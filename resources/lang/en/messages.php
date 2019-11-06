@@ -2187,4 +2187,14 @@
   'campaign.choose_your_template_layout' => 'Choose layout for campaign template',
   'campaign.choose_template.intro' => 'Select campaign template depend on your purpose.
         You can create template from scratch or select from exist templates.',
+  'campaign.edit_template' => 'Edit campaign template',
+  'campaign.html_email' => 'HTML Email',
+  'campaign.html_email.last_edit' => 'Last edited on :date',
+  'campaign.compose_email' => 'Compose Email',
+  'campaign.change_template' => 'Change Template',
+  'campaign.attachment' => 'Attachment',
+  'campaign.attachment.intro' => 'Email will be sent with the follow files below.
+        Drag and drop your local files to upload zone to attach files into the campaign email.',
+  'campaign.attachment.file_size_is' => 'File size: :size',
+  'campaign.attached_files' => 'Attached files',
 ) ?>

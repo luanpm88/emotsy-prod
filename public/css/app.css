@@ -2701,9 +2701,18 @@ canvas[data-zr-dom-id='_zrender_hover_'] {
 .template-boxes .panel-body {
     padding: 0;
 }
+.template-boxes .panel-body label {
+    text-align: center;
+    display: block;
+    color: #333;
+    margin: 8px;
+}
 .template-boxes .panel-body img {
     border: solid 1px #aaa;
     border-radius: 3px;
+}
+.template-boxes.layout .panel-body img {
+    border: none;
 }
 p.link-inline a {
   text-decoration: underline;
@@ -2747,10 +2756,11 @@ p.link-inline a {
   display: flex;
   list-style: none;
   padding: 15px;
-  border: dashed 1.5px #fff;
+  border: dashed 2px #fff;
+  border-radius: 15px;
 }
 .hover-list li:hover {
-  border: dashed 1.5px #aaa;
+  border: dashed 2px #aaa;
 }
 .hover-list li i {
   font-size: 28px;
@@ -2783,6 +2793,28 @@ p.link-inline a {
 .btn {
   padding: 7px 18px;
 }
-.nav > li > a {
+.mc-nav > li > a {
     padding: 0 0 5px 0;
+}
+.media-left {
+  display: flex;
+}
+.media-left .media {
+  padding-right: 20px;
+    padding-top: 8px;
+}
+.media-left .media img {
+      width: 60px;
+    height: 60px;
+}
+.media-left .main {
+  
+}
+.media-left .main label {
+      margin-bottom: 0px;
+    font-size: 17px;
+}
+.media-left .main p {
+  font-size: 14px;
+    margin-bottom: 15px;
 }

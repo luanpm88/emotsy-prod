@@ -49,6 +49,15 @@ Route::get('/app/templates/{name?}', [ function ($name) {
     }
 }])->where('name', '.+');
 
+// upload path for campaigns
+Route::get('/app/campaigns/{name?}', [ function ($name) {
+    $path = storage_path("app/campaigns/$name");
+    $mime_type = \Acelle\Library\File::getFileType($path);
+    if (\File::exists($path)) {
+        return response()->file($path, array('Content-Type' => $mime_type));
+    }
+}])->where('name', '.+');
+
 // Setting upload path
 Route::get('setting/{filename}', 'SettingController@file');
 
@@ -262,9 +271,13 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::patch('templates/{uid}/update', 'TemplateController@update');
 
     // Campaign
-    Route::get('campaigns/{uid}/template/upload', 'CampaignController@templateUpload');
-    Route::get('campaigns/{uid}/template/theme', 'CampaignController@templateTheme');
-    Route::get('campaigns/{uid}/template/layout', 'CampaignController@templateLayout');
+    Route::post('campaigns/{uid}/template/asset', 'CampaignController@templateAsset');
+    Route::get('campaigns/{uid}/template/content', 'CampaignController@templateContent');
+    Route::match(['get', 'post'], 'campaigns/{uid}/template/edit', 'CampaignController@templateEdit');
+    Route::match(['get', 'post'], 'campaigns/{uid}/template/upload', 'CampaignController@templateUpload');
+    Route::get('campaigns/{uid}/template/theme/list', 'CampaignController@templateThemeList');
+    Route::match(['get', 'post'], 'campaigns/{uid}/template/theme', 'CampaignController@templateTheme');
+    Route::match(['get', 'post'], 'campaigns/{uid}/template/layout', 'CampaignController@templateLayout');
     Route::get('campaigns/{uid}/template/create', 'CampaignController@templateCreate');
     
     Route::get('campaigns/{uid}/spam-score', 'CampaignController@spamScore');

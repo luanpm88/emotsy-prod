@@ -334,6 +334,10 @@ class CampaignController extends Controller
             return redirect()->action('CampaignController@templateCreate', ['uid' => $campaign->uid]);
         }
         
+        return view('campaigns.template.index', [
+            'campaign' => $campaign,
+        ]);
+        
         //// Required tags
         //$validate = 'required';
         //
@@ -452,9 +456,96 @@ class CampaignController extends Controller
         if (\Gate::denies('update', $campaign)) {
             return $this->notAuthorized();
         }
+        
+        // add layout to campaign template
+        if ($request->isMethod('post')) {
+            if ($request->layout) {
+                $campaign->addTemplateFromLayout($request->layout);
+            }
+            
+            return redirect()->action('CampaignController@templateEdit', $campaign->uid);
+        }
 
         return view('campaigns.template.layout', [
+            'campaign' => $campaign,            
+        ]);
+    }
+    
+    /**
+     * Edit campaign template.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function templateEdit(Request $request)
+    {
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+        
+        // save campaign html
+        if ($request->isMethod('post')) {
+            $rules = array(
+                'content' => 'required',
+            );
+
+            $this->validate($request, $rules);
+            
+            $campaign->html = $request->content;            
+            $campaign->save();
+            
+            // update plain
+            $campaign->updatePlainFromHtml();
+        }
+
+        return view('campaigns.template.edit', [
             'campaign' => $campaign,
+            'list' => $campaign->defaultMailList,
+        ]);
+    }
+    
+    /**
+     * Upload asset to builder.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function templateAsset(Request $request, $uid)
+    {
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        
+        $path = $request->file('file')->storeAs(
+            'campaigns/assets/' . $campaign->uid, md5($request->file('file')), 'public'
+        );
+        
+        return response()->json([
+            'url' => \Storage::url($path)
+        ]);
+    }
+    
+    /**
+     * Campaign html content.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function templateContent(Request $request)
+    {
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        return view('campaigns.template.content', [
+            'content' => $campaign->html,
         ]);
     }
     
@@ -468,14 +559,37 @@ class CampaignController extends Controller
     public function templateTheme(Request $request)
     {
         $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
-        $templates = Template::where('customer_id', '=', null);
 
         // authorize
         if (\Gate::denies('update', $campaign)) {
             return $this->notAuthorized();
         }
+        
+        if ($request->isMethod('post')) {
+            $template = \Acelle\Model\Template::findByUid($request->template);
+            $campaign->copyFromTemplate($template);
+            
+            return redirect()->action('CampaignController@templateEdit', $campaign->uid);
+        }
 
         return view('campaigns.template.theme', [
+            'campaign' => $campaign,
+        ]);
+    }
+    
+    
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function templateThemeList(Request $request)
+    {
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $request->merge(array("customer_id" => $request->user()->customer->id));
+        $templates = Template::search($request)->paginate($request->per_page);
+
+        return view('campaigns.template.themeList', [
             'campaign' => $campaign,
             'templates' => $templates,
         ]);
@@ -495,6 +609,13 @@ class CampaignController extends Controller
         // authorize
         if (\Gate::denies('update', $campaign)) {
             return $this->notAuthorized();
+        }
+        
+        // validate and save posted data
+        if ($request->isMethod('post')) {
+            $campaign->uploadTemplate($request);
+            
+            return redirect()->action('CampaignController@templateEdit', $campaign->uid);
         }
 
         return view('campaigns.template.upload', [

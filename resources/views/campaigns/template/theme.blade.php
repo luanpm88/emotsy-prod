@@ -6,7 +6,7 @@
         <div class="col-md-10">
             <h2>{{ trans('messages.campaign.choose_your_template_layout') }}</h2>
                 
-            <ul class="nav nav-tabs campaign-template-tabs">
+            <ul class="nav nav-tabs mc-nav campaign-template-tabs">
                 <li><a href="{{ action('CampaignController@templateLayout', $campaign->uid) }}">Layouts</a></li>
                 <li class="active"><a href="{{ action('CampaignController@templateTheme', $campaign->uid) }}">Themes</a></li>
                 <li><a href="{{ action('CampaignController@templateUpload', $campaign->uid) }}">Upload</a></li>
@@ -14,12 +14,11 @@
                 
             <div id="gallery">
                 <form class="listing-form"
-                    data-url="{{ action('TemplateController@builderTemplates') }}"
+                    data-url="{{ action('CampaignController@templateThemeList', $campaign->uid) }}"
                     per-page="{{ Acelle\Model\Template::$itemsPerPage }}"					
                 >				
                     <div class="row top-list-controls">
-                        <div class="col-md-9">
-                            @if ($templates->count() >= 0)					
+                        <div class="col-md-9">		
                                 <div class="filter-box">										
                                     <span class="filter-group">
                                         <span class="title text-semibold text-muted">{{ trans('messages.from') }}</span>
@@ -45,7 +44,6 @@
                                         <i class="icon-search4 keyword_search_button"></i>
                                     </span>
                                 </div>
-                            @endif
                         </div>
                     </div>
                     
