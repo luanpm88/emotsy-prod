@@ -497,6 +497,14 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/users', 'UserController');
 
     // Template
+    Route::get('admin/templates/builder/templates', 'TemplateController@builderTemplates');
+    Route::post('admin/templates/builder/create', 'TemplateController@builderCreate');
+    Route::get('admin/templates/builder/create', 'TemplateController@builderCreate');
+    Route::post('admin/templates/{uid}/builder/edit/asset', 'TemplateController@builderAsset');
+    Route::get('admin/templates/{uid}/builder/edit/content', 'TemplateController@builderEditContent');
+    Route::post('admin/templates/{uid}/builder/edit', 'TemplateController@builderEdit');
+    Route::get('admin/templates/{uid}/builder/edit', 'TemplateController@builderEdit');
+    
     Route::post('admin/templates/{uid}/copy', 'TemplateController@copy');
     Route::get('admin/templates/{uid}/copy', 'TemplateController@copy');
     Route::get('admin/templates/sort', 'TemplateController@sort');

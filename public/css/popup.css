@@ -88,6 +88,6 @@
     border-color: #bbb;
     background-color: #fff;
 }
-.select2-container {
+.select2-dropdown {
     z-index: 1000000;
 }

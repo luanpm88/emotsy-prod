@@ -585,4 +585,48 @@ class Template extends Model
         
         return $template;
     }
+    
+    /**
+     * Load templates from folder.
+     *
+     * @return mixed
+     */
+    public function load($path)
+    {
+        // copy file and get thumb
+        \Acelle\Library\Tool::xcopy($path, $this->getUploadDir());
+        $this->image = $this->getUploadDir() . '/thumb.png';
+        $this->replaceHtmlUrl('/' . $this->getUploadUri() . '/');
+        $this->save();
+    }
+    
+    /**
+     * Load demo templates from storage/themes.
+     *
+     * @return mixed
+     */
+    public static function loadFromThemes($admin)
+    {
+        $themePath = storage_path('themes');
+        $folders = scandir($themePath);
+        
+        foreach($folders as $folder) {
+            $fullPath = $themePath . '/' . $folder;
+            
+            if ($folder != '.' && $folder != '..' && is_dir($fullPath)) {
+                // Create admin template
+                $template = new Template();
+                $name = trim(file_get_contents($fullPath . '/name'));
+                $html = file_get_contents($fullPath . '/index.html');
+                
+                $template->name = $name;
+                $template->admin_id = $admin->id;
+                $template->content = $html;
+                $template->save();
+                
+                // load from path
+                $template->load($fullPath);
+            }
+        }
+    }
 }

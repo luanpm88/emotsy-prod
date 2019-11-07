@@ -2653,6 +2653,7 @@ abstract class AbsCampaign extends Model
         
         // replace image url
         $this->html = $template->content;
+        $this->html = str_replace($template->getUploadUri(), $this->getUploadUri(), $this->html);
         $this->save();
     }
 }

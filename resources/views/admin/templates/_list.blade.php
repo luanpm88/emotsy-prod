@@ -50,11 +50,7 @@
 												<a href="#preview" class="btn bg-teal-600 btn-icon" onclick="popupwindow('{{ action('Admin\TemplateController@preview', $template->uid) }}', '{{ $template->name }}', 800, 800)"><i class="icon-zoomin3"></i> {{ trans("messages.preview") }}</a>
 											@endif
 											@if (Auth::user()->admin->can('update', $template))
-												@if ($template->source == 'builder')
-													<a href="{{ action('Admin\TemplateController@rebuild', $template->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
-												@else
-													<a href="{{ action('Admin\TemplateController@edit', $template->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
-												@endif
+												<a href="{{ action('Admin\TemplateController@builderEdit', $template->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
 											@endif
 											@if (Auth::user()->admin->can('preview', $template) ||
 												Auth::user()->admin->can('copy', $template) ||

@@ -308,8 +308,11 @@ class TemplateController extends Controller
         if (!$request->user()->customer->can('image', $template)) {
             return $this->notAuthorized();
         }
-
-        if (!empty($template->image) && file_exists(storage_path($template->image).'.thumb.jpg')) {
+        
+        if (!empty($template->image) && file_exists($template->image)) {
+            $img = \Image::make($template->image);
+            
+        } elseif (!empty($template->image) && file_exists(storage_path($template->image).'.thumb.jpg')) {
             $img = \Image::make(storage_path($template->image).'.thumb.jpg');
         } else {
             $img = \Image::make(public_path('assets/images/placeholder.jpg'));
@@ -389,6 +392,11 @@ class TemplateController extends Controller
         // authorize
         if (!$request->user()->customer->can('saveImage', $template)) {
             return $this->not_authorized();
+        }
+        
+        // if thumb is default
+        if (substr($template->image, 0, 1) == '/') {
+            return;
         }
 
         $upload_loca = 'app/email_templates/';
@@ -555,6 +563,11 @@ class TemplateController extends Controller
         // Generate info
         $user = $request->user();
         $template = Template::findByUid($uid);
+        
+        // authorize
+        if (!$request->user()->customer->can('update', $template)) {
+            return $this->notAuthorized();
+        }
 
         return view('templates.builder.content', [
             'content' => $template->content,
@@ -571,6 +584,11 @@ class TemplateController extends Controller
     public function builderAsset(Request $request, $uid)
     {
         $template = Template::findByUid($uid);
+        
+        // authorize
+        if (!$request->user()->customer->can('update', $template)) {
+            return $this->notAuthorized();
+        }
         
         $path = $request->file('file')->storeAs(
             'templates/assets/' . $template->uid, md5($request->file('file')), 'public'
@@ -594,6 +612,11 @@ class TemplateController extends Controller
         
         $template = new Template();
         $template->name = trans('messages.untitled_template');
+        
+        // authorize
+        if (!$request->user()->customer->can('create', Template::class)) {
+            return $this->notAuthorized();
+        }
         
         // Gallery
         $templates = Template::where('customer_id', '=', null);
@@ -632,6 +655,11 @@ class TemplateController extends Controller
     {
         $request->merge(array("customer_id" => $request->user()->customer->id));
         $templates = Template::search($request)->paginate($request->per_page);
+        
+        // authorize
+        if (!$request->user()->customer->can('create', Template::class)) {
+            return $this->notAuthorized();
+        }
 
         return view('templates.builder.templates', [
             'templates' => $templates,
