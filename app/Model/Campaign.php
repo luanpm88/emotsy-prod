@@ -459,4 +459,45 @@ class Campaign extends AbsCampaign
     {
         return $this->defaultMailList->pickSendingServer();
     }
+    
+    /**
+     * Get builder templates.
+     *
+     * @return mixed
+     */
+    public function getBuilderTemplates($customer)
+    {
+        $result = [];
+        
+        // Gallery
+        $templates = Template::where('customer_id', '=', null)
+            ->orWhere('customer_id', '=', $customer->id)
+            ->orderBy('customer_id')
+            ->get();
+        
+        foreach($templates as $template) {
+            $result[] = [
+                'name' => $template->name,
+                'url' => action('CampaignController@templateChangeTemplate', ['uid' => $this->uid, 'change_uid' => $template->uid]),
+                'thumbnail' => action('TemplateController@image', $template->uid),
+            ];
+        }
+        
+        return $result;
+    }
+    
+    /**
+     * Get builder templates.
+     *
+     * @return mixed
+     */
+    public function changeTemplate($template)
+    {
+        \Acelle\Library\Tool::xcopy($template->getUploadDir(), $this->getUploadDir());
+        $this->html = $template->content;
+        $this->image = $template->image;
+        // replace image url
+        $this->html = str_replace($template->getUploadUri(), $this->getUploadUri(), $this->html);
+        $this->save();
+    }
 }

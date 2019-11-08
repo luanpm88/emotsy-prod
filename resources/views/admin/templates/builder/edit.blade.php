@@ -14,6 +14,8 @@
         var CSRF_TOKEN = "{{ csrf_token() }}";
         var editor;
         
+        var templates = JSON.parse('{!! json_encode($templates) !!}');
+        
         $( document ).ready(function() {
             editor = new Editor({
                 url: '{{ action('Admin\TemplateController@builderEditContent', $template->uid) }}',
@@ -24,6 +26,7 @@
                 saveMethod: 'POST',
                 tags: {!! json_encode(Acelle\Model\Template::builderTags((isset($list) ? $list : null))) !!},
                 root: '{{ URL::asset('builder') }}/',
+                templates: templates,
             });
           
             editor.init();

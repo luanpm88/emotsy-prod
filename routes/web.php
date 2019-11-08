@@ -243,6 +243,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::post('lists/{list_uid}/pages/{alias}/preview', 'PageController@preview');
 
     // Template
+    Route::get('templates/{uid}/builder/change-template/{change_uid}', 'TemplateController@builderChangeTemplate');
     Route::get('templates/builder/templates', 'TemplateController@builderTemplates');
     Route::post('templates/builder/create', 'TemplateController@builderCreate');
     Route::get('templates/builder/create', 'TemplateController@builderCreate');
@@ -271,6 +272,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::patch('templates/{uid}/update', 'TemplateController@update');
 
     // Campaign
+    Route::get('campaigns/{uid}/template/change/{template_uid}', 'CampaignController@templateChangeTemplate');
+    Route::post('campaigns/{uid}/template/asset', 'CampaignController@templateAsset');
     Route::post('campaigns/{uid}/template/asset', 'CampaignController@templateAsset');
     Route::get('campaigns/{uid}/template/content', 'CampaignController@templateContent');
     Route::match(['get', 'post'], 'campaigns/{uid}/template/edit', 'CampaignController@templateEdit');
@@ -497,6 +500,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/users', 'UserController');
 
     // Template
+    Route::get('admin/templates/{uid}/builder/change-template/{change_uid}', 'TemplateController@builderChangeTemplate');
     Route::get('admin/templates/builder/templates', 'TemplateController@builderTemplates');
     Route::post('admin/templates/builder/create', 'TemplateController@builderCreate');
     Route::get('admin/templates/builder/create', 'TemplateController@builderCreate');

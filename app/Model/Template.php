@@ -629,4 +629,69 @@ class Template extends Model
             }
         }
     }
+    
+    /**
+     * Get builder templates.
+     *
+     * @return mixed
+     */
+    public function getBuilderTemplates($customer)
+    {
+        $result = [];
+        
+        // Gallery
+        $templates = Template::where('customer_id', '=', null)
+            ->orWhere('customer_id', '=', $customer->id)
+            ->orderBy('customer_id')
+            ->get();
+        
+        foreach($templates as $template) {
+            $result[] = [
+                'name' => $template->name,
+                'url' => action('TemplateController@builderChangeTemplate', ['uid' => $this->uid, 'change_uid' => $template->uid]),
+                'thumbnail' => action('TemplateController@image', $template->uid),
+            ];
+        }
+        
+        return $result;
+    }
+    
+    /**
+     * Get builder templates.
+     *
+     * @return mixed
+     */
+    public function getBuilderAdminTemplates()
+    {
+        $result = [];
+        
+        // Gallery
+        $templates = Template::where('customer_id', '=', null)
+            ->get();
+        
+        foreach($templates as $template) {
+            $result[] = [
+                'name' => $template->name,
+                'url' => action('Admin\TemplateController@builderChangeTemplate', ['uid' => $this->uid, 'change_uid' => $template->uid]),
+                'thumbnail' => action('Admin\TemplateController@image', $template->uid),
+            ];
+        }
+        
+        return $result;
+    }
+    
+    /**
+     * Get builder templates.
+     *
+     * @return mixed
+     */
+    public function changeTemplate($template)
+    {
+        \Acelle\Library\Tool::xcopy($template->getUploadDir(), $this->getUploadDir());
+        $this->content = $template->content;
+        $this->image = $template->image;
+        // replace image url
+        $this->content = str_replace($template->getUploadUri(), $this->getUploadUri(), $this->content);
+        $this->save();
+    }
 }

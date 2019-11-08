@@ -505,6 +505,7 @@ class CampaignController extends Controller
         return view('campaigns.template.edit', [
             'campaign' => $campaign,
             'list' => $campaign->defaultMailList,
+            'templates' => $campaign->getBuilderTemplates($request->user()->customer),
         ]);
     }
     
@@ -2137,4 +2138,25 @@ class CampaignController extends Controller
             'score' => $score,
         ]);
 	}
+    
+    /**
+     * Change template from exist template.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function templateChangeTemplate(Request $request, $uid, $template_uid)
+    {
+        // Generate info
+        $campaign = \Acelle\Model\Campaign::findByUid($uid);
+        $changeTemplate = Template::findByUid($template_uid);
+
+        // authorize
+        if (!$request->user()->admin->can('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+        
+        $campaign->changeTemplate($changeTemplate);
+    }
 }

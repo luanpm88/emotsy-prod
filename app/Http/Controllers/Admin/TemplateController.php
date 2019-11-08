@@ -492,6 +492,7 @@ class TemplateController extends Controller
 
         return view('admin.templates.builder.edit', [
             'template' => $template,
+            'templates' => $template->getBuilderAdminTemplates(),
         ]);
     }
     
@@ -608,5 +609,26 @@ class TemplateController extends Controller
         return view('admin.templates.builder.templates', [
             'templates' => $templates,
         ]);
+    }
+    
+    /**
+     * Change template from exist template.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function builderChangeTemplate(Request $request, $uid, $change_uid)
+    {
+        // Generate info
+        $template = Template::findByUid($uid);
+        $changeTemplate = Template::findByUid($change_uid);
+
+        // authorize
+        if (!$request->user()->admin->can('update', $template)) {
+            return $this->notAuthorized();
+        }
+        
+        $template->changeTemplate($changeTemplate);
     }
 }

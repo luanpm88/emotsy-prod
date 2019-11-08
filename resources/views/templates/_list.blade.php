@@ -48,11 +48,9 @@
 
                 <td class="text-right">
                     @if (Auth::user()->customer->can('update', $template))
-                        @if ($template->source == 'builder')
-                            <a href="{{ action('TemplateController@rebuild', $template->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
-                        @else
-                            <a href="{{ action('TemplateController@edit', $template->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
-                        @endif
+                        <a href="{{ action('TemplateController@builderEdit', $template->uid) }}" type="button" class="btn bg-grey btn-icon">
+                            {{ trans('messages.design') }}
+                        </a>
                     @endif
                     @if (Auth::user()->customer->can('preview', $template) ||
                         Auth::user()->customer->can('copy', $template) ||

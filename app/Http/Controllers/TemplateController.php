@@ -548,7 +548,30 @@ class TemplateController extends Controller
 
         return view('templates.builder.edit', [
             'template' => $template,
+            'templates' => $template->getBuilderTemplates($user->customer),
         ]);
+    }
+    
+    /**
+     * Change template from exist template.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function builderChangeTemplate(Request $request, $uid, $change_uid)
+    {
+        // Generate info
+        $user = $request->user();
+        $template = Template::findByUid($uid);
+        $changeTemplate = Template::findByUid($change_uid);
+
+        // authorize
+        if (!$request->user()->customer->can('update', $template)) {
+            return $this->notAuthorized();
+        }
+        
+        $template->changeTemplate($changeTemplate);
     }
     
     /**
