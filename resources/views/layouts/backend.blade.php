@@ -52,19 +52,17 @@
 							<i class="icon-user"></i> {{ trans('messages.customer') }}
 							<span class="caret"></span>
 						</a>
-						<ul class="dropdown-menu mc-dropdown">
+						<ul class="dropdown-menu">
 							@if (Auth::user()->can("read", new Acelle\Model\Customer()))
 								<li rel0="CustomerController">
 									<a href="{{ action('Admin\CustomerController@index') }}">
-										{{ trans('messages.customers') }}
-										<subtitle>{{ trans('messages.customers.desc') }}</subtitle>
+										<i class="icon-users"></i> {{ trans('messages.customers') }}
 									</a>
 								</li>
 							@endif
 							<li rel0="SubscriptionController">
 								<a href="{{ action('Admin\SubscriptionController@index') }}">
-									{{ trans('messages.subscriptions') }}
-									<subtitle>{{ trans('messages.subscriptions.desc') }}</subtitle>
+									<i class="icon-quill4"></i> {{ trans('messages.subscriptions') }}
 								</a>
 							</li>
 						</ul>
