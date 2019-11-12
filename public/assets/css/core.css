@@ -5025,8 +5025,8 @@ a.thumbnail.active {
 * ---------------------------------------------------------------------------- */
 .alert {
   position: relative;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding: 15px;
+  color: #231d14;
 }
 .alert .alert-heading {
   margin-top: 0;
@@ -5055,6 +5055,7 @@ a.thumbnail.active {
 .alert-primary .close {
   color: #104d92;
 }
+/*
 .alert-success,
 .alert-success .close {
   color: #205823;
@@ -5071,6 +5072,7 @@ a.thumbnail.active {
 .alert-danger .close {
   color: #9c1f1f;
 }
+*/
 .alert.alert-rounded {
   border-radius: 100px;
   padding-left: 25px;

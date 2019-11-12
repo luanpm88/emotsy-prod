@@ -64,5 +64,6 @@ class Kernel extends HttpKernel
         'installed' => \Acelle\Http\Middleware\Installed::class,
         'not_installed' => \Acelle\Http\Middleware\NotInstalled::class,
         'not_logged_in' => \Acelle\Http\Middleware\NotLoggedIn::class,
+        'subscription' => \Acelle\Http\Middleware\Subscription::class,
     ];
 }

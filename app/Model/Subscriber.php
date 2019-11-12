@@ -25,6 +25,8 @@ namespace Acelle\Model;
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Log as MailLog;
 use Acelle\Model\Blacklist;
+use Acelle\Model\AutoTrigger;
+use DB;
 
 class Subscriber extends Model
 {
@@ -888,6 +890,7 @@ class Subscriber extends Model
         // @todo Filter by current user only
         return Blacklist::where('email', '=', $this->email)->exists();
     }
+<<<<<<< HEAD
 
     public function getFullName($default = null)
     {
@@ -897,5 +900,27 @@ class Subscriber extends Model
         } else {
             return $full;
         }
+    }
+
+    /**
+     * Is the subscriber active?
+     */
+    public function isActive()
+    {
+        return ($this->status == self::STATUS_SUBSCRIBED);
+    }
+
+    /**
+     * Delete the constraint (which cannot explicitly set in MySQL).
+     */
+    public function delete()
+    {
+        DB::transaction(function() {
+            foreach (AutoTrigger::where('preceded_by', $this->id)->get() as $trigger) {
+                $trigger->delete();
+            }
+
+            parent::delete();
+        });
     }
 }

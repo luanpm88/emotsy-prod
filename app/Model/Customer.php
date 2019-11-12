@@ -26,8 +26,12 @@ use Acelle\Library\QuotaTrackerFile;
 use Acelle\Model\Setting;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Acelle\Cashier\Traits\BillableUserTrait;
+use Acelle\Cashier\Interfaces\BillableUserInterface;
+use Acelle\Model\Plan;
+use Acelle\Cashier\Subscription;
 
-class Customer extends Model
+class Customer extends Model implements BillableUserInterface
 {
     protected $quotaTracker;
 
@@ -43,8 +47,6 @@ class Customer extends Model
     protected $fillable = [
         'name', 'first_name', 'last_name', 'timezone', 'language_id', 'color_scheme',
     ];
-
-    protected $currentSubscription;
 
     /**
      * The rules for validation.
@@ -65,6 +67,30 @@ class Customer extends Model
             $rules['password'] = 'confirmed|min:5';
         } else {
             $rules['password'] = 'required|confirmed|min:5';
+        }
+
+        return $rules;
+    }
+    
+    /**
+     * The rules for validation.
+     *
+     * @var array
+     */
+    public function registerRules()
+    {
+        $rules = array(
+            'email' => 'required|email|unique:users,email,'.$this->user_id.',id',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'timezone' => 'required',
+            'language_id' => 'required',
+        );
+
+        if (isset($this->id)) {
+            $rules['password'] = 'min:5';
+        } else {
+            $rules['password'] = 'required|min:5';
         }
 
         return $rules;
@@ -95,6 +121,13 @@ class Customer extends Model
      *
      * @var object | collect
      */
+    public function subscription()
+    {
+        return $this->hasOne('Acelle\Cashier\Subscription', 'user_id', 'uid')
+            ->where('status', '<>', Subscription::STATUS_ENDED)
+            ->orderBy('created_at', 'desc');
+    }
+    
     public function contact()
     {
         return $this->belongsTo('Acelle\Model\Contact');
@@ -150,11 +183,6 @@ class Customer extends Model
         return $this->hasMany('Acelle\Model\Automation');
     }
 
-    public function subscriptions()
-    {
-        return $this->hasMany('Acelle\Model\Subscription')->orderBy('created_at', 'desc');
-    }
-
     public function sendingDomains()
     {
         return $this->hasMany('Acelle\Model\SendingDomain');
@@ -164,7 +192,7 @@ class Customer extends Model
     {
         return $this->sendingDomains()->where('status', '=', SendingDomain::STATUS_ACTIVE);
     }
-    
+
     public function activeDkimSendingDomains()
     {
         return $this->activeSendingDomains()->where('dkim_verified', true);
@@ -183,6 +211,28 @@ class Customer extends Model
     public function blacklists()
     {
         return $this->hasMany('Acelle\Model\Blacklist');
+    }
+
+    public function senders()
+    {
+        return $this->hasMany('Acelle\Model\Sender')->where('status', '=', \Acelle\Model\Sender::STATUS_VERIFIED);
+    }
+
+    public function activeVerifiedSendingDomains()
+    {
+        return $this->sendingDomains()
+            ->where('status', '=', \Acelle\Model\SendingDomain::STATUS_ACTIVE)
+            ->where('domain_verified', '=', \Acelle\Model\SendingDomain::VERIFIED);
+    }
+
+    /**
+     * Get active subscription.
+     *
+     * @return void
+     */
+    public function activeSubscription()
+    {
+        return (is_object($this->subscription) && $this->subscription->active()) ? $this->subscription : null;
     }
 
     /**
@@ -359,34 +409,6 @@ class Customer extends Model
                         ->where('subscribers.created_at', '<=', $end);
 
         return $query->count();
-    }
-
-    /**
-     * Get customer options.
-     *
-     * @return string
-     */
-    public function getOptions()
-    {
-        //@todo how to get option from subscription/plan
-        $subscription = $this->getCurrentSubscription();
-        if (is_object($subscription)) {
-            return $subscription->getOptions();
-        } else {
-            return \Acelle\Model\Subscription::defaultOptions();
-        }
-    }
-
-    /**
-     * Get customer option.
-     *
-     * @return string
-     */
-    public function getOption($name)
-    {
-        $options = $this->getOptions();
-        // @todo: chỗ này cần raise 1 cái exception chứ ko phải là trả về rỗng (trả vể rỗng để "dìm" lỗi đi à?)
-        return isset($options[$name]) ? $options[$name] : '';
     }
 
     /**
@@ -724,10 +746,6 @@ class Customer extends Model
      */
     public function getSendingQuotaUsage()
     {
-        $current = $this->getCurrentSubscription();
-        if (is_null($current)) {
-            return 0;
-        }
         $tracker = $this->getQuotaTracker();
 
         return $tracker->getUsage();
@@ -740,11 +758,6 @@ class Customer extends Model
      */
     public function getSendingQuotaUsagePercentage()
     {
-        $current = $this->getCurrentSubscription();
-        if (is_null($current)) {
-            return 0;
-        }
-
         $max = $this->getSendingQuota();
         $count = $this->getSendingQuotaUsage();
 
@@ -768,11 +781,9 @@ class Customer extends Model
      */
     public function getQuotaHash()
     {
-        $current = $this->getCurrentSubscription();
-
         $quota = [
-            'start' => (isset($current->start_at) ? $current->start_at->timestamp : null),
-            'max' => $current->getOption('email_max'),
+            'start' => (isset($current->created_at) ? $current->created_at->timestamp : null),
+            'max' => $this->getOption('email_max'),
         ];
 
         return $quota;
@@ -820,12 +831,6 @@ class Customer extends Model
      */
     public function getQuotaTracker()
     {
-        $current = $this->getCurrentSubscription();
-
-        if (is_null($current)) {
-            throw new \Exception('User not subscribed to any active plan');
-        }
-
         if (!$this->quotaTracker) {
             $this->initQuotaTracker();
         }
@@ -935,91 +940,6 @@ class Customer extends Model
         if ($request->_remove_image == 'true') {
             $this->removeImage();
             $this->image = '';
-        }
-    }
-
-    /**
-     * Get customer current subscriptions.
-     *
-     * @return Subscription
-     */
-    public function getCurrentSubscriptions()
-    {
-        return $subsciption = $this->subscriptions()
-            ->where(function ($query) {
-                $query->where('subscriptions.start_at', '<=', \Carbon\Carbon::now()->endOfDay())
-                    ->orWhereNull('subscriptions.start_at');
-            })->where(function ($query) {
-                $query->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->startOfDay())
-                    ->orWhereNull('subscriptions.end_at');
-            });
-    }
-
-    /**
-     * Get customer current subscription.
-     *
-     * @return Subscription
-     */
-    public function getCurrentSubscription()
-    {
-        if (!$this->currentSubscription) {
-            $this->currentSubscription = $this->getCurrentSubscriptions()
-            ->where('subscriptions.status', '=', \Acelle\Model\Subscription::STATUS_ACTIVE)
-            ->first();
-        }
-
-        return $this->currentSubscription;
-    }
-
-    /**
-     * Get customer next subscriptions.
-     *
-     * @return Subscription
-     */
-    public function getNextSubscription()
-    {
-        return $subsciption = $this->subscriptions()
-            ->where('subscriptions.start_at', '>', \Carbon\Carbon::now()->endOfDay())
-            ->first();
-    }
-
-    /**
-     * Get customer current subscription.
-     *
-     * @return Subscription
-     */
-    public function getCurrentSubscriptionIgnoreStatus()
-    {
-        return $subsciption = $this->getCurrentSubscriptions()
-            ->first();
-    }
-
-    /**
-     * Get customer current pending subscription.
-     *
-     * @return Subscription
-     */
-    public function getCurrentInactiveSubscription()
-    {
-        return $subsciption = $this->subscriptions()
-            ->where('status', '=', \Acelle\Model\Subscription::STATUS_INACTIVE)
-            ->first();
-    }
-
-    /**
-     * Get next subscription start at.
-     *
-     * @return Date
-     */
-    public function getNextScriptionStartAt()
-    {
-        $last_subscription = $this->subscriptions()
-            ->orderBy('created_at', 'desc')->first();
-
-        if (is_object($last_subscription) && isset($last_subscription->end_at)) {
-            return $last_subscription->end_at->addDay(1);
-        } else {
-            return \Acelle\Library\Tool::customerDateTime(\Carbon\Carbon::now());
         }
     }
 
@@ -1369,26 +1289,6 @@ class Customer extends Model
     }
 
     /**
-     * Subscriptions count.
-     *
-     * @return number
-     */
-    public function subscriptionsCount()
-    {
-        return $this->subscriptions()->count();
-    }
-
-    /**
-     * Check if customer dosen't have any plan.
-     *
-     * @return bool
-     */
-    public function notHaveAnyPlan()
-    {
-        return $this->subscriptionsCount() == 0;
-    }
-
-    /**
      * Count customer automations.
      *
      * @return number
@@ -1487,36 +1387,12 @@ class Customer extends Model
      */
     public function currentPlanName()
     {
-        $current_subscription = $this->getCurrentSubscription();
-
         return is_object($this->user->admin) ?
             trans('messages.admin_default_plan') :
-            (is_object($current_subscription) ?
-                $current_subscription->plan_name :
+            (is_object($this->activeSubscription()) ?
+                $this->activeSubscription()->plan->name :
                 trans('messages.no_plan')
             );
-    }
-
-    /**
-     * Get customer subscription not include old one.
-     *
-     * @return Subscription
-     */
-    public function getNotOutdatedSubscriptions()
-    {
-        return $subsciption = $this->subscriptions()
-            ->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->startOfDay());
-    }
-
-    /**
-     * Get customer current pending subscription not include old one.
-     *
-     * @return Subscription
-     */
-    public function getNotOutdatedInactiveSubscriptions()
-    {
-        return $subsciption = $this->getNotOutdatedSubscriptions()
-            ->where('subscriptions.status', '=', \Acelle\Model\Subscription::STATUS_INACTIVE);
     }
 
     /**
@@ -1630,28 +1506,14 @@ class Customer extends Model
     {
         // Check the customer has permissions using email verification servers and has his own email verification servers
         if ($this->getOption('create_email_verification_servers') == 'yes') {
-            $result = $this->activeEmailVerificationServers()->get()->map(function ($server) {
+            return $this->activeEmailVerificationServers()->get()->map(function ($server) {
                 return $server;
             });
         // If customer dont have permission creating sending servers
         } else {
-            $subscription = $this->getCurrentSubscription();
-
-            // Check if has email verification servers for current subscription
-            if (is_object($subscription)) {
-                if ($subscription->getOption('all_email_verification_servers') == 'yes') {
-                    $result = \Acelle\Model\EmailVerificationServer::getAllAdminActive()->get()->map(function ($server) {
-                        return $server;
-                    });
-                } else {
-                    $result = $subscription->activeSubscriptionsEmailVerificationServers()->get()->map(function ($server) {
-                        return $server->emailVerificationServer;
-                    });
-                }
-            }
+            // Get server from the plan
+            return  $this->activeSubscription()->plan->getEmailVerificaionServers();
         }
-        
-        return $result;
     }
 
     /**
@@ -1670,8 +1532,6 @@ class Customer extends Model
             });
         // If customer dont have permission creating sending domain
         } else {
-            $subscription = $this->getCurrentSubscription();
-
             // Check if has email verification servers for current subscription
             $result = \Acelle\Model\SendingDomain::getAllAdminActive()->get()->map(function ($server) {
                 return $server;
@@ -1746,13 +1606,13 @@ class Customer extends Model
                 $types[$type] = $server;
             }
         }
-        
+
         if (!Setting::isYes('delivery.sendmail')) {
-            unset($types['sendmail']); 
+            unset($types['sendmail']);
         }
-        
+
         if (!Setting::isYes('delivery.phpmail')) {
-            unset($types['php-mail']); 
+            unset($types['php-mail']);
         }
 
         return $types;
@@ -1830,16 +1690,6 @@ class Customer extends Model
     }
 
     /**
-     * Check if customer has api access.
-     *
-     * @return bool
-     */
-    public function canUseApi()
-    {
-        return $this->getOption('api_access') == 'yes';
-    }
-    
-    /**
      * Get all customer's and system domains.
      *
      * @return bool
@@ -1848,4 +1698,233 @@ class Customer extends Model
     {
         return \Acelle\Model\SendingDomain::getAllActive();
     }
+
+    //====================================== BILLABLE USER INTERFACE =======================================
+
+    /**
+     * Customer get email.
+     *
+     * @return string
+     */
+    public function getBillableEmail()
+    {
+        return $this->email();
+    }
+
+    /**
+     * Customer get remote owner id.
+     *
+     * @return string
+     */
+    public function getBillableId()
+    {
+        return $this->uid;
+    }
+
+    /**
+     * Customer get local owner id.
+     *
+     * @return string
+     */
+    public function getLocalOwnerId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Update billable owner id.
+     *
+     * @return void
+     */
+    public function updateRemoteOwnerId($ownerId)
+    {
+        $this->remote_owner_id = $ownerId;
+        $this->save();
+    }
+
+    /**
+     * Update billable card brand.
+     *
+     * @return void
+     */
+    public function updateBillableCardBrand($cardBrand)
+    {
+        $this->billable_card_brand = $cardBrand;
+        $this->save();
+    }
+
+    /**
+     * Update billable card last four.
+     *
+     * @return void
+     */
+    public function updateBillableCardLastFour($cardLastFour)
+    {
+        $this->billable_card_last_four = $cardLastFour;
+        $this->save();
+    }
+
+    /**
+     * Get customer options.
+     *
+     * @return string
+     */
+    public function getOptions()
+    {
+        if (is_object($this->activeSubscription())) {
+            // Find plan
+            return $this->activeSubscription()->plan->getOptions();
+        } else {
+            return [];
+        }
+    }
+
+    /**
+     * Get customer option.
+     *
+     * @return string
+     */
+    public function getOption($name)
+    {
+        $options = $this->getOptions();
+        // @todo: chỗ này cần raise 1 cái exception chứ ko phải là trả về rỗng (trả vể rỗng để "dìm" lỗi đi à?)
+        return isset($options[$name]) ? $options[$name] : null;
+    }
+
+    /**
+     * Check if customer has api access.
+     *
+     * @return bool
+     */
+    public function canUseApi()
+    {
+        return $this->getOption('api_access') == 'yes';
+    }
+
+    /**
+     * Get all verified identities.
+     *
+     * @return array
+     */
+    public function getVerifiedIdentities()
+    {
+        $list = [];
+
+        // own emails
+        $senders = $this->senders()->get();
+        foreach ($senders as $sender) {
+            $list[] = $sender->name . " <" . $sender->email . ">";
+        }
+
+        // own domain
+        $domains = $this->activeVerifiedSendingDomains()->get();
+        foreach ($domains as $domain) {
+            $list[] = $domain->name;
+        }
+
+        // plan sending server emails
+        $list = array_merge($this->activeSubscription()->plan->getVerifiedIdentities(), $list);
+
+        return $list;
+    }
+
+    /**
+     * Get all verified identities.
+     *
+     * @return array
+     */
+    public function verifiedIdentitiesDroplist($keyword = null)
+    {
+        $droplist = [];
+        $topList = [];
+        $bottomList = [];
+        
+        if (!$keyword) {
+            $keyword = '###';
+        }
+        
+        foreach ($this->getVerifiedIdentities() as $item) {
+                // check if email
+                if (extract_email($item) !== null) {
+                    $email = extract_email($item);
+                    if ( strpos(strtolower($email), $keyword) === 0 ) {
+                        $topList[] = [
+                            'text' => extract_name($item),
+                            'value' => $email,
+                            'desc' => str_replace($keyword, '<span class="text-semibold text-primary"><strong>'.$keyword.'</strong></span>', $email),
+                        ];
+                    } else {
+                        $bottomList[] = [
+                            'text' => extract_name($item),
+                            'value' => $email,
+                            'desc' => $email,
+                        ];
+                    }
+                } else { // domains are alse
+                    $dKey = explode('@', $keyword);
+                    $eKey = $dKey[0];
+                    $dKey = isset($dKey[1]) ? $dKey[1] : null;
+                    // if ( (!isset($dKey) || $dKey == '') || ($dKey && strpos(strtolower($item), $dKey) === 0 )) {
+                        if ($keyword == '###') {
+                            $eKey = '****';
+                        }
+                        $topList[] = [
+                            'text' => $eKey . '@'.str_replace($dKey, '<span class="text-semibold text-primary"><strong>'.$dKey.'</strong></span>', $item),
+                            'subfix' => $item,
+                            'desc' => null,
+                        ];
+                    // }
+                }
+        }
+        
+        $droplist = array_merge($topList, $bottomList);
+
+        return $droplist;
+    }
+    
+    /**
+     * Begin creating a new subscription.
+     *
+     * @param  string  $subscription
+     * @param  string  $plan
+     * @return \Laravel\Cashier\SubscriptionBuilder
+     */
+    public function createSubscription($plan, $gateway)
+    {
+        // update subscription model
+        $subscription = new Subscription();
+        $subscription->user_id = $this->getBillableId();
+        $subscription->plan_id = $plan->getBillableId();
+        $subscription->status = Subscription::STATUS_NEW;
+
+        // Always set ends at if gateway dose not support recurring
+        if (!$gateway->isSupportRecurring()) {
+            $interval = $plan->getBillableInterval();
+            $intervalCount = $plan->getBillableIntervalCount();
+
+            switch ($interval) {
+                case 'month':
+                    $endsAt = \Carbon\Carbon::now()->addMonth($intervalCount)->timestamp;
+                    break;
+                case 'day':
+                    $endsAt = \Carbon\Carbon::now()->addDay($intervalCount)->timestamp;
+                case 'week':
+                    $endsAt = \Carbon\Carbon::now()->addWeek($intervalCount)->timestamp;
+                    break;
+                case 'year':
+                    $endsAt = \Carbon\Carbon::now()->addYear($intervalCount)->timestamp;
+                    break;
+                default:
+                    $endsAt = null;
+            }
+
+            $subscription->ends_at = $endsAt;
+        }
+
+        $subscription->save();
+
+        $gateway->createSubscription($subscription);
+
+        return $subscription;
+    }   
 }

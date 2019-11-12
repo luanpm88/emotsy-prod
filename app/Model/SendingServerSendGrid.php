@@ -175,4 +175,35 @@ class SendingServerSendGrid extends SendingServer
 
         return $mail;
     }
+    
+    /**
+     * Get verified identities (domains and email addresses)
+     *
+     * @return boolean
+     */
+    public function getVerifiedIdentities()
+    {
+        $response = $this->client()->client->whitelabel()->domains()->get();
+        $json = json_decode($response->body(), true);
+        if (array_key_exists('errors', $json)) {
+            throw new \Exception('Failed to connect to SendGrid: '.$response->body());
+        }
+        $validDomains = array_filter($json, function($domain) { return $domain['valid'] == true; });
+        return array_map(function($domain){ return $domain['domain']; }, $validDomains);
+    }
+    
+    /**
+     * Check the sending server settings, make sure it does work
+     *
+     * @return boolean
+     */
+    public function test()
+    {
+        $response = $this->client()->client->whitelabel()->domains()->get();
+        $json = json_decode($response->body(), true);
+        if (array_key_exists('errors', $json)) {
+            throw new \Exception('Failed to connect to SendGrid: '.$response->body());
+        }
+        return true;
+    }
 }

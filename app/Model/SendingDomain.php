@@ -421,11 +421,13 @@ class SendingDomain extends Model
      */
     public function verifyDkim()
     {
+        $possibles = collect([$this->getDnsDkimConfigWithoutQuote(), $this->getDnsDkimConfig(), $this->getEscapedDnsDkimConfig()]);
+        $possibles = $possibles->map(function ($item, $key) { return preg_replace('/\s+/', '', $item); });
+        
         $fqdn = sprintf('%s.%s', $this->getDkimSelector(), $this->name);
-        $results = collect(dns_get_record($fqdn, DNS_TXT));
-        $results = $results->where('type', 'TXT')
-                           ->whereIn('txt', [$this->getDnsDkimConfigWithoutQuote(), $this->getDnsDkimConfig(), $this->getEscapedDnsDkimConfig()]);
-
+        $results = collect(dns_get_record($fqdn, DNS_TXT))->where('type', 'TXT')->map(function ($item, $key) { return preg_replace('/\s+/', '', $item['txt']); });
+        $results = $results->intersect($possibles);
+        
         $this->dkim_verified = $results->isEmpty() ? self::UNVERIFIED : self::VERIFIED;
         $this->save();
     }

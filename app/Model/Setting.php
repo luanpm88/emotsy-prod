@@ -23,10 +23,15 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Acelle\Cashier\Cashier;
 
 class Setting extends Model
 {
     const UPLOAD_PATH = 'app/setting/';
+
+    // Payment status
+    const PAYMENT_STATUS_ACTIVE = 'active';
+    const PAYMENT_STATUS_INACTIVE = 'inactive';
 
     /**
      * Get all items.
@@ -60,7 +65,7 @@ class Setting extends Model
             return self::defaultSettings()[$name]['value'];
         } else {
             // @todo exception case not handled
-            return;
+            return null;
         }
     }
 
@@ -444,6 +449,21 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
+            'system.payment_gateway' => [
+                'cat' => 'others',
+                'value' => '',
+                'type' => 'text',
+            ],
+            'system.end_period_last_days' => [
+                'cat' => 'payment',
+                'value' => '10',
+                'type' => 'text',
+            ],
+            'system.renew_free_plan' => [
+                'cat' => 'payment',
+                'value' => 'no',
+                'type' => 'text',
+            ],
             'theme.beta' => [
                 'cat' => 'others',
                 'value' => 'no',
@@ -620,5 +640,56 @@ class Setting extends Model
                 $setting->save();
             }
         }
+    }
+    
+    /**
+     * Get payments gateways.
+     *
+     * @var array
+     */
+    public static function getPaymentGateways()
+    {
+        return config('cashier.gateways');
+    }
+    
+    /**
+     * Get payments gateway by name.
+     *
+     * @var array
+     */
+    public static function getPaymentGateway($name)
+    {
+        if (!isset(config('cashier.gateways')[$name])) {
+            return null;
+        }
+        
+        $gateway = config('cashier.gateways')[$name];
+        
+        return $gateway;
+    }
+    
+    /**
+     * Get payment status select options.
+     *
+     * @var array
+     */
+    public static function paymentStatusSelectOptions()
+    {
+        return [self::PAYMENT_STATUS_INACTIVE, self::PAYMENT_STATUS_ACTIVE];
+    }
+    
+    /**
+     * Update payment gateway.
+     *
+     * @var void
+     */
+    public static function updatePaymentGateway($name, $params)
+    {
+        foreach ($params as $key => $value) {
+            $setting = 'payment.' . $name . '.' . $key;
+            
+            self::set($setting, $value);
+        }
+        
     }
 }

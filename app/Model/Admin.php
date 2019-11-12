@@ -23,6 +23,7 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Acelle\Cashier\Subscription;
 
 class Admin extends Model
 {
@@ -232,7 +233,7 @@ class Admin extends Model
     public static function filter($request)
     {
         $query = self::select('admins.*')
-                        ->join('users', 'admins.user_id', '=', 'users.id')
+                        ->join('users', 'users.id', '=', 'admins.user_id')
                         ->leftJoin('admin_groups', 'admin_groups.id', '=', 'admins.admin_group_id');
 
         // Keyword
@@ -386,8 +387,8 @@ class Admin extends Model
      */
     public function getAllSubscriptions()
     {
-        $query = \Acelle\Model\Subscription::select('subscriptions.*')
-            ->join('customers', 'customers.id', '=', 'subscriptions.customer_id');
+        $query = Subscription::select('subscriptions.*')
+            ->leftJoin('customers', 'customers.uid', '=', 'subscriptions.user_id');
 
         if (!$this->user->can('readAll', new \Acelle\Model\Customer())) {
             $query = $query->where(function ($q) {
@@ -407,8 +408,7 @@ class Admin extends Model
     public function subscriptionNotificationCount()
     {
         $query = $this->getAllSubscriptions()
-            ->where('subscriptions.status', '=', \Acelle\Model\Subscription::STATUS_INACTIVE)
-            ->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->endOfDay())
+            ->where('subscriptions.ends_at', '>=', \Carbon\Carbon::now()->endOfDay())
             ->count();
 
         return $query == 0 ? '' : $query;
@@ -422,8 +422,7 @@ class Admin extends Model
     public function recentSubscriptions($number = 5)
     {
         $query = $this->getAllSubscriptions()
-            //->where('subscriptions.status', '=', \Acelle\Model\Subscription::STATUS_INACTIVE)
-            //->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->endOfDay())
+            ->whereNull('ends_at')->orWhere('ends_at', '>=', \Carbon\Carbon::now())
             ->orderBy('subscriptions.created_at', 'desc')->limit($number);
 
         return $query->get();
@@ -473,21 +472,6 @@ class Admin extends Model
             $customer->timezone = $this->timezone;
             $customer->status = $this->status;
             $customer->save();
-
-            // Add plan
-            $plan = \Acelle\Model\Plan::getDefaultPlan();
-            $subscription = new \Acelle\Model\Subscription();
-            $subscription->status = \Acelle\Model\Subscription::STATUS_ACTIVE;
-            $subscription->admin_id = $admin->id;
-            $subscription->plan_id = $plan->id;
-            $subscription->customer_id = $customer->id;
-
-            $subscription->fillAttributes([]);
-
-            // Start at default
-            $subscription->start_at = \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now());
-
-            $subscription->save();
         }
     }
 
@@ -544,7 +528,7 @@ class Admin extends Model
      */
     public function getAllSubscriptionsByPlan($plan)
     {
-        return $this->getAllSubscriptions()->where('subscriptions.plan_id', '=', $plan->id);
+        return $this->getAllSubscriptions()->where('subscriptions.plan_id', '=', $plan->uid);
     }
 
     /**

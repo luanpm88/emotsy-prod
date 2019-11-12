@@ -27,6 +27,7 @@ use Acelle\Library\Log as MailLog;
 use Acelle\Library\QuotaTrackerFile;
 use Carbon\Carbon;
 use Acelle\Library\StringHelper;
+use Acelle\Library\Notification\BackendError as BackendErrorNotification;
 
 class SendingServer extends Model
 {
@@ -34,6 +35,21 @@ class SendingServer extends Model
     const DELIVERY_STATUS_FAILED = 'failed';
     const STATUS_ACTIVE = 'active';
     const STATUS_INACTIVE = 'inactive';
+    
+    // TYPE
+    const TYPE_AMAZON_API = 'amazon-api';
+    const TYPE_AMAZON_SMTP = 'amazon-smtp';
+    const TYPE_SENDGRID_API = 'sendgrid-api';
+    const TYPE_SENDGRID_SMTP = 'sendgrid-smtp';
+    const TYPE_MAILGUN_API = 'mailgun-api';
+    const TYPE_MAILGUN_SMTP = 'mailgun-smtp';    
+    const TYPE_ELASTICEMAIL_API = 'elasticemail-api';
+    const TYPE_ELASTICEMAIL_SMTP = 'elasticemail-smtp';
+    const TYPE_SPARKPOST_API = 'sparkpost-api';
+    const TYPE_SPARKPOST_SMTP = 'sparkpost-smtp';
+    const TYPE_PHP_MAIL = 'php-mail';
+    const TYPE_SENDMAIL = 'sendmail';
+    const TYPE_SMTP = 'smtp';  
 
     protected $quotaTracker;
     protected $subAccount;
@@ -52,19 +68,19 @@ class SendingServer extends Model
 
     // Supported server types
     public static $serverMapping = array(
-        'amazon-api' => 'SendingServerAmazonApi',
-        'amazon-smtp' => 'SendingServerAmazonSmtp',
-        'smtp' => 'SendingServerSmtp',
-        'sendmail' => 'SendingServerSendmail',
-        'php-mail' => 'SendingServerPhpMail',
-        'mailgun-api' => 'SendingServerMailgunApi',
-        'mailgun-smtp' => 'SendingServerMailgunSmtp',
-        'sendgrid-api' => 'SendingServerSendGridApi',
-        'sendgrid-smtp' => 'SendingServerSendGridSmtp',
-        'elasticemail-api' => 'SendingServerElasticEmailApi',
-        'elasticemail-smtp' => 'SendingServerElasticEmailSmtp',
-        'sparkpost-api' => 'SendingServerSparkPostApi',
-        'sparkpost-smtp' => 'SendingServerSparkPostSmtp',
+        self::TYPE_AMAZON_API => 'SendingServerAmazonApi',
+        self::TYPE_AMAZON_SMTP => 'SendingServerAmazonSmtp',
+        self::TYPE_SMTP => 'SendingServerSmtp',
+        self::TYPE_SENDMAIL => 'SendingServerSendmail',
+        self::TYPE_PHP_MAIL => 'SendingServerPhpMail',
+        self::TYPE_MAILGUN_API => 'SendingServerMailgunApi',
+        self::TYPE_MAILGUN_SMTP => 'SendingServerMailgunSmtp',
+        self::TYPE_SENDGRID_API => 'SendingServerSendGridApi',
+        self::TYPE_SENDGRID_SMTP => 'SendingServerSendGridSmtp',
+        self::TYPE_ELASTICEMAIL_API => 'SendingServerElasticEmailApi',
+        self::TYPE_ELASTICEMAIL_SMTP => 'SendingServerElasticEmailSmtp',
+        self::TYPE_SPARKPOST_API => 'SendingServerSparkPostApi',
+        self::TYPE_SPARKPOST_SMTP => 'SendingServerSparkPostSmtp',
     );
 
     /**
@@ -95,8 +111,12 @@ class SendingServer extends Model
     public static function mapServerType($server)
     {
         $class_name = '\Acelle\Model\\'.self::$serverMapping[$server->type];
-
-        return $class_name::find($server->id);
+        
+        if ($server->id) {
+            return $class_name::find($server->id);
+        } else {
+            return new $class_name(['type' => $server->type]);
+        }        
     }
 
     /**
@@ -275,9 +295,8 @@ class SendingServer extends Model
     public static function types()
     {
         return [
-            'amazon-smtp' => [
-                'cols' => [
-                    'name' => 'required',
+            self::TYPE_AMAZON_SMTP => [
+                'cols' => [                    
                     'host' => 'required',
                     'aws_access_key_id' => 'required',
                     'aws_secret_access_key' => 'required',
@@ -286,47 +305,52 @@ class SendingServer extends Model
                     'smtp_password' => 'required',
                     'smtp_port' => 'required',
                     'smtp_protocol' => 'required',
-                    'default_from_email' => 'email|required',
+                ],
+                'settings' => [
+                    'name' => 'required',
                 ],
             ],
-            'amazon-api' => [
+            self::TYPE_AMAZON_API => [
                 'cols' => [
-                    'name' => 'required',
                     'aws_access_key_id' => 'required',
                     'aws_secret_access_key' => 'required',
                     'aws_region' => 'required',
-                    'default_from_email' => 'email|required',
+                ],
+                'settings' => [
+                    'name' => 'required',
                 ],
             ],
-            'sendgrid-smtp' => [
+            self::TYPE_SENDGRID_SMTP => [
                 'cols' => [
-                    'name' => 'required',
                     'api_key' => 'required',
                     'host' => 'required',
                     'smtp_username' => 'required',
                     'smtp_password' => 'required',
                     'smtp_port' => 'required',
-                    'default_from_email' => 'email|required',
+                ],
+                'settings' => [
+                    'name' => 'required',
                 ],
             ],
-            'sendgrid-api' => [
+            self::TYPE_SENDGRID_API => [
                 'cols' => [
-                    'name' => 'required',
                     'api_key' => 'required',
-                    'default_from_email' => 'email|required',
+                ],
+                'settings' => [
+                    'name' => 'required',
                 ],
             ],
-            'mailgun-api' => [
+            self::TYPE_MAILGUN_API => [
                 'cols' => [
-                    'name' => 'required',
+                    'api_key' => 'required',
                     'domain' => 'required',
-                    'api_key' => 'required',
-                    'default_from_email' => 'email|required',
+                ],
+                'settings' => [
+                    'name' => 'required',
                 ],
             ],
-            'mailgun-smtp' => [
+            self::TYPE_MAILGUN_SMTP => [
                 'cols' => [
-                    'name' => 'required',
                     'domain' => 'required',
                     'api_key' => 'required',
                     'host' => 'required',
@@ -334,75 +358,84 @@ class SendingServer extends Model
                     'smtp_password' => 'required',
                     'smtp_port' => 'required',
                     'smtp_protocol' => 'required',
-                    'default_from_email' => 'email|required',
+                ],
+                'settings' => [
+                    'name' => 'required',
                 ],
             ],
-            'elasticemail-api' => [
+            self::TYPE_ELASTICEMAIL_API => [
                 'cols' => [
-                    'name' => 'required',
                     'api_key' => 'required',
-                    'default_from_email' => 'email|required',
+                ],
+                'settings' => [
+                    'name' => 'required',
                 ],
             ],
-            'elasticemail-smtp' => [
+            self::TYPE_ELASTICEMAIL_SMTP => [
                 'cols' => [
-                    'name' => 'required',
-                    'api_key' => 'required',
-                    'host' => 'required',
-                    'smtp_username' => 'required',
-                    'smtp_password' => 'required',
-                    'smtp_port' => 'required',
-                    'default_from_email' => 'email|required',
-                ],
-            ],
-            'sparkpost-api' => [
-                'cols' => [
-                    'name' => 'required',
-                    'host' => 'required',
-                    'api_key' => 'required',
-                    'default_from_email' => 'email|required',
-                ],
-            ],
-            'sparkpost-smtp' => [
-                'cols' => [
-                    'name' => 'required',
                     'api_key' => 'required',
                     'host' => 'required',
                     'smtp_username' => 'required',
                     'smtp_password' => 'required',
                     'smtp_port' => 'required',
-                    'smtp_protocol' => '',
-                    'default_from_email' => 'email|required',
+                ],
+                'settings' => [
+                    'name' => 'required',
                 ],
             ],
-            'smtp' => [
+            self::TYPE_SPARKPOST_API => [
                 'cols' => [
+                    'host' => 'required',
+                    'api_key' => 'required',
+                ],
+                'settings' => [
                     'name' => 'required',
+                ],
+            ],
+            self::TYPE_SPARKPOST_SMTP => [
+                'cols' => [
+                    'api_key' => 'required',
                     'host' => 'required',
                     'smtp_username' => 'required',
                     'smtp_password' => 'required',
                     'smtp_port' => 'required',
                     'smtp_protocol' => '',
+                ],
+                'settings' => [
+                    'name' => 'required',
+                ],
+            ],
+            self::TYPE_SMTP => [
+                'cols' => [
+                    'host' => 'required',
+                    'smtp_username' => 'required',
+                    'smtp_password' => 'required',
+                    'smtp_port' => 'required',
+                    'smtp_protocol' => '',                    
+                ],
+                'settings' => [
+                    'name' => 'required',
                     'bounce_handler_id' => '',
                     'feedback_loop_handler_id' => '',
-                    'default_from_email' => 'email|required',
                 ],
             ],
-            'sendmail' => [
+            self::TYPE_SENDMAIL => [
                 'cols' => [
-                    'name' => 'required',
                     'sendmail_path' => 'required',
-                    'bounce_handler_id' => '',
-                    'feedback_loop_handler_id' => '',
-                    'default_from_email' => 'email|required',
                 ],
-            ],
-            'php-mail' => [
-                'cols' => [
+                'settings' => [
                     'name' => 'required',
                     'bounce_handler_id' => '',
                     'feedback_loop_handler_id' => '',
-                    'default_from_email' => 'email|required',
+                ],
+            ],
+            self::TYPE_PHP_MAIL => [
+                'cols' => [                    
+                ],
+                'settings' => [
+                    'name' => 'required',
+                    'bounce_handler_id' => '',
+                    'feedback_loop_handler_id' => '',
                 ],
             ],
         ];
@@ -419,6 +452,22 @@ class SendingServer extends Model
         $options = $query->orderBy('name')->get()->map(function ($item) {
             return ['value' => $item->uid, 'text' => $item->name];
         });
+
+        return $options;
+    }
+    
+    /**
+     * Get sparkpost select options.
+     *
+     * @return array
+     */
+    public static function getSparkpostHostnameSelectOptions()
+    {
+        $options = [
+            ['text' => trans('messages.choose'), 'value' => ''],
+            ['text' => 'SparkPost Global', 'value' => 'api.sparkpost.com'],
+            ['text' => 'SparkPost EU', 'value' => 'api.eu.sparkpost.com'],
+        ];
 
         return $options;
     }
@@ -459,6 +508,51 @@ class SendingServer extends Model
 
         return $rules;
     }
+    
+    /**
+     * Get rules.
+     *
+     * @return string
+     */
+    public function getRules()
+    {
+        $rules = SendingServer::types()[$this->type]['cols'];
+
+        return $rules;
+    }
+    
+    /**
+     * Test connection.
+     *
+     * @return object
+     */
+    public function validConnection($request)
+    {
+        $validator = \Validator::make($request->all(), $this->getRules());
+        
+        // test amazon api connection
+        $validator->after(function ($validator) {
+            try {
+                $this->test();
+            } catch (\Exception $e) {
+                $validator->errors()->add('connection', $e->getMessage());
+            }
+        });
+        
+        return $validator;
+    }
+    
+    /**
+     * Get configuration rules.
+     *
+     * @return string
+     */
+    public function getConfigRules()
+    {
+        $rules = SendingServer::types()[$this->type]['settings'];        
+
+        return $rules;
+    }
 
     /**
      * Quota display.
@@ -471,7 +565,21 @@ class SendingServer extends Model
             return trans('messages.unlimited');
         }
 
-        return $this->quota_value.' / '.$this->quota_base.' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase($this->quota_unit, $this->quota_base));
+        return $this->quota_value.'/'.$this->quota_base.' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase($this->quota_unit, $this->quota_base));
+    }
+    
+    /**
+     * Quota display.
+     *
+     * @return string
+     */
+    public function displayQuotaHtml()
+    {
+        if ($this->quota_value == -1) {
+            return trans('messages.unlimited');
+        }
+
+        return '<b>'.$this->quota_value.'</b>/<b>'.$this->quota_base.' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase($this->quota_unit, $this->quota_base)).'</b>';
     }
 
     /**
@@ -483,12 +591,9 @@ class SendingServer extends Model
     {
         return [
             ['value' => '', 'text' => trans('messages.choose')],
-            ['value' => 'us-east-1', 'text' => 'US East (N. Virginia)'],
-            ['value' => 'us-west-2', 'text' => 'US West (Oregon)'],
-            ['value' => 'ap-south-1', 'text' => 'Asia Pacific (Mumbai)'],
-            ['value' => 'ap-southeast-2', 'text' => 'Asia Pacific (Sydney)'],
-            ['value' => 'eu-central-1', 'text' => 'EU (Frankfurt)'],
-            ['value' => 'eu-west-1', 'text' => 'EU (Ireland)'],
+            ['value' => 'us-east-1', 'text' => 'US East (N. Virginia)', 'host' => 'email-smtp.us-east-1.amazonaws.com'],
+            ['value' => 'us-west-2', 'text' => 'US West (Oregon)', 'host' => 'email-smtp.us-west-2.amazonaws.com'],
+            ['value' => 'eu-west-1', 'text' => 'EU (Ireland)', 'host' => 'email-smtp.eu-west-1.amazonaws.com'],
         ];
     }
 
@@ -705,5 +810,445 @@ class SendingServer extends Model
     public function setSubAccount($subAccount)
     {
         $this->subAccount = $subAccount;
+    }
+    
+    /**
+     * Get sending server select2 select options.
+     *
+     * @return array
+     */
+    public static function select2($request)
+    {
+        $data = ['items' => [], 'more' => true];
+
+        $query = self::getAll();
+        if (isset($request->q)) {
+            $keyword = $request->q;
+            $query = $query->where(function ($q) use ($keyword) {
+                $q->orwhere('sending_servers.name', 'like', '%'.$keyword.'%');
+            });
+        }
+        
+        // plan
+        if ($request->plan_uid) {
+            $plan = \Acelle\Model\Plan::findByUid($request->plan_uid);
+            $existIds = $plan->plansSendingServers()->pluck('sending_server_id')->toArray();
+        }
+
+        foreach ($query->limit(20)->get() as $server) {
+            if ($request->plan_uid && in_array($server->id, $existIds)) {
+                $data['items'][] = [
+                    'id' => $server->uid,
+                    'text' => $server->name.' ('.trans('messages.sending_server.added').')'.'|||'.trans('messages.' . $server->type),
+                    'disabled' => true
+                ];
+            } else {
+                $data['items'][] = ['id' => $server->uid, 'text' => $server->name.'|||'.trans('messages.' . $server->type)];
+            }            
+        }
+
+        return json_encode($data);
+    }
+    
+    /**
+     * Get sending limit types.
+     *
+     * @return array
+     */
+    public static function sendingLimitValues()
+    {
+        return [
+            'unlimited' => [
+                'quota_value' => -1,
+                'quota_base' => -1,
+                'quota_unit' => 'day',
+            ],
+            '100_per_minute' => [
+                'quota_value' => 100,
+                'quota_base' => 1,
+                'quota_unit' => 'minute',
+            ],
+            '1000_per_hour' => [
+                'quota_value' => 1000,
+                'quota_base' => 1,
+                'quota_unit' => 'hour',
+            ],
+            '10000_per_day' => [
+                'quota_value' => 10000,
+                'quota_base' => 1,
+                'quota_unit' => 'day',
+            ],            
+        ];
+    }
+    
+    /**
+     * Get sending limit select options.
+     *
+     * @return array
+     */
+    public function getSendingLimitSelectOptions()
+    {
+        $options = [];
+        $current = trans('messages.sending_servers.sending_limit.phrase', [
+            'quota_value' => \Acelle\Library\Tool::format_number($this->quota_value),
+            'quota_base' => \Acelle\Library\Tool::format_number($this->quota_base),
+            'quota_unit' => $this->quota_unit,
+        ]);
+        if ($this->quota_value == -1) {
+            $current = trans('messages.sending_server.quota.unlimited');
+        }
+        
+        $exist = false;
+        foreach (SendingServer::sendingLimitValues() as $key => $data) {            
+            $wording = trans('messages.sending_servers.sending_limit.phrase', [
+                'quota_value' => \Acelle\Library\Tool::format_number($data['quota_value']),
+                'quota_base' => \Acelle\Library\Tool::format_number($data['quota_base']),
+                'quota_unit' => $data['quota_unit'],
+            ]);
+            
+            if ($data['quota_value'] == -1) {
+                $wording = trans('messages.sending_server.quota.unlimited');
+            }
+            
+            $options[] = ['text' => $wording, 'value' => $key];
+            
+            if ($wording == $current) {
+                $exist = true;
+                $this->setOption('sending_limit', $key);
+            }
+        }
+        
+        // exist
+        if (!$exist) {            
+            $options[] = ['text' => $current, 'value' => 'current'];
+            $this->setOption('sending_limit', 'current');
+        }
+        
+        // Custom
+        $options[] = ['text' => trans('messages.sending_servers.quota.custom'), 'value' => 'custom'];
+
+        return $options;
+    }
+    
+    /**
+     * Default options.
+     *
+     * @return array
+     */
+    public static function defaultOptions()
+    {
+        return [
+            'domains' => [],
+            'emails' => [],
+            'allow_unverified_from_email' => 'no',
+            'allow_verify_domain_remotely' => 'no',
+            'allow_verify_email_remotely' => 'no',
+            'allow_verify_domain_remotely' => 'no',
+            'allow_verify_email_remotely' => 'no',
+        ];
+    }
+    
+    /**
+     * Get options.
+     *
+     * @return array
+     */
+    public function getOptions()
+    {
+        $savedOptions = isset($this->options) ? json_decode($this->options, true) : [];
+        return array_merge(SendingServer::defaultOptions(), $savedOptions);
+    }
+    
+    /**
+     * Get option.
+     *
+     * @return array
+     */
+    public function getOption($name)
+    {
+        $options = $this->getOptions();
+        
+        return isset($options[$name]) ? $options[$name] : null;
+    }
+    
+    /**
+     * Get options.
+     *
+     * @return array
+     */
+    public function setOptions($options)
+    {
+        $savingOptions = $this->getOptions();
+        foreach($options as $key => $option) {
+            $savingOptions[$key] = $option;
+        }
+        
+        $this->options = json_encode($savingOptions);
+    }
+    
+    /**
+     * Get options.
+     *
+     * @return array
+     */
+    public function setOption($name, $value)
+    {
+        if (!isset($this->options)) {
+            $options = [];
+        } else {
+            $options = json_decode($this->options, true);
+        }
+        
+        $options[$name] = $value;
+        
+        $this->options = json_encode($options);
+    }
+    
+    /**
+     * Get Mailgun domains info.
+     *
+     * @return array
+     */
+    public function getMailgunDomainInfo()
+    {
+        return [
+            [
+                'domain' => 'acellemail.com',
+                'created_at' => \Carbon\Carbon::now()->subDay(2),
+            ],
+            [
+                'domain' => 'bolero.vn',
+                'created_at' => \Carbon\Carbon::now()->subDay(13),
+            ],
+        ];
+    }
+    
+    /**
+     * Get local identity info.
+     *
+     * @return array
+     */
+    public function getLocalIdentityInfo()
+    {
+        return [
+            [
+                'type' => 'domain',
+                'name' => 'acellemail.com',
+                'created_at' => \Carbon\Carbon::now()->subDay(2),
+            ],
+            [
+                'type' => 'domain',
+                'name' => 'bolero.vn',
+                'created_at' => \Carbon\Carbon::now()->subDay(13),
+            ],
+            [
+                'type' => 'email',
+                'name' => 'system@acellemail.com',
+                'created_at' => \Carbon\Carbon::now()->subDay(13),
+            ],
+        ];
+    }
+    
+    /**
+     * Get domains.
+     *
+     * @return array
+     */
+    public function getDomains()
+    {
+        $domains = $this->getOption('domains');
+        
+        return $domains ? $domains : [];
+    }
+    
+    /**
+     * Add domain.
+     *
+     * @return array
+     */
+    public function addDomain($domain)
+    {
+        $domains = $this->getOption('domains');
+        $domains[] = $domain;
+        
+        $this->setOption('domains', $domains);
+        $this->save();
+    }
+    
+    /**
+     * Add domain.
+     *
+     * @return array
+     */
+    public function removeDomain($domain)
+    {
+        $domains = $this->getOption('domains');
+        
+        if (($key = array_search($domain, $domains)) !== false) {
+            unset($domains[$key]);
+        }
+        
+        $this->setOption('domains', $domains);
+        $this->save();
+    }
+    
+    /**
+     * Check if domain is enabled.
+     *
+     * @return array
+     */
+    public function isDomainEnabled($domain)
+    {
+        $domains = $this->getDomains();
+        
+        return in_array($domain, $domains);
+    }
+    
+    /**
+     * Check if domain is enabled.
+     *
+     * @return array
+     */
+    public function isIdentityEnabled($type, $value)
+    {
+        $values = $this->getOption($type . 's');
+        
+        return in_array($values, $value);
+    }
+    
+    /**
+     * Allow user to verify his/her own sending domain against Acelle Mail
+     *
+     * @return boolean
+     */
+    public function allowVerifyingOwnDomains()
+    {
+        return json_decode($this->options, true)['allow_verify_domain_against_acelle'] == 'yes';
+    }
+    
+    /**
+     * Allow user to verify his/her own sending domain against Acelle Mail
+     *
+     * @return boolean
+     */
+    public function allowVerifyingOwnEmails()
+    {
+        return json_decode($this->options, true)['allow_verify_email_against_acelle'] == 'yes';
+    }
+    
+    /**
+     * Allow user to verify his/her own emails against AWS
+     *
+     * @return boolean
+     */
+    public function allowVerifyingOwnDomainsRemotely()
+    {
+        return json_decode($this->options, true)['allow_verify_domain_remotely'] == 'yes';
+    }
+    
+    /**
+     * Allow user to verify his/her own emails against AWS
+     *
+     * @return boolean
+     */
+    public function allowVerifyingOwnEmailsRemotely()
+    {
+        return json_decode($this->options, true)['allow_verify_email_remotely'] == 'yes';
+    }
+    
+    /**
+     * Allow user send from unverified FROM email address
+     *
+     * @return boolean
+     */
+    public function allowUnverifiedFromEmailAddress()
+    {
+        return json_decode($this->options, true)['allow_unverified_from_email'] == 'yes';
+    }
+    
+    /**
+     * Check the sending server settings, make sure it does work
+     *
+     * @return boolean
+     */
+    public function test()
+    {
+        return true;
+    }
+    
+    /**
+     * Get verified identities
+     *
+     * @return array
+     */
+    public function getVerifiedIdentities()
+    {
+        return array_merge($this->getOption("domains"), $this->getOption("emails"));
+    }
+    
+    /**
+     * Get all verified identities.
+     *
+     * @return array
+     */
+    public function verifiedIdentitiesDroplist($keyword = null)
+    {
+        $droplist = [];
+        $topList = [];
+        $bottomList = [];
+        
+        if (!$keyword) {
+            $keyword = '###';
+        }
+        
+        foreach ($this->getVerifiedIdentities() as $item) {
+                // check if email
+                if (extract_email($item) !== null) {
+                    $email = extract_email($item);
+                    if ( strpos(strtolower($email), $keyword) === 0 ) {
+                        $topList[] = [
+                            'text' => extract_name($item),
+                            'value' => $email,
+                            'desc' => str_replace($keyword, '<span class="text-semibold text-primary"><strong>'.$keyword.'</strong></span>', $email),
+                        ];
+                    } else {
+                        $bottomList[] = [
+                            'text' => extract_name($item),
+                            'value' => $email,
+                            'desc' => $email,
+                        ];
+                    }
+                } else { // domains are alse
+                    $dKey = explode('@', $keyword);
+                    $dKey = isset($dKey[1]) ? $dKey[1] : null;
+                    // if ( (!isset($dKey) || $dKey == '') || ($dKey && strpos(strtolower($item), $dKey) === 0 )) {
+                        $topList[] = [
+                            'text' => '****@'.str_replace($dKey, '<span class="text-semibold text-primary"><strong>'.$dKey.'</strong></span>', $item),
+                            'subfix' => $item,
+                            'desc' => null,
+                        ];
+                    // }
+                }
+        }
+        
+        $droplist = array_merge($topList, $bottomList);
+        
+        return $droplist;
+    }
+    
+    /**
+     * Show up sending notification to admin dashboard.
+     *
+     * @return array
+     * @note the scope of this function is private, use public only for inheritance
+     */
+    public function raiseSendingError($exception)
+    {
+        MailLog::warning('Sending failed');
+        MailLog::warning($exception->getMessage());
+            
+        $errorTitle = "Server `{$this->name}` ({$this->uid}) failed to send";
+        BackendErrorNotification::cleanupDuplicateNotifications($errorTitle);
+        BackendErrorNotification::warning([ 'title' => $errorTitle, 'message' => date('Y-m-d').' '.$errorTitle.': '.$exception->getMessage() ], false);
     }
 }

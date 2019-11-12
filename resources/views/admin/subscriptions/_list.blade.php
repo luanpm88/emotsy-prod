@@ -5,140 +5,126 @@
 		@foreach ($subscriptions as $key => $subscription)
 			<tr>
 				<td width="1%">
-					<img width="80" class="img-circle mr-10" src="{{ action('CustomerController@avatar', $subscription->customer->uid) }}" alt="">
-				</td>
-				<td>
-					<h5 class="no-margin text-bold">
-						<a class="kq_search" href="{{ action('Admin\SubscriptionController@edit', $subscription->uid) }}">
-							{{ $subscription->customer->displayName() }}
-						</a>
-					</h5>
-					<span class="text-muted kq_search">{{ $subscription->customer->user->email }}</span>
-					<br />
-					<span><i class="icon-clipboard2"></i> {{ $subscription->plan->name }}</span>
-					@if (Auth::user()->admin->can('readAll', $subscription))
-						<br />
-						@include ('admin.modules.admin_line', ['admin' => $subscription->customer->admin])
+					@if ($subscription->ended())
+						<i class="icon-dash subscription-status-icon"></i>
+					@elseif ($subscription->isPending() || $subscription->isNew())
+						<i class="lnr lnr-sync subscription-status-icon"></i>
+					@else
+						<i class="lnr lnr-checkmark-circle subscription-status-icon"></i>
 					@endif
 				</td>
 				<td>
 					<h5 class="no-margin text-bold">
-						{{ Acelle\Library\Tool::format_price($subscription->price, $subscription->currency_format) }}
+						<span class="kq_search" href="#">
+							{{ $subscription->plan->name }}
+						</span>
 					</h5>
-					<span class="text-muted">{{ trans('messages.price') }}</span>
+					<div class="text-muted">{!! trans('messages.subscribed_by', [
+						'name' => $subscription->user->displayName(),
+						'customer_link' => action('Admin\CustomerController@edit', $subscription->user->uid)
+					]) !!}</div>
 				</td>
-                @if (!$subscription->isTimeUnlimited())
-                    <td>
-                        <h5 class="no-margin text-bold">
-                            {{ Acelle\Library\Tool::formatDate($subscription->start_at) }}
-                        </h5>
-                        <span class="text-muted">{{ trans('messages.start_at') }}</span>
-                    </td>
-                    <td>
-                        <h5 class="no-margin text-bold">
-                            {{ Acelle\Library\Tool::formatDate($subscription->end_at) }}
-                        </h5>
-                        <span class="text-muted">{{ trans('messages.end_at') }}</span>
-                    </td>
-                    <td>
-                        @if ($subscription->beingUsed())
-                            <h5 class="no-margin text-bold">
-                                {{ $subscription->daysRemainCount() }}
-                            </h5>
-                            <span class="text-muted">{!! trans_choice('messages.days_remain', $subscription->daysRemainCount()) !!}</span>
-                        @else
-                            <h5 class="no-margin text-bold">
-                                --
-                            </h5>
-                            <span class="text-muted">{!! trans_choice('messages.days_remain', 0) !!}</span>
-                        @endif
-                    </td>
-                @else
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                @endif
-                <td>
-					<span class="text-muted2 list-status pull-left">
-						<span class="label label-flat bg-{{ $subscription->getStatus() }}">{{ trans('messages.subscription_status_' . $subscription->getStatus()) }}</span>
+				<td width="15%">
+                    <h5 class="no-margin">
+                        <span class="kq_search">{{ Acelle\Library\Tool::dateTime($subscription->created_at)->format('M d, Y') }}</span>
+                    </h5>
+                    <span class="text-muted2">{{ trans('messages.subscribed_on') }}</span>
+                </td>
+				<td width="15%">
+					@if ($subscription->isEnded())
+						<h5 class="no-margin">
+								<span class="kq_search">{{ Acelle\Library\Tool::formatDate($subscription->ends_at) }}</span>
+							</h5>
+						<span class="text-muted2">{{ trans('messages.subscription.subscription_end') }}</span>
+					@elseif ($subscription->cancelled())
+						<h5 class="no-margin">
+							<span class="kq_search">{{ Acelle\Library\Tool::dateTime($subscription->current_period_ends_at)->diffForHumans() }}</span>
+						</h5>
+						<span class="text-muted2">{{ trans('messages.subscription.subscription_end') }}</span>
+					@elseif ($subscription->isRecurring())
+						<h5 class="no-margin">
+							<span class="kq_search">
+								{{ Acelle\Library\Tool::dateTime($subscription->current_period_ends_at)->diffForHumans() }}
+							</span>
+						</h5>
+						<span class="text-muted2">{{ trans('messages.subscription.next_billing') }}</span>
+					@endif
+				</td>
+				<td>
+                    <span class="text-muted2 list-status pull-left">
+						@if (!$subscription->isActive() || !$gateway->hasPending($subscription))
+							<span class="label label-flat bg-{{ $subscription->status }}">{{ trans('messages.subscription.status.' . $subscription->status) }}</span>
+						@else
+							<a href="{{ action('Admin\SubscriptionController@invoices', $subscription->uid) }}" class="modal_link label label-flat bg-active_with_pending">{{ trans('messages.subscription.status.active_pending') }}</a>
+						@endif
 					</span>
-				</td>
-				<td>
-                    @if ($subscription->paymentsCount())
-                        <span class="text-muted2 list-status pull-left payments-button"
-                            data-url="{{ action('Admin\SubscriptionController@payments', $subscription->uid) }}">
-                            <span class="label label-sub label-flat bg-{{ $subscription->getPaidStatus() }}">
-                                {{ trans('messages.subscription_paid_status_' . $subscription->getPaidStatus()) }}
-                                <i class="icon-history"></i>
-                            </span>
-                        </span>
-                    @else
-                        <span class="text-muted2 list-status pull-left">
-                            <span class="label label-sub label-flat bg-{{ $subscription->getPaidStatus() }}">
-                                {{ trans('messages.subscription_paid_status_' . $subscription->getPaidStatus()) }}
-                            </span>
-                        </span>
-                    @endif
-				</td>
+                </td>
 				<td class="text-right">
-					@if (Auth::user()->admin->can('update', $subscription))
-						<a href="{{ action('Admin\SubscriptionController@edit', $subscription->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey-600 btn-icon"><i class="icon icon-pencil pr-0 mr-0"></i></a>
+					@if (\Auth::user()->admin->can('cancel', $subscription))
+						<a data-method="POST" link-confirm="{{ trans('messages.subscription.cancel.confirm') }}"
+						  href="{{ action('Admin\SubscriptionController@cancel', $subscription->uid) }}" class="btn bg-grey-600">
+							{{ trans('messages.subscription.cancel') }}
+						</a>
 					@endif
-					@if (\Auth::user()->admin->can('delete', $subscription) || Auth::user()->admin->can('enable', $subscription) || Auth::user()->admin->can('disable', $subscription))
+					@if (\Auth::user()->admin->can('resume', $subscription))
+						<a data-method="POST" link-confirm="{{ trans('messages.subscription.resume.confirm') }}"
+						  href="{{ action('Admin\SubscriptionController@resume', $subscription->uid) }}" class="btn bg-grey-600">
+							{{ trans('messages.subscription.resume') }}
+						</a>
+					@endif
+					@if(
+						\Auth::user()->admin->can('cancelNow', $subscription) ||
+						\Auth::user()->admin->can('changePlan', $subscription) ||
+						\Auth::user()->admin->can('invoices', $subscription) ||
+						\Auth::user()->admin->can('setActive', $subscription)
+					)
 						<div class="btn-group">
-							<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
+							<button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret ml-0"></span></button>
 							<ul class="dropdown-menu dropdown-menu-right">
-								@if (Auth::user()->admin->can('enable', $subscription))
+								@if (\Auth::user()->admin->can('approvePendingInvoice', $subscription))
 									<li>
-										<a data-method='PATCH' link-confirm="{{ trans('messages.enable_subscriptions_confirm') }}" href="{{ action('Admin\SubscriptionController@enable', ["uids" => $subscription->uid]) }}">
-											<i class="icon-checkbox-checked2"></i> {{ trans('messages.enable') }}
+										<a data-method="POST" link-confirm="{{ trans('messages.subscription.approve_pending_invoice.confirm') }}"
+										  href="{{ action('Admin\SubscriptionController@approvePendingInvoice', $subscription->uid) }}">
+											{{ trans('messages.subscription.approve_pending_invoice') }}
 										</a>
 									</li>
 								@endif
-								@if (Auth::user()->admin->can('disable', $subscription))
+								@if (\Auth::user()->admin->can('setActive', $subscription))
 									<li>
-										<a data-method='PATCH' link-confirm="{{ trans('messages.disable_subscriptions_confirm') }}" href="{{ action('Admin\SubscriptionController@disable', ["uids" => $subscription->uid]) }}">
-											<i class="icon-checkbox-unchecked2"></i> {{ trans('messages.disable') }}
+										<a data-method="POST" link-confirm="{{ trans('messages.subscription.set_active.confirm') }}"
+										  href="{{ action('Admin\SubscriptionController@setActive', $subscription->uid) }}">
+											{{ trans('messages.subscription.set_active') }}
 										</a>
 									</li>
 								@endif
-								@if (Auth::user()->admin->can('paid', $subscription))
+								@if (\Auth::user()->admin->can('invoices', $subscription))
 									<li>
-										<a
-											message="{{ trans('messages.paid_subscriptions_confirm') }}" data-toggle="modal" data-target="#paid-form-modal" href="#paid"
-											class="list-form-button"
-											data-uids="{{ $subscription->uid }}"
-											data-method="PATCH"
-											data-url="{{ action('Admin\SubscriptionController@paid') }}"
-										>
-											<i class="icon-checkmark-circle"></i> {{ trans('messages.paid') }}
+										<a class="modal_link"
+										  href="{{ action('Admin\SubscriptionController@invoices', $subscription->uid) }}">
+											{{ trans('messages.subscription.logs') }}
 										</a>
 									</li>
 								@endif
-								@if (Auth::user()->admin->can('unpaid', $subscription))
+								@if (\Auth::user()->admin->can('cancelNow', $subscription))
 									<li>
-										<a
-											message="{{ trans('messages.unpaid_subscriptions_confirm') }}" data-toggle="modal" data-target="#list-form-modal" href="#paid"
-											class="list-form-button"
-											data-uids="{{ $subscription->uid }}"
-											data-method="PATCH"
-											data-url="{{ action('Admin\SubscriptionController@unpaid') }}"
-										>
-											<i class="icon-radio-unchecked"></i> {{ trans('messages.unpaid') }}
+										<a data-method="POST" link-confirm="{{ trans('messages.subscription.cancel_now.confirm') }}"
+										  href="{{ action('Admin\SubscriptionController@cancelNow', $subscription->uid) }}">
+											{{ trans('messages.subscription.cancel_now') }}
 										</a>
 									</li>
 								@endif
 								@if (\Auth::user()->admin->can('delete', $subscription))
 									<li>
-										<a data-method='delete' delete-confirm="{{ trans('messages.delete_subscriptions_confirm') }}" href="{{ action('Admin\SubscriptionController@delete', ['uids' => $subscription->uid]) }}">
-											<i class="icon-trash"></i> {{ trans('messages.delete') }}
+										<a data-method="DELETE" link-confirm="{{ trans('messages.subscription.delete.confirm') }}"
+										  href="{{ action('Admin\SubscriptionController@delete', ['id' => $subscription->uid]) }}">
+											{{ trans('messages.subscription.delete') }}
 										</a>
 									</li>
 								@endif
 							</ul>
 						</div>
-					@endcan
-				</td>
+					@endif
+                </td>
 			</tr>
 		@endforeach
 	</table>

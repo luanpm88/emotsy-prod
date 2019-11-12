@@ -75,11 +75,12 @@
         </div>
         <div class="tab-pane" id="top-tab4">
             <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-12">
                     @include('admin.plans._form_sending_server', [
                         'help_class' => 'subscription',
                         'rules' => $plan->rules(),
-                        'relatedSendingServers' => $plan->plansSendingServers
+                        'relatedSendingServers' => $plan->plansSendingServers,
+                        'update_link' => action('Admin\PlanController@sendingServers', $plan->uid),
                     ])
                 </div>
             </div>

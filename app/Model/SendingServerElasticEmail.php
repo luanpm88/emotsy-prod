@@ -228,4 +228,37 @@ class SendingServerElasticEmail extends SendingServer
         // Use transactionid returned from ElasticEmail as runtime_message_id
         return $jsonResponse->data->transactionid;
     }
+    
+    /**
+     * Get verified domains.
+     *
+     * @return Array
+     */
+    public function getVerifiedIdentities()
+    {
+        $response = file_get_contents(self::API_ENDPOINT.'/domain/list?apikey='.$this->api_key);
+        $json = json_decode($response, true);
+        if ($json['success'] == false) {
+            throw new \Exception($json['error']);
+        }
+
+        $domains = array_map(function($e) { return $e['domain']; }, $json['data']);
+        return $domains;
+    }
+    
+    /**
+     * Check the sending server settings, make sure it does work
+     *
+     * @return boolean
+     */
+    public function test()
+    {
+        $response = file_get_contents(self::API_ENDPOINT.'/domain/list?apikey='.$this->api_key);
+        $json = json_decode($response, true);
+        if ($json['success'] == false) {
+            throw new \Exception('Failed to connect to ElasticEmail: '.$response);
+        }
+        
+        return true;
+    }
 }

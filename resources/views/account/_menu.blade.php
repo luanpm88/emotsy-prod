@@ -15,8 +15,9 @@
                 <li rel0="AccountController/subscription"
                     rel1="PaymentController"
                     rel2="AccountController/subscriptionNew"
+                    rel3="AccountSubscriptionController"
                 >
-                    <a href="{{ action("AccountController@subscription") }}" class="level-1">
+                    <a href="{{ action("AccountSubscriptionController@index") }}" class="level-1">
                         <i class="icon-quill4 position-left"></i> {{ trans('messages.subscription') }}
                     </a>
                 </li>

@@ -19,6 +19,11 @@ new_version = ARGV[2]
 output = ARGV[0]
 gitdir = ARGV[1]
 
+if last_supported == new_version
+  puts "No upgrade package needed"
+  exit(0)
+end
+
 # Get deleted files
 deleted = []
 for version in old_versions

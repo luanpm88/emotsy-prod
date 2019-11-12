@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Log as LaravelLog;
 use Gate;
 use Validator;
 use Illuminate\Validation\ValidationException;
+use Acelle\Model\TrackingLog;
+use Acelle\Library\StringHelper;
 
 class CampaignController extends Controller
 {
@@ -1027,8 +1029,15 @@ class CampaignController extends Controller
      */
     public function open(Request $request)
     {
+        $messageId = StringHelper::base64UrlDecode($request->message_id);
+
+        if (!TrackingLog::where('message_id', $messageId)->exists()) {
+            LaravelLog::warning('Open tracking log not available for message: '.$messageId);
+            return response()->file(public_path('images/transparent.gif'));
+        }
+
         $log = new \Acelle\Model\OpenLog();
-        $log->message_id = \Acelle\Library\StringHelper::base64UrlDecode($request->message_id);
+        $log->message_id = $messageId;
         $location = \Acelle\Model\IpLocation::add($this->getRemoteIPAddress());
         $log->ip_address = $location->ip_address;
         $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
@@ -1037,7 +1046,7 @@ class CampaignController extends Controller
         // The second parameter of the constructor function is false, meanining immediate update
         try {
             $log->save();
-
+            LaravelLog::info('Open log recorded: '.$messageId);
             event(new \Acelle\Events\MailListUpdated($log->trackingLog->subscriber->mailList));
         } catch (\Exception $ex) {
             // in case TrackingLog record does not exist yet (open before logged!)
@@ -1054,9 +1063,16 @@ class CampaignController extends Controller
     public function click(Request $request)
     {
         $decoded_url = \Acelle\Library\StringHelper::base64UrlDecode($request->url);
+        $messageId = StringHelper::base64UrlDecode($request->message_id);
+
+        if (!TrackingLog::where('message_id', $messageId)->exists()) {
+            LaravelLog::warning('Click tracking log not available, redirect anyway: '.$messageId);
+            return redirect()->away($decoded_url);
+        }
+        
         // redirect base64_decode($url);
         $log = new \Acelle\Model\ClickLog();
-        $log->message_id = \Acelle\Library\StringHelper::base64UrlDecode($request->message_id);
+        $log->message_id = $messageId;
         $location = \Acelle\Model\IpLocation::add($_SERVER['REMOTE_ADDR']);
         $log->ip_address = $location->ip_address;
         $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
@@ -1066,6 +1082,7 @@ class CampaignController extends Controller
         // The second parameter of the constructor function is false, meanining immediate update
         try {
             $log->save();
+            LaravelLog::info('Click log recorded: '.$messageId);
             event(new \Acelle\Events\MailListUpdated($log->trackingLog->subscriber->mailList));
         } catch (\Exception $ex) {
             // in case TrackingLog record does not exist yet (open before logged!)

@@ -163,23 +163,28 @@ class SendingServerAmazon extends SendingServer
      */
     public function verifyIdentity($email)
     {
-        $domain = extract_domain($email);
-        
+        $domain = extract_domain($email);        
+        $verifiedIdentities = $this->getVerifiedIdentities();
+        return in_array($email, $verifiedIdentities) || in_array($domain, $verifiedIdentities);
+    }
+    
+    /**
+     * Get verified identities (domains and email addresses)
+     *
+     * @return boolean
+     */
+    public function getVerifiedIdentities()
+    {
         $identities = $this->sesClient()->listIdentities([
             'MaxItems' => 1000, # @todo, need pagination here
         ])->toArray()['Identities'];
-
-        if (!(in_array($email, $identities) || in_array($domain, $identities))) {
-            return false;
-        }
         
         $identitiesWithAttributes = $this->sesClient()->getIdentityVerificationAttributes([
             'Identities' => $identities
         ])->toArray()['VerificationAttributes'];
         
         $verifiedIdentities = array_keys(array_filter($identitiesWithAttributes, function($r) { return $r['VerificationStatus'] == 'Success'; }));
-        
-        return in_array($email, $verifiedIdentities) || in_array($domain, $verifiedIdentities);
+        return $verifiedIdentities;
     }
     
     /**
@@ -192,5 +197,57 @@ class SendingServerAmazon extends SendingServer
         $this->sesClient()->verifyEmailIdentity([
             'EmailAddress' => $email,
         ]);
+    }
+    
+    /**
+     * Check if AWS actions are allowed
+     *
+     * @return boolean
+     */
+    public static function testConnection($key, $secret, $region)
+    {
+        $iamClient = \Aws\Iam\IamClient::factory(array(
+            'credentials' => array(
+                'key' => trim($key),
+                'secret' => trim($secret),
+            ),
+            'region' => $region,
+            'version' => '2010-05-08',
+        ));
+        
+        // getting API caller
+        $arn = $iamClient->getUser()->get('User')['Arn'];
+        
+        $username = array_values(array_slice(explode(':', $arn), -1))[0];
+        if ($username == 'root') {
+            return true;
+        }
+        
+        $actions = ['ses:VerifyEmailIdentity', 'ses:GetIdentityVerificationAttributes', 'ses:ListIdentities', 'ses:SetIdentityFeedbackForwardingEnabled', 'sns:CreateTopic', 'sns:Subscribe', 'sns:SetIdentityNotificationTopic'];
+        $results = $iamClient->simulatePrincipalPolicy(['PolicySourceArn' => $arn, 'ActionNames' => $actions])->toArray();
+        foreach ($results['EvaluationResults'] as $result) {
+            $action = $result['EvalActionName'];
+            $decision = $result['EvalDecision'];
+        
+            if ($decision != 'allowed') {
+                throw new \Exception("Action {$action} is not allowed");
+            }
+        }
+        
+        return true;
+    }
+    
+    /**
+     * Check if AWS actions are allowed for the corresponding instance
+     *
+     * @return boolean
+     */
+    public function test()
+    {
+        return self::testConnection(
+            $this->aws_access_key_id,
+            $this->aws_secret_access_key,
+            $this->aws_region
+        );
     }
 }

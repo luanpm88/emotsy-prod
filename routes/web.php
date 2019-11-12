@@ -51,6 +51,7 @@ Route::get('/app/templates/{name?}', [ function ($name) {
 
 // Setting upload path
 Route::get('setting/{filename}', 'SettingController@file');
+Route::get('/no-plan', 'AccountSubscriptionController@noPlan');
 
 // For visitor with Web UI, loading the right app language
 Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
@@ -102,6 +103,10 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
 
     Route::get('payments/paddle/card/{subscription_uid}/hook', 'PaymentController@paddle_card_hook');
     Route::post('payments/paddle/card/{subscription_uid}/hook', 'PaymentController@paddle_card_hook');
+    
+    // Customer registration
+    Route::post('users/register', 'UserController@register');
+    Route::get('users/register', 'UserController@register');
 });
 
 // Without authentication
@@ -136,6 +141,40 @@ Route::group(['middleware' => ['not_installed']], function () {
 });
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function () {
+    // Account subscription
+    Route::get('subscription/pending', 'AccountSubscriptionController@pending');
+    Route::get('subscription/checkout', 'AccountSubscriptionController@checkout');
+    Route::get('subscription/review', 'AccountSubscriptionController@review');
+    Route::get('subscription/select-plan', 'AccountSubscriptionController@selectPlan');
+    Route::get('subscription', 'AccountSubscriptionController@index');
+    
+    
+    Route::post('subscription/payment-claim', 'AccountSubscriptionController@paymentClaim');
+    Route::get('subscriptions/invoices/download-raw', 'AccountSubscriptionController@downloadRawInvoice');
+    Route::match(['get', 'post'], 'subscriptions/change-plan-no-recurring/{plan_id}', 'AccountSubscriptionController@changePlanNoRecurring');
+    Route::match(['get', 'post'], 'subscription/renew', 'AccountSubscriptionController@renew');
+    Route::get('subscription/pending', 'AccountSubscriptionController@pending');
+    Route::post('subscription/change-plan', 'AccountSubscriptionController@changePlan');
+    Route::get('subscription/change-plan', 'AccountSubscriptionController@changePlan');
+    Route::post('subscription/cancel-now', 'AccountSubscriptionController@cancelNow');
+    Route::post('subscription/resume', 'AccountSubscriptionController@resume');
+    Route::post('subscription/cancel', 'AccountSubscriptionController@cancel');
+    Route::match(['get', 'post'], 'subscription/update-card', 'AccountSubscriptionController@updateCard');
+    Route::get('subscription/preview', 'AccountSubscriptionController@preview');
+
+
+    Route::match(['get', 'post'], 'subscription/pay', 'AccountSubscriptionController@pay');
+    Route::get('subscription/card', 'AccountSubscriptionController@card');
+    Route::post('subscription/create', 'AccountSubscriptionController@create');
+    Route::get('subscription/new', 'AccountSubscriptionController@new');
+    
+
+    // Customer login back
+    Route::get('customers/login-back', 'CustomerController@loginBack');
+    Route::get('customers/admin-area', 'CustomerController@adminArea');
+});
+
+Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscription']], function () {
     Route::get('/', 'HomeController@index');
     Route::get('frontend/docs/api/v1', 'Controller@docsApiV1');
     Route::get('/current_user_uid', 'UserController@showUid');
@@ -322,8 +361,6 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('campaigns/{uid}/edit', 'CampaignController@edit');
     Route::patch('campaigns/{uid}/update', 'CampaignController@update');
 
-    Route::get('customers/login-back', 'CustomerController@loginBack');
-
     Route::get('users/login-back', 'UserController@loginBack');
 
     // System job
@@ -388,6 +425,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::resource('subscriptions', 'SubscriptionController');
 
     // Sending servers
+    Route::post('sending_servers/{uid}/test-connection', 'SendingServerController@testConnection');
     Route::post('sending_servers/{uid}/test', 'SendingServerController@test');
     Route::get('sending_servers/{uid}/test', 'SendingServerController@test');
     Route::get('sending_servers/select', 'SendingServerController@select');
@@ -459,6 +497,10 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('senders/sort', 'SenderController@sort');
     Route::get('senders/delete', 'SenderController@delete');
     Route::resource('senders', 'SenderController');
+
+    // Notifications
+    Route::resource('notifications', 'NotificationController');
+    Route::post('notifications/{id}/hide', 'NotificationController@hide');
 });
 
 // ADMIN AREA
@@ -497,6 +539,20 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/layouts', 'LayoutController');
 
     // Sending servers
+    Route::get('admin/sending_servers/{uid}/senders/dropbox', 'SendingServerController@fromDropbox');
+    Route::post('admin/sending_servers/{uid}/remove-domain/{domain}', 'SendingServerController@removeDomain');
+    Route::post('admin/sending_servers/{uid}/add-domain', 'SendingServerController@addDomain');
+    Route::get('admin/sending_servers/{uid}/add-domain', 'SendingServerController@addDomain');
+    Route::get('admin/sending_servers/aws-region-host', 'SendingServerController@awsRegionHost');
+
+    Route::post('admin/sending_servers/{uid}/test-php-mail', 'SendingServerController@testPhpMail');
+    Route::post('admin/sending_servers/{uid}/test-connection', 'SendingServerController@testConnection');
+
+    Route::post('admin/sending_servers/{uid}/config', 'SendingServerController@config');
+    Route::post('admin/sending_servers/sending-limit', 'SendingServerController@sendingLimit');
+    Route::get('admin/sending_servers/sending-limit', 'SendingServerController@sendingLimit');
+
+    Route::get('admin/sending_servers/select2', 'SendingServerController@select2');
     Route::post('admin/sending_servers/{uid}/test', 'SendingServerController@test');
     Route::get('admin/sending_servers/{uid}/test', 'SendingServerController@test');
     Route::get('admin/sending_servers/select', 'SendingServerController@select');
@@ -549,6 +605,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/languages', 'LanguageController');
 
     // Settings
+    Route::post('admin/settings/payment', 'SettingController@payment');
     Route::post('admin/settings/advanced/{name}/update', 'SettingController@advancedUpdate');
     Route::get('admin/settings/advanced', 'SettingController@advanced');
     Route::post('admin/settings/upgrade/cancel', 'SettingController@cancelUpgrade');
@@ -653,6 +710,30 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::post('admin/account/contact', 'AccountController@contact');
 
     // Plan
+    Route::match(['get', 'post'], 'admin/plans/{uid}/sending-server/subaccount', 'PlanController@sendingServerSubaccount');
+    Route::match(['get', 'post'], 'admin/plans/{uid}/sending-server/own', 'PlanController@sendingServerOwn');
+    Route::match(['get', 'post'], 'admin/plans/{uid}/sending-server/option', 'PlanController@sendingServerOption');
+    Route::match(['get', 'post'], 'admin/plans/{uid}/wizard/sending-server', 'PlanController@wizardSendingServer');
+    Route::match(['get', 'post'], 'admin/plans/wizard', 'PlanController@wizard');
+    Route::get('admin/plans/{uid}/sending-server', 'PlanController@sendingServer');
+    Route::match(['get', 'post'], 'admin/plans/{uid}/billing-cycle', 'PlanController@billingCycle');
+    Route::match(['get', 'post'], 'admin/plans/{uid}/sending-limit', 'PlanController@sendingLimit');
+    Route::get('admin/plans/{uid}/email-verification', 'PlanController@emailVerification');
+    Route::get('admin/plans/{uid}/general', 'PlanController@general');
+    Route::get('admin/plans/{uid}/quota', 'PlanController@quota');
+    Route::get('admin/plans/{uid}/security', 'PlanController@security');
+    Route::get('admin/plans/{uid}/email-footer', 'PlanController@emailFooter');
+    Route::get('admin/plans/{uid}/payment', 'PlanController@payment');
+    Route::get('admin/plans/{uid}/billing-history', 'PlanController@billingHistory');
+    Route::get('admin/plans/{uid}/general', 'PlanController@general');
+    Route::post('admin/plans/{uid}/save', 'PlanController@save');
+
+    Route::post('admin/plans/{id}/sending_servers/{sending_server_uid}/set-primary', 'PlanController@setPrimarySendingServer');
+    Route::match(['get', 'post'], 'admin/plans/{id}/sending_servers/fitness', 'PlanController@fitness');
+    Route::post('admin/plans/{id}/sending_servers/{sending_server_uid}/remove', 'PlanController@removeSendingServer');
+    Route::post('admin/plans/{id}/sending_servers/add', 'PlanController@addSendingServer');
+    Route::get('admin/plans/{id}/sending_servers/add', 'PlanController@addSendingServer');
+    Route::get('admin/plans/{id}/sending_servers', 'PlanController@sendingServers');
     Route::get('admin/plans/pieChart', 'PlanController@pieChart');
     Route::get('admin/plans/delete/confirm', 'PlanController@deleteConfirm');
     Route::get('admin/plans/select2', 'PlanController@select2');
@@ -661,8 +742,9 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/plans/delete', 'PlanController@delete');
     Route::get('admin/plans/disable', 'PlanController@disable');
     Route::get('admin/plans/enable', 'PlanController@enable');
-    Route::resource('admin/plans', 'PlanController');
     Route::post('admin/plans/copy', 'PlanController@copy');
+    Route::resource('admin/plans', 'PlanController');
+
     // Currency
     Route::get('admin/currencies/select2', 'CurrencyController@select2');
     Route::get('admin/currencies/listing/{page?}', 'CurrencyController@listing');
@@ -673,6 +755,17 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/currencies', 'CurrencyController');
 
     // Subscription
+    Route::post('admin/subscriptions/{id}/renew', 'SubscriptionController@renew');
+    Route::get('subscriptions/{id}/invoices/download-raw', 'SubscriptionController@downloadRawInvoice');
+    Route::post('admin/subscriptions/{id}/approve-pending-invoice', 'SubscriptionController@approvePendingInvoice');
+    Route::post('admin/subscriptions/{id}/set-active', 'SubscriptionController@setActive');
+    Route::get('admin/subscriptions/{id}/invoices', 'SubscriptionController@invoices');
+    Route::post('admin/subscriptions/{id}/change-plan', 'SubscriptionController@changePlan');
+    Route::get('admin/subscriptions/{id}/change-plan', 'SubscriptionController@changePlan');
+    Route::post('admin/subscriptions/{id}/cancel-now', 'SubscriptionController@cancelNow');
+    Route::post('admin/subscriptions/{id}/resume', 'SubscriptionController@resume');
+    Route::post('admin/subscriptions/{id}/cancel', 'SubscriptionController@cancel');
+
     Route::patch('admin/subscriptions/unpaid', 'SubscriptionController@unpaid');
     Route::patch('admin/subscriptions/paid', 'SubscriptionController@paid');
     Route::get('admin/subscriptions/{uid}/payments', 'SubscriptionController@payments');
@@ -709,4 +802,10 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::delete('admin/sub_accounts/{uid}/delete', 'SubAccountController@delete');
     Route::get('admin/sub_accounts/listing/{page?}', 'SubAccountController@listing');
     Route::resource('admin/sub_accounts', 'SubAccountController');
+
+    // Payment gateways
+    Route::post('admin/payment/gateways/{name}/set-primary', 'PaymentController@setPrimary');
+    Route::post('admin/payment/gateways/update/{name}', 'PaymentController@update');
+    Route::get('admin/payment/gateways/edit/{name}', 'PaymentController@edit');
+    Route::get('admin/payment/gateways/index', 'PaymentController@index');
 });

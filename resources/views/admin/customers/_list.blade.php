@@ -26,24 +26,28 @@
                     <span class="text-muted2">{{ trans('messages.current_plan') }}</span>
                 </td>
                 <td class="stat-fix-size">
-                    <div class="single-stat-box pull-left ml-20">
-                        <span class="no-margin text-teal-800 stat-num">{{ $item->displaySendingQuotaUsage() }}</span>
-                        <div class="progress progress-xxs">
-                            <div class="progress-bar progress-bar-info" style="width: {{ $item->getSendingQuotaUsagePercentage() }}%">
+                    @if (is_object($item->subscription))
+                        <div class="single-stat-box pull-left ml-20">
+                            <span class="no-margin text-teal-800 stat-num">{{ $item->displaySendingQuotaUsage() }}</span>
+                            <div class="progress progress-xxs">
+                                <div class="progress-bar progress-bar-info" style="width: {{ $item->getSendingQuotaUsagePercentage() }}%">
+                                </div>
                             </div>
+                            <span class="text-muted">
+                                <strong>{{ \Acelle\Library\Tool::format_number($item->getSendingQuotaUsage()) }}/{{ ($item->getSendingQuota() == -1) ? '∞' : \Acelle\Library\Tool::format_number($item->getSendingQuota()) }}</strong>
+                                <div class="text-nowrap">{{ trans('messages.sending_credits_used') }}</div>
+                            </span>
                         </div>
-                        <span class="text-muted"><strong>{{ \Acelle\Library\Tool::format_number($item->getSendingQuotaUsage()) }}/{{ ($item->getSendingQuota() == -1) ? '∞' : \Acelle\Library\Tool::format_number($item->getSendingQuota()) }}</strong>
-                            <div class="text-nowrap">{{ trans('messages.sending_credits_used') }}</div>
-                        </span>
-                    </div>
-                    <div class="single-stat-box pull-left ml-20">
-                        <span class="no-margin text-teal-800 stat-num">{{ $item->displaySubscribersUsage() }}</span>
-                        <div class="progress progress-xxs">
-                            <div class="progress-bar progress-bar-info" style="width: {{ $item->readCache('SubscriberUsage') }}%">
+                        <div class="single-stat-box pull-left ml-20">
+                            <span class="no-margin text-teal-800 stat-num">{{ $item->displaySubscribersUsage() }}</span>
+                            <div class="progress progress-xxs">
+                                <div class="progress-bar progress-bar-info" style="width: {{ $item->readCache('SubscriberUsage') }}%">
+                                </div>
                             </div>
+                            <span class="text-muted"><strong>{{ number_with_delimiter($item->readCache('SubscriberCount')) }}/{{ number_with_delimiter($item->maxSubscribers()) }}</strong>
+                            <br /> {{ trans('messages.subscribers') }}</span>
                         </div>
-                        <span class="text-muted"><strong>{{ number_with_delimiter($item->readCache('SubscriberCount')) }}/{{ number_with_delimiter($item->maxSubscribers()) }}</strong><br /> {{ trans('messages.subscribers') }}</span>
-                    </div>
+                    @endif
                 </td>
                 <td>
                     <span class="text-muted2 list-status pull-left">

@@ -39,35 +39,50 @@
                         <div class="row">
                             <div class="col-sm-5 col-md-5">
                                 <h6 class="mt-0 mb-0 text-semibold">
-                                    <a href="{{ action('Admin\CustomerController@subscriptions', $subscription->customer->uid) }}">
-                                        <i class="lnr lnr-license"></i>
-                                        {{ $subscription->plan_name }}
+                                    <a href="{{ action('Admin\CustomerController@subscriptions', $subscription->user->uid) }}">
+                                        <i class="icon-clipboard2"></i>
+                                        {{ $subscription->plan->name }}
                                     </a>
                                 </h6>
-                                <p class="mb-0">
-                                    <!--<img width="40" class="img-circle mr-10 pull-left" src="{{ action('CustomerController@avatar', $subscription->customer->uid) }}" alt="">-->
-                                    <!--<i class="icon-user" style="
+                                <p class="mb-0">                                    
+                                    <i class="icon-user" style="
                                         font-size: 14px;
                                         padding: 0;
                                         margin: 5px 0 0 -8px;
-                                        height: auto;"></i>-->
-                                    {{ $subscription->customer->displayName() }}
+                                        height: auto;"></i>
+                                    {{ $subscription->user->displayName() }}
                                 </p>
                             </div>
                             <div class="col-sm-4 col-md-4 text-left">
-                                <h6 class="no-margin text-semibold">
-                                    {{ Tool::formatDateTime($subscription->created_at) }}
-                                </h6>
-                                <span class="">{{ trans('messages.created_at') }}</span>
+                                @if ($subscription->ended())
+                                    <h5 class="no-margin">
+                                        <span class="kq_search">{{ Acelle\Library\Tool::formatDate($subscription->ends_at) }}</span>
+                                    </h5>
+                                    <span class="text-muted2">{{ trans('messages.subscription.ended_on') }}</span>
+                                @elseif ($subscription->cancelled())
+                                    <h5 class="no-margin">
+                                        <span class="kq_search">{{ Acelle\Library\Tool::formatDate($subscription->ends_at) }}</span>
+                                    </h5>
+                                    <span class="text-muted2">{{ trans('messages.subscription.ends_on') }}</span>
+                                @else
+                                    <h5 class="no-margin">
+                                        <span class="kq_search">{{ Acelle\Library\Tool::formatDate($subscription->updated_at) }}</span>
+                                    </h5>
+                                    <span class="text-muted2">{{ trans('messages.subscription.updated_at') }}</span>
+                                @endif
                             </div>
                             <div class="col-sm-3 col-md-3 text-left">
                                 <span class="text-muted2 list-status pull-left">
-                                    <span class="label label-flat bg-{{ $subscription->status }}">{{ trans('messages.subscription_status_' . $subscription->status) }}</span>
+                                    @if ($subscription->ended())
+                                        <span class="label label-flat bg-ended">{{ trans('messages.subscription.status.ended') }}</span>						
+                                    @elseif ($subscription->active())
+                                        <span class="label label-flat bg-active">{{ trans('messages.subscription.status.active') }}</span>						
+                                    @elseif ($subscription->cancelled() && !$subscription->ended())
+                                        <span class="label label-flat bg-cancelled">{{ trans('messages.subscription.status.cancelled') }}</span>						
+                                    @elseif ($subscription->recurring())
+                                        <span class="label label-flat bg-info">{{ trans('messages.subscription.status.recurring') }}</span>						
+                                    @endif
                                 </span>
-                                <!--<br/>
-                                <span class="text-muted2 list-status pull-left">
-                                    <span class="label label-sub label-flat bg-{{ $subscription->timeStatus() }}">{{ trans('messages.subscription_time_status_' . $subscription->timeStatus()) }}</span>
-                                </span>-->
                             </div>
                         </div>
                     </li>

@@ -20,13 +20,14 @@
                 </td>
                 <td>
                     <h5 class="no-margin text-bold">
-                        <i class="icon-square plan-list-color-icon" style="color: {{ $plan->color }}"></i>
                         <span class="kq_search" href="{{ action('Admin\PlanController@edit', $plan->uid) }}">
                             {{ $plan->name }}
                         </span>
                     </h5>
-                    @if (Auth::user()->can('readAll', $plan))
-                        @include ('admin.modules.admin_line', ['admin' => $plan->admin])
+                    @if ($plan->hasPrimarySendingServer())
+                        <span class="text-muted">{{ trans('messages.plans.send_via.wording', ['server' => trans('messages.' . $plan->primarySendingServer()->type)]) }} &bull; {{ trans('messages.plans.subscriber_count', ['count' => $plan->customersCount()]) }}</span>
+                    @else
+                        <span class="text-muted"><span class="text-danger"><i class="fa fa-minus-circle"></i> {{ trans('messages.plans.send_via.empty') }}</span></span>
                     @endif
                 </td>
                 <td>
@@ -42,19 +43,13 @@
                     <span class="text-muted">{{ trans('messages.sending_total_quota_label') }}</span>
                 </td>
                 <td>
-                    <h5 class="no-margin text-bold kq_search">
-                        {{ \Acelle\Library\Tool::formatDate($plan->updated_at) }}
-                    </h5>
-                    <span class="text-muted">{{ trans('messages.updated_at') }}</span>
-                </td>
-                <td>
                     <span class="text-muted2 list-status pull-left">
                         <span class="label label-flat bg-{{ $plan->status }}">{{ trans('messages.plan_status_' . $plan->status) }}</span>
                     </span>
                 </td>
                 <td class="text-right text-nowrap" width="5%">
                     @can('update', $plan)
-                        <a href="{{ action('Admin\PlanController@edit', $plan->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
+                        <a href="{{ action('Admin\PlanController@general', $plan->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
                     @endcan
                     @if (\Auth::user()->can('delete', $plan) || \Auth::user()->can('disable', $plan) || \Auth::user()->can('enable', $plan) || \Auth::user()->can('copy', $plan))
                         <div class="btn-group">

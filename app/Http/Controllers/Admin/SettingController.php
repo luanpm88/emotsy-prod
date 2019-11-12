@@ -635,4 +635,37 @@ class SettingController extends Controller
         
         echo trans('messages.setting.update.success', ['name' => $name]);
     }
+    
+    /**
+     * Payment gateway settings.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function payment(Request $request)
+    {
+        if ($request->user()->admin->getPermission('setting_general') != 'yes') {
+            return $this->notAuthorized();
+        }
+
+        // \Acelle\Model\Setting::updateAll();
+        $settings = \Acelle\Model\Setting::getAll();
+        
+        if($this->isDemoMode()) {
+            return $this->notAuthorized();
+        }
+
+        $rules = [
+            'end_period_last_days' => 'required',
+            'renew_free_plan' => 'required',
+        ];
+        $this->validate($request, $rules);
+
+        // Save settings
+        \Acelle\Model\Setting::set('system.end_period_last_days', $request->end_period_last_days);
+        \Acelle\Model\Setting::set('system.renew_free_plan', $request->renew_free_plan);
+
+        // Redirect to my lists page
+        $request->session()->flash('alert-success', trans('messages.setting.updated'));
+        return redirect()->action('Admin\PaymentController@index');
+    }
 }

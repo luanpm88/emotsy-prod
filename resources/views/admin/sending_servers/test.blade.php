@@ -15,13 +15,20 @@
         <div class="modal-body">
             <p>{{ trans('messages.test_sending_server.intro') }}</p>
             @include('helpers.form_control', [
-                'type' => 'text',
+                'type' => 'autofill',
+                'id' => 'sender_from_input',
                 'class' => 'email',
-                'label' => trans('messages.from_email'),
                 'name' => 'from_email',
                 'value' => '',
-                'help_class' => 'sending_server',
-                'rules' => ['from_email' => 'required']
+                'label' => trans('messages.from_email'),
+                'rules' => ['from_email' => 'required'],
+                'help_class' => 'campaign',
+                'url' => action('Admin\SendingServerController@fromDropbox', $server->uid),
+                'empty' => trans('messages.sender.dropbox.empty'),
+                'error' => trans('messages.sender.dropbox.error', [
+                    'sender_link' => action('Admin\SendingServerController@index'),
+                ]),
+                'header' => trans('messages.verified_senders'),
             ])
             @include('helpers.form_control', [
                 'type' => 'text',
@@ -66,3 +73,17 @@
         </div>
     </form>
 </div>
+    
+<script>
+    //$(document).ready(function() {
+        // auto fill
+        var box = $('#sender_from_input').autofill({
+            messages: {
+                header_found: '{{ trans('messages.sending_identity') }}',
+                header_not_found: '{{ trans('messages.sending_identity.not_found.header') }}'
+            }
+        });
+        box.loadDropbox(function() {
+        })
+    //})
+</script>

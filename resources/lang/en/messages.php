@@ -1,6 +1,6 @@
 <?php return array (
-  'datetime_format' => 'M d, Y, H:i A',
-  'datetime_format_2' => 'M d, Y, H:i:s',
+  'datetime_format' => 'M dS, Y H:i',
+  'datetime_format_2' => 'M dS, Y H:i:s',
   'time_format' => 'H:i',
   'date_format' => 'M d, Y',
   'j_date_format' => 'yyyy-mm-dd',
@@ -11,7 +11,7 @@
   'forgot_password' => 'Forgot Password?',
   'login' => 'Log In',
   'copy_right_light' => '© 2019. <span class="text-white">Acelle Email Marketing Application</span> by <a href="http://acellemail.com" class="text-white" target="_blank">acellemail.com</a>',
-  'copy_right' => '© 2019. Acelle Email Marketing Application by <a href="http://acellemail.com" class="" target="_blank">acellemail.com</a>',
+  'copy_right' => '© 2019. Acelle Email Marketing Application by <a title="Go to AcelleMail home page." class="xtooltip" href="http://acellemail.com" class="" target="_blank">acellemail.com</a>',
   'send_password_reset_link' => 'Send Password Reset Link',
   'password_reset' => 'Password Reset',
   'password_reset.help' => 'We\'ll email you instructions on how to reset your password.',
@@ -113,6 +113,8 @@
   'one_by_one' => 'One-by-one',
   'list.created' => 'List was successfully created',
   'list.updated' => 'List was successfully updated',
+  'sending_server.connect_failed' => 'Failed to connect to the remote service, please check your connection. Sending server is DISABLED',
+  'sending_server.identities_list_failed' => 'Failed to retrieve identities list',
   'sending_server.created' => 'Sending server was successfully created',
   'sending_server.updated' => 'Sending server was successfully updated',
   'sending_server.deleted' => 'Sending server was successfully deleted',
@@ -634,7 +636,7 @@
   'open_map' => 'Opens - Map',
   'last_open' => 'Last open',
   'login_as_this_user' => 'Login as this user',
-  'current_login_as' => 'You are currently logged in as <span class="text-semibold">:name</span>',
+  'current_login_as' => 'You are currently logged in as <strong>:name</strong>',
   'click_to_return_to_origin_user' => 'Click <a href=":link" class="text-semibold text-white">here</a> to return to your account',
   'no_activity_logs' => 'You haven\'t had any activities recently',
   'activity_log' => 'Activity log',
@@ -747,8 +749,8 @@
   'update_urls' => 'Update URLs',
   'label_multi_process' => 'Enable multi-processing email delivery',
   'api_token_guide' => 'You need to add parameter <span class="text-semibold">api_token=YOUR_API_TOKEN</span> to each request to the API system
-          <br />Example: :link
-      ',
+      <br />Example: :link
+    ',
   'handlers' => 'Handlers',
   'plain-text' => 'Plain text',
   'select_campaign_type' => 'Select campaign type',
@@ -892,14 +894,14 @@
   'ip' => 'IP',
   'area' => 'Area',
   'template_upload_guide' => '
-        Please upload your HTML template bundle. Normally, it should be a .zip file containing:
-        <ul>
-          <li>One single .html file and</li>
-          <li>One directory at the same level containing asset files (JS, CSS, Images, etc.)</li>
-        </ul>
-        <br />
-        Please click <a class="text-semibold" href=":link" target="_blank">[here]</a> to download a sample email template
-      ',
+      Please upload your HTML template bundle. Normally, it should be a .zip file containing:
+      <ul>
+      <li>One single .html file and</li>
+      <li>One directory at the same level containing asset files (JS, CSS, Images, etc.)</li>
+      </ul>
+      <br />
+      Please click <a class="text-semibold" href=":link" target="_blank">[here]</a> to download a sample email template
+    ',
   'disable' => 'Disable',
   'enable' => 'Enable',
   'STYLE' => 'STYLE',
@@ -927,9 +929,9 @@
   'custom_css' => 'Custom CSS',
   'validate_script' => 'Validate script',
   'cron_jobs_guide' => '
-          Insert the following line to your system\'s contab. <br />
-          Please note, below timings for running the cron jobs are the recommended, you can change it if you want.
-      ',
+      Insert the following line to your system\'s contab. <br />
+      Please note, below timings for running the cron jobs are the recommended, you can change it if you want.
+    ',
   'last_click' => 'Last click',
   'not_opened' => 'Not opened',
   'not_clicked' => 'Not clicked',
@@ -979,6 +981,7 @@
   'admin_groups.custom_order.updated' => 'Admin groups order were successfully updated',
   'admin_group_empty_line_1' => 'You have no admin group',
   'create_admin' => 'Create admin',
+  'admin.dashboard.notification_delete_confirm' => 'Are you sure you have resolved the issue and you want to suppress this notification?',
   'admin.updated' => 'Admin was successfully updated',
   'admin.created' => 'Admin was successfully created',
   'admins.disabled' => 'Admin was successfully disabled',
@@ -1023,16 +1026,16 @@
   'monthly' => 'Monthly',
   'yearly' => 'Yearly',
   'price' => 'Price',
-  'create_currency' => 'Create currency',
+  'create_currency' => 'Add currency',
   'currency.updated' => 'Currency was successfully updated',
-  'currency.created' => 'Currency was successfully created',
+  'currency.created' => 'Currency was successfully added',
   'currencies.disabled' => 'Currency was successfully disabled',
   'currencies.enabled' => 'Currency was successfully enabled',
   'enable_currencies_confirm' => 'You\'re about to enable :number currency(ies).',
   'delete_currencies_confirm' => 'You\'re about to delete :number currency(ies).',
   'disable_currencies_confirm' => 'You\'re about to disable :number currency(ies).',
   'currency_empty_line_1' => 'You have no currency',
-  'currencies.deleted' => 'Currency was successfully deleted',
+  'currencies.deleted' => 'Currency was successfully removed',
   'currency' => 'Currency',
   'currencies' => 'Currencies',
   'unit_daily' => 'Day',
@@ -1045,8 +1048,8 @@
   'spam-reported' => 'Spam reported',
   'sendgrid-api' => 'Sendgrid API',
   'sendgrid-smtp' => 'Sendgrid SMTP',
-  'sparkpost-api' => 'SparkPost API',
-  'sparkpost-smtp' => 'SparkPost SMTP',
+  'sparkpost-api' => 'Sparkpost API',
+  'sparkpost-smtp' => 'Sparkpost SMTP',
   'elasticemail-api' => 'Elastic Email API',
   'elasticemail-smtp' => 'Elastic Email SMTP',
   'email_existed' => '[:time] ERROR: \':email\' existed',
@@ -1066,8 +1069,8 @@
   'sending_server_intro_amazon-api' => 'Amazon\'s Simple Email service through Web API',
   'sending_server_intro_sendgrid-smtp' => 'SendGrid\'s Email service through SMTP protocol',
   'sending_server_intro_sendgrid-api' => 'SendGrid\'s Email service through Web API v3',
-  'sending_server_intro_sparkpost-smtp' => 'SparkPost\'s Email service through SMTP protocol',
-  'sending_server_intro_sparkpost-api' => 'SparkPost\'s Email service through Web API v1',
+  'sending_server_intro_sparkpost-smtp' => 'Sparkpost\'s Email service through SMTP protocol',
+  'sending_server_intro_sparkpost-api' => 'Sparkpost\'s Email service through Web API v1',
   'sending_server_intro_elasticemail-smtp' => 'Elastic Email\'s service through SMTP protocol',
   'sending_server_intro_elasticemail-api' => 'Elastic Email\'s service through Web API v2',
   'sending_server_intro_mailgun-api' => 'Mailgun\'s Email service through Web API',
@@ -1075,7 +1078,7 @@
   'sending_server_intro_smtp' => 'Send emails through a SMTP service',
   'sending_server_intro_sendmail' => 'Send emails through the sendmail program on the hosting system',
   'sending_server_intro_php-mail' => 'Send emails through the built-in mail() function in PHP',
-  'sending_server.speed' => 'Speed limit: :limit',
+  'sending_server.speed' => 'Sending limit :limit',
   'open_uniq_per_total' => ':count unique / opened :total times',
   'clicked_a_link' => 'Clicked a link',
   'count_clicked' => ':count / :total links',
@@ -1195,11 +1198,11 @@
   'download' => 'Download',
   'upload_language' => 'Upload language',
   'language_upload_guide' => 'Language upload file should be a zip package containing translation files:<br />
-          <span class="text-semibold">messages.php</span><br />
-          <span class="text-semibold">auth.php</span><br />
-          <span class="text-semibold">pagination.php</span><br />
-          <span class="text-semibold">passwords.php</span><br />
-          <span class="text-semibold">validation.php</span>',
+      <span class="text-semibold">messages.php</span><br />
+      <span class="text-semibold">auth.php</span><br />
+      <span class="text-semibold">pagination.php</span><br />
+      <span class="text-semibold">passwords.php</span><br />
+      <span class="text-semibold">validation.php</span>',
   'system_email' => 'System Email',
   'clicked_emails_rate' => 'Clicked emails rate',
   'delete_language_confirm_warning' => 'If there are one or more users using this language, they will be changed to the default language.',
@@ -1216,8 +1219,8 @@
   'Event_based_list_subscription' => 'Event based: list subscription',
   'Event_based_list_unsubscription' => 'Event based: list unsubscription',
   'Event_based_custom_list_subscriber_event' => 'Event based: custom list/subscriber events<br />
-          <span class="text-muted">For example: subscriber\'s birthday, list creation,...</span>
-      ',
+      <span class="text-muted">For example: subscriber\'s birthday, list creation,...</span>
+    ',
   'Custom_criteria' => 'Custom criteria',
   'API_call' => 'API call',
   'Trigger' => 'Trigger',
@@ -1497,8 +1500,8 @@
   'subscription.wording' => 'This feature allows you to monitor the details of your customers\' subscription. You can approve the payment, enable or disable a subscription. You can also create new subsciptions for your existing customers',
   'registration_confirmation_email' => 'Registration confirmation email',
   'registration_confirmation_email_subject' => 'Acelle Mail - Registration confirmation',
-  'activation_email_sent_content' => '<p>We need to confirm your email address to complete the registration process.</p>
-<p>To complete the registration process, please click the link in the email we just sent you.</p>',
+  'activation_email_sent_content' => '<p>We need to confirm your email address to complete the registration process.
+    To complete the registration process, please click the link in the email we just sent you.</p>',
   'activation_email_resent_content' => '<p>Please click the link in the email we just sent you.</p>',
   'activation_email_sent_title' => 'Registration confirmation',
   'you_are_not_activated' => 'Your account hasn\'t been activated. Please check your inbox for confirmation email or resend it again.',
@@ -1518,7 +1521,7 @@
   'you_are_logged_in_as' => 'You are logged in as :name',
   'you_have_inactive_subscription' => 'You have already had an pending subscription',
   'subscription_finish_messages' => '<h2 class="text-semibold mt-0 text-teal-800">Congratulation!</h2>
-        <p>You are successfully subscribed to the plan <span class="text-bold">:plan</span>. Now your account is activated.</p><p>Let choose an action below for next step.</p>',
+      <p>You are successfully subscribed to the plan <span class="text-bold">:plan</span>. Now your account is activated.</p><p>Let choose an action below for next step.</p>',
   'go_to_dashboard' => 'Go to the dashboard',
   'check_your_subscriptions' => 'Check your subscriptions',
   'to' => 'To',
@@ -1587,9 +1590,9 @@
   'expiration_date' => 'Expiration Date',
   'card_number' => 'Card number',
   'cvv' => 'CVV',
-  'pay_by_credit_card' => '<i class="icon-credit-card"></i> Pay by credit card',
+  'pay_by_credit_card' => 'Pay by credit card',
   'subscription_paid_finish_messages' => '<h2 class="text-semibold mt-0 text-teal-800">Congratulation!</h2>
-        <p>You are successfully subscribed to the plan <span class="text-bold">:plan</span>. Now your account is activated.<br />Let choose an action below for next step.</p>',
+      <p>You are successfully subscribed to the plan <span class="text-bold">:plan</span>. Now your account is activated.<br />Let choose an action below for next step.</p>',
   'something_error_accur' => 'An unexpected error occurred. Please check again.',
   'payment_method_type_braintree_credit_card_button' => '<i class="icon-credit-card"></i> Pay by Credit card',
   'payment_method_type_braintree_credit_card' => 'Pay by Braintree / Credit card',
@@ -1610,7 +1613,7 @@
   'data' => 'Data',
   'order_id' => 'Order ID',
   'payments_history' => 'Payments history',
-  'sending_server.wording' => 'This feature allows you to add a sending server which will actually send out your campaign emails. You can configure a standard SMTP connection or connect to a 3rd services like Amazon SES, SendGrid, Mailgun, ElasticEmail, SparkPost... You can also take advantage of the the hosting server\'s email capability by creating a "PHP Mail" or "Sendmail" sending server',
+  'sending_server.wording' => 'This feature allows you to add a sending server which will actually send out your campaign emails. You can configure a standard SMTP connection or connect to a 3rd services like Amazon SES, SendGrid, Mailgun, ElasticEmail, Sparkpost... You can also take advantage of the the hosting server\'s email capability by creating a "PHP Mail" or "Sendmail" sending server',
   'log.sending_server.created' => 'The sending server "<a href=":link">:name</a>" was created!',
   'log.sending_server.updated' => 'The sending server "<a href=":link">:name</a>" was updated!',
   'log.sending_server.deleted' => 'The sending server ":name" was deleted!',
@@ -1635,7 +1638,7 @@
   'enable_user_registration' => 'Enable customer registration',
   'setting.enable_user_registration.help' => 'Visitor can create new customer account and register for a plan.',
   'payment_methods.custom_order.updated' => 'Payment methods order were successfully updated',
-  'max_emails' => 'Max emails',
+  'max_emails' => 'Email sending credits',
   'admin_default_plan' => 'Default plan',
   'something_went_wrong_with_payment' => 'Something went wrong with the payment service. Please try again later.<br/>Error: :error',
   'something_went_wrong' => 'Something went wrong.',
@@ -1656,16 +1659,16 @@
   'license.license_types' => 'License types',
   'license.no_license' => 'You do not enter a valid license yet. Please purchase a license and enter it in the form below to continue using the product',
   'license_guide' => '
-        <p>When you purchase Acelle Mail from Envato website, you are actually purchasing a license to use the product.<br>There are 2 types of license that are issued</p>
-        <h4>Regular License</h4>
-        <p>
-            All features are available, for a single end product which end users are NOT charged for
-        </p>
-        <h4>Extended License</h4>
-        <p>
-            All features are available, for a single end product which end users can be charged for (software as a service)
-        </p>
-    ',
+      <p>When you purchase Acelle Mail from Envato website, you are actually purchasing a license to use the product.<br>There are 2 types of license that are issued</p>
+      <h4>Regular License</h4>
+      <p>
+        All features are available, for a single end product which end users are NOT charged for
+      </p>
+      <h4>Extended License</h4>
+      <p>
+        All features are available, for a single end product which end users can be charged for (software as a service)
+      </p>
+  ',
   'license_label_extended' => 'Extended',
   'license_label_normal' => 'Normal',
   'your_current_license' => 'Thank you for purchasing Acelle Mail! Below is your license key, also known as Purchase Code. Your license type is',
@@ -1709,31 +1712,30 @@
   'file.uploaded' => 'File was successfully uploaded.',
   'current_plan' => 'Current plan',
   'current_plan_intro' => '<p>Thank you for doing your email marketing with Acelle Mail.
-        You are currently subscribed to the <strong>:plan</strong> plan.
-        Your subscription will expire in <strong>:remain</strong>, on <strong>:end_at</strong></p>
-        <p>Please find your current plan details below</p>',
+      You are currently subscribed to the <strong>:plan</strong> plan.
+      Your subscription will expire in <strong>:remain</strong>, on <strong>:end_at</strong></p>
+      <p>Please find your current plan details below</p>',
   'current_plan_intro_unlimited' => '<p>Thank you for doing your email marketing with Acelle Mail.
-        You are currently subscribed to the <strong>:plan</strong> plan.</p>
-        <p>Please find your current plan details below</p>',
+      You are currently subscribed to the <strong>:plan</strong> plan.</p>
+      <p>Please find your current plan details below</p>',
   'plan_name' => 'Plan name',
   'more_details' => 'More details',
   'max_automations_label' => 'Max automations',
   'current_plan_notactive_intro' => 'You have a pending subscription for <a><strong>:plan plan</strong></a>.
-        Please finish the payment or wait for the payment confirmation to activate your subscription',
+      Please finish the payment or wait for the payment confirmation to activate your subscription',
   'next_plan_notactive_intro' => 'You have a pending subscription for <a><strong>:plan plan</strong></a>.
-        Please finish the payment or wait for the payment confirmation to activate your subscription',
+      Please finish the payment or wait for the payment confirmation to activate your subscription',
   'purchasing_intro_braintree_credit_card' => 'Please fill out the below information so we can setup your account for puchasing the <a><strong>:plan plan</strong></a> with the pay by Credit Card option
-                . Your plan price is: <a><strong>:price</strong></a>',
-  'subscribe_to_a_plan' => 'Subscribe to a plan',
+          . Your plan price is: <a><strong>:price</strong></a>',
   'subscribe_to_a_plan_intro' => 'Thank you for signing up with Acelle Mail. You are not currently subscribed to any plan yet. Below are the available plans for you to choose from:',
   'subscribe_plan' => 'Subscribe',
   'purchasing_intro_braintree_paypal' => 'Please click the PayPal checkout button below to proceed with the payment for your subscription to <a><strong>:plan plan</strong></a>, the price is <a><strong>:price</strong></a>',
   'next_plan' => 'Next plan',
   'available_plans' => 'Available plans',
   'next_plan_active_intro' => 'You have successfully subscribed to the <a><strong>:plan plan</strong></a>.
-        Your subscription will start in <strong>:remain</strong>, from <strong>:start_at</strong>. Please find your next plan details below',
+      Your subscription will start in <strong>:remain</strong>, from <strong>:start_at</strong>. Please find your next plan details below',
   'current_plan_disabled_intro' => 'Your current subscription for <a><strong>:plan plan</strong></a> was disabled.
-        Please contact your service provider for more information',
+      Please contact your service provider for more information',
   'plan_status_active' => 'Active',
   'plan_status_inactive' => 'Inactive',
   'registration_recaptcha' => 'Registration captcha',
@@ -1748,7 +1750,7 @@
   'resources_statistics_intro' => 'An overview of system resource usage',
   'payment_method_status' => 'Status',
   'current_plan_notactive_paid_intro' => 'You have a pending subscription for <a><strong>:plan plan</strong></a>.
-        Please wait for the confirmation to activate your subscription',
+      Please wait for the confirmation to activate your subscription',
   'no_admin' => 'system',
   'payment_action_paid' => 'Pay',
   'payment_action_unpaid' => 'Un-Paid',
@@ -1769,12 +1771,12 @@
   'stripe_credit_card' => 'Stripe / Credit Card',
   'payment_method_type_stripe_credit_card_button' => '<i class="icon-credit-card"></i> Pay by Credit card',
   'purchasing_intro_stripe_credit_card' => 'Please click the button below so we can setup your account for puchasing the <a><strong>:plan plan</strong></a> with the Pay by Credit Card option
-                . Your plan price is: <a><strong>:price</strong></a>',
+          . Your plan price is: <a><strong>:price</strong></a>',
   'pay_with_strip_label_button' => 'Click to pay',
   'stripe_checkout_description' => 'Pay for order #:order',
   'payment_method_type_stripe_credit_card' => 'Pay by Stripe / Credit card',
   'purchasing_intro_paypal' => 'Please click the button below so we can setup your account for puchasing the <a><strong>:plan plan</strong></a> with the Pay with PayPal option
-        . Your plan price is: <a><strong>:price</strong></a>',
+      . Your plan price is: <a><strong>:price</strong></a>',
   'paypal_client_id' => 'PayPal Client ID',
   'paypal_secret' => 'PayPal Secret',
   'paypal_error_amount_not_equal' => 'Payment amount is not valid. Please contact the provider for more infomation.',
@@ -1847,11 +1849,11 @@
   'can_import_list' => 'Customer can import list',
   'can_export_list' => 'Customer can export list',
   'cash.wording' => 'Enable the cash payment option to allow payment to take place outside of the system. i.e. user can somehow make the payment for the subscription and then click on the "Pay In Cash" button to claim the payment.
-        As the administrator, you can then go to the Subscription dashboard to review and confirm the payment.',
+      As the administrator, you can then go to the Subscription dashboard to review and confirm the payment.',
   'braintree_credit_card.wording' => 'Enter your Braintree merchant account\'s information to accept payments by credit card',
   'braintree_paypal.wording' => 'Enter your Braintree merchant account\'s information to accept PayPal payments.
-        Please make sure you also have a PayPal business account and link it with your Braintree account.
-        See the Braintree documentation <a target="_blank" href="https://articles.braintreepayments.com/support/guides/payment-methods/paypal/setup-guide">here</a>.',
+      Please make sure you also have a PayPal business account and link it with your Braintree account.
+      See the Braintree documentation <a target="_blank" href="https://articles.braintreepayments.com/support/guides/payment-methods/paypal/setup-guide">here</a>.',
   'paypal.wording' => 'Setup your PayPal account to receive PayPal payments.',
   'stripe_credit_card.wording' => 'Setup your Stripe account to receive payments by credit cards.',
   'loading_paypal' => 'loading PayPal button... Please wait.',
@@ -1943,7 +1945,7 @@
   'test_sending_server' => 'Sending a test message',
   'test_sending_server.intro' => 'Fill in the form below and hit the Send button to test the your server.',
   'email_review' => 'Email review',
-  'sending_server.test_success' => 'Test message was successfully sent!',
+  'sending_server.test_email_sent' => 'Test message was successfully sent!',
   'bounce_handler.test_success' => 'Connection tested',
   'feedback_loop_handler.test_success' => 'Connection tested',
   'bounce_handler.testing_connection' => 'Testing connection...',
@@ -1958,7 +1960,7 @@
   'template.copied' => 'Template was successfully copied',
   'notification.note' => 'Note: ',
   'notification.sending_servers' => 'sending servers added by admin shall be used by users who are not permitted to add their own ones. You can select the sending servers to assign to a particular plan',
-  'tax_billing_required' => 'Billing information required?',
+  'plan.tax_billing_required' => 'Billing information required?',
   'plan.tax_billing_required.help' => 'Ask for tax billing information when subscribing to the plan',
   'the_email_no_longer_exists' => 'The email no longer exists',
   'campaign.resend' => 'Resend',
@@ -1988,9 +1990,9 @@
   'select_tool.whole_page' => 'Current page',
   'select_tool.all_items' => 'All items',
   'plan_option.system_s_sending_server' => 'Use system\'s sending servers',
-  'plan_option.system_s_sending_server.intro' => 'Customer is not allowed to add sending servers. Emails shall be sent using system\'s sending servers added by administrator',
+  'plan_option.system_s_sending_server.intro' => 'This is the standard setting. Users subscribing to this plan do not have to care about how emails are actually sent. Email delivery is managed by the administrator and is transparent to users. Click the Settings button below to set up email delivery service for this plan',
   'plan_option.own_sending_server' => 'Use own sending servers',
-  'plan_option.own_sending_server.intro' => 'Customer is allowed to add their own sending servers',
+  'plan_option.own_sending_server.intro' => 'This is the extended setting for advanced users who want to manage their own sending services. Users subscribing to this plan need to add and manage their own sending servers',
   'plan_option.sub_account' => 'Use a sub-account of system\'s sending servers',
   'plan_option.sub_account.intro' => 'SendGrid and ElasticEmail support creating sub-accounts that belong to a parent account. Sub-accounts are provided in order to help you segment your email sending and API activity. Acelle Mail will automatically create a separate sub-account for any user subscribing to the plan. Select one SendGrid/ElasticEmail master account below to create sub-accounts from',
   'select_sending_servers' => 'Select sending servers',
@@ -2016,7 +2018,7 @@
   'payment_method.paddle_card.button' => '<i class="icon-credit-card"></i> Pay with Paddle',
   'paddle_card.pay_by_card' => '<i class="icon-credit-card"></i> Pay with Paddle',
   'paddle_card.purchasing_intro' => 'Please click the button below so we can setup your account for puchasing the <a><strong>:plan plan</strong></a> with the Pay by Card (Paddle) option
-                . Your plan price is: <a><strong>:price</strong></a>',
+          . Your plan price is: <a><strong>:price</strong></a>',
   'paddle.vendor_id' => 'Vendor ID',
   'paddle.vendor_auth_code' => 'Vendor auth code',
   'paddle_checkout_title' => 'Plan: :plan',
@@ -2035,11 +2037,11 @@
   'payment_method.payumoney.button' => '<i class="icon-credit-card"></i> Pay with PayU',
   'payment_method_type_payumoney_button' => '<i class="fa fa-money"></i> Pay with PayU',
   'purchasing_intro_payumoney' => 'Please fill out the below information so we can setup your account for puchasing the <a><strong>:plan plan</strong></a> with the pay by Credit Card / Debit Card option
-                . Your plan price is: <a><strong>:price</strong></a>',
+          . Your plan price is: <a><strong>:price</strong></a>',
   'pay_by_credit_debit_card' => 'Pay by Credit / Debit Card',
   'firstname' => 'First Name',
   'subscription_paid_finish_messages_failure' => '<h2 class="text-semibold mt-0 text-danger">Sorry!</h2>
-        <p>You are <span class="text-bold text-danger">un-successfully</span> subscribed to the plan <span class="text-bold">:plan</span>. Now your account is not activated.<br />Let choose an action below for next step.</p>',
+      <p>You are <span class="text-bold text-danger">un-successfully</span> subscribed to the plan <span class="text-bold">:plan</span>. Now your account is not activated.<br />Let choose an action below for next step.</p>',
   'payu.testing' => 'For Testing',
   'payu.production' => 'For Production',
   'what_would_you_like_to_name_your_plan' => 'What would you like to name your Plan?',
@@ -2101,7 +2103,7 @@
   'subscriber.email.fail_to_verify' => 'Cannot verify email address',
   'site_favicon' => 'Site favicon',
   'trouble_clicking_reset_password_button' => 'If you’re having trouble clicking the ":actionText" button, copy and paste the URL below
-         into your web browser: [:actionUrl](:actionUrl)',
+       into your web browser: [:actionUrl](:actionUrl)',
   'email_greeting.whoops' => 'Whoops!',
   'email_greeting.hello' => 'Hello!',
   'verified_senders' => 'Sending Identity',
@@ -2135,26 +2137,510 @@
   'sender.verify_toggle.pending' => 'Click here to change verification type',
   'sender.dropbox.empty' => '(empty)',
   'sender.dropbox.error' => 'The email address you entered is not verified yet.
-    Click <a href=":sender_link" target="blank">here</a> to verify. You can proceed with an unverified sender anyway if you are sure about it',
+    Click <a href=":sender_link" target="blank"><strong>here</strong></a> to verify. You can proceed with an unverified sender anyway if you are sure about it',
   'sender.type.none' => 'none',
   'sender.view' => 'View',
   'sender.wording' => 'Acelle Mail requires that you verify your identities (the domains or email addresses that you send email from) to confirm that you own them, and to prevent unauthorized use',
   'senders.empty_verified_domain_sender.warning' => 'You have no verified sender.
     Add and verify a <a href=":domain_link" target="blank">[domain]</a> or
     <a href=":sender_link" target="blank">[email address]</a> to send email on behalf of.',
-  'login.email' => 'Email',
-  'login.password' => 'Password',
-  'login.remember_me' => 'Remember me on this device',
-  'campaign.check_spam_score' => 'Check Spam Score',
-  'campaign.spam_score' => 'Spam Score',
-  'plan.setting' => 'Email Settings',
+  'plan.sending_servers.intro' => 'This feature allows you to add a sending server which will actually send out your campaign emails.
+      You can configure a standard SMTP connection or connect to a 3rd services like Amazon SES,
+      SendGrid, Mailgun, ElasticEmail, Sparkpost... You can also take advantage of the the hosting server\'s
+      email capability by creating a "PHP Mail" or "Sendmail" sending server',
+  'plan.sending_servers.list_intro' => 'Below are the sending servers available for users subscribed to this plan.
+      Emails sent out by users will be delivered by these servers',
+  'plan.sending_servers' => 'Sending servers',
+  'plan.sending_servers.listing' => 'All available sending servers',
+  'plan.sending_servers.add' => 'Add Sending Server',
+  'plan.sending_identify' => 'Sending Identify',
+  'plan.sending_identify.intro' => 'Verifying an Identity for Amazon SES Sending Authorization. The first step in configuring sending
+      authorization is to prove that you own the email address or domain from which the
+      delegate sender will send email',
+  'plan.sending_servers.select' => 'Select sending server',
+  'plan.sending_servers.choose' => 'Choose',
+  'plan.sending_server.added' => 'Sending server was successfully added.',
+  'plan.sending_server.removed' => 'Sending server was successfully removed.',
+  'plan.fitness' => 'Fitness',
+  'plan.fitness.save' => 'Save',
+  'plan.sending_servers.settings' => 'Settings',
+  'plan.sending_servers.fitness.change' => 'Finess',
+  'plan.sending_servers.fitness.updated' => 'Fitnesses was successfully updated.',
+  'sending_servers.configuration_settings' => 'Configuration settings',
+  'sending_servers.amazon_api_key.intro' => 'Amazon Simple Email Service (Amazon SES) is a cloud-based email sending service designed to help digital marketers and application developers send marketing, notification, and transactional emails. Obtain your Amazon SES key pairs and fill in the form below to get connected',
+  'sending_servers.amazon_smtp.intro' => 'Amazon Simple Email Service (Amazon SES) is a cloud-based email sending service designed
+    to help digital marketers and application developers send marketing, notification, and transactional emails.
+    Obtain your Amazon SMTP settings and fill in the form below to get connected',
+  'sending_servers.configuration_settings.aws.intro' => 'Set up a connection to your Amazon Web Service account to send email through Simple Email Service (SES).',
+  'sending_server.name.help' => 'For example: My AWS',
+  'sending_servers.sending_limit.aws.intro' => 'Control how fast your application can send through this connection.
+    Every Amazon SES account has its own set of sending limits. You can find the details of AWS limits here',
+  'sending_servers.speed_limit' => 'Speed limit',
+  'sending_servers.quota.100_per_minute' => '100 emails per minute',
+  'sending_servers.quota.1000_per_hour' => '1,000 emails per hour',
+  'sending_servers.quota.10000_per_day' => '10,000 emails per day',
+  'sending_servers.quota.custom' => 'Custom',
+  'sending_servers.sending_identity' => 'Sending identity',
+  'sending_servers.sending_identity.intro' => 'The following domains were verified against your Amazon SES account.
+    Click <a target="_blank" href=":link">here</a> to find more details in your Amazon dashboard. Choose the domain that users are
+    allowed to send on behalf of (FROM address)',
+  'sending_serbers.go_to_amazon_dashboard' => 'Go to Amazon dashboard',
+  'sending_serbers.add_domain' => 'Add domain',
+  'sending_serbers.add_email_domain' => 'Add email/domain',
+  'sending_limit.save' => 'Save',
+  'sending_limit.close' => 'Close',
+  'sending_server.test_connection' => 'Test Connection',
+  'sending_server.send_a_test_email' => 'Send A Test Email',
+  'sending_servers.fitness' => 'Probability',
+  'sending_servers.sending_limit.phrase' => ':quota_value emails per :quota_base :quota_unit',
+  'sending_server.quota.unlimited' => 'Unlimited',
+  'sending_servers.sending_identity.mailgun.intro' => 'The following domains were verified against your Mailgun account.
+      User can only send from the domains below and is not allowed to send on their own identity',
+  'sending_servers.mailgun_api_key.intro' => 'You are connected to Mailgun using the API key below',
+  'sending_servers.mailgun_smtp.intro' => 'You are connected to Mailgun using the SMTP below',
+  'sending_servers.sending_limit.mailgun.intro' => 'Specify speed limit to control how fast your application can send through this connection in
+    terms of email throughput. You can find the details of SendGrid limits <a href="">here</a>',
+  'sending_servers.configuration_settings.mailgun.intro' => 'Set up a connection to your Mailgun account to send emails.',
+  'sending_servers.sending_identity.sendgrid.intro' => 'The following domains were verified against your Sendgrid account.
+      User can only send from the domains below and is not allowed to send on their own identity',
+  'sending_servers.sendgrid_api_key.intro' => 'You are connected to Sendgrid using the API key below',
+  'sending_servers.sendgrid_smtp.intro' => 'You are connected to Sendgrid using the SMTP below',
+  'sending_servers.sending_limit.sendgrid.intro' => 'Specify speed limit to control how fast your application can send through this connection in
+    terms of email throughput. You can find the details of Sendgrid limits <a href="">here</a>',
+  'sending_servers.configuration_settings.sendgrid.intro' => 'Set up a connection to your Sendgrid account to send emails.',
+  'sending_serbers.sendgrid.allow_verify.intro' => 'You can also allow your users to verify an identity on their own.
+            That is, user can request to verify their own email address or domain against your
+            Sendgrid account',
+  'sending_serbers.aws.allow_verify.intro' => 'You can also allow your users to verify an identity on their own.
+            That is, user can request to verify their own email address or domain against your
+            Amazon SES account',
+  'allow_verify_domain_against_sendgrid' => 'Allow verifying user\'s own domains',
+  'allow_verify_email_against_sendgrid' => 'Allow verifying user\'s own email addresses',
+  'allow_verify_domain_against_aws' => 'Allow verifying user\'s own domains against AWS',
+  'allow_verify_email_against_aws' => 'Allow verifying user\'s own email addresses against AWS',
+  'sending_serbers.go_to_sendgrid_dashboard' => 'Go to Sendrid dashboard',
+  'sending_serbers.go_to_mailgun_dashboard' => 'Go to Mailgun dashboard',
+  'sending_servers.sending_identity.elasticemail.intro' => 'The following domains were verified against your Elastic Email account.
+      User can only send from the domains below and is not allowed to send on their own identity',
+  'sending_servers.elasticemail_api_key.intro' => 'You are connected to Elastic Email using the API key below',
+  'sending_servers.elasticemail_smtp.intro' => 'You are connected to Elastic Email using the SMTP below',
+  'sending_servers.sending_limit.elasticemail.intro' => 'Specify speed limit to control how fast your application can send through this connection in
+    terms of email throughput. You can find the details of SendGrid limits <a href="">here</a>',
+  'sending_servers.configuration_settings.elasticemail.intro' => 'Set up a connection to your Elastic Email account to send emails.',
+  'sending_serbers.go_to_elasticemail_dashboard' => 'Go to Elastic Email dashboard',
+  'sending_servers.sending_identity.sparkpost.intro' => 'The following domains were verified against your Sparkpost account.
+      User can only send from the domains below and is not allowed to send on their own identity',
+  'sending_servers.sparkpost_api_key.intro' => 'You are connected to Sparkpost using the API key below',
+  'sending_servers.sparkpost_smtp.intro' => 'You are connected to Sparkpost using the SMTP below',
+  'sending_servers.sending_limit.sparkpost.intro' => 'Sparkpost speed limit to control how fast your application can send through this connection in
+    terms of email throughput. You can find the details of Sparkpost limits <a href="">here</a>',
+  'sending_servers.configuration_settings.sparkpost.intro' => 'Set up a connection to your Sparkpost account to send emails.',
+  'sending_serbers.go_to_sparkpost_dashboard' => 'Go to Sparkpost dashboard',
+  'plan.sending_server.primary.updated' => 'Primary sending server was successfully updated.',
+  'sending_servers.set_primary' => 'Set primary',
+  'sending_servers.primary' => 'primary',
+  'plan.sending_identify.intro.amazon-api' => 'You are using Amazon SES as your primary delivery method.
+      Amazon SES requires that users verify their identities (the domains or email addresses that you send
+      email from) to confirm their ownership, and to prevent unauthorized use. Only verified identity can
+      be used as FROM email address when setting campaign email.
+      Bounce and feedback loop is handled by Amazon SES through API without users having
+      to configure anything at Acelle Mail',
+  'plan.sending_identify.intro.amazon-smtp' => 'You are using Amazon SES as your primary delivery method.
+      Amazon SES requires that users verify their identities (the domains or email addresses that you send
+      email from) to confirm their ownership, and to prevent unauthorized use. Only verified identity can
+      be used as FROM email address when setting campaign email.
+      Bounce and feedback loop is handled by Amazon SES through API without users having
+      to configure anything at Acelle Mail',
+  'plan.sending_identify.intro.smtp' => 'It is recommended that users verify their own identities (domains or
+      email addresses) to confirm their ownership, and to prevent unauthorized use. Only verified identity can
+      be used as FROM email address. Users will need to set up a bounce/feedback handler
+      (in Sending > Bounce/Feedback Handler) to process bounced/feedback messages.',
+  'plan.sending_identify.intro.sendmail' => 'It is recommended that users verify their own identities (domains or
+      email addresses) to confirm their ownership, and to prevent unauthorized use. Only verified identity can
+      be used as FROM email address. Users will need to set up a bounce/feedback handler
+      (in Sending > Bounce/Feedback Handler) to process bounced/feedback messages.',
+  'plan.sending_identify.intro.php-mail' => 'It is recommended that users verify their own identities (domains or
+      email addresses) to confirm their ownership, and to prevent unauthorized use. Only verified identity can
+      be used as FROM email address. Users will need to set up a bounce/feedback handler
+      (in Sending > Bounce/Feedback Handler) to process bounced/feedback messages.',
+  'plan.sending_identify.intro.mailgun-api' => 'You are using [Mailgun] as your primary delivery method.
+      [Mailgun] only allows sending from a verified sending domain that you register against [Mailgun].
+      Bounce and feedback loop is handled by
+      [Mailgun] through API without users having to configure anything at Acelle Mail',
+  'plan.sending_identify.intro.mailgun-smtp' => 'You are using [Mailgun] as your primary delivery method.
+      [Mailgun] only allows sending from a verified sending domain that you register against [Mailgun].
+      Bounce and feedback loop is handled by
+      [Mailgun] through API without users having to configure anything at Acelle Mail',
+  'plan.sending_identify.intro.sendgrid-api' => 'It is recommended that users verify their own identities (domains or
+      email addresses) to confirm their ownership, and to prevent unauthorized use. Only verified identity can
+      be used as FROM email address. Users will need to set up a bounce/feedback handler
+      (in Sending > Bounce/Feedback Handler) to process bounced/feedback messages.',
+  'plan.sending_identify.intro.sendgrid-smtp' => 'It is recommended that users verify their own identities (domains or
+      email addresses) to confirm their ownership, and to prevent unauthorized use. Only verified identity can
+      be used as FROM email address. Users will need to set up a bounce/feedback handler
+      (in Sending > Bounce/Feedback Handler) to process bounced/feedback messages.',
+  'plan.sending_identify.intro.elasticemail-api' => 'You are using [Elasticemail] as your primary delivery method.
+      [Elasticemail] only allows sending from a verified sending domain that you register against [Elasticemail].
+      Bounce and feedback loop is handled by
+      [Elasticemail] through API without users having to configure anything at Acelle Mail',
+  'plan.sending_identify.intro.elasticemail-smtp' => 'You are using [Elasticemail] as your primary delivery method.
+      [Elasticemail] only allows sending from a verified sending domain that you register against [Elasticemail].
+      Bounce and feedback loop is handled by
+      [Elasticemail] through API without users having to configure anything at Acelle Mail',
+  'plan.sending_identify.intro.sparkpost-api' => 'You are using [Sparkpost] as your primary delivery method.
+      [Sparkpost] only allows sending from a verified sending domain that you register against [Sparkpost].
+      Bounce and feedback loop is handled by
+      [Sparkpost] through API without users having to configure anything at Acelle Mail',
+  'plan.sending_identify.intro.sparkpost-smtp' => 'You are using [Sparkpost] as your primary delivery method.
+      [Sparkpost] only allows sending from a verified sending domain that you register against [Sparkpost].
+      Bounce and feedback loop is handled by
+      [Sparkpost] through API without users having to configure anything at Acelle Mail',
+  'sending_server.testing' => 'Checking server connection...',
+  'sending_server.test_success' => 'The sending server is valid',
+  'sending_servers.php-mail.intro' => 'Configure Acelle Mail to send emails directly through the hosting server\'s through PHP
+      `mail()` function. Make sure the function is not disabled on your hosting server',
+  'sending_server.php-mail.check_php_mail' => 'Check PHP Mail',
+  'sending_servers.local_identity.intro' => 'Specify the delivery domains that users can use. That is, user can specify a
+      FROM email address that does match one of the following domains',
+  'sending_server.identity_type.domain' => 'domain',
+  'sending_server.identity_type.email' => 'email',
+  'sending_serbers.php-mail.allow_verify.intro' => 'You can also allow your users to verify an identity on their own.
+      That is, user can add their own email addresses or domains and verify against Acelle Mail.
+      Once verified, user can use their own FROM email address when sending',
+  'allow_verify_domain_against_acelle' => 'Allow verifying user\'s own domains against Acelle Mail',
+  'allow_verify_email_against_acelle' => 'Allow verifying user\'s own email addresses Acelle Mail',
+  'allow_unverified_from_email' => 'Allow unverified FROM email addresses',
+  'plans.send_via.wording' => 'Use :server for email delivery',
+  'plans.send_via.empty' => 'No sending server selected',
+  'sending_server.aws.add_domain_redirect_confirm' => 'You need to login to your AWS console to add a sending domain. Do you want to proceed?',
+  'email_addresses' => 'Email addresses',
+  'domains' => 'Domains',
+  'plan.general' => 'General',
+  'plan.settings' => 'Settings',
+  'plan.quota' => 'Quota',
+  'plan.security' => 'Security',
+  'plan.billing' => 'Billing',
+  'plan.email_verification' => 'Email verification',
+  'plan.email_footer' => 'Email footer',
+  'plan.payment' => 'Payment',
+  'plan.billing_history' => 'Billing history',
+  'plan.sending_limit' => 'Sending limit',
+  'plan.resources' => 'Resources',
+  'plan.sending_limit.phrase' => ':quota_value email(s) per :quota_base :quota_unit(s)',
+  'plans.sending_limit.unlimited' => 'Unlimited',
+  'plans.sending_limit.wording' => 'The configuration setting below allows you to set a limit on email sending speed. For example, to limit sending speed to <strong>2,000 emails every 5 minutes</strong>, you can set <strong>Sending limit = 2000</strong>, <strong>Time value = 5</strong>, and <strong>Time unit = minute</strong> accordingly',
+  'plans.sending_limit.custom' => 'custom',
+  'plan.sending_limit.intro' => 'The configuration setting below allows you to set a limit on email sending speed...',
+  'plan.general.details' => 'Plan Details',
+  'plan.general.overview' => 'Overview',
+  'plan.general.details.intro' => 'A plan, or service plan, is the group of services and limits that you have agreed to provide to your customer. A plan allows you to centrally plan and standardize your service offerings. Set up your plan details below:',
+  'plan.quota_time.wording' => 'per :amount :unit(s)',
+  'plan.sending_credits' => 'Sending credits',
+  'plan.delivery' => 'Delivery',
+  'plan.billing_cycle' => 'Billing cycle',
+  'plan.billing_cycle.daily' => 'Daily',
+  'plan.billing_cycle.monthly' => 'Monthly',
+  'plan.billing_cycle.yearly' => 'Yearly',
+  'plan.billing_cycle.custom' => 'Custom',
+  'plan.billing_cycle.phrase' => ':frequency_amount :frequency_unit(s)',
+  'plans.billing_cycle.wording' => 'Setting up plan billing cycle',
+  'plans.billing_cycle.save' => 'Save',
+  'plans.billing_cycle.close' => 'Close',
+  'plan.name' => 'Name',
+  'plan.currency' => 'Currency',
+  'plan.price' => 'Price',
+  'plan.color' => 'Color',
+  'plan.sending_limit.unlimited' => 'Unlimited',
+  'plan.sending_limit.100_per_minute' => '100 emails per minute',
+  'plan.sending_limit.1000_per_hour' => '1,000 emails per hour',
+  'plan.sending_limit.10000_per_day' => '10,000 emails per day',
+  'plan.sending_limit.custom' => 'custom',
+  'plan.speed_limit' => 'Speed limit',
+  'plan.speed_limit.intro' => 'Limit sending speed to protect your sending reputation',
+  'plan.set_a_limit' => 'Set a limit',
+  'plan.process_limit.intro' => 'Acelle Mail supports forking multiple processes for sending multiple times faster in terms of
+    email throughput. However, it will consume multiple times more CPU and memory as a tradeoff.',
+  'plan.resource.intro' => 'Set up your plan\'s quota to limit the resources or services that users subscribed to this plan can use',
   'plan.enabled_email_footer' => 'Enable email footer',
   'plan.email_footer_trial_period_only' => 'For trial period only',
   'plan.html_footer' => 'HTML footer',
   'plan.plain_text_footer' => 'Plain text footer',
   'plan.email_footer.intro' => 'Include a footer in every out-going email message to reflect your brand.
     Normally, you can enable this option for trial period',
-  'plan.email_footer' => 'Email footer',
+  'plan.sending_server' => 'Sending server',
+  'plan.sending_server.intro' => 'Choose how emails are actually delivered for users subscribing to this plan',
+  'plan.email_verification.intro' => 'Setting up email verification servers for the plan',
+  'plan.email_verification.use_own' => 'Use own email verfication servers',
+  'plan.email_verification.use_own.intro' => 'Customer is allowed to add their own sending servers',
+  'plan.email_verification.use_system' => 'Use system\'s email verfication servers',
+  'plan.email_verification.use_system.intro' => 'Customer is not allowed to add email verfication servers.
+    Emails shall be sent using system\'s email verfication servers added by administrator',
+  'plan.email_verification.select_server' => 'Select email verification server(s) that customer can use:',
+  'plan.sending_server.not_set' => 'Not set',
+  'plan.new_plan' => 'Add a new plan',
+  'plan.wizard.next' => 'Next',
+  'plan.wizard.cancel' => 'Cancel',
+  'plan.wizard.finish' => 'Finish',
+  'plan.save_and_manage_sending_servers' => 'Save & Manage sending servers',
+  'plan.manage_sending_servers' => 'Manage sending servers',
+  'plan.back_to_sending_server_setting' => 'Back to plan setting',
+  'plan.sending_servers.empty_warning' => 'There is no sending server selected for this plan',
+  'plan.sending_servers.add_empty_warning' => 'There is no available sending server for this plan.
+    Click <a target="_blank" href=":link"><strong>here</strong></a> to add one.',
+  'plan.sending_server.custom' => 'Custom',
+  'plan.sending_server.change_confirm' => 'You are about to change plan sending server setting',
+  'plan.payment.intro' => 'Connect your plan to a payment gateway like Stripe or Braintree/Paypal,
+    to accept payment online',
+  'payment_gateways' => 'Payment gateways',
+  'payment_gateways.wording' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+    Sed ac ultrices nibh. Mauris porta, augue id condimentum feugiat, ipsum lectus sagittis est, accumsan blandit
+    sapien eros tincidunt nulla. Nam massa nisl, facilisis quis rhoncus quis, blandit ac sem.
+    Pellentesque ornare ante sit amet dolor cursus, nec egestas nisi scelerisque.',
+  'payment.status.active' => 'active',
+  'payment.status.inactive' => 'inactive',
+  'payments.cash' => 'Cash',
+  'payments.stripe' => 'Stripe',
+  'payments.cash.list_intro' => 'Pay by Cash',
+  'payments.stripe.list_intro' => 'Pay with Stripe credit card',
+  'payment.cash.wording' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+    Sed ac ultrices nibh. Mauris porta, augue id condimentum feugiat, ipsum lectus sagittis est, accumsan blandit
+    sapien eros tincidunt nulla. Nam massa nisl, facilisis quis rhoncus quis, blandit ac sem.
+    Pellentesque ornare ante sit amet dolor cursus, nec egestas nisi scelerisque.',
+  'payment.stripe.wording' => 'Stripe is a technology company based in San Francisco, California. Its software allows individuals and businesses to make and receive payments over the Internet. Stripe provides the technical, fraud prevention, and banking infrastructure required to operate online payment systems.',
+  'payment.status' => 'Status',
+  'payment.stripe.publishable_key' => 'Publishable key',
+  'payment.stripe.secret_key' => 'Secret key',
+  'payment_gateway.updated' => 'Payment gateway was successfully updated',
+  'payment.options[cash].help' => 'Enable/disable cash payment',
+  'payment.options[status].help' => 'Enable/disable payment',
+  'payment.options' => 'Payment settings',
+  'subscription.payment' => 'Payment',
+  'subscription.payment.wording' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+    Sed ac ultrices nibh. Mauris porta, augue id condimentum feugiat, ipsum lectus sagittis est, accumsan blandit
+    sapien eros tincidunt nulla. Nam massa nisl, facilisis quis rhoncus quis, blandit ac sem.
+    Pellentesque ornare ante sit amet dolor cursus, nec egestas nisi scelerisque.',
+  'purchasing_intro_stripe' => 'You are subscribing to <span class="text-nowrap text-big text-semibold">:plan</span> plan
+          . Your plan price is: <span class="text-nowrap text-big text-bold">:price</span>
+          . Please select your card bellow to process the payment.',
+  'purchasing_intro_direct' => 'You are subscribing to <span class="text-nowrap text-big text-semibold">:plan</span> plan
+          . Your plan price is: <span class="text-nowrap text-big text-bold">:price</span>
+          . Click confirm button below to accept and get payment guide.',
+  'subscription.current_subscription.recurring.wording' => 'You are currently subscribed to <strong>:plan</strong> (<strong>:money</strong>).<br>
+      Next invoice will be billed in <strong>:remain</strong>, on <strong>:next_on</strong>.',
+  'subscription.cancel.confirm' => 'You\'re about to cancel :number subscription. You\'re still subscribed until the end of period',
+  'subscription.renew.confirm' => 'You\'re about to renew :number subscription.',
+  'subscription.cancelled' => 'The subscription was successfully cancelled',
+  'subscription.current_subscription.cancel_at_end_of_period.wording' => 'You are currently subscribed to <strong>:plan</strong> plan (<strong>:money</strong>).
+      Your subscription will expire in <strong>:remain</strong>, on <strong>:end_at</strong>',
+  'subscription.resume' => 'Resume',
+  'plan_details' => 'Plan details',
+  'plan_details.intro' => 'The table below is the details of you current plan. Including plan name, quota, permissions and other information.',
+  'subscription.resume.confirm' => 'You\'re about to resume :number subscription.',
+  'subscription.resumed' => 'The subscription was successfully resumed',
+  'subscription.cancel' => 'Cancel',
+  'subscription.cancel_now' => 'Cancel now',
+  'subscription.cancel_now.confirm' => 'You\'re about to cancel :number subscription immediately.',
+  'subscription.cancelled_now' => 'The subscription was successfully cancelled',
+  'subscription.change_plan' => 'Change plan',
+  'subscription.change_plan.wording' => 'Select plan below to change',
+  'payments.braintree' => 'Braintree',
+  'payments.braintree.list_intro' => 'Pay with Braintree',
+  'payment.braintree.environment' => 'Environment',
+  'payment.braintree.merchant_id' => 'Merchant ID',
+  'payment.braintree.public_key' => 'Public key',
+  'payment.braintree.private_key' => 'Private key',
+  'payment.braintree.wording' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+    Sed ac ultrices nibh. Mauris porta, augue id condimentum feugiat, ipsum lectus sagittis est, accumsan blandit
+    sapien eros tincidunt nulla. Nam massa nisl, facilisis quis rhoncus quis, blandit ac sem.
+    Pellentesque ornare ante sit amet dolor cursus, nec egestas nisi scelerisque.',
+  'purchasing_intro_braintree' => 'Please fill out the below information so we can setup your account for puchasing the <a><strong>:plan plan</strong></a> with the Pay with Braintree option
+      . Your plan price is: <a><strong>:price</strong></a>',
+  'payment.braintree.request_payment_method' => 'Request payment method',
+  'payment.braintree.pay' => 'Pay',
+  'plan.choose_a_payment_gateway' => 'Choose a payment gateway',
+  'plan.choose_a_payment_gateway.help' => 'You are connecting to Stripe, which allows you to get paid from users\' credit cards (VISA, Master, etc.)',
+  'payment.edit' => 'Edit',
+  'payment.set_primary' => 'Set Primary',
+  'payment.primary' => 'Primary',
+  'payment.pay_now' => 'Pay now',
+  'subscription.plan_changed' => 'Subsription plan was successfully changed',
+  'subscription.ends_at' => 'Ends at',
+  'subscription.ends_on' => 'Ends on',
+  'subscription.ended_on' => 'Ended on',
+  'subscription.status.ended' => 'Ended',
+  'subscription.status.active' => 'Active',
+  'subscription.status.cancelled' => 'Cancelled',
+  'subscription.status.recurring' => 'Recurring',
+  'subscription.status.new' => 'New',
+  'subscription.status.pending' => 'Pending',
+  'subscription.status.done' => 'Done',
+  'subscription.created_at' => 'Created at',
+  'subscription.updated_at' => 'Updated at',
+  'payment.braintree' => 'Braintree',
+  'payments.coinpayments' => 'Coin-Payments',
+  'payments.coinpayments.list_intro' => 'Multiple Cryptocurrencies accepted via CoinPayments',
+  'payment.coinpayments.wording' => 'Multiple Cryptocurrencies accepted via CoinPayments',
+  'payment.coinpayments.merchant_id' => 'Merchant ID',
+  'payment.coinpayments.public_key' => 'Public key',
+  'payment.coinpayments.private_key' => 'Private key',
+  'payment.coinpayments.ipn_secret' => 'IPN secret',
+  'purchasing_intro_coinpayments' => 'Please click the button below so we can setup your account for puchasing the <span class="text-nowrap text-big text-semibold">:plan plan</span>
+    . Your plan price is: <span class="text-nowrap text-big text-bold">:price</span>',
+  'subscription.checkout' => 'Checkout',
+  'subscription.checkout.intro' => 'Your subscription was successfully created. Click <strong>Pay now</strong> button bellow to purchase the plan',
+  'subscription.plan' => 'Plan',
+  'subscription.plan.wording' => 'Your are currently subscribing to <strong>:plan</strong> plan. Let take a quick look over it.',
+  'subscription.payment.checkout' => 'Checkout',
+  'subscription.pending.intro' => '',
+  'subscription.pending.coinpayments.wording' => 'You are currently subscribed to <strong>:plan</strong> (<strong>:money</strong>). Please wait for processing your subscription.
+    If you haven\'t purchase the plan, please follow the checkout guide from CointPayments.net in your
+    mailbox with title <strong class="text-nowrap">[CoinPayments.net] New Payment Submitted</strong>.<br/><br/> <strong>OR</strong> <br/>',
+  'subscription.future_pending.coinpayments' => 'You have currently payment pending. Please wait for processing your payment.
+    If you haven\'t purchase the plan, please follow the checkout guide from CointPayments.net in your
+    mailbox with title <strong class="text-nowrap">[CoinPayments.net] ...</strong>.',
+  'subscription.future_pending.direct' => 'You are currently subscribed to <strong>:plan</strong> (<strong>:money</strong>).
+    Please follow the steps bellow to purchase your plan:',
+  'subscription.claimed.direct' => 'Please wait for processing your subscription.
+    If you haven\'t purchase the plan, please review the payment guide bellow:',
+  'subscription.payment.checkout_again' => 'Checkout again',
+  'subscription.current_subscription.cancel_at_end_of_period_no_recurring_supported.wording' => 'You are currently subscribed to <strong>:plan</strong> (<strong>:money</strong>).<br>
+      The subscription will be end in <strong>:remain</strong>, on <strong>:end_at</strong>.',
+  'payments.direct' => 'Direct payment',
+  'payments.direct.list_intro' => 'Payment are created and saved local server.',
+  'payment.direct.wording' => 'Payment are created and saved local server. Manually update payment records via app.',
+  'payment.direct.database_path' => 'Database file path',
+  'payment_gateway.not_valid' => 'Something went wrong: :message',
+  'subscription.pending.direct.wording' => 'You are currently subscribed to <strong>:plan</strong> (<strong>:money</strong>).
+    Please wait for processing your subscription.
+    If you haven\'t purchase the plan, please follow the steps bellow: <br/>',
+  'invoice.datetime' => 'Datetime',
+  'invoice.amount' => 'Amount',
+  'invoice.description' => 'Description',
+  'invoice.status' => 'Status',
+  'subscription.logs' => 'Invoices / Billing History',
+  'subscription.logs.intro' => 'All your payment transactions are logged here. Let check them for details of your invoices / billing history.',
+  'subscription.logs.empty' => 'No records found',
+  'no_plan.title' => 'You are not subscribed to any plan!',
+  'select_plan.wording' => 'You need to subscribe to a plan in order to experience the application. Choose one of plans below to subcribe for using the app:',
+  'manage_your_subscription' => 'Manage your subscription',
+  'payment.coinpayments' => 'CoinPayments',
+  'sending_server.add_domain.wording' => 'Enter new domain name here to add domain to sending server',
+  'sending_server.add_email_domain.wording' => 'Enter new email/domain name here to add domain to sending server',
+  'sending_server.add_domain' => 'Add domain',
+  'sending_server.add_email_domain' => 'Add email/domain',
+  'sending_serbers.remove_domain' => 'Delete',
+  'sending_serbers.remove_email_domain' => 'Delete',
+  'sending_server.domain.removed' => 'Domain was removed subccessfully',
+  'sending_server.domain.remove_domain.confirm' => 'You are about to remove domain from list',
+  'subscription.top_up' => 'Top-up',
+  'subscription.top_up.wording' => 'The <strong>:plan</strong> plan is being ended in <strong>:remain</strong>, on <strong>:on</strong>.
+    So you should pay top-up for the next period.
+    Click the button bellow to process.',
+  'subscription.payment.pay_top_up' => 'Pay top-up',
+  'subscription.renew.coinpayments.wording' => 'Select button bellow and fill your payment infomation to pay top-up fees.',
+  'subscription_done.coinpayments.email' => 'Hello :customer, <br/>Your subscription to :plan plan was successfully processed. Thanks for your purchasing.<br>
+    Click <a href=":link">here</a> to check your subscription status.',
+  'subscription_done.email_subject' => 'Subscription was created successfully',
+  'no_primary_payment' => 'No Payment Gateway selected. Please go to Admin / Setting / Payment Gateways to select one',
+  'subscription_done.direct.email' => 'Hello :customer, <br/>Your subscription to :plan plan was successfully created.<br>
+    Click <a href=":link">here</a> to check your subscription status and process with payment.',
+  'subscription_done.stripe.email' => 'Hello :customer, <br/>Your subscription to :plan plan was successfully created.<br>
+    Click <a href=":link">here</a> to check your subscription status and process with payment.',
+  'subscription.next_invoice' => 'Next invoice',
+  'subscription.next_invoice.empty' => 'No invoices found',
+  'subscription.renew' => 'Renew',
+  'system.end_period_last_days' => 'Number of days before subscription period end',
+  'subscription.renew.warning' => 'The subscription is going to expired in <strong>:remain</strong>, on <strong>:next_on</strong>.
+    You should renew the plan for not interrupted when using app',
+  'invoice.created_at' => 'Created at',
+  'invoice.period_ends_at' => 'Period ends at',
+  'invoice.subscribe_to_plan' => 'Subscribe to plan <strong>:plan</strong>',
+  'invoice.renew_plan' => 'Renew plan <strong>:plan</strong>',
+  'invoice.change_plan' => 'Change to <strong>:new_plan</strong> plan',
+  'subscription.change_plan.checkout.coinpayments' => 'You are about to change plan from <strong>:current_plan</strong> to <strong>:new_plan</strong>.
+    The extra amount need to purchase amount for new plan is <strong>:amount</strong>. The subscription will be ended on <strong>:end_on</strong>',
+  'subscription.download_raw_invoices' => 'Download invoices (raw)',
+  'subscription.set_active' => 'Set active',
+  'subscription.set_active.confirm' => 'You are about to approve payment status for the subscription. This can not be un-done.',
+  'subscription.set_active.success' => 'The subscription invoice was approved successfully.',
+  'subscription.renew.checkout' => 'Checkout',
+  'subscription.renew.direct.wording' => 'Click the button bellow to renew the subscription for <strong>:plan</strong> plan.
+    The total amoutn is <strong>:price</strong>.',
+  'subscription.approve_pending_invoice' => 'Approve pending invoice',
+  'subscription.approve_pending_invoice.confirm' => 'You have pending invoice. Do you want to approve it. This can not be un-done.',
+  'subscription.approve_pending_invoice.success' => 'The pending invoice was approved successfully.',
+  'invoice.status.pending' => 'invoice pending',
+  'subscription.change_now' => 'Change now',
+  'subscription.plan_changed.lower_error' => 'Can not change from higher plan to lower one',
+  'payment.settings' => 'Settings',
+  'system.renew_free_plan' => 'Can renew free plan',
+  'setting.renew_free_plan.help' => 'Customers who are subscribing to a Free plan can not renew the plan. Need to change to a no-free plan first.',
+  'payment.direct.notice' => 'Payment notice/guide',
+  'plans.subscriber_count' => ':count subscriber(s)',
+  'payment.direct' => 'Direct',
+  'plan.info.subscriber_count' => 'There are <strong>:count</strong> customer(s) currently subscribed to this plan.
+    Click <a href=":link"><strong>here</strong></a> to see more details.',
+  'admin.no_primary_payment' => 'No Primary Payment Gateway selected. Click <a href=":link"><strong>here</strong></a> to select one.',
+  'save_and_set_primary' => 'Save & Set Primary',
+  'gateway.error.subscription_exist' => 'Can not change payment gateway because there are one or more active subscriptions.',
+  'subscription.delete' => 'Delete',
+  'subscription.delete.confirm' => 'You\'re about to delete :number subscription completely. This can not be un-done.',
+  'current_payment_intro' => 'Payment for your service plans is currently handled by <strong>:name</strong>. Click <a href=":link"><strong>here</strong></a> to manage payment gateways.',
+  'subscribed_by' => 'Subscribed by <a href=":customer_link">:name</a>',
+  'subscribed_on' => 'Subscribed on',
+  'login.email' => 'Email',
+  'login.password' => 'Password',
+  'login.remember_me' => 'Remember me on this device',
+  'customer.admin_area' => 'Admin Area',
+  'customer.back_to_admin' => 'Back to Admin',
+  'subscription.start_from' => 'Start from',
+  'subscription.next_billing_date' => 'Next billing date',
+  'subscription_of' => ':name\'s subscription',
+  'invoice.status.claimed' => 'Payment claimed',
+  'subscription.review_payment_notice' => 'Review payment guide',
+  'subscription.claim_payment' => 'I have paid already!',
+  'subscription.claim_payment.confirm' => 'You\'re about to claim that you have already paid the plan.',
+  'invoice.status.future_payment.pending' => 'Next invoice is pending',
+  'invoice.status.future_payment.claimed' => 'Next invoice was claimed',
+  'customer_has_no_plan' => 'Customer doesn\'t have any payment method',
+  'subscription.checkout.processing_payment' => 'Processing your payment... please wait!',
+  'subscription.payment.next' => 'Next',
+  'subscription.card_list' => 'Your card information',
+  'card.last4' => 'Last 4 number',
+  'subscription.pay_with_this_card' => 'Pay with this card',
+  'subscription.pay_with_new_card' => 'Pay with new card',
+  'card.holder' => 'Card holder',
+  'customer.no_card' => 'You haven\'t had card information yet',
+  'notify.success' => 'Success',
+  'notify.danger' => 'Danger',
+  'notify.warning' => 'Warning',
+  'notify.info' => 'Information',
+  'notify.error' => 'Error',
+  'subscription.finished' => 'Thank you! You are now subscribed to <strong>:plan</strong> plan.',
+  'subscription.direct.confirm' => 'Confirm',
+  'subscription.click_here_to_cancel_now' => 'Click here if you want to change other plan',
+  'payment.stripe' => 'Stripe',
+  'subscription.pay_with_stripe' => 'Pay with Stripe',
+  'notify.clear_all' => 'Clear all',
+  'payment.not_set' => 'Not set!',
+  'subscription.checkout.processing_payment.intro' => 'This process is automatic. Please do not close this browser/tab or change page.<br>
+    Your browser will redirect to next page shortly.',
+  'sending_identity.not_found.header' => 'No identity matches your FROM email address',
+  'sending_identity' => 'Sending Identity',
+  'sending_identity.exist_error' => 'Email/domain already exists!',
+  'plan.description' => 'Description',
+  'plan.pricing' => 'Pricing',
+  'plan.starting_at' => 'Starting At',
+  'plan.select' => 'Select',
+  'plan.review.wording' => 'Thank you for subscribing to Acelle Mail. Please review your selected plan below and procceed with the payment and get started.',
+  'payment.proceed_with_payment' => 'Proceed with Payment',
+  'payment.agree_service_intro' => 'By clicking the <strong><i>Proceed with payment</i></strong> button, you are paying for :plan plan, and you agree to Acelle Mail <i>Term of Use</i> and <i>Privacy Policy</i>.',
+  'plan.review' => 'Plan review',
+  'payment.coinpayments.receive_currency' => 'Receive Currency Code',
+  'subscription.status.active_pending' => 'Update pending',
+  'campaign.check_spam_score' => 'Check Spam Score',
+  'campaign.spam_score' => 'Spam Score',
+  'plan.setting' => 'Email Settings',
   'campaign.score.passed' => 'PASSED',
   'campaign.score.failed' => 'FAILED',
   'campaign.send_without_score_passed.warning' => 'Your message does not pass SpamScore test, are you sure you want to proceed anyway?',
@@ -2171,4 +2657,51 @@
   'list.start_clone' => 'Start Clone',
   'click_here_select_customer' => 'Click here to select customer',
   'list.clone_for.success' => 'List was successfully cloned.',
+  'plan_option.delivery_setting' => 'Delivery setting',
+  'plan_option.change' => 'Change',
+  'plan.sending_server.option' => 'Sending server option',
+  'plan.sending_servers.own.setting' => 'Options',
+  'plan.sending_servers.own.setting.intro' => 'Below are available options for configuring how customers can use their own sending servers.',
+  'plan.sending_server.saved' => 'Plan sending server setting was successfully saved.',
+  'plan.sending_servers.sub_account.setting' => 'Setting',
+  'plan.sending_servers.sub_account.setting.intro' => 'Below are available options for configuring how customers can use their own sending servers for subaccount creation.',
+  'plan.no_available_plan' => 'There are no available plans now. Please try again later!',
+  'customers.desc' => 'Manage your system users who subscribe to a plan',
+  'subscriptions.desc' => 'Manage user subscriptions. See who suscribe to which plan.',
+  'subscription.next_billing' => 'Next billing',
+  'subscription.expire' => 'Expire',
+  'sending_identity.status.active' => 'active',
+  'plan.fitness.more' => 'more',
+  'plan.fitness.less' => 'less',
+  'invoice.action' => 'Action',
+  'sending_server.domain_email' => 'Domain / Email',
+  'sending_server.server' => 'Server',
+  'sending_server.date_added' => 'Date added',
+  'sending_server.status' => 'Status',
+  'sending_server.action' => 'Action',
+  'identity.supported' => 'DKIM and SPF supported',
+  'go_to_sending_server_page' => 'Go to sending server setting page',
+  'go_to' => 'Go',
+  'subscription.change_plan.select_below' => 'Select the plan you want to change below. Changing plan can be un-done so make sure you want to change.',
+  'subscription.select_a_plan' => 'Select a Plan',
+  'plan.current_subscribed' => 'Current subscribed',
+  'create_your_account' => 'Create your Acelle Email account',
+  'register.intro' => 'Manage your contacts, generate leads, run a marketing campaign,... Join us at Acelle Mail to enjoy doing
+    every day sales & marketing without any hassle. If you already have an account? <a href=":login">Login</a>',
+  'get_started' => 'Get Started!',
+  'register.agreement_intro' => 'By clicking the "Get Started!" button, you are creating a Acelle Mail account,
+    and you agree to Mailchimp\'s Terms of Use and Privacy Policy.',
+  'email_confirmation' => 'Email Confirmation',
+  'admin.dashboard.recent_activity.wording' => 'By default, all activities of customers are logged for investigating.
+    Visit <a href=":here"> Customers Dashboard</a> to see the full list',
+  'sending_server.added' => 'added',
+  'plan.sending_server.already_added' => 'The sending server was already added',
+  'braintree.plan_mapping' => 'Plan mapping',
+  'braintree.plan_mapping.intro' => 'Mapping remote plans to local plans so Braintree can know how to add subscription.
+    This will change local plan price and billing recycle time too.',
+  'payment_gateway.braintree.mapping_updated' => 'Braintree plans were mapped',
+  'payment.setting' => 'Setting',
+  'subscription.subscription_end' => 'Ends at',
+  'subscription.ended' => 'Ended',
+  'n_a' => 'N/A',
 ) ?>

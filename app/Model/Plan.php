@@ -23,8 +23,15 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Validator;
+use Illuminate\Validation\ValidationException;
+use Acelle\Cashier\Interfaces\BillablePlanInterface;
+use Acelle\Cashier\Services\StripePaymentGateway;
+use Acelle\Cashier\Services\BraintreePaymentGateway;
+use Acelle\Model\PlansEmailVerificationServer;
+use Acelle\Cashier\Subscription;
 
-class Plan extends Model
+class Plan extends Model implements BillablePlanInterface
 {
     // Plan status
     const STATUS_INACTIVE = 'inactive';
@@ -41,7 +48,15 @@ class Plan extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'frequency_amount', 'frequency_unit', 'price', 'color', 'currency_id', 'tax_billing_required', 'paddle_plan_id', 'admin_id',
+        'name',
+        'frequency_amount',
+        'frequency_unit',
+        'price',
+        'color',
+        'currency_id',
+        'tax_billing_required',
+        'paddle_plan_id',
+        'admin_id',
     ];
 
     /**
@@ -70,6 +85,98 @@ class Plan extends Model
         if ($this->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SUBACCOUNT) {
             $rules['options.sending_server_subaccount_uid'] = 'required';
         }
+
+        return $rules;
+    }
+    
+    /**
+     * The rules for validation.
+     *
+     * @var array
+     */
+    public function validationRules()
+    {
+        $rules = [
+            'general' => [
+                'plan.general.name' => 'required',
+                'plan.general.currency_id' => 'required',
+                'plan.general.frequency_amount' => 'sometimes|required|min:1',
+                'plan.general.frequency_unit' => 'sometimes|required',
+                'plan.general.price' => 'required|min:0',
+                'plan.general.color' => 'sometimes|required',
+            ],
+            'options' => [],
+        ];
+
+        $options = self::defaultOptions();
+        foreach ($options as $type => $option) {
+            if ($type != 'sending_server_subaccount_uid' && !in_array($type, ['plain_text_footer', 'html_footer'])) {
+                $rules['options']['plan.options.'.$type] = 'sometimes|required';
+            }
+        }
+
+        if ($this->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SUBACCOUNT) {
+            $rules['options']['plan.options.sending_server_subaccount_uid'] = 'sometimes|required';
+        }
+
+        return $rules;
+    }
+    
+    /**
+     * The rules for validation.
+     *
+     * @var array
+     */
+    public function generalRules()
+    {
+        $rules = array(
+            'name' => 'required',
+            'currency_id' => 'required',
+            'frequency_amount' => 'required|min:1',
+            'frequency_unit' => 'required',
+            'price' => 'required|min:0',
+            'color' => 'required',
+        );
+
+        return $rules;
+    }
+    
+    /**
+     * The rules for validation.
+     *
+     * @var array
+     */
+    public function resourcesRules()
+    {
+        $rules = array(
+            'options.email_max' => 'required',
+            'options.list_max' => 'required',
+            'options.subscriber_max' => 'required',
+            'options.subscriber_per_list_max' => 'required',
+            'options.segment_per_list_max' => 'required',
+            'options.campaign_max' => 'required',
+            'options.automation_max' => 'required',
+            'options.max_process' => 'required',
+            'options.max_size_upload_total' => 'required',
+            'options.max_file_size_upload' => 'required',
+        );
+
+        return $rules;
+    }
+    
+    /**
+     * The rules for validation.
+     *
+     * @var array
+     */
+    public function sendingLimitRules()
+    {
+        $rules = array(
+            'options.sending_limit' => 'required',
+            'options.sending_quota' => 'required',
+            'options.sending_quota_time' => 'required',
+            'options.sending_quota_time_unit' => 'required',
+        );
 
         return $rules;
     }
@@ -124,7 +231,12 @@ class Plan extends Model
 
     public function subscriptions()
     {
-        return $this->hasMany('Acelle\Model\Subscription');
+        return $this->hasMany('Acelle\Cashier\Subscription', 'plan_id', 'uid')
+            ->where(function($query){
+                $query->whereNull('ends_at')
+                      ->orWhere('ends_at', '>=', \Carbon\Carbon::now());
+            })
+            ->orderBy('created_at', 'desc');
     }
 
     public function plansEmailVerificationServers()
@@ -270,6 +382,121 @@ class Plan extends Model
             ['value' => 'unlimited', 'text' => trans('messages.plan_time_unlimited')],
         ];
     }
+    
+    /**
+     * Get sending limit types.
+     *
+     * @return array
+     */
+    public static function sendingLimitValues()
+    {
+        return [
+            'unlimited' => [
+                'quota_value' => -1,
+                'quota_base' => -1,
+                'quota_unit' => 'day',
+            ],
+            '100_per_minute' => [
+                'quota_value' => 100,
+                'quota_base' => 1,
+                'quota_unit' => 'minute',
+            ],
+            '1000_per_hour' => [
+                'quota_value' => 1000,
+                'quota_base' => 1,
+                'quota_unit' => 'hour',
+            ],
+            '10000_per_day' => [
+                'quota_value' => 10000,
+                'quota_base' => 1,
+                'quota_unit' => 'day',
+            ],            
+        ];
+    }
+    
+    /**
+     * Get billing recurs available values.
+     *
+     * @return array
+     */
+    public static function billingCycleValues()
+    {
+        return [
+            'daily' => [
+                'frequency_amount' => 1,
+                'frequency_unit' => 'day',
+            ],
+            'monthly' => [
+                'frequency_amount' => 1,
+                'frequency_unit' => 'month',
+            ],
+            'yearly' => [
+                'frequency_amount' => 1,
+                'frequency_unit' => 'year',
+            ],  
+        ];
+    }
+    
+    /**
+     * Get sending limit select options.
+     *
+     * @return array
+     */
+    public function getSendingLimitSelectOptions()
+    {
+        $options = [];
+        
+        foreach (Plan::sendingLimitValues() as $key => $data) {            
+            $wording = trans('messages.plan.sending_limit.' . $key);            
+            $options[] = ['text' => $wording, 'value' => $key];
+        }
+
+        // exist
+        if ($this->getOption('sending_limit') == 'other') {
+            $wording = trans('messages.plan.sending_limit.phrase', [
+                'quota_value' => format_number($this->getOption('sending_quota')),
+                'quota_base' => format_number($this->getOption('sending_quota_time')),
+                'quota_unit' => $this->getOption('sending_quota_time_unit'),
+            ]);
+            
+            $options[] = ['text' => $wording, 'value' => 'other'];
+        }
+        
+        // Custom
+        $options[] = ['text' => trans('messages.plan.sending_limit.custom'), 'value' => 'custom'];
+
+        return $options;
+    }
+    
+    /**
+     * Get billing recurs select options.
+     *
+     * @return array
+     */
+    public function getBillingCycleSelectOptions()
+    {
+        $options = [];
+        
+        foreach (Plan::billingCycleValues() as $key => $data) {            
+            $wording = trans('messages.plan.billing_cycle.' . $key);            
+            $options[] = ['text' => $wording, 'value' => $key];
+        }
+
+        // exist
+        if ($this->getOption('billing_cycle') == 'other') {
+            $wording = trans('messages.plan.billing_cycle.phrase', [
+                'frequency_amount' => format_number($this->frequency_amount),
+                'frequency_unit' => $this->frequency_unit,
+            ]);
+            
+            $options[] = ['text' => $wording, 'value' => 'other'];
+        }
+        
+        // Custom
+        $options[] = ['text' => trans('messages.plan.billing_cycle.custom'), 'value' => 'custom'];
+
+        return $options;
+    }
 
     /**
      * Default options for new plan.
@@ -286,6 +513,8 @@ class Plan extends Model
             'segment_per_list_max' => '-1',
             'campaign_max' => '-1',
             'automation_max' => '-1',
+            'billing_cycle' => 'monthly',
+            'sending_limit' => '1000_per_hour',
             'sending_quota' => '-1',
             'sending_quota_time' => '-1',
             'sending_quota_time_unit' => 'day',
@@ -296,7 +525,7 @@ class Plan extends Model
             'unsubscribe_url_required' => 'yes',
             'access_when_offline' => 'no',
             //'create_sending_servers' => 'no',
-            'create_sending_domains' => 'no',
+            'create_sending_domains' => 'yes',
             'sending_servers_max' => '-1',
             'sending_domains_max' => '-1',
             'all_email_verification_servers' => 'yes',
@@ -313,6 +542,7 @@ class Plan extends Model
             'email_footer_trial_period_only' => 'no',
             'html_footer' => '',
             'plain_text_footer' => '',
+            'payment_gateway' => '',
         ];
 
         // Sending server types
@@ -383,7 +613,7 @@ class Plan extends Model
     public static function multiProcessSelectOptions()
     {
         $options = [['value' => 1, 'text' => trans('messages.one_single_process')]];
-        for ($i = 2; $i < 101; ++$i) {
+        for ($i = 2; $i < 4; ++$i) {
             $options[] = ['value' => $i, 'text' => $i];
         }
 
@@ -404,6 +634,16 @@ class Plan extends Model
         } else {
             return strtolower(\Acelle\Library\Tool::format_number($this->getOption('sending_quota')).' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase('email', $this->getOption('sending_quota'))).' / '.$this->getOption('sending_quota_time').' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase($this->getOption('sending_quota_time_unit'), $this->getOption('sending_quota'))));
         }
+    }
+    
+    /**
+     * Display plan price.
+     *
+     * @return array
+     */
+    public function displayPrice()
+    {
+        return format_price($this->price, $this->currency->format);
     }
 
     /**
@@ -547,6 +787,15 @@ class Plan extends Model
         if ($request->user()->admin && !$request->user()->admin->can('readAll', new \Acelle\Model\Plan())) {
             $query = $query->where('plans.admin_id', '=', $request->user()->admin->id);
         }
+        
+        if ($request->change_from_uid) {
+            $plan = \Acelle\Model\Plan::findByUid($request->change_from_uid);
+            
+            $query = $query->where('id', '<>', $request->change_from_uid);
+            $query = $query->where('uid', '<>', $request->change_from_uid);
+            $query = $query->where('frequency_amount', '=', $plan->frequency_amount);
+            $query = $query->where('frequency_unit', '=', $plan->frequency_unit);
+        }
 
         foreach ($query->limit(20)->get() as $plan) {
             $data['items'][] = ['id' => $plan->uid, 'text' => htmlspecialchars($plan->name).'|||'.htmlspecialchars(\Acelle\Library\Tool::format_price($plan->price, $plan->currency->format))];
@@ -616,9 +865,9 @@ class Plan extends Model
      *
      * @return int
      */
-    public function cutomersCount()
+    public function customersCount()
     {
-        return $this->subscriptions()->distinct('customer_id')->count('customer_id');
+        return $this->subscriptions()->distinct('user_id')->count('user_id');
     }
 
     /**
@@ -730,20 +979,125 @@ class Plan extends Model
         $this->options = json_encode($options);
         $this->save();
     }
+    
+    /**
+     * Set option.
+     */
+    public function asignOption($name, $value)
+    {
+        $options = json_decode($this->options, true);
+        $options[$name] = $value;
+
+        $this->options = json_encode($options);
+    }
 
     /**
      * Fill option from request.
      */
-    public function fillOptions($options)
+    public function fillOptions($options=[])
     {
         $defaultOptions = self::defaultOptions();
-        $dbOptions = $this->options ? json_decode($this->options, true) : $defaultOptions;
+        $saveOptions = $this->options ? array_merge($defaultOptions, json_decode($this->options, true)) : $defaultOptions;
         if (!empty($options)) {
             foreach ($options as $key => $value) {
-                $dbOptions[$key] = $value;
+                $saveOptions[$key] = $value;
             }
         }
-        $this->options = json_encode($dbOptions);
+            
+        $this->options = json_encode($saveOptions);
+    }
+    
+    /**
+     * Fill from request.
+     */
+    public function fillAll($request)
+    {
+        // if has general params
+        if (isset($request->plan['general'])) {
+            $params = $request->plan['general'];
+            if ($params['frequency_amount'] == '') {
+                $params['frequency_amount'] = 1;
+            }
+            $this->fill($params);            
+        }
+        
+        // if has options params
+        if (isset($request->plan['options'])) {
+            $this->fillOptions($request->plan['options']);
+        }
+        
+        //// if has email verifications
+        //if (isset($request->plan['email_verification_servers'])) {
+        //    $this->fillPlansEmailVerificationServers($request->plan['email_verification_servers']);
+        //}
+        
+        // old request
+        if ($request->old()) {
+            if (isset($request->old()['plan']['general'])) {
+                // fill all attributes
+                $this->fill($request->old()['plan']['general']);
+            }
+            if (isset($request->old()['plan']['options'])) {
+                // fill all options
+                $this->fillOptions($request->old()['plan']['options']);
+            }
+            //if (isset($request->old()['plan']['email_verification_servers'])) {
+            //    $this->fillPlansEmailVerificationServers($request->old()['plan']['email_verification_servers']);
+            //}
+        }
+        
+        // billing cycle
+        $billingCycle = $this->getOption('billing_cycle');
+        if (isset($billingCycle) && $billingCycle != 'custom' && $billingCycle != 'other') {
+            $limits = Plan::billingCycleValues()[$billingCycle];
+            $this->frequency_amount = $limits['frequency_amount'];
+            $this->frequency_unit = $limits['frequency_unit'];
+        }
+        
+        // billing cycle
+        $sendingLimit = $this->getOption('sending_limit');
+        if (isset($sendingLimit) && $sendingLimit != 'custom' && $sendingLimit != 'other') {
+            $limits = Plan::sendingLimitValues()[$sendingLimit];
+            $this->asignOption('sending_quota', $limits['quota_value']);
+            $this->asignOption('sending_quota_time', $limits['quota_base']);
+            $this->asignOption('sending_quota_time_unit', $limits['quota_unit']);
+        }
+    }
+    
+    /**
+     * Fill from request.
+     */
+    public function validate($request)
+    {
+        $rules = [];
+        foreach(array_keys($request->plan) as $key) {
+            if (isset($this->validationRules()[$key])) {
+                $rules = array_merge($rules, $this->validationRules()[$key]);                
+            }
+        }
+        
+        return Validator::make($request->all(), $rules);
+    }
+    
+    /**
+     * Fill from request.
+     */
+    public function saveAll($request)
+    {
+        $this->fillAll($request);
+        
+        $validator = $this->validate($request);
+        
+        if ($validator->fails()) {
+            throw new ValidationException($validator);
+        }
+        
+        $this->save();
+        
+        // For email verification servers
+        if (isset($request->plan['email_verification_servers'])) {
+            $this->updateEmailVerificationServers($request->plan['email_verification_servers']);
+        }
     }
 
     /**
@@ -807,5 +1161,310 @@ class Plan extends Model
         }
 
         return true;
+    }
+    
+    /**
+     ** Add sending server by uid.
+     **/
+    public function addSendingServerByUid($sendinServerUid)
+    {        
+        $server = SendingServer::findByUid($sendinServerUid);
+        $row = new PlansSendingServer();
+        $row->plan_id = $this->id;
+        $row->sending_server_id = $server->id;
+        $row->fitness = '50';
+        
+        // First primary
+        if (!$this->plansSendingServers()->where('is_primary', '=', true)->count()) {
+            $row->is_primary = true;
+        }
+        
+        $row->save();
+    }
+    
+    /**
+     ** Remove sending server by uid.
+     **/
+    public function removeSendingServerByUid($sendinServerUid)
+    {
+        $server = SendingServer::findByUid($sendinServerUid);
+        $this->plansSendingServers()->where('sending_server_id', '=', $server->id)->delete();
+        
+        // First primary
+        $query = $this->plansSendingServers()->where('is_primary', '=', true);
+        if (!$query->count()) {
+            $first = $this->plansSendingServers()->first();
+            if (is_object($first)) {
+                $first->is_primary = true;
+                $first->save();
+            }
+        }
+    }
+    
+    /**
+     ** Remove sending server by uid.
+     **/
+    public function setPrimarySendingServer($sendinServerUid)
+    {        
+        $this->plansSendingServers()->update(['is_primary' => false]);
+        
+        $server = SendingServer::findByUid($sendinServerUid);
+        $this->plansSendingServers()->where('sending_server_id', '=', $server->id)->update(['is_primary' => true]);
+    }
+    
+    /**
+     ** Update fitness by sending servers.
+     **/
+    public function updateFitnesses($hash)
+    {
+        foreach($hash as $uid => $value) {
+            $sendingServer = SendingServer::findByUid($uid);
+            \Acelle\Model\PlansSendingServer::where('sending_server_id', '=', $sendingServer->id)
+                ->update(['fitness' => $value]);
+        }
+    }
+    
+    /**
+     ** Get Primary sending server.
+     **/
+    public function primarySendingServer()
+    {
+        $pss = $this->plansSendingServers()->where('is_primary', '=', true)->first();
+        // @todo: quăng 1 cái exception nếu $pss null, ko return null sẽ gây lỗi tiềm ẩn
+        return is_object($pss) ? $pss->sendingServer : null;
+    }
+    
+    /**
+     ** Get Primary sending server.
+     **/
+    public function primarySendingServerAdded()
+    {
+        $pss = $this->plansSendingServers()->where('is_primary', '=', true)->first();
+        // @todo: quăng 1 cái exception nếu $pss null, ko return null sẽ gây lỗi tiềm ẩn
+        return is_object($pss) ? $pss->updated_at : null;
+    }
+    
+    /**
+     * Get all verified identities.
+     *
+     * @return array
+     */
+    public function getVerifiedIdentities()
+    {
+        //$server = $this->primarySendingServer();
+        //
+        //if (isset($server)) {
+        //    return $this->primarySendingServer()->getVerifiedIdentities();
+        //} else {
+        //    return [];
+        //}
+        $result = [];
+        
+        foreach ($this->sendingServers()->get() as $sendingServer) {
+            $result = array_merge($result, $sendingServer->getVerifiedIdentities());
+        }
+        
+        return array_unique($result);
+    }
+    
+    /**
+     * Check if plan is free.
+     *
+     * @return bool
+     */
+    public function isFree()
+    {
+        return $this->price == 0;
+    }
+    
+    /**
+     * Get stripe price.
+     *
+     * @return string
+     */
+    public function stripePrice()
+    {
+        $currency_rates = [
+            'CLP' => 1,
+            'DJF' => 1,
+            'JPY' => 1,
+            'KMF' => 1,
+            'RWF' => 1,
+            'VUV' => 1,
+            'XAF' => 1,
+            'XOF' => 1,
+            'BIF' => 1,
+            'GNF' => 1,
+            'KRW' => 1,
+            'MGA' => 1,
+            'PYG' => 1,
+            'VND' => 1,
+            'XPF' => 1,
+        ];
+        $rate = isset($currency_rates[$this->currency->code]) ? $currency_rates[$this->currency->code] : 100;
+
+        return $this->price * $rate;
+    }
+    
+    //====================================== BILLABLE PLAN INTERFACE =======================================
+    
+    /**
+     * PlanInterface: get remote plan id.
+     *
+     * @return string
+     */
+    public function getBillableId()
+    {
+        return $this->uid;
+    }
+    
+    /**
+     * PlanInterface: get name.
+     *
+     * @return string
+     */
+    public function getBillableName()
+    {
+        return $this->name;
+    }
+    
+    /**
+     * PlanInterface: get interval.
+     *
+     * @return string
+     */
+    public function getBillableInterval()
+    {
+        return $this->frequency_unit;
+    }
+    
+    /**
+     * PlanInterface: get interval count.
+     *
+     * @return string
+     */
+    public function getBillableIntervalCount()
+    {
+        return $this->frequency_amount;
+    }
+    
+    /**
+     * PlanInterface: get currency.
+     *
+     * @return string
+     */
+    public function getBillableCurrency()
+    {
+        return $this->currency->code;
+    }
+    
+    /**
+     * PlanInterface: get interval count.
+     *
+     * @return string
+     */
+    public function getBillableAmount()
+    {
+        return $this->price;
+    }
+    
+    /**
+     * PlanInterface: get interval count.
+     *
+     * @return string
+     */
+    public function getBillableFormattedPrice()
+    {
+        return \Acelle\Library\Tool::format_price($this->price, $this->currency->format);
+    }
+    
+    /**
+     * Get all .
+     *
+     * @var bool
+     */
+    public function activePlansEmailVerificationServers()
+    {
+        return $this->plansEmailVerificationServers()
+            ->where('status', '=', PlansEmailVerificationServer::STATUS_ACTIVE);
+    }
+    
+    /**
+     * Get list of available email verification servers.
+     *
+     * @var bool
+     */
+    public function getEmailVerificaionServers()
+    {
+        if ($this->getOption('all_email_verification_servers') == 'yes') {
+            $result = \Acelle\Model\EmailVerificationServer::getAllAdminActive()->get()->map(function ($server) {
+                return $server;
+            });
+        } else {
+            $result = $this->activePlansEmailVerificationServers()->get()->map(function ($server) {
+                return $server->emailVerificationServer;
+            });
+        }
+        
+        return $result;
+    }
+    
+    /**
+     * Check if plan has primary sending server
+     *
+     * @var bool
+     */
+    public function hasPrimarySendingServer()
+    {
+        return is_object($this->primarySendingServer());
+    }
+    
+    /**
+     * Check if plan is active
+     *
+     * @var bool
+     */
+    public function isActive()
+    {
+        return $this->status == PlansEmailVerificationServer::STATUS_ACTIVE;
+    }
+    
+    /**
+     * Check if plan is available
+     *
+     * @var bool
+     */
+    public function isAvailable()
+    {
+        return $this->isActive() && $this->hasPrimarySendingServer();
+    }
+    
+    /**
+     * Get all available plans for customer register
+     *
+     * @var bool
+     */
+    public static function getAvailablePlans()
+    {
+        $plans = Plan::getAllActive()->get();
+        
+        $aPlans = [];
+        foreach($plans as $plan) {
+            if ($plan->isAvailable()) {
+                $aPlans[] = $plan;
+            }
+        }
+        
+        return $aPlans;
+    }
+    
+    /**
+     * Get all sending servers
+     *
+     * @var collect
+     */
+    public function sendingServers()
+    {
+        return SendingServer::whereIn('id', $this->plansSendingServers()->pluck('sending_server_id')->toArray());
     }
 }

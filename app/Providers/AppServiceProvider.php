@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Schema;
 use URL;
+use Acelle\Model\Setting;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -66,6 +67,21 @@ class AppServiceProvider extends ServiceProvider
         Validator::replacer('license_error', function ($message, $attribute, $rule, $parameters) {
             return str_replace(':error', $parameters[0], $message);
         });
+        
+        // Payment config load from database
+        if (isInitiated()) {
+            $gateway = Setting::get('system.payment_gateway');
+            config(['cashier.gateway' => $gateway]);
+            foreach (config('cashier.gateways') as $gw => $data) {
+                foreach ($data['fields'] as $key => $value ) {
+                    $con = Setting::get('payment.' . $gw . '.' . $key);
+                    if ($con != null) {
+                        config(['cashier.gateways.' . $gw . '.fields.' . $key => $con]);
+                    }
+                }
+            }
+        }
+            
     }
 
     /**

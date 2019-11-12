@@ -484,12 +484,28 @@ function app_version()
  */
 function extract_email($str)
 {
-    preg_match("/(?<email>[-0-9a-zA-Z\.+_]+@[-0-9a-zA-Z\.+_]+\.[a-zA-Z]{2,4})/", $str, $matched);
+    preg_match("/(?<email>[-0-9a-zA-Z\.+_]+@[-0-9a-zA-Z\.+_]+\.[a-zA-Z]+)/", $str, $matched);
     if (array_key_exists('email', $matched)) {
         return $matched['email'];
     } else {
         return null;
     }
+}
+
+/**
+ * Extract name from a string
+ * For example: get abc@mail.com from "My Name <abc@mail.com>"
+ *
+ * @return string version
+ */
+function extract_name($str)
+{
+   $parts = explode("<", $str);
+   if (count($parts) > 1) {
+      return trim($parts[0]);
+   }
+   $parts = explode("@", extract_email($str));
+   return $parts[0];
 }
 
 /**
@@ -513,6 +529,39 @@ function extract_domain($email)
 function doublequote($str)
 {
     return sprintf('"%s"', preg_replace('/^"+|"+$/', '', $str));
+}
+
+function jsonGet($array, $path) {
+   $jsonObject = new \JsonPath\JsonObject($array);
+   $result = $jsonObject->get($path)[0];
+   return $result;
+}
+
+/**
+* Format price.
+*
+* @param string
+*
+* @return string
+*/
+function format_number($number) {
+   if(is_numeric( $number ) && floor( $number ) != $number) {
+       return number_format($number, 2, trans('messages.dec_point'), trans('messages.thousands_sep'));
+   } elseif (is_numeric( $number )) {
+       return number_format($number, 0, trans('messages.dec_point'), trans('messages.thousands_sep'));
+   } else {
+       return $number;
+   }
+}
+/**
+* Format price.
+*
+* @param string
+*
+* @return string
+*/
+function format_price($price, $format='{PRICE}') {
+   return str_replace('{PRICE}', format_number($price), $format);
 }
 
 /**

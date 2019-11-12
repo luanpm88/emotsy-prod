@@ -1080,6 +1080,13 @@ class AutoEvent extends Model
         // @todo: retrieve the first subscriber only, what if there are more than one subscribers?
         if (!empty($subscribers) && !is_null($subscribers)) {
             $trigger->subscriber_id = $subscribers[0]->id;
+            // Hack, dirty -> check for subscriber status (active or not)
+            // Do not fire inactive subscriber
+            $subscriber = Subscriber::find($trigger->subscriber_id);
+            if (!$subscriber->isActive()) {
+                MailLog::info(sprintf('Subscriber %s is not active, not firing. Automation: %s, Event type: %s, Event ID: %s', $subscriber->email, $this->automation->name, $this->event_type, $this->id));
+                return;
+            }
         }
 
         $this->autoTriggers()->save($trigger);

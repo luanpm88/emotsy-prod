@@ -8,4 +8,10 @@
 	var LANG_ANY_DATETIME_FORMAT = '{{ trans('messages.any_datetime_format') }}';
 	var LANG_J_DATE_FORMAT = '{{ trans('messages.j_date_format') }}';
 	var CSRF_TOKEN = "{{ csrf_token() }}";
+	
+	$(document).ready(function() {
+		$('.xtooltip').tooltipster({
+			theme: 'tooltipster-light'
+		});
+	});
 </script>

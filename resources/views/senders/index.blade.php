@@ -13,14 +13,21 @@
     <div class="page-title">
         <ul class="breadcrumb breadcrumb-caret position-right">
             <li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li><a href="{{ action("SenderController@index") }}">{{ trans('messages.verified_senders') }}</a></li>
+            <li><a href="{{ action("SendingDomainController@index") }}">{{ trans('messages.email_addresses') }}</a></li>
         </ul>
         <h1>
-            <span class="text-semibold"><i class="icon-list2"></i> {{ trans('messages.verified_senders') }}</span>
-        </h1>
+            <span class="text-semibold">{{ trans('messages.verified_senders') }}</span>
+        </h1>    
     </div>
 @endsection
 
 @section('content')
+    
+    @include('senders._menu')
+    
+    <h2 class="text-semibold"><i class="icon-list2 mr-10"></i> {{ trans('messages.email_addresses') }}</h2>
+    
     <p>{{ trans('messages.sender.wording') }}</p>
 
     <form class="listing-form"

@@ -31,7 +31,6 @@ p {
     margin: 0 0 20px;
     font-size: 15px;
 }
-
 b, strong {
     font-weight: 600;
 }
@@ -220,7 +219,7 @@ h3 {
     min-width: 140px;
 }
 .text-muted {
-    color: #666;
+    color: #241c15;
 }
 .text-muted2 {
     color: #999;
@@ -698,17 +697,17 @@ input.error {
 }
 .table-sub .label {
 }
-.bg-waiting, .bg-ready, .bg-sent, .bg-finished, .bg-pending_active {
+.bg-submitted_for_settlement, .bg-authorized, .bg-pending, .bg-waiting, .bg-ready, .bg-sent, .bg-finished, .bg-pending_active {
     background-color: #2196F3;
     border-color: #2196F3;
     color: #fff;
 }
-.bg-deliverable, .bg-current_active, .bg-current, .bg-cron-running, .bg-running, .bg-starting, .bg-pending-sending, .bg-active, .bg-confirmed, .bg-paid, .bg-sending, .bg-subscribed {
+.bg-settled, .bg-recurring, .bg-deliverable, .bg-current_active, .bg-current, .bg-cron-running, .bg-running, .bg-starting, .bg-pending-sending, .bg-active, .bg-confirmed, .bg-paid, .bg-sending, .bg-subscribed {
     background-color: #4CAF50;
     border-color: #4CAF50;
     color: #fff;
 }
-.bg-unknown, .bg-expired, .bg-past, .bg-spam-reported, .bg-pending, .bg-not_sent, .bg-canceled, .bg-cancelled, .bg-unactive, .bg-disabled, .bg-unsubscribed, .bg-unconfirmed, .bg-draft, .bg-blacklisted, .bg-done {
+.bg-ended, .bg-unknown, .bg-expired, .bg-past, .bg-spam-reported, .bg-not_sent, .bg-canceled, .bg-cancelled, .bg-unactive, .bg-disabled, .bg-unsubscribed, .bg-unconfirmed, .bg-draft, .bg-blacklisted, .bg-done {
     background-color: #777;
     border-color: #777;
     color: #fff;
@@ -727,8 +726,8 @@ input.error {
     color: #000;
 }
 .bg-future, .bg-new {
-    background-color: #FF5722;
-    border-color: #FF5722;
+    background-color: #f25f24;
+    border-color: #f25f24;
     color: #fff;
 }
 .bg-undeliverable, .bg-outdated, .bg-error, .bg-failed {
@@ -2092,7 +2091,6 @@ ul.modern-listing li .admin-line i {
 .btn-close-pnotify {
     position: absolute;
     right: 0;
-    color: rgba(255,255,255, 0.5);
     padding: 3px 3px;
     height: 20px;
     line-height: 16px;
@@ -2105,9 +2103,6 @@ ul.modern-listing li .admin-line i {
     font-size: 14px;
 }
 .btn-close-pnotify:hover {
-    background: rgba(255,255,255, 0.6);
-    color: #888;
-    border-color: #555;
 }
 .boxing {
     padding-bottom: 0;
@@ -2154,7 +2149,7 @@ input.mini-input {
     box-shadow: 0 2px 3px 0 rgba(0,0,0,0.25);
 }
 .select2-container--open .select2-dropdown--below {
-    margin-top: -3px;
+    margin-top: 1px;
 }
 .sweet-alert h2 {
     font-size: 16px;
@@ -2384,7 +2379,7 @@ a.loading, button.loading {
 }
 .alert {
     border: none;
-    border-radius: 7px;
+    border-radius: 4px;
 }
 .mb-40 {
     margin-bottom: 40px;
@@ -2628,6 +2623,63 @@ canvas[data-zr-dom-id='_zrender_hover_'] {
     unicode-bidi: bidi-override !important;
     direction: unset !important;
     text-align:right;
+}
+.modal-trigger {
+  cursor: pointer;
+}
+.list-boxes {
+}
+.list-box {
+  margin-right: 20px;
+  border: solid 1px #bbb;
+  padding: 10px 20px;
+  border-radius: 5px;
+  width: 45%;
+  float: left;
+  margin-bottom: 20px;
+}
+.list-box:hover {
+  box-shadow: 2px 2px 2px rgba(0,0,0,0.1);
+}
+.list-box.active {
+}
+
+.list-box a {
+  color: #333;
+  display: block;
+}
+.list-box label {
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 120%;
+}
+.list-box-footer {
+  padding-top: 10px;
+  margin-top: 10px;
+  border-top: solid 1px #aaa;
+}
+.flex {
+  display: flex;
+  justify-content: space-between;
+}
+.space-between {
+  justify-content: space-between;
+}
+.text-big {
+  font-size: 20px !important;
+}
+.alert h4 {
+  margin-bottom: 0;
+  font-weight: 600;
+  font-size:14px;
+}
+.alert p {
+  font-size: 14px;
+  margin: 0;
+}
+
+.alert .fal {
+  font-size: 22px;
 }
 .campaign-row-neutral {
   color: #777;

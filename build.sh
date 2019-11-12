@@ -89,8 +89,8 @@ php artisan key:generate
 # Generate the upgrade patch file
 ruby patch.rb /tmp/tmpbuild "$CURDIR" "$VERSION"
 mkdir upgrade
-mv /tmp/tmpbuild/* upgrade/
-rm -fr /tmp/tmpbuild
+test -e /tmp/tmpbuild && mv /tmp/tmpbuild/* upgrade/
+test -e /tmp/tmpbuild && rm -fr /tmp/tmpbuild
 rm -fr patch.rb
 
 cd ..

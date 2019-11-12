@@ -66,15 +66,6 @@
 									'help_class' => 'campaign'
 								])
 							</div>
-								
-							@include('helpers.form_control', ['type' => 'checkbox2',
-								'name' => 'use_default_sending_server_from_email',
-								'label' => trans('messages.use_sending_server_default_value'),
-								'value' => $campaign->use_default_sending_server_from_email,
-								'rules' => $campaign->automatedCampaignRules(),
-								'help_class' => 'campaign',
-								'options' => ['0','1'],
-							])
                                                             
                             @include('helpers.form_control', ['type' => 'text',
 								'name' => 'reply_to',

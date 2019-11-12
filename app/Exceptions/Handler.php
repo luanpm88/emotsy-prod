@@ -34,35 +34,14 @@ class Handler extends ExceptionHandler
      */
     public function report(Exception $exception)
     {
-        if (isInitiated()) {
+        if (in_array(get_class($exception), $this->dontReport)) {
+            // skip logging as those exceptions are handled by Laravel Auth
+        } else if (isInitiated()) {
             try {
                 // check if the exception does match the known list
-                foreach ($this->customErrors() as $key => $value) {
-                    if ($key == get_class($exception)) {
-                        // if the exception message does match
-                        if (array_key_exists('match', $value)) {
-                            if (strpos($exception->getMessage(), $value['match']) !== false && $value['notify'] == true) {
-                                // error description does match, ok
-                            } else {
-                                continue;
-                            }
-                        }
-    
-                        // If message is a string, that's fine
-                        // If message is a Closure, execute it to get the actual message
-                        // Normally, we pass the exception instance to the closure to generate more detailed/specific message
-                        if ($value['message'] instanceof Closure) {
-                            $value['message'] = $value['message']($exception);
-                        }
-                        BackendErrorNotification::warning($value, false);
-                    }
-                }
-                
-                // Just report any error for debugging
-                // Comment it out once done
                 $errorTitle = $exception->getMessage();
                 BackendErrorNotification::cleanupDuplicateNotifications($errorTitle);
-                BackendErrorNotification::warning([ 'title' => $errorTitle, 'message' => date('Y-m-d').' '.$exception->getMessage() ], false);
+                BackendErrorNotification::warning([ 'title' => $errorTitle, 'message' => date('Y-m-d').' ('.get_class($exception).') '.$exception->getMessage() ], false);
             } catch (Exception $e) {
                 // just keep silent
             }
@@ -70,7 +49,7 @@ class Handler extends ExceptionHandler
 
         parent::report($exception);
     }
-    
+
     /**
      * Convert an authentication exception into an unauthenticated response.
      *

@@ -148,7 +148,7 @@
                                 </div>
                                 <div class="col-sm-2 col-md-2 text-left">
                                     <h5 class="no-margin text-bold">
-                                        {{ number_to_percentage($item->aggregate) }}
+                                        {{ number_with_delimiter($item->aggregate) }}
                                     </h5>
                                     <span class="text-muted">{{ trans('messages.opens') }}</span>
                                         <br /><br />

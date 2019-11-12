@@ -12,11 +12,11 @@ class PatchNullStartAtForSubscriptions extends Migration
      */
     public function up()
     {
-        $subscriptions =  \Acelle\Model\Subscription::whereNull('start_at')->get();
-        foreach ($subscriptions as $subscription) {
-            $subscription->start_at = $subscription->created_at;
-            $subscription->save();
-        }
+        //$subscriptions =  \Acelle\Model\Subscription::whereNull('start_at')->get();
+        //foreach ($subscriptions as $subscription) {
+        //    $subscription->start_at = $subscription->created_at;
+        //    $subscription->save();
+        //}
     }
 
     /**

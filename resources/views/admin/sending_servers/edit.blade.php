@@ -8,24 +8,33 @@
 @endsection
 
 @section('page_header')
+    @foreach ($notices as $n)
+        @include('elements._notification', [
+            'level' => 'warning',
+            'title' => $n['title'],
+            'message' => htmlspecialchars($n['message']),
+        ])
+    @endforeach
 
-            <div class="page-title">
-                <ul class="breadcrumb breadcrumb-caret position-right">
-                    <li><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-                </ul>
-                <h1>
-                    <span class="text-semibold"><i class="icon-pencil"></i> {{ $server->name }}</span>
-                </h1>
-            </div>
+    <div class="page-title">
+        <ul class="breadcrumb breadcrumb-caret position-right">
+            <li><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li><a href="{{ action("Admin\SendingServerController@index") }}">{{ trans('messages.sending_servers') }}</a></li>
+            <li>{{ trans('messages.edit') }}</li>
+        </ul>
+        <h1>
+            <span class="text-semibold"><i class="icon-pencil"></i>
+                {{ $server->name }}
+            </span>
+                
+            <span class="label label-flat bg-{{$server->status}}">{{$server->status}}</span>
+        </h1>
+    </div>
 
 @endsection
 
 @section('content')
-
-    <form enctype="multipart/form-data" action="{{ action('Admin\SendingServerController@update', ["uid" => $server->uid, "type" => request()->type]) }}" method="POST" class="form-validate-jquery">
-        {{ csrf_field() }}
-        <input type="hidden" name="_method" value="PATCH">
-        @include('admin.sending_servers._form')
-    <form>
+    
+    @include('admin.sending_servers.form.' . $server->type, ['identities' => $identities])
 
 @endsection

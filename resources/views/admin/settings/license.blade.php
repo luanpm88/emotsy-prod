@@ -40,7 +40,7 @@
 
 
                 @foreach ($settings as $name => $setting)
-                    @if ($setting['cat'] == 'license')
+                    @if (array_key_exists('cat', $setting) && $setting['cat'] == 'license')
                         @if ($current_license)
 							<div class="sub-section">
 								<h3>{{ trans('messages.license.your_license') }}</h3>

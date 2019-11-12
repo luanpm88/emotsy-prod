@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 
 use Acelle\Http\Requests;
 use Acelle\Http\Controllers\Controller;
+use Acelle\Model\Plan;
+use Acelle\Model\Setting;
+use Acelle\Model\SendingServer;
 
 class PlanController extends Controller
 {
@@ -31,6 +34,7 @@ class PlanController extends Controller
 
         return view('admin.plans.index', [
             'plans' => $plans,
+            'gateway' => Setting::getPaymentGateway(Setting::get('system.payment_gateway')),
         ]);
     }
 
@@ -240,57 +244,24 @@ class PlanController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function save(Request $request, $uid)
     {
         // Get current user
-        $user = $request->user();
-        $plan = \Acelle\Model\Plan::findByUid($id);
+        $plan = Plan::findByUid($uid);
 
         // authorize
         if (\Gate::denies('update', $plan)) {
             return $this->notAuthorized();
         }
 
-        // prevent action from demo mod
-        if ($this->isDemoMode()) {
-            return $this->notAuthorized();
+        $plan->saveAll($request);
+
+        # redirect to sending servers page when needed
+        if ($request->use_system_sending_server) {
+            return redirect()->action('Admin\PlanController@sendingServers', $plan->uid);
         }
 
-        // save posted data
-        if ($request->isMethod('patch')) {
-            $plan->fill($request->all());
-            // $plan->options = json_encode($request->options);
-            $plan->fillOptions($request->options);
-
-            $this->validate($request, $plan->rules());
-
-            $rules = [];
-            if (isset($request->sending_servers)) {
-                foreach ($request->sending_servers as $key => $param) {
-                    if ($param['check']) {
-                        $rules['sending_servers.'.$key.'.fitness'] = 'required';
-                    }
-                }
-            }
-            $this->validate($request, $rules);
-
-            $plan->save();
-
-            // For sending servers
-            if (isset($request->sending_servers)) {
-                $plan->updateSendingServers($request->sending_servers);
-            }
-
-            // For email verification servers
-            if (isset($request->email_verification_servers)) {
-                $plan->updateEmailVerificationServers($request->email_verification_servers);
-            }
-            //update single plan on server like paypal, paddle,stripe_credit_card
-            //if payment method is active
-            $plan->createPlanOnServer($request->all(), $plan);
-            $request->session()->flash('alert-success', trans('messages.plan.updated'));
-            return redirect()->action('Admin\PlanController@edit', $plan->uid);
-        }
+        return redirect()->back()->with('alert-success', trans('messages.plan.updated'));
     }
 
     /**
@@ -493,5 +464,543 @@ class PlanController extends Controller
         $plan->copy($request->copy_plan_name);
 
         echo trans('messages.plan.copied');
+    }
+
+    /**
+     * Plan sending server setting.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function sendingServer(Request $request, $uid)
+    {
+        $plan = Plan::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $plan)) {
+            return $this->notAuthorized();
+        }
+        
+        if ($plan->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SYSTEM) {
+            return redirect()->action('Admin\PlanController@sendingServers', $plan->uid);
+        } else if ($plan->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN) {
+            return redirect()->action('Admin\PlanController@sendingServerOwn', $plan->uid);
+        } else if ($plan->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SUBACCOUNT) {
+            return redirect()->action('Admin\PlanController@sendingServerSubaccount', $plan->uid);
+        }
+
+        // fill all
+        $plan->fillAll($request);
+
+        return view('admin.plans.sending_server', [
+            'plan' => $plan,
+        ]);
+    }
+    
+    /**
+     * Plan sending server subaccount setting.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function sendingServerSubaccount(Request $request, $uid)
+    {
+        $plan = \Acelle\Model\Plan::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $plan)) {
+            return $this->notAuthorized();
+        }
+        
+        // save posted data
+        if ($request->isMethod('post')) {
+            $plan->fillAll($request);            
+            $plan->save();
+            
+            $request->session()->flash('alert-success', trans('messages.plan.sending_server.saved'));
+            return redirect()->action('Admin\PlanController@sendingServerSubaccount', $plan->uid);
+        }
+
+        return view('admin.plans.sending_server.subaccount', [
+            'plan' => $plan,
+        ]);
+    }
+    
+    /**
+     * Plan sending server own setting.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function sendingServerOwn(Request $request, $uid)
+    {
+        $plan = \Acelle\Model\Plan::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $plan)) {
+            return $this->notAuthorized();
+        }
+        
+        // save posted data
+        if ($request->isMethod('post')) {
+            $plan->fillAll($request);            
+            $plan->save();
+            
+            $request->session()->flash('alert-success', trans('messages.plan.sending_server.saved'));
+            return redirect()->action('Admin\PlanController@sendingServerOwn', $plan->uid);
+        }
+
+        return view('admin.plans.sending_server.own', [
+            'plan' => $plan,
+        ]);
+    }
+
+    /**
+     * Plan sending server setting.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function emailVerification(Request $request, $uid)
+    {
+        $plan = Plan::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $plan)) {
+            return $this->notAuthorized();
+        }
+
+        // fill all
+        $plan->fillAll($request);
+
+        return view('admin.plans.email_verification', [
+            'plan' => $plan,
+        ]);
+    }
+
+    /**
+     * Plan sending servers.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function sendingServers(Request $request, $uid)
+    {
+        $plan = \Acelle\Model\Plan::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $plan)) {
+            return $this->notAuthorized();
+        }
+
+        return view('admin.plans.sending_server.system', [
+            'plan' => $plan,
+        ]);
+    }
+
+    /**
+     * Add plan sending server.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function addSendingServer(Request $request, $uid)
+    {
+        $plan = \Acelle\Model\Plan::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $plan)) {
+            return $this->notAuthorized();
+        }
+
+        // save posted data
+        if ($request->isMethod('post')) {
+            $sendingServer = SendingServer::findByUid($request->sending_server_uid);
+            $existIds = $plan->plansSendingServers()->pluck('sending_server_id')->toArray();
+            
+            // check if sending server is already added
+            if (in_array($sendingServer->id, $existIds)) {
+                $request->session()->flash('alert-error', trans('messages.plan.sending_server.already_added'));
+                return redirect()->action('Admin\PlanController@sendingServers', $plan->uid);
+            }            
+            
+            $plan->addSendingServerByUid($sendingServer->uid);
+
+            $request->session()->flash('alert-success', trans('messages.plan.sending_server.added'));
+            return redirect()->action('Admin\PlanController@sendingServers', $plan->uid);
+        }
+
+        return view('admin.plans.sending_servers_add', [
+            'plan' => $plan,
+            'noSendingServer' => true,
+        ]);
+    }
+
+    /**
+     * Remove plan sending server.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function removeSendingServer(Request $request, $uid)
+    {
+        $plan = \Acelle\Model\Plan::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $plan)) {
+            return $this->notAuthorized();
+        }
+
+        // save posted data
+        $plan->removeSendingServerByUid($request->sending_server_uid);
+
+        $request->session()->flash('alert-success', trans('messages.plan.sending_server.removed'));
+        return redirect()->action('Admin\PlanController@sendingServers', $plan->uid);
+    }
+
+    /**
+     * Set primary plan sending server.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function setPrimarySendingServer(Request $request, $uid)
+    {
+        $plan = \Acelle\Model\Plan::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $plan)) {
+            return $this->notAuthorized();
+        }
+
+        // save posted data
+        $plan->setPrimarySendingServer($request->sending_server_uid);
+
+        $request->session()->flash('alert-success', trans('messages.plan.sending_server.primary.updated'));
+        return redirect()->action('Admin\PlanController@sendingServers', $plan->uid);
+    }
+
+    /**
+     * Plan sending servers fitnesses.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function fitness(Request $request, $uid)
+    {
+        $plan = \Acelle\Model\Plan::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $plan)) {
+            return $this->notAuthorized();
+        }
+
+        // update fitness value
+        if ($request->isMethod('post')) {
+            $plan->updateFitnesses($request->sending_servers);
+
+            $request->session()->flash('alert-success', trans('messages.plan.sending_servers.fitness.updated'));
+            return redirect()->action('Admin\PlanController@sendingServers', $plan->uid);
+        }
+
+        return view('admin.plans.fitness', [
+            'plan' => $plan,
+        ]);
+    }
+
+    /**
+     * Plan general information.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param string $uid
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function general(Request $request, $uid)
+    {
+        $plan = Plan::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $plan)) {
+            return $this->notAuthorized();
+        }
+
+        // fill all params
+        $plan->fillAll($request);
+
+        return view('admin.plans.general', [
+            'plan' => $plan,
+        ]);
+    }
+
+    /**
+     * Plan quota information.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param string $uid
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function quota(Request $request, $uid)
+    {
+        $plan = Plan::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $plan)) {
+            return $this->notAuthorized();
+        }
+
+        // fill all
+        $plan->fillAll($request);
+
+        return view('admin.plans.quota', [
+            'plan' => $plan,
+            'options' => $plan->getOptions(),
+        ]);
+    }
+
+    /**
+     * Plan security information.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param string $uid
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function security(Request $request, $uid)
+    {
+        $plan = Plan::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $plan)) {
+            return $this->notAuthorized();
+        }
+
+        // fill all
+        $plan->fillAll($request);
+
+        return view('admin.plans.security', [
+            'plan' => $plan,
+        ]);
+    }
+
+    /**
+     * Plan payment information.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param string $uid
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function payment(Request $request, $uid)
+    {
+        $plan = Plan::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $plan)) {
+            return $this->notAuthorized();
+        }
+
+        // fill all
+        $plan->fillAll($request);
+
+        return view('admin.plans.payment', [
+            'plan' => $plan,
+        ]);
+    }
+
+    /**
+     * Plan email footer information.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param string $uid
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function emailFooter(Request $request, $uid)
+    {
+        $plan = Plan::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $plan)) {
+            return $this->notAuthorized();
+        }
+
+        // fill all
+        $plan->fillAll($request);
+
+        return view('admin.plans.email_footer', [
+            'plan' => $plan,
+        ]);
+    }
+
+    /**
+     * Sending Limit Form.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function sendingLimit(Request $request)
+    {
+        if (!$request->uid) {
+            $plan = new Plan();
+        } else {
+            $plan = Plan::findByUid($request->uid);
+        }
+
+        // save posted data
+        if ($request->isMethod('post')) {
+            $plan->fillAll($request);
+            return view('admin.plans._sending_limit', [
+                'plan' => $plan,
+            ]);
+        }
+
+        return view('admin.plans.sending_limit', [
+            'plan' => $plan,
+        ]);
+    }
+
+    /**
+     * Billing cycle form.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function billingCycle(Request $request)
+    {
+        if (!$request->uid || $request->uid == '00') {
+            $plan = new Plan();
+            $plan->uid = '00';
+        } else {
+            $plan = Plan::findByUid($request->uid);
+        }
+
+        // save posted data
+        if ($request->isMethod('post')) {
+            $plan->fillAll($request);            
+            return view('admin.plans._billing_cycle', [
+                'plan' => $plan,
+            ]);
+        }
+
+        return view('admin.plans.billing_cycle', [
+            'plan' => $plan,
+        ]);
+    }
+
+    /**
+     * Sending Limit Form.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function wizard(Request $request)
+    {
+        if (!$request->uid) {
+            $plan = new Plan();
+        } else {
+            $plan = Plan::findByUid($request->uid);
+        }
+
+        $plan->status = Plan::STATUS_INACTIVE;
+
+        // fill all
+        $plan->fillAll($request);
+
+        // save posted data
+        if ($request->isMethod('post')) {
+            $validator = $plan->validate($request);
+
+            if ($validator->fails()) {
+                return redirect()
+                    ->action('Admin\PlanController@wizard')
+                    ->withErrors($validator)
+                    ->withInput();
+            }
+
+            $plan->saveAll($request);
+
+            return redirect()->action('Admin\PlanController@wizardSendingServer', $plan->uid);
+        }
+
+        return view('admin.plans.wizard', [
+            'plan' => $plan,
+        ]);
+    }
+
+    /**
+     * Sending Limit Form.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function wizardSendingServer(Request $request)
+    {
+        $plan = Plan::findByUid($request->uid);
+        // fill all
+        $plan->fillAll($request);
+
+        // save posted data
+        if ($request->isMethod('post')) {
+            $validator = $plan->validate($request);
+
+            if ($validator->fails()) {
+                return redirect()
+                    ->action('Admin\PlanController@wizardSendingServer', $plan->uid)
+                    ->withErrors($validator)
+                    ->withInput();
+            }
+
+            $plan->saveAll($request);
+
+             return 'success';
+        }
+
+        return view('admin.plans.wizard_sending_server', [
+            'plan' => $plan,
+        ]);
+    }
+    
+    /**
+     * Plan sending server change option.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function sendingServerOption(Request $request, $uid)
+    {
+        $plan = Plan::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $plan)) {
+            return $this->notAuthorized();
+        }
+        
+        // save posted data
+        if ($request->isMethod('post')) {
+            $plan->fillAll($request);            
+            $plan->save();
+            
+            return redirect()->action('Admin\PlanController@sendingServer', $plan->uid);
+        }
+        
+        return view('admin.plans.sending_server_option', [
+            'plan' => $plan,
+        ]);
     }
 }

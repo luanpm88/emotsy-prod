@@ -25,6 +25,7 @@ namespace Acelle\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Acelle\Notifications\ResetPassword;
+use Acelle\Cashier\Billable;
 
 class User extends Authenticatable
 {
@@ -98,14 +99,13 @@ class User extends Authenticatable
      *
      * @return string
      */
-    public function sendActivationMail($name = null, $redirect_url = null)
+    public function sendActivationMail($name = null)
     {
 
         $layout = \Acelle\Model\Layout::where('alias', 'registration_confirmation_email')->first();
         $token = $this->getToken();
-        $redirect_url = urlencode($redirect_url);
 
-        $layout->content = str_replace('{ACTIVATION_URL}', \Acelle\Model\Setting::get('url_root') . action('UserController@activate', ['token' => $token, 'redirect' => $redirect_url], false), $layout->content);
+        $layout->content = str_replace('{ACTIVATION_URL}', \Acelle\Model\Setting::get('url_root') . action('UserController@activate', ['token' => $token], false), $layout->content);
         $layout->content = str_replace('{CUSTOMER_NAME}', $name, $layout->content);
 
         $name = is_null($name) ? trans('messages.to_email_name') : $name;

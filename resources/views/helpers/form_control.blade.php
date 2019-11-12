@@ -12,7 +12,7 @@
     @include('helpers._' . $type)
 @elseif (!empty($errors))
     <div class="form-group{{ $errors->has($var_name) ? ' has-error' : '' }} control-{{ $type }}">
-        @if (!empty($label) && $type != 'checkbox2')
+        @if (!empty($label) && $type != 'checkbox2' && $type != 'mc_checkbox')
             <label>
                 {!! $label !!}
                 @if ($required)
@@ -24,14 +24,6 @@
                     | <a href="#none" class="checkboxes_check_none">{{ trans('messages.none') }}</a>
                 @endif
             </label>
-        @endif
-
-        @if ($type == 'textarea')
-            @if ($errors->has($var_name))
-                <span class="help-block">
-                    <strong>{{ $errors->first($var_name) }}</strong>
-                </span>
-            @endif
         @endif
 
         @if (!empty($prefix))
@@ -59,13 +51,17 @@
                 {!! trans('messages.' . $help_class . '.' . $name . '.help') !!}
             </div>
         @endif
+        
+        @if (isset($help))
+            <div class="help alert alert-info">
+                {!! $help !!}
+            </div>
+        @endif
 
-        @if ($type != 'textarea')
-            @if ($errors->has($var_name))
-                <span class="help-block">
-                    <strong>{{ $errors->first($var_name) }}</strong>
-                </span>
-            @endif
+        @if ($errors->has($var_name))
+            <span class="help-block">
+                <strong>{{ $errors->first($var_name) }}</strong>
+            </span>
         @endif
     </div>
 @endif

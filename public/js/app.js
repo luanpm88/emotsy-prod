@@ -436,6 +436,49 @@ function popupwindow(url, title, w, h) {
   return window.open(url, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+screen.height+', top='+top+', left='+left);
 }
 
+function select2Ajax(selectBox) {
+    var url = selectBox.attr("data-url");
+    var placeholder = selectBox.attr("placeholder");
+    if(typeof(placeholder) == 'undefined') {
+        placeholder = "";
+    }
+    selectBox.select2({
+        placeholder: placeholder,
+        allowClear: true,
+        ajax: {
+            url: url,
+            dataType: 'json',
+            delay: 250,
+
+            data: function (params) {
+              return {
+                q: params.term, // search term
+                page: params.page
+              };
+            },
+            processResults: function (data, params) {
+                // parse the results into the format expected by Select2
+                // since we are using custom formatting functions we do not need to
+                // alter the remote JSON data, except to indicate that infinite
+                // scrolling can be used
+                params.page = params.page || 1;
+
+                return {
+                    results: data.items,
+                    pagination: {
+                        more: (params.page * 30) < data.total_count
+                    }
+                };
+            },
+            cache: true
+        },
+        escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+        minimumInputLength: 0,
+        templateResult: formatSelect2TextOption,
+        templateSelection: formatSelect2TextSelected,
+    });
+}
+
 $(function() {
     // Default tooltip
     $('[data-popup=tooltip]').tooltip({
@@ -701,6 +744,11 @@ $(function() {
             $(".link-confirm-button").attr("link-method", $(this).attr('link-method'));
             $(".link-confirm-button").removeClass("ajax_link");
         }
+        
+        // direct link
+        if ($(this).hasClass('direct-link')) {
+            $(".link-confirm-button").removeClass("ajax_link");
+        }
 
         e.stopImmediatePropagation();
         e.preventDefault();
@@ -892,6 +940,10 @@ $(function() {
             catch(e)
             {
             }
+            
+            if (typeof(msg) == 'object') {
+                
+            }
 
             // Reload table if exists
             if ($(".listing-form").length > 0) {
@@ -1070,46 +1122,7 @@ $(function() {
 
     // Select2 ajax
     $(".select2-ajax").each(function() {
-        var url = $(this).attr("data-url");
-        var placeholder = $(this).attr("placeholder");
-        if(typeof(placeholder) == 'undefined') {
-            placeholder = "";
-        }
-        $(this).select2({
-            placeholder: placeholder,
-            allowClear: true,
-            ajax: {
-                url: url,
-                dataType: 'json',
-                delay: 250,
-
-                data: function (params) {
-                  return {
-                    q: params.term, // search term
-                    page: params.page
-                  };
-                },
-                processResults: function (data, params) {
-                    // parse the results into the format expected by Select2
-                    // since we are using custom formatting functions we do not need to
-                    // alter the remote JSON data, except to indicate that infinite
-                    // scrolling can be used
-                    params.page = params.page || 1;
-
-                    return {
-                        results: data.items,
-                        pagination: {
-                            more: (params.page * 30) < data.total_count
-                        }
-                    };
-                },
-                cache: true
-            },
-            escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
-            minimumInputLength: 0,
-            templateResult: formatSelect2TextOption,
-            templateSelection: formatSelect2TextSelected,
-        });
+        select2Ajax($(this));
     });
 
     // Campaign quickview dashboard
@@ -1813,18 +1826,6 @@ $(function() {
         $(this).parents('.ui-pnotify').remove();
     });
 
-    // Plan time unit unlimited selection
-    $(document).on('change', 'select[name=frequency_unit]', function() {
-        var val = $(this).val();
-
-        if (val == 'unlimited') {
-            $('input[name=frequency_amount]').val(-1).addClass('text-trans').prop('readonly', true);
-        } else {
-            $('input[name=frequency_amount]').val(1).removeClass('text-trans').prop('readonly', false);
-        }
-    });
-    $('select[name=frequency_unit]').trigger('change');
-
     // Segment condition field type select
     $(document).on('change', '.condition-field-select', function() {
         var line = $(this).parents('.condition-line');
@@ -1869,13 +1870,30 @@ $(function() {
         var url = $(this).attr("href");
         var a_ = $(this);
         var method = $(this).attr('data-method');
+        var load = htmlLoader();
+        var size = $(this).attr('data-size');
+        
+        if (typeof(size) === 'undefined') {
+            size = 'lg';
+        }
 
         // Finding modal
         var modal = $('#ajax-modal[rel="'+url+'"]');
         if (!modal.length) {
-            $('body').append('<div id="ajax-modal" rel="'+url+'" class="modal fade ajax-modal"><div class="modal-dialog modal-md"></div></div>');
+            var html = '<div class="modal fade" role="dialog" id="ajax-modal" rel="'+url+'">'+
+                '<div class="modal-dialog modal-'+size+' modal-select">'+
+                    '<div class="modal-content">'+
+                        '<div class="modal-body">'+
+                            load+
+                        '</div>'+
+                    '</div>'+
+                '</div>'+
+            '</div>';
+            
+            $('body').append(html);
             modal = $('#ajax-modal[rel="'+url+'"]');
         }
+        modal.modal('show');
 
         // Skip if previous ajax calling
         if (a_.hasClass('loading')) {
@@ -1910,8 +1928,56 @@ $(function() {
             data: data
         })
         .done(function( data ) {
-            modal.find('.modal-dialog').html(data);
-            modal.modal('show');
+            modal.find('.modal-dialog').html(data);            
+            
+            //
+            if (typeof(customValidate) !== 'undefined') {
+                customValidate(modal.find("form"));
+            }
+            
+            // Select2 ajax
+            modal.find(".select2-ajax").each(function() {
+                var url = $(this).attr("data-url");
+                var placeholder = $(this).attr("placeholder");
+                if(typeof(placeholder) == 'undefined') {
+                    placeholder = "";
+                }
+                $(this).select2({
+                    placeholder: placeholder,
+                    allowClear: true,
+                    ajax: {
+                        url: url,
+                        dataType: 'json',
+                        delay: 250,
+        
+                        data: function (params) {
+                          return {
+                            q: params.term, // search term
+                            page: params.page
+                          };
+                        },
+                        processResults: function (data, params) {
+                            // parse the results into the format expected by Select2
+                            // since we are using custom formatting functions we do not need to
+                            // alter the remote JSON data, except to indicate that infinite
+                            // scrolling can be used
+                            params.page = params.page || 1;
+        
+                            return {
+                                results: data.items,
+                                pagination: {
+                                    more: (params.page * 30) < data.total_count
+                                }
+                            };
+                        },
+                        cache: true
+                    },
+                    escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+                    minimumInputLength: 0,
+                    templateResult: formatSelect2TextOption,
+                    templateSelection: formatSelect2TextSelected,
+                });
+            });
 
             // Remove loading effect
             a_.removeClass('loading');
@@ -2157,7 +2223,119 @@ $(function() {
         },
     });
     
-    // autofill
-    $('.autofill').autofill();
+    //// autofill
+    //$('.autofill').autofill();
+    
+    // password eye toggle
+    $(document).on('click', '.btn-view-password', function() {
+        var btn = $(this);
+        var input = btn.closest('div').find('input');
+        
+        console.log(input);
+        
+        if (btn.hasClass('open')) {
+            btn.removeClass('open');
+            input.attr('type', 'password');
+            btn.removeClass('icon-eye-blocked');
+            btn.addClass('icon-eye');
+        } else {
+            btn.addClass('open');
+            input.attr('type', 'text');
+            btn.removeClass('icon-eye');
+            btn.addClass('icon-eye-blocked');
+        }
+        
+        input.focus();
+    });
+    
+    // bootstrap switch    
+    $(".boostrap-switch").bootstrapSwitch();
+    
+    // Toogle control
+    $('[toggle-control]').each(function() {
+        var box = $(this);
+        var control = $(box.attr('toggle-control'));
+        var show_cond = box.attr('toggle-show-value');
+        
+        control.change(function() {
+            var value = $(this).val();
+            
+            if (value !== show_cond) {
+                box.hide();
+            } else {
+                box.fadeIn();
+            }
+        });
+        
+        control.trigger('change');
+    });
+    
+    // inline edit
+    $('.select-custom').select_custom();
+    
+    //
+    $(document).on('click', '.switch-form-toggle', function() {
+        var form = $(this).closest('form');
+        var disabled = $(this).prop('data-disabled');
+        var label_edit = $(this).attr('data-edit');
+        var label_cancel = $(this).attr('data-cancel');
+        
+        if (disabled == 'false') {
+            form.find('input, select').prop('disabled', true);
+            $(this).prop('data-disabled', 'true');
+            $(this).html(label_edit);
+            form.find('.edit-group').removeClass('hide');
+            form.find('.cancel-group').addClass('hide');
+        } else {
+            form.find('input, select').prop('disabled', false);
+            $(this).prop('data-disabled', 'false');
+            $(this).html(label_cancel);
+            form.find('.edit-group').addClass('hide');
+            form.find('.cancel-group').removeClass('hide');
+        }
+    });
+    
+    // Link confirm
+    $(document).on("click", "a[confirm]", function(e) {
+        var url = $(this).attr("href");
+        var target = $(this).attr("target");
+        var confirm = $(this).attr("confirm");
 
+        // Finding modal
+        var modal = $('#confirm-modal');
+        
+        modal.find('.modal-body h6').html(confirm);
+        modal.find('.modal-footer .link-confirm-button').attr("href", url);
+        modal.find('.modal-footer .link-confirm-button').attr("target", target);
+        
+        modal.modal("show");
+        
+
+        e.stopImmediatePropagation();
+        e.preventDefault();
+    });
+    
+    // Link confirm
+    $(document).on("click", "#confirm-modal .link-confirm-button", function() {
+        $('.modal').modal("hide");
+    });
+    
+    // Ajax box
+    $('.ajax_box').each(function() {
+        var box = $(this);
+        var url = box.attr('data-url');
+        var control = $(box.attr('data-control'));
+        
+        control.change(function() {
+            $.ajax({
+                method: 'GET',
+                url: url,
+                data: box.closest('form').serialize(),
+            })
+            .done(function(response) {
+                box.html(response);
+            });
+        });
+        control.trigger('change');
+    });
 });

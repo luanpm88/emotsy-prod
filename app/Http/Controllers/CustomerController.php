@@ -3,6 +3,8 @@
 namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Acelle\Cashier\Subscription;
+use Acelle\Cashier\Cashier;
 
 class CustomerController extends Controller
 {
@@ -19,7 +21,15 @@ class CustomerController extends Controller
             $customer = new \Acelle\Model\Customer();
         }
         if (!empty($customer->imagePath())) {
-            $img = \Image::make($customer->imagePath());
+            try {
+                $img = \Image::make($customer->imagePath());    
+            } catch(\Intervention\Image\Exception\NotReadableException $ex) {
+                // file not found
+                $customer->image = null;
+                $customer->save();
+                $img = \Image::make(public_path('assets/images/placeholder.jpg'));
+            }
+            
         } else {
             $img = \Image::make(public_path('assets/images/placeholder.jpg'));
         }
@@ -51,5 +61,39 @@ class CustomerController extends Controller
         \Auth::login($orig_user);
         
         return redirect()->action('Admin\CustomerController@index');
+    }
+    
+    /**
+     * Admin area.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function adminArea(Request $request)
+    {
+        $id = \Session::get('orig_customer_id');
+        $orig_user = \Acelle\Model\User::findByUid($id);
+        $gateway = Cashier::getPaymentGateway();
+        
+        // Get current subscription
+        $customer = $request->user()->customer;
+        $subscription = $customer->subscription;
+        
+        $next_billing_date = null;
+        if (is_object($subscription)) {
+            $next_billing_date = $subscription->ends_at;
+            if($subscription->active()) {
+                $subscriptionParam = $customer->retrieveSubscription($gateway);
+                $next_billing_date = \Carbon\Carbon::createFromTimestamp($subscriptionParam->currentPeriodEnd);
+            }
+        }
+        
+        return view('customers.admin_area', [
+            'customer' => $customer,
+            'subscription' => $subscription,
+            'next_billing_date' => $next_billing_date,
+            'gateway' => $gateway,
+        ]);
     }
 }

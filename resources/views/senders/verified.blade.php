@@ -10,20 +10,25 @@
 
 @section('page_header')
 	
-			<div class="page-title">
-				<ul class="breadcrumb breadcrumb-caret position-right">
-					<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-					<li><a href="{{ action("SenderController@index") }}">{{ trans('messages.verified_senders') }}</a></li>
-					<li class="active">{{ trans('messages.update') }}</li>
-				</ul>
-				<h1>
-					<span class="text-semibold"><i class="icon-profile"></i> {{ $sender->name }}</span>
-				</h1>
-			</div>
+	<div class="page-title">
+		<ul class="breadcrumb breadcrumb-caret position-right">
+            <li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li><a href="{{ action("SenderController@index") }}">{{ trans('messages.verified_senders') }}</a></li>
+            <li><a href="{{ action("SendingDomainController@index") }}">{{ trans('messages.email_addresses') }}</a></li>
+        </ul>
+        <h1>
+            <span class="text-semibold">{{ trans('messages.verified_senders') }}</span>
+        </h1> 
+	</div>
 				
 @endsection
 
 @section('content')
+	
+	@include('senders._menu')
+	<h1>
+		<span class="text-semibold"><i class="icon-profile"></i> {{ $sender->name }}</span>
+	</h1>
     
     <div class="row">
         <div class="col-sm-12 col-md-8">

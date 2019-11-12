@@ -71,4 +71,22 @@ class SendingServerSendmail extends SendingServer
             );
         }
     }
+    
+    /**
+     * Check the sending server settings, make sure it does work
+     *
+     * @return boolean
+     */
+    public function test()
+    {
+        if (!file_exists($this->sendmail_path)) {
+            throw new \Exception("File {$this->sendmail_path} does not exists");
+        }
+        
+        if (!is_executable($this->sendmail_path)) {
+            throw new \Exception("File {$this->sendmail_path} is not executable");
+        }
+        
+        return true;
+    }
 }

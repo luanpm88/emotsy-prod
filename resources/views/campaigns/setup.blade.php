@@ -57,6 +57,7 @@
 				<div class="hiddable-cond" data-control="[name=use_default_sending_server_from_email]" data-hide-value="1">
 					@include('helpers.form_control', [
 						'type' => 'autofill',
+						'id' => 'sender_from_input',
 						'name' => 'from_email',
 						'label' => trans('messages.from_email'),
 						'value' => $campaign->from_email,
@@ -70,15 +71,6 @@
 						'header' => trans('messages.verified_senders'),
 					])
 				</div>
-				
-				@include('helpers.form_control', ['type' => 'checkbox2',
-					'name' => 'use_default_sending_server_from_email',
-					'label' => trans('messages.use_sending_server_default_value'),
-					'value' => $campaign->use_default_sending_server_from_email,
-					'rules' => $rules,
-					'help_class' => 'campaign',
-					'options' => ['0','1'],
-				])
 												
 				@include('helpers.form_control', ['type' => 'text',
 					'name' => 'reply_to',
@@ -134,5 +126,21 @@
 		</div>
 		
 	<form>
+	
+	<script>
+		$(document).ready(function() {
+			// auto fill
+			var box = $('#sender_from_input').autofill({
+				messages: {
+					header_found: '{{ trans('messages.sending_identity') }}',
+					header_not_found: '{{ trans('messages.sending_identity.not_found.header') }}'
+				}
+			});
+			box.loadDropbox(function() {
+				$('#sender_from_input').focusout();
+				box.updateErrorMessage();
+			})
+		})
+	</script>
 				
 @endsection

@@ -1,3 +1,29 @@
+    <!-- Basic modal -->
+	<div id="confirm-modal" class="modal fade mc-modal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form class="confirm-link-form" onkeypress="return event.keyCode != 13;">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">{{ trans('messages.are_you_sure') }}</h4>
+					</div>
+
+					<div class="modal-body">
+
+							<h6></h6>
+
+					</div>
+
+					<div class="modal-footer">
+						<button type="button" class="btn btn-mc_inline" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
+						<a class="btn btn-mc_primary link-confirm-button">{{ trans('messages.ok') }}</a>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!-- /basic modal -->
+
     <a style="display: none" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#delete_confirm_model">aa</a>
 	<!-- Basic modal -->
 	<div id="delete_confirm_model" class="modal fade new-modal">
@@ -32,11 +58,11 @@
 
 	<a style="display: none" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#link_confirm_model">Open modal</a>
 	<!-- Basic modal -->
-	<div id="link_confirm_model" class="modal fade">
+	<div id="link_confirm_model" class="modal mc-modal fade">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<form class="confirm-link-form" onkeypress="return event.keyCode != 13;">
-					<div class="modal-header bg-info-800">
+					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal">&times;</button>
 						<h4 class="modal-title">{{ trans('messages.are_you_sure') }}</h4>
 					</div>
@@ -48,8 +74,8 @@
 					</div>
 
 					<div class="modal-footer">
-						<button type="button" class="btn btn-link" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
-						<a class="btn bg-info-800 link-confirm-button ajax_link">{{ trans('messages.confirm') }}</a>
+						<button type="button" class="btn btn-mc_inline" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
+						<a class="btn btn-mc_primary link-confirm-button ajax_link">{{ trans('messages.confirm') }}</a>
 					</div>
 				</form>
 			</div>
@@ -149,19 +175,16 @@
 	</div>
 	<!-- /basic modal -->
 
-	<div class="ui-pnotify bg-warning" style="background-color: rgba(255,87,34,0.7); width: auto; right: 20px; top: auto; bottom: 20px; opacity: 1; display: block; overflow: visible; cursor: auto;">
-		<div class="btn-close-pnotify"><i class="icon-cross2"></i></div>
-		@if (null !== Session::get('orig_customer_id') && Auth::user()->customer)
-			<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
-				<h4 class="ui-pnotify-title">{!! trans('messages.current_login_as', ["name" => Auth::user()->customer->displayName()]) !!}</h4>
-				<div class="ui-pnotify-text">
-					{!! trans('messages.click_to_return_to_origin_user', ["link" => action("CustomerController@loginBack")]) !!}
-				</div>
-				<div style="margin-top: 10px; clear: both; text-align: right; display: none;"></div>
-			</div>
-		@endif
+	@if (null !== Session::get('orig_customer_id') && Auth::user()->customer)
+		<a href="{{ action('CustomerController@adminArea') }}" class="user-switch-area mc-modal-control">
+			{{ trans('messages.customer.admin_area') }}
+		</a>
+	@endif
+
+	<div class="ui-pnotify alert-warning mc-notify-wanring" style="width: auto; right: 20px; top: auto; bottom: 20px; opacity: 1; display: block; overflow: visible; cursor: auto;">
+		<div class="btn-close-pnotify">{{ trans('messages.notify.clear_all') }}</div>
 		@if (null !== Session::get('orig_admin_id') && Auth::user()->admin)
-			<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
+			<div class="alert ui-pnotify-container alert-warning ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
 				<h4 class="ui-pnotify-title">{!! trans('messages.current_login_as', ["name" => Auth::user()->admin->displayName()]) !!}</h4>
 				<div class="ui-pnotify-text">
 					{!! trans('messages.click_to_return_to_origin_user', ["link" => action("Admin\AdminController@loginBack")]) !!}
@@ -170,49 +193,34 @@
 			</div>
 		@endif
 		@if (Acelle\Model\Setting::get("site_online") == 'false')
-			<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
+			<div class="alert ui-pnotify-container alert-warning ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
 				<h4 class="ui-pnotify-title">{!! trans('messages.site_is_offline') !!}</h4>
 				<div style="margin-top: 10px; clear: both; text-align: right; display: none;"></div>
 			</div>
 		@endif
 
 		@if (\Acelle\Library\Tool::currentView() == 'frontend')
-			<!-- Alert if customer don't have any subscription -->
-			@if (is_object(\Auth::user()->customer) &&
-				\Auth::user()->customer->notHaveAnyPlan())
-				<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
-					<h4 class="ui-pnotify-title">
-					{!! trans('messages.not_have_any_plan_notification', [
-						'link' => action('AccountController@subscription'),
-					]) !!}
-					</h4>
-					<div style="margin-top: 10px; clear: both; text-align: right; display: none;"></div>
-				</div>
-			@endif
-
-			<!-- Alert if customer have any subscription but none of them is active -->
-			@if (is_object(\Auth::user()->customer)
-				&& !is_object(\Auth::user()->customer->getCurrentSubscription())
-				&& !\Auth::user()->customer->notHaveAnyPlan())
-				<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
-					<h4 class="ui-pnotify-title">
-					{!! trans('messages.not_have_active_plan_notification', [
-						'link' => action('AccountController@subscription'),
-					]) !!}
-					</h4>
-					<div style="margin-top: 10px; clear: both; text-align: right; display: none;"></div>
-				</div>
-			@endif
-
 			<!-- Alert if customer use their own sending servers but haven't had any one yet -->
 			@if (
 				is_object(\Auth::user()->customer) &&
 				\Auth::user()->customer->getOption("sending_server_option") == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN &&
 				!\Auth::user()->customer->activeSendingServers()->count())
-				<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
+				<div class="alert ui-pnotify-container alert-warning ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
 					<h4 class="ui-pnotify-title">
 					{!! trans('messages.not_have_any_customer_sending_server', [
 						'link' => action('SendingServerController@select'),
+					]) !!}
+					</h4>
+					<div style="margin-top: 10px; clear: both; text-align: right; display: none;"></div>
+				</div>
+			@endif
+
+			@if (is_object(\Auth::user()->customer) &&
+				!is_object(\Auth::user()->customer->subscription))
+				<div class="alert ui-pnotify-container alert-warning ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
+					<h4 class="ui-pnotify-title text-nowrap">
+					{!! trans('messages.not_have_any_plan_notification', [
+						'link' => action('AccountSubscriptionController@index'),
 					]) !!}
 					</h4>
 					<div style="margin-top: 10px; clear: both; text-align: right; display: none;"></div>
@@ -225,7 +233,7 @@
 			@if (
 				!\Acelle\Model\SendingServer::getAllAdminActive()->count()
 			)
-				<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
+				<div class="alert ui-pnotify-container alert-warning ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
 					<h4 class="ui-pnotify-title">
 					{!! trans('messages.not_have_any_admin_sending_server', [
 						'link' => action('Admin\SendingServerController@select'),

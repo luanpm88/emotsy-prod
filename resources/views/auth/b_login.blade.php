@@ -64,7 +64,7 @@
     @if (\Acelle\Model\Setting::get('enable_user_registration') == 'yes')
         <div class="text-center">
             {!! trans('messages.need_a_account_create_an_one', [
-	'link' => action('SubscriptionController@selectPlan')
+	'link' => action('UserController@register')
             ]) !!}
         </div>
     @endif

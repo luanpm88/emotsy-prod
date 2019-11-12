@@ -43,9 +43,7 @@
 					</a>
 				</li>
 
-				@if (Auth::user()->can("read", new Acelle\Model\Customer())
-					|| Auth::user()->admin->can("read", new Acelle\Model\Subscription())
-				)
+				@if (Auth::user()->can("read", new Acelle\Model\Customer()))
 					<li class="dropdown language-switch"
 						rel0="CustomerGroupController"
 						rel1="CustomerController"
@@ -62,13 +60,11 @@
 									</a>
 								</li>
 							@endif
-							@if (Auth::user()->admin->can("read", new Acelle\Model\Subscription()))
-								<li rel0="SubscriptionController">
-									<a href="{{ action('Admin\SubscriptionController@index') }}">
-										<i class="icon-quill4"></i> {{ trans('messages.subscriptions') }}
-									</a>
-								</li>
-							@endif
+							<li rel0="SubscriptionController">
+								<a href="{{ action('Admin\SubscriptionController@index') }}">
+									<i class="icon-quill4"></i> {{ trans('messages.subscriptions') }}
+								</a>
+							</li>
 						</ul>
 					</li>
 				@endif
@@ -76,7 +72,6 @@
 				@if (
 					Auth::user()->can("read", new Acelle\Model\Plan())
 					|| Auth::user()->can("read", new Acelle\Model\Currency())
-					|| Auth::user()->can("read", new Acelle\Model\PaymentMethod())
 				)
 					<li class="dropdown language-switch"
 						rel0="PlanController"
@@ -101,13 +96,6 @@
 									</a>
 								</li>
 							@endif
-							@if (Auth::user()->can("read", new Acelle\Model\PaymentMethod()))
-								<li rel0="PaymentMethodController">
-									<a href="{{ action('Admin\PaymentMethodController@index') }}">
-										<i class="icon-credit-card2"></i> {{ trans('messages.payment_methods') }}
-									</a>
-								</li>
-							@endif
 						</ul>
 					</li>
 				@endif
@@ -128,7 +116,7 @@
 							@if (Auth::user()->admin->getPermission("admin_read") != 'no')
 								<li rel0="AdminController">
 									<a href="{{ action('Admin\AdminController@index') }}">
-										<i class="icon-users"></i> {{ trans('messages.admins') }}
+										<i class="icon-users"></i> {{ trans('messages.admins') }}										
 									</a>
 								</li>
 							@endif
@@ -192,11 +180,11 @@
 								</li>
 							@endif
 							@if (Auth::user()->admin->getPermission("sending_domain_read") != 'no')
-								<li rel0="SendingDomainController">
+								<!--<li rel0="SendingDomainController">
 									<a href="{{ action('Admin\SendingDomainController@index') }}">
 										<i class="icon-earth"></i> {{ trans('messages.sending_domains') }}
 									</a>
-								</li>
+								</li>-->
 							@endif
 							@if (Auth::user()->admin->getPermission("email_verification_server_read") != 'no')
 								<li rel0="EmailVerificationServerController">
@@ -252,6 +240,11 @@
 								</a>
 							</li>
 						@endif
+						<li rel0="PaymentController">
+							<a href="{{ action('Admin\PaymentController@index') }}">
+								<i class="icon-credit-card2"></i> {{ trans('messages.payment_gateways') }}
+							</a>
+						</li>
                     </ul>
 				</li>
 
@@ -389,7 +382,6 @@
 
 		</div>
 		<!-- /page content -->
-
 
 		<!-- Footer -->
 		<div class="footer text-muted">
