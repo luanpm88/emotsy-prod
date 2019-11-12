@@ -890,7 +890,6 @@ class Subscriber extends Model
         // @todo Filter by current user only
         return Blacklist::where('email', '=', $this->email)->exists();
     }
-<<<<<<< HEAD
 
     public function getFullName($default = null)
     {
