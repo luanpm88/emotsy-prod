@@ -40,7 +40,7 @@ class Popup {
     }
     
     loading() {
-        this.popup.html(this.loadingHtml);
+        this.popup.prepend(this.loadingHtml);
     }
     
     static hide() {

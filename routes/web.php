@@ -49,6 +49,15 @@ Route::get('/app/templates/{name?}', [ function ($name) {
     }
 }])->where('name', '.+');
 
+// upload path for campaigns
+Route::get('/app/campaigns/{name?}', [ function ($name) {
+    $path = storage_path("app/campaigns/$name");
+    $mime_type = \Acelle\Library\File::getFileType($path);
+    if (\File::exists($path)) {
+        return response()->file($path, array('Content-Type' => $mime_type));
+    }
+}])->where('name', '.+');
+
 // Setting upload path
 Route::get('setting/{filename}', 'SettingController@file');
 Route::get('/no-plan', 'AccountSubscriptionController@noPlan');
@@ -276,6 +285,15 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('lists/{list_uid}/pages/{alias}/preview', 'PageController@preview');
 
     // Template
+    Route::get('templates/{uid}/builder/change-template/{change_uid}', 'TemplateController@builderChangeTemplate');
+    Route::get('templates/builder/templates', 'TemplateController@builderTemplates');
+    Route::post('templates/builder/create', 'TemplateController@builderCreate');
+    Route::get('templates/builder/create', 'TemplateController@builderCreate');
+    Route::post('templates/{uid}/builder/edit/asset', 'TemplateController@builderAsset');
+    Route::get('templates/{uid}/builder/edit/content', 'TemplateController@builderEditContent');
+    Route::post('templates/{uid}/builder/edit', 'TemplateController@builderEdit');
+    Route::get('templates/{uid}/builder/edit', 'TemplateController@builderEdit');
+    
     Route::post('templates/{uid}/copy', 'TemplateController@copy');
     Route::get('templates/{uid}/copy', 'TemplateController@copy');
     Route::get('templates/{uid}/content', 'TemplateController@content');
@@ -296,6 +314,17 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::patch('templates/{uid}/update', 'TemplateController@update');
 
     // Campaign
+    Route::get('campaigns/{uid}/template/change/{template_uid}', 'CampaignController@templateChangeTemplate');
+    Route::post('campaigns/{uid}/template/asset', 'CampaignController@templateAsset');
+    Route::post('campaigns/{uid}/template/asset', 'CampaignController@templateAsset');
+    Route::get('campaigns/{uid}/template/content', 'CampaignController@templateContent');
+    Route::match(['get', 'post'], 'campaigns/{uid}/template/edit', 'CampaignController@templateEdit');
+    Route::match(['get', 'post'], 'campaigns/{uid}/template/upload', 'CampaignController@templateUpload');
+    Route::get('campaigns/{uid}/template/theme/list', 'CampaignController@templateThemeList');
+    Route::match(['get', 'post'], 'campaigns/{uid}/template/theme', 'CampaignController@templateTheme');
+    Route::match(['get', 'post'], 'campaigns/{uid}/template/layout', 'CampaignController@templateLayout');
+    Route::get('campaigns/{uid}/template/create', 'CampaignController@templateCreate');
+    
     Route::get('campaigns/{uid}/spam-score', 'CampaignController@spamScore');
     Route::get('campaigns/{from_uid}/copy-move-from/{action}', 'CampaignController@copyMoveForm');
     Route::post('campaigns/{uid}/resend', 'CampaignController@resend');
@@ -516,6 +545,15 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/users', 'UserController');
 
     // Template
+    Route::get('admin/templates/{uid}/builder/change-template/{change_uid}', 'TemplateController@builderChangeTemplate');
+    Route::get('admin/templates/builder/templates', 'TemplateController@builderTemplates');
+    Route::post('admin/templates/builder/create', 'TemplateController@builderCreate');
+    Route::get('admin/templates/builder/create', 'TemplateController@builderCreate');
+    Route::post('admin/templates/{uid}/builder/edit/asset', 'TemplateController@builderAsset');
+    Route::get('admin/templates/{uid}/builder/edit/content', 'TemplateController@builderEditContent');
+    Route::post('admin/templates/{uid}/builder/edit', 'TemplateController@builderEdit');
+    Route::get('admin/templates/{uid}/builder/edit', 'TemplateController@builderEdit');
+    
     Route::post('admin/templates/{uid}/copy', 'TemplateController@copy');
     Route::get('admin/templates/{uid}/copy', 'TemplateController@copy');
     Route::get('admin/templates/sort', 'TemplateController@sort');

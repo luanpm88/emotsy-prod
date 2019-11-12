@@ -847,7 +847,7 @@ ul.campaign-steps li:first-child:after {
 }
 .nav-tabs > li {
     font-size: 15px;
-    margin-right: 20px;
+    margin-right: 30px;
 }
 textarea.plain_text_content {
     height: 350px;
@@ -2711,6 +2711,61 @@ canvas[data-zr-dom-id='_zrender_hover_'] {
 .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
   border-color: #dedddc;
 }
+.select-template-layout .panel-template-style {
+  border-width: 1px;
+  padding: 2px;
+}
+.select-template-layout.selected .panel-template-style {
+  border-color: #166dba;
+  position: relative;
+  background: #d2e3f2;
+}
+.select-template-layout.selected:before {
+    content: '\ed6c';
+    font-family: 'icomoon';
+    right: 20px;
+    position: absolute;
+    color: #fff;
+    background: #166dba;
+    border-radius: 0 0 0 100px;
+    padding: 2px 3px 6px 11px;
+    z-index: 1;
+}
+.mc-tabs > li {
+  padding: 0 15px;
+  margin-right: 10px;
+}
+.mc-tabs > li:first-child {
+  padding-left: 0;
+}
+.mc-tabs > li > a {
+  padding: 9px 0;
+  font-weight: 600;
+}
+.nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
+  border: none;
+    border-bottom: 2px solid #26A69A;
+    border-bottom-color: #26A69A;
+}
+.template-boxes .panel-template-style {
+  border-color: transparent;
+}
+.template-boxes .panel-body {
+    padding: 0;
+}
+.template-boxes .panel-body label {
+    text-align: center;
+    display: block;
+    color: #333;
+    margin: 8px;
+}
+.template-boxes .panel-body img {
+    border: solid 1px #aaa;
+    border-radius: 3px;
+}
+.template-boxes.layout .panel-body img {
+    border: none;
+}
 p.link-inline a {
   text-decoration: underline;
 }
@@ -2745,4 +2800,73 @@ p.link-inline a {
     border-radius: 5px;
     overflow: hidden;
     box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+}
+.hover-list {
+  padding: 0;
+}
+.hover-list li {
+  display: flex;
+  list-style: none;
+  padding: 15px;
+  border: dashed 2px #fff;
+  border-radius: 15px;
+}
+.hover-list li:hover {
+  border: dashed 2px #aaa;
+}
+.hover-list li i {
+  font-size: 28px;
+  margin-right: 20px;
+  color: #333;
+  margin-top: 6px;
+}
+.hover-list li .list-body {
+  padding-right: 100px;
+  width: 100%;
+}
+.hover-list li .list-body h4 {
+  margin: 0 0 3px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #00695B;
+}
+.hover-list li .list-body p {
+  font-size: 14px;
+  margin: 0;
+}
+.hover-list li .list-action {
+  align-items: center;
+  display: flex;
+  visibility: hidden;
+}
+.hover-list li:hover .list-action {
+  visibility: visible;
+}
+.btn {
+  padding: 7px 18px;
+}
+.mc-nav > li > a {
+    padding: 0 0 5px 0;
+}
+.media-left {
+  display: flex;
+}
+.media-left .media {
+  padding-right: 20px;
+    padding-top: 8px;
+}
+.media-left .media img {
+      width: 60px;
+    height: 60px;
+}
+.media-left .main {
+  
+}
+.media-left .main label {
+      margin-bottom: 0px;
+    font-size: 17px;
+}
+.media-left .main p {
+  font-size: 14px;
+    margin-bottom: 15px;
 }

@@ -27,6 +27,7 @@ use Validator;
 use Acelle\Library\Tool;
 use ZipArchive;
 use Illuminate\Validation\ValidationException;
+use Sunra\PhpSimple\HtmlDomParser;
 
 class Template extends Model
 {
@@ -370,6 +371,8 @@ class Template extends Model
             $copy->content = str_replace($this->getUploadUri(), $copy->getUploadUri(), $copy->content);
             $copy->save();
         }
+        
+        return $copy;
     }
 
     /**
@@ -520,5 +523,175 @@ class Template extends Model
         Tool::xdelete($tmp_path);
         
         return $template;
+    }
+    
+    /**
+     * Template tags.
+     *
+     * All availabel template tags
+     */
+    public static function builderTags($list = null)
+    {
+        $tags = Template::tags($list);
+        
+        $result = [];
+        foreach($tags as $tag) {
+            $result[] = [
+                'type' => 'label',
+                'text' => '{' . $tag['name'] . '}',
+                'tag' => '{' . $tag['name'] . '}',
+                'required' => true,
+            ];
+        }
+
+        return $result;
+    }
+    
+    /**
+     * Create template from layout.
+     *
+     * All availabel template tags
+     */
+    public static function createTemplateFromLayout($layout)
+    {
+        $template = new Template();
+        $template->save();
+        
+        $sDir = storage_path('layouts/' . $layout);
+        $dDir = $template->getUploadDir();
+        
+        // Copy source code
+        \Acelle\Library\Tool::xcopy($sDir, $dDir);
+        
+        // get layout content
+        $template->content = file_get_contents($sDir . '/index.html');
+        
+        // change content
+        $document = HtmlDomParser::str_get_html($template->content);
+        foreach($document->find('img, script') as $element) {            
+            if (preg_match('/^http/', $element->src) == 0) {
+                $element->src = '/' . $template->getUploadUri() . '/' . $element->src;
+            }
+        }
+        foreach($document->find('link') as $element) {            
+            if (preg_match('/^http/', $element->href) == 0) {
+                $element->href = '/' . $template->getUploadUri() . '/' . $element->href;
+            }
+        }
+        $template->content =  $document;
+        
+        // save template
+        $template->save();
+        
+        return $template;
+    }
+    
+    /**
+     * Load templates from folder.
+     *
+     * @return mixed
+     */
+    public function load($path)
+    {
+        // copy file and get thumb
+        \Acelle\Library\Tool::xcopy($path, $this->getUploadDir());
+        $this->image = $this->getUploadDir() . '/thumb.png';
+        $this->replaceHtmlUrl('/' . $this->getUploadUri() . '/');
+        $this->save();
+    }
+    
+    /**
+     * Load demo templates from storage/themes.
+     *
+     * @return mixed
+     */
+    public static function loadFromThemes($admin)
+    {
+        $themePath = storage_path('themes');
+        $folders = scandir($themePath);
+        
+        foreach($folders as $folder) {
+            $fullPath = $themePath . '/' . $folder;
+            
+            if ($folder != '.' && $folder != '..' && is_dir($fullPath)) {
+                // Create admin template
+                $template = new Template();
+                $name = trim(file_get_contents($fullPath . '/name'));
+                $html = file_get_contents($fullPath . '/index.html');
+                
+                $template->name = $name;
+                $template->admin_id = $admin->id;
+                $template->content = $html;
+                $template->save();
+                
+                // load from path
+                $template->load($fullPath);
+            }
+        }
+    }
+    
+    /**
+     * Get builder templates.
+     *
+     * @return mixed
+     */
+    public function getBuilderTemplates($customer)
+    {
+        $result = [];
+        
+        // Gallery
+        $templates = Template::where('customer_id', '=', null)
+            ->orWhere('customer_id', '=', $customer->id)
+            ->orderBy('customer_id')
+            ->get();
+        
+        foreach($templates as $template) {
+            $result[] = [
+                'name' => $template->name,
+                'url' => action('TemplateController@builderChangeTemplate', ['uid' => $this->uid, 'change_uid' => $template->uid]),
+                'thumbnail' => action('TemplateController@image', $template->uid),
+            ];
+        }
+        
+        return $result;
+    }
+    
+    /**
+     * Get builder templates.
+     *
+     * @return mixed
+     */
+    public function getBuilderAdminTemplates()
+    {
+        $result = [];
+        
+        // Gallery
+        $templates = Template::where('customer_id', '=', null)
+            ->get();
+        
+        foreach($templates as $template) {
+            $result[] = [
+                'name' => $template->name,
+                'url' => action('Admin\TemplateController@builderChangeTemplate', ['uid' => $this->uid, 'change_uid' => $template->uid]),
+                'thumbnail' => action('Admin\TemplateController@image', $template->uid),
+            ];
+        }
+        
+        return $result;
+    }
+    
+    /**
+     * Get builder templates.
+     *
+     * @return mixed
+     */
+    public function changeTemplate($template)
+    {
+        \Acelle\Library\Tool::xcopy($template->getUploadDir(), $this->getUploadDir());
+        $this->content = $template->content;
+        $this->image = $template->image;
+        // replace image url
+        $this->content = str_replace($template->getUploadUri(), $this->getUploadUri(), $this->content);
+        $this->save();
     }
 }
