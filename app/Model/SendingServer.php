@@ -485,9 +485,8 @@ class SendingServer extends Model
             ['value' => '', 'text' => trans('messages.choose')],
             ['value' => 'us-east-1', 'text' => 'US East (N. Virginia)'],
             ['value' => 'us-west-2', 'text' => 'US West (Oregon)'],
-            ['value' => 'ap-southeast-1', 'text' => 'Asia Pacific (Singapore)'],
+            ['value' => 'ap-south-1', 'text' => 'Asia Pacific (Mumbai)'],
             ['value' => 'ap-southeast-2', 'text' => 'Asia Pacific (Sydney)'],
-            ['value' => 'ap-northeast-1', 'text' => 'Asia Pacific (Tokyo)'],
             ['value' => 'eu-central-1', 'text' => 'EU (Frankfurt)'],
             ['value' => 'eu-west-1', 'text' => 'EU (Ireland)'],
         ];
