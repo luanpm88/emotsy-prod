@@ -557,7 +557,7 @@ class Template extends Model
         $template = new Template();
         $template->save();
         
-        $sDir = storage_path('layouts/' . $layout);
+        $sDir = database_path('layouts/' . $layout);
         $dDir = $template->getUploadDir();
         
         // Copy source code
@@ -605,9 +605,9 @@ class Template extends Model
      *
      * @return mixed
      */
-    public static function loadFromThemes($admin)
+    public static function loadFromThemes()
     {
-        $themePath = storage_path('themes');
+        $themePath = database_path('themes');
         $folders = scandir($themePath);
         
         foreach($folders as $folder) {
@@ -620,7 +620,7 @@ class Template extends Model
                 $html = file_get_contents($fullPath . '/index.html');
                 
                 $template->name = $name;
-                $template->admin_id = $admin->id;
+                $template->admin_id = 1;
                 $template->content = $html;
                 $template->save();
                 

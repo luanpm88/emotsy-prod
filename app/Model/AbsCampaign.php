@@ -2492,7 +2492,7 @@ abstract class AbsCampaign extends Model
      */
     public function addTemplateFromLayout($layout)
     {        
-        $sDir = storage_path('layouts/' . $layout);
+        $sDir = database_path('layouts/' . $layout);
         $dDir = $this->getUploadDir();
         
         // Copy source code
