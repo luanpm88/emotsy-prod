@@ -544,6 +544,10 @@ class TemplateController extends Controller
             
             $template->content = $request->content;
             $template->save();
+            
+            return response()->json([
+                'status' => 'success',
+            ]);
         }
 
         return view('templates.builder.edit', [
