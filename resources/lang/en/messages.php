@@ -1990,7 +1990,7 @@
   'select_tool.whole_page' => 'Current page',
   'select_tool.all_items' => 'All items',
   'plan_option.system_s_sending_server' => 'Use system\'s sending servers',
-  'plan_option.system_s_sending_server.intro' => 'This is the standard setting. Users subscribing to this plan do not have to care about how emails are actually sent. Email delivery is managed by the administrator and is transparent to users. Click the Settings button below to set up email delivery service for this plan',
+  'plan_option.system_s_sending_server.intro' => 'This is the standard setting. Users subscribing to this plan do not have to care about how emails are actually sent. Email delivery is managed by the administrator and is transparent to users. Once you have created the plan, you will be able to configure sending servers for the plan',
   'plan_option.own_sending_server' => 'Use own sending servers',
   'plan_option.own_sending_server.intro' => 'This is the extended setting for advanced users who want to manage their own sending services. Users subscribing to this plan need to add and manage their own sending servers',
   'plan_option.sub_account' => 'Use a sub-account of system\'s sending servers',
@@ -2148,11 +2148,12 @@
       You can configure a standard SMTP connection or connect to a 3rd services like Amazon SES,
       SendGrid, Mailgun, ElasticEmail, Sparkpost... You can also take advantage of the the hosting server\'s
       email capability by creating a "PHP Mail" or "Sendmail" sending server',
-  'plan.sending_servers.list_intro' => 'Below are the sending servers available for users subscribed to this plan.
-      Emails sent out by users will be delivered by these servers',
+  'plan.sending_servers.list_intro' => 'Below are sending servers that will be used for this plan.
+      In other words, emails sent out by users who subscribe to this plan will be delivered by these servers',
   'plan.sending_servers' => 'Sending servers',
-  'plan.sending_servers.listing' => 'All available sending servers',
+  'plan.sending_servers.listing' => 'Sending servers',
   'plan.sending_servers.add' => 'Add Sending Server',
+  'plan.sending_servers.add.ok' => 'OK',
   'plan.sending_identify' => 'Sending Identify',
   'plan.sending_identify.intro' => 'Verifying an Identity for Amazon SES Sending Authorization. The first step in configuring sending
       authorization is to prove that you own the email address or domain from which the
@@ -2239,62 +2240,19 @@
   'plan.sending_server.primary.updated' => 'Primary sending server was successfully updated.',
   'sending_servers.set_primary' => 'Set primary',
   'sending_servers.primary' => 'primary',
-  'plan.sending_identify.intro.amazon-api' => 'You are using Amazon SES as your primary delivery method.
-      Amazon SES requires that users verify their identities (the domains or email addresses that you send
-      email from) to confirm their ownership, and to prevent unauthorized use. Only verified identity can
-      be used as FROM email address when setting campaign email.
-      Bounce and feedback loop is handled by Amazon SES through API without users having
-      to configure anything at Acelle Mail',
-  'plan.sending_identify.intro.amazon-smtp' => 'You are using Amazon SES as your primary delivery method.
-      Amazon SES requires that users verify their identities (the domains or email addresses that you send
-      email from) to confirm their ownership, and to prevent unauthorized use. Only verified identity can
-      be used as FROM email address when setting campaign email.
-      Bounce and feedback loop is handled by Amazon SES through API without users having
-      to configure anything at Acelle Mail',
-  'plan.sending_identify.intro.smtp' => 'It is recommended that users verify their own identities (domains or
-      email addresses) to confirm their ownership, and to prevent unauthorized use. Only verified identity can
-      be used as FROM email address. Users will need to set up a bounce/feedback handler
-      (in Sending > Bounce/Feedback Handler) to process bounced/feedback messages.',
-  'plan.sending_identify.intro.sendmail' => 'It is recommended that users verify their own identities (domains or
-      email addresses) to confirm their ownership, and to prevent unauthorized use. Only verified identity can
-      be used as FROM email address. Users will need to set up a bounce/feedback handler
-      (in Sending > Bounce/Feedback Handler) to process bounced/feedback messages.',
-  'plan.sending_identify.intro.php-mail' => 'It is recommended that users verify their own identities (domains or
-      email addresses) to confirm their ownership, and to prevent unauthorized use. Only verified identity can
-      be used as FROM email address. Users will need to set up a bounce/feedback handler
-      (in Sending > Bounce/Feedback Handler) to process bounced/feedback messages.',
-  'plan.sending_identify.intro.mailgun-api' => 'You are using [Mailgun] as your primary delivery method.
-      [Mailgun] only allows sending from a verified sending domain that you register against [Mailgun].
-      Bounce and feedback loop is handled by
-      [Mailgun] through API without users having to configure anything at Acelle Mail',
-  'plan.sending_identify.intro.mailgun-smtp' => 'You are using [Mailgun] as your primary delivery method.
-      [Mailgun] only allows sending from a verified sending domain that you register against [Mailgun].
-      Bounce and feedback loop is handled by
-      [Mailgun] through API without users having to configure anything at Acelle Mail',
-  'plan.sending_identify.intro.sendgrid-api' => 'It is recommended that users verify their own identities (domains or
-      email addresses) to confirm their ownership, and to prevent unauthorized use. Only verified identity can
-      be used as FROM email address. Users will need to set up a bounce/feedback handler
-      (in Sending > Bounce/Feedback Handler) to process bounced/feedback messages.',
-  'plan.sending_identify.intro.sendgrid-smtp' => 'It is recommended that users verify their own identities (domains or
-      email addresses) to confirm their ownership, and to prevent unauthorized use. Only verified identity can
-      be used as FROM email address. Users will need to set up a bounce/feedback handler
-      (in Sending > Bounce/Feedback Handler) to process bounced/feedback messages.',
-  'plan.sending_identify.intro.elasticemail-api' => 'You are using [Elasticemail] as your primary delivery method.
-      [Elasticemail] only allows sending from a verified sending domain that you register against [Elasticemail].
-      Bounce and feedback loop is handled by
-      [Elasticemail] through API without users having to configure anything at Acelle Mail',
-  'plan.sending_identify.intro.elasticemail-smtp' => 'You are using [Elasticemail] as your primary delivery method.
-      [Elasticemail] only allows sending from a verified sending domain that you register against [Elasticemail].
-      Bounce and feedback loop is handled by
-      [Elasticemail] through API without users having to configure anything at Acelle Mail',
-  'plan.sending_identify.intro.sparkpost-api' => 'You are using [Sparkpost] as your primary delivery method.
-      [Sparkpost] only allows sending from a verified sending domain that you register against [Sparkpost].
-      Bounce and feedback loop is handled by
-      [Sparkpost] through API without users having to configure anything at Acelle Mail',
-  'plan.sending_identify.intro.sparkpost-smtp' => 'You are using [Sparkpost] as your primary delivery method.
-      [Sparkpost] only allows sending from a verified sending domain that you register against [Sparkpost].
-      Bounce and feedback loop is handled by
-      [Sparkpost] through API without users having to configure anything at Acelle Mail',
+  'plan.sending_identify.intro.amazon-api' => 'Your plan is setup to use Amazon SES as primary delivery method. Users who subscribe to this plan must use the following identities as their FROM email address. Edit your sending server setting to add more identities',
+  'plan.sending_identify.intro.amazon-smtp' => 'Your plan is setup to use Amazon SES as primary delivery method. Users who subscribe to this plan must use the following identities as their FROM email address. Edit your sending server setting to add more identities',
+  'plan.sending_identify.intro.smtp' => 'Below are <span class="xtooltip" title=\'A sending domain is a domain that is used to indicate who an email is from via the "From:" header\'>sending domains</span> that users who subscribe to this plan can use to send email on behalf of. You can also edit your sending server setting to allow users to add and verify their own sending domains',
+  'plan.sending_identify.intro.sendmail' => 'Below are <span class="xtooltip" title=\'A sending domain is a domain that is used to indicate who an email is from via the "From:" header\'>sending domains</span> that users who subscribe to this plan can use to send email on behalf of. You can also edit your sending server setting to allow users to add and verify their own sending domains',
+  'plan.sending_identify.intro.php-mail' => 'Below are <span class="xtooltip" title=\'A sending domain is a domain that is used to indicate who an email is from via the "From:" header\'>sending domains</span> that users who subscribe to this plan can use to send email on behalf of. You can also edit your sending server setting to allow users to add and verify their own sending domains',
+  'plan.sending_identify.intro.mailgun-api' => 'Your plan is setup to use Mailgun as primary delivery method. Users who subscribe to this plan must use the following identities as their FROM email address. Edit your sending server setting to add more identities',
+  'plan.sending_identify.intro.mailgun-smtp' => 'Your plan is setup to use Mailgun as primary delivery method. Users who subscribe to this plan must use the following identities as their FROM email address. Edit your sending server setting to add more identities',
+  'plan.sending_identify.intro.sendgrid-api' => 'Below are <span class="xtooltip" title=\'A sending domain is a domain that is used to indicate who an email is from via the "From:" header\'>sending domains</span> that users who subscribe to this plan can use to send email on behalf of. You can also edit your sending server setting to allow users to add and verify their own sending domains',
+  'plan.sending_identify.intro.sendgrid-smtp' => 'Below are <span class="xtooltip" title=\'A sending domain is a domain that is used to indicate who an email is from via the "From:" header\'>sending domains</span> that users who subscribe to this plan can use to send email on behalf of. You can also edit your sending server setting to allow users to add and verify their own sending domains',
+  'plan.sending_identify.intro.elasticemail-api' => 'Your plan is setup to use Elasticemail as primary delivery method. Users who subscribe to this plan must use the following identities as their FROM email address. Edit your sending server setting to add more identities',
+  'plan.sending_identify.intro.elasticemail-smtp' => 'Your plan is setup to use Elasticemail as primary delivery method. Users who subscribe to this plan must use the following identities as their FROM email address. Edit your sending server setting to add more identities',
+  'plan.sending_identify.intro.sparkpost-api' => 'Your plan is setup to use Sparkpost as primary delivery method. Users who subscribe to this plan must use the following identities as their FROM email address. Edit your sending server setting to add more identities',
+  'plan.sending_identify.intro.sparkpost-smtp' => 'Your plan is setup to use Sparkpost as primary delivery method. Users who subscribe to this plan must use the following identities as their FROM email address. Edit your sending server setting to add more identities',
   'sending_server.testing' => 'Checking server connection...',
   'sending_server.test_success' => 'The sending server is valid',
   'sending_servers.php-mail.intro' => 'Configure Acelle Mail to send emails directly through the hosting server\'s through PHP
