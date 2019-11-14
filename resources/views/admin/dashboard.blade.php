@@ -8,9 +8,8 @@
 @endsection
 
 @section('content')
-    <!--
+
     @include('admin.notifications._top', ['notifications' => $notifications])
-    -->
 
     <h1 class="mb-10">{{ trans('messages.backend_dashboard_hello', ['name' => Auth::user()->admin->displayName()]) }}</h1>
     <p>{{ trans('messages.backend_dashboard_welcome') }}</p>
@@ -44,7 +43,7 @@
                                         {{ $subscription->plan->name }}
                                     </a>
                                 </h6>
-                                <p class="mb-0">                                    
+                                <p class="mb-0">
                                     <i class="icon-user" style="
                                         font-size: 14px;
                                         padding: 0;
@@ -74,13 +73,13 @@
                             <div class="col-sm-3 col-md-3 text-left">
                                 <span class="text-muted2 list-status pull-left">
                                     @if ($subscription->ended())
-                                        <span class="label label-flat bg-ended">{{ trans('messages.subscription.status.ended') }}</span>						
+                                        <span class="label label-flat bg-ended">{{ trans('messages.subscription.status.ended') }}</span>
                                     @elseif ($subscription->active())
-                                        <span class="label label-flat bg-active">{{ trans('messages.subscription.status.active') }}</span>						
+                                        <span class="label label-flat bg-active">{{ trans('messages.subscription.status.active') }}</span>
                                     @elseif ($subscription->cancelled() && !$subscription->ended())
-                                        <span class="label label-flat bg-cancelled">{{ trans('messages.subscription.status.cancelled') }}</span>						
+                                        <span class="label label-flat bg-cancelled">{{ trans('messages.subscription.status.cancelled') }}</span>
                                     @elseif ($subscription->recurring())
-                                        <span class="label label-flat bg-info">{{ trans('messages.subscription.status.recurring') }}</span>						
+                                        <span class="label label-flat bg-info">{{ trans('messages.subscription.status.recurring') }}</span>
                                     @endif
                                 </span>
                             </div>
