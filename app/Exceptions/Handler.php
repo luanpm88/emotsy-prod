@@ -38,10 +38,11 @@ class Handler extends ExceptionHandler
             // skip logging as those exceptions are handled by Laravel Auth
         } else if (isInitiated()) {
             try {
+                // IMPORTANT: do not use Model here, what if DB connect is not initiated correctly, exception loop stack => "PHP Fatal error:  Uncaught Error: Maximum function nesting level of '256' reached, aborting"
                 // check if the exception does match the known list
-                $errorTitle = $exception->getMessage();
-                BackendErrorNotification::cleanupDuplicateNotifications($errorTitle);
-                BackendErrorNotification::warning([ 'title' => $errorTitle, 'message' => date('Y-m-d').' ('.get_class($exception).') '.$exception->getMessage() ], false);
+                // $errorTitle = $exception->getMessage();
+                // BackendErrorNotification::cleanupDuplicateNotifications($errorTitle);
+                // BackendErrorNotification::warning([ 'title' => $errorTitle, 'message' => date('Y-m-d').' ('.get_class($exception).') '.$exception->getMessage() ], false);
             } catch (Exception $e) {
                 // just keep silent
             }
