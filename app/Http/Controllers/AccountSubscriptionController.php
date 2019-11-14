@@ -76,8 +76,9 @@ class AccountSubscriptionController extends Controller
         $customer = $request->user()->customer;
         $subscription = $customer->subscription;
         $plans = Plan::getAvailablePlans();
-        $colWidth = round(85 / Plan::getAllActive()->count());
-        
+        $planCount = Plan::getAllActive()->count();
+        $colWidth = ($planCount == 0) ? 0 :  round(85 / $planCount );
+
         if (isset($subscription)) {
             $request->session()->flash('alert-error', 'Already subscribed a plan!');
             return redirect()->action('AccountSubscriptionController@index');
