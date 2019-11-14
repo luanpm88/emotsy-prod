@@ -2165,7 +2165,6 @@
   'plan.fitness' => 'Fitness',
   'plan.fitness.save' => 'Save',
   'plan.sending_servers.settings' => 'Settings',
-  'plan.sending_servers.fitness.change' => 'Finess',
   'plan.sending_servers.fitness.updated' => 'Fitnesses was successfully updated.',
   'sending_servers.configuration_settings' => 'Configuration settings',
   'sending_servers.amazon_api_key.intro' => 'Amazon Simple Email Service (Amazon SES) is a cloud-based email sending service designed to help digital marketers and application developers send marketing, notification, and transactional emails. Obtain your Amazon SES key pairs and fill in the form below to get connected',
@@ -2193,6 +2192,7 @@
   'sending_server.test_connection' => 'Test Connection',
   'sending_server.send_a_test_email' => 'Send A Test Email',
   'sending_servers.fitness' => 'Probability',
+  'sending_servers.fitness.explain' => 'When it comes to deliver an email, if there are more than one sending servers available, Acelle will pick one randomly. The higher probability value a sending server has, the more likely it is selected',
   'sending_servers.sending_limit.phrase' => ':quota_value emails per :quota_base :quota_unit',
   'sending_server.quota.unlimited' => 'Unlimited',
   'sending_servers.sending_identity.mailgun.intro' => 'The following domains were verified against your Mailgun account.
