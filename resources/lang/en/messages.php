@@ -2350,16 +2350,13 @@
   'plan.payment.intro' => 'Connect your plan to a payment gateway like Stripe or Braintree/Paypal,
     to accept payment online',
   'payment_gateways' => 'Payment gateways',
-  'payment_gateways.wording' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-    Sed ac ultrices nibh. Mauris porta, augue id condimentum feugiat, ipsum lectus sagittis est, accumsan blandit
-    sapien eros tincidunt nulla. Nam massa nisl, facilisis quis rhoncus quis, blandit ac sem.
-    Pellentesque ornare ante sit amet dolor cursus, nec egestas nisi scelerisque.',
+  'payment_gateways.wording' => 'To accept payments from your Acelle users, you will need to use a supported payment gateway. Please choose  your preferred payment gateway from the list below',
   'payment.status.active' => 'active',
   'payment.status.inactive' => 'inactive',
   'payments.cash' => 'Cash',
   'payments.stripe' => 'Stripe',
   'payments.cash.list_intro' => 'Pay by Cash',
-  'payments.stripe.list_intro' => 'Pay with Stripe credit card',
+  'payments.stripe.list_intro' => 'Receive payments from Credit / Debit card to your Stripe account',
   'payment.cash.wording' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.
     Sed ac ultrices nibh. Mauris porta, augue id condimentum feugiat, ipsum lectus sagittis est, accumsan blandit
     sapien eros tincidunt nulla. Nam massa nisl, facilisis quis rhoncus quis, blandit ac sem.
@@ -2402,15 +2399,12 @@
   'subscription.change_plan' => 'Change plan',
   'subscription.change_plan.wording' => 'Select plan below to change',
   'payments.braintree' => 'Braintree',
-  'payments.braintree.list_intro' => 'Pay with Braintree',
+  'payments.braintree.list_intro' => 'Receive payments from Credit / Debit card to your Braintree account',
   'payment.braintree.environment' => 'Environment',
   'payment.braintree.merchant_id' => 'Merchant ID',
   'payment.braintree.public_key' => 'Public key',
   'payment.braintree.private_key' => 'Private key',
-  'payment.braintree.wording' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-    Sed ac ultrices nibh. Mauris porta, augue id condimentum feugiat, ipsum lectus sagittis est, accumsan blandit
-    sapien eros tincidunt nulla. Nam massa nisl, facilisis quis rhoncus quis, blandit ac sem.
-    Pellentesque ornare ante sit amet dolor cursus, nec egestas nisi scelerisque.',
+  'payment.braintree.wording' => 'Braintree is a full-stack payments platform that makes it easy to accept payments in Acelle Mail. You will need to sign up for a Braintree account, obtain your integration ID and keys and set it up below',
   'purchasing_intro_braintree' => 'Please fill out the below information so we can setup your account for puchasing the <a><strong>:plan plan</strong></a> with the Pay with Braintree option
       . Your plan price is: <a><strong>:price</strong></a>',
   'payment.braintree.request_payment_method' => 'Request payment method',
@@ -2436,8 +2430,8 @@
   'subscription.updated_at' => 'Updated at',
   'payment.braintree' => 'Braintree',
   'payments.coinpayments' => 'Coin-Payments',
-  'payments.coinpayments.list_intro' => 'Multiple Cryptocurrencies accepted via CoinPayments',
-  'payment.coinpayments.wording' => 'Multiple Cryptocurrencies accepted via CoinPayments',
+  'payments.coinpayments.list_intro' => 'Receive payment from a cryptocurrency like Bitcoin, Monero, ZCash, etc.',
+  'payment.coinpayments.wording' => 'You can accept payments from many cryptocurrencies like Bitcoin, Monero, ZCash, etc. You will need to sign up for a Coint-Payments account, obtain your integration ID and keys and set it up below',
   'payment.coinpayments.merchant_id' => 'Merchant ID',
   'payment.coinpayments.public_key' => 'Public key',
   'payment.coinpayments.private_key' => 'Private key',
@@ -2464,8 +2458,8 @@
   'subscription.current_subscription.cancel_at_end_of_period_no_recurring_supported.wording' => 'You are currently subscribed to <strong>:plan</strong> (<strong>:money</strong>).<br>
       The subscription will be end in <strong>:remain</strong>, on <strong>:end_at</strong>.',
   'payments.direct' => 'Direct payment',
-  'payments.direct.list_intro' => 'Payment are created and saved local server.',
-  'payment.direct.wording' => 'Payment are created and saved local server. Manually update payment records via app.',
+  'payments.direct.list_intro' => 'Receive payments outside of the application',
+  'payment.direct.wording' => 'Write instructions for your users to make a payment outside of the application. For example: deposit to your bank account or pay by cash. Use this option when you do not have any payment gateway account like Stripe, Braintree or PayPal',
   'payment.direct.database_path' => 'Database file path',
   'payment_gateway.not_valid' => 'Something went wrong: :message',
   'subscription.pending.direct.wording' => 'You are currently subscribed to <strong>:plan</strong> (<strong>:money</strong>).
@@ -2531,9 +2525,9 @@
   'subscription.change_now' => 'Change now',
   'subscription.plan_changed.lower_error' => 'Can not change from higher plan to lower one',
   'payment.settings' => 'Settings',
-  'system.renew_free_plan' => 'Can renew free plan',
+  'system.renew_free_plan' => 'Allow users to renew FREE plans',
   'setting.renew_free_plan.help' => 'Customers who are subscribing to a Free plan can not renew the plan. Need to change to a no-free plan first.',
-  'payment.direct.notice' => 'Payment notice/guide',
+  'payment.direct.notice' => 'Payment instructions',
   'plans.subscriber_count' => ':count subscriber(s)',
   'payment.direct' => 'Direct',
   'plan.info.subscriber_count' => 'There are <strong>:count</strong> customer(s) currently subscribed to this plan.
