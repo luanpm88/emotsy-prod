@@ -851,6 +851,44 @@ class SendingServer extends Model
     }
     
     /**
+     * Get sending server select2 select options.
+     *
+     * @return array
+     */
+    public static function adminSelect2($request)
+    {
+        $data = ['items' => [], 'more' => true];
+
+        $query = self::getAll()->whereNull('customer_id');
+        if (isset($request->q)) {
+            $keyword = $request->q;
+            $query = $query->where(function ($q) use ($keyword) {
+                $q->orwhere('sending_servers.name', 'like', '%'.$keyword.'%');
+            });
+        }
+        
+        // plan
+        if ($request->plan_uid) {
+            $plan = \Acelle\Model\Plan::findByUid($request->plan_uid);
+            $existIds = $plan->plansSendingServers()->pluck('sending_server_id')->toArray();
+        }
+
+        foreach ($query->limit(20)->get() as $server) {
+            if ($request->plan_uid && in_array($server->id, $existIds)) {
+                $data['items'][] = [
+                    'id' => $server->uid,
+                    'text' => $server->name.' ('.trans('messages.sending_server.added').')'.'|||'.trans('messages.' . $server->type),
+                    'disabled' => true
+                ];
+            } else {
+                $data['items'][] = ['id' => $server->uid, 'text' => $server->name.'|||'.trans('messages.' . $server->type)];
+            }            
+        }
+
+        return json_encode($data);
+    }
+    
+    /**
      * Get sending limit types.
      *
      * @return array
