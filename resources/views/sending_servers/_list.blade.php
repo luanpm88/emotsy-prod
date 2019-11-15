@@ -24,7 +24,7 @@
 										</td>
 										<td>
 											<h5 class="no-margin text-bold">
-												<a class="kq_search" href="{{ action('SendingServerController@edit', ["uid" => $item->uid, "type" => $item->type]) }}">{{ $item->name }}</a>
+												<a class="kq_search" href="{{ action('SendingServerController@edit', ["uid" => $item->uid, "type" => $item->type]) }}">{{ trans('messages.' . $item->type) }}</a>
 											</h5>
 											<span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
 										</td>

@@ -1,6 +1,6 @@
 @extends('layouts.frontend')
 
-@section('title', $server->name)
+@section('title', trans('messages.' . $server->type))
 
 @section('page_script')
     <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
@@ -15,7 +15,7 @@
             <li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
         </ul>
         <h1>
-            <span class="text-semibold"><i class="icon-pencil"></i> {{ $server->name }}</span>
+            <span class="text-semibold"><i class="icon-pencil"></i> {{ trans('messages.' . $server->type) }}</span>
         </h1>
     </div>
 
