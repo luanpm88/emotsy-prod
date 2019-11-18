@@ -631,11 +631,11 @@ class MailList extends Model
         $copy->created_at = \Carbon\Carbon::now();
         $copy->updated_at = \Carbon\Carbon::now();
         $copy->custom_order = 0;
-        
+
         if ($customer) {
             $copy->customer_id = $customer->id;
         }
-        
+
         $copy->save();
 
         // Contact
@@ -1240,7 +1240,22 @@ class MailList extends Model
                                FROM (SELECT tmp.email FROM {$tmpTable} tmp LEFT JOIN ".table('subscribers')." main ON (tmp.email = main.email AND main.mail_list_id = {$this->id}) WHERE main.email IS NULL) uniq");
 
                 // Insert subscribers' custom fields to the fields table
-                DB::statement('DELETE FROM '.table('subscriber_fields').' WHERE subscriber_id IN (SELECT main.id FROM '.table('subscribers')." main JOIN {$tmpTable} tmp ON main.email = tmp.email WHERE mail_list_id = ".$this->id.')');
+                // OPTION 1: DELETE WHERE IN
+                // DB::statement('DELETE FROM '.table('subscriber_fields').' WHERE subscriber_id IN (SELECT main.id FROM '.table('subscribers')." main JOIN {$tmpTable} tmp ON main.email = tmp.email WHERE mail_list_id = ".$this->id.')');
+
+                // OPTION 2: DELETE JOIN
+                DB::statement(sprintf('
+                    DELETE f
+                    FROM %s main
+                    JOIN %s tmp ON main.email = tmp.email
+                    JOIN %s f ON main.id = f.subscriber_id
+                    WHERE mail_list_id = %s;',
+                    table('subscribers'),
+                    $tmpTable,
+                    table('subscriber_fields'),
+                    $this->id
+                ));
+
                 foreach ($availableFields as $field) {
                     $sql = 'INSERT INTO '.table('subscriber_fields')."(subscriber_id, field_id, value, created_at, updated_at)
                     SELECT t.subscriber_id, f.id, t.`{$field}`, NOW(), NOW()
@@ -1887,7 +1902,7 @@ class MailList extends Model
     {
         return $this->segments()->count();
     }
-    
+
     /**
      * Copy new list.
      */
@@ -1898,11 +1913,11 @@ class MailList extends Model
         $copy->created_at = \Carbon\Carbon::now();
         $copy->updated_at = \Carbon\Carbon::now();
         $copy->custom_order = 0;
-        
+
         if ($customer) {
             $copy->customer_id = $customer->id;
         }
-        
+
         $copy->save();
 
         // Contact
@@ -1930,16 +1945,16 @@ class MailList extends Model
                 $new_option->save();
             }
         }
-        
+
         // copy all subscribers
         foreach($this->subscribers as $subscriber) {
             $subscriber->copy($copy);
         }
-        
+
         // update cache
         $copy->updateCache();
     }
-    
+
     /**
      * Segments count.
      */
