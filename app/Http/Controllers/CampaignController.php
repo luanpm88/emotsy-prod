@@ -502,6 +502,10 @@ class CampaignController extends Controller
             
             // update plain
             $campaign->updatePlainFromHtml();
+            
+            return response()->json([
+                'status' => 'success',
+            ]);
         }
 
         return view('campaigns.template.edit', [

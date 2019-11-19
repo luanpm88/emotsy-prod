@@ -40,7 +40,10 @@
                     
                 <div class="media-left">
                     <div class="media">
-                        <img src="{{ action('CampaignController@image', $campaign->uid) }}?v={{ rand(0,10) }}" />
+                        <i class="lnr lnr-book" style="
+							font-size: 60px;
+							color: #555;
+						"></i>
                     </div>
                     <div class="main">
                         <label>{{ trans('messages.campaign.html_email') }}</label>
