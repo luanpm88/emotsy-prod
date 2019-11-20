@@ -54,6 +54,8 @@ class SendingServerElasticEmailApi extends SendingServerElasticEmail
             MailLog::warning('Sending failed');
             MailLog::warning($e->getMessage());
 
+            throw $e;
+
             return array(
                 'status' => self::DELIVERY_STATUS_FAILED,
                 'error' => $e->getMessage(),

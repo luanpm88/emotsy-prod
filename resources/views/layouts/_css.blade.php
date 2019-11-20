@@ -22,6 +22,7 @@
 <link href="{{ URL::asset('rangeslider/css/bootstrap-slider.css') }}" rel="stylesheet" type="text/css">
 <link href="{{ URL::asset('css/autofill.css') }}" rel="stylesheet" type="text/css">
 <link href="{{ URL::asset('bootstrap3-editable/css/bootstrap-editable.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ URL::asset('css/popup.css') }}" rel="stylesheet" type="text/css">
 <link href="{{ URL::asset('css/mc.css') }}" rel="stylesheet" type="text/css">
 <link href="{{ URL::asset('css/popup.css') }}" rel="stylesheet" type="text/css">
 <link href="{{ URL::asset('css/loading.css') }}" rel="stylesheet" type="text/css">

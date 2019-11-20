@@ -89,6 +89,14 @@
 								</a>
 							</li>
 							<li>
+								<a
+									href="{{ action('MailListController@cloneForCustomersChoose', $item->uid) }}"
+									class="clone-for-users"
+								>
+									<i class="icon-users"></i> {{ trans('messages.list.clone_for_other_users') }}
+								</a>
+							</li>
+							<li>
 								<a list-delete-confirm="{{ action('MailListController@deleteConfirm', ['uids' => $item->uid]) }}" href="{{ action('MailListController@delete', ['uids' => $item->uid]) }}">
 									<i class="icon-trash"></i> {{ trans('messages.delete') }}
 								</a>
@@ -101,6 +109,30 @@
 	</table>
 	@include('elements/_per_page_select', ["items" => $lists])
 	{{ $lists->links() }}
+	
+	<script>
+		var clonePopup = new Popup(); 
+		$('.clone-for-users').click(function(e) {
+			e.preventDefault();
+			var url = $(this).attr('href');
+			
+			clonePopup.load(url);
+			
+			//addMaskLoading();
+			//
+			//$.ajax({
+			//	method: "POST",
+			//	url: url,
+			//	data: {
+			//		_token: CSRF_TOKEN
+			//	},
+			//})
+			//.done(function( msg ) {
+			//	removeMaskLoading();
+			//});
+		});
+	</script>
+	
 @elseif (!empty(request()->keyword))
 	<div class="empty-list">
 		<i class="icon-address-book2"></i>

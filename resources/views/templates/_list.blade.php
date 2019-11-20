@@ -48,20 +48,27 @@
 
                 <td class="text-right">
                     @if (Auth::user()->customer->can('update', $template))
-                        @if ($template->source == 'builder')
-                            <a href="{{ action('TemplateController@rebuild', $template->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
-                        @else
-                            <a href="{{ action('TemplateController@edit', $template->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
-                        @endif
+                        <a href="{{ action('TemplateController@builderEdit', $template->uid) }}" type="button" class="btn bg-grey btn-icon">
+                            {{ trans('messages.design') }}
+                        </a>
                     @endif
                     @if (Auth::user()->customer->can('preview', $template) ||
                         Auth::user()->customer->can('copy', $template) ||
-                        Auth::user()->customer->can('delete', $template))
+                        Auth::user()->customer->can('delete', $template) ||
+                        Auth::user()->customer->can('update', $template))
                         <div class="btn-group">
                             <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
                             <ul class="dropdown-menu dropdown-menu-right">
                                 @if (Auth::user()->customer->can('preview', $template))
                                     <li><a href="#preview" onclick="popupwindow('{{ action('TemplateController@preview', $template->uid) }}', '{{ $template->name }}', 800, 800)"><i class="icon-zoomin3"></i> {{ trans("messages.preview") }}</a></li>
+                                @endif
+                                @if (Auth::user()->customer->can('update', $template))
+                                    <li>
+                                        <a href="{{ action('TemplateController@builderEdit', $template->uid) }}">
+                                            <i class="icon-hammer"></i> {{ trans("messages.buider.try_new") }}
+                                            <span class="badge badge-primary">{{ trans('messages.builder.beta') }}</span>
+                                        </a>
+                                    </li>
                                 @endif
                                 @if (Auth::user()->customer->can('copy', $template))
                                     <li>

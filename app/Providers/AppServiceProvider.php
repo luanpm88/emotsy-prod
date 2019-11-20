@@ -74,7 +74,10 @@ class AppServiceProvider extends ServiceProvider
             config(['cashier.gateway' => $gateway]);
             foreach (config('cashier.gateways') as $gw => $data) {
                 foreach ($data['fields'] as $key => $value ) {
-                    config(['cashier.gateways.' . $gw . '.fields.' . $key => Setting::get('payment.' . $gw . '.' . $key)]);
+                    $con = Setting::get('payment.' . $gw . '.' . $key);
+                    if ($con != null) {
+                        config(['cashier.gateways.' . $gw . '.fields.' . $key => $con]);
+                    }
                 }
             }
         }

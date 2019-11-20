@@ -79,7 +79,6 @@
                                 </div>
                             </label>
                             <div class="radio_more_box">
-                                <hr class="mb-5">
                                 @include('helpers.form_control', ['type' => 'checkbox2',
                                     'class' => '',
                                     'name' => 'plan[options][all_email_verification_servers]',

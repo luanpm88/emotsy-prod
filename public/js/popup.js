@@ -40,7 +40,7 @@ class Popup {
     }
     
     loading() {
-        this.popup.html(this.loadingHtml);
+        this.popup.prepend(this.loadingHtml);
     }
     
     static hide() {
@@ -75,11 +75,15 @@ class Popup {
             
             // set back button
             // back button
-            _this.popup.find('.back').click( function() {
-                if (typeof(_this.back) !== 'undefined') {
+            if (typeof(_this.back) !== 'undefined') {
+                _this.popup.find('.back').click( function() {                    
                     _this.back();
-                }
-            });
+                });
+            } else {
+                _this.popup.find('.back').click( function() {                    
+                    Popup.hide();
+                });
+            }
             
             // click close button
             _this.popup.find(".close").click(function(){

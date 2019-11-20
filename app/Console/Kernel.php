@@ -5,6 +5,7 @@ namespace Acelle\Console;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Acelle\Model\Automation;
+use Acelle\Cashier\Cashier;
 use Acelle\Cashier\Subscription;
 use Acelle\Model\Setting;
 use Laravel\Tinker\Console\TinkerCommand;
@@ -40,7 +41,7 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             event(new \Acelle\Events\CronJobExecuted());
         })->name('cronjob_event:log')->everyMinute();
-        
+
         // Automation
         $schedule->call(function () {
             Automation::run();
@@ -51,25 +52,24 @@ class Kernel extends ConsoleKernel
 
         // Queued import/export/campaign
         $schedule->command('queue:work --once --tries=3')->everyMinute();
-        
+
         // Sender verifying
         $schedule->command('sender:verify')->everyFiveMinutes();
-        
+
         // System clean up
         $schedule->command('system:cleanup')->daily();
-        
+
         // GeoIp database check
         $schedule->command('geoip:check')->everyMinute()->withoutOverlapping();
-        
+
         // Automation
         $schedule->call(function () {
-            $gateway = \App::make('Acelle\Cashier\PaymentGateway');
-            foreach(Subscription::whereNull('ends_at')->orWhere('ends_at', '>=', \Carbon\Carbon::now())->get() as $subscription) {
-                $subscription->sync($gateway);
-            }
+            // $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+            $gateway = Cashier::getPaymentGateway();
+            Subscription::check($gateway);
         })->name('subscription:run')->everyFiveMinutes();
     }
-    
+
     /**
      * Register the Closure based commands for the application.
      *

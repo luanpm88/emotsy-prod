@@ -53,48 +53,6 @@
 	</div>
 </form>
 
-
-@if($service->isValid())
-	<?php
-		$remotePlans = $service->serviceGateway->plan()->all();
-		$mapping = json_decode(config('cashier.gateways.braintree.fields.mapping'), true);
-	?>
-	<form enctype="multipart/form-data" action="{{ action('Admin\PaymentController@braintreeMapping') }}" method="POST" class="mapping form-validate-jquery">
-		{{ csrf_field() }}
-		
-		<div class="sub-section">
-			<div class="row">
-				<div class="col-md-6">
-					<h2>{{ trans('messages.braintree.plan_mapping') }}</h2>
-					<p>{{ trans('messages.braintree.plan_mapping.intro') }}</p>
-						
-					<ul class="dotted-list topborder section mb-20">
-						@foreach(\Acelle\Model\Plan::getAll()->get() as $plan)
-							<li class="flex">
-								<div class="unit size1of2">
-									<strong>{{ $plan->name }}</strong>
-								</div>
-								<div class="lastUnit size1of2">
-									<select class="form-control" name="mapping[{{ $plan->uid }}]" style="display: inline-block; width: 200px;">
-										<option value=''>{{ trans('messages.select_plan') }}</option>
-										@foreach ($remotePlans as $remotePlan) {
-											<option {{ isset($mapping[$plan->uid]) && $mapping[$plan->uid] == $remotePlan->id ? 'selected="selected"' : '' }} value="{{ $remotePlan->id }}">{{ $remotePlan->name }}</option>
-										@endforeach
-									</select>
-								</div>
-							</li>
-						@endforeach
-					</ul>
-						
-					<div class="text-left">
-						<button class="btn btn-mc_primary mr-5">{{ trans('messages.save') }}</button>
-						<a class="btn btn-mc_default" href="{{ action('Admin\PaymentController@index') }}">{{ trans('messages.cancel') }}</a>
-					</div>
-				</div>
-			</div>
-		</div>
-@endif
-
 <script>
 	$(document).ready(function() {
 		$(document).on('change keyup', 'form.braintree input, form.braintree select', function() {

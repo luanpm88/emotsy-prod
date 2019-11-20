@@ -492,7 +492,7 @@ class SendingServerController extends Controller
      */
     public function select2(Request $request)
     {
-        echo \Acelle\Model\SendingServer::select2($request);
+        echo \Acelle\Model\SendingServer::adminSelect2($request);
     }
     
     /**

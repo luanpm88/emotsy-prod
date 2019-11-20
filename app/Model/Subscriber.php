@@ -881,7 +881,7 @@ class Subscriber extends Model
             }
         }
     }
-    
+
     /**
      * Check if the subscriber is listed in the Blacklist database.
      */
@@ -890,8 +890,17 @@ class Subscriber extends Model
         // @todo Filter by current user only
         return Blacklist::where('email', '=', $this->email)->exists();
     }
-    
-    
+
+    public function getFullName($default = null)
+    {
+        $full = trim($this->getValueByTag('FIRST_NAME') . " " . $this->getValueByTag('LAST_NAME'));
+        if (empty($full)) {
+            return $default;
+        } else {
+            return $full;
+        }
+    }
+
     /**
      * Is the subscriber active?
      */
@@ -909,7 +918,7 @@ class Subscriber extends Model
             foreach (AutoTrigger::where('preceded_by', $this->id)->get() as $trigger) {
                 $trigger->delete();
             }
-            
+
             parent::delete();
         });
     }

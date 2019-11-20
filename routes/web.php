@@ -49,6 +49,15 @@ Route::get('/app/templates/{name?}', [ function ($name) {
     }
 }])->where('name', '.+');
 
+// upload path for campaigns
+Route::get('/app/campaigns/{name?}', [ function ($name) {
+    $path = storage_path("app/campaigns/$name");
+    $mime_type = \Acelle\Library\File::getFileType($path);
+    if (\File::exists($path)) {
+        return response()->file($path, array('Content-Type' => $mime_type));
+    }
+}])->where('name', '.+');
+
 // Setting upload path
 Route::get('setting/{filename}', 'SettingController@file');
 Route::get('/no-plan', 'AccountSubscriptionController@noPlan');
@@ -122,7 +131,7 @@ Route::group(['middleware' => ['not_installed']], function () {
     Route::post('lists/{list_uid}/sign-up', 'PageController@signUpForm');
     Route::get('lists/{list_uid}/sign-up/{subscriber_uid}/thank-you', 'PageController@signUpThankyouPage');
     Route::get('lists/{list_uid}/subscribe-confirm/{uid}/{code}', 'PageController@signUpConfirmationThankyou');
-    Route::get('lists/{list_uid}/unsubscribe/{uid}/{code}', 'PageController@unsubscribeForm');
+    Route::get('lists/{list_uid}/unsubscribe/{uid}/{code}', 'PageController@unsubscribeForm')->name('unsubscribeForm');
     Route::post('lists/{list_uid}/unsubscribe/{uid}/{code}', 'PageController@unsubscribeForm');
     Route::get('lists/{list_uid}/unsubscribe-success/{uid}', 'PageController@unsubscribeSuccessPage');
     Route::get('lists/{list_uid}/update-profile/{uid}/{code}', 'PageController@profileUpdateForm')->name('updateProfileUrl');
@@ -141,7 +150,8 @@ Route::group(['middleware' => ['not_installed']], function () {
 });
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function () {
-    // Account subscription    
+    // Account subscription
+    Route::get('subscription/pending', 'AccountSubscriptionController@pending');
     Route::get('subscription/checkout', 'AccountSubscriptionController@checkout');
     Route::get('subscription/review', 'AccountSubscriptionController@review');
     Route::get('subscription/select-plan', 'AccountSubscriptionController@selectPlan');
@@ -195,6 +205,9 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('assets/images/avatar/user-{uid?}.jpg', 'UserController@avatar');
 
     // Mail list
+    Route::get('lists/{uid}/clone-to-customers/choose', 'MailListController@cloneForCustomersChoose');
+    Route::post('lists/{uid}/clone-to-customers', 'MailListController@cloneForCustomers');
+    
     Route::get('lists/{uid}/verification/progress', 'MailListController@verificationProgress');
     Route::get('lists/{uid}/verification', 'MailListController@verification');
     Route::post('lists/{uid}/verification/start', 'MailListController@startVerification');
@@ -272,6 +285,15 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('lists/{list_uid}/pages/{alias}/preview', 'PageController@preview');
 
     // Template
+    Route::get('templates/{uid}/builder/change-template/{change_uid}', 'TemplateController@builderChangeTemplate');
+    Route::get('templates/builder/templates', 'TemplateController@builderTemplates');
+    Route::post('templates/builder/create', 'TemplateController@builderCreate');
+    Route::get('templates/builder/create', 'TemplateController@builderCreate');
+    Route::post('templates/{uid}/builder/edit/asset', 'TemplateController@builderAsset');
+    Route::get('templates/{uid}/builder/edit/content', 'TemplateController@builderEditContent');
+    Route::post('templates/{uid}/builder/edit', 'TemplateController@builderEdit');
+    Route::get('templates/{uid}/builder/edit', 'TemplateController@builderEdit');
+    
     Route::post('templates/{uid}/copy', 'TemplateController@copy');
     Route::get('templates/{uid}/copy', 'TemplateController@copy');
     Route::get('templates/{uid}/content', 'TemplateController@content');
@@ -292,6 +314,17 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::patch('templates/{uid}/update', 'TemplateController@update');
 
     // Campaign
+    Route::get('campaigns/{uid}/template/change/{template_uid}', 'CampaignController@templateChangeTemplate');
+    Route::post('campaigns/{uid}/template/asset', 'CampaignController@templateAsset');
+    Route::post('campaigns/{uid}/template/asset', 'CampaignController@templateAsset');
+    Route::get('campaigns/{uid}/template/content', 'CampaignController@templateContent');
+    Route::match(['get', 'post'], 'campaigns/{uid}/template/edit', 'CampaignController@templateEdit');
+    Route::match(['get', 'post'], 'campaigns/{uid}/template/upload', 'CampaignController@templateUpload');
+    Route::get('campaigns/{uid}/template/theme/list', 'CampaignController@templateThemeList');
+    Route::match(['get', 'post'], 'campaigns/{uid}/template/theme', 'CampaignController@templateTheme');
+    Route::match(['get', 'post'], 'campaigns/{uid}/template/layout', 'CampaignController@templateLayout');
+    Route::get('campaigns/{uid}/template/create', 'CampaignController@templateCreate');
+    
     Route::get('campaigns/{uid}/spam-score', 'CampaignController@spamScore');
     Route::get('campaigns/{from_uid}/copy-move-from/{action}', 'CampaignController@copyMoveForm');
     Route::post('campaigns/{uid}/resend', 'CampaignController@resend');
@@ -521,6 +554,15 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/users', 'UserController');
 
     // Template
+    Route::get('admin/templates/{uid}/builder/change-template/{change_uid}', 'TemplateController@builderChangeTemplate');
+    Route::get('admin/templates/builder/templates', 'TemplateController@builderTemplates');
+    Route::post('admin/templates/builder/create', 'TemplateController@builderCreate');
+    Route::get('admin/templates/builder/create', 'TemplateController@builderCreate');
+    Route::post('admin/templates/{uid}/builder/edit/asset', 'TemplateController@builderAsset');
+    Route::get('admin/templates/{uid}/builder/edit/content', 'TemplateController@builderEditContent');
+    Route::post('admin/templates/{uid}/builder/edit', 'TemplateController@builderEdit');
+    Route::get('admin/templates/{uid}/builder/edit', 'TemplateController@builderEdit');
+    
     Route::post('admin/templates/{uid}/copy', 'TemplateController@copy');
     Route::get('admin/templates/{uid}/copy', 'TemplateController@copy');
     Route::get('admin/templates/sort', 'TemplateController@sort');
@@ -809,7 +851,6 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/sub_accounts', 'SubAccountController');
 
     // Payment gateways
-    Route::post('admin/payment/gateways/braintree/mapping', 'PaymentController@braintreeMapping');
     Route::post('admin/payment/gateways/{name}/set-primary', 'PaymentController@setPrimary');
     Route::post('admin/payment/gateways/update/{name}', 'PaymentController@update');
     Route::get('admin/payment/gateways/edit/{name}', 'PaymentController@edit');

@@ -260,7 +260,7 @@ class Campaign extends AbsCampaign
         # Subscriber specific
         if (!$this->isStdClassSubscriber($subscriber)) {
             $tags['UPDATE_PROFILE_URL'] = $this->generateUpdateProfileUrl($subscriber);
-            $tags['UNSUBSCRIBE_URL'] = $this->generateUnsubscribeUrl($msgId);
+            $tags['UNSUBSCRIBE_URL'] = $this->generateUnsubscribeUrl($msgId, $subscriber);
             $tags['WEB_VIEW_URL'] = $this->generateWebViewerUrl($msgId);
 
             # Subscriber custom fields
@@ -306,7 +306,7 @@ class Campaign extends AbsCampaign
             $conditions = [];
             foreach ($this->listsSegments as $lists_segment) {
                 if (!empty($lists_segment->segment_id)) {
-                    // Segment 
+                    // Segment
                     $conds = $lists_segment->segment->getSubscribersConditions();
                     if (!empty($conds['joins'])) {
                         foreach ($conds['joins'] as $joining) {
@@ -459,5 +459,46 @@ class Campaign extends AbsCampaign
     public function pickSendingServer()
     {
         return $this->defaultMailList->pickSendingServer();
+    }
+    
+    /**
+     * Get builder templates.
+     *
+     * @return mixed
+     */
+    public function getBuilderTemplates($customer)
+    {
+        $result = [];
+        
+        // Gallery
+        $templates = Template::where('customer_id', '=', null)
+            ->orWhere('customer_id', '=', $customer->id)
+            ->orderBy('customer_id')
+            ->get();
+        
+        foreach($templates as $template) {
+            $result[] = [
+                'name' => $template->name,
+                'url' => action('CampaignController@templateChangeTemplate', ['uid' => $this->uid, 'change_uid' => $template->uid]),
+                'thumbnail' => action('TemplateController@image', $template->uid),
+            ];
+        }
+        
+        return $result;
+    }
+    
+    /**
+     * Get builder templates.
+     *
+     * @return mixed
+     */
+    public function changeTemplate($template)
+    {
+        \Acelle\Library\Tool::xcopy($template->getUploadDir(), $this->getUploadDir());
+        $this->html = $template->content;
+        $this->image = $template->image;
+        // replace image url
+        $this->html = str_replace($template->getUploadUri(), $this->getUploadUri(), $this->html);
+        $this->save();
     }
 }

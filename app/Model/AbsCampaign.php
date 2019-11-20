@@ -31,9 +31,14 @@ use Acelle\Model\SendingDomain;
 use Acelle\Model\SendingServer;
 use Acelle\Model\Subscriber;
 use Acelle\Model\TrackingLog;
+use Validator;
+use Illuminate\Validation\ValidationException;
 use DB;
 use Carbon\Carbon;
 use File;
+use Sunra\PhpSimple\HtmlDomParser;
+use Acelle\Library\Tool;
+use ZipArchive;
 
 abstract class AbsCampaign extends Model
 {
@@ -534,7 +539,7 @@ abstract class AbsCampaign extends Model
             'X-Acelle-Customer-Id' => $this->customer->uid,
             'X-Acelle-Message-Id' => $msgId,
             'X-Acelle-Sending-Server-Id' => $server->uid,
-            'List-Unsubscribe' => '<'.$this->generateUnsubscribeUrl($msgId).'>',
+            'List-Unsubscribe' => '<'.$this->generateUnsubscribeUrl($msgId, $subscriber).'>',
             'Precedence' => 'bulk',
         );
     }
@@ -865,7 +870,8 @@ abstract class AbsCampaign extends Model
         }
 
         // Step 3
-        if ((!empty($this->html) || $this->type == 'plain-text') && !empty($this->plain) && $this->unsubscribe_url_valid()) {
+        // if ((!empty($this->html) || $this->type == 'plain-text') && !empty($this->plain) && $this->unsubscribe_url_valid()) {
+        if ((!empty($this->html) || $this->type == 'plain-text') && !empty($this->plain)) {
             $step = 3;
         } else {
             return $step;
@@ -1654,9 +1660,13 @@ abstract class AbsCampaign extends Model
         return $records->take($number);
     }
 
-    public function generateUnsubscribeUrl($msgId)
+    public function generateUnsubscribeUrl($msgId, $subscriber)
     {
+        // OPTION 1: immediately opt out
         $path = route('unsubscribeUrl', ['message_id' => StringHelper::base64UrlEncode($msgId)], false);
+
+        // OPTION 2: unsubscribe form
+        $path = route('unsubscribeForm', ['list_uid' => $subscriber->mailList->uid, 'code' => $subscriber->getSecurityToken('unsubscribe'), 'uid' => $subscriber->uid], false);
 
         return $this->buildPublicUrl($path);
     }
@@ -2448,5 +2458,202 @@ abstract class AbsCampaign extends Model
         list($message, $msgId) = $this->prepareEmail($subscriber, $server);
 
         return $message;
+    }
+    
+    /**
+     * Get public campaign upload uri.
+     */
+    public function getUploadUri()
+    {
+        return 'app/campaigns/template_' . $this->uid;
+    }
+    
+    /**
+     * Get public campaign upload dir.
+     */
+    public function getUploadDir()
+    {
+        return storage_path('app/campaigns/template_' . $this->uid);
+    }
+    
+    /**
+     * Get public campaign upload dir.
+     */
+    public function updatePlainFromHtml()
+    {
+        $this->plain = preg_replace('/\s+/', ' ', preg_replace('/\r\n/', ' ', strip_tags($this->html)));
+        $this->save();
+    }
+    
+    /**
+     * Create template from layout.
+     *
+     * All availabel template tags
+     */
+    public function addTemplateFromLayout($layout)
+    {        
+        $sDir = database_path('layouts/' . $layout);
+        $dDir = $this->getUploadDir();
+        
+        // Copy source code
+        \Acelle\Library\Tool::xcopy($sDir, $dDir);
+        
+        // get layout content
+        $html = file_get_contents($sDir . '/index.html');
+        
+        // change content
+        $document = HtmlDomParser::str_get_html($html);
+        foreach($document->find('img, script') as $element) {            
+            if (preg_match('/^http/', $element->src) == 0) {
+                $element->src = '/' . $this->getUploadUri() . '/' . $element->src;
+            }
+        }
+        foreach($document->find('link') as $element) {            
+            if (preg_match('/^http/', $element->href) == 0) {
+                $element->href = '/' . $this->getUploadUri() . '/' . $element->href;
+            }
+        }
+        
+        // set document as campaign html
+        $this->html =  $document;
+        
+        // save template
+        $this->save();
+        
+        // update plain
+        $this->updatePlainFromHtml();
+    }
+    
+    /**
+     * Upload a template.
+     */
+    public function uploadTemplate($request)
+    {
+        $rules = array(
+            'file' => 'required|mimetypes:application/zip,application/octet-stream,application/x-zip-compressed,multipart/x-zip',
+        );
+
+        $validator = Validator::make($request->all(), $rules, [
+            'file.mimetypes' => 'Input must be a valid .zip file',
+        ]);
+        
+        if ($validator->fails()) {
+            throw new ValidationException($validator);
+        }
+        
+        // move file to temp place
+        $tmp_path = storage_path('tmp/uploaded_template_'.$this->uid.'_'.time());
+        $file_name = $request->file('file')->getClientOriginalName();
+        $request->file('file')->move($tmp_path, $file_name);
+        $tmp_zip = join_paths($tmp_path, $file_name);
+        
+        // read zip file check if zip archive invalid
+        $zip = new ZipArchive();
+        if ($zip->open($tmp_zip, ZipArchive::CREATE) !== true) {
+            // @todo hack
+            // $validator = Validator::make([], []); // Empty data and rules fields
+            $validator->errors()->add('file', 'Cannot open .zip file');
+            throw new ValidationException($validator);
+        }
+
+        // unzip template archive and remove zip file
+        $zip->extractTo($tmp_path);
+        $zip->close();
+        unlink($tmp_zip);
+
+        // try to find the main file, index.html | index.html | file_name.html | ...
+        $archive_name = str_replace(array('../', './', '..\\', '.\\', '..'), '', basename($file_name, '.zip'));
+        $main_file = null;
+        $sub_path = "";
+        $possible_main_file_names = array('index.html', 'index.htm', $archive_name.'.html', $archive_name.'.htm');
+        
+        $possible_main_file_names = array('index.html', 'index.htm', $archive_name.'.html', $archive_name.'.htm');
+        foreach ($possible_main_file_names as $name) {
+            if (is_file($file = $tmp_path.'/'.$name)) {
+                $main_file = $file;
+                break;
+            }
+            $dirs = array_filter(glob($tmp_path.'/'.'*'), 'is_dir');
+            foreach($dirs as $sub) {
+                if (is_file($file = $sub.'/'.$name)) {
+                    $main_file = $file;
+                    $sub_path = explode("/",$sub)[count(explode("/",$sub))-1]."/";
+                    break;
+                }
+            }
+        }
+        // try to find first htm|html file
+        if ($main_file === null) {
+            $objects = scandir($tmp_path);
+            foreach ($objects as $object) {
+                if ($object != '.' && $object != '..') {
+                    if (!is_dir($tmp_path.'/'.$object)) {
+                        if (preg_match('/\.html?$/i', $object)) {
+                            $main_file = $tmp_path.'/'.$object;
+                            break;
+                        }
+                    }
+                }
+            }
+            $dirs = array_filter(glob($tmp_path.'/'.'*'), 'is_dir');
+            foreach($dirs as $sub) {
+                $objects = scandir($sub);
+                foreach ($objects as $object) {
+                    if ($object != '.' && $object != '..') {
+                        if (!is_dir($sub.'/'.$object)) {
+                            if (preg_match('/\.html?$/i', $object)) {
+                                $main_file = $sub.'/'.$object;
+                                $sub_path = explode("/",$sub)[count(explode("/",$sub))-1]."/";
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // main file not found
+        if ($main_file === null) {
+            $validator->errors()->add('file', 'Cannot find index file (index.html) in the template folder');
+            throw new ValidationException($validator);
+        }
+
+        // read main file content
+        $html_content = trim(file_get_contents($main_file));
+
+        // Save new html
+        $public_dir = $this->getUploadUri();
+        $public_upload_path = $this->getUploadDir();
+        
+        $this->html = $html_content;
+        $this->html = \Acelle\Library\Tool::replaceHtmlUrl($this->html, $request->root().'/'.$public_dir.'/'.$sub_path);
+        $this->save();
+
+        // copy all folder to public path
+        if (!file_exists($public_upload_path)) {
+            mkdir($public_upload_path, 0777, true);
+        }
+        // exec("cp -r {$tmp_path}/* {$public_upload_path}/");
+        Tool::xcopy($tmp_path, $public_upload_path);
+
+        // remove tmp folder
+        // exec("rm -r {$tmp_path}");
+        Tool::xdelete($tmp_path);
+        
+        // update plain
+        $this->updatePlainFromHtml();
+    }
+    
+    /**
+     * Copy new template.
+     */
+    public function copyFromTemplate($template)
+    {
+        \Acelle\Library\Tool::xcopy($template->getUploadDir(), $this->getUploadDir());
+        
+        // replace image url
+        $this->html = $template->content;
+        $this->html = str_replace($template->getUploadUri(), $this->getUploadUri(), $this->html);
+        $this->save();
     }
 }

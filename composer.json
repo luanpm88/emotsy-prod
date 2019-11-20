@@ -37,6 +37,7 @@
         "skyscanner/jsonpath": "^0.7.3",
         "sparkpost/sparkpost": "^2.1",
         "stripe/stripe-php": "^6.22",
+        "sunra/php-simple-html-dom-parser": "^1.5",
         "swiftmailer/swiftmailer": "^5.4",
         "symfony/yaml": "^3.1",
         "tijsverkoyen/css-to-inline-styles": "^2.2",

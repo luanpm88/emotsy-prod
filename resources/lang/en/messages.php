@@ -1990,7 +1990,7 @@
   'select_tool.whole_page' => 'Current page',
   'select_tool.all_items' => 'All items',
   'plan_option.system_s_sending_server' => 'Use system\'s sending servers',
-  'plan_option.system_s_sending_server.intro' => 'This is the standard setting. Users subscribing to this plan do not have to care about how emails are actually sent. Email delivery is managed by the administrator and is transparent to users. Click the Settings button below to set up email delivery service for this plan',
+  'plan_option.system_s_sending_server.intro' => 'This is the standard setting. Users subscribing to this plan do not have to care about how emails are actually sent. Email delivery is managed by the administrator and is transparent to users. Once you have created the plan, you will be able to configure sending servers for the plan',
   'plan_option.own_sending_server' => 'Use own sending servers',
   'plan_option.own_sending_server.intro' => 'This is the extended setting for advanced users who want to manage their own sending services. Users subscribing to this plan need to add and manage their own sending servers',
   'plan_option.sub_account' => 'Use a sub-account of system\'s sending servers',
@@ -2148,11 +2148,12 @@
       You can configure a standard SMTP connection or connect to a 3rd services like Amazon SES,
       SendGrid, Mailgun, ElasticEmail, Sparkpost... You can also take advantage of the the hosting server\'s
       email capability by creating a "PHP Mail" or "Sendmail" sending server',
-  'plan.sending_servers.list_intro' => 'Below are the sending servers available for users subscribed to this plan.
-      Emails sent out by users will be delivered by these servers',
+  'plan.sending_servers.list_intro' => 'Below are sending servers that will be used for this plan.
+      In other words, emails sent out by users who subscribe to this plan will be delivered by these servers',
   'plan.sending_servers' => 'Sending servers',
-  'plan.sending_servers.listing' => 'All available sending servers',
+  'plan.sending_servers.listing' => 'Sending servers',
   'plan.sending_servers.add' => 'Add Sending Server',
+  'plan.sending_servers.add.ok' => 'OK',
   'plan.sending_identify' => 'Sending Identify',
   'plan.sending_identify.intro' => 'Verifying an Identity for Amazon SES Sending Authorization. The first step in configuring sending
       authorization is to prove that you own the email address or domain from which the
@@ -2164,7 +2165,6 @@
   'plan.fitness' => 'Fitness',
   'plan.fitness.save' => 'Save',
   'plan.sending_servers.settings' => 'Settings',
-  'plan.sending_servers.fitness.change' => 'Finess',
   'plan.sending_servers.fitness.updated' => 'Fitnesses was successfully updated.',
   'sending_servers.configuration_settings' => 'Configuration settings',
   'sending_servers.amazon_api_key.intro' => 'Amazon Simple Email Service (Amazon SES) is a cloud-based email sending service designed to help digital marketers and application developers send marketing, notification, and transactional emails. Obtain your Amazon SES key pairs and fill in the form below to get connected',
@@ -2192,6 +2192,7 @@
   'sending_server.test_connection' => 'Test Connection',
   'sending_server.send_a_test_email' => 'Send A Test Email',
   'sending_servers.fitness' => 'Probability',
+  'sending_servers.fitness.explain' => 'When it comes to deliver an email, if there are more than one sending servers available, Acelle will pick one randomly. The higher probability value a sending server has, the more likely it is selected',
   'sending_servers.sending_limit.phrase' => ':quota_value emails per :quota_base :quota_unit',
   'sending_server.quota.unlimited' => 'Unlimited',
   'sending_servers.sending_identity.mailgun.intro' => 'The following domains were verified against your Mailgun account.
@@ -2239,62 +2240,19 @@
   'plan.sending_server.primary.updated' => 'Primary sending server was successfully updated.',
   'sending_servers.set_primary' => 'Set primary',
   'sending_servers.primary' => 'primary',
-  'plan.sending_identify.intro.amazon-api' => 'You are using Amazon SES as your primary delivery method.
-      Amazon SES requires that users verify their identities (the domains or email addresses that you send
-      email from) to confirm their ownership, and to prevent unauthorized use. Only verified identity can
-      be used as FROM email address when setting campaign email.
-      Bounce and feedback loop is handled by Amazon SES through API without users having
-      to configure anything at Acelle Mail',
-  'plan.sending_identify.intro.amazon-smtp' => 'You are using Amazon SES as your primary delivery method.
-      Amazon SES requires that users verify their identities (the domains or email addresses that you send
-      email from) to confirm their ownership, and to prevent unauthorized use. Only verified identity can
-      be used as FROM email address when setting campaign email.
-      Bounce and feedback loop is handled by Amazon SES through API without users having
-      to configure anything at Acelle Mail',
-  'plan.sending_identify.intro.smtp' => 'It is recommended that users verify their own identities (domains or
-      email addresses) to confirm their ownership, and to prevent unauthorized use. Only verified identity can
-      be used as FROM email address. Users will need to set up a bounce/feedback handler
-      (in Sending > Bounce/Feedback Handler) to process bounced/feedback messages.',
-  'plan.sending_identify.intro.sendmail' => 'It is recommended that users verify their own identities (domains or
-      email addresses) to confirm their ownership, and to prevent unauthorized use. Only verified identity can
-      be used as FROM email address. Users will need to set up a bounce/feedback handler
-      (in Sending > Bounce/Feedback Handler) to process bounced/feedback messages.',
-  'plan.sending_identify.intro.php-mail' => 'It is recommended that users verify their own identities (domains or
-      email addresses) to confirm their ownership, and to prevent unauthorized use. Only verified identity can
-      be used as FROM email address. Users will need to set up a bounce/feedback handler
-      (in Sending > Bounce/Feedback Handler) to process bounced/feedback messages.',
-  'plan.sending_identify.intro.mailgun-api' => 'You are using [Mailgun] as your primary delivery method.
-      [Mailgun] only allows sending from a verified sending domain that you register against [Mailgun].
-      Bounce and feedback loop is handled by
-      [Mailgun] through API without users having to configure anything at Acelle Mail',
-  'plan.sending_identify.intro.mailgun-smtp' => 'You are using [Mailgun] as your primary delivery method.
-      [Mailgun] only allows sending from a verified sending domain that you register against [Mailgun].
-      Bounce and feedback loop is handled by
-      [Mailgun] through API without users having to configure anything at Acelle Mail',
-  'plan.sending_identify.intro.sendgrid-api' => 'It is recommended that users verify their own identities (domains or
-      email addresses) to confirm their ownership, and to prevent unauthorized use. Only verified identity can
-      be used as FROM email address. Users will need to set up a bounce/feedback handler
-      (in Sending > Bounce/Feedback Handler) to process bounced/feedback messages.',
-  'plan.sending_identify.intro.sendgrid-smtp' => 'It is recommended that users verify their own identities (domains or
-      email addresses) to confirm their ownership, and to prevent unauthorized use. Only verified identity can
-      be used as FROM email address. Users will need to set up a bounce/feedback handler
-      (in Sending > Bounce/Feedback Handler) to process bounced/feedback messages.',
-  'plan.sending_identify.intro.elasticemail-api' => 'You are using [Elasticemail] as your primary delivery method.
-      [Elasticemail] only allows sending from a verified sending domain that you register against [Elasticemail].
-      Bounce and feedback loop is handled by
-      [Elasticemail] through API without users having to configure anything at Acelle Mail',
-  'plan.sending_identify.intro.elasticemail-smtp' => 'You are using [Elasticemail] as your primary delivery method.
-      [Elasticemail] only allows sending from a verified sending domain that you register against [Elasticemail].
-      Bounce and feedback loop is handled by
-      [Elasticemail] through API without users having to configure anything at Acelle Mail',
-  'plan.sending_identify.intro.sparkpost-api' => 'You are using [Sparkpost] as your primary delivery method.
-      [Sparkpost] only allows sending from a verified sending domain that you register against [Sparkpost].
-      Bounce and feedback loop is handled by
-      [Sparkpost] through API without users having to configure anything at Acelle Mail',
-  'plan.sending_identify.intro.sparkpost-smtp' => 'You are using [Sparkpost] as your primary delivery method.
-      [Sparkpost] only allows sending from a verified sending domain that you register against [Sparkpost].
-      Bounce and feedback loop is handled by
-      [Sparkpost] through API without users having to configure anything at Acelle Mail',
+  'plan.sending_identify.intro.amazon-api' => 'Your plan is setup to use Amazon SES as primary delivery method. Users who subscribe to this plan must use the following identities as their FROM email address. Edit your sending server setting to add more identities',
+  'plan.sending_identify.intro.amazon-smtp' => 'Your plan is setup to use Amazon SES as primary delivery method. Users who subscribe to this plan must use the following identities as their FROM email address. Edit your sending server setting to add more identities',
+  'plan.sending_identify.intro.smtp' => 'Below are <span class="xtooltip" title=\'A sending domain is a domain that is used to indicate who an email is from via the "From:" header\'>sending domains</span> that users who subscribe to this plan can use to send email on behalf of. You can also edit your sending server setting to allow users to add and verify their own sending domains',
+  'plan.sending_identify.intro.sendmail' => 'Below are <span class="xtooltip" title=\'A sending domain is a domain that is used to indicate who an email is from via the "From:" header\'>sending domains</span> that users who subscribe to this plan can use to send email on behalf of. You can also edit your sending server setting to allow users to add and verify their own sending domains',
+  'plan.sending_identify.intro.php-mail' => 'Below are <span class="xtooltip" title=\'A sending domain is a domain that is used to indicate who an email is from via the "From:" header\'>sending domains</span> that users who subscribe to this plan can use to send email on behalf of. You can also edit your sending server setting to allow users to add and verify their own sending domains',
+  'plan.sending_identify.intro.mailgun-api' => 'Your plan is setup to use Mailgun as primary delivery method. Users who subscribe to this plan must use the following identities as their FROM email address. Edit your sending server setting to add more identities',
+  'plan.sending_identify.intro.mailgun-smtp' => 'Your plan is setup to use Mailgun as primary delivery method. Users who subscribe to this plan must use the following identities as their FROM email address. Edit your sending server setting to add more identities',
+  'plan.sending_identify.intro.sendgrid-api' => 'Below are <span class="xtooltip" title=\'A sending domain is a domain that is used to indicate who an email is from via the "From:" header\'>sending domains</span> that users who subscribe to this plan can use to send email on behalf of. You can also edit your sending server setting to allow users to add and verify their own sending domains',
+  'plan.sending_identify.intro.sendgrid-smtp' => 'Below are <span class="xtooltip" title=\'A sending domain is a domain that is used to indicate who an email is from via the "From:" header\'>sending domains</span> that users who subscribe to this plan can use to send email on behalf of. You can also edit your sending server setting to allow users to add and verify their own sending domains',
+  'plan.sending_identify.intro.elasticemail-api' => 'Your plan is setup to use Elasticemail as primary delivery method. Users who subscribe to this plan must use the following identities as their FROM email address. Edit your sending server setting to add more identities',
+  'plan.sending_identify.intro.elasticemail-smtp' => 'Your plan is setup to use Elasticemail as primary delivery method. Users who subscribe to this plan must use the following identities as their FROM email address. Edit your sending server setting to add more identities',
+  'plan.sending_identify.intro.sparkpost-api' => 'Your plan is setup to use Sparkpost as primary delivery method. Users who subscribe to this plan must use the following identities as their FROM email address. Edit your sending server setting to add more identities',
+  'plan.sending_identify.intro.sparkpost-smtp' => 'Your plan is setup to use Sparkpost as primary delivery method. Users who subscribe to this plan must use the following identities as their FROM email address. Edit your sending server setting to add more identities',
   'sending_server.testing' => 'Checking server connection...',
   'sending_server.test_success' => 'The sending server is valid',
   'sending_servers.php-mail.intro' => 'Configure Acelle Mail to send emails directly through the hosting server\'s through PHP
@@ -2392,16 +2350,13 @@
   'plan.payment.intro' => 'Connect your plan to a payment gateway like Stripe or Braintree/Paypal,
     to accept payment online',
   'payment_gateways' => 'Payment gateways',
-  'payment_gateways.wording' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-    Sed ac ultrices nibh. Mauris porta, augue id condimentum feugiat, ipsum lectus sagittis est, accumsan blandit
-    sapien eros tincidunt nulla. Nam massa nisl, facilisis quis rhoncus quis, blandit ac sem.
-    Pellentesque ornare ante sit amet dolor cursus, nec egestas nisi scelerisque.',
+  'payment_gateways.wording' => 'To accept payments from your Acelle users, you will need to use a supported payment gateway. Please choose  your preferred payment gateway from the list below',
   'payment.status.active' => 'active',
   'payment.status.inactive' => 'inactive',
   'payments.cash' => 'Cash',
   'payments.stripe' => 'Stripe',
   'payments.cash.list_intro' => 'Pay by Cash',
-  'payments.stripe.list_intro' => 'Pay with Stripe credit card',
+  'payments.stripe.list_intro' => 'Receive payments from Credit / Debit card to your Stripe account',
   'payment.cash.wording' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.
     Sed ac ultrices nibh. Mauris porta, augue id condimentum feugiat, ipsum lectus sagittis est, accumsan blandit
     sapien eros tincidunt nulla. Nam massa nisl, facilisis quis rhoncus quis, blandit ac sem.
@@ -2444,15 +2399,12 @@
   'subscription.change_plan' => 'Change plan',
   'subscription.change_plan.wording' => 'Select plan below to change',
   'payments.braintree' => 'Braintree',
-  'payments.braintree.list_intro' => 'Pay with Braintree',
+  'payments.braintree.list_intro' => 'Receive payments from Credit / Debit card to your Braintree account',
   'payment.braintree.environment' => 'Environment',
   'payment.braintree.merchant_id' => 'Merchant ID',
   'payment.braintree.public_key' => 'Public key',
   'payment.braintree.private_key' => 'Private key',
-  'payment.braintree.wording' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-    Sed ac ultrices nibh. Mauris porta, augue id condimentum feugiat, ipsum lectus sagittis est, accumsan blandit
-    sapien eros tincidunt nulla. Nam massa nisl, facilisis quis rhoncus quis, blandit ac sem.
-    Pellentesque ornare ante sit amet dolor cursus, nec egestas nisi scelerisque.',
+  'payment.braintree.wording' => 'Braintree is a full-stack payments platform that makes it easy to accept payments in Acelle Mail. You will need to sign up for a Braintree account, obtain your integration ID and keys and set it up below',
   'purchasing_intro_braintree' => 'Please fill out the below information so we can setup your account for puchasing the <a><strong>:plan plan</strong></a> with the Pay with Braintree option
       . Your plan price is: <a><strong>:price</strong></a>',
   'payment.braintree.request_payment_method' => 'Request payment method',
@@ -2478,8 +2430,8 @@
   'subscription.updated_at' => 'Updated at',
   'payment.braintree' => 'Braintree',
   'payments.coinpayments' => 'Coin-Payments',
-  'payments.coinpayments.list_intro' => 'Multiple Cryptocurrencies accepted via CoinPayments',
-  'payment.coinpayments.wording' => 'Multiple Cryptocurrencies accepted via CoinPayments',
+  'payments.coinpayments.list_intro' => 'Receive payment from a cryptocurrency like Bitcoin, Monero, ZCash, etc.',
+  'payment.coinpayments.wording' => 'You can accept payments from many cryptocurrencies like Bitcoin, Monero, ZCash, etc. You will need to sign up for a Coint-Payments account, obtain your integration ID and keys and set it up below',
   'payment.coinpayments.merchant_id' => 'Merchant ID',
   'payment.coinpayments.public_key' => 'Public key',
   'payment.coinpayments.private_key' => 'Private key',
@@ -2506,8 +2458,8 @@
   'subscription.current_subscription.cancel_at_end_of_period_no_recurring_supported.wording' => 'You are currently subscribed to <strong>:plan</strong> (<strong>:money</strong>).<br>
       The subscription will be end in <strong>:remain</strong>, on <strong>:end_at</strong>.',
   'payments.direct' => 'Direct payment',
-  'payments.direct.list_intro' => 'Payment are created and saved local server.',
-  'payment.direct.wording' => 'Payment are created and saved local server. Manually update payment records via app.',
+  'payments.direct.list_intro' => 'Receive payments outside of the application',
+  'payment.direct.wording' => 'Write instructions for your users to make a payment outside of the application. For example: deposit to your bank account or pay by cash. Use this option when you do not have any payment gateway account like Stripe, Braintree or PayPal',
   'payment.direct.database_path' => 'Database file path',
   'payment_gateway.not_valid' => 'Something went wrong: :message',
   'subscription.pending.direct.wording' => 'You are currently subscribed to <strong>:plan</strong> (<strong>:money</strong>).
@@ -2573,9 +2525,9 @@
   'subscription.change_now' => 'Change now',
   'subscription.plan_changed.lower_error' => 'Can not change from higher plan to lower one',
   'payment.settings' => 'Settings',
-  'system.renew_free_plan' => 'Can renew free plan',
+  'system.renew_free_plan' => 'Allow users to renew FREE plans',
   'setting.renew_free_plan.help' => 'Customers who are subscribing to a Free plan can not renew the plan. Need to change to a no-free plan first.',
-  'payment.direct.notice' => 'Payment notice/guide',
+  'payment.direct.notice' => 'Payment instructions',
   'plans.subscriber_count' => ':count subscriber(s)',
   'payment.direct' => 'Direct',
   'plan.info.subscriber_count' => 'There are <strong>:count</strong> customer(s) currently subscribed to this plan.
@@ -2650,6 +2602,21 @@
   'campaign.score' => 'Score',
   'campaign.score.description' => 'Description',
   'custom_script' => 'Copy and paste your custom scripts in the box below. It will be included in every page',
+  'buider.try_new' => 'Try new Builder',
+  'builder.beta' => 'beta',
+  'template.new_template' => 'New template',
+  'template.name_your_new_template' => 'Name your new template',
+  'template.select_your_template' => 'Select one of template layouts below',
+  'template.create_and_design' => 'Start Design',
+  'layouts' => 'Layouts',
+  'template.need_select_template' => 'Please select layout or template for the template',
+  'admin.dashboard.recent_activity.wording' => 'By default, all activities of customers are logged for investigating. Visit <a href=":here"> Customers Dashboard</a> to see the full list',
+  'list.clone_for_other_users' => 'Clone for other users',
+  'list.select_customer_for_clone_list' => 'Clone :list list',
+  'list.select_customer_for_clone_list.intro' => 'Select one or more customers below and click Start Clone button to clone this list for',
+  'list.start_clone' => 'Start Clone',
+  'click_here_select_customer' => 'Click here to select customer',
+  'list.clone_for.success' => 'List was successfully cloned.',
   'plan_option.delivery_setting' => 'Delivery setting',
   'plan_option.change' => 'Change',
   'plan.sending_server.option' => 'Sending server option',
@@ -2658,7 +2625,7 @@
   'plan.sending_server.saved' => 'Plan sending server setting was successfully saved.',
   'plan.sending_servers.sub_account.setting' => 'Setting',
   'plan.sending_servers.sub_account.setting.intro' => 'Below are available options for configuring how customers can use their own sending servers for subaccount creation.',
-  'plan.no_available_plan' => 'There are no available plans now. Please try again later!',
+  'plan.no_available_plan' => 'There are no ACTIVE plans. Please check with your service administrator',
   'customers.desc' => 'Manage your system users who subscribe to a plan',
   'subscriptions.desc' => 'Manage user subscriptions. See who suscribe to which plan.',
   'subscription.next_billing' => 'Next billing',
@@ -2742,4 +2709,31 @@
   'automation.action.condition.intro' => 'Choose one of the conditions below for your workflow. Acelle Mail will evaluate the condition
         and branch off your workflow accordingly.',
   'automation.action.set_up_your_condition' => 'Set up your condition',
+  'subscription.subscription_end' => 'Ends at',
+  'subscription.ended' => 'Ended',
+  'n_a' => 'N/A',
+  'campaign.content_management' => 'Content Management',
+  'campaign.email_content' => 'Email Content',
+  'campaign.email_content.intro' => 'Create your email from scratch or start from Acelle Mail per-built templates / themes.
+        Customize the content the way you desire with our powerful but easy-to-use HTML email builder.',
+  'campaign.template.from_layout' => 'From a Template Layout',
+  'campaign.template.from_layout.intro' => 'Craft your email based off a pre-built layout we made for you',
+  'campaign.template.from_theme' => 'From a theme',
+  'campaign.template.from_theme.intro' => 'No need to create an email from scratch. Start from a beautiful template we have',
+  'campaign.template.start' => 'Start',
+  'campaign.template.upload' => 'Upload own template',
+  'campaign.template.upload.intro' => 'Upload your own template in ZIP format',
+  'campaign.choose_your_template_layout' => 'Choose layout for campaign template',
+  'campaign.choose_template.intro' => 'Select campaign template depend on your purpose.
+        You can create template from scratch or select from exist templates.',
+  'campaign.edit_template' => 'Edit campaign template',
+  'campaign.html_email' => 'HTML Email',
+  'campaign.html_email.last_edit' => 'Last edited on :date',
+  'campaign.compose_email' => 'Compose Email',
+  'campaign.change_template' => 'Change Template',
+  'campaign.attachment' => 'Attachment',
+  'campaign.attachment.intro' => 'Email will be sent with the follow files below.
+        Drag and drop your local files to upload zone to attach files into the campaign email.',
+  'campaign.attachment.file_size_is' => 'File size: :size',
+  'campaign.attached_files' => 'Attached files',
 ) ?>

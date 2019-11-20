@@ -71,7 +71,7 @@
 							<a href="{{ action('Admin\TemplateController@upload') }}" type="button" class="btn bg-info-800">
 								<i class="icon icon-upload"></i> {{ trans('messages.upload') }}
 							</a>
-							<a href="{{ action('Admin\TemplateController@buildSelect') }}" type="button" class="btn bg-info-800">
+							<a href="{{ action('Admin\TemplateController@builderCreate') }}" type="button" class="btn bg-info-800">
 								<i class="icon icon-plus2"></i> {{ trans('messages.create') }}
 							</a>
 						</div>

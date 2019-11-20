@@ -14,11 +14,13 @@ function initJs(container) {
     container.find('select').select2({
         minimumResultsForSearch: 101,
         templateResult: formatSelect2TextOption,
-        templateSelection: formatSelect2TextSelected
+        templateSelection: formatSelect2TextSelected,
+        placeholder: function(){
+            $(this).attr('data-placeholder');
+        }
     });
     
     // pick a time
-    // Time picker
     if (container.find(".pickatime").length) {
         container.find(".pickatime").AnyTime_picker({
             format: "%H:%i"
@@ -41,6 +43,124 @@ function initJs(container) {
         format: 'yyyy-mm-dd',
         language: LANG_CODE
     });
+    
+    // Select2 ajax
+    container.find(".select2-ajax").each(function() {
+        var url = $(this).attr("data-url");
+        var placeholder = $(this).attr("placeholder");
+        if(typeof(placeholder) == 'undefined') {
+            placeholder = "";
+        }
+        $(this).select2({
+            placeholder: placeholder,
+            allowClear: true,
+            ajax: {
+                url: url,
+                dataType: 'json',
+                delay: 250,
+
+                data: function (params) {
+                  return {
+                    q: params.term, // search term
+                    page: params.page
+                  };
+                },
+                processResults: function (data, params) {
+                    // parse the results into the format expected by Select2
+                    // since we are using custom formatting functions we do not need to
+                    // alter the remote JSON data, except to indicate that infinite
+                    // scrolling can be used
+                    params.page = params.page || 1;
+
+                    return {
+                        results: data.items,
+                        pagination: {
+                            more: (params.page * 30) < data.total_count
+                        }
+                    };
+                },
+                cache: true
+            },
+            escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+            minimumInputLength: 0,
+            templateResult: formatSelect2TextOption,
+            templateSelection: formatSelect2TextSelected,
+        });
+    });
+    
+    if (container.find(".listing-form").length) {
+        container.find(".listing-form").each(function() {
+            var form = $(this);
+            var id = form.attr('data-id');
+    
+            if(typeof(id) === 'undefined') {
+                form.attr('data-id', guid());
+            }
+            if (form.find('.table-boxes').length) {
+                // sortable box
+                // Make list sortable
+                form.sortable({
+                    connectWith: '.boxes-plans',
+                    items: '.plan-box-list',
+                    helper: 'original',
+                    cursor: 'move',
+                    handle: '.panel-heading',
+                    revert: 100,
+                    containment: '.boxes-plans',
+                    forceHelperSize: true,
+                    placeholder: 'sortable-placeholder',
+                    forcePlaceholderSize: true,
+                    tolerance: 'pointer'
+                });
+            } else {
+              // Make list sortable
+              form.sortable({
+                  connectWith: '.row-sortable',
+                  items: 'tr',
+                  helper: 'original',
+                  cursor: 'move',
+                  handle: '[data-action=move]',
+                  revert: 100,
+                  containment: 'tbody',
+                  forceHelperSize: true,
+                  placeholder: 'sortable-placeholder',
+                  forcePlaceholderSize: true,
+                  tolerance: 'pointer',
+                  start: function(e, ui) {
+                      drag_child = ui.item.next().next();
+                      $("tr.child").hide();
+                      ui.placeholder.height(ui.item.outerHeight());
+                  },
+                  update: function(e, ui) {
+                      $("tr.child").each(function() {
+                          var rel = $(this).attr("parent");
+                          $(this).insertAfter($("tr[rel='"+rel+"']"));
+                      });
+                      $("tr.child").fadeIn();
+                      updateCustomOrder(form);
+                  },
+                  stop: function(event, ui) {
+                      $("tr.child").fadeIn();
+                  }
+              });
+            }
+    
+            // Render table
+            tableFilter(form);
+        });
+    }
+    
+    // Primary file input
+	container.find(".file-styled-primary").uniform({
+		wrapperClass: 'bg-warning',
+		fileButtonHtml: '<i class="icon-plus2"></i>'
+	});
+
+    // Styled file input
+    container.find(".file-styled").uniform({
+        wrapperClass: 'bg-teal-400',
+        fileButtonHtml: '<i class="icon-googleplus5"></i>'
+    });
 }
 
 function notify(type, title, message) {
@@ -53,7 +173,7 @@ function notify(type, title, message) {
                 "top":"60px"
             });
         }
-    });
+    });    
 }
 
 function removeMaskLoading() {
@@ -62,7 +182,7 @@ function removeMaskLoading() {
 
 function addMaskLoading(text) {
     if (typeof(text) === 'undefined') {
-        var text = '';
+        text = '';
     }
     $('body').append('<div class="mask-loading-effect"><div class="content">'+text+'<div class="spinner2">'+
         '<div class="bounce1"></div>'+

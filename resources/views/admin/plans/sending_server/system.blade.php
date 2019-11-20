@@ -90,7 +90,7 @@
                                 <div class="single-stat-box pull-left">
                                     <span class="stat-head percent-list">{{ $planSendingServer->showFitness() }}%</span>
                                     <br />
-                                    <span class="text-muted">{{ trans("messages.sending_servers.fitness") }}
+                                    <span class="text-muted xtooltip" title="{{ trans("messages.sending_servers.fitness.explain") }}">{{ trans("messages.sending_servers.fitness") }}
                                     @if ($plan->plansSendingServers()->count() > 1)
                                         - <a modal-size="lg" class="mc-modal-control" href="{{ action('Admin\PlanController@fitness', ['id' => $plan->uid]) }}">{{ trans('messages.edit') }}</a></span>
                                     @endif

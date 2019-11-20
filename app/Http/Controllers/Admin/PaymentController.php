@@ -54,7 +54,7 @@ class PaymentController extends Controller
     public function update(Request $request, MessageBag $message_bag, $name)
     {
         $errors = new MessageBag;
-        $gatewayService = Cashier::getPaymentGateway($name, $request->options);
+        $gatewayService = Cashier::getPaymentGateway($name, $request->options);        
         
         try {
             $gatewayService->validate();
@@ -80,6 +80,7 @@ class PaymentController extends Controller
             return view('admin.payments.edit', [
                 'gateway' => Setting::getPaymentGateway($name),
                 'errors' => $errors,
+                'service' => $gatewayService,
             ]);
         }
     }
@@ -118,33 +119,5 @@ class PaymentController extends Controller
             $request->session()->flash('alert-error', trans('messages.payment_gateway.not_valid', ['message' => $ex->getMessage()]));
             return redirect()->action('Admin\PaymentController@edit', $name);
         }
-    }
-    
-    /**
-     * Update braintree mapping.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int                      $name
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function braintreeMapping(Request $request)
-    {
-        $service = Cashier::getPaymentGateway('braintree');
-        
-        $mapping = [];
-        foreach ($request->mapping as $key => $value) {
-            if ($value != '') {
-                $mapping[$key] = $value;
-            }
-        }
-        
-        // update database
-        $setting = 'payment.braintree.mapping';
-        Setting::set($setting, json_encode($mapping));
-        
-        // redirect to index
-        $request->session()->flash('alert-success', trans('messages.payment_gateway.braintree.mapping_updated'));
-        return redirect()->action('Admin\PaymentController@index');
     }
 }

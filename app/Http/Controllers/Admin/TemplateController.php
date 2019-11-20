@@ -396,7 +396,9 @@ class TemplateController extends Controller
             return $this->notAuthorized();
         }
 
-        if (!empty($template->image)) {
+        if (!empty($template->image) && file_exists($template->image)) {
+            $img = \Image::make($template->image);            
+        } elseif (!empty($template->image)) {
             $img = \Image::make(storage_path($template->image).'.thumb.jpg');
         } else {
             $img = \Image::make(public_path('assets/images/placeholder.jpg'));
@@ -456,5 +458,177 @@ class TemplateController extends Controller
         return view('admin.templates.copy', [
             'template' => $template,
         ]);
+    }
+    
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function builderEdit(Request $request, $uid)
+    {
+        // Generate info
+        $user = $request->user();
+        $template = Template::findByUid($uid);
+
+        // authorize
+        if (!$request->user()->admin->can('update', $template)) {
+            return $this->notAuthorized();
+        }
+        
+        // validate and save posted data
+        if ($request->isMethod('post')) {
+            $rules = array(
+                'content' => 'required',
+            );
+
+            $this->validate($request, $rules);
+            
+            $template->content = $request->content;
+            $template->save();
+        }
+
+        return view('admin.templates.builder.edit', [
+            'template' => $template,
+            'templates' => $template->getBuilderAdminTemplates(),
+        ]);
+    }
+    
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function builderEditContent(Request $request, $uid)
+    {
+        // Generate info
+        $user = $request->user();
+        $template = Template::findByUid($uid);
+        
+        // authorize
+        if (!$request->user()->admin->can('update', $template)) {
+            return $this->notAuthorized();
+        }
+
+        return view('admin.templates.builder.content', [
+            'content' => $template->content,
+        ]);
+    }
+    
+    /**
+     * Upload asset to builder.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function builderAsset(Request $request, $uid)
+    {
+        $template = Template::findByUid($uid);
+        
+        // authorize
+        if (!$request->user()->admin->can('update', $template)) {
+            return $this->notAuthorized();
+        }
+        
+        $path = $request->file('file')->storeAs(
+            'templates/assets/' . $template->uid, md5($request->file('file')), 'public'
+        );
+        
+        return response()->json([
+            'url' => \Storage::url($path)
+        ]);
+    }
+    
+    /**
+     * Create template / temlate selection.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function builderCreate(Request $request)
+    {
+        $admin = $request->user()->admin;
+        
+        $template = new Template();
+        $template->name = trans('messages.untitled_template');
+        
+        // authorize
+        if (!$request->user()->admin->can('create', Template::class)) {
+            return $this->notAuthorized();
+        }
+        
+        // Gallery
+        $templates = Template::where('customer_id', '=', null);
+        
+        // validate and save posted data
+        if ($request->isMethod('post')) {
+            if ($request->layout) {
+                $template = Template::createTemplateFromLayout($request->layout);
+                $template->admin_id = $admin->id;
+                $template->name = $request->name;
+                
+                $template->save();
+            }
+            
+            if ($request->template) {
+                $currentTemplate = Template::findByUid($request->template);
+                
+                $template = $currentTemplate->copy($request->name, null, $admin);
+            }
+            
+            return redirect()->action('Admin\TemplateController@builderEdit', $template->uid);
+        }
+
+        return view('admin.templates.builder.create', [
+            'template' => $template,
+            'templates' => $templates,
+        ]);
+    }
+    
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function builderTemplates(Request $request)
+    {
+        $request->merge(array("customer_id" => $request->user()->customer->id));
+        $templates = Template::search($request)->paginate($request->per_page);
+        
+        // authorize
+        if (!$request->user()->admin->can('create', Template::class)) {
+            return $this->notAuthorized();
+        }
+
+        return view('admin.templates.builder.templates', [
+            'templates' => $templates,
+        ]);
+    }
+    
+    /**
+     * Change template from exist template.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function builderChangeTemplate(Request $request, $uid, $change_uid)
+    {
+        // Generate info
+        $template = Template::findByUid($uid);
+        $changeTemplate = Template::findByUid($change_uid);
+
+        // authorize
+        if (!$request->user()->admin->can('update', $template)) {
+            return $this->notAuthorized();
+        }
+        
+        $template->changeTemplate($changeTemplate);
     }
 }
