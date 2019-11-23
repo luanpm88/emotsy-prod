@@ -1405,6 +1405,22 @@ class CampaignController extends Controller
             'campaign' => $campaign,
         ]);
     }
+    
+    /**
+     * Download tracking logs.
+     */
+    public function trackingLogDownload(Request $request)
+    {
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        return response('Downloading...', 200)
+            ->header('Content-Type', 'text/plain');
+    }
 
     /**
      * Bounce logs.
@@ -1444,6 +1460,22 @@ class CampaignController extends Controller
             'items' => $items,
             'campaign' => $campaign,
         ]);
+    }
+    
+    /**
+     * Download bounce logs.
+     */
+    public function bounceLogDownload(Request $request)
+    {
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        return response('Downloading...', 200)
+            ->header('Content-Type', 'text/plain');
     }
 
     /**
@@ -1485,6 +1517,22 @@ class CampaignController extends Controller
             'campaign' => $campaign,
         ]);
     }
+    
+    /**
+     * Download feedback logs.
+     */
+    public function feedbackLogDownload(Request $request)
+    {
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        return response('Downloading...', 200)
+            ->header('Content-Type', 'text/plain');
+    }
 
     /**
      * Open logs.
@@ -1524,6 +1572,22 @@ class CampaignController extends Controller
             'items' => $items,
             'campaign' => $campaign,
         ]);
+    }
+    
+    /**
+     * Download open logs.
+     */
+    public function openLogDownload(Request $request)
+    {
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        return response('Downloading...', 200)
+            ->header('Content-Type', 'text/plain');
     }
 
     /**
@@ -1565,6 +1629,22 @@ class CampaignController extends Controller
             'campaign' => $campaign,
         ]);
     }
+    
+    /**
+     * Download open logs.
+     */
+    public function clickLogDownload(Request $request)
+    {
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        return response('Downloading...', 200)
+            ->header('Content-Type', 'text/plain');
+    }
 
     /**
      * Unscubscribe logs.
@@ -1604,6 +1684,22 @@ class CampaignController extends Controller
             'items' => $items,
             'campaign' => $campaign,
         ]);
+    }
+    
+    /**
+     * Download open logs.
+     */
+    public function unsubscribeLogDownload(Request $request)
+    {
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        return response('Downloading...', 200)
+            ->header('Content-Type', 'text/plain');
     }
 
     /**

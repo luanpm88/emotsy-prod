@@ -44,7 +44,12 @@
 									</span>
 								</div>
 							@endif
-						</div>
+						</div>                            
+                        <div class="col-md-2 text-right">
+                            <a href="{{ action('CampaignController@clickLogDownload', $campaign->uid) }}" type="button" class="btn bg-info-800">
+                                <i class="icon icon-download mr-5"></i> {{ trans('messages.click_log.download') }}
+                            </a>
+                        </div>
 					</div>
 					
 					<div class="pml-table-container">

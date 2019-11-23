@@ -328,7 +328,14 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('campaigns/{uid}/spam-score', 'CampaignController@spamScore');
     Route::get('campaigns/{from_uid}/copy-move-from/{action}', 'CampaignController@copyMoveForm');
     Route::post('campaigns/{uid}/resend', 'CampaignController@resend');
-
+    
+    Route::get('campaigns/{uid}/unsubscribe-log/download', 'CampaignController@unsubscribeLogDownload');
+    Route::get('campaigns/{uid}/click-log/download', 'CampaignController@clickLogDownload');
+    Route::get('campaigns/{uid}/open-log/download', 'CampaignController@openLogDownload');
+    Route::get('campaigns/{uid}/feedback-log/download', 'CampaignController@feedbackLogDownload');
+    Route::get('campaigns/{uid}/bounce-log/download', 'CampaignController@bounceLogDownload');
+    Route::get('campaigns/{uid}/tracking-log/download', 'CampaignController@trackingLogDownload');
+    
     Route::get('campaigns/{uid}/template/review-iframe', 'CampaignController@templateReviewIframe');
     Route::get('campaigns/{uid}/template/review', 'CampaignController@templateReview');
     Route::get('campaigns/select-type', 'CampaignController@selectType');

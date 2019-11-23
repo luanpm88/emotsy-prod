@@ -2688,4 +2688,10 @@
         Drag and drop your local files to upload zone to attach files into the campaign email.',
   'campaign.attachment.file_size_is' => 'File size: :size',
   'campaign.attached_files' => 'Attached files',
+  'tracking_log.download' => 'Download',
+  'bounce_log.download' => 'Download',
+  'open_log.download' => 'Download',
+  'click_log.download' => 'Download',
+  'feedback_log.download' => 'Download',
+  'unsubscribe_log.download' => 'Download',
 ) ?>
