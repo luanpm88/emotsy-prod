@@ -209,4 +209,14 @@ class User extends Authenticatable
    {
        $this->notify(new ResetPassword($token, url('password/reset', $token)));
    }
+
+   public function getStoragePath($path = '') {
+      $base = storage_path('app/user/'.$this->uid);
+
+      if (!\File::exists($base)) {
+         \File::makeDirectory($base, 0777, true, true);
+      }
+
+      return join_paths($base, $path);
+   }
 }

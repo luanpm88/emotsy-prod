@@ -2601,6 +2601,8 @@
   'campaign.score.test' => 'Test',
   'campaign.score' => 'Score',
   'campaign.score.description' => 'Description',
+  'campaign.log.download.inprogress' => 'Export is in progress, please wait... ',
+  'campaign.log.download.complete' => 'Export completed! click to download',
   'custom_script' => 'Copy and paste your custom scripts in the box below. It will be included in every page',
   'buider.try_new' => 'Try new Builder',
   'builder.beta' => 'beta',

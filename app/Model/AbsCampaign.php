@@ -39,6 +39,7 @@ use File;
 use Sunra\PhpSimple\HtmlDomParser;
 use Acelle\Library\Tool;
 use ZipArchive;
+use League\Csv\Writer;
 
 abstract class AbsCampaign extends Model
 {
@@ -2459,7 +2460,7 @@ abstract class AbsCampaign extends Model
 
         return $message;
     }
-    
+
     /**
      * Get public campaign upload uri.
      */
@@ -2467,7 +2468,7 @@ abstract class AbsCampaign extends Model
     {
         return 'app/campaigns/template_' . $this->uid;
     }
-    
+
     /**
      * Get public campaign upload dir.
      */
@@ -2475,7 +2476,7 @@ abstract class AbsCampaign extends Model
     {
         return storage_path('app/campaigns/template_' . $this->uid);
     }
-    
+
     /**
      * Get public campaign upload dir.
      */
@@ -2484,46 +2485,46 @@ abstract class AbsCampaign extends Model
         $this->plain = preg_replace('/\s+/', ' ', preg_replace('/\r\n/', ' ', strip_tags($this->html)));
         $this->save();
     }
-    
+
     /**
      * Create template from layout.
      *
      * All availabel template tags
      */
     public function addTemplateFromLayout($layout)
-    {        
+    {
         $sDir = database_path('layouts/' . $layout);
         $dDir = $this->getUploadDir();
-        
+
         // Copy source code
         \Acelle\Library\Tool::xcopy($sDir, $dDir);
-        
+
         // get layout content
         $html = file_get_contents($sDir . '/index.html');
-        
+
         // change content
         $document = HtmlDomParser::str_get_html($html);
-        foreach($document->find('img, script') as $element) {            
+        foreach($document->find('img, script') as $element) {
             if (preg_match('/^http/', $element->src) == 0) {
                 $element->src = '/' . $this->getUploadUri() . '/' . $element->src;
             }
         }
-        foreach($document->find('link') as $element) {            
+        foreach($document->find('link') as $element) {
             if (preg_match('/^http/', $element->href) == 0) {
                 $element->href = '/' . $this->getUploadUri() . '/' . $element->href;
             }
         }
-        
+
         // set document as campaign html
         $this->html =  $document;
-        
+
         // save template
         $this->save();
-        
+
         // update plain
         $this->updatePlainFromHtml();
     }
-    
+
     /**
      * Upload a template.
      */
@@ -2536,17 +2537,17 @@ abstract class AbsCampaign extends Model
         $validator = Validator::make($request->all(), $rules, [
             'file.mimetypes' => 'Input must be a valid .zip file',
         ]);
-        
+
         if ($validator->fails()) {
             throw new ValidationException($validator);
         }
-        
+
         // move file to temp place
         $tmp_path = storage_path('tmp/uploaded_template_'.$this->uid.'_'.time());
         $file_name = $request->file('file')->getClientOriginalName();
         $request->file('file')->move($tmp_path, $file_name);
         $tmp_zip = join_paths($tmp_path, $file_name);
-        
+
         // read zip file check if zip archive invalid
         $zip = new ZipArchive();
         if ($zip->open($tmp_zip, ZipArchive::CREATE) !== true) {
@@ -2566,7 +2567,7 @@ abstract class AbsCampaign extends Model
         $main_file = null;
         $sub_path = "";
         $possible_main_file_names = array('index.html', 'index.htm', $archive_name.'.html', $archive_name.'.htm');
-        
+
         $possible_main_file_names = array('index.html', 'index.htm', $archive_name.'.html', $archive_name.'.htm');
         foreach ($possible_main_file_names as $name) {
             if (is_file($file = $tmp_path.'/'.$name)) {
@@ -2624,7 +2625,7 @@ abstract class AbsCampaign extends Model
         // Save new html
         $public_dir = $this->getUploadUri();
         $public_upload_path = $this->getUploadDir();
-        
+
         $this->html = $html_content;
         $this->html = \Acelle\Library\Tool::replaceHtmlUrl($this->html, $request->root().'/'.$public_dir.'/'.$sub_path);
         $this->save();
@@ -2639,21 +2640,109 @@ abstract class AbsCampaign extends Model
         // remove tmp folder
         // exec("rm -r {$tmp_path}");
         Tool::xdelete($tmp_path);
-        
+
         // update plain
         $this->updatePlainFromHtml();
     }
-    
+
     /**
      * Copy new template.
      */
     public function copyFromTemplate($template)
     {
         \Acelle\Library\Tool::xcopy($template->getUploadDir(), $this->getUploadDir());
-        
+
         // replace image url
         $this->html = $template->content;
         $this->html = str_replace($template->getUploadUri(), $this->getUploadUri(), $this->html);
         $this->save();
+    }
+
+    /**
+     * Copy new template.
+     */
+    public function generateTrackingLogCsv($progressCallback = null)
+    {
+        $tmpTableName = 'log_'.$this->uid.'_'.md5(rand());
+        $filePath = $this->customer->user->getStoragePath($tmpTableName.".csv");
+
+        DB::statement("DROP TABLE IF EXISTS ".table($tmpTableName));
+        DB::statement("CREATE TEMPORARY TABLE ".table($tmpTableName)." AS SELECT
+            c.name as campaign_name,
+            s.email as subscriber_email,
+            l.status as delivery_status,
+            l.created_at as sent_at,
+            IF(o.id IS NULL, 'no', 'yes') as `open`,
+            IF(ck.id IS NULL, 'no', 'yes') as `click`,
+            IF(u.id IS NULL, 'no', 'yes') as `unsubscribe`,
+            IF(f.id IS NULL, 'no', 'yes') as `feedback`,
+            IF(b.id IS NULL, 'no', 'yes') as `bounce`,
+            o.created_at AS open_at,
+            ck.created_at AS click_at,
+            ck.url as click_url,
+            ck.ip_address as click_ip_address,
+            ck.user_agent as click_user_agent,
+            u.created_at AS unsubscribe_at,
+            f.created_at AS feedback_at,
+            b.created_at AS bounce_at
+          FROM ".table('tracking_logs')." l
+          JOIN ".table('campaigns')." c ON l.campaign_id = c.id
+          JOIN ".table('subscribers')." s ON l.subscriber_id = s.id
+          LEFT JOIN ".table('open_logs')." o ON o.message_id = l.message_id
+          LEFT JOIN ".table('click_logs')." ck ON ck.message_id = l.message_id
+          LEFT JOIN ".table('unsubscribe_logs')." u ON u.message_id = l.message_id
+          LEFT JOIN ".table('feedback_logs')." f ON f.message_id = l.message_id
+          LEFT JOIN ".table('bounce_logs')." b ON b.message_id = l.message_id");
+
+        $total = DB::table($tmpTableName)->count();
+        $limit = 1000;
+        $pages = ceil($total / $limit);
+
+        $headers = [
+            'campaign_name',
+            'subscriber_email',
+            'delivery_status',
+            'sent_at',
+            'open',
+            'click',
+            'unsubscribe',
+            'feedback',
+            'bounce',
+            'open_at',
+            'click_at',
+            'click_url',
+            'click_ip_address',
+            'click_user_agent',
+            'unsubscribe_at',
+            'feedback_at',
+            'bounce_at'
+        ];
+
+        // insert header
+        $csv = Writer::createFromPath($filePath, 'w+');
+        $csv->insertOne($headers);
+
+        for ($i = 0; $i < $pages; $i += 1) {
+            $items = DB::table($tmpTableName)->select('*')
+                                             ->limit($limit)
+                                             ->offset($i)
+                                             ->get()
+                                             ->map(function($r){return (array)$r; })
+                                             ->toArray();
+            $csv->insertAll($items);
+
+            // callback progress
+            if (!is_null($progressCallback)) {
+                $percentage = ($i+1)/$pages;
+                $progressCallback([ 'progress' =>  $percentage, 'path' => $filePath]);
+            }
+        }
+
+        // callback progress
+        if (!is_null($progressCallback)) {
+            $progressCallback([ 'progress' =>  1, 'path' => $filePath]);
+        }
+
+        return $filePath;
     }
 }
