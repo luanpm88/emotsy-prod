@@ -622,7 +622,7 @@ class Template extends Model
                 $template->name = $name;
                 $template->admin_id = 1;
                 $template->content = $html;
-                $template->replaceHtmlUrl($this->getUploadUri());
+                $template->replaceHtmlUrl($template->getUploadUri());
                 $template->save();
                 
                 // load from path
