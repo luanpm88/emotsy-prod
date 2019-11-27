@@ -74,3 +74,17 @@
 		</ul>
 	</div>
 </div>
+
+<script>
+	var downloaded = false;
+	var downloadWindow;
+
+	function goToDownLoad() {
+		downloadWindow = window.open('{{ action('CampaignController@trackingLogDownload', ['uid' => $campaign->uid]) }}', '_blank');
+	}
+
+	function downloadAndCloseDownloadWindow(downloadUrl) {
+		downloadWindow.close();
+		window.location.href = downloadUrl;
+	}
+</script>

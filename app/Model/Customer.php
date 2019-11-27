@@ -71,7 +71,7 @@ class Customer extends Model implements BillableUserInterface
 
         return $rules;
     }
-    
+
     /**
      * The rules for validation.
      *
@@ -127,7 +127,7 @@ class Customer extends Model implements BillableUserInterface
             ->where('status', '<>', Subscription::STATUS_ENDED)
             ->orderBy('created_at', 'desc');
     }
-    
+
     public function contact()
     {
         return $this->belongsTo('Acelle\Model\Contact');
@@ -1848,11 +1848,11 @@ class Customer extends Model implements BillableUserInterface
         $droplist = [];
         $topList = [];
         $bottomList = [];
-        
+
         if (!$keyword) {
             $keyword = '###';
         }
-        
+
         foreach ($this->getVerifiedIdentities() as $item) {
                 // check if email
                 if (extract_email($item) !== null) {
@@ -1886,12 +1886,12 @@ class Customer extends Model implements BillableUserInterface
                     // }
                 }
         }
-        
+
         $droplist = array_merge($topList, $bottomList);
 
         return $droplist;
     }
-    
+
     /**
      * Begin creating a new subscription.
      *
@@ -1936,5 +1936,10 @@ class Customer extends Model implements BillableUserInterface
         $gateway->createSubscription($subscription);
 
         return $subscription;
-    }   
+    }
+
+    public function getCurrentSubscription()
+    {
+        return $this->subscription;
+    }
 }

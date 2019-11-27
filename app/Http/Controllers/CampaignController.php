@@ -12,6 +12,8 @@ use Illuminate\Validation\ValidationException;
 use Acelle\Model\TrackingLog;
 use Acelle\Library\StringHelper;
 use Acelle\Model\Template;
+use Acelle\Jobs\ExportCampaignLog;
+use Acelle\Model\SystemJob;
 
 class CampaignController extends Controller
 {
@@ -325,21 +327,21 @@ class CampaignController extends Controller
     {
         $customer = $request->user()->customer;
         $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
-        
+
         // authorize
         if (\Gate::denies('update', $campaign)) {
             return $this->notAuthorized();
         }
-        
+
         // check if campagin does not have template
         if (!$campaign->html) {
             return redirect()->action('CampaignController@templateCreate', ['uid' => $campaign->uid]);
         }
-        
+
         return view('campaigns.template.index', [
             'campaign' => $campaign,
         ]);
-        
+
         //// Required tags
         //$validate = 'required';
         //
@@ -399,7 +401,7 @@ class CampaignController extends Controller
         //    'rules' => $rules,
         //]);
     }
-    
+
     /**
      * Create template.
      *
@@ -442,7 +444,7 @@ class CampaignController extends Controller
             'campaign' => $campaign,
         ]);
     }
-    
+
     /**
      * Create template from layout.
      *
@@ -458,21 +460,21 @@ class CampaignController extends Controller
         if (\Gate::denies('update', $campaign)) {
             return $this->notAuthorized();
         }
-        
+
         // add layout to campaign template
         if ($request->isMethod('post')) {
             if ($request->layout) {
                 $campaign->addTemplateFromLayout($request->layout);
             }
-            
+
             return redirect()->action('CampaignController@templateEdit', $campaign->uid);
         }
 
         return view('campaigns.template.layout', [
-            'campaign' => $campaign,            
+            'campaign' => $campaign,
         ]);
     }
-    
+
     /**
      * Edit campaign template.
      *
@@ -488,7 +490,7 @@ class CampaignController extends Controller
         if (\Gate::denies('update', $campaign)) {
             return $this->notAuthorized();
         }
-        
+
         // save campaign html
         if ($request->isMethod('post')) {
             $rules = array(
@@ -496,13 +498,13 @@ class CampaignController extends Controller
             );
 
             $this->validate($request, $rules);
-            
-            $campaign->html = $request->content;            
+
+            $campaign->html = $request->content;
             $campaign->save();
-            
+
             // update plain
             $campaign->updatePlainFromHtml();
-            
+
             return response()->json([
                 'status' => 'success',
             ]);
@@ -514,7 +516,7 @@ class CampaignController extends Controller
             'templates' => $campaign->getBuilderTemplates($request->user()->customer),
         ]);
     }
-    
+
     /**
      * Upload asset to builder.
      *
@@ -525,16 +527,16 @@ class CampaignController extends Controller
     public function templateAsset(Request $request, $uid)
     {
         $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
-        
+
         $path = $request->file('file')->storeAs(
             'campaigns/assets/' . $campaign->uid, md5($request->file('file')), 'public'
         );
-        
+
         return response()->json([
             'url' => \Storage::url($path)
         ]);
     }
-    
+
     /**
      * Campaign html content.
      *
@@ -555,7 +557,7 @@ class CampaignController extends Controller
             'content' => $campaign->html,
         ]);
     }
-    
+
     /**
      * Create template from theme.
      *
@@ -571,11 +573,11 @@ class CampaignController extends Controller
         if (\Gate::denies('update', $campaign)) {
             return $this->notAuthorized();
         }
-        
+
         if ($request->isMethod('post')) {
             $template = \Acelle\Model\Template::findByUid($request->template);
             $campaign->copyFromTemplate($template);
-            
+
             return redirect()->action('CampaignController@templateEdit', $campaign->uid);
         }
 
@@ -583,8 +585,8 @@ class CampaignController extends Controller
             'campaign' => $campaign,
         ]);
     }
-    
-    
+
+
     /**
      * Display a listing of the resource.
      *
@@ -601,7 +603,7 @@ class CampaignController extends Controller
             'templates' => $templates,
         ]);
     }
-    
+
     /**
      * Upload template.
      *
@@ -617,11 +619,11 @@ class CampaignController extends Controller
         if (\Gate::denies('update', $campaign)) {
             return $this->notAuthorized();
         }
-        
+
         // validate and save posted data
         if ($request->isMethod('post')) {
             $campaign->uploadTemplate($request);
-            
+
             return redirect()->action('CampaignController@templateEdit', $campaign->uid);
         }
 
@@ -1287,7 +1289,7 @@ class CampaignController extends Controller
             LaravelLog::warning('Click tracking log not available, redirect anyway: '.$messageId);
             return redirect()->away($decoded_url);
         }
-        
+
         // redirect base64_decode($url);
         $log = new \Acelle\Model\ClickLog();
         $log->message_id = $messageId;
@@ -1404,6 +1406,57 @@ class CampaignController extends Controller
             'items' => $items,
             'campaign' => $campaign,
         ]);
+    }
+
+    /**
+     * Download tracking logs.
+     */
+    public function trackingLogDownload(Request $request)
+    {
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        $job = new ExportCampaignLog($campaign);
+        dispatch($job);
+
+        return view('campaigns.download_tracking_log', [
+            'campaign' => $campaign,
+            'job' => $job->getSystemJob()
+        ]);
+    }
+
+    /**
+     * Tracking logs export progress.
+     */
+    public function trackingLogExportProgress(Request $request)
+    {
+        $job = SystemJob::find($request->uid);
+        $json = json_decode($job->data, true);
+
+        $output = [
+            'progress' => $json['progress']
+        ];
+
+        if ($json['progress'] == 1) {
+            $output['download_url'] = action('CampaignController@download', ['uid' => $job->id]);
+        }
+
+        return response()->json($output);
+    }
+
+    /**
+     * Actually download.
+     */
+    public function download(Request $request)
+    {
+        $job = SystemJob::find($request->uid);
+        $json = json_decode($job->data, true);
+        $path = $json['path'];
+        return response()->download($path)->deleteFileAfterSend(true);
     }
 
     /**
@@ -2159,13 +2212,10 @@ class CampaignController extends Controller
             'score' => $score,
         ]);
 	}
-    
+
     /**
      * Change template from exist template.
      *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
      */
     public function templateChangeTemplate(Request $request, $uid, $template_uid)
     {
@@ -2177,7 +2227,7 @@ class CampaignController extends Controller
         if (!$request->user()->admin->can('update', $campaign)) {
             return $this->notAuthorized();
         }
-        
+
         $campaign->changeTemplate($changeTemplate);
     }
 }

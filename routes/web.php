@@ -112,7 +112,7 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
 
     Route::get('payments/paddle/card/{subscription_uid}/hook', 'PaymentController@paddle_card_hook');
     Route::post('payments/paddle/card/{subscription_uid}/hook', 'PaymentController@paddle_card_hook');
-    
+
     // Customer registration
     Route::post('users/register', 'UserController@register');
     Route::get('users/register', 'UserController@register');
@@ -156,8 +156,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('subscription/review', 'AccountSubscriptionController@review');
     Route::get('subscription/select-plan', 'AccountSubscriptionController@selectPlan');
     Route::get('subscription', 'AccountSubscriptionController@index');
-    
-    
+
+
     Route::post('subscription/payment-claim', 'AccountSubscriptionController@paymentClaim');
     Route::get('subscriptions/invoices/download-raw', 'AccountSubscriptionController@downloadRawInvoice');
     Route::match(['get', 'post'], 'subscriptions/change-plan-no-recurring/{plan_id}', 'AccountSubscriptionController@changePlanNoRecurring');
@@ -176,7 +176,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('subscription/card', 'AccountSubscriptionController@card');
     Route::post('subscription/create', 'AccountSubscriptionController@create');
     Route::get('subscription/new', 'AccountSubscriptionController@new');
-    
+
 
     // Customer login back
     Route::get('customers/login-back', 'CustomerController@loginBack');
@@ -207,7 +207,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     // Mail list
     Route::get('lists/{uid}/clone-to-customers/choose', 'MailListController@cloneForCustomersChoose');
     Route::post('lists/{uid}/clone-to-customers', 'MailListController@cloneForCustomers');
-    
+
     Route::get('lists/{uid}/verification/progress', 'MailListController@verificationProgress');
     Route::get('lists/{uid}/verification', 'MailListController@verification');
     Route::post('lists/{uid}/verification/start', 'MailListController@startVerification');
@@ -293,7 +293,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('templates/{uid}/builder/edit/content', 'TemplateController@builderEditContent');
     Route::post('templates/{uid}/builder/edit', 'TemplateController@builderEdit');
     Route::get('templates/{uid}/builder/edit', 'TemplateController@builderEdit');
-    
+
     Route::post('templates/{uid}/copy', 'TemplateController@copy');
     Route::get('templates/{uid}/copy', 'TemplateController@copy');
     Route::get('templates/{uid}/content', 'TemplateController@content');
@@ -324,10 +324,13 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::match(['get', 'post'], 'campaigns/{uid}/template/theme', 'CampaignController@templateTheme');
     Route::match(['get', 'post'], 'campaigns/{uid}/template/layout', 'CampaignController@templateLayout');
     Route::get('campaigns/{uid}/template/create', 'CampaignController@templateCreate');
-    
+
     Route::get('campaigns/{uid}/spam-score', 'CampaignController@spamScore');
     Route::get('campaigns/{from_uid}/copy-move-from/{action}', 'CampaignController@copyMoveForm');
     Route::post('campaigns/{uid}/resend', 'CampaignController@resend');
+    Route::get('campaigns/{uid}/tracking-log/download', 'CampaignController@trackingLogDownload');
+    Route::get('campaigns/job/{uid}/progress', 'CampaignController@trackingLogExportProgress');
+    Route::get('campaigns/job/{uid}/download', 'CampaignController@download');
 
     Route::get('campaigns/{uid}/template/review-iframe', 'CampaignController@templateReviewIframe');
     Route::get('campaigns/{uid}/template/review', 'CampaignController@templateReview');
@@ -562,7 +565,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/templates/{uid}/builder/edit/content', 'TemplateController@builderEditContent');
     Route::post('admin/templates/{uid}/builder/edit', 'TemplateController@builderEdit');
     Route::get('admin/templates/{uid}/builder/edit', 'TemplateController@builderEdit');
-    
+
     Route::post('admin/templates/{uid}/copy', 'TemplateController@copy');
     Route::get('admin/templates/{uid}/copy', 'TemplateController@copy');
     Route::get('admin/templates/sort', 'TemplateController@sort');
