@@ -1,0 +1,423 @@
+.box-list {
+  
+}
+.box-list .box-item {
+    width: 280px;
+    float: left;
+    margin-right: 20px;
+    height: 170px;
+    text-align: center;
+    border: solid 1px #bbb;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    color: #333;
+    cursor: pointer;
+}
+.box-list .box-item:hover {
+  border-color: #888;
+}
+.box-list .box-item h4 {
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+.box-list .box-item p {
+    margin-bottom: 0;
+}
+.btn {
+    padding: 8px 18px;
+}
+.line-item {
+    display: flex;
+    padding: 7px;
+    cursor: pointer;
+}
+.line-item:hover {
+    background: #f5f5f5;
+}
+.line-item .line-icon {
+    padding-right: 20px;
+    font-size: 28px;
+    line-height: 20px;
+}
+.line-item .line-body h4 {
+    margin: 0 0 3px 0;
+    font-weight: 600;
+}
+.line-item .line-body p {
+}
+
+.hover-list {
+  padding: 0;
+}
+.hover-list li {
+  display: flex;
+  list-style: none;
+  padding: 15px;
+  border: dashed 2px #fff;
+  border-radius: 15px;
+}
+.hover-list li:hover {
+  border: dashed 2px #aaa;
+}
+.hover-list li i {
+  font-size: 28px;
+  margin-right: 20px;
+  color: #333;
+  margin-top: 6px;
+}
+.hover-list li .list-body {
+  padding-right: 100px;
+  width: 100%;
+}
+.hover-list li .list-body h4 {
+  margin: 0 0 3px 0;
+  font-weight: 600;
+  color: #00695B;
+}
+.hover-list li .list-body p {
+  margin: 0;
+}
+.hover-list li .list-action {
+  align-items: center;
+  display: flex;
+  visibility: hidden;
+}
+.hover-list li:hover .list-action {
+  visibility: visible;
+}
+.btn {
+  padding: 7px 18px;
+}
+.mc-nav > li > a {
+    padding: 0 0 5px 0;
+}
+.media-left {
+  display: flex;
+}
+.media-left .media {
+  padding-right: 20px;
+    padding-top: 8px;
+}
+.media-left .media img {
+      width: 60px;
+    height: 60px;
+}
+.media-left .main {
+  
+}
+.media-left .main label {
+    margin-bottom: 0px;
+}
+.media-left .main p {
+    margin-bottom: 15px;
+}
+
+.automation2 {
+    display: flex;
+}
+.automation2 .diagram {
+    width: 70%;
+    height: 100vh;
+    padding: 87px 30px 30px 30px;
+    background: #f2f2f2;
+}
+.automation2 .sidebar {
+    width: 30%;
+    padding: 87px 30px 30px 30px;
+}
+.navbar-brand.left-logo {
+    display: block;
+    height: 55px;
+    background: rgba(0,0,0,0.3);
+    padding: 10px 20px;
+    margin: -16px 20px -17px -16px;
+}
+.navbar-brand.left-logo img {
+    height: 17px;
+}
+.navbar h1 {
+    color: #ccc;
+    font-size: 20px;
+    margin: 0;
+    font-weight: normal;
+}
+.navbar {
+    color: #777;
+}
+.navbar a:hover {
+    text-decoration: none;
+    color: #fff;
+}
+.automation-top-menu {
+    display: flex;
+    align-items: center;
+}
+.automation-top-menu .action {
+    color: #ccc;
+    padding: 8px 10px;
+    margin: 0 10px;
+    display: flex;
+    align-items: center;
+}
+.bg-dark {
+    background-color: #222!important;
+}
+.btn-primary {
+    background-color: #007c99;
+    border-color: #007c99;
+}
+.btn-danger {
+    background-color: #bf3e1b;
+    border-color: #bf3e1b;
+}
+.account-info a {
+    padding: 10px 20px;
+    background: rgba(255,255,255,0.05);
+    color: #aaa;
+    border-radius: 2px;
+    margin-left: 10px;
+    display: flex;
+    margin: -4px -10px -3px 0;
+    align-items: center;
+}
+.account-info a img{
+    height: 24px;
+    width: 24px;
+    display: inline-block;
+    margin-right: 10px;
+    border-radius: 100%;
+}
+.btn-secondary {
+    color: #fff;
+    background-color: #5d5e60;
+    border-color: #5d5e60;
+}
+.nav-link {
+    padding: .5rem 1.2rem;
+}
+.nav-tabs .nav-link:focus, .nav-tabs .nav-link:hover {
+    border-color: transparent;
+    color: #333;
+}
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+    font-weight: 600;    
+    border-color: #dee2e6 #dee2e6 #fff;
+    border-top: solid 2px #007c99;
+}
+.btn {
+    padding: 7px 20px;
+    font-size: 87%;
+    font-weight: 600;
+}
+.nav-tabs .nav-link {
+    color: #555;
+    display: flex;
+    align-items: center;
+}
+.flex-center {
+    display: flex;
+    align-items: center;
+}
+.small, small {
+    font-size: 90%;
+}
+/* ------------------------------------------------------------------------------
+*
+*  # Switchery toggles
+*
+*  Styles for switchery.min.js - toggle switches
+*
+*  Version: 1.0
+*  Latest update: Mar 25, 2015
+*
+* ---------------------------------------------------------------------------- */
+.switchery {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 100px;
+  cursor: pointer;
+  display: inline-block;
+  width: 44px;
+  height: 22px;
+  vertical-align: middle;
+  position: relative;
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+}
+.checkbox-switchery .switchery {
+  position: absolute;
+  left: 0;
+  margin-top: -2px;
+}
+.switchery > small {
+  background-color: #fff;
+  border-radius: 100px;
+  width: 22px;
+  height: 22px;
+  position: absolute;
+  top: 0;
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+.checkbox.checkbox-switchery {
+  margin-bottom: 14px;
+  padding-left: 0;
+}
+.checkbox.checkbox-switchery.disabled .switchery {
+  cursor: not-allowed;
+}
+.checkbox[class*=switchery-],
+.checkbox-inline[class*=switchery-] {
+  padding-left: 0;
+  padding-right: 0;
+}
+.switchery-lg.checkbox-switchery {
+  margin-bottom: 18px;
+}
+.switchery-lg.checkbox-switchery .switchery {
+  margin-top: -4px;
+}
+label.switchery-lg {
+  margin-bottom: 0;
+}
+.switchery-lg .switchery {
+  height: 26px;
+  width: 52px;
+}
+.switchery-lg .switchery > small {
+  height: 26px;
+  width: 26px;
+}
+.switchery-sm.checkbox-switchery {
+  margin-bottom: 10px;
+}
+.switchery-sm.checkbox-switchery .switchery {
+  margin-top: 0px;
+}
+label.switchery-sm {
+  margin-bottom: 0;
+}
+.switchery-sm .switchery {
+  height: 18px;
+  width: 36px;
+}
+.switchery-sm .switchery > small {
+  height: 18px;
+  width: 18px;
+}
+.switchery-xs.checkbox-switchery {
+  margin-bottom: 6px;
+}
+.switchery-xs.checkbox-switchery .switchery {
+  margin-top: 2px;
+}
+label.switchery-xs {
+  margin-bottom: 0;
+}
+.switchery-xs .switchery {
+  height: 14px;
+  width: 28px;
+}
+.switchery-xs .switchery > small {
+  height: 14px;
+  width: 14px;
+}
+.checkbox-switchery label,
+label.checkbox-switchery {
+  position: relative;
+  padding-left: 56px;
+  margin: 0;
+  cursor: pointer;
+}
+.checkbox-switchery.switchery-lg label,
+label.checkbox-switchery.switchery-lg {
+  padding-left: 64px;
+}
+.checkbox-switchery.switchery-sm label,
+label.checkbox-switchery.switchery-sm {
+  padding-left: 48px;
+}
+.checkbox-switchery.switchery-xs label,
+label.checkbox-switchery.switchery-xs {
+  padding-left: 40px;
+}
+.checkbox-switchery.checkbox-inline {
+  margin-bottom: 0;
+}
+.checkbox-switchery.checkbox-right .switchery {
+  left: auto;
+  right: 0;
+}
+.checkbox-switchery.checkbox-right label,
+label.checkbox-switchery.checkbox-right {
+  padding-left: 0;
+  padding-right: 56px;
+}
+.checkbox-switchery.checkbox-right.switchery-lg label,
+label.checkbox-switchery.checkbox-right.switchery-lg {
+  padding-left: 0;
+  padding-right: 64px;
+}
+.checkbox-switchery.checkbox-right.switchery-sm label,
+label.checkbox-switchery.checkbox-right.switchery-sm {
+  padding-left: 0;
+  padding-right: 48px;
+}
+.checkbox-switchery.checkbox-right.switchery-xs label,
+label.checkbox-switchery.checkbox-right.switchery-xs {
+  padding-left: 0;
+  padding-right: 40px;
+}
+.switchery-double .switchery {
+  position: relative;
+  margin-left: 7px;
+  margin-right: 7px;
+  margin-top: -7px;
+  margin-bottom: -5px;
+}
+.switchery-double.checkbox-switchery label,
+label.switchery-double.checkbox-switchery {
+  padding: 0;
+}
+.switchery-double.switchery-lg .switchery {
+  margin-top: -8px;
+  margin-bottom: -6px;
+}
+.switchery-double.switchery-sm .switchery {
+  margin-top: -6px;
+  margin-bottom: -4px;
+}
+.switchery-double.switchery-xs .switchery {
+  margin-top: -5px;
+  margin-bottom: -3px;
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 32px;
+    height: 38px;
+    padding-left: 12px;
+    padding-right: 24px;
+}
+.popup-body .select2-selection--single:not([class*=bg-]):not([class*=border-]) {
+    height: 38px;
+}
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 38px;
+    top: 0px;
+}
+.select2-results__option {
+    padding: 6px 12px;
+}
+.mask-control {
+    height: 26px;
+    display: block;
+    margin-top: -29px;
+    font-size: 15px;
+    padding-left: 11px;
+    background: rgba(0,0,0,0);
+    margin-left: 2px;
+    float: left;
+    position: absolute;
+    display: none;
+}

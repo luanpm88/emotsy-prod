@@ -541,7 +541,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('automation2/trigger/select', 'Automation2Controller@triggerSelect');
     Route::get('automation2/trigger/select/confirm', 'Automation2Controller@triggerSelectConfirm');
     Route::get('automation2/trigger/select', 'Automation2Controller@triggerSelectPupop');
-    Route::get('automation2/create', 'Automation2Controller@create');
+    Route::match(['get'], 'automation2/{uid}/edit', 'Automation2Controller@edit');
+    Route::match(['get', 'post'], 'automation2/create', 'Automation2Controller@create');
 });
 
 // ADMIN AREA

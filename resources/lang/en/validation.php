@@ -142,6 +142,16 @@
     array (
       'required' => 'The email has already been subscribed.',
     ),
+    'mail_list_uid' => 
+    array (
+      'required' => 'The Mail List is required.',
+    ),
+    'contact' => 
+    array (
+      'zip' => array (
+        'required' => 'The Zip / Postal code is required.',
+      ),
+    ),
   ),
   'attributes' => 
   array (

@@ -180,15 +180,25 @@ function removeMaskLoading() {
     $('.mask-loading-effect').remove();
 }
 
-function addMaskLoading(text) {
+function addMaskLoading(text, callback) {
+    removeMaskLoading();
+    
     if (typeof(text) === 'undefined') {
         text = '';
     }
-    $('body').append('<div class="mask-loading-effect"><div class="content">'+text+'<div class="spinner2">'+
+    
+    var div = $('<div style="display: none">').html('<div class="mask-loading-effect"><div class="content">'+text+'<div class="spinner2">'+
         '<div class="bounce1"></div>'+
         '<div class="bounce2"></div>'+
         '<div class="bounce3"></div>'+
         '</div></div><div>');
+    
+    $('body').append(div);
+    div.fadeIn(400, function() {
+        if (typeof(callback) !== 'undefined') {
+            callback();
+        }
+    });
 }
 
 function showAjaxDetailBox(items) {

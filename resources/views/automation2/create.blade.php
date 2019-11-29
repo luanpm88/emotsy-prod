@@ -1,207 +1,87 @@
-@extends('layouts.frontend')
-
-@section('title', trans('messages.automation.create'))
-	
-@section('page_script')
-	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
-		
-    <script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
-@endsection
-
-@section('page_header')	
-			<div class="page-title">
-				<ul class="breadcrumb breadcrumb-caret position-right">
-					<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-					<li><a href="{{ action("AutomationController@index") }}">{{ trans('messages.automations') }}</a></li>
-				</ul>
-				<h1>
-					<span class="text-semibold">{{ trans('messages.automation.create') }}</span>
-				</h1>				
-			</div>
-@endsection
+@extends('layouts.popup.small')
 
 @section('content')
-	<div class="sub-section">
-		<div class="automation2-container">
-			<button class="btn btn-mc_default add-trigger-but">Click to choose a Trigger</button>
-			<br>
-			<button class="btn btn-mc_primary trigger mt-20"
-				data-type="say-happy-birthday"
-			>
-					[Trigger] Say `Happy birthday`
-			</button>
-			<br>
-			<button class="btn btn-mc_default add-action-but mt-20"
-				data-type="say-happy-birthday"
-			>
-					Add action
-			</button>
-			<br>
-			<button class="btn btn-mc_primary action mt-20"
-				data-type="wait"
-			>
-					[Action] Wait 30 minutes
-			</button>
-		</div>
-	</div>
-		
-	<script>
-		function SelectActionConfirm(type) {
-			var url = '{{ action('Automation2Controller@actionSelectConfirm') }}' + '?type=' + type;
-			
-			var popup = new Popup(url, function() {
-				console.log('Confirm action type popup loaded!');
-				
-				// set back event
-				popup.back = function() {
-					OpenActionSelectPopup();
-				};
-				
-				// when click confirm select trigger type
-				popup.popup.find('.select-action-confirm').click(function(e) {
-					e.preventDefault();
-				
-					var url = $(this).attr('data-url');
-					var data = $('#action-select').serialize();
-					
-					// show loading effect
-					popup.loading();
-					
-					$.ajax({
-						url: url,
-						type: 'POST',
-						data: data,
-					}).always(function(response) {
-						// todo: when trigger selected
-						console.log('Action was selected');
-						
-						popup.hide();
-						
-						notify('success', '{{ trans('messages.notify.success') }}', response.message);
-					});
-				});
-			});
-			
-			popup.load();
-		}
-	
-		function OpenActionSelectPopup() {
-			var popup = new Popup('{{ action('Automation2Controller@actionSelectPupop') }}', function() {
-				console.log('Select action popup loaded!');
-				
-				// set back event
-				popup.back = function() {
-					Popup.hide();
-				};
-				
-				// when click on action type
-				popup.popup.find('.action-select-but').click(function() {
-					var type = $(this).attr('data-type');
-					
-					// show select trigger confirm box
-					SelectActionConfirm(type);
-				});
-			});
-			
-			popup.load();
-		}
-		
-		function OpenTriggerSelectPopup() {
-			var popup = new Popup('{{ action('Automation2Controller@triggerSelectPupop') }}', function() {
-				console.log('Select trigger popup loaded!');
-				
-				// set back event
-				popup.back = function() {
-					Popup.hide();
-				};
-				
-				// when click on trigger type
-				popup.popup.find('.trigger-select-but').click(function() {
-					var type = $(this).attr('data-type');
-					
-					// show select trigger confirm box
-					SelectTriggerConfirm(type);
-				});
-			});
-			
-			popup.load();
-		}
-		
-		function SelectTriggerConfirm(type) {
-			var url = '{{ action('Automation2Controller@triggerSelectConfirm') }}' + '?type=' + type;
-			
-			var popup = new Popup(url, function() {
-				console.log('Confirm trigger type popup loaded!');
-				
-				
-				
-				// set back event
-				popup.back = function() {
-					OpenTriggerSelectPopup();
-				};
-				
-				// when click confirm select trigger type
-				popup.popup.find('.select-trigger-confirm').click(function() {
-					var url = $(this).attr('data-url');
-					var data = $('#trigger-select').serialize();
-					
-					// show loading effect
-					popup.loading();
-					
-					$.ajax({
-						url: url,
-						type: 'POST',
-						data: data,
-					}).always(function(response) {
-						// todo: when trigger selected
-						console.log('Trigger was selected');
-						
-						popup.hide();
-						
-						notify('success', '{{ trans('messages.notify.success') }}', response.message);
-					});
-				});
-			});
-			
-			popup.load();
-		}
-	
-		$(document).ready(function() {
-			// Click on add trigger button
-			$(document).on('click', '.add-trigger-but', function() {
-				console.log('add trigger click!');
-				
-				// Open trigger types select list
-				OpenTriggerSelectPopup();
-			});
-			
-			// Click on exist trigger
-			$(document).on('click', '.trigger', function() {
-				console.log('click on one trigger!');
-				
-				var type = $(this).attr('data-type');
-				
-				// Open trigger types select list
-				SelectTriggerConfirm(type);
-			});
-			
-			// click on add action button
-			$(document).on('click', '.add-action-but', function() {
-				console.log('add action click!');
-				
-				// Open action types select list
-				OpenActionSelectPopup();
-			});
-			
-			// Click on exist action
-			$(document).on('click', '.action', function() {
-				console.log('click on one action!');
-				
-				var type = $(this).attr('data-type');
-				
-				// Open action types select list
-				SelectActionConfirm(type);
-			});
-		});
-	</script>
+	<div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            <form id="automationCreate" action="{{ action("Automation2Controller@create") }}" method="POST" class="form-validate-jqueryz">
+                {{ csrf_field() }}            
+        
+                <h1 class="mb-20">{{ trans('messages.automation.create_automation') }}</h1>
+            
+                <p class="mb-10">{{ trans('messages.automation.name_your_automation') }}</p>
+                
+                <div class="row mb-4">
+                    <div class="col-md-8">
+                        @include('helpers.form_control', [
+                            'type' => 'text',
+                            'class' => '',
+                            'label' => '',
+                            'name' => 'name',
+                            'value' => $automation->name,
+                            'help_class' => 'automation',
+                            'rules' => $automation->rules(),
+                        ])
+                    </div>
+                </div>
+    
+                    
+                <h3 class="mt-30 mb-20">{{ trans('messages.automation.choose_a_mail_list') }}</h3>
+                <p class="mb-10">{{ trans('messages.automation.choose_a_mail_list.intro') }}</p>
+                    
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        @include('helpers.form_control', [
+                            'name' => 'mail_list_uid',
+                            'include_blank' => trans('messages.automation.choose_list'),
+                            'type' => 'select',
+                            'label' => '',
+                            'value' => (is_object($automation->mailList) ? $automation->mailList->uid : ''),
+                            'options' => Auth::user()->customer->readCache('MailListSelectOptions', []),
+                            'rules' => $automation->rules(),
+                        ])
+                    </div>
+                </div>
+                
+                <div class="text-center">
+                    <button class="btn btn-mc_primary mt-20">{{ trans('messages.automation.get_started') }}</button>
+                </div>
+                    
+            </form>
+                
+        </div>
+    </div>
+        
+    <script>
+        $('#automationCreate').submit(function(e) {
+            e.preventDefault();
+            
+            var form = $(this);
+            var url = form.attr('action');
+            
+            // loading effect
+            createAutomationPopup.loading();
+            
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: form.serialize(),
+                statusCode: {
+                    // validate error
+                    400: function (res) {
+                       createAutomationPopup.loadHtml(res.responseText);
+                    }
+                 },
+                 success: function (res) {
+                    createAutomationPopup.hide();
+                    
+                    addMaskLoading(res.message, function() {
+                        setTimeout(function() {
+                            window.location = res.url;
+                        }, 1000);
+                    });
+                 }
+            });
+        });
+    </script>
 @endsection

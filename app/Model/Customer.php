@@ -182,6 +182,11 @@ class Customer extends Model implements BillableUserInterface
     {
         return $this->hasMany('Acelle\Model\Automation');
     }
+    
+    public function automation2s()
+    {
+        return $this->hasMany('Acelle\Model\Automation2');
+    }
 
     public function sendingDomains()
     {
@@ -1941,5 +1946,15 @@ class Customer extends Model implements BillableUserInterface
     public function getCurrentSubscription()
     {
         return $this->subscription;
+    }
+    
+    /**
+     * Count customer automation2s.
+     *
+     * @return number
+     */
+    public function automation2sCount()
+    {
+        return $this->automation2s()->count();
     }
 }

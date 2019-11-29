@@ -11,9 +11,9 @@
 				<div class="box-list mt-40">
 					@foreach ($types as $type)
 						<a class="box-item trigger-select-but"
-							data-type="{{ $type }}">
-								<h4>{{ trans('messages.automation.trigger.' . $type) }}</h4>
-								<p>{{ trans('messages.automation.trigger.' . $type . '.desc') }}</p>
+						data-type="{{ $type }}">
+							<h6>{{ trans('messages.automation.trigger.' . $type) }}</h6>
+							<p>{{ trans('messages.automation.trigger.' . $type . '.desc') }}</p>
 						</a>
 					@endforeach                
             </div>

@@ -2744,4 +2744,13 @@
   'click_log.download' => 'Download',
   'feedback_log.download' => 'Download',
   'unsubscribe_log.download' => 'Download',
+  'automation.create_automation' => 'Create Automation',
+  'automation.name_your_automation' => 'Name your new automation. This name is used to identify the automation later.',
+  'automation.choose_a_mail_list' => 'Choose a Mail List',
+  'automation.choose_a_mail_list.intro' => 'Choose a Mail List to associate with your automation.
+        You will be able to change the mail list ater on while customizing your automation.',
+  'automation.untitled' => 'Untitled Automation',
+  'automation.choose_list' => 'Choose a mail list',
+  'automation.get_started' => 'Get started',
+  'automation.created.redirecting' => 'The automation was successfully created. Redirecting to edit page...',
 ) ?>

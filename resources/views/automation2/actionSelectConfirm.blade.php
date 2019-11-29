@@ -15,7 +15,7 @@
 				
 				<hr>
 				
-				<button class="btn btn-mc_primary select-action-confirm"
+				<button class="btn btn-secondary select-action-confirm"
 					data-url="{{ action('Automation2Controller@actionSelect', ['type' => $type]) }}"
 				>
 						{{ trans('messages.automation.trigger.select_confirm') }}

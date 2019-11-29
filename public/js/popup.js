@@ -21,12 +21,12 @@ class Popup {
         }
         this.popup.css('display', 'none');
         
-        // click outside to close
-        $(".popup").click(function(e){
-            if(e.target != this) return; // only continue if the target itself has been clicked
-            // this section only processes if the .nav > li itself is clicked.
-            Popup.hide();
-        });
+        //// click outside to close
+        //$(".popup").click(function(e){
+        //    if(e.target != this) return; // only continue if the target itself has been clicked
+        //    // this section only processes if the .nav > li itself is clicked.
+        //    Popup.hide();
+        //});
     }
     
     show() {
@@ -46,6 +46,30 @@ class Popup {
     static hide() {
         $('.popup').fadeOut();
         $('html').css('overflow', 'auto');
+    }
+    
+    applyJs() {
+        var _this = this;
+        
+        // init js
+        initJs(_this.popup);
+        
+        // set back button
+        // back button
+        if (typeof(_this.back) !== 'undefined') {
+            _this.popup.find('.back').click( function() {                    
+                _this.back();
+            });
+        } else {
+            _this.popup.find('.back').click( function() {                    
+                Popup.hide();
+            });
+        }
+        
+        // click close button
+        _this.popup.find(".close").click(function(){
+            Popup.hide();
+        });
     }
     
     load(url) {
@@ -70,25 +94,16 @@ class Popup {
                 _this.callback();
             }
             
-            // init js
-            initJs(_this.popup);
-            
-            // set back button
-            // back button
-            if (typeof(_this.back) !== 'undefined') {
-                _this.popup.find('.back').click( function() {                    
-                    _this.back();
-                });
-            } else {
-                _this.popup.find('.back').click( function() {                    
-                    Popup.hide();
-                });
-            }
-            
-            // click close button
-            _this.popup.find(".close").click(function(){
-                Popup.hide();
-            });
+            // apply js for new content
+            _this.applyJs();
         });
+    }
+    
+    loadHtml(html) {
+        var _this = this;
+        
+        _this.popup.html(html);
+        
+        _this.applyJs();
     }
 }

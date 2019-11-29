@@ -4,7 +4,10 @@ namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Validator;
 use Acelle\Http\Requests;
+use Acelle\Model\Automation2;
+use Acelle\Model\MailList;
 
 class Automation2Controller extends Controller
 {
@@ -15,7 +18,64 @@ class Automation2Controller extends Controller
      */
     public function create(Request $request)
     {
-        return view('automation2.create');
+        $customer = $request->user()->customer;
+        
+        // init automation
+        $automation = new Automation2([
+            'name' => trans('messages.automation.untitled')
+        ]);
+        
+        // authorize
+        if (\Gate::denies('create', $automation)) {
+            return $this->noMoreItem();
+        }
+        
+        // saving
+        if($request->isMethod('post')) {
+            // fill before save
+            $automation->fill($request->all());
+            
+            // make validator
+            $validator = Validator::make($request->all(), $automation->rules());
+            
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('automation2.create', [
+                    'automation' => $automation,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+            
+            // pass validation and save
+            $automation->mail_list_id = MailList::findByUid($request->mail_list_uid)->id;
+            $automation->customer_id = $customer->id;
+            $automation->save();
+            
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.automation.created.redirecting'),
+                'url' => action('Automation2Controller@edit', ['uid' => $automation->uid])
+            ], 201);
+        }
+        
+        return view('automation2.create', [
+            'automation' => $automation,                          
+        ]);
+    }
+    
+    /**
+     * Creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Request $request, $uid)
+    {
+        // init automation
+        $automation = Automation2::findByUid($uid);
+        
+        return view('automation2.edit', [
+            'automation' => $automation,                          
+        ]);
     }
     
     /**

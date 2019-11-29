@@ -4,9 +4,9 @@
 	<div class="row">
         <div class="col-md-1"></div>
         <div class="col-md-10">
-            <h2 class="mb-20">
+            <h3 class="mb-3">
                 {{ trans('messages.automation.trigger.' . $type) }}
-            </h2>
+            </h3>
             <p class="mb-10">
                 {{ trans('messages.automation.trigger.' . $type . '.intro') }}
             </p>
@@ -22,7 +22,7 @@
 				
 				<hr>
 				
-				<button class="btn btn-mc_primary select-trigger-confirm"
+				<button class="btn btn-secondary select-trigger-confirm"
 					data-url="{{ action('Automation2Controller@triggerSelect', ['type' => $type]) }}"
 				>
 						{{ trans('messages.automation.trigger.select_confirm') }}

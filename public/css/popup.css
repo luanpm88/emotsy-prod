@@ -61,13 +61,11 @@
     padding: 20px;
     overflow: auto;
     max-height: calc(100vh - 110px);
-    padding-bottom: 60px;
+    padding-bottom: 40px;
 }
 .popup-body .select2 {
-    width: auto !important;
 }
 .popup-body .form-group label {
-    font-weight: 600;
 }
 .popup-body .control-time2 .time-selector, .popup-body .control-date2 .date-selector {
     width: auto;
@@ -75,15 +73,22 @@
 .popup-body .control-time2 .input-icon-right, .popup-body .control-date2 .input-icon-right {
     width: auto;
     display: inline-block;
+    position: relative;
+}
+.popup-body .control-time2 .input-icon-right i, .popup-body .control-date2 .input-icon-right i {
+    position: absolute;
+    right: 10px;
+    top: 11px;
+    color: #666;
 }
 .popup-body .form-group {
     margin-bottom: 15px;
 }
 .ui-timepicker-standard {
-    z-index: 100000 !important;
+    z-index: 1000000 !important;
 }
 .datepicker-dropdown {
-    z-index: 100000 !important;
+    z-index: 1000000 !important;
 }
 .popup-body .select2-selection--single:not([class*=bg-]):not([class*=border-]) {
     border-color: #bbb;
@@ -91,4 +96,7 @@
 }
 .select2-dropdown {
     z-index: 1000000;
+}
+.popup-body .has-error .select2-selection--single:not([class*=bg-]) {
+    border-color: #D84315;
 }
