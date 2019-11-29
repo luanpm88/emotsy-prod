@@ -319,6 +319,7 @@ class SendingServer extends Model
             'mailgun-api' => [
                 'cols' => [
                     'name' => 'required',
+                    'host' => 'required',
                     'domain' => 'required',
                     'api_key' => 'required',
                     'default_from_email' => 'email|required',
@@ -489,6 +490,20 @@ class SendingServer extends Model
             ['value' => 'ap-southeast-2', 'text' => 'Asia Pacific (Sydney)'],
             ['value' => 'eu-central-1', 'text' => 'EU (Frankfurt)'],
             ['value' => 'eu-west-1', 'text' => 'EU (Ireland)'],
+        ];
+    }
+    
+    /**
+     * Select options for aws region.
+     *
+     * @return array
+     */
+    public static function mailgunRegionSelectOptions()
+    {
+        return [
+            ['value' => '', 'text' => trans('messages.choose')],
+            ['value' => 'https://api.mailgun.net/v3', 'text' => 'US/Global Server'],
+            ['value' => 'https://api.eu.mailgun.net/v3', 'text' => 'EU Server'],
         ];
     }
 
