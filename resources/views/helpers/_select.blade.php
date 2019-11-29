@@ -1,4 +1,5 @@
 <select name="{{ $name }}"
+	{{ isset($disabled) && $disabled == true ? ' disabled="disabled"' : "" }}
 	@if(isset($placeholder))
 		data-placeholder="{{ $placeholder }}"
 	@endif

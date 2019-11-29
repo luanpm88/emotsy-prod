@@ -36,7 +36,7 @@
 			])
 		</div>
 	@endif
-	@if (array_key_exists("host", Acelle\Model\SendingServer::types()[request()->type]["cols"]) && request()->type != 'sparkpost-api')
+	@if (array_key_exists("host", Acelle\Model\SendingServer::types()[request()->type]["cols"]) && request()->type != 'sparkpost-api' && request()->type != 'mailgun-api')
 		<div class="col-sm-6 col-md-4">
 			@include('helpers.form_control', [
 				'type' => 'text',
@@ -57,6 +57,19 @@
 				'value' => $server->host,
 				'help_class' => 'sending_server',
 				'options' => Acelle\Model\SendingServerSparkPost::HOSTS,
+				'rules' => Acelle\Model\SendingServer::rules(request()->type)
+			])
+		</div>
+	@endif
+	@if ( array_key_exists("host", Acelle\Model\SendingServer::types()[request()->type]["cols"]) && request()->type == 'mailgun-api' )
+		<div class="col-sm-6 col-md-4">
+			@include('helpers.form_control', [
+				'type' => 'select',
+				'class' => '',
+				'name' => 'host',
+				'value' => $server->host,
+				'help_class' => 'sending_server',
+				'options' => Acelle\Model\SendingServer::mailgunRegionSelectOptions(),
 				'rules' => Acelle\Model\SendingServer::rules(request()->type)
 			])
 		</div>

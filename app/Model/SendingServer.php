@@ -344,6 +344,7 @@ class SendingServer extends Model
                 'cols' => [
                     'api_key' => 'required',
                     'domain' => 'required',
+                    'host' => 'required',
                 ],
                 'settings' => [
                     'name' => 'required',
@@ -594,6 +595,20 @@ class SendingServer extends Model
             ['value' => 'us-east-1', 'text' => 'US East (N. Virginia)', 'host' => 'email-smtp.us-east-1.amazonaws.com'],
             ['value' => 'us-west-2', 'text' => 'US West (Oregon)', 'host' => 'email-smtp.us-west-2.amazonaws.com'],
             ['value' => 'eu-west-1', 'text' => 'EU (Ireland)', 'host' => 'email-smtp.eu-west-1.amazonaws.com'],
+        ];
+    }
+    
+    /**
+     * Select options for aws region.
+     *
+     * @return array
+     */
+    public static function mailgunRegionSelectOptions()
+    {
+        return [
+            ['value' => '', 'text' => trans('messages.choose')],
+            ['value' => 'https://api.mailgun.net/v3', 'text' => 'US/Global Server'],
+            ['value' => 'https://api.eu.mailgun.net/v3', 'text' => 'EU Server'],
         ];
     }
 
