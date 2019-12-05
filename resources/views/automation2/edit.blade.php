@@ -71,40 +71,31 @@
 				</div>
 				<p>This is an automation for the poorest marketers. Triggered when people subscribe to your mail list “<strong>La Paloma</strong>”</p>
 				
-				
-				
-				<ul class="nav nav-tabs mt-5">
-					<li class="nav-item">
-						<a class="nav-link active" href="#">
-							<i class="lnr lnr-exit-up mr-2"></i>
-							Trigger
-						</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="#">
-							<i class="lnr lnr-layers mr-2"></i>
-							Information
-						</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="#">
-							<i class="lnr lnr-cog mr-2"></i>
-							Settings
-						</a>
-					</li>
-				</ul>
+				<div class="sidebar-setting-container">
+					<ul class="nav nav-tabs mt-5">
+						<li class="nav-item">
+							<a class="nav-link active" href="#">
+								<i class="lnr lnr-exit-up mr-2"></i>
+								Automation
+							</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" href="#">
+								<i class="lnr lnr-cog mr-2"></i>
+								Settings
+							</a>
+						</li>
+					</ul>
 					
-				<h5 class="mb-3 mt-4">
-					{{ trans('messages.automation.trigger.say-happy-birthday') }}
-				</h5>
-				<p class="">
-					{{ trans('messages.automation.trigger.say-happy-birthday.intro') }}
-				</p>
-				
-				<div class="mt-4">
-					<button class="btn btn-secondary mr-2">Save</button>
-					<button class="btn btn-outline-secondary">Chage Trigger</button>
+					<p class="mt-3">
+						Your automation trigger is not set up yet. Click the button below to configure your trigger
+					</p>
+						
+					<button class="btn btn-secondary add-trigger-but">
+						Set Up Trigger
+					</button>
 				</div>
+						
 				<br><br><br>
 				<h6 class="mb-2 mt-5 text-danger">
 					Dangerous Zone
@@ -123,7 +114,7 @@
 		
 	<script>
 		function SelectActionConfirm(type) {
-			var url = '{{ action('Automation2Controller@actionSelectConfirm') }}' + '?type=' + type;
+			var url = '{{ action('Automation2Controller@actionSelectConfirm', $automation->uid) }}' + '?type=' + type;
 			
 			var popup = new Popup(url, function() {
 				console.log('Confirm action type popup loaded!');
@@ -162,7 +153,7 @@
 		}
 	
 		function OpenActionSelectPopup() {
-			var popup = new Popup('{{ action('Automation2Controller@actionSelectPupop') }}', function() {
+			var popup = new Popup('{{ action('Automation2Controller@actionSelectPupop', $automation->uid) }}', function() {
 				console.log('Select action popup loaded!');
 				
 				// set back event
@@ -183,7 +174,7 @@
 		}
 		
 		function OpenTriggerSelectPopup() {
-			var popup = new Popup('{{ action('Automation2Controller@triggerSelectPupop') }}', function() {
+			var popup = new Popup('{{ action('Automation2Controller@triggerSelectPupop', $automation->uid) }}', function() {
 				console.log('Select trigger popup loaded!');
 				
 				// set back event
@@ -204,7 +195,7 @@
 		}
 		
 		function SelectTriggerConfirm(type) {
-			var url = '{{ action('Automation2Controller@triggerSelectConfirm') }}' + '?type=' + type;
+			var url = '{{ action('Automation2Controller@triggerSelectConfirm', $automation->uid) }}' + '?type=' + type;
 			
 			var popup = new Popup(url, function() {
 				console.log('Confirm trigger type popup loaded!');
@@ -217,7 +208,9 @@
 				};
 				
 				// when click confirm select trigger type
-				popup.popup.find('.select-trigger-confirm').click(function() {
+				popup.popup.find('.select-trigger-confirm').click(function(e) {
+					e.preventDefault();
+				
 					var url = $(this).attr('data-url');
 					var data = $('#trigger-select').serialize();
 					
@@ -235,11 +228,48 @@
 						popup.hide();
 						
 						notify('success', '{{ trans('messages.notify.success') }}', response.message);
+						
+						// Edit Trigger
+						EditTrigger('{{ action('Automation2Controller@triggerEdit', $automation->uid) }}' + '?type=say-happy-birthday');
 					});
 				});
 			});
 			
 			popup.load();
+		}
+		
+		function EditTrigger(url) {
+			var container = $('.sidebar-setting-container');
+			
+			$.ajax({
+				url: url,
+				type: 'GET',
+			}).always(function(response) {
+				// todo: when trigger selected
+				console.log('Trigger was selected');
+				
+				container.html(response);
+				
+				// init js
+				initJs(container);
+			});
+		}
+		
+		function EditAction(url) {
+			var container = $('.sidebar-setting-container');
+			
+			$.ajax({
+				url: url,
+				type: 'GET',
+			}).always(function(response) {
+				// todo: when trigger selected
+				console.log('Action was selected');
+				
+				container.html(response);
+				
+				// init js
+				initJs(container);
+			});
 		}
 	
 		$(document).ready(function() {
@@ -252,13 +282,12 @@
 			});
 			
 			// Click on exist trigger
-			$(document).on('click', '.trigger', function() {
-				console.log('click on one trigger!');
-				
-				var type = $(this).attr('data-type');
+			$(document).on('click', '.trigger', function() {			
+				var type = $(this).attr('data-type');				
+				var url = '{{ action('Automation2Controller@triggerEdit', $automation->uid) }}' + '?type=' + type;
 				
 				// Open trigger types select list
-				SelectTriggerConfirm(type);
+				EditTrigger(url);
 			});
 			
 			// click on add action button
@@ -273,10 +302,11 @@
 			$(document).on('click', '.action', function() {
 				console.log('click on one action!');
 				
-				var type = $(this).attr('data-type');
+				var type = $(this).attr('data-type');				
+				var url = '{{ action('Automation2Controller@actionEdit', $automation->uid) }}' + '?type=' + type;
 				
-				// Open action types select list
-				SelectActionConfirm(type);
+				// Open trigger types select list
+				EditAction(url);
 			});
 		});
 	</script>

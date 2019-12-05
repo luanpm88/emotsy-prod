@@ -166,16 +166,26 @@ function initJs(container) {
 }
 
 function notify(type, title, message) {
-    new PNotify({
+    var options = {
         title: title,
         text: message,
-        type: type,
-        before_open: function(PNotify) {
-            PNotify.elem.css({
-                "top":"60px"
-            });
+        addClass: 'nonblock',
+        modules: {
+          Buttons: {
+            sticker: false
+          }
         }
-    });    
+    };
+    
+    if (type == 'success') {
+        PNotify.success(options);
+    } else if(type == 'notice') {
+        PNotify.notice(options);
+    } else if(type == 'info') {
+        PNotify.info(options);
+    } else if(type == 'error') {
+        PNotify.error(options);
+    }
 }
 
 function removeMaskLoading() {

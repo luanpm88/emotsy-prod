@@ -117,13 +117,15 @@
     display: flex;
 }
 .automation2 .diagram {
-    width: 70%;
+    width: 65%;
     height: 100vh;
     padding: 87px 30px 30px 30px;
     background: #f2f2f2;
 }
 .automation2 .sidebar {
-    width: 30%;
+    width: 35%;
+    height: 100vh;
+    overflow: auto;
     padding: 87px 30px 30px 30px;
 }
 .navbar-brand.left-logo {
@@ -399,6 +401,9 @@ label.switchery-double.checkbox-switchery {
     padding-left: 12px;
     padding-right: 24px;
 }
+.select2-container .select2-selection--single {
+  height: 38px;
+}
 .popup-body .select2-selection--single:not([class*=bg-]):not([class*=border-]) {
     height: 38px;
 }
@@ -420,4 +425,7 @@ label.switchery-double.checkbox-switchery {
     float: left;
     position: absolute;
     display: none;
+}
+.form-group .select2-container {
+  display: block;
 }

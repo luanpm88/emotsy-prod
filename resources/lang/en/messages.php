@@ -2753,4 +2753,6 @@
   'automation.choose_list' => 'Choose a mail list',
   'automation.get_started' => 'Get started',
   'automation.created.redirecting' => 'The automation was successfully created. Redirecting to edit page...',
+  'automation.trigger.save_change' => 'Save Change',
+  'automation.action.save_change' => 'Save Change',
 ) ?>

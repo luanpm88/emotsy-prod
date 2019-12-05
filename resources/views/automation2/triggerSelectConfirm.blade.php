@@ -11,7 +11,7 @@
                 {{ trans('messages.automation.trigger.' . $type . '.intro') }}
             </p>
 				
-			<form id="trigger-select" action="{{ action("Automation2Controller@triggerSelect") }}" method="POST" class="form-validate-jqueryz">
+			<form id="trigger-select" action="{{ action("Automation2Controller@triggerSelect", $automation->uid) }}" method="POST" class="form-validate-jqueryz">
 				{{ csrf_field() }}
 				
 				<input type="hidden" name="type" value="{{ $type }}" />
@@ -23,7 +23,7 @@
 				<hr>
 				
 				<button class="btn btn-secondary select-trigger-confirm"
-					data-url="{{ action('Automation2Controller@triggerSelect', ['type' => $type]) }}"
+					data-url="{{ action('Automation2Controller@triggerSelect', ['uid' => $automation->uid, 'type' => $type]) }}"
 				>
 						{{ trans('messages.automation.trigger.select_confirm') }}
 				</button>

@@ -14,7 +14,7 @@
                             <i class="lnr lnr-{{ trans('messages.automation.action.' . $type . '.icon') }}"></i>
                         </div>
                         <div class="line-body">
-                            <h4 class="text-teal-800">{{ trans('messages.automation.action.' . $type) }}</h4>
+                            <h5 class="text-teal-800">{{ trans('messages.automation.action.' . $type) }}</h5>
                             <p>{{ trans('messages.automation.action.' . $type . '.desc') }}</p>
                         </div>
                     </div>

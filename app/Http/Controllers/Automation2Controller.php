@@ -73,6 +73,11 @@ class Automation2Controller extends Controller
         // init automation
         $automation = Automation2::findByUid($uid);
         
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+        
         return view('automation2.edit', [
             'automation' => $automation,                          
         ]);
@@ -83,9 +88,16 @@ class Automation2Controller extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function triggerSelectPupop(Request $request)
+    public function triggerSelectPupop(Request $request, $uid)
     {
-        sleep(0.5);
+        // init automation
+        $automation = Automation2::findByUid($uid);
+        
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+        
         $types = [
             'welcome-new-subscriber',
             'say-happy-birthday',
@@ -94,8 +106,10 @@ class Automation2Controller extends Controller
             'say-goodbye-subscriber',
             'api-3-0',
         ];
+        
         return view('automation2.triggerSelectPupop', [
             'types' => $types,
+            'automation' => $automation,
         ]);
     }
     
@@ -104,11 +118,19 @@ class Automation2Controller extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function triggerSelectConfirm(Request $request)
+    public function triggerSelectConfirm(Request $request, $uid)
     {
-        sleep(0.5);
+        // init automation
+        $automation = Automation2::findByUid($uid);
+        
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+        
         return view('automation2.triggerSelectConfirm', [
             'type' => $request->type,
+            'automation' => $automation,
         ]);
     }
     
@@ -117,9 +139,15 @@ class Automation2Controller extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function triggerSelect(Request $request)
+    public function triggerSelect(Request $request, $uid)
     {
-        sleep(2);
+        // init automation
+        $automation = Automation2::findByUid($uid);
+        
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
         
         return response()->json([
             'status' => 'success',
@@ -133,15 +161,25 @@ class Automation2Controller extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function actionSelectPupop(Request $request)
+    public function actionSelectPupop(Request $request, $uid)
     {
+        // init automation
+        $automation = Automation2::findByUid($uid);
+        
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+        
         $types = [
             'send-an-email',
             'wait',
             'condition',
         ];
+        
         return view('automation2.actionSelectPupop', [
             'types' => $types,
+            'automation' => $automation,
         ]);
     }
     
@@ -150,11 +188,19 @@ class Automation2Controller extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function actionSelectConfirm(Request $request)
+    public function actionSelectConfirm(Request $request, $uid)
     {
-        sleep(0.5);
+        // init automation
+        $automation = Automation2::findByUid($uid);
+        
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+        
         return view('automation2.actionSelectConfirm', [
             'type' => $request->type,
+            'automation' => $automation,
         ]);
     }
     
@@ -163,14 +209,62 @@ class Automation2Controller extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function actionSelect(Request $request)
+    public function actionSelect(Request $request, $uid)
     {
-        sleep(2);
+        // init automation
+        $automation = Automation2::findByUid($uid);
+        
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
         
         return response()->json([
             'status' => 'success',
             'message' => 'Action was successfully added.',
             'label' => '[Trigger] ' . trans('messages.automation.action.' . $request->type),
+        ]);
+    }
+    
+    /**
+     * Edit trigger.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function triggerEdit(Request $request, $uid)
+    {
+        // init automation
+        $automation = Automation2::findByUid($uid);
+        
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+        
+        return view('automation2.triggerEdit', [
+            'type' => $request->type,
+            'automation' => $automation,
+        ]);
+    }
+    
+    /**
+     * Edit action.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function actionEdit(Request $request, $uid)
+    {
+        // init automation
+        $automation = Automation2::findByUid($uid);
+        
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+        
+        return view('automation2.actionEdit', [
+            'type' => $request->type,
+            'automation' => $automation,
         ]);
     }
 }

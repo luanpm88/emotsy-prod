@@ -20,10 +20,6 @@ class Automation2Policy
 
     public function update(User $user, Automation2 $automation)
     {
-        return $automation->customer_id == $user->customer->id &&
-            in_array($automation->status, [
-                Automation2::STATUS_ACTIVE,
-                Automation2::STATUS_INACTIVE
-            ]);
+        return true;
     }
 }
