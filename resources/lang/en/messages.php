@@ -2469,7 +2469,7 @@
   'invoice.amount' => 'Amount',
   'invoice.description' => 'Description',
   'invoice.status' => 'Status',
-  'subscription.logs' => 'Invoices / Billing History',
+  'subscription.logs' => 'Invoices and billing history',
   'subscription.logs.intro' => 'All your payment transactions are logged here. Let check them for details of your invoices / billing history.',
   'subscription.logs.empty' => 'No records found',
   'no_plan.title' => 'You are not subscribed to any plan!',
