@@ -58,6 +58,15 @@ Route::get('/app/campaigns/{name?}', [ function ($name) {
     }
 }])->where('name', '.+');
 
+// upload path for email
+Route::get('/app/email/{name?}', [ function ($name) {
+    $path = storage_path("app/email/$name");
+    $mime_type = \Acelle\Library\File::getFileType($path);
+    if (\File::exists($path)) {
+        return response()->file($path, array('Content-Type' => $mime_type));
+    }
+}])->where('name', '.+');
+
 // Setting upload path
 Route::get('setting/{filename}', 'SettingController@file');
 Route::get('/no-plan', 'AccountSubscriptionController@noPlan');
@@ -535,6 +544,21 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('notifications/{id}/hide', 'NotificationController@hide');
     
     // Automation2
+    Route::get('automation2/{uid}/template/{email_uid}/change/{template_uid}', 'Automation2Controller@templateChangeTemplate');
+    Route::post('automation2/{uid}/template/{email_uid}/asset', 'Automation2Controller@templateAsset');
+    Route::post('automation2/{uid}/template/{email_uid}/asset', 'Automation2Controller@templateAsset');
+    Route::get('automation2/{uid}/template/{email_uid}/content', 'Automation2Controller@templateContent');
+    Route::match(['get', 'post'], 'automation2/{uid}/template/{email_uid}/edit', 'Automation2Controller@templateEdit');
+    Route::match(['get', 'post'], 'automation2/{uid}/template/{email_uid}/upload', 'Automation2Controller@templateUpload');
+    Route::get('automation2/{uid}/template/{email_uid}/theme/list', 'Automation2Controller@templateThemeList');
+    Route::match(['get', 'post'], 'automation2/{uid}/template/{email_uid}/theme', 'Automation2Controller@templateTheme');
+    Route::match(['get', 'post'], 'automation2/{uid}/template/{email_uid}/layout', 'Automation2Controller@templateLayout');
+    Route::get('automation2/{uid}/template/{email_uid}/create', 'Automation2Controller@templateCreate');
+    
+    Route::match(['get', 'post'], 'automation2/{uid}/email/setup', 'Automation2Controller@emailSetup');
+    Route::match(['get', 'post'], 'automation2/{uid}/email/confirm', 'Automation2Controller@emailConfirm');
+    Route::match(['get', 'post'], 'automation2/{uid}/email/{email_uid}', 'Automation2Controller@email');
+    Route::match(['get', 'post'], 'automation2/{uid}/email/{email_uid}/template', 'Automation2Controller@emailTemplate');    
     Route::match(['get'], 'automation2/{uid}/action/edit', 'Automation2Controller@actionEdit');
     Route::match(['get'], 'automation2/{uid}/trigger/edit', 'Automation2Controller@triggerEdit');
     Route::post('automation2/{uid}/action/select', 'Automation2Controller@actionSelect');
@@ -545,6 +569,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('automation2/{uid}/trigger/select', 'Automation2Controller@triggerSelectPupop');
     Route::match(['get'], 'automation2/{uid}/edit', 'Automation2Controller@edit');
     Route::match(['get', 'post'], 'automation2/create', 'Automation2Controller@create');
+    Route::get('automation2s', 'Automation2Controller@index');
 });
 
 // ADMIN AREA

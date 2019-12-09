@@ -2670,7 +2670,7 @@
     Acelle Mail offers a wide selection of preset automation types with built-in triggers, ranging from abandoned
     cart emails to a simple welcome message.',
   'automation.trigger.welcome-new-subscriber' => 'Welcome new subscribers',
-  'automation.trigger.say-happy-birthday' => 'Say `Happy birthday`',
+  'automation.trigger.say-happy-birthday' => 'Say `Goodbye`',
   'automation.trigger.subscriber-added-date' => 'Subscriber added date',
   'automation.trigger.specific-date' => 'Specific date',
   'automation.trigger.say-goodbye-subscriber' => 'Say goodbye to subscriber',
@@ -2755,4 +2755,51 @@
   'automation.created.redirecting' => 'The automation was successfully created. Redirecting to edit page...',
   'automation.trigger.save_change' => 'Save Change',
   'automation.action.save_change' => 'Save Change',
+  'email.track_open.help' => 'Discover who opens your campaigns by tracking the number of times an invisible web
+        beacon embedded in the campaign is downloaded.',
+  'email.track_click.help' => 'Discover which campaign links were clicked, how many times they were clicked, and who did the clicking.',
+  'email.track_fbl.help' => 'Sign your email with your sending domain (if any), telling receiving email servers that your email is
+        actually coming from you. This is to help establish the authenticity of your email, improving delivery rate.',
+  'email.sign_dkim.help' => 'Sign your email with your sending domain (if any), telling receiving email servers that your email
+        is actually coming from you. This is to help establish the authenticity of your email, improving delivery rate.',
+  'email.setup.save_next' => 'Save & Next',
+  'automation.email.settings' => 'Settings',
+  'automation.trigger.title' => 'Trigger: :title',
+  'automation.go_back' => 'Go back',
+  'automation.switch_automation' => 'Switch automation',
+  'automation.running' => 'running',
+  'automation.intro' => 'This is an automation for the poorest marketers. Triggered when people subscribe to
+        your mail list “<strong>:list</strong>”',
+  'automation.trigger' => 'Trigger',
+  'automation.settings' => 'Settings',
+  'automation.trigger.empty_msg' => 'Your automation trigger is not set up yet. Click the button
+        below to configure your trigger',
+  'automation.trigger.setup' => 'Set Up Trigger',
+  'dangerous_zone' => 'Dangerous Zone',
+  'automation.action.delete.confirm' => 'Delete this action will also delete all its children. This action cannot be undone',
+  'automation.trigger.added' => 'Trigger was successfully added.',
+  'automation.action.added' => 'Action was successfully added.',
+  'automation.action.title' => 'Action: :title',
+  'automation.email.setup' => 'Setup',
+  'automation.email.template' => 'Template',
+  'automation.email.confirm' => 'Confirm',
+  'automation.template.content_management' => 'Content Management',
+  'automation.template.email_content' => 'Email Content',
+  'automation.template.email_content.intro' => 'Create your email from scratch or start from Acelle Mail per-built templates / themes.
+        Customize the content the way you desire with our powerful but easy-to-use HTML email builder.',
+  'automation.template.from_layout' => 'From a Template Layout',
+  'automation.template.from_layout.intro' => 'Craft your email based off a pre-built layout we made for you',
+  'automation.template.from_theme' => 'From a theme',
+  'automation.template.from_theme.intro' => 'No need to create an email from scratch. Start from a beautiful template we have',
+  'automation.template.start' => 'Start',
+  'automation.template.upload' => 'Upload own template',
+  'automation.template.upload.intro' => 'Upload your own template in ZIP format',
+  'automation.choose_your_template_layout' => 'Choose layout for campaign template',
+  'automation.choose_your_template_layout.intro' => 'You can quickly create template for email by choosing exist
+        layout/theme, or upload from template source file.',
+  'automation.choose_template.intro' => 'Select campaign template depend on your purpose.
+        You can create template from scratch or select from exist templates.',
+  'automation.action.wait.title' => 'Wait :number :time',
+  'automation.action.condition.read_email.title' => 'Condition: Open previous email?',
+  'automation.action.condition.click_link.title' => 'Condition: Click on a link?',
 ) ?>

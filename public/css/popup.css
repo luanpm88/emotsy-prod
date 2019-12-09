@@ -58,7 +58,7 @@
     cursor: pointer;
 }
 .popup-body {
-    padding: 20px;
+    padding: 30px;
     overflow: auto;
     max-height: calc(100vh - 110px);
     padding-bottom: 40px;

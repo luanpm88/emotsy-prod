@@ -10,6 +10,15 @@
 * ---------------------------------------------------------------------------- */
 
 function initJs(container) {
+    //
+    // Switchery
+    // ------------------------------
+    container.find('.switchery').each(function() {
+        if($(this).attr("data-switchery") != "true") {
+            var switchery = new Switchery(this, {color: $(".navbar-inverse").css("background-color")});
+        }
+    });
+    
     // Select2
     container.find('select').select2({
         minimumResultsForSearch: 101,

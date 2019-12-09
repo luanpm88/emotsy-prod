@@ -19,24 +19,26 @@
     </li>
 </ul>
     
-<form id="trigger-select" action="{{ action("Automation2Controller@actionEdit", ['uid' => $automation->uid, 'type' => $type]) }}" method="POST" class="form-validate-jqueryz">
-    {{ csrf_field() }}
-    
-    <input type="hidden" name="type" value="{{ $type }}" />
-    
-    @if(View::exists('automation2.action.' . $type))
-        @include('automation2.action.' . $type)
-    @endif
-    
-    <div class="trigger-action mt-4">    
-        <button class="btn btn-secondary select-trigger-confirm mr-1"
-            data-url="{{ action('Automation2Controller@triggerSelect', ['uid' => $automation->uid, 'type' => $type]) }}"
-        >
-                {{ trans('messages.automation.action.save_change') }}
-        </button>
-        
-        <a href="javascript:;" class="btn btn-outline-secondary change-action-but">
-            Change Action
-        </a>
-    </div>
-</form>
+@if(View::exists('automation2.action.' . $type))
+    @include('automation2.action.' . $type)
+@endif
+
+<div class="trigger-action mt-4">    
+    <button class="btn btn-secondary select-trigger-confirm mr-1"
+        data-url="{{ action('Automation2Controller@triggerSelect', ['uid' => $automation->uid, 'type' => $type]) }}"
+    >
+            {{ trans('messages.automation.action.save_change') }}
+    </button>
+</div>
+
+<br>
+<h6 class="mb-2 mt-5 text-danger">
+    {{ trans('messages.automation.dangerous_zone') }}
+</h6>
+<p class="">
+    {{ trans('messages.automation.action.delete.confirm') }}        
+</p>
+<div class="mt-3">
+    <button class="btn btn-danger">
+        <i class='lnr lnr-trash mr-2'></i> Delete This Action</button>
+</div>

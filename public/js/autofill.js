@@ -143,8 +143,12 @@ $.fn.autofill = function(options) {
         });
 
         if (!valid && box.error != '') {
-            if (!box.container.parent().find('.autofill-error').length) {
-                box.container.after('<div class="helper-block autofill-error alert alert-warning">'+box.error+'</div>');
+            if (!box.container.closest('.control-autofill').find('.autofill-error').length) {
+                if (box.container.closest('.control-autofill').find('.help-block').length > 0) {
+                    box.container.closest('.control-autofill').find('.help-block').after('<div class="helper-block autofill-error alert alert-warning">'+box.error+'</div>');
+                } else {
+                    box.container.after('<div class="helper-block autofill-error alert alert-warning">'+box.error+'</div>');
+                }
             }
             // Change box title
             box.container.find('.header').addClass('text-warning');

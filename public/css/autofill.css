@@ -83,6 +83,9 @@
     cursor: pointer;
     font-size: 13px;
 }
+.autofill-dropbox li a:last-child {
+  border-bottom: none;
+}
 .autofill-dropbox li a.autofill-item-a:hover {
     background-color: #f8f8f8;
 }
@@ -129,4 +132,7 @@
 span.autofill-item-a {
   padding: 10px 20px;
   display: block;
+}
+.autofill-error {
+  margin-top: 10px;
 }

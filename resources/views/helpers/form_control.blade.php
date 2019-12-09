@@ -8,7 +8,7 @@
     $required = (isset($rules) && isset($rules[$var_name]) && in_array('required', explode('|', $rules[$var_name]))) ? true : '';
 ?>
 
-@if ($type == 'checkbox')
+@if ($type == 'checkbox' || $type == 'checkbox3')
     @include('helpers._' . $type)
 @elseif (!empty($errors))
     <div class="form-group{{ $errors->has($var_name) ? ' has-error' : '' }} control-{{ $type }}">
@@ -60,7 +60,7 @@
 
         @if ($errors->has($var_name))
             <span class="help-block">
-                <strong>{{ $errors->first($var_name) }}</strong>
+                {{ $errors->first($var_name) }}
             </span>
         @endif
     </div>

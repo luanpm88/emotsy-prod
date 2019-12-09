@@ -23,7 +23,7 @@
 				<hr>
 				
 				<button class="btn btn-secondary select-trigger-confirm"
-					data-url="{{ action('Automation2Controller@triggerSelect', ['uid' => $automation->uid, 'type' => $type]) }}"
+					data-url="{{ action('Automation2Controller@triggerSelect', ['uid' => $automation->uid]) }}"
 				>
 						{{ trans('messages.automation.trigger.select_confirm') }}
 				</button>

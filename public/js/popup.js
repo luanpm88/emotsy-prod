@@ -72,11 +72,15 @@ class Popup {
         });
     }
     
-    load(url) {
+    load(url, callback) {
         var _this = this;
         
         if (typeof(url) !== 'undefined') {
             this.url = url;
+        }
+        
+        if (typeof(callback) !== 'undefined') {
+            this.callback = callback;
         }
         
         this.loading();

@@ -2,7 +2,7 @@
   
 }
 .box-list .box-item {
-    width: 280px;
+    width: 276px;
     float: left;
     margin-right: 20px;
     height: 170px;
@@ -119,8 +119,9 @@
 .automation2 .diagram {
     width: 65%;
     height: 100vh;
-    padding: 87px 30px 30px 30px;
+    padding: 55px 0 0 0;
     background: #f2f2f2;
+    overflow: auto;
 }
 .automation2 .sidebar {
     width: 35%;
@@ -404,7 +405,7 @@ label.switchery-double.checkbox-switchery {
 .select2-container .select2-selection--single {
   height: 38px;
 }
-.popup-body .select2-selection--single:not([class*=bg-]):not([class*=border-]) {
+.select2-selection--single:not([class*=bg-]):not([class*=border-]) {
     height: 38px;
 }
 .select2-container--default .select2-selection--single .select2-selection__arrow {
@@ -428,4 +429,140 @@ label.switchery-double.checkbox-switchery {
 }
 .form-group .select2-container {
   display: block;
+}
+.switch3 {
+  width: 100px;
+}
+.checkbox3 {
+  display: flex;
+  margin-bottom: 20px;
+}
+.checkbox3 div.label {
+  font-weight: 600;
+}
+.hide {
+  display: none;
+}
+.form-group.has-error .form-control{
+  border-color: #bf3e1b;
+}
+.form-group.has-error .help-block{
+  color: #bf3e1b;
+  font-size: 85%;
+}
+.key-value-list {
+    padding: 0;
+}
+.key-value-list li {
+    list-style: none;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: solid 1px #ddd;
+}
+.key-value-list li label {
+  font-weight: 600;
+  margin: 0;
+}
+.key-value-list li .value {
+  color: #555;
+}
+.key-value-list.list-small li label {
+  font-size: 92%;
+}
+.key-value-list.list-small li .value {
+  font-size: 92%;
+}
+.form-group label {
+}
+.control-time2 .time-selector, .control-date2 .date-selector {
+    width: auto;
+}
+.control-time2 .input-icon-right, .control-date2 .input-icon-right {
+    width: auto;
+    display: inline-block;
+    position: relative;
+}
+.control-time2 .input-icon-right i, .control-date2 .input-icon-right i {
+    position: absolute;
+    right: 10px;
+    top: 11px;
+    color: #666;
+}
+.form-group {
+    margin-bottom: 15px;
+}
+.hover-list {
+  padding: 0;
+}
+.hover-list li {
+  display: flex;
+  list-style: none;
+  padding: 15px;
+  border: dashed 2px #fff;
+  border-radius: 15px;
+}
+.hover-list li:hover {
+  border: dashed 2px #aaa;
+  cursor: pointer;
+}
+.hover-list li i {
+  font-size: 38px;
+  margin-right: 20px;
+  color: #333;
+  margin-top: 6px;
+}
+.hover-list li .list-body {
+  padding-right: 100px;
+  width: 100%;
+}
+.hover-list li .list-body label {
+  margin: 0 0 3px 0;
+  font-weight: 600;
+  color: #00695B;
+  font-size: 110%;
+}
+.hover-list li .list-body p {
+  margin: 0;
+}
+.hover-list li .list-action {
+  align-items: center;
+  display: flex;
+  visibility: hidden;
+}
+.hover-list li:hover .list-action {
+  visibility: visible;
+}
+.template-boxes .panel-template-style {
+  border-color: transparent;
+}
+.template-boxes .panel-body {
+    padding: 0;
+}
+.template-boxes .panel-body label {
+    text-align: center;
+    display: block;
+    color: #333;
+    margin: 8px;
+}
+.template-boxes .panel-body img {
+    border: solid 1px #aaa;
+    border-radius: 3px;
+}
+.template-boxes.layout .panel-body img {
+    border: none;
+    width: 100%;
+}
+
+.full-iframe-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 90000000;
+}
+.full-iframe-popup iframe.builder {
+  width: 100%;
+  height: 100vh;
+  border: none;
 }

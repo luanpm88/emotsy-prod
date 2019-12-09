@@ -19,6 +19,7 @@
 	<link href="{{ URL::asset('css/popup.css') }}" rel="stylesheet" type="text/css">
 	<link href="{{ URL::asset('css/loading.css') }}" rel="stylesheet" type="text/css">
 	<link href="{{ URL::asset('css/popup.css') }}" rel="stylesheet" type="text/css">
+	<link href="{{ URL::asset('css/autofill.css') }}" rel="stylesheet" type="text/css">
     
 	
 	
@@ -63,6 +64,9 @@
 	<script>
 		PNotify.defaults.styling = 'bootstrap4';
 	</script>
+		
+	<!-- Diagram -->
+	<script src="{{ URL::asset('assets2/lib/custom.js') }}"></script>
 		
 	<!-- App -->
 	<link href="{{ URL::asset('assets2/css/app.css') }}" rel="stylesheet" type="text/css">
