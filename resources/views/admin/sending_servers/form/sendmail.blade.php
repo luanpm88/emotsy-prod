@@ -7,14 +7,14 @@
     <input type="hidden" name="_method" value="PATCH">
     {{ csrf_field() }}
 @endif
-    
+
     <div class="mc_section">
         <div class="row">
             <div class="col-md-6">
-                <p>{{ trans('messages.sending_servers.php-mail.intro') }}</p>
-                    
+                <p>{!! trans('messages.sending_servers.sendmail.intro') !!}</p>
                 @include('helpers.form_control', [
                     'type' => 'text',
+                    'placeholder' => 'Example: /usr/bin/sendmail',
                     'class' => '',
                     'name' => 'sendmail_path',
                     'value' => $server->sendmail_path,
@@ -22,7 +22,6 @@
                     'rules' => $server->getRules(),
                     'disabled' =>($server->id && $errors->isEmpty()),
                 ])
-                
             </div>
         </div>
         <div class="text-left">

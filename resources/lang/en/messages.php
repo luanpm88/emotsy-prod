@@ -2255,8 +2255,9 @@
   'plan.sending_identify.intro.sparkpost-smtp' => 'Your plan is setup to use Sparkpost as primary delivery method. Users who subscribe to this plan must use the following identities as their FROM email address. Edit your sending server setting to add more identities',
   'sending_server.testing' => 'Checking server connection...',
   'sending_server.test_success' => 'The sending server is valid',
-  'sending_servers.php-mail.intro' => 'Configure Acelle Mail to send emails directly through the hosting server\'s through PHP
-      `mail()` function. Make sure the function is not disabled on your hosting server',
+  'sending_servers.php-mail.intro' => 'Configure Acelle Mail to send emails directly through the hosting server\'s PHP
+      <code>mail()</code> function. Make sure the function is not disabled on your hosting server',
+  'sending_servers.sendmail.intro' => 'Configure Acelle Mail to send emails directly through the hosting server\'s <code>sendmail</code> program. Make sure the function is already installed on your hosting server.',
   'sending_server.php-mail.check_php_mail' => 'Check PHP Mail',
   'sending_servers.local_identity.intro' => 'Specify the delivery domains that users can use. That is, user can specify a
       FROM email address that does match one of the following domains',
