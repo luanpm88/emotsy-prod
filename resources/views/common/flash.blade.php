@@ -22,7 +22,8 @@
                         PNotify.elem.css({
                             "top":"60px"
                         });
-                    }
+                    },
+                    closer: false
                 });
 
             });
