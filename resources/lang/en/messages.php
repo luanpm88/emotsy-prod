@@ -2380,8 +2380,8 @@
   'purchasing_intro_direct' => 'You are subscribing to <span class="text-nowrap text-big text-semibold">:plan</span> plan
           . Your plan price is: <span class="text-nowrap text-big text-bold">:price</span>
           . Click confirm button below to accept and get payment guide.',
-  'subscription.current_subscription.recurring.wording' => 'You are currently subscribed to <strong>:plan</strong> (<strong>:money</strong>).<br>
-      Next invoice will be billed in <strong>:remain</strong>, on <strong>:next_on</strong>.',
+  'subscription.current_subscription.recurring.wording' => 'You are currently subscribed to <strong>:plan</strong> (<strong>:money</strong>) plan.<br>
+      Your next invoice will be automatically billed in <strong>:remain</strong>, on <strong>:next_on</strong>.',
   'subscription.cancel.confirm' => 'You\'re about to cancel :number subscription. You\'re still subscribed until the end of period',
   'subscription.renew.confirm' => 'You\'re about to renew :number subscription.',
   'subscription.cancelled' => 'The subscription was successfully cancelled',

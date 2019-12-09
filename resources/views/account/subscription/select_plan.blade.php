@@ -15,7 +15,7 @@
             <li class="active">{{ trans('messages.subscription') }}</li>
         </ul>
         <h1>
-            <span class="text-semibold"><i class="icon-profile"></i> {{ Auth::user()->customer->displayName() }}</span>
+            <span class="text-semibold">{{ Auth::user()->customer->displayName() }}</span>
         </h1>
     </div>
 
@@ -29,7 +29,7 @@
                     'level' => 'warning',
                     'message' => trans('messages.no_plan.title')
                 ])
-        
+
                 <p>{{ trans('messages.select_plan.wording') }}</p>
             </div>
         </div>
@@ -37,7 +37,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="sub-section">
-            
+
                 @if (empty($plans))
                     <div class="row">
                         <div class="col-md-6">
@@ -50,31 +50,31 @@
                 @else
                     <div class="price-box">
                         <div class="price-table" style="margin-top: -30px;">
-                    
+
                             @foreach ($plans as $plan)
                                 <div class="price-line">
                                     <div class="price-header">
                                         <lable class="plan-title">{{ $plan->name }}</lable>
                                         <p>{{ $plan->description }}</p>
                                     </div>
-                                    
+
                                     <div class="price-item text-center">
                                         <div>{{ trans('messages.plan.starting_at') }}</div>
                                         <div class="plan-price">
                                             {{ \Acelle\Library\Tool::format_price($plan->price, $plan->currency->format) }}
                                         </div>
                                         <div>{{ $plan->displayFrequencyTime() }}</div>
-                                            
+
                                         <a
                                             href="{{ action('AccountSubscriptionController@review', ['plan_uid' => $plan->uid]) }}"
                                             class="btn btn-mc_primary btn-mc_mk mt-30">
                                                 {{ trans('messages.plan.select') }}
                                         </a>
-                                        
+
                                     </div>
                                 </div>
                             @endforeach
-                        
+
                         </div>
                     </div>
                 @endif
@@ -82,6 +82,6 @@
             </div>
         </div>
     </div>
-    
+
 
 @endsection

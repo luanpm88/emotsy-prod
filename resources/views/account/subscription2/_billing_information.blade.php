@@ -1,6 +1,6 @@
 @if (false)
     <div class="sub-section">
-        <h3 class="text-semibold"><i class="icon-quill4"></i> {{ trans('messages.billing_information') }}</h3>
+        <h3 class="text-semibold">{{ trans('messages.billing_information') }}</h3>
         <p>
             {!! trans('messages.billing_information_info', [
                 'plan' => $subscription->plan->name,

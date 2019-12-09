@@ -12,7 +12,7 @@
 			<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
 		</ul>
 		<h1>
-			<span class="text-semibold"><i class="icon-quill4"></i> {{ trans('messages.your_subscriptions') }}</span>
+			<span class="text-semibold">{{ trans('messages.your_subscriptions') }}</span>
 		</h1>
 	</div>
 
@@ -30,7 +30,7 @@
 
 				<div class="text-left">
 					<a href="{{ action('HomeController@index') }}" class="btn bg-teal"><i class="icon-home"></i> {{ trans('messages.go_to_dashboard') }}</a>
-					<a href="{{ action('AccountController@subscription') }}" class="btn bg-grey"><i class="icon-quill4"></i> {{ trans('messages.check_your_subscriptions') }}</a>
+					<a href="{{ action('AccountController@subscription') }}" class="btn bg-grey">{{ trans('messages.check_your_subscriptions') }}</a>
 				</div>
 			</div>
 		</div>
