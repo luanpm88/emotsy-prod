@@ -2394,7 +2394,7 @@
   'subscription.resumed' => 'The subscription was successfully resumed',
   'subscription.cancel' => 'Cancel',
   'subscription.cancel_now' => 'Cancel now',
-  'subscription.cancel_now.confirm' => 'You\'re about to cancel :number subscription immediately.',
+  'subscription.cancel_now.confirm' => 'You\'re about to cancel :number subscription before its due date. Are you sure you want to cancel it? This action cannot be undone',
   'subscription.cancelled_now' => 'The subscription was successfully cancelled',
   'subscription.change_plan' => 'Change plan',
   'subscription.change_plan.wording' => 'Select plan below to change',
