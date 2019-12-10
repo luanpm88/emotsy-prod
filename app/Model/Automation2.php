@@ -94,4 +94,16 @@ class Automation2 extends Model
             'mail_list_uid' => 'required',
         ];
     }
+    
+    public function getElements() {
+        return json_decode($this->data);
+    }
+    
+    public function getElementById($id) {
+        $data = $this->getElements()[$id];
+        
+        // search by id
+        
+        return $element;
+    }
 }

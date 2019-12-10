@@ -69,37 +69,6 @@
 		<div class="automation2">
 			<div class="diagram text-center">				
 				<svg id="svg" style="overflow: auto" width="100%" height="800" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"></svg>
-				<p>
-					<input id="print" type="button" value="Print JSON to Console"></input>			
-				</p>
-				<button class="btn btn-secondary add-trigger-but mb-4">Click to choose a Trigger</button>
-				<br>
-				<button class="btn btn-primary trigger mb-4"
-					data-type="say-happy-birthday"
-				>
-						[Trigger] Say `Happy birthday`
-				</button>
-				<br>
-				<button class="btn btn-secondary add-action-but mb-4"
-					data-type="say-happy-birthday"
-				>
-						Add action
-				</button>
-				<br>
-				<button class="btn btn-danger action mb-4"
-					data-type="wait"
-				>
-						[Action] Wait 30 minutes
-				</button>
-				<br>
-				<button class="btn btn-danger action-email mb-4"
-					data-url="{{ action('Automation2Controller@email', [
-						'uid' => $automation->uid,
-						'email_uid' => '5de9d6a5c0d31',
-					]) }}"
-				>
-						[Action] Send an Email
-				</button>
 			</div>
 			<div class="sidebar">
 				<div class="sidebar-header flex-center mb-3">
@@ -367,8 +336,7 @@
 
         (function() {
             var json = [
-                {title: "Click to choose a trigger", child: 786574686, id: "trigger", type: "ElementTrigger", options: {init: false}},
-				{title: "Send email `info@hoangkhang.com.vn`", id: 786574686, type: "ElementAction", options: {"edit_url":"http://automation.wsl/automation2/5dedf0eb5be62/email/5def1a685be39"}},
+                {title: "Click to choose a trigger", id: "trigger", type: "ElementTrigger", options: {init: false}}
             ];
 
             var container = document.getElementById('svg');
@@ -446,12 +414,6 @@
 					OpenActionSelectPopup();
                 }
             });
-
-            // buttons
-            document.getElementById('print').onclick = function() {
-                // TODO 2: khi click save thì lấy nội dung JSON lưu vào Automation
-                console.log(tree.toJson());
-            };
 
         })();
     </script>

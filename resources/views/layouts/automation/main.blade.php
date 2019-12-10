@@ -66,7 +66,7 @@
 	</script>
 		
 	<!-- Diagram -->
-	<script src="{{ URL::asset('assets2/lib/custom.js') }}"></script>
+	<script src="{{ URL::asset('assets2/lib/automation.js') }}"></script>
 		
 	<!-- App -->
 	<link href="{{ URL::asset('assets2/css/app.css') }}" rel="stylesheet" type="text/css">

@@ -1,4 +1,4 @@
-<ul class="nav nav-tabs mt-5">
+<ul class="nav nav-tabs mt-5 mb-4">
     <li class="nav-item">
         <a class="nav-link active" href="#">
             <i class="lnr lnr-exit-up mr-2"></i>

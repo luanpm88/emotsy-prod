@@ -2,7 +2,7 @@
   
 }
 .box-list .box-item {
-    width: 276px;
+    width: 270px;
     float: left;
     margin-right: 20px;
     height: 170px;
@@ -40,9 +40,10 @@
     font-size: 28px;
     line-height: 20px;
 }
-.line-item .line-body h4 {
+.line-item .line-body h5 {
     margin: 0 0 3px 0;
     font-weight: 600;
+    font-size: 17px;
 }
 .line-item .line-body p {
 }
@@ -118,8 +119,8 @@
 }
 .automation2 .diagram {
     width: 65%;
-    height: 100vh;
-    padding: 55px 0 0 0;
+    height: calc(100vh - 55px);
+    margin: 55px 0 0 0;
     background: #f2f2f2;
     overflow: auto;
 }

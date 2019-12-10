@@ -13,8 +13,8 @@
     <h4 class="mt-4 mb-3">{{ trans('messages.automation.email.attached_files') }}</h4>
         
     <div class="row">
-        <div class="col-md-6">
-                        <ul class="key-value-list list-small">
+        <div class="col-md-12">
+            <ul class="key-value-list list-small">
                 @foreach ($email->attachments as $attachment)
                     <li class="flex">
                         <div class="icon">
