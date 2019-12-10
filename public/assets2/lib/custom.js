@@ -33,6 +33,17 @@ class AutomationElement {
                 list[e.id].draw(400, 100, container);
                 list[e.id].setPosition(1, 0);
                 trigger = list[e.id];
+
+                trigger.onclick(events.onclick);
+                trigger.onhover(events.onhover);
+                trigger.onadd(events.onadd);
+
+                // add to events bucket
+                trigger.events['onclick'] = events.onclick;
+                trigger.events['onhover'] = events.onhover;
+                trigger.events['onadd'] = events.onadd;
+                trigger.events['onaddyes'] = events.onaddyes;
+                trigger.events['onaddno'] = events.onaddno;
             } else if (e.type == 'ElementAction') {
                 list[e.id] = new ElementAction(e);
             } else if (e.type == 'ElementWait') {
@@ -44,7 +55,6 @@ class AutomationElement {
 
         // Assignment
         for (i = 0; i < json.length; i += 1) {
-
             e = json[i];
             var o = list[ e.id ];
 
@@ -57,18 +67,18 @@ class AutomationElement {
                     o.appendNo(list[e.childNo]);
                 }
 
-                o.onaddyes(events.onaddyes);
-                o.onaddno(events.onaddno);
+                //o.onaddyes(events.onaddyes);
+                //o.onaddno(events.onaddno);
             } else {
                 if (e.child != null) {
                     o.append(list[e.child]);
                 }
 
-                o.onadd(events.onadd);
+                //o.onadd(events.onadd);
             }
 
-            o.onclick(events.onclick);
-            o.onhover(events.onhover);
+            //o.onclick(events.onclick);
+            //o.onhover(events.onhover);
         }
         trigger.organize();
         return trigger;
@@ -89,6 +99,8 @@ class AutomationElement {
 
         this.parent = null;
         this.selected = false;
+
+        this.events = {};
 
         if (params.options == null) {
             params.options = {};
@@ -117,12 +129,28 @@ class AutomationElement {
         document.getElementById(this.getId() + '_title').innerHTML = this.title;
     }
 
+    copyEventsFromTrigger() {
+        for (var i = 0; i < Object.keys(this.getTrigger().events).length ; i += 1) {
+            var event = Object.keys(this.getTrigger().events)[i];
+            var func = this.getTrigger().events[event];
+            try {
+                this[event](func);
+                console.log('event added: ' + event);
+            } catch (err) {
+                console.log('warning: cannot assign event "' + event + '" to element "' + this.title + '"');
+            }
+
+        }
+    }
+
     // Custom Events
     onclick(callback) {
         // cover the A (link) element only
         var me = this;
-        console.log('#' + this.getId() + '_textlink');
-        $(document).on('click', '#' + this.getId() + '_textlink', function() {
+        var selector = '#' + this.getId() + '_textlink';
+
+        $(document).off('click', selector);
+        $(document).on('click', selector, function() {
             callback(me);
         });
     }
@@ -130,7 +158,10 @@ class AutomationElement {
     onhover(callback) {
         // cover the outbound rect
         var me = this;
-        $(document).on('mouseover', '#' + this.getId(), function() {
+        var selector = '#' + this.getId();
+
+        $(document).off('mouseover', selector);
+        $(document).on('mouseover', selector, function() {
             callback(me);
         });
     }
@@ -467,6 +498,20 @@ class AutomationElement {
             right = this.findRightMostSibling();
         }
     }
+
+    remove() {
+        if (this.parent.isCondition()) {
+            if (this.parent.childYes.getId() == this.getId()) {
+                this.parent.childYes = null;
+            } else {
+                this.parent.childNo = null;
+            }
+        } else {
+            this.parent.child = null;
+        }
+
+        this.clear();
+    }
 }
 
 class ElementAction extends AutomationElement {
@@ -505,7 +550,11 @@ class ElementAction extends AutomationElement {
         // IMPORTANT: setPosition must go first, before reappending childrend
         element.setPosition(this.x, this.y + 1);
 
+        // reappend children
         element.reappendChild();
+
+        // copy events from trigger buckets
+        element.copyEventsFromTrigger();
     }
 
     reappendChild() {
@@ -521,9 +570,10 @@ class ElementAction extends AutomationElement {
     }
 
     onadd(callback) {
-        var link = '#' + this.getPlusId() + '-iconlink';
+        var selector = '#' + this.getPlusId() + '-iconlink';
         var me = this;
-        $(document).on('click', link, function() {
+        $(document).off('click', selector);
+        $(document).on('click', selector, function() {
             callback(me);
         });
     }
@@ -592,7 +642,7 @@ class ElementTrigger extends ElementAction {
     toJson() {
         var json = [];
         this.browse(function(element){
-            var item = { title: element.title, id: element.id, type: element.constructor.name };
+            var item = { title: element.title, id: element.id, type: element.constructor.name, options: element.options };
 
             if (element.isCondition()) {
                 if (element.childYes != null) {
@@ -774,6 +824,8 @@ class ElementCondition extends AutomationElement {
         // IMPORTANT: setPosition must go first before reappending
         element.setPosition(this.x - ((this.shrink) ? 0.5 : 1), this.y + 1.5);
         element.reappendChild();
+
+        element.copyEventsFromTrigger();
     }
 
     appendNo(element) {
@@ -794,6 +846,8 @@ class ElementCondition extends AutomationElement {
         // IMPORTANT: setPosition must go first before reappending
         element.setPosition(this.x + 1 + this.expand, this.y + 1.5);
         element.reappendChild();
+
+        element.copyEventsFromTrigger();
     }
 
     reappendChild() {
@@ -878,17 +932,19 @@ class ElementCondition extends AutomationElement {
     }
 
     onaddyes(callback) {
-        var link = '#' + this.getPlusYesId() + '-iconlink';
+        var selector = '#' + this.getPlusYesId() + '-iconlink';
         var me = this;
-        $(document).on('click', link, function() {
+        $(document).off('click', selector);
+        $(document).on('click', selector, function() {
             callback(me);
         });
     }
 
     onaddno(callback) {
-        var link = '#' + this.getPlusNoId() + '-iconlink';
+        var selector = '#' + this.getPlusNoId() + '-iconlink';
         var me = this;
-        $(document).on('click', link, function() {
+        $(document).off('click', selector);
+        $(document).on('click', selector, function() {
             callback(me);
         });
     }

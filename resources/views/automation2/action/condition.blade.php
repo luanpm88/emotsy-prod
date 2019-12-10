@@ -1,7 +1,7 @@
-<h2 class="mb-20">
+<h4 class="mb-3 mt-3">
     {{ trans('messages.automation.action.set_up_your_condition') }}
-</h2>
-<p class="mb-10">
+</h4>
+<p class="mb-3">
     {{ trans('messages.automation.action.condition.intro') }}
 </p>
 

@@ -48,10 +48,10 @@
         </li>
         <li>
             <label>
-                Attachment
+                {{ trans('messages.automation.email.attachment') }}
             </label>
             <div class="value">
-                (2) files
+                {{ trans('messages.automation.email.attachment_count', ['count' => $email->attachments()->count()]) }}
             </div>
         </li>
     </ul>    
@@ -59,12 +59,8 @@
     <div class="trigger-action mt-4">    
         <span class="btn btn-secondary email-settings-change mr-1"
         >
-                {{ trans('messages.automation.email.settings') }}
+            {{ trans('messages.automation.email.settings') }}
         </span>
-        
-        <a href="javascript:;" class="btn btn-outline-secondary change-action-but">
-            Change Action
-        </a>
     </div>
     
 <form>

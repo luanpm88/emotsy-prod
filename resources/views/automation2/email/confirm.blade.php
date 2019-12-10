@@ -13,7 +13,7 @@
                 'email_uid' => $email->uid,
             ]) }}')">
                 <i class="lnr lnr-cog mr-2"></i>
-                Setup
+                {{ trans('messages.automation.email.setup') }}
             </a>
         </li>
         <li class="nav-item">
@@ -26,13 +26,20 @@
                 @endif
             >
                 <i class="lnr lnr-layers mr-2"></i>
-                Template
+                {{ trans('messages.automation.email.content') }}
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link active {{ (!isset($email->id)) ? 'disabled' : '' }}" href="javascript:;">
+            <a class="nav-link active {{ (!isset($email->id)) ? 'disabled' : '' }}" href="javascript:;"
+                @if (isset($email->id))                    
+                    onclick="popup.load('{{ action('Automation2Controller@emailConfirm', [
+                        'uid' => $automation->uid,
+                        'email_uid' => $email->uid,
+                    ]) }}')"
+                @endif
+            >
                 <i class="lnr lnr-cog mr-2"></i>
-                Confirm
+                {{ trans('messages.automation.email.confirm') }}
             </a>
         </li>
     </ul>

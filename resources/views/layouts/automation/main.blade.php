@@ -71,6 +71,12 @@
 	<!-- App -->
 	<link href="{{ URL::asset('assets2/css/app.css') }}" rel="stylesheet" type="text/css">
 	
+	<!-- Dropzone -->
+	<script type="text/javascript" src="{{ URL::asset('assets2/lib/dropzone/dropzone.js') }}"></script>
+	<link href="{{ URL::asset('assets2/lib/dropzone/dropzone.css') }}" rel="stylesheet" type="text/css">
+	
+	<!-- Ajax box -->
+	<script type="text/javascript" src="{{ URL::asset('assets2/js/box.js') }}"></script>
 
 	@yield('page_script')
 	
@@ -81,7 +87,7 @@
 	<script type="text/javascript" src="{{ URL::asset('js/mc_modal.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('js/iframe_modal.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('js/mc.js') }}"></script>
-	<script type="text/javascript" src="{{ URL::asset('js/popup.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('js/popup.js') }}"></script>	
 	<!-- /theme JS files -->
 
 	@include('layouts._script_vars')

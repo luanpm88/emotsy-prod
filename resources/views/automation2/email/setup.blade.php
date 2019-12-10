@@ -8,9 +8,12 @@
         
     <ul class="nav nav-tabs mb-4">
         <li class="nav-item">
-            <a class="nav-link active" href="javascript:;" onclick>
+            <a class="nav-link active" href="javascript:;" onclick="popup.load('{{ action('Automation2Controller@emailSetup', [
+                'uid' => $automation->uid,
+                'email_uid' => $email->uid,
+            ]) }}')">
                 <i class="lnr lnr-cog mr-2"></i>
-                Setup
+                {{ trans('messages.automation.email.setup') }}
             </a>
         </li>
         <li class="nav-item">
@@ -23,7 +26,7 @@
                 @endif
             >
                 <i class="lnr lnr-layers mr-2"></i>
-                Template
+                {{ trans('messages.automation.email.content') }}
             </a>
         </li>
         <li class="nav-item">
@@ -36,7 +39,7 @@
                 @endif
             >
                 <i class="lnr lnr-cog mr-2"></i>
-                Confirm
+                {{ trans('messages.automation.email.confirm') }}
             </a>
         </li>
     </ul>
@@ -46,6 +49,8 @@
     
     <form id="emailSetup" action="{{ action('Automation2Controller@emailSetup', $automation->uid) }}" method="POST">
         {{ csrf_field() }}
+        
+        <input type="hidden" name="email_uid" value="{{ $email->uid }}" />
     
         <div class="row">
             <div class="col-md-6">                                            
@@ -159,14 +164,23 @@
                        popup.loadHtml(res.responseText);
                     }
                  },
-                 success: function (res) {
-                    popup.load(res.url);
+                 success: function (response) {
+                    popup.load(response.url);
                     
-                    //addMaskLoading(res.message, function() {
-                    //    setTimeout(function() {
-                    //        window.location = res.url;
-                    //    }, 1000);
-                    //});
+                    if (response.is_new) {
+                        var newE = new ElementAction({title: response.title, options: response.options});
+						tree.getSelected().insert(newE);
+                    } else {
+                        // set node title
+						tree.getSelected().setTitle(response.title);
+						// merge options with reponse options
+						tree.getSelected().setOptions($.extend(tree.getOptions(), response.options));
+                        
+                        // reload sidebar
+                        sidebar.load();
+                    }
+                    
+                    notify('success', '{{ trans('messages.notify.success') }}', response.message);
                  }
             });
         });

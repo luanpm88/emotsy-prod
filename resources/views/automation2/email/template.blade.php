@@ -17,9 +17,16 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link active {{ (!isset($email->id)) ? 'disabled' : '' }}" href="javascript:;">
+            <a class="nav-link active {{ (!isset($email->id)) ? 'disabled' : '' }}" href="javascript:;"
+                @if (isset($email->id))                    
+                    onclick="popup.load('{{ action('Automation2Controller@emailTemplate', [
+                        'uid' => $automation->uid,
+                        'email_uid' => $email->uid,
+                    ]) }}')"
+                @endif
+            >
                 <i class="lnr lnr-layers mr-2"></i>
-                {{ trans('messages.automation.email.template') }}
+                {{ trans('messages.automation.email.content') }}
             </a>
         </li>
         <li class="nav-item">

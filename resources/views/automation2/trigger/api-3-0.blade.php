@@ -3,7 +3,7 @@
         'type' => 'text',
         'class' => '',
         'label' => '',
-        'name' => 'api',
+        'name' => 'options[api]',
         'value' => '',
         'help_class' => 'trigger',
         'rules' => [],

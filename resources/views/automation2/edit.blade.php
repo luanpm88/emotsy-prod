@@ -152,6 +152,7 @@
 		
 	<script>
 		var popup;
+		var sidebar = new Box($('.sidebar-setting-container'));
 		
 		function SelectActionConfirm(type) {
 			var url = '{{ action('Automation2Controller@actionSelectConfirm', $automation->uid) }}' + '?type=' + type;
@@ -291,37 +292,11 @@
 		}
 		
 		function EditTrigger(url) {
-			var container = $('.sidebar-setting-container');
-			
-			$.ajax({
-				url: url,
-				type: 'GET',
-			}).always(function(response) {
-				// todo: when trigger selected
-				console.log('Trigger was selected');
-				
-				container.html(response);
-				
-				// init js
-				initJs(container);
-			});
+			sidebar.load(url);
 		}
 		
 		function EditAction(url) {
-			var container = $('.sidebar-setting-container');
-			
-			$.ajax({
-				url: url,
-				type: 'GET',
-			}).always(function(response) {
-				// todo: when trigger selected
-				console.log('Action was selected');
-				
-				container.html(response);
-				
-				// init js
-				initJs(container);
-			});
+			sidebar.load(url);
 		}
 	
 		$(document).ready(function() {
@@ -392,7 +367,8 @@
 
         (function() {
             var json = [
-                {title: "Click to choose a trigger", id: "trigger", type: "ElementTrigger", options: {init: false}}
+                {title: "Click to choose a trigger", child: 786574686, id: "trigger", type: "ElementTrigger", options: {init: false}},
+				{title: "Send email `info@hoangkhang.com.vn`", id: 786574686, type: "ElementAction", options: {"edit_url":"http://automation.wsl/automation2/5dedf0eb5be62/email/5def1a685be39"}},
             ];
 
             var container = document.getElementById('svg');
@@ -404,10 +380,10 @@
                     // Prams: e.getId()
                     // Trả về thông tin chi tiết của action để load nội dung bên phải
                     // Trên server: gọi hàm model: Automation2::getActionInfo(id)
-					console.log('ddddd');
-					console.log(e);
 					
                     e.select(); // highlight
+					
+					console.log(e.getType());
                     
 					// if click on a trigger
 					if (e.getType() == 'ElementTrigger') {
@@ -419,13 +395,36 @@
 						}
 						// trigger was init
 						else {
-							console.log(e);
 							var type = $(this).attr('data-type');
 							var url = '{{ action('Automation2Controller@triggerEdit', $automation->uid) }}' + '?type=' + e.getOptions().type;
 							
 							// Open trigger types select list
 							EditTrigger(url);
 						}
+					}
+					// is WAIT
+					else if (e.getType() == 'ElementWait') {
+							var type = $(this).attr('data-type');
+							var url = '{{ action('Automation2Controller@actionEdit', $automation->uid) }}' + '?type=' + e.getOptions().type;
+							
+							// Open trigger types select list
+							EditAction(url);
+					}
+					// is Condition
+					else if (e.getType() == 'ElementCondition') {
+							var type = $(this).attr('data-type');
+							var url = '{{ action('Automation2Controller@actionEdit', $automation->uid) }}' + '?type=' + e.getOptions().type;
+							
+							// Open trigger types select list
+							EditAction(url);
+					}
+					// is Condition
+					else if (e.getType() == 'ElementAction') {
+							var type = $(this).attr('data-type');
+							var url = e.getOptions().edit_url;
+							
+							// Open trigger types select list
+							EditAction(url);
 					}
                 },
 

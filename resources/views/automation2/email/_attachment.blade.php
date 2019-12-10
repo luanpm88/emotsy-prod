@@ -1,55 +1,87 @@
-<link rel="stylesheet" type="text/css" href="{{ URL::asset('assets/js/plugins/dropzone/css/dropzone.css') }}" />
+<form action="{{ action('Automation2Controller@emailAttachmentUpload', [
+  'uid' => $automation->uid,
+  'email_uid' => $email->uid,
+]) }}" class="dropzone">
+  {{ csrf_field() }}
 
-  <div class="image_upload_div">
-    <form action="{{url('/')}}/filemanager/upload_attachment.php" class="dropzone">
-       <input name="path" value="../email_attachment/{{$email->uid}}/" type="hidden">
-       <input name="path_thumb" value="../thumbs/{{$email->uid}}/" type="hidden">
-    </form>
+  <div class="fallback">
+    <input name="files[]" type="file" multiple />
   </div>
-  <div class="attachments_pnl">
-    <?php
-      $path_email=public_path().'/email_attachment'.'/'.$email->uid;
-      if (is_dir($path_email)) {
-          echo "<h3 class='mt-40'>" . trans('messages.email.attached_files') . " <br/></h3>";
-          $ffs = scandir($path_email);
-
-          unset($ffs[array_search('.', $ffs, true)]);
-          unset($ffs[array_search('..', $ffs, true)]);
-
-          // prevent empty ordered elements
-          if (count($ffs) < 1) {
-              return;
-          }
-
-          echo '<ul>';
-          foreach ($ffs as $k=>$ff) {
-                $fileszie = formatSizeUnits(filesize( $path_email . '/' . $ff));
-              echo '<li id="delete_'.$k.'"><i class="lnr lnr-file-empty icon-file"></i><span><name>'.$ff.'</name><size>'.trans('messages.email.attachment.file_size_is', ['size' => $fileszie]).'</size></span>'; ?> 
-            <form action="{{url('/')}}/filemanager/force_download_attachment.php" method="post" class="download-form" id="{{$k}}">
-              <input name="path" value="{{$email->uid}}{{'/'}}" type="hidden">
-              <input class="name_download" name="name" value="{{$ff}}" type="hidden">
-<span>
-              <a title="" class="tip-right" href="javascript:void('')" onclick="$('#{{$k}}').submit();" data-original-title="Download">{{ trans('messages.download') }}</a>
-|
-             <a
-                file-delete-confirm="{{url('/')}}/filemanager/execute_attachment.php?_token={{ csrf_token() }}&action=delete_file&file={{$ff}}&path={{$email->uid}}{{'/'}}"
-                href="{{url('/')}}/filemanager/execute_attachment.php?_token={{ csrf_token() }}&action=delete_file&file={{$ff}}&path={{$email->uid}}{{'/'}}"
-                title="Delete"
-                class=""
-                data-del="delete_{{$k}}"
-            >
-                 {{ trans('messages.remove') }}
-              </a>
-</span>
-            </form>
-            <?php
-                  if (is_dir($path_email.'/'.$ff)) {
-                      listFolderFiles($path_email.'/'.$ff);
-                  }
-              echo '</li>';
-          }
-          echo '</ol>';
-      }
-    ?>
-
-  </div>
+</form>
+  
+@if($email->attachments()->count())
+    <h4 class="mt-4 mb-3">{{ trans('messages.automation.email.attached_files') }}</h4>
+        
+    <div class="row">
+        <div class="col-md-6">
+                        <ul class="key-value-list list-small">
+                @foreach ($email->attachments as $attachment)
+                    <li class="flex">
+                        <div class="icon">
+                            <i class="lnr lnr-file-empty"></i>
+                        </div>
+                        <div class="content mr-auto">
+                            <label>
+                                {{ $attachment->name }}
+                            </label>
+                            <div class="value">
+                                {{ trans('messages.campaign.attachment.file_size_is', ['size' => formatSizeUnits($attachment->size)]) }}
+                            </div>
+                        </div>
+                        <div class="action">
+                            <a                                
+                                href="{{ action('Automation2Controller@emailAttachmentDownload', [
+                                    'uid' => $automation->uid,
+                                    'email_uid' => $email->uid,
+                                    'attachment_uid' => $attachment->uid,
+                                ]) }}"
+                                class=""
+                                title="{{ trans('messages.automation.email.attachment.download') }}"
+                            >
+                                <i class="lnr lnr-download"></i>
+                            </a>
+                            <a                                
+                                href="{{ action('Automation2Controller@emailAttachmentRemove', [
+                                    'uid' => $automation->uid,
+                                    'email_uid' => $email->uid,
+                                    'attachment_uid' => $attachment->uid,
+                                ]) }}"
+                                class="attachment-remove"
+                                title="{{ trans('messages.automation.email.attachment.remove') }}"
+                            >
+                                <i class="lnr lnr-trash"></i>
+                            </a>
+                        </div>
+                    </li>
+                @endforeach
+            </ul>
+        </div>
+    </div>
+@endif
+  
+<script>
+    //
+    // Dropzone
+    // ------------------------------
+    $(".dropzone").dropzone({uploadMultiple: true});
+    
+    $('.attachment-remove').click(function(e) {
+        e.preventDefault();
+        
+        var link = $(this);
+        var url = link.attr('href');
+        
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: {
+                "_token": CSRF_TOKEN
+            },
+            success: function (response) {
+                popup.load();
+                
+                notify('success', '{{ trans('messages.notify.success') }}', response.message);
+             }
+        });
+    });
+</script>

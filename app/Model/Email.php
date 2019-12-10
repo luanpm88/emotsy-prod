@@ -8,6 +8,8 @@ use Carbon\Carbon;
 use File;
 use Sunra\PhpSimple\HtmlDomParser;
 use Acelle\Library\Tool;
+use Acelle\Model\Attachment;
+use Illuminate\Support\Facades\Storage;
 
 class Email extends Model
 {
@@ -26,6 +28,14 @@ class Email extends Model
     public function automation()
     {
         return $this->belongsTo('Acelle\Model\Automation2', 'automation2_id');
+    }
+    
+    /**
+     * Association with mailList through mail_list_id column.
+     */
+    public function attachments()
+    {
+        return $this->hasMany('Acelle\Model\Attachment');
     }
     
     /**
@@ -150,5 +160,21 @@ class Email extends Model
         }
         
         return $result;
+    }
+    
+    /**
+     * Upload attachment.
+     *
+     * @return mixed
+     */
+    public function uploadAttachment($file)
+    {
+        $att = new Attachment();
+        $att->email_id = $this->id;
+        $att->size = $file->getSize();        
+        $att->name = $file->getClientOriginalName();
+        $att->file = Storage::disk('local')->put('attachments/' . $this->uid, $file);
+        
+        $att->save();
     }
 }

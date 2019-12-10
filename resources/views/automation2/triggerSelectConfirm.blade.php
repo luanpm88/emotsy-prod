@@ -14,7 +14,7 @@
 			<form id="trigger-select" action="{{ action("Automation2Controller@triggerSelect", $automation->uid) }}" method="POST" class="form-validate-jqueryz">
 				{{ csrf_field() }}
 				
-				<input type="hidden" name="type" value="{{ $type }}" />
+				<input type="hidden" name="options[type]" value="{{ $type }}" />
 				
 				@if(View::exists('automation2.trigger.' . $type))
 					@include('automation2.trigger.' . $type)

@@ -9,6 +9,8 @@ use Acelle\Http\Requests;
 use Acelle\Model\Automation2;
 use Acelle\Model\MailList;
 use Acelle\Model\Email;
+use Acelle\Model\Attachment;
+use Illuminate\Support\Facades\Storage;
 
 class Automation2Controller extends Controller
 {
@@ -154,11 +156,9 @@ class Automation2Controller extends Controller
             'status' => 'success',
             'message' => trans('messages.automation.trigger.added'),
             'title' => trans('messages.automation.trigger.title', [
-                    'title' => trans('messages.automation.trigger.' . $request->type)
+                    'title' => trans('messages.automation.trigger.' . $request->options["type"])
                 ]),
-            'options' => [
-                'type' => $request->type,
-            ],
+            'options' => $request->options,
         ]);
     }
     
@@ -299,6 +299,17 @@ class Automation2Controller extends Controller
             return $this->notAuthorized();
         }
         
+        if($request->isMethod('post')) {
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.automation.trigger.updated'),
+                'title' => trans('messages.automation.trigger.title', [
+                        'title' => trans('messages.automation.trigger.' . $request->options["type"])
+                    ]),
+                'options' => $request->options,
+            ]);
+        }
+        
         return view('automation2.triggerEdit', [
             'type' => $request->type,
             'automation' => $automation,
@@ -318,6 +329,60 @@ class Automation2Controller extends Controller
         // authorize
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
+        }
+        
+        // saving
+        if($request->isMethod('post')) {
+            if ($request->type == 'wait') {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => trans('messages.automation.action.updated'),
+                    'title' => trans('messages.automation.action.wait.title', [
+                        'number' => explode('_', $request->after)[0],
+                        'time' => explode('_', $request->after)[1],
+                    ]),
+                    'options' => [
+                        'type' => $request->type,
+                        'after' => $request->after,
+                    ],
+                ]);
+            } else if ($request->type == 'condition') {
+                if ($request->criterion == 'read_email') {
+                    return response()->json([
+                        'status' => 'success',
+                        'message' => trans('messages.automation.action.updated'),
+                        'title' => trans('messages.automation.action.condition.read_email.title'),
+                        'options' => [
+                            'type' => $request->type,
+                            'criterion' => $request->criterion,
+                            'read_email' => $request->read_email,
+                        ],
+                    ]);
+                } else if ($request->criterion == 'click_link') {
+                    return response()->json([
+                        'status' => 'success',
+                        'message' => trans('messages.automation.action.updated'),
+                        'title' => trans('messages.automation.action.condition.click_link.title'),
+                        'options' => [
+                            'type' => $request->type,
+                            'criterion' => $request->criterion,
+                            'click_link' => $request->click_link,
+                        ],
+                    ]);
+                }
+            } else {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => trans('messages.automation.action.updated'),
+                    'title' => trans('messages.automation.action.title', [
+                        'title' => trans('messages.automation.action.' . $request->type)
+                    ]),
+                    'options' => [
+                        'type' => $request->type,
+                        'after' => $request->after,
+                    ],
+                ]);
+            }
         }
         
         return view('automation2.actionEdit', [
@@ -368,11 +433,41 @@ class Automation2Controller extends Controller
             $email->automation2_id = $automation->id;
             $email->save();
             
-            return response()->json([
-                'status' => 'success',
-                'message' => trans('messages.automation.email.created.redirecting'),
-                'url' => action('Automation2Controller@emailTemplate', ['uid' => $automation->uid, 'email_uid' => $email->uid])
-            ], 201);
+            if (empty($request->email_uid)) {
+                return response()->json([
+                    'status' => 'success',
+                    'title' => trans('messages.automation.send_a_email', ['title' => $email->subject]),
+                    'message' => trans('messages.automation.email.created'),
+                    'url' => action('Automation2Controller@emailTemplate', [
+                        'uid' => $automation->uid,
+                        'email_uid' => $email->uid,
+                    ]),
+                    'is_new' => true,
+                    'options' => [
+                        'edit_url' => action('Automation2Controller@email', [
+                            'uid' => $automation->uid,
+                            'email_uid' => $email->uid,
+                        ]),
+                    ],
+                ], 201);
+            } else {
+                return response()->json([
+                    'status' => 'success',
+                    'title' => trans('messages.automation.send_a_email', ['title' => $email->subject]),
+                    'message' => trans('messages.automation.email.updated'),
+                    'url' => action('Automation2Controller@emailTemplate', [
+                        'uid' => $automation->uid,
+                        'email_uid' => $email->uid,
+                    ]),
+                    'is_new' => false,
+                    'options' => [
+                        'edit_url' => action('Automation2Controller@email', [
+                            'uid' => $automation->uid,
+                            'email_uid' => $email->uid,
+                        ]),
+                    ],
+                ], 201);
+            }
         }
         
         return view('automation2.email.setup', [
@@ -774,5 +869,59 @@ class Automation2Controller extends Controller
         return view('campaigns.preview', [
             'campaign' => $campaign,
         ]);
+    }
+    
+    /**
+     * Attachment upload.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function emailAttachmentUpload(Request $request, $uid, $email_uid)
+    {
+        $automation = Automation2::findByUid($uid);
+        $email = Email::findByUid($request->email_uid);
+        
+        foreach($request->file as $file) {
+            $email->uploadAttachment($file);
+        }
+    }
+    
+    /**
+     * Attachment remove.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function emailAttachmentRemove(Request $request, $uid, $email_uid, $attachment_uid)
+    {
+        $automation = Automation2::findByUid($uid);
+        $email = Email::findByUid($request->email_uid);
+        $attachment = Attachment::findByUid($request->attachment_uid);
+        
+        $attachment->remove();
+        
+        return response()->json([
+            'status' => 'success',
+            'message' => trans('messages.automation.email.attachment.removed'),
+        ], 201);
+    }
+    
+    /**
+     * Attachment download.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function emailAttachmentDownload(Request $request, $uid, $email_uid, $attachment_uid)
+    {
+        $automation = Automation2::findByUid($uid);
+        $email = Email::findByUid($request->email_uid);
+        $attachment = Attachment::findByUid($request->attachment_uid);
+        
+        return response()->download(storage_path('app/' . $attachment->file), $attachment->name);
     }
 }

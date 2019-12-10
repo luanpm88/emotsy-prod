@@ -544,6 +544,10 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('notifications/{id}/hide', 'NotificationController@hide');
     
     // Automation2
+    Route::post('automation2/{uid}/template/{email_uid}/attachment/{attachment_uid}/remove', 'Automation2Controller@emailAttachmentRemove');
+    Route::get('automation2/{uid}/template/{email_uid}/attachment/{attachment_uid}', 'Automation2Controller@emailAttachmentDownload');
+    
+    Route::post('automation2/{uid}/template/{email_uid}/attachment', 'Automation2Controller@emailAttachmentUpload');
     Route::get('automation2/{uid}/template/{email_uid}/change/{template_uid}', 'Automation2Controller@templateChangeTemplate');
     Route::post('automation2/{uid}/template/{email_uid}/asset', 'Automation2Controller@templateAsset');
     Route::post('automation2/{uid}/template/{email_uid}/asset', 'Automation2Controller@templateAsset');
@@ -559,8 +563,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::match(['get', 'post'], 'automation2/{uid}/email/confirm', 'Automation2Controller@emailConfirm');
     Route::match(['get', 'post'], 'automation2/{uid}/email/{email_uid}', 'Automation2Controller@email');
     Route::match(['get', 'post'], 'automation2/{uid}/email/{email_uid}/template', 'Automation2Controller@emailTemplate');    
-    Route::match(['get'], 'automation2/{uid}/action/edit', 'Automation2Controller@actionEdit');
-    Route::match(['get'], 'automation2/{uid}/trigger/edit', 'Automation2Controller@triggerEdit');
+    Route::match(['get', 'post'], 'automation2/{uid}/action/edit', 'Automation2Controller@actionEdit');
+    Route::match(['get', 'post'], 'automation2/{uid}/trigger/edit', 'Automation2Controller@triggerEdit');
     Route::post('automation2/{uid}/action/select', 'Automation2Controller@actionSelect');
     Route::get('automation2/{uid}/action/select/confirm', 'Automation2Controller@actionSelectConfirm');
     Route::get('automation2/{uid}/action/select', 'Automation2Controller@actionSelectPupop');

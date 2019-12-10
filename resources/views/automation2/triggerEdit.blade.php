@@ -29,16 +29,14 @@
 <form id="trigger-select" action="{{ action("Automation2Controller@triggerEdit", ['uid' => $automation->uid, 'type' => $type]) }}" method="POST" class="form-validate-jqueryz">
     {{ csrf_field() }}
     
-    <input type="hidden" name="type" value="{{ $type }}" />
+    <input type="hidden" name="options[type]" value="{{ $type }}" />
     
     @if(View::exists('automation2.trigger.' . $type))
         @include('automation2.trigger.' . $type)
     @endif
     
     <div class="trigger-action mt-4">    
-        <button class="btn btn-secondary select-trigger-confirm mr-1"
-            data-url="{{ action('Automation2Controller@triggerSelect', ['uid' => $automation->uid, 'type' => $type]) }}"
-        >
+        <button class="btn btn-secondary trigger-save-change mr-1">
                 {{ trans('messages.automation.trigger.save_change') }}
         </button>
         
@@ -47,3 +45,33 @@
         </a>
     </div>
 </form>
+    
+<script>
+    $('#trigger-select').submit(function(e) {
+        e.preventDefault();
+        
+        var form = $(this);
+        var data = form.serialize();
+        var url = form.attr('action');
+        
+        sidebar.loading();
+        
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: data,
+        }).always(function(response) {
+            // set node title
+            tree.getSelected().setTitle(response.title);
+            // merge options with reponse options
+            tree.getSelected().setOptions($.extend(tree.getOptions(), response.options));
+            tree.getSelected().setOptions($.extend(tree.getOptions(), {init: true}));
+            
+            // notify
+            notify('success', '{{ trans('messages.notify.success') }}', response.message);
+            
+            // reload sidebar
+            sidebar.load();
+        });        
+    });
+</script>
