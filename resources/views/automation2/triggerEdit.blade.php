@@ -70,10 +70,10 @@
             data: data,
         }).always(function(response) {
             // set node title
-            tree.getSelected().setTitle(response.title);
+            tree.setTitle(response.title);
             // merge options with reponse options
-            tree.getSelected().setOptions($.extend(tree.getOptions(), response.options));
-            tree.getSelected().setOptions($.extend(tree.getOptions(), {init: true}));
+            tree.setOptions($.extend(tree.getOptions(), response.options));
+            tree.setOptions($.extend(tree.getOptions(), {init: true}));
             
             // notify
             notify('success', '{{ trans('messages.notify.success') }}', response.message);
