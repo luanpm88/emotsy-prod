@@ -80,6 +80,10 @@
 		var popup;
 		var sidebar = new Box($('.sidebar'));
 		
+		function setAutomationName(name) {
+			$('.navbar h1').html(name);
+		}
+		
 		function saveData() {
 			var url = '{{ action('Automation2Controller@saveData', $automation->uid) }}';
 		
