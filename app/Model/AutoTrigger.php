@@ -102,25 +102,24 @@ class AutoTrigger extends Model
     public function check()
     {
         $last = $this->getLatestAction();
-        $passed = $last->execute();
-        $this->updateJson($last); // update 'last_checked_at' field of Wait for example
 
-        while ($passed == true) { // true means: done with this step, should proceed next
+        while ($last->execute() == true) { // true means: done with this step, should proceed next
+            //var_dump($last->toJson());
+            $this->updateJson($last); // update 'last_checked_at' field of Wait for example
             $last = $this->moveToNextAction();
             if ($last == null) {
                 break;
             }
-            $passed = $last->execute();
-            $this->updateJson($last); // update 'last_checked_at' field of Wait for example
         }
+
+        $this->updateJson($last); // update 'last_checked_at' field of Wait for example
     }
 
     public function updateJson($action)
     {
-        $json = json_decode($this->data, true);
-
-        $json[$action->getId()] = $action->toJson();
         var_dump($action->toJson());
+        $json = json_decode($this->data, true);
+        $json[$action->getId()] = $action->toJson();
         $this->data = json_encode($json);
         $this->save();
     }
@@ -170,7 +169,7 @@ class AutoTrigger extends Model
 
 /*
 
-
+$f = AutoTrigger::first();$x = $f->getLatestAction()
 $s = '{
 "trigger": {"title":"New Subscribers!", "type": "ElementTrigger", "child": "welcome", "options": {"test": "123"}, "latest": true},
 "welcome": {"title":"Send a Welcome email", "type": "ElementAction", "child": "welcome2"},

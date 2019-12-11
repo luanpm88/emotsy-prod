@@ -2,6 +2,8 @@
 
 namespace Acelle\Library\Automation;
 
+use Carbon\Carbon;
+
 abstract class Action
 {
     protected $id;
@@ -10,6 +12,7 @@ abstract class Action
     protected $latest = false;
     protected $child;
     protected $options;
+    protected $last_executed = null;
 
     public function __construct($params = [])
     {
@@ -19,6 +22,7 @@ abstract class Action
         $this->child = array_key_exists('child', $params) ? $params['child'] : null;
         $this->options = array_key_exists('options', $params) ? $params['options'] : [];
         $this->latest = array_key_exists('latest', $params) ? $params['latest'] : null;
+        $this->last_executed = array_key_exists('last_executed', $params) ? $params['last_executed'] : null;
     }
 
     public function toJson()
@@ -30,6 +34,7 @@ abstract class Action
             'child' => $this->child,
             'latest' => $this->isLatest(),
             'options' => $this->getOptions(),
+            'last_executed' => $this->last_executed,
         ];
     }
 
@@ -71,5 +76,10 @@ abstract class Action
     public function markAsLatest($latest = true)
     {
         $this->latest = $latest;
+    }
+
+    public function recordLastExecutedTime()
+    {
+        $this->last_executed = Carbon::now()->timestamp;
     }
 }

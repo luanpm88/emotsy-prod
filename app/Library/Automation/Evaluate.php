@@ -2,8 +2,6 @@
 
 namespace Acelle\Library\Automation;
 
-use Carbon\Carbon;
-
 class Evaluate extends Action
 {
     protected $childYes;
@@ -30,7 +28,7 @@ class Evaluate extends Action
 
     public function execute()
     {
-        $this->setOption('checked_at', Carbon::now()->timestamp);
+        $this->recordLastExecutedTime();
 
         return true;
     }
