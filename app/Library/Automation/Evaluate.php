@@ -2,63 +2,27 @@
 
 namespace Acelle\Library\Automation;
 
-class Evaluate implements ActionInterface
+class Evaluate extends Action
 {
-    protected $id;
-    protected $title;
     protected $childYes;
     protected $childNo;
-    protected $options = [];
-
-    protected $next = null;
 
     function __construct($params = [])
     {
-        $this->id = $params['id'];
-        $this->title = $params['title'];
-        $this->options = $params['options'];
-        $this->childYes = $params['childYes'];
-        $this->childNo = $params['childNo'];
-    }
+        parent::__construct($params);
 
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    public function getTitle()
-    {
-        return $this->title;
-    }
-
-    public function getOptions() {
-        return $this->options;
+        $this->childYes = array_key_exists('childYes', $params) ? $params['childYes'] : null;
+        $this->childNo = array_key_exists('childNo', $params) ? $params['childNo'] : null;
     }
 
     public function toJson()
     {
-        return [
-            'title' => $this->getTitle(),
-            'id' => $this->getId(),
+        $json = parent::toJson();
+        $json = array_merge( $json, [
             'childYes' => $this->childYes,
-            'childNo' => $this->childNo,
-            'options' => $this->getOptions()
-        ];
-    }
+            'childNo' => $this->childNo
+        ]);
 
-    public function execute($callback)
-    {
-        if ($this->check() == true) {
-            $this->next = $this->childYes;
-        } else {
-            $this->next = $this->childNo;
-        }
-
-        return true; // Send and Evalue always return true, Wait may return false
-    }
-
-    public function getNextActionId()
-    {
-        return $this->next;
+        return $json;
     }
 }
