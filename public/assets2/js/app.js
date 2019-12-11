@@ -175,26 +175,21 @@ function initJs(container) {
 }
 
 function notify(type, title, message) {
-    var options = {
+    if (typeof window.stackBottomRight === 'undefined') {
+        window.stackBottomRight = {
+          'dir1': 'up',
+          'dir2': 'left',
+          'firstpos1': 25,
+          'firstpos2': 25
+        };
+    }
+    var opts = {
+        type: type,
         title: title,
         text: message,
-        addClass: 'nonblock',
-        modules: {
-          Buttons: {
-            sticker: false
-          }
-        }
+        stack: window.stackBottomRight
     };
-    
-    if (type == 'success') {
-        PNotify.success(options);
-    } else if(type == 'notice') {
-        PNotify.notice(options);
-    } else if(type == 'info') {
-        PNotify.info(options);
-    } else if(type == 'error') {
-        PNotify.error(options);
-    }
+    PNotify.alert(opts);
 }
 
 function removeMaskLoading() {

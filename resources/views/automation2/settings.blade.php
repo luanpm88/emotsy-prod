@@ -72,6 +72,8 @@
 </div>
     
 <script>
+    setAutomationName('{{ $automation->name }}');
+
     $('#automationUpdate').submit(function(e) {
         e.preventDefault();
         
