@@ -71,57 +71,28 @@
 				<svg id="svg" style="overflow: auto" width="100%" height="800" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"></svg>
 			</div>
 			<div class="sidebar">
-				<div class="sidebar-header flex-center mb-3">
-					<h5 class="m-0 mr-auto">{{ $automation->name }}</h5>
-					<span class="mr-2 small"><i>{{ trans('messages.automation.running') }}</i></span>
-					<div>
-						@include('helpers.form_control', [
-							'type' => 'checkbox',
-							'name' => 'automation_active',
-							'label' => '',
-							'class' => 'automation_active',
-							'value' => 'true',
-							'options' => [false,true],
-							'help_class' => '',
-							'rules' => []
-						])
-					</div>
-				</div>
-				<p>
-					{!! trans('messages.automation.intro', ['list' => $automation->mailList->name]) !!}
-				</p>
 				
-				<div class="sidebar-setting-container">
-					<ul class="nav nav-tabs mt-5">
-						<li class="nav-item">
-							<a class="nav-link active" href="#">
-								<i class="lnr lnr-exit-up mr-2"></i>
-								{{ trans('messages.automation.trigger') }}
-							</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="#">
-								<i class="lnr lnr-cog mr-2"></i>
-								{{ trans('messages.automation.settings') }}
-							</a>
-						</li>
-					</ul>
-					
-					<p class="mt-3">
-						{{ trans('messages.automation.trigger.empty_msg') }}
-					</p>
-						
-					<button class="btn btn-secondary add-trigger-but">
-						{{ trans('messages.automation.trigger.setup') }}
-					</button>
-				</div>
 			</div>
 		</div>
 	</main>
 		
 	<script>
 		var popup;
-		var sidebar = new Box($('.sidebar-setting-container'));
+		var sidebar = new Box($('.sidebar'));
+		
+		function saveData() {
+			var url = '{{ action('Automation2Controller@saveData', $automation->uid) }}';
+		
+			$.ajax({
+				url: url,
+				type: 'POST',
+				data: {
+					_token: CSRF_TOKEN,
+					data: tree.toJson(),
+				},
+			}).always(function() {
+			});
+		}
 		
 		function SelectActionConfirm(type) {
 			var url = '{{ action('Automation2Controller@actionSelectConfirm', $automation->uid) }}' + '?type=' + type;
@@ -155,6 +126,9 @@
 							var newE = new ElementCondition({title: response.title, options: response.options});
 						}
 						tree.getSelected().insert(newE);
+						
+						// save tree
+						saveData();
 						
 						popup.hide();
 						
@@ -214,8 +188,6 @@
 			popup = new Popup(url, function() {
 				console.log('Confirm trigger type popup loaded!');
 				
-				
-				
 				// set back event
 				popup.back = function() {
 					OpenTriggerSelectPopup();
@@ -243,7 +215,10 @@
 						tree.setTitle(response.title);
 						// merge options with reponse options
 						tree.setOptions($.extend(tree.getOptions(), response.options));
-						tree.setOptions($.extend(tree.getOptions(), {init: true}));
+						tree.setOptions($.extend(tree.getOptions(), {init: "true"}));
+						
+						// save tree
+						saveData();
 						
 						// hide popup
 						popup.hide();
@@ -269,8 +244,8 @@
 		}
 	
 		$(document).ready(function() {
-			// diagram
-			
+			// load sidebar
+			sidebar.load('{{ action('Automation2Controller@settings', $automation->uid) }}');
 		
 			// Click on add trigger button
 			$(document).on('click', '.add-trigger-but', function() {
@@ -335,9 +310,17 @@
         var tree;
 
         (function() {
-            var json = [
-                {title: "Click to choose a trigger", id: "trigger", type: "ElementTrigger", options: {init: false}}
-            ];
+            //var json = [
+            //    {title: "Click to choose a trigger", id: "trigger", type: "ElementTrigger", options: {init: false}}
+            //];
+			
+			@if ($automation->data)
+				var json = {!! $automation->getData() !!};
+			@else
+				var json = [
+					{title: "Click to choose a trigger", id: "trigger", type: "ElementTrigger", options: {init: "false"}}
+				];
+			@endif
 
             var container = document.getElementById('svg');
 
@@ -358,7 +341,7 @@
 						var options = e.getOptions();
 						
 						// check if trigger is not init
-						if (!options.init) {
+						if (options.init == "false") {
 							OpenTriggerSelectPopup();
 						}
 						// trigger was init

@@ -58,8 +58,8 @@
 						<i class="icon-paperplane"></i> {{ trans('messages.campaigns') }}
 					</a>
 				</li>
-				<li rel0="AutomationController">
-					<a href="{{ action('AutomationController@index') }}">
+				<li rel0="Automation2Controller">
+					<a href="{{ action('Automation2Controller@index') }}">
 						<i class="icon-alarm-check"></i> {{ trans('messages.Automations') }}
 					</a>
 				</li>
