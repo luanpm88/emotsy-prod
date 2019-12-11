@@ -13,7 +13,9 @@ class Box {
     }
     
     loading() {
-        this.box.prepend(this.loadingHtml);
+        if (!this.box.find('.box-loading').length) {
+            this.box.prepend(this.loadingHtml);
+        }
     }
     
     applyJs() {

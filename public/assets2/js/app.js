@@ -187,7 +187,8 @@ function notify(type, title, message) {
         type: type,
         title: title,
         text: message,
-        stack: window.stackBottomRight
+        stack: window.stackBottomRight,
+        addClass: 'nonblock'
     };
     PNotify.alert(opts);
 }
