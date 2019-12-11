@@ -23,32 +23,58 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Acelle\Library\Automation\Send;
+use Acelle\Library\Automation\Wait;
+use Acelle\Library\Automation\Evaluate;
 
 class AutoTrigger extends Model
 {
     protected $fillable = [
-        'start_at',
+        //
     ];
 
-    protected $dates = ['created_at', 'updated_at', 'start_at'];
+    protected $dates = ['created_at', 'updated_at'];
 
     /**
      * Associations.
      *
-     * @var object | collect
+     * @return the associated subscriber
      */
-    public function autoEvent()
+    public function subscriber()
     {
-        return $this->belongsTo('Acelle\Model\AutoEvent');
+        return $this->belongsTo('Acelle\Model\Subscriber');
     }
 
     /**
      * Associations.
      *
-     * @return the associated subscriber, in case of FollowUp trigger
+     * @return the associated automation2
      */
-    public function subscriber()
+    public function automation2()
     {
-        return $this->belongsTo('Acelle\Model\Subscriber');
+        return $this->belongsTo('Acelle\Model\Automation2');
+    }
+
+    public function getLastAction()
+    {
+        return new Send([]);
+    }
+
+    // mark the next action as "latest" and return it
+    public function moveToNextAction() {
+        return $this->markLastestAction($this->getLastAction()->getNextId());
+    }
+
+    public function check()
+    {
+        $last = $this->getLastAction();
+        while ($last->execute()) {
+            $last = $this->moveToNextAction();
+        }
+    }
+
+    private function markLastestAction($id)
+    {
+
     }
 }
