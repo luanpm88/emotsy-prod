@@ -21,6 +21,7 @@ class CreateAutomation2sTable extends Migration
             $table->integer('mail_list_id')->unsigned();
             $table->string('time_zone');
             $table->string('status');
+            $table->text('data');
             
             $table->timestamps();
             

@@ -1,21 +1,29 @@
-<ul class="nav nav-tabs mt-5">
+@include('automation2._info')
+
+<ul class="nav nav-tabs mt-3">
     <li class="nav-item">
         <a class="nav-link active" href="#">
-            <i class="lnr lnr-exit-up mr-2"></i>
-            Trigger
-        </a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="#">
-            <i class="lnr lnr-layers mr-2"></i>
-            Information
-        </a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="#">
             <i class="lnr lnr-cog mr-2"></i>
-            Settings
+            {{ trans('messages.automation.settings') }}
         </a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="#">
+            <i class="lnr lnr-chart-bars mr-2"></i>
+            {{ trans('messages.automation.insight') }}
+        </a>
+    </li>
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+            <i class="lnr lnr-menu mr-2"></i> {{ trans('messages.automation.statistics') }}
+        </a>
+        <div class="dropdown-menu">
+            <a class="dropdown-item" href="#">Action</a>
+            <a class="dropdown-item" href="#">Another action</a>
+            <a class="dropdown-item" href="#">Something else here</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">Separated link</a>
+        </div>
     </li>
 </ul>
                         
@@ -62,10 +70,10 @@
             data: data,
         }).always(function(response) {
             // set node title
-            tree.getSelected().setTitle(response.title);
+            tree.setTitle(response.title);
             // merge options with reponse options
-            tree.getSelected().setOptions($.extend(tree.getOptions(), response.options));
-            tree.getSelected().setOptions($.extend(tree.getOptions(), {init: true}));
+            tree.setOptions($.extend(tree.getOptions(), response.options));
+            tree.setOptions($.extend(tree.getOptions(), {init: true}));
             
             // notify
             notify('success', '{{ trans('messages.notify.success') }}', response.message);

@@ -180,6 +180,9 @@
                         sidebar.load();
                     }
                     
+                    // save tree
+					saveData();
+                    
                     notify('success', '{{ trans('messages.notify.success') }}', response.message);
                  }
             });

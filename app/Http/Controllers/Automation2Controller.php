@@ -15,6 +15,35 @@ use Illuminate\Support\Facades\Storage;
 class Automation2Controller extends Controller
 {
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Request $request)
+    {
+        $user = $request->user();
+        $automations = $user->customer->automation2s();
+
+        return view('automation2.index', [
+            'automations' => $automations,
+        ]);
+    }
+    
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function listing(Request $request)
+    {
+        $automations = Automation2::search($request)->paginate($request->per_page);
+
+        return view('automation2._list', [
+            'automations' => $automations,
+        ]);
+    }
+    
+    /**
      * Creating a new resource.
      *
      * @return \Illuminate\Http\Response
@@ -25,8 +54,9 @@ class Automation2Controller extends Controller
         
         // init automation
         $automation = new Automation2([
-            'name' => trans('messages.automation.untitled')
+            'name' => trans('messages.automation.untitled')            
         ]);
+        $automation->status = Automation2::STATUS_INACTIVE;
         
         // authorize
         if (\Gate::denies('create', $automation)) {
@@ -67,6 +97,59 @@ class Automation2Controller extends Controller
     }
     
     /**
+     * Update automation.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $uid)
+    {
+        $customer = $request->user()->customer;
+        
+        // find automation
+        $automation = Automation2::findByUid($uid);
+        
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+        
+        // fill before save
+        $automation->fill($request->all());
+            
+        // make validator
+        $validator = Validator::make($request->all(), $automation->rules());
+            
+        // redirect if fails
+        if ($validator->fails()) {
+            return response()->view('automation2.settings', [
+                'automation' => $automation,
+                'errors' => $validator->errors(),
+            ], 400);
+        }
+            
+        // pass validation and save
+        $automation->mail_list_id = MailList::findByUid($request->mail_list_uid)->id;
+        $automation->save();
+            
+        return response()->json([
+            'status' => 'success',
+            'message' => trans('messages.automation.updated'),
+        ], 201);
+    }
+    
+    /**
+     * Update automation.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function saveData(Request $request, $uid)
+    {
+        // find automation
+        $automation = Automation2::findByUid($uid);
+        $automation->saveData(json_encode($request->data));
+    }
+    
+    /**
      * Creating a new resource.
      *
      * @return \Illuminate\Http\Response
@@ -82,6 +165,26 @@ class Automation2Controller extends Controller
         }
         
         return view('automation2.edit', [
+            'automation' => $automation,                          
+        ]);
+    }
+    
+    /**
+     * Automation settings in sidebar.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function settings(Request $request, $uid)
+    {
+        // init automation
+        $automation = Automation2::findByUid($uid);
+        
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+        
+        return view('automation2.settings', [
             'automation' => $automation,                          
         ]);
     }
@@ -923,5 +1026,84 @@ class Automation2Controller extends Controller
         $attachment = Attachment::findByUid($request->attachment_uid);
         
         return response()->download(storage_path('app/' . $attachment->file), $attachment->name);
+    }
+    
+    /**
+     * Enable automation.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function enable(Request $request)
+    {
+        $automations = Automation2::whereIn('uid', explode(',', $request->uids));
+
+        foreach ($automations->get() as $automation) {
+            // authorize
+            if (\Gate::allows('enable', $automation)) {
+                $automation->enable();
+            }
+        }
+        
+        return response()->json([
+            'status' => 'success',
+            'message' => trans_choice('messages.automation.enabled', $automations->count()),
+        ]);
+    }
+    
+    /**
+     * Disable event.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function disable(Request $request)
+    {
+        $automations = Automation2::whereIn('uid', explode(',', $request->uids));
+
+        foreach ($automations->get() as $automation) {
+            // authorize
+            if (\Gate::allows('disable', $automation)) {
+                $automation->disable();
+            }
+        }
+        
+        return response()->json([
+            'status' => 'success',
+            'message' => trans_choice('messages.automation.disabled', $automations->count()),
+        ]);
+    }
+    
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function delete(Request $request)
+    {
+        if (isSiteDemo()) {
+            echo trans('messages.operation_not_allowed_in_demo');
+            return;
+        }
+        
+        $automations = Automation2::whereIn('uid', explode(',', $request->uids));
+
+        foreach ($automations->get() as $automation) {
+            // authorize
+            if (\Gate::allows('delete', $automation)) {
+                $automation->delete();
+            }
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => trans_choice('messages.automation.deleted', $automations->count()),
+        ]);
     }
 }

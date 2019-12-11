@@ -981,6 +981,12 @@ $(function() {
         })
         .done(function( msg ) {
             var type = 'success';
+            
+            if (typeof(msg.status) !== 'undefined') {
+                type = msg.status;
+                msg = msg.message;
+            }
+            
             if(msg.indexOf('is-error') !== -1) {
                 type = 'error';
             }
@@ -1005,16 +1011,18 @@ $(function() {
             }
 
             if(msg !== '' && !a_.hasClass('reload_page')) {
-                swal({
-                    title: msg,
-                    text: "",
-                    confirmButtonColor: "#00695C",
-                    type: type,
-                    allowOutsideClick: true,
-                    confirmButtonText: LANG_OK,
-                    customClass: "swl-success",
-                    html: true
-                });
+                //swal({
+                //    title: msg,
+                //    text: "",
+                //    confirmButtonColor: "#00695C",
+                //    type: type,
+                //    allowOutsideClick: true,
+                //    confirmButtonText: LANG_OK,
+                //    customClass: "swl-success",
+                //    html: true
+                //});
+                
+                notify(type, LANG_NOTIFY_SUCCESS, msg);
             }
 
             // Remove loading effect

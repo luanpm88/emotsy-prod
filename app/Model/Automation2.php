@@ -106,4 +106,71 @@ class Automation2 extends Model
         
         return $element;
     }
+    
+    /**
+     * Filter items.
+     *
+     * @return collect
+     */
+    public static function filter($request)
+    {
+        $user = $request->user();
+        $query = self::where('customer_id', '=', $user->customer->id);
+
+        // Keyword
+        if (!empty(trim($request->keyword))) {
+            $query = $query->where('name', 'like', '%'.$request->keyword.'%');
+        }
+
+        return $query;
+    }
+
+    /**
+     * Search items.
+     *
+     * @return collect
+     */
+    public static function search($request)
+    {
+        $query = self::filter($request);
+
+        $query = $query->orderBy($request->sort_order, $request->sort_direction);
+
+        return $query;
+    }
+    
+    /**
+     * enable automation.
+     */
+    public function enable()
+    {
+        $this->status = self::STATUS_ACTIVE;
+        $this->save();
+    }
+
+    /**
+     * disable automation.
+     */
+    public function disable()
+    {
+        $this->status = self::STATUS_INACTIVE;
+        $this->save();
+    }
+    
+    /**
+     * disable automation.
+     */
+    public function saveData($data)
+    {
+        $this->data = $data;
+        $this->save();
+    }
+    
+    /**
+     * disable automation.
+     */
+    public function getData()
+    {
+        return isset($this->data) ? preg_replace('/"([^"]+)"\s*:\s*/', '$1:', $this->data) : "[]";
+    }
 }

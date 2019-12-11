@@ -544,6 +544,10 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('notifications/{id}/hide', 'NotificationController@hide');
     
     // Automation2
+    Route::post('automation2/{uid}/data/save', 'Automation2Controller@saveData');
+    Route::post('automation2/{uid}/update', 'Automation2Controller@update');
+    Route::get('automation2/{uid}/settings', 'Automation2Controller@settings');
+    
     Route::post('automation2/{uid}/template/{email_uid}/attachment/{attachment_uid}/remove', 'Automation2Controller@emailAttachmentRemove');
     Route::get('automation2/{uid}/template/{email_uid}/attachment/{attachment_uid}', 'Automation2Controller@emailAttachmentDownload');
     
@@ -573,7 +577,11 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('automation2/{uid}/trigger/select', 'Automation2Controller@triggerSelectPupop');
     Route::match(['get'], 'automation2/{uid}/edit', 'Automation2Controller@edit');
     Route::match(['get', 'post'], 'automation2/create', 'Automation2Controller@create');
-    Route::get('automation2s', 'Automation2Controller@index');
+    Route::patch('automation2/disable', 'Automation2Controller@disable');
+    Route::patch('automation2/enable', 'Automation2Controller@enable');
+    Route::delete('automation2/delete', 'Automation2Controller@delete');
+    Route::get('automation2/listing', 'Automation2Controller@listing');
+    Route::get('automation2', 'Automation2Controller@index');
 });
 
 // ADMIN AREA

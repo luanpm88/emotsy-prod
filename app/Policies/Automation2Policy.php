@@ -22,4 +22,30 @@ class Automation2Policy
     {
         return true;
     }
+    
+    
+    public function enable(User $user, Automation2 $automation)
+    {
+        return $automation->customer_id == $user->customer->id &&
+            in_array($automation->status, [
+                Automation2::STATUS_INACTIVE
+            ]);
+    }
+    
+    public function disable(User $user, Automation2 $automation)
+    {
+        return $automation->customer_id == $user->customer->id &&
+            in_array($automation->status, [
+                Automation2::STATUS_ACTIVE
+            ]);
+    }
+    
+    public function delete(User $user, Automation2 $automation)
+    {
+        return $automation->customer_id == $user->customer->id &&
+            in_array($automation->status, [
+                Automation2::STATUS_ACTIVE,
+                Automation2::STATUS_INACTIVE
+            ]);
+    }
 }
