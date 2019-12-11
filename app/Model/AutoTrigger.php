@@ -60,7 +60,7 @@ class AutoTrigger extends Model
     {
         $json = json_decode(is_null($this->data) ? [] : $this->data);
         $actions = json_decode($automtion2->data, true);
-        foreach($actions as $action) {
+        foreach ($actions as $action) {
             $json[$action['id']] = $action;
         }
 
@@ -72,19 +72,21 @@ class AutoTrigger extends Model
     public function getLatestAction()
     {
         $action = null;
-        $this->getActions(function($instance) use (&$action) {
+        $this->getActions(function ($instance) use (&$action) {
             if ($instance->isLatest()) {
                 $action = $instance;
             }
         });
+
         return $action;
     }
 
     // Mark the next action as "latest" and return it
-    public function moveToNextAction() {
+    public function moveToNextAction()
+    {
         $nextId = $this->getLatestAction()->getNextActionId();
         $selected = null;
-        $this->getActions(function($instance) use ($nextId, &$selected) {
+        $this->getActions(function ($instance) use ($nextId, &$selected) {
             if ($instance->getId() == $nextId) {
                 $instance->markAsLatest(true);
                 $selected = $instance;
@@ -93,6 +95,7 @@ class AutoTrigger extends Model
             }
             $this->updateJson($instance);
         });
+
         return $selected;
     }
 
@@ -129,7 +132,7 @@ class AutoTrigger extends Model
         foreach ($json as $key => $attributes) {
             $instance = null;
             $attributes['id'] = $key;
-            switch ($attributes['type']){
+            switch ($attributes['type']) {
                 case 'ElementTrigger':
                     $instance = new Evaluate($attributes);
                     break;
@@ -144,27 +147,26 @@ class AutoTrigger extends Model
                     break;
                 default:
                     var_dump($attributes['type']);
-                    1/0;
+                    1 / 0;
             }
 
             $callback($instance);
         }
     }
 
-
     // for debugging only
     public function getTrigger()
     {
         $trigger = null;
-        $this->getActions(function($e) use ( &$trigger) {
+        $this->getActions(function ($e) use (&$trigger) {
             if ($e->getType() == 'ElementTrigger') {
                 $trigger = $e;
             }
         });
+
         return  $trigger;
     }
 }
-
 
 /*
 

@@ -6,7 +6,7 @@ use Carbon\Carbon;
 
 class Send extends Action
 {
-    function __construct($params = [])
+    public function __construct($params = [])
     {
         // title: "Send a Welcome email", id: "welcome", type: "ElementAction", child: "condition"
         parent::__construct($params);
@@ -17,6 +17,7 @@ class Send extends Action
     public function execute()
     {
         $this->setOption('checked_at', Carbon::now()->timestamp);
+
         return true;
     }
 }

@@ -11,7 +11,7 @@ abstract class Action
     protected $child;
     protected $options;
 
-    function __construct($params = [])
+    public function __construct($params = [])
     {
         $this->id = $params['id'];
         $this->title = $params['title'];
@@ -21,7 +21,6 @@ abstract class Action
         $this->latest = array_key_exists('latest', $params) ? $params['latest'] : null;
     }
 
-
     public function toJson()
     {
         return [
@@ -30,7 +29,7 @@ abstract class Action
             'type' => $this->type,
             'child' => $this->child,
             'latest' => $this->isLatest(),
-            'options' => $this->getOptions()
+            'options' => $this->getOptions(),
         ];
     }
 

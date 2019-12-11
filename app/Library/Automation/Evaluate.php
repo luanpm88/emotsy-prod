@@ -9,7 +9,7 @@ class Evaluate extends Action
     protected $childYes;
     protected $childNo;
 
-    function __construct($params = [])
+    public function __construct($params = [])
     {
         parent::__construct($params);
 
@@ -20,9 +20,9 @@ class Evaluate extends Action
     public function toJson()
     {
         $json = parent::toJson();
-        $json = array_merge( $json, [
+        $json = array_merge($json, [
             'childYes' => $this->childYes,
-            'childNo' => $this->childNo
+            'childNo' => $this->childNo,
         ]);
 
         return $json;
@@ -31,6 +31,7 @@ class Evaluate extends Action
     public function execute()
     {
         $this->setOption('checked_at', Carbon::now()->timestamp);
+
         return true;
     }
 }
