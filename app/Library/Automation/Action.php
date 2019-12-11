@@ -17,7 +17,7 @@ abstract class Action
         $this->title = $params['title'];
         $this->type = $params['type'];
         $this->child = array_key_exists('child', $params) ? $params['child'] : null;
-        $this->options = array_key_exists('options', $params) ? $params['child'] : null;
+        $this->options = array_key_exists('options', $params) ? $params['options'] : [];
         $this->latest = array_key_exists('latest', $params) ? $params['latest'] : null;
     }
 
@@ -29,7 +29,8 @@ abstract class Action
             'title' => $this->getTitle(),
             'type' => $this->type,
             'child' => $this->child,
-            'latest' => $this->isLatest()
+            'latest' => $this->isLatest(),
+            'options' => $this->getOptions()
         ];
     }
 
@@ -51,6 +52,11 @@ abstract class Action
     public function getOptions()
     {
         return $this->options;
+    }
+
+    public function setOption($name, $value)
+    {
+        $this->options[$name] = $value;
     }
 
     public function getNextActionId()

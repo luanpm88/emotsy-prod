@@ -99,8 +99,16 @@ class AutoTrigger extends Model
     public function check()
     {
         $last = $this->getLatestAction();
-        while ($last->execute()) {
+        $passed = $last->execute();
+        $this->updateJson($last); // update 'last_checked_at' field of Wait for example
+
+        while ($passed == true) { // true means: done with this step, should proceed next
             $last = $this->moveToNextAction();
+            if ($last == null) {
+                break;
+            }
+            $passed = $last->execute();
+            $this->updateJson($last); // update 'last_checked_at' field of Wait for example
         }
     }
 
@@ -109,6 +117,7 @@ class AutoTrigger extends Model
         $json = json_decode($this->data, true);
 
         $json[$action->getId()] = $action->toJson();
+        var_dump($action->toJson());
         $this->data = json_encode($json);
         $this->save();
     }
@@ -142,6 +151,8 @@ class AutoTrigger extends Model
         }
     }
 
+
+    // for debugging only
     public function getTrigger()
     {
         $trigger = null;
@@ -156,12 +167,17 @@ class AutoTrigger extends Model
 
 
 /*
+
+
 $s = '{
 "trigger": {"title":"New Subscribers!", "type": "ElementTrigger", "child": "welcome", "options": {"test": "123"}, "latest": true},
-"welcome": {"title":"Send a Welcome email", "type": "ElementAction", "child": "wait"},
+"welcome": {"title":"Send a Welcome email", "type": "ElementAction", "child": "welcome2"},
+"welcome2": {"title":"Send a Welcome email", "type": "ElementAction", "child": "wait"},
 "wait": {"title":"Wait for a while", "type": "ElementWait", "child": "condition"},
 "condition": {"title":"Send a Welcome email", "type": "ElementWait", "child": "condition"}
 }';
 $f->data = $s;
 $f->save();
+
+
 */
