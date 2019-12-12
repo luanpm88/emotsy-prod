@@ -4,7 +4,7 @@
         'class' => '',
         'label' => '',
         'name' => 'options[api]',
-        'value' => '',
+        'value' => isset($trigger) ? $trigger->options->api : '',
         'help_class' => 'trigger',
         'rules' => [],
     ])

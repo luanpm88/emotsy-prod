@@ -11,7 +11,7 @@
         'class' => '',
         'label' => 'Select criterion',
         'name' => 'criterion',
-        'value' => '',
+        'value' => isset($element) && isset($element->options->criterion) ? $element->options->criterion : '',
         'help_class' => 'trigger',
         'options' => [
             ['text' => 'Subscriber read an Email', 'value' => 'read_email'],
@@ -26,8 +26,8 @@
         'type' => 'select',
         'class' => '',
         'label' => 'Which email subscriber reads',
-        'name' => 'after',
-        'value' => '',
+        'name' => 'email_uid',
+        'value' => isset($element) && isset($element->options->email_uid) ? $element->options->email_uid : '',
         'help_class' => 'trigger',
         'options' => [
             ['text' => 'Thank for joining our community', 'value' => '123'],
@@ -41,8 +41,8 @@
         'type' => 'select',
         'class' => '',
         'label' => 'Which Link subscriber clicks',
-        'name' => 'after',
-        'value' => '',
+        'name' => 'link',
+        'value' => isset($element) && isset($element->options->link) ? $element->options->link : '',
         'help_class' => 'trigger',
         'options' => [
             ['text' => 'Special discount from Topica', 'value' => '123'],

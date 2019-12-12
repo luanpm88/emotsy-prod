@@ -78,6 +78,9 @@
             // notify
             notify('success', '{{ trans('messages.notify.success') }}', response.message);
             
+            // save tree
+            saveData();
+            
             // reload sidebar
             sidebar.load();
         });        

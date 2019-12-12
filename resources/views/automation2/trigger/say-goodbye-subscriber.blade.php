@@ -4,7 +4,7 @@
         'class' => '',
         'label' => 'After',
         'name' => 'options[after]',
-        'value' => '',
+        'value' => isset($trigger) ? $trigger->options->after : '',
         'help_class' => 'trigger',
         'options' => [['text' => '5 minutes', 'value' => '+5_minutes']],
         'rules' => [],

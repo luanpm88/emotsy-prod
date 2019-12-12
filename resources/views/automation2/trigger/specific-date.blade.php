@@ -4,7 +4,7 @@
         'class' => '',
         'label' => 'Date',
         'name' => 'options[date]',
-        'value' => '',
+        'value' => isset($trigger) ? $trigger->options->date : '',
         'help_class' => 'trigger',
         'rules' => [],
     ])
@@ -13,7 +13,7 @@
         'type' => 'time2',
         'name' => 'options[at]',
         'label' => 'At',
-        'value' => '',
+        'value' => isset($trigger) ? $trigger->options->at : '',
         'rules' => [],
         'help_class' => 'trigger'
     ])

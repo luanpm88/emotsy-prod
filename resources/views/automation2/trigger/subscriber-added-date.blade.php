@@ -4,7 +4,7 @@
         'class' => '',
         'label' => 'Before or After',
         'name' => 'options[before_after]',
-        'value' => '',
+        'value' => isset($trigger) ? $trigger->options->before_after : '',
         'help_class' => 'trigger',
         'options' => [['text' => '1 day before', 'value' => '-1day']],
         'rules' => [],
@@ -14,7 +14,7 @@
         'type' => 'time2',
         'name' => 'options[at]',
         'label' => 'At',
-        'value' => '',
+        'value' => isset($trigger) ? $trigger->options->at : '',
         'rules' => [],
         'help_class' => 'trigger'
     ])

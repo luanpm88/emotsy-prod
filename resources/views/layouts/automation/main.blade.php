@@ -16,10 +16,10 @@
 	<link rel="stylesheet" href="{{ URL::asset('assets/datepicker/dist/datepicker.min.css') }}">
 	<link href="{{ URL::asset('assets/css/icons/icomoon/styles.css') }}" rel="stylesheet" type="text/css">
 	
-	<link href="{{ URL::asset('css/popup.css') }}" rel="stylesheet" type="text/css">
 	<link href="{{ URL::asset('css/loading.css') }}" rel="stylesheet" type="text/css">
 	<link href="{{ URL::asset('css/popup.css') }}" rel="stylesheet" type="text/css">
 	<link href="{{ URL::asset('css/autofill.css') }}" rel="stylesheet" type="text/css">
+	<link href="{{ URL::asset('assets2/css/dialog.css') }}" rel="stylesheet" type="text/css">
     
 	
 	
@@ -87,7 +87,8 @@
 	<script type="text/javascript" src="{{ URL::asset('js/mc_modal.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('js/iframe_modal.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('js/mc.js') }}"></script>
-	<script type="text/javascript" src="{{ URL::asset('js/popup.js') }}"></script>	
+	<script type="text/javascript" src="{{ URL::asset('js/popup.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('assets2/js/dialog.js') }}"></script>
 	<!-- /theme JS files -->
 
 	@include('layouts._script_vars')

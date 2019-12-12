@@ -281,7 +281,7 @@
 				console.log('click on one action!');
 				
 				var type = $(this).attr('data-type');				
-				var url = '{{ action('Automation2Controller@actionEdit', $automation->uid) }}' + '?type=' + type;
+				var url = '{{ action('Automation2Controller@actionEdit', $automation->uid) }}' + '?type=' + type + '&id=' + tree.getSelected().id;
 				
 				// Open trigger types select list
 				EditAction(url);
@@ -351,7 +351,7 @@
 						// trigger was init
 						else {
 							var type = $(this).attr('data-type');
-							var url = '{{ action('Automation2Controller@triggerEdit', $automation->uid) }}' + '?type=' + e.getOptions().type;
+							var url = '{{ action('Automation2Controller@triggerEdit', $automation->uid) }}' + '?type=' + e.getOptions().type + '&id=' + e.getId();
 							
 							// Open trigger types select list
 							EditTrigger(url);
@@ -360,7 +360,7 @@
 					// is WAIT
 					else if (e.getType() == 'ElementWait') {
 							var type = $(this).attr('data-type');
-							var url = '{{ action('Automation2Controller@actionEdit', $automation->uid) }}' + '?type=' + e.getOptions().type;
+							var url = '{{ action('Automation2Controller@actionEdit', $automation->uid) }}' + '?type=' + e.getOptions().type + '&id=' + e.getId();
 							
 							// Open trigger types select list
 							EditAction(url);
@@ -368,7 +368,7 @@
 					// is Condition
 					else if (e.getType() == 'ElementCondition') {
 							var type = $(this).attr('data-type');
-							var url = '{{ action('Automation2Controller@actionEdit', $automation->uid) }}' + '?type=' + e.getOptions().type;
+							var url = '{{ action('Automation2Controller@actionEdit', $automation->uid) }}' + '?type=' + e.getOptions().type + '&id=' + e.getId();
 							
 							// Open trigger types select list
 							EditAction(url);

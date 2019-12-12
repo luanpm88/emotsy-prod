@@ -11,7 +11,7 @@
         'class' => '',
         'label' => '',
         'name' => 'after',
-        'value' => '',
+        'value' => isset($element) ? $element->options->after : '',
         'help_class' => 'trigger',
         'options' => [['text' => '30 minutes', 'value' => '+30_minutes'], ['text' => '1 hour', 'value' => '+1_hour']],
         'rules' => [],

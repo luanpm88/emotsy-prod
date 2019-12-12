@@ -407,8 +407,8 @@ class Automation2Controller extends Controller
                 'status' => 'success',
                 'message' => trans('messages.automation.trigger.updated'),
                 'title' => trans('messages.automation.trigger.title', [
-                        'title' => trans('messages.automation.trigger.' . $request->options["type"])
-                    ]),
+                    'title' => trans('messages.automation.trigger.' . $request->options["type"])
+                ]),
                 'options' => $request->options,
             ]);
         }
@@ -416,6 +416,7 @@ class Automation2Controller extends Controller
         return view('automation2.triggerEdit', [
             'type' => $request->type,
             'automation' => $automation,
+            'trigger' => $automation->getTrigger(),
         ]);
     }
     
@@ -491,6 +492,7 @@ class Automation2Controller extends Controller
         return view('automation2.actionEdit', [
             'type' => $request->type,
             'automation' => $automation,
+            'element' => $automation->getElement($request->id),
         ]);
     }
     

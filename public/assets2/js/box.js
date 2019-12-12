@@ -51,6 +51,9 @@ class Box {
             
             // apply js for new content
             _this.applyJs();
+            
+            // scroll top
+            _this.box.animate({scrollTop: 0});
         });
     }
     
@@ -60,5 +63,7 @@ class Box {
         _this.box.html(html);
         
         _this.applyJs();
+        
+        _this.box.animate({scrollTop: 0});
     }
 }

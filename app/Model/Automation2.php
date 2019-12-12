@@ -95,10 +95,6 @@ class Automation2 extends Model
         ];
     }
     
-    public function getElements() {
-        return json_decode($this->data);
-    }
-    
     public function getElementById($id) {
         $data = $this->getElements()[$id];
         
@@ -172,5 +168,39 @@ class Automation2 extends Model
     public function getData()
     {
         return isset($this->data) ? preg_replace('/"([^"]+)"\s*:\s*/', '$1:', $this->data) : "[]";
+    }
+    
+    /**
+     * get all tree elements.
+     */
+    public function getElements()
+    {
+        return isset($this->data) ? json_decode($this->data) : [];
+    }
+    
+    /**
+     * get trigger.
+     */
+    public function getTrigger()
+    {
+        $elements = $this->getElements();
+        
+        return empty($elements) ? null : $elements[0];
+    }
+    
+    /**
+     * get element by id.
+     */
+    public function getElement($id)
+    {
+        $elements = $this->getElements();
+        
+        foreach ($elements as $element) {
+            if ($element->id == $id) {
+                return $element;
+            }
+        }
+        
+        return null;
     }
 }
