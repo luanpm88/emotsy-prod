@@ -343,8 +343,6 @@ class SendingServer extends Model
             self::TYPE_MAILGUN_API => [
                 'cols' => [
                     'name' => 'required',
-                    'host' => 'required',
-                    'domain' => 'required',
                     'api_key' => 'required',
                     'domain' => 'required',
                 ],

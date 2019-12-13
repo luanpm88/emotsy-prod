@@ -15,7 +15,7 @@
             <li class="active">{{ trans('messages.subscription') }}</li>
         </ul>
         <h1>
-            <span class="text-semibold"><i class="icon-quill4"></i> {{ Auth::user()->customer->displayName() }}</span>
+            <span class="text-semibold">{{ Auth::user()->customer->displayName() }}</span>
         </h1>
     </div>
 
@@ -27,7 +27,7 @@
 
     <div class="row">
         <div class="col-sm-12 col-md-6 col-lg-6">
-        
+
             @if ($hasPendingPaymentForFuture)
                 @include('account.subscription.future_pending._' . \Acelle\Model\Setting::get('system.payment_gateway'))
             @elseif ($goingToExpire && (\Acelle\Model\Setting::get('system.renew_free_plan') == 'yes' || (\Acelle\Model\Setting::get('system.renew_free_plan') == 'no' && !$subscription->plan->isFree())))
@@ -38,7 +38,7 @@
                     ]) !!}
                 </p>
             @endif
-        
+
             <h2 class="text-semibold">{{ trans('messages.subscription') }}</h2>
 
             <div class="sub-section">
@@ -54,7 +54,7 @@
                                 'next_on' => \Acelle\Library\Tool::formatDate($currentPeriodEnd)
                             ]) !!}
                         </p>
-                            
+
                         @if (\Auth::user()->customer->can('cancel', $subscription))
                             <a link-method="POST" link-confirm="{{ trans('messages.subscription.cancel.confirm') }}"
                                 href="{{ action('AccountSubscriptionController@cancel') }}"
@@ -72,7 +72,7 @@
                             </a>
                         @endif
                         @if (\Auth::user()->customer->can('changePlan', $subscription))
-                            <a 
+                            <a
                                 href="{{ action('AccountSubscriptionController@changePlan', ["id" => $subscription->uid]) }}"
                                 class="btn bg-grey-600 mr-10 modal_link"
                                 data-size="sm"
@@ -89,7 +89,7 @@
                                 'end_at' => \Acelle\Library\Tool::formatDate($currentPeriodEnd)
                             ]) !!}
                         </p>
-                            
+
                         @if (\Auth::user()->customer->can('resume', $subscription))
                             <a link-method="POST" link-confirm="{{ trans('messages.subscription.resume.confirm') }}"
                                 href="{{ action('AccountSubscriptionController@resume') }}"
@@ -115,7 +115,7 @@
                                 'end_at' => \Acelle\Library\Tool::formatDate($currentPeriodEnd)
                             ]) !!}
                         </p>
-                        
+
                         @if (\Auth::user()->customer->can('renew', $subscription) && !$hasPendingPaymentForFuture)
                             <a class="btn btn-mc_primary mr-10"
                                 href="{{ action('AccountSubscriptionController@renew') }}">
@@ -131,7 +131,7 @@
                             </a>
                         @endif
                         @if (\Auth::user()->customer->can('changePlan', $subscription) && !$hasPendingPaymentForFuture)
-                            <a 
+                            <a
                                 href="{{ action('AccountSubscriptionController@changePlan', ["id" => $subscription->uid]) }}"
                                 class="btn bg-grey-600 mr-10 modal_link"
                                 data-size="sm"
@@ -139,7 +139,7 @@
                                 {{ trans('messages.subscription.change_plan') }}
                             </a>
                         @endif
-                    @endif 
+                    @endif
                 @endif
             </div>
             <div class="sub-section">
@@ -149,7 +149,7 @@
             </div>
         </div>
     </div>
-        
+
     @include('account.subscription._invoices')
-    
+
 @endsection

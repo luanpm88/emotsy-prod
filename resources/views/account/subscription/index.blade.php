@@ -15,7 +15,7 @@
             <li class="active">{{ trans('messages.subscription') }}</li>
         </ul>
         <h1>
-            <span class="text-semibold"><i class="icon-quill4"></i> {{ Auth::user()->customer->displayName() }}</span>
+            <span class="text-semibold">{{ Auth::user()->customer->displayName() }}</span>
         </h1>
     </div>
 
@@ -27,18 +27,16 @@
 
     <div class="row">
         <div class="col-sm-12 col-md-6 col-lg-6">
-        
+
             @if ($gateway->hasPending($subscription))
                 <div class="alert alert-warning">
                     {!! $gateway->getPendingNotice($subscription) !!}
                 </div>
             @endif
-        
+
             <h2 class="text-semibold">{{ trans('messages.subscription') }}</h2>
 
             <div class="sub-section">
-                <h3 class="text-semibold">{{ trans('messages.current_plan') }} </h3>
-
                 @if ($subscription->isActive())
                     @if ($subscription->isRecurring())
                         <p>
@@ -59,9 +57,9 @@
                             ]) !!}
                         </p>
                     @endif
-                    
+
                     @if (\Auth::user()->customer->can('renew', $subscription))
-                        <a 
+                        <a
                             href="{{ $gateway->getRenewUrl($subscription, action('AccountSubscriptionController@index')) }}"
                             class="btn bg-grey-600 mr-10"
                             data-size="sm"
@@ -69,7 +67,7 @@
                             {{ trans('messages.subscription.renew') }}
                         </a>
                     @endif
-                    
+
                     @if (\Auth::user()->customer->can('cancel', $subscription))
                         <a link-method="POST" link-confirm="{{ trans('messages.subscription.cancel.confirm') }}"
                             href="{{ action('AccountSubscriptionController@cancel') }}"
@@ -78,7 +76,7 @@
                             {{ trans('messages.subscription.cancel') }}
                         </a>
                     @endif
-                    
+
                     @if (\Auth::user()->customer->can('resume', $subscription))
                         <a link-method="POST" link-confirm="{{ trans('messages.subscription.resume.confirm') }}"
                             href="{{ action('AccountSubscriptionController@resume') }}"
@@ -87,7 +85,7 @@
                             {{ trans('messages.subscription.resume') }}
                         </a>
                     @endif
-                    
+
                     @if (\Auth::user()->customer->can('cancelNow', $subscription))
                         <a link-method="POST" link-confirm="{{ trans('messages.subscription.cancel_now.confirm') }}"
                             href="{{ action('AccountSubscriptionController@cancelNow') }}"
@@ -96,9 +94,9 @@
                             {{ trans('messages.subscription.cancel_now') }}
                         </a>
                     @endif
-                    
+
                     @if (\Auth::user()->customer->can('changePlan', $subscription))
-                        <a 
+                        <a
                             href="{{ action('AccountSubscriptionController@changePlan', ["id" => $subscription->uid]) }}"
                             class="btn btn-mc_default change_plan_button"
                             data-size="sm"
@@ -110,31 +108,31 @@
             </div>
         </div>
     </div>
-        
+
     @include('account.subscription._invoices')
-                
+
     <div class="sub-section">
         <div class="row">
             <div class="col-sm-12 col-md-6 col-lg-6">
-                <h2 class="text-semibold mb-10">{{ trans('messages.plan_details') }} </h2>
+                <h2 class="text-semibold">{{ trans('messages.plan_details') }} </h2>
                 <p>{{ trans('messages.plan_details.intro') }}</p>
-        
+
                 @include('plans._details', ['plan' => $plan])
             </div>
         </div>
     </div>
-        
+
     <script>
         var changePlanModal = new IframeModal();
-        
+
         $(function() {
             $('.change_plan_button').click(function(e) {
                 e.preventDefault();
-                
+
                 var src = $(this).attr('href');
                 changePlanModal.load(src);
             });
         });
     </script>
-    
+
 @endsection

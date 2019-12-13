@@ -15,7 +15,7 @@
             <li class="active">{{ trans('messages.subscription') }}</li>
         </ul>
         <h1>
-            <span class="text-semibold"><i class="icon-profile"></i> {{ Auth::user()->customer->displayName() }}</span>
+            <span class="text-semibold">{{ Auth::user()->customer->displayName() }}</span>
         </h1>
     </div>
 
@@ -36,9 +36,9 @@
                         'price' => Acelle\Library\Tool::format_price($subscription->plan->price, $subscription->plan->currency->format)
                     ]) !!}
                 </p>
-                
+
                 @include("account.subscription.renew._" . $gateway['name'])
-                
+
 			</div>
         </div>
     </div>

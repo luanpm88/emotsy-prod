@@ -12,7 +12,7 @@
 			<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
 		</ul>
 		<h1>
-			<span class="text-semibold"><i class="icon-quill4"></i> {{ trans('messages.your_subscriptions') }}</span>
+			<span class="text-semibold">{{ trans('messages.your_subscriptions') }}</span>
 		</h1>
 	</div>
 
@@ -91,7 +91,7 @@
     ?>
 	 $('body').css({"display":"none"});
 	 document.getElementById('payment_form').submit();
-	 
+
 	 <?php
 }
     ?>

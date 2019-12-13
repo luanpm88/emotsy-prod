@@ -33,6 +33,17 @@
                     'rules' => $server->getRules(),
                     'disabled' =>($server->id && $errors->isEmpty()),
                 ])
+                
+                @include('helpers.form_control', [
+                    'type' => 'select',
+                    'class' => '',
+                    'name' => 'host',
+                    'value' => $server->host,
+                    'help_class' => 'sending_server',
+                    'options' => Acelle\Model\SendingServer::mailgunRegionSelectOptions(),
+                    'rules' => $server->getRules(),
+                    'disabled' => ($server->id && $errors->isEmpty()),
+                ])
             </div>
         </div>
         <div class="text-left">

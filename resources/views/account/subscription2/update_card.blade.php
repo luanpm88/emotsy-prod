@@ -12,7 +12,7 @@
 			<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
 		</ul>
 		<h1>
-			<span class="text-semibold"><i class="icon-quill4"></i> {{ trans('messages.your_subscriptions') }}</span>
+			<span class="text-semibold">{{ trans('messages.your_subscriptions') }}</span>
 		</h1>
 	</div>
 
@@ -36,9 +36,9 @@
                         'price' => Acelle\Library\Tool::format_price($plan->price, $plan->currency->format)
                     ]) !!}
                 </p>
-                
+
                 @include("account.subscription.card._" . $gateway['name'])
-                
+
 			</div>
 		</div>
 	</div>
