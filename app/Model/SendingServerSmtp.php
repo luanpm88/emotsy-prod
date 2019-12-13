@@ -38,12 +38,11 @@ class SendingServerSmtp extends SendingServer
     public function send($message, $params = array())
     {
         try {
-            $transport = \Swift_SmtpTransport::newInstance($this->host, (int) $this->smtp_port, $this->smtp_protocol)
-              ->setUsername($this->smtp_username)
-              ->setPassword($this->smtp_password)
+            $transport = new \Swift_SmtpTransport($this->host, (int) $this->smtp_port, $this->smtp_protocol);
+            $transport->setUsername($this->smtp_username);
+            $transport->setPassword($this->smtp_password);
               // in case of: stream_socket_enable_crypto(): SSL operation failed with code 1. OpenSSL Error messages: error:14090086:SSL routines:SSL3_GET_SERVER_CERTIFICATE:certificate verify failed
               //->setStreamOptions(array('ssl' => array('allow_self_signed' => true, 'verify_peer' => false, 'verify_peer_name' => false)))
-            ;
 
             // setup bounce handler: specify the Return-Path
             // if ($this->bounceHandler) {
@@ -51,7 +50,7 @@ class SendingServerSmtp extends SendingServer
             // }
 
             // Create the Mailer using your created Transport
-            $mailer = \Swift_Mailer::newInstance($transport);
+            $mailer = new \Swift_Mailer($transport);
 
             // Actually send
             $sent = $mailer->send($message);

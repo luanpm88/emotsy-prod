@@ -39,10 +39,10 @@ class SendingServerSendmail extends SendingServer
     public function send($message, $params = array())
     {
         try {
-            $transport = \Swift_SendmailTransport::newInstance($this->sendmail_path.' -bs');
+            $transport = new \Swift_SendmailTransport($this->sendmail_path.' -bs');
 
             // Create the Mailer using your created Transport
-            $mailer = \Swift_Mailer::newInstance($transport);
+            $mailer = new \Swift_Mailer($transport);
 
             // Actually send
             $sent = $mailer->send($message);

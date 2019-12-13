@@ -58,20 +58,19 @@ class TestCampaign extends Command
     }
 
     public function testSmtp() {
-        $transport = \Swift_SmtpTransport::newInstance('smtp.elasticemail.com', 2525, 'tls')
-          ->setUsername('')
-          ->setPassword('')
+        $transport = new \Swift_SmtpTransport('smtp.elasticemail.com', 2525, 'tls');
+        $transport->setUsername('');
+        $transport->setPassword('');
           ;
 
         // Create the Mailer using your created Transport
-        $mailer = \Swift_Mailer::newInstance($transport);
+        $mailer = new \Swift_Mailer($transport);
 
         // Create a message
-        $message = \Swift_Message::newInstance('Wonderful Subject')
-          ->setFrom(array('' => 'Asish'))
-          ->setTo(array('' => 'Louis'))
-          ->setBody('Here is the message itself')
-          ;
+        $message = new \Swift_Message('Wonderful Subject');
+        $message->setFrom(array('' => 'Asish'));
+        $message->setTo(array('' => 'Louis'));
+        $message->setBody('Here is the message itself');
 
         // Send the message
         $result = $mailer->send($message);

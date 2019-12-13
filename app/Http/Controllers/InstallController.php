@@ -142,10 +142,10 @@ class InstallController extends Controller
             if ($request->mail_driver == 'smtp') {
                 $rules = [];
                 try {
-                    $transport = \Swift_SmtpTransport::newInstance($request->smtp_hostname, $request->smtp_port, $request->smtp_encryption);
+                    $transport = new \Swift_SmtpTransport($request->smtp_hostname, $request->smtp_port, $request->smtp_encryption);
                     $transport->setUsername($request->smtp_username);
                     $transport->setPassword($request->smtp_password);
-                    $mailer = \Swift_Mailer::newInstance($transport);
+                    $mailer = new \Swift_Mailer($transport);
                     $mailer->getTransport()->start();
                 } catch (\Swift_TransportException $e) {
                     $rules['smtp_valid'] = 'required';

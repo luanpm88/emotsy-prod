@@ -315,7 +315,7 @@ abstract class AbsCampaign extends Model
         $customHeaders = $this->getCustomHeaders($subscriber, $this);
         $msgId = $customHeaders['X-Acelle-Message-Id'];
 
-        $message = \Swift_Message::newInstance();
+        $message = new \Swift_Message();
         $message->setId($msgId);
 
         if ($this->type == self::TYPE_REGULAR) {
@@ -345,7 +345,7 @@ abstract class AbsCampaign extends Model
 
         $message->setTo($subscriber->email);
         $message->setReplyTo($this->reply_to);
-        $message->setEncoder(\Swift_Encoding::get8bitEncoding());
+        $message->setEncoder( new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit') );
         $message->addPart($this->getPlainContent($subscriber, $msgId, $server), 'text/plain');
         if ($this->type == self::TYPE_REGULAR) {
             $message->addPart($this->getHtmlContent($subscriber, $msgId, $server), 'text/html');

@@ -34,6 +34,6 @@ class MailListSubscriptionListener
         )->send(
             new MailListSubscriptionNotificationMailer($event->subscriber)
         );
-        
+
     }
 }

@@ -779,7 +779,7 @@ class SendingServer extends Model
          *     + plain
          */
         MailLog::info(sprintf('Sending test email to %s for sending server `%s`', $params['to_email'], $this->name));
-        $message = \Swift_Message::newInstance();
+        $message = new \Swift_Message();
         $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($params['from_email']));
         $message->setId($msgId);
         $message->getHeaders()->addTextHeader('X-Acelle-Message-Id', $msgId); // this header is required for SendGrid API sending server

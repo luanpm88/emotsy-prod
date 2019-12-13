@@ -40,17 +40,16 @@ class SendingServerSparkPostSmtp extends SendingServerSparkPost
         try {
             $this->setupWebhook();
 
-            $transport = \Swift_SmtpTransport::newInstance($this->host, (int) $this->smtp_port, $this->smtp_protocol)
-              ->setUsername($this->smtp_username)
-              ->setPassword($this->smtp_password)
-            ;
+            $transport = new \Swift_SmtpTransport($this->host, (int) $this->smtp_port, $this->smtp_protocol);
+            $transport->setUsername($this->smtp_username);
+            $transport->setPassword($this->smtp_password);
 
             // tracking bounce/feedback
             $msgId = $message->getHeaders()->get('X-Acelle-Message-Id')->getFieldBody();
             $message->getHeaders()->addTextHeader('X-MSYS-API', json_encode(['metadata' => ['runtime_message_id' => $msgId]]));
 
             // Create the Mailer using your created Transport
-            $mailer = \Swift_Mailer::newInstance($transport);
+            $mailer = new \Swift_Mailer($transport);
 
             // Actually send
             $sent = $mailer->send($message);

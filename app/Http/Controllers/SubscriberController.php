@@ -777,7 +777,7 @@ class SubscriberController extends Controller
 
         return $img->response();
     }
-    
+
     /**
      * Resend confirmation email.
      *
@@ -794,7 +794,7 @@ class SubscriberController extends Controller
         if ($request->select_tool == 'all_items') {
             $subscribers = $this->search($list, $request);
         }
-        
+
         // Launch re-sending job
         dispatch(new \Acelle\Jobs\SendConfirmationEmailJob($subscribers->get(), $list));
 

@@ -265,12 +265,12 @@ class SettingController extends Controller
             if ($env["MAIL_DRIVER"] == 'smtp') {
                 $rules = [];
                 try {
-                    $transport = \Swift_SmtpTransport::newInstance($env["MAIL_HOST"], $env["MAIL_PORT"], $env["MAIL_ENCRYPTION"]);
+                    $transport = new \Swift_SmtpTransport($env["MAIL_HOST"], $env["MAIL_PORT"], $env["MAIL_ENCRYPTION"]);
                     $transport->setUsername($env["MAIL_USERNAME"]);
                     $transport->setPassword($env["MAIL_PASSWORD"]);
                     // @todo: it is not recommended to allow self-signed
                     $transport->setStreamOptions(array('ssl' => array('allow_self_signed' => true, 'verify_peer' => false, 'verify_peer_name' => false)));
-                    $mailer = \Swift_Mailer::newInstance($transport);
+                    $mailer = new \Swift_Mailer($transport);
                     $mailer->getTransport()->start();
                 } catch (\Swift_TransportException $e) {
                     $rules['smtp_valid'] = 'required';

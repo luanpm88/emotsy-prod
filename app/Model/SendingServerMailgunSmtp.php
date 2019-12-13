@@ -40,13 +40,12 @@ class SendingServerMailgunSmtp extends SendingServerMailgun
         try {
             $this->setupWebhooks();
 
-            $transport = \Swift_SmtpTransport::newInstance($this->host, (int) $this->smtp_port, $this->smtp_protocol)
-              ->setUsername($this->smtp_username)
-              ->setPassword($this->smtp_password)
-            ;
+            $transport = new \Swift_SmtpTransport($this->host, (int) $this->smtp_port, $this->smtp_protocol);
+            $transport->setUsername($this->smtp_username);
+            $transport->setPassword($this->smtp_password);
 
             // Create the Mailer using your created Transport
-            $mailer = \Swift_Mailer::newInstance($transport);
+            $mailer = new \Swift_Mailer($transport);
 
             // Actually send
             $sent = $mailer->send($message);

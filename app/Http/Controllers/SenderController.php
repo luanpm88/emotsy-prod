@@ -31,7 +31,7 @@ class SenderController extends Controller
         if (\Gate::denies('listing', new Sender())) {
             return $this->notAuthorized();
         }
-        
+
         return view('senders.index', [
             'senders' => $this->search($request),
         ]);
@@ -61,7 +61,7 @@ class SenderController extends Controller
     public function create(Request $request)
     {
         $sender = new Sender();
-        
+
         $sender->fill($request->old());
 
         // authorize
@@ -95,16 +95,16 @@ class SenderController extends Controller
             $sender->fill($request->all());
             $sender->customer_id = $request->user()->customer->id;
             $sender->status = Sender::STATUS_NEW;
-            
+
             $this->validate($request, $sender->rules());
-            
+
             if ($sender->save()) {
                 $request->session()->flash('alert-success', trans('messages.sender.created'));
                 return redirect()->action('SenderController@show', $sender->uid);
             }
         }
     }
-    
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -169,7 +169,7 @@ class SenderController extends Controller
         // save posted data
         if ($request->isMethod('patch')) {
             $sender->name = $request->name;
-            
+
             $this->validate($request, $sender->editRules());
 
             if ($sender->save()) {
@@ -178,7 +178,7 @@ class SenderController extends Controller
             }
         }
     }
-    
+
     /**
      * Verify sender.
      *
@@ -199,11 +199,11 @@ class SenderController extends Controller
         // save posted data
         if ($request->isMethod('post')) {
             $sender->fill($request->all());
-            
+
             $this->validate($request, $sender->verificationRules());
-            
+
             $sender->save();
-            
+
             if (!$sender->isVerified()) {
                 if ($sender->type == Sender::VERIFICATION_TYPE_ACELLE) {
                     // Set pending and return to show with guide
@@ -212,10 +212,10 @@ class SenderController extends Controller
                 } else if ($sender->type = Sender::VERIFICATION_TYPE_AMAZON_SES) {
                     // Wroking with Amazon SES here...
                     $sender->setPending();
-                    
+
                     // Trigger AWS API to send a verification email
                     $sender->sendVerificationEmail();
-                    
+
                     return redirect()->action('SenderController@show', $sender->uid);
                 }
             } else {
@@ -330,7 +330,7 @@ class SenderController extends Controller
         $request->session()->flash('alert-success', trans('messages.sender.import.cancelled'));
         return redirect()->action('SenderController@index');
     }
-    
+
     /**
      * Dropbox list.
      *
@@ -365,7 +365,7 @@ class SenderController extends Controller
         //    $domains = $domains->whereRaw('LOWER(name) LIKE ?', $keyword.'%')->limit(10);
         //}
         //
-        //$domains = $domains->get();    
+        //$domains = $domains->get();
         //foreach($domains as $key => $domain) {
         //    $domain->name = strtolower(trim($domain->name));
         //    $row = [
@@ -385,12 +385,12 @@ class SenderController extends Controller
         //    ];
         //    $droplist[] = $row;
         //}
-        
+
         //return view('senders.dropbox', [
         //    'droplist' => $droplist,
         //]);
-        
-        $droplist = $request->user()->customer->verifiedIdentitiesDroplist(strtolower(trim($request->keyword)));        
+
+        $droplist = $request->user()->customer->verifiedIdentitiesDroplist(strtolower(trim($request->keyword)));
         return response()->json($droplist);
     }
 }
