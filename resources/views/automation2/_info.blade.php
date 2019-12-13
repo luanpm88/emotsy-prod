@@ -19,7 +19,7 @@
         {!! trans('messages.automation.intro', ['list' => $automation->mailList->name]) !!}
     </p>
     <div>
-        <a href="javascrip:;" class="btn btn-info text-nowrap" onclick="sidebar.load('{{ action('Automation2Controller@settings', $automation->uid) }}')">
+        <a href="javascrip:;" class="btn btn-info text-nowrap d-flex align-items-center" onclick="sidebar.load('{{ action('Automation2Controller@settings', $automation->uid) }}')">
             <i class="material-icons mr-2">show_chart</i>{{ trans('messages.automation.settings') }}
         </a>
     </div>         
