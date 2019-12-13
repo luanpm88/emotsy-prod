@@ -19,6 +19,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         // Commands\Inspire::class,
+        /* no longer needed as of Laravel 5.5
         Commands\TestCampaign::class,
         Commands\UpgradeTranslation::class,
         Commands\RunHandler::class,
@@ -27,6 +28,7 @@ class Kernel extends ConsoleKernel
         Commands\SystemCleanup::class,
         Commands\GeoIpCheck::class,
         TinkerCommand::class,
+        */
     ];
 
     /**
@@ -77,6 +79,8 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
+        $this->load(__DIR__.'/Commands');
+
         require base_path('routes/console.php');
     }
 }

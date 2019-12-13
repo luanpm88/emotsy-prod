@@ -197,7 +197,6 @@ return [
          * 3rd Service Provider
          */
         Intervention\Image\ImageServiceProvider::class,
-        Barryvdh\Queue\AsyncServiceProvider::class,
         Chumper\Zipper\ZipperServiceProvider::class,
 
         // Laravel\Cashier\CashierServiceProvider::class,
