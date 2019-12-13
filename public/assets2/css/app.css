@@ -793,3 +793,22 @@ label.switchery-double.checkbox-switchery {
     top: -27px;
     left: 0;
 }
+.material-icons-outlined, .material-icons {
+  font-size: 100%;
+}
+.dropdown-menu.with-icon {
+  
+}
+.dropdown-menu.with-icon .dropdown-item {
+    padding-left: 45px;
+}
+.dropdown-menu.with-icon i {
+    margin-left: -29px;
+}
+.btn .material-icons {
+  font-size: 120%;
+}
+.btn {
+  display: flex;
+  align-items: center;
+}

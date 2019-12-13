@@ -14,13 +14,13 @@
         ])
     </div>
 </div>
-<div class="flex">
-    <p class="pr-4">
+<div class="d-flex align-items-center mb-4">
+    <p class="pr-4 mb-0">
         {!! trans('messages.automation.intro', ['list' => $automation->mailList->name]) !!}
     </p>
     <div>
-        <a href="javascrip:;" class="btn btn-info" onclick="sidebar.load('{{ action('Automation2Controller@settings', $automation->uid) }}')">
-            <i class="lnr lnr-cog mr-2"></i>{{ trans('messages.automation.settings') }}
+        <a href="javascrip:;" class="btn btn-info text-nowrap" onclick="sidebar.load('{{ action('Automation2Controller@settings', $automation->uid) }}')">
+            <i class="material-icons mr-2">show_chart</i>{{ trans('messages.automation.settings') }}
         </a>
     </div>         
 </div>
