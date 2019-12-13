@@ -17,6 +17,11 @@ class Automation2Policy
 
         return $max > $customer->automationsCount() || $max == -1;
     }
+    
+    public function view(User $user, Automation2 $automation)
+    {
+        return $automation->customer_id == $user->customer->id;
+    }
 
     public function update(User $user, Automation2 $automation)
     {

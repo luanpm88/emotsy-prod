@@ -913,7 +913,7 @@ class Automation2Controller extends Controller
         $template = \Acelle\Model\Template::findByUid($request->template_uid);
 
         // authorize
-        if (\Gate::denies('update', $campaign)) {
+        if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
         }
 
@@ -944,35 +944,13 @@ class Automation2Controller extends Controller
         $rules = [];
 
         // authorize
-        if (\Gate::denies('update', $campaign)) {
+        if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
         }
 
         return view('campaigns.template_preview', [
             'campaign' => $campaign,
             'rules' => $rules,
-        ]);
-    }
-
-    /**
-     * Template preview iframe.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function templateIframe(Request $request)
-    {
-        $user = $request->user();
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
-
-        // authorize
-        if (\Gate::denies('update', $campaign)) {
-            return $this->notAuthorized();
-        }
-
-        return view('campaigns.preview', [
-            'campaign' => $campaign,
         ]);
     }
     
@@ -987,6 +965,11 @@ class Automation2Controller extends Controller
     {
         $automation = Automation2::findByUid($uid);
         $email = Email::findByUid($request->email_uid);
+        
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
         
         foreach($request->file as $file) {
             $email->uploadAttachment($file);
@@ -1005,6 +988,11 @@ class Automation2Controller extends Controller
         $automation = Automation2::findByUid($uid);
         $email = Email::findByUid($request->email_uid);
         $attachment = Attachment::findByUid($request->attachment_uid);
+        
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
         
         $attachment->remove();
         
@@ -1026,6 +1014,11 @@ class Automation2Controller extends Controller
         $automation = Automation2::findByUid($uid);
         $email = Email::findByUid($request->email_uid);
         $attachment = Attachment::findByUid($request->attachment_uid);
+        
+        // authorize
+        if (\Gate::denies('read', $automation)) {
+            return $this->notAuthorized();
+        }
         
         return response()->download(storage_path('app/' . $attachment->file), $attachment->name);
     }
@@ -1106,6 +1099,90 @@ class Automation2Controller extends Controller
         return response()->json([
             'status' => 'success',
             'message' => trans_choice('messages.automation.deleted', $automations->count()),
+        ]);
+    }
+    
+    /**
+     * Automation insight page.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function insight(Request $request, $uid)
+    {
+        $automation = Automation2::findByUid($uid);
+        
+        // authorize
+        if (\Gate::denies('view', $automation)) {
+            return $this->notAuthorized();
+        }
+
+        return view('automation2.insight', [
+            'automation' => $automation,
+        ]);
+    }
+    
+    /**
+     * Automation contacts list.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function contacts(Request $request, $uid)
+    {
+        $automation = Automation2::findByUid($uid);
+        
+        // authorize
+        if (\Gate::denies('view', $automation)) {
+            return $this->notAuthorized();
+        }
+
+        return view('automation2.contacts', [
+            'automation' => $automation,
+        ]);
+    }
+    
+    /**
+     * Automation timeline.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function timeline(Request $request, $uid)
+    {
+        $automation = Automation2::findByUid($uid);
+        
+        // authorize
+        if (\Gate::denies('view', $automation)) {
+            return $this->notAuthorized();
+        }
+
+        return view('automation2.timeline', [
+            'automation' => $automation,
+        ]);
+    }
+    
+    /**
+     * Automation contact profile.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function profile(Request $request, $uid)
+    {
+        $automation = Automation2::findByUid($uid);
+        
+        // authorize
+        if (\Gate::denies('view', $automation)) {
+            return $this->notAuthorized();
+        }
+
+        return view('automation2.profile', [
+            'automation' => $automation,
         ]);
     }
 }

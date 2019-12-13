@@ -203,4 +203,36 @@ class Automation2 extends Model
         
         return null;
     }
+    
+    /**
+     * Get started time.
+     */
+    public function getStartedTime()
+    {
+        return $this->created_at->diffForHumans();
+    }
+    
+    /**
+     * Get contacts count.
+     */
+    public function getContactsCount()
+    {
+        return 2345;
+    }
+    
+    /**
+     * Get complete percent.
+     */
+    public function getCompletePercent()
+    {
+        return 56;
+    }
+    
+    /**
+     * Get complete percent.
+     */
+    public function getEmailsSentCount()
+    {
+        return 2500;
+    }
 }

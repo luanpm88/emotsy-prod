@@ -77,7 +77,7 @@
 	</main>
 		
 	<script>
-		var popup;
+		var popup = new Popup();
 		var sidebar = new Box($('.sidebar'));
 		
 		function setAutomationName(name) {

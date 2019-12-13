@@ -544,6 +544,11 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('notifications/{id}/hide', 'NotificationController@hide');
     
     // Automation2
+    Route::get('automation2/{uid}/profile', 'Automation2Controller@profile');
+    Route::get('automation2/{uid}/timeline', 'Automation2Controller@timeline');
+    Route::get('automation2/{uid}/contacts', 'Automation2Controller@contacts');
+    
+    Route::get('automation2/{uid}/insight', 'Automation2Controller@insight');
     Route::post('automation2/{uid}/data/save', 'Automation2Controller@saveData');
     Route::post('automation2/{uid}/update', 'Automation2Controller@update');
     Route::get('automation2/{uid}/settings', 'Automation2Controller@settings');

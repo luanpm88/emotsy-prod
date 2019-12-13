@@ -2834,4 +2834,12 @@
   'automation.action.deteled' => 'Action was successfully removed',
   'automation.email.delete.confirm' => 'You are about to delete this email.',
   'automation.email.deteled' => 'Email was successfully removed',
+  'automation.your_overview' => 'Your automation stats overview',
+  'automation.started_at' => 'Started: :time',
+  'automation.contacts' => 'contact|contacts',
+  'automation.complete' => 'Complete',
+  'automation.emails_sent' => 'Complete',
+  'automation.insight.intro' => 'Below is the insight of your campaign performance and how users respond to your campaign',
+  'automation.timeline' => 'Timeline',
+  'automation.all_contacts' => 'All contacts',
 ) ?>
