@@ -32,9 +32,9 @@
     
 <div class="mc-table small mt-4">
     <div class="mc-row d-flex align-items-center">
-        <div class="media trigger bg-danger">
+        <div class="media trigger">
             <a href="">
-                <i class="lnr lnr-exit-up"></i>
+                <i class="lnr lnr-exit-up bg-danger"></i>
             </a>
         </div>
         <div class="flex-fill">
@@ -56,9 +56,9 @@
         </div>
     </div>
     <div class="mc-row d-flex align-items-center">
-        <div class="media email bg-primary">
+        <div class="media email">
             <a href="">
-                <i class="lnr lnr-envelope"></i>
+                <i class="lnr lnr-envelope bg-primary"></i>
             </a>
         </div>
         <div class="flex-fill">
@@ -80,9 +80,9 @@
         </div>
     </div>
     <div class="mc-row d-flex align-items-center">
-        <div class="media open bg-info">
+        <div class="media open">
             <a href="">
-                <i class="lnr lnr-exit-up"></i>
+                <i class="lnr lnr-exit-up bg-info"></i>
             </a>
         </div>
         <div class="flex-fill">
