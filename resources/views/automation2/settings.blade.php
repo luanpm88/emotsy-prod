@@ -30,6 +30,15 @@
                 'options' => Auth::user()->customer->readCache('MailListSelectOptions', []),
                 'rules' => $automation->rules(),
             ])
+            
+            @include('helpers.form_control', [
+                'type' => 'select',
+                'name' => 'timezone',
+                'value' => 'America/Paramaribo',
+                'options' => Tool::getTimezoneSelectOptions(),
+                'include_blank' => trans('messages.choose'),
+                'rules' => $automation->rules()
+            ])
         </div>
     </div>
     

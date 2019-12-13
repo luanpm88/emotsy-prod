@@ -11,7 +11,7 @@
         @include('automation2.action.' . $type)
     @endif
     
-    <div class="trigger-action mt-4">    
+    <div class="trigger-action mt-2">    
         <button class="btn btn-secondary action-save-change mr-1"
             data-url="{{ action('Automation2Controller@triggerSelect', ['uid' => $automation->uid, 'type' => $type]) }}"
         >

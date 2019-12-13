@@ -5,15 +5,17 @@
     {{ trans('messages.automation.action.wait.intro') }}
 </p>
 
-<div class="mb-20">
-    @include('helpers.form_control', [
-        'type' => 'select',
-        'class' => '',
-        'label' => '',
-        'name' => 'after',
-        'value' => isset($element) ? $element->options->after : '',
-        'help_class' => 'trigger',
-        'options' => [['text' => '30 minutes', 'value' => '+30_minutes'], ['text' => '1 hour', 'value' => '+1_hour']],
-        'rules' => [],
-    ])
+<div class="row">
+    <div class="col-md-6">
+        @include('helpers.form_control', [
+            'type' => 'select',
+            'class' => '',
+            'label' => '',
+            'name' => 'after',
+            'value' => isset($element) ? $element->options->after : '',
+            'help_class' => 'trigger',
+            'options' => [['text' => '30 minutes', 'value' => '+30_minutes'], ['text' => '1 hour', 'value' => '+1_hour']],
+            'rules' => [],
+        ])
+    </div>
 </div>

@@ -13,9 +13,7 @@
 					@include('automation2.action.' . $type)
 				@endif
 				
-				<hr>
-				
-				<button class="btn btn-secondary select-action-confirm"
+				<button class="btn btn-secondary select-action-confirm mt-2"
 					data-url="{{ action('Automation2Controller@actionSelect', ['uid' => $automation->uid, 'type' => $type]) }}"
 				>
 						{{ trans('messages.automation.trigger.select_confirm') }}
