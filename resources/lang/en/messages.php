@@ -2830,7 +2830,7 @@
   'automation.automation_name' => 'Automation name',
   'automation.settings.save' => 'Save',
   'automation.delete_this_action' => 'Delete this Action',
-  'automation.action.delete.confirm' => 'You are about to delete this action.',
+  'automation.action.delete.confirm' => 'Click the button below to remove this action. Notice that deleting an element will also delete all its children as well as associated data. This action cannot be undone.',
   'automation.action.deteled' => 'Action was successfully removed',
   'automation.email.delete.confirm' => 'You are about to delete this email.',
   'automation.email.deteled' => 'Email was successfully removed',
