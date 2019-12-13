@@ -8,7 +8,7 @@
     
 <form id="automationUpdate" action="{{ action("Automation2Controller@update", $automation->uid) }}" method="POST" class="form-validate-jqueryz">
     {{ csrf_field() }}
-    <i class="material-icons-outlined">alarm</i> <i class="material-icons-outlined">face</i>
+    
     <div class="row mb-3">
         <div class="col-md-8">
             @include('helpers.form_control', [

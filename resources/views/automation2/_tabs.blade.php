@@ -1,7 +1,7 @@
 <ul class="nav nav-tabs mt-3 mb-4">
 <li class="nav-item">
     <a class="nav-link settings" href="javascript:;" onclick="sidebar.load('{{ action('Automation2Controller@settings', $automation->uid) }}')">
-        <i class="material-icons-outlined mr-2">settings_input_component</i>
+        <i class="material-icons-outlined mr-2">menu</i>
         {{ trans('messages.automation.settings') }}
     </a>
 </li>
