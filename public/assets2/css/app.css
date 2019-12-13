@@ -118,14 +118,14 @@
     display: flex;
 }
 .automation2 .diagram {
-    width: 65%;
+    width: 60%;
     height: calc(100vh - 56px);
     margin: 56px 0 0 0;
     background: #f2f2f2;
     overflow: auto;
 }
 .automation2 .sidebar {
-    width: 35%;
+    width: 40%;
     height: calc(100vh - 56px);
     overflow: auto;
     padding: 30px;
@@ -434,7 +434,8 @@ label.switchery-double.checkbox-switchery {
   display: block;
 }
 .switch3 {
-  width: 100px;
+  width: 50px;
+  text-align: right:
 }
 .checkbox3 {
   display: flex;

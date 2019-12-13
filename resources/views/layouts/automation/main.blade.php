@@ -20,6 +20,9 @@
 	<link href="{{ URL::asset('css/popup.css') }}" rel="stylesheet" type="text/css">
 	<link href="{{ URL::asset('css/autofill.css') }}" rel="stylesheet" type="text/css">
 	<link href="{{ URL::asset('assets2/css/dialog.css') }}" rel="stylesheet" type="text/css">
+	
+	<!-- Google icons -->
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     
 	
 	

@@ -23,7 +23,7 @@
 </div>
 
 <div class="input-with-icon mb-4">
-    <i class="fa fa-search"></i>
+    <i class="material-icons">search</i>
     <input class="form-control mt-3" name="keyworf" placeholder='Enter to search contacts...' />
 </div>
     
