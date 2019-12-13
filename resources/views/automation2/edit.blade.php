@@ -67,18 +67,20 @@
 	
 	<main role="main">
 		<div class="automation2">
-			<div class="diagram text-center">				
+			<div class="diagram text-center scrollbar-inner">				
 				<svg id="svg" style="overflow: auto" width="100%" height="800" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"></svg>
 			</div>
-			<div class="sidebar">
-				
+			<div class="sidebar scrollbar-inner">
+				<div class="sidebar-content">
+					
+				</div>
 			</div>
 		</div>
 	</main>
 		
 	<script>
 		var popup = new Popup();
-		var sidebar = new Box($('.sidebar'));
+		var sidebar = new Box($('.sidebar-content'));
 		
 		function setAutomationName(name) {
 			$('.navbar h1').html(name);

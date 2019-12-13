@@ -81,6 +81,10 @@
 	
 	<!-- Ajax box -->
 	<script type="text/javascript" src="{{ URL::asset('assets2/js/box.js') }}"></script>
+		
+	<!-- Scrollbar -->
+	<script type="text/javascript" src="{{ URL::asset('assets2/lib/scrollbar/jquery.scrollbar.js') }}"></script>
+	<link href="{{ URL::asset('assets2/lib/scrollbar/jquery.scrollbar.css') }}" rel="stylesheet" type="text/css">
 
 	@yield('page_script')
 	

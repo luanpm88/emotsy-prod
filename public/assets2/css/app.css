@@ -128,9 +128,11 @@
     width: 40%;
     height: calc(100vh - 56px);
     overflow: auto;
-    padding: 30px;
-    position: relative;
     margin-top: 56px;
+}
+.automation2 .sidebar-content {
+    padding: 30px;
+    position: relative;    
 }
 .navbar-brand.left-logo {
     display: block;

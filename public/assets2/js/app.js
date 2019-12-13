@@ -9,7 +9,12 @@
 *
 * ---------------------------------------------------------------------------- */
 
-function initJs(container) {    
+function initJs(container) {
+    //
+    // Scrollbar
+    // ------------------------------
+    container.find('.scrollbar-inner').scrollbar();
+    
     //
     // Switchery
     // ------------------------------
@@ -2409,4 +2414,6 @@ $(function() {
         });
         control.trigger('change');
     });
+    
+    initJs($('body'));
 });
