@@ -2697,4 +2697,6 @@
   'click_log.download' => 'Download',
   'feedback_log.download' => 'Download',
   'unsubscribe_log.download' => 'Download',
+  'plan.sending_server.own' => 'Use customer\'s sending servers',
+  'plan.sending_server.subaccount' => 'Use sending servers subacount',
 ) ?>

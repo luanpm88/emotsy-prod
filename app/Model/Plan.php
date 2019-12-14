@@ -1400,6 +1400,16 @@ class Plan extends Model implements BillablePlanInterface
     }
     
     /**
+     * Check if plan sending server type is system
+     *
+     * @var bool
+     */
+    public function useSystemSendingServer()
+    {
+        return $this->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SYSTEM;
+    }
+    
+    /**
      * Check if plan is active
      *
      * @var bool

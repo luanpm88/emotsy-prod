@@ -24,7 +24,9 @@
                             {{ $plan->name }}
                         </span>
                     </h5>
-                    @if ($plan->hasPrimarySendingServer())
+                    @if (!$plan->useSystemSendingServer())
+                        {{ trans('messages.plan.sending_server.' . $plan->getOption('sending_server_option')) }}  &bull; {{ trans('messages.plans.subscriber_count', ['count' => $plan->customersCount()]) }}
+                    @elseif ($plan->hasPrimarySendingServer())
                         <span class="text-muted">{{ trans('messages.plans.send_via.wording', ['server' => trans('messages.' . $plan->primarySendingServer()->type)]) }} &bull; {{ trans('messages.plans.subscriber_count', ['count' => $plan->customersCount()]) }}</span>
                     @else
                         <span class="text-muted"><span class="text-danger"><i class="fa fa-minus-circle"></i> {{ trans('messages.plans.send_via.empty') }}</span></span>
