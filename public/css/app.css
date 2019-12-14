@@ -2843,7 +2843,7 @@ p.link-inline a {
   visibility: visible;
 }
 .btn {
-  padding: 7px 18px;
+  padding: 7px 12px;
 }
 .mc-nav > li > a {
     padding: 0 0 5px 0;
@@ -2869,4 +2869,7 @@ p.link-inline a {
 .media-left .main p {
   font-size: 14px;
     margin-bottom: 15px;
+}
+.template-start {
+  cursor: pointer;
 }
