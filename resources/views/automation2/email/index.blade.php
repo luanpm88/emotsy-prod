@@ -1,31 +1,6 @@
 @include('automation2._info')
 
-<ul class="nav nav-tabs mt-3">
-    <li class="nav-item">
-        <a class="nav-link active" href="#">
-            <i class="lnr lnr-cog mr-2"></i>
-            {{ trans('messages.automation.settings') }}
-        </a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="#">
-            <i class="lnr lnr-chart-bars mr-2"></i>
-            {{ trans('messages.automation.insight') }}
-        </a>
-    </li>
-    <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
-            <i class="lnr lnr-menu mr-2"></i> {{ trans('messages.automation.statistics') }}
-        </a>
-        <div class="dropdown-menu">
-            <a class="dropdown-item" href="#">Action</a>
-            <a class="dropdown-item" href="#">Another action</a>
-            <a class="dropdown-item" href="#">Something else here</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">Separated link</a>
-        </div>
-    </li>
-</ul>
+@include('automation2._tabs', ['tab' => 'settings'])
     
 <h5 class="mb-20 mt-3"h5>
     {{ trans('messages.automation.action.send-an-email') }}
