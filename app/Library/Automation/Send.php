@@ -14,6 +14,7 @@ class Send extends Action
 
     public function execute()
     {
+        // this should go into the parent 
         $this->recordLastExecutedTime();
 
         return true;
