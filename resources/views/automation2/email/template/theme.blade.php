@@ -6,124 +6,129 @@
         Make sure you fill-up all neccessary information for an email.
     </p>
 	
-	<ul class="nav nav-tabs mb-4">
-        <li class="nav-item">
-            <a class="nav-link" href="javascript:;" onclick="popup.load('{{ action('Automation2Controller@emailSetup', [
-                'uid' => $automation->uid,
-                'email_uid' => $email->uid,
-            ]) }}')">
-                <i class="lnr lnr-cog mr-2"></i>
-                {{ trans('messages.automation.email.setup') }}
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link active {{ (!isset($email->id)) ? 'disabled' : '' }}" href="javascript:;">
-                <i class="lnr lnr-layers mr-2"></i>
-                {{ trans('messages.automation.email.template') }}
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link {{ (!isset($email->id)) ? 'disabled' : '' }}" href="javascript:;"
-                @if (isset($email->id))                    
-                    onclick="popup.load('{{ action('Automation2Controller@emailConfirm', [
-                        'uid' => $automation->uid,
-                        'email_uid' => $email->uid,
-                    ]) }}')"
-                @endif
-            >
-                <i class="lnr lnr-cog mr-2"></i>
-                {{ trans('messages.automation.email.confirm') }}
-            </a>
-        </li>
-    </ul>
+	@include('automation2.email._tabs', ['tab' => 'template'])
 	
 	<div class="row">
         <div class="col-md-12">
             <h4 class="mb-3 mt-2">{{ trans('messages.automation.choose_your_template_layout') }}</h4>
 			<p class="mb-4">{{ trans('messages.automation.choose_your_template_layout.intro') }}</p>
                 
-            <ul class="nav nav-tabs campaign-template-tabs">
-                <li class="nav-item">
-					<a class="nav-link" onclick="popup.load('{{ action('Automation2Controller@templateLayout', [
-							'uid' => $automation->uid,
-							'email_uid' => $email->uid,
-						]) }}')"
-					>
-						Layouts
-					</a>
-				</li>
-                <li class="nav-item">
-					<a class="nav-link active" onclick="popup.load('{{ action('Automation2Controller@templateTheme', [
-							'uid' => $automation->uid,
-							'email_uid' => $email->uid,
-						]) }}')"
-					>
-						Themes
-					</a>
-				</li>
-                <li class="nav-item">
-					<a class="nav-link" onclick="popup.load('{{ action('Automation2Controller@templateUpload', [
-							'uid' => $automation->uid,
-							'email_uid' => $email->uid,
-						]) }}')"
-					>
-						Upload
-					</a>
-				</li>
-            </ul>
-                
-            <div id="gallery">
-                <form class="listing-form mt-5"
-                    data-url="{{ action('CampaignController@templateThemeList', $automation->uid) }}"
-                    per-page="{{ Acelle\Model\Template::$itemsPerPage }}"					
-                >				
-                    <div class="row top-list-controls">
-                        <div class="col-md-9">		
-                                <div class="filter-box">										
-                                    <span class="filter-group">
-                                        <span class="title text-semibold text-muted">{{ trans('messages.from') }}</span>
-                                        <select class="select" name="from">
-                                            <option value="all">{{ trans('messages.all') }}</option>
-                                            <option value="mine">{{ trans('messages.my_templates') }}</option>
-                                            <option value="gallery" selected='selected'>{{ trans('messages.gallery') }}</option>
-                                        </select>										
-                                    </span>
-                                    <span class="filter-group">
-                                        <span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
-                                        <select class="select" name="sort-order">
-                                            <option value="custom_order" class="active">{{ trans('messages.custom_order') }}</option>
-                                            <option value="name">{{ trans('messages.name') }}</option>
-                                            <option value="created_at">{{ trans('messages.created_at') }}</option>
-                                        </select>										
-                                        <button class="btn btn-xs sort-direction" rel="asc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
-                                            <i class="icon-sort-amount-asc"></i>
-                                        </button>
-                                    </span>
-                                    <span class="text-nowrap">
-                                        <input name="search_keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
-                                        <i class="icon-search4 keyword_search_button"></i>
-                                    </span>
-                                </div>
-                        </div>
-                    </div>
-                    
-                    <div class="pml-table-container">
-                        
-                        
-                        
-                    </div>
-                </form>
-            </div>
+            @include('automation2.email.template._tabs', ['tab' => 'theme'])
+			
+			<div class="template-filter pt-4">
+				<div class="d-flex align-items-center">
+					<label class="font-weight-semibold mr-2">From</label>
+					<select class="select" name="from">
+						<option value="all">{{ trans('messages.all') }}</option>
+						<option value="mine" selected='selected'>{{ trans('messages.my_templates') }}</option>
+						<option value="gallery">{{ trans('messages.gallery') }}</option>
+					</select>	
+				</div>
+			</div>
+			<div class="template-list">
+				
+			</div>
         </div>
     </div>
         
     <script>
-        $('.campaign-template-tabs a').click(function(e) {
-            e.preventDefault();
+		class List {
+			constructor(selector, url, data) {
+				this.page = 0;
+				this.per_page = 4;
+				this.list = selector;
+				this.loadingHtml = '<div class="list-loading"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>';
+				
+				if (url !== null) {
+					this.url = url;
+				}
+				
+				this.data = function() { return {}; };
+				if (data !== null) {
+					this.data = data;
+				}
+			}
+			
+			loading() {
+				if (!this.list.find('.list-loading').length) {
+					this.list.prepend(this.loadingHtml);
+				}
+				
+				this.list.addClass('list-is-loading');
+			}
+			
+			loaded() {
+				var _this = this;
+				
+				// apply js for new content
+				initJs(_this.list);
+				
+				// remove loading effects
+				_this.list.find('.list-loading').remove();        
+				_this.list.removeClass('list-is-loading');
+				
+				// page link
+				_this.list.find('.page-link').click(function() {
+					var page = $(this).attr('data-page');					
+					_this.page = page;
+					_this.load();
+				});
+			}
+		
+			load(url) {
+				var _this = this;
         
-            var url = $(this).attr('href');
-        
-            templatePopup.load(url);
-        });
+				if (url != null) {
+					_this.url = url;
+				}
+				
+				this.loading();
+				
+				// post data
+				var data = {
+					_token: CSRF_TOKEN,
+					page: _this.page,
+					per_page: _this.per_page,
+				};
+				
+				$.extend( data, _this.data() );
+				
+				
+				$.ajax({
+					url: _this.url,
+					type: 'POST',
+					dataType: 'html',
+					data: data,
+				}).always(function(response) {
+					_this.list.html(response);
+					
+					// scroll top
+					_this.list.animate({scrollTop: 0});
+					
+					// done
+					_this.loaded();
+				});
+			}
+		}
+		
+		var list = new List(
+			$('.template-list'),
+			'{{ action('Automation2Controller@templateThemeList', [
+				'uid' => $automation->uid,
+				'email_uid' => $email->uid,
+			]) }}',
+			function() {
+				return {
+					from: $('[name=from]').val(),
+				};
+			}
+		);		
+		list.load();
+		
+		// filters
+		$('[name=from]').change(function() {
+			list.load();
+		});
+		
     </script>
 @endsection

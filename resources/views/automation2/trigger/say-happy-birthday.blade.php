@@ -1,12 +1,17 @@
-<div class="mb-20">
-    @include('helpers.form_control', [
-        'type' => 'select',
-        'class' => '',
-        'label' => 'Before or After',
-        'name' => 'options[before_after]',
-        'value' => isset($trigger) ? $trigger->options->before_after : '',
-        'help_class' => 'trigger',
-        'options' => [['text' => '1 day before', 'value' => '-1_day']],
-        'rules' => [],
-    ])
+<div class="row">
+    <div class="col-md-6">
+        <input type="hidden" name="options[type]" value="event" />
+        <input type="hidden" name="options[field]" value="date_of_birth" />
+        
+        @include('helpers.form_control', [
+            'type' => 'select',
+            'class' => '',
+            'label' => trans('messages.automation.before_or_after'),
+            'name' => 'options[delay]',
+            'value' => $trigger->getOption('delay'),
+            'help_class' => 'trigger',
+            'options' => $automation->getDelayBeforeOptions(),
+            'rules' => [],
+        ])
+    </div>
 </div>

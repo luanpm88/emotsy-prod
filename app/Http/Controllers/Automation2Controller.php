@@ -10,6 +10,7 @@ use Acelle\Model\Automation2;
 use Acelle\Model\MailList;
 use Acelle\Model\Email;
 use Acelle\Model\Attachment;
+use Acelle\Model\Template;
 use Illuminate\Support\Facades\Storage;
 
 class Automation2Controller extends Controller
@@ -54,7 +55,7 @@ class Automation2Controller extends Controller
         
         // init automation
         $automation = new Automation2([
-            'name' => trans('messages.automation.untitled')            
+            'name' => trans('messages.automation.untitled'),            
         ]);
         $automation->status = Automation2::STATUS_INACTIVE;
         
@@ -235,8 +236,9 @@ class Automation2Controller extends Controller
         }
         
         return view('automation2.triggerSelectConfirm', [
-            'type' => $request->type,
+            'key' => $request->key,
             'automation' => $automation,
+            'trigger' => $automation->getTrigger(),
         ]);
     }
     
@@ -259,7 +261,7 @@ class Automation2Controller extends Controller
             'status' => 'success',
             'message' => trans('messages.automation.trigger.added'),
             'title' => trans('messages.automation.trigger.title', [
-                    'title' => trans('messages.automation.trigger.' . $request->options["type"])
+                    'title' => trans('messages.automation.trigger.' . $request->options["key"])
                 ]),
             'options' => $request->options,
         ]);
@@ -308,15 +310,16 @@ class Automation2Controller extends Controller
         }
         
         // if it is email
-        if ($request->type == 'send-an-email') {
+        if ($request->key == 'send-an-email') {
             return redirect()->action('Automation2Controller@emailSetup', [
                 'uid' => $automation->uid,
             ]);
         }
         
         return view('automation2.actionSelectConfirm', [
-            'type' => $request->type,
+            'key' => $request->key,
             'automation' => $automation,
+            'element' => $automation->getElement(),
         ]);
     }
     
@@ -335,39 +338,39 @@ class Automation2Controller extends Controller
             return $this->notAuthorized();
         }
         
-        if ($request->type == 'wait') {
+        if ($request->key == 'wait') {
             return response()->json([
                 'status' => 'success',
                 'message' => trans('messages.automation.action.added'),
                 'title' => trans('messages.automation.action.wait.title', [
-                    'number' => explode('_', $request->after)[0],
-                    'time' => explode('_', $request->after)[1],
+                    'number' => explode(' ', $request->time)[0],
+                    'time' => explode(' ', $request->time)[1],
                 ]),
                 'options' => [
-                    'type' => $request->type,
-                    'after' => $request->after,
+                    'key' => $request->key,
+                    'time' => $request->time,
                 ],
             ]);
-        } else if ($request->type == 'condition') {
-            if ($request->criterion == 'read_email') {
+        } else if ($request->key == 'condition') {
+            if ($request->type == 'open') {
                 return response()->json([
                     'status' => 'success',
                     'message' => trans('messages.automation.action.added'),
                     'title' => trans('messages.automation.action.condition.read_email.title'),
                     'options' => [
+                        'key' => $request->key,
                         'type' => $request->type,
-                        'criterion' => $request->criterion,
                         'read_email' => $request->read_email,
                     ],
                 ]);
-            } else if ($request->criterion == 'click_link') {
+            } else if ($request->type == 'click') {
                 return response()->json([
                     'status' => 'success',
                     'message' => trans('messages.automation.action.added'),
                     'title' => trans('messages.automation.action.condition.click_link.title'),
                     'options' => [
+                        'key' => $request->key,
                         'type' => $request->type,
-                        'criterion' => $request->criterion,
                         'click_link' => $request->click_link,
                     ],
                 ]);
@@ -377,10 +380,10 @@ class Automation2Controller extends Controller
                 'status' => 'success',
                 'message' => trans('messages.automation.action.added'),
                 'title' => trans('messages.automation.action.title', [
-                    'title' => trans('messages.automation.action.' . $request->type)
+                    'title' => trans('messages.automation.action.' . $request->key)
                 ]),
                 'options' => [
-                    'type' => $request->type,
+                    'key' => $request->key,
                     'after' => $request->after,
                 ],
             ]);
@@ -407,14 +410,14 @@ class Automation2Controller extends Controller
                 'status' => 'success',
                 'message' => trans('messages.automation.trigger.updated'),
                 'title' => trans('messages.automation.trigger.title', [
-                    'title' => trans('messages.automation.trigger.' . $request->options["type"])
+                    'title' => trans('messages.automation.trigger.' . $request->options["key"])
                 ]),
                 'options' => $request->options,
             ]);
         }
         
         return view('automation2.triggerEdit', [
-            'type' => $request->type,
+            'key' => $request->key,
             'automation' => $automation,
             'trigger' => $automation->getTrigger(),
         ]);
@@ -437,39 +440,39 @@ class Automation2Controller extends Controller
         
         // saving
         if($request->isMethod('post')) {
-            if ($request->type == 'wait') {
+            if ($request->key == 'wait') {
                 return response()->json([
                     'status' => 'success',
                     'message' => trans('messages.automation.action.updated'),
                     'title' => trans('messages.automation.action.wait.title', [
-                        'number' => explode('_', $request->after)[0],
-                        'time' => explode('_', $request->after)[1],
+                        'number' => explode(' ', $request->time)[0],
+                        'time' => explode(' ', $request->time)[1],
                     ]),
                     'options' => [
-                        'type' => $request->type,
-                        'after' => $request->after,
+                        'key' => $request->key,
+                        'time' => $request->time,
                     ],
                 ]);
-            } else if ($request->type == 'condition') {
-                if ($request->criterion == 'read_email') {
+            } else if ($request->key == 'condition') {
+                if ($request->type == 'open') {
                     return response()->json([
                         'status' => 'success',
                         'message' => trans('messages.automation.action.updated'),
                         'title' => trans('messages.automation.action.condition.read_email.title'),
                         'options' => [
+                            'key' => $request->key,
                             'type' => $request->type,
-                            'criterion' => $request->criterion,
                             'read_email' => $request->read_email,
                         ],
                     ]);
-                } else if ($request->criterion == 'click_link') {
+                } else if ($request->type == 'click') {
                     return response()->json([
                         'status' => 'success',
                         'message' => trans('messages.automation.action.updated'),
                         'title' => trans('messages.automation.action.condition.click_link.title'),
                         'options' => [
+                            'key' => $request->key,
                             'type' => $request->type,
-                            'criterion' => $request->criterion,
                             'click_link' => $request->click_link,
                         ],
                     ]);
@@ -479,10 +482,10 @@ class Automation2Controller extends Controller
                     'status' => 'success',
                     'message' => trans('messages.automation.action.updated'),
                     'title' => trans('messages.automation.action.title', [
-                        'title' => trans('messages.automation.action.' . $request->type)
+                        'title' => trans('messages.automation.action.' . $request->key)
                     ]),
                     'options' => [
-                        'type' => $request->type,
+                        'key' => $request->key,
                         'after' => $request->after,
                     ],
                 ]);
@@ -490,7 +493,7 @@ class Automation2Controller extends Controller
         }
         
         return view('automation2.actionEdit', [
-            'type' => $request->type,
+            'key' => $request->key,
             'automation' => $automation,
             'element' => $automation->getElement($request->id),
         ]);
@@ -509,7 +512,11 @@ class Automation2Controller extends Controller
         if ($request->email_uid) {
             $email = Email::findByUid($request->email_uid);
         } else {
-            $email = new Email();
+            $email = new Email([
+                'sign_dkim' => true,
+                'track_open' => true,
+                'track_click' => true,
+            ]);
         }
         
         // authorize
@@ -841,10 +848,8 @@ class Automation2Controller extends Controller
         }
 
         if ($request->isMethod('post')) {
-            $template = \Acelle\Model\Template::findByUid($request->template);
-            $campaign->copyFromTemplate($template);
-
-            return redirect()->action('CampaignController@templateEdit', $campaign->uid);
+            $template = Template::findByUid($request->template_uid);
+            $email->copyFromTemplate($template);
         }
 
         return view('automation2.email.template.theme', [
@@ -859,15 +864,20 @@ class Automation2Controller extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function templateThemeList(Request $request)
+    public function templateThemeList(Request $request, $uid, $email_uid)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        sleep(1);
+        $automation = Automation2::findByUid($uid);
+        $email = Email::findByUid($request->email_uid);
+        
         $request->merge(array("customer_id" => $request->user()->customer->id));
-        $templates = Template::search($request)->paginate($request->per_page);
-
-        return view('campaigns.template.themeList', [
-            'campaign' => $campaign,
+        list($templates, $pagination) = pagination($request, Template::search($request));
+        
+        return view('automation2.email.template.themeList', [
+            'automation' => $automation,
+            'email' => $email,
             'templates' => $templates,
+            'pagination' => $pagination,
         ]);
     }
 

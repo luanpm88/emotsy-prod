@@ -6,43 +6,7 @@
         Make sure you fill-up all neccessary information for an email.
     </p>
         
-    <ul class="nav nav-tabs mb-4">
-        <li class="nav-item">
-            <a class="nav-link" href="javascript:;" onclick="popup.load('{{ action('Automation2Controller@emailSetup', [
-                'uid' => $automation->uid,
-                'email_uid' => $email->uid,
-            ]) }}')">
-                <i class="lnr lnr-cog mr-2"></i>
-                {{ trans('messages.automation.email.setup') }}
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link active {{ (!isset($email->id)) ? 'disabled' : '' }}" href="javascript:;"
-                @if (isset($email->id))                    
-                    onclick="popup.load('{{ action('Automation2Controller@emailTemplate', [
-                        'uid' => $automation->uid,
-                        'email_uid' => $email->uid,
-                    ]) }}')"
-                @endif
-            >
-                <i class="lnr lnr-layers mr-2"></i>
-                {{ trans('messages.automation.email.content') }}
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link {{ (!isset($email->id)) ? 'disabled' : '' }}" href="javascript:;"
-                @if (isset($email->id))                    
-                    onclick="popup.load('{{ action('Automation2Controller@emailConfirm', [
-                        'uid' => $automation->uid,
-                        'email_uid' => $email->uid,
-                    ]) }}')"
-                @endif
-            >
-                <i class="lnr lnr-cog mr-2"></i>
-                {{ trans('messages.automation.email.confirm') }}
-            </a>
-        </li>
-    </ul>
+    @include('automation2.email._tabs', ['tab' => 'template'])
     
     <div class="row">
         <div class="col-md-8">
@@ -86,6 +50,20 @@
                 <p>{{ trans('messages.campaign.attachment.intro') }}</p>
                     
                 @include('automation2.email._attachment')
+            </div>
+                
+            <div class="text-right mt-5">
+                <a href="javascript:;" onclick="popup.hide()" class="btn btn-inline-secondary mr-1">
+                    {{ trans('messages.close') }}
+                </a>
+                <a href="javascript:;" onclick="popup.load('{{ action('Automation2Controller@emailConfirm', [
+                    'uid' => $automation->uid,
+                    'email_uid' => $email->uid
+                ]) }}')" class="btn btn-secondary">
+                    <span class="d-flex align-items-center">
+                        <span>{{ trans('messages.automation.email.next_confirm') }}</span> <i class="material-icons">keyboard_arrow_right</i>
+                    </span>
+                </a>
             </div>
         </div>
     </div>

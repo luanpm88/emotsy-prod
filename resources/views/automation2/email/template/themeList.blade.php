@@ -1,42 +1,19 @@
-@if ($templates->count() > 0)
-    <div id="layout" class="tab-pane fade in active template-boxes layout mt-20" style="
-        margin-left: -20px;
-        margin-right: -20px;
-    ">
+@if ($templates->count() >0)
+    <div class="template-list-items mt-3 clearfix">
         @foreach ($templates as $key => $template)
-            <div class="col-xxs-12 col-xs-6 col-sm-3 col-md-2">
-                <a href="javascript:;" class="select-template-layout" data-template="{{ $template->uid }}">
-                    <div class="panel panel-flat panel-template-style">
-                        <div class="panel-body">
-                            <a link-method="POST"
-                                href="{{ action('CampaignController@templateTheme', ['uid' => $campaign->uid, 'template' => $template->uid]) }}"
-                            >
-                                <img src="{{ action('TemplateController@image', $template->uid) }}?v={{ rand(0,10) }}" />
-                                <label class="mb-20 text-center">{{ $template->name }}</label>
-                            </a>
-                        </div>
-                    </div>
-                </a>
-            </div>
+            <a href="" class="d-block template-list-item">
+                <img href="javascript:;" src="{{ action('TemplateController@image', $template->uid) }}?v={{ rand(0,10) }}" />
+                <label class="mb-20 text-center d-block mt-3">{{ $template->name }}</label>
+            </a>
         @endforeach
     </div>
         
-    <hr style="clear: both">
-        
-    @include('elements/_per_page_select', ["items" => $templates])
-    {{ $templates->links() }}
-@elseif (!empty(request()->keyword))
-    <div class="empty-list">
-        <i class="icon-magazine"></i>
-        <span class="line-1">
-            {{ trans('messages.no_search_result') }}
-        </span>
-    </div>
+    @include('helpers._pagination')
 @else
     <div class="empty-list">
-        <i class="icon-magazine"></i>
+        <i class="material-icons-outlined">featured_play_list</i>
         <span class="line-1">
-            {{ trans('messages.template_empty_line_1') }}
+            {{ trans('messages.automation.email.empty_template_list') }}
         </span>
     </div>
 @endif

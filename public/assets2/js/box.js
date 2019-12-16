@@ -16,6 +16,17 @@ class Box {
         if (!this.box.find('.box-loading').length) {
             this.box.prepend(this.loadingHtml);
         }
+        
+        this.box.addClass('box-is-loading');
+    }
+    
+    loaded() {
+        // apply js for new content
+        this.applyJs();
+        
+        // remove loading effects
+        this.box.find('.box-loading').remove();        
+        this.box.removeClass('box-is-loading');
     }
     
     applyJs() {
@@ -49,11 +60,11 @@ class Box {
                 _this.callback();
             }
             
-            // apply js for new content
-            _this.applyJs();
-            
             // scroll top
             _this.box.animate({scrollTop: 0});
+            
+            // done
+            _this.loaded();
         });
     }
     
@@ -62,8 +73,9 @@ class Box {
         
         _this.box.html(html);
         
-        _this.applyJs();
-        
         _this.box.animate({scrollTop: 0});
+        
+        // done
+        _this.loaded();
     }
 }

@@ -3,22 +3,22 @@
 @include('automation2._tabs', ['tab' => 'settings'])
                         
 <h5 class="mb-3 mt-4">
-    {{ trans('messages.automation.trigger.' . $type) }}
+    {{ trans('messages.automation.trigger.' . $key) }}
 </h5>
 <p class="mb-10">
-    {{ trans('messages.automation.trigger.' . $type . '.intro') }}
+    {{ trans('messages.automation.trigger.' . $key . '.intro') }}
 </p>
     
-<form id="trigger-select" action="{{ action("Automation2Controller@triggerEdit", ['uid' => $automation->uid, 'type' => $type]) }}" method="POST" class="form-validate-jqueryz">
+<form id="trigger-select" action="{{ action("Automation2Controller@triggerEdit", ['uid' => $automation->uid, 'key' => $key]) }}" method="POST" class="form-validate-jqueryz">
     {{ csrf_field() }}
     
-    <input type="hidden" name="options[type]" value="{{ $type }}" />
+    <input type="hidden" name="options[key]" value="{{ $key }}" />
     
-    @if(View::exists('automation2.trigger.' . $type))
-        @include('automation2.trigger.' . $type)
+    @if(View::exists('automation2.trigger.' . $key))
+        @include('automation2.trigger.' . $key)
     @endif
     
-    <div class="trigger-action mt-4">    
+    <div class="trigger-action mt-2">    
         <button class="btn btn-secondary trigger-save-change mr-1">
                 {{ trans('messages.automation.trigger.save_change') }}
         </button>
@@ -47,7 +47,7 @@
             // set node title
             tree.setTitle(response.title);
             // merge options with reponse options
-            tree.setOptions($.extend(tree.getOptions(), response.options));
+            tree.setOptions(response.options);
             tree.setOptions($.extend(tree.getOptions(), {init: true}));
             
             // notify

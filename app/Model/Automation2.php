@@ -23,6 +23,7 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Acelle\Model\AutomationElement;
 
 class Automation2 extends Model
 {
@@ -175,7 +176,7 @@ class Automation2 extends Model
      */
     public function getElements()
     {
-        return isset($this->data) ? json_decode($this->data) : [];
+        return isset($this->data) && !empty($this->data) ? json_decode($this->data) : [];
     }
     
     /**
@@ -185,23 +186,23 @@ class Automation2 extends Model
     {
         $elements = $this->getElements();
         
-        return empty($elements) ? null : $elements[0];
+        return empty($elements) ? new AutomationElement(null) : new AutomationElement($elements[0]);
     }
     
     /**
      * get element by id.
      */
-    public function getElement($id)
+    public function getElement($id=null)
     {
         $elements = $this->getElements();
         
         foreach ($elements as $element) {
             if ($element->id == $id) {
-                return $element;
+                return new AutomationElement($element);
             }
         }
         
-        return null;
+        return new AutomationElement(null);
     }
     
     /**
@@ -234,5 +235,29 @@ class Automation2 extends Model
     public function getEmailsSentCount()
     {
         return 2500;
+    }
+    
+    /**
+     * Get delay options.
+     */
+    public function getDelayOptions()
+    {
+        return [
+            ['text' => '5 minutes', 'value' => '5 minutes'],
+            ['text' => '10 minutes', 'value' => '10 minutes'],
+        ];
+    }
+    
+    /**
+     * Get delay or before options.
+     */
+    public function getDelayBeforeOptions()
+    {
+        return [
+            ['text' => '-10 minutes', 'value' => '-10 minutes'],
+            ['text' => '-5 minutes', 'value' => '-5 minutes'],
+            ['text' => '5 minutes', 'value' => '5 minutes'],
+            ['text' => '10 minutes', 'value' => '10 minutes'],
+        ];
     }
 }
