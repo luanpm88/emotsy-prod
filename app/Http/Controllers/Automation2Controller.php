@@ -11,6 +11,7 @@ use Acelle\Model\MailList;
 use Acelle\Model\Email;
 use Acelle\Model\Attachment;
 use Acelle\Model\Template;
+use Acelle\Model\Subscriber;
 use Illuminate\Support\Facades\Storage;
 
 class Automation2Controller extends Controller
@@ -870,6 +871,11 @@ class Automation2Controller extends Controller
         $automation = Automation2::findByUid($uid);
         $email = Email::findByUid($request->email_uid);
         
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+        
         $request->merge(array("customer_id" => $request->user()->customer->id));
         list($templates, $pagination) = pagination($request, Template::search($request));
         
@@ -888,24 +894,38 @@ class Automation2Controller extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function templateUpload(Request $request)
+    public function templateUpload(Request $request, $uid, $email_uid)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
-
+        $automation = Automation2::findByUid($uid);
+        $email = Email::findByUid($request->email_uid);
+        
         // authorize
-        if (\Gate::denies('update', $campaign)) {
+        if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
         }
 
         // validate and save posted data
         if ($request->isMethod('post')) {
-            $campaign->uploadTemplate($request);
-
-            return redirect()->action('CampaignController@templateEdit', $campaign->uid);
+            
+            list($result, $validator) = $email->uploadTemplate($request);
+            
+            if (!$result) {
+                return response()->view('automation2.email.template.upload', [
+                    'automation' => $automation,
+                    'email' => $email,
+                    'errors' => $validator->errors(),
+                ], 400);
+            } else {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => trans('messages.automation.email.template.uploaded'),
+                ], 201);
+            }
         }
 
-        return view('campaigns.template.upload', [
-            'campaign' => $campaign,
+        return view('automation2.email.template.upload', [
+            'automation' => $automation,
+            'email' => $email,
         ]);
     }
 
@@ -1149,8 +1169,32 @@ class Automation2Controller extends Controller
             return $this->notAuthorized();
         }
 
-        return view('automation2.contacts', [
+        return view('automation2.contacts.index', [
             'automation' => $automation,
+        ]);
+    }
+    
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function contactsList(Request $request, $uid)
+    {
+        sleep(1);
+        $automation = Automation2::findByUid($uid);
+        
+        // authorize
+        if (\Gate::denies('view', $automation)) {
+            return $this->notAuthorized();
+        }
+        
+        list($contacts, $pagination) = pagination($request, Subscriber::gSearch($automation->mailList->subscribers(), $request));
+        
+        return view('automation2.contacts.list', [
+            'automation' => $automation,
+            'contacts' => $contacts,
+            'pagination' => $pagination,
         ]);
     }
     

@@ -1,4 +1,4 @@
-<ul class="nav nav-tabs email-template-tabs">
+<ul class="nav nav-pills email-template-tabs">
     <li class="nav-item">
         <a href="javascript:;" class="nav-link layout" onclick="popup.load('{{ action('Automation2Controller@templateLayout', [
                 'uid' => $automation->uid,

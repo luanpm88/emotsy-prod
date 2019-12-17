@@ -1964,4 +1964,12 @@ class MailList extends Model
             $this->copyAll($this->name, $customer);
         }
     }
+    
+    /**
+     * Get one field for list.
+     */
+    public function getOneField()
+    {
+        return $this->getFields()->where('tag', '<>', 'EMAIL')->first();
+    }
 }

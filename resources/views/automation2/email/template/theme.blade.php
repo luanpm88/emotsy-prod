@@ -25,109 +25,30 @@
 					</select>	
 				</div>
 			</div>
-			<div class="template-list">
+			<div class="template-list ajax-list">
 				
 			</div>
         </div>
     </div>
         
     <script>
-		class List {
-			constructor(selector, url, data) {
-				this.page = 0;
-				this.per_page = 4;
-				this.list = selector;
-				this.loadingHtml = '<div class="list-loading"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>';
-				
-				if (url !== null) {
-					this.url = url;
-				}
-				
-				this.data = function() { return {}; };
-				if (data !== null) {
-					this.data = data;
-				}
-			}
-			
-			loading() {
-				if (!this.list.find('.list-loading').length) {
-					this.list.prepend(this.loadingHtml);
-				}
-				
-				this.list.addClass('list-is-loading');
-			}
-			
-			loaded() {
-				var _this = this;
-				
-				// apply js for new content
-				initJs(_this.list);
-				
-				// remove loading effects
-				_this.list.find('.list-loading').remove();        
-				_this.list.removeClass('list-is-loading');
-				
-				// page link
-				_this.list.find('.page-link').click(function() {
-					var page = $(this).attr('data-page');					
-					_this.page = page;
-					_this.load();
-				});
-			}
+		var listTheme = new List( $('.template-list'), {
+			url: '{{ action('Automation2Controller@templateThemeList', [
+					'uid' => $automation->uid,
+					'email_uid' => $email->uid,
+				]) }}',
+			data: function() {
+					return {
+						from: $('[name=from]').val(),
+					};
+				},
+		});
 		
-			load(url) {
-				var _this = this;
-        
-				if (url != null) {
-					_this.url = url;
-				}
-				
-				this.loading();
-				
-				// post data
-				var data = {
-					_token: CSRF_TOKEN,
-					page: _this.page,
-					per_page: _this.per_page,
-				};
-				
-				$.extend( data, _this.data() );
-				
-				
-				$.ajax({
-					url: _this.url,
-					type: 'POST',
-					dataType: 'html',
-					data: data,
-				}).always(function(response) {
-					_this.list.html(response);
-					
-					// scroll top
-					_this.list.animate({scrollTop: 0});
-					
-					// done
-					_this.loaded();
-				});
-			}
-		}
-		
-		var list = new List(
-			$('.template-list'),
-			'{{ action('Automation2Controller@templateThemeList', [
-				'uid' => $automation->uid,
-				'email_uid' => $email->uid,
-			]) }}',
-			function() {
-				return {
-					from: $('[name=from]').val(),
-				};
-			}
-		);		
-		list.load();
+		listTheme.load();
 		
 		// filters
 		$('[name=from]').change(function() {
-			list.load();
+			listTheme.load();
 		});
 		
     </script>

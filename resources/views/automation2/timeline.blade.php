@@ -29,12 +29,12 @@
 <div class="mc-table small border-top">
     <div class="mc-row d-flex align-items-center">
         <div class="media trigger">
-            <a href="javascript:;" onclick="popup.load('{{ action('Automation2Controller@profile', $automation->uid) }}')" class="font-weight-semibold d-block">
+            <a href="javascript:;" class="font-weight-semibold d-block">
                 <img src="https://i.pravatar.cc/200" />
             </a>
         </div>
         <div class="flex-fill flex-grow-1" style="width: 50%">
-            <a href="javascript:;" onclick="popup.load('{{ action('Automation2Controller@profile', $automation->uid) }}')" class="font-weight-semibold d-block">
+            <a href="javascript:;" class="font-weight-semibold d-block">
                 Owen Stretch
             </a>
             <desc>Subscribes to mail list</desc>
@@ -45,12 +45,12 @@
     </div>
     <div class="mc-row d-flex align-items-center">
         <div class="media email">
-            <a href="javascript:;" onclick="popup.load('{{ action('Automation2Controller@profile', $automation->uid) }}')" class="font-weight-semibold d-block">
+            <a href="javascript:;" class="font-weight-semibold d-block">
                 <img src="https://i.pravatar.cc/300" />
             </a>
         </div>
         <div class="flex-fill flex-grow-1" style="width: 50%">
-            <a href="javascript:;" onclick="popup.load('{{ action('Automation2Controller@profile', $automation->uid) }}')" class="font-weight-semibold d-block">
+            <a href="javascript:;" class="font-weight-semibold d-block">
                 Jenilee Mcnair
             </a>
             <desc>Open `Welcome to s` email...</desc>
@@ -61,12 +61,12 @@
     </div>
     <div class="mc-row d-flex align-items-center">
         <div class="media open">
-            <a href="javascript:;" onclick="popup.load('{{ action('Automation2Controller@profile', $automation->uid) }}')" class="font-weight-semibold d-block">
+            <a href="javascript:;" class="font-weight-semibold d-block">
                 <img src="https://i.pravatar.cc/400" />
             </a>
         </div>
         <div class="flex-fill flex-grow-1" style="width: 50%">
-            <a href="javascript:;" onclick="popup.load('{{ action('Automation2Controller@profile', $automation->uid) }}')" class="font-weight-semibold d-block">
+            <a href="javascript:;" class="font-weight-semibold d-block">
                 Siggrid Lanha
             </a>
             <desc>Subscribes to mail list</desc>
@@ -77,12 +77,12 @@
     </div>
     <div class="mc-row d-flex align-items-center">
         <div class="media trigger">
-            <a href="javascript:;" onclick="popup.load('{{ action('Automation2Controller@profile', $automation->uid) }}')" class="font-weight-semibold d-block">
+            <a href="javascript:;" class="font-weight-semibold d-block">
                 <i class="lnr lnr-user bg-danger"></i>
             </a>
         </div>
         <div class="flex-fill flex-grow-1" style="width: 50%">
-            <a href="javascript:;" onclick="popup.load('{{ action('Automation2Controller@profile', $automation->uid) }}')" class="font-weight-semibold d-block">
+            <a href="javascript:;" class="font-weight-semibold d-block">
                 Nato Simonhu
             </a>
             <desc>Opt out of mail list</desc>

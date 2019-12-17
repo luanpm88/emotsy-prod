@@ -1,41 +1,96 @@
-@extends('layouts.popup.small')
+@extends('layouts.popup.medium')
 
 @section('content')
+	<p class="mb-4">
+        <strong>Send-an-email action</strong> Plase folow the wizard below to create email information/content for sending to customers.
+        Make sure you fill-up all neccessary information for an email.
+    </p>
+	
+	@include('automation2.email._tabs', ['tab' => 'template'])
+		
 	<div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
-            <h2>{{ trans('messages.campaign.choose_your_template_layout') }}</h2>
-                
-            <ul class="nav nav-tabs mc-nav campaign-template-tabs">
-                <li><a href="{{ action('CampaignController@templateLayout', $campaign->uid) }}">Layouts</a></li>
-                <li><a href="{{ action('CampaignController@templateTheme', $campaign->uid) }}">Themes</a></li>
-                <li class="active"><a href="{{ action('CampaignController@templateUpload', $campaign->uid) }}">Upload</a></li>
-            </ul>
-            
-            <div class="alert alert-info">
+        <div class="col-md-8">
+			@include('automation2.email.template._tabs', ['tab' => 'upload'])
+			
+            <h4 class="mb-3 mt-3">{{ trans('messages.automation.email.upload_template') }}</h4>
+				
+			<div class="alert alert-info mt-4">
                 {!! trans('messages.template_upload_guide', ["link" => 'https://s3.amazonaws.com/acellemail/newsletter-template-green.zip']) !!}
             </div>
-            
-            <form enctype="multipart/form-data" action="{{ action('CampaignController@templateUpload', $campaign->uid) }}" method="POST" class="ajax_upload_form form-validate-jquery">
+                
+            <form enctype="multipart/form-data" action="{{ action('Automation2Controller@templateUpload', [
+				'uid' => $automation->uid,
+				'email_uid' => $email->uid,
+			]) }}" method="POST" class="template-upload-form">
                 {{ csrf_field() }}
 
-                @include('helpers.form_control', ['required' => true, 'type' => 'file', 'label' => trans('messages.upload_file'), 'name' => 'file'])
+                <div class="input-group mb-4 mt-4">
+					<div class="input-group-prepend">
+					  <span class="input-group-text">{{ trans('messages.automation.email.template.upload') }}</span>
+					</div>
+					<div class="custom-file">
+					  <input type="file" name="file" class="custom-file-input" id="templateFile" required>
+					  <label class="custom-file-label" for="templateFile">{{ trans('messages.automation.email.template.choose_file') }}</label>
+					</div>
+				</div>
 				
-                <div class="mt-20">
-                    <button class="btn btn-primary bg-grey-600 mr-5">{{ trans('messages.upload') }}</button>
+                <div class="mt-4">
+                    <button class="btn btn-primary bg-grey-600 mr-5">{{ trans('messages.automation.email.template.upload') }}</button>
                 </div>
 
             </form>
         </div>
     </div>
-        
-    <script>
-        $('.campaign-template-tabs a').click(function(e) {
-            e.preventDefault();
-        
-            var url = $(this).attr('href');
-        
-            templatePopup.load(url);
-        });
-    </script>
+		
+	<script>
+		$('.template-upload-form').submit(function(e) {
+			e.preventDefault();
+			
+			if (!$('#templateFile').val()) {
+				notify('error', '{{ trans('messages.notify.error') }}', '{{ trans('messages.automation.email.template.no_file_select') }}');
+				
+				return;
+			}
+		
+			var url = $(this).attr('action');
+			var fd = new FormData($(this)[0]);
+			
+			popup.loading();
+			
+			$.ajax({
+				url: url,  
+				type: 'POST',
+				data: fd,
+				cache: false,
+				contentType: false,
+				processData: false,
+				statusCode: {
+                    // validate error
+                    400: function (res) {
+                       popup.loadHtml(res.responseText);
+                    }
+                },
+				success: function(data) {
+					notify(data.status, '{{ trans('messages.notify.success') }}', data.message);
+					
+					popup.load('{{ action('Automation2Controller@emailTemplate', [
+						'uid' => $automation->uid,
+						'email_uid' => $email->uid,
+					]) }}');
+					
+					// iframe builder
+					var url = '{{ action('Automation2Controller@templateEdit', [
+						'uid' => $automation->uid,
+						'email_uid' => $email->uid,
+					]) }}';        
+					var div = $('<div class="full-iframe-popup">').html('<iframe scrolling="no" class="builder" src="'+url+'"></iframe>');            
+					$('body').append(div);
+				}				
+			});
+		});
+		
+		$('#templateFile').change(function(e) {
+			$('[for="templateFile"]').html($(this).val());
+		});
+	</script>
 @endsection

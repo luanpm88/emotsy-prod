@@ -2870,4 +2870,12 @@
   'pagination.page_of' => 'Page :page of <span class="font-weight-semibold">:pages</span>',
   'pagination.previous' => 'Previous',
   'pagination.next' => 'Next',
+  'automation.email.upload_template' => 'Upload template',
+  'automation.email.upload_template.intro' => 'Upload your custom template from zip file and use it for this email.',
+  'automation.email.template.upload' => 'Upload',
+  'automation.email.template.choose_file' => 'Choose file',
+  'automation.email.template.no_file_select' => 'Upload file is missing. Please choose one.',
+  'automation.empty_contacts' => 'Automation contact list is empty',
+  'automation.contact.added_at' => 'Added at: :time',
+  'automation.contact.all_count' => 'All contacts (:count)',
 ) ?>

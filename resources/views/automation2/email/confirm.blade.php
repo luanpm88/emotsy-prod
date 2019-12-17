@@ -172,7 +172,7 @@
             </div>
         </div>                
             
-        <a href="javascript:;" class="btn btn-secondary mt-4" onclick="popup.hide()">{{ trans('messages.close') }}</a>
+        <a href="javascript:;" class="btn btn-secondary mt-4" onclick="sidebar.load(); popup.hide()">{{ trans('messages.close') }}</a>
     </form>
     
     <script>
