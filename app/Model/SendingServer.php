@@ -788,7 +788,8 @@ class SendingServer extends Model
         $message->setFrom($params['from_email']);
         $message->setTo($params['to_email']);
         $message->setReplyTo($params['from_email']);
-        $message->setEncoder(\Swift_Encoding::get8bitEncoding());
+        // $message->setEncoder(\Swift_Encoding::get8bitEncoding());
+        $message->setEncoder( new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit') );
         $message->addPart($params['plain'], 'text/plain');
         $result = self::getInstance($this)->send($message);
 
