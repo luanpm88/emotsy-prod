@@ -1,3 +1,7 @@
+a {
+    color: #007c99;
+}
+
 .text-warning {
     color: #f88400!important;
 }
@@ -826,6 +830,10 @@ label.switchery-double.checkbox-switchery {
     font-size: 35px;
     margin-top: 7px;
 }
+.ajax-list {
+  min-height: 200px;
+  position: relative;
+}
 .template-list-items {
     margin-right: -20px;
 }
@@ -882,4 +890,19 @@ label.switchery-double.checkbox-switchery {
 }
 .list-is-loading .lds-ellipsis div {
   background: #000;
+}
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+    background-color: transparent;
+    border-bottom: solid 1.5px #007c99;
+    color: #007c99;
+    border-radius: 0;
+}
+.nav-pills .nav-link {
+    padding: 0 0 3px 0;
+    margin: .5rem 1rem;
+    font-weight: 600;
+    color: #333;
+}
+.nav-pills .nav-item:first-child .nav-link {
+  margin-left: 0;
 }

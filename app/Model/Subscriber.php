@@ -310,6 +310,32 @@ class Subscriber extends Model
 
         return $query;
     }
+    
+    /**
+     * Get all languages.
+     *
+     * @return collect
+     */
+    public static function gSearch($collect, $request, $customer = null)
+    {
+        $query = $collect->select('subscribers.*', 'email_verifications.result as verify_result');
+
+        // Filter by customer
+        if (!isset($customer)) {
+            $customer = $request->user()->customer;
+        }
+        $query = $query->where('mail_lists.customer_id', '=', $customer->id);
+
+        // Filter
+        $query = self::filter($query, $request);
+
+        // Order
+        if (isset($request->sort_order)) {
+            $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        }
+
+        return $query;
+    }
 
     /**
      * Get field value by list field.

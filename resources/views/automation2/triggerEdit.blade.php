@@ -50,14 +50,14 @@
             tree.setOptions(response.options);
             tree.setOptions($.extend(tree.getOptions(), {init: true}));
             
-            // notify
-            notify('success', '{{ trans('messages.notify.success') }}', response.message);
-            
             // save tree
-            saveData();
-            
-            // reload sidebar
-            sidebar.load();
+            saveData(function() {
+                // notify
+                notify('success', '{{ trans('messages.notify.success') }}', response.message);
+                
+                // reload sidebar
+                sidebar.load();
+            });
         });        
     });
 </script>

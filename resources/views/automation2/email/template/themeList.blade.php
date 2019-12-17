@@ -1,7 +1,7 @@
 @if ($templates->count() >0)
     <div class="template-list-items mt-3 clearfix">
         @foreach ($templates as $key => $template)
-            <a href="" class="d-block template-list-item">
+            <a href="javascript:;" class="d-block template-list-item template-choose" data-template="{{ $template->uid }}">
                 <img href="javascript:;" src="{{ action('TemplateController@image', $template->uid) }}?v={{ rand(0,10) }}" />
                 <label class="mb-20 text-center d-block mt-3">{{ $template->name }}</label>
             </a>
@@ -17,3 +17,38 @@
         </span>
     </div>
 @endif
+
+<script>
+    $('.template-choose').click(function() {
+        var url = '{{ action('Automation2Controller@templateTheme', [
+            'uid' => $automation->uid,
+            'email_uid' => $email->uid,
+        ]) }}';
+        var template_uid = $(this).attr('data-template');
+        
+        // loading popup
+        popup.loading();
+        
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: {
+                _token: CSRF_TOKEN,
+                template_uid: template_uid
+            }
+        }).always(function(response) {
+            popup.load('{{ action('Automation2Controller@emailTemplate', [
+                'uid' => $automation->uid,
+                'email_uid' => $email->uid,
+            ]) }}');
+            
+            // iframe builder
+			var url = '{{ action('Automation2Controller@templateEdit', [
+				'uid' => $automation->uid,
+				'email_uid' => $email->uid,
+			]) }}';        
+            var div = $('<div class="full-iframe-popup">').html('<iframe scrolling="no" class="builder" src="'+url+'"></iframe>');            
+            $('body').append(div);
+        });
+    });
+</script>

@@ -24,6 +24,8 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Model\AutomationElement;
+use Acelle\Model\Email;
+use Acelle\Model\EmailLink;
 
 class Automation2 extends Model
 {
@@ -53,6 +55,22 @@ class Automation2 extends Model
     public function mailList()
     {
         return $this->belongsTo('Acelle\Model\MailList');
+    }
+    
+    /**
+     * Get all of the links for the automation.
+     */
+    public function emailLinks()
+    {
+        return $this->hasManyThrough('Acelle\Model\EmailLink', 'Acelle\Model\Email');
+    }
+    
+    /**
+     * Get all of the emails for the automation.
+     */
+    public function emails()
+    {
+        return $this->hasMany('Acelle\Model\Email');
     }
     
     /**
@@ -259,5 +277,33 @@ class Automation2 extends Model
             ['text' => '5 minutes', 'value' => '5 minutes'],
             ['text' => '10 minutes', 'value' => '10 minutes'],
         ];
+    }
+    
+    /**
+     * Get email links options.
+     */
+    public function getEmailLinkOptions()
+    {
+        $data = [];
+        
+        foreach($this->emailLinks as $link) {
+            $data[] = ['text' => $link->link, 'value' => $link->uid];
+        }
+        
+        return $data;
+    }
+    
+    /**
+     * Get emails options.
+     */
+    public function getEmailOptions()
+    {
+        $data = [];
+        
+        foreach($this->emails as $email) {
+            $data[] = ['text' => $email->subject, 'value' => $email->uid];
+        }
+        
+        return $data;
     }
 }

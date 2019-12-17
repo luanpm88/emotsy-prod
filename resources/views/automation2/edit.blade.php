@@ -86,7 +86,7 @@
 			$('.navbar h1').html(name);
 		}
 		
-		function saveData() {
+		function saveData(callback) {
 			var url = '{{ action('Automation2Controller@saveData', $automation->uid) }}';
 		
 			$.ajax({
@@ -97,6 +97,9 @@
 					data: tree.toJson(),
 				},
 			}).always(function() {
+				if (callback != null) {
+					callback();
+				}
 			});
 		}
 		
@@ -112,11 +115,11 @@
 				};
 				
 				// when click confirm select trigger type
-				popup.popup.find('.select-action-confirm').click(function(e) {
+				popup.popup.find('#action-select').submit(function(e) {
 					e.preventDefault();
 				
-					var url = $(this).attr('data-url');
-					var data = $('#action-select').serialize();
+					var url = $(this).attr('action');
+					var data = $(this).serialize();
 					
 					// show loading effect
 					popup.loading();
@@ -134,11 +137,12 @@
 						tree.getSelected().insert(newE);
 						
 						// save tree
-						saveData();
-						
-						popup.hide();
-						
-						notify('success', '{{ trans('messages.notify.success') }}', response.message);
+						saveData(function() {
+							// hide popup
+							popup.hide();
+							
+							notify('success', '{{ trans('messages.notify.success') }}', response.message);
+						});
 					});
 				});
 			});
@@ -224,16 +228,16 @@
 						tree.setOptions($.extend(tree.getOptions(), {init: "true"}));
 						
 						// save tree
-						saveData();
-						
-						// hide popup
-						popup.hide();
-						
-						// notify success message
-						notify('success', '{{ trans('messages.notify.success') }}', response.message);
-						
-						// Edit Trigger
-						EditTrigger('{{ action('Automation2Controller@triggerEdit', $automation->uid) }}' + '?key=' + tree.getOptions().key);
+						saveData(function() {
+							// hide popup
+							popup.hide();
+							
+							// notify success message
+							notify('success', '{{ trans('messages.notify.success') }}', response.message);
+							
+							// Edit Trigger
+							EditTrigger('{{ action('Automation2Controller@triggerEdit', $automation->uid) }}' + '?key=' + tree.getOptions().key);
+						});
 					});
 				});
 			});
