@@ -202,16 +202,6 @@ class AutomationElement {
     */
 
     drawPlus(id, cx, cy, ctype, container) {
-        /*
-        var existingPlus = document.getElementById(id);
-
-        if (existingPlus != null) {
-            ctype = existingPlus.getAttribute('ctype');
-            var existingGroup = existingPlus.parentNode;
-            existingGroup.parentNode.removeChild(existingGroup);
-        }
-        */
-
         var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
         var circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
         var a = document.createElementNS("http://www.w3.org/2000/svg", 'a');
@@ -263,15 +253,15 @@ class AutomationElement {
         var point2;
 
         if (high.tagName == 'rect') {
-            point1 = this.drawCircle('circle1', parseInt(high.getAttribute('x')) + this.DefaultRectWith/2, parseInt(high.getAttribute('y')) + this.DefaultRectHeight, g);
+            point1 = this.drawCircle('circle1', parseInt(high.getAttribute('x')) + this.DefaultRectWith/2, parseInt(high.getAttribute('y')) + this.DefaultRectHeight, g, false);
         } else {
-            point1 = this.drawCircle('circle1', parseInt(high.getAttribute('cx')), parseInt(high.getAttribute('cy')) + this.DefaultActionCircleSize, g);
+            point1 = this.drawCircle('circle1', parseInt(high.getAttribute('cx')), parseInt(high.getAttribute('cy')) + this.DefaultActionCircleSize, g, true);
         }
 
         if (low.tagName == 'rect') {
-            point2 = this.drawCircle('circle2', parseInt(low.getAttribute('x')) + this.DefaultRectWith/2, parseInt(low.getAttribute('y')), g);
+            point2 = this.drawCircle('circle2', parseInt(low.getAttribute('x')) + this.DefaultRectWith/2, parseInt(low.getAttribute('y')), g, false);
         } else {
-            point2 = this.drawCircle('circle2', parseInt(low.getAttribute('cx')), parseInt(low.getAttribute('cy')) - this.DefaultActionCircleSize, g);
+            point2 = this.drawCircle('circle2', parseInt(low.getAttribute('cx')), parseInt(low.getAttribute('cy')) - this.DefaultActionCircleSize, g, true);
         }
 
         this.drawPath(point1, point2, g);
@@ -291,16 +281,19 @@ class AutomationElement {
         rect.setAttribute('width', this.DefaultRectWith);
         rect.setAttribute('height', this.DefaultRectHeight);
 
+        var text1 = document.createElementNS("http://www.w3.org/2000/svg", 'text');
+
         if (type == 'trigger') {
             rect.setAttribute('class', 'element trigger');
+            text1.innerHTML = '&#xf144;';
         } else if (type == 'wait') {
             rect.setAttribute('class', 'element wait');
+            text1.innerHTML = '&#xf1da;';
         } else {
             rect.setAttribute('class', 'element action');
+            text1.innerHTML = '&#xf0e0;';
         }
 
-        var text1 = document.createElementNS("http://www.w3.org/2000/svg", 'text');
-        text1.innerHTML = '&#xf0e0;';
         text1.setAttribute('font-family', 'FontAwesome');
         text1.setAttribute('x', left + 10);
         text1.setAttribute('fill', '#fff');
@@ -331,7 +324,7 @@ class AutomationElement {
         this.drawConnector(this.id, plusId, g);
     }
 
-    drawCircle(id, cx, cy, container) {
+    drawCircle(id, cx, cy, container, zeroPoint = false) {
         var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
         container.appendChild(g);
 
@@ -339,7 +332,12 @@ class AutomationElement {
         circle.setAttribute('id', id);
         circle.setAttribute('cx', cx);
         circle.setAttribute('cy', cy);
-        circle.setAttribute('r', this.DefaultPointSize);
+        if (zeroPoint) {
+            circle.setAttribute('r', 0);
+        } else {
+            circle.setAttribute('r', this.DefaultPointSize);
+        }
+
         circle.setAttribute('fill', this.DefaultFill);
         g.appendChild(circle);
         return circle;
