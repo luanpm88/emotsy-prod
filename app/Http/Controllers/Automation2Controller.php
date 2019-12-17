@@ -361,7 +361,7 @@ class Automation2Controller extends Controller
                     'options' => [
                         'key' => $request->key,
                         'type' => $request->type,
-                        'read_email' => $request->read_email,
+                        'email' => $request->email,
                     ],
                 ]);
             } else if ($request->type == 'click') {
@@ -372,7 +372,7 @@ class Automation2Controller extends Controller
                     'options' => [
                         'key' => $request->key,
                         'type' => $request->type,
-                        'click_link' => $request->click_link,
+                        'email_link' => $request->email_link,
                     ],
                 ]);
             }
@@ -463,7 +463,7 @@ class Automation2Controller extends Controller
                         'options' => [
                             'key' => $request->key,
                             'type' => $request->type,
-                            'read_email' => $request->read_email,
+                            'email' => $request->email,
                         ],
                     ]);
                 } else if ($request->type == 'click') {
@@ -474,7 +474,7 @@ class Automation2Controller extends Controller
                         'options' => [
                             'key' => $request->key,
                             'type' => $request->type,
-                            'click_link' => $request->click_link,
+                            'email_link' => $request->email_link,
                         ],
                     ]);
                 }
@@ -1226,9 +1226,10 @@ class Automation2Controller extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function profile(Request $request, $uid)
+    public function profile(Request $request, $uid, $contact_uid)
     {
         $automation = Automation2::findByUid($uid);
+        $contact = Subscriber::findByUid($contact_uid);
         
         // authorize
         if (\Gate::denies('view', $automation)) {
@@ -1237,6 +1238,7 @@ class Automation2Controller extends Controller
 
         return view('automation2.profile', [
             'automation' => $automation,
+            'contact' => $contact,
         ]);
     }
 }

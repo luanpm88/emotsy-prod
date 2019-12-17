@@ -4,7 +4,7 @@
 	<div class="row">
         <div class="col-md-12">
             <div class="d-flex align-items-center">
-                <h3 class="mr-auto mb-4">Profile</h3>
+                <h3 class="mr-auto mb-4">{{ trans('messages.automation.contact.profile') }}</h3>
                 <div class="">
                     <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
                         <div class="btn-group btn-group-sm" role="group">
@@ -24,11 +24,11 @@
             <div class="profile d-flex">
                 <div class="media mr-4">
                     <!--<i class="lnr lnr-user"></i>-->
-                    <img src="https://i.pravatar.cc/300" />
+                    <img src="{{ action('SubscriberController@avatar',  $contact->uid) }}" />
                 </div>
                 <div class="account">
                     <h5 class="mb-0">Neko Gal</h5>
-                    <p class="small mb-2">noke.gal@lumina.jp.co</p>
+                    <p class="small mb-2">{{ $contact->email }}</p>
                     <div class="tags">
                         <div class="btn-group" role="group" aria-label="Basic example">
                             <button type="button" class="btn btn-light btn-tag">Hight Profile</button>

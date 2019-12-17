@@ -2878,4 +2878,7 @@
   'automation.empty_contacts' => 'Automation contact list is empty',
   'automation.contact.added_at' => 'Added at: :time',
   'automation.contact.all_count' => 'All contacts (:count)',
+  'automation.contact.profile' => 'Profile',
+  'automation.condition.choose_email' => 'Choose email',
+  'automation.condition.choose_link' => 'Choose link',
 ) ?>

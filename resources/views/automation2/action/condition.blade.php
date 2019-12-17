@@ -24,14 +24,14 @@
 <div class="mb-20" data-condition="open" style="display:none">
     @include('helpers.form_control', [
         'type' => 'select',
-        'class' => '',
+        'class' => 'required',
         'label' => 'Which email subscriber reads',
-        'name' => 'email_uid',
-        'value' => $element->getOption('email_uid'),
+        'name' => 'email',
+        'value' => $element->getOption('email'),
         'help_class' => 'trigger',
-        'options' => [
-            ['text' => 'Thank for joining our community', 'value' => '123'],
-        ],
+        'include_blank' => trans('messages.automation.condition.choose_email'),
+        'required' => true,
+        'options' => $automation->getEmailOptions(),
         'rules' => [],
     ])
 </div>
@@ -39,14 +39,14 @@
 <div class="mb-20" data-condition="click" style="display:none">
     @include('helpers.form_control', [
         'type' => 'select',
-        'class' => '',
+        'class' => 'required',
         'label' => 'Which Link subscriber clicks',
         'name' => 'email_link',
         'value' => $element->getOption('email_link'),
         'help_class' => 'trigger',
-        'options' => [
-            ['text' => 'Special discount from Topica', 'value' => '123'],
-        ],
+        'options' => $automation->getEmailLinkOptions(),
+        'include_blank' => trans('messages.automation.condition.choose_link'),
+        'required' => true,
         'rules' => [],
     ])
 </div>

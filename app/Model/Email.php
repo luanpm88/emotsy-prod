@@ -35,11 +35,19 @@ class Email extends Model
     }
     
     /**
-     * Association with mailList through mail_list_id column.
+     * Association with attachments.
      */
     public function attachments()
     {
         return $this->hasMany('Acelle\Model\Attachment');
+    }
+    
+    /**
+     * Association with email links.
+     */
+    public function emailLinks()
+    {
+        return $this->hasMany('Acelle\Model\EmailLink');
     }
     
     /**
@@ -312,5 +320,38 @@ class Email extends Model
         Tool::xdelete($tmp_path);
         
         return [true, $validator];
+    }
+    
+    /**
+     * Find and update email links.
+     */
+    public function updateLinks()
+    {
+        if (!$this->content) {
+            return false;
+        }
+        
+        $links = [];
+        
+        // find all links from contents
+        $document = HtmlDomParser::str_get_html($this->content);
+        foreach($document->find('a') as $element) {
+            if (preg_match('/^http/', $element->href) != 0) {
+                $links[] = trim($element->href);
+            }
+        }
+        
+        // delete al bold links
+        $this->emailLinks()->whereNotIn('link', $links)->delete();
+    
+        foreach($links as $link) {
+            $exist = $this->emailLinks()->where('link', '=', $link)->count();
+            
+            if(!$exist) {
+                $this->emailLinks()->create([
+                    'link' => $link,
+                ]);
+            }
+        }
     }
 }

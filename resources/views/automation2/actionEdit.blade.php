@@ -53,14 +53,14 @@
             tree.getSelected().setOptions($.extend(tree.getSelected().getOptions(), response.options));
             tree.getSelected().setOptions($.extend(tree.getSelected().getOptions(), {init: true}));
             
-            // notify
-            notify('success', '{{ trans('messages.notify.success') }}', response.message);
-            
             // save tree
-            saveData();
-            
-            // reload sidebar
-            sidebar.load();
+            saveData(function() {
+                // notify
+                notify('success', '{{ trans('messages.notify.success') }}', response.message);
+                
+                // reload sidebar
+                sidebar.load();
+            });
         });        
     });
     
@@ -70,16 +70,16 @@
         var confirm = $(this).attr('data-confirm');
         var dialog = new Dialog('confirm', null, confirm, function(dialog) {
             // remove current node
-            tree.getSelected().remove();        
-            
-            // notify
-            notify('success', '{{ trans('messages.notify.success') }}', '{{ trans('messages.automation.action.deteled') }}');
-            
-            // load default sidebar
-            sidebar.load('{{ action('Automation2Controller@settings', $automation->uid) }}');
+            tree.getSelected().remove();
             
             // save tree
-            saveData();
+            saveData(function() {
+                // notify
+                notify('success', '{{ trans('messages.notify.success') }}', '{{ trans('messages.automation.action.deteled') }}');
+                
+                // load default sidebar
+                sidebar.load('{{ action('Automation2Controller@settings', $automation->uid) }}');
+            });
         });
     });
 </script>
