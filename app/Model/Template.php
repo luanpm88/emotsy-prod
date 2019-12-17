@@ -129,6 +129,18 @@ class Template extends Model
                 }
             }
         }
+        
+        // from
+        if ($request->from) {
+            if ($request->from == 'mine') {
+                $query = $query->where('customer_id', '=', $request->customer_id);
+            } elseif ($request->from == 'gallery') {
+                $query = $query->where('customer_id', '=', null);
+            } else {
+                $query = $query->where('customer_id', '=', null)
+                    ->orWhere('customer_id', '=', $request->customer_id);
+            }
+        }
 
         // Admin
         if (!empty($request->admin_id)) {

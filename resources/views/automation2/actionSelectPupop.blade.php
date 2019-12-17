@@ -9,7 +9,7 @@
                 
             <div class="line-list">
                 @foreach ($types as $type)
-                    <div class="line-item action-select-but" data-type="{{ $type }}">
+                    <div class="line-item action-select-but" data-key="{{ $type }}">
                         <div class="line-icon">
                             <i class="lnr lnr-{{ trans('messages.automation.action.' . $type . '.icon') }}"></i>
                         </div>

@@ -2,18 +2,18 @@
 
 @include('automation2._tabs', ['tab' => 'settings'])
 
-<form id="action-edit" action="{{ action("Automation2Controller@actionEdit", ['uid' => $automation->uid, 'type' => $type]) }}" method="POST" class="form-validate-jqueryz">
+<form id="action-edit" action="{{ action("Automation2Controller@actionEdit", ['uid' => $automation->uid, 'key' => $key]) }}" method="POST" class="form-validate-jqueryz">
     {{ csrf_field() }}
     
-    <input type="hidden" name="type" value="{{ $type }}" />
+    <input type="hidden" name="key" value="{{ $key }}" />
     
-    @if(View::exists('automation2.action.' . $type))
-        @include('automation2.action.' . $type)
+    @if(View::exists('automation2.action.' . $key))
+        @include('automation2.action.' . $key)
     @endif
     
     <div class="trigger-action mt-2">    
         <button class="btn btn-secondary action-save-change mr-1"
-            data-url="{{ action('Automation2Controller@triggerSelect', ['uid' => $automation->uid, 'type' => $type]) }}"
+            data-url="{{ action('Automation2Controller@triggerSelect', ['uid' => $automation->uid, 'key' => $key]) }}"
         >
                 {{ trans('messages.automation.action.save_change') }}
         </button>

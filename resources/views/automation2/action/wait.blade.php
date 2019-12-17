@@ -6,15 +6,15 @@
 </p>
 
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-6">    
         @include('helpers.form_control', [
             'type' => 'select',
             'class' => '',
             'label' => '',
-            'name' => 'after',
-            'value' => isset($element) ? $element->options->after : '',
+            'name' => 'time',
+            'value' => $element->getOption('time'),
             'help_class' => 'trigger',
-            'options' => [['text' => '30 minutes', 'value' => '+30_minutes'], ['text' => '1 hour', 'value' => '+1_hour']],
+            'options' => $automation->getDelayOptions(),
             'rules' => [],
         ])
     </div>

@@ -100,8 +100,8 @@
 			});
 		}
 		
-		function SelectActionConfirm(type) {
-			var url = '{{ action('Automation2Controller@actionSelectConfirm', $automation->uid) }}' + '?type=' + type;
+		function SelectActionConfirm(key) {
+			var url = '{{ action('Automation2Controller@actionSelectConfirm', $automation->uid) }}' + '?key=' + key;
 			
 			popup = new Popup(url, function() {
 				console.log('Confirm action type popup loaded!');
@@ -126,9 +126,9 @@
 						type: 'POST',
 						data: data,
 					}).always(function(response) {
-						if (response.options.type == 'wait') {
+						if (response.options.key == 'wait') {
 							var newE = new ElementWait({title: response.title, options: response.options});
-						} else if (response.options.type == 'condition') {
+						} else if (response.options.key == 'condition') {
 							var newE = new ElementCondition({title: response.title, options: response.options});
 						}
 						tree.getSelected().insert(newE);
@@ -157,10 +157,10 @@
 				
 				// when click on action type
 				popup.popup.find('.action-select-but').click(function() {
-					var type = $(this).attr('data-type');
+					var key = $(this).attr('data-key');
 					
 					// show select trigger confirm box
-					SelectActionConfirm(type);
+					SelectActionConfirm(key);
 				});
 			});
 			
@@ -178,18 +178,18 @@
 				
 				// when click on trigger type
 				popup.popup.find('.trigger-select-but').click(function() {
-					var type = $(this).attr('data-type');
+					var key = $(this).attr('data-key');
 					
 					// show select trigger confirm box
-					SelectTriggerConfirm(type);
+					SelectTriggerConfirm(key);
 				});
 			});
 			
 			popup.load();
 		}
 		
-		function SelectTriggerConfirm(type) {
-			var url = '{{ action('Automation2Controller@triggerSelectConfirm', $automation->uid) }}' + '?type=' + type;
+		function SelectTriggerConfirm(key) {
+			var url = '{{ action('Automation2Controller@triggerSelectConfirm', $automation->uid) }}' + '?key=' + key;
 			
 			popup = new Popup(url, function() {
 				console.log('Confirm trigger type popup loaded!');
@@ -220,7 +220,7 @@
 						// set node title
 						tree.setTitle(response.title);
 						// merge options with reponse options
-						tree.setOptions($.extend(tree.getOptions(), response.options));
+						tree.setOptions(response.options);
 						tree.setOptions($.extend(tree.getOptions(), {init: "true"}));
 						
 						// save tree
@@ -233,7 +233,7 @@
 						notify('success', '{{ trans('messages.notify.success') }}', response.message);
 						
 						// Edit Trigger
-						EditTrigger('{{ action('Automation2Controller@triggerEdit', $automation->uid) }}' + '?type=' + tree.getOptions().type);
+						EditTrigger('{{ action('Automation2Controller@triggerEdit', $automation->uid) }}' + '?key=' + tree.getOptions().key);
 					});
 				});
 			});
@@ -282,8 +282,8 @@
 			$(document).on('click', '.action', function() {
 				console.log('click on one action!');
 				
-				var type = $(this).attr('data-type');				
-				var url = '{{ action('Automation2Controller@actionEdit', $automation->uid) }}' + '?type=' + type + '&id=' + tree.getSelected().id;
+				var type = $(this).attr('data-key');				
+				var url = '{{ action('Automation2Controller@actionEdit', $automation->uid) }}' + '?key=' + key + '&id=' + tree.getSelected().id;
 				
 				// Open trigger types select list
 				EditAction(url);
@@ -352,8 +352,7 @@
 						}
 						// trigger was init
 						else {
-							var type = $(this).attr('data-type');
-							var url = '{{ action('Automation2Controller@triggerEdit', $automation->uid) }}' + '?type=' + e.getOptions().type + '&id=' + e.getId();
+							var url = '{{ action('Automation2Controller@triggerEdit', $automation->uid) }}' + '?key=' + e.getOptions().key + '&id=' + e.getId();
 							
 							// Open trigger types select list
 							EditTrigger(url);
@@ -361,16 +360,14 @@
 					}
 					// is WAIT
 					else if (e.getType() == 'ElementWait') {
-							var type = $(this).attr('data-type');
-							var url = '{{ action('Automation2Controller@actionEdit', $automation->uid) }}' + '?type=' + e.getOptions().type + '&id=' + e.getId();
+							var url = '{{ action('Automation2Controller@actionEdit', $automation->uid) }}' + '?key=' + e.getOptions().key + '&id=' + e.getId();
 							
 							// Open trigger types select list
 							EditAction(url);
 					}
 					// is Condition
 					else if (e.getType() == 'ElementCondition') {
-							var type = $(this).attr('data-type');
-							var url = '{{ action('Automation2Controller@actionEdit', $automation->uid) }}' + '?type=' + e.getOptions().type + '&id=' + e.getId();
+							var url = '{{ action('Automation2Controller@actionEdit', $automation->uid) }}' + '?key=' + e.getOptions().key + '&id=' + e.getId();
 							
 							// Open trigger types select list
 							EditAction(url);

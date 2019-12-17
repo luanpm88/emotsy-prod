@@ -1,3 +1,6 @@
+.text-warning {
+    color: #f88400!important;
+}
 .box-list {
   
 }
@@ -618,19 +621,23 @@ label.switchery-double.checkbox-switchery {
 }
 .automation2 .sidebar .box-loading {
     background: transparent;
-    width: 100vh;
-    height: 100px;
+    width: 100%;
+    height: 40px;
     display: inline-block;
     align-items: center;
     text-align: center;
     justify-content: center;
     border-radius: 15px;
-    box-shadow: none;
     position: absolute;
     z-index: 100;
-    top: 3px;
-    left: 90px;
-    margin: 0 auto;
+    top: 100px;
+    left: -10px;
+}
+.box-is-loading .lds-ellipsis div {
+  background: #000;
+}
+.box-is-loading {
+  opacity: 0.5;
 }
 .dropdown.open .dropdown-menu {
   display: block;
@@ -809,8 +816,70 @@ label.switchery-double.checkbox-switchery {
 }
 .btn .material-icons {
   font-size: 120%;
+  line-height: 14px;
 }
 /*.btn {
   display: flex;
   align-items: center;
 }*/
+.key-value-list .list-media i {
+    font-size: 35px;
+    margin-top: 7px;
+}
+.template-list-items {
+    margin-right: -20px;
+}
+.template-list-item {
+    width: 248px;
+    padding: 10px;
+    border: solid 1px #aaa;
+    border-radius: 4px;
+    float: left;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    color: #333;
+}
+.template-list-item label {
+    height: 40px;
+    line-height: normal;
+}
+.template-list-item img {
+    height: 220px;
+    width: 100%;
+}
+.empty-list {
+  height: 200px;
+  display: block;
+  align-items: center;
+  padding: 50px;
+  text-align: center;
+}
+
+.empty-list i {
+    display: block;
+    font-size: 90px;
+}
+.template-list {
+  position: relative;
+}
+.list-is-loading {
+  opacity: 0.5;
+}
+.list-loading {
+    background: transparent;
+    width: 100%;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    border-radius: 15px;
+    box-shadow: none;
+    position: absolute;
+    z-index: 100;
+    top: 0;
+    left: 0;
+}
+.list-is-loading .lds-ellipsis div {
+  background: #000;
+}

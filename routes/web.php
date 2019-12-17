@@ -563,13 +563,13 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('automation2/{uid}/template/{email_uid}/content', 'Automation2Controller@templateContent');
     Route::match(['get', 'post'], 'automation2/{uid}/template/{email_uid}/edit', 'Automation2Controller@templateEdit');
     Route::match(['get', 'post'], 'automation2/{uid}/template/{email_uid}/upload', 'Automation2Controller@templateUpload');
-    Route::get('automation2/{uid}/template/{email_uid}/theme/list', 'Automation2Controller@templateThemeList');
+    Route::post('automation2/{uid}/template/{email_uid}/theme/list', 'Automation2Controller@templateThemeList');
     Route::match(['get', 'post'], 'automation2/{uid}/template/{email_uid}/theme', 'Automation2Controller@templateTheme');
     Route::match(['get', 'post'], 'automation2/{uid}/template/{email_uid}/layout', 'Automation2Controller@templateLayout');
     Route::get('automation2/{uid}/template/{email_uid}/create', 'Automation2Controller@templateCreate');
     
     Route::match(['get', 'post'], 'automation2/{uid}/email/setup', 'Automation2Controller@emailSetup');
-    Route::match(['get', 'post'], 'automation2/{uid}/email/confirm', 'Automation2Controller@emailConfirm');
+    Route::match(['get', 'post'], 'automation2/{uid}/email/{email_uid}/confirm', 'Automation2Controller@emailConfirm');
     Route::match(['get', 'post'], 'automation2/{uid}/email/{email_uid}', 'Automation2Controller@email');
     Route::match(['get', 'post'], 'automation2/{uid}/email/{email_uid}/template', 'Automation2Controller@emailTemplate');    
     Route::match(['get', 'post'], 'automation2/{uid}/action/edit', 'Automation2Controller@actionEdit');
