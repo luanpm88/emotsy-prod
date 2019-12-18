@@ -557,10 +557,7 @@ class Automation2Controller extends Controller
                     ]),
                     'is_new' => true,
                     'options' => [
-                        'edit_url' => action('Automation2Controller@email', [
-                            'uid' => $automation->uid,
-                            'email_uid' => $email->uid,
-                        ]),
+                        'email_uid' => $email->uid,
                     ],
                 ], 201);
             } else {
@@ -574,10 +571,7 @@ class Automation2Controller extends Controller
                     ]),
                     'is_new' => false,
                     'options' => [
-                        'edit_url' => action('Automation2Controller@email', [
-                            'uid' => $automation->uid,
-                            'email_uid' => $email->uid,
-                        ]),
+                        'email_uid' => $email->uid,
                     ],
                 ], 201);
             }
@@ -623,11 +617,11 @@ class Automation2Controller extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function email(Request $request, $uid, $email_uid)
+    public function email(Request $request, $uid)
     {
         // init automation
         $automation = Automation2::findByUid($uid);
-        $email = Email::findByUid($email_uid);
+        $email = Email::findByUid($request->email_uid);
         
         // authorize
         if (\Gate::denies('update', $automation)) {

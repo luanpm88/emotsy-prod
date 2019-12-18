@@ -379,7 +379,7 @@
 					// is Email
 					else if (e.getType() == 'ElementAction') {
 							var type = $(this).attr('data-type');
-							var url = e.getOptions().edit_url;
+							var url = '{{ action('Automation2Controller@email', $automation->uid) }}?email_uid=' + e.getOptions().email_uid;
 							
 							// Open trigger types select list
 							EditAction(url);
