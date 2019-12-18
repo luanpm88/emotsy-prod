@@ -27,6 +27,8 @@ use Acelle\Model\AutomationElement;
 use Acelle\Model\Email;
 use Acelle\Model\EmailLink;
 use DB;
+use Acelle\Model\Subscriber;
+use Carbon\Carbon;
 
 class Automation2 extends Model
 {
@@ -331,5 +333,82 @@ class Automation2 extends Model
         });
 
         return $trigger;
+    }
+
+    /**
+     * Scan for triggers updates and new triggers
+     */
+    public static function run()
+    {
+        $automations = self::where('status', 'active')->get();
+        foreach ($automations as $automation) {
+            $automation->check();
+        }
+    }
+
+    /**
+     * Scan for triggers updates and new triggers
+     */
+    public function check()
+    {
+        $type = 'list-subscription';
+        switch ($type) {
+            case 'list-subscription':
+                $this->checkForListSubscription();
+                break;
+            case 'ElementAction':
+                //...
+                break;
+            case 'ElementCondition':
+                //...
+                break;
+            case 'ElementWait':
+                //...
+                break;
+            default:
+                throw new \Exception('Unknown Automation trigger type '. $type);
+        }
+    }
+
+    /**
+     * Check for list-subscription events.
+     */
+    public function checkForListSubscription()
+    {
+        $now = Carbon::now();
+        $subscribers = $this->getNewSubscribersToFollow();
+        foreach ($subscribers as $subscriber) {
+            $this->initTrigger($subscriber->id);
+        }
+    }
+
+    /**
+     * Get previous event's opened messages to follow up.
+     *
+     * @return collection
+     */
+    public function getNewSubscribersToFollow()
+    {
+        // Boot performance with temporary table + index
+        try {
+            \DB::statement("DROP TEMPORARY TABLE `_new_subscribers_to_follow`");
+        } catch (\Exception $ex) {
+            // just ignore, in case 2 queries in the same MySQL connection session
+        }
+
+        \DB::statement(sprintf("
+            CREATE TEMPORARY TABLE `_new_subscribers_to_follow` AS
+            SELECT COALESCE(subscriber_id, 0) AS subscriber_id
+            FROM %s WHERE automation2_id = %s;
+
+            CREATE INDEX _new_subscribers_to_follow_index ON _new_subscribers_to_follow(subscriber_id);"
+            , table('auto_triggers'), $this->id)
+        );
+
+        return Subscriber::whereRaw(table('subscribers.id').' NOT IN (SELECT subscriber_id FROM _new_subscribers_to_follow)')
+                    ->where('subscribers.created_at', '>=', $this->created_at)
+                    ->where('mail_list_id', $this->mailList->id)
+                    ->whereRaw(sprintf('COALESCE('.table('subscribers.subscription_type').", '') <> %s", db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED)))
+                    ->get();
     }
 }
