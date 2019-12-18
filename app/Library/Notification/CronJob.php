@@ -28,14 +28,12 @@ use Acelle\Model\Notification;
 class CronJob extends Notification
 {
     /**
-     * Check if CronJob is recently executed and log a notification if not
-     *
-     * @return void
+     * Check if CronJob is recently executed and log a notification if not.
      */
     public static function check()
     {
         self::cleanupSimilarNotifications();
-        
+
         $interval = Setting::get('cronjob_min_interval');
         if (!self::isCronjobExecutedWithin($interval)) {
             $warning = [
@@ -46,11 +44,11 @@ class CronJob extends Notification
             self::warning($warning);
         }
     }
-    
+
     /**
-     * Check if CronJob is recently executed
+     * Check if CronJob is recently executed.
      *
-     * @return boolean
+     * @return bool
      */
     private static function isCronjobExecutedWithin($diff)
     {
@@ -58,15 +56,15 @@ class CronJob extends Notification
         if (is_null($timestamp)) {
             return false;
         }
-        
+
         $lastexec = \Carbon\Carbon::createFromTimestamp($timestamp);
         $checked = new \Carbon\Carbon(sprintf('%s ago', $diff));
-        
+
         return $lastexec->gte($checked);
     }
-    
+
     /**
-     * Get last cron job executed date/time string
+     * Get last cron job executed date/time string.
      *
      * @return string
      */
@@ -76,7 +74,7 @@ class CronJob extends Notification
         if (is_null($timestamp)) {
             return '#unknown';
         }
-        
+
         return \Carbon\Carbon::createFromTimestamp($timestamp)->toDateTimeString();
     }
 }

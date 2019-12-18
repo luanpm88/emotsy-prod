@@ -20,7 +20,7 @@ use Twig_SimpleFunction;
 class TwigUx extends Twig_Extension
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getName()
     {
@@ -28,7 +28,7 @@ class TwigUx extends Twig_Extension
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getFunctions()
     {
@@ -36,16 +36,17 @@ class TwigUx extends Twig_Extension
             new Twig_SimpleFunction(
                 'ux',
                 function ($path) {
-                    return 'ux/templates/' . $path;
+                    return 'ux/templates/'.$path;
                 }
             ),
             new Twig_SimpleFunction(
                 'demo_auth',
                 function () {
                     $auth = \Acelle\Model\User::getAuthenticateFromFile();
+
                     return [
-                        'email' => isset($auth['email']) ? $auth['email'] : "",
-                        'password' => $auth['password'] ? $auth['password'] : "",
+                        'email' => isset($auth['email']) ? $auth['email'] : '',
+                        'password' => $auth['password'] ? $auth['password'] : '',
                     ];
                 }
             ),

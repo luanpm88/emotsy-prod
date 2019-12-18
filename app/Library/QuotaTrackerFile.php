@@ -18,10 +18,12 @@
  * @version    1.0
  *
  * @link       http://acellemail.com
+ *
  * @todo separate the time-series and the quota stuffs
  */
 
 namespace Acelle\Library;
+
 use Carbon\Carbon;
 
 class QuotaTrackerFile
@@ -37,12 +39,11 @@ class QuotaTrackerFile
     const UNLIMITED = -1;
 
     /**
-     * Constructor, modeling data from a JSON array
+     * Constructor, modeling data from a JSON array.
      *
-     * @param String $file
-     * @param Array $limit, for example $limit = ['1 hour' => 50000, '1 minute' => 2000]
-     * @param Array $quota, for example $quota = ['start' => 'Jan 1, 2016', 'interval' => '1 month', 'max' => ]
-     * @return void
+     * @param string $file
+     * @param array  $limit, for example $limit = ['1 hour' => 50000, '1 minute' => 2000]
+     * @param array  $quota, for example $quota = ['start' => 'Jan 1, 2016', 'interval' => '1 month', 'max' => ]
      */
     public function __construct($file, $quota = null, $limits = [])
     {
@@ -53,9 +54,7 @@ class QuotaTrackerFile
     }
 
     /**
-     * Create the lock file itself if not exist
-     *
-     * @return void
+     * Create the lock file itself if not exist.
      */
     private function createLogFile()
     {
@@ -64,7 +63,7 @@ class QuotaTrackerFile
         }
 
         // lock at application level
-        $fp = fopen(storage_path('lock'), "r+");
+        $fp = fopen(storage_path('lock'), 'r+');
         $start = time();
         while (true) {
             $this->timeout($start);
@@ -98,20 +97,19 @@ class QuotaTrackerFile
     }
 
     /**
-     * Check if over quota, add a time point
+     * Check if over quota, add a time point.
      *
      * @param Timestamps $timePoint
-     *
-     * @return void
      */
-    public function add(Carbon $timePoint = null) {
+    public function add(Carbon $timePoint = null)
+    {
         if (!isset($timePoint)) {
             $timePoint = Carbon::now();
         }
 
         $mode = 'a';
-        $this->getExclusiveLock($mode, function(&$writer) use ($timePoint) {
-            fwrite($writer, "," . $timePoint->timestamp);
+        $this->getExclusiveLock($mode, function (&$writer) use ($timePoint) {
+            fwrite($writer, ','.$timePoint->timestamp);
             fflush($writer);
         });
 
@@ -119,18 +117,17 @@ class QuotaTrackerFile
     }
 
     /**
-     * Check if over quota
+     * Check if over quota.
      *
      * @param Timestamps $timePoint
-     *
-     * @return void
      */
-    public function check(Carbon $timePoint = null) {
+    public function check(Carbon $timePoint = null)
+    {
         if (!isset($timePoint)) {
             $timePoint = Carbon::now();
         }
 
-        $this->getSharedLock(function() use (&$result, $timePoint) {
+        $this->getSharedLock(function () use (&$result, $timePoint) {
             $result = true;
 
             # check quota
@@ -138,6 +135,7 @@ class QuotaTrackerFile
             if (!is_null($this->quota)) {
                 if (self::UNLIMITED != $this->quota['max'] && $this->getUsage($timePoint) >= $this->quota['max']) {
                     $result = false;
+
                     return;
                 }
             }
@@ -162,11 +160,9 @@ class QuotaTrackerFile
     }
 
     /**
-     * Shift the time series until its range fits the new time point
+     * Shift the time series until its range fits the new time point.
      *
      * @param Timestamps $timePoint
-     *
-     * @return void
      */
     private function shiftBy(Carbon $timePoint, $interval)
     {
@@ -192,7 +188,7 @@ class QuotaTrackerFile
 
         // cut off the series from the point
         $offset = null;
-        foreach($this->series as $i => $value) {
+        foreach ($this->series as $i => $value) {
             if ($value >= $cutOff) {
                 $offset = $i;
                 break;
@@ -207,23 +203,23 @@ class QuotaTrackerFile
     }
 
     /**
-     * Renew the quota data for the tracker
+     * Renew the quota data for the tracker.
+     *
      * @note this method MUST be wrapped in a transaction
      *
-     * @param Array $series
-     * @return void
+     * @param array $series
      */
     public function reset()
     {
-        $this->getExclusiveLock('r+', function($writer) {
+        $this->getExclusiveLock('r+', function ($writer) {
             ftruncate($writer, 0);
         });
     }
 
     /**
-     * Get the first data point of the time series
+     * Get the first data point of the time series.
      *
-     * @return Mixed data point
+     * @return mixed data point
      */
     private function first()
     {
@@ -231,9 +227,9 @@ class QuotaTrackerFile
     }
 
     /**
-     * Get the last data point of the time series
+     * Get the last data point of the time series.
      *
-     * @return Mixed data point
+     * @return mixed data point
      */
     private function last()
     {
@@ -241,14 +237,15 @@ class QuotaTrackerFile
     }
 
     /**
-     * Count the time series length
+     * Count the time series length.
+     *
      * @transaction-safe
      *
-     * @return Integer count
+     * @return int count
      */
     public function getUsage($timePoint = null, $interval = null)
     {
-        $this->getSharedLock(function() use (&$result, $timePoint, $interval) {
+        $this->getSharedLock(function () use (&$result, $timePoint, $interval) {
             if (is_null($interval)) {
                 list($start, $value) = $this->archived;
                 $result = $value + sizeof($this->getSeries($timePoint, $interval));
@@ -261,7 +258,7 @@ class QuotaTrackerFile
     }
 
     /**
-     * Get usage percentage
+     * Get usage percentage.
      *
      * @return float
      */
@@ -270,14 +267,16 @@ class QuotaTrackerFile
         if (is_null($this->quota)) {
             return $this->getUsage($timePoint, $interval) / array_values($this->limits)[0];
         }
+
         return (float) $this->getUsage($timePoint, $interval) / $this->quota['max'];
     }
 
     /**
-     * Get the data series
+     * Get the data series.
+     *
      * @transaction-safe
      *
-     * @return Array data series
+     * @return array data series
      */
     public function getSeries(Carbon $timePoint = null, $interval = null)
     {
@@ -285,7 +284,7 @@ class QuotaTrackerFile
             $timePoint = Carbon::now();
         }
 
-        $this->getSharedLock(function() use (&$series, $timePoint, $interval) {
+        $this->getSharedLock(function () use (&$series, $timePoint, $interval) {
             $series = $this->shiftBy($timePoint, $interval);
         });
 
@@ -293,10 +292,9 @@ class QuotaTrackerFile
     }
 
     /**
-     * Clean up the series data that are older than quota['max']
-     * @transaction-safe
+     * Clean up the series data that are older than quota['max'].
      *
-     * @return void
+     * @transaction-safe
      */
     public function cleanupSeries($timePoint = null, $interval = '1 month')
     {
@@ -305,7 +303,7 @@ class QuotaTrackerFile
         }
 
         $mode = 'r+';
-        $this->getExclusiveLock($mode, function($writer) use ($timePoint, $interval) {
+        $this->getExclusiveLock($mode, function ($writer) use ($timePoint, $interval) {
             $this->load();
 
             // rebasing the start
@@ -348,19 +346,18 @@ class QuotaTrackerFile
             // retrieve the latest archive data
             list($start, $value) = $this->archived;
             $value += count($archived);
-            $archivedStr = sprintf("%s:%s|", $start, $value);
+            $archivedStr = sprintf('%s:%s|', $start, $value);
 
             // write to file
             ftruncate($writer, 0);
-            fwrite($writer, $archivedStr . implode(",", $newSeries));
+            fwrite($writer, $archivedStr.implode(',', $newSeries));
             fflush($writer);
         });
     }
 
     /**
-     * Get exclusive lock, preparing to read/write quota data
+     * Get exclusive lock, preparing to read/write quota data.
      *
-     * @return void
      * @deprecated due to performance issue (write the entire series to the file, mod "w")
      */
     public function getExclusiveLock($mode, $callback)
@@ -391,20 +388,19 @@ class QuotaTrackerFile
     }
 
     /**
-     * Get shared lock, preparing to read quota data
-     *
-     * @return void
+     * Get shared lock, preparing to read quota data.
      */
     public function getSharedLock($callback)
     {
         if ($this->hasLock) {
             // execute the callback
             $callback($this);
+
             return;
         }
 
         $this->createLogFile();
-        $reader = fopen($this->file, "r");
+        $reader = fopen($this->file, 'r');
         $start = time();
         while (true) {
             // if timed out
@@ -430,7 +426,7 @@ class QuotaTrackerFile
     }
 
     /**
-     * Load time series from file
+     * Load time series from file.
      *
      * @return array time series
      */
@@ -449,26 +445,25 @@ class QuotaTrackerFile
         // a faster way is to use json_decode
 
         // REXP to replace anything before the pipe or leading/trailing comma
-        $this->series = json_decode('[' . preg_replace('/(^(.*\|,*|,+)|,+$)/', '', $series) . ']');
+        $this->series = json_decode('['.preg_replace('/(^(.*\|,*|,+)|,+$)/', '', $series).']');
+
         return $this->series;
     }
 
     /**
-     * Time out a lock request when it exceeds the QUOTA setting
-     *
-     * @return void
+     * Time out a lock request when it exceeds the QUOTA setting.
      */
     private function timeout($start)
     {
         if (time() - $start > self::TIMEOUT) {
-            throw new \Exception("Timeout getting lock");
+            throw new \Exception('Timeout getting lock');
         }
     }
 
     /**
-     * Get the raw series data (for testing only)
+     * Get the raw series data (for testing only).
      *
-     * @return Array series
+     * @return array series
      */
     public function getRawSeries()
     {
@@ -476,9 +471,9 @@ class QuotaTrackerFile
     }
 
     /**
-     * Get the raw archived info (for testing only)
+     * Get the raw archived info (for testing only).
      *
-     * @return Array series
+     * @return array series
      */
     public function getRawArchived()
     {
@@ -486,9 +481,9 @@ class QuotaTrackerFile
     }
 
     /**
-     * Dump the quota track configuration settings
+     * Dump the quota track configuration settings.
      *
-     * @return Array settings
+     * @return array settings
      */
     public function dump()
     {

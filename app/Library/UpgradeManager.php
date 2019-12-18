@@ -33,18 +33,16 @@ class UpgradeManager
     const META_FILE = 'meta.json';
 
     /**
-     * Constructor, specify the source, target and load the meta information
-     *
+     * Constructor, specify the source, target and load the meta information.
      */
-    function __construct()
+    public function __construct()
     {
         $this->source = storage_path('tmp/patch');
         $this->target = base_path();
     }
 
     /**
-     * Constructor, specify the source, target and load the meta information
-     *
+     * Constructor, specify the source, target and load the meta information.
      */
     public function load($path)
     {
@@ -65,45 +63,41 @@ class UpgradeManager
                 $this->validate();
             } else {
                 umask($old);
-                LaravelLog::error('Cannot open zip file ' . $path . ' with error code ' . $res);
-                throw new \Exception("Invalid upgrade package");
+                LaravelLog::error('Cannot open zip file '.$path.' with error code '.$res);
+                throw new \Exception('Invalid upgrade package');
             }
         } catch (\Exception $e) {
             $this->rm($this->source);
             throw $e;
         }
-
     }
 
     /**
-     * Read the meta data from a patch package
-     *
+     * Read the meta data from a patch package.
      */
     public function getNewVersion()
     {
         if ($this->isNewVersionAvailable()) {
             return $this->getMetaInfo()['version'];
         } else {
-            return null;
+            return;
         }
     }
 
     /**
-     * Get last supported version for upgrade
-     *
+     * Get last supported version for upgrade.
      */
     public function getLastSupportedVersion()
     {
         if ($this->isNewVersionAvailable()) {
             return $this->getMetaInfo()['last_supported'];
         } else {
-            return null;
+            return;
         }
     }
 
     /**
-     * Read the meta data from a patch package
-     *
+     * Read the meta data from a patch package.
      */
     public function cleanup()
     {
@@ -117,8 +111,7 @@ class UpgradeManager
     }
 
     /**
-     * Read the meta data from a patch package
-     *
+     * Read the meta data from a patch package.
      */
     public function validate()
     {
@@ -132,7 +125,7 @@ class UpgradeManager
         }
 
         if (version_compare($this->getLastSupportedVersion(), $this->getCurrentVersion(), '>')) {
-            throw new \Exception(sprintf('You are on a version that is not supported by this update, last supported version is %s', $this->getLastSupportedVersion() ));
+            throw new \Exception(sprintf('You are on a version that is not supported by this update, last supported version is %s', $this->getLastSupportedVersion()));
         }
 
         // DRYRUN to see if there is any error
@@ -140,22 +133,20 @@ class UpgradeManager
     }
 
     /**
-     * Read the meta data from a patch package
-     *
+     * Read the meta data from a patch package.
      */
     private function getMetaInfo()
     {
         $path = join_paths($this->source, self::META_FILE);
         if (!file_exists($path)) {
-            throw new \Exception("Unknown package format");
+            throw new \Exception('Unknown package format');
         }
 
         return json_decode(file_get_contents($path), true);
     }
 
     /**
-     * Actually run the upgrade process
-     *
+     * Actually run the upgrade process.
      */
     public function run($test = false)
     {
@@ -184,7 +175,7 @@ class UpgradeManager
             $langFiles = [];
 
             // new or updated files
-            foreach($updates as $file) {
+            foreach ($updates as $file) {
                 $source = join_paths($this->source, $file);
                 $target = join_paths($this->target, $file);
 
@@ -223,7 +214,7 @@ class UpgradeManager
             }
 
             // deleted files
-            foreach($deletes as $file) {
+            foreach ($deletes as $file) {
                 $target = join_paths($this->target, $file);
 
                 if ($test) {
@@ -234,11 +225,10 @@ class UpgradeManager
                     LaravelLog::info("Deleting {$target}");
                     @unlink($target);
                 }
-
             }
 
             // new or updated packages
-            foreach($packages as $dir) {
+            foreach ($packages as $dir) {
                 $source = join_paths($this->source, 'vendor', $dir);
                 $target = join_paths($this->target, 'vendor', $dir);
                 if ($test) {
@@ -253,7 +243,7 @@ class UpgradeManager
             }
 
             // new or updated entire directories
-            foreach($dirs as $dir) {
+            foreach ($dirs as $dir) {
                 $source = join_paths($this->source, $dir);
                 $target = join_paths($this->target, $dir);
                 if ($test) {
@@ -273,7 +263,7 @@ class UpgradeManager
             }
 
             // cleanup
-            LaravelLog::info("Cleaning up");
+            LaravelLog::info('Cleaning up');
             $this->cleanup();
 
             if (!$test) {
@@ -290,14 +280,14 @@ class UpgradeManager
             throw $e;
         }
     }
-    
+
     public function refreshConfig()
     {
         // reload the config & run migration
-        LaravelLog::info("Updating .env file");
+        LaravelLog::info('Updating .env file');
         $this->mergeEnv(base_path('.env'), base_path('.env.example'));
-        
-        LaravelLog::info("Start caching & migrating");
+
+        LaravelLog::info('Start caching & migrating');
         $files = ['bootstrap/cache/config.php', 'bootstrap/cache/services.php', 'bootstrap/cache/compiled.php'];
         foreach ($files as $file) {
             $path = base_path($file);
@@ -305,43 +295,45 @@ class UpgradeManager
                 $this->rm($path);
             }
         }
-        
+
         try {
             \Artisan::call('cache:clear');
             \Artisan::call('route:clear');
-            \Artisan::call('view:clear');    
+            \Artisan::call('view:clear');
         } catch (\Exception $e) {
             // something wrong here
         }
 
         artisan_config_cache();
         artisan_migrate();
-        LaravelLog::info("Done caching & migrating!");
+        LaravelLog::info('Done caching & migrating!');
     }
 
     /**
-     * Actually run the upgrade process
-     *
+     * Actually run the upgrade process.
      */
     public function upgradeTranslationFiles()
     {
         $dir = base_path('resources/lang/');
-
     }
-    
+
     /**
      * Merge .env files.
-     *
      */
-    private function mergeEnv($mainfile, $updatefile) {
+    private function mergeEnv($mainfile, $updatefile)
+    {
         $maindb = file($mainfile);
         $updatedb = file($updatefile);
-    
+
         $rexp = '/\s*=\s*/';
-        $mainkeys = array_map(function($record) use ($rexp) { $pair = preg_split($rexp, $record); return (empty($pair)) ? null : $pair[0]; }, $maindb);
-    
+        $mainkeys = array_map(function ($record) use ($rexp) { $pair = preg_split($rexp, $record);
+
+return (empty($pair)) ? null : $pair[0]; }, $maindb);
+
         foreach ($updatedb as $updaterecord) {
-            if (empty(trim($updaterecord))) { continue; }
+            if (empty(trim($updaterecord))) {
+                continue;
+            }
             list($updatekey, $updatevalue) = preg_split($rexp, $updaterecord);
             // echo "Checking $updatekey\n";
             if (!in_array($updatekey, $mainkeys)) {
@@ -353,8 +345,7 @@ class UpgradeManager
     }
 
     /**
-     * Test the upgrade process (DRY-RUN)
-     *
+     * Test the upgrade process (DRY-RUN).
      */
     public function test()
     {
@@ -362,8 +353,7 @@ class UpgradeManager
     }
 
     /**
-     * Get current app version
-     *
+     * Get current app version.
      */
     public function getCurrentVersion()
     {
@@ -371,8 +361,7 @@ class UpgradeManager
     }
 
     /**
-     * Check if new version is available
-     *
+     * Check if new version is available.
      */
     public function isNewVersionAvailable()
     {
@@ -380,7 +369,7 @@ class UpgradeManager
     }
 
     /**
-     * Check if an existing file is writable or a new path can be created
+     * Check if an existing file is writable or a new path can be created.
      *
      * @input string file path
      * @output boolean
@@ -399,7 +388,7 @@ class UpgradeManager
     }
 
     /**
-     * Check if the specified path can be created
+     * Check if the specified path can be created.
      *
      * @output boolean
      */
@@ -413,26 +402,24 @@ class UpgradeManager
             if (empty($tmppath)) {
                 continue;
             }
-            
+
             try {
                 if (!file_exists($tmppath)) {
                     break;
                 } else {
                     $parent = $tmppath;
-                }    
+                }
             } catch (\Exception $ex) {
                 LaravelLog::warning($path.' not in open_basedir: '.ini_get('open_basedir'));
                 $parent = $tmppath;
             }
-            
         }
 
         return is_writable($parent);
     }
 
     /**
-     * Delete a directory recursively
-     *
+     * Delete a directory recursively.
      */
     private function rm($src)
     {
@@ -442,17 +429,17 @@ class UpgradeManager
 
         if (!is_dir($src)) {
             unlink($src);
+
             return;
         }
 
         $dir = opendir($src);
-        while(false !== ( $file = readdir($dir)) ) {
-            if (( $file != '.' ) && ( $file != '..' )) {
-                $full = $src . '/' . $file;
-                if ( is_dir($full) ) {
+        while (false !== ($file = readdir($dir))) {
+            if (($file != '.') && ($file != '..')) {
+                $full = $src.'/'.$file;
+                if (is_dir($full)) {
                     $this->rm($full);
-                }
-                else {
+                } else {
                     unlink($full);
                 }
             }
@@ -462,8 +449,7 @@ class UpgradeManager
     }
 
     /**
-     * Copy a directory recursively
-     *
+     * Copy a directory recursively.
      */
     private function copy($src, $dst)
     {
@@ -473,16 +459,17 @@ class UpgradeManager
         // if source is a file, just copy it
         if (!is_dir($src)) {
             copy($src, $dst);
+
             return;
         }
 
         // if source is a directory, copy recursively all its child files/directories
         $dir = opendir($src);
         mkdir($dst);
-        
-        while(false !== ( $file = readdir($dir)) ) {
-            if (( $file != '.' ) && ( $file != '..' )) {
-                if ( is_dir(join_paths($src, $file)) ) {
+
+        while (false !== ($file = readdir($dir))) {
+            if (($file != '.') && ($file != '..')) {
+                if (is_dir(join_paths($src, $file))) {
                     $this->copy(join_paths($src,  $file), join_paths($dst, $file));
                 } else {
                     copy(join_paths($src, $file), join_paths($dst,  $file));
@@ -493,8 +480,7 @@ class UpgradeManager
     }
 
     /**
-     * Create base directory for a given path
-     *
+     * Create base directory for a given path.
      */
     public function createBaseDir($path)
     {
@@ -505,22 +491,20 @@ class UpgradeManager
             if (empty($tmppath)) {
                 continue;
             }
-            
+
             try {
                 if (!file_exists($tmppath)) {
                     mkdir($tmppath);
-                }    
+                }
             } catch (\Exception $ex) {
                 LaravelLog::warning($tmppath.' not in open_basedir (skip mkdir): '.ini_get('open_basedir'));
                 $parent = $tmppath;
             }
-            
         }
     }
 
     /**
-     * Check if the provided file is a language file
-     *
+     * Check if the provided file is a language file.
      */
     public function isLanguageFile($path)
     {
@@ -528,8 +512,7 @@ class UpgradeManager
     }
 
     /**
-     * Check if the provided file is a language file and is EN
-     *
+     * Check if the provided file is a language file and is EN.
      */
     public function isEnFile($path)
     {
@@ -540,7 +523,7 @@ class UpgradeManager
      * Upgrade all existing language packages using the provided file
      * For example:
      *    $manager = new \Acelle\Library\UpgradeManager();
-     *    $manager->upgradeLanguageFiles(resource_path("lang/en/messages.php"));
+     *    $manager->upgradeLanguageFiles(resource_path("lang/en/messages.php"));.
      */
     public function upgradeLanguageFiles($sourcePath)
     {
@@ -550,7 +533,7 @@ class UpgradeManager
         foreach ($languages as $lang) {
             // if for any reason the language directory does not exist, just ignore it
             if (!file_exists($lang->languageDir())) {
-                LaravelLog::warning(sprintf("Language directory %s does not exist", $lang->languageDir()));
+                LaravelLog::warning(sprintf('Language directory %s does not exist', $lang->languageDir()));
                 continue;
             }
 
@@ -564,7 +547,7 @@ class UpgradeManager
      * Merge the language file to retain user's change
      * Example:
      *    $manager = new \Acelle\Library\UpgradeManager()
-     *    $manager->mergeLanguageFile('/home/user/mailixa/resources/lang/en/messages.php', '/tmp/messages.php')
+     *    $manager->mergeLanguageFile('/home/user/mailixa/resources/lang/en/messages.php', '/tmp/messages.php').
      */
     public function mergeLanguageFile($sourcePath, $targetPath)
     {
@@ -576,7 +559,7 @@ class UpgradeManager
         $target = include $targetPath;
         $merged = array_diff_key($target + $source, array_diff_key($target, $source));
 
-        $out = '<?php return ' . var_export(\Yaml::parse(\Yaml::dump($merged)), true) . ' ?>';
+        $out = '<?php return '.var_export(\Yaml::parse(\Yaml::dump($merged)), true).' ?>';
         \File::put($targetPath, $out);
     }
 }

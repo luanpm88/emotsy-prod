@@ -26,8 +26,7 @@ namespace Acelle\Library;
 class ExtendedSmtpTransport extends \Swift_SmtpTransport
 {
     /**
-     * Array used to store raw SMTP responses
-     *
+     * Array used to store raw SMTP responses.
      */
     private $rawResponses = array();
     private $rawTrasmissionData = array();
@@ -43,6 +42,7 @@ class ExtendedSmtpTransport extends \Swift_SmtpTransport
         $response = parent::executeCommand($command, $codes, $failures);
         $this->rawResponses[] = $response;
         $this->rawTrasmissionData[] = $response;
+
         return $response;
     }
 
@@ -58,13 +58,13 @@ class ExtendedSmtpTransport extends \Swift_SmtpTransport
 
     /**
      * Get Elastic message ID from the last SMTP response.
-     * which looks like this: "250 OK 5c4764a2-93a7-4914-91e2-b6c6f57aff9d"
+     * which looks like this: "250 OK 5c4764a2-93a7-4914-91e2-b6c6f57aff9d".
      *
      * @return string messageId
      */
     public function getMessageId()
     {
-        $messageId = NULL;
+        $messageId = null;
         foreach ($this->rawResponses as $e) {
             preg_match('/(?<=250 ok\s)[^\s]*/i', $e, $matched);
             if (sizeof($matched) > 0) {
@@ -76,7 +76,7 @@ class ExtendedSmtpTransport extends \Swift_SmtpTransport
     }
 
     /**
-     * Get SMTP raw responses (for debugging)
+     * Get SMTP raw responses (for debugging).
      *
      * @return array SMTP responses
      */

@@ -18,6 +18,7 @@
  * @version    1.0
  *
  * @link       http://acellemail.com
+ *
  * @todo separate the time-series and the quota stuffs
  */
 
@@ -26,25 +27,21 @@ namespace Acelle\Library;
 class Lockable
 {
     /**
-     * Get exclusive lock
-     *
-     * @return void
+     * Get exclusive lock.
      */
     private $file;
-    
+
     public function __construct($file)
     {
         if (!file_exists($file)) {
             touch($file);
         }
-        
+
         $this->file = $file;
     }
-    
+
     /**
-     * Get exclusive lock
-     *
-     * @return void
+     * Get exclusive lock.
      */
     public function getExclusiveLock($callback, $timeout = 5, $exceptionCallback = null)
     {
@@ -65,14 +62,12 @@ class Lockable
     }
 
     /**
-     * Get shared lock
-     *
-     * @return void
+     * Get shared lock.
      */
     public function getSharedLock($callback, $timeout = 5, $exceptionCallback = null)
     {
         $start = time();
-        $reader = fopen($this->file, "r");
+        $reader = fopen($this->file, 'r');
         while (true) {
             $this->checkTimeout($start, $timeout, $exceptionCallback);
             if (flock($reader, LOCK_SH | LOCK_NB)) {  // acquire an exclusive lock
@@ -85,19 +80,17 @@ class Lockable
             }
         }
     }
-    
+
     /**
-     * Check for timeout
-     *
-     * @return void
+     * Check for timeout.
      */
     public function checkTimeout($startTime, $timeoutDuration, $callback)
     {
         if (time() - $startTime > $timeoutDuration) {
             if (!is_null($callback)) {
-                $callback();    
+                $callback();
             } else {
-                throw new \Exception("Timeout getting lock #Lockable");
+                throw new \Exception('Timeout getting lock #Lockable');
             }
         }
     }

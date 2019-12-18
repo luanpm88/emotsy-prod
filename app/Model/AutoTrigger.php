@@ -23,6 +23,7 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Acelle\Library\Automation\Action;
 use Acelle\Library\Automation\Send;
 use Acelle\Library\Automation\Wait;
 use Acelle\Library\Automation\Evaluate;
@@ -97,7 +98,7 @@ class AutoTrigger extends Model
             $last = $trigger;
         }
 
-        while ($last->execute() == true) { // true means: done with this step, should proceed next
+        while ($last->execute($this) == true) { // true means: done with this step, should proceed next
             $this->updateAction($last); // update 'last_checked_at' field of Wait for example
             $last = $this->moveToNextAction();
             if ($last == null) {
@@ -105,7 +106,10 @@ class AutoTrigger extends Model
             }
         }
 
-        $this->updateAction($last); // update 'last_checked_at' field of Wait for example
+        if (!is_null($last)) {
+            $this->updateAction($last); // update 'last_checked_at' field of Wait for example
+        }
+
     }
 
     public function updateAction($action)
@@ -185,19 +189,3 @@ class AutoTrigger extends Model
         return  $trigger;
     }
 }
-
-/*
-
-$f = AutoTrigger::first();$x = $f->getLatestAction()
-$s = '{
-"trigger": {"title":"New Subscribers!", "type": "ElementTrigger", "child": "welcome", "options": {"test": "123"}, "latest": true},
-"welcome": {"title":"Send a Welcome email", "type": "ElementAction", "child": "welcome2"},
-"welcome2": {"title":"Send a Welcome email", "type": "ElementAction", "child": "wait"},
-"wait": {"title":"Wait for a while", "type": "ElementWait", "child": "condition"},
-"condition": {"title":"Send a Welcome email", "type": "ElementWait", "child": "condition"}
-}';
-$f->data = $s;
-$f->save();
-
-
-*/

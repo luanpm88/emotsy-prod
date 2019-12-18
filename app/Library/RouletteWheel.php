@@ -51,7 +51,7 @@ class RouletteWheel
         // just in case
         return array_keys($a)[sizeof($a) - 1];
     }
-    
+
     /**
      * Generate a random float.
      *

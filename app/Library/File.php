@@ -70,18 +70,17 @@ class File
             'ods' => 'application/vnd.oasis.opendocument.spreadsheet',
         );
 
-        $arr = explode('.',$filename);
+        $arr = explode('.', $filename);
         $ext = strtolower(array_pop($arr));
         if (array_key_exists($ext, $mime_types)) {
             return $mime_types[$ext];
-        }
-        elseif (function_exists('finfo_open')) {
+        } elseif (function_exists('finfo_open')) {
             $finfo = finfo_open(FILEINFO_MIME);
             $mimetype = finfo_file($finfo, $filename);
             finfo_close($finfo);
+
             return $mimetype;
-        }
-        else {
+        } else {
             return 'application/octet-stream';
         }
     }

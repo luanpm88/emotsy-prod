@@ -28,14 +28,12 @@ use Acelle\Model\Notification;
 class SystemUrl extends Notification
 {
     /**
-     * Check if CronJob is recently executed and log a notification if not
-     *
-     * @return void
+     * Check if CronJob is recently executed and log a notification if not.
      */
     public static function check()
     {
         self::cleanupSimilarNotifications();
-        
+
         $current = url('/');
         $cached = Setting::get('url_root');
         if ($current != $cached) {

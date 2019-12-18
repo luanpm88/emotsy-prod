@@ -25,7 +25,7 @@ class Email extends Model
     protected $fillable = [
         'subject', 'from', 'from_name', 'reply_to', 'sign_dkim', 'track_open', 'track_click', 'action_id'
     ];
-    
+
     /**
      * Association with mailList through mail_list_id column.
      */
@@ -33,7 +33,7 @@ class Email extends Model
     {
         return $this->belongsTo('Acelle\Model\Automation2', 'automation2_id');
     }
-    
+
     /**
      * Association with attachments.
      */
@@ -41,7 +41,7 @@ class Email extends Model
     {
         return $this->hasMany('Acelle\Model\Attachment');
     }
-    
+
     /**
      * Association with email links.
      */
@@ -49,7 +49,7 @@ class Email extends Model
     {
         return $this->hasMany('Acelle\Model\EmailLink');
     }
-    
+
     /**
      * Bootstrap any application services.
      */
@@ -67,7 +67,7 @@ class Email extends Model
             $item->uid = $uid;
         });
     }
-    
+
     /**
      * Find item by uid.
      *
@@ -77,7 +77,7 @@ class Email extends Model
     {
         return self::where('uid', '=', $uid)->first();
     }
-    
+
     /**
      * Create automation rules.
      *
@@ -91,7 +91,7 @@ class Email extends Model
             'from_name' => 'required',
         ];
     }
-    
+
     /**
      * Get public campaign upload uri.
      */
@@ -143,7 +143,7 @@ class Email extends Model
         // save template
         $this->save();
     }
-    
+
     /**
      * Get builder templates.
      *
@@ -152,13 +152,13 @@ class Email extends Model
     public function getBuilderTemplates($customer)
     {
         $result = [];
-        
+
         // Gallery
         $templates = Template::where('customer_id', '=', null)
             ->orWhere('customer_id', '=', $customer->id)
             ->orderBy('customer_id')
             ->get();
-        
+
         foreach($templates as $template) {
             $result[] = [
                 'name' => $template->name,
@@ -170,10 +170,10 @@ class Email extends Model
                 'thumbnail' => action('TemplateController@image', $template->uid),
             ];
         }
-        
+
         return $result;
     }
-    
+
     /**
      * Upload attachment.
      *
@@ -183,26 +183,26 @@ class Email extends Model
     {
         $att = new Attachment();
         $att->email_id = $this->id;
-        $att->size = $file->getSize();        
+        $att->size = $file->getSize();
         $att->name = $file->getClientOriginalName();
         $att->file = Storage::disk('local')->put('attachments/' . $this->uid, $file);
-        
+
         $att->save();
     }
-    
+
     /**
      * Copy new template.
      */
     public function copyFromTemplate($template)
     {
         \Acelle\Library\Tool::xcopy($template->getUploadDir(), $this->getUploadDir());
-        
+
         // replace image url
         $this->content = $template->content;
         $this->content = str_replace($template->getUploadUri(), $this->getUploadUri(), $this->content);
         $this->save();
     }
-    
+
     /**
      * Upload a template.
      */
@@ -318,10 +318,10 @@ class Email extends Model
         // remove tmp folder
         // exec("rm -r {$tmp_path}");
         Tool::xdelete($tmp_path);
-        
+
         return [true, $validator];
     }
-    
+
     /**
      * Find and update email links.
      */
@@ -330,9 +330,9 @@ class Email extends Model
         if (!$this->content) {
             return false;
         }
-        
+
         $links = [];
-        
+
         // find all links from contents
         $document = HtmlDomParser::str_get_html($this->content);
         foreach($document->find('a') as $element) {
@@ -340,18 +340,23 @@ class Email extends Model
                 $links[] = trim($element->href);
             }
         }
-        
+
         // delete al bold links
         $this->emailLinks()->whereNotIn('link', $links)->delete();
-    
+
         foreach($links as $link) {
             $exist = $this->emailLinks()->where('link', '=', $link)->count();
-            
+
             if(!$exist) {
                 $this->emailLinks()->create([
                     'link' => $link,
                 ]);
             }
         }
+    }
+
+    public function deliverTo($subscriber)
+    {
+        // send to this subscriber
     }
 }

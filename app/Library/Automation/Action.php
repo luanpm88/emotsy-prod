@@ -76,6 +76,8 @@ abstract class Action
     public function markAsLatest($latest = true)
     {
         $this->latest = $latest;
+
+        return $this;
     }
 
     public function recordLastExecutedTime()

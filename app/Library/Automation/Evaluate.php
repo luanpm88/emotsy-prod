@@ -26,7 +26,7 @@ class Evaluate extends Action
         return $json;
     }
 
-    public function execute()
+    public function execute($trigger)
     {
         $this->recordLastExecutedTime();
 

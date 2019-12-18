@@ -22,7 +22,6 @@
 
 namespace Acelle\Library\Notification;
 
-use Acelle\Model\Setting;
 use Acelle\Model\Notification;
 
 class BackendError extends Notification

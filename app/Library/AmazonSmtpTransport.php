@@ -26,8 +26,7 @@ namespace Acelle\Library;
 class AmazonSmtpTransport extends \Swift_SmtpTransport
 {
     /**
-     * Array used to store raw SMTP responses
-     *
+     * Array used to store raw SMTP responses.
      */
     private $rawResponses = array();
 
@@ -40,6 +39,7 @@ class AmazonSmtpTransport extends \Swift_SmtpTransport
     {
         $response = parent::executeCommand($command, $codes, $failures);
         $this->rawResponses[] = $response;
+
         return $response;
     }
 
@@ -72,9 +72,9 @@ class AmazonSmtpTransport extends \Swift_SmtpTransport
     }
 
     /**
-     * Get an array of SMTP raw responses
+     * Get an array of SMTP raw responses.
      *
-     * @return Array SMTP messages
+     * @return array SMTP messages
      */
     public function getRawResponses()
     {

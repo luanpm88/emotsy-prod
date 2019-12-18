@@ -34,7 +34,7 @@ class Log
 {
     public static $logger;
     public static $path;
-    
+
     /**
      * Debug.
      *
@@ -44,7 +44,7 @@ class Log
     {
         self::$logger->debug($message);
     }
-    
+
     /**
      * Info.
      *
@@ -54,7 +54,7 @@ class Log
     {
         self::$logger->info($message);
     }
-    
+
     /**
      * Notice.
      *
@@ -64,7 +64,7 @@ class Log
     {
         self::$logger->notice($message);
     }
-    
+
     /**
      * Warning.
      *
@@ -74,7 +74,7 @@ class Log
     {
         self::$logger->warning($message);
     }
-    
+
     /**
      * Error.
      *
@@ -132,7 +132,7 @@ class Log
         self::$logger = new Logger('mailer');
         self::$logger->pushHandler($stream);
     }
-    
+
     /**
      * Configure log format, used at initialization.
      *
@@ -153,7 +153,7 @@ class Log
     }
 
     /**
-     * Create a custom logger
+     * Create a custom logger.
      *
      * @return logger
      */
@@ -168,7 +168,7 @@ class Log
 
         $logger = new Logger($name);
         $logger->pushHandler($stream);
-        
+
         return $logger;
     }
 }

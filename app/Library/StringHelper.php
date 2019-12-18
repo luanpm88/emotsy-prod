@@ -76,7 +76,7 @@ class StringHelper
     }
 
     /**
-     * Generate MessageId from domain name
+     * Generate MessageId from domain name.
      *
      * @param string $val
      *
@@ -96,15 +96,15 @@ class StringHelper
     }
 
     /**
-     * Check if a given string is a test Message Id
+     * Check if a given string is a test Message Id.
      *
      * @param string $messageId
      *
-     * @return boolean
+     * @return bool
      */
     public static function isTestMessageId($messageId)
     {
-        return (strpos($messageId, '.0000000000000@') !== false);
+        return strpos($messageId, '.0000000000000@') !== false;
     }
 
     /**
@@ -126,7 +126,7 @@ class StringHelper
 
     /**
      * Extract SendGrid X-Message-Id from Smtp-Id
-     * For example, extract "GuUFV1znQTmkQyPXrPLyxA" from "<GuUFV1znQTmkQyPXrPLyxA@ismtpd0019p1sin1.sendgrid.net>"
+     * For example, extract "GuUFV1znQTmkQyPXrPLyxA" from "<GuUFV1znQTmkQyPXrPLyxA@ismtpd0019p1sin1.sendgrid.net>".
      *
      * @param string $val
      *
@@ -135,21 +135,22 @@ class StringHelper
     public static function extractSendGridMessageId($smtpId)
     {
         $cleaned = self::cleanupMessageId($smtpId);
+
         return substr($cleaned, 0, strpos($cleaned, '@'));
     }
 
     /**
-     * Detect file encoding
+     * Detect file encoding.
      *
-     * @param String file path
+     * @param string file path
      *
-     * @return String encoding or false if cannot detect one
+     * @return string encoding or false if cannot detect one
      */
     public static function detectEncoding($file, $max = 100)
     {
-        $file = fopen($file, "r");
+        $file = fopen($file, 'r');
 
-        $sample = "";
+        $sample = '';
         $count = 0;
         while (!feof($file) && $count <= $max) {
             $count += 1;
@@ -161,9 +162,9 @@ class StringHelper
     }
 
     /**
-     * Convert from one encoding to the other
+     * Convert from one encoding to the other.
      *
-     * @param String file path
+     * @param string file path
      */
     public static function toUTF8($file, $from = 'UTF-8')
     {
@@ -174,13 +175,13 @@ class StringHelper
 
     /**
      * Check if a (UTF-8 encoded) file contains BOM
-     * Fix it (remove BOM chars) if any
+     * Fix it (remove BOM chars) if any.
      *
-     * @param String file path
+     * @param string file path
      */
     public static function checkAndRemoveUTF8BOM($file)
     {
-        $bom = pack('H*','EFBBBF');
+        $bom = pack('H*', 'EFBBBF');
         $text = file_get_contents($file);
         $matched = preg_match("/^$bom/", $text, $result);
 
@@ -190,6 +191,7 @@ class StringHelper
 
         $text = preg_replace("/^$bom/", '', $text);
         file_put_contents($file, $text);
+
         return true;
     }
 }

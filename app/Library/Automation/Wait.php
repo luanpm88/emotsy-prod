@@ -4,10 +4,10 @@ namespace Acelle\Library\Automation;
 
 class Wait extends Action
 {
-    public function execute()
+    public function execute($trigger)
     {
         $this->recordLastExecutedTime();
 
-        return false;
+        return true;
     }
 }

@@ -18,7 +18,7 @@ class MtaSync
             // Base URI is used with relative requests
             'base_uri' => $this->apiEndpoint,
             // You can set any number of default request options.
-            'timeout'  => 5.0,
+            'timeout' => 5.0,
         ]);
 
         return $client;
@@ -36,7 +36,7 @@ class MtaSync
 
         $params = array_merge($params, $attributes);
 
-        $this->request('POST', 'api/domain', $params );
+        $this->request('POST', 'api/domain', $params);
     }
 
     public function removeDomain($name)
@@ -58,7 +58,7 @@ class MtaSync
         $response = $this->getClient()->request($type, $action, [
             'headers' => [
                 'Accept' => 'application/json',
-                'Authorization' => 'Bearer ' . $this->apiKey,
+                'Authorization' => 'Bearer '.$this->apiKey,
             ],
             'form_params' => $params,
         ]);

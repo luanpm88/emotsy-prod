@@ -1,7 +1,8 @@
 <?php
+
 namespace Acelle\Library\Contracts;
-  
-Interface GeoIpInterface
+
+interface GeoIpInterface
 {
     public function resolveIp($ip);
     public function getCountryCode();

@@ -26,8 +26,8 @@ use Illuminate\Database\Eloquent\Model;
 use Acelle\Model\AutomationElement;
 use Acelle\Model\Email;
 use Acelle\Model\EmailLink;
-use DB;
 use Acelle\Model\Subscriber;
+use DB;
 use Carbon\Carbon;
 
 class Automation2 extends Model
@@ -340,16 +340,18 @@ class Automation2 extends Model
      */
     public static function run()
     {
-        $automations = self::where('status', 'active')->get();
+        // Step 1: check for new trigger
+        $automations = self::where('status', self::STATUS_ACTIVE)->get();
         foreach ($automations as $automation) {
-            $automation->check();
+            $automation->checkForNewTriggers();
+            $automation->checkForExistingTriggersUpdate();
         }
     }
 
     /**
-     * Scan for triggers updates and new triggers
+     * Check for new triggers
      */
-    public function check()
+    public function checkForNewTriggers()
     {
         $type = 'list-subscription';
         switch ($type) {
@@ -367,6 +369,16 @@ class Automation2 extends Model
                 break;
             default:
                 throw new \Exception('Unknown Automation trigger type '. $type);
+        }
+    }
+
+    /**
+     * Check for existing triggers update
+     */
+    public function checkForExistingTriggersUpdate()
+    {
+        foreach ($this->autoTriggers as $trigger) {
+            $trigger->check();
         }
     }
 
@@ -406,9 +418,9 @@ class Automation2 extends Model
         );
 
         return Subscriber::whereRaw(table('subscribers.id').' NOT IN (SELECT subscriber_id FROM _new_subscribers_to_follow)')
-                    ->where('subscribers.created_at', '>=', $this->created_at)
-                    ->where('mail_list_id', $this->mailList->id)
-                    ->whereRaw(sprintf('COALESCE('.table('subscribers.subscription_type').", '') <> %s", db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED)))
-                    ->get();
+                ->where('subscribers.created_at', '>=', $this->created_at)
+                ->where('mail_list_id', $this->mailList->id)
+                ->whereRaw(sprintf('COALESCE('.table('subscribers.subscription_type').", '') <> %s", db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED)))
+                ->get();
     }
 }
