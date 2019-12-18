@@ -137,8 +137,8 @@
                     // set node title
                     tree.getSelected().setTitle(response.title);
                     // merge options with reponse options
-                    tree.getSelected().setOptions($.extend(tree.getOptions(), {init: "true"}));
-                    tree.getSelected().setOptions($.extend(tree.getOptions(), response.options));
+                    tree.getSelected().setOptions($.extend(tree.getSelected().getOptions(), {init: "true"}));
+                    tree.getSelected().setOptions($.extend(tree.getSelected().getOptions(), response.options));
 
                     doSelect(tree.getSelected());
                     

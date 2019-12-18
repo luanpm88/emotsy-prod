@@ -6,20 +6,20 @@ a {
     color: #f88400!important;
 }
 .box-list {
-  
+  margin-right: -20px;
 }
 .box-list .box-item {
-    width: 270px;
-    float: left;
-    margin-right: 20px;
-    height: 170px;
-    text-align: center;
-    border: solid 1px #bbb;
-    padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 5px;
-    color: #333;
-    cursor: pointer;
+  width: 320px;
+  float: left;
+  margin-right: 20px;
+  height: 140px;
+  text-align: center;
+  border: solid 1px #bbb;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  color: #333;
+  cursor: pointer;
 }
 .box-list .box-item:hover {
   border-color: #888;
