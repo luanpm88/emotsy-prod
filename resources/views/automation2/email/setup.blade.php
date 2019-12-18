@@ -1,20 +1,17 @@
 @extends('layouts.popup.medium')
 
 @section('content')
-    <p class="mb-4">
-        <strong>Send-an-email action</strong> Plase folow the wizard below to create email information/content for sending to customers.
-        Make sure you fill-up all neccessary information for an email.
-    </p>
         
     @include('automation2.email._tabs', ['tab' => 'setup'])
         
-    <h3 class="mb-4">Email Setup</h3>    
+    <h5 class="mb-3">Email Setup</h5>    
     <p>Please fill-up email information below. They will be used to apply to all emails that send to customers.</p>
     
     <form id="emailSetup" action="{{ action('Automation2Controller@emailSetup', $automation->uid) }}" method="POST">
         {{ csrf_field() }}
         
         <input type="hidden" name="email_uid" value="{{ $email->uid }}" />
+        <input type="hidden" name="action_id" value="{{ $email->action_id }}" />
     
         <div class="row">
             <div class="col-md-6">                                            
@@ -137,18 +134,13 @@
                  success: function (response) {
                     popup.load(response.url);
                     
-                    if (response.is_new) {
-                        var newE = new ElementAction({title: response.title, options: response.options});
-						tree.getSelected().insert(newE);
-                    } else {
-                        // set node title
-						tree.getSelected().setTitle(response.title);
-						// merge options with reponse options
-						tree.getSelected().setOptions($.extend(tree.getOptions(), response.options));
-                        
-                        // reload sidebar
-                        sidebar.load();
-                    }
+                    // set node title
+                    tree.getSelected().setTitle(response.title);
+                    // merge options with reponse options
+                    tree.getSelected().setOptions($.extend(tree.getOptions(), {init: "true"}));
+                    tree.getSelected().setOptions($.extend(tree.getOptions(), response.options));
+
+                    doSelect(tree.getSelected());
                     
                     // save tree
 					saveData();

@@ -1,10 +1,6 @@
 @extends('layouts.popup.medium')
 
 @section('content')
-	<p class="mb-4">
-        <strong>Send-an-email action</strong> Plase folow the wizard below to create email information/content for sending to customers.
-        Make sure you fill-up all neccessary information for an email.
-    </p>
 	
 	@include('automation2.email._tabs', ['tab' => 'template'])
 		
@@ -12,7 +8,7 @@
         <div class="col-md-8">
 			@include('automation2.email.template._tabs', ['tab' => 'upload'])
 			
-            <h4 class="mb-3 mt-3">{{ trans('messages.automation.email.upload_template') }}</h4>
+            <h5 class="mb-3 mt-3">{{ trans('messages.automation.email.upload_template') }}</h4>
 				
 			<div class="alert alert-info mt-4">
                 {!! trans('messages.template_upload_guide', ["link" => 'https://s3.amazonaws.com/acellemail/newsletter-template-green.zip']) !!}

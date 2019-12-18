@@ -1,17 +1,13 @@
 @extends('layouts.popup.medium')
 
 @section('content')
-    <p class="mb-4">
-        <strong>Send-an-email action</strong> Plase folow the wizard below to create email information/content for sending to customers.
-        Make sure you fill-up all neccessary information for an email.
-    </p>
         
     @include('automation2.email._tabs', ['tab' => 'template'])
     
     <div class="row">
         <div class="col-md-8">
             <div class="sub-section">
-                <h3 class="mb-4">{{ trans('messages.campaign.email_content') }}</h3>                
+                <h5 class="mb-3">{{ trans('messages.campaign.email_content') }}</h5>                
                 <p>{{ trans('messages.campaign.email_content.intro') }}</p>
                     
                 <div class="media-left">
@@ -46,7 +42,7 @@
             </div>
                 
             <div class="sub-section">   
-                <h3 class="mt-5">{{ trans('messages.campaign.attachment') }}</h3>
+                <h5 class="mt-5 mb-3">{{ trans('messages.campaign.attachment') }}</h5>
                 <p>{{ trans('messages.campaign.attachment.intro') }}</p>
                     
                 @include('automation2.email._attachment')

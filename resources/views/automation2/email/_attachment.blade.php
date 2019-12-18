@@ -10,7 +10,7 @@
 </form>
   
 @if($email->attachments()->count())
-    <h4 class="mt-4 mb-3">{{ trans('messages.automation.email.attached_files') }}</h4>
+    <h5 class="mt-4 mb-3">{{ trans('messages.automation.email.attached_files') }}</h5>
         
     <div class="row">
         <div class="col-md-12">

@@ -23,7 +23,7 @@ class Email extends Model
      * @var array
      */
     protected $fillable = [
-        'subject', 'from', 'from_name', 'reply_to', 'sign_dkim', 'track_open', 'track_click'
+        'subject', 'from', 'from_name', 'reply_to', 'sign_dkim', 'track_open', 'track_click', 'action_id'
     ];
     
     /**

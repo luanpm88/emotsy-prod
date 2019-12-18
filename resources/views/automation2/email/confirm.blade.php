@@ -1,14 +1,10 @@
 @extends('layouts.popup.medium')
 
 @section('content')
-    <p class="mb-4">
-        <strong>Send-an-email action</strong> Plase folow the wizard below to create email information/content for sending to customers.
-        Make sure you fill-up all neccessary information for an email.
-    </p>
         
     @include('automation2.email._tabs', ['tab' => 'confirm'])
         
-    <h3 class="mb-3">{{ trans('messages.automation.email.you_are_set_to_send') }}</h3>    
+    <h5 class="mb-3">{{ trans('messages.automation.email.you_are_set_to_send') }}</h5>    
     <p>{{ trans('messages.automation.email.review_email_intro') }}</p>
     
     <form id="emailSetup" action="{{ action('Automation2Controller@emailSetup', $automation->uid) }}" method="POST">
@@ -16,7 +12,7 @@
         
         <div class="row">
             <div class="col-md-7">
-                <ul class="key-value-list mt-4">
+                <ul class="key-value-list mt-2">
                     <li class="d-flex align-items-center">
                         <div class="list-media mr-4">
                             <i class="material-icons-outlined text-success">check</i>
