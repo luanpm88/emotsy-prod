@@ -149,6 +149,19 @@
 			
 			popup.load();
 		}
+
+		function EmailSetup(id) {
+			var url = '{{ action('Automation2Controller@emailSetup', $automation->uid) }}' + '?action_id=' + id;
+			
+			popup = new Popup(url, function() {
+				// set back event
+				popup.back = function() {
+					Popup.hide();
+				};
+			});
+			
+			popup.load();
+		}
 	
 		function OpenActionSelectPopup() {
 			popup = new Popup('{{ action('Automation2Controller@actionSelectPupop', $automation->uid) }}', function() {
@@ -162,9 +175,23 @@
 				// when click on action type
 				popup.popup.find('.action-select-but').click(function() {
 					var key = $(this).attr('data-key');
-					
-					// show select trigger confirm box
-					SelectActionConfirm(key);
+
+					if (key == 'send-an-email') {
+						var newE = new ElementAction({
+							title: '{{ trans('messages.automation.tree.action_not_set') }}'
+						});
+
+						tree.getSelected().insert(newE, {init: "false"});
+
+						doSelect(newE);
+
+						notify('success', '{{ trans('messages.notify.success') }}', '{{ trans('messages.automation.email.created') }}');
+
+						EmailSetup(newE.getId());
+					} else {
+						// show select trigger confirm box
+						SelectActionConfirm(key);
+					}					
 				});
 			});
 			
@@ -319,6 +346,62 @@
 	<script>
         var tree;
 
+		function doSelect(e) {
+			// TODO 1:
+			// Gọi Ajax to Automation2@action
+			// Prams: e.getId()
+			// Trả về thông tin chi tiết của action để load nội dung bên phải
+			// Trên server: gọi hàm model: Automation2::getActionInfo(id)
+			
+			e.select(); // highlight
+			
+			console.log(e.getType());
+			
+			// if click on a trigger
+			if (e.getType() == 'ElementTrigger') {
+				var options = e.getOptions();
+				
+				// check if trigger is not init
+				if (options.init == "false") {
+					OpenTriggerSelectPopup();
+				}
+				// trigger was init
+				else {
+					var url = '{{ action('Automation2Controller@triggerEdit', $automation->uid) }}' + '?key=' + e.getOptions().key + '&id=' + e.getId();
+					
+					// Open trigger types select list
+					EditTrigger(url);
+				}
+			}
+			// is WAIT
+			else if (e.getType() == 'ElementWait') {
+					var url = '{{ action('Automation2Controller@actionEdit', $automation->uid) }}' + '?key=' + e.getOptions().key + '&id=' + e.getId();
+					
+					// Open trigger types select list
+					EditAction(url);
+			}
+			// is Condition
+			else if (e.getType() == 'ElementCondition') {
+					var url = '{{ action('Automation2Controller@actionEdit', $automation->uid) }}' + '?key=' + e.getOptions().key + '&id=' + e.getId();
+					
+					// Open trigger types select list
+					EditAction(url);
+			}
+			// is Email
+			else if (e.getType() == 'ElementAction') {
+				if (e.getOptions().init == "true") {
+					var type = $(this).attr('data-type');
+					var url = '{{ action('Automation2Controller@email', $automation->uid) }}?email_uid=' + e.getOptions().email_uid;
+					
+					// Open trigger types select list
+					EditAction(url);
+				} else {
+					// show select trigger confirm box
+					EmailSetup(e.getId());
+				}
+			}
+		}
+
         (function() {
             //var json = [
             //    {title: "Click to choose a trigger", id: "trigger", type: "ElementTrigger", options: {init: false}}
@@ -336,54 +419,7 @@
 
             tree = AutomationElement.fromJson(json, container, {
                 onclick: function(e) {				
-                    // TODO 1:
-                    // Gọi Ajax to Automation2@action
-                    // Prams: e.getId()
-                    // Trả về thông tin chi tiết của action để load nội dung bên phải
-                    // Trên server: gọi hàm model: Automation2::getActionInfo(id)
-					
-                    e.select(); // highlight
-					
-					console.log(e.getType());
-                    
-					// if click on a trigger
-					if (e.getType() == 'ElementTrigger') {
-						var options = e.getOptions();
-						
-						// check if trigger is not init
-						if (options.init == "false") {
-							OpenTriggerSelectPopup();
-						}
-						// trigger was init
-						else {
-							var url = '{{ action('Automation2Controller@triggerEdit', $automation->uid) }}' + '?key=' + e.getOptions().key + '&id=' + e.getId();
-							
-							// Open trigger types select list
-							EditTrigger(url);
-						}
-					}
-					// is WAIT
-					else if (e.getType() == 'ElementWait') {
-							var url = '{{ action('Automation2Controller@actionEdit', $automation->uid) }}' + '?key=' + e.getOptions().key + '&id=' + e.getId();
-							
-							// Open trigger types select list
-							EditAction(url);
-					}
-					// is Condition
-					else if (e.getType() == 'ElementCondition') {
-							var url = '{{ action('Automation2Controller@actionEdit', $automation->uid) }}' + '?key=' + e.getOptions().key + '&id=' + e.getId();
-							
-							// Open trigger types select list
-							EditAction(url);
-					}
-					// is Email
-					else if (e.getType() == 'ElementAction') {
-							var type = $(this).attr('data-type');
-							var url = '{{ action('Automation2Controller@email', $automation->uid) }}?email_uid=' + e.getOptions().email_uid;
-							
-							// Open trigger types select list
-							EditAction(url);
-					}
+                    doSelect(e);
                 },
 
                 onhover: function(e) {
@@ -400,6 +436,9 @@
 					//  e.insert(new ElementAction({title: title}));
                     // OR e.insert(new ElementWait({title: title}));
                     // OR e.insert(new ElementCondition({title: title}));
+					// var newE = new ElementAction({
+					// 	title: '{{ trans('messages.automation.tree.action_not_set') }}'
+					// });
 					
 					OpenActionSelectPopup();
                 }

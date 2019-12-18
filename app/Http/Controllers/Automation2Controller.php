@@ -310,13 +310,6 @@ class Automation2Controller extends Controller
             return $this->notAuthorized();
         }
         
-        // if it is email
-        if ($request->key == 'send-an-email') {
-            return redirect()->action('Automation2Controller@emailSetup', [
-                'uid' => $automation->uid,
-            ]);
-        }
-        
         return view('automation2.actionSelectConfirm', [
             'key' => $request->key,
             'automation' => $automation,
@@ -517,6 +510,7 @@ class Automation2Controller extends Controller
                 'sign_dkim' => true,
                 'track_open' => true,
                 'track_click' => true,
+                'action_id' => $request->action_id,
             ]);
         }
         
@@ -546,35 +540,18 @@ class Automation2Controller extends Controller
             $email->automation2_id = $automation->id;
             $email->save();
             
-            if (empty($request->email_uid)) {
-                return response()->json([
-                    'status' => 'success',
-                    'title' => trans('messages.automation.send_a_email', ['title' => $email->subject]),
-                    'message' => trans('messages.automation.email.created'),
-                    'url' => action('Automation2Controller@emailTemplate', [
-                        'uid' => $automation->uid,
-                        'email_uid' => $email->uid,
-                    ]),
-                    'is_new' => true,
-                    'options' => [
-                        'email_uid' => $email->uid,
-                    ],
-                ], 201);
-            } else {
-                return response()->json([
-                    'status' => 'success',
-                    'title' => trans('messages.automation.send_a_email', ['title' => $email->subject]),
-                    'message' => trans('messages.automation.email.updated'),
-                    'url' => action('Automation2Controller@emailTemplate', [
-                        'uid' => $automation->uid,
-                        'email_uid' => $email->uid,
-                    ]),
-                    'is_new' => false,
-                    'options' => [
-                        'email_uid' => $email->uid,
-                    ],
-                ], 201);
-            }
+            return response()->json([
+                'status' => 'success',
+                'title' => trans('messages.automation.send_a_email', ['title' => $email->subject]),
+                'message' => trans('messages.automation.email.set_up.success'),
+                'url' => action('Automation2Controller@emailTemplate', [
+                    'uid' => $automation->uid,
+                    'email_uid' => $email->uid,
+                ]),
+                'options' => [
+                    'email_uid' => $email->uid,
+                ],
+            ], 201);
         }
         
         return view('automation2.email.setup', [

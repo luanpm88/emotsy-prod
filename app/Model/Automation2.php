@@ -114,14 +114,6 @@ class Automation2 extends Model
         ];
     }
     
-    public function getElementById($id) {
-        $data = $this->getElements()[$id];
-        
-        // search by id
-        
-        return $element;
-    }
-    
     /**
      * Filter items.
      *

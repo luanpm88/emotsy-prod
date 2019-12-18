@@ -2883,5 +2883,8 @@
   'automation.condition.choose_link' => 'Choose link',
   'automation.automation_email' => 'Automation Email',
   'automation.back_to_workflow' => 'Back to Workflow',
-  'automation.automation_email.intro' => 'Discover who opens your campaigns by tracking the number of times an invisible web beacon embedded in the campaign is downloaded.',
+  'automation.automation_email.intro' => 'Discover who opens your campaigns by tracking the number of times an
+    invisible web beacon embedded in the campaign is downloaded.',
+  'automation.tree.action_not_set' => 'not set up yet',
+  'automation.email.set_up.success' => 'Email was successfully set up',
 ) ?>
