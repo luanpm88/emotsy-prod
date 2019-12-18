@@ -42,9 +42,7 @@
         
         var url = '{{ action('Automation2Controller@emailSetup', ['uid' => $automation->uid, 'email_uid' => $email->uid]) }}';
         
-        popup = new Popup(url);
-        
-        popup.load();
+        popup.load(url);
     });
     
     $('.action-delete').click(function(e) {

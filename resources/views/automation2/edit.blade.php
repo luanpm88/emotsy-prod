@@ -79,7 +79,12 @@
 	</main>
 		
 	<script>
-		var popup = new Popup();
+		var popup = new Popup(undefined, undefined, {
+			onclose: function() {
+				sidebar.load();
+			}
+		});
+
 		var sidebar = new Box($('.sidebar-content'));
 		
 		function setAutomationName(name) {
@@ -106,7 +111,7 @@
 		function SelectActionConfirm(key) {
 			var url = '{{ action('Automation2Controller@actionSelectConfirm', $automation->uid) }}' + '?key=' + key;
 			
-			popup = new Popup(url, function() {
+			popup.load(url, function() {
 				console.log('Confirm action type popup loaded!');
 				
 				// set back event
@@ -153,7 +158,7 @@
 		function EmailSetup(id) {
 			var url = '{{ action('Automation2Controller@emailSetup', $automation->uid) }}' + '?action_id=' + id;
 			
-			popup = new Popup(url, function() {
+			popup.load(url, function() {
 				// set back event
 				popup.back = function() {
 					Popup.hide();
@@ -164,7 +169,7 @@
 		}
 	
 		function OpenActionSelectPopup() {
-			popup = new Popup('{{ action('Automation2Controller@actionSelectPupop', $automation->uid) }}', function() {
+			popup.load('{{ action('Automation2Controller@actionSelectPupop', $automation->uid) }}', function() {
 				console.log('Select action popup loaded!');
 				
 				// set back event
@@ -177,17 +182,18 @@
 					var key = $(this).attr('data-key');
 
 					if (key == 'send-an-email') {
+						// new action as email
 						var newE = new ElementAction({
 							title: '{{ trans('messages.automation.tree.action_not_set') }}'
 						});
-
+						
+						// add email to tree
 						tree.getSelected().insert(newE, {init: "false"});
-
+						
+						// select email action and open popup
 						doSelect(newE);
 
 						notify('success', '{{ trans('messages.notify.success') }}', '{{ trans('messages.automation.email.created') }}');
-
-						EmailSetup(newE.getId());
 					} else {
 						// show select trigger confirm box
 						SelectActionConfirm(key);
@@ -199,7 +205,7 @@
 		}
 		
 		function OpenTriggerSelectPopup() {
-			popup = new Popup('{{ action('Automation2Controller@triggerSelectPupop', $automation->uid) }}', function() {
+			popup.load('{{ action('Automation2Controller@triggerSelectPupop', $automation->uid) }}', function() {
 				console.log('Select trigger popup loaded!');
 				
 				// set back event
@@ -222,7 +228,7 @@
 		function SelectTriggerConfirm(key) {
 			var url = '{{ action('Automation2Controller@triggerSelectConfirm', $automation->uid) }}' + '?key=' + key;
 			
-			popup = new Popup(url, function() {
+			popup.load(url, function() {
 				console.log('Confirm trigger type popup loaded!');
 				
 				// set back event
@@ -418,7 +424,7 @@
             var container = document.getElementById('svg');
 
             tree = AutomationElement.fromJson(json, container, {
-                onclick: function(e) {				
+                onclick: function(e) {
                     doSelect(e);
                 },
 
