@@ -1,15 +1,23 @@
 class Popup {
-    constructor(url, callback) {
+    constructor(url, callback, options) {
         var _this = this;
+        this.options = {};
         this.popup = $('.popup');
         this.loadingHtml = '<div class="popup-loading"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>';
         
+        // url
         if (typeof(url) !== 'undefined') {
             this.url = url;
         }
         
+        // callback
         if (typeof(callback) !== 'undefined') {
             this.callback = callback;
+        }
+        
+        // options
+        if (typeof(options) !== 'undefined') {
+            this.options = options;
         }
         
         if (!this.popup.length) {
@@ -27,6 +35,11 @@ class Popup {
         //    // this section only processes if the .nav > li itself is clicked.
         //    Popup.hide();
         //});
+
+        // onclose popup
+        if(this.options.onclose != null) {
+            this.onclose = this.options.onclose;
+        }
     }
     
     show() {
@@ -37,6 +50,11 @@ class Popup {
     hide() {
         this.popup.fadeOut();
         $('html').css('overflow', 'auto');
+
+        // onclose
+        if (this.onclose != null) {
+            this.onclose();
+        }
     }
     
     loading() {
@@ -68,7 +86,7 @@ class Popup {
         
         // click close button
         _this.popup.find(".close").click(function(){
-            Popup.hide();
+            _this.hide();
         });
     }
     

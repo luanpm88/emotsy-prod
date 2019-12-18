@@ -78,7 +78,6 @@
     </a>
         
     <script>
-		var templatePopup = new Popup();
 		var window;
     
         $(document).ready(function() {
@@ -86,7 +85,7 @@
             $('.template-start').click(function() {
 				var url = $(this).attr('data-url');
 				
-                templatePopup.load(url);
+                popup.load(url);
             });
 			
 			$('.template-compose').click(function(e) {
