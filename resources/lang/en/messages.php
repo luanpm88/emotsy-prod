@@ -2881,4 +2881,7 @@
   'automation.contact.profile' => 'Profile',
   'automation.condition.choose_email' => 'Choose email',
   'automation.condition.choose_link' => 'Choose link',
+  'automation.automation_email' => 'Automation Email',
+  'automation.back_to_workflow' => 'Back to Workflow',
+  'automation.automation_email.intro' => 'Discover who opens your campaigns by tracking the number of times an invisible web beacon embedded in the campaign is downloaded.',
 ) ?>

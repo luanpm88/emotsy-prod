@@ -376,7 +376,7 @@
 							// Open trigger types select list
 							EditAction(url);
 					}
-					// is Condition
+					// is Email
 					else if (e.getType() == 'ElementAction') {
 							var type = $(this).attr('data-type');
 							var url = e.getOptions().edit_url;
