@@ -30,7 +30,7 @@ use Acelle\Library\Automation\Evaluate;
 class AutoTrigger extends Model
 {
     protected $fillable = [
-        //
+        'subscriber_id',
     ];
 
     protected $dates = ['created_at', 'updated_at'];
@@ -53,19 +53,6 @@ class AutoTrigger extends Model
     public function automation2()
     {
         return $this->belongsTo('Acelle\Model\Automation2');
-    }
-
-    // Update the workflow structure to trigger
-    public function updateFromAutomation()
-    {
-        $json = json_decode(is_null($this->data) ? [] : $this->data);
-        $actions = json_decode($automtion2->data, true);
-        foreach ($actions as $action) {
-            $json[$action['id']] = $action;
-        }
-
-        $this->data = json_encode($json);
-        $this->save();
     }
 
     // getLatestAction from trigger
@@ -93,7 +80,7 @@ class AutoTrigger extends Model
             } else {
                 $instance->markAsLatest(false);
             }
-            $this->updateJson($instance);
+            $this->updateAction($instance);
         });
 
         return $selected;
@@ -103,54 +90,86 @@ class AutoTrigger extends Model
     {
         $last = $this->getLatestAction();
 
+        if ($last == null) {
+            $trigger = $this->getTrigger();
+            $trigger->markAsLatest(true);
+            $this->updateAction( $trigger );
+            $last = $trigger;
+        }
+
         while ($last->execute() == true) { // true means: done with this step, should proceed next
-            //var_dump($last->toJson());
-            $this->updateJson($last); // update 'last_checked_at' field of Wait for example
+            $this->updateAction($last); // update 'last_checked_at' field of Wait for example
             $last = $this->moveToNextAction();
             if ($last == null) {
                 break;
             }
         }
 
-        $this->updateJson($last); // update 'last_checked_at' field of Wait for example
+        $this->updateAction($last); // update 'last_checked_at' field of Wait for example
     }
 
-    public function updateJson($action)
+    public function updateAction($action)
     {
-        var_dump($action->toJson());
-        $json = json_decode($this->data, true);
-        $json[$action->getId()] = $action->toJson();
+        $json = $this->getJson();
+
+        if (array_key_exists($action->getId(), $json)) {
+            $current = $json[$action->getId()];
+            $updated = array_merge($current, $action->toJson());
+            $json[$action->getId()] = $updated;
+        } else {
+            $json[$action->getId()] = $action->toJson();
+        }
+
         $this->data = json_encode($json);
         $this->save();
     }
 
     public function getActions($callback)
     {
-        $json = json_decode($this->data, true);
+        $json = $this->getJson();
 
         foreach ($json as $key => $attributes) {
-            $instance = null;
             $attributes['id'] = $key;
-            switch ($attributes['type']) {
-                case 'ElementTrigger':
-                    $instance = new Evaluate($attributes);
-                    break;
-                case 'ElementAction':
-                    $instance = new Send($attributes);
-                    break;
-                case 'ElementCondition':
-                    $instance = new Evaluate($attributes);
-                    break;
-                case 'ElementWait':
-                    $instance = new Wait($attributes);
-                    break;
-                default:
-                    var_dump($attributes['type']);
-                    1 / 0;
-            }
-
+            $instance = $this->getAction($attributes);
             $callback($instance);
         }
+    }
+
+    public function getAction($attributes)
+    {
+        switch ($attributes['type']) {
+            case 'ElementTrigger':
+                $instance = new Evaluate($attributes);
+                break;
+            case 'ElementAction':
+                $instance = new Send($attributes);
+                break;
+            case 'ElementCondition':
+                $instance = new Evaluate($attributes);
+                break;
+            case 'ElementWait':
+                $instance = new Wait($attributes);
+                break;
+            default:
+                throw new \Exception('Unknown Action type '. $attributes['type']);
+        }
+
+        return $instance;
+    }
+
+    public function updateWorkflow()
+    {
+        $origins = json_decode($this->automation2->data, true);
+
+        foreach ($origins as $origin) {
+            $action = $this->getAction($origin);
+            $this->updateAction($action);
+        }
+    }
+
+    public function getJson()
+    {
+        return is_null($this->data) ? [] : json_decode($this->data, true);
     }
 
     // for debugging only

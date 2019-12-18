@@ -26,13 +26,14 @@ use Illuminate\Database\Eloquent\Model;
 use Acelle\Model\AutomationElement;
 use Acelle\Model\Email;
 use Acelle\Model\EmailLink;
+use DB;
 
 class Automation2 extends Model
 {
     // Automation status
     const STATUS_ACTIVE = 'active';
     const STATUS_INACTIVE = 'inactive';
-    
+
     /**
      * Items per page.
      *
@@ -48,7 +49,7 @@ class Automation2 extends Model
     protected $fillable = [
         'name'
     ];
-    
+
     /**
      * Association with mailList through mail_list_id column.
      */
@@ -56,7 +57,7 @@ class Automation2 extends Model
     {
         return $this->belongsTo('Acelle\Model\MailList');
     }
-    
+
     /**
      * Get all of the links for the automation.
      */
@@ -64,7 +65,7 @@ class Automation2 extends Model
     {
         return $this->hasManyThrough('Acelle\Model\EmailLink', 'Acelle\Model\Email');
     }
-    
+
     /**
      * Get all of the emails for the automation.
      */
@@ -72,7 +73,15 @@ class Automation2 extends Model
     {
         return $this->hasMany('Acelle\Model\Email');
     }
-    
+
+    /**
+     * Association
+     */
+    public function autoTriggers()
+    {
+        return $this->hasMany('Acelle\Model\AutoTrigger');
+    }
+
     /**
      * Bootstrap any application services.
      */
@@ -90,7 +99,7 @@ class Automation2 extends Model
             $item->uid = $uid;
         });
     }
-    
+
     /**
      * Find item by uid.
      *
@@ -100,7 +109,7 @@ class Automation2 extends Model
     {
         return self::where('uid', '=', $uid)->first();
     }
-    
+
     /**
      * Create automation rules.
      *
@@ -113,15 +122,15 @@ class Automation2 extends Model
             'mail_list_uid' => 'required',
         ];
     }
-    
+
     public function getElementById($id) {
         $data = $this->getElements()[$id];
-        
+
         // search by id
-        
+
         return $element;
     }
-    
+
     /**
      * Filter items.
      *
@@ -153,7 +162,7 @@ class Automation2 extends Model
 
         return $query;
     }
-    
+
     /**
      * enable automation.
      */
@@ -171,7 +180,7 @@ class Automation2 extends Model
         $this->status = self::STATUS_INACTIVE;
         $this->save();
     }
-    
+
     /**
      * disable automation.
      */
@@ -180,7 +189,7 @@ class Automation2 extends Model
         $this->data = $data;
         $this->save();
     }
-    
+
     /**
      * disable automation.
      */
@@ -188,7 +197,7 @@ class Automation2 extends Model
     {
         return isset($this->data) ? preg_replace('/"([^"]+)"\s*:\s*/', '$1:', $this->data) : "[]";
     }
-    
+
     /**
      * get all tree elements.
      */
@@ -196,33 +205,33 @@ class Automation2 extends Model
     {
         return isset($this->data) && !empty($this->data) ? json_decode($this->data) : [];
     }
-    
+
     /**
      * get trigger.
      */
     public function getTrigger()
     {
         $elements = $this->getElements();
-        
+
         return empty($elements) ? new AutomationElement(null) : new AutomationElement($elements[0]);
     }
-    
+
     /**
      * get element by id.
      */
     public function getElement($id=null)
     {
         $elements = $this->getElements();
-        
+
         foreach ($elements as $element) {
             if ($element->id == $id) {
                 return new AutomationElement($element);
             }
         }
-        
+
         return new AutomationElement(null);
     }
-    
+
     /**
      * Get started time.
      */
@@ -230,7 +239,7 @@ class Automation2 extends Model
     {
         return $this->created_at->diffForHumans();
     }
-    
+
     /**
      * Get contacts count.
      */
@@ -238,7 +247,7 @@ class Automation2 extends Model
     {
         return 2345;
     }
-    
+
     /**
      * Get complete percent.
      */
@@ -246,7 +255,7 @@ class Automation2 extends Model
     {
         return 56;
     }
-    
+
     /**
      * Get complete percent.
      */
@@ -254,7 +263,7 @@ class Automation2 extends Model
     {
         return 2500;
     }
-    
+
     /**
      * Get delay options.
      */
@@ -265,7 +274,7 @@ class Automation2 extends Model
             ['text' => '10 minutes', 'value' => '10 minutes'],
         ];
     }
-    
+
     /**
      * Get delay or before options.
      */
@@ -278,32 +287,49 @@ class Automation2 extends Model
             ['text' => '10 minutes', 'value' => '10 minutes'],
         ];
     }
-    
+
     /**
      * Get email links options.
      */
     public function getEmailLinkOptions()
     {
         $data = [];
-        
+
         foreach($this->emailLinks as $link) {
             $data[] = ['text' => $link->link, 'value' => $link->uid];
         }
-        
+
         return $data;
     }
-    
+
     /**
      * Get emails options.
      */
     public function getEmailOptions()
     {
         $data = [];
-        
+
         foreach($this->emails as $email) {
             $data[] = ['text' => $email->subject, 'value' => $email->uid];
         }
-        
+
         return $data;
+    }
+
+    /**
+     * Initiate a trigger with a given subscriber.
+     */
+    public function initTrigger($subscriberId)
+    {
+        $trigger = null;
+        DB::transaction(function() use (&$trigger, $subscriberId) {
+            $trigger = $this->autoTriggers()->create([
+                'susbcriber_id' => $subscriberId
+            ]);
+
+            $trigger->updateWorkflow();
+        });
+
+        return $trigger;
     }
 }
