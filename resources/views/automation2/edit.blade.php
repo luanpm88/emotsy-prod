@@ -262,6 +262,9 @@
 						
 						// save tree
 						saveData(function() {
+							// select trigger
+							doSelect(tree);
+
 							// hide popup
 							popup.hide();
 							
@@ -289,63 +292,6 @@
 		$(document).ready(function() {
 			// load sidebar
 			sidebar.load('{{ action('Automation2Controller@settings', $automation->uid) }}');
-		
-			// Click on add trigger button
-			$(document).on('click', '.add-trigger-but', function() {
-				console.log('add trigger click!');
-				
-				// Open trigger types select list
-				OpenTriggerSelectPopup();
-			});
-			
-			//// Click on exist trigger
-			//$(document).on('click', '.trigger', function() {			
-			//	var type = $(this).attr('data-type');				
-			//	var url = '{{ action('Automation2Controller@triggerEdit', $automation->uid) }}' + '?type=' + type;
-			//	
-			//	// Open trigger types select list
-			//	EditTrigger(url);
-			//});
-			
-			// click on add action button
-			$(document).on('click', '.add-action-but', function() {
-				console.log('add action click!');
-				
-				// Open action types select list
-				OpenActionSelectPopup();
-			});
-			
-			// Click on exist action
-			$(document).on('click', '.action', function() {
-				console.log('click on one action!');
-				
-				var type = $(this).attr('data-key');				
-				var url = '{{ action('Automation2Controller@actionEdit', $automation->uid) }}' + '?key=' + key + '&id=' + tree.getSelected().id;
-				
-				// Open trigger types select list
-				EditAction(url);
-			});
-			
-			// Click on exist action
-			$(document).on('click', '.action-email', function() {
-				console.log('click on one action!');
-				
-				var url = $(this).attr('data-url');				
-				var container = $('.sidebar-setting-container');
-			
-				$.ajax({
-					url: url,
-					type: 'GET',
-				}).always(function(response) {
-					// todo: when trigger selected
-					console.log('Action was selected');
-					
-					container.html(response);
-					
-					// init js
-					initJs(container);
-				});
-			});
 		});
 	</script>
 		
