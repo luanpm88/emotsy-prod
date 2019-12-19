@@ -25,11 +25,24 @@
     position: absolute;
     z-index: 100;
 }
+.popup-is-loading .popup-container:before {
+    content: "loading";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: #fff;
+    opacity: 0.5;
+    text-indent: -90000px;
+    z-index: 1;
+}
 .popup-container {
     background: #fff;
     border-radius: 5px;
     box-shadow: 1px 1px 10px rgba(0,0,0,0.6);
     width: 800px;
+    position: relative;
 }
 .popup-container.medium{
     width: 1150px;

@@ -292,6 +292,7 @@ class Automation2Controller extends Controller
         return view('automation2.actionSelectPupop', [
             'types' => $types,
             'automation' => $automation,
+            'hasChildren' => $request->hasChildren,
         ]);
     }
     
@@ -838,7 +839,6 @@ class Automation2Controller extends Controller
      */
     public function templateThemeList(Request $request, $uid, $email_uid)
     {
-        sleep(1);
         $automation = Automation2::findByUid($uid);
         $email = Email::findByUid($request->email_uid);
         
@@ -1152,7 +1152,6 @@ class Automation2Controller extends Controller
      */
     public function contactsList(Request $request, $uid)
     {
-        sleep(1);
         $automation = Automation2::findByUid($uid);
         
         // authorize

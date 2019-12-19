@@ -59,6 +59,16 @@ class Popup {
     
     loading() {
         this.popup.prepend(this.loadingHtml);
+        this.popup.addClass('popup-is-loading');
+    }
+
+    loaded() {
+        // apply js for new content
+        this.applyJs();
+        
+        // remove loading effects
+        this.popup.find('.popup-loading').remove();        
+        this.popup.removeClass('popup-is-loading');
     }
     
     static hide() {
@@ -116,8 +126,8 @@ class Popup {
                 _this.callback();
             }
             
-            // apply js for new content
-            _this.applyJs();
+            // after load
+            _this.loaded();
         });
     }
     
@@ -126,6 +136,7 @@ class Popup {
         
         _this.popup.html(html);
         
-        _this.applyJs();
+        // after load
+        _this.loaded();
     }
 }

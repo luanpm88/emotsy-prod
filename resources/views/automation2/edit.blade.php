@@ -151,8 +151,6 @@
 					});
 				});
 			});
-			
-			popup.load();
 		}
 
 		function EmailSetup(id) {
@@ -164,12 +162,10 @@
 					Popup.hide();
 				};
 			});
-			
-			popup.load();
 		}
 	
 		function OpenActionSelectPopup() {
-			popup.load('{{ action('Automation2Controller@actionSelectPupop', $automation->uid) }}', function() {
+			popup.load('{{ action('Automation2Controller@actionSelectPupop', $automation->uid) }}?hasChildren=' + tree.getSelected().hasChildren(), function() {
 				console.log('Select action popup loaded!');
 				
 				// set back event
@@ -200,8 +196,6 @@
 					}					
 				});
 			});
-			
-			popup.load();
 		}
 		
 		function OpenTriggerSelectPopup() {
@@ -221,8 +215,6 @@
 					SelectTriggerConfirm(key);
 				});
 			});
-			
-			popup.load();
 		}
 		
 		function SelectTriggerConfirm(key) {
@@ -277,8 +269,6 @@
 					});
 				});
 			});
-			
-			popup.load();
 		}
 		
 		function EditTrigger(url) {

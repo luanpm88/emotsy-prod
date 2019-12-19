@@ -46,7 +46,7 @@ class PlanPolicy
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->admin->id == $item->admin_id);
 
-        return $can && !$item->isDefault();
+        return $can;
     }
 
     public function disable(User $user, Plan $item)
@@ -55,7 +55,7 @@ class PlanPolicy
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->admin->id == $item->admin_id);
 
-        return $can && $item->status != 'inactive' && !$item->isDefault();
+        return $can && $item->status != 'inactive';
     }
 
     public function enable(User $user, Plan $item)
@@ -64,7 +64,7 @@ class PlanPolicy
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->admin->id == $item->admin_id);
 
-        return $can && $item->status != 'active' && !$item->isDefault();
+        return $can && $item->status != 'active';
     }
 
     public function copy(User $user, Plan $item)

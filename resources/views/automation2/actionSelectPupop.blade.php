@@ -9,13 +9,21 @@
                 
             <div class="line-list">
                 @foreach ($types as $type)
-                    <div class="line-item action-select-but" data-key="{{ $type }}">
+                    @php
+                        $disabled = ($type == 'condition' && $hasChildren == "true") ? 'd-disabled' : '';
+                    @endphp
+                    <div class="line-item action-select-but {{ $disabled }}" data-key="{{ $type }}">
                         <div class="line-icon">
                             <i class="lnr lnr-{{ trans('messages.automation.action.' . $type . '.icon') }}"></i>
                         </div>
                         <div class="line-body">
                             <h5>{{ trans('messages.automation.action.' . $type) }}</h5>
                             <p>{{ trans('messages.automation.action.' . $type . '.desc') }}</p>
+                            @if ($type == 'condition' && $hasChildren == "true")
+                                <p class="text-warning small mt-1">
+                                    <i class="material-icons-outlined">warning</i> {{ trans('messages.automation.action.can_not_add_condition') }}
+                                </p>
+                            @endif
                         </div>
                     </div>
                 @endforeach
