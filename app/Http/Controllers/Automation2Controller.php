@@ -292,6 +292,7 @@ class Automation2Controller extends Controller
         return view('automation2.actionSelectPupop', [
             'types' => $types,
             'automation' => $automation,
+            'hasChildren' => $request->hasChildren,
         ]);
     }
     

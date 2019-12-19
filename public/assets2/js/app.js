@@ -193,7 +193,8 @@ function notify(type, title, message) {
         title: title,
         text: message,
         stack: window.stackBottomRight,
-        addClass: 'nonblock'
+        addClass: 'nonblock',
+        delay: 200000,
     };
     PNotify.alert(opts);
 }
