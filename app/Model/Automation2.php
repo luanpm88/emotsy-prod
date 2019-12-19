@@ -332,14 +332,12 @@ class Automation2 extends Model
     /**
      * Initiate a trigger with a given subscriber.
      */
-    public function initTrigger($subscriberId)
+    public function initTrigger($subscriber)
     {
         $trigger = null;
-        DB::transaction(function() use (&$trigger, $subscriberId) {
-            $trigger = $this->autoTriggers()->create([
-                'susbcriber_id' => $subscriberId
-            ]);
-
+        DB::transaction(function() use (&$trigger, $subscriber) {
+            $trigger = $this->autoTriggers()->create();
+            $trigger->subscriber()->associate($subscriber); // assign to subscriber_id field
             $trigger->updateWorkflow();
         });
 
@@ -405,7 +403,7 @@ class Automation2 extends Model
         $subscribers = $this->getNewSubscribersToFollow();
         $this->logger()->info(sprintf('%s new subscriber(s) found', count($subscribers)));
         foreach ($subscribers as $subscriber) {
-            $this->initTrigger($subscriber->id);
+            $this->initTrigger($subscriber);
         }
     }
 

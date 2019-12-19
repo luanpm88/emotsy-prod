@@ -31,7 +31,7 @@ use Acelle\Library\Automation\Evaluate;
 class AutoTrigger extends Model
 {
     protected $fillable = [
-        'subscriber_id',
+        //
     ];
 
     protected $dates = ['created_at', 'updated_at'];
@@ -187,5 +187,10 @@ class AutoTrigger extends Model
         });
 
         return  $trigger;
+    }
+
+    public function logger()
+    {
+        return $this->automation2->logger();
     }
 }
