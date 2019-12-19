@@ -2888,4 +2888,6 @@
   'automation.tree.action_not_set' => 'not set up yet',
   'automation.email.set_up.success' => 'Email was successfully set up',
   'automation.action.can_not_add_condition' => 'Condition can only be inserted after leaf node',
+  'plan.sending_server.own' => 'Use customer\'s sending servers',
+  'plan.sending_server.subaccount' => 'Use sending servers subacount',
 ) ?>

@@ -830,7 +830,7 @@ class Plan extends Model implements BillablePlanInterface
      */
     public static function getAllActive($admin = null)
     {
-        $query = self::getAllActiveWithDefault()->where('plans.is_default', '=', false);
+        $query = self::getAllActiveWithDefault();
 
         return $query;
     }
@@ -895,16 +895,6 @@ class Plan extends Model implements BillablePlanInterface
     }
 
     /**
-     * Get default-system plan.
-     *
-     * @return Plan
-     */
-    public static function getDefaultPlan()
-    {
-        return self::where('is_default', '=', true)->first();
-    }
-
-    /**
      * Fill email verification servers.
      */
     public function fillPlansEmailVerificationServers($params)
@@ -956,16 +946,6 @@ class Plan extends Model implements BillablePlanInterface
         } else {
             return $this->getOption('email_verification_servers_max');
         }
-    }
-
-    /**
-     * Check if plan is default.
-     *
-     * @return bool
-     */
-    public function isDefault()
-    {
-        return $this->is_default;
     }
 
     /**
@@ -1417,6 +1397,16 @@ class Plan extends Model implements BillablePlanInterface
     public function hasPrimarySendingServer()
     {
         return is_object($this->primarySendingServer());
+    }
+    
+    /**
+     * Check if plan sending server type is system
+     *
+     * @var bool
+     */
+    public function useSystemSendingServer()
+    {
+        return $this->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SYSTEM;
     }
     
     /**

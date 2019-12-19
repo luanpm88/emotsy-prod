@@ -15,17 +15,17 @@
 
 @section('page_header')
 	
-			<div class="page-title">
-				<ul class="breadcrumb breadcrumb-caret position-right">
-					<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-					<li><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
-				</ul>
-				<h1>
-					<span class="text-semibold"><i class="icon-paperplane"></i> {{ $campaign->name }}</span>
-				</h1>
+	<div class="page-title">
+		<ul class="breadcrumb breadcrumb-caret position-right">
+			<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+			<li><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
+		</ul>
+		<h1>
+			<span class="text-semibold"><i class="icon-paperplane"></i> {{ $campaign->name }}</span>
+		</h1>
 
-				@include('campaigns._steps', ['current' => 3])
-			</div>
+		@include('campaigns._steps', ['current' => 3])
+	</div>
 
 @endsection
 
@@ -37,43 +37,43 @@
             <p>{{ trans('messages.campaign.email_content.intro') }}</p>
                 
             <ul class="hover-list">
-                <li>
+                <li class="template-start" data-url="{{ action('CampaignController@templateLayout', $campaign->uid) }}">
                     <i class="lnr lnr-file-add"></i>
                     <div class="list-body">
                         <h4>{{ trans('messages.campaign.template.from_layout') }}</h4>
                         <p>{{ trans('messages.campaign.template.from_layout.intro') }}</p>
                     </div>
                     <div class="list-action">
-                        <button data-url="{{ action('CampaignController@templateLayout', $campaign->uid) }}"
-							class="btn btn-primary bg-grey-800 template-start"
+                        <button
+							class="btn btn-primary bg-grey-800"
 						>
                             {{ trans('messages.campaign.template.start') }}
                         </button>
                     </div>
                 </li>
-                <li>
+                <li class="template-start" data-url="{{ action('CampaignController@templateTheme', $campaign->uid) }}">
                     <i class="lnr lnr-license"></i>
                     <div class="list-body">
                         <h4>{{ trans('messages.campaign.template.from_theme') }}</h4>
                         <p>{{ trans('messages.campaign.template.from_theme.intro') }}</p>
                     </div>
                     <div class="list-action">
-                        <button data-url="{{ action('CampaignController@templateTheme', $campaign->uid) }}"
-							class="btn btn-primary bg-grey-800 template-start"
+                        <button
+							class="btn btn-primary bg-grey-800"
 						>
                             {{ trans('messages.campaign.template.start') }}
                         </button>
                     </div>
                 </li>
-                <li>
+                <li class="template-start" data-url="{{ action('CampaignController@templateUpload', $campaign->uid) }}">
                     <i class="lnr lnr-user"></i>
                     <div class="list-body">
                         <h4>{{ trans('messages.campaign.template.upload') }}</h4>
                         <p>{{ trans('messages.campaign.template.upload.intro') }}</p>
                     </div>
                     <div class="list-action">
-                        <button data-url="{{ action('CampaignController@templateUpload', $campaign->uid) }}"
-							class="btn btn-primary bg-grey-800 template-start"
+                        <button
+							class="btn btn-primary bg-grey-800"
 						>
                             {{ trans('messages.campaign.template.start') }}
                         </button>
