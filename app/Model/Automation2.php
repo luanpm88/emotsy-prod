@@ -29,6 +29,9 @@ use Acelle\Model\EmailLink;
 use Acelle\Model\Subscriber;
 use DB;
 use Carbon\Carbon;
+use Monolog\Logger;
+use Monolog\Handler\RotatingFileHandler;
+use Monolog\Formatter\LineFormatter;
 
 class Automation2 extends Model
 {
@@ -82,6 +85,14 @@ class Automation2 extends Model
     public function autoTriggers()
     {
         return $this->hasMany('Acelle\Model\AutoTrigger');
+    }
+
+    /**
+     * Association
+     */
+    public function customer()
+    {
+        return $this->belongsTo('Acelle\Model\Customer');
     }
 
     /**
@@ -343,6 +354,7 @@ class Automation2 extends Model
         // Step 1: check for new trigger
         $automations = self::where('status', self::STATUS_ACTIVE)->get();
         foreach ($automations as $automation) {
+            $automation->logger()->info(sprintf('Checking automation "%s"', $automation->name));
             $automation->checkForNewTriggers();
             $automation->checkForExistingTriggersUpdate();
         }
@@ -353,6 +365,7 @@ class Automation2 extends Model
      */
     public function checkForNewTriggers()
     {
+        $this->logger()->info(sprintf('Checking for new trigger'));
         $type = 'list-subscription';
         switch ($type) {
             case 'list-subscription':
@@ -377,6 +390,7 @@ class Automation2 extends Model
      */
     public function checkForExistingTriggersUpdate()
     {
+        $this->logger()->info(sprintf('Checking for trigger update'));
         foreach ($this->autoTriggers as $trigger) {
             $trigger->check();
         }
@@ -389,6 +403,7 @@ class Automation2 extends Model
     {
         $now = Carbon::now();
         $subscribers = $this->getNewSubscribersToFollow();
+        $this->logger()->info(sprintf('%s new subscriber(s) found', count($subscribers)));
         foreach ($subscribers as $subscriber) {
             $this->initTrigger($subscriber->id);
         }
@@ -422,5 +437,17 @@ class Automation2 extends Model
                 ->where('mail_list_id', $this->mailList->id)
                 ->whereRaw(sprintf('COALESCE('.table('subscribers.subscription_type').", '') <> %s", db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED)))
                 ->get();
+    }
+
+    public function logger()
+    {
+        $pid = getmypid();
+        $formatter = new LineFormatter("[%datetime%] #{$pid} %channel%.%level_name%: %message%\n");
+        $stream = new RotatingFileHandler(storage_path('logs/automation.log'), 0, Logger::INFO);
+        $stream->setFormatter($formatter);
+
+        $logger = new Logger('automation-'.$this->uid);
+        $logger->pushHandler($stream);
+        return $logger;
     }
 }

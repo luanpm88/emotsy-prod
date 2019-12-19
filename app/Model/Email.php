@@ -8,12 +8,17 @@ use Carbon\Carbon;
 use File;
 use Sunra\PhpSimple\HtmlDomParser;
 use Acelle\Library\Tool;
+use Acelle\Library\StringHelper;
+use Acelle\Library\Log as MailLog;
 use Acelle\Model\Attachment;
+use Acelle\Model\TrackingLog;
+use Acelle\Model\Setting;
 use Illuminate\Support\Facades\Storage;
 use Validator;
 use Illuminate\Validation\ValidationException;
 use ZipArchive;
 use League\Csv\Writer;
+
 
 class Email extends Model
 {
@@ -355,8 +360,438 @@ class Email extends Model
         }
     }
 
+    // @note: complicated dependencies
+    // It is just fine, we can think Email as an object depends on User/Customer
     public function deliverTo($subscriber)
     {
-        // send to this subscriber
+        // @todo: code smell here, violation of Demeter Law
+        // @todo: performance
+        while ($this->automation->customer->overQuota()) {
+            MailLog::warning(sprintf("Email `%s` (%s) to `%s` halted, user exceeds sending limit", $this->subject, $this->uid, $subscriber->email));
+            sleep(60);
+        }
+
+        $server = $subscriber->mailList->pickSendingServer();
+
+        MailLog::info("Sending to subscriber `{$subscriber->email}`");
+
+        list($message, $msgId) = $this->prepare($subscriber, $server);
+
+        $sent = $server->send($message);
+
+        // additional log
+        MailLog::info("Sent to subscriber `{$subscriber->email}`");
+        $this->trackMessage($sent, $subscriber, $server, $msgId);
+    }
+
+    /**
+     * Prepare the email content using Swift Mailer.
+     *
+     * @input object subscriber
+     * @input object sending server
+     *
+     * @return MIME text message
+     */
+    public function prepare($subscriber)
+    {
+        // build the message
+        $customHeaders = $this->getCustomHeaders($subscriber, $this);
+        $msgId = $customHeaders['X-Acelle-Message-Id'];
+
+        $message = new \Swift_Message();
+        $message->setId($msgId);
+
+        // fixed: HTML type only
+        $message->setContentType('text/html; charset=utf-8');
+
+        foreach ($customHeaders as $key => $value) {
+            $message->getHeaders()->addTextHeader($key, $value);
+        }
+
+        // @TODO for AWS, setting returnPath requires verified domain or email address
+        $server = $subscriber->mailList->pickSendingServer();
+        if ($server->allowCustomReturnPath()) {
+            $returnPath = $server->getVerp($subscriber->email);
+            if ($returnPath) {
+                $message->setReturnPath($returnPath);
+            }
+        }
+        $message->setSubject($this->getSubject($subscriber, $msgId));
+        $message->setFrom(array($this->from => $this->from_name));
+        $message->setTo($subscriber->email);
+        $message->setReplyTo($this->reply_to);
+        $message->setEncoder( new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit') );
+        $message->addPart($this->getHtmlContent($subscriber, $msgId, $server), 'text/html');
+
+        if ($this->sign_dkim) {
+            $message = $this->sign($message);
+        }
+
+        //@todo attach function used for any attachment of Campaign
+        $path_campaign = public_path().'/campaign_attachment'.'/'.$this->uid;
+        if (is_dir($path_campaign)) {
+            $files = File::allFiles($path_campaign);
+            foreach ($files as $file) {
+                $message->attach(\Swift_Attachment::fromPath((string) $file));
+            }
+        }
+
+        return array($message, $msgId);
+    }
+
+    /**
+     * Build Email Custom Headers.
+     *
+     * @return Hash list of custom headers
+     */
+    public function getCustomHeaders($subscriber, $server)
+    {
+        $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from));
+
+        return array(
+            'X-Acelle-Campaign-Id' => $this->uid,
+            'X-Acelle-Subscriber-Id' => $subscriber->uid,
+            'X-Acelle-Customer-Id' => $this->automation->customer->uid,
+            'X-Acelle-Message-Id' => $msgId,
+            'X-Acelle-Sending-Server-Id' => $server->uid,
+            'List-Unsubscribe' => '<'.$this->generateUnsubscribeUrl($msgId, $subscriber).'>',
+            'Precedence' => 'bulk',
+        );
+    }
+
+    public function generateUnsubscribeUrl($msgId, $subscriber)
+    {
+        // OPTION 1: immediately opt out
+        $path = route('unsubscribeUrl', ['message_id' => StringHelper::base64UrlEncode($msgId)], false);
+
+        // OPTION 2: unsubscribe form
+        $path = route('unsubscribeForm', ['list_uid' => $subscriber->mailList->uid, 'code' => $subscriber->getSecurityToken('unsubscribe'), 'uid' => $subscriber->uid], false);
+
+        return $this->buildPublicUrl($path);
+    }
+
+    /**
+     * Log delivery message, used for later tracking.
+     */
+    public function trackMessage($response, $subscriber, $server, $msgId)
+    {
+        // @todo: customerneedcheck
+        $params = array_merge(array(
+                'email_id' => $this->id,
+                'message_id' => $msgId,
+                'subscriber_id' => $subscriber->id,
+                'sending_server_id' => $server->id,
+                'customer_id' => $this->automation->customer->id,
+            ), $response);
+
+        if (!isset($params['runtime_message_id'])) {
+            $params['runtime_message_id'] = $msgId;
+        }
+
+        // create tracking log for message
+        TrackingLog::create($params);
+
+        // increment customer quota usage
+        $this->customer->countUsage();
+        $server->countUsage();
+    }
+
+    /**
+     * Get tagged Subject.
+     *
+     * @return string
+     */
+    public function getSubject($subscriber, $msgId)
+    {
+        return $this->tagMessage($this->subject, $subscriber, $msgId, null);
+    }
+
+    public function buildPublicUrl($path)
+    {
+        $host = Setting::get('url_root');
+
+        return join_url($host, $path);
+    }
+
+    public function tagMessage($message, $subscriber, $msgId, $server = null)
+    {
+        if (!is_null($server) && $server->isElasticEmailServer()) {
+            $message = $server->addUnsubscribeUrl($message);
+        }
+
+        $tags = array(
+            'CAMPAIGN_NAME' => $this->name,
+            'CAMPAIGN_UID' => $this->uid,
+            'CAMPAIGN_SUBJECT' => $this->subject,
+            'CAMPAIGN_FROM_EMAIL' => $this->from,
+            'CAMPAIGN_FROM_NAME' => $this->from_name,
+            'CAMPAIGN_REPLY_TO' => $this->reply_to,
+            'SUBSCRIBER_UID' => $subscriber->uid,
+            'CURRENT_YEAR' => date('Y'),
+            'CURRENT_MONTH' => date('m'),
+            'CURRENT_DAY' => date('d'),
+            'CONTACT_NAME' => $subscriber->mailList->contact->company,
+            'CONTACT_COUNTRY' => $subscriber->mailList->contact->country->name,
+            'CONTACT_STATE' => $subscriber->mailList->contact->state,
+            'CONTACT_CITY' => $subscriber->mailList->contact->city,
+            'CONTACT_ADDRESS_1' => $subscriber->mailList->contact->address_1,
+            'CONTACT_ADDRESS_2' => $subscriber->mailList->contact->address_2,
+            'CONTACT_PHONE' => $subscriber->mailList->contact->phone,
+            'CONTACT_URL' => $subscriber->mailList->contact->url,
+            'CONTACT_EMAIL' => $subscriber->mailList->contact->email,
+            'LIST_NAME' => $subscriber->mailList->name,
+            'LIST_SUBJECT' => $subscriber->mailList->default_subject,
+            'LIST_FROM_NAME' => $subscriber->mailList->from_name,
+            'LIST_FROM_EMAIL' => $subscriber->mailList->from_email,
+        );
+
+        # Subscriber specific
+        if (!$this->isStdClassSubscriber($subscriber)) {
+            $tags['UPDATE_PROFILE_URL'] = $this->generateUpdateProfileUrl($subscriber);
+            $tags['UNSUBSCRIBE_URL'] = $this->generateUnsubscribeUrl($msgId, $subscriber);
+            $tags['WEB_VIEW_URL'] = $this->generateWebViewerUrl($msgId);
+
+            # Subscriber custom fields
+            foreach ($subscriber->mailList->fields as $field) {
+                $tags['SUBSCRIBER_'.$field->tag] = $subscriber->getValueByField($field);
+            }
+        } else {
+            $tags['SUBSCRIBER_EMAIL'] = $subscriber->email;
+        }
+
+        // Actually transform the message
+        foreach ($tags as $tag => $value) {
+            $message = str_replace('{'.$tag.'}', $value, $message);
+        }
+
+        return $message;
+    }
+
+    /**
+     * Check if the given variable is a subscriber object (for actually sending a campaign)
+     * Or a stdClass subscriber (for sending test email).
+     *
+     * @param object $object
+     */
+    public function isStdClassSubscriber($object)
+    {
+        return get_class($object) == 'stdClass';
+    }
+
+    public function generateUpdateProfileUrl($subscriber)
+    {
+        $path = route('updateProfileUrl', ['list_uid' => $subscriber->mailList->uid, 'uid' => $subscriber->uid, 'code' => $subscriber->getSecurityToken('update-profile')], false);
+
+        return $this->buildPublicUrl($path);
+    }
+
+    public function generateWebViewerUrl($msgId)
+    {
+        $path = route('webViewerUrl', ['message_id' => StringHelper::base64UrlEncode($msgId)], false);
+
+        return $this->buildPublicUrl($path);
+    }
+
+    /**
+     * Build Email HTML content.
+     *
+     * @return string
+     */
+    public function getHtmlContent($subscriber, $msgId, $server = null)
+    {
+        // @note: IMPORTANT: the order must be as follows
+        // * addTrackingURL
+        // * appendOpenTrackingUrl
+        // * tagMessage
+
+        // @note: addTrackingUrl() must go before appendOpenTrackingUrl()
+        $body = $this->html;
+
+        // Enable click tracking
+        if ($this->track_click) {
+            $body = $this->addTrackingUrl($body, $msgId);
+        }
+
+        // Enable open tracking
+        if ($this->track_open) {
+            $body = $this->appendOpenTrackingUrl($body, $msgId);
+        }
+
+        // Append footer
+        if ($this->footerEnabled()) {
+            $body = $this->appendFooter($body, $this->getHtmlFooter());
+        }
+
+        // Transform tags
+        $body = $this->tagMessage($body, $subscriber, $msgId, $server);
+
+        // Transform CSS/HTML content to inline CSS
+        $body = $this->inlineHtml($body);
+
+        return $body;
+    }
+
+    /**
+     * Replace link in text by click tracking url.
+     *
+     * @return text
+     * @note addTrackingUrl() must go before appendOpenTrackingUrl()
+     */
+    public function addTrackingUrl($email_html_content, $msgId)
+    {
+        if (preg_match_all('/<a[^>]*href=["\'](?<url>http[^"\']*)["\']/i', $email_html_content, $matches)) {
+            foreach ($matches[0] as $key => $href) {
+                $url = $matches['url'][$key];
+
+                $newUrl = route('clickTrackingUrl', ['message_id' => StringHelper::base64UrlEncode($msgId), 'url' => StringHelper::base64UrlEncode($url)], false);
+                $newUrl = $this->buildTrackingUrl($newUrl);
+                $newHref = str_replace($url, $newUrl, $href);
+
+                // if the link contains UNSUBSCRIBE URL tag
+                if (strpos($href, '{UNSUBSCRIBE_URL}') !== false) {
+                    // just do nothing
+                } elseif (preg_match('/{[A-Z0-9_]+}/', $href)) {
+                    // just skip if the url contains a tag. For example: {UPDATE_PROFILE_URL}
+                    // @todo: do we track these clicks?
+                } else {
+                    $email_html_content = str_replace($href, $newHref, $email_html_content);
+                }
+            }
+        }
+
+        return $email_html_content;
+    }
+
+    /**
+     * Append Open Tracking URL
+     * Append open-tracking URL to every email message.
+     */
+    public function appendOpenTrackingUrl($body, $msgId)
+    {
+        $path = route('openTrackingUrl', ['message_id' => StringHelper::base64UrlEncode($msgId)], false);
+        $url = $this->buildTrackingUrl($path);
+
+        return $body.'<img src="'.$url.'" width="0" height="0" alt="" style="visibility:hidden" />';
+    }
+
+    public function buildTrackingUrl($path)
+    {
+        $host = $this->getTrackingHost();
+
+        return join_url($host, $path);
+    }
+
+    public function getTrackingHost()
+    {
+        $root = Setting::get('url_root');
+        return $root;
+
+        /*
+        if (!$this->trackingDomain()->exists()) {
+            return $root;
+        }
+
+        preg_match('/^(?<scheme>https{0,1}:\/\/)/', $root, $result);
+        $protocol = $result['scheme'];
+
+        return sprintf('%s%s', $protocol, $this->trackingDomain->name);
+        */
+    }
+
+    /**
+     * Check if email footer enabled.
+     *
+     * @return string
+     */
+    public function footerEnabled()
+    {
+        return ($this->automation->customer->getCurrentSubscription()->plan->getOption('email_footer_enabled') == 'yes') ? true : false;
+    }
+
+    /**
+     * Get HTML footer.
+     *
+     * @return string
+     */
+    public function getHtmlFooter()
+    {
+        return $this->automation->customer->getCurrentSubscription()->plan->getOption('html_footer');
+    }
+
+    /**
+     * Append footer.
+     *
+     * @return string.
+     */
+    public function appendFooter($body, $footer)
+    {
+        return $body.$footer;
+    }
+
+    /**
+     * Convert html to inline.
+     *
+     * @todo not very OOP here, consider moving this to a Helper instead
+     */
+    public function inlineHtml($html)
+    {
+        // Convert to inline css if template source is builder
+        if ($this->template_source == 'builder') {
+            $cssToInlineStyles = new CssToInlineStyles();
+
+            $css = file_get_contents(public_path('css/res_email.css'));
+
+            // output
+            $html = $cssToInlineStyles->convert(
+                $html,
+                $css
+            );
+        }
+
+        return $html;
+    }
+
+    /**
+     * Find sending domain from email.
+     *
+     * @return mixed
+     */
+    public function findSendingDomain($email)
+    {
+        $domainName = substr(strrchr($email, '@'), 1);
+
+        if ($domainName == false) {
+            return;
+        }
+
+        $domain = $this->customer->activeDkimSendingDomains()->where('name', $domainName)->first();
+        if (is_null($domain)) {
+            $domain = SendingDomain::getAllAdminActive()->where('name', $domainName)->first();
+        }
+
+        return $domain;
+    }
+
+    /**
+     * Sign the message with DKIM.
+     *
+     * @return mixed
+     */
+    public function sign($message)
+    {
+        $sendingDomain = $this->findSendingDomain($this->from_email);
+
+        if (empty($sendingDomain)) {
+            return $message;
+        }
+
+        $privateKey = $sendingDomain->dkim_private;
+        $domainName = $sendingDomain->name;
+        $selector = $sendingDomain->getDkimSelectorParts()[0];
+        $signer = new \Swift_Signers_DKIMSigner($privateKey, $domainName, $selector);
+        $signer->ignoreHeader('Return-Path');
+        $message->attachSigner($signer);
+
+        return $message;
     }
 }
