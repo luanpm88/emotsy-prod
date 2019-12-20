@@ -24,6 +24,11 @@ class Dialog {
             this.cancel = this.options.cancel;
         }
 
+        // on close
+        if (this.options.close != null) {
+            this.close = this.options.close;
+        }
+
         // title
         if (this.options.title != null) {
             this.title = this.options.title;
@@ -101,6 +106,10 @@ class Dialog {
 
         // click close button
         _this.dialog.find(".close").click(function() {
+            if (_this.close != null) {
+                _this.close(_this);
+            }
+
             _this.dialog.hide();
         });
         

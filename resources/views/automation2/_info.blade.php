@@ -57,7 +57,10 @@
                 });      
             },
             cancel: function(dialog) {
-                    sidebar.load();
+                sidebar.load();
+            },
+            close: function(dialog) {
+                sidebar.load();
             },
         });
           
