@@ -73,6 +73,10 @@ class AutoTrigger extends Model
     public function moveToNextAction()
     {
         $nextId = $this->getLatestAction()->getNextActionId();
+        if (is_null($nextId)) {
+            return;
+        }
+
         $selected = null;
         $this->getActions(function ($instance) use ($nextId, &$selected) {
             if ($instance->getId() == $nextId) {
@@ -89,8 +93,8 @@ class AutoTrigger extends Model
 
     public function check()
     {
+        $this->logger()->info(sprintf('UPDATE > Trigger %s for "%s" - "%s" Start checking', $this->id, $this->automation2->name, $this->subscriber->email));
         $last = $this->getLatestAction();
-
         if ($last == null) {
             $trigger = $this->getTrigger();
             $trigger->markAsLatest(true);
@@ -98,16 +102,21 @@ class AutoTrigger extends Model
             $last = $trigger;
         }
 
+        $this->logger()->info(sprintf('UPDATE > %s > Checking "%s"', $this->id, $last->getTitle()));
+
         while ($last->execute($this) == true) { // true means: done with this step, should proceed next
             $this->updateAction($last); // update 'last_checked_at' field of Wait for example
             $last = $this->moveToNextAction();
             if ($last == null) {
+                $this->logger()->info(sprintf('UPDATE > %s > End of flow, no more action to check', $this->id, $this->automation2->name, $this->subscriber->email));
                 break;
             }
+            $this->logger()->info(sprintf('UPDATE > %s > Checking "%s"', $this->id, $last->getTitle()));
         }
 
         if (!is_null($last)) {
             $this->updateAction($last); // update 'last_checked_at' field of Wait for example
+            $this->logger()->info(sprintf('UPDATE > %s > Pending at "%s"', $this->id, $last->getTitle()));
         }
 
     }
@@ -115,7 +124,6 @@ class AutoTrigger extends Model
     public function updateAction($action)
     {
         $json = $this->getJson();
-
         if (array_key_exists($action->getId(), $json)) {
             $current = $json[$action->getId()];
             $updated = array_merge($current, $action->toJson());

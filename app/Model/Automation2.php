@@ -363,7 +363,7 @@ class Automation2 extends Model
      */
     public function checkForNewTriggers()
     {
-        $this->logger()->info(sprintf('Checking for new trigger'));
+        $this->logger()->info(sprintf('NEW > Start checking for new trigger'));
         $type = 'list-subscription';
         switch ($type) {
             case 'list-subscription':
@@ -381,6 +381,7 @@ class Automation2 extends Model
             default:
                 throw new \Exception('Unknown Automation trigger type '. $type);
         }
+        $this->logger()->info(sprintf('NEW > Finish checking for new trigger'));
     }
 
     /**
@@ -388,10 +389,11 @@ class Automation2 extends Model
      */
     public function checkForExistingTriggersUpdate()
     {
-        $this->logger()->info(sprintf('Checking for trigger update'));
+        $this->logger()->info(sprintf('UPDATE > Start checking for trigger update'));
         foreach ($this->autoTriggers as $trigger) {
             $trigger->check();
         }
+        $this->logger()->info(sprintf('UPDATE > Finish checking for trigger update'));
     }
 
     /**
@@ -401,9 +403,12 @@ class Automation2 extends Model
     {
         $now = Carbon::now();
         $subscribers = $this->getNewSubscribersToFollow();
-        $this->logger()->info(sprintf('%s new subscriber(s) found', count($subscribers)));
+        $this->logger()->info(sprintf('NEW > There are %s new subscriber(s) found', count($subscribers)));
+        $i = 0;
         foreach ($subscribers as $subscriber) {
+            $i += 1;
             $this->initTrigger($subscriber);
+            $this->logger()->info(sprintf('NEW > %s > Adding (%s/%s) new trigger', $subscriber->email, $i, count($subscribers)));
         }
     }
 
