@@ -150,24 +150,7 @@ class AutoTrigger extends Model
 
     public function getAction($attributes)
     {
-        switch ($attributes['type']) {
-            case 'ElementTrigger':
-                $instance = new Trigger($attributes);
-                break;
-            case 'ElementAction':
-                $instance = new Send($attributes);
-                break;
-            case 'ElementCondition':
-                $instance = new Evaluate($attributes);
-                break;
-            case 'ElementWait':
-                $instance = new Wait($attributes);
-                break;
-            default:
-                throw new \Exception('Unknown Action type '. $attributes['type']);
-        }
-
-        return $instance;
+        return $this->automation2->getAction($attributes);
     }
 
     public function updateWorkflow()
@@ -220,5 +203,22 @@ class AutoTrigger extends Model
         });
 
         return $timeline;
+    }
+
+    public function getActionById($id)
+    {
+        $selected = null;
+        $this->getActions(function($action) use ($id, &$selected) {
+            if ($action->getId() == $id) {
+                $selected = $action;
+            }
+        });
+
+        return $selected;
+    }
+
+    public function isActionExecuted($id)
+    {
+        return !is_null($this->getActionById($id)->getLastExecuted());
     }
 }

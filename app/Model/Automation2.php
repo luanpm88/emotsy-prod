@@ -28,6 +28,11 @@ use Acelle\Model\Email;
 use Acelle\Model\EmailLink;
 use Acelle\Model\Subscriber;
 use DB;
+use Acelle\Library\Automation\Action;
+use Acelle\Library\Automation\Trigger;
+use Acelle\Library\Automation\Send;
+use Acelle\Library\Automation\Wait;
+use Acelle\Library\Automation\Evaluate;
 use Carbon\Carbon;
 use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
@@ -458,5 +463,64 @@ class Automation2 extends Model
     {
         $trigger = $this->autoTriggers()->where('subscriber_id', $subscriber->id)->first();
         return $trigger->getTimeline();
+
+        /*
+         * See sample output at: http://prntscr.com/qdczr6
+         */
+    }
+
+    public function getInsight()
+    {
+        $actions = json_decode($this->data, true);
+        $insights = [];
+        foreach ($actions as $action) {
+            $insights[$action['id']] = $this->getActionStats($action);
+        }
+
+        return $insights;
+    }
+
+    public function getActionStats($action)
+    {
+        $total = $this->mailList->count();
+        $count = 0;
+        foreach ($this->autoTriggers as $trigger) {
+            var_dump($action['id']);
+            $count += ($trigger->isActionExecuted($action['id'])) ? 1 : 0;
+        }
+        // The following implementation is prettier but 'countBy' is supported in Laravel 5.8 only
+        // $count = $this->autoTriggers()->countBy(function($trigger) {
+        //    return $trigger->isActionExecuted($action['id']);
+        // });
+
+        $insight = [
+            'count' => $count,
+            'percentage' => ($total != 0) ? ($count / $total) : 0,
+            'latest_activity' => $this->autoTriggers()->max('created_at'),
+        ];
+
+        return $insight;
+    }
+
+    public function getAction($attributes)
+    {
+        switch ($attributes['type']) {
+            case 'ElementTrigger':
+                $instance = new Trigger($attributes);
+                break;
+            case 'ElementAction':
+                $instance = new Send($attributes);
+                break;
+            case 'ElementCondition':
+                $instance = new Evaluate($attributes);
+                break;
+            case 'ElementWait':
+                $instance = new Wait($attributes);
+                break;
+            default:
+                throw new \Exception('Unknown Action type '. $attributes['type']);
+        }
+
+        return $instance;
     }
 }
