@@ -32,4 +32,9 @@ class Evaluate extends Action
 
         return true;
     }
+
+    public function getTimelineDescription()
+    {
+        return 'Read email entitled "Welcome email"';
+    }
 }

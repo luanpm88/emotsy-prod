@@ -24,6 +24,7 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Automation\Action;
+use Acelle\Library\Automation\Trigger;
 use Acelle\Library\Automation\Send;
 use Acelle\Library\Automation\Wait;
 use Acelle\Library\Automation\Evaluate;
@@ -151,7 +152,7 @@ class AutoTrigger extends Model
     {
         switch ($attributes['type']) {
             case 'ElementTrigger':
-                $instance = new Evaluate($attributes);
+                $instance = new Trigger($attributes);
                 break;
             case 'ElementAction':
                 $instance = new Send($attributes);
@@ -200,5 +201,23 @@ class AutoTrigger extends Model
     public function logger()
     {
         return $this->automation2->logger();
+    }
+
+    public function getTimeline()
+    {
+        $timeline = [];
+        $this->getActions(function($action) use (&$timeline) {
+            if (!is_null($action->getLastExecuted())) {
+                $entry['datetime'] = $action->getLastExecuted();
+                $entry['description'] = $action->getTimelineDescription();
+                $timeline[] = $entry;
+            }
+        });
+
+        usort($timeline, function($a, $b) {
+            return $a['datetime'] > $b['datetime'];
+        });
+
+        return $timeline;
     }
 }

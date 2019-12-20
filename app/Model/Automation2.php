@@ -453,4 +453,10 @@ class Automation2 extends Model
         $logger->pushHandler($stream);
         return $logger;
     }
+
+    public function getTimeline($subscriber)
+    {
+        $trigger = $this->autoTriggers()->where('subscriber_id', $subscriber->id)->first();
+        return $trigger->getTimeline();
+    }
 }

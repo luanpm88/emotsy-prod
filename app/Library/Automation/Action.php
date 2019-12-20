@@ -34,7 +34,7 @@ abstract class Action
             'child' => $this->child,
             'latest' => $this->isLatest(),
             'options' => $this->getOptions(),
-            'last_executed' => $this->last_executed,
+            'last_executed' => $this->getLastExecuted(),
         ];
     }
 
@@ -51,6 +51,11 @@ abstract class Action
     public function getTitle()
     {
         return $this->title;
+    }
+
+    public function getLastExecuted()
+    {
+        return $this->last_executed;
     }
 
     public function getOptions()

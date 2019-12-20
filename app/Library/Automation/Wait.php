@@ -10,4 +10,9 @@ class Wait extends Action
 
         return true;
     }
+
+    public function getTimelineDescription()
+    {
+        return 'Waiting for the event to occur';
+    }
 }
