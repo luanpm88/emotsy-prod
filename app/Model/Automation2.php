@@ -449,7 +449,7 @@ class Automation2 extends Model
         $stream = new RotatingFileHandler(storage_path('logs/automation.log'), 0, Logger::INFO);
         $stream->setFormatter($formatter);
 
-        $logger = new Logger('automation-'.$this->uid);
+        $logger = new Logger($this->uid);
         $logger->pushHandler($stream);
         return $logger;
     }
