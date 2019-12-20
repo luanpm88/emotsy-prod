@@ -208,6 +208,7 @@ class AutoTrigger extends Model
         $timeline = [];
         $this->getActions(function($action) use (&$timeline) {
             if (!is_null($action->getLastExecuted())) {
+                $entry['action_id'] = $action->getId();
                 $entry['datetime'] = $action->getLastExecuted();
                 $entry['description'] = $action->getTimelineDescription();
                 $timeline[] = $entry;
