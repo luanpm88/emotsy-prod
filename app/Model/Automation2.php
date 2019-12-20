@@ -408,7 +408,7 @@ class Automation2 extends Model
         foreach ($subscribers as $subscriber) {
             $i += 1;
             $this->initTrigger($subscriber);
-            $this->logger()->info(sprintf('NEW > %s > Adding (%s/%s) new trigger', $subscriber->email, $i, count($subscribers)));
+            $this->logger()->info(sprintf('NEW > (%s/%s) > Adding new trigger for %s', $i, count($subscribers), $subscriber->email));
         }
     }
 

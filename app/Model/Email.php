@@ -492,7 +492,7 @@ class Email extends Model
         TrackingLog::create($params);
 
         // increment customer quota usage
-        $this->customer->countUsage();
+        $this->automation->customer->countUsage();
         $server->countUsage();
     }
 
