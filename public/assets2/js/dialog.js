@@ -1,33 +1,47 @@
 class Dialog {
-    constructor(type, title, message, callback) {
+    constructor(type, options) {
         var _this = this;
         this.dialog = $('.dialog');
+        this.options = {};
         this.loadingHtml = '<div class="dialog-loading"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>';
         
         if (type == null) {
             this.type = type;
         }
         
-        if (title != null) {
-            this.title = title;
+        // options
+        if (options != null) {
+            this.options = options;
+        }
+
+        // on ok
+        if (this.options.ok != null) {
+            this.ok = this.options.ok;
+        }
+
+        // on cancel
+        if (this.options.cancel != null) {
+            this.cancel = this.options.cancel;
+        }
+
+        // title
+        if (this.options.title != null) {
+            this.title = this.options.title;
+        }
+
+        // message
+        if (this.options.message != null) {
+            this.message = this.options.message;
         }
         
-        if (message != null) {
-            this.message = message;
-        }
-        
-        if (callback != null) {
-            this.callback = callback;
-        }
-        
-        if (!this.dialog.length) {
-            var dialog = $('<div class="dialog">').html(this.renderHtml(type));
-            $('body').append(dialog);
-            
-            this.dialog = dialog;
-        }
+        // remove and create new one
+        this.dialog.remove();
+        var dialog = $('<div class="dialog">').html(this.renderHtml(type));
+        $('body').append(dialog);        
+        this.dialog = dialog;
         this.dialog.css('display', 'none');
         
+        // show dialog
         this.load();
     }
     
@@ -48,7 +62,7 @@ class Dialog {
                         </div>
                         <div class="dialog-footer">
                             <button class="btn btn-primary dialog-ok mr-2">`+LANG_OK+`</button>
-                            <button class="btn btn-outline-secondary dialog-close mr-2">`+LANG_CANCEL+`</button>
+                            <button class="btn btn-outline-secondary dialog-cancel mr-2">`+LANG_CANCEL+`</button>
                         </div>
                     </div>
                 `;
@@ -84,31 +98,37 @@ class Dialog {
         
         // init js
         initJs(_this.dialog);
+
+        // click close button
+        _this.dialog.find(".close").click(function() {
+            _this.dialog.hide();
+        });
         
         // click close button
-        _this.dialog.find(".close, .dialog-close").click(function() {
+        _this.dialog.find(".dialog-cancel").click(function() {
+            if (_this.cancel != null) {
+                _this.cancel(_this);
+            }
+
             _this.dialog.hide();
         });
         
         // click ok button
         _this.dialog.find(".dialog-ok").click(function() {
-            _this.callback(_this);
+            if (_this.ok != null) {
+                _this.ok(_this);
+            }
             
             _this.hide();
         });
     }
     
-    load(message, callback) {
+    load(message) {
         var _this = this;
         
         if (typeof(message) !== 'undefined') {
             _this.message = message;
         }
-        
-        if (typeof(callback) !== 'undefined') {
-            _this.callback = callback;
-        }
-        
         _this.show();
         
         _this.dialog.find('.dialog-body').html(message);
