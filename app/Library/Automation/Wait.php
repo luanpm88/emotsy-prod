@@ -13,6 +13,6 @@ class Wait extends Action
 
     public function getTimelineDescription()
     {
-        return 'Waiting for the event to occur';
+        return 'Wait for 24 hours before proceeding with the next event';
     }
 }
