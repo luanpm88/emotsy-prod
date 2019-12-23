@@ -221,4 +221,18 @@ class AutoTrigger extends Model
     {
         return !is_null($this->getActionById($id)->getLastExecuted());
     }
+
+    public function isComplete()
+    {
+        $last = $this->getLatestAction();
+        if ($last == null) {
+            $last = $this->getTrigger();
+        }
+        $nextId = $last->getNextActionId();
+        if (is_null($nextId)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

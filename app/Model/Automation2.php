@@ -485,7 +485,6 @@ class Automation2 extends Model
         $total = $this->mailList->count();
         $count = 0;
         foreach ($this->autoTriggers as $trigger) {
-            var_dump($action['id']);
             $count += ($trigger->isActionExecuted($action['id'])) ? 1 : 0;
         }
         // The following implementation is prettier but 'countBy' is supported in Laravel 5.8 only
@@ -500,6 +499,24 @@ class Automation2 extends Model
         ];
 
         return $insight;
+    }
+
+    public function getSummaryStats()
+    {
+        $total = $this->mailList->count();
+        $involved = $this->autoTriggers()->count();
+        $involvePercentage = $involved / $total;
+
+        $complete = 0;
+        foreach ($this->autoTriggers as $trigger) {
+            $complete += ($trigger->isComplete()) ? 1 : 0;
+        }
+
+        return [
+            'total' => $total,
+            'involed' => $involvePercentage,
+            'complete' => $complete
+        ];
     }
 
     public function getAction($attributes)
