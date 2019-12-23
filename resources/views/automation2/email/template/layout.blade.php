@@ -72,9 +72,11 @@
 				var url = '{{ action('Automation2Controller@templateEdit', [
                         'uid' => $automation->uid,
                         'email_uid' => $email->uid,
-                    ]) }}';				
-				var div = $('<div class="full-iframe-popup">').html('<iframe scrolling="no" class="builder" src="'+url+'"></iframe>');
-				$('body').append(div);
+                    ]) }}';
+				openBuilder(url);
+
+				// notify
+				notify('success', '{{ trans('messages.notify.success') }}', response.message);
 			});
         });
     </script>

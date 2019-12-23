@@ -67,8 +67,6 @@
                     }
                 },
 				success: function(data) {
-					notify(data.status, '{{ trans('messages.notify.success') }}', data.message);
-					
 					popup.load('{{ action('Automation2Controller@emailTemplate', [
 						'uid' => $automation->uid,
 						'email_uid' => $email->uid,
@@ -78,9 +76,11 @@
 					var url = '{{ action('Automation2Controller@templateEdit', [
 						'uid' => $automation->uid,
 						'email_uid' => $email->uid,
-					]) }}';        
-					var div = $('<div class="full-iframe-popup">').html('<iframe scrolling="no" class="builder" src="'+url+'"></iframe>');            
-					$('body').append(div);
+					]) }}';
+					openBuilder(url);
+
+					// notify
+					notify(data.status, '{{ trans('messages.notify.success') }}', data.message);
 				}				
 			});
 		});

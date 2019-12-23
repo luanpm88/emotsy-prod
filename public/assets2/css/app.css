@@ -610,7 +610,7 @@ label.switchery-double.checkbox-switchery {
     font-weight: 600;
 }
 .ui-pnotify.ui-pnotify-fade-in {
-  z-index: 10000001 !important;
+  z-index: 100000000002 !important;
 }
 .box-loading {
     background: transparent;

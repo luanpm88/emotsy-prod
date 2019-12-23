@@ -2893,4 +2893,7 @@
   'automation.disable.confirm' => 'You are about to disable `<span class="font-weight-semibold">:name</span>` automation.',
   'automation.enable.confirm' => 'You are about to enable `<span class="font-weight-semibold">:name</span>` automation.',
   'automation.template.opening_builder' => 'Opening builder...',
+  'automation.email.template.layout.selected' => 'Email template layout was selected.',
+  'automation.email.template.theme.selected' => 'Email template theme was selected.',
+  'automation.email.template.uploaded' => 'Email template theme was uploaded.',
 ) ?>
