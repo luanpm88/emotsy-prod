@@ -71,10 +71,8 @@
             e.preventDefault();
             
             var url = $(this).attr('href');
-        
-            var div = $('<div class="full-iframe-popup">').html('<iframe scrolling="no" class="builder" src="'+url+'"></iframe>');
-            
-            $('body').append(div);
+
+            openBuilder(url);
         });
         
         $('.template-change').click(function(e) {
