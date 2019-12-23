@@ -23,6 +23,7 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Acelle\Model\Timeline;
 use Acelle\Library\Automation\Action;
 use Acelle\Library\Automation\Trigger;
 use Acelle\Library\Automation\Send;
@@ -66,6 +67,16 @@ class AutoTrigger extends Model
         return $this->belongsTo('Acelle\Model\Automation2');
     }
 
+    /**
+     * Associations.
+     *
+     * @return the associated timelines
+     */
+    public function timelines()
+    {
+        return $this->hasMany('Acelle\Model\Timeline');
+    }
+
     // getLatestAction from trigger
     public function getLatestAction()
     {
@@ -101,6 +112,15 @@ class AutoTrigger extends Model
         return $selected;
     }
 
+    public function recordToTimeline($action)
+    {
+        $this->timelines()->create([
+            'automation2_id' => $this->automation2_id,
+            'subscriber_id' => $this->subscriber_id,
+            'activity' => $action->getActionDescription(),
+        ]);
+    }
+
     public function check()
     {
         $this->logger()->info(sprintf('UPDATE > Trigger %s for "%s" - "%s" Start checking', $this->id, $this->automation2->name, $this->subscriber->email));
@@ -114,8 +134,10 @@ class AutoTrigger extends Model
 
         $this->logger()->info(sprintf('UPDATE > %s > Checking "%s"', $this->id, $last->getTitle()));
 
-        while ($last->execute($this) == true) { // true means: done with this step, should proceed next
+        while ($last->execute() == true) { // true means: done with this step, should proceed next
             $this->updateAction($last); // update 'last_checked_at' field of Wait for example
+            $this->recordToTimeline($last);
+
             $last = $this->moveToNextAction();
             if ($last == null) {
                 $this->logger()->info(sprintf('UPDATE > %s > End of flow, no more action to check', $this->id, $this->automation2->name, $this->subscriber->email));
@@ -166,6 +188,7 @@ class AutoTrigger extends Model
         foreach ($json as $key => $attributes) {
             $attributes['id'] = $key;
             $instance = $this->getAction($attributes);
+            $instance->setAutoTrigger($this);
             $callback($instance);
         }
     }
@@ -215,7 +238,7 @@ class AutoTrigger extends Model
             if (!is_null($action->getLastExecuted())) {
                 $entry['action_id'] = $action->getId();
                 $entry['datetime'] = $action->getLastExecuted();
-                $entry['description'] = $action->getTimelineDescription();
+                $entry['description'] = $action->getActionDescription();
                 $timeline[] = $entry;
             }
         });

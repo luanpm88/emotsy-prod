@@ -14,6 +14,9 @@ abstract class Action
     protected $options;
     protected $last_executed = null;
 
+    // parent object
+    protected $autoTrigger;
+
     public function __construct($params = [])
     {
         $this->id = $params['id'];
@@ -23,6 +26,11 @@ abstract class Action
         $this->options = array_key_exists('options', $params) ? $params['options'] : [];
         $this->latest = array_key_exists('latest', $params) ? $params['latest'] : null;
         $this->last_executed = array_key_exists('last_executed', $params) ? $params['last_executed'] : null;
+    }
+
+    public function setAutoTrigger($autoTrigger)
+    {
+        $this->autoTrigger = $autoTrigger;
     }
 
     public function toJson()

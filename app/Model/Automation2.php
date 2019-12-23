@@ -505,7 +505,7 @@ class Automation2 extends Model
     {
         $total = $this->mailList->count();
         $involved = $this->autoTriggers()->count();
-        $involvePercentage = $involved / $total;
+        $involvePercentage = ($total == 0) ? 0 : $involved / $total;
 
         $complete = 0;
         foreach ($this->autoTriggers as $trigger) {

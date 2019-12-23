@@ -7,11 +7,11 @@ use Acelle\Jobs\DeliverEmail;
 
 class Send extends Action
 {
-    public function execute($autoTrigger)
+    public function execute()
     {
         $email = $this->getEmail();
-        dispatch(new DeliverEmail($email, $autoTrigger->subscriber));
-        $autoTrigger->logger()->info(sprintf('Send email entitled "%s" to "%s", queued', $email->subject, $autoTrigger->subscriber->email));
+        dispatch(new DeliverEmail($email, $this->autoTrigger->subscriber));
+        $this->autoTrigger->logger()->info(sprintf('Send email entitled "%s" to "%s", queued', $email->subject, $this->autoTrigger->subscriber->email));
 
         $this->recordLastExecutedTime();
 
@@ -23,8 +23,9 @@ class Send extends Action
         return Email::findByUid($this->options['email_uid']);
     }
 
-    public function getTimelineDescription()
+    public function getActionDescription()
     {
-        return sprintf('Receive email entitled "%s"', $this->getEmail()->subject);
+        $nameOrEmail = $this->autoTrigger->subscriber->getFullNameOrEmail();
+        return sprintf('User %s receives email entitled "%s"', $nameOrEmail, $this->getEmail()->subject);
     }
 }

@@ -26,15 +26,16 @@ class Evaluate extends Action
         return $json;
     }
 
-    public function execute($trigger)
+    public function execute()
     {
         $this->recordLastExecutedTime();
 
         return true;
     }
 
-    public function getTimelineDescription()
+    public function getActionDescription()
     {
-        return 'Read email entitled "Welcome email"';
+        $nameOrEmail = $this->autoTrigger->subscriber->getFullNameOrEmail();
+        return sprintf('User %s reads email entitled "Welcome email"', $nameOrEmail);
     }
 }

@@ -926,6 +926,16 @@ class Subscriber extends Model
         }
     }
 
+    public function getFullNameOrEmail()
+    {
+        $full = $this->getFullName();
+        if (empty($full)) {
+            return $this->email;
+        } else {
+            return $full;
+        }
+    }
+
     /**
      * Is the subscriber active?
      */

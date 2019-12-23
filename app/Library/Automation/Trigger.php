@@ -4,14 +4,15 @@ namespace Acelle\Library\Automation;
 
 class Trigger extends Action
 {
-    public function execute($autoTrigger)
+    public function execute()
     {
         $this->recordLastExecutedTime();
         return true;
     }
 
-    public function getTimelineDescription()
+    public function getActionDescription()
     {
-        return sprintf('Subscribe to mail list, automation triggered!');
+        $nameOrEmail = $this->autoTrigger->subscriber->getFullNameOrEmail();
+        return sprintf('User %s subscribes to mail list, automation triggered!', $nameOrEmail);
     }
 }
