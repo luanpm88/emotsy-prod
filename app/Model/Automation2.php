@@ -541,7 +541,7 @@ class Automation2 extends Model
         return $instance;
     }
 
-    public function subscribers($actionId = null)
+    public function getSubscribers($actionId = null)
     {
         $list = $this->mailList->subscribers();
 
