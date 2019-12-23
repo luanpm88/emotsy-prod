@@ -101,6 +101,14 @@ class Automation2 extends Model
     }
 
     /**
+     * Association
+     */
+    public function timelines()
+    {
+        return $this->hasMany('Acelle\Model\Timeline');
+    }
+
+    /**
      * Bootstrap any application services.
      */
     public static function boot()
@@ -459,14 +467,10 @@ class Automation2 extends Model
         return $logger;
     }
 
-    public function getTimeline($subscriber)
+    public function getTimelineBy($subscriber)
     {
         $trigger = $this->autoTriggers()->where('subscriber_id', $subscriber->id)->first();
         return $trigger->getTimeline();
-
-        /*
-         * See sample output at: http://prntscr.com/qdczr6
-         */
     }
 
     public function getInsight()
