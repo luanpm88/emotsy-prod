@@ -25,7 +25,6 @@ namespace Acelle\Model;
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Log as MailLog;
 use Acelle\Model\Blacklist;
-use Acelle\Model\AutoTrigger;
 use DB;
 
 class Subscriber extends Model
@@ -310,7 +309,7 @@ class Subscriber extends Model
 
         return $query;
     }
-    
+
     /**
      * Get all languages.
      *
@@ -933,19 +932,5 @@ class Subscriber extends Model
     public function isActive()
     {
         return ($this->status == self::STATUS_SUBSCRIBED);
-    }
-
-    /**
-     * Delete the constraint (which cannot explicitly set in MySQL).
-     */
-    public function delete()
-    {
-        DB::transaction(function() {
-            foreach (AutoTrigger::where('preceded_by', $this->id)->get() as $trigger) {
-                $trigger->delete();
-            }
-
-            parent::delete();
-        });
     }
 }
