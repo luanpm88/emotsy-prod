@@ -23,7 +23,7 @@
                 {{ trans('messages.automation.trigger.save_change') }}
         </button>
         
-        <a href="javascript:;" class="btn btn-outline-secondary add-trigger-but">
+        <a href="javascript:;" class="btn btn-outline-secondary change-trigger-but">
             Change Trigger
         </a>
     </div>
@@ -59,5 +59,9 @@
                 sidebar.load();
             });
         });        
+    });
+
+    $('.change-trigger-but').click(function() {
+        OpenTriggerSelectPopup();
     });
 </script>

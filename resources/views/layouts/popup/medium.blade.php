@@ -4,11 +4,13 @@
         <h2 class="title">@yield('title')</h2>
         <i class="lnr lnr-cross close"></i>
     </div>
-    <div class="popup-body">
-        <!-- display flash message -->
-        @include('common.errors')
+    <div class="popup-body scrollbar-inner">
+        <div class="popup-content">
+            <!-- display flash message -->
+            @include('common.errors')
 
-        <!-- main inner content -->
-        @yield('content')
+            <!-- main inner content -->
+            @yield('content')
+        </div>
     </div>
 </div>
