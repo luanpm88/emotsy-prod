@@ -707,10 +707,10 @@ class Automation2Controller extends Controller
                 $email->addTemplateFromLayout($request->layout);
             }
             
-            return redirect()->action('Automation2Controller@emailTemplate', [
-                'uid' => $automation->uid,
-                'email_uid' => $email->uid,
-            ]);
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.automation.email.template.layout.selected'),
+            ], 201);
         }
 
         return view('automation2.email.template.layout', [
@@ -823,6 +823,11 @@ class Automation2Controller extends Controller
         if ($request->isMethod('post')) {
             $template = Template::findByUid($request->template_uid);
             $email->copyFromTemplate($template);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.automation.email.template.theme.selected'),
+            ], 201);
         }
 
         return view('automation2.email.template.theme', [
