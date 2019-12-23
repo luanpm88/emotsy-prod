@@ -2890,4 +2890,6 @@
   'automation.action.can_not_add_condition' => 'Condition can only be inserted after leaf node',
   'plan.sending_server.own' => 'Use customer\'s sending servers',
   'plan.sending_server.subaccount' => 'Use sending servers subacount',
+  'automation.disable.confirm' => 'You are about to disable `<span class="font-weight-semibold">:name</span>` automation.',
+  'automation.enable.confirm' => 'You are about to enable `<span class="font-weight-semibold">:name</span>` automation.',
 ) ?>

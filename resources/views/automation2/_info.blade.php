@@ -29,24 +29,40 @@
     // change automation status
     $('[name="automation_status"]').change(function() {
         var value = $(this).is(":checked");
-        var url;
+        var url, confirm;
+
+        console.log(value);
         
         if (value) {
             url = '{{ action('Automation2Controller@enable', ["uids" => $automation->uid]) }}';
+            confirm = '{!! trans('messages.automation.enable.confirm', ['name' => $automation->name]) !!}';
         } else {
             url = '{{ action('Automation2Controller@disable', ["uids" => $automation->uid]) }}';
+            confirm = '{!! trans('messages.automation.disable.confirm', ['name' => $automation->name]) !!}';
         }
-        
-        $.ajax({
-            url: url,
-            type: 'PATCH',
-            data: {
-                _token: CSRF_TOKEN
-            }
-        }).always(function(response) {
-            notify(response.status, '{{ trans('messages.notify.success') }}', response.message);
-        
-            sidebar.load();
-        });        
+
+        var dialog = new Dialog('confirm', {
+            message: confirm,
+            ok: function(dialog) {
+                $.ajax({
+                    url: url,
+                    type: 'PATCH',
+                    data: {
+                        _token: CSRF_TOKEN
+                    }
+                }).always(function(response) {
+                    notify(response.status, '{{ trans('messages.notify.success') }}', response.message);
+                
+                    sidebar.load();
+                });      
+            },
+            cancel: function(dialog) {
+                sidebar.load();
+            },
+            close: function(dialog) {
+                sidebar.load();
+            },
+        });
+          
     });
 </script>

@@ -68,18 +68,21 @@
         e.preventDefault();
         
         var confirm = $(this).attr('data-confirm');
-        var dialog = new Dialog('confirm', null, confirm, function(dialog) {
-            // remove current node
-            tree.getSelected().remove();
-            
-            // save tree
-            saveData(function() {
-                // notify
-                notify('success', '{{ trans('messages.notify.success') }}', '{{ trans('messages.automation.action.deteled') }}');
+        var dialog = new Dialog('confirm', {
+            message: confirm,
+            ok: function(dialog) {
+                // remove current node
+                tree.getSelected().remove();
                 
-                // load default sidebar
-                sidebar.load('{{ action('Automation2Controller@settings', $automation->uid) }}');
-            });
+                // save tree
+                saveData(function() {
+                    // notify
+                    notify('success', '{{ trans('messages.notify.success') }}', '{{ trans('messages.automation.action.deteled') }}');
+                    
+                    // load default sidebar
+                    sidebar.load('{{ action('Automation2Controller@settings', $automation->uid) }}');
+                });
+            },
         });
     });
 </script>
