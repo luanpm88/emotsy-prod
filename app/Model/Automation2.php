@@ -540,4 +540,16 @@ class Automation2 extends Model
 
         return $instance;
     }
+
+    public function subscribers($actionId = null)
+    {
+        $list = $this->mailList->subscribers();
+
+        if (!is_null($actionId)) {
+            $list->join('auto_triggers', 'auto_triggers.subscriber_id', '=', 'subscribers.id')
+                 ->where('auto_triggers.executed_index', 'LIKE', '%' .$actionId. '%');
+        }
+
+        return $list;
+    }
 }
