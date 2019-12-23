@@ -231,25 +231,6 @@ class AutoTrigger extends Model
         return $this->automation2->logger();
     }
 
-    public function getTimeline()
-    {
-        $timeline = [];
-        $this->getActions(function($action) use (&$timeline) {
-            if (!is_null($action->getLastExecuted())) {
-                $entry['action_id'] = $action->getId();
-                $entry['datetime'] = $action->getLastExecuted();
-                $entry['description'] = $action->getActionDescription();
-                $timeline[] = $entry;
-            }
-        });
-
-        usort($timeline, function($a, $b) {
-            return $a['datetime'] > $b['datetime'];
-        });
-
-        return $timeline;
-    }
-
     public function getActionById($id)
     {
         $selected = null;

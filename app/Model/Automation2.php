@@ -467,10 +467,10 @@ class Automation2 extends Model
         return $logger;
     }
 
-    public function getTimelineBy($subscriber)
+    public function timelinesBy($subscriber)
     {
         $trigger = $this->autoTriggers()->where('subscriber_id', $subscriber->id)->first();
-        return $trigger->getTimeline();
+        return $trigger->timelines();
     }
 
     public function getInsight()
