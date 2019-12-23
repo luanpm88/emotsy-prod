@@ -37,6 +37,15 @@ class AutoTrigger extends Model
 
     protected $dates = ['created_at', 'updated_at'];
 
+    public static function boot()
+    {
+        parent::boot();
+
+        self::saving(function($model){
+            $model->updateExecutedIndex();
+        });
+    }
+
     /**
      * Associations.
      *
@@ -134,7 +143,20 @@ class AutoTrigger extends Model
         }
 
         $this->data = json_encode($json);
+
         $this->save();
+    }
+
+    private function updateExecutedIndex()
+    {
+        $executed = [];
+        $this->getActions(function($action) use (&$executed) {
+            if (!is_null($action->getLastExecuted())) {
+                $executed[] = $action->getId();
+            }
+        });
+
+        $this->executed_index = implode(',', $executed);
     }
 
     public function getActions($callback)
