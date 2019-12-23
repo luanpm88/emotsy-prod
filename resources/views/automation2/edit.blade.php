@@ -86,6 +86,20 @@
 		});
 
 		var sidebar = new Box($('.sidebar-content'));
+
+		function openBuilder(url) {
+			var div = $('<div class="full-iframe-popup">').html('<iframe scrolling="no" class="builder d-none" src="'+url+'"></iframe>');
+            
+            $('body').append(div);
+
+            // open builder effects
+            addMaskLoading("{{ trans('messages.automation.template.opening_builder') }}");
+            $('.builder').on("load", function() {
+                removeMaskLoading();
+
+				$(this).removeClass("d-none");
+            });
+		}
 		
 		function setAutomationName(name) {
 			$('.navbar h1').html(name);
