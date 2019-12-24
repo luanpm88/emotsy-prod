@@ -26,7 +26,7 @@ class List {
         }
         
         // data        
-        if (this.options.data !== null) {
+        if (this.options.data !== null && typeof(this.options.data) != 'undefined') {
             this.data = this.options.data;
         }
     }

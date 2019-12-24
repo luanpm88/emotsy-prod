@@ -1,10 +1,20 @@
 @include('automation2._info')
 				
-@include('automation2._tabs', ['tab' => 'statistics', 'sub' => 'all_contacts'])
+@include('automation2._tabs', ['tab' => 'statistics', 'sub' => (request()->action_id ? 'contacts_action_' . request()->action_id : 'all_contacts')])
     
 <div class="insight-topine d-flex small align-items-center">
     <div class="insight-desc mr-auto">
-        There are 3 contacts who received `<span class="font-weight-semibold">Followup email</span>`
+        @if (request()->action_id)
+            {!! trans_choice('messages.automation.action.contacts_intro', $automation->subscribers(request()->action_id)->count(), [
+                'count' => format_number($automation->subscribers(request()->action_id)->count()),
+                'name' => $automation->getElement(request()->action_id)->getName(),
+            ]) !!}
+        @else
+            {!! trans_choice('messages.automation.contacts_intro', $automation->subscribers()->count(), [
+                'count' => format_number($automation->subscribers()->count()),
+                'name' => $automation->name,
+            ]) !!}
+        @endif        
     </div>
     <div class="insight-action">
         <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
@@ -33,6 +43,7 @@
     var listContact = new List( $('.contacts_list'), {
         url: '{{ action('Automation2Controller@contactsList', [
                 'uid' => $automation->uid,
+                'action_id' => request()->action_id,
             ]) }}',
         data: function() {
                 return {

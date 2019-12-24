@@ -27,7 +27,7 @@
                     <img src="{{ action('SubscriberController@avatar',  $contact->uid) }}" />
                 </div>
                 <div class="account">
-                    <h5 class="mb-0">Neko Gal</h5>
+                    <h5 class="mb-0">{{ $contact->getFullName() }}</h5>
                     <p class="small mb-2">{{ $contact->email }}</p>
                     <div class="tags">
                         <div class="btn-group" role="group" aria-label="Basic example">
@@ -68,43 +68,26 @@
             </div>
                 
             <div class="activity-feed mt-3">
-                <label class="date small font-weight-semibold pl-4 mb-0">Yesterday</label>
-                <div class="activity d-flex py-3 px-4">
-                    <div class="activity-media pr-4 ">
-                        <time class="d-block text-center small font-weight-semibold">1:12pm</time>
-                        <i class="lnr lnr-envelope mt-2"></i>
+                <label class="date small font-weight-semibold mb-0 divider">{{ trans('messages.automation.profile_timeline_head') }}</label>
+                
+                @foreach($automation->timelinesBy($contact)->get() as $timeline)
+                    <div class="activity d-flex py-3 px-4">
+                        <div class="activity-media pr-4 text-center">
+                            <time class="d-block text-center mini mb-2">{{ $timeline->created_at->diffForHumans() }}</time>
+                            <i class="material-icons d-inline-block">
+                                done_all
+                            </i>
+                        </div>
+                        <div class="small">
+                            <action class="d-block font-weight-semibold mb-1">
+                                {{ $timeline->activity }}
+                            </action>
+                            <desc class="d-block">
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris id dapibus odio.
+                            </desc>
+                        </div>
                     </div>
-                    <div class="small">
-                        <action class="d-block font-weight-semibold mb-1">Subscribes to mail list `Welcome to Soriento` via subscription built-in form</action>
-                        <desc class="d-block">
-                           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris id dapibus odio.
-                        </desc>
-                    </div>
-                </div>
-                <div class="activity d-flex py-3 px-4">
-                    <div class="activity-media pr-4 ">
-                        <time class="d-block text-center small font-weight-semibold">10:24am</time>
-                        <i class="lnr lnr-exit-up mt-2"></i>
-                    </div>
-                    <div class="small">
-                        <action class="d-block font-weight-semibold mb-1">Subscribes to mail list `Welcome to Soriento` via subscription built-in form</action>
-                        <desc class="d-block">
-                           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris id dapibus odio.
-                        </desc>
-                    </div>
-                </div>
-                <div class="activity d-flex py-3 px-4">
-                    <div class="activity-media pr-4 ">
-                        <time class="d-block text-center small font-weight-semibold">3:54am</time>
-                        <i class="lnr lnr-bubble mt-2"></i>
-                    </div>
-                    <div class="small">
-                        <action class="d-block font-weight-semibold mb-1">Subscribes to mail list `Welcome to Soriento` via subscription built-in form</action>
-                        <desc class="d-block">
-                           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris id dapibus odio.
-                        </desc>
-                    </div>
-                </div>
+                @endforeach
             </div>
         </div>
     </div>

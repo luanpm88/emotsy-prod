@@ -1126,6 +1126,8 @@ class Automation2Controller extends Controller
 
         return view('automation2.insight', [
             'automation' => $automation,
+            'stats' => $automation->getSummaryStats(),
+            'insight' => $automation->getInsight(),
         ]);
     }
     
@@ -1163,8 +1165,15 @@ class Automation2Controller extends Controller
         if (\Gate::denies('view', $automation)) {
             return $this->notAuthorized();
         }
+
+        // all or action contacts
+        if ($request->action_id) {
+            $subscribers = Subscriber::gSearch($automation->subscribers($request->action_id), $request);
+        } else {
+            $subscribers = Subscriber::gSearch($automation->subscribers(), $request);
+        }
         
-        list($contacts, $pagination) = pagination($request, Subscriber::gSearch($automation->mailList->subscribers(), $request));
+        list($contacts, $pagination) = pagination($request, $subscribers);
         
         return view('automation2.contacts.list', [
             'automation' => $automation,
@@ -1189,8 +1198,31 @@ class Automation2Controller extends Controller
             return $this->notAuthorized();
         }
 
-        return view('automation2.timeline', [
+        return view('automation2.timeline.index', [
             'automation' => $automation,
+        ]);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function timelineList(Request $request, $uid)
+    {
+        $automation = Automation2::findByUid($uid);
+        
+        // authorize
+        if (\Gate::denies('view', $automation)) {
+            return $this->notAuthorized();
+        }
+        
+        list($timelines, $pagination) = pagination($request, $automation->timelines());
+        
+        return view('automation2.timeline.list', [
+            'automation' => $automation,
+            'timelines' => $timelines,
+            'pagination' => $pagination,
         ]);
     }
     

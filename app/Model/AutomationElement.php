@@ -23,6 +23,7 @@
 namespace Acelle\Model;
 
 use Acelle\Model\Automation2;
+use Acelle\Model\Email;
 
 class AutomationElement
 {
@@ -38,7 +39,7 @@ class AutomationElement
     }
     
     /**
-     * Get value.
+     * Get options.
      *
      * @return string
      */
@@ -49,5 +50,101 @@ class AutomationElement
         }
         
         return null;
+    }
+
+    /**
+     * Get value.
+     *
+     * @return string
+     */
+    public function get($name)
+    {
+        if (isset($this->data) && isset($this->data->$name)) {
+            return $this->data->$name;
+        }
+        
+        return null;
+    }
+
+    /**
+     * Get value.
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        switch ($this->get('type')) {
+            case 'ElementTrigger':
+                return trans('messages.automation.trigger.title', [
+                    'title' => trans('messages.automation.trigger.' . $this->getOption("key"))
+                ]);
+                break;
+            case 'ElementAction':
+                $email = Email::findByUid($this->getOption('email_uid'));
+                return trans('messages.automation.send_a_email', ['title' => $email->subject]);
+                break;
+            case 'ElementWait':
+                return trans('messages.automation.action.wait.title', [
+                    'number' => explode(' ', $this->getOption("time"))[0],
+                    'time' => explode(' ', $this->getOption("time"))[1],
+                ]);
+                break;
+            case 'ElementCondition':
+                if ($this->getOption("type") == 'open') {
+                    return trans('messages.automation.action.condition.read_email.title');
+                } else if ($this->getOption("type") == 'click') {
+                    return trans('messages.automation.action.condition.click_link.title');
+                }
+                break;
+            default:
+        }
+    }
+
+    /**
+     * Get value.
+     *
+     * @return string
+     */
+    public function getIcon()
+    {
+        switch ($this->get('type')) {
+            case 'ElementTrigger':
+                return '<i class="lnr lnr-exit-up bg-success"></i>';
+                break;
+            case 'ElementAction':
+                return '<i class="lnr lnr-envelope bg-primary"></i>';
+                break;
+            case 'ElementWait':
+                return '<i class="lnr lnr-clock bg-secondary"></i>';
+                break;
+            case 'ElementCondition':
+                return '<i class="material-icons bg-warning">call_split</i>';
+                break;
+            default:
+        }
+    }
+
+    /**
+     * Get value.
+     *
+     * @return string
+     */
+    public function getIconWithoutBg($class='')
+    {
+        switch ($this->get('type')) {
+            case 'ElementTrigger':
+                return '<i class="lnr lnr-exit-up '.$class.'"></i>';
+                break;
+            case 'ElementAction':
+                return '<i class="lnr lnr-envelope '.$class.'"></i>';
+                break;
+            case 'ElementWait':
+                return '<i class="lnr lnr-clock '.$class.'"></i>';
+                break;
+            case 'ElementCondition':
+                return '<i class="material-icons '.$class.'">call_split</i>';
+                break;
+            default:
+        }
     }
 }

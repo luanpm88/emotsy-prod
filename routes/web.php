@@ -545,6 +545,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     
     // Automation2
     Route::get('automation2/{uid}/contact/{contact_uid}/profile', 'Automation2Controller@profile');
+    Route::post('automation2/{uid}/timeline/list', 'Automation2Controller@timelineList');
     Route::get('automation2/{uid}/timeline', 'Automation2Controller@timeline');
     Route::post('automation2/{uid}/contacts/list', 'Automation2Controller@contactsList');
     Route::get('automation2/{uid}/contacts', 'Automation2Controller@contacts');

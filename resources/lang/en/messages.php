@@ -2896,4 +2896,16 @@
   'automation.email.template.layout.selected' => 'Email template layout was selected.',
   'automation.email.template.theme.selected' => 'Email template theme was selected.',
   'automation.email.template.uploaded' => 'Email template theme was uploaded.',
+  'automation.complete_percent' => '% Complete',
+  'automation.involved' => 'Involved',
+  'automation.insight.triggered' => 'Triggered',
+  'automation.action.last_updated' => 'Last updated',
+  'automation.action.contacts_count' => ':count contact|:count contacts',
+  'automation.contacts_intro' => 'There are <span class="font-weight-semibold">:count</span>
+    contacts who involved in this automation',
+  'automation.action.contacts_intro' => 'There are <span class="font-weight-semibold">:count</span> contacts who involved in action
+    `<span class="font-weight-semibold">:name</span>`',
+  'automation.profile_timeline_head' => 'Timeline',
+  'automation.timline.intro' => 'There are <span class="font-weight-semibold">:count</span> activities recorded for your campaign.',
+  'automation.all_activities' => 'All activities',
 ) ?>

@@ -13,16 +13,16 @@
     
 <div class="insight-stat-brief d-flex mt-3 mb-4">
     <div class="insight-stat-col flex-fill">
-        <number>{{ format_number($automation->getContactsCount()) }}</number>
+        <number>{{ format_number($stats['total']) }}</number>
         <desc class="text-muted">{{ trans_choice('messages.automation.contacts', $automation->getContactsCount()) }}</desc>
     </div>
     <div class="insight-stat-col flex-fill">
-        <number>{{ $automation->getCompletePercent() }}%</number>
-        <desc class="text-muted">{{ trans('messages.automation.complete') }}</desc>
+        <number>{{ format_number($stats['involed']) }}</number>
+        <desc class="text-muted">{{ trans('messages.automation.involved') }}</desc>
     </div>
     <div class="insight-stat-col flex-fill">
-        <number>{{ format_number($automation->getEmailsSentCount()) }}</number>
-        <desc class="text-muted">{{ trans_choice('messages.automation.emails_sent', $automation->getEmailsSentCount()) }}</desc>
+        <number>{{ calc_percentage($stats['complete'], $stats['involed']) }}</number>
+        <desc class="text-muted">{{ trans('messages.automation.complete_percent') }}</desc>
     </div>
 </div>
     
@@ -31,100 +31,37 @@
 </p>
     
 <div class="mc-table small mt-3">
-    <div class="mc-row d-flex align-items-center">
-        <div class="media trigger">
-            <a href="">
-                <i class="lnr lnr-exit-up bg-danger"></i>
-            </a>
+    @foreach ($insight as $key => $element)
+        @php
+            $action = $automation->getElement($key);
+        @endphp
+
+        <div class="mc-row d-flex align-items-center">
+            <div class="media trigger">
+                {!! $action->getIcon() !!}
+            </div>
+            <div class="flex-fill" style="width: 35%">
+                <label class="font-weight-semibold">
+                    {{ $action->getName() }}
+                </label>
+                <desc>
+                    {{ trans_choice('messages.automation.action.contacts_count', $element['percentage'], [
+                        'count' => format_number($element['percentage']),
+                    ]) }}
+                </desc>
+            </div>
+            <div class="flex-fill">
+                <label class="font-weight-semibold">
+                    {{ \Carbon\Carbon::parse($element['latest_activity'])->diffForHumans() }}
+                </label>
+                <desc>{{ trans('messages.automation.action.last_updated') }}</desc>
+            </div>
+            <div class="flex-fill text-center">
+                <label class="font-weight-semibold">
+                    {{ format_number($element['percentage']) }}%
+                </label>
+            </div>
         </div>
-        <div class="flex-fill" style="width: 35%">
-            <label class="font-weight-semibold">
-                Triggered
-            </label>
-            <desc>503 contacts</desc>
-        </div>
-        <div class="flex-fill">
-            <label class="font-weight-semibold">
-                14 minutes ago
-            </label>
-            <desc>Lasted updated</desc>
-        </div>
-        <div class="flex-fill text-center">
-            <label class="font-weight-semibold">
-                100%
-            </label>
-        </div>
-    </div>
-    <div class="mc-row d-flex align-items-center">
-        <div class="media email">
-            <a href="">
-                <i class="lnr lnr-envelope bg-primary"></i>
-            </a>
-        </div>
-        <div class="flex-fill" style="width: 35%">
-            <label class="font-weight-semibold">
-                Send welcome email
-            </label>
-            <desc>503 contacts</desc>
-        </div>
-        <div class="flex-fill">
-            <label class="font-weight-semibold">
-                2 hours ago
-            </label>
-            <desc>Lasted updated</desc>
-        </div>
-        <div class="flex-fill text-center">
-            <label class="font-weight-semibold">
-                100%
-            </label>
-        </div>
-    </div>
-    <div class="mc-row d-flex align-items-center">
-        <div class="media open">
-            <a href="">
-                <i class="lnr lnr-exit-up bg-info"></i>
-            </a>
-        </div>
-        <div class="flex-fill" style="width: 35%">
-            <label class="font-weight-semibold">
-                Open `ABC` email
-            </label>
-            <desc>503 contacts</desc>
-        </div>
-        <div class="flex-fill">
-            <label class="font-weight-semibold">
-                2 days ago
-            </label>
-            <desc>Lasted updated</desc>
-        </div>
-        <div class="flex-fill text-center">
-            <label class="font-weight-semibold">
-                100%
-            </label>
-        </div>
-    </div>
-    <div class="mc-row d-flex align-items-center">
-        <div class="media email">
-            <a href="">
-                <i class="lnr lnr-envelope bg-primary"></i>
-            </a>
-        </div>
-        <div class="flex-fill" style="width: 35%">
-            <label class="font-weight-semibold">
-                Triggered
-            </label>
-            <desc>503 contacts</desc>
-        </div>
-        <div class="flex-fill">
-            <label class="font-weight-semibold">
-                11 Dec, 2019
-            </label>
-            <desc>Lasted updated</desc>
-        </div>
-        <div class="flex-fill text-center">
-            <label class="font-weight-semibold">
-                99%
-            </label>
-        </div>
-    </div>
+            
+    @endforeach
 </div>

@@ -20,17 +20,23 @@
             <i class="material-icons mr-2">timeline</i> {{ trans('messages.automation.timeline') }}
         </a>
         <a class="dropdown-item all_contacts" href="#" onclick="sidebar.load('{{ action('Automation2Controller@contacts', $automation->uid) }}')">
-            <i class="material-icons-outlined mr-2">people</i> {{ trans('messages.automation.all_contacts') }} (4,600)
+            <i class="material-icons-outlined mr-2">people</i> {{ trans('messages.automation.all_contacts') }}
+            ({{ $automation->subscribers()->count() }})
         </a>
-        <a class="dropdown-item" href="#" onclick="sidebar.load('{{ action('Automation2Controller@contacts', $automation->uid) }}')">
-            Contacts subscribed to list (200)
-        </a>
-        <a class="dropdown-item" href="#" onclick="sidebar.load('{{ action('Automation2Controller@contacts', $automation->uid) }}')">
-            Contacts receiving welcome email (200)
-        </a>
-        <a class="dropdown-item" href="#" onclick="sidebar.load('{{ action('Automation2Controller@contacts', $automation->uid) }}')">
-            Contacts click VNExpress.ner link (35)
-        </a>
+        <div class="dropdown-divider"></div>
+        @foreach ($automation->getInsight() as $key => $element)
+            @php
+                $action = $automation->getElement($key);
+            @endphp
+
+            <a class="dropdown-item contacts_action_{{ $key }}" href="#" onclick="sidebar.load('{{ action('Automation2Controller@contacts', [
+                'uid' => $automation->uid,
+                'action_id' => $key
+            ]) }}')">
+                {!! $action->getIconWithoutBg() !!}
+                <span class="ml-2">{{ $action->getName() }} ({{ format_number($element['count']) }})</span>
+            </a>                
+        @endforeach
     </div>
 </li>
 </ul>

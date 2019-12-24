@@ -200,6 +200,10 @@ a {
     background-color: #007c99;
     border-color: #007c99;
 }
+.btn-warning, .bg-warning {
+    background-color: #e47a50!important;
+    border-color: #e47a50;
+}
 .btn-danger, .bg-danger {
     background-color: #bf3e1b;
     border-color: #bf3e1b;
@@ -796,6 +800,9 @@ label.switchery-double.checkbox-switchery {
     display: block;
     opacity: 0.9;
 }
+.activity-feed .activity-media {
+  width: 100px;
+}
 .activity-feed .activity {
     border: solid 1px #ccc;
     border-radius: 5px;
@@ -817,13 +824,17 @@ label.switchery-double.checkbox-switchery {
     display: block;
     border-left: solid 1.5px #bbb;
     width: 2px;
-    margin-left: 50px;
+    margin-left: 60px;
     margin-top: 5px;
     margin-bottom: 5px;
     text-indent: -9000px;
     position: absolute;
     top: -27px;
     left: 0;
+}
+.activity-feed label.divider {
+  width: 130px;
+  text-align: center;
 }
 .material-icons-outlined, .material-icons {
   font-size: 100%;
@@ -950,4 +961,7 @@ label.switchery-double.checkbox-switchery {
   color: #fff;
   font-size: 20px;
   font-style: italic;
+}
+.mini, mini {
+  font-size: 80%;
 }
