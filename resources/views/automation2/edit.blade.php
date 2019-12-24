@@ -28,11 +28,11 @@
         }
 
         rect.wait {
-            fill: rgb(91, 156, 103);
+            fill: #65605b;
         }
 
         rect.condition {
-            fill: #ee8d50;
+            fill: #e47a50;
         }
     </style>
 	
