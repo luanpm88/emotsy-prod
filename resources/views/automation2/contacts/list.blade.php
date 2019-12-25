@@ -11,7 +11,11 @@
                         'uid' => $automation->uid,
                         'contact_uid' => $contact->uid,
                     ]) }}')" class="font-weight-semibold d-block">
-                        <img src="{{ action('SubscriberController@avatar',  $contact->uid) }}" haha="https://i.pravatar.cc/30{{ $key }}" />
+                        @if ($contact->avatar)
+                            <img src="{{ action('SubscriberController@avatar',  $contact->uid) }}" haha="https://i.pravatar.cc/30{{ $key }}" />
+                        @else
+                            <i style="opacity: 0.7" class="lnr lnr-user bg-{{ rand_item(['info', 'success', 'secondary', 'primary', 'danger', 'warning']) }}"></i>
+                        @endif
                     </a>
                 </div>
                 <div class="flex-fill flex-grow-1" style="width: 50%">

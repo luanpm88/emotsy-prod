@@ -651,3 +651,14 @@ function pagination($request, $collect)
         ]
     ];
 }
+
+/**
+ * Get random item from array
+ *
+ * @return object
+ */
+function rand_item($arr)
+{
+    return $arr[array_rand($arr)];
+}
+
