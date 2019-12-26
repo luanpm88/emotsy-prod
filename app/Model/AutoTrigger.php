@@ -118,6 +118,7 @@ class AutoTrigger extends Model
             'automation2_id' => $this->automation2_id,
             'subscriber_id' => $this->subscriber_id,
             'activity' => $action->getActionDescription(),
+            'activity_type' => $action->getType(),
         ]);
     }
 
