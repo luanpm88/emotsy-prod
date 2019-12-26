@@ -475,6 +475,10 @@ class Automation2 extends Model
 
     public function getInsight()
     {
+        if (!$this->data) {
+            return [];
+        }
+
         $actions = json_decode($this->data, true);
         $insights = [];
         foreach ($actions as $action) {
