@@ -44,6 +44,9 @@ a {
     font-weight: 600;
     margin-bottom: 10px;
 }
+.box-list .box-item i.material-icons-outlined, .box-list .box-item i.material-icons {
+  font-size: 20px;
+}
 .box-list .box-item p {
     margin-bottom: 0;
 }

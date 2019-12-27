@@ -12,9 +12,25 @@
                               Action
                             </button>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnGroupDrop1">
-                              <a class="dropdown-item" href="#">Remove contact</a>
-                              <a class="dropdown-item" href="#">Deactivate</a>
-                              <a class="dropdown-item" href="#">Go to profile page</a>
+                                <a class="dropdown-item profile-remove-contact"
+                                    href="{{ action('Automation2Controller@removeContact', [
+                                        'uid' => $automation->uid,
+                                        'contact_uid' => $contact->uid,
+                                    ]) }}"
+                                    data-confirm="{{ trans('messages.automation.profile.remove_contact.confirm', ['name' => $contact->getFullName()]) }}"
+                                >
+                                    {{ trans('messages.automation.profile.remove_contact') }}
+                                </a>
+                                <a class="dropdown-item profile-tag-contact"
+                                    href="{{ action('Automation2Controller@tagContact', [
+                                        'uid' => $automation->uid,
+                                        'contact_uid' => $contact->uid,
+                                    ]) }}"
+                                >{{ trans('messages.automation.profile.tag_contact') }}</a>
+                                <a class="dropdown-item" href="{{ action('SubscriberController@edit', [
+                                    'list_uid' => $contact->mailList->uid,
+                                    'uid' => $contact->uid,
+                                ]) }}">{{ trans('messages.automation.profile.go_to_pofile') }}</a>
                             </div>
                         </div>
                     </div>
@@ -91,4 +107,53 @@
             </div>
         </div>
     </div>
+
+    <script>
+        $('.profile-remove-contact').click(function(e) {
+            e.preventDefault();
+
+            var confirm = $(this).attr('data-confirm');
+            var url = $(this).attr('href');
+
+            var dialog = new Dialog('confirm', {
+                message: confirm,
+                ok: function(dialog) {                    
+                    $.ajax({
+                        url: url,
+                        method: 'POST',
+                        data: {
+                            _token: CSRF_TOKEN,
+                        },
+                        statusCode: {
+                            // validate error
+                            400: function (res) {
+                                alert('Something went wrong!');
+                            }
+                        },
+                        success: function (response) {
+                            // notify
+                            notify('success', '{{ trans('messages.notify.success') }}', response.message);
+
+                            popup.hide();
+                        }
+                    });
+                },
+            });
+        });
+
+        var tagContact = new Popup(undefined, undefined, {
+			onclose: function() {
+				sidebar.load();
+			}
+		});
+        $('.profile-tag-contact').click(function(e) {
+            e.preventDefault();
+
+            var url = $(this).attr('href');
+
+            tagContact.load(url, function() {
+				console.log('Confirm action type popup loaded!');				
+			});
+        });
+    </script>
 @endsection

@@ -544,6 +544,12 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('notifications/{id}/hide', 'NotificationController@hide');
     
     // Automation2
+    Route::match(['get', 'post'], 'automation2/{uid}/contacts/copy-to-new-list', 'Automation2Controller@copyToNewList');
+    Route::post('automation2/{uid}/contacts/export', 'Automation2Controller@exportContacts');
+
+    Route::match(['get', 'post'], 'automation2/{uid}/contacts/tag', 'Automation2Controller@tagContacts');
+    Route::match(['get', 'post'], 'automation2/{uid}/contact/{contact_uid}/tag', 'Automation2Controller@tagContact');
+    Route::post('automation2/{uid}/contact/{contact_uid}/remove', 'Automation2Controller@removeContact');
     Route::get('automation2/{uid}/contact/{contact_uid}/profile', 'Automation2Controller@profile');
     Route::post('automation2/{uid}/timeline/list', 'Automation2Controller@timelineList');
     Route::get('automation2/{uid}/timeline', 'Automation2Controller@timeline');
