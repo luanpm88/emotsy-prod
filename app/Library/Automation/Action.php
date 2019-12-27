@@ -71,6 +71,11 @@ abstract class Action
         return $this->options;
     }
 
+    public function getOption($key)
+    {
+        return $this->options[$key];
+    }
+
     public function setOption($name, $value)
     {
         $this->options[$name] = $value;
