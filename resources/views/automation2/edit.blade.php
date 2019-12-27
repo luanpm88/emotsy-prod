@@ -68,7 +68,7 @@
 	<main role="main">
 		<div class="automation2">
 			<div class="diagram text-center scrollbar-inner">				
-				<svg id="svg" style="overflow: auto" width="100%" height="800" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"></svg>
+				<svg id="svg" style="overflow: auto" width="100%" height="1800" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"></svg>
 			</div>
 			<div class="sidebar scrollbar-inner">
 				<div class="sidebar-content">
@@ -397,7 +397,17 @@
 					// });
 					
 					OpenActionSelectPopup();
-                }
+                },
+
+                onaddyes: function(e) {
+                	alert(1);
+                	e.appendYes(new ElementAction({title: 'Yes yes yes'}));
+                },
+
+                onaddno: function(e) {
+                	alert(2);
+                	e.appendNo(new ElementAction({title: 'No no no'}));
+                },
             });
 
         })();
