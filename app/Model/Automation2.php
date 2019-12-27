@@ -377,12 +377,13 @@ class Automation2 extends Model
     public function checkForNewTriggers()
     {
         $this->logger()->info(sprintf('NEW > Start checking for new trigger'));
-        $type = 'list-subscription';
-        switch ($type) {
+
+        switch ($this->getTriggerAction()->getOption('key')) {
             case 'list-subscription':
                 $this->checkForListSubscription();
                 break;
-            case 'ElementAction':
+            case 'specific-date':
+                $this->checkForSpecificDatetime();
                 //...
                 break;
             case 'ElementCondition':
@@ -414,15 +415,50 @@ class Automation2 extends Model
      */
     public function checkForListSubscription()
     {
+        $this->logger()->info(sprintf('NEW > Check for List Subscription'));
         $now = Carbon::now();
         $subscribers = $this->getNewSubscribersToFollow();
-        $this->logger()->info(sprintf('NEW > There are %s new subscriber(s) found', count($subscribers)));
+        $total = count($subscribers);
+        $this->logger()->info(sprintf('NEW > There are %s new subscriber(s) found', $total));
+        
         $i = 0;
         foreach ($subscribers as $subscriber) {
             $i += 1;
             $this->initTrigger($subscriber);
-            $this->logger()->info(sprintf('NEW > (%s/%s) > Adding new trigger for %s', $i, count($subscribers), $subscriber->email));
+            $this->logger()->info(sprintf('NEW > (%s/%s) > Adding new trigger for %s', $i, $total, $subscriber->email));
         }
+    }
+
+    /**
+     * Check for specific-datetimetime events.
+     */
+    public function checkForSpecificDatetime()
+    {
+        $this->logger()->info(sprintf('NEW > Check for Specific Date/Time'));
+        // this is a one-time triggered automation event
+        // just abort if it is already triggered
+        if ($this->autoTriggers()->exists()) {
+            $this->logger()->info(sprintf('NEW > Already triggered'));
+            return;
+        }
+
+        $now = Carbon::now();
+        $trigger = $this->getTriggerAction();
+
+        $eventDate = Carbon::parse($trigger->getOption('date').' '.$trigger->getOption('at'));
+        $checked = $now->gte($eventDate);
+
+        $total = $this->subscribers()->count();
+        $i = 0;
+        if ($checked) {
+            $this->logger()->info(sprintf('NEW > It is %s hours due! triggering!', $now->diffInHours($eventDate)));
+            foreach ($this->subscribers()->get() as $subscriber) {
+                $i += 1;
+                $this->initTrigger($subscriber);
+                $this->logger()->info(sprintf('NEW > (%s/%s) > Adding new trigger for %s', $i, $total, $subscriber->email));
+            }
+        }
+
     }
 
     /**
@@ -448,7 +484,7 @@ class Automation2 extends Model
             , table('auto_triggers'), $this->id)
         );
 
-        return Subscriber::whereRaw(table('subscribers.id').' NOT IN (SELECT subscriber_id FROM _new_subscribers_to_follow)')
+        return $this->subscribers()->whereRaw(table('subscribers.id').' NOT IN (SELECT subscriber_id FROM _new_subscribers_to_follow)')
                 ->where('subscribers.created_at', '>=', $this->created_at)
                 ->where('mail_list_id', $this->mailList->id)
                 ->whereRaw(sprintf('COALESCE('.table('subscribers.subscription_type').", '') <> %s", db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED)))
