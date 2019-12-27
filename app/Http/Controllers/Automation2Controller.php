@@ -1248,4 +1248,143 @@ class Automation2Controller extends Controller
             'contact' => $contact,
         ]);
     }
+
+    /**
+     * Automation remove contact.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function removeContact(Request $request, $uid, $contact_uid)
+    {
+        $automation = Automation2::findByUid($uid);
+        $contact = Subscriber::findByUid($contact_uid);
+        
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => trans('messages.automation.contact.deleted'),
+        ], 201);
+    }
+
+    /**
+     * Automation tag contact.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function tagContact(Request $request, $uid, $contact_uid)
+    {
+        $automation = Automation2::findByUid($uid);
+        $contact = Subscriber::findByUid($contact_uid);
+        
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+
+        // saving
+        if($request->isMethod('post')) {
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.automation.contact.tagged'),
+            ], 201);
+        }
+
+        return view('automation2.contacts.tagContact', [
+            'automation' => $automation,
+            'contact' => $contact,
+        ]);
+    }
+
+    /**
+     * Automation tag contacts.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function tagContacts(Request $request, $uid)
+    {
+        $automation = Automation2::findByUid($uid);
+        
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+
+        // saving
+        if($request->isMethod('post')) {
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.automation.contacts.tagged'),
+            ], 201);
+        }
+
+        return view('automation2.contacts.tagContacts', [
+            'automation' => $automation,
+        ]);
+    }
+    
+    /**
+     * Automation export contacts.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function exportContacts(Request $request, $uid)
+    {
+        sleep(2);
+
+        $automation = Automation2::findByUid($uid);
+        
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+
+        // saving
+        if($request->isMethod('post')) {
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.automation.contacts.exported'),
+            ], 201);
+        }
+    }
+
+    /**
+     * Automation copy contacts to new list.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function copyToNewList(Request $request, $uid)
+    {
+        $automation = Automation2::findByUid($uid);
+        
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+
+        // saving
+        if($request->isMethod('post')) {
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.automation.contacts.tagged'),
+            ], 201);
+        }
+
+        return view('automation2.contacts.copyToNewList', [
+            'automation' => $automation,
+        ]);
+    }
 }

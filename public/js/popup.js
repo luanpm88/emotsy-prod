@@ -1,8 +1,9 @@
 class Popup {
     constructor(url, callback, options) {
         var _this = this;
+        this.id = '_' + Math.random().toString(36).substr(2, 9);
         this.options = {};
-        this.popup = $('.popup');
+        this.popup = $('.popup[id='+this.id+']');
         this.loadingHtml = '<div class="popup-loading"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>';
         
         // url
@@ -21,7 +22,7 @@ class Popup {
         }
         
         if (!this.popup.length) {
-            var popup = $('<div class="popup">').html('');
+            var popup = $('<div class="popup" id="'+this.id+'">').html('');
             $('body').append(popup);
             
             this.popup = popup;
@@ -90,7 +91,7 @@ class Popup {
             });
         } else {
             _this.popup.find('.back').click( function() {                    
-                Popup.hide();
+                _this.hide();
             });
         }
         

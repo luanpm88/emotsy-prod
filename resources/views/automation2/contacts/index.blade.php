@@ -23,9 +23,21 @@
                 Action
               </button>
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnGroupDrop1">
-                <a class="dropdown-item" href="#">Export this list</a>
-                <a class="dropdown-item" href="#">Copy to a new list</a>
-                <a class="dropdown-item" href="#">Tag those contacts</a>
+                <a class="dropdown-item list-export-contacts"
+                    href="{{ action('Automation2Controller@exportContacts', [
+                        'uid' => $automation->uid,
+                    ]) }}"
+                >{{ trans('messages.automation.export_this_list') }}</a>
+                <a class="dropdown-item list-copy-contacts-new-list"
+                    href="{{ action('Automation2Controller@copyToNewList', [
+                        'uid' => $automation->uid,
+                    ]) }}"
+                >{{ trans('messages.automation.copy_to_new_list') }}</a>
+                <a class="dropdown-item list-tag-contacts"
+                    href="{{ action('Automation2Controller@tagContacts', [
+                        'uid' => $automation->uid,
+                    ]) }}"
+                >{{ trans('messages.automation.tag_those_contacts') }}</a>
               </div>
             </div>
         </div>
@@ -57,5 +69,69 @@
     // filters
     $('[name=contact_keyword]').keyup(function() {
         listContact.load();
+    });
+
+    // tag contacts
+    var tagContact = new Popup(undefined, undefined, {
+        onclose: function() {
+            sidebar.load();
+        }
+    });
+    $('.list-tag-contacts').click(function(e) {
+        e.preventDefault();
+
+        var url = $(this).attr('href');
+
+        tagContact.load(url, function() {
+            console.log('Tag action type popup loaded!');				
+        });
+    });
+
+    // export contacts
+    $('.list-export-contacts').click(function(e) {
+        e.preventDefault();
+
+        var url = $(this).attr('href');
+
+        addMaskLoading('{{ trans('messages.automation.exporting_contacts') }}');
+
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: {
+                _token: CSRF_TOKEN,
+            },
+            statusCode: {
+                // validate error
+                400: function (res) {
+                    alert('Something went wrong!');
+                }
+            },
+            success: function (response) {
+                // notify
+                notify('success', '{{ trans('messages.notify.success') }}', response.message);
+
+                // remove effects
+                removeMaskLoading();
+
+                popup.hide();
+            }
+        });
+    });
+    
+    // copy contacts
+    var copyContact = new Popup(undefined, undefined, {
+        onclose: function() {
+            sidebar.load();
+        }
+    });
+    $('.list-copy-contacts-new-list').click(function(e) {
+        e.preventDefault();
+
+        var url = $(this).attr('href');
+
+        copyContact.load(url, function() {
+            console.log('Copy to new list popup loaded!');				
+        });
     });
 </script>

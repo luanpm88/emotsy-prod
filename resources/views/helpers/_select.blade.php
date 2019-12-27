@@ -8,6 +8,13 @@
 		<option value="">{{ $include_blank }}</option>
 	@endif
 	@foreach($options as $option)
-		<option{{ in_array($option['value'], explode(",", $value)) ? " selected" : "" }} value="{{ $option['value'] }}">{{ htmlspecialchars($option['text']) }}</option>
+		<option
+			@if (is_array($value))
+				{{ in_array($option['value'], $value) ? " selected" : "" }}
+			@else
+				{{ in_array($option['value'], explode(",", $value)) ? " selected" : "" }}
+			@endif
+			value="{{ $option['value'] }}"
+		>{{ htmlspecialchars($option['text']) }}</option>
 	@endforeach
 </select>
