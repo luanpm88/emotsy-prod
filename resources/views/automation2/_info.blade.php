@@ -16,7 +16,7 @@
 </div>
 <div class="d-flex align-items-center mb-4">
     <p class="pr-4 mb-0">
-        {!! trans('messages.automation.intro', ['list' => $automation->mailList->name]) !!}
+        {!! $automation->getIntro() !!}
     </p>
     <div>
         <a href="javascrip:;" class="btn btn-info text-nowrap d-flex align-items-center" onclick="sidebar.load('{{ action('Automation2Controller@settings', $automation->uid) }}')">

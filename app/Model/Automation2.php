@@ -227,9 +227,9 @@ class Automation2 extends Model
     /**
      * get all tree elements.
      */
-    public function getElements()
+    public function getElements($hash = false) # true => return hash, false (default) => return stdObject
     {
-        return isset($this->data) && !empty($this->data) ? json_decode($this->data) : [];
+        return isset($this->data) && !empty($this->data) ? json_decode($this->data, $hash) : [];
     }
 
     /**
@@ -527,7 +527,32 @@ class Automation2 extends Model
         ];
     }
 
-    public function getAction($attributes)
+    // for debugging only
+    public function getTriggerAction() : Trigger
+    {
+        $trigger = null;
+        $this->getActions(function ($e) use (&$trigger) {
+            if ($e->getType() == 'ElementTrigger') {
+                $trigger = $e;
+            }
+        });
+
+        return  $trigger;
+    }
+
+    // by Louis
+    public function getActions($callback)
+    {
+        $actions = $this->getElements(true);
+
+        foreach ($actions as $action) {
+            $instance = $this->getAction($action);
+            $callback($instance);
+        }
+
+    }
+
+    public function getAction($attributes) : Action
     {
         switch ($attributes['type']) {
             case 'ElementTrigger':
@@ -560,4 +585,13 @@ class Automation2 extends Model
 
         return $list;
     }
+
+    public function getIntro()
+    {
+        $triggerType = $this->getTriggerAction()->getOption('key');
+        $translationKey = 'messages.automation.intro.'.$triggerType;
+        return __($translationKey, [ 'list' => $this->mailList->name ] );
+    }
+
+
 }

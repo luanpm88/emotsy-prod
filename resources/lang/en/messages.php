@@ -2769,8 +2769,12 @@
   'automation.go_back' => 'Go back',
   'automation.switch_automation' => 'Switch automation',
   'automation.running' => 'running',
-  'automation.intro' => 'This is an automation for the poorest marketers. Triggered when people subscribe to
-        your mail list “<strong>:list</strong>”',
+  'automation.intro.say-happy-birthday' => 'Automated email marketing campaign which is triggered on subscribers\' date of birth, applied for ":list" mail list',
+  'automation.intro.welcome-new-subscriber' => 'Automated email marketing campaign which is triggered for new subscriber, applied for ":list" mail list',
+  'automation.intro.subscriber-added-date' => 'Automated email marketing campaign which is triggered YEARLY on subscriber added date, applied for ":list" mail list',
+  'automation.intro.specific-date' => 'Automated email marketing campaign which is triggered on a specific date/time to all subscribers, applied for ":list" mail list',
+  'automation.intro.say-goodbye-subscriber' => 'Automated email marketing campaign which is triggered every time a subscriber opts out of your list, applied for ":list" mail list',
+  'automation.intro.api-3-0' => 'Automated email marketing campaign which is triggered by an API request from other, applied for ":list" mail list',
   'automation.trigger' => 'Trigger',
   'automation.settings' => 'Settings',
   'automation.trigger.empty_msg' => 'Your automation trigger is not set up yet. Click the button
