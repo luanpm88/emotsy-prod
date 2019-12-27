@@ -462,6 +462,23 @@ class Automation2 extends Model
     }
 
     /**
+     * Check for follow-up-clicked events.
+     */
+    public function checkForListUnsubscription()
+    {
+        $now = Carbon::now();
+        $subscribers = $this->getUnsubscribersToFollow();
+
+        foreach ($subscribers as $subscriber) {
+            if ($now->gte($subscriber->unsubscribed_at->copy()->modify($this->getDelayInterval()))) {
+                MailLog::info(sprintf('Trigger sending follow-up unsubscribed email for automation `%s`, subscriber ID: %s, event ID: %s, message ID: %s', $this->automation->name, $subscriber->id, $this->id, $subscriber->message_id));
+                $this->fire(collect([$subscriber]));
+                // a more verbal way is: fire(Subscriber::where('id', $log->subscriber_id)
+            }
+        }
+    }
+
+    /**
      * Get previous event's opened messages to follow up.
      *
      * @return collection
@@ -489,6 +506,20 @@ class Automation2 extends Model
                 ->where('mail_list_id', $this->mailList->id)
                 ->whereRaw(sprintf('COALESCE('.table('subscribers.subscription_type').", '') <> %s", db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED)))
                 ->get();
+    }
+
+    /**
+     * Get previous event's unsubscribed messages to follow up.
+     *
+     * @return collection
+     */
+    public function getUnsubscribersToFollow()
+    {
+        return $this->subscribers()
+                    ->join('unsubscribe_logs', 'subscribers.id', '=', 'unsubscribe_logs.subscriber_id')
+                    ->whereRaw(sprintf('%s NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %s WHERE automation2_id = %s)', table('subscribers.id'), table('auto_triggers'), $this->id))
+                    ->where('unsubscribe_logs.created_at', '>=', $this->created_at)
+                    ->get();
     }
 
     public function logger()

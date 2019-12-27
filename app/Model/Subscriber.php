@@ -99,6 +99,11 @@ class Subscriber extends Model
         return $this->hasMany('Acelle\Model\TrackingLog');
     }
 
+    public function unsubscribeLogs()
+    {
+        return $this->hasMany('Acelle\Model\UnsubscribeLog');
+    }
+
     /**
      * Bootstrap any application services.
      */
@@ -160,6 +165,19 @@ class Subscriber extends Model
         $this->save();
 
         return true;
+    }
+
+    /**
+     * Unsubscribe to the list.
+     *
+     */
+    public function unsubscribe()
+    {
+        $this->status = 'unsubscribed';
+        $this->save();
+        $this->unsubscribeLogs()->create([
+            //            
+        ]);
     }
 
     /**
