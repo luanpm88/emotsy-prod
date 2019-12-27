@@ -384,18 +384,6 @@
 
                 onadd: function(e) {
 					e.select();
-                    // TODO 3: hiện popup cho user chọn type của action
-                    // var title = prompt('Enter new element name to insert');
-                    // ..... popup....
-
-                    // sau khi chọn và cấu hình xong xuôi hết
-					//  e.insert(new ElementAction({title: title}));
-                    // OR e.insert(new ElementWait({title: title}));
-                    // OR e.insert(new ElementCondition({title: title}));
-					// var newE = new ElementAction({
-					// 	title: '{{ trans('messages.automation.tree.action_not_set') }}'
-					// });
-					
 					OpenActionSelectPopup();
                 },
 
