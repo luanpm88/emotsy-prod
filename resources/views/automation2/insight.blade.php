@@ -14,7 +14,7 @@
 <div class="insight-stat-brief d-flex mt-3 mb-4">
     <div class="insight-stat-col flex-fill">
         <number>{{ format_number($stats['total']) }}</number>
-        <desc class="text-muted">{{ trans_choice('messages.automation.contacts', $automation->getContactsCount()) }}</desc>
+        <desc class="text-muted">{{ trans_choice('messages.automation.contacts', $stats['total']) }}</desc>
     </div>
     <div class="insight-stat-col flex-fill">
         <number>{{ format_number($stats['involed']) }}</number>
