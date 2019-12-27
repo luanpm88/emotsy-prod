@@ -470,7 +470,7 @@ class Automation2 extends Model
     public function timelinesBy($subscriber)
     {
         $trigger = $this->autoTriggers()->where('subscriber_id', $subscriber->id)->first();
-        return $trigger->timelines();
+        return (is_null($trigger)) ? Timeline::whereRaw('1=2') : $trigger->timelines(); // trick - return an empty Timeline[] array
     }
 
     public function getInsight()
