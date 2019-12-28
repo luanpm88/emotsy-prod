@@ -100,17 +100,17 @@
         </div>
         <div class="values mr-auto">
             <label>
-                {{ trans('messages.automation.email.template') }}
+                {{ trans('messages.automation.email.summary.content') }}
             </label>
             <div class="value">
                 @if($email->content)
-                    {{ trans('messages.automation.email.template_selected_click_edit', [
-                        'link' => '',
+                    {{ trans('messages.automation.email.content.last_edit', [
+                        'time' => $email->updated_at->diffForHumans(),
                     ]) }}
                 @else
                     <span class="text-danger small">
                         <i class="material-icons-outlined">error_outline</i>
-                        {{ trans('messages.email.no_template') }}
+                        {{ trans('messages.automation.email.no_content') }}
                     </span>
                 @endif
             </div>
@@ -120,7 +120,7 @@
                 'uid' => $automation->uid,
                 'email_uid' => $email->uid,
             ]) }}')" class="btn btn-outline-secondary btn-sm">
-                {{ trans('messages.automation.email.template') }}
+                {{ trans('messages.automation.email.summary.content.update') }}
             </a>
         </div>
     </li>

@@ -40,7 +40,13 @@
             <div class="profile d-flex">
                 <div class="media mr-4">
                     <!--<i class="lnr lnr-user"></i>-->
-                    <img src="{{ action('SubscriberController@avatar',  $contact->uid) }}" />
+                    @if ($contact->avatar)
+                        <img src="{{ action('SubscriberController@avatar',  $contact->uid) }}" />
+                    @elseif(isSiteDemo())
+                        <img src="https://i.pravatar.cc/300" />
+                    @else
+                        <i style="opacity: 0.7" class="lnr lnr-user bg-{{ rand_item(['info', 'success', 'secondary', 'primary', 'danger', 'warning']) }}"></i>
+                    @endif
                 </div>
                 <div class="account">
                     <h5 class="mb-0">{{ $contact->getFullName() }}</h5>
@@ -90,16 +96,14 @@
                     <div class="activity d-flex py-3 px-4">
                         <div class="activity-media pr-4 text-center">
                             <time class="d-block text-center mini mb-2">{{ $timeline->created_at->diffForHumans() }}</time>
-                            <i class="material-icons d-inline-block">
-                                done_all
-                            </i>
+                            {!! Acelle\Model\AutomationElement::getIconByType($timeline->activity_type) !!}
                         </div>
                         <div class="small">
                             <action class="d-block font-weight-semibold mb-1">
                                 {{ $timeline->activity }}
                             </action>
-                            <desc class="d-block">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris id dapibus odio.
+                            <desc class="d-block small text-muted">
+                                <i class="lnr lnr-clock mr-1"></i> {{ Acelle\Library\Tool::formatDateTime($timeline->created_at) }}
                             </desc>
                         </div>
                     </div>

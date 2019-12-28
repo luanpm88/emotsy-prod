@@ -11,12 +11,6 @@
                 <p>{{ trans('messages.campaign.email_content.intro') }}</p>
                     
                 <div class="media-left">
-                    <div class="media">
-                        <i class="lnr lnr-book" style="
-                            font-size: 60px;
-                            color: #555;
-                        "></i>
-                    </div>
                     <div class="main">
                         <label class="font-weight-bold">{{ trans('messages.campaign.html_email') }}</label>
                         <p>{{ trans('messages.campaign.html_email.last_edit', [

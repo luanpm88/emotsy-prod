@@ -296,8 +296,17 @@ class Automation2 extends Model
     public function getDelayOptions()
     {
         return [
-            ['text' => '5 minutes', 'value' => '5 minutes'],
-            ['text' => '10 minutes', 'value' => '10 minutes'],
+            ['text' => trans('messages.automation.delay.immediately'), 'value' => '0'],
+            ['text' => trans_choice('messages.automation.delay.day', 1), 'value' => '1 day'],
+            ['text' => trans_choice('messages.automation.delay.day', 2), 'value' => '2 days'],
+            ['text' => trans_choice('messages.automation.delay.day', 3), 'value' => '3 days'],
+            ['text' => trans_choice('messages.automation.delay.day', 4), 'value' => '4 days'],
+            ['text' => trans_choice('messages.automation.delay.day', 5), 'value' => '5 days'],
+            ['text' => trans_choice('messages.automation.delay.day', 6), 'value' => '6 days'],
+            ['text' => trans_choice('messages.automation.delay.week', 1), 'value' => '1 week'],
+            ['text' => trans_choice('messages.automation.delay.week', 2), 'value' => '2 weeks'],
+            ['text' => trans_choice('messages.automation.delay.month', 1), 'value' => '1 month'],
+            ['text' => trans_choice('messages.automation.delay.month', 2), 'value' => '2 months'],
         ];
     }
 
@@ -398,7 +407,7 @@ class Automation2 extends Model
                 //...
                 break;
             default:
-                throw new \Exception('Unknown Automation trigger type '. $type);
+                throw new \Exception('Unknown Automation trigger type '. $this->getTriggerAction()->getOption('key'));
         }
         $this->logger()->info(sprintf('NEW > Finish checking for new trigger'));
     }

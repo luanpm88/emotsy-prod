@@ -33,6 +33,8 @@
                     ]) }}')" class="font-weight-semibold d-block">
                         @if ($timeline->subscriber->avatar)
                             <img src="{{ action('SubscriberController@avatar',  $timeline->subscriber->uid) }}" />
+                        @elseif(isSiteDemo())
+                            <img src="https://i.pravatar.cc/30{{ $key }}" />
                         @else
                             <i style="opacity: 0.7" class="lnr lnr-user bg-{{ rand_item(['info', 'success', 'secondary', 'primary', 'danger', 'warning']) }}"></i>
                         @endif                        
@@ -57,7 +59,7 @@
     @include('helpers._pagination')
 @else
     <div class="empty-list">
-        <i class="material-icons-outlined">supervised_user_circle</i>
+        <i class="lnr lnr-users"></i>
         <span class="line-1">
             {{ trans('messages.automation.empty_contacts') }}
         </span>

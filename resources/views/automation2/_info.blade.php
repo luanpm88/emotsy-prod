@@ -1,6 +1,6 @@
 <div class="sidebar-header flex-center mb-2">
     <h5 class="m-0 mr-auto">{{ $automation->name }}</h5>
-    <span class="mr-2 small"><i>{{ trans('messages.automation.status.' . $automation->status) }}</i></span>
+    <span class="mr-2 small">{{ trans('messages.automation.status.' . $automation->status) }}</span>
     <div>
         @include('helpers.form_control', [
             'type' => 'checkbox',
