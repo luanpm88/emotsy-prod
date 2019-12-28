@@ -337,10 +337,7 @@ class Automation2Controller extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => trans('messages.automation.action.added'),
-                'title' => trans('messages.automation.action.wait.title', [
-                    'number' => explode(' ', $request->time)[0],
-                    'time' => explode(' ', $request->time)[1],
-                ]),
+                'title' => trans('messages.automation.delay.' . $request->time),
                 'options' => [
                     'key' => $request->key,
                     'time' => $request->time,
@@ -439,10 +436,7 @@ class Automation2Controller extends Controller
                 return response()->json([
                     'status' => 'success',
                     'message' => trans('messages.automation.action.updated'),
-                    'title' => trans('messages.automation.action.wait.title', [
-                        'number' => explode(' ', $request->time)[0],
-                        'time' => explode(' ', $request->time)[1],
-                    ]),
+                    'title' => trans('messages.automation.wait.delay.' . $request->time),
                     'options' => [
                         'key' => $request->key,
                         'time' => $request->time,

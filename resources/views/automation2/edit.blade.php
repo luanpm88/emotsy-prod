@@ -45,21 +45,53 @@
 					<img height="22" src="{{ URL::asset('images/logo_light.png') }}" alt="">
 				@endif
 			</a>
-			<h1 class="mr-auto">{{ $automation->name }}</h1>
+			<div class="d-inline-block d-flex mr-auto align-items-center">
+				<h1 class="">{{ $automation->name }}</h1>
+				<i class="material-icons-outlined automation-head-icon ml-2">alarm</i>
+			</div>
 			<div class="automation-top-menu">
 				<span class="mr-3"><i>Last saved: 2 minutes</i></span>
 				<a href="{{ action('Automation2Controller@index') }}" class="action">
+					<i class="material-icons-outlined mr-2">arrow_back</i>
 					{{ trans('messages.automation.go_back') }}
 				</a>
 				<a href="javascript:'" class="action">
-					<i class="lnr lnr-menu mr-2"></i>
+					<i class="material-icons-outlined mr-2">
+horizontal_split
+</i>
 					{{ trans('messages.automation.switch_automation') }}
 				</a>
 				<div class="account-info">
-					<a href="">
-						<img class="avatar" src="{{ action('CustomerController@avatar', Auth::user()->customer->uid) }}" alt="">
-						{{ Auth::user()->customer->displayName() }}
-					</a>
+					<ul class="navbar-nav mr-auto navbar-dark bg-dark"">						
+						<li class="nav-item dropdown">
+							<a class="account-item nav-link dropdown-toggle px-2" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								<img class="avatar" src="{{ action('CustomerController@avatar', Auth::user()->customer->uid) }}" alt="">
+								{{ Auth::user()->customer->displayName() }}
+							</a>
+							<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+								<a class="dropdown-item d-flex align-items-center" href="{{ action('AccountSubscriptionController@index') }}">
+									<i class="material-icons-outlined mr-2">redeem</i>
+									<span>{{ trans('messages.subscriptions') }}</span>
+								</a>
+								<a class="dropdown-item d-flex align-items-center" href="{{ action("AccountController@profile") }}">
+									<i class="material-icons-outlined mr-2">account_circle</i>
+									<span>{{ trans('messages.account') }}</span>
+								</a>
+								@if (Auth::user()->customer->canUseApi())
+									<a href="{{ action("AccountController@api") }}" class="dropdown-item d-flex align-items-center">
+										<i class="material-icons-outlined mr-2">code</i>
+										<span>{{ trans('messages.api') }}</span>
+									</a>
+								@endif
+								<div class="dropdown-divider"></div>
+								<a class="dropdown-item d-flex align-items-center" href="{{ url("/logout") }}">
+									<i class="material-icons-outlined mr-2">power_settings_new</i>
+									<span>{{ trans('messages.logout') }}</span>
+								</a>
+							</div>
+						</li>
+					</ul>
+					
 				</div>
 			</div>
 		</nav>
@@ -69,6 +101,26 @@
 		<div class="automation2">
 			<div class="diagram text-center scrollbar-inner">				
 				<svg id="svg" style="overflow: auto" width="100%" height="1800" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"></svg>
+
+				<div class="history">
+					<a class="history-action history-undo" href="javascript:;">
+						<i class="material-icons-outlined">undo</i>
+					</a>
+					<a class="history-action history-redo disabled" href="javascript:;">
+						<i class="material-icons-outlined">redo</i>
+					</a>
+					<a class="history-action history-list" href="javascript:;">
+						<i class="material-icons-outlined">history</i>
+					</a>
+					<ul class="history-list-items">
+						<li>
+							<a href="" class="d-flex align-items-center"><i class="material-icons-outlined mr-2">playlist_add</i> <span>Change something...</span></a>
+						</li>
+						<li>
+							<a href="" class="d-flex align-items-center"><i class="material-icons-outlined mr-2">remove_circle_outline</i> <span>Do some action...</span></a>
+						</li>
+					</ul>
+				</div>
 			</div>
 			<div class="sidebar scrollbar-inner">
 				<div class="sidebar-content">
@@ -86,6 +138,16 @@
 		});
 
 		var sidebar = new Box($('.sidebar-content'));
+
+		function toggleHistory() {
+			var his = $('.history .history-list-items');
+
+			if (his.is(":visible")) {
+				his.fadeOut();
+			} else {
+				his.fadeIn();
+			}
+		}
 
 		function openBuilder(url) {
 			var div = $('<div class="full-iframe-popup">').html('<iframe scrolling="no" class="builder d-none" src="'+url+'"></iframe>');
@@ -296,6 +358,21 @@
 		$(document).ready(function() {
 			// load sidebar
 			sidebar.load('{{ action('Automation2Controller@settings', $automation->uid) }}');
+
+			// history toggle
+			$('.diagram .history .history-list').click(function() {
+				toggleHistory();
+			});
+			$(document).mouseup(function(e) 
+			{
+				var container = $(".history .history-list-items");
+
+				// if the target of the click isn't the container nor a descendant of the container
+				if (!container.is(e.target) && container.has(e.target).length === 0) 
+				{
+					container.fadeOut();
+				}
+			});
 		});
 	</script>
 		
@@ -388,13 +465,13 @@
                 },
 
                 onaddyes: function(e) {
-                	alert(1);
-                	e.appendYes(new ElementAction({title: 'Yes yes yes'}));
+                	e.select();
+					OpenActionSelectPopup();
                 },
 
                 onaddno: function(e) {
-                	alert(2);
-                	e.appendNo(new ElementAction({title: 'No no no'}));
+                	e.select();
+					OpenActionSelectPopup();
                 },
             });
 

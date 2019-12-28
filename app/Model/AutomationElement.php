@@ -84,10 +84,7 @@ class AutomationElement
                 return trans('messages.automation.send_a_email', ['title' => $email->subject]);
                 break;
             case 'ElementWait':
-                return trans('messages.automation.action.wait.title', [
-                    'number' => explode(' ', $this->getOption("time"))[0],
-                    'time' => explode(' ', $this->getOption("time"))[1],
-                ]);
+                return trans('messages.automation.wait.delay.' . $this->getOption("time"));
                 break;
             case 'ElementCondition':
                 if ($this->getOption("type") == 'open') {
@@ -107,7 +104,17 @@ class AutomationElement
      */
     public function getIcon()
     {
-        switch ($this->get('type')) {
+        return AutomationElement::getIconByType($this->get('type'));
+    }
+
+    /**
+     * Get value.
+     *
+     * @return string
+     */
+    public static function getIconByType($type)
+    {
+        switch ($type) {
             case 'ElementTrigger':
                 return '<i class="lnr lnr-exit-up bg-success"></i>';
                 break;

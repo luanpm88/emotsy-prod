@@ -211,8 +211,8 @@ a {
     background-color: #bf3e1b;
     border-color: #bf3e1b;
 }
-.account-info a {
-    padding: 10px 20px;
+.account-info a.account-item {
+    padding: 10px 15px!important;
     background: rgba(255,255,255,0.05);
     color: #aaa;
     border-radius: 2px;
@@ -227,6 +227,25 @@ a {
     display: inline-block;
     margin-right: 10px;
     border-radius: 100%;
+}
+.account-info a.dropdown-toggle::after {
+  margin-left: 0.35em;
+}
+.account-info .dropdown.open .dropdown-menu {
+  background: #333;
+  margin-right: -11px;
+  margin-top: 9px;
+  border-radius: 0 0 4px 4px;
+}
+.account-info .dropdown.open .dropdown-menu a {
+  background: #333;
+  color: #ddd;
+}
+.account-info .dropdown.open .dropdown-menu a:hover {
+  background: #222;
+}
+.account-info .dropdown.open .dropdown-menu .dropdown-divider {
+  border-top: 1px solid #444;
 }
 .btn-secondary, .bg-secondary {
     color: #fff;
@@ -898,7 +917,7 @@ label.switchery-double.checkbox-switchery {
 
 .empty-list i {
     display: block;
-    font-size: 90px;
+    font-size: 60px;
 }
 .template-list {
   position: relative;
@@ -967,4 +986,73 @@ label.switchery-double.checkbox-switchery {
 }
 .mini, mini {
   font-size: 80%;
+}
+.automation-head-icon {
+  font-size: 22px;
+}
+.activity-feed .activity-media i {
+  display: inline-block;
+  opacity: 0.8;
+  color: #fff;
+}
+.diagram .history {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+.diagram .history .history-action {
+  padding: 5px;
+  display: block;
+  width: 30px;
+  height: 30px;
+  background: rgba(0,0,0,0.6);
+  border-bottom: solid 1px rgba(255,255,255,0.2);
+  color: #ddd;
+  font-size: 18px;
+  font-weight: normal;
+}
+.diagram .history .history-action:hover {
+  background: rgba(0,0,0,0.8);
+}
+.diagram .history .history-action.disabled {
+  background: rgba(0,0,0,0.4);
+}
+.diagram .history .history-action.disabled:hover {
+  background: rgba(0,0,0,0.4);
+}
+.diagram .history .history-undo {
+  border-radius: 4px 4px 0px 0px;
+}
+.diagram .history .history-redo {
+  
+}
+.diagram .history .history-list {
+  border-radius: 0px 0px 4px 4px;
+}
+.diagram .history .history-list-items {
+  display: block;
+  position: absolute;
+  top: 60px;
+  left: 30px;
+  background: #fff;
+  box-shadow: 0px 0px 18px rgba(0,0,0,0.2);
+  border-radius: 4px;
+  padding: 0;
+  display: none;
+}
+.diagram .history .history-list-items li {
+  list-style: none;
+}
+.diagram .history .history-list-items a {
+  padding: 9px 15px;
+  display: block;
+  width: 250px;
+  border-bottom: solid 1px #ddd;
+  font-size: 92%;
+  text-align: left;
+  color: #333;
+}
+.diagram .history .history-list-items a:hover {
+  background: #f2f2f2;
+  text-decoration: none;
 }
