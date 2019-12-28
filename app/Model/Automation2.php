@@ -352,6 +352,7 @@ class Automation2 extends Model
             $trigger = $this->autoTriggers()->create();
             $trigger->subscriber()->associate($subscriber); // assign to subscriber_id field
             $trigger->updateWorkflow();
+            $trigger->save();
         });
 
         return $trigger;
@@ -384,6 +385,10 @@ class Automation2 extends Model
                 break;
             case 'specific-date':
                 $this->checkForSpecificDatetime();
+                //...
+                break;
+            case 'say-goodbye-subscriber':
+                $this->checkForListUnsubscription();
                 //...
                 break;
             case 'ElementCondition':
@@ -466,15 +471,15 @@ class Automation2 extends Model
      */
     public function checkForListUnsubscription()
     {
-        $now = Carbon::now();
+        $this->logger()->info(sprintf('NEW > Check for List Unsubscription'));
         $subscribers = $this->getUnsubscribersToFollow();
-
+        $total = count($subscribers);
+        $this->logger()->info(sprintf('NEW > %s new unsubscribers found', $total));
+        $i = 0;
         foreach ($subscribers as $subscriber) {
-            if ($now->gte($subscriber->unsubscribed_at->copy()->modify($this->getDelayInterval()))) {
-                MailLog::info(sprintf('Trigger sending follow-up unsubscribed email for automation `%s`, subscriber ID: %s, event ID: %s, message ID: %s', $this->automation->name, $subscriber->id, $this->id, $subscriber->message_id));
-                $this->fire(collect([$subscriber]));
-                // a more verbal way is: fire(Subscriber::where('id', $log->subscriber_id)
-            }
+            $i += 1;
+            $this->initTrigger($subscriber);
+            $this->logger()->info(sprintf('NEW > (%s/%s) > Adding new trigger for %s', $i, $total, $subscriber->email));
         }
     }
 
@@ -516,8 +521,10 @@ class Automation2 extends Model
     public function getUnsubscribersToFollow()
     {
         return $this->subscribers()
+                    ->select('subscribers.*')
                     ->join('unsubscribe_logs', 'subscribers.id', '=', 'unsubscribe_logs.subscriber_id')
-                    ->whereRaw(sprintf('%s NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %s WHERE automation2_id = %s)', table('subscribers.id'), table('auto_triggers'), $this->id))
+                    ->leftJoin('auto_triggers', 'subscribers.id', '=', 'auto_triggers.subscriber_id')
+                    ->whereNull('auto_triggers.id')
                     ->where('unsubscribe_logs.created_at', '>=', $this->created_at)
                     ->get();
     }
