@@ -51,6 +51,10 @@ class AutomationElement {
             } else if (e.type == 'ElementCondition') {
                 list[e.id] = new ElementCondition(e);
             }
+
+            if (events.validate != null) {
+                list[e.id].validateCallback = events.validate;    
+            }
         }
 
         // Assignment
@@ -81,6 +85,11 @@ class AutomationElement {
             //o.onhover(events.onhover);
         }
         trigger.organize();
+        
+        trigger.browse(function(e){
+            e.validate();
+        });
+
         return trigger;
     }
 
@@ -102,10 +111,18 @@ class AutomationElement {
 
         this.events = {};
 
+        this.validateCallback = null;
+
         if (params.options == null) {
             params.options = {};
         }
         this.options = params.options;
+    }
+
+    validate() {
+        if (this.validateCallback != null) {
+            this.validateCallback(this);
+        }
     }
 
     getType() {
@@ -322,6 +339,8 @@ class AutomationElement {
         var plusId = this.id + "-plus";
         this.drawPlus(plusId, parseInt(rect.getAttribute('x')) + this.DefaultRectWith/2, parseInt(rect.getAttribute('y')) + this.DefaultRectHeight + this.DefaultVerticalSpace, 'plus', g);
         this.drawConnector(this.id, plusId, g);
+
+        this.drawNotice(this.id + '-notice', left, top, g);
     }
 
     drawCircle(id, cx, cy, container, zeroPoint = false) {
@@ -509,6 +528,63 @@ class AutomationElement {
         }
 
         this.clear();
+    }
+
+    drawNotice(id, left, top, container) {
+        var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        var circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        var a = document.createElementNS("http://www.w3.org/2000/svg", 'a');
+        var text = document.createElementNS("http://www.w3.org/2000/svg", 'text');
+        var title = document.createElementNS("http://www.w3.org/2000/svg", 'title');
+
+        var cx = left + this.DefaultRectWith;
+        var cy = top;
+
+        g.setAttribute('id', id);
+        g.style.visibility = 'hidden';
+
+        circle.setAttribute('cx', cx);
+        circle.setAttribute('cy', cy);
+        circle.setAttribute('r', 10);
+        circle.setAttribute('style', 'fill:#bb1e1e;stroke:#eee;stroke-width:1');
+
+        a.setAttribute('xlink:href', '#');
+        //a.setAttribute('style',  'cursor:pointer');
+
+        text.setAttribute('x', cx - 2);
+        text.setAttribute('y', cy + 4);
+        text.setAttribute('font-size', '12px');
+        text.setAttribute('font-family', 'FontAwesome');
+        text.setAttribute('fill', '#fefefe');
+        text.innerHTML = '&#xf12a;';
+
+        container.appendChild(g);
+        g.appendChild(circle);
+        g.appendChild(a);
+        a.appendChild(text);
+        g.appendChild(title);
+    }
+
+    getGroupId() {
+        return this.getId() + '_group';
+    }
+
+    getNoticeId() {
+        return this.getId() + '-notice';
+    }
+
+    showNotice(message) {
+        var title = document.getElementById(this.getGroupId()).querySelector('title');
+        title.innerHTML = message;
+        var notice = document.getElementById(this.getNoticeId());
+        notice.style.visibility = 'visible';
+    }
+
+    hideNotice() {
+        var notice = document.getElementById(this.getNoticeId());
+        if (notice != null) {
+            notice.style.visibility = 'hidden';
+        }
     }
 }
 
@@ -739,6 +815,8 @@ class ElementCondition extends AutomationElement {
         a.appendChild(text2);
 
         this.drawConditionPlus(rect.getAttribute('x'), rect.getAttribute('y'));
+
+        this.drawNotice(this.id + '-notice', left, top, g);
     }
 
     drawConditionPlus(rectX, rectY) {

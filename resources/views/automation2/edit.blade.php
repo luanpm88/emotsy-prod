@@ -473,6 +473,25 @@ horizontal_split
                 	e.select();
 					OpenActionSelectPopup();
                 },
+
+                validate: function(e) {
+                    if (e.getType() == 'ElementTrigger') {
+                        console.log(e.getOptions());
+                        if (e.getOptions()['init'] == null || e.getOptions()['init'] != true) {
+                            e.showNotice('Trigger not set up yet. Click on this action to set up your automation trigger');
+                        } else {
+                            e.hideNotice();
+                        }
+                    }
+
+                    if (e.getType() == 'ElementAction') {
+                        if (e.getOptions()['init'] == null || e.getOptions()['init'] != true) {
+                            e.showNotice('Email not set up yet. Click on this action to set up your email');
+                        } else {
+                            e.hideNotice();
+                        }
+                    }
+                }
             });
 
         })();
