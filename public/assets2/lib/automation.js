@@ -30,7 +30,7 @@ class AutomationElement {
             e = json[i];
             if (e.type == 'ElementTrigger') {
                 list[e.id] = new ElementTrigger(e);
-                list[e.id].draw(400, 100, container);
+                list[e.id].draw(320, 80, container);
                 list[e.id].setPosition(1, 0);
                 trigger = list[e.id];
 
@@ -287,6 +287,7 @@ class AutomationElement {
     drawAction(left, top, container, type = 'action') {
         var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
         g.setAttribute('id', this.id + '_group');
+        g.setAttribute('class', type);
         container.appendChild(g);
 
         var rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");   // Create a <button> element
@@ -315,7 +316,7 @@ class AutomationElement {
         text1.setAttribute('x', left + 10);
         text1.setAttribute('fill', '#fff');
         text1.setAttribute('y', top + this.DefaultRectHeight/2 + 5);
-        text1.setAttribute('font-size', '14px');
+        text1.setAttribute('font-size', '16px');
 
         var a = document.createElementNS("http://www.w3.org/2000/svg", 'a');
         a.setAttribute('id', this.id + '_textlink');
@@ -329,7 +330,7 @@ class AutomationElement {
         text2.setAttribute('x', left + 30);
         text2.setAttribute('fill', '#fff');
         text2.setAttribute('y', top + this.DefaultRectHeight/2 + 5);
-        text2.setAttribute('font-size', '14px');
+        text2.setAttribute('font-size', '13px');
 
         g.appendChild(rect);
         g.appendChild(text1);
@@ -773,6 +774,7 @@ class ElementCondition extends AutomationElement {
         // A little bit confusing here
         var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
         g.setAttribute('id', this.id + '_group');
+        g.setAttribute('class', 'condition');
         container.appendChild(g);
 
         var shifted = this.shift * this.DefaultRectWith;

@@ -28,7 +28,17 @@
         }
 
         rect.wait {
-            fill: #65605b;
+            fill: #fafafa;
+            stroke: #666;
+            stroke-width: 1;
+        }
+
+        g.wait > a > text {
+            fill: #666;
+        }
+
+        g.wait > text {
+            fill: #666;
         }
 
         rect.condition {
