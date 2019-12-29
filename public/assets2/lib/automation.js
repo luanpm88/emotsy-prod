@@ -552,7 +552,7 @@ class AutomationElement {
         //a.setAttribute('style',  'cursor:pointer');
 
         text.setAttribute('x', cx - 2);
-        text.setAttribute('y', cy + 4);
+        text.setAttribute('y', cy + 5);
         text.setAttribute('font-size', '12px');
         text.setAttribute('font-family', 'FontAwesome');
         text.setAttribute('fill', '#fefefe');
