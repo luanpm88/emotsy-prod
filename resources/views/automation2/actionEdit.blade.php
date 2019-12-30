@@ -24,7 +24,7 @@
     {{ trans('messages.automation.dangerous_zone') }}
 </h6>
 <p class="">
-    {{ trans('messages.automation.action.delete.confirm') }}        
+    {{ trans('messages.automation.action.delete.wording') }}        
 </p>
 <div class="mt-3">
     <a href="javascript:;" data-confirm="{{ trans('messages.automation.action.delete.confirm') }}" class="btn btn-danger action-delete">

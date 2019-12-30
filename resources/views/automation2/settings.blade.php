@@ -44,6 +44,21 @@
     
     <button class="btn btn-secondary mt-20">{{ trans('messages.automation.settings.save') }}</button>            
 </form>
+
+<h6 class="mb-2 mt-5 text-danger">
+    {{ trans('messages.automation.dangerous_zone') }}
+</h6>
+<p class="">
+    {{ trans('messages.automation.delete.wording') }}        
+</p>
+<div class="mt-3">
+    <a href="{{ action('Automation2Controller@delete', ['uids' => $automation->uid]) }}"
+        data-confirm="{{ trans('messages.automation.delete.confirm') }}"
+        class="btn btn-danger automation-delete"
+    >
+        <i class='lnr lnr-trash mr-2'></i> {{ trans('messages.automation.delete_automation') }}
+    </a>
+</div>
     
 <script>
     setAutomationName('{{ $automation->name }}');
@@ -103,4 +118,44 @@
         $(this).data('currVal', $(this).val());
         $(this).data('confirm', 'false');
     }).trigger('update');
+
+    $('.automation-delete').click(function(e) {
+        e.preventDefault();
+        
+        var confirm = $(this).attr('data-confirm');
+        var url = $(this).attr('href');
+    console.log(url);
+
+        var dialog = new Dialog('confirm', {
+            message: confirm,
+            ok: function(dialog) {
+                //
+                $.ajax({
+                    url: url,
+                    method: 'DELETE',
+                    data: {
+                        _token: CSRF_TOKEN,
+                    },
+                    statusCode: {
+                        // validate error
+                        400: function (res) {
+                            console.log('Something went wrong!');
+                        }
+                    },
+                    success: function (response) {
+                        addMaskLoading(
+                            '{{ trans('messages.automation.redirect_to_index') }}',
+                            function() {
+                                window.location = '{{ action('Automation2Controller@index') }}';
+                            },
+                            { wait: 2000 }
+                        );
+
+                        // notify
+                        notify('success', '{{ trans('messages.notify.success') }}', response.message);
+                    }
+                });
+            },
+        });
+    });
 </script>

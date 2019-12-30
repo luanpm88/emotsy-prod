@@ -210,23 +210,32 @@ function removeMaskLoading() {
     $('.mask-loading-effect').remove();
 }
 
-function addMaskLoading(text, callback) {
+function addMaskLoading(text, callback, options) {
     removeMaskLoading();
+    var wait = 400;
     
     if (typeof(text) === 'undefined') {
         text = '';
     }
+
+    if (typeof(options) === 'undefined') {
+        options = {};
+    }
+
+    if (typeof(options.wait) !== 'undefined') {
+        wait = options.wait;
+    }
     
-    var div = $('<div>').html('<div class="mask-loading-effect"><div class="content">'+text+'<div class="spinner2">'+
-        '<div class="bounce1"></div>'+
-        '<div class="bounce2"></div>'+
-        '<div class="bounce3"></div>'+
-        '</div></div><div>');
+    var div = $('<div>').html(`<div class="mask-loading-effect"><div class="content">
+        <div class="mask-loading mb-3"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>
+        `+text+`</div><div>`
+    );
     
     $('body').append(div);
+    
     div.fadeIn(400, function() {
         if (typeof(callback) !== 'undefined') {
-            callback();
+            setTimeout(function() { callback(); }, wait);
         }
     });
 }

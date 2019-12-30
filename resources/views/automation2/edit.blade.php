@@ -90,6 +90,13 @@
 								{{ Auth::user()->customer->displayName() }}
 							</a>
 							<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+								@can("admin_access", Auth::user())
+									<a class="dropdown-item d-flex align-items-center" href="{{ action("Admin\HomeController@index") }}">
+										<i class="material-icons-outlined mr-2">double_arrow</i>
+										{{ trans('messages.admin_view') }}
+									</a>
+									<div class="dropdown-divider"></div>
+								@endif
 								<a class="dropdown-item d-flex align-items-center" href="{{ action('AccountSubscriptionController@index') }}">
 									<i class="material-icons-outlined mr-2">redeem</i>
 									<span>{{ trans('messages.subscriptions') }}</span>
@@ -348,6 +355,9 @@
 						// merge options with reponse options
 						tree.setOptions(response.options);
 						tree.setOptions($.extend(tree.getOptions(), {init: "true"}));
+
+						// validate
+						tree.validate();
 						
 						// save tree
 						saveData(function() {

@@ -19,7 +19,7 @@
     @endif
     
     <div class="trigger-action mt-2">
-        @if (!in_array($key, ['say-goodbye-subscriber']))
+        @if (!in_array($key, ['say-goodbye-subscriber', 'welcome-new-subscriber']))
             <button class="btn btn-secondary trigger-save-change mr-1">
                 {{ trans('messages.automation.trigger.save_change') }}
             </button>

@@ -13,5 +13,29 @@
             'options' => $automation->getDelayBeforeOptions(),
             'rules' => [],
         ])
+
+        @include('helpers.form_control', [
+            'type' => 'time2',
+            'name' => 'options[at]',
+            'label' => trans('messages.automation.at'),
+            'value' => $trigger->getOption('at'),
+            'rules' => [],
+            'help_class' => 'trigger'
+        ])
+    </div>
+</div>
+<p>{{ trans('messages.automation.choose_birthday_field') }}</p>
+<div class="row">
+    <div class="col-md-6">
+        @include('helpers.form_control', [
+            'type' => 'select',
+            'class' => '',
+            'include_blank' => trans('messages.automation.choose_list_field'),
+            'name' => 'options[field]',
+            'value' => $trigger->getOption('field'),
+            'help_class' => 'trigger',
+            'options' => $automation->getListFieldOptions(),
+            'rules' => [],
+        ])
     </div>
 </div>

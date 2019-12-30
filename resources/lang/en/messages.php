@@ -2789,6 +2789,7 @@
         below to configure your trigger',
   'automation.trigger.setup' => 'Set Up Trigger',
   'automation.dangerous_zone' => 'Dangerous Zone',
+  'automation.action.delete.wording' => 'Delete this action will also delete all its children. This action cannot be undone',
   'automation.action.delete.confirm' => 'Delete this action will also delete all its children. This action cannot be undone',
   'automation.trigger.added' => 'Trigger was successfully added.',
   'automation.trigger.updated' => 'Trigger was successfully updated.',
@@ -2837,8 +2838,8 @@
   'automation.deleted' => 'Automation was successfully deleted|One or more automations were successfully deleted',
   'automation.insight' => 'Insight',
   'automation.statistics' => 'Statistics',
-  'automation.settings.intro' => 'Automation triggered when people subscribe to the “<span class="font-weight-bold">My guru</span>” mail list.
-        Click on the Trigger element to change how your automation triggers.',
+  'automation.settings.intro' => 'Below is general information of the automation. You can update the settings and click
+    `<span class="font-weight-semibold">Save</span>` button.',
   'automation.change_mail_list' => 'Change Mail List',
   'automation.automation_name' => 'Automation name',
   'automation.settings.save' => 'Save',
@@ -2976,4 +2977,10 @@
   'automation.go_timeline' => 'Go to Timline',
   'automation.switch_automation.confirm' => 'Switch to automation',
   'automation.intro.' => 'There are no trigger selected. Click on trigger in right screen to select one for your automation.',
+  'automation.choose_birthday_field' => 'If your mail list has `Date of Birth` field, please choose it from the list below',
+  'automation.choose_list_field' => 'Choose a list field',
+  'automation.delete.wording' => 'You are about to delete this automation. This can be undone.',
+  'automation.delete.confirm' => 'You are about to delete this automation. This can be undone.',
+  'automation.delete_automation' => 'Delete',
+  'automation.redirect_to_index' => 'Redirecting to automation list...',
 ) ?>
