@@ -92,22 +92,31 @@
             <div class="activity-feed mt-3">
                 <label class="date small font-weight-semibold mb-0 divider">{{ trans('messages.automation.profile_timeline_head') }}</label>
                 
-                @foreach($automation->timelinesBy($contact)->get() as $timeline)
-                    <div class="activity d-flex py-3 px-4">
-                        <div class="activity-media pr-4 text-center">
-                            <time class="d-block text-center mini mb-2">{{ $timeline->created_at->diffForHumans() }}</time>
-                            {!! Acelle\Model\AutomationElement::getIconByType($timeline->activity_type) !!}
+                @if ($automation->timelinesBy($contact)->count() > 0)
+                    @foreach($automation->timelinesBy($contact)->get() as $timeline)
+                        <div class="activity d-flex py-3 px-4">
+                            <div class="activity-media pr-4 text-center">
+                                <time class="d-block text-center mini mb-2">{{ $timeline->created_at->diffForHumans() }}</time>
+                                {!! Acelle\Model\AutomationElement::getIconByType($timeline->activity_type) !!}
+                            </div>
+                            <div class="small">
+                                <action class="d-block font-weight-semibold mb-1">
+                                    {{ $timeline->activity }}
+                                </action>
+                                <desc class="d-block small text-muted">
+                                    <i class="lnr lnr-clock mr-1"></i> {{ Acelle\Library\Tool::formatDateTime($timeline->created_at) }}
+                                </desc>
+                            </div>
                         </div>
-                        <div class="small">
-                            <action class="d-block font-weight-semibold mb-1">
-                                {{ $timeline->activity }}
-                            </action>
-                            <desc class="d-block small text-muted">
-                                <i class="lnr lnr-clock mr-1"></i> {{ Acelle\Library\Tool::formatDateTime($timeline->created_at) }}
-                            </desc>
-                        </div>
+                    @endforeach
+                @else
+                    <div class="empty-list">
+                        <i class="material-icons">timeline</i>
+                        <span class="line-1">
+                            {{ trans('messages.automation.timeline.no_activities') }}
+                        </span>
                     </div>
-                @endforeach
+                @endif
             </div>
         </div>
     </div>

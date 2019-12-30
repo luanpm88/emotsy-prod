@@ -908,11 +908,16 @@ label.switchery-double.checkbox-switchery {
     width: 100%;
 }
 .empty-list {
-  height: 200px;
+  height: auto;
   display: block;
   align-items: center;
   padding: 50px;
   text-align: center;
+  border: dashed 2px #ccc;
+  margin-top: 30px;
+  border-radius: 10px;
+  background: #f6f6f6;
+  color: #777;
 }
 
 .empty-list i {
@@ -1055,4 +1060,52 @@ label.switchery-double.checkbox-switchery {
 .diagram .history .history-list-items a:hover {
   background: #f2f2f2;
   text-decoration: none;
+}
+a.insight-stat-col {
+  color: #333;
+}
+a.insight-stat-col:hover {
+  text-decoration: none;
+  color: #000;
+}
+a:hover {
+  text-decoration: none;
+}
+a:hover label {
+  cursor: pointer;
+}
+.cursor-pointer {
+  cursor: pointer;
+}
+.switch-automation {
+  position: relative;
+}
+.switch-automation .select2 {
+  position: absolute;
+  color: transparent;
+  width: 100%!important;
+  outline: none;
+}
+.switch-automation .select2-selection--single {
+  background: none;
+  border: none;
+  outline: none;
+  color: none;
+}
+.switch-automation:hover .select2-selection--single {
+  outline: none;
+  height: 48px;
+}
+.switch-automation .select2-container--default .select2-selection--single .select2-selection__rendered {
+  color: transparent;
+}
+.switch-automation .select2-container--default .select2-selection--single .select2-selection__arrow {
+  display: none;
+}
+.switch-automation:hover .action {
+  cursor: pointer;
+  color: #fff;
+}
+[id*="---hidden--"] {
+  display: none;
 }

@@ -65,12 +65,23 @@
 					<i class="material-icons-outlined mr-2">arrow_back</i>
 					{{ trans('messages.automation.go_back') }}
 				</a>
-				<a href="javascript:'" class="action">
-					<i class="material-icons-outlined mr-2">
-horizontal_split
-</i>
-					{{ trans('messages.automation.switch_automation') }}
-				</a>
+
+				<div class="switch-automation d-flex">
+					<select class="select2 top-menu-select" name="switch_automation">
+						<option value="--hidden--"></option>
+						@foreach($automation->getSwitchAutomations()->get() as $auto)
+							<option value='{{ action('Automation2Controller@edit', $auto->uid) }}'>{{ $auto->name }}</option>
+						@endforeach
+					</select>
+
+					<a href="javascript:'" class="action">
+						<i class="material-icons-outlined mr-2">
+	horizontal_split
+	</i>
+						{{ trans('messages.automation.switch_automation') }}
+					</a>
+				</div>
+
 				<div class="account-info">
 					<ul class="navbar-nav mr-auto navbar-dark bg-dark"">						
 						<li class="nav-item dropdown">
@@ -383,6 +394,27 @@ horizontal_split
 					container.fadeOut();
 				}
 			});
+
+			// switch automation
+			$('[name=switch_automation]').change(function() {
+				var val = $(this).val();
+				var text = $('[name=switch_automation] option:selected').text();
+				var confirm = "{{ trans('messages.automation.switch_automation.confirm') }} <span class='font-weight-semibold'>" + text + "</span>"; 
+
+				var dialog = new Dialog('confirm', {
+					message: confirm,
+					ok: function(dialog) {
+						window.location = val; 
+					},
+					cancel: function() {
+						$('[name=switch_automation]').val('');
+					},
+					close: function() {
+						$('[name=switch_automation]').val('');
+					},
+				});
+			});
+			$('.select2-results__option').each
 		});
 	</script>
 		

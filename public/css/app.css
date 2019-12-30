@@ -2924,3 +2924,8 @@ p.link-inline a {
 .template-start {
   cursor: pointer;
 }
+.material-icons-outlined, .material-icons {
+    font-size: inherit;
+}
+.lnr {
+}

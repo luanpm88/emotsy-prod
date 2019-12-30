@@ -84,6 +84,7 @@ class Automation2Controller extends Controller
             // pass validation and save
             $automation->mail_list_id = MailList::findByUid($request->mail_list_uid)->id;
             $automation->customer_id = $customer->id;
+            $automation->data = '[{"title":"Click to choose a trigger","id":"trigger","type":"ElementTrigger","options":{"init":"false", "key": ""}}]';
             $automation->save();
             
             return response()->json([
@@ -505,7 +506,7 @@ class Automation2Controller extends Controller
                 'sign_dkim' => true,
                 'track_open' => true,
                 'track_click' => true,
-                'action_id' => $request->action_id,
+                'action_id' => $request->action_id,                
             ]);
         }
         

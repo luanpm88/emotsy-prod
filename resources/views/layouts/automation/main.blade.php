@@ -54,7 +54,12 @@
     <script type="text/javascript" src="{{ URL::asset('js/jquery.cookie.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('rangeslider/bootstrap-slider.js') }}"></script>	
 	<script type="text/javascript" src="{{ URL::asset('bootstrap3-editable/js/bootstrap-editable.js') }}"></script>		
+
+	<!-- Tooltip -->
+	<link rel="stylesheet" href="{{ URL::asset('assets/tooltipster/css/tooltipster.bundle.css') }}">
+	<link rel="stylesheet" href="{{ URL::asset('assets/tooltipster/css/plugins/tooltipster/sideTip/themes/tooltipster-sideTip-light.min.css') }}">
 	<script type="text/javascript" src="{{ URL::asset('assets/tooltipster/js/tooltipster.bundle.js') }}"></script>		
+
 	<script type="text/javascript" src="{{ URL::asset('assets/timepicker/jquery.timepicker.js') }}"></script>		
 	<script type="text/javascript" src="{{ URL::asset('assets/datepicker/dist/datepicker.min.js') }}"></script>		
 	

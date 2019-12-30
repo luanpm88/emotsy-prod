@@ -296,7 +296,6 @@ class Automation2 extends Model
     public function getDelayOptions()
     {
         return [
-            ['text' => trans('messages.automation.delay.immediately'), 'value' => '0'],
             ['text' => trans_choice('messages.automation.delay.day', 1), 'value' => '1 day'],
             ['text' => trans_choice('messages.automation.delay.day', 2), 'value' => '2 days'],
             ['text' => trans_choice('messages.automation.delay.day', 3), 'value' => '3 days'],
@@ -693,6 +692,14 @@ class Automation2 extends Model
         });
 
         return $count;
+    }
+
+    /**
+     * Get recent automations for switch
+     */
+    public function getSwitchAutomations()
+    {
+        return Automation2::where('id', '<>', $this->id)->orderBy('updated_at', 'desc')->limit(50);
     }
 
 }

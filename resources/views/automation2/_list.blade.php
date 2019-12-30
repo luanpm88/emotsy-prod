@@ -62,7 +62,9 @@
                 </td>
                 <td class="text-right text-nowrap">
                     @if (\Gate::allows('update', $automation))
-                        <a data-popup="tooltip" title="{{ trans('messages.edit') }}" href="{{ action('Automation2Controller@edit', $automation->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i></a>
+                        <a data-popup="tooltip" href="{{ action('Automation2Controller@edit', $automation->uid) }}" type="button" class="btn bg-grey btn-icon">
+                         <i class="lnr lnr-cog mr-5 text-semibold"></i> {{ trans('messages.automation.design') }}
+                        </a>
                     @endif
                     @if (\Gate::allows('delete', $automation) || Auth::user()->can('disable', $automation) || Auth::user()->can('enable', $automation))
                         <div class="btn-group">

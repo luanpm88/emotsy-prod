@@ -74,4 +74,33 @@
              }
         });
     });
+
+    var $sel = $('[name=mail_list_uid]').on('change', function() {
+        if ($sel.data('confirm') == 'false') {
+            confirm = `{{ trans('messages.automation.change_list.confirm') }}`;
+
+            var dialog = new Dialog('confirm', {
+                message: confirm,
+                ok: function(dialog) {
+                    // store new value        
+                    $sel.trigger('update');     
+                },
+                cancel: function(dialog) {
+                    // reset
+                    $sel.trigger('restore');
+                },
+                close: function(dialog) {
+                    // reset
+                    $sel.trigger('restore');
+                },
+            });
+        }
+    }).on('restore', function() {
+        $(this).data('confirm', 'true');
+        $(this).val($(this).data('currVal')).change();
+        $(this).data('confirm', 'false');
+    }).on('update', function() {
+        $(this).data('currVal', $(this).val());
+        $(this).data('confirm', 'false');
+    }).trigger('update');
 </script>

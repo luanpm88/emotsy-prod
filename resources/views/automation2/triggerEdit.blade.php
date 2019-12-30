@@ -18,11 +18,13 @@
         @include('automation2.trigger.' . $key)
     @endif
     
-    <div class="trigger-action mt-2">    
-        <button class="btn btn-secondary trigger-save-change mr-1">
+    <div class="trigger-action mt-2">
+        @if (!in_array($key, ['say-goodbye-subscriber']))
+            <button class="btn btn-secondary trigger-save-change mr-1">
                 {{ trans('messages.automation.trigger.save_change') }}
-        </button>
-        
+            </button>
+        @endif
+
         <a href="javascript:;" class="btn btn-outline-secondary change-trigger-but">
             Change Trigger
         </a>

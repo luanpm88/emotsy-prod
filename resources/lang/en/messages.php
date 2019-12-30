@@ -2968,4 +2968,12 @@
   'automation.wait.delay.2 weeks' => 'Wait 2 weeks',
   'automation.wait.delay.1 month' => 'Wait 1 month',
   'automation.wait.delay.2 months' => 'Wait 2 months',
+  'automation.timeline.no_activities' => 'No activities',
+  'automation.change_list.confirm' => 'Changing the target list will erase all current list tracking / 
+    stats. In other words, your automation data will be reset for the new list.',
+  'automation.design' => 'Design',
+  'automation.go_contacts' => 'Go to Contacts',
+  'automation.go_timeline' => 'Go to Timline',
+  'automation.switch_automation.confirm' => 'Switch to automation',
+  'automation.intro.' => 'There are no trigger selected. Click on trigger in right screen to select one for your automation.',
 ) ?>

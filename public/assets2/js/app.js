@@ -11,6 +11,13 @@
 
 function initJs(container) {
     //
+    // xtooltip
+    // ------------------------------
+    container.find('.xtooltip').tooltipster({
+        theme: 'tooltipster-light'
+    });
+
+    //
     // Scrollbar
     // ------------------------------
     container.find('.scrollbar-inner').scrollbar();
@@ -26,7 +33,7 @@ function initJs(container) {
     
     // Select2
     container.find('select').select2({
-        minimumResultsForSearch: 101,
+        minimumResultsForSearch: 20,
         templateResult: formatSelect2TextOption,
         templateSelection: formatSelect2TextSelected,
         placeholder: function(){

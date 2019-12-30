@@ -59,9 +59,9 @@
     @include('helpers._pagination')
 @else
     <div class="empty-list">
-        <i class="lnr lnr-users"></i>
+        <i class="material-icons">timeline</i>
         <span class="line-1">
-            {{ trans('messages.automation.empty_contacts') }}
+            {{ trans('messages.automation.timeline.no_activities') }}
         </span>
     </div>
 @endif
