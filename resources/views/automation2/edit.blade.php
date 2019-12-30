@@ -5,10 +5,6 @@
 @section('content')
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 	<style>
-        text:hover {
-            fill: pink;
-        }
-
         rect.selected {
             stroke-width: 1 !important;;
             stroke-dasharray: 5;
@@ -33,16 +29,16 @@
             stroke-width: 1;
         }
 
-        g.wait > a > text {
-            fill: #666;
-        }
-
-        g.wait > text {
+        g.wait > g > a tspan {
             fill: #666;
         }
 
         rect.condition {
             fill: #e47a50;
+        }
+
+        text:hover, tspan:hover {
+            fill: pink !important;
         }
     </style>
 	
