@@ -4,30 +4,78 @@
 	<div class="row">
         <div class="col-md-1"></div>
         <div class="col-md-10">
-            <h3 class="mb-3">{{ trans('messages.automation.profile.tag_contacts') }}</h3>
-            <p>{!! trans('messages.automation.profile.tag_contacts.intro', [
-                'count' => '1,200',
-            ]) !!}</p>
-                
-            @include('helpers.form_control', [
-                'type' => 'select',
-                'class' => '',
-                'label' => 'Select criterion',
-                'name' => 'type',
-                'value' => ['VIP customer', 'Lead'],
-                'help_class' => 'trigger',
-                'options' => [
-                    ['text' => 'Hight profile', 'value' => 'Hight profile'],
-                    ['text' => 'VIP customer', 'value' => 'VIP customer'],
-                    ['text' => 'Lead', 'value' => 'Lead'],
-                ],
-                'rules' => [],
-                'multiple' => 'true',
-            ])
+            <form class="tag-contacts" action="{{ action("Automation2Controller@tagContacts", $automation->uid) }}"
+                method="POST" class="form-validate-jqueryz"
+            >
+                {{ csrf_field() }}
 
-            <div class="mt-4">
-                <button class="btn btn-secondary">{{ trans('messages.automation.profile.tag') }}</button>
-            </div>
+                <input type="hidden" name="action_id" value="{{ request()->action_id }}" />
+
+                <h3 class="mb-3">{{ trans('messages.automation.profile.tag_contacts') }}</h3>
+                <p>{!! trans('messages.automation.profile.tag_contacts.intro', [
+                    'count' => format_number($subscribers->count()),
+                ]) !!}</p>
+                    
+                @include('helpers.form_control', [
+                    'type' => 'select',
+                    'class' => '',
+                    'label' => '',
+                    'name' => 'tags[]',
+                    'value' => [],
+                    'help_class' => 'trigger',
+                    'options' => [
+                        ['text' => 'Hight profile', 'value' => 'Hight profile'],
+                        ['text' => 'VIP customer', 'value' => 'VIP customer'],
+                        ['text' => 'Lead', 'value' => 'Lead'],
+                    ],
+                    'rules' => ['tags' => 'required'],
+                    'multiple' => 'true',
+                    'placeholder' => trans('messages.automation.contact.choose_tags'),
+                ])
+
+                <div class="mt-4">
+                    <button class="btn btn-secondary">{{ trans('messages.automation.profile.tag') }}</button>
+                </div>
         </div>
     </div>
+    
+    <script>
+        $('form.tag-contacts').submit(function(e) {
+            e.preventDefault();
+            
+            var form = $(this);
+            var data = form.serialize();
+            var url = form.attr('action');
+            
+            addMaskLoading('{{ trans('messages.automation.contacts.tagging_contacts') }}');
+
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: data,
+                statusCode: {
+                    // validate error
+                    400: function (res) {
+                        tagContact.loadHtml(res.responseText);
+
+                        // remove masking
+                        removeMaskLoading();
+                    }
+                },
+                success: function (res) {
+                    // hide popup
+                    tagContact.hide();
+
+                    // notify
+                    notify('success', '{{ trans('messages.notify.success') }}', res.message);
+
+                    // remove masking
+                    removeMaskLoading();
+
+                    // reload sidebar
+                    sidebar.load();
+                }
+            });    
+        });
+    </script>
 @endsection

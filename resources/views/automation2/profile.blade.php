@@ -9,7 +9,7 @@
                     <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
                         <div class="btn-group btn-group-sm" role="group">
                             <button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                              Action
+                                {{ trans('messages.automation.profile.action') }}
                             </button>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnGroupDrop1">
                                 <a class="dropdown-item profile-remove-contact"
@@ -26,7 +26,7 @@
                                         'uid' => $automation->uid,
                                         'contact_uid' => $contact->uid,
                                     ]) }}"
-                                >{{ trans('messages.automation.profile.tag_contact') }}</a>
+                                >{{ trans('messages.automation.profile.manage_tag') }}</a>
                                 <a class="dropdown-item" href="{{ action('SubscriberController@edit', [
                                     'list_uid' => $contact->mailList->uid,
                                     'uid' => $contact->uid,
@@ -52,30 +52,26 @@
                     <h5 class="mb-0">{{ $contact->getFullName() }}</h5>
                     <p class="small mb-2">{{ $contact->email }}</p>
                     <div class="tags">
-                        <div class="btn-group" role="group" aria-label="Basic example">
-                            <button type="button" class="btn btn-light btn-tag">Hight Profile</button>
-                            <button type="button" class="btn btn-light btn-tag">
-                                <i class="lnr lnr-cross"></i>
-                            </button>
-                        </div>
-                        <div class="btn-group" role="group" aria-label="Basic example">
-                            <button type="button" class="btn btn-light btn-tag">VIP Customer</button>
-                            <button type="button" class="btn btn-light btn-tag">
-                                <i class="lnr lnr-cross"></i>
-                            </button>
-                        </div>
+                        @foreach ($contact->getTags() as $tag)
+                            <div class="btn-group" role="group" aria-label="Basic example">
+                                <button type="button" class="btn btn-light btn-tag">{{ $tag }}</button>
+                                <button type="button" class="btn btn-light btn-tag">
+                                    <i class="lnr lnr-cross"></i>
+                                </button>
+                            </div>
+                        @endforeach
                     </div>
                 </div>
             </div>
             
             
             <div class="d-flex align-items-center mt-5">
-                <h3 class="mr-auto">Activity Feed</h3>
+                <h3 class="mr-auto">{{ trans('messages.automation.contact.activity_feed') }}</h3>
                 <div class="">
                     <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
                         <div class="btn-group btn-group-sm" role="group">
                             <button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                              All activities
+                                {{ trans('messages.automation.contact.all_activities') }}
                             </button>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnGroupDrop1">
                                 <a class="dropdown-item" href="#">Open</a>

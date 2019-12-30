@@ -663,6 +663,7 @@ class Subscriber extends Model
         if (!is_object($copy)) {
             $copy = $this->replicate();
             $copy->mail_list_id = $list->id;
+            unset($copy->verify_result);
             $copy->save();
 
             $copy = \Acelle\Model\Subscriber::find($copy->id);
@@ -960,5 +961,43 @@ class Subscriber extends Model
     public function isActive()
     {
         return ($this->status == self::STATUS_SUBSCRIBED);
+    }
+
+    /**
+     * Get tags
+     */
+    public function getTags()
+    {
+        if (!$this->tags) {
+            return [];
+        }
+
+        return json_decode($this->tags, true);
+    }
+    
+    /**
+     * Add tags
+     */
+    public function addTags($arr)
+    {
+        $tags = $this->getTags();
+
+        $nTags = array_values(array_unique(array_merge($tags, $arr)));
+
+        $this->tags = json_encode($nTags);
+        $this->save();
+    }
+
+    /**
+     * Add tags
+     */
+    public function updateTags($arr)
+    {
+        if (!$arr) {
+            $arr = [];
+        }
+
+        $this->tags = json_encode($arr);
+        $this->save();
     }
 }

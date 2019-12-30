@@ -666,6 +666,8 @@ class MailList extends Model
 
         // update cache
         $copy->updateCache();
+        
+        return $copy;
     }
 
     /**

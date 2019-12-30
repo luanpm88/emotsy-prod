@@ -6,41 +6,46 @@
     <div class="insight-desc mr-auto">
         @if (request()->action_id)
             {!! trans_choice('messages.automation.action.contacts_intro', $automation->subscribers(request()->action_id)->count(), [
-                'count' => format_number($automation->subscribers(request()->action_id)->count()),
+                'count' => format_number($subscribers->count()),
                 'name' => $automation->getElement(request()->action_id)->getName(),
             ]) !!}
         @else
             {!! trans_choice('messages.automation.contacts_intro', $automation->subscribers()->count(), [
-                'count' => format_number($automation->subscribers()->count()),
+                'count' => format_number($subscribers->count()),
                 'name' => $automation->name,
             ]) !!}
         @endif        
     </div>
     <div class="insight-action">
-        <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-            <div class="btn-group btn-group-sm" role="group">
-              <button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Action
-              </button>
-              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnGroupDrop1">
-                <a class="dropdown-item list-export-contacts"
-                    href="{{ action('Automation2Controller@exportContacts', [
-                        'uid' => $automation->uid,
-                    ]) }}"
-                >{{ trans('messages.automation.export_this_list') }}</a>
-                <a class="dropdown-item list-copy-contacts-new-list"
-                    href="{{ action('Automation2Controller@copyToNewList', [
-                        'uid' => $automation->uid,
-                    ]) }}"
-                >{{ trans('messages.automation.copy_to_new_list') }}</a>
-                <a class="dropdown-item list-tag-contacts"
-                    href="{{ action('Automation2Controller@tagContacts', [
-                        'uid' => $automation->uid,
-                    ]) }}"
-                >{{ trans('messages.automation.tag_those_contacts') }}</a>
-              </div>
+        @if ($subscribers->count())
+            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                <div class="btn-group btn-group-sm" role="group">
+                <button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Action
+                </button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnGroupDrop1">
+                    <a class="dropdown-item list-export-contacts"
+                        href="{{ action('Automation2Controller@exportContacts', [
+                            'uid' => $automation->uid,
+                            'action_id' => request()->action_id,
+                        ]) }}"
+                    >{{ trans('messages.automation.export_this_list') }}</a>
+                    <a class="dropdown-item list-copy-contacts-new-list"
+                        href="{{ action('Automation2Controller@copyToNewList', [
+                            'uid' => $automation->uid,
+                            'action_id' => request()->action_id,
+                        ]) }}"
+                    >{{ trans('messages.automation.copy_to_new_list') }}</a>
+                    <a class="dropdown-item list-tag-contacts"
+                        href="{{ action('Automation2Controller@tagContacts', [
+                            'uid' => $automation->uid,
+                            'action_id' => request()->action_id,
+                        ]) }}"
+                    >{{ trans('messages.automation.tag_those_contacts') }}</a>
+                </div>
+                </div>
             </div>
-        </div>
+        @endif
     </div>
 </div>
 

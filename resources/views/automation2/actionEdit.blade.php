@@ -2,7 +2,7 @@
 
 @include('automation2._tabs', ['tab' => 'settings'])
 
-<form id="action-edit" action="{{ action("Automation2Controller@actionEdit", ['uid' => $automation->uid, 'key' => $key]) }}" method="POST" class="form-validate-jqueryz">
+<form class="action-edit" action="{{ action("Automation2Controller@actionEdit", ['uid' => $automation->uid, 'key' => $key]) }}" method="POST" class="form-validate-jqueryz">
     {{ csrf_field() }}
     
     <input type="hidden" name="key" value="{{ $key }}" />
@@ -33,7 +33,7 @@
 </div>
     
 <script>
-    $('#action-edit').submit(function(e) {
+    $('.action-edit').submit(function(e) {
         e.preventDefault();
         
         var form = $(this);

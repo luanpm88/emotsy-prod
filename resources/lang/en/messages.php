@@ -2983,4 +2983,15 @@
   'automation.delete.confirm' => 'You are about to delete this automation. This can be undone.',
   'automation.delete_automation' => 'Delete',
   'automation.redirect_to_index' => 'Redirecting to automation list...',
+  'automation.contacts.copied_to_new_list' => '<span class="font-weight-semibold">:count</span> contacts were copied to
+    `<span class="font-weight-semibold">:list</span>` successfully',
+  'automation.contacts.copying_to_new_list' => 'Copying contacts... Please wait.',
+  'automation.contact.choose_tags' => 'Choose one or many tags',
+  'automation.contacts.tagging_contacts' => 'Tagging contacts... Please wait.',
+  'automation.contacts.tagged' => '<span class="font-weight-semibold">:count</span> contacts were tagged successfully',
+  'automation.profile.action' => 'Action',
+  'automation.contact.activity_feed' => 'Activity Feed',
+  'automation.contact.all_activities' => 'All activities',
+  'automation.profile.manage_tag' => 'Manage tags',
+  'automation.contact.tagged' => ':contact\'s tags were updated',
 ) ?>

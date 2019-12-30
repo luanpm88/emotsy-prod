@@ -202,6 +202,7 @@ function notify(type, title, message) {
         stack: window.stackBottomRight,
         addClass: 'nonblock',
         delay: 2000,
+        textTrusted: true,
     };
     PNotify.alert(opts);
 }

@@ -1142,8 +1142,16 @@ class Automation2Controller extends Controller
             return $this->notAuthorized();
         }
 
+        // all or action contacts
+        if ($request->action_id) {
+            $subscribers = Subscriber::gSearch($automation->subscribers($request->action_id), $request);
+        } else {
+            $subscribers = Subscriber::gSearch($automation->subscribers(), $request);
+        }
+
         return view('automation2.contacts.index', [
             'automation' => $automation,
+            'subscribers' => $subscribers,
         ]);
     }
     
@@ -1286,9 +1294,13 @@ class Automation2Controller extends Controller
 
         // saving
         if($request->isMethod('post')) {
+            $contact->updateTags($request->tags);
+
             return response()->json([
                 'status' => 'success',
-                'message' => trans('messages.automation.contact.tagged'),
+                'message' => trans('messages.automation.contact.tagged', [
+                    'contact' => $contact->getFullName(),
+                ]),
             ], 201);
         }
 
@@ -1308,6 +1320,13 @@ class Automation2Controller extends Controller
     public function tagContacts(Request $request, $uid)
     {
         $automation = Automation2::findByUid($uid);
+
+        // subscribers list
+        if ($request->action_id) {
+            $subscribers = Subscriber::gSearch($automation->subscribers($request->action_id), $request);
+        } else {
+            $subscribers = Subscriber::gSearch($automation->subscribers(), $request);
+        }
         
         // authorize
         if (\Gate::denies('update', $automation)) {
@@ -1315,15 +1334,37 @@ class Automation2Controller extends Controller
         }
 
         // saving
-        if($request->isMethod('post')) {
+        if($request->isMethod('post')) {                        
+            // make validator
+            $validator = Validator::make($request->all(), [
+                'tags' => 'required',
+            ]);
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('automation2.contacts.tagContacts', [
+                    'automation' => $automation,
+                    'subscribers' => $subscribers,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            // Copy to list
+            foreach ($subscribers->get() as $subscriber) {
+                $subscriber->addTags($request->tags);
+            }
+
             return response()->json([
                 'status' => 'success',
-                'message' => trans('messages.automation.contacts.tagged'),
+                'message' => trans('messages.automation.contacts.tagged', [
+                    'count' => $subscribers->count(),
+                ]),
             ], 201);
         }
 
         return view('automation2.contacts.tagContacts', [
             'automation' => $automation,
+            'subscribers' => $subscribers,
         ]);
     }
     
@@ -1370,16 +1411,52 @@ class Automation2Controller extends Controller
             return $this->notAuthorized();
         }
 
+        // subscribers list
+        if ($request->action_id) {
+            $subscribers = Subscriber::gSearch($automation->subscribers($request->action_id), $request);
+        } else {
+            $subscribers = Subscriber::gSearch($automation->subscribers(), $request);
+        }
+
         // saving
-        if($request->isMethod('post')) {
+        if($request->isMethod('post')) {                        
+            // make validator
+            $validator = Validator::make($request->all(), [
+                'name' => 'required',
+            ]);
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('automation2.contacts.copyToNewList', [
+                    'automation' => $automation,
+                    'subscribers' => $subscribers,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            // Crate new list
+            $list = $automation->mailList->copy($request->name);
+
+            // Copy to list
+            foreach ($subscribers->get() as $subscriber) {
+                $subscriber->copy($list);
+            }
+
+            // update cache
+            $list->updateCache();
+
             return response()->json([
                 'status' => 'success',
-                'message' => trans('messages.automation.contacts.tagged'),
+                'message' => trans('messages.automation.contacts.copied_to_new_list', [
+                    'count' => $subscribers->count(),
+                    'list' => $list->name,
+                ]),
             ], 201);
         }
 
         return view('automation2.contacts.copyToNewList', [
             'automation' => $automation,
+            'subscribers' => $subscribers,
         ]);
     }
 }
