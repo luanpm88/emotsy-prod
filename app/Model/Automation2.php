@@ -676,5 +676,23 @@ class Automation2 extends Model
         return __($translationKey, [ 'list' => $this->mailList->name ] );
     }
 
+    public function getBriefIntro()
+    {
+        $triggerType = $this->getTriggerAction()->getOption('key');
+        $translationKey = 'messages.automation.brief-intro.'.$triggerType;
+        return __($translationKey, [ 'list' => $this->mailList->name ] );
+    }
+
+    public function countEmails()
+    {
+        $count = 0;
+        $this->getActions(function($e) use (&$count) {
+            if ($e->getType() == 'ElementAction') {
+                $count += 1;
+            }
+        });
+
+        return $count;
+    }
 
 }

@@ -2713,6 +2713,7 @@
   'automation.action.condition.intro' => 'Choose one of the conditions below for your workflow. Acelle Mail will evaluate the condition
         and branch off your workflow accordingly.',
   'automation.action.set_up_your_condition' => 'Set up your condition',
+  'automation.overview.contacts' => 'Contacts',
   'subscription.subscription_end' => 'Ends at',
   'subscription.ended' => 'Ended',
   'n_a' => 'N/A',
@@ -2776,6 +2777,12 @@
   'automation.intro.specific-date' => 'Automated email marketing campaign which is triggered on a specific date/time to all subscribers, applied for ":list" mail list',
   'automation.intro.say-goodbye-subscriber' => 'Automated email marketing campaign which is triggered every time a subscriber opts out of your list, applied for ":list" mail list',
   'automation.intro.api-3-0' => 'Automated email marketing campaign which is triggered by an API request from other, applied for ":list" mail list',
+  'automation.brief-intro.say-happy-birthday' => 'Trigger on subscribers\' date of birth',
+  'automation.brief-intro.welcome-new-subscriber' => 'Trigger when new subscriber opts in',
+  'automation.brief-intro.subscriber-added-date' => 'Trigger yearly on subscriber added date',
+  'automation.brief-intro.specific-date' => 'Trigger on a specific date/time',
+  'automation.brief-intro.say-goodbye-subscriber' => 'Trigger when subscriber opts out of list',
+  'automation.brief-intro.api-3-0' => 'Trigger via API 3.0 request',
   'automation.trigger' => 'Trigger',
   'automation.settings' => 'Settings',
   'automation.trigger.empty_msg' => 'Your automation trigger is not set up yet. Click the button

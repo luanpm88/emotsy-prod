@@ -27,26 +27,26 @@
                         </a>
                     </h5>
                     <div class="text-semibold" data-popup="tooltip">
-                        100 {{ trans('messages.recipients') }}
+                        {{ $automation->getBriefIntro() }}
                     </div>
                 </td>
                 <td>
                     <h5 class="no-margin">
-                        --
+                        {{ $automation->mailList()->count() }}
                     </h5>
-                    <span class="text-muted2">{{ trans('messages.type') }}</span>
+                    <span class="text-muted2">{{ trans('messages.automation.overview.contacts') }}</span>
                 </td>
                 <td>
                     <h5 class="no-margin text-teal-800 stat-num">
-                        --
-                    </h5>
-                    <span class="text-muted2">{{ trans('messages.triggers') }}</span>
-                </td>
-                <td>
-                    <h5 class="no-margin text-teal-800 stat-num">
-                        --
+                        {{ $automation->countEmails() }}
                     </h5>
                     <span class="text-muted2">{{ trans('messages.emails') }}</span>
+                </td>
+                <td>
+                    <h5 class="no-margin text-teal-800 stat-num">
+                        {{ number_to_percentage($automation->getSummaryStats()['complete']) }}
+                    </h5>
+                    <span class="text-muted2">{{ trans('messages.complete') }}</span>
                 </td>
                 <td>
                     <span class="no-margin text-bold">
