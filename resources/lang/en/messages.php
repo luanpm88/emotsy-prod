@@ -2671,7 +2671,7 @@
     Acelle Mail offers a wide selection of preset automation types with built-in triggers, ranging from abandoned
     cart emails to a simple welcome message.',
   'automation.trigger.welcome-new-subscriber' => 'Welcome new subscribers',
-  'automation.trigger.' => '[not_set]',
+  'automation.trigger.' => 'Trigger',
   'automation.trigger.say-happy-birthday' => 'Say `Happy birthday`',
   'automation.trigger.subscriber-added-date' => 'Subscriber added date',
   'automation.trigger.specific-date' => 'Specific date',
@@ -2767,7 +2767,7 @@
         is actually coming from you. This is to help establish the authenticity of your email, improving delivery rate.',
   'email.setup.save_next' => 'Save & Next',
   'automation.email.settings' => 'Settings',
-  'automation.trigger.title' => 'Trigger: :title',
+  'automation.trigger.title' => ':title',
   'automation.go_back' => 'Go back',
   'automation.switch_automation' => 'Switch automation',
   'automation.running' => 'running',
@@ -3002,4 +3002,5 @@
   'automation.trigger.tree.api-3-0' => 'Trigger manually via API 3.0 request',
   'automation.trigger.tree.subscriber-added-date' => 'Trigger on contacts\' subscribe date',
   'automation.trigger.tree.specific-date' => 'Autostart on a scheduled date/time',
+  'automation.no_email' => 'Email',
 ) ?>

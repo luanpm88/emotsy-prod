@@ -81,7 +81,12 @@ class AutomationElement
                 break;
             case 'ElementAction':
                 $email = Email::findByUid($this->getOption('email_uid'));
-                return trans('messages.automation.send_a_email', ['title' => $email->subject]);
+                if ($email) {
+                    return trans('messages.automation.send_a_email', ['title' => $email->subject]);
+                } else {
+                    return trans('messages.automation.no_email');
+                }
+                    
                 break;
             case 'ElementWait':
                 return trans('messages.automation.wait.delay.' . $this->getOption("time"));

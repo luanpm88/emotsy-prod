@@ -208,17 +208,10 @@
 			});
 		}
 		
-		function SelectActionConfirm(key) {
+		function SelectActionConfirm(key, insertToTree) {
 			var url = '{{ action('Automation2Controller@actionSelectConfirm', $automation->uid) }}' + '?key=' + key;
 			
-			popup.load(url, function() {
-				console.log('Confirm action type popup loaded!');
-				
-				// set back event
-				popup.back = function() {
-					OpenActionSelectPopup();
-				};
-				
+			popup.load(url, function() {				
 				// when click confirm select trigger type
 				popup.popup.find('#action-select').submit(function(e) {
 					e.preventDefault();
@@ -235,11 +228,12 @@
 						data: data,
 					}).always(function(response) {
 						if (response.options.key == 'wait') {
-							var newE = new ElementWait({title: response.title, options: response.options});
+							var newE = new ElementWait({title: response.title, options: response.options});							
 						} else if (response.options.key == 'condition') {
-							var newE = new ElementCondition({title: response.title, options: response.options});
+							var newE = new ElementCondition({title: response.title, options: response.options});							
 						}
-						tree.getSelected().insert(newE);
+
+						insertToTree(newE);
 						
 						// save tree
 						saveData(function() {
@@ -264,7 +258,7 @@
 			});
 		}
 	
-		function OpenActionSelectPopup() {
+		function OpenActionSelectPopup(insertToTree) {
 			popup.load('{{ action('Automation2Controller@actionSelectPupop', $automation->uid) }}?hasChildren=' + tree.getSelected().hasChildren(), function() {
 				console.log('Select action popup loaded!');
 				
@@ -280,11 +274,12 @@
 					if (key == 'send-an-email') {
 						// new action as email
 						var newE = new ElementAction({
-							title: '{{ trans('messages.automation.tree.action_not_set') }}'
+							title: '{{ trans('messages.automation.tree.action_not_set') }}',
+							options: {init: "false"}
 						});
 						
 						// add email to tree
-						tree.getSelected().insert(newE, {init: "false"});
+						insertToTree(newE);
 						
 						// select email action and open popup
 						doSelect(newE);
@@ -292,7 +287,7 @@
 						notify('success', '{{ trans('messages.notify.success') }}', '{{ trans('messages.automation.email.created') }}');
 					} else {
 						// show select trigger confirm box
-						SelectActionConfirm(key);
+						SelectActionConfirm(key, insertToTree);
 					}					
 				});
 			});
@@ -509,20 +504,37 @@
 
                 onadd: function(e) {
 					e.select();
-					OpenActionSelectPopup();
+					OpenActionSelectPopup(function(element) {
+						e.insert(element);
+
+						// select new element
+						doSelect(element);
+					});				
                 },
 
                 onaddyes: function(e) {
                 	e.select();
-					OpenActionSelectPopup();
+					OpenActionSelectPopup(function(element) {
+						e.insertYes(element);
+
+						// select new element
+						doSelect(element);
+					});
                 },
 
                 onaddno: function(e) {
                 	e.select();
-					OpenActionSelectPopup();
+					OpenActionSelectPopup(function(element) {
+						e.insertNo(element);
+
+						// select new element
+						doSelect(element);
+					});
                 },
 
                 validate: function(e) {
+					console.log('do validate email');
+
                     if (e.getType() == 'ElementTrigger') {
                         console.log(e.getOptions());
                         if (e.getOptions()['init'] == null || e.getOptions()['init'] != "true") {
@@ -533,6 +545,7 @@
                     }
 
                     if (e.getType() == 'ElementAction') {
+						console.log('validate email');
                         if (e.getOptions()['init'] == null || e.getOptions()['init'] != "true") {
                             e.showNotice('Email not 100% set up yet. Click on this action to set up your email');
                         } else {
