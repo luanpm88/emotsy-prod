@@ -164,16 +164,24 @@ function initJs(container) {
 }
 
 function notify(type, title, message) {
-    new PNotify({
+    if (typeof window.stackBottomRight === 'undefined') {
+        window.stackBottomRight = {
+          'dir1': 'up',
+          'dir2': 'left',
+          'firstpos1': 25,
+          'firstpos2': 25
+        };
+    }
+    var opts = {
+        type: type,
         title: title,
         text: message,
-        type: type,
-        before_open: function(PNotify) {
-            PNotify.elem.css({
-                "top":"60px"
-            });
-        }
-    });    
+        stack: window.stackBottomRight,
+        addClass: 'nonblock',
+        delay: 2000,
+        textTrusted: true,
+    };
+    PNotify.alert(opts);
 }
 
 function removeMaskLoading() {

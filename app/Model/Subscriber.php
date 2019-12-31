@@ -1000,4 +1000,19 @@ class Subscriber extends Model
         $this->tags = json_encode($arr);
         $this->save();
     }
+
+    /**
+     * Remove tag
+     */
+    public function removeTag($tag)
+    {
+        $tags = $this->getTags();
+
+        if (($key = array_search($tag, $tags)) !== false) {
+            unset($tags[$key]);
+        }
+
+        $this->tags = json_encode($tags);
+        $this->save();
+    }
 }

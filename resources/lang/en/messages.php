@@ -2994,4 +2994,6 @@
   'automation.contact.all_activities' => 'All activities',
   'automation.profile.manage_tag' => 'Manage tags',
   'automation.contact.tagged' => ':contact\'s tags were updated',
+  'automation.contact.tag.removed' => '<span class="font-weight-semibold">:tag</span> tag were updated',
+  'automation.profile.click_to_add_tag' => 'Add tag',
 ) ?>

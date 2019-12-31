@@ -1367,6 +1367,33 @@ class Automation2Controller extends Controller
             'subscribers' => $subscribers,
         ]);
     }
+
+    /**
+     * Automation remove contact tag.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function removeTag(Request $request, $uid, $contact_uid)
+    {
+        $automation = Automation2::findByUid($uid);
+        $contact = Subscriber::findByUid($contact_uid);
+        
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+
+        $contact->removeTag($request->tag);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => trans('messages.automation.contact.tag.removed', [
+                'tag' => $request->tag,
+            ]),
+        ], 201);
+    }
     
     /**
      * Automation export contacts.

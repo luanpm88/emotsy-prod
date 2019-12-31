@@ -1946,6 +1946,12 @@ ul.plans-intro li span {
     color: #fff;
     text-decoration: underline;
 }
+.ui-pnotify {
+    top: inherit;
+}
+.mc-notify-wanring .ui-pnotify-title {
+    white-space: normal;
+}
 .hosted-field {
     height: 36px;
     border: solid 2px #ccc;

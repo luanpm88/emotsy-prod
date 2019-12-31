@@ -51,15 +51,31 @@
                 <div class="account">
                     <h5 class="mb-0">{{ $contact->getFullName() }}</h5>
                     <p class="small mb-2">{{ $contact->email }}</p>
-                    <div class="tags">
-                        @foreach ($contact->getTags() as $tag)
-                            <div class="btn-group" role="group" aria-label="Basic example">
-                                <button type="button" class="btn btn-light btn-tag">{{ $tag }}</button>
-                                <button type="button" class="btn btn-light btn-tag">
-                                    <i class="lnr lnr-cross"></i>
+                    <div class="tags mt-3">
+                        @if ($contact->getTags())
+                            @foreach ($contact->getTags() as $tag)
+                                <a href="{{ action('Automation2Controller@removeTag', [
+                                    'uid' => $automation->uid,
+                                    'contact_uid' => $contact->uid,
+                                    'tag' => $tag,
+                                ]) }}" class="btn-group remove-contact-tag" role="group" aria-label="Basic example">
+                                    <button type="button" class="btn btn-light btn-tag">{{ $tag }}</button>
+                                    <button type="button" class="btn btn-light btn-tag">
+                                        <i class="lnr lnr-cross"></i>
+                                    </button>
+                                </a>
+                            @endforeach
+                        @else
+                            <a href="{{ action('Automation2Controller@tagContact', [
+                                        'uid' => $automation->uid,
+                                        'contact_uid' => $contact->uid,
+                                    ]) }}" class="btn-group profile-tag-contact" role="group" aria-label="Basic example">
+                                <button type="button" class="btn btn-light btn-tag d-flex align-items-center">
+                                    <i class="material-icons">add</i>
+                                    <span class="font-italic">{{ trans('messages.automation.profile.click_to_add_tag') }}<span>
                                 </button>
-                            </div>
-                        @endforeach
+                            </a>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -163,6 +179,35 @@
             tagContact.load(url, function() {
 				console.log('Confirm action type popup loaded!');				
 			});
+        });
+        
+        $('.remove-contact-tag').click(function(e) {
+            e.preventDefault();
+
+            var url = $(this).attr('href');
+
+            popup.loading();
+
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: {
+                    _token: CSRF_TOKEN,
+                },
+                statusCode: {
+                    // validate error
+                    400: function (res) {
+                        alert('Something went wrong!');
+                    }
+                },
+                success: function (response) {
+                    // notify
+                    notify('success', '{{ trans('messages.notify.success') }}', response.message);
+
+                    // reload popup
+                    popup.load();
+                }
+            });
         });
     </script>
 @endsection
