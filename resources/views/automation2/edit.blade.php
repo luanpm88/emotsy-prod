@@ -489,23 +489,24 @@
                 },
 
                 validate: function(e) {
-					console.log('do validate email');
-
                     if (e.getType() == 'ElementTrigger') {
-                        console.log(e.getOptions());
                         if (e.getOptions()['init'] == null || e.getOptions()['init'] != "true") {
                             e.showNotice('Trigger not set up yet. Click on this action to set up your automation trigger');
+                            e.setTitle('### Trigger not set up yet !!!');
                         } else {
                             e.hideNotice();
+                            e.setTitle('Correct title goes here');
                         }
                     }
 
                     if (e.getType() == 'ElementAction') {
-						console.log('validate email');
                         if (e.getOptions()['init'] == null || e.getOptions()['init'] != "true") {
                             e.showNotice('Email not 100% set up yet. Click on this action to set up your email');
+                            e.setTitle('### Email not set up yet !!!');
                         } else {
                             e.hideNotice();
+                            e.setTitle('Correct title goes here');
+
                         }
                     }
                 }

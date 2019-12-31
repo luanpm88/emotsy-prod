@@ -37,7 +37,7 @@ class AutomationElement {
                 trigger.onclick(events.onclick);
                 trigger.onhover(events.onhover);
                 trigger.onadd(events.onadd);
-                trigger.validate = events.validate;
+                trigger.setCustomFunction('validate', events.validate);
 
                 // add to events bucket
                 trigger.events['onclick'] = events.onclick;
@@ -86,7 +86,7 @@ class AutomationElement {
         trigger.organize();
         
         trigger.browse(function(e){
-            //e.validate();
+            e.validate();
         });
 
         return trigger;
@@ -166,7 +166,6 @@ class AutomationElement {
             try {
                 this.setCustomFunction(name, func);
                 console.log('custom function added: ' + name);
-                console.log(func);
             } catch (err) {
                 console.log('warning: cannot assign custom function "' + event + '" to element "' + this.title + '"');
             }
