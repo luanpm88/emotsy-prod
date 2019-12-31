@@ -280,11 +280,11 @@
 						
 						// add email to tree
 						insertToTree(newE);
-						
-						// select email action and open popup
-						doSelect(newE);
 
-						notify('success', '{{ trans('messages.notify.success') }}', '{{ trans('messages.automation.email.created') }}');
+						// save tree
+						saveData(function() {
+							notify('success', '{{ trans('messages.notify.success') }}', '{{ trans('messages.automation.email.created') }}');
+						});
 					} else {
 						// show select trigger confirm box
 						SelectActionConfirm(key, insertToTree);
