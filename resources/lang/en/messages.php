@@ -2777,6 +2777,7 @@
   'automation.intro.specific-date' => 'Automated email marketing campaign which is triggered on a specific date/time to all subscribers, applied for ":list" mail list',
   'automation.intro.say-goodbye-subscriber' => 'Automated email marketing campaign which is triggered every time a subscriber opts out of your list, applied for ":list" mail list',
   'automation.intro.api-3-0' => 'Automated email marketing campaign which is triggered by an API request from other, applied for ":list" mail list',
+  'automation.brief-intro.' => 'Trigger is not set',
   'automation.brief-intro.say-happy-birthday' => 'Trigger on subscribers\' date of birth',
   'automation.brief-intro.welcome-new-subscriber' => 'Trigger when new subscriber opts in',
   'automation.brief-intro.subscriber-added-date' => 'Trigger yearly on subscriber added date',
