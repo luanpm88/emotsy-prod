@@ -37,6 +37,7 @@ class AutomationElement {
                 trigger.onclick(events.onclick);
                 trigger.onhover(events.onhover);
                 trigger.onadd(events.onadd);
+                trigger.validate = events.validate;
 
                 // add to events bucket
                 trigger.events['onclick'] = events.onclick;
@@ -44,16 +45,14 @@ class AutomationElement {
                 trigger.events['onadd'] = events.onadd;
                 trigger.events['onaddyes'] = events.onaddyes;
                 trigger.events['onaddno'] = events.onaddno;
+
+                trigger.functions['validate'] = events.validate;
             } else if (e.type == 'ElementAction') {
                 list[e.id] = new ElementAction(e);
             } else if (e.type == 'ElementWait') {
                 list[e.id] = new ElementWait(e);
             } else if (e.type == 'ElementCondition') {
                 list[e.id] = new ElementCondition(e);
-            }
-
-            if (events.validate != null) {
-                list[e.id].validateCallback = events.validate;    
             }
         }
 
@@ -87,7 +86,7 @@ class AutomationElement {
         trigger.organize();
         
         trigger.browse(function(e){
-            e.validate();
+            //e.validate();
         });
 
         return trigger;
@@ -110,19 +109,12 @@ class AutomationElement {
         this.selected = false;
 
         this.events = {};
-
-        this.validateCallback = null;
+        this.functions = {};
 
         if (params.options == null) {
             params.options = {};
         }
         this.options = params.options;
-    }
-
-    validate() {
-        if (this.validateCallback != null) {
-            this.validateCallback(this);
-        }
     }
 
     getType() {
@@ -155,6 +147,28 @@ class AutomationElement {
                 console.log('event added: ' + event);
             } catch (err) {
                 console.log('warning: cannot assign event "' + event + '" to element "' + this.title + '"');
+            }
+
+        }
+    }
+
+    setCustomFunction(name, func) {
+        this[name] = function() {
+            func(this);
+        }
+    }
+
+    copyCustomFunctionsFromTrigger() {
+        for (var i = 0; i < Object.keys(this.getTrigger().functions).length ; i += 1) {
+            var name = Object.keys(this.getTrigger().functions)[i];
+            var func = this.getTrigger().functions[name];
+
+            try {
+                this.setCustomFunction(name, func);
+                console.log('custom function added: ' + name);
+                console.log(func);
+            } catch (err) {
+                console.log('warning: cannot assign custom function "' + event + '" to element "' + this.title + '"');
             }
 
         }
@@ -648,6 +662,9 @@ class ElementAction extends AutomationElement {
 
         // copy events from trigger buckets
         element.copyEventsFromTrigger();
+
+        // copy custom functions from trigger buckets
+        element.copyCustomFunctionsFromTrigger();
     }
 
     reappendChild() {
@@ -935,6 +952,9 @@ class ElementCondition extends AutomationElement {
         element.reappendChild();
 
         element.copyEventsFromTrigger();
+
+        // copy custom functions from trigger buckets
+        element.copyCustomFunctionsFromTrigger();
     }
 
     appendNo(element) {
@@ -957,6 +977,9 @@ class ElementCondition extends AutomationElement {
         element.reappendChild();
 
         element.copyEventsFromTrigger();
+
+        // copy custom functions from trigger buckets
+        element.copyCustomFunctionsFromTrigger();
     }
 
     reappendChild() {
