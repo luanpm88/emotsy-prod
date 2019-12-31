@@ -37,6 +37,7 @@ class AutomationElement {
                 trigger.onclick(events.onclick);
                 trigger.onhover(events.onhover);
                 trigger.onadd(events.onadd);
+                trigger.validate = events.validate;
 
                 // add to events bucket
                 trigger.events['onclick'] = events.onclick;
@@ -44,16 +45,14 @@ class AutomationElement {
                 trigger.events['onadd'] = events.onadd;
                 trigger.events['onaddyes'] = events.onaddyes;
                 trigger.events['onaddno'] = events.onaddno;
+
+                trigger.functions['validate'] = events.validate;
             } else if (e.type == 'ElementAction') {
                 list[e.id] = new ElementAction(e);
             } else if (e.type == 'ElementWait') {
                 list[e.id] = new ElementWait(e);
             } else if (e.type == 'ElementCondition') {
                 list[e.id] = new ElementCondition(e);
-            }
-
-            if (events.validate != null) {
-                list[e.id].validateCallback = events.validate;    
             }
         }
 
@@ -87,7 +86,7 @@ class AutomationElement {
         trigger.organize();
         
         trigger.browse(function(e){
-            e.validate();
+            //e.validate();
         });
 
         return trigger;
@@ -110,19 +109,12 @@ class AutomationElement {
         this.selected = false;
 
         this.events = {};
-
-        this.validateCallback = null;
+        this.functions = {};
 
         if (params.options == null) {
             params.options = {};
         }
         this.options = params.options;
-    }
-
-    validate() {
-        if (this.validateCallback != null) {
-            this.validateCallback(this);
-        }
     }
 
     getType() {
@@ -155,6 +147,28 @@ class AutomationElement {
                 console.log('event added: ' + event);
             } catch (err) {
                 console.log('warning: cannot assign event "' + event + '" to element "' + this.title + '"');
+            }
+
+        }
+    }
+
+    setCustomFunction(name, func) {
+        this[name] = function() {
+            func(this);
+        }
+    }
+
+    copyCustomFunctionsFromTrigger() {
+        for (var i = 0; i < Object.keys(this.getTrigger().functions).length ; i += 1) {
+            var name = Object.keys(this.getTrigger().functions)[i];
+            var func = this.getTrigger().functions[name];
+
+            try {
+                this.setCustomFunction(name, func);
+                console.log('custom function added: ' + name);
+                console.log(func);
+            } catch (err) {
+                console.log('warning: cannot assign custom function "' + event + '" to element "' + this.title + '"');
             }
 
         }
@@ -263,7 +277,7 @@ class AutomationElement {
         a.appendChild(text);
     }
 
-    drawConnector(highId, lowId, container) {
+    drawConnector(highId, lowId, container, strokeType = 'solid') {
         var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
         g.setAttribute('id', lowId + '_connector');
         container.appendChild(g);
@@ -285,7 +299,7 @@ class AutomationElement {
             point2 = this.drawCircle('circle2', parseInt(low.getAttribute('_cx')), parseInt(low.getAttribute('_cy')) - this.DefaultActionCircleSize, g, true);
         }
 
-        this.drawPath(point1, point2, g);
+        this.drawPath(point1, point2, g, strokeType);
     }
 
     drawAction(left, top, container, type = 'action') {
@@ -381,7 +395,7 @@ class AutomationElement {
         return circle;
     }
 
-    drawPath(point1, point2, container) {
+    drawPath(point1, point2, container, strokeType) {
         var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
         var p1 = point2.getAttribute('_cx') + "," + (parseInt(point2.getAttribute('_cy')) - parseInt(point2.getAttribute('r')));
         var p2 = point2.getAttribute('_cx')  + "," + (parseInt(point1.getAttribute('_cy')) + parseInt(point1.getAttribute('r')));
@@ -389,9 +403,17 @@ class AutomationElement {
         var p4 = point1.getAttribute('_cx')  + "," + (parseInt(point1.getAttribute('_cy')) + parseInt(point1.getAttribute('r')));
 
         path.setAttribute('d', "M" + p1  + " C" + p2 + " " + p3  + " " + p4 );
-        path.setAttribute('stroke-width', 1);
+        if (strokeType == 'solid') {
+            path.setAttribute('stroke-width', 1);
+            path.setAttribute('stroke', '#ccc');
+        } else {
+            path.setAttribute('stroke-width', 2);
+            path.setAttribute('stroke-dasharray', 5);
+            path.setAttribute('stroke', '#aaa');
+        }
+        
         path.setAttribute('fill', 'transparent');
-        path.setAttribute('stroke', '#ccc');
+        
         container.appendChild(path);
         return path;
     }
@@ -648,6 +670,9 @@ class ElementAction extends AutomationElement {
 
         // copy events from trigger buckets
         element.copyEventsFromTrigger();
+
+        // copy custom functions from trigger buckets
+        element.copyCustomFunctionsFromTrigger();
     }
 
     reappendChild() {
@@ -875,8 +900,8 @@ class ElementCondition extends AutomationElement {
             'plus',
             this.getContainer()
         );
-        this.drawConnector(plusYesLabel, plusYes, this.getContainer());
-        this.drawConnector(this.id, plusYesLabel, this.getContainer());
+        this.drawConnector(plusYesLabel, plusYes, this.getContainer(), 'dashed');
+        this.drawConnector(this.id, plusYesLabel, this.getContainer(), 'dashed');
 
         var expanded = this.expand * this.DefaultRectWith;
 
@@ -898,8 +923,8 @@ class ElementCondition extends AutomationElement {
             this.getContainer()
         );
 
-        this.drawConnector(plusNoLabel, plusNo,  this.getContainer());
-        this.drawConnector(this.id, plusNoLabel,  this.getContainer());
+        this.drawConnector(plusNoLabel, plusNo,  this.getContainer(), 'dashed');
+        this.drawConnector(this.id, plusNoLabel,  this.getContainer(), 'dashed');
     }
 
     getPlusYesId() {
@@ -925,7 +950,7 @@ class ElementCondition extends AutomationElement {
         var plus = document.getElementById(this.getPlusYesId());
 
         element.draw(parseInt(plus.getAttribute('_cx')) - this.DefaultRectWith/2, parseInt(plus.getAttribute('_cy')) + this.DefaultActionCircleSize/2 + this.DefaultVerticalSpace, this.getContainer());
-        this.drawConnector(plus.id, element.id, element.getContainer());
+        this.drawConnector(plus.id, element.id, element.getContainer(), 'dashed');
 
         this.childYes = element;
         element.parent = this;
@@ -935,6 +960,9 @@ class ElementCondition extends AutomationElement {
         element.reappendChild();
 
         element.copyEventsFromTrigger();
+
+        // copy custom functions from trigger buckets
+        element.copyCustomFunctionsFromTrigger();
     }
 
     appendNo(element) {
@@ -947,7 +975,7 @@ class ElementCondition extends AutomationElement {
 
         var plus = document.getElementById(this.getPlusNoId());
         element.draw(parseInt(plus.getAttribute('_cx')) - this.DefaultRectWith/2, parseInt(plus.getAttribute('_cy')) + this.DefaultActionCircleSize/2 + this.DefaultVerticalSpace, this.getContainer());
-        this.drawConnector(plus.id, element.id, element.getContainer());
+        this.drawConnector(plus.id, element.id, element.getContainer(), 'dashed');
 
         this.childNo = element;
         element.parent = this;
@@ -957,6 +985,9 @@ class ElementCondition extends AutomationElement {
         element.reappendChild();
 
         element.copyEventsFromTrigger();
+
+        // copy custom functions from trigger buckets
+        element.copyCustomFunctionsFromTrigger();
     }
 
     reappendChild() {
