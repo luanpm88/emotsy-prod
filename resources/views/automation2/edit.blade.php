@@ -495,7 +495,7 @@
                             e.setTitle('### Trigger not set up yet !!!');
                         } else {
                             e.hideNotice();
-                            e.setTitle('Correct title goes here');
+                            // e.setTitle('Correct title goes here');
                         }
                     }
 
@@ -505,7 +505,7 @@
                             e.setTitle('### Email not set up yet !!!');
                         } else {
                             e.hideNotice();
-                            e.setTitle('Correct title goes here');
+                            // e.setTitle('Correct title goes here');
 
                         }
                     }
