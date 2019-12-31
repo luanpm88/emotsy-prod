@@ -224,9 +224,12 @@ class AutomationElement {
         var a = document.createElementNS("http://www.w3.org/2000/svg", 'a');
         var text = document.createElementNS("http://www.w3.org/2000/svg", 'text');
 
+        var box = document.createElementNS("http://www.w3.org/2000/svg", 'g');
+        box.setAttribute('transform', 'translate(' + cx + ',' + (cy + this.DefaultActionCircleSize/2) + ')');
+
         circle.setAttribute('id', id);
-        circle.setAttribute('cx', cx);
-        circle.setAttribute('cy', cy + this.DefaultActionCircleSize/2);
+        circle.setAttribute('_cx', cx);
+        circle.setAttribute('_cy', cy + this.DefaultActionCircleSize/2);
         circle.setAttribute('ctype', ctype);
         circle.setAttribute('r', this.DefaultActionCircleSize);
         circle.setAttribute('style', 'fill:#fff;stroke:rgb(101, 117, 138);stroke-width:1');
@@ -235,15 +238,15 @@ class AutomationElement {
         a.setAttribute('xlink:href', '#');
         a.setAttribute('style',  'cursor:pointer');
 
-        text.setAttribute('x', cx - 5);
-        text.setAttribute('y', parseInt(circle.getAttribute('cy')) + 7);
+        text.setAttribute('x', 0);
+        text.setAttribute('y', 2);
         text.setAttribute('font-size', '16px');
+        text.setAttribute('alignment-baseline', 'middle');
+        text.setAttribute('text-anchor', 'middle');
 
         if (ctype == 'plus') {
             text.innerHTML = '+';
-            text.setAttribute('x', cx - 8);
-            text.setAttribute('y', parseInt(circle.getAttribute('cy')) + 10);
-            text.setAttribute('font-size', '28px');
+            text.setAttribute('font-size', '20px');
         } else if (ctype == 'yes') {
             text.innerHTML = 'Y';
         } else {
@@ -254,8 +257,9 @@ class AutomationElement {
         text.setAttribute('fill', '#aaa');
 
         container.appendChild(g);
-        g.appendChild(circle);
-        g.appendChild(a);
+        g.appendChild(box);
+        box.appendChild(circle);
+        box.appendChild(a);
         a.appendChild(text);
     }
 
@@ -270,15 +274,15 @@ class AutomationElement {
         var point2;
 
         if (high.tagName == 'rect') {
-            point1 = this.drawCircle('circle1', parseInt(high.getAttribute('x')) + this.DefaultRectWith/2, parseInt(high.getAttribute('y')) + this.DefaultRectHeight, g, false);
+            point1 = this.drawCircle('circle1', parseInt(high.getAttribute('_x')) + this.DefaultRectWith/2, parseInt(high.getAttribute('_y')) + this.DefaultRectHeight, g, false);
         } else {
-            point1 = this.drawCircle('circle1', parseInt(high.getAttribute('cx')), parseInt(high.getAttribute('cy')) + this.DefaultActionCircleSize, g, true);
+            point1 = this.drawCircle('circle1', parseInt(high.getAttribute('_cx')), parseInt(high.getAttribute('_cy')) + this.DefaultActionCircleSize, g, true);
         }
 
         if (low.tagName == 'rect') {
-            point2 = this.drawCircle('circle2', parseInt(low.getAttribute('x')) + this.DefaultRectWith/2, parseInt(low.getAttribute('y')), g, false);
+            point2 = this.drawCircle('circle2', parseInt(low.getAttribute('_x')) + this.DefaultRectWith/2, parseInt(low.getAttribute('_y')), g, false);
         } else {
-            point2 = this.drawCircle('circle2', parseInt(low.getAttribute('cx')), parseInt(low.getAttribute('cy')) - this.DefaultActionCircleSize, g, true);
+            point2 = this.drawCircle('circle2', parseInt(low.getAttribute('_cx')), parseInt(low.getAttribute('_cy')) - this.DefaultActionCircleSize, g, true);
         }
 
         this.drawPath(point1, point2, g);
@@ -290,55 +294,67 @@ class AutomationElement {
         g.setAttribute('class', type);
         container.appendChild(g);
 
+        var box = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        box.setAttribute('transform', 'translate(' + left + ',' + top + ')');
+        
         var rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");   // Create a <button> element
         rect.setAttribute('id', this.id);
-        rect.setAttribute('x', left);
-        rect.setAttribute('y', top);
+        rect.setAttribute('_x', left);
+        rect.setAttribute('_y', top);
         rect.setAttribute('rx', this.DefaultRound);
         rect.setAttribute('ry', this.DefaultRound);
         rect.setAttribute('width', this.DefaultRectWith);
         rect.setAttribute('height', this.DefaultRectHeight);
 
-        var text1 = document.createElementNS("http://www.w3.org/2000/svg", 'text');
+        var a = document.createElementNS("http://www.w3.org/2000/svg", 'a');
+        var text = document.createElementNS("http://www.w3.org/2000/svg", 'text');
+        text.setAttribute('x', this.DefaultRectWith/2);
+        text.setAttribute('y', this.DefaultRectHeight/2);
+        text.setAttribute('alignment-baseline', 'middle');
+        text.setAttribute('text-anchor', 'middle');
+
+        var text1 = document.createElementNS("http://www.w3.org/2000/svg", 'tspan');
 
         if (type == 'trigger') {
             rect.setAttribute('class', 'element trigger');
-            text1.innerHTML = '&#xf144;';
+            text1.innerHTML = '&#xf144; ';
         } else if (type == 'wait') {
             rect.setAttribute('class', 'element wait');
-            text1.innerHTML = '&#xf1da;';
+            text1.innerHTML = '&#xf1da; ';
         } else {
             rect.setAttribute('class', 'element action');
-            text1.innerHTML = '&#xf0e0;';
+            text1.innerHTML = '&#xf0e0; ';
         }
 
         text1.setAttribute('font-family', 'FontAwesome');
-        text1.setAttribute('x', left + 10);
         text1.setAttribute('fill', '#fff');
-        text1.setAttribute('y', top + this.DefaultRectHeight/2 + 5);
-        text1.setAttribute('font-size', '16px');
+        text1.setAttribute('font-size', '15px');
+        text1.setAttribute('alignment-baseline', 'middle');
+        text1.setAttribute('text-anchor', 'middle');
 
-        var a = document.createElementNS("http://www.w3.org/2000/svg", 'a');
+        
         a.setAttribute('id', this.id + '_textlink');
         a.setAttribute('xlink:href', 'https://stackoverflow.com/questions/34968082/how-to-add-a-link-inside-an-svg-circle');
         a.setAttribute('style',  'cursor:pointer');
 
-        var text2 = document.createElementNS("http://www.w3.org/2000/svg", 'text');
+        var text2 = document.createElementNS("http://www.w3.org/2000/svg", 'tspan');
         text2.setAttribute('id', this.getId() + '_title');
         text2.innerHTML = this.title;
         text2.setAttribute('font-family', 'Arial');
-        text2.setAttribute('x', left + 30);
         text2.setAttribute('fill', '#fff');
-        text2.setAttribute('y', top + this.DefaultRectHeight/2 + 5);
-        text2.setAttribute('font-size', '13px');
+        text2.setAttribute('font-size', '12px');
+        text2.setAttribute('alignment-baseline', 'middle');
+        text2.setAttribute('text-anchor', 'middle');
 
-        g.appendChild(rect);
-        g.appendChild(text1);
-        g.appendChild(a);
-        a.appendChild(text2);
+        g.appendChild(box);
+        box.appendChild(rect)
+        box.appendChild(a);
+        a.appendChild(text);
+        text.appendChild(text1);
+        text.appendChild(text2);
 
         var plusId = this.id + "-plus";
-        this.drawPlus(plusId, parseInt(rect.getAttribute('x')) + this.DefaultRectWith/2, parseInt(rect.getAttribute('y')) + this.DefaultRectHeight + this.DefaultVerticalSpace, 'plus', g);
+        this.drawPlus(plusId, left + this.DefaultRectWith/2, top + this.DefaultRectHeight + this.DefaultVerticalSpace, 'plus', g);
         this.drawConnector(this.id, plusId, g);
 
         this.drawNotice(this.id + '-notice', left, top, g);
@@ -352,6 +368,8 @@ class AutomationElement {
         circle.setAttribute('id', id);
         circle.setAttribute('cx', cx);
         circle.setAttribute('cy', cy);
+        circle.setAttribute('_cx', cx);
+        circle.setAttribute('_cy', cy);
         if (zeroPoint) {
             circle.setAttribute('r', 0);
         } else {
@@ -365,10 +383,10 @@ class AutomationElement {
 
     drawPath(point1, point2, container) {
         var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        var p1 = point2.getAttribute('cx') + "," + (parseInt(point2.getAttribute('cy')) - parseInt(point2.getAttribute('r')));
-        var p2 = point2.getAttribute('cx')  + "," + (parseInt(point1.getAttribute('cy')) + parseInt(point1.getAttribute('r')));
-        var p3 = point1.getAttribute('cx')  + "," + (parseInt(point2.getAttribute('cy')) - parseInt(point2.getAttribute('r')));
-        var p4 = point1.getAttribute('cx')  + "," + (parseInt(point1.getAttribute('cy')) + parseInt(point1.getAttribute('r')));
+        var p1 = point2.getAttribute('_cx') + "," + (parseInt(point2.getAttribute('_cy')) - parseInt(point2.getAttribute('r')));
+        var p2 = point2.getAttribute('_cx')  + "," + (parseInt(point1.getAttribute('_cy')) + parseInt(point1.getAttribute('r')));
+        var p3 = point1.getAttribute('_cx')  + "," + (parseInt(point2.getAttribute('_cy')) - parseInt(point2.getAttribute('r')));
+        var p4 = point1.getAttribute('_cx')  + "," + (parseInt(point1.getAttribute('_cy')) + parseInt(point1.getAttribute('r')));
 
         path.setAttribute('d', "M" + p1  + " C" + p2 + " " + p3  + " " + p4 );
         path.setAttribute('stroke-width', 1);
@@ -616,7 +634,7 @@ class ElementAction extends AutomationElement {
 
         var plus = document.getElementById(this.getPlusId());
 
-        element.draw(parseInt(plus.getAttribute('cx')) - this.DefaultRectWith/2, parseInt(plus.getAttribute('cy')) + this.DefaultActionCircleSize/2 + this.DefaultVerticalSpace, this.getContainer());
+        element.draw(parseInt(plus.getAttribute('_cx')) - this.DefaultRectWith/2, parseInt(plus.getAttribute('_cy')) + this.DefaultActionCircleSize/2 + this.DefaultVerticalSpace, this.getContainer());
         this.drawConnector(this.getPlusId(), element.id, element.getContainer());
 
         this.child = element;
@@ -779,44 +797,57 @@ class ElementCondition extends AutomationElement {
 
         var shifted = this.shift * this.DefaultRectWith;
 
+        var box = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        box.setAttribute('transform', 'translate(' + (left  + shifted) + ',' + top + ')');
+
         var rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");   // Create a <button> element
         rect.setAttribute('id', this.id);
-        rect.setAttribute('x', left + shifted);
-        rect.setAttribute('y', top);
+        rect.setAttribute('_x', left + shifted);
+        rect.setAttribute('_y', top);
         rect.setAttribute('rx', this.DefaultRound);
         rect.setAttribute('ry', this.DefaultRound);
         rect.setAttribute('width', this.DefaultRectWith);
         rect.setAttribute('height', this.DefaultRectHeight);
         rect.setAttribute('class', 'element condition');
 
-        var text1 = document.createElementNS("http://www.w3.org/2000/svg", 'text');
-        text1.innerHTML = '&#xf059;';
-        text1.setAttribute('font-family', 'FontAwesome');
-        text1.setAttribute('x', left + shifted + 10);
-        text1.setAttribute('fill', '#fff');
-        text1.setAttribute('y', top + this.DefaultRectHeight/2 + 5);
-        text1.setAttribute('font-size', '14px');
-
         var a = document.createElementNS("http://www.w3.org/2000/svg", 'a');
+
+        var text = document.createElementNS("http://www.w3.org/2000/svg", 'text');
+        text.setAttribute('x', this.DefaultRectWith/2);
+        text.setAttribute('y', this.DefaultRectHeight/2);
+        text.setAttribute('alignment-baseline', 'middle');
+        text.setAttribute('text-anchor', 'middle');
+
+        var text1 = document.createElementNS("http://www.w3.org/2000/svg", 'tspan');
+        text1.innerHTML = '&#xf059; ';
+        text1.setAttribute('font-family', 'FontAwesome');
+        text1.setAttribute('fill', '#fff');
+        text1.setAttribute('font-size', '15px');
+        text1.setAttribute('alignment-baseline', 'middle');
+        text1.setAttribute('text-anchor', 'middle');
+
+        
         a.setAttribute('id', this.getId() + '_textlink');
         a.setAttribute('xlink:href', 'https://stackoverflow.com/questions/34968082/how-to-add-a-link-inside-an-svg-circle');
         a.setAttribute('style',  'cursor:pointer');
 
-        var text2 = document.createElementNS("http://www.w3.org/2000/svg", 'text');
+        var text2 = document.createElementNS("http://www.w3.org/2000/svg", 'tspan');
         text2.innerHTML = this.title;
         text2.setAttribute('id', this.getId() + '_title');
         text2.setAttribute('font-family', 'Arial');
-        text2.setAttribute('x', left + shifted + 30);
         text2.setAttribute('fill', '#fff');
-        text2.setAttribute('y', top + this.DefaultRectHeight/2 + 5);
-        text2.setAttribute('font-size', '14px');
+        text2.setAttribute('font-size', '12px');
+        text2.setAttribute('alignment-baseline', 'middle');
+        text2.setAttribute('text-anchor', 'middle');
 
-        g.appendChild(rect);
-        g.appendChild(text1);
-        g.appendChild(a);
-        a.appendChild(text2);
+        g.appendChild(box);
+        box.appendChild(rect)
+        box.appendChild(a);
+        a.appendChild(text);
+        text.appendChild(text1);
+        text.appendChild(text2);
 
-        this.drawConditionPlus(rect.getAttribute('x'), rect.getAttribute('y'));
+        this.drawConditionPlus(rect.getAttribute('_x'), rect.getAttribute('_y'));
 
         this.drawNotice(this.id + '-notice', left, top, g);
     }
@@ -893,7 +924,7 @@ class ElementCondition extends AutomationElement {
 
         var plus = document.getElementById(this.getPlusYesId());
 
-        element.draw(parseInt(plus.getAttribute('cx')) - this.DefaultRectWith/2, parseInt(plus.getAttribute('cy')) + this.DefaultActionCircleSize/2 + this.DefaultVerticalSpace, this.getContainer());
+        element.draw(parseInt(plus.getAttribute('_cx')) - this.DefaultRectWith/2, parseInt(plus.getAttribute('_cy')) + this.DefaultActionCircleSize/2 + this.DefaultVerticalSpace, this.getContainer());
         this.drawConnector(plus.id, element.id, element.getContainer());
 
         this.childYes = element;
@@ -915,7 +946,7 @@ class ElementCondition extends AutomationElement {
         element.clear();
 
         var plus = document.getElementById(this.getPlusNoId());
-        element.draw(parseInt(plus.getAttribute('cx')) - this.DefaultRectWith/2, parseInt(plus.getAttribute('cy')) + this.DefaultActionCircleSize/2 + this.DefaultVerticalSpace, this.getContainer());
+        element.draw(parseInt(plus.getAttribute('_cx')) - this.DefaultRectWith/2, parseInt(plus.getAttribute('_cy')) + this.DefaultActionCircleSize/2 + this.DefaultVerticalSpace, this.getContainer());
         this.drawConnector(plus.id, element.id, element.getContainer());
 
         this.childNo = element;
