@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "08300261808436572a560be0fbeb83dc",
+    "content-hash": "4e6b94152e932991af2ba96b7e938709",
     "packages": [
         {
             "name": "acelle/cashier",
@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/luanpm88/acelle-cashier.git",
-                "reference": "e23fa409b5e4cc20f4d1550a4569e6e3bf01fd16"
+                "reference": "2eedc8ba41e75d413aa920a5dfd26606b13b72ea"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/luanpm88/acelle-cashier/zipball/e23fa409b5e4cc20f4d1550a4569e6e3bf01fd16",
-                "reference": "e23fa409b5e4cc20f4d1550a4569e6e3bf01fd16",
+                "url": "https://api.github.com/repos/luanpm88/acelle-cashier/zipball/2eedc8ba41e75d413aa920a5dfd26606b13b72ea",
+                "reference": "2eedc8ba41e75d413aa920a5dfd26606b13b72ea",
                 "shasum": ""
             },
             "require": {
@@ -77,7 +77,7 @@
                 "issues": "https://github.com/laravel/cashier/issues",
                 "source": "https://github.com/laravel/cashier"
             },
-            "time": "2019-11-11T09:30:49+00:00"
+            "time": "2019-12-31T03:08:26+00:00"
         },
         {
             "name": "aws/aws-php-sns-message-validator",
@@ -512,6 +512,7 @@
             ],
             "description": "Promoting the interoperability of container objects (DIC, SL, etc.)",
             "homepage": "https://github.com/container-interop/container-interop",
+            "abandoned": "psr/container",
             "time": "2017-02-14T19:40:03+00:00"
         },
         {
@@ -3424,12 +3425,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/rdok/elasticemail-php.git",
-                "reference": "8875b650eab96fac69086df2439683f126642e01"
+                "reference": "5b3d5650e4be925d4850705d07d8c88d4c447cde"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rdok/elasticemail-php/zipball/8875b650eab96fac69086df2439683f126642e01",
-                "reference": "8875b650eab96fac69086df2439683f126642e01",
+                "url": "https://api.github.com/repos/rdok/elasticemail-php/zipball/5b3d5650e4be925d4850705d07d8c88d4c447cde",
+                "reference": "5b3d5650e4be925d4850705d07d8c88d4c447cde",
                 "shasum": ""
             },
             "require": {

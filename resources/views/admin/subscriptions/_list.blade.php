@@ -38,13 +38,21 @@
 						<span class="text-muted2">{{ trans('messages.subscription.subscription_end') }}</span>
 					@elseif ($subscription->cancelled())
 						<h5 class="no-margin">
-							<span class="kq_search">{{ Acelle\Library\Tool::dateTime($subscription->current_period_ends_at)->diffForHumans() }}</span>
+							@if ($subscription->current_period_ends_at)
+								<span class="kq_search">{{ Acelle\Library\Tool::dateTime($subscription->current_period_ends_at)->diffForHumans() }}</span>
+							@else
+								<span class="kq_search">--</span>
+							@endif
 						</h5>
 						<span class="text-muted2">{{ trans('messages.subscription.subscription_end') }}</span>
 					@elseif ($subscription->isRecurring())
 						<h5 class="no-margin">
 							<span class="kq_search">
-								{{ Acelle\Library\Tool::dateTime($subscription->current_period_ends_at)->diffForHumans() }}
+								@if ($subscription->current_period_ends_at)
+									{{ Acelle\Library\Tool::dateTime($subscription->current_period_ends_at)->diffForHumans() }}
+								@else
+									--
+								@endif									
 							</span>
 						</h5>
 						<span class="text-muted2">{{ trans('messages.subscription.next_billing') }}</span>
