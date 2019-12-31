@@ -1073,6 +1073,9 @@ a:hover {
 a:hover label {
   cursor: pointer;
 }
+.insight-stat-brief a:hover .stats-title {
+  border-bottom: dashed 1px #999 !important;
+}
 .cursor-pointer {
   cursor: pointer;
 }

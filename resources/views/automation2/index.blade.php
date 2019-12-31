@@ -44,14 +44,14 @@
                             <ul class="dropdown-menu">
                                 <li>
                                     <a data-method="PATCH" link-confirm="{{ trans('messages.enable_automations_confirm') }}"
-                                        href="{{ action('AutomationController@enable') }}"
+                                        href="{{ action('Automation2Controller@enable') }}"
                                     >
                                         <i class="icon-checkbox-checked2"></i> {{ trans('messages.enable') }}
                                     </a>
                                 </li>
-                                <li><a data-method="PATCH" link-confirm="{{ trans('messages.disable_automations_confirm') }}" href="{{ action('AutomationController@disable') }}"><i class="icon-checkbox-unchecked2"></i> {{ trans('messages.disable') }}</a></li>
+                                <li><a data-method="PATCH" link-confirm="{{ trans('messages.disable_automations_confirm') }}" href="{{ action('Automation2Controller@disable') }}"><i class="icon-checkbox-unchecked2"></i> {{ trans('messages.disable') }}</a></li>
                                 <li>
-                                    <a data-method='delete' delete-confirm="{{ trans('messages.delete_automations_confirm') }}" href="{{ action('AutomationController@delete') }}">
+                                    <a data-method='delete' delete-confirm="{{ trans('messages.delete_automations_confirm') }}" href="{{ action('Automation2Controller@delete') }}">
                                     <i class="icon-trash"></i> {{ trans('messages.delete') }}</a>
                                 </li>
                             </ul>

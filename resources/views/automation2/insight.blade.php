@@ -14,15 +14,21 @@
 <div class="insight-stat-brief d-flex mt-3 mb-4">
     <a title="{{ trans('messages.automation.go_contacts') }}" href="javascript:;" onclick="sidebar.load('{{ action('Automation2Controller@contacts', $automation->uid) }}')" class="xtooltip insight-stat-col flex-fill">
         <number>{{ format_number($stats['total']) }}</number>
-        <desc class="text-muted">{{ trans_choice('messages.automation.contacts', $stats['total']) }}</desc>
+        <desc class="text-muted text-center">
+            <span class="stats-title">{{ trans_choice('messages.automation.contacts', $stats['total']) }}</span>
+        </desc>
     </a>
     <a title="{{ trans('messages.automation.go_contacts') }}" href="javascript:;" onclick="sidebar.load('{{ action('Automation2Controller@contacts', $automation->uid) }}')" class="xtooltip insight-stat-col flex-fill">
         <number>{{ format_number($stats['involed']) }}</number>
-        <desc class="text-muted">{{ trans('messages.automation.involved') }}</desc>
+        <desc class="text-muted text-center">
+            <span class="stats-title">{{ trans_choice('messages.automation.involved', $stats['total']) }}</span>
+        </desc>
     </a>
     <a title="{{ trans('messages.automation.go_contacts') }}" href="javascript:;" onclick="sidebar.load('{{ action('Automation2Controller@contacts', $automation->uid) }}')" class="xtooltip insight-stat-col flex-fill">
         <number>{{ calc_percentage($stats['complete'], $stats['involed']) }}</number>
-        <desc class="text-muted">{{ trans('messages.automation.complete_percent') }}</desc>
+        <desc class="text-muted text-center">
+            <span class="stats-title">{{ trans_choice('messages.automation.complete_percent', $stats['total']) }}</span>
+        </desc>
     </a>
 </div>
     

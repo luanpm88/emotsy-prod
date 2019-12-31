@@ -412,24 +412,24 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('systems/jobs/{id}/download/csv', 'SystemJobController@downloadCsv');
 
     // Automation
-    Route::get('automations/{uid}/list-segment-form', 'AutomationController@listSegmentForm');
-    Route::patch('automations/disable', 'AutomationController@disable');
-    Route::patch('automations/enable', 'AutomationController@enable');
-    Route::get('automations/{uid}/overview/emails/list', 'AutomationController@overviewCampaignsList');
-    Route::get('automations/{uid}/overview/emails', 'AutomationController@overviewCampaigns');
-    Route::get('automations/{uid}/overview/workflow', 'AutomationController@overviewWorkflow');
-    Route::post('automations/{uid}/confirm', 'AutomationController@confirm');
-    Route::get('automations/{uid}/confirm', 'AutomationController@confirm');
-    Route::delete('automations/delete', 'AutomationController@delete');
-    Route::get('automations/{uid}/auto-event/form', 'AutomationController@nextEventForm');
-    Route::post('automations/{uid}/workflow', 'AutomationController@workflow');
-    Route::get('automations/{uid}/workflow', 'AutomationController@workflow');
-    Route::get('automations/{uid}/custom-criteria/form', 'AutomationController@criteriaForm');
-    Route::post('automations/{uid}/trigger', 'AutomationController@trigger');
-    Route::get('automations/{uid}/trigger', 'AutomationController@trigger');
-    Route::get('automations/sort', 'AutomationController@sort');
-    Route::get('automations/listing/{page?}', 'AutomationController@listing');
-    Route::resource('automations', 'AutomationController');
+    // Route::get('automations/{uid}/list-segment-form', 'AutomationController@listSegmentForm');
+    // Route::patch('automations/disable', 'AutomationController@disable');
+    // Route::patch('automations/enable', 'AutomationController@enable');
+    // Route::get('automations/{uid}/overview/emails/list', 'AutomationController@overviewCampaignsList');
+    // Route::get('automations/{uid}/overview/emails', 'AutomationController@overviewCampaigns');
+    // Route::get('automations/{uid}/overview/workflow', 'AutomationController@overviewWorkflow');
+    // Route::post('automations/{uid}/confirm', 'AutomationController@confirm');
+    // Route::get('automations/{uid}/confirm', 'AutomationController@confirm');
+    // Route::delete('automations/delete', 'AutomationController@delete');
+    // Route::get('automations/{uid}/auto-event/form', 'AutomationController@nextEventForm');
+    // Route::post('automations/{uid}/workflow', 'AutomationController@workflow');
+    // Route::get('automations/{uid}/workflow', 'AutomationController@workflow');
+    // Route::get('automations/{uid}/custom-criteria/form', 'AutomationController@criteriaForm');
+    // Route::post('automations/{uid}/trigger', 'AutomationController@trigger');
+    // Route::get('automations/{uid}/trigger', 'AutomationController@trigger');
+    // Route::get('automations/sort', 'AutomationController@sort');
+    // Route::get('automations/listing/{page?}', 'AutomationController@listing');
+    // Route::resource('automations', 'AutomationController');
 
     // Auto event
     Route::get('auto-events/{uid}/emails/{campaign_uid}/template', 'AutoEventController@template'); //
