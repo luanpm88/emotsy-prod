@@ -1404,13 +1404,18 @@ class Automation2Controller extends Controller
      */
     public function exportContacts(Request $request, $uid)
     {
-        sleep(2);
-
         $automation = Automation2::findByUid($uid);
         
         // authorize
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
+        }
+
+        // subscribers list
+        if ($request->action_id) {
+            $subscribers = Subscriber::gSearch($automation->subscribers($request->action_id), $request);
+        } else {
+            $subscribers = Subscriber::gSearch($automation->subscribers(), $request);
         }
 
         // saving
