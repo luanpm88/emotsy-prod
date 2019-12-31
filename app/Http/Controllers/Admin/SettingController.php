@@ -264,6 +264,7 @@ class SettingController extends Controller
             $site_info = $request->all();
             if ($env["MAIL_DRIVER"] == 'smtp') {
                 $rules = [];
+                $messages = [];
                 try {
                     $transport = new \Swift_SmtpTransport($env["MAIL_HOST"], $env["MAIL_PORT"], $env["MAIL_ENCRYPTION"]);
                     $transport->setUsername($env["MAIL_USERNAME"]);
@@ -274,10 +275,12 @@ class SettingController extends Controller
                     $mailer->getTransport()->start();
                 } catch (\Swift_TransportException $e) {
                     $rules['smtp_valid'] = 'required';
+                    $messages['required'] = $e->getMessage();
                 } catch (\Exception $e) {
                     $rules['smtp_valid'] = 'required';
+                    $messages['required'] = $e->getMessage();
                 }
-                $this->validate($request, $rules);
+                $this->validate($request, $rules, $messages);
             }
 
             foreach($env as $key => $value) {
