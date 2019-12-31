@@ -17,17 +17,13 @@
                 ]) !!}</p>
                     
                 @include('helpers.form_control', [
-                    'type' => 'select',
+                    'type' => 'select_tag',
                     'class' => '',
                     'label' => '',
                     'name' => 'tags[]',
                     'value' => [],
                     'help_class' => 'trigger',
-                    'options' => [
-                        ['text' => 'Hight profile', 'value' => 'Hight profile'],
-                        ['text' => 'VIP customer', 'value' => 'VIP customer'],
-                        ['text' => 'Lead', 'value' => 'Lead'],
-                    ],
+                    'options' => [],
                     'rules' => ['tags' => 'required'],
                     'multiple' => 'true',
                     'placeholder' => trans('messages.automation.contact.choose_tags'),

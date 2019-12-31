@@ -42,6 +42,19 @@ function initJs(container) {
         dropdownAutoWidth : true,
         width: 'auto'
     });
+
+    // Select2 tags
+    container.find('select').select2({
+        minimumResultsForSearch: 20,
+        templateResult: formatSelect2TextOption,
+        templateSelection: formatSelect2TextSelected,
+        placeholder: function(){
+            $(this).attr('data-placeholder');
+        },
+        dropdownAutoWidth : true,
+        width: 'auto',
+        tags: true,
+    });
     
     // pick a time
     if (container.find(".pickatime").length) {
