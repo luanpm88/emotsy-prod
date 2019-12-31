@@ -19,7 +19,7 @@
     @endif
     
     <div class="trigger-action mt-2">
-        @if (!in_array($key, ['say-goodbye-subscriber', 'welcome-new-subscriber']))
+        @if (!in_array($key, ['say-goodbye-subscriber', 'welcome-new-subscriber', 'api-3-0']))
             <button class="btn btn-secondary trigger-save-change mr-1">
                 {{ trans('messages.automation.trigger.save_change') }}
             </button>
@@ -40,27 +40,34 @@
         var url = form.attr('action');
         
         sidebar.loading();
-        
+
         $.ajax({
             url: url,
-            type: 'POST',
+            method: 'POST',
             data: data,
-        }).always(function(response) {
-            // set node title
-            tree.setTitle(response.title);
-            // merge options with reponse options
-            tree.setOptions(response.options);
-            tree.setOptions($.extend(tree.getOptions(), {init: true}));
-            
-            // save tree
-            saveData(function() {
-                // notify
-                notify('success', '{{ trans('messages.notify.success') }}', response.message);
+            statusCode: {
+                // validate error
+                400: function (res) {
+                    sidebar.loadHtml(res.responseText);
+                }
+            },
+            success: function (response) {
+                // set node title
+                tree.setTitle(response.title);
+                // merge options with reponse options
+                tree.setOptions(response.options);
+                tree.setOptions($.extend(tree.getOptions(), {init: true}));
                 
-                // reload sidebar
-                sidebar.load();
-            });
-        });        
+                // save tree
+                saveData(function() {
+                    // notify
+                    notify('success', '{{ trans('messages.notify.success') }}', response.message);
+                    
+                    // reload sidebar
+                    sidebar.load();
+                });
+            }
+        });
     });
 
     $('.change-trigger-but').click(function() {

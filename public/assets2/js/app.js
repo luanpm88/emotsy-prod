@@ -67,7 +67,6 @@ function initJs(container) {
     container.find('.time-selector').timepicker({
         timeFormat: 'h:mm p',
         interval: 30,
-        defaultTime: '11',
         startTime: '10:00',
         dynamic: false,
         dropdown: true,

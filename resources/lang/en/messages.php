@@ -3003,4 +3003,5 @@
   'automation.trigger.tree.subscriber-added-date' => 'Trigger on contacts\' subscribe date',
   'automation.trigger.tree.specific-date' => 'Autostart on a scheduled date/time',
   'automation.no_email' => 'Email',
+  'automation.before' => 'Before',
 ) ?>

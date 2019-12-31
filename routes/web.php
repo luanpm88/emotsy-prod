@@ -544,6 +544,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('notifications/{id}/hide', 'NotificationController@hide');
     
     // Automation2
+    Route::match(['get', 'post'], 'api/3.0/automations/{uid}/execute', 'Automation2Controller@executeApi');
+
     Route::match(['get', 'post'], 'automation2/{uid}/contacts/copy-to-new-list', 'Automation2Controller@copyToNewList');
     Route::post('automation2/{uid}/contacts/export', 'Automation2Controller@exportContacts');
 

@@ -322,50 +322,6 @@
 				popup.back = function() {
 					OpenTriggerSelectPopup();
 				};
-				
-				// when click confirm select trigger type
-				popup.popup.find('.select-trigger-confirm').click(function(e) {
-					e.preventDefault();
-				
-					var url = $(this).attr('data-url');
-					var data = $(this).closest('form').serialize();
-					
-					// show loading effect
-					popup.loading();
-					
-					$.ajax({
-						url: url,
-						type: 'POST',
-						data: data,
-					}).always(function(response) {
-						// todo: when trigger selected
-						// console.log('Trigger was selected');
-						
-						// set node title
-						tree.setTitle(response.title);
-						// merge options with reponse options
-						tree.setOptions(response.options);
-						tree.setOptions($.extend(tree.getOptions(), {init: "true"}));
-
-						// validate
-						tree.validate();
-						
-						// save tree
-						saveData(function() {
-							// select trigger
-							doSelect(tree);
-
-							// hide popup
-							popup.hide();
-							
-							// notify success message
-							notify('success', '{{ trans('messages.notify.success') }}', response.message);
-							
-							// Edit Trigger
-							EditTrigger('{{ action('Automation2Controller@triggerEdit', $automation->uid) }}' + '?key=' + tree.getOptions().key);
-						});
-					});
-				});
 			});
 		}
 		

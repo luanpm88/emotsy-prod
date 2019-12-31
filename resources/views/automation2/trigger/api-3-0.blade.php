@@ -4,9 +4,12 @@
     @include('helpers.form_control', [
         'type' => 'text',
         'class' => '',
+        'readonly' => true,
         'label' => '',
         'name' => 'options[endpoint]',
-        'value' => $trigger->getOption('endpoint'),
+        'value' => 'POST ' . action('Automation2Controller@executeApi', [
+            'uid' => $automation->uid,
+        ]),
         'help_class' => 'trigger',
         'rules' => [],
     ])

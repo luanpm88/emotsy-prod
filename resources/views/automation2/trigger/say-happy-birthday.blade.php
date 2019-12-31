@@ -6,12 +6,12 @@
         @include('helpers.form_control', [
             'type' => 'select',
             'class' => '',
-            'label' => trans('messages.automation.before_or_after'),
-            'name' => 'options[delay]',
-            'value' => $trigger->getOption('delay'),
+            'label' => trans('messages.automation.before'),
+            'name' => 'options[before]',
+            'value' => $trigger->getOption('before'),
             'help_class' => 'trigger',
             'options' => $automation->getDelayBeforeOptions(),
-            'rules' => [],
+            'rules' => $rules,
         ])
 
         @include('helpers.form_control', [
@@ -19,7 +19,7 @@
             'name' => 'options[at]',
             'label' => trans('messages.automation.at'),
             'value' => $trigger->getOption('at'),
-            'rules' => [],
+            'rules' => $rules,
             'help_class' => 'trigger'
         ])
     </div>
@@ -35,7 +35,7 @@
             'value' => $trigger->getOption('field'),
             'help_class' => 'trigger',
             'options' => $automation->getListFieldOptions(),
-            'rules' => [],
+            'rules' => $rules,
         ])
     </div>
 </div>

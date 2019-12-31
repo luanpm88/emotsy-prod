@@ -11,7 +11,7 @@
             'value' => $trigger->getOption('delay'),
             'help_class' => 'trigger',
             'options' => $automation->getDelayOptions(),
-            'rules' => [],
+            'rules' => $rules,
         ])
         
         @include('helpers.form_control', [
@@ -20,7 +20,8 @@
             'label' => trans('messages.automation.at'),
             'value' => $trigger->getOption('at'),
             'rules' => [],
-            'help_class' => 'trigger'
+            'help_class' => 'trigger',
+            'rules' => $rules,
         ])
     </div>
 </div>

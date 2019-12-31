@@ -231,6 +231,7 @@ class Automation2Controller extends Controller
     {
         // init automation
         $automation = Automation2::findByUid($uid);
+        $rules = $this->triggerRules()[$request->key];
         
         // authorize
         if (\Gate::denies('update', $automation)) {
@@ -241,7 +242,35 @@ class Automation2Controller extends Controller
             'key' => $request->key,
             'automation' => $automation,
             'trigger' => $automation->getTrigger(),
+            'rules' => $rules,
         ]);
+    }
+
+    /**
+     * Select trigger type.
+     *
+     * @return array
+     */
+    public function triggerRules()
+    {
+        return [
+            'welcome-new-subscriber' => [],
+            'say-happy-birthday' => [
+                'options.before' => 'required',
+                'options.at' => 'required',
+                'options.field' => 'required',
+            ],
+            'specific-date' => [
+                'options.date' => 'required',
+                'options.at' => 'required',
+            ],
+            'say-goodbye-subscriber' => [],
+            'api-3-0' => [],
+            'subscriber-added-date' => [
+                'options.delay' => 'required',
+                'options.at' => 'required',
+            ],
+        ];
     }
     
     /**
@@ -253,10 +282,25 @@ class Automation2Controller extends Controller
     {
         // init automation
         $automation = Automation2::findByUid($uid);
+        $rules = $this->triggerRules()[$request->options['key']];
         
         // authorize
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
+        }
+
+        // make validator
+        $validator = Validator::make($request->all(), $rules);
+            
+        // redirect if fails
+        if ($validator->fails()) {
+            return response()->view('automation2.triggerSelectConfirm', [
+                'key' => $request->options['key'],
+                'automation' => $automation,
+                'trigger' => $automation->getTrigger(),
+                'rules' => $rules,
+                'errors' => $validator->errors(),
+            ], 400);
         }
         
         return response()->json([
@@ -266,6 +310,7 @@ class Automation2Controller extends Controller
                 'title' => trans('messages.automation.trigger.tree.' . $request->options["key"])
             ]),
             'options' => $request->options,
+            'rules' => $rules,
         ]);
     }
     
@@ -392,6 +437,7 @@ class Automation2Controller extends Controller
     {
         // init automation
         $automation = Automation2::findByUid($uid);
+        $rules = $this->triggerRules()[$request->key];
         
         // authorize
         if (\Gate::denies('update', $automation)) {
@@ -399,6 +445,21 @@ class Automation2Controller extends Controller
         }
         
         if($request->isMethod('post')) {
+            // make validator
+            $validator = Validator::make($request->all(), $this->triggerRules()[$request->options['key']]);
+            $rules = $this->triggerRules()[$request->options['key']];
+                
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('automation2.triggerEdit', [
+                    'key' => $request->options['key'],
+                    'automation' => $automation,
+                    'trigger' => $automation->getTrigger(),
+                    'rules' => $rules,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
             return response()->json([
                 'status' => 'success',
                 'message' => trans('messages.automation.trigger.updated'),
@@ -413,6 +474,7 @@ class Automation2Controller extends Controller
             'key' => $request->key,
             'automation' => $automation,
             'trigger' => $automation->getTrigger(),
+            'rules' => $rules,
         ]);
     }
     

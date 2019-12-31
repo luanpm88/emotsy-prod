@@ -8,7 +8,7 @@
         'name' => 'options[date]',
         'value' => $trigger->getOption('date'),
         'help_class' => 'trigger',
-        'rules' => [],
+        'rules' => $rules,
     ])
     
     @include('helpers.form_control', [
@@ -16,7 +16,7 @@
         'name' => 'options[at]',
         'label' => trans('messages.automation.at'),
         'value' => $trigger->getOption('at'),
-        'rules' => [],
+        'rules' => $rules,
         'help_class' => 'trigger'
     ])
 </div>
