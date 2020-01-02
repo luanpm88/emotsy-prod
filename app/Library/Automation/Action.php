@@ -100,4 +100,25 @@ abstract class Action
     {
         $this->last_executed = Carbon::now()->timestamp;
     }
+
+    public function hasChild($e)
+    {
+        if (is_null($this->child)) {
+            return false;
+        }
+
+        return ($e->getId() == $this->child);
+    }
+
+    public function getParent()
+    {
+        $parent = null;
+        $this->autoTrigger->getActions(function($action) use (&$parent) {
+            if ($action->hasChild($this)) {
+                $parent = $action;
+            }
+        });
+
+        return $parent;
+    }
 }
