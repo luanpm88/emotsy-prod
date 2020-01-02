@@ -1025,13 +1025,13 @@ label.switchery-double.checkbox-switchery {
   background: rgba(0,0,0,0.4);
 }
 .diagram .history .history-undo {
-  border-radius: 4px 4px 0px 0px;
+  border-radius: 2px 2px 0px 0px;
 }
 .diagram .history .history-redo {
   
 }
 .diagram .history .history-list {
-  border-radius: 0px 0px 4px 4px;
+  border-radius: 0px 0px 2px 2px;
 }
 .diagram .history .history-list-items {
   display: block;
