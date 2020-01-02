@@ -375,7 +375,7 @@ class Email extends Model
 
         MailLog::info("Sending to subscriber `{$subscriber->email}`");
 
-        list($message, $msgId) = $this->prepare($subscriber, $server);
+        list($message, $msgId) = $this->prepare($subscriber);
 
         $sent = $server->send($message);
 
@@ -605,7 +605,7 @@ class Email extends Model
         // * tagMessage
 
         // @note: addTrackingUrl() must go before appendOpenTrackingUrl()
-        $body = $this->html;
+        $body = $this->content;
 
         // Enable click tracking
         if ($this->track_click) {
