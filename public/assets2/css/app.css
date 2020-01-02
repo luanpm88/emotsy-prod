@@ -1,7 +1,9 @@
 a {
     color: #007c99;
 }
-
+.text-muted {
+  color: #777!important;
+}
 .ui-pnotify-title-bs4 {
   font-size: inherit !important;
   margin-bottom: 2px !important;
@@ -879,7 +881,7 @@ label.switchery-double.checkbox-switchery {
   align-items: center;
 }*/
 .key-value-list .list-media i {
-    font-size: 35px;
+    font-size: 22px;
     margin-top: 7px;
 }
 .ajax-list {
