@@ -79,7 +79,7 @@ class AutoTrigger extends Model
      */
     public function timelines()
     {
-        return $this->hasMany('Acelle\Model\Timeline');
+        return $this->hasMany('Acelle\Model\Timeline')->orderBy('created_at', 'DESC');
     }
 
     // getLatestAction from trigger

@@ -135,8 +135,17 @@ class AutomationElement {
 
     setTitle(title) {
         this.title = title;
-        document.getElementById(this.getId() + '_title').innerHTML = this.title;
+        var textElement = document.getElementById(this.getId() + '_title');
+        textElement.innerHTML = this.title;
+        this.crop(textElement);
     }
+
+    crop(text) {
+        var maxSize = this.DefaultRectWith - 30;
+        while (text.getComputedTextLength() > maxSize) {
+            text.textContent = text.textContent.slice(0, -4).trim() + "...";
+        }
+    };
 
     copyEventsFromTrigger() {
         for (var i = 0; i < Object.keys(this.getTrigger().events).length ; i += 1) {
@@ -352,12 +361,12 @@ class AutomationElement {
 
         var text2 = document.createElementNS("http://www.w3.org/2000/svg", 'tspan');
         text2.setAttribute('id', this.getId() + '_title');
-        text2.innerHTML = this.title;
         text2.setAttribute('font-family', 'Arial');
         text2.setAttribute('fill', '#fff');
         text2.setAttribute('font-size', '12px');
         text2.setAttribute('alignment-baseline', 'middle');
         text2.setAttribute('text-anchor', 'middle');
+        // text2.innerHTML = this.title;
 
         g.appendChild(box);
         box.appendChild(rect)
@@ -369,8 +378,10 @@ class AutomationElement {
         var plusId = this.id + "-plus";
         this.drawPlus(plusId, left + this.DefaultRectWith/2, top + this.DefaultRectHeight + this.DefaultVerticalSpace, 'plus', g);
         this.drawConnector(this.id, plusId, g);
-
         this.drawNotice(this.id + '-notice', left, top, g);
+
+        // also crop text
+        this.setTitle(this.title);
     }
 
     drawCircle(id, cx, cy, container, zeroPoint = false) {
@@ -856,7 +867,7 @@ class ElementCondition extends AutomationElement {
         a.setAttribute('style',  'cursor:pointer');
 
         var text2 = document.createElementNS("http://www.w3.org/2000/svg", 'tspan');
-        text2.innerHTML = this.title;
+        //text2.innerHTML = this.title;
         text2.setAttribute('id', this.getId() + '_title');
         text2.setAttribute('font-family', 'Arial');
         text2.setAttribute('fill', '#fff');
@@ -874,6 +885,9 @@ class ElementCondition extends AutomationElement {
         this.drawConditionPlus(rect.getAttribute('_x'), rect.getAttribute('_y'));
 
         this.drawNotice(this.id + '-notice', left, top, g);
+
+        // also crop text
+        this.setTitle(this.title);
     }
 
     drawConditionPlus(rectX, rectY) {
