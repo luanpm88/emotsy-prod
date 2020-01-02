@@ -206,6 +206,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('account/contact', 'AccountController@contact');
     Route::get('account/logs', 'AccountController@logs');
     Route::get('account/logs/listing', 'AccountController@logsListing');
+    Route::get('account/quota_log_2', 'AccountController@quotaLog2');
     Route::get('account/quota_log', 'AccountController@quotaLog');
     Route::get('account/subscription', 'AccountController@subscription');
     Route::get('account/subscription/new', 'AccountController@subscriptionNew');

@@ -93,6 +93,10 @@
 									</a>
 									<div class="dropdown-divider"></div>
 								@endif
+								<a class="dropdown-item d-flex align-items-center quota-view" href="{{ action("AccountController@quotaLog2") }}">
+									<i class="material-icons-outlined mr-2">multiline_chart</i>
+									<span class="">{{ trans('messages.used_quota') }}</span>
+								</a>
 								<a class="dropdown-item d-flex align-items-center" href="{{ action('AccountSubscriptionController@index') }}">
 									<i class="material-icons-outlined mr-2">redeem</i>
 									<span>{{ trans('messages.subscriptions') }}</span>
@@ -415,6 +419,17 @@
 
 				var dialog = new Dialog('alert', {
 					message: 'Automation is already finallized. Cannot rollback to previous state.',
+				});
+			});
+			
+			// quota view
+			$('.quota-view').click(function(e) {
+				e.preventDefault();
+
+				var url = $(this).attr('href');
+
+				popup.load(url, function() {
+					console.log('quota popup loaded!');
 				});
 			});
 		});
