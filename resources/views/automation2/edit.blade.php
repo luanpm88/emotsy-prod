@@ -93,6 +93,10 @@
 									</a>
 									<div class="dropdown-divider"></div>
 								@endif
+								<a class="dropdown-item d-flex align-items-center quota-view" href="{{ action("AccountController@quotaLog2") }}">
+									<i class="material-icons-outlined mr-2">multiline_chart</i>
+									<span class="">{{ trans('messages.used_quota') }}</span>
+								</a>
 								<a class="dropdown-item d-flex align-items-center" href="{{ action('AccountSubscriptionController@index') }}">
 									<i class="material-icons-outlined mr-2">redeem</i>
 									<span>{{ trans('messages.subscriptions') }}</span>
@@ -141,10 +145,40 @@
 					</a>
 					<ul class="history-list-items">
 						<li>
-							<a href="" class="d-flex align-items-center"><i class="material-icons-outlined mr-2">playlist_add</i> <span>Change something...</span></a>
+							<a href="" class="d-flex align-items-center">
+								<i class="material-icons-outlined mr-2">refresh</i>
+								<span class="content mr-auto">Reset current flow</span>
+								<time class="mini text-muted">1 minute</time>
+							</a>
+						</li>
+						<li class="divider"></li>
+						<li>
+							<a href="" class="d-flex align-items-center">
+								<i class="material-icons-outlined mr-2">alarm</i>
+								<span class="content mr-auto">Wait activity added</span>
+								<time class="mini text-muted">3 hours</time>
+							</a>
 						</li>
 						<li>
-							<a href="" class="d-flex align-items-center"><i class="material-icons-outlined mr-2">remove_circle_outline</i> <span>Do some action...</span></a>
+							<a href="" class="d-flex align-items-center">
+								<i class="material-icons-outlined mr-2">email</i>
+								<span class="content mr-auto">Send email activity added</span>
+								<time class="mini text-muted">4 days</time>
+							</a>
+						</li>
+						<li>
+							<a href="" class="d-flex align-items-center">
+								<i class="material-icons-outlined mr-2">call_split</i>
+								<span class="content mr-auto">Condition activity added</span>
+								<time class="mini text-muted">20 Aug</time>
+							</a>
+						</li>
+						<li>
+							<a href="" class="d-flex align-items-center">
+								<i class="material-icons-outlined mr-2">play_circle_outline</i>
+								<span class="content mr-auto">Trigger criteria setup</span>
+								<time class="mini text-muted">11 Aug</time>
+							</a>
 						</li>
 					</ul>
 				</div>
@@ -284,6 +318,9 @@
 						// add email to tree
 						insertToTree(newE);
 
+						// validate
+						newE.validate();
+
 						// save tree
 						saveData(function() {
 							notify('success', '{{ trans('messages.notify.success') }}', '{{ trans('messages.automation.email.created') }}');
@@ -375,6 +412,26 @@
 				});
 			});
 			$('.select2-results__option').each
+
+			// fake history
+			$('.diagram .history .history-list-items a').click(function(e) {
+				e.preventDefault();
+
+				var dialog = new Dialog('alert', {
+					message: 'Automation is already finallized. Cannot rollback to previous state.',
+				});
+			});
+			
+			// quota view
+			$('.quota-view').click(function(e) {
+				e.preventDefault();
+
+				var url = $(this).attr('href');
+
+				popup.load(url, function() {
+					console.log('quota popup loaded!');
+				});
+			});
 		});
 	</script>
 		
@@ -494,8 +551,8 @@
                 validate: function(e) {
                     if (e.getType() == 'ElementTrigger') {
                         if (e.getOptions()['init'] == null || e.getOptions()['init'] != "true") {
-                            e.showNotice('Trigger not set up yet. Click on this action to set up your automation trigger');
-                            e.setTitle('### Trigger not set up yet !!!');
+                            e.showNotice('{{ trans('messages.automation.trigger.is_not_setup') }}');
+                            e.setTitle('{{ trans('messages.automation.trigger.is_not_setup.title') }}');
                         } else {
                             e.hideNotice();
                             // e.setTitle('Correct title goes here');
@@ -504,8 +561,10 @@
 
                     if (e.getType() == 'ElementAction') {
                         if (e.getOptions()['init'] == null || e.getOptions()['init'] != "true") {
-                            e.showNotice('Email not 100% set up yet. Click on this action to set up your email');
-                            e.setTitle('### Email not set up yet !!!');
+							e.showNotice('{{ trans('messages.automation.email.is_not_setup') }}');
+                            e.setTitle('{{ trans('messages.automation.email.is_not_setup.title') }}');
+                        } else if (e.getOptions()['template'] == null || e.getOptions()['template'] != "true") {
+							e.showNotice('{{ trans('messages.automation.email.has_no_content') }}');
                         } else {
                             e.hideNotice();
                             // e.setTitle('Correct title goes here');

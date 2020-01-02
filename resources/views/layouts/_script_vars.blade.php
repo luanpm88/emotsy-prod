@@ -11,6 +11,7 @@
 	var LANG_J_DATE_FORMAT = '{{ trans('messages.j_date_format') }}';
 	var CSRF_TOKEN = "{{ csrf_token() }}";
 	var LANG_NOTIFY_SUCCESS = '{{ trans('messages.notify.success') }}';
+	var LANG_ALERT = '{{ trans('messages.notify.alert') }}';
 	
 	$(document).ready(function() {
 		$('.xtooltip').tooltipster({

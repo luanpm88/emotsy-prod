@@ -309,6 +309,9 @@ class InstallController extends Controller
         // Run migrate
         artisan_migrate();
 
+        // Run storage link
+        artisan_storage_link();
+
         // import database with prefix
         $this->importDatabase($database);
 

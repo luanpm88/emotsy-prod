@@ -3005,4 +3005,10 @@
   'automation.trigger.tree.specific-date' => 'Autostart on a scheduled date/time',
   'automation.no_email' => 'Email',
   'automation.before' => 'Before',
+  'notify.alert' => 'Alert',
+  'automation.trigger.is_not_setup' => 'Trigger not set up yet. Click on this action to set up your automation trigger',
+  'automation.trigger.is_not_setup.title' => '! Trigger not set up yet',
+  'automation.email.is_not_setup' => 'Email is not set up. Click on this action to set up your email',
+  'automation.email.is_not_setup.title' => '! Email not set up yet',
+  'automation.email.has_no_content' => 'Email\'s content is empty. Let add some content for email.',
 ) ?>

@@ -156,6 +156,14 @@ class AccountController extends Controller
     }
 
     /**
+     * Quta logs 2.
+     */
+    public function quotaLog2(Request $request)
+    {
+        return view('account.quota_log_2');
+    }
+
+    /**
      * Api token.
      */
     public function api(Request $request)
