@@ -20,9 +20,9 @@
             </a>
         </div>
     </li> --}}
-    <li class="d-flex">
+    <li class="d-flex align-items-center">
         <div class="list-media mr-4">
-            <i class="material-icons-outlined text-success">check</i>
+            <i class="material-icons-outlined text-muted">textsms</i>
         </div>
         <div class="values mr-auto">
             <label>
@@ -41,9 +41,9 @@
             </a>
         </div>
     </li>
-    <li class="d-flex">
+    <li class="d-flex align-items-center">
         <div class="list-media mr-4">
-            <i class="material-icons-outlined text-success">check</i>
+            <i class="material-icons-outlined text-muted">my_location</i>
         </div>
         <div class="values mr-auto">
             <label>
@@ -62,9 +62,9 @@
             </a>
         </div>
     </li>
-    <li class="d-flex">
+    <li class="d-flex align-items-center">
         <div class="list-media mr-4">
-            <i class="material-icons-outlined text-success">check</i>
+            <i class="material-icons-outlined text-muted">reply</i>
         </div>
         <div class="values mr-auto">
             <label>
@@ -90,12 +90,12 @@
             </a>
         </div>
     </li>
-    <li class="d-flex">
+    <li class="d-flex align-items-center">
         <div class="list-media mr-4">
             @if($email->content)
-                <i class="material-icons-outlined text-success">check</i>
+                <i class="material-icons-outlined text-muted">vertical_split</i>
             @else
-                <i class="material-icons-outlined text-danger">close</i>
+                <i class="material-icons-outlined text-muted">vertical_split</i>
             @endif
         </div>
         <div class="values mr-auto">
@@ -124,9 +124,9 @@
             </a>
         </div>
     </li>
-    <li class="d-flex">
+    <li class="d-flex align-items-center">
         <div class="list-media mr-4">
-            <i class="material-icons-outlined text-success">check</i>
+            <i class="material-icons-outlined text-muted">track_changes</i>
         </div>
         <div class="values mr-auto">
             <label>
