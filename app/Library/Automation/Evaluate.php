@@ -38,4 +38,13 @@ class Evaluate extends Action
         $nameOrEmail = $this->autoTrigger->subscriber->getFullNameOrEmail();
         return sprintf('User %s reads email entitled "Welcome email"', $nameOrEmail);
     }
+
+    public function hasChild($e)
+    {
+        if (is_null($this->childYes) && is_null($this->childNo)) {
+            return false;
+        }
+
+        return ($e->getId() == $this->childYes || $e->getId() == $this->childNo);
+    }
 }
