@@ -414,7 +414,7 @@
 			$('.select2-results__option').each
 
 			// fake history
-			$('.diagram .history .history-list-items a').click(function(e) {
+			$('.diagram .history .history-list-items a, .history .history-undo').click(function(e) {
 				e.preventDefault();
 
 				var dialog = new Dialog('alert', {
