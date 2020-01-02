@@ -138,10 +138,40 @@
 					</a>
 					<ul class="history-list-items">
 						<li>
-							<a href="" class="d-flex align-items-center"><i class="material-icons-outlined mr-2">playlist_add</i> <span>Change something...</span></a>
+							<a href="" class="d-flex align-items-center">
+								<i class="material-icons-outlined mr-2">refresh</i>
+								<span class="content mr-auto">Reset current flow</span>
+								<time class="mini text-muted">1 minute</time>
+							</a>
+						</li>
+						<li class="divider"></li>
+						<li>
+							<a href="" class="d-flex align-items-center">
+								<i class="material-icons-outlined mr-2">alarm</i>
+								<span class="content mr-auto">Wait activity added</span>
+								<time class="mini text-muted">3 hours</time>
+							</a>
 						</li>
 						<li>
-							<a href="" class="d-flex align-items-center"><i class="material-icons-outlined mr-2">remove_circle_outline</i> <span>Do some action...</span></a>
+							<a href="" class="d-flex align-items-center">
+								<i class="material-icons-outlined mr-2">email</i>
+								<span class="content mr-auto">Send email activity added</span>
+								<time class="mini text-muted">4 days</time>
+							</a>
+						</li>
+						<li>
+							<a href="" class="d-flex align-items-center">
+								<i class="material-icons-outlined mr-2">call_split</i>
+								<span class="content mr-auto">Condition activity added</span>
+								<time class="mini text-muted">20 Aug</time>
+							</a>
+						</li>
+						<li>
+							<a href="" class="d-flex align-items-center">
+								<i class="material-icons-outlined mr-2">play_circle_outline</i>
+								<span class="content mr-auto">Trigger criteria setup</span>
+								<time class="mini text-muted">11 Aug</time>
+							</a>
 						</li>
 					</ul>
 				</div>
@@ -372,6 +402,15 @@
 				});
 			});
 			$('.select2-results__option').each
+
+			// fake history
+			$('.diagram .history .history-list-items a').click(function(e) {
+				e.preventDefault();
+
+				var dialog = new Dialog('alert', {
+					message: 'Automation is already finallized. Cannot rollback to previous state.',
+				});
+			});
 		});
 	</script>
 		

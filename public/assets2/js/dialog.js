@@ -71,6 +71,27 @@ class Dialog {
                         </div>
                     </div>
                 `;
+                case "alert":
+                    if (this.title == null) {
+                        this.title = LANG_ALERT;
+                    }
+                    return `
+                        <div class="dialog-container">
+                            <div class="dialog-header">
+                                <h2 class="title d-flex align-items-center">
+                                    <i class="material-icons-outlined alert-icon mr-2">notifications</i>
+                                    <span>`+this.title+`</span>
+                                </h2>
+                                <i class="lnr lnr-cross close"></i>
+                            </div>
+                            <div class="dialog-body">
+                                `+this.message+`
+                            </div>
+                            <div class="dialog-footer">
+                                <button class="btn btn-primary dialog-ok mr-2">`+LANG_OK+`</button>
+                            </div>
+                        </div>
+                    `;
             case y:
               // code block
               break;

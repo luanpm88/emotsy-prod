@@ -1,5 +1,5 @@
 <ul class="key-value-list mt-2">
-    <li class="d-flex align-items-center">
+    {{-- <li class="d-flex align-items-center">
         <div class="list-media mr-4">
             <i class="material-icons-outlined text-success">check</i>
         </div>
@@ -19,7 +19,7 @@
                 {{ trans('messages.automation.email.setup') }}
             </a>
         </div>
-    </li>
+    </li> --}}
     <li class="d-flex">
         <div class="list-media mr-4">
             <i class="material-icons-outlined text-success">check</i>

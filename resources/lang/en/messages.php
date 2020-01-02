@@ -3005,4 +3005,5 @@
   'automation.trigger.tree.specific-date' => 'Autostart on a scheduled date/time',
   'automation.no_email' => 'Email',
   'automation.before' => 'Before',
+  'notify.alert' => 'Alert',
 ) ?>

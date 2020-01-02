@@ -258,6 +258,15 @@ function artisan_migrate() {
 }
 
 /**
+ * Run artisan storage link
+ *
+ * @return boolean
+ */
+function artisan_storage_link() {
+    \Artisan::call('storage:link');
+}
+
+/**
  * Run artisan clean up
  *
  * @return boolean
