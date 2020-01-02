@@ -39,6 +39,7 @@
                 tags: {!! json_encode(Acelle\Model\Template::builderTags((isset($list) ? $list : null))) !!},
                 root: '{{ URL::asset('builder') }}/',
                 templates: templates,
+                logo: '{{ URL::asset('images/logo_light_builder.png') }}',
             });
           
             editor.init();
