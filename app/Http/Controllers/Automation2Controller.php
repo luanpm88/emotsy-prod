@@ -464,7 +464,7 @@ class Automation2Controller extends Controller
                 'status' => 'success',
                 'message' => trans('messages.automation.trigger.updated'),
                 'title' => trans('messages.automation.trigger.title', [
-                    'title' => trans('messages.automation.trigger.' . $request->options["key"])
+                    'title' => trans('messages.automation.trigger.tree.' . $request->options["key"])
                 ]),
                 'options' => $request->options,
             ]);
