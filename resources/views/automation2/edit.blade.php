@@ -314,6 +314,9 @@
 						// add email to tree
 						insertToTree(newE);
 
+						// validate
+						newE.validate();
+
 						// save tree
 						saveData(function() {
 							notify('success', '{{ trans('messages.notify.success') }}', '{{ trans('messages.automation.email.created') }}');
@@ -533,8 +536,8 @@
                 validate: function(e) {
                     if (e.getType() == 'ElementTrigger') {
                         if (e.getOptions()['init'] == null || e.getOptions()['init'] != "true") {
-                            e.showNotice('Trigger not set up yet. Click on this action to set up your automation trigger');
-                            e.setTitle('### Trigger not set up yet !!!');
+                            e.showNotice('{{ trans('messages.automation.trigger.is_not_setup') }}');
+                            e.setTitle('{{ trans('messages.automation.trigger.is_not_setup.title') }}');
                         } else {
                             e.hideNotice();
                             // e.setTitle('Correct title goes here');
@@ -543,8 +546,10 @@
 
                     if (e.getType() == 'ElementAction') {
                         if (e.getOptions()['init'] == null || e.getOptions()['init'] != "true") {
-                            e.showNotice('Email not 100% set up yet. Click on this action to set up your email');
-                            e.setTitle('### Email not set up yet !!!');
+							e.showNotice('{{ trans('messages.automation.email.is_not_setup') }}');
+                            e.setTitle('{{ trans('messages.automation.email.is_not_setup.title') }}');
+                        } else if (e.getOptions()['template'] == null || e.getOptions()['template'] != "true") {
+							e.showNotice('{{ trans('messages.automation.email.has_no_content') }}');
                         } else {
                             e.hideNotice();
                             // e.setTitle('Correct title goes here');

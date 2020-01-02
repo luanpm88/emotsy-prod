@@ -141,6 +141,9 @@
                     tree.getSelected().setOptions($.extend(tree.getSelected().getOptions(), response.options));
 
                     doSelect(tree.getSelected());
+
+                    // validate
+					tree.getSelected().validate();
                     
                     // save tree
 					saveData();

@@ -76,5 +76,12 @@
         
             popup.load(url);
         });
+
+        console.log('aaa');
+
+        // Check email content already set if this page accur
+        tree.getSelected().setOptions($.extend(tree.getSelected().getOptions(), {template: "true"}));
+        tree.getSelected().validate();
+        saveData();
     </script>
 @endsection
