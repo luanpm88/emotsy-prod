@@ -37,7 +37,7 @@
             fill: #e47a50;
         }
 
-        text:hover, tspan:hover {
+        g text:hover, g tspan:hover {
             fill: pink !important;
         }
     </style>
@@ -124,7 +124,10 @@
 	<main role="main">
 		<div class="automation2">
 			<div class="diagram text-center scrollbar-inner">				
-				<svg id="svg" style="overflow: auto" width="100%" height="1800" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"></svg>
+				<svg id="svg" style="overflow: auto" width="100%" height="1800" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+					<text x="435" y="30" alignment-baseline="middle" text-anchor="middle">Automation starts when the following trigger condition is met</text>
+
+				</svg>
 
 				<div class="history">
 					<a class="history-action history-undo" href="javascript:;">

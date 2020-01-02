@@ -94,11 +94,11 @@ class AutomationElement {
 
     constructor(params = {}) {
         this.DefaultRound = 5;
-        this.DefaultRectWith = 230;
+        this.DefaultRectWith = 220;
         this.DefaultRectHeight = 32;
         this.DefaultFill = '#aaa';
         this.DefaultPointSize = 4;
-        this.DefaultVerticalSpace = 40;
+        this.DefaultVerticalSpace = 30;
         this.DefaultActionCircleSize = 16;
         this.MinShift = 0.5;
 
@@ -330,13 +330,13 @@ class AutomationElement {
 
         if (type == 'trigger') {
             rect.setAttribute('class', 'element trigger');
-            text1.innerHTML = '&#xf144; ';
+            text1.innerHTML = '&#xf144;&nbsp;&nbsp;';
         } else if (type == 'wait') {
             rect.setAttribute('class', 'element wait');
-            text1.innerHTML = '&#xf1da; ';
+            text1.innerHTML = '&#xf1da;&nbsp;&nbsp;';
         } else {
             rect.setAttribute('class', 'element action');
-            text1.innerHTML = '&#xf0e0; ';
+            text1.innerHTML = '&#xf0e0;&nbsp;&nbsp;';
         }
 
         text1.setAttribute('font-family', 'FontAwesome');
@@ -843,7 +843,7 @@ class ElementCondition extends AutomationElement {
         text.setAttribute('text-anchor', 'middle');
 
         var text1 = document.createElementNS("http://www.w3.org/2000/svg", 'tspan');
-        text1.innerHTML = '&#xf059; ';
+        text1.innerHTML = '&#xf059;&nbsp;&nbsp;';
         text1.setAttribute('font-family', 'FontAwesome');
         text1.setAttribute('fill', '#fff');
         text1.setAttribute('font-size', '15px');
