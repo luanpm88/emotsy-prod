@@ -2,10 +2,13 @@
 
 namespace Acelle\Library\Automation;
 
+use Acelle\Model\Email;
+
 class Evaluate extends Action
 {
     protected $childYes;
     protected $childNo;
+    protected $evaluationResult = null;
 
     public function __construct($params = [])
     {
@@ -13,6 +16,7 @@ class Evaluate extends Action
 
         $this->childYes = array_key_exists('childYes', $params) ? $params['childYes'] : null;
         $this->childNo = array_key_exists('childNo', $params) ? $params['childNo'] : null;
+        $this->evaluationResult = array_key_exists('evaluationResult', $params) ? $params['evaluationResult'] : null;
     }
 
     public function toJson()
@@ -21,16 +25,52 @@ class Evaluate extends Action
         $json = array_merge($json, [
             'childYes' => $this->childYes,
             'childNo' => $this->childNo,
+            'evaluationResult' => $this->evaluationResult,
         ]);
 
         return $json;
     }
 
     public function execute()
-    {
-        $this->recordLastExecutedTime();
+    {   
+        // IMPORTANT
+        // If this is the latest also the last action of the workflow
+        // no more execute, just return true
+        // UPDATE: check always, wait for new action
+        // if (!is_null($this->last_executed)) {
+        //     $this->autoTrigger->logger()->info('Latest also last action');
+        //     return true;
+        // }
 
-        return true;
+        $result = $this->evaluateCondition();
+        $this->evaluationResult = $result;
+
+        $this->recordLastExecutedTime();
+        return $result;
+    }
+
+    public function evaluateCondition()
+    {
+        $criterion = $this->getOption('type');
+        $result = null;
+        switch ($criterion) {
+            case 'open':
+                $result = $this->evaluateEmailOpenCondition();
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+
+        return $result;
+    }
+
+    public function evaluateEmailOpenCondition()
+    {
+        $emailUid = $this->getOption('email');
+        $email = Email::findByUid($emailUid);
+        return $email->isOpened($this->autoTrigger->subscriber);
     }
 
     public function getActionDescription()
@@ -46,5 +86,14 @@ class Evaluate extends Action
         }
 
         return ($e->getId() == $this->childYes || $e->getId() == $this->childNo);
+    }
+
+    public function getNextActionId()
+    {
+        if ($this->evaluationResult) {
+            return $this->childYes;
+        } else {
+            return $this->childNo;
+        }
     }
 }

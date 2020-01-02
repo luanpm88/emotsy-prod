@@ -9,6 +9,15 @@ class Send extends Action
 {
     public function execute()
     {
+        // IMPORTANT
+        // If this is the latest also the last action of the workflow
+        // no more execute, just return true
+        if (!is_null($this->last_executed)) {
+            $this->autoTrigger->logger()->info('Latest also last action');
+            return true;
+        }
+
+        sleep(1); // to avoid same date/time with previous wait, wrong timeline order
         $email = $this->getEmail();
         dispatch(new DeliverEmail($email, $this->autoTrigger->subscriber));
         $this->autoTrigger->logger()->info(sprintf('Send email entitled "%s" to "%s", queued', $email->subject, $this->autoTrigger->subscriber->email));
