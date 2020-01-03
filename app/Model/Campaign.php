@@ -494,7 +494,7 @@ class Campaign extends AbsCampaign
      */
     public function changeTemplate($template)
     {
-        \Acelle\Library\Tool::xcopy($template->getUploadDir(), $this->getUploadDir());
+        \Acelle\Library\Tool::xcopy($template->getStoragePath(), $this->getUploadDir());
         $this->html = $template->content;
         $this->image = $template->image;
         // replace image url

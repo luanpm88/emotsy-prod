@@ -40,32 +40,35 @@ Route::group(['middleware' => ['installed']], function () {
     Route::get('install/finish', 'InstallController@finish');
 });
 
-// UX routes
-Route::get('/app/templates/{name?}', [ function ($name) {
-    $path = storage_path("app/templates/$name");
+// assets path for template
+Route::get('/assets/campaigns/{uid}/{name?}', [ function ($uid, $name) {
+    $campaign = \Acelle\Model\Campaign::findByUid($uid);
+    $path = $campaign->getStoragePath($name);
     $mime_type = \Acelle\Library\File::getFileType($path);
     if (\File::exists($path)) {
         return response()->file($path, array('Content-Type' => $mime_type));
     }
-}])->where('name', '.+');
+}])->where('name', '.+')->name('campaign_assets');
 
-// upload path for campaigns
-Route::get('/app/campaigns/{name?}', [ function ($name) {
-    $path = storage_path("app/campaigns/$name");
+// assets path for template
+Route::get('/assets/templates/{uid}/{name?}', [ function ($uid, $name) {
+    $template = \Acelle\Model\Template::findByUid($uid);
+    $path = $template->getStoragePath($name);
     $mime_type = \Acelle\Library\File::getFileType($path);
     if (\File::exists($path)) {
         return response()->file($path, array('Content-Type' => $mime_type));
     }
-}])->where('name', '.+');
+}])->where('name', '.+')->name('template_assets');
 
-// upload path for email
-Route::get('/app/email/{name?}', [ function ($name) {
-    $path = storage_path("app/email/$name");
+// assets path for email
+Route::get('/assets/emails/{uid}/{name?}', [ function ($uid, $name) {
+    $email = \Acelle\Model\Email::findByUid($uid);
+    $path = $email->getStoragePath($name);
     $mime_type = \Acelle\Library\File::getFileType($path);
     if (\File::exists($path)) {
         return response()->file($path, array('Content-Type' => $mime_type));
     }
-}])->where('name', '.+');
+}])->where('name', '.+')->name('email_assets');
 
 // Setting upload path
 Route::get('setting/{filename}', 'SettingController@file');

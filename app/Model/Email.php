@@ -129,32 +129,7 @@ class Email extends Model
     public function addTemplateFromLayout($layout)
     {
         $sDir = database_path('layouts/' . $layout);
-        $dDir = $this->getUploadDir();
-
-        // Copy source code
-        \Acelle\Library\Tool::xcopy($sDir, $dDir);
-
-        // get layout content
-        $html = file_get_contents($sDir . '/index.html');
-
-        // change content
-        $document = HtmlDomParser::str_get_html($html);
-        foreach($document->find('img, script') as $element) {
-            if (preg_match('/^http/', $element->src) == 0) {
-                $element->src = '/' . $this->getUploadUri() . '/' . $element->src;
-            }
-        }
-        foreach($document->find('link') as $element) {
-            if (preg_match('/^http/', $element->href) == 0) {
-                $element->href = '/' . $this->getUploadUri() . '/' . $element->href;
-            }
-        }
-
-        // set document as campaign html
-        $this->content =  $document;
-
-        // save template
-        $this->save();
+        $this->loadFromDirectory($sDir);
     }
 
     /**
@@ -208,58 +183,24 @@ class Email extends Model
      */
     public function copyFromTemplate($template)
     {
-        \Acelle\Library\Tool::xcopy($template->getUploadDir(), $this->getUploadDir());
+        \Acelle\Library\Tool::xcopy($template->getStoragePath(), $this->getStoragePath());
 
         // replace image url
         $this->content = $template->content;
-        $this->content = str_replace($template->getUploadUri(), $this->getUploadUri(), $this->content);
         $this->save();
     }
 
     /**
-     * Upload a template.
+     * Load from directory.
      */
-    public function uploadTemplate($request)
+    public function loadFromDirectory($tmp_path)
     {
-        $rules = array(
-            'file' => 'required|mimetypes:application/zip,application/octet-stream,application/x-zip-compressed,multipart/x-zip',
-        );
-
-        $validator = Validator::make($request->all(), $rules, [
-            'file.mimetypes' => 'Input must be a valid .zip file',
-        ]);
-
-        if ($validator->fails()) {
-            return [false, $validator];
-        }
-
-        // move file to temp place
-        $tmp_path = storage_path('tmp/uploaded_template_'.$this->uid.'_'.time());
-        $file_name = $request->file('file')->getClientOriginalName();
-        $request->file('file')->move($tmp_path, $file_name);
-        $tmp_zip = join_paths($tmp_path, $file_name);
-
-        // read zip file check if zip archive invalid
-        $zip = new ZipArchive();
-        if ($zip->open($tmp_zip, ZipArchive::CREATE) !== true) {
-            // @todo hack
-            // $validator = Validator::make([], []); // Empty data and rules fields
-            $validator->errors()->add('file', 'Cannot open .zip file');
-            return [false, $validator];
-        }
-
-        // unzip template archive and remove zip file
-        $zip->extractTo($tmp_path);
-        $zip->close();
-        unlink($tmp_zip);
-
         // try to find the main file, index.html | index.html | file_name.html | ...
-        $archive_name = str_replace(array('../', './', '..\\', '.\\', '..'), '', basename($file_name, '.zip'));
         $main_file = null;
         $sub_path = "";
-        $possible_main_file_names = array('index.html', 'index.htm', $archive_name.'.html', $archive_name.'.htm');
+        $possible_main_file_names = array('index.html', 'index.htm');
 
-        $possible_main_file_names = array('index.html', 'index.htm', $archive_name.'.html', $archive_name.'.htm');
+        $possible_main_file_names = array('index.html', 'index.htm');
         foreach ($possible_main_file_names as $name) {
             if (is_file($file = $tmp_path.'/'.$name)) {
                 $main_file = $file;
@@ -304,35 +245,131 @@ class Email extends Model
             }
         }
 
-        // main file not found
-        if ($main_file === null) {
-            $validator->errors()->add('file', 'Cannot find index file (index.html) in the template folder');
-            throw new ValidationException($validator);
-        }
+        // // main file not found
+        // if ($main_file === null) {
+        //     $validator->errors()->add('file', 'Cannot find index file (index.html) in the template folder');
+        //     throw new ValidationException($validator);
+        // }
 
         // read main file content
         $html_content = trim(file_get_contents($main_file));
-
-        // Save new html
-        $public_dir = $this->getUploadUri();
-        $public_upload_path = $this->getUploadDir();
-
         $this->content = $html_content;
-        $this->content = \Acelle\Library\Tool::replaceHtmlUrl($this->content, $request->root().'/'.$public_dir.'/'.$sub_path);
         $this->save();
+        
+        // upload path
+        $upload_path = $this->getStoragePath();
 
         // copy all folder to public path
-        if (!file_exists($public_upload_path)) {
-            mkdir($public_upload_path, 0777, true);
-        }
-        // exec("cp -r {$tmp_path}/* {$public_upload_path}/");
-        Tool::xcopy($tmp_path, $public_upload_path);
+        if (!file_exists($upload_path)) {
+            mkdir($upload_path, 0777, true);
+        }        
 
         // remove tmp folder
         // exec("rm -r {$tmp_path}");
         Tool::xdelete($tmp_path);
+    }
+
+    /**
+     * Get public campaign upload dir.
+     */
+    public function getStoragePath($path="")
+    {
+        return storage_path('app/users/' . $this->automation->customer->uid . '/emails/' . $this->uid . '/content/' . $path);
+    }
+
+    /**
+     * Upload a template.
+     */
+    public function uploadTemplate($request)
+    {
+        $rules = array(
+            'file' => 'required|mimetypes:application/zip,application/octet-stream,application/x-zip-compressed,multipart/x-zip',
+        );
+
+        $validator = Validator::make($request->all(), $rules, [
+            'file.mimetypes' => 'Input must be a valid .zip file',
+        ]);
+
+        if ($validator->fails()) {
+            return [false, $validator];
+        }
+
+        // move file to temp place
+        $tmp_path = storage_path('tmp/uploaded_template_'.$this->uid.'_'.time());
+        $file_name = $request->file('file')->getClientOriginalName();
+        $request->file('file')->move($tmp_path, $file_name);
+        $tmp_zip = join_paths($tmp_path, $file_name);
+
+        // read zip file check if zip archive invalid
+        $zip = new ZipArchive();
+        if ($zip->open($tmp_zip, ZipArchive::CREATE) !== true) {
+            // @todo hack
+            // $validator = Validator::make([], []); // Empty data and rules fields
+            $validator->errors()->add('file', 'Cannot open .zip file');
+            return [false, $validator];
+        }
+
+        // unzip template archive and remove zip file
+        $zip->extractTo($tmp_path);
+        $zip->close();
+        unlink($tmp_zip);
+
+        $this->loadFromDirectory($tmp_path);
+
+        // exec("cp -r {$tmp_path}/* {$public_upload_path}/");
+        Tool::xcopy($tmp_path, $upload_path);
 
         return [true, $validator];
+    }
+
+    /**
+     * transform URL.
+     */
+    public function transform()
+    {
+        // replace relative urls
+        $this->content = \Acelle\Library\Tool::replaceTemplateUrl($this->content, route('email_assets', ['uid' => $this->uid, 'path' => '']));
+    }
+
+    /**
+     * transform URL.
+     */
+    public function untransform()
+    {
+        // replace absolute urls
+        $this->content = str_replace(route('email_assets', ['uid' => $this->uid, 'path' => '']).'/', '', $this->content);
+    }
+
+    /**
+     * transform URL.
+     */
+    public function render()
+    {
+        $this->transform();
+
+        return $this->content;
+    }
+    
+    /**
+     * Upload asset.
+     */
+    public function uploadAsset($file)
+    {
+        $file_name = $file->getClientOriginalName();
+        $upload_dir = 'upload/';
+
+        $new_name = $file_name;
+        $i = 1;
+        while(file_exists($this->getStoragePath($upload_dir) . $new_name)) {
+            $new_name = $i . '_' . $file_name;
+            $i++;
+        }
+
+        $path = $file->move(
+            $this->getStoragePath($upload_dir), $new_name
+        );
+
+        return $upload_dir . $new_name;
     }
 
     /**

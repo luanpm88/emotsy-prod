@@ -30,7 +30,7 @@
     {{ trans('messages.automation.action.delete.confirm') }}        
 </p>
 <div class="mt-3">
-    <a href="javascript:;" data-confirm="{{ trans('messages.automation.email.delete.confirm') }}" class="btn btn-danger action-delete">
+    <a href="javascript:;" data-confirm="{{ trans('messages.automation.email.delete.confirm') }}" class="btn btn-danger email-action-delete">
         <i class='lnr lnr-trash mr-2'></i> {{ trans('messages.automation.delete_this_action') }}
     </a>
 </div>
@@ -45,22 +45,26 @@
         popup.load(url);
     });
     
-    $('.action-delete').click(function(e) {
+    $('.email-action-delete').click(function(e) {
         e.preventDefault();
         
         var confirm = $(this).attr('data-confirm');
-        var dialog = new Dialog('confirm', null, confirm, function(dialog) {
-            // remove current node
-            tree.getSelected().remove();        
-            
-            // notify
-            notify('success', '{{ trans('messages.notify.success') }}', '{{ trans('messages.automation.email.deteled') }}');
-            
-            // load default sidebar
-            sidebar.load('{{ action('Automation2Controller@settings', $automation->uid) }}');
-            
-            // save tree
-            saveData();
+
+        var dialog = new Dialog('confirm', {
+            message: confirm,
+            ok: function(dialog) {
+                // remove current node
+                tree.getSelected().remove();        
+                
+                // notify
+                notify('success', '{{ trans('messages.notify.success') }}', '{{ trans('messages.automation.email.deteled') }}');
+                
+                // load default sidebar
+                sidebar.load('{{ action('Automation2Controller@settings', $automation->uid) }}');
+                
+                // save tree
+                saveData();
+            },
         });
     });
 </script>

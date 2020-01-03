@@ -30,7 +30,7 @@
     width: 100%;
     background: rgba(0,0,0,0.7);">{{ trans('messages.saving_screenshot') }}</div>
 
-{!! $template->content !!}
+{!! $template->render() !!}
 
 <script>
     setTimeout('captureFullPage()', 1000);

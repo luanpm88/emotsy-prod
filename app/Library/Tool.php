@@ -928,6 +928,40 @@ class Tool
     }
 
     /**
+     * Replace HTML url.
+     *
+     * @return text
+     */
+    public static function replaceTemplateUrl($content, $path)
+    {
+        // find all link in html content
+        preg_match_all('/(?<=src=|background=|href=|url\()(\'|")?(?<url>.*?)(?=\1|\))/i', $content, $matches);
+        $srcs = array_unique($matches['url']);
+
+        foreach ($srcs as $key => $src) {
+            $srcs[$key] = htmlspecialchars_decode($src);
+            $srcs[$key] = str_replace('"', '', $srcs[$key]);
+            $srcs[$key] = str_replace('\'', '', $srcs[$key]);
+        }
+
+        foreach ($srcs as $src) {
+            if (preg_match('/https?/i', $src) || preg_match('/^\{/i', $src) || preg_match('/^\%/i', $src) || preg_match('/^https?/i', $src) || preg_match('/^#/i', $src) || strpos($src, '//') === 0) {
+                continue;
+            }
+
+            $new_src = $path.'/'.$src;
+            // $new_src = route('template_assets', ['uid' => $uid, 'path' => $src]);
+
+            // replace image url
+            $content = str_replace($src, $new_src, $content);
+        }
+
+        $content = str_replace('&quot;', '', $content);
+
+        return $content;
+    }
+
+    /**
      * Check current view if exist.
      *
      * @return bool
