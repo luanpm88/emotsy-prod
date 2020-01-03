@@ -500,6 +500,7 @@ class CampaignController extends Controller
             $this->validate($request, $rules);
 
             $campaign->html = $request->content;
+            $campaign->untransform();
             $campaign->save();
 
             // update plain
@@ -528,12 +529,10 @@ class CampaignController extends Controller
     {
         $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
 
-        $path = $request->file('file')->storeAs(
-            'campaigns/assets/' . $campaign->uid, md5($request->file('file')), 'public'
-        );
+        $upload_path = $campaign->uploadAsset($request->file('file'));
 
         return response()->json([
-            'url' => \Storage::url($path)
+            'url' => route('campaign_assets', ['uid' => $campaign->uid, 'path' => $upload_path])
         ]);
     }
 
@@ -554,7 +553,7 @@ class CampaignController extends Controller
         }
 
         return view('campaigns.template.content', [
-            'content' => $campaign->html,
+            'content' => $campaign->render(),
         ]);
     }
 

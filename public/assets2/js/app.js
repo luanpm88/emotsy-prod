@@ -215,6 +215,7 @@ function notify(type, title, message) {
         addClass: 'nonblock',
         delay: 2000,
         textTrusted: true,
+        titleTrusted: true,
     };
     PNotify.alert(opts);
 }

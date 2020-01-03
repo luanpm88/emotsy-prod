@@ -55,7 +55,7 @@
                         notify(response.status, '{{ trans('messages.notify.success') }}', response.message);
                     } else {
                         var dialog = new Dialog('notification', {
-                            title: '{{ trans('messages.automation.started.title') }}',
+                            title: '{{ trans('messages.automation.started.title') }} <i class="lnr lnr-rocket ml-3"></i> ',
                             message: `{{ trans('messages.automation.started.desc') }}`,
                             ok: function(dialog) {        
                                 sidebar.load();                    

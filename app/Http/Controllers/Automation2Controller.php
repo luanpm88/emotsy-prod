@@ -802,6 +802,7 @@ class Automation2Controller extends Controller
             $this->validate($request, $rules);
             
             $email->content = $request->content;
+            $email->untransform();
             $email->save();
             
             return response()->json([
@@ -828,13 +829,11 @@ class Automation2Controller extends Controller
     {
         $automation = Automation2::findByUid($uid);
         $email = Email::findByUid($request->email_uid);
-
-        $path = $request->file('file')->storeAs(
-            'email/assets/' . $email->uid, md5($request->file('file')), 'public'
-        );
+        
+        $upload_path = $email->uploadAsset($request->file('file'));
 
         return response()->json([
-            'url' => \Storage::url($path)
+            'url' => route('email_assets', ['uid' => $email->uid, 'path' => $upload_path])
         ]);
     }
 
@@ -856,7 +855,7 @@ class Automation2Controller extends Controller
         }
 
         return view('automation2.email.template.content', [
-            'content' => $email->content,
+            'content' => $email->render(),
         ]);
     }
 

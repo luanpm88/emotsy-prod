@@ -183,6 +183,7 @@ class TemplateController extends Controller
 
             // Save template
             $template->fill($request->all());
+            $template->untransform();
             $template->save();
 
             // Redirect to my lists page
@@ -488,6 +489,10 @@ class TemplateController extends Controller
             
             $template->content = $request->content;
             $template->save();
+
+            return response()->json([
+                'status' => 'success',
+            ]);
         }
 
         return view('admin.templates.builder.edit', [
@@ -515,7 +520,7 @@ class TemplateController extends Controller
         }
 
         return view('admin.templates.builder.content', [
-            'content' => $template->content,
+            'content' => $template->render(),
         ]);
     }
     
@@ -535,12 +540,10 @@ class TemplateController extends Controller
             return $this->notAuthorized();
         }
         
-        $path = $request->file('file')->storeAs(
-            'templates/assets/' . $template->uid, md5($request->file('file')), 'public'
-        );
-        
+        $upload_path = $template->uploadAsset($request->file('file'));
+
         return response()->json([
-            'url' => \Storage::url($path)
+            'url' => route('template_assets', ['uid' => $template->uid, 'path' => $upload_path])
         ]);
     }
     
@@ -569,11 +572,12 @@ class TemplateController extends Controller
         // validate and save posted data
         if ($request->isMethod('post')) {
             if ($request->layout) {
-                $template = Template::createTemplateFromLayout($request->layout);
+                $template = new Template();
                 $template->admin_id = $admin->id;
                 $template->name = $request->name;
-                
                 $template->save();
+
+                $template->addTemplateFromLayout($request->layout);
             }
             
             if ($request->template) {
