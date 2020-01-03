@@ -29,12 +29,23 @@
                 $action = $automation->getElement($key);
             @endphp
 
-            <a class="dropdown-item contacts_action_{{ $key }}" href="#" onclick="sidebar.load('{{ action('Automation2Controller@contacts', [
+            <a class="xtooltip dropdown-item contacts_action_{{ $key }} d-flex align-items-center" href="#" onclick="sidebar.load('{{ action('Automation2Controller@contacts', [
                 'uid' => $automation->uid,
                 'action_id' => $key
-            ]) }}')">
+            ]) }}')"
+                title="{{ $action->getName() }}"
+            >
                 {!! $action->getIconWithoutBg() !!}
-                <span class="ml-2">{{ $action->getName() }} ({{ format_number($element['count']) }})</span>
+                <span class="ml-2 mr-2"
+                    style="
+                        display: inline-block;
+                        max-width: 280px;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                        overflow: hidden;
+                    "
+                >{{ $action->getName() }}</span>
+                <count>({{ format_number($element['count']) }})</count>
             </a>                
         @endforeach
     </div>

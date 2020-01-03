@@ -6,7 +6,7 @@
         'class' => '',
         'label' => trans('messages.automation.date'),
         'name' => 'options[date]',
-        'value' => $trigger->getOption('date'),
+        'value' => ($trigger->getOption('date') ? $trigger->getOption('date') : toDateString(\Carbon\Carbon::now())),
         'help_class' => 'trigger',
         'rules' => $rules,
     ])
@@ -15,7 +15,7 @@
         'type' => 'time2',
         'name' => 'options[at]',
         'label' => trans('messages.automation.at'),
-        'value' => $trigger->getOption('at'),
+        'value' => ($trigger->getOption('at') ? $trigger->getOption('at') : toTimeString(\Carbon\Carbon::now())),
         'rules' => $rules,
         'help_class' => 'trigger'
     ])

@@ -1,5 +1,6 @@
 $.fn.autofill = function(options) {
     var box = this;
+    box.id = '_' + Math.random().toString(36).substr(2, 9);
     box.input = box.find('.autofill-input');
     box.value = function() {
         return box.input.val().trim();
@@ -28,7 +29,7 @@ $.fn.autofill = function(options) {
 
     // dropdown list
     box.loadingRow = '<li class="loader-box"><a class="loader" href="javascript:;"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></a></li>';
-    dropboxHtml = '<div class="autofill-dropbox-container hide"><ul class="autofill-dropbox">' +
+    dropboxHtml = '<div class="autofill-dropbox-container autofill-dropbox-container-'+box.id+' hide"><ul class="autofill-dropbox autofill-dropbox-'+box.id+'">' +
         //'<li><a class="loading" href="javascript:;">'+loadingEffect+'</a></li>' +
         //'<li><a class="active" href="javascript:;"><label>Lawe Pham</label><span class="text-bold">L</span>awepham@gmail.com</a></li>' +
         //'<li><a class="" href="javascript:;"><label>Louis Walker</label><span class="text-bold">L</span>ouis@gmail.com</a></li>' +
@@ -37,8 +38,8 @@ $.fn.autofill = function(options) {
         //'<li><a class="" href="javascript:;"><label>****@abc.com</label></a></li>' +
         '</ul></div>';
     box.append(dropboxHtml);
-    box.dropbox = box.find('.autofill-dropbox');
-    box.container = box.find('.autofill-dropbox-container');
+    box.dropbox = box.find('.autofill-dropbox-'+box.id);
+    box.container = box.find('.autofill-dropbox-container-'+box.id);
 
     if (box.header != '') {
         box.container.prepend('<h5 class="header">'+box.header+'</h5>');
@@ -49,43 +50,43 @@ $.fn.autofill = function(options) {
 
     // ---- BEGIN FUNCTIONS ------------------------------
     // Init dropbox
-    clearDropbox = function() {
+    box.clearDropbox = function() {
         box.dropbox.html(box.loadingRow);
     };
 
-    maskDropbox = function() {
+    box.maskDropbox = function() {
         if (!box.dropbox.find('.loader-box').length) {
             box.dropbox.prepend(box.loadingRow);
         }
     };
 
-    unmaskDropbox = function() {
+    box.unmaskDropbox = function() {
         box.dropbox.find('.loader-box').remove();
     };
 
     // Show dropbox
-    showDropbox = function() {
+    box.showDropbox = function() {
         //if (box.value() != '') {
             box.container.removeClass('hide');
         //}
     };
 
     // Hide dropbox
-    hideDropbox = function() {
+    box.hideDropbox = function() {
         box.container.addClass('hide');
     };
 
     // Toggle dropbox
-    toggleDropbox = function() {
+    box.toggleDropbox = function() {
         if (box.value() != '') {
-            showDropbox();
+            box.showDropbox();
         } else {
             // hideDropbox();
         }
     };
 
     // Set current
-    setCurrent = function(li) {
+    box.setCurrent = function(li) {
         box.current = li;
 
         box.dropbox.find('li').removeClass('current');
@@ -93,9 +94,9 @@ $.fn.autofill = function(options) {
     };
 
     // Reset current
-    resetCurrent = function() {
+    box.resetCurrent = function() {
         if (box.dropbox.find('li.autofill-item').length) {
-            setCurrent(box.dropbox.find('li.autofill-item').first());
+            box.setCurrent(box.dropbox.find('li.autofill-item').first());
         } else {
             box.current = null;
         }
@@ -142,14 +143,17 @@ $.fn.autofill = function(options) {
             }
         });
 
-        if (!valid && box.error != '') {
-            if (!box.container.closest('.control-autofill').find('.autofill-error').length) {
-                if (box.container.closest('.control-autofill').find('.help-block').length > 0) {
-                    box.container.closest('.control-autofill').find('.help-block').after('<div class="helper-block autofill-error alert alert-warning">'+box.error+'</div>');
-                } else {
-                    box.container.after('<div class="helper-block autofill-error alert alert-warning">'+box.error+'</div>');
+        if (!valid) {
+            if (box.error != '') {
+                if (!box.container.closest('.control-autofill').find('.autofill-error').length) {
+                    if (box.container.closest('.control-autofill').find('.help-block').length > 0) {
+                        box.container.closest('.control-autofill').find('.help-block').after('<div class="helper-block autofill-error alert alert-warning">'+box.error+'</div>');
+                    } else {
+                        box.container.after('<div class="helper-block autofill-error alert alert-warning">'+box.error+'</div>');
+                    }
                 }
             }
+            
             // Change box title
             box.container.find('.header').addClass('text-warning');
             box.container.find('.header').html(box.messages.header_not_found);
@@ -161,7 +165,7 @@ $.fn.autofill = function(options) {
         }
     };
 
-    renderDropboxList = function(data) {
+    box.renderDropboxList = function(data) {
         box.dropbox.html('');
 
         if (data.length) {
@@ -203,7 +207,7 @@ $.fn.autofill = function(options) {
         }
     };
 
-    moveUp = function() {
+    box.moveUp = function() {
         if (box.dropbox.find('li.autofill-item').length) {
             if (box.current == null || !box.current.prev().hasClass('autofill-item')) {
                 setCurrent(box.dropbox.find('li.autofill-item').last());
@@ -213,19 +217,19 @@ $.fn.autofill = function(options) {
         }
     };
 
-    moveDown = function() {
+    box.moveDown = function() {
         if (box.dropbox.find('li.autofill-item').length) {
             if (box.current == null || !box.current.next().hasClass('autofill-item')) {
-                setCurrent(box.dropbox.find('li.autofill-item').first());
+                box.setCurrent(box.dropbox.find('li.autofill-item').first());
             } else if (box.current.next().hasClass('autofill-item')) {
-                setCurrent(box.current.next());
+                box.setCurrent(box.current.next());
             }
         }
     };
 
     // jax load dropbox content
     box.loadDropbox = function(callback) {
-        maskDropbox();
+        box.maskDropbox();
 
         if(box.xhr != null && box.xhr.readyState != 4){
             box.xhr.abort();
@@ -239,9 +243,9 @@ $.fn.autofill = function(options) {
         })
         .done(function(data) {
             // box.dropbox.html(html);
-            renderDropboxList(data);
+            box.renderDropboxList(data);
 
-            resetCurrent();
+            box.resetCurrent();
 
             // Click to dropbox
             box.find('.autofill-item').on('click', function() {
@@ -249,7 +253,7 @@ $.fn.autofill = function(options) {
                 selectCurrent();
             });
 
-            unmaskDropbox();
+            box.unmaskDropbox();
 
             // callback
             if (typeof(callback) !== 'undefined') {
@@ -263,27 +267,27 @@ $.fn.autofill = function(options) {
     // ---- BEGIN EVENTS ------------------------------
     // On focus
     box.input.on('focus', function() {
-        showDropbox();
+        box.showDropbox();
         box.loadDropbox();
     });
 
     // Out focus
     box.input.on('focusout', function() {
-        setTimeout(function() {hideDropbox();}, 200);
+        setTimeout(function() {box.hideDropbox();}, 200);
         box.updateErrorMessage();
     });
 
     // Key up
     box.input.on('keyup', function(event) {
         if(event.keyCode !== 13 && event.keyCode !== 38 && event.keyCode !== 40 ) {
-            toggleDropbox();
+            box.toggleDropbox();
             box.loadDropbox();
         }
         if(event.keyCode == 38) {
-            moveUp();
+            box.moveUp();
         }
         if(event.keyCode == 40) {
-            moveDown();
+            box.moveDown();
         }
         
         box.updateErrorMessage();

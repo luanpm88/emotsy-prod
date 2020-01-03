@@ -671,3 +671,22 @@ function rand_item($arr)
     return $arr[array_rand($arr)];
 }
 
+/**
+ * Return date string
+ *
+ * @return object
+ */
+function toDateString($datetime)
+{
+    return \Acelle\Library\Tool::dateTime($datetime)->format('Y-m-d');
+}
+
+/**
+ * Return time string
+ *
+ * @return object
+ */
+function toTimeString($datetime)
+{
+    return \Acelle\Library\Tool::dateTime($datetime)->format('h:i A');
+}

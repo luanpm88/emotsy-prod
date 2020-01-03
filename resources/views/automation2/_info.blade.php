@@ -51,7 +51,23 @@
                         _token: CSRF_TOKEN
                     }
                 }).always(function(response) {
-                    notify(response.status, '{{ trans('messages.notify.success') }}', response.message);
+                    if (!value) {
+                        notify(response.status, '{{ trans('messages.notify.success') }}', response.message);
+                    } else {
+                        var dialog = new Dialog('notification', {
+                            title: '{{ trans('messages.automation.started.title') }}',
+                            message: `{{ trans('messages.automation.started.desc') }}`,
+                            ok: function(dialog) {        
+                                sidebar.load();                    
+                            },
+                            cancel: function(dialog) {
+                                sidebar.load();
+                            },
+                            close: function(dialog) {
+                                sidebar.load();
+                            },
+                        });
+                    }
                 
                     sidebar.load();
                 });      
