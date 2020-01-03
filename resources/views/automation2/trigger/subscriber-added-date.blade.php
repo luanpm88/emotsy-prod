@@ -18,7 +18,7 @@
             'type' => 'time2',
             'name' => 'options[at]',
             'label' => trans('messages.automation.at'),
-            'value' => $trigger->getOption('at'),
+            'value' => ($trigger->getOption('at') ? $trigger->getOption('at') : '8:00 AM'),
             'rules' => [],
             'help_class' => 'trigger',
             'rules' => $rules,

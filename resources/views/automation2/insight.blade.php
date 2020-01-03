@@ -75,7 +75,7 @@
                 <desc>{{ trans('messages.automation.action.last_updated') }}</desc>
             </a>
             <div class="flex-fill text-center">
-                <h3 title="{{ trans('messages.automation.go_contacts') }}" onclick="sidebar.load('{{ action('Automation2Controller@contacts', [
+                <h3 title="{{ trans('messages.automation.insight.percent_tip') }}" onclick="sidebar.load('{{ action('Automation2Controller@contacts', [
                         'uid' => $automation->uid,
                         'action_id' => $key
                     ]) }}')" class="cursor-pointer xtooltip font-weight-semibold"

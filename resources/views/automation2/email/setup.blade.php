@@ -20,7 +20,8 @@
                     'label' => trans('messages.email_subject'),
                     'value' => $email->subject,
                     'rules' => $email->rules(),
-                    'help_class' => 'email'
+                    'help_class' => 'email',
+                    'placeholder' => trans('messages.automation.email.subject.placeholder'), 
                 ])
                                                 
                 @include('helpers.form_control', ['type' => 'text',
@@ -28,7 +29,8 @@
                     'label' => trans('messages.from_name'),
                     'value' => $email->from_name,
                     'rules' => $email->rules(),
-                    'help_class' => 'email'
+                    'help_class' => 'email',
+                    'placeholder' => trans('messages.automation.email.from_name.placeholder'), 
                 ])
                 
                 @include('helpers.form_control', [
@@ -45,14 +47,24 @@
                         'sender_link' => action('SenderController@index'),
                     ]),
                     'header' => trans('messages.verified_senders'),
+                    'placeholder' => trans('messages.automation.email.from.placeholder'), 
                 ])
                                                 
-                @include('helpers.form_control', ['type' => 'text',
+                @include('helpers.form_control', [
+                    'type' => 'autofill',
+                    'id' => 'sender_reply_to_input',
                     'name' => 'reply_to',
                     'label' => trans('messages.reply_to'),
                     'value' => $email->reply_to,
+                    'url' => action('SenderController@dropbox'),
                     'rules' => $email->rules(),
-                    'help_class' => 'email'
+                    'help_class' => 'email',
+                    'empty' => trans('messages.sender.dropbox.empty'),
+                    'error' => trans('messages.sender.dropbox.reply.error', [
+                        'sender_link' => action('SenderController@index'),
+                    ]),
+                    'header' => trans('messages.verified_senders'),
+                    'placeholder' => trans('messages.automation.email.from.placeholder'), 
                 ])
                 
             </div>
@@ -109,6 +121,18 @@
             $('#sender_from_input').focusout();
             box.updateErrorMessage();
         })
+
+        // auto fill 2
+        var box2 = $('#sender_reply_to_input').autofill({
+            messages: {
+                header_found: '{{ trans('messages.sending_identity') }}',
+                header_not_found: '{{ trans('messages.sending_identity.reply.not_found.header') }}'
+            }
+        });
+        box2.loadDropbox(function() {
+            $('#sender_reply_to_input').focusout();
+            box2.updateErrorMessage();
+        })
         
         $('#emailSetup').submit(function(e) {
             e.preventDefault();
@@ -151,6 +175,10 @@
                     notify('success', '{{ trans('messages.notify.success') }}', response.message);
                  }
             });
+        });
+
+        $('[name="from"]').blur(function() {
+            $('[name="reply_to"]').val($(this).val());
         });
     </script>
 @endsection

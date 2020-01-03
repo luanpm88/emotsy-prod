@@ -15,8 +15,8 @@
 				<div class="d-flex align-items-center">
 					<label class="font-weight-semibold mr-2">From</label>
 					<select class="select" name="from">
-						<option value="all">{{ trans('messages.all') }}</option>
-						<option value="mine" selected='selected'>{{ trans('messages.my_templates') }}</option>
+						<option value="all" selected='selected'>{{ trans('messages.all') }}</option>
+						<option value="mine">{{ trans('messages.my_templates') }}</option>
 						<option value="gallery">{{ trans('messages.gallery') }}</option>
 					</select>	
 				</div>
