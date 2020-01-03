@@ -268,7 +268,9 @@ class AutomationElement {
 
         if (ctype == 'plus') {
             text.innerHTML = '+';
-            text.setAttribute('font-size', '20px');
+            text.setAttribute('font-size', '24px');
+            text.setAttribute('x', 0);
+        text.setAttribute('y', 3);
         } else if (ctype == 'yes') {
             text.innerHTML = 'Y';
         } else {
