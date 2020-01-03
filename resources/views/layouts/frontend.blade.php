@@ -162,12 +162,14 @@
 							<li><a href="{{ action("Admin\HomeController@index") }}"><i class="icon-enter2"></i> {{ trans('messages.admin_view') }}</a></li>
 							<li class="divider"></li>
 						@endif
-						<li class="dropdown">
-							<a href="#" class="top-quota-button" data-url="{{ action("AccountController@quotaLog") }}">
-								<i class="icon-stats-bars4"></i>
-								<span class="">{{ trans('messages.used_quota') }}</span>
-							</a>
-						</li>
+						@if (request()->user()->customer->activeSubscription())
+							<li class="dropdown">
+								<a href="#" class="top-quota-button" data-url="{{ action("AccountController@quotaLog") }}">
+									<i class="icon-stats-bars4"></i>
+									<span class="">{{ trans('messages.used_quota') }}</span>
+								</a>
+							</li>
+						@endif
 						<li rel0="AccountSubscriptionController\index">
 							<a href="{{ action('AccountSubscriptionController@index') }}">
 								<i class="icon-quill4"></i> {{ trans('messages.subscriptions') }}
