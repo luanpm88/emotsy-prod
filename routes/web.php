@@ -599,6 +599,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::delete('automation2/delete', 'Automation2Controller@delete');
     Route::get('automation2/listing', 'Automation2Controller@listing');
     Route::get('automation2', 'Automation2Controller@index');
+
+    Route::get('email/preview/{uid}/{subscriber_uid}', 'EmailController@preview');
 });
 
 // ADMIN AREA

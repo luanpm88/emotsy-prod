@@ -56,6 +56,14 @@ class Email extends Model
     }
 
     /**
+     * Association with open logs.
+     */
+    public function trackingLogs()
+    {
+        return $this->hasMany('Acelle\Model\TrackingLog');
+    }
+
+    /**
      * Bootstrap any application services.
      */
     public static function boot()
@@ -793,5 +801,11 @@ class Email extends Model
         $message->attachSigner($signer);
 
         return $message;
+    }
+
+    public function isOpened($subscriber)
+    {
+        return $this->trackingLogs()->where('subscriber_id', $subscriber->id)
+                            ->join('open_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')->exists();
     }
 }

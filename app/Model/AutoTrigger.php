@@ -45,6 +45,11 @@ class AutoTrigger extends Model
         self::saving(function($model){
             $model->updateExecutedIndex();
         });
+
+        self::retrieved(function($model){
+            // IMPORTANT: in case of any change made to the parent automation2
+            $model->updateWorkflow();
+        });
     }
 
     /**
@@ -74,7 +79,7 @@ class AutoTrigger extends Model
      */
     public function timelines()
     {
-        return $this->hasMany('Acelle\Model\Timeline');
+        return $this->hasMany('Acelle\Model\Timeline')->orderBy('created_at', 'DESC');
     }
 
     // getLatestAction from trigger
@@ -185,7 +190,6 @@ class AutoTrigger extends Model
     public function getActions($callback)
     {
         $json = $this->getJson();
-
         foreach ($json as $key => $attributes) {
             $attributes['id'] = $key;
             $instance = $this->getAction($attributes);
@@ -202,11 +206,22 @@ class AutoTrigger extends Model
     public function updateWorkflow()
     {
         $origins = json_decode($this->automation2->data, true);
+        $newJson = [];
 
         foreach ($origins as $origin) {
-            $action = $this->getAction($origin);
-            $this->updateAction($action);
+            $newAction = $this->getAction($origin);
+            $currentAction = $this->getActionById($newAction->getId());
+            
+            if (is_null($currentAction)) {
+                $newJson[$newAction->getId()] = $newAction->toJson();
+            } else {
+                $mergedJson = array_merge($currentAction->toJson(), $origin); // IMPORTANT: do not use newAction->toJson() --> null values will overwrite existing values
+                $newJson[$newAction->getId()] = $mergedJson;
+            }
         }
+
+        $this->data = json_encode($newJson);
+        $this->save();
     }
 
     public function getJson()
