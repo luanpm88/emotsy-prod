@@ -305,9 +305,8 @@ class TemplateController extends Controller
             return $this->notAuthorized();
         }
         
-        if (!empty($template->image) && file_exists($template->image)) {
-            $img = \Image::make($template->image);
-            
+        if ($template->getThumb()) {
+            $img = \Image::make($template->getThumb());
         } elseif (!empty($template->image) && file_exists(storage_path($template->image).'.thumb.jpg')) {
             $img = \Image::make(storage_path($template->image).'.thumb.jpg');
         } else {

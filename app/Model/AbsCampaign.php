@@ -2583,6 +2583,22 @@ abstract class AbsCampaign extends Model
     }
 
     /**
+     * Get thumb.
+     */
+    public function getThumb()
+    {
+        // find index
+        $names = array('thumbnail.jpg', 'thumbnail.png', 'thumb.jpg', 'thumb.png');
+        foreach ($names as $name) {
+            if (is_file($file = $this->getStoragePath() . $name)) {
+                return $file;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * transform URL.
      */
     public function transform()

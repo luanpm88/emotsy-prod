@@ -1052,15 +1052,51 @@ label.switchery-double.checkbox-switchery {
 }
 .diagram .history .history-list-items li {
   list-style: none;
+  position: relative;
 }
 .diagram .history .history-list-items a {
-  padding: 9px 15px;
+  padding: 9px 15px 9px 30px;
   display: block;
   width: 250px;
-  border-bottom: solid 1px #ddd;
+  border-bottom: solid 1px #eee;
   font-size: 92%;
   text-align: left;
   color: #333;
+}
+.diagram .history .history-list-items a:after {
+  content: "hello";
+  position: absolute;
+  left: 7px;
+  top: 34%;
+  background: #ddd;
+  width: 14px;
+  height: 14px;
+  border-radius: 100%;
+  display: block;
+  text-indent: 9000px;
+  line-height: 0;
+  border-width: 0px 2px;
+  border: solid 2px #fff;
+  z-index: 1;
+}
+.diagram .history .history-list-items a.current:after {
+  background: #17a2b8;
+}
+.diagram .history .history-list-items a:before {
+  content: "hello";
+  position: absolute;
+  left: 11px;
+  top: 50%;
+  background: #ddd;
+  height: 100%;
+  width: 6px;
+  text-indent: 9000px;
+  border: solid 2px #fff;
+  border-width: 0px 2px;
+  z-index: 1;
+}
+.diagram .history .history-list-items li:last-child a:before {
+  display: none;
 }
 .diagram .history .history-list-items a:hover {
   background: #f2f2f2;
@@ -1158,4 +1194,11 @@ a:hover label {
 .ui-timepicker-standard {
   font-family: inherit;
   font-size: inherit;
+}
+.automation-template-thumb {
+  width: 160px;
+  box-shadow: 0px 0px 22px rgba(0,0,0,0.2);
+  border: solid 1px #ddd;
+  padding: 5px;
+  border-radius: 10px;
 }

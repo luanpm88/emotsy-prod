@@ -5,33 +5,42 @@
     @include('automation2.email._tabs', ['tab' => 'template'])
     
     <div class="row">
-        <div class="col-md-8">
-            <div class="sub-section">
-                <h5 class="mb-3">{{ trans('messages.campaign.email_content') }}</h5>                
-                <p>{{ trans('messages.campaign.email_content.intro') }}</p>
-                    
-                <div class="media-left">
-                    <div class="main">
-                        <label class="font-weight-bold">{{ trans('messages.campaign.html_email') }}</label>
-                        <p>{{ trans('messages.campaign.html_email.last_edit', [
-                            'date' => Acelle\Library\Tool::formatDateTime($email->updated_at),
-                        ]) }}</p>
+        <div class="col-md-12">
+            <div class="sub-section d-flex">
+                <div class="mr-auto pr-5">
+                    <h5 class="mb-3">{{ trans('messages.campaign.email_content') }}</h5>                
+                    <p>{{ trans('messages.campaign.email_content.intro') }}</p>
                         
-                        <a href="{{ action('Automation2Controller@templateEdit', [
-                                'uid' => $automation->uid,
-                                'email_uid' => $email->uid,
-                            ]) }}" class="btn btn-secondary mr-1 template-compose"
-                        >
-                            {{ trans('messages.campaign.compose_email') }}
-                        </a>
-                        <a href="{{ action('Automation2Controller@templateCreate', [
-                                'uid' => $automation->uid,
-                                'email_uid' => $email->uid,
-                            ]) }}" class="btn btn-outline-secondary template-change"
-                        >
-                            {{ trans('messages.campaign.change_template') }}
-                        </a>
+                    <div class="media-left">
+                        <div class="main">
+                            <label class="font-weight-bold">{{ trans('messages.campaign.html_email') }}</label>
+                            <p>{{ trans('messages.campaign.html_email.last_edit', [
+                                'date' => Acelle\Library\Tool::formatDateTime($email->updated_at),
+                            ]) }}</p>
+                            
+                            <a href="{{ action('Automation2Controller@templateEdit', [
+                                    'uid' => $automation->uid,
+                                    'email_uid' => $email->uid,
+                                ]) }}" class="btn btn-secondary mr-1 template-compose"
+                            >
+                                {{ trans('messages.campaign.compose_email') }}
+                            </a>
+                            <a href="{{ action('Automation2Controller@templateCreate', [
+                                    'uid' => $automation->uid,
+                                    'email_uid' => $email->uid,
+                                ]) }}" class="btn btn-outline-secondary template-change"
+                            >
+                                {{ trans('messages.campaign.change_template') }}
+                            </a>
+                        </div>
                     </div>
+                </div>
+                <div>
+                    <img class="automation-template-thumb" src="{{ action('EmailController@image', [
+                            'uid' => $automation->uid,
+                            'email_uid' => $email->uid,
+                        ]) }}?v={{ Carbon\Carbon::now() }}"
+                    />
                 </div>
             </div>
                 

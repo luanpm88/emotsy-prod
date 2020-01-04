@@ -191,10 +191,30 @@ class Email extends Model
     }
 
     /**
+     * Get thumb.
+     */
+    public function getThumb()
+    {
+        // find index
+        $names = array('thumbnail.jpg', 'thumbnail.png', 'thumb.jpg', 'thumb.png');
+        foreach ($names as $name) {
+            if (is_file($file = $this->getStoragePath() . $name)) {
+                return $file;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Load from directory.
      */
     public function loadFromDirectory($tmp_path)
     {
+        // remove current folder
+        // exec("rm -r {$tmp_path}");
+        Tool::xdelete($this->getStoragePath());
+
         // try to find the main file, index.html | index.html | file_name.html | ...
         $main_file = null;
         $sub_path = "";
@@ -262,11 +282,10 @@ class Email extends Model
         // copy all folder to public path
         if (!file_exists($upload_path)) {
             mkdir($upload_path, 0777, true);
-        }        
+        }
 
-        // remove tmp folder
-        // exec("rm -r {$tmp_path}");
-        Tool::xdelete($tmp_path);
+        // exec("cp -r {$tmp_path}/* {$public_upload_path}/");
+        Tool::xcopy($tmp_path, $upload_path);
     }
 
     /**
@@ -316,8 +335,9 @@ class Email extends Model
 
         $this->loadFromDirectory($tmp_path);
 
-        // exec("cp -r {$tmp_path}/* {$public_upload_path}/");
-        Tool::xcopy($tmp_path, $upload_path);
+        // remove tmp folder
+        // exec("rm -r {$tmp_path}");
+        Tool::xdelete($tmp_path);
 
         return [true, $validator];
     }

@@ -407,9 +407,10 @@ class Template extends Model
     {
         // try to find the main file, index.html | index.html | file_name.html | ...
         $main_file = null;
+        $thumb = null;
         $sub_path = "";
-        $possible_main_file_names = array('index.html', 'index.htm');
 
+        // find index
         $possible_main_file_names = array('index.html', 'index.htm');
         foreach ($possible_main_file_names as $name) {
             if (is_file($file = $tmp_path.'/'.$name)) {
@@ -425,7 +426,7 @@ class Template extends Model
                 }
             }
         }
-        // try to find first htm|html file
+        // if not find any first html file
         if ($main_file === null) {
             $objects = scandir($tmp_path);
             foreach ($objects as $object) {
@@ -469,7 +470,9 @@ class Template extends Model
         // upload path
         $upload_path = $this->getStoragePath();
 
-        // copy all folder to public path
+        echo $upload_path;
+
+        // copy all folder to upload path
         if (!file_exists($upload_path)) {
             mkdir($upload_path, 0777, true);
         }
@@ -549,6 +552,22 @@ class Template extends Model
             $dir_id = 'admin';
         }
         return storage_path('app/users/' . $dir_id . '/templates/' . $this->uid . '/content/' . $path);
+    }
+
+    /**
+     * Get thumb.
+     */
+    public function getThumb()
+    {
+        // find index
+        $names = array('thumbnail.jpg', 'thumbnail.png', 'thumb.jpg', 'thumb.png');
+        foreach ($names as $name) {
+            if (is_file($file = $this->getStoragePath() . $name)) {
+                return $file;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -663,18 +682,11 @@ class Template extends Model
             
             if ($folder != '.' && $folder != '..' && is_dir($fullPath)) {
                 // Create admin template
-                $template = new Template();
-                $name = trim(file_get_contents($fullPath . '/name'));
-                $html = file_get_contents($fullPath . '/index.html');
-                
-                $template->name = $name;
+                $template = new Template();                
+                $template->name = $folder;
                 $template->admin_id = 1;
-                $template->content = $html;
-                $template->replaceHtmlUrl($template->getUploadUri());
-                $template->save();
-                
-                // load from path
-                $template->load($fullPath);
+
+                $template->loadFromDirectory($fullPath);
             }
         }
     }

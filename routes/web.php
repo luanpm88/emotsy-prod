@@ -571,6 +571,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('automation2/{uid}/template/{email_uid}/attachment/{attachment_uid}/remove', 'Automation2Controller@emailAttachmentRemove');
     Route::get('automation2/{uid}/template/{email_uid}/attachment/{attachment_uid}', 'Automation2Controller@emailAttachmentDownload');
     
+    Route::get('automation2/{uid}/template/{email_uid}/image', 'EmailController@image');
     Route::post('automation2/{uid}/template/{email_uid}/attachment', 'Automation2Controller@emailAttachmentUpload');
     Route::get('automation2/{uid}/template/{email_uid}/change/{template_uid}', 'Automation2Controller@templateChangeTemplate');
     Route::post('automation2/{uid}/template/{email_uid}/asset', 'Automation2Controller@templateAsset');

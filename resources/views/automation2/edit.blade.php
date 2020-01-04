@@ -145,7 +145,7 @@
 					</a>
 					<ul class="history-list-items">
 						<li>
-							<a href="" class="d-flex align-items-center">
+							<a href="" class="d-flex align-items-center current">
 								<i class="material-icons-outlined mr-2">refresh</i>
 								<span class="content mr-auto">Reset current flow</span>
 								{{-- <time class="mini text-muted">1 minute</time> --}}
