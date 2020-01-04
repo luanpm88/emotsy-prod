@@ -2997,7 +2997,7 @@
   'automation.contact.all_activities' => 'All activities',
   'automation.profile.manage_tag' => 'Manage tags',
   'automation.contact.tagged' => ':contact\'s tags were updated',
-  'automation.contact.tag.removed' => '<span class="font-weight-semibold">:tag</span> tag were updated',
+  'automation.contact.tag.removed' => '<span class="font-weight-semibold">:tag</span> tag were removed',
   'automation.profile.click_to_add_tag' => 'Add tag',
   'automation.trigger.tree.welcome-new-subscriber' => 'New contact subscribes to mail list',
   'automation.trigger.tree.say-happy-birthday' => 'Trigger on contacts\' date of birth',
