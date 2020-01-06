@@ -700,7 +700,7 @@ class Automation2 extends Model
     }
 
     /**
-     * Get list fields options.
+     * Produce sample data.
      */
     public function produceSampleData()
     {
@@ -710,4 +710,16 @@ class Automation2 extends Model
         }
     }
 
+    /**
+     * Clean up after list change.
+     */
+    public function resetListRelatedData()
+    {
+        // Delete autoTriggers will also delete
+        // + tracking_logs
+        // + open logs
+        // + click logs
+        // + timelines
+        $this->autoTriggers()->delete();
+    }
 }
