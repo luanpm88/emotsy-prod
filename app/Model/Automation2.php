@@ -578,7 +578,7 @@ class Automation2 extends Model
 
     public function getActionStats($action)
     {
-        $total = $this->mailList->count();
+        $total = $this->mailList->readCache('SubscriberCount');
         $count = 0;
         foreach ($this->autoTriggers as $trigger) {
             $count += ($trigger->isActionExecuted($action['id'])) ? 1 : 0;
