@@ -106,6 +106,15 @@
                         'help_class' => 'plan',
                         'rules' => $plan->generalRules()
                     ])
+
+                    @include('helpers.form_control', [
+                        'type' => 'text',
+                        'name' => 'plan[general][description]',
+                        'label' => trans('messages.plan.description'),
+                        'value' => $plan->description,
+                        'help_class' => 'plan',
+                        'rules' => $plan->generalRules(),
+                    ])
                     
                     @include('helpers.form_control', [
                         'class' => 'numeric',
