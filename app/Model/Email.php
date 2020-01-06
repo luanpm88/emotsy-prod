@@ -155,11 +155,6 @@ class Email extends Model
         foreach($templates as $template) {
             $result[] = [
                 'name' => $template->name,
-                'url' => action('Automation2Controller@templateChangeTemplate', [
-                    'uid' => $this->automation->uid,
-                    'email_uid' => $this->uid,
-                    'change_uid' => $template->uid
-                ]),
                 'thumbnail' => action('TemplateController@image', $template->uid),
             ];
         }
@@ -877,5 +872,27 @@ class Email extends Model
     {
         return $this->trackingLogs()->where('subscriber_id', $subscriber->id)
                             ->join('open_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')->exists();
+    }
+
+    /**
+     * Check if email has template.
+     *
+     * @return void
+     */
+    public function hasTemplate()
+    {
+        return $this->content;
+    }
+
+    /**
+     * Remove email template.
+     *
+     * @return void
+     */
+    public function removeTemplate()
+    {
+        $this->content = null;
+        \Acelle\Library\Tool::xdelete($this->getStoragePath());
+        $this->save();
     }
 }

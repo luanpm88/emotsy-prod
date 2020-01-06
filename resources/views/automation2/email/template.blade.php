@@ -25,7 +25,7 @@
                             >
                                 {{ trans('messages.campaign.compose_email') }}
                             </a>
-                            <a href="{{ action('Automation2Controller@templateCreate', [
+                            <a href="{{ action('Automation2Controller@templateRemove', [
                                     'uid' => $automation->uid,
                                     'email_uid' => $email->uid,
                                 ]) }}" class="btn btn-outline-secondary template-change"
@@ -77,20 +77,52 @@
 
             openBuilder(url);
         });
-        
-        $('.template-change').click(function(e) {
-            e.preventDefault();
-            
-            var url = $(this).attr('href');
-        
-            popup.load(url);
-        });
-
-        console.log('aaa');
 
         // Check email content already set if this page accur
         tree.getSelected().setOptions($.extend(tree.getSelected().getOptions(), {template: "true"}));
         tree.getSelected().validate();
         saveData();
+        
+        $('.template-change').click(function(e) {
+            e.preventDefault();
+            
+            var url = $(this).attr('href');
+            var confirm = `{{ trans('messages.automation.email.change_template.confirm') }}`;
+
+            var dialog = new Dialog('confirm', {
+                message: confirm,
+                ok: function(dialog) {
+                    $.ajax({
+                        url: url,
+                        method: 'POST',
+                        data: {
+                            _token: CSRF_TOKEN
+                        },
+                        statusCode: {
+                            // validate error
+                            400: function (res) {
+                                console.log('Something went wrong!');
+                            }
+                        },
+                        success: function (response) {
+                            // Check email content already set if this page accur
+                            tree.getSelected().setOptions($.extend(tree.getSelected().getOptions(), {template: "false"}));
+                            tree.getSelected().validate();
+
+                            // after remove
+                            saveData(function() {
+                                // reload
+                                popup.load();
+
+                                // notify
+                                notify(response.status, '{{ trans('messages.notify.success') }}', response.message);
+                            });
+
+                            
+                        }
+                    });
+                },
+            });                
+        });
     </script>
 @endsection

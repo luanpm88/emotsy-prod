@@ -3021,4 +3021,7 @@
   'automation.started.desc' => 'Congratulations! Your automated campaign is now up and running.
     Acelle Mail keeps track of your individual contacts activities as well as overall campaign performance.
     Check out your Insight and Statistics reports for more details.',
+  'automation.email.change_template.confirm' => 'Changing template will remove current email content with customiztions.
+    This can be undone.',
+  'automation.email.template.removed' => 'Email\'s template was cleared',
 ) ?>

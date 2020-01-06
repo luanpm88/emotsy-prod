@@ -57,7 +57,6 @@
         var dialog = new Dialog('confirm', {
             message: confirm,
             ok: function(dialog) {
-
                 $.ajax({
                     url: url,
                     method: 'POST',

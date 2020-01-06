@@ -326,7 +326,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('templates/{uid}/edit', 'TemplateController@edit');
     Route::patch('templates/{uid}/update', 'TemplateController@update');
 
-    // Campaign
+    // Campaign    
     Route::get('campaigns/{uid}/template/change/{template_uid}', 'CampaignController@templateChangeTemplate');
     Route::post('campaigns/{uid}/template/asset', 'CampaignController@templateAsset');
     Route::post('campaigns/{uid}/template/asset', 'CampaignController@templateAsset');
@@ -573,7 +573,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     
     Route::get('automation2/{uid}/template/{email_uid}/image', 'EmailController@image');
     Route::post('automation2/{uid}/template/{email_uid}/attachment', 'Automation2Controller@emailAttachmentUpload');
-    Route::get('automation2/{uid}/template/{email_uid}/change/{template_uid}', 'Automation2Controller@templateChangeTemplate');
+    Route::post('automation2/{uid}/template/{email_uid}/remove-template', 'Automation2Controller@templateRemove');
     Route::post('automation2/{uid}/template/{email_uid}/asset', 'Automation2Controller@templateAsset');
     Route::post('automation2/{uid}/template/{email_uid}/asset', 'Automation2Controller@templateAsset');
     Route::get('automation2/{uid}/template/{email_uid}/content', 'Automation2Controller@templateContent');

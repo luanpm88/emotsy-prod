@@ -660,7 +660,7 @@ class Automation2Controller extends Controller
             return $this->notAuthorized();
         }
         
-        if (!$email->content) {
+        if (!$email->hasTemplate()) {
             return redirect()->action('Automation2Controller@templateCreate', [
                 'uid' => $automation->uid,
                 'email_uid' => $email->uid,
@@ -986,35 +986,30 @@ class Automation2Controller extends Controller
             'email' => $email,
         ]);
     }
-
+    
     /**
-     * Choose an existed template.
+     * Remove exist template.
      *
      * @param \Illuminate\Http\Request $request
      *
      * @return \Illuminate\Http\Response
      */
-    public function templateChoose(Request $request)
+    public function templateRemove(Request $request, $uid, $email_uid)
     {
-        $user = $request->user();
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
-        $template = \Acelle\Model\Template::findByUid($request->template_uid);
-
+        $automation = Automation2::findByUid($uid);
+        $email = Email::findByUid($request->email_uid);
+        
         // authorize
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
         }
 
-        $campaign->html = $template->content;
-        $campaign->template_source = $template->source;
-        // $campaign->plain = preg_replace('/\s+/',' ',preg_replace('/\r\n/',' ',strip_tags($campaign->html)));
-        $campaign->save();
+        $email->removeTemplate();
 
-        if (!$campaign->is_auto) {
-            return redirect()->action('CampaignController@templatePreview', ['uid' => $campaign->uid]);
-        } else {
-            return redirect()->action('AutoEventController@templatePreview', ['uid' => $campaign->autoEvent()->uid, 'campaign_uid' => $campaign->uid]);
-        }
+        return response()->json([
+            'status' => 'success',
+            'message' => trans('messages.automation.email.template.removed'),
+        ], 201);
     }
 
     /**
