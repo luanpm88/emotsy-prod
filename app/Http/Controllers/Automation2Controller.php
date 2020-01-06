@@ -131,7 +131,9 @@ class Automation2Controller extends Controller
         }
             
         // pass validation and save
-        $automation->mail_list_id = MailList::findByUid($request->mail_list_uid)->id;
+        $automation->updateMailList(MailList::findByUid($request->mail_list_uid));      
+        
+        // save
         $automation->save();
             
         return response()->json([

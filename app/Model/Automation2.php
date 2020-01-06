@@ -722,4 +722,18 @@ class Automation2 extends Model
         // + timelines
         $this->autoTriggers()->delete();
     }
+    
+    /**
+     * Change mail list.
+     */
+    public function updateMailList($new_list)
+    {
+        if ($this->mail_list_id != $new_list->id) {
+            $this->mail_list_id = $new_list->id;
+            $this->save();
+            
+            // reset automation list
+            $this->resetListRelatedData();
+        }
+    }
 }
