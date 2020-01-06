@@ -312,22 +312,6 @@ function language_code() {
  *
  * @return string
  */
-function calc_percentage($number, $total, $precision = 2)
-{
-    if (!is_numeric($number)) {
-        return $number;
-    }
-    if ($total == 0) {
-        return '--';
-    }
-    return format_number(($number/$total) * 100) + 0;
-}
-
-/**
- * Format a number as percentage
- *
- * @return string
- */
 function number_to_percentage($number, $precision = 2)
 {
     if (!is_numeric($number)) {

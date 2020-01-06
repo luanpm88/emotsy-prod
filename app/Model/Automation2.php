@@ -267,30 +267,6 @@ class Automation2 extends Model
     }
 
     /**
-     * Get contacts count.
-     */
-    public function getContactsCount()
-    {
-        return 2345;
-    }
-
-    /**
-     * Get complete percent.
-     */
-    public function getCompletePercent()
-    {
-        return 56;
-    }
-
-    /**
-     * Get complete percent.
-     */
-    public function getEmailsSentCount()
-    {
-        return 2500;
-    }
-
-    /**
      * Get delay options.
      */
     public function getDelayOptions()
@@ -578,7 +554,7 @@ class Automation2 extends Model
 
     public function getActionStats($action)
     {
-        $total = $this->mailList->count();
+        $total = $this->mailList->readCache('SubscriberCount');
         $count = 0;
         foreach ($this->autoTriggers as $trigger) {
             $count += ($trigger->isActionExecuted($action['id'])) ? 1 : 0;
@@ -599,19 +575,20 @@ class Automation2 extends Model
 
     public function getSummaryStats()
     {
-        $total = $this->mailList->subscribers()->count();
+        $total = $this->mailList->readCache('SubscriberCount');
         $involved = $this->autoTriggers()->count();
-        $involvePercentage = ($total == 0) ? 0 : $involved / $total;
 
         $complete = 0;
         foreach ($this->autoTriggers as $trigger) {
             $complete += ($trigger->isComplete()) ? 1 : 0;
         }
 
+        $completePercentage = ($total == 0) ? 0 : $complete / $total;
+
         return [
             'total' => $total,
-            'involed' => $involvePercentage,
-            'complete' => $complete
+            'involed' => $involved,
+            'complete' => $completePercentage
         ];
     }
 
@@ -722,4 +699,27 @@ class Automation2 extends Model
         return $data;
     }
 
+    /**
+     * Produce sample data.
+     */
+    public function produceSampleData()
+    {
+        $subscribers = $this->subscribers()->inRandomOrder()->limit(100)->get();
+        foreach ($subscribers as $subscriber) {
+            $this->initTrigger($subscriber);
+        }
+    }
+
+    /**
+     * Clean up after list change.
+     */
+    public function resetListRelatedData()
+    {
+        // Delete autoTriggers will also delete
+        // + tracking_logs
+        // + open logs
+        // + click logs
+        // + timelines
+        $this->autoTriggers()->delete();
+    }
 }

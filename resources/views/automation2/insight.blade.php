@@ -19,13 +19,13 @@
         </desc>
     </a>
     <a title="{{ trans('messages.automation.go_contacts') }}" href="javascript:;" onclick="sidebar.load('{{ action('Automation2Controller@contacts', $automation->uid) }}')" class="xtooltip insight-stat-col flex-fill">
-        <number>{{ format_number($stats['involed']) }}</number>
+        <number>{{ number_with_delimiter($stats['involed']) }}</number>
         <desc class="text-muted text-center">
             <span class="stats-title">{{ trans_choice('messages.automation.involved', $stats['total']) }}</span>
         </desc>
     </a>
     <a title="{{ trans('messages.automation.go_contacts') }}" href="javascript:;" onclick="sidebar.load('{{ action('Automation2Controller@contacts', $automation->uid) }}')" class="xtooltip insight-stat-col flex-fill">
-        <number>{{ calc_percentage($stats['complete'], $stats['involed']) }}</number>
+        <number>{{ number_to_percentage($stats['complete']) }}</number>
         <desc class="text-muted text-center">
             <span class="stats-title">{{ trans_choice('messages.automation.complete_percent', $stats['total']) }}</span>
         </desc>
