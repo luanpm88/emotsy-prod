@@ -703,8 +703,8 @@ input.error {
     color: #fff;
 }
 .bg-settled, .bg-recurring, .bg-deliverable, .bg-current_active, .bg-current, .bg-cron-running, .bg-running, .bg-starting, .bg-pending-sending, .bg-active, .bg-confirmed, .bg-paid, .bg-sending, .bg-subscribed {
-    background-color: #d7eacc;
-    border-color: #d7eacc;
+    background-color: #c4efab;
+    border-color: #c4efab;
     color: #231c15;
 }
 .bg-ended, .bg-unknown, .bg-expired, .bg-past, .bg-spam-reported, .bg-not_sent, .bg-canceled, .bg-cancelled, .bg-unactive, .bg-disabled, .bg-unsubscribed, .bg-unconfirmed, .bg-draft, .bg-blacklisted, .bg-done {
