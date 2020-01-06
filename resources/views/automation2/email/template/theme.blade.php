@@ -33,6 +33,7 @@
 					'uid' => $automation->uid,
 					'email_uid' => $email->uid,
 				]) }}',
+			per_page: 12,
 			data: function() {
 					return {
 						from: $('[name=from]').val(),

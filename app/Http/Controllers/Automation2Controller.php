@@ -219,6 +219,7 @@ class Automation2Controller extends Controller
         return view('automation2.triggerSelectPupop', [
             'types' => $types,
             'automation' => $automation,
+            'trigger' => $automation->getTrigger(),
         ]);
     }
     
@@ -616,6 +617,31 @@ class Automation2Controller extends Controller
             'automation' => $automation,
             'email' => $email,
         ]);
+    }
+
+    /**
+     * Delete automation email.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function emailDelete(Request $request, $uid, $email_uid)
+    {
+        // init automation
+        $automation = Automation2::findByUid($uid);        
+        $email = Email::findByUid($email_uid);
+        
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+        
+        // delete email
+        $email->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => trans('messages.automation.email.deteled'),
+        ], 201);
     }
     
     /**

@@ -1430,7 +1430,7 @@ class Plan extends Model implements BillablePlanInterface
      */
     public function isAvailable()
     {
-        return $this->isActive() && $this->hasPrimarySendingServer();
+        return $this->isActive();
     }
     
     /**

@@ -63,7 +63,7 @@
                 <td class="text-right text-nowrap">
                     @if (\Gate::allows('update', $automation))
                         <a data-popup="tooltip" href="{{ action('Automation2Controller@edit', $automation->uid) }}" type="button" class="btn bg-grey btn-icon">
-                         <i class="lnr lnr-cog mr-5 text-semibold"></i> {{ trans('messages.automation.design') }}
+                            <i class="material-icons">multiline_chart</i> {{ trans('messages.automation.design') }}
                         </a>
                     @endif
                     @if (\Gate::allows('delete', $automation) || Auth::user()->can('disable', $automation) || Auth::user()->can('enable', $automation))

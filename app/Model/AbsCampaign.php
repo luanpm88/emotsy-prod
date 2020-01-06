@@ -767,6 +767,11 @@ abstract class AbsCampaign extends Model
             // Update links
             $item->updateLinks();
         });
+
+        static::deleted(function ($item) {
+            $uploaded_dir = $item->getStoragePath();
+            \Acelle\Library\Tool::xdelete($uploaded_dir);
+        });
     }
 
     /**
@@ -2579,7 +2584,7 @@ abstract class AbsCampaign extends Model
      */
     public function getStoragePath($path="")
     {
-        return storage_path('app/users/' . $this->customer->uid . '/campaigns/' . $this->uid . '/content/' . $path);
+        return storage_path('app/users/' . $this->customer->uid . '/campaigns/' . $this->uid . '/' . $path);
     }
 
     /**

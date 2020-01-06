@@ -42,6 +42,28 @@ a {
 .box-list .box-item:hover {
   border-color: #888;
 }
+.box-list .box-item.current {
+  border: none;
+  background: #f4f4f4;
+  color: #555;
+  cursor: default;
+  pointer-events: none;
+  overflow: hidden;
+  position: relative;
+}
+.box-list .box-item.current:before {
+  content: "";
+  position: absolute;
+  border: 3px dashed #888;
+  top: -2px;
+  bottom: -1px;
+  left: -2px;
+  right: -1px;
+  border-radius: 7px;
+}
+.box-list .box-item.current:hover {
+  border-color: #aaa;
+}
 .box-list .box-item h4 {
     font-weight: 600;
     margin-bottom: 10px;
@@ -1201,4 +1223,10 @@ a:hover label {
   border: solid 1px #ddd;
   padding: 5px;
   border-radius: 10px;
+}
+.select2-container--default .select2-selection--single {
+  border-color: #ced4da;
+}
+.select2-container .select2-selection--single:focus {
+  box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
 }

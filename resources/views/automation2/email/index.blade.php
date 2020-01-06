@@ -30,7 +30,10 @@
     {{ trans('messages.automation.action.delete.confirm') }}        
 </p>
 <div class="mt-3">
-    <a href="javascript:;" data-confirm="{{ trans('messages.automation.email.delete.confirm') }}" class="btn btn-danger email-action-delete">
+    <a href="{{ action('Automation2Controller@emailDelete', [
+        'uid' => $automation->uid,
+        'email_uid' => $email->uid,
+    ]) }}" data-confirm="{{ trans('messages.automation.email.delete.confirm') }}" class="btn btn-danger email-action-delete">
         <i class='lnr lnr-trash mr-2'></i> {{ trans('messages.automation.delete_this_action') }}
     </a>
 </div>
@@ -49,21 +52,38 @@
         e.preventDefault();
         
         var confirm = $(this).attr('data-confirm');
+        var url = $(this).attr('href');
 
         var dialog = new Dialog('confirm', {
             message: confirm,
             ok: function(dialog) {
-                // remove current node
-                tree.getSelected().remove();        
-                
-                // notify
-                notify('success', '{{ trans('messages.notify.success') }}', '{{ trans('messages.automation.email.deteled') }}');
-                
-                // load default sidebar
-                sidebar.load('{{ action('Automation2Controller@settings', $automation->uid) }}');
-                
-                // save tree
-                saveData();
+
+                $.ajax({
+                    url: url,
+                    method: 'POST',
+                    data: {
+                        _token: CSRF_TOKEN
+                    },
+                    statusCode: {
+                        // validate error
+                        400: function (res) {
+                            console.log('Something went wrong!');
+                        }
+                    },
+                    success: function (response) {
+                        // remove current node
+                        tree.getSelected().remove();
+                        
+                        // save tree
+                        saveData(function() {                            
+                            // notify
+                            notify('success', '{{ trans('messages.notify.success') }}', response.message);
+                            
+                            // load default sidebar
+                            sidebar.load('{{ action('Automation2Controller@settings', $automation->uid) }}');
+                        });
+                    }
+                });                        
             },
         });
     });

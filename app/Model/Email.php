@@ -79,6 +79,11 @@ class Email extends Model
             }
             $item->uid = $uid;
         });
+
+        static::deleted(function ($item) {
+            $uploaded_dir = $item->getEmailStoragePath();
+            \Acelle\Library\Tool::xdelete($uploaded_dir);
+        });
     }
 
     /**
@@ -291,9 +296,17 @@ class Email extends Model
     /**
      * Get public campaign upload dir.
      */
+    public function getEmailStoragePath()
+    {
+        return storage_path('app/users/' . $this->automation->customer->uid . '/emails/' . $this->uid . '/');
+    }
+
+    /**
+     * Get public campaign upload dir.
+     */
     public function getStoragePath($path="")
     {
-        return storage_path('app/users/' . $this->automation->customer->uid . '/emails/' . $this->uid . '/content/' . $path);
+        return $this->getEmailStoragePath() . 'content/' . $path;
     }
 
     /**
