@@ -222,6 +222,7 @@
       'general' => 
       array (
         'name' => 'name',
+        'description' => 'description',
         'currency_id' => 'currency',
         'frequency_amount' => 'frequency amount',
         'frequency_unit' => 'frequency unit',

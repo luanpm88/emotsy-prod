@@ -69,7 +69,7 @@ class Template extends Model
         });
 
         static::deleted(function ($item) {
-            $uploaded_dir = $item->getUploadDir();
+            $uploaded_dir = $item->getStoragePath();
             \Acelle\Library\Tool::xdelete($uploaded_dir);
         });
     }
@@ -551,7 +551,7 @@ class Template extends Model
         } else {
             $dir_id = 'admin';
         }
-        return storage_path('app/users/' . $dir_id . '/templates/' . $this->uid . '/content/' . $path);
+        return storage_path('app/users/' . $dir_id . '/templates/' . $this->uid . '/' . $path);
     }
 
     /**
@@ -754,5 +754,15 @@ class Template extends Model
         // replace image url
         $this->content = str_replace($template->getUploadUri(), $this->getUploadUri(), $this->content);
         $this->save();
+    }
+    
+    /**
+     * Delete template and it's directory.
+     *
+     * @return mixed
+     */
+    public function deleteTemplate()
+    {
+        
     }
 }

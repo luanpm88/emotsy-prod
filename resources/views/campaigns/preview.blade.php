@@ -32,6 +32,6 @@
 
 {!! $campaign->render() !!}
 
-<script>
+{{-- <script>
     setTimeout('captureFullPage()', 1000);
-</script>
+</script> --}}
