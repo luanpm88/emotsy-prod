@@ -599,7 +599,7 @@ class Automation2 extends Model
 
     public function getSummaryStats()
     {
-        $total = $this->mailList->subscribers()->count();
+        $total = $this->mailList->readCache('SubscriberCount');
         $involved = $this->autoTriggers()->count();
         $involvePercentage = ($total == 0) ? 0 : $involved / $total;
 

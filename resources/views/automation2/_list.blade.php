@@ -32,7 +32,7 @@
                 </td>
                 <td>
                     <h5 class="no-margin">
-                        {{ $automation->mailList()->count() }}
+                        {{ $automation->mailList->readCache('SubscriberCount') }}
                     </h5>
                     <span class="text-muted2">{{ trans('messages.automation.overview.contacts') }}</span>
                 </td>
