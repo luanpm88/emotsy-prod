@@ -599,7 +599,7 @@ class Automation2 extends Model
 
     public function getSummaryStats()
     {
-        $total = $this->mailList->count();
+        $total = $this->mailList->subscribers()->count();
         $involved = $this->autoTriggers()->count();
         $involvePercentage = ($total == 0) ? 0 : $involved / $total;
 
