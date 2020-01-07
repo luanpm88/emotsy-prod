@@ -1,3 +1,13 @@
+4.0.0 / 2020-01-08
+==================
+
+ * Changed: support PHP 7.0.0 or higher (PHP 5.6 is no longer supported)
+ * Changed: now on Laravel 5.5 framework
+ * Added: new drag & drop email builder
+ * Added: new automation workflow visual designer
+ * Added: support auto/recurring billing with Stripe
+ * Added: improved SaaS workflow
+
 3.0.21 / 2019-03-21
 ==================
 
