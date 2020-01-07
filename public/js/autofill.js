@@ -103,7 +103,7 @@ $.fn.autofill = function(options) {
     };
 
     // Select current
-    selectCurrent = function() {
+    box.selectCurrent = function() {
         if (box.current != null) {
             var value = box.current.attr('data-value');
             var subfix = box.current.attr('data-subfix');
@@ -210,9 +210,9 @@ $.fn.autofill = function(options) {
     box.moveUp = function() {
         if (box.dropbox.find('li.autofill-item').length) {
             if (box.current == null || !box.current.prev().hasClass('autofill-item')) {
-                setCurrent(box.dropbox.find('li.autofill-item').last());
+                box.setCurrent(box.dropbox.find('li.autofill-item').last());
             } else if (box.current.prev().hasClass('autofill-item')) {
-                setCurrent(box.current.prev());
+                box.setCurrent(box.current.prev());
             }
         }
     };
@@ -249,8 +249,8 @@ $.fn.autofill = function(options) {
 
             // Click to dropbox
             box.find('.autofill-item').on('click', function() {
-                setCurrent($(this));
-                selectCurrent();
+                box.setCurrent($(this));
+                box.selectCurrent();
             });
 
             box.unmaskDropbox();
@@ -298,7 +298,7 @@ $.fn.autofill = function(options) {
         if(event.keyCode == 13) {
             event.preventDefault();
 
-            selectCurrent();
+            box.selectCurrent();
 
             return false;
         }
