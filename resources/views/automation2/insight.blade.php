@@ -58,9 +58,7 @@
                     'uid' => $automation->uid,
                     'action_id' => $key
                 ]) }}')" class="cursor-pointer xtooltip">
-                    {{ trans_choice('messages.automation.action.contacts_count', $element['count'], [
-                        'count' => format_number($element['count']),
-                    ]) }}
+                    {{ $element['subtitle'] }}
                 </desc>
             </div>
             <a 
@@ -80,7 +78,7 @@
                         'action_id' => $key
                     ]) }}')" class="cursor-pointer xtooltip font-weight-semibold"
                 >
-                    {{ format_number($element['percentage']) }}%
+                    {{ number_to_percentage($element['percentage']) }}
                 </h3>
             </div>
         </div>

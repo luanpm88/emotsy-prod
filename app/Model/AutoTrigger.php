@@ -264,6 +264,11 @@ class AutoTrigger extends Model
         return !is_null($this->getActionById($id)->getLastExecuted());
     }
 
+    public function isLatest($id)
+    {
+        return $this->getActionById($id)->isLatest();
+    }
+
     public function isComplete()
     {
         $last = $this->getLatestAction();

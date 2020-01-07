@@ -13,6 +13,7 @@ abstract class Action
     protected $child;
     protected $options;
     protected $last_executed = null;
+    protected $evaluationResult = null;
 
     // parent object
     protected $autoTrigger;
@@ -26,6 +27,7 @@ abstract class Action
         $this->options = array_key_exists('options', $params) ? $params['options'] : [];
         $this->latest = array_key_exists('latest', $params) ? $params['latest'] : null;
         $this->last_executed = array_key_exists('last_executed', $params) ? $params['last_executed'] : null;
+        $this->evaluationResult = array_key_exists('evaluationResult', $params) ? $params['evaluationResult'] : null;
     }
 
     public function setAutoTrigger($autoTrigger)
@@ -43,6 +45,7 @@ abstract class Action
             'latest' => $this->isLatest(),
             'options' => $this->getOptions(),
             'last_executed' => $this->getLastExecuted(),
+            'evaluationResult' => $this->evaluationResult,
         ];
     }
 
@@ -84,6 +87,11 @@ abstract class Action
     public function getNextActionId()
     {
         return $this->child;
+    }
+
+    public function getEvaluationResult()
+    {
+        return $this->evaluationResult;        
     }
 
     public function isLatest()

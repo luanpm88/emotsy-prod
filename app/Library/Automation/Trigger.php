@@ -7,6 +7,7 @@ class Trigger extends Action
     public function execute()
     {
         $this->recordLastExecutedTime();
+        $this->evaluationResult = true;
         return true;
     }
 

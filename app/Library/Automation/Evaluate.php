@@ -8,7 +8,6 @@ class Evaluate extends Action
 {
     protected $childYes;
     protected $childNo;
-    protected $evaluationResult = null;
 
     public function __construct($params = [])
     {
@@ -16,7 +15,6 @@ class Evaluate extends Action
 
         $this->childYes = array_key_exists('childYes', $params) ? $params['childYes'] : null;
         $this->childNo = array_key_exists('childNo', $params) ? $params['childNo'] : null;
-        $this->evaluationResult = array_key_exists('evaluationResult', $params) ? $params['evaluationResult'] : null;
     }
 
     public function toJson()
@@ -25,7 +23,6 @@ class Evaluate extends Action
         $json = array_merge($json, [
             'childYes' => $this->childYes,
             'childNo' => $this->childNo,
-            'evaluationResult' => $this->evaluationResult,
         ]);
 
         return $json;
@@ -43,6 +40,11 @@ class Evaluate extends Action
         // }
 
         $result = $this->evaluateCondition();
+
+        if (config('app.demo') == true) {
+            $result = (bool)random_int(0, 1);
+        }
+
         $this->evaluationResult = $result;
 
         $this->recordLastExecutedTime();

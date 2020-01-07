@@ -8,6 +8,12 @@ class Wait extends Action
 {
     public function execute()
     {
+        if (config('app.demo') == true) {
+            $this->evaluationResult = (bool)random_int(0, 1);
+            $this->recordLastExecutedTime();
+            return $this->evaluationResult;
+        }
+
         sleep(1); // to avoid same day with previous action when modifying (n days)
         $now = Carbon::now();
         $waitDuration = $this->getOption('time');  // 1 hour, 1 day, 2 days
@@ -15,17 +21,16 @@ class Wait extends Action
         var_dump($parentExecutionTime->toString());
         $due = $parentExecutionTime->modify($waitDuration);
 
-        $checked = $now->gte($due);
-
+        $this->evaluationResult = $now->gte($due);
         $this->recordLastExecutedTime();
 
-        if ($checked) {
+        if ($this->evaluationResult) {
             $this->autoTrigger->logger()->info(sprintf('---> It is already %s minutes (or %s hours) due! move to next action!', $now->diffInMinutes($due), $now->diffInHours($due)));
         } else {
             $this->autoTrigger->logger()->info(sprintf('---> Waiting for another %s minutes (or %s hours)...', $now->diffInMinutes($due), $now->diffInHours($due)));
         }
 
-        return $checked;
+        return $this->evaluationResult;
     }
 
     public function getActionDescription()
