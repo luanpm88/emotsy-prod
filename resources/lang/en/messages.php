@@ -2940,13 +2940,13 @@
   'automation.profile.go_to_pofile' => 'Go to profile page',
   'automation.profile.tag_contact' => 'Tag contact',
   'automation.profile.tag_contact.intro' => 'Your are about to tag <span class="font-weight-semibold">:name</span>.
-    Type your tags in the box below, separate by a space',
+    Type your tags in the box below, press ENTER to confirm each',
   'automation.export_this_list' => 'Export this list',
   'automation.copy_to_new_list' => 'Copy to a new list',
   'automation.tag_those_contacts' => 'Tag those contacts',
   'automation.profile.tag_contacts' => 'Tag contacts',
   'automation.profile.tag_contacts.intro' => 'Your are about to tag <span class="font-weight-semibold">:count</span> contacts
-    Type your tags in the box below, separate by a space',
+    Type your tags in the box below, press ENTER to confirm each',
   'automation.contacts.exported' => 'Contacts was successfully exported.',
   'automation.exporting_contacts' => 'Exporting contacts...',
   'automation.contacts.copy_to_new_list' => 'Copy contacts',
