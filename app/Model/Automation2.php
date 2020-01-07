@@ -370,7 +370,7 @@ class Automation2 extends Model
         $this->logger()->info(sprintf('NEW > Start checking for new trigger'));
 
         switch ($this->getTriggerAction()->getOption('key')) {
-            case 'welcome-new-subscriber':
+            case 'say-happy-birthday':
                 $this->checkForListSubscription();
                 break;
             case 'specific-date':
@@ -552,23 +552,73 @@ class Automation2 extends Model
         return $insights;
     }
 
-    public function getActionStats($action)
+    public function getActionStats($attributes)
     {
         $total = $this->mailList->readCache('SubscriberCount');
-        $count = 0;
-        foreach ($this->autoTriggers as $trigger) {
-            $count += ($trigger->isActionExecuted($action['id'])) ? 1 : 0;
-        }
+        
         // The following implementation is prettier but 'countBy' is supported in Laravel 5.8 only
         // $count = $this->autoTriggers()->countBy(function($trigger) {
         //    return $trigger->isActionExecuted($action['id']);
         // });
+        $action = $this->getAction($attributes); // IMPORTANT: this action does not associate with a particular trigger
+        $count = 0;
+        foreach ($this->autoTriggers as $trigger) {
+            $count += ($trigger->isActionExecuted($action->getId())) ? 1 : 0;
+        }
 
-        $insight = [
-            'count' => $count,
-            'percentage' => ($total != 0) ? ($count / $total) : 0,
-            'latest_activity' => $this->autoTriggers()->max('created_at'),
-        ];
+        if ($action->getType() == 'ElementTrigger') {
+            $insight = [
+                'count' => $count,
+                'subtitle' => __('messages.automation.stats.triggered', ['count' => $count]),
+                'percentage' => ($total != 0) ? ($count / $total) : 0,
+                'latest_activity' => $this->autoTriggers()->max('created_at'),
+            ];    
+        } else if ($action->getType() == 'ElementWait') {
+            $count = 0;
+            foreach ($this->autoTriggers as $trigger) {
+                $count += ($trigger->isLatest($action->getId())) ? 1 : 0;
+            }
+
+            $insight = [
+                'count' => $count,
+                'subtitle' => __('messages.automation.stats.in-queue', ['count' => $count]),
+                'percentage' => ($total != 0) ? ($count / $total) : 0,
+                'latest_activity' => $this->autoTriggers()->max('created_at'),
+            ];
+        } else if ($action->getType() == 'ElementAction') {
+            $insight = [
+                'count' => $count,
+                'subtitle' => __('messages.automation.stats.sent', ['count' => $count]),
+                'percentage' => ($total != 0) ? ($count / $total) : 0,
+                'latest_activity' => $this->autoTriggers()->max('created_at'),
+            ];
+        } else if ($action->getType() == 'ElementCondition') {
+            $yes = 0;
+            $no = 0;
+            foreach ($this->autoTriggers as $trigger) {
+                // instantiate the object again, this time with associated autotrigger
+                $actionWithAutoTrigger = $trigger->getActionById($action->getId());
+                
+                if (is_null($actionWithAutoTrigger->getLastExecuted())) {
+                    continue;
+                }
+
+                if ($actionWithAutoTrigger->getEvaluationResult()) {
+                    $yes += 1;
+                } else {
+                    $no += 1;
+                }
+            }
+
+            $insight = [
+                'count' => $yes + $no,
+                'subtitle' => __('messages.automation.stats.condition', ['yes' => $yes, 'no' => $no]),
+                'percentage' => ($total != 0) ? (($yes + $no) / $total) : 0,
+                'latest_activity' => $this->autoTriggers()->max('created_at'),
+            ];
+        }
+
+        
 
         return $insight;
     }
@@ -617,6 +667,8 @@ class Automation2 extends Model
 
     }
 
+
+    // IMPORTANT: object returned by this function is not associated with a particular AutoTrigger
     public function getAction($attributes) : Action
     {
         switch ($attributes['type']) {
@@ -704,10 +756,22 @@ class Automation2 extends Model
      */
     public function produceSampleData()
     {
-        $subscribers = $this->subscribers()->inRandomOrder()->limit(100)->get();
+        // Reset all
+        $this->resetListRelatedData();
+
+        $count = $this->mailList->readCache('SubscriberCount');
+
+        $min = (int) ($count * 0.2);
+        $max = (int) ($count * 0.7);
+
+        // Generate triggers
+        $subscribers = $this->subscribers()->inRandomOrder()->limit(rand($min, $max))->get();
         foreach ($subscribers as $subscriber) {
             $this->initTrigger($subscriber);
         }
+
+        // Run through trigger check
+        $this->checkForExistingTriggersUpdate();
     }
 
     /**

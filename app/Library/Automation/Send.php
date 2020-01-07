@@ -23,6 +23,7 @@ class Send extends Action
         $this->autoTrigger->logger()->info(sprintf('Send email entitled "%s" to "%s", queued', $email->subject, $this->autoTrigger->subscriber->email));
 
         $this->recordLastExecutedTime();
+        $this->evaluationResult = true;
 
         return true;
     }
