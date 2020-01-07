@@ -35,12 +35,18 @@
                         </div>
                     </div>
                 </div>
-                <div>
+                <div class="template-thumb-container">
                     <img class="automation-template-thumb" src="{{ action('EmailController@image', [
                             'uid' => $automation->uid,
                             'email_uid' => $email->uid,
                         ]) }}?v={{ Carbon\Carbon::now() }}"
                     />
+                    <a href="{{ action('Automation2Controller@templateEdit', [
+                        'uid' => $automation->uid,
+                        'email_uid' => $email->uid,
+                    ]) }}" class="btn btn-primary template-compose" style="display:none">
+                        {{ trans('messages.automation.template.edit_with_builder') }}
+                    </a>
                 </div>
             </div>
                 

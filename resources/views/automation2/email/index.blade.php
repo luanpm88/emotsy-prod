@@ -43,7 +43,7 @@
     $('.email-settings-change').click(function(e) {
         e.preventDefault();
         
-        var url = '{{ action('Automation2Controller@emailSetup', ['uid' => $automation->uid, 'email_uid' => $email->uid]) }}';
+        var url = '{{ action('Automation2Controller@emailTemplate', ['uid' => $automation->uid, 'email_uid' => $email->uid]) }}';
         
         popup.load(url);
     });
@@ -66,7 +66,9 @@
                     statusCode: {
                         // validate error
                         400: function (res) {
-                            console.log('Something went wrong!');
+                            response = JSON.parse(res.responseText);
+                            // notify
+                            notify('notice', '{{ trans('messages.notify.warning') }}', response.message);
                         }
                     },
                     success: function (response) {

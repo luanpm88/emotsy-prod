@@ -1227,3 +1227,26 @@ a:hover label {
   /* font-size: 110%; */
   font-weight: 600;
 }
+.template-thumb-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.template-thumb-container:hover::before {
+  content: 'hello';
+  text-indent: -9000px;
+  top: 0;
+  left: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.06);
+}
+.template-thumb-container:hover .btn {
+  display: block !important;
+  position: absolute;
+  margin: 0 20px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.8);
+  padding: 7px 10px;
+  transition: visibility 0s linear 10s, opacity 0.33s linear;
+}

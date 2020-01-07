@@ -12,6 +12,11 @@
 	var CSRF_TOKEN = "{{ csrf_token() }}";
 	var LANG_NOTIFY_SUCCESS = '{{ trans('messages.notify.success') }}';
 	var LANG_ALERT = '{{ trans('messages.notify.alert') }}';
+	var LANG_NOTIFY = {
+		'success': '{{ trans('messages.notify.success') }}',
+		'error': '{{ trans('messages.notify.error') }}',
+		'notice': '{{ trans('messages.notify.notice') }}'
+	};
 	
 	$(document).ready(function() {
 		$('.xtooltip').tooltipster({

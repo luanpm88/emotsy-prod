@@ -3024,4 +3024,6 @@
   'automation.email.change_template.confirm' => 'Changing template will remove current email content with customiztions.
     This can be undone.',
   'automation.email.template.removed' => 'Email\'s template was cleared',
+  'automation.template.edit_with_builder' => 'Edit with HTML builder',
+  'notify.notice' => 'Notice',
 ) ?>

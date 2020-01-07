@@ -325,6 +325,13 @@ class TemplateController extends Controller
      */
     public function delete(Request $request)
     {
+        if (isSiteDemo()) {
+            return response()->json([
+                'status' => 'notice',
+                'message' => trans('messages.operation_not_allowed_in_demo'),
+            ]);
+        }
+
         $items = Template::whereIn('uid', explode(',', $request->uids));
 
         foreach ($items->get() as $item) {

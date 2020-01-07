@@ -24,7 +24,7 @@
                     {{ csrf_field() }}
                     <input type="hidden" name="_method" value="PATCH">
                     <input type="hidden" name="list_uid" value="{{ $list->uid }}" />
-                    @include('helpers._upload',['src' => action('SubscriberController@avatar',  $subscriber->uid), 'dragId' => 'upload-avatar', 'preview' => 'image'])
+                    @include('helpers._upload',['src' => (isSiteDemo() ? 'https://i.pravatar.cc/300' : action('SubscriberController@avatar',  $subscriber->uid)), 'dragId' => 'upload-avatar', 'preview' => 'image'])
                     <h3 class="clear-both">{{trans("messages.basic_information")}}</h3>
                     @include("subscribers._form")
 

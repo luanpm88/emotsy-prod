@@ -16,7 +16,7 @@
                 {{ trans('messages.photo_at_least', ["size" => "300px x 300px"]) }}
                 <a href="#remove" class=" remove-profile-image"> {{ trans('messages.remove_current_photo') }}</a>
                 <br />
-                <a href="#upload" onclick="$('input[name=image]').trigger('click')" class="btn btn-xs  background-gray">{{ trans('messages.upload_photo') }}</a>
+                <a href="#upload" onclick="$('input[name=image]').trigger('click')" class="btn background-gray mt-10">{{ trans('messages.upload_photo') }}</a>
             </div>
         </div>
     </div>

@@ -1030,7 +1030,7 @@ $(function() {
                 //    html: true
                 //});
                 
-                notify(type, LANG_NOTIFY_SUCCESS, msg);
+                notify(type, LANG_NOTIFY[type], msg);
             }
 
             // Remove loading effect
