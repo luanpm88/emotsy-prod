@@ -100,7 +100,6 @@ class Plan extends Model implements BillablePlanInterface
         $rules = [
             'general' => [
                 'plan.general.name' => 'required',
-                'plan.general.description' => 'required',
                 'plan.general.currency_id' => 'required',
                 'plan.general.frequency_amount' => 'sometimes|required|min:1',
                 'plan.general.frequency_unit' => 'sometimes|required',
@@ -133,7 +132,6 @@ class Plan extends Model implements BillablePlanInterface
     {
         $rules = array(
             'name' => 'required',
-            'description' => 'required',
             'currency_id' => 'required',
             'frequency_amount' => 'required|min:1',
             'frequency_unit' => 'required',
@@ -193,7 +191,6 @@ class Plan extends Model implements BillablePlanInterface
     {
         $rules = array(
             'name' => 'required',
-            'description' => 'required',
             'currency_id' => 'required',
             'frequency_amount' => 'required|min:1',
             'frequency_unit' => 'required',
