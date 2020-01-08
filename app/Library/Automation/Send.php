@@ -19,7 +19,13 @@ class Send extends Action
 
         sleep(1); // to avoid same date/time with previous wait, wrong timeline order
         $email = $this->getEmail();
-        dispatch(new DeliverEmail($email, $this->autoTrigger->subscriber));
+
+        if (config('app.demo') == true) {
+            // do nothing
+        } else {
+            dispatch(new DeliverEmail($email, $this->autoTrigger->subscriber));
+        }
+
         $this->autoTrigger->logger()->info(sprintf('Send email entitled "%s" to "%s", queued', $email->subject, $this->autoTrigger->subscriber->email));
 
         $this->recordLastExecutedTime();
