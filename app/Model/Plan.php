@@ -984,7 +984,12 @@ class Plan extends Model implements BillablePlanInterface
                 $saveOptions[$key] = $value;
             }
         }
-            
+
+	// workaround
+        if (empty($this->description)) {
+            $this->description = '[ plan description goes here ]';
+        }
+        
         $this->options = json_encode($saveOptions);
     }
     
