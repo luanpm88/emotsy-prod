@@ -1,4 +1,4 @@
-4.0.0 / 2020-01-08
+4.0.1 / 2020-01-08
 ==================
 
  * Changed: support PHP 7.0.0 or higher (PHP 5.6 is no longer supported)
