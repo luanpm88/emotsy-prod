@@ -14,7 +14,15 @@ class MakeMessageIdInUnsubscribeLogsTableNullable extends Migration
     public function up()
     {
         Schema::table('unsubscribe_logs', function (Blueprint $table) {
+            $table->dropForeign('unsubscribe_logs_message_id_foreign');
+        });
+
+        Schema::table('unsubscribe_logs', function (Blueprint $table) {
             $table->string('message_id')->nullable()->change();
+        });
+
+        Schema::table('unsubscribe_logs', function (Blueprint $table) {
+            $table->foreign('message_id')->references('message_id')->on('tracking_logs')->onDelete('cascade');
         });
     }
 
