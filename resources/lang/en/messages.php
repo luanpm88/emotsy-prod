@@ -3022,4 +3022,5 @@
   'automation.email.template.removed' => 'Email\'s template was cleared',
   'automation.template.edit_with_builder' => 'Edit with HTML builder',
   'notify.notice' => 'Notice',
+  'go_to_admin_dashboard' => 'Go to admin dashboard',
 ) ?>
