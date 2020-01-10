@@ -119,7 +119,9 @@ class SendingServerController extends Controller
         // save posted data
         if ($request->isMethod('post')) {
             // options
-            $options = [];
+            $options = [
+                'allow_verify_domain_remotely' => 'yes',
+            ];
             
             // fill values
             $server->fill($request->all());
