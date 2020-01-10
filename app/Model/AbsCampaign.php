@@ -1668,6 +1668,13 @@ abstract class AbsCampaign extends Model
 
     public function generateUnsubscribeUrl($msgId, $subscriber)
     {
+        // in case of a fake object, for sending test email
+        if (is_a($subscriber, 'stdClass')) {
+            $path = route('unsubscribeUrl', ['message_id' => StringHelper::base64UrlEncode($msgId)], false);
+            return $path;
+        }
+
+
         // OPTION 1: immediately opt out
         $path = route('unsubscribeUrl', ['message_id' => StringHelper::base64UrlEncode($msgId)], false);
 
