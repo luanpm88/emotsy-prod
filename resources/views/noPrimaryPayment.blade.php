@@ -8,5 +8,5 @@
             {{ trans('messages.no_primary_payment') }}
         </span>
     </div>
-    <a href='#back' onclick='history.back()' class='btn bg-grey-400'>{{ trans('messages.go_back') }}</a>
+    <a href='{{ action('Admin\PaymentController@index') }}' onclick='history.back()' class='btn bg-grey-400'>{{ trans('messages.go_to_admin_dashboard') }}</a>
 @endsection

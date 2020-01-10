@@ -34,7 +34,7 @@ class LanguagePolicy
     public function update(User $user, Language $item)
     {
         $ability = $user->admin->getPermission('language_update');
-        $can = $ability == 'yes' && !$item->is_default;
+        $can = $ability == 'yes';
 
         return $can;
     }
