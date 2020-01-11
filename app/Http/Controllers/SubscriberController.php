@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Acelle\Model\Subscriber;
 use Acelle\Model\EmailVerificationServer;
 use Acelle\Library\Log as MailLog;
+use Acelle\Model\MailList;
 
 class SubscriberController extends Controller
 {
@@ -290,7 +291,10 @@ class SubscriberController extends Controller
         }
 
         // Redirect to my lists page
-        echo trans('messages.subscribers.deleted');
+        return response()->json([
+            "status" => 'success',
+            "message" => trans('messages.subscribers.deleted'),
+        ]);
     }
 
     /**
@@ -800,5 +804,67 @@ class SubscriberController extends Controller
 
         // Redirect to my lists page
         echo trans('messages.subscribers.resend_confirmation_email.being_sent');
+    }
+
+    /**
+     * Update tags.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function updateTags(Request $request, $list_uid, $uid)
+    {
+        $list = MailList::findByUid($list_uid);
+        $subscriber = Subscriber::findByUid($uid);
+        
+        // authorize
+        if (\Gate::denies('update', $subscriber)) {
+            return $this->notAuthorized();
+        }
+
+        // saving
+        if($request->isMethod('post')) {
+            $subscriber->updateTags($request->tags);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.subscriber.tagged', [
+                    'subscriber' => $subscriber->getFullName(),
+                ]),
+            ], 201);
+        }
+
+        return view('subscribers.updateTags', [
+            'list' => $list,
+            'subscriber' => $subscriber,
+        ]);
+    }
+
+    /**
+     * Automation remove contact tag.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function removeTag(Request $request, $list_uid, $uid)
+    {
+        $list = MailList::findByUid($list_uid);
+        $subscriber = Subscriber::findByUid($uid);
+        
+        // authorize
+        if (\Gate::denies('delete', $subscriber)) {
+            return $this->notAuthorized();
+        }
+
+        $subscriber->removeTag($request->tag);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => trans('messages.automation.contact.tag.removed', [
+                'tag' => $request->tag,
+            ]),
+        ], 201);
     }
 }

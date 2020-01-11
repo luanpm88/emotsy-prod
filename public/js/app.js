@@ -19,6 +19,17 @@ function initJs(container) {
             $(this).attr('data-placeholder');
         }
     });
+
+    // Select2
+    container.find('.select-tag').select2({
+        minimumResultsForSearch: 101,
+        templateResult: formatSelect2TextOption,
+        templateSelection: formatSelect2TextSelected,
+        placeholder: function(){
+            $(this).attr('data-placeholder');
+        },
+        tags: true,
+    });
     
     // pick a time
     if (container.find(".pickatime").length) {

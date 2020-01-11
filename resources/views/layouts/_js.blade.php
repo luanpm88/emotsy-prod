@@ -52,6 +52,11 @@
 	</script>
 
 	@yield('page_script')
+
+	<!-- Dialog -->
+	<link href="{{ URL::asset('css/dialog.css') }}" rel="stylesheet" type="text/css">
+	<script type="text/javascript" src="{{ URL::asset('js/dialog.js') }}"></script>
+
 	
 	<script type="text/javascript" src="{{ URL::asset('js/autofill.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('js/select-custom.js') }}"></script>

@@ -249,6 +249,9 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('lists/{list_uid}/fields/{uid}/delete', 'FieldController@delete');
 
     // Subscriber
+    Route::post('lists/{list_uid}/subscriber/{uid}/remove-tag', 'SubscriberController@removeTag');
+    Route::match(['get', 'post'], 'lists/{list_uid}/subscriber/{uid}/update-tags', 'SubscriberController@updateTags');
+
     Route::post('lists/{list_uid}/subscribers/resend/confirmation-email/{uids?}', 'SubscriberController@resendConfirmationEmail');
     Route::post('subscriber/{uid}/verification/start', 'SubscriberController@startVerification');
     Route::post('subscriber/{uid}/verification/reset', 'SubscriberController@resetVerification');
@@ -261,6 +264,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('lists/{list_uid}/subscribers/store', 'SubscriberController@store');
     Route::get('lists/{list_uid}/subscribers/{uid}/edit', 'SubscriberController@edit');
     Route::patch('lists/{list_uid}/subscribers/{uid}/update', 'SubscriberController@update');
+    Route::post('lists/{list_uid}/subscribers/delete', 'SubscriberController@delete');
     Route::get('lists/{list_uid}/subscribers/delete', 'SubscriberController@delete');
     Route::get('lists/{list_uid}/subscribers/subscribe', 'SubscriberController@subscribe');
     Route::get('lists/{list_uid}/subscribers/unsubscribe', 'SubscriberController@unsubscribe');

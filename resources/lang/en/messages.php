@@ -3026,4 +3026,6 @@
   'subscribers.profile.action' => 'Action',
   'subscribers.profile.remove_subscriber' => 'Remove',
   'subscribers.profile.manage_tags' => 'Manage tags',
+  'subscriber.delete.confirm' => 'You\'re about to delete this subscriber.',
+  'subscriber.deleted.redirect' => 'Subscriber was deleted. Redirecting to list page...',
 ) ?>

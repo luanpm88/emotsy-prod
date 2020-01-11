@@ -32,7 +32,7 @@ function initJs(container) {
     });
     
     // Select2
-    container.find('select').select2({
+    container.find('.select').select2({
         minimumResultsForSearch: 20,
         templateResult: formatSelect2TextOption,
         templateSelection: formatSelect2TextSelected,
@@ -44,7 +44,7 @@ function initJs(container) {
     });
 
     // Select2 tags
-    container.find('select').select2({
+    container.find('.select-tag').select2({
         minimumResultsForSearch: 20,
         templateResult: formatSelect2TextOption,
         templateSelection: formatSelect2TextSelected,
