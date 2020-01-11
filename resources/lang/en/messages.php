@@ -3023,4 +3023,7 @@
   'automation.template.edit_with_builder' => 'Edit with HTML builder',
   'notify.notice' => 'Notice',
   'go_to_admin_dashboard' => 'Go to admin dashboard',
+  'subscribers.profile.action' => 'Action',
+  'subscribers.profile.remove_subscriber' => 'Remove',
+  'subscribers.profile.manage_tags' => 'Manage tags',
 ) ?>
