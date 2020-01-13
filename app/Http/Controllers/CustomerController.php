@@ -84,8 +84,7 @@ class CustomerController extends Controller
         if (is_object($subscription)) {
             $next_billing_date = $subscription->ends_at;
             if($subscription->active()) {
-                $subscriptionParam = $customer->retrieveSubscription($gateway);
-                $next_billing_date = \Carbon\Carbon::createFromTimestamp($subscriptionParam->currentPeriodEnd);
+                $next_billing_date = $subscription->current_period_ends_at;
             }
         }
         
