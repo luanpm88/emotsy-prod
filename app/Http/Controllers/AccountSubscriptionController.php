@@ -79,7 +79,7 @@ class AccountSubscriptionController extends Controller
         $planCount = Plan::getAllActive()->count();
         $colWidth = ($planCount == 0) ? 0 :  round(85 / $planCount );
 
-        if (isset($subscription)) {
+        if (isset($subscription) && !$subscription->ended()) {
             $request->session()->flash('alert-error', 'Already subscribed a plan!');
             return redirect()->action('AccountSubscriptionController@index');
         }
@@ -135,7 +135,7 @@ class AccountSubscriptionController extends Controller
         $subscription = $customer->subscription;
         $plan = Plan::findByUid($request->plan_uid);
         
-        if (isset($subscription)) {
+        if (isset($subscription) && !$subscription->ended()) {
             $request->session()->flash('alert-error', 'Already subscribed a plan!');
             return redirect()->action('AccountSubscriptionController@index');
         }
