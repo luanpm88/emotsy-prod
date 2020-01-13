@@ -18,7 +18,6 @@ class Wait extends Action
         $now = Carbon::now();
         $waitDuration = $this->getOption('time');  // 1 hour, 1 day, 2 days
         $parentExecutionTime = $carbon = Carbon::createFromTimestamp($this->getParent()->getLastExecuted());
-        var_dump($parentExecutionTime->toString());
         $due = $parentExecutionTime->modify($waitDuration);
 
         $this->evaluationResult = $now->gte($due);

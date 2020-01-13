@@ -46,7 +46,7 @@ class Kernel extends ConsoleKernel
 
         // Automation
         $schedule->call(function () {
-            Automation::run();
+            Automation2::run();
         })->name('automation:run')->everyFiveMinutes();
 
         // Bounce/feedback handler
