@@ -342,7 +342,6 @@ class SendingServer extends Model
             ],
             self::TYPE_MAILGUN_API => [
                 'cols' => [
-                    'name' => 'required',
                     'api_key' => 'required',
                     'domain' => 'required',
                 ],
@@ -430,15 +429,15 @@ class SendingServer extends Model
                     'feedback_loop_handler_id' => '',
                 ],
             ],
-            self::TYPE_PHP_MAIL => [
-                'cols' => [                    
-                ],
-                'settings' => [
-                    'name' => 'required',
-                    'bounce_handler_id' => '',
-                    'feedback_loop_handler_id' => '',
-                ],
-            ],
+            // self::TYPE_PHP_MAIL => [
+            //     'cols' => [                    
+            //     ],
+            //     'settings' => [
+            //         'name' => 'required',
+            //         'bounce_handler_id' => '',
+            //         'feedback_loop_handler_id' => '',
+            //     ],
+            // ],
         ];
     }
 

@@ -61,12 +61,6 @@
 						@else
 							@if ($subscription->recurring())
 								<span class="label label-flat bg-info">{{ trans('messages.subscription.status.recurring') }}</span>
-							@elseif ($subscription->checkPendingPaymentForFuture($gateway))
-								@if ($subscription->isPaymentClaimed())
-									<div class="label label-flat bg-warning">{{ trans('messages.invoice.status.future_payment.claimed') }}</div>
-								@else
-									<div class="label label-flat bg-info">{{ trans('messages.invoice.status.future_payment.pending') }}</div>
-								@endif
 							@else
 								<span class="label label-flat bg-active">{{ trans('messages.subscription.status.active') }}</span>
 							@endif

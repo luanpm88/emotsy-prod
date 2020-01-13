@@ -12,7 +12,7 @@
 			'name' => 'name',
 			'label' => trans('messages.domain_name'),
 			'value' => $server->name,
-			'help_class' => 'sending_server',
+			'help_class' => 'sending_domain',
 			'rules' => Acelle\Model\SendingDomain::rules()
 		])
 	</div>

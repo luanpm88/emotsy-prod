@@ -3,7 +3,11 @@
 	@if(isset($placeholder))
 		data-placeholder="{{ $placeholder }}"
 	@endif
-		class="select select-search{{ $classes }} {{ isset($class) ? $class : "" }} {{ isset($required) && !empty($required) ? 'required' : '' }}" {{ isset($multiple) && $multiple == true ? "multiple='multiple'" : "" }}>
+		class="select select-search{{ $classes }} {{ isset($class) ? $class : "" }}
+			{{ isset($required) && !empty($required) ? 'required' : '' }}"
+			{{ isset($multiple) && $multiple == true ? "multiple='multiple'" : "" }}
+			{{ isset($readonly) && $readonly == true ? "readonly='readonly'" : "" }}
+		>
 	@if (isset($include_blank))
 		<option value="">{{ $include_blank }}</option>
 	@endif

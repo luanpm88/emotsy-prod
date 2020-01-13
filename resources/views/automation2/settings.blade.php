@@ -34,10 +34,11 @@
             @include('helpers.form_control', [
                 'type' => 'select',
                 'name' => 'timezone',
-                'value' => 'America/Paramaribo',
+                'value' => \Auth::user()->customer->timezone,
                 'options' => Tool::getTimezoneSelectOptions(),
                 'include_blank' => trans('messages.choose'),
-                'rules' => $automation->rules()
+                'rules' => $automation->rules(),
+                'disabled' => true,
             ])
         </div>
     </div>
