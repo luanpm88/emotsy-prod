@@ -99,12 +99,6 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
     // Admin avatar
     Route::get('assets/images/avatar/admin-{uid?}.jpg', 'AdminController@avatar');
 
-    // Customer subscription
-    Route::get('subscriptions/preview', 'SubscriptionController@preview');
-    Route::post('subscriptions/register/{plan_uid?}', 'SubscriptionController@register');
-    Route::get('subscriptions/register/{plan_uid?}', 'SubscriptionController@register');
-    Route::get('subscriptions/select-plan', 'SubscriptionController@selectPlan');
-
     // User resend activation email
     Route::get('users/resend-activation-email', 'UserController@resendActivationEmail');
 
@@ -151,7 +145,7 @@ Route::group(['middleware' => ['not_installed']], function () {
     Route::get('lists/{list_uid}/update-profile-success/{uid}', 'PageController@profileUpdateSuccessPage');
     Route::get('lists/{list_uid}/profile-update-email-sent/{uid}', 'PageController@profileUpdateEmailSent');
     Route::post('payments/paddle/card/webhook', 'PaymentController@paddle_webhook');
-    Route::get('subscriptions/preview', 'SubscriptionController@preview');
+
     // Notification handler
     Route::post('delivery/notify/{stype}', 'DeliveryController@notify');
     Route::get('delivery/notify/{stype}', 'DeliveryController@notify');
@@ -171,8 +165,6 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
 
 
     Route::post('subscription/payment-claim', 'AccountSubscriptionController@paymentClaim');
-    Route::get('subscriptions/invoices/download-raw', 'AccountSubscriptionController@downloadRawInvoice');
-    Route::match(['get', 'post'], 'subscriptions/change-plan-no-recurring/{plan_id}', 'AccountSubscriptionController@changePlanNoRecurring');
     Route::match(['get', 'post'], 'subscription/renew', 'AccountSubscriptionController@renew');
     Route::get('subscription/pending', 'AccountSubscriptionController@pending');
     Route::post('subscription/change-plan', 'AccountSubscriptionController@changePlan');
@@ -460,18 +452,6 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('auto-events/{uid}/campaigns/add', 'AutoEventController@addCampaign');
     Route::get('auto-events/{uid}/campaigns', 'AutoEventController@campaigns');
     Route::resource('auto-events', 'AutoEventController');
-
-    // Subscription
-    Route::get('subscriptions/{uid}/pay/method/{payment_method_uid}', 'SubscriptionController@selectPaymentMethod');
-    Route::get('subscriptions/checkout/paypal/{subscription_uid}', 'PaymentController@paypal');
-    Route::get('subscriptions/checkout/{uid}', 'SubscriptionController@checkout');
-    Route::get('subscriptions/finish', 'SubscriptionController@finish');
-    Route::post('subscriptions/subscription/{plan_uid?}', 'SubscriptionController@subscription');
-    Route::get('subscriptions/subscription/{plan_uid?}', 'SubscriptionController@subscription');
-    Route::get('subscriptions/listing/{page?}', 'SubscriptionController@listing');
-    Route::get('subscriptions/sort', 'SubscriptionController@sort');
-    Route::delete('subscriptions/delete', 'SubscriptionController@delete');
-    Route::resource('subscriptions', 'SubscriptionController');
 
     // Sending servers
     Route::post('sending_servers/{uid}/test-connection', 'SendingServerController@testConnection');
@@ -874,7 +854,6 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
 
     // Subscription
     Route::post('admin/subscriptions/{id}/renew', 'SubscriptionController@renew');
-    Route::get('subscriptions/{id}/invoices/download-raw', 'SubscriptionController@downloadRawInvoice');
     Route::post('admin/subscriptions/{id}/approve-pending-invoice', 'SubscriptionController@approvePendingInvoice');
     Route::post('admin/subscriptions/{id}/set-active', 'SubscriptionController@setActive');
     Route::get('admin/subscriptions/{id}/invoices', 'SubscriptionController@invoices');
