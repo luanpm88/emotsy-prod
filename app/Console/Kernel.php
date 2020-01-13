@@ -4,7 +4,7 @@ namespace Acelle\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use Acelle\Model\Automation;
+use Acelle\Model\Automation2;
 use Acelle\Cashier\Cashier;
 use Acelle\Cashier\Subscription;
 use Acelle\Model\Setting;
