@@ -3018,4 +3018,12 @@
   'automation.email.change_template.confirm' => 'Changing template will remove current email content with customiztions.
     This can be undone.',
   'automation.email.template.removed' => 'Email\'s template was cleared',
+  'automation.template.edit_with_builder' => 'Edit with HTML builder',
+  'notify.notice' => 'Notice',
+  'go_to_admin_dashboard' => 'Go to admin dashboard',
+  'subscribers.profile.action' => 'Action',
+  'subscribers.profile.remove_subscriber' => 'Remove',
+  'subscribers.profile.manage_tags' => 'Manage tags',
+  'subscriber.delete.confirm' => 'You\'re about to delete this subscriber.',
+  'subscriber.deleted.redirect' => 'Subscriber was deleted. Redirecting to list page...',
 ) ?>
