@@ -281,12 +281,6 @@ class Setting extends Model
                 'type' => 'text',
                 'class' => 'numeric',
             ],
-            'url_root' => [
-                'cat' => 'url',
-                'value' => '',
-                'type' => 'text',
-                'not_required' => true,
-            ],
             'url_unsubscribe' => [
                 'cat' => 'url',
                 'value' => '',

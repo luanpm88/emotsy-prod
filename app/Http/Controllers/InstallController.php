@@ -392,9 +392,6 @@ class InstallController extends Controller
         }
 
         // Insert system urls
-        $mysqli->query('DELETE FROM `'.$database['tables_prefix']."settings` WHERE name='url_root'");
-        $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
-                        ('url_root', '".url('/')."', '".$date."', '".$date."');");     
         $mysqli->query('DELETE FROM `'.$database['tables_prefix']."settings` WHERE name='url_delivery_handler'");
         $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
                         ('url_delivery_handler', '".action('DeliveryController@notify', ['stype' => ''])."', '".$date."', '".$date."');");

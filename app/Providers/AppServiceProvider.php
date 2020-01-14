@@ -18,6 +18,18 @@ class AppServiceProvider extends ServiceProvider
         ini_set('memory_limit', '-1');
         ini_set('pcre.backtrack_limit', 1000000000);
 
+        // Check if HTTPS (including proxy case)
+        $isSecure = false;
+        if (isset($_SERVER['HTTPS']) && strcasecmp($_SERVER['HTTPS'], 'on') == 0) {
+            $isSecure = true;
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && strcasecmp($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') == 0 || !empty($_SERVER['HTTP_X_FORWARDED_SSL']) && strcasecmp($_SERVER['HTTP_X_FORWARDED_SSL'], 'on') == 0) {
+            $isSecure = true;
+        }
+        
+        if ($isSecure) {
+            URL::forceScheme('https');
+        }
+
         // HTTP or HTTPS
         // parse_url will return either 'http' or 'https'
         //$scheme = parse_url(config('app.url'), PHP_URL_SCHEME);

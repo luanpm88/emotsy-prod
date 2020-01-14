@@ -169,7 +169,7 @@ class SettingController extends Controller
         
         // Check URL
         $current = url('/');
-        $cached = Setting::get('url_root');
+        $cached = config('app.url');
         
         return view('admin.settings.urls', [
             'settings' => $settings,
@@ -315,7 +315,6 @@ class SettingController extends Controller
             return $this->notAuthorized();
         }
 
-        \Acelle\Model\Setting::set('url_root', url('/'));
         \Acelle\Model\Setting::set('url_unsubscribe', action('CampaignController@unsubscribe', ['message_id' => 'MESSAGE_ID']));
         \Acelle\Model\Setting::set('url_open_track', action('CampaignController@open', ['message_id' => 'MESSAGE_ID']));
         \Acelle\Model\Setting::set('url_click_track', action('CampaignController@click', ['message_id' => 'MESSAGE_ID', 'url' => 'URL']));

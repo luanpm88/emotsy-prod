@@ -1707,14 +1707,14 @@ abstract class AbsCampaign extends Model
 
     public function buildPublicUrl($path)
     {
-        $host = Setting::get('url_root');
+        $host = config('app.url');
 
         return join_url($host, $path);
     }
 
     public function getTrackingHost()
     {
-        $root = Setting::get('url_root');
+        $root = config('app.url');
 
         if (!$this->trackingDomain()->exists()) {
             return $root;

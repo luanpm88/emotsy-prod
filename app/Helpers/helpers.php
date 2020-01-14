@@ -189,6 +189,36 @@ function exec_enabled() {
    }
 }
 
+function reset_app_url() {
+    // update .env file, set app_url to current host url
+
+    // get .env file path
+    $path = base_path('.env');
+    $raw = preg_split('/[\r\n]+/', file_get_contents($path));
+
+    // read from .env, load into $settings as [ key1 => value1, key2 => value2, etc. ]
+    $settings = [];
+    foreach($raw as $e) {
+        preg_match('/^(?<key>[A-Z0-9_]+)=(?<value>.*)/', $e, $matched);
+        
+        if (array_key_exists('key', $matched) && array_key_exists('value', $matched)) {
+            $settings[$matched['key']] = $matched['value'];
+        }
+    }
+
+    // add APP_URL setting if not exists
+    if (!array_key_exists('APP_URL', $settings)) {
+        $settings['APP_URL'] = url('/');
+    }
+
+    // Write back to .env file
+    $file = fopen($path, 'w');
+    foreach($settings as $key => $value) {
+        fwrite($file, "{$key}=$value\n");
+    }
+    fclose($file);
+}
+
 /**
  * Run artisan config cache
  *
