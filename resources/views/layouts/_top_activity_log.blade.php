@@ -9,7 +9,7 @@
 							{{ trans('messages.activity_log') }}						
 						</div>
 
-						<ul class="media-list dropdown-content-body">
+						<ul class="media-list dropdown-content-body top-history">
 							@if (Auth::user()->customer->logs()->count() == 0)
 								<li class="text-center text-muted2">
 									<span href="#">
@@ -29,7 +29,7 @@
 											<span class="media-annotation pull-right">{{ $log->created_at->diffForHumans() }}</span>
 										</a>
 	
-										<span class="text-muted">{!! $log->message() !!}</span>
+										<span class="text-muted desc text-muted" title='{!! $log->message() !!}'>{!! $log->message() !!}</span>
 									</div>
 								</li>
 							@endforeach
