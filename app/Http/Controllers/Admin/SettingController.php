@@ -311,6 +311,13 @@ class SettingController extends Controller
      */
     public function updateUrls(Request $request)
     {
+        // capture the current url, write to .env
+        reset_app_url(true); // force update
+
+        // @todo cannot use the artisan_config_cache() helper, cannot even call Artisan::call('config:cache') directly
+        // \Artisan::call('config:cache');
+        unlink(base_path('bootstrap/cache/config.php'));
+
         if ($request->user()->admin->getPermission('setting_system_urls') != 'yes') {
             return $this->notAuthorized();
         }

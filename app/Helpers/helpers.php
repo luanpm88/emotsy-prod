@@ -189,7 +189,7 @@ function exec_enabled() {
    }
 }
 
-function reset_app_url() {
+function reset_app_url($force = false) { // replace if already exists
     // update .env file, set app_url to current host url
 
     // get .env file path
@@ -208,6 +208,8 @@ function reset_app_url() {
 
     // add APP_URL setting if not exists
     if (!array_key_exists('APP_URL', $settings)) {
+        $settings['APP_URL'] = url('/');
+    } else if ($force) {
         $settings['APP_URL'] = url('/');
     }
 
