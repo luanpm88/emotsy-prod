@@ -3,6 +3,7 @@
 namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Acelle\Library\Log as MailLog;
 
 class UserController extends Controller
 {

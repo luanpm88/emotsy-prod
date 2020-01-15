@@ -38,6 +38,10 @@ class AccountSubscriptionController extends Controller
         if (!is_object($subscription)) {
             return redirect()->action('AccountSubscriptionController@selectPlan');
         }
+
+        if (!$subscription->plan->isActive()) {
+            return view('account.subscription.error', ['message' => __('messages.subscription.error.plan-not-active', [ 'name' => $subscription->plan->name])]);
+        }
         
         // Check if subscriotion is new
         if ($subscription->isNew()) {

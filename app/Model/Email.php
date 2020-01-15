@@ -581,7 +581,7 @@ class Email extends Model
 
     public function buildPublicUrl($path)
     {
-        $host = Setting::get('url_root');
+        $host = config('app.url');
 
         return join_url($host, $path);
     }
@@ -756,7 +756,7 @@ class Email extends Model
 
     public function getTrackingHost()
     {
-        $root = Setting::get('url_root');
+        $root = config('app.url');
         return $root;
 
         /*

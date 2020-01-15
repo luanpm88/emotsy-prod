@@ -1,3 +1,13 @@
+4.0.5 / 2020-01-14
+==================
+
+ * Fixed: subscription issue for free plan
+ * Fixed: auto-detect HTTP scheme (https or http)
+ * Fixed: plan not visiable in certain cases
+ * Updated: smaller builder.js file
+ * Updated: faster loading of builder components
+ * Updated: drop "use sending server's default FROM email address"
+
 4.0.1 / 2020-01-08
 ==================
 

@@ -35,7 +35,7 @@ class SystemUrl extends Notification
         self::cleanupSimilarNotifications();
 
         $current = url('/');
-        $cached = Setting::get('url_root');
+        $cached = config('app.url');
         if ($current != $cached) {
             $warning = [
                 'title' => trans('messages.admin.notification.system_url_title'),

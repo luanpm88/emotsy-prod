@@ -274,7 +274,7 @@ class SendingDomain extends Model
      */
     public function getHostIpAddress()
     {
-        $root = \Acelle\Model\Setting::get('url_root');
+        $root = config('app.url');
         $hostname = parse_url($root, PHP_URL_HOST);
         $ip = gethostbyname($hostname);
 

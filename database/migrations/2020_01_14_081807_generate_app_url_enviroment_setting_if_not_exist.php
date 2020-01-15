@@ -1,9 +1,10 @@
 <?php
 
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class InsertUrlRootSetting extends Migration
+class GenerateAppUrlEnviromentSettingIfNotExist extends Migration
 {
     /**
      * Run the migrations.
@@ -12,11 +13,12 @@ class InsertUrlRootSetting extends Migration
      */
     public function up()
     {
-        // Trick here
-        preg_match('/^https{0,1}:\/\/[^\/]*/', \Acelle\Model\Setting::get('url_delivery_handler'), $result);
-        if (!empty($result)) { // for upgrade only, not needed for new installation
-            \Acelle\Model\Setting::set('url_root', $result[0]);
+        // Just return if running in console (when $request object is unknown)
+        if (App::runningInConsole()) {
+            return;
         }
+
+        reset_app_url();
     }
 
     /**
