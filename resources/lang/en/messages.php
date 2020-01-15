@@ -2593,6 +2593,7 @@
   'plan.review' => 'Plan review',
   'payment.coinpayments.receive_currency' => 'Receive Currency Code',
   'subscription.status.active_pending' => 'Update pending',
+  'subscription.status.renew_change_pending' => 'Renewing/Changing',
   'campaign.check_spam_score' => 'Check Spam Score',
   'campaign.spam_score' => 'Spam Score',
   'plan.setting' => 'Email Settings',
@@ -3028,4 +3029,6 @@
   'subscribers.profile.manage_tags' => 'Manage tags',
   'subscriber.delete.confirm' => 'You\'re about to delete this subscriber.',
   'subscriber.deleted.redirect' => 'Subscriber was deleted. Redirecting to list page...',
+  'payment.direct.confirmation_message' => 'Payment confirmation message',
+  'payment.direct.payment_instruction' => 'Payment instructions',
 ) ?>

@@ -308,6 +308,7 @@ class SendingServer extends Model
                 ],
                 'settings' => [
                     'name' => 'required',
+                    'default_from_email' => 'email',
                 ],
             ],
             self::TYPE_AMAZON_API => [
@@ -318,6 +319,7 @@ class SendingServer extends Model
                 ],
                 'settings' => [
                     'name' => 'required',
+                    'default_from_email' => 'email',
                 ],
             ],
             self::TYPE_SENDGRID_SMTP => [
@@ -330,6 +332,7 @@ class SendingServer extends Model
                 ],
                 'settings' => [
                     'name' => 'required',
+                    'default_from_email' => 'email',
                 ],
             ],
             self::TYPE_SENDGRID_API => [
@@ -338,6 +341,7 @@ class SendingServer extends Model
                 ],
                 'settings' => [
                     'name' => 'required',
+                    'default_from_email' => 'email',
                 ],
             ],
             self::TYPE_MAILGUN_API => [
@@ -347,6 +351,7 @@ class SendingServer extends Model
                 ],
                 'settings' => [
                     'name' => 'required',
+                    'default_from_email' => 'email',
                 ],
             ],
             self::TYPE_MAILGUN_SMTP => [
@@ -361,6 +366,7 @@ class SendingServer extends Model
                 ],
                 'settings' => [
                     'name' => 'required',
+                    'default_from_email' => 'email',
                 ],
             ],
             self::TYPE_ELASTICEMAIL_API => [
@@ -369,6 +375,7 @@ class SendingServer extends Model
                 ],
                 'settings' => [
                     'name' => 'required',
+                    'default_from_email' => 'email',
                 ],
             ],
             self::TYPE_ELASTICEMAIL_SMTP => [
@@ -381,6 +388,7 @@ class SendingServer extends Model
                 ],
                 'settings' => [
                     'name' => 'required',
+                    'default_from_email' => 'email',
                 ],
             ],
             self::TYPE_SPARKPOST_API => [
@@ -390,6 +398,7 @@ class SendingServer extends Model
                 ],
                 'settings' => [
                     'name' => 'required',
+                    'default_from_email' => 'email',
                 ],
             ],
             self::TYPE_SPARKPOST_SMTP => [
@@ -403,6 +412,7 @@ class SendingServer extends Model
                 ],
                 'settings' => [
                     'name' => 'required',
+                    'default_from_email' => 'email',
                 ],
             ],
             self::TYPE_SMTP => [
@@ -415,8 +425,9 @@ class SendingServer extends Model
                 ],
                 'settings' => [
                     'name' => 'required',
+                    'default_from_email' => 'email',
                     'bounce_handler_id' => '',
-                    'feedback_loop_handler_id' => '',
+                    'feedback_loop_handler_id' => '',                    
                 ],
             ],
             self::TYPE_SENDMAIL => [
@@ -425,8 +436,9 @@ class SendingServer extends Model
                 ],
                 'settings' => [
                     'name' => 'required',
+                    'default_from_email' => 'email',
                     'bounce_handler_id' => '',
-                    'feedback_loop_handler_id' => '',
+                    'feedback_loop_handler_id' => '',                    
                 ],
             ],
             // self::TYPE_PHP_MAIL => [

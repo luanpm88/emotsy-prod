@@ -46,7 +46,7 @@
                         </td>
                         <td>
                             <span class="no-margin kq_search">
-                                <span class="label label-flat label-success bg-{{ $invoice->status }}" style="white-space: nowrap;">
+                                <span class="label label-success bg-{{ $invoice->status }}" style="white-space: nowrap;">
                                     {{ str_replace('_', ' ', $invoice->status) }}
                                 </span>
                             </span>

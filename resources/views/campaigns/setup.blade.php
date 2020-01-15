@@ -54,7 +54,7 @@
 					'help_class' => 'campaign'
 				])
 				
-				<div class="hiddable-cond" data-control="[name=use_default_sending_server_from_email]" data-hide-value="1">
+				<div class="hiddable-box" data-control="[name=use_default_sending_server_from_email]" data-hide-value="1">
 					@include('helpers.form_control', [
 						'type' => 'autofill',
 						'id' => 'sender_from_input',
@@ -71,6 +71,15 @@
 						'header' => trans('messages.verified_senders'),
 					])
 				</div>
+
+				@include('helpers.form_control', ['type' => 'checkbox2',
+					'name' => 'use_default_sending_server_from_email',
+					'label' => trans('messages.use_sending_server_default_value'),
+					'value' => $campaign->use_default_sending_server_from_email,
+					'rules' => $rules,
+					'help_class' => 'campaign',
+					'options' => ['0','1'],
+				])
 												
 				@include('helpers.form_control', ['type' => 'text',
 					'name' => 'reply_to',
