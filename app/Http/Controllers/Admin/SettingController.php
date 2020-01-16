@@ -316,7 +316,9 @@ class SettingController extends Controller
 
         // @todo cannot use the artisan_config_cache() helper, cannot even call Artisan::call('config:cache') directly
         // \Artisan::call('config:cache');
-        unlink(base_path('bootstrap/cache/config.php'));
+        if (file_exists(base_path('bootstrap/cache/config.php'))) {
+            unlink(base_path('bootstrap/cache/config.php'));
+        }
 
         if ($request->user()->admin->getPermission('setting_system_urls') != 'yes') {
             return $this->notAuthorized();
