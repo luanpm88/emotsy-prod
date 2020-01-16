@@ -6,7 +6,7 @@ require 'json'
 
 # Settings
 old_versions = ['4.0.0']                    # sort by chronological order
-packages = []       # vendor packages to be replaced
+packages = ['acelle']       # vendor packages to be replaced
 dirs = ['public/builder', 'resources/lang/default' ]               # 'resources/lang/default' for example
 
 # Auto setting
@@ -108,8 +108,8 @@ end
 
 for dir in meta[:dirs]
   `rm -fr  #{File.join(output, subdir, dir)}`
-  `mkdir -p #{File.join(output, subdir, dir)}`
-  `cp -r #{dir} #{File.join(output, subdir, dir)}`
+  `mkdir -p #{File.join(output, subdir, File.dirname(dir))}`
+  `cp -r #{dir} #{File.join(output, subdir, File.dirname(dir))}`
 end
 
 ## zip file
