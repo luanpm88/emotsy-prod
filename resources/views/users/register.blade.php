@@ -93,7 +93,7 @@
                 <hr>
                 <div class="row flex align-items">
                     <div class="col-md-4">
-                        <button type='submit' class="btn btn-mc_primary"><i class="icon-check"></i> {{ trans('messages.get_started') }}</button>
+                        <button type='submit' class="btn btn-mc_primary res-button"><i class="icon-check"></i> {{ trans('messages.get_started') }}</button>
                     </div>
                     <div class="col-md-8">
                         {!! trans('messages.register.agreement_intro') !!}
@@ -104,5 +104,15 @@
             <div class="col-md-1"></div>
         </div>
     </form>
+
+    <script>
+        @if (isSiteDemo())
+            $('.res-button').click(function(e) {
+                e.preventDefault();
+
+                notify('notice', '{{ trans('messages.notify.notice') }}', '{{ trans('messages.operation_not_allowed_in_demo') }}');
+            });
+        @endif
+    </script>
     
 @endsection

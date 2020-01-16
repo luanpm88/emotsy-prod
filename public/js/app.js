@@ -1945,7 +1945,7 @@ $(function() {
     });
 
     // add segment condition
-    $(document).on("click", "a.modal_link", function(e) {
+    $(document).on("click", ".modal_link", function(e) {
         e.preventDefault();
         $(".modal").modal('hide');
         var url = $(this).attr("href");

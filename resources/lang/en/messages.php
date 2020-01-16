@@ -1641,7 +1641,7 @@
   'max_emails' => 'Email sending credits',
   'admin_default_plan' => 'Default plan',
   'something_went_wrong_with_payment' => 'Something went wrong with the payment service. Please try again later.<br/>Error: :error',
-  'something_went_wrong' => 'Something went wrong.',
+  'something_went_wrong' => 'Something went wrong',
   'something_went_wrong_with_email_service' => 'Something went wrong with the email service. Please try again later.',
   'customers.deleted' => 'One or more customers were successfully deleted',
   'license_optional' => 'License (Purchased code)',
@@ -2390,6 +2390,7 @@
   'subscription.current_subscription.cancel_at_end_of_period.wording' => 'You are currently subscribed to <strong>:plan</strong> plan (<strong>:money</strong>).
       Your subscription will expire in <strong>:remain</strong>, on <strong>:end_at</strong>',
   'subscription.resume' => 'Resume',
+  'subscription.error.plan-not-active' => 'The plan <strong>:name</strong> you subscribed to is currently not active. Please check with your system administrator',
   'plan_details' => 'Plan details',
   'plan_details.intro' => 'The table below is the details of you current plan. Including plan name, quota, permissions and other information.',
   'subscription.resume.confirm' => 'You\'re about to resume :number subscription.',
@@ -2593,6 +2594,7 @@
   'plan.review' => 'Plan review',
   'payment.coinpayments.receive_currency' => 'Receive Currency Code',
   'subscription.status.active_pending' => 'Update pending',
+  'subscription.status.renew_change_pending' => 'Renewing/Changing',
   'campaign.check_spam_score' => 'Check Spam Score',
   'campaign.spam_score' => 'Spam Score',
   'plan.setting' => 'Email Settings',
@@ -3028,4 +3030,6 @@
   'subscribers.profile.manage_tags' => 'Manage tags',
   'subscriber.delete.confirm' => 'You\'re about to delete this subscriber.',
   'subscriber.deleted.redirect' => 'Subscriber was deleted. Redirecting to list page...',
+  'payment.direct.confirmation_message' => 'Payment confirmation message',
+  'payment.direct.payment_instruction' => 'Payment instructions',
 ) ?>

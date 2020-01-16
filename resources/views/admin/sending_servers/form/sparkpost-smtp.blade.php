@@ -127,7 +127,7 @@
         </div>
     </div>
 </form>
-@if ($server->id && $errors->isEmpty())
+@if ($server->id)
 <form action="{{ action('Admin\SendingServerController@config', $server->uid) }}" method="POST" class="form-validate-jqueryz">
     {{ csrf_field() }}
     <div class="mc_section">
@@ -143,6 +143,15 @@
                     'class' => '',
                     'name' => 'name',
                     'value' => $server->name,
+                    'help_class' => 'sending_server',
+                    'rules' => $server->getConfigRules(),
+                ])
+
+                @include('helpers.form_control', [
+                    'type' => 'text',
+                    'class' => '',
+                    'name' => 'default_from_email',
+                    'value' => $server->default_from_email,
                     'help_class' => 'sending_server',
                     'rules' => $server->getConfigRules(),
                 ])

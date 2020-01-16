@@ -155,6 +155,14 @@ class SendingServerController extends Controller
             return $this->notAuthorized();
         }
 
+        // bounce / feedback hanlder nullable
+        if ($request->old() && empty($request->old()["bounce_handler_id"])) {
+            $server->bounce_handler_id = null;
+        }
+        if ($request->old() && empty($request->old()["feedback_loop_handler_id"])) {
+            $server->feedback_loop_handler_id = null;
+        }
+
         $server->fill($request->old());
 
         return view('sending_servers.edit', [
@@ -183,11 +191,6 @@ class SendingServerController extends Controller
 
         // save posted data
         if ($request->isMethod('patch')) {
-            $this->validate($request, \Acelle\Model\SendingServer::rules($request->type));
-
-            // Save current user info
-            $server->fill($request->all());
-
             // bounce / feedback hanlder nullable
             if (empty($request->bounce_handler_id)) {
                 $server->bounce_handler_id = null;
@@ -195,6 +198,11 @@ class SendingServerController extends Controller
             if (empty($request->feedback_loop_handler_id)) {
                 $server->feedback_loop_handler_id = null;
             }
+            
+            // Save current user info
+            $server->fill($request->all());
+            
+            $this->validate($request, $server->getRules());
 
             if ($server->save()) {
                 // Log
