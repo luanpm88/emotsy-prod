@@ -357,6 +357,7 @@ class Email extends Model
     {
         // replace relative urls
         $this->content = \Acelle\Library\Tool::replaceTemplateUrl($this->content, route('email_assets', ['uid' => $this->uid, 'path' => '']));
+        return $this->content;
     }
 
     /**
@@ -678,7 +679,7 @@ class Email extends Model
         // * tagMessage
 
         // @note: addTrackingUrl() must go before appendOpenTrackingUrl()
-        $body = $this->content;
+        $body = $this->transform();
 
         // Enable click tracking
         if ($this->track_click) {

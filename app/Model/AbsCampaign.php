@@ -558,7 +558,7 @@ abstract class AbsCampaign extends Model
         // * tagMessage
 
         // @note: addTrackingUrl() must go before appendOpenTrackingUrl()
-        $body = $this->html;
+        $body = $this->transform();
 
         // Enable click tracking
         if ($this->track_click) {
@@ -2617,6 +2617,7 @@ abstract class AbsCampaign extends Model
     {
         // replace relative urls
         $this->html = \Acelle\Library\Tool::replaceTemplateUrl($this->html, route('campaign_assets', ['uid' => $this->uid, 'path' => '']));
+        return $this->html;
     }
 
     /**
