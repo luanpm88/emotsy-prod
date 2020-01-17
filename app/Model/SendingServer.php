@@ -1188,7 +1188,8 @@ class SendingServer extends Model
      */
     public function allowVerifyingOwnDomains()
     {
-        return json_decode($this->options, true)['allow_verify_domain_against_acelle'] == 'yes';
+        $options = json_decode($this->options, true);
+        return array_key_exists('allow_verify_domain_against_acelle', $options) && $options['allow_verify_domain_against_acelle'] == 'yes';
     }
     
     /**
@@ -1198,7 +1199,8 @@ class SendingServer extends Model
      */
     public function allowVerifyingOwnEmails()
     {
-        return json_decode($this->options, true)['allow_verify_email_against_acelle'] == 'yes';
+        $options = json_decode($this->options, true);
+        return array_key_exists('allow_verify_email_against_acelle', $options) && $options['allow_verify_email_against_acelle'] == 'yes';
     }
     
     /**
@@ -1208,7 +1210,8 @@ class SendingServer extends Model
      */
     public function allowVerifyingOwnDomainsRemotely()
     {
-        return json_decode($this->options, true)['allow_verify_domain_remotely'] == 'yes';
+        $options = json_decode($this->options, true);
+        return array_key_exists('allow_verify_domain_remotely', $options) && $options['allow_verify_domain_remotely'] == 'yes';
     }
     
     /**
@@ -1218,7 +1221,8 @@ class SendingServer extends Model
      */
     public function allowVerifyingOwnEmailsRemotely()
     {
-        return json_decode($this->options, true)['allow_verify_email_remotely'] == 'yes';
+        $options = json_decode($this->options, true);
+        return array_key_exists('allow_verify_email_remotely', $options) && $options['allow_verify_email_remotely'] == 'yes';
     }
     
     /**
@@ -1228,7 +1232,8 @@ class SendingServer extends Model
      */
     public function allowUnverifiedFromEmailAddress()
     {
-        return json_decode($this->options, true)['allow_unverified_from_email'] == 'yes';
+        $options = json_decode($this->options, true);
+        return array_key_exists('allow_unverified_from_email', $options) && $options['allow_unverified_from_email'] == 'yes';
     }
     
     /**
