@@ -2,6 +2,9 @@
 
 namespace Acelle\Helpers;
 
+use Acelle\Model\Setting;
+use Carbon\Carbon;
+
 class LicenseHelper
 {
     // license type
@@ -69,9 +72,37 @@ class LicenseHelper
     *
     * @return boolean
     */
-    public static function isExtended($license)
+    public static function isExtended($code = null)
     {
-        return LicenseHelper::isValid($license) && LicenseHelper::getLicenseType($license) == LicenseHelper::TYPE_EXTENDED;
+        if (is_null($code)) {
+            return \Acelle\Model\Setting::get('license_type') == LicenseHelper::TYPE_EXTENDED;
+        } else {
+            return LicenseHelper::isValid($code) && LicenseHelper::getLicenseType($code) == LicenseHelper::TYPE_EXTENDED;    
+        }
+        
+    }
+
+    /**
+    * Check if supported
+    *
+    * @return boolean
+    */
+    public static function isSupported($code = null)
+    {
+        if (is_null($code)) {
+            $code = Setting::get('license');
+        }
+
+        if (empty($code)) {
+            throw new \Exception("No purchase code available for your installation");
+        }
+
+        $supportedUntil = Carbon::parse(self::getLicense($code)['data']['supported_until']);
+
+        return [
+            $supportedUntil->gte(Carbon::now()),            
+            $supportedUntil,
+        ];
     }
 
     /**
@@ -84,26 +115,5 @@ class LicenseHelper
         $result = self::getLicense($license);
 
         return $result['status'] == 'valid';
-    }
-
-    /**
-     * Check license is extended not remote.
-     *
-     * @var boolean
-     */
-    public static function systemLicenseIsExtended()
-    {
-        return \Acelle\Model\Setting::get('license_type') == LicenseHelper::TYPE_EXTENDED;
-    }
-
-    /**
-     * Check when show not extended popup.
-     *
-     * @var boolean
-     */
-    public static function showNotExtendedLicensePopup()
-    {
-        return (\Request::is('*payment_methods*'))
-            && !LicenseHelper::systemLicenseIsExtended();
     }
 }
