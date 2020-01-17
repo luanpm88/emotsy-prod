@@ -5,9 +5,9 @@
 require 'json'
 
 # Settings
-old_versions = ['4.0.0']                    # sort by chronological order
+old_versions = ['4.0.9']                    # sort by chronological order
 packages = ['acelle']       # vendor packages to be replaced
-dirs = ['public/builder', 'resources/lang/default' ]               # 'resources/lang/default' for example
+dirs = ['resources/lang/default' ]               # 'resources/lang/default' for example
 
 # Auto setting
 release_date = Time.now.to_s
