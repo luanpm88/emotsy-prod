@@ -195,15 +195,17 @@ class Sender extends Model
      *
      * @return array
      */
-    public static function verificationTypeSelectOptions()
+    public static function verificationTypeSelectOptions($server)
     {
-        $options = [
-            ['value' => self::VERIFICATION_TYPE_ACELLE, 'text' => \Acelle\Model\Setting::get('site_name')],
-        ];
+        $options = [];
 
-        // @todo: code smell!
-        if (Setting::get('aws_verification_server') != 'no') {
-            $options[] = ['value' => self::VERIFICATION_TYPE_AMAZON_SES, 'text' => trans('messages.sender.type.' . self::VERIFICATION_TYPE_AMAZON_SES)];
+        if ($server->allowVerifyingOwnEmails()) {
+            $options[] = ['value' => self::VERIFICATION_TYPE_ACELLE, 'text' => \Acelle\Model\Setting::get('site_name')];
+        }
+
+        if ($server->allowVerifyingOwnEmailsRemotely()) {
+            // AWS server name
+            $options[] = ['value' => self::VERIFICATION_TYPE_AMAZON_SES, 'text' => $server->name];
         }
 
         return $options;
@@ -265,7 +267,10 @@ class Sender extends Model
      */
     public function getAwsVerificationServer()
     {
-        return SendingServerAmazonApi::findByUid(Setting::get('aws_verification_server'));
+        $subscription = $this->customer->subscription;
+        $server = $subscription->plan->primarySendingServer();
+
+        return SendingServerAmazonApi::find($server->id);
     }
 
     /**

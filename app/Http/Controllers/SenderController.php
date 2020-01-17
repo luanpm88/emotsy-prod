@@ -115,6 +115,8 @@ class SenderController extends Controller
     public function show(Request $request, $id)
     {
         $sender = Sender::findByUid($id);
+        $subscription = $request->user()->customer->subscription;
+        $server = $subscription->plan->primarySendingServer();
 
         // authorize
         if (\Gate::denies('read', $sender)) {
@@ -123,6 +125,7 @@ class SenderController extends Controller
 
         return view('senders.show', [
             'sender' => $sender,
+            'verificationOptions' => Sender::verificationTypeSelectOptions($server)
         ]);
     }
 
