@@ -32,6 +32,16 @@ class SenderController extends Controller
             return $this->notAuthorized();
         }
 
+        $server = $request->user()->customer->subscription->plan->primarySendingServer();
+        $email = $server->allowVerifyingOwnEmails() || $server->allowVerifyingOwnEmailsRemotely();
+        $domain = $server->allowVerifyingOwnDomains();
+
+        if ($email || $domain ) {
+            //
+        } else {
+            return $this->notAuthorized();
+        }
+
         return view('senders.index', [
             'senders' => $this->search($request),
         ]);
