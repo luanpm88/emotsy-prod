@@ -97,10 +97,13 @@ class LicenseHelper
             throw new \Exception("No purchase code available for your installation");
         }
 
-        $supportedUntil = Carbon::parse(self::getLicense($code)['data']['supported_until']);
+        $result = self::getLicense($code);
+
+        $supportedUntil = Carbon::parse($result['data']['supported_until']);
+        $supported = $result['data']['supported'];
 
         return [
-            $supportedUntil->gte(Carbon::now()),            
+            $supported,
             $supportedUntil,
         ];
     }
