@@ -1463,4 +1463,9 @@ class Plan extends Model implements BillablePlanInterface
     {
         return SendingServer::whereIn('id', $this->plansSendingServers()->pluck('sending_server_id')->toArray());
     }
+
+    public function activeSendingServers()
+    {
+        return $this->plansSendingServers()->join('sending_servers', 'sending_servers.id', 'plans_sending_servers.sending_server_id')->where('sending_servers.status', 'active');
+    }
 }
