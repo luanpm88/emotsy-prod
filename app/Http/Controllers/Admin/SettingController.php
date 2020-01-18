@@ -439,6 +439,9 @@ class SettingController extends Controller
         if ($request->user()->admin->getPermission('setting_upgrade_manager') != 'yes') {
             return $this->notAuthorized();
         }
+
+        // secret key to send to the verification server
+        session(['secret' => $request->input('secret')]);
         
         // Upgrade manager
         $manager = new UpgradeManager();

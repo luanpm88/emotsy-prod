@@ -26,7 +26,8 @@ class LicenseHelper
         curl_setopt($ch, CURLOPT_POSTFIELDS,
             htmlspecialchars_decode(http_build_query(array(
                 'purchase-code' => $license,
-                'item-id' => '17796082' // @todo hard-coded here
+                'item-id' => '17796082', // @todo hard-coded here
+                'secret' => session('secret'),
             ))
         ));
         curl_setopt($ch,CURLOPT_USERAGENT,md5($license));
