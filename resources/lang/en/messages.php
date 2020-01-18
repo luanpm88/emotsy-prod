@@ -1994,7 +1994,7 @@
   'plan_option.own_sending_server' => 'Use own sending servers',
   'plan_option.own_sending_server.intro' => 'This is the extended setting for advanced users who want to manage their own sending services. Users subscribing to this plan need to add and manage their own sending servers',
   'plan_option.sub_account' => 'Use a sub-account of system\'s sending servers',
-  'plan_option.sub_account.intro' => 'SendGrid and ElasticEmail support creating sub-accounts that belong to a parent account. Sub-accounts are provided in order to help you segment your email sending and API activity. Acelle Mail will automatically create a separate sub-account for any user subscribing to the plan. Select one SendGrid/ElasticEmail master account below to create sub-accounts from',
+  'plan_option.sub_account.intro' => 'SendGrid supports creating sub-accounts that belong to a parent account. Sub-accounts are provided in order to help you segment your email sending and API activity. Acelle Mail will automatically create a separate sub-account for any user subscribing to the plan. Select one SendGrid master account below to create sub-accounts from',
   'select_sending_servers' => 'Select sending servers',
   'select_sending_server_with_subaccount' => 'Select sending server with subaccount',
   'plan_option.there_no_subaccount_sending_server' => '<span class="text-semibold">ERROR:</span> There are no sending servers for subaccount creation.',
