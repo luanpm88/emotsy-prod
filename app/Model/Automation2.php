@@ -574,6 +574,18 @@ class Automation2 extends Model
                 'percentage' => ($total != 0) ? ($count / $total) : 0,
                 'latest_activity' => $this->autoTriggers()->max('created_at'),
             ];    
+        } else if ($action->getType() == 'ElementOperation') {
+            $count = 0;
+            foreach ($this->autoTriggers as $trigger) {
+                $count += ($trigger->isLatest($action->getId())) ? 1 : 0;
+            }
+
+            $insight = [
+                'count' => $count,
+                'subtitle' => '#Operation TBD',
+                'percentage' => ($total != 0) ? ($count / $total) : 0,
+                'latest_activity' => $this->autoTriggers()->max('created_at'),
+            ];
         } else if ($action->getType() == 'ElementWait') {
             $count = 0;
             foreach ($this->autoTriggers as $trigger) {
