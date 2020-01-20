@@ -53,6 +53,8 @@ class AutomationElement {
                 list[e.id] = new ElementWait(e);
             } else if (e.type == 'ElementCondition') {
                 list[e.id] = new ElementCondition(e);
+            } else if (e.type == 'ElementCondition') {
+                list[e.id] = new ElementOperation(e);
             }
         }
 
