@@ -3443,3 +3443,36 @@ p.link-inline a {
     color: #333;
     border-color: #FFF3E0;
 }
+.automation-template-thumb {
+    width: 190px !important;
+    height: auto !important;
+    box-shadow: 0px 0px 22px rgba(0,0,0,0.2);
+    border: solid 1px #ddd;
+    padding: 5px;
+    border-radius: 10px;
+  }
+.template-thumb-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.template-thumb-container:hover::before {
+    content: 'hello';
+    text-indent: -9000px;
+    top: 0;
+    left: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.06);
+}
+.template-thumb-container:hover .btn {
+    display: block !important;
+    position: absolute;
+    width: 77%;
+    white-space: normal;
+    margin: 0 20px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.8);
+    padding: 7px 10px;
+    transition: visibility 0s linear 10s, opacity 0.33s linear;
+}

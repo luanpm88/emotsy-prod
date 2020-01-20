@@ -1,6 +1,6 @@
 <input type="hidden" name="type" value="{{ $server->type }}" />
 <div class="row">
-	@if (array_key_exists("name", Acelle\Model\SendingServer::types()[request()->type]["cols"]))
+	@if (array_key_exists("name", Acelle\Model\SendingServer::frontendTypes()[request()->type]["cols"]))
 		<div class="col-sm-6 col-md-4">
 			@include('helpers.form_control', [
 				'type' => 'text',
@@ -12,7 +12,7 @@
 			])
 		</div>
 	@endif
-	@if (array_key_exists("domain", Acelle\Model\SendingServer::types()[request()->type]["cols"]))
+	@if (array_key_exists("domain", Acelle\Model\SendingServer::frontendTypes()[request()->type]["cols"]))
 		<div class="col-sm-6 col-md-4">
 			@include('helpers.form_control', [
 				'type' => 'text',
@@ -24,7 +24,7 @@
 			])
 		</div>
 	@endif
-	@if (array_key_exists("api_key", Acelle\Model\SendingServer::types()[request()->type]["cols"]))
+	@if (array_key_exists("api_key", Acelle\Model\SendingServer::frontendTypes()[request()->type]["cols"]))
 		<div class="col-sm-6 col-md-4">
 			@include('helpers.form_control', [
 				'type' => 'text',
@@ -36,7 +36,7 @@
 			])
 		</div>
 	@endif
-	@if (array_key_exists("host", Acelle\Model\SendingServer::types()[request()->type]["cols"]) && request()->type != 'sparkpost-api')
+	@if (array_key_exists("host", Acelle\Model\SendingServer::frontendTypes()[request()->type]["cols"]) && request()->type != 'sparkpost-api')
 		<div class="col-sm-6 col-md-4">
 			@include('helpers.form_control', [
 				'type' => 'text',
@@ -48,7 +48,7 @@
 			])
 		</div>
 	@endif
-	@if ( array_key_exists("host", Acelle\Model\SendingServer::types()[request()->type]["cols"]) && request()->type == 'sparkpost-api' )
+	@if ( array_key_exists("host", Acelle\Model\SendingServer::frontendTypes()[request()->type]["cols"]) && request()->type == 'sparkpost-api' )
 		<div class="col-sm-6 col-md-4">
 			@include('helpers.form_control', [
 				'type' => 'select',
@@ -61,7 +61,7 @@
 			])
 		</div>
 	@endif
-	@if (array_key_exists("aws_access_key_id", Acelle\Model\SendingServer::types()[request()->type]["cols"]))
+	@if (array_key_exists("aws_access_key_id", Acelle\Model\SendingServer::frontendTypes()[request()->type]["cols"]))
 		<div class="col-sm-6 col-md-4">
 			@include('helpers.form_control', [
 				'type' => 'text',
@@ -73,7 +73,7 @@
 			])
 		</div>
 	@endif
-	@if (array_key_exists("aws_secret_access_key", Acelle\Model\SendingServer::types()[request()->type]["cols"]))
+	@if (array_key_exists("aws_secret_access_key", Acelle\Model\SendingServer::frontendTypes()[request()->type]["cols"]))
 		<div class="col-sm-6 col-md-4">
 			@include('helpers.form_control', [
 				'type' => 'text',
@@ -85,7 +85,7 @@
 			])
 		</div>
 	@endif
-	@if (array_key_exists("aws_region", Acelle\Model\SendingServer::types()[request()->type]["cols"]))
+	@if (array_key_exists("aws_region", Acelle\Model\SendingServer::frontendTypes()[request()->type]["cols"]))
 		<div class="col-sm-6 col-md-4">
 			@include('helpers.form_control', [
 				'type' => 'select',
@@ -98,7 +98,7 @@
 			])
 		</div>
 	@endif
-	@if (array_key_exists("smtp_username", Acelle\Model\SendingServer::types()[request()->type]["cols"]))
+	@if (array_key_exists("smtp_username", Acelle\Model\SendingServer::frontendTypes()[request()->type]["cols"]))
 		<div class="col-sm-6 col-md-4">
 			@include('helpers.form_control', [
 				'type' => 'text',
@@ -110,7 +110,7 @@
 			])
 		</div>
 	@endif
-	@if (array_key_exists("smtp_password", Acelle\Model\SendingServer::types()[request()->type]["cols"]))
+	@if (array_key_exists("smtp_password", Acelle\Model\SendingServer::frontendTypes()[request()->type]["cols"]))
 		<div class="col-sm-6 col-md-4">
 			@include('helpers.form_control', [
 				'type' => 'text',
@@ -122,7 +122,7 @@
 			])
 		</div>
 	@endif
-	@if (array_key_exists("smtp_port", Acelle\Model\SendingServer::types()[request()->type]["cols"]))
+	@if (array_key_exists("smtp_port", Acelle\Model\SendingServer::frontendTypes()[request()->type]["cols"]))
 		<div class="col-sm-6 col-md-4">
 			@include('helpers.form_control', [
 				'type' => 'text',
@@ -134,7 +134,7 @@
 			])
 		</div>
 	@endif
-	@if (array_key_exists("smtp_protocol", Acelle\Model\SendingServer::types()[request()->type]["cols"]))
+	@if (array_key_exists("smtp_protocol", Acelle\Model\SendingServer::frontendTypes()[request()->type]["cols"]))
 		<div class="col-sm-6 col-md-4">
 			@include('helpers.form_control', [
 				'type' => 'text',
@@ -146,7 +146,7 @@
 			])
 		</div>
 	@endif
-	@if (array_key_exists("sendmail_path", Acelle\Model\SendingServer::types()[request()->type]["cols"]))
+	@if (array_key_exists("sendmail_path", Acelle\Model\SendingServer::frontendTypes()[request()->type]["cols"]))
 		<div class="col-sm-6 col-md-4">
 			@include('helpers.form_control', [
 				'type' => 'text',
@@ -158,7 +158,7 @@
 			])
 		</div>
 	@endif
-	@if (array_key_exists("default_from_email", Acelle\Model\SendingServer::types()[request()->type]["cols"]))
+	@if (array_key_exists("default_from_email", Acelle\Model\SendingServer::frontendTypes()[request()->type]["cols"]))
 		<div class="col-sm-6 col-md-4">
 			@include('helpers.form_control', [
 				'type' => 'text',
@@ -219,11 +219,11 @@
 	</div>
 </div>
 
-@if ( array_key_exists("bounce_handler_id", Acelle\Model\SendingServer::types()[request()->type]["cols"])
-	|| array_key_exists("feedback_loop_handler_id", Acelle\Model\SendingServer::types()[request()->type]["cols"]))
+@if ( array_key_exists("bounce_handler_id", Acelle\Model\SendingServer::frontendTypes()[request()->type]["cols"])
+	|| array_key_exists("feedback_loop_handler_id", Acelle\Model\SendingServer::frontendTypes()[request()->type]["cols"]))
 	<h4 class="text-semibold text-teal-800">{{ trans('messages.handlers') }}</h4>
 	<div class="row">
-		@if (array_key_exists("bounce_handler_id", Acelle\Model\SendingServer::types()[request()->type]["cols"]))
+		@if (array_key_exists("bounce_handler_id", Acelle\Model\SendingServer::frontendTypes()[request()->type]["cols"]))
 			<div class="col-md-4">
 				@include('helpers.form_control', [
 					'type' => 'select',
@@ -238,7 +238,7 @@
 				])
 			</div>
 		@endif
-		@if (array_key_exists("feedback_loop_handler_id", Acelle\Model\SendingServer::types()[request()->type]["cols"]))
+		@if (array_key_exists("feedback_loop_handler_id", Acelle\Model\SendingServer::frontendTypes()[request()->type]["cols"]))
 			<div class="col-md-4">
 				@include('helpers.form_control', [
 					'type' => 'select',

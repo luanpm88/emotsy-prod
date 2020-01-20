@@ -103,7 +103,7 @@ class SendingServerController extends Controller
 
         // save posted data
         if ($request->isMethod('post')) {
-            $this->validate($request, \Acelle\Model\SendingServer::rules($request->type));
+            $this->validate($request, \Acelle\Model\SendingServer::frontendRules($request->type));
 
             // Save current user info
             $server->fill($request->all());
@@ -202,7 +202,7 @@ class SendingServerController extends Controller
             // Save current user info
             $server->fill($request->all());
             
-            $this->validate($request, $server->getRules());
+            $this->validate($request, $server->getFrontendRules());
 
             if ($server->save()) {
                 // Log

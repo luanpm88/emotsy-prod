@@ -441,15 +441,127 @@ class SendingServer extends Model
                     'feedback_loop_handler_id' => '',                    
                 ],
             ],
-            // self::TYPE_PHP_MAIL => [
-            //     'cols' => [                    
-            //     ],
-            //     'settings' => [
-            //         'name' => 'required',
-            //         'bounce_handler_id' => '',
-            //         'feedback_loop_handler_id' => '',
-            //     ],
-            // ],
+        ];
+    }
+
+    /**
+     * Type of server.
+     *
+     * @return object
+     */
+    public static function frontendTypes()
+    {
+        return [
+            self::TYPE_AMAZON_SMTP => [
+                'cols' => [                    
+                    'host' => 'required',
+                    'aws_access_key_id' => 'required',
+                    'aws_secret_access_key' => 'required',
+                    'aws_region' => 'required',
+                    'smtp_username' => 'required',
+                    'smtp_password' => 'required',
+                    'smtp_port' => 'required',
+                    'smtp_protocol' => 'required',
+                    'default_from_email' => 'email',
+                ],
+            ],
+            self::TYPE_AMAZON_API => [
+                'cols' => [
+                    'aws_access_key_id' => 'required',
+                    'aws_secret_access_key' => 'required',
+                    'aws_region' => 'required',
+                    'default_from_email' => 'email',
+                ],
+            ],
+            self::TYPE_SENDGRID_SMTP => [
+                'cols' => [
+                    'api_key' => 'required',
+                    'host' => 'required',
+                    'smtp_username' => 'required',
+                    'smtp_password' => 'required',
+                    'smtp_port' => 'required',
+                    'default_from_email' => 'email',
+                ],
+            ],
+            self::TYPE_SENDGRID_API => [
+                'cols' => [
+                    'api_key' => 'required',
+                    'default_from_email' => 'email',
+                ],
+            ],
+            self::TYPE_MAILGUN_API => [
+                'cols' => [
+                    'api_key' => 'required',
+                    'domain' => 'required',
+                    'default_from_email' => 'email',
+                ],
+            ],
+            self::TYPE_MAILGUN_SMTP => [
+                'cols' => [
+                    'domain' => 'required',
+                    'api_key' => 'required',
+                    'host' => 'required',
+                    'smtp_username' => 'required',
+                    'smtp_password' => 'required',
+                    'smtp_port' => 'required',
+                    'smtp_protocol' => 'required',
+                    'default_from_email' => 'email',
+                ],
+            ],
+            self::TYPE_ELASTICEMAIL_API => [
+                'cols' => [
+                    'api_key' => 'required',
+                    'default_from_email' => 'email',
+                ],
+            ],
+            self::TYPE_ELASTICEMAIL_SMTP => [
+                'cols' => [
+                    'api_key' => 'required',
+                    'host' => 'required',
+                    'smtp_username' => 'required',
+                    'smtp_password' => 'required',
+                    'smtp_port' => 'required',
+                    'default_from_email' => 'email',
+                ],
+            ],
+            self::TYPE_SPARKPOST_API => [
+                'cols' => [
+                    'host' => 'required',
+                    'api_key' => 'required',
+                    'default_from_email' => 'email',
+                ],
+            ],
+            self::TYPE_SPARKPOST_SMTP => [
+                'cols' => [
+                    'api_key' => 'required',
+                    'host' => 'required',
+                    'smtp_username' => 'required',
+                    'smtp_password' => 'required',
+                    'smtp_port' => 'required',
+                    'smtp_protocol' => '',
+                    'default_from_email' => 'email',
+                ],
+            ],
+            self::TYPE_SMTP => [
+                'cols' => [
+                    'host' => 'required',
+                    'smtp_username' => 'required',
+                    'smtp_password' => 'required',
+                    'smtp_port' => 'required',
+                    'smtp_protocol' => '',           
+                    'default_from_email' => 'email',  
+                    'bounce_handler_id' => '',
+                    'feedback_loop_handler_id' => '',       
+                ],
+            ],
+            self::TYPE_SENDMAIL => [
+                'cols' => [
+                    'sendmail_path' => 'required',
+                    'default_from_email' => 'email',
+                    'bounce_handler_id' => '',
+                    'feedback_loop_handler_id' => '',
+                ],
+            ],
         ];
     }
 
@@ -517,6 +629,33 @@ class SendingServer extends Model
         $rules['quota_value'] = 'required|numeric';
         $rules['quota_base'] = 'required|numeric';
         $rules['quota_unit'] = 'required';
+
+        return $rules;
+    }
+
+    /**
+     * Get rules.
+     *
+     * @return string
+     */
+    public static function frontendRules($type)
+    {
+        $rules = self::types()[$type]['cols'];
+        $rules['quota_value'] = 'required|numeric';
+        $rules['quota_base'] = 'required|numeric';
+        $rules['quota_unit'] = 'required';
+
+        return $rules;
+    }
+
+    /**
+     * Get rules.
+     *
+     * @return string
+     */
+    public function getFrontendRules()
+    {
+        $rules = SendingServer::frontendTypes()[$this->type]['cols'];
 
         return $rules;
     }
