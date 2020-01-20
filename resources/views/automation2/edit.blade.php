@@ -29,6 +29,10 @@
             stroke-width: 1;
         }
 
+        rect.operation {
+            fill: #966089;
+        }
+
         g.wait > g > a tspan {
             fill: #666;
         }

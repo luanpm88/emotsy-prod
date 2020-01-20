@@ -345,9 +345,12 @@ class AutomationElement {
         } else if (type == 'wait') {
             rect.setAttribute('class', 'element wait');
             text1.innerHTML = '&#xf1da;&nbsp;&nbsp;';
-        } else {
+        } else if (type == 'action') {
             rect.setAttribute('class', 'element action');
             text1.innerHTML = '&#xf0e0;&nbsp;&nbsp;';
+        } else if (type == 'operation') {
+            rect.setAttribute('class', 'element operation');
+            text1.innerHTML = '&#xf2bd;&nbsp;&nbsp;';
         }
 
         text1.setAttribute('font-family', 'FontAwesome');
@@ -809,6 +812,12 @@ class ElementTrigger extends ElementAction {
 class ElementWait extends ElementAction {
     draw(top, left, container = null) {
         this.drawAction(top, left, container, 'wait');
+    }
+}
+
+class ElementOperation extends ElementAction {
+    draw(top, left, container = null) {
+        this.drawAction(top, left, container, 'operation');
     }
 }
 
