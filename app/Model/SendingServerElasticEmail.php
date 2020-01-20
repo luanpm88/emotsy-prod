@@ -157,13 +157,16 @@ class SendingServerElasticEmail extends SendingServer
         }
 
         $subscribeUrl = StringHelper::joinUrl(Setting::get('url_delivery_handler'), self::WEBHOOK);
-
-        $response = file_get_contents(self::API_ENDPOINT.'/account/updatehttpnotification?apikey='.$this->api_key.'&url='.$subscribeUrl.'&settings={sent:false,opened:false,clicked:false,unsubscribed:false,complaints:true,error:true}');
+        $endpoint = self::API_ENDPOINT.'/account/updatehttpnotification?apikey='.$this->api_key.'&url='.$subscribeUrl.'&settings={sent:false,opened:false,clicked:false,unsubscribed:false,complaints:true,error:true}';
+        $response = file_get_contents($endpoint);
         if ($response == '{"success":true}') {
             MailLog::info('webhook set!');
             self::$isWebhookSetup = true;
         } else {
-            throw new \Exception('ElasticEmail Erorr. Cannot setup webhook. Response from server: '.$response);
+            $msg = 'ElasticEmail Erorr. Cannot setup webhook for "'.$subscribeUrl.'". Response from server: '.$response;
+            MailLog::error($msg);
+            MailLog::error('Elastic endpoint: '.$endpoint);
+            throw new \Exception($msg);
         }
     }
 

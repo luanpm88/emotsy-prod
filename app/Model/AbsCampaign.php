@@ -558,7 +558,7 @@ abstract class AbsCampaign extends Model
         // * tagMessage
 
         // @note: addTrackingUrl() must go before appendOpenTrackingUrl()
-        $body = $this->html;
+        $body = $this->transform();
 
         // Enable click tracking
         if ($this->track_click) {
@@ -1120,7 +1120,7 @@ abstract class AbsCampaign extends Model
             return 0;
         }
 
-        return round(($this->clickedLinkCount() / $url_count), 0);
+        return round(($this->clickedLinkCount() / $url_count), 2);
     }
 
     /**
@@ -1148,7 +1148,7 @@ abstract class AbsCampaign extends Model
             return 0;
         }
 
-        return round(($this->clickCount() / $open_count), 0);
+        return ($this->clickCount() / $open_count);
     }
 
     /**
@@ -1164,7 +1164,7 @@ abstract class AbsCampaign extends Model
             return 0;
         }
 
-        return round(($this->clickedEmailsCount() / $open_count), 2);
+        return ($this->clickedEmailsCount() / $open_count);
     }
 
     /**
@@ -1180,7 +1180,7 @@ abstract class AbsCampaign extends Model
             return 0;
         }
 
-        return round(($this->clickCount() / $open_count), 0);
+        return ($this->clickCount() / $open_count);
     }
 
     /**
@@ -1244,7 +1244,7 @@ abstract class AbsCampaign extends Model
             return 0;
         }
 
-        return round(($this->openCount() / $delivered_count), 0);
+        return ($this->openCount() / $delivered_count);
     }
 
     /**
@@ -1276,7 +1276,7 @@ abstract class AbsCampaign extends Model
             return 0;
         }
 
-        return round(($this->openUniqCount() / $delivered_count), 2);
+        return ($this->openUniqCount() / $delivered_count);
     }
 
     /**
@@ -1302,7 +1302,7 @@ abstract class AbsCampaign extends Model
             return 0;
         }
 
-        return round(($this->feedbackCount() / $delivered_count), 0);
+        return ($this->feedbackCount() / $delivered_count);
     }
 
     /**
@@ -1328,7 +1328,7 @@ abstract class AbsCampaign extends Model
             return 0;
         }
 
-        return round(($this->bounceCount() / $delivered_count), 0);
+        return ($this->bounceCount() / $delivered_count);
     }
 
     /**
@@ -1354,7 +1354,7 @@ abstract class AbsCampaign extends Model
             return 0;
         }
 
-        return round(($this->hardBounceCount() / $delivered_processed_count), 0);
+        return ($this->hardBounceCount() / $delivered_processed_count);
     }
 
     /**
@@ -1380,7 +1380,7 @@ abstract class AbsCampaign extends Model
             return 0;
         }
 
-        return round(($this->softBounceCount() / $tracking_count), 0);
+        return ($this->softBounceCount() / $tracking_count);
     }
 
     /**
@@ -1406,7 +1406,7 @@ abstract class AbsCampaign extends Model
             return 0;
         }
 
-        return round(($this->unsubscribeCount() / $delivered_count), 0);
+        return ($this->unsubscribeCount() / $delivered_count);
     }
 
     /**
@@ -2617,6 +2617,7 @@ abstract class AbsCampaign extends Model
     {
         // replace relative urls
         $this->html = \Acelle\Library\Tool::replaceTemplateUrl($this->html, route('campaign_assets', ['uid' => $this->uid, 'path' => '']));
+        return $this->html;
     }
 
     /**

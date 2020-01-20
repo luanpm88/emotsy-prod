@@ -32,6 +32,16 @@ class SenderController extends Controller
             return $this->notAuthorized();
         }
 
+        $server = $request->user()->customer->subscription->plan->primarySendingServer();
+        $email = $server->allowVerifyingOwnEmails() || $server->allowVerifyingOwnEmailsRemotely();
+        $domain = $server->allowVerifyingOwnDomains();
+
+        if ($email || $domain ) {
+            //
+        } else {
+            return $this->notAuthorized();
+        }
+
         return view('senders.index', [
             'senders' => $this->search($request),
         ]);
@@ -115,6 +125,8 @@ class SenderController extends Controller
     public function show(Request $request, $id)
     {
         $sender = Sender::findByUid($id);
+        $subscription = $request->user()->customer->subscription;
+        $server = $subscription->plan->primarySendingServer();
 
         // authorize
         if (\Gate::denies('read', $sender)) {
@@ -123,6 +135,7 @@ class SenderController extends Controller
 
         return view('senders.show', [
             'sender' => $sender,
+            'verificationOptions' => Sender::verificationTypeSelectOptions($server)
         ]);
     }
 

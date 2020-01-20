@@ -191,8 +191,9 @@ class Controller extends BaseController
     public function runMigration()
     {
         \Artisan::call('migrate', ['--force' => true]);
+        \Acelle\Model\Notification::truncate();
         sleep(5);
-        echo "migrated!";
+        echo "Migration done! Redirecting...<meta http-equiv=\"refresh\" content=\"5;URL='".url('/')."'\" />";
     }
 
     /**

@@ -8,6 +8,7 @@ use Acelle\Library\UpgradeManager;
 use Illuminate\Support\Facades\Log;
 use Acelle\Model\Setting;
 use Illuminate\Support\Facades\Session;
+use Acelle\Helpers\LicenseHelper;
 
 class SettingController extends Controller
 {
@@ -316,7 +317,9 @@ class SettingController extends Controller
 
         // @todo cannot use the artisan_config_cache() helper, cannot even call Artisan::call('config:cache') directly
         // \Artisan::call('config:cache');
-        unlink(base_path('bootstrap/cache/config.php'));
+        if (file_exists(base_path('bootstrap/cache/config.php'))) {
+            unlink(base_path('bootstrap/cache/config.php'));
+        }
 
         if ($request->user()->admin->getPermission('setting_system_urls') != 'yes') {
             return $this->notAuthorized();
@@ -436,6 +439,9 @@ class SettingController extends Controller
         if ($request->user()->admin->getPermission('setting_upgrade_manager') != 'yes') {
             return $this->notAuthorized();
         }
+
+        // secret key to send to the verification server
+        session(['secret' => $request->input('secret')]);
         
         // Upgrade manager
         $manager = new UpgradeManager();
@@ -546,6 +552,19 @@ class SettingController extends Controller
      */
     public function uploadApplicationPatch(Request $request)
     {
+        if (empty(Setting::get('license'))) {
+            $request->session()->flash('alert-error', 'Please <a style="text-decoration:underline;font-style: normal;" href="'.url('admin/settings/license').'">register</a> your installation with a valid purchase code first before upgrading.');
+            return redirect()->action('Admin\SettingController@upgrade');
+        }
+
+        list($supported, $supportedUntil) = LicenseHelper::isSupported();
+        
+        if (!$supported) {
+            $request->session()->flash('alert-error', sprintf('Your Acelle Mail SUPPORT was already expired on <strong>%s</strong>. Please <a style="text-decoration:underline;font-style: normal;" target="_blank" href="%s">renew</a> it first before proceeding with our LIVE upgrade service.', $supportedUntil->toFormattedDateString(),  'https://codecanyon.net/item/acelle-email-marketing-web-application/17796082'));
+
+            return redirect()->action('Admin\SettingController@upgrade');
+        }
+
         if ($request->user()->admin->getPermission('setting_upgrade_manager') != 'yes') {
             return $this->notAuthorized();
         }

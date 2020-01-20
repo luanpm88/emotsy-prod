@@ -30,6 +30,14 @@
         <div class="tab-content">
             <div class="row">
                 <div class="col-md-6">
+                    @if (session('alert-error'))
+                        @include('elements._notification', [
+                            'level' => 'warning',
+                            'title' => 'Cannot upgrade',
+                            'message' => session('alert-error')
+                        ])
+                    @endif
+
                     @if (isset($failed))
                         <p class="alert alert-warning">
                             {{ trans('messages.upgrade.error.something_wrong') }}

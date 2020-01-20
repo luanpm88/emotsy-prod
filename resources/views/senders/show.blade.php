@@ -135,7 +135,7 @@
                         'type' => 'select',
                         'name' => 'type',
                         'value' => $sender->type,
-                        'options' => Acelle\Model\Sender::verificationTypeSelectOptions(),
+                        'options' => $verificationOptions,
                         'include_blank' => trans('messages.choose'),
                         'rules' => $sender->verificationRules()
                     ])

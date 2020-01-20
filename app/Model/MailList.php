@@ -1724,6 +1724,7 @@ class MailList extends Model
         } elseif ($this->customer->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SYSTEM) {
             // Check if has sending servers for current subscription
             if (is_object($subscription)) {
+                /*
                 if ($subscription->plan->getOption('all_sending_servers') == 'yes') {
                     if (\Acelle\Model\SendingServer::getAllAdminActive()->count()) {
                         $result = \Acelle\Model\SendingServer::getAllAdminActive()->get()->map(function ($server) {
@@ -1735,6 +1736,11 @@ class MailList extends Model
                         return [$server->sending_server_id, $server->fitness];
                     });
                 }
+                */
+
+                $result = $subscription->plan->activeSendingServers->map(function($server) {
+                    return [ $server->sending_server_id, $server->fitness ];
+                });
             }
         //} elseif ($subscription->useSubAccount()) {
         //    $result[] = [$subscription->subAccount->sending_server_id, '100'];
