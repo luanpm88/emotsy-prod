@@ -380,7 +380,7 @@ class Plan extends Model implements BillablePlanInterface
             ['value' => 'week', 'text' => trans('messages.week')],
             ['value' => 'month', 'text' => trans('messages.month')],
             ['value' => 'year', 'text' => trans('messages.year')],
-            ['value' => 'unlimited', 'text' => trans('messages.plan_time_unlimited')],
+            // ['value' => 'unlimited', 'text' => trans('messages.plan_time_unlimited')],
         ];
     }
     
