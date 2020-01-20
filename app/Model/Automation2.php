@@ -33,6 +33,7 @@ use Acelle\Library\Automation\Trigger;
 use Acelle\Library\Automation\Send;
 use Acelle\Library\Automation\Wait;
 use Acelle\Library\Automation\Evaluate;
+use Acelle\Library\Automation\Operate;
 use Carbon\Carbon;
 use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
@@ -683,6 +684,9 @@ class Automation2 extends Model
                 break;
             case 'ElementWait':
                 $instance = new Wait($attributes);
+                break;
+            case 'ElementOperate':
+                $instance = new Operate($attributes);
                 break;
             default:
                 throw new \Exception('Unknown Action type '. $attributes['type']);
