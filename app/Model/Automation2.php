@@ -685,7 +685,7 @@ class Automation2 extends Model
             case 'ElementWait':
                 $instance = new Wait($attributes);
                 break;
-            case 'ElementOperate':
+            case 'ElementOperation':
                 $instance = new Operate($attributes);
                 break;
             default:
