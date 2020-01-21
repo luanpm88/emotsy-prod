@@ -3055,4 +3055,7 @@
       receive money or set up a merchant account',
   'payment.paypal.client_id' => 'Client ID',
   'payment.paypal.secret' => 'Secret',
+  'payment.paypal.environment' => 'Environment',
+  'payment.paypal.wording' => 'PayPal is the fast/safe way to send money, make an online payment,
+  receive money or set up a merchant account.',
 ) ?>

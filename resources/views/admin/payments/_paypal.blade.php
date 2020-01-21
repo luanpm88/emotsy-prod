@@ -3,6 +3,16 @@
 	<div class="row">
 		<div class="col-md-6">
 			@include('helpers.form_control', [
+				'type' => 'select',
+				'name' => 'options[environment]',
+				'value' => $gateway['fields']['environment'],
+				'label' => trans('messages.payment.paypal.environment'),
+				'help_class' => 'payment',
+				'options' => [['text' => 'Sandbox', 'value' => 'sandbox'],['text' => 'Production', 'value' => 'production']],
+				'rules' => ['options.environment' => 'required'],
+			])
+
+			@include('helpers.form_control', [
 				'type' => 'text',
 				'class' => '',
 				'name' => 'options[client_id]',
