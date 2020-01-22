@@ -24,6 +24,7 @@
         "louis/sendgrid": "dev-master",
         "mailgun/mailgun-php": "^2.1",
         "mika56/spfcheck": "^1.1",
+        "paypal/paypal-checkout-sdk": "1.0.1",
         "paypal/rest-api-sdk-php": "^1.11",
         "php-http/curl-client": "^1.5",
         "php-http/guzzle6-adapter": "^1.1",
