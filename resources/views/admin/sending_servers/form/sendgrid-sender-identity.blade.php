@@ -51,20 +51,11 @@
 
             @include('helpers.form_control', [
                 'type' => 'checkbox2',
-                'label' => trans('messages.allow_verify_domain_against_sendgrid'),
-                'name' => 'options[allow_verify_domain_remotely]',
-                'value' => $server->getOption('allow_verify_domain_remotely'),
+                'label' => trans('messages.allow_verify_domain_against_acelle'),
+                'name' => 'options[allow_verify_domain_against_acelle]',
+                'value' => $server->getOption('allow_verify_domain_against_acelle'),
                 'help_class' => 'sending_server',
                 'options' => ['no', 'yes'],
-            ])
-            @include('helpers.form_control', [
-                'type' => 'checkbox2',
-                'label' => trans('messages.allow_verify_email_against_sendgrid'),
-                'name' => 'options[allow_verify_email_remotely]',
-                'value' => $server->getOption('allow_verify_email_remotely'),
-                'help_class' => 'sending_server',
-                'options' => ['no', 'yes'],
-                'disabled' => 'disabled',
             ])
 
             <hr>

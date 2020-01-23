@@ -41,10 +41,14 @@ class SenderController extends Controller
         } else {
             return $this->notAuthorized();
         }
-
-        return view('senders.index', [
-            'senders' => $this->search($request),
-        ]);
+        if ($domain) {
+            return redirect(url('sending_domains'));
+        } else {
+            return view('senders.index', [
+                'senders' => $this->search($request),
+            ]);    
+        }
+        
     }
 
     /**
