@@ -6,7 +6,7 @@ require 'json'
 
 # Settings
 old_versions = ['4.0.9']                    # sort by chronological order
-packages = ['acelle']       # vendor packages to be replaced
+packages = ['acelle', 'paypal']       # vendor packages to be replaced
 dirs = ['resources/lang/default' ]               # 'resources/lang/default' for example
 
 # Auto setting
