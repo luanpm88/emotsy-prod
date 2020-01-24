@@ -322,7 +322,9 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('templates/{uid}/edit', 'TemplateController@edit');
     Route::patch('templates/{uid}/update', 'TemplateController@update');
 
-    // Campaign    
+    // Campaign
+    Route::match(['get', 'post'], 'campaigns/{uid}/plain', 'CampaignController@plain');
+
     Route::get('campaigns/{uid}/template/change/{template_uid}', 'CampaignController@templateChangeTemplate');
     Route::post('campaigns/{uid}/template/asset', 'CampaignController@templateAsset');
     Route::post('campaigns/{uid}/template/asset', 'CampaignController@templateAsset');
