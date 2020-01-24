@@ -48,7 +48,7 @@ class SenderController extends Controller
             return $this->notAuthorized();
         }
 
-        if ($domain) {
+        if ($domain && !$email) {
             return redirect(url('sending_domains'));
         } else {
             return view('senders.index', [
