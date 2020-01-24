@@ -18,10 +18,15 @@ class SendingDomainPolicy
                 $can = $user->admin->getPermission('sending_domain_read') != 'no';
                 break;
             case 'customer':
-                $can = (
-                    $user->customer->getOption('sending_server_option') == Plan::SENDING_SERVER_OPTION_SYSTEM &&
-                    $user->customer->subscription->plan->primarySendingServer()->allowVerifyingOwnDomains()
-                );
+                $subscription = $user->customer->subscription;
+
+                if ($subscription->plan->useOwnSendingServer()) {
+                    $can = true;
+                } else {
+                    $server = $subscription->plan->primarySendingServer();
+                    $can = $server->allowVerifyingOwnDomains();    
+                }
+
                 break;
         }
 
@@ -49,10 +54,14 @@ class SendingDomainPolicy
                 $can = $user->admin->getPermission('sending_domain_create') == 'yes';
                 break;
             case 'customer':
-                $can = (
-                    $user->customer->getOption('sending_server_option') == Plan::SENDING_SERVER_OPTION_SYSTEM &&
-                    $user->customer->subscription->plan->primarySendingServer()->allowVerifyingOwnDomains()
-                );
+                $subscription = $user->customer->subscription;
+
+                if ($subscription->plan->useOwnSendingServer()) {
+                    $can = true;
+                } else {
+                    $server = $subscription->plan->primarySendingServer();
+                    $can = $server->allowVerifyingOwnDomains();    
+                }
                 break;
         }
 
@@ -68,10 +77,15 @@ class SendingDomainPolicy
                     || ($ability == 'own' && $user->admin->id == $item->admin_id);
                 break;
             case 'customer':
-                $can = (
-                    $user->customer->getOption('sending_server_option') == Plan::SENDING_SERVER_OPTION_SYSTEM &&
-                    $user->customer->subscription->plan->primarySendingServer()->allowVerifyingOwnDomains()
-                );
+                $subscription = $user->customer->subscription;
+
+                if ($subscription->plan->useOwnSendingServer()) {
+                    $can = true;
+                } else {
+                    $server = $subscription->plan->primarySendingServer();
+                    $can = $server->allowVerifyingOwnDomains();    
+                }
+
                 $can = $can && $user->customer->id == $item->customer_id;
                 break;
         }
@@ -88,10 +102,15 @@ class SendingDomainPolicy
                     || ($ability == 'own' && $user->admin->id == $item->admin_id);
                 break;
             case 'customer':
-                $can = (
-                    $user->customer->getOption('sending_server_option') == Plan::SENDING_SERVER_OPTION_SYSTEM &&
-                    $user->customer->subscription->plan->primarySendingServer()->allowVerifyingOwnDomains()
-                );
+                $subscription = $user->customer->subscription;
+
+                if ($subscription->plan->useOwnSendingServer()) {
+                    $can = true;
+                } else {
+                    $server = $subscription->plan->primarySendingServer();
+                    $can = $server->allowVerifyingOwnDomains();    
+                }
+                
                 $can = $can && $user->customer->id == $item->customer_id;
                 break;
         }

@@ -1414,6 +1414,11 @@ class Plan extends Model implements BillablePlanInterface
     {
         return $this->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SYSTEM;
     }
+
+    public function useOwnSendingServer()
+    {
+        return $this->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN;
+    }
     
     /**
      * Check if plan is active
@@ -1468,4 +1473,5 @@ class Plan extends Model implements BillablePlanInterface
     {
         return $this->plansSendingServers()->join('sending_servers', 'sending_servers.id', 'plans_sending_servers.sending_server_id')->where('sending_servers.status', 'active');
     }
+
 }

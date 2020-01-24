@@ -32,15 +32,22 @@ class SenderController extends Controller
             return $this->notAuthorized();
         }
 
-        $server = $request->user()->customer->subscription->plan->primarySendingServer();
-        $email = $server->allowVerifyingOwnEmails() || $server->allowVerifyingOwnEmailsRemotely();
-        $domain = $server->allowVerifyingOwnDomains();
+        $subscription = $request->user()->customer->subscription;
+        if ($subscription->plan->useOwnSendingServer()) {
+            $email = true;
+            $domain = true;
+        } else {
+            $server = $subscription->plan->primarySendingServer();
+            $email = $server->allowVerifyingOwnEmails() || $server->allowVerifyingOwnEmailsRemotely();
+            $domain = $server->allowVerifyingOwnDomains();    
+        }
 
         if ($email || $domain ) {
             //
         } else {
             return $this->notAuthorized();
         }
+
         if ($domain) {
             return redirect(url('sending_domains'));
         } else {
