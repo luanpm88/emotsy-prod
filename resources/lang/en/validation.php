@@ -148,7 +148,8 @@
     ),
     'contact' => 
     array (
-      'zip' => array (
+      'zip' => 
+      array (
         'required' => 'The Zip / Postal code is required.',
       ),
     ),
