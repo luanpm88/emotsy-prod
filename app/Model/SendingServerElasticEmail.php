@@ -28,6 +28,7 @@ use Acelle\Library\StringHelper;
 class SendingServerElasticEmail extends SendingServer
 {
     const WEBHOOK = 'elasticemail';
+    const WEBHOOK_NAME = 'acellemail';
     const API_ENDPOINT = 'https://api.elasticemail.com/v2';
 
     protected $table = 'sending_servers';
@@ -134,7 +135,9 @@ class SendingServerElasticEmail extends SendingServer
             return true;
         }
 
-        $response = file_get_contents(self::API_ENDPOINT.'/account/updatehttpnotification?apikey='.$this->api_key.'&allowCustomHeaders=true');
+        $uri = self::API_ENDPOINT.'/account/updateadvancedoptions?apikey='.$this->api_key.'&allowCustomHeaders=true';
+
+        $response = file_get_contents($uri);
         $responseJson = json_decode($response);
 
         if ($responseJson->success == true) {
@@ -156,10 +159,16 @@ class SendingServerElasticEmail extends SendingServer
             return true;
         }
 
-        $subscribeUrl = StringHelper::joinUrl(Setting::get('url_delivery_handler'), self::WEBHOOK);
-        $endpoint = self::API_ENDPOINT.'/account/updatehttpnotification?apikey='.$this->api_key.'&url='.$subscribeUrl.'&settings={sent:false,opened:false,clicked:false,unsubscribed:false,complaints:true,error:true}';
-        $response = file_get_contents($endpoint);
-        if ($response == '{"success":true}') {
+        // delete existing webhook
+        $this->deleteWebHook();
+
+        // add webhook
+        $subscribeUrl = urlencode($this->getSubscribeUrl());
+        $endpoint = self::API_ENDPOINT.'/account/addwebhook?apikey='.$this->api_key.'&webNotificationUrl='.$subscribeUrl.'&name='.self::WEBHOOK_NAME.'&notifyOncePerEmail=&notificationForSent=&notificationForOpened=&notificationForClicked=&notificationForUnsubscribed=&notificationForAbuseReport=true&notificationForError=true';
+
+        $response = json_decode(file_get_contents($endpoint), true);
+
+        if ($response['success'] == true) {
             MailLog::info('webhook set!');
             self::$isWebhookSetup = true;
         } else {
@@ -168,6 +177,41 @@ class SendingServerElasticEmail extends SendingServer
             MailLog::error('Elastic endpoint: '.$endpoint);
             throw new \Exception($msg);
         }
+    }
+
+    public function deleteWebHook()
+    {
+        MailLog::info('Deleting webhooks if any');
+        $loadUri = self::API_ENDPOINT.'/account/loadwebhook?apikey='.$this->api_key.'&limit=1000';
+        $webhooks = json_decode(file_get_contents($loadUri), true)['data'];
+        MailLog::info(sizeof($webhooks).' webhooks found');
+
+        foreach ($webhooks as $webhook) {
+            MailLog::info('Checking '.$webhook['url'].' ('.$webhook['name'].')');
+            if ($this->isSubscribeUrl($webhook['url']) || $webhook['name'] == self::WEBHOOK_NAME ) {
+                MailLog::info('Deleting '.$webhook['url'].' ('.$webhook['name'].')');
+                $deleteUri = $deleteUri = self::API_ENDPOINT.'/account/deletewebhook?apikey='.$this->api_key.'&webhookID='.$webhook['webhookid'];
+                $result = json_decode(file_get_contents($deleteUri), true);
+                if ($result['success'] != true) {
+                    MailLog::error('Cannot delete webhook '.$webhook['url'].' ('.$webhook['name'].')');
+                    throw new \Exception('Cannot delete webhook '.$webhook['url'].' ('.$webhook['name'].')');
+                }
+                
+            } else {
+                MailLog::info('Skipped');
+            }
+        }
+    }
+
+    public function getSubscribeUrl()
+    {
+        return StringHelper::joinUrl(Setting::get('url_delivery_handler'), self::WEBHOOK);
+    }
+
+    private function isSubscribeUrl($url)
+    {
+        // simpley compare the provided url to see if it is the same as the subscribe one
+        return join_paths($this->getSubscribeUrl(), '/') == join_paths($url, '/');
     }
 
     /**
