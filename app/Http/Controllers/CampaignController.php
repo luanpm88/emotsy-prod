@@ -333,6 +333,10 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
+        if ($campaign->type == 'plain-text') {
+           return redirect()->action('CampaignController@plain', ['uid' => $campaign->uid]);
+        }
+
         // check if campagin does not have template
         if (!$campaign->html) {
             return redirect()->action('CampaignController@templateCreate', ['uid' => $campaign->uid]);
@@ -659,6 +663,40 @@ class CampaignController extends Controller
         } else {
             return redirect()->action('AutoEventController@templatePreview', ['uid' => $campaign->autoEvent()->uid, 'campaign_uid' => $campaign->uid]);
         }
+    }
+
+    /**
+     * Choose an existed template.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function plain(Request $request)
+    {
+        $user = $request->user();
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        // validate and save posted data
+        if ($request->isMethod('post')) {
+            // Check validation
+            $this->validate($request, ['plain' => 'required']);
+
+            // save campaign plain text
+            $campaign->plain = $request->plain;
+            $campaign->save();
+
+            return redirect()->action('CampaignController@schedule', ['uid' => $campaign->uid]);
+        }
+
+        return view('campaigns.plain', [
+            'campaign' => $campaign,
+        ]);
     }
 
     /**

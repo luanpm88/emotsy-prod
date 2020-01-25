@@ -3476,3 +3476,6 @@ p.link-inline a {
     padding: 7px 10px;
     transition: visibility 0s linear 10s, opacity 0.33s linear;
 }
+.campaign-plain-text {
+    min-height: 200px;
+}
