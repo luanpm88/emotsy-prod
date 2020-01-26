@@ -371,7 +371,7 @@ class Automation2 extends Model
         $this->logger()->info(sprintf('NEW > Start checking for new trigger'));
 
         switch ($this->getTriggerAction()->getOption('key')) {
-            case 'say-happy-birthday':
+            case 'welcome-new-subscriber':
                 $this->checkForListSubscription();
                 break;
             case 'specific-date':
