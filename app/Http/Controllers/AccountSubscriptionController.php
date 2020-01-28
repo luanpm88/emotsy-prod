@@ -109,7 +109,7 @@ class AccountSubscriptionController extends Controller
         $gateway = Cashier::getPaymentGateway();
 
         // Create subscription
-        $subscription = $gateway->create($customer, $plan);        
+        $subscription = $gateway->create($customer, $plan);
 
         try {
             \Mail::to($customer->user->email)->send(new \Acelle\Mail\SubscriptionDoneMailer($subscription));

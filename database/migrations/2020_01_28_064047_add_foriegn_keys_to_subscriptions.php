@@ -13,16 +13,22 @@ class AddForiegnKeysToSubscriptions extends Migration
      */
     public function up()
     {
-        Schema::table('customers', function ($table) {
-            $table->integer('uid')->unsigned()->change();
+        Schema::table('plans', function ($table) {            
+            $table->index('uid');
         });
-        
-        Schema::table('subscriptions', function ($table) {
-            $table->integer('user_id')->unsigned()->change();
-            $table->integer('plan_id')->unsigned()->change();
 
-            $table->foreign('plan_id')->references('id')->on('plans')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')->on('customers')->onDelete('cascade');
+        Schema::table('customers', function ($table) {            
+            $table->index('uid');
+        });
+
+        Schema::table('subscriptions', function ($table) {
+            \Doctrine\DBAL\Types\Type::addType('uuid', 'Ramsey\Uuid\Doctrine\UuidType');
+            
+            $table->uuid('user_id')->change();
+            $table->uuid('plan_id')->change();
+
+            $table->foreign('plan_id')->references('uid')->on('plans')->onDelete('cascade');
+            $table->foreign('user_id')->references('uid')->on('customers')->onDelete('cascade');
         });
     }
 

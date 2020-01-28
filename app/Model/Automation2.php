@@ -273,6 +273,14 @@ class Automation2 extends Model
     public function getDelayOptions()
     {
         return [
+            ['text' => trans_choice('messages.automation.delay.minute', 1), 'value' => '1 minute'],
+            ['text' => trans_choice('messages.automation.delay.minute', 30), 'value' => '30 minutes'],
+            ['text' => trans_choice('messages.automation.delay.hour', 1), 'value' => '1 hours'],
+            ['text' => trans_choice('messages.automation.delay.hour', 2), 'value' => '2 hours'],
+            ['text' => trans_choice('messages.automation.delay.hour', 4), 'value' => '4 hours'],
+            ['text' => trans_choice('messages.automation.delay.hour', 8), 'value' => '8 hours'],
+            ['text' => trans_choice('messages.automation.delay.hour', 12), 'value' => '12 hours'],
+
             ['text' => trans_choice('messages.automation.delay.day', 1), 'value' => '1 day'],
             ['text' => trans_choice('messages.automation.delay.day', 2), 'value' => '2 days'],
             ['text' => trans_choice('messages.automation.delay.day', 3), 'value' => '3 days'],

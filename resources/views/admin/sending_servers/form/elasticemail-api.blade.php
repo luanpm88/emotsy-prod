@@ -11,7 +11,7 @@
     <div class="mc_section">
         <div class="row">
             <div class="col-md-6">
-                <p>{{ trans('messages.sending_servers.elasticemail_api_key.intro') }}</p>
+                <p>{!! trans('messages.sending_servers.elasticemail_api_key.intro') !!}</p>
 
                 @include('helpers.form_control', [
                     'type' => 'password',

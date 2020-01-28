@@ -127,14 +127,14 @@ class SendingServerController extends Controller
             $server->fill($request->all());
             $server = \Acelle\Model\SendingServer::mapServerType($server);
             
-            // validation
-            $validator = $server->validConnection($request); //\Validator::make($request->all(), $server->getRules());            
+            // // validation
+            // $validator = $server->validConnection($request); //\Validator::make($request->all(), $server->getRules());            
                       
-            if ($validator->fails()) {
-                return redirect()->action('Admin\SendingServerController@create', $server->type)
-                            ->withErrors($validator)
-                            ->withInput();
-            }
+            // if ($validator->fails()) {
+            //     return redirect()->action('Admin\SendingServerController@create', $server->type)
+            //                 ->withErrors($validator)
+            //                 ->withInput();
+            // }
             
             $server->admin_id = $request->user()->admin->id;
             $server->status = SendingServer::STATUS_ACTIVE;
