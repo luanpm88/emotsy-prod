@@ -399,7 +399,7 @@ class SettingController extends Controller
         // validate and save posted data
         if ($request->isMethod('post')) {
 
-            if($this->isDemoMode()) {
+            if ($this->isDemoMode()) {
                 return $this->notAuthorized();
             }
 
@@ -557,13 +557,18 @@ class SettingController extends Controller
             return redirect()->action('Admin\SettingController@upgrade');
         }
 
-        list($supported, $supportedUntil) = LicenseHelper::isSupported();
-        
-        if (!$supported) {
-            $request->session()->flash('alert-error', sprintf('Your Acelle Mail SUPPORT was already expired on <strong>%s</strong>. Please <a style="text-decoration:underline;font-style: normal;" target="_blank" href="%s">renew</a> it first before proceeding with our LIVE upgrade service.', $supportedUntil->toFormattedDateString(),  'https://codecanyon.net/item/acelle-email-marketing-web-application/17796082'));
+        try {
+            list($supported, $supportedUntil) = LicenseHelper::isSupported();
+            if (!$supported) {
+                $request->session()->flash('alert-error', sprintf('Your Acelle Mail SUPPORT was already expired on <strong>%s</strong>. Please <a style="text-decoration:underline;font-style: normal;" target="_blank" href="%s">renew</a> it first before proceeding with our LIVE upgrade service.', $supportedUntil->toFormattedDateString(),  'https://codecanyon.net/item/acelle-email-marketing-web-application/17796082'));
 
+                return redirect()->action('Admin\SettingController@upgrade');
+            }
+        } catch (\Exception $ex) {
+            $request->session()->flash('alert-error', $ex->getMessage());
             return redirect()->action('Admin\SettingController@upgrade');
         }
+
 
         if ($request->user()->admin->getPermission('setting_upgrade_manager') != 'yes') {
             return $this->notAuthorized();

@@ -100,6 +100,10 @@ class LicenseHelper
 
         $result = self::getLicense($code);
 
+        if (array_key_exists('status', $result) && $result['status'] == 'invalid') {
+            throw new \Exception("Invalid license key. Please go to Settings > License dashboard and enter a valid license key to register your installation");
+        }
+
         $supportedUntil = Carbon::parse($result['data']['supported_until']);
         $supported = $result['data']['supported'];
 
