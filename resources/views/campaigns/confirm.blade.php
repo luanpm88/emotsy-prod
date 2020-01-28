@@ -112,7 +112,7 @@
             </ul>
 
             @if ($campaign->step() >= 5)
-                @if (!$score['result'])
+                @if (!is_null($score) && !$score['result'])
                     @if (!Acelle\Model\Setting::isYes('spamassassin.required'))
                         <!--1.	Show ra error như dưới nhưng vẫn cho gửi campaign
                         2.	Khi user click Send thì show 1 cái confirm box: “Your message does not pass SpamScore test, are you sure you want to proceed anyway?”-->
