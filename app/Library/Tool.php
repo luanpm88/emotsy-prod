@@ -647,7 +647,7 @@ class Tool
                 'text' => trans('messages.async_job_type'),
                 'description' => trans('messages.async_job_type_desc'),
                 'value' => 'async',
-                'disabled' => exec_enabled(),
+                'disabled' => true, //exec_enabled(),
                 'tooltip' => (!exec_enabled() ? 'Your server does not support async' : ''),
             ];
         }
