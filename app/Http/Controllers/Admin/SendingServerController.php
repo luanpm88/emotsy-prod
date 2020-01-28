@@ -125,6 +125,7 @@ class SendingServerController extends Controller
             
             // fill values
             $server->fill($request->all());
+            $server = \Acelle\Model\SendingServer::mapServerType($server);
             
             // validation
             $validator = $server->validConnection($request); //\Validator::make($request->all(), $server->getRules());            
@@ -257,6 +258,7 @@ class SendingServerController extends Controller
         // Get current user
         $current_user = $request->user();
         $server = \Acelle\Model\SendingServer::findByUid($id);
+        $server = \Acelle\Model\SendingServer::mapServerType($server);
 
         // authorize
         if (!$request->user()->admin->can('update', $server)) {
