@@ -12,7 +12,6 @@ use Acelle\Helpers\LicenseHelper;
 
 class SettingController extends Controller
 {
-
     /**
      * Display and update all settings.
      *
@@ -27,9 +26,8 @@ class SettingController extends Controller
         } elseif ($request->user()->admin->getPermission('setting_system_urls') == 'yes') {
             return redirect()->action('Admin\SettingController@urls');
         } elseif ($request->user()->admin->getPermission('setting_background_job') == 'yes') {
-           return redirect()->action('Admin\SettingController@cronjob');
+            return redirect()->action('Admin\SettingController@cronjob');
         }
-
     }
 
     /**
@@ -55,8 +53,7 @@ class SettingController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
-
-            if($this->isDemoMode()) {
+            if ($this->isDemoMode()) {
                 return $this->notAuthorized();
             }
 
@@ -90,6 +87,7 @@ class SettingController extends Controller
 
             // Redirect to my lists page
             $request->session()->flash('alert-success', trans('messages.setting.updated'));
+
             return redirect()->action('Admin\SettingController@general');
         }
 
@@ -121,8 +119,7 @@ class SettingController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
-
-            if($this->isDemoMode()) {
+            if ($this->isDemoMode()) {
                 return $this->notAuthorized();
             }
 
@@ -147,6 +144,7 @@ class SettingController extends Controller
 
             // Redirect to my lists page
             $request->session()->flash('alert-success', trans('messages.setting.updated'));
+
             return redirect()->action('Admin\SettingController@sending');
         }
 
@@ -167,11 +165,11 @@ class SettingController extends Controller
         }
 
         $settings = \Acelle\Model\Setting::getAll();
-        
+
         // Check URL
         $current = url('/');
         $cached = config('app.url');
-        
+
         return view('admin.settings.urls', [
             'settings' => $settings,
             'matched' => ($cached == $current),
@@ -192,17 +190,19 @@ class SettingController extends Controller
         }
 
         // Re-generate remote job url
-        if($request->re_generate_remote_job_url) {
+        if ($request->re_generate_remote_job_url) {
             $remote_job_token = str_random(60);
             \Acelle\Model\Setting::set('remote_job_token', $remote_job_token);
             echo action('Controller@remoteJob', ['remote_job_token' => $remote_job_token]);
+
             return;
         }
 
         $respone = \Acelle\Library\Tool::cronjobUpdateController($request, $this);
-        if($respone == 'done' || $respone['valid'] == true) {
+        if ($respone == 'done' || $respone['valid'] == true) {
             $next = action('Admin\SettingController@cronjob').'#result_box';
             artisan_config_cache();
+
             return redirect()->away($next);
         }
 
@@ -222,18 +222,18 @@ class SettingController extends Controller
 
         // SMTP
         $env = [
-            'MAIL_DRIVER' => config("mail.driver"),
-            'MAIL_HOST' => config("mail.host"),
-            'MAIL_PORT' => config("mail.port"),
-            'MAIL_USERNAME' => config("mail.username"),
-            'MAIL_PASSWORD' => config("mail.password"),
-            'MAIL_ENCRYPTION' => config("mail.encryption"),
-            'MAIL_FROM_ADDRESS' => config("mail.from")["address"],
-            'MAIL_FROM_NAME' => config("mail.from")["name"],
+            'MAIL_DRIVER' => config('mail.driver'),
+            'MAIL_HOST' => config('mail.host'),
+            'MAIL_PORT' => config('mail.port'),
+            'MAIL_USERNAME' => config('mail.username'),
+            'MAIL_PASSWORD' => config('mail.password'),
+            'MAIL_ENCRYPTION' => config('mail.encryption'),
+            'MAIL_FROM_ADDRESS' => config('mail.from')['address'],
+            'MAIL_FROM_NAME' => config('mail.from')['name'],
         ];
 
-        if (null !== $request->old() && isset($request->old()["env"])) {
-            foreach ($request->old()["env"] as $name => $value) {
+        if (null !== $request->old() && isset($request->old()['env'])) {
+            foreach ($request->old()['env'] as $name => $value) {
                 $env[$name] = $value;
             }
         }
@@ -250,26 +250,25 @@ class SettingController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
-
-            if($this->isDemoMode()) {
+            if ($this->isDemoMode()) {
                 return $this->notAuthorized();
             }
 
             $env = $request->env;
 
-            if ($env["MAIL_DRIVER"] == 'smtp') {
+            if ($env['MAIL_DRIVER'] == 'smtp') {
                 $this->validate($request, $env_rules);
             }
 
             // Check SMTP connection
             $site_info = $request->all();
-            if ($env["MAIL_DRIVER"] == 'smtp') {
+            if ($env['MAIL_DRIVER'] == 'smtp') {
                 $rules = [];
                 $messages = [];
                 try {
-                    $transport = new \Swift_SmtpTransport($env["MAIL_HOST"], $env["MAIL_PORT"], $env["MAIL_ENCRYPTION"]);
-                    $transport->setUsername($env["MAIL_USERNAME"]);
-                    $transport->setPassword($env["MAIL_PASSWORD"]);
+                    $transport = new \Swift_SmtpTransport($env['MAIL_HOST'], $env['MAIL_PORT'], $env['MAIL_ENCRYPTION']);
+                    $transport->setUsername($env['MAIL_USERNAME']);
+                    $transport->setPassword($env['MAIL_PASSWORD']);
                     // @todo: it is not recommended to allow self-signed
                     $transport->setStreamOptions(array('ssl' => array('allow_self_signed' => true, 'verify_peer' => false, 'verify_peer_name' => false)));
                     $mailer = new \Swift_Mailer($transport);
@@ -284,9 +283,9 @@ class SettingController extends Controller
                 $this->validate($request, $rules, $messages);
             }
 
-            foreach($env as $key => $value) {
-                if(empty($value)) {
-                    $value = "null";
+            foreach ($env as $key => $value) {
+                if (empty($value)) {
+                    $value = 'null';
                 }
                 \Acelle\Model\Setting::setEnv($key, $value);
             }
@@ -296,6 +295,7 @@ class SettingController extends Controller
             \Artisan::call('config:cache');
             $request->session()->flash('alert-success', trans('messages.setting.updated'));
             sleep(3);
+
             return redirect()->away($next);
         }
 
@@ -332,7 +332,7 @@ class SettingController extends Controller
         \Acelle\Model\Setting::set('url_update_profile', action('PageController@profileUpdateForm', array(
             'list_uid' => 'LIST_UID',
             'uid' => 'SUBSCRIBER_UID',
-            'code' => 'SECURE_CODE'))
+            'code' => 'SECURE_CODE', ))
         );
         \Acelle\Model\Setting::set('url_web_view', action('CampaignController@webView', ['message_id' => 'MESSAGE_ID']));
 
@@ -349,13 +349,13 @@ class SettingController extends Controller
      */
     public function logs(Request $request)
     {
-        $path = base_path("artisan");
+        $path = base_path('artisan');
         $lines = 300;
 
-        $error_logs = "";
+        $error_logs = '';
         $file = file($path);
-        for ($i = max(0, count($file)-$lines); $i < count($file); $i++) {
-          $error_logs .= $file[$i];
+        for ($i = max(0, count($file) - $lines); $i < count($file); ++$i) {
+            $error_logs .= $file[$i];
         }
 
         return view('admin.settings.logs', [
@@ -370,7 +370,7 @@ class SettingController extends Controller
      */
     public function download_log(Request $request)
     {
-        $path = storage_path("logs/" . $request->file);
+        $path = storage_path('logs/'.$request->file);
 
         return response()->download($path);
     }
@@ -398,7 +398,6 @@ class SettingController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
-
             if ($this->isDemoMode()) {
                 return $this->notAuthorized();
             }
@@ -416,9 +415,10 @@ class SettingController extends Controller
 
                 // Redirect to my lists page
                 $request->session()->flash('alert-success', trans('messages.license.updated'));
+
                 return redirect()->action('Admin\SettingController@license');
             } catch (\Exception $ex) {
-                $license_error = trans("messages.something_wrong_with_license_check", ['error' => $ex->getMessage()]);
+                $license_error = trans('messages.something_wrong_with_license_check', ['error' => $ex->getMessage()]);
             }
         }
 
@@ -430,7 +430,7 @@ class SettingController extends Controller
     }
 
     /**
-     * Upgrade manager page
+     * Upgrade manager page.
      *
      * @return \Illuminate\Http\Response
      */
@@ -442,13 +442,13 @@ class SettingController extends Controller
 
         // secret key to send to the verification server
         session(['secret' => $request->input('secret')]);
-        
+
         // Upgrade manager
         $manager = new UpgradeManager();
-        
+
         // Redirect URL
         $pageUrl = action('Admin\SettingController@upgrade');
-        
+
         // If upgrade done successfully, perform config:cache
         // The config:cache must be done in a subsequent process, not in the 'doUpgrade' one
         if ($request->session()->has('upgraded')) {
@@ -466,16 +466,17 @@ class SettingController extends Controller
                     Upgrade done, redirecting...
                 </body>
                 </html>';
+
             return;
         }
-        
+
         if ($request->session()->has('reset')) {
             $pageUrl = action('Admin\SettingController@upgrade');
             $request->session()->forget('reset');
             Session::save();
             $request->session()->flash('alert-success', trans('messages.upgrade.alert.upgrade_success'));
         }
-        
+
         return view('admin.settings.upgrade', [
             'any' => 'any',
             'manager' => $manager,
@@ -483,7 +484,7 @@ class SettingController extends Controller
     }
 
     /**
-     * Upgrade manager page
+     * Upgrade manager page.
      *
      * @return \Illuminate\Http\Response
      */
@@ -511,9 +512,11 @@ class SettingController extends Controller
                     Upgrade is in progress, please wait...
                 </body>
                 </html>';
+
             return;
         } else {
             Log::warning('Cannot upgrade, certain files are not writable');
+
             return view('admin.settings.upgrade', [
                 'any' => 'any',
                 'manager' => $manager,
@@ -523,7 +526,7 @@ class SettingController extends Controller
     }
 
     /**
-     * Cancel upgrade and delete the uploaded file
+     * Cancel upgrade and delete the uploaded file.
      *
      * @return \Illuminate\Http\Response
      */
@@ -538,7 +541,7 @@ class SettingController extends Controller
             $manager->cleanup();
             $request->session()->flash('alert-info', trans('messages.upgrade.alert.cancel_success'));
         } catch (\Exception $e) {
-            Log::info("Something went wrong while cancelling upgrade. " . $e->getMessage());
+            Log::info('Something went wrong while cancelling upgrade. '.$e->getMessage());
             $request->session()->flash('alert-error', $e->getMessage());
         }
 
@@ -546,7 +549,7 @@ class SettingController extends Controller
     }
 
     /**
-     * Upload the application patch
+     * Upload the application patch.
      *
      * @return \Illuminate\Http\Response
      */
@@ -554,6 +557,7 @@ class SettingController extends Controller
     {
         if (empty(Setting::get('license'))) {
             $request->session()->flash('alert-error', 'Please <a style="text-decoration:underline;font-style: normal;" href="'.url('admin/settings/license').'">register</a> your installation with a valid purchase code first before upgrading.');
+
             return redirect()->action('Admin\SettingController@upgrade');
         }
 
@@ -566,9 +570,9 @@ class SettingController extends Controller
             }
         } catch (\Exception $ex) {
             $request->session()->flash('alert-error', $ex->getMessage());
+
             return redirect()->action('Admin\SettingController@upgrade');
         }
-
 
         if ($request->user()->admin->getPermission('setting_upgrade_manager') != 'yes') {
             return $this->notAuthorized();
@@ -580,17 +584,17 @@ class SettingController extends Controller
             // moving will end up fail with an exception
             // also, file('file')->path() will return the application root directory rather than the correct file path
             $request->file('file')->move(storage_path('tmp'), $request->file('file')->getClientOriginalName());
-            $path = storage_path('tmp/' . $request->file('file')->getClientOriginalName());
+            $path = storage_path('tmp/'.$request->file('file')->getClientOriginalName());
             $manager->load($path);
             $request->session()->flash('alert-success', trans('messages.upgrade.alert.upload_success'));
         } catch (\Exception $e) {
-            Log::info("Upgrade failed. " . $e->getMessage());
+            Log::info('Upgrade failed. '.$e->getMessage());
             $request->session()->flash('alert-error', $e->getMessage());
         }
 
         return redirect()->action('Admin\SettingController@upgrade');
     }
-    
+
     /**
      * Advanced settings.
      *
@@ -614,8 +618,7 @@ class SettingController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
-
-            if($this->isDemoMode()) {
+            if ($this->isDemoMode()) {
                 return $this->notAuthorized();
             }
 
@@ -640,6 +643,7 @@ class SettingController extends Controller
 
             // Redirect to my lists page
             $request->session()->flash('alert-success', trans('messages.setting.updated'));
+
             return redirect()->action('Admin\SettingController@advanced');
         }
 
@@ -647,7 +651,7 @@ class SettingController extends Controller
             'settings' => $settings,
         ]);
     }
-    
+
     /**
      * Advanced settings.
      *
@@ -658,17 +662,17 @@ class SettingController extends Controller
         if ($request->user()->admin->getPermission('setting_general') != 'yes') {
             return $this->notAuthorized();
         }
-        
-        if($this->isDemoMode()) {
+
+        if ($this->isDemoMode()) {
             return $this->notAuthorized();
         }
-        
+
         // update setting value
         \Acelle\Model\Setting::set($name, $request->value);
-        
+
         echo trans('messages.setting.update.success', ['name' => $name]);
     }
-    
+
     /**
      * Payment gateway settings.
      *
@@ -682,8 +686,8 @@ class SettingController extends Controller
 
         // \Acelle\Model\Setting::updateAll();
         $settings = \Acelle\Model\Setting::getAll();
-        
-        if($this->isDemoMode()) {
+
+        if ($this->isDemoMode()) {
             return $this->notAuthorized();
         }
 
@@ -699,6 +703,7 @@ class SettingController extends Controller
 
         // Redirect to my lists page
         $request->session()->flash('alert-success', trans('messages.setting.updated'));
+
         return redirect()->action('Admin\PaymentController@index');
     }
 }

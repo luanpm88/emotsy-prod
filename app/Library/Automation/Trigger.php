@@ -8,12 +8,14 @@ class Trigger extends Action
     {
         $this->recordLastExecutedTime();
         $this->evaluationResult = true;
+
         return true;
     }
 
     public function getActionDescription()
     {
         $nameOrEmail = $this->autoTrigger->subscriber->getFullNameOrEmail();
+
         return sprintf('User %s subscribes to mail list, automation triggered!', $nameOrEmail);
     }
 }

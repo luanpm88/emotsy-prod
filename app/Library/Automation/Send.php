@@ -14,6 +14,7 @@ class Send extends Action
         // no more execute, just return true
         if (!is_null($this->last_executed)) {
             $this->autoTrigger->logger()->info('Already executed, I\'m the latest also the last action');
+
             return true;
         }
 
@@ -42,6 +43,7 @@ class Send extends Action
     public function getActionDescription()
     {
         $nameOrEmail = $this->autoTrigger->subscriber->getFullNameOrEmail();
+
         return sprintf('User %s receives email entitled "%s"', $nameOrEmail, $this->getEmail()->subject);
     }
 }

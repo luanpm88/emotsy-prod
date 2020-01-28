@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Globally available helper methods
+ * Globally available helper methods.
  *
  * LICENSE: This product includes software developed at
  * the Acelle Co., Ltd. (http://acellemail.com/).
@@ -18,22 +18,23 @@
  * @link       http://acellemail.com
  */
 
-
 /**
- * Get full table name by adding the DB prefix
+ * Get full table name by adding the DB prefix.
  *
  * @param string table name
+ *
  * @return string fulle table name with prefix
  */
 function table($name)
 {
-    return \DB::getTablePrefix() . $name;
+    return \DB::getTablePrefix().$name;
 }
 
 /**
- * Quote a value with astrophe to inject to an SQL statement
+ * Quote a value with astrophe to inject to an SQL statement.
  *
  * @param string original value
+ *
  * @return string quoted value
  * @todo: use MySQL escape function to correctly escape string with astrophe
  */
@@ -43,9 +44,10 @@ function quote($value)
 }
 
 /**
- * Quote a value with astrophe to inject to an SQL statement
+ * Quote a value with astrophe to inject to an SQL statement.
  *
  * @param string original value
+ *
  * @return string quoted value
  * @todo: use MySQL escape function to correctly escape string with astrophe
  */
@@ -55,7 +57,7 @@ function db_quote($value)
 }
 
 /**
- * Break an array into smaller batches (arrays)
+ * Break an array into smaller batches (arrays).
  *
  * @param array original array
  * @param int batch size
@@ -65,7 +67,7 @@ function db_quote($value)
 function each_batch($array, $batchSize, $skipHeader, $callback)
 {
     $batch = [];
-    foreach($array as $i => $value) {
+    foreach ($array as $i => $value) {
         // skip the header
         if ($i == 0 && $skipHeader) {
             continue;
@@ -86,80 +88,92 @@ function each_batch($array, $batchSize, $skipHeader, $callback)
 
 /**
  * Count the total number of line of a given file without loading the entire file.
- * This is effective for large file
+ * This is effective for large file.
  *
  * @param string file path
+ *
  * @return int line count
  */
 function line_count($path)
 {
     $file = new \SplFileObject($path, 'r');
     $file->seek(PHP_INT_MAX);
+
     return $file->key() + 1;
 }
 
 /**
- * Join filesystem path strings
+ * Join filesystem path strings.
  *
  * @param * parts of the path
+ *
  * @return string a full path
  */
 function join_paths()
 {
     $paths = array();
     foreach (func_get_args() as $arg) {
-        if ($arg !== '') { $paths[] = $arg; }
+        if ($arg !== '') {
+            $paths[] = $arg;
+        }
     }
 
-    return preg_replace('#/+#','/',join('/', $paths));
+    return preg_replace('#/+#', '/', implode('/', $paths));
 }
 
 /**
- * Join URL parts
+ * Join URL parts.
  *
  * @param * parts of the URL. Note that the first part should be something like http:// or http://host.name
+ *
  * @return string a full URL
  */
 function join_url()
 {
     $paths = array();
     foreach (func_get_args() as $arg) {
-        if ($arg !== '') { $paths[] = $arg; }
+        if ($arg !== '') {
+            $paths[] = $arg;
+        }
     }
 
-    return preg_replace('#(?<=[^:])/+#', '/', join('/', $paths));
+    return preg_replace('#(?<=[^:])/+#', '/', implode('/', $paths));
 }
 
 /**
- * Get unique array based on user defined condition
+ * Get unique array based on user defined condition.
  *
  * @param array original array
+ *
  * @return array unique array
  */
 function array_unique_by($array, $callback)
 {
     $result = [];
-    foreach($array as $value) {
+    foreach ($array as $value) {
         $key = $callback($value);
         $result[$key] = $value;
     }
+
     return array_values($result);
 }
 
 /**
- * Get UTC offset of a particular time zone
+ * Get UTC offset of a particular time zone.
  *
  * @param string timezone
+ *
  * @return string UTC offset (+02:00 for example)
  */
 function utc_offset($timezone)
 {
     $offset = \Carbon\Carbon::now($timezone)->offsetHours - \Carbon\Carbon::now('UTC')->offsetHours;
+
     return sprintf("%+'03d:00", $offset);
 }
 
 /**
- * Get Database UTC offset
+ * Get Database UTC offset.
  *
  * @return string UTC offset (+02:00 for example)
  */
@@ -175,21 +189,24 @@ function db_utc_offset()
 }
 
 /**
- * Check if exec() function is available
+ * Check if exec() function is available.
  *
- * @return boolean
+ * @return bool
  */
-function exec_enabled() {
-   try {
-       // make a small test
-       exec("ls");
-       return function_exists('exec') && !in_array('exec', array_map('trim', explode(', ', ini_get('disable_functions'))));
-   } catch (\Exception $ex) {
-       return false;
-   }
+function exec_enabled()
+{
+    try {
+        // make a small test
+       exec('ls');
+
+        return function_exists('exec') && !in_array('exec', array_map('trim', explode(', ', ini_get('disable_functions'))));
+    } catch (\Exception $ex) {
+        return false;
+    }
 }
 
-function reset_app_url($force = false) { // replace if already exists
+function reset_app_url($force = false)
+{ // replace if already exists
     // update .env file, set app_url to current host url
 
     // get .env file path
@@ -198,9 +215,9 @@ function reset_app_url($force = false) { // replace if already exists
 
     // read from .env, load into $settings as [ key1 => value1, key2 => value2, etc. ]
     $settings = [];
-    foreach($raw as $e) {
+    foreach ($raw as $e) {
         preg_match('/^(?<key>[A-Z0-9_]+)=(?<value>.*)/', $e, $matched);
-        
+
         if (array_key_exists('key', $matched) && array_key_exists('value', $matched)) {
             $settings[$matched['key']] = $matched['value'];
         }
@@ -209,24 +226,25 @@ function reset_app_url($force = false) { // replace if already exists
     // add APP_URL setting if not exists
     if (!array_key_exists('APP_URL', $settings)) {
         $settings['APP_URL'] = url('/');
-    } else if ($force) {
+    } elseif ($force) {
         $settings['APP_URL'] = url('/');
     }
 
     // Write back to .env file
     $file = fopen($path, 'w');
-    foreach($settings as $key => $value) {
+    foreach ($settings as $key => $value) {
         fwrite($file, "{$key}=$value\n");
     }
     fclose($file);
 }
 
 /**
- * Run artisan config cache
+ * Run artisan config cache.
  *
- * @return boolean
+ * @return bool
  */
-function artisan_config_cache() {
+function artisan_config_cache()
+{
     // Artisan config:cache generate the following two files
     // Since config:cache runs in the background
     // to determine if it is done, we just check if the files modified time have been changed
@@ -261,7 +279,7 @@ function artisan_config_cache() {
         // if any file is still missing, keep waiting
         // if any file is not updated, keep waiting
         // @todo: services.php file keeps unchanged after artisan config:cache
-        foreach($files as $file) {
+        foreach ($files as $file) {
             $path = base_path($file);
             if (!file_exists($path)) {
                 sleep(1);
@@ -281,48 +299,53 @@ function artisan_config_cache() {
 }
 
 /**
- * Run artisan migrate
+ * Run artisan migrate.
  *
- * @return boolean
+ * @return bool
  */
-function artisan_migrate() {
-    \Artisan::call('migrate', ["--force"=> true]);
+function artisan_migrate()
+{
+    \Artisan::call('migrate', ['--force' => true]);
 }
 
 /**
- * Run artisan storage link
+ * Run artisan storage link.
  *
- * @return boolean
+ * @return bool
  */
-function artisan_storage_link() {
+function artisan_storage_link()
+{
     \Artisan::call('storage:link');
 }
 
 /**
- * Run artisan clean up
+ * Run artisan clean up.
  *
- * @return boolean
+ * @return bool
  */
-function artisan_clear() {
+function artisan_clear()
+{
     \Artisan::call('view:clear');
     \Artisan::call('route:clear');
 }
 
 /**
- * Check if site is in demo mod
+ * Check if site is in demo mod.
  *
- * @return boolean
+ * @return bool
  */
-function isSiteDemo() {
+function isSiteDemo()
+{
     return config('app.demo');
 }
 
 /**
- * Get language code
+ * Get language code.
  *
  * @return string
  */
-function language_code() {
+function language_code()
+{
     // Generate info
     $user = \Auth::user();
 
@@ -330,7 +353,7 @@ function language_code() {
 
     if (isset($_COOKIE['last_language_code'])) {
         $language_code = $_COOKIE['last_language_code'];
-    } else if (is_object($default_language)) {
+    } elseif (is_object($default_language)) {
         $language_code = $default_language->code;
     } else {
         $language_code = 'en';
@@ -340,7 +363,7 @@ function language_code() {
 }
 
 /**
- * Format a number as percentage
+ * Format a number as percentage.
  *
  * @return string
  */
@@ -349,11 +372,12 @@ function number_to_percentage($number, $precision = 2)
     if (!is_numeric($number)) {
         return $number;
     }
+
     return sprintf("%.{$precision}f%%", $number * 100);
 }
 
 /**
- * Format a number with delimiter
+ * Format a number with delimiter.
  *
  * @return string
  */
@@ -362,42 +386,47 @@ function number_with_delimiter($number, $precision = 0, $seperator = ',')
     if (!is_numeric($number)) {
         return $number;
     }
+
     return number_format($number, $precision, '.', $seperator);
 }
 
 /**
- * Function to convert IP address to IP number (IPv6)
+ * Function to convert IP address to IP number (IPv6).
  *
  * @return string
  */
-function Dot2LongIPv6($IPaddr) {
+function Dot2LongIPv6($IPaddr)
+{
     $int = inet_pton($IPaddr);
     $bits = 15;
     $ipv6long = 0;
     while ($bits >= 0) {
-        $bin = sprintf("%08b", (ord($int[$bits])));
+        $bin = sprintf('%08b', (ord($int[$bits])));
         if ($ipv6long) {
-            $ipv6long = $bin . $ipv6long;
+            $ipv6long = $bin.$ipv6long;
         } else {
             $ipv6long = $bin;
         }
-        $bits--;
+        --$bits;
     }
     $ipv6long = gmp_strval(gmp_init($ipv6long, 2), 10);
+
     return $ipv6long;
 }
 
 /**
  * Paginate a Laravel collection, used for service only as
- * it DOES NOT return a true Pagination object (for rendering to view)
+ * it DOES NOT return a true Pagination object (for rendering to view).
  *
  * @input Laravel Query Builder
  * @input callback function
+ *
  * @return collection result set
  */
-function paginate($builder, $callback, $params = []) {
+function paginate($builder, $callback, $params = [])
+{
     $default = [
-        'limit' => 10000
+        'limit' => 10000,
     ];
 
     $params = array_merge($default, $params);
@@ -411,7 +440,7 @@ function paginate($builder, $callback, $params = []) {
     $pages = ceil($params['count'] / $params['limit']);
 
     for ($page = 1; $page <= $pages; $page += 1) {
-        $offset = $params['limit'] * ( $page - 1 );
+        $offset = $params['limit'] * ($page - 1);
 
         $builder = $builder->skip($offset)->take($params['limit']);
         $callback($builder, $page);
@@ -419,36 +448,37 @@ function paginate($builder, $callback, $params = []) {
 }
 
 /**
- * Overwrite the Laravel's Builder#paginate, accept a $total parameter specifying the total number of records
+ * Overwrite the Laravel's Builder#paginate, accept a $total parameter specifying the total number of records.
  *
- * @param  int  $perPage
- * @param  array  $columns
- * @param  string  $pageName
- * @param  int|null  $page
+ * @param int      $perPage
+ * @param array    $columns
+ * @param string   $pageName
+ * @param int|null $page
+ *
  * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
  */
 function optimized_paginate($builder, $perPage = 15, $columns = null, $pageName = null, $page = null, $total = null)
 {
-  $pageName = $pageName ?: 'page';
-  $page = $page ?: \Illuminate\Pagination\Paginator::resolveCurrentPage($pageName);
-  $columns = $columns ?: ['*'];
-  $total = is_null($total) ? $builder->getCountForPagination() : $total;
+    $pageName = $pageName ?: 'page';
+    $page = $page ?: \Illuminate\Pagination\Paginator::resolveCurrentPage($pageName);
+    $columns = $columns ?: ['*'];
+    $total = is_null($total) ? $builder->getCountForPagination() : $total;
   // in case $total == 0
   $results = $total ? $builder->forPage($page, $perPage)->get($columns) : collect([]);
 
-  return new \Illuminate\Pagination\LengthAwarePaginator($results, $total, $perPage, $page, [
+    return new \Illuminate\Pagination\LengthAwarePaginator($results, $total, $perPage, $page, [
     'path' => \Illuminate\Pagination\Paginator::resolveCurrentPath(),
     'pageName' => $pageName,
   ]);
 }
 
-
 /**
- * Distinct count helper for performance
+ * Distinct count helper for performance.
  *
- * @return integer
+ * @return int
  */
-function distinctCount($builder, $column = null, $method = 'group') {
+function distinctCount($builder, $column = null, $method = 'group')
+{
     $q = clone $builder;
     /*
      * There are 2 options to COUNT DISTINCT
@@ -466,7 +496,7 @@ function distinctCount($builder, $column = null, $method = 'group') {
     }
 
     // Result
-    $count = \DB::table( \DB::raw("({$q->toSql()}) as sub") )
+    $count = \DB::table(\DB::raw("({$q->toSql()}) as sub"))
         ->addBinding($q->getBindings()) // you need to get underlying Query Builder
         ->count();
 
@@ -474,7 +504,7 @@ function distinctCount($builder, $column = null, $method = 'group') {
 }
 
 /**
- * Measure execution time of a script
+ * Measure execution time of a script.
  *
  * @return float execution time
  */
@@ -490,25 +520,28 @@ function measure($callback, $tests = 5)
     }
     $agv = array_sum($results) / count($results);
     echo "$agv\n";
+
     return $agv;
 }
 
 /**
- * Check if function is enabled
+ * Check if function is enabled.
  *
- * @return boolean
+ * @return bool
  */
-function func_enabled($name) {
+function func_enabled($name)
+{
     try {
         $disabled = explode(',', ini_get('disable_functions'));
+
         return !in_array($name, $disabled);
     } catch (\Exception $ex) {
-       return false;
+        return false;
     }
 }
 
 /**
- * Get the current application version
+ * Get the current application version.
  *
  * @return string version
  */
@@ -519,7 +552,7 @@ function app_version()
 
 /**
  * Extract email from a string
- * For example: get abc@mail.com from "My Name <abc@mail.com>"
+ * For example: get abc@mail.com from "My Name <abc@mail.com>".
  *
  * @return string version
  */
@@ -529,29 +562,30 @@ function extract_email($str)
     if (array_key_exists('email', $matched)) {
         return $matched['email'];
     } else {
-        return null;
+        return;
     }
 }
 
 /**
  * Extract name from a string
- * For example: get abc@mail.com from "My Name <abc@mail.com>"
+ * For example: get abc@mail.com from "My Name <abc@mail.com>".
  *
  * @return string version
  */
 function extract_name($str)
 {
-   $parts = explode("<", $str);
-   if (count($parts) > 1) {
-      return trim($parts[0]);
-   }
-   $parts = explode("@", extract_email($str));
-   return $parts[0];
+    $parts = explode('<', $str);
+    if (count($parts) > 1) {
+        return trim($parts[0]);
+    }
+    $parts = explode('@', extract_email($str));
+
+    return $parts[0];
 }
 
 /**
  * Extract domain from an email
- * For example: get mail.com from "My Name <abc@mail.com>"
+ * For example: get mail.com from "My Name <abc@mail.com>".
  *
  * @return string version
  */
@@ -559,11 +593,12 @@ function extract_domain($email)
 {
     $email = extract_email($email);
     $domain = substr(strrchr($email, '@'), 1);
+
     return $domain;
 }
 
 /**
- * Doublequote a string
+ * Doublequote a string.
  *
  * @return string
  */
@@ -572,43 +607,47 @@ function doublequote($str)
     return sprintf('"%s"', preg_replace('/^"+|"+$/', '', $str));
 }
 
-function jsonGet($array, $path) {
-   $jsonObject = new \JsonPath\JsonObject($array);
-   $result = $jsonObject->get($path)[0];
-   return $result;
+function jsonGet($array, $path)
+{
+    $jsonObject = new \JsonPath\JsonObject($array);
+    $result = $jsonObject->get($path)[0];
+
+    return $result;
 }
 
 /**
-* Format price.
-*
-* @param string
-*
-* @return string
-*/
-function format_number($number) {
-   if(is_numeric( $number ) && floor( $number ) != $number) {
-       return number_format($number, 2, trans('messages.dec_point'), trans('messages.thousands_sep'));
-   } elseif (is_numeric( $number )) {
-       return number_format($number, 0, trans('messages.dec_point'), trans('messages.thousands_sep'));
-   } else {
-       return $number;
-   }
-}
-/**
-* Format price.
-*
-* @param string
-*
-* @return string
-*/
-function format_price($price, $format='{PRICE}') {
-   return str_replace('{PRICE}', format_number($price), $format);
-}
-
-/**
- * Check if the app is initiated
+ * Format price.
  *
- * @return boolean
+ * @param string
+ *
+ * @return string
+ */
+function format_number($number)
+{
+    if (is_numeric($number) && floor($number) != $number) {
+        return number_format($number, 2, trans('messages.dec_point'), trans('messages.thousands_sep'));
+    } elseif (is_numeric($number)) {
+        return number_format($number, 0, trans('messages.dec_point'), trans('messages.thousands_sep'));
+    } else {
+        return $number;
+    }
+}
+/**
+ * Format price.
+ *
+ * @param string
+ *
+ * @return string
+ */
+function format_price($price, $format = '{PRICE}')
+{
+    return str_replace('{PRICE}', format_number($price), $format);
+}
+
+/**
+ * Check if the app is initiated.
+ *
+ * @return bool
  */
 function isInitiated()
 {
@@ -616,37 +655,26 @@ function isInitiated()
 }
 
 function formatSizeUnits($bytes)
-    {
-        if ($bytes >= 1073741824)
-        {
-            $bytes = number_format($bytes / 1073741824, 2) . ' GB';
-        }
-        elseif ($bytes >= 1048576)
-        {
-            $bytes = number_format($bytes / 1048576, 2) . ' MB';
-        }
-        elseif ($bytes >= 1024)
-        {
-            $bytes = number_format($bytes / 1024, 2) . ' KB';
-        }
-        elseif ($bytes > 1)
-        {
-            $bytes = $bytes . ' bytes';
-        }
-        elseif ($bytes == 1)
-        {
-            $bytes = $bytes . ' byte';
-        }
-        else
-        {
-            $bytes = '0 bytes';
-        }
+{
+    if ($bytes >= 1073741824) {
+        $bytes = number_format($bytes / 1073741824, 2).' GB';
+    } elseif ($bytes >= 1048576) {
+        $bytes = number_format($bytes / 1048576, 2).' MB';
+    } elseif ($bytes >= 1024) {
+        $bytes = number_format($bytes / 1024, 2).' KB';
+    } elseif ($bytes > 1) {
+        $bytes = $bytes.' bytes';
+    } elseif ($bytes == 1) {
+        $bytes = $bytes.' byte';
+    } else {
+        $bytes = '0 bytes';
+    }
 
-        return $bytes;
+    return $bytes;
 }
 
 /**
- * Pagination for items
+ * Pagination for items.
  *
  * @return array
  */
@@ -655,30 +683,30 @@ function pagination($request, $collect)
     $page = 0;
     $per_page = 10;
     $total = $collect->count();
-    
+
     if ($request->page) {
         $page = $request->page;
     }
-    
+
     if ($request->per_page) {
         $per_page = $request->per_page;
     }
-    
-    $items = $collect->skip($page*$per_page)->take($per_page);
-    
+
+    $items = $collect->skip($page * $per_page)->take($per_page);
+
     return [
         $items->get(),
         [
-            "page" => $page,
-            "per_page" => $per_page,
-            "total" => $total,
-            "pageCount" => ceil($total/$per_page),
-        ]
+            'page' => $page,
+            'per_page' => $per_page,
+            'total' => $total,
+            'pageCount' => ceil($total / $per_page),
+        ],
     ];
 }
 
 /**
- * Get random item from array
+ * Get random item from array.
  *
  * @return object
  */
@@ -688,7 +716,7 @@ function rand_item($arr)
 }
 
 /**
- * Return date string
+ * Return date string.
  *
  * @return object
  */
@@ -698,7 +726,7 @@ function toDateString($datetime)
 }
 
 /**
- * Return time string
+ * Return time string.
  *
  * @return object
  */

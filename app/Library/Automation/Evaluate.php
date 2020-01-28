@@ -29,7 +29,7 @@ class Evaluate extends Action
     }
 
     public function execute()
-    {   
+    {
         // IMPORTANT
         // If this is the latest also the last action of the workflow
         // no more execute, just return true
@@ -42,12 +42,13 @@ class Evaluate extends Action
         $result = $this->evaluateCondition();
 
         if (config('app.demo') == true) {
-            $result = (bool)random_int(0, 1);
+            $result = (bool) random_int(0, 1);
         }
 
         $this->evaluationResult = $result;
 
         $this->recordLastExecutedTime();
+
         return $result;
     }
 
@@ -59,7 +60,7 @@ class Evaluate extends Action
             case 'open':
                 $result = $this->evaluateEmailOpenCondition();
                 break;
-            
+
             default:
                 # code...
                 break;
@@ -72,12 +73,14 @@ class Evaluate extends Action
     {
         $emailUid = $this->getOption('email');
         $email = Email::findByUid($emailUid);
+
         return $email->isOpened($this->autoTrigger->subscriber);
     }
 
     public function getActionDescription()
     {
         $nameOrEmail = $this->autoTrigger->subscriber->getFullNameOrEmail();
+
         return sprintf('User %s reads email entitled "Welcome email"', $nameOrEmail);
     }
 
@@ -87,7 +90,7 @@ class Evaluate extends Action
             return false;
         }
 
-        return ($e->getId() == $this->childYes || $e->getId() == $this->childNo);
+        return $e->getId() == $this->childYes || $e->getId() == $this->childNo;
     }
 
     public function getNextActionId()

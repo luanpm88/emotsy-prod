@@ -20,7 +20,7 @@ class LicenseHelper
     {
         $ch = curl_init();
 
-        curl_setopt($ch, CURLOPT_URL,"http://verify.acellemail.com/"); // @todo hard-coded here
+        curl_setopt($ch, CURLOPT_URL, 'http://verify.acellemail.com/'); // @todo hard-coded here
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_TIMEOUT_MS, 100000);
         curl_setopt($ch, CURLOPT_POSTFIELDS,
@@ -30,7 +30,7 @@ class LicenseHelper
                 'secret' => session('secret'),
             ))
         ));
-        curl_setopt($ch,CURLOPT_USERAGENT,md5($license));
+        curl_setopt($ch, CURLOPT_USERAGENT, md5($license));
 
         // receive server response ...
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -69,25 +69,24 @@ class LicenseHelper
     }
 
     /**
-    * Check is valid extend license
-    *
-    * @return boolean
-    */
+     * Check is valid extend license.
+     *
+     * @return bool
+     */
     public static function isExtended($code = null)
     {
         if (is_null($code)) {
-            return \Acelle\Model\Setting::get('license_type') == LicenseHelper::TYPE_EXTENDED;
+            return \Acelle\Model\Setting::get('license_type') == self::TYPE_EXTENDED;
         } else {
-            return LicenseHelper::isValid($code) && LicenseHelper::getLicenseType($code) == LicenseHelper::TYPE_EXTENDED;    
+            return self::isValid($code) && self::getLicenseType($code) == self::TYPE_EXTENDED;
         }
-        
     }
 
     /**
-    * Check if supported
-    *
-    * @return boolean
-    */
+     * Check if supported.
+     *
+     * @return bool
+     */
     public static function isSupported($code = null)
     {
         if (is_null($code)) {
@@ -95,13 +94,13 @@ class LicenseHelper
         }
 
         if (empty($code)) {
-            throw new \Exception("No purchase code available for your installation");
+            throw new \Exception('No purchase code available for your installation');
         }
 
         $result = self::getLicense($code);
 
         if (array_key_exists('status', $result) && $result['status'] == 'invalid') {
-            throw new \Exception("Invalid license key. Please go to Settings > License dashboard and enter a valid license key to register your installation");
+            throw new \Exception('Invalid license key. Please go to Settings > License dashboard and enter a valid license key to register your installation');
         }
 
         $supportedUntil = Carbon::parse($result['data']['supported_until']);
@@ -114,10 +113,10 @@ class LicenseHelper
     }
 
     /**
-    * Check license is valid
-    *
-    * @return boolean
-    */
+     * Check license is valid.
+     *
+     * @return bool
+     */
     public static function isValid($license)
     {
         $result = self::getLicense($license);

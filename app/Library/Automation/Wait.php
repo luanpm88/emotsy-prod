@@ -9,8 +9,9 @@ class Wait extends Action
     public function execute()
     {
         if (config('app.demo') == true) {
-            $this->evaluationResult = (bool)random_int(0, 1);
+            $this->evaluationResult = (bool) random_int(0, 1);
             $this->recordLastExecutedTime();
+
             return $this->evaluationResult;
         }
 
@@ -35,6 +36,7 @@ class Wait extends Action
     public function getActionDescription()
     {
         $nameOrEmail = $this->autoTrigger->subscriber->getFullNameOrEmail();
+
         return sprintf('Wait for 24 hours before proceeding with the next event for user %s', $nameOrEmail);
     }
 }

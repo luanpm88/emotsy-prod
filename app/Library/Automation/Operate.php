@@ -11,11 +11,12 @@ class Operate extends Action
         // no more execute, just return true
         if (!is_null($this->last_executed)) {
             $this->autoTrigger->logger()->info('Already executed, I\'m the latest also the last action');
+
             return true;
         }
 
         sleep(1); // to avoid same date/time with previous wait, wrong timeline order
-        
+
         if (config('app.demo') == true) {
             // do nothing
         } else {
@@ -34,6 +35,7 @@ class Operate extends Action
     public function getActionDescription()
     {
         $nameOrEmail = $this->autoTrigger->subscriber->getFullNameOrEmail();
+
         return sprintf('Perform an operation');
     }
 }

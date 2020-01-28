@@ -91,7 +91,7 @@ abstract class Action
 
     public function getEvaluationResult()
     {
-        return $this->evaluationResult;        
+        return $this->evaluationResult;
     }
 
     public function isLatest()
@@ -115,13 +115,13 @@ abstract class Action
             return false;
         }
 
-        return ($e->getId() == $this->child);
+        return $e->getId() == $this->child;
     }
 
     public function getParent()
     {
         $parent = null;
-        $this->autoTrigger->getActions(function($action) use (&$parent) {
+        $this->autoTrigger->getActions(function ($action) use (&$parent) {
             if ($action->hasChild($this)) {
                 $parent = $action;
             }
