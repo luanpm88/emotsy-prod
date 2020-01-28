@@ -4,7 +4,6 @@ namespace Acelle\Console\Commands;
 
 use Illuminate\Console\Command;
 use Acelle\Model\Log;
-use Acelle\Model\Subscription;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Support\Facades\Log as LaravelLog;
@@ -43,6 +42,7 @@ class SystemCleanup extends Command
      */
     public function handle()
     {
+        /*
         // Delete old log
         Log::where('created_at', '<', new Carbon('1 year ago'))->delete();
         
@@ -52,5 +52,6 @@ class SystemCleanup extends Command
             LaravelLog::warning('Orphan subscriptions');
             $query->delete();
         }
+        */
     }
 }

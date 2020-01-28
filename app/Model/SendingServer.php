@@ -745,6 +745,9 @@ class SendingServer extends Model
             ['value' => 'us-east-1', 'text' => 'US East (N. Virginia)', 'host' => 'email-smtp.us-east-1.amazonaws.com'],
             ['value' => 'us-west-2', 'text' => 'US West (Oregon)', 'host' => 'email-smtp.us-west-2.amazonaws.com'],
             ['value' => 'eu-west-1', 'text' => 'EU (Ireland)', 'host' => 'email-smtp.eu-west-1.amazonaws.com'],
+            ['value' => 'ap-south-1', 'text' => 'Asia Pacific (Mumbai)', 'host' => 'email-smtp.ap-south-1.amazonaws.com'],
+            ['value' => 'ap-southeast-2', 'text' => 'Asia Pacific (Sydney)', 'host' => 'email-smtp.ap-southeast-2.amazonaws.com'],
+            ['value' => 'eu-central-1', 'text' => 'Europe (Frankfurt)', 'host' => 'email-smtp.eu-central-1.amazonaws.com'],
         ];
     }
     

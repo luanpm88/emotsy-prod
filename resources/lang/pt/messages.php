@@ -3056,4 +3056,7 @@
   'payment.paypal.environment' => 'Environment',
   'payment.paypal.wording' => 'PayPal is the fast/safe way to send money, make an online payment,
   receive money or set up a merchant account.',
+  'campaign.email_content_plain' => 'Email Content',
+  'campaign.email_content_plain.intro' => 'Enter your email plain text via text box below.',
+  'campaign.plain.save' => 'Save & Next',
 ) ?>
