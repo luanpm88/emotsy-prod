@@ -18,6 +18,7 @@ use Validator;
 use Illuminate\Validation\ValidationException;
 use ZipArchive;
 use League\Csv\Writer;
+use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 
 
 class Email extends Model
@@ -801,6 +802,24 @@ class Email extends Model
     {
         return $body.$footer;
     }
+    
+    /**
+     * Check if template is layout.
+     *
+     * @return string.
+     */
+    public function isLayout($html=null)
+    {
+        if (!$html) {
+            $html = $this->render();
+        }
+
+        if (strpos($html, 'AcelleSystemLayouts') !== false) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * Convert html to inline.
@@ -809,18 +828,16 @@ class Email extends Model
      */
     public function inlineHtml($html)
     {
-        // Convert to inline css if template source is builder
-        if ($this->template_source == 'builder') {
+        if ($this->isLayout($html)) {
+            // Convert to inline css if template source is builder
             $cssToInlineStyles = new CssToInlineStyles();
-
-            $css = file_get_contents(public_path('css/res_email.css'));
-
+            $css = file_get_contents(public_path('assets2/css/email/main.css'));
             // output
             $html = $cssToInlineStyles->convert(
                 $html,
                 $css
             );
-        }
+        }            
 
         return $html;
     }
