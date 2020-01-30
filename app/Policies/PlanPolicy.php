@@ -64,7 +64,7 @@ class PlanPolicy
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->admin->id == $item->admin_id);
 
-        return $can && $item->status != 'active';
+        return $can && $item->status != 'active' && $item->isValid();
     }
 
     public function copy(User $user, Plan $item)

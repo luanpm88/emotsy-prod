@@ -1474,4 +1474,33 @@ class Plan extends Model implements BillablePlanInterface
         return $this->plansSendingServers()->join('sending_servers', 'sending_servers.id', 'plans_sending_servers.sending_server_id')->where('sending_servers.status', 'active');
     }
 
+    /**
+     * Check if plan is valid to active
+     *
+     * @var boolean
+     */
+    public function isValid()
+    {
+        // use system sending server but has no primary sending server
+        if ($this->useSystemSendingServer() && !$this->hasPrimarySendingServer()) {
+            return false;
+        }
+
+        // else return true
+        return true;
+    }
+
+    /**
+     * Check status of sending server
+     *
+     * @var void
+     */
+    public function checkStatus()
+    {
+        // disable sending server if it is not valid
+        if (!$this->isValid()) {
+            $this->disable();
+        }
+    }
+
 }

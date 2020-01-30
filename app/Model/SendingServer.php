@@ -94,6 +94,16 @@ class SendingServer extends Model
     }
 
     /**
+     * Plans.
+     *
+     * @return collection
+     */
+    public function plans()
+    {
+        return $this->belongsToMany('Acelle\Model\Plan', 'plans_sending_servers');
+    }
+
+    /**
      * Get the bounce handler.
      */
     public function bounceHandler()
@@ -1462,5 +1472,21 @@ class SendingServer extends Model
         $errorTitle = "Server `{$this->name}` ({$this->uid}) failed to send";
         BackendErrorNotification::cleanupDuplicateNotifications($errorTitle);
         BackendErrorNotification::warning([ 'title' => $errorTitle, 'message' => date('Y-m-d').' '.$errorTitle.': '.$exception->getMessage() ], false);
+    }
+    
+    /**
+     * Delete sending server
+     */
+    public function doDelete()
+    {
+        $plans = $this->plans;
+        
+        // delete
+        $this->delete();
+
+        // check all plans status
+        foreach($plans as $plan) {
+            $plan->checkStatus();
+        }
     }
 }
