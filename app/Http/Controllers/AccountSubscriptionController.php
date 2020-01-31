@@ -233,11 +233,10 @@ class AccountSubscriptionController extends Controller
     public function cancel(Request $request)
     {
         $customer = $request->user()->customer;
-        $gateway = Cashier::getPaymentGateway();
         $subscription = $customer->subscription;
 
         if ($request->user()->customer->can('cancel', $subscription)) {
-            $gateway->cancel($subscription);
+            $subscription->cancel();
         }
 
         // Redirect to my subscription page
@@ -255,11 +254,10 @@ class AccountSubscriptionController extends Controller
     public function resume(Request $request)
     {
         $customer = $request->user()->customer;
-        $gateway = Cashier::getPaymentGateway();
         $subscription = $customer->subscription;
 
         if ($request->user()->customer->can('resume', $subscription)) {
-            $gateway->resume($subscription);
+            $subscription->resume();
         }
 
         // Redirect to my subscription page
@@ -279,10 +277,9 @@ class AccountSubscriptionController extends Controller
         $customer = $request->user()->customer;
         // Get current subscription
         $subscription = $customer->subscription;
-        $gateway = Cashier::getPaymentGateway();
 
         if ($request->user()->customer->can('cancelNow', $subscription)) {
-            $gateway->cancelNow($subscription);
+            $subscription->cancelNow();
         }
 
         // Redirect to my subscription page

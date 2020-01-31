@@ -104,7 +104,7 @@ class SubscriptionController extends Controller
         $gateway = Cashier::getPaymentGateway();
 
         if ($request->user()->admin->can('cancel', $subscription)) {
-            $gateway->cancel($subscription);
+            $subscription->cancel();
         }
 
         echo trans('messages.subscription.cancelled');
@@ -124,7 +124,7 @@ class SubscriptionController extends Controller
         $gateway = Cashier::getPaymentGateway();
 
         if ($request->user()->admin->can('resume', $subscription)) {
-            $gateway->resume($subscription);
+            $subscription->resume();
         }
 
         echo trans('messages.subscription.resumed');
@@ -144,7 +144,7 @@ class SubscriptionController extends Controller
         $gateway = Cashier::getPaymentGateway();
 
         if ($request->user()->admin->can('cancelNow', $subscription)) {
-            $gateway->cancelNow($subscription);
+            $subscription->cancelNow();
         }
 
         echo trans('messages.subscription.cancelled_now');
@@ -159,28 +159,6 @@ class SubscriptionController extends Controller
      **/
     public function changePlan(Request $request, $id)
     {
-        // Get current subscription
-        $subscription = Subscription::findByUid($request->id);
-        $plan = Plan::findByUid($request->plan_uid);
-        $gateway = Cashier::getPaymentGateway();
-
-        if (! $request->user()->admin->can('changePlan', $subscription)) {
-            return $this->notAuthorized();
-        }
-
-        if ($request->isMethod('post')) {
-            if ($request->user()->customer->can('changePlan', $subscription)) {
-                $gateway->changePlan($request->user()->customer, $plan);
-
-                // Redirect to my subscription page
-                $request->session()->flash('alert-success', trans('messages.subscription.plan_changed'));
-                return back();
-            }
-        }
-
-        return view('admin.subscriptions.change_plan', [
-            'subscription' => $subscription,
-        ]);
     }
 
     /**

@@ -2382,7 +2382,7 @@
   'purchasing_intro_direct' => 'You are subscribing to <span class="text-nowrap text-big text-semibold">:plan</span> plan
           . Your plan price is: <span class="text-nowrap text-big text-bold">:price</span>
           . Click confirm button below to accept and get payment guide.',
-  'subscription.current_subscription.recurring.wording' => 'Thank you for being with us, you are currently subscribed to <strong>:plan</strong> :money/m plan.<br>
+  'subscription.current_subscription.recurring.wording' => 'Thank you for being with us, you are currently subscribed to <strong>:plan</strong> plan.<br>
       Your next invoice will automatically be billed in <strong>:remain</strong>, on <strong>:next_on</strong>.',
   'subscription.cancel.confirm' => 'You\'re about to cancel :number subscription. You\'re still subscribed until the end of period',
   'subscription.renew.confirm' => 'You\'re about to renew :number subscription.',
@@ -3071,4 +3071,5 @@
   'campaign.email_content_plain' => 'Email Content',
   'campaign.email_content_plain.intro' => 'Enter your email plain text via text box below.',
   'campaign.plain.save' => 'Save & Next',
+  'subscription.subscription_ended_at' => 'Ended at',
 ) ?>

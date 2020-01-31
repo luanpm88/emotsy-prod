@@ -14,11 +14,11 @@
                     <th>{{ trans('messages.invoice.status') }}</th>
                     <th>{{ trans('messages.invoice.action') }}</th>
                 </tr>
-                @forelse ($gateway->getInvoices($subscription) as $key => $invoice)
+                @forelse ($subscription->getInvoices() as $key => $invoice)
                     <tr>
                         <td>
                             <span class="no-margin kq_search">
-                                {{ Acelle\Library\Tool::formatDate(Carbon\Carbon::createFromTimestamp($invoice->createdAt)) }}
+                                {{ Acelle\Library\Tool::formatDate($invoice->created_at) }}
                             </span>
                         </td>
                         <td>
@@ -28,20 +28,12 @@
                         </td>
                         <td>
                             <span class="no-margin kq_search">
-                                @if ($invoice->periodEndsAt)
-                                    {{ Acelle\Library\Tool::formatDate(Carbon\Carbon::createFromTimestamp($invoice->periodEndsAt)) }}
-                                @else
-                                    {{ trans('messages.n_a') }}
-                                @endif
+                                {{ Acelle\Library\Tool::formatDate($invoice->current_period_ends_at) }}
                             </span>
                         </td>
                         <td>
                             <span class="no-margin kq_search">
-                                @if ($invoice->amount)
-                                    {{ $invoice->amount }}
-                                @else
-                                    {{ trans('messages.n_a') }}
-                                @endif
+                                {{ $invoice->amount }}
                             </span>
                         </td>
                         <td>

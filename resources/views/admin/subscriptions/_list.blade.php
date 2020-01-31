@@ -35,7 +35,7 @@
 						<h5 class="no-margin">
 								<span class="kq_search">{{ Acelle\Library\Tool::formatDate($subscription->ends_at) }}</span>
 							</h5>
-						<span class="text-muted2">{{ trans('messages.subscription.subscription_end') }}</span>
+						<span class="text-muted2">{{ trans('messages.subscription.subscription_ended_at') }}</span>
 					@elseif ($subscription->cancelled())
 						<h5 class="no-margin">
 							@if ($subscription->current_period_ends_at)
