@@ -31,7 +31,7 @@ use Acelle\Library\StringHelper;
 use Acelle\Exceptions\VerificationProcessCancelledException;
 use Acelle\Model\Setting;
 use Acelle\Model\Customer;
-
+use Acelle\Model\SendingServer;
 
 class MailList extends Model
 {
@@ -1617,9 +1617,13 @@ class MailList extends Model
         $message->addPart($body, 'text/html');
 
         try {
-            $this->send($message, [
+            $result = $this->send($message, [
                 'subscriber' => $subscriber,
             ]);
+
+            if ($result['status'] == SendingServer::DELIVERY_STATUS_FAILED) {
+                throw new \Exception("Error returned from sending service: ".$result['error']);
+            }
         } catch (\Exception $ex) {
             $error = $ex->getMessage();
             MailLog::error($error);

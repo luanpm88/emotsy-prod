@@ -1815,6 +1815,24 @@ abstract class AbsCampaign extends Model
     }
 
     /**
+     * Check if template is layout.
+     *
+     * @return string.
+     */
+    public function isLayout($html=null)
+    {
+        if (!$html) {
+            $html = $this->render();
+        }
+
+        if (strpos($html, 'AcelleSystemLayouts') !== false) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Convert html to inline.
      *
      * @todo not very OOP here, consider moving this to a Helper instead
@@ -1822,11 +1840,9 @@ abstract class AbsCampaign extends Model
     public function inlineHtml($html)
     {
         // Convert to inline css if template source is builder
-        if ($this->template_source == 'builder') {
+        if ($this->isLayout($html)) {
             $cssToInlineStyles = new CssToInlineStyles();
-
-            $css = file_get_contents(public_path('css/res_email.css'));
-
+            $css = file_get_contents(public_path('assets2/css/email/main.css'));
             // output
             $html = $cssToInlineStyles->convert(
                 $html,

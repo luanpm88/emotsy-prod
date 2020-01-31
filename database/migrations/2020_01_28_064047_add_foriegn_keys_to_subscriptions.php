@@ -21,6 +21,8 @@ class AddForiegnKeysToSubscriptions extends Migration
             $table->index('uid');
         });
 
+        \Acelle\Cashier\Subscription::whereRaw(sprintf('(%s NOT IN (SELECT uid FROM %s) OR %s NOT IN (SELECT uid FROM %s))', 'user_id', table('customers'), 'plan_id', table('plans')))->delete();
+
         Schema::table('subscriptions', function ($table) {
             \Doctrine\DBAL\Types\Type::addType('uuid', 'Ramsey\Uuid\Doctrine\UuidType');
             

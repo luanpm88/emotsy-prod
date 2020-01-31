@@ -661,6 +661,9 @@ class PlanController extends Controller
         // save posted data
         $plan->removeSendingServerByUid($request->sending_server_uid);
 
+        // check plan status
+        $plan->checkStatus();
+
         $request->session()->flash('alert-success', trans('messages.plan.sending_server.removed'));
         return redirect()->action('Admin\PlanController@sendingServers', $plan->uid);
     }
