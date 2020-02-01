@@ -34,6 +34,12 @@
                 </div>
             @endif
 
+            @if ($gateway->hasError($subscription))
+                <div class="alert alert-danger">
+                    {!! $gateway->getErrorNotice($subscription) !!}
+                </div>
+            @endif
+
             <h2 class="text-semibold">{{ trans('messages.subscription') }}</h2>
 
             <div class="sub-section">

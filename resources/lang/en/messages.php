@@ -3079,4 +3079,5 @@
   ',
   'customer.assign_plan' => 'Assign plan',
   'customer.plan.assigned' => 'Assigned <strong>:plan</strong> plan to <strong>:customer</strong> successfully.',
+  'messages.success' => 'Success',
 ) ?>

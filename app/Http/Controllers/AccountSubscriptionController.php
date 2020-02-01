@@ -34,6 +34,8 @@ class AccountSubscriptionController extends Controller
         // Get current subscription
         $subscription = $customer->subscription;
 
+        // $gateway->recurring($subscription);
+
         // Customer dose not have subscription
         if (!is_object($subscription)) {
             return redirect()->action('AccountSubscriptionController@selectPlan');
