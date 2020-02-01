@@ -21,6 +21,7 @@ class CreateSubscriptionTransactionsTable extends Migration
             $table->timestamp('current_period_ends_at')->nullable();
             $table->string('status');
             $table->string('description');
+            $table->string('title');
             $table->string('amount');
             $table->text('metadata');
 

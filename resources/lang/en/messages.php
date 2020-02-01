@@ -3072,4 +3072,6 @@
   'campaign.email_content_plain.intro' => 'Enter your email plain text via text box below.',
   'campaign.plain.save' => 'Save & Next',
   'subscription.subscription_ended_at' => 'Ended at',
+  'subscription.approve_pending' => 'Approve',
+  'invoice.title' => 'Content',
 ) ?>

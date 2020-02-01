@@ -111,6 +111,14 @@
 										</a>
 									</li>
 								@endif
+								@if (\Auth::user()->admin->can('approvePending', $subscription))
+									<li>
+										<a data-method="POST" link-confirm="{{ trans('messages.subscription.set_active.confirm') }}"
+										  href="{{ action('Admin\SubscriptionController@approvePending', $subscription->uid) }}">
+											{{ trans('messages.subscription.approve_pending') }}
+										</a>
+									</li>
+								@endif
 								@if (\Auth::user()->admin->can('invoices', $subscription))
 									<li>
 										<a class="modal_link"

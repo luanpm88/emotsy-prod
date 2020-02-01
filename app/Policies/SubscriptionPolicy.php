@@ -193,7 +193,23 @@ class SubscriptionPolicy
     public function setActive(User $user, Subscription $subscription, $role)
     {
         $gateway = Cashier::getPaymentGateway();
-        $can = $subscription->isPending() || $gateway->hasPending($subscription);
+        $can = $subscription->isPending();
+
+        switch ($role) {
+            case 'admin':
+                break;
+            case 'customer':
+                $can = false;
+                break;
+        }
+
+        return $can;
+    }
+
+    public function approvePending(User $user, Subscription $subscription, $role)
+    {
+        $gateway = Cashier::getPaymentGateway();
+        $can = $gateway->hasPending($subscription);
 
         switch ($role) {
             case 'admin':

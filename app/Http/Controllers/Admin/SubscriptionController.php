@@ -193,6 +193,11 @@ class SubscriptionController extends Controller
         $subscription = Subscription::findByUid($request->id);
         $gateway = Cashier::getPaymentGateway();
 
+        // authorize
+        if (!$request->user()->admin->can('setActive', $subscription)) {
+            return $this->notAuthorized();
+        }
+
         try {
             $gateway->setActive($subscription);
         } catch (\Exception $ex) {
@@ -217,14 +222,19 @@ class SubscriptionController extends Controller
      *
      * @return \Illuminate\Http\Response
      **/
-    public function approvePendingInvoice(Request $request, $id)
+    public function approvePending(Request $request, $id)
     {
         // Get current subscription
         $subscription = Subscription::findByUid($request->id);
         $gateway = Cashier::getPaymentGateway();
 
+        // authorize
+        if (!$request->user()->admin->can('approvePending', $subscription)) {
+            return $this->notAuthorized();
+        }
+
         try {
-            $subscription->approvePendingInvoice($gateway);
+            $gateway->approvePending($subscription);
         } catch (\Exception $ex) {
             echo json_encode([
                 'status' => 'error',
@@ -235,28 +245,9 @@ class SubscriptionController extends Controller
 
         echo json_encode([
             'status' => 'success',
-            'message' => trans('messages.subscription.approve_pending_invoice.success'),
+            'message' => trans('messages.subscription.set_active.success'),
         ]);
         return;
-    }
-
-    /**
-     * Download raw invoices.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     **/
-    public function downloadRawInvoice(Request $request, $id)
-    {
-        $subscription = Subscription::findByUid($id);
-        $gatewayService = Cashier::getPaymentGateway();
-
-
-        return response(var_export($gatewayService->getRawInvoices($subscription)), 200, [
-            'Content-Type' => 'application/json',
-            'Content-Disposition' => 'attachment; filename="payment_logs.txt"',
-        ]);
     }
 
     /**

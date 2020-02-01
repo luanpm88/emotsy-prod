@@ -21,7 +21,7 @@
                                         <table class="table table-box pml-table table-log mt-10">
                                             <tr>
                                                 <th>{{ trans('messages.invoice.created_at') }}</th>
-                                                <th>{{ trans('messages.invoice.description') }}</th>
+                                                <th>{{ trans('messages.invoice.title') }}</th>
                                                 <th>{{ trans('messages.invoice.period_ends_at') }}</th>
                                                 <th>{{ trans('messages.invoice.amount') }}</th>
                                                 <th>{{ trans('messages.invoice.status') }}</th>
@@ -36,8 +36,11 @@
                                                     </td>
                                                     <td>
                                                         <span class="no-margin kq_search">
-                                                            {!! $invoice->description !!}
+                                                            {!! $invoice->title !!}
                                                         </span>
+                                                        @if ($invoice->description)
+                                                            <div class="small text-muted">{!! $invoice->description !!}</div>
+                                                        @endif
                                                     </td>
                                                     <td>
                                                         <span class="no-margin kq_search">
