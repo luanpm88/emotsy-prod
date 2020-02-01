@@ -3074,4 +3074,9 @@
   'subscription.subscription_ended_at' => 'Ended at',
   'subscription.approve_pending' => 'Approve',
   'invoice.title' => 'Content',
+  'customer.assign_plan.confirm' => 'You\'re about to assign <strong>:plan</strong> plan to <strong>:customer</strong>.
+    This will cancel customer\'s current subscription if it exists. This can be undone.
+  ',
+  'customer.assign_plan' => 'Assign plan',
+  'customer.plan.assigned' => 'Assigned <strong>:plan</strong> plan to <strong>:customer</strong> successfully.',
 ) ?>

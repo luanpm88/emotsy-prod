@@ -439,6 +439,16 @@ class Admin extends Model
     }
 
     /**
+     * Get customer language code.
+     *
+     * @return string
+     */
+    public function getLanguageCodeFull()
+    {
+        return is_object($this->language) ? ($this->language->code . '-' . strtoupper($this->language->region_code)) : null;
+    }
+
+    /**
      * Get admin logs of their customers.
      *
      * @return string

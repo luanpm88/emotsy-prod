@@ -97,4 +97,13 @@ class CustomerPolicy
         $can = $can && $item->subAccounts()->count();
         return $can;
     }
+    
+    public function assignPlan(User $user, Customer $item)
+    {
+        $ability = $user->admin->getPermission('customer_update');
+        $can = $ability == 'all'
+                || ($ability == 'own' && $user->admin->id == $item->admin_id);
+
+        return $can;
+    }
 }
