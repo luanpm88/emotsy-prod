@@ -10,7 +10,6 @@ use Acelle\Model\Plan;
 use Acelle\Cashier\Cashier;
 use Acelle\Cashier\Services\StripeGatewayService;
 use Carbon\Carbon;
-use Acelle\Cashier\SubscriptionParam;
 
 class AccountSubscriptionController extends Controller
 {
@@ -34,8 +33,6 @@ class AccountSubscriptionController extends Controller
         // Get current subscription
         $subscription = $customer->subscription;
 
-        // $gateway->recurring($subscription);
-
         // Customer dose not have subscription
         if (!is_object($subscription)) {
             return redirect()->action('AccountSubscriptionController@selectPlan');
@@ -50,8 +47,8 @@ class AccountSubscriptionController extends Controller
             return redirect()->action('AccountSubscriptionController@checkout');
         }
         
-        // retrieve subscription info
-        $gateway->sync($subscription);
+        // // retrieve subscription info
+        // $gateway->sync($subscription);
         
         // Check if subscriotion is new
         if ($subscription->isPending()) {
