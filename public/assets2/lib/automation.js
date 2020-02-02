@@ -64,18 +64,18 @@ class AutomationElement {
             var o = list[ e.id ];
 
             if (o.isCondition()) {
-                if (e.childYes != null) {
+                if (e.childYes !== null && e.childYes !== '') {
                     o.appendYes(list[e.childYes]);
                 }
 
-                if (e.childNo != null) {
+                if (e.childNo !== null && e.childNo !== '') {
                     o.appendNo(list[e.childNo]);
                 }
 
                 //o.onaddyes(events.onaddyes);
                 //o.onaddno(events.onaddno);
             } else {
-                if (e.child != null) {
+                if (e.child !== null && e.child !== '') {
                     o.append(list[e.child]);
                 }
 
