@@ -782,14 +782,20 @@ class ElementTrigger extends ElementAction {
             if (element.isCondition()) {
                 if (element.childYes != null) {
                     item.childYes = element.childYes.id;
+                } else {
+                    item.childYes = null;
                 }
 
                 if (element.childNo != null) {
                     item.childNo = element.childNo.id;
+                } else {
+                    item.childNo = null;
                 }
             } else {
                 if (element.child != null) {
                     item.child = element.child.id;
+                } else {
+                    item.child = null;
                 }
             }
 
