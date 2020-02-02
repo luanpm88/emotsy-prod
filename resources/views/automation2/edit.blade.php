@@ -240,7 +240,7 @@
 				type: 'POST',
 				data: {
 					_token: CSRF_TOKEN,
-					data: tree.toJson(),
+					data: JSON.stringify(tree.toJson()),
 				},
 			}).always(function() {
 				if (callback != null) {
