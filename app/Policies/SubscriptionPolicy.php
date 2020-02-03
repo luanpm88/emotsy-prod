@@ -42,7 +42,8 @@ class SubscriptionPolicy
 
     public function cancel(User $user, Subscription $subscription, $role)
     {
-        $can = $subscription->isActive() && $subscription->isRecurring();
+        $gateway = Cashier::getPaymentGateway();
+        $can = $subscription->isActive() && $subscription->isRecurring() && $gateway->isSupportRecurring();
         switch ($role) {
             case 'admin':
                 break;
@@ -121,7 +122,7 @@ class SubscriptionPolicy
         $lastDays = Setting::get('system.end_period_last_days');
         $goingToExpire = $subscription->goingToExpire($lastDays);
 
-        $can = $can && $goingToExpire;
+        // $can = $can && $goingToExpire;
 
         switch ($role) {
             case 'admin':
