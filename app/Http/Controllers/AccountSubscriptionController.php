@@ -52,7 +52,7 @@ class AccountSubscriptionController extends Controller
         
         // Check if subscriotion is new
         if ($subscription->isPending()) {
-            return redirect()->action('AccountSubscriptionController@pending');
+            return redirect()->away($gateway->getPendingUrl($subscription));
         }
         
         // if subscription is ended atfer sygned
