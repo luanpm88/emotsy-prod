@@ -82,8 +82,14 @@ class AppServiceProvider extends ServiceProvider
         
         // Payment config load from database
         if (isInitiated()) {
-            $gateway = Setting::get('system.payment_gateway');
-            config(['cashier.gateway' => $gateway]);
+            // update global configs
+            config([
+                'cashier.gateway' => Setting::get('system.payment_gateway'),
+                'cashier.end_period_last_days' => Setting::get('system.end_period_last_days'),
+                'cashier.renew_free_plan' => Setting::get('system.renew_free_plan'),
+            ]);
+
+            // per payment configs
             foreach (config('cashier.gateways') as $gw => $data) {
                 foreach ($data['fields'] as $key => $value ) {
                     $con = Setting::get('payment.' . $gw . '.' . $key);
