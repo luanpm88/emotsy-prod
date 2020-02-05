@@ -87,6 +87,7 @@ class AppServiceProvider extends ServiceProvider
                 'cashier.gateway' => Setting::get('system.payment_gateway'),
                 'cashier.end_period_last_days' => Setting::get('system.end_period_last_days'),
                 'cashier.renew_free_plan' => Setting::get('system.renew_free_plan'),
+                'cashier.recurring_charge_before_days' => Setting::get('system.recurring_charge_before_days'),
             ]);
 
             // per payment configs

@@ -3080,10 +3080,13 @@
   'customer.assign_plan' => 'Assign plan',
   'customer.plan.assigned' => 'Assigned <strong>:plan</strong> plan to <strong>:customer</strong> successfully.',
   'messages.success' => 'Success',
-  'subscription.logs_transactions' => 'Logs/Invoices',
-  'subscription.transactions' => 'Invoices',
+  'subscription.logs_transactions' => 'Logs/Transactions',
+  'subscription.transactions' => 'Transactions',
   'subscription.log.created_at' => 'Created at',
   'subscription.log.message' => 'Message',  
   'subscription.ended_intro' => 'The subscription to <strong>:plan</strong> plan was ended at <strong>:ended_at</strong>.
     Please renew or choose an other plan.',
+  'system.recurring_charge_before_days' => 'Auto recurring charge before',
+  'setting.recurring_charge_before_days.help' => 'The number of days before the subscription end of period date.
+    System will automatically charge the subscription',
 ) ?>

@@ -41,9 +41,8 @@
                 <div id="transactions" class="tab-pane fade">
                     <table class="table table-box pml-table table-log mt-10">
                         <tr>
-                            <th>{{ trans('messages.invoice.created_at') }}</th>
+                            <th width="130px">{{ trans('messages.invoice.created_at') }}</th>
                             <th>{{ trans('messages.invoice.title') }}</th>
-                            <th>{{ trans('messages.invoice.period_ends_at') }}</th>
                             <th>{{ trans('messages.invoice.amount') }}</th>
                             <th>{{ trans('messages.invoice.status') }}</th>
                             <th>{{ trans('messages.invoice.action') }}</th>
@@ -62,11 +61,6 @@
                                     @if ($invoice->description)
                                         <div class="small text-muted">{!! $invoice->description !!}</div>
                                     @endif
-                                </td>
-                                <td>
-                                    <span class="no-margin kq_search">
-                                        {{ Acelle\Library\Tool::formatDate($invoice->current_period_ends_at) }}
-                                    </span>
                                 </td>
                                 <td>
                                     <span class="no-margin kq_search">
