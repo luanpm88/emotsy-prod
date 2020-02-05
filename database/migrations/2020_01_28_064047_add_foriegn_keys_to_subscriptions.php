@@ -25,6 +25,10 @@ class AddForiegnKeysToSubscriptions extends Migration
         DB::statement(sprintf('ALTER TABLE %s MODIFY plan_id CHAR(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;', table('subscriptions')));
         DB::statement(sprintf('ALTER TABLE %s MODIFY user_id CHAR(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;', table('subscriptions')));
 
+        DB::statement(sprintf("ALTER TABLE %s ENGINE = 'InnoDB'", table('subscriptions')));
+        DB::statement(sprintf("ALTER TABLE %s ENGINE = 'InnoDB'", table('customers')));
+        DB::statement(sprintf("ALTER TABLE %s ENGINE = 'InnoDB'", table('plans')));
+
         Schema::table('plans', function ($table) {
             $table->collation = 'utf8mb4_unicode_ci';
             $table->charset = 'utf8mb4';
