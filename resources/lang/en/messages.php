@@ -2472,7 +2472,7 @@
   'invoice.amount' => 'Amount',
   'invoice.description' => 'Description',
   'invoice.status' => 'Status',
-  'subscription.logs' => 'Invoices and billing history',
+  'subscription.logs' => 'Logs',
   'subscription.logs.intro' => 'All your payment transactions are logged here. Let check them for details of your invoices / billing history.',
   'subscription.logs.empty' => 'No records found',
   'no_plan.title' => 'You are not subscribed to any plan!',
@@ -3080,4 +3080,10 @@
   'customer.assign_plan' => 'Assign plan',
   'customer.plan.assigned' => 'Assigned <strong>:plan</strong> plan to <strong>:customer</strong> successfully.',
   'messages.success' => 'Success',
+  'subscription.logs_transactions' => 'Logs/Invoices',
+  'subscription.transactions' => 'Invoices',
+  'subscription.log.created_at' => 'Created at',
+  'subscription.log.message' => 'Message',  
+  'subscription.ended_intro' => 'The subscription to <strong>:plan</strong> plan was ended at <strong>:ended_at</strong>.
+    Please renew or choose an other plan.',
 ) ?>

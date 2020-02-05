@@ -9,6 +9,7 @@ use Acelle\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Log as LaravelLog;
 use Acelle\Cashier\Cashier;
 use Acelle\Cashier\Subscription;
+use Acelle\Cashier\SubscriptionLog;
 use Acelle\Model\Plan;
 
 class SubscriptionController extends Controller
@@ -104,7 +105,7 @@ class SubscriptionController extends Controller
         $gateway = Cashier::getPaymentGateway();
 
         if ($request->user()->admin->can('cancel', $subscription)) {
-            $subscription->cancel();
+            $gateway->cancel($subscription);
         }
 
         echo trans('messages.subscription.cancelled');
@@ -124,7 +125,7 @@ class SubscriptionController extends Controller
         $gateway = Cashier::getPaymentGateway();
 
         if ($request->user()->admin->can('resume', $subscription)) {
-            $subscription->resume();
+            $gateway->resume($subscription);
         }
 
         echo trans('messages.subscription.resumed');
@@ -144,7 +145,7 @@ class SubscriptionController extends Controller
         $gateway = Cashier::getPaymentGateway();
 
         if ($request->user()->admin->can('cancelNow', $subscription)) {
-            $subscription->cancelNow();
+            $gateway->cancelNow($subscription);
         }
 
         echo trans('messages.subscription.cancelled_now');

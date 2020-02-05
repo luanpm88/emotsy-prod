@@ -25,12 +25,26 @@
     <div class="row">
         <div class="col-sm-12 col-md-6 col-lg-6">
             <div class="sub-section">
-                @include('elements._notification', [
-                    'level' => 'warning',
-                    'message' => trans('messages.no_plan.title')
-                ])
+                @if ($subscription)
+                    @include('elements._notification', [
+                        'level' => 'warning',
+                        'message' => trans('messages.subscription.ended_intro', [
+                            'ended_at' => Acelle\Library\Tool::formatDate($subscription->ends_at),
+                            'plan' => $subscription->plan->name,
+                        ])
+                    ])
+                    
+                    <p>{{ trans('messages.select_plan.wording') }}</p>
+                @else
+                    @include('elements._notification', [
+                        'level' => 'warning',
+                        'message' => trans('messages.no_plan.title')
+                    ])
 
-                <p>{{ trans('messages.select_plan.wording') }}</p>
+                    <p>{{ trans('messages.select_plan.wording') }}</p>
+                @endif
+
+                    
             </div>
         </div>
     </div>

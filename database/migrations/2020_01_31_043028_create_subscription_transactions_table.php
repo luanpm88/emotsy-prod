@@ -17,6 +17,7 @@ class CreateSubscriptionTransactionsTable extends Migration
             $table->increments('id');
             $table->uuid('uid');
             $table->integer('subscription_id')->unsigned();
+            $table->string('type');
             $table->timestamp('ends_at')->nullable();
             $table->timestamp('current_period_ends_at')->nullable();
             $table->string('status');

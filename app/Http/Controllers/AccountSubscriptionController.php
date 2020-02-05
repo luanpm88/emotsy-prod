@@ -10,6 +10,7 @@ use Acelle\Model\Plan;
 use Acelle\Cashier\Cashier;
 use Acelle\Cashier\Services\StripeGatewayService;
 use Carbon\Carbon;
+use Acelle\Cashier\SubscriptionLog;
 
 class AccountSubscriptionController extends Controller
 {
@@ -34,62 +35,35 @@ class AccountSubscriptionController extends Controller
         $subscription = $customer->subscription;
 
         // Customer dose not have subscription
-        if (!is_object($subscription)) {
-            return redirect()->action('AccountSubscriptionController@selectPlan');
+        if (!is_object($subscription) || $subscription->isEnded()) {
+            $plans = Plan::getAvailablePlans();
+            $planCount = Plan::getAllActive()->count();
+            $colWidth = ($planCount == 0) ? 0 :  round(85 / $planCount );
+            return view('account.subscription.select_plan', [
+                'plans' => $plans,
+                'colWidth' => $colWidth,
+                'subscription' => $subscription,
+            ]);
         }
 
         if (!$subscription->plan->isActive()) {
             return view('account.subscription.error', ['message' => __('messages.subscription.error.plan-not-active', [ 'name' => $subscription->plan->name])]);
         }
         
-        // Check if subscriotion is new
+        // Check if subscription is new
         if ($subscription->isNew()) {
-            return redirect()->action('AccountSubscriptionController@checkout');
+            return redirect()->away($gateway->getCheckoutUrl($subscription, action('AccountSubscriptionController@index')));
         }
         
-        // // retrieve subscription info
-        // $gateway->sync($subscription);
-        
-        // Check if subscriotion is new
+        // Check if subscription is new
         if ($subscription->isPending()) {
-            return redirect()->away($gateway->getPendingUrl($subscription));
-        }
-        
-        // if subscription is ended atfer sygned
-        if ($subscription->ended()) {
-            return redirect()->action('AccountSubscriptionController@selectPlan');
+            return redirect()->away($gateway->getPendingUrl($subscription, action('AccountSubscriptionController@index')));
         }
         
         return view('account.subscription.index', [
             'subscription' => $subscription,
             'gateway' => $gateway,
             'plan' => $subscription->plan,
-        ]);
-    }
-    
-    /**
-     * Slect plan.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     **/
-    public function selectPlan(Request $request)
-    {
-        $customer = $request->user()->customer;
-        $subscription = $customer->subscription;
-        $plans = Plan::getAvailablePlans();
-        $planCount = Plan::getAllActive()->count();
-        $colWidth = ($planCount == 0) ? 0 :  round(85 / $planCount );
-
-        if (isset($subscription) && !$subscription->ended()) {
-            $request->session()->flash('alert-error', 'Already subscribed a plan!');
-            return redirect()->action('AccountSubscriptionController@index');
-        }
-
-        return view('account.subscription.select_plan', [
-            'plans' => $plans,
-            'colWidth' => $colWidth,
         ]);
     }
     
@@ -117,11 +91,7 @@ class AccountSubscriptionController extends Controller
         }
         
         // Check if subscriotion is new
-        if ($subscription->isActive()) {
-            return redirect()->action('AccountSubscriptionController@index');
-        }
-
-        return redirect()->action('AccountSubscriptionController@checkout');
+        return redirect()->action('AccountSubscriptionController@index');
     }
     
     /**
@@ -145,29 +115,6 @@ class AccountSubscriptionController extends Controller
         
         return view('account.subscription.review', [
             'plan' => $plan,
-        ]);
-    }
-    
-    /**
-     * Subscription checkout page.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     **/
-    public function checkout(Request $request)
-    {
-        $customer = $request->user()->customer;
-        $subscription = $customer->subscription;
-        
-        // Authorization
-        if (!$request->user()->customer->can('checkout', $subscription)) {
-            return $this->notAuthorized();
-        }
-        
-        return redirect()->action("\Acelle\Cashier\Controllers\\" . ucfirst(config('cashier.gateway')) . "Controller@checkout", [
-            'subscription_id' => $subscription->uid,
-            'return_url' => action('AccountSubscriptionController@index'),
         ]);
     }
     
@@ -207,10 +154,11 @@ class AccountSubscriptionController extends Controller
     public function cancel(Request $request)
     {
         $customer = $request->user()->customer;
-        $subscription = $customer->subscription;
+        $subscription = $customer->subscription;     
+        $gateway = Cashier::getPaymentGateway();   
 
         if ($request->user()->customer->can('cancel', $subscription)) {
-            $subscription->cancel();
+            $gateway->cancel($subscription);
         }
 
         // Redirect to my subscription page
@@ -229,9 +177,10 @@ class AccountSubscriptionController extends Controller
     {
         $customer = $request->user()->customer;
         $subscription = $customer->subscription;
+        $gateway = Cashier::getPaymentGateway();
 
         if ($request->user()->customer->can('resume', $subscription)) {
-            $subscription->resume();
+            $gateway->resume($subscription);
         }
 
         // Redirect to my subscription page
@@ -251,60 +200,14 @@ class AccountSubscriptionController extends Controller
         $customer = $request->user()->customer;
         // Get current subscription
         $subscription = $customer->subscription;
-
+        $gateway = Cashier::getPaymentGateway();
+        
         if ($request->user()->customer->can('cancelNow', $subscription)) {
-            $subscription->cancelNow();
+            $gateway->cancelNow($subscription);
         }
 
         // Redirect to my subscription page
         $request->session()->flash('alert-success', trans('messages.subscription.cancelled_now'));
         return redirect()->action('AccountSubscriptionController@index');
-    }
-    
-    /**
-     * Renew plan.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     **/
-    public function renew(Request $request)
-    {        
-        $customer = $request->user()->customer;
-        $subscription = $customer->subscription;
-        $gateway = Cashier::getPaymentGateway();
-        
-        // Authorization
-        if (!$request->user()->customer->can('renew', $subscription)) {
-            return $this->notAuthorized();
-        }
-        
-        // check if status is not pending
-        if ($gateway->hasPending($subscription)) {
-            throw new \Exception("Can not renew pending subscription!");
-        }
-        
-        $gateway->renew($subscription);
-        
-        return redirect()->away($gateway->getPendingUrl($subscription, action('AccountSubscriptionController@index')));
-    }
-
-    /**
-     * Download raw invoices.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     **/
-    public function downloadRawInvoice(Request $request)
-    {
-        $subscription = $request->user()->customer->subscription;
-        $gatewayService = Cashier::getPaymentGateway();
-
-
-        return response(var_export($gatewayService->getRawInvoices($subscription)), 200, [
-            'Content-Type' => 'application/json',
-            'Content-Disposition' => 'attachment; filename="payment_logs.txt"',
-        ]);
     }
 }
