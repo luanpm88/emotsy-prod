@@ -33,14 +33,12 @@ class AddForiegnKeysToSubscriptions extends Migration
             $table->collation = 'utf8mb4_unicode_ci';
             $table->charset = 'utf8mb4';
             $table->uuid('uid')->collation('utf8mb4_unicode_ci')->charset('utf8mb4')->change();
-            $table->index('uid');
         });
 
         Schema::table('customers', function ($table) {            
             $table->collation = 'utf8mb4_unicode_ci';
             $table->charset = 'utf8mb4';
             $table->uuid('uid')->collation('utf8mb4_unicode_ci')->charset('utf8mb4')->change();
-            $table->index('uid');
         });
 
         \Acelle\Cashier\Subscription::whereRaw(sprintf('(%s NOT IN (SELECT uid FROM %s) OR %s NOT IN (SELECT uid FROM %s))', 'user_id', table('customers'), 'plan_id', table('plans')))->delete();
