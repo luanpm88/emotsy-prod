@@ -1577,4 +1577,43 @@ class Automation2Controller extends Controller
             'subscribers' => $subscribers,
         ]);
     }
+
+    /**
+     * Automation template classic builder.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function templateEditClassic(Request $request, $uid, $email_uid)
+    {
+        // init automation
+        $automation = Automation2::findByUid($uid);        
+        $email = Email::findByUid($email_uid);
+        
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+
+        // saving
+        if($request->isMethod('post')) {                        
+            $rules = array(
+                'content' => 'required',
+            );
+            
+            $this->validate($request, $rules);
+            
+            $email->content = $request->content;
+            $email->untransform();
+            $email->save();
+            
+            echo $email->content;
+        }
+
+        return view('automation2.email.template.editClassic', [
+            'automation' => $automation,
+            'email' => $email,
+        ]);
+    }
 }

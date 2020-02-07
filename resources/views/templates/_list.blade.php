@@ -64,9 +64,8 @@
                                 @endif
                                 @if (Auth::user()->customer->can('update', $template))
                                     <li>
-                                        <a href="{{ action('TemplateController@builderEdit', $template->uid) }}">
-                                            <i class="icon-hammer"></i> {{ trans("messages.buider.try_new") }}
-                                            <span class="badge badge-primary">{{ trans('messages.builder.beta') }}</span>
+                                        <a href="{{ action('TemplateController@edit', $template->uid) }}">
+                                            <i class="icon-hammer"></i> {{ trans("messages.buider.builder_classic") }}
                                         </a>
                                     </li>
                                 @endif

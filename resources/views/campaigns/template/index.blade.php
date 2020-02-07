@@ -49,8 +49,11 @@
                             <a href="{{ action('CampaignController@templateCreate', $campaign->uid) }}" class="btn btn-primary bg-grey-600 mr-5">
                                 {{ trans('messages.campaign.change_template') }}
                             </a>
-                            <a href="{{ action('CampaignController@templateEdit', $campaign->uid) }}" class="btn btn-default">
-                                {{ trans('messages.campaign.compose_email') }}
+                            <a href="{{ action('CampaignController@templateEdit', $campaign->uid) }}" class="btn btn-primary">
+                                {{ trans('messages.campaign.email_builder_pro') }}
+                            </a>
+                            <a href="{{ action('CampaignController@builderClassic', $campaign->uid) }}" class="btn btn-default">
+                                {{ trans('messages.campaign.email_builder_classic') }}
                             </a>
                         </div>
                     </div>
