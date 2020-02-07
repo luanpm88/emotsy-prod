@@ -3083,7 +3083,7 @@
   'subscription.logs_transactions' => 'Logs/Transactions',
   'subscription.transactions' => 'Transactions',
   'subscription.log.created_at' => 'Created at',
-  'subscription.log.message' => 'Message',  
+  'subscription.log.message' => 'Message',
   'subscription.ended_intro' => 'The subscription to <strong>:plan</strong> plan was ended at <strong>:ended_at</strong>.
     Please renew or choose an other plan.',
   'system.recurring_charge_before_days' => 'Auto recurring charge before',
