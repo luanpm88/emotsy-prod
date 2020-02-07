@@ -151,7 +151,7 @@ class Automation2Controller extends Controller
     {
         // find automation
         $automation = Automation2::findByUid($uid);
-        $automation->saveData(json_encode($request->data));
+        $automation->saveData($request->data);
     }
     
     /**

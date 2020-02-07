@@ -64,18 +64,18 @@ class AutomationElement {
             var o = list[ e.id ];
 
             if (o.isCondition()) {
-                if (e.childYes != null) {
+                if (e.childYes !== null && e.childYes !== '') {
                     o.appendYes(list[e.childYes]);
                 }
 
-                if (e.childNo != null) {
+                if (e.childNo !== null && e.childNo !== '') {
                     o.appendNo(list[e.childNo]);
                 }
 
                 //o.onaddyes(events.onaddyes);
                 //o.onaddno(events.onaddno);
             } else {
-                if (e.child != null) {
+                if (e.child !== null && e.child !== '') {
                     o.append(list[e.child]);
                 }
 
@@ -782,14 +782,20 @@ class ElementTrigger extends ElementAction {
             if (element.isCondition()) {
                 if (element.childYes != null) {
                     item.childYes = element.childYes.id;
+                } else {
+                    item.childYes = null;
                 }
 
                 if (element.childNo != null) {
                     item.childNo = element.childNo.id;
+                } else {
+                    item.childNo = null;
                 }
             } else {
                 if (element.child != null) {
                     item.child = element.child.id;
+                } else {
+                    item.child = null;
                 }
             }
 
