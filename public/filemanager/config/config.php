@@ -3,22 +3,22 @@ if (session_id() == '') session_start();
 
 class Uidd
 {
-  static public function get() {
-		require '../../bootstrap/autoload.php';
-
+    static public function get() {
+	require '../../bootstrap/autoload.php';
     $app = require_once '../../bootstrap/app.php';
 
     $kernel = $app->make('Illuminate\Contracts\Http\Kernel');
-
     $response = $kernel->handle(
       $request = Illuminate\Http\Request::capture()
     );
 
+    /*
     $id = $app['encrypter']->decrypt($_COOKIE[$app['config']['session.cookie']]);
     $app['session']->driver()->setId($id);
     $app['session']->driver()->start();
+	*/
 
-    $user_uid = $app['auth']->user()->uid;
+    $user_uid = Auth::user()->uid;
 
     // Make folder if not exist
 		if (!file_exists('../source')) {
