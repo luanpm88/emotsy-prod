@@ -2267,4 +2267,41 @@ class CampaignController extends Controller
 
         $campaign->changeTemplate($changeTemplate);
     }
+
+    /**
+     * Edit email content.
+     *
+     */
+    public function builderClassic(Request $request, $uid)
+    {
+        // Generate info
+        $campaign = \Acelle\Model\Campaign::findByUid($uid);
+
+        // authorize
+        if (!$request->user()->admin->can('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        // validate and save posted data
+        if ($request->isMethod('post')) {
+            $rules = array(
+                'html' => 'required',
+            );
+
+            $this->validate($request, $rules);
+
+            // Save template
+            $campaign->html = $request->html;
+            $campaign->untransform();
+            $campaign->save();
+
+            // Redirect to my lists page
+            $request->session()->flash('alert-success', trans('messages.template.updated'));
+            return redirect()->action('CampaignController@template', $campaign->uid);
+        }
+
+        return view('campaigns.builderClassic', [
+            'campaign' => $campaign,
+        ]);
+    }
 }

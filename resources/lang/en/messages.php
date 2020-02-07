@@ -3071,4 +3071,28 @@
   'campaign.email_content_plain' => 'Email Content',
   'campaign.email_content_plain.intro' => 'Enter your email plain text via text box below.',
   'campaign.plain.save' => 'Save & Next',
+  'subscription.subscription_ended_at' => 'Ended at',
+  'subscription.approve_pending' => 'Approve',
+  'invoice.title' => 'Content',
+  'customer.assign_plan.confirm' => 'You\'re about to assign <strong>:plan</strong> plan to <strong>:customer</strong>.
+    This will cancel customer\'s current subscription if it exists. This can be undone.
+  ',
+  'customer.assign_plan' => 'Assign plan',
+  'customer.plan.assigned' => 'Assigned <strong>:plan</strong> plan to <strong>:customer</strong> successfully.',
+  'messages.success' => 'Success',
+  'subscription.logs_transactions' => 'Logs/Transactions',
+  'subscription.transactions' => 'Transactions',
+  'subscription.log.created_at' => 'Created at',
+  'subscription.log.message' => 'Message',  
+  'subscription.ended_intro' => 'The subscription to <strong>:plan</strong> plan was ended at <strong>:ended_at</strong>.
+    Please renew or choose an other plan.',
+  'system.recurring_charge_before_days' => 'Auto recurring charge before',
+  'setting.recurring_charge_before_days.help' => 'The number of days before the subscription end of period date.
+    System will automatically charge the subscription',
+  'buider.builder_classic' => 'Classic Builder',
+  'campaign.email_builder_pro' => 'Email builder PRO',
+  'campaign.email_builder_classic' => 'Email builder Classic',
+  'campaign.compose_email_classic' => 'Builder Classic',
+  'automation.classic_builder' => 'Classic Builder Editor',
+  'automation.template.saving' => 'Saving template...',
 ) ?>

@@ -25,10 +25,17 @@
                             >
                                 {{ trans('messages.campaign.compose_email') }}
                             </a>
+                            <a href="{{ action('Automation2Controller@templateEditClassic', [
+                                    'uid' => $automation->uid,
+                                    'email_uid' => $email->uid,
+                                ]) }}" class="btn btn-outline-secondary mr-1 template-compose-classic"
+                            >
+                                {{ trans('messages.campaign.compose_email_classic') }}
+                            </a>
                             <a href="{{ action('Automation2Controller@templateRemove', [
                                     'uid' => $automation->uid,
                                     'email_uid' => $email->uid,
-                                ]) }}" class="btn btn-outline-secondary template-change"
+                                ]) }}" class="btn btn-outline-primary template-change"
                             >
                                 {{ trans('messages.campaign.change_template') }}
                             </a>
@@ -82,6 +89,14 @@
             var url = $(this).attr('href');
 
             openBuilder(url);
+        });
+        
+        $('.template-compose-classic').click(function(e) {
+            e.preventDefault();
+            
+            var url = $(this).attr('href');
+
+            openBuilderClassic(url);
         });
 
         // Check email content already set if this page accur
