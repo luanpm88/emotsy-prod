@@ -3095,4 +3095,5 @@
   'campaign.compose_email_classic' => 'Builder Classic',
   'automation.classic_builder' => 'Classic Builder Editor',
   'automation.template.saving' => 'Saving template...',
+  'email_domain' => 'Email/Domain',
 ) ?>

@@ -150,7 +150,7 @@
                     <table class="table table-box table-box-head field-list">
                         <thead>
                             <tr>
-                                <td>{{ trans('messages.domain') }}</td>
+                                <td>{{ trans('messages.email_domain') }}</td>
                                 <td>{{ trans('messages.status') }}</td>
                                 <td>{{ trans('messages.action') }}</td>
                             </tr>

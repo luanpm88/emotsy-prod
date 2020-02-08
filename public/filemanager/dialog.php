@@ -281,9 +281,9 @@ $get_params = http_build_query($get_params);
 	<?php
 	if ($aviary_active){
 	if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) { ?>
-		<script src="https://dme0ih8comzn4.cloudfront.net/imaging/v2/editor.js"></script>
+		<!-- <script src="https://dme0ih8comzn4.cloudfront.net/imaging/v2/editor.js"></script> -->
 	<?php }else{ ?>
-		<script src="http://feather.aviary.com/imaging/v2/editor.js"></script>
+		<!-- <script src="http://feather.aviary.com/imaging/v2/editor.js"></script> -->
 	<?php }} ?>
 
 	<!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
@@ -325,41 +325,7 @@ $get_params = http_build_query($get_params);
 			}
 		};
 		if (image_editor) {
-		var featherEditor = new Aviary.Feather({
-		<?php
-			foreach ($aviary_defaults_config as $aopt_key => $aopt_val) {
-				echo $aopt_key.": ".json_encode($aopt_val).",";
-			} ?>
-			onReady: function() {
-				hide_animation();
-			},
-			onSave: function(imageID, newURL) {
-				show_animation();
-				var img = document.getElementById(imageID);
-				img.src = newURL;
-				$.ajax({
-					type: "POST",
-					url: "ajax_calls.php?action=save_img",
-					data: { url: newURL, path:$('#sub_folder').val()+$('#fldr_value').val(), name:$('#aviary_img').attr('data-name') }
-				}).done(function( msg ) {
-					featherEditor.close();
-					d = new Date();
-					$("figure[data-name='"+$('#aviary_img').attr('data-name')+"']").find('img').each(function(){
-					$(this).attr('src',$(this).attr('src')+"?"+d.getTime());
-					});
-					$("figure[data-name='"+$('#aviary_img').attr('data-name')+"']").find('figcaption a.preview').each(function(){
-					$(this).attr('data-url',$(this).data('url')+"?"+d.getTime());
-					});
-					hide_animation();
-				});
-				return false;
-			},
-			onError: function(errorObj) {
-					bootbox.alert(errorObj.message);
-					hide_animation();
-			}
-
-	});
+		
 		}
 	</script>
 	<script src="js/include.js"></script>

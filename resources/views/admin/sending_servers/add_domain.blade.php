@@ -21,6 +21,7 @@
                                 @include('helpers.form_control', [
                                     'type' => 'text',
                                     'name' => 'domain',
+                                    'label' => trans('messages.email_domain'),
                                     'value' => isset($domain) ? $domain : '',
                                     'help_class' => 'domain',
                                     'rules' => ['domain' => 'required']
