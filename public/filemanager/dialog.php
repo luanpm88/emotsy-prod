@@ -847,6 +847,12 @@ $files=array_merge(array($prev_folder),array($current_folder),$sorted);
 				}
 				if($mini_src==""){
 					$is_icon_thumb_mini=false;
+				} else {
+					if(file_exists($thumbs_base_path.$rfm_subfolder.$subdir.$file)){
+						$mini_src = $thumb_dir.$rfm_subfolder.$subdir.$file;
+					} elseif (file_exists($current_path.$rfm_subfolder.$subdir.$file)) {
+						$mini_src = $upload_dir.$rfm_subfolder.$subdir.$file;
+					}
 				}
 
 				$class_ext=0;
