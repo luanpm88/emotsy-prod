@@ -82,11 +82,15 @@ class Uidd
 		"user_uid" => $user_uid,
 		"max_size_upload_total" => $max_size_upload_total,
 		"max_file_size_upload" => $max_file_size_upload,
+		"storage_path" => storage_path(),
 	];
   }
 }
 
+
+
 $db_config = Uidd::get();
+$storage_path = $db_config['storage_path'];
 $_SESSION["user_uid"] = $db_config["user_uid"];
 $_SESSION["max_size_upload_total"] = $db_config["max_size_upload_total"];
 $_SESSION["max_file_size_upload"] = $db_config["max_file_size_upload"];
@@ -179,7 +183,7 @@ $config = array(
 	| with final /
 	|
 	*/
-	'current_path' => '../../storage/app/customers/' . $user_uid . '/home/',
+	'current_path' => $storage_path . '/app/customers/' . $user_uid . '/home/',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -190,7 +194,7 @@ $config = array(
 	| DO NOT put inside upload folder
 	|
 	*/
-	'thumbs_base_path' => '../../storage/app/customers/' . $user_uid . '/thumbs/',
+	'thumbs_base_path' => $storage_path . '/app/customers/' . $user_uid . '/thumbs/',
 
 	/*
 	|--------------------------------------------------------------------------
