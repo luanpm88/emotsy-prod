@@ -82,7 +82,7 @@ class Uidd
 		"user_uid" => $user_uid,
 		"max_size_upload_total" => $max_size_upload_total,
 		"max_file_size_upload" => $max_file_size_upload,
-		"storage_path" => storage_path(),
+		"storage_path" => storage_path() . '/app/customers/' . $user_uid,
 	];
   }
 }
@@ -183,7 +183,7 @@ $config = array(
 	| with final /
 	|
 	*/
-	'current_path' => $storage_path . '/app/customers/' . $user_uid . '/home/',
+	'current_path' => $storage_path . '/home/',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -194,7 +194,7 @@ $config = array(
 	| DO NOT put inside upload folder
 	|
 	*/
-	'thumbs_base_path' => $storage_path . '/app/customers/' . $user_uid . '/thumbs/',
+	'thumbs_base_path' => $storage_path . '/thumbs/',
 
 	/*
 	|--------------------------------------------------------------------------
