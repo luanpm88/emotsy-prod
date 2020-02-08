@@ -841,8 +841,6 @@ $files=array_merge(array($prev_folder),array($current_folder),$sorted);
 				} else {
 					if(file_exists($thumbs_base_path.$rfm_subfolder.$subdir.$file)){
 						$src_thumb = $thumb_dir.$rfm_subfolder.$subdir.$file;
-					}else{
-						$src_thumb = $upload_dir.$rfm_subfolder.$subdir.$file;
 					}
 				}
 				if($mini_src==""){
@@ -850,8 +848,6 @@ $files=array_merge(array($prev_folder),array($current_folder),$sorted);
 				} else {
 					if(file_exists($thumbs_base_path.$rfm_subfolder.$subdir.$file)){
 						$mini_src = $thumb_dir.$rfm_subfolder.$subdir.$file;
-					} elseif (file_exists($current_path.$rfm_subfolder.$subdir.$file)) {
-						$mini_src = $upload_dir.$rfm_subfolder.$subdir.$file;
 					}
 				}
 
