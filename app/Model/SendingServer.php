@@ -123,10 +123,14 @@ class SendingServer extends Model
         $class_name = '\Acelle\Model\\'.self::$serverMapping[$server->type];
         
         if ($server->id) {
-            return $class_name::find($server->id);
+            $instance = $class_name::find($server->id);
         } else {
-            return new $class_name(['type' => $server->type]);
-        }        
+            $instance = new $class_name(['type' => $server->type]);
+        }
+
+        $instance->fill($server->getAttributes());
+
+        return $instance;
     }
 
     /**
