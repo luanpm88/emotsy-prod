@@ -60,7 +60,23 @@ class Uidd
 				$fp = fopen($thumbs_path . "/index.html","wb");
 				fwrite($fp,$content);
 				fclose($fp);
-    }
+	}
+	
+	$paths = [
+		'../../storage/app/customer/' . $user_uid,
+		'../../storage/app/customer/' . $user_uid . '/home',
+		'../../storage/app/customer/' . $user_uid . '/home/thumbs',
+	];
+
+	foreach ($paths as $path) {
+		if (!file_exists($path)) {
+			mkdir($path, 0777, true);
+			$content = "";
+			$fp = fopen($path . "/index.html","wb");
+			fwrite($fp,$content);
+			fclose($fp);
+		}
+	}
 
     return [
 		"user_uid" => $user_uid,
@@ -152,7 +168,8 @@ $config = array(
 	| with start and final /
 	|
 	*/
-	'upload_dir' => $base_r_url . 'source/' . $user_uid . "/",
+	'upload_dir' => $base_r_url . 'files/' . $user_uid . "/",
+	'thumb_dir' => $base_r_url . 'files/thumbs/' . $user_uid . "/",
 
 	/*
 	|--------------------------------------------------------------------------
@@ -162,7 +179,7 @@ $config = array(
 	| with final /
 	|
 	*/
-	'current_path' => '../source/' . $user_uid . "/",
+	'current_path' => '../../storage/app/customers/' . $user_uid . '/home/',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -173,7 +190,7 @@ $config = array(
 	| DO NOT put inside upload folder
 	|
 	*/
-	'thumbs_base_path' => '../thumbs/' . $user_uid . "/",
+	'thumbs_base_path' => '../../storage/app/customers/' . $user_uid . '/thumbs/',
 
 	/*
 	|--------------------------------------------------------------------------

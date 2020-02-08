@@ -831,16 +831,22 @@ $files=array_merge(array($prev_folder),array($current_folder),$sorted);
 				$is_icon_thumb_mini=false;
 				$no_thumb=false;
 				if($src_thumb==""){
-				$no_thumb=true;
-				if(file_exists('img/'.$icon_theme.'/'.$extension_lower.".jpg")){
-					$src_thumb ='img/'.$icon_theme.'/'.$extension_lower.".jpg";
-				}else{
-					$src_thumb = "img/".$icon_theme."/default.jpg";
-				}
-				$is_icon_thumb=true;
+					$no_thumb=true;
+					if(file_exists('img/'.$icon_theme.'/'.$extension_lower.".jpg")){
+						$src_thumb ='img/'.$icon_theme.'/'.$extension_lower.".jpg";
+					}else{
+						$src_thumb = "img/".$icon_theme."/default.jpg";
+					}
+					$is_icon_thumb=true;
+				} else {
+					if(file_exists($thumbs_base_path.$rfm_subfolder.$subdir.$file)){
+						$src_thumb = $thumb_dir.$rfm_subfolder.$subdir.$file;
+					}else{
+						$src_thumb = $upload_dir.$rfm_subfolder.$subdir.$file;
+					}
 				}
 				if($mini_src==""){
-				$is_icon_thumb_mini=false;
+					$is_icon_thumb_mini=false;
 				}
 
 				$class_ext=0;
