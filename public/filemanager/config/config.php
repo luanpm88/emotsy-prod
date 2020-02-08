@@ -63,9 +63,9 @@ class Uidd
 	}
 	
 	$paths = [
-		'../../storage/app/customer/' . $user_uid,
-		'../../storage/app/customer/' . $user_uid . '/home',
-		'../../storage/app/customer/' . $user_uid . '/home/thumbs',
+		'../../storage/app/customers/' . $user_uid,
+		'../../storage/app/customers/' . $user_uid . '/home',
+		'../../storage/app/customers/' . $user_uid . '/home/thumbs',
 	];
 
 	foreach ($paths as $path) {
