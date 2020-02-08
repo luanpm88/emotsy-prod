@@ -18,7 +18,16 @@ class Uidd
     $app['session']->driver()->start();
 	*/
 
-    $user_uid = Auth::user()->uid;
+	// $user_uid = Auth::user()->uid;
+	if (is_object($app['auth']->user())) {
+		$user_uid = Auth::user()->uid;
+		$max_size_upload_total = is_object($app['auth']->user()->customer) ? $app['auth']->user()->customer->getOption("max_size_upload_total") : 999999999;
+		$max_file_size_upload = is_object($app['auth']->user()->customer) ? $app['auth']->user()->customer->getOption("max_file_size_upload") : 999999999;
+	} else {
+		$user_uid = $_SESSION["user_uid"];
+		$max_size_upload_total = $_SESSION["max_size_upload_total"];
+		$max_file_size_upload = $_SESSION["max_file_size_upload"];
+	}
 
     // Make folder if not exist
 		if (!file_exists('../source')) {
@@ -54,15 +63,17 @@ class Uidd
     }
 
     return [
-				"user_uid" => $user_uid,
-				"max_size_upload_total" => is_object($app['auth']->user()->customer) ? $app['auth']->user()->customer->getOption("max_size_upload_total") : 999999999,
-				"max_file_size_upload" => is_object($app['auth']->user()->customer) ? $app['auth']->user()->customer->getOption("max_file_size_upload") : 999999999,
-		];
+		"user_uid" => $user_uid,
+		"max_size_upload_total" => $max_size_upload_total,
+		"max_file_size_upload" => $max_file_size_upload,
+	];
   }
 }
 
 $db_config = Uidd::get();
 $_SESSION["user_uid"] = $db_config["user_uid"];
+$_SESSION["max_size_upload_total"] = $db_config["max_size_upload_total"];
+$_SESSION["max_file_size_upload"] = $db_config["max_file_size_upload"];
 $_SESSION['RF']['language'] = "en_EN";
 $_SESSION['RF']['language_file'] = 'lang/en_EN.php';
 $lang = "vi";
