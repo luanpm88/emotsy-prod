@@ -63,6 +63,7 @@ class Uidd
 	}
 	
 	$paths = [
+		storage_path() . '/app/customers',
 		storage_path() . '/app/customers/' . $user_uid,
 		storage_path() . '/app/customers/' . $user_uid . '/home',
 		storage_path() . '/app/customers/' . $user_uid . '/thumbs',
