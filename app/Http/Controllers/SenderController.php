@@ -33,11 +33,12 @@ class SenderController extends Controller
         }
 
         $subscription = $request->user()->customer->subscription;
+        $server = $subscription->plan->primarySendingServer();
+
         if ($subscription->plan->useOwnSendingServer()) {
             $email = true;
             $domain = true;
-        } else {
-            $server = $subscription->plan->primarySendingServer();
+        } else {    
             $email = $server->allowVerifyingOwnEmails() || $server->allowVerifyingOwnEmailsRemotely();
             $domain = $server->allowVerifyingOwnDomains();    
         }
@@ -45,7 +46,9 @@ class SenderController extends Controller
         if ($email || $domain ) {
             //
         } else {
-            return $this->notAuthorized();
+            return view('senders.available', [
+                'identities' => $server->getVerifiedIdentities(),
+            ]);
         }
 
         if ($domain && !$email) {
@@ -53,7 +56,7 @@ class SenderController extends Controller
         } else {
             return view('senders.index', [
                 'senders' => $this->search($request),
-            ]);    
+            ]);
         }
         
     }
