@@ -63,7 +63,7 @@ Route::get('/assets/templates/{uid}/{name?}', [ function ($uid, $name) {
 // assets path for customer thumbs
 Route::get('/files/thumbs/{uid}/{name?}', [ function ($uid, $name) {
     $customer = \Acelle\Model\Customer::findByUid($uid);
-    $path = storage_path('app/customers/' . $uid . '/thumbs/' . $name);
+    $path = storage_path('app/customers/' . $uid . '/home/thumbs/' . $name);
     $mime_type = \Acelle\Library\File::getFileType($path);
     if (\File::exists($path)) {
         return response()->file($path, array('Content-Type' => $mime_type));
@@ -72,7 +72,7 @@ Route::get('/files/thumbs/{uid}/{name?}', [ function ($uid, $name) {
 // assets path for customer files
 Route::get('/files/{uid}/{name?}', [ function ($uid, $name) {
     $customer = \Acelle\Model\Customer::findByUid($uid);
-    $path = storage_path('app/customers/' . $uid . '/home/' . $name);
+    $path = storage_path('app/customers/' . $uid . '/home/files/' . $name);
     $mime_type = \Acelle\Library\File::getFileType($path);
     if (\File::exists($path)) {
         return response()->file($path, array('Content-Type' => $mime_type));

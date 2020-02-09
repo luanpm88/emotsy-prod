@@ -29,53 +29,17 @@ class Uidd
 		$max_file_size_upload = $_SESSION["max_file_size_upload"];
 	}
 
-    // Make folder if not exist
-		if (!file_exists('../source')) {
-        mkdir('../source', 0777, true);
-				$content = "";
-				$fp = fopen('../source' . "/index.html","wb");
-				fwrite($fp,$content);
-				fclose($fp);
-    }
-    if (!file_exists('../thumbs')) {
-        mkdir('../thumbs', 0777, true);
-				$content = "";
-				$fp = fopen('../thumbs' . "/index.html","wb");
-				fwrite($fp,$content);
-				fclose($fp);
-    }
-
-    $source_path = '../source/' . $user_uid;
-    $thumbs_path = '../thumbs/' . $user_uid;
-    if (!file_exists($source_path)) {
-        mkdir($source_path, 0777, true);
-				$content = "";
-				$fp = fopen($source_path . "/index.html","wb");
-				fwrite($fp,$content);
-				fclose($fp);
-    }
-    if (!file_exists($thumbs_path)) {
-        mkdir($thumbs_path, 0777, true);
-				$content = "";
-				$fp = fopen($thumbs_path . "/index.html","wb");
-				fwrite($fp,$content);
-				fclose($fp);
-	}
-	
+    // Make folder if not exist	
 	$paths = [
 		storage_path() . '/app/customers',
 		storage_path() . '/app/customers/' . $user_uid,
 		storage_path() . '/app/customers/' . $user_uid . '/home',
-		storage_path() . '/app/customers/' . $user_uid . '/thumbs',
+		storage_path() . '/app/customers/' . $user_uid . '/home/files',
+		storage_path() . '/app/customers/' . $user_uid . '/home/thumbs',
 	];
-
 	foreach ($paths as $path) {
 		if (!file_exists($path)) {
 			mkdir($path, 0777, true);
-			$content = "";
-			$fp = fopen($path . "/index.html","wb");
-			fwrite($fp,$content);
-			fclose($fp);
 		}
 	}
 
@@ -83,7 +47,7 @@ class Uidd
 		"user_uid" => $user_uid,
 		"max_size_upload_total" => $max_size_upload_total,
 		"max_file_size_upload" => $max_file_size_upload,
-		"storage_path" => storage_path() . '/app/customers/' . $user_uid,
+		"storage_path" => storage_path('/app/customers/' . $user_uid . '/home'),
 	];
   }
 }
@@ -184,7 +148,7 @@ $config = array(
 	| with final /
 	|
 	*/
-	'current_path' => $storage_path . '/home/',
+	'current_path' => $storage_path . '/files/',
 
 	/*
 	|--------------------------------------------------------------------------

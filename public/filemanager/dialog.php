@@ -865,7 +865,7 @@ $files=array_merge(array($prev_folder),array($current_folder),$sorted);
 				}else{
 					$class_ext = 1;
 				}
-				if((!($_GET['type']==1 && !$is_img) && !(($_GET['type']==3 && !$is_video) && ($_GET['type']==3 && !$is_audio))) && $class_ext>0){
+				if(true || (!($_GET['type']==1 && !$is_img) && !(($_GET['type']==3 && !$is_video) && ($_GET['type']==3 && !$is_audio))) && $class_ext>0){
 ?>
 			<li class="ff-item-type-<?php echo $class_ext;?> file"  data-name="<?php echo $file;?>" <?php if(($filter!='' && stripos($file,$filter)===false)) echo ' style="display:none;"';?>><?php
 			$file_prevent_rename = false;
