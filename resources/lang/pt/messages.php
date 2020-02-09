@@ -3093,4 +3093,6 @@
   'campaign.compose_email_classic' => 'Builder Classic',
   'automation.classic_builder' => 'Classic Builder Editor',
   'automation.template.saving' => 'Saving template...',
+  'sender.available.intro' => 'Below are sending identities that you can use for your marketing email. Use an email address or any email address that matches the domains from the list below as your FROM email address in your campaign setup.',
+  'email_domain' => 'Email/Domain',
 ) ?>
