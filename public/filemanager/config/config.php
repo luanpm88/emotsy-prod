@@ -31,11 +31,11 @@ class Uidd
 
     // Make folder if not exist	
 	$paths = [
-		storage_path() . '/app/customers',
-		storage_path() . '/app/customers/' . $user_uid,
-		storage_path() . '/app/customers/' . $user_uid . '/home',
-		storage_path() . '/app/customers/' . $user_uid . '/home/files',
-		storage_path() . '/app/customers/' . $user_uid . '/home/thumbs',
+		storage_path('/app/customers'),
+		storage_path('/app/customers/' . $user_uid),
+		storage_path('/app/customers/' . $user_uid . '/home'),
+		storage_path('/app/customers/' . $user_uid . '/home/files'),
+		storage_path('/app/customers/' . $user_uid . '/home/thumbs'),
 	];
 	foreach ($paths as $path) {
 		if (!file_exists($path)) {
