@@ -200,12 +200,21 @@ class Segment extends Model
 
             // If conditions with fields
             if (isset($condition->field_id)) {
+                $type = $condition->field->type;
                 switch ($condition->operator) {
                     case 'equal':
-                        $cond = 'LOWER(sf'.$number.".value) = ".db_quote($keyword);
+                        if ($type == 'number') {
+                            $cond = sprintf('CAST(sf%s.value AS SIGNED) = CAST(%s AS SIGNED)', $number, db_quote($keyword));
+                        } else {
+                            $cond = 'LOWER(sf'.$number.".value) = ".db_quote($keyword);
+                        }
                         break;
                     case 'not_equal':
-                        $cond = 'LOWER(sf'.$number.".value) != ".db_quote($keyword);
+                        if ($type == 'number') {
+                            $cond = sprintf('CAST(sf%s.value AS SIGNED) != CAST(%s AS SIGNED)', $number, db_quote($keyword));
+                        } else {
+                            $cond = 'LOWER(sf'.$number.".value) != ".db_quote($keyword);
+                        }
                         break;
                     case 'contains':
                         $cond = 'LOWER(sf'.$number.".value) LIKE ".db_quote('%'.$keyword.'%');
@@ -220,10 +229,19 @@ class Segment extends Model
                         $cond = 'LOWER(sf'.$number.".value) LIKE ".db_quote('%'.$keyword.'%');
                         break;
                     case 'greater':
-                        $cond = 'sf'.$number.".value > ".db_quote($keyword);
+                        if ($type == 'number') {
+                            $cond = sprintf('CAST(sf%s.value AS SIGNED) > CAST(%s AS SIGNED)', $number, db_quote($keyword));
+                        } else {
+                            $cond = 'sf'.$number.".value > ".db_quote($keyword);
+                        }
                         break;
                     case 'less':
-                        $cond = 'sf'.$number.".value < ".db_quote($keyword);
+                        if ($type == 'number') {
+                            $cond = sprintf('CAST(sf%s.value AS SIGNED) < CAST(%s AS SIGNED)', $number, db_quote($keyword));
+                        } else {
+                            $cond = 'sf'.$number.".value < ".db_quote($keyword);
+                        }
+                        
                         break;
                     case 'not_starts':
                         $cond = 'sf'.$number.".value NOT LIKE ".db_quote($keyword.'%');

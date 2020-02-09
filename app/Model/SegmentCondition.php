@@ -35,6 +35,11 @@ class SegmentCondition extends Model
         'field_id', 'operator', 'value',
     ];
 
+    public function field()
+    {
+        return $this->belongsTo('Acelle\Model\Field');
+    }
+
     /**
      * Bootstrap any application services.
      */
