@@ -47,7 +47,7 @@ class SenderController extends Controller
             //
         } else {
             return view('senders.available', [
-                'identities' => $server->getVerifiedIdentities(),
+                'identities' => $subscription->plan->getVerifiedIdentities(),
             ]);
         }
 
