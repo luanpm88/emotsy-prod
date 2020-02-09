@@ -2107,6 +2107,7 @@
   'email_greeting.whoops' => 'Whoops!',
   'email_greeting.hello' => 'Hello!',
   'verified_senders' => 'Sending Identity',
+  'sender.available.intro' => 'Below are sending identities that you can use for your marketing email. Use an email address or any email address that matches the domains from the list below as your FROM email address in your campaign setup.',
   'sender.create' => 'New sender',
   'senders.empty.message' => 'You have no sender yet',
   'sender.delete' => 'Delete',
