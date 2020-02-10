@@ -68,7 +68,7 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             // $gateway = \App::make('Acelle\Cashier\PaymentGateway');
             $gateway = Cashier::getPaymentGateway();
-            Subscription::check($gateway);
+            Subscription::checkAll($gateway);
         })->name('subscription:run')->everyFiveMinutes();
     }
 
