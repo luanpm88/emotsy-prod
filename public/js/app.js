@@ -11,7 +11,7 @@
 
 function initJs(container) {
     // Select2
-    container.find('select').select2({
+    container.find('.select').select2({
         minimumResultsForSearch: 101,
         templateResult: formatSelect2TextOption,
         templateSelection: formatSelect2TextSelected,
@@ -50,54 +50,15 @@ function initJs(container) {
     });
     
     // date selector
-    $('.date-selector').datepicker({
+    container.find('.date-selector').datepicker({
         format: 'yyyy-mm-dd',
         language: LANG_CODE
     });
     
     // Select2 ajax
     container.find(".select2-ajax").each(function() {
-        var url = $(this).attr("data-url");
-        var placeholder = $(this).attr("placeholder");
-        if(typeof(placeholder) == 'undefined') {
-            placeholder = "";
-        }
-        $(this).select2({
-            placeholder: placeholder,
-            allowClear: true,
-            ajax: {
-                url: url,
-                dataType: 'json',
-                delay: 250,
-
-                data: function (params) {
-                  return {
-                    q: params.term, // search term
-                    page: params.page
-                  };
-                },
-                processResults: function (data, params) {
-                    // parse the results into the format expected by Select2
-                    // since we are using custom formatting functions we do not need to
-                    // alter the remote JSON data, except to indicate that infinite
-                    // scrolling can be used
-                    params.page = params.page || 1;
-
-                    return {
-                        results: data.items,
-                        pagination: {
-                            more: (params.page * 30) < data.total_count
-                        }
-                    };
-                },
-                cache: true
-            },
-            escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
-            minimumInputLength: 0,
-            templateResult: formatSelect2TextOption,
-            templateSelection: formatSelect2TextSelected,
-        });
-    });
+        select2Ajax($(this));
+    });   
     
     if (container.find(".listing-form").length) {
         container.find(".listing-form").each(function() {

@@ -129,6 +129,9 @@ class Popup {
             
             // after load
             _this.loaded();
+
+            // // apply js
+            // _this.applyJs();
         });
     }
     
@@ -139,5 +142,8 @@ class Popup {
         
         // after load
         _this.loaded();
+
+        // // apply js
+        // _this.applyJs();
     }
 }

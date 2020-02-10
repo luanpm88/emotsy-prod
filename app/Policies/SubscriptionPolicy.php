@@ -141,7 +141,7 @@ class SubscriptionPolicy
     {
         switch ($role) {
             case 'admin':
-                $can = false;
+                $can = true;
                 break;
             case 'customer':
                 $can = !isset($subscription);
@@ -225,20 +225,20 @@ class SubscriptionPolicy
         return $can;
     }
 
-    public function approvePendingInvoice(User $user, Subscription $subscription, $role)
+    public function rejectPending(User $user, Subscription $subscription, $role)
     {
-        //$gateway = Cashier::getPaymentGateway();
-        //$can = $subscription->checkPendingPaymentForFuture($gateway);
-        //
-        //switch ($role) {
-        //    case 'admin':
-        //        break;
-        //    case 'customer':
-        //        $can = false;
-        //        break;
-        //}
-        //
-        //return $can;
+        $gateway = Cashier::getPaymentGateway();
+        $can = $gateway->hasPending($subscription);
+
+        switch ($role) {
+            case 'admin':
+                break;
+            case 'customer':
+                $can = false;
+                break;
+        }
+
+        return $can;
     }
 
     public function delete(User $user, Subscription $subscription, $role)
