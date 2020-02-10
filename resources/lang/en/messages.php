@@ -3104,4 +3104,12 @@
   'subscription.create_new_subsctiption' => 'Create new subscription',
   'subscription.create_new_subsctiption.intro' => 'Let\'s select customer and plan below to asign customer to plan',
   'subscription.create' => 'Create',
+  'stripe.require_valid_card' => 'Require a valid card',
+  'stripe.require_valid_card.intro' => 'Any customer subscribing to a plan will need to add his or her credit or
+    debit card which will be automatically charged, even for FREE plan',
+  'stripe.always_ask_for_valid_card' => 'Always ask for valid card',
+  'braintree.require_valid_card' => 'Require a valid card',
+  'braintree.require_valid_card.intro' => 'Any customer subscribing to a plan will need to add his or her credit or
+    debit card which will be automatically charged, even for FREE plan',
+  'braintree.always_ask_for_valid_card' => 'Always ask for valid card',
 ) ?>
