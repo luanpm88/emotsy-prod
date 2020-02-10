@@ -30,9 +30,15 @@
                                     <span class="badge badge-success badge-lg">{{ trans('messages.sending_identity.status.active') }}</span>
                                 </td>
                                 <td>
-                                    <input type="checkbox" name="options[domains][]" value="{{ $domain }}" class="switchery"
-                                        {{ $server->isDomainEnabled($domain) ? " checked" : "" }}
-                                    />
+                                    @if (checkEmail($domain))
+                                        <input type="checkbox" name="options[emails][]" value="{{ $domain }}" class="switchery"
+                                            {{ $server->isEmailEnabled($domain) ? " checked" : "" }}
+                                        />
+                                    @else
+                                        <input type="checkbox" name="options[domains][]" value="{{ $domain }}" class="switchery"
+                                            {{ $server->isDomainEnabled($domain) ? " checked" : "" }}
+                                        />
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach

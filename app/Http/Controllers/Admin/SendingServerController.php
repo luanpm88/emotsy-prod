@@ -163,8 +163,10 @@ class SendingServerController extends Controller
             }
 
             if ($server->save()) {
-                $request->session()->flash('alert-success', trans('messages.sending_server.created'));
+                // init sending server identities
+                $server->initVerifiedIdentities();
 
+                $request->session()->flash('alert-success', trans('messages.sending_server.created'));
                 return redirect()->action('Admin\SendingServerController@edit', [$server->uid, $server->type]);
             }
         }
@@ -644,23 +646,44 @@ class SendingServerController extends Controller
         if ($request->isMethod('post')) {
             $valid = true;
             
-            // validation
-            $validator = \Validator::make($request->all(), [
-                'domain' => 'required|regex:/^(?!:\/\/)(?=.{1,255}$)((.{1,63}\.){1,127}(?![0-9]*$)[a-z0-9-]+\.?)$/i',
-            ]);
-            
-            if (in_array(strtolower($request->domain), $server->getDomains())) {
-                $validator->errors()->add('domain', trans('messages.sending_identity.exist_error'));
-                $valid = false;
+            if (checkEmail($request->domain)) {
+                // validation
+                $validator = \Validator::make($request->all(), [
+                    'domain' => 'required|email',
+                ]);
+                
+                if (in_array(strtolower($request->domain), $server->getEmails())) {
+                    $validator->errors()->add('domain', trans('messages.sending_identity.exist_error'));
+                    $valid = false;
+                }
+                
+                if (!$valid || $validator->fails()) {
+                    return redirect()->action('Admin\SendingServerController@addDomain', $server->uid)
+                                ->withErrors($validator)
+                                ->withInput();
+                }
+
+                $server->addEmail(strtolower($request->domain)); 
+            } else {
+                // validation
+                $validator = \Validator::make($request->all(), [
+                    'domain' => 'required|regex:/^(?!:\/\/)(?=.{1,255}$)((.{1,63}\.){1,127}(?![0-9]*$)[a-z0-9-]+\.?)$/i',
+                ]);
+                
+                if (in_array(strtolower($request->domain), $server->getDomains())) {
+                    $validator->errors()->add('domain', trans('messages.sending_identity.exist_error'));
+                    $valid = false;
+                }
+                
+                if (!$valid || $validator->fails()) {
+                    return redirect()->action('Admin\SendingServerController@addDomain', $server->uid)
+                                ->withErrors($validator)
+                                ->withInput();
+                }
+
+                $server->addDomain(strtolower($request->domain)); 
             }
             
-            if (!$valid || $validator->fails()) {
-                return redirect()->action('Admin\SendingServerController@addDomain', $server->uid)
-                            ->withErrors($validator)
-                            ->withInput();
-            }
-            
-            $server->addDomain(strtolower($request->domain));            
             $request->session()->flash('alert-success', trans('messages.sending_server.updated'));
             return;
         }
@@ -681,7 +704,11 @@ class SendingServerController extends Controller
     public function removeDomain(Request $request, $uid, $domain)
     {
         $server = SendingServer::findByUid($request->uid);
-        $server->removeDomain($domain);
+        if (checkEmail($domain)) {
+            $server->removeEmail($domain);
+        } else {
+            $server->removeDomain($domain);
+        }
         
         $request->session()->flash('alert-success', trans('messages.sending_server.domain.removed'));
         return redirect()->action('Admin\SendingServerController@edit', [$server->uid, $server->type]);

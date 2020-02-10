@@ -30,9 +30,15 @@
                                     <span class="badge badge-success badge-lg">{{ trans('messages.sending_identity.status.active') }}</span>
                                 </td>
                                 <td>
-                                    <input type="checkbox" name="options[domains][]" value="{{ $domain }}" class="switchery"
-                                        {{ $server->isDomainEnabled($domain) ? " checked" : "" }}
-                                    />
+                                    @if (checkEmail($domain))
+                                        <input type="checkbox" name="options[emails][]" value="{{ $domain }}" class="switchery"
+                                            {{ $server->isEmailEnabled($domain) ? " checked" : "" }}
+                                        />
+                                    @else
+                                        <input type="checkbox" name="options[domains][]" value="{{ $domain }}" class="switchery"
+                                            {{ $server->isDomainEnabled($domain) ? " checked" : "" }}
+                                        />
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach
@@ -40,7 +46,10 @@
                 </table>
             @endif
             <br>
-            <button class="btn btn-mc_default mr-10">{{ trans('messages.sending_serbers.add_domain') }}</button>
+            <a href="https://app.sparkpost.com/auth" type="button" target="_blank"
+              class="btn btn-mc_default mr-10">
+                {{ trans('messages.sending_serbers.add_domain') }}
+            </a>
             <a href="https://app.sparkpost.com/auth" type="button" target="_blank"
               class="btn btn-mc_default">
                 {{ trans('messages.sending_serbers.go_to_sparkpost_dashboard') }}

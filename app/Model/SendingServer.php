@@ -1281,6 +1281,49 @@ class SendingServer extends Model
         
         return $domains ? $domains : [];
     }
+
+    /**
+     * Get emails.
+     *
+     * @return array
+     */
+    public function getEmails()
+    {
+        $emails = $this->getOption('emails');
+        
+        return $emails ? $emails : [];
+    }
+
+    /**
+     * Add email.
+     *
+     * @return array
+     */
+    public function addEmail($email)
+    {
+        $emails = $this->getOption('emails');
+        $emails[] = $email;
+        
+        $this->setOption('emails', $emails);
+        $this->save();
+    }
+    
+    /**
+     * Add email.
+     *
+     * @return array
+     */
+    public function removeEmail($email)
+    {
+        $emails = $this->getOption('emails');
+        
+        if (($key = array_search($email, $emails)) !== false) {
+            unset($emails[$key]);
+        }
+        
+        $this->setOption('emails', $emails);
+        $this->save();
+    }
     
     /**
      * Add domain.
@@ -1323,6 +1366,18 @@ class SendingServer extends Model
         $domains = $this->getDomains();
         
         return in_array($domain, $domains);
+    }
+
+    /**
+     * Check if emails is enabled.
+     *
+     * @return array
+     */
+    public function isEmailEnabled($email)
+    {
+        $emails = $this->getEmails();
+        
+        return in_array($email, $emails);
     }
     
     /**
@@ -1435,6 +1490,31 @@ class SendingServer extends Model
     public function getVerifiedIdentities()
     {
         return array_merge($this->getOption("domains"), $this->getOption("emails"));
+    }
+
+    /**
+     * Get verified identities
+     *
+     * @return array
+     */
+    public function initVerifiedIdentities()
+    {
+        $items = $this->getVerifiedIdentities();
+
+        $domains = [];
+        $emails = [];
+        foreach($items as $item) {
+            if (checkEmail($item)) {
+                $emails[] = $item;
+            } else {
+                $domains[] = $item;
+            }
+        }
+
+        $this->setOption('emails', $emails);
+        $this->setOption('domains', $domains);
+
+        $this->save();
     }
     
     /**
