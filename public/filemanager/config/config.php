@@ -3,66 +3,62 @@ if (session_id() == '') session_start();
 
 class Uidd
 {
-  static public function get() {
-		require '../../bootstrap/autoload.php';
-
+    static public function get() {
+	require '../../bootstrap/autoload.php';
     $app = require_once '../../bootstrap/app.php';
 
     $kernel = $app->make('Illuminate\Contracts\Http\Kernel');
-
     $response = $kernel->handle(
       $request = Illuminate\Http\Request::capture()
     );
 
+    /*
     $id = $app['encrypter']->decrypt($_COOKIE[$app['config']['session.cookie']]);
     $app['session']->driver()->setId($id);
     $app['session']->driver()->start();
+	*/
 
-    $user_uid = $app['auth']->user()->uid;
+	// $user_uid = Auth::user()->uid;
+	if (is_object($app['auth']->user())) {
+		$user_uid = Auth::user()->uid;
+		$max_size_upload_total = is_object($app['auth']->user()->customer) ? $app['auth']->user()->customer->getOption("max_size_upload_total") : 999999999;
+		$max_file_size_upload = is_object($app['auth']->user()->customer) ? $app['auth']->user()->customer->getOption("max_file_size_upload") : 999999999;
+	} else {
+		$user_uid = $_SESSION["user_uid"];
+		$max_size_upload_total = $_SESSION["max_size_upload_total"];
+		$max_file_size_upload = $_SESSION["max_file_size_upload"];
+	}
 
-    // Make folder if not exist
-		if (!file_exists('../source')) {
-        mkdir('../source', 0777, true);
-				$content = "";
-				$fp = fopen('../source' . "/index.html","wb");
-				fwrite($fp,$content);
-				fclose($fp);
-    }
-    if (!file_exists('../thumbs')) {
-        mkdir('../thumbs', 0777, true);
-				$content = "";
-				$fp = fopen('../thumbs' . "/index.html","wb");
-				fwrite($fp,$content);
-				fclose($fp);
-    }
-
-    $source_path = '../source/' . $user_uid;
-    $thumbs_path = '../thumbs/' . $user_uid;
-    if (!file_exists($source_path)) {
-        mkdir($source_path, 0777, true);
-				$content = "";
-				$fp = fopen($source_path . "/index.html","wb");
-				fwrite($fp,$content);
-				fclose($fp);
-    }
-    if (!file_exists($thumbs_path)) {
-        mkdir($thumbs_path, 0777, true);
-				$content = "";
-				$fp = fopen($thumbs_path . "/index.html","wb");
-				fwrite($fp,$content);
-				fclose($fp);
-    }
+    // Make folder if not exist	
+	$paths = [
+		storage_path('/app/customers'),
+		storage_path('/app/customers/' . $user_uid),
+		storage_path('/app/customers/' . $user_uid . '/home'),
+		storage_path('/app/customers/' . $user_uid . '/home/files'),
+		storage_path('/app/customers/' . $user_uid . '/home/thumbs'),
+	];
+	foreach ($paths as $path) {
+		if (!file_exists($path)) {
+			mkdir($path, 0777, true);
+		}
+	}
 
     return [
-				"user_uid" => $user_uid,
-				"max_size_upload_total" => is_object($app['auth']->user()->customer) ? $app['auth']->user()->customer->getOption("max_size_upload_total") : 999999999,
-				"max_file_size_upload" => is_object($app['auth']->user()->customer) ? $app['auth']->user()->customer->getOption("max_file_size_upload") : 999999999,
-		];
+		"user_uid" => $user_uid,
+		"max_size_upload_total" => $max_size_upload_total,
+		"max_file_size_upload" => $max_file_size_upload,
+		"storage_path" => storage_path('/app/customers/' . $user_uid . '/home'),
+	];
   }
 }
 
+
+
 $db_config = Uidd::get();
+$storage_path = $db_config['storage_path'];
 $_SESSION["user_uid"] = $db_config["user_uid"];
+$_SESSION["max_size_upload_total"] = $db_config["max_size_upload_total"];
+$_SESSION["max_file_size_upload"] = $db_config["max_file_size_upload"];
 $_SESSION['RF']['language'] = "en_EN";
 $_SESSION['RF']['language_file'] = 'lang/en_EN.php';
 $lang = "vi";
@@ -141,7 +137,8 @@ $config = array(
 	| with start and final /
 	|
 	*/
-	'upload_dir' => $base_r_url . 'source/' . $user_uid . "/",
+	'upload_dir' => $base_r_url . 'files/' . $user_uid . "/",
+	'thumb_dir' => $base_r_url . 'files/thumbs/' . $user_uid . "/",
 
 	/*
 	|--------------------------------------------------------------------------
@@ -151,7 +148,7 @@ $config = array(
 	| with final /
 	|
 	*/
-	'current_path' => '../source/' . $user_uid . "/",
+	'current_path' => $storage_path . '/files/',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -162,7 +159,7 @@ $config = array(
 	| DO NOT put inside upload folder
 	|
 	*/
-	'thumbs_base_path' => '../thumbs/' . $user_uid . "/",
+	'thumbs_base_path' => $storage_path . '/thumbs/',
 
 	/*
 	|--------------------------------------------------------------------------

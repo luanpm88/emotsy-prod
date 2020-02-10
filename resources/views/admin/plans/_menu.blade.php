@@ -54,10 +54,21 @@
                     </li>
                 </ul>
             </li>-->
-            <li rel0="PlanController/sendingServer" rel1="PlanController/sendingServers">
-                <a href="{{ action('Admin\PlanController@sendingServer', $plan->uid) }}" class="level-1">
-                    {{ trans('messages.plan.sending_server') }}
-                </a>
+            <li rel0="PlanController/sendingServer" rel1="PlanController/sendingServers">                
+                @if ($plan->useSystemSendingServer() && !$plan->hasPrimarySendingServer())
+                    <a href="{{ action('Admin\PlanController@sendingServer', $plan->uid) }}" class="level-1 xtooltip"
+                         title="{{ trans('messages.plans.send_via.empty') }}"
+                    >
+                        {{ trans('messages.plan.sending_server') }}
+                        <i class="material-icons-outlined tabs-warning-icon text-danger">info</i>
+                    </a>
+                @else
+                    <a href="{{ action('Admin\PlanController@sendingServer', $plan->uid) }}" class="level-1">
+                        {{ trans('messages.plan.sending_server') }}
+                        <i class="material-icons-outlined tabs-warning-icon text-danger xtooltip" title="{{ trans('messages.plans.send_via.empty') }}">info</i>
+                    </a>
+                @endif
+                
             </li>
             <li rel0="PlanController/emailVerification">
                 <a href="{{ action('Admin\PlanController@emailVerification', $plan->uid) }}" class="level-1">

@@ -1,3 +1,17 @@
+4.0.18 / 2020-02-10
+==================
+
+ * Fixed: sending identity not working in certain cases
+ * Fixed: better SMTP error handling
+ * Fixed: automation visual designer not loading correctly
+ * Fixed: no longer require write permission on public/ folder
+ * Fixed: KEY event issue with builder pro
+ * Fixed: irrelevant content injected into outgoing email
+ * Fixed: unexpected input fields injected into email content
+ * Added: allowing switching to basic email builder
+ * Added: allowing viewing of available identities list
+ * Added: file manager for basic email builder
+
 4.0.5 / 2020-01-14
 ==================
 

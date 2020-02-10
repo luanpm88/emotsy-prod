@@ -58,6 +58,13 @@
 												<div class="btn-group">
 													<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 													<ul class="dropdown-menu dropdown-menu-right">
+														@if (Auth::user()->admin->can('update', $template))
+															<li>
+																<a href="{{ action('Admin\TemplateController@edit', $template->uid) }}">
+																	<i class="icon-hammer"></i> {{ trans("messages.buider.builder_classic") }}
+																</a>
+															</li>
+														@endif
 														@if (Auth::user()->admin->can('copy', $template))
 															<li>
 																<a

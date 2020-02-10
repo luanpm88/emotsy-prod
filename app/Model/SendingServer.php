@@ -123,10 +123,14 @@ class SendingServer extends Model
         $class_name = '\Acelle\Model\\'.self::$serverMapping[$server->type];
         
         if ($server->id) {
-            return $class_name::find($server->id);
+            $instance = $class_name::find($server->id);
         } else {
-            return new $class_name(['type' => $server->type]);
-        }        
+            $instance = new $class_name(['type' => $server->type]);
+        }
+
+        $instance->fill($server->getAttributes());
+
+        return $instance;
     }
 
     /**
@@ -1341,6 +1345,11 @@ class SendingServer extends Model
     public function allowVerifyingOwnDomains()
     {
         $options = json_decode($this->options, true);
+        
+        if (is_null($options)) {
+            return false;
+        }
+
         return array_key_exists('allow_verify_domain_against_acelle', $options) && $options['allow_verify_domain_against_acelle'] == 'yes';
     }
     
@@ -1352,6 +1361,11 @@ class SendingServer extends Model
     public function allowVerifyingOwnEmails()
     {
         $options = json_decode($this->options, true);
+        
+        if (is_null($options)) {
+            return false;
+        }
+        
         return array_key_exists('allow_verify_email_against_acelle', $options) && $options['allow_verify_email_against_acelle'] == 'yes';
     }
     
@@ -1363,6 +1377,11 @@ class SendingServer extends Model
     public function allowVerifyingOwnDomainsRemotely()
     {
         $options = json_decode($this->options, true);
+        
+        if (is_null($options)) {
+            return false;
+        }
+
         return array_key_exists('allow_verify_domain_remotely', $options) && $options['allow_verify_domain_remotely'] == 'yes';
     }
     
@@ -1374,6 +1393,11 @@ class SendingServer extends Model
     public function allowVerifyingOwnEmailsRemotely()
     {
         $options = json_decode($this->options, true);
+        
+        if (is_null($options)) {
+            return false;
+        }
+
         return array_key_exists('allow_verify_email_remotely', $options) && $options['allow_verify_email_remotely'] == 'yes';
     }
     
@@ -1385,6 +1409,11 @@ class SendingServer extends Model
     public function allowUnverifiedFromEmailAddress()
     {
         $options = json_decode($this->options, true);
+        
+        if (is_null($options)) {
+            return false;
+        }
+        
         return array_key_exists('allow_unverified_from_email', $options) && $options['allow_unverified_from_email'] == 'yes';
     }
     

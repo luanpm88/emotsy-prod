@@ -227,6 +227,20 @@
 				$(this).removeClass("d-none");
             });
 		}
+
+		function openBuilderClassic(url) {
+			var div = $('<div class="full-iframe-popup">').html('<iframe scrolling="yes" class="builder d-none" src="'+url+'"></iframe>');
+            
+            $('body').append(div);
+
+            // open builder effects
+            addMaskLoading("{{ trans('messages.automation.template.opening_builder') }}");
+            $('.builder').on("load", function() {
+                removeMaskLoading();
+
+				$(this).removeClass("d-none");
+            });
+		}
 		
 		function setAutomationName(name) {
 			$('.navbar h1').html(name);
@@ -240,7 +254,7 @@
 				type: 'POST',
 				data: {
 					_token: CSRF_TOKEN,
-					data: tree.toJson(),
+					data: JSON.stringify(tree.toJson()),
 				},
 			}).always(function() {
 				if (callback != null) {
