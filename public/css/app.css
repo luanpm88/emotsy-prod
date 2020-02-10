@@ -3479,3 +3479,10 @@ p.link-inline a {
 .campaign-plain-text {
     min-height: 200px;
 }
+.tabs-warning-icon {
+    font-size: 20px;
+    position: absolute;
+    top: 4px;
+    text-decoration: none;
+    border-bottom: none !important;
+}

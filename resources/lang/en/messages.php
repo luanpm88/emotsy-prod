@@ -2107,6 +2107,7 @@
   'email_greeting.whoops' => 'Whoops!',
   'email_greeting.hello' => 'Hello!',
   'verified_senders' => 'Sending Identity',
+  'sender.available.intro' => 'Below are sending identities that you can use for your marketing email. Use an email address or any email address that matches the domains from the list below as your FROM email address in your campaign setup.',
   'sender.create' => 'New sender',
   'senders.empty.message' => 'You have no sender yet',
   'sender.delete' => 'Delete',
@@ -3083,10 +3084,17 @@
   'subscription.logs_transactions' => 'Logs/Transactions',
   'subscription.transactions' => 'Transactions',
   'subscription.log.created_at' => 'Created at',
-  'subscription.log.message' => 'Message',  
+  'subscription.log.message' => 'Message',
   'subscription.ended_intro' => 'The subscription to <strong>:plan</strong> plan was ended at <strong>:ended_at</strong>.
     Please renew or choose an other plan.',
   'system.recurring_charge_before_days' => 'Auto recurring charge before',
   'setting.recurring_charge_before_days.help' => 'The number of days before the subscription end of period date.
     System will automatically charge the subscription',
+  'buider.builder_classic' => 'Classic Builder',
+  'campaign.email_builder_pro' => 'Email builder PRO',
+  'campaign.email_builder_classic' => 'Email builder Classic',
+  'campaign.compose_email_classic' => 'Builder Classic',
+  'automation.classic_builder' => 'Classic Builder Editor',
+  'automation.template.saving' => 'Saving template...',
+  'email_domain' => 'Email/Domain',
 ) ?>

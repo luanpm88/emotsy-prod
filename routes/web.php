@@ -60,6 +60,25 @@ Route::get('/assets/templates/{uid}/{name?}', [ function ($uid, $name) {
     }
 }])->where('name', '.+')->name('template_assets');
 
+// assets path for customer thumbs
+Route::get('/files/thumbs/{uid}/{name?}', [ function ($uid, $name) {
+    $customer = \Acelle\Model\Customer::findByUid($uid);
+    $path = storage_path('app/customers/' . $uid . '/home/thumbs/' . $name);
+    $mime_type = \Acelle\Library\File::getFileType($path);
+    if (\File::exists($path)) {
+        return response()->file($path, array('Content-Type' => $mime_type));
+    }
+}])->where('name', '.+')->name('customer_thumbs');
+// assets path for customer files
+Route::get('/files/{uid}/{name?}', [ function ($uid, $name) {
+    $customer = \Acelle\Model\Customer::findByUid($uid);
+    $path = storage_path('app/customers/' . $uid . '/home/files/' . $name);
+    $mime_type = \Acelle\Library\File::getFileType($path);
+    if (\File::exists($path)) {
+        return response()->file($path, array('Content-Type' => $mime_type));
+    }
+}])->where('name', '.+')->name('customer_files');
+
 // assets path for email
 Route::get('/assets/emails/{uid}/{name?}', [ function ($uid, $name) {
     $email = \Acelle\Model\Email::findByUid($uid);
@@ -323,6 +342,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::patch('templates/{uid}/update', 'TemplateController@update');
 
     // Campaign
+    Route::match(['get', 'post'], 'campaigns/{uid}/template/builder-classic', 'CampaignController@builderClassic');
     Route::match(['get', 'post'], 'campaigns/{uid}/plain', 'CampaignController@plain');
 
     Route::get('campaigns/{uid}/template/change/{template_uid}', 'CampaignController@templateChangeTemplate');
@@ -534,6 +554,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('notifications/{id}/hide', 'NotificationController@hide');
     
     // Automation2
+    Route::match(['get', 'post'], 'automation2/{uid}/template/{email_uid}/edit-classic', 'Automation2Controller@templateEditClassic');
     Route::match(['get', 'post'], 'api/3.0/automations/{uid}/execute', 'Automation2Controller@executeApi');
 
     Route::match(['get', 'post'], 'automation2/{uid}/contacts/copy-to-new-list', 'Automation2Controller@copyToNewList');
