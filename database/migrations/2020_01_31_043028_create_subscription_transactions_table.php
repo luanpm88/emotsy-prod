@@ -13,6 +13,9 @@ class CreateSubscriptionTransactionsTable extends Migration
      */
     public function up()
     {
+        // Clean up all subscriptions!!!!!
+        \Acelle\Cashier\Subscription::whereRaw('true')->delete();
+
         Schema::create('subscription_transactions', function (Blueprint $table) {
             $table->increments('id');
             $table->uuid('uid');
