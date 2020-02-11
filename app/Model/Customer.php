@@ -788,6 +788,7 @@ class Customer extends Model implements BillableUserInterface
      */
     public function getQuotaHash()
     {
+        $current = $this->getCurrentSubscription();
         $quota = [
             'start' => (isset($current->created_at) ? $current->created_at->timestamp : null),
             'max' => $this->getOption('email_max'),
