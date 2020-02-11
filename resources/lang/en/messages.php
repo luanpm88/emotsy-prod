@@ -3097,4 +3097,10 @@
   'automation.classic_builder' => 'Classic Builder Editor',
   'automation.template.saving' => 'Saving template...',
   'email_domain' => 'Email/Domain',
+  'all_notifications' => 'All notifications',
+  'notification.level' => 'Level',
+  'notification.level.error' => 'Error',
+  'notification.level.warning' => 'Warning',
+  'notification.level.info' => 'Info',
+  'no_action_notifications' => 'No notification',
 ) ?>

@@ -24,6 +24,7 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Cashier\Subscription;
+use Acelle\Model\Notification;
 
 class Admin extends Model
 {
@@ -780,5 +781,15 @@ class Admin extends Model
         }
 
         return $options;
+    }
+
+    /**
+     * Get system notification.
+     *
+     * @return int
+     */
+    public function notifications()
+    {
+        return Notification::orderBy('created_at', 'desc');
     }
 }

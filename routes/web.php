@@ -620,6 +620,10 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin', 'HomeController@index');
     Route::get('admin/docs/api/v1', 'ApiController@doc');
 
+    // Notification
+    Route::get('admin/notifications/listing', 'NotificationController@listing');
+    Route::get('admin/notifications', 'NotificationController@index');
+
     // User
     Route::get('admin/users/switch/{uid}', 'UserController@switch_user');
     Route::get('admin/users/listing/{page?}', 'UserController@listing');

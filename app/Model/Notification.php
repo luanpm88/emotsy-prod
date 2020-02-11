@@ -163,4 +163,43 @@ class Notification extends Model
         $this->visibility = false;
         return $this->save();
     }
+
+    /**
+     * Filter items.
+     *
+     * @return collect
+     */
+    public static function filter($request)
+    {
+        $query = self::select('notifications.*');
+
+        // Keyword
+        if (!empty(trim($request->keyword))) {
+            $query = $query->where('message', 'like', '%'.$request->keyword.'%');
+        }
+
+        // filters
+        $filters = $request->filters;
+        if (!empty($filters)) {
+            if (!empty($filters['level'])) {
+                $query = $query->where('notifications.level', '=', $filters['level']);
+            }
+        }
+
+        return $query;
+    }
+
+    /**
+     * Search items.
+     *
+     * @return collect
+     */
+    public static function search($request)
+    {
+        $query = self::filter($request);
+
+        $query = $query->orderBy($request->sort_order, $request->sort_direction);
+
+        return $query;
+    }
 }

@@ -17,6 +17,11 @@
                         <i class="icon-key position-left"></i> {{ trans('messages.api_token') }}
                     </a>
                 </li>
+                <li rel0="NotificationController">
+                    <a href="{{ action("Admin\NotificationController@index") }}" class="level-1">
+                        <i class="icon-history position-left"></i> {{ trans('messages.notifications') }}
+                    </a>
+                </li>
             </ul>
         </div>
     </div>

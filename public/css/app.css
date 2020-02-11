@@ -3486,3 +3486,24 @@ p.link-inline a {
     text-decoration: none;
     border-bottom: none !important;
 }
+.top-notifications .media-left i {
+    width: 35px;
+    height: 35px;
+    border-radius: 100%;
+    display: block;
+    font-size: 20px !important;
+    padding: 6px 8px;
+    text-align: center;
+    opacity: 0.9;
+}
+.admin-notification-media {
+    width: 35px;
+    height: 35px;
+    border-radius: 100%;
+    display: block;
+    font-size: 20px !important;
+    padding: 6px 8px;
+    text-align: center;
+    opacity: 0.9;
+    margin-right: 10px;
+}

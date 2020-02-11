@@ -326,6 +326,9 @@
 			</ul>
 
 			<ul class="nav navbar-nav navbar-right">
+
+				@include('layouts._top_notifications')
+
 				<li class="dropdown dropdown-user">
 					<a class="dropdown-toggle" data-toggle="dropdown">
 						<img src="{{ action('AdminController@avatar', Auth::user()->admin->uid) }}" alt="">
