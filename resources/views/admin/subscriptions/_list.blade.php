@@ -90,19 +90,13 @@
 						\Auth::user()->admin->can('cancelNow', $subscription) ||
 						\Auth::user()->admin->can('changePlan', $subscription) ||
 						\Auth::user()->admin->can('invoices', $subscription) ||
-						\Auth::user()->admin->can('setActive', $subscription)
+						\Auth::user()->admin->can('setActive', $subscription) ||
+						\Auth::user()->admin->can('approvePending', $subscription) ||
+						\Auth::user()->admin->can('rejectPending', $subscription)
 					)
 						<div class="btn-group">
 							<button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret ml-0"></span></button>
-							<ul class="dropdown-menu dropdown-menu-right">
-								@if (\Auth::user()->admin->can('approvePendingInvoice', $subscription))
-									<li>
-										<a data-method="POST" link-confirm="{{ trans('messages.subscription.approve_pending_invoice.confirm') }}"
-										  href="{{ action('Admin\SubscriptionController@approvePendingInvoice', $subscription->uid) }}">
-											{{ trans('messages.subscription.approve_pending_invoice') }}
-										</a>
-									</li>
-								@endif
+							<ul class="dropdown-menu dropdown-menu-right">								
 								@if (\Auth::user()->admin->can('setActive', $subscription))
 									<li>
 										<a data-method="POST" link-confirm="{{ trans('messages.subscription.set_active.confirm') }}"
@@ -116,6 +110,14 @@
 										<a data-method="POST" link-confirm="{{ trans('messages.subscription.set_active.confirm') }}"
 										  href="{{ action('Admin\SubscriptionController@approvePending', $subscription->uid) }}">
 											{{ trans('messages.subscription.approve_pending') }}
+										</a>
+									</li>
+								@endif
+								@if (\Auth::user()->admin->can('rejectPending', $subscription))
+									<li>
+										<a data-method="POST" link-confirm="{{ trans('messages.subscription.reject_pending.confirm') }}"
+										  href="{{ action('Admin\SubscriptionController@rejectPending', $subscription->uid) }}">
+											{{ trans('messages.subscription.reject_pending') }}
 										</a>
 									</li>
 								@endif

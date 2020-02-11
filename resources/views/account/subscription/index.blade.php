@@ -92,15 +92,6 @@
                         </a>
                     @endif
 
-                    @if (\Auth::user()->customer->can('cancelNow', $subscription))
-                        <a link-method="POST" link-confirm="{{ trans('messages.subscription.cancel_now.confirm') }}"
-                            href="{{ action('AccountSubscriptionController@cancelNow') }}"
-                            class="btn bg-grey-600 mr-10"
-                        >
-                            {{ trans('messages.subscription.cancel_now') }}
-                        </a>
-                    @endif
-
                     @if (\Auth::user()->customer->can('changePlan', $subscription))
                         <a
                             href="{{ action('AccountSubscriptionController@changePlan', ["id" => $subscription->uid]) }}"
@@ -108,6 +99,15 @@
                             data-size="sm"
                         >
                             {{ trans('messages.subscription.change_plan') }}
+                        </a>
+                    @endif
+
+                    @if (\Auth::user()->customer->can('cancelNow', $subscription))
+                        <a link-method="POST" link-confirm="{{ trans('messages.subscription.cancel_now.confirm') }}"
+                            href="{{ action('AccountSubscriptionController@cancelNow') }}"
+                            class="btn btn-mc_inline mr-10"
+                        >
+                            {{ trans('messages.subscription.cancel_now') }}
                         </a>
                     @endif
                 @endif

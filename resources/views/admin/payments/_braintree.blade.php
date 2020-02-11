@@ -40,6 +40,18 @@
 					'rules' => ['options.private_key' => 'required'],
 				])
 				
+				<h2 class="mt-40 mb-4">{{ trans('messages.braintree.require_valid_card') }}</h2>
+				<p>{{ trans('messages.braintree.require_valid_card.intro') }}</p>
+
+				@include('helpers.form_control', ['type' => 'checkbox2',
+					'class' => '',
+					'name' => 'options[always_ask_for_valid_card]',
+					'value' => $gateway['fields']['always_ask_for_valid_card'],
+					'label' => trans('messages.braintree.always_ask_for_valid_card'),
+					'options' => ['no','yes'],
+					'help_class' => 'payment',
+				])
+
 				<hr>
 				<div class="text-left">
 					<button class="btn btn-mc_primary mr-5">{{ trans('messages.save') }}</button>

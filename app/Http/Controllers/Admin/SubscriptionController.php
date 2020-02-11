@@ -11,6 +11,7 @@ use Acelle\Cashier\Cashier;
 use Acelle\Cashier\Subscription;
 use Acelle\Cashier\SubscriptionLog;
 use Acelle\Model\Plan;
+use Acelle\Model\Customer;
 
 class SubscriptionController extends Controller
 {
@@ -41,6 +42,54 @@ class SubscriptionController extends Controller
         return view('admin.subscriptions.index', [
             'subscriptions' => $subscriptions,
             'plan' => $plan,
+        ]);
+    }
+
+    /**
+     * Admin create new subscription for customer.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create(Request $request)
+    {
+        // authorize
+        if (!$request->user()->admin->can('create', new Subscription())) {
+            return $this->notAuthorized();
+        }
+
+        $subscription = new Subscription();
+        $rules = [
+            'customer_uid' => 'required',
+            'plan_uid' => 'required',
+        ];
+
+        // save posted data
+        if ($request->isMethod('post')) {
+            $validator = \Validator::make($request->all(), $rules);
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('admin.subscriptions.create', [
+                    'subscription' => $subscription,
+                    'rules' => $rules,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            // asign plan
+            $customer = Customer::findByUid($request->customer_uid);
+            $plan = Plan::findByUid($request->plan_uid);
+            $customer->assignPlan($plan);
+            
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.subscription.created'),
+            ]);
+        }
+
+        return view('admin.subscriptions.create', [
+            'subscription' => $subscription,
+            'rules' => $rules,
         ]);
     }
 
@@ -246,7 +295,42 @@ class SubscriptionController extends Controller
 
         echo json_encode([
             'status' => 'success',
-            'message' => trans('messages.subscription.set_active.success'),
+            'message' => trans('messages.subscription.approve_pending.success'),
+        ]);
+        return;
+    }
+
+    /**
+     * Reject subscription pending.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     **/
+    public function rejectPending(Request $request, $id)
+    {
+        // Get current subscription
+        $subscription = Subscription::findByUid($request->id);
+        $gateway = Cashier::getPaymentGateway();
+
+        // authorize
+        if (!$request->user()->admin->can('rejectPending', $subscription)) {
+            return $this->notAuthorized();
+        }
+
+        try {
+            $gateway->rejectPending($subscription);
+        } catch (\Exception $ex) {
+            echo json_encode([
+                'status' => 'error',
+                'message' => $ex->getMessage(),
+            ]);
+            return;
+        }
+
+        echo json_encode([
+            'status' => 'success',
+            'message' => trans('messages.subscription.reject_pending.success'),
         ]);
         return;
     }
