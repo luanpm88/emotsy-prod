@@ -3517,3 +3517,6 @@ p.link-inline a {
     top: 10px;
     right: 10px;
 }
+.bg-grey-light {
+    background: #f2f2f2;
+}
