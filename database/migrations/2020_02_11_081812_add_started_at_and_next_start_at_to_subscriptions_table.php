@@ -28,6 +28,7 @@ class AddStartedAtAndNextStartAtToSubscriptionsTable extends Migration
     {
         Schema::table('subscriptions', function (Blueprint $table) {
             $table->dropColumn('started_at');
+            $table->dropColumn('last_period_ends_at');
         });
     }
 }
