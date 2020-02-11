@@ -2524,7 +2524,7 @@
   'subscription.renew.checkout' => 'Checkout',
   'subscription.renew.direct.wording' => 'Click the button bellow to renew the subscription for <strong>:plan</strong> plan.
     The total amoutn is <strong>:price</strong>.',
-  'subscription.approve_pending' => 'Approve pending invoice',
+  'subscription.approve_pending' => 'Approve',
   'subscription.approve_pending.confirm' => 'You have pending invoice. Do you want to approve it. This can not be un-done.',
   'subscription.approve_pending.success' => 'The pending invoice was approved successfully.',
   'invoice.status.pending' => 'invoice pending',
@@ -3075,7 +3075,6 @@
   'campaign.email_content_plain.intro' => 'Enter your email plain text via text box below.',
   'campaign.plain.save' => 'Save & Next',
   'subscription.subscription_ended_at' => 'Ended at',
-  'subscription.approve_pending' => 'Approve',
   'invoice.title' => 'Content',
   'customer.assign_plan.confirm' => 'You\'re about to assign <strong>:plan</strong> plan to <strong>:customer</strong>.
     This will cancel customer\'s current subscription if it exists. This can be undone.
