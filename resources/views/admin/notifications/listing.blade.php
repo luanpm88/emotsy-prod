@@ -2,8 +2,20 @@
 							<table class="table table-box pml-table"
                                 current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
                             >
-								@foreach ($notifications as $key => $notification)
+								@foreach ($notifications as $key => $notification)									
 									<tr>
+										<td width="1%">
+											<div class="text-nowrap">
+												<div class="checkbox inline">
+													<label>
+														<input type="checkbox" class="node styled"
+															name="ids[]"
+															value="{{ $notification->uid }}"
+														/>
+													</label>
+												</div>
+											</div>
+										</td>
                                         <td width="1%">
 											@if ($notification->level == \Acelle\Model\Notification::LEVEL_WARNING)
 												<i class="lnr lnr-warning bg-warning admin-notification-media"></i>
@@ -32,14 +44,14 @@
 							{{ $notifications->links() }}                            
 						@elseif (!empty(request()->keyword) || !empty(request()->filters["type"]))
 							<div class="empty-list">
-								<i class="icon-history"></i>
+								<i class="material-icons">message</i> 
 								<span class="line-1">
 									{{ trans('messages.no_search_result') }}
 								</span>
 							</div>
 						@else					
 							<div class="empty-list">
-								<i class="icon-history"></i>
+								<i class="material-icons">message</i> 
 								<span class="line-1">
 									{{ trans('messages.no_action_notifications') }}
 								</span>

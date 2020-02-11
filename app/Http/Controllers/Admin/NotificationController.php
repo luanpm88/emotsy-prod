@@ -33,4 +33,28 @@ class NotificationController extends Controller
             'notifications' => $notifications,
         ]);
     }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function delete(Request $request)
+    {
+        if (isSiteDemo()) {
+            echo trans('messages.operation_not_allowed_in_demo');
+            return;
+        }
+
+        $notifications = Notification::whereIn('uid', explode(',', $request->uids));
+
+        foreach ($notifications->get() as $notification) {
+            $notifications->delete();
+        }
+
+        // Redirect to my lists page
+        echo trans('messages.notifications.deleted', ['number' => $notifications->count()]);
+    }
 }

@@ -1,7 +1,12 @@
 <li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-		<i class="icon-history"></i>
+	<a href="#" class="dropdown-toggle" data-toggle="dropdown" style="display: flex;
+    align-items: center;
+    height: 52px;">
+		<i class="material-icons">message</i> 
 		<span class="visible-xs-inline-block position-right">{{ trans('messages.activity_log') }}</span>
+		@if (Acelle\Model\Notification::count())
+			<span class="badge badge-danger top-notification-alert">!</span>
+		@endif
 	</a>
 	
 	<div class="dropdown-menu dropdown-content width-350">
@@ -13,16 +18,16 @@
 			@if (Auth::user()->admin->notifications()->count() == 0)
 				<li class="text-center text-muted2">
 					<span href="#">
-						<i class="icon-history"></i> {{ trans('messages.no_activity_logs') }}
+						<i class="lnr lnr-bubble"></i> {{ trans('messages.no_notifications') }}
 					</span>
 				</li>
 			@endif
 			@foreach (Auth::user()->admin->notifications()->take(20)->get() as $notification)
 				<li class="media">
 					<div class="media-left">
-						@if ($notification->level == \Acelle\Model\Notification::LEVEL_ERROR)
+						@if ($notification->level == \Acelle\Model\Notification::LEVEL_WARNING)
 							<i class="lnr lnr-warning bg-warning"></i>
-						@elseif ( false &&$notification->level == \Acelle\Model\Notification::LEVEL_WARNING)
+						@elseif ( false &&$notification->level == \Acelle\Model\Notification::LEVEL_ERROR)
 							<i class="lnr lnr-cross bg-danger"></i>
 						@else
 							<i class="lnr lnr-menu bg-info"></i>

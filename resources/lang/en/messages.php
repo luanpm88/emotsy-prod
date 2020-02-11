@@ -3118,4 +3118,7 @@
   'braintree.require_valid_card.intro' => 'Any customer subscribing to a plan will need to add his or her credit or
     debit card which will be automatically charged, even for FREE plan',
   'braintree.always_ask_for_valid_card' => 'Always ask for valid card',
+  'notification.delete.confirm' => 'You\'re about to delete :number notification(s).',
+  'notifications.deleted' => '<strong>:number</strong> notification(s) was successfully deleted',
+  'no_notifications' => 'There are no notifications yet',
 ) ?>

@@ -3507,3 +3507,13 @@ p.link-inline a {
     opacity: 0.9;
     margin-right: 10px;
 }
+.navbar-nav > li > a > .label, .navbar-nav > li > a > .badge.top-notification-alert {
+    width: 16px;
+    height: 16px;
+    font-weight: bold;
+    padding: 0;
+    font-size: 11px;
+    line-height: 12px;
+    top: 10px;
+    right: 10px;
+}

@@ -621,6 +621,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/docs/api/v1', 'ApiController@doc');
 
     // Notification
+    Route::get('admin/notifications/delete', 'NotificationController@delete');
     Route::get('admin/notifications/listing', 'NotificationController@listing');
     Route::get('admin/notifications', 'NotificationController@index');
 
