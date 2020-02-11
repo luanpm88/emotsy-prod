@@ -14,7 +14,8 @@ class AddStartedAtAndNextStartAtToSubscriptionsTable extends Migration
     public function up()
     {
         Schema::table('subscriptions', function (Blueprint $table) {
-            $table->datetime('started_at')->nullable(false);
+            $table->datetime('started_at')->nullable(true);
+            $table->datetime('last_period_ends_at')->nullable(true);
         });
     }
 
