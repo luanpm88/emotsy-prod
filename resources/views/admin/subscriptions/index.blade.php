@@ -29,7 +29,7 @@
         per-page="15"
     >
         <div class="row top-list-controls">
-            <div class="col-md-11">
+            <div class="col-md-10">
                 @if ($subscriptions->count() >= 0)
                     <div class="filter-box">
                         <span class="filter-group">
@@ -63,9 +63,28 @@
                     </div>
                 @endif
             </div>
+            @if (\Auth::user()->admin->can('create', new Acelle\Cashier\Subscription()))
+                <div class="col-md-2 text-right">
+                    <a href="{{ action("Admin\SubscriptionController@create") }}" type="button"
+                        class="btn bg-info-800 modal-action new-subscription"
+                    >
+                        <i class="icon icon-plus2"></i> {{ trans('messages.subscription.new') }}
+                    </a>
+                </div>
+            @endif
         </div>
 
         <div class="pml-table-container">
         </div>
     </form>
+
+    <script>
+        var newSubscription = new Popup(); 
+		$('.new-subscription').click(function(e) {
+			e.preventDefault();
+			var url = $(this).attr('href');
+			
+			newSubscription.load(url);
+		});
+    </script>
 @endsection

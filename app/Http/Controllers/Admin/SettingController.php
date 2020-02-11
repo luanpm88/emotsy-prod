@@ -694,12 +694,14 @@ class SettingController extends Controller
         $rules = [
             'end_period_last_days' => 'required',
             'renew_free_plan' => 'required',
+            'recurring_charge_before_days' => 'required',
         ];
         $this->validate($request, $rules);
 
         // Save settings
         \Acelle\Model\Setting::set('system.end_period_last_days', $request->end_period_last_days);
         \Acelle\Model\Setting::set('system.renew_free_plan', $request->renew_free_plan);
+        \Acelle\Model\Setting::set('system.recurring_charge_before_days', $request->recurring_charge_before_days);
 
         // Redirect to my lists page
         $request->session()->flash('alert-success', trans('messages.setting.updated'));

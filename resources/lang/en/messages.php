@@ -2383,7 +2383,7 @@
   'purchasing_intro_direct' => 'You are subscribing to <span class="text-nowrap text-big text-semibold">:plan</span> plan
           . Your plan price is: <span class="text-nowrap text-big text-bold">:price</span>
           . Click confirm button below to accept and get payment guide.',
-  'subscription.current_subscription.recurring.wording' => 'Thank you for being with us, you are currently subscribed to <strong>:plan</strong> :money/m plan.<br>
+  'subscription.current_subscription.recurring.wording' => 'Thank you for being with us, you are currently subscribed to <strong>:plan</strong> plan.<br>
       Your next invoice will automatically be billed in <strong>:remain</strong>, on <strong>:next_on</strong>.',
   'subscription.cancel.confirm' => 'You\'re about to cancel :number subscription. You\'re still subscribed until the end of period',
   'subscription.renew.confirm' => 'You\'re about to renew :number subscription.',
@@ -2473,7 +2473,7 @@
   'invoice.amount' => 'Amount',
   'invoice.description' => 'Description',
   'invoice.status' => 'Status',
-  'subscription.logs' => 'Invoices and billing history',
+  'subscription.logs' => 'Logs',
   'subscription.logs.intro' => 'All your payment transactions are logged here. Let check them for details of your invoices / billing history.',
   'subscription.logs.empty' => 'No records found',
   'no_plan.title' => 'You are not subscribed to any plan!',
@@ -2522,9 +2522,9 @@
   'subscription.renew.checkout' => 'Checkout',
   'subscription.renew.direct.wording' => 'Click the button bellow to renew the subscription for <strong>:plan</strong> plan.
     The total amoutn is <strong>:price</strong>.',
-  'subscription.approve_pending_invoice' => 'Approve pending invoice',
-  'subscription.approve_pending_invoice.confirm' => 'You have pending invoice. Do you want to approve it. This can not be un-done.',
-  'subscription.approve_pending_invoice.success' => 'The pending invoice was approved successfully.',
+  'subscription.approve_pending' => 'Approve pending invoice',
+  'subscription.approve_pending.confirm' => 'You have pending invoice. Do you want to approve it. This can not be un-done.',
+  'subscription.approve_pending.success' => 'The pending invoice was approved successfully.',
   'invoice.status.pending' => 'invoice pending',
   'subscription.change_now' => 'Change now',
   'subscription.plan_changed.lower_error' => 'Can not change from higher plan to lower one',
@@ -3103,4 +3103,19 @@
   'notification.level.warning' => 'Warning',
   'notification.level.info' => 'Info',
   'no_action_notifications' => 'No notification',
+  'subscription.reject_pending' => 'Reject',
+  'subscription.reject_pending.confirm' => 'Do you want to reject the pending renew/change plan. This can not be un-done.',
+  'subscription.reject_pending.success' => 'The pending renew/change plan was rejected.',
+  'subscription.new' => 'New subscription',
+  'subscription.create_new_subsctiption' => 'Create new subscription',
+  'subscription.create_new_subsctiption.intro' => 'Let\'s select customer and plan below to asign customer to plan',
+  'subscription.create' => 'Create',
+  'stripe.require_valid_card' => 'Require a valid card',
+  'stripe.require_valid_card.intro' => 'Any customer subscribing to a plan will need to add his or her credit or
+    debit card which will be automatically charged, even for FREE plan',
+  'stripe.always_ask_for_valid_card' => 'Always ask for valid card',
+  'braintree.require_valid_card' => 'Require a valid card',
+  'braintree.require_valid_card.intro' => 'Any customer subscribing to a plan will need to add his or her credit or
+    debit card which will be automatically charged, even for FREE plan',
+  'braintree.always_ask_for_valid_card' => 'Always ask for valid card',
 ) ?>

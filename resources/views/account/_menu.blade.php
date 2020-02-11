@@ -16,6 +16,7 @@
                     rel1="PaymentController"
                     rel2="AccountController/subscriptionNew"
                     rel3="AccountSubscriptionController"
+                    class="{{ isset($tab) && $tab == 'subscription' ? 'active' : '' }}"
                 >
                     <a href="{{ action("AccountSubscriptionController@index") }}" class="level-1">
                         <i class="icon-quill4 position-left"></i> {{ trans('messages.subscription') }}

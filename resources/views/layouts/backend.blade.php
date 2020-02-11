@@ -15,6 +15,17 @@
 		$.cookie('last_language_code', '{{ Auth::user()->admin->getLanguageCode() }}');
 	</script>
 
+	<!-- Custom langue -->
+	<script>
+		var LANG_CODE = 'en-US';
+	</script>
+	@if (Auth::user()->admin->getLanguageCodeFull())
+		<script type="text/javascript" src="{{ URL::asset('assets/datepicker/i18n/datepicker.' . Auth::user()->admin->getLanguageCodeFull() . '.js') }}"></script>
+		<script>
+			LANG_CODE = '{{ Auth::user()->admin->getLanguageCodeFull() }}';
+		</script>
+	@endif
+
 </head>
 
 <body class="navbar-top  color-scheme-{{ Auth::user()->admin->getColorScheme() }}">

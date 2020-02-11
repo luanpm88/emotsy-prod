@@ -4,6 +4,9 @@ namespace Acelle\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
+use Acelle\Model\Plan;
+use Acelle\Cashier\Cashier;
+use Acelle\Cashier\SubscriptionTransaction;
 
 class CustomerController extends Controller
 {
@@ -542,6 +545,46 @@ class CustomerController extends Controller
 
         return view('admin.customers.sub_account', [
             'customer' => $customer
+        ]);
+    }
+
+    /**
+     * Assign plan to customer.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function assignPlan(Request $request, $uid)
+    {
+        $customer = \Acelle\Model\Customer::findByUid($uid);
+        $plans = Plan::getAvailablePlans();
+        $gateway = Cashier::getPaymentGateway();
+
+        // authorize
+        if (\Gate::denies('assignPlan', $customer)) {
+            return $this->notAuthorized();
+        }
+
+        // save posted data
+        if ($request->isMethod('post')) {
+            $plan = Plan::findByUid($request->plan_uid);
+
+            $customer->assignPlan($plan);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.customer.plan.assigned', [
+                    'plan' => $plan->name,
+                    'customer' => $customer->displayName(),
+                ]),
+            ], 201);
+        }
+
+        return view('admin.customers.assign_plan', [
+            'customer' => $customer,
+            'plans' => $plans,
+            'gateway' => $gateway,
         ]);
     }
 }

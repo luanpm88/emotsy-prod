@@ -29,7 +29,9 @@ use Carbon\Carbon;
 use Acelle\Cashier\Traits\BillableUserTrait;
 use Acelle\Cashier\Interfaces\BillableUserInterface;
 use Acelle\Model\Plan;
+use Acelle\Cashier\Cashier;
 use Acelle\Cashier\Subscription;
+use Acelle\Cashier\SubscriptionTransaction;
 
 class Customer extends Model implements BillableUserInterface
 {
@@ -124,7 +126,7 @@ class Customer extends Model implements BillableUserInterface
     public function subscription()
     {
         return $this->hasOne('Acelle\Cashier\Subscription', 'user_id', 'uid')
-            ->where('status', '<>', Subscription::STATUS_ENDED)
+            // ->where('status', '<>', Subscription::STATUS_ENDED)
             ->orderBy('created_at', 'desc');
     }
 
@@ -1402,12 +1404,10 @@ class Customer extends Model implements BillableUserInterface
      */
     public function currentPlanName()
     {
-        return is_object($this->user->admin) ?
-            trans('messages.admin_default_plan') :
-            (is_object($this->activeSubscription()) ?
-                $this->activeSubscription()->plan->name :
-                trans('messages.no_plan')
-            );
+        return (is_object($this->activeSubscription()) ?
+            $this->activeSubscription()->plan->name :
+            trans('messages.no_plan')
+        );
     }
 
     /**
@@ -1956,5 +1956,20 @@ class Customer extends Model implements BillableUserInterface
     public function automation2sCount()
     {
         return $this->automation2s()->count();
+    }
+
+    /**
+     * Assign plan to customer.
+     *
+     * @return void
+     */
+    public function assignPlan($plan)
+    {
+        if ($this->activeSubscription()) {
+            $this->activeSubscription()->cancelNow();
+        }
+
+        // assign new plan
+        Cashier::assignPlan($this, $plan);
     }
 }

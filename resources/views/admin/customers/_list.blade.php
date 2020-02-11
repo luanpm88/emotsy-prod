@@ -61,10 +61,27 @@
                     @can('update', $item)
                         <a href="{{ action('Admin\CustomerController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey-600 btn-icon"><i class="icon icon-pencil pr-0 mr-0"></i></a>
                     @endcan
-                    @if (Auth::user()->can('delete', $item) || Auth::user()->can('enable', $item) || Auth::user()->can('disable', $item))
+                    @if (Auth::user()->can('delete', $item) ||
+                        Auth::user()->can('enable', $item) ||
+                        Auth::user()->can('disable', $item) ||
+                        Auth::user()->can('assignPlan', $item)
+                    )
                         <div class="btn-group">
                             <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
                             <ul class="dropdown-menu dropdown-menu-right">
+                                @can('assignPlan', $item)
+                                    <li>
+                                        <a
+                                            href="{{ action('Admin\CustomerController@assignPlan', [
+                                                "uid" => $item->uid,
+                                            ]) }}"
+                                            class="assign_plan_button"
+                                        >
+                                            <i class="icon-clipboard2"></i>
+                                             {{ trans('messages.customer.assign_plan') }}
+                                        </a>
+                                    </li>
+                                @endcan
                                 @can('enable', $item)
                                     <li>
                                         <a link-confirm="{{ trans('messages.enable_customers_confirm') }}" href="{{ action('Admin\CustomerController@enable', ["uids" => $item->uid]) }}">
@@ -100,6 +117,18 @@
     </table>
     @include('elements/_per_page_select', ["items" => $customers])
     {{ $customers->links() }}
+
+    <script>        
+        $(function() {
+            $('.assign_plan_button').click(function(e) {
+                e.preventDefault();
+
+                var src = $(this).attr('href');
+                assignPlanModal.load(src);
+            });
+        });
+    </script>
+
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
         <i class="icon-users"></i>

@@ -1,5 +1,5 @@
 <script>
-    @foreach (['danger', 'warning', 'success', 'info', 'error', 'warning'] as $msg)
+    @foreach (['success'] as $msg)
         @if(Session::has('alert-' . $msg))
             $(document).ready(function() {
                 notify("{{ $msg }}", '{{ trans('messages.notify.' . $msg)}}', '{!! preg_replace('/[\r\n]+/', ' ', Session::get('alert-' . $msg)) !!}');

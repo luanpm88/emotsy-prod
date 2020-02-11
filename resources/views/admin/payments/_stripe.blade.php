@@ -19,6 +19,18 @@
 				'help_class' => 'payment',
 				'rules' => ['options.secret_key' => 'required'],
 			])
+
+			<h2 class="mt-40 mb-4">{{ trans('messages.stripe.require_valid_card') }}</h2>
+			<p>{{ trans('messages.stripe.require_valid_card.intro') }}</p>
+
+			@include('helpers.form_control', ['type' => 'checkbox2',
+                'class' => '',
+                'name' => 'options[always_ask_for_valid_card]',
+                'value' => $gateway['fields']['always_ask_for_valid_card'],
+                'label' => trans('messages.stripe.always_ask_for_valid_card'),
+                'options' => ['no','yes'],
+                'help_class' => 'payment',
+            ])
 			
 			<hr>
 			<div class="text-left">
@@ -30,4 +42,6 @@
 			</div>
 		</div>
 	</div>
+
+	
 </form>
