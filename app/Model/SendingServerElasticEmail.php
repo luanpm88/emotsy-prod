@@ -289,7 +289,8 @@ class SendingServerElasticEmail extends SendingServer
             throw new \Exception($json['error']);
         }
 
-        $domains = array_map(function($e) { return $e['domain']; }, $json['data']);
+        // just in case the 'domain' value comes in "domain.com (admin@emailaddress.com)"
+        $domains = array_map(function($e) { return preg_split('/\s+/', $e['domain'])[0]; }, $json['data']);
         return $domains;
     }
     
