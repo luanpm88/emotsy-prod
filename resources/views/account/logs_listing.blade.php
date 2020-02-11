@@ -10,7 +10,7 @@
 										<td>
 											<p class="mb-0">                                                
                                                 {!! $item->message() !!}<br />
-												<div class="text-muted2">{{ trans('messages.' . $item->type) }}</div>
+												<span class="text-muted2">{{ trans('messages.' . $item->type) }}</span>
                                             </p>
 										</td>
 										<td>
