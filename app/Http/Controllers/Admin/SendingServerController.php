@@ -667,7 +667,7 @@ class SendingServerController extends Controller
             } else {
                 // validation
                 $validator = \Validator::make($request->all(), [
-                    'domain' => 'required|regex:/^(?!:\/\/)(?=.{1,255}$)((.{1,63}\.){1,127}(?![0-9]*$)[a-z0-9-]+\.?)$/i',
+                    'domain' => 'required|regex:/^[a-zA-Z0-9][a-zA-Z0-9\-\_]+[a-zA-Z0-9]$/i',
                 ]);
                 
                 if (in_array(strtolower($request->domain), $server->getDomains())) {
@@ -704,6 +704,9 @@ class SendingServerController extends Controller
     public function removeDomain(Request $request, $uid, $domain)
     {
         $server = SendingServer::findByUid($request->uid);
+        
+        $domain = base64_decode($domain);
+
         if (checkEmail($domain)) {
             $server->removeEmail($domain);
         } else {

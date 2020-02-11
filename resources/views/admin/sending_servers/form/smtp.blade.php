@@ -207,7 +207,7 @@
                                         <span class="badge badge-success badge-lg">{{ trans('messages.sending_identity.status.active') }}</span>
                                     </td>
                                     <td>
-                                        <a href="{{ action('Admin\SendingServerController@removeDomain', [$server->uid, $domain]) }}"
+                                        <a href="{{ action('Admin\SendingServerController@removeDomain', [$server->uid, base64_encode($domain)]) }}"
                                             link-confirm="{{ trans('messages.sending_server.domain.remove_domain.confirm') }}"
                                             class="text-warning" link-method="POST">
                                               {{ trans('messages.sending_serbers.remove_email_domain') }}
