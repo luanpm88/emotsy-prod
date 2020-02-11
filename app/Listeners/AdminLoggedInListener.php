@@ -6,6 +6,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Acelle\Library\Notification\CronJob;
 use Acelle\Library\Notification\SystemUrl;
+use Acelle\Library\Notification\Subscription;
 use Acelle\Events\AdminLoggedIn;
 
 class AdminLoggedInListener
@@ -33,5 +34,8 @@ class AdminLoggedInListener
         
         // Check System URL
         SystemUrl::check();
+
+        // Check for pending subscriptions
+        Subscription::check();
     }
 }
