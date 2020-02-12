@@ -24,10 +24,14 @@ class Subscription
         }
 
         // If sending server not available
-        $server = $subscription->plan->primarySendingServer();
-        if (is_null($server)) {
-           return response()->view('errors.general', [ 'message' => "The plan you currently subscribe to ({$subscription->plan->name}) does not have any sending server. Log in as admin, then go to Plan setting page, make sure you add a sending server to this plan" ]);
+
+        if ($subscription->plan->useSystemSendingServer()) {
+            $server = $subscription->plan->primarySendingServer();
+            if (is_null($server)) {
+               return response()->view('errors.general', [ 'message' => __('messages.plan.sending_server.no_sending_server_error', ['plan' => $subscription->plan->name]) ]);
+            }
         }
+            
 
         return $next($request);
     }
