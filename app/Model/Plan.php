@@ -407,11 +407,26 @@ class Plan extends Model implements BillablePlanInterface
                 'quota_base' => 1,
                 'quota_unit' => 'hour',
             ],
+            '10000_per_hour' => [
+                'quota_value' => 10000,
+                'quota_base' => 1,
+                'quota_unit' => 'hour',
+            ],
+            '50000_per_hour' => [
+                'quota_value' => 50000,
+                'quota_base' => 1,
+                'quota_unit' => 'hour',
+            ],
             '10000_per_day' => [
                 'quota_value' => 10000,
                 'quota_base' => 1,
                 'quota_unit' => 'day',
-            ],            
+            ],       
+            '100000_per_day' => [
+                'quota_value' => 100000,
+                'quota_base' => 1,
+                'quota_unit' => 'day',
+            ],        
         ];
     }
     
