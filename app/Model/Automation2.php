@@ -761,9 +761,9 @@ class Automation2 extends Model
     /**
      * Get recent automations for switch
      */
-    public function getSwitchAutomations()
+    public function getSwitchAutomations($customer)
     {
-        return Automation2::where('id', '<>', $this->id)->orderBy('updated_at', 'desc')->limit(50);
+        return $customer->automation2s()->where('id', '<>', $this->id)->orderBy('updated_at', 'desc')->limit(50);
     }
 
     /**
