@@ -3520,3 +3520,15 @@ p.link-inline a {
 .bg-grey-light {
     background: #f2f2f2;
 }
+.dropdown-user .customer-warning-icon {
+    right: 0px;
+    position: absolute;
+    top: 6px;
+    font-weight: normal;
+}
+.dropdown-user .subscription-warning-icon {
+    right: 0px;
+    position: absolute;
+    top: 13px;
+    font-weight: normal;
+}

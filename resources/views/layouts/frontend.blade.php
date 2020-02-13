@@ -155,6 +155,10 @@
 						<img src="{{ action('CustomerController@avatar', Auth::user()->customer->uid) }}" alt="">
 						<span>{{ Auth::user()->customer->displayName() }}</span>
 						<i class="caret"></i>
+
+						@if (Auth::user()->customer->hasSubscriptionNotice())
+							<i class="material-icons customer-warning-icon text-danger">info</i>
+						@endif
 					</a>
 
 					<ul class="dropdown-menu dropdown-menu-right">
@@ -173,6 +177,9 @@
 						<li rel0="AccountSubscriptionController\index">
 							<a href="{{ action('AccountSubscriptionController@index') }}">
 								<i class="icon-quill4"></i> {{ trans('messages.subscriptions') }}
+								@if (Auth::user()->customer->hasSubscriptionNotice())
+									<i class="material-icons-outlined subscription-warning-icon text-danger">info</i>
+								@endif
 							</a>
 						</li>
 						<li><a href="{{ action("AccountController@profile") }}"><i class="icon-profile"></i> {{ trans('messages.account') }}</a></li>
