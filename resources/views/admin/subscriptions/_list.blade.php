@@ -115,8 +115,11 @@
 								@endif
 								@if (\Auth::user()->admin->can('rejectPending', $subscription))
 									<li>
-										<a data-method="POST" link-confirm="{{ trans('messages.subscription.reject_pending.confirm') }}"
-										  href="{{ action('Admin\SubscriptionController@rejectPending', $subscription->uid) }}">
+										<a data-method="POST"
+											class="rejectPending"
+											{{-- link-confirm="{{ trans('messages.subscription.reject_pending.confirm') }}" --}}
+										  	href="{{ action('Admin\SubscriptionController@rejectPending', $subscription->uid) }}"
+										>
 											{{ trans('messages.subscription.reject_pending') }}
 										</a>
 									</li>
@@ -154,6 +157,18 @@
 	</table>
 	@include('elements/_per_page_select', ["items" => $subscriptions])
 	{{ $subscriptions->links() }}
+
+	<script>        
+        $(function() {
+            $('.rejectPending').click(function(e) {
+                e.preventDefault();
+
+                var src = $(this).attr('href');
+                rejectPendingSub.load(src);
+            });
+        });
+    </script>
+
 @elseif (!empty(request()->keyword) || !empty(request()->filters))
 	<div class="empty-list">
 		<i class="icon-quill4"></i>

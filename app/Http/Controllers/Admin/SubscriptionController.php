@@ -318,21 +318,42 @@ class SubscriptionController extends Controller
             return $this->notAuthorized();
         }
 
-        try {
-            $gateway->rejectPending($subscription);
-        } catch (\Exception $ex) {
-            echo json_encode([
-                'status' => 'error',
-                'message' => $ex->getMessage(),
+        if ($request->isMethod('post')) {
+            $validator = \Validator::make($request->all(), ['reason' => 'required']);
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('admin.subscriptions.rejectPending', [
+                    'subscription' => $subscription,
+                    'gateway' => $gateway,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+            
+            // try reject
+            try {
+                $gateway->rejectPending($subscription, $request->reason);
+            } catch (\Exception $ex) {
+                $validator->errors()->add('reason', $ex->getMessage());
+                
+                return response()->view('admin.subscriptions.rejectPending', [
+                    'subscription' => $subscription,
+                    'gateway' => $gateway,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            // success
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.subscription.reject_pending.success'),
             ]);
-            return;
         }
 
-        echo json_encode([
-            'status' => 'success',
-            'message' => trans('messages.subscription.reject_pending.success'),
+        return view('admin.subscriptions.rejectPending', [
+            'subscription' => $subscription,
+            'gateway' => $gateway,
         ]);
-        return;
     }
 
     /**

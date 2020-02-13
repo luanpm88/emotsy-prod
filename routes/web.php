@@ -885,7 +885,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::match(['get','post'], 'admin/subscriptions/create', 'SubscriptionController@create');
     Route::post('admin/subscriptions/{id}/approve-pending', 'SubscriptionController@approvePending');
     Route::post('admin/subscriptions/{id}/renew', 'SubscriptionController@renew');
-    Route::post('admin/subscriptions/{id}/reject-pending', 'SubscriptionController@rejectPending');
+    Route::match(['get','post'], 'admin/subscriptions/{id}/reject-pending', 'SubscriptionController@rejectPending');
     Route::post('admin/subscriptions/{id}/set-active', 'SubscriptionController@setActive');
     Route::get('admin/subscriptions/{id}/invoices', 'SubscriptionController@invoices');
     Route::post('admin/subscriptions/{id}/change-plan', 'SubscriptionController@changePlan');

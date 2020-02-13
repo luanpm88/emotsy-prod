@@ -3129,4 +3129,6 @@
   'notification.delete.confirm' => 'You\'re about to delete :number notification(s).',
   'notifications.deleted' => '<strong>:number</strong> notification(s) was successfully deleted',
   'no_notifications' => 'There are no notifications yet',
+  'subscription.reject_pending_payment' => 'Reject payment',
+  'subscription.reject_pending_payment.leave_note' => 'Leave a note to your customer regarding the reason the payment is rejected',
 ) ?>

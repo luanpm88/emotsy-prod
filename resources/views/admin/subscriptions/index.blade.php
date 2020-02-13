@@ -86,5 +86,8 @@
 			
 			newSubscription.load(url);
 		});
+
+        // reject subscription modal
+		var rejectPendingSub = new Popup();
     </script>
 @endsection
