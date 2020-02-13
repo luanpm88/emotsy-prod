@@ -2,10 +2,11 @@
 	<a href="#" class="dropdown-toggle" data-toggle="dropdown" style="display: flex;
     align-items: center;
     height: 52px;">
-		<i class="material-icons">message</i> 
+		<i class="lnr lnr-alarm top-notification-icon"></i> 
 		<span class="visible-xs-inline-block position-right">{{ trans('messages.activity_log') }}</span>
 		@if (Acelle\Model\Notification::count())
-			<span class="badge badge-danger top-notification-alert">!</span>
+			{{-- <span class="badge badge-danger top-notification-alert">!</span> --}}
+			<i class="material-icons-outlined tabs-warning-icon text-danger top-notification-alert">info</i>
 		@endif
 	</a>
 	

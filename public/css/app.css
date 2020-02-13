@@ -3532,3 +3532,10 @@ p.link-inline a {
     top: 13px;
     font-weight: normal;
 }
+.top-notification-alert {
+    right: 7px;
+    top: 9px;
+}
+.top-notification-icon {
+    font-size: 20px !important;
+}
