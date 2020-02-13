@@ -1984,6 +1984,10 @@ class Customer extends Model implements BillableUserInterface
         $gateway = \Acelle\Cashier\Cashier::getPaymentGateway();
         
         if (is_object($this->subscription)) {
+            if ($this->subscription->isNew() || $this->subscription->isPending()) {
+                return true;
+            }
+
             if ($gateway->hasPending($this->subscription) || $gateway->hasError($this->subscription)) {
                 return true;
             }
