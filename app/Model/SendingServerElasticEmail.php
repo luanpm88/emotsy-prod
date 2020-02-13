@@ -172,7 +172,7 @@ class SendingServerElasticEmail extends SendingServer
             MailLog::info('webhook set!');
             self::$isWebhookSetup = true;
         } else {
-            $msg = 'ElasticEmail Erorr. Cannot setup webhook for "'.$subscribeUrl.'". Response from server: '.$response;
+            $msg = 'ElasticEmail Erorr. Cannot setup webhook for "'.$subscribeUrl.'". Response from server: '.json_encode($response);
             MailLog::error($msg);
             MailLog::error('Elastic endpoint: '.$endpoint);
             throw new \Exception($msg);

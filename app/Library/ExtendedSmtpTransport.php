@@ -36,10 +36,10 @@ class ExtendedSmtpTransport extends \Swift_SmtpTransport
      *
      * @return mixed
      */
-    public function executeCommand($command, $codes = array(), &$failures = null)
+    public function executeCommand($command, $codes = array(), &$failures = null, $pipeline = false, $address = null)
     {
         $this->rawTrasmissionData[] = $command;
-        $response = parent::executeCommand($command, $codes, $failures);
+        $response = parent::executeCommand($command, $codes, $failures, $pipeline, $address);
         $this->rawResponses[] = $response;
         $this->rawTrasmissionData[] = $response;
 
