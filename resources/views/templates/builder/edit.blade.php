@@ -14,7 +14,7 @@
         var CSRF_TOKEN = "{{ csrf_token() }}";
         var editor;
         
-        var templates = JSON.parse('{!! json_encode($templates) !!}');
+        var templates = {!! json_encode($templates) !!};
         
         $( document ).ready(function() {
             editor = new Editor({
@@ -42,7 +42,7 @@
                     '{{ url('/images/backgrounds/images14.jpg') }}',
                     '{{ url('/images/backgrounds/images15.jpg') }}',
                     '{{ url('/images/backgrounds/images16.jpg') }}',
-                    '{{ url('/images/backgrounds/images17.png') }}',
+                    '{{ url('/images/backgrounds/images17.png') }}'
                 ]
             });
           
