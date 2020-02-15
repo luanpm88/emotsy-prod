@@ -3131,4 +3131,7 @@
   'no_notifications' => 'There are no notifications yet',
   'subscription.reject_pending_payment' => 'Reject payment',
   'subscription.reject_pending_payment.leave_note' => 'Leave a note to your customer regarding the reason the payment is rejected',
+  'payments.paypal_subscription' => 'PayPal Subscription',
+  'payments.paypal_subscription.list_intro' => 'With PayPal Subscriptions, you can bill customers for
+    plans at regular intervals via their PayPal account',
 ) ?>

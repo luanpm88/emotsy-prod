@@ -194,7 +194,15 @@ class SubscriptionController extends Controller
         $gateway = Cashier::getPaymentGateway();
 
         if ($request->user()->admin->can('cancelNow', $subscription)) {
-            $gateway->cancelNow($subscription);
+            try {
+                $gateway->cancelNow($subscription);
+            } catch (\Exception $ex) {
+                echo json_encode([
+                    'status' => 'error',
+                    'message' => $ex->getMessage(),
+                ]);
+                return;
+            }
         }
 
         echo trans('messages.subscription.cancelled_now');

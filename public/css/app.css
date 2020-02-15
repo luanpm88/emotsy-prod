@@ -2020,11 +2020,17 @@ ul.dotted-list {
     line-height: 24px;
     padding: 12px 0 11px;
     border-bottom: 1px dotted #e0e0e0;
-    display: list-item;
+    display: flex;
 }
 .dotted-list>li>div {
     padding: 0;
     display: block;
+}
+.dotted-list>li>div:first-child {
+    width: 35% !important;
+}
+.dotted-list>li>div:last-child {
+    width: 55% !important;
 }
 .topborder>li:first-child {
     border-top: 1px dotted #e0e0e0;

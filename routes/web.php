@@ -206,14 +206,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('customers/admin-area', 'CustomerController@adminArea');
 });
 
-Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscription']], function () {
-    Route::get('/', 'HomeController@index');
-    Route::get('frontend/docs/api/v1', 'Controller@docsApiV1');
-    Route::get('/current_user_uid', 'UserController@showUid');
-
-    // Update current user profile
-    Route::get('account/api/renew', 'AccountController@renewToken');
-    Route::get('account/api', 'AccountController@api');
+Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function () {
+    // Customer profile/information
     Route::get('account/profile', 'AccountController@profile');
     Route::post('account/profile', 'AccountController@profile');
     Route::get('account/contact', 'AccountController@contact');
@@ -222,6 +216,16 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('account/logs/listing', 'AccountController@logsListing');
     Route::get('account/quota_log_2', 'AccountController@quotaLog2');
     Route::get('account/quota_log', 'AccountController@quotaLog');
+});
+
+Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscription']], function () {
+    Route::get('/', 'HomeController@index');
+    Route::get('frontend/docs/api/v1', 'Controller@docsApiV1');
+    Route::get('/current_user_uid', 'UserController@showUid');
+
+    // Update current user profile
+    Route::get('account/api/renew', 'AccountController@renewToken');
+    Route::get('account/api', 'AccountController@api');    
     Route::get('account/subscription', 'AccountController@subscription');
     Route::get('account/subscription/new', 'AccountController@subscriptionNew');
 

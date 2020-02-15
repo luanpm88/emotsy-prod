@@ -501,10 +501,10 @@ stat .stat-head {
   background: #777;
   border-color: #777;
 }
-.bg-coinpayments, .bg-stripe, .bg-braintree, .bg-direct, .bg-paypal {
+.bg-coinpayments, .bg-stripe, .bg-braintree, .bg-direct, .bg-paypal, .bg-paypal_subscription {
   position: relative;
 }
-.bg-coinpayments::after, .bg-stripe::after, .bg-braintree::after, .bg-direct::after, .bg-paypal::after {
+.bg-coinpayments::after, .bg-stripe::after, .bg-braintree::after, .bg-direct::after, .bg-paypal::after, .bg-paypal_subscription::after {
   content: "";
   background-image: url("../images/coinpayments-logo.png");
   background-size: 140px auto;
@@ -539,6 +539,12 @@ stat .stat-head {
     margin-left: -5px;
 }
 .bg-paypal::after {
+  background-image: url(../images/paypal-logo.png);
+  background-size: 57px;
+  margin-top: -14px;
+  margin-left: 7px;
+}
+.bg-paypal_subscription::after {
   background-image: url(../images/paypal-logo.png);
   background-size: 57px;
   margin-top: -14px;
