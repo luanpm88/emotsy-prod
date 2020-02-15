@@ -2261,7 +2261,7 @@ class CampaignController extends Controller
         $changeTemplate = Template::findByUid($template_uid);
 
         // authorize
-        if (!$request->user()->admin->can('update', $campaign)) {
+        if (!$request->user()->customer->can('update', $campaign)) {
             return $this->notAuthorized();
         }
 
@@ -2278,7 +2278,7 @@ class CampaignController extends Controller
         $campaign = \Acelle\Model\Campaign::findByUid($uid);
 
         // authorize
-        if (!$request->user()->admin->can('update', $campaign)) {
+        if (!$request->user()->customer->can('update', $campaign)) {
             return $this->notAuthorized();
         }
 
