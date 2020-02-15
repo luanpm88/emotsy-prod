@@ -14,7 +14,7 @@
         var CSRF_TOKEN = "{{ csrf_token() }}";
         var editor;
         
-        var templates = JSON.parse('{!! json_encode($templates) !!}');
+        var templates = {!! json_encode($templates) !!};
         
         $( document ).ready(function() {
             editor = new Editor({
