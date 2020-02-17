@@ -70,7 +70,7 @@
                     @else
                         <h3>{{ trans('messages.upgrade.title.current') }}</h3>
                         <p>{!! trans('messages.upgrade.wording.upload', [ 'current' => "<code>{$manager->getCurrentVersion()}</code>" ]) !!}</p>
-                        <p>Please make sure the upgrade package file size does not exceed the following upload limit settings:</p>
+                        <p>Upgrade may not work correctly if the upgrade package file size exceeds the upload limit set by your hosting's PHP settings:</p>
                         <ul>
                             <li><code>post_max_size</code> <strong>{{ ini_get('post_max_size') }}</strong></li>
                             <li><code>upload_max_filesize</code> <strong>{{ ini_get('upload_max_filesize') }}</strong></li>
