@@ -117,11 +117,6 @@ function tableFilter(form, custom_url) {
     .done(function( msg ) {
         container.html(msg);
 
-        // Uniform
-        container.find(".styled").uniform({
-            radioClass: 'choice'
-        });
-
         // Default tooltip
         container.find('[data-popup=tooltip]').tooltip({
             template: '<div class="tooltip"><div class="bg-teal-800"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div></div>'
@@ -130,10 +125,6 @@ function tableFilter(form, custom_url) {
         // Pagination class
         // ------------------------------
         form.find(".pagination").addClass('pagination-separated');
-
-        // Select2
-        // ------------------------------
-        form.find(".select").select2({minimumResultsForSearch: -1});
 
         // Hightlight
         if (typeof(keyword) != 'undefined' && keyword.trim() != '') {
@@ -152,6 +143,9 @@ function tableFilter(form, custom_url) {
         container.removeClass('loading');
         
         container.find('.inline-editable').editable();
+
+        // apply js
+        initJs(container);
     });
 }
 

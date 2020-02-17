@@ -841,6 +841,9 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::post('admin/account/contact', 'AccountController@contact');
 
     // Plan
+    Route::post('admin/plans/{uid}/visible/on', 'PlanController@visibleOn');
+    Route::post('admin/plans/{uid}/visible/off', 'PlanController@visibleOff');
+
     Route::match(['get', 'post'], 'admin/plans/{uid}/sending-server/subaccount', 'PlanController@sendingServerSubaccount');
     Route::match(['get', 'post'], 'admin/plans/{uid}/sending-server/own', 'PlanController@sendingServerOwn');
     Route::match(['get', 'post'], 'admin/plans/{uid}/sending-server/option', 'PlanController@sendingServerOption');

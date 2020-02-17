@@ -5,17 +5,30 @@
         @foreach ($plans as $key => $plan)
             <tr>
                 <td width="1%">
-                    <div class="text-nowrap">
-                        <div class="checkbox inline">
-                            <input type="hidden" class="node styled"
-                                custom-order="{{ $plan->custom_order }}"
-                                name="ids[]"
-                                value="{{ $plan->uid }}"
-                            />
-                        </div>
+                    <div class="text-nowrap d-flex align-items-canter">
                         @if (request()->sort_order == 'custom_order' && empty(request()->keyword))
                             <i data-action="move" class="icon icon-more2 list-drag-button"></i>
                         @endif
+                        @if (!$plan->visible)
+                            <a
+                                title="{{ trans('messages.plan.show') }}"
+                                data-method="POST"
+                                href="{{ action('Admin\PlanController@visibleOn', $plan->uid) }}"
+                                class="ajax_link plan-off {{ (\Auth::user()->can('visibleOn', $plan) ? 'xtooltip' : 'disabled') }}"
+                            >
+                                <i class="material-icons plan-off-icon">toggle_off</i>
+                            </a>
+                        @else
+                            <a
+                                title="{{ trans('messages.plan.hide') }}"
+                                link-confirm="{{ trans('messages.plans.hide.confirm') }}"
+                                data-method="POST"
+                                href="{{ action('Admin\PlanController@visibleOff', $plan->uid) }}"
+                                class="ajax_link plan-on {{ (\Auth::user()->can('visibleOff', $plan) ? 'xtooltip' : 'disabled') }}"
+                            >
+                                <i class="material-icons plan-on-icon">toggle_on</i>
+                            </a>
+                        @endif                        
                     </div>
                 </td>
                 <td>
@@ -53,7 +66,11 @@
                     @can('update', $plan)
                         <a href="{{ action('Admin\PlanController@general', $plan->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
                     @endcan
-                    @if (\Auth::user()->can('delete', $plan) || \Auth::user()->can('disable', $plan) || \Auth::user()->can('enable', $plan) || \Auth::user()->can('copy', $plan))
+                    @if (\Auth::user()->can('delete', $plan) ||
+                         \Auth::user()->can('disable', $plan) || 
+                         \Auth::user()->can('enable', $plan) || 
+                         \Auth::user()->can('copy', $plan)
+                    )
                         <div class="btn-group">
                             <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
                             <ul class="dropdown-menu dropdown-menu-right">
@@ -71,7 +88,7 @@
                                         </a>
                                     </li>
                                 @endif
-                                 @can('copy', $plan)
+                                @can('copy', $plan)
                                     <li>
                                         <a data-name="{{'Copy of '}}{{$plan->name}}" data-uid="{{$plan->uid}}" title="{{ trans('messages.copy') }}" class="copy-plan-link">
                                             <i class="icon icon-copy4"></i> {{ trans('messages.copy') }}

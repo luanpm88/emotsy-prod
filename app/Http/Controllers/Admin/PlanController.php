@@ -1006,4 +1006,64 @@ class PlanController extends Controller
             'plan' => $plan,
         ]);
     }
+
+    /**
+     * Show item.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function visibleOn(Request $request, $uid)
+    {
+        $plan = \Acelle\Model\Plan::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('visibleOn', $plan)) {
+            // 
+            return response()->json([
+                'status' => 'error',
+                'message' => trans('messages.plan.show.denied'),
+            ], 201);
+        }
+
+        //
+        $plan->visibleOn();
+
+        // Redirect to my lists page
+        return response()->json([
+            'status' => 'success',
+            'message' => trans('messages.plan.showed'),
+        ], 201);
+    }
+
+    /**
+     * Show item.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function visibleOff(Request $request, $uid)
+    {
+        $plan = \Acelle\Model\Plan::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('visibleOff', $plan)) {
+            // 
+            return response()->json([
+                'status' => 'error',
+                'message' => trans('messages.plan.hide.denied'),
+            ], 201);
+        }
+
+        //
+        $plan->visibleOff();
+
+        // Redirect to my lists page
+        return response()->json([
+            'status' => 'success',
+            'message' => trans('messages.plan.hidden'),
+        ], 201);
+    }
 }

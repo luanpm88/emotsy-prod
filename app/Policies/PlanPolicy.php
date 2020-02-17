@@ -67,6 +67,24 @@ class PlanPolicy
         return $can && $item->status != 'active' && $item->isValid();
     }
 
+    public function visibleOn(User $user, Plan $item)
+    {
+        $ability = $user->admin->getPermission('plan_update');
+        $can = $ability == 'all'
+                || ($ability == 'own' && $user->admin->id == $item->admin_id);
+
+        return $can && !$item->visible && $item->isActive();
+    }
+
+    public function visibleOff(User $user, Plan $item)
+    {
+        $ability = $user->admin->getPermission('plan_update');
+        $can = $ability == 'all'
+                || ($ability == 'own' && $user->admin->id == $item->admin_id);
+
+        return $can && $item->visible;
+    }
+
     public function copy(User $user, Plan $item)
     {
         $ability = $user->admin->getPermission('plan_copy');

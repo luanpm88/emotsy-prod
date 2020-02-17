@@ -10,6 +10,13 @@
 * ---------------------------------------------------------------------------- */
 
 function initJs(container) {
+    //
+    // xtooltip
+    // ------------------------------
+    container.find('.xtooltip').tooltipster({
+        theme: 'tooltipster-light'
+    });
+    
     // Select2
     container.find('.select').select2({
         minimumResultsForSearch: 101,
@@ -132,6 +139,11 @@ function initJs(container) {
     container.find(".file-styled").uniform({
         wrapperClass: 'bg-teal-400',
         fileButtonHtml: '<i class="icon-googleplus5"></i>'
+    });
+
+    // Uniform
+    container.find(".styled").uniform({
+        radioClass: 'choice'
     });
 }
 

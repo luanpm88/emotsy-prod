@@ -750,7 +750,6 @@ a.bg-active_with_pending:hover {
 }
 .xtooltip {
   border-bottom: 1px dashed #999;
-  cursor: help;
 }
 .tooltipster-sidetip.tooltipster-light .tooltipster-box {
     border-radius: 15px;

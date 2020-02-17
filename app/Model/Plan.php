@@ -336,6 +336,7 @@ class Plan extends Model implements BillablePlanInterface
     public function disable()
     {
         $this->status = PaymentMethod::STATUS_INACTIVE;
+        $this['visible'] = false;
 
         return $this->save();
     }
@@ -1516,6 +1517,28 @@ class Plan extends Model implements BillablePlanInterface
         if (!$this->isValid()) {
             $this->disable();
         }
+    }
+
+    /**
+     * Show plan.
+     *
+     * @return bool
+     */
+    public function visibleOff()
+    {
+        $this['visible'] = 0;
+        $this->save();
+    }
+
+    /**
+     * Hide plan.
+     *
+     * @return bool
+     */
+    public function visibleOn()
+    {
+        $this['visible'] = true;
+        $this->save();
     }
 
 }

@@ -3134,4 +3134,11 @@
   'payments.paypal_subscription' => 'PayPal Subscription',
   'payments.paypal_subscription.list_intro' => 'With PayPal Subscriptions, you can bill customers for
     plans at regular intervals via their PayPal account',
+  'plans.hide.confirm' => 'Are you sure you want to set your plan to invisible? Your users will no longer see this plan',
+  'plan.hidden' => 'The plan was hidden successfully',
+  'plan.showed' => 'The plan was showed successfully',
+  'plan.hide.denied' => 'You can not hide this plan',
+  'plan.show.denied' => 'You can not show this plan',
+  'plan.show' => 'Show this plan',
+  'plan.hide' => 'Hide this plan',
 ) ?>

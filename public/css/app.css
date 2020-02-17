@@ -3545,3 +3545,32 @@ p.link-inline a {
 .top-notification-icon {
     font-size: 20px !important;
 }
+.plan-off-icon, .plan-on-icon {
+    font-size: 40px;
+    margin-right: 10px;
+}
+.plan-off-icon:hover, .plan-on-icon:hover {
+    opacity: 0.8;
+}
+.plan-off-icon {
+    color: #888;
+}
+.align-items-canter {
+    align-items: center;
+}
+a.plan-off .spinner, a.plan-on .spinner {
+    width: 24px;
+    height: 24px;
+    position: relative;
+    margin: 0px auto;
+    margin-left: -45px;
+    margin-top: 0px;
+    margin-bottom: 9px;
+}
+.plan-off.disabled, .plan-on.disabled {
+    opacity: 0.2;
+    pointer-events: none;
+}
+.plan-off.xtooltip, .plan-on.xtooltip {
+    border: none;
+}
