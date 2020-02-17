@@ -845,9 +845,29 @@ class Plan extends Model implements BillablePlanInterface
      *
      * @return collect
      */
+    public static function getAllActiveVisible($admin = null)
+    {
+        $query = self::getAll()
+            ->where('plans.status', '=', self::STATUS_ACTIVE)
+            ->where('plans.visible', '=', true);
+
+        if (isset($admin) && !$admin->can('readAll', new \Acelle\Model\Plan())) {
+            $query = $query->where('plans.admin_id', '=', $admin->id);
+        }
+
+        $query = $query->orderBy('custom_order', 'asc');
+
+        return $query;
+    }
+
+    /**
+     * Get all items.
+     *
+     * @return collect
+     */
     public static function getAllActive($admin = null)
     {
-        $query = self::getAllActiveWithDefault();
+        $query = self::getAllActiveVisible();
 
         return $query;
     }
@@ -1463,7 +1483,7 @@ class Plan extends Model implements BillablePlanInterface
      */
     public static function getAvailablePlans()
     {
-        $plans = Plan::getAllActive()->get();
+        $plans = Plan::getAllActiveVisible()->get();
         
         $aPlans = [];
         foreach($plans as $plan) {
