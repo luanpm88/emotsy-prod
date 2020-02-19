@@ -10,6 +10,9 @@
 				<optgroup label="{{ trans('messages.email_verification') }}">
 					<option value="verification">{{ trans('messages.verification_result') }}</option>
 				</optgroup>
+				<optgroup label="{{ trans('messages.segment.other_cond') }}">
+					<option value="tag">{{ trans('messages.segment.tag') }}</option>
+				</optgroup>
 			</select>
 		</div>
 	</div>

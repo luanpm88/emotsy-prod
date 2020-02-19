@@ -22,19 +22,21 @@ function initJs(container) {
         minimumResultsForSearch: 101,
         templateResult: formatSelect2TextOption,
         templateSelection: formatSelect2TextSelected,
-        placeholder: function(){
-            $(this).attr('data-placeholder');
-        }
+        // placeholder: function(){
+        //     $(this).attr('data-placeholder');
+        // }
     });
 
     // Select2
     container.find('.select-tag').select2({
-        minimumResultsForSearch: 101,
+        minimumResultsForSearch: 20,
         templateResult: formatSelect2TextOption,
         templateSelection: formatSelect2TextSelected,
         placeholder: function(){
             $(this).attr('data-placeholder');
         },
+        dropdownAutoWidth : true,
+        width: 'auto',
         tags: true,
     });
     
@@ -903,14 +905,18 @@ $(function() {
 
             msg = msg.replace(/__index__/g, num);
 
-            $('.segment-conditions-container').append(msg);
+            var div = $(msg);
+            $('.segment-conditions-container').append(div);
 
-            var new_line = $('.segment-conditions-container .condition-line').last();
-            new_line.find('select').select2({
-                templateResult: formatSelect2TextOption,
-                templateSelection: formatSelect2TextSelected
-            });
-            new_line.find('select').trigger('change');
+            // var new_line = $('.segment-conditions-container .condition-line').last();
+            // div.find('select').select2({
+            //     templateResult: formatSelect2TextOption,
+            //     templateSelection: formatSelect2TextSelected
+            // });
+            initJs(div);
+            div.find('select').trigger('change');
+
+
         });
     });
 

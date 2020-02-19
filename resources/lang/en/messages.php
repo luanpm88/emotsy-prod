@@ -3141,4 +3141,8 @@
   'plan.show.denied' => 'You can not show this plan',
   'plan.show' => 'Show this plan',
   'plan.hide' => 'Hide this plan',
+  'automation.segment' => 'Segment',
+  'automation.segment.all_list' => 'A whole list',
+  'segment.tag' => 'Tag',
+  'segment.other_cond' => 'Other',
 ) ?>

@@ -31,6 +31,9 @@
 														<optgroup label="{{ trans('messages.email_verification') }}">
 															<option{{ strpos($condition->operator, 'verification') !== false ? " selected" : "" }} value="verification">{{ trans('messages.verification_result') }}</option>
 														</optgroup>
+														<optgroup label="{{ trans('messages.other') }}">
+															<option{{ strpos($condition->operator, 'tag') !== false ? " selected" : "" }} value="tag">{{ trans('messages.segment.tag') }}</option>
+														</optgroup>
 													</select>
 												</div>
 											</div>

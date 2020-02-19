@@ -558,6 +558,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('notifications/{id}/hide', 'NotificationController@hide');
     
     // Automation2
+    Route::get('automation2/{uid}/segment-select', 'Automation2Controller@segmentSelect');
+
     Route::match(['get', 'post'], 'automation2/{uid}/template/{email_uid}/edit-classic', 'Automation2Controller@templateEditClassic');
     Route::match(['get', 'post'], 'api/3.0/automations/{uid}/execute', 'Automation2Controller@executeApi');
 

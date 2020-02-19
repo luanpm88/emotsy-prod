@@ -179,6 +179,19 @@ class Segment extends Model
     }
 
     /**
+     * Get verification operators.
+     *
+     * @return options
+     */
+    public static function tagOperators()
+    {
+        return [
+            ['text' => trans('messages.contains'), 'value' => 'tag_contains'],
+            ['text' => trans('messages.not_contains'), 'value' => 'tag_not_contains'],
+        ];
+    }
+
+    /**
      * Get subscribers conditions.
      *
      * @return collect
@@ -269,7 +282,7 @@ class Segment extends Model
 
                 // add condition
                 $conditions[] = $cond;
-            } else {
+            } elseif (strpos($condition->operator, 'verification') === 0) {
                 switch ($condition->operator) {
                     case 'verification_equal':
                         // add condition
@@ -278,6 +291,18 @@ class Segment extends Model
                     case 'verification_not_equal':
                         // add condition
                         $conditions[] = '('.\DB::getTablePrefix().'email_verifications.result IS NULL OR '.\DB::getTablePrefix()."email_verifications.result != '".$condition->value."')";
+                        break;
+                    default:
+                }
+            } elseif (strpos($condition->operator, 'tag') === 0) {
+                switch ($condition->operator) {
+                    case 'tag_contains':
+                        // add condition
+                        $conditions[] = '('.\DB::getTablePrefix()."subscribers.tags LIKE " . db_quote('%"'.$keyword.'"%') . ')';
+                        break;
+                    case 'tag_not_contains':
+                        // add condition
+                        $conditions[] = '('.\DB::getTablePrefix()."subscribers.tags NOT LIKE " . db_quote('%"'.$keyword.'"%') . ')';
                         break;
                     default:
                 }
