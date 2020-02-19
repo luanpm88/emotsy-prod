@@ -131,6 +131,7 @@ class AutoTrigger extends Model
     {
         $this->logger()->info(sprintf('UPDATE > Trigger %s for "%s" - "%s" Start checking', $this->id, $this->automation2->name, $this->subscriber->email));
         $last = $this->getLatestAction();
+        
         if ($last == null) {
             $trigger = $this->getTrigger();
             $trigger->markAsLatest(true);
@@ -138,25 +139,45 @@ class AutoTrigger extends Model
             $last = $trigger;
         }
 
-        $this->logger()->info(sprintf('UPDATE > %s > Checking "%s"', $this->id, $last->getTitle()));
+        $this->logger()->info(sprintf('UPDATE > %s >Start checking "%s" from last action', $this->id, $last->getTitle()));
 
+        // For examxple, if Send already executed but it is the last element
+        if (is_null($last->getLastExecuted())) {
+            $firstCheck = true;
+        } else {
+            $firstCheck = false;
+        }
+
+        // * Send => always true
+        // * Evaluation => always true
+        // * Trigger => always true
+        // * Wait => true or false
         while ($last->execute() == true) { // true means: done with this step, should proceed next
             $this->updateAction($last); // update 'last_checked_at' field of Wait for example
-            $this->recordToTimeline($last);
+
+            if ($firstCheck) {
+                $this->recordToTimeline($last);
+            }
 
             $last = $this->moveToNextAction();
             if ($last == null) {
                 $this->logger()->info(sprintf('UPDATE > %s > End of flow, no more action to check', $this->id, $this->automation2->name, $this->subscriber->email));
                 break;
             }
+
+            if (is_null($last->getLastExecuted())) {
+                $firstCheck = true;
+            } else {
+                $firstCheck = false;
+            }
+
             $this->logger()->info(sprintf('UPDATE > %s > Checking "%s"', $this->id, $last->getTitle()));
         }
 
         if (!is_null($last)) {
-            $this->updateAction($last); // update 'last_checked_at' field of Wait for example
+            $this->updateAction($last); // update 'last_checked_at' field of Wait in case it returns false and jump here
             $this->logger()->info(sprintf('UPDATE > %s > Pending at "%s"', $this->id, $last->getTitle()));
         }
-
     }
 
     public function updateAction($action)
