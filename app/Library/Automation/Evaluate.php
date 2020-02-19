@@ -33,7 +33,7 @@ class Evaluate extends Action
         // IMPORTANT
         // If this is the latest also the last action of the workflow
         // no more execute, just return true
-        // UPDATE: check always, wait for new action
+        // UPDATE: check always, wait for open/click anyway! if it is the last action
         // if (!is_null($this->last_executed)) {
         //     $this->autoTrigger->logger()->info('Latest also last action');
         //     return true;
@@ -49,7 +49,8 @@ class Evaluate extends Action
 
         $this->recordLastExecutedTime();
 
-        return $result;
+        // always return true, not evaluation result!
+        return true;
     }
 
     public function evaluateCondition()
@@ -80,8 +81,14 @@ class Evaluate extends Action
     public function getActionDescription()
     {
         $nameOrEmail = $this->autoTrigger->subscriber->getFullNameOrEmail();
+        $emailUid = $this->getOption('email');
+        $email = Email::findByUid($emailUid);
 
-        return sprintf('User %s reads email entitled "Welcome email"', $nameOrEmail);
+        if ($this->getOption('type') == 'open') {
+            return sprintf('Tracking: waiting for user %s to READ email entitled "%s"', $nameOrEmail, $email->subject);
+        } else {
+            return sprintf('Tracking: waiting for user %s to CLICK email entitled "%s"', $nameOrEmail, $email->subject);
+        }
     }
 
     public function hasChild($e)
