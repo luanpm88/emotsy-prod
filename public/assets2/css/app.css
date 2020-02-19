@@ -1253,3 +1253,7 @@ a:hover label {
 .switch-automation .select2-container .select2-selection--single:focus {
   box-shadow: none;
 }
+.quick_note {
+  font-size: 81%;
+  color: #666;
+}

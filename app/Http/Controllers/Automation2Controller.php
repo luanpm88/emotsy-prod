@@ -1616,4 +1616,24 @@ class Automation2Controller extends Controller
             'email' => $email,
         ]);
     }
+
+    /**
+     * Segment select.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function segmentSelect(Request $request, $uid)
+    {
+        // init automation
+        $automation = Automation2::findByUid($uid);
+        
+        // authorize
+        if (\Gate::denies('view', $automation)) {
+            return $this->notAuthorized();
+        }
+        
+        return view('automation2.segmentSelect', [
+            'automation' => $automation,                          
+        ]);
+    }
 }
