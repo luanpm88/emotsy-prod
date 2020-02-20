@@ -741,8 +741,6 @@ function toTimeString($datetime)
  * @return object
  */
 function checkEmail($email) {
-    $find1 = strpos($email, '@');
-    $find2 = strpos($email, '.');
-    return ($find1 !== false && $find2 !== false && $find2 > $find1);
+    return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
  }
  
