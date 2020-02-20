@@ -3151,7 +3151,7 @@
   'campaign.template.builder.select' => 'Choose builder',
   'campaign.theme.selected' => 'The theme was successfully applied.',
   'campaign.template.uploaded' => 'Template was successfully uploaded.',
-  'automation.template.builder.select.intro' => 'The campaign content was successfully updated.
+  'automation.template.builder.select.intro' => 'The email content was successfully updated.
       Choose one of builders below to edit',
   'automation.template.builder.select' => 'Choose builder',
 ) ?>
