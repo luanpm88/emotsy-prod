@@ -37,5 +37,43 @@
         
             templatePopup.load(url);
         });
+
+        var builderSelectPopup = new Popup(null, undefined, {onclose: function() {
+            window.location = '{{ action('CampaignController@template', $campaign->uid) }}';
+        }});
+
+        $('.ajax_upload_form').submit(function(e) {
+            e.preventDefault();        
+            var url = $(this).attr('action');
+            var formData = new FormData($(this)[0]);
+
+            addMaskLoading();
+
+            // 
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: formData,
+                async: false,
+                cache: false,
+                contentType: false,
+                processData: false,
+                statusCode: {
+                    // validate error
+                    400: function (res) {
+                        alert('Something went wrong!');
+                    }
+                },
+                success: function (response) {
+                    removeMaskLoading();
+
+                    // notify
+                    notify('success', '{{ trans('messages.notify.success') }}', response.message);
+
+                    builderSelectPopup.load(response.url);
+                    templatePopup.hide();
+                }
+            });
+        });
     </script>
 @endsection

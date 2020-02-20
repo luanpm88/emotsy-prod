@@ -134,6 +134,7 @@ class Email extends Model
      */
     public function addTemplateFromLayout($layout)
     {
+
         $sDir = database_path('layouts/' . $layout);
         $this->loadFromDirectory($sDir);
     }
@@ -184,6 +185,8 @@ class Email extends Model
      */
     public function copyFromTemplate($template)
     {
+        Tool::xdelete($this->getStoragePath());
+
         \Acelle\Library\Tool::xcopy($template->getStoragePath(), $this->getStoragePath());
 
         // replace image url

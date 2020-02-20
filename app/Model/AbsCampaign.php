@@ -2522,6 +2522,11 @@ abstract class AbsCampaign extends Model
     public function addTemplateFromLayout($layout)
     {
         $sDir = database_path('layouts/' . $layout);
+
+        // delete old template
+        Tool::xdelete($this->getStoragePath());
+
+        // load
         $this->loadFromDirectory($sDir);
     }
 
@@ -2714,6 +2719,10 @@ abstract class AbsCampaign extends Model
         $zip->close();
         unlink($tmp_zip);
 
+        // delete old template
+        Tool::xdelete($this->getStoragePath());
+
+        // load template
         $this->loadFromDirectory($tmp_path);
 
         // remove tmp folder
@@ -2729,6 +2738,9 @@ abstract class AbsCampaign extends Model
      */
     public function copyFromTemplate($template)
     {
+        // delete old template
+        Tool::xdelete($this->getStoragePath());
+
         \Acelle\Library\Tool::xcopy($template->getStoragePath(), $this->getStoragePath());
 
         // replace image url

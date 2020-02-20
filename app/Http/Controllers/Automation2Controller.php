@@ -795,10 +795,37 @@ class Automation2Controller extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => trans('messages.automation.email.template.layout.selected'),
+                'url' => action('Automation2Controller@templateBuilderSelect', [
+                    'uid' => $automation->uid,
+                    'email_uid' => $email->uid,
+                ]),
             ], 201);
         }
 
         return view('automation2.email.template.layout', [
+            'automation' => $automation,
+            'email' => $email,
+        ]);
+    }
+
+    /**
+     * Select builder for editing template.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function templateBuilderSelect(Request $request, $uid, $email_uid)
+    {
+        $automation = Automation2::findByUid($uid);
+        $email = Email::findByUid($request->email_uid);
+
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+
+        return view('automation2.email.template.templateBuilderSelect', [
             'automation' => $automation,
             'email' => $email,
         ]);

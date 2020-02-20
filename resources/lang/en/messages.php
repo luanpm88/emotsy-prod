@@ -3145,4 +3145,13 @@
   'automation.segment.all_list' => 'A whole list',
   'segment.tag' => 'Tag',
   'segment.other_cond' => 'Other',
+  'campaign.layout.selected' => 'The layout was successfully applied.',
+  'campaign.template.builder.select.intro' => 'The campaign content was successfully updated.
+      Choose one of builders below to edit',
+  'campaign.template.builder.select' => 'Choose builder',
+  'campaign.theme.selected' => 'The theme was successfully applied.',
+  'campaign.template.uploaded' => 'Template was successfully uploaded.',
+  'automation.template.builder.select.intro' => 'The campaign content was successfully updated.
+      Choose one of builders below to edit',
+  'automation.template.builder.select' => 'Choose builder',
 ) ?>

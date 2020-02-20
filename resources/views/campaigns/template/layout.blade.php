@@ -21,8 +21,11 @@
                         <a href="javascript:;" class="select-template-layout" data-layout="{{ $name }}">
                             <div class="panel panel-flat panel-template-style">
                                 <div class="panel-body">
-									<a link-method="POST"
-										href="{{ action('CampaignController@templateLayout', ['uid' => $campaign->uid, 'layout' => $name]) }}"
+									<a 
+										href="{{ action('CampaignController@templateLayout', [
+                                            'uid' => $campaign->uid,
+                                            'layout' => $name]) }}"
+                                        class="choose-layout"
 									>
 										<img src="{{ url('images/template_styles/'.$name.'.png') }}" />
 										<label class="mb-20 text-center">{{ trans('messages.'.$name) }}</label>
@@ -43,6 +46,41 @@
             var url = $(this).attr('href');
         
             templatePopup.load(url);
+        });
+        
+        var builderSelectPopup = new Popup(null, undefined, {onclose: function() {
+            window.location = '{{ action('CampaignController@template', $campaign->uid) }}';
+        }});
+
+        $('.choose-layout').click(function(e) {
+            e.preventDefault();        
+            var url = $(this).attr('href');
+
+            addMaskLoading();
+
+            // 
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: {
+                    _token: CSRF_TOKEN,
+                },
+                statusCode: {
+                    // validate error
+                    400: function (res) {
+                        alert('Something went wrong!');
+                    }
+                },
+                success: function (response) {
+                    removeMaskLoading();
+
+                    // notify
+                    notify('success', '{{ trans('messages.notify.success') }}', response.message);
+
+                    builderSelectPopup.load(response.url);
+                    templatePopup.hide();
+                }
+            });
         });
     </script>
 @endsection

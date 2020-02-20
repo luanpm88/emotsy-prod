@@ -39,6 +39,10 @@
     </div>
         
     <script>
+		var builderSelectPopup = new Popup(null, undefined, {onclose: function() {
+            
+        }});
+
         $('a.select-layout').click(function(e) {
             e.preventDefault();
         
@@ -67,13 +71,8 @@
 					'uid' => $automation->uid,
 					'email_uid' => $email->uid,
 				]) }}');
-				
-				// open builder in iframe
-				var url = '{{ action('Automation2Controller@templateEdit', [
-                        'uid' => $automation->uid,
-                        'email_uid' => $email->uid,
-                    ]) }}';
-				openBuilder(url);
+
+				builderSelectPopup.load(response.url);
 
 				// notify
 				notify('success', '{{ trans('messages.notify.success') }}', response.message);

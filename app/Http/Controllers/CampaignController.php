@@ -471,10 +471,36 @@ class CampaignController extends Controller
                 $campaign->addTemplateFromLayout($request->layout);
             }
 
-            return redirect()->action('CampaignController@templateEdit', $campaign->uid);
+            // return redirect()->action('CampaignController@templateEdit', $campaign->uid);
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.campaign.layout.selected'),
+                'url' => action('CampaignController@templateBuilderSelect', $campaign->uid),
+            ]);
         }
 
         return view('campaigns.template.layout', [
+            'campaign' => $campaign,
+        ]);
+    }
+
+    /**
+     * Select builder for editing template.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function templateBuilderSelect(Request $request, $uid)
+    {
+        $campaign = \Acelle\Model\Campaign::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        return view('campaigns.template.templateBuilderSelect', [
             'campaign' => $campaign,
         ]);
     }
@@ -581,7 +607,12 @@ class CampaignController extends Controller
             $template = \Acelle\Model\Template::findByUid($request->template);
             $campaign->copyFromTemplate($template);
 
-            return redirect()->action('CampaignController@templateEdit', $campaign->uid);
+            // return redirect()->action('CampaignController@templateEdit', $campaign->uid);
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.campaign.theme.selected'),
+                'url' => action('CampaignController@templateBuilderSelect', $campaign->uid),
+            ]);
         }
 
         return view('campaigns.template.theme', [
@@ -627,7 +658,12 @@ class CampaignController extends Controller
         if ($request->isMethod('post')) {
             $campaign->uploadTemplate($request);
 
-            return redirect()->action('CampaignController@templateEdit', $campaign->uid);
+            // return redirect()->action('CampaignController@template', $campaign->uid);
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.campaign.template.uploaded'),
+                'url' => action('CampaignController@templateBuilderSelect', $campaign->uid),
+            ]);
         }
 
         return view('campaigns.template.upload', [

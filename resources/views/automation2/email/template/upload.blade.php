@@ -39,6 +39,10 @@
     </div>
 		
 	<script>
+		var builderSelectPopup = new Popup(null, undefined, {onclose: function() {
+				
+		}});
+		
 		$('.template-upload-form').submit(function(e) {
 			e.preventDefault();
 			
@@ -71,13 +75,11 @@
 						'uid' => $automation->uid,
 						'email_uid' => $email->uid,
 					]) }}');
-					
-					// iframe builder
-					var url = '{{ action('Automation2Controller@templateEdit', [
+
+					builderSelectPopup.load('{{ action('Automation2Controller@templateBuilderSelect', [
 						'uid' => $automation->uid,
 						'email_uid' => $email->uid,
-					]) }}';
-					openBuilder(url);
+					]) }}');
 
 					// notify
 					notify(data.status, '{{ trans('messages.notify.success') }}', data.message);

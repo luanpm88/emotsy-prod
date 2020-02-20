@@ -49,7 +49,7 @@
                             <a href="{{ action('CampaignController@templateCreate', $campaign->uid) }}" class="btn btn-primary bg-grey-600 mr-5">
                                 {{ trans('messages.campaign.change_template') }}
                             </a>
-                            <a href="{{ action('CampaignController@templateEdit', $campaign->uid) }}" class="btn btn-primary">
+                            <a href="{{ action('CampaignController@templateEdit', $campaign->uid) }}" class="btn btn-primary mr-5">
                                 {{ trans('messages.campaign.email_builder_pro') }}
                             </a>
                             <a href="{{ action('CampaignController@builderClassic', $campaign->uid) }}" class="btn btn-default">
@@ -90,7 +90,7 @@
     </a>
         
     <script>
-		var templatePopup = new Popup();
+		var templatePopup = new Popup();        
     
         $(document).ready(function() {
         

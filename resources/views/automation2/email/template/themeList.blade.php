@@ -19,6 +19,10 @@
 @endif
 
 <script>
+    var builderSelectPopup = new Popup(null, undefined, {onclose: function() {
+            
+    }});
+
     $('.template-choose').click(function() {
         var url = '{{ action('Automation2Controller@templateTheme', [
             'uid' => $automation->uid,
@@ -41,13 +45,11 @@
                 'uid' => $automation->uid,
                 'email_uid' => $email->uid,
             ]) }}');
-            
-            // iframe builder
-			var url = '{{ action('Automation2Controller@templateEdit', [
-				'uid' => $automation->uid,
-				'email_uid' => $email->uid,
-			]) }}';        
-            openBuilder(url);
+
+            builderSelectPopup.load('{{ action('Automation2Controller@templateBuilderSelect', [
+                'uid' => $automation->uid,
+                'email_uid' => $email->uid,
+            ]) }}');
 
             // notify
             notify('success', '{{ trans('messages.notify.success') }}', response.message);
