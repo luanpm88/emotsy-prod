@@ -29,7 +29,7 @@
                 <h3 class="mt-30 mb-20">{{ trans('messages.automation.choose_a_mail_list') }}</h3>
                 <p class="mb-10">{{ trans('messages.automation.choose_a_mail_list.intro') }}</p>
                     
-                <div class="row mb-4">
+                <div class="row">
                     <div class="col-md-6">
                         @include('helpers.form_control', [
                             'name' => 'mail_list_uid',
@@ -40,6 +40,14 @@
                             'options' => Auth::user()->customer->readCache('MailListSelectOptions', []),
                             'rules' => $automation->rules(),
                         ])
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-10">
+                        <div class="automation-segment">
+
+                        </div>
                     </div>
                 </div>
                 
@@ -53,6 +61,15 @@
     </div>
         
     <script>
+        // automation segment
+        var automationSegment = new Box($('.automation-segment'));
+        $('[name=mail_list_uid]').change(function(e) {
+            var url = '{{ action('Automation2Controller@segmentSelect') }}?list_uid=' + $(this).val();
+
+            automationSegment.load(url);
+        });
+        $('[name=mail_list_uid]').change();
+
         $('#automationCreate').submit(function(e) {
             e.preventDefault();
             

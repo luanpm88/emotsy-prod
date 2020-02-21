@@ -66,6 +66,7 @@
     <script type="text/javascript" src="{{ URL::asset('js/iframe_modal.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('js/mc.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('js/popup.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('assets2/js/box.js') }}"></script>
 	<!-- /theme JS files -->
 
 	@include('layouts._script_vars')

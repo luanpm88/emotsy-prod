@@ -14,7 +14,7 @@ class AddSegmentIdToAutomation2s extends Migration
     public function up()
     {
         Schema::table('automation2s', function (Blueprint $table) {
-            $table->integer('segment_id')->unsigned();
+            $table->text('segment_id')->nullable();
         });
     }
 
@@ -26,7 +26,7 @@ class AddSegmentIdToAutomation2s extends Migration
     public function down()
     {
         Schema::table('automation2s', function (Blueprint $table) {
-            //
+            $table->dropColumn('segment_id');
         });
     }
 }

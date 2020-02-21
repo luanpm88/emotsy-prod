@@ -68,7 +68,7 @@ class Automation2Controller extends Controller
         // saving
         if($request->isMethod('post')) {
             // fill before save
-            $automation->fill($request->all());
+            $automation->fillRequest($request);
             
             // make validator
             $validator = Validator::make($request->all(), $automation->rules());
@@ -117,7 +117,7 @@ class Automation2Controller extends Controller
         }
         
         // fill before save
-        $automation->fill($request->all());
+        $automation->fillRequest($request);
             
         // make validator
         $validator = Validator::make($request->all(), $automation->rules());
@@ -1622,18 +1622,33 @@ class Automation2Controller extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function segmentSelect(Request $request, $uid)
+    public function segmentSelect(Request $request)
     {
-        // init automation
-        $automation = Automation2::findByUid($uid);
-        
-        // authorize
-        if (\Gate::denies('view', $automation)) {
-            return $this->notAuthorized();
+        if (!$request->list_uid) {
+            return '';
         }
+
+        // init automation
+        if ($request->uid) {
+            $automation = Automation2::findByUid($request->uid);
+
+            // authorize
+            if (\Gate::denies('view', $automation)) {
+                return $this->notAuthorized();
+            }
+        } else {
+            $automation = new Automation2();
+
+            // authorize
+            if (\Gate::denies('create', $automation)) {
+                return $this->notAuthorized();
+            }
+        }
+        $list = MailList::findByUid($request->list_uid);        
         
         return view('automation2.segmentSelect', [
-            'automation' => $automation,                          
+            'automation' => $automation,
+            'list' => $list,
         ]);
     }
 }
