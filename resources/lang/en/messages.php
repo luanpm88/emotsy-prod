@@ -3164,4 +3164,5 @@
     represent of using the template',
   'template.thumb.upload_thumbnail_url' => 'Select thumbnail url',
   'template.thumb.upload_thumbnail_url.intro' => 'Enter image url below which will be used as template thumbnail',
+  'template.thumb.uploaded' => 'Template thumbnail was uploaded successfully',
 ) ?>
