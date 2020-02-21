@@ -753,7 +753,7 @@ class TemplateController extends Controller
         if ($request->isMethod('post')) {
             // make validator
             $validator = \Validator::make($request->all(), [
-                'url' => 'required|regex:/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/',
+                'url' => 'required|url',
             ]);
 
             // redirect if fails

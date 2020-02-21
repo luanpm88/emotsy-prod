@@ -2283,7 +2283,7 @@ a.loading, button.loading {
     top: 0;
     left: 0;
     text-align: center;
-    z-index: 10000;
+    z-index: 1000000;
 }
 .mask-loading-effect .content {
     display: block;
