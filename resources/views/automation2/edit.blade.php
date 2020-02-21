@@ -133,7 +133,7 @@
 		<div class="automation2">
 			<div class="diagram text-center scrollbar-inner">				
 				<svg id="svg" style="overflow: auto" width="100%" height="1800" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-					<text x="435" y="30" alignment-baseline="middle" text-anchor="middle">Automation starts when the following trigger condition is met</text>
+					<text x="435" y="30" alignment-baseline="middle" text-anchor="middle">{{ trans('messages.automation.designer.intro') }}</text>
 
 				</svg>
 
