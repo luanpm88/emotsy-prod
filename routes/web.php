@@ -317,6 +317,9 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('lists/{list_uid}/pages/{alias}/preview', 'PageController@preview');
 
     // Template
+    Route::match(['get','post'], 'templates/{uid}/update-thumb-url', 'TemplateController@updateThumbUrl');
+    Route::match(['get','post'], 'templates/{uid}/update-thumb', 'TemplateController@updateThumb');
+
     Route::get('templates/{uid}/builder/change-template/{change_uid}', 'TemplateController@builderChangeTemplate');
     Route::get('templates/builder/templates', 'TemplateController@builderTemplates');
     Route::post('templates/builder/create', 'TemplateController@builderCreate');

@@ -69,6 +69,13 @@
                                         </a>
                                     </li>
                                 @endif
+                                @if (Auth::user()->customer->can('update', $template))
+                                    <li>
+                                        <a class="upload-thumb-button" href="{{ action('TemplateController@updateThumb', $template->uid) }}">
+                                            <i class="icon-file-picture"></i> {{ trans("messages.template.upload_thumbnail") }}
+                                        </a>
+                                    </li>
+                                @endif
                                 @if (Auth::user()->customer->can('copy', $template))
                                     <li>
                                         <a
@@ -93,6 +100,19 @@
     </table>
     @include('elements/_per_page_select', ["items" => $templates])
     {{ $templates->links() }}
+    
+    <script>
+		var thumbPopup = new Popup();        
+    
+        $('.upload-thumb-button').click(function(e) {
+            e.preventDefault();
+            
+            var url = $(this).attr('href');
+            
+            thumbPopup.load(url);
+        });
+    </script>
+
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
         <i class="icon-magazine"></i>

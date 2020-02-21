@@ -3574,3 +3574,7 @@ a.plan-off .spinner, a.plan-on .spinner {
 .plan-off.xtooltip, .plan-on.xtooltip {
     border: none;
 }
+.nav-tabs.inline-tabs {
+    border: none;
+    display: inline-block;
+}

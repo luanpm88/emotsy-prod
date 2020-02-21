@@ -3156,4 +3156,12 @@
   'automation.template.builder.select.intro' => 'The email content was successfully updated.
       Choose one of builders below to edit',
   'automation.template.builder.select' => 'Choose builder',
+  'template.upload_thumbnail' => 'Change thumbnail',
+  'template.thumb.upload' => 'Upload',
+  'template.thumb.url' => 'Url',
+  'template.thumb.upload_thumbnail' => 'Upload thumbnail',
+  'template.thumb.upload_thumbnail.intro' => 'Upload image for template thumbnail when it shows in list or
+    represent of using the template',
+  'template.thumb.upload_thumbnail_url' => 'Select thumbnail url',
+  'template.thumb.upload_thumbnail_url.intro' => 'Enter image url below which will be used as template thumbnail',
 ) ?>

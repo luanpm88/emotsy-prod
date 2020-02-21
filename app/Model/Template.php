@@ -558,7 +558,7 @@ class Template extends Model
     public function getThumb()
     {
         // find index
-        $names = array('thumbnail.jpg', 'thumbnail.png', 'thumb.jpg', 'thumb.png');
+        $names = array('thumbnail.png', 'thumbnail.jpg', 'thumbnail.png', 'thumb.jpg', 'thumb.png');
         foreach ($names as $name) {
             if (is_file($file = $this->getStoragePath() . $name)) {
                 return $file;
@@ -755,12 +755,23 @@ class Template extends Model
     }
     
     /**
-     * Delete template and it's directory.
+     * Upload template thumbnail.
      *
      * @return mixed
      */
-    public function deleteTemplate()
+    public function uploadThumbnail($file)
     {
-        
+        $file->move($this->getStoragePath(), 'thumbnail.png');
+    }
+
+    /**
+     * Upload template thumbnail Url.
+     *
+     * @return mixed
+     */
+    public function uploadThumbnailUrl($url)
+    {
+        $contents = file_get_contents($url);
+        file_put_contents($this->getStoragePath() . 'thumbnail.png', $contents);
     }
 }
