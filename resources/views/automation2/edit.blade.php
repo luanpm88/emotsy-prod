@@ -60,7 +60,7 @@
 				<i class="material-icons-outlined automation-head-icon ml-2">alarm</i>
 			</div>
 			<div class="automation-top-menu">
-				<span class="mr-3"><i>Last saved: 2 minutes</i></span>
+				<span class="mr-3"><i>{{ trans('messages.automation.designer.last_saved', [ 'minute' => rand(1,3) ]) }}</i></span>
 				<a href="{{ action('Automation2Controller@index') }}" class="action">
 					<i class="material-icons-outlined mr-2">arrow_back</i>
 					{{ trans('messages.automation.go_back') }}

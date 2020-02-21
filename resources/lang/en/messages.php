@@ -1355,6 +1355,7 @@
   'triggers' => 'Triggers',
   'disable_automation_before_add_event_confirm' => 'Automation <span class="text-semibold text-teal-800">:name</span> is already running. Please disable the automation before editing its workflow. You can enable it again once you are done.',
   'automation.designer.intro' => 'Automation starts when the following trigger condition is met',
+  'automation.designer.last_saved' => 'Last savved: :minute minutes',
   'automations.disabled' => 'One or more automations were successfully disabled',
   'automation.disabled' => 'Automation was successfully disabled|One or more automations were successfully disabled',
   'automations.enabled' => 'One or more automations were successfully enabled',
