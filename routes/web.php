@@ -564,7 +564,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     
     // Automation2
     Route::get('automation2/{uid}/template/{email_uid}/builder-select', 'Automation2Controller@templateBuilderSelect');
-    Route::get('automation2/{uid}/segment-select', 'Automation2Controller@segmentSelect');
+    Route::get('automation2/segment-select', 'Automation2Controller@segmentSelect');
 
     Route::match(['get', 'post'], 'automation2/{uid}/template/{email_uid}/edit-classic', 'Automation2Controller@templateEditClassic');
     Route::match(['get', 'post'], 'api/3.0/automations/{uid}/execute', 'Automation2Controller@executeApi');

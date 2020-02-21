@@ -34,8 +34,8 @@ function initJs(container) {
     // Select2
     container.find('.select').select2({
         minimumResultsForSearch: 20,
-        templateResult: formatSelect2TextOption,
-        templateSelection: formatSelect2TextSelected,
+        // templateResult: formatSelect2TextOption,
+        // templateSelection: formatSelect2TextSelected,
         placeholder: function(){
             $(this).attr('data-placeholder');
         },

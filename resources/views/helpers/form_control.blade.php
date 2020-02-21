@@ -35,7 +35,7 @@
         @include('helpers._' . $type)
 
         @if (!empty($quick_note))
-            <span class="quick_note">
+            <span class="quick_note small">
                 {!! $quick_note !!}
             </span>
         @endif

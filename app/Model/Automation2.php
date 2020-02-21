@@ -829,4 +829,48 @@ class Automation2 extends Model
             $this->resetListRelatedData();
         }
     }
+    
+    /**
+     * Fill from request.
+     */
+    public function fillRequest($request)
+    {
+        // fill attributes
+        $this->fill($request->all());
+
+        // fill segments
+        $segments = [];
+        $this->segment_id = null;
+        if(!empty($request->segment_uid)) {
+            foreach($request->segment_uid as $segmentUid) {
+                $segments[] = \Acelle\Model\Segment::findByUid($segmentUid)->id;
+            }
+
+            if (!empty($segments)) {
+                $this->segment_id = implode(',', $segments);
+            }
+        }
+    }
+
+    /**
+     * Get segments.
+     */
+    public function getSegments()
+    {
+        if (!$this->segment_id) {
+            return collect([]);
+        }
+
+        $segments = \Acelle\Model\Segment::whereIn('id', explode(',', $this->segment_id))->get();
+
+        return $segments;
+    }
+
+    /**
+     * Get segments uids.
+     */
+    public function getSegmentUids()
+    {
+        return $this->getSegments()->map->uid->toArray();
+    }
 }

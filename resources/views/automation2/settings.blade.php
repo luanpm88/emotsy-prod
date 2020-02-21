@@ -30,6 +30,10 @@
                 'options' => Auth::user()->customer->readCache('MailListSelectOptions', []),
                 'rules' => $automation->rules(),
             ])
+
+            <div class="automation-segment">
+
+            </div>
             
             @include('helpers.form_control', [
                 'type' => 'select',
@@ -62,6 +66,17 @@
 </div>
     
 <script>
+    // automation segment
+    var automationSegment = new Box($('.automation-segment'));
+    $('[name=mail_list_uid]').change(function(e) {
+        var url = '{{ action('Automation2Controller@segmentSelect') }}?uid={{ $automation->uid }}&list_uid=' + $(this).val();
+
+        automationSegment.load(url);
+    });
+    $('[name=mail_list_uid]').change();
+
+
+    // set automation name
     setAutomationName('{{ $automation->name }}');
 
     $('#automationUpdate').submit(function(e) {
@@ -125,7 +140,6 @@
         
         var confirm = $(this).attr('data-confirm');
         var url = $(this).attr('href');
-    console.log(url);
 
         var dialog = new Dialog('confirm', {
             message: confirm,
