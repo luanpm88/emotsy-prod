@@ -642,4 +642,88 @@ class TemplateController extends Controller
         
         $template->changeTemplate($changeTemplate);
     }
+
+    /**
+     * Update template thumb.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function updateThumb(Request $request, $uid)
+    {
+        $template = Template::findByUid($uid);
+        
+        // authorize
+        if (!$request->user()->admin->can('update', $template)) {
+            return $this->notAuthorized();
+        }
+
+        if ($request->isMethod('post')) {
+            // make validator
+            $validator = \Validator::make($request->all(), [
+                'file' => 'required',
+            ]);
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('templates.updateThumb', [
+                    'template' => $template,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+            
+            // update thumb
+            $template->uploadThumbnail($request->file);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.template.thumb.uploaded'),
+            ], 201);
+        }
+
+        return view('admin.templates.updateThumb', [
+            'template' => $template,
+        ]);
+    }
+
+    /**
+     * Update template thumb url.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function updateThumbUrl(Request $request, $uid)
+    {
+        $template = Template::findByUid($uid);
+        
+        // authorize
+        if (!$request->user()->admin->can('update', $template)) {
+            return $this->notAuthorized();
+        }
+
+        if ($request->isMethod('post')) {
+            // make validator
+            $validator = \Validator::make($request->all(), [
+                'url' => 'required|url',
+            ]);
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('templates.updateThumbUrl', [
+                    'template' => $template,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+            
+            // update thumb
+            $template->uploadThumbnailUrl($request->url);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.template.thumb.uploaded'),
+            ], 201);
+        }
+
+        return view('admin.templates.updateThumbUrl', [
+            'template' => $template,
+        ]);
+    }
 }

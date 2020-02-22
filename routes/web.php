@@ -645,6 +645,9 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/users', 'UserController');
 
     // Template
+    Route::match(['get','post'], 'admin/templates/{uid}/update-thumb-url', 'TemplateController@updateThumbUrl');
+    Route::match(['get','post'], 'admin/templates/{uid}/update-thumb', 'TemplateController@updateThumb');
+
     Route::get('admin/templates/{uid}/builder/change-template/{change_uid}', 'TemplateController@builderChangeTemplate');
     Route::get('admin/templates/builder/templates', 'TemplateController@builderTemplates');
     Route::post('admin/templates/builder/create', 'TemplateController@builderCreate');
