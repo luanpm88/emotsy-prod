@@ -93,13 +93,12 @@
     </form>
         
     <script>
-        var createAutomationPopup;
+        var createAutomationPopup = new Popup();
     
         function showCreateCampaignPopup() {
             var url = '{{ action("Automation2Controller@create") }}';
-            
-            createAutomationPopup = new Popup(url);            
-            createAutomationPopup.load();            
+                  
+            createAutomationPopup.load(url);            
         }
         
         $(document).ready(function() {
