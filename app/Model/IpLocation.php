@@ -25,6 +25,7 @@ namespace Acelle\Model;
 use App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log as LaravelLog;
+use Acelle\Library\Notification\BackendError;
 
 class IpLocation extends Model
 {
@@ -62,14 +63,18 @@ class IpLocation extends Model
             $location->zipcode = $geoip->getZipcode();
             $location->latitude = $geoip->getLatitude();
             $location->longitude = $geoip->getLongitude();
+            $location->save();
         } catch (\Exception $e) {
-            echo $e->getMessage();
             // Note log
+            $title = 'GeoIP Error';
+            BackendError::cleanupDuplicateNotifications($title);
+            BackendError::info([
+                'title' => $title,
+                'message' => 'Cannot resolve IP address. '.$e->getMessage()
+            ]);
+
             LaravelLog::warning('Cannot get IP location info: '.$e->getMessage());
         }
-
-        $location->save();
-
         return $location;
     }
 
