@@ -76,7 +76,7 @@
                             <ul class="dropdown-menu dropdown-menu-right">
                                 @if (Auth::user()->admin->can('enable', $plan))
                                     <li>
-                                        <a link-confirm="{{ trans('messages.enable_plans_confirm') }}" href="{{ action('Admin\PlanController@enable', ["uids" => $plan->uid]) }}">
+                                        <a class="enable-plan" href="{{ action('Admin\PlanController@enable', ["uids" => $plan->uid]) }}">
                                             <i class="icon-checkbox-checked2"></i> {{ trans('messages.enable') }}
                                         </a>
                                     </li>
@@ -111,6 +111,68 @@
     </table>
     @include('elements/_per_page_select', ["items" => $plans])
     {{ $plans->links() }}
+
+    <script>
+        $('.enable-plan').click(function(e) {
+            e.preventDefault();
+
+            var confirm = `{{ trans('messages.plan.enable.confirm') }}`;
+            var url = $(this).attr('href');
+
+            var dialog = new Dialog('confirm', {
+                message: confirm,
+                ok: function(dialog) {                    
+                    $.ajax({
+                        url: url,
+                        method: 'POST',
+                        data: {
+                            _token: CSRF_TOKEN,
+                        },
+                        statusCode: {
+                            // validate error
+                            400: function (res) {
+                                alert('Something went wrong!');
+                            }
+                        },
+                        success: function (response) {
+                            // notify
+                            notify('success', '{{ trans('messages.notify.success') }}', response.message);
+
+                            // 
+                            tableFilterAll();
+
+                            // visible confirm
+                            var vdialog = new Dialog('confirm', {
+                                message: `{{ trans('messages.plan.visible_on.confirm') }}`,
+                                ok: function(dialog) {                    
+                                    $.ajax({
+                                        url: response.visible_url,
+                                        method: 'POST',
+                                        data: {
+                                            _token: CSRF_TOKEN,
+                                        },
+                                        statusCode: {
+                                            // validate error
+                                            400: function (res) {
+                                                alert('Something went wrong!');
+                                            }
+                                        },
+                                        success: function (response) {
+                                            // notify
+                                            notify('success', '{{ trans('messages.notify.success') }}', response.message);
+
+                                            // 
+                                            tableFilterAll();
+                                        }
+                                    });
+                                },
+                            });
+                        }
+                    });
+                },
+            });
+        });
+    </script>
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
         <i class="icon-clipboard2"></i>

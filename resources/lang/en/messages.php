@@ -1010,7 +1010,9 @@
   'plan.created' => 'Plan was successfully created',
   'plans.disabled' => 'Plan was successfully disabled',
   'plans.enabled' => 'Plan was successfully enabled',
-  'enable_plans_confirm' => 'You\'re about to enable :number plan(s).',
+  'plan.enable.confirm' => 'You\'re about to enable the plan.',
+  'plan.visible_on.confirm' => 'The selected plan was successfully enabled. Do you want to also
+    make it visible to your users for subscribing to?.',
   'disable_plans_confirm' => 'You\'re about to disable :number plan(s).',
   'plan_empty_line_1' => 'You have no plan',
   'plans.deleted' => 'Plan was successfully deleted',

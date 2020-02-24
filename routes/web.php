@@ -886,7 +886,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/plans/sort', 'PlanController@sort');
     Route::get('admin/plans/delete', 'PlanController@delete');
     Route::get('admin/plans/disable', 'PlanController@disable');
-    Route::get('admin/plans/enable', 'PlanController@enable');
+    Route::post('admin/plans/enable', 'PlanController@enable');
     Route::post('admin/plans/copy', 'PlanController@copy');
     Route::resource('admin/plans', 'PlanController');
 

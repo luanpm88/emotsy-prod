@@ -66,7 +66,7 @@ class Dialog {
                             `+this.message+`
                         </div>
                         <div class="dialog-footer">
-                            <button class="btn btn-primary dialog-ok mr-2">`+LANG_OK+`</button>
+                            <button class="btn btn-primary btn-mc_primary dialog-ok mr-2">`+LANG_OK+`</button>
                             <button class="btn btn-outline-secondary dialog-cancel mr-2">`+LANG_CANCEL+`</button>
                         </div>
                     </div>
@@ -88,7 +88,7 @@ class Dialog {
                                 `+this.message+`
                             </div>
                             <div class="dialog-footer">
-                                <button class="btn btn-primary dialog-ok mr-2">`+LANG_OK+`</button>
+                                <button class="btn btn-primary btn-mc_primary dialog-ok mr-2">`+LANG_OK+`</button>
                             </div>
                         </div>
                     `;
@@ -104,7 +104,7 @@ class Dialog {
                                 </h2>
                                 `+this.message+`
                                 <div>
-                                    <button class="btn btn-info dialog-ok mr-2 mt-4 px-5">`+LANG_OK+`</button>
+                                    <button class="btn btn-info btn-mc_primary dialog-ok mr-2 mt-4 px-5">`+LANG_OK+`</button>
                                 </div>
                             </div>
                         </div>

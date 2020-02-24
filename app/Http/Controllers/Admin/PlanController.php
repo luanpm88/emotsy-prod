@@ -294,7 +294,11 @@ class PlanController extends Controller
         }
 
         // Redirect to my lists page
-        echo trans('messages.plans.enabled');
+        return response()->json([
+            'status' => 'success',
+            'message' => trans('messages.plans.enabled'),
+            'visible_url' => action('Admin\PlanController@visibleOn', $request->uids),
+        ], 201);
     }
 
     /**
