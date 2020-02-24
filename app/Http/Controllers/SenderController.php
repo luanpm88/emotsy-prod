@@ -36,7 +36,7 @@ class SenderController extends Controller
         $server = $subscription->plan->primarySendingServer();
 
         if ($subscription->plan->useOwnSendingServer()) {
-            $email = true;
+            $email = false;
             $domain = true;
         } else {    
             $email = $server->allowVerifyingOwnEmails() || $server->allowVerifyingOwnEmailsRemotely();

@@ -1,7 +1,9 @@
 <div class="row">
     <div class="col-md-12">
         <ul class="nav nav-tabs nav-tabs-top page-second-nav">
-            @if (  Auth::user()->customer->subscription->plan->useOwnSendingServer() || Auth::user()->customer->subscription->plan->primarySendingServer()->allowVerifyingOwnEmails() || Auth::user()->customer->subscription->plan->primarySendingServer()->allowVerifyingOwnEmailsRemotely() ) {
+            @if (Auth::user()->customer->subscription->plan->useOwnSendingServer())
+            
+            @elseif ( Auth::user()->customer->subscription->plan->primarySendingServer()->allowVerifyingOwnEmails() || Auth::user()->customer->subscription->plan->primarySendingServer()->allowVerifyingOwnEmailsRemotely() ) {
                 <li rel0="SenderController">
                     <a href="{{ action('SenderController@index') }}" class="level-1">
                     <i class="icon-envelop2 mr-10"></i> {{ trans('messages.email_addresses') }}
