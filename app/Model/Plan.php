@@ -1484,11 +1484,16 @@ class Plan extends Model implements BillablePlanInterface
     public static function getAvailablePlans()
     {
         $plans = Plan::getAllActiveVisible()->get();
+        $service = \Acelle\Cashier\Cashier::getPaymentGateway();
         
         $aPlans = [];
         foreach($plans as $plan) {
             if ($plan->isAvailable()) {
-                $aPlans[] = $plan;
+                if (config('cashier.gateway') !== 'paypal_subscription' ||
+                    $service->findPlanConnection($plan)
+                ) {
+                    $aPlans[] = $plan;
+                }
             }
         }
         

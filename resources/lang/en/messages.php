@@ -2511,6 +2511,8 @@
   'no_primary_payment' => 'No Payment Gateway selected. Please go to Admin / Setting / Payment Gateways to select one',
   'subscription_done.direct.email' => 'Hello :customer, <br/>Your subscription to :plan plan was successfully created.<br>
     Click <a href=":link">here</a> to check your subscription status and process with payment.',
+  'subscription_done.paypal_subscription.email' => 'Hello :customer, <br/>Your subscription to :plan plan was successfully created.<br>
+    Click <a href=":link">here</a> to check your subscription status and process with payment.',
   'subscription_done.stripe.email' => 'Hello :customer, <br/>Your subscription to :plan plan was successfully created.<br>
     Click <a href=":link">here</a> to check your subscription status and process with payment.',
   'subscription.next_invoice' => 'Next invoice',

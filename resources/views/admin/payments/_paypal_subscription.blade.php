@@ -92,44 +92,46 @@
 					<p>{{ trans('messages.payment.paypal.connect_your_plans.intro') }}<p>
 
 					<div class="mc-list mt-20">
-						@foreach (Acelle\Model\Plan::getAvailablePlans() as $plan)
-							<div class="list-item d-flex align-items-center">
-								<div class="list-setting-main mr-auto" style="width: 50%">
-									<h4 class="title text-bold">
-										{{ $plan->name }}
-									</h4>
-									<p>{{ $plan->description }}</p>
-								</div>
-								<div class="list-setting-main mr-auto">
-									<h4 class="title text-bold">
-										{{ $plan->getBillableFormattedPrice() }}
-									</h4>
-									<p class="text-muted">{{ $plan->displayFrequencyTime() }}</p>
-								</div>
-								<div class="list-setting-footer text-right" style="width: 20%">
+						@foreach (Acelle\Model\Plan::getAllActive()->get() as $plan)
+							@if ($plan->price > 0)
+								<div class="list-item d-flex align-items-center">
+									<div class="list-setting-main mr-auto" style="width: 50%">
+										<h4 class="title text-bold">
+											{{ $plan->name }}
+										</h4>
+										<p>{{ $plan->description }}</p>
+									</div>
+									<div class="list-setting-main mr-auto">
+										<h4 class="title text-bold">
+											{{ $plan->getBillableFormattedPrice() }}
+										</h4>
+										<p class="text-muted">{{ $plan->displayFrequencyTime() }}</p>
+									</div>
+									<div class="list-setting-footer text-right" style="width: 20%">
 
-									@if ($service->findPlanConnection($plan))
-										<span class="">{{ trans('messages.payment.paypal_subscription.plan.connected') }}</span>
-										<a link-method="POST" link-confirm="{{ trans('messages.payment.paypal_subscription.disconnect_plan.confirm') }}"
-											class="btn btn-mc_default ml-5"
-											href="{{ action('Admin\PaymentController@paypalSubscriptionDisconnectPlan', $plan->uid) }}"
-										>
-											{{ trans('messages.payment.paypal_subscription.disconnect_plan') }}
-										</a>
-									@else
-										<form
-											action="{{ action('Admin\PaymentController@paypalSubscriptionConnectPlan', $plan->uid) }}"
-											method="POST" class="form-validate-jquery"
-										>
-											{{ csrf_field() }}
-											<button class="btn btn-mc_primary ml-5" href="">
-												{{ trans('messages.payment.paypal_subscription.connect_plan') }}
-											</button>
-										</form>
-									@endif
-									
+										@if ($service->findPlanConnection($plan))
+											<span class="">{{ trans('messages.payment.paypal_subscription.plan.connected') }}</span>
+											<a link-method="POST" link-confirm="{{ trans('messages.payment.paypal_subscription.disconnect_plan.confirm') }}"
+												class="btn btn-mc_default ml-5"
+												href="{{ action('Admin\PaymentController@paypalSubscriptionDisconnectPlan', $plan->uid) }}"
+											>
+												{{ trans('messages.payment.paypal_subscription.disconnect_plan') }}
+											</a>
+										@else
+											<form
+												action="{{ action('Admin\PaymentController@paypalSubscriptionConnectPlan', $plan->uid) }}"
+												method="POST" class="form-validate-jquery"
+											>
+												{{ csrf_field() }}
+												<button class="btn btn-mc_primary ml-5" href="">
+													{{ trans('messages.payment.paypal_subscription.connect_plan') }}
+												</button>
+											</form>
+										@endif
+										
+									</div>
 								</div>
-							</div>
+							@endif
 						@endforeach
 					</div>
 
