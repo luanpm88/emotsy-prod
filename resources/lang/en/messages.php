@@ -1013,6 +1013,8 @@
   'plan.enable.confirm' => 'You\'re about to enable the plan.',
   'plan.visible_on.confirm' => 'The selected plan was successfully enabled. Do you want to also
     make it visible to your users for subscribing to?.',
+  'plan.enable_and_visible.confirm' => 'You are about to enable the selected plan. Do you want to
+    also make it visible to your users for subscribing to?',
   'disable_plans_confirm' => 'You\'re about to disable :number plan(s).',
   'plan_empty_line_1' => 'You have no plan',
   'plans.deleted' => 'Plan was successfully deleted',
@@ -2587,6 +2589,7 @@
   'notify.warning' => 'Warning',
   'notify.info' => 'Information',
   'notify.error' => 'Error',
+  'notify.confirmation' => 'Confirmation',
   'subscription.finished' => 'Thank you! You are now subscribed to <strong>:plan</strong> plan.',
   'subscription.direct.confirm' => 'Confirm',
   'subscription.click_here_to_cancel_now' => 'Click here if you want to change other plan',

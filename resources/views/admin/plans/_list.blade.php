@@ -76,7 +76,11 @@
                             <ul class="dropdown-menu dropdown-menu-right">
                                 @if (Auth::user()->admin->can('enable', $plan))
                                     <li>
-                                        <a class="enable-plan" href="{{ action('Admin\PlanController@enable', ["uids" => $plan->uid]) }}">
+                                        <a class="enable-plan"
+                                            href=""
+                                            href_yes="{{ action('Admin\PlanController@enable', ["uids" => $plan->uid, "visible" => true]) }}"
+                                            href_no="{{ action('Admin\PlanController@enable', ["uids" => $plan->uid, "visible" => false]) }}"
+                                        >
                                             <i class="icon-checkbox-checked2"></i> {{ trans('messages.enable') }}
                                         </a>
                                     </li>
@@ -116,14 +120,15 @@
         $('.enable-plan').click(function(e) {
             e.preventDefault();
 
-            var confirm = `{{ trans('messages.plan.enable.confirm') }}`;
-            var url = $(this).attr('href');
+            var confirm = `{{ trans('messages.plan.enable_and_visible.confirm') }}`;
+            var href_yes = $(this).attr('href_yes');
+            var href_no = $(this).attr('href_no');
 
-            var dialog = new Dialog('confirm', {
+            var dialog = new Dialog('yesno', {
                 message: confirm,
-                ok: function(dialog) {                    
+                no: function(dialog) {
                     $.ajax({
-                        url: url,
+                        url: href_no,
                         method: 'POST',
                         data: {
                             _token: CSRF_TOKEN,
@@ -140,33 +145,28 @@
 
                             // 
                             tableFilterAll();
+                        }
+                    });
+                },
+                yes: function(dialog) {                    
+                    $.ajax({
+                        url: href_yes,
+                        method: 'POST',
+                        data: {
+                            _token: CSRF_TOKEN,
+                        },
+                        statusCode: {
+                            // validate error
+                            400: function (res) {
+                                alert('Something went wrong!');
+                            }
+                        },
+                        success: function (response) {
+                            // notify
+                            notify('success', '{{ trans('messages.notify.success') }}', response.message);
 
-                            // visible confirm
-                            var vdialog = new Dialog('confirm', {
-                                message: `{{ trans('messages.plan.visible_on.confirm') }}`,
-                                ok: function(dialog) {                    
-                                    $.ajax({
-                                        url: response.visible_url,
-                                        method: 'POST',
-                                        data: {
-                                            _token: CSRF_TOKEN,
-                                        },
-                                        statusCode: {
-                                            // validate error
-                                            400: function (res) {
-                                                alert('Something went wrong!');
-                                            }
-                                        },
-                                        success: function (response) {
-                                            // notify
-                                            notify('success', '{{ trans('messages.notify.success') }}', response.message);
-
-                                            // 
-                                            tableFilterAll();
-                                        }
-                                    });
-                                },
-                            });
+                            // 
+                            tableFilterAll();
                         }
                     });
                 },

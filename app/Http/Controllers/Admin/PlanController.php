@@ -290,6 +290,10 @@ class PlanController extends Controller
             // authorize
             if (\Gate::allows('update', $item)) {
                 $item->enable();
+
+                if ($request->visible) {
+                    $item->visibleOn();
+                }
             }
         }
 

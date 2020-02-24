@@ -19,6 +19,16 @@ class Dialog {
             this.ok = this.options.ok;
         }
 
+        // on yes
+        if (this.options.yes != null) {
+            this.yes = this.options.yes;
+        }
+
+        // on no
+        if (this.options.no != null) {
+            this.no = this.options.no;
+        }
+
         // on cancel
         if (this.options.cancel != null) {
             this.cancel = this.options.cancel;
@@ -109,6 +119,25 @@ class Dialog {
                             </div>
                         </div>
                     `;
+                case "yesno":
+                    if (this.title == null) {
+                        this.title = LANG_CONFIRMATION;
+                    }
+                    return `
+                    <div class="dialog-container">
+                        <div class="dialog-header">
+                            <h2 class="title">`+this.title+`</h2>
+                            <i class="lnr lnr-cross close"></i>
+                        </div>
+                        <div class="dialog-body">
+                            `+this.message+`
+                        </div>
+                        <div class="dialog-footer">
+                            <button class="btn btn-primary btn-mc_primary dialog-yes mr-2">`+LANG_YES+`</button>
+                            <button class="btn btn-outline-secondary dialog-no mr-2">`+LANG_NO+`</button>
+                        </div>
+                    </div>
+                    `;
             case y:
               // code block
               break;
@@ -164,6 +193,24 @@ class Dialog {
         _this.dialog.find(".dialog-ok").click(function() {
             if (_this.ok != null) {
                 _this.ok(_this);
+            }
+            
+            _this.hide();
+        });
+
+        // click yes button
+        _this.dialog.find(".dialog-yes").click(function() {
+            if (_this.yes != null) {
+                _this.yes(_this);
+            }
+            
+            _this.hide();
+        });
+
+        // click no button
+        _this.dialog.find(".dialog-no").click(function() {
+            if (_this.no != null) {
+                _this.no(_this);
             }
             
             _this.hide();
