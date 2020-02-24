@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Acelle\Http\Requests;
 use Acelle\Http\Controllers\Controller;
 use Acelle\Model\Setting;
+use Acelle\Model\Plan;
 use Illuminate\Support\MessageBag;
 use Acelle\Cashier\Cashier;
 use Acelle\Cashier\Subscription;
@@ -36,10 +37,18 @@ class PaymentController extends Controller
     {
         $service = Cashier::getPaymentGateway($name);
         $gateway = Setting::getPaymentGateway($name);
+
+        try {
+            $service->validate();
+            $isValid = true;
+        } catch (\Exception $ex) {
+            $isValid = false;
+        }
         
         return view('admin.payments.edit', [
             'gateway' => $gateway,
             'service' => $service,
+            'isValid' => $isValid,
         ]);
     }
 
@@ -119,5 +128,77 @@ class PaymentController extends Controller
             $request->session()->flash('alert-error', trans('messages.payment_gateway.not_valid', ['message' => $ex->getMessage()]));
             return redirect()->action('Admin\PaymentController@edit', $name);
         }
+    }
+    
+    /**
+     * Connect paypal plan.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $name
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function paypalSubscriptionConnectPlan(Request $request, $plan_uid)
+    {
+        $service = Cashier::getPaymentGateway('paypal_subscription');
+        $plan = Plan::findByUid($plan_uid);
+
+        $service->connectPlan($plan);
+
+        $request->session()->flash('alert-success', trans('messages.payment_gateway.paypal_subscription.plan.connected'));
+        return redirect()->action('Admin\PaymentController@edit', 'paypal_subscription');
+    }
+
+    /**
+     * Disonnect paypal plan.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $name
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function paypalSubscriptionDisconnectPlan(Request $request, $plan_uid)
+    {
+        $service = Cashier::getPaymentGateway('paypal_subscription');
+        $plan = Plan::findByUid($plan_uid);
+
+        $service->disconnectPlan($plan);
+
+        $request->session()->flash('alert-success', trans('messages.payment_gateway.paypal_subscription.plan.disconnected'));
+        return redirect()->action('Admin\PaymentController@edit', 'paypal_subscription');
+    }
+
+    /**
+     * Connect paypal.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $name
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function paypalSubscriptionConnect(Request $request)
+    {
+        $service = Cashier::getPaymentGateway('paypal_subscription');
+        $service->initPaypalProduct();
+
+        $request->session()->flash('alert-success', trans('messages.payment_gateway.paypal_subscription.connected'));
+        return redirect()->action('Admin\PaymentController@edit', 'paypal_subscription');
+    }
+
+    /**
+     * Disconnect paypal.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $name
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function paypalSubscriptionDisconnect(Request $request)
+    {
+        $service = Cashier::getPaymentGateway('paypal_subscription');
+        $service->removePaypalProduct();
+
+        $request->session()->flash('alert-success', trans('messages.payment_gateway.paypal_subscription.disconnected'));
+        return redirect()->action('Admin\PaymentController@edit', 'paypal_subscription');
     }
 }

@@ -3136,6 +3136,8 @@
   'payments.paypal_subscription' => 'PayPal Subscription',
   'payments.paypal_subscription.list_intro' => 'With PayPal Subscriptions, you can bill customers for
     plans at regular intervals via their PayPal account',
+  'payment.paypal_subscription.wording' => 'With PayPal Subscriptions, you can bill customers for
+    plans at regular intervals via their PayPal account',
   'plans.hide.confirm' => 'Are you sure you want to set your plan to invisible? Your users will no longer see this plan',
   'plan.hidden' => 'The plan was hidden successfully',
   'plan.showed' => 'The plan was showed successfully',
@@ -3165,4 +3167,25 @@
   'template.thumb.upload_thumbnail_url' => 'Select thumbnail url',
   'template.thumb.upload_thumbnail_url.intro' => 'Enter image url below which will be used as template thumbnail',
   'template.thumb.uploaded' => 'Template thumbnail was uploaded successfully',
+  'payment.paypal.connect_your_plans' => 'Connect your plans',
+  'payment.paypal.connect_your_plans.intro' => 'Connect your plans with PayPal in order to enable recurring payment',
+  'payment.paypal_subscription.connect' => 'Connect',
+  'payment.paypal_subscription.connect_plan' => 'Connect',
+  'payment.paypal_subscription.disconnect_plan' => 'Disconnect',
+  'payment.paypal_subscription.connection' => 'Connection',
+  'payment.paypal_subscription.connected_to_paypal' => 'Connected to PayPal',
+  'payment.paypal_subscription.connected_to_paypal.wording' => 'You are now connected to PayPal subscription service through
+    the `:name`. Click <a href=":dashboard">HERE</a> to go to PayPal application dashboard or
+    <a link-method="POST" link-confirm="You are about to disconnect from PayPal. This can not be undone" href=":disconnect">
+    click here to disconnect from PayPal</a>.
+    <span class="badge badge-primary bg-grey badge-large mt-4">PayPal Service ID: :product_id</span>',
+  'payment.paypal_subscription.connect_to_paypal' => 'Connect to PayPal',
+  'payment.paypal_subscription.connect_to_paypal.wording' => 'You are not connected to PayPal subscription service. Click button
+    bellow to connect.',
+  'payment_gateway.paypal_subscription.connected' => 'Connected from PayPal service successfully',
+  'payment_gateway.paypal_subscription.disconnected' => 'Disconnected from PayPal service successfully',
+  'payment_gateway.paypal_subscription.plan.connected' => 'Connected from PayPal plan successfully',
+  'payment_gateway.paypal_subscription.plan.disconnected' => 'Disconnected from PayPal plan successfully',
+  'payment.paypal_subscription.plan.connected' => 'connected',
+  'payment.paypal_subscription.disconnect_plan.confirm' => 'You are about to disconnect this plan. This can be undone.',
 ) ?>

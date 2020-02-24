@@ -1,3 +1,5 @@
+<h3>{{ trans('messages.payment.options') }}</h3>
+
 <form enctype="multipart/form-data" action="{{ action('Admin\PaymentController@update', $gateway['name']) }}" method="POST" class="form-validate-jquery">
     {{ csrf_field() }}	
 	<div class="row">

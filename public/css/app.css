@@ -3578,3 +3578,13 @@ a.plan-off .spinner, a.plan-on .spinner {
     border: none;
     display: inline-block;
 }
+.mc-list .list-item {
+    border-bottom: solid 1px #ddd;
+}
+.mc-list .list-item:first-child {
+    border-top: solid 1px #ddd;
+}
+.badge-large {
+    font-size: 100% !important;
+    padding: 5px 10px;
+}

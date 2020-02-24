@@ -34,8 +34,6 @@
 				</p>
 			</div>
 		</div>
-		
-		<h3>{{ trans('messages.payment.options') }}</h3>
 			
 		@include('admin.payments._' . $gateway['name']) 
 
