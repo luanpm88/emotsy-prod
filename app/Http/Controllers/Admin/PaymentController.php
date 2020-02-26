@@ -143,7 +143,12 @@ class PaymentController extends Controller
         $service = Cashier::getPaymentGateway('paypal_subscription');
         $plan = Plan::findByUid($plan_uid);
 
-        $service->connectPlan($plan);
+        try {
+            $service->connectPlan($plan);
+        } catch (\Exception $e) {
+            $request->session()->flash('alert-error', 'PyPal Subscription service error: ' . $e->getMessage());
+            return redirect()->action('Admin\PaymentController@edit', 'paypal_subscription');
+        }        
 
         $request->session()->flash('alert-success', trans('messages.payment_gateway.paypal_subscription.plan.connected'));
         return redirect()->action('Admin\PaymentController@edit', 'paypal_subscription');
@@ -162,7 +167,12 @@ class PaymentController extends Controller
         $service = Cashier::getPaymentGateway('paypal_subscription');
         $plan = Plan::findByUid($plan_uid);
 
-        $service->disconnectPlan($plan);
+        try {
+            $service->disconnectPlan($plan);
+        } catch (\Exception $e) {
+            $request->session()->flash('alert-error', 'PyPal Subscription service error: ' . $e->getMessage());
+            return redirect()->action('Admin\PaymentController@edit', 'paypal_subscription');
+        }
 
         $request->session()->flash('alert-success', trans('messages.payment_gateway.paypal_subscription.plan.disconnected'));
         return redirect()->action('Admin\PaymentController@edit', 'paypal_subscription');
@@ -179,7 +189,13 @@ class PaymentController extends Controller
     public function paypalSubscriptionConnect(Request $request)
     {
         $service = Cashier::getPaymentGateway('paypal_subscription');
-        $service->initPaypalProduct();
+        
+        try {
+            $service->initPaypalProduct();
+        } catch (\Exception $e) {
+            $request->session()->flash('alert-error', 'PyPal Subscription service error: ' . $e->getMessage());
+            return redirect()->action('Admin\PaymentController@edit', 'paypal_subscription');
+        }
 
         $request->session()->flash('alert-success', trans('messages.payment_gateway.paypal_subscription.connected'));
         return redirect()->action('Admin\PaymentController@edit', 'paypal_subscription');
@@ -196,7 +212,13 @@ class PaymentController extends Controller
     public function paypalSubscriptionDisconnect(Request $request)
     {
         $service = Cashier::getPaymentGateway('paypal_subscription');
-        $service->removePaypalProduct();
+
+        try {
+            $service->removePaypalProduct();
+        } catch (\Exception $e) {
+            $request->session()->flash('alert-error', 'PyPal Subscription service error: ' . $e->getMessage());
+            return redirect()->action('Admin\PaymentController@edit', 'paypal_subscription');
+        }        
 
         $request->session()->flash('alert-success', trans('messages.payment_gateway.paypal_subscription.disconnected'));
         return redirect()->action('Admin\PaymentController@edit', 'paypal_subscription');

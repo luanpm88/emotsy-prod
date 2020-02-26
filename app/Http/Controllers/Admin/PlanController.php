@@ -254,7 +254,11 @@ class PlanController extends Controller
             return $this->notAuthorized();
         }
 
-        $plan->saveAll($request);
+        try {
+            $plan->saveAll($request);
+        } catch (\Exception $e) {
+            return redirect()->back()->with('alert-error', trans('messages.plan.save_error', ['error' => $e->getMessage()]));
+        }
 
         # redirect to sending servers page when needed
         if ($request->use_system_sending_server) {
@@ -346,6 +350,12 @@ class PlanController extends Controller
         }
 
         foreach ($items->get() as $item) {
+            // disconnect plan            
+            if (config('cashier.gateway') == 'paypal_subscription') {
+                $service = \Acelle\Cashier\Cashier::getPaymentGateway('paypal_subscription');
+                $service->disconnectPlan($item);
+            }
+
             $item->delete();
         }
 

@@ -3195,4 +3195,6 @@
   'payment_gateway.paypal_subscription.plan.disconnected' => 'Disconnected from PayPal plan successfully',
   'payment.paypal_subscription.plan.connected' => 'connected',
   'payment.paypal_subscription.disconnect_plan.confirm' => 'You are about to disconnect this plan. This can be undone.',
+  'payment.paypal_subscription' => 'PayPal Subscription',
+  'plan.save_error' => 'Something went wrong when updating plan: :error',
 ) ?>

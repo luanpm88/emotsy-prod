@@ -1106,7 +1106,15 @@ class Plan extends Model implements BillablePlanInterface
      */
     public function saveAll($request)
     {
+        $oldPlan = $this->replicate();
+
         $this->fillAll($request);
+
+        // sync remote plan            
+        if (config('cashier.gateway') == 'paypal_subscription' && isset($request->plan) && isset($request->plan['general'])) {
+            $service = \Acelle\Cashier\Cashier::getPaymentGateway('paypal_subscription');
+            $service->syncPlan($this, $oldPlan);
+        }
         
         $validator = $this->validate($request);
         
