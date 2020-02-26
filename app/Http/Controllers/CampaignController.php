@@ -2331,6 +2331,9 @@ class CampaignController extends Controller
             $campaign->untransform();
             $campaign->save();
 
+            // update plain
+            $campaign->updatePlainFromHtml();
+
             // Redirect to my lists page
             $request->session()->flash('alert-success', trans('messages.template.updated'));
             return redirect()->action('CampaignController@template', $campaign->uid);
