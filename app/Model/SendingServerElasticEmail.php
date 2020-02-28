@@ -172,7 +172,7 @@ class SendingServerElasticEmail extends SendingServer
             MailLog::info('webhook set!');
             self::$isWebhookSetup = true;
         } else {
-            $msg = 'ElasticEmail Erorr. Cannot setup webhook for "'.$subscribeUrl.'". Response from server: '.json_encode($response);
+            $msg = 'ElasticEmail Erorr. Cannot setup webhook for "'.$subscribeUrl.'". Make sure your Elastic API key has full access. Also, please note that the webhook feature is reserved for Elastic Unlimited PRO & API PRO plans only. Response from server: '.json_encode($response);
             MailLog::error($msg);
             MailLog::error('Elastic endpoint: '.$endpoint);
             throw new \Exception($msg);
