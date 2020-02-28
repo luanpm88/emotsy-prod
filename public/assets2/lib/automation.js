@@ -1108,15 +1108,19 @@ class ElementCondition extends AutomationElement {
             right = this.findRightMostSibling(-0.5);
         }
 
-        var right = this.findRightMostSibling(); // sâu hơn nửa line
-        
+        var right = this.findRightMostSibling(-1.0); // sâu hơn 1 line
+        while (right != null && this.getDistance(right) < 2) {
+            right.shiftToRight();
+            right = this.findRightMostSibling(-1.0);
+        }
+
+        var right = this.findRightMostSibling(); // ngang hàng
         var safeDistance = 1.5;
         if (right != null) {
             if (right.getType() == 'ElementCondition') {
                 safeDistance = 2.5;
             }    
         }
-        
         while (right != null && this.getDistance(right) < safeDistance) {
             right.shiftToRight();
             right = this.findRightMostSibling();
@@ -1127,6 +1131,13 @@ class ElementCondition extends AutomationElement {
                     safeDistance = 2.5;
                 }    
             }
+        }
+
+        var right = this.findRightMostSibling(0.5); // cao hơn 0.5 line
+        var safeDistance = 2.0;
+        while (right != null && this.getDistance(right) < safeDistance) {
+            right.shiftToRight();
+            right = this.findRightMostSibling(0.5);
         }
     }
 
