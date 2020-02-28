@@ -1415,8 +1415,7 @@ class Plan extends Model implements BillablePlanInterface
      */
     public function activePlansEmailVerificationServers()
     {
-        return $this->plansEmailVerificationServers()
-            ->where('status', '=', PlansEmailVerificationServer::STATUS_ACTIVE);
+        return $this->plansEmailVerificationServers();
     }
     
     /**
