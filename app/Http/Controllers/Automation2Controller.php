@@ -790,6 +790,9 @@ class Automation2Controller extends Controller
         if ($request->isMethod('post')) {
             if ($request->layout) {
                 $email->addTemplateFromLayout($request->layout);
+
+                // update links
+                $email->updateLinks();
             }
             
             return response()->json([
@@ -859,6 +862,9 @@ class Automation2Controller extends Controller
             $email->content = $request->content;
             $email->untransform();
             $email->save();
+
+            // update links
+            $email->updateLinks();
             
             return response()->json([
                 'status' => 'success',
@@ -935,6 +941,9 @@ class Automation2Controller extends Controller
             $template = Template::findByUid($request->template_uid);
             $email->copyFromTemplate($template);
 
+            // update links
+            $email->updateLinks();
+
             return response()->json([
                 'status' => 'success',
                 'message' => trans('messages.automation.email.template.theme.selected'),
@@ -1003,6 +1012,9 @@ class Automation2Controller extends Controller
                     'errors' => $validator->errors(),
                 ], 400);
             } else {
+                // update links
+                $email->updateLinks();
+
                 return response()->json([
                     'status' => 'success',
                     'message' => trans('messages.automation.email.template.uploaded'),
@@ -1635,7 +1647,8 @@ class Automation2Controller extends Controller
             $email->untransform();
             $email->save();
             
-            echo $email->content;
+            // update links
+            $email->updateLinks();
         }
 
         return view('automation2.email.template.editClassic', [
