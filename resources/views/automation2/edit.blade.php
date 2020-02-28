@@ -540,16 +540,18 @@
 					e.select();
 					OpenActionSelectPopup(function(element) {
 						e.insert(element);
+						e.getTrigger().organize();
 
 						// select new element
 						doSelect(element);
-					});				
+					});
                 },
 
                 onaddyes: function(e) {
                 	e.select();
 					OpenActionSelectPopup(function(element) {
 						e.insertYes(element);
+						e.getTrigger().organize();
 
 						// select new element
 						doSelect(element);
@@ -560,6 +562,7 @@
                 	e.select();
 					OpenActionSelectPopup(function(element) {
 						e.insertNo(element);
+						e.getTrigger().organize();
 
 						// select new element
 						doSelect(element);
