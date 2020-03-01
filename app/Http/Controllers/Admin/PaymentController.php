@@ -80,7 +80,15 @@ class PaymentController extends Controller
             }
 
             $request->session()->flash('alert-success', trans('messages.payment_gateway.updated'));
-            return redirect()->action('Admin\PaymentController@index');
+            if ($name == 'paypal_subscription') {
+                // auto connect
+                if (!$gatewayService->getData()['product_id']) {
+                    $gatewayService->initPaypalProduct();
+                }
+                return redirect()->action('Admin\PaymentController@edit', $name);
+            } else {
+                return redirect()->action('Admin\PaymentController@index');
+            }
         } catch (\Exception $ex) {
             // Add example error messages to the MessageBag instance.
             $errors->add('payment',
