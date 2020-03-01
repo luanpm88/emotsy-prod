@@ -48,7 +48,7 @@ class PaymentController extends Controller
         return view('admin.payments.edit', [
             'gateway' => $gateway,
             'service' => $service,
-            'isValid' => $isValid,
+            'isValid' => $isValid && $service->getData()['product_id'],
         ]);
     }
 
