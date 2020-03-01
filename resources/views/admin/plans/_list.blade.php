@@ -14,7 +14,7 @@
                                 title="{{ trans('messages.plan.show') }}"
                                 data-method="POST"
                                 href="{{ action('Admin\PlanController@visibleOn', $plan->uid) }}"
-                                class="ajax_link plan-off {{ (\Auth::user()->can('visibleOn', $plan) ? 'xtooltip' : 'disabled') }}"
+                                class="ajax_link plan-off {{ (\Auth::user()->can('visibleOn', $plan) ? 'xtooltip' : 'cant_show') }}"
                             >
                                 <i class="material-icons plan-off-icon">toggle_off</i>
                             </a>
@@ -67,31 +67,11 @@
                         <a href="{{ action('Admin\PlanController@general', $plan->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
                     @endcan
                     @if (\Auth::user()->can('delete', $plan) ||
-                         \Auth::user()->can('disable', $plan) || 
-                         \Auth::user()->can('enable', $plan) || 
                          \Auth::user()->can('copy', $plan)
                     )
                         <div class="btn-group">
                             <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
                             <ul class="dropdown-menu dropdown-menu-right">
-                                @if (Auth::user()->admin->can('enable', $plan))
-                                    <li>
-                                        <a class="enable-plan"
-                                            href=""
-                                            href_yes="{{ action('Admin\PlanController@enable', ["uids" => $plan->uid, "visible" => true]) }}"
-                                            href_no="{{ action('Admin\PlanController@enable', ["uids" => $plan->uid, "visible" => false]) }}"
-                                        >
-                                            <i class="icon-checkbox-checked2"></i> {{ trans('messages.enable') }}
-                                        </a>
-                                    </li>
-                                @endif
-                                @if (Auth::user()->admin->can('disable', $plan))
-                                    <li>
-                                        <a link-confirm="{{ trans('messages.disable_plans_confirm') }}" href="{{ action('Admin\PlanController@disable', ["uids" => $plan->uid]) }}">
-                                            <i class="icon-checkbox-unchecked2"></i> {{ trans('messages.disable') }}
-                                        </a>
-                                    </li>
-                                @endif
                                 @can('copy', $plan)
                                     <li>
                                         <a data-name="{{'Copy of '}}{{$plan->name}}" data-uid="{{$plan->uid}}" title="{{ trans('messages.copy') }}" class="copy-plan-link">
@@ -117,6 +97,15 @@
     {{ $plans->links() }}
 
     <script>
+        $('.cant_show').click(function(e) {
+            e.preventDefault();
+
+            var confirm = `{{ trans('messages.plan.cant_show') }}`;
+            var dialog = new Dialog('alert', {
+                message: confirm
+            })
+        });
+
         $('.enable-plan').click(function(e) {
             e.preventDefault();
 

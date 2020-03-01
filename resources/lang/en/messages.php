@@ -3194,7 +3194,12 @@
   'payment_gateway.paypal_subscription.plan.connected' => 'Connected from PayPal plan successfully',
   'payment_gateway.paypal_subscription.plan.disconnected' => 'Disconnected from PayPal plan successfully',
   'payment.paypal_subscription.plan.connected' => 'connected',
-  'payment.paypal_subscription.disconnect_plan.confirm' => 'You are about to disconnect this plan. This can be undone.',
+  'payment.paypal_subscription.disconnect_plan.confirm' => 'Disconnect PayPal will also delete all (remote)
+    PayPal subscriptions. Are you sure you want to proceed anyway?',
   'payment.paypal_subscription' => 'PayPal Subscription',
   'plan.save_error' => 'Something went wrong when updating plan: :error',
+  'plan.cant_show' => 'Your plan is inactive, please fix your plan issues first before set it to visible',
+  'plan.go_to_plans' => 'Please go to your Plans Management page to change visibility',
+  'payment.paypal_subscription.no_mapping_plans' => 'You have no plans. Please go to <a href=":link">
+    Plans Management</a> page to create a plan first',
 ) ?>

@@ -153,6 +153,9 @@ class PaymentController extends Controller
 
         try {
             $service->connectPlan($plan);
+
+            // check plan status
+            $plan->checkStatus();
         } catch (\Exception $e) {
             $request->session()->flash('alert-error', 'PyPal Subscription service error: ' . $e->getMessage());
             return redirect()->action('Admin\PaymentController@edit', 'paypal_subscription');

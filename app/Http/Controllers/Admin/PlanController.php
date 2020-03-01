@@ -256,6 +256,9 @@ class PlanController extends Controller
 
         try {
             $plan->saveAll($request);
+
+            // check plan status
+            $plan->checkStatus();
         } catch (\Exception $e) {
             return redirect()->back()->with('alert-error', trans('messages.plan.save_error', ['error' => $e->getMessage()]));
         }
@@ -279,57 +282,57 @@ class PlanController extends Controller
     {
     }
 
-    /**
-     * Enable item.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function enable(Request $request)
-    {
-        $items = \Acelle\Model\Plan::whereIn('uid', explode(',', $request->uids));
+    // /**
+    //  * Enable item.
+    //  *
+    //  * @param \Illuminate\Http\Request $request
+    //  *
+    //  * @return \Illuminate\Http\Response
+    //  */
+    // public function enable(Request $request)
+    // {
+    //     $items = \Acelle\Model\Plan::whereIn('uid', explode(',', $request->uids));
 
-        foreach ($items->get() as $item) {
-            // authorize
-            if (\Gate::allows('update', $item)) {
-                $item->enable();
+    //     foreach ($items->get() as $item) {
+    //         // authorize
+    //         if (\Gate::allows('update', $item)) {
+    //             $item->enable();
 
-                if ($request->visible) {
-                    $item->visibleOn();
-                }
-            }
-        }
+    //             if ($request->visible) {
+    //                 $item->visibleOn();
+    //             }
+    //         }
+    //     }
 
-        // Redirect to my lists page
-        return response()->json([
-            'status' => 'success',
-            'message' => trans('messages.plans.enabled'),
-            'visible_url' => action('Admin\PlanController@visibleOn', $request->uids),
-        ], 201);
-    }
+    //     // Redirect to my lists page
+    //     return response()->json([
+    //         'status' => 'success',
+    //         'message' => trans('messages.plans.enabled'),
+    //         'visible_url' => action('Admin\PlanController@visibleOn', $request->uids),
+    //     ], 201);
+    // }
 
-    /**
-     * Disable item.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function disable(Request $request)
-    {
-        $items = \Acelle\Model\Plan::whereIn('uid', explode(',', $request->uids));
+    // /**
+    //  * Disable item.
+    //  *
+    //  * @param \Illuminate\Http\Request $request
+    //  *
+    //  * @return \Illuminate\Http\Response
+    //  */
+    // public function disable(Request $request)
+    // {
+    //     $items = \Acelle\Model\Plan::whereIn('uid', explode(',', $request->uids));
 
-        foreach ($items->get() as $item) {
-            // authorize
-            if (\Gate::allows('update', $item)) {
-                $item->disable();
-            }
-        }
+    //     foreach ($items->get() as $item) {
+    //         // authorize
+    //         if (\Gate::allows('update', $item)) {
+    //             $item->disable();
+    //         }
+    //     }
 
-        // Redirect to my lists page
-        echo trans('messages.plans.disabled');
-    }
+    //     // Redirect to my lists page
+    //     echo trans('messages.plans.disabled');
+    // }
 
     /**
      * Remove the specified resource from storage.
@@ -650,6 +653,9 @@ class PlanController extends Controller
             
             $plan->addSendingServerByUid($sendingServer->uid);
 
+            // check plan status
+            $plan->checkStatus();
+
             $request->session()->flash('alert-success', trans('messages.plan.sending_server.added'));
             return redirect()->action('Admin\PlanController@sendingServers', $plan->uid);
         }
@@ -705,6 +711,9 @@ class PlanController extends Controller
         // save posted data
         $plan->setPrimarySendingServer($request->sending_server_uid);
 
+        // check plan status
+        $plan->checkStatus();
+
         $request->session()->flash('alert-success', trans('messages.plan.sending_server.primary.updated'));
         return redirect()->action('Admin\PlanController@sendingServers', $plan->uid);
     }
@@ -728,6 +737,9 @@ class PlanController extends Controller
         // update fitness value
         if ($request->isMethod('post')) {
             $plan->updateFitnesses($request->sending_servers);
+
+            // check plan status
+            $plan->checkStatus();
 
             $request->session()->flash('alert-success', trans('messages.plan.sending_servers.fitness.updated'));
             return redirect()->action('Admin\PlanController@sendingServers', $plan->uid);
@@ -954,6 +966,9 @@ class PlanController extends Controller
 
             $plan->saveAll($request);
 
+            // check plan status
+            $plan->checkStatus();
+
             return redirect()->action('Admin\PlanController@wizardSendingServer', $plan->uid);
         }
 
@@ -988,6 +1003,9 @@ class PlanController extends Controller
 
             $plan->saveAll($request);
 
+            // check plan status
+            $plan->checkStatus();
+
              return 'success';
         }
 
@@ -1016,6 +1034,9 @@ class PlanController extends Controller
         if ($request->isMethod('post')) {
             $plan->fillAll($request);            
             $plan->save();
+
+            // check plan status
+            $plan->checkStatus();
             
             return redirect()->action('Admin\PlanController@sendingServer', $plan->uid);
         }
@@ -1048,6 +1069,9 @@ class PlanController extends Controller
         //
         $plan->visibleOn();
 
+        // check plan status
+        $plan->checkStatus();
+
         // Redirect to my lists page
         return response()->json([
             'status' => 'success',
@@ -1077,6 +1101,9 @@ class PlanController extends Controller
 
         //
         $plan->visibleOff();
+
+        // check plan status
+        $plan->checkStatus();
 
         // Redirect to my lists page
         return response()->json([

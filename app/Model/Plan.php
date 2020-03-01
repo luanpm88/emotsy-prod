@@ -30,6 +30,7 @@ use Acelle\Cashier\Services\StripePaymentGateway;
 use Acelle\Cashier\Services\BraintreePaymentGateway;
 use Acelle\Model\PlansEmailVerificationServer;
 use Acelle\Cashier\Subscription;
+use Acelle\Cashier\Cashier;
 
 class Plan extends Model implements BillablePlanInterface
 {
@@ -1562,6 +1563,19 @@ class Plan extends Model implements BillablePlanInterface
         // disable sending server if it is not valid
         if (!$this->isValid()) {
             $this->disable();
+
+            $this->visibleOff();
+        } else {
+            $this->enable();
+        }
+            
+        if (config('cashier.gateway') == 'paypal_subscription') {
+            $service = Cashier::getPaymentGateway();
+
+            if (!$service->findPlanConnection($this)) {
+                $this->disable();
+                $this->visibleOff();
+            }
         }
     }
 
