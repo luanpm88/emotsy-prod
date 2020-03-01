@@ -41,7 +41,7 @@
 							<span class="media-annotation pull-right">{{ $notification->created_at->diffForHumans() }}</span>
 						</a>
 
-						<span class="text-muted desc text-muted" title='{!! $notification->message !!}'>{!! $notification->message !!}</span>
+						<span class="text-muted desc text-muted" title='{!! $notification->message !!}'>{{ $notification->message }}</span>
 					</div>
 				</li>
 			@endforeach
