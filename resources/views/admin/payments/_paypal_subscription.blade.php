@@ -92,7 +92,7 @@
 					<p>{{ trans('messages.payment.paypal.connect_your_plans.intro') }}<p>
 
 					<div class="mc-list mt-20">
-						@foreach (Acelle\Model\Plan::getAllActive()->get() as $plan)
+						@foreach (Acelle\Model\Plan::getActive()->get() as $plan)
 							@if ($plan->price > 0)
 								<div class="list-item d-flex align-items-center">
 									<div class="list-setting-main mr-auto" style="width: 50%">

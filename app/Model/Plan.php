@@ -845,6 +845,20 @@ class Plan extends Model implements BillablePlanInterface
      *
      * @return collect
      */
+    public static function getActive($admin = null)
+    {
+        $query = self::getAll()
+            ->where('plans.status', '=', self::STATUS_ACTIVE);
+        $query = $query->orderBy('custom_order', 'asc');
+
+        return $query;
+    }
+
+    /**
+     * Get all items.
+     *
+     * @return collect
+     */
     public static function getAllActiveVisible($admin = null)
     {
         $query = self::getAll()
