@@ -30,7 +30,8 @@ class AutomationElement {
             e = json[i];
             if (e.type == 'ElementTrigger') {
                 list[e.id] = new ElementTrigger(e);
-                list[e.id].draw(320, 80, container);
+
+                list[e.id].draw(360, 80, container);
                 list[e.id].setPosition(1, 0);
                 trigger = list[e.id];
 
@@ -775,15 +776,29 @@ class ElementTrigger extends ElementAction {
     }
 
     organize() {
+        // organize condition elements
         this.browse(function(element) {
             if (element.getType() == 'ElementCondition') {
                 element.reposition();
             }
         });
 
+        // organize leaves
         this.getLeaves(function(element) {
             element.reposition();
         });
+
+        // shift tree to right if needed
+        var minX = 0;
+        this.browse(function(element) {
+            if (element.x < minX) {
+                minX = element.x;
+            }
+        });  
+
+        if (minX < 0) {
+            this.redrawTree(Math.abs(minX));
+        }
     }
 
     toJson() {
@@ -826,6 +841,28 @@ class ElementTrigger extends ElementAction {
         });
 
         return selected;
+    }
+
+    redrawTree(step) {
+        // get trigger RECT
+        var rect = document.getElementById(this.getId());
+        var newX = parseInt(rect.getAttribute('_x')) + (step * this.DefaultRectWith);
+        var newY = parseInt(rect.getAttribute('_y'));
+        
+        // trick, get true/original container
+        var container = this.getContainer().parentNode;
+
+        // clear HTML
+        this.clear();
+
+        console.log(newX);
+        console.log(newY);
+        console.log(container);
+
+        // redraw
+        this.draw(newX, newY, container);
+        this.setPosition(this.x + step, this.y);
+        this.reappendChild();
     }
 }
 
