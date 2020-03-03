@@ -1,3 +1,22 @@
+4.0.19 / 2020-03-04
+==================
+
+ + Fixed: automation elements are not well organized
+ + Fixed: PayPal integration: sync not working correctly
+ + Fixed: Elasicemail API no longer works correctly
+ + Fixed: cannot create admin of reseller group
+ + Fixed: templates compatibility issues with Edge and Firefox
+ + Fixed: default sending speed is too low
+ + Fixed: quota tracking does not work correctly
+ + Fixed: plan status shown correctly
+ + Added: language package for German
+ + Added: plat visibility setting support 
+ + Added: thumbnail update support
+ + Added: classic email builder support
+ + Added: automation for list's segments
+ + Added: subscription notification for admin
+ + Added: notification management dashboard
+
 4.0.18 / 2020-02-10
 ==================
 
