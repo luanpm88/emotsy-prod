@@ -388,14 +388,18 @@ class Admin extends Model
      */
     public function getAllSubscriptions()
     {
-        $query = Subscription::select('subscriptions.*')
-            ->leftJoin('customers', 'customers.uid', '=', 'subscriptions.user_id');
-
-        if (!$this->user->can('readAll', new \Acelle\Model\Customer())) {
+        if ($this->user->can('readAll', new \Acelle\Model\Customer())) {
+            $query = Subscription::select('subscriptions.*')->leftJoin('customers', 'customers.uid', '=', 'subscriptions.user_id');
+        } else {
+            $query = Subscription::select('subscriptions.*')
+                ->join('customers', 'customers.uid', '=', 'subscriptions.user_id')
+                ->where('customers.admin_id', '=', $this->id);
+            /* ERROR
             $query = $query->where(function ($q) {
                 $q->orwhere('customers.admin_id', '=', $this->id)
                     ->orWhere('subscriptions.admin_id', '=', $this->id);
             });
+            */
         }
 
         return $query;
