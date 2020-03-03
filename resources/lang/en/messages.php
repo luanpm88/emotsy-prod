@@ -451,7 +451,7 @@
   'emails_per_minute' => 'Emails per minute',
   'change_server_time' => 'Change server time',
   'conditions_max' => 'Max conditions per segment',
-  'sending_quota' => 'Sending limit',
+  'sending_quota' => 'Sending credits',
   'quota_time' => 'Time value',
   'quota_time_unit' => 'Time unit',
   'user_group_options' => 'Options',
