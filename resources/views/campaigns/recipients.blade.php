@@ -32,7 +32,7 @@
         </h4>
 
         <div class="addable-multiple-form">
-            <div class="addable-multiple-container">
+            <div class="addable-multiple-container campaign-list-segments">
                 <?php $num = 0 ?>
                 @foreach ($campaign->getListsSegmentsGroups() as $index =>  $lists_segment_group)
                     @include('campaigns._list_segment_form', [

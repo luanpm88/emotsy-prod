@@ -48,7 +48,7 @@
                 ])
             @endif
         </div>
-        <div class="col-md-1 pt-28">
+        <div class="col-md-1 pt-28 del-col">
             <a onclick="$(this).parents('.condition-line').remove()" href="#delete" class="btn bg-danger-400"><i class="icon-trash"></i></a>
         </div>
     </div>

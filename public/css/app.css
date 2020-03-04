@@ -3588,3 +3588,6 @@ a.plan-off .spinner, a.plan-on .spinner {
     font-size: 100% !important;
     padding: 5px 10px;
 }
+.campaign-list-segments .condition-line:first-child .del-col {
+    display: none;
+}
