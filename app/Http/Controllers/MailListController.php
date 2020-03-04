@@ -405,14 +405,14 @@ class MailListController extends Controller
         ];
 
         // columns
-        for ($i = 2; $i >= 0; --$i) {
+        for ($i = 4; $i >= 0; --$i) {
             $result['columns'][] = \Carbon\Carbon::now()->subMonthsNoOverflow($i)->format('m/Y');
         }
 
         // datas
         foreach ($result['bar_names'] as $bar) {
             $data = [];
-            for ($i = 2; $i >= 0; --$i) {
+            for ($i = 4; $i >= 0; --$i) {
                 $data[] = \Acelle\Model\Customer::subscribersCountByTime(
                     \Carbon\Carbon::now()->subMonthsNoOverflow($i)->startOfMonth(),
                     \Carbon\Carbon::now()->subMonthsNoOverflow($i)->endOfMonth(),
