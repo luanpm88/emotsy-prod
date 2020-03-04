@@ -33,7 +33,14 @@
     <form action="{{ action('CampaignController@builderClassic', $campaign->uid) }}" method="POST" class="form-validate-jqueryz">
         {{ csrf_field() }}
 
-        <h2 class="mt-0">{{ trans('messages.email_content') }}</h2>
+        <div class="d-flex align-items-canter">
+            <h2 class="mt-0 mr-auto">{{ trans('messages.email_content') }}</h2>
+            <a href="{{ action('CampaignController@builderPlainEdit', [
+                'uid' => $campaign->uid
+            ]) }}" class="btn btn-default">
+                {{ trans('messages.campaign.plain_text_editor') }}
+            </a>
+        </div>
         
         <div class="tab-content">
             
@@ -53,7 +60,7 @@
         
         <hr>
         <div class="text-right">
-            <button class="btn bg-teal-800">{{ trans('messages.save_and_next') }} <i class="icon-arrow-right7"></i> </button>
+            <button class="btn bg-teal-800">{{ trans('messages.save') }}</button>
         </div>
         
     <form>			

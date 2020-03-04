@@ -2510,8 +2510,10 @@ abstract class AbsCampaign extends Model
      */
     public function updatePlainFromHtml()
     {
-        $this->plain = preg_replace('/\s+/', ' ', preg_replace('/\r\n/', ' ', strip_tags($this->html)));
-        $this->save();
+        if (!$this->plain) {
+            $this->plain = preg_replace('/\s+/', ' ', preg_replace('/\r\n/', ' ', strip_tags($this->html)));
+            $this->save();
+        }
     }
 
     /**

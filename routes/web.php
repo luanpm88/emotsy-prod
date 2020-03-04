@@ -351,6 +351,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     // Campaign
     Route::get('campaigns/{uid}/template/builder-select', 'CampaignController@templateBuilderSelect');
 
+    Route::match(['get', 'post'], 'campaigns/{uid}/template/builder-plain', 'CampaignController@builderPlainEdit');
     Route::match(['get', 'post'], 'campaigns/{uid}/template/builder-classic', 'CampaignController@builderClassic');
     Route::match(['get', 'post'], 'campaigns/{uid}/plain', 'CampaignController@plain');
 

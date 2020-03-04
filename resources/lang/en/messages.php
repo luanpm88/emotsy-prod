@@ -3202,4 +3202,6 @@
   'plan.go_to_plans' => 'Please go to your Plans Management page to change visibility',
   'payment.paypal_subscription.no_mapping_plans' => 'You have no plans. Please go to <a href=":link">
     Plans Management</a> page to create a plan first',
+  'campaign.plain_text_editor' => 'Plain text exditor',
+  'campaign.html_editor' => 'HTML Editor',
 ) ?>

@@ -2343,4 +2343,41 @@ class CampaignController extends Controller
             'campaign' => $campaign,
         ]);
     }
+    
+    /**
+     * Edit plain text.
+     *
+     */
+    public function builderPlainEdit(Request $request, $uid)
+    {
+        // Generate info
+        $campaign = \Acelle\Model\Campaign::findByUid($uid);
+
+        // authorize
+        if (!$request->user()->customer->can('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        // validate and save posted data
+        if ($request->isMethod('post')) {
+            $rules = array(
+                'plain' => 'required',
+            );
+
+            $this->validate($request, $rules);
+
+            // Save template
+            $campaign->plain = $request->plain;
+            $campaign->untransform();
+            $campaign->save();
+
+            // Redirect to my lists page
+            $request->session()->flash('alert-success', trans('messages.template.updated'));
+            return redirect()->action('CampaignController@template', $campaign->uid);
+        }
+
+        return view('campaigns.builderPlainEdit', [
+            'campaign' => $campaign,
+        ]);
+    }
 }
