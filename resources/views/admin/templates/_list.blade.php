@@ -84,7 +84,9 @@
 										</a>
 									</li>
 								@endif
-								<li><a delete-confirm="{{ trans('messages.delete_templates_confirm') }}" href="{{ action('Admin\TemplateController@delete', ["uids" => $template->uid]) }}"><i class="icon-trash"></i> {{ trans("messages.delete") }}</a></li>
+								@if (Auth::user()->admin->can('delete', $template))
+									<li><a delete-confirm="{{ trans('messages.delete_templates_confirm') }}" href="{{ action('Admin\TemplateController@delete', ["uids" => $template->uid]) }}"><i class="icon-trash"></i> {{ trans("messages.delete") }}</a></li>
+								@endif
 							</ul>
 						</div>
 					@endif
