@@ -218,7 +218,7 @@ class TemplateController extends Controller
 
             // Save template
             $template->fill($request->all());
-            $template->untransform();
+            // $template->untransform();
             $template->save();
 
             // Redirect to my lists page
