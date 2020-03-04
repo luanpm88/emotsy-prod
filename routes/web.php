@@ -563,7 +563,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::resource('notifications', 'NotificationController');
     Route::post('notifications/{id}/hide', 'NotificationController@hide');
     
-    // Automation2
+    // Automation2    
+    Route::match(['get', 'post'], 'automation2/{uid}/template/{email_uid}/plain-edit', 'Automation2Controller@templateEditPlain');
     Route::get('automation2/{uid}/template/{email_uid}/builder-select', 'Automation2Controller@templateBuilderSelect');
     Route::get('automation2/segment-select', 'Automation2Controller@segmentSelect');
 

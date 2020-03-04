@@ -748,28 +748,6 @@ class Automation2Controller extends Controller
     }
 
     /**
-     * Select template type.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function templateSelect(Request $request)
-    {
-        $user = $request->user();
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
-
-        // authorize
-        if (\Gate::denies('update', $campaign)) {
-            return $this->notAuthorized();
-        }
-
-        return view('campaigns.template_select', [
-            'campaign' => $campaign,
-        ]);
-    }
-
-    /**
      * Create template from layout.
      *
      * @param \Illuminate\Http\Request $request
@@ -790,6 +768,9 @@ class Automation2Controller extends Controller
         if ($request->isMethod('post')) {
             if ($request->layout) {
                 $email->addTemplateFromLayout($request->layout);
+
+                // update email plain text
+                $email->updatePlainFromContent();
 
                 // update links
                 $email->updateLinks();
@@ -862,6 +843,9 @@ class Automation2Controller extends Controller
             $email->content = $request->content;
             $email->untransform();
             $email->save();
+
+            // update email plain text
+            $email->updatePlainFromContent();
 
             // update links
             $email->updateLinks();
@@ -941,6 +925,9 @@ class Automation2Controller extends Controller
             $template = Template::findByUid($request->template_uid);
             $email->copyFromTemplate($template);
 
+            // update email plain text
+            $email->updatePlainFromContent();
+
             // update links
             $email->updateLinks();
 
@@ -1006,6 +993,9 @@ class Automation2Controller extends Controller
             list($result, $validator) = $email->uploadTemplate($request);
             
             if (!$result) {
+                // update email plain text
+                $email->updatePlainFromContent();
+
                 return response()->view('automation2.email.template.upload', [
                     'automation' => $automation,
                     'email' => $email,
@@ -1646,12 +1636,72 @@ class Automation2Controller extends Controller
             $email->content = $request->content;
             $email->untransform();
             $email->save();
+
+            // update email plain text
+            $email->updatePlainFromContent();
             
             // update links
             $email->updateLinks();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.automation.email.content.updated'),
+            ], 201);
         }
 
         return view('automation2.email.template.editClassic', [
+            'automation' => $automation,
+            'email' => $email,
+        ]);
+    }
+
+    /**
+     * Automation template classic builder.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function templateEditPlain(Request $request, $uid, $email_uid)
+    {
+        // init automation
+        $automation = Automation2::findByUid($uid);        
+        $email = Email::findByUid($email_uid);
+        
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+
+        // saving
+        if($request->isMethod('post')) {                        
+            $rules = array(
+                'plain' => 'required',
+            );
+            
+            // make validator
+            $validator = Validator::make($request->all(), $rules);
+            
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('automation2.email.template.editPlain', [
+                    'automation' => $automation,
+                    'email' => $email,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+            
+            $email->plain = $request->plain;
+            $email->untransform();
+            $email->save();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.automation.email.plain.updated'),
+            ], 201);
+        }
+
+        return view('automation2.email.template.editPlain', [
             'automation' => $automation,
             'email' => $email,
         ]);

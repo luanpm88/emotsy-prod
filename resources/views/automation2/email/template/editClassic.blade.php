@@ -13,7 +13,17 @@
         <div class="col-md-1"></div>
         <div class="col-md-10">
 
-            <h2>{{ trans('messages.automation.classic_builder') }}</h2>
+            <div class="d-flex align-items-canter">
+                <h2 class="mr-auto">{{ trans('messages.automation.classic_builder') }}</h2>
+                <a href="{{ action('Automation2Controller@templateEditPlain', [
+                    'uid' => $automation->uid,
+                    'email_uid' => $email->uid,
+                ]) }}" class="btn btn-default plain-edit">
+                    {{ trans('messages.email.plain_text_editor') }}
+                </a>
+            </div>
+
+            
             <form action="{{ action('Automation2Controller@templateEditClassic', [
                 'uid' => $automation->uid,
                 'email_uid' => $email->uid,
@@ -57,19 +67,31 @@
             var url = $(this).attr('action');
             var data = $(this).serialize();
 
-            // open builder effects
-            addMaskLoading("{{ trans('messages.automation.template.saving') }}", function() {
-                $.ajax({
-                    url: url,
-                    type: 'POST',
-                    data: data,
-                }).always(function(response) {
-                    removeMaskLoading();
+            if ($(this).valid()) {
+                // open builder effects
+                addMaskLoading("{{ trans('messages.automation.template.saving') }}", function() {
+                    $.ajax({
+                        url: url,
+                        method: 'POST',
+                        data: data,
+                        statusCode: {
+                            // validate error
+                            400: function (res) {
+                                console.log('Something went wrong!');
+                            }
+                        },
+                        success: function (response) {
+                            removeMaskLoading();
 
-                    parent.$('.full-iframe-popup').remove();
-                    popup.load();
-                });
-            });            
+                            // notify
+                            parent.notify('success', '{{ trans('messages.notify.success') }}', response.message);
+
+                            parent.$('.full-iframe-popup').remove();
+                            parent.popup.load();
+                        }
+                    });
+                });         
+            }     
         });
     
     </script>

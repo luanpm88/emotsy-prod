@@ -2506,7 +2506,7 @@ abstract class AbsCampaign extends Model
     }
 
     /**
-     * Get public campaign upload dir.
+     * Update campaign plain text.
      */
     public function updatePlainFromHtml()
     {

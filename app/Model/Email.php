@@ -916,4 +916,15 @@ class Email extends Model
         \Acelle\Library\Tool::xdelete($this->getStoragePath());
         $this->save();
     }
+
+    /**
+     * Update email plain text.
+     */
+    public function updatePlainFromContent()
+    {
+        if (!$this->plain) {
+            $this->plain = preg_replace('/\s+/', ' ', preg_replace('/\r\n/', ' ', strip_tags($this->content)));
+            $this->save();
+        }
+    }
 }

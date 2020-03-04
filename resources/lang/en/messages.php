@@ -3204,4 +3204,8 @@
     Plans Management</a> page to create a plan first',
   'campaign.plain_text_editor' => 'Plain text exditor',
   'campaign.html_editor' => 'HTML Editor',
+  'email.plain_text_editor' => 'Plain text exditor',
+  'email.html_editor' => 'HTML Editor',
+  'automation.email.plain.updated' => 'Email plain text was upadated.',
+  'automation.email.content.updated' => 'Email content was upadated.',
 ) ?>
