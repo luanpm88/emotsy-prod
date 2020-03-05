@@ -190,6 +190,11 @@ class Customer extends Model implements BillableUserInterface
         return $this->hasMany('Acelle\Model\Automation2');
     }
 
+    public function activeAutomation2s()
+    {
+        return $this->hasMany('Acelle\Model\Automation2')->where('status', Automation2::STATUS_ACTIVE);
+    }
+
     public function sendingDomains()
     {
         return $this->hasMany('Acelle\Model\SendingDomain');
@@ -267,7 +272,7 @@ class Customer extends Model implements BillableUserInterface
      */
     public function displayName()
     {
-        return htmlspecialchars($this->first_name.' '.$this->last_name);
+        return htmlspecialchars(trim($this->first_name.' '.$this->last_name));
     }
 
     /**
@@ -1994,5 +1999,15 @@ class Customer extends Model implements BillableUserInterface
         }
 
         return false;
+    }
+
+    public function isSubscriptionActive()
+    {
+        $subscription = $this->activeSubscription();
+        if (is_null($subscription)) {
+            return false;
+        }
+
+        return $subscription->active();
     }
 }

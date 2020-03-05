@@ -68,7 +68,7 @@ class IpLocation extends Model
             // Note log
             $title = 'GeoIP Error';
             BackendError::cleanupDuplicateNotifications($title);
-            BackendError::info([
+            BackendError::warning([
                 'title' => $title,
                 'message' => 'Cannot resolve IP address. '.$e->getMessage()
             ]);

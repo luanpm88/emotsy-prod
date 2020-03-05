@@ -27,6 +27,7 @@ use Acelle\Model\AutomationElement;
 use Acelle\Model\Email;
 use Acelle\Model\EmailLink;
 use Acelle\Model\Subscriber;
+use Acelle\Model\Customer;
 use DB;
 use Acelle\Library\Automation\Action;
 use Acelle\Library\Automation\Trigger;
@@ -362,13 +363,21 @@ class Automation2 extends Model
      */
     public static function run()
     {
-        // Step 1: check for new trigger
-        $automations = self::where('status', self::STATUS_ACTIVE)->get();
-        foreach ($automations as $automation) {
-            $automation->logger()->info(sprintf('Checking automation "%s"', $automation->name));
-            $automation->checkForNewTriggers();
-            $automation->checkForExistingTriggersUpdate();
+        $customers = Customer::all();
+        foreach ($customers as $customer) {
+            $automations = $customer->activeAutomation2s;
+            foreach ($automations as $automation) {
+                if ($customer->isSubscriptionActive()) {
+                    $automation->logger()->info(sprintf('Checking automation "%s"', $automation->name));
+                    $automation->checkForNewTriggers();
+                    $automation->checkForExistingTriggersUpdate();
+                } else {
+                    $automation->logger()->warning(sprintf('Automation "%s" skipped, user "%s" not on active subscription', $automation->name, $customer->displayName()));
+                }                
+            }
         }
+
+        
     }
 
     /**
