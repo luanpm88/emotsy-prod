@@ -53,7 +53,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('handler:run')->everyThirtyMinutes();
 
         // Queued import/export/campaign
-        $schedule->command('queue:work --once --tries=3')->everyMinute();
+        $schedule->command('queue:work --once --tries=1')->everyMinute();
 
         // Sender verifying
         $schedule->command('sender:verify')->everyFiveMinutes();

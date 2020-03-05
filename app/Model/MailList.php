@@ -298,9 +298,19 @@ class MailList extends Model
      *
      * @return object
      */
+    public function activeSubscribers()
+    {
+        return $this->subscribers()->where('subscribers.status', 'subscribed');
+    }
+
+    /**
+     * Get field by tag.
+     *
+     * @return object
+     */
     public function getActiveSubscribers()
     {
-        return $this->subscribers()->where('status', 'active')->get();
+        return $this->activeSubscribers()->get();
     }
 
     /**
