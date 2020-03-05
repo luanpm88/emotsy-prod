@@ -61,7 +61,7 @@
 		<div class="mc-list mt-20">
 			@foreach (Acelle\Model\Plan::getAll()->get() as $plan)
 				
-					<div class="list-item d-flex align-items-center">
+					<div class="list-item d-flex align-items-center pb-10">
 						<div class="list-setting-main mr-3">
 							@if (!$plan->visible)
 								<a
@@ -87,7 +87,16 @@
 							<h4 class="title text-bold">
 								{{ $plan->name }}
 							</h4>
-							<p>{{ $plan->description }}</p>
+							<p class="mb-0">{{ $plan->description }}</p>
+							@if (!$plan->useSystemSendingServer())
+								<span class="text-muted small" class="">{{ trans('messages.plan.sending_server.' . $plan->getOption('sending_server_option')) }}  &bull; {{ trans('messages.plans.subscriber_count', ['count' => $plan->customersCount()]) }}</span>
+							@elseif ($plan->hasPrimarySendingServer())
+								<span class="text-muted small">{{ trans('messages.plans.send_via.wording', ['server' => trans('messages.' . $plan->primarySendingServer()->type)]) }} &bull; {{ trans('messages.plans.subscriber_count', ['count' => $plan->customersCount()]) }}</span>
+							@endif
+
+							@foreach ($plan->errors() as $error)
+								<div class="text-muted"><span class="text-danger"><i class="fa fa-minus-circle"></i> {{ $error }}</span></div>
+							@endforeach
 						</div>
 						<div class="list-setting-main mr-auto">
 							<h4 class="title text-bold">

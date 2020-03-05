@@ -3208,4 +3208,5 @@
   'email.html_editor' => 'HTML Editor',
   'automation.email.plain.updated' => 'Email plain text was upadated.',
   'automation.email.content.updated' => 'Email content was upadated.',
+  'plans.paypal_not_connected' => 'Plan not connected, go to PayPal settings to fix',
 ) ?>

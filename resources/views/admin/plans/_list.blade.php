@@ -37,13 +37,16 @@
                             {{ $plan->name }}
                         </span>
                     </h5>
+                    <p class="mb-0">{{ $plan->description }}</p>
                     @if (!$plan->useSystemSendingServer())
-                        {{ trans('messages.plan.sending_server.' . $plan->getOption('sending_server_option')) }}  &bull; {{ trans('messages.plans.subscriber_count', ['count' => $plan->customersCount()]) }}
+                        <span class="text-muted small" class="">{{ trans('messages.plan.sending_server.' . $plan->getOption('sending_server_option')) }}  &bull; {{ trans('messages.plans.subscriber_count', ['count' => $plan->customersCount()]) }}</span>
                     @elseif ($plan->hasPrimarySendingServer())
-                        <span class="text-muted">{{ trans('messages.plans.send_via.wording', ['server' => trans('messages.' . $plan->primarySendingServer()->type)]) }} &bull; {{ trans('messages.plans.subscriber_count', ['count' => $plan->customersCount()]) }}</span>
-                    @else
-                        <span class="text-muted"><span class="text-danger"><i class="fa fa-minus-circle"></i> {{ trans('messages.plans.send_via.empty') }}</span></span>
+                        <span class="text-muted small">{{ trans('messages.plans.send_via.wording', ['server' => trans('messages.' . $plan->primarySendingServer()->type)]) }} &bull; {{ trans('messages.plans.subscriber_count', ['count' => $plan->customersCount()]) }}</span>
                     @endif
+
+                    @foreach ($plan->errors() as $error)
+                        <div class="text-muted"><span class="text-danger"><i class="fa fa-minus-circle"></i> {{ $error }}</span></div>
+                    @endforeach
                 </td>
                 <td>
                     <h5 class="no-margin text-bold kq_search">

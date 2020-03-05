@@ -1554,6 +1554,32 @@ class Plan extends Model implements BillablePlanInterface
     }
 
     /**
+     * Check plan error status
+     *
+     * @var array
+     */
+    public function errors()
+    {
+        $errors = [];
+
+        // use system sending server but has no primary sending server
+        if ($this->useSystemSendingServer() && !$this->hasPrimarySendingServer()) {
+            $errors[] = trans('messages.plans.send_via.empty');
+        }
+
+        if (config('cashier.gateway') == 'paypal_subscription') {
+            $service = Cashier::getPaymentGateway();
+
+            if (!$service->findPlanConnection($this)) {
+                $errors[] = trans('messages.plans.paypal_not_connected');
+            }
+        }
+
+        // else return true
+        return $errors;
+    }
+
+    /**
      * Check status of sending server
      *
      * @var void
