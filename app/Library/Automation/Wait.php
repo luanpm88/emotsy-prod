@@ -15,7 +15,6 @@ class Wait extends Action
             return $this->evaluationResult;
         }
 
-        sleep(1); // to avoid same day with previous action when modifying (n days)
         $now = Carbon::now();
         $waitDuration = $this->getOption('time');  // 1 hour, 1 day, 2 days
         $parentExecutionTime = $carbon = Carbon::createFromTimestamp($this->getParent()->getLastExecuted());
@@ -25,6 +24,7 @@ class Wait extends Action
         $this->recordLastExecutedTime();
 
         if ($this->evaluationResult) {
+            sleep(1); // to avoid same day with previous action when modifying (n days)
             $this->autoTrigger->logger()->info(sprintf('---> It is already %s minutes (or %s hours) due! move to next action!', $now->diffInMinutes($due), $now->diffInHours($due)));
         } else {
             $this->autoTrigger->logger()->info(sprintf('---> Waiting for another %s minutes (or %s hours)...', $now->diffInMinutes($due), $now->diffInHours($due)));
