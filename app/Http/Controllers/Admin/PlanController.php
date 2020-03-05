@@ -357,6 +357,9 @@ class PlanController extends Controller
             if (config('cashier.gateway') == 'paypal_subscription') {
                 $service = \Acelle\Cashier\Cashier::getPaymentGateway('paypal_subscription');
                 $service->disconnectPlan($item);
+
+                // check plan status
+                $item->checkStatus();
             }
 
             $item->delete();
