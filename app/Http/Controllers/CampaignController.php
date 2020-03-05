@@ -694,11 +694,7 @@ class CampaignController extends Controller
         // $campaign->plain = preg_replace('/\s+/',' ',preg_replace('/\r\n/',' ',strip_tags($campaign->html)));
         $campaign->save();
 
-        if (!$campaign->is_auto) {
-            return redirect()->action('CampaignController@templatePreview', ['uid' => $campaign->uid]);
-        } else {
-            return redirect()->action('AutoEventController@templatePreview', ['uid' => $campaign->autoEvent()->uid, 'campaign_uid' => $campaign->uid]);
-        }
+        return redirect()->action('CampaignController@templatePreview', ['uid' => $campaign->uid]);
     }
 
     /**
@@ -2096,11 +2092,7 @@ class CampaignController extends Controller
         // $campaign->plain = preg_replace('/\s+/',' ',preg_replace('/\r\n/',' ',strip_tags($campaign->html)));
         $campaign->save();
 
-        if (!$campaign->is_auto) {
-            return redirect()->action('CampaignController@templatePreview', ['uid' => $campaign->uid]);
-        } else {
-            return redirect()->action('AutoEventController@templatePreview', ['uid' => $campaign->autoEvent()->uid, 'campaign_uid' => $campaign->uid]);
-        }
+        return redirect()->action('CampaignController@templatePreview', ['uid' => $campaign->uid]);
     }
 
     /**

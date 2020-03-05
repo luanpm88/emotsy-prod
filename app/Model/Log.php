@@ -134,7 +134,7 @@ class Log extends Model
             }
 
             $item = Automation2::find($data['id']);
-            $link = is_object($item) ? action('AutomationController@edit', $item->uid) : '#deleted';
+            $link = is_object($item) ? action('Automation2Controller@edit', $item->uid) : '#deleted';
 
             $data['link'] = $link;
         }

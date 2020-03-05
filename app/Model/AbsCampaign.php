@@ -70,11 +70,7 @@ abstract class AbsCampaign extends Model
      */
     public function defaultMailList()
     {
-        if ($this->isAuto()) {
-            return $this->autoEvent()->automation->belongsTo('Acelle\Model\MailList', 'default_mail_list_id');
-        } else {
-            return $this->belongsTo('Acelle\Model\MailList', 'default_mail_list_id');
-        }
+        return $this->belongsTo('Acelle\Model\MailList', 'default_mail_list_id');
     }
 
     /**
@@ -113,44 +109,6 @@ abstract class AbsCampaign extends Model
         }
 
         return $rules;
-    }
-
-    /**
-     * Get campaign validation rules.
-     */
-    public function automatedCampaignRules()
-    {
-        $rules = array(
-            'type' => 'required',
-            'name' => 'required',
-            'subject' => 'required',
-            'from_name' => 'required',
-            'reply_to' => 'required|email',
-        );
-
-        if ($this->use_default_sending_server_from_email) {
-            $rules['from_email'] = 'email';
-        } else {
-            $rules['from_email'] = 'required|email';
-        }
-
-        return $rules;
-    }
-
-    /**
-     * Get the auto events of the campaign.
-     */
-    public function autoEvents()
-    {
-        return $this->belongsToMany('Acelle\Model\AutoEvent', 'auto_campaigns');
-    }
-
-    /**
-     * Get the auto event of the campaign.
-     */
-    public function autoEvent()
-    {
-        return $this->autoEvents()->first();
     }
 
     /**
@@ -251,10 +209,6 @@ abstract class AbsCampaign extends Model
      */
     public function getListsSegments()
     {
-        if ($this->isAuto()) {
-            return $this->autoEvent()->automation->getListsSegments();
-        }
-
         $lists_segments = $this->listsSegments;
 
         if ($lists_segments->isEmpty()) {
@@ -275,10 +229,6 @@ abstract class AbsCampaign extends Model
      */
     public function getListsSegmentsGroups()
     {
-        if ($this->isAuto()) {
-            return $this->autoEvent()->automation->getListsSegmentsGroups();
-        }
-
         $lists_segments = $this->getListsSegments();
         $groups = [];
 

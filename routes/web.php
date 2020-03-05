@@ -20,9 +20,6 @@ Route::get('/assets/ux/{name?}', [ function ($name) {
     }
 }])->where('name', '.+');
 
-// Automation
-Route::resource('automation', 'AutomationController');
-
 // Installation
 Route::group(['middleware' => ['installed']], function () {
     // Installation
@@ -441,48 +438,6 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('systems/jobs/{id}/download/log', 'SystemJobController@downloadLog');
     Route::get('systems/jobs/{id}/download/csv', 'SystemJobController@downloadCsv');
 
-    // Automation
-    // Route::get('automations/{uid}/list-segment-form', 'AutomationController@listSegmentForm');
-    // Route::patch('automations/disable', 'AutomationController@disable');
-    // Route::patch('automations/enable', 'AutomationController@enable');
-    // Route::get('automations/{uid}/overview/emails/list', 'AutomationController@overviewCampaignsList');
-    // Route::get('automations/{uid}/overview/emails', 'AutomationController@overviewCampaigns');
-    // Route::get('automations/{uid}/overview/workflow', 'AutomationController@overviewWorkflow');
-    // Route::post('automations/{uid}/confirm', 'AutomationController@confirm');
-    // Route::get('automations/{uid}/confirm', 'AutomationController@confirm');
-    // Route::delete('automations/delete', 'AutomationController@delete');
-    // Route::get('automations/{uid}/auto-event/form', 'AutomationController@nextEventForm');
-    // Route::post('automations/{uid}/workflow', 'AutomationController@workflow');
-    // Route::get('automations/{uid}/workflow', 'AutomationController@workflow');
-    // Route::get('automations/{uid}/custom-criteria/form', 'AutomationController@criteriaForm');
-    // Route::post('automations/{uid}/trigger', 'AutomationController@trigger');
-    // Route::get('automations/{uid}/trigger', 'AutomationController@trigger');
-    // Route::get('automations/sort', 'AutomationController@sort');
-    // Route::get('automations/listing/{page?}', 'AutomationController@listing');
-    // Route::resource('automations', 'AutomationController');
-
-    // Auto event
-    Route::get('auto-events/{uid}/emails/{campaign_uid}/template', 'AutoEventController@template'); //
-    Route::post('auto-events/{uid}/emails/{campaign_uid}/template', 'AutoEventController@template'); //
-    Route::get('auto-events/{uid}/emails/{campaign_uid}/template/select', 'AutoEventController@templateSelect'); //
-    Route::get('auto-events/{uid}/emails/{campaign_uid}/template/choose/{template_uid}', 'AutoEventController@templateChoose');
-    Route::get('auto-events/{uid}/emails/{campaign_uid}/template/preview', 'AutoEventController@templatePreview'); //
-    Route::get('auto-events/{uid}/emails/{campaign_uid}/template/iframe', 'AutoEventController@templateIframe'); //
-    Route::get('auto-events/{uid}/emails/{campaign_uid}/template/build/{style}', 'AutoEventController@templateBuild'); //
-    Route::get('auto-events/{uid}/emails/{campaign_uid}/template/rebuild', 'AutoEventController@templateRebuild'); //
-
-    Route::patch('auto-events/{uid}/move/up', 'AutoEventController@moveUp');
-    Route::patch('auto-events/{uid}/move/down', 'AutoEventController@moveDown');
-    Route::patch('auto-events/{uid}/disable', 'AutoEventController@disable');
-    Route::patch('auto-events/{uid}/enable', 'AutoEventController@enable');
-    Route::patch('auto-events/{uid}/emails/{campaign_uid}/setup', 'AutoEventController@campaignSetup');
-    Route::get('auto-events/{uid}/emails/{campaign_uid}/setup', 'AutoEventController@campaignSetup');
-    Route::delete('auto-events/{uid}/delete', 'AutoEventController@delete');
-    Route::delete('auto-events/campaigns/{uid}/delete', 'AutoEventController@deleteCampaign');
-    Route::post('auto-events/{uid}/campaigns/add', 'AutoEventController@addCampaign');
-    Route::get('auto-events/{uid}/campaigns', 'AutoEventController@campaigns');
-    Route::resource('auto-events', 'AutoEventController');
-
     // Sending servers
     Route::post('sending_servers/{uid}/test-connection', 'SendingServerController@testConnection');
     Route::post('sending_servers/{uid}/test', 'SendingServerController@test');
@@ -567,8 +522,6 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('automation2/segment-select', 'Automation2Controller@segmentSelect');
 
     Route::match(['get', 'post'], 'automation2/{uid}/template/{email_uid}/edit-classic', 'Automation2Controller@templateEditClassic');
-    Route::match(['get', 'post'], 'api/3.0/automations/{uid}/execute', 'Automation2Controller@executeApi');
-
     Route::match(['get', 'post'], 'automation2/{uid}/contacts/copy-to-new-list', 'Automation2Controller@copyToNewList');
     Route::post('automation2/{uid}/contacts/export', 'Automation2Controller@exportContacts');
 

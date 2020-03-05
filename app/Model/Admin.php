@@ -688,7 +688,7 @@ class Admin extends Model
         $query = \Acelle\Model\Automation2::query();
 
         if (!$this->can('readAll', new \Acelle\Model\Customer())) {
-            $query = $query->leftJoin('customers', 'customers.id', '=', 'automations.customer_id')
+            $query = $query->leftJoin('customers', 'customers.id', '=', 'automation2s.customer_id')
                 ->where('customers.admin_id', '=', $this->id);
         }
 

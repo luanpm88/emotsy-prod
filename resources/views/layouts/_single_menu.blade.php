@@ -10,7 +10,7 @@
 					</a>
 				</li>
 				<li rel0="AutomationController">
-					<a href="{{ action('AutomationController@index') }}">
+					<a href="{{ action('Automation2Controller@index') }}">
 						<i class="icon-alarm-check"></i> {{ trans('messages.Automations') }}
 					</a>
 				</li>
