@@ -3194,6 +3194,7 @@
   'payment_gateway.paypal_subscription.plan.connected' => 'Connected from PayPal plan successfully',
   'payment_gateway.paypal_subscription.plan.disconnected' => 'Disconnected from PayPal plan successfully',
   'payment.paypal_subscription.plan.connected' => 'connected',
+  'payment.paypal_subscription.plan.connected.intro' => 'This plan is connected to the remote PayPal ID: :id',
   'payment.paypal_subscription.disconnect_plan.confirm' => 'Disconnect PayPal will also delete all (remote)
     PayPal subscriptions. Are you sure you want to proceed anyway?',
   'payment.paypal_subscription' => 'PayPal Subscription',

@@ -112,7 +112,7 @@
 						<div class="list-setting-footer text-right" style="width: 20%">
 							@if (true || $plan->price > 0)
 								@if ($service->findPlanConnection($plan) && $plan->price > 0)
-									<span class="">{{ trans('messages.payment.paypal_subscription.plan.connected') }}</span>
+									<span class="xtooltip" title="{{ trans('messages.payment.paypal_subscription.plan.connected.intro', ['id' => $service->findPlanConnection($plan)['paypal_id']]) }}">{{ trans('messages.payment.paypal_subscription.plan.connected') }}</span>
 									<a link-method="POST" link-confirm="{{ trans('messages.payment.paypal_subscription.disconnect_plan.confirm') }}"
 										class="btn btn-mc_default ml-5"
 										href="{{ action('Admin\PaymentController@paypalSubscriptionDisconnectPlan', $plan->uid) }}"
