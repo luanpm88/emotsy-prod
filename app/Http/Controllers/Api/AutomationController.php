@@ -3,6 +3,8 @@
 namespace Acelle\Http\Controllers\Api;
 
 use Acelle\Http\Controllers\Controller;
+use Acelle\Model\Automation2;
+use Acelle\Jobs\RunAutomation;
 
 /**
  * /api/v1/campaigns - API controller for managing campaigns.
@@ -16,27 +18,17 @@ class AutomationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function apiCall($uid)
+    public function execute($uid)
     {
-        $user = \Auth::guard('api')->user();
-        $automation = \Acelle\Model\Automation::findByUid($uid);
-        
-        try {            
-            // check if automation exists
-            if (!is_object($automation)) {
-                throw new \Exception("Automation not found"); 
-            }
-            
-            // authorize
-            if (!$user->can('update', $automation)) {
-                throw new \Exception("Unauthorized"); 
-            }
-            
-            // start automation
-            $automation->start();
-            return \Response::json(array('message' => trans('messages.automation.started')), 200);
-        } catch (\Exception $e) {
-            return \Response::json(array('message' => $e->getMessage()), 400);
+        try {
+            $automation = Automation2::findByUid($uid);
+            $automation->logger()->info(sprintf('Queuing automation "%s" in response to API call', $automation->name));
+            dispatch(new RunAutomation($automation));
+
+            return \Response::json(['success' => true], 200);
+        } catch (\Exception $ex) {
+            return \Response::json(['success' => false, 'error' => $ex->getMessage()], 500);
         }
+        
     }
 }

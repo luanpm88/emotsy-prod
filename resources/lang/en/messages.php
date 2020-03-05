@@ -2697,7 +2697,7 @@
   'automation.trigger.subscriber-added-date' => 'Subscriber added date',
   'automation.trigger.specific-date' => 'Specific date',
   'automation.trigger.say-goodbye-subscriber' => 'Say goodbye to subscriber',
-  'automation.trigger.api-3-0' => 'API 3.0',
+  'automation.trigger.api-3-0' => 'API 1.0',
   'automation.trigger.welcome-new-subscriber.desc' => 'Introduce yourself | your agonization to people when they sign up for your audience.',
   'automation.trigger.say-happy-birthday.desc' => 'Celebrate with an exclusive offer or cheerful message that sends based
         on the birthday field in your audience.',
@@ -2712,7 +2712,7 @@
   'automation.trigger.subscriber-added-date.intro' => 'Automation starts yearly on your subscribers joining date. Sometimes you may want to trigger the automation prior to the date. You can schedule it accordingly below',
   'automation.trigger.specific-date.intro' => 'Start a marketing campaign immediately or schedule it for a particular date/time. Automation will be triggered accordingly for all contacts in the selected mail list',
   'automation.trigger.say-goodbye-subscriber.intro' => 'Start the automation when a subscriber unsubscribes from your audience. Normally you may want to send a follow email asking for the reason ask well as offering re-subscription benefits.',
-  'automation.trigger.api-3-0.intro' => 'Automation is triggered manually or from another application using Acelle Mail API 3.0. Make an HTTP POST request to the API endpoint below',
+  'automation.trigger.api-3-0.intro' => 'Automation is triggered manually or from another application using Acelle Mail API 1.0. Make an HTTP POST request to the API endpoint below',
   'automation.trigger.select_confirm' => 'Confirm',
   'automation.add_an_action' => 'Add an Action',
   'automation.action.intro' => 'Streamline your communication and personlize each customer\' experience. Use automation
@@ -2807,7 +2807,7 @@
   'automation.brief-intro.subscriber-added-date' => 'Trigger yearly on subscriber added date',
   'automation.brief-intro.specific-date' => 'Trigger on a specific date/time',
   'automation.brief-intro.say-goodbye-subscriber' => 'Trigger when subscriber opts out of list',
-  'automation.brief-intro.api-3-0' => 'Trigger via API 3.0 request',
+  'automation.brief-intro.api-3-0' => 'Trigger via API 1.0 request',
   'automation.trigger' => 'Trigger',
   'automation.settings' => 'Settings',
   'automation.trigger.empty_msg' => 'Your automation trigger is not set up yet. Click the button
@@ -3029,7 +3029,7 @@
   'automation.trigger.tree.welcome-new-subscriber' => 'New contact subscribes to mail list',
   'automation.trigger.tree.say-happy-birthday' => 'Trigger on contacts\' date of birth',
   'automation.trigger.tree.say-goodbye-subscriber' => 'Contact unsubscribes from mail list',
-  'automation.trigger.tree.api-3-0' => 'Trigger manually via API 3.0 request',
+  'automation.trigger.tree.api-3-0' => 'Trigger manually via API 1.0 request',
   'automation.trigger.tree.subscriber-added-date' => 'Trigger on contacts\' subscribe date',
   'automation.trigger.tree.specific-date' => 'Autostart on a scheduled date/time',
   'automation.no_email' => 'Email',

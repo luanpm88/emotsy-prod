@@ -7,7 +7,7 @@
         'readonly' => true,
         'label' => '',
         'name' => 'options[endpoint]',
-        'value' => 'POST ' . action('Automation2Controller@executeApi', [
+        'value' => 'POST ' . route('automation_execute', [
             'uid' => $automation->uid,
         ]),
         'help_class' => 'trigger',

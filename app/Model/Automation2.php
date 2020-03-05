@@ -399,7 +399,7 @@ class Automation2 extends Model
                 $this->checkForListUnsubscription();
                 //...
                 break;
-            case 'ElementCondition':
+            case 'api-3-0':
                 //...
                 break;
             case 'ElementWait':
@@ -881,5 +881,23 @@ class Automation2 extends Model
     public function getSegmentUids()
     {
         return $this->getSegments()->map->uid->toArray();
+    }
+
+    /**
+     * Get segments uids.
+     */
+    public function execute()
+    {
+        $subscribers = $this->mailList->activeSubscribers()->leftJoin('auto_triggers', 'subscribers.id', '=', 'auto_triggers.subscriber_id')->whereNull('auto_triggers.id')->get();
+        foreach ($subscribers as $subscriber) {
+            $this->initTrigger($subscriber);
+        }
+    }
+
+    public function allowApiCall()
+    {
+        // Usually invoked by API call
+        $type = $this->getTriggerAction()->getOption('key');
+        return ($type == 'api-3-0');
     }
 }
