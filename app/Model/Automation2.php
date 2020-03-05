@@ -888,10 +888,19 @@ class Automation2 extends Model
      */
     public function execute()
     {
-        $subscribers = $this->mailList->activeSubscribers()->leftJoin('auto_triggers', 'subscribers.id', '=', 'auto_triggers.subscriber_id')->whereNull('auto_triggers.id')->get();
+        $subscribers = $this->getNotTriggeredSubscribers();
         foreach ($subscribers as $subscriber) {
             $this->initTrigger($subscriber);
         }
+    }
+
+    public function getNotTriggeredSubscribers()
+    {
+        return $this->mailList->activeSubscribers()
+                                      ->leftJoin('auto_triggers', function($join) {
+                                          $join->on('subscribers.id', '=', 'auto_triggers.subscriber_id')->where('auto_triggers.automation2_id', '=', $this->id);
+                                      })
+                                      ->whereNull('auto_triggers.id')->select('subscribers.*')->get();
     }
 
     public function allowApiCall()

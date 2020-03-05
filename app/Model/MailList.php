@@ -300,7 +300,7 @@ class MailList extends Model
      */
     public function activeSubscribers()
     {
-        return $this->subscribers()->where('status', 'subscribed');
+        return $this->subscribers()->where('subscribers.status', 'subscribed');
     }
 
     /**
