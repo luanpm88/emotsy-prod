@@ -31,11 +31,11 @@ class Uidd
 
     // Make folder if not exist	
 	$paths = [
-		storage_path('/app/customers'),
-		storage_path('/app/customers/' . $user_uid),
-		storage_path('/app/customers/' . $user_uid . '/home'),
-		storage_path('/app/customers/' . $user_uid . '/home/files'),
-		storage_path('/app/customers/' . $user_uid . '/home/thumbs'),
+		storage_path('/app/users'),
+		storage_path('/app/users/' . $user_uid),
+		storage_path('/app/users/' . $user_uid . '/home'),
+		storage_path('/app/users/' . $user_uid . '/home/files'),
+		storage_path('/app/users/' . $user_uid . '/home/thumbs'),
 	];
 	foreach ($paths as $path) {
 		if (!file_exists($path)) {
@@ -47,7 +47,7 @@ class Uidd
 		"user_uid" => $user_uid,
 		"max_size_upload_total" => $max_size_upload_total,
 		"max_file_size_upload" => $max_file_size_upload,
-		"storage_path" => storage_path('/app/customers/' . $user_uid . '/home'),
+		"storage_path" => storage_path('/app/users/' . $user_uid . '/home'),
 	];
   }
 }
