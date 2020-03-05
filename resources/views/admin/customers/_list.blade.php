@@ -20,10 +20,14 @@
                     <span class="text-muted2">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
                 </td>
                 <td>
-                    <h5 class="no-margin">
-                        <span><i class="icon-clipboard2"></i> {{ $item->currentPlanName() }}</span>
-                    </h5>
-                    <span class="text-muted2">{{ trans('messages.current_plan') }}</span>
+                    @if ($item->currentPlanName())
+                        <h5 class="no-margin">
+                            <span><i class="icon-clipboard2"></i> {{ $item->currentPlanName() }}</span>
+                        </h5>
+                        <span class="text-muted2">{{ trans('messages.current_plan') }}</span>
+                    @else
+                        <span class="text-muted2">{{ trans('messages.customer.no_active_subscription') }}</span>
+                    @endif
                 </td>
                 <td class="stat-fix-size">
                     @if (is_object($item->subscription))

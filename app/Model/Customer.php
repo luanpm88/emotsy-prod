@@ -1412,7 +1412,7 @@ class Customer extends Model implements BillableUserInterface
     {
         return (is_object($this->activeSubscription()) ?
             $this->activeSubscription()->plan->name :
-            trans('messages.no_plan')
+            ''
         );
     }
 

@@ -3210,4 +3210,6 @@
   'automation.email.plain.updated' => 'Email plain text was upadated.',
   'automation.email.content.updated' => 'Email content was upadated.',
   'plans.paypal_not_connected' => 'Plan not connected, go to PayPal settings to fix',
+  'plan.save_and_connect' => 'Save & Connect',
+  'customer.no_active_subscription' => 'no active subscription',
 ) ?>
