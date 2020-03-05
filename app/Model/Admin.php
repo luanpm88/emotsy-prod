@@ -685,7 +685,7 @@ class Admin extends Model
      */
     public function getAllAutomations()
     {
-        $query = \Acelle\Model\Automation::getAll();
+        $query = \Acelle\Model\Automation2::query();
 
         if (!$this->can('readAll', new \Acelle\Model\Customer())) {
             $query = $query->leftJoin('customers', 'customers.id', '=', 'automations.customer_id')
