@@ -9,6 +9,11 @@ class Send extends Action
 {
     public function execute()
     {
+        if ($this->options['init'] == 'false' || $this->options['init'] == false) {
+            $this->autoTrigger->logger()->info('Email not set up yet');
+            return false;
+        }
+
         // IMPORTANT
         // If this is the latest also the last action of the workflow
         // no more execute, just return true
