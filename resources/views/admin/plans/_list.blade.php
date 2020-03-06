@@ -33,7 +33,7 @@
                 </td>
                 <td>
                     <h5 class="no-margin text-bold">
-                        <span class="kq_search" href="{{ action('Admin\PlanController@edit', $plan->uid) }}">
+                        <span class="kq_search" href="{{ action('Admin\PlanController@general', $plan->uid) }}">
                             {{ $plan->name }}
                         </span>
                     </h5>
@@ -45,7 +45,9 @@
                     @endif
 
                     @foreach ($plan->errors() as $error)
-                        <div class="text-muted"><span class="text-danger"><i class="fa fa-minus-circle"></i> {{ $error }}</span></div>
+                        <div class="text-muted"><span class="text-danger"><i class="fa fa-minus-circle"></i>
+                            {{ trans('messages.plan.' . $error) }}
+                        </span></div>
                     @endforeach
                 </td>
                 <td>

@@ -85,7 +85,7 @@
 						</div>
 						<div class="list-setting-main mr-auto" style="width: 50%">
 							<h4 class="title text-bold">
-								{{ $plan->name }}
+								<a target="_blank" href="{{ action('Admin\PlanController@general', $plan->uid) }}">{{ $plan->name }}</a>
 							</h4>
 							<p class="mb-0">{{ $plan->description }}</p>
 							@if (!$plan->useSystemSendingServer())
@@ -95,7 +95,7 @@
 							@endif
 
 							@foreach ($plan->errors() as $error)
-								<div class="text-muted"><span class="text-danger"><i class="fa fa-minus-circle"></i> {{ $error }}</span></div>
+								<div class="text-muted"><span class="text-danger"><i class="fa fa-minus-circle"></i> {{ trans('messages.plan.' . $error . '.setting') }}</span></div>
 							@endforeach
 						</div>
 						<div class="list-setting-main mr-auto">
@@ -110,7 +110,7 @@
 							</span>
 						</div>
 						<div class="list-setting-footer text-right" style="width: 20%">
-							@if (true || $plan->price > 0)
+							@if ($plan->price > 0)
 								@if ($service->findPlanConnection($plan) && $plan->price > 0)
 									<span class="xtooltip" title="{{ trans('messages.payment.paypal_subscription.plan.connected.intro', ['id' => $service->findPlanConnection($plan)['paypal_id']]) }}">{{ trans('messages.payment.paypal_subscription.plan.connected') }}</span>
 									<a link-method="POST" link-confirm="{{ trans('messages.payment.paypal_subscription.disconnect_plan.confirm') }}"
@@ -130,8 +130,6 @@
 										</button>
 									</form>
 								@endif
-							@else
-								<span class="">{{ trans('messages.payment.paypal_subscription.plan.connected') }}</span>
 							@endif
 						</div>
 					</div>

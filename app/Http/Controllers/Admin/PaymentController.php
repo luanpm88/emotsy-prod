@@ -229,6 +229,11 @@ class PaymentController extends Controller
 
         try {
             $service->removePaypalProduct();
+
+            // check all plan status
+            foreach (Plan::all() as $plan) {
+                $plan->checkStatus();
+            }
         } catch (\Exception $e) {
             $request->session()->flash('alert-error', 'PyPal Subscription service error: ' . $e->getMessage());
             return redirect()->action('Admin\PaymentController@edit', 'paypal_subscription');

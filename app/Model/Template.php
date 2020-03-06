@@ -574,7 +574,7 @@ class Template extends Model
     public function transform()
     {
         // replace relative urls
-        $this->content = \Acelle\Library\Tool::replaceTemplateUrl($this->content, route('template_assets', ['uid' => $this->uid, 'path' => '']));
+        $this->content = '<!DOCTYPE html>' . \Acelle\Library\Tool::replaceTemplateUrl($this->content, route('template_assets', ['uid' => $this->uid, 'path' => '']));
     }
 
     /**

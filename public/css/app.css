@@ -3591,3 +3591,9 @@ a.plan-off .spinner, a.plan-on .spinner {
 .campaign-list-segments .condition-line:first-child .del-col {
     display: none;
 }
+.dropdown-menu {
+    box-shadow: 0 3px 10px hsl(0, 0%, 50%);
+    border-radius: 2px;
+    border-color: transparent !important;
+    border: none;
+}

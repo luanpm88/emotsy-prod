@@ -360,7 +360,7 @@ class Email extends Model
     public function transform()
     {
         // replace relative urls
-        $this->content = \Acelle\Library\Tool::replaceTemplateUrl($this->content, route('email_assets', ['uid' => $this->uid, 'path' => '']));
+        $this->content = '<!DOCTYPE html>' . \Acelle\Library\Tool::replaceTemplateUrl($this->content, route('email_assets', ['uid' => $this->uid, 'path' => '']));
         return $this->content;
     }
 

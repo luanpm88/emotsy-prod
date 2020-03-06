@@ -2639,7 +2639,7 @@ abstract class AbsCampaign extends Model
     public function transform()
     {
         // replace relative urls
-        $this->html = \Acelle\Library\Tool::replaceTemplateUrl($this->html, route('campaign_assets', ['uid' => $this->uid, 'path' => '']));
+        $this->html = '<!DOCTYPE html>' . \Acelle\Library\Tool::replaceTemplateUrl($this->html, route('campaign_assets', ['uid' => $this->uid, 'path' => '']));
         return $this->html;
     }
 
