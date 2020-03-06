@@ -3137,7 +3137,7 @@
   'braintree.always_ask_for_valid_card' => 'Always ask for valid card',
   'notification.delete.confirm' => 'You\'re about to delete :number notification(s).',
   'notifications.deleted' => '<strong>:number</strong> notification(s) was successfully deleted',
-  'no_notifications' => 'There are no notifications yet',
+  'no_notifications' => 'There is no notification',
   'subscription.reject_pending_payment' => 'Reject payment',
   'subscription.reject_pending_payment.leave_note' => 'Leave a note to your customer regarding the reason the payment is rejected',
   'payments.paypal_subscription' => 'PayPal Subscription',

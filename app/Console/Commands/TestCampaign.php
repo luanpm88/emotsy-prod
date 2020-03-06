@@ -13,7 +13,6 @@ use Acelle\Model\User;
 use Acelle\Model\MailList;
 use Acelle\Model\Subscriber;
 use Acelle\Model\TrackingLog;
-use Acelle\Model\AutoEvent;
 use Acelle\Model\SendingServer;
 use Acelle\Model\AutoTrigger;
 use Acelle\Model\SendingServerElasticEmailApi;

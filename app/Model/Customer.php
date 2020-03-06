@@ -180,11 +180,6 @@ class Customer extends Model implements BillableUserInterface
         return $this->hasMany('Acelle\Model\TrackingLog')->orderBy('created_at', 'asc');
     }
 
-    public function automations()
-    {
-        return $this->hasMany('Acelle\Model\Automation');
-    }
-    
     public function automation2s()
     {
         return $this->hasMany('Acelle\Model\Automation2');
@@ -1318,7 +1313,7 @@ class Customer extends Model implements BillableUserInterface
      */
     public function automationsCount()
     {
-        return $this->automations()->count();
+        return $this->automation2sCount();
     }
 
     /**
@@ -1344,7 +1339,7 @@ class Customer extends Model implements BillableUserInterface
     public function automationsUsage()
     {
         $max = $this->maxAutomations();
-        $count = $this->automationsCount();
+        $count = $this->automation2sCount();
 
         if ($max == '∞') {
             return 0;

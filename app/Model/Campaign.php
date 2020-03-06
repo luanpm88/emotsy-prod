@@ -288,8 +288,7 @@ class Campaign extends AbsCampaign
     {
         // get subscribers from auto campaign or normal campaign
         if ($this->isAuto()) {
-            // Get subscriber from auto event
-            $query = $this->autoEvent()->subscribers();
+            // Get subscriber from auto event -- deprecated
         } else {
             if ($this->listsSegments->isEmpty()) {
                 // this is a trick for returning an empty builder

@@ -103,6 +103,12 @@ class MailList extends Model
         return $this->hasMany('Acelle\Model\Segment');
     }
 
+     public function automations()
+     {
+         return $this->hasMany('Acelle\Model\Automation2');
+     }
+
+
     public function pages()
     {
         return $this->hasMany('Acelle\Model\Page');
@@ -126,14 +132,6 @@ class MailList extends Model
     public function campaigns()
     {
         return $this->belongsToMany('Acelle\Model\Campaign', 'campaigns_lists_segments', 'mail_list_id', 'campaign_id');
-    }
-
-    /**
-     * has_many association with automations through automations_lists_segments.
-     */
-    public function automations()
-    {
-        return $this->belongsToMany('Acelle\Model\Automation', 'automations_lists_segments', 'mail_list_id', 'automation_id');
     }
 
     /**

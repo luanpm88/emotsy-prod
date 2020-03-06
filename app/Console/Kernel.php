@@ -44,7 +44,7 @@ class Kernel extends ConsoleKernel
             event(new \Acelle\Events\CronJobExecuted());
         })->name('cronjob_event:log')->everyMinute();
 
-        // Automation
+        // Automation2
         $schedule->call(function () {
             Automation2::run();
         })->name('automation:run')->everyFiveMinutes();
@@ -64,7 +64,7 @@ class Kernel extends ConsoleKernel
         // GeoIp database check
         $schedule->command('geoip:check')->everyMinute()->withoutOverlapping();
 
-        // Automation
+        // Subscription
         $schedule->call(function () {
             // $gateway = \App::make('Acelle\Cashier\PaymentGateway');
             $gateway = Cashier::getPaymentGateway();
