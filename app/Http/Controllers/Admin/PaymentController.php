@@ -130,6 +130,11 @@ class PaymentController extends Controller
 
             Setting::set('system.payment_gateway', $name);
 
+            // check all plan status
+            foreach (Plan::all() as $plan) {
+                $plan->checkStatus();
+            }
+
             $request->session()->flash('alert-success', trans('messages.payment_gateway.updated'));
             return redirect()->action('Admin\PaymentController@index');
         } catch (\Exception $ex) {

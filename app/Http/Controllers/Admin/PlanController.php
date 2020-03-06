@@ -74,7 +74,6 @@ class PlanController extends Controller
             'frequency_amount' => 1,
             'frequency_unit' => 'month'
         ]);
-        $plan->status = \Acelle\Model\Plan::STATUS_ACTIVE;
 
         // authorize
         if (\Gate::denies('create', $plan)) {
@@ -153,9 +152,11 @@ class PlanController extends Controller
             }
             $this->validate($request, $rules);
 
-            $plan->admin_id = $user->admin->id;
-            $plan->status = \Acelle\Model\Plan::STATUS_ACTIVE;
+            $plan->admin_id = $user->admin->id;            
             $plan->save();
+
+            // check status
+            $plan->checkStatus();
 
             // For sending servers
             if (isset($request->sending_servers)) {

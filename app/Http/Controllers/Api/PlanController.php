@@ -96,8 +96,10 @@ class PlanController extends Controller
             }
 
             $plan->admin_id = $user->admin->id;
-            $plan->status = \Acelle\Model\Plan::STATUS_ACTIVE;
             $plan->save();
+
+            // check status
+            $plan->checkStatus();
 
             // For sending servers
             if (isset($request->sending_servers)) {
@@ -115,81 +117,5 @@ class PlanController extends Controller
                 'plan_uid' => $plan->uid
             ), 200);
         }
-
-        //// validate and save posted data
-        //if ($request->isMethod('post')) {
-        //    $validator = \Validator::make($request->all(), $subscriber->getRules());
-        //    if ($validator->fails()) {
-        //        return response()->json($validator->messages(), 403);
-        //    }
-        //
-        //    // Save subscriber
-        //    $subscriber->email = $request->EMAIL;
-        //    $subscriber->save();
-        //
-        //    // Update field
-        //    $subscriber->updateFields($request->all());
-        //
-        //    // Log
-        //    $subscriber->log('created', $user->customer);
-        //
-        //    // update MailList cache
-        //    $subscriber->mailList->updateCachedInfo();
-        //
-        //    // update MailList cache
-        //    $subscriber->mailList->updateCachedInfo();
-        //
-        //    return \Response::json(array(
-        //        'message' => trans('messages.subscriber.created'),
-        //        'subscriber_uid' => $subscriber->uid
-        //    ), 200);
-        //}
-        //
-        //
-        //
-        //// Get current user
-        //$user = $request->user();
-        //$plan = new \Acelle\Model\Plan();
-        //
-        //// authorize
-        //if (\Gate::denies('create', $plan)) {
-        //    return $this->notAuthorized();
-        //}
-        //
-        //// save posted data
-        //if ($request->isMethod('post')) {
-        //    $plan->fill($request->all());
-        //    // $plan->options = json_encode($request->options);
-        //    $plan->fillOptions($request->options);
-        //
-        //    $this->validate($request, $plan->rules());
-        //
-        //    $rules = [];
-        //    if (isset($request->sending_servers)) {
-        //        foreach ($request->sending_servers as $key => $param) {
-        //            if ($param['check']) {
-        //                $rules['sending_servers.'.$key.'.fitness'] = 'required';
-        //            }
-        //        }
-        //    }
-        //    $this->validate($request, $rules);
-        //
-        //    $plan->admin_id = $user->admin->id;
-        //    $plan->status = \Acelle\Model\Plan::STATUS_ACTIVE;
-        //    $plan->save();
-        //
-        //    // For sending servers
-        //    if (isset($request->sending_servers)) {
-        //        $plan->updateSendingServers($request->sending_servers);
-        //    }
-        //
-        //    // For email verification servers
-        //    if (isset($request->email_verification_servers)) {
-        //        $plan->updateEmailVerificationServers($request->email_verification_servers);
-        //    }
-        //
-        //    $request->session()->flash('alert-success', trans('messages.plan.created'));
-        //    return redirect()->action('Admin\PlanController@index');
-        //}
     }
 }

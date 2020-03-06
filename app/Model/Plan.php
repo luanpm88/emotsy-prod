@@ -1157,6 +1157,9 @@ class Plan extends Model implements BillablePlanInterface
         $copy->status = PaymentMethod::STATUS_ACTIVE;
         $copy->custom_order = 0;
         $copy->save();
+
+        // check status
+        $copy->checkStatus();
     }
 
     /**
