@@ -52,7 +52,7 @@
             // merge options with reponse options
             tree.getSelected().setOptions($.extend(tree.getSelected().getOptions(), response.options));
             tree.getSelected().setOptions($.extend(tree.getSelected().getOptions(), {init: true}));
-            
+            tree.getSelected().validate();
             // save tree
             saveData(function() {
                 // notify

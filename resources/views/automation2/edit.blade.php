@@ -276,7 +276,6 @@
 					
 					// show loading effect
 					popup.loading();
-					
 					$.ajax({
 						url: url,
 						type: 'POST',
@@ -289,6 +288,8 @@
 						}
 
 						insertToTree(newE);
+
+						newE.validate();
 						
 						// save tree
 						saveData(function() {
@@ -589,7 +590,17 @@
                         } else {
                             e.hideNotice();
                             // e.setTitle('Correct title goes here');
+                        }
+                    }
 
+                    if (e.getType() == 'ElementCondition') {
+                        if (  e.getOptions()['type'] == null || 
+                        	 (e.getOptions()['email'] == null && e.getOptions()['email_link'] == null )) {
+							e.showNotice('Condition not set up yet');
+                            e.setTitle('Condition not set up yet');
+                        } else {
+                            e.hideNotice();
+                            // e.setTitle('Correct title goes here');
                         }
                     }
                 }
