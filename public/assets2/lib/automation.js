@@ -568,16 +568,19 @@ class AutomationElement {
             right = this.findRightMostSibling(-0.5);
         }
 
-        var right = this.findRightMostSibling();
+        right = this.findRightMostSibling();
         while (right != null && this.getDistance(right) < 1.5) {
             right.shiftToRight();
             right = this.findRightMostSibling();
         }
 
-        var right = this.findRightMostSibling(0.5); // tìm element nằm cao hơn 0.5
-        while (right != null && this.getDistance(right) < 1.0) {
+        right = this.findRightMostSibling(0.5); // tìm element nằm cao hơn 0.5
+        var safe = (right != null && right.isCondition()) ? 2.0 : 1.0;
+        while (right != null && this.getDistance(right) < safe) {
+            console.log('Con nhieu day: ' + this.getDistance(right));
             right.shiftToRight();
             right = this.findRightMostSibling(0.5);
+            safe = (right.isCondition()) ? 2.0 : 1.0;
         }
     }
 
