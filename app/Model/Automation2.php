@@ -400,10 +400,10 @@ class Automation2 extends Model
                 //...
                 break;
             case 'api-3-0':
-                //...
+                // Just wait for API call
                 break;
-            case 'ElementWait':
-                //...
+            case 'others':
+                // others
                 break;
             default:
                 throw new \Exception('Unknown Automation trigger type '. $this->getTriggerAction()->getOption('key'));
@@ -881,6 +881,25 @@ class Automation2 extends Model
     public function getSegmentUids()
     {
         return $this->getSegments()->map->uid->toArray();
+    }
+
+    // for debugging only
+    public function updateActionOptions($actionId, $data = [])
+    {
+        $json = json_decode($this->data, true);
+
+        for ($i = 0; $i < sizeof($json); $i += 1) {
+            $action = $json[$i];
+            if ($action['id'] != $actionId) {
+                continue;
+            }
+
+            $action['options'] = array_merge($action['options'], $data);
+
+            $json[$i] = $action;
+            $this->data = json_encode($json);
+            $this->save();
+        }
     }
 
     /**

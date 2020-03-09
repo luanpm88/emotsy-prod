@@ -517,7 +517,7 @@ class Automation2Controller extends Controller
                         'options' => [
                             'key' => $request->key,
                             'type' => $request->type,
-                            'email' => $request->email,
+                            'email' => empty($request->email) ? null : $request->email,
                         ],
                     ]);
                 } else if ($request->type == 'click') {
@@ -528,7 +528,7 @@ class Automation2Controller extends Controller
                         'options' => [
                             'key' => $request->key,
                             'type' => $request->type,
-                            'email_link' => $request->email_link,
+                            'email_link' => empty($request->email_link) ? null : $request->email_link,
                         ],
                     ]);
                 }
