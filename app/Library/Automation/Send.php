@@ -9,8 +9,14 @@ class Send extends Action
 {
     public function execute()
     {
+        $subscriber = $this->autoTrigger->subscriber;
+        if (!$subscriber->isActive()) {
+            $this->autoTrigger->logger()->warning(sprintf('Subscriber "%s" is not active (current status: "%s")', $subscriber->email, $subscriber->status));
+            return false;
+        }
+
         if ($this->options['init'] == 'false' || $this->options['init'] == false) {
-            $this->autoTrigger->logger()->info('Email not set up yet');
+            $this->autoTrigger->logger()->warning('Email not set up yet');
             return false;
         }
 
@@ -18,9 +24,9 @@ class Send extends Action
         // If this is the latest also the last action of the workflow
         // no more execute, just return true
         if (!is_null($this->last_executed)) {
-            $this->autoTrigger->logger()->info('Send action already executed');
+            $this->autoTrigger->logger()->warning('Send action already executed');
 
-            return true;
+            return true; // in case of adding new element after this, but duplicate log
         }
 
         $email = $this->getEmail();
