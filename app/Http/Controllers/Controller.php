@@ -36,7 +36,11 @@ class Controller extends BaseController
      */
     public function notAuthorized()
     {
-        return view('notAuthorized');
+        if(request()->ajax()){
+            return response()->json(['message' => trans('messages.not_authorized_message')], 403);
+        }
+
+        return response()->view('notAuthorized')->setStatusCode(403); 
     }
 
     /**
