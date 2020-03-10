@@ -8,7 +8,7 @@
 				'name' => 'name',
 				'value' => $server->name,
 				'help_class' => 'sending_server',
-				'rules' => Acelle\Model\SendingServer::rules(request()->type)
+				'rules' => Acelle\Model\SendingServer::frontendRules(request()->type)
 			])
 		</div>
 	@endif
@@ -20,7 +20,7 @@
 				'name' => 'domain',
 				'value' => $server->domain,
 				'help_class' => 'sending_server',
-				'rules' => Acelle\Model\SendingServer::rules(request()->type)
+				'rules' => Acelle\Model\SendingServer::frontendRules(request()->type)
 			])
 		</div>
 	@endif
@@ -32,7 +32,7 @@
 				'name' => 'api_key',
 				'value' => $server->api_key,
 				'help_class' => 'sending_server',
-				'rules' => Acelle\Model\SendingServer::rules(request()->type)
+				'rules' => Acelle\Model\SendingServer::frontendRules(request()->type)
 			])
 		</div>
 	@endif
@@ -44,7 +44,7 @@
 				'name' => 'host',
 				'value' => $server->host,
 				'help_class' => 'sending_server',
-				'rules' => Acelle\Model\SendingServer::rules(request()->type)
+				'rules' => Acelle\Model\SendingServer::frontendRules(request()->type)
 			])
 		</div>
 	@endif
@@ -57,7 +57,7 @@
 				'value' => $server->host,
 				'help_class' => 'sending_server',
 				'options' => Acelle\Model\SendingServerSparkPost::HOSTS,
-				'rules' => Acelle\Model\SendingServer::rules(request()->type)
+				'rules' => Acelle\Model\SendingServer::frontendRules(request()->type)
 			])
 		</div>
 	@endif
@@ -69,7 +69,7 @@
 				'name' => 'aws_access_key_id',
 				'value' => $server->aws_access_key_id,
 				'help_class' => 'sending_server',
-				'rules' => Acelle\Model\SendingServer::rules(request()->type)
+				'rules' => Acelle\Model\SendingServer::frontendRules(request()->type)
 			])
 		</div>
 	@endif
@@ -81,7 +81,7 @@
 				'name' => 'aws_secret_access_key',
 				'value' => $server->aws_secret_access_key,
 				'help_class' => 'sending_server',
-				'rules' => Acelle\Model\SendingServer::rules(request()->type)
+				'rules' => Acelle\Model\SendingServer::frontendRules(request()->type)
 			])
 		</div>
 	@endif
@@ -94,7 +94,7 @@
 				'value' => $server->aws_region,
 				'help_class' => 'sending_server',
 				'options' => Acelle\Model\SendingServer::awsRegionSelectOptions(),
-				'rules' => Acelle\Model\SendingServer::rules(request()->type)
+				'rules' => Acelle\Model\SendingServer::frontendRules(request()->type)
 			])
 		</div>
 	@endif
