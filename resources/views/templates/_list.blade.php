@@ -48,8 +48,11 @@
 
                 <td class="text-right">
                     @if (Auth::user()->customer->can('update', $template))
-                        <a href="{{ action('TemplateController@builderEdit', $template->uid) }}" type="button" class="btn bg-grey btn-icon">
-                            {{ trans('messages.design') }}
+                        <a href="{{ action('TemplateController@builderEdit', $template->uid) }}" type="button" class="btn btn-default btn-icon">
+                            {{ trans('messages.template.pro_builder') }}
+                        </a>
+                        <a href="{{ action('TemplateController@edit', $template->uid) }}" type="button" class="btn bg-grey btn-icon">
+                            {{ trans('messages.template.classic_builder') }}
                         </a>
                     @endif
                     @if (Auth::user()->customer->can('preview', $template) ||

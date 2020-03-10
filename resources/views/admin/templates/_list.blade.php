@@ -47,10 +47,15 @@
 				</td>
 				<td class="text-right">
 					@if (Auth::user()->admin->can('preview', $template))
-						<a href="#preview" class="btn bg-teal-600 btn-icon" onclick="popupwindow('{{ action('Admin\TemplateController@preview', $template->uid) }}', '{{ $template->name }}', 800, 800)"><i class="icon-zoomin3"></i> {{ trans("messages.preview") }}</a>
+						<a href="#preview" class="btn bg-teal-600 btn-icon" onclick="popupwindow('{{ action('Admin\TemplateController@preview', $template->uid) }}', '{{ $template->name }}', 800, 800)"><i class="icon-zoomin3"></i></a>
 					@endif
 					@if (Auth::user()->admin->can('update', $template))
-						<a href="{{ action('Admin\TemplateController@builderEdit', $template->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
+						<a href="{{ action('Admin\TemplateController@builderEdit', $template->uid) }}" type="button" class="btn btn-default btn-icon">
+                            {{ trans('messages.template.pro_builder') }}
+                        </a>
+                        <a href="{{ action('Admin\TemplateController@edit', $template->uid) }}" type="button" class="btn bg-grey btn-icon">
+                            {{ trans('messages.template.classic_builder') }}
+                        </a>
 					@endif
 					@if (Auth::user()->admin->can('preview', $template) ||
 						Auth::user()->admin->can('copy', $template) ||
