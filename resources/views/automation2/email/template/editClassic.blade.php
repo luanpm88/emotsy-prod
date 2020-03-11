@@ -125,7 +125,7 @@
                         $('#mceu_0 .mce-txt').html('{{ trans('messages.editor.insert_tag') }}');
                     },
                     values: [
-                        @foreach(Acelle\Model\Template::tags() as $tag)
+                        @foreach(Acelle\Model\Template::tags($automation->mailList) as $tag)
                             {text: '{{ "{".$tag["name"]."}" }}', value: '{{ "{".$tag["name"]."}" }}'},
                         @endforeach
                     ],
