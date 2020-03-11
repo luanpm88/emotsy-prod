@@ -41,6 +41,10 @@ class PaymentController extends Controller
         try {
             $service->validate();
             $isValid = true;
+
+            if ($name == 'paypal_subscription') {
+                $isValid && $service->getData()['product_id'];
+            }
         } catch (\Exception $ex) {
             $isValid = false;
         }
@@ -48,7 +52,7 @@ class PaymentController extends Controller
         return view('admin.payments.edit', [
             'gateway' => $gateway,
             'service' => $service,
-            'isValid' => $isValid && $service->getData()['product_id'],
+            'isValid' => $isValid,
         ]);
     }
 
