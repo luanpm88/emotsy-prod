@@ -133,6 +133,11 @@ class PaymentController extends Controller
             $service->validate();
 
             Setting::set('system.payment_gateway', $name);
+            
+            // update global configs
+            config([
+                'cashier.gateway' => $name
+            ]);
 
             // check all plan status
             foreach (Plan::all() as $plan) {
@@ -191,7 +196,7 @@ class PaymentController extends Controller
             $service->disconnectPlan($plan);
 
             // check plan status
-            $item->checkStatus();
+            $plan->checkStatus();
         } catch (\Exception $e) {
             $request->session()->flash('alert-error', 'PyPal Subscription service error: ' . $e->getMessage());
             return redirect()->action('Admin\PaymentController@edit', 'paypal_subscription');
