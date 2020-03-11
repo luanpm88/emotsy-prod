@@ -13,12 +13,27 @@ class UpdateAutoTriggersTable extends Migration
      */
     public function up()
     {
+        try {
+            Schema::table('auto_triggers', function (Blueprint $table) {
+                $table->dropForeign('auto_triggers_auto_event_id_foreign');
+                $table->dropColumn('auto_event_id');
+            });
+        } catch (\Exception $ex) {
+            //
+        }
+
+        // trick: make sure the OLD auto_event_id is no longer there
+        Schema::table('auto_triggers', function (Blueprint $table) {
+            $table->integer('auto_event_id')->nullable();
+        });
+
+        Schema::table('auto_triggers', function (Blueprint $table) {
+            $table->dropColumn('auto_event_id');
+        });
+
         Schema::table('auto_triggers', function (Blueprint $table) {
             $table->text('data')->nullable();
             $table->integer('automation2_id')->unsigned();
-
-            $table->dropForeign('auto_triggers_auto_event_id_foreign');
-            $table->dropColumn('auto_event_id');
             $table->dropColumn('preceded_by');
             $table->dropColumn('start_at');
 
