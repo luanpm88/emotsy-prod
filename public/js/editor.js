@@ -5,6 +5,7 @@ $(document).ready(function() {
         convert_urls: false,
         remove_script_host: false,
         forced_root_block: "",
+        skin: "oxide-dark",
         valid_elements : '*[*],meta[*]',
         extended_valid_elements : "meta[*]",
         valid_children : "+body[meta],+div[h2|span|meta|object],+object[param|embed]",
@@ -20,9 +21,9 @@ $(document).ready(function() {
           APP_URL.replace('/index.php','')+'/css/page.css',
         ],
 
-        external_filemanager_path:APP_URL.replace('/index.php','')+"/filemanager/",
+        external_filemanager_path:APP_URL.replace('/index.php','')+"/filemanager2/",
         filemanager_title:"Responsive Filemanager" ,
-        external_plugins: { "filemanager" : APP_URL.replace('/index.php','')+"/filemanager/plugin.min.js"}
+        external_plugins: { "filemanager" : APP_URL.replace('/index.php','')+"/filemanager2/plugin.min.js"}
     });
 
     tinymce.init({
@@ -31,6 +32,7 @@ $(document).ready(function() {
         convert_urls: false,
         remove_script_host: false,
         forced_root_block: "",
+        skin: "oxide-dark",
         valid_elements : '*[*],meta[*]',
         extended_valid_elements : "meta[*]",
         valid_children : "+body[meta],+div[h2|span|meta|object],+object[param|embed]",
@@ -45,9 +47,9 @@ $(document).ready(function() {
           APP_URL.replace('/index.php','')+'/css/email.css',
         ],
 
-        external_filemanager_path:APP_URL.replace('/index.php','')+"/filemanager/",
+        external_filemanager_path:APP_URL.replace('/index.php','')+"/filemanager2/",
         filemanager_title:"Responsive Filemanager" ,
-        external_plugins: { "filemanager" : APP_URL.replace('/index.php','')+"/filemanager/plugin.min.js"}
+        external_plugins: { "filemanager" : APP_URL.replace('/index.php','')+"/filemanager2/plugin.min.js"}
     });
 
     tinymce.init({
@@ -56,6 +58,7 @@ $(document).ready(function() {
         convert_urls: false,
         remove_script_host: false,
         forced_root_block: "",
+        skin: "oxide-dark",
         plugins: [
           'fullpage table advlist autolink lists link image charmap print preview anchor directionality',
           'searchreplace visualblocks code fullscreen',
@@ -68,9 +71,9 @@ $(document).ready(function() {
         content_css: [
             APP_URL.replace('/index.php','')+'/tinymce/skins/lightgray/content.fixed.css',
         ],
-        external_filemanager_path:APP_URL.replace('/index.php','')+"/filemanager/",
+        external_filemanager_path:APP_URL.replace('/index.php','')+"/filemanager2/",
         filemanager_title:"Responsive Filemanager" ,
-        external_plugins: { "filemanager" : APP_URL.replace('/index.php','')+"/filemanager/plugin.min.js"}
+        external_plugins: { "filemanager" : APP_URL.replace('/index.php','')+"/filemanager2/plugin.min.js"}
     });
 
     tinymce.init({
@@ -79,6 +82,7 @@ $(document).ready(function() {
         convert_urls: false,
         remove_script_host: false,
         forced_root_block: "",
+        skin: "oxide-dark",
         plugins: [
           'table advlist autolink lists link image charmap print preview anchor directionality',
           'searchreplace visualblocks code fullscreen',
@@ -92,9 +96,9 @@ $(document).ready(function() {
           APP_URL.replace('/index.php','')+'/css/res_email.css',
           APP_URL.replace('/index.php','')+'/css/editor.css',
         ],
-        external_filemanager_path:APP_URL.replace('/index.php','')+"/filemanager/",
+        external_filemanager_path:APP_URL.replace('/index.php','')+"/filemanager2/",
         filemanager_title:"Responsive Filemanager" ,
-        external_plugins: { "filemanager" : APP_URL.replace('/index.php','')+"/filemanager/plugin.min.js"},
+        external_plugins: { "filemanager" : APP_URL.replace('/index.php','')+"/filemanager2/plugin.min.js"},
     });
     
     tinymce.init({
@@ -103,6 +107,7 @@ $(document).ready(function() {
         convert_urls: false,
         remove_script_host: false,
         forced_root_block: "",
+        skin: "oxide-dark",
         plugins: [
           'table advlist autolink lists link image charmap print preview anchor directionality',
           'searchreplace visualblocks code fullscreen',
@@ -116,8 +121,8 @@ $(document).ready(function() {
           APP_URL.replace('/index.php','')+'/css/res_email.css',
           APP_URL.replace('/index.php','')+'/css/editor.css',
         ],
-        external_filemanager_path:APP_URL.replace('/index.php','')+"/filemanager/",
+        external_filemanager_path:APP_URL.replace('/index.php','')+"/filemanager2/",
         filemanager_title:"Responsive Filemanager" ,
-        external_plugins: { "filemanager" : APP_URL.replace('/index.php','')+"/filemanager/plugin.min.js"},
+        external_plugins: { "filemanager" : APP_URL.replace('/index.php','')+"/filemanager2/plugin.min.js"},
     });
 });

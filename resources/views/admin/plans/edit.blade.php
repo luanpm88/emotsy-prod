@@ -7,7 +7,7 @@
 
     <script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
     
-    <script type="text/javascript" src="{{ URL::asset('tinymce/tinymce.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('js/tinymce/tinymce.min.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('js/editor.js') }}"></script>
 @endsection
 
