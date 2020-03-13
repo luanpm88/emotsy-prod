@@ -99,8 +99,7 @@ class AppServiceProvider extends ServiceProvider
                     }
                 }
             }
-        }
-            
+        }            
     }
 
     /**
