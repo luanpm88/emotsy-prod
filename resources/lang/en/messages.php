@@ -2476,7 +2476,7 @@
   'subscription.payment.checkout_again' => 'Checkout again',
   'subscription.current_subscription.cancel_at_end_of_period_no_recurring_supported.wording' => 'You are currently subscribed to <strong>:plan</strong> (<strong>:money</strong>).<br>
       The subscription will be end in <strong>:remain</strong>, on <strong>:end_at</strong>.',
-  'payments.direct' => 'Direct payment',
+  'payments.direct' => 'Offline payment',
   'payments.direct.list_intro' => 'Receive payments outside of the application',
   'payment.direct.wording' => 'Write instructions for your users to make a payment outside of the application. For example: deposit to your bank account or pay by cash. Use this option when you do not have any payment gateway account like Stripe, Braintree or PayPal',
   'payment.direct.database_path' => 'Database file path',
