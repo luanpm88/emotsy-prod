@@ -939,20 +939,24 @@ class Tool
         $srcs = array_unique($matches['url']);
 
         foreach ($srcs as $key => $src) {
-            $srcs[$key] = htmlspecialchars_decode($src);
             $srcs[$key] = str_replace('"', '', $srcs[$key]);
             $srcs[$key] = str_replace('\'', '', $srcs[$key]);
         }
 
         foreach ($srcs as $src) {
             if (preg_match('/https?/i', $src) || preg_match('/^\{/i', $src) || preg_match('/^\%/i', $src) || preg_match('/^https?/i', $src) || preg_match('/^#/i', $src) || strpos($src, '//') === 0 || preg_match('/^mailto:/i', $src)) {
-                continue;
+
+                    // Convert &amp; back to & (which was encoded by TinyMCE)
+                $new_src = htmlspecialchars_decode($src);
+            } else {
+                // Convert &amp; back to & (which was encoded by TinyMCE)
+                $decoded = htmlspecialchars_decode($src);
+
+                // Build the full path
+                $new_src = $path.'/'.$decoded;
             }
 
-            $new_src = $path.'/'.$src;
-            // $new_src = route('template_assets', ['uid' => $uid, 'path' => $src]);
-
-            // replace image url
+            // replace url
             $content = str_replace($src, $new_src, $content);
         }
 
