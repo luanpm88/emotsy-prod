@@ -83,12 +83,11 @@
                 remove_script_host: false,
                 skin: "oxide-dark",
                 forced_root_block: "",
-                plugins: [
-                'fullpage table advlist autolink lists link image charmap print preview anchor directionality',
-                'searchreplace visualblocks code fullscreen',
-                'insertdatetime media contextmenu paste code textcolor'
-                ],
-                toolbar: 'acelletags insertfile undo redo | fontselect | fontsizeselect | styleselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | ltr rtl',
+                plugins: 'print preview paste importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars emoticons',
+                imagetools_cors_hosts: ['picsum.photos'],
+                menubar: 'file edit view insert format tools table help',
+                toolbar: 'acelletags | undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media template link anchor codesample | ltr rtl',
+                toolbar_sticky: true,
                 valid_elements : '*[*],meta[*]',
                 extended_valid_elements : "meta[*]",
                 valid_children : "+body[style],+body[meta],+div[h2|span|meta|object],+object[param|embed]",
