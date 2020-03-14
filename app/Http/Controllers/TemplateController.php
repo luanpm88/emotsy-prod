@@ -209,22 +209,31 @@ class TemplateController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('patch')) {
+            // Save template
+            $template->fill($request->all());
+
             $rules = array(
                 'name' => 'required',
                 'content' => 'required',
             );
 
-            $this->validate($request, $rules);
-
-            // Save template
-            $template->fill($request->all());
+            // make validator
+            $validator = \Validator::make($request->all(), $rules);
+            
+            // redirect if fails
+            if ($validator->fails()) {
+                // faled
+                return response()->json($validator->errors(), 400);
+            }
+            
             // $template->untransform();
             $template->save();
 
-            // Redirect to my lists page
-            $request->session()->flash('alert-success', trans('messages.template.updated'));
-
-            return redirect()->action('TemplateController@index');
+            // success
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.template.updated'),
+            ], 201);
         }
     }
 

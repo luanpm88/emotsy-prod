@@ -18,7 +18,7 @@
 				@endif
 			</a>
 			<div class="d-inline-block d-flex mr-auto align-items-center">
-                <a style="" href="{{ action('TemplateController@index') }}" class="action black-back-button mr-3">
+                <a href="javascript:;" onclick="parent.$('body').removeClass('overflow-hidden');parent.$('.full-iframe-popup').fadeOut()" class="action black-back-button mr-3">
 					<i class="material-icons-outlined">arrow_back</i>
 				</a>
                 <h1 class="">{{ $template->name }}</h1>
@@ -29,7 +29,7 @@
 			</div>
 		</nav>
 	</header>
-    <form id="classic-builder-form" style="margin-top: 56px;" action="{{ action('TemplateController@update', $template->uid) }}" method="POST" class="ajax_upload_form form-validate-jquery">
+    <form id="classic-builder-form" style="margin-top: 56px;" action="{{ action('TemplateController@update', $template->uid) }}" method="POST" class="ajax_upload_form form-validate-jquery builder-classic-form">
         {{ csrf_field() }}
         <input type="hidden" name="_method" value="PATCH">
 
@@ -61,13 +61,49 @@
     </form> 
 
     <script>
-        $('.sidebar').css('height', $(window).height()-56);
+        $('.builder-classic-form').submit(function(e) {
+            e.preventDefault();
+
+            tinymce.triggerSave();
+
+            var url = $(this).attr('action');
+            var data = $(this).serialize();
+
+            if ($(this).valid()) {
+                // open builder effects
+                addMaskLoading("{{ trans('messages.automation.template.saving') }}", function() {
+                    $.ajax({
+                        url: url,
+                        method: 'POST',
+                        data: data,
+                        statusCode: {
+                            // validate error
+                            400: function (res) {
+                                console.log('Something went wrong!');
+                            }
+                        },
+                        success: function (response) {
+                            removeMaskLoading();
+                            parent.$('body').removeClass('overflow-hidden');
+
+                            // notify
+                            parent.notify('success', '{{ trans('messages.notify.success') }}', response.message);
+
+                            parent.$('.full-iframe-popup').remove();
+                            parent.popup.load();
+                        }
+                    });
+                });         
+            }     
+        });
+
+        $('.sidebar').css('height', parent.$('.full-iframe-popup').height()-56);
 
         var editor;
         $(document).ready(function() {
             editor = tinymce.init({
                 selector: '.template-editor',
-                height: $(window).height()-56,
+                height: parent.$('.full-iframe-popup').height()-56,
                 convert_urls: false,
                 remove_script_host: false,
                 skin: "oxide-dark",

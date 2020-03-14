@@ -9,7 +9,55 @@
 *
 * ---------------------------------------------------------------------------- */
 
+function openBuilder(url) {
+    var div = $('<div class="full-iframe-popup">').html('<iframe scrolling="no" class="builder d-none" src="'+url+'"></iframe>');
+    
+    $(".full-iframe-popup").remove();
+    $('body').append(div);
+
+    // open builder effects
+    addMaskLoading("{{ trans('messages.automation.template.opening_builder') }}");
+    $('.builder').on("load", function() {
+        removeMaskLoading();
+
+        $(this).removeClass("d-none");
+    });
+    $('body').addClass('overflow-hidden');
+}
+
+function openBuilderClassic(url) {
+    var div = $('<div class="full-iframe-popup">').html('<iframe scrolling="yes" class="builder d-none" src="'+url+'"></iframe>');
+    
+    $(".full-iframe-popup").remove();
+    $('body').append(div);
+
+    // open builder effects
+    addMaskLoading("{{ trans('messages.automation.template.opening_builder') }}");
+    $('.builder').on("load", function() {
+        removeMaskLoading();
+
+        $(this).removeClass("d-none");
+    });
+    $('body').addClass('overflow-hidden');
+}
+
 function initJs(container) {
+    container.find('.template-compose').click(function(e) {
+        e.preventDefault();
+        
+        var url = $(this).attr('href');
+
+        openBuilder(url);
+    });
+    
+    container.find('.template-compose-classic').click(function(e) {
+        e.preventDefault();
+        
+        var url = $(this).attr('href');
+
+        openBuilderClassic(url);
+    });
+
     //
     // xtooltip
     // ------------------------------
@@ -2398,5 +2446,21 @@ $(function() {
             });
         });
         control.trigger('change');
+    });
+
+    $('.template-compose').click(function(e) {
+        e.preventDefault();
+        
+        var url = $(this).attr('href');
+
+        openBuilder(url);
+    });
+    
+    $('.template-compose-classic').click(function(e) {
+        e.preventDefault();
+        
+        var url = $(this).attr('href');
+
+        openBuilderClassic(url);
     });
 });

@@ -18,7 +18,7 @@
 				@endif
 			</a>
 			<div class="d-inline-block d-flex mr-auto align-items-center">
-                <a style="" href="{{ action('CampaignController@template', $campaign->uid) }}" class="action black-back-button mr-3">
+                <a style="" href="javascript:;" onclick="parent.$('body').removeClass('overflow-hidden');parent.$('.full-iframe-popup').fadeOut()" class="action black-back-button mr-3">
 					<i class="material-icons-outlined">arrow_back</i>
 				</a>
                 <h1 class="">{{ $campaign->name }}</h1>
@@ -55,7 +55,52 @@
     <form>
 
     <script>
-        $('.sidebar').css('height', $(window).height()-56);
-        $('[name=plain]').css('height', $(window).height()-56);
+    $('#classic-builder-form').submit(function(e) {
+            e.preventDefault();
+
+            tinymce.triggerSave();
+
+            var url = $(this).attr('action');
+            var data = $(this).serialize();
+
+            if ($(this).valid()) {
+                // open builder effects
+                addMaskLoading("{{ trans('messages.automation.template.saving') }}", function() {
+                    $.ajax({
+                        url: url,
+                        method: 'POST',
+                        data: data,
+                        statusCode: {
+                            // validate error
+                            400: function (res) {
+                                removeMaskLoading();
+                                
+                                // notify
+                                parent.notify('error', '{{ trans('messages.notify.error') }}', res.responseText);
+                            }
+                        },
+                        success: function (response) {
+                            removeMaskLoading();
+
+                            if (typeof(parent.builderSelectPopup) != 'undefined') {
+                                parent.builderSelectPopup.hide();
+                            }
+
+                            // notify
+                            parent.notify('success', '{{ trans('messages.notify.success') }}', response.message);
+
+                            parent.$('body').removeClass('overflow-hidden');
+
+                            parent.$('.full-iframe-popup').remove();
+                            parent.popup.load();
+                            
+                        }
+                    });
+                });         
+            }     
+        });
+
+        $('.sidebar').css('height', parent.$('.full-iframe-popup').height()-56);
+        $('[name=plain]').css('height', parent.$('.full-iframe-popup').height()-56);
     </script>
 @endsection

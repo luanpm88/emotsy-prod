@@ -19,7 +19,10 @@
         $( document ).ready(function() {
             editor = new Editor({
                 url: '{{ action('TemplateController@builderEditContent', $template->uid) }}',
-                urlBack: '{{ action('TemplateController@index') }}',
+                backCallback: function() {
+                  parent.$('.full-iframe-popup').fadeOut();
+                  parent.$('body').removeClass('overflow-hidden');
+                },
                 uploadAssetUrl: '{{ action('TemplateController@builderAsset', $template->uid) }}',
                 uploadAssetMethod: 'POST',
                 saveUrl: '{{ action('TemplateController@builderEdit', $template->uid) }}',

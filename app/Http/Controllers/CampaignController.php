@@ -469,6 +469,9 @@ class CampaignController extends Controller
         if ($request->isMethod('post')) {
             if ($request->layout) {
                 $campaign->addTemplateFromLayout($request->layout);
+
+                // update plain
+                $campaign->updatePlainFromHtml();
             }
 
             // return redirect()->action('CampaignController@templateEdit', $campaign->uid);
@@ -607,6 +610,9 @@ class CampaignController extends Controller
             $template = \Acelle\Model\Template::findByUid($request->template);
             $campaign->copyFromTemplate($template);
 
+            // update plain
+            $campaign->updatePlainFromHtml();
+
             // return redirect()->action('CampaignController@templateEdit', $campaign->uid);
             return response()->json([
                 'status' => 'success',
@@ -657,6 +663,9 @@ class CampaignController extends Controller
         // validate and save posted data
         if ($request->isMethod('post')) {
             $campaign->uploadTemplate($request);
+
+            // update plain
+            $campaign->updatePlainFromHtml();
 
             // return redirect()->action('CampaignController@template', $campaign->uid);
             return response()->json([
@@ -2316,8 +2325,15 @@ class CampaignController extends Controller
                 'html' => 'required',
             );
 
-            $this->validate($request, $rules);
-
+            // make validator
+            $validator = \Validator::make($request->all(), $rules);
+            
+            // redirect if fails
+            if ($validator->fails()) {
+                // faled
+                return response()->json($validator->errors(), 400);
+            }
+            
             // Save template
             $campaign->html = $request->html;
             // $campaign->untransform();
@@ -2326,9 +2342,11 @@ class CampaignController extends Controller
             // update plain
             $campaign->updatePlainFromHtml();
 
-            // Redirect to my lists page
-            $request->session()->flash('alert-success', trans('messages.template.updated'));
-            return redirect()->action('CampaignController@template', $campaign->uid);
+            // success
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.template.updated'),
+            ], 201);
         }
 
         return view('campaigns.builderClassic', [
@@ -2356,16 +2374,25 @@ class CampaignController extends Controller
                 'plain' => 'required',
             );
 
-            $this->validate($request, $rules);
+            // make validator
+            $validator = \Validator::make($request->all(), $rules);
+            
+            // redirect if fails
+            if ($validator->fails()) {
+                // faled
+                return response()->json($validator->errors(), 400);
+            }
 
             // Save template
             $campaign->plain = $request->plain;
             // $campaign->untransform();
             $campaign->save();
 
-            // Redirect to my lists page
-            $request->session()->flash('alert-success', trans('messages.template.updated'));
-            return redirect()->action('CampaignController@template', $campaign->uid);
+            // success
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.template.updated'),
+            ], 201);
         }
 
         return view('campaigns.builderPlainEdit', [

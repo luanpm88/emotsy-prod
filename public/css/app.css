@@ -3609,3 +3609,23 @@ a.plan-off .spinner, a.plan-on .spinner {
 .black-back-button:hover {
     opacity: 1;
 }
+.full-iframe-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 90000000;
+}
+.full-iframe-popup iframe.builder {
+  width: 100%;
+  height: 100vh;
+  border: none;
+  background: #333;
+}
+body > .ui-pnotify {
+    z-index: 10000000000 !important;
+}
+.overflow-hidden {
+    overflow: hidden !important;
+}

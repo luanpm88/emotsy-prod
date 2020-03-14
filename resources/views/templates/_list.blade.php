@@ -48,10 +48,10 @@
 
                 <td class="text-right">
                     @if (Auth::user()->customer->can('update', $template))
-                        <a href="{{ action('TemplateController@builderEdit', $template->uid) }}" type="button" class="btn btn-default btn-icon">
+                        <a href="{{ action('TemplateController@builderEdit', $template->uid) }}" type="button" class="btn btn-default btn-icon template-compose">
                             {{ trans('messages.template.pro_builder') }}
                         </a>
-                        <a href="{{ action('TemplateController@edit', $template->uid) }}" type="button" class="btn bg-grey btn-icon">
+                        <a href="{{ action('TemplateController@edit', $template->uid) }}" type="button" class="btn bg-grey btn-icon template-compose-classic">
                             {{ trans('messages.template.classic_builder') }}
                         </a>
                     @endif
@@ -67,7 +67,7 @@
                                 @endif
                                 @if (Auth::user()->customer->can('update', $template))
                                     <li>
-                                        <a href="{{ action('TemplateController@edit', $template->uid) }}">
+                                        <a class="template-compose-classic" href="{{ action('TemplateController@edit', $template->uid) }}">
                                             <i class="icon-hammer"></i> {{ trans("messages.buider.builder_classic") }}
                                         </a>
                                     </li>

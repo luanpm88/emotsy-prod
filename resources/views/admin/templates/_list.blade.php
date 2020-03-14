@@ -50,10 +50,12 @@
 						<a href="#preview" class="btn bg-teal-600 btn-icon" onclick="popupwindow('{{ action('Admin\TemplateController@preview', $template->uid) }}', '{{ $template->name }}', 800, 800)"><i class="icon-zoomin3"></i></a>
 					@endif
 					@if (Auth::user()->admin->can('update', $template))
-						<a href="{{ action('Admin\TemplateController@builderEdit', $template->uid) }}" type="button" class="btn btn-default btn-icon">
+						<a href="{{ action('Admin\TemplateController@builderEdit', $template->uid) }}"
+							type="button" class="btn btn-default btn-icon template-compose">
                             {{ trans('messages.template.pro_builder') }}
                         </a>
-                        <a href="{{ action('Admin\TemplateController@edit', $template->uid) }}" type="button" class="btn bg-grey btn-icon">
+                        <a href="{{ action('Admin\TemplateController@edit', $template->uid) }}"
+							type="button" class="btn bg-grey btn-icon template-compose-classic">
                             {{ trans('messages.template.classic_builder') }}
                         </a>
 					@endif
@@ -65,7 +67,7 @@
 							<ul class="dropdown-menu dropdown-menu-right">
 								@if (Auth::user()->admin->can('update', $template))
 									<li>
-										<a href="{{ action('Admin\TemplateController@edit', $template->uid) }}">
+										<a class="template-compose-classic" href="{{ action('Admin\TemplateController@edit', $template->uid) }}">
 											<i class="icon-hammer"></i> {{ trans("messages.buider.builder_classic") }}
 										</a>
 									</li>

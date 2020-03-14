@@ -19,7 +19,14 @@
         $( document ).ready(function() {
             editor = new Editor({
                 url: '{{ action('CampaignController@templateContent', $campaign->uid) }}',
-                urlBack: '{{ action('CampaignController@template', $campaign->uid) }}',
+                backCallback: function() {
+                  parent.$('.full-iframe-popup').fadeOut();
+                  parent.$('body').removeClass('overflow-hidden');
+
+                  if (typeof(parent.builderSelectPopup) != 'undefined') {
+                    parent.builderSelectPopup.hide();
+                  }
+                },
                 uploadAssetUrl: '{{ action('CampaignController@templateAsset', $campaign->uid) }}',
                 uploadAssetMethod: 'POST',
                 saveUrl: '{{ action('CampaignController@templateEdit', $campaign->uid) }}',
