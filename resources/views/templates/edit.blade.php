@@ -25,7 +25,7 @@
 				<i class="material-icons-outlined automation-head-icon ml-2">web</i>
 			</div>
 			<div class="automation-top-menu">
-				<button class="btn btn-primary mr-4" onclick="$('#classic-builder-form').submit()">{{ trans('messages.save') }}</button>
+				<button class="btn btn-primary mr-3" onclick="$('#classic-builder-form').submit()">{{ trans('messages.save') }}</button>
 
 				<div class="account-info">
 					<ul class="navbar-nav mr-auto navbar-dark bg-dark"">						
