@@ -31,51 +31,7 @@
                 ]) }}">
                     {{ trans('messages.email.plain_text_editor') }}
                 </a>
-				<button class="btn btn-primary mr-2" onclick="$('#classic-builder-form').submit()">{{ trans('messages.save') }}</button>
-                
-				<div class="account-info">
-					<ul class="navbar-nav mr-auto navbar-dark bg-dark"">						
-						<li class="nav-item dropdown">
-							<a class="account-item nav-link dropdown-toggle px-2" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								<img class="avatar" src="{{ action('CustomerController@avatar', Auth::user()->customer->uid) }}" alt="">
-								{{ Auth::user()->customer->displayName() }}
-							</a>
-							<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-								@can("admin_access", Auth::user())
-									<a class="dropdown-item d-flex align-items-center" href="{{ action("Admin\HomeController@index") }}">
-										<i class="material-icons-outlined mr-2">double_arrow</i>
-										{{ trans('messages.admin_view') }}
-									</a>
-									<div class="dropdown-divider"></div>
-								@endif
-								<a class="dropdown-item d-flex align-items-center quota-view" href="{{ action("AccountController@quotaLog2") }}">
-									<i class="material-icons-outlined mr-2">multiline_chart</i>
-									<span class="">{{ trans('messages.used_quota') }}</span>
-								</a>
-								<a class="dropdown-item d-flex align-items-center" href="{{ action('AccountSubscriptionController@index') }}">
-									<i class="material-icons-outlined mr-2">redeem</i>
-									<span>{{ trans('messages.subscriptions') }}</span>
-								</a>
-								<a class="dropdown-item d-flex align-items-center" href="{{ action("AccountController@profile") }}">
-									<i class="material-icons-outlined mr-2">account_circle</i>
-									<span>{{ trans('messages.account') }}</span>
-								</a>
-								@if (Auth::user()->customer->canUseApi())
-									<a href="{{ action("AccountController@api") }}" class="dropdown-item d-flex align-items-center">
-										<i class="material-icons-outlined mr-2">code</i>
-										<span>{{ trans('messages.api') }}</span>
-									</a>
-								@endif
-								<div class="dropdown-divider"></div>
-								<a class="dropdown-item d-flex align-items-center" href="{{ url("/logout") }}">
-									<i class="material-icons-outlined mr-2">power_settings_new</i>
-									<span>{{ trans('messages.logout') }}</span>
-								</a>
-							</div>
-						</li>
-					</ul>
-					
-				</div>
+				<button class="btn btn-primary" onclick="$('#classic-builder-form').submit()">{{ trans('messages.save') }}</button>
 			</div>
 		</nav>
 	</header>
