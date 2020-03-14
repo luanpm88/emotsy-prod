@@ -133,7 +133,7 @@
                         @foreach(Acelle\Model\Template::tags() as $tag)
                             items.push({
                                 type: 'menuitem',
-                                text: '{{ "{".$tag["name"]."}" }}',
+                                text: '{{ $tag["name"] }}',
                                 onAction: function (_) {
                                     editor.insertContent('{{ "{".$tag["name"]."}" }}');
                                 }

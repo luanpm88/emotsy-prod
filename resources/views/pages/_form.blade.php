@@ -12,7 +12,7 @@
         <br />
         @foreach($layout->tags() as $tag)
             @if ($tag["required"])
-                <a data-popup="tooltip" title='{{ trans('messages.click_to_insert_tag') }}' href="javascript:;" class="btn btn-default text-semibold btn-xs insert_tag_button" data-tag-name="{{ $tag["name"] }}">
+                <a data-popup="tooltip" draggable="false" title='{{ trans('messages.click_to_insert_tag') }}' href="javascript:;" class="btn btn-default text-semibold btn-xs insert_tag_button" data-tag-name="{{ $tag["name"] }}">
                     {{ $tag["name"] }}
                 </a>
             @endif
@@ -33,7 +33,7 @@
         @endforeach
         @foreach($layout->tags() as $tag)
             @if (!$tag["required"])
-                <a data-popup="tooltip" title='{{ trans('messages.click_to_insert_tag') }}' href="javascript:;" class="btn btn-default text-semibold btn-xs insert_tag_button" data-tag-name="{{ $tag["name"] }}">
+                <a data-popup="tooltip" draggable="false" title='{{ trans('messages.click_to_insert_tag') }}' href="javascript:;" class="btn btn-default text-semibold btn-xs insert_tag_button" data-tag-name="{{ $tag["name"] }}">
                     {{ $tag["name"] }}
                 </a>
             @endif
