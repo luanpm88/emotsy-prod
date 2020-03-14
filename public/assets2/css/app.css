@@ -1274,3 +1274,16 @@ a:hover label {
 .select2-container--default .select2-selection--multiple .select2-selection__rendered .select2-search__field {
   padding: 0 10px;
 }
+.black-back-button {
+  color: #fff;
+  background: #333;
+  width: 33px;
+  font-size: 25px;
+  height: 56px;
+  width: 56px;
+  padding: 10px;
+  text-align: center;
+}
+.black-back-button:hover {
+  background: #444;
+}

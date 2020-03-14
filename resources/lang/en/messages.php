@@ -3218,5 +3218,5 @@
   'plan.plan_not_connected.setting' => 'Plan not connected to PayPal, click Connect button',
   'template.pro_builder' => 'PRO builder',
   'template.classic_builder' => 'Classic builder',
-  'editor.insert_tag' => 'Insert TAG',
+  'editor.insert_tag' => 'Insert Acelle Tags',
 ) ?>

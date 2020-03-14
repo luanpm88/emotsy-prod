@@ -4,7 +4,10 @@
 						<br />
 						@foreach($tags as $tag)
 							@if ($tag["required"])
-								<a data-popup="tooltip" title='{{ trans('messages.click_to_insert_tag') }}' href="javascript:;" class="btn btn-default text-semibold btn-xs insert_tag_button" data-tag-name="{{ "{".$tag["name"]."}" }}">
+								<a
+									style="padding: 3px 7px !important;
+    									font-weight: normal;"
+									data-popup="tooltip" title='{{ trans('messages.click_to_insert_tag') }}' href="javascript:;" class="btn btn-secondary text-semibold btn-xs insert_tag_button" data-tag-name="{{ "{".$tag["name"]."}" }}">
 									{{ "{".$tag["name"]."}" }}
 								</a>
 							@endif
@@ -19,7 +22,10 @@
 						<br />
 						@foreach($tags as $tag)
 							@if (!$tag["required"])
-								<a data-popup="tooltip" title='{{ trans('messages.click_to_insert_tag') }}' href="javascript:;" class="btn btn-default text-semibold btn-xs insert_tag_button" data-tag-name="{{ "{".$tag["name"]."}" }}">
+								<a data-popup="tooltip" title='{{ trans('messages.click_to_insert_tag') }}' href="javascript:;"
+									style="padding: 3px 7px !important;
+    								font-weight: normal;"
+								class="btn btn-secondary mb-2 mr-1 text-semibold btn-xs insert_tag_button" data-tag-name="{{ "{".$tag["name"]."}" }}">
 									{{ "{".$tag["name"]."}" }}
 								</a>
 							@endif

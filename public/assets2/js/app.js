@@ -1127,9 +1127,10 @@ $(function() {
     $(document).on("click", ".insert_tag_button", function() {
         var tag = $(this).attr("data-tag-name");
 
-        if(!$(".plain_text_li").hasClass("active")) {
+        if($('textarea[name="html"]').length || $('textarea[name="content"]').length) {
             tinymce.activeEditor.execCommand('mceInsertContent', false, tag);
         } else {
+            speechSynthesis;
             $('textarea[name="plain"]').val($('textarea[name="plain"]').val()+tag);
         }
     });

@@ -3597,3 +3597,15 @@ a.plan-off .spinner, a.plan-on .spinner {
     border-color: transparent !important;
     border: none;
 }
+.black-back-button {
+    opacity: 0.9;
+    width: 33px;
+    font-size: 25px;
+    height: 56px;
+    width: 56px;
+    padding: 10px;
+    text-align: center;
+}
+.black-back-button:hover {
+    opacity: 1;
+}
