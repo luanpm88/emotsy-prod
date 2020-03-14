@@ -116,6 +116,7 @@ class TemplateController extends Controller
             if(isset($request->source)) {
                 $template->source = $request->source;
             }
+            $template->untransform();
             $template->save();
 
             // Redirect to my lists page
@@ -183,7 +184,7 @@ class TemplateController extends Controller
 
             // Save template
             $template->fill($request->all());
-            // $template->untransform();
+            $template->untransform();
             $template->save();
 
             // Redirect to my lists page
@@ -384,6 +385,7 @@ class TemplateController extends Controller
 
         // save
         $template->image = $upload_loca.$filename;
+        $template->untransform();
         $template->save();
     }
 
@@ -434,6 +436,7 @@ class TemplateController extends Controller
             }
 
             $item->custom_order = $row[1];
+            $item->untransform();
             $item->save();
         }
 
@@ -495,6 +498,7 @@ class TemplateController extends Controller
             $this->validate($request, $rules);
             
             $template->content = $request->content;
+            $template->untransform();
             $template->save();
 
             return response()->json([

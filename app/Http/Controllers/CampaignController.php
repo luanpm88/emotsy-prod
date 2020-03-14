@@ -530,7 +530,7 @@ class CampaignController extends Controller
             $this->validate($request, $rules);
 
             $campaign->html = $request->content;
-            // $campaign->untransform();
+            $campaign->untransform();
             $campaign->save();
 
             // update plain
@@ -2320,7 +2320,7 @@ class CampaignController extends Controller
 
             // Save template
             $campaign->html = $request->html;
-            // $campaign->untransform();
+            $campaign->untransform();
             $campaign->save();
 
             // update plain
@@ -2360,7 +2360,7 @@ class CampaignController extends Controller
 
             // Save template
             $campaign->plain = $request->plain;
-            // $campaign->untransform();
+            $campaign->untransform();
             $campaign->save();
 
             // Redirect to my lists page
