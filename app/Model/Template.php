@@ -465,6 +465,7 @@ class Template extends Model
         // read main file content
         $html_content = trim(file_get_contents($main_file));
         $this->content = $html_content;
+        $this->untransform();
         $this->save();
         
         // upload path
@@ -528,6 +529,7 @@ class Template extends Model
         }
         
         $template->fill($request->all());
+        $template->untransform();
         $template->save();
 
         $template->loadFromDirectory($tmp_path);
@@ -662,6 +664,7 @@ class Template extends Model
         \Acelle\Library\Tool::xcopy($path, $this->getUploadDir());
         $this->image = $this->getUploadDir() . '/thumb.png';
         $this->replaceHtmlUrl('/' . $this->getUploadUri() . '/');
+        $this->untransform();
         $this->save();
     }
     
@@ -751,6 +754,7 @@ class Template extends Model
         $this->image = $template->image;
         // replace image url
         $this->content = str_replace($template->getUploadUri(), $this->getUploadUri(), $this->content);
+        $this->untransform();
         $this->save();
     }
     

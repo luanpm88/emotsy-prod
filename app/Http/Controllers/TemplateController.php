@@ -139,7 +139,7 @@ class TemplateController extends Controller
             //// update content
             //$template->content = preg_replace('/href\=\'([^\']*\{)/',"href='{", $template->content);
             //$template->content = preg_replace('/href\=\"([^\"]*\{)/','href="{', $template->content);
-
+            $template->untransform();
             $template->save();
 
             // Redirect to my lists page
@@ -226,7 +226,7 @@ class TemplateController extends Controller
                 return response()->json($validator->errors(), 400);
             }
             
-            // $template->untransform();
+            $template->untransform();
             $template->save();
 
             // success
@@ -267,6 +267,7 @@ class TemplateController extends Controller
             }
 
             $item->custom_order = $row[1];
+            $item->untransform();
             $item->save();
         }
 
@@ -429,6 +430,7 @@ class TemplateController extends Controller
 
         // save
         $template->image = $upload_loca.$filename;
+        $template->untransform();
         $template->save();
     }
 
@@ -554,6 +556,7 @@ class TemplateController extends Controller
             $this->validate($request, $rules);
             
             $template->content = $request->content;
+            $template->untransform();
             $template->save();
             
             return response()->json([
@@ -663,6 +666,7 @@ class TemplateController extends Controller
                 $template = new Template();
                 $template->customer_id = $customer->id;
                 $template->name = $request->name;
+                $template->untransform();
                 $template->save();
 
                 $template->addTemplateFromLayout($request->layout);
