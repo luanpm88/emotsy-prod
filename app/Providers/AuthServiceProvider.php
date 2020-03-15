@@ -4,7 +4,6 @@ namespace Acelle\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Acelle\Model\Setting;
-use Acelle\Library\Log as MailLog;
 use Gate;
 
 class AuthServiceProvider extends ServiceProvider
@@ -48,19 +47,18 @@ class AuthServiceProvider extends ServiceProvider
 
     /**
      * Register any authentication / authorization services.
-     *
-     * @return void
      */
     public function boot()
     {
         $this->registerPolicies();
-        
+
         Gate::define('send-from', function ($user, $fromEmail) {
             if (Setting::get('allow_send_from_unverified_domain') == 'yes') {
                 return true;
-            }            
-            
+            }
+
             $domain = substr(strrchr($fromEmail, '@'), 1);
+
             return $user->customer->activeSendingDomains()->where('name', $domain)->exists();
         });
     }

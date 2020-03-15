@@ -25,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
         } elseif (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && strcasecmp($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') == 0 || !empty($_SERVER['HTTP_X_FORWARDED_SSL']) && strcasecmp($_SERVER['HTTP_X_FORWARDED_SSL'], 'on') == 0) {
             $isSecure = true;
         }
-        
+
         if ($isSecure) {
             URL::forceScheme('https');
         }
@@ -42,7 +42,7 @@ class AppServiceProvider extends ServiceProvider
         // SQLSTATE[42000]: Syntax error or access violation: 1071 Specified key was too long; max key length is 767 bytes
         Schema::defaultStringLength(191);
 
-        if (!\App::runningInConsole()){
+        if (!\App::runningInConsole()) {
             // This is just a trick for getting Controller name in view
             // See https://stackoverflow.com/questions/29549660/get-laravel-5-controller-name-in-view
             // @todo: fix this anti-pattern
@@ -68,18 +68,18 @@ class AppServiceProvider extends ServiceProvider
         });
 
         // License validator
-        Validator::extend('license', function($attribute, $value, $parameters, $validator) {
+        Validator::extend('license', function ($attribute, $value, $parameters, $validator) {
             return $value == '' || true;
         });
 
         // License error validator
-        Validator::extend('license_error', function($attribute, $value, $parameters, $validator) {
+        Validator::extend('license_error', function ($attribute, $value, $parameters, $validator) {
             return false;
         });
         Validator::replacer('license_error', function ($message, $attribute, $rule, $parameters) {
             return str_replace(':error', $parameters[0], $message);
         });
-        
+
         // Payment config load from database
         if (isInitiated()) {
             // update global configs
@@ -92,14 +92,14 @@ class AppServiceProvider extends ServiceProvider
 
             // per payment configs
             foreach (config('cashier.gateways') as $gw => $data) {
-                foreach ($data['fields'] as $key => $value ) {
-                    $con = Setting::get('payment.' . $gw . '.' . $key);
+                foreach ($data['fields'] as $key => $value) {
+                    $con = Setting::get('payment.'.$gw.'.'.$key);
                     if ($con != null) {
-                        config(['cashier.gateways.' . $gw . '.fields.' . $key => $con]);
+                        config(['cashier.gateways.'.$gw.'.fields.'.$key => $con]);
                     }
                 }
             }
-        }            
+        }
     }
 
     /**

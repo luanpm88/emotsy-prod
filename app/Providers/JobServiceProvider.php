@@ -12,8 +12,6 @@ class JobServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
-     *
-     * @return void
      */
     public function boot()
     {
@@ -23,7 +21,7 @@ class JobServiceProvider extends ServiceProvider
         // mark the SystemJob record as RUNNING
         \Queue::before(function (JobProcessing $event) {
             $job = $this->getJobObject($event);
-            
+
             // associate the queue job with system_job
             // @todo IMPORTANT job_id is only available when the job has actually started
             $systemJob = $job->getSystemJob();
@@ -48,8 +46,6 @@ class JobServiceProvider extends ServiceProvider
 
     /**
      * Register the application services.
-     *
-     * @return void
      */
     public function register()
     {
@@ -58,20 +54,19 @@ class JobServiceProvider extends ServiceProvider
 
     /**
      * Register the application services.
-     *
-     * @return void
      */
-    private function getJobObject($event) {
+    private function getJobObject($event)
+    {
         $data = $event->job->payload();
+
         return unserialize($data['data']['command']);
     }
 
     /**
-     * Init the MailLog
-     *
-     * @return void
+     * Init the MailLog.
      */
-    private function initMailLog() {
+    private function initMailLog()
+    {
         MailLog::configure(storage_path().'/logs/mail.log');
     }
 }
