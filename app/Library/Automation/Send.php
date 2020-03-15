@@ -12,11 +12,13 @@ class Send extends Action
         $subscriber = $this->autoTrigger->subscriber;
         if (!$subscriber->isActive()) {
             $this->autoTrigger->logger()->warning(sprintf('Subscriber "%s" is not active (current status: "%s")', $subscriber->email, $subscriber->status));
+
             return false;
         }
 
         if ($this->options['init'] == 'false' || $this->options['init'] == false) {
             $this->autoTrigger->logger()->warning('Email not set up yet');
+
             return false;
         }
 

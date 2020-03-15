@@ -569,7 +569,7 @@ return (empty($pair)) ? null : $pair[0]; }, $maindb);
      *    $manager = new \Acelle\Library\UpgradeManager()
      *    $manager->updateLanguageFile('/home/user/mailixa/resources/lang/en/messages.php', '/tmp/messages.php').
      * ==> update $target file with new values from $source
-     * notice that it does not delete any entry in $target
+     * notice that it does not delete any entry in $target.
      */
     public function updateLanguageFile($sourcePath, $targetPath)
     {

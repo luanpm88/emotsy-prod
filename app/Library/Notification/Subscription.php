@@ -22,7 +22,6 @@
 
 namespace Acelle\Library\Notification;
 
-use Acelle\Model\Setting;
 use Acelle\Model\Notification;
 use Acelle\Cashier\Subscription as CashierSubscription;
 
@@ -39,7 +38,7 @@ class Subscription extends Notification
         if ($count > 0) {
             self::info([
                 'title' => trans('messages.admin.notification.subscription.title'),
-                'message' => trans('messages.admin.notification.subscription.pending', ['count' => $count])
+                'message' => trans('messages.admin.notification.subscription.pending', ['count' => $count]),
             ]);
         }
     }

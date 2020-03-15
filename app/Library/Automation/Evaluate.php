@@ -52,12 +52,11 @@ class Evaluate extends Action
 
             // always return true, not evaluation result!
             return true;
-
         } catch (\Exception $ex) {
             $this->autoTrigger->logger()->warning(sprintf('Error while executing Condition %s. Error message: %s', $this->getId(), $ex->getMessage()));
+
             return false;
         }
-        
     }
 
     public function evaluateCondition()
@@ -68,13 +67,13 @@ class Evaluate extends Action
         switch ($criterion) {
             case 'open':
                 if (empty($this->getOption('email'))) {
-                    throw new \Exception("Email missing for open condition");
+                    throw new \Exception('Email missing for open condition');
                 }
                 $result = $this->evaluateEmailOpenCondition();
                 break;
             case 'click':
                 if (empty($this->getOption('email_link'))) {
-                    throw new \Exception("URL missing for click condition");
+                    throw new \Exception('URL missing for click condition');
                 }
                 $result = $this->evaluateEmailOpenCondition();
                 break;
