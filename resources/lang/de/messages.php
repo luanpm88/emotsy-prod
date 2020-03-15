@@ -3176,4 +3176,7 @@
   'plan.plan_not_connected' => 'Plan not connected, go to PayPal settings to fix',
   'plan.sending_server_empty.setting' => 'No sending server selected',
   'plan.plan_not_connected.setting' => 'Plan not connected to PayPal, click Connect button',
+  'template.pro_builder' => 'PRO builder',
+  'template.classic_builder' => 'Classic builder',
+  'editor.insert_tag' => 'Insert Acelle Tags',
 ) ?>
