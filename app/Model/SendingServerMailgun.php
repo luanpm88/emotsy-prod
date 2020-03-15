@@ -88,7 +88,7 @@ class SendingServerMailgun extends SendingServer
             'id' => 'bounce',
             'url' => $subscribeUrl,
         ));
-        
+
         MailLog::info('Bounce webhook created');
 
         $result = $this->client()->post("domains/$domain/webhooks", array(
@@ -100,27 +100,29 @@ class SendingServerMailgun extends SendingServer
 
         self::$isWebhookSetup = true;
     }
-    
+
     /**
-     * Get verified identities (domains and email addresses)
+     * Get verified identities (domains and email addresses).
      *
-     * @return boolean
+     * @return bool
      */
     public function getVerifiedIdentities()
     {
         $response = $this->client()->get('domains');
         $json = json_decode(json_encode($response), true);
-        return array_map(function($domain){ return $domain['name']; }, $json['http_response_body']['items']);
+
+        return array_map(function ($domain) { return $domain['name']; }, $json['http_response_body']['items']);
     }
-    
+
     /**
-     * Check the sending server settings, make sure it does work
+     * Check the sending server settings, make sure it does work.
      *
-     * @return boolean
+     * @return bool
      */
     public function test()
     {
         $response = $this->client()->get('domains');
+
         return true;
     }
 }

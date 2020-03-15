@@ -1185,7 +1185,7 @@ class OldSubscription extends Model
         }
         $this->options = json_encode($db_options);
     }
-    
+
     /**
      * Get PayPal price for countries.
      */
@@ -1194,24 +1194,25 @@ class OldSubscription extends Model
         $noDecimalCodes = [
             'JPY',
         ];
-        
+
         if (in_array($this->currency_code, $noDecimalCodes)) {
             $price = round($this->price, 0);
         } else {
             $price = $this->price;
         }
-        
+
         return $price;
     }
-    
+
     /**
      * Set end at datetime from start at.
      */
-    public function setEndAt() {
+    public function setEndAt()
+    {
         if (!isset($this->start_at)) {
-            return null;
+            return;
         }
-        
+
         // end day
         switch ($this->plan->frequency_unit) {
             case 'day':

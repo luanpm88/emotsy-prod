@@ -263,37 +263,38 @@ class SendingServerSparkPost extends SendingServer
             MailLog::warning('Cannot find associated tracking log for message '.$feedbackLog->runtime_message_id);
         }
     }
-    
+
     /**
-     * Get verified identities (domains and email addresses)
+     * Get verified identities (domains and email addresses).
      *
-     * @return boolean
+     * @return bool
      */
     public function getVerifiedIdentities()
     {
-        $response = $this->client()->request('GET', 'sending-domains', [ 'ownership_verified' => 'true' ]);
+        $response = $this->client()->request('GET', 'sending-domains', ['ownership_verified' => 'true']);
 
         if ($response->getStatusCode() != 200) {
             throw new \Exception($response->getBody(true));
         }
 
         $domains = $response->getBody();
-        return array_map(function($domain){ return $domain['domain']; }, $domains['results']);
+
+        return array_map(function ($domain) { return $domain['domain']; }, $domains['results']);
     }
-    
+
     /**
-     * Check the sending server settings, make sure it does work
+     * Check the sending server settings, make sure it does work.
      *
-     * @return boolean
+     * @return bool
      */
     public function test()
     {
         try {
-            $response = $this->client()->request('GET', 'sending-domains', [ 'ownership_verified' => 'true' ]);
+            $response = $this->client()->request('GET', 'sending-domains', ['ownership_verified' => 'true']);
         } catch (\Exception $ex) {
             throw new \Exception('Cannot connect to SparkPost: '.$ex->getMessage());
         }
-        
+
         return true;
     }
 }

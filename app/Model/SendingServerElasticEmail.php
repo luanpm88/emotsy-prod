@@ -188,7 +188,7 @@ class SendingServerElasticEmail extends SendingServer
 
         foreach ($webhooks as $webhook) {
             MailLog::info('Checking '.$webhook['url'].' ('.$webhook['name'].')');
-            if ($this->isSubscribeUrl($webhook['url']) || $webhook['name'] == self::WEBHOOK_NAME ) {
+            if ($this->isSubscribeUrl($webhook['url']) || $webhook['name'] == self::WEBHOOK_NAME) {
                 MailLog::info('Deleting '.$webhook['url'].' ('.$webhook['name'].')');
                 $deleteUri = $deleteUri = self::API_ENDPOINT.'/account/deletewebhook?apikey='.$this->api_key.'&webhookID='.$webhook['webhookid'];
                 $result = json_decode(file_get_contents($deleteUri), true);
@@ -196,7 +196,6 @@ class SendingServerElasticEmail extends SendingServer
                     MailLog::error('Cannot delete webhook '.$webhook['url'].' ('.$webhook['name'].')');
                     throw new \Exception('Cannot delete webhook '.$webhook['url'].' ('.$webhook['name'].')');
                 }
-                
             } else {
                 MailLog::info('Skipped');
             }
@@ -275,11 +274,11 @@ class SendingServerElasticEmail extends SendingServer
         // Use transactionid returned from ElasticEmail as runtime_message_id
         return $jsonResponse->data->transactionid;
     }
-    
+
     /**
      * Get verified domains.
      *
-     * @return Array
+     * @return array
      */
     public function getVerifiedIdentities()
     {
@@ -290,14 +289,15 @@ class SendingServerElasticEmail extends SendingServer
         }
 
         // just in case the 'domain' value comes in "domain.com (admin@emailaddress.com)"
-        $domains = array_map(function($e) { return preg_split('/\s+/', $e['domain'])[0]; }, $json['data']);
+        $domains = array_map(function ($e) { return preg_split('/\s+/', $e['domain'])[0]; }, $json['data']);
+
         return $domains;
     }
-    
+
     /**
-     * Check the sending server settings, make sure it does work
+     * Check the sending server settings, make sure it does work.
      *
-     * @return boolean
+     * @return bool
      */
     public function test()
     {
@@ -306,7 +306,7 @@ class SendingServerElasticEmail extends SendingServer
         if ($json['success'] == false) {
             throw new \Exception('Failed to connect to ElasticEmail: '.$response);
         }
-        
+
         return true;
     }
 }

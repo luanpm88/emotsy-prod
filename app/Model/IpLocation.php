@@ -54,7 +54,7 @@ class IpLocation extends Model
         try {
             $geoip = App::make('Acelle\Library\Contracts\GeoIpInterface');
             $geoip->resolveIp($ip);
-            
+
             $location->ip_address = $ip;
             $location->country_code = $geoip->getCountryCode();
             $location->country_name = $geoip->getCountryName();
@@ -70,11 +70,12 @@ class IpLocation extends Model
             BackendError::cleanupDuplicateNotifications($title);
             BackendError::warning([
                 'title' => $title,
-                'message' => 'Cannot resolve IP address. '.$e->getMessage()
+                'message' => 'Cannot resolve IP address. '.$e->getMessage(),
             ]);
 
             LaravelLog::warning('Cannot get IP location info: '.$e->getMessage());
         }
+
         return $location;
     }
 

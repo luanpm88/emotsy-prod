@@ -65,7 +65,7 @@ class Setting extends Model
             return self::defaultSettings()[$name]['value'];
         } else {
             // @todo exception case not handled
-            return null;
+            return;
         }
     }
 
@@ -635,7 +635,7 @@ class Setting extends Model
             }
         }
     }
-    
+
     /**
      * Get payments gateways.
      *
@@ -645,7 +645,7 @@ class Setting extends Model
     {
         return config('cashier.gateways');
     }
-    
+
     /**
      * Get payments gateway by name.
      *
@@ -654,14 +654,14 @@ class Setting extends Model
     public static function getPaymentGateway($name)
     {
         if (!isset(config('cashier.gateways')[$name])) {
-            return null;
+            return;
         }
-        
+
         $gateway = config('cashier.gateways')[$name];
-        
+
         return $gateway;
     }
-    
+
     /**
      * Get payment status select options.
      *
@@ -671,7 +671,7 @@ class Setting extends Model
     {
         return [self::PAYMENT_STATUS_INACTIVE, self::PAYMENT_STATUS_ACTIVE];
     }
-    
+
     /**
      * Update payment gateway.
      *
@@ -680,10 +680,9 @@ class Setting extends Model
     public static function updatePaymentGateway($name, $params)
     {
         foreach ($params as $key => $value) {
-            $setting = 'payment.' . $name . '.' . $key;
-            
+            $setting = 'payment.'.$name.'.'.$key;
+
             self::set($setting, $value);
         }
-        
     }
 }

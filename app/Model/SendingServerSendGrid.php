@@ -66,7 +66,7 @@ class SendingServerSendGrid extends SendingServer
         if (self::$isWebhookSetup) {
             return true;
         }
-        
+
         MailLog::info('Setting up SendGrid webhooks');
         $subscribeUrl = StringHelper::joinUrl(Setting::get('url_delivery_handler'), self::WEBHOOK);
         $request_body = json_decode('{
@@ -90,7 +90,7 @@ class SendingServerSendGrid extends SendingServer
         if ($response->statusCode() == '200') {
             MailLog::info('Webhooks successfully set!');
         } else {
-            throw new \Exception(sprintf('Cannot setup SendGrid webhook. Status code: %s. Body: %s', $response->statusCode(), $response->body() ));
+            throw new \Exception(sprintf('Cannot setup SendGrid webhook. Status code: %s. Body: %s', $response->statusCode(), $response->body()));
         }
 
         self::$isWebhookSetup = true;
@@ -175,11 +175,11 @@ class SendingServerSendGrid extends SendingServer
 
         return $mail;
     }
-    
+
     /**
-     * Get verified identities (domains and email addresses)
+     * Get verified identities (domains and email addresses).
      *
-     * @return boolean
+     * @return bool
      */
     public function getVerifiedIdentities()
     {
@@ -188,14 +188,15 @@ class SendingServerSendGrid extends SendingServer
         if (array_key_exists('errors', $json)) {
             throw new \Exception('Failed to connect to SendGrid: '.$response->body());
         }
-        $validDomains = array_filter($json, function($domain) { return $domain['valid'] == true; });
-        return array_map(function($domain){ return $domain['domain']; }, $validDomains);
+        $validDomains = array_filter($json, function ($domain) { return $domain['valid'] == true; });
+
+        return array_map(function ($domain) { return $domain['domain']; }, $validDomains);
     }
-    
+
     /**
-     * Check the sending server settings, make sure it does work
+     * Check the sending server settings, make sure it does work.
      *
-     * @return boolean
+     * @return bool
      */
     public function test()
     {
@@ -204,6 +205,7 @@ class SendingServerSendGrid extends SendingServer
         if (array_key_exists('errors', $json)) {
             throw new \Exception('Failed to connect to SendGrid: '.$response->body());
         }
+
         return true;
     }
 }

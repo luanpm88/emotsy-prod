@@ -155,42 +155,44 @@ class SendingServerAmazon extends SendingServer
             sleep(1); // SNS request rate limit
         });
     }
-    
+
     /**
-     * Check an email address if it is verified against AWS
+     * Check an email address if it is verified against AWS.
      *
-     * @return boolean
+     * @return bool
      */
     public function verifyIdentity($email)
     {
-        $domain = extract_domain($email);        
+        $domain = extract_domain($email);
         $verifiedIdentities = $this->getVerifiedIdentities();
+
         return in_array($email, $verifiedIdentities) || in_array($domain, $verifiedIdentities);
     }
-    
+
     /**
-     * Get verified identities (domains and email addresses)
+     * Get verified identities (domains and email addresses).
      *
-     * @return boolean
+     * @return bool
      */
     public function getVerifiedIdentities()
     {
         $identities = $this->sesClient()->listIdentities([
             'MaxItems' => 1000, # @todo, need pagination here
         ])->toArray()['Identities'];
-        
+
         $identitiesWithAttributes = $this->sesClient()->getIdentityVerificationAttributes([
-            'Identities' => $identities
+            'Identities' => $identities,
         ])->toArray()['VerificationAttributes'];
-        
-        $verifiedIdentities = array_keys(array_filter($identitiesWithAttributes, function($r) { return $r['VerificationStatus'] == 'Success'; }));
+
+        $verifiedIdentities = array_keys(array_filter($identitiesWithAttributes, function ($r) { return $r['VerificationStatus'] == 'Success'; }));
+
         return $verifiedIdentities;
     }
-    
+
     /**
-     * Check an email address if it is verified against AWS
+     * Check an email address if it is verified against AWS.
      *
-     * @return boolean
+     * @return bool
      */
     public function sendVerificationEmail($email)
     {
@@ -198,11 +200,11 @@ class SendingServerAmazon extends SendingServer
             'EmailAddress' => $email,
         ]);
     }
-    
+
     /**
-     * Check if AWS actions are allowed
+     * Check if AWS actions are allowed.
      *
-     * @return boolean
+     * @return bool
      */
     public static function testConnection($key, $secret, $region)
     {
@@ -214,33 +216,33 @@ class SendingServerAmazon extends SendingServer
             'region' => $region,
             'version' => '2010-05-08',
         ));
-        
+
         // getting API caller
         $arn = $iamClient->getUser()->get('User')['Arn'];
-        
+
         $username = array_values(array_slice(explode(':', $arn), -1))[0];
         if ($username == 'root') {
             return true;
         }
-        
+
         $actions = ['ses:VerifyEmailIdentity', 'ses:GetIdentityVerificationAttributes', 'ses:ListIdentities', 'ses:SetIdentityFeedbackForwardingEnabled', 'sns:CreateTopic', 'sns:Subscribe', 'sns:SetIdentityNotificationTopic'];
         $results = $iamClient->simulatePrincipalPolicy(['PolicySourceArn' => $arn, 'ActionNames' => $actions])->toArray();
         foreach ($results['EvaluationResults'] as $result) {
             $action = $result['EvalActionName'];
             $decision = $result['EvalDecision'];
-        
+
             if ($decision != 'allowed') {
                 throw new \Exception("Action {$action} is not allowed");
             }
         }
-        
+
         return true;
     }
-    
+
     /**
-     * Check if AWS actions are allowed for the corresponding instance
+     * Check if AWS actions are allowed for the corresponding instance.
      *
-     * @return boolean
+     * @return bool
      */
     public function test()
     {

@@ -12,9 +12,9 @@ class EmailLink extends Model
      * @var array
      */
     protected $fillable = [
-        'link'
+        'link',
     ];
-    
+
     /**
      * Association with mailList through mail_list_id column.
      */
@@ -22,7 +22,7 @@ class EmailLink extends Model
     {
         return $this->belongsTo('Acelle\Model\Email');
     }
-    
+
     /**
      * Bootstrap any application services.
      */
@@ -40,7 +40,7 @@ class EmailLink extends Model
             $item->uid = $uid;
         });
     }
-    
+
     /**
      * Find item by uid.
      *

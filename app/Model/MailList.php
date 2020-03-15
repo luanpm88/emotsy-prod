@@ -29,9 +29,6 @@ use Acelle\Library\Log as MailLog;
 use Acelle\Library\RouletteWheel;
 use Acelle\Library\StringHelper;
 use Acelle\Exceptions\VerificationProcessCancelledException;
-use Acelle\Model\Setting;
-use Acelle\Model\Customer;
-use Acelle\Model\SendingServer;
 
 class MailList extends Model
 {
@@ -103,11 +100,10 @@ class MailList extends Model
         return $this->hasMany('Acelle\Model\Segment');
     }
 
-     public function automations()
-     {
-         return $this->hasMany('Acelle\Model\Automation2');
-     }
-
+    public function automations()
+    {
+        return $this->hasMany('Acelle\Model\Automation2');
+    }
 
     public function pages()
     {
@@ -632,7 +628,7 @@ class MailList extends Model
     /**
      * Copy new list.
      */
-    public function copy($name, $customer=null)
+    public function copy($name, $customer = null)
     {
         $copy = $this->replicate(['cache']);
         $copy->name = $name;
@@ -674,7 +670,7 @@ class MailList extends Model
 
         // update cache
         $copy->updateCache();
-        
+
         return $copy;
     }
 
@@ -780,7 +776,7 @@ class MailList extends Model
             foreach ($list->subscribers()->skip($page * $num)->take($num)->get() as $key => $item) {
                 $cols = [];
                 $cols[] = $item->uid;
-                $cols[] = trans("messages.list.exported_file.status." . $item->status);
+                $cols[] = trans('messages.list.exported_file.status.'.$item->status);
                 foreach ($list->getFields as $key2 => $field) {
                     $value = $item->getValueByField($field);
                     $cols[] = $value;
@@ -1095,7 +1091,7 @@ class MailList extends Model
             $reader = \League\Csv\Reader::createFromPath($file);
             // get the headers, using array_filter to strip empty/null header
             // to avoid the error of "InvalidArgumentException: Use a flat array with unique string values in /home/nghi/mailixa/vendor/league/csv/src/Reader.php:305"
-            $headers = array_filter(array_map(function($value) { return strtolower(trim($value)); }, $reader->fetchOne()));
+            $headers = array_filter(array_map(function ($value) { return strtolower(trim($value)); }, $reader->fetchOne()));
             $fields = collect($this->fields)->map(function ($field) {
                 return strtolower($field->tag);
             })->toArray();
@@ -1630,7 +1626,7 @@ class MailList extends Model
             ]);
 
             if ($result['status'] == SendingServer::DELIVERY_STATUS_FAILED) {
-                throw new \Exception("Error returned from sending service: ".$result['error']);
+                throw new \Exception('Error returned from sending service: '.$result['error']);
             }
         } catch (\Exception $ex) {
             $error = $ex->getMessage();
@@ -1750,8 +1746,8 @@ class MailList extends Model
                 }
                 */
 
-                $result = $subscription->plan->activeSendingServers->map(function($server) {
-                    return [ $server->sending_server_id, $server->fitness ];
+                $result = $subscription->plan->activeSendingServers->map(function ($server) {
+                    return [$server->sending_server_id, $server->fitness];
                 });
             }
         //} elseif ($subscription->useSubAccount()) {
@@ -1926,7 +1922,7 @@ class MailList extends Model
     /**
      * Copy new list.
      */
-    public function copyAll($name, $customer=null)
+    public function copyAll($name, $customer = null)
     {
         $copy = $this->replicate(['cache']);
         $copy->name = $name;
@@ -1967,7 +1963,7 @@ class MailList extends Model
         }
 
         // copy all subscribers
-        foreach($this->subscribers as $subscriber) {
+        foreach ($this->subscribers as $subscriber) {
             $subscriber->copy($copy);
         }
 
@@ -1980,11 +1976,11 @@ class MailList extends Model
      */
     public function cloneForCustomers($customers)
     {
-        foreach($customers as $customer) {
+        foreach ($customers as $customer) {
             $this->copyAll($this->name, $customer);
         }
     }
-    
+
     /**
      * Get one field for list.
      */

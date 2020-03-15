@@ -23,8 +23,6 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Acelle\Model\SendingDomain;
-use Acelle\Model\Setting;
 use Illuminate\Support\Facades\Log as LaravelLog;
 
 class Sender extends Model
@@ -144,7 +142,7 @@ class Sender extends Model
      */
     public function setPending()
     {
-        $this->status = Sender::STATUS_PENDING;
+        $this->status = self::STATUS_PENDING;
         $this->save();
     }
 
@@ -155,7 +153,7 @@ class Sender extends Model
      */
     public function verificationRules()
     {
-        $rules = array (
+        $rules = array(
             'type' => 'required',
         );
 
@@ -218,7 +216,7 @@ class Sender extends Model
      */
     public function isVerified()
     {
-        return $this->status == Sender::STATUS_VERIFIED;
+        return $this->status == self::STATUS_VERIFIED;
     }
 
     /**
@@ -253,7 +251,7 @@ class Sender extends Model
             $this->status = $this->getAwsVerificationServer()->verifyIdentity($this->email) ? self::STATUS_VERIFIED : self::STATUS_PENDING;
         } else {
             $domain = extract_domain($this->email);
-            $this->status = $this->customer->getSendingDomains()->contains(function($r) use($domain) { return $r->name == $domain; }) ? self::STATUS_VERIFIED : self::STATUS_PENDING;
+            $this->status = $this->customer->getSendingDomains()->contains(function ($r) use ($domain) { return $r->name == $domain; }) ? self::STATUS_VERIFIED : self::STATUS_PENDING;
         }
 
         $this->save();

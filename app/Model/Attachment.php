@@ -13,8 +13,8 @@ class Attachment extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'size'    ];
-    
+        'name', 'size',    ];
+
     /**
      * Association with mailList through mail_list_id column.
      */
@@ -22,7 +22,7 @@ class Attachment extends Model
     {
         return $this->belongsTo('Acelle\Model\Email');
     }
-    
+
     /**
      * Bootstrap any application services.
      */
@@ -40,7 +40,7 @@ class Attachment extends Model
             $item->uid = $uid;
         });
     }
-    
+
     /**
      * Find item by uid.
      *
@@ -50,7 +50,7 @@ class Attachment extends Model
     {
         return self::where('uid', '=', $uid)->first();
     }
-    
+
     /**
      * Remove attachment.
      *
@@ -59,7 +59,7 @@ class Attachment extends Model
     public function remove()
     {
         Storage::disk('local')->delete($this->file);
-        
+
         $this->delete();
     }
 }

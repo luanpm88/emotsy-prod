@@ -25,7 +25,6 @@ namespace Acelle\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Acelle\Notifications\ResetPassword;
-use Acelle\Cashier\Billable;
 
 class User extends Authenticatable
 {
@@ -101,7 +100,6 @@ class User extends Authenticatable
      */
     public function sendActivationMail($name = null)
     {
-
         $layout = \Acelle\Model\Layout::where('alias', 'registration_confirmation_email')->first();
         $token = $this->getToken();
 
@@ -199,24 +197,24 @@ class User extends Authenticatable
         return base_path('public/source/'.$this->uid.'/');
     }
 
-    /**
+   /**
     * Send the password reset notification.
     *
     * @param  string  $token
-    * @return void
     */
    public function sendPasswordResetNotification($token)
    {
        $this->notify(new ResetPassword($token, url('password/reset', $token)));
    }
 
-   public function getStoragePath($path = '') {
-      $base = storage_path('app/user/'.$this->uid);
+    public function getStoragePath($path = '')
+    {
+        $base = storage_path('app/user/'.$this->uid);
 
-      if (!\File::exists($base)) {
-         \File::makeDirectory($base, 0777, true, true);
-      }
+        if (!\File::exists($base)) {
+            \File::makeDirectory($base, 0777, true, true);
+        }
 
-      return join_paths($base, $path);
-   }
+        return join_paths($base, $path);
+    }
 }

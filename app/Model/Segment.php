@@ -219,48 +219,48 @@ class Segment extends Model
                         if ($type == 'number') {
                             $cond = sprintf('CAST(sf%s.value AS SIGNED) = CAST(%s AS SIGNED)', $number, db_quote($keyword));
                         } else {
-                            $cond = 'LOWER(sf'.$number.".value) = ".db_quote($keyword);
+                            $cond = 'LOWER(sf'.$number.'.value) = '.db_quote($keyword);
                         }
                         break;
                     case 'not_equal':
                         if ($type == 'number') {
                             $cond = sprintf('CAST(sf%s.value AS SIGNED) != CAST(%s AS SIGNED)', $number, db_quote($keyword));
                         } else {
-                            $cond = 'LOWER(sf'.$number.".value) != ".db_quote($keyword);
+                            $cond = 'LOWER(sf'.$number.'.value) != '.db_quote($keyword);
                         }
                         break;
                     case 'contains':
-                        $cond = 'LOWER(sf'.$number.".value) LIKE ".db_quote('%'.$keyword.'%');
+                        $cond = 'LOWER(sf'.$number.'.value) LIKE '.db_quote('%'.$keyword.'%');
                         break;
                     case 'not_contains':
-                        $cond = 'LOWER(sf'.$number.".value) NOT LIKE ".db_quote('%'.$keyword.'%');
+                        $cond = 'LOWER(sf'.$number.'.value) NOT LIKE '.db_quote('%'.$keyword.'%');
                         break;
                     case 'starts':
-                        $cond = 'LOWER(sf'.$number.".value) LIKE ".db_quote('%'.$keyword.'%');
+                        $cond = 'LOWER(sf'.$number.'.value) LIKE '.db_quote('%'.$keyword.'%');
                         break;
                     case 'ends':
-                        $cond = 'LOWER(sf'.$number.".value) LIKE ".db_quote('%'.$keyword.'%');
+                        $cond = 'LOWER(sf'.$number.'.value) LIKE '.db_quote('%'.$keyword.'%');
                         break;
                     case 'greater':
                         if ($type == 'number') {
                             $cond = sprintf('CAST(sf%s.value AS SIGNED) > CAST(%s AS SIGNED)', $number, db_quote($keyword));
                         } else {
-                            $cond = 'sf'.$number.".value > ".db_quote($keyword);
+                            $cond = 'sf'.$number.'.value > '.db_quote($keyword);
                         }
                         break;
                     case 'less':
                         if ($type == 'number') {
                             $cond = sprintf('CAST(sf%s.value AS SIGNED) < CAST(%s AS SIGNED)', $number, db_quote($keyword));
                         } else {
-                            $cond = 'sf'.$number.".value < ".db_quote($keyword);
+                            $cond = 'sf'.$number.'.value < '.db_quote($keyword);
                         }
-                        
+
                         break;
                     case 'not_starts':
-                        $cond = 'sf'.$number.".value NOT LIKE ".db_quote($keyword.'%');
+                        $cond = 'sf'.$number.'.value NOT LIKE '.db_quote($keyword.'%');
                         break;
                     case 'not_ends':
-                        $cond = 'LOWER(sf'.$number.".value) NOT LIKE ".db_quote('%'.$keyword);
+                        $cond = 'LOWER(sf'.$number.'.value) NOT LIKE '.db_quote('%'.$keyword);
                         break;
                     case 'not_blank':
                         $cond = '(LOWER(sf'.$number.".value) != '' AND LOWER(sf".$number.'.value) IS NOT NULL)';
@@ -298,11 +298,11 @@ class Segment extends Model
                 switch ($condition->operator) {
                     case 'tag_contains':
                         // add condition
-                        $conditions[] = '('.\DB::getTablePrefix()."subscribers.tags LIKE " . db_quote('%"'.$keyword.'"%') . ')';
+                        $conditions[] = '('.\DB::getTablePrefix().'subscribers.tags LIKE '.db_quote('%"'.$keyword.'"%').')';
                         break;
                     case 'tag_not_contains':
                         // add condition
-                        $conditions[] = '('.\DB::getTablePrefix()."subscribers.tags NOT LIKE " . db_quote('%"'.$keyword.'"%') . ')';
+                        $conditions[] = '('.\DB::getTablePrefix().'subscribers.tags NOT LIKE '.db_quote('%"'.$keyword.'"%').')';
                         break;
                     default:
                 }

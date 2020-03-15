@@ -23,12 +23,10 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Acelle\Model\Timeline;
 use Acelle\Library\Automation\Action;
 use Acelle\Library\Automation\Trigger;
 use Acelle\Library\Automation\Send;
 use Acelle\Library\Automation\Wait;
-use Acelle\Library\Automation\Evaluate;
 
 class AutoTrigger extends Model
 {
@@ -42,11 +40,11 @@ class AutoTrigger extends Model
     {
         parent::boot();
 
-        self::saving(function($model){
+        self::saving(function ($model) {
             $model->updateExecutedIndex();
         });
 
-        self::retrieved(function($model){
+        self::retrieved(function ($model) {
             // IMPORTANT: in case of any change made to the parent automation2
             $model->updateWorkflow();
         });
@@ -131,11 +129,11 @@ class AutoTrigger extends Model
     {
         $this->logger()->info(sprintf('UPDATE > Trigger %s for "%s" - "%s" Start checking', $this->id, $this->automation2->name, $this->subscriber->email));
         $last = $this->getLatestAction();
-        
+
         if ($last == null) {
             $trigger = $this->getTrigger();
             $trigger->markAsLatest(true);
-            $this->updateAction( $trigger );
+            $this->updateAction($trigger);
             $last = $trigger;
         }
 
@@ -199,7 +197,7 @@ class AutoTrigger extends Model
     private function updateExecutedIndex()
     {
         $executed = [];
-        $this->getActions(function($action) use (&$executed) {
+        $this->getActions(function ($action) use (&$executed) {
             if (!is_null($action->getLastExecuted())) {
                 $executed[] = $action->getId();
             }
@@ -232,7 +230,7 @@ class AutoTrigger extends Model
         foreach ($origins as $origin) {
             $newAction = $this->getAction($origin);
             $currentAction = $this->getActionById($newAction->getId());
-            
+
             if (is_null($currentAction)) {
                 $newJson[$newAction->getId()] = $newAction->toJson();
             } else {
@@ -271,7 +269,7 @@ class AutoTrigger extends Model
     public function getActionById($id)
     {
         $selected = null;
-        $this->getActions(function($action) use ($id, &$selected) {
+        $this->getActions(function ($action) use ($id, &$selected) {
             if ($action->getId() == $id) {
                 $selected = $action;
             }

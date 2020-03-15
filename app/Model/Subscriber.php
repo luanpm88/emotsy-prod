@@ -24,8 +24,7 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Log as MailLog;
-use Acelle\Model\Blacklist;
-use DB;
+
 
 class Subscriber extends Model
 {
@@ -169,7 +168,6 @@ class Subscriber extends Model
 
     /**
      * Unsubscribe to the list.
-     *
      */
     public function unsubscribe()
     {
@@ -823,6 +821,7 @@ class Subscriber extends Model
         $log->email_verification_server_id = $verifier->id;
         $this->emailVerifications()->save($log);
         MailLog::info(sprintf('Finish verifying %s (%s)', $this->email, $this->id));
+
         return $log->isDeliverable();
     }
 
@@ -937,7 +936,7 @@ class Subscriber extends Model
 
     public function getFullName($default = null)
     {
-        $full = trim($this->getValueByTag('FIRST_NAME') . " " . $this->getValueByTag('LAST_NAME'));
+        $full = trim($this->getValueByTag('FIRST_NAME').' '.$this->getValueByTag('LAST_NAME'));
         if (empty($full)) {
             return $default;
         } else {
@@ -960,11 +959,11 @@ class Subscriber extends Model
      */
     public function isActive()
     {
-        return ($this->status == self::STATUS_SUBSCRIBED);
+        return $this->status == self::STATUS_SUBSCRIBED;
     }
 
     /**
-     * Get tags
+     * Get tags.
      */
     public function getTags()
     {
@@ -974,9 +973,9 @@ class Subscriber extends Model
 
         return json_decode($this->tags, true);
     }
-    
+
     /**
-     * Add tags
+     * Add tags.
      */
     public function addTags($arr)
     {
@@ -989,7 +988,7 @@ class Subscriber extends Model
     }
 
     /**
-     * Add tags
+     * Add tags.
      */
     public function updateTags($arr)
     {
@@ -1002,7 +1001,7 @@ class Subscriber extends Model
     }
 
     /**
-     * Remove tag
+     * Remove tag.
      */
     public function removeTag($tag)
     {

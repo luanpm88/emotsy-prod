@@ -23,15 +23,11 @@
 namespace Acelle\Model;
 
 use Acelle\Library\QuotaTrackerFile;
-use Acelle\Model\Setting;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
-use Acelle\Cashier\Traits\BillableUserTrait;
 use Acelle\Cashier\Interfaces\BillableUserInterface;
-use Acelle\Model\Plan;
 use Acelle\Cashier\Cashier;
 use Acelle\Cashier\Subscription;
-use Acelle\Cashier\SubscriptionTransaction;
 
 class Customer extends Model implements BillableUserInterface
 {
@@ -234,8 +230,6 @@ class Customer extends Model implements BillableUserInterface
 
     /**
      * Get active subscription.
-     *
-     * @return void
      */
     public function activeSubscription()
     {
@@ -875,7 +869,7 @@ class Customer extends Model implements BillableUserInterface
     {
         return is_object($this->language) ? $this->language->code : null;
     }
-    
+
     /**
      * Get customer language code.
      *
@@ -883,7 +877,7 @@ class Customer extends Model implements BillableUserInterface
      */
     public function getLanguageCodeFull()
     {
-        return is_object($this->language) ? ($this->language->code . '-' . strtoupper($this->language->region_code)) : null;
+        return is_object($this->language) ? ($this->language->code.'-'.strtoupper($this->language->region_code)) : null;
     }
 
     /**
@@ -1405,10 +1399,10 @@ class Customer extends Model implements BillableUserInterface
      */
     public function currentPlanName()
     {
-        return (is_object($this->activeSubscription()) ?
+        return is_object($this->activeSubscription()) ?
             $this->activeSubscription()->plan->name :
             ''
-        );
+        ;
     }
 
     /**
@@ -1749,8 +1743,6 @@ class Customer extends Model implements BillableUserInterface
 
     /**
      * Update billable owner id.
-     *
-     * @return void
      */
     public function updateRemoteOwnerId($ownerId)
     {
@@ -1760,8 +1752,6 @@ class Customer extends Model implements BillableUserInterface
 
     /**
      * Update billable card brand.
-     *
-     * @return void
      */
     public function updateBillableCardBrand($cardBrand)
     {
@@ -1771,8 +1761,6 @@ class Customer extends Model implements BillableUserInterface
 
     /**
      * Update billable card last four.
-     *
-     * @return void
      */
     public function updateBillableCardLastFour($cardLastFour)
     {
@@ -1829,7 +1817,7 @@ class Customer extends Model implements BillableUserInterface
         // own emails
         $senders = $this->senders()->get();
         foreach ($senders as $sender) {
-            $list[] = $sender->name . " <" . $sender->email . ">";
+            $list[] = $sender->name.' <'.$sender->email.'>';
         }
 
         // own domain
@@ -1860,10 +1848,10 @@ class Customer extends Model implements BillableUserInterface
         }
 
         foreach ($this->getVerifiedIdentities() as $item) {
-                // check if email
+            // check if email
                 if (extract_email($item) !== null) {
                     $email = extract_email($item);
-                    if ( strpos(strtolower($email), $keyword) === 0 ) {
+                    if (strpos(strtolower($email), $keyword) === 0) {
                         $topList[] = [
                             'text' => extract_name($item),
                             'value' => $email,
@@ -1884,8 +1872,8 @@ class Customer extends Model implements BillableUserInterface
                         if ($keyword == '###') {
                             $eKey = '****';
                         }
-                        $topList[] = [
-                            'text' => $eKey . '@'.str_replace($dKey, '<span class="text-semibold text-primary"><strong>'.$dKey.'</strong></span>', $item),
+                    $topList[] = [
+                            'text' => $eKey.'@'.str_replace($dKey, '<span class="text-semibold text-primary"><strong>'.$dKey.'</strong></span>', $item),
                             'subfix' => $item,
                             'desc' => null,
                         ];
@@ -1901,8 +1889,9 @@ class Customer extends Model implements BillableUserInterface
     /**
      * Begin creating a new subscription.
      *
-     * @param  string  $subscription
-     * @param  string  $plan
+     * @param string $subscription
+     * @param string $plan
+     *
      * @return \Laravel\Cashier\SubscriptionBuilder
      */
     public function createSubscription($plan, $gateway)
@@ -1948,7 +1937,7 @@ class Customer extends Model implements BillableUserInterface
     {
         return $this->subscription;
     }
-    
+
     /**
      * Count customer automation2s.
      *
@@ -1961,8 +1950,6 @@ class Customer extends Model implements BillableUserInterface
 
     /**
      * Assign plan to customer.
-     *
-     * @return void
      */
     public function assignPlan($plan)
     {
@@ -1973,16 +1960,14 @@ class Customer extends Model implements BillableUserInterface
         // assign new plan
         Cashier::assignPlan($this, $plan);
     }
-    
+
     /**
      * Check customer if has notice.
-     *
-     * @return void
      */
     public function hasSubscriptionNotice()
     {
         $gateway = \Acelle\Cashier\Cashier::getPaymentGateway();
-        
+
         if (is_object($this->subscription)) {
             if ($this->subscription->isNew() || $this->subscription->isPending()) {
                 return true;

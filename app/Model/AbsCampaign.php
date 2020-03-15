@@ -27,16 +27,11 @@ use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Log as MailLog;
 use Acelle\Library\StringHelper;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
-use Acelle\Model\SendingDomain;
-use Acelle\Model\SendingServer;
-use Acelle\Model\Subscriber;
-use Acelle\Model\TrackingLog;
 use Validator;
 use Illuminate\Validation\ValidationException;
 use DB;
 use Carbon\Carbon;
 use File;
-use Sunra\PhpSimple\HtmlDomParser;
 use Acelle\Library\Tool;
 use ZipArchive;
 use League\Csv\Writer;
@@ -295,7 +290,7 @@ abstract class AbsCampaign extends Model
 
         $message->setTo($subscriber->email);
         $message->setReplyTo($this->reply_to);
-        $message->setEncoder( new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit') );
+        $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
         $message->addPart($this->getPlainContent($subscriber, $msgId, $server), 'text/plain');
         if ($this->type == self::TYPE_REGULAR) {
             $message->addPart($this->getHtmlContent($subscriber, $msgId, $server), 'text/html');
@@ -1098,7 +1093,7 @@ abstract class AbsCampaign extends Model
             return 0;
         }
 
-        return ($this->clickCount() / $open_count);
+        return $this->clickCount() / $open_count;
     }
 
     /**
@@ -1114,7 +1109,7 @@ abstract class AbsCampaign extends Model
             return 0;
         }
 
-        return ($this->clickedEmailsCount() / $open_count);
+        return $this->clickedEmailsCount() / $open_count;
     }
 
     /**
@@ -1130,7 +1125,7 @@ abstract class AbsCampaign extends Model
             return 0;
         }
 
-        return ($this->clickCount() / $open_count);
+        return $this->clickCount() / $open_count;
     }
 
     /**
@@ -1194,7 +1189,7 @@ abstract class AbsCampaign extends Model
             return 0;
         }
 
-        return ($this->openCount() / $delivered_count);
+        return $this->openCount() / $delivered_count;
     }
 
     /**
@@ -1226,7 +1221,7 @@ abstract class AbsCampaign extends Model
             return 0;
         }
 
-        return ($this->openUniqCount() / $delivered_count);
+        return $this->openUniqCount() / $delivered_count;
     }
 
     /**
@@ -1252,7 +1247,7 @@ abstract class AbsCampaign extends Model
             return 0;
         }
 
-        return ($this->feedbackCount() / $delivered_count);
+        return $this->feedbackCount() / $delivered_count;
     }
 
     /**
@@ -1278,7 +1273,7 @@ abstract class AbsCampaign extends Model
             return 0;
         }
 
-        return ($this->bounceCount() / $delivered_count);
+        return $this->bounceCount() / $delivered_count;
     }
 
     /**
@@ -1304,7 +1299,7 @@ abstract class AbsCampaign extends Model
             return 0;
         }
 
-        return ($this->hardBounceCount() / $delivered_processed_count);
+        return $this->hardBounceCount() / $delivered_processed_count;
     }
 
     /**
@@ -1330,7 +1325,7 @@ abstract class AbsCampaign extends Model
             return 0;
         }
 
-        return ($this->softBounceCount() / $tracking_count);
+        return $this->softBounceCount() / $tracking_count;
     }
 
     /**
@@ -1356,7 +1351,7 @@ abstract class AbsCampaign extends Model
             return 0;
         }
 
-        return ($this->unsubscribeCount() / $delivered_count);
+        return $this->unsubscribeCount() / $delivered_count;
     }
 
     /**
@@ -1621,9 +1616,9 @@ abstract class AbsCampaign extends Model
         // in case of a fake object, for sending test email
         if (is_a($subscriber, 'stdClass')) {
             $path = route('unsubscribeUrl', ['message_id' => StringHelper::base64UrlEncode($msgId)], false);
+
             return $path;
         }
-
 
         // OPTION 1: immediately opt out
         $path = route('unsubscribeUrl', ['message_id' => StringHelper::base64UrlEncode($msgId)], false);
@@ -1769,7 +1764,7 @@ abstract class AbsCampaign extends Model
      *
      * @return string.
      */
-    public function isLayout($html=null)
+    public function isLayout($html = null)
     {
         if (!$html) {
             $html = $this->render();
@@ -2335,21 +2330,21 @@ abstract class AbsCampaign extends Model
         $test = $this->execSpamc();
 
         // Get scores / thresholds
-        preg_match ('/\s*(?<score>[0-9\.\/]+)\s*/', $test, $score);
+        preg_match('/\s*(?<score>[0-9\.\/]+)\s*/', $test, $score);
 
         if (!array_key_exists('score', $score)) {
             throw new \Exception('Cannot get SpamScore: '.$test);
         }
 
         $score = $score['score'];
-        list($current, $threshold) = preg_split ('/\//', $score);
-        $passed = ( $current <= $threshold ) ? true : false;
+        list($current, $threshold) = preg_split('/\//', $score);
+        $passed = ($current <= $threshold) ? true : false;
 
         // get the details
         $json = [];
 
         $firstMatch = false;
-        foreach(preg_split("/((\r?\n)|(\r\n?))/", $test) as $line){
+        foreach (preg_split("/((\r?\n)|(\r\n?))/", $test) as $line) {
             preg_match('/^\s*(?<score>[\-0-9\.]+)\s+(?<rule>[\w]+)\s+(?<desc>.*)/', $line, $result);
 
             if (array_key_exists('score', $result) && array_key_exists('rule', $result) && array_key_exists('desc', $result)) {
@@ -2358,11 +2353,11 @@ abstract class AbsCampaign extends Model
                     'score' => $result['score'],
                     'rule' => $result['rule'],
                     'desc' => $result['desc'],
-                    'status' => ($result['score'] > 0.0) ? 'failed' : (($result['score'] == 0.0) ? 'neutral' : 'passed')
+                    'status' => ($result['score'] > 0.0) ? 'failed' : (($result['score'] == 0.0) ? 'neutral' : 'passed'),
                 ];
             } elseif ($firstMatch) {
                 $lastRecord = end($json);
-                $lastRecord['desc'] .= " ".trim($line);
+                $lastRecord['desc'] .= ' '.trim($line);
                 // replace last record
                 $json[sizeof($json) - 1] = $lastRecord;
             }
@@ -2371,7 +2366,7 @@ abstract class AbsCampaign extends Model
         return [
             'result' => $passed,
             'score' => $score,
-            'details' => $json
+            'details' => $json,
         ];
     }
 
@@ -2444,7 +2439,7 @@ abstract class AbsCampaign extends Model
      */
     public function getUploadUri()
     {
-        return 'app/campaigns/template_' . $this->uid;
+        return 'app/campaigns/template_'.$this->uid;
     }
 
     /**
@@ -2452,7 +2447,7 @@ abstract class AbsCampaign extends Model
      */
     public function getUploadDir()
     {
-        return storage_path('app/campaigns/template_' . $this->uid);
+        return storage_path('app/campaigns/template_'.$this->uid);
     }
 
     /**
@@ -2473,7 +2468,7 @@ abstract class AbsCampaign extends Model
      */
     public function addTemplateFromLayout($layout)
     {
-        $sDir = database_path('layouts/' . $layout);
+        $sDir = database_path('layouts/'.$layout);
 
         // delete old template
         Tool::xdelete($this->getStoragePath());
@@ -2489,7 +2484,7 @@ abstract class AbsCampaign extends Model
     {
         // try to find the main file, index.html | index.html | file_name.html | ...
         $main_file = null;
-        $sub_path = "";
+        $sub_path = '';
         $possible_main_file_names = array('index.html', 'index.htm');
 
         $possible_main_file_names = array('index.html', 'index.htm');
@@ -2499,10 +2494,10 @@ abstract class AbsCampaign extends Model
                 break;
             }
             $dirs = array_filter(glob($tmp_path.'/'.'*'), 'is_dir');
-            foreach($dirs as $sub) {
+            foreach ($dirs as $sub) {
                 if (is_file($file = $sub.'/'.$name)) {
                     $main_file = $file;
-                    $sub_path = explode("/",$sub)[count(explode("/",$sub))-1]."/";
+                    $sub_path = explode('/', $sub)[count(explode('/', $sub)) - 1].'/';
                     break;
                 }
             }
@@ -2521,14 +2516,14 @@ abstract class AbsCampaign extends Model
                 }
             }
             $dirs = array_filter(glob($tmp_path.'/'.'*'), 'is_dir');
-            foreach($dirs as $sub) {
+            foreach ($dirs as $sub) {
                 $objects = scandir($sub);
                 foreach ($objects as $object) {
                     if ($object != '.' && $object != '..') {
                         if (!is_dir($sub.'/'.$object)) {
                             if (preg_match('/\.html?$/i', $object)) {
                                 $main_file = $sub.'/'.$object;
-                                $sub_path = explode("/",$sub)[count(explode("/",$sub))-1]."/";
+                                $sub_path = explode('/', $sub)[count(explode('/', $sub)) - 1].'/';
                                 break;
                             }
                         }
@@ -2547,7 +2542,7 @@ abstract class AbsCampaign extends Model
         $html_content = trim(file_get_contents($main_file));
         $this->html = $html_content;
         $this->save();
-        
+
         // upload path
         $upload_path = $this->getStoragePath();
 
@@ -2562,9 +2557,9 @@ abstract class AbsCampaign extends Model
     /**
      * Get public campaign upload dir.
      */
-    public function getStoragePath($path="")
+    public function getStoragePath($path = '')
     {
-        return storage_path('app/users/' . $this->customer->uid . '/campaigns/' . $this->uid . '/' . $path);
+        return storage_path('app/users/'.$this->customer->uid.'/campaigns/'.$this->uid.'/'.$path);
     }
 
     /**
@@ -2575,12 +2570,12 @@ abstract class AbsCampaign extends Model
         // find index
         $names = array('thumbnail.jpg', 'thumbnail.png', 'thumb.jpg', 'thumb.png');
         foreach ($names as $name) {
-            if (is_file($file = $this->getStoragePath() . $name)) {
+            if (is_file($file = $this->getStoragePath().$name)) {
                 return $file;
             }
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -2589,7 +2584,8 @@ abstract class AbsCampaign extends Model
     public function transform()
     {
         // replace relative urls
-        $this->html = '<!DOCTYPE html>' . \Acelle\Library\Tool::replaceTemplateUrl($this->html, route('campaign_assets', ['uid' => $this->uid, 'path' => '']));
+        $this->html = '<!DOCTYPE html>'.\Acelle\Library\Tool::replaceTemplateUrl($this->html, route('campaign_assets', ['uid' => $this->uid, 'path' => '']));
+
         return $this->html;
     }
 
@@ -2611,7 +2607,7 @@ abstract class AbsCampaign extends Model
 
         return $this->html;
     }
-    
+
     /**
      * Upload asset.
      */
@@ -2622,16 +2618,16 @@ abstract class AbsCampaign extends Model
 
         $new_name = $file_name;
         $i = 1;
-        while(file_exists($this->getStoragePath($upload_dir) . $new_name)) {
-            $new_name = $i . '_' . $file_name;
-            $i++;
+        while (file_exists($this->getStoragePath($upload_dir).$new_name)) {
+            $new_name = $i.'_'.$file_name;
+            ++$i;
         }
 
         $path = $file->move(
             $this->getStoragePath($upload_dir), $new_name
         );
 
-        return $upload_dir . $new_name;
+        return $upload_dir.$new_name;
     }
 
     /**
@@ -2706,10 +2702,10 @@ abstract class AbsCampaign extends Model
     public function generateTrackingLogCsv($progressCallback = null)
     {
         $tmpTableName = 'log_'.$this->uid.'_'.md5(rand());
-        $filePath = $this->customer->user->getStoragePath($tmpTableName.".csv");
+        $filePath = $this->customer->user->getStoragePath($tmpTableName.'.csv');
 
-        DB::statement("DROP TABLE IF EXISTS ".table($tmpTableName));
-        DB::statement("CREATE TEMPORARY TABLE ".table($tmpTableName)." AS SELECT
+        DB::statement('DROP TABLE IF EXISTS '.table($tmpTableName));
+        DB::statement('CREATE TEMPORARY TABLE '.table($tmpTableName)." AS SELECT
             c.name as campaign_name,
             s.email as subscriber_email,
             l.status as delivery_status,
@@ -2727,14 +2723,14 @@ abstract class AbsCampaign extends Model
             u.created_at AS unsubscribe_at,
             f.created_at AS feedback_at,
             b.created_at AS bounce_at
-          FROM ".table('tracking_logs')." l
-          JOIN ".table('campaigns')." c ON l.campaign_id = c.id
-          JOIN ".table('subscribers')." s ON l.subscriber_id = s.id
-          LEFT JOIN ".table('open_logs')." o ON o.message_id = l.message_id
-          LEFT JOIN ".table('click_logs')." ck ON ck.message_id = l.message_id
-          LEFT JOIN ".table('unsubscribe_logs')." u ON u.message_id = l.message_id
-          LEFT JOIN ".table('feedback_logs')." f ON f.message_id = l.message_id
-          LEFT JOIN ".table('bounce_logs')." b ON b.message_id = l.message_id");
+          FROM ".table('tracking_logs').' l
+          JOIN '.table('campaigns').' c ON l.campaign_id = c.id
+          JOIN '.table('subscribers').' s ON l.subscriber_id = s.id
+          LEFT JOIN '.table('open_logs').' o ON o.message_id = l.message_id
+          LEFT JOIN '.table('click_logs').' ck ON ck.message_id = l.message_id
+          LEFT JOIN '.table('unsubscribe_logs').' u ON u.message_id = l.message_id
+          LEFT JOIN '.table('feedback_logs').' f ON f.message_id = l.message_id
+          LEFT JOIN '.table('bounce_logs').' b ON b.message_id = l.message_id');
 
         $total = DB::table($tmpTableName)->count();
         $limit = 1000;
@@ -2757,7 +2753,7 @@ abstract class AbsCampaign extends Model
             'click_user_agent',
             'unsubscribe_at',
             'feedback_at',
-            'bounce_at'
+            'bounce_at',
         ];
 
         // insert header
@@ -2769,20 +2765,20 @@ abstract class AbsCampaign extends Model
                                              ->limit($limit)
                                              ->offset($i)
                                              ->get()
-                                             ->map(function($r){return (array)$r; })
+                                             ->map(function ($r) {return (array) $r; })
                                              ->toArray();
             $csv->insertAll($items);
 
             // callback progress
             if (!is_null($progressCallback)) {
-                $percentage = ($i+1)/$pages;
-                $progressCallback([ 'progress' =>  $percentage, 'path' => $filePath]);
+                $percentage = ($i + 1) / $pages;
+                $progressCallback(['progress' => $percentage, 'path' => $filePath]);
             }
         }
 
         // callback progress
         if (!is_null($progressCallback)) {
-            $progressCallback([ 'progress' =>  1, 'path' => $filePath]);
+            $progressCallback(['progress' => 1, 'path' => $filePath]);
         }
 
         return $filePath;

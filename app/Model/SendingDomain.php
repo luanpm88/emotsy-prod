@@ -24,7 +24,6 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\MtaSync;
-use Acelle\Model\Setting;
 use Mika56\SPFCheck\SPFCheck;
 use Mika56\SPFCheck\DNSRecordGetterDirect;
 
@@ -262,7 +261,7 @@ class SendingDomain extends Model
     }
 
     /**
-     * Get quoted SPF
+     * Get quoted SPF.
      */
     public function getQuotedSpf()
     {
@@ -294,7 +293,7 @@ class SendingDomain extends Model
     }
 
     /**
-     * Retrieve the full verification hostname (including domain name)
+     * Retrieve the full verification hostname (including domain name).
      */
     public function getFullVerificationHostName()
     {
@@ -302,7 +301,7 @@ class SendingDomain extends Model
     }
 
     /**
-     * Get DNS host name
+     * Get DNS host name.
      */
     public function getDnsHostName()
     {
@@ -408,7 +407,7 @@ class SendingDomain extends Model
         $fqdn = sprintf('%s.%s', $this->getVerificationTxtName(), $this->name);
         $results = collect(dns_get_record($fqdn, DNS_TXT));
         $results = $results->where('type', 'TXT')
-                           ->whereIn('txt', [$this->verification_token, doublequote($this->verification_token)] );
+                           ->whereIn('txt', [$this->verification_token, doublequote($this->verification_token)]);
 
         $this->domain_verified = $results->isEmpty() ? self::UNVERIFIED : self::VERIFIED;
         $this->save();
@@ -423,11 +422,11 @@ class SendingDomain extends Model
     {
         $possibles = collect([$this->getDnsDkimConfigWithoutQuote(), $this->getDnsDkimConfig(), $this->getEscapedDnsDkimConfig()]);
         $possibles = $possibles->map(function ($item, $key) { return preg_replace('/\s+/', '', $item); });
-        
+
         $fqdn = sprintf('%s.%s', $this->getDkimSelector(), $this->name);
         $results = collect(dns_get_record($fqdn, DNS_TXT))->where('type', 'TXT')->map(function ($item, $key) { return preg_replace('/\s+/', '', $item['txt']); });
         $results = $results->intersect($possibles);
-        
+
         $this->dkim_verified = $results->isEmpty() ? self::UNVERIFIED : self::VERIFIED;
         $this->save();
     }
@@ -439,10 +438,10 @@ class SendingDomain extends Model
      */
     public function verifySpf()
     {
-        $checker = new SPFCheck(new DNSRecordGetterDirect("8.8.8.8"));
+        $checker = new SPFCheck(new DNSRecordGetterDirect('8.8.8.8'));
         $check = $checker->isIPAllowed($this->getHostIpAddress(), $this->name);
 
-        $this->spf_verified = ( $check == SPFCheck::RESULT_PASS ) ? self::VERIFIED : self::UNVERIFIED;
+        $this->spf_verified = ($check == SPFCheck::RESULT_PASS) ? self::VERIFIED : self::UNVERIFIED;
         $this->save();
     }
 
@@ -484,7 +483,7 @@ class SendingDomain extends Model
     public function getDkimSelector()
     {
         if (!empty($this->dkim_selector)) {
-            return $this->dkim_selector . '._domainkey';
+            return $this->dkim_selector.'._domainkey';
         } else {
             return Setting::get('dkim_selector').'._domainkey';
         }
@@ -497,7 +496,7 @@ class SendingDomain extends Model
      */
     public function getDkimSelectorParts()
     {
-        return explode(".", $this->getDkimSelector());
+        return explode('.', $this->getDkimSelector());
     }
 
     /**
@@ -517,11 +516,13 @@ class SendingDomain extends Model
      */
     public function setDkimSelector($dkim_selector)
     {
-        if ( preg_match('/^[a-z0-9]{1,24}$/',  $dkim_selector) ) {
+        if (preg_match('/^[a-z0-9]{1,24}$/',  $dkim_selector)) {
             $this->dkim_selector = $dkim_selector;
             $this->save();
+
             return true;
         }
+
         return false;
     }
 
@@ -532,11 +533,13 @@ class SendingDomain extends Model
      */
     public function setVerificationTxtName($verification_hostname)
     {
-        if ( preg_match('/^[a-z0-9]{1,24}$/',  $verification_hostname) ) {
+        if (preg_match('/^[a-z0-9]{1,24}$/',  $verification_hostname)) {
             $this->verification_hostname = $verification_hostname;
             $this->save();
+
             return true;
         }
+
         return false;
     }
 }

@@ -3,23 +3,16 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use DB;
-use Carbon\Carbon;
 use File;
 use Sunra\PhpSimple\HtmlDomParser;
 use Acelle\Library\Tool;
 use Acelle\Library\StringHelper;
 use Acelle\Library\Log as MailLog;
-use Acelle\Model\Attachment;
-use Acelle\Model\TrackingLog;
-use Acelle\Model\Setting;
 use Illuminate\Support\Facades\Storage;
 use Validator;
 use Illuminate\Validation\ValidationException;
 use ZipArchive;
-use League\Csv\Writer;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
-
 
 class Email extends Model
 {
@@ -29,7 +22,7 @@ class Email extends Model
      * @var array
      */
     protected $fillable = [
-        'subject', 'from', 'from_name', 'reply_to', 'sign_dkim', 'track_open', 'track_click', 'action_id'
+        'subject', 'from', 'from_name', 'reply_to', 'sign_dkim', 'track_open', 'track_click', 'action_id',
     ];
 
     /**
@@ -116,7 +109,7 @@ class Email extends Model
      */
     public function getUploadUri()
     {
-        return 'app/email/template_' . $this->uid;
+        return 'app/email/template_'.$this->uid;
     }
 
     /**
@@ -124,7 +117,7 @@ class Email extends Model
      */
     public function getUploadDir()
     {
-        return storage_path('app/email/template_' . $this->uid);
+        return storage_path('app/email/template_'.$this->uid);
     }
 
     /**
@@ -134,8 +127,7 @@ class Email extends Model
      */
     public function addTemplateFromLayout($layout)
     {
-
-        $sDir = database_path('layouts/' . $layout);
+        $sDir = database_path('layouts/'.$layout);
         $this->loadFromDirectory($sDir);
     }
 
@@ -154,7 +146,7 @@ class Email extends Model
             ->orderBy('customer_id')
             ->get();
 
-        foreach($templates as $template) {
+        foreach ($templates as $template) {
             $result[] = [
                 'name' => $template->name,
                 'thumbnail' => action('TemplateController@image', $template->uid),
@@ -175,7 +167,7 @@ class Email extends Model
         $att->email_id = $this->id;
         $att->size = $file->getSize();
         $att->name = $file->getClientOriginalName();
-        $att->file = Storage::disk('local')->put('attachments/' . $this->uid, $file);
+        $att->file = Storage::disk('local')->put('attachments/'.$this->uid, $file);
 
         $att->save();
     }
@@ -202,12 +194,12 @@ class Email extends Model
         // find index
         $names = array('thumbnail.jpg', 'thumbnail.png', 'thumb.jpg', 'thumb.png');
         foreach ($names as $name) {
-            if (is_file($file = $this->getStoragePath() . $name)) {
+            if (is_file($file = $this->getStoragePath().$name)) {
                 return $file;
             }
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -221,7 +213,7 @@ class Email extends Model
 
         // try to find the main file, index.html | index.html | file_name.html | ...
         $main_file = null;
-        $sub_path = "";
+        $sub_path = '';
         $possible_main_file_names = array('index.html', 'index.htm');
 
         $possible_main_file_names = array('index.html', 'index.htm');
@@ -231,10 +223,10 @@ class Email extends Model
                 break;
             }
             $dirs = array_filter(glob($tmp_path.'/'.'*'), 'is_dir');
-            foreach($dirs as $sub) {
+            foreach ($dirs as $sub) {
                 if (is_file($file = $sub.'/'.$name)) {
                     $main_file = $file;
-                    $sub_path = explode("/",$sub)[count(explode("/",$sub))-1]."/";
+                    $sub_path = explode('/', $sub)[count(explode('/', $sub)) - 1].'/';
                     break;
                 }
             }
@@ -253,14 +245,14 @@ class Email extends Model
                 }
             }
             $dirs = array_filter(glob($tmp_path.'/'.'*'), 'is_dir');
-            foreach($dirs as $sub) {
+            foreach ($dirs as $sub) {
                 $objects = scandir($sub);
                 foreach ($objects as $object) {
                     if ($object != '.' && $object != '..') {
                         if (!is_dir($sub.'/'.$object)) {
                             if (preg_match('/\.html?$/i', $object)) {
                                 $main_file = $sub.'/'.$object;
-                                $sub_path = explode("/",$sub)[count(explode("/",$sub))-1]."/";
+                                $sub_path = explode('/', $sub)[count(explode('/', $sub)) - 1].'/';
                                 break;
                             }
                         }
@@ -279,7 +271,7 @@ class Email extends Model
         $html_content = trim(file_get_contents($main_file));
         $this->content = $html_content;
         $this->save();
-        
+
         // upload path
         $upload_path = $this->getStoragePath();
 
@@ -297,15 +289,15 @@ class Email extends Model
      */
     public function getEmailStoragePath()
     {
-        return storage_path('app/users/' . $this->automation->customer->uid . '/emails/' . $this->uid . '/');
+        return storage_path('app/users/'.$this->automation->customer->uid.'/emails/'.$this->uid.'/');
     }
 
     /**
      * Get public campaign upload dir.
      */
-    public function getStoragePath($path="")
+    public function getStoragePath($path = '')
     {
-        return $this->getEmailStoragePath() . 'content/' . $path;
+        return $this->getEmailStoragePath().'content/'.$path;
     }
 
     /**
@@ -337,6 +329,7 @@ class Email extends Model
             // @todo hack
             // $validator = Validator::make([], []); // Empty data and rules fields
             $validator->errors()->add('file', 'Cannot open .zip file');
+
             return [false, $validator];
         }
 
@@ -360,7 +353,8 @@ class Email extends Model
     public function transform()
     {
         // replace relative urls
-        $this->content = '<!DOCTYPE html>' . \Acelle\Library\Tool::replaceTemplateUrl($this->content, route('email_assets', ['uid' => $this->uid, 'path' => '']));
+        $this->content = '<!DOCTYPE html>'.\Acelle\Library\Tool::replaceTemplateUrl($this->content, route('email_assets', ['uid' => $this->uid, 'path' => '']));
+
         return $this->content;
     }
 
@@ -382,7 +376,7 @@ class Email extends Model
 
         return $this->content;
     }
-    
+
     /**
      * Upload asset.
      */
@@ -393,16 +387,16 @@ class Email extends Model
 
         $new_name = $file_name;
         $i = 1;
-        while(file_exists($this->getStoragePath($upload_dir) . $new_name)) {
-            $new_name = $i . '_' . $file_name;
-            $i++;
+        while (file_exists($this->getStoragePath($upload_dir).$new_name)) {
+            $new_name = $i.'_'.$file_name;
+            ++$i;
         }
 
         $path = $file->move(
             $this->getStoragePath($upload_dir), $new_name
         );
 
-        return $upload_dir . $new_name;
+        return $upload_dir.$new_name;
     }
 
     /**
@@ -418,7 +412,7 @@ class Email extends Model
 
         // find all links from contents
         $document = HtmlDomParser::str_get_html($this->content);
-        foreach($document->find('a') as $element) {
+        foreach ($document->find('a') as $element) {
             if (preg_match('/^http/', $element->href) != 0) {
                 $links[] = trim($element->href);
             }
@@ -427,10 +421,10 @@ class Email extends Model
         // delete al bold links
         $this->emailLinks()->whereNotIn('link', $links)->delete();
 
-        foreach($links as $link) {
+        foreach ($links as $link) {
             $exist = $this->emailLinks()->where('link', '=', $link)->count();
 
-            if(!$exist) {
+            if (!$exist) {
                 $this->emailLinks()->create([
                     'link' => $link,
                 ]);
@@ -445,7 +439,7 @@ class Email extends Model
         // @todo: code smell here, violation of Demeter Law
         // @todo: performance
         while ($this->automation->customer->overQuota()) {
-            MailLog::warning(sprintf("Email `%s` (%s) to `%s` halted, user exceeds sending limit", $this->subject, $this->uid, $subscriber->email));
+            MailLog::warning(sprintf('Email `%s` (%s) to `%s` halted, user exceeds sending limit', $this->subject, $this->uid, $subscriber->email));
             sleep(60);
         }
 
@@ -498,7 +492,7 @@ class Email extends Model
         $message->setFrom(array($this->from => $this->from_name));
         $message->setTo($subscriber->email);
         $message->setReplyTo($this->reply_to);
-        $message->setEncoder( new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit') );
+        $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
         $message->addPart($this->getHtmlContent($subscriber, $msgId, $server), 'text/html');
 
         if ($this->sign_dkim) {
@@ -762,6 +756,7 @@ class Email extends Model
     public function getTrackingHost()
     {
         $root = config('app.url');
+
         return $root;
 
         /*
@@ -805,13 +800,13 @@ class Email extends Model
     {
         return $body.$footer;
     }
-    
+
     /**
      * Check if template is layout.
      *
      * @return string.
      */
-    public function isLayout($html=null)
+    public function isLayout($html = null)
     {
         if (!$html) {
             $html = $this->render();
@@ -840,7 +835,7 @@ class Email extends Model
                 $html,
                 $css
             );
-        }            
+        }
 
         return $html;
     }
@@ -897,8 +892,6 @@ class Email extends Model
 
     /**
      * Check if email has template.
-     *
-     * @return void
      */
     public function hasTemplate()
     {
@@ -907,8 +900,6 @@ class Email extends Model
 
     /**
      * Remove email template.
-     *
-     * @return void
      */
     public function removeTemplate()
     {

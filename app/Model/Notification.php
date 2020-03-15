@@ -27,11 +27,11 @@ use Illuminate\Database\Eloquent\Model;
 class Notification extends Model
 {
     protected $table = 'notifications';
-    
+
     const LEVEL_INFO = 'info';
     const LEVEL_WARNING = 'warning';
     const LEVEL_ERROR = 'error';
-    
+
     protected $fillable = [
         'type',
         'title',
@@ -39,9 +39,9 @@ class Notification extends Model
         'level',
         'uid',
     ];
-    
+
     /**
-     * Create an INFO notification
+     * Create an INFO notification.
      *
      * @return notification record
      */
@@ -50,13 +50,14 @@ class Notification extends Model
         $default = [
             'level' => static::LEVEL_INFO,
         ];
-        
+
         $attributes = array_merge($default, $attributes);
+
         return static::add($attributes, $cleanup);
     }
-    
+
     /**
-     * Create an WARNING notification
+     * Create an WARNING notification.
      *
      * @return notification record
      */
@@ -65,13 +66,14 @@ class Notification extends Model
         $default = [
             'level' => static::LEVEL_WARNING,
         ];
-        
+
         $attributes = array_merge($default, $attributes);
+
         return static::add($attributes, $cleanup);
     }
-    
+
     /**
-     * Create an ERROR notification
+     * Create an ERROR notification.
      *
      * @return notification record
      */
@@ -80,13 +82,14 @@ class Notification extends Model
         $default = [
             'level' => static::LEVEL_ERROR,
         ];
-        
+
         $attributes = array_merge($default, $attributes);
+
         return static::add($attributes, $cleanup);
     }
-    
+
     /**
-     * Actually insert the notification record to the notifications table
+     * Actually insert the notification record to the notifications table.
      *
      * @return notification record
      */
@@ -98,13 +101,14 @@ class Notification extends Model
         ];
         $attributes = array_merge($default, $attributes);
         if ($cleanup) {
-            self::cleanupSimilarNotifications();    
+            self::cleanupSimilarNotifications();
         }
+
         return self::create($attributes);
     }
-    
+
     /**
-     * Get top notifications
+     * Get top notifications.
      *
      * @return notification records
      */
@@ -112,21 +116,17 @@ class Notification extends Model
     {
         return static::where('visibility', true)->limit($limit)->get();
     }
-    
+
     /**
-     * Clean up notifications of the same type as the called class
-     *
-     * @return void
+     * Clean up notifications of the same type as the called class.
      */
     public static function cleanupSimilarNotifications()
     {
         static::where('type', get_called_class())->delete();
     }
-    
+
     /**
-     * Clean up notifications of the same type / title as the called class
-     *
-     * @return void
+     * Clean up notifications of the same type / title as the called class.
      */
     public static function cleanupDuplicateNotifications($title)
     {
@@ -135,14 +135,12 @@ class Notification extends Model
 
     /**
      * Clean up all notifications.
-     *
-     * @return void
      */
     public static function cleanup()
     {
         static::query()->delete();
     }
-    
+
     /**
      * Find item by uid.
      *
@@ -152,7 +150,7 @@ class Notification extends Model
     {
         return self::where('uid', '=', $uid)->first();
     }
-    
+
     /**
      * Hide item.
      *
@@ -161,6 +159,7 @@ class Notification extends Model
     public function hide()
     {
         $this->visibility = false;
+
         return $this->save();
     }
 

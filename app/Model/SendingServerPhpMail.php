@@ -72,11 +72,11 @@ class SendingServerPhpMail extends SendingServer
             );
         }
     }
-    
+
     /**
-     * Check the sending server settings, make sure it does work
+     * Check the sending server settings, make sure it does work.
      *
-     * @return boolean
+     * @return bool
      */
     public function test()
     {

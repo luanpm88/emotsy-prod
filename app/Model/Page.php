@@ -32,7 +32,7 @@ class Page extends Model
      * @var array
      */
     protected $fillable = [
-        'content', 'subject', 'use_outside_url', 'outside_url'
+        'content', 'subject', 'use_outside_url', 'outside_url',
     ];
 
     /**
@@ -117,21 +117,21 @@ class Page extends Model
         $this->content = str_replace('{EMAIL_FIELD}', view('helpers.form_control', ['type' => 'text', 'name' => 'EMAIL', 'label' => trans('messages.email_address'), 'value' => '', 'rules' => $this->mailList->getFieldRules()])->render(), $this->content);
         $this->content = str_replace('{UNSUBSCRIBE_BUTTON}', '<button class="btn btn-info bg-teal-800" type="submit">'.trans('messages.unsubscribe').' <i class="icon-arrow-right14 position-right"></i></button>', $this->content);
         $this->content = str_replace('{UPDATE_PROFILE_BUTTON}', '<button class="btn btn-info bg-teal-800" type="submit">'.trans('messages.update_profile').' <i class="icon-arrow-right14 position-right"></i></button>', $this->content);
-        $this->content = str_replace('{SUBSCRIBE_URL}', config('app.url') . action('PageController@signUpForm', $this->mailList->uid, false), $this->content);
+        $this->content = str_replace('{SUBSCRIBE_URL}', config('app.url').action('PageController@signUpForm', $this->mailList->uid, false), $this->content);
 
         // SUBSCRIBE CONFIRM URL
         if (isset($subscriber)) {
             // [SUBSCRIBE_CONFIRM_URL]
-            $this->content = str_replace('{SUBSCRIBE_CONFIRM_URL}', config('app.url') . action('PageController@signUpConfirmationThankyou', array('list_uid' => $this->mailList->uid, 'uid' => $subscriber->uid, 'code' => $subscriber->getSecurityToken('subscribe-confirm')), false), $this->content);
+            $this->content = str_replace('{SUBSCRIBE_CONFIRM_URL}', config('app.url').action('PageController@signUpConfirmationThankyou', array('list_uid' => $this->mailList->uid, 'uid' => $subscriber->uid, 'code' => $subscriber->getSecurityToken('subscribe-confirm')), false), $this->content);
 
             // Summary
             $summary = view('subscribers._summary', ['list' => $this->mailList, 'subscriber' => $subscriber])->render();
             $this->content = str_replace('{SUBSCRIBER_SUMMARY}', $summary, $this->content);
 
             // UBSUBSCRIBE URL
-            $this->content = str_replace('{UNSUBSCRIBE_URL}', config('app.url') . action('PageController@unsubscribeForm', array('list_uid' => $this->mailList->uid, 'uid' => $subscriber->uid, 'code' => $subscriber->getSecurityToken('unsubscribe')), false), $this->content);
+            $this->content = str_replace('{UNSUBSCRIBE_URL}', config('app.url').action('PageController@unsubscribeForm', array('list_uid' => $this->mailList->uid, 'uid' => $subscriber->uid, 'code' => $subscriber->getSecurityToken('unsubscribe')), false), $this->content);
 
-            $this->content = str_replace('{UPDATE_PROFILE_URL}', config('app.url') . action('PageController@profileUpdateForm', array('list_uid' => $this->mailList->uid, 'uid' => $subscriber->uid, 'code' => $subscriber->getSecurityToken('update-profile')), false), $this->content);
+            $this->content = str_replace('{UPDATE_PROFILE_URL}', config('app.url').action('PageController@profileUpdateForm', array('list_uid' => $this->mailList->uid, 'uid' => $subscriber->uid, 'code' => $subscriber->getSecurityToken('update-profile')), false), $this->content);
 
             // LIST FIELDS
             foreach ($this->mailList->fields as $field) {
@@ -144,7 +144,7 @@ class Page extends Model
             $this->content = str_replace('{SUBSCRIBER_SUMMARY}', '<p><strong>'.trans('messages.email').':</strong></p><p><strong>'.trans('messages.first_name').':</strong></p><p><strong>'.trans('messages.last_name').':</strong></p>', $this->content);
         }
     }
-    
+
     /**
      * Render transformed subject.
      *
@@ -165,28 +165,28 @@ class Page extends Model
         $subject = str_replace('{CONTACT_PHONE}', $this->mailList->contact->phone, $subject);
         $subject = str_replace('{CONTACT_EMAIL}', $this->mailList->contact->email, $subject);
         $subject = str_replace('{CONTACT_URL}', $this->mailList->contact->url, $subject);
-        
+
         // FIELDS
         $subject = str_replace('{SUBSCRIBE_BUTTON}', '<button class="btn btn-info bg-teal-800" type="submit">'.trans('messages.subscribe').' <i class="icon-arrow-right14 position-right"></i></button>', $subject);
         $subject = str_replace('{EMAIL_FIELD}', view('helpers.form_control', ['type' => 'text', 'name' => 'EMAIL', 'label' => trans('messages.email_address'), 'value' => '', 'rules' => $this->mailList->getFieldRules()])->render(), $subject);
         $subject = str_replace('{UNSUBSCRIBE_BUTTON}', '<button class="btn btn-info bg-teal-800" type="submit">'.trans('messages.unsubscribe').' <i class="icon-arrow-right14 position-right"></i></button>', $subject);
         $subject = str_replace('{UPDATE_PROFILE_BUTTON}', '<button class="btn btn-info bg-teal-800" type="submit">'.trans('messages.update_profile').' <i class="icon-arrow-right14 position-right"></i></button>', $subject);
-        $subject = str_replace('{SUBSCRIBE_URL}', config('app.url') . action('PageController@signUpForm', $this->mailList->uid, false), $subject);
-        
+        $subject = str_replace('{SUBSCRIBE_URL}', config('app.url').action('PageController@signUpForm', $this->mailList->uid, false), $subject);
+
         // SUBSCRIBE CONFIRM URL
         if (isset($subscriber)) {
             // [SUBSCRIBE_CONFIRM_URL]
-            $subject = str_replace('{SUBSCRIBE_CONFIRM_URL}', config('app.url') . action('PageController@signUpConfirmationThankyou', array('list_uid' => $this->mailList->uid, 'uid' => $subscriber->uid, 'code' => $subscriber->getSecurityToken('subscribe-confirm')), false), $subject);
-        
+            $subject = str_replace('{SUBSCRIBE_CONFIRM_URL}', config('app.url').action('PageController@signUpConfirmationThankyou', array('list_uid' => $this->mailList->uid, 'uid' => $subscriber->uid, 'code' => $subscriber->getSecurityToken('subscribe-confirm')), false), $subject);
+
             // Summary
             $summary = view('subscribers._summary', ['list' => $this->mailList, 'subscriber' => $subscriber])->render();
             $subject = str_replace('{SUBSCRIBER_SUMMARY}', $summary, $subject);
-        
+
             // UBSUBSCRIBE URL
-            $subject = str_replace('{UNSUBSCRIBE_URL}', config('app.url') . action('PageController@unsubscribeForm', array('list_uid' => $this->mailList->uid, 'uid' => $subscriber->uid, 'code' => $subscriber->getSecurityToken('unsubscribe')), false), $subject);
-        
-            $subject = str_replace('{UPDATE_PROFILE_URL}', config('app.url') . action('PageController@profileUpdateForm', array('list_uid' => $this->mailList->uid, 'uid' => $subscriber->uid, 'code' => $subscriber->getSecurityToken('update-profile')), false), $subject);
-        
+            $subject = str_replace('{UNSUBSCRIBE_URL}', config('app.url').action('PageController@unsubscribeForm', array('list_uid' => $this->mailList->uid, 'uid' => $subscriber->uid, 'code' => $subscriber->getSecurityToken('unsubscribe')), false), $subject);
+
+            $subject = str_replace('{UPDATE_PROFILE_URL}', config('app.url').action('PageController@profileUpdateForm', array('list_uid' => $this->mailList->uid, 'uid' => $subscriber->uid, 'code' => $subscriber->getSecurityToken('update-profile')), false), $subject);
+
             // LIST FIELDS
             foreach ($this->mailList->fields as $field) {
                 $subject = str_replace('{SUBSCRIBER_'.$field->tag.'}', $subscriber->getValueByField($field), $subject);
@@ -197,7 +197,7 @@ class Page extends Model
             $subject = str_replace('{UNSUBSCRIBE_URL}', 'http://domain.example/secure_token', $subject);
             $subject = str_replace('{SUBSCRIBER_SUMMARY}', '<p><strong>'.trans('messages.email').':</strong></p><p><strong>'.trans('messages.first_name').':</strong></p><p><strong>'.trans('messages.last_name').':</strong></p>', $subject);
         }
-        
+
         return $subject;
     }
 
@@ -222,7 +222,7 @@ class Page extends Model
             'data' => json_encode($data),
         ]);
     }
-    
+
     /**
      * Check if page has outside url.
      */
@@ -236,7 +236,7 @@ class Page extends Model
             'profile_update_success_page',
         ));
     }
-    
+
     /**
      * Get outside url with subscriber uid.
      */
@@ -245,13 +245,13 @@ class Page extends Model
         $url = $this->outside_url;
         // LIST FIELDS
         foreach ($this->mailList->fields as $field) {
-            $url = str_replace('{SUBSCRIBER_'.$field->tag.'}',urlencode($subscriber->getValueByField($field)), $url);
+            $url = str_replace('{SUBSCRIBER_'.$field->tag.'}', urlencode($subscriber->getValueByField($field)), $url);
         }
-            
+
         if (parse_url($this->outside_url, PHP_URL_QUERY)) {
-            return $url . "&subscriber_id=" . $subscriber->uid;
+            return $url.'&subscriber_id='.$subscriber->uid;
         } else {
-            return $url . "?subscriber_id=" . $subscriber->uid;
+            return $url.'?subscriber_id='.$subscriber->uid;
         }
     }
 }

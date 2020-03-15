@@ -24,7 +24,6 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Cashier\Subscription;
-use Acelle\Model\Notification;
 
 class Admin extends Model
 {
@@ -450,7 +449,7 @@ class Admin extends Model
      */
     public function getLanguageCodeFull()
     {
-        return is_object($this->language) ? ($this->language->code . '-' . strtoupper($this->language->region_code)) : null;
+        return is_object($this->language) ? ($this->language->code.'-'.strtoupper($this->language->region_code)) : null;
     }
 
     /**

@@ -161,7 +161,7 @@ class Campaign extends AbsCampaign
                     // @todo: customerneedcheck
                     while ($this->customer->overQuota()) {
                         // throw new \Exception('Customer has reached sending limit');
-                        MailLog::warning(sprintf("Campaign `%s` (%s) halted, user exceeds sending limit", $this->name, $this->uid));
+                        MailLog::warning(sprintf('Campaign `%s` (%s) halted, user exceeds sending limit', $this->name, $this->uid));
                         sleep(60);
                     }
 
@@ -475,7 +475,7 @@ class Campaign extends AbsCampaign
             ->orderBy('customer_id')
             ->get();
 
-        foreach($templates as $template) {
+        foreach ($templates as $template) {
             $result[] = [
                 'name' => $template->name,
                 'url' => action('CampaignController@templateChangeTemplate', ['uid' => $this->uid, 'change_uid' => $template->uid]),

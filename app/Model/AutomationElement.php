@@ -22,22 +22,20 @@
 
 namespace Acelle\Model;
 
-use Acelle\Model\Automation2;
-use Acelle\Model\Email;
-
 class AutomationElement
 {
     protected $data;
-    
+
     /**
      * Constructor.
      *
      * @return the associated automation2
      */
-    function __construct($data) {
+    public function __construct($data)
+    {
         $this->data = $data;
     }
-    
+
     /**
      * Get options.
      *
@@ -48,8 +46,8 @@ class AutomationElement
         if (isset($this->data) && isset($this->data->options) && isset($this->data->options->$name)) {
             return $this->data->options->$name;
         }
-        
-        return null;
+
+        return;
     }
 
     /**
@@ -62,8 +60,8 @@ class AutomationElement
         if (isset($this->data) && isset($this->data->$name)) {
             return $this->data->$name;
         }
-        
-        return null;
+
+        return;
     }
 
     /**
@@ -76,7 +74,7 @@ class AutomationElement
         switch ($this->get('type')) {
             case 'ElementTrigger':
                 return trans('messages.automation.trigger.title', [
-                    'title' => trans('messages.automation.trigger.' . $this->getOption("key"))
+                    'title' => trans('messages.automation.trigger.'.$this->getOption('key')),
                 ]);
                 break;
             case 'ElementAction':
@@ -86,15 +84,15 @@ class AutomationElement
                 } else {
                     return trans('messages.automation.no_email');
                 }
-                    
+
                 break;
             case 'ElementWait':
-                return trans('messages.automation.wait.delay.' . $this->getOption("time"));
+                return trans('messages.automation.wait.delay.'.$this->getOption('time'));
                 break;
             case 'ElementCondition':
-                if ($this->getOption("type") == 'open') {
+                if ($this->getOption('type') == 'open') {
                     return trans('messages.automation.action.condition.read_email.title');
-                } else if ($this->getOption("type") == 'click') {
+                } elseif ($this->getOption('type') == 'click') {
                     return trans('messages.automation.action.condition.click_link.title');
                 }
                 break;
@@ -109,7 +107,7 @@ class AutomationElement
      */
     public function getIcon()
     {
-        return AutomationElement::getIconByType($this->get('type'));
+        return self::getIconByType($this->get('type'));
     }
 
     /**
@@ -141,7 +139,7 @@ class AutomationElement
      *
      * @return string
      */
-    public function getIconWithoutBg($class='')
+    public function getIconWithoutBg($class = '')
     {
         switch ($this->get('type')) {
             case 'ElementTrigger':

@@ -23,11 +23,7 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Acelle\Model\AutomationElement;
-use Acelle\Model\Email;
-use Acelle\Model\EmailLink;
-use Acelle\Model\Subscriber;
-use Acelle\Model\Customer;
+
 use DB;
 use Acelle\Library\Automation\Action;
 use Acelle\Library\Automation\Trigger;
@@ -59,7 +55,7 @@ class Automation2 extends Model
      * @var array
      */
     protected $fillable = [
-        'name'
+        'name',
     ];
 
     /**
@@ -87,7 +83,7 @@ class Automation2 extends Model
     }
 
     /**
-     * Association
+     * Association.
      */
     public function autoTriggers()
     {
@@ -95,7 +91,7 @@ class Automation2 extends Model
     }
 
     /**
-     * Association
+     * Association.
      */
     public function customer()
     {
@@ -103,7 +99,7 @@ class Automation2 extends Model
     }
 
     /**
-     * Association
+     * Association.
      */
     public function timelines()
     {
@@ -151,7 +147,8 @@ class Automation2 extends Model
         ];
     }
 
-    public function getElementById($id) {
+    public function getElementById($id)
+    {
         $data = $this->getElements()[$id];
 
         // search by id
@@ -223,7 +220,7 @@ class Automation2 extends Model
      */
     public function getData()
     {
-        return isset($this->data) ? preg_replace('/"([^"]+)"\s*:\s*/', '$1:', $this->data) : "[]";
+        return isset($this->data) ? preg_replace('/"([^"]+)"\s*:\s*/', '$1:', $this->data) : '[]';
     }
 
     /**
@@ -247,7 +244,7 @@ class Automation2 extends Model
     /**
      * get element by id.
      */
-    public function getElement($id=null)
+    public function getElement($id = null)
     {
         $elements = $this->getElements();
 
@@ -321,7 +318,7 @@ class Automation2 extends Model
     {
         $data = [];
 
-        foreach($this->emailLinks as $link) {
+        foreach ($this->emailLinks as $link) {
             $data[] = ['text' => $link->link, 'value' => $link->uid];
         }
 
@@ -335,7 +332,7 @@ class Automation2 extends Model
     {
         $data = [];
 
-        foreach($this->emails as $email) {
+        foreach ($this->emails as $email) {
             $data[] = ['text' => $email->subject, 'value' => $email->uid];
         }
 
@@ -348,7 +345,7 @@ class Automation2 extends Model
     public function initTrigger($subscriber)
     {
         $trigger = null;
-        DB::transaction(function() use (&$trigger, $subscriber) {
+        DB::transaction(function () use (&$trigger, $subscriber) {
             $trigger = $this->autoTriggers()->create();
             $trigger->subscriber()->associate($subscriber); // assign to subscriber_id field
             $trigger->updateWorkflow();
@@ -359,7 +356,7 @@ class Automation2 extends Model
     }
 
     /**
-     * Scan for triggers updates and new triggers
+     * Scan for triggers updates and new triggers.
      */
     public static function run()
     {
@@ -373,15 +370,13 @@ class Automation2 extends Model
                     $automation->checkForExistingTriggersUpdate();
                 } else {
                     $automation->logger()->warning(sprintf('Automation "%s" skipped, user "%s" not on active subscription', $automation->name, $customer->displayName()));
-                }                
+                }
             }
         }
-
-        
     }
 
     /**
-     * Check for new triggers
+     * Check for new triggers.
      */
     public function checkForNewTriggers()
     {
@@ -406,13 +401,13 @@ class Automation2 extends Model
                 // others
                 break;
             default:
-                throw new \Exception('Unknown Automation trigger type '. $this->getTriggerAction()->getOption('key'));
+                throw new \Exception('Unknown Automation trigger type '.$this->getTriggerAction()->getOption('key'));
         }
         $this->logger()->info(sprintf('NEW > Finish checking for new trigger'));
     }
 
     /**
-     * Check for existing triggers update
+     * Check for existing triggers update.
      */
     public function checkForExistingTriggersUpdate()
     {
@@ -433,7 +428,7 @@ class Automation2 extends Model
         $subscribers = $this->getNewSubscribersToFollow();
         $total = count($subscribers);
         $this->logger()->info(sprintf('NEW > There are %s new subscriber(s) found', $total));
-        
+
         $i = 0;
         foreach ($subscribers as $subscriber) {
             $i += 1;
@@ -452,6 +447,7 @@ class Automation2 extends Model
         // just abort if it is already triggered
         if ($this->autoTriggers()->exists()) {
             $this->logger()->info(sprintf('NEW > Already triggered'));
+
             return;
         }
 
@@ -471,7 +467,6 @@ class Automation2 extends Model
                 $this->logger()->info(sprintf('NEW > (%s/%s) > Adding new trigger for %s', $i, $total, $subscriber->email));
             }
         }
-
     }
 
     /**
@@ -500,18 +495,17 @@ class Automation2 extends Model
     {
         // Boot performance with temporary table + index
         try {
-            \DB::statement("DROP TEMPORARY TABLE `_new_subscribers_to_follow`");
+            \DB::statement('DROP TEMPORARY TABLE `_new_subscribers_to_follow`');
         } catch (\Exception $ex) {
             // just ignore, in case 2 queries in the same MySQL connection session
         }
 
-        \DB::statement(sprintf("
+        \DB::statement(sprintf('
             CREATE TEMPORARY TABLE `_new_subscribers_to_follow` AS
             SELECT COALESCE(subscriber_id, 0) AS subscriber_id
             FROM %s WHERE automation2_id = %s;
 
-            CREATE INDEX _new_subscribers_to_follow_index ON _new_subscribers_to_follow(subscriber_id);"
-            , table('auto_triggers'), $this->id)
+            CREATE INDEX _new_subscribers_to_follow_index ON _new_subscribers_to_follow(subscriber_id);', table('auto_triggers'), $this->id)
         );
 
         return $this->subscribers()->whereRaw(table('subscribers.id').' NOT IN (SELECT subscriber_id FROM _new_subscribers_to_follow)')
@@ -546,17 +540,19 @@ class Automation2 extends Model
         } else {
             $stream = new RotatingFileHandler(storage_path('logs/automation.log'), 0, Logger::INFO);
         }
-        
+
         $stream->setFormatter($formatter);
 
         $logger = new Logger($this->uid);
         $logger->pushHandler($stream);
+
         return $logger;
     }
 
     public function timelinesBy($subscriber)
     {
         $trigger = $this->autoTriggers()->where('subscriber_id', $subscriber->id)->first();
+
         return (is_null($trigger)) ? Timeline::whereRaw('1=2') : $trigger->timelines(); // trick - return an empty Timeline[] array
     }
 
@@ -578,7 +574,7 @@ class Automation2 extends Model
     public function getActionStats($attributes)
     {
         $total = $this->mailList->readCache('SubscriberCount');
-        
+
         // The following implementation is prettier but 'countBy' is supported in Laravel 5.8 only
         // $count = $this->autoTriggers()->countBy(function($trigger) {
         //    return $trigger->isActionExecuted($action['id']);
@@ -595,8 +591,8 @@ class Automation2 extends Model
                 'subtitle' => __('messages.automation.stats.triggered', ['count' => $count]),
                 'percentage' => ($total != 0) ? ($count / $total) : 0,
                 'latest_activity' => $this->autoTriggers()->max('created_at'),
-            ];    
-        } else if ($action->getType() == 'ElementOperation') {
+            ];
+        } elseif ($action->getType() == 'ElementOperation') {
             $count = 0;
             foreach ($this->autoTriggers as $trigger) {
                 $count += ($trigger->isLatest($action->getId())) ? 1 : 0;
@@ -608,7 +604,7 @@ class Automation2 extends Model
                 'percentage' => ($total != 0) ? ($count / $total) : 0,
                 'latest_activity' => $this->autoTriggers()->max('created_at'),
             ];
-        } else if ($action->getType() == 'ElementWait') {
+        } elseif ($action->getType() == 'ElementWait') {
             $count = 0;
             foreach ($this->autoTriggers as $trigger) {
                 $count += ($trigger->isLatest($action->getId())) ? 1 : 0;
@@ -620,20 +616,20 @@ class Automation2 extends Model
                 'percentage' => ($total != 0) ? ($count / $total) : 0,
                 'latest_activity' => $this->autoTriggers()->max('created_at'),
             ];
-        } else if ($action->getType() == 'ElementAction') {
+        } elseif ($action->getType() == 'ElementAction') {
             $insight = [
                 'count' => $count,
                 'subtitle' => __('messages.automation.stats.sent', ['count' => $count]),
                 'percentage' => ($total != 0) ? ($count / $total) : 0,
                 'latest_activity' => $this->autoTriggers()->max('created_at'),
             ];
-        } else if ($action->getType() == 'ElementCondition') {
+        } elseif ($action->getType() == 'ElementCondition') {
             $yes = 0;
             $no = 0;
             foreach ($this->autoTriggers as $trigger) {
                 // instantiate the object again, this time with associated autotrigger
                 $actionWithAutoTrigger = $trigger->getActionById($action->getId());
-                
+
                 if (is_null($actionWithAutoTrigger->getLastExecuted())) {
                     continue;
                 }
@@ -653,8 +649,6 @@ class Automation2 extends Model
             ];
         }
 
-        
-
         return $insight;
     }
 
@@ -673,7 +667,7 @@ class Automation2 extends Model
         return [
             'total' => $total,
             'involed' => $involved,
-            'complete' => $completePercentage
+            'complete' => $completePercentage,
         ];
     }
 
@@ -699,9 +693,7 @@ class Automation2 extends Model
             $instance = $this->getAction($action);
             $callback($instance);
         }
-
     }
-
 
     // IMPORTANT: object returned by this function is not associated with a particular AutoTrigger
     public function getAction($attributes) : Action
@@ -723,7 +715,7 @@ class Automation2 extends Model
                 $instance = new Operate($attributes);
                 break;
             default:
-                throw new \Exception('Unknown Action type '. $attributes['type']);
+                throw new \Exception('Unknown Action type '.$attributes['type']);
         }
 
         return $instance;
@@ -735,7 +727,7 @@ class Automation2 extends Model
 
         if (!is_null($actionId)) {
             $list->join('auto_triggers', 'auto_triggers.subscriber_id', '=', 'subscribers.id')
-                 ->where('auto_triggers.executed_index', 'LIKE', '%' .$actionId. '%');
+                 ->where('auto_triggers.executed_index', 'LIKE', '%'.$actionId.'%');
         }
 
         return $list;
@@ -745,20 +737,22 @@ class Automation2 extends Model
     {
         $triggerType = $this->getTriggerAction()->getOption('key');
         $translationKey = 'messages.automation.intro.'.$triggerType;
-        return __($translationKey, [ 'list' => $this->mailList->name ] );
+
+        return __($translationKey, ['list' => $this->mailList->name]);
     }
 
     public function getBriefIntro()
     {
         $triggerType = $this->getTriggerAction()->getOption('key');
         $translationKey = 'messages.automation.brief-intro.'.$triggerType;
-        return __($translationKey, [ 'list' => $this->mailList->name ] );
+
+        return __($translationKey, ['list' => $this->mailList->name]);
     }
 
     public function countEmails()
     {
         $count = 0;
-        $this->getActions(function($e) use (&$count) {
+        $this->getActions(function ($e) use (&$count) {
             if ($e->getType() == 'ElementAction') {
                 $count += 1;
             }
@@ -768,7 +762,7 @@ class Automation2 extends Model
     }
 
     /**
-     * Get recent automations for switch
+     * Get recent automations for switch.
      */
     public function getSwitchAutomations($customer)
     {
@@ -782,7 +776,7 @@ class Automation2 extends Model
     {
         $data = [];
 
-        foreach($this->mailList->getFields()->get() as $field) {
+        foreach ($this->mailList->getFields()->get() as $field) {
             $data[] = ['text' => $field->label, 'value' => $field->uid];
         }
 
@@ -824,7 +818,7 @@ class Automation2 extends Model
         // + timelines
         $this->autoTriggers()->delete();
     }
-    
+
     /**
      * Change mail list.
      */
@@ -833,12 +827,12 @@ class Automation2 extends Model
         if ($this->mail_list_id != $new_list->id) {
             $this->mail_list_id = $new_list->id;
             $this->save();
-            
+
             // reset automation list
             $this->resetListRelatedData();
         }
     }
-    
+
     /**
      * Fill from request.
      */
@@ -850,8 +844,8 @@ class Automation2 extends Model
         // fill segments
         $segments = [];
         $this->segment_id = null;
-        if(!empty($request->segment_uid)) {
-            foreach($request->segment_uid as $segmentUid) {
+        if (!empty($request->segment_uid)) {
+            foreach ($request->segment_uid as $segmentUid) {
                 $segments[] = \Acelle\Model\Segment::findByUid($segmentUid)->id;
             }
 
@@ -916,7 +910,7 @@ class Automation2 extends Model
     public function getNotTriggeredSubscribers()
     {
         return $this->mailList->activeSubscribers()
-                                      ->leftJoin('auto_triggers', function($join) {
+                                      ->leftJoin('auto_triggers', function ($join) {
                                           $join->on('subscribers.id', '=', 'auto_triggers.subscriber_id')->where('auto_triggers.automation2_id', '=', $this->id);
                                       })
                                       ->whereNull('auto_triggers.id')->select('subscribers.*')->get();
@@ -926,6 +920,7 @@ class Automation2 extends Model
     {
         // Usually invoked by API call
         $type = $this->getTriggerAction()->getOption('key');
-        return ($type == 'api-3-0');
+
+        return $type == 'api-3-0';
     }
 }

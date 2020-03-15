@@ -27,7 +27,6 @@ use Validator;
 use Acelle\Library\Tool;
 use ZipArchive;
 use Illuminate\Validation\ValidationException;
-use Sunra\PhpSimple\HtmlDomParser;
 
 class Template extends Model
 {
@@ -129,7 +128,7 @@ class Template extends Model
                 }
             }
         }
-        
+
         // from
         if ($request->from) {
             if ($request->from == 'mine') {
@@ -380,7 +379,7 @@ class Template extends Model
 
             \Acelle\Library\Tool::xcopy($this->getStoragePath(), $copy->getStoragePath());
         }
-        
+
         return $copy;
     }
 
@@ -408,7 +407,7 @@ class Template extends Model
         // try to find the main file, index.html | index.html | file_name.html | ...
         $main_file = null;
         $thumb = null;
-        $sub_path = "";
+        $sub_path = '';
 
         // find index
         $possible_main_file_names = array('index.html', 'index.htm');
@@ -418,10 +417,10 @@ class Template extends Model
                 break;
             }
             $dirs = array_filter(glob($tmp_path.'/'.'*'), 'is_dir');
-            foreach($dirs as $sub) {
+            foreach ($dirs as $sub) {
                 if (is_file($file = $sub.'/'.$name)) {
                     $main_file = $file;
-                    $sub_path = explode("/",$sub)[count(explode("/",$sub))-1]."/";
+                    $sub_path = explode('/', $sub)[count(explode('/', $sub)) - 1].'/';
                     break;
                 }
             }
@@ -440,14 +439,14 @@ class Template extends Model
                 }
             }
             $dirs = array_filter(glob($tmp_path.'/'.'*'), 'is_dir');
-            foreach($dirs as $sub) {
+            foreach ($dirs as $sub) {
                 $objects = scandir($sub);
                 foreach ($objects as $object) {
                     if ($object != '.' && $object != '..') {
                         if (!is_dir($sub.'/'.$object)) {
                             if (preg_match('/\.html?$/i', $object)) {
                                 $main_file = $sub.'/'.$object;
-                                $sub_path = explode("/",$sub)[count(explode("/",$sub))-1]."/";
+                                $sub_path = explode('/', $sub)[count(explode('/', $sub)) - 1].'/';
                                 break;
                             }
                         }
@@ -467,7 +466,7 @@ class Template extends Model
         $this->content = $html_content;
         $this->untransform();
         $this->save();
-        
+
         // upload path
         $upload_path = $this->getStoragePath();
 
@@ -476,16 +475,16 @@ class Template extends Model
             mkdir($upload_path, 0777, true);
         }
         // exec("cp -r {$tmp_path}/* {$public_upload_path}/");
-        Tool::xcopy($tmp_path, $upload_path);       
+        Tool::xcopy($tmp_path, $upload_path);
     }
-    
+
     /**
      * Upload a template.
      */
     public static function upload($request, $asAdmin = false)
     {
         $user = $request->user();
-        
+
         $rules = array(
             'file' => 'required|mimetypes:application/zip,application/octet-stream,application/x-zip-compressed,multipart/x-zip',
             'name' => 'required',
@@ -494,17 +493,17 @@ class Template extends Model
         $validator = Validator::make($request->all(), $rules, [
             'file.mimetypes' => 'Input must be a valid .zip file',
         ]);
-        
+
         if ($validator->fails()) {
             throw new ValidationException($validator);
         }
-        
+
         // move file to temp place
         $tmp_path = storage_path('tmp/uploaded_template_'.$user->id.'_'.time());
         $file_name = $request->file('file')->getClientOriginalName();
         $request->file('file')->move($tmp_path, $file_name);
         $tmp_zip = join_paths($tmp_path, $file_name);
-        
+
         // read zip file check if zip archive invalid
         $zip = new ZipArchive();
         if ($zip->open($tmp_zip, ZipArchive::CREATE) !== true) {
@@ -527,7 +526,7 @@ class Template extends Model
         } else {
             $template->customer_id = $user->customer->id;
         }
-        
+
         $template->fill($request->all());
         $template->untransform();
         $template->save();
@@ -537,21 +536,22 @@ class Template extends Model
         // remove tmp folder
         // exec("rm -r {$tmp_path}");
         Tool::xdelete($tmp_path);
-        
+
         return $template;
     }
 
     /**
      * Get public campaign upload dir.
      */
-    public function getStoragePath($path="")
+    public function getStoragePath($path = '')
     {
         if ($this->customer) {
             $dir_id = $this->customer->uid;
         } else {
             $dir_id = 'admin';
         }
-        return storage_path('app/users/' . $dir_id . '/templates/' . $this->uid . '/' . $path);
+
+        return storage_path('app/users/'.$dir_id.'/templates/'.$this->uid.'/'.$path);
     }
 
     /**
@@ -562,12 +562,12 @@ class Template extends Model
         // find index
         $names = array('thumbnail.png', 'thumbnail.jpg', 'thumbnail.png', 'thumb.jpg', 'thumb.png');
         foreach ($names as $name) {
-            if (is_file($file = $this->getStoragePath() . $name)) {
+            if (is_file($file = $this->getStoragePath().$name)) {
                 return $file;
             }
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -576,7 +576,7 @@ class Template extends Model
     public function transform()
     {
         // replace relative urls
-        $this->content = '<!DOCTYPE html>' . \Acelle\Library\Tool::replaceTemplateUrl($this->content, route('template_assets', ['uid' => $this->uid, 'path' => '']));
+        $this->content = '<!DOCTYPE html>'.\Acelle\Library\Tool::replaceTemplateUrl($this->content, route('template_assets', ['uid' => $this->uid, 'path' => '']));
     }
 
     /**
@@ -608,18 +608,18 @@ class Template extends Model
 
         $new_name = $file_name;
         $i = 1;
-        while(file_exists($this->getStoragePath($upload_dir) . $new_name)) {
-            $new_name = $i . '_' . $file_name;
-            $i++;
+        while (file_exists($this->getStoragePath($upload_dir).$new_name)) {
+            $new_name = $i.'_'.$file_name;
+            ++$i;
         }
 
         $path = $file->move(
             $this->getStoragePath($upload_dir), $new_name
         );
 
-        return $upload_dir . $new_name;
+        return $upload_dir.$new_name;
     }
-    
+
     /**
      * Template tags.
      *
@@ -627,21 +627,21 @@ class Template extends Model
      */
     public static function builderTags($list = null)
     {
-        $tags = Template::tags($list);
-        
+        $tags = self::tags($list);
+
         $result = [];
-        foreach($tags as $tag) {
+        foreach ($tags as $tag) {
             $result[] = [
                 'type' => 'label',
-                'text' => '{' . $tag['name'] . '}',
-                'tag' => '{' . $tag['name'] . '}',
+                'text' => '{'.$tag['name'].'}',
+                'tag' => '{'.$tag['name'].'}',
                 'required' => true,
             ];
         }
 
         return $result;
     }
-    
+
     /**
      * Create template from layout.
      *
@@ -649,10 +649,10 @@ class Template extends Model
      */
     public function addTemplateFromLayout($layout)
     {
-        $sDir = database_path('layouts/' . $layout);
+        $sDir = database_path('layouts/'.$layout);
         $this->loadFromDirectory($sDir);
     }
-    
+
     /**
      * Load templates from folder.
      *
@@ -662,12 +662,12 @@ class Template extends Model
     {
         // copy file and get thumb
         \Acelle\Library\Tool::xcopy($path, $this->getUploadDir());
-        $this->image = $this->getUploadDir() . '/thumb.png';
-        $this->replaceHtmlUrl('/' . $this->getUploadUri() . '/');
+        $this->image = $this->getUploadDir().'/thumb.png';
+        $this->replaceHtmlUrl('/'.$this->getUploadUri().'/');
         $this->untransform();
         $this->save();
     }
-    
+
     /**
      * Load demo templates from storage/themes.
      *
@@ -677,13 +677,13 @@ class Template extends Model
     {
         $themePath = database_path('themes');
         $folders = scandir($themePath);
-        
-        foreach($folders as $folder) {
-            $fullPath = $themePath . '/' . $folder;
-            
+
+        foreach ($folders as $folder) {
+            $fullPath = $themePath.'/'.$folder;
+
             if ($folder != '.' && $folder != '..' && is_dir($fullPath)) {
                 // Create admin template
-                $template = new Template();                
+                $template = new self();
                 $template->name = $folder;
                 $template->admin_id = 1;
 
@@ -691,7 +691,7 @@ class Template extends Model
             }
         }
     }
-    
+
     /**
      * Get builder templates.
      *
@@ -700,24 +700,24 @@ class Template extends Model
     public function getBuilderTemplates($customer)
     {
         $result = [];
-        
+
         // Gallery
-        $templates = Template::where('customer_id', '=', null)
+        $templates = self::where('customer_id', '=', null)
             ->orWhere('customer_id', '=', $customer->id)
             ->orderBy('customer_id')
             ->get();
-        
-        foreach($templates as $template) {
+
+        foreach ($templates as $template) {
             $result[] = [
                 'name' => $template->name,
                 'url' => action('TemplateController@builderChangeTemplate', ['uid' => $this->uid, 'change_uid' => $template->uid]),
                 'thumbnail' => action('TemplateController@image', $template->uid),
             ];
         }
-        
+
         return $result;
     }
-    
+
     /**
      * Get builder templates.
      *
@@ -726,22 +726,22 @@ class Template extends Model
     public function getBuilderAdminTemplates()
     {
         $result = [];
-        
+
         // Gallery
-        $templates = Template::where('customer_id', '=', null)
+        $templates = self::where('customer_id', '=', null)
             ->get();
-        
-        foreach($templates as $template) {
+
+        foreach ($templates as $template) {
             $result[] = [
                 'name' => $template->name,
                 'url' => action('Admin\TemplateController@builderChangeTemplate', ['uid' => $this->uid, 'change_uid' => $template->uid]),
                 'thumbnail' => action('Admin\TemplateController@image', $template->uid),
             ];
         }
-        
+
         return $result;
     }
-    
+
     /**
      * Get builder templates.
      *
@@ -757,7 +757,7 @@ class Template extends Model
         $this->untransform();
         $this->save();
     }
-    
+
     /**
      * Upload template thumbnail.
      *
@@ -776,6 +776,6 @@ class Template extends Model
     public function uploadThumbnailUrl($url)
     {
         $contents = file_get_contents($url);
-        file_put_contents($this->getStoragePath() . 'thumbnail.png', $contents);
+        file_put_contents($this->getStoragePath().'thumbnail.png', $contents);
     }
 }

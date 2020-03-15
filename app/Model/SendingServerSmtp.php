@@ -79,11 +79,11 @@ class SendingServerSmtp extends SendingServer
             );
         }
     }
-    
+
     /**
-     * Check the sending server settings, make sure it does work
+     * Check the sending server settings, make sure it does work.
      *
-     * @return boolean
+     * @return bool
      */
     public function test()
     {
@@ -96,7 +96,7 @@ class SendingServerSmtp extends SendingServer
         // Create the Mailer using your created Transport
         $mailer = new \Swift_Mailer($transport);
         $mailer->getTransport()->start();
-        
+
         return true;
     }
 }

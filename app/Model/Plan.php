@@ -26,9 +26,6 @@ use Illuminate\Database\Eloquent\Model;
 use Validator;
 use Illuminate\Validation\ValidationException;
 use Acelle\Cashier\Interfaces\BillablePlanInterface;
-use Acelle\Cashier\Services\StripePaymentGateway;
-use Acelle\Cashier\Services\BraintreePaymentGateway;
-use Acelle\Model\PlansEmailVerificationServer;
 use Acelle\Cashier\Subscription;
 use Acelle\Cashier\Cashier;
 
@@ -90,7 +87,7 @@ class Plan extends Model implements BillablePlanInterface
 
         return $rules;
     }
-    
+
     /**
      * The rules for validation.
      *
@@ -123,7 +120,7 @@ class Plan extends Model implements BillablePlanInterface
 
         return $rules;
     }
-    
+
     /**
      * The rules for validation.
      *
@@ -142,7 +139,7 @@ class Plan extends Model implements BillablePlanInterface
 
         return $rules;
     }
-    
+
     /**
      * The rules for validation.
      *
@@ -165,7 +162,7 @@ class Plan extends Model implements BillablePlanInterface
 
         return $rules;
     }
-    
+
     /**
      * The rules for validation.
      *
@@ -234,7 +231,7 @@ class Plan extends Model implements BillablePlanInterface
     public function subscriptions()
     {
         return $this->hasMany('Acelle\Cashier\Subscription', 'plan_id', 'uid')
-            ->where(function($query){
+            ->where(function ($query) {
                 $query->whereNull('ends_at')
                       ->orWhere('ends_at', '>=', \Carbon\Carbon::now());
             })
@@ -385,7 +382,7 @@ class Plan extends Model implements BillablePlanInterface
             // ['value' => 'unlimited', 'text' => trans('messages.plan_time_unlimited')],
         ];
     }
-    
+
     /**
      * Get sending limit types.
      *
@@ -423,15 +420,15 @@ class Plan extends Model implements BillablePlanInterface
                 'quota_value' => 10000,
                 'quota_base' => 1,
                 'quota_unit' => 'day',
-            ],       
+            ],
             '100000_per_day' => [
                 'quota_value' => 100000,
                 'quota_base' => 1,
                 'quota_unit' => 'day',
-            ],        
+            ],
         ];
     }
-    
+
     /**
      * Get billing recurs available values.
      *
@@ -451,10 +448,10 @@ class Plan extends Model implements BillablePlanInterface
             'yearly' => [
                 'frequency_amount' => 1,
                 'frequency_unit' => 'year',
-            ],  
+            ],
         ];
     }
-    
+
     /**
      * Get sending limit select options.
      *
@@ -463,9 +460,9 @@ class Plan extends Model implements BillablePlanInterface
     public function getSendingLimitSelectOptions()
     {
         $options = [];
-        
-        foreach (Plan::sendingLimitValues() as $key => $data) {            
-            $wording = trans('messages.plan.sending_limit.' . $key);            
+
+        foreach (self::sendingLimitValues() as $key => $data) {
+            $wording = trans('messages.plan.sending_limit.'.$key);
             $options[] = ['text' => $wording, 'value' => $key];
         }
 
@@ -476,16 +473,16 @@ class Plan extends Model implements BillablePlanInterface
                 'quota_base' => format_number($this->getOption('sending_quota_time')),
                 'quota_unit' => $this->getOption('sending_quota_time_unit'),
             ]);
-            
+
             $options[] = ['text' => $wording, 'value' => 'other'];
         }
-        
+
         // Custom
         $options[] = ['text' => trans('messages.plan.sending_limit.custom'), 'value' => 'custom'];
 
         return $options;
     }
-    
+
     /**
      * Get billing recurs select options.
      *
@@ -494,9 +491,9 @@ class Plan extends Model implements BillablePlanInterface
     public function getBillingCycleSelectOptions()
     {
         $options = [];
-        
-        foreach (Plan::billingCycleValues() as $key => $data) {            
-            $wording = trans('messages.plan.billing_cycle.' . $key);            
+
+        foreach (self::billingCycleValues() as $key => $data) {
+            $wording = trans('messages.plan.billing_cycle.'.$key);
             $options[] = ['text' => $wording, 'value' => $key];
         }
 
@@ -506,10 +503,10 @@ class Plan extends Model implements BillablePlanInterface
                 'frequency_amount' => format_number($this->frequency_amount),
                 'frequency_unit' => $this->frequency_unit,
             ]);
-            
+
             $options[] = ['text' => $wording, 'value' => 'other'];
         }
-        
+
         // Custom
         $options[] = ['text' => trans('messages.plan.billing_cycle.custom'), 'value' => 'custom'];
 
@@ -653,7 +650,7 @@ class Plan extends Model implements BillablePlanInterface
             return strtolower(\Acelle\Library\Tool::format_number($this->getOption('sending_quota')).' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase('email', $this->getOption('sending_quota'))).' / '.$this->getOption('sending_quota_time').' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase($this->getOption('sending_quota_time_unit'), $this->getOption('sending_quota'))));
         }
     }
-    
+
     /**
      * Display plan price.
      *
@@ -805,10 +802,10 @@ class Plan extends Model implements BillablePlanInterface
         if ($request->user()->admin && !$request->user()->admin->can('readAll', new \Acelle\Model\Plan())) {
             $query = $query->where('plans.admin_id', '=', $request->user()->admin->id);
         }
-        
+
         if ($request->change_from_uid) {
             $plan = \Acelle\Model\Plan::findByUid($request->change_from_uid);
-            
+
             $query = $query->where('id', '<>', $request->change_from_uid);
             $query = $query->where('uid', '<>', $request->change_from_uid);
             $query = $query->where('frequency_amount', '=', $plan->frequency_amount);
@@ -1011,7 +1008,7 @@ class Plan extends Model implements BillablePlanInterface
         $this->options = json_encode($options);
         $this->save();
     }
-    
+
     /**
      * Set option.
      */
@@ -1026,7 +1023,7 @@ class Plan extends Model implements BillablePlanInterface
     /**
      * Fill option from request.
      */
-    public function fillOptions($options=[])
+    public function fillOptions($options = [])
     {
         $defaultOptions = self::defaultOptions();
         $saveOptions = $this->options ? array_merge($defaultOptions, json_decode($this->options, true)) : $defaultOptions;
@@ -1036,14 +1033,14 @@ class Plan extends Model implements BillablePlanInterface
             }
         }
 
-	// workaround
+    // workaround
         if (empty($this->description)) {
             $this->description = '[ plan description goes here ]';
         }
-        
+
         $this->options = json_encode($saveOptions);
     }
-    
+
     /**
      * Fill from request.
      */
@@ -1055,19 +1052,19 @@ class Plan extends Model implements BillablePlanInterface
             if ($params['frequency_amount'] == '') {
                 $params['frequency_amount'] = 1;
             }
-            $this->fill($params);            
+            $this->fill($params);
         }
-        
+
         // if has options params
         if (isset($request->plan['options'])) {
             $this->fillOptions($request->plan['options']);
         }
-        
+
         //// if has email verifications
         //if (isset($request->plan['email_verification_servers'])) {
         //    $this->fillPlansEmailVerificationServers($request->plan['email_verification_servers']);
         //}
-        
+
         // old request
         if ($request->old()) {
             if (isset($request->old()['plan']['general'])) {
@@ -1082,40 +1079,40 @@ class Plan extends Model implements BillablePlanInterface
             //    $this->fillPlansEmailVerificationServers($request->old()['plan']['email_verification_servers']);
             //}
         }
-        
+
         // billing cycle
         $billingCycle = $this->getOption('billing_cycle');
         if (isset($billingCycle) && $billingCycle != 'custom' && $billingCycle != 'other') {
-            $limits = Plan::billingCycleValues()[$billingCycle];
+            $limits = self::billingCycleValues()[$billingCycle];
             $this->frequency_amount = $limits['frequency_amount'];
             $this->frequency_unit = $limits['frequency_unit'];
         }
-        
+
         // billing cycle
         $sendingLimit = $this->getOption('sending_limit');
         if (isset($sendingLimit) && $sendingLimit != 'custom' && $sendingLimit != 'other') {
-            $limits = Plan::sendingLimitValues()[$sendingLimit];
+            $limits = self::sendingLimitValues()[$sendingLimit];
             $this->asignOption('sending_quota', $limits['quota_value']);
             $this->asignOption('sending_quota_time', $limits['quota_base']);
             $this->asignOption('sending_quota_time_unit', $limits['quota_unit']);
         }
     }
-    
+
     /**
      * Fill from request.
      */
     public function validate($request)
     {
         $rules = [];
-        foreach(array_keys($request->plan) as $key) {
+        foreach (array_keys($request->plan) as $key) {
             if (isset($this->validationRules()[$key])) {
-                $rules = array_merge($rules, $this->validationRules()[$key]);                
+                $rules = array_merge($rules, $this->validationRules()[$key]);
             }
         }
-        
+
         return Validator::make($request->all(), $rules);
     }
-    
+
     /**
      * Fill from request.
      */
@@ -1130,15 +1127,15 @@ class Plan extends Model implements BillablePlanInterface
             $service = \Acelle\Cashier\Cashier::getPaymentGateway('paypal_subscription');
             $service->syncPlan($this, $oldPlan);
         }
-        
+
         $validator = $this->validate($request);
-        
+
         if ($validator->fails()) {
             throw new ValidationException($validator);
         }
-        
+
         $this->save();
-        
+
         // For email verification servers
         if (isset($request->plan['email_verification_servers'])) {
             $this->updateEmailVerificationServers($request->plan['email_verification_servers']);
@@ -1210,26 +1207,26 @@ class Plan extends Model implements BillablePlanInterface
 
         return true;
     }
-    
+
     /**
      ** Add sending server by uid.
      **/
     public function addSendingServerByUid($sendinServerUid)
-    {        
+    {
         $server = SendingServer::findByUid($sendinServerUid);
         $row = new PlansSendingServer();
         $row->plan_id = $this->id;
         $row->sending_server_id = $server->id;
         $row->fitness = '50';
-        
+
         // First primary
         if (!$this->plansSendingServers()->where('is_primary', '=', true)->count()) {
             $row->is_primary = true;
         }
-        
+
         $row->save();
     }
-    
+
     /**
      ** Remove sending server by uid.
      **/
@@ -1237,7 +1234,7 @@ class Plan extends Model implements BillablePlanInterface
     {
         $server = SendingServer::findByUid($sendinServerUid);
         $this->plansSendingServers()->where('sending_server_id', '=', $server->id)->delete();
-        
+
         // First primary
         $query = $this->plansSendingServers()->where('is_primary', '=', true);
         if (!$query->count()) {
@@ -1248,30 +1245,30 @@ class Plan extends Model implements BillablePlanInterface
             }
         }
     }
-    
+
     /**
      ** Remove sending server by uid.
      **/
     public function setPrimarySendingServer($sendinServerUid)
-    {        
+    {
         $this->plansSendingServers()->update(['is_primary' => false]);
-        
+
         $server = SendingServer::findByUid($sendinServerUid);
         $this->plansSendingServers()->where('sending_server_id', '=', $server->id)->update(['is_primary' => true]);
     }
-    
+
     /**
      ** Update fitness by sending servers.
      **/
     public function updateFitnesses($hash)
     {
-        foreach($hash as $uid => $value) {
+        foreach ($hash as $uid => $value) {
             $sendingServer = SendingServer::findByUid($uid);
             \Acelle\Model\PlansSendingServer::where('sending_server_id', '=', $sendingServer->id)
                 ->update(['fitness' => $value]);
         }
     }
-    
+
     /**
      ** Get Primary sending server.
      **/
@@ -1281,7 +1278,7 @@ class Plan extends Model implements BillablePlanInterface
         // @todo: quăng 1 cái exception nếu $pss null, ko return null sẽ gây lỗi tiềm ẩn
         return is_object($pss) ? $pss->sendingServer : null;
     }
-    
+
     /**
      ** Get Primary sending server.
      **/
@@ -1291,7 +1288,7 @@ class Plan extends Model implements BillablePlanInterface
         // @todo: quăng 1 cái exception nếu $pss null, ko return null sẽ gây lỗi tiềm ẩn
         return is_object($pss) ? $pss->updated_at : null;
     }
-    
+
     /**
      * Get all verified identities.
      *
@@ -1307,14 +1304,14 @@ class Plan extends Model implements BillablePlanInterface
         //    return [];
         //}
         $result = [];
-        
+
         foreach ($this->sendingServers()->get() as $sendingServer) {
             $result = array_merge($result, $sendingServer->getVerifiedIdentities());
         }
-        
+
         return array_unique($result);
     }
-    
+
     /**
      * Check if plan is free.
      *
@@ -1324,7 +1321,7 @@ class Plan extends Model implements BillablePlanInterface
     {
         return $this->price == 0;
     }
-    
+
     /**
      * Get stripe price.
      *
@@ -1353,9 +1350,9 @@ class Plan extends Model implements BillablePlanInterface
 
         return $this->price * $rate;
     }
-    
+
     //====================================== BILLABLE PLAN INTERFACE =======================================
-    
+
     /**
      * PlanInterface: get remote plan id.
      *
@@ -1365,7 +1362,7 @@ class Plan extends Model implements BillablePlanInterface
     {
         return $this->uid;
     }
-    
+
     /**
      * PlanInterface: get name.
      *
@@ -1375,7 +1372,7 @@ class Plan extends Model implements BillablePlanInterface
     {
         return $this->name;
     }
-    
+
     /**
      * PlanInterface: get interval.
      *
@@ -1385,7 +1382,7 @@ class Plan extends Model implements BillablePlanInterface
     {
         return $this->frequency_unit;
     }
-    
+
     /**
      * PlanInterface: get interval count.
      *
@@ -1395,7 +1392,7 @@ class Plan extends Model implements BillablePlanInterface
     {
         return $this->frequency_amount;
     }
-    
+
     /**
      * PlanInterface: get currency.
      *
@@ -1405,7 +1402,7 @@ class Plan extends Model implements BillablePlanInterface
     {
         return $this->currency->code;
     }
-    
+
     /**
      * PlanInterface: get interval count.
      *
@@ -1415,7 +1412,7 @@ class Plan extends Model implements BillablePlanInterface
     {
         return $this->price;
     }
-    
+
     /**
      * PlanInterface: get interval count.
      *
@@ -1425,7 +1422,7 @@ class Plan extends Model implements BillablePlanInterface
     {
         return \Acelle\Library\Tool::format_price($this->price, $this->currency->format);
     }
-    
+
     /**
      * Get all .
      *
@@ -1435,7 +1432,7 @@ class Plan extends Model implements BillablePlanInterface
     {
         return $this->plansEmailVerificationServers();
     }
-    
+
     /**
      * Get list of available email verification servers.
      *
@@ -1452,12 +1449,12 @@ class Plan extends Model implements BillablePlanInterface
                 return $server->emailVerificationServer;
             });
         }
-        
+
         return $result;
     }
-    
+
     /**
-     * Check if plan has primary sending server
+     * Check if plan has primary sending server.
      *
      * @var bool
      */
@@ -1465,9 +1462,9 @@ class Plan extends Model implements BillablePlanInterface
     {
         return is_object($this->primarySendingServer());
     }
-    
+
     /**
-     * Check if plan sending server type is system
+     * Check if plan sending server type is system.
      *
      * @var bool
      */
@@ -1480,9 +1477,9 @@ class Plan extends Model implements BillablePlanInterface
     {
         return $this->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN;
     }
-    
+
     /**
-     * Check if plan is active
+     * Check if plan is active.
      *
      * @var bool
      */
@@ -1490,9 +1487,9 @@ class Plan extends Model implements BillablePlanInterface
     {
         return $this->status == PlansEmailVerificationServer::STATUS_ACTIVE;
     }
-    
+
     /**
-     * Check if plan is available
+     * Check if plan is available.
      *
      * @var bool
      */
@@ -1500,19 +1497,19 @@ class Plan extends Model implements BillablePlanInterface
     {
         return $this->isActive();
     }
-    
+
     /**
-     * Get all available plans for customer register
+     * Get all available plans for customer register.
      *
      * @var bool
      */
     public static function getAvailablePlans()
     {
-        $plans = Plan::getAllActiveVisible()->get();
+        $plans = self::getAllActiveVisible()->get();
         $service = \Acelle\Cashier\Cashier::getPaymentGateway();
-        
+
         $aPlans = [];
-        foreach($plans as $plan) {
+        foreach ($plans as $plan) {
             if ($plan->isAvailable()) {
                 if (config('cashier.gateway') !== 'paypal_subscription' ||
                     $service->findPlanConnection($plan)
@@ -1521,12 +1518,12 @@ class Plan extends Model implements BillablePlanInterface
                 }
             }
         }
-        
+
         return $aPlans;
     }
-    
+
     /**
-     * Get all sending servers
+     * Get all sending servers.
      *
      * @var collect
      */
@@ -1541,9 +1538,9 @@ class Plan extends Model implements BillablePlanInterface
     }
 
     /**
-     * Check if plan is valid to active
+     * Check if plan is valid to active.
      *
-     * @var boolean
+     * @var bool
      */
     public function isValid()
     {
@@ -1557,7 +1554,7 @@ class Plan extends Model implements BillablePlanInterface
     }
 
     /**
-     * Check plan error status
+     * Check plan error status.
      *
      * @var array
      */
@@ -1583,7 +1580,7 @@ class Plan extends Model implements BillablePlanInterface
     }
 
     /**
-     * Check status of sending server
+     * Check status of sending server.
      *
      * @var void
      */
@@ -1597,7 +1594,7 @@ class Plan extends Model implements BillablePlanInterface
         } else {
             $this->enable();
         }
-            
+
         if (config('cashier.gateway') == 'paypal_subscription') {
             $service = Cashier::getPaymentGateway();
 
@@ -1629,5 +1626,4 @@ class Plan extends Model implements BillablePlanInterface
         $this['visible'] = true;
         $this->save();
     }
-
 }

@@ -35,21 +35,21 @@ class SendingServer extends Model
     const DELIVERY_STATUS_FAILED = 'failed';
     const STATUS_ACTIVE = 'active';
     const STATUS_INACTIVE = 'inactive';
-    
+
     // TYPE
     const TYPE_AMAZON_API = 'amazon-api';
     const TYPE_AMAZON_SMTP = 'amazon-smtp';
     const TYPE_SENDGRID_API = 'sendgrid-api';
     const TYPE_SENDGRID_SMTP = 'sendgrid-smtp';
     const TYPE_MAILGUN_API = 'mailgun-api';
-    const TYPE_MAILGUN_SMTP = 'mailgun-smtp';    
+    const TYPE_MAILGUN_SMTP = 'mailgun-smtp';
     const TYPE_ELASTICEMAIL_API = 'elasticemail-api';
     const TYPE_ELASTICEMAIL_SMTP = 'elasticemail-smtp';
     const TYPE_SPARKPOST_API = 'sparkpost-api';
     const TYPE_SPARKPOST_SMTP = 'sparkpost-smtp';
     const TYPE_PHP_MAIL = 'php-mail';
     const TYPE_SENDMAIL = 'sendmail';
-    const TYPE_SMTP = 'smtp';  
+    const TYPE_SMTP = 'smtp';
 
     protected $quotaTracker;
     protected $subAccount;
@@ -63,7 +63,7 @@ class SendingServer extends Model
     protected $fillable = [
         'name', 'type', 'host', 'aws_access_key_id', 'aws_secret_access_key', 'aws_region', 'domain', 'api_key', 'api_secret_key', 'smtp_username',
         'smtp_password', 'smtp_port', 'smtp_protocol', 'quota_value', 'sendmail_path', 'quota_base', 'quota_unit',
-        'bounce_handler_id', 'feedback_loop_handler_id', 'status', 'default_from_email'
+        'bounce_handler_id', 'feedback_loop_handler_id', 'status', 'default_from_email',
     ];
 
     // Supported server types
@@ -121,7 +121,7 @@ class SendingServer extends Model
     public static function mapServerType($server)
     {
         $class_name = '\Acelle\Model\\'.self::$serverMapping[$server->type];
-        
+
         if ($server->id) {
             $instance = $class_name::find($server->id);
         } else {
@@ -310,7 +310,7 @@ class SendingServer extends Model
     {
         return [
             self::TYPE_AMAZON_SMTP => [
-                'cols' => [                    
+                'cols' => [
                     'host' => 'required',
                     'aws_access_key_id' => 'required',
                     'aws_secret_access_key' => 'required',
@@ -435,13 +435,13 @@ class SendingServer extends Model
                     'smtp_username' => 'required',
                     'smtp_password' => 'required',
                     'smtp_port' => 'required',
-                    'smtp_protocol' => '',                    
+                    'smtp_protocol' => '',
                 ],
                 'settings' => [
                     'name' => 'required',
                     'default_from_email' => 'email',
                     'bounce_handler_id' => '',
-                    'feedback_loop_handler_id' => '',                    
+                    'feedback_loop_handler_id' => '',
                 ],
             ],
             self::TYPE_SENDMAIL => [
@@ -452,7 +452,7 @@ class SendingServer extends Model
                     'name' => 'required',
                     'default_from_email' => 'email',
                     'bounce_handler_id' => '',
-                    'feedback_loop_handler_id' => '',                    
+                    'feedback_loop_handler_id' => '',
                 ],
             ],
         ];
@@ -467,7 +467,7 @@ class SendingServer extends Model
     {
         return [
             self::TYPE_AMAZON_SMTP => [
-                'cols' => [                    
+                'cols' => [
                     'name' => 'required',
                     'host' => 'required',
                     'aws_access_key_id' => 'required',
@@ -573,10 +573,10 @@ class SendingServer extends Model
                     'smtp_username' => 'required',
                     'smtp_password' => 'required',
                     'smtp_port' => 'required',
-                    'smtp_protocol' => '',           
-                    'default_from_email' => 'email',  
+                    'smtp_protocol' => '',
+                    'default_from_email' => 'email',
                     'bounce_handler_id' => '',
-                    'feedback_loop_handler_id' => '',       
+                    'feedback_loop_handler_id' => '',
                 ],
             ],
             self::TYPE_SENDMAIL => [
@@ -605,7 +605,7 @@ class SendingServer extends Model
 
         return $options;
     }
-    
+
     /**
      * Get sparkpost select options.
      *
@@ -681,11 +681,11 @@ class SendingServer extends Model
      */
     public function getFrontendRules()
     {
-        $rules = SendingServer::frontendTypes()[$this->type]['cols'];
+        $rules = self::frontendTypes()[$this->type]['cols'];
 
         return $rules;
     }
-    
+
     /**
      * Get rules.
      *
@@ -693,11 +693,11 @@ class SendingServer extends Model
      */
     public function getRules()
     {
-        $rules = SendingServer::types()[$this->type]['cols'];
+        $rules = self::types()[$this->type]['cols'];
 
         return $rules;
     }
-    
+
     /**
      * Test connection.
      *
@@ -706,7 +706,7 @@ class SendingServer extends Model
     public function validConnection($request)
     {
         $validator = \Validator::make($request->all(), $this->getRules());
-        
+
         // test amazon api connection
         $validator->after(function ($validator) {
             try {
@@ -715,10 +715,10 @@ class SendingServer extends Model
                 $validator->errors()->add('connection', $e->getMessage());
             }
         });
-        
+
         return $validator;
     }
-    
+
     /**
      * Get configuration rules.
      *
@@ -726,7 +726,7 @@ class SendingServer extends Model
      */
     public function getConfigRules()
     {
-        $rules = SendingServer::types()[$this->type]['settings'];        
+        $rules = self::types()[$this->type]['settings'];
 
         return $rules;
     }
@@ -744,7 +744,7 @@ class SendingServer extends Model
 
         return $this->quota_value.'/'.$this->quota_base.' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase($this->quota_unit, $this->quota_base));
     }
-    
+
     /**
      * Quota display.
      *
@@ -776,7 +776,7 @@ class SendingServer extends Model
             ['value' => 'eu-central-1', 'text' => 'Europe (Frankfurt)', 'host' => 'email-smtp.eu-central-1.amazonaws.com'],
         ];
     }
-    
+
     /**
      * Select options for aws region.
      *
@@ -968,7 +968,7 @@ class SendingServer extends Model
         $message->setTo($params['to_email']);
         $message->setReplyTo($params['from_email']);
         // $message->setEncoder(\Swift_Encoding::get8bitEncoding());
-        $message->setEncoder( new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit') );
+        $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
         $message->addPart($params['plain'], 'text/plain');
         $result = self::getInstance($this)->send($message);
 
@@ -1006,7 +1006,7 @@ class SendingServer extends Model
     {
         $this->subAccount = $subAccount;
     }
-    
+
     /**
      * Get sending server select2 select options.
      *
@@ -1023,7 +1023,7 @@ class SendingServer extends Model
                 $q->orwhere('sending_servers.name', 'like', '%'.$keyword.'%');
             });
         }
-        
+
         // plan
         if ($request->plan_uid) {
             $plan = \Acelle\Model\Plan::findByUid($request->plan_uid);
@@ -1034,17 +1034,17 @@ class SendingServer extends Model
             if ($request->plan_uid && in_array($server->id, $existIds)) {
                 $data['items'][] = [
                     'id' => $server->uid,
-                    'text' => $server->name.' ('.trans('messages.sending_server.added').')'.'|||'.trans('messages.' . $server->type),
-                    'disabled' => true
+                    'text' => $server->name.' ('.trans('messages.sending_server.added').')'.'|||'.trans('messages.'.$server->type),
+                    'disabled' => true,
                 ];
             } else {
-                $data['items'][] = ['id' => $server->uid, 'text' => $server->name.'|||'.trans('messages.' . $server->type)];
-            }            
+                $data['items'][] = ['id' => $server->uid, 'text' => $server->name.'|||'.trans('messages.'.$server->type)];
+            }
         }
 
         return json_encode($data);
     }
-    
+
     /**
      * Get sending server select2 select options.
      *
@@ -1061,7 +1061,7 @@ class SendingServer extends Model
                 $q->orwhere('sending_servers.name', 'like', '%'.$keyword.'%');
             });
         }
-        
+
         // plan
         if ($request->plan_uid) {
             $plan = \Acelle\Model\Plan::findByUid($request->plan_uid);
@@ -1072,17 +1072,17 @@ class SendingServer extends Model
             if ($request->plan_uid && in_array($server->id, $existIds)) {
                 $data['items'][] = [
                     'id' => $server->uid,
-                    'text' => $server->name.' ('.trans('messages.sending_server.added').')'.'|||'.trans('messages.' . $server->type),
-                    'disabled' => true
+                    'text' => $server->name.' ('.trans('messages.sending_server.added').')'.'|||'.trans('messages.'.$server->type),
+                    'disabled' => true,
                 ];
             } else {
-                $data['items'][] = ['id' => $server->uid, 'text' => $server->name.'|||'.trans('messages.' . $server->type)];
-            }            
+                $data['items'][] = ['id' => $server->uid, 'text' => $server->name.'|||'.trans('messages.'.$server->type)];
+            }
         }
 
         return json_encode($data);
     }
-    
+
     /**
      * Get sending limit types.
      *
@@ -1110,10 +1110,10 @@ class SendingServer extends Model
                 'quota_value' => 10000,
                 'quota_base' => 1,
                 'quota_unit' => 'day',
-            ],            
+            ],
         ];
     }
-    
+
     /**
      * Get sending limit select options.
      *
@@ -1130,39 +1130,39 @@ class SendingServer extends Model
         if ($this->quota_value == -1) {
             $current = trans('messages.sending_server.quota.unlimited');
         }
-        
+
         $exist = false;
-        foreach (SendingServer::sendingLimitValues() as $key => $data) {            
+        foreach (self::sendingLimitValues() as $key => $data) {
             $wording = trans('messages.sending_servers.sending_limit.phrase', [
                 'quota_value' => \Acelle\Library\Tool::format_number($data['quota_value']),
                 'quota_base' => \Acelle\Library\Tool::format_number($data['quota_base']),
                 'quota_unit' => $data['quota_unit'],
             ]);
-            
+
             if ($data['quota_value'] == -1) {
                 $wording = trans('messages.sending_server.quota.unlimited');
             }
-            
+
             $options[] = ['text' => $wording, 'value' => $key];
-            
+
             if ($wording == $current) {
                 $exist = true;
                 $this->setOption('sending_limit', $key);
             }
         }
-        
+
         // exist
-        if (!$exist) {            
+        if (!$exist) {
             $options[] = ['text' => $current, 'value' => 'current'];
             $this->setOption('sending_limit', 'current');
         }
-        
+
         // Custom
         $options[] = ['text' => trans('messages.sending_servers.quota.custom'), 'value' => 'custom'];
 
         return $options;
     }
-    
+
     /**
      * Default options.
      *
@@ -1180,7 +1180,7 @@ class SendingServer extends Model
             'allow_verify_email_remotely' => 'no',
         ];
     }
-    
+
     /**
      * Get options.
      *
@@ -1189,9 +1189,10 @@ class SendingServer extends Model
     public function getOptions()
     {
         $savedOptions = isset($this->options) ? json_decode($this->options, true) : [];
-        return array_merge(SendingServer::defaultOptions(), $savedOptions);
+
+        return array_merge(self::defaultOptions(), $savedOptions);
     }
-    
+
     /**
      * Get option.
      *
@@ -1200,10 +1201,10 @@ class SendingServer extends Model
     public function getOption($name)
     {
         $options = $this->getOptions();
-        
+
         return isset($options[$name]) ? $options[$name] : null;
     }
-    
+
     /**
      * Get options.
      *
@@ -1212,13 +1213,13 @@ class SendingServer extends Model
     public function setOptions($options)
     {
         $savingOptions = $this->getOptions();
-        foreach($options as $key => $option) {
+        foreach ($options as $key => $option) {
             $savingOptions[$key] = $option;
         }
-        
+
         $this->options = json_encode($savingOptions);
     }
-    
+
     /**
      * Get options.
      *
@@ -1231,12 +1232,12 @@ class SendingServer extends Model
         } else {
             $options = json_decode($this->options, true);
         }
-        
+
         $options[$name] = $value;
-        
+
         $this->options = json_encode($options);
     }
-    
+
     /**
      * Get Mailgun domains info.
      *
@@ -1255,7 +1256,7 @@ class SendingServer extends Model
             ],
         ];
     }
-    
+
     /**
      * Get local identity info.
      *
@@ -1281,7 +1282,7 @@ class SendingServer extends Model
             ],
         ];
     }
-    
+
     /**
      * Get domains.
      *
@@ -1290,7 +1291,7 @@ class SendingServer extends Model
     public function getDomains()
     {
         $domains = $this->getOption('domains');
-        
+
         return $domains ? $domains : [];
     }
 
@@ -1302,7 +1303,7 @@ class SendingServer extends Model
     public function getEmails()
     {
         $emails = $this->getOption('emails');
-        
+
         return $emails ? $emails : [];
     }
 
@@ -1315,11 +1316,11 @@ class SendingServer extends Model
     {
         $emails = $this->getOption('emails');
         $emails[] = $email;
-        
+
         $this->setOption('emails', $emails);
         $this->save();
     }
-    
+
     /**
      * Add email.
      *
@@ -1328,15 +1329,15 @@ class SendingServer extends Model
     public function removeEmail($email)
     {
         $emails = $this->getOption('emails');
-        
+
         if (($key = array_search($email, $emails)) !== false) {
             unset($emails[$key]);
         }
-        
+
         $this->setOption('emails', $emails);
         $this->save();
     }
-    
+
     /**
      * Add domain.
      *
@@ -1346,11 +1347,11 @@ class SendingServer extends Model
     {
         $domains = $this->getOption('domains');
         $domains[] = $domain;
-        
+
         $this->setOption('domains', $domains);
         $this->save();
     }
-    
+
     /**
      * Add domain.
      *
@@ -1359,15 +1360,15 @@ class SendingServer extends Model
     public function removeDomain($domain)
     {
         $domains = $this->getOption('domains');
-        
+
         if (($key = array_search($domain, $domains)) !== false) {
             unset($domains[$key]);
         }
-        
+
         $this->setOption('domains', $domains);
         $this->save();
     }
-    
+
     /**
      * Check if domain is enabled.
      *
@@ -1376,7 +1377,7 @@ class SendingServer extends Model
     public function isDomainEnabled($domain)
     {
         $domains = $this->getDomains();
-        
+
         return in_array($domain, $domains);
     }
 
@@ -1388,10 +1389,10 @@ class SendingServer extends Model
     public function isEmailEnabled($email)
     {
         $emails = $this->getEmails();
-        
+
         return in_array($email, $emails);
     }
-    
+
     /**
      * Check if domain is enabled.
      *
@@ -1399,113 +1400,113 @@ class SendingServer extends Model
      */
     public function isIdentityEnabled($type, $value)
     {
-        $values = $this->getOption($type . 's');
-        
+        $values = $this->getOption($type.'s');
+
         return in_array($values, $value);
     }
-    
+
     /**
-     * Allow user to verify his/her own sending domain against Acelle Mail
+     * Allow user to verify his/her own sending domain against Acelle Mail.
      *
-     * @return boolean
+     * @return bool
      */
     public function allowVerifyingOwnDomains()
     {
         $options = json_decode($this->options, true);
-        
+
         if (is_null($options)) {
             return false;
         }
 
         return array_key_exists('allow_verify_domain_against_acelle', $options) && $options['allow_verify_domain_against_acelle'] == 'yes';
     }
-    
+
     /**
-     * Allow user to verify his/her own sending domain against Acelle Mail
+     * Allow user to verify his/her own sending domain against Acelle Mail.
      *
-     * @return boolean
+     * @return bool
      */
     public function allowVerifyingOwnEmails()
     {
         $options = json_decode($this->options, true);
-        
+
         if (is_null($options)) {
             return false;
         }
-        
+
         return array_key_exists('allow_verify_email_against_acelle', $options) && $options['allow_verify_email_against_acelle'] == 'yes';
     }
-    
+
     /**
-     * Allow user to verify his/her own emails against AWS
+     * Allow user to verify his/her own emails against AWS.
      *
-     * @return boolean
+     * @return bool
      */
     public function allowVerifyingOwnDomainsRemotely()
     {
         $options = json_decode($this->options, true);
-        
+
         if (is_null($options)) {
             return false;
         }
 
         return array_key_exists('allow_verify_domain_remotely', $options) && $options['allow_verify_domain_remotely'] == 'yes';
     }
-    
+
     /**
-     * Allow user to verify his/her own emails against AWS
+     * Allow user to verify his/her own emails against AWS.
      *
-     * @return boolean
+     * @return bool
      */
     public function allowVerifyingOwnEmailsRemotely()
     {
         $options = json_decode($this->options, true);
-        
+
         if (is_null($options)) {
             return false;
         }
 
         return array_key_exists('allow_verify_email_remotely', $options) && $options['allow_verify_email_remotely'] == 'yes';
     }
-    
+
     /**
-     * Allow user send from unverified FROM email address
+     * Allow user send from unverified FROM email address.
      *
-     * @return boolean
+     * @return bool
      */
     public function allowUnverifiedFromEmailAddress()
     {
         $options = json_decode($this->options, true);
-        
+
         if (is_null($options)) {
             return false;
         }
-        
+
         return array_key_exists('allow_unverified_from_email', $options) && $options['allow_unverified_from_email'] == 'yes';
     }
-    
+
     /**
-     * Check the sending server settings, make sure it does work
+     * Check the sending server settings, make sure it does work.
      *
-     * @return boolean
+     * @return bool
      */
     public function test()
     {
         return true;
     }
-    
+
     /**
-     * Get verified identities
+     * Get verified identities.
      *
      * @return array
      */
     public function getVerifiedIdentities()
     {
-        return array_merge($this->getOption("domains"), $this->getOption("emails"));
+        return array_merge($this->getOption('domains'), $this->getOption('emails'));
     }
 
     /**
-     * Get verified identities
+     * Get verified identities.
      *
      * @return array
      */
@@ -1515,7 +1516,7 @@ class SendingServer extends Model
 
         $domains = [];
         $emails = [];
-        foreach($items as $item) {
+        foreach ($items as $item) {
             if (checkEmail($item)) {
                 $emails[] = $item;
             } else {
@@ -1528,7 +1529,7 @@ class SendingServer extends Model
 
         $this->save();
     }
-    
+
     /**
      * Get all verified identities.
      *
@@ -1539,16 +1540,16 @@ class SendingServer extends Model
         $droplist = [];
         $topList = [];
         $bottomList = [];
-        
+
         if (!$keyword) {
             $keyword = '###';
         }
-        
+
         foreach ($this->getVerifiedIdentities() as $item) {
-                // check if email
+            // check if email
                 if (extract_email($item) !== null) {
                     $email = extract_email($item);
-                    if ( strpos(strtolower($email), $keyword) === 0 ) {
+                    if (strpos(strtolower($email), $keyword) === 0) {
                         $topList[] = [
                             'text' => extract_name($item),
                             'value' => $email,
@@ -1573,12 +1574,12 @@ class SendingServer extends Model
                     // }
                 }
         }
-        
+
         $droplist = array_merge($topList, $bottomList);
-        
+
         return $droplist;
     }
-    
+
     /**
      * Show up sending notification to admin dashboard.
      *
@@ -1589,24 +1590,24 @@ class SendingServer extends Model
     {
         MailLog::warning('Sending failed');
         MailLog::warning($exception->getMessage());
-            
+
         $errorTitle = "Server `{$this->name}` ({$this->uid}) failed to send";
         BackendErrorNotification::cleanupDuplicateNotifications($errorTitle);
-        BackendErrorNotification::warning([ 'title' => $errorTitle, 'message' => date('Y-m-d').' '.$errorTitle.': '.$exception->getMessage() ], false);
+        BackendErrorNotification::warning(['title' => $errorTitle, 'message' => date('Y-m-d').' '.$errorTitle.': '.$exception->getMessage()], false);
     }
-    
+
     /**
-     * Delete sending server
+     * Delete sending server.
      */
     public function doDelete()
     {
         $plans = $this->plans;
-        
+
         // delete
         $this->delete();
 
         // check all plans status
-        foreach($plans as $plan) {
+        foreach ($plans as $plan) {
             $plan->checkStatus();
         }
     }
