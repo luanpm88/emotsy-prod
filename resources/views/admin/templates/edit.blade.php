@@ -1,4 +1,4 @@
-@extends('layouts.black')
+@extends('layouts.black_admin')
 
 @section('title', trans('messages.edit_template'))
 
