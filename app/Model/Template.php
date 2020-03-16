@@ -338,7 +338,7 @@ class Template extends Model
      */
     public function replaceHtmlUrl($template_path)
     {
-        $this->content = \Acelle\Library\Tool::replaceHtmlUrl($this->content, $template_path);
+        $this->content = \Acelle\Library\Tool::replaceTemplateUrl($this->content, $template_path);
     }
 
     /**

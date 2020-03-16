@@ -899,65 +899,33 @@ class Tool
      *
      * @return text
      */
-    public static function replaceHtmlUrl($content, $path)
-    {
-        // find all link in html content
-        preg_match_all('/(?<=src=|background=|href=|url\()(\'|")?(?<url>.*?)(?=\1|\))/i', $content, $matches);
-        $srcs = array_unique($matches['url']);
-
-        foreach ($srcs as $key => $src) {
-            $srcs[$key] = htmlspecialchars_decode($src);
-            $srcs[$key] = str_replace('"', '', $srcs[$key]);
-            $srcs[$key] = str_replace('\'', '', $srcs[$key]);
-        }
-
-        foreach ($srcs as $src) {
-            if (preg_match('/https?/i', $src) || preg_match('/^\{/i', $src) || preg_match('/^\%/i', $src) || preg_match('/^https?/i', $src) || preg_match('/^#/i', $src) || strpos($src, '//') === 0) {
-                continue;
-            }
-
-            $new_src = $path.$src;
-
-            // replace image url
-            $content = str_replace($src, $new_src, $content);
-        }
-
-        $content = str_replace('&quot;', '', $content);
-
-        return $content;
-    }
-
-    /**
-     * Replace HTML url.
-     *
-     * @return text
-     */
     public static function replaceTemplateUrl($content, $path)
     {
         // find all link in html content
         preg_match_all('/(?<=src=|background=|href=|url\()(\'|")?(?<url>.*?)(?=\1|\))/i', $content, $matches);
         $srcs = array_unique($matches['url']);
 
-        foreach ($srcs as $key => $src) {
-            $srcs[$key] = str_replace('"', '', $srcs[$key]);
-            $srcs[$key] = str_replace('\'', '', $srcs[$key]);
-        }
-
         foreach ($srcs as $src) {
-            if (preg_match('/https?/i', $src) || preg_match('/^\{/i', $src) || preg_match('/^\%/i', $src) || preg_match('/^https?/i', $src) || preg_match('/^#/i', $src) || strpos($src, '//') === 0 || preg_match('/^mailto:/i', $src)) {
+            $new_src = str_replace('"', '', $src);
+            $new_src = str_replace('\'', '', $new_src);
+            $new_src = htmlspecialchars_decode($new_src); // Convert &amp; back to & (which was encoded by TinyMCE)
 
-                    // Convert &amp; back to & (which was encoded by TinyMCE)
-                $new_src = htmlspecialchars_decode($src);
+            if (preg_match('/https?/i', $src) || preg_match('/^\{/i', $src) || preg_match('/^\%/i', $src) || preg_match('/^https?/i', $src) || preg_match('/^#/i', $src) || strpos($src, '//') === 0 || preg_match('/^mailto:/i', $src) || preg_match('/^tel:/i', $src)) {
+                // nothing
             } else {
-                // Convert &amp; back to & (which was encoded by TinyMCE)
-                $decoded = htmlspecialchars_decode($src);
-
                 // Build the full path
-                $new_src = $path.'/'.$decoded;
+                $new_src = $path.'/'.$new_src;
             }
 
-            // replace url
-            $content = str_replace($src, $new_src, $content);
+            // using a quote in replacement to avoid replacing twice
+            // for example
+            //
+            // dir/assets/2984023984320
+            //    ==> http://$path/dir/assets/2984023984320
+            // dir/assets
+            //    ==> http://$path/http://$path/2984023984320
+            // Example of quote: href="http://, href=http://, or url: (http://)
+            $content = preg_replace('/([\'"\(\:\=]\s*)'.preg_quote($src, '/').'(\s*[\'"\)])/', "$1$new_src$2", $content);
         }
 
         $content = str_replace('&quot;', '', $content);
