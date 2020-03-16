@@ -906,6 +906,10 @@ class Tool
         $srcs = array_unique($matches['url']);
 
         foreach ($srcs as $src) {
+            if (empty(trim($src))) {
+                continue;
+            }
+            
             $new_src = str_replace('"', '', $src);
             $new_src = str_replace('\'', '', $new_src);
             $new_src = htmlspecialchars_decode($new_src); // Convert &amp; back to & (which was encoded by TinyMCE)
@@ -925,7 +929,7 @@ class Tool
             // dir/assets
             //    ==> http://$path/http://$path/2984023984320
             // Example of quote: href="http://, href=http://, or url: (http://)
-            $content = preg_replace('/([\'"\(\:\=]\s*)'.preg_quote($src, '/').'(\s*[\'"\)])/', "$1$new_src$2", $content);
+            $content = preg_replace('/(src=|background=|href=|url\s*\()([\'"]?\s*)'.preg_quote($src, '/').'(\s*[\s\'"\)])/', "$1$2$new_src$3", $content);
         }
 
         $content = str_replace('&quot;', '', $content);
