@@ -149,6 +149,10 @@
 				$('#sender_from_input').focusout();
 				box.updateErrorMessage();
 			})
+
+			$('[name="from_email"]').blur(function() {
+				$('[name="reply_to"]').val($(this).val());
+			});
 		})
 	</script>
 				
