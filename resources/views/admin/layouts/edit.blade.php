@@ -27,6 +27,10 @@
 			<div class="automation-top-menu">
 				<button class="btn btn-primary" onclick="$('#classic-builder-form').submit()">{{ trans('messages.save') }}</button>
 			</div>
+            <a style="" href="{{ action('Admin\LayoutController@index') }}"
+                class="action black-close-button ml-2" style="margin-right: -15px">
+                <i class="material-icons-outlined">close</i>
+            </a>
 		</nav>
 	</header>
     <form id="classic-builder-form" style="margin-top: 56px !important;" action="{{ action('Admin\LayoutController@update', $layout->uid) }}" method="POST" class="ajax_upload_form form-validate-jquery">

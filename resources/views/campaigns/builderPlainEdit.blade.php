@@ -32,6 +32,10 @@
                 </a>
 				<button class="btn btn-primary" onclick="$('#classic-builder-form').submit()">{{ trans('messages.save') }}</button>
 			</div>
+            <a href="javascript:;" onclick="parent.$('body').removeClass('overflow-hidden');parent.$('.full-iframe-popup').fadeOut()"
+                class="action black-close-button ml-2" style="margin-right: -15px">
+                <i class="material-icons-outlined">close</i>
+            </a>
 		</nav>
 	</header>
     <form style="margin-top: 56px !important" id="classic-builder-form" action="{{ action('CampaignController@builderPlainEdit', $campaign->uid) }}" method="POST" class="form-validate-jqueryz">
@@ -88,12 +92,6 @@
 
                             // notify
                             parent.notify('success', '{{ trans('messages.notify.success') }}', response.message);
-
-                            parent.$('body').removeClass('overflow-hidden');
-
-                            parent.$('.full-iframe-popup').remove();
-                            parent.popup.load();
-                            
                         }
                     });
                 });         
