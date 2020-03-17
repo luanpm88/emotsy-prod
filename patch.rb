@@ -32,7 +32,7 @@ for version in old_versions
 end
 
 # Get updated flies
-updated = `git --git-dir #{File.join(gitdir, '.git')}  --work-tree #{gitdir} diff --diff-filter=AM --name-only #{last_supported} #{new_version}`.split("\n")
+updated = `git --git-dir #{File.join(gitdir, '.git')}  --work-tree #{gitdir} diff --diff-filter=ACMRTUXB --name-only #{last_supported} #{new_version}`.split("\n")
 
 updated << 'VERSION'
 updated.uniq!
