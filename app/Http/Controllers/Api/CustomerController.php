@@ -317,4 +317,48 @@ class CustomerController extends Controller
             'customer_uid' => $customer->uid
         ), 200);
     }
+
+    /**
+     * Assign plan to customer.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function assignPlan(Request $request, $uid, $plan_uid)
+    {
+        $user = \Auth::guard('api')->user();
+        $customer = \Acelle\Model\Customer::findByUid($uid);
+
+        // check if item exists
+        if (!is_object($customer)) {
+            return \Response::json(array('status' => 0, 'message' => 'Customer not found'), 404);
+        }
+
+        // authorize
+        if (!$user->can('assignPlan', $customer)) {
+            return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 401);
+        }
+
+        $plan = \Acelle\Model\Plan::findByUid($plan_uid);
+
+        // check if item exists
+        if (!is_object($plan)) {
+            return \Response::json(array('status' => 0, 'message' => 'Can not find plan with id: ' . $plan_uid), 404);
+        }
+
+        // check if item active
+        if (!$plan->isActive()) {
+            return \Response::json(array('status' => 0, 'message' => 'Plan is not active'), 404);
+        }
+
+        $customer->assignPlan($plan);
+
+        return \Response::json(array(
+            'status' => 1, 
+            'message' => 'Assigned '.$customer->displayName().' plan to '.$plan->name.' successfully.',
+            'customer_uid' => $customer->uid,
+            'plan_uid' => $plan->uid
+        ), 200);
+    }
 }
