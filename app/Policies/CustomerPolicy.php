@@ -105,7 +105,7 @@ class CustomerPolicy
                 || ($ability == 'own' && $user->admin->id == $item->admin_id);
 
         $service = \Acelle\Cashier\Cashier::getPaymentGateway();
-        $can = $can && !$service->useRemoteSubscription();
+        $can = $can;
 
         return $can;
     }
