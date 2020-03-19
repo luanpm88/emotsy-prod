@@ -441,6 +441,20 @@ class ApiHelper
 ' .str_replace('-ID-', '<redbold>{uid}</redbold>', action("Api\CustomerController@disable", '-ID-')).'? \
 -d api_token=' .\Auth::user()->api_token,
                 ],
+
+                [
+                    'method' => 'POST',
+                    'uri' => '/api/v1/customers/{uid}/assign-plan/{plan_uid}',
+                    'description' => 'Assign Plan to Customer',
+                    'parameters' => [
+                        ['name' => '$uid', 'description' => 'Customer\'s uid'],
+                        ['name' => '$plan_uid', 'description' => 'Plan\'s uid'],
+                    ],
+                    'returns' => 'Action messages in json',
+                    'example' => 'curl -X POST -H "accept:application/json" -G \
+' .str_replace('-plan_uid-', '<redbold>{plan_uid}</redbold>', str_replace('-uid-', '<redbold>{uid}</redbold>', action("Api\CustomerController@assignPlan", ['uid' => '-uid-', 'plan_uid' => '-plan_uid-']))).'? \
+-d api_token=' .\Auth::user()->api_token,
+                ],
             ],
         ];
 

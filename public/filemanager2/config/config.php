@@ -77,8 +77,8 @@ class Uidd
 	// $user_uid = Auth::user()->uid;
 	if (is_object($app['auth']->user())) {
 		$user_uid = Auth::user()->uid;
-		$max_size_upload_total = is_object($app['auth']->user()->customer) ? $app['auth']->user()->customer->getOption("max_size_upload_total") : 999999999;
-		$max_file_size_upload = is_object($app['auth']->user()->customer) ? $app['auth']->user()->customer->getOption("max_file_size_upload") : 999999999;
+		$max_size_upload_total = is_object($app['auth']->user()->customer) && $app['auth']->user()->customer->getOption("max_size_upload_total") > 0 ? $app['auth']->user()->customer->getOption("max_size_upload_total") : 999999999;
+		$max_file_size_upload = is_object($app['auth']->user()->customer) && $app['auth']->user()->customer->getOption("max_file_size_upload") > 0 ? $app['auth']->user()->customer->getOption("max_file_size_upload") : 999999999;
 	} else {
 		$user_uid = $_SESSION["user_uid"];
 		$max_size_upload_total = $_SESSION["max_size_upload_total"];

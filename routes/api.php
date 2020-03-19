@@ -51,6 +51,7 @@ Route::group(['namespace' => 'Api', 'prefix' => 'v1', 'middleware' => 'auth:api'
     Route::resource('plans', 'PlanController');
 
     // Customer
+    Route::post('customers/{uid}/assign-plan/{plan_uid}', 'CustomerController@assignPlan');
     Route::patch('customers/{uid}/disable', 'CustomerController@disable');
     Route::patch('customers/{uid}/enable', 'CustomerController@enable');
     Route::resource('customers', 'CustomerController');
