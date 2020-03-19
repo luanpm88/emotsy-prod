@@ -667,7 +667,7 @@ class SendingServerController extends Controller
             } else {
                 // validation
                 $validator = \Validator::make($request->all(), [
-                    'domain' => 'required|regex:/^[a-zA-Z0-9][a-zA-Z0-9\-\_]+[a-zA-Z0-9]$/i',
+                    'domain' => 'required|regex:/^(?:[-A-Za-z0-9]+\.)+[A-Za-z]{2,6}$/i',
                 ]);
                 
                 if (in_array(strtolower($request->domain), $server->getDomains())) {
