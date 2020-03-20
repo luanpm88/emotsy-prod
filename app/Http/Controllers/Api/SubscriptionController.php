@@ -59,4 +59,47 @@ class SubscriptionController extends Controller
             ), 200);
         }
     }
+
+    /**
+     * Approve subscription pending.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     **/
+    public function setActive(Request $request, $uid)
+    {
+        // Get current subscription
+        $subscription = \Acelle\Cashier\Subscription::findByUid($uid);
+        $gateway = \Acelle\Cashier\Cashier::getPaymentGateway();
+
+        // check if item exists
+        if (!is_object($subscription)) {
+            return \Response::json(array('status' => 0, 'message' => 'Can not find subscription with uid: ' . $uid), 404);
+        }
+
+        // check if item is pending
+        if (!$subscription->isPending()) {
+            return \Response::json(array('status' => 0, 'message' => 'Can not set active for subscription. Subscription is not pending.'), 403);
+        }
+
+        // authorize
+        if (!$request->user()->admin->can('setActive', $subscription)) {
+            return \Response::json(array('message' => 'Unauthorized'), 401);
+        }
+
+        try {
+            $gateway->setActive($subscription);
+        } catch (\Exception $ex) {
+            return \Response::json([
+                'status' => 'error',
+                'message' => $ex->getMessage(),
+            ], 403);
+        }
+
+        return \Response::json([
+            'status' => 'success',
+            'message' => trans('messages.subscription.set_active.success'),
+        ]);
+    }
 }

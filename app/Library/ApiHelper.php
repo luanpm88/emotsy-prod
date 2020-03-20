@@ -480,6 +480,18 @@ class ApiHelper
 -d customer_uid={customer_uid} \
 -d plan_uid={plan_uid}',
                 ],
+                [
+                    'method' => 'POST',
+                    'uri' => '/api/v1/subscriptions/{uid}/activate',
+                    'description' => 'Admin activate pending subscription',
+                    'parameters' => [
+                        ['name' => '$uid', 'description' => 'Subscription\'s uid'],
+                    ],
+                    'returns' => 'Action messages in json',
+                    'example' => 'curl -X POST -H "accept:application/json" -G \
+' .str_replace('-uid-', '<redbold>{uid}</redbold>', action("Api\SubscriptionController@setActive", "-uid-")).'? \
+-d api_token=' .\Auth::user()->api_token,
+                ],
             ],
         ];
 

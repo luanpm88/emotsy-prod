@@ -2535,7 +2535,7 @@
   'subscription.download_raw_invoices' => 'Download invoices (raw)',
   'subscription.set_active' => 'Set active',
   'subscription.set_active.confirm' => 'You are about to approve payment status for the subscription. This can not be un-done.',
-  'subscription.set_active.success' => 'The subscription invoice was approved successfully.',
+  'subscription.set_active.success' => 'The subscription was activated successfully.',
   'subscription.renew.checkout' => 'Checkout',
   'subscription.renew.direct.wording' => 'Click the button bellow to renew the subscription for <strong>:plan</strong> plan.
     The total amount is <strong>:price</strong>.',
