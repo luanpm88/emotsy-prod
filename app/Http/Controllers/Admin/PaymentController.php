@@ -43,7 +43,7 @@ class PaymentController extends Controller
             $isValid = true;
 
             if ($name == 'paypal_subscription') {
-                $isValid && $service->getData()['product_id'];
+                $isValid = $isValid && $service->getData()['product_id'];
             }
         } catch (\Exception $ex) {
             $isValid = false;
