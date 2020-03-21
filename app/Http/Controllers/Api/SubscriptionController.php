@@ -23,41 +23,38 @@ class SubscriptionController extends Controller
      */
     public function store(Request $request)
     {
-        // Get current user
         $user = \Auth::guard('api')->user();
-        $subscription = new \Acelle\Model\Subscription();
-        $subscription->status = \Acelle\Model\Subscription::STATUS_ACTIVE;
+        $customer = \Acelle\Model\Customer::findByUid($request->customer_uid);
+        $plan = \Acelle\Model\Plan::findByUid($request->plan_uid);
+
+        // check if customer exists
+        if (!is_object($customer)) {
+            return \Response::json(array('status' => 0, 'message' => 'Customer not found'), 404);
+        }
+
+        // check if plan exists
+        if (!is_object($plan)) {
+            return \Response::json(array('status' => 0, 'message' => 'Plan not found'), 404);
+        }
 
         // authorize
-        if (!$user->isAdmin() || !$user->admin->can('create', $subscription)) {
-            return \Response::json(array('message' => 'Unauthorized'), 401);
+        if (!$user->can('assignPlan', $customer)) {
+            return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 401);
         }
 
-        // save posted data
-        if ($request->isMethod('post')) {
-            $validator = \Validator::make($request->all(), $subscription->rules());
-            if ($validator->fails()) {
-                return response()->json($validator->messages(), 403);
-            }
-
-            $subscription->fillAttributes($request->all());
-            $subscription->admin_id = $user->admin->id;
-
-            // Allow admin update start/end date
-            if(!empty($request->start_at)) {
-                $subscription->start_at = \Acelle\Library\Tool::systemTimeFromString($request->start_at . ' 00:00');
-            }
-            if(!empty($request->end_at)) {
-                $subscription->end_at = \Acelle\Library\Tool::systemTimeFromString($request->end_at . ' 00:00');
-            }
-
-            $subscription->save();
-
-            return \Response::json(array(
-                'message' => trans('messages.subscription.created'),
-                'subscription_uid' => $subscription->uid
-            ), 200);
+        // check if item active
+        if (!$plan->isActive()) {
+            return \Response::json(array('status' => 0, 'message' => 'Plan is not active'), 404);
         }
+
+        $customer->assignPlan($plan);
+
+        return \Response::json(array(
+            'status' => 1, 
+            'message' => 'Assigned '.$customer->displayName().' plan to '.$plan->name.' successfully.',
+            'customer_uid' => $customer->uid,
+            'plan_uid' => $plan->uid
+        ), 200);
     }
 
     /**
