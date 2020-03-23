@@ -1990,4 +1990,12 @@ class Customer extends Model implements BillableUserInterface
 
         return $subscription->active();
     }
+
+    public function getHomePath($path = null)
+    {
+        $full = storage_path(join_paths("app/users/{$this->user->uid}/home", $path));
+        // false means => do not create the last element of path, which is normally a file
+        create_basedir($full, false);
+        return $full;
+    }
 }
