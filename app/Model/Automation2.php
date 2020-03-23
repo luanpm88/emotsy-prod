@@ -35,6 +35,7 @@ use Carbon\Carbon;
 use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Formatter\LineFormatter;
+use Acelle\Library\Lockable;
 
 class Automation2 extends Model
 {
@@ -362,14 +363,28 @@ class Automation2 extends Model
     {
         $customers = Customer::all();
         foreach ($customers as $customer) {
+            // Only one automation process to run at one given time
+
             $automations = $customer->activeAutomation2s;
             foreach ($automations as $automation) {
-                if ($customer->isSubscriptionActive()) {
-                    $automation->logger()->info(sprintf('Checking automation "%s"', $automation->name));
-                    $automation->checkForNewTriggers();
-                    $automation->checkForExistingTriggersUpdate();
-                } else {
-                    $automation->logger()->warning(sprintf('Automation "%s" skipped, user "%s" not on active subscription', $automation->name, $customer->displayName()));
+                $automationLockFile = $customer->getHomePath(join_paths('locks/automation-lock-', $automation->uid));
+                $lock = new Lockable($automationLockFile);
+                $timeout = 3; // seconds
+                
+                try {
+                    $lock->getExclusiveLock(function($f) use ($customer, $automation) {
+                        sleep(10);
+                        if ($customer->isSubscriptionActive()) {
+                            $automation->logger()->info(sprintf('Checking automation "%s"', $automation->name));
+                            $automation->checkForNewTriggers();
+                            $automation->checkForExistingTriggersUpdate();
+
+                        } else {
+                            $automation->logger()->warning(sprintf('Automation "%s" skipped, user "%s" not on active subscription', $automation->name, $customer->displayName()));
+                        }
+                    }, $timeout);
+                } catch (\Exception $ex) {
+                    $automation->logger()->warning(sprintf('Error while executing automation "%s". %s', $automation->name, $ex->getMessage()));
                 }
             }
         }
