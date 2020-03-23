@@ -48,6 +48,7 @@ class Lockable
         $start = time();
         $reader = fopen($this->file, 'w');
         while (true) {
+            // raise an exception and quit if timed out
             $this->checkTimeout($start, $timeout, $exceptionCallback);
             if (flock($reader, LOCK_EX | LOCK_NB)) {  // acquire an exclusive lock
                 // execute the callback
@@ -69,6 +70,7 @@ class Lockable
         $start = time();
         $reader = fopen($this->file, 'r');
         while (true) {
+            // raise an exception and quit if timed out
             $this->checkTimeout($start, $timeout, $exceptionCallback);
             if (flock($reader, LOCK_SH | LOCK_NB)) {  // acquire an exclusive lock
                 // execute the callback
@@ -89,9 +91,9 @@ class Lockable
         if (time() - $startTime > $timeoutDuration) {
             if (!is_null($callback)) {
                 $callback();
-            } else {
-                throw new \Exception('Timeout getting lock #Lockable');
             }
+
+            throw new \Exception('Timeout getting lock #Lockable');
         }
     }
 }
