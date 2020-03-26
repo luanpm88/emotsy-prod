@@ -444,7 +444,7 @@ h2 [class^="icon-"] {
 
 }
 .has-error .select2-selection--single:not([class*=bg-]) {
-    border-color: #D84315;
+    border-color: #D84315 !important;
 }
 .header-flash {
     margin-top: 30px;
@@ -3628,4 +3628,152 @@ body > .ui-pnotify {
 }
 .overflow-hidden {
     overflow: hidden !important;
+}
+.popup-wizard {
+    margin: -40px -60px;
+    display: flex;
+}
+.popup-wizard .wizard-sidebar {
+    width: 30%;
+    padding-top: 10px;
+    border-right: solid 1px #ddd;
+    margin-bottom: 60px;
+}
+.popup-wizard .wizard-content {
+    width: 70%;
+    padding: 40px;
+    border-left: solid 1px #ddd;
+    margin-left: -1px;
+}
+.wizard-steps {
+    padding: 0;    
+}
+.wizard-steps li {
+    list-style: none;
+}
+.wizard-steps li a {
+    display: flex;
+    align-items: center;
+    padding: 10px 25px;
+    color: #333;
+}
+.wizard-steps li a.current {
+    background: #f2f2f2;
+}
+.wizard-steps li span {
+}
+.wizard-steps li a label {
+    margin: 0;
+    font-weight: 600;
+    font-size: 15px;
+}
+.wizard-steps li a p {
+    margin: 0;
+    font-size: 98%;
+}
+.wizard-steps li a i {
+    font-size: 28px;
+    margin-right: 25px;
+}
+@media (min-width: 769px) {
+    .dropzone .dz-default.dz-message {
+        height: 120px;
+        margin-top: -74px;
+    }
+    .dropzone .dz-default.dz-message:before {
+        font-size: 50px !important;
+        top: 32px !important;
+    }
+    .dropzone .dz-default.dz-message span {
+        font-size: 19px;
+        margin-top: 70px !important;
+    }
+}
+.dropzone .dz-default.dz-message:before {
+    content: '\e81e' !important;
+    font-family: 'Linearicons-Free' !important;
+}
+.import-mapping {
+    margin: 0;
+    padding: 0;
+}
+.import-mapping li {
+    list-style: none;
+    padding: 10px 0px;
+    border-bottom: solid 1px #ddd;
+}
+.import-mapping li:first-child {
+    border-top: solid 1px #ddd;
+}
+.import-mapping .field-name {
+    
+}
+.import-mapping .field-checkbox {
+    margin-right: 20px;
+}
+.import-mapping .field-checkbox .switchery {
+    margin: 0;
+    width: 37px;
+    height: 18px;
+}
+.import-mapping .field-checkbox .switchery > small {
+    background-color: #fff;
+    border-radius: 100px;
+    width: 16px;
+    height: 16px;
+}
+.import-mapping .field-actions .toogle-icon {
+    font-weight: 600 !important;
+    font-size: 12px;
+}
+.import-mapping .field-options {
+    padding: 20px 10px 0 59px;
+    display: none;
+}
+.import-mapping li.more-option .field-options {
+    display: block;
+}
+.import-mapping .field-options .field-option-radio {
+    width: 17px;
+    height: 17px;
+    margin-right: 15px;
+    flex: 0 0 17px;
+}
+.import-mapping .field-options .option-intro label {
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+.import-mapping .field-options .option-intro p {
+    font-size: 98%;
+}
+.option-update .select2 {
+    max-width: 200px;
+}
+.import-mapping .field-options .field-option {    
+    border: dashed 1px #fff;
+    border-radius: 3px;
+}
+.import-mapping .field-options .field-option {    
+    border: dashed 1px #fff;
+    border-radius: 3px;
+}
+.import-mapping .field-options .field-option.current {
+    border: dashed 1px #aaa;
+    padding: 10px;
+    margin: 10px -10px 14px -10px;
+}
+.import-mapping .field-options .field-option .option-update {
+    display: none;
+}
+.import-mapping .field-options .field-option.current .option-update {
+    display: block;
+}
+.import-mapping .select2-selection--single:not([class*=bg-]), .import-mapping .select2-selection--multiple:not([class*=bg-]):not([class*=border-]) {
+    border: solid 1px #bbb;
+}
+.import-mapping .form-control {
+    border: solid 1px #bbb;
+}
+.import-mapping .has-error .form-control {
+    border: solid 1px #D84315;
 }

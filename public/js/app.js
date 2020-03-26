@@ -42,6 +42,13 @@ function openBuilderClassic(url) {
 }
 
 function initJs(container) {
+    // Initialize multiple switches
+    container.find('.switchery').each(function() {
+        if($(this).attr("data-switchery") != "true") {
+            var switchery = new Switchery(this, {color: '#00897B'});
+        }
+    });
+
     container.find('.template-compose').click(function(e) {
         e.preventDefault();
         

@@ -45,7 +45,7 @@
     position: relative;
 }
 .popup-container.medium{
-    width: 1150px;
+    width: 1000px;
 }
 .popup-header {
     display: flex;

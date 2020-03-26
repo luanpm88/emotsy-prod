@@ -29,8 +29,8 @@
                     </li>
                     <li class="divider"></li>
                     @if (\Auth::user()->can('import', $list))
-                    <li rel0="SubscriberController/import">
-                    <a href="{{ action('SubscriberController@import', $list->uid) }}">
+                    <li rel0="SubscriberController/import2">
+                    <a href="{{ action('SubscriberController@import2', $list->uid) }}">
                     <i class="icon-download4"></i> {{ trans('messages.import') }}
                     </a>
                     </li>

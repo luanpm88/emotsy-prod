@@ -3219,4 +3219,52 @@
   'template.pro_builder' => 'PRO builder',
   'template.classic_builder' => 'Classic builder',
   'editor.insert_tag' => 'Insert Acelle Tags',
+  'subscribers.import_csv' => 'Import CSV File',
+  'subscribers.import_csv.intro' => 'Acceptable file type is CSV, please checkout the
+    <a target="_blank" href=":csv_link"><strong>Sample.csv</strong></a>.
+    Click button bellow to start a import.',
+  'subscriber.import.start' => 'Start',
+  'subscriber.import.upload_csv_file' => 'Upload CSV File',
+  'subscriber.import.upload_csv_file.intro' => 'Import subscribers by uploading CSV file',
+  'subscriber.import.upload.wording' => 'Choose a comma separated values text file (.csv) in
+    which the comma character (,) typically
+    separates each field of text. Your file MUST include the first column header. Click 
+    <a href=":link">here</a> to download a sample CSV file.',
+  'subscriber.import.mapping' => 'Mapping',
+  'subscriber.import.mapping.intro' => 'Import subscribers by uploading CSV file',
+  'subscriber.import.review_go' => 'Review & Go',
+  'subscriber.import.review_go.intro' => 'Import subscribers by uploading CSV file',
+  'subscriber.import.next_mapping' => 'Next',
+  'subscriber.import.csv_uploaded' => 'CSV file was uploaded successfully',
+  'subscriber.import.mapping.wording' => 'Map the columns from your input file to the list fields on the right.
+    You can also choose to create a new field automatically if it is not present in your list yet.',
+  'subscriber_import' => 'Subscriber Import',
+  'subscriber.import.associate_exist' => 'Associate with an existing list field',
+  'subscriber.import.associate_exist.intro' => 'Choose an existing field from your list to import. Date type will be
+    formatted accordingly to the list field`s type',
+  'subscriber.import.create_new_field' => 'Create new list field',
+  'subscriber.import.create_new_field.intro' => 'Create new custom field for your mail list to store data from this column',
+  'subscriber.import.skip_field' => 'Skip this field',
+  'subscriber.import.skip_field.intro' => 'Data from this column will be skipped and will not be imported to your list',
+  'subscriber.import.select_field' => 'Choose field',
+  'subscriber.import.ok_i_done' => 'OK, I\'m done',
+  'subscriber.import.data_type' => 'Data type',
+  'subscriber.import.field_name' => 'Field name',
+  'subscriber.import.select_type' => 'Select type',
+  'subscriber.import.must_select_field_option' => 'Please select al least one import option',
+  'subscriber.import.something_wrong' => 'Validation was failed. Please check the inputs again',
+  'subscriber.import.create_field.summary' => 'Create new <span class="field_type font-weight-semibold"></span> field, namely
+    <span class="field_name font-weight-semibold"></span>.
+    <a href="javascript:;" class="change-option">Click here to change</a>',
+  'subscriber.import.selected_field.summary' => 'Selected field: <span class="field_name font-weight-semibold"></span>.
+    <a href="javascript:;" class="change-option">Click here to change</a>',
+  'subscriber.import.associate_with' => 'Associate with',
+  'subscriber.import.create' => 'Create',
+  'subscriber.import.more_options' => 'more options...',
+  'subscriber.import.start' => 'Start Import',
+  'subscriber.import.mapping_empty' => 'Please select at least one column for mapping data',
+  'subscriber.import.no_email_field' => 'There is no EMAIL field in mapping selection',
+  'subscriber.import.multiple_field_error' => 'A field can be only one time mapped',
+  'subscriber.import.running.wording' => 'Import is in progress, it may take several minutes or even hours
+    depending on your inputs file as well as your server performance.',
 ) ?>
