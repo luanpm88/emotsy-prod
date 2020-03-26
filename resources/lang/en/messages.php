@@ -3266,5 +3266,5 @@
   'subscriber.import.no_email_field' => 'There is no EMAIL field in mapping selection',
   'subscriber.import.multiple_field_error' => 'A field can be only one time mapped',
   'subscriber.import.running.wording' => 'Import is in progress, it may take several minutes or even hours
-    depending on your inputs file as well as your server performance.',
+    depending on your inputs file as well as your server performance.app',
 ) ?>

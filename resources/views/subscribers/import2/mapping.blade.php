@@ -218,6 +218,8 @@
                     e.preventDefault();
 
                     if (_this.validAll()) {
+                        _this.collapseColumnAll();
+
                         alert(JSON.stringify(_this.getData()));
 
                         var url = $(this).attr('href');
@@ -475,6 +477,19 @@
                 if (_this.optionType == 'skip') {
                     _this.unselectColumn();
                 }
+            }
+
+            collapseColumnAll() {
+                var _this = this;
+
+                $('.select-field:checked').each(function() {
+                    var row = {}
+
+                    _this.setColumn($(this).closest('li'));
+
+                    // collapse column
+                    _this.collapseColumn();
+                });
             }
         }
 
