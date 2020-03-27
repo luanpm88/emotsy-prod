@@ -3219,4 +3219,8 @@
   'template.pro_builder' => 'PRO builder',
   'template.classic_builder' => 'Classic builder',
   'editor.insert_tag' => 'Insert Acelle Tags',
+  'use_custom_verification_email' => 'Use custom verification email. Click
+    <a href=":link" class="custom-verification-email-edit">here</a> to edit',
+  'custom_verification_email' => 'Custom Verification Email',
+  'custom_verification_email.updated' => 'Custom verification email was updated',
 ) ?>

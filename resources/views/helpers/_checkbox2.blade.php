@@ -10,6 +10,6 @@
             name="{{ $name }}" value="{{ $options[1] }}"
             class="styled {{ $classes }}  {{ isset($class) ? $class : "" }}"
             type="checkbox" class="styled">
-        {{ $label }}
+        {!! $label !!}
     </label>
 </div>

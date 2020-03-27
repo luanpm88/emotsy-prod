@@ -633,6 +633,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/layouts', 'LayoutController');
 
     // Sending servers
+    Route::match(['get','post'], 'admin/sending_servers/{uid}/custom-verification-email', 'SendingServerController@customVerificationEmail');
     Route::get('admin/sending_servers/{uid}/senders/dropbox', 'SendingServerController@fromDropbox');
     Route::post('admin/sending_servers/{uid}/remove-domain/{domain}', 'SendingServerController@removeDomain');
     Route::post('admin/sending_servers/{uid}/add-domain', 'SendingServerController@addDomain');
