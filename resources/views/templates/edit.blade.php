@@ -102,6 +102,7 @@
         var editor;
         $(document).ready(function() {
             editor = tinymce.init({
+                language: '{{ Auth::user()->customer->getLanguageCode() }}',
                 selector: '.template-editor',
                 height: parent.$('.full-iframe-popup').height()-56,
                 convert_urls: false,

@@ -7,6 +7,7 @@
     var editor;
     $(document).ready(function() {
         editor = tinymce.init({
+            language: '{{ Auth::user()->customer->getLanguageCode() }}',
             selector: '.template-editor',
             height: 500,
             convert_urls: false,
