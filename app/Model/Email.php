@@ -353,7 +353,10 @@ class Email extends Model
     public function transform()
     {
         // replace relative urls
-        $this->content = '<!DOCTYPE html>'.\Acelle\Library\Tool::replaceTemplateUrl($this->content, route('email_assets', ['uid' => $this->uid, 'path' => '']));
+        $this->content = \Acelle\Library\Tool::replaceTemplateUrl(
+            tinyDocTypeTransform($this->content),
+            route('email_assets', ['uid' => $this->uid, 'path' => ''])
+        );
 
         return $this->content;
     }
@@ -364,7 +367,10 @@ class Email extends Model
     public function untransform()
     {
         // replace absolute urls
-        $this->content = str_replace(route('email_assets', ['uid' => $this->uid, 'path' => '']).'/', '', $this->content);
+        $this->content = str_replace(
+            route('email_assets', ['uid' => $this->uid, 'path' => '']).'/', '',
+            tinyDocTypeUntransform($this->content)
+        );
     }
 
     /**
