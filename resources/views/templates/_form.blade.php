@@ -49,6 +49,10 @@
                     callback(items);
                     }
                 });
+
+                editor.on('init', function(e) {
+                    $('.classic-loader').remove();
+                });
             }
         });
     });

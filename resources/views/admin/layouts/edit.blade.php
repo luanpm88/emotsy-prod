@@ -39,6 +39,8 @@
 
         <div class="row mr-0 ml-0">
             <div class="col-md-9 pl-0 pb-0 pr-0">
+                <div class="loading classic-loader"><div class="text-center inner"><div class="box-loading"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div></div></div>
+
                 @include('helpers.form_control', [
                     'class' => 'template-editor',
                     'label' => '',
@@ -123,6 +125,10 @@
 
                         callback(items);
                         }
+                    });
+
+                    editor.on('init', function(e) {
+                        $('.classic-loader').remove();
                     });
                 }
             });

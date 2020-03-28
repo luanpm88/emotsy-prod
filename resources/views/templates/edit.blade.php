@@ -39,6 +39,9 @@
 
         <div class="row mr-0 ml-0">
             <div class="col-md-9 pl-0 pb-0 pr-0">
+                
+                <div class="loading classic-loader"><div class="text-center inner"><div class="box-loading"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div></div></div>
+                
                 @include('helpers.form_control', [
                     'class' => 'template-editor',
                     'label' => '',
@@ -47,7 +50,7 @@
                     'name' => 'content',
                     'value' => $template->render(),
                     'rules' => ['content' => 'required']
-                ])                
+                ])
             </div>
             <div class="col-md-3 pr-0 pb-0 sidebar pr-4 pt-4 pl-4" style="overflow:auto;background:#f5f5f5">
                 @include('helpers.form_control', [
@@ -143,6 +146,10 @@
 
                         callback(items);
                         }
+                    });
+
+                    editor.on('init', function(e) {
+                        $('.classic-loader').remove();
                     });
                 }
             });
