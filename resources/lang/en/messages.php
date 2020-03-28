@@ -3223,4 +3223,7 @@
     <a href=":link" class="custom-verification-email-edit">here</a> to edit',
   'custom_verification_email' => 'Custom Verification Email',
   'custom_verification_email.updated' => 'Custom verification email was updated',
+  'builder.both' => 'Both',
+  'builder.pro' => 'Pro',
+  'builder.classic' => 'Classic',
 ) ?>

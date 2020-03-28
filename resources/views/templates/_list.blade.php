@@ -48,12 +48,16 @@
 
                 <td class="text-right">
                     @if (Auth::user()->customer->can('update', $template))
-                        <a href="{{ action('TemplateController@builderEdit', $template->uid) }}" type="button" class="btn btn-default btn-icon template-compose">
-                            {{ trans('messages.template.pro_builder') }}
-                        </a>
-                        <a href="{{ action('TemplateController@edit', $template->uid) }}" type="button" class="btn bg-grey btn-icon template-compose-classic">
-                            {{ trans('messages.template.classic_builder') }}
-                        </a>
+                        @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']))
+                            <a href="{{ action('TemplateController@builderEdit', $template->uid) }}" type="button" class="btn btn-default btn-icon template-compose">
+                                {{ trans('messages.template.pro_builder') }}
+                            </a>
+                        @endif
+                        @if (in_array(Acelle\Model\Setting::get('builder'), ['both','classic']))
+                            <a href="{{ action('TemplateController@edit', $template->uid) }}" type="button" class="btn bg-grey btn-icon template-compose-classic">
+                                {{ trans('messages.template.classic_builder') }}
+                            </a>
+                        @endif
                     @endif
                     @if (Auth::user()->customer->can('preview', $template) ||
                         Auth::user()->customer->can('copy', $template) ||

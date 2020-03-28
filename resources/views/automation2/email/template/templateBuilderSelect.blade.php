@@ -7,20 +7,24 @@
             <h2>{{ trans('messages.automation.template.builder.select') }}</h2>
             <p>{{ trans('messages.automation.template.builder.select.intro') }}</p>
             
-            <a href="{{ action('Automation2Controller@templateEdit', [
-                    'uid' => $automation->uid,
-                    'email_uid' => $email->uid,
-                ]) }}" class="btn btn-secondary mr-1 template-compose"
-            >
-                {{ trans('messages.campaign.email_builder_pro') }}
-            </a>
-            <a href="{{ action('Automation2Controller@templateEditClassic', [
-                    'uid' => $automation->uid,
-                    'email_uid' => $email->uid,
-                ]) }}" class="btn btn-outline-secondary mr-1 template-compose-classic"
-            >
-                {{ trans('messages.campaign.email_builder_classic') }}
-            </a>
+            @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']))
+                <a href="{{ action('Automation2Controller@templateEdit', [
+                        'uid' => $automation->uid,
+                        'email_uid' => $email->uid,
+                    ]) }}" class="btn btn-secondary mr-1 template-compose"
+                >
+                    {{ trans('messages.campaign.email_builder_pro') }}
+                </a>
+            @endif
+            @if (in_array(Acelle\Model\Setting::get('builder'), ['both','classic']))
+                <a href="{{ action('Automation2Controller@templateEditClassic', [
+                        'uid' => $automation->uid,
+                        'email_uid' => $email->uid,
+                    ]) }}" class="btn btn-outline-secondary mr-1 template-compose-classic"
+                >
+                    {{ trans('messages.campaign.email_builder_classic') }}
+                </a>
+            @endif
         </div>
     </div>
     <script>
