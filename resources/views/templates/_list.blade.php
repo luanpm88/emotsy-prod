@@ -71,13 +71,6 @@
                                 @endif
                                 @if (Auth::user()->customer->can('update', $template))
                                     <li>
-                                        <a class="template-compose-classic" href="{{ action('TemplateController@edit', $template->uid) }}">
-                                            <i class="icon-hammer"></i> {{ trans("messages.buider.builder_classic") }}
-                                        </a>
-                                    </li>
-                                @endif
-                                @if (Auth::user()->customer->can('update', $template))
-                                    <li>
                                         <a class="upload-thumb-button" href="{{ action('TemplateController@updateThumb', $template->uid) }}">
                                             <i class="icon-file-picture"></i> {{ trans("messages.template.upload_thumbnail") }}
                                         </a>

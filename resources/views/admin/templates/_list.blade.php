@@ -70,13 +70,6 @@
 							<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 							<ul class="dropdown-menu dropdown-menu-right">
 								@if (Auth::user()->admin->can('update', $template))
-									<li>
-										<a class="template-compose-classic" href="{{ action('Admin\TemplateController@edit', $template->uid) }}">
-											<i class="icon-hammer"></i> {{ trans("messages.buider.builder_classic") }}
-										</a>
-									</li>
-								@endif
-								@if (Auth::user()->admin->can('update', $template))
                                     <li>
                                         <a class="upload-thumb-button" href="{{ action('Admin\TemplateController@updateThumb', $template->uid) }}">
                                             <i class="icon-file-picture"></i> {{ trans("messages.template.upload_thumbnail") }}
