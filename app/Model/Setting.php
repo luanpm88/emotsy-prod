@@ -240,6 +240,12 @@ class Setting extends Model
                 'type' => 'textarea',
                 'not_required' => 'yes',
             ],
+            'builder' => [
+                'cat' => 'general',
+                'value' => 'both',
+                'type' => 'select',
+                'options' => self::builderOptions(),
+            ],
             'import_subscribers_commitment' => [
                 'cat' => 'others',
                 'value' => null,
@@ -506,6 +512,20 @@ class Setting extends Model
             ['value' => 'pink', 'text' => trans('messages.pink')],
             ['value' => 'grey', 'text' => trans('messages.grey')],
             ['value' => 'white', 'text' => trans('messages.white')],
+        ];
+    }
+
+    /**
+     * Color array.
+     *
+     * @return array
+     */
+    public static function builderOptions()
+    {
+        return [
+            ['value' => 'both', 'text' => trans('messages.builder.both')],
+            ['value' => 'pro', 'text' => trans('messages.builder.pro')],
+            ['value' => 'classic', 'text' => trans('messages.builder.classic')],
         ];
     }
 

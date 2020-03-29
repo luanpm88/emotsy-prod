@@ -3267,4 +3267,11 @@
   'subscriber.import.multiple_field_error' => 'A field can be only one time mapped',
   'subscriber.import.running.wording' => 'Import is in progress, it may take several minutes or even hours
     depending on your inputs file as well as your server performance.app',
+  'use_custom_verification_email' => 'Use custom verification email. Click
+    <a href=":link" class="custom-verification-email-edit">here</a> to edit',
+  'custom_verification_email' => 'Custom Verification Email',
+  'custom_verification_email.updated' => 'Custom verification email was updated',
+  'builder.both' => 'Both',
+  'builder.pro' => 'Pro',
+  'builder.classic' => 'Classic',
 ) ?>

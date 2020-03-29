@@ -48,12 +48,16 @@
 
                 <td class="text-right">
                     @if (Auth::user()->customer->can('update', $template))
-                        <a href="{{ action('TemplateController@builderEdit', $template->uid) }}" type="button" class="btn btn-default btn-icon template-compose">
-                            {{ trans('messages.template.pro_builder') }}
-                        </a>
-                        <a href="{{ action('TemplateController@edit', $template->uid) }}" type="button" class="btn bg-grey btn-icon template-compose-classic">
-                            {{ trans('messages.template.classic_builder') }}
-                        </a>
+                        @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']))
+                            <a href="{{ action('TemplateController@builderEdit', $template->uid) }}" type="button" class="btn btn-default btn-icon template-compose">
+                                {{ trans('messages.template.pro_builder') }}
+                            </a>
+                        @endif
+                        @if (in_array(Acelle\Model\Setting::get('builder'), ['both','classic']))
+                            <a href="{{ action('TemplateController@edit', $template->uid) }}" type="button" class="btn bg-grey btn-icon template-compose-classic">
+                                {{ trans('messages.template.classic_builder') }}
+                            </a>
+                        @endif
                     @endif
                     @if (Auth::user()->customer->can('preview', $template) ||
                         Auth::user()->customer->can('copy', $template) ||
@@ -64,13 +68,6 @@
                             <ul class="dropdown-menu dropdown-menu-right">
                                 @if (Auth::user()->customer->can('preview', $template))
                                     <li><a href="#preview" onclick="popupwindow('{{ action('TemplateController@preview', $template->uid) }}', '{{ $template->name }}', 800, 800)"><i class="icon-zoomin3"></i> {{ trans("messages.preview") }}</a></li>
-                                @endif
-                                @if (Auth::user()->customer->can('update', $template))
-                                    <li>
-                                        <a class="template-compose-classic" href="{{ action('TemplateController@edit', $template->uid) }}">
-                                            <i class="icon-hammer"></i> {{ trans("messages.buider.builder_classic") }}
-                                        </a>
-                                    </li>
                                 @endif
                                 @if (Auth::user()->customer->can('update', $template))
                                     <li>

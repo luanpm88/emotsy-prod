@@ -574,9 +574,12 @@ class Template extends Model
      * transform URL.
      */
     public function transform()
-    {
+    {        
         // replace relative urls
-        $this->content = '<!DOCTYPE html>'.\Acelle\Library\Tool::replaceTemplateUrl($this->content, route('template_assets', ['uid' => $this->uid, 'path' => '']));
+        $this->content = \Acelle\Library\Tool::replaceTemplateUrl(
+            tinyDocTypeTransform($this->content),
+            route('template_assets', ['uid' => $this->uid, 'path' => ''])
+        );
     }
 
     /**
@@ -585,7 +588,10 @@ class Template extends Model
     public function untransform()
     {
         // replace absolute urls
-        $this->content = str_replace(route('template_assets', ['uid' => $this->uid, 'path' => '']).'/', '', $this->content);
+        $this->content = str_replace(
+            route('template_assets', ['uid' => $this->uid, 'path' => '']).'/', '', 
+            tinyDocTypeUntransform($this->content)
+        );
     }
 
     /**

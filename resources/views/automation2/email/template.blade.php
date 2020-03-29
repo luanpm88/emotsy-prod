@@ -18,20 +18,24 @@
                                 'date' => Acelle\Library\Tool::formatDateTime($email->updated_at),
                             ]) }}</p>
                             
-                            <a href="{{ action('Automation2Controller@templateEdit', [
-                                    'uid' => $automation->uid,
-                                    'email_uid' => $email->uid,
-                                ]) }}" class="btn btn-secondary mr-1 template-compose"
-                            >
-                                {{ trans('messages.campaign.compose_email') }}
-                            </a>
-                            <a href="{{ action('Automation2Controller@templateEditClassic', [
-                                    'uid' => $automation->uid,
-                                    'email_uid' => $email->uid,
-                                ]) }}" class="btn btn-outline-secondary mr-1 template-compose-classic"
-                            >
-                                {{ trans('messages.campaign.compose_email_classic') }}
-                            </a>
+                            @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']))
+                                <a href="{{ action('Automation2Controller@templateEdit', [
+                                        'uid' => $automation->uid,
+                                        'email_uid' => $email->uid,
+                                    ]) }}" class="btn btn-secondary mr-1 template-compose"
+                                >
+                                    {{ trans('messages.campaign.compose_email') }}
+                                </a>
+                            @endif
+                            @if (in_array(Acelle\Model\Setting::get('builder'), ['both','classic']))
+                                <a href="{{ action('Automation2Controller@templateEditClassic', [
+                                        'uid' => $automation->uid,
+                                        'email_uid' => $email->uid,
+                                    ]) }}" class="btn btn-outline-secondary mr-1 template-compose-classic"
+                                >
+                                    {{ trans('messages.campaign.compose_email_classic') }}
+                                </a>
+                            @endif
                             <a href="{{ action('Automation2Controller@templateRemove', [
                                     'uid' => $automation->uid,
                                     'email_uid' => $email->uid,
@@ -48,12 +52,23 @@
                             'email_uid' => $email->uid,
                         ]) }}?v={{ Carbon\Carbon::now() }}"
                     />
-                    <a href="{{ action('Automation2Controller@templateEdit', [
-                        'uid' => $automation->uid,
-                        'email_uid' => $email->uid,
-                    ]) }}" class="btn btn-primary template-compose" style="display:none">
-                        {{ trans('messages.automation.template.edit_with_builder') }}
-                    </a>
+                    @if (in_array(Acelle\Model\Setting::get('builder'), ['both','classic']))
+                        <a href="{{ action('Automation2Controller@templateEditClassic', [
+                            'uid' => $automation->uid,
+                            'email_uid' => $email->uid,
+                        ]) }}" class="btn btn-primary template-compose" style="display:none">
+                            {{ trans('messages.automation.template.edit_with_builder') }}
+                        </a>
+                    @endif
+                    @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']))
+                        <a href="{{ action('Automation2Controller@templateEdit', [
+                            'uid' => $automation->uid,
+                            'email_uid' => $email->uid,
+                        ]) }}" class="btn btn-primary template-compose" style="display:none">
+                            {{ trans('messages.automation.template.edit_with_builder') }}
+                        </a>
+                    @endif
+                    
                 </div>
             </div>
                 

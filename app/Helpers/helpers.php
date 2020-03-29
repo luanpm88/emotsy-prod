@@ -764,3 +764,22 @@ function create_basedir($path, $createBasename = true)
         mkdir($path); // create the last file name
     }
 }
+
+function tinyDocTypeTransform($content)
+{
+    if(stripos(strtolower($content), '<!doctype') === false) { 
+        $doctype = '<!DoCtYPe html>';
+    } else {
+        $doctype = '';
+    }
+
+    return $doctype . $content;
+}
+
+function tinyDocTypeUntransform($content)
+{
+    return str_replace(
+        '<!DoCtYPe html>', '', 
+        $content
+    );
+}

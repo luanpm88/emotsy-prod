@@ -2584,7 +2584,10 @@ abstract class AbsCampaign extends Model
     public function transform()
     {
         // replace relative urls
-        $this->html = '<!DOCTYPE html>'.\Acelle\Library\Tool::replaceTemplateUrl($this->html, route('campaign_assets', ['uid' => $this->uid, 'path' => '']));
+        $this->html = \Acelle\Library\Tool::replaceTemplateUrl(
+            tinyDocTypeTransform($this->html),
+            route('campaign_assets', ['uid' => $this->uid, 'path' => ''])
+        );
 
         return $this->html;
     }
@@ -2595,7 +2598,10 @@ abstract class AbsCampaign extends Model
     public function untransform()
     {
         // replace absolute urls
-        $this->html = str_replace(route('campaign_assets', ['uid' => $this->uid, 'path' => '']).'/', '', $this->html);
+        $this->html = str_replace(
+            route('campaign_assets', ['uid' => $this->uid, 'path' => '']).'/', '',
+            tinyDocTypeUntransform($this->html)
+        );
     }
 
     /**

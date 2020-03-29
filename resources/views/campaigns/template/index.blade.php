@@ -49,12 +49,16 @@
                             <a href="{{ action('CampaignController@templateCreate', $campaign->uid) }}" class="btn btn-primary bg-grey-600 mr-5">
                                 {{ trans('messages.campaign.change_template') }}
                             </a>
-                            <a href="{{ action('CampaignController@templateEdit', $campaign->uid) }}" class="btn btn-primary mr-5 template-compose">
-                                {{ trans('messages.campaign.email_builder_pro') }}
-                            </a>
-                            <a href="{{ action('CampaignController@builderClassic', $campaign->uid) }}" class="btn btn-default template-compose-classic">
-                                {{ trans('messages.campaign.email_builder_classic') }}
-                            </a>
+                            @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']))
+                                <a href="{{ action('CampaignController@templateEdit', $campaign->uid) }}" class="btn btn-primary mr-5 template-compose">
+                                    {{ trans('messages.campaign.email_builder_pro') }}
+                                </a>
+                            @endif
+                            @if (in_array(Acelle\Model\Setting::get('builder'), ['both','classic']))
+                                <a href="{{ action('CampaignController@builderClassic', $campaign->uid) }}" class="btn btn-default template-compose-classic">
+                                    {{ trans('messages.campaign.email_builder_classic') }}
+                                </a>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -64,11 +68,20 @@
                                 'uid' => $campaign->uid,
                             ]) }}?v={{ Carbon\Carbon::now() }}"
                         />
-                        <a href="{{ action('CampaignController@templateEdit', $campaign->uid) }}"
-                            class="btn btn-primary template-compose" style="display:none"
-                        >
-                            {{ trans('messages.automation.template.edit_with_builder') }}
-                        </a>
+                        @if (in_array(Acelle\Model\Setting::get('builder'), ['both','classic']))
+                            <a href="{{ action('CampaignController@builderClassic', $campaign->uid) }}"
+                                class="btn btn-primary template-compose-classic" style="display:none"
+                            >
+                                {{ trans('messages.automation.template.edit_with_builder') }}
+                            </a>
+                        @endif
+                        @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']))
+                            <a href="{{ action('CampaignController@templateEdit', $campaign->uid) }}"
+                                class="btn btn-primary template-compose" style="display:none"
+                            >
+                                {{ trans('messages.automation.template.edit_with_builder') }}
+                            </a>
+                        @endif                            
                     </div>
                 </div>
             </div>

@@ -606,7 +606,7 @@ class TemplateController extends Controller
                 $template = $currentTemplate->copy($request->name, null, $admin);
             }
             
-            return redirect()->action('Admin\TemplateController@builderEdit', $template->uid);
+            return redirect()->action('Admin\TemplateController@index');
         }
 
         return view('admin.templates.builder.create', [

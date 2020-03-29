@@ -34,7 +34,7 @@
                 tags: {!! json_encode(Acelle\Model\Template::builderTags((isset($list) ? $list : null))) !!},
                 root: '{{ URL::asset('builder') }}/',
                 templates: templates,
-                logo: '{{ URL::asset('images/logo_light_builder.png') }}',
+                logo: '{{ \Acelle\Model\Setting::get('site_logo_small') ? action('SettingController@file', \Acelle\Model\Setting::get('site_logo_small')) : URL::asset('images/logo_light_builder.png') }}',
                 backgrounds: [
                     '{{ url('/images/backgrounds/images1.jpg') }}',
                     '{{ url('/images/backgrounds/images2.jpg') }}',
