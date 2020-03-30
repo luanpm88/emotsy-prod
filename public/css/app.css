@@ -3629,3 +3629,12 @@ body > .ui-pnotify {
 .overflow-hidden {
     overflow: hidden !important;
 }
+.full-iframe-popup .frame-classic-loader {
+    position: absolute;
+    height: 100vh;
+    width: 100%;
+    background: #fff;
+    display: flex;
+    padding: 0 50%;
+    align-items: center;
+}
