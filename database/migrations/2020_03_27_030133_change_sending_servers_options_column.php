@@ -13,7 +13,7 @@ class ChangeSendingServersOptionsColumn extends Migration
      */
     public function up()
     {
-        DB::statement('ALTER TABLE sending_servers CHANGE options options LONGTEXT;');
+        DB::statement('ALTER TABLE ' . table('sending_servers') . ' CHANGE options options LONGTEXT;');
     }
 
     /**
