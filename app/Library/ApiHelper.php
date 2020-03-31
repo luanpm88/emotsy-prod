@@ -107,6 +107,26 @@ class ApiHelper
 ' .str_replace('-ID-', '<redbold>{uid}</redbold>', action("Api\MailListController@show", '-ID-')).'? \
 -d api_token=' .\Auth::user()->api_token,
                 ],
+
+                [
+                    'method' => 'POST',
+                    'uri' => '/api/v1/lists/{uid}/add-field',
+                    'description' => 'Add custom field to list',
+                    'parameters' => [
+                        ['name' => '$type', 'description' => 'Choose one of these types: text, number, datetime.'],
+                        ['name' => '$label', 'description' => 'Field\' label'],
+                        ['name' => '$tag', 'description' => 'The tag name may have alpha-numeric characters, as well as dashes and underscores.'],
+                        ['name' => '$default_value', 'description' => 'Default value of the field', 'optional' => true],
+                    ],
+                    'returns' => 'Creation messages in json',
+                    'example' => 'curl -X POST -H "accept:application/json" -G \
+' .str_replace('-ID-', '<redbold>{uid}</redbold>', action("Api\MailListController@addField", '-ID-')).'? \
+-d api_token=' .\Auth::user()->api_token . ' \
+-d type=text \
+-d label=Custom \
+-d tag=CUSTOM_FIELD_1 \
+-d default_value=test'
+                ],
             ],
         ];
 

@@ -25,6 +25,7 @@ Route::group(['namespace' => 'Api', 'prefix' => 'v1', 'middleware' => 'auth:api'
     });
 
     // List
+    Route::post('lists/{uid}/add-field', 'MailListController@addField');
     Route::resource('lists', 'MailListController');
 
     // Campaign

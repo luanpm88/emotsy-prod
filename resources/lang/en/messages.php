@@ -3233,4 +3233,5 @@
     Free Payment Gateway. Supports Netbanking, Credit, Debit Cards etc',
   'payment.razorpay.key_secret' => 'Key Secret',
   'payment.razorpay.key_id' => 'Key ID',
+  'field.created' => 'List\'s field was created',
 ) ?>

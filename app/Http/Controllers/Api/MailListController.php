@@ -162,4 +162,62 @@ class MailListController extends Controller
             ), 200);
         }
     }
+
+    /**
+     * Add custom field for mail list.
+     *
+     * POST /api/v1/lists/store
+     *
+     * @param \Illuminate\Http\Request $request All list information.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function addField(Request $request, $uid)
+    {
+        $user = \Auth::guard('api')->user();
+        $list = \Acelle\Model\MailList::findByUid($uid);
+
+        if (!$list) {
+            return \Response::json(array('status' => 0, 'message' => 'Can not find list with uid=' . $uid), 404);
+        }
+
+        // authorize
+        if (!$user->can('update', $list)) {
+            return \Response::json(array('status' => 0, 'message' => trans('no_more_item')), 403);
+        }
+
+        // validate and save posted data
+        if ($request->isMethod('post')) {
+            $rules = [
+                // check required input
+                'type' => 'required|in:text,number,datetime',
+                'label' => 'required',
+                'tag' => 'required|alpha_dash',
+            ];
+            $validator = \Validator::make($request->all(), $rules);
+            if ($validator->fails()) {
+                return response()->json($validator->messages(), 403);
+            }
+
+            $exist = \Acelle\Model\Field::where('mail_list_id', '=', $list->id)
+                ->where('tag', '=', $request->tag)
+                ->count();
+            
+            if ($exist) {
+                return \Response::json(array('status' => 0, 'message' => 'Field tag exists'), 403);
+            }
+            
+            // Save field
+            $field = new \Acelle\Model\Field();
+            $field->mail_list_id = $list->id;
+            $field->fill($request->all());
+            $field->save();
+
+            return \Response::json(array(
+                'status' => 1, 
+                'message' => trans('messages.field.created'),
+                'field' => $field->toArray()
+            ), 200);
+        }
+    }
 }
