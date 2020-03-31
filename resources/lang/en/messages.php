@@ -3226,4 +3226,11 @@
   'builder.both' => 'Both',
   'builder.pro' => 'Pro',
   'builder.classic' => 'Classic',
+  'payments.razorpay' => 'Razorpay',
+  'payments.razorpay.list_intro' => 'Start Accepting Payments Instantly with Razorpay\'s
+    Free Payment Gateway. Supports Netbanking, Credit, Debit Cards etc',
+  'payment.razorpay.wording' => 'Start Accepting Payments Instantly with Razorpay\'s
+    Free Payment Gateway. Supports Netbanking, Credit, Debit Cards etc',
+  'payment.razorpay.key_secret' => 'Key Secret',
+  'payment.razorpay.key_id' => 'Key ID',
 ) ?>
