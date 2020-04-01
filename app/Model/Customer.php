@@ -1976,6 +1976,11 @@ class Customer extends Model implements BillableUserInterface
             if ($gateway->hasPending($this->subscription) || $gateway->hasError($this->subscription)) {
                 return true;
             }
+
+            // if has pending renew
+            if (Cashier::hasPendingRenew($this->subscription)) {
+                return true;
+            }
         }
 
         return false;

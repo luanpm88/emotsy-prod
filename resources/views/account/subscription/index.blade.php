@@ -64,6 +64,13 @@
                         </p>
                     @endif
 
+                    @if (Acelle\Cashier\Cashier::hasPendingRenew($subscription))
+                        @include('elements._notification', [
+                            'level' => 'warning',
+                            'message' => trans('messages.subscription.has_renew_pending.warning')
+                        ])
+                    @endif
+
                     @if (\Auth::user()->customer->can('renew', $subscription))
                         <a
                             href="{{ $gateway->getRenewUrl($subscription, action('AccountSubscriptionController@index')) }}"
