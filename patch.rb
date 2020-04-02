@@ -23,15 +23,15 @@ if last_supported == new_version
   exit(0)
 end
 
-history = `git --git-dir #{File.join(gitdir, '.git')}  --work-tree #{gitdir} log #{last_supported}..#{new_version} --pretty=format:"%h"`
+history = `git --git-dir #{File.join(gitdir, '.git')}  --work-tree #{gitdir} log #{last_supported}..#{new_version} --pretty=format:"%h"`.split("\n")
 
 # Get deleted files
 deleted = []
 updated = []
 for version in history
-  deleted += `git --git-dir #{File.join(gitdir, '.git')}  --work-tree #{gitdir} show --diff-filter=D --pretty="format:" --name-only #{version}`.split("\n")
-  deleted += `git --git-dir #{File.join(gitdir, '.git')}  --work-tree #{gitdir} show --diff-filter=R --pretty="format:" --name-only #{version} | awk '{print $2}`.split("\n")
-  updated += `git --git-dir #{File.join(gitdir, '.git')}  --work-tree #{gitdir} show --diff-filter=ACMRTUXB --pretty="format:" --name-only #{version}`.split("\n")
+  deleted += `git --git-dir #{File.join(gitdir, '.git')}  --work-tree #{gitdir} show --diff-filter=D --pretty='format:' --name-only #{version}`.split("\n")
+  deleted += `git --git-dir #{File.join(gitdir, '.git')}  --work-tree #{gitdir} show --diff-filter=R --pretty='format:' --name-only #{version} | awk '{print $1}'`.split("\n")
+  updated += `git --git-dir #{File.join(gitdir, '.git')}  --work-tree #{gitdir} show --diff-filter=ACMRTUXB --pretty='format:' --name-only #{version}`.split("\n")
 end
 
 updated << 'VERSION'
@@ -43,16 +43,6 @@ skipped = [
   'patch.rb'
 ]
 
-for f in updated
-  unless File.exists?(f)
-    skipped << f
-  end
-end
-
-puts skipped.uniq.map{|f| "* Skipped: #{f}"}.join("\n")
-
-updated.delete_if{ |f| skipped.include?(f) }
-
 # Resolve the updated/deleted stuffs
 # Make sure your working copy is of the correct version: "git checkout v3.0.0-p3" for example
 intersected = deleted & updated
@@ -63,6 +53,16 @@ for e in intersected
     updated.delete_if { |i| i == e }
   end
 end
+
+for f in updated
+  unless File.exists?(f)
+    skipped << f
+  end
+end
+
+puts skipped.uniq.map{|f| "* Skipped: #{f}"}.join("\n")
+
+updated.delete_if{ |f| skipped.include?(f) }
 
 if !updated.select{|f| f[/resources.lang.en.[a-z0-9]+\.php$/] }.empty?
   dirs << 'resources/lang/default'

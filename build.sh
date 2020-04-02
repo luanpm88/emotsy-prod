@@ -36,7 +36,12 @@ fi
 CURPATH=$(pwd)
 
 # cp -r $CURPATH $OUTPUT
-rsync -qavr --exclude='.git' $CURPATH $OUTPUT
+# 
+rsync -qavr --exclude="/vendor" --exclude='.git' $CURPATH/ $OUTPUT
+
+# copy the whole folder vendor seems faster
+cp -r $CURPATH/vendor $OUTPUT/
+
 cd $OUTPUT
 
 # create version file
