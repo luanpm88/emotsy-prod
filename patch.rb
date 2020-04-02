@@ -6,8 +6,8 @@ require 'json'
 
 # Settings
 old_versions = ['4.0.9']                    # sort by chronological order
-packages = ['acelle', 'paypal', 'doctrine', 'ramsey']       # vendor packages to be replaced
-dirs = ['resources/lang/default', 'public/builder']               # 'resources/lang/default' for example
+packages = ['acelle', 'paypal', 'doctrine', 'ramsey', 'stripe']       # vendor packages to be replaced
+dirs = ['resources/lang/default', 'public/builder']                   # 'resources/lang/default' for example
 
 # Auto setting
 release_date = Time.now.to_s
