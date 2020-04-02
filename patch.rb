@@ -5,14 +5,13 @@
 require 'json'
 
 # Settings
-old_versions = ['4.0.9']                    # sort by chronological order
+last_supported = '4.0.9'
 packages = ['acelle', 'paypal', 'doctrine', 'ramsey', 'stripe']       # vendor packages to be replaced
 dirs = ['resources/lang/default', 'public/builder']                   # 'resources/lang/default' for example
 
 # Auto setting
 release_date = Time.now.to_s
 packages += ['autoload.php', 'composer'] unless packages.empty?
-last_supported = old_versions[0]
 
 # Retrieve input
 new_version = ARGV[2]
@@ -24,22 +23,23 @@ if last_supported == new_version
   exit(0)
 end
 
+history = `git log #{last_supported}..#{new_version} --pretty=format:"%h"`
+
 # Get deleted files
 deleted = []
-for version in old_versions
-  deleted += `git --git-dir #{File.join(gitdir, '.git')}  --work-tree #{gitdir} diff --diff-filter=D --name-only #{version} #{new_version}`.split("\n")
-  deleted.uniq!
+updated = []
+for version in history
+  deleted += `git --git-dir #{File.join(gitdir, '.git')}  --work-tree #{gitdir} show --diff-filter=D --pretty="format:" --name-only #{version}`.split("\n")
+  deleted += `git --git-dir #{File.join(gitdir, '.git')}  --work-tree #{gitdir} show --diff-filter=R --pretty="format:" --name-only #{version} | awk '{print $2}`.split("\n")
+  updated += `git --git-dir #{File.join(gitdir, '.git')}  --work-tree #{gitdir} show --diff-filter=ACMRTUXB --pretty="format:" --name-only #{version}`.split("\n")
 end
 
-# Get updated flies
-updated = `git --git-dir #{File.join(gitdir, '.git')}  --work-tree #{gitdir} diff --diff-filter=ACMRTUXB --name-only #{last_supported} #{new_version}`.split("\n")
-
 updated << 'VERSION'
+
+deleted.uniq!
 updated.uniq!
 
 skipped = [
-  'public/images/default_site_logo_small_dark.png',
-  'public/images/default_site_logo_small_light.png',
   'patch.rb'
 ]
 
