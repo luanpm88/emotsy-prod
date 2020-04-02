@@ -35,7 +35,8 @@ fi
 
 CURPATH=$(pwd)
 
-cp -r $CURPATH $OUTPUT
+# cp -r $CURPATH $OUTPUT
+rsync -qavr --exclude='.git' $CURPATH $OUTPUT
 cd $OUTPUT
 
 # create version file

@@ -23,7 +23,7 @@ if last_supported == new_version
   exit(0)
 end
 
-history = `git log #{last_supported}..#{new_version} --pretty=format:"%h"`
+history = `git --git-dir #{File.join(gitdir, '.git')}  --work-tree #{gitdir} log #{last_supported}..#{new_version} --pretty=format:"%h"`
 
 # Get deleted files
 deleted = []
