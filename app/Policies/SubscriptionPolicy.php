@@ -115,16 +115,7 @@ class SubscriptionPolicy
 
     public function renew(User $user, Subscription $subscription, $role)
     {
-        $gateway = Cashier::getPaymentGateway();
-        $can = $subscription->isActive() && !$gateway->hasPending($subscription) && !$gateway->isSupportRecurring();
-        $can = $can && (
-            config('cashier.renew_free_plan') == 'yes' ||
-            (config('cashier.renew_free_plan') == 'no' && !$subscription->plan->isFree())
-        );
-
-        $goingToExpire = $subscription->goingToExpire();
-
-        // $can = $can && $goingToExpire;
+        $can = Cashier::hasPendingRenew($subscription);
 
         switch ($role) {
             case 'admin':

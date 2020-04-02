@@ -2519,6 +2519,8 @@
     Click <a href=":link">here</a> to check your subscription status and process with payment.',
   'subscription_done.stripe.email' => 'Hello :customer, <br/>Your subscription to :plan plan was successfully created.<br>
     Click <a href=":link">here</a> to check your subscription status and process with payment.',
+  'subscription_done.razorpay.email' => 'Hello :customer, <br/>Your subscription to :plan plan was successfully created.<br>
+    Click <a href=":link">here</a> to check your subscription status and process with payment.',
   'subscription.next_invoice' => 'Next invoice',
   'subscription.next_invoice.empty' => 'No invoices found',
   'subscription.renew' => 'Renew',
@@ -3234,4 +3236,7 @@
   'payment.razorpay.key_secret' => 'Key Secret',
   'payment.razorpay.key_id' => 'Key ID',
   'field.created' => 'List\'s field was created',
+  'subscription.has_renew_pending.warning' => 'The subscription is going to expired soon!
+    You should extend current plan by clicking on the <strong>Renew</strong> button bellow.',
+  'payment.razorpay' => 'Razorpay',
 ) ?>
