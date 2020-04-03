@@ -223,9 +223,11 @@ class Customer extends Model implements BillableUserInterface
 
     public function activeVerifiedSendingDomains()
     {
+        $server = $this->activeSubscription()->plan->primarySendingServer();
         return $this->sendingDomains()
             ->where('status', '=', \Acelle\Model\SendingDomain::STATUS_ACTIVE)
-            ->where('domain_verified', '=', \Acelle\Model\SendingDomain::VERIFIED);
+            ->where('domain_verified', '=', \Acelle\Model\SendingDomain::VERIFIED)
+            ->whereRaw(sprintf('(%s IS NULL or %s = %s)', table('sending_domains.sending_server_id'), table('sending_domains.sending_server_id'), $server->id));
     }
 
     /**

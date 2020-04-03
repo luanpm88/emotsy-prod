@@ -89,10 +89,14 @@ class SendingDomain extends Model
      *
      * @return collect
      */
-    public static function filter($request)
+    public static function filter($request, $server = null)
     {
         $user = $request->user();
-        $query = self::select('sending_domains.*');
+        if ($server) {
+            $query = self::select('sending_domains.*')->whereRaw(sprintf('(%s IS NULL or %s = %s)', table('sending_domains.sending_server_id'), table('sending_domains.sending_server_id'), $server->id));
+        } else {
+            $query = self::select('sending_domains.*');
+        }
 
         // Keyword
         if (!empty(trim($request->keyword))) {
@@ -130,9 +134,9 @@ class SendingDomain extends Model
      *
      * @return collect
      */
-    public static function search($request)
+    public static function search($request, $server = null)
     {
-        $query = self::filter($request);
+        $query = self::filter($request, $server);
 
         if (!empty($request->sort_order)) {
             $query = $query->orderBy($request->sort_order, $request->sort_direction);

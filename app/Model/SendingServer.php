@@ -1641,6 +1641,11 @@ class SendingServer extends Model
     {
         // For now, it is for Amazon only
         $options = $this->getOptions();
+
+        if (!array_key_exists('identities', $options)) {
+            return;
+        }
+
         $identities = $options['identities'];
 
         $selectedEmails = array_key_exists('emails', $selected) ? $selected['emails'] : [];

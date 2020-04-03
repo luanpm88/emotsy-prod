@@ -22,7 +22,8 @@ class SendingDomainController extends Controller
         }
 
         $request->merge(array("customer_id" => $request->user()->customer->id));
-        $items = SendingDomain::search($request);
+        $server = $request->user()->customer->activeSubscription()->plan->primarySendingServer();
+        $items = SendingDomain::search($request, $server);
 
         return view('sending_domains.index', [
             'items' => $items,
@@ -41,7 +42,8 @@ class SendingDomainController extends Controller
         }
 
         $request->merge(array("customer_id" => $request->user()->customer->id));
-        $items = SendingDomain::search($request)->paginate($request->per_page);
+        $server = $request->user()->customer->activeSubscription()->plan->primarySendingServer();
+        $items = SendingDomain::search($request, $server)->paginate($request->per_page);
 
         return view('sending_domains._list', [
             'items' => $items,
