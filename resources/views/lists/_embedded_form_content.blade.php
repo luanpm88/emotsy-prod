@@ -50,47 +50,53 @@
 		@endif
 
         </div>
-			
-		<link href="{{ URL::asset('assets/css/icons/icomoon/styles.css') }}" rel="stylesheet" type="text/css">
-		<link href="{{ URL::asset('assets/css/components.css') }}" rel="stylesheet" type="text/css">
-		<link href="{{ URL::asset('css/app.css') }}?v={{ app_version() }}" rel="stylesheet" type="text/css">
-		
-		<script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery.min.js') }}"></script>
-		<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/validation/validate.min.js') }}"></script>
-			
-		<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/pickers/pickadate/picker.js') }}"></script>
-		<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/pickers/pickadate/picker.date.js') }}"></script>
-			
-		<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
-		<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/pickers/anytime.min.js') }}"></script>
-		
-		@include('layouts._script_vars')
-		
-		<script>
-			$.noConflict();
-			jQuery( document ).ready(function( $ ) {				
-				@if (!isset($preview))
-					@if ($javascript == 'yes')			
-						$(".subscribe-embedded-form form").validate({
-							rules: {
-							  EMAIL: {
-								required: true,
-								email: true,
-								remote: "{{ action('MailListController@checkEmail', $list->uid) }}"
-							  }
-							}
-						});
-					@endif
-				@endif
-		
-				$('.pickadate').pickadate({format: LANG_J_DATE_FORMAT, selectYears: 100});
 
-				if ($(".pickadatetime").length) {
-					$(".pickadatetime").AnyTime_picker({
-						format: LANG_ANY_DATETIME_FORMAT
-					});
-				}
-			});
-		</script>
+		@if ($stylesheet == 'yes')
+			<link href="{{ URL::asset('assets/css/icons/icomoon/styles.css') }}" rel="stylesheet" type="text/css">
+			<link href="{{ URL::asset('assets/css/components.css') }}" rel="stylesheet" type="text/css">
+			<link href="{{ URL::asset('css/app.css') }}?v={{ app_version() }}" rel="stylesheet" type="text/css">
+		@endif
+		
+		@if ($javascript == 'yes')
+			<script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery.min.js') }}"></script>
+			<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/validation/validate.min.js') }}"></script>
+				
+			<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/pickers/pickadate/picker.js') }}"></script>
+			<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/pickers/pickadate/picker.date.js') }}"></script>
+				
+			<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
+			<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/pickers/anytime.min.js') }}"></script>
+		@endif
+		
+		
+		@if ($javascript == 'yes')
+			@include('layouts._script_vars')
+			<script>
+				$.noConflict();
+				jQuery( document ).ready(function( $ ) {				
+					@if (!isset($preview))
+						@if ($javascript == 'yes')			
+							$(".subscribe-embedded-form form").validate({
+								rules: {
+								EMAIL: {
+									required: true,
+									email: true,
+									remote: "{{ action('MailListController@checkEmail', $list->uid) }}"
+								}
+								}
+							});
+						@endif
+					@endif
+			
+					$('.pickadate').pickadate({format: LANG_J_DATE_FORMAT, selectYears: 100});
+
+					if ($(".pickadatetime").length) {
+						$(".pickadatetime").AnyTime_picker({
+							format: LANG_ANY_DATETIME_FORMAT
+						});
+					}
+				});
+			</script>
+		@endif
 			
 		

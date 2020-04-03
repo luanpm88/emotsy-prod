@@ -928,6 +928,7 @@
   'stylesheet_included' => 'Include stylesheet',
   'custom_css' => 'Custom CSS',
   'validate_script' => 'Validate script',
+  'include_javascript' => 'Include javascript',
   'cron_jobs_guide' => '
       Insert the following line to your system\'s crontab. <br />
       Please note, below timings for running the cron jobs are the recommended, you can change it if you want.
@@ -1417,9 +1418,6 @@
   'automation_status_draft' => 'Draft',
   'automation_status_active' => 'Active',
   'automation_status_inactive' => 'Inactive',
-  'auto_event_status_draft' => 'Draft',
-  'auto_event_status_active' => 'Active',
-  'auto_event_status_inactive' => 'Inactive',
   'list_status_active' => 'Active',
   'list_status_inactive' => 'Inactive',
   'system_job_status_new' => 'New',
@@ -2147,7 +2145,13 @@
   'sender.dropbox.empty' => '(empty)',
   'sender.dropbox.error' => 'The email address you entered is not verified yet.
     Click <a href=":sender_link" target="blank"><strong>here</strong></a> to verify. You can proceed with an unverified sender anyway if you are sure about it',
+  'sender.dropbox.error.' => 'The email address you entered is not verified yet.
+    Click <a href=":sender_link" target="blank"><strong>here</strong></a> to verify.',
+  'sender.dropbox.error.1' => 'The email address you entered is not verified yet.
+    Click <a href=":sender_link" target="blank"><strong>here</strong></a> to verify. You can proceed with an unverified sender anyway if you are sure about it',
   'sender.dropbox.reply.error' => 'The email address you entered is not verified yet.',
+  'sender.dropbox.reply.error.' => 'The email address you entered is not verified yet.',
+  'sender.dropbox.reply.error.1' => 'The email address you entered is not verified yet.',
   'sender.type.none' => 'none',
   'sender.view' => 'View',
   'sender.wording' => 'Acelle Mail requires that you verify your identities (the domains or email addresses that you send email from) to confirm that you own them, and to prevent unauthorized use',
@@ -3239,4 +3243,14 @@
   'subscription.has_renew_pending.warning' => 'The subscription is going to expired soon!
     You should extend current plan by clicking on the <strong>Renew</strong> button bellow.',
   'payment.razorpay' => 'Razorpay',
+  'sending_server.default_email_verification.content' => '<!DOCTYPE html>
+    <html>
+    <head>
+    </head>
+    <body>
+    <br /><span style="font-size: 24pt;">Acelle Mail Verification Center</span><br /><br /><span style="font-size: 14pt;">Dear Mr. or Mrs. {USER_LAST_NAME}</span><br /><br /><span style="font-size: 14pt;">Thank you for registering your email</span><br /><br /><span style="font-size: 14pt;">Please click the link below to verify your identity</span><br /><br /><em>Verification link will automatically be inserted to the end of your email content</em><br /><em>You can safely delete this notification line</em>
+    </body>
+    </html>',
+  'sending_servier.custom_verification_email.subject' => 'Subject',
+  'sending_server.default_email_verification.subject' => 'Verify your email address',
 ) ?>

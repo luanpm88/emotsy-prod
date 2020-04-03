@@ -301,7 +301,7 @@ abstract class AbsCampaign extends Model
         }
 
         //@todo attach function used for any attachment of Campaign
-        $path_campaign = public_path().'/campaign_attachment'.'/'.$this->uid;
+        $path_campaign = $this->getAttachmentPath();
         if (is_dir($path_campaign)) {
             $files = File::allFiles($path_campaign);
             foreach ($files as $file) {
@@ -2788,5 +2788,63 @@ abstract class AbsCampaign extends Model
         }
 
         return $filePath;
+    }
+
+    /**
+     * Get attachment path.
+     */
+    public function getAttachmentPath($path='')
+    {
+        return $this->getStoragePath('attachment/' . $path);
+    }
+
+    /**
+     * Upload attachment.
+     */
+    public function uploadAttachment($file)
+    {
+        $file_name = $file->getClientOriginalName();
+
+        $new_name = $file_name;
+        $i = 1;
+        while (file_exists($this->getAttachmentPath().$new_name)) {
+            $new_name = $i.'_'.$file_name;
+            ++$i;
+        }
+
+        $path = $file->move(
+            $this->getAttachmentPath(), $new_name
+        );
+
+        return $this->getAttachmentPath().$new_name;
+    }
+
+    /**
+     * Upload attachment.
+     */
+    public function getAttachments()
+    {
+        $atts = [];
+        $path_campaign = $this->getAttachmentPath();
+
+        if (!is_dir($path_campaign)) {
+            return $atts;
+        }
+
+        $ffs = scandir($path_campaign);
+
+        unset($ffs[array_search('.', $ffs, true)]);
+        unset($ffs[array_search('..', $ffs, true)]);
+
+        // prevent empty ordered elements
+        if (count($ffs) < 1) {
+            return $atts;
+        }
+
+        foreach ($ffs as $k => $ff) {
+            $atts[] = $ff;
+        }
+
+        return $atts;
     }
 }

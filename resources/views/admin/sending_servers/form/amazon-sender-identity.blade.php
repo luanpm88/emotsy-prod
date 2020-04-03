@@ -5,6 +5,8 @@
             <p>
                 {!! trans('messages.sending_servers.sending_identity.intro', ['link' => 'https://us-west-2.console.aws.amazon.com/ses/home#verified-senders-domain']) !!}
             </p>
+        </div>
+        <div class="col-md-8">
             @if (is_null($identities))
                 @include('elements._notification', [
                     'level' => 'warning',
@@ -17,34 +19,52 @@
                         <tr>
                             <td>{{ trans('messages.domain') }}</td>
                             <td>{{ trans('messages.status') }}</td>
-                            <td>{{ trans('messages.action') }}</td>
+                            <td align="center" class="xtooltip" title="Set whether or not this identity is available for all users">Available for All</td>
+                            <td>Added By</td>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($identities as $domain)
+                        @foreach ($allIdentities as $domain => $attributes)
                             <tr class="odd">
                                 <td>
                                     {{ $domain }}
                                 </td>
                                 <td>
-                                    <span class="badge badge-success badge-lg">{{ trans('messages.sending_identity.status.active') }}</span>
-                                </td>
-                                <td>
-                                    @if (checkEmail($domain))
-                                        <input type="checkbox" name="options[emails][]" value="{{ $domain }}" class="switchery"
-                                            {{ $server->isEmailEnabled($domain) ? " checked" : "" }}
-                                        />
+                                    @if ($attributes['VerificationStatus'] == 'Success')
+                                        <span class="badge badge-success badge-lg">{{ trans('messages.sending_domain_status_active') }}</span>
                                     @else
-                                        <input type="checkbox" name="options[domains][]" value="{{ $domain }}" class="switchery"
-                                            {{ $server->isDomainEnabled($domain) ? " checked" : "" }}
-                                        />
+                                        <span class="badge badge-default badge-lg">{{ trans('messages.sending_domain_status_inactive') }}</span>
                                     @endif
+                                    
+                                </td>
+
+                                @if (!is_null($attributes['UserId']))
+                                    <td align="center"><span class="xtooltip" title="This domain is private and is available for the owner user only">Private</span></td>
+                                @elseif ($attributes['VerificationStatus'] == 'Success')
+                                    <td align="center">
+                                        @if (checkEmail($domain))
+                                            <input type="checkbox" name="options[emails][]" value="{{ $domain }}" class="switchery"
+                                                {{ $attributes['Selected'] ? " checked" : "" }}
+                                            />
+                                        @else
+                                            <input type="checkbox" name="options[domains][]" value="{{ $domain }}" class="switchery"
+                                                {{ $attributes['Selected'] ? " checked" : "" }}
+                                            />
+                                        @endif
+                                    </td>
+                                @else
+                                    <td align="center"></td>
+                                @endif
+                                <td>
+                                    <a href="{{ action('Admin\CustomerController@index') }}" target="_blank">{{ $attributes['UserName'] }}</a>
                                 </td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
             @endif
+        </div>
+        <div class="col-md-6">
             <br>
             <a target="_blank" confirm="{{ trans('messages.sending_server.aws.add_domain_redirect_confirm') }}" href="https://us-west-2.console.aws.amazon.com/ses/home?region={{ $server->type }}" class="btn btn-mc_default mr-10">
                 {{ trans('messages.sending_serbers.add_domain') }}

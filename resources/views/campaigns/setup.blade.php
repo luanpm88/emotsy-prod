@@ -65,7 +65,7 @@
 						'help_class' => 'campaign',
 						'url' => action('SenderController@dropbox'),
 						'empty' => trans('messages.sender.dropbox.empty'),
-						'error' => trans('messages.sender.dropbox.error', [
+						'error' => trans('messages.sender.dropbox.error.' . Auth::user()->customer->allowUnverifiedFromEmailAddress(), [
 							'sender_link' => action('SenderController@index'),
 						]),
 						'header' => trans('messages.verified_senders'),
@@ -81,13 +81,21 @@
 					'options' => ['0','1'],
 				])
 												
-				@include('helpers.form_control', ['type' => 'text',
-					'name' => 'reply_to',
-					'label' => trans('messages.reply_to'),
-					'value' => $campaign->reply_to,
-					'rules' => $rules,
-					'help_class' => 'campaign'
-				])
+				@include('helpers.form_control', [
+                    'type' => 'autofill',
+                    'id' => 'sender_reply_to_input',
+                    'name' => 'reply_to',
+                    'label' => trans('messages.reply_to'),
+                    'value' => $campaign->reply_to,
+                    'url' => action('SenderController@dropbox'),
+                    'rules' => $campaign->rules(),
+                    'help_class' => 'campaign',
+                    'empty' => trans('messages.sender.dropbox.empty'),
+                    'error' => trans('messages.sender.dropbox.reply.error.' . Auth::user()->customer->allowUnverifiedFromEmailAddress(), [
+                        'sender_link' => action('SenderController@index'),
+                    ]),
+                    'header' => trans('messages.verified_senders'),
+                ])
 				
 			</div>
 			<div class="col-md-6 segments-select-box">
@@ -130,13 +138,23 @@
 			</div>
 		</div>
 		<hr>
-		<div class="text-right">
+		<div class="text-right {{ Auth::user()->customer->allowUnverifiedFromEmailAddress() ? '' : 'unverified_next_but' }}">
 			<button class="btn bg-teal-800">{{ trans('messages.save_and_next') }} <i class="icon-arrow-right7"></i> </button>
 		</div>
 		
 	<form>
 	
 	<script>
+		function checkUnverified() {
+			if(!$('.autofill-error:visible').length) {
+				$('.unverified_next_but').show();
+			} else {
+				$('.unverified_next_but').hide();
+			}
+		}
+
+		setInterval(function() { checkUnverified() }, 1000);
+
 		$(document).ready(function() {
 			// auto fill
 			var box = $('#sender_from_input').autofill({
@@ -150,8 +168,23 @@
 				box.updateErrorMessage();
 			})
 
+			// auto fill 2
+			var box2 = $('#sender_reply_to_input').autofill({
+				messages: {
+					header_found: '{{ trans('messages.sending_identity') }}',
+					header_not_found: '{{ trans('messages.sending_identity.reply.not_found.header') }}'
+				}
+			});
+			box2.loadDropbox(function() {
+				$('#sender_reply_to_input').focusout();
+				box2.updateErrorMessage();
+			})
+
 			$('[name="from_email"]').blur(function() {
-				$('[name="reply_to"]').val($(this).val());
+				$('[name="reply_to"]').val($(this).val()).change();
+			});
+			$('[name="from_email"]').change(function() {
+				$('[name="reply_to"]').val($(this).val()).change();
 			});
 		})
 	</script>

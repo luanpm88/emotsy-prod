@@ -10,7 +10,7 @@
                     </a>
                 </li>
             @endif
-            @if ( Auth::user()->customer->subscription->plan->useOwnSendingServer() || Auth::user()->customer->subscription->plan->primarySendingServer()->allowVerifyingOwnDomains() ) {
+            @if ( Auth::user()->customer->subscription->plan->useOwnSendingServer() || Auth::user()->customer->subscription->plan->primarySendingServer()->allowVerifyingOwnDomains() || Auth::user()->customer->subscription->plan->primarySendingServer()->allowVerifyingOwnDomainsRemotely() ) {
                 <li rel0="SendingDomainController">
                     <a href="{{ action('SendingDomainController@index') }}" class="level-1">
                     <i class="icon-earth mr-10"></i> {{ trans('messages.domains') }}

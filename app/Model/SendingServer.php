@@ -111,6 +111,11 @@ class SendingServer extends Model
         return $this->belongsTo('Acelle\Model\BounceHandler');
     }
 
+    public function sendingDomains()
+    {
+        return $this->hasMany('Acelle\Model\SendingDomain', 'sending_server_id');
+    }
+
     /**
      * Map a server to its class type and retrive an instance from the database.
      *
@@ -1202,7 +1207,23 @@ class SendingServer extends Model
     {
         $options = $this->getOptions();
 
-        return isset($options[$name]) ? $options[$name] : null;
+        $value = isset($options[$name]) ? $options[$name] : null;
+
+        // default value
+        if(!$value) {
+            // default verification email
+            if ($name == 'custom_verification_email') {
+                $value = trans('messages.sending_server.default_email_verification.content');;
+            }
+            
+            // default verification email
+            if ($name == 'custom_verification_email_subject') {
+                $value = trans('messages.sending_server.default_email_verification.subject');;
+            }
+        }
+
+
+        return $value;
     }
 
     /**
@@ -1500,16 +1521,6 @@ class SendingServer extends Model
      *
      * @return array
      */
-    public function getVerifiedIdentities()
-    {
-        return array_merge($this->getOption('domains'), $this->getOption('emails'));
-    }
-
-    /**
-     * Get verified identities.
-     *
-     * @return array
-     */
     public function initVerifiedIdentities()
     {
         $items = $this->getVerifiedIdentities();
@@ -1610,5 +1621,58 @@ class SendingServer extends Model
         foreach ($plans as $plan) {
             $plan->checkStatus();
         }
+    }
+
+    /**
+     * Verification sending server tags.
+     */
+    public static function verificationEmailTags()
+    {
+        return [
+            ['name' => 'USER_FIRST_NAME', 'required' => false],
+            ['name' => 'USER_LAST_NAME', 'required' => false],
+            ['name' => 'USER_ID', 'required' => false],
+            ['name' => 'USER_EMAIL', 'required' => false],
+            ['name' => 'EMAIL_TO_VERIFY', 'required' => false],
+        ];
+    }
+
+    public function updateIdentitiesList($selected)
+    {
+        // For now, it is for Amazon only
+        $options = $this->getOptions();
+
+        if (!array_key_exists('identities', $options)) {
+            return;
+        }
+
+        $identities = $options['identities'];
+
+        $selectedEmails = array_key_exists('emails', $selected) ? $selected['emails'] : [];
+        $selectedDomains = array_key_exists('domains', $selected) ? $selected['domains'] : [];
+        $selectedIdentities = array_merge($selectedEmails, $selectedDomains);
+
+        foreach($identities as $key => $attributes) {
+            if (in_array($key, $selectedIdentities)) {
+                $attributes['Selected'] = true;
+            } else {
+                $attributes['Selected'] = false;
+            }
+
+            $identities[$key] = $attributes;
+        }
+
+        $options['identities'] = $identities;
+        $this->setOptions($options);
+    }
+
+    public function getVerifiedIdentities()
+    {
+        return array_merge($this->getOption('domains'), $this->getOption('emails'));
+    }
+
+    public function syncIdentities()
+    {
+        // for overwriting, see Amazon sending server for example
     }
 }

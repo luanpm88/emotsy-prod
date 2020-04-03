@@ -223,9 +223,11 @@ class Customer extends Model implements BillableUserInterface
 
     public function activeVerifiedSendingDomains()
     {
+        $server = $this->activeSubscription()->plan->primarySendingServer();
         return $this->sendingDomains()
             ->where('status', '=', \Acelle\Model\SendingDomain::STATUS_ACTIVE)
-            ->where('domain_verified', '=', \Acelle\Model\SendingDomain::VERIFIED);
+            ->where('domain_verified', '=', \Acelle\Model\SendingDomain::VERIFIED)
+            ->whereRaw(sprintf('(%s IS NULL or %s = %s)', table('sending_domains.sending_server_id'), table('sending_domains.sending_server_id'), $server->id));
     }
 
     /**
@@ -1829,7 +1831,7 @@ class Customer extends Model implements BillableUserInterface
         // plan sending server emails
         $list = array_merge($this->activeSubscription()->plan->getVerifiedIdentities(), $list);
 
-        return $list;
+        return array_values(array_unique($list));
     }
 
     /**
@@ -2002,5 +2004,24 @@ class Customer extends Model implements BillableUserInterface
         // false means => do not create the last element of path, which is normally a file
         create_basedir($full, false);
         return $full;
+    }
+
+    public function allowUnverifiedFromEmailAddress() {
+        $plan = $this->subscription->plan;
+
+        if (!$plan) {
+            return false;
+        }
+
+        if ($plan->useSystemSendingServer() && is_object($plan->primarySendingServer())) {
+            return $plan->primarySendingServer()->allowUnverifiedFromEmailAddress();
+        }
+
+        return true;
+    }
+
+    public function getFullName()
+    {
+        return trim($this->first_name.' '.$this->last_name);
     }
 }
