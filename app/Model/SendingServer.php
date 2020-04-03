@@ -1665,4 +1665,9 @@ class SendingServer extends Model
     {
         return array_merge($this->getOption('domains'), $this->getOption('emails'));
     }
+
+    public function syncIdentities()
+    {
+        // for overwriting, see Amazon sending server for example
+    }
 }
