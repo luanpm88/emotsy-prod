@@ -63,7 +63,12 @@
     //
     // Dropzone
     // ------------------------------
-    $(".dropzone").dropzone({uploadMultiple: true});
+    $(".dropzone").dropzone({
+        uploadMultiple: true,
+        success: function() {
+            popup.load();
+        }
+    });
     
     $('.attachment-remove').click(function(e) {
         e.preventDefault();
