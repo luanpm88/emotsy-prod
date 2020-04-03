@@ -131,7 +131,7 @@ $.fn.autofill = function(options) {
             }
 
             // domain
-            if (box.value().split('@').length >= 2 && dataSubfix.indexOf(box.value().split('@')[1].trim().toLowerCase()) == 0) {
+            if (box.value().split('@').length >= 2 && dataSubfix == box.value().split('@')[1].trim().toLowerCase()) { // && dataSubfix.indexOf(box.value().split('@')[1].trim().toLowerCase()) == 0) {
                 valid = true;
                 return;
             }
@@ -290,6 +290,15 @@ $.fn.autofill = function(options) {
             box.moveDown();
         }
         
+        box.updateErrorMessage();
+    });
+
+    // Key up
+    box.input.on('blur', function(event) {
+        box.updateErrorMessage();
+    });
+
+    box.input.on('change', function(event) {
         box.updateErrorMessage();
     });
 

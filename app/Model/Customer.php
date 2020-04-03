@@ -2003,4 +2003,18 @@ class Customer extends Model implements BillableUserInterface
         create_basedir($full, false);
         return $full;
     }
+
+    public function allowUnverifiedFromEmailAddress() {
+        $plan = $this->subscription->plan;
+
+        if (!$plan) {
+            return false;
+        }
+
+        if ($plan->useSystemSendingServer() && is_object($plan->primarySendingServer())) {
+            return $plan->primarySendingServer()->allowUnverifiedFromEmailAddress();
+        }
+
+        return true;
+    }
 }

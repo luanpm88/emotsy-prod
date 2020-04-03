@@ -2148,7 +2148,13 @@
   'sender.dropbox.empty' => '(empty)',
   'sender.dropbox.error' => 'The email address you entered is not verified yet.
     Click <a href=":sender_link" target="blank"><strong>here</strong></a> to verify. You can proceed with an unverified sender anyway if you are sure about it',
+  'sender.dropbox.error.' => 'The email address you entered is not verified yet.
+    Click <a href=":sender_link" target="blank"><strong>here</strong></a> to verify.',
+  'sender.dropbox.error.1' => 'The email address you entered is not verified yet.
+    Click <a href=":sender_link" target="blank"><strong>here</strong></a> to verify. You can proceed with an unverified sender anyway if you are sure about it',
   'sender.dropbox.reply.error' => 'The email address you entered is not verified yet.',
+  'sender.dropbox.reply.error.' => 'The email address you entered is not verified yet.',
+  'sender.dropbox.reply.error.1' => 'The email address you entered is not verified yet.',
   'sender.type.none' => 'none',
   'sender.view' => 'View',
   'sender.wording' => 'Acelle Mail requires that you verify your identities (the domains or email addresses that you send email from) to confirm that you own them, and to prevent unauthorized use',

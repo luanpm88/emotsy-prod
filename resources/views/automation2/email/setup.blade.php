@@ -43,7 +43,7 @@
                     'help_class' => 'email',
                     'url' => action('SenderController@dropbox'),
                     'empty' => trans('messages.sender.dropbox.empty'),
-                    'error' => trans('messages.sender.dropbox.error', [
+                    'error' => trans('messages.sender.dropbox.error.' . Auth::user()->customer->allowUnverifiedFromEmailAddress(), [
                         'sender_link' => action('SenderController@index'),
                     ]),
                     'header' => trans('messages.verified_senders'),
@@ -60,7 +60,7 @@
                     'rules' => $email->rules(),
                     'help_class' => 'email',
                     'empty' => trans('messages.sender.dropbox.empty'),
-                    'error' => trans('messages.sender.dropbox.reply.error', [
+                    'error' => trans('messages.sender.dropbox.reply.error.' . Auth::user()->customer->allowUnverifiedFromEmailAddress(), [
                         'sender_link' => action('SenderController@index'),
                     ]),
                     'header' => trans('messages.verified_senders'),
@@ -100,7 +100,7 @@
             </div>
         </div>
         
-        <div class="text-right mt-5">
+        <div class="text-right mt-5 {{ Auth::user()->customer->allowUnverifiedFromEmailAddress() ? '' : 'unverified_next_but' }}">
             <button class="btn btn-secondary">
                 <span class="d-flex align-items-center">
                     <span>{{ trans('messages.email.setup.save_next') }}</span> <i class="material-icons">keyboard_arrow_right</i>
@@ -110,6 +110,16 @@
     </form>
     
     <script>
+        function checkUnverified() {
+			if(!$('.autofill-error:visible').length) {
+				$('.unverified_next_but').show();
+			} else {
+				$('.unverified_next_but').hide();
+			}
+		}
+
+        setInterval(function() { checkUnverified() }, 1000);
+
         // auto fill
         var box = $('#sender_from_input').autofill({
             messages: {
@@ -177,8 +187,11 @@
             });
         });
 
+        $('[name="from"]').change(function() {
+            $('[name="reply_to"]').val($(this).val()).change();
+        });
         $('[name="from"]').blur(function() {
-            $('[name="reply_to"]').val($(this).val());
+            $('[name="reply_to"]').val($(this).val()).change();
         });
     </script>
 @endsection
