@@ -60,7 +60,7 @@
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label>{{ trans('messages.validate_script') }}</label>
+                            <label>{{ trans('messages.include_javascript') }}</label>
                             <div class="notoping">
                                 @include('helpers.form_control', ['type' => 'checkbox',
                                     'name' => 'javascript',

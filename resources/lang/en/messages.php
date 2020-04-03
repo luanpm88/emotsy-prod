@@ -928,6 +928,7 @@
   'stylesheet_included' => 'Include stylesheet',
   'custom_css' => 'Custom CSS',
   'validate_script' => 'Validate script',
+  'include_javascript' => 'Include javascript',
   'cron_jobs_guide' => '
       Insert the following line to your system\'s crontab. <br />
       Please note, below timings for running the cron jobs are the recommended, you can change it if you want.
