@@ -1,4 +1,4 @@
-<script type="text/javascript" src="{{ URL::asset('assets2/lib/dropzone/dropzone.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/dropzone/js/dropzone.js') }}"></script>
 <link rel="stylesheet" type="text/css" href="{{ URL::asset('assets/js/plugins/dropzone/css/dropzone.css') }}" />
 
   <div class="image_upload_div">
@@ -58,7 +58,6 @@
       })
       .done(function(msg) {
           $('.attachments_pnl').html($(msg).find('.attachments_pnl').html());
-          myDropzone.removeAllFiles();
       });
     }
 
