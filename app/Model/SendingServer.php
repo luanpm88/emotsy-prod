@@ -1202,7 +1202,23 @@ class SendingServer extends Model
     {
         $options = $this->getOptions();
 
-        return isset($options[$name]) ? $options[$name] : null;
+        $value = isset($options[$name]) ? $options[$name] : null;
+
+        // default value
+        if(!$value) {
+            // default verification email
+            if ($name == 'custom_verification_email') {
+                $value = trans('messages.sending_server.default_email_verification.content');;
+            }
+            
+            // default verification email
+            if ($name == 'custom_verification_email_subject') {
+                $value = trans('messages.sending_server.default_email_verification.subject');;
+            }
+        }
+
+
+        return $value;
     }
 
     /**
@@ -1610,5 +1626,19 @@ class SendingServer extends Model
         foreach ($plans as $plan) {
             $plan->checkStatus();
         }
+    }
+    
+    /**
+     * Verification sending server tags.
+     */
+    public static function verificationEmailTags()
+    {
+        return [
+            ['name' => 'USER_FIRST_NAME', 'required' => false],
+            ['name' => 'USER_LAST_NAME', 'required' => false],
+            ['name' => 'USER_ID', 'required' => false],
+            ['name' => 'USER_EMAIL', 'required' => false],
+            ['name' => 'EMAIL_TO_VERIFY', 'required' => false],
+        ];
     }
 }

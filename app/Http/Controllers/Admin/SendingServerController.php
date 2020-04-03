@@ -752,6 +752,7 @@ class SendingServerController extends Controller
         // save posted data
         if ($request->isMethod('post')) {
             $server->setOption('custom_verification_email', $request->content);
+            $server->setOption('custom_verification_email_subject', $request->subject);
             $server->save();
 
             // success

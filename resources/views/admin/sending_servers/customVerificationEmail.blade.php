@@ -37,7 +37,7 @@
         {{ csrf_field() }}
 
         <div class="row mr-0 ml-0">
-            <div class="col-md-12 pl-0 pb-0 pr-0">
+            <div class="col-md-9 pl-0 pb-0 pr-0">
                 <div class="loading classic-loader"><div class="text-center inner"><div class="box-loading"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div></div></div>
                 @include('helpers.form_control', [
                     'class' => 'template-editor',
@@ -48,7 +48,33 @@
                     'value' => $server->getOption('custom_verification_email'),
                     'rules' => ['content' => 'required']
                 ])                
-            </div>     
+            </div>
+            <div class="col-md-3 pr-0 pb-0 sidebar pr-4 pt-4 pl-4" style="overflow:auto;background:#f5f5f5">
+                @include('helpers.form_control', [
+                    'required' => true,
+                    'type' => 'text',
+                    'label' => trans('messages.sending_servier.custom_verification_email.subject'),
+                    'name' => 'subject',
+                    'value' => $server->getOption('custom_verification_email_subject'),
+                    'rules' => ['subject' => 'required']
+                ])
+                <br />
+				@if (count(Acelle\Model\SendingServer::verificationEmailTags()) > 0)
+					<div class="tags_list">
+						<label class="text-semibold text-teal">{{ trans('messages.available_tags') }}:</label>
+						<br />
+						@foreach(Acelle\Model\SendingServer::verificationEmailTags() as $tag)
+                            <a data-popup="tooltip" title='{{ trans('messages.click_to_insert_tag') }}' href="javascript:;"
+                                style="padding: 3px 7px !important;
+                                font-weight: normal;"
+                                draggable="false"
+                            class="btn btn-secondary mb-2 mr-1 text-semibold btn-xs insert_tag_button" data-tag-name="{{ "{".$tag["name"]."}" }}">
+                                {{ $tag["name"] }}
+                            </a>
+						@endforeach
+					</div>
+				@endif
+            </div>
         </div>   
     </form> 
 
@@ -119,7 +145,7 @@
                         fetch: function (callback) {
                         var items = [];
 
-                        @foreach(Acelle\Model\Template::tags() as $tag)
+                        @foreach(Acelle\Model\SendingServer::verificationEmailTags() as $tag)
                             items.push({
                                 type: 'menuitem',
                                 text: '{{ $tag["name"] }}',
