@@ -78,6 +78,46 @@ class SendingServerAmazon extends SendingServer
         return self::$sesClient;
     }
 
+    public function verifyDomain($domain)
+    {
+        $identity = $this->verifyDomainIdentity($domain);
+        $dkim = $this->verifyDomainDkim($domain);
+        return [
+            'identity' => $identity,
+            'dkim' => $dkim,
+        ];
+    }
+
+    public function verifyDomainIdentity($domain)
+    {
+        $result = $this->sesClient()->verifyDomainIdentity([
+            'Domain' => $domain,
+        ]);
+
+        $token = $result->toArray()['VerificationToken'];
+        return [
+            'type' => 'CNAME',
+            'name' => "_amazonses.{$domain}",
+            'value' => $token,
+        ];
+    }
+
+    public function verifyDomainDkim($domain)
+    {
+        $result = $this->sesClient()->verifyDomainDkim([
+            'Domain' => $domain,
+        ]);
+
+        $tokens = $result->toArray()['DkimTokens'];
+        return array_map(function($token) use ($domain) {
+            return [
+                'type' => 'CNAME',
+                'name' => "{$token}._domainkey.{$domain}",
+                'value' => "{$token}.dkim.amazonses.com",
+            ];
+        }, $tokens);
+    }
+
     /**
      * Setup AWS SNS for bounce and feedback loop.
      *
@@ -176,18 +216,93 @@ class SendingServerAmazon extends SendingServer
      */
     public function getVerifiedIdentities()
     {
-        $identities = $this->sesClient()->listIdentities([
+        $options = $this->getOptions();
+        $identities = array_key_exists('identities', $options) ? $options['identities'] : [];
+
+        $selected = [];
+        foreach($identities as $name => $attributes) {
+            if ($attributes['Selected']) {
+                $selected[] = $name;
+            }
+        }
+
+        return $selected;
+    }
+
+    /**
+     * Get verified identities (domains and email addresses).
+     *
+     * @return bool
+     */
+    public function syncIdentities()
+    {
+        // Merge the list of identities from Amazon to the local sending domains to get customer information
+        $emailOrDomains = $this->sesClient()->listIdentities([
             'MaxItems' => 1000, # @todo, need pagination here
         ])->toArray()['Identities'];
 
-        $identitiesWithAttributes = $this->sesClient()->getIdentityVerificationAttributes([
-            'Identities' => $identities,
+        $identities = $this->sesClient()->getIdentityVerificationAttributes([
+            'Identities' => $emailOrDomains,
         ])->toArray()['VerificationAttributes'];
 
-        $verifiedIdentities = array_keys(array_filter($identitiesWithAttributes, function ($r) { return $r['VerificationStatus'] == 'Success'; }));
+        $addedByUsers = $this->sendingDomains()->whereIn('name', $emailOrDomains)->get();
 
-        return $verifiedIdentities;
+        foreach($addedByUsers as $domain) {
+            if (array_key_exists($domain->name, $identities)) {
+                $identities[$domain->name]['UserId'] = $domain->customer->id;
+                $identities[$domain->name]['UserName'] = $domain->customer->getFullName();
+            }
+        }
+
+        foreach($identities as $key => $attributes) {
+            if (!array_key_exists('UserId', $attributes)) {
+                $identities[$key]['UserId'] = null;
+            }
+
+            if (!array_key_exists('UserName', $attributes)) {
+                $identities[$key]['UserName'] = null;
+            }
+        }
+
+        $options = $this->getOptions();
+        foreach ($identities as $key => $attributes) {
+            if (array_key_exists('identities', $options) && array_key_exists($key, $options['identities'])) {
+                $cached = $options['identities'][$key];
+                $attributes['Selected'] = $cached['Selected'];
+            } else {
+                $attributes['Selected'] = true; // IMPORTANT: default to true
+            }
+
+            if ($attributes['VerificationStatus'] != 'Success') {
+                $attributes['Selected'] = false;
+            }
+
+            $identities[$key] = $attributes;
+        }
+
+        $options['identities'] = $identities;
+        $this->setOptions($options);
+        $this->save();
     }
+
+    public function checkDomainVerificationStatus($domain)
+    {
+        $status = $identitiesWithAttributes = $this->sesClient()->getIdentityVerificationAttributes([
+            'Identities' => [$domain],
+        ])->toArray()['VerificationAttributes'][$domain]['VerificationStatus'];
+
+        return 'Success' == $status;
+    }
+
+    public function checkDkimVerificationStatus($domain)
+    {
+        $status = $identitiesWithAttributes = $this->sesClient()->getIdentityDkimAttributes([
+            'Identities' => [$domain],
+        ])->toArray()['DkimAttributes'][$domain]['DkimVerificationStatus'];
+
+        return 'Success' == $status;
+    }
+    
 
     /**
      * Check an email address if it is verified against AWS.

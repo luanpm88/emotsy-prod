@@ -29,89 +29,20 @@
 @section('content')
     
     @include('senders._menu')
-    
-    <h2>
-        <span class="text-semibold"><i class="icon-pencil"></i> {{ $server->name }}</span>
-    </h2>
 
     <div class="row">
         <div class="col-sm-12 col-md-10 col-lg-10">
+            <h1>
+                <span class="text-semibold"><i class="icon-earth"></i> {{ $server->name }}</span>
+            </h1>
             <p>{!! trans('messages.sending_domain.wording') !!}</p>
-        </div>
-    </div>
 
-    <div class="row">
-        <div class="col-sm-12 col-md-12">
-            <h3>{{ trans('messages.sending_domain.title') }}</h3>
-        </div>
-    </div>
-    
-    <div class="row">
-        <div class="col-sm-12 col-md-8">
-            <ul class="dotted-list topborder section section-flex">
-                <li>
-                    <div class="unit size1of3">
-                        <strong>{{ trans('messages.domain_name') }}</strong>
-                    </div>
-                    <div class="size2of3">
-                        <mc:flag class="text-bold">{{ $server->name }}</mc:flag>
-                    </div>
-                </li>
-                <li>
-                    <div class="unit size1of3">
-                        <strong>{{ trans("messages.signing_enabled") }}</strong>
-                    </div>
-                    <div class="size2of3">
-                        <mc:flag class="text-bold"><i class="table-checkmark-{{ $server->signing_enabled }}"></i></mc:flag>
-                    </div>
-                </li>
-                <li>
-                    <div class="unit size1of3">
-                        <strong>{{ trans('messages.dkim_private') }}</strong>
-                    </div>
-                    <div class="size2of3">
-                        <mc:flag>
-                            @include('helpers.form_control', [
-                                'label' => '',
-                                'type' => 'textarea',
-                                'class' => 'dkim_box code',
-                                'readonly' => 'readonly',
-                                'name' => 'dkim_private',
-                                'value' => $server->dkim_private,
-                                'help_class' => 'sending_domain',
-                                'rules' => Acelle\Model\SendingDomain::rules()
-                            ])
-                        </mc:flag>
-                    </div>
-                </li>
-                <li>
-                    <div class="unit size1of3">
-                        <strong>{{ trans('messages.dkim_public') }}</strong>
-                    </div>
-                    <div class="size2of3">
-                        <mc:flag>
-                            @include('helpers.form_control', [
-                                'label' => '',
-                                'type' => 'textarea',
-                                'class' => 'dkim_box code',
-                                'readonly' => 'readonly',
-                                'name' => 'dkim_public',
-                                'value' => $server->dkim_public,
-                                'help_class' => 'sending_domain',
-                                'rules' => Acelle\Model\SendingDomain::rules()
-                            ])
-                        </mc:flag>
-                    </div>
-                </li>
-            </ul>
-        </div>
-    </div>
-        
-    <div class="row">
-        <div class="col-sm-12 col-md-12 mt-20">
             <h3>{{ trans('messages.sending_domain.dkim_title') }}</h3>
             <p>{!! trans('messages.sending_domain.dkim_wording') !!}</p>
             <p>{!! trans('messages.sending_domain.spf_wording') !!}</p>
+        </div>
+
+        <div class="col-sm-12 col-md-12 mt-20">
             <div class="scrollbar-boxx dim-box">
                 <div class="listing-form"
 					data-url="{{ action('SendingDomainController@records', $server->uid) }}"

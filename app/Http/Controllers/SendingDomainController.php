@@ -4,6 +4,8 @@ namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
+use Acelle\Model\SendingDomain;
+use Acelle\Model\SendingServer;
 
 class SendingDomainController extends Controller
 {
@@ -15,12 +17,12 @@ class SendingDomainController extends Controller
      */
     public function index(Request $request)
     {
-        if (!$request->user()->customer->can('read', new \Acelle\Model\SendingDomain())) {
+        if (!$request->user()->customer->can('read', new SendingDomain())) {
             return $this->notAuthorized();
         }
 
         $request->merge(array("customer_id" => $request->user()->customer->id));
-        $items = \Acelle\Model\SendingDomain::search($request);
+        $items = SendingDomain::search($request);
 
         return view('sending_domains.index', [
             'items' => $items,
@@ -34,12 +36,12 @@ class SendingDomainController extends Controller
      */
     public function listing(Request $request)
     {
-        if (!$request->user()->customer->can('read', new \Acelle\Model\SendingDomain())) {
+        if (!$request->user()->customer->can('read', new SendingDomain())) {
             return $this->notAuthorized();
         }
 
         $request->merge(array("customer_id" => $request->user()->customer->id));
-        $items = \Acelle\Model\SendingDomain::search($request)->paginate($request->per_page);
+        $items = SendingDomain::search($request)->paginate($request->per_page);
 
         return view('sending_domains._list', [
             'items' => $items,
@@ -53,7 +55,7 @@ class SendingDomainController extends Controller
      */
     public function create(Request $request)
     {
-        $server = new \Acelle\Model\SendingDomain([
+        $server = new SendingDomain([
             'signing_enabled' => true,
         ]);
         $server->status = 'active';
@@ -82,30 +84,36 @@ class SendingDomainController extends Controller
     {
         // Get current user
         $current_user = $request->user();
-        $server = new \Acelle\Model\SendingDomain();
+        $domain = new SendingDomain();
+        $subscription = $request->user()->customer->subscription;
+        $server = SendingServer::mapServerType($subscription->plan->primarySendingServer());
 
         // authorize
-        if (!$request->user()->customer->can('create', $server)) {
+        if (!$request->user()->customer->can('create', $domain)) {
             return $this->notAuthorized();
         }
 
         // save posted data
         if ($request->isMethod('post')) {
-            $this->validate($request, \Acelle\Model\SendingDomain::rules());
+            $this->validate($request, SendingDomain::rules());
 
             // Save current user info
-            $server->fill($request->all());
-            $server->customer_id = $request->user()->customer->id;
-            $server->status = 'active';
+            $domain->fill($request->all());
+            $domain->customer_id = $request->user()->customer->id;
+            $domain->status = 'active';
 
-            if ($server->save()) {
-                $server->syncToMta();
+            if ($domain->save()) {
+                $domain->syncToMta();
+
+                if ($server->allowVerifyingOwnDomainsRemotely()) {
+                    $domain->verifyWith($server);
+                }
 
                 // Log
-                $server->log('created', $request->user()->customer);
+                $domain->log('created', $request->user()->customer);
 
                 $request->session()->flash('alert-success', trans('messages.sending_domain.created'));
-                return redirect()->action('SendingDomainController@show', $server->uid);
+                return redirect()->action('SendingDomainController@show', $domain->uid);
             }
         }
     }
@@ -119,10 +127,10 @@ class SendingDomainController extends Controller
      */
     public function show($id)
     {
-        $server = \Acelle\Model\SendingDomain::findByUid($id);
+        $domain = SendingDomain::findByUid($id);
 
         return view('sending_domains.show', [
-            'server' => $server,
+            'server' => $domain,
             'readonly' => 'readonly',
         ]);
     }
@@ -136,7 +144,7 @@ class SendingDomainController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        $server = \Acelle\Model\SendingDomain::findByUid($id);
+        $server = SendingDomain::findByUid($id);
 
         // authorize
         if (!$request->user()->customer->can('update', $server)) {
@@ -163,7 +171,7 @@ class SendingDomainController extends Controller
     {
         // Get current user
         $current_user = $request->user();
-        $server = \Acelle\Model\SendingDomain::findByUid($id);
+        $server = SendingDomain::findByUid($id);
 
         // authorize
         if (!$request->user()->customer->can('update', $server)) {
@@ -172,7 +180,7 @@ class SendingDomainController extends Controller
 
         // save posted data
         if ($request->isMethod('patch')) {
-            $this->validate($request, \Acelle\Model\SendingDomain::rules());
+            $this->validate($request, SendingDomain::rules());
 
             // Save current user info
             $server->fill($request->all());
@@ -209,7 +217,7 @@ class SendingDomainController extends Controller
     {
         $sort = json_decode($request->sort);
         foreach ($sort as $row) {
-            $item = \Acelle\Model\SendingDomain::findByUid($row[0]);
+            $item = SendingDomain::findByUid($row[0]);
 
             // authorize
             if (!$request->user()->customer->can('update', $item)) {
@@ -232,7 +240,7 @@ class SendingDomainController extends Controller
      */
     public function delete(Request $request)
     {
-        $items = \Acelle\Model\SendingDomain::whereIn('uid', explode(',', $request->uids));
+        $items = SendingDomain::whereIn('uid', explode(',', $request->uids));
 
         foreach ($items->get() as $item) {
             // authorize
@@ -257,7 +265,7 @@ class SendingDomainController extends Controller
      */
     public function verify($id)
     {
-        $server = \Acelle\Model\SendingDomain::findByUid($id);
+        $server = SendingDomain::findByUid($id);
         $server->verify();
     }
 
@@ -270,11 +278,20 @@ class SendingDomainController extends Controller
      */
     public function records($id)
     {
-        $server = \Acelle\Model\SendingDomain::findByUid($id);
+        $domain = SendingDomain::findByUid($id);
 
-        return view('sending_domains._records', [
-            'server' => $server,
-        ]);
+        if ($domain->isAssociatedWithSendingServer()) {
+            return view('sending_domains._records_aws', [
+                'domain' => $domain,
+                'identity' => $domain->getOptions()['verification']['identity'],
+                'dkims' => $domain->getOptions()['verification']['dkim'],
+            ]);
+        } else {
+            return view('sending_domains._records', [
+                'server' => $domain,
+            ]);    
+        }
+        
     }
 
     /**
@@ -287,7 +304,7 @@ class SendingDomainController extends Controller
      */
     public function updateVerificationTxtName($id, Request $request)
     {
-        $server = \Acelle\Model\SendingDomain::findByUid($id);
+        $server = SendingDomain::findByUid($id);
 
         // authorize
         if (!$request->user()->customer->can('update', $server)) {
@@ -310,7 +327,7 @@ class SendingDomainController extends Controller
      */
     public function updateDkimSelector($id, Request $request)
     {
-        $server = \Acelle\Model\SendingDomain::findByUid($id);
+        $server = SendingDomain::findByUid($id);
 
         // authorize
         if (!$request->user()->customer->can('update', $server)) {

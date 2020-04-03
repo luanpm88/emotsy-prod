@@ -111,6 +111,11 @@ class SendingServer extends Model
         return $this->belongsTo('Acelle\Model\BounceHandler');
     }
 
+    public function sendingDomains()
+    {
+        return $this->hasMany('Acelle\Model\SendingDomain', 'sending_server_id');
+    }
+
     /**
      * Map a server to its class type and retrive an instance from the database.
      *
@@ -1516,16 +1521,6 @@ class SendingServer extends Model
      *
      * @return array
      */
-    public function getVerifiedIdentities()
-    {
-        return array_merge($this->getOption('domains'), $this->getOption('emails'));
-    }
-
-    /**
-     * Get verified identities.
-     *
-     * @return array
-     */
     public function initVerifiedIdentities()
     {
         $items = $this->getVerifiedIdentities();
@@ -1627,7 +1622,7 @@ class SendingServer extends Model
             $plan->checkStatus();
         }
     }
-    
+
     /**
      * Verification sending server tags.
      */
@@ -1640,5 +1635,34 @@ class SendingServer extends Model
             ['name' => 'USER_EMAIL', 'required' => false],
             ['name' => 'EMAIL_TO_VERIFY', 'required' => false],
         ];
+    }
+
+    public function updateIdentitiesList($selected)
+    {
+        // For now, it is for Amazon only
+        $options = $this->getOptions();
+        $identities = $options['identities'];
+
+        $selectedEmails = array_key_exists('emails', $selected) ? $selected['emails'] : [];
+        $selectedDomains = array_key_exists('domains', $selected) ? $selected['domains'] : [];
+        $selectedIdentities = array_merge($selectedEmails, $selectedDomains);
+
+        foreach($identities as $key => $attributes) {
+            if (in_array($key, $selectedIdentities)) {
+                $attributes['Selected'] = true;
+            } else {
+                $attributes['Selected'] = false;
+            }
+
+            $identities[$key] = $attributes;
+        }
+
+        $options['identities'] = $identities;
+        $this->setOptions($options);
+    }
+
+    public function getVerifiedIdentities()
+    {
+        return array_merge($this->getOption('domains'), $this->getOption('emails'));
     }
 }

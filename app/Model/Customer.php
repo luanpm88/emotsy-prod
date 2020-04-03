@@ -2017,4 +2017,9 @@ class Customer extends Model implements BillableUserInterface
 
         return true;
     }
+
+    public function getFullName()
+    {
+        return trim($this->first_name.' '.$this->last_name);
+    }
 }

@@ -28,6 +28,7 @@ use Illuminate\Validation\ValidationException;
 use Acelle\Cashier\Interfaces\BillablePlanInterface;
 use Acelle\Cashier\Subscription;
 use Acelle\Cashier\Cashier;
+use Acelle\Model\SendingServer;
 
 class Plan extends Model implements BillablePlanInterface
 {
@@ -1275,7 +1276,7 @@ class Plan extends Model implements BillablePlanInterface
     public function primarySendingServer()
     {
         $pss = $this->plansSendingServers()->where('is_primary', '=', true)->first();
-        // @todo: quăng 1 cái exception nếu $pss null, ko return null sẽ gây lỗi tiềm ẩn
+        // @todo: raise 1 cái exception nếu $pss null, ko return null sẽ gây lỗi tiềm ẩn
         return is_object($pss) ? $pss->sendingServer : null;
     }
 
@@ -1296,19 +1297,11 @@ class Plan extends Model implements BillablePlanInterface
      */
     public function getVerifiedIdentities()
     {
-        //$server = $this->primarySendingServer();
-        //
-        //if (isset($server)) {
-        //    return $this->primarySendingServer()->getVerifiedIdentities();
-        //} else {
-        //    return [];
-        //}
         $result = [];
-
         foreach ($this->sendingServers()->get() as $sendingServer) {
+            $sendingServer = SendingServer::mapServerType($sendingServer);
             $result = array_merge($result, $sendingServer->getVerifiedIdentities());
         }
-
         return array_unique($result);
     }
 
@@ -1350,8 +1343,6 @@ class Plan extends Model implements BillablePlanInterface
 
         return $this->price * $rate;
     }
-
-    //====================================== BILLABLE PLAN INTERFACE =======================================
 
     /**
      * PlanInterface: get remote plan id.
