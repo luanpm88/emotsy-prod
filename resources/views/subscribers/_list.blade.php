@@ -17,13 +17,20 @@
 					</div>
 				</td>
 				<td>
-					<div class="no-margin text-bold">
-						<a class="kq_search" href="{{ action('SubscriberController@edit', ['list_uid' => $list->uid ,'uid' => $item->uid]) }}">
-							{{ $item->email }}
-						</a>
-						<br />
-						<span class="label label-flat bg-{{ $item->status }}">{{ trans('messages.' . $item->status) }}</span>
-						<span class="label label-flat bg-{{ $item->verify_result }}">{{ trans('messages.email_verification_result_' . $item->verify_result) }}</span>
+					<div class="d-flex">
+						<div class="subscriber-avatar">
+							<a href="{{ action('SubscriberController@edit', ['list_uid' => $list->uid ,'uid' => $item->uid]) }}">
+								<img src="{{ (isSiteDemo() ? 'https://i.pravatar.cc/300?v=' . $key : action('SubscriberController@avatar',  $item->uid)) }}" />
+							</a>
+						</div>
+						<div class="no-margin text-bold">
+							<a class="kq_search" href="{{ action('SubscriberController@edit', ['list_uid' => $list->uid ,'uid' => $item->uid]) }}">
+								{{ $item->email }}
+							</a>
+							<br />
+							<span class="label label-flat bg-{{ $item->status }}">{{ trans('messages.' . $item->status) }}</span>
+							<span class="label label-flat bg-{{ $item->verify_result }}">{{ trans('messages.email_verification_result_' . $item->verify_result) }}</span>
+						</div>
 					</div>
 				</td>
 

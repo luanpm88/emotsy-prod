@@ -3638,3 +3638,10 @@ body > .ui-pnotify {
     padding: 0 50%;
     align-items: center;
 }
+.subscriber-avatar img {
+    width: 60px;
+    height: 60px;
+    border-radius: 100%;
+    border: solid 1px #aaa;
+    margin-right: 20px;
+}
