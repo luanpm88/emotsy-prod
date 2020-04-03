@@ -11,7 +11,6 @@
     <script type="text/javascript" src="{{ URL::asset('js/editor.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('js/listing.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/dropzone/js/dropzone.js') }}"></script>
 @endsection
 
 @section('page_header')

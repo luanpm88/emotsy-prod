@@ -2399,4 +2399,57 @@ class CampaignController extends Controller
             'campaign' => $campaign,
         ]);
     }
+
+    /**
+     * Upload attachment.
+     *
+     */
+    public function uploadAttachment(Request $request, $uid)
+    {
+        // Generate info
+        $campaign = \Acelle\Model\Campaign::findByUid($uid);
+
+        // authorize
+        if (!$request->user()->customer->can('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        foreach($request->file as $file) {
+            $campaign->uploadAttachment($file);
+        }
+    }
+
+    /**
+     * Download attachment.
+     *
+     */
+    public function downloadAttachment(Request $request, $uid)
+    {
+        // Generate info
+        $campaign = \Acelle\Model\Campaign::findByUid($uid);
+
+        // authorize
+        if (!$request->user()->customer->can('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        return response()->download($campaign->getAttachmentPath($request->name), $request->name);
+    }
+
+    /**
+     * Remove attachment.
+     *
+     */
+    public function removeAttachment(Request $request, $uid)
+    {
+        // Generate info
+        $campaign = \Acelle\Model\Campaign::findByUid($uid);
+
+        // authorize
+        if (!$request->user()->customer->can('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        unlink($campaign->getAttachmentPath($request->name));
+    }
 }

@@ -1,55 +1,81 @@
+<script type="text/javascript" src="{{ URL::asset('assets2/lib/dropzone/dropzone.js') }}"></script>
 <link rel="stylesheet" type="text/css" href="{{ URL::asset('assets/js/plugins/dropzone/css/dropzone.css') }}" />
 
   <div class="image_upload_div">
-    <form action="{{url('/')}}/filemanager/upload_attachment.php" class="dropzone">
-       <input name="path" value="../campaign_attachment/{{$campaign->uid}}/" type="hidden">
-       <input name="path_thumb" value="../thumbs/{{$campaign->uid}}/" type="hidden">
+    <form action="{{ action('CampaignController@uploadAttachment', $campaign->uid) }}" class="dropzone">
+       {{ csrf_field() }}
     </form>
   </div>
   <div class="attachments_pnl">
-    <?php
-      $path_campaign=public_path().'/campaign_attachment'.'/'.$campaign->uid;
-      if (is_dir($path_campaign)) {
-          echo "<h3 class='mt-40'>" . trans('messages.campaign.attached_files') . " <br/></h3>";
-          $ffs = scandir($path_campaign);
+    <h3 class='mt-40'>{{ trans('messages.campaign.attached_files') }}<br/></h3>
 
-          unset($ffs[array_search('.', $ffs, true)]);
-          unset($ffs[array_search('..', $ffs, true)]);
-
-          // prevent empty ordered elements
-          if (count($ffs) < 1) {
-              return;
-          }
-
-          echo '<ul>';
-          foreach ($ffs as $k=>$ff) {
-                $fileszie = formatSizeUnits(filesize( $path_campaign . '/' . $ff));
-              echo '<li id="delete_'.$k.'"><i class="lnr lnr-file-empty icon-file"></i><span><name>'.$ff.'</name><size>'.trans('messages.campaign.attachment.file_size_is', ['size' => $fileszie]).'</size></span>'; ?> 
-            <form action="{{url('/')}}/filemanager/force_download_attachment.php" method="post" class="download-form" id="{{$k}}">
-              <input name="path" value="{{$campaign->uid}}{{'/'}}" type="hidden">
-              <input class="name_download" name="name" value="{{$ff}}" type="hidden">
-<span>
-              <a title="" class="tip-right" href="javascript:void('')" onclick="$('#{{$k}}').submit();" data-original-title="Download">{{ trans('messages.download') }}</a>
-|
-             <a
-                file-delete-confirm="{{url('/')}}/filemanager/execute_attachment.php?_token={{ csrf_token() }}&action=delete_file&file={{$ff}}&path={{$campaign->uid}}{{'/'}}"
-                href="{{url('/')}}/filemanager/execute_attachment.php?_token={{ csrf_token() }}&action=delete_file&file={{$ff}}&path={{$campaign->uid}}{{'/'}}"
-                title="Delete"
-                class=""
-                data-del="delete_{{$k}}"
-            >
-                 {{ trans('messages.remove') }}
+    @if (!empty($campaign->getAttachments()))
+      <ul>
+        @foreach ($campaign->getAttachments() as $k=>$filename)
+          @php
+            $fileszie = formatSizeUnits(filesize($campaign->getAttachmentPath($filename)));
+          @endphp
+          <li class="d-flex align-items-canter">
+            <div class="d-flex mr-auto">
+              <i class="lnr lnr-file-empty icon-file"></i>
+              <span><name>{{ $filename }}</name><size>{{ trans('messages.campaign.attachment.file_size_is', ['size' => $fileszie]) }}</size></span> 
+            </div>
+            <div class="text-nowrap">
+              <a title="" class="tip-right" href="{{ action('CampaignController@downloadAttachment', [
+                'uid' => $campaign->uid,
+                'name' => $filename,
+              ]) }}">
+                {{ trans('messages.download') }}
               </a>
-</span>
-            </form>
-            <?php
-                  if (is_dir($path_campaign.'/'.$ff)) {
-                      listFolderFiles($path_campaign.'/'.$ff);
-                  }
-              echo '</li>';
-          }
-          echo '</ol>';
-      }
-    ?>
-
+              |
+              <a href="{{ action('CampaignController@removeAttachment', [
+                'uid' => $campaign->uid,
+                'name' => $filename,
+              ]) }}" class="remove-attachment">
+                {{ trans('messages.remove') }}
+              </a>
+            </div>
+          </li>
+        @endforeach
+      </ul>
+    @endif
   </div>
+
+  <script>
+  Dropzone.autoDiscover = false;
+
+    var myDropzone = $(".dropzone").dropzone({
+      uploadMultiple: true,
+      success: function() {
+        reloadList();
+      }
+    });
+
+    function reloadList() {
+      $.ajax({
+          method: 'GET',
+          url: '',
+      })
+      .done(function(msg) {
+          $('.attachments_pnl').html($(msg).find('.attachments_pnl').html());
+          myDropzone.removeAllFiles();
+      });
+    }
+
+    $(document).on('click', '.remove-attachment', function(e) {
+      e.preventDefault();
+
+      var url = $(this).attr('href');
+
+      $.ajax({
+          method: 'POST',
+          url: url,
+          data: {
+            _token: CSRF_TOKEN
+          }
+      })
+      .done(function(msg) {
+        reloadList();
+      });
+    });
+  </script>
