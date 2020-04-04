@@ -933,9 +933,9 @@ class Tool
             try {
                 // @important: the following line of code is very likely to get an "preg_replace(): Compilation failed: regular expression is too large at offset" error. That's the reason why we need try..catch here
                 $content = preg_replace('/(src=|background=|href=|url\s*\()([\'"]?\s*)'.preg_quote($src, '/').'(\s*[\s\'"\)])/', "$1$2$new_src$3", $content);
-            } catch (\Psy\Exception\ErrorException $ex) {
+            } catch (\ErrorException $ex) {
                 // preg_replace(): Compilation failed: regular expression is too large at offset
-                
+
                 // use the old and non-safe way!!!!
                 $content = str_replace($src, $new_src, $content);
             }
