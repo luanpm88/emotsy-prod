@@ -6,7 +6,7 @@ require 'json'
 
 # Settings
 last_supported = '4.0.9'
-packages = ['acelle', 'paypal', 'doctrine', 'ramsey', 'stripe']       # vendor packages to be replaced
+packages = ['acelle', 'paypal', 'doctrine', 'ramsey', 'stripe', 'kub-at']       # vendor packages to be replaced
 dirs = ['resources/lang/default', 'public/builder']                   # 'resources/lang/default' for example
 
 # Auto setting
