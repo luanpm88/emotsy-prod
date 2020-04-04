@@ -784,9 +784,13 @@ class Customer extends Model implements BillableUserInterface
      */
     public function getQuotaHash()
     {
+        if (is_null($current->started_at)) {
+            throw new \Exception('Application error: subscription started_at not set!');
+        }
+
         $current = $this->getCurrentSubscription();
         $quota = [
-            'start' => (isset($current->created_at) ? $current->created_at->timestamp : null),
+            'start' => (isset($current->started_at) ? $current->started_at->timestamp : null),
             'max' => $this->getOption('email_max'),
         ];
 
