@@ -225,8 +225,9 @@ class SendingServerController extends Controller
             ];
         }        
         
-        $identities = null;
-        
+        $identities = [];
+        $allIdentities = [];
+
         try {
             $identities = $server->getVerifiedIdentities();
             $allIdentities = array_key_exists('identities', $server->getOptions()) ? $server->getOptions()['identities'] : [];
