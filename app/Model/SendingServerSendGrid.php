@@ -181,16 +181,26 @@ class SendingServerSendGrid extends SendingServer
      *
      * @return bool
      */
-    public function getVerifiedIdentities()
+    public function syncIdentities()
     {
         $response = $this->client()->client->whitelabel()->domains()->get();
         $json = json_decode($response->body(), true);
         if (array_key_exists('errors', $json)) {
             throw new \Exception('Failed to connect to SendGrid: '.$response->body());
         }
-        $validDomains = array_filter($json, function ($domain) { return $domain['valid'] == true; });
+        
+        $identities = [];
+        foreach ($json as $domain) {
+            $name = $domain['domain'];
+            $identities[$name] = ['VerificationStatus' => $domain['valid'] == true]; 
+        }
 
-        return array_map(function ($domain) { return $domain['domain']; }, $validDomains);
+        $identityStore = $this->getIdentityStore();
+        $identityStore->update($identities);
+        $options = $this->getOptions();
+        $options['identities'] = $identityStore->get();
+        $this->setOptions($options);
+        $this->save();
     }
 
     /**
