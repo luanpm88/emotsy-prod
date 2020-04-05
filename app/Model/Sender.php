@@ -32,10 +32,6 @@ class Sender extends Model
     const STATUS_PENDING = 'pending';
     const STATUS_VERIFIED = 'verified';
 
-    // Verifiation types
-    const VERIFICATION_TYPE_ACELLE = 'acelle';
-    const VERIFICATION_TYPE_AMAZON_SES = 'amazon_ses';
-
     /**
      * Items per page.
      *
@@ -76,6 +72,11 @@ class Sender extends Model
         return $this->belongsTo('Acelle\Model\Customer');
     }
 
+    public function sendingServer()
+    {
+        return $this->belongsTo('Acelle\Model\SendingServer');
+    }
+
     public static function pending()
     {
         return self::where('status', self::STATUS_PENDING);
@@ -103,7 +104,7 @@ class Sender extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'type',
+        'name', 'email'
     ];
 
     /**
@@ -147,20 +148,6 @@ class Sender extends Model
     }
 
     /**
-     * The rules for verification.
-     *
-     * @var array
-     */
-    public function verificationRules()
-    {
-        $rules = array(
-            'type' => 'required',
-        );
-
-        return $rules;
-    }
-
-    /**
      * Bootstrap any application services.
      */
     public static function boot()
@@ -186,27 +173,6 @@ class Sender extends Model
     public static function findByUid($uid)
     {
         return self::where('uid', '=', $uid)->first();
-    }
-
-    /**
-     * Verification type select options.
-     *
-     * @return array
-     */
-    public static function verificationTypeSelectOptions($server)
-    {
-        $options = [];
-
-        if ($server->allowVerifyingOwnEmails()) {
-            $options[] = ['value' => self::VERIFICATION_TYPE_ACELLE, 'text' => \Acelle\Model\Setting::get('site_name')];
-        }
-
-        if ($server->allowVerifyingOwnEmailsRemotely()) {
-            // AWS server name
-            $options[] = ['value' => self::VERIFICATION_TYPE_AMAZON_SES, 'text' => $server->name];
-        }
-
-        return $options;
     }
 
     /**
@@ -246,39 +212,44 @@ class Sender extends Model
      */
     public function updateVerificationStatus()
     {
-        LaravelLog::info(sprintf('Verifying sender %s (%s)', $this->email, $this->type));
-        if ($this->type == self::VERIFICATION_TYPE_AMAZON_SES) {
-            $this->status = $this->getAwsVerificationServer()->verifyIdentity($this->email) ? self::STATUS_VERIFIED : self::STATUS_PENDING;
+        // only work for server of allowVerifyingOwnEmailsRemotely() == true
+        $server = $this->sendingServer;
+        if (!is_null($server)) {
+            $verified = $server->mapType()->verifyIdentity($this->email);
+            $this->status = $verified ? self::STATUS_VERIFIED : self::STATUS_PENDING;
+            $this->save();
+            LaravelLog::info(sprintf('Verify sender %s done, status: %s', $this->email, $this->status));
         } else {
-            $domain = extract_domain($this->email);
-            $this->status = $this->customer->getSendingDomains()->contains(function ($r) use ($domain) { return $r->name == $domain; }) ? self::STATUS_VERIFIED : self::STATUS_PENDING;
+            // verify by clicking on an Acelle link
+            // so nothing to do here
+        }
+    }
+
+    public function toRFCEmailAddress()
+    {
+        return "{$this->name} <{$this->email}>";
+    }
+
+    public function verifyWith($server)
+    {
+        // Check if it is already verify
+        $this->updateVerificationStatus();
+
+        if ($this->isVerified()) {
+            return;
         }
 
-        $this->save();
-        LaravelLog::info(sprintf('Verify sender %s (%s) done, status: %s', $this->email, $this->type, $this->status));
-    }
+        if ($server->allowVerifyingOwnEmailsRemotely()) {
+            // this sender is bound with a specific sending server
+            // set $this->sending_server_id = $server->id the correct way
+            $this->sendingServer()->associate($server); 
+            $this->save();
+        }
 
-    /**
-     * Get AWS Verification Server.
-     *
-     * @return string
-     */
-    public function getAwsVerificationServer()
-    {
-        $subscription = $this->customer->subscription;
-        $server = $subscription->plan->primarySendingServer();
+        $this->setPending();
 
-        return SendingServerAmazonApi::find($server->id);
-    }
-
-    /**
-     * Get AWS Verification Server.
-     *
-     * @return string
-     */
-    public function sendVerificationEmail()
-    {
-        LaravelLog::info(sprintf('Sending verification email for %s (%s)', $this->email, $this->type));
-        $this->getAwsVerificationServer()->sendVerificationEmail($this->email);
+        // just in case it is already verified
+        $this->updateVerificationStatus();
+        $server->mapType()->sendVerificationEmail($this->toRFCEmailAddress());
     }
 }

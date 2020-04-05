@@ -1608,4 +1608,21 @@ class SendingServer extends Model
         $identityStore = new IdentityStore( array_key_exists('identities', $options) ? $options['identities'] : [] );
         return $identityStore;
     }
+
+    public function mapType()
+    {
+        return self::mapServerType($this);
+    }
+
+    /**
+     * Check an identity (email or domain) if it is verified against AWS.
+     *
+     * @return bool
+     */
+    public function verifyIdentity($identity)
+    {
+        $this->syncIdentities();
+        $verifiedIdentities = array_keys($this->getIdentityStore()->get(['VerificationStatus' => IdentityStore::VERIFICATION_STATUS_SUCCESS]));
+        return in_array($identity, $verifiedIdentities);
+    }
 }

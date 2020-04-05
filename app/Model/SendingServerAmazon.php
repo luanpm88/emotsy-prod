@@ -198,19 +198,6 @@ class SendingServerAmazon extends SendingServer
     }
 
     /**
-     * Check an email address if it is verified against AWS.
-     *
-     * @return bool
-     */
-    public function verifyIdentity($email)
-    {
-        $domain = extract_domain($email);
-        $verifiedIdentities = $this->getVerifiedIdentities();
-
-        return in_array($email, $verifiedIdentities) || in_array($domain, $verifiedIdentities);
-    }
-
-    /**
      * Get verified identities (domains and email addresses).
      *
      * @return bool
@@ -335,5 +322,45 @@ class SendingServerAmazon extends SendingServer
             $this->aws_secret_access_key,
             $this->aws_region
         );
+    }
+
+    /**
+     * Allow user to verify his/her own sending domain against Acelle Mail.
+     *
+     * @return bool
+     */
+    public function allowVerifyingOwnDomains()
+    {
+        return false;
+    }
+
+    /**
+     * Allow user to verify his/her own sending domain against Acelle Mail.
+     *
+     * @return bool
+     */
+    public function allowVerifyingOwnEmails()
+    {
+        return false;
+    }
+
+    /**
+     * Allow user to verify his/her own emails against AWS.
+     *
+     * @return bool
+     */
+    public function allowVerifyingOwnDomainsRemotely()
+    {
+        return true;
+    }
+
+    /**
+     * Allow user to verify his/her own emails against AWS.
+     *
+     * @return bool
+     */
+    public function allowVerifyingOwnEmailsRemotely()
+    {
+        return true;
     }
 }

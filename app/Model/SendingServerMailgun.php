@@ -137,4 +137,44 @@ class SendingServerMailgun extends SendingServer
 
         return true;
     }
+
+    /**
+     * Allow user to verify his/her own sending domain against Acelle Mail.
+     *
+     * @return bool
+     */
+    public function allowVerifyingOwnDomains()
+    {
+        return false;
+    }
+
+    /**
+     * Allow user to verify his/her own sending domain against Acelle Mail.
+     *
+     * @return bool
+     */
+    public function allowVerifyingOwnEmails()
+    {
+        return false;
+    }
+
+    /**
+     * Allow user to verify his/her own emails against AWS.
+     *
+     * @return bool
+     */
+    public function allowVerifyingOwnDomainsRemotely()
+    {
+        return false;
+    }
+
+    /**
+     * Allow user to verify his/her own emails against AWS.
+     *
+     * @return bool
+     */
+    public function allowVerifyingOwnEmailsRemotely()
+    {
+        return false;
+    }
 }

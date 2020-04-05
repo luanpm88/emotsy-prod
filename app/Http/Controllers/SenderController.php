@@ -149,7 +149,6 @@ class SenderController extends Controller
 
         return view('senders.show', [
             'sender' => $sender,
-            'verificationOptions' => Sender::verificationTypeSelectOptions($server)
         ]);
     }
 
@@ -216,6 +215,7 @@ class SenderController extends Controller
      */
     public function verify(Request $request, $id)
     {
+        $server = $request->user()->customer->activeSubscription()->plan->primarySendingServer();
         $sender = Sender::findByUid($id);
 
         // authorize
@@ -223,33 +223,14 @@ class SenderController extends Controller
             return $this->notAuthorized();
         }
 
+        $sender->verifyWith($server);
+
         // save posted data
-        if ($request->isMethod('post')) {
-            $sender->fill($request->all());
-
-            $this->validate($request, $sender->verificationRules());
-
-            $sender->save();
-
-            if (!$sender->isVerified()) {
-                if ($sender->type == Sender::VERIFICATION_TYPE_ACELLE) {
-                    // Set pending and return to show with guide
-                    $sender->setPending();
-                    return redirect()->action('SenderController@show', $sender->uid);
-                } else if ($sender->type = Sender::VERIFICATION_TYPE_AMAZON_SES) {
-                    // Wroking with Amazon SES here...
-                    $sender->setPending();
-
-                    // Trigger AWS API to send a verification email
-                    $sender->sendVerificationEmail();
-
-                    return redirect()->action('SenderController@show', $sender->uid);
-                }
-            } else {
-                $request->session()->flash('alert-success', trans('messages.sender.verified'));
-                return redirect()->action('SenderController@show', $sender->uid);
-            }
+        if ($sender->isVerified()) {
+            $request->session()->flash('alert-success', trans('messages.sender.verified'));
         }
+
+        return redirect()->action('SenderController@show', $sender->uid);
     }
 
     /**
