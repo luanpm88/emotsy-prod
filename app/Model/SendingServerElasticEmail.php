@@ -280,8 +280,11 @@ class SendingServerElasticEmail extends SendingServer
      *
      * @return array
      */
-    public function getVerifiedIdentities()
+    public function syncIdentities()
     {
+        // Sample result: 
+        // {"success":true,"data":[{"domain":"empiremedicaltraining.info (contact@empiremedicaltraining.info)","defaultdomain":true,"spf":true,"dkim":true,"mx":true,"dmarc":true,"isrewritedomainvalid":true,"verify":false,"type":0,"trackingstatus":0,"certificatestatus":0,"certificatevalidationerror":null,"trackingtypeuserrequest":null,"verp":true,"custombouncesdomain":null,"iscustombouncesdomaindefault":false,"ownership":0}]}
+
         $response = file_get_contents(self::API_ENDPOINT.'/domain/list?apikey='.$this->api_key);
         $json = json_decode($response, true);
         if ($json['success'] == false) {
@@ -289,9 +292,19 @@ class SendingServerElasticEmail extends SendingServer
         }
 
         // just in case the 'domain' value comes in "domain.com (admin@emailaddress.com)"
-        $domains = array_map(function ($e) { return preg_split('/\s+/', $e['domain'])[0]; }, $json['data']);
+        $identities = [];
+        foreach ($json['data'] as $domain) {
+            $name = preg_split('/\s+/', $domain['domain'])[0];
+            $identities[$name] = ['VerificationStatus' => $domain['verify']]; 
+        }
 
-        return $domains;
+        $identityStore = $this->getIdentityStore();
+        $identityStore->update($identities);
+
+        $options = $this->getOptions();
+        $options['identities'] = $identityStore->get();
+        $this->setOptions($options);
+        $this->save();
     }
 
     /**
