@@ -110,4 +110,9 @@ class SendingServerSmtp extends SendingServer
     {
         return false;
     }
+
+    public function syncIdentities()
+    {
+        // just do nothing
+    }
 }

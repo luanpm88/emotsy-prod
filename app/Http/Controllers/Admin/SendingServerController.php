@@ -667,8 +667,6 @@ class SendingServerController extends Controller
                                 ->withErrors($validator)
                                 ->withInput();
                 }
-
-                $server->addEmail(strtolower($request->domain)); 
             } else {
                 // validation
                 $validator = \Validator::make($request->all(), [
@@ -685,9 +683,9 @@ class SendingServerController extends Controller
                                 ->withErrors($validator)
                                 ->withInput();
                 }
-
-                $server->addDomain(strtolower($request->domain)); 
             }
+
+            $server->addIdentity(strtolower($request->domain)); 
             
             $request->session()->flash('alert-success', trans('messages.sending_server.updated'));
             return;
@@ -706,18 +704,11 @@ class SendingServerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function removeDomain(Request $request, $uid, $domain)
+    public function removeDomain(Request $request, $uid, $identity)
     {
         $server = SendingServer::findByUid($request->uid);
-        
-        $domain = base64_decode($domain);
+        $server->removeIdentity(base64_decode($identity));
 
-        if (checkEmail($domain)) {
-            $server->removeEmail($domain);
-        } else {
-            $server->removeDomain($domain);
-        }
-        
         $request->session()->flash('alert-success', trans('messages.sending_server.domain.removed'));
         return redirect()->action('Admin\SendingServerController@edit', [$server->uid, $server->type]);
     }

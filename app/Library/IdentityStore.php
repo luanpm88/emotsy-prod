@@ -30,6 +30,9 @@ class IdentityStore
 
     private function normalize($data)
     {
+    	if (is_string($data)) {
+    		$data = [ $data => [] ];
+    	}
 
     	foreach ($data as $key => $attributes) {
     		$attributes = array_merge($this->defaultIdentityAttributes, $attributes);
@@ -136,6 +139,23 @@ class IdentityStore
     	}, ARRAY_FILTER_USE_BOTH);
 
     	return $filtered;
+    }
+
+    public function add($data)
+    {
+    	// $identity must be an array [ 'key' => [ attributes ]]
+    	$normalized = $this->normalize($data);
+    	$this->identities = array_merge($this->identities, $normalized);
+    	return $this;
+    }
+
+    public function remove($key)
+    {
+    	// $identity must be an array [ 'key' => [ attributes ]]
+    	if (array_key_exists($key, $this->identities)) {
+    		unset($this->identities[$key]);
+    	}
+    	return $this;
     }
 }
 

@@ -99,4 +99,9 @@ class SendingServerSendmail extends SendingServer
     {
         return false;
     }
+
+    public function syncIdentities()
+    {
+        // just do nothing
+    }
 }

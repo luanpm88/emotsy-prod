@@ -1330,33 +1330,15 @@ class SendingServer extends Model
     }
 
     /**
-     * Add email.
+     * Add domain.
      *
      * @return array
      */
-    public function addEmail($email)
+    public function addIdentity($domain)
     {
-        $emails = $this->getOption('emails');
-        $emails[] = $email;
-
-        $this->setOption('emails', $emails);
-        $this->save();
-    }
-
-    /**
-     * Add email.
-     *
-     * @return array
-     */
-    public function removeEmail($email)
-    {
-        $emails = $this->getOption('emails');
-
-        if (($key = array_search($email, $emails)) !== false) {
-            unset($emails[$key]);
-        }
-
-        $this->setOption('emails', $emails);
+        $identityStore = $this->getIdentityStore();
+        $identityStore->add([ $domain => ['VerificationStatus' => true ]]);
+        $this->setOption('identities', $identityStore->get());
         $this->save();
     }
 
@@ -1365,29 +1347,11 @@ class SendingServer extends Model
      *
      * @return array
      */
-    public function addDomain($domain)
+    public function removeIdentity($identity)
     {
-        $domains = $this->getOption('domains');
-        $domains[] = $domain;
-
-        $this->setOption('domains', $domains);
-        $this->save();
-    }
-
-    /**
-     * Add domain.
-     *
-     * @return array
-     */
-    public function removeDomain($domain)
-    {
-        $domains = $this->getOption('domains');
-
-        if (($key = array_search($domain, $domains)) !== false) {
-            unset($domains[$key]);
-        }
-
-        $this->setOption('domains', $domains);
+        $identityStore = $this->getIdentityStore();
+        $identityStore->remove($identity);
+        $this->setOption('identities', $identityStore->get());
         $this->save();
     }
 
