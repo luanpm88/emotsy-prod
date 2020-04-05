@@ -106,12 +106,24 @@ class SendingServerMailgun extends SendingServer
      *
      * @return bool
      */
-    public function getVerifiedIdentities()
+    public function syncIdentities()
     {
         $response = $this->client()->get('domains');
         $json = json_decode(json_encode($response), true);
 
-        return array_map(function ($domain) { return $domain['name']; }, $json['http_response_body']['items']);
+        $identities = [];
+        foreach ($json['http_response_body']['items'] as $domain) {
+            $name = $domain['name'];
+            $identities[$name] = ['VerificationStatus' => $domain['state'] == 'active']; 
+        }
+
+        $identityStore = $this->getIdentityStore();
+        $identityStore->update($identities);
+
+        $options = $this->getOptions();
+        $options['identities'] = $identityStore->get();
+        $this->setOptions($options);
+        $this->save();
     }
 
     /**
