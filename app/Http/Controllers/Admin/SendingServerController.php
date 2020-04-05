@@ -657,7 +657,7 @@ class SendingServerController extends Controller
                     'domain' => 'required|email',
                 ]);
                 
-                if (in_array(strtolower($request->domain), $server->getEmails())) {
+                if (in_array(strtolower($request->domain), $server->getVerifiedIdentities())) {
                     $validator->errors()->add('domain', trans('messages.sending_identity.exist_error'));
                     $valid = false;
                 }
@@ -673,7 +673,7 @@ class SendingServerController extends Controller
                     'domain' => 'required|regex:/^(?:[-A-Za-z0-9]+\.)+[A-Za-z]{2,6}$/i',
                 ]);
                 
-                if (in_array(strtolower($request->domain), $server->getDomains())) {
+                if (in_array(strtolower($request->domain), $server->getVerifiedIdentities())) {
                     $validator->errors()->add('domain', trans('messages.sending_identity.exist_error'));
                     $valid = false;
                 }

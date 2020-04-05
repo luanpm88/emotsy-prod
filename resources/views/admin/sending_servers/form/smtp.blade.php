@@ -184,7 +184,7 @@
                 </p>
             </div>
 
-            <div class="col-md-8">
+            <div class="col-md-9">
                 @if (is_null($identities))
                     @include('elements._notification', [
                         'level' => 'warning',

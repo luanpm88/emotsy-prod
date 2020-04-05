@@ -1306,30 +1306,6 @@ class SendingServer extends Model
     }
 
     /**
-     * Get domains.
-     *
-     * @return array
-     */
-    public function getDomains()
-    {
-        $domains = $this->getOption('domains');
-
-        return $domains ? $domains : [];
-    }
-
-    /**
-     * Get emails.
-     *
-     * @return array
-     */
-    public function getEmails()
-    {
-        $emails = $this->getOption('emails');
-
-        return $emails ? $emails : [];
-    }
-
-    /**
      * Add domain.
      *
      * @return array
