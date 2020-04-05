@@ -25,6 +25,7 @@ namespace Acelle\Model;
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Log as MailLog;
 use Acelle\Library\QuotaTrackerFile;
+use Acelle\Library\IdentityStore;
 use Carbon\Carbon;
 use Acelle\Library\StringHelper;
 use Acelle\Library\Notification\BackendError as BackendErrorNotification;
@@ -1641,38 +1642,30 @@ class SendingServer extends Model
     {
         // For now, it is for Amazon only
         $options = $this->getOptions();
-
         if (!array_key_exists('identities', $options)) {
             return;
         }
 
-        $identities = $options['identities'];
-
         $selectedEmails = array_key_exists('emails', $selected) ? $selected['emails'] : [];
         $selectedDomains = array_key_exists('domains', $selected) ? $selected['domains'] : [];
-        $selectedIdentities = array_merge($selectedEmails, $selectedDomains);
+        $identityStore = new identityStore($options['identities']);
+        $identityStore->select( array_merge($selectedEmails, $selectedDomains) );
 
-        foreach($identities as $key => $attributes) {
-            if (in_array($key, $selectedIdentities)) {
-                $attributes['Selected'] = true;
-            } else {
-                $attributes['Selected'] = false;
-            }
-
-            $identities[$key] = $attributes;
-        }
-
-        $options['identities'] = $identities;
+        $options['identities'] = $identityStore->get();
         $this->setOptions($options);
     }
 
     public function getVerifiedIdentities()
     {
-        return array_merge($this->getOption('domains'), $this->getOption('emails'));
+        // by default, only return SELECTED | VERIRIED | NON-PRIVATE identities
+        $filtered = $this->getIdentityStore()->get( ['Selected' => true, 'UserId' => null, 'VerificationStatus' => 'Success'] );
+        return array_keys($filtered);
     }
 
-    public function syncIdentities()
+    public function getIdentityStore() : IdentityStore
     {
-        // for overwriting, see Amazon sending server for example
+        $options = $this->getOptions();
+        $identityStore = new IdentityStore( array_key_exists('identities', $options) ? $options['identities'] : [] );
+        return $identityStore;
     }
 }

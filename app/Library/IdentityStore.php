@@ -1,14 +1,18 @@
 <?php
 
+namespace Acelle\Library;
+
 class IdentityStore
 {
 	private $identities;
 	private $defaultIdentityAttributes = [
-		'Selected' => false,
+		'Selected' => true,
 		'VerificationStatus' => 'Pending',
 		'UserId' => null,
 		'UserName' => null,
 	];
+
+	const VERIFICATION_STATUS_SUCCESS = 'Success';
 
 	/* *
 	 * Identity data coming in form of php array
@@ -28,11 +32,34 @@ class IdentityStore
     {
 
     	foreach ($data as $key => $attributes) {
-    		$attributes = array_merge($attributes, $this->defaultIdentityAttributes);
+    		$attributes = array_merge($this->defaultIdentityAttributes, $attributes);
+    		$attributes['VerificationStatus'] = $this->mapVerificationStatus($attributes['VerificationStatus']);
     		$data[$key] = $attributes;
         }
 
         return $data;
+    }
+
+    private function mapVerificationStatus($status) {
+    	if ($status === true) {
+    		return 'Success';
+    	} elseif ($status === false) {
+    		return 'Pending';
+    	}
+
+    	$map = [
+    		'Success' => 'Success',
+    		'Pending' => 'Pending',
+    		'Failed' => 'Pending',
+    		'TemporaryFailure' => 'Pending',
+    		'NotStarted' => 'Pending',
+    	];
+
+    	if (!array_key_exists($status, $map)) {
+    		throw new \Exception("Status '{$status}' of verification status not recognized by Acelle");
+    	}
+
+    	return $map[$status];
     }
 
     public function update($data, $replace = true)
@@ -42,7 +69,7 @@ class IdentityStore
 		// + replace=false means only update, and merge, keep existing identites that are not present in the new set    	
 
     	// $data should come as [ 'key1' => [ attributes], 'key2' => ... ]
-    	$newIdentities = $data;
+    	$newIdentities = $this->normalize($data);
 
     	// Note: this method will take new identities only
     	// Any existing identity that is not present in the new identities set will be deleted
@@ -98,14 +125,17 @@ class IdentityStore
     	return $this->identities[$key];
     }
 
-    public function get()
+    public function get($conditions = null)
     {
-    	return $this->identities;
+    	if (is_null($conditions)) {
+    		return $this->identities;
+    	}
+
+    	$filtered = array_filter($this->identities, function($attributes, $key) use ($conditions) {
+    		return empty(array_diff_assoc($conditions, $attributes)); // if attributes satisfy conditions 
+    	}, ARRAY_FILTER_USE_BOTH);
+
+    	return $filtered;
     }
 }
 
-
-$store = new IdentityStore(['a' => [], 'b' => []]);
-$store->update(['b' => ['VerificationStatus' => 'Failed', 'UserId' => 'Nghi'] ], false);
-var_dump($store->select(['a'])->get());
-var_dump($store->select(['b'])->get());

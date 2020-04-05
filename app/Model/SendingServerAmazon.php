@@ -25,6 +25,7 @@ namespace Acelle\Model;
 use Acelle\Library\Log as MailLog;
 use Acelle\Library\StringHelper;
 use Acelle\Library\Lockable;
+use Acelle\Library\IdentityStore;
 
 class SendingServerAmazon extends SendingServer
 {
@@ -214,26 +215,6 @@ class SendingServerAmazon extends SendingServer
      *
      * @return bool
      */
-    public function getVerifiedIdentities()
-    {
-        $options = $this->getOptions();
-        $identities = array_key_exists('identities', $options) ? $options['identities'] : [];
-
-        $selected = [];
-        foreach($identities as $name => $attributes) {
-            if ($attributes['Selected']) {
-                $selected[] = $name;
-            }
-        }
-
-        return $selected;
-    }
-
-    /**
-     * Get verified identities (domains and email addresses).
-     *
-     * @return bool
-     */
     public function syncIdentities()
     {
         // Merge the list of identities from Amazon to the local sending domains to get customer information
@@ -264,23 +245,11 @@ class SendingServerAmazon extends SendingServer
             }
         }
 
+        $identityStore = $this->getIdentityStore();
+        $identityStore->update($identities);
+
         $options = $this->getOptions();
-        foreach ($identities as $key => $attributes) {
-            if (array_key_exists('identities', $options) && array_key_exists($key, $options['identities'])) {
-                $cached = $options['identities'][$key];
-                $attributes['Selected'] = $cached['Selected'];
-            } else {
-                $attributes['Selected'] = true; // IMPORTANT: default to true
-            }
-
-            if ($attributes['VerificationStatus'] != 'Success') {
-                $attributes['Selected'] = false;
-            }
-
-            $identities[$key] = $attributes;
-        }
-
-        $options['identities'] = $identities;
+        $options['identities'] = $identityStore->get();
         $this->setOptions($options);
         $this->save();
     }
