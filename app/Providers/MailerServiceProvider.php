@@ -35,7 +35,7 @@ class MailerServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind('xmailer', function ($app) {
-            $driver = Setting::get('mailer.driver') || config('mail.driver');
+            $driver = Setting::get('mailer.driver') ?? config('mail.driver');
 
             switch ($driver) {
                 case SendingServer::TYPE_SMTP:
