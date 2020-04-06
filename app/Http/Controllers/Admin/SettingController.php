@@ -302,8 +302,8 @@ class SettingController extends Controller
             \Acelle\Model\Setting::set('mailer.encryption', $env['MAIL_ENCRYPTION']);
             \Acelle\Model\Setting::set('mailer.username', $env['MAIL_USERNAME']);
             \Acelle\Model\Setting::set('mailer.password', $env['MAIL_PASSWORD']);
-            \Acelle\Model\Setting::set('mailer.from.name', $env['MAIL_FROM_ADDRESS']);
-            \Acelle\Model\Setting::set('mailer.from.address', $env['MAIL_FROM_NAME']);
+            \Acelle\Model\Setting::set('mailer.from.name', $env['MAIL_FROM_NAME']);
+            \Acelle\Model\Setting::set('mailer.from.address', $env['MAIL_FROM_ADDRESS']);
 
             // Redirect to my lists page
             $next = action('Admin\SettingController@mailer');
