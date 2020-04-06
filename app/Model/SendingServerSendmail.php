@@ -104,4 +104,23 @@ class SendingServerSendmail extends SendingServer
     {
         // just do nothing
     }
+
+    public static function instantiateFromSettings($settings = [])
+    {
+        $properties = [ 'sendmail_path', 'from_name', 'from_address' ];
+        $required = ['sendmail_path', 'from_address'];
+
+        $server = new self();
+
+        // Validate
+        foreach($properties as $property) {
+            if ((!array_key_exists($property, $settings) || empty($settings[$property])) && in_array($property, $required)) {
+                throw new \Exception("Cannot instantiate Sendmail mailer, '{$property}' property is missing");
+            }
+
+            $server->{$property} = $settings[$property];
+        }
+
+        return $server;
+    }
 }

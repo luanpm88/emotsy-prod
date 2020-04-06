@@ -214,19 +214,18 @@ class SenderController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function verify(Request $request, $id)
+    public function verify(Request $request)
     {
-        $server = $request->user()->customer->activeSubscription()->plan->primarySendingServer();
-        $sender = Sender::findByUid($id);
-
-        // authorize
-        if (\Gate::denies('verify', $sender)) {
-            return $this->notAuthorized();
+        try {
+            $sender = Sender::verifyToken($request->token);
+            return view('senders.verified', [
+                'sender' => $sender,
+            ]);
+        } catch (\Exception $ex) {
+            return view('senders.failed', [
+                'message' => $ex->getMessage(),
+            ]);
         }
-
-        $sender->verifyWith($server);
-
-        return redirect()->action('SenderController@show', $sender->uid);
     }
 
     /**

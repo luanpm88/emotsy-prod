@@ -24,11 +24,13 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log as LaravelLog;
+use Acelle\Model\Setting;
+use App;
 
 class Sender extends Model
 {
     // Statuses
-    const STATUS_NEW = 'new';
+    const STATUS_NEW = 'new'; // deprecated
     const STATUS_PENDING = 'pending';
     const STATUS_VERIFIED = 'verified';
 
@@ -225,6 +227,13 @@ class Sender extends Model
         }
     }
 
+    public function setVerified()
+    {
+        $this->status = self::STATUS_VERIFIED;
+        $this->save();
+        return $this;
+    }
+
     public function toRFCEmailAddress()
     {
         return "{$this->name} <{$this->email}>";
@@ -248,13 +257,71 @@ class Sender extends Model
             // this sender is bound with a specific sending server
             // set $this->sending_server_id = $server->id the correct way
             $this->sendingServer()->associate($server); 
+            $this->setPending();
             $this->save();
+
+            $server->mapType()->sendVerificationEmail($this->toRFCEmailAddress());
+        } else {
+            // If server does not support verification
+            $this->sendVerificationEmail();
         }
 
-        $this->setPending();
+        
 
-        // just in case it is already verified
-        $this->updateVerificationStatus();
-        $server->mapType()->sendVerificationEmail($this->toRFCEmailAddress());
+        
+    }
+
+    public function sendVerificationEmail()
+    {
+        $htmlContent = "<h1>Identity verification</h1><p>Dear {NAME}</p><p>Click the link below to verify your email address<br><a href='{LINK}'>{LINK}</a></p>";
+        $htmlContent = str_replace('{NAME}', $this->name, $htmlContent);
+        $htmlContent = str_replace('{NAME}', $this->name, $htmlContent);
+
+        // build the message
+        $message = new \Swift_Message();
+        $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
+        $message->setContentType('text/html; charset=utf-8');
+
+        $message->setSubject('Verify your email address');
+        $message->setTo($this->email);
+        $message->setReplyTo(Setting::get('mail.reply_to'));
+        $message->addPart($htmlContent, 'text/html');
+
+        $mailer = App::make('xmailer');
+        $result = $mailer->sendWithDefaultFromAddress($message);
+
+        if (array_key_exists('error', $result)) {
+            throw new \Exception($result['error']);
+        }
+    }
+
+    public function generateVerificationToken()
+    {
+        $token = urlencode(encrypt($this->uid));
+        return $token;
+    }
+
+    public function generateVerificationUrl()
+    {
+        return action('SenderController@verify', [ 'token' => $this->generateVerificationToken() ] );
+    }
+
+    public static function verifyToken($token)
+    {
+        $uid = null;
+
+        try {
+            $uid = decrypt(urldecode($token));    
+        } catch (\Exception $ex) {
+            throw new \Exception("Invalid sender verification token", 1);
+        }
+
+        $sender = self::findByUid($uid);
+
+        if (is_null($sender)) {
+            throw new \Exception("Identity not found", 1);
+        }
+        
+        return $sender->setVerified();
     }
 }

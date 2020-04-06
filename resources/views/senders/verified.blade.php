@@ -1,84 +1,39 @@
-@extends('layouts.frontend')
+@extends('layouts.register')
 
-@section('title', $sender->name)
-	
-@section('page_script')
-	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
-		
-    <script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
-@endsection
+@section('title', trans('messages.create_your_account'))
 
-@section('page_header')
-	
-	<div class="page-title">
-		<ul class="breadcrumb breadcrumb-caret position-right">
-            <li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-            <li><a href="{{ action("SenderController@index") }}">{{ trans('messages.verified_senders') }}</a></li>
-            <li><a href="{{ action("SendingDomainController@index") }}">{{ trans('messages.email_addresses') }}</a></li>
-        </ul>
-        <h1>
-            <span class="text-semibold">{{ trans('messages.verified_senders') }}</span>
-        </h1> 
-	</div>
-				
+@section('page_script')    
+    <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/visualization/echarts/echarts.js') }}"></script>
+    
+    <script type="text/javascript" src="{{ URL::asset('js/chart.js') }}"></script>
 @endsection
 
 @section('content')
-	
-	@include('senders._menu')
-	<h1>
-		<span class="text-semibold"><i class="icon-profile"></i> {{ $sender->name }}</span>
-	</h1>
     
-    <div class="row">
-        <div class="col-sm-12 col-md-8">
-            <ul class="dotted-list topborder section section-flex">
-                <li>
-                    <div class="unit size1of3">
-                        <strong>{{ trans('messages.name') }}</strong>
-                    </div>
-                    <div class="size2of3">
-                        <mc:flag class="text-bold">{{ $sender->name }}</mc:flag>
-                    </div>
-                </li>
-                <li>
-                    <div class="unit size1of3">
-                        <strong>{{ trans('messages.email') }}</strong>
-                    </div>
-                    <div class="size2of3">
-                        <mc:flag class="text-bold">{{ $sender->email }}</mc:flag>
-                    </div>
-                </li>
-                <li>
-                    <div class="unit size1of3">
-                        <strong>{{ trans("messages.status") }}</strong>
-                    </div>
-                    <div class="size2of3">
-                        <mc:flag class="text-bold">
-							<span class="label label-primary bg-{{ $sender->status }}">
-								{{ trans('messages.sender.status.' . $sender->status) }}
-							</span>
-						</mc:flag>
-                    </div>
-                </li>
-                <li>
-                    <div class="unit size1of3">
-                        <strong>{{ trans('messages.created_at') }}</strong>
-                    </div>
-                    <div class="size2of3">
-                        <mc:flag class="text-bold">{{ Tool::formatDateTime($sender->created_at) }}</mc:flag>
-                    </div>
-                </li>
-            </ul>
+    <div class="row mt-40 mc-form">
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+            
+            <h1 class="mb-20">{{ trans('messages.sender.status.done.title') }}</h1>
+            <p>{!! trans('messages.sender.status.done.description', ['email' => $sender->email ]) !!}</p>
+
+            <!--
+            <p><img width="100%" style="box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 3px 10px 0 rgba(0, 0, 0, 0.19)" src="https://acellemail.s3.amazonaws.com/sample-verified-identity.png"></p>
+            -->
+            <hr>
+            <div class="row flex align-items">
+                <div class="col-md-4">
+                    <form method="GET" action="{{ action('SenderController@index') }}">
+                        <button type='submit' class="btn btn-mc_primary res-button"><i class="icon-check"></i> {{ trans('messages.sender.status.done.gotit') }}</button>
+                    </form>
+                </div>
+                <div class="col-md-8" style="font-size:13px;font-style: italic">
+                    {{ trans('messages.sender.status.done.note') }}
+                </div>
+                    
+            </div>
         </div>
+        <div class="col-md-1"></div>
     </div>
     
-    <div class="subsection">
-        <h3>{{ trans('messages.sender.verification_status') }}</h3>
-		
-		<p>{!! trans('messages.sender.satus_info.' . $sender->type . '.' . $sender->status) !!}</p>
-    </div>
-
-
-				
 @endsection

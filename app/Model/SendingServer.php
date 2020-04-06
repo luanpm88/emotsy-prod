@@ -1625,4 +1625,15 @@ class SendingServer extends Model
         $verifiedIdentities = array_keys($this->getIdentityStore()->get(['VerificationStatus' => IdentityStore::VERIFICATION_STATUS_SUCCESS]));
         return in_array($identity, $verifiedIdentities);
     }
+
+    public function sendWithDefaultFromAddress($message, $params = [])
+    {
+        if (empty($this->from_name)) {
+            $message->setFrom( [ $this->from_name => $this->from_address ] );
+        } else {
+            $message->setFrom($this->from_address);
+        }
+
+        return  $this->send($message, $params);
+    }
 }

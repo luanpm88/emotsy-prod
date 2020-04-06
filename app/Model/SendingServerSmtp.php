@@ -115,4 +115,23 @@ class SendingServerSmtp extends SendingServer
     {
         // just do nothing
     }
+
+    public static function instantiateFromSettings($settings = [])
+    {
+        $properties = [ 'host', 'smtp_port',  'smtp_protocol', 'smtp_username', 'smtp_password', 'from_name', 'from_address' ];
+        $required = ['host', 'smtp_port', 'smtp_username', 'smtp_password', 'from_address'];
+
+        $server = new self();
+
+        // validate
+        foreach($properties as $property) {
+            if ((!array_key_exists($property, $settings) || empty($settings[$property])) && in_array($property, $required)) {
+                throw new \Exception("Cannot instantiate SMTP mailer, '{$property}' property is missing");
+            }
+
+            $server->{$property} = $settings[$property];
+        }
+
+        return $server;
+    }
 }
