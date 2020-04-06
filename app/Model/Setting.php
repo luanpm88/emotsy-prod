@@ -546,7 +546,7 @@ class Setting extends Model
 
         // Write file
         $env_file = fopen($file_path, 'w') or die('Unable to open file!');
-        fwrite($env_file, implode($data, ''));
+        fwrite($env_file, implode('', $data));
         fclose($env_file);
     }
 
