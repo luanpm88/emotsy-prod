@@ -107,21 +107,27 @@ class InstallController extends Controller
             'password' => 'required',
             'timezone' => 'required',
         ];
-        $smtp_rules = [
-            'smtp_hostname' => 'required',
-            'smtp_port' => 'required',
-            'smtp_username' => 'required',
-            'smtp_password' => 'required',
-            'smtp_from_email' => 'required|email',
-            'smtp_from_name' => 'required',
+        $mail_rules = [
+            'smtp' => [
+                'smtp_hostname' => 'required',
+                'smtp_port' => 'required',
+                'smtp_username' => 'required',
+                'smtp_password' => 'required',
+                'mail_from_email' => 'required|email',
+                'mail_from_name' => 'required',
+            ],
+            'sendmail' => [
+                'mail_from_email' => 'required|email',
+                'mail_from_name' => 'required',
+            ],
         ];
+        $smtp_rules = $mail_rules['smtp'];
+
         // validate and save posted data
         if ($request->isMethod('post')) {
             $request->session()->forget('site_info');
 
-            if ($request->mail_driver == 'smtp') {
-                $rules = array_merge($rules, $smtp_rules);
-            }
+            $rules = array_merge($rules, $mail_rules[$request->mail_driver]);
             $this->validate($request, $rules);
 
             $site_info = $request->all();
@@ -153,9 +159,6 @@ class InstallController extends Controller
                     $rules['smtp_valid'] = 'required';
                 }
                 $this->validate($request, $rules);
-            } else {
-                $site_info["smtp_from_name"] = $site_info["site_name"];
-                $site_info["smtp_from_email"] = $site_info["email"];
             }
 
             $request->session()->put('site_info', $site_info);
@@ -423,6 +426,16 @@ class InstallController extends Controller
                         ('license', '".$site_info['license']."', '".$date."', '".$date."');");
         $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
                         ('license_type', '".$site_info['license_type']."', '".$date."', '".$date."');");
+
+        // mail setting
+        \Acelle\Model\Setting::set('mailer.driver', $site_info['mail_driver']);
+        \Acelle\Model\Setting::set('mailer.host', $site_info['smtp_hostname']);
+        \Acelle\Model\Setting::set('mailer.port', $site_info['smtp_port']);
+        \Acelle\Model\Setting::set('mailer.encryption', $site_info['smtp_encryption']);
+        \Acelle\Model\Setting::set('mailer.username', $site_info['smtp_username']);
+        \Acelle\Model\Setting::set('mailer.password', $site_info['smtp_password']);
+        \Acelle\Model\Setting::set('mailer.from.name', $site_info['mail_from_name']);
+        \Acelle\Model\Setting::set('mailer.from.address', $site_info['mail_from_email']);
 
         $request->session()->flash('alert-success', trans('messages.install.database_import.success'));
 
@@ -749,8 +762,8 @@ MAIL_PORT='.(isset($smtp['smtp_port']) ? $smtp['smtp_port'] : '').'
 MAIL_USERNAME="'.(isset($smtp['smtp_username']) ? $smtp['smtp_username'] : '').'"
 MAIL_PASSWORD="'.(isset($smtp['smtp_password']) ? $smtp['smtp_password'] : '').'"
 MAIL_ENCRYPTION='.(isset($smtp['smtp_encryption']) ? $smtp['smtp_encryption'] : '').'
-MAIL_FROM_ADDRESS="'.(isset($smtp['smtp_from_email']) ? $smtp['smtp_from_email'] : '').'"
-MAIL_FROM_NAME="'.(isset($smtp['smtp_from_name']) ? $smtp['smtp_from_name'] : '').'"
+MAIL_FROM_ADDRESS="'.(isset($smtp['mail_from_email']) ? $smtp['mail_from_email'] : '').'"
+MAIL_FROM_NAME="'.(isset($smtp['mail_from_name']) ? $smtp['mail_from_name'] : '').'"
 ';
         $config_string;
         fwrite($env_file, $config_string);

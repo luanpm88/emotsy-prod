@@ -50,11 +50,8 @@
     <script>
         function toogleMailer() {
             var value = $("select[name='env[MAIL_DRIVER]']").val();
-            if (value == 'sendmail') {
-                $('.smtp_box').hide();
-            } else {
-                $('.smtp_box').show();
-            }
+            $('.mailer-setting').hide();
+            $('.mailer-setting.' + value).show();
         }
         
         $(document).ready(function() {

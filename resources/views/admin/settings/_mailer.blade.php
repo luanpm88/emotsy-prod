@@ -13,8 +13,8 @@
                 ])
             </div>
         </div>
-        <div class="smtp_box">
-            <div class="row box">
+        <div class="">
+            <div class="row box mailer-setting smtp">
                 <div class="col-md-6">
                     @include('helpers.form_control', [
                         'type' => 'text',
@@ -51,7 +51,7 @@
                 </div>
             </div>
                 
-            <div class="row box">
+            <div class="row box  mailer-setting smtp">
                 <div class="col-md-6">
                     @include('helpers.form_control', [
                         'type' => 'text',
@@ -74,7 +74,7 @@
                 </div>
             </div>
                 
-            <div class="row box">
+            <div class="row box  mailer-setting smtp sendmail">
                 <div class="col-md-6">
                     @include('helpers.form_control', [
                         'type' => 'text',

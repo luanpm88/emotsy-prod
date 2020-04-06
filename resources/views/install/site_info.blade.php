@@ -135,8 +135,8 @@
 				</div>
 	</div>
 		
-	<div class="smtp_box">
-		<div class="row">
+	<div class="">
+		<div class="row smtp_box mailer-setting smtp">
 			<div class="col-md-6">
 				@include('helpers.form_control', [
 					'type' => 'text',
@@ -172,7 +172,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="row">
+		<div class="row mailer-setting smtp">
 			<div class="col-md-6">
 				@include('helpers.form_control', [
 					'type' => 'text',
@@ -194,13 +194,13 @@
 				])
 			</div>
 		</div>
-		<div class="row">
+		<div class="row mailer-setting smtp sendmail">
 			<div class="col-md-6">
 				@include('helpers.form_control', [
 					'type' => 'text',
-					'name' => 'smtp_from_email',
+					'name' => 'mail_from_email',
 					'label' => trans('messages.from_email'),
-					'value' => (isset($site_info["smtp_from_email"]) ? $site_info["smtp_from_email"] : ""),
+					'value' => (isset($site_info["mail_from_email"]) ? $site_info["mail_from_email"] : ""),
 					'help_class' => 'install',
 					'rules' => $smtp_rules
 				])
@@ -208,9 +208,9 @@
 			<div class="col-md-6">
 				@include('helpers.form_control', [
 					'type' => 'text',
-					'name' => 'smtp_from_name',
+					'name' => 'mail_from_name',
 					'label' => trans('messages.from_name'),
-					'value' => (isset($site_info["smtp_from_name"]) ? $site_info["smtp_from_name"] : ""),
+					'value' => (isset($site_info["mail_from_name"]) ? $site_info["mail_from_name"] : ""),
 					'help_class' => 'install',
 					'rules' => $smtp_rules
 				])
@@ -227,11 +227,8 @@
 <script>
 	function toogleMailer() {
 		var value = $("select[name='mail_driver']").val();
-		if(value == 'sendmail') {
-			$('.smtp_box').hide();
-		} else {
-			$('.smtp_box').show();
-		}
+		$('.mailer-setting').hide();
+        $('.mailer-setting.' + value).show();
 	}
 	$(document).ready(function() {	
 		toogleMailer();

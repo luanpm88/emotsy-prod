@@ -239,13 +239,19 @@ class SettingController extends Controller
         }
 
         $env_rules = [
-            'env.MAIL_DRIVER' => 'required',
-            'env.MAIL_HOST' => 'required',
-            'env.MAIL_PORT' => 'required',
-            'env.MAIL_USERNAME' => 'required',
-            'env.MAIL_PASSWORD' => 'required',
-            'env.MAIL_FROM_ADDRESS' => 'required|email',
-            'env.MAIL_FROM_NAME' => 'required',
+            'smtp' => [
+                'env.MAIL_DRIVER' => 'required',
+                'env.MAIL_HOST' => 'required',
+                'env.MAIL_PORT' => 'required',
+                'env.MAIL_USERNAME' => 'required',
+                'env.MAIL_PASSWORD' => 'required',
+                'env.MAIL_FROM_ADDRESS' => 'required|email',
+                'env.MAIL_FROM_NAME' => 'required',
+            ],
+            'sendmail' => [
+                'env.MAIL_FROM_ADDRESS' => 'required|email',
+                'env.MAIL_FROM_NAME' => 'required',
+            ],
         ];
 
         // validate and save posted data
@@ -256,9 +262,7 @@ class SettingController extends Controller
 
             $env = $request->env;
 
-            if ($env['MAIL_DRIVER'] == 'smtp') {
-                $this->validate($request, $env_rules);
-            }
+            $this->validate($request, $env_rules[$env['MAIL_DRIVER']]);
 
             // Check SMTP connection
             $site_info = $request->all();
@@ -283,12 +287,23 @@ class SettingController extends Controller
                 $this->validate($request, $rules, $messages);
             }
 
+            // update env
             foreach ($env as $key => $value) {
                 if (empty($value)) {
                     $value = 'null';
                 }
                 \Acelle\Model\Setting::setEnv($key, $value);
             }
+
+            // update settings table
+            \Acelle\Model\Setting::set('mailer.driver', $env['MAIL_DRIVER']);
+            \Acelle\Model\Setting::set('mailer.host', $env['MAIL_HOST']);
+            \Acelle\Model\Setting::set('mailer.port', $env['MAIL_PORT']);
+            \Acelle\Model\Setting::set('mailer.encryption', $env['MAIL_ENCRYPTION']);
+            \Acelle\Model\Setting::set('mailer.username', $env['MAIL_USERNAME']);
+            \Acelle\Model\Setting::set('mailer.password', $env['MAIL_PASSWORD']);
+            \Acelle\Model\Setting::set('mailer.from.name', $env['MAIL_FROM_ADDRESS']);
+            \Acelle\Model\Setting::set('mailer.from.address', $env['MAIL_FROM_NAME']);
 
             // Redirect to my lists page
             $next = action('Admin\SettingController@mailer');
@@ -300,7 +315,7 @@ class SettingController extends Controller
         }
 
         return view('admin.settings.mailer', [
-            'env_rules' => $env_rules,
+            'env_rules' => $env_rules['smtp'],
             'env' => $env,
         ]);
     }
