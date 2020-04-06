@@ -216,9 +216,18 @@ class Customer extends Model implements BillableUserInterface
         return $this->hasMany('Acelle\Model\Blacklist');
     }
 
+    // Only direct senders children
     public function senders()
     {
-        return $this->hasMany('Acelle\Model\Sender')->where('status', '=', \Acelle\Model\Sender::STATUS_VERIFIED);
+        return $this->hasMany('Acelle\Model\Sender');
+    }
+
+    // All senders, including ones that are not associated to a particular sending servers
+    public function allSenders()
+    {
+        $server = $this->activeSubscription()->plan->primarySendingServer();
+        $result = Sender::whereRaw(sprintf("%s IS NULL OR %s = %s", table('senders.sending_server_id'), table('senders.sending_server_id'), $server->id ));
+        return $result;
     }
 
     public function activeVerifiedSendingDomains()
@@ -1822,7 +1831,7 @@ class Customer extends Model implements BillableUserInterface
         $list = [];
 
         // own emails
-        $senders = $this->senders()->get();
+        $senders = $this->allSenders()->where('status', Sender::STATUS_VERIFIED);
         foreach ($senders as $sender) {
             $list[] = $sender->name.' <'.$sender->email.'>';
         }

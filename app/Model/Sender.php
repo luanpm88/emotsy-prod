@@ -47,7 +47,7 @@ class Sender extends Model
     public static function filter($request)
     {
         $user = $request->user();
-        $query = self::select('senders.*');
+        $query = $user->customer->allSenders()->select('senders.*');
 
         // Keyword
         if (!empty(trim($request->keyword))) {
