@@ -701,11 +701,16 @@ input.error {
 .table-sub .label {
 }
 .bg-submitted_for_settlement, .bg-authorized, .bg-pending, .bg-waiting, .bg-ready, .bg-sent, .bg-finished, .bg-pending_active {
-    background-color: #2196F3;
-    border-color: #2196F3;
-    color: #fff;
+    background-color: #FFF3E0;
+    border-color: #FFF3E0;
+    color: #231c15;
 }
 .bg-settled, .bg-recurring, .bg-deliverable, .bg-current_active, .bg-current, .bg-cron-running, .bg-running, .bg-starting, .bg-pending-sending, .bg-active, .bg-confirmed, .bg-paid, .bg-sending, .bg-subscribed {
+    background-color: #c4efab;
+    border-color: #c4efab;
+    color: #231c15;
+}
+.bg-verified {
     background-color: #c4efab;
     border-color: #c4efab;
     color: #231c15;

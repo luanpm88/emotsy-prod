@@ -12,9 +12,8 @@
 			</th>
 			<th>{{ trans('messages.name') }}</th>
 			<th>{{ trans('messages.email') }}</th>
-			<th>{{ trans('messages.sender.type') }}</th>
 			<th>{{ trans('messages.created_at') }}</th>
-			<th>{{ trans('messages.sender.type') }}</th>
+			<th>{{ trans('messages.status') }}</th>
 			<th class="text-right">{{ trans('messages.action') }}</th>
 		</tr>
 		@foreach ($senders as $key => $sender)
@@ -42,10 +41,6 @@
 					<span class="text-muted second-line-mobile">{{ trans('messages.email') }}</span>
 				</td>
 				<td>
-					<span class="no-margin kq_search">{{ $sender->type ? trans('messages.sender.type.' . $sender->type) : trans('messages.sender.type.none') }}</span>
-					<span class="text-muted second-line-mobile">{{ trans('messages.sender.type') }}</span>
-				</td>
-				<td>
 					<span class="no-margin kq_search">{{ Tool::formatDateTime($sender->created_at) }}</span>
 					<span class="text-muted second-line-mobile">{{ trans('messages.created_at') }}</span>
 				</td>
@@ -53,7 +48,7 @@
 					<span class="label label-primary bg-{{ $sender->status }}">
 						{{ trans('messages.sender.status.' . $sender->status) }}
 					</span>
-					<span class="text-muted second-line-mobile">{{ trans('messages.sender.status') }}</span>
+					<span class="text-muted second-line-mobile">{{ trans('messages.sender.status.' . $sender->status) }}</span>
 				</td>
 				<td class="text-right">
 					<div class="btn-group">

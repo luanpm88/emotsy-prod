@@ -106,12 +106,24 @@ class SendingServerMailgun extends SendingServer
      *
      * @return bool
      */
-    public function getVerifiedIdentities()
+    public function syncIdentities()
     {
         $response = $this->client()->get('domains');
         $json = json_decode(json_encode($response), true);
 
-        return array_map(function ($domain) { return $domain['name']; }, $json['http_response_body']['items']);
+        $identities = [];
+        foreach ($json['http_response_body']['items'] as $domain) {
+            $name = $domain['name'];
+            $identities[$name] = ['VerificationStatus' => $domain['state'] == 'active']; 
+        }
+
+        $identityStore = $this->getIdentityStore();
+        $identityStore->update($identities);
+
+        $options = $this->getOptions();
+        $options['identities'] = $identityStore->get();
+        $this->setOptions($options);
+        $this->save();
     }
 
     /**
@@ -124,5 +136,45 @@ class SendingServerMailgun extends SendingServer
         $response = $this->client()->get('domains');
 
         return true;
+    }
+
+    /**
+     * Allow user to verify his/her own sending domain against Acelle Mail.
+     *
+     * @return bool
+     */
+    public function allowVerifyingOwnDomains()
+    {
+        return false;
+    }
+
+    /**
+     * Allow user to verify his/her own sending domain against Acelle Mail.
+     *
+     * @return bool
+     */
+    public function allowVerifyingOwnEmails()
+    {
+        return false;
+    }
+
+    /**
+     * Allow user to verify his/her own emails against AWS.
+     *
+     * @return bool
+     */
+    public function allowVerifyingOwnDomainsRemotely()
+    {
+        return false;
+    }
+
+    /**
+     * Allow user to verify his/her own emails against AWS.
+     *
+     * @return bool
+     */
+    public function allowVerifyingOwnEmailsRemotely()
+    {
+        return false;
     }
 }

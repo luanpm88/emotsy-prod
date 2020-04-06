@@ -49,6 +49,11 @@ class SendingDomain extends Model
         return $this->belongsTo('Acelle\Model\Admin');
     }
 
+    public function sendingServer()
+    {
+        return $this->belongsTo('Acelle\Model\SendingServer');
+    }
+
     /**
      * Get all items.
      *
@@ -84,10 +89,14 @@ class SendingDomain extends Model
      *
      * @return collect
      */
-    public static function filter($request)
+    public static function filter($request, $server = null)
     {
         $user = $request->user();
-        $query = self::select('sending_domains.*');
+        if ($server) {
+            $query = self::select('sending_domains.*')->whereRaw(sprintf('(%s IS NULL or %s = %s)', table('sending_domains.sending_server_id'), table('sending_domains.sending_server_id'), $server->id));
+        } else {
+            $query = self::select('sending_domains.*');
+        }
 
         // Keyword
         if (!empty(trim($request->keyword))) {
@@ -125,9 +134,9 @@ class SendingDomain extends Model
      *
      * @return collect
      */
-    public static function search($request)
+    public static function search($request, $server = null)
     {
-        $query = self::filter($request);
+        $query = self::filter($request, $server);
 
         if (!empty($request->sort_order)) {
             $query = $query->orderBy($request->sort_order, $request->sort_direction);
@@ -404,12 +413,19 @@ class SendingDomain extends Model
      */
     public function verifyDomainDns()
     {
-        $fqdn = sprintf('%s.%s', $this->getVerificationTxtName(), $this->name);
-        $results = collect(dns_get_record($fqdn, DNS_TXT));
-        $results = $results->where('type', 'TXT')
-                           ->whereIn('txt', [$this->verification_token, doublequote($this->verification_token)]);
+        if ($this->isAssociatedWithSendingServer()) {
+            $server = SendingServer::mapServerType($this->sendingServer);
+            $result = $server->checkDomainVerificationStatus($this->name);
+            $this->domain_verified = $result ? self::VERIFIED : self::UNVERIFIED;
+        } else {
+            $fqdn = sprintf('%s.%s', $this->getVerificationTxtName(), $this->name);
+            $results = collect(dns_get_record($fqdn, DNS_TXT));
+            $results = $results->where('type', 'TXT')
+                               ->whereIn('txt', [$this->verification_token, doublequote($this->verification_token)]);
 
-        $this->domain_verified = $results->isEmpty() ? self::UNVERIFIED : self::VERIFIED;
+            $this->domain_verified = $results->isEmpty() ? self::UNVERIFIED : self::VERIFIED;
+        }
+
         $this->save();
     }
 
@@ -420,14 +436,21 @@ class SendingDomain extends Model
      */
     public function verifyDkim()
     {
-        $possibles = collect([$this->getDnsDkimConfigWithoutQuote(), $this->getDnsDkimConfig(), $this->getEscapedDnsDkimConfig()]);
-        $possibles = $possibles->map(function ($item, $key) { return preg_replace('/\s+/', '', $item); });
+        if ($this->isAssociatedWithSendingServer()) {
+            $server = SendingServer::mapServerType($this->sendingServer);
+            $result = $server->checkDkimVerificationStatus($this->name);
+            $this->dkim_verified = $result ? self::VERIFIED : self::UNVERIFIED;
+        } else {
+            $possibles = collect([$this->getDnsDkimConfigWithoutQuote(), $this->getDnsDkimConfig(), $this->getEscapedDnsDkimConfig()]);
+            $possibles = $possibles->map(function ($item, $key) { return preg_replace('/\s+/', '', $item); });
 
-        $fqdn = sprintf('%s.%s', $this->getDkimSelector(), $this->name);
-        $results = collect(dns_get_record($fqdn, DNS_TXT))->where('type', 'TXT')->map(function ($item, $key) { return preg_replace('/\s+/', '', $item['txt']); });
-        $results = $results->intersect($possibles);
+            $fqdn = sprintf('%s.%s', $this->getDkimSelector(), $this->name);
+            $results = collect(dns_get_record($fqdn, DNS_TXT))->where('type', 'TXT')->map(function ($item, $key) { return preg_replace('/\s+/', '', $item['txt']); });
+            $results = $results->intersect($possibles);
 
-        $this->dkim_verified = $results->isEmpty() ? self::UNVERIFIED : self::VERIFIED;
+            $this->dkim_verified = $results->isEmpty() ? self::UNVERIFIED : self::VERIFIED;
+        }
+        
         $this->save();
     }
 
@@ -541,5 +564,30 @@ class SendingDomain extends Model
         }
 
         return false;
+    }
+
+    public function verifyWith($server)
+    {
+        $this->sending_server_id = $server->id;
+        $verinfo = $server->verifyDomain($this->name);
+        $options = $this->getOptions();
+        $options['verification'] = $verinfo;
+        $this->setOptions($options);
+        $this->save();
+    }
+
+    public function getOptions()
+    {
+        return json_decode($this->options, true);
+    }
+
+    public function setOptions($array)
+    {
+        $this->options = json_encode($array);
+    }
+
+    public function isAssociatedWithSendingServer()
+    {
+        return !is_null($this->sending_server_id);
     }
 }

@@ -195,11 +195,12 @@ class SendingServerController extends Controller
         $server = \Acelle\Model\SendingServer::findByUid($id);
         $server = \Acelle\Model\SendingServer::mapServerType($server);
         $originServer = \Acelle\Model\SendingServer::mapServerType($server);
-
         // authorize
         if (!$request->user()->admin->can('update', $server)) {
             return $this->notAuthorized();
         }
+
+        $server->syncIdentities();
 
         // bounce / feedback hanlder nullable
         if ($request->old() && empty($request->old()["bounce_handler_id"])) {
@@ -209,8 +210,8 @@ class SendingServerController extends Controller
             $server->feedback_loop_handler_id = null;
         }
 
-        $server->fill($request->old());        
-        
+        $server->fill($request->old());
+
         $notices = [];
         
         try {
@@ -224,10 +225,12 @@ class SendingServerController extends Controller
             ];
         }        
         
-        $identities = null;
-        
+        $identities = [];
+        $allIdentities = [];
+
         try {
             $identities = $server->getVerifiedIdentities();
+            $allIdentities = array_key_exists('identities', $server->getOptions()) ? $server->getOptions()['identities'] : [];
         } catch (\Exception $ex) {
             $notices[] = [
                 'title' => trans('messages.sending_server.identities_list_failed'),
@@ -244,6 +247,7 @@ class SendingServerController extends Controller
             'server' => $server,
             'notices' => $notices,
             'identities' => $identities,
+            'allIdentities' => $allIdentities,
         ]);
     }
 
@@ -576,6 +580,7 @@ class SendingServerController extends Controller
         // default sever quota
         if ($request->options) {
             $server->setOptions($request->options); // options = json_encode($request->options);
+            $server->updateIdentitiesList($request->options);
         }
         
         // Sening limit
@@ -652,7 +657,7 @@ class SendingServerController extends Controller
                     'domain' => 'required|email',
                 ]);
                 
-                if (in_array(strtolower($request->domain), $server->getEmails())) {
+                if (in_array(strtolower($request->domain), $server->getVerifiedIdentities())) {
                     $validator->errors()->add('domain', trans('messages.sending_identity.exist_error'));
                     $valid = false;
                 }
@@ -662,15 +667,13 @@ class SendingServerController extends Controller
                                 ->withErrors($validator)
                                 ->withInput();
                 }
-
-                $server->addEmail(strtolower($request->domain)); 
             } else {
                 // validation
                 $validator = \Validator::make($request->all(), [
                     'domain' => 'required|regex:/^(?:[-A-Za-z0-9]+\.)+[A-Za-z]{2,6}$/i',
                 ]);
                 
-                if (in_array(strtolower($request->domain), $server->getDomains())) {
+                if (in_array(strtolower($request->domain), $server->getVerifiedIdentities())) {
                     $validator->errors()->add('domain', trans('messages.sending_identity.exist_error'));
                     $valid = false;
                 }
@@ -680,9 +683,9 @@ class SendingServerController extends Controller
                                 ->withErrors($validator)
                                 ->withInput();
                 }
-
-                $server->addDomain(strtolower($request->domain)); 
             }
+
+            $server->addIdentity(strtolower($request->domain)); 
             
             $request->session()->flash('alert-success', trans('messages.sending_server.updated'));
             return;
@@ -701,18 +704,11 @@ class SendingServerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function removeDomain(Request $request, $uid, $domain)
+    public function removeDomain(Request $request, $uid, $identity)
     {
         $server = SendingServer::findByUid($request->uid);
-        
-        $domain = base64_decode($domain);
+        $server->removeIdentity(base64_decode($identity));
 
-        if (checkEmail($domain)) {
-            $server->removeEmail($domain);
-        } else {
-            $server->removeDomain($domain);
-        }
-        
         $request->session()->flash('alert-success', trans('messages.sending_server.domain.removed'));
         return redirect()->action('Admin\SendingServerController@edit', [$server->uid, $server->type]);
     }

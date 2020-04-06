@@ -216,16 +216,27 @@ class Customer extends Model implements BillableUserInterface
         return $this->hasMany('Acelle\Model\Blacklist');
     }
 
+    // Only direct senders children
     public function senders()
     {
-        return $this->hasMany('Acelle\Model\Sender')->where('status', '=', \Acelle\Model\Sender::STATUS_VERIFIED);
+        return $this->hasMany('Acelle\Model\Sender');
+    }
+
+    // All senders, including ones that are not associated to a particular sending servers
+    public function allSenders()
+    {
+        $server = $this->activeSubscription()->plan->primarySendingServer();
+        $result = Sender::whereRaw(sprintf("%s IS NULL OR %s = %s", table('senders.sending_server_id'), table('senders.sending_server_id'), $server->id ));
+        return $result;
     }
 
     public function activeVerifiedSendingDomains()
     {
+        $server = $this->activeSubscription()->plan->primarySendingServer();
         return $this->sendingDomains()
             ->where('status', '=', \Acelle\Model\SendingDomain::STATUS_ACTIVE)
-            ->where('domain_verified', '=', \Acelle\Model\SendingDomain::VERIFIED);
+            ->where('domain_verified', '=', \Acelle\Model\SendingDomain::VERIFIED)
+            ->whereRaw(sprintf('(%s IS NULL or %s = %s)', table('sending_domains.sending_server_id'), table('sending_domains.sending_server_id'), $server->id));
     }
 
     /**
@@ -783,8 +794,13 @@ class Customer extends Model implements BillableUserInterface
     public function getQuotaHash()
     {
         $current = $this->getCurrentSubscription();
+
+        if (is_null($current->started_at)) {
+            throw new \Exception('Application error: subscription started_at not set!');
+        }
+        
         $quota = [
-            'start' => (isset($current->created_at) ? $current->created_at->timestamp : null),
+            'start' => (isset($current->started_at) ? $current->started_at->timestamp : null),
             'max' => $this->getOption('email_max'),
         ];
 
@@ -1815,7 +1831,7 @@ class Customer extends Model implements BillableUserInterface
         $list = [];
 
         // own emails
-        $senders = $this->senders()->get();
+        $senders = $this->allSenders()->where('status', Sender::STATUS_VERIFIED);
         foreach ($senders as $sender) {
             $list[] = $sender->name.' <'.$sender->email.'>';
         }
@@ -1829,7 +1845,7 @@ class Customer extends Model implements BillableUserInterface
         // plan sending server emails
         $list = array_merge($this->activeSubscription()->plan->getVerifiedIdentities(), $list);
 
-        return $list;
+        return array_values(array_unique($list));
     }
 
     /**
@@ -2016,5 +2032,10 @@ class Customer extends Model implements BillableUserInterface
         }
 
         return true;
+    }
+
+    public function getFullName()
+    {
+        return trim($this->first_name.' '.$this->last_name);
     }
 }

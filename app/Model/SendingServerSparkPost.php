@@ -269,7 +269,7 @@ class SendingServerSparkPost extends SendingServer
      *
      * @return bool
      */
-    public function getVerifiedIdentities()
+    public function syncIdentities()
     {
         $response = $this->client()->request('GET', 'sending-domains', ['ownership_verified' => 'true']);
 
@@ -277,9 +277,19 @@ class SendingServerSparkPost extends SendingServer
             throw new \Exception($response->getBody(true));
         }
 
-        $domains = $response->getBody();
+        $json = $response->getBody();
+        $identities = [];
+        foreach ($json['results'] as $domain) {
+            $name = $domain['domain'];
+            $identities[$name] = ['VerificationStatus' => $domain['status']['ownership_verified'] == true]; 
+        }
 
-        return array_map(function ($domain) { return $domain['domain']; }, $domains['results']);
+        $identityStore = $this->getIdentityStore();
+        $identityStore->update($identities);
+        $options = $this->getOptions();
+        $options['identities'] = $identityStore->get();
+        $this->setOptions($options);
+        $this->save();
     }
 
     /**
@@ -296,5 +306,45 @@ class SendingServerSparkPost extends SendingServer
         }
 
         return true;
+    }
+
+    /**
+     * Allow user to verify his/her own sending domain against Acelle Mail.
+     *
+     * @return bool
+     */
+    public function allowVerifyingOwnDomains()
+    {
+        return false;
+    }
+
+    /**
+     * Allow user to verify his/her own sending domain against Acelle Mail.
+     *
+     * @return bool
+     */
+    public function allowVerifyingOwnEmails()
+    {
+        return false;
+    }
+
+    /**
+     * Allow user to verify his/her own emails against AWS.
+     *
+     * @return bool
+     */
+    public function allowVerifyingOwnDomainsRemotely()
+    {
+        return false;
+    }
+
+    /**
+     * Allow user to verify his/her own emails against AWS.
+     *
+     * @return bool
+     */
+    public function allowVerifyingOwnEmailsRemotely()
+    {
+        return false;
     }
 }

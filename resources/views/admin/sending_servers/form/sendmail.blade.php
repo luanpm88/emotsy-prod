@@ -140,29 +140,60 @@
                 <p>
                     {!! trans('messages.sending_servers.local_identity.intro') !!}                    
                 </p>
+            </div>
+
+            <div class="col-md-9">
                 @if (is_null($identities))
                     @include('elements._notification', [
                         'level' => 'warning',
                         'title' => 'Error fetching identities list',
-                        'message' => 'Please check your connection',
+                        'message' => 'Please check your connection to AWS',
                     ])
                 @else
                     <table class="table table-box table-box-head field-list">
                         <thead>
                             <tr>
-                                <td>{{ trans('messages.email_domain') }}</td>
+                                <td>{{ trans('messages.domain') }}</td>
                                 <td>{{ trans('messages.status') }}</td>
-                                <td>{{ trans('messages.action') }}</td>
+                                <td align="center" class="xtooltip" title="Set whether or not this identity is available for all users">Available for All</td>
+                                <td>Added By</td>
+                                <td>Action</td>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($identities as $domain)
+                            @foreach ($allIdentities as $domain => $attributes)
                                 <tr class="odd">
                                     <td>
                                         {{ $domain }}
                                     </td>
                                     <td>
-                                        <span class="badge badge-success badge-lg">{{ trans('messages.sending_identity.status.active') }}</span>
+                                        @if ($attributes['VerificationStatus'] == 'Success')
+                                            <span class="badge badge-success badge-lg">{{ trans('messages.sending_domain_status_active') }}</span>
+                                        @else
+                                            <span class="badge badge-default badge-lg">{{ trans('messages.sending_domain_status_inactive') }}</span>
+                                        @endif
+                                        
+                                    </td>
+
+                                    @if (!is_null($attributes['UserId']))
+                                        <td align="center"><span class="xtooltip" title="This domain is private and is available for the owner user only">Private</span></td>
+                                    @elseif ($attributes['VerificationStatus'] == 'Success')
+                                        <td align="center">
+                                            @if (checkEmail($domain))
+                                                <input type="checkbox" name="options[emails][]" value="{{ $domain }}" class="switchery"
+                                                    {{ $attributes['Selected'] ? " checked" : "" }}
+                                                />
+                                            @else
+                                                <input type="checkbox" name="options[domains][]" value="{{ $domain }}" class="switchery"
+                                                    {{ $attributes['Selected'] ? " checked" : "" }}
+                                                />
+                                            @endif
+                                        </td>
+                                    @else
+                                        <td align="center"></td>
+                                    @endif
+                                    <td>
+                                        <a href="{{ action('Admin\CustomerController@index') }}" target="_blank">{{ $attributes['UserName'] }}</a>
                                     </td>
                                     <td>
                                         <a href="{{ action('Admin\SendingServerController@removeDomain', [$server->uid, base64_encode($domain)]) }}"
@@ -176,6 +207,8 @@
                         </tbody>
                     </table>
                 @endif
+            </div>
+            <div class="col-md-6">
                 <br>
                 <a href="{{ action('Admin\SendingServerController@addDomain', $server->uid) }}"
                   class="btn btn-mc_default mr-10 modal_link" data-size="md">

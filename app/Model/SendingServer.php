@@ -25,6 +25,7 @@ namespace Acelle\Model;
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Log as MailLog;
 use Acelle\Library\QuotaTrackerFile;
+use Acelle\Library\IdentityStore;
 use Carbon\Carbon;
 use Acelle\Library\StringHelper;
 use Acelle\Library\Notification\BackendError as BackendErrorNotification;
@@ -109,6 +110,11 @@ class SendingServer extends Model
     public function bounceHandler()
     {
         return $this->belongsTo('Acelle\Model\BounceHandler');
+    }
+
+    public function sendingDomains()
+    {
+        return $this->hasMany('Acelle\Model\SendingDomain', 'sending_server_id');
     }
 
     /**
@@ -1300,57 +1306,15 @@ class SendingServer extends Model
     }
 
     /**
-     * Get domains.
+     * Add domain.
      *
      * @return array
      */
-    public function getDomains()
+    public function addIdentity($domain)
     {
-        $domains = $this->getOption('domains');
-
-        return $domains ? $domains : [];
-    }
-
-    /**
-     * Get emails.
-     *
-     * @return array
-     */
-    public function getEmails()
-    {
-        $emails = $this->getOption('emails');
-
-        return $emails ? $emails : [];
-    }
-
-    /**
-     * Add email.
-     *
-     * @return array
-     */
-    public function addEmail($email)
-    {
-        $emails = $this->getOption('emails');
-        $emails[] = $email;
-
-        $this->setOption('emails', $emails);
-        $this->save();
-    }
-
-    /**
-     * Add email.
-     *
-     * @return array
-     */
-    public function removeEmail($email)
-    {
-        $emails = $this->getOption('emails');
-
-        if (($key = array_search($email, $emails)) !== false) {
-            unset($emails[$key]);
-        }
-
-        $this->setOption('emails', $emails);
+        $identityStore = $this->getIdentityStore();
+        $identityStore->add([ $domain => ['VerificationStatus' => true ]]);
+        $this->setOption('identities', $identityStore->get());
         $this->save();
     }
 
@@ -1359,29 +1323,11 @@ class SendingServer extends Model
      *
      * @return array
      */
-    public function addDomain($domain)
+    public function removeIdentity($identity)
     {
-        $domains = $this->getOption('domains');
-        $domains[] = $domain;
-
-        $this->setOption('domains', $domains);
-        $this->save();
-    }
-
-    /**
-     * Add domain.
-     *
-     * @return array
-     */
-    public function removeDomain($domain)
-    {
-        $domains = $this->getOption('domains');
-
-        if (($key = array_search($domain, $domains)) !== false) {
-            unset($domains[$key]);
-        }
-
-        $this->setOption('domains', $domains);
+        $identityStore = $this->getIdentityStore();
+        $identityStore->remove($identity);
+        $this->setOption('identities', $identityStore->get());
         $this->save();
     }
 
@@ -1516,16 +1462,6 @@ class SendingServer extends Model
      *
      * @return array
      */
-    public function getVerifiedIdentities()
-    {
-        return array_merge($this->getOption('domains'), $this->getOption('emails'));
-    }
-
-    /**
-     * Get verified identities.
-     *
-     * @return array
-     */
     public function initVerifiedIdentities()
     {
         $items = $this->getVerifiedIdentities();
@@ -1627,7 +1563,7 @@ class SendingServer extends Model
             $plan->checkStatus();
         }
     }
-    
+
     /**
      * Verification sending server tags.
      */
@@ -1640,5 +1576,53 @@ class SendingServer extends Model
             ['name' => 'USER_EMAIL', 'required' => false],
             ['name' => 'EMAIL_TO_VERIFY', 'required' => false],
         ];
+    }
+
+    public function updateIdentitiesList($selected)
+    {
+        // For now, it is for Amazon only
+        $options = $this->getOptions();
+        if (!array_key_exists('identities', $options)) {
+            return;
+        }
+
+        $selectedEmails = array_key_exists('emails', $selected) ? $selected['emails'] : [];
+        $selectedDomains = array_key_exists('domains', $selected) ? $selected['domains'] : [];
+        $identityStore = new identityStore($options['identities']);
+        $identityStore->select( array_merge($selectedEmails, $selectedDomains) );
+
+        $options['identities'] = $identityStore->get();
+        $this->setOptions($options);
+    }
+
+    public function getVerifiedIdentities()
+    {
+        // by default, only return SELECTED | VERIRIED | NON-PRIVATE identities
+        $filtered = $this->getIdentityStore()->get( ['Selected' => true, 'UserId' => null, 'VerificationStatus' => 'Success'] );
+        return array_keys($filtered);
+    }
+
+    public function getIdentityStore() : IdentityStore
+    {
+        $options = $this->getOptions();
+        $identityStore = new IdentityStore( array_key_exists('identities', $options) ? $options['identities'] : [] );
+        return $identityStore;
+    }
+
+    public function mapType()
+    {
+        return self::mapServerType($this);
+    }
+
+    /**
+     * Check an identity (email or domain) if it is verified against AWS.
+     *
+     * @return bool
+     */
+    public function verifyIdentity($identity)
+    {
+        $this->syncIdentities();
+        $verifiedIdentities = array_keys($this->getIdentityStore()->get(['VerificationStatus' => IdentityStore::VERIFICATION_STATUS_SUCCESS]));
+        return in_array($identity, $verifiedIdentities);
     }
 }

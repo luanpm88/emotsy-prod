@@ -89,4 +89,19 @@ class SendingServerSendmail extends SendingServer
 
         return true;
     }
+
+    public function allowVerifyingOwnEmailsRemotely()
+    {
+        return false;
+    }
+
+    public function allowVerifyingOwnDomainsRemotely()
+    {
+        return false;
+    }
+
+    public function syncIdentities()
+    {
+        // just do nothing
+    }
 }

@@ -581,6 +581,9 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('automation2', 'Automation2Controller@index');
 
     Route::get('email/preview/{uid}/{subscriber_uid}', 'EmailController@preview');
+
+    // Sample UI/UX
+    Route::get('sample', 'SamplesController@index');    
 });
 
 // ADMIN AREA

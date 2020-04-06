@@ -45,7 +45,7 @@
                                 {{ trans('messages.actions') }} <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu">
-                                <li><a delete-confirm="{{ trans('messages.remove_blacklist_confirm') }}" href="{{ action('BlacklistController@delete') }}"><i class="icon-trash"></i> {{ trans('messages.delete') }}</a></li>
+                                <li><a delete-confirm="{{ trans('messages.remove_blacklist_confirm') }}" href="{{ action('SenderController@delete') }}"><i class="icon-trash"></i> {{ trans('messages.delete') }}</a></li>
                             </ul>
                         </div>
                         <span class="filter-group">
