@@ -230,6 +230,11 @@ class Sender extends Model
         return "{$this->name} <{$this->email}>";
     }
 
+    public function isPending()
+    {
+        return $this->status == self::STATUS_PENDING;
+    }
+
     public function verifyWith($server)
     {
         // Check if it is already verify

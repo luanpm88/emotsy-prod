@@ -118,12 +118,14 @@ class SenderController extends Controller
         if ($request->isMethod('post')) {
             $sender->fill($request->all());
             $sender->customer_id = $request->user()->customer->id;
-            $sender->status = Sender::STATUS_NEW;
+            $sender->status = Sender::STATUS_PENDING;
 
             $this->validate($request, $sender->rules());
 
             if ($sender->save()) {
-                $request->session()->flash('alert-success', trans('messages.sender.created'));
+                $server = $request->user()->customer->activeSubscription()->plan->primarySendingServer();
+                $sender->verifyWith($server);
+                
                 return redirect()->action('SenderController@show', $sender->uid);
             }
         }
@@ -139,8 +141,7 @@ class SenderController extends Controller
     public function show(Request $request, $id)
     {
         $sender = Sender::findByUid($id);
-        $subscription = $request->user()->customer->subscription;
-        $server = $subscription->plan->primarySendingServer();
+        $sender->updateVerificationStatus();
 
         // authorize
         if (\Gate::denies('read', $sender)) {
@@ -224,11 +225,6 @@ class SenderController extends Controller
         }
 
         $sender->verifyWith($server);
-
-        // save posted data
-        if ($sender->isVerified()) {
-            $request->session()->flash('alert-success', trans('messages.sender.verified'));
-        }
 
         return redirect()->action('SenderController@show', $sender->uid);
     }
