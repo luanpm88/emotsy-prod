@@ -273,16 +273,19 @@ class Sender extends Model
 
     public function sendVerificationEmail()
     {
-        $htmlContent = "<h1>Identity verification</h1><p>Dear {NAME}</p><p>Click the link below to verify your email address<br><a href='{LINK}'>{LINK}</a></p>";
-        $htmlContent = str_replace('{NAME}', $this->name, $htmlContent);
-        $htmlContent = str_replace('{NAME}', $this->name, $htmlContent);
+        $template = Layout::where('alias', 'sender_verification_email')->first();
+        $htmlContent = $template->content;
+
+        $htmlContent = str_replace('{USER_NAME}', $this->name, $htmlContent);
+        $htmlContent = str_replace('{USER_EMAIL}', $this->email, $htmlContent);
+        $htmlContent = str_replace('{VERIFICATION_LINK}', $this->generateVerificationUrl(), $htmlContent);
 
         // build the message
         $message = new \Swift_Message();
         $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
         $message->setContentType('text/html; charset=utf-8');
 
-        $message->setSubject('Verify your email address');
+        $message->setSubject($template->subject);
         $message->setTo($this->email);
         $message->setReplyTo(Setting::get('mail.reply_to'));
         $message->addPart($htmlContent, 'text/html');

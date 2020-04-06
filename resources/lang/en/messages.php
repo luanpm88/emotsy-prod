@@ -2636,6 +2636,7 @@
   'template.select_your_template' => 'Select one of template layouts below',
   'template.create_and_design' => 'Start Design',
   'layouts' => 'Layouts',
+  'sender_verification_email' => 'Sender Verification Email',
   'template.need_select_template' => 'Please select layout or template for the template',
   'admin.dashboard.recent_activity.wording' => 'By default, all activities of customers are logged for investigating.
     Visit <a href=":here"> Customers Dashboard</a> to see the full list',
