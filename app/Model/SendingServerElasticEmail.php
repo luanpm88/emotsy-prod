@@ -284,7 +284,6 @@ class SendingServerElasticEmail extends SendingServer
     {
         // Sample result: 
         // {"success":true,"data":[{"domain":"empiremedicaltraining.info (contact@empiremedicaltraining.info)","defaultdomain":true,"spf":true,"dkim":true,"mx":true,"dmarc":true,"isrewritedomainvalid":true,"verify":false,"type":0,"trackingstatus":0,"certificatestatus":0,"certificatevalidationerror":null,"trackingtypeuserrequest":null,"verp":true,"custombouncesdomain":null,"iscustombouncesdomaindefault":false,"ownership":0}]}
-
         $response = file_get_contents(self::API_ENDPOINT.'/domain/list?apikey='.$this->api_key);
         $json = json_decode($response, true);
         if ($json['success'] == false) {
@@ -295,7 +294,9 @@ class SendingServerElasticEmail extends SendingServer
         $identities = [];
         foreach ($json['data'] as $domain) {
             $name = preg_split('/\s+/', $domain['domain'])[0];
-            $identities[$name] = ['VerificationStatus' => $domain['verify']]; 
+
+            // Notice that verify:true means NOT verified while verify:false => already verified!!!! STUPID!
+            $identities[$name] = ['VerificationStatus' => !$domain['verify']];
         }
 
         $identityStore = $this->getIdentityStore();
