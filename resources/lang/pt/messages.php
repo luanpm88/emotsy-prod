@@ -1372,9 +1372,6 @@
   'automation_status_draft' => 'Rascunho',
   'automation_status_active' => 'Ativo',
   'automation_status_inactive' => 'Inativo',
-  'auto_event_status_draft' => 'Rascunho',
-  'auto_event_status_active' => 'Ativo',
-  'auto_event_status_inactive' => 'Inativo',
   'list_status_active' => 'Ativo',
   'list_status_inactive' => 'Inativo',
   'system_job_status_new' => 'Novo',
@@ -2103,33 +2100,19 @@
   'sender.delete' => 'Delete',
   'sender.delete.confirm' => 'You\'re about to delete sender from the list.',
   'sender.edit' => 'Edit information',
-  'sender.created' => 'Sender successfully created',
   'sender.new.wording' => 'Verify an email to use as a “FROM” address when you send emails. A verified identity will help improve deliverability. That is, it helps keep your campaigns out of spam folders and protects your reputation by ensuring others can\'t use your identity without permission.',
   'sender.show.wording' => 'A verified identity used as a “FROM” address will help improve deliverability. That is, it helps keep your campaigns out of spam folders and protects your reputation by ensuring others can\'t use your identity without permission.',
   'sender.updated' => 'Sender was successfully updated',
   'sender.deleted' => 'ender was successfully deleted',
-  'sender.type' => 'Type',
   'sender.verify_sender' => 'Verify sender',
-  'sender.type.acelle' => 'Acelle Mail App',
-  'sender.type.amazon_ses' => 'Amazon SES',
   'sender.status.new' => 'new',
   'sender.status.pending' => 'pending',
   'sender.status.verified' => 'verified',
   'sender.verification_status' => 'Verification status',
-  'sender.status_info.acelle.pending' => 'To verify <span class="text-bold">:email</span> against :type,
-    you will need to add & verify the domain by clicking <a class="text-bold" href=":link">[here]</a> to go to the Sending Domain dashboard.
-    Once you have added and verified your domain,
-    the sender <code class="text-nowrap">:name &lt;:email&gt;</code> will automatically be set as verified.',
-  'sender.status_info.amazon_ses.pending' => 'A verification email has been sent to your email address <span class="text-bold">:email</span>.
-    Please check your mailbox and click on the confirmation link.',
-  'sender.status_info.amazon_ses.verified' => 'Email verified!',
-  'sender.status_info.acelle.verified' => 'Email verified!',
   'sender.verify_toggle.verified' => 'Click here to verify <span class="text-bold">:email</span> again',
-  'sender.verify_toggle.pending' => 'Click here to change verification type',
   'sender.dropbox.empty' => '(empty)',
   'sender.dropbox.error' => 'The email address you entered is not verified yet.
     Click <a href=":sender_link" target="blank">here</a> to verify. You can proceed with an unverified sender anyway if you are sure about it',
-  'sender.type.none' => 'none',
   'sender.view' => 'View',
   'sender.wording' => 'Acelle Mail requires that you verify your identities (the domains or email addresses that you send email from) to confirm that you own them, and to prevent unauthorized use',
   'senders.empty_verified_domain_sender.warning' => 'You have no verified sender.
@@ -3218,4 +3201,52 @@
   'template.pro_builder' => 'PRO builder',
   'template.classic_builder' => 'Classic builder',
   'editor.insert_tag' => 'Insert Acelle Tags',
+  'include_javascript' => 'Include javascript',
+  'sender.status.failed.title' => 'Verification failure',
+  'sender.status.failed.description' => 'It appears the verification link is already expired or the sender had been removed from our application',
+  'sender.status.failed.note' => 'Don\'t worry, you can always get back your to Sender Identity management dashboard to verify your email address again',
+  'sender.status.done.title' => 'Verification done!',
+  'sender.status.done.description' => 'Thank you for confirming your identity! Your email address at <code>:email</code> is now verified. You can use it as your FROM address in your email setup as in the example below',
+  'sender.status.done.note' => 'You will be redirected to Sender Identity management dashboard, you may need to log in first if you are not currectly logged in',
+  'sender.status.done.gotit' => 'Ok, I got it!',
+  'sender.status_info.pending' => 'Pending verification...',
+  'sender.status_info.pending.note' => 'We have sent an email to this sender\'s email address. Please click on the link included in the email to activate',
+  'sender.status_info.verified' => 'Identity verified!',
+  'sender.status_info.verified.note' => 'This sender is now activated and you can now use it as your FROM address in your campaign',
+  'sender.dropbox.error.' => 'The email address you entered is not verified yet. Please choose one that matches the suggested list or click <a href=":sender_link" target="blank"><strong>here</strong></a> to verify.',
+  'sender.dropbox.error.1' => 'The email address you entered is not verified yet.
+    Click <a href=":sender_link" target="blank"><strong>here</strong></a> to verify. You can proceed with an unverified sender anyway if you are sure about it',
+  'sender.dropbox.reply.error.' => 'The email address you entered is not verified yet.',
+  'sender.dropbox.reply.error.1' => 'The email address you entered is not verified yet.',
+  'subscription_done.razorpay.email' => 'Hello :customer, <br/>Your subscription to :plan plan was successfully created.<br>
+    Click <a href=":link">here</a> to check your subscription status and process with payment.',
+  'sender_verification_email' => 'Sender Verification Email',
+  'use_custom_verification_email' => 'Use custom verification email. Click
+    <a href=":link" class="custom-verification-email-edit">here</a> to edit',
+  'custom_verification_email' => 'Custom Verification Email',
+  'custom_verification_email.updated' => 'Custom verification email was updated',
+  'builder.both' => 'Both',
+  'builder.pro' => 'Pro',
+  'builder.classic' => 'Classic',
+  'payments.razorpay' => 'Razorpay',
+  'payments.razorpay.list_intro' => 'Start Accepting Payments Instantly with Razorpay\'s
+    Free Payment Gateway. Supports Netbanking, Credit, Debit Cards etc',
+  'payment.razorpay.wording' => 'Start Accepting Payments Instantly with Razorpay\'s
+    Free Payment Gateway. Supports Netbanking, Credit, Debit Cards etc',
+  'payment.razorpay.key_secret' => 'Key Secret',
+  'payment.razorpay.key_id' => 'Key ID',
+  'field.created' => 'List\'s field was created',
+  'subscription.has_renew_pending.warning' => 'The subscription is going to expired soon!
+    You should extend current plan by clicking on the <strong>Renew</strong> button bellow.',
+  'payment.razorpay' => 'Razorpay',
+  'sending_server.default_email_verification.content' => '<!DOCTYPE html>
+    <html>
+    <head>
+    </head>
+    <body>
+    <br /><span style="font-size: 24pt;">Acelle Mail Verification Center</span><br /><br /><span style="font-size: 14pt;">Dear Mr. or Mrs. {USER_LAST_NAME}</span><br /><br /><span style="font-size: 14pt;">Thank you for registering your email</span><br /><br /><span style="font-size: 14pt;">Please click the link below to verify your identity</span><br /><br /><em>Verification link will automatically be inserted to the end of your email content</em><br /><em>You can safely delete this notification line</em>
+    </body>
+    </html>',
+  'sending_servier.custom_verification_email.subject' => 'Subject',
+  'sending_server.default_email_verification.subject' => 'Verify your email address',
 ) ?>
