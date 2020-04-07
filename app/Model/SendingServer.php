@@ -1569,12 +1569,10 @@ class SendingServer extends Model
      */
     public static function verificationEmailTags()
     {
-        return [
-            ['name' => 'USER_FIRST_NAME', 'required' => false],
-            ['name' => 'USER_LAST_NAME', 'required' => false],
-            ['name' => 'USER_ID', 'required' => false],
+        return [            
+            ['name' => 'USER_NAME', 'required' => false],            
             ['name' => 'USER_EMAIL', 'required' => false],
-            ['name' => 'EMAIL_TO_VERIFY', 'required' => false],
+            ['name' => 'USER_ID', 'required' => false],
         ];
     }
 
