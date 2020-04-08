@@ -16,6 +16,9 @@ class CreateSubscriptionTransactionsTable extends Migration
         // Clean up all subscriptions!!!!!
         \Acelle\Cashier\Subscription::whereRaw('true')->delete();
 
+        DB::statement(sprintf('ALTER TABLE %s CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;', table('subscriptions')));
+        DB::statement(sprintf("ALTER TABLE %s ENGINE = 'InnoDB'", table('subscriptions')));
+
         Schema::create('subscription_transactions', function (Blueprint $table) {
             $table->increments('id');
             $table->uuid('uid');
