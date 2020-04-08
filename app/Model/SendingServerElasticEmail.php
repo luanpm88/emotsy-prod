@@ -283,7 +283,7 @@ class SendingServerElasticEmail extends SendingServer
     public function syncIdentities()
     {
         // Sample result: 
-        // {"success":true,"data":[{"domain":"empiremedicaltraining.info (contact@empiremedicaltraining.info)","defaultdomain":true,"spf":true,"dkim":true,"mx":true,"dmarc":true,"isrewritedomainvalid":true,"verify":false,"type":0,"trackingstatus":0,"certificatestatus":0,"certificatevalidationerror":null,"trackingtypeuserrequest":null,"verp":true,"custombouncesdomain":null,"iscustombouncesdomaindefault":false,"ownership":0}]}
+        // {"success":true,"data":[{"domain":"marcurselli.com (info@marcurselli.com)","defaultdomain":true,"spf":true,"dkim":true,"mx":true,"dmarc":true,"isrewritedomainvalid":true,"verify":false,"type":0,"trackingstatus":0,"certificatestatus":0,"certificatevalidationerror":null,"trackingtypeuserrequest":null,"verp":true,"custombouncesdomain":"bounces.marcurselli.com","iscustombouncesdomaindefault":true,"ownership":0},{"domain":"acellemail.com","defaultdomain":false,"spf":false,"dkim":false,"mx":true,"dmarc":false,"isrewritedomainvalid":false,"verify":true,"type":0,"trackingstatus":2,"certificatestatus":0,"certificatevalidationerror":null,"trackingtypeuserrequest":null,"verp":true,"custombouncesdomain":null,"iscustombouncesdomaindefault":false,"ownership":0}]}
         $response = file_get_contents(self::API_ENDPOINT.'/domain/list?apikey='.$this->api_key);
         $json = json_decode($response, true);
         if ($json['success'] == false) {
