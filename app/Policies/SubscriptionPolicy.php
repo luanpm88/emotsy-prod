@@ -57,7 +57,7 @@ class SubscriptionPolicy
     public function resume(User $user, Subscription $subscription, $role)
     {
         $gateway = Cashier::getPaymentGateway();
-        $can = $gateway->isSupportRecurring() && $subscription->cancelled() && !$subscription->isEnded();
+        $can = $subscription->isActive() && $gateway->isSupportRecurring() && $subscription->cancelled() && !$subscription->isEnded();
 
         switch ($role) {
             case 'admin':
