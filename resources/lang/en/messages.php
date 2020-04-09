@@ -418,7 +418,7 @@
   'bounce_handlers' => 'Bounce handlers',
   'bounce_handler' => 'Bounce handler',
   'setting' => 'Setting',
-  'page_form_layout' => 'Page/Form Layout',
+  'page_form_layout' => 'Custom Emails &amp; Pages',
   'report' => 'Report',
   'blacklist' => 'Blacklist',
   'sending_log' => 'Sending log',
@@ -539,7 +539,7 @@
   'sending_domain.verified' => 'verified',
   'sending_domain.pending' => 'pending',
   'languages' => 'Languages',
-  'languages.wording' => 'Acelle Mail multilingual support feature allows you to use different, translated versions of the web application. You can switch to a preferred language or even add your own one. You can customize the user interface (UI) text by translating it the way you desire.',
+  'languages.wording' => 'Our multilingual system allows you to use different, translated versions of the web application. You can switch to a preferred language or even add your own one. You can customize the user interface (UI) text by translating it the way you desire.',
   'language.created' => 'Language was successfully created',
   'language.updated' => 'Language was successfully updated',
   'languages.deleted' => 'One or more languages were successfully deleted',
@@ -1503,7 +1503,7 @@
   'update_subscription' => 'Update subscription',
   'subscription.wording' => 'This feature allows you to monitor the details of your customers\' subscription. You can approve the payment, enable or disable a subscription. You can also create new subscriptions for your existing customers',
   'registration_confirmation_email' => 'Registration confirmation email',
-  'registration_confirmation_email_subject' => 'Acelle Mail - Registration confirmation',
+  'registration_confirmation_email_subject' => 'Registration confirmation',
   'activation_email_sent_content' => '<p>We need to confirm your email address to complete the registration process.
     To complete the registration process, please click the link in the email we just sent you.</p>',
   'activation_email_resent_content' => '<p>Please click the link in the email we just sent you.</p>',
@@ -1531,7 +1531,7 @@
   'to' => 'To',
   'days_remain' => 'Day remaining|Days remaining',
   'need_a_account_create_an_one' => 'Need an Acelle Mail account? <a href=":link" class="text-info">Create an account</a>',
-  'signin_if_has_account' => 'Already have a Acelle Mail account? <a href=":link" class="text-info">Log in here</a>',
+  'signin_if_has_account' => 'Already have an Acelle Mail account? <a href=":link" class="text-info">Log in here</a>',
   'get_started' => 'Get Started!',
   'your_subscriptions' => 'Your subscriptions',
   'these_are_your_current_plans' => 'These are your current plans:',
@@ -1715,11 +1715,11 @@
   'file' => 'FILE',
   'file.uploaded' => 'File was successfully uploaded.',
   'current_plan' => 'Current plan',
-  'current_plan_intro' => '<p>Thank you for doing your email marketing with Acelle Mail.
+  'current_plan_intro' => '<p>Thank you for doing your email marketing with us.
       You are currently subscribed to the <strong>:plan</strong> plan.
       Your subscription will expire in <strong>:remain</strong>, on <strong>:end_at</strong></p>
       <p>Please find your current plan details below</p>',
-  'current_plan_intro_unlimited' => '<p>Thank you for doing your email marketing with Acelle Mail.
+  'current_plan_intro_unlimited' => '<p>Thank you for doing your email marketing with us.
       You are currently subscribed to the <strong>:plan</strong> plan.</p>
       <p>Please find your current plan details below</p>',
   'plan_name' => 'Plan name',
@@ -1731,7 +1731,7 @@
       Please finish the payment or wait for the payment confirmation to activate your subscription',
   'purchasing_intro_braintree_credit_card' => 'Please fill out the below information so we can setup your account for purchasing the <a><strong>:plan plan</strong></a> with the pay by Credit Card option
           . Your plan price is: <a><strong>:price</strong></a>',
-  'subscribe_to_a_plan_intro' => 'Thank you for signing up with Acelle Mail. You are not currently subscribed to any plan yet. Below are the available plans for you to choose from:',
+  'subscribe_to_a_plan_intro' => 'Thank you for signing up with us. You are not currently subscribed to any plan yet. Below are the available plans for you to choose from:',
   'subscribe_plan' => 'Subscribe',
   'purchasing_intro_braintree_paypal' => 'Please click the PayPal checkout button below to proceed with the payment for your subscription to <a><strong>:plan plan</strong></a>, the price is <a><strong>:price</strong></a>',
   'next_plan' => 'Next plan',
@@ -1745,10 +1745,10 @@
   'registration_recaptcha' => 'Registration captcha',
   'setting.registration_recaptcha.help' => 'Enable captcha for registration to block spammers and bots from accessing the webapp.',
   'frontend_dashboard_hello' => 'Hello, :name!',
-  'frontend_dashboard_welcome' => 'Welcome back to your account dashboard. Check out your email campaigns\' performance statistics and personalized tips from Acelle Mail.',
+  'frontend_dashboard_welcome' => 'Welcome back to your account dashboard. Check out your email campaigns\' performance statistics and personalized tips from our insight reports.',
   'empty_record_message' => 'There are no records yet!',
   'backend_dashboard_hello' => 'Hello, :name!',
-  'backend_dashboard_welcome' => 'Welcome back to admin dashboard. Check out these system statistics and notifications from Acelle Mail.',
+  'backend_dashboard_welcome' => 'Welcome back to admin dashboard. Check out these system statistics and notifications from our insight reports.',
   'resources_statistics' => 'Resources statistics',
   'sending_limit' => 'Sending credits',
   'resources_statistics_intro' => 'An overview of system resource usage',
@@ -1897,15 +1897,15 @@
   'upgrade.button.cancel' => 'Cancel',
   'upgrade.button.upgrade_now' => 'Yes, upgrade now',
   'upgrade.button.' => '',
-  'upgrade.upgrade_confirm' => 'Acelle Mail is going to upgrade the application. Please click the confirm button to proceed',
+  'upgrade.upgrade_confirm' => 'The system is going to upgrade itself. Please click the confirm button to proceed',
   'upgrade.upgrade_cancel' => 'Are you sure you want to cancel the upgrade?',
-  'upgrade.wording.upgrade' => 'Your are running on Acelle Mail :current, a newer version is available: :new<br>Do you want to proceed with the upgrade?',
+  'upgrade.wording.upgrade' => 'Your are running on version :current, a newer version is available: :new<br>Do you want to proceed with the upgrade?',
   'upgrade.title.current' => 'Your current version',
   'upgrade.title.upgrade_confirm' => 'Upgrade confirmation',
-  'upgrade.wording.upload' => 'Your are currently running on Acelle Mail :current. To upgrade your application, please download the latest build from <code><a target="_blank" href="https://codecanyon.net/item/acelle-email-marketing-web-application/17796082">codecanyon.net</a></code>, then you can find the upgrade package located at <code>[acellemail source]/upgrade/patch-4.x.x.bin</code>, upload it using the form below',
-  'upgrade.alert.upgrade_success' => 'Congratulations! You have successfully upgraded to the new version of Acelle Mail.',
+  'upgrade.wording.upload' => 'Your are currently running on version :current. To upgrade your application, please download the latest build from <code><a target="_blank" href="https://codecanyon.net/item/acelle-email-marketing-web-application/17796082">codecanyon.net</a></code>, then you can find the upgrade package located at <code>[acellemail source]/upgrade/patch-4.x.x.bin</code>, upload it using the form below',
+  'upgrade.alert.upgrade_success' => 'Congratulations! The system has successfully upgraded itself to a new version',
   'upgrade.alert.cancel_success' => 'Upgrade has been canceled',
-  'upgrade.alert.upload_success' => 'A new version of Acelle Mail was successfully uploaded. You can now review the changes and proceed with the upgrade',
+  'upgrade.alert.upload_success' => 'A new version of the system was successfully uploaded. You can now review the changes and proceed with the upgrade',
   'upgrade_manager' => 'Upgrade Manager',
   'campaign_intro_regular' => 'Campaign with HTML email content as well as images, links. This is the most common type.',
   'campaign_intro_plain-text' => 'Send a plain-text email without link tracking, images, or HTML.',
@@ -1998,7 +1998,7 @@
   'plan_option.own_sending_server' => 'Use own sending servers',
   'plan_option.own_sending_server.intro' => 'This is the extended setting for advanced users who want to manage their own sending services. Users subscribing to this plan need to add and manage their own sending servers',
   'plan_option.sub_account' => 'Use a sub-account of system\'s sending servers',
-  'plan_option.sub_account.intro' => 'SendGrid supports creating sub-accounts that belong to a parent account. Sub-accounts are provided in order to help you segment your email sending and API activity. Acelle Mail will automatically create a separate sub-account for any user subscribing to the plan. Select one SendGrid master account below to create sub-accounts from',
+  'plan_option.sub_account.intro' => 'SendGrid supports creating sub-accounts that belong to a parent account. Sub-accounts are provided in order to help you segment your email sending and API activity. The system will automatically create a separate sub-account for any user subscribing to the plan. Select one SendGrid master account below to create sub-accounts from',
   'select_sending_servers' => 'Select sending servers',
   'select_sending_server_with_subaccount' => 'Select sending server with sub-account',
   'plan_option.there_no_subaccount_sending_server' => '<span class="text-semibold">ERROR:</span> There are no sending servers for sub-account creation.',
@@ -2064,8 +2064,8 @@
   'form_page.use_outside_url' => 'Custom URL',
   'form_page.use_outside_url.intro' => 'Redirect to the URL below',
   'form_page.use_built_in_page' => 'Built-in page',
-  'form_page.use_built_in_page.intro' => 'Use your Acelle Mail page',
-  'form_page.enter_outside_url' => 'http://your-url.com',
+  'form_page.use_built_in_page.intro' => 'Use the application\'s web page',
+  'form_page.enter_outside_url' => 'http://your-custom-url.com',
   'campaign.overview_statistics' => 'Statistics',
   'list.overview_statistics' => 'Statistics',
   'embedded_form.list_not_exsit' => 'The list does not exist',
@@ -2092,12 +2092,12 @@
   'admin.notification.cronjob_not_active' => 'Application\'s CronJob has not been executed during the last :cronjob_min_interval. Last executed at :cronjob_last_executed',
   'admin.notification.cronjob_title' => 'CronJob',
   'admin.notification.system_url_title' => 'Application URL',
-  'admin.notification.system_url_not_match' => 'The current application URL (:current) does not match with the one stored in Acelle Mail\'s cache (:cached). Please go to Admin > Setting > All Settings > System URL to verify and update your setting cache',
+  'admin.notification.system_url_not_match' => 'The current web URL (:current) does not match with the one stored in the system\'s cache (:cached). Please go to Admin > Setting > All Settings > System URL to verify and update your setting cache',
   'admin.notification.subscription.title' => 'Subscription',
   'admin.notification.subscription.pending' => 'There are :count pending subscriptions that need your approval',
-  'admin.settings.system_urls.not_match' => 'WARNING: The current application URL <code>:current</code> does not match with the one stored in Acelle Mail\'s cache <code>:cached</code>. Click the button below to update Acelle Mail\'s cache',
+  'admin.settings.system_urls.not_match' => 'WARNING: The current web URL <code>:current</code> does not match with the one stored inthe system\'s cache <code>:cached</code>. Click the button below to update the system\'s cache',
   'admin.settings.system_urls.title' => 'Application URL',
-  'admin.settings.system_urls.current_urls_wording' => 'Below are the current application URLs stored in Acelle Mail cache',
+  'admin.settings.system_urls.current_urls_wording' => 'Below are the current application URLs stored in the system\'s cache',
   'admin.settings.edit_app_settings' => 'Edit application settings',
   'advanced_settings' => 'Advanced settings',
   'setting.name' => 'Name',
@@ -2149,7 +2149,7 @@
   'sender.dropbox.reply.error.' => 'The email address you entered is not verified yet.',
   'sender.dropbox.reply.error.1' => 'The email address you entered is not verified yet.',
   'sender.view' => 'View',
-  'sender.wording' => 'Acelle Mail requires that you verify your identities (the domains or email addresses that you send email from) to confirm that you own them, and to prevent unauthorized use',
+  'sender.wording' => 'For sending marketing emails, it is required that you verify your identities (the domains or email addresses that you send email from) to confirm that you own them, and to prevent unauthorized use',
   'senders.empty_verified_domain_sender.warning' => 'You have no verified sender.
     Add and verify a <a href=":domain_link" target="blank">[domain]</a> or
     <a href=":sender_link" target="blank">[email address]</a> to send email on behalf of.',
@@ -2205,7 +2205,7 @@
   'sending_server.test_connection' => 'Test Connection',
   'sending_server.send_a_test_email' => 'Send A Test Email',
   'sending_servers.fitness' => 'Probability',
-  'sending_servers.fitness.explain' => 'When it comes to deliver an email, if there are more than one sending servers available, Acelle will pick one randomly. The higher probability value a sending server has, the more likely it is selected',
+  'sending_servers.fitness.explain' => 'When it comes to deliver an email, if there are more than one sending servers available, the system will pick one randomly. The higher probability value a sending server has, the more likely it is selected',
   'sending_servers.sending_limit.phrase' => ':quota_value emails per :quota_base :quota_unit',
   'sending_server.quota.unlimited' => 'Unlimited',
   'sending_servers.sending_identity.mailgun.intro' => 'The following domains were verified against your Mailgun account.
@@ -2268,19 +2268,19 @@
   'plan.sending_identify.intro.sparkpost-smtp' => 'Your plan is setup to use Sparkpost as primary delivery method. Users who subscribe to this plan must use the following identities as their FROM email address. Edit your sending server setting to add more identities',
   'sending_server.testing' => 'Checking server connection...',
   'sending_server.test_success' => 'The sending server is valid',
-  'sending_servers.php-mail.intro' => 'Configure Acelle Mail to send emails directly through the hosting server\'s PHP <code>mail()</code> function. Make sure the function is not disabled on your hosting server',
-  'sending_servers.smtp.intro' => 'Configure Acelle Mail to send emails through an SMTP service which can be either your own SMTP system or from a 3rd service provider.',
-  'sending_servers.sendmail.intro' => 'Configure Acelle Mail to send emails directly through the hosting server\'s <code>sendmail</code> program. Make sure the function is already installed on your hosting server.',
+  'sending_servers.php-mail.intro' => 'Configure the system to send emails directly through the hosting server\'s PHP <code>mail()</code> function. Make sure the function is not disabled on your hosting server',
+  'sending_servers.smtp.intro' => 'Configure the system to send emails through an SMTP service which can be either your own SMTP system or from a 3rd service provider.',
+  'sending_servers.sendmail.intro' => 'Configure the system to send emails directly through the hosting server\'s <code>sendmail</code> program. Make sure the function is already installed on your hosting server.',
   'sending_server.php-mail.check_php_mail' => 'Check PHP Mail',
   'sending_servers.local_identity.intro' => 'Specify the delivery domains that users can use. That is, user can specify a
       FROM email address that does match one of the following domains',
   'sending_server.identity_type.domain' => 'domain',
   'sending_server.identity_type.email' => 'email',
   'sending_serbers.php-mail.allow_verify.intro' => 'You can also allow your users to verify an identity on their own.
-      That is, user can add their own email addresses or domains and verify against Acelle Mail.
+      That is, user can add their own email addresses or domains and verify against the application.
       Once verified, user can use their own FROM email address when sending',
-  'allow_verify_domain_against_acelle' => 'Allow verifying user\'s own domains against Acelle Mail',
-  'allow_verify_email_against_acelle' => 'Allow verifying user\'s own email addresses Acelle Mail',
+  'allow_verify_domain_against_acelle' => 'Allow verifying user\'s own domains',
+  'allow_verify_email_against_acelle' => 'Allow verifying user\'s own emails',
   'allow_unverified_from_email' => 'Allow unverified FROM email addresses',
   'plans.send_via.wording' => 'Use :server for email delivery',
   'plans.send_via.empty' => 'No sending server selected',
@@ -2333,14 +2333,14 @@
   'plan.speed_limit' => 'Speed limit',
   'plan.speed_limit.intro' => 'Limit sending speed to protect your sending reputation',
   'plan.set_a_limit' => 'Set a limit',
-  'plan.process_limit.intro' => 'Acelle Mail supports forking multiple processes for sending multiple times faster in terms of
+  'plan.process_limit.intro' => 'The system supports forking multiple processes for sending multiple times faster in terms of
     email throughput. However, it will consume multiple times more CPU and memory as a trade-off.',
   'plan.resource.intro' => 'Set up your plan\'s quota to limit the resources or services that users subscribed to this plan can use',
   'plan.enabled_email_footer' => 'Enable email footer',
   'plan.email_footer_trial_period_only' => 'For trial period only',
   'plan.html_footer' => 'HTML footer',
   'plan.plain_text_footer' => 'Plain text footer',
-  'plan.email_footer.intro' => 'Include a footer in every out-going email message to reflect your brand.
+  'plan.email_footer.intro' => 'Include a footer in every out-going email message to reflect your own brand.
     Normally, you can enable this option for trial period',
   'plan.sending_server' => 'Sending server',
   'plan.sending_server.intro' => 'Choose how emails are actually delivered for users subscribing to this plan',
@@ -2367,7 +2367,7 @@
   'plan.payment.intro' => 'Connect your plan to a payment gateway like Stripe or Braintree/Paypal,
     to accept payment online',
   'payment_gateways' => 'Payment gateways',
-  'payment_gateways.wording' => 'To accept payments from your Acelle users, you will need to use a supported payment gateway. Please choose  your preferred payment gateway from the list below',
+  'payment_gateways.wording' => 'To accept payments from your users, you will need to use a supported payment gateway. Please choose  your preferred payment gateway from the list below',
   'payment.status.active' => 'active',
   'payment.status.inactive' => 'inactive',
   'payments.cash' => 'Cash',
@@ -2422,7 +2422,7 @@
   'payment.braintree.merchant_id' => 'Merchant ID',
   'payment.braintree.public_key' => 'Public key',
   'payment.braintree.private_key' => 'Private key',
-  'payment.braintree.wording' => 'Braintree is a full-stack payments platform that makes it easy to accept payments in Acelle Mail. You will need to sign up for a Braintree account, obtain your integration ID and keys and set it up below',
+  'payment.braintree.wording' => 'Braintree is a full-stack payments platform that makes it easy to accept online payments. You will need to sign up for a Braintree account, obtain your integration ID and keys and set it up below',
   'purchasing_intro_braintree' => 'Please fill out the below information so we can setup your account for purchasing the <a><strong>:plan plan</strong></a> with the Pay with Braintree option
       . Your plan price is: <a><strong>:price</strong></a>',
   'payment.braintree.request_payment_method' => 'Request payment method',
@@ -2608,9 +2608,9 @@
   'plan.pricing' => 'Pricing',
   'plan.starting_at' => 'Starting At',
   'plan.select' => 'Select',
-  'plan.review.wording' => 'Thank you for subscribing to Acelle Mail. Please review your selected plan below and proceed with the payment and get started.',
+  'plan.review.wording' => 'Thank you for subscribing. Please review your selected plan below and proceed with the payment and get started.',
   'payment.proceed_with_payment' => 'Proceed with Payment',
-  'payment.agree_service_intro' => 'By clicking the <strong><i>Proceed with payment</i></strong> button, you are paying for :plan plan, and you agree to Acelle Mail <i>Term of Use</i> and <i>Privacy Policy</i>.',
+  'payment.agree_service_intro' => 'By clicking the <strong><i>Proceed with payment</i></strong> button, you are paying for :plan plan, and you agree to our <i>Term of Use</i> and <i>Privacy Policy</i>.',
   'plan.review' => 'Plan review',
   'payment.coinpayments.receive_currency' => 'Receive Currency Code',
   'subscription.status.active_pending' => 'Update pending',
@@ -2636,6 +2636,7 @@
   'template.select_your_template' => 'Select one of template layouts below',
   'template.create_and_design' => 'Start Design',
   'layouts' => 'Layouts',
+  'layout.description' => 'Below are default email templates &amp; pages used by the application. You can customize those the way you desire. For example, you may want to add a logo to an email to reflect your brand',
   'sender_verification_email' => 'Sender Verification Email',
   'template.need_select_template' => 'Please select layout or template for the template',
   'admin.dashboard.recent_activity.wording' => 'By default, all activities of customers are logged for investigating.
@@ -2674,11 +2675,11 @@
   'subscription.change_plan.select_below' => 'Select the plan you want to change below. Changing plan can be un-done so make sure you want to change.',
   'subscription.select_a_plan' => 'Select a Plan',
   'plan.current_subscribed' => 'Current subscribed',
-  'create_your_account' => 'Create your Acelle Email account',
-  'register.intro' => 'Manage your contacts, generate leads, run a marketing campaign,... Join us at Acelle Mail to enjoy doing
+  'create_your_account' => 'Create your your account',
+  'register.intro' => 'Manage your contacts, generate leads, run a marketing campaign,... Join us to enjoy doing
     every day sales & marketing without any hassle. If you already have an account? <a href=":login">Login</a>',
-  'register.agreement_intro' => 'By clicking the "Get Started!" button, you are creating a Acelle Mail account,
-    and you agree to Mailchimp\'s Terms of Use and Privacy Policy.',
+  'register.agreement_intro' => 'By clicking the "Get Started!" button, you are creating an account at our system,
+    and you agree to our\'s Terms of Use and Privacy Policy.',
   'email_confirmation' => 'Email Confirmation',
   'sending_server.added' => 'added',
   'plan.sending_server.already_added' => 'The sending server was already added',
@@ -2690,8 +2691,8 @@
   'automation.create' => 'Add new',
   'automation.automation_trigger' => 'Automation Trigger',
   'automation.trigger.intro' => 'A trigger is the action that starts an automation. For example,
-    Acelle Mail can trigger an automated email when someone subscribes to your audience or purchases a certain product.
-    Acelle Mail offers a wide selection of preset automation types with built-in triggers, ranging from abandoned
+    the system can trigger an automated email when someone subscribes to your audience or purchases a certain product.
+    We offers a wide selection of preset automation types with built-in triggers, ranging from abandoned
     cart emails to a simple welcome message.',
   'automation.trigger.welcome-new-subscriber' => 'Welcome new subscribers',
   'automation.trigger.' => 'Trigger',
@@ -2706,7 +2707,7 @@
   'automation.trigger.subscriber-added-date.desc' => 'Send an email based on when a subscriber joined your audience.',
   'automation.trigger.specific-date.desc' => 'Send a one-time message based on an individual date field, like an appointment.',
   'automation.trigger.say-goodbye-subscriber.desc' => 'Send an email to say sorry when a subscriber unsubscribe from your audience.',
-  'automation.trigger.api-3-0.desc' => 'Trigger an email series with an API call via Acelle Mail, if you\'ve got a developer on hand.',
+  'automation.trigger.api-3-0.desc' => 'Trigger an email series with an API call from your application, if you\'ve got a developer on hand.',
   'automation.trigger.welcome-new-subscriber.intro' => 'Trigger when user subscribes to your list. Normally, it is recommended that you send a
         welcome email to warmly greet your new subscriber as well as offer him/her your products or service',
   'automation.trigger.say-happy-birthday.intro' => 'Celebrate with an exclusive offer or cheerful message that sends based
@@ -2714,7 +2715,7 @@
   'automation.trigger.subscriber-added-date.intro' => 'Automation starts yearly on your subscribers joining date. Sometimes you may want to trigger the automation prior to the date. You can schedule it accordingly below',
   'automation.trigger.specific-date.intro' => 'Start a marketing campaign immediately or schedule it for a particular date/time. Automation will be triggered accordingly for all contacts in the selected mail list',
   'automation.trigger.say-goodbye-subscriber.intro' => 'Start the automation when a subscriber unsubscribes from your audience. Normally you may want to send a follow email asking for the reason ask well as offering re-subscription benefits.',
-  'automation.trigger.api-3-0.intro' => 'Automation is triggered manually or from another application using Acelle Mail API 3.0. Make an HTTP POST request to the API endpoint below',
+  'automation.trigger.api-3-0.intro' => 'Automation is triggered manually or from another application using API 1.0. Make an HTTP POST request to the API endpoint below',
   'automation.trigger.select_confirm' => 'Confirm',
   'automation.add_an_action' => 'Add an Action',
   'automation.action.intro' => 'Streamline your communication and personalize each customer\'s experience. Use automation
@@ -2730,9 +2731,9 @@
   'automation.action.condition.icon' => 'code',
   'automation.action.wait.intro' => 'Set your automation workflow wait for a while before proceeding with next action.
         How long do you want to wait, please choose below.',
-  'automation.action.send-an-email.intro' => 'Choose one of the conditions below for your workflow. Acelle Mail will evaluate the condition
+  'automation.action.send-an-email.intro' => 'Choose one of the conditions below for your workflow. We will evaluate the condition
         and branch off your workflow accordingly.',
-  'automation.action.condition.intro' => 'Choose one of the conditions below for your workflow. Acelle Mail will evaluate the condition
+  'automation.action.condition.intro' => 'Choose one of the conditions below for your workflow. We will evaluate the condition
         and branch off your workflow accordingly.',
   'automation.action.set_up_your_condition' => 'Set up your condition',
   'automation.overview.contacts' => 'Contacts',
@@ -2745,7 +2746,7 @@
   'n_a' => 'N/A',
   'campaign.content_management' => 'Content Management',
   'campaign.email_content' => 'Email Content',
-  'campaign.email_content.intro' => 'Create your email from scratch or start from Acelle Mail per-built templates / themes.
+  'campaign.email_content.intro' => 'Create your email from scratch or start from our pre-built templates / themes.
         Customize the content the way you desire with our powerful but easy-to-use HTML email builder.',
   'campaign.template.from_layout' => 'From a Template Layout',
   'campaign.template.from_layout.intro' => 'Craft your email based off a pre-built layout we made for you',
@@ -2828,7 +2829,7 @@
   'automation.email.confirm' => 'Confirm',
   'automation.template.content_management' => 'Content Management',
   'automation.template.email_content' => 'Email Content',
-  'automation.template.email_content.intro' => 'Create your email from scratch or start from Acelle Mail per-built templates / themes.
+  'automation.template.email_content.intro' => 'Create your email from scratch or start from our pre-built templates / themes.
         Customize the content the way you desire with our powerful but easy-to-use HTML email builder.',
   'automation.template.from_layout' => 'From a Template Layout',
   'automation.template.from_layout.intro' => 'Craft your email based off a pre-built layout we made for you',
@@ -3048,7 +3049,7 @@
   'automation.email.from.placeholder' => 'E.g. noreply@domain.com',
   'automation.started.title' => 'Automation Started',
   'automation.started.desc' => 'Congratulations! Your automated campaign is now up and running.
-    Acelle Mail keeps track of your individual contacts activities as well as overall campaign performance.
+    We keep track of your individual contacts activities as well as overall campaign performance.
     Check out your Insight and Statistics reports for more details.',
   'automation.email.change_template.confirm' => 'Changing template will remove current email content with customizations.
     This can be undone.',
@@ -3220,7 +3221,7 @@
   'plan.plan_not_connected.setting' => 'Plan not connected to PayPal, click Connect button',
   'template.pro_builder' => 'PRO builder',
   'template.classic_builder' => 'Classic builder',
-  'editor.insert_tag' => 'Insert Acelle Tags',
+  'editor.insert_tag' => 'Insert Custom Tags',
   'use_custom_verification_email' => 'Use custom verification email. Click
     <a href=":link" class="custom-verification-email-edit">here</a> to edit',
   'custom_verification_email' => 'Custom Verification Email',
@@ -3244,7 +3245,7 @@
     <head>
     </head>
     <body>
-    <br /><span style="font-size: 24pt;">Acelle Mail Verification Center</span><br /><br /><span style="font-size: 14pt;">Dear Mr. or Mrs. {USER_NAME}</span><br /><br /><span style="font-size: 14pt;">Thank you for registering your email</span><br /><br /><span style="font-size: 14pt;">Please click the link below to verify your identity</span><br /><br /><em>Verification link will automatically be inserted to the end of your email content</em><br /><em>You can safely delete this notification line</em>
+    <br /><span style="font-size: 24pt;">Verification Center</span><br /><br /><span style="font-size: 14pt;">Dear Mr. or Mrs. {USER_NAME}</span><br /><br /><span style="font-size: 14pt;">Thank you for registering your email</span><br /><br /><span style="font-size: 14pt;">Please click the link below to verify your identity</span><br /><br /><em>Verification link will automatically be inserted to the end of your email content</em><br /><em>You can safely delete this notification line</em>
     </body>
     </html>',
   'sending_servier.custom_verification_email.subject' => 'Subject',
