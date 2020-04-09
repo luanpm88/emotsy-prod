@@ -170,6 +170,7 @@ Route::group(['middleware' => ['not_installed']], function () {
 
     // Verify a sender
     Route::get('senders/verify/{token}', 'SenderController@verify');
+    Route::get('senders/verify/{uid}/result', 'SenderController@verifyResult');
 });
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function () {

@@ -265,10 +265,14 @@ class SendingServerAmazon extends SendingServer
      *
      * @return bool
      */
-    public function sendVerificationEmail($email)
+    public function sendVerificationEmail($identity)
     {
-        $this->sesClient()->verifyEmailIdentity([
-            'EmailAddress' => $email,
+        // send custom template to Amazon
+        $this->createCustomVerificationEmailTemplateFor($identity);
+
+        $this->sesClient()->SendCustomVerificationEmail([
+            'EmailAddress' => $identity->email,
+            'TemplateName' => $this->getCustomVerificationEmailTemplateNameFor($identity),
         ]);
     }
 
@@ -362,5 +366,68 @@ class SendingServerAmazon extends SendingServer
     public function allowVerifyingOwnEmailsRemotely()
     {
         return true;
+    }
+
+    public function createCustomVerificationEmailTemplateFor($identity)
+    {
+        if (empty($this->default_from_email)) {
+            throw new \Exception("Sending server `{$this->name}` does not have a 'Default FROM Email Address'. Please go to admin area, then sending server setting dashboard and update this value for the sending server");
+        }
+
+        // create a seperate template for each $identity
+        // for safety, remove it immediately after using
+        // It is because Amazon may restrict the number of templates available
+        if ($this->checkVerificationEmailTemplateFor($identity)) {
+            $this->deleteCustomVerificationEmailTemplateFor($identity); // reset, in case user updates the template
+        }
+
+        // Get the template
+        $template = Layout::where('alias', 'sender_verification_email_for_amazon_ses')->first();
+        $name = $this->getCustomVerificationEmailTemplateNameFor($identity);
+        $redirectUrl = $identity->generateVerificationResultUrl();
+
+        // Replace tags
+        $html = $template->content;
+        $html = str_replace('{USER_NAME}', $identity->name, $html);
+        $html = str_replace('{USER_EMAIL}', $identity->email, $html);
+
+        // Push to Amazon
+        MailLog::info('Creating custom verification template ' . $this->getCustomVerificationEmailTemplateNameFor($identity));
+        $result = $this->sesClient()->CreateCustomVerificationEmailTemplate([
+            'TemplateName' => $name,
+            'TemplateSubject' => $template->subject,
+            'TemplateContent' => $html,
+            'FromEmailAddress' => $this->default_from_email,
+            'FailureRedirectionURL' => $redirectUrl,
+            'SuccessRedirectionURL' => $redirectUrl,
+        ]);
+    }
+
+    public function checkVerificationEmailTemplateFor($identity)
+    {
+        // Check if template already exists for $identity
+        $name = $this->getCustomVerificationEmailTemplateNameFor($identity);
+        $result = $this->sesClient()->ListCustomVerificationEmailTemplates([
+            'MaxResults' => 50,
+        ]);
+
+        $name = $this->getCustomVerificationEmailTemplateNameFor($identity);
+        $names = array_map(function($r) { return $r['TemplateName']; }, $result->toArray()['CustomVerificationEmailTemplates']);
+        return in_array($name, $names);
+    }
+
+    public function deleteCustomVerificationEmailTemplateFor($identity)
+    {
+        $name = $this->getCustomVerificationEmailTemplateNameFor($identity);
+        MailLog::info('Cleaning up old AWS custom verification template ' . $this->getCustomVerificationEmailTemplateNameFor($identity));
+        $result = $this->sesClient()->DeleteCustomVerificationEmailTemplate([
+            'TemplateName' => $name,
+        ]);
+        return $result;
+    }
+
+    private function getCustomVerificationEmailTemplateNameFor($identity)
+    {
+        return "verification-email-{$identity->uid}";
     }
 }

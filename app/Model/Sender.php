@@ -260,15 +260,11 @@ class Sender extends Model
             $this->setPending();
             $this->save();
 
-            $server->mapType()->sendVerificationEmail($this->toRFCEmailAddress());
+            $server->mapType()->sendVerificationEmail($this);
         } else {
             // If server does not support verification
             $this->sendVerificationEmail();
-        }
-
-        
-
-        
+        }        
     }
 
     public function sendVerificationEmail()
@@ -307,6 +303,11 @@ class Sender extends Model
     public function generateVerificationUrl()
     {
         return action('SenderController@verify', [ 'token' => $this->generateVerificationToken() ] );
+    }
+
+    public function generateVerificationResultUrl()
+    {
+        return action('SenderController@verifyResult', [ 'uid' => $this->uid ]);
     }
 
     public static function verifyToken($token)
