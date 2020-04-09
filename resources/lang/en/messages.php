@@ -2638,6 +2638,7 @@
   'layouts' => 'Layouts',
   'layout.description' => 'Below are default email templates &amp; pages used by the application. You can customize those the way you desire. For example, you may want to add a logo to an email to reflect your brand',
   'sender_verification_email' => 'Sender Verification Email',
+  'sender_verification_email_for_amazon_ses' => 'Sender Verification Email for Amazon SES',
   'template.need_select_template' => 'Please select layout or template for the template',
   'admin.dashboard.recent_activity.wording' => 'By default, all activities of customers are logged for investigating.
     Visit <a href=":here"> Customers Dashboard</a> to see the full list',

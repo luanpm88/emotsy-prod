@@ -13,7 +13,7 @@ class AddDefaultTemplateForSenderVerificationEmail extends Migration
      */
     public function up()
     {
-        $html = '<!DOCTYPE html><html><body style="padding-left:20%;padding-right:20%"><h1>Identify Verification</h1><p>Dear{USER_NAME}</p><p>Thank you for registering your email ({USER_EMAIL}) with us. Please click the link below to verify your email address against our service. If you do not request this verification, please just ignore this email</p><p>{VERIFICATION_LINK}</p></body></html>';
+        $html = '<!DOCTYPE html><html><body style="padding-left:20%;padding-right:20%"><h1>Identify Verification</h1><p>Dear {USER_NAME}</p><p>Thank you for registering your email ({USER_EMAIL}) with us. Please click the link below to verify your email address against our service. If you do not request this verification, please just ignore this email</p><p>{VERIFICATION_LINK}</p></body></html>';
 
 
         // Avoid using Olequent Model in migration
