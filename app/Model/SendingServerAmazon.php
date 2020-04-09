@@ -26,8 +26,9 @@ use Acelle\Library\Log as MailLog;
 use Acelle\Library\StringHelper;
 use Acelle\Library\Lockable;
 use Acelle\Library\IdentityStore;
+use Acelle\Library\SendingServer\DomainVerificationInterface;
 
-class SendingServerAmazon extends SendingServer
+class SendingServerAmazon extends SendingServer implements DomainVerificationInterface
 {
     const SNS_TOPIC = 'ACELLEHANDLER';
     const SNS_TYPE = 'amazon'; // @TODO
@@ -79,13 +80,14 @@ class SendingServerAmazon extends SendingServer
         return self::$sesClient;
     }
 
-    public function verifyDomain($domain)
+    public function verifyDomain($domain) : array
     {
         $identity = $this->verifyDomainIdentity($domain);
         $dkim = $this->verifyDomainDkim($domain);
         return [
             'identity' => $identity,
             'dkim' => $dkim,
+            'spf' => [],
         ];
     }
 
@@ -241,7 +243,7 @@ class SendingServerAmazon extends SendingServer
         $this->save();
     }
 
-    public function checkDomainVerificationStatus($domain)
+    public function checkDomainVerificationStatus($domain) : bool
     {
         $status = $identitiesWithAttributes = $this->sesClient()->getIdentityVerificationAttributes([
             'Identities' => [$domain],
@@ -250,13 +252,18 @@ class SendingServerAmazon extends SendingServer
         return 'Success' == $status;
     }
 
-    public function checkDkimVerificationStatus($domain)
+    public function checkDkimVerificationStatus($domain) : bool
     {
         $status = $identitiesWithAttributes = $this->sesClient()->getIdentityDkimAttributes([
             'Identities' => [$domain],
         ])->toArray()['DkimAttributes'][$domain]['DkimVerificationStatus'];
 
         return 'Success' == $status;
+    }
+
+    public function checkSpfVerificationStatus($domain) : bool
+    {
+        return true; // hack
     }
     
 

@@ -35,15 +35,40 @@
         <tr>
             <td>
                 <span class="text-muted2 list-status pull-left">
-                    <span class="label label-flat bg-ended square-tag">{{ $identity['type'] }}</span>
+                    <span class="label label-flat bg-ended square-tag">{{ $dkim['type'] }}</span>
                 </span>
             </td>
             <td>
                 {{ $dkim['name'] }}
             </td>
-            <td>{{ $dkim['value'] }}</td>
+            <td width="60%" style="word-wrap:break-word;word-break:break-all;">{{ $dkim['value'] }}</td>
             <td class="text-right">
                 @if ($domain->dkimVerified())
+                    <span class="text-muted2 list-status pull-left">
+                        <span class="label label-flat bg-active">{{ trans('messages.sending_domain.verified') }}</span>
+                    </span>
+                @else
+                    <span class="text-muted2 list-status pull-left">
+                        <span class="label label-flat bg-inactive">{{ trans('messages.sending_domain.pending') }}</span>
+                    </span>
+                @endif
+            </td>
+        </tr>
+        @endforeach
+
+        @foreach ($spf as $r)
+        <tr>
+            <td>
+                <span class="text-muted2 list-status pull-left">
+                    <span class="label label-flat bg-ended square-tag">{{ $r['type'] }}</span>
+                </span>
+            </td>
+            <td>
+                {{ $r['name'] }}
+            </td>
+            <td>{{ $r['value'] }}</td>
+            <td class="text-right">
+                @if ($domain->spfVerified())
                     <span class="text-muted2 list-status pull-left">
                         <span class="label label-flat bg-active">{{ trans('messages.sending_domain.verified') }}</span>
                     </span>

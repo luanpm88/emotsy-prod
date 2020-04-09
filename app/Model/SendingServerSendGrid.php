@@ -27,8 +27,9 @@ use Acelle\Library\StringHelper;
 use SendGrid\Mail;
 use SendGrid\Email;
 use SendGrid\Content;
+use Acelle\Library\SendingServer\DomainVerificationInterface;
 
-class SendingServerSendGrid extends SendingServer
+class SendingServerSendGrid extends SendingServer implements DomainVerificationInterface
 {
     const WEBHOOK = 'sendgrid';
 
@@ -217,5 +218,159 @@ class SendingServerSendGrid extends SendingServer
         }
 
         return true;
+    }
+
+    public function verifyDomain($domain) : array
+    {
+        $body = json_decode('{
+          "automatic_security": false,
+          "custom_spf": false,
+          "subdomain": "'.$this->getDefaultSubdomainName($domain).'",
+          "default": false,
+          "domain": "'.$domain.'"
+        }');
+
+        $response = $this->client()->client->whitelabel()->domains()->post($body);
+        $result = json_decode($response->body(), true);
+        
+        if (array_key_exists('errors', $result)) {
+            // in case of {"errors":[{"message":"An authenticated domain already exists for this URL. Please use a unique subdomain."}]}
+            // => get the domain information
+            
+            $result = $this->getDomainVerificationInfo($domain);
+            // if domain not found, then it is another error at first
+            if (empty($result)) {
+                throw new \Exception($response->body());
+            }
+        }
+
+        $identityRecord = $result['dns']['mail_server'];
+        $identityRecord['name'] = $identityRecord['host'];
+        $identityRecord['value'] = $identityRecord['data'];
+        $identityRecord['type'] = strtoupper($identityRecord['type']);
+
+        $dkimRecord = $result['dns']['dkim'];
+        $dkimRecord['name'] = $dkimRecord['host'];
+        $dkimRecord['value'] = $dkimRecord['data'];
+        $dkimRecord['type'] = strtoupper($dkimRecord['type']);
+
+        $spfRecord = $result['dns']['subdomain_spf'];
+        $spfRecord['name'] = $spfRecord['host'];
+        $spfRecord['value'] = $spfRecord['data'];
+        $spfRecord['type'] = strtoupper($spfRecord['type']);
+
+        return [
+            'identity' => $identityRecord,
+            'dkim' => [ $dkimRecord ], // there may be more than one DKIM, AWS for example
+            'spf' => [ $spfRecord ],
+        ];
+    }
+
+    public function checkDomainVerificationStatus($domain) : bool
+    {
+        $this->validateDomain($domain);
+        $info = $this->getDomainVerificationInfo($domain);
+
+        if (empty($info)) {
+            return false;
+        }
+
+        return $info['dns']['mail_server']['valid'];
+    }
+
+    public function checkDkimVerificationStatus($domain) : bool
+    {
+        $this->validateDomain($domain);
+        $info = $this->getDomainVerificationInfo($domain);
+
+        if (empty($info)) {
+            return false;
+        }
+
+        return $info['dns']['dkim']['valid'];
+    }
+
+    public function checkSpfVerificationStatus($domain) : bool
+    {
+        $this->validateDomain($domain);
+        $info = $this->getDomainVerificationInfo($domain);
+
+        if (empty($info)) {
+            return false;
+        }
+
+        return $info['dns']['subdomain_spf']['valid'];
+    }
+
+    private function getDefaultSubdomainName($domain)
+    {
+        return substr(md5($domain), 0, 12);
+    }
+
+    private function getDomainVerificationInfo($domain)
+    {
+        $response = $this->client()->client->whitelabel()->domains()->get();
+        $domains = json_decode($response->body(), true);
+        
+        $domains = array_values(array_filter($domains, function($r) use ($domain) {
+            return $domain == $r['domain'] && $this->getDefaultSubdomainName($domain) == $r['subdomain'];
+        }));
+
+        if (empty($domains)) {
+            return null;
+        } else {
+            return $domains[0];
+        }
+    }
+
+    public function validateDomain($domain)
+    {
+        // both dkim and identity
+        $info = $this->getDomainVerificationInfo($domain);
+        if (empty($info)) {
+            return;
+        }
+        $result = $this->client()->client->whitelabel()->domains()->_($info['id'])->validate()->post();
+        return $result;
+    }
+
+    /**
+     * Allow user to verify his/her own sending domain against Acelle Mail.
+     *
+     * @return bool
+     */
+    public function allowVerifyingOwnDomains()
+    {
+        return false;
+    }
+
+    /**
+     * Allow user to verify his/her own sending domain against Acelle Mail.
+     *
+     * @return bool
+     */
+    public function allowVerifyingOwnEmails()
+    {
+        return true;
+    }
+
+    /**
+     * Allow user to verify his/her own emails against AWS.
+     *
+     * @return bool
+     */
+    public function allowVerifyingOwnDomainsRemotely()
+    {
+        return true;
+    }
+
+    /**
+     * Allow user to verify his/her own emails against AWS.
+     *
+     * @return bool
+     */
+    public function allowVerifyingOwnEmailsRemotely()
+    {
+        return false;
     }
 }

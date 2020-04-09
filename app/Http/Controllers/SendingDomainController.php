@@ -283,10 +283,16 @@ class SendingDomainController extends Controller
         $domain = SendingDomain::findByUid($id);
 
         if ($domain->isAssociatedWithSendingServer()) {
+            $options = $domain->getOptions()['verification'];
+            $identity = $options['identity'];
+            $dkims = $options['dkim'];
+            $spf = array_key_exists('spf', $options) ? $options['spf'] : [];
+
             return view('sending_domains._records_aws', [
                 'domain' => $domain,
-                'identity' => $domain->getOptions()['verification']['identity'],
-                'dkims' => $domain->getOptions()['verification']['dkim'],
+                'identity' => $identity,
+                'dkims' => $dkims,
+                'spf' => $spf,
             ]);
         } else {
             return view('sending_domains._records', [

@@ -195,7 +195,14 @@ class SendingDomain extends Model
         // Create uid when creating list.
         static::saving(function ($item) {
             // Disable if not verified
-            $item->status = $item->domain_verified ? self::STATUS_ACTIVE : self::STATUS_INACTIVE;
+            if ($item->isAssociatedWithSendingServer()) {
+                // all verification must pass for a remote service
+                $item->status = ( $item->domain_verified && $item->dkim_verified && $item->spf_verified ) ? self::STATUS_ACTIVE : self::STATUS_INACTIVE;
+            } else {
+                // Identity is enough in certain cases (SMTP, Sendmail, etc.)
+                $item->status = $item->domain_verified ? self::STATUS_ACTIVE : self::STATUS_INACTIVE;
+            }
+            
         });
     }
 
@@ -461,10 +468,15 @@ class SendingDomain extends Model
      */
     public function verifySpf()
     {
-        $checker = new SPFCheck(new DNSRecordGetterDirect('8.8.8.8'));
-        $check = $checker->isIPAllowed($this->getHostIpAddress(), $this->name);
-
-        $this->spf_verified = ($check == SPFCheck::RESULT_PASS) ? self::VERIFIED : self::UNVERIFIED;
+        if ($this->isAssociatedWithSendingServer()) {
+            $server = $this->sendingServer->mapType();
+            $result = $server->checkSpfVerificationStatus($this->name);
+            $this->spf_verified = $result ? self::VERIFIED : self::UNVERIFIED;
+        } else {
+            $checker = new SPFCheck(new DNSRecordGetterDirect('8.8.8.8'));
+            $check = $checker->isIPAllowed($this->getHostIpAddress(), $this->name);
+            $this->spf_verified = ($check == SPFCheck::RESULT_PASS) ? self::VERIFIED : self::UNVERIFIED;
+        }
         $this->save();
     }
 
