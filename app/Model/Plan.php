@@ -1277,7 +1277,7 @@ class Plan extends Model implements BillablePlanInterface
     {
         $pss = $this->plansSendingServers()->where('is_primary', '=', true)->first();
         // @todo: raise 1 cái exception nếu $pss null, ko return null sẽ gây lỗi tiềm ẩn
-        return is_object($pss) ? $pss->sendingServer : null;
+        return is_object($pss) ? $pss->sendingServer->mapType() : null;
     }
 
     /**
