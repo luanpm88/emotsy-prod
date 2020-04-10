@@ -266,7 +266,7 @@ class SendingServerSendGrid extends SendingServer implements DomainVerificationI
         ];
     }
 
-    public function checkDomainVerificationStatus($domain) : bool
+    public function checkDomainVerificationStatus($domain) : array
     {
         $this->validateDomain($domain);
         $info = $this->getDomainVerificationInfo($domain);
@@ -275,31 +275,10 @@ class SendingServerSendGrid extends SendingServer implements DomainVerificationI
             return false;
         }
 
-        return $info['dns']['mail_server']['valid'];
-    }
-
-    public function checkDkimVerificationStatus($domain) : bool
-    {
-        $this->validateDomain($domain);
-        $info = $this->getDomainVerificationInfo($domain);
-
-        if (empty($info)) {
-            return false;
-        }
-
-        return $info['dns']['dkim']['valid'];
-    }
-
-    public function checkSpfVerificationStatus($domain) : bool
-    {
-        $this->validateDomain($domain);
-        $info = $this->getDomainVerificationInfo($domain);
-
-        if (empty($info)) {
-            return false;
-        }
-
-        return $info['dns']['subdomain_spf']['valid'];
+        $identity = $info['dns']['mail_server']['valid'];
+        $dkim = $info['dns']['dkim']['valid'];
+        $spf = $info['dns']['subdomain_spf']['valid'];
+        return [ $identity, $dkim, $spf ];
     }
 
     private function getDefaultSubdomainName($domain)

@@ -434,18 +434,12 @@ class SendingDomain extends Model
      */
     public function verifyDomainDns()
     {
-        if ($this->isAssociatedWithSendingServer()) {
-            $server = SendingServer::mapServerType($this->sendingServer);
-            $result = $server->checkDomainVerificationStatus($this->name);
-            $this->domain_verified = $result ? self::VERIFIED : self::UNVERIFIED;
-        } else {
-            $fqdn = sprintf('%s.%s', $this->getVerificationTxtName(), $this->name);
-            $results = collect(dns_get_record($fqdn, DNS_TXT));
-            $results = $results->where('type', 'TXT')
-                               ->whereIn('txt', [$this->verification_token, doublequote($this->verification_token)]);
+        $fqdn = sprintf('%s.%s', $this->getVerificationTxtName(), $this->name);
+        $results = collect(dns_get_record($fqdn, DNS_TXT));
+        $results = $results->where('type', 'TXT')
+                           ->whereIn('txt', [$this->verification_token, doublequote($this->verification_token)]);
 
-            $this->domain_verified = $results->isEmpty() ? self::UNVERIFIED : self::VERIFIED;
-        }
+        $this->domain_verified = $results->isEmpty() ? self::UNVERIFIED : self::VERIFIED;
 
         $this->save();
     }
@@ -457,20 +451,14 @@ class SendingDomain extends Model
      */
     public function verifyDkim()
     {
-        if ($this->isAssociatedWithSendingServer()) {
-            $server = SendingServer::mapServerType($this->sendingServer);
-            $result = $server->checkDkimVerificationStatus($this->name);
-            $this->dkim_verified = $result ? self::VERIFIED : self::UNVERIFIED;
-        } else {
-            $possibles = collect([$this->getDnsDkimConfigWithoutQuote(), $this->getDnsDkimConfig(), $this->getEscapedDnsDkimConfig()]);
-            $possibles = $possibles->map(function ($item, $key) { return preg_replace('/\s+/', '', $item); });
+        $possibles = collect([$this->getDnsDkimConfigWithoutQuote(), $this->getDnsDkimConfig(), $this->getEscapedDnsDkimConfig()]);
+        $possibles = $possibles->map(function ($item, $key) { return preg_replace('/\s+/', '', $item); });
 
-            $fqdn = sprintf('%s.%s', $this->getDkimSelector(), $this->name);
-            $results = collect(dns_get_record($fqdn, DNS_TXT))->where('type', 'TXT')->map(function ($item, $key) { return preg_replace('/\s+/', '', $item['txt']); });
-            $results = $results->intersect($possibles);
+        $fqdn = sprintf('%s.%s', $this->getDkimSelector(), $this->name);
+        $results = collect(dns_get_record($fqdn, DNS_TXT))->where('type', 'TXT')->map(function ($item, $key) { return preg_replace('/\s+/', '', $item['txt']); });
+        $results = $results->intersect($possibles);
 
-            $this->dkim_verified = $results->isEmpty() ? self::UNVERIFIED : self::VERIFIED;
-        }
+        $this->dkim_verified = $results->isEmpty() ? self::UNVERIFIED : self::VERIFIED;
         
         $this->save();
     }
@@ -482,18 +470,12 @@ class SendingDomain extends Model
      */
     public function verifySpf()
     {
-        if ($this->isAssociatedWithSendingServer()) {
-            $server = $this->sendingServer->mapType();
-            $result = $server->checkSpfVerificationStatus($this->name);
-            $this->spf_verified = $result ? self::VERIFIED : self::UNVERIFIED;
-        } else {
-            $checker1 = new SPFCheck(new DNSRecordGetterDirect('8.8.8.8'));
-            $check1 = $checker1->isIPAllowed($this->getHostIpAddress(), $this->name);
+        $checker = new SPFCheck(new DNSRecordGetterDirect('8.8.8.8'));
+        // $checker = new SPFCheck(new DNSRecordGetter());
+        $check = $checker->isIPAllowed($this->getHostIpAddress(), $this->name);
 
-            $checker2 = new SPFCheck(new DNSRecordGetter());
-            $check2 = $checker2->isIPAllowed($this->getHostIpAddress(), $this->name);
-            $this->spf_verified = ($check1 == SPFCheck::RESULT_PASS || $check2 == SPFCheck::RESULT_PASS) ? self::VERIFIED : self::UNVERIFIED;
-        }
+        $this->spf_verified = ($check == SPFCheck::RESULT_PASS || $check == SPFCheck::RESULT_SOFTFAIL) ? self::VERIFIED : self::UNVERIFIED;
+
         $this->save();
     }
 

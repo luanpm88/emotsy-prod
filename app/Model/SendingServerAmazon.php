@@ -264,13 +264,11 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
         $dkim = 'Success' == $status;
 
         // SPF: hack
-        $checker1 = new SPFCheck(new DNSRecordGetterDirect('8.8.8.8'));
-        $check1 = $checker1->isIPAllowed(gethostbyname('amazonses.com'), $domain);
+        $checker = new SPFCheck(new DNSRecordGetterDirect('8.8.8.8'));
+        // $checker = new SPFCheck(new DNSRecordGetter());
+        $check = $checker->isIPAllowed(gethostbyname('amazonses.com'), $domain);
 
-        $checker2 = new SPFCheck(new DNSRecordGetter());
-        $check2 = $checker2->isIPAllowed(gethostbyname('amazonses.com'), $domain);
-
-        $spf = ($check1 == SPFCheck::RESULT_PASS || $check2 == SPFCheck::RESULT_PASS);
+        $spf = ($check == SPFCheck::RESULT_PASS || $check == SPFCheck::RESULT_SOFTFAIL);
 
         // Return all
         return [$identity, $dkim, $spf];
