@@ -42,9 +42,9 @@
                 
                 <td class="text-center">
                     <div class="single-stat-box pull-left">
-                        <i class="table-checkmark-{{ $item->signing_enabled }}"></i>
+                        <i class="table-checkmark-{{ $item->spf_verified }}"></i>
                         <br />
-                        <span class="text-muted">{{ trans("messages.signing_enabled") }}</span>
+                        <span class="text-muted">{{ trans("messages.sending_domain.spf_verification") }}</span>
                     </div>
                 </td>
                 <td class="text-right">
