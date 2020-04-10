@@ -23,7 +23,7 @@
 						<label>
 							<input type="checkbox" class="node styled"
 								name="ids[]"
-								value="{{ $sender->id }}"
+								value="{{ $sender->uid }}"
 							/>
 						</label>
 					</div>
