@@ -267,8 +267,8 @@ class SendingDomainController extends Controller
      */
     public function verify($id)
     {
-        $server = SendingDomain::findByUid($id);
-        $server->verify();
+        $domain = SendingDomain::findByUid($id);
+        $domain->verify();
     }
 
     /**

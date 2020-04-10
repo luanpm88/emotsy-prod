@@ -21,9 +21,5 @@ interface DomainVerificationInterface
 	*/
 	public function verifyDomain($domain) : array;
 
-	public function checkDomainVerificationStatus($domain) : bool;
-
-	public function checkDkimVerificationStatus($domain) : bool;
-
-	public function checkSpfVerificationStatus($domain) : bool;
+	public function checkDomainVerificationStatus($domain) : array;
 }

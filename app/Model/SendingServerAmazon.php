@@ -27,11 +27,15 @@ use Acelle\Library\StringHelper;
 use Acelle\Library\Lockable;
 use Acelle\Library\IdentityStore;
 use Acelle\Library\SendingServer\DomainVerificationInterface;
+use Mika56\SPFCheck\SPFCheck;
+use Mika56\SPFCheck\DNSRecordGetterDirect;
+use Mika56\SPFCheck\DNSRecordGetter;
 
 class SendingServerAmazon extends SendingServer implements DomainVerificationInterface
 {
     const SNS_TOPIC = 'ACELLEHANDLER';
     const SNS_TYPE = 'amazon'; // @TODO
+    const SPF_DNS_RECORD = 'v=spf1 include:amazonses.com ~all';
 
     public $notificationTypes = array('Bounce', 'Complaint');
     public static $snsClient = null;
@@ -87,7 +91,7 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
         return [
             'identity' => $identity,
             'dkim' => $dkim,
-            'spf' => [],
+            'spf' => [[ 'type' => 'TXT', 'name' => $domain, 'value' => self::SPF_DNS_RECORD ]],
         ];
     }
 
@@ -243,29 +247,34 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
         $this->save();
     }
 
-    public function checkDomainVerificationStatus($domain) : bool
+    public function checkDomainVerificationStatus($domain) : array
     {
+        // Identity
         $status = $identitiesWithAttributes = $this->sesClient()->getIdentityVerificationAttributes([
             'Identities' => [$domain],
         ])->toArray()['VerificationAttributes'][$domain]['VerificationStatus'];
 
-        return 'Success' == $status;
-    }
+        $identity = 'Success' == $status;
 
-    public function checkDkimVerificationStatus($domain) : bool
-    {
+        // DKIM
         $status = $identitiesWithAttributes = $this->sesClient()->getIdentityDkimAttributes([
             'Identities' => [$domain],
         ])->toArray()['DkimAttributes'][$domain]['DkimVerificationStatus'];
 
-        return 'Success' == $status;
-    }
+        $dkim = 'Success' == $status;
 
-    public function checkSpfVerificationStatus($domain) : bool
-    {
-        return true; // hack
+        // SPF: hack
+        $checker1 = new SPFCheck(new DNSRecordGetterDirect('8.8.8.8'));
+        $check1 = $checker1->isIPAllowed(gethostbyname('amazonses.com'), $domain);
+
+        $checker2 = new SPFCheck(new DNSRecordGetter());
+        $check2 = $checker2->isIPAllowed(gethostbyname('amazonses.com'), $domain);
+
+        $spf = ($check1 == SPFCheck::RESULT_PASS || $check2 == SPFCheck::RESULT_PASS);
+
+        // Return all
+        return [$identity, $dkim, $spf];
     }
-    
 
     /**
      * Check an email address if it is verified against AWS.

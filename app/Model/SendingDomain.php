@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\MtaSync;
 use Mika56\SPFCheck\SPFCheck;
 use Mika56\SPFCheck\DNSRecordGetterDirect;
+use Mika56\SPFCheck\DNSRecordGetter;
 
 class SendingDomain extends Model
 {
@@ -386,10 +387,23 @@ class SendingDomain extends Model
      */
     public function verify()
     {
-        // Verify Host, DKIM and SPF
-        $this->verifyDomainDns();
-        $this->verifyDkim();
-        $this->verifySpf();
+        if ($this->isAssociatedWithSendingServer()) {
+            // Verify Host, DKIM and SPF
+            $server = $this->sendingServer->mapType();
+            list($identity, $dkim, $spf) = $server->checkDomainVerificationStatus($this->name);
+            
+            // update domain record in db
+            $this->domain_verified = $identity;
+            $this->dkim_verified = $dkim;
+            $this->spf_verified = $spf;
+            $this->save();
+        } else {
+            // Verify Host, DKIM and SPF
+            $this->verifyDomainDns();
+            $this->verifyDkim();
+            $this->verifySpf();
+        }
+        
 
         $this->syncToMta();
     }
@@ -473,9 +487,12 @@ class SendingDomain extends Model
             $result = $server->checkSpfVerificationStatus($this->name);
             $this->spf_verified = $result ? self::VERIFIED : self::UNVERIFIED;
         } else {
-            $checker = new SPFCheck(new DNSRecordGetterDirect('8.8.8.8'));
-            $check = $checker->isIPAllowed($this->getHostIpAddress(), $this->name);
-            $this->spf_verified = ($check == SPFCheck::RESULT_PASS) ? self::VERIFIED : self::UNVERIFIED;
+            $checker1 = new SPFCheck(new DNSRecordGetterDirect('8.8.8.8'));
+            $check1 = $checker1->isIPAllowed($this->getHostIpAddress(), $this->name);
+
+            $checker2 = new SPFCheck(new DNSRecordGetter());
+            $check2 = $checker2->isIPAllowed($this->getHostIpAddress(), $this->name);
+            $this->spf_verified = ($check1 == SPFCheck::RESULT_PASS || $check2 == SPFCheck::RESULT_PASS) ? self::VERIFIED : self::UNVERIFIED;
         }
         $this->save();
     }

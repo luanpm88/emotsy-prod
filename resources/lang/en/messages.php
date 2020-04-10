@@ -536,6 +536,7 @@
   'sending_domain.signing_enabled.help' => 'Sign outgoing emails if the FROM email address matches this domain',
   'sending_domain.domain_verification' => 'Domain verification',
   'sending_domain.dkim_verification' => 'DKIM verification',
+  'sending_domain.spf_verification' => 'SPF verification',
   'sending_domain.verified' => 'verified',
   'sending_domain.pending' => 'pending',
   'languages' => 'Languages',
