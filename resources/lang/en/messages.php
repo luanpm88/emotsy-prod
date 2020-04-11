@@ -2118,6 +2118,7 @@
   'sender.create' => 'New sender',
   'senders.empty.message' => 'You have no sender yet',
   'sender.delete' => 'Delete',
+  'senders.deleted' => 'Sender was successfully deleted',
   'sender.delete.confirm' => 'You\'re about to delete sender from the list.',
   'sender.edit' => 'Edit information',
   'sender.new.wording' => 'Verify an email to use as a “FROM” address when you send emails. A verified identity will help improve deliverability. That is, it helps keep your campaigns out of spam folders and protects your reputation by ensuring others can\'t use your identity without permission.',
