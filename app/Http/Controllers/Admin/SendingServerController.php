@@ -194,13 +194,10 @@ class SendingServerController extends Controller
     {
         $server = \Acelle\Model\SendingServer::findByUid($id);
         $server = \Acelle\Model\SendingServer::mapServerType($server);
-        $originServer = \Acelle\Model\SendingServer::mapServerType($server);
         // authorize
         if (!$request->user()->admin->can('update', $server)) {
             return $this->notAuthorized();
         }
-
-        $server->syncIdentities();
 
         // bounce / feedback hanlder nullable
         if ($request->old() && empty($request->old()["bounce_handler_id"])) {
@@ -216,8 +213,9 @@ class SendingServerController extends Controller
         
         try {
             $server->test();
+            $server->syncIdentities();
         } catch (\Exception $ex) {
-            $originServer->disable();
+            $server->disable();
             
             $notices[] = [
                 'title' => trans('messages.sending_server.connect_failed'),
