@@ -1974,7 +1974,8 @@ class Customer extends Model implements BillableUserInterface
         }
 
         // assign new plan
-        Cashier::assignPlan($this, $plan);
+        $gateway = \Acelle\Cashier\Cashier::getPaymentGateway();
+        $gateway->create($this, $plan);
     }
 
     /**
