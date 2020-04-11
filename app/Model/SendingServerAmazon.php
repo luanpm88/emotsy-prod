@@ -219,9 +219,11 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
             'Identities' => $emailOrDomains,
         ])->toArray()['VerificationAttributes'];
 
-        $addedByUsers = $this->sendingDomains()->whereIn('name', $emailOrDomains)->get();
+        // Domains added by users
+        $domainsByUsers = $this->sendingDomains()->whereIn('name', $emailOrDomains)->get();
+        $sendersByUsers = $this->senders()->whereIn('name', $emailOrDomains)->get();
 
-        foreach($addedByUsers as $domain) {
+        foreach($domainsByUsers->merge($sendersByUsers) as $domain) {
             if (array_key_exists($domain->name, $identities)) {
                 $identities[$domain->name]['UserId'] = $domain->customer->id;
                 $identities[$domain->name]['UserName'] = $domain->customer->getFullName();

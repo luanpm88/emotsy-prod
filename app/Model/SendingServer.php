@@ -118,6 +118,16 @@ class SendingServer extends Model
     }
 
     /**
+     * Senders.
+     *
+     * @return collection
+     */
+    public function senders()
+    {
+        return $this->hasMany('Acelle\Model\Sender', 'sending_server_id');
+    }
+
+    /**
      * Map a server to its class type and retrive an instance from the database.
      *
      * @return mixed
