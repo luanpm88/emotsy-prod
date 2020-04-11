@@ -114,20 +114,21 @@ class SenderController extends Controller
             return $this->notAuthorized();
         }
 
-        // save posted data
-        if ($request->isMethod('post')) {
-            $sender->fill($request->all());
-            $sender->customer_id = $request->user()->customer->id;
-            $sender->status = Sender::STATUS_PENDING;
+        $sender->fill($request->all());
+        $sender->customer_id = $request->user()->customer->id;
+        $sender->status = Sender::STATUS_PENDING;
 
-            $this->validate($request, $sender->rules());
+        $this->validate($request, $sender->rules());
 
-            if ($sender->save()) {
-                $server = $request->user()->customer->activeSubscription()->plan->primarySendingServer();
-                $sender->verifyWith($server);
-                
-                return redirect()->action('SenderController@show', $sender->uid);
-            }
+        try {
+            $sender->save();
+            $server = $request->user()->customer->activeSubscription()->plan->primarySendingServer();
+            $sender->verifyWith($server);
+            return redirect()->action('SenderController@show', $sender->uid);
+        } catch (\Exception $ex) {
+            $sender->delete();
+            $request->session()->flash('alert-error', $ex->getMessage());
+            return redirect()->action('SenderController@index');
         }
     }
 
