@@ -76,13 +76,13 @@
                 </span>
                 <span class="cancel-group hide">
                     <button class="btn btn-mc_primary mr-10">{{ trans('messages.save') }}</button>
-                    <a href="{{ action('Admin\SendingServerController@edit', [$server->uid, $server->type]) }}" type="button" class="btn btn-mc_inline">
+                    <a href="{{ action('Admin\SendingServerController@index', [$server->uid, $server->type]) }}" type="button" class="btn btn-mc_inline">
                         {{ trans('messages.cancel') }}
                     </a>
                 </span>
             @else
                 <button class="btn btn-mc_primary mr-10">{{ trans('messages.save') }}</button>
-                <a href="{{ action('Admin\SendingServerController@edit', [$server->uid, $server->type]) }}" type="button" class="btn btn-mc_inline">
+                <a href="{{ action('Admin\SendingServerController@index') }}" type="button" class="btn btn-mc_inline">
                     {{ trans('messages.cancel') }}
                 </a>
             @endif

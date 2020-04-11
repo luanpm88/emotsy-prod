@@ -119,9 +119,7 @@ class SendingServerController extends Controller
         // save posted data
         if ($request->isMethod('post')) {
             // options
-            $options = [
-                'allow_verify_domain_remotely' => 'yes',
-            ];
+            $options = [];
             
             // fill values
             $server->fill($request->all());
@@ -163,9 +161,6 @@ class SendingServerController extends Controller
             }
 
             if ($server->save()) {
-                // init sending server identities
-                $server->initVerifiedIdentities();
-
                 $request->session()->flash('alert-success', trans('messages.sending_server.created'));
                 return redirect()->action('Admin\SendingServerController@edit', [$server->uid, $server->type]);
             }
@@ -214,6 +209,7 @@ class SendingServerController extends Controller
         try {
             $server->test();
             $server->syncIdentities();
+            $server->setDefaultFromEmailAddress();
         } catch (\Exception $ex) {
             $server->disable();
             

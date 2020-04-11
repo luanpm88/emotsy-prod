@@ -1468,31 +1468,6 @@ class SendingServer extends Model
     }
 
     /**
-     * Get verified identities.
-     *
-     * @return array
-     */
-    public function initVerifiedIdentities()
-    {
-        $items = $this->getVerifiedIdentities();
-
-        $domains = [];
-        $emails = [];
-        foreach ($items as $item) {
-            if (checkEmail($item)) {
-                $emails[] = $item;
-            } else {
-                $domains[] = $item;
-            }
-        }
-
-        $this->setOption('emails', $emails);
-        $this->setOption('domains', $domains);
-
-        $this->save();
-    }
-
-    /**
      * Get all verified identities.
      *
      * @return array
@@ -1643,5 +1618,31 @@ class SendingServer extends Model
         }
 
         return  $this->send($message, $params);
+    }
+
+    public function setDefaultFromEmailAddress()
+    {
+        if (!empty($this->default_from_email)) {
+        //    return;
+        }
+
+        $identityStore = $this->getIdentityStore();
+        $names = array_keys($identityStore->get(['VerificationStatus' => 'Success']));
+        
+        $emails = array_values(array_filter($names, function($name) { return checkEmail($name); }));
+        $domains = array_values(array_filter($names, function($name) { return !checkEmail($name); }));
+
+        $default = null;
+
+        if (!empty($domains)) {
+            $default = 'noreply@'.$domains[0];
+        } elseif (!empty($emails)) {
+            $default = $emails[0];
+        }
+
+        if (!is_null($default)) {
+            $this->default_from_email = $default;
+            $this->save();
+        }
     }
 }
