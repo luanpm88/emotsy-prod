@@ -196,6 +196,16 @@ class SendingServerSendGrid extends SendingServer implements DomainVerificationI
             $identities[$name] = ['VerificationStatus' => $domain['valid'] == true]; 
         }
 
+        // list of identities that are added by customers/users
+        $addedByUsers = $this->sendingDomains()->whereIn('name', array_keys($identities))->get();
+
+        foreach($addedByUsers as $domain) {
+            if (array_key_exists($domain->name, $identities)) {
+                $identities[$domain->name]['UserId'] = $domain->customer->id;
+                $identities[$domain->name]['UserName'] = $domain->customer->getFullName();
+            }
+        }
+
         $identityStore = $this->getIdentityStore();
         $identityStore->update($identities);
         $options = $this->getOptions();
