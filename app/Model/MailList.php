@@ -1439,11 +1439,6 @@ class MailList extends Model
             $campaign->updateCache();
         }
 
-        // Trigger the CampaignUpdate event to update the related automations' cache information
-        foreach ($this->automations as $automation) {
-            $automation->updateCache();
-        }
-
         // Update segments cached information
         foreach ($this->segments as $segment) {
             $segment->updateCache();
