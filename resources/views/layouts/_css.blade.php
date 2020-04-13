@@ -7,7 +7,7 @@
 <link href="{{ URL::asset('assets/css/icons/icomoon/styles.css') }}" rel="stylesheet" type="text/css">
 <link href="{{ URL::asset('assets/css/icons/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
 <link href="{{ URL::asset('assets/css/icons/fontawesome-free/css/fontawesome.min.css') }}" rel="stylesheet" type="text/css">
-<link href="{{ URL::asset('assets/css/bootstrap.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ URL::asset('assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
 <link href="{{ URL::asset('assets/css/core.css') }}" rel="stylesheet" type="text/css">
 <link href="{{ URL::asset('assets/css/components.css') }}" rel="stylesheet" type="text/css">
 <link href="{{ URL::asset('assets/css/colors.css') }}" rel="stylesheet" type="text/css">
@@ -19,7 +19,7 @@
 <link href="{{ URL::asset('css/app.css') }}?v={{ app_version() }}" rel="stylesheet" type="text/css">
 <link href="{{ URL::asset('css/theme.css') }}" rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="{{ URL::asset('assets/css/icons/linearicons/style.css') }}">
-<link rel="stylesheet" href="{{ URL::asset('assets/tooltipster/css/tooltipster.bundle.css') }}">
+<link rel="stylesheet" href="{{ URL::asset('assets/tooltipster/css/tooltipster.bundle.min.css') }}">
 <link rel="stylesheet" href="{{ URL::asset('assets/tooltipster/css/plugins/tooltipster/sideTip/themes/tooltipster-sideTip-light.min.css') }}">
 <link rel="stylesheet" href="{{ URL::asset('assets/timepicker/jquery.timepicker.css') }}">
 <link rel="stylesheet" href="{{ URL::asset('assets/datepicker/dist/datepicker.min.css') }}">

@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,600" rel="stylesheet" type="text/css">
     <link href="{{ URL::asset('assets/css/icons/icomoon/styles.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ URL::asset('assets/css/icons/fontawesome/styles.min.css') }}" rel="stylesheet" type="text/css">
-    <link href="{{ URL::asset('assets/css/bootstrap.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ URL::asset('assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ URL::asset('assets/css/core.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ URL::asset('assets/css/components.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ URL::asset('assets/css/colors.css') }}" rel="stylesheet" type="text/css">

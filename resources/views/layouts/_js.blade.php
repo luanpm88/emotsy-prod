@@ -34,9 +34,9 @@
     <script type="text/javascript" src="{{ URL::asset('js/jquery.cookie.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('rangeslider/bootstrap-slider.js') }}"></script>
 	
-	<script type="text/javascript" src="{{ URL::asset('bootstrap3-editable/js/bootstrap-editable.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('bootstrap3-editable/js/bootstrap-editable.min.js') }}"></script>
 		
-	<script type="text/javascript" src="{{ URL::asset('assets/tooltipster/js/tooltipster.bundle.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('assets/tooltipster/js/tooltipster.bundle.min.js') }}"></script>
 		
 	<script type="text/javascript" src="{{ URL::asset('assets/timepicker/jquery.timepicker.js') }}"></script>
 		

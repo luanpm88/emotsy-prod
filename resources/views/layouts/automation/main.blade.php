@@ -53,12 +53,12 @@
     <script type="text/javascript" src="{{ URL::asset('js/scrollbar/jquery.mCustomScrollbar.concat.min.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('js/jquery.cookie.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('rangeslider/bootstrap-slider.js') }}"></script>	
-	<script type="text/javascript" src="{{ URL::asset('bootstrap3-editable/js/bootstrap-editable.js') }}"></script>		
+	<script type="text/javascript" src="{{ URL::asset('bootstrap3-editable/js/bootstrap-editable.min.js') }}"></script>		
 
 	<!-- Tooltip -->
-	<link rel="stylesheet" href="{{ URL::asset('assets/tooltipster/css/tooltipster.bundle.css') }}">
+	<link rel="stylesheet" href="{{ URL::asset('assets/tooltipster/css/tooltipster.bundle.min.css') }}">
 	<link rel="stylesheet" href="{{ URL::asset('assets/tooltipster/css/plugins/tooltipster/sideTip/themes/tooltipster-sideTip-light.min.css') }}">
-	<script type="text/javascript" src="{{ URL::asset('assets/tooltipster/js/tooltipster.bundle.js') }}"></script>		
+	<script type="text/javascript" src="{{ URL::asset('assets/tooltipster/js/tooltipster.bundle.min.js') }}"></script>		
 
 	<script type="text/javascript" src="{{ URL::asset('assets/timepicker/jquery.timepicker.js') }}"></script>		
 	<script type="text/javascript" src="{{ URL::asset('assets/datepicker/dist/datepicker.min.js') }}"></script>		
@@ -88,7 +88,7 @@
 	<script type="text/javascript" src="{{ URL::asset('assets2/js/box.js') }}"></script>
 		
 	<!-- Scrollbar -->
-	<script type="text/javascript" src="{{ URL::asset('assets2/lib/scrollbar/jquery.scrollbar.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('assets2/lib/scrollbar/jquery.scrollbar.min.js') }}"></script>
 	<link href="{{ URL::asset('assets2/lib/scrollbar/jquery.scrollbar.css') }}" rel="stylesheet" type="text/css">
 
 	@yield('page_script')

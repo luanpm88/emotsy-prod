@@ -8,7 +8,7 @@
 	<script type="text/javascript" src="{{ URL::asset('js/ace/ace/theme-twilight.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('js/ace/ace/mode-php.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('js/ace/ace/mode-yaml.js') }}"></script>
-	<script type="text/javascript" src="{{ URL::asset('js/ace/jquery-ace.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('js/ace/jquery-ace.min.js') }}"></script>
 		
     <script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
 @endsection

@@ -112,7 +112,7 @@ $compatibilities =  [
 	<link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,600|Open+Sans:300italic,400italic,600italic,700italic,700,300,600,400" rel="stylesheet" type="text/css">
 	<link href="http://local:8000/assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">
 	<link href="http://local:8000/assets/css/icons/fontawesome/styles.min.css" rel="stylesheet" type="text/css">
-	<link href="http://local:8000/assets/css/bootstrap.css" rel="stylesheet" type="text/css">
+	<link href="http://local:8000/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css">
 	<link href="http://local:8000/assets/css/core.css" rel="stylesheet" type="text/css">
 	<link href="http://local:8000/assets/css/components.css" rel="stylesheet" type="text/css">
 	<link href="http://local:8000/assets/css/colors.css" rel="stylesheet" type="text/css">
