@@ -1549,18 +1549,6 @@ class SendingServer extends Model
         }
     }
 
-    /**
-     * Verification sending server tags.
-     */
-    public static function verificationEmailTags()
-    {
-        return [            
-            ['name' => 'USER_NAME', 'required' => false],            
-            ['name' => 'USER_EMAIL', 'required' => false],
-            ['name' => 'USER_ID', 'required' => false],
-        ];
-    }
-
     public function updateIdentitiesList($selected)
     {
         // For now, it is for Amazon only

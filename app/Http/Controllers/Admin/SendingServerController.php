@@ -721,39 +721,4 @@ class SendingServerController extends Controller
         $droplist = $server->verifiedIdentitiesDroplist(strtolower(trim($request->keyword)));        
         return response()->json($droplist);
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function customVerificationEmail(Request $request, $uid)
-    {
-        // Generate info
-        $server = SendingServer::findByUid($request->uid);
-
-        // authorize
-        if (!$request->user()->admin->can('update', $server)) {
-            return $this->notAuthorized();
-        }
-
-        // save posted data
-        if ($request->isMethod('post')) {
-            $server->setOption('custom_verification_email', $request->content);
-            $server->setOption('custom_verification_email_subject', $request->subject);
-            $server->save();
-
-            // success
-            return response()->json([
-                'status' => 'success',
-                'message' => trans('messages.custom_verification_email.updated'),
-            ], 201);
-        }
-
-        return view('admin.sending_servers.customVerificationEmail', [
-            'server' => $server,
-        ]);
-    }
 }

@@ -245,19 +245,6 @@
                     'help_class' => 'sending_server',
                     'options' => ['no', 'yes'],
                 ])
-
-                <div class="use_custom_verification_email" style="display:none;padding-left:35px">
-                    @include('helpers.form_control', [
-                        'type' => 'checkbox2',
-                        'label' => trans('messages.use_custom_verification_email', [
-                            'link' => action('Admin\SendingServerController@customVerificationEmail', $server->uid)
-                        ]),
-                        'name' => 'options[use_custom_verification_email]',
-                        'value' => $server->getOption('use_custom_verification_email'),
-                        'help_class' => 'sending_server',
-                        'options' => ['no', 'yes'],
-                    ])
-                </div>
                 
                 <hr>
                 <div class="mt-20">
@@ -283,14 +270,6 @@
             }
         });
         $('[name="options[allow_verify_email_against_acelle]"]').change();
-
-        $('.custom-verification-email-edit').click(function(e) {
-            e.preventDefault();
-            
-            var url = $(this).attr('href');
-            
-            openBuilderClassic(url);
-        });
     });
 </script>
 
