@@ -3253,4 +3253,5 @@
     </html>',
   'sending_servier.custom_verification_email.subject' => 'Subject',
   'sending_server.default_email_verification.subject' => 'Verify your email address',
+  'other' => 'Other',
 ) ?>
