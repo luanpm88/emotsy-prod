@@ -244,7 +244,7 @@ class Sender extends Model
         return $this->status == self::STATUS_PENDING;
     }
 
-    public function verifyWith($server)
+    public function verifyWith($server = null)
     {
         // Check if it is already verify
         $this->updateVerificationStatus();
@@ -253,7 +253,7 @@ class Sender extends Model
             return;
         }
 
-        if ($server->allowVerifyingOwnEmailsRemotely()) {
+        if (!is_null($server) && $server->allowVerifyingOwnEmailsRemotely()) {
             // this sender is bound with a specific sending server
             // set $this->sending_server_id = $server->id the correct way
             $this->sendingServer()->associate($server); 

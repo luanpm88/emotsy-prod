@@ -1275,6 +1275,10 @@ class Plan extends Model implements BillablePlanInterface
      **/
     public function primarySendingServer()
     {
+        if (!$this->useSystemSendingServer()) {
+            throw new \Exception('ACELLE ERROR: 120000700392');
+        }
+
         $pss = $this->plansSendingServers()->where('is_primary', '=', true)->first();
         // @todo: raise 1 cái exception nếu $pss null, ko return null sẽ gây lỗi tiềm ẩn
         return is_object($pss) ? $pss->sendingServer->mapType() : null;

@@ -22,7 +22,14 @@ class SendingDomainController extends Controller
         }
 
         $request->merge(array("customer_id" => $request->user()->customer->id));
-        $server = $request->user()->customer->activeSubscription()->plan->primarySendingServer();
+        $plan = $request->user()->customer->activeSubscription()->plan;
+
+        if ($plan->useSystemSendingServer()) {
+            $server = $plan->primarySendingServer();    
+        } else {
+            $server = null;
+        }
+
         $items = SendingDomain::search($request, $server);
 
         return view('sending_domains.index', [
@@ -42,7 +49,14 @@ class SendingDomainController extends Controller
         }
 
         $request->merge(array("customer_id" => $request->user()->customer->id));
-        $server = $request->user()->customer->activeSubscription()->plan->primarySendingServer();
+        $plan = $request->user()->customer->activeSubscription()->plan;
+
+        if ($plan->useSystemSendingServer()) {
+            $server = $plan->primarySendingServer();    
+        } else {
+            $server = null;
+        }
+        
         $items = SendingDomain::search($request, $server)->paginate($request->per_page);
 
         return view('sending_domains._list', [
@@ -87,36 +101,38 @@ class SendingDomainController extends Controller
         // Get current user
         $current_user = $request->user();
         $domain = new SendingDomain();
-        $subscription = $request->user()->customer->subscription;
-        $server = SendingServer::mapServerType($subscription->plan->primarySendingServer());
 
         // authorize
         if (!$request->user()->customer->can('create', $domain)) {
             return $this->notAuthorized();
         }
 
+        $subscription = $request->user()->customer->subscription;
+        $plan = $subscription->plan;
+
         // save posted data
-        if ($request->isMethod('post')) {
-            $this->validate($request, SendingDomain::rules());
+        $this->validate($request, SendingDomain::rules());
 
-            // Save current user info
-            $domain->fill($request->all());
-            $domain->customer_id = $request->user()->customer->id;
-            $domain->status = 'active';
+        // Save current user info
+        $domain->fill($request->all());
+        $domain->customer_id = $request->user()->customer->id;
+        $domain->status = 'active';
 
-            if ($domain->save()) {
-                $domain->syncToMta();
-
+        if ($domain->save()) {
+            if ($plan->useSystemSendingServer()) {
+                $server = $plan->primarySendingServer();
                 if ($server->allowVerifyingOwnDomainsRemotely()) {
                     $domain->verifyWith($server);
                 }
-
-                // Log
-                $domain->log('created', $request->user()->customer);
-
-                $request->session()->flash('alert-success', trans('messages.sending_domain.created'));
-                return redirect()->action('SendingDomainController@show', $domain->uid);
             }
+
+            $domain->syncToMta();
+
+            // Log
+            $domain->log('created', $request->user()->customer);
+
+            $request->session()->flash('alert-success', trans('messages.sending_domain.created'));
+            return redirect()->action('SendingDomainController@show', $domain->uid);
         }
     }
 
