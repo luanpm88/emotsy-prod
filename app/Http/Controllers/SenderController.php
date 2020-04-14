@@ -33,19 +33,18 @@ class SenderController extends Controller
         }
 
         $subscription = $request->user()->customer->subscription;
-        $server = $subscription->plan->primarySendingServer();
+        $plan = $subscription->plan;
 
         if ($subscription->plan->useOwnSendingServer()) {
-            $email = false;
+            $email = true;
             $domain = true;
-        } else {    
+        } else {
+            $server = $plan->primarySendingServer();
             $email = $server->allowVerifyingOwnEmails() || $server->allowVerifyingOwnEmailsRemotely();
             $domain = $server->allowVerifyingOwnDomains() || $server->allowVerifyingOwnDomainsRemotely();
         }
 
-        if ($email || $domain ) {
-            //
-        } else {
+        if (!$email || !$domain ) {
             return view('senders.available', [
                 'identities' => $subscription->plan->getVerifiedIdentities(),
             ]);
@@ -114,6 +113,8 @@ class SenderController extends Controller
             return $this->notAuthorized();
         }
 
+        $plan = $request->user()->customer->activeSubscription()->plan;
+
         $sender->fill($request->all());
         $sender->customer_id = $request->user()->customer->id;
         $sender->status = Sender::STATUS_PENDING;
@@ -122,7 +123,13 @@ class SenderController extends Controller
 
         try {
             $sender->save();
-            $server = $request->user()->customer->activeSubscription()->plan->primarySendingServer();
+
+            if ($plan->useSystemSendingServer()) {
+                $server = $plan->primarySendingServer();
+            } else {
+                $server = null;
+            }
+
             $sender->verifyWith($server);
             return redirect()->action('SenderController@show', $sender->uid);
         } catch (\Exception $ex) {

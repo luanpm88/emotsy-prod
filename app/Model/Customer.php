@@ -225,8 +225,14 @@ class Customer extends Model implements BillableUserInterface
     // All senders, including ones that are not associated to a particular sending servers
     public function allSenders()
     {
-        $server = $this->activeSubscription()->plan->primarySendingServer();
-        $result = Sender::whereRaw(sprintf("%s IS NULL OR %s = %s", table('senders.sending_server_id'), table('senders.sending_server_id'), $server->id ));
+        $plan = $this->activeSubscription()->plan;
+        if ($plan->useSystemSendingServer()) {
+            $server = $plan->primarySendingServer();
+            $result = $this->senders()->whereRaw(sprintf("%s IS NULL OR %s = %s", table('senders.sending_server_id'), table('senders.sending_server_id'), $server->id ));    
+        } else {
+            $result = $this->senders();
+        }
+        
         return $result;
     }
 

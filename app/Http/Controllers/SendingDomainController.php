@@ -22,7 +22,14 @@ class SendingDomainController extends Controller
         }
 
         $request->merge(array("customer_id" => $request->user()->customer->id));
-        $server = $request->user()->customer->activeSubscription()->plan->primarySendingServer();
+        $plan = $request->user()->customer->activeSubscription()->plan;
+
+        if ($plan->useSystemSendingServer()) {
+            $server = $plan->primarySendingServer();    
+        } else {
+            $server = null;
+        }
+
         $items = SendingDomain::search($request, $server);
 
         return view('sending_domains.index', [
@@ -42,7 +49,14 @@ class SendingDomainController extends Controller
         }
 
         $request->merge(array("customer_id" => $request->user()->customer->id));
-        $server = $request->user()->customer->activeSubscription()->plan->primarySendingServer();
+        $plan = $request->user()->customer->activeSubscription()->plan;
+
+        if ($plan->useSystemSendingServer()) {
+            $server = $plan->primarySendingServer();    
+        } else {
+            $server = null;
+        }
+        
         $items = SendingDomain::search($request, $server)->paginate($request->per_page);
 
         return view('sending_domains._list', [
