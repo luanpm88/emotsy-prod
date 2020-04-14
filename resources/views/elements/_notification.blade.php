@@ -2,8 +2,13 @@
     $icons = [
         'warning' =>  'lnr lnr-warning',
         'info' =>  'lnr lnr-checkmark-circle',
-        'danger' =>  'lnr lnr-question-circle'
+        'danger' =>  'lnr lnr-question-circle',
+        'error' =>  'lnr lnr-question-circle',
     ];
+
+    if ($level == 'error') {
+        $level = 'danger';
+    }
 
     if (isset($params)) {
         $paramsString = implode(' ', collect($params)

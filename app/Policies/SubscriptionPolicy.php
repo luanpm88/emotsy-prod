@@ -106,21 +106,7 @@ class SubscriptionPolicy
                 $can = false;
                 break;
             case 'customer':
-                $can = $subscription->isActive() && !$gateway->hasPending($subscription);
-                break;
-        }
-
-        return $can;
-    }
-
-    public function renew(User $user, Subscription $subscription, $role)
-    {
-        $can = Cashier::hasPendingRenew($subscription);
-
-        switch ($role) {
-            case 'admin':
-                break;
-            case 'customer':
+                $can = $subscription->isActive();
                 break;
         }
 
@@ -203,7 +189,7 @@ class SubscriptionPolicy
     public function approvePending(User $user, Subscription $subscription, $role)
     {
         $gateway = Cashier::getPaymentGateway();
-        $can = $gateway->hasPending($subscription);
+        $can = $subscription->hasError() && in_array($subscription->getError()["type"], ['renew', 'change_plan']);
 
         switch ($role) {
             case 'admin':
@@ -219,7 +205,7 @@ class SubscriptionPolicy
     public function rejectPending(User $user, Subscription $subscription, $role)
     {
         $gateway = Cashier::getPaymentGateway();
-        $can = $gateway->hasPending($subscription);
+        $can = $subscription->hasError() && in_array($subscription->getError()["type"], ['renew', 'change_plan']);
 
         switch ($role) {
             case 'admin':

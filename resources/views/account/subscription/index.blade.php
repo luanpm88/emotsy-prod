@@ -28,16 +28,11 @@
     <div class="row">
         <div class="col-sm-12 col-md-6 col-lg-6">
 
-            @if ($gateway->hasPending($subscription))
-                <div class="alert alert-warning">
-                    {!! $gateway->getPendingNotice($subscription) !!}
-                </div>
-            @endif
-
-            @if ($gateway->hasError($subscription))
-                <div class="alert alert-danger">
-                    {!! $gateway->getErrorNotice($subscription) !!}
-                </div>
+            @if ($subscription->hasError())
+                @include('elements._notification', [
+                    'level' => $subscription->getError()["status"],
+                    'message' => $subscription->getError()["message"]
+                ])
             @endif
 
             <h2 class="text-semibold">{{ trans('messages.subscription') }}</h2>
@@ -62,23 +57,6 @@
                                 'end_at' => \Acelle\Library\Tool::formatDate($subscription->current_period_ends_at)
                             ]) !!}
                         </p>
-                    @endif
-
-                    @if (Acelle\Cashier\Cashier::hasPendingRenew($subscription))
-                        @include('elements._notification', [
-                            'level' => 'warning',
-                            'message' => trans('messages.subscription.has_renew_pending.warning')
-                        ])
-                    @endif
-
-                    @if (\Auth::user()->customer->can('renew', $subscription))
-                        <a
-                            href="{{ $gateway->getRenewUrl($subscription, action('AccountSubscriptionController@index')) }}"
-                            class="btn bg-grey-600 mr-10"
-                            data-size="sm"
-                        >
-                            {{ trans('messages.subscription.renew') }}
-                        </a>
                     @endif
 
                     @if (\Auth::user()->customer->can('cancel', $subscription))
