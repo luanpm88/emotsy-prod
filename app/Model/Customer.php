@@ -28,6 +28,7 @@ use Carbon\Carbon;
 use Acelle\Cashier\Interfaces\BillableUserInterface;
 use Acelle\Cashier\Cashier;
 use Acelle\Cashier\Subscription;
+use Acelle\Model\SendingDomain;
 
 class Customer extends Model implements BillableUserInterface
 {
@@ -238,11 +239,21 @@ class Customer extends Model implements BillableUserInterface
 
     public function activeVerifiedSendingDomains()
     {
-        $server = $this->activeSubscription()->plan->primarySendingServer();
-        return $this->sendingDomains()
-            ->where('status', '=', \Acelle\Model\SendingDomain::STATUS_ACTIVE)
-            ->where('domain_verified', '=', \Acelle\Model\SendingDomain::VERIFIED)
-            ->whereRaw(sprintf('(%s IS NULL or %s = %s)', table('sending_domains.sending_server_id'), table('sending_domains.sending_server_id'), $server->id));
+        $plan = $this->activeSubscription()->plan;
+
+        if ($plan->useSystemSendingServer()) {
+            $server = $plan->primarySendingServer();
+            return $this->sendingDomains()
+                ->where('status', '=', SendingDomain::STATUS_ACTIVE)
+                ->where('domain_verified', '=', SendingDomain::VERIFIED)
+                ->whereRaw(sprintf('(%s IS NULL or %s = %s)', table('sending_domains.sending_server_id'), table('sending_domains.sending_server_id'), $server->id));
+        } else {
+            return $this->sendingDomains()
+                ->where('status', '=', SendingDomain::STATUS_ACTIVE)
+                ->where('domain_verified', '=', SendingDomain::VERIFIED);
+        }
+        
+        
     }
 
     /**
@@ -1848,8 +1859,11 @@ class Customer extends Model implements BillableUserInterface
             $list[] = $domain->name;
         }
 
-        // plan sending server emails
-        $list = array_merge($this->activeSubscription()->plan->getVerifiedIdentities(), $list);
+        // plan sending server emails if system sending servers
+        $plan = $this->activeSubscription()->plan;
+        if ($plan->useSystemSendingServer()) {
+            $list = array_merge($plan->getVerifiedIdentities(), $list);
+        }
 
         return array_values(array_unique($list));
     }
@@ -1871,36 +1885,36 @@ class Customer extends Model implements BillableUserInterface
 
         foreach ($this->getVerifiedIdentities() as $item) {
             // check if email
-                if (extract_email($item) !== null) {
-                    $email = extract_email($item);
-                    if (strpos(strtolower($email), $keyword) === 0) {
-                        $topList[] = [
-                            'text' => extract_name($item),
-                            'value' => $email,
-                            'desc' => str_replace($keyword, '<span class="text-semibold text-primary"><strong>'.$keyword.'</strong></span>', $email),
-                        ];
-                    } else {
-                        $bottomList[] = [
-                            'text' => extract_name($item),
-                            'value' => $email,
-                            'desc' => $email,
-                        ];
-                    }
-                } else { // domains are alse
-                    $dKey = explode('@', $keyword);
-                    $eKey = $dKey[0];
-                    $dKey = isset($dKey[1]) ? $dKey[1] : null;
-                    // if ( (!isset($dKey) || $dKey == '') || ($dKey && strpos(strtolower($item), $dKey) === 0 )) {
-                        if ($keyword == '###') {
-                            $eKey = '****';
-                        }
+            if (extract_email($item) !== null) {
+                $email = extract_email($item);
+                if (strpos(strtolower($email), $keyword) === 0) {
                     $topList[] = [
-                            'text' => $eKey.'@'.str_replace($dKey, '<span class="text-semibold text-primary"><strong>'.$dKey.'</strong></span>', $item),
-                            'subfix' => $item,
-                            'desc' => null,
-                        ];
-                    // }
+                        'text' => extract_name($item),
+                        'value' => $email,
+                        'desc' => str_replace($keyword, '<span class="text-semibold text-primary"><strong>'.$keyword.'</strong></span>', $email),
+                    ];
+                } else {
+                    $bottomList[] = [
+                        'text' => extract_name($item),
+                        'value' => $email,
+                        'desc' => $email,
+                    ];
                 }
+            } else { // domains are alse
+                $dKey = explode('@', $keyword);
+                $eKey = $dKey[0];
+                $dKey = isset($dKey[1]) ? $dKey[1] : null;
+                // if ( (!isset($dKey) || $dKey == '') || ($dKey && strpos(strtolower($item), $dKey) === 0 )) {
+                    if ($keyword == '###') {
+                        $eKey = '****';
+                    }
+                $topList[] = [
+                        'text' => $eKey.'@'.str_replace($dKey, '<span class="text-semibold text-primary"><strong>'.$dKey.'</strong></span>', $item),
+                        'subfix' => $item,
+                        'desc' => null,
+                    ];
+                // }
+            }
         }
 
         $droplist = array_merge($topList, $bottomList);
