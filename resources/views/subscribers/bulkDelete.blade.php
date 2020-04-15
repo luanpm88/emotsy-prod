@@ -25,6 +25,10 @@
     </form>
 
     <script>
+        bulkDeletePopup.back = function() {
+            bulkDeletePopup.hide();
+        }
+
         $('.bulk-delete-form').submit(function(e) {
             e.preventDefault();
 

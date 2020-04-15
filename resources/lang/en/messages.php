@@ -3261,4 +3261,5 @@
   'subscriber.bulk_delete.enter_emails.confirm' => 'Are you sure you want to delete the
     following <strong>:count</strong> contact(s) from this mail list?',
   'bulk_delete.ok_delete' => 'OK, DELETE',
+  'subscriber.bulk_delete.enter_emails.empty' => 'There are no subscribers found!',
 ) ?>
