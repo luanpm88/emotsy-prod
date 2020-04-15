@@ -3267,4 +3267,7 @@
   'segment.last_link_click' => 'Last link click',
   'segment.greater_than_days' => 'Greater than (days)',
   'segment.less_than_days' => 'Less than (days)',
+  'text_direction.ltr' => 'LTR - Left to Right',
+  'text_direction.rtl' => 'RTL - Right to Left',
+  'text_direction' => 'Text editor direction',
 ) ?>

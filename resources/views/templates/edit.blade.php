@@ -105,8 +105,9 @@
         var editor;
         $(document).ready(function() {
             editor = tinymce.init({
-                language: '{{ Auth::user()->customer->getLanguageCode() }}',
+                language: '{{ Auth::user()->customer->getLanguageCode() }}',                
                 selector: '.template-editor',
+                // directionality: "rtl",
                 height: parent.$('.full-iframe-popup').height()-56,
                 convert_urls: false,
                 remove_script_host: false,
