@@ -113,25 +113,4 @@ class EmailController extends Controller
         }
         
     }
-
-    /**
-     * Template screenshot.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function image(Request $request, $uid, $email_uid)
-    {
-        // Get current user
-        $email = Email::findByUid($email_uid);
-
-        if ($email->getThumb()) {
-            $img = \Image::make($email->getThumb());
-        } else {
-            $img = \Image::make(public_path('assets/images/placeholder.jpg'));
-        }
-
-        return $img->response();
-    }
 }
