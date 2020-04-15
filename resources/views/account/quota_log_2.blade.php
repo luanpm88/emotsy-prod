@@ -4,7 +4,7 @@
     <h4 class="mt-0 mb-4 d-flex align-items-center">
         <i class="material-icons mr-2">multiline_chart</i>
         <span>{{ trans("messages.used_quota") }}</span>
-    </h3>
+    </h4>
 
     <!-- Alert if customer don't have any subscription -->
     @if (is_object(\Auth::user()->customer) &&

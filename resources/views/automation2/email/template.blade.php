@@ -47,10 +47,7 @@
                     </div>
                 </div>
                 <div class="template-thumb-container">
-                    <img class="automation-template-thumb" src="{{ action('EmailController@image', [
-                            'uid' => $automation->uid,
-                            'email_uid' => $email->uid,
-                        ]) }}?v={{ Carbon\Carbon::now() }}"
+                    <img class="automation-template-thumb" src="{{ $email->getThumbUrl() }}?v={{ Carbon\Carbon::now() }}"
                     />
                     @if (in_array(Acelle\Model\Setting::get('builder'), ['both','classic']))
                         <a href="{{ action('Automation2Controller@templateEditClassic', [

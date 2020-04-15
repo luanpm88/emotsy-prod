@@ -63,10 +63,7 @@
                 </div>
                 <div>
                     <div class="template-thumb-container ml-4">
-                        <img class="automation-template-thumb" src="{{ action('CampaignController@image', [
-                                'uid' => $campaign->uid,
-                            ]) }}?v={{ Carbon\Carbon::now() }}"
-                        />
+                        <img class="automation-template-thumb" src="{{ $campaign->getThumbUrl() }}?v={{ Carbon\Carbon::now() }}" />
                         @if (in_array(Acelle\Model\Setting::get('builder'), ['both','classic']))
                             <a href="{{ action('CampaignController@builderClassic', $campaign->uid) }}"
                                 class="btn btn-primary template-compose-classic" style="display:none"

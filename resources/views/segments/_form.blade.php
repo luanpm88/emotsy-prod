@@ -34,6 +34,10 @@
 														<optgroup label="{{ trans('messages.other') }}">
 															<option{{ strpos($condition->operator, 'tag') !== false ? " selected" : "" }} value="tag">{{ trans('messages.segment.tag') }}</option>
 														</optgroup>
+														<optgroup label="{{ trans('messages.segment.activities') }}">
+															<option{{ strpos($condition->operator, 'last_open_email') !== false ? " selected" : "" }} value="last_open_email">{{ trans('messages.segment.last_open_email') }}</option>
+															<option{{ strpos($condition->operator, 'last_link_click') !== false ? " selected" : "" }} value="last_link_click">{{ trans('messages.segment.last_link_click') }}</option>
+														</optgroup>
 													</select>
 												</div>
 											</div>

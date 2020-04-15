@@ -264,7 +264,12 @@ class SubscriberController extends Controller
     public function delete(Request $request)
     {
         $customer = $request->user()->customer;
-        $subscribers = \Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
+        $uids = $request->uids;
+
+        if (!is_array($request->uids)) {
+            $uids = explode(',', $request->uids);
+        }
+        $subscribers = \Acelle\Model\Subscriber::whereIn('uid', $uids);
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
 
         // Select all items
@@ -866,5 +871,87 @@ class SubscriberController extends Controller
                 'tag' => $request->tag,
             ]),
         ], 201);
+    }
+
+    /**
+     * Bulk remove the specified resource from storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function bulkDelete(Request $request)
+    {
+        // init
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+
+        // validate and save posted data
+        if ($request->isMethod('post')) {
+            // make validator
+            $validator = \Validator::make($request->all(), ['emails' => 'required']);
+            
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('subscribers.bulkDelete', [
+                    'list' => $list,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            // get all emails
+            $emails = array_unique(preg_split("/[\s,\r\n]+/", $request->emails));
+            $subscribers = $list->subscribers()->whereIn('email', $emails)->get();
+
+            // 
+            return view('subscribers.bulkDeleteConfirm', [
+                'list' => $list,
+                'emails' => $emails,
+                'subscribers' => $subscribers,
+            ]);
+        }
+
+        return view('subscribers.bulkDelete', [
+            'list' => $list,
+        ]);
+    }
+
+    /**
+     * Bulk remove the specified resource from storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function bulkDeleteConfirm(Request $request)
+    {
+        // init
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+
+        // validate and save posted data
+        if ($request->isMethod('post')) {
+            // make validator
+            $validator = \Validator::make($request->all(), ['emails' => 'required']);
+            
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('subscribers.bulkDelete', [
+                    'list' => $list,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            // get all emails
+            $emails = preg_split("/[\s,\r\n]+/", $request->emails);
+
+            // 
+            return view('subscribers.bulkDeleteConfirm', [
+                'list' => $list,
+                'emails' => $emails,
+            ]);
+        }
+
+        return view('subscribers.bulkDelete', [
+            'list' => $list,
+        ]);
     }
 }

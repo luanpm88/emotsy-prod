@@ -263,6 +263,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('lists/{list_uid}/fields/{uid}/delete', 'FieldController@delete');
 
     // Subscriber
+    Route::match(['get', 'post'], 'lists/{list_uid}/subscribers/bulk-delete', 'SubscriberController@bulkDelete');
+
     Route::post('lists/{list_uid}/subscriber/{uid}/remove-tag', 'SubscriberController@removeTag');
     Route::match(['get', 'post'], 'lists/{list_uid}/subscriber/{uid}/update-tags', 'SubscriberController@updateTags');
 
@@ -336,7 +338,6 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('templates/choosing/{campaign_uid}/{page?}', 'TemplateController@choosing');
     Route::get('templates/upload', 'TemplateController@upload');
     Route::post('templates/upload', 'TemplateController@upload');
-    Route::get('templates/{uid}/image', 'TemplateController@image');
     Route::post('templates/{uid}/saveImage', 'TemplateController@saveImage');
     Route::get('templates/{uid}/preview', 'TemplateController@preview');
     Route::get('templates/delete', 'TemplateController@delete');
@@ -380,7 +381,6 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('campaigns/select-type', 'CampaignController@selectType');
     Route::get('campaigns/{uid}/list-segment-form', 'CampaignController@listSegmentForm');
     Route::post('campaigns/{uid}/image/save', 'CampaignController@saveImage');
-    Route::get('campaigns/{uid}/image', 'CampaignController@image');
     Route::get('campaigns/{uid}/preview', 'CampaignController@preview');
     Route::get('campaigns/templates/list', 'CampaignController@templateList');
     Route::patch('campaigns/{uid}/templates/choose/from/{from_uid}', 'CampaignController@campaignTemplateChoose');
@@ -549,7 +549,6 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('automation2/{uid}/template/{email_uid}/attachment/{attachment_uid}/remove', 'Automation2Controller@emailAttachmentRemove');
     Route::get('automation2/{uid}/template/{email_uid}/attachment/{attachment_uid}', 'Automation2Controller@emailAttachmentDownload');
     
-    Route::get('automation2/{uid}/template/{email_uid}/image', 'EmailController@image');
     Route::post('automation2/{uid}/template/{email_uid}/attachment', 'Automation2Controller@emailAttachmentUpload');
     Route::post('automation2/{uid}/template/{email_uid}/remove-template', 'Automation2Controller@templateRemove');
     Route::post('automation2/{uid}/template/{email_uid}/asset', 'Automation2Controller@templateAsset');
@@ -622,7 +621,6 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::post('admin/templates/{uid}/copy', 'TemplateController@copy');
     Route::get('admin/templates/{uid}/copy', 'TemplateController@copy');
     Route::get('admin/templates/sort', 'TemplateController@sort');
-    Route::get('admin/templates/{uid}/image', 'TemplateController@image');
     Route::post('admin/templates/{uid}/saveImage', 'TemplateController@saveImage');
     Route::get('admin/templates/{uid}/preview', 'TemplateController@preview');
     Route::get('admin/templates/listing/{page?}', 'TemplateController@listing');

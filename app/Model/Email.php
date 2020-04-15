@@ -149,7 +149,7 @@ class Email extends Model
         foreach ($templates as $template) {
             $result[] = [
                 'name' => $template->name,
-                'thumbnail' => action('TemplateController@image', $template->uid),
+                'thumbnail' => $template->getThumbUrl(),
             ];
         }
 
@@ -189,17 +189,42 @@ class Email extends Model
     /**
      * Get thumb.
      */
-    public function getThumb()
+    public function getThumbName()
     {
         // find index
-        $names = array('thumbnail.jpg', 'thumbnail.png', 'thumb.jpg', 'thumb.png');
+        $names = array('thumbnail.png', 'thumbnail.jpg', 'thumbnail.png', 'thumb.jpg', 'thumb.png');
         foreach ($names as $name) {
             if (is_file($file = $this->getStoragePath().$name)) {
-                return $file;
+                return $name;
             }
         }
 
         return;
+    }
+
+    /**
+     * Get thumb.
+     */
+    public function getThumb()
+    {
+        // find index
+        if($this->getThumbName()) {
+            return $this->getStoragePath().$this->getThumbName();
+        }
+
+        return;
+    }
+
+    /**
+     * Get thumb.
+     */
+    public function getThumbUrl()
+    {
+        if ($this->getThumbName()) {
+            return route('email_assets', ['uid' => $this->uid, 'path' => $this->getThumbName()]);
+        } else {
+            return url('assets/images/placeholder.jpg');
+        }
     }
 
     /**

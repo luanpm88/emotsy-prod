@@ -21,7 +21,7 @@
                 </td>
                 <td width="1%">
                     <a href="#"  onclick="popupwindow('{{ action('TemplateController@preview', $template->uid) }}', '{{ $template->name }}', 800, 800)">
-                        <img class="template-thumb" width="100" height="120" src="{{ action('TemplateController@image', $template->uid) }}?v={{ rand(0,10) }}" />
+                        <img class="template-thumb" width="100" height="120" src="{{ $template->getThumbUrl() }}?v={{ rand(0,10) }}" />
                     </a>
                 </td>
                 <td>

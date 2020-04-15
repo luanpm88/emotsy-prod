@@ -2053,32 +2053,6 @@ class CampaignController extends Controller
     }
 
     /**
-     * Template screenshot.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function image(Request $request)
-    {
-        // Get current user
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
-
-        // authorize
-        if (\Gate::denies('image', $campaign)) {
-            return $this->notAuthorized();
-        }
-
-        if ($campaign->getThumb()) {
-            $img = \Image::make($campaign->getThumb());
-        } else {
-            $img = \Image::make(public_path('assets/images/placeholder.jpg'));
-        }
-
-        return $img->response();
-    }
-
-    /**
      * Choose an existed campaign template.
      *
      * @param \Illuminate\Http\Request $request

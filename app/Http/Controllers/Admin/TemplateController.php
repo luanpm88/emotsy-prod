@@ -399,34 +399,6 @@ class TemplateController extends Controller
     }
 
     /**
-     * Template screenshot.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function image(Request $request)
-    {
-        // Get current user
-        $template = \Acelle\Model\Template::findByUid($request->uid);
-
-        // authorize
-        if (!$request->user()->admin->can('image', $template)) {
-            return $this->notAuthorized();
-        }
-
-        if ($template->getThumb()) {
-            $img = \Image::make($template->getThumb());            
-        } elseif (!empty($template->image)) {
-            $img = \Image::make(storage_path($template->image).'.thumb.jpg');
-        } else {
-            $img = \Image::make(public_path('assets/images/placeholder.jpg'));
-        }
-
-        return $img->response();
-    }
-
-    /**
      * Custom sort items.
      *
      * @param \Illuminate\Http\Request $request

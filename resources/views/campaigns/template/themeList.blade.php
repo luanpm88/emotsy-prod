@@ -12,7 +12,7 @@
                                 href="{{ action('CampaignController@templateTheme', ['uid' => $campaign->uid, 'template' => $template->uid]) }}"
                                 class="choose-theme"
                             >
-                                <img src="{{ action('TemplateController@image', $template->uid) }}?v={{ rand(0,10) }}" />
+                                <img src="{{ $template->getThumbUrl() }}?v={{ rand(0,10) }}" />
                                 <label class="mb-20 text-center">{{ $template->name }}</label>
                             </a>
                         </div>

@@ -299,34 +299,6 @@ class TemplateController extends Controller
     }
 
     /**
-     * Template screenshot.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function image(Request $request)
-    {
-        // Get current user
-        $template = Template::findByUid($request->uid);
-
-        // authorize
-        if (!$request->user()->customer->can('image', $template)) {
-            return $this->notAuthorized();
-        }
-        
-        if ($template->getThumb()) {
-            $img = \Image::make($template->getThumb());
-        } elseif (!empty($template->image) && file_exists(storage_path($template->image).'.thumb.jpg')) {
-            $img = \Image::make(storage_path($template->image).'.thumb.jpg');
-        } else {
-            $img = \Image::make(public_path('assets/images/placeholder.jpg'));
-        }
-
-        return $img->response();
-    }
-
-    /**
      * Remove the specified resource from storage.
      *
      * @param \Illuminate\Http\Request $request

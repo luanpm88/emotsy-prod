@@ -2,7 +2,7 @@
     <div class="template-list-items mt-3 clearfix">
         @foreach ($templates as $key => $template)
             <a href="javascript:;" class="d-block template-list-item template-choose" data-template="{{ $template->uid }}">
-                <img href="javascript:;" src="{{ action('TemplateController@image', $template->uid) }}?v={{ rand(0,10) }}" />
+                <img href="javascript:;" src="{{ $template->getThumbUrl() }}?v={{ rand(0,10) }}" />
                 <label class="mb-20 text-center d-block mt-3">{{ $template->name }}</label>
             </a>
         @endforeach
