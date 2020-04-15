@@ -731,6 +731,9 @@ class Email extends Model
         // Transform CSS/HTML content to inline CSS
         $body = $this->inlineHtml($body);
 
+        // Replace bare line feed char which is not accepted by Outlook, Yahoo, AOL...
+        $body = StringHelper::replaceBareLineFeed($body);
+
         return $body;
     }
 

@@ -194,4 +194,9 @@ class StringHelper
 
         return true;
     }
+
+    public static function replaceBareLineFeed($content)
+    {
+        return trim(preg_replace("/(?<=[^\r])\n/", "\r\n", $content));
+    }
 }
