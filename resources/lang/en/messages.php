@@ -3262,4 +3262,9 @@
     following <strong>:count</strong> contact(s) from this mail list?',
   'bulk_delete.ok_delete' => 'OK, DELETE',
   'subscriber.bulk_delete.enter_emails.empty' => 'There are no subscribers found!',
+  'segment.activities' => 'Activites',
+  'segment.last_open_email' => 'Last email open',
+  'segment.last_link_click' => 'Last link click',
+  'segment.greater_than_days' => 'Greater than (days)',
+  'segment.less_than_days' => 'Less than (days)',
 ) ?>

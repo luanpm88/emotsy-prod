@@ -192,6 +192,32 @@ class Segment extends Model
     }
 
     /**
+     * Get verification operators.
+     *
+     * @return options
+     */
+    public static function openMailOperators()
+    {
+        return [
+            ['text' => trans('messages.segment.greater_than_days'), 'value' => 'last_open_email_greater_than_days'],
+            ['text' => trans('messages.segment.less_than_days'), 'value' => 'last_open_email_less_than_days'],
+        ];
+    }
+
+    /**
+     * Get verification operators.
+     *
+     * @return options
+     */
+    public static function clickLinkOperators()
+    {
+        return [
+            ['text' => trans('messages.segment.greater_than_days'), 'value' => 'last_link_click_greater_than_days'],
+            ['text' => trans('messages.segment.less_than_days'), 'value' => 'last_link_click_less_than_days'],
+        ];
+    }
+
+    /**
      * Get subscribers conditions.
      *
      * @return collect
