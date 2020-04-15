@@ -3256,4 +3256,9 @@
   'sending_servier.custom_verification_email.subject' => 'Subject',
   'sending_server.default_email_verification.subject' => 'Verify your email address',
   'other' => 'Other',
+  'subscriber.bulk_delete' => 'Bulk Delete',
+  'subscriber.bulk_delete.enter_emails' => 'Enter email addresses you want to delete, seperate by a space or a line break',
+  'subscriber.bulk_delete.enter_emails.confirm' => 'Are you sure you want to delete the
+    following <strong>:count</strong> contact(s) from this mail list?',
+  'bulk_delete.ok_delete' => 'OK, DELETE',
 ) ?>

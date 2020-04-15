@@ -3650,3 +3650,35 @@ body > .ui-pnotify {
     border: solid 1px #aaa;
     margin-right: 20px;
 }
+textarea.bulk-delete {
+    height: 160px;
+}
+.subscriber-list {
+    padding: 0;
+    max-height: 200px;
+    overflow: auto;
+}
+.subscriber-list li {
+    list-style: none;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: solid 1px #ddd;
+}
+.subscriber-list li:first-child {
+    border-top: solid 1px #ddd;
+    padding-top: 10px;
+}
+.subscriber-list li label {
+    margin: 0;
+    font-weight: 600;
+}
+.subscriber-list li p {
+    margin: 0;
+}
+.subscriber-list .avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 100%;
+    border: solid 1px #aaa;
+    margin-right: 18px;
+}
