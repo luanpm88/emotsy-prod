@@ -900,13 +900,7 @@ class SubscriberController extends Controller
 
             // get all emails
             $emails = array_unique(preg_split("/[\s,\r\n]+/", $request->emails));
-            $subscribers = [];
-            foreach ($emails as $email) {
-                $subscriber = $list->subscribers()->whereRaw('LOWER(`email`) LIKE ? ',trim(strtolower($email)))->first();
-                if ($subscriber) {
-                    $subscribers[] = $subscriber;
-                }
-            }
+            $subscribers = $list->subscribers()->whereIn('email', $emails)->get();
 
             // 
             return view('subscribers.bulkDeleteConfirm', [
