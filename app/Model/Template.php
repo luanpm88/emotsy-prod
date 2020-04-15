@@ -557,17 +557,42 @@ class Template extends Model
     /**
      * Get thumb.
      */
-    public function getThumb()
+    public function getThumbName()
     {
         // find index
         $names = array('thumbnail.png', 'thumbnail.jpg', 'thumbnail.png', 'thumb.jpg', 'thumb.png');
         foreach ($names as $name) {
             if (is_file($file = $this->getStoragePath().$name)) {
-                return $file;
+                return $name;
             }
         }
 
         return;
+    }
+
+    /**
+     * Get thumb.
+     */
+    public function getThumb()
+    {
+        // find index
+        if($this->getThumbName()) {
+            return $this->getStoragePath().$this->getThumbName();
+        }
+
+        return;
+    }
+
+    /**
+     * Get thumb.
+     */
+    public function getThumbUrl()
+    {
+        if ($this->getThumbName()) {
+            return route('template_assets', ['uid' => $this->uid, 'path' => $this->getThumbName()]);
+        } else {
+            return url('assets/images/placeholder.jpg');
+        }
     }
 
     /**
@@ -717,7 +742,7 @@ class Template extends Model
             $result[] = [
                 'name' => $template->name,
                 'url' => action('TemplateController@builderChangeTemplate', ['uid' => $this->uid, 'change_uid' => $template->uid]),
-                'thumbnail' => action('TemplateController@image', $template->uid),
+                'thumbnail' => $template->getThumbUrl(),
             ];
         }
 
@@ -741,7 +766,7 @@ class Template extends Model
             $result[] = [
                 'name' => $template->name,
                 'url' => action('Admin\TemplateController@builderChangeTemplate', ['uid' => $this->uid, 'change_uid' => $template->uid]),
-                'thumbnail' => action('Admin\TemplateController@image', $template->uid),
+                'thumbnail' => $template->getThumbUrl(),
             ];
         }
 

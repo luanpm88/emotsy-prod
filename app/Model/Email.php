@@ -149,7 +149,7 @@ class Email extends Model
         foreach ($templates as $template) {
             $result[] = [
                 'name' => $template->name,
-                'thumbnail' => action('TemplateController@image', $template->uid),
+                'thumbnail' => $template->getThumbUrl(),
             ];
         }
 

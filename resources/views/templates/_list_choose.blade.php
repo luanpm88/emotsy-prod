@@ -6,7 +6,7 @@
 									<tr>
 										<td width="1%">
 											<a href="#"  onclick="popupwindow('{{ action('TemplateController@preview', $item->uid) }}', '{{ $item->name }}', 800, 800)">
-												<img class="template-thumb mr-10" width="100" height="120" src="{{ action('TemplateController@image', $item->uid) }}?v={{ rand(0,10) }}" />
+												<img class="template-thumb mr-10" width="100" height="120" src="{{ $template->getThumbUrl() }}?v={{ rand(0,10) }}" />
 											</a>
 										</td>
 										<td>

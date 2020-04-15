@@ -338,7 +338,6 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('templates/choosing/{campaign_uid}/{page?}', 'TemplateController@choosing');
     Route::get('templates/upload', 'TemplateController@upload');
     Route::post('templates/upload', 'TemplateController@upload');
-    Route::get('templates/{uid}/image', 'TemplateController@image');
     Route::post('templates/{uid}/saveImage', 'TemplateController@saveImage');
     Route::get('templates/{uid}/preview', 'TemplateController@preview');
     Route::get('templates/delete', 'TemplateController@delete');
@@ -624,7 +623,6 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::post('admin/templates/{uid}/copy', 'TemplateController@copy');
     Route::get('admin/templates/{uid}/copy', 'TemplateController@copy');
     Route::get('admin/templates/sort', 'TemplateController@sort');
-    Route::get('admin/templates/{uid}/image', 'TemplateController@image');
     Route::post('admin/templates/{uid}/saveImage', 'TemplateController@saveImage');
     Route::get('admin/templates/{uid}/preview', 'TemplateController@preview');
     Route::get('admin/templates/listing/{page?}', 'TemplateController@listing');

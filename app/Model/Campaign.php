@@ -479,7 +479,7 @@ class Campaign extends AbsCampaign
             $result[] = [
                 'name' => $template->name,
                 'url' => action('CampaignController@templateChangeTemplate', ['uid' => $this->uid, 'change_uid' => $template->uid]),
-                'thumbnail' => action('TemplateController@image', $template->uid),
+                'thumbnail' => $template->getThumbUrl(),
             ];
         }
 
