@@ -257,8 +257,12 @@ class Language extends Model
      */
     public function getLocaleArrayFromFile($filename)
     {
-        $arr = \File::getRequire($this->languageDir().$filename.'.php');
+        clearstatcache();
+        if (function_exists('opcache_invalidate')) {
+            opcache_invalidate($this->languageDir().$filename.'.php');
+        }
 
+        $arr = \File::getRequire($this->languageDir().$filename.'.php');
         return $arr;
     }
 
