@@ -526,6 +526,9 @@ abstract class AbsCampaign extends Model
         // Transform CSS/HTML content to inline CSS
         $body = $this->inlineHtml($body);
 
+        // Replace bare line feed char which is not accepted by Outlook, Yahoo, AOL...
+        $body = StringHelper::replaceBareLineFeed($body);
+
         return $body;
     }
 
@@ -570,8 +573,11 @@ abstract class AbsCampaign extends Model
 
         // Append footer
         if ($this->footerEnabled()) {
-            $body = $this->appendFooter($plain, $this->getPlainTextFooter());
+            $plain = $this->appendFooter($plain, $this->getPlainTextFooter());
         }
+
+        // Replace bare line feed char which is not accepted by Outlook, Yahoo, AOL...
+        $plain = StringHelper::replaceBareLineFeed($plain);
 
         return $plain;
     }
