@@ -134,6 +134,24 @@
                         fetch: function (callback) {
                         var items = [];
 
+                        // Unsubscribe link
+                        items.push({
+                            type: 'menuitem',
+                            text: 'UNSUBSCRIBE_LINK',
+                            onAction: function (_) {
+                                editor.insertContent('<a href="{UNSUBSCRIBE_URL}">{{ trans('messages.editor.unsubscribe_text') }}</a>');
+                            }
+                        });                        
+
+                        // web view url
+                        items.push({
+                            type: 'menuitem',
+                            text: 'WEB_VIEW_LINK',
+                            onAction: function (_) {
+                                editor.insertContent('<a href="{WEB_VIEW_URL}">{{ trans('messages.editor.click_view_web_version') }}</a>');
+                            }
+                        });
+
                         @foreach(Acelle\Model\Template::tags($campaign->defaultMailList) as $tag)
                             items.push({
                                 type: 'menuitem',

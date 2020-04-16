@@ -3271,4 +3271,6 @@
   'text_direction.rtl' => 'RTL - Right to Left',
   'text_direction' => 'Text editor direction',
   'payment.paypal' => 'PayPal',
+  'editor.unsubscribe_text' => 'Click here to unsubscribe',
+  'editor.click_view_web_version' => 'Click to view web version of this email',
 ) ?>

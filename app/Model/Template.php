@@ -661,6 +661,26 @@ class Template extends Model
         $tags = self::tags($list);
 
         $result = [];
+
+        if (true) {
+            
+            // Unsubscribe link
+            $result[] = [
+                'type' => 'label',
+                'text' => '<a href="{UNSUBSCRIBE_URL}">' . trans('messages.editor.unsubscribe_text') . '</a>',
+                'tag' => '{UNSUBSCRIBE_LINK}',
+                'required' => true,
+            ];
+            
+            // web view link
+            $result[] = [
+                'type' => 'label',
+                'text' => '<a href="{WEB_VIEW_URL}">' . trans('messages.editor.click_view_web_version') . '</a>',
+                'tag' => '{WEB_VIEW_LINK}',
+                'required' => true,
+            ];
+        }
+
         foreach ($tags as $tag) {
             $result[] = [
                 'type' => 'label',
