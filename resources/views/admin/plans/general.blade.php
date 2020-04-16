@@ -89,7 +89,9 @@
                                         </a>
                                     @endif
                                 @else
-                                    {{ trans('messages.plan.sending_server.custom') }}
+                                    <a href="{{ action('Admin\PlanController@sendingServer', $plan->uid) }}">
+                                        {{ trans('messages.plan.sending_server.custom') }}
+                                    </a>
                                 @endif
                             </h3>
                             <p>{{ trans('messages.plan.delivery') }}</p>
