@@ -3270,4 +3270,5 @@
   'text_direction.ltr' => 'LTR - Left to Right',
   'text_direction.rtl' => 'RTL - Right to Left',
   'text_direction' => 'Text editor direction',
+  'payment.paypal' => 'PayPal',
 ) ?>
