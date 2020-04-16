@@ -3217,4 +3217,18 @@
   'layout.description' => 'Below are default email templates &amp; pages used by the application. You can customize those the way you desire. For example, you may want to add a logo to an email to reflect your brand',
   'sender_verification_email_for_amazon_ses' => 'Sender Verification Email for Amazon SES',
   'other' => 'Other',
+  'subscriber.bulk_delete' => 'Bulk Delete',
+  'subscriber.bulk_delete.enter_emails' => 'Enter email addresses you want to delete, seperate by a space or a line break',
+  'subscriber.bulk_delete.enter_emails.confirm' => 'Are you sure you want to delete the
+    following <strong>:count</strong> contact(s) from this mail list?',
+  'bulk_delete.ok_delete' => 'OK, DELETE',
+  'subscriber.bulk_delete.enter_emails.empty' => 'There are no subscribers found!',
+  'segment.activities' => 'Activites',
+  'segment.last_open_email' => 'Last email open',
+  'segment.last_link_click' => 'Last link click',
+  'segment.greater_than_days' => 'Greater than (days)',
+  'segment.less_than_days' => 'Less than (days)',
+  'text_direction.ltr' => 'LTR - Left to Right',
+  'text_direction.rtl' => 'RTL - Right to Left',
+  'text_direction' => 'Text editor direction',
 ) ?>
