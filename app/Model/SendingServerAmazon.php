@@ -103,7 +103,7 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
 
         $token = $result->toArray()['VerificationToken'];
         return [
-            'type' => 'CNAME',
+            'type' => 'TXT',
             'name' => "_amazonses.{$domain}",
             'value' => $token,
         ];
