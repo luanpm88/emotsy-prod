@@ -3,8 +3,9 @@
 @section('title', trans('messages.edit_template'))
 
 @section('page_script')
+<script src="{{ URL::asset('assets2/js/UrlAutoFill.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('js/tinymce/tinymce.min.js') }}"></script>        
-    <script type="text/javascript" src="{{ URL::asset('js/editor.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('js/editor.js') }}"></script>    
 @endsection
 
 @section('content')
@@ -68,6 +69,11 @@
     </form> 
 
     <script>
+        var urlFill = new UrlAutoFill([
+            {value: '{UNSUBSCRIBE_URL}', text: '{{ trans('messages.editor.unsubscribe_text') }}'},
+            {value: '{WEB_VIEW_URL}', text: '{{ trans('messages.editor.click_view_web_version') }}'}
+        ]);
+
         $('.builder-classic-form').submit(function(e) {
             e.preventDefault();
 
@@ -120,14 +126,10 @@
                 valid_elements : '*[*],meta[*]',
                 extended_valid_elements : "meta[*]",
                 valid_children : "+body[style],+body[meta],+div[h2|span|meta|object],+object[param|embed]",
-                content_css: [
-                    APP_URL.replace('/index.php','')+'/tinymce/skins/lightgray/content.fixed.css',
-                ],
                 external_filemanager_path:APP_URL.replace('/index.php','')+"/filemanager2/",
                 filemanager_title:"Responsive Filemanager" ,
                 external_plugins: { "filemanager" : APP_URL.replace('/index.php','')+"/filemanager2/plugin.min.js"},
                 setup: function (editor) {
-                    
                     /* Menu button that has a simple "insert date" menu item, and a submenu containing other formats. */
                     /* Clicking the first menu item or one of the submenu items inserts the date in the selected format. */
                     editor.ui.registry.addMenuButton('acelletags', {

@@ -16,7 +16,6 @@ $(document).ready(function() {
         ],
         toolbar: 'insertfile undo redo | fontselect | fontsizeselect | styleselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | ltr rtl',
         content_css: [
-          APP_URL.replace('/index.php','')+'/tinymce/skins/lightgray/content.fixed.css',
           APP_URL.replace('/index.php','')+'/css/all.css',
           APP_URL.replace('/index.php','')+'/css/page.css',
         ],
@@ -43,7 +42,6 @@ $(document).ready(function() {
         ],
         toolbar: 'insertfile undo redo | fontselect | fontsizeselect | styleselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | ltr rtl',
         content_css: [
-          APP_URL.replace('/index.php','')+'/tinymce/skins/lightgray/content.fixed.css',
           APP_URL.replace('/index.php','')+'/css/email.css',
         ],
 
@@ -68,9 +66,6 @@ $(document).ready(function() {
         valid_elements : '*[*],meta[*]',
         extended_valid_elements : "meta[*]",
         valid_children : "+body[style],+body[meta],+div[h2|span|meta|object],+object[param|embed]",
-        content_css: [
-            APP_URL.replace('/index.php','')+'/tinymce/skins/lightgray/content.fixed.css',
-        ],
         external_filemanager_path:APP_URL.replace('/index.php','')+"/filemanager2/",
         filemanager_title:"Responsive Filemanager" ,
         external_plugins: { "filemanager" : APP_URL.replace('/index.php','')+"/filemanager2/plugin.min.js"}

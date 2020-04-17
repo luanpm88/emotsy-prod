@@ -21,9 +21,6 @@
             valid_elements : '*[*],meta[*]',
             extended_valid_elements : "meta[*]",
             valid_children : "+body[style],+body[meta],+div[h2|span|meta|object],+object[param|embed]",
-            content_css: [
-                APP_URL.replace('/index.php','')+'/tinymce/skins/lightgray/content.fixed.css',
-            ],
             external_filemanager_path:APP_URL.replace('/index.php','')+"/filemanager2/",
             filemanager_title:"Responsive Filemanager" ,
             external_plugins: { "filemanager" : APP_URL.replace('/index.php','')+"/filemanager2/plugin.min.js"},

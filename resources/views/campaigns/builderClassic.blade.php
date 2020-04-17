@@ -5,6 +5,8 @@
 @section('page_script')
 	<script type="text/javascript" src="{{ URL::asset('js/tinymce/tinymce.min.js') }}"></script>        
     <script type="text/javascript" src="{{ URL::asset('js/editor.js') }}"></script>
+
+    <script src="{{ URL::asset('assets2/js/UrlAutoFill.js') }}"></script>
 @endsection
 
 @section('content')
@@ -60,6 +62,11 @@
     <form>
 
     <script>
+        var urlFill = new UrlAutoFill([
+            {value: '{UNSUBSCRIBE_URL}', text: '{{ trans('messages.editor.unsubscribe_text') }}'},
+            {value: '{WEB_VIEW_URL}', text: '{{ trans('messages.editor.click_view_web_version') }}'}
+        ]);
+
         $('#classic-builder-form').submit(function(e) {
             e.preventDefault();
 
@@ -119,9 +126,6 @@
                 valid_elements : '*[*],meta[*]',
                 extended_valid_elements : "meta[*]",
                 valid_children : "+body[style],+body[meta],+div[h2|span|meta|object],+object[param|embed]",
-                content_css: [
-                    APP_URL.replace('/index.php','')+'/tinymce/skins/lightgray/content.fixed.css',
-                ],
                 external_filemanager_path:APP_URL.replace('/index.php','')+"/filemanager2/",
                 filemanager_title:"Responsive Filemanager" ,
                 external_plugins: { "filemanager" : APP_URL.replace('/index.php','')+"/filemanager2/plugin.min.js"},
