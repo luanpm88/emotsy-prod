@@ -2048,4 +2048,11 @@ class Customer extends Model implements BillableUserInterface
     {
         return trim($this->first_name.' '.$this->last_name);
     }
+
+    /**
+     * Get current period ends at.
+     */
+    public function getCurrentPeriodEndsAt() {
+        return (is_object($this->subscription) && $this->subscription->active()) ? $this->current_period_ends_at : null;
+    }
 }
