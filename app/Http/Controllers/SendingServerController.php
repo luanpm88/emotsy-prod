@@ -191,16 +191,17 @@ class SendingServerController extends Controller
 
         // save posted data
         if ($request->isMethod('patch')) {
+            // Save current user info
+            $server->fill($request->all());
+
             // bounce / feedback hanlder nullable
             if (empty($request->bounce_handler_id)) {
                 $server->bounce_handler_id = null;
             }
+
             if (empty($request->feedback_loop_handler_id)) {
                 $server->feedback_loop_handler_id = null;
             }
-            
-            // Save current user info
-            $server->fill($request->all());
             
             $this->validate($request, $server->getFrontendRules());
 

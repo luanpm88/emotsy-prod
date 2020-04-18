@@ -2767,7 +2767,8 @@ abstract class AbsCampaign extends Model
           LEFT JOIN '.table('click_logs').' ck ON ck.message_id = l.message_id
           LEFT JOIN '.table('unsubscribe_logs').' u ON u.message_id = l.message_id
           LEFT JOIN '.table('feedback_logs').' f ON f.message_id = l.message_id
-          LEFT JOIN '.table('bounce_logs').' b ON b.message_id = l.message_id');
+          LEFT JOIN '.table('bounce_logs').' b ON b.message_id = l.message_id
+          WHERE c.id = '.$this->id);
 
         $total = DB::table($tmpTableName)->count();
         $limit = 1000;

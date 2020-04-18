@@ -77,6 +77,8 @@ rm -fr composer.phar
 rm -fr doc
 rm -fr reset
 rm -fr apigen.phar
+rm -fr vendor/paypal/paypal-checkout-sdk/composer.phar
+rm -fr vendor/lawepham/geoip/composer.phar
 
 # Reduce file size
 rm -fr vendor/paypal/rest-api-sdk-php/sample
