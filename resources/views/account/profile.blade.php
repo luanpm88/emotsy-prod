@@ -79,7 +79,7 @@
                                 'rules' => '',
                             ])
                         </div>
-                        {{-- <div class="col-md-6 color-box">
+                        <div class="col-md-6 color-box">
                             @include('helpers.form_control', [
                                 'type' => 'select',
                                 'class' => '',
@@ -92,7 +92,7 @@
                                 ],
                                 'rules' => '',
                             ])
-                        </div> --}}
+                        </div>
                     </div>
 
                 </div>

@@ -80,6 +80,20 @@
 								'rules' => '',
 							])
 						</div>
+						<div class="col-md-6 color-box">
+                            @include('helpers.form_control', [
+                                'type' => 'select',
+                                'class' => '',
+                                'name' => 'text_direction',
+                                'value' => $admin->text_direction,
+                                'help_class' => 'customer',
+                                'options' => [
+                                    ['text' => trans('messages.text_direction.ltr'), 'value' => 'ltr'],
+                                    ['text' => trans('messages.text_direction.rtl'), 'value' => 'rtl']
+                                ],
+                                'rules' => '',
+                            ])
+                        </div>
 					</div>
 
 				</div>
