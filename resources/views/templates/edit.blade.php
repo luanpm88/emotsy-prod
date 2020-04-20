@@ -3,7 +3,7 @@
 @section('title', trans('messages.edit_template'))
 
 @section('page_script')
-<script src="{{ URL::asset('assets2/js/UrlAutoFill.js') }}"></script>
+    <script src="{{ URL::asset('assets2/js/UrlAutoFill.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('js/tinymce/tinymce.min.js') }}"></script>        
     <script type="text/javascript" src="{{ URL::asset('js/editor.js') }}"></script>    
 @endsection

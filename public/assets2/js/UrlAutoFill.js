@@ -7,49 +7,78 @@ class UrlAutoFill {
         _this.values = [];                
 
         if (!_this.keyup) {
-            _this.keyup = $(document).on('keyup', '[type=url]', function(event) {
+            _this.keyup = $(document).on('focus', '[type=url]', function(event) {
+                if (!$('.urlautofill-input').length) {
+                    var input = $('<input type="text" class="urlautofill-input">');
+                    $(this).after(input);
+                    input.focus();
+                    input.val($(this).val());
+
+                    _this.input = input;
+                }
+            });
+
+            $(document).on('input', '[type=url]', function(event) {
+                console.log('input');
+            });
+
+            $(document).on('keyup change', '.urlautofill-input', function(event) {
                 if(event.keyCode !== 13 && event.keyCode !== 38 && event.keyCode !== 40 ) {
-                    _this.input = $(this);
                     _this.updateValues();
                     _this.showDropdown();
                 }
+                $('[type=url]').val(_this.input.val());
+            })
 
+            $(document).on('keydown', '.urlautofill-input', function(event) {
                 if(event.keyCode == 38) {
                     _this.moveUp();
-                    event.preventDefault();
                 }
                 if(event.keyCode == 40) {
                     _this.moveDown();
-                    event.preventDefault();
                 }
-                if(event.keyCode == 13) {                    
-                    event.preventDefault();
+                if(event.keyCode == 13) {
                     if (_this.current) {
                         _this.select(_this.current);
                     }
-                    return false;
                 }
-            })
+            });
 
             _this.keyword = function() {
-                return $('[type=url]').val();
+                return $('.urlautofill-input').val();
             }
 
-            $(document).on('click', '.urlfill-dropdown li', function() {
+            $(document).on('mousedown', '.urlfill-dropdown li', function() {
                 _this.select($(this));
             })
 
-            $(document).on('focus click', '[type=url]', function(event) {
+            $(document).on('focus click', '.urlautofill-input', function(event) {
                 _this.input = $(this);
                 _this.updateValues();
                 setTimeout(function() {
                     _this.showDropdown();
+                    _this.input.val($('[type=url]').val());
+
+                    _this.input.css('opacity', '1');
                 }, 100);
             });
 
-            $(document).on('focusout', '[type=url]', function(event) {
+            $(document).on('focusout', '.urlautofill-input', function(event) {
                 setTimeout(function() {
                     _this.hideDropdown();
+                    _this.input.val($('[type=url]').val());
+                }, 100);
+
+                _this.input.css('opacity', '0');
+            });
+            
+            $(document).on('mousedown', 'button', function(event) {
+                $('[type=url]').focus();
+            });
+
+            $(document).on('change', '[type=url]', function(event) {
+                setTimeout(function() {
+                    _this.input.val($('[type=url]').val());
                 }, 100);
             });
         }                    
@@ -97,11 +126,11 @@ class UrlAutoFill {
             }
         });
 
-        _this.data.forEach(function(item) {
-            if (!matches.includes(item.value)) {
-                _this.values.push(item);
-            }
-        });
+        // _this.data.forEach(function(item) {
+        //     if (!matches.includes(item.value)) {
+        //         _this.values.push(item);
+        //     }
+        // });
     }
 
     showDropdown() {
@@ -143,5 +172,7 @@ class UrlAutoFill {
         _this.input.focusout();
 
         _this.input.closest('.tox-form__group').next().find('input').val(item.attr('data'));
+
+        $('[type=url]').val(_this.input.val());
     }
 }        
