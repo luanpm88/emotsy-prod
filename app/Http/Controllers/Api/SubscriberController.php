@@ -131,6 +131,11 @@ class SubscriberController extends Controller
     
                 // Update field
                 $subscriber->updateFields($request->all());
+
+                // update tags
+                if ($request->tag) {
+                    $subscriber->updateTags(explode(',', $request->tag));
+                }
     
                 // Log
                 $subscriber->log('created', $user->customer);
@@ -429,7 +434,7 @@ class SubscriberController extends Controller
 
         // authorize
         if (!$user->can('update', $subscriber)) {
-            return \Response::json(array('status' => 0, 'message' => trans('no_more_item')), 403);
+            return \Response::json(array('message' => 'Unauthorized'), 401);
         }
 
         // validate and save posted data
@@ -441,6 +446,11 @@ class SubscriberController extends Controller
 
             // Update field
             $subscriber->updateFields($request->all());
+
+            // update tags
+            if ($request->tag) {
+                $subscriber->updateTags(explode(',', $request->tag));
+            }
 
             // Log
             $subscriber->log('updated', $customer);

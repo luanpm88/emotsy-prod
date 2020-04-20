@@ -996,6 +996,12 @@ class Subscriber extends Model
             $arr = [];
         }
 
+        // remove trailing space
+        array_walk($arr, function(&$val) { $val = trim($val); });
+
+        // remove empty tag
+        $arr = array_filter($arr, function(&$val) { return !empty($val); });
+
         $this->tags = json_encode($arr);
         $this->save();
     }

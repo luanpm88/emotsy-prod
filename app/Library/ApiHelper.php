@@ -215,6 +215,7 @@ class ApiHelper
                     'description' => 'Create subscriber for a mail list',
                     'parameters' => [
                         ['name' => '$EMAIL', 'description' => 'Subscriber\'s email'],
+                        ['name' => '$tag', 'description' => 'Subscriber\'s tags, seperated by a comma (,).', 'optional' => true],
                         ['name' => '$[OTHER_FIELDS...]', 'description' => 'All subscriber\'s other fields: FIRST_NAME (?), LAST_NAME (?),... (depending on the list fields configuration)', 'optional' => true],
                     ],
                     'returns' => 'Creation messages in json',
@@ -222,6 +223,7 @@ class ApiHelper
 ' .str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@store", ['list_id' => '-LIST_ID-'])).'? \
 -d api_token=' .\Auth::user()->api_token.' \
 -d EMAIL=test@gmail.com \
+-d tag=foo,bar,tag+with+space, \
 -d FIRST_NAME=Marine \
 -d LAST_NAME=Joze',
                 ],
@@ -232,6 +234,7 @@ class ApiHelper
                     'description' => 'Update subscriber for a mail list',
                     'parameters' => [
                         ['name' => '$EMAIL', 'description' => 'Subscriber\'s email'],
+                        ['name' => '$tag', 'description' => 'Subscriber\'s tags, seperated by a comma (,).', 'optional' => true],
                         ['name' => '$[OTHER_FIELDS...]', 'description' => 'All subscriber\'s other fields: FIRST_NAME (?), LAST_NAME (?),... (depending on the list fields configuration)', 'optional' => true],
                     ],
                     'returns' => 'Update messages in json',
@@ -239,6 +242,7 @@ class ApiHelper
 ' .str_replace('-ID-', '<redbold>{uid}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@update", ['list_uid' => '-LIST_ID-',  'uid' => '-ID-']))).'? \
 -d api_token=' .\Auth::user()->api_token.' \
 -d EMAIL=test@gmail.com \
+-d tag=foo,bar,tag+with+space, \
 -d FIRST_NAME=Marine \
 -d LAST_NAME=Joze',
                 ],
