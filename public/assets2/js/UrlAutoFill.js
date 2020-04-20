@@ -72,7 +72,7 @@ class UrlAutoFill {
                 _this.input.css('opacity', '0');
             });
             
-            $(document).on('mousedown', 'button', function(event) {
+            $(document).on('mousedown', '.tox-browse-url', function(event) {
                 $('[type=url]').focus();
             });
 
