@@ -125,6 +125,7 @@
   'campaign_empty_line_1' => 'You have no campaign',
   'user_empty_line_1' => 'You have no user',
   'bounce_handler_empty_line_1' => 'You have no bounce handler',
+  'bounce_handler.intro' => 'Bounce/feedback handler is a mailbox used for receiving bounced messages or spam/abuse feedback. The application checks the mailbox to keep track of email delivery issue. Notice that bounce/feedback handler is used for SMTP or Sendmail sending server only. If you send through a third-party service like Amazon SES, SendGrid, Mailgun, Elasticemail, etc. you do not have to set up a bounce/feedback handler as it is already handled by the service and will be reflected in your campaign statistics automatically (then just ignore this setting)',
   'list_empty_line_2' => '',
   'segment_empty_line_1' => 'You have no segment',
   'sort_by' => 'Sort by',
