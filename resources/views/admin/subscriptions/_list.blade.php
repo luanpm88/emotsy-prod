@@ -73,8 +73,8 @@
 								{{ trans('messages.subscription.status.change_plan_pending') }}
 							</span>
 						@else
-							<span  href="{{ action('Admin\SubscriptionController@invoices', $subscription->uid) }}"
-								class="modal_link label bg-{{ $subscription->status }}"
+							<span style="cursor:pointer" href="{{ action('Admin\SubscriptionController@invoices', $subscription->uid) }}"
+								class="view_invoices label bg-{{ $subscription->status }}"
 							>{{ trans('messages.subscription.status.' . $subscription->status) }}</span>
 						@endif
 					</span>
@@ -173,6 +173,12 @@
                 rejectPendingSub.load(src);
             });
         });
+
+		var invoices = new Popup();
+		$('.view_invoices').click(function(e) {
+			e.preventDefault();
+			invoices.load($(this).attr('href'));
+		});
     </script>
 
 @elseif (!empty(request()->keyword) || !empty(request()->filters))
