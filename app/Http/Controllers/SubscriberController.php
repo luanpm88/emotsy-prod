@@ -805,7 +805,7 @@ class SubscriberController extends Controller
         }
 
         // Launch re-sending job
-        dispatch(new \Acelle\Jobs\SendConfirmationEmailJob($subscribers->get(), $list));
+        dispatch_now(new \Acelle\Jobs\SendConfirmationEmailJob($subscribers->get(), $list));
 
         // Redirect to my lists page
         echo trans('messages.subscribers.resend_confirmation_email.being_sent');
