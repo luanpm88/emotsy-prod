@@ -340,7 +340,7 @@ class SendingServerSendGrid extends SendingServer implements DomainVerificationI
      */
     public function allowVerifyingOwnEmails()
     {
-        return false;
+        return true;
     }
 
     /**

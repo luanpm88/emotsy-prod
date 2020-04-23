@@ -75,7 +75,7 @@ class Evaluate extends Action
                 if (empty($this->getOption('email_link'))) {
                     throw new \Exception('URL missing for click condition');
                 }
-                $result = $this->evaluateEmailOpenCondition();
+                $result = $this->evaluateEmailClickCondition();
                 break;
             default:
                 # code...
@@ -91,6 +91,14 @@ class Evaluate extends Action
         $email = Email::findByUid($emailUid);
 
         return $email->isOpened($this->autoTrigger->subscriber);
+    }
+
+    public function evaluateEmailClickCondition()
+    {
+        $emailUid = $this->getOption('email');
+        $email = Email::findByUid($emailUid);
+
+        return $email->isClick($this->autoTrigger->subscriber);
     }
 
     public function getActionDescription()
