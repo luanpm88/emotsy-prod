@@ -586,7 +586,7 @@ class AutomationElement {
 
     remove() {
         if (this.parent.isCondition()) {
-            if (this.parent.childYes.getId() == this.getId()) {
+            if (this.parent.childYes && this.parent.childYes.getId() == this.getId()) {
                 this.parent.childYes = null;
             } else {
                 this.parent.childNo = null;
