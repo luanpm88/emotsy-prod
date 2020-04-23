@@ -924,6 +924,12 @@ class Email extends Model
                             ->join('open_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')->exists();
     }
 
+    public function isClicked($subscriber)
+    {
+        return $this->trackingLogs()->where('subscriber_id', $subscriber->id)
+                            ->join('click_logs', 'click_logs.message_id', '=', 'tracking_logs.message_id')->exists();
+    }
+
     /**
      * Check if email has template.
      */
