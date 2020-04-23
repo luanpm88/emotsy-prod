@@ -126,11 +126,13 @@ class UrlAutoFill {
             }
         });
 
-        _this.data.forEach(function(item) {
-            if (!matches.includes(item.value)) {
-                _this.values.push(item);
-            }
-        });
+        if (_this.keyword() == '') {
+            _this.data.forEach(function(item) {
+                if (!matches.includes(item.value)) {
+                    _this.values.push(item);
+                }
+            });
+        }
     }
 
     showDropdown() {
