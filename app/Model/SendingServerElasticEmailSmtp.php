@@ -40,7 +40,12 @@ class SendingServerElasticEmailSmtp extends SendingServerElasticEmail
     public function send($message, $params = array())
     {
         try {
-            $this->setupWebhooks();
+            try {
+                $this->setupWebhooks();
+            } catch (\Exception $ex) {
+                MailLog::warning('Cannot set up Elastic webhook: ' . $ex->getMessage());
+            }
+
             $this->enableCustomHeaders();
 
             $transport = ExtendedSmtpTransport::newInstance($this->host, (int) $this->smtp_port, $this->smtp_protocol);

@@ -39,7 +39,12 @@ class SendingServerElasticEmailApi extends SendingServerElasticEmail
     public function send($message, $params = array())
     {
         try {
-            $this->setupWebhooks();
+            try {
+                $this->setupWebhooks();
+            } catch (\Exception $ex) {
+                MailLog::warning('Cannot set up Elastic webhook: ' . $ex->getMessage());
+            }
+
             $this->enableCustomHeaders();
 
             $result = $this->sendElasticEmailV2($message);
