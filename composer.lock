@@ -2085,16 +2085,16 @@
         },
         {
             "name": "louis/log-viewer",
-            "version": "1.2.1",
+            "version": "1.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/louisitvn/log-viewer.git",
-                "reference": "71fd716d0de6e5f8215a81e0fc4c57b5d9c80989"
+                "reference": "2b0cf5b7a3fd281b60c3a412a0839f92c47c581b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/louisitvn/log-viewer/zipball/71fd716d0de6e5f8215a81e0fc4c57b5d9c80989",
-                "reference": "71fd716d0de6e5f8215a81e0fc4c57b5d9c80989",
+                "url": "https://api.github.com/repos/louisitvn/log-viewer/zipball/2b0cf5b7a3fd281b60c3a412a0839f92c47c581b",
+                "reference": "2b0cf5b7a3fd281b60c3a412a0839f92c47c581b",
                 "shasum": ""
             },
             "require": {
@@ -2123,10 +2123,10 @@
             ],
             "description": "Log Viewer",
             "support": {
-                "source": "https://github.com/louisitvn/log-viewer/tree/1.2.1",
+                "source": "https://github.com/louisitvn/log-viewer/tree/1.2.2",
                 "issues": "https://github.com/louisitvn/log-viewer/issues"
             },
-            "time": "2018-09-09T16:31:09+00:00"
+            "time": "2020-04-24T20:20:07+00:00"
         },
         {
             "name": "louis/sendgrid",

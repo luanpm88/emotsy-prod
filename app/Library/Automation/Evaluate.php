@@ -3,6 +3,7 @@
 namespace Acelle\Library\Automation;
 
 use Acelle\Model\Email;
+use Acelle\Model\EmailLink;
 
 class Evaluate extends Action
 {
@@ -53,6 +54,8 @@ class Evaluate extends Action
             // always return true, not evaluation result!
             return true;
         } catch (\Exception $ex) {
+            // @todo automation error
+            // show it up to UI
             $this->autoTrigger->logger()->warning(sprintf('Error while executing Condition %s. Error message: %s', $this->getId(), $ex->getMessage()));
 
             return false;
@@ -95,17 +98,24 @@ class Evaluate extends Action
 
     public function evaluateEmailClickCondition()
     {
-        $emailUid = $this->getOption('email');
-        $email = Email::findByUid($emailUid);
+        $linkUid = $this->getOption('email_link');
+        $email = EmailLink::findByUid($linkUid)->email;
 
-        return $email->isClick($this->autoTrigger->subscriber);
+        return $email->isClicked($this->autoTrigger->subscriber);
     }
 
     public function getActionDescription()
     {
         $nameOrEmail = $this->autoTrigger->subscriber->getFullNameOrEmail();
-        $emailUid = $this->getOption('email');
-        $email = Email::findByUid($emailUid);
+        $options = $this->getOptions();
+
+        if (array_key_exists('email', $options)) {
+            $emailUid = $this->getOption('email');
+            $email = Email::findByUid($emailUid);    
+        } else {
+            $linkUid = $this->getOption('email_link');
+            $email = EmailLink::findByUid($linkUid)->email;
+        }
 
         if ($this->getOption('type') == 'open') {
             return sprintf('Tracking: waiting for user %s to READ email entitled "%s"', $nameOrEmail, $email->subject);
