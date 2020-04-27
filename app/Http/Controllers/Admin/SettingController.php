@@ -321,6 +321,34 @@ class SettingController extends Controller
     }
 
     /**
+     * Mailer settings.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function mailerTest(Request $request)
+    {
+        if ($request->user()->admin->getPermission('setting_general') != 'yes') {
+            return $this->notAuthorized();
+        }
+
+        // validate and save posted data
+        if ($request->isMethod('post')) {
+            if ($this->isDemoMode()) {
+                return $this->notAuthorized();
+            }
+            
+            // sending test email
+            sleep(2);
+            return response()->json([
+                'status' => 'success',
+                'message' => json_encode($request->all()),
+            ]);
+        }
+
+        return view('admin.settings.mailerTest');
+    }
+
+    /**
      * Update all urls.
      *
      * @return \Illuminate\Http\Response

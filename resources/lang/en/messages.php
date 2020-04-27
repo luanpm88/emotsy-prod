@@ -3274,4 +3274,7 @@
   'payment.paypal' => 'PayPal',
   'editor.unsubscribe_text' => 'Click here to unsubscribe',
   'editor.click_view_web_version' => 'Click to view web version of this email',
+  'setting.mailer.send_a_test_email' => 'Send a test email',
+  'setting.mailer.email_content' => 'This is a test email.',
+  'setting.mailer.sending_test_email' => 'Sending test email...',
 ) ?>

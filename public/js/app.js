@@ -47,6 +47,11 @@ function openBuilderClassic(url) {
 }
 
 function initJs(container) {
+    // validate
+    if (typeof(customValidate) !== 'undefined') {
+        customValidate(container.find(".form-validate-jquery"));
+    }
+
     container.find('.template-compose').click(function(e) {
         e.preventDefault();
         

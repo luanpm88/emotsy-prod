@@ -716,6 +716,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('u', 'SettingController@upgrade'); // shortcut to upgrade page
     Route::post('admin/settings/license', 'SettingController@license');
     Route::get('admin/settings/license', 'SettingController@license');
+    Route::match(['get','post'], 'admin/settings/mailer/test', 'SettingController@mailerTest');
     Route::get('admin/settings/mailer', 'SettingController@mailer');
     Route::post('admin/settings/mailer', 'SettingController@mailer');
     Route::get('admin/settings/cronjob', 'SettingController@cronjob');

@@ -100,7 +100,24 @@
         
         <br />
         <div class="text-left">
-            <button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
+            <button class="btn btn-mc_primary mr-2"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
+            <a href="{{ action('Admin\SettingController@mailerTest') }}"
+                class="btn btn-mc_default send-test-email"
+            >
+                <i class="icon-envelope mr-2"></i> {{ trans('messages.setting.mailer.send_a_test_email') }}
+            </a>
         </div>
     </div>
+
+    <script>
+        var testPopup = new Popup();
+
+        $('.send-test-email').click(function(e) {
+            e.preventDefault();
+            var url = $(this).attr('href');
+
+            testPopup.data = $('.mailer-form').serialize();
+            testPopup.load(url);
+        });
+    </script>
 @endif

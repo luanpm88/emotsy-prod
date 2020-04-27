@@ -5,6 +5,7 @@ class Popup {
         this.options = {};
         this.popup = $('.popup[id='+this.id+']');
         this.loadingHtml = '<div class="popup-loading"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>';
+        this.data = {};
         
         // url
         if (typeof(url) !== 'undefined') {
@@ -19,6 +20,11 @@ class Popup {
         // options
         if (typeof(options) !== 'undefined') {
             this.options = options;
+
+            // data            
+            if (typeof(options.data) !== 'undefined') {
+                this.data = options.data;
+            }
         }
         
         if (!this.popup.length) {
@@ -120,6 +126,7 @@ class Popup {
             url: _this.url,
             type: 'GET',
             dataType: 'html',
+            data: _this.data,
         }).always(function(response) {
             _this.popup.html(response);
             

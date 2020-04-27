@@ -3682,3 +3682,6 @@ textarea.bulk-delete {
     border: solid 1px #aaa;
     margin-right: 18px;
 }
+.form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
+    background-color: #efefef;
+}
