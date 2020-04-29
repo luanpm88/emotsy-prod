@@ -24,7 +24,7 @@
 @endsection
 
 @section('content')
-    <form action="{{ action('CampaignController@recipients', $campaign->uid) }}" method="POST" class="form-validate-jqueryz">
+    <form action="{{ action('CampaignController@recipients', $campaign->uid) }}" method="POST" class="form-validate-jqueryz recipients-form">
         {{ csrf_field() }}
 
         <h4 class="mb-20 mt-0">
@@ -57,4 +57,16 @@
         </div>
     <form>
 
+    <script>
+        $('.recipients-form').submit(function(e) {
+            if (!$('[radio-group=campaign_list_info_defaulf]:checked').length) {
+                new Dialog('alert', {
+                    message: '{{ trans('messages.recipients.select_default_list.warning') }}',
+                });
+
+                e.preventDefault();
+                return false;
+            }
+        });
+    </script>
 @endsection
