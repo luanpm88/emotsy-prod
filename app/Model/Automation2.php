@@ -551,9 +551,9 @@ class Automation2 extends Model
         $pid = getmypid();
         $formatter = new LineFormatter("[%datetime%] #{$pid} %channel%.%level_name%: %message%\n");
         if (getenv('LOGFILE') != false) {
-            $stream = new RotatingFileHandler(getenv('LOGFILE'), 0, Logger::INFO);
+            $stream = new RotatingFileHandler(getenv('LOGFILE'), 0, Logger::WARNING);
         } else {
-            $stream = new RotatingFileHandler(storage_path('logs/automation.log'), 0, Logger::INFO);
+            $stream = new RotatingFileHandler(storage_path('logs/automation.log'), 0, Logger::WARNING);
         }
 
         $stream->setFormatter($formatter);
