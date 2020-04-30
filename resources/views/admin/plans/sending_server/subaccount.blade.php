@@ -30,7 +30,7 @@
     
     @include('admin.plans._menu')
     
-    <form action="{{ action('Admin\PlanController@sendingServerOwn', $plan->uid) }}" method="POST" class="form-validate-jqueryx">
+    <form action="{{ action('Admin\PlanController@sendingServerSubaccount', $plan->uid) }}" method="POST" class="form-validate-jqueryx">
         {{ csrf_field() }}
         
         <div class="mc-section">
@@ -50,36 +50,39 @@
                 </div>
             </div>
                 
-            <div class="row flex-center">
-                <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-6">
                     <h2 class="mc-h2 mt-0 mb-10">
                         <span class="text-semibold">{{ trans('messages.plan.sending_servers.sub_account.setting') }}</span>
                     </h2>
                     <p>{{ trans('messages.plan.sending_servers.sub_account.setting.intro') }}</p>
+                
+                    @if (Auth()->user()->admin->getSubaccountSendingServers()->count())
+                        <div class="row">
+                            <div class="col-md-12">
+                                @include('helpers.form_control', [
+                                    'type' => 'select',
+                                    'class' => 'numeric',
+                                    'name' => 'plan[options][sending_server_subaccount_uid]',
+                                    'value' => $plan->getOption('sending_server_subaccount_uid'),
+                                    'label' => '',
+                                    'help_class' => 'plan',
+                                    'include_blank' => trans('messages.select_sending_server_with_subaccount'),
+                                    'options' => Auth()->user()->admin->getSubaccountSendingServersSelectOptions(),
+                                    'rules' => $plan->validationRules()['options'],
+                                ])
+                            </div>
+                        </div>
+
+                        <button class="btn btn-mc_primary mr-10">{{ trans('messages.save') }}</button>
+                    @else
+                        <div class="alert alert-danger">
+                            {!! trans('messages.plan_option.there_no_subaccount_sending_server') !!}
+                        </div>
+                    @endif
                 </div>
             </div>
             
-            @if (Auth()->user()->admin->getSubaccountSendingServers()->count())
-                <div class="row">
-                    <div class="col-md-12">
-                        @include('helpers.form_control', [
-                            'type' => 'select',
-                            'class' => 'numeric',
-                            'name' => 'plan[options][sending_server_subaccount_uid]',
-                            'value' => $plan->getOption('sending_server_subaccount_uid'),
-                            'label' => '',
-                            'help_class' => 'plan',
-                            'include_blank' => trans('messages.select_sending_server_with_subaccount'),
-                            'options' => Auth()->user()->admin->getSubaccountSendingServersSelectOptions(),
-                            'rules' => $plan->validationRules()['options'],
-                        ])
-                    </div>
-                </div>
-            @else
-                <div class="alert alert-danger">
-                    {!! trans('messages.plan_option.there_no_subaccount_sending_server') !!}
-                </div>
-            @endif
         </div>
     </form>
     
