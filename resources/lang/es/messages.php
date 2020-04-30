@@ -2681,9 +2681,9 @@
   'automation.action.send-an-email.desc' => 'Diseñe o envíe correos electrónicos automáticos o regulares a sus contactos.',
   'automation.action.wait.desc' => 'Diseñe o envíe correos electrónicos automáticos o regulares a sus contactos',
   'automation.action.condition.desc' => 'Diseñe o envíe correos electrónicos automáticos o regulares a sus contactos..',
-  'automation.action.send-an-email.icon' => 'sobre',
-  'automation.action.wait.icon' => 'alarma',
-  'automation.action.condition.icon' => 'codigo',
+  'automation.action.send-an-email.icon' => 'envelope',
+  'automation.action.wait.icon' => 'alarm',
+  'automation.action.condition.icon' => 'code',
   'automation.action.wait.intro' => 'Configure su flujo de trabajo de automatización, espere un momento antes de continuar con la próxima acción.
       Cuánto tiempo se debe esperar. Elige a continuación.',
   'automation.action.send-an-email.intro' => 'Elija una de las siguientes condiciones para su flujo de trabajo. La plataforma evaluará la condición
