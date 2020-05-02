@@ -133,5 +133,29 @@
                 }
             });
         });
+
+        $('#classic-builder-form').submit(function(e) {
+            e.preventDefault();
+            tinyMCE.triggerSave();
+
+            var data = $(this).serialize();
+            var url = $(this).attr('action');
+
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: data,
+                statusCode: {
+                    // validate error
+                    400: function (res) {
+                        // notify
+                        notify('error', '{{ trans('messages.notify.error') }}', JSON.parse(res.responseText).message);
+                    }
+                },
+                success: function (response) {
+                    window.location = response.url
+                }
+            });
+        });
     </script>
 @endsection

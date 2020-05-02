@@ -133,7 +133,26 @@ class LayoutController extends Controller
                 'subject' => 'required',
             );
 
-            $this->validate($request, $rules);
+            // $this->validate($request, $rules);
+
+            // make validator
+            $validator = \Validator::make($request->all(), $rules);
+            
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $validator->errors()->all()[0],
+                ], 400);
+            }
+
+            // check ses email tags
+            if ($layout->alias == 'sender_verification_email_for_amazon_ses' && preg_match( "/\<((meta)|(title)|(style))/i", $request->content)) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => trans('messages.layout.amazon_ses.tag_not_permit'),
+                ], 400);
+            }
 
             // Save template
             $layout->fill($request->all());
@@ -141,8 +160,10 @@ class LayoutController extends Controller
 
             // Redirect to my lists page
             $request->session()->flash('alert-success', trans('messages.layout.updated'));
-
-            return redirect()->action('Admin\LayoutController@edit', $layout->uid);
+            return response()->json([
+                'status' => 'success',
+                'url' => action('Admin\LayoutController@edit', $layout->uid),
+            ]);
         }
     }
 

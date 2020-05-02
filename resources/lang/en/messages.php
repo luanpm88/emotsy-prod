@@ -3281,4 +3281,6 @@
   'automation.trigger.change' => 'Change Trigger',
   'automation.email.setup.intro' => 'Please fill-up email information below. They will be used to apply
     to all emails that send to customers.',
+  'layout.amazon_ses.tag_not_permit' => 'Template content dose not except tags: meta|title|style.
+    Remove those tags if they exist and try again.',
 ) ?>
