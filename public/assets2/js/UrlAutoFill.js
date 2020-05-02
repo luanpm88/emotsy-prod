@@ -173,7 +173,9 @@ class UrlAutoFill {
         _this.input.val(value);
         _this.input.focusout();
 
-        _this.input.closest('.tox-form__group').next().find('input').val(item.attr('data'));
+        if (_this.input.closest('.tox-form__group').next().find('input').val() == '') {
+            _this.input.closest('.tox-form__group').next().find('input').val(item.attr('data'));
+        }
 
         $('[type=url]').val(_this.input.val());
     }
