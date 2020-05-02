@@ -3278,4 +3278,7 @@
   'setting.mailer.email_content' => 'This is a test email.',
   'setting.mailer.sending_test_email' => 'Sending test email...',
   'recipients.select_default_list.warning' => 'Please choose a DEFAULT mail list!',
+  'automation.trigger.change' => 'Change Trigger',
+  'automation.email.setup.intro' => 'Please fill-up email information below. They will be used to apply
+    to all emails that send to customers.',
 ) ?>

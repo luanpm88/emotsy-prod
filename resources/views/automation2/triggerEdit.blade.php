@@ -26,7 +26,7 @@
         @endif
 
         <a href="javascript:;" class="btn btn-outline-secondary change-trigger-but">
-            Change Trigger
+            {{ trans('messages.automation.trigger.change') }}
         </a>
     </div>
 </form>

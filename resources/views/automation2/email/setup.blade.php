@@ -5,7 +5,7 @@
     @include('automation2.email._tabs', ['tab' => 'setup'])
         
     <h5 class="mb-3">Email Setup</h5>    
-    <p>Please fill-up email information below. They will be used to apply to all emails that send to customers.</p>
+    <p>{{ trans('messages.automation.email.setup.intro') }}</p>
     
     <form id="emailSetup" action="{{ action('Automation2Controller@emailSetup', $automation->uid) }}" method="POST">
         {{ csrf_field() }}
