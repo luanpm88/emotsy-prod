@@ -70,7 +70,7 @@ class IpLocation extends Model
             BackendError::cleanupDuplicateNotifications($title);
             BackendError::warning([
                 'title' => $title,
-                'message' => 'Cannot resolve IP address. '.$e->getMessage(),
+                'message' => 'Cannot resolve IP address '.$ip.'. '.$e->getMessage(),
             ]);
 
             LaravelLog::warning('Cannot get IP location info: '.$e->getMessage());
