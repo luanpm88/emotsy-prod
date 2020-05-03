@@ -57,12 +57,9 @@ class MailerServiceProvider extends ServiceProvider
                         'from_name' => Setting::get('mailer.from.name') ?? config('mail.from.name'),
                         'from_address' => Setting::get('mailer.from.address') ?? config('mail.from.address'),
                     ]);
-                    
                     break;
-                
                 default:
                     throw new \Exception("Mail driver '{$driver}' not found by Acelle", 1);
-                    
                     break;
             }
 

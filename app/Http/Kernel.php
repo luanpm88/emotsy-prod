@@ -59,6 +59,8 @@ class Kernel extends HttpKernel
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \Acelle\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
+        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'frontend' => \Acelle\Http\Middleware\Frontend::class,
         'backend' => \Acelle\Http\Middleware\Backend::class,
         'installed' => \Acelle\Http\Middleware\Installed::class,

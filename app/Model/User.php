@@ -27,6 +27,7 @@ use Illuminate\Notifications\Notifiable;
 use Acelle\Notifications\ResetPassword;
 
 class User extends Authenticatable
+           // 5.7 implements MustVerifyEmail
 {
     use Notifiable;
 

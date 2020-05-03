@@ -17,7 +17,7 @@
         );
     }
 ?>
-<div {!! $paramsString or '' !!} title="Click to suppress notification messages" class="alert alert-{{ $level }}" style="display: flex; flex-direction: row; align-items: center; cursor: pointer">
+<div {!! $paramsString ?? '' !!} title="Click to suppress notification messages" class="alert alert-{{ $level }}" style="display: flex; flex-direction: row; align-items: center; cursor: pointer">
     <div style="margin-right:15px">
         <i class="{{ $icons[$level] }}"></i>
     </div>

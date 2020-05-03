@@ -2,6 +2,7 @@
 
 namespace Acelle\Providers;
 
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Schema;
@@ -17,6 +18,9 @@ class AppServiceProvider extends ServiceProvider
     {
         ini_set('memory_limit', '-1');
         ini_set('pcre.backtrack_limit', 1000000000);
+
+        // Laravel 5.5 to 5.6 compatibility
+        Blade::withoutDoubleEncoding();
 
         // Check if HTTPS (including proxy case)
         $isSecure = false;
@@ -100,12 +104,5 @@ class AppServiceProvider extends ServiceProvider
                 }
             }
         }
-    }
-
-    /**
-     * Register any application services.
-     */
-    public function register()
-    {
     }
 }
