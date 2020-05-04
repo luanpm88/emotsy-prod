@@ -783,3 +783,12 @@ function tinyDocTypeUntransform($content)
         $content
     );
 }
+
+function demo_auth() {
+    $auth = \Acelle\Model\User::getAuthenticateFromFile();
+
+    return [
+        'email' => isset($auth['email']) ? $auth['email'] : '',
+        'password' => $auth['password'] ? $auth['password'] : '',
+    ];
+}

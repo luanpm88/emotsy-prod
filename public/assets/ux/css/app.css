@@ -1362,6 +1362,14 @@ ul.pagination2 li a.active, ul.pagination li.active span, ul.pagination3 li a.ac
   border-color: #e85c41;
 }
 
+.has-error .help-block {
+  color: #e85c41;
+  margin-top: 4px;
+  font-weight: normal;
+  display: block;
+  font-size: 13px;
+}
+
 a.btn-default, a.btn-default:hover {
   color: #222;
 }
