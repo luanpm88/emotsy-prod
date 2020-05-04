@@ -20,6 +20,17 @@
                                 'rules' => $language->rules()
                             ])
                         </div>
+                        <div class="col-md-4">
+                            @include('helpers.form_control', [
+                                'type' => 'text',
+                                'class' => '',
+                                'name' => 'region_code',
+                                'value' => $language->region_code,
+                                'options' => \Acelle\Model\Language::languageCodes(),
+                                'help_class' => 'language',
+                                'rules' => $language->rules()
+                            ])
+                        </div>
                     </div>
 
                     <hr >

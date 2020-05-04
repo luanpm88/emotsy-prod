@@ -449,7 +449,8 @@ class Admin extends Model
      */
     public function getLanguageCodeFull()
     {
-        return is_object($this->language) ? ($this->language->code.'-'.strtoupper($this->language->region_code)) : null;
+        $region_code = $this->language->region_code ? strtoupper($this->language->region_code) : strtoupper($this->language->code);
+        return is_object($this->language) ? ($this->language->code.'-'.$region_code) : null;
     }
 
     /**
