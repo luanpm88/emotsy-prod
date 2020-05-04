@@ -201,7 +201,6 @@ return [
 
         // Laravel\Cashier\CashierServiceProvider::class,
         Acelle\Cashier\CashierServiceProvider::class,
-        TwigBridge\ServiceProvider::class,
 
         // More
         Acelle\Providers\MailerServiceProvider::class,
