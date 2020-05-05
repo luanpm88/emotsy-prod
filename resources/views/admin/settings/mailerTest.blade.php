@@ -76,23 +76,20 @@
                     url: url,
                     method: 'POST',
                     data: data,
-                    statusCode: {
-                        // validate error
-                        400: function (res) {
-                            removeMaskLoading();
+                    error: function (response) {
+                        removeMaskLoading();
 
-                            var dialog = new Dialog('alert', {
-                                title: '{{ trans('messages.notify.error') }}',
-                                message: res.responseText,
-                            });
-                        }
+                        var dialog = new Dialog('alert', {
+                            title: '{{ trans('messages.notify.failed') }}',
+                            message: JSON.parse(response.responseText).error,
+                        });
                     },
                     success: function (response) {
                         removeMaskLoading();
                 
                         var dialog = new Dialog('alert', {
                             title: '{{ trans('messages.notify.success') }}',
-                            message: response.message,
+                            message: '{{ trans('messages.setting.mailer.email_sent') }}',
                         });
                     }
                 });

@@ -3283,4 +3283,7 @@
     to all emails that send to customers.',
   'layout.amazon_ses.tag_not_permit' => 'Template content dose not except tags: meta|title|style.
     Remove those tags if they exist and try again.',
+  'setting.mailer.save_change_before_test' => 'Please save your changes first before sending a test email',
+  'notify.failed' => 'Failed',
+  'setting.mailer.email_sent' => 'Email successfully sent',
 ) ?>

@@ -1,5 +1,5 @@
 @if (Auth::user()->admin->getPermission("setting_general") == 'yes')
-    <div class="tab-pane active" id="top-smtp">
+    <div class="tab-pane active mailer-form" id="top-smtp">
         <div class="row">
             <div class="col-md-6">
                 @include('helpers.form_control', [
@@ -111,9 +111,22 @@
 
     <script>
         var testPopup = new Popup();
+        var changed = false;
+
+        $('.mailer-form input, .mailer-form select').change(function() {
+            changed = true;
+        });
 
         $('.send-test-email').click(function(e) {
             e.preventDefault();
+
+            // something changed!
+            if (changed) {
+                var dialog = new Dialog('alert', {
+                    message: '{{ trans('messages.setting.mailer.save_change_before_test') }}',
+                });
+            }
+
             var url = $(this).attr('href');
 
             testPopup.data = $('.mailer-form').serialize();
