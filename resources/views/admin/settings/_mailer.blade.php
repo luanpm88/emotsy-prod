@@ -125,6 +125,7 @@
                 var dialog = new Dialog('alert', {
                     message: '{{ trans('messages.setting.mailer.save_change_before_test') }}',
                 });
+                return;
             }
 
             var url = $(this).attr('href');
