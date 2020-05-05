@@ -3,20 +3,14 @@
 namespace Acelle\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Contracts\Support\DeferrableProvider;
 use Acelle\Model\Setting;
 use Acelle\Model\SendingServer;
 use Acelle\Model\SendingServerSmtp;
 use Acelle\Model\SendingServerSendmail;
 
-class MailerServiceProvider extends ServiceProvider
+class MailerServiceProvider extends ServiceProvider implements DeferrableProvider
 {
-    /**
-     * Indicates if loading of the provider is deferred.
-     *
-     * @var bool
-     */
-    protected $defer = true;
-
     /**
      * Bootstrap the application services.
      *
