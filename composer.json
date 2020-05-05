@@ -38,7 +38,7 @@
         "skyscanner/jsonpath": "^0.7.3",
         "sparkpost/sparkpost": "^2.1",
         "swiftmailer/swiftmailer": "~6.0",
-        "symfony/yaml": "^5.0",
+        "symfony/yaml": "^4.4",
         "tijsverkoyen/css-to-inline-styles": "^2.2",
         "zendframework/zend-mail": "^2.7"
     },
