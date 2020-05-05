@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Acelle\Model\Setting;
 use Illuminate\Support\Facades\Session;
 use Acelle\Helpers\LicenseHelper;
+use App;
 
 class SettingController extends Controller
 {
@@ -337,12 +338,19 @@ class SettingController extends Controller
                 return $this->notAuthorized();
             }
             
-            // sending test email
-            sleep(2);
-            return response()->json([
-                'status' => 'success',
-                'message' => json_encode($request->all()),
-            ]);
+            // build the message
+            $message = new \Swift_Message();
+            $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
+            $message->setContentType('text/html; charset=utf-8');
+
+            $message->setSubject($request->input('subject'));
+            $message->setTo($request->input('to_email'));
+            $message->addPart($request->input('content'), 'text/html');
+
+            $mailer = App::make('xmailer');
+            $result = $mailer->sendWithDefaultFromAddress($message);
+
+            return response()->json($result);
         }
 
         return view('admin.settings.mailerTest');
@@ -540,6 +548,11 @@ class SettingController extends Controller
         $failed = $manager->test();
         if (empty($failed)) {
             $pageUrl = action('Admin\SettingController@upgrade');
+
+            if (file_exists(base_path('bootstrap/cache/config.php'))) {
+                unlink(base_path('bootstrap/cache/config.php'));
+            }
+            
             $manager->run();
             Log::info('System successfully upgraded to the new version');
             $request->session()->put('upgraded', true);
