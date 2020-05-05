@@ -669,6 +669,12 @@ class MailListController extends Controller
         }
 
         $list = \Acelle\Model\MailList::findByUid($request->uid);
+
+        // Language
+        if (is_object($list->customer) && is_object($list->customer->language)) {
+            \App::setLocale($list->customer->language->code);
+            \Carbon\Carbon::setLocale($list->customer->language->code);
+        }
         
         // Check if list does exist
         if (!is_object($list)) {
@@ -716,7 +722,7 @@ class MailListController extends Controller
                 $errs = [];
                 foreach($validator->errors()->toArray() as $key => $error) {
                     if ($key != 'email_already_subscribed') {
-                        $errs[] = $key . ": " . $error[0];
+                        $errs[] = $error[0];
                     } else {
                         $errs[] = $error[0];
                     }
