@@ -18,8 +18,8 @@ foreach ($required_functions as $f) {
 }
 
 // Check PHP version
-if (!version_compare(PHP_VERSION, '7.0.0', '>=')) {
-    echo "ERROR: PHP 7.0.0 or higher is required.<br />";
+if (!version_compare(PHP_VERSION, '7.1.3', '>=')) {
+    echo "ERROR: PHP 7.1.3 or higher is required.<br />";
     exit(0);
 }
 

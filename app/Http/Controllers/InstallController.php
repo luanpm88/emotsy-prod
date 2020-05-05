@@ -529,8 +529,8 @@ class InstallController extends Controller
             [
                 'type' => 'requirement',
                 'name' => 'PHP version',
-                'check' => version_compare(PHP_VERSION, '7.0.0', '>='),
-                'note' => 'PHP 7.0.0 or higher is required.',
+                'check' => version_compare(PHP_VERSION, '7.1.3', '>='),
+                'note' => 'PHP 7.1.3 or higher is required.',
             ],
             [
                 'type' => 'requirement',
