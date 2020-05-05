@@ -3235,4 +3235,13 @@
   'editor.unsubscribe_text' => 'Click here to unsubscribe',
   'editor.click_view_web_version' => 'Click to view web version of this email',
   'bounce_handler.intro' => 'Bounce/feedback handler is a mailbox used for receiving bounced messages or spam/abuse feedback. The application checks the mailbox to keep track of email delivery issue. Notice that bounce/feedback handler is used for SMTP or Sendmail sending server only. If you send through a third-party service like Amazon SES, SendGrid, Mailgun, Elasticemail, etc. you do not have to set up a bounce/feedback handler as it is already handled by the service and will be reflected in your campaign statistics automatically (then just ignore this setting)',
+  'setting.mailer.send_a_test_email' => 'Send a test email',
+  'setting.mailer.email_content' => 'This is a test email.',
+  'setting.mailer.sending_test_email' => 'Sending test email...',
+  'recipients.select_default_list.warning' => 'Please choose a DEFAULT mail list!',
+  'automation.trigger.change' => 'Change Trigger',
+  'automation.email.setup.intro' => 'Please fill-up email information below. They will be used to apply
+    to all emails that send to customers.',
+  'layout.amazon_ses.tag_not_permit' => 'Template content dose not except tags: meta|title|style.
+    Remove those tags if they exist and try again.',
 ) ?>
