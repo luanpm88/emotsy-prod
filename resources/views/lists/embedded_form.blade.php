@@ -31,12 +31,12 @@
                                 'help_class' => 'list'
                         ])
 
-                        @include('helpers.form_control', ['type' => 'text',
+                        {{-- @include('helpers.form_control', ['type' => 'text',
                                 'name' => 'redirect_url',
                                 'label' => trans('messages.form_title'),
                                 'value' => trans('messages.Subscribe_to_our_mailing_list'),
                                 'help_class' => 'list'
-                        ])
+                        ]) --}}
                     </div>
                     <div class="col-md-2">
                         <div class="form-group">
