@@ -334,28 +334,21 @@ class SettingController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
-            // if ($this->isDemoMode()) {
-            //     return $this->notAuthorized();
-            // }
+            if ($this->isDemoMode()) {
+                return $this->notAuthorized();
+            }
             
-            // // build the message
-            // $message = new \Swift_Message();
-            // $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
-            // $message->setContentType('text/html; charset=utf-8');
+            // build the message
+            $message = new \Swift_Message();
+            $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
+            $message->setContentType('text/html; charset=utf-8');
 
-            // $message->setSubject($request->input('subject'));
-            // $message->setTo($request->input('to_email'));
-            // $message->addPart($request->input('content'), 'text/html');
+            $message->setSubject($request->input('subject'));
+            $message->setTo($request->input('to_email'));
+            $message->addPart($request->input('content'), 'text/html');
 
-            // $mailer = App::make('xmailer');
-            // $result = $mailer->sendWithDefaultFromAddress($message);
-
-            // return response()->json($result);
-            
-            $result = [
-                'status' => 'failed', // sent|failed
-                'error' => 'Something went wrong!',
-            ];
+            $mailer = App::make('xmailer');
+            $result = $mailer->sendWithDefaultFromAddress($message);
 
             $statusCode = $result['status'] == 'sent' ? 200 : 400;
             return response()->json($result, $statusCode);
