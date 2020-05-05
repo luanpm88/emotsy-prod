@@ -353,11 +353,11 @@ class SettingController extends Controller
             // return response()->json($result);
             
             $result = [
-                'status' => 'success',
+                'status' => 'failed', // sent|failed
                 'error' => 'Something went wrong!',
             ];
 
-            $statusCode = $result['status'] == 'success' ? 200 : 400;
+            $statusCode = $result['status'] == 'sent' ? 200 : 400;
             return response()->json($result, $statusCode);
         }
 
