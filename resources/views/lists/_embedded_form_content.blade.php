@@ -41,6 +41,10 @@
 				@endif
 			@endforeach
 
+			@if (request()->redirect_url)
+				<input type="hidden" name="redirect_url" value="{{ request()->redirect_url }}" />
+			@endif
+
 			<div class="form-button">
 			  <button class="btn btn-primary">{{ trans('messages.subscribe') }}</button>
 			</div>

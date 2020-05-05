@@ -741,7 +741,7 @@ class MailListController extends Controller
                     'back_link' => $url,
                 ]);
             }
-
+            
             $subscriber->email = $request->EMAIL;
             $subscriber->ip = $request->ip();
             $subscriber->save();
@@ -772,6 +772,12 @@ class MailListController extends Controller
                 // update MailList cache
                 event(new \Acelle\Events\MailListUpdated($subscriber->mailList));
 
+                // custom redirect
+                if($request->redirect_url) {
+                    return redirect()->away($request->redirect_url);
+                }
+                
+                // default redirect
                 return redirect()->action('PageController@signUpThankyouPage', ['list_uid' => $list->uid, 'subscriber_uid' => $subscriber->uid]);
             } else {
                 // change status to subscribed
@@ -783,6 +789,12 @@ class MailListController extends Controller
                     $list->sendSubscriptionWelcomeEmail($subscriber);
                 }
 
+                // custom redirect
+                if($request->redirect_url) {
+                    return redirect()->away($request->redirect_url);
+                }
+                
+                // default redirect
                 return redirect()->action('PageController@signUpConfirmationThankyou', [
                         'list_uid' => $list->uid,
                         'uid' => $subscriber->uid,
