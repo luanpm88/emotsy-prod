@@ -3191,7 +3191,7 @@
   'payment.paypal_subscription.connection' => 'Connection',
   'payment.paypal_subscription.connected_to_paypal' => 'Connected to PayPal',
   'payment.paypal_subscription.connected_to_paypal.wording' => 'You are now connected to PayPal subscription service through
-    the `:name`. Click <a href=":dashboard">HERE</a> to go to PayPal application dashboard or
+    the `:name`. Click <a target="_blank" href=":dashboard">HERE</a> to go to PayPal application dashboard or
     <a link-method="POST" link-confirm="You are about to disconnect from PayPal. This can not be undone" href=":disconnect">
     click here to disconnect from PayPal</a>.
     <span class="badge badge-primary bg-grey badge-large mt-4">PayPal Service ID: :product_id</span>',
