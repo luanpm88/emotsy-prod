@@ -144,8 +144,8 @@
 			<p>{!! trans('messages.payment.paypal_subscription.connected_to_paypal.wording', [
 				'name' => \Acelle\Model\Setting::get('site_name'),
 				'product_id' => $service->getData()['product_id'],
-				'dashboard' => '',
-				'disconnect' => action('Admin\PaymentController@paypalSubscriptionDisconnect', 'sss'),
+				'dashboard' => 'https://www.paypal.com/mep/dashboard',
+				'disconnect' => action('Admin\PaymentController@paypalSubscriptionDisconnect'),
 			]) !!}<p>							
 		</div>
 	</div>
