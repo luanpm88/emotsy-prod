@@ -102,6 +102,7 @@ class PaymentController extends Controller
                 'gateway' => Setting::getPaymentGateway($name),
                 'errors' => $errors,
                 'service' => $gatewayService,
+                'isValid' => false,
             ]);
         }
     }
