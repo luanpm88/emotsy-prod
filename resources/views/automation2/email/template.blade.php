@@ -49,23 +49,16 @@
                 <div class="template-thumb-container">
                     <img class="automation-template-thumb" src="{{ $email->getThumbUrl() }}?v={{ Carbon\Carbon::now() }}"
                     />
-                    @if (in_array(Acelle\Model\Setting::get('builder'), ['both','classic']))
-                        <a href="{{ action('Automation2Controller@templateEditClassic', [
+                    <a
+                        onclick="popupwindow('{{ action('Automation2Controller@templatePreview', [
                             'uid' => $automation->uid,
                             'email_uid' => $email->uid,
-                        ]) }}" class="btn btn-primary template-compose" style="display:none">
-                            {{ trans('messages.automation.template.edit_with_builder') }}
-                        </a>
-                    @endif
-                    @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']))
-                        <a href="{{ action('Automation2Controller@templateEdit', [
-                            'uid' => $automation->uid,
-                            'email_uid' => $email->uid,
-                        ]) }}" class="btn btn-primary template-compose" style="display:none">
-                            {{ trans('messages.automation.template.edit_with_builder') }}
-                        </a>
-                    @endif
-                    
+                        ]) }}', '{{ $automation->name }}', 800, 800)"
+                        href="javascript:;"
+                        class="btn btn-primary" style="display:none"
+                    >
+                        {{ trans('messages.automation.template.preview') }}
+                    </a>
                 </div>
             </div>
                 

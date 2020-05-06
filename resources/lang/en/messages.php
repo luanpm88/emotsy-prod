@@ -3288,4 +3288,5 @@
   'setting.mailer.email_sent' => 'Email successfully sent',
   'list.embedded_form.redirect_url' => 'Custom redirect url',
   'list.redirect_url.placeholder' => 'Leave blank for default thank you page',
+  'automation.template.preview' => 'Preview',
 ) ?>

@@ -64,20 +64,13 @@
                 <div>
                     <div class="template-thumb-container ml-4">
                         <img class="automation-template-thumb" src="{{ $campaign->getThumbUrl() }}?v={{ Carbon\Carbon::now() }}" />
-                        @if (in_array(Acelle\Model\Setting::get('builder'), ['both','classic']))
-                            <a href="{{ action('CampaignController@builderClassic', $campaign->uid) }}"
-                                class="btn btn-primary template-compose-classic" style="display:none"
-                            >
-                                {{ trans('messages.automation.template.edit_with_builder') }}
-                            </a>
-                        @endif
-                        @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']))
-                            <a href="{{ action('CampaignController@templateEdit', $campaign->uid) }}"
-                                class="btn btn-primary template-compose" style="display:none"
-                            >
-                                {{ trans('messages.automation.template.edit_with_builder') }}
-                            </a>
-                        @endif                            
+                        <a
+                            onclick="popupwindow('{{ action('CampaignController@preview', $campaign->uid) }}', '{{ $campaign->name }}', 800, 800)"
+                            href="javascript:;"
+                            class="btn btn-primary" style="display:none"
+                        >
+                            {{ trans('messages.automation.template.preview') }}
+                        </a>                           
                     </div>
                 </div>
             </div>

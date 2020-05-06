@@ -1050,21 +1050,19 @@ class Automation2Controller extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function templatePreview(Request $request)
+    public function templatePreview(Request $request, $uid, $email_uid)
     {
-        $user = $request->user();
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
-
-        $rules = [];
-
+        $automation = Automation2::findByUid($uid);
+        $email = Email::findByUid($request->email_uid);
+        
         // authorize
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
         }
 
-        return view('campaigns.template_preview', [
-            'campaign' => $campaign,
-            'rules' => $rules,
+        return view('automation2.email.template.preview', [
+            'automation' => $automation,
+            'email' => $email,
         ]);
     }
     
