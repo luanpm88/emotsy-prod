@@ -51,7 +51,7 @@ class SendConfirmationEmailJob extends SystemJob
                 MailLog::info(sprintf('Re-sending confirmation email to %s (%s)', $subscriber->email, $subscriber->id));
                 $this->mailList->sendSubscriptionConfirmationEmail($subscriber);
             } catch (\Exception $e) {
-                MailLog::error(sprintf('Something went wrong when re-sending confirmation email for mail list %s. Error: %s', $this->mailList, $e->getMessage()));
+                MailLog::error(sprintf('Something went wrong when re-sending confirmation email for mail list %s. Error: %s', $this->mailList->name, $e->getMessage()));
                 break;
             }
         }
