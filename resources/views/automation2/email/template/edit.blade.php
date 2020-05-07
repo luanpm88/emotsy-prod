@@ -55,7 +55,62 @@
                     '{{ url('/images/backgrounds/images15.jpg') }}',
                     '{{ url('/images/backgrounds/images16.jpg') }}',
                     '{{ url('/images/backgrounds/images17.png') }}',
-                ]
+                ],
+                customInlineEdit: function(container) {
+                  var tinyconfig = {
+                      skin: 'oxide-dark',
+                      inline: true,
+                      menubar: false,
+                      force_br_newlines : false,
+                      force_p_newlines : false,
+                      forced_root_block : '',
+                      inline_boundaries: false,
+                      plugins: 'image link textcolor lists autolink',
+                      //toolbar: 'undo redo | bold italic underline | fontselect fontsizeselect | forecolor backcolor | alignleft aligncenter alignright alignfull | numlist bullist outdent indent',
+                      toolbar: [
+                          'undo redo | bold italic underline | fontselect fontsizeselect | link | menuDateButton',
+                          // 'forecolor backcolor | alignleft aligncenter alignright alignfull | numlist bullist outdent indent'
+                      ],
+                      external_filemanager_path:'{{ url('/') }}'.replace('/index.php','')+"/filemanager2/",
+                      filemanager_title:"Responsive Filemanager" ,
+                      external_plugins: { "filemanager" : '{{ url('/') }}'.replace('/index.php','')+"/filemanager2/plugin.min.js"},
+                      setup: function (editor) {
+                      
+                          /* Menu button that has a simple "insert date" menu item, and a submenu containing other formats. */
+                          /* Clicking the first menu item or one of the submenu items inserts the date in the selected format. */
+                          editor.ui.registry.addMenuButton('menuDateButton', {
+                            text: getI18n('editor.insert_tag'),
+                            fetch: function (callback) {
+                              var items = [];
+
+                              thisEditor.tags.forEach(function(tag) {
+                                  if ( tag.type == 'label') {
+                                      items.push({
+                                          type: 'menuitem',
+                                          text: tag.tag.replace("{", "").replace("}", ""),
+                                          onAction: function (_) {
+                                              if (tag.text) {
+                                                  editor.insertContent(tag.text);
+                                              } else {
+                                                  editor.insertContent(tag.tag);
+                                              }                                            
+                                          }
+                                      });
+                                  }
+                              });
+                              
+                              callback(items);
+                            }
+                          });
+                      }
+                  };
+
+                  container.addClass('builder-class-tinymce');
+                  tinyconfig.selector = '.builder-class-tinymce';
+                  $("#builder_iframe")[0].contentWindow.tinymce.init(tinyconfig);
+
+                  container.removeClass('builder-class-tinymce');
+                }
             });
           
             editor.init();
