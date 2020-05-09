@@ -494,6 +494,12 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
+            'storage.s3' => [
+                'cat' => 'others',
+                'value' => null,
+                'type' => 'text',
+                'not_required' => true,
+            ],
         ];
     }
 

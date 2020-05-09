@@ -24,11 +24,14 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Validator;
-use Acelle\Library\Tool;
 use ZipArchive;
+use RecursiveIteratorIterator;
+use RecursiveDirectoryIterator;
+use Acelle\Library\Tool;
+use Acelle\Library\Storage\Contracts\Storable;
 use Illuminate\Validation\ValidationException;
 
-class Template extends Model
+class Template extends Model implements Storable
 {
     /**
      * The attributes that are mass assignable.
@@ -540,10 +543,49 @@ class Template extends Model
         return $template;
     }
 
-    /**
-     * Get public campaign upload dir.
-     */
-    public function getStoragePath($path = '')
+    public function getArchivePath() : string
+    {
+        return join_paths('users', $this->getPath().'.zip');
+    }
+
+    public function toZip() : string
+    {
+        // Get real path for our folder
+        $rootPath = $this->getStoragePath();
+        $outputPath = join_paths('/tmp/', $this->uid.'.zip');
+
+        // Initialize archive object
+        $zip = new ZipArchive();
+        $zip->open($outputPath, ZipArchive::CREATE | ZipArchive::OVERWRITE);
+
+        // Create recursive directory iterator
+        /** @var SplFileInfo[] $files */
+        $files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($rootPath),
+            RecursiveIteratorIterator::LEAVES_ONLY
+        );
+
+        foreach ($files as $name => $file)
+        {
+            // Skip directories (they would be added automatically)
+            if (!$file->isDir())
+            {
+                // Get real and relative path for current file
+                $filePath = $file->getRealPath();
+                $relativePath = substr($filePath, strlen($rootPath) + 1);
+
+                // Add current file to archive
+                $zip->addFile($filePath, $relativePath);
+            }
+        }
+
+        // Zip archive will be created only after closing object
+        $zip->close();
+
+        return $outputPath;
+    }
+
+    public function getPath()
     {
         if ($this->customer) {
             $dir_id = $this->customer->uid;
@@ -551,7 +593,15 @@ class Template extends Model
             $dir_id = 'admin';
         }
 
-        return storage_path('app/users/'.$dir_id.'/templates/'.$this->uid.'/'.$path);
+        return join_paths($dir_id, 'templates', $this->uid);
+    }
+
+    /**
+     * Get public campaign upload dir.
+     */
+    public function getStoragePath($path = '/')
+    {
+        return storage_path(join_paths('app/users/', $this->getPath(), $path));
     }
 
     /**

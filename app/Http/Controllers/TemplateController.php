@@ -5,6 +5,8 @@ namespace Acelle\Http\Controllers;
 use Illuminate\Http\Request;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use Acelle\Model\Template;
+use Acelle\Model\Setting;
+use App;
 
 class TemplateController extends Controller
 {
@@ -141,6 +143,10 @@ class TemplateController extends Controller
             //$template->content = preg_replace('/href\=\"([^\"]*\{)/','href="{', $template->content);
             $template->untransform();
             $template->save();
+
+            if (!is_null(Setting::get('storage.s3'))) {
+                App::make('xstore')->store($template);
+            }
 
             // Redirect to my lists page
             $request->session()->flash('alert-success', trans('messages.template.created'));
@@ -291,6 +297,11 @@ class TemplateController extends Controller
         // validate and save posted data
         if ($request->isMethod('post')) {
             $template = Template::upload($request);
+
+            if (!is_null(Setting::get('storage.s3'))) {
+                App::make('xstore')->store($template);
+            }
+
             $request->session()->flash('alert-success', trans('messages.template.uploaded'));
             return redirect()->action('TemplateController@index');
         }

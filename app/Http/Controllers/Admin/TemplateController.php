@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use Acelle\Model\Template;
+use Acelle\Model\Setting;
+use App;
 
 class TemplateController extends Controller
 {
@@ -119,6 +121,10 @@ class TemplateController extends Controller
             $template->untransform();
             $template->save();
 
+            if (!is_null(Setting::get('storage.s3'))) {
+                App::make('xstore')->store($template);
+            }
+
             // Redirect to my lists page
             $request->session()->flash('alert-success', trans('messages.template.created'));
 
@@ -221,6 +227,11 @@ class TemplateController extends Controller
         if ($request->isMethod('post')) {
             $asAdmin = true;
             $template = Template::upload($request, $asAdmin);
+
+            if (!is_null(Setting::get('storage.s3'))) {
+                App::make('xstore')->store($template);
+            }
+
             $request->session()->flash('alert-success', trans('messages.template.uploaded'));
             return redirect()->action('Admin\TemplateController@index');
         }

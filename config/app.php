@@ -188,6 +188,7 @@ return [
 
         // More
         Acelle\Providers\MailerServiceProvider::class,
+        Acelle\Providers\StorageServiceProvider::class,
     ],
 
     /*
