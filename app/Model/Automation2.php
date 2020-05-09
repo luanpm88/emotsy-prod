@@ -367,7 +367,7 @@ class Automation2 extends Model
 
             $automations = $customer->activeAutomation2s;
             foreach ($automations as $automation) {
-                $automationLockFile = $customer->getHomePath(join_paths('locks/automation-lock-', $automation->uid));
+                $automationLockFile = $customer->getHomePath('locks/automation-lock-', $automation->uid);
                 $lock = new Lockable($automationLockFile);
                 $timeout = 3; // seconds
                 
