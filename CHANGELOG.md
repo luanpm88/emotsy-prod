@@ -1,3 +1,23 @@
+4.0.20 / 2020-05-10
+==================
+
+ * Fixed: default template missing
+ * Fixed: users cannot add custom sending identities
+ * Fixed: translation missing
+ * Fixed: SendGrid subaccount issue
+ * Fixed: PayPal integration error while checking out
+ * Fixed: click tracking error for Automation
+ * Fixed: Pro builder loading performance
+ * Fixed: SPF cannot be verified
+ * Fixed: translation cache issue
+ * Added: upgrade to Laravel 5.8 (current 5.5)
+ * Added: minimum PHP version required is now 7.1.3
+ * Added: send test email for system email
+ * Added: autofill support for tags
+ * Added: clean up bare linefeed characters in email
+ * Added: assign plan to customer support
+ * Added: reorganization of users assets storage
+
 4.0.19 / 2020-03-04
 ==================
 
