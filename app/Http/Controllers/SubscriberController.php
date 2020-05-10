@@ -51,7 +51,8 @@ class SubscriberController extends Controller
         }
 
         $subscribers = $this->search($list, $request);
-        $total = distinctCount($subscribers);
+        // $total = distinctCount($subscribers);
+        $total = $subscribers->count();
         $subscribers->with(['mailList', 'subscriberFields']);
         $subscribers = \optimized_paginate($subscribers, $request->per_page, null, null, null, $total);
 

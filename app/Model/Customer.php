@@ -592,7 +592,8 @@ class Customer extends Model implements BillableUserInterface
             return $this->readCache('SubscriberCount');
         }
 
-        return distinctCount($this->subscribers(), 'subscribers.email', 'distinct');
+        // return distinctCount($this->subscribers(), 'subscribers.email', 'distinct');
+        return $this->subscribers()->count();
     }
 
     /**

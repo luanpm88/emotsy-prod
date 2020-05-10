@@ -373,7 +373,8 @@ class MailList extends Model
      */
     public function unsubscribeCount()
     {
-        return distinctCount($this->subscribers()->where('status', '=', 'unsubscribed'), 'subscribers.email');
+        // return distinctCount($this->subscribers()->where('status', '=', 'unsubscribed'), 'subscribers.email');
+        return $this->subscribers()->where('status', '=', 'unsubscribed')->count();
     }
 
     /**
@@ -398,7 +399,8 @@ class MailList extends Model
      */
     public function subscribeCount()
     {
-        return distinctCount($this->subscribers()->where('status', '=', 'subscribed'), 'subscribers.email');
+        // return distinctCount($this->subscribers()->where('status', '=', 'subscribed'), 'subscribers.email');
+        return $this->subscribers()->where('status', '=', 'subscribed')->count();
     }
 
     /**
@@ -423,7 +425,8 @@ class MailList extends Model
      */
     public function unconfirmedCount()
     {
-        return distinctCount($this->subscribers()->where('status', '=', 'unconfirmed'), 'subscribers.email');
+        // return distinctCount($this->subscribers()->where('status', '=', 'unconfirmed'), 'subscribers.email');
+        return $this->subscribers()->where('status', '=', 'unconfirmed')->count();
     }
 
     /**
@@ -433,7 +436,8 @@ class MailList extends Model
      */
     public function blacklistedCount()
     {
-        return distinctCount($this->subscribers()->where('status', '=', 'blacklisted'), 'subscribers.email');
+        // return distinctCount($this->subscribers()->where('status', '=', 'blacklisted'), 'subscribers.email');
+        return $this->subscribers()->where('status', '=', 'blacklisted')->count();
     }
 
     /**
@@ -443,7 +447,8 @@ class MailList extends Model
      */
     public function spamReportedCount()
     {
-        return distinctCount($this->subscribers()->where('status', '=', 'spam-reported'), 'subscribers.email');
+        // return distinctCount($this->subscribers()->where('status', '=', 'spam-reported'), 'subscribers.email');
+        return $this->subscribers()->where('status', '=', 'spam-reported')->count();
     }
 
     /**
