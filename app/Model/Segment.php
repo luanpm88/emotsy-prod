@@ -421,7 +421,8 @@ class Segment extends Model
             return $this->readCache('SubscriberCount');
         }
 
-        return distinctCount($this->subscribers());
+        // return distinctCount($this->subscribers());
+        return $this->subscribers()->count();
     }
 
     /**
