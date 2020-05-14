@@ -1850,7 +1850,7 @@ class Customer extends Model implements BillableUserInterface
         $list = [];
 
         // own emails
-        $senders = $this->allSenders()->where('status', Sender::STATUS_VERIFIED);
+        $senders = $this->allSenders()->where('status', Sender::STATUS_VERIFIED)->get();
         foreach ($senders as $sender) {
             $list[] = $sender->name.' <'.$sender->email.'>';
         }
