@@ -178,10 +178,10 @@ class PageController extends Controller
                 // SEND subscription confirmation email
                 $list->sendSubscriptionConfirmationEmail($subscriber);
 
-                return redirect()->action('PageController@signUpConfirmationThankyou', [
+                // find display thank you page
+                return redirect()->action('PageController@signUpThankyouPage', [
                         'list_uid' => $list->uid,
-                        'uid' => $subscriber->uid,
-                        'code' => 'empty',
+                        'subscriber_uid' => $subscriber->uid,
                     ]
                 );
             } else {
@@ -198,10 +198,10 @@ class PageController extends Controller
                     }
                 }
 
-                // find display thank you page
-                return redirect()->action('PageController@signUpThankyouPage', [
+                return redirect()->action('PageController@signUpConfirmationThankyou', [
                         'list_uid' => $list->uid,
-                        'subscriber_uid' => $subscriber->uid,
+                        'uid' => $subscriber->uid,
+                        'code' => 'empty',
                     ]
                 );
             }
