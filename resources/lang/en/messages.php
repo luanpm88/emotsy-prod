@@ -2224,7 +2224,7 @@
   'sending_servers.sendgrid_smtp.intro' => 'You are connected to Sendgrid using the SMTP below',
   'sending_servers.sending_limit.sendgrid.intro' => 'Specify speed limit to control how fast your application can send through this connection in
     terms of email throughput. You can find the details of Sendgrid limits <a href="">here</a>',
-  'sending_servers.configuration_settings.sendgrid.intro' => 'Set up a connection to your Sendgrid account to send emails.',
+  'sending_servers.configuration_settings.sendgrid.intro' => 'Provide more configuration settings for your sending server',
   'sending_serbers.sendgrid.allow_verify.intro' => 'You can also allow your users to verify an identity on their own.
             That is, user can request to verify their own email address or domain against your
             Sendgrid account',
