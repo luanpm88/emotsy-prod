@@ -49,32 +49,27 @@ class IpLocation extends Model
     {
         //SELECT * FROM `ip2location_db11` WHERE INET_ATON('116.109.245.204') <= ip_to LIMIT 1
         $location = self::firstOrNew(['ip_address' => $ip]);
+        $geoip = App::make('Acelle\Library\Contracts\GeoIpInterface');
 
-        // Get info
         try {
-            $geoip = App::make('Acelle\Library\Contracts\GeoIpInterface');
             $geoip->resolveIp($ip);
-
-            $location->ip_address = $ip;
-            $location->country_code = $geoip->getCountryCode();
-            $location->country_name = $geoip->getCountryName();
-            $location->region_name = $geoip->getRegionName();
-            $location->city = $geoip->getCity();
-            $location->zipcode = $geoip->getZipcode();
-            $location->latitude = $geoip->getLatitude();
-            $location->longitude = $geoip->getLongitude();
-            $location->save();
         } catch (\Exception $e) {
             // Note log
             $title = 'GeoIP Error';
-            BackendError::cleanupDuplicateNotifications($title);
-            BackendError::warning([
-                'title' => $title,
-                'message' => 'Cannot resolve IP address '.$ip.'. '.$e->getMessage(),
-            ]);
+            LaravelLog::warning('Cannot get IP location info for '.$ip.'. Error: '.$e->getMessage());
 
-            LaravelLog::warning('Cannot get IP location info: '.$e->getMessage());
+            $geoip->resolveIp('0.0.0.0'); // to safely generate location info
         }
+
+        $location->ip_address = $ip;
+        $location->country_code = $geoip->getCountryCode();
+        $location->country_name = $geoip->getCountryName();
+        $location->region_name = $geoip->getRegionName();
+        $location->city = $geoip->getCity();
+        $location->zipcode = $geoip->getZipcode();
+        $location->latitude = $geoip->getLatitude();
+        $location->longitude = $geoip->getLongitude();
+        $location->save();
 
         return $location;
     }
