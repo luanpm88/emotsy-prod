@@ -1855,7 +1855,7 @@
   'upgrade.wording.upgrade' => 'Estás corriendo en Acelle Mail :current, una nueva version esta disponible: :new<br>¿Desea continuar con la actualización?',
   'upgrade.title.current' => 'Su actual version',
   'upgrade.title.upgrade_confirm' => 'Confirmación de actualización',
-  'upgrade.wording.upload' => 'Actualmente se está ejecutando en Acelle Mail: :current. Para actualizar su aplicación, descargue la última compilación de <code> <a target="_blank" href="https://codecanyon.net/item/acelle-email-marketing-web-application/17796082"> codecanyon.net </a> </code>, puede encontrar el paquete de actualización ubicado en <code> [fuente acellemail] /upgrade/patch-3.xxbin </code>, cárguelo usando el formulario a continuación',
+  'upgrade.wording.upload' => 'Actualmente se está ejecutando en Acelle Mail :current. Para actualizar su aplicación, descargue la última compilación de <code> <a target="_blank" href="https://codecanyon.net/item/acelle-email-marketing-web-application/17796082"> codecanyon.net </a> </code>, puede encontrar el paquete de actualización ubicado en <code> [fuente acellemail] /upgrade/patch-3.xxbin </code>, cárguelo usando el formulario a continuación',
   'upgrade.alert.upgrade_success' => '¡Felicidades! Has actualizado con éxito a la nueva versión de Acelle Mail.',
   'upgrade.alert.cancel_success' => 'La actualización ha sido cancelada',
   'upgrade.alert.upload_success' => 'Se cargó con éxito una nueva versión de Acelle Mail. Ahora puede revisar los cambios y continuar con la actualización.',
