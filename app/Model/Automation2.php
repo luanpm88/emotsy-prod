@@ -938,4 +938,66 @@ class Automation2 extends Model
 
         return $type == 'api-3-0';
     }
+
+    /**
+     * Update Campaign cached data.
+     */
+    public function updateCache($key = null)
+    {
+        // cache indexes
+        $index = [
+            // @note: SubscriberCount must come first as its value shall be used by the others
+            'SummaryStats' => function (&$auto) {
+                return $auto->getSummaryStats();
+            }
+        ];
+
+        // retrieve cached data
+        $cache = json_decode($this->cache, true);
+        if (is_null($cache)) {
+            $cache = [];
+        }
+
+        if (is_null($key)) {
+            // update all cache
+            foreach ($index as $key => $callback) {
+                $cache[$key] = $callback($this);
+                if ($key == 'SubscriberCount') {
+                    // SubscriberCount cache must always be updated as its value will be used for the others
+                    $this->cache = json_encode($cache);
+                    $this->save();
+                }
+            }
+        } else {
+            // update specific key
+            $callback = $index[$key];
+            $cache[$key] = $callback($this);
+        }
+
+        // write back to the DB
+        $this->cache = json_encode($cache);
+        $this->save();
+    }
+
+    /**
+     * Retrieve Campaign cached data.
+     *
+     * @return mixed
+     */
+    public function readCache($key, $default = null)
+    {
+        $cache = json_decode($this->cache, true);
+        if (is_null($cache)) {
+            return $default;
+        }
+        if (array_key_exists($key, $cache)) {
+            if (is_null($cache[$key])) {
+                return $default;
+            } else {
+                return $cache[$key];
+            }
+        } else {
+            return $default;
+        }
+    }
 }
