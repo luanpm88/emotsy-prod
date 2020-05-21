@@ -44,7 +44,7 @@
                 </td>
                 <td>
                     <h5 class="no-margin text-teal-800 stat-num">
-                        {{ number_to_percentage($automation->getSummaryStats()['complete']) }}
+                        {{ $automation->readCache('SummaryStats') ? number_to_percentage($automation->readCache('SummaryStats')['complete']) : '#' }}
                     </h5>
                     <span class="text-muted2">{{ trans('messages.complete') }}</span>
                 </td>

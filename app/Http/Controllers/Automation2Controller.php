@@ -163,6 +163,7 @@ class Automation2Controller extends Controller
     {
         // init automation
         $automation = Automation2::findByUid($uid);
+        $automation->updateCacheInBackground();
         
         // authorize
         if (\Gate::denies('update', $automation)) {
@@ -1234,7 +1235,7 @@ class Automation2Controller extends Controller
 
         return view('automation2.insight', [
             'automation' => $automation,
-            'stats' => $automation->getSummaryStats(),
+            'stats' => $automation->readCache('SummaryStats'),
             'insight' => $automation->getInsight(),
         ]);
     }

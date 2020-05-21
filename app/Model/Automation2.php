@@ -36,6 +36,7 @@ use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Formatter\LineFormatter;
 use Acelle\Library\Lockable;
+use Acelle\Model\SystemJob as SystemJobModel;
 
 class Automation2 extends Model
 {
@@ -378,7 +379,7 @@ class Automation2 extends Model
                             $automation->logger()->info(sprintf('Checking automation "%s"', $automation->name));
                             $automation->checkForNewTriggers();
                             $automation->checkForExistingTriggersUpdate();
-
+                            $automation->updateCache();
                         } else {
                             $automation->logger()->warning(sprintf('Automation "%s" skipped, user "%s" not on active subscription', $automation->name, $customer->displayName()));
                         }
@@ -998,6 +999,18 @@ class Automation2 extends Model
             }
         } else {
             return $default;
+        }
+    }
+
+    public function updateCacheInBackground()
+    {
+        $existed = SystemJobModel::getNewJobs()
+                       ->where('name', \Acelle\Jobs\UpdateAutomation::class)
+                       ->where('data', $this->id)
+                       ->exists();
+
+        if (!$existed) {
+            dispatch(new \Acelle\Jobs\UpdateAutomation($this));
         }
     }
 }
