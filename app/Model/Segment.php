@@ -335,6 +335,14 @@ class Segment extends Model
                         // IMPORTANT: LEFT JOIN HERE
                         $conditions[] = sprintf('(%s IN (SELECT s.id FROM %s s LEFT JOIN %s l ON s.id = l.subscriber_id LEFT JOIN %s o ON l.message_id = o.message_id WHERE DATEDIFF(now(), o.created_at) > %s OR o.created_at IS NULL))', table('subscribers.id'), table('subscribers'), table('tracking_logs'), table('open_logs'), db_quote($keyword));
                         break;
+                    case 'last_link_click_less_than_days':
+                        // IMPORTANT: NO LEFT JOIN HERE
+                        $conditions[] = sprintf('(%s IN (SELECT s.id FROM %s s JOIN %s l ON s.id = l.subscriber_id JOIN %s o ON l.message_id = o.message_id WHERE DATEDIFF(now(), o.created_at) < %s))', table('subscribers.id'), table('subscribers'), table('tracking_logs'), table('click_logs'), db_quote($keyword));
+                        break;
+                    case 'last_link_click_greater_than_days':
+                        // IMPORTANT: LEFT JOIN HERE
+                        $conditions[] = sprintf('(%s IN (SELECT s.id FROM %s s LEFT JOIN %s l ON s.id = l.subscriber_id LEFT JOIN %s o ON l.message_id = o.message_id WHERE DATEDIFF(now(), o.created_at) > %s OR o.created_at IS NULL))', table('subscribers.id'), table('subscribers'), table('tracking_logs'), table('click_logs'), db_quote($keyword));
+                        break;
                     default:
                         throw new \Exception("Unknown segment condition type (operator): ".$condition->operator);
                 }
