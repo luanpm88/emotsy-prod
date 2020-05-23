@@ -295,6 +295,7 @@ class Segment extends Model
                         $cond = '(LOWER(sf'.$number.".value) = '' OR LOWER(sf".$number.'.value) IS NULL)';
                         break;
                     default:
+                        throw new \Exception("Unknown segment condition type (operator): ".$condition->operator);
                 }
 
                 // add to joins array
@@ -308,7 +309,7 @@ class Segment extends Model
 
                 // add condition
                 $conditions[] = $cond;
-            } elseif (strpos($condition->operator, 'verification') === 0) {
+            } else {
                 switch ($condition->operator) {
                     case 'verification_equal':
                         // add condition
@@ -318,10 +319,6 @@ class Segment extends Model
                         // add condition
                         $conditions[] = '('.\DB::getTablePrefix().'email_verifications.result IS NULL OR '.\DB::getTablePrefix()."email_verifications.result != '".$condition->value."')";
                         break;
-                    default:
-                }
-            } elseif (strpos($condition->operator, 'tag') === 0) {
-                switch ($condition->operator) {
                     case 'tag_contains':
                         // add condition
                         $conditions[] = '('.\DB::getTablePrefix().'subscribers.tags LIKE '.db_quote('%"'.$keyword.'"%').')';
@@ -330,7 +327,16 @@ class Segment extends Model
                         // add condition
                         $conditions[] = '('.\DB::getTablePrefix().'subscribers.tags NOT LIKE '.db_quote('%"'.$keyword.'"%').')';
                         break;
+                    case 'last_open_email_less_than_days':
+                        // IMPORTANT: NO LEFT JOIN HERE
+                        $conditions[] = sprintf('(%s IN (SELECT s.id FROM %s s JOIN %s l ON s.id = l.subscriber_id JOIN %s o ON l.message_id = o.message_id WHERE DATEDIFF(now(), o.created_at) < %s))', table('subscribers.id'), table('subscribers'), table('tracking_logs'), table('open_logs'), db_quote($keyword));
+                        break;
+                    case 'last_open_email_greater_than_days':
+                        // IMPORTANT: LEFT JOIN HERE
+                        $conditions[] = sprintf('(%s IN (SELECT s.id FROM %s s LEFT JOIN %s l ON s.id = l.subscriber_id LEFT JOIN %s o ON l.message_id = o.message_id WHERE DATEDIFF(now(), o.created_at) > %s OR o.created_at IS NULL))', table('subscribers.id'), table('subscribers'), table('tracking_logs'), table('open_logs'), db_quote($keyword));
+                        break;
                     default:
+                        throw new \Exception("Unknown segment condition type (operator): ".$condition->operator);
                 }
             }
         }
