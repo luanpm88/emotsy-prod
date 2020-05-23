@@ -701,16 +701,22 @@ class MailListController extends Controller
             }
 
             // Validation
-            $rules = $subscriber->getRules();
-            if(is_object($subscriber) && $subscriber->status == \Acelle\Model\Subscriber::STATUS_SUBSCRIBED) {
+            $rules = ['EMAIL' => 'required|email'];
+
+            /* it is ok to have subscriber subscribe again without any confusing message
+            if (is_object($subscriber) && $subscriber->status == \Acelle\Model\Subscriber::STATUS_SUBSCRIBED) {
                 $rules['email_already_subscribed'] = 'required';
             }
+            */
 
             if ($list->subscribe_confirmation) {
-                $subscriber->status = 'unconfirmed';
+                if ($subscriber->status != 'subscribed') {
+                    $subscriber->status = 'unconfirmed';
+                }
             } else {
                 $subscriber->status = 'subscribed';
             }
+
             $subscriber->from = 'embedded-form';
 
             // Validate
@@ -721,11 +727,7 @@ class MailListController extends Controller
                 // $validator->errors()
                 $errs = [];
                 foreach($validator->errors()->toArray() as $key => $error) {
-                    if ($key != 'email_already_subscribed') {
-                        $errs[] = $error[0];
-                    } else {
-                        $errs[] = $error[0];
-                    }
+                    $errs[] = $error[0];
                 }
 
                 if (strpos($url, '?') !== false) {
@@ -745,6 +747,7 @@ class MailListController extends Controller
             $subscriber->email = $request->EMAIL;
             $subscriber->ip = $request->ip();
             $subscriber->save();
+
             // Update field
             $subscriber->updateFields($request->all());
             
@@ -773,7 +776,7 @@ class MailListController extends Controller
                 event(new \Acelle\Events\MailListUpdated($subscriber->mailList));
 
                 // custom redirect
-                if($request->redirect_url) {
+                if ($request->redirect_url) {
                     return redirect()->away($request->redirect_url);
                 }
                 
@@ -784,13 +787,13 @@ class MailListController extends Controller
                 $subscriber->updateStatus('subscribed');
 
                 // Send welcome email
-                if($list->send_welcome_email) {
+                if ($list->send_welcome_email) {
                     // SEND subscription confirmation email
                     $list->sendSubscriptionWelcomeEmail($subscriber);
                 }
 
                 // custom redirect
-                if($request->redirect_url) {
+                if ($request->redirect_url) {
                     return redirect()->away($request->redirect_url);
                 }
                 
