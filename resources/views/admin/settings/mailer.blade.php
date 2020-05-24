@@ -43,6 +43,8 @@
             @include("admin.settings._tabs")
 
             <div class="tab-content">
+                <p>{{ trans('messages.system_email.intro') }}</p>
+
                 @include("admin.settings._mailer")
             </div>
         </div>

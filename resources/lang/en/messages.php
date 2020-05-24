@@ -772,6 +772,7 @@
   'api_key' => 'API key',
   'all_sending_servers' => 'All sending servers',
   'system_email_configuration' => 'System\'s email configuration',
+  'system_email.intro' => 'Configure email service which is used by the system to send transactional emails like user verification, application notification, etc.',
   'Upload_file' => 'Upload',
   'Select' => 'Select',
   'Erase' => 'Erase',
