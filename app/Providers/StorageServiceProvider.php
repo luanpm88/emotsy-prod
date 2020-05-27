@@ -19,11 +19,15 @@ class StorageServiceProvider extends ServiceProvider implements DeferrableProvid
         // service business is implemented here, not recommended
         $this->app->bind('xstore', function ($app) {
             // Sample of valid setting: "s3:://apikey:secret@region:bucket"
-            list($apiKey, $secret, $region, $bucket) = array_values(array_filter(preg_split('/(s3::\/\/)|([:@])/', Setting::get('storage.s3'))));
+            try {
+                list($apiKey, $secret, $region, $bucket) = array_values(array_filter(preg_split('/(s3::\/\/)|([:@])/', Setting::get('storage.s3'))));
 
-            $service = new S3($apiKey, $secret, $region, $bucket);
+                $service = new S3($apiKey, $secret, $region, $bucket);
 
-            return $service;
+                return $service;
+            } catch(\Exception $ex) {
+                return null;
+            }
         });
     }
 
