@@ -144,7 +144,7 @@ class TemplateController extends Controller
             $template->untransform();
             $template->save();
 
-            if (!is_null(Setting::get('storage.s3'))) {
+            if (!empty(Setting::get('storage.s3'))) {
                 App::make('xstore')->store($template);
             }
 
@@ -298,7 +298,7 @@ class TemplateController extends Controller
         if ($request->isMethod('post')) {
             $template = Template::upload($request);
 
-            if (!is_null(Setting::get('storage.s3'))) {
+            if (!empty(Setting::get('storage.s3'))) {
                 App::make('xstore')->store($template);
             }
 
