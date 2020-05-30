@@ -3290,4 +3290,10 @@
   'list.embedded_form.redirect_url' => 'Custom redirect url',
   'list.redirect_url.placeholder' => 'Leave blank for default thank you page',
   'automation.template.preview' => 'Preview',
+  'campaign.resend.title' => 'Resend campaign',
+  'campaign.resend.intro' => 'Send this campaign again, but only to subscribers who:',
+  'campaign.resend.option.not_receive' => 'Do not reveive the email (new subscribers for example)',
+  'campaign.resend.option.not_open' => 'Do not open the email',
+  'campaign.resend.option.not_click' => 'Do not click on any link in the email',
+  'campaign.resend.cancel' => 'Cancel',
 ) ?>

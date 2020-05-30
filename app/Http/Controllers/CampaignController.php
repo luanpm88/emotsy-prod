@@ -2209,18 +2209,28 @@ class CampaignController extends Controller
         $customer = $request->user()->customer;
         $campaign = \Acelle\Model\Campaign::findByUid($uid);
 
-        // authorize
-        if (\Gate::allows('resend', $campaign)) {
-            $campaign->ready();
-            $campaign->resend();
-            // Redirect to my lists page
-            echo trans('messages.campaign.resent');
-        } else {
-            echo json_encode([
-                'status' => 'error',
-                'message' => trans('messages.not_authorized_message'),
-            ]);
+        // do resend with option: $request->option : not_receive|not_open|not_click
+        if ($request->isMethod('post')) {
+            // authorize
+            if (\Gate::allows('resend', $campaign)) {
+                $campaign->ready();
+                $campaign->resend();
+                // Redirect to my lists page
+                return response()->json([
+                    'status' => 'success',
+                    'message' => trans('messages.campaign.resent'),
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => trans('messages.not_authorized_message'),
+                ]);
+            }
         }
+
+        return view('campaigns.resend', [
+            'campaign' => $campaign,
+        ]);
     }
 
     /**

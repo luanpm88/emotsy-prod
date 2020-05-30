@@ -362,7 +362,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
 
     Route::get('campaigns/{uid}/spam-score', 'CampaignController@spamScore');
     Route::get('campaigns/{from_uid}/copy-move-from/{action}', 'CampaignController@copyMoveForm');
-    Route::post('campaigns/{uid}/resend', 'CampaignController@resend');
+    Route::match(['get', 'post'], 'campaigns/{uid}/resend', 'CampaignController@resend');
     Route::get('campaigns/{uid}/tracking-log/download', 'CampaignController@trackingLogDownload');
     Route::get('campaigns/job/{uid}/progress', 'CampaignController@trackingLogExportProgress');
     Route::get('campaigns/job/{uid}/download', 'CampaignController@download');

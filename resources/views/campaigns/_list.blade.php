@@ -95,7 +95,7 @@
 							<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 							<ul class="dropdown-menu dropdown-menu-right">
 								@if (\Gate::allows('resend', $item))
-									<li><a data-method='POST' link-confirm="{{ trans('messages.campaign.resend_confirm') }}" href="{{ action('CampaignController@resend', ["uids" => $item->uid]) }}">
+									<li><a class="resend-campaign" href="{{ action('CampaignController@resend', ["uids" => $item->uid]) }}">
 										<i class="icon-reload-alt"></i> {{ trans("messages.campaign.resend") }}</a></li>
 								@endif
 								@if (\Gate::allows('pause', $item))
@@ -123,6 +123,20 @@
 	</table>
 	@include('elements/_per_page_select', ["items" => $campaigns])
 	{{ $campaigns->links() }}
+
+	<script>
+		var resendPopup = new Popup();
+
+		$('.resend-campaign').click(function(e) {
+			e.preventDefault();
+
+			var url = $(this).attr('href');
+
+			resendPopup.load(url);
+
+			console.log(url);
+		});
+	</script>
 @elseif (!empty(request()->keyword))
 	<div class="empty-list">
 		<i class="icon-paperplane"></i>
