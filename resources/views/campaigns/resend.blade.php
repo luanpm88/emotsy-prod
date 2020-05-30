@@ -1,4 +1,4 @@
-@extends('layouts.popup.medium')
+@extends('layouts.popup.small')
 
 @section('content')
 	<div class="row">
@@ -22,9 +22,11 @@
                     ],
                     'help_class' => 'campaign',
 				])
-
-                <button class="btn btn-mc_primary bg-grey mt-3 mr-2">{{ trans('messages.campaign.resend') }}</button>
-                <button class="btn btn-link font-weight-semibold mt-3">{{ trans('messages.campaign.resend.cancel') }}</button>
+                <hr>
+                <div class="text-center">
+                    <button class="btn btn-mc_primary bg-grey mt-3 mr-2">{{ trans('messages.campaign.resend') }}</button>
+                    <button class="btn btn-link font-weight-semibold mt-3">{{ trans('messages.campaign.resend.cancel') }}</button>
+                </div>
             </form>
         </div>
     </div>
