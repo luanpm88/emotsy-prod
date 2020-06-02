@@ -1887,7 +1887,7 @@ abstract class AbsCampaign extends Model
                 $this->cleanupFailedLog();
                 $this->cleanupNotOpenLog();
                 break;
-            case 'not_receive':
+            case 'not_click':
                 $this->cleanupFailedLog();
                 $this->cleanupNotClickLog();
                 break;
@@ -1907,7 +1907,7 @@ abstract class AbsCampaign extends Model
     {
         // clean up failed log so that they will be included in resend
         $recipients = $this->trackingLogs()->where('status', SendingServer::DELIVERY_STATUS_FAILED);
-        MailLog::warning('Resend to those who faield to deliver: '.$recipients->count());
+        MailLog::warning('Resend to those who failed to deliver: '.$recipients->count());
         $recipients->delete();
 
     }

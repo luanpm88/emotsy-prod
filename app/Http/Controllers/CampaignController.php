@@ -2214,7 +2214,7 @@ class CampaignController extends Controller
             // authorize
             if (\Gate::allows('resend', $campaign)) {
                 $campaign->ready();
-                $campaign->resend();
+                $campaign->resend($request->option);
                 // Redirect to my lists page
                 return response()->json([
                     'status' => 'success',
