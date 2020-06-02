@@ -23,12 +23,13 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use DB;
 use Illuminate\Support\Facades\Validator;
 use Acelle\Library\Log as MailLog;
 use Acelle\Library\RouletteWheel;
 use Acelle\Library\StringHelper;
 use Acelle\Exceptions\VerificationProcessCancelledException;
+use DB;
+use App;
 
 class MailList extends Model
 {
@@ -997,6 +998,35 @@ class MailList extends Model
         $layout = \Acelle\Model\Layout::where('alias', 'unsubscribe_goodbye_email')->first();
         $send_page = \Acelle\Model\Page::findPage($list, $layout);
         $this->sendMail($subscriber, $send_page, $send_page->getTransformedSubject($subscriber));
+    }
+
+    /**
+     * Send unsubscription goodbye email to list owner.
+     */
+    public function sendUnsubscriptionNotificationEmailToListOwner($subscriber)
+    {
+        // Create a message
+        $message = new \Swift_Message();
+        $message->setContentType('text/html; charset=utf-8');
+        $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
+        $message->setTo([ $this->customer->user->email => $this->customer->displayName()]);
+
+        $template = \Acelle\Model\Layout::where('alias', 'unsubscribe_notification_for_list_owner')->first();
+        $htmlContent = $template->content;
+
+        $htmlContent = str_replace('{LIST_NAME}', $this->name, $htmlContent);
+        $htmlContent = str_replace('{EMAIL}', $subscriber->email, $htmlContent);
+
+        $message->setSubject($template->subject);
+        $message->addPart($htmlContent, 'text/html');
+
+        $mailer = App::make('xmailer');
+        MailLog::info('Sending unsubscription notification to list owner: '.$this->customer->user->email);
+        $result = $mailer->sendWithDefaultFromAddress($message);
+
+        if (array_key_exists('error', $result)) {
+            throw new \Exception("Error sending unsubscribe notification: ".$result['error']);
+        }
     }
 
     /**
