@@ -391,8 +391,7 @@ class Campaign extends AbsCampaign
 
         $builder = $this->subscribers([], ['email_verifications'])
                 ->whereRaw(sprintf(table('subscribers').'.email NOT IN (SELECT email FROM %s t JOIN %s s ON t.subscriber_id = s.id WHERE t.campaign_id = %s)', table('tracking_logs'), table('subscribers'), $this->id))
-                ->whereRaw(DB::getTablePrefix()."subscribers.status = '".Subscriber::STATUS_SUBSCRIBED."'")
-                ->groupBy(DB::raw(table('subscribers.email')));
+                ->whereRaw(DB::getTablePrefix()."subscribers.status = '".Subscriber::STATUS_SUBSCRIBED."'");
 
         if (!is_null($partition)) {
             // retrieve the subscribers list for this partition only
@@ -402,6 +401,9 @@ class Campaign extends AbsCampaign
             $builder = $builder->whereRaw(sprintf('CONV(SUBSTR(MD5(%s),1, 4), 16, 10) MOD %s = %s', table('subscribers.email'), $count, $partitionId));
         }
 
+        $total = $builder->count(); // IMPORTNT: Count before group, otherwise it will always return 0 or 1
+        $builder = $builder->groupBy(DB::raw(table('subscribers.email')));
+
         // the array_unique_by functions out-perform the Collection::unique of Laravel!!!
         // The following code snipet is no longer needed as the list is already unique by email
         //     $unique = array_unique_by($subscribers, function ($r) {
@@ -410,7 +412,7 @@ class Campaign extends AbsCampaign
 
         $page = 1;
         $limit = 2000;
-        while ($total = $builder->count()) {
+        while ($builder->count()) { // IMPORTANT: count() for a grouped query will always return 0 or 1
             // @note eager loading will result in a very long query
             // which could exceed the [max_allowed_packet] setting of MySQL
             // so the value of $limit must be considered carefully
