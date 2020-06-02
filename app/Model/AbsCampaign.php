@@ -1876,10 +1876,25 @@ abstract class AbsCampaign extends Model
     /**
      * Re-send the campaign for sending.
      */
-    public function resend()
+    public function resend($filter = 'not_receive') // not_receive | not_open | not_click
     {
         // clean up failed log so that they will be included in resend
-        $this->cleanupFailedLog();
+        switch ($filter) {
+            case 'not_receive':
+                $this->cleanupFailedLog();
+                break;
+            case 'not_open':
+                $this->cleanupFailedLog();
+                $this->cleanupNotOpenLog();
+                break;
+            case 'not_receive':
+                $this->cleanupFailedLog();
+                $this->cleanupNotClickLog();
+                break;
+            default:
+                throw new \Exception("Unknown campaign RESEND type: ".$filter);
+                break;
+        }
 
         // and queue again
         $this->requeue();
@@ -1891,7 +1906,30 @@ abstract class AbsCampaign extends Model
     public function cleanupFailedLog()
     {
         // clean up failed log so that they will be included in resend
-        $this->trackingLogs()->where('status', SendingServer::DELIVERY_STATUS_FAILED)->delete();
+        $recipients = $this->trackingLogs()->where('status', SendingServer::DELIVERY_STATUS_FAILED);
+        MailLog::warning('Resend to those who faield to deliver: '.$recipients->count());
+        $recipients->delete();
+
+    }
+
+    public function cleanupNotOpenLog()
+    {
+        // clean up failed log so that they will be included in resend
+        $recipients = Campaign::first()->trackingLogs()
+                         ->leftJoin('open_logs', 'tracking_logs.message_id', 'open_logs.message_id')
+                         ->whereNull('open_logs.id');
+        MailLog::warning('Resend to those who did not open: '.$recipients->count());
+        $recipients->delete();
+    }
+
+    public function cleanupNotClickLog()
+    {
+        // clean up failed log so that they will be included in resend
+        $recipients = Campaign::first()->trackingLogs()
+                         ->leftJoin('click_logs', 'tracking_logs.message_id', 'click_logs.message_id')
+                         ->whereNull('click_logs.id');
+        MailLog::warning('Resend to those who did not click: '.$recipients->count());
+        $recipients->delete();
     }
 
     /**

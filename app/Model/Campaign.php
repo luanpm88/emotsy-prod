@@ -337,19 +337,20 @@ class Campaign extends AbsCampaign
         if ((isset($filters) && (isset($filters['open']) || isset($filters['click']) || isset($filters['tracking_status'])))
         ) {
             $query = $query->leftJoin('tracking_logs', 'tracking_logs.subscriber_id', '=', 'subscribers.id');
-            $query = $query->where('tracking_logs.id', '!=', 'NULL');
+            $query = $query->whereNotNull('tracking_logs.id');
             $query = $query->where('tracking_logs.campaign_id', '=', $this->id);
         }
+
         if (isset($filters)) {
             if (isset($filters['open'])) {
-                $equal = ($filters['open'] == 'opened') ? '!=' : '=';
+                $equal = ($filters['open'] == 'opened') ? 'whereNotNull' : 'whereNull';
                 $query = $query->leftJoin('open_logs', 'tracking_logs.message_id', '=', 'open_logs.message_id')
-                    ->where('open_logs.id', $equal, null);
+                    ->$equal('open_logs.id');
             }
             if (isset($filters['click'])) {
-                $equal = ($filters['click'] == 'clicked') ? '!=' : '=';
+                $equal = ($filters['click'] == 'clicked') ? 'whereNotNull' : 'whereNull';
                 $query = $query->leftJoin('click_logs', 'tracking_logs.message_id', '=', 'click_logs.message_id')
-                    ->where('click_logs.id', $equal, null);
+                    ->$equal('click_logs.id');
             }
             if (isset($filters['tracking_status'])) {
                 $val = ($filters['tracking_status'] == 'not_sent') ? null : $filters['tracking_status'];
