@@ -3250,4 +3250,11 @@
   'list.embedded_form.redirect_url' => 'Custom redirect url',
   'list.redirect_url.placeholder' => 'Leave blank for default thank you page',
   'automation.template.preview' => 'Preview',
+  'system_email.intro' => 'Configure email service which is used by the system to send transactional emails like user verification, application notification, etc.',
+  'campaign.resend.title' => 'Resend campaign',
+  'campaign.resend.intro' => 'Send this campaign again, but only to subscribers who:',
+  'campaign.resend.option.not_receive' => 'Did not reveive the email (new subscribers for example)',
+  'campaign.resend.option.not_open' => 'Did not open the email',
+  'campaign.resend.option.not_click' => 'Did not click on any link in the email',
+  'campaign.resend.cancel' => 'Cancel',
 ) ?>
