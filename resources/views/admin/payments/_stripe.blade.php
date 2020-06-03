@@ -32,6 +32,15 @@
                 'label' => trans('messages.stripe.always_ask_for_valid_card'),
                 'options' => ['no','yes'],
                 'help_class' => 'payment',
+			])
+			
+			@include('helpers.form_control', ['type' => 'checkbox2',
+                'class' => '',
+                'name' => 'options[billing_address_required]',
+                'value' => $gateway['fields']['billing_address_required'],
+                'label' => trans('messages.stripe.billing_address_required'),
+                'options' => ['no','yes'],
+                'help_class' => 'payment',
             ])
 			
 			<hr>

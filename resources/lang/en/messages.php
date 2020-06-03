@@ -3297,4 +3297,5 @@
   'campaign.resend.option.not_click' => 'Did not click on any link in the email',
   'campaign.resend.cancel' => 'Cancel',
   'unsubscribe_notification_for_list_owner' => 'Unsubscription notification email (for mail list owner)',
+  'stripe.billing_address_required' => 'Require address information',
 ) ?>
