@@ -37,6 +37,7 @@ use Monolog\Handler\RotatingFileHandler;
 use Monolog\Formatter\LineFormatter;
 use Acelle\Library\Lockable;
 use Acelle\Model\SystemJob as SystemJobModel;
+use DateTime;
 
 class Automation2 extends Model
 {
@@ -404,11 +405,12 @@ class Automation2 extends Model
                 break;
             case 'specific-date':
                 $this->checkForSpecificDatetime();
-                //...
                 break;
             case 'say-goodbye-subscriber':
                 $this->checkForListUnsubscription();
-                //...
+                break;
+            case 'say-happy-birthday':
+                $this->checkForDateOfBirth();
                 break;
             case 'api-3-0':
                 // Just wait for API call
@@ -420,6 +422,42 @@ class Automation2 extends Model
                 throw new \Exception('Unknown Automation trigger type '.$this->getTriggerAction()->getOption('key'));
         }
         $this->logger()->info(sprintf('NEW > Finish checking for new trigger'));
+    }
+
+    public function checkForDateOfBirth()
+    {
+        // TODAY + CURRENT TIME
+        $currentTime = new DateTime();
+        // TODAY + GIVEN TIME
+        $triggerTime = new DateTime($this->getTriggerAction()->getOptions()['at']);
+
+        if ($currentTime < $triggerTime) {
+            return;
+        }
+
+        // Get the modify interval: 1 days, 2 days... for example
+        $interval = $this->getTriggerAction()->getOptions()['before']; 
+
+        $today = Carbon::now($this->customer->timezone)->modify($interval);
+        $dobFieldUid = $this->getTriggerAction()->getOptions()['field'];
+        $dobFieldId = Field::findByUid($dobFieldUid)->id;
+        $subscribers = $this->subscribers()
+            ->join('subscriber_fields', 'subscribers.id', 'subscriber_fields.subscriber_id')
+            ->where('subscriber_fields.field_id', $dobFieldId)
+            ->whereIn(DB::raw(sprintf('SUBSTRING(%s, 1, 10)', table('subscriber_fields.value'))), [
+                $today->format('Y-m-d'),
+                $today->format('Y:m:d'),
+                $today->format('m/d/Y'),
+                $today->format('m-d-Y'),
+            ])
+            ->leftJoin('auto_triggers', 'auto_triggers.subscriber_id', 'subscribers.id')
+            ->whereNull('auto_triggers.subscriber_id')->get();
+
+        // init trigger
+        foreach ($subscribers as $subscriber) {
+            $this->initTrigger($subscriber);
+            $this->logger()->info(sprintf('NEW > ??? > Say happy birthday (%s) to %s', $interval, $subscriber->email));
+        }
     }
 
     /**
@@ -739,7 +777,7 @@ class Automation2 extends Model
 
     public function subscribers($actionId = null)
     {
-        $list = $this->mailList->subscribers();
+        $list = $this->mailList->subscribers()->select('subscribers.*');
 
         if (!is_null($actionId)) {
             $list->join('auto_triggers', 'auto_triggers.subscriber_id', '=', 'subscribers.id')
