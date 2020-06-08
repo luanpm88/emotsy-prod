@@ -1888,6 +1888,7 @@
   'email_verification_result_undeliverable' => 'Undeliverable',
   'email_verification_result_unknown' => 'Unknown',
   'email_verification_result_risky' => 'Risky',
+  'email_verification_result_unverified' => 'Unverfied',
   'email_verification_result_' => '',
   'all_verification' => 'All verification',
   'verification_result' => 'Verification result',

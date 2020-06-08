@@ -10,6 +10,7 @@ class EmailVerification extends Model
     const RESULT_UNDELIVERABLE = 'undeliverable';
     const RESULT_UNKNOWN = 'unknown';
     const RESULT_RISKY = 'risky';
+    const RESULT_UNVERIFIED = 'unverified';
 
     /**
      * Check if the email address is deliverable.
@@ -63,6 +64,7 @@ class EmailVerification extends Model
             ['value' => self::RESULT_UNDELIVERABLE, 'text' => trans('messages.email_verification_result_'.self::RESULT_UNDELIVERABLE)],
             ['value' => self::RESULT_UNKNOWN, 'text' => trans('messages.email_verification_result_'.self::RESULT_UNKNOWN)],
             ['value' => self::RESULT_RISKY, 'text' => trans('messages.email_verification_result_'.self::RESULT_RISKY)],
+            ['value' => self::RESULT_UNVERIFIED, 'text' => trans('messages.email_verification_result_'.self::RESULT_UNVERIFIED)],
         ];
     }
 }
