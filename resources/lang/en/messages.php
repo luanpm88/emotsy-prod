@@ -3299,4 +3299,6 @@
   'campaign.resend.cancel' => 'Cancel',
   'unsubscribe_notification_for_list_owner' => 'Unsubscription notification email (for mail list owner)',
   'stripe.billing_address_required' => 'Require address information',
+  'campaign.preheader.intro' => '<strong>Preheader</strong> is the short summary text that follows the subject line
+    when viewing an email from the inbox',
 ) ?>
