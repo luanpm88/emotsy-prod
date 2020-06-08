@@ -261,7 +261,7 @@ class Customer extends Model implements BillableUserInterface
      */
     public function activeSubscription()
     {
-        return (is_object($this->subscription) && $this->subscription->active()) ? $this->subscription : null;
+        return (is_object($this->subscription) && $this->subscription->isActive()) ? $this->subscription : null;
     }
 
     /**
