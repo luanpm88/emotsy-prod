@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Acelle Email Marketing Web Application</title>
+        <title>@yield('title') - {{ \Acelle\Model\Setting::get("site_name") }}</title>
 
         <!-- Required meta tags -->
         <meta charset="utf-8">
