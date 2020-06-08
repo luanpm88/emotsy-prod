@@ -308,8 +308,6 @@ class PageController extends Controller
 
         if ($request->isMethod('post')) {
             if ($subscriber->getSecurityToken('unsubscribe') == $request->code && $subscriber->status == 'subscribed') {
-                // Validation
-                $this->validate($request, ['EMAIL' => 'required|email|exists:subscribers,email']);
 
                 $subscriber->status = 'unsubscribed';
                 $subscriber->save();
