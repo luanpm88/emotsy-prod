@@ -53,12 +53,12 @@
                                 </p>
                             </div>
                             <div class="col-sm-4 col-md-4 text-left">
-                                @if ($subscription->ended())
+                                @if ($subscription->isEnded())
                                     <h5 class="no-margin">
                                         <span class="kq_search">{{ Acelle\Library\Tool::formatDate($subscription->ends_at) }}</span>
                                     </h5>
                                     <span class="text-muted2">{{ trans('messages.subscription.ended_on') }}</span>
-                                @elseif ($subscription->cancelled())
+                                @elseif ($subscription->isActive())
                                     <h5 class="no-margin">
                                         <span class="kq_search">{{ Acelle\Library\Tool::formatDate($subscription->ends_at) }}</span>
                                     </h5>
@@ -72,15 +72,7 @@
                             </div>
                             <div class="col-sm-3 col-md-3 text-left">
                                 <span class="text-muted2 list-status pull-left">
-                                    @if ($subscription->ended())
-                                        <span class="label label-flat bg-ended">{{ trans('messages.subscription.status.ended') }}</span>
-                                    @elseif ($subscription->active())
-                                        <span class="label label-flat bg-active">{{ trans('messages.subscription.status.active') }}</span>
-                                    @elseif ($subscription->cancelled() && !$subscription->ended())
-                                        <span class="label label-flat bg-cancelled">{{ trans('messages.subscription.status.cancelled') }}</span>
-                                    @elseif ($subscription->recurring())
-                                        <span class="label label-flat bg-info">{{ trans('messages.subscription.status.recurring') }}</span>
-                                    @endif
+                                    <span class="label label-flat bg-{{ $subscription->status }}">{{ trans('messages.subscription.status.' . $subscription->status) }}</span>
                                 </span>
                             </div>
                         </div>

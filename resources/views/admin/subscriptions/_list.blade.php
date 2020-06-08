@@ -5,7 +5,7 @@
 		@foreach ($subscriptions as $key => $subscription)
 			<tr>
 				<td width="1%">
-					@if ($subscription->ended())
+					@if ($subscription->isEnded())
 						<i class="icon-dash subscription-status-icon"></i>
 					@elseif ($subscription->isPending() || $subscription->isNew())
 						<i class="lnr lnr-sync subscription-status-icon"></i>

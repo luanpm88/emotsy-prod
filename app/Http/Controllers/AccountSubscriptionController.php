@@ -108,7 +108,7 @@ class AccountSubscriptionController extends Controller
         $subscription = $customer->subscription;
         $plan = Plan::findByUid($request->plan_uid);
         
-        if (isset($subscription) && !$subscription->ended()) {
+        if (isset($subscription) && !$subscription->isEnded()) {
             $request->session()->flash('alert-error', 'Already subscribed a plan!');
             return redirect()->action('AccountSubscriptionController@index');
         }
