@@ -2021,7 +2021,7 @@ class Customer extends Model implements BillableUserInterface
             return false;
         }
 
-        return $subscription->active();
+        return $subscription->isActive();
     }
 
     public function getHomePath($path = null)
@@ -2055,6 +2055,6 @@ class Customer extends Model implements BillableUserInterface
      * Get current period ends at.
      */
     public function getCurrentPeriodEndsAt() {
-        return (is_object($this->subscription) && $this->subscription->active()) ? $this->current_period_ends_at : null;
+        return (is_object($this->subscription) && $this->subscription->isActive()) ? $this->current_period_ends_at : null;
     }
 }

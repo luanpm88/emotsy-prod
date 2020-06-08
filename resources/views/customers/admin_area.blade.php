@@ -19,7 +19,7 @@
                     <mc:flag><strong>{{ $subscription->plan->name }}</strong></mc:flag>
                 </div>
             </li>
-            @if ($subscription->active())
+            @if ($subscription->isActive())
                 @if ($subscription->recurring())
                     <li>
                         <div class="unit size1of2">
@@ -46,8 +46,8 @@
                 </div>
                 <div class="lastUnit size1of2">
                     <mc:flag>
-                        @if (!$subscription->active())
-							@if ($subscription->ended())
+                        @if (!$subscription->isActive())
+							@if ($subscription->isEnded())
 								<span class="label label-flat bg-cancelled">{{ trans('messages.subscription.status.ended') }}</span>
 							@elseif ($subscription->isNew())
 								<span class="label label-flat bg-new">{{ trans('messages.subscription.status.new') }}</span>

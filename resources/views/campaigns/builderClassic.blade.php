@@ -56,6 +56,16 @@
                 ])             
             </div>
             <div class="col-md-3 pr-0 pb-0 sidebar pr-4 pt-4 pl-4" style="overflow:auto;background:#f5f5f5">
+                <p class="mb-1">{!! trans('messages.campaign.preheader.intro') !!}</p>
+                @include('helpers.form_control', [
+                    'required' => true,
+                    'type' => 'textarea',
+                    'label' => '',
+                    'name' => 'preheader',
+                    'value' => $campaign->preheader,
+                    // 'rules' => ['preheader' => 'required'],
+                ])
+                <hr>
                 @include('elements._tags', ['tags' => Acelle\Model\Template::tags($campaign->defaultMailList)])
             </div>            
         </div>   

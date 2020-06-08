@@ -2324,6 +2324,7 @@ class CampaignController extends Controller
             
             // Save template
             $campaign->html = $request->html;
+            $campaign->preheader = $request->preheader;
             $campaign->untransform();
             $campaign->save();
 

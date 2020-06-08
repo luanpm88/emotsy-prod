@@ -44,7 +44,7 @@
             <div class="sub-section">
                 <h3 class="text-semibold">{{ trans('messages.current_plan') }} </h3>
 
-                @if ($subscription->active())
+                @if ($subscription->isActive())
                     @if ($subscription->recurring())
                         <p>
                             {!! trans('messages.subscription.current_subscription.recurring.wording', [
