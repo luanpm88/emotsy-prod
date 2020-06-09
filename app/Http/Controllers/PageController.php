@@ -321,6 +321,10 @@ class PageController extends Controller
                         return view('somethingWentWrong', ['message' => $ex->getMessage()]);
                     }
                 }
+
+                if (Setting::isYes('send_notification_email_for_list_subscription')) {
+                    $list->sendUnsubscriptionNotificationEmailToListOwner($subscriber);
+                }
             }
 
             return redirect()->action('PageController@unsubscribeSuccessPage', ['list_uid' => $list->uid, 'uid' => $subscriber->uid]);

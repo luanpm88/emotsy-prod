@@ -1427,17 +1427,14 @@ class CampaignController extends Controller
             $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
             $log->save();
 
-            try {
-                // Send goodbye email
-                if ($list->unsubscribe_notification) {
-                    // SEND subscription confirmation email
-                    $list->sendUnsubscriptionNotificationEmail($subscriber);
-                }
+            // Send goodbye email
+            if ($list->unsubscribe_notification) {
+                // SEND subscription confirmation email
+                $list->sendUnsubscriptionNotificationEmail($subscriber);
+            }
 
-                if (Setting::isYes('send_notification_email_for_list_subscription')) {
-                    $list->sendUnsubscriptionNotificationEmailToListOwner($subscriber);
-                }
-            } catch (\Exception $e) {
+            if (Setting::isYes('send_notification_email_for_list_subscription')) {
+                $list->sendUnsubscriptionNotificationEmailToListOwner($subscriber);
             }
 
             return view('pages.default', [
