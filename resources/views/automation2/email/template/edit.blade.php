@@ -18,6 +18,8 @@
         
         $( document ).ready(function() {
             editor = new Editor({
+                buildMode: false,
+                legacyMode: true,
                 url: '{{ action('Automation2Controller@templateContent', [
                   'uid' => $automation->uid,
                   'email_uid' => $email->uid,
