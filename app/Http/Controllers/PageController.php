@@ -308,8 +308,6 @@ class PageController extends Controller
 
         if ($request->isMethod('post')) {
             if ($subscriber->getSecurityToken('unsubscribe') == $request->code && $subscriber->status == 'subscribed') {
-                // Validation
-                $this->validate($request, ['EMAIL' => 'required|email|exists:subscribers,email']);
 
                 $subscriber->status = 'unsubscribed';
                 $subscriber->save();
@@ -322,6 +320,10 @@ class PageController extends Controller
                     } catch (\Exception $ex) {
                         return view('somethingWentWrong', ['message' => $ex->getMessage()]);
                     }
+                }
+
+                if (Setting::isYes('send_notification_email_for_list_subscription')) {
+                    $list->sendUnsubscriptionNotificationEmailToListOwner($subscriber);
                 }
             }
 

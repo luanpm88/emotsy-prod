@@ -1627,7 +1627,7 @@ abstract class AbsCampaign extends Model
         }
 
         // OPTION 1: immediately opt out
-        $path = route('unsubscribeUrl', ['message_id' => StringHelper::base64UrlEncode($msgId)], false);
+        // $path = route('unsubscribeUrl', ['message_id' => StringHelper::base64UrlEncode($msgId)], false);
 
         // OPTION 2: unsubscribe form
         $path = route('unsubscribeForm', ['list_uid' => $subscriber->mailList->uid, 'code' => $subscriber->getSecurityToken('unsubscribe'), 'uid' => $subscriber->uid], false);

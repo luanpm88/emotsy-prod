@@ -18,6 +18,8 @@
         
         $( document ).ready(function() {
             editor = new Editor({
+                buildMode: false,
+                legacyMode: true,
                 url: '{{ action('TemplateController@builderEditContent', $template->uid) }}',
                 backCallback: function() {
                   parent.$('.full-iframe-popup').fadeOut();
