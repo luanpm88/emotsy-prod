@@ -38,6 +38,7 @@ use Monolog\Formatter\LineFormatter;
 use Acelle\Library\Lockable;
 use Acelle\Model\SystemJob as SystemJobModel;
 use DateTime;
+use DateTimeZone;
 
 class Automation2 extends Model
 {
@@ -369,13 +370,12 @@ class Automation2 extends Model
 
             $automations = $customer->activeAutomation2s;
             foreach ($automations as $automation) {
-                $automationLockFile = $customer->getHomePath('locks/automation-lock-', $automation->uid);
+                $automationLockFile = $customer->getHomePath('locks/automation-lock-'.$automation->uid);
                 $lock = new Lockable($automationLockFile);
-                $timeout = 3; // seconds
+                $timeout = 30; // seconds
                 
                 try {
                     $lock->getExclusiveLock(function($f) use ($customer, $automation) {
-                        sleep(10);
                         if ($customer->isSubscriptionActive()) {
                             $automation->logger()->info(sprintf('Checking automation "%s"', $automation->name));
                             $automation->checkForNewTriggers();
@@ -427,11 +427,12 @@ class Automation2 extends Model
     public function checkForDateOfBirth()
     {
         // TODAY + CURRENT TIME
-        $currentTime = new DateTime();
+        $currentTime = new DateTime(null, new DateTimeZone($this->customer->timezone));
         // TODAY + GIVEN TIME
-        $triggerTime = new DateTime($this->getTriggerAction()->getOptions()['at']);
+        $triggerTime = new DateTime($this->getTriggerAction()->getOptions()['at'], new DateTimeZone($this->customer->timezone));
 
         if ($currentTime < $triggerTime) {
+            $this->logger()->info(sprintf('Not the right time: CURRENT %s < %s', $currentTime->format('Y-m-d H:i:s'), $triggerTime->format('Y-m-d H:i:s')));
             return;
         }
 

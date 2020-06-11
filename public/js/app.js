@@ -10,7 +10,10 @@
 * ---------------------------------------------------------------------------- */
 
 function openBuilder(url) {
-    var div = $('<div class="full-iframe-popup">').html('<iframe scrolling="no" class="builder d-none" src="'+url+'"></iframe>');
+    var div = $('<div class="full-iframe-popup">').html(`
+        <div class="loading classic-loader frame-classic-loader"><div class="text-center inner"><div class="box-loading"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div></div></div>
+        <iframe scrolling="yes" class="builder d-none" src="`+url+`"></iframe>
+    `);
     
     $(".full-iframe-popup").remove();
     $('body').append(div);
@@ -21,6 +24,8 @@ function openBuilder(url) {
         removeMaskLoading();
 
         $(this).removeClass("d-none");
+
+        $('.full-iframe-popup .frame-classic-loader').remove();
     });
     $('body').addClass('overflow-hidden');
 }
