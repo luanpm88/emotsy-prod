@@ -58,6 +58,9 @@
                       force_p_newlines : false,
                       forced_root_block : '',
                       inline_boundaries: false,
+                      relative_urls: false,
+                        convert_urls: false,
+                        remove_script_host : false,
                       plugins: 'image link textcolor lists autolink',
                       //toolbar: 'undo redo | bold italic underline | fontselect fontsizeselect | forecolor backcolor | alignleft aligncenter alignright alignfull | numlist bullist outdent indent',
                       toolbar: [
