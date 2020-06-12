@@ -135,6 +135,7 @@
                 toolbar_sticky: true,
                 toolbar_sticky: true,
                 valid_elements : '*[*],meta[*]',
+                valid_children: '+h1[div],+h2[div],+h3[div],+h4[div],+h5[div],+h6[div],+a[div]',
                 extended_valid_elements : "meta[*]",
                 valid_children : "+body[style],+body[meta],+div[h2|span|meta|object],+object[param|embed]",
                 external_filemanager_path:APP_URL.replace('/index.php','')+"/filemanager2/",
