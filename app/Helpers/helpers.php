@@ -792,3 +792,8 @@ function demo_auth() {
         'password' => $auth['password'] ? $auth['password'] : '',
     ];
 }
+
+// Make string pretty, used for printing debugging SQL
+function prettifystr($str) {
+    return preg_replace('/\s+/', ' ', trim($str));
+}

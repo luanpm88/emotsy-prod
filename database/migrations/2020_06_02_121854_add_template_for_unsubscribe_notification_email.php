@@ -13,7 +13,7 @@ class AddTemplateForUnsubscribeNotificationEmail extends Migration
      */
     public function up()
     {
-        $html = '<!DOCTYPE html><html><body style="padding-left:20%;padding-right:20%"><h1>Unsubscribe notification</h1><p>Dear List Onwer</p><p>User <strong>{EMAIL}</strong> has unsubscribed from your mail list <strong>{LIST_NAME}</strong></p></body></html>';
+        $html = '<!DOCTYPE html><html><body style="padding-left:20%;padding-right:20%"><h1>Unsubscribe notification</h1><p>Dear List Owner</p><p>User <strong>{EMAIL}</strong> has unsubscribed from your mail list <strong>{LIST_NAME}</strong></p></body></html>';
 
         // Avoid using Olequent Model in migration
         // What if the model gets changed or deleted completely later on?
