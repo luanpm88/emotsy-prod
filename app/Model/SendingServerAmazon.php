@@ -116,7 +116,7 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
         ]);
 
         $tokens = $result->toArray()['DkimTokens'];
-        return array_map(function($token) use ($domain) {
+        return array_map(function ($token) use ($domain) {
             return [
                 'type' => 'CNAME',
                 'name' => "{$token}._domainkey.{$domain}",
@@ -223,14 +223,14 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
         $domainsByUsers = $this->sendingDomains()->whereIn('name', $emailOrDomains)->get();
         $sendersByUsers = $this->senders()->whereIn('name', $emailOrDomains)->get();
 
-        foreach($domainsByUsers->merge($sendersByUsers) as $domain) {
+        foreach ($domainsByUsers->merge($sendersByUsers) as $domain) {
             if (array_key_exists($domain->name, $identities)) {
                 $identities[$domain->name]['UserId'] = $domain->customer->id;
                 $identities[$domain->name]['UserName'] = $domain->customer->getFullName();
             }
         }
 
-        foreach($identities as $key => $attributes) {
+        foreach ($identities as $key => $attributes) {
             if (!array_key_exists('UserId', $attributes)) {
                 $identities[$key]['UserId'] = null;
             }
@@ -428,7 +428,9 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
         ]);
 
         $name = $this->getCustomVerificationEmailTemplateNameFor($identity);
-        $names = array_map(function($r) { return $r['TemplateName']; }, $result->toArray()['CustomVerificationEmailTemplates']);
+        $names = array_map(function ($r) {
+            return $r['TemplateName'];
+        }, $result->toArray()['CustomVerificationEmailTemplates']);
         return in_array($name, $names);
     }
 

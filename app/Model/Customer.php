@@ -229,7 +229,7 @@ class Customer extends Model implements BillableUserInterface
         $plan = $this->activeSubscription()->plan;
         if ($plan->useSystemSendingServer()) {
             $server = $plan->primarySendingServer();
-            $result = $this->senders()->whereRaw(sprintf("%s IS NULL OR %s = %s", table('senders.sending_server_id'), table('senders.sending_server_id'), $server->id ));    
+            $result = $this->senders()->whereRaw(sprintf("%s IS NULL OR %s = %s", table('senders.sending_server_id'), table('senders.sending_server_id'), $server->id));
         } else {
             $result = $this->senders();
         }
@@ -252,8 +252,6 @@ class Customer extends Model implements BillableUserInterface
                 ->where('status', '=', SendingDomain::STATUS_ACTIVE)
                 ->where('domain_verified', '=', SendingDomain::VERIFIED);
         }
-        
-        
     }
 
     /**
@@ -1907,9 +1905,9 @@ class Customer extends Model implements BillableUserInterface
                 $eKey = $dKey[0];
                 $dKey = isset($dKey[1]) ? $dKey[1] : null;
                 // if ( (!isset($dKey) || $dKey == '') || ($dKey && strpos(strtolower($item), $dKey) === 0 )) {
-                    if ($keyword == '###') {
-                        $eKey = '****';
-                    }
+                if ($keyword == '###') {
+                    $eKey = '****';
+                }
                 $topList[] = [
                         'text' => $eKey.'@'.str_replace($dKey, '<span class="text-semibold text-primary"><strong>'.$dKey.'</strong></span>', $item),
                         'subfix' => $item,
@@ -1951,6 +1949,7 @@ class Customer extends Model implements BillableUserInterface
                     break;
                 case 'day':
                     $endsAt = \Carbon\Carbon::now()->addDay($intervalCount)->timestamp;
+                    // no break
                 case 'week':
                     $endsAt = \Carbon\Carbon::now()->addWeek($intervalCount)->timestamp;
                     break;
@@ -2032,7 +2031,8 @@ class Customer extends Model implements BillableUserInterface
         return $full;
     }
 
-    public function allowUnverifiedFromEmailAddress() {
+    public function allowUnverifiedFromEmailAddress()
+    {
         $plan = $this->subscription->plan;
 
         if (!$plan) {
@@ -2054,7 +2054,8 @@ class Customer extends Model implements BillableUserInterface
     /**
      * Get current period ends at.
      */
-    public function getCurrentPeriodEndsAt() {
+    public function getCurrentPeriodEndsAt()
+    {
         return (is_object($this->subscription) && $this->subscription->isActive()) ? $this->current_period_ends_at : null;
     }
 }

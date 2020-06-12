@@ -45,7 +45,8 @@ class SendingServerMailgunApi extends SendingServerMailgun
             $toEmail = array_keys($message->getTo())[0];
 
             $result = $this->client()->sendMessage(
-                $this->domain, array(
+                $this->domain,
+                array(
                     'from' => $fromEmail,
                     'to' => $toEmail,
                 ),

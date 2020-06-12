@@ -70,7 +70,8 @@ class SendingServerSendGrid extends SendingServer implements DomainVerificationI
 
         MailLog::info('Setting up SendGrid webhooks');
         $subscribeUrl = StringHelper::joinUrl(Setting::get('url_delivery_handler'), self::WEBHOOK);
-        $request_body = json_decode('{
+        $request_body = json_decode(
+            '{
             "bounce": true,
             "click": false,
             "deferred": false,
@@ -131,7 +132,9 @@ class SendingServerSendGrid extends SendingServer implements DomainVerificationI
         // Also, sort the parts so that text/plain comes before text/html
 
         $parts = $message->getChildren();
-        usort($parts, function ($a, $b) { return ($a->getContentType() == 'text/plain') ? -1 : 1; });
+        usort($parts, function ($a, $b) {
+            return ($a->getContentType() == 'text/plain') ? -1 : 1;
+        });
 
         $parts = array_map(function ($part) {
             return new Content($part->getContentType(), $part->getBody());
@@ -193,13 +196,13 @@ class SendingServerSendGrid extends SendingServer implements DomainVerificationI
         $identities = [];
         foreach ($json as $domain) {
             $name = $domain['domain'];
-            $identities[$name] = ['VerificationStatus' => $domain['valid'] == true]; 
+            $identities[$name] = ['VerificationStatus' => $domain['valid'] == true];
         }
 
         // list of identities that are added by customers/users
         $addedByUsers = $this->sendingDomains()->whereIn('name', array_keys($identities))->get();
 
-        foreach($addedByUsers as $domain) {
+        foreach ($addedByUsers as $domain) {
             if (array_key_exists($domain->name, $identities)) {
                 $identities[$domain->name]['UserId'] = $domain->customer->id;
                 $identities[$domain->name]['UserName'] = $domain->customer->getFullName();
@@ -301,7 +304,7 @@ class SendingServerSendGrid extends SendingServer implements DomainVerificationI
         $response = $this->client()->client->whitelabel()->domains()->get();
         $domains = json_decode($response->body(), true);
         
-        $domains = array_values(array_filter($domains, function($r) use ($domain) {
+        $domains = array_values(array_filter($domains, function ($r) use ($domain) {
             return $domain == $r['domain'] && $this->getDefaultSubdomainName($domain) == $r['subdomain'];
         }));
 

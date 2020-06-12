@@ -113,7 +113,7 @@ class SendingServerSendmail extends SendingServer
         $server = new self();
 
         // Validate
-        foreach($properties as $property) {
+        foreach ($properties as $property) {
             if ((!array_key_exists($property, $settings) || empty($settings[$property])) && in_array($property, $required)) {
                 throw new \Exception("Cannot instantiate Sendmail mailer, '{$property}' property is missing");
             }

@@ -104,7 +104,7 @@ class Campaign extends AbsCampaign
                 $this->run($partition);
 
                 exit($i + 1);
-                // end child process
+            // end child process
             } else {
                 $children[] = $pid;
             }

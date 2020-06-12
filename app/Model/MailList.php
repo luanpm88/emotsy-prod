@@ -1126,7 +1126,9 @@ class MailList extends Model
             $reader = \League\Csv\Reader::createFromPath($file);
             // get the headers, using array_filter to strip empty/null header
             // to avoid the error of "InvalidArgumentException: Use a flat array with unique string values in /home/nghi/mailixa/vendor/league/csv/src/Reader.php:305"
-            $headers = array_filter(array_map(function ($value) { return strtolower(trim($value)); }, $reader->fetchOne()));
+            $headers = array_filter(array_map(function ($value) {
+                return strtolower(trim($value));
+            }, $reader->fetchOne()));
             $fields = collect($this->fields)->map(function ($field) {
                 return strtolower($field->tag);
             })->toArray();
@@ -1285,7 +1287,8 @@ class MailList extends Model
                 // DB::statement('DELETE FROM '.table('subscriber_fields').' WHERE subscriber_id IN (SELECT main.id FROM '.table('subscribers')." main JOIN {$tmpTable} tmp ON main.email = tmp.email WHERE mail_list_id = ".$this->id.')');
 
                 // OPTION 2: DELETE JOIN
-                DB::statement(sprintf('
+                DB::statement(sprintf(
+                    '
                     DELETE f
                     FROM %s main
                     JOIN %s tmp ON main.email = tmp.email
@@ -1780,7 +1783,7 @@ class MailList extends Model
                     return [$server->sending_server_id, $server->fitness];
                 });
             }
-        //} elseif ($subscription->useSubAccount()) {
+            //} elseif ($subscription->useSubAccount()) {
         //    $result[] = [$subscription->subAccount->sending_server_id, '100'];
         }
 

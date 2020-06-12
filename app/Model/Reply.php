@@ -116,7 +116,7 @@ class Reply extends Model
             $reply->content = $header.PHP_EOL.$body;
             $reply->save();
 
-            // just delete 
+            // just delete
             // imap_delete($mbox, $msgNo);
             // flag as seen
             imap_setflag_full($mbox, $msgNo, '\\Seen \\Flagged');

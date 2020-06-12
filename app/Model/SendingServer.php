@@ -1221,15 +1221,17 @@ class SendingServer extends Model
         $value = isset($options[$name]) ? $options[$name] : null;
 
         // default value
-        if(!$value) {
+        if (!$value) {
             // default verification email
             if ($name == 'custom_verification_email') {
-                $value = trans('messages.sending_server.default_email_verification.content');;
+                $value = trans('messages.sending_server.default_email_verification.content');
+                ;
             }
             
             // default verification email
             if ($name == 'custom_verification_email_subject') {
-                $value = trans('messages.sending_server.default_email_verification.subject');;
+                $value = trans('messages.sending_server.default_email_verification.subject');
+                ;
             }
         }
 
@@ -1484,32 +1486,32 @@ class SendingServer extends Model
 
         foreach ($this->getVerifiedIdentities() as $item) {
             // check if email
-                if (extract_email($item) !== null) {
-                    $email = extract_email($item);
-                    if (strpos(strtolower($email), $keyword) === 0) {
-                        $topList[] = [
+            if (extract_email($item) !== null) {
+                $email = extract_email($item);
+                if (strpos(strtolower($email), $keyword) === 0) {
+                    $topList[] = [
                             'text' => extract_name($item),
                             'value' => $email,
                             'desc' => str_replace($keyword, '<span class="text-semibold text-primary"><strong>'.$keyword.'</strong></span>', $email),
                         ];
-                    } else {
-                        $bottomList[] = [
+                } else {
+                    $bottomList[] = [
                             'text' => extract_name($item),
                             'value' => $email,
                             'desc' => $email,
                         ];
-                    }
-                } else { // domains are alse
-                    $dKey = explode('@', $keyword);
-                    $dKey = isset($dKey[1]) ? $dKey[1] : null;
-                    // if ( (!isset($dKey) || $dKey == '') || ($dKey && strpos(strtolower($item), $dKey) === 0 )) {
-                        $topList[] = [
+                }
+            } else { // domains are alse
+                $dKey = explode('@', $keyword);
+                $dKey = isset($dKey[1]) ? $dKey[1] : null;
+                // if ( (!isset($dKey) || $dKey == '') || ($dKey && strpos(strtolower($item), $dKey) === 0 )) {
+                $topList[] = [
                             'text' => '****@'.str_replace($dKey, '<span class="text-semibold text-primary"><strong>'.$dKey.'</strong></span>', $item),
                             'subfix' => $item,
                             'desc' => null,
                         ];
-                    // }
-                }
+                // }
+            }
         }
 
         $droplist = array_merge($topList, $bottomList);
@@ -1560,7 +1562,7 @@ class SendingServer extends Model
         $selectedEmails = array_key_exists('emails', $selected) ? $selected['emails'] : [];
         $selectedDomains = array_key_exists('domains', $selected) ? $selected['domains'] : [];
         $identityStore = new identityStore($options['identities']);
-        $identityStore->select( array_merge($selectedEmails, $selectedDomains) );
+        $identityStore->select(array_merge($selectedEmails, $selectedDomains));
 
         $options['identities'] = $identityStore->get();
         $this->setOptions($options);
@@ -1569,14 +1571,14 @@ class SendingServer extends Model
     public function getVerifiedIdentities()
     {
         // by default, only return SELECTED | VERIRIED | NON-PRIVATE identities
-        $filtered = $this->getIdentityStore()->get( ['Selected' => true, 'UserId' => null, 'VerificationStatus' => 'Success'] );
+        $filtered = $this->getIdentityStore()->get(['Selected' => true, 'UserId' => null, 'VerificationStatus' => 'Success']);
         return array_keys($filtered);
     }
 
     public function getIdentityStore() : IdentityStore
     {
         $options = $this->getOptions();
-        $identityStore = new IdentityStore( array_key_exists('identities', $options) ? $options['identities'] : [] );
+        $identityStore = new IdentityStore(array_key_exists('identities', $options) ? $options['identities'] : []);
         return $identityStore;
     }
 
@@ -1600,7 +1602,7 @@ class SendingServer extends Model
     public function sendWithDefaultFromAddress($message, $params = [])
     {
         if (empty($this->from_name)) {
-            $message->setFrom( [ $this->from_name => $this->from_address ] );
+            $message->setFrom([ $this->from_name => $this->from_address ]);
         } else {
             $message->setFrom($this->from_address);
         }
@@ -1611,14 +1613,18 @@ class SendingServer extends Model
     public function setDefaultFromEmailAddress()
     {
         if (!empty($this->default_from_email)) {
-        //    return;
+            //    return;
         }
 
         $identityStore = $this->getIdentityStore();
         $names = array_keys($identityStore->get(['VerificationStatus' => 'Success']));
         
-        $emails = array_values(array_filter($names, function($name) { return checkEmail($name); }));
-        $domains = array_values(array_filter($names, function($name) { return !checkEmail($name); }));
+        $emails = array_values(array_filter($names, function ($name) {
+            return checkEmail($name);
+        }));
+        $domains = array_values(array_filter($names, function ($name) {
+            return !checkEmail($name);
+        }));
 
         $default = null;
 

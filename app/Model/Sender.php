@@ -256,7 +256,7 @@ class Sender extends Model
         if (!is_null($server) && $server->allowVerifyingOwnEmailsRemotely()) {
             // this sender is bound with a specific sending server
             // set $this->sending_server_id = $server->id the correct way
-            $this->sendingServer()->associate($server); 
+            $this->sendingServer()->associate($server);
             $this->setPending();
             $this->save();
 
@@ -264,7 +264,7 @@ class Sender extends Model
         } else {
             // If server does not support verification
             $this->sendVerificationEmail();
-        }        
+        }
     }
 
     public function sendVerificationEmail()
@@ -302,7 +302,7 @@ class Sender extends Model
 
     public function generateVerificationUrl()
     {
-        return action('SenderController@verify', [ 'token' => $this->generateVerificationToken() ] );
+        return action('SenderController@verify', [ 'token' => $this->generateVerificationToken() ]);
     }
 
     public function generateVerificationResultUrl()
@@ -315,7 +315,7 @@ class Sender extends Model
         $uid = null;
 
         try {
-            $uid = decrypt(urldecode($token));    
+            $uid = decrypt(urldecode($token));
         } catch (\Exception $ex) {
             throw new \Exception("Invalid sender verification token", 1);
         }

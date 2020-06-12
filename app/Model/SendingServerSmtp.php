@@ -124,7 +124,7 @@ class SendingServerSmtp extends SendingServer
         $server = new self();
 
         // validate
-        foreach($properties as $property) {
+        foreach ($properties as $property) {
             if ((!array_key_exists($property, $settings) || empty($settings[$property])) && in_array($property, $required)) {
                 throw new \Exception("Cannot instantiate SMTP mailer, '{$property}' property is missing");
             }

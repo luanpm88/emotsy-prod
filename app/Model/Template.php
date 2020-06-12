@@ -565,11 +565,9 @@ class Template extends Model implements Storable
             RecursiveIteratorIterator::LEAVES_ONLY
         );
 
-        foreach ($files as $name => $file)
-        {
+        foreach ($files as $name => $file) {
             // Skip directories (they would be added automatically)
-            if (!$file->isDir())
-            {
+            if (!$file->isDir()) {
                 // Get real and relative path for current file
                 $filePath = $file->getRealPath();
                 $relativePath = substr($filePath, strlen($rootPath) + 1);
@@ -626,7 +624,7 @@ class Template extends Model implements Storable
     public function getThumb()
     {
         // find index
-        if($this->getThumbName()) {
+        if ($this->getThumbName()) {
             return $this->getStoragePath().$this->getThumbName();
         }
 
@@ -649,7 +647,7 @@ class Template extends Model implements Storable
      * transform URL.
      */
     public function transform()
-    {        
+    {
         // replace relative urls
         $this->content = \Acelle\Library\Tool::replaceTemplateUrl(
             tinyDocTypeTransform($this->content),
@@ -664,7 +662,8 @@ class Template extends Model implements Storable
     {
         // replace absolute urls
         $this->content = str_replace(
-            route('template_assets', ['uid' => $this->uid, 'path' => '']).'/', '', 
+            route('template_assets', ['uid' => $this->uid, 'path' => '']).'/',
+            '',
             tinyDocTypeUntransform($this->content)
         );
     }
@@ -695,7 +694,8 @@ class Template extends Model implements Storable
         }
 
         $path = $file->move(
-            $this->getStoragePath($upload_dir), $new_name
+            $this->getStoragePath($upload_dir),
+            $new_name
         );
 
         return $upload_dir.$new_name;

@@ -208,7 +208,7 @@ class Email extends Model
     public function getThumb()
     {
         // find index
-        if($this->getThumbName()) {
+        if ($this->getThumbName()) {
             return $this->getStoragePath().$this->getThumbName();
         }
 
@@ -393,7 +393,8 @@ class Email extends Model
     {
         // replace absolute urls
         $this->content = str_replace(
-            route('email_assets', ['uid' => $this->uid, 'path' => '']).'/', '',
+            route('email_assets', ['uid' => $this->uid, 'path' => '']).'/',
+            '',
             tinyDocTypeUntransform($this->content)
         );
     }
@@ -424,7 +425,8 @@ class Email extends Model
         }
 
         $path = $file->move(
-            $this->getStoragePath($upload_dir), $new_name
+            $this->getStoragePath($upload_dir),
+            $new_name
         );
 
         return $upload_dir.$new_name;

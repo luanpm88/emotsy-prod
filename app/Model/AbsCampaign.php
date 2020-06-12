@@ -1909,7 +1909,6 @@ abstract class AbsCampaign extends Model
         $recipients = $this->trackingLogs()->where('status', SendingServer::DELIVERY_STATUS_FAILED);
         MailLog::warning('Resend to those who failed to deliver: '.$recipients->count());
         $recipients->delete();
-
     }
 
     public function cleanupNotOpenLog()
@@ -2630,7 +2629,7 @@ abstract class AbsCampaign extends Model
     public function getThumb()
     {
         // find index
-        if($this->getThumbName()) {
+        if ($this->getThumbName()) {
             return $this->getStoragePath().$this->getThumbName();
         }
 
@@ -2670,7 +2669,8 @@ abstract class AbsCampaign extends Model
     {
         // replace absolute urls
         $this->html = str_replace(
-            route('campaign_assets', ['uid' => $this->uid, 'path' => '']).'/', '',
+            route('campaign_assets', ['uid' => $this->uid, 'path' => '']).'/',
+            '',
             tinyDocTypeUntransform($this->html)
         );
     }
@@ -2701,7 +2701,8 @@ abstract class AbsCampaign extends Model
         }
 
         $path = $file->move(
-            $this->getStoragePath($upload_dir), $new_name
+            $this->getStoragePath($upload_dir),
+            $new_name
         );
 
         return $upload_dir.$new_name;
@@ -2843,7 +2844,9 @@ abstract class AbsCampaign extends Model
                                              ->limit($limit)
                                              ->offset($i)
                                              ->get()
-                                             ->map(function ($r) {return (array) $r; })
+                                             ->map(function ($r) {
+                                                 return (array) $r;
+                                             })
                                              ->toArray();
             $csv->insertAll($items);
 
@@ -2885,7 +2888,8 @@ abstract class AbsCampaign extends Model
         }
 
         $path = $file->move(
-            $this->getAttachmentPath(), $new_name
+            $this->getAttachmentPath(),
+            $new_name
         );
 
         return $this->getAttachmentPath().$new_name;

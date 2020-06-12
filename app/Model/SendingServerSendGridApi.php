@@ -30,13 +30,13 @@ class SendingServerSendGridApi extends SendingServerSendGrid
 {
     protected $table = 'sending_servers';
 
-/**
- * Send the provided message.
- *
- * @return bool
- *
- * @param message
- */
+    /**
+     * Send the provided message.
+     *
+     * @return bool
+     *
+     * @param message
+     */
     // Inherit class to implementation of this method
     public function send($message, $params = array())
     {

@@ -25,7 +25,6 @@ namespace Acelle\Model;
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Log as MailLog;
 
-
 class Subscriber extends Model
 {
     const STATUS_SUBSCRIBED = 'subscribed';
@@ -174,7 +173,7 @@ class Subscriber extends Model
         $this->status = 'unsubscribed';
         $this->save();
         $this->unsubscribeLogs()->create([
-            //            
+            //
         ]);
     }
 
@@ -230,9 +229,9 @@ class Subscriber extends Model
                 foreach (explode(' ', trim($request->keyword)) as $keyword) {
                     $query = $query->where(function ($q) use ($keyword) {
                         $q->orwhere('subscribers.email', 'like', '%'.$keyword.'%');
-                            /* does not support searching on subscriber fields, for the sake of performance
-                            ->orWhere('subscriber_fields.value', 'like', '%'.$keyword.'%');
-                            */
+                        /* does not support searching on subscriber fields, for the sake of performance
+                        ->orWhere('subscriber_fields.value', 'like', '%'.$keyword.'%');
+                        */
                     });
                 }
             }
@@ -359,7 +358,9 @@ class Subscriber extends Model
      */
     public function getValueByField($field)
     {
-        $fv = $this->subscriberFields->filter(function ($r, $key) use ($field) { return $r->field_id == $field->id; })->first();
+        $fv = $this->subscriberFields->filter(function ($r, $key) use ($field) {
+            return $r->field_id == $field->id;
+        })->first();
         if (is_object($fv)) {
             return $fv->value;
         } else {
@@ -997,10 +998,14 @@ class Subscriber extends Model
         }
 
         // remove trailing space
-        array_walk($arr, function(&$val) { $val = trim($val); });
+        array_walk($arr, function (&$val) {
+            $val = trim($val);
+        });
 
         // remove empty tag
-        $arr = array_filter($arr, function(&$val) { return !empty($val); });
+        $arr = array_filter($arr, function (&$val) {
+            return !empty($val);
+        });
 
         $this->tags = json_encode($arr);
         $this->save();

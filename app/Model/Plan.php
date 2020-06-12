@@ -1034,7 +1034,7 @@ class Plan extends Model implements BillablePlanInterface
             }
         }
 
-    // workaround
+        // workaround
         if (empty($this->description)) {
             $this->description = '[ plan description goes here ]';
         }
@@ -1123,7 +1123,7 @@ class Plan extends Model implements BillablePlanInterface
 
         $this->fillAll($request);
 
-        // sync remote plan            
+        // sync remote plan
         if (config('cashier.gateway') == 'paypal_subscription' && isset($request->plan) && isset($request->plan['general'])) {
             $service = \Acelle\Cashier\Cashier::getPaymentGateway('paypal_subscription');
             $service->syncPlan($this, $oldPlan);

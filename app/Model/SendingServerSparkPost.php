@@ -281,7 +281,7 @@ class SendingServerSparkPost extends SendingServer
         $identities = [];
         foreach ($json['results'] as $domain) {
             $name = $domain['domain'];
-            $identities[$name] = ['VerificationStatus' => $domain['status']['ownership_verified'] == true]; 
+            $identities[$name] = ['VerificationStatus' => $domain['status']['ownership_verified'] == true];
         }
 
         $identityStore = $this->getIdentityStore();

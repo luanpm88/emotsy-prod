@@ -198,15 +198,15 @@ class User extends Authenticatable
         return base_path('public/source/'.$this->uid.'/');
     }
 
-   /**
-    * Send the password reset notification.
-    *
-    * @param  string  $token
-    */
-   public function sendPasswordResetNotification($token)
-   {
-       $this->notify(new ResetPassword($token, url('password/reset', $token)));
-   }
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPassword($token, url('password/reset', $token)));
+    }
 
     public function getStoragePath($path = '')
     {

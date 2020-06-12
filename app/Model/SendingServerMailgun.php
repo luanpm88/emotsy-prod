@@ -114,7 +114,7 @@ class SendingServerMailgun extends SendingServer
         $identities = [];
         foreach ($json['http_response_body']['items'] as $domain) {
             $name = $domain['name'];
-            $identities[$name] = ['VerificationStatus' => $domain['state'] == 'active']; 
+            $identities[$name] = ['VerificationStatus' => $domain['state'] == 'active'];
         }
 
         $identityStore = $this->getIdentityStore();

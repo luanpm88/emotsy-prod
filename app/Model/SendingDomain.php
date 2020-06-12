@@ -198,12 +198,11 @@ class SendingDomain extends Model
             // Disable if not verified
             if ($item->isAssociatedWithSendingServer()) {
                 // all verification must pass for a remote service
-                $item->status = ( $item->domain_verified && $item->dkim_verified && $item->spf_verified ) ? self::STATUS_ACTIVE : self::STATUS_INACTIVE;
+                $item->status = ($item->domain_verified && $item->dkim_verified && $item->spf_verified) ? self::STATUS_ACTIVE : self::STATUS_INACTIVE;
             } else {
                 // Identity is enough in certain cases (SMTP, Sendmail, etc.)
                 $item->status = $item->domain_verified ? self::STATUS_ACTIVE : self::STATUS_INACTIVE;
             }
-            
         });
     }
 
@@ -452,10 +451,14 @@ class SendingDomain extends Model
     public function verifyDkim()
     {
         $possibles = collect([$this->getDnsDkimConfigWithoutQuote(), $this->getDnsDkimConfig(), $this->getEscapedDnsDkimConfig()]);
-        $possibles = $possibles->map(function ($item, $key) { return preg_replace('/\s+/', '', $item); });
+        $possibles = $possibles->map(function ($item, $key) {
+            return preg_replace('/\s+/', '', $item);
+        });
 
         $fqdn = sprintf('%s.%s', $this->getDkimSelector(), $this->name);
-        $results = collect(dns_get_record($fqdn, DNS_TXT))->where('type', 'TXT')->map(function ($item, $key) { return preg_replace('/\s+/', '', $item['txt']); });
+        $results = collect(dns_get_record($fqdn, DNS_TXT))->where('type', 'TXT')->map(function ($item, $key) {
+            return preg_replace('/\s+/', '', $item['txt']);
+        });
         $results = $results->intersect($possibles);
 
         $this->dkim_verified = $results->isEmpty() ? self::UNVERIFIED : self::VERIFIED;
@@ -550,7 +553,7 @@ class SendingDomain extends Model
      */
     public function setDkimSelector($dkim_selector)
     {
-        if (preg_match('/^[a-z0-9]{1,24}$/',  $dkim_selector)) {
+        if (preg_match('/^[a-z0-9]{1,24}$/', $dkim_selector)) {
             $this->dkim_selector = $dkim_selector;
             $this->save();
 
@@ -567,7 +570,7 @@ class SendingDomain extends Model
      */
     public function setVerificationTxtName($verification_hostname)
     {
-        if (preg_match('/^[a-z0-9]{1,24}$/',  $verification_hostname)) {
+        if (preg_match('/^[a-z0-9]{1,24}$/', $verification_hostname)) {
             $this->verification_hostname = $verification_hostname;
             $this->save();
 

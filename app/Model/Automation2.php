@@ -375,7 +375,7 @@ class Automation2 extends Model
                 $timeout = 30; // seconds
                 
                 try {
-                    $lock->getExclusiveLock(function($f) use ($customer, $automation) {
+                    $lock->getExclusiveLock(function ($f) use ($customer, $automation) {
                         if ($customer->isSubscriptionActive()) {
                             $automation->logger()->info(sprintf('Checking automation "%s"', $automation->name));
                             $automation->checkForNewTriggers();
@@ -440,7 +440,7 @@ class Automation2 extends Model
         }
 
         // Get the modify interval: 1 days, 2 days... for example
-        $interval = $this->getTriggerAction()->getOptions()['before']; 
+        $interval = $this->getTriggerAction()->getOptions()['before'];
 
         $today = Carbon::now($this->customer->timezone)->modify($interval);
         $dobFieldUid = $this->getTriggerAction()->getOptions()['field'];
@@ -558,7 +558,8 @@ class Automation2 extends Model
             // just ignore, in case 2 queries in the same MySQL connection session
         }
 
-        \DB::statement(sprintf('
+        \DB::statement(
+            sprintf('
             CREATE TEMPORARY TABLE `_new_subscribers_to_follow` AS
             SELECT COALESCE(subscriber_id, 0) AS subscriber_id
             FROM %s WHERE automation2_id = %s;

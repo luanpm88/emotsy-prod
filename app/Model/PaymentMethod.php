@@ -430,7 +430,7 @@ class PaymentMethod extends Model
             // Token success
             if (isset($json->access_token)) {
                 return ['success' => true, 'token' => $json->access_token];
-                // Check if has any error
+            // Check if has any error
             } elseif (isset($json->error)) {
                 throw new \Exception($json->error.': '.$json->error_description);
             }
