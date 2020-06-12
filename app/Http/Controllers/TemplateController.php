@@ -134,7 +134,7 @@ class TemplateController extends Controller
             // Save template
             $template->fill($request->all());
             $template->source = 'editor';
-            if(isset($request->source)) {
+            if (isset($request->source)) {
                 $template->source = $request->source;
             }
 
@@ -435,7 +435,7 @@ class TemplateController extends Controller
         }
 
         $elements = [];
-        if(isset($request->style)) {
+        if (isset($request->style)) {
             $elements = Template::templateStyles()[$request->style];
         }
 
