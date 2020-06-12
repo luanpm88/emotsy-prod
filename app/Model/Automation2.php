@@ -381,11 +381,14 @@ class Automation2 extends Model
                             $automation->checkForNewTriggers();
                             $automation->checkForExistingTriggersUpdate();
                             $automation->updateCache();
+                            $automation->setLastError(null);
                         } else {
                             $automation->logger()->warning(sprintf('Automation "%s" skipped, user "%s" not on active subscription', $automation->name, $customer->displayName()));
                         }
                     }, $timeout);
                 } catch (\Exception $ex) {
+                    $automation->setLastError($ex->getMessage());
+
                     $automation->logger()->warning(sprintf('Error while executing automation "%s". %s', $automation->name, $ex->getMessage()));
                 }
             }
@@ -567,7 +570,30 @@ class Automation2 extends Model
                 ->where('subscribers.created_at', '>=', $this->created_at)
                 ->where('mail_list_id', $this->mailList->id)
                 ->whereRaw(sprintf('COALESCE('.table('subscribers.subscription_type').", '') <> %s", db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED)))
-                ->get();
+                ->toSql();
+    }
+
+    /**
+     * Get previous event's opened messages to follow up.
+     *
+     * @return collection
+     */
+    public function getNewSubscribersToFollowDebug()
+    {
+        $tmpSql = sprintf('
+            CREATE TEMPORARY TABLE `_new_subscribers_to_follow` AS
+            SELECT COALESCE(subscriber_id, 0) AS subscriber_id
+            FROM %s WHERE automation2_id = %s;
+
+            CREATE INDEX _new_subscribers_to_follow_index ON _new_subscribers_to_follow(subscriber_id);', table('auto_triggers'), $this->id);
+     
+        $newSubscribersSql = $this->subscribers()->whereRaw(table('subscribers.id').' NOT IN (SELECT subscriber_id FROM _new_subscribers_to_follow)')
+                ->where('subscribers.created_at', '>=', $this->created_at)
+                ->where('mail_list_id', $this->mailList->id)
+                ->whereRaw(sprintf('COALESCE('.table('subscribers.subscription_type').", '') <> %s", db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED)))
+                ->toSql();
+
+        return prettifystr($tmpSql."; ".$newSubscribersSql);
     }
 
     /**
@@ -1051,5 +1077,11 @@ class Automation2 extends Model
         if (!$existed) {
             dispatch(new \Acelle\Jobs\UpdateAutomation($this));
         }
+    }
+
+    public function setLastError($message)
+    {
+        $this->last_error = $message;
+        $this->save();
     }
 }

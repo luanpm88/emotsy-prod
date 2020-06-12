@@ -1352,3 +1352,31 @@ a:hover label {
   width: 98%;
   background: #fff;
 }
+
+.alert {
+  color: rgb(35, 29, 20);
+}
+
+.alert p {
+  margin-bottom: 0;
+}
+
+.alert .btn {
+  padding: 7px 12px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.alert .bg-grey-600 {
+    background-color: #666;
+    border-color: #666;
+    color: #fff;
+}
+
+.alert h4 {
+    margin-bottom: 0;
+    font-weight: 600;
+    font-size: 14px;
+    margin-top: 0;
+    color: inherit;
+}

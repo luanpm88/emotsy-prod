@@ -1,3 +1,18 @@
+@if (!is_null($automation->last_error))
+<div class="alert alert-warning" style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
+    <div style="display: flex; flex-direction: row; align-items: center;">
+        <div style="margin-right:15px">
+            <i class="lnr lnr-warning"></i>
+        </div>
+        <div style="padding-right: 40px">
+            <h4>Execution Error</h4>
+            <p>{{ $automation->last_error }}</p>
+        </div>
+    </div>
+    <!-- <button class="btn bg-grey-600">Close</button> -->
+</div>
+@endif
+
 <div class="sidebar-header flex-center mb-2">
     <h5 class="m-0 mr-auto">{{ $automation->name }}</h5>
     <span class="mr-2 small">{{ trans('messages.automation.status.' . $automation->status) }}</span>
