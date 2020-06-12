@@ -69,7 +69,7 @@ class DeliveryController extends Controller
         $messages = json_decode(file_get_contents('php://input'), true);
         MailLog::info(file_get_contents('php://input'));
 
-        foreach($messages as $message) {
+        foreach ($messages as $message) {
             switch ($message['event']) {
                 case 'dropped':
                 case 'bounce':
@@ -234,14 +234,14 @@ class DeliveryController extends Controller
             $bounceLog->raw = $message['Message'];
             $trackingLog = TrackingLog::where('runtime_message_id', $bounceLog->runtime_message_id)->first();
             if (!is_null($trackingLog)) {
-                $bounceLog->message_id = $trackingLog->message_id;    
+                $bounceLog->message_id = $trackingLog->message_id;
                 $bounceLog->save();
                 MailLog::info('Bounce recorded for message '.$bounceLog->runtime_message_id);
     
                 if ($bounce['bounceType'] === 'Permanent') {
                     MailLog::info('Adding email to blacklist');
                     $bounceLog->findSubscriberByRuntimeMessageId()->sendToBlacklist($bounceLog->raw);
-                }    
+                }
             } else {
                 MailLog::info('No tracking log found');
                 $bounceLog->save();
@@ -307,12 +307,12 @@ class DeliveryController extends Controller
         $validation = Validator::make($params, $rules, $msg);
         
         // Rules for bounce
-        $validation->sometimes('bounce_type', 'required|in:hard,soft', function($input) {
+        $validation->sometimes('bounce_type', 'required|in:hard,soft', function ($input) {
             return $input->event == 'bounce';
         });
         
         // Rules for feedback
-        $validation->sometimes('feedback_type', 'required|in:spam,abuse', function($input) {
+        $validation->sometimes('feedback_type', 'required|in:spam,abuse', function ($input) {
             return $input->event == 'feedback';
         });
         
@@ -351,7 +351,7 @@ class DeliveryController extends Controller
             $subscriber = $bounceLog->findSubscriberByRuntimeMessageId();
             if (!is_null($subscriber)) {
                 MailLog::info('Adding email to blacklist');
-                $bounceLog->findSubscriberByRuntimeMessageId()->sendToBlacklist($bounceLog->raw);    
+                $bounceLog->findSubscriberByRuntimeMessageId()->sendToBlacklist($bounceLog->raw);
             } else {
                 MailLog::warning('Subscriber not found');
             }

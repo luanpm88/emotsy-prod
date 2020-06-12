@@ -107,10 +107,8 @@ class EmailController extends Controller
                 $path = route('openTrackingUrl', ['message_id' => StringHelper::base64UrlEncode($log->message_id)], false);
                 $url = $email->buildTrackingUrl($path);
                 $links[] = "{$log->email_id} <a href='{$url}'>{$url}</a>";
-
             }
             return response(implode('<br>', $links), 200);
         }
-        
     }
 }

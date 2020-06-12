@@ -210,14 +210,13 @@ class CustomerController extends Controller
         }
 
         // prevent action from demo mod
-        if($this->isDemoMode()) {
+        if ($this->isDemoMode()) {
             return $this->notAuthorized();
         }
 
         // save posted data
         if ($request->isMethod('patch')) {
-
-            if($this->isDemoMode()) {
+            if ($this->isDemoMode()) {
                 return $this->notAuthorized();
             }
 

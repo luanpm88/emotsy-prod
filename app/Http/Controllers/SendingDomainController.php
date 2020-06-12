@@ -25,7 +25,7 @@ class SendingDomainController extends Controller
         $plan = $request->user()->customer->activeSubscription()->plan;
 
         if ($plan->useSystemSendingServer()) {
-            $server = $plan->primarySendingServer();    
+            $server = $plan->primarySendingServer();
         } else {
             $server = null;
         }
@@ -52,7 +52,7 @@ class SendingDomainController extends Controller
         $plan = $request->user()->customer->activeSubscription()->plan;
 
         if ($plan->useSystemSendingServer()) {
-            $server = $plan->primarySendingServer();    
+            $server = $plan->primarySendingServer();
         } else {
             $server = null;
         }
@@ -313,9 +313,8 @@ class SendingDomainController extends Controller
         } else {
             return view('sending_domains._records', [
                 'server' => $domain,
-            ]);    
+            ]);
         }
-        
     }
 
     /**

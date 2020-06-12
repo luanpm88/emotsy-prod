@@ -79,7 +79,7 @@ class SendingServerController extends Controller
     {
         $server = new \Acelle\Model\SendingServer();
         $server->type = $request->type;
-        $server = \Acelle\Model\SendingServer::mapServerType($server);        
+        $server = \Acelle\Model\SendingServer::mapServerType($server);
         $server->status = 'active';
         $server->uid = '0';
         $server->quota_value = '1000';
@@ -109,7 +109,7 @@ class SendingServerController extends Controller
     public function store(Request $request)
     {
         // New sending server
-        $server = new SendingServer();        
+        $server = new SendingServer();
 
         // authorize
         if (!$request->user()->admin->can('create', $server)) {
@@ -126,7 +126,7 @@ class SendingServerController extends Controller
             $server = \Acelle\Model\SendingServer::mapServerType($server);
             
             // validation
-            $validator = $server->validConnection($request); //\Validator::make($request->all(), $server->getRules());            
+            $validator = $server->validConnection($request); //\Validator::make($request->all(), $server->getRules());
                       
             if ($validator->fails()) {
                 return redirect()->action('Admin\SendingServerController@create', $server->type)
@@ -217,7 +217,7 @@ class SendingServerController extends Controller
                 'title' => trans('messages.sending_server.connect_failed'),
                 'message' => $ex->getMessage()
             ];
-        }        
+        }
         
         $identities = [];
         $allIdentities = [];
@@ -230,7 +230,7 @@ class SendingServerController extends Controller
                 'title' => trans('messages.sending_server.identities_list_failed'),
                 'message' => $ex->getMessage(),
             ];
-        }        
+        }
         
         // options
         if (isset($request->old()['options'])) {
@@ -585,7 +585,7 @@ class SendingServerController extends Controller
             $server->quota_base = $limits['quota_base'];
         }
 
-        // save posted data        
+        // save posted data
         $this->validate($request, $server->getConfigRules());
         
         // bounce / feedback hanlder nullable
@@ -601,7 +601,6 @@ class SendingServerController extends Controller
 
             return redirect()->action('Admin\SendingServerController@edit', [$server->uid, $server->type]);
         }
-        
     }
     
     /**
@@ -619,7 +618,7 @@ class SendingServerController extends Controller
             $server = new SendingServer();
         }
         
-        foreach(SendingServer::awsRegionSelectOptions() as $option) {
+        foreach (SendingServer::awsRegionSelectOptions() as $option) {
             if (isset($option['host']) && $option['value'] == $request->aws_region) {
                 $server->host = $option['host'];
             }
@@ -679,7 +678,7 @@ class SendingServerController extends Controller
                 }
             }
 
-            $server->addIdentity(strtolower($request->domain)); 
+            $server->addIdentity(strtolower($request->domain));
             
             $request->session()->flash('alert-success', trans('messages.sending_server.updated'));
             return;
@@ -718,7 +717,7 @@ class SendingServerController extends Controller
     {
         $server = SendingServer::findByUid($request->uid);
         
-        $droplist = $server->verifiedIdentitiesDroplist(strtolower(trim($request->keyword)));        
+        $droplist = $server->verifiedIdentitiesDroplist(strtolower(trim($request->keyword)));
         return response()->json($droplist);
     }
 }

@@ -132,7 +132,7 @@ class SegmentController extends Controller
                 if (is_object($field)) {
                     $condition->field_id = $field->id;
                 } else {
-                    $condition->field_id = NULL;
+                    $condition->field_id = null;
                 }
 
                 $condition->save();
@@ -298,7 +298,7 @@ class SegmentController extends Controller
                 if (is_object($field)) {
                     $condition->field_id = $field->id;
                 } else {
-                    $condition->field_id = NULL;
+                    $condition->field_id = null;
                 }
 
                 $condition->save();
@@ -354,7 +354,7 @@ class SegmentController extends Controller
         }
 
         // Redirect to my lists page
-         // Redirect to my lists page
+        // Redirect to my lists page
         echo trans('messages.segments.deleted');
     }
 
@@ -427,7 +427,7 @@ class SegmentController extends Controller
             return $this->notAuthorized();
         }
         // Start system job
-        $job = new \Acelle\Jobs\ExportSegmentsJob($list, $request->user()->customer,$request->input("fields"),$request->uid);
+        $job = new \Acelle\Jobs\ExportSegmentsJob($list, $request->user()->customer, $request->input("fields"), $request->uid);
         $this->dispatch($job);
 
         // Action Log

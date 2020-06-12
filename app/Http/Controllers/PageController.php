@@ -179,7 +179,9 @@ class PageController extends Controller
                 $list->sendSubscriptionConfirmationEmail($subscriber);
 
                 // find display thank you page
-                return redirect()->action('PageController@signUpThankyouPage', [
+                return redirect()->action(
+                    'PageController@signUpThankyouPage',
+                    [
                         'list_uid' => $list->uid,
                         'subscriber_uid' => $subscriber->uid,
                     ]
@@ -198,7 +200,9 @@ class PageController extends Controller
                     }
                 }
 
-                return redirect()->action('PageController@signUpConfirmationThankyou', [
+                return redirect()->action(
+                    'PageController@signUpConfirmationThankyou',
+                    [
                         'list_uid' => $list->uid,
                         'uid' => $subscriber->uid,
                         'code' => 'empty',
@@ -308,7 +312,6 @@ class PageController extends Controller
 
         if ($request->isMethod('post')) {
             if ($subscriber->getSecurityToken('unsubscribe') == $request->code && $subscriber->status == 'subscribed') {
-
                 $subscriber->status = 'unsubscribed';
                 $subscriber->save();
 

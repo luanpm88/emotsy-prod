@@ -24,7 +24,7 @@ class Controller extends BaseController
      *
      * @return \Illuminate\Http\Response
      */
-    function isDemoMode()
+    public function isDemoMode()
     {
         return config('app.demo');
     }
@@ -36,11 +36,11 @@ class Controller extends BaseController
      */
     public function notAuthorized()
     {
-        if(request()->ajax()){
+        if (request()->ajax()) {
             return response()->json(['message' => trans('messages.not_authorized_message')], 403);
         }
 
-        return response()->view('notAuthorized')->setStatusCode(403); 
+        return response()->view('notAuthorized')->setStatusCode(403);
     }
 
     /**
@@ -207,7 +207,7 @@ class Controller extends BaseController
      */
     public function remoteJob($remote_job_token)
     {
-        if(\Acelle\Model\Setting::get('remote_job_token') === $remote_job_token) {
+        if (\Acelle\Model\Setting::get('remote_job_token') === $remote_job_token) {
             // @todo remote cronjob code here...
         } else {
             echo trans('messages.invalid_token');

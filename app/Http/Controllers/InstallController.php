@@ -324,7 +324,8 @@ class InstallController extends Controller
 
         // Insert default superuser
         $mysqli->query('DELETE FROM `'.$database['tables_prefix'].'users` WHERE 1');
-        $mysqli->query('INSERT INTO `'.$database['tables_prefix']."users`
+        $mysqli->query(
+            'INSERT INTO `'.$database['tables_prefix']."users`
             (
                 `id`,
                 `uid`,
@@ -351,7 +352,8 @@ class InstallController extends Controller
         );
 
         $mysqli->query('DELETE FROM `'.$database['tables_prefix'].'admins` WHERE 1');
-        $mysqli->query('INSERT INTO `'.$database['tables_prefix']."admins`
+        $mysqli->query(
+            'INSERT INTO `'.$database['tables_prefix']."admins`
             (
                 `id`,
                 `uid`,
@@ -480,7 +482,7 @@ class InstallController extends Controller
         }
 
         // Re-generate remote job url
-        if($request->re_generate_remote_job_url) {
+        if ($request->re_generate_remote_job_url) {
             $remote_job_token = str_random(60);
             \Acelle\Model\Setting::set('remote_job_token', $remote_job_token);
             echo action('Controller@remoteJob', ['remote_job_token' => $remote_job_token]);
@@ -488,7 +490,7 @@ class InstallController extends Controller
         }
 
         $respone = \Acelle\Library\Tool::cronjobUpdateController($request, $this);
-        if($respone == 'done' || $respone == 'remote') {
+        if ($respone == 'done' || $respone == 'remote') {
             return redirect()->action('InstallController@finishing');
         }
 

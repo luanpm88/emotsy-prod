@@ -156,7 +156,7 @@ class MailListController extends Controller
             $list->updateCachedInfo();
 
             return \Response::json(array(
-                'status' => 1, 
+                'status' => 1,
                 'message' => trans('messages.list.created'),
                 'list_uid' => $list->uid
             ), 200);
@@ -214,7 +214,7 @@ class MailListController extends Controller
             $field->save();
 
             return \Response::json(array(
-                'status' => 1, 
+                'status' => 1,
                 'message' => trans('messages.field.created'),
                 'field' => $field->toArray()
             ), 200);

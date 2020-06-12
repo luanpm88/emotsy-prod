@@ -22,7 +22,7 @@ class PaymentController extends Controller
     public function index(Request $request, MessageBag $message_bag)
     {
         return view('admin.payments.index', [
-            'gateways' => Setting::getPaymentGateways(),            
+            'gateways' => Setting::getPaymentGateways(),
         ]);
     }
 
@@ -67,7 +67,7 @@ class PaymentController extends Controller
     public function update(Request $request, MessageBag $message_bag, $name)
     {
         $errors = new MessageBag;
-        $gatewayService = Cashier::getPaymentGateway($name, $request->options);        
+        $gatewayService = Cashier::getPaymentGateway($name, $request->options);
         
         try {
             $gatewayService->validate();
@@ -95,8 +95,10 @@ class PaymentController extends Controller
             }
         } catch (\Exception $ex) {
             // Add example error messages to the MessageBag instance.
-            $errors->add('payment',
-                trans('messages.payment_gateway.not_valid', ['message' => $ex->getMessage()]));
+            $errors->add(
+                'payment',
+                trans('messages.payment_gateway.not_valid', ['message' => $ex->getMessage()])
+            );
 
             return view('admin.payments.edit', [
                 'gateway' => Setting::getPaymentGateway($name),
@@ -174,7 +176,7 @@ class PaymentController extends Controller
         } catch (\Exception $e) {
             $request->session()->flash('alert-error', 'PyPal Subscription service error: ' . $e->getMessage());
             return redirect()->action('Admin\PaymentController@edit', 'paypal_subscription');
-        }        
+        }
 
         $request->session()->flash('alert-success', trans('messages.payment_gateway.paypal_subscription.plan.connected'));
         return redirect()->action('Admin\PaymentController@edit', 'paypal_subscription');
@@ -252,7 +254,7 @@ class PaymentController extends Controller
         } catch (\Exception $e) {
             $request->session()->flash('alert-error', 'PyPal Subscription service error: ' . $e->getMessage());
             return redirect()->action('Admin\PaymentController@edit', 'paypal_subscription');
-        }        
+        }
 
         $request->session()->flash('alert-success', trans('messages.payment_gateway.paypal_subscription.disconnected'));
         return redirect()->action('Admin\PaymentController@edit', 'paypal_subscription');

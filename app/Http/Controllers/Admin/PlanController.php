@@ -152,7 +152,7 @@ class PlanController extends Controller
             }
             $this->validate($request, $rules);
 
-            $plan->admin_id = $user->admin->id;            
+            $plan->admin_id = $user->admin->id;
             $plan->save();
 
             // check status
@@ -354,7 +354,7 @@ class PlanController extends Controller
         }
 
         foreach ($items->get() as $item) {
-            // disconnect plan            
+            // disconnect plan
             if (config('cashier.gateway') == 'paypal_subscription') {
                 $service = \Acelle\Cashier\Cashier::getPaymentGateway('paypal_subscription');
                 $service->disconnectPlan($item);
@@ -509,9 +509,9 @@ class PlanController extends Controller
         
         if ($plan->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SYSTEM) {
             return redirect()->action('Admin\PlanController@sendingServers', $plan->uid);
-        } else if ($plan->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN) {
+        } elseif ($plan->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN) {
             return redirect()->action('Admin\PlanController@sendingServerOwn', $plan->uid);
-        } else if ($plan->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SUBACCOUNT) {
+        } elseif ($plan->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SUBACCOUNT) {
             return redirect()->action('Admin\PlanController@sendingServerSubaccount', $plan->uid);
         }
 
@@ -541,7 +541,7 @@ class PlanController extends Controller
         
         // save posted data
         if ($request->isMethod('post')) {
-            $plan->fillAll($request);            
+            $plan->fillAll($request);
             $plan->save();
             
             $request->session()->flash('alert-success', trans('messages.plan.sending_server.saved'));
@@ -571,7 +571,7 @@ class PlanController extends Controller
         
         // save posted data
         if ($request->isMethod('post')) {
-            $plan->fillAll($request);            
+            $plan->fillAll($request);
             $plan->save();
             
             $request->session()->flash('alert-success', trans('messages.plan.sending_server.saved'));
@@ -653,7 +653,7 @@ class PlanController extends Controller
             if (in_array($sendingServer->id, $existIds)) {
                 $request->session()->flash('alert-error', trans('messages.plan.sending_server.already_added'));
                 return redirect()->action('Admin\PlanController@sendingServers', $plan->uid);
-            }            
+            }
             
             $plan->addSendingServerByUid($sendingServer->uid);
 
@@ -926,7 +926,7 @@ class PlanController extends Controller
 
         // save posted data
         if ($request->isMethod('post')) {
-            $plan->fillAll($request);            
+            $plan->fillAll($request);
             return view('admin.plans._billing_cycle', [
                 'plan' => $plan,
             ]);
@@ -1010,7 +1010,7 @@ class PlanController extends Controller
             // check plan status
             $plan->checkStatus();
 
-             return 'success';
+            return 'success';
         }
 
         return view('admin.plans.wizard_sending_server', [
@@ -1036,7 +1036,7 @@ class PlanController extends Controller
         
         // save posted data
         if ($request->isMethod('post')) {
-            $plan->fillAll($request);            
+            $plan->fillAll($request);
             $plan->save();
 
             // check plan status
@@ -1063,7 +1063,7 @@ class PlanController extends Controller
 
         // authorize
         if (\Gate::denies('visibleOn', $plan)) {
-            // 
+            //
             return response()->json([
                 'status' => 'error',
                 'message' => trans('messages.plan.show.denied'),
@@ -1096,7 +1096,7 @@ class PlanController extends Controller
 
         // authorize
         if (\Gate::denies('visibleOff', $plan)) {
-            // 
+            //
             return response()->json([
                 'status' => 'error',
                 'message' => trans('messages.plan.hide.denied'),

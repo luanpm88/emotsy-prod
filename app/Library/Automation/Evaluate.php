@@ -111,7 +111,7 @@ class Evaluate extends Action
 
         if (array_key_exists('email', $options)) {
             $emailUid = $this->getOption('email');
-            $email = Email::findByUid($emailUid);    
+            $email = Email::findByUid($emailUid);
         } else {
             $linkUid = $this->getOption('email_link');
             $email = EmailLink::findByUid($linkUid)->email;

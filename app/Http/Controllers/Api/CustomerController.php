@@ -72,7 +72,7 @@ class CustomerController extends Controller
                 }
 
                 return \Response::json(array(
-                    'status' => 1, 
+                    'status' => 1,
                     'message' => trans('messages.customer.created'),
                     'customer_uid' => $customer->uid,
                     'api_token' => $customer->user->api_token
@@ -108,8 +108,7 @@ class CustomerController extends Controller
 
         // save posted data
         if ($request->isMethod('patch')) {
-
-            if($this->isDemoMode()) {
+            if ($this->isDemoMode()) {
                 return $this->notAuthorized();
             }
 
@@ -151,7 +150,7 @@ class CustomerController extends Controller
             }
 
             return \Response::json(array(
-                'status' => 1, 
+                'status' => 1,
                 'message' => trans('messages.customer.updated'),
                 'customer_uid' => $customer->uid
             ), 200);
@@ -261,7 +260,7 @@ class CustomerController extends Controller
         $customer->enable();
 
         return \Response::json(array(
-            'status' => 1, 
+            'status' => 1,
             'message' => trans('messages.customer.enabled'),
             'customer_uid' => $customer->uid
         ), 200);
@@ -295,7 +294,7 @@ class CustomerController extends Controller
         $customer->disable();
 
         return \Response::json(array(
-            'status' => 1, 
+            'status' => 1,
             'message' => trans('messages.customer.disabled'),
             'customer_uid' => $customer->uid
         ), 200);
@@ -338,7 +337,7 @@ class CustomerController extends Controller
         $customer->assignPlan($plan);
 
         return \Response::json(array(
-            'status' => 1, 
+            'status' => 1,
             'message' => 'Assigned '.$customer->displayName().' plan to '.$plan->name.' successfully.',
             'customer_uid' => $customer->uid,
             'plan_uid' => $plan->uid

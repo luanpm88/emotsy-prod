@@ -25,7 +25,7 @@ class StorageServiceProvider extends ServiceProvider implements DeferrableProvid
                 $service = new S3($apiKey, $secret, $region, $bucket);
 
                 return $service;
-            } catch(\Exception $ex) {
+            } catch (\Exception $ex) {
                 return null;
             }
         });

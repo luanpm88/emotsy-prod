@@ -148,7 +148,7 @@ class SubscriberController extends Controller
                 // trigger the event
                 if (Setting::isYes('send_notification_email_for_list_subscription')) {
                     Log::info("Sending notification email for subscriber {$subscriber->email}, list {$subscriber->mailList->name}");
-                    event(new MailListSubscription($user, $subscriber));    
+                    event(new MailListSubscription($user, $subscriber));
                 } else {
                     Log::info("No notification email for subscriber {$subscriber->email}, list {$subscriber->mailList->name}");
                 }

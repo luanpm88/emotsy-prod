@@ -65,14 +65,14 @@ class UserController extends Controller
     {
         $userActivation = \Acelle\Model\UserActivation::where('token', '=', $token)->first();
 
-        if(!$userActivation) {
+        if (!$userActivation) {
             return view('notAuthorized');
         } else {
             $userActivation->user->setActivated();
 
             $request->session()->put('user-activated', trans('messages.user.activated'));
 
-            if(isset($request->redirect)) {
+            if (isset($request->redirect)) {
                 return redirect()->away(urldecode($request->redirect));
             } else {
                 return redirect()->action('HomeController@index');
@@ -112,7 +112,7 @@ class UserController extends Controller
         // Customer account
         $user = $request->user();
         $is_customer_logged_in = is_object($user) && is_object($user->customer);
-        if($is_customer_logged_in) {
+        if ($is_customer_logged_in) {
             return redirect()->action('AccountSubscriptionController@index');
         } else {
             $customer = new \Acelle\Model\Customer();
@@ -126,10 +126,10 @@ class UserController extends Controller
             }
         }
 
-         // save posted data
+        // save posted data
         if ($request->isMethod('post')) {
             // Validation
-            if($is_customer_logged_in) {
+            if ($is_customer_logged_in) {
             } else {
                 $rules = $customer->registerRules();
 
@@ -145,12 +145,12 @@ class UserController extends Controller
             }
 
             // Save customer
-            if(!$is_customer_logged_in) {
+            if (!$is_customer_logged_in) {
                 $customer->updateInformation($request);
             }
 
             // Send registration confirmation email
-            if($is_customer_logged_in) {
+            if ($is_customer_logged_in) {
             } else {
                 $user = \Acelle\Model\User::find($customer->user_id);
 
@@ -158,7 +158,7 @@ class UserController extends Controller
                     $user->sendActivationMail($customer->displayName());
                 } catch (\Exception $e) {
                     $error = $e->getMessage();
-                    MailLog::error( $error );
+                    MailLog::error($error);
                     return view('somethingWentWrong', ['message' => trans('messages.something_went_wrong_with_email_service') . ": " . $error]);
                 }
 

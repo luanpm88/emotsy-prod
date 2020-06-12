@@ -29,6 +29,5 @@ class AutomationController extends Controller
         } catch (\Exception $ex) {
             return \Response::json(['success' => false, 'error' => $ex->getMessage()], 500);
         }
-        
     }
 }

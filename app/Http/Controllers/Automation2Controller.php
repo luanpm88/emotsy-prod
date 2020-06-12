@@ -56,7 +56,7 @@ class Automation2Controller extends Controller
         
         // init automation
         $automation = new Automation2([
-            'name' => trans('messages.automation.untitled'),            
+            'name' => trans('messages.automation.untitled'),
         ]);
         $automation->status = Automation2::STATUS_INACTIVE;
         
@@ -66,7 +66,7 @@ class Automation2Controller extends Controller
         }
         
         // saving
-        if($request->isMethod('post')) {
+        if ($request->isMethod('post')) {
             // fill before save
             $automation->fillRequest($request);
             
@@ -95,7 +95,7 @@ class Automation2Controller extends Controller
         }
         
         return view('automation2.create', [
-            'automation' => $automation,                          
+            'automation' => $automation,
         ]);
     }
     
@@ -131,7 +131,7 @@ class Automation2Controller extends Controller
         }
             
         // pass validation and save
-        $automation->updateMailList(MailList::findByUid($request->mail_list_uid));      
+        $automation->updateMailList(MailList::findByUid($request->mail_list_uid));
         
         // save
         $automation->save();
@@ -171,7 +171,7 @@ class Automation2Controller extends Controller
         }
         
         return view('automation2.edit', [
-            'automation' => $automation,                          
+            'automation' => $automation,
         ]);
     }
     
@@ -191,7 +191,7 @@ class Automation2Controller extends Controller
         }
         
         return view('automation2.settings', [
-            'automation' => $automation,                          
+            'automation' => $automation,
         ]);
     }
     
@@ -393,7 +393,7 @@ class Automation2Controller extends Controller
                     'time' => $request->time,
                 ],
             ]);
-        } else if ($request->key == 'condition') {
+        } elseif ($request->key == 'condition') {
             if ($request->type == 'open') {
                 return response()->json([
                     'status' => 'success',
@@ -405,7 +405,7 @@ class Automation2Controller extends Controller
                         'email' => empty($request->email) ? null : $request->email,
                     ],
                 ]);
-            } else if ($request->type == 'click') {
+            } elseif ($request->type == 'click') {
                 return response()->json([
                     'status' => 'success',
                     'message' => trans('messages.automation.action.added'),
@@ -448,7 +448,7 @@ class Automation2Controller extends Controller
             return $this->notAuthorized();
         }
         
-        if($request->isMethod('post')) {
+        if ($request->isMethod('post')) {
             // make validator
             $validator = Validator::make($request->all(), $this->triggerRules()[$request->options['key']]);
             $rules = $this->triggerRules()[$request->options['key']];
@@ -498,7 +498,7 @@ class Automation2Controller extends Controller
         }
         
         // saving
-        if($request->isMethod('post')) {
+        if ($request->isMethod('post')) {
             if ($request->key == 'wait') {
                 return response()->json([
                     'status' => 'success',
@@ -509,7 +509,7 @@ class Automation2Controller extends Controller
                         'time' => $request->time,
                     ],
                 ]);
-            } else if ($request->key == 'condition') {
+            } elseif ($request->key == 'condition') {
                 if ($request->type == 'open') {
                     return response()->json([
                         'status' => 'success',
@@ -521,7 +521,7 @@ class Automation2Controller extends Controller
                             'email' => empty($request->email) ? null : $request->email,
                         ],
                     ]);
-                } else if ($request->type == 'click') {
+                } elseif ($request->type == 'click') {
                     return response()->json([
                         'status' => 'success',
                         'message' => trans('messages.automation.action.updated'),
@@ -572,7 +572,7 @@ class Automation2Controller extends Controller
                 'sign_dkim' => true,
                 'track_open' => true,
                 'track_click' => true,
-                'action_id' => $request->action_id,                
+                'action_id' => $request->action_id,
             ]);
         }
         
@@ -582,7 +582,7 @@ class Automation2Controller extends Controller
         }
         
         // saving
-        if($request->isMethod('post')) {
+        if ($request->isMethod('post')) {
             // fill before save
             $email->fill($request->all());
             
@@ -630,7 +630,7 @@ class Automation2Controller extends Controller
     public function emailDelete(Request $request, $uid, $email_uid)
     {
         // init automation
-        $automation = Automation2::findByUid($uid);        
+        $automation = Automation2::findByUid($uid);
         $email = Email::findByUid($email_uid);
         
         // authorize
@@ -715,8 +715,7 @@ class Automation2Controller extends Controller
         }
         
         // saving
-        if($request->isMethod('post')) {
-            
+        if ($request->isMethod('post')) {
         }
         
         return view('automation2.email.confirm', [
@@ -990,7 +989,6 @@ class Automation2Controller extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
-            
             list($result, $validator) = $email->uploadTemplate($request);
             
             if (!$result) {
@@ -1084,7 +1082,7 @@ class Automation2Controller extends Controller
             return $this->notAuthorized();
         }
         
-        foreach($request->file as $file) {
+        foreach ($request->file as $file) {
             $email->uploadAttachment($file);
         }
     }
@@ -1407,7 +1405,7 @@ class Automation2Controller extends Controller
         }
 
         // saving
-        if($request->isMethod('post')) {
+        if ($request->isMethod('post')) {
             $contact->updateTags($request->tags);
 
             return response()->json([
@@ -1448,7 +1446,7 @@ class Automation2Controller extends Controller
         }
 
         // saving
-        if($request->isMethod('post')) {                        
+        if ($request->isMethod('post')) {
             // make validator
             $validator = Validator::make($request->all(), [
                 'tags' => 'required',
@@ -1533,7 +1531,7 @@ class Automation2Controller extends Controller
         }
 
         // saving
-        if($request->isMethod('post')) {
+        if ($request->isMethod('post')) {
             return response()->json([
                 'status' => 'success',
                 'message' => trans('messages.automation.contacts.exported'),
@@ -1565,7 +1563,7 @@ class Automation2Controller extends Controller
         }
 
         // saving
-        if($request->isMethod('post')) {                        
+        if ($request->isMethod('post')) {
             // make validator
             $validator = Validator::make($request->all(), [
                 'name' => 'required',
@@ -1616,7 +1614,7 @@ class Automation2Controller extends Controller
     public function templateEditClassic(Request $request, $uid, $email_uid)
     {
         // init automation
-        $automation = Automation2::findByUid($uid);        
+        $automation = Automation2::findByUid($uid);
         $email = Email::findByUid($email_uid);
         
         // authorize
@@ -1625,7 +1623,7 @@ class Automation2Controller extends Controller
         }
 
         // saving
-        if($request->isMethod('post')) {                        
+        if ($request->isMethod('post')) {
             $rules = array(
                 'content' => 'required',
             );
@@ -1664,7 +1662,7 @@ class Automation2Controller extends Controller
     public function templateEditPlain(Request $request, $uid, $email_uid)
     {
         // init automation
-        $automation = Automation2::findByUid($uid);        
+        $automation = Automation2::findByUid($uid);
         $email = Email::findByUid($email_uid);
         
         // authorize
@@ -1673,7 +1671,7 @@ class Automation2Controller extends Controller
         }
 
         // saving
-        if($request->isMethod('post')) {                        
+        if ($request->isMethod('post')) {
             $rules = array(
                 'plain' => 'required',
             );
@@ -1733,7 +1731,7 @@ class Automation2Controller extends Controller
                 return $this->notAuthorized();
             }
         }
-        $list = MailList::findByUid($request->list_uid);        
+        $list = MailList::findByUid($request->list_uid);
         
         return view('automation2.segmentSelect', [
             'automation' => $automation,

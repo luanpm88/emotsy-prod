@@ -693,7 +693,7 @@ class MailListController extends Controller
 
         // Create subscriber
         if ($request->isMethod('post')) {
-            $subscriber = $list->subscribers()->where('email','=',strtolower(trim($request->EMAIL)))->first();
+            $subscriber = $list->subscribers()->where('email', '=', strtolower(trim($request->EMAIL)))->first();
 
             if (!is_object($subscriber)) {
                 $subscriber = new \Acelle\Model\Subscriber($request->all());
@@ -726,7 +726,7 @@ class MailListController extends Controller
                 $url = $request->session()->pull('form_url');
                 // $validator->errors()
                 $errs = [];
-                foreach($validator->errors()->toArray() as $key => $error) {
+                foreach ($validator->errors()->toArray() as $key => $error) {
                     $errs[] = $error[0];
                 }
 
@@ -798,7 +798,9 @@ class MailListController extends Controller
                 }
                 
                 // default redirect
-                return redirect()->action('PageController@signUpConfirmationThankyou', [
+                return redirect()->action(
+                    'PageController@signUpConfirmationThankyou',
+                    [
                         'list_uid' => $list->uid,
                         'uid' => $subscriber->uid,
                         'code' => 'empty',
@@ -888,9 +890,9 @@ class MailListController extends Controller
         header("Access-Control-Allow-Origin: *");
 
         $list = \Acelle\Model\MailList::findByUid($request->uid);
-        $subscriber = $list->subscribers()->where('email','=',strtolower(trim($request->EMAIL)))->first();
+        $subscriber = $list->subscribers()->where('email', '=', strtolower(trim($request->EMAIL)))->first();
 
-        if(is_object($subscriber) && $subscriber->status == \Acelle\Model\Subscriber::STATUS_SUBSCRIBED) {
+        if (is_object($subscriber) && $subscriber->status == \Acelle\Model\Subscriber::STATUS_SUBSCRIBED) {
             $result = trans('messages.email_already_subscribed');
         } else {
             $result = true;
@@ -909,7 +911,7 @@ class MailListController extends Controller
         $customers = Customer::where('id', '!=', $list->customer_id);
         
         $options = [];
-        foreach($customers->get() as $customer) {
+        foreach ($customers->get() as $customer) {
             $options[] = ['text' => $customer->displayName(), 'value' => $customer->uid];
         }
         

@@ -102,7 +102,7 @@ class SubscriptionController extends Controller
     {
         $gateway = Cashier::getPaymentGateway();
 
-        if(!$gateway) {
+        if (!$gateway) {
             return view('admin.subscriptions.no_gateway');
         }
 

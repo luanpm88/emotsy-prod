@@ -112,7 +112,7 @@ class PlanController extends Controller
             }
 
             return \Response::json(array(
-                'status' => 1, 
+                'status' => 1,
                 'message' => trans('messages.plan.created'),
                 'plan_uid' => $plan->uid
             ), 200);

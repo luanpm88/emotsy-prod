@@ -381,7 +381,9 @@ class SettingController extends Controller
         \Acelle\Model\Setting::set('url_open_track', action('CampaignController@open', ['message_id' => 'MESSAGE_ID']));
         \Acelle\Model\Setting::set('url_click_track', action('CampaignController@click', ['message_id' => 'MESSAGE_ID', 'url' => 'URL']));
         \Acelle\Model\Setting::set('url_delivery_handler', action('DeliveryController@notify', ['stype' => '']));
-        \Acelle\Model\Setting::set('url_update_profile', action('PageController@profileUpdateForm', array(
+        \Acelle\Model\Setting::set(
+            'url_update_profile',
+            action('PageController@profileUpdateForm', array(
             'list_uid' => 'LIST_UID',
             'uid' => 'SUBSCRIBER_UID',
             'code' => 'SECURE_CODE', ))
@@ -622,7 +624,7 @@ class SettingController extends Controller
         try {
             list($supported, $supportedUntil) = LicenseHelper::isSupported();
             if (!$supported) {
-                $request->session()->flash('alert-error', sprintf('Your Acelle Mail SUPPORT was already expired on <strong>%s</strong>. Please <a style="text-decoration:underline;font-style: normal;" target="_blank" href="%s">renew</a> it first before proceeding with our LIVE upgrade service.', $supportedUntil->toFormattedDateString(),  'https://codecanyon.net/item/acelle-email-marketing-web-application/17796082'));
+                $request->session()->flash('alert-error', sprintf('Your Acelle Mail SUPPORT was already expired on <strong>%s</strong>. Please <a style="text-decoration:underline;font-style: normal;" target="_blank" href="%s">renew</a> it first before proceeding with our LIVE upgrade service.', $supportedUntil->toFormattedDateString(), 'https://codecanyon.net/item/acelle-email-marketing-web-application/17796082'));
 
                 return redirect()->action('Admin\SettingController@upgrade');
             }

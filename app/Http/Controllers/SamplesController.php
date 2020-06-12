@@ -8,6 +8,6 @@ class SamplesController extends Controller
 {
     public function index()
     {
-    	return view('samples.index');
+        return view('samples.index');
     }
 }

@@ -229,7 +229,7 @@ class SubscriberController extends Controller
                 $subscriber->removeImage();
             }
 
-                // Update field
+            // Update field
             $subscriber->updateFields($request->all());
 
             event(new \Acelle\Events\MailListUpdated($subscriber->mailList));
@@ -279,7 +279,9 @@ class SubscriberController extends Controller
         }
 
         // get related mail lists to update the cached information
-        $lists = $subscribers->get()->map(function($e) { return \Acelle\Model\MailList::find($e->mail_list_id); })->unique();
+        $lists = $subscribers->get()->map(function ($e) {
+            return \Acelle\Model\MailList::find($e->mail_list_id);
+        })->unique();
 
         // actually delete the subscriber
         foreach ($subscribers->get() as $subscriber) {
@@ -430,7 +432,7 @@ class SubscriberController extends Controller
             return $this->notAuthorized();
         }
 
-        if(!is_object($system_job)) {
+        if (!is_object($system_job)) {
             return "none";
         }
 
@@ -555,7 +557,7 @@ class SubscriberController extends Controller
             return $this->notAuthorized();
         }
 
-        if(!is_object($system_job)) {
+        if (!is_object($system_job)) {
             return "none";
         }
 
@@ -830,7 +832,7 @@ class SubscriberController extends Controller
         }
 
         // saving
-        if($request->isMethod('post')) {
+        if ($request->isMethod('post')) {
             $subscriber->updateTags($request->tags);
 
             return response()->json([
@@ -903,7 +905,7 @@ class SubscriberController extends Controller
             $emails = array_unique(preg_split("/[\s,\r\n]+/", $request->emails));
             $subscribers = $list->subscribers()->whereIn('email', $emails)->get();
 
-            // 
+            //
             return view('subscribers.bulkDeleteConfirm', [
                 'list' => $list,
                 'emails' => $emails,
@@ -944,7 +946,7 @@ class SubscriberController extends Controller
             // get all emails
             $emails = preg_split("/[\s,\r\n]+/", $request->emails);
 
-            // 
+            //
             return view('subscribers.bulkDeleteConfirm', [
                 'list' => $list,
                 'emails' => $emails,

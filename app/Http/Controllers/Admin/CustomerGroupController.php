@@ -221,10 +221,9 @@ class CustomerGroupController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('patch')) {
-            
-            if($this->isDemoMode()) {
+            if ($this->isDemoMode()) {
                 return $this->notAuthorized();
-            }   
+            }
             
             $this->validate($request, \Acelle\Model\CustomerGroup::rules());
 

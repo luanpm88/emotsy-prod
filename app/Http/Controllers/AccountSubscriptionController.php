@@ -38,7 +38,7 @@ class AccountSubscriptionController extends Controller
         if (!is_object($subscription) || $subscription->isEnded()) {
             $plans = Plan::getAvailablePlans();
             $planCount = Plan::getAllActive()->count();
-            $colWidth = ($planCount == 0) ? 0 :  round(85 / $planCount );
+            $colWidth = ($planCount == 0) ? 0 :  round(85 / $planCount);
             return view('account.subscription.select_plan', [
                 'plans' => $plans,
                 'colWidth' => $colWidth,
@@ -126,7 +126,7 @@ class AccountSubscriptionController extends Controller
      * @return \Illuminate\Http\Response
      **/
     public function changePlan(Request $request)
-    {        
+    {
         $customer = $request->user()->customer;
         $subscription = $customer->subscription;
         $gateway = Cashier::getPaymentGateway();
@@ -142,7 +142,7 @@ class AccountSubscriptionController extends Controller
             'gateway' => $gateway,
             'plans' => $plans,
         ]);
-    }    
+    }
     
     /**
      * Cancel subscription at the end of current period.
@@ -154,8 +154,8 @@ class AccountSubscriptionController extends Controller
     public function cancel(Request $request)
     {
         $customer = $request->user()->customer;
-        $subscription = $customer->subscription;     
-        $gateway = Cashier::getPaymentGateway();   
+        $subscription = $customer->subscription;
+        $gateway = Cashier::getPaymentGateway();
 
         if ($request->user()->customer->can('cancel', $subscription)) {
             $gateway->cancel($subscription);

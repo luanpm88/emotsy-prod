@@ -22,14 +22,13 @@ class CustomerController extends Controller
         }
         if (!empty($customer->imagePath())) {
             try {
-                $img = \Image::make($customer->imagePath());    
-            } catch(\Intervention\Image\Exception\NotReadableException $ex) {
+                $img = \Image::make($customer->imagePath());
+            } catch (\Intervention\Image\Exception\NotReadableException $ex) {
                 // file not found
                 $customer->image = null;
                 $customer->save();
                 $img = \Image::make(public_path('assets/images/placeholder.jpg'));
             }
-            
         } else {
             $img = \Image::make(public_path('assets/images/placeholder.jpg'));
         }
@@ -83,7 +82,7 @@ class CustomerController extends Controller
         $next_billing_date = null;
         if (is_object($subscription)) {
             $next_billing_date = $subscription->ends_at;
-            if($subscription->isActive()) {
+            if ($subscription->isActive()) {
                 $next_billing_date = $subscription->current_period_ends_at;
             }
         }

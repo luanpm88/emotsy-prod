@@ -274,7 +274,7 @@ class BounceHandlerController extends Controller
                 'status' => 'success', // or success
                 'message' => trans('messages.bounce_handler.test_success')
             ]);
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             echo json_encode([
                 'status' => 'error', // or success
                 'message' => $e->getMessage()

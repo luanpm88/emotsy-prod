@@ -117,7 +117,7 @@ class LayoutController extends Controller
         $user = $request->user();
         $layout = \Acelle\Model\Layout::findByUid($id);
         
-        if($this->isDemoMode()) {
+        if ($this->isDemoMode()) {
             return $this->notAuthorized();
         }
 
@@ -147,7 +147,7 @@ class LayoutController extends Controller
             }
 
             // check ses email tags
-            if ($layout->alias == 'sender_verification_email_for_amazon_ses' && preg_match( "/\<((meta)|(title)|(style))/i", $request->content)) {
+            if ($layout->alias == 'sender_verification_email_for_amazon_ses' && preg_match("/\<((meta)|(title)|(style))/i", $request->content)) {
                 return response()->json([
                     'status' => 'error',
                     'message' => trans('messages.layout.amazon_ses.tag_not_permit'),

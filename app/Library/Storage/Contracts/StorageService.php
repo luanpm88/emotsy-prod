@@ -4,5 +4,5 @@ namespace Acelle\Library\Storage\Contracts;
 
 interface StorageService
 {
-	public function store(Storable $object);
+    public function store(Storable $object);
 }

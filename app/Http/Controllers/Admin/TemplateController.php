@@ -115,7 +115,7 @@ class TemplateController extends Controller
             // Save template
             $template->fill($request->all());
             $template->source = 'editor';
-            if(isset($request->source)) {
+            if (isset($request->source)) {
                 $template->source = $request->source;
             }
             $template->untransform();
@@ -286,7 +286,7 @@ class TemplateController extends Controller
         }
 
         $elements = [];
-        if(isset($request->style)) {
+        if (isset($request->style)) {
             $elements = \Acelle\Model\Template::templateStyles()[$request->style];
         }
 
@@ -452,7 +452,7 @@ class TemplateController extends Controller
                 return $this->notAuthorized();
             }
 
-            $template->copy($request->name, NULL, $request->user()->admin);
+            $template->copy($request->name, null, $request->user()->admin);
 
             echo trans('messages.template.copied');
             return;

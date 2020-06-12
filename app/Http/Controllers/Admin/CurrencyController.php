@@ -169,7 +169,7 @@ class CurrencyController extends Controller
         $currency = \Acelle\Model\Currency::findByUid($id);
 
         // prevent action from demo mod
-        if($this->isDemoMode()) {
+        if ($this->isDemoMode()) {
             return $this->notAuthorized();
         }
 

@@ -334,7 +334,7 @@ class CampaignController extends Controller
         }
 
         if ($campaign->type == 'plain-text') {
-           return redirect()->action('CampaignController@plain', ['uid' => $campaign->uid]);
+            return redirect()->action('CampaignController@plain', ['uid' => $campaign->uid]);
         }
 
         // check if campagin does not have template
@@ -2241,14 +2241,15 @@ class CampaignController extends Controller
      *
      * @return string
      */
-    private function getRemoteIPAddress() {
-	    if (array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER)) {
+    private function getRemoteIPAddress()
+    {
+        if (array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER)) {
             $ip = preg_split('/\s*,\s*/', $_SERVER['HTTP_X_FORWARDED_FOR'])[0];
             return $ip;
-	    } else {
-	        return $_SERVER['REMOTE_ADDR'];
-	    }
-	}
+        } else {
+            return $_SERVER['REMOTE_ADDR'];
+        }
+    }
 
     /**
      * Get spam score.
@@ -2257,7 +2258,8 @@ class CampaignController extends Controller
      *
      * @return string
      */
-    public function spamScore(Request $request, $uid) {
+    public function spamScore(Request $request, $uid)
+    {
         // Get current user
         $campaign = \Acelle\Model\Campaign::findByUid($uid);
 
@@ -2267,10 +2269,10 @@ class CampaignController extends Controller
             return response()->json('Cannot get score. Make sure you setup for SpamAssassin correctly', 500); // Status code here
         }
 
-	    return view('campaigns.spam_score', [
+        return view('campaigns.spam_score', [
             'score' => $score,
         ]);
-	}
+    }
 
     /**
      * Change template from exist template.
@@ -2400,7 +2402,7 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        foreach($request->file as $file) {
+        foreach ($request->file as $file) {
             $campaign->uploadAttachment($file);
         }
     }

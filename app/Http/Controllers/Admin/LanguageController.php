@@ -160,7 +160,7 @@ class LanguageController extends Controller
             $this->validate($request, $language->rules());
 
             // rename locale folder
-            if($language->code != $request->code) {
+            if ($language->code != $request->code) {
                 rename(base_path("resources/lang/") . $language->code, base_path("resources/lang/") . $request->code);
             }
 
@@ -225,7 +225,7 @@ class LanguageController extends Controller
         $parse_error = $request->session()->get("parse_error");
         $filename = $request->file;
         
-        if($this->isDemoMode() && $language->is_default) {
+        if ($this->isDemoMode() && $language->is_default) {
             return $this->notAuthorized();
         }
         
@@ -372,7 +372,7 @@ class LanguageController extends Controller
             $openZip = $zip->open($tmp_zip, \ZipArchive::CREATE);
 
             // read zip file check if zip archive invalid
-            if ($openZip !== TRUE) {
+            if ($openZip !== true) {
                 $rules["zip_archive_unvalid"] = 'required';
                 $this->validate($request, $rules);
             }
@@ -382,7 +382,7 @@ class LanguageController extends Controller
             $zip->close();
             unlink($tmp_zip);
                        
-            $request->session()->flash('alert-success', trans('messages.language.uploaded'));            
+            $request->session()->flash('alert-success', trans('messages.language.uploaded'));
             return redirect()->action('Admin\LanguageController@translate', ["id" => $language->uid, "file" => "messages"]);
         }
         

@@ -50,7 +50,7 @@ class SubscriptionController extends Controller
         $customer->assignPlan($plan);
 
         return \Response::json(array(
-            'status' => 1, 
+            'status' => 1,
             'message' => 'Assigned '.$customer->displayName().' plan to '.$plan->name.' successfully.',
             'customer_uid' => $customer->uid,
             'plan_uid' => $plan->uid

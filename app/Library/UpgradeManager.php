@@ -326,9 +326,11 @@ class UpgradeManager
         $updatedb = file($updatefile);
 
         $rexp = '/\s*=\s*/';
-        $mainkeys = array_map(function ($record) use ($rexp) { $pair = preg_split($rexp, $record);
+        $mainkeys = array_map(function ($record) use ($rexp) {
+            $pair = preg_split($rexp, $record);
 
-return (empty($pair)) ? null : $pair[0]; }, $maindb);
+            return (empty($pair)) ? null : $pair[0];
+        }, $maindb);
 
         foreach ($updatedb as $updaterecord) {
             if (empty(trim($updaterecord))) {
@@ -470,9 +472,9 @@ return (empty($pair)) ? null : $pair[0]; }, $maindb);
         while (false !== ($file = readdir($dir))) {
             if (($file != '.') && ($file != '..')) {
                 if (is_dir(join_paths($src, $file))) {
-                    $this->copy(join_paths($src,  $file), join_paths($dst, $file));
+                    $this->copy(join_paths($src, $file), join_paths($dst, $file));
                 } else {
-                    copy(join_paths($src, $file), join_paths($dst,  $file));
+                    copy(join_paths($src, $file), join_paths($dst, $file));
                 }
             }
         }
