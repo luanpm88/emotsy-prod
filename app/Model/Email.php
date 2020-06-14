@@ -717,7 +717,7 @@ class Email extends Model
         $body = $this->transform();
 
         if (Setting::isYes('rss.enabled')) {
-            if (is_null($rssContent)) {
+            if (is_null($this->rssContent)) {
                 $this->rssContent = Rss::parse($body);
             }
 
