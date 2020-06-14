@@ -500,6 +500,12 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
+            'rss.enabled' => [
+                'cat' => 'others',
+                'value' => null,
+                'type' => 'text',
+                'not_required' => true,
+            ],
         ];
     }
 

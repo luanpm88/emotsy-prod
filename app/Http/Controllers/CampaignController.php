@@ -14,6 +14,8 @@ use Acelle\Library\StringHelper;
 use Acelle\Model\Template;
 use Acelle\Jobs\ExportCampaignLog;
 use Acelle\Model\SystemJob;
+use Acelle\Model\Setting;
+use Acelle\Library\Rss;
 
 class CampaignController extends Controller
 {
@@ -2007,6 +2009,10 @@ class CampaignController extends Controller
                 $html,
                 $css
             );
+        }
+
+        if (Setting::isYes('rss.enabled')) {
+            $campaign->html = Rss::parse($campaign->html);
         }
 
         return view('campaigns.preview', [

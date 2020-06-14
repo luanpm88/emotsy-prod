@@ -2,51 +2,65 @@
 
 namespace Acelle\Library;
 
+use SimpleXMLElement;
+
 /**
  * Tool class.
  */
 class Rss
 {
-    
-    protected $raw = null;
-    protected $blocks = [];
-
-    public function __construct($raw)
+    public static function parse($content)
     {
-        $this->raw = $raw;
+        $rss = new \Twig\TwigFunction('rss', function ($url, $count = 10) {
+            $dom = simplexml_load_string(file_get_contents($url), 'SimpleXMLElement', LIBXML_NOCDATA);
+            $x = self::xmlToArray($dom);
+            $x = ($x['rss']['channel']);
+            $x['item'] = array_slice($x['item'], 0, $count);
+            return $x;
+        });
+
+        $loader = new \Twig\Loader\ArrayLoader([
+            'content' => $content,
+        ]);
+
+        $twig = new \Twig\Environment($loader);
+        $twig->addFunction($rss);
+
+        return $twig->render('content');
     }
 
-    public function render($retry = false)
+    private static function xmlToArray(SimpleXMLElement $xml): array
     {
-        preg_match('/{rss:start.*}.*{rss:end}/sim', $this->raw, $matched);
-        $allrss = $r[0];
+        $parser = function (SimpleXMLElement $xml, array $collection = []) use (&$parser) {
+            $nodes = $xml->children();
+            $attributes = $xml->attributes();
 
-        // blocks like (without end) ['{RSS:START}.....', '{RSS:START}.....' ]
-        $blocks = preg_split('/{RSS:END}/i', $allrss);
-        foreach($blocks as $block) {
-            $this->process($block);
-        }
+            if (0 !== count($attributes)) {
+                foreach ($attributes as $attrName => $attrValue) {
+                    $collection['attributes'][$attrName] = strval($attrValue);
+                }
+            }
 
-    }
+            if (0 === $nodes->count()) {
+                // $collection['value'] = strval($xml);
+                // return $collection;
+                return strval($xml);
+            }
 
-    public function process($block)
-    {
+            foreach ($nodes as $nodeName => $nodeValue) {
+                if (count($nodeValue->xpath('../' . $nodeName)) < 2) {
+                    $collection[$nodeName] = $parser($nodeValue);
+                    continue;
+                }
 
-    }
+                $collection[$nodeName][] = $parser($nodeValue);
+            }
 
-    private function getMeta($block)
-    {
-        preg_match('/{RSS:START[^\}]*}/i', $start, $matched);
-        $header = $matched[0];
+            return $collection;
+        };
 
-        $header = preg_replace('/{RSS:START\s*|}/i', '', $header);
-        $header = trim($header);
-        $metastr = preg_split('/\s+/', $header);
+        return [
+            $xml->getName() => $parser($xml)
+        ];
     }
 }
-
-$raw = '
-{RSS:START URL=http://rss.cnn.com/rss/edition.rss}
-<h1>{rss:title}</h1>
-{rss:end}
-'

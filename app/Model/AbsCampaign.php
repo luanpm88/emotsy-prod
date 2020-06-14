@@ -24,17 +24,19 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\ValidationException;
+use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
+use Carbon\Carbon;
+use League\Csv\Writer;
 use Acelle\Library\Log as MailLog;
 use Acelle\Library\StringHelper;
-use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
-use Validator;
-use Illuminate\Validation\ValidationException;
-use DB;
-use Carbon\Carbon;
-use File;
 use Acelle\Library\Tool;
+use Acelle\Library\Rss;
+use Acelle\Model\Setting;
+use Validator;
+use DB;
+use File;
 use ZipArchive;
-use League\Csv\Writer;
 
 abstract class AbsCampaign extends Model
 {
@@ -59,6 +61,9 @@ abstract class AbsCampaign extends Model
      * @var array
      */
     protected $dates = ['created_at', 'updated_at', 'run_at'];
+
+    // parse content
+    protected $rssContent = null;
 
     /**
      * Get campaign's default mail list.
@@ -504,6 +509,14 @@ abstract class AbsCampaign extends Model
 
         // @note: addTrackingUrl() must go before appendOpenTrackingUrl()
         $body = $this->transform();
+
+        if (Setting::isYes('rss.enabled')) {
+            if (is_null($rssContent)) {
+                $this->rssContent = Rss::parse($body);
+            }
+
+            $body = $this->rssContent;
+        }
 
         // Enable click tracking
         if ($this->track_click) {

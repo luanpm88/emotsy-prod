@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use File;
 use KubAT\PhpSimple\HtmlDomParser;
 use Acelle\Library\Tool;
+use Acelle\Library\Rss;
+use Acelle\Model\Setting;
 use Acelle\Library\StringHelper;
 use Acelle\Library\Log as MailLog;
 use Illuminate\Support\Facades\Storage;
@@ -24,6 +26,8 @@ class Email extends Model
     protected $fillable = [
         'subject', 'from', 'from_name', 'reply_to', 'sign_dkim', 'track_open', 'track_click', 'action_id',
     ];
+
+    protected $rssContent = null;
 
     /**
      * Association with mailList through mail_list_id column.
@@ -711,6 +715,14 @@ class Email extends Model
 
         // @note: addTrackingUrl() must go before appendOpenTrackingUrl()
         $body = $this->transform();
+
+        if (Setting::isYes('rss.enabled')) {
+            if (is_null($rssContent)) {
+                $this->rssContent = Rss::parse($body);
+            }
+
+            $body = $this->rssContent;
+        }
 
         // Enable click tracking
         if ($this->track_click) {
