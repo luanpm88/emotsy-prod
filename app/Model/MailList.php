@@ -1016,6 +1016,7 @@ class MailList extends Model
 
         $htmlContent = str_replace('{LIST_NAME}', $this->name, $htmlContent);
         $htmlContent = str_replace('{EMAIL}', $subscriber->email, $htmlContent);
+        $htmlContent = str_replace('{FULL_NAME}', $subscriber->getFullName(), $htmlContent);
 
         $message->setSubject($template->subject);
         $message->addPart($htmlContent, 'text/html');
