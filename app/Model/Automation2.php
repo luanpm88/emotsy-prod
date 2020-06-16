@@ -372,7 +372,7 @@ class Automation2 extends Model
             foreach ($automations as $automation) {
                 $automationLockFile = $customer->getHomePath('locks/automation-lock-'.$automation->uid);
                 $lock = new Lockable($automationLockFile);
-                $timeout = 30; // seconds
+                $timeout = 5; // seconds
 
                 $lock->getExclusiveLock(function ($f) use ($customer, $automation) {
                     try {
