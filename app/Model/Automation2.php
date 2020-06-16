@@ -373,9 +373,9 @@ class Automation2 extends Model
                 $automationLockFile = $customer->getHomePath('locks/automation-lock-'.$automation->uid);
                 $lock = new Lockable($automationLockFile);
                 $timeout = 30; // seconds
-                
-                try {
-                    $lock->getExclusiveLock(function ($f) use ($customer, $automation) {
+
+                $lock->getExclusiveLock(function ($f) use ($customer, $automation) {
+                    try {
                         if ($customer->isSubscriptionActive()) {
                             $automation->logger()->info(sprintf('Checking automation "%s"', $automation->name));
                             $automation->checkForNewTriggers();
@@ -385,12 +385,11 @@ class Automation2 extends Model
                         } else {
                             $automation->logger()->warning(sprintf('Automation "%s" skipped, user "%s" not on active subscription', $automation->name, $customer->displayName()));
                         }
-                    }, $timeout);
-                } catch (\Exception $ex) {
-                    $automation->setLastError($ex->getMessage());
-
-                    $automation->logger()->warning(sprintf('Error while executing automation "%s". %s', $automation->name, $ex->getMessage()));
-                }
+                    } catch (\Exception $ex) {
+                        $automation->setLastError($ex->getMessage());
+                        $automation->logger()->warning(sprintf('Error while executing automation "%s". %s', $automation->name, $ex->getMessage()));
+                    }
+                }, $timeout);
             }
         }
     }
