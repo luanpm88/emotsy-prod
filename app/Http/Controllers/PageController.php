@@ -302,6 +302,7 @@ class PageController extends Controller
      */
     public function unsubscribeForm(Request $request)
     {
+        // IMPORTANT: it does not create TrackingLog!!!
         $user = $request->user();
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $layout = \Acelle\Model\Layout::where('alias', 'unsubscribe_form')->first();
