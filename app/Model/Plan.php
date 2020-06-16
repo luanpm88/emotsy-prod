@@ -1529,7 +1529,8 @@ class Plan extends Model implements BillablePlanInterface
 
     public function activeSendingServers()
     {
-        return $this->plansSendingServers()->join('sending_servers', 'sending_servers.id', 'plans_sending_servers.sending_server_id')->where('sending_servers.status', 'active');
+        // do not care if sending server is enabled or not
+        return $this->plansSendingServers()->join('sending_servers', 'sending_servers.id', 'plans_sending_servers.sending_server_id');
     }
 
     /**
