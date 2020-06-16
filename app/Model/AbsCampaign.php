@@ -1354,7 +1354,7 @@ abstract class AbsCampaign extends Model
      */
     public function unsubscribeCount()
     {
-        return $this->unsubscribeLogs()->distinct('unsubscribe_logs.subscriber_id')->count('unsubscribe_logs.subscriber_id');
+        return $this->unsubscribeLogs()->distinct('unsubscribe_logs.subscriber_id')->count();
     }
 
     /**
