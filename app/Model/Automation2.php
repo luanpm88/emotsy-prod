@@ -659,11 +659,18 @@ class Automation2 extends Model
         // $count = $this->autoTriggers()->countBy(function($trigger) {
         //    return $trigger->isActionExecuted($action['id']);
         // });
-        $action = $this->getAction($attributes); // IMPORTANT: this action does not associate with a particular trigger
-        $count = 0;
-        foreach ($this->autoTriggers as $trigger) {
-            $count += ($trigger->isActionExecuted($action->getId())) ? 1 : 0;
-        }
+
+        // IMPORTANT: this action does not associate with a particular trigger
+        $action = $this->getAction($attributes);
+
+        // @DEPRECATED
+        // $count = 0;
+        // foreach ($this->autoTriggers as $trigger) {
+        //     $count += ($trigger->isActionExecuted($action->getId())) ? 1 : 0;
+        // }
+
+        // Count the number subscribers whose action has been executed
+        $count = $this->subscribersByExecutedAction($action->getId())->count();
 
         if ($action->getType() == 'ElementTrigger') {
             $insight = [
@@ -685,14 +692,15 @@ class Automation2 extends Model
                 'latest_activity' => $this->autoTriggers()->max('created_at'),
             ];
         } elseif ($action->getType() == 'ElementWait') {
-            $count = 0;
-            foreach ($this->autoTriggers as $trigger) {
-                $count += ($trigger->isLatest($action->getId())) ? 1 : 0;
-            }
+            // Count the numbe contacts with this action as last executed one
+            $queue = $this->subscribersByLatestAction($action->getId())->count();
+
+            // since the previous $count also covers $queue ones, so get the already passed one by subtracting
+            $passed = $count - $queue;
 
             $insight = [
                 'count' => $count,
-                'subtitle' => __('messages.automation.stats.in-queue', ['count' => $count]),
+                'subtitle' => __('messages.automation.stats.in-queue2', ['queue' => $queue, 'passed' => $passed]),
                 'percentage' => ($total != 0) ? ($count / $total) : 0,
                 'latest_activity' => $this->autoTriggers()->max('created_at'),
             ];
@@ -704,22 +712,8 @@ class Automation2 extends Model
                 'latest_activity' => $this->autoTriggers()->max('created_at'),
             ];
         } elseif ($action->getType() == 'ElementCondition') {
-            $yes = 0;
-            $no = 0;
-            foreach ($this->autoTriggers as $trigger) {
-                // instantiate the object again, this time with associated autotrigger
-                $actionWithAutoTrigger = $trigger->getActionById($action->getId());
-
-                if (is_null($actionWithAutoTrigger->getLastExecuted())) {
-                    continue;
-                }
-
-                if ($actionWithAutoTrigger->getEvaluationResult()) {
-                    $yes += 1;
-                } else {
-                    $no += 1;
-                }
-            }
+            $yes = $this->subscribersByExecutedAction($action->getChildYesId())->count();
+            $no = $this->subscribersByExecutedAction($action->getChildNoId())->count();
 
             $insight = [
                 'count' => $yes + $no,
@@ -801,17 +795,36 @@ class Automation2 extends Model
         return $instance;
     }
 
+    // get all subscribers
+    // if $actionId is provided, get only subscribers who have been triggered and have gone through the action
     public function subscribers($actionId = null)
     {
         $list = $this->mailList->subscribers()->select('subscribers.*');
 
         if (!is_null($actionId)) {
+            // @deprecated, use the subscribersByLatestAction() method instead
             $list->join('auto_triggers', 'auto_triggers.subscriber_id', '=', 'subscribers.id')
                  ->where('auto_triggers.executed_index', 'LIKE', '%'.$actionId.'%');
         }
 
         return $list;
     }
+
+    public function subscribersByLatestAction($actionId)
+    {
+        $list = $this->mailList->subscribers()->select('subscribers.*');
+        $list->join('auto_triggers', 'auto_triggers.subscriber_id', '=', 'subscribers.id')
+                 ->where('auto_triggers.executed_index', 'LIKE', '%'.$actionId);
+        return $list;
+    }
+
+    public function subscribersByExecutedAction($actionId)
+    {
+        $list = $this->mailList->subscribers()->select('subscribers.*');
+        $list->join('auto_triggers', 'auto_triggers.subscriber_id', '=', 'subscribers.id')
+                 ->where('auto_triggers.executed_index', 'LIKE', '%'.$actionId.'%');
+        return $list;
+    }    
 
     public function getIntro()
     {

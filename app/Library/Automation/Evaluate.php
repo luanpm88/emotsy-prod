@@ -141,4 +141,14 @@ class Evaluate extends Action
             return $this->childNo;
         }
     }
+
+    public function getChildYesId()
+    {
+        return $this->childYes;
+    }
+
+    public function getChildNoId()
+    {
+        return $this->childNo;
+    }
 }
