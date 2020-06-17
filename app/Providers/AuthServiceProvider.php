@@ -44,22 +44,4 @@ class AuthServiceProvider extends ServiceProvider
         \Acelle\Model\Sender::class => \Acelle\Policies\SenderPolicy::class,
         \Acelle\Model\Automation2::class => \Acelle\Policies\Automation2Policy::class,
     ];
-
-    /**
-     * Register any authentication / authorization services.
-     */
-    public function boot()
-    {
-        $this->registerPolicies();
-
-        Gate::define('send-from', function ($user, $fromEmail) {
-            if (Setting::get('allow_send_from_unverified_domain') == 'yes') {
-                return true;
-            }
-
-            $domain = substr(strrchr($fromEmail, '@'), 1);
-
-            return $user->customer->activeSendingDomains()->where('name', $domain)->exists();
-        });
-    }
 }
