@@ -44,4 +44,12 @@ class AuthServiceProvider extends ServiceProvider
         \Acelle\Model\Sender::class => \Acelle\Policies\SenderPolicy::class,
         \Acelle\Model\Automation2::class => \Acelle\Policies\Automation2Policy::class,
     ];
+
+    /**
+     * Register any authentication / authorization services.
+     */
+    public function boot()
+    {
+        $this->registerPolicies();
+    }
 }
