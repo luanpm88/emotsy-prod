@@ -3301,4 +3301,5 @@
   'stripe.billing_address_required' => 'Require address information',
   'campaign.preheader.intro' => '<strong>Preheader</strong> is the short summary text that follows the subject line
     when viewing an email from the inbox',
+  'automation.trigger.change.confirm' => 'Changing trigger will erase your automation history, are you sure?',
 ) ?>

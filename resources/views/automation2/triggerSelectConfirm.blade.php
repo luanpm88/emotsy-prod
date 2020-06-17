@@ -9,12 +9,13 @@
             </h3>
             <p class="mb-10">
                 {{ trans('messages.automation.trigger.' . $key . '.intro') }}
-            </p>
+			</p>
 				
 			<form id="trigger-select" action="{{ action("Automation2Controller@triggerSelect", $automation->uid) }}" method="POST" class="form-validate-jqueryz">
 				{{ csrf_field() }}
 				
 				<input type="hidden" name="options[key]" value="{{ $key }}" />
+				<input type="hidden" name="" value="{{ $key }}" />
 				
 				@if(View::exists('automation2.trigger.' . $key))
 					@include('automation2.trigger.' . $key)
@@ -23,20 +24,17 @@
 				<button class="btn btn-secondary select-trigger-confirm mt-2"
 					data-url="{{ action('Automation2Controller@triggerSelect', ['uid' => $automation->uid]) }}"
 				>
-						{{ trans('messages.automation.trigger.select_confirm') }}
+					{{ trans('messages.automation.trigger.select_confirm') }}
 				</button>
 			</form>
         </div>
     </div>
 
 	<script>
-		// when click confirm select trigger type
-		$('.select-trigger-confirm').click(function(e) {
-			e.preventDefault();
-		
-			var url = $(this).attr('data-url');
-			var data = $(this).closest('form').serialize();
-			
+		function confirm() {
+			var url = $('.select-trigger-confirm').attr('data-url');
+			var data = $('.select-trigger-confirm').closest('form').serialize();
+
 			// show loading effect
 			popup.loading();
 
@@ -50,8 +48,7 @@
 						popup.loadHtml(res.responseText);
 					}
 				},
-				success: function (response) {
-					
+				success: function (response) {					
 					// todo: when trigger selected
 					// console.log('Trigger was selected');
 					
@@ -80,6 +77,23 @@
 					});
 				}
 			});
+		}
+
+		// when click confirm select trigger type
+		$('.select-trigger-confirm').click(function(e) {
+			e.preventDefault();
+			
+			@if ($automation->getTrigger()->getOption('init') == 'true' && $automation->getTrigger()->getOption('type') != $key)
+				var dialog = new Dialog('confirm', {
+					message: '{{ trans('messages.automation.trigger.change.confirm') }}',
+					ok: function(dialog) {
+						confirm();   
+					}
+				});
+			@else
+				confirm();
+			@endif
+					
 		});
 	</script>
 @endsection
