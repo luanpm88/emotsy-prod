@@ -93,7 +93,7 @@ class Lockable
                 $callback();
             }
 
-            throw new \Exception('Timeout getting lock #Lockable');
+            throw new \Exception('Timeout getting lock #Lockable for: '.$this->file);
         }
     }
 }
