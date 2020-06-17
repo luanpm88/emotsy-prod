@@ -731,9 +731,10 @@ class Automation2 extends Model
         $total = $this->mailList->readCache('SubscriberCount');
         $involved = $this->autoTriggers()->count();
 
+        $leaves = $this->getLeafActions();
         $complete = 0;
-        foreach ($this->autoTriggers as $trigger) {
-            $complete += ($trigger->isComplete()) ? 1 : 0;
+        foreach ($leaves as $leaf) {
+            $complete += $this->subscribersByLatestAction($leaf)->count();    
         }
 
         $completePercentage = ($total == 0) ? 0 : $complete / $total;
@@ -767,6 +768,21 @@ class Automation2 extends Model
             $instance = $this->getAction($action);
             $callback($instance);
         }
+    }
+
+    // by Louis
+    public function getLeafActions()
+    {
+        $leaves = [];
+        $actions = $this->getElements(true);
+
+        $this->getActions(function ($e) use (&$leaves) {
+            if ($e->getNextActionId() == null) {
+                $leaves[] = $e->getId();
+            }
+        });
+
+        return $leaves;
     }
 
     // IMPORTANT: object returned by this function is not associated with a particular AutoTrigger
