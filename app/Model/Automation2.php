@@ -95,6 +95,17 @@ class Automation2 extends Model
     }
 
     /**
+     * Association: triggers that have not finished
+     */
+    public function pendingAutoTriggers()
+    {
+        $leaves = $this->getLeafActions();
+        $condition = '('.implode(' AND ', array_map(function($e) { return "executed_index NOT LIKE '%{$e}'"; }, $leaves)).')';
+        $query = $this->autoTriggers()->whereRaw($condition);
+        return $query;
+    }
+
+    /**
      * Association.
      */
     public function customer()
@@ -469,9 +480,16 @@ class Automation2 extends Model
     public function checkForExistingTriggersUpdate()
     {
         $this->logger()->info(sprintf('UPDATE > Start checking for trigger update'));
+        
+        /* FORCE RECHECK
         foreach ($this->autoTriggers as $trigger) {
             $trigger->check();
+        }*/
+
+        foreach($this->pendingAutoTriggers as $trigger) {
+            $trigger->check();
         }
+
         $this->logger()->info(sprintf('UPDATE > Finish checking for trigger update'));
     }
 
@@ -728,7 +746,7 @@ class Automation2 extends Model
 
     public function getSummaryStats()
     {
-        $total = $this->mailList->readCache('SubscriberCount');
+        $total = $this->mailList->subscribersCount();
         $involved = $this->autoTriggers()->count();
 
         $leaves = $this->getLeafActions();
