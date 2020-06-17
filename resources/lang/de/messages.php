@@ -2661,7 +2661,6 @@
   'automation.action.condition.intro' => 'Wählen Sie eine der folgenden Bedingungen für Ihren Workflow. Email App wertet den Zustand aus und verzweigt diesen Zustand für Ihren Workflow entsprechend.',
   'automation.action.set_up_your_condition' => 'Was soll Ausgelöst werden?',
   'automation.overview.contacts' => 'Kontakte',
-  'automation.stats.in-queue' => ':count Kontakt (e) in der Warteschlange',
   'automation.stats.triggered' => ':count Kontakt (e) ausgelöst',
   'automation.stats.sent' => 'Sende zu :count Kontakte',
   'automation.stats.condition' => 'Ja: :yes, Nein: :no',
@@ -3257,4 +3256,11 @@
   'campaign.resend.option.not_open' => 'Did not open the email',
   'campaign.resend.option.not_click' => 'Did not click on any link in the email',
   'campaign.resend.cancel' => 'Cancel',
+  'email_verification_result_unverified' => 'Unverified',
+  'automation.stats.in-queue2' => ':passed passed, :queue in queue',
+  'unsubscribe_notification_for_list_owner' => 'Unsubscription notification email (for mail list owner)',
+  'stripe.billing_address_required' => 'Require address information',
+  'campaign.preheader.intro' => '<strong>Preheader</strong> is the short summary text that follows the subject line
+    when viewing an email from the inbox',
+  'automation.trigger.change.confirm' => 'Changing trigger will erase your automation history, are you sure?',
 ) ?>

@@ -2690,7 +2690,6 @@
         and branch off your workflow accordingly.',
   'automation.action.set_up_your_condition' => 'Set up your condition',
   'automation.overview.contacts' => 'Contacts',
-  'automation.stats.in-queue' => ':count contact(s) in queue',
   'automation.stats.triggered' => ':count contact(s) triggered',
   'automation.stats.sent' => 'Sent to :count contact(s)',
   'automation.stats.condition' => 'Yes: :yes, No: :no',
@@ -3296,4 +3295,11 @@
   'campaign.resend.option.not_open' => 'Did not open the email',
   'campaign.resend.option.not_click' => 'Did not click on any link in the email',
   'campaign.resend.cancel' => 'Cancel',
+  'email_verification_result_unverified' => 'Unverified',
+  'automation.stats.in-queue2' => ':passed passed, :queue in queue',
+  'unsubscribe_notification_for_list_owner' => 'Unsubscription notification email (for mail list owner)',
+  'stripe.billing_address_required' => 'Require address information',
+  'campaign.preheader.intro' => '<strong>Preheader</strong> is the short summary text that follows the subject line
+    when viewing an email from the inbox',
+  'automation.trigger.change.confirm' => 'Changing trigger will erase your automation history, are you sure?',
 ) ?>
