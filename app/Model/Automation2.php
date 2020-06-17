@@ -451,8 +451,51 @@ class Automation2 extends Model
 
         // Get the modify interval: 1 days, 2 days... for example
         $interval = $this->getTriggerAction()->getOptions()['before'];
+        $thisId = $this->id;
 
         $today = Carbon::now($this->customer->timezone)->modify($interval);
+        $dobFieldUid = $this->getTriggerAction()->getOptions()['field'];
+        $dobFieldId = Field::findByUid($dobFieldUid)->id;
+        $subscribers = $this->subscribers()
+            ->join('subscriber_fields', 'subscribers.id', 'subscriber_fields.subscriber_id')
+            ->where('subscriber_fields.field_id', $dobFieldId)
+            ->whereIn(DB::raw(sprintf('SUBSTRING(%s, 1, 10)', table('subscriber_fields.value'))), [
+                $today->format('Y-m-d'),
+                $today->format('Y:m:d'),
+                $today->format('m/d/Y'),
+                $today->format('m-d-Y'),
+            ])
+            ->leftJoin('auto_triggers', function($join) use ($thisId) {
+                $join->on('auto_triggers.subscriber_id', 'subscribers.id');
+                $join->where('auto_triggers.automation2_id', $thisId);
+            })
+            ->whereNull('auto_triggers.subscriber_id')->get();
+
+        // init trigger
+        foreach ($subscribers as $subscriber) {
+            $this->initTrigger($subscriber);
+            $this->logger()->info(sprintf('NEW > ??? > Say happy birthday (%s) to %s', $interval, $subscriber->email));
+        }
+    }
+
+    public function checkForDateOfBirthDebug()
+    {
+        $debug = [];
+        // TODAY + CURRENT TIME
+        $currentTime = new DateTime(null, new DateTimeZone($this->customer->timezone));
+        // TODAY + GIVEN TIME
+        $triggerTime = new DateTime($this->getTriggerAction()->getOptions()['at'], new DateTimeZone($this->customer->timezone));
+
+        if ($currentTime < $triggerTime) {
+            $debug[] = sprintf('Not the right time: CURRENT %s < %s', $currentTime->format('Y-m-d H:i:s'), $triggerTime->format('Y-m-d H:i:s'));
+        }
+
+        // Get the modify interval: 1 days, 2 days... for example
+        $interval = $this->getTriggerAction()->getOptions()['before'];
+        $today = Carbon::now($this->customer->timezone)->modify($interval);
+        $debug[] = 'Before: '.$this->getTriggerAction()->getOptions()['before'];
+        $debug[] = 'So, look for those whose DOB is: '.$today->format('Y-m-d');
+
         $dobFieldUid = $this->getTriggerAction()->getOptions()['field'];
         $dobFieldId = Field::findByUid($dobFieldUid)->id;
         $subscribers = $this->subscribers()
@@ -467,11 +510,10 @@ class Automation2 extends Model
             ->leftJoin('auto_triggers', 'auto_triggers.subscriber_id', 'subscribers.id')
             ->whereNull('auto_triggers.subscriber_id')->get();
 
-        // init trigger
-        foreach ($subscribers as $subscriber) {
-            $this->initTrigger($subscriber);
-            $this->logger()->info(sprintf('NEW > ??? > Say happy birthday (%s) to %s', $interval, $subscriber->email));
-        }
+        $sql = "select `".table('subscribers')."`.* from `".table('subscribers')."` inner join `".table('subscriber_fields')."` on `".table('subscribers')."`.`id` = `".table('subscriber_fields')."`.`subscriber_id` left join `".table('auto_triggers')."` on `".table('auto_triggers')."`.`subscriber_id` = `".table('subscribers')."`.`id` and `".table('auto_triggers')."`.`automation2_id` = ".$this->id." where `".table('subscribers')."`.`mail_list_id` = ".$this->mailList->id." and `".table('subscribers')."`.`mail_list_id` is not null and `".table('subscriber_fields')."`.`field_id` = ".$dobFieldId." and SUBSTRING(".table('subscriber_fields').".value, 1, 10) in ('".$today->format('Y-m-d')."', '".$today->format('Y:m:d')."', '".$today->format('m/d/Y')."', '".$today->format('m-d-Y')."') and `".table('auto_triggers')."`.`subscriber_id` is null;";
+        $debug[] = $sql;
+
+        return $debug;
     }
 
     /**
@@ -833,32 +875,31 @@ class Automation2 extends Model
     // if $actionId is provided, get only subscribers who have been triggered and have gone through the action
     public function subscribers($actionId = null)
     {
-        $list = $this->mailList->subscribers()->select('subscribers.*');
+        $query = $this->mailList->subscribers()->select('subscribers.*');
 
         if (!is_null($actionId)) {
             // @deprecated, use the subscribersByLatestAction() method instead
-            $list->join('auto_triggers', 'auto_triggers.subscriber_id', '=', 'subscribers.id')
-                 ->where('auto_triggers.executed_index', 'LIKE', '%'.$actionId.'%');
+            $query->join('auto_triggers', 'auto_triggers.subscriber_id', '=', 'subscribers.id')
+                 ->where('auto_triggers.executed_index', 'LIKE', '%'.$actionId.'%')
+                 ->where('auto_triggers.automation2_id', $this->id);
         }
 
-        return $list;
+        return $query;
     }
 
     public function subscribersByLatestAction($actionId)
     {
-        $list = $this->mailList->subscribers()->select('subscribers.*');
-        $list->join('auto_triggers', 'auto_triggers.subscriber_id', '=', 'subscribers.id')
-                 ->where('auto_triggers.executed_index', 'LIKE', '%'.$actionId);
-        return $list;
+        $query = $this->autoTriggers()->join('subscribers', 'auto_triggers.subscriber_id', '=', 'subscribers.id')
+                 ->where('auto_triggers.executed_index', 'LIKE', '%'.$actionId)->select('subscribers.*');
+        return $query;
     }
 
     public function subscribersByExecutedAction($actionId)
     {
-        $list = $this->mailList->subscribers()->select('subscribers.*');
-        $list->join('auto_triggers', 'auto_triggers.subscriber_id', '=', 'subscribers.id')
-                 ->where('auto_triggers.executed_index', 'LIKE', '%'.$actionId.'%');
-        return $list;
-    }    
+        $query = $this->autoTriggers()->join('subscribers', 'auto_triggers.subscriber_id', '=', 'subscribers.id')
+                 ->where('auto_triggers.executed_index', 'LIKE', '%'.$actionId.'%')->select('subscribers.*');
+        return $query;
+    }
 
     public function getIntro()
     {
