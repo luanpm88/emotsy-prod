@@ -5,6 +5,7 @@ namespace Acelle\Http\Controllers;
 use Illuminate\Http\Request;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use Acelle\Model\Template;
+use Acelle\Library\Rss;
 use Acelle\Model\Setting;
 use App;
 
@@ -365,6 +366,10 @@ class TemplateController extends Controller
                 $html,
                 $css
             );
+        }
+
+        if (Setting::isYes('rss.enabled')) {
+            $template->content = Rss::parse($template->content);
         }
 
         return view('templates.preview', [
