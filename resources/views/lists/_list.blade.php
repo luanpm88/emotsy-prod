@@ -88,14 +88,16 @@
 									<i class="icon-copy4"></i> {{ trans('messages.copy') }}
 								</a>
 							</li>
-							<li>
-								<a
-									href="{{ action('MailListController@cloneForCustomersChoose', $item->uid) }}"
-									class="clone-for-users"
-								>
-									<i class="icon-users"></i> {{ trans('messages.list.clone_for_other_users') }}
-								</a>
-							</li>
+							@if ($settings['list.clone_for_others'])
+								<li>
+									<a
+										href="{{ action('MailListController@cloneForCustomersChoose', $item->uid) }}"
+										class="clone-for-users"
+									>
+										<i class="icon-users"></i> {{ trans('messages.list.clone_for_other_users') }}
+									</a>
+								</li>
+							@endif
 							<li>
 								<a list-delete-confirm="{{ action('MailListController@deleteConfirm', ['uids' => $item->uid]) }}" href="{{ action('MailListController@delete', ['uids' => $item->uid]) }}">
 									<i class="icon-trash"></i> {{ trans('messages.delete') }}

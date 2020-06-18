@@ -506,6 +506,12 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
+            'list.clone_for_others' => [
+                'cat' => 'others',
+                'value' => 'no',
+                'type' => 'text',
+                'not_required' => true,
+            ],
         ];
     }
 
