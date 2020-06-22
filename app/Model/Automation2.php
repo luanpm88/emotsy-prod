@@ -541,7 +541,6 @@ class Automation2 extends Model
     public function checkForListSubscription()
     {
         $this->logger()->info(sprintf('NEW > Check for List Subscription'));
-        $now = Carbon::now();
         $subscribers = $this->getNewSubscribersToFollow();
         $total = count($subscribers);
         $this->logger()->info(sprintf('NEW > There are %s new subscriber(s) found', $total));
@@ -568,10 +567,9 @@ class Automation2 extends Model
             return;
         }
 
-        $now = Carbon::now();
+        $now = Carbon::now($this->customer->timezone);
         $trigger = $this->getTriggerAction();
-
-        $eventDate = Carbon::parse($trigger->getOption('date').' '.$trigger->getOption('at'));
+        $eventDate = Carbon::parse(sprintf('%s %s %s', $trigger->getOption('date'), $trigger->getOption('at'), $this->customer->timezone));
         $checked = $now->gte($eventDate);
 
         $total = $this->subscribers()->count();
