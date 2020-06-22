@@ -94,7 +94,7 @@ class UserController extends Controller
         try {
             $user->sendActivationMail($user->email, action('HomeController@index'));
         } catch (\Exception $e) {
-            return view('somethingWentWrong', ['message' => trans('messages.something_went_wrong_with_email_service')]);
+            return view('somethingWentWrong', ['message' => trans('messages.something_went_wrong_with_email_service').': '.$e->getMessage() ]);
         }
 
         return view('users.registration_confirmation_sent');
