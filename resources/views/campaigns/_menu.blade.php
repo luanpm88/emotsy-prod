@@ -79,8 +79,8 @@
 	var downloaded = false;
 	var downloadWindow;
 
-	function goToDownLoad() {
-		downloadWindow = window.open('{{ action('CampaignController@trackingLogDownload', ['uid' => $campaign->uid]) }}', '_blank');
+	function goToDownLoad(logtype) {
+		downloadWindow = window.open('{{ action('CampaignController@trackingLogDownload', ['uid' => $campaign->uid]) }}?logtype=' + logtype, '_blank');
 	}
 
 	function downloadAndCloseDownloadWindow(downloadUrl) {

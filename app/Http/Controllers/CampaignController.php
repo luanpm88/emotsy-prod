@@ -1493,7 +1493,9 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $job = new ExportCampaignLog($campaign);
+        $logtype = $request->input('logtype');
+
+        $job = new ExportCampaignLog($campaign, $logtype);
         dispatch($job);
 
         return view('campaigns.download_tracking_log', [

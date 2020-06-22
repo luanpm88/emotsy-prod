@@ -46,7 +46,7 @@
                 @endif
             </div>
             <div class="col-md-2 text-right">
-                <a href="javascript:goToDownLoad()" type="button" class="btn bg-info-800">
+                <a href="javascript:goToDownLoad('open_logs')" type="button" class="btn bg-info-800">
                     <i class="icon icon-download mr-5"></i> {{ trans('messages.open_log.download') }}
                 </a>
             </div>

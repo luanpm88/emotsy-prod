@@ -5,6 +5,7 @@ namespace Acelle\Jobs;
 class ExportCampaignLog extends SystemJob
 {
     protected $campaign;
+    protected $logtype;
 
     /**
      * Create a new job instance.
@@ -13,9 +14,11 @@ class ExportCampaignLog extends SystemJob
      *
      * @return void
      */
-    public function __construct($campaign)
+    public function __construct($campaign, $logtype)
     {
         $this->campaign = $campaign;
+        $this->logtype = $logtype;
+
         parent::__construct();
 
         // This line must go after the constructor
@@ -29,7 +32,7 @@ class ExportCampaignLog extends SystemJob
      */
     public function handle()
     {
-        $this->campaign->generateTrackingLogCsv(function($progress) {
+        $this->campaign->generateTrackingLogCsv($this->logtype, function($progress) {
             $this->updateStatus($progress);
         });
     }

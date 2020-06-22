@@ -2790,63 +2790,216 @@ abstract class AbsCampaign extends Model
     /**
      * Copy new template.
      */
-    public function generateTrackingLogCsv($progressCallback = null)
+    public function generateTrackingLogCsv($logtype, $progressCallback = null)
     {
         $tmpTableName = 'log_'.$this->uid.'_'.md5(rand());
         $filePath = $this->customer->user->getStoragePath($tmpTableName.'.csv');
 
         DB::statement('DROP TABLE IF EXISTS '.table($tmpTableName));
-        DB::statement('CREATE TEMPORARY TABLE '.table($tmpTableName)." AS SELECT
-            c.name as campaign_name,
-            s.email as subscriber_email,
-            l.status as delivery_status,
-            l.created_at as sent_at,
-            IF(o.id IS NULL, 'no', 'yes') as `open`,
-            IF(ck.id IS NULL, 'no', 'yes') as `click`,
-            IF(u.id IS NULL, 'no', 'yes') as `unsubscribe`,
-            IF(f.id IS NULL, 'no', 'yes') as `feedback`,
-            IF(b.id IS NULL, 'no', 'yes') as `bounce`,
-            o.created_at AS open_at,
-            ck.created_at AS click_at,
-            ck.url as click_url,
-            ck.ip_address as click_ip_address,
-            ck.user_agent as click_user_agent,
-            u.created_at AS unsubscribe_at,
-            f.created_at AS feedback_at,
-            b.created_at AS bounce_at
-          FROM ".table('tracking_logs').' l
-          JOIN '.table('campaigns').' c ON l.campaign_id = c.id
-          JOIN '.table('subscribers').' s ON l.subscriber_id = s.id
-          LEFT JOIN '.table('open_logs').' o ON o.message_id = l.message_id
-          LEFT JOIN '.table('click_logs').' ck ON ck.message_id = l.message_id
-          LEFT JOIN '.table('unsubscribe_logs').' u ON u.message_id = l.message_id
-          LEFT JOIN '.table('feedback_logs').' f ON f.message_id = l.message_id
-          LEFT JOIN '.table('bounce_logs').' b ON b.message_id = l.message_id
-          WHERE c.id = '.$this->id);
+        
+        if ($logtype == 'open_logs') {
+            DB::statement('CREATE TEMPORARY TABLE '.table($tmpTableName).' AS SELECT
+                c.name as campaign_name,
+                s.email as subscriber_email,
+                l.status as delivery_status,
+                l.created_at as sent_at,
+                o.created_at AS open_at,
+                o.user_agent AS device,
+                ip.ip_address,
+                ip.country_code,
+                ip.country_name,
+                ip.region_code,
+                ip.region_name,
+                ip.city,
+                ip.zipcode,
+                ip.latitude,
+                ip.longitude,
+                ip.metro_code
+              FROM '.table('tracking_logs').' l
+              JOIN '.table('campaigns').' c ON l.campaign_id = c.id
+              JOIN '.table('subscribers').' s ON l.subscriber_id = s.id
+              JOIN '.table('open_logs').' o ON o.message_id = l.message_id
+              LEFT JOIN '.table('ip_locations').' ip ON ip.ip_address = o.ip_address
+              WHERE c.id = '.$this->id. ' ORDER BY c.name, l.created_at');
+
+            $headers = [
+                'campaign_name',
+                'subscriber_email',
+                'delivery_status',
+                'sent_at',
+                'open_at',
+                'device',
+                'ip_address',
+                'country_code',
+                'country_name',
+                'region_code',
+                'region_name',
+                'city',
+                'zipcode',
+                'latitude',
+                'longitude',
+                'metro_code',
+            ];
+        } elseif ($logtype == 'click_logs') {
+            DB::statement('CREATE TEMPORARY TABLE '.table($tmpTableName).' AS SELECT
+                c.name as campaign_name,
+                s.email as subscriber_email,
+                l.status as delivery_status,
+                l.created_at as sent_at,
+                ck.created_at AS click_at,
+                ck.url,
+                ck.user_agent AS device,
+                ip.ip_address,
+                ip.country_code,
+                ip.country_name,
+                ip.region_code,
+                ip.region_name,
+                ip.city,
+                ip.zipcode,
+                ip.latitude,
+                ip.longitude,
+                ip.metro_code
+              FROM '.table('tracking_logs').' l
+              JOIN '.table('campaigns').' c ON l.campaign_id = c.id
+              JOIN '.table('subscribers').' s ON l.subscriber_id = s.id
+              JOIN '.table('click_logs').' ck ON ck.message_id = l.message_id
+              LEFT JOIN '.table('ip_locations').' ip ON ip.ip_address = ck.ip_address
+              WHERE c.id = '.$this->id. ' ORDER BY c.name, l.created_at');
+
+            $headers = [
+                'campaign_name',
+                'subscriber_email',
+                'delivery_status',
+                'sent_at',
+                'click_at',
+                'url',
+                'device',
+                'ip_address',
+                'country_code',
+                'country_name',
+                'region_code',
+                'region_name',
+                'city',
+                'zipcode',
+                'latitude',
+                'longitude',
+                'metro_code',
+            ];
+        } elseif ($logtype == 'unsubscribe_logs') {
+            DB::statement('CREATE TEMPORARY TABLE '.table($tmpTableName).' AS SELECT
+                c.name as campaign_name,
+                s.email as subscriber_email,
+                l.status as delivery_status,
+                l.created_at as sent_at,
+                u.created_at AS unsubscribe_at,
+                u.user_agent AS device,
+                ip.ip_address,
+                ip.country_code,
+                ip.country_name,
+                ip.region_code,
+                ip.region_name,
+                ip.city,
+                ip.zipcode,
+                ip.latitude,
+                ip.longitude,
+                ip.metro_code
+              FROM '.table('tracking_logs').' l
+              JOIN '.table('campaigns').' c ON l.campaign_id = c.id
+              JOIN '.table('subscribers').' s ON l.subscriber_id = s.id
+              JOIN '.table('unsubscribe_logs').' u ON u.message_id = l.message_id
+              LEFT JOIN '.table('ip_locations').' ip ON ip.ip_address = u.ip_address
+              WHERE c.id = '.$this->id. ' ORDER BY c.name, l.created_at');
+
+            $headers = [
+                'campaign_name',
+                'subscriber_email',
+                'delivery_status',
+                'sent_at',
+                'unsubscribe_at',
+                'device',
+                'ip_address',
+                'country_code',
+                'country_name',
+                'region_code',
+                'region_name',
+                'city',
+                'zipcode',
+                'latitude',
+                'longitude',
+                'metro_code',
+            ];
+        } elseif ($logtype == 'feedback_logs') {
+            DB::statement('CREATE TEMPORARY TABLE '.table($tmpTableName).' AS SELECT
+                c.name AS campaign_name,
+                s.email AS subscriber_email,
+                l.status AS delivery_status,
+                l.created_at AS sent_at,
+                f.created_at AS feedback_at,
+                f.feedback_type AS feedback_type,
+                f.raw_feedback_content AS feedback_content
+              FROM '.table('tracking_logs').' l
+              JOIN '.table('campaigns').' c ON l.campaign_id = c.id
+              JOIN '.table('subscribers').' s ON l.subscriber_id = s.id
+              JOIN '.table('feedback_logs').' f ON f.message_id = l.message_id
+              WHERE c.id = '.$this->id. ' ORDER BY c.name, l.created_at');
+
+            $headers = [
+                'campaign_name',
+                'subscriber_email',
+                'delivery_status',
+                'sent_at',
+                'feedback_at',
+                'feedback_type',
+                'feedback_content',
+            ];
+        } elseif ($logtype == 'bounce_logs') {
+            DB::statement('CREATE TEMPORARY TABLE '.table($tmpTableName).' AS SELECT
+                c.name AS campaign_name,
+                s.email AS subscriber_email,
+                l.status AS delivery_status,
+                l.created_at AS sent_at,
+                b.created_at AS bounce_at,
+                b.bounce_type AS bounce_type,
+                b.raw AS bounce_content
+              FROM '.table('tracking_logs').' l
+              JOIN '.table('campaigns').' c ON l.campaign_id = c.id
+              JOIN '.table('subscribers').' s ON l.subscriber_id = s.id
+              JOIN '.table('bounce_logs').' b ON b.message_id = l.message_id
+              WHERE c.id = '.$this->id. ' ORDER BY c.name, l.created_at');
+
+            $headers = [
+                'campaign_name',
+                'subscriber_email',
+                'delivery_status',
+                'sent_at',
+                'bounce_at',
+                'bounce_type',
+                'bounce_content',
+            ];
+        } elseif ($logtype == 'tracking_logs') {
+            DB::statement('CREATE TEMPORARY TABLE '.table($tmpTableName).' AS SELECT
+                c.name AS campaign_name,
+                s.email AS subscriber_email,
+                l.status AS delivery_status,
+                l.created_at AS sent_at
+              FROM '.table('tracking_logs').' l
+              JOIN '.table('campaigns').' c ON l.campaign_id = c.id
+              JOIN '.table('subscribers').' s ON l.subscriber_id = s.id
+              WHERE c.id = '.$this->id. ' ORDER BY c.name, l.created_at');
+
+            $headers = [
+                'campaign_name',
+                'subscriber_email',
+                'delivery_status',
+                'sent_at',
+            ];
+        } else {
+            throw new \Exception('Unknown export type: '.$logtype);
+        }
 
         $total = DB::table($tmpTableName)->count();
         $limit = 1000;
         $pages = ceil($total / $limit);
-
-        $headers = [
-            'campaign_name',
-            'subscriber_email',
-            'delivery_status',
-            'sent_at',
-            'open',
-            'click',
-            'unsubscribe',
-            'feedback',
-            'bounce',
-            'open_at',
-            'click_at',
-            'click_url',
-            'click_ip_address',
-            'click_user_agent',
-            'unsubscribe_at',
-            'feedback_at',
-            'bounce_at',
-        ];
 
         // insert header
         $csv = Writer::createFromPath($filePath, 'w+');
