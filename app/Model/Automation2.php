@@ -671,17 +671,18 @@ class Automation2 extends Model
 
     public function logger()
     {
-        $pid = getmypid();
-        $formatter = new LineFormatter("[%datetime%] #{$pid} %channel%.%level_name%: %message%\n");
+        $formatter = new LineFormatter("[%datetime%] %channel%.%level_name%: %message%\n");
         if (getenv('LOGFILE') != false) {
             $stream = new RotatingFileHandler(getenv('LOGFILE'), 0, Logger::WARNING);
         } else {
-            $stream = new RotatingFileHandler(storage_path('logs/automation.log'), 0, Logger::WARNING);
+            $logfile = storage_path('logs/' . php_sapi_name() . '/automation-'.$this->uid.'.log');
+            $stream = new RotatingFileHandler($logfile, 0, Logger::WARNING);
         }
 
         $stream->setFormatter($formatter);
 
-        $logger = new Logger($this->uid);
+        $pid = getmypid();
+        $logger = new Logger($pid);
         $logger->pushHandler($stream);
 
         return $logger;

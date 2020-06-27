@@ -67,6 +67,6 @@ class JobServiceProvider extends ServiceProvider
      */
     private function initMailLog()
     {
-        MailLog::configure(storage_path().'/logs/mail.log');
+        MailLog::configure(storage_path().'/logs/' . php_sapi_name() . '/mail.log');
     }
 }
