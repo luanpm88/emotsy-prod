@@ -132,7 +132,7 @@
 								@endif
 								@if (\Auth::user()->admin->can('invoices', $subscription))
 									<li>
-										<a class="modal_link"
+										<a class="view_invoices"
 										  href="{{ action('Admin\SubscriptionController@invoices', $subscription->uid) }}">
 											{{ trans('messages.subscription.logs') }}
 										</a>
