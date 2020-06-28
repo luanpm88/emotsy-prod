@@ -313,6 +313,7 @@ class Automation2 extends Model
     public function getDelayBeforeOptions()
     {
         return [
+            ['text' => trans_choice('messages.automation.delay.0_day', 0), 'value' => '0 day'],
             ['text' => trans_choice('messages.automation.delay.day', 1), 'value' => '1 day'],
             ['text' => trans_choice('messages.automation.delay.day', 2), 'value' => '2 days'],
             ['text' => trans_choice('messages.automation.delay.day', 3), 'value' => '3 days'],

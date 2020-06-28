@@ -2985,6 +2985,7 @@
   'automation.email.no_content' => 'Email content is empty',
   'automation.email.summary.content.update' => 'Update',
   'automation.email.summary.setting' => 'Settings',
+  'automation.delay.0_day' => '0 day (on the same day)',
   'automation.delay.immediately' => 'Immediately',
   'automation.delay.day' => '1 day|:count days',
   'automation.delay.minute' => '1 minute|:count minutes',
