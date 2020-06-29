@@ -148,7 +148,7 @@ class Dialog {
                 _this.close(_this);
             }
 
-            _this.dialog.hide();
+            _this.hide();
         });
         
         // click close button
@@ -157,7 +157,7 @@ class Dialog {
                 _this.cancel(_this);
             }
 
-            _this.dialog.hide();
+            _this.hide();
         });
         
         // click ok button
