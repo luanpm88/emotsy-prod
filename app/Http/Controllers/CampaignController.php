@@ -282,7 +282,7 @@ class CampaignController extends Controller
         $campaign->subject = !empty($campaign->subject) ? $campaign->subject : $campaign->defaultMailList->default_subject;
 
         // Get old post values
-        if (null !== $request->old()) {
+        if ($request->old()) {
             $campaign->fillAttributes($request->old());
         }
 

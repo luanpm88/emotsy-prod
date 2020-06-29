@@ -223,6 +223,12 @@ class Customer extends Model implements BillableUserInterface
         return $this->hasMany('Acelle\Model\Sender');
     }
 
+    // tracking domain
+    public function trackingDomains()
+    {
+        return $this->hasMany('Acelle\Model\TrackingDomain');
+    }
+
     // All senders, including ones that are not associated to a particular sending servers
     public function allSenders()
     {
@@ -2057,5 +2063,18 @@ class Customer extends Model implements BillableUserInterface
     public function getCurrentPeriodEndsAt()
     {
         return (is_object($this->subscription) && $this->subscription->isActive()) ? $this->current_period_ends_at : null;
+    }
+
+    /**
+     * Get list of available tracking domain options.
+     *
+     * @var bool
+     */
+    public function getVerifiedTrackingDomainOptions()
+    {
+        return $this->trackingDomains()->verified()->get()->map(function ($domain) {
+            return ['value' => $domain->uid, 'text' => $domain->name];
+        });
+        
     }
 }

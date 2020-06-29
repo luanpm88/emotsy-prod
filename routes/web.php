@@ -462,6 +462,11 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('sending_domains/delete', 'SendingDomainController@delete');
     Route::resource('sending_domains', 'SendingDomainController');
 
+    // Tracking domain
+    Route::get('tracking_domains/listing/{page?}', 'TrackingDomainController@listing');
+    Route::get('tracking_domains/delete', 'TrackingDomainController@delete');
+    Route::resource('tracking_domains', 'TrackingDomainController');
+
     // Payment
     Route::get('payments/paddle/card/{subscription_uid}', 'PaymentController@paddle_card');
     Route::post('payments/billing-information/{subscription_uid}', 'PaymentController@billingInformation');

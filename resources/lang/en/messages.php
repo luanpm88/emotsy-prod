@@ -3737,4 +3737,31 @@
   'change_plan_pending' => 'You are changing to <strong>:plan</strong> plan with amount: <strong>:amount</strong>.
         <br><a href=":url"><strong>Click here</strong></a> to see more details.',
   'change_plan.failed' => 'Can not change plan: :error',
+  'tracking_domains' => 'Tracking domains',
+  'tracking_domain.created' => 'Sending domain was successfully created',
+  'tracking_domain.updated' => 'Sending domain was successfully updated',
+  'tracking_domains.deleted' => 'One or more tracking domains were successfully deleted',
+  'tracking_domain.wording' => 'For sending marketing emails, it is required that you verify your identities
+      (the domain or email address that you send email from) to confirm that you own them, and to prevent
+      unauthorized use)',
+  'delete_tracking_domains_confirm' => 'You\'re about to delete :number tracking domain(s) from the list.',
+  'tracking_domain_empty_line_1' => 'You have no tracking domain',
+  'tracking_domain.signing_enabled.help' => 'Sign outgoing emails if the FROM email address matches this domain',
+  'tracking_domain.domain_verification' => 'Domain verification',
+  'tracking_domain.dkim_verification' => 'DKIM verification',
+  'tracking_domain.spf_verification' => 'SPF verification',
+  'tracking_domain.verified' => 'verified',
+  'tracking_domain.unverified' => 'unverified',
+  'tracking_domain.create' => 'Create Tracking domain',
+  'dns_verification' => 'DNS verification',
+  'tracking_domain.dns_verification.help' => 'Verify this domain through DNS update. You will need to have
+      access to your DNS control panel',
+  'tracking_domain.view' => 'View',
+  'tracking_domain.status.verified' => 'verified',
+  'tracking_domain.status.unverified' => 'unverified',
+  'custom_tracking_domain' => 'Custom Tracking Domain',
+  'campaign.custom_tracking_domain.help' => 'Sign your email with your tracking domain (if any), telling
+      receiving email servers that your email is actually comming from you. This is to help establish the
+      authenticity of your email, improving delivery rate.',
+  'campaign.select_tracking_domain' => 'Select tracking domain',
 ) ?>
