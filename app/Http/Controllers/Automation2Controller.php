@@ -217,6 +217,8 @@ class Automation2Controller extends Controller
             'specific-date',
             'say-goodbye-subscriber',
             'api-3-0',
+            'weekly-recurring',
+            'monthly-recurring',
         ];
         
         return view('automation2.triggerSelectPupop', [
@@ -272,6 +274,14 @@ class Automation2Controller extends Controller
             'api-3-0' => [],
             'subscriber-added-date' => [
                 'options.delay' => 'required',
+                'options.at' => 'required',
+            ],
+            'weekly-recurring' => [
+                'options.days_of_week' => 'required',
+                'options.at' => 'required',
+            ],
+            'monthly-recurring' => [
+                'options.days_of_month' => 'required|array|min:1',
                 'options.at' => 'required',
             ],
         ];

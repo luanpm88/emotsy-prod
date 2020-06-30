@@ -3764,4 +3764,27 @@
       receiving email servers that your email is actually comming from you. This is to help establish the
       authenticity of your email, improving delivery rate.',
   'campaign.select_tracking_domain' => 'Select tracking domain',
+  'automation.trigger.weekly-recurring' => 'Weekly recurring',
+  'automation.trigger.weekly-recurring.desc' => 'Schedule your campaign to automatically
+      send on a weekly basis, on a particular week day you choose',
+  'automation.trigger.weekly-recurring.intro' => 'Schedule your campaign to automatically
+      send on a weekly basis, on a particular week day you choose',      
+  'automation.trigger.monthly-recurring' => 'Monthly recurring',
+  'automation.trigger.monthly-recurring.desc' => 'Schedule your campaign to automatically send on a
+      monthly basis, on a particular day of the month',
+  'automation.trigger.monthly-recurring.intro' => 'Schedule your campaign to automatically send on a
+      monthly basis, on a particular day of the month',
+  'automation.trigger.icon.weekly-recurring' => 'update',
+  'automation.trigger.icon.monthly-recurring' => 'date_range',
+  'days_of_week' => 'Days of week',
+  'days_of_month' => 'Days of month',
+  'day_of_week.0' => 'Sun',
+  'day_of_week.1' => 'Mon',
+  'day_of_week.2' => 'Tue',
+  'day_of_week.3' => 'Wed',
+  'day_of_week.4' => 'Thu',
+  'day_of_week.5' => 'Fri',
+  'day_of_week.6' => 'Sat',
+  'automation.trigger.tree.weekly-recurring' => 'Weekly recurring',
+  'automation.trigger.tree.monthly-recurring' => 'Monthly recurring',
 ) ?>
