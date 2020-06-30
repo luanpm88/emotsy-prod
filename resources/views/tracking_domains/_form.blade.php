@@ -24,6 +24,7 @@
 				'options' => [0, 1],
 				'rules' => $domain->rules(),
 				'readonly' => true,
+				'disabled' => true,
 			])
 		</div>
 	</div>

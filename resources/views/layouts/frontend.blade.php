@@ -108,7 +108,7 @@
 							</li>
 							<li rel0="TrackingDomainController">
 								<a href="{{ action('TrackingDomainController@index') }}">
-									<i class="icon-user-check"></i> {{ trans('messages.tracking_domains') }}
+									<i class="icon-earth"></i> {{ trans('messages.tracking_domains') }}
 								</a>
 							</li>
                             @if (Auth::user()->customer->can("read", new Acelle\Model\EmailVerificationServer()))
