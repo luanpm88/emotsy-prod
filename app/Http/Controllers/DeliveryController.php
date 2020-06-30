@@ -65,6 +65,8 @@ class DeliveryController extends Controller
      */
     private function handleSendGrid()
     {
+        // Reference: https://sendgrid.com/docs/for-developers/tracking-events/event/
+
         MailLog::configure(storage_path().'/logs/handler-sendgrid.log');
         $messages = json_decode(file_get_contents('php://input'), true);
         MailLog::info(file_get_contents('php://input'));
