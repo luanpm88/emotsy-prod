@@ -3773,9 +3773,7 @@
   'tracking_domain.status.verified' => 'verified',
   'tracking_domain.status.unverified' => 'unverified',
   'custom_tracking_domain' => 'Custom Tracking Domain',
-  'campaign.custom_tracking_domain.help' => 'Sign your email with your tracking domain (if any), telling
-      receiving email servers that your email is actually comming from you. This is to help establish the
-      authenticity of your email, improving delivery rate.',
+  'campaign.custom_tracking_domain.help' => 'Using a tracking domain causes all the links and URLs in your emails to be overwritten as if they come from your own brand\'s domain (rather than from this application hostname), making your email more authentic and more likely to reach recipients INBOX.',
   'campaign.select_tracking_domain' => 'Select tracking domain',
   'automation.trigger.weekly-recurring' => 'Weekly recurring',
   'automation.trigger.weekly-recurring.desc' => 'Schedule your campaign to automatically
