@@ -43,7 +43,7 @@ class Lockable
     /**
      * Get exclusive lock.
      */
-    public function getExclusiveLock($callback, $timeout = 5, $exceptionCallback = null)
+    public function getExclusiveLock($callback, $timeout = 15, $exceptionCallback = null)
     {
         $start = time();
         $reader = fopen($this->file, 'w');
