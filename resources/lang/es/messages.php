@@ -3743,9 +3743,7 @@
   'tracking_domain.created' => 'Sending domain was successfully created',
   'tracking_domain.updated' => 'Sending domain was successfully updated',
   'tracking_domains.deleted' => 'One or more tracking domains were successfully deleted',
-  'tracking_domain.wording' => 'For sending marketing emails, it is required that you verify your identities
-      (the domain or email address that you send email from) to confirm that you own them, and to prevent
-      unauthorized use)',
+  'tracking_domain.wording' => 'Using a tracking domain causes all the links and URLs in your emails to be overwritten as if they come from your own brand\'s domain (rather than from this application hostname), making your email more authentic and more likely to reach recipients INBOX.',
   'delete_tracking_domains_confirm' => 'You\'re about to delete :number tracking domain(s) from the list.',
   'tracking_domain_empty_line_1' => 'You have no tracking domain',
   'tracking_domain.signing_enabled.help' => 'Sign outgoing emails if the FROM email address matches this domain',
