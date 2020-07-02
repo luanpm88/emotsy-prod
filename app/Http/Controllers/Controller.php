@@ -224,4 +224,9 @@ class Controller extends BaseController
         \Auth::logout();
         return view('isDisabled');
     }
+
+    public function appkey()
+    {
+        echo get_app_identity();
+    }
 }

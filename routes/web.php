@@ -162,6 +162,9 @@ Route::group(['middleware' => ['not_installed']], function () {
     // Verify a sender
     Route::get('senders/verify/{token}', 'SenderController@verify');
     Route::get('senders/verify/{uid}/result', 'SenderController@verifyResult');
+
+    // Get Application Key
+    Route::get('appkey', 'Controller@appkey')->name('appkey');
 });
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function () {
@@ -465,6 +468,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     // Tracking domain
     Route::get('tracking_domains/listing/{page?}', 'TrackingDomainController@listing');
     Route::get('tracking_domains/delete', 'TrackingDomainController@delete');
+    Route::get('tracking_domains/{uid}/verify', 'TrackingDomainController@verify');
     Route::resource('tracking_domains', 'TrackingDomainController');
 
     // Payment

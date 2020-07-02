@@ -25,10 +25,6 @@
 
 @section('content')
     
-    <h2>
-        <span class="text-semibold"><i class="icon-list2 mr-10"></i> {{ trans('messages.tracking_domains') }}</span>
-    </h2>
-    
 	<div class="row">
         <div class="col-sm-12 col-md-10 col-lg-10">
             <p>{!! trans('messages.tracking_domain.wording') !!}</p>

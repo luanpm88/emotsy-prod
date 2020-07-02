@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
 use Acelle\Model\TrackingDomain;
 use Acelle\Model\SendingServer;
+use Acelle\Model\Setting;
 
 class TrackingDomainController extends Controller
 {
@@ -117,10 +118,11 @@ class TrackingDomainController extends Controller
     public function show($id)
     {
         $domain = TrackingDomain::findByUid($id);
+        $hostname = parse_url(Setting::get('url_root'), PHP_URL_HOST);
 
         return view('tracking_domains.show', [
             'domain' => $domain,
-            'readonly' => 'readonly',
+            'hostname' => $hostname,
         ]);
     }
 
@@ -189,10 +191,11 @@ class TrackingDomainController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function verify($id)
+    public function verify($uid)
     {
-        $domain = TrackingDomain::findByUid($id);
+        $domain = TrackingDomain::findByUid($uid);
         $domain->verify();
+        return redirect()->action('TrackingDomainController@show', ['uid' => $uid]);
     }
 
     /**

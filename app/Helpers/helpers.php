@@ -797,3 +797,8 @@ function demo_auth() {
 function prettifystr($str) {
     return preg_replace('/\s+/', ' ', trim($str));
 }
+
+function get_app_identity()
+{
+    return md5(config('app.key'));
+}

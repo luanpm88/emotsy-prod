@@ -27,6 +27,7 @@ use Acelle\Library\MtaSync;
 use Mika56\SPFCheck\SPFCheck;
 use Mika56\SPFCheck\DNSRecordGetterDirect;
 use Mika56\SPFCheck\DNSRecordGetter;
+use GuzzleHttp\Client;
 
 class TrackingDomain extends Model
 {
@@ -161,5 +162,49 @@ class TrackingDomain extends Model
     public static function scopeVerified($query)
     {
         return $query->where('status', '=', self::STATUS_VERIFIED);
+    }
+
+    public function isVerified()
+    {
+        return $this->status == self::STATUS_VERIFIED;
+    }
+
+    public function getFQDN($trailingDot = true)
+    {
+        return $this->name . (( $trailingDot ) ? '.' : '');
+    }
+
+    public function getUrl()
+    {
+        return $this->scheme.'://'.$this->name;
+    }
+
+    public function getVerificationUrl()
+    {
+        return $this->getUrl().route('appkey', [], false);
+    }
+
+    public function setVerified()
+    {
+        $this->status = self::STATUS_VERIFIED;
+    }
+
+    public function verify()
+    {
+        try {
+            $client = new Client();
+            $response = $client->request('GET', $this->getVerificationUrl());
+            
+            if ($response->getBody() == get_app_identity()) {
+                $this->setVerified();
+                $this->save();
+            } else {
+                throw new \Exception("Verification failed");
+            }
+            return true;
+        } catch (\Exception $ex) {
+            // loggging here
+            return false;
+        }
     }
 }
