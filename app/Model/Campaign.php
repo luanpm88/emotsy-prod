@@ -227,6 +227,7 @@ class Campaign extends AbsCampaign
      */
     public function tagMessage($message, $subscriber, $msgId, $server = null)
     {
+        // DEPRECATED
         if (!is_null($server) && $server->isElasticEmailServer()) {
             $message = $server->addUnsubscribeUrl($message);
         }

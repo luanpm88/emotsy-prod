@@ -385,12 +385,22 @@ class Email extends Model
     /**
      * transform URL.
      */
-    public function transform()
+    public function transform($useTrackingHost = false)
     {
+        // IMPORTANT: since the untransform function presumes that the email is transform using the default hostname,
+        //            using tracking host will make it failed to untransform
+        //            this option is for campaign delivery and preview only
+        // replace relative urls
+        if ($useTrackingHost) {
+            $path = join_paths($this->getTrackingHost(), route('email_assets', ['uid' => $this->uid, 'path' => ''], false));
+        } else {
+            $path = route('email_assets', ['uid' => $this->uid, 'path' => '']);
+        }
+
         // replace relative urls
         $this->content = \Acelle\Library\Tool::replaceTemplateUrl(
             tinyDocTypeTransform($this->content),
-            route('email_assets', ['uid' => $this->uid, 'path' => ''])
+            $path,
         );
 
         return $this->content;
@@ -736,14 +746,21 @@ class Email extends Model
      *
      * @return string
      */
-    public function getHtmlContent($subscriber, $msgId, $server = null)
+    public function getHtmlContent($subscriber = null, $msgId = null, $server = null)
     {
         // @note: IMPORTANT: the order must be as follows
         // * addTrackingURL
         // * appendOpenTrackingUrl
         // * tagMessage
+        $body = $this->content;
 
-        // @note: addTrackingUrl() must go before appendOpenTrackingUrl()
+        // Append footer
+        if ($this->footerEnabled()) {
+            $body = $this->appendFooter($body, $this->getHtmlFooter());
+        }
+
+        // this is required because the next function 'transform()' will use this->html value
+        $this->content = $body;
         $body = $this->transform();
 
         if (Setting::isYes('rss.enabled')) {
@@ -754,6 +771,11 @@ class Email extends Model
             $body = $this->rssContent;
         }
 
+        if (is_null($msgId)) {
+            $msgId = 'SAMPLE'; // for preview mode
+        }
+
+        // @note: addTrackingUrl() must go before appendOpenTrackingUrl()
         // Enable click tracking
         if ($this->track_click) {
             $body = $this->addTrackingUrl($body, $msgId);
@@ -764,15 +786,16 @@ class Email extends Model
             $body = $this->appendOpenTrackingUrl($body, $msgId);
         }
 
-        // Append footer
-        if ($this->footerEnabled()) {
-            $body = $this->appendFooter($body, $this->getHtmlFooter());
+        if (!is_null($subscriber)) {
+            // Transform tags
+            $body = $this->tagMessage($body, $subscriber, $msgId, $server);
         }
 
-        // Transform tags
-        $body = $this->tagMessage($body, $subscriber, $msgId, $server);
-
         // Transform CSS/HTML content to inline CSS
+        // Be carefule, it will make
+        //       <a href="{BUNSUBSCRIBE_URL}" 
+        // become
+        //       <a href="%7BUNSUBSCRIBE_URL%7D" 
         $body = $this->inlineHtml($body);
 
         // Replace bare line feed char which is not accepted by Outlook, Yahoo, AOL...

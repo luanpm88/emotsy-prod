@@ -1992,23 +1992,6 @@ class CampaignController extends Controller
             return $this->not_authorized();
         }
 
-        // Convert to inline css if template source is builder
-        if ($campaign->template_source == 'builder') {
-            $cssToInlineStyles = new CssToInlineStyles();
-            $html = $campaign->html;
-            $css = file_get_contents(public_path('css/res_email.css'));
-
-            // output
-            $campaign->html = $cssToInlineStyles->convert(
-                $html,
-                $css
-            );
-        }
-
-        if (Setting::isYes('rss.enabled')) {
-            $campaign->html = Rss::parse($campaign->html);
-        }
-
         return view('campaigns.preview', [
             'campaign' => $campaign,
         ]);

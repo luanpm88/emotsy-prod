@@ -62,7 +62,7 @@
         </div>
 
         <div id="html" class="tabcontent" style="display: block">
-            {!! $campaign->render() !!}
+            {!! $campaign->getHtmlContent() !!}
         </div>
     @endif
 
