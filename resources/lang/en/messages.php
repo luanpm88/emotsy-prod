@@ -3787,4 +3787,5 @@
   'day_of_week.6' => 'Sat',
   'automation.trigger.tree.weekly-recurring' => 'Weekly recurring',
   'automation.trigger.tree.monthly-recurring' => 'Monthly recurring',
+  'tracking_domain.scheme' => 'Scheme',
 ) ?>

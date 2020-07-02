@@ -23,6 +23,13 @@
                     </h5>
                     <span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($trackingDomain->created_at) }}</span>
                 </td>
+                <td>
+                    <div class="single-stat-box pull-left">
+                        <span class="no-margin stat-num">{{ strtoupper($trackingDomain->scheme) }}</span>
+                        <br>
+                        <span class="text-muted text-nowrap">{{ trans('messages.tracking_domain.scheme') }}</span>
+                    </div>
+                </td>
                 <td class="text-right">
                     <span class="text-muted2 list-status pull-left">
                         <span class="label label-flat bg-{{ $trackingDomain->status }}">

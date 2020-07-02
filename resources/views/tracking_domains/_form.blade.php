@@ -2,16 +2,30 @@
 
 <div class="row">
 	<div class="col-sm-6 col-md-6">
-		@include('helpers.form_control', [
-			'type' => 'text',
-			'readonly' => $readonly,
-			'class' => '',
-			'name' => 'name',
-			'label' => trans('messages.domain_name'),
-			'value' => $domain->name,
-			'help_class' => 'tracking_domain',
-			'rules' => $domain->rules()
-		])
+		<label class="mb-3 font-weight-semibold">{{ trans('messages.domain_name') }}</label>
+		<div class="tracking-domain-scheme-name">			
+			@include('helpers.form_control', [
+				'type' => 'select',
+				'class' => '',
+				'name' => 'scheme',
+				'label' => '',
+				'value' => $domain->scheme,
+				'help_class' => 'tracking_domain',
+				'options' => [
+					['text' => 'HTTP', 'value' => 'http'],
+					['text' => 'HTTPS', 'value' => 'https'],
+				],
+			])
+			@include('helpers.form_control', [
+				'type' => 'text',
+				'class' => '',
+				'name' => 'name',
+				'label' => '',
+				'value' => $domain->name,
+				'help_class' => 'tracking_domain',
+				'rules' => $domain->rules()
+			])
+		</div>
 	</div>
 	<div class="col-sm-6 col-md-6">
 		<div class="form-group checkbox-right-switch">

@@ -3685,3 +3685,16 @@ textarea.bulk-delete {
 .form-control[disabled], .form-control[readonly], fieldset[disabled] .form-control {
     background-color: #efefef;
 }
+.tracking-domain-scheme-name {
+    display: flex;
+}
+.tracking-domain-scheme-name .control-text {
+    width: 100%;
+}
+.tracking-domain-scheme-name .control-select .select2-selection {
+    border-radius: 5px 0 0 5px;
+    height: 36px;
+}
+.tracking-domain-scheme-name .control-text input[type=text] {
+    border-radius: 0px 5px 5px 0px;
+}
