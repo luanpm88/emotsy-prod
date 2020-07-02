@@ -4,17 +4,18 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use File;
+use Validator;
+use ZipArchive;
 use KubAT\PhpSimple\HtmlDomParser;
 use Acelle\Library\Tool;
 use Acelle\Library\Rss;
-use Acelle\Model\Setting;
 use Acelle\Library\StringHelper;
 use Acelle\Library\Log as MailLog;
+use Acelle\Model\Setting;
 use Illuminate\Support\Facades\Storage;
-use Validator;
 use Illuminate\Validation\ValidationException;
-use ZipArchive;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
+use Acelle\Jobs\DeliverEmail;
 
 class Email extends Model
 {
@@ -59,6 +60,11 @@ class Email extends Model
     public function trackingLogs()
     {
         return $this->hasMany('Acelle\Model\TrackingLog');
+    }
+
+    public function deliveryAttempts()
+    {
+        return $this->hasMany('Acelle\Model\DeliveryAttempt');
     }
 
     /**
@@ -475,8 +481,25 @@ class Email extends Model
 
     // @note: complicated dependencies
     // It is just fine, we can think Email as an object depends on User/Customer
-    public function deliverTo($subscriber)
+    public function deliverTo($subscriber, $queue = false)
     {
+
+        if ($queue) {
+            $deliveryAttempt = $this->deliveryAttempts()->create([
+                'subscriber_id' => $subscriber->id,
+                // 'email_id' already included
+            ]);
+            
+            dispatch(new DeliverEmail(
+                $this,
+                $subscriber,
+                $deliveryAttempt->id,
+                get_class($deliveryAttempt),
+            ));
+
+            return $deliveryAttempt;
+        }
+
         // @todo: code smell here, violation of Demeter Law
         // @todo: performance
         while ($this->automation->customer->overQuota()) {

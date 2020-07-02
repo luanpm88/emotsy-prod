@@ -27,12 +27,13 @@ use Acelle\Jobs\Job;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
 
 use Acelle\Model\SystemJob as SystemJobModel;
 
 class SystemJob extends Job implements ShouldQueue
 {
-    use InteractsWithQueue, SerializesModels;
+    use InteractsWithQueue, SerializesModels, Dispatchable;
 
     protected $systemJob;
 
@@ -41,12 +42,14 @@ class SystemJob extends Job implements ShouldQueue
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($objectId = null, $objectName = null)
     {
         // init the SystemJob record to keep track of
         $systemJob = SystemJobModel::create(array(
             'status' => SystemJobModel::STATUS_NEW,
             'name' => get_called_class(),
+            'object_id' => $objectId,
+            'object_name' => $objectName,
         ));
         
         $this->systemJob = $systemJob;

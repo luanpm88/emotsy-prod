@@ -37,7 +37,9 @@ class Send extends Action
             // do nothing
         } else {
             sleep(1); // to avoid same date/time with previous wait, wrong timeline order
-            dispatch(new DeliverEmail($email, $this->autoTrigger->subscriber));
+            // dispatch(new DeliverEmail($email, $this->autoTrigger->subscriber));
+            $queue = true;
+            $email->deliverTo($this->autoTrigger->subscriber, $queue); // queue, do not send immediately 
         }
 
         $this->autoTrigger->logger()->info(sprintf('Send email entitled "%s" to "%s", queued', $email->subject, $this->autoTrigger->subscriber->email));

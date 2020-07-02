@@ -14,11 +14,11 @@ class DeliverEmail extends SystemJob
      *
      * @return void
      */
-    public function __construct($email, $subscriber)
+    public function __construct($email, $subscriber, $objectId, $objectName)
     {
         $this->email = $email;
         $this->subscriber = $subscriber;
-        parent::__construct();
+        parent::__construct($objectId, $objectName);
     }
 
     /**

@@ -40,7 +40,7 @@ class SystemJob extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'status',
+        'name', 'status', 'object_id', 'object_name'
     ];
 
     /**
