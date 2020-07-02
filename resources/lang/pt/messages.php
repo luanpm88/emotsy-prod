@@ -3736,4 +3736,73 @@
   'change_plan_pending' => 'You are changing to <strong>:plan</strong> plan with amount: <strong>:amount</strong>.
         <br><a href=":url"><strong>Click here</strong></a> to see more details.',
   'change_plan.failed' => 'Can not change plan: :error',
+  'automation.delay.0_day' => '0 day (on the same day)',
+  'tracking_domains' => 'Tracking domains',
+  'tracking_domain.created' => 'Sending domain was successfully created',
+  'tracking_domain.updated' => 'Sending domain was successfully updated',
+  'tracking_domains.deleted' => 'One or more tracking domains were successfully deleted',
+  'tracking_domain.wording' => 'For sending marketing emails, it is required that you verify your identities
+      (the domain or email address that you send email from) to confirm that you own them, and to prevent
+      unauthorized use)',
+  'delete_tracking_domains_confirm' => 'You\'re about to delete :number tracking domain(s) from the list.',
+  'tracking_domain_empty_line_1' => 'You have no tracking domain',
+  'tracking_domain.signing_enabled.help' => 'Sign outgoing emails if the FROM email address matches this domain',
+  'tracking_domain.domain_verification' => 'Domain verification',
+  'tracking_domain.dkim_verification' => 'DKIM verification',
+  'tracking_domain.spf_verification' => 'SPF verification',
+  'tracking_domain.verified' => 'verified',
+  'tracking_domain.unverified' => 'unverified',
+  'tracking_domain.create' => 'Create Tracking domain',
+  'tracking_domain.show.dns_setup.title' => 'DNS Setup',
+  'tracking_domain.show.dns_setup.note1' => 'Tracking domains are used by the application in tracking email opens and link clicks. Once set up, all links in your emails are transformed and wrapped by a tracking domain. It helps improve your email reputation and make it less likely to be treated as spam hence improve your sending performance.',
+  'tracking_domain.show.dns_setup.note2' => 'You need to add the following CNAME record to your domain DNS to verify your domain as well as to enable open/click tracking through the application.',
+  'tracking_domain.show.dns_setup.note3' => 'Notice that DNS update may take from 5 minutes to a few hours to propagate',
+  'tracking_domain.hostname' => 'Host name',
+  'tracking_domain.record_type' => 'Record type',
+  'tracking_domain.value' => 'Value',
+  'tracking_domain.show.pending_title' => 'Pending verification',
+  'tracking_domain.show.pending_note' => 'Please update your domain DNS records accordingly to the guideline below. Once you believe you\'re all set up, click the refresh button to check',
+  'tracking_domain.show.dns_setup' => 'DNS Setup',
+  'tracking_domain.refresh' => 'Refresh now',
+  'tracking_domain.show.verified_title' => 'Tracking domain verified',
+  'tracking_domain.show.verified_note' => 'Your tracking domain is verified and is ready for use. You can now set up your campaigns or automation to use a tracking domain to improve delivery performance',
+  'dns_verification' => 'DNS verification',
+  'tracking_domain.dns_verification.help' => 'Verify this domain through DNS update. You will need to have
+      access to your DNS control panel',
+  'tracking_domain.view' => 'View',
+  'tracking_domain.status.verified' => 'verified',
+  'tracking_domain.status.unverified' => 'unverified',
+  'custom_tracking_domain' => 'Custom Tracking Domain',
+  'campaign.custom_tracking_domain.help' => 'Sign your email with your tracking domain (if any), telling
+      receiving email servers that your email is actually comming from you. This is to help establish the
+      authenticity of your email, improving delivery rate.',
+  'campaign.select_tracking_domain' => 'Select tracking domain',
+  'automation.trigger.weekly-recurring' => 'Weekly recurring',
+  'automation.trigger.weekly-recurring.desc' => 'Schedule your campaign to automatically
+      send on a weekly basis, on a particular week day you choose',
+  'automation.trigger.weekly-recurring.intro' => 'Schedule your campaign to automatically
+      send on a weekly basis, on a particular week day you choose',
+  'automation.intro.weekly-recurring' => 'Schedule your campaign to automatically
+      send on a weekly basis, on a particular week day you choose',
+  'automation.trigger.monthly-recurring' => 'Monthly recurring',
+  'automation.trigger.monthly-recurring.desc' => 'Schedule your campaign to automatically send on a
+      monthly basis, on a particular day of the month',
+  'automation.trigger.monthly-recurring.intro' => 'Schedule your campaign to automatically send on a
+      monthly basis, on a particular day of the month',
+  'automation.intro.monthly-recurring' => 'Schedule your campaign to automatically send on a
+      monthly basis, on a particular day of the month',
+  'automation.trigger.icon.weekly-recurring' => 'update',
+  'automation.trigger.icon.monthly-recurring' => 'date_range',
+  'days_of_week' => 'Days of week',
+  'days_of_month' => 'Days of month',
+  'day_of_week.0' => 'Sun',
+  'day_of_week.1' => 'Mon',
+  'day_of_week.2' => 'Tue',
+  'day_of_week.3' => 'Wed',
+  'day_of_week.4' => 'Thu',
+  'day_of_week.5' => 'Fri',
+  'day_of_week.6' => 'Sat',
+  'automation.trigger.tree.weekly-recurring' => 'Weekly recurring',
+  'automation.trigger.tree.monthly-recurring' => 'Monthly recurring',
+  'tracking_domain.scheme' => 'Scheme',
 ) ?>

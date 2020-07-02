@@ -40,31 +40,32 @@
                                 <i class="lnr lnr-warning"></i>
                             </div>
                             <div style="padding-right: 40px">
-                                <h4>Pending verification</h4>
-                                <p>Please update your domain DNS records accordingly to the guideline below. Once you believe you're all set up, click the refresh button to check</p>
+                                <h4>{{ trans('messages.tracking_domain.show.pending_title') }}</h4>
+                            <p>{{ trans('messages.tracking_domain.show.pending_note') }}</p>
                             </div>
                         </div>
-                        <button type="submit" class="btn bg-grey-600">Refresh now!</button>
+                        <button type="submit" class="btn bg-grey-600">{{ trans('messages.tracking_domain.refresh') }}</button>
                     </div>
                 </form>
-                <h2>DNS Setup</h2>
-                <p>Tracking domains are used by the application in tracking email opens and link clicks. Once set up, all links in your emails are transformed and wrapped by a tracking domain. It helps improve your email reputation and make it less likely to be treated as spam hence improve your sending performance</p>
+                <h2>{{ trans('messages.tracking_domain.show.dns_setup.title') }}</h2>
+                <p>{{ trans('messages.tracking_domain.show.dns_setup.note1') }}</p>
 
-                <p>You need to add the following <strong>CNAME</strong> record to your domain DNS to verify your domain as well as to enable open/click tracking through the application.</p>
+                <p>{{ trans('messages.tracking_domain.show.dns_setup.note2') }}</p>
                 <ul class="dotted-list topborder section section-flex">
                     <li style="font-size:16px">
                         <div class="size1of3">
-                            <strong>{{ $domain->getFQDN() }}</strong><br><span style="font-size:14px;">Host name</span>
+                            <strong>{{ $domain->getFQDN() }}</strong><br><span style="font-size:14px;">{{ trans('messages.tracking_domain.hostname') }}</span>
                         </div>
                         <div class="unit size1of3">
-                            <strong>CNAME</strong><br><span style="font-size:14px;">Record type</span>
+                            <strong>CNAME</strong><br><span style="font-size:14px;">{{ trans('messages.tracking_domain.record_type') }}</span>
                         </div>
                         <div class="size1of3">
-                            <strong>{{ $hostname }}</strong><br><span style="font-size:14px;">Value</span>
+                            <strong>{{ $hostname }}</strong><br><span style="font-size:14px;">{{ trans('messages.tracking_domain.value') }}</span>
                         </div>
                     </li>
                 </ul>
-                <p style="margin-top: 20px"><i>Notice that DNS update may take from 5 minutes to a few hours to propagate</i></p>
+                <p style="margin-top: 20px"><i>{{ trans('messages.tracking_domain.show.dns_setup.note3') }}</i></p>
+                <a type="button" style="padding-left:0" class="btn btn-mc_inline" href="{{ action('TrackingDomainController@index') }} ">{{ trans('messages.go_back') }}</a>
             @else
                 <div data-type="admin-notification" class="alert alert-success" style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
                     <div style="display: flex; flex-direction: row; align-items: center;">
@@ -72,13 +73,13 @@
                             <i class="lnr lnr-checkmark-circle"></i>
                         </div>
                         <div style="padding-right: 40px">
-                            <h4>{{ trans('messages.sender.status_info.verified') }}</h4>
-                            <p>Your tracking domain is already verify and is ready for use. You can now set up your campaigns or automation to use a tracking domain to improve delivery performance</p>
+                            <h4>{{ trans('messages.tracking_domain.show.verified_title') }}</h4>
+                            <p>{{ trans('messages.tracking_domain.show.verified_note') }}</p>
                         </div>
                     </div>
                 </div>
 
-                <a type="button" class="btn btn-mc_inline" href="{{ action('TrackingDomainController@index') }} ">Go back</a>
+                <a type="button" style="padding-left:0" class="btn btn-mc_inline" href="{{ action('TrackingDomainController@index') }} ">{{ trans('messages.go_back') }}</a>
             @endif
         </div>
     </div>
