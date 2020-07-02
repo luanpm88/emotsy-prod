@@ -2697,7 +2697,7 @@ abstract class AbsCampaign extends Model
         }
         $this->html = \Acelle\Library\Tool::replaceTemplateUrl(
             tinyDocTypeTransform($this->html),
-            $path,
+            $path
         );
 
         return $this->html;

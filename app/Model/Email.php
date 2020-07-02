@@ -415,7 +415,7 @@ class Email extends Model
         // replace relative urls
         $this->content = \Acelle\Library\Tool::replaceTemplateUrl(
             tinyDocTypeTransform($this->content),
-            $path,
+            $path
         );
 
         return $this->content;
@@ -638,6 +638,7 @@ class Email extends Model
      */
     public function trackMessage($response, $subscriber, $server, $msgId, $triggerId = null)
     {
+
         // @todo: customerneedcheck
         $params = array_merge(array(
                 // 'email_id' => $this->id,
