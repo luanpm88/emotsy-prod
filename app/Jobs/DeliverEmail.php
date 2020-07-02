@@ -6,6 +6,7 @@ class DeliverEmail extends SystemJob
 {
     protected $email;
     protected $subscriber;
+    protected $triggerId; // one email may be delivered to a given subscriber more than once (weekly recurring, birthday... for example)
 
     /**
      * Create a new job instance.
@@ -14,10 +15,11 @@ class DeliverEmail extends SystemJob
      *
      * @return void
      */
-    public function __construct($email, $subscriber, $objectId, $objectName)
+    public function __construct($email, $subscriber, $triggerId, $objectId, $objectName)
     {
         $this->email = $email;
         $this->subscriber = $subscriber;
+        $this->triggerId = $triggerId;
         parent::__construct($objectId, $objectName);
     }
 
@@ -28,6 +30,6 @@ class DeliverEmail extends SystemJob
      */
     public function handle()
     {
-        $this->email->deliverTo($this->subscriber);
+        $this->email->deliverTo($this->subscriber, $this->triggerId);
     }
 }

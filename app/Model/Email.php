@@ -479,27 +479,29 @@ class Email extends Model
         }
     }
 
+    public function queueDeliverTo($subscriber, $triggerId = null)
+    {
+        $deliveryAttempt = $this->deliveryAttempts()->create([
+            'subscriber_id' => $subscriber->id,
+            'auto_trigger_id' => $triggerId,
+            // 'email_id' already included
+        ]);
+        
+        dispatch(new DeliverEmail(
+            $this,
+            $subscriber,
+            $triggerId,
+            $deliveryAttempt->id,
+            get_class($deliveryAttempt),
+        ));
+
+        return $deliveryAttempt;
+    }
+
     // @note: complicated dependencies
     // It is just fine, we can think Email as an object depends on User/Customer
-    public function deliverTo($subscriber, $queue = false)
+    public function deliverTo($subscriber, $triggerId = null)
     {
-
-        if ($queue) {
-            $deliveryAttempt = $this->deliveryAttempts()->create([
-                'subscriber_id' => $subscriber->id,
-                // 'email_id' already included
-            ]);
-            
-            dispatch(new DeliverEmail(
-                $this,
-                $subscriber,
-                $deliveryAttempt->id,
-                get_class($deliveryAttempt),
-            ));
-
-            return $deliveryAttempt;
-        }
-
         // @todo: code smell here, violation of Demeter Law
         // @todo: performance
         while ($this->automation->customer->overQuota()) {
@@ -517,7 +519,7 @@ class Email extends Model
 
         // additional log
         MailLog::info("Sent to subscriber `{$subscriber->email}`");
-        $this->trackMessage($sent, $subscriber, $server, $msgId);
+        $this->trackMessage($sent, $subscriber, $server, $msgId, $triggerId);
     }
 
     /**
@@ -609,15 +611,16 @@ class Email extends Model
     /**
      * Log delivery message, used for later tracking.
      */
-    public function trackMessage($response, $subscriber, $server, $msgId)
+    public function trackMessage($response, $subscriber, $server, $msgId, $triggerId = null)
     {
         // @todo: customerneedcheck
         $params = array_merge(array(
-                'email_id' => $this->id,
+                // 'email_id' => $this->id,
                 'message_id' => $msgId,
                 'subscriber_id' => $subscriber->id,
                 'sending_server_id' => $server->id,
                 'customer_id' => $this->automation->customer->id,
+                'auto_trigger_id' => $triggerId, 
             ), $response);
 
         if (!isset($params['runtime_message_id'])) {
@@ -625,7 +628,7 @@ class Email extends Model
         }
 
         // create tracking log for message
-        TrackingLog::create($params);
+        $this->trackingLogs()->create($params);
 
         // increment customer quota usage
         $this->automation->customer->countUsage();

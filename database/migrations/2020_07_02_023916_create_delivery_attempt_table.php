@@ -18,10 +18,12 @@ class CreateDeliveryAttemptTable extends Migration
             $table->uuid('uid');
             $table->integer('subscriber_id')->unsigned();
             $table->integer('email_id')->unsigned();
+            $table->integer('auto_trigger_id')->unsigned()->nullable();
             $table->timestamps();
 
             $table->foreign('subscriber_id')->references('id')->on('subscribers')->onDelete('cascade');
             $table->foreign('email_id')->references('id')->on('emails')->onDelete('cascade');
+            $table->foreign('auto_trigger_id')->references('id')->on('auto_triggers')->onDelete('cascade');
         });
     }
 

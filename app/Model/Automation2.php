@@ -985,6 +985,7 @@ class Automation2 extends Model
         // + click logs
         // + timelines
         $this->autoTriggers()->delete();
+        $this->updateCache();
     }
 
     /**

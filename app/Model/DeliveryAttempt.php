@@ -12,6 +12,9 @@ class DeliveryAttempt extends Model
 	// It is because tracking_logs records are produced only after actual delivery, and updating a log table is not recommended
 	// So we have:
 	//
+	//               Trigger
+	//                  |
+	//                  |
 	//         [ Email, Subscriber ]           
 	//                  |
 	//                  |
@@ -21,6 +24,6 @@ class DeliveryAttempt extends Model
 	//             TrackingLog
 
 	protected $fillable = [
-		'subscriber_id', 'email_id'
+		'subscriber_id', 'email_id', 'auto_trigger_id',
 	];
 }
