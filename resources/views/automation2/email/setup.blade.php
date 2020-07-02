@@ -101,7 +101,7 @@
                         'type' => 'checkbox3',
                         'name' => 'custom_tracking_domain',
                         'label' => trans('messages.custom_tracking_domain'),
-                        'value' => $email->tracking_domain_id,
+                        'value' => $email->tracking_domain_id || request()->custom_tracking_domain,
                         'options' => [false,true],
                         'help_class' => 'email',
                         'rules' => $email->rules()

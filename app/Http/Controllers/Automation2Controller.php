@@ -609,7 +609,7 @@ class Automation2Controller extends Controller
             }
             
             // make validator
-            $validator = Validator::make($request->all(), $email->rules());
+            $validator = Validator::make($request->all(), $email->rules($request));
             
             // redirect if fails
             if ($validator->fails()) {

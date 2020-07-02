@@ -292,7 +292,7 @@ class CampaignController extends Controller
             $campaign->fillAttributes($request->all());
 
             // Check validation
-            $this->validate($request, $campaign->rules());
+            $this->validate($request, $campaign->rules($request));
             $campaign->save();
 
             // Log

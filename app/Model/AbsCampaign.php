@@ -92,7 +92,7 @@ abstract class AbsCampaign extends Model
     /**
      * Get campaign validation rules.
      */
-    public function rules()
+    public function rules($request=null)
     {
         $rules = array(
             'name' => 'required',
@@ -106,6 +106,11 @@ abstract class AbsCampaign extends Model
             $rules['from_email'] = 'email';
         } else {
             $rules['from_email'] = 'required|email';
+        }
+
+        // tracking domain
+        if (isset($request) && $request->custom_tracking_domain) {
+            $rules['tracking_domain_uid'] = 'required';
         }
 
         return $rules;

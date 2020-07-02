@@ -113,13 +113,20 @@ class Email extends Model
      *
      * @return array
      */
-    public function rules()
+    public function rules($request=null)
     {
-        return [
+        $rules = [
             'subject' => 'required',
             'from' => 'required|email',
             'from_name' => 'required',
         ];
+
+        // tracking domain
+        if (isset($request) && $request->custom_tracking_domain) {
+            $rules['tracking_domain_uid'] = 'required';
+        }
+
+        return $rules;
     }
 
     /**
