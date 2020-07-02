@@ -96,6 +96,29 @@
                         'help_class' => 'email',
                         'rules' => $email->rules(),
                     ])
+
+                    @include('helpers.form_control', [
+                        'type' => 'checkbox3',
+                        'name' => 'custom_tracking_domain',
+                        'label' => trans('messages.custom_tracking_domain'),
+                        'value' => $email->tracking_domain_id,
+                        'options' => [false,true],
+                        'help_class' => 'email',
+                        'rules' => $email->rules()
+                    ])
+
+                    <div class="select-tracking-domain">
+                        @include('helpers.form_control', [
+                            'type' => 'select',
+                            'name' => 'tracking_domain_uid',
+                            'label' => '',
+                            'value' => $email->trackingDomain? $email->trackingDomain->uid : null,
+                            'options' => Auth::user()->customer->getVerifiedTrackingDomainOptions(),
+                            'include_blank' => trans('messages.automation.email.select_tracking_domain'),
+                            'help_class' => 'email',
+                            'rules' => $email->rules()
+                        ])
+                    </div>
                 </div>
             </div>
         </div>
@@ -193,5 +216,17 @@
         $('[name="from"]').blur(function() {
             $('[name="reply_to"]').val($(this).val()).change();
         });
+
+        // select custom tracking domain
+        $('[name=custom_tracking_domain]').change(function() {
+            var value = $('[name=custom_tracking_domain]:checked').val();
+
+            if (value) {
+                $('.select-tracking-domain').show();
+            } else {
+                $('.select-tracking-domain').hide();
+            }
+        });
+        $('[name=custom_tracking_domain]').change();
     </script>
 @endsection

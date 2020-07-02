@@ -68,6 +68,14 @@ class Email extends Model
     }
 
     /**
+     * Get email's associated tracking domain.
+     */
+    public function trackingDomain()
+    {
+        return $this->belongsTo('Acelle\Model\TrackingDomain', 'tracking_domain_id');
+    }
+
+    /**
      * Bootstrap any application services.
      */
     public static function boot()
@@ -1023,6 +1031,26 @@ class Email extends Model
         if (!$this->plain) {
             $this->plain = preg_replace('/\s+/', ' ', preg_replace('/\r\n/', ' ', strip_tags($this->content)));
             $this->save();
+        }
+    }
+
+    /**
+     * Fill email's fields from request.
+     */
+    public function fillAttributes($params)
+    {
+        $this->fill($params);
+
+        // Tacking domain
+        if (isset($params['custom_tracking_domain']) && $params['custom_tracking_domain'] && isset($params['tracking_domain_uid'])) {
+            $tracking_domain = \Acelle\Model\TrackingDomain::findByUid($params['tracking_domain_uid']);
+            if (is_object($tracking_domain)) {
+                $this->tracking_domain_id = $tracking_domain->id;
+            } else {
+                $this->tracking_domain_id = null;
+            }
+        } else {
+            $this->tracking_domain_id = null;
         }
     }
 }
