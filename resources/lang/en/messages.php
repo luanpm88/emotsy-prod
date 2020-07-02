@@ -3769,10 +3769,14 @@
       send on a weekly basis, on a particular week day you choose',
   'automation.trigger.weekly-recurring.intro' => 'Schedule your campaign to automatically
       send on a weekly basis, on a particular week day you choose',      
+  'automation.intro.weekly-recurring' => 'Schedule your campaign to automatically
+      send on a weekly basis, on a particular week day you choose',
   'automation.trigger.monthly-recurring' => 'Monthly recurring',
   'automation.trigger.monthly-recurring.desc' => 'Schedule your campaign to automatically send on a
       monthly basis, on a particular day of the month',
   'automation.trigger.monthly-recurring.intro' => 'Schedule your campaign to automatically send on a
+      monthly basis, on a particular day of the month',
+  'automation.intro.monthly-recurring' => 'Schedule your campaign to automatically send on a
       monthly basis, on a particular day of the month',
   'automation.trigger.icon.weekly-recurring' => 'update',
   'automation.trigger.icon.monthly-recurring' => 'date_range',
