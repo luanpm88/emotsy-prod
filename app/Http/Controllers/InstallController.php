@@ -746,7 +746,7 @@ APP_URL='.url('/').'
 DB_HOST='.(isset($database['hostname']) ? $database['hostname'] : '').'
 DB_DATABASE='.(isset($database['database_name']) ? $database['database_name'] : '').'
 DB_USERNAME='.(isset($database['username']) ? $database['username'] : '').'
-DB_PASSWORD='.(isset($database['password']) ? $database['password'] : '').'
+DB_PASSWORD='.(isset($database['password']) ? quoteDotEnvValue($database['password']) : '').'
 DB_PORT='.(isset($database['port']) ? $database['port'] : '').'
 DB_TABLES_PREFIX='.(isset($database['tables_prefix']) ? $database['tables_prefix'] : '').'
 
@@ -762,7 +762,7 @@ MAIL_DRIVER='.(isset($smtp['mail_driver']) ? $smtp['mail_driver'] : 'mail').'
 MAIL_HOST='.(isset($smtp['smtp_hostname']) ? $smtp['smtp_hostname'] : '').'
 MAIL_PORT='.(isset($smtp['smtp_port']) ? $smtp['smtp_port'] : '').'
 MAIL_USERNAME="'.(isset($smtp['smtp_username']) ? $smtp['smtp_username'] : '').'"
-MAIL_PASSWORD="'.(isset($smtp['smtp_password']) ? $smtp['smtp_password'] : '').'"
+MAIL_PASSWORD="'.(isset($smtp['smtp_password']) ? quoteDotEnvValue($smtp['smtp_password']) : '').'"
 MAIL_ENCRYPTION='.(isset($smtp['smtp_encryption']) ? $smtp['smtp_encryption'] : '').'
 MAIL_FROM_ADDRESS="'.(isset($smtp['mail_from_email']) ? $smtp['mail_from_email'] : '').'"
 MAIL_FROM_NAME="'.(isset($smtp['mail_from_name']) ? $smtp['mail_from_name'] : '').'"

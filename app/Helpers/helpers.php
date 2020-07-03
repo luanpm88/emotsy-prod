@@ -802,3 +802,15 @@ function get_app_identity()
 {
     return md5(config('app.key'));
 }
+
+function quoteDotEnvValue($value)
+{
+    $containsSharp = (strpos($value, '#') !== false);
+
+    if ($containsSharp) {
+        $value = str_replace('"', '\"', $value);
+        $value = '"'.$value.'"';
+    }
+
+    return $value;
+}
