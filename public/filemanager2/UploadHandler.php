@@ -165,7 +165,7 @@ class UploadHandler
                     'max_width' => 800,
                     'max_height' => 600
                 ),
-		        */
+                */
                 //'thumbnail' => array(
                     // Uncomment the following to use a defined directory for the thumbnails
                     // instead of a subdirectory based on the version identifier.
@@ -493,13 +493,15 @@ class UploadHandler
             $name = $this->upcount_name($name);
         }
         // Keep an existing filename if this is part of a chunked upload:
-        $uploaded_bytes = $this->fix_integer_overflow((int)$content_range[1]);
-        while (is_file($this->get_upload_path($name))) {
-            if ($uploaded_bytes === $this->get_file_size(
-                    $this->get_upload_path($name))) {
-                break;
+        if(isset($content_range[1])) {
+            $uploaded_bytes = $this->fix_integer_overflow((int)$content_range[1]);
+            while (is_file($this->get_upload_path($name))) {
+                if ($uploaded_bytes === $this->get_file_size(
+                        $this->get_upload_path($name))) {
+                    break;
+                }
+                $name = $this->upcount_name($name);
             }
-            $name = $this->upcount_name($name);
         }
         return $name;
     }
@@ -897,11 +899,11 @@ class UploadHandler
         if (!empty($options['auto_orient'])) {
             $image_oriented = $this->imagick_orient_image($image);
         } 
-	    
+        
         $image_resize = false; 
         $new_width = $max_width = $img_width = $image->getImageWidth();
         $new_height = $max_height = $img_height = $image->getImageHeight(); 
-		  
+          
         // use isset(). User might be setting max_width = 0 (auto in regular resizing). Value 0 would be considered empty when you use empty()
         if (isset($options['max_width'])) {
             $image_resize = true; 
@@ -1425,7 +1427,7 @@ class UploadHandler
         $response = array($this->options['param_name'] => $files);
         $name = $file_name ? $file_name : $upload['name'][0];
         $res = $this->generate_response($response, $print_response);
-        if(is_file($this->get_upload_path($name))){
+        if(isset($content_range[1]) && is_file($this->get_upload_path($name))){
             $uploaded_bytes = $this->fix_integer_overflow((int)$content_range[1]);
             $totalSize = $this->get_file_size($this->get_upload_path($name));
             if ($totalSize - $uploaded_bytes - $this->options['readfile_chunk_size'] < 0) {
