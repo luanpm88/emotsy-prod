@@ -70,6 +70,17 @@
                         <div class="btn-group">
                             <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
                             <ul class="dropdown-menu dropdown-menu-right">
+                                @can('view', $automation)
+                                    <li>
+                                        <a                                            
+                                            href="{{ action('Automation2Controller@subscribers', [
+                                                "uids" => $automation->uid
+                                            ]) }}"
+                                        >
+                                            <i class="icon-users"></i> {{ trans('messages.subscribers') }}
+                                        </a>
+                                    </li>
+                                @endcan
                                 @can('enable', $automation)
                                     <li>
                                         <a data-method="PATCH" link-confirm="{{ trans('messages.enable_automations_confirm') }}"

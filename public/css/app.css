@@ -3698,3 +3698,173 @@ textarea.bulk-delete {
 .tracking-domain-scheme-name .control-text input[type=text] {
     border-radius: 0px 5px 5px 0px;
 }
+.automation-header .bg-dark {
+    background-color: #222!important;
+}
+.automation-header .fixed-top {
+    position: fixed !important;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 1030;
+}
+.automation-header .navbar-brand {
+    display: inline-block;
+    padding-top: .3125rem;
+    padding-bottom: .3125rem;
+    margin-right: 1rem;
+    font-size: 1.25rem;
+    line-height: inherit;
+    white-space: nowrap;
+}
+.automation-header .navbar-dark .navbar-brand {
+    color: #fff;
+}
+.automation-header .navbar-brand.left-logo {
+    display: block;
+    height: 55px;
+    background: rgba(0,0,0,0.3);
+    padding: 10px 20px;
+    margin: -16px 20px -17px -16px;
+}
+.automation-header .navbar {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    -ms-flex-align: center;
+    align-items: center;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    padding: .5rem 1rem;
+    height: 56px;
+}
+@media (min-width: 768px) {
+.automation-header .navbar-expand-md {
+    -ms-flex-flow: row nowrap;
+    flex-flow: row nowrap;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+}
+}
+.automation-header .account-info a img {
+    height: 24px;
+    width: 24px;
+    display: inline-block;
+    margin-right: 10px;
+    border-radius: 100%;
+}
+.automation-header .navbar-brand {
+    display: inline-block;
+    padding-top: .3125rem;
+    padding-bottom: .3125rem;
+    margin-right: 1rem;
+    font-size: 1.25rem;
+    line-height: inherit;
+    white-space: nowrap;    
+}
+.automation-header .navbar-dark .navbar-brand {
+    color: #fff;
+}
+.automation-header .navbar-brand.left-logo {
+    display: block;
+    height: 55px;
+    background: rgba(0,0,0,0.3);
+    padding: 15px 20px;
+    margin: -16px 20px -17px -16px;
+}
+.automation-header .mr-auto, .automation-header .mx-auto {
+    margin-right: auto!important;
+}
+.automation-header .navbar h1 {
+    color: #ccc;
+    font-size: 20px;
+    margin: 0;
+    font-weight: normal;
+}
+.automation-header .automation-top-menu {
+    display: flex;
+    align-items: center;
+}
+.automation-header .mr-3, .automation-header .mx-3 {
+    margin-right: 1rem!important;
+}
+.automation-header .automation-top-menu .action {
+    color: #ccc;
+    padding: 8px 10px;
+    margin: 0 10px;
+    display: flex;
+    align-items: center;
+}
+.automation-header .navbar-brand.left-logo img {
+    height: 17px;
+}
+.automation-header .switch-automation {
+    position: relative;
+}
+.automation-header .switch-automation .select2 {
+    position: absolute;
+    color: transparent;
+    width: 100%!important;
+    outline: none;
+}
+.automation-header .select2-container .select2-selection--single {
+    height: 38px;
+}
+.automation-header .switch-automation .select2-selection--single {
+    background: none;
+    border: none;
+    outline: none;
+    color: none;
+}
+.automation-header .select2-container--default .select2-selection--single {
+    border-color: #ced4da;
+}
+.automation-header .select2-selection--single:not([class*=bg-]):not([class*=border-]) {
+    height: 38px;
+}
+.automation-header .switch-automation .select2-container--default .select2-selection--single .select2-selection__arrow {
+    display: none;
+}
+.automation-header .select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 38px;
+    top: 0px;
+}
+.automation-header .account-info a.account-item {
+    padding: 10px 15px!important;
+    background: rgba(255,255,255,0.05);
+    color: #aaa;
+    border-radius: 2px;
+    margin-left: 10px;
+    display: flex;
+    margin: -4px -4px -3px 0;
+    align-items: center;
+}
+.automation-header .navbar-nav {
+    margin-left: 0;
+    padding-left: 0;
+}
+.automation-header .account-info .dropdown.open .dropdown-menu {
+    background: #333;
+    margin-right: -11px;
+    margin-top: 9px;
+    border-radius: 0 0 4px 4px;
+}
+.automation-header .account-info .dropdown.open .dropdown-menu a {
+    display: block;
+    width: 100%;
+    padding: 1rem 1.5rem;
+    clear: both;
+    font-weight: 400;
+    color: #212529;
+    text-align: inherit;
+    white-space: nowrap;
+    background-color: transparent;
+    border: 0;
+    background: #333;
+    color: #ddd;
+}
+.automation-header .account-info .dropdown.open .dropdown-menu a:hover {
+    background: #222;
+}

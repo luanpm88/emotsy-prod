@@ -151,6 +151,12 @@ class Automation2Controller extends Controller
     {
         // find automation
         $automation = Automation2::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+
         $automation->saveData($request->data);
     }
     
@@ -896,6 +902,11 @@ class Automation2Controller extends Controller
     {
         $automation = Automation2::findByUid($uid);
         $email = Email::findByUid($request->email_uid);
+
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
         
         $upload_path = $email->uploadAsset($request->file('file'));
 
@@ -1758,6 +1769,129 @@ class Automation2Controller extends Controller
         return view('automation2.segmentSelect', [
             'automation' => $automation,
             'list' => $list,
+        ]);
+    }
+
+    /**
+     * Display a listing of subscribers.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function subscribers(Request $request, $uid)
+    {
+        // init
+        $automation = Automation2::findByUid($uid);
+        $list = $automation->mailList;
+
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+
+        return view('automation2.subscribers.index', [
+            'automation' => $automation,
+            'list' => $list,
+        ]);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function subscribersList(Request $request, $uid)
+    {
+        // init
+        $automation = Automation2::findByUid($uid);
+        $list = $automation->mailList;
+
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+
+        $subscribers = $automation->subscribers()->search($request)
+            ->where('mail_list_id', '=', $list->id);
+
+        // $total = distinctCount($subscribers);
+        $total = $subscribers->count();
+        $subscribers->with(['mailList', 'subscriberFields']);
+        $subscribers = \optimized_paginate($subscribers, $request->per_page, null, null, null, $total);
+
+        $fields = $list->getFields->whereIn('uid', explode(',', $request->columns));
+
+        return view('automation2.subscribers._list', [
+            'automation' => $automation,
+            'subscribers' => $subscribers,
+            'total' => $total,
+            'list' => $list,
+            'fields' => $fields,
+        ]);
+    }
+
+    /**
+     * Remove subscriber from automation.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function subscribersRemove(Request $request, $uid, $subscriber_uid)
+    {
+        // init automation
+        $automation = Automation2::findByUid($uid);
+        $subscriber = Subscriber::findByUid($subscriber_uid);
+
+        // authorize
+        if (\Gate::denies('update', $subscriber)) {
+            return;
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => trans('messages.automation.subscriber.removed'),
+        ], 201);
+    }
+
+    /**
+     * Restart subscriber for automation.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function subscribersRestart(Request $request, $uid, $subscriber_uid)
+    {
+        // init automation
+        $automation = Automation2::findByUid($uid);
+        $subscriber = Subscriber::findByUid($subscriber_uid);
+
+        // authorize
+        if (\Gate::denies('update', $subscriber)) {
+            return;
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => trans('messages.automation.subscriber.restarted'),
+        ], 201);
+    }
+
+    /**
+     * Display a listing of subscribers.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function subscribersShow(Request $request, $uid, $subscriber_uid)
+    {
+        // init automation
+        $automation = Automation2::findByUid($uid);
+        $subscriber = Subscriber::findByUid($subscriber_uid);
+
+        // authorize
+        if (\Gate::denies('read', $subscriber)) {
+            return;
+        }
+
+        return view('automation2.subscribers.show', [
+            'automation' => $automation,
+            'subscriber' => $subscriber,
         ]);
     }
 }

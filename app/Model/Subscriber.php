@@ -1029,4 +1029,126 @@ class Subscriber extends Model
         $this->tags = json_encode($tags);
         $this->save();
     }
+
+    /**
+     * Filter items.
+     *
+     * @return collect
+     */
+    public static function scopeFilter($query, $request)
+    {
+        /* does not support searching on subscriber fields, for the sake of performance
+        $query = $query->leftJoin('subscriber_fields', 'subscribers.id', '=', 'subscriber_fields.subscriber_id')
+            ->leftJoin('mail_lists', 'subscribers.mail_list_id', '=', 'mail_lists.id');
+        */
+        $query = $query->leftJoin('mail_lists', 'subscribers.mail_list_id', '=', 'mail_lists.id');
+
+        // Email verification join
+        $query = $query->leftJoin('email_verifications', 'email_verifications.subscriber_id', '=', 'subscribers.id');
+
+        if (isset($request)) {
+            // Keyword
+            if (!empty(trim($request->keyword))) {
+                foreach (explode(' ', trim($request->keyword)) as $keyword) {
+                    $query = $query->where(function ($q) use ($keyword) {
+                        $q->orwhere('subscribers.email', 'like', '%'.$keyword.'%');
+                        /* does not support searching on subscriber fields, for the sake of performance
+                        ->orWhere('subscriber_fields.value', 'like', '%'.$keyword.'%');
+                        */
+                    });
+                }
+            }
+
+            // filters
+            $filters = $request->filters;
+            if (!empty($filters)) {
+                if (!empty($filters['status'])) {
+                    $query = $query->where('subscribers.status', '=', $filters['status']);
+                }
+                if (!empty($filters['verification_result'])) {
+                    if ($filters['verification_result'] == 'unverified') {
+                        $query = $query->whereNull('email_verifications.result');
+                    } else {
+                        $query = $query->where('email_verifications.result', '=', $filters['verification_result']);
+                    }
+                }
+            }
+
+            // outside filters
+            if (!empty($request->status)) {
+                $query = $query->where('subscribers.status', '=', $request->status);
+            }
+            if (!empty($request->verification_result)) {
+                $query = $query->where('email_verifications.result', '=', $request->verification_result);
+            }
+
+            // Open
+            if ($request->open == 'yes') {
+                $query = $query->whereExists(function ($q) {
+                    $q->select(\DB::raw(1))
+                        ->from('open_logs')
+                        ->join('tracking_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')
+                        ->whereRaw(table('tracking_logs').'.subscriber_id = '.table('subscribers').'.id');
+                });
+            }
+
+            // Not Open
+            if ($request->open == 'no') {
+                $query = $query->whereNotExists(function ($q) {
+                    $q->select(\DB::raw(1))
+                        ->from('open_logs')
+                        ->join('tracking_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')
+                        ->whereRaw(table('tracking_logs').'.subscriber_id = '.table('subscribers').'.id');
+                });
+            }
+
+            // Click
+            if ($request->click == 'yes') {
+                $query = $query->whereExists(function ($q) {
+                    $q->select(\DB::raw(1))
+                        ->from('click_logs')
+                        ->join('tracking_logs', 'click_logs.message_id', '=', 'tracking_logs.message_id')
+                        ->whereRaw(table('tracking_logs').'.subscriber_id = '.table('subscribers').'.id');
+                });
+            }
+
+            // Not Click
+            if ($request->click == 'no') {
+                $query = $query->whereNotExists(function ($q) {
+                    $q->select(\DB::raw(1))
+                        ->from('click_logs')
+                        ->join('tracking_logs', 'click_logs.message_id', '=', 'tracking_logs.message_id')
+                        ->whereRaw(table('tracking_logs').'.subscriber_id = '.table('subscribers').'.id');
+                });
+            }
+        }
+
+        return $query;
+    }
+
+    /**
+     * Get all languages.
+     *
+     * @return collect
+     */
+    public static function scopeSearch($query, $request, $customer = null)
+    {
+        $query = self::select('subscribers.*', 'email_verifications.result as verify_result');
+
+        // Filter by customer
+        if (!isset($customer)) {
+            $customer = $request->user()->customer;
+        }
+        $query = $query->where('mail_lists.customer_id', '=', $customer->id);
+
+        // Filter
+        $query = $query->filter($request);
+
+        // Order
+        if (isset($request->sort_order)) {
+            $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        }
+
+        return $query;
+    }
 }

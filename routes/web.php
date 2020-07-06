@@ -523,6 +523,12 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('notifications/{id}/hide', 'NotificationController@hide');
     
     // Automation2    
+    Route::post('automation2/{uid}/subscribers/{subscriber_uid}/restart', 'Automation2Controller@subscribersRestart');
+    Route::post('automation2/{uid}/subscribers/{subscriber_uid}/remove', 'Automation2Controller@subscribersRemove');
+    Route::get('automation2/{uid}/subscribers/{subscriber_uid}/show', 'Automation2Controller@subscribersShow');
+    Route::get('automation2/{uid}/subscribers/list', 'Automation2Controller@subscribersList');
+    Route::get('automation2/{uid}/subscribers/list', 'Automation2Controller@subscribersList');
+    Route::get('automation2/{uid}/subscribers', 'Automation2Controller@subscribers');
     Route::get('automation2/{uid}/template/{email_uid}/preview', 'Automation2Controller@templatePreview');
     Route::match(['get', 'post'], 'automation2/{uid}/template/{email_uid}/plain-edit', 'Automation2Controller@templateEditPlain');
     Route::get('automation2/{uid}/template/{email_uid}/builder-select', 'Automation2Controller@templateBuilderSelect');
