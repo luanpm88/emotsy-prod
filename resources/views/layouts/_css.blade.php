@@ -13,8 +13,7 @@
 <link href="{{ URL::asset('assets/css/colors.css') }}" rel="stylesheet" type="text/css">
 
 <!-- Google icons -->
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+<link href="{{ URL::asset('assets/css/material_icons.css') }}" rel="stylesheet">
 
 <link href="{{ URL::asset('css/app.css') }}?v={{ app_version() }}" rel="stylesheet" type="text/css">
 <link href="{{ URL::asset('css/theme.css') }}" rel="stylesheet" type="text/css">

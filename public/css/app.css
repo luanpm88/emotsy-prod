@@ -3828,8 +3828,11 @@ textarea.bulk-delete {
     display: none;
 }
 .automation-header .select2-container--default .select2-selection--single .select2-selection__arrow {
-    height: 38px;
+    height: 45px;
     top: 0px;
+}
+.automation-header .select2 {
+    height: 46px;
 }
 .automation-header .account-info a.account-item {
     padding: 10px 15px!important;
@@ -3852,7 +3855,8 @@ textarea.bulk-delete {
     border-radius: 0 0 4px 4px;
 }
 .automation-header .account-info .dropdown.open .dropdown-menu a {
-    display: block;
+    display: flex;
+    align-items: center;
     width: 100%;
     padding: 1rem 1.5rem;
     clear: both;
@@ -3867,4 +3871,25 @@ textarea.bulk-delete {
 }
 .automation-header .account-info .dropdown.open .dropdown-menu a:hover {
     background: #222;
+}
+.automation-header .automation-head-icon {
+    font-size: 22px;
+}
+.automation-header .material-icons-outlined, .automation-header .material-icons {
+    font-size: 100%;
+    color: #ccc;
+    font-size: 20px;
+}
+.automation-header .account-info a.dropdown-toggle::after {
+    margin-left: 0.35em;
+}
+.automation-header .dropdown-toggle::after {
+    display: inline-block;
+    margin-left: .255em;
+    vertical-align: .255em;
+    content: "";
+    border-top: .3em solid;
+    border-right: .3em solid transparent;
+    border-bottom: 0;
+    border-left: .3em solid transparent;
 }

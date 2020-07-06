@@ -52,7 +52,6 @@
 
 				<div class="switch-automation d-flex">
 					<select class="select select2 top-menu-select" name="switch_automation">
-						<option value="--hidden--"></option>
 						@foreach($automation->getSwitchAutomations(Auth::user()->customer)->get() as $auto)
 							<option value='{{ action('Automation2Controller@edit', $auto->uid) }}'>{{ $auto->name }}</option>
 						@endforeach

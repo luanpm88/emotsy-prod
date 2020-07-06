@@ -22,8 +22,7 @@
 	<link href="{{ URL::asset('assets2/css/dialog.css') }}" rel="stylesheet" type="text/css">
 	
 	<!-- Google icons -->
-	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+	<link href="{{ URL::asset('assets/css/material_icons.css') }}" rel="stylesheet">
     
 	
 	
