@@ -25,7 +25,7 @@ class Automation2Policy
 
     public function update(User $user, Automation2 $automation)
     {
-        return true;
+        return $automation->customer_id == $user->customer->id;
     }
     
     
