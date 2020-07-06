@@ -60,7 +60,7 @@
 				<i class="material-icons-outlined automation-head-icon ml-2">alarm</i>
 			</div>
 			<div class="automation-top-menu">
-				<span class="mr-3"><i>{{ trans('messages.automation.designer.last_saved', [ 'minute' => rand(1,3) ]) }}</i></span>
+			<span class="mr-3"><i class="last_save_time" data-url="{{ action('Automation2Controller@lastSaved', $automation->uid) }}">{{ trans('messages.automation.designer.last_saved', ['time' => $automation->updated_at->diffForHumans()]) }}</i></span>
 				<a href="{{ action('Automation2Controller@index') }}" class="action">
 					<i class="material-icons-outlined mr-2">arrow_back</i>
 					{{ trans('messages.automation.go_back') }}
@@ -203,6 +203,7 @@
 		});
 
 		var sidebar = new Box($('.sidebar-content'));
+		var lastSaved = new Box($('.last_save_time'), $('.last_save_time').attr('data-url'));
 
 		function toggleHistory() {
 			var his = $('.history .history-list-items');
@@ -260,6 +261,9 @@
 				if (callback != null) {
 					callback();
 				}
+
+				// update last saved
+				lastSaved.load();
 			});
 		}
 		

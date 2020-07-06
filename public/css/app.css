@@ -3893,3 +3893,6 @@ textarea.bulk-delete {
     border-bottom: 0;
     border-left: .3em solid transparent;
 }
+.automation-header .last_save_time {
+    color: #aaa;
+}

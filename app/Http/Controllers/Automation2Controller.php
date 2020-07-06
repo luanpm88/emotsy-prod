@@ -1894,4 +1894,22 @@ class Automation2Controller extends Controller
             'subscriber' => $subscriber,
         ]);
     }
+    
+    /**
+     * Get last saved time.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function lastSaved(Request $request, $uid)
+    {
+        // init automation
+        $automation = Automation2::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('view', $automation)) {
+            return;
+        }
+
+        return trans('messages.automation.designer.last_saved', ['time' => $automation->updated_at->diffForHumans()]);
+    }
 }
