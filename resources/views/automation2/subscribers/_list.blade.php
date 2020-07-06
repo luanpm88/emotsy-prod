@@ -75,7 +75,7 @@
 								<li><a data-method="POST" class="ajax_link" href="{{ action('Automation2Controller@subscribersRemove', [
 									'uid' => $automation->uid,
 									'subscriber_uid' => $subscriber->uid
-								]) }}) }}">
+								]) }}">
 									<i class="icon-exit"></i> {{ trans('messages.automation.subscriber.remove') }}
 								</a></li>
 							@endif
@@ -83,7 +83,7 @@
 								<li><a data-method="POST" class="ajax_link" href="{{ action('Automation2Controller@subscribersRestart', [
 									'uid' => $automation->uid,
 									'subscriber_uid' => $subscriber->uid
-								]) }}) }}">
+								]) }}">
 									<i class="icon-sync"></i> {{ trans('messages.automation.subscriber.restart') }}
 								</a></li>
 							@endif
