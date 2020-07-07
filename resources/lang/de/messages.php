@@ -3762,4 +3762,15 @@
   'automation.trigger.tree.weekly-recurring' => 'Weekly recurring',
   'automation.trigger.tree.monthly-recurring' => 'Monthly recurring',
   'tracking_domain.scheme' => 'Scheme',
+  'automation.email.select_tracking_domain' => 'Select tracking domain',
+  'email.custom_tracking_domain.help' => 'Sign your email with your tracking domain (if any), telling
+      receiving email servers that your email is actually comming from you. This is to help establish the
+      authenticity of your email, improving delivery rate.',
+  'automation.brief-intro.weekly-recurring' => 'Schedule your campaign to automatically send weekly',
+  'automation.brief-intro.mongthly-recurring' => 'Schedule your campaign to automatically send monthly',
+  'automation.subscriber.restart' => 'Restart Automation',
+  'automation.subscriber.view' => 'View',
+  'automation.subscriber.remove' => 'Remove from Automation',
+  'automation.subscriber.removed' => 'Subscriber was successfully removed from automation',
+  'automation.subscriber.restarted' => 'Subscriber was successfully restarted within automation',
 ) ?>
