@@ -264,7 +264,7 @@ abstract class AbsCampaign extends Model
      *
      * @return MIME text message
      */
-    public function prepareEmail($subscriber, $server)
+    public function prepareEmail($subscriber, $server = null)
     {
         // build the message
         $customHeaders = $this->getCustomHeaders($subscriber, $this);
@@ -284,7 +284,7 @@ abstract class AbsCampaign extends Model
         }
 
         // @TODO for AWS, setting returnPath requires verified domain or email address
-        if ($server->allowCustomReturnPath()) {
+        if (!is_null($server) && $server->allowCustomReturnPath()) {
             $returnPath = $server->getVerp($subscriber->email);
             if ($returnPath) {
                 $message->setReturnPath($returnPath);
