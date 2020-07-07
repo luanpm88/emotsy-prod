@@ -127,13 +127,21 @@ class SendingServerSendGrid extends SendingServer implements DomainVerificationI
         $toName = (is_null($message->getTo())) ? null : array_values($message->getTo())[0];
         $replyToEmail = (is_null($message->getReplyTo())) ? $fromEmail : array_keys($message->getReplyTo())[0];
 
-        // Following RFC 1341, section 7.2, if either text/html or text/plain are to be sent in your email: text/plain needs to be first
+        // Following RFC 1341, section 7.2
+        //     If either text/html or text/plain are to be sent in your email
+        //     text/plain needs to be first, followed by text/html, followed by any other content
         // So, use array_shift instead of array_pop
         // Also, sort the parts so that text/plain comes before text/html
 
         $parts = $message->getChildren();
         usort($parts, function ($a, $b) {
-            return ($a->getContentType() == 'text/plain') ? -1 : 1;
+            if ($a->getContentType() == 'text/plain') {
+                return -1;
+            } else if ($a->getContentType() == 'text/html') {
+                return 0;
+            } else {
+                return 1;
+            }
         });
 
         $parts = array_map(function ($part) {
