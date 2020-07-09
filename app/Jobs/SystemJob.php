@@ -100,8 +100,8 @@ class SystemJob extends Job implements ShouldQueue
      *
      * @return void
      */
-    public function setFailed() {
+    public function setFailed($msg = null) {
         $systemJob = $this->getSystemJob();
-        $systemJob->setFailed();
+        $systemJob->setFailed($msg);
     }
 }
