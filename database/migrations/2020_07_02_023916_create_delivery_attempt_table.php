@@ -13,6 +13,9 @@ class CreateDeliveryAttemptTable extends Migration
      */
     public function up()
     {
+        \DB::statement(sprintf("ALTER TABLE %s ENGINE = 'InnoDB'", table('subscribers')));
+        \DB::statement(sprintf("ALTER TABLE %s ENGINE = 'InnoDB'", table('auto_triggers')));
+
         Schema::create('delivery_attempts', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->uuid('uid');
