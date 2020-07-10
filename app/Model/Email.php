@@ -517,7 +517,7 @@ class Email extends Model
             $subscriber,
             $triggerId,
             $deliveryAttempt->id,
-            get_class($deliveryAttempt),
+            get_class($deliveryAttempt)
         ));
 
         return $deliveryAttempt;
