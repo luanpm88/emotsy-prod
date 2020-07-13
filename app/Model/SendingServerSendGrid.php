@@ -27,6 +27,7 @@ use Acelle\Library\StringHelper;
 use SendGrid\Mail;
 use SendGrid\Email;
 use SendGrid\Content;
+use SendGrid\Attachment;
 use Acelle\Library\SendingServer\DomainVerificationInterface;
 
 class SendingServerSendGrid extends SendingServer implements DomainVerificationInterface
@@ -144,15 +145,24 @@ class SendingServerSendGrid extends SendingServer implements DomainVerificationI
             }
         });
 
+        // skip attachment part
         $parts = array_map(function ($part) {
-            return new Content($part->getContentType(), $part->getBody());
+            if (method_exists($part, 'getDisposition')) { // only a part of type Swift_Mime_Attachment has this method
+                // add later on
+                return null;
+            } else {
+                return new Content($part->getContentType(), $part->getBody());
+            }
         }, $parts);
+
+        // remove null element
+        $parts = array_filter($parts);
 
         $mail = new Mail(
             new Email($fromName, $fromEmail),
             $message->getSubject(),
             new Email($toName, $toEmail),
-            array_shift($parts)
+            array_shift($parts) // first content only
         );
 
         // set Reply-To header
@@ -160,6 +170,19 @@ class SendingServerSendGrid extends SendingServer implements DomainVerificationI
 
         foreach ($parts as $part) {
             $mail->addContent($part);
+        }
+
+        foreach ($message->getChildren() as $part) {
+            if (method_exists($part, 'getDisposition')) {
+                $filename = basename($part->getFilename());
+                $encoded = base64_encode($part->getBody());
+                $attachment = new Attachment();
+                $attachment->setType($part->getContentType());
+                $attachment->setContent($encoded);
+                $attachment->setDisposition("attachment");
+                $attachment->setFilename($filename);
+                $mail->addAttachment($attachment);
+            }
         }
 
         $preserved = [
