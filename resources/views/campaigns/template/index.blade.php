@@ -75,13 +75,17 @@
                     </div>
                 </div>
             </div>
-            <div class="sub-section">
-                <h2 class="mt-0">Spam Score</h2>
-                <p>Certain tests can be made against your email content and header to calculate an aggregate score which runs on a <strong>1 - 10 scale</strong>. The lower the score is, the more compliant your email is. Messages with a score at or below 5 are considered safe, while messages with score higher then 5 may be treated at spam by ISP.</p>
-                <a href="#" class="btn btn-primary bg-grey-600 mr-5">
-                    Calculate Score
-                </a>
-            </div>
+
+            @if ($spamscore)
+                <div class="sub-section">
+                    <h2 class="mt-0">{{ trans('messages.campaign.spam_score') }}</h2>
+                    <p>{!! trans('messages.campaign.score.intro') !!}</p>
+                    <a href="#" id="calculate-score" class="btn btn-primary bg-grey-600 mr-5">
+                        {{ trans('messages.campaign.check_spam_score') }}
+                    </a>
+                </div>
+            @endif
+
             <div class="sub-section">   
                 <h2 class="mt-0">{{ trans('messages.campaign.attachment') }}</h2>
                 <p>{{ trans('messages.campaign.attachment.intro') }}</p>
@@ -102,13 +106,17 @@
         var templatePopup = new Popup();        
     
         $(document).ready(function() {
-        
             $('.template-start').click(function() {
                 var url = $(this).attr('data-url');
                 
                 templatePopup.load(url);
             });
-        
+        });
+
+        $('#calculate-score').click(function() {
+            spamPopup = new Popup("{{ action('CampaignController@spamScore', ['uid' => $campaign->uid]) }}");
+            spamPopup.load();
+            return false;
         });
     </script>
 

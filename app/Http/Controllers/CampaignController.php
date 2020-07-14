@@ -338,6 +338,7 @@ class CampaignController extends Controller
 
         return view('campaigns.template.index', [
             'campaign' => $campaign,
+            'spamscore' => Setting::isYes('spamassassin.enabled'),
         ]);
 
         //// Required tags
