@@ -27,6 +27,8 @@ use Illuminate\Support\Facades\Validator;
 use Acelle\Library\Log as MailLog;
 use Acelle\Library\RouletteWheel;
 use Acelle\Library\StringHelper;
+use Acelle\Events\MailListSubscription;
+use Acelle\Model\Setting;
 use Acelle\Exceptions\VerificationProcessCancelledException;
 use DB;
 use App;
@@ -38,6 +40,9 @@ class MailList extends Model
     const IMPORT_STATUS_RUNNING = 'running';
     const IMPORT_STATUS_FAILED = 'failed';
     const IMPORT_STATUS_DONE = 'done';
+
+    const SOURCE_EMBEDDED_FORM = 'embedded-form';
+    const SOURCE_WEB = 'web';
 
     /**
      * The attributes that are mass assignable.
@@ -2021,5 +2026,67 @@ class MailList extends Model
     public function getOneField()
     {
         return $this->getFields()->where('tag', '<>', 'EMAIL')->first();
+    }
+
+    public function subscribe($request, $source)
+    {
+        // Validation
+        // it is ok to have subscriber subscribe again without any confusing message
+        //     if (is_object($subscriber) && $subscriber->status == \Acelle\Model\Subscriber::STATUS_SUBSCRIBED) {
+        //        $rules['email_already_subscribed'] = 'required';
+        //     }
+
+        $validator = \Validator::make($request->all(), $this->getFieldRules());
+        
+        if ($validator->fails()) {
+            return [$validator, null];
+        }
+
+        // Validated, proceed
+        $subscriber = $this->subscribers()->firstOrNew(['email' => strtolower(trim($request->EMAIL))]);
+        $subscriber->from = $source;
+
+        // Check if subscriber already in blacklist
+        if ($subscriber->isListedInBlacklist()) {
+            throw new \Exception(trans('messages.subscriber.blacklisted'));
+        }
+
+        if ($this->subscribe_confirmation) {
+            if ($subscriber->isSubscribed()) {
+                MailLog::info("Subscriber {$subscriber->email} already in the list");
+            } else {
+                $subscriber->status = 'unconfirmed';
+            }
+        } else {
+            $subscriber->status = 'subscribed';
+        }
+        $subscriber->ip = $request->ip();
+        $subscriber->save();
+        $subscriber->updateFields($request->all());
+
+        // update MailList cache
+        event(new \Acelle\Events\MailListUpdated($this));
+        
+        MailLog::info("Subscriber {$subscriber->email} is added to list {$this->name} via {$source}");
+
+        // trigger the event
+        if (Setting::isYes('send_notification_email_for_list_subscription')) {
+            MailLog::info("Sending notification email for subscriber {$subscriber->email}, list {$this->name}");
+            event(new MailListSubscription($this->customer->user, $subscriber));
+        } else {
+            MailLog::info("No notification email for subscriber {$subscriber->email}, list {$this->name}");
+        }
+
+        if ($this->subscribe_confirmation && !$subscriber->isSubscribed()) {
+            MailLog::info("Send subscription confirmation email to {$subscriber->email}, list {$this->name}");
+            $this->sendSubscriptionConfirmationEmail($subscriber);
+        }
+
+        if ($this->send_welcome_email && $subscriber->isSubscribed()) {
+            MailLog::info("Send subscription 'All done!' email to {$subscriber->email}, list {$this->name}");
+            $this->sendSubscriptionWelcomeEmail($subscriber);
+        }
+
+        return [$validator, $subscriber];
     }
 }

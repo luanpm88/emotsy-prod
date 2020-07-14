@@ -1151,4 +1151,9 @@ class Subscriber extends Model
 
         return $query;
     }
+
+    public function isSubscribed()
+    {
+        return $this->status == self::STATUS_SUBSCRIBED;
+    }
 }

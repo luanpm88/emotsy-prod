@@ -694,122 +694,51 @@ class MailListController extends Controller
             ]);
         }
 
-        // Create subscriber
-        if ($request->isMethod('post')) {
-            $subscriber = $list->subscribers()->where('email', '=', strtolower(trim($request->EMAIL)))->first();
+        try {
+            // Create subscriber
+            list($validator, $subscriber) = $list->subscribe($request, MailList::SOURCE_EMBEDDED_FORM);
+        } catch (\Exception $ex) {
+            return view('somethingWentWrong', ['message' => $ex->getMessage()]);
+        }
+        
 
-            if (!is_object($subscriber)) {
-                $subscriber = new \Acelle\Model\Subscriber($request->all());
-                $subscriber->mail_list_id = $list->id;
+        if ($validator->fails()) {
+            $url = $request->session()->pull('form_url');
+            // $validator->errors()
+            $errs = [];
+            foreach ($validator->errors()->toArray() as $key => $error) {
+                $errs[] = $error[0];
             }
 
-            // Validation
-            $rules = ['EMAIL' => 'required|email'];
-
-            /* it is ok to have subscriber subscribe again without any confusing message
-            if (is_object($subscriber) && $subscriber->status == \Acelle\Model\Subscriber::STATUS_SUBSCRIBED) {
-                $rules['email_already_subscribed'] = 'required';
-            }
-            */
-
-            if ($list->subscribe_confirmation) {
-                if ($subscriber->status != 'subscribed') {
-                    $subscriber->status = 'unconfirmed';
-                }
+            if (strpos($url, '?') !== false) {
+                $url = $url . "&" . implode('&', $errs);
             } else {
-                $subscriber->status = 'subscribed';
+                $url = $url . "?" . implode('&', $errs);
             }
 
-            $subscriber->from = 'embedded-form';
+            // return redirect()->away($url);
+            return view('lists.embedded_form_errors', [
+                'errors' => $errs,
+                'list' => $list,
+                'back_link' => $url,
+            ]);
+        }
 
-            // Validate
-            $validator = \Validator::make($request->all(), $rules);
-
-            if ($validator->fails()) {
-                $url = $request->session()->pull('form_url');
-                // $validator->errors()
-                $errs = [];
-                foreach ($validator->errors()->toArray() as $key => $error) {
-                    $errs[] = $error[0];
-                }
-
-                if (strpos($url, '?') !== false) {
-                    $url = $url . "&" . implode('&', $errs);
-                } else {
-                    $url = $url . "?" . implode('&', $errs);
-                }
-
-                // return redirect()->away($url);
-                return view('lists.embedded_form_errors', [
-                    'errors' => $errs,
-                    'list' => $list,
-                    'back_link' => $url,
-                ]);
-            }
-            
-            $subscriber->email = $request->EMAIL;
-            $subscriber->ip = $request->ip();
-            $subscriber->save();
-
-            // Update field
-            $subscriber->updateFields($request->all());
-            
-            Log::info("Subscriber {$subscriber->email} is added to list {$subscriber->mailList->name} via embedded form");
-
-            // trigger the event
-            if (Setting::isYes('send_notification_email_for_list_subscription')) {
-                Log::info("Sending notification email for subscriber {$subscriber->email}, list {$subscriber->mailList->name}");
-                event(new MailListSubscription($list->customer->user, $subscriber));
-            } else {
-                Log::info("No notification email for subscriber {$subscriber->email}, list {$subscriber->mailList->name}");
-            }
-
-            if ($list->subscribe_confirmation) {
-                // SEND subscription confirmation email
-                try {
-                    if ($subscriber->isListedInBlacklist()) {
-                        throw new \Exception(trans('messages.subscriber.blacklisted'));
-                    }
-                    $list->sendSubscriptionConfirmationEmail($subscriber);
-                } catch (\Exception $ex) {
-                    return view('somethingWentWrong', ['message' => $ex->getMessage()]);
-                }
-
-                // update MailList cache
-                event(new \Acelle\Events\MailListUpdated($subscriber->mailList));
-
-                // custom redirect
-                if ($request->redirect_url) {
-                    return redirect()->away($request->redirect_url);
-                }
-                
-                // default redirect
-                return redirect()->action('PageController@signUpThankyouPage', ['list_uid' => $list->uid, 'subscriber_uid' => $subscriber->uid]);
-            } else {
-                // change status to subscribed
-                $subscriber->updateStatus('subscribed');
-
-                // Send welcome email
-                if ($list->send_welcome_email) {
-                    // SEND subscription confirmation email
-                    $list->sendSubscriptionWelcomeEmail($subscriber);
-                }
-
-                // custom redirect
-                if ($request->redirect_url) {
-                    return redirect()->away($request->redirect_url);
-                }
-                
-                // default redirect
-                return redirect()->action(
-                    'PageController@signUpConfirmationThankyou',
-                    [
-                        'list_uid' => $list->uid,
-                        'uid' => $subscriber->uid,
-                        'code' => 'empty',
-                    ]
-                );
-            }
+        // custom redirect
+        if ($request->redirect_url) {
+            return redirect()->away($request->redirect_url);
+        } else if ($list->subscribe_confirmation && !$subscriber->isSubscribed()) {
+            // tell subscriber to check email for confirmation
+            return redirect()->action('PageController@signUpThankyouPage', ['list_uid' => $list->uid, 'subscriber_uid' => $subscriber->uid]);
+        } else {
+            // All done, confirmed
+            return redirect()->action(
+                'PageController@signUpConfirmationThankyou', [
+                    'list_uid' => $list->uid,
+                    'uid' => $subscriber->uid,
+                    'code' => 'empty',
+                ]
+            );
         }
     }
 

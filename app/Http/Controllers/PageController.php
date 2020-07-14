@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Acelle\Events\MailListSubscription;
 use Acelle\Model\Setting;
+use Acelle\Model\MailList;
 
 class PageController extends Controller
 {
@@ -141,68 +142,25 @@ class PageController extends Controller
 
         // Create subscriber
         if ($request->isMethod('post')) {
-            $subscriber = \Acelle\Model\Subscriber::where('email', '=', strtolower($request->EMAIL))
-                ->where('mail_list_id', '=', $list->id)->first();
-            if (!is_object($subscriber)) {
-                $subscriber = new \Acelle\Model\Subscriber($request->all());
-                $subscriber->mail_list_id = $list->id;
+            try {
+                list($validator, $subscriber) = $list->subscribe($request, MailList::SOURCE_WEB);
+            } catch (\Exception $ex) {
+                return view('somethingWentWrong', ['message' => $ex->getMessage()]);
             }
 
-            // Validation
-            $this->validate($request, $subscriber->getRules());
+            if ($validator->fails()) {
+                return back()->withErrors($validator)->withInput();
+            }
 
-            $subscriber->email = $request->EMAIL;
-            $subscriber->ip = $request->ip();
-            $subscriber->from = 'web';
-            if ($list->subscribe_confirmation) {
-                $subscriber->status = 'unconfirmed';
+            if ($request->redirect_url) {
+                return redirect()->away($request->redirect_url);
+            } else if ($list->subscribe_confirmation && !$subscriber->isSubscribed()) {
+                // tell subscriber to check email for confirmation
+                return redirect()->action('PageController@signUpThankyouPage', ['list_uid' => $list->uid, 'subscriber_uid' => $subscriber->uid]);
             } else {
-                $subscriber->status = 'subscribed';
-            }
-
-            $subscriber->save();
-            // Update field
-            $subscriber->updateFields($request->all());
-
-            Log::info("Subscriber {$subscriber->email} is added to list {$subscriber->mailList->name} via subscription form");
-
-            // trigger the event
-            if (Setting::isYes('send_notification_email_for_list_subscription')) {
-                Log::info("Sending notification email for subscriber {$subscriber->email}, list {$subscriber->mailList->name}");
-                event(new MailListSubscription($list->customer->user, $subscriber));
-            } else {
-                Log::info("No notification email for subscriber {$subscriber->email}, list {$subscriber->mailList->name}");
-            }
-
-            if ($list->subscribe_confirmation) {
-                // SEND subscription confirmation email
-                $list->sendSubscriptionConfirmationEmail($subscriber);
-
-                // find display thank you page
+                // All done, confirmed
                 return redirect()->action(
-                    'PageController@signUpThankyouPage',
-                    [
-                        'list_uid' => $list->uid,
-                        'subscriber_uid' => $subscriber->uid,
-                    ]
-                );
-            } else {
-                // change status to subscribed
-                $subscriber->updateStatus('subscribed');
-
-                // Send welcome email
-                if ($list->send_welcome_email) {
-                    // SEND subscription confirmation email
-                    try {
-                        $list->sendSubscriptionWelcomeEmail($subscriber);
-                    } catch (\Exception $ex) {
-                        return view('somethingWentWrong', ['message' => $ex->getMessage()]);
-                    }
-                }
-
-                return redirect()->action(
-                    'PageController@signUpConfirmationThankyou',
-                    [
+                    'PageController@signUpConfirmationThankyou', [
                         'list_uid' => $list->uid,
                         'uid' => $subscriber->uid,
                         'code' => 'empty',
