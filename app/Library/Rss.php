@@ -37,14 +37,14 @@ class Rss
 
             if (0 !== count($attributes)) {
                 foreach ($attributes as $attrName => $attrValue) {
-                    $collection['attributes'][$attrName] = strval($attrValue);
+                    $collection['attributes'][$attrName] = html_entity_decode(strval($attrValue));
                 }
             }
 
             if (0 === $nodes->count()) {
                 // $collection['value'] = strval($xml);
                 // return $collection;
-                return strval($xml);
+                return html_entity_decode(strval($xml));
             }
 
             foreach ($nodes as $nodeName => $nodeValue) {
