@@ -41,7 +41,7 @@
                 @endforeach
             </tbody>
         </table>
-        <p class="mt-10">Powered by SpamAssassin™</p>
+        <p class="mt-20">Powered by SpamAssassin™</p>
     </div>
 </div>
 @endsection

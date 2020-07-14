@@ -127,7 +127,7 @@ class Popup {
             type: 'GET',
             dataType: 'html',
             data: _this.data,
-        }).always(function(response) {
+        }).done(function(response) {
             _this.popup.html(response);
             
             if (typeof(_this.callback) !== 'undefined') {
@@ -139,6 +139,10 @@ class Popup {
 
             // // apply js
             // _this.applyJs();
+        }).fail(function(jqXHR, textStatus, errorThrown){
+            // for debugging
+            alert(errorThrown);
+            document.write(jqXHR.responseText);
         });
     }
     
