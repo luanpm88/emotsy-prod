@@ -111,6 +111,7 @@ function line_count($path)
  */
 function join_paths()
 {
+    // @IMPORTAN: only support http:// and https://, do not support other stuffs
     $paths = array();
     foreach (func_get_args() as $arg) {
         if ($arg !== '') {
@@ -118,7 +119,20 @@ function join_paths()
         }
     }
 
-    return preg_replace('#/+#', '/', implode('/', $paths));
+    $out = preg_replace('#/+#', '/', implode('/', $paths));
+    $fix = [
+        'http:/' => 'http://',
+        'https:/' => 'https://',
+    ];
+
+    foreach($fix as $key => $value) {
+        if (strpos($out, $key) !== false) {
+            $out = str_replace($key, $value, $out);
+            break;
+        }
+    }
+
+    return $out;
 }
 
 /**

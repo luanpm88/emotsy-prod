@@ -63,7 +63,7 @@ abstract class AbsCampaign extends Model
     protected $dates = ['created_at', 'updated_at', 'run_at'];
 
     // parse content
-    protected $rssContent = null;
+    protected $parsedContent = null;
 
     /**
      * Get campaign's default mail list.
@@ -511,53 +511,65 @@ abstract class AbsCampaign extends Model
         // * addTrackingURL
         // * appendOpenTrackingUrl
         // * tagMessage
-        $body = $this->html;
+        if (is_null($this->parsedContent)) {
+            // STEP 01. Get RAW content
+            $body = $this->html;
 
-        // Append footer
-        if ($this->footerEnabled()) {
-            $body = $this->appendFooter($body, $this->getHtmlFooter());
-        }
-
-        $body = $this->transformWithoutUpdate($body, true);
-
-        if (Setting::isYes('rss.enabled')) {
-            // Do not repeat this for every email sent
-            if (is_null($this->rssContent)) {
-                $this->rssContent = Rss::parse($body);
+            // STEP 02. Append footer
+            if ($this->footerEnabled()) {
+                $body = $this->appendFooter($body, $this->getHtmlFooter());
+            }
+            
+            // STEP 03. Parse RSS
+            if (Setting::isYes('rss.enabled')) {
+                $body = Rss::parse($body);
             }
 
-            $body = $this->rssContent;
+            // STEP 04. Replace Bare linefeed
+            // Replace bare line feed char which is not accepted by Outlook, Yahoo, AOL...
+            $body = StringHelper::replaceBareLineFeed($body);
+
+            // "Cache" it, do not repeat this task for every subscriber in the loop
+            $this->parsedContent = $body;
+        } else {
+            // Retrieve content from cache
+            $body = $this->parsedContent;
         }
+
+        // STEP 05. Transform URLs
+        $body = $this->transformWithoutUpdate($body, true);
 
         if (is_null($msgId)) {
             $msgId = 'SAMPLE'; // for preview mode
         }
 
+        // STEP 06. Add Click Tracking
+        //
         // @note: addTrackingUrl() must go before appendOpenTrackingUrl()
         // Enable click tracking
         if ($this->track_click) {
             $body = $this->addTrackingUrl($body, $msgId);
         }
 
-        // Enable open tracking
+        // STEP 07. Add Open Tracking
         if ($this->track_open) {
             $body = $this->appendOpenTrackingUrl($body, $msgId);
         }
 
+        // STEP 08. Transform Tags
         if (!is_null($subscriber)) {
             // Transform tags
             $body = $this->tagMessage($body, $subscriber, $msgId, $server);
         }
 
+        // STEP 09. Make CSS inline
+        //
         // Transform CSS/HTML content to inline CSS
         // Be carefule, it will make
         //       <a href="{BUNSUBSCRIBE_URL}" 
         // become
         //       <a href="%7BUNSUBSCRIBE_URL%7D" 
         $body = $this->inlineHtml($body);
-
-        // Replace bare line feed char which is not accepted by Outlook, Yahoo, AOL...
-        $body = StringHelper::replaceBareLineFeed($body);
 
         return $body;
     }
