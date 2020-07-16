@@ -518,11 +518,10 @@ abstract class AbsCampaign extends Model
             $body = $this->appendFooter($body, $this->getHtmlFooter());
         }
 
-        // this is required because the next function 'transform()' will use this->html value
-        $this->html = $body;
-        $body = $this->transform(true);
+        $body = $this->transformWithoutUpdate($body, true);
 
         if (Setting::isYes('rss.enabled')) {
+            // Do not repeat this for every email sent
             if (is_null($this->rssContent)) {
                 $this->rssContent = Rss::parse($body);
             }
@@ -2687,6 +2686,15 @@ abstract class AbsCampaign extends Model
      */
     public function transform($useTrackingHost = false)
     {
+        $this->html = $this->transformWithoutUpdate($this->html, $useTrackingHost);
+        return $this->html;
+    }
+
+    /**
+     * transform URL.
+     */
+    public function transformWithoutUpdate($html, $useTrackingHost = false)
+    {
         // IMPORTANT: since the untransform function presumes that the email is transform using the default hostname,
         //            using tracking host will make it failed to untransform
         //            this option is for campaign delivery and preview only
@@ -2696,12 +2704,11 @@ abstract class AbsCampaign extends Model
         } else {
             $path = route('campaign_assets', ['uid' => $this->uid, 'path' => '']);
         }
-        $this->html = \Acelle\Library\Tool::replaceTemplateUrl(
-            tinyDocTypeTransform($this->html),
+        
+        return \Acelle\Library\Tool::replaceTemplateUrl(
+            tinyDocTypeTransform($html),
             $path
         );
-
-        return $this->html;
     }
 
     /**

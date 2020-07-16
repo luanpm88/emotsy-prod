@@ -402,6 +402,15 @@ class Email extends Model
      */
     public function transform($useTrackingHost = false)
     {
+        $this->content = $this->transformWithoutUpdate($this->content, $useTrackingHost);
+        return $this->content;
+    }
+
+    /**
+     * transform URL.
+     */
+    public function transformWithoutUpdate($html, $useTrackingHost = false)
+    {
         // IMPORTANT: since the untransform function presumes that the email is transform using the default hostname,
         //            using tracking host will make it failed to untransform
         //            this option is for campaign delivery and preview only
@@ -413,12 +422,10 @@ class Email extends Model
         }
 
         // replace relative urls
-        $this->content = \Acelle\Library\Tool::replaceTemplateUrl(
-            tinyDocTypeTransform($this->content),
+        return \Acelle\Library\Tool::replaceTemplateUrl(
+            tinyDocTypeTransform($html),
             $path
         );
-
-        return $this->content;
     }
 
     /**
@@ -775,9 +782,7 @@ class Email extends Model
             $body = $this->appendFooter($body, $this->getHtmlFooter());
         }
 
-        // this is required because the next function 'transform()' will use this->html value
-        $this->content = $body;
-        $body = $this->transform();
+        $body = $this->transformWithoutUpdate($body, true);
 
         if (Setting::isYes('rss.enabled')) {
             if (is_null($this->rssContent)) {
