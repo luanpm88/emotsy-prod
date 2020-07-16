@@ -900,10 +900,8 @@ class Tool
      */
     public static function replaceTemplateUrl($content, $path)
     {
-        // find all link in html content
-        // DO NOT REPLACE <A HREF=#>
-        // preg_match_all('/(?<=src=|background=|href=|url\()(\'|")?(?<url>.*?)(?=\1|\))/i', $content, $matches);
-        preg_match_all('/(?<=src=|background=|url\()(\'|")?(?<url>.*?)(?=\1|\))/i', $content, $matches);
+        // find all asset links in html content
+        preg_match_all('/(?<=src=|background=|href=|url\()(\'|")?(?<url>.*?)(?=\1|\))/i', $content, $matches);
         $srcs = array_unique($matches['url']);
 
         foreach ($srcs as $src) {
