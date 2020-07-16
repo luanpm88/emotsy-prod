@@ -999,7 +999,8 @@ abstract class AbsCampaign extends Model
      */
     public function notDeliveredCount()
     {
-        return $this->subscribersCount() - $this->trackingLogs()->count();
+        $subscribersCountUniq = distinctCount($this->subscribers([], ['email_verifications']), 'subscribers.email');
+        return $subscribersCountUniq - $this->deliveredCount();
     }
 
     /**
