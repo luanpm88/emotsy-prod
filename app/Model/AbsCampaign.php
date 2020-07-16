@@ -1708,16 +1708,11 @@ abstract class AbsCampaign extends Model
 
     public function getTrackingHost()
     {
-        $root = config('app.url');
-
-        if (!$this->trackingDomain()->exists()) {
-            return $root;
+        if ($this->trackingDomain()->exists()) {
+            return $this->trackingDomain->getUrl();
+        } else {
+            return config('app.url');
         }
-
-        preg_match('/^(?<scheme>https{0,1}:\/\/)/', $root, $result);
-        $protocol = $result['scheme'];
-
-        return sprintf('%s%s', $protocol, $this->trackingDomain->name);
     }
 
     /**
@@ -2707,20 +2702,24 @@ abstract class AbsCampaign extends Model
      */
     public function transformWithoutUpdate($html, $useTrackingHost = false)
     {
-        // IMPORTANT: since the untransform function presumes that the email is transform using the default hostname,
-        //            using tracking host will make it failed to untransform
-        //            this option is for campaign delivery and preview only
-        // replace relative urls
-        if ($useTrackingHost) {
-            $path = join_paths($this->getTrackingHost(), route('campaign_assets', ['uid' => $this->uid, 'path' => ''], false));
-        } else {
-            $path = route('campaign_assets', ['uid' => $this->uid, 'path' => '']);
+        // Notice that there are 2 types of assets that need to untransform
+        // #1 Campaign relative URL
+        // #2 User assets (uploaded by file manager) absolute URL
+        // 
+
+        // Replace #2
+        if ($this->getTrackingHost() != config('app.url')) {
+            $html = str_replace(config('app.url'), $this->getTrackingHost(), $html);
         }
-        
-        return \Acelle\Library\Tool::replaceTemplateUrl(
-            tinyDocTypeTransform($html),
-            $path
-        );
+
+        // Replace #1
+        $path = join_url($this->getTrackingHost(), route('campaign_assets', ['uid' => $this->uid, 'path' => ''], false));
+        $html = \Acelle\Library\Tool::replaceTemplateUrl($html, $path);
+
+        // By the way, fix <html>
+        $html = tinyDocTypeTransform($html);
+
+        return $html;
     }
 
     /**
@@ -2728,7 +2727,13 @@ abstract class AbsCampaign extends Model
      */
     public function untransform()
     {
-        // replace absolute urls
+        // Notice that there are 2 types of assets that need to untransform
+        // #1 Campaign relative URL
+        // #2 User assets (uploaded by file manager) absolute URL
+        // 
+        // and only #1 will be untransformed while #2 is kept as is
+
+        // Replace relative URL with campaign URL
         $this->html = str_replace(
             route('campaign_assets', ['uid' => $this->uid, 'path' => '']).'/',
             '',
