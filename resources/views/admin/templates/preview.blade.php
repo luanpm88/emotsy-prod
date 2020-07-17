@@ -9,4 +9,4 @@
     width: 100%;
     background: rgba(0,0,0,0.7);">{{ trans('messages.saving_screenshot') }}</div>
 
-{!! $template->render() !!}
+{!! $template->getHtmlContent() !!}

@@ -352,23 +352,6 @@ class TemplateController extends Controller
             return $this->not_authorized();
         }
 
-        // Convert to inline css if template source is builder
-        if ($template->source == 'builder') {
-            $cssToInlineStyles = new CssToInlineStyles();
-            $html = $template->content;
-            $css = file_get_contents(public_path("css/res_email.css"));
-
-            // output
-            $template->content = $cssToInlineStyles->convert(
-                $html,
-                $css
-            );
-        }
-
-        if (Setting::isYes('rss.enabled')) {
-            $template->content = Rss::parse($template->content);
-        }
-
         return view('admin.templates.preview', [
             'template' => $template,
         ]);
@@ -548,10 +531,10 @@ class TemplateController extends Controller
             return $this->notAuthorized();
         }
         
-        $upload_path = $template->uploadAsset($request->file('file'));
+        $filename = $template->uploadAsset($request->file('file'));
 
         return response()->json([
-            'url' => route('template_assets', ['uid' => $template->uid, 'path' => $upload_path])
+            'url' => route('customer_files', ['uid' => $request->user()->uid, 'name' => $filename])
         ]);
     }
     

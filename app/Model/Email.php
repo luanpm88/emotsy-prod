@@ -479,11 +479,6 @@ class Email extends Model
     public function render()
     {
         $body = $this->transformWithoutUpdate($this->content, $useTrackingHost = false);
-
-        if (Setting::isYes('rss.enabled')) {
-            $body = Rss::parse($body);
-        }
-
         return $body;
     }
 
@@ -492,7 +487,7 @@ class Email extends Model
      */
     public function uploadAsset($file)
     {
-        return $this->automation->customer->uploadAsset($file);
+        return $this->automation->customer->user->uploadAsset($file);
     }
 
     /**
@@ -944,30 +939,15 @@ class Email extends Model
     }
 
     /**
-     * Check if template is layout.
-     *
-     * @return string.
-     */
-    public function isLayout($html = null)
-    {
-        if (!$html) {
-            $html = $this->render();
-        }
-
-        if (strpos($html, 'AcelleSystemLayouts') !== false) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
      * Convert html to inline.
      *
      * @todo not very OOP here, consider moving this to a Helper instead
      */
     public function inlineHtml($html)
     {
+        return $html;
+
+        // TODO: review this stuff!
         if ($this->isLayout($html)) {
             // Convert to inline css if template source is builder
             $cssToInlineStyles = new CssToInlineStyles();

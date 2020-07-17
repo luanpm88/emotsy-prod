@@ -1814,6 +1814,9 @@ abstract class AbsCampaign extends Model
      */
     public function isLayout($html = null)
     {
+        return $html;
+
+        // TODO: review the stuffs below
         if (!$html) {
             $html = $this->render();
         }
@@ -2755,11 +2758,6 @@ abstract class AbsCampaign extends Model
     public function render()
     {
         $body = $this->transformWithoutUpdate($this->html, $useTrackingHost = false);
-
-        if (Setting::isYes('rss.enabled')) {
-            $body = Rss::parse($body);
-        }
-
         return $body;
     }
 
@@ -2768,7 +2766,7 @@ abstract class AbsCampaign extends Model
      */
     public function uploadAsset($file)
     {
-        return $this->customer->uploadAsset($file);
+        return $this->customer->user->uploadAsset($file);
     }
 
     /**
