@@ -1705,9 +1705,7 @@ abstract class AbsCampaign extends Model
 
     public function buildPublicUrl($path)
     {
-        $host = config('app.url');
-
-        return join_url($host, $path);
+        return join_url($this->getTrackingHost(), $path);
     }
 
     public function getTrackingHost()
