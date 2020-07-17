@@ -2075,6 +2075,29 @@ class Customer extends Model implements BillableUserInterface
         return $this->trackingDomains()->verified()->get()->map(function ($domain) {
             return ['value' => $domain->uid, 'text' => $domain->name];
         });
-        
+    }
+
+    public function uploadAsset($file)
+    {
+        // store to storage/app/users/{uid}/home/files/
+        $assetdir = $this->getHomePath('files');
+        $newname = $file->getClientOriginalName();
+        $newpath = join_paths($assetdir, $newname);
+
+        // In case file name conflicts
+        $i = 1;
+        while (file_exists($newpath)) {
+            $newname = $file->getClientOriginalName()."_".$i;
+            $newpath = join_paths($assetdir, $newname);
+            ++$i;
+        }
+
+        // Move uploaded file
+        $file->move(
+            $assetdir,
+            $newname
+        );
+
+        return $newname;
     }
 }

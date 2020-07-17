@@ -908,10 +908,10 @@ class Automation2Controller extends Controller
             return $this->notAuthorized();
         }
         
-        $upload_path = $email->uploadAsset($request->file('file'));
+        $filename = $email->uploadAsset($request->file('file'));
 
         return response()->json([
-            'url' => route('email_assets', ['uid' => $email->uid, 'path' => $upload_path])
+            'url' => route('customer_files', ['uid' => $request->user()->uid, 'name' => $filename])
         ]);
     }
 

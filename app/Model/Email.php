@@ -436,15 +436,17 @@ class Email extends Model
         // #1 Campaign relative URL
         // #2 User assets (uploaded by file manager) absolute URL
         // 
-
-        // Replace #2
-        if ($this->getTrackingHost() != config('app.url')) {
-            $html = str_replace(config('app.url'), $this->getTrackingHost(), $html);
+        $host = config('app.url'); // Default host
+        
+        if ($useTrackingHost) {
+            // Replace #2
+            $html = str_replace($host, $this->getTrackingHost(), $html);
+            $host = $this->getTrackingHost();
         }
 
         // Replace #1
-        $path = join_url($this->getTrackingHost(), route('email_assets', ['uid' => $this->uid, 'path' => ''], false));
-        $html = \Acelle\Library\Tool::replaceTemplateUrl($html, $path);
+        $path = join_url($host, route('email_assets', ['uid' => $this->uid, 'path' => ''], false));
+        $html = \Acelle\Library\Tool::replaceTemplateUrl($html, $path);    
 
         // By the way, fix <html>
         $html = tinyDocTypeTransform($html);
@@ -472,17 +474,17 @@ class Email extends Model
     }
 
     /**
-     * transform URL.
+     * Render email content for BUILDER EDIT
      */
     public function render()
     {
-        $this->transform();
+        $body = $this->transformWithoutUpdate($this->content, $useTrackingHost = false);
 
         if (Setting::isYes('rss.enabled')) {
-            $this->content = Rss::parse($this->content);
+            $body = Rss::parse($body);
         }
-        
-        return $this->content;
+
+        return $body;
     }
 
     /**
@@ -490,22 +492,7 @@ class Email extends Model
      */
     public function uploadAsset($file)
     {
-        $file_name = $file->getClientOriginalName();
-        $upload_dir = 'upload/';
-
-        $new_name = $file_name;
-        $i = 1;
-        while (file_exists($this->getStoragePath($upload_dir).$new_name)) {
-            $new_name = $i.'_'.$file_name;
-            ++$i;
-        }
-
-        $path = $file->move(
-            $this->getStoragePath($upload_dir),
-            $new_name
-        );
-
-        return $upload_dir.$new_name;
+        return $this->automation->customer->uploadAsset($file);
     }
 
     /**
