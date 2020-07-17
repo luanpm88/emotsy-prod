@@ -1130,7 +1130,6 @@ class Automation2Controller extends Controller
     public function emailAttachmentRemove(Request $request, $uid, $email_uid, $attachment_uid)
     {
         $automation = Automation2::findByUid($uid);
-        $email = Email::findByUid($request->email_uid);
         $attachment = Attachment::findByUid($request->attachment_uid);
         
         // authorize

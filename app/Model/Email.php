@@ -7,6 +7,7 @@ use File;
 use Validator;
 use ZipArchive;
 use KubAT\PhpSimple\HtmlDomParser;
+use Acelle\Library\ExtendedSwiftMessage;
 use Acelle\Library\Tool;
 use Acelle\Library\Rss;
 use Acelle\Library\StringHelper;
@@ -87,15 +88,13 @@ class Email extends Model
         static::creating(function ($item) {
             // Create new uid
             $uid = uniqid();
-            while (self::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
             $item->uid = $uid;
         });
 
         static::deleted(function ($item) {
-            $uploaded_dir = $item->getEmailStoragePath();
-            \Acelle\Library\Tool::xdelete($uploaded_dir);
+            if (is_dir($item->getEmailStoragePath())) {
+                File::deleteDirectory($item->getEmailStoragePath());
+            }
         });
     }
 
@@ -184,18 +183,31 @@ class Email extends Model
 
     /**
      * Upload attachment.
-     *
-     * @return mixed
      */
     public function uploadAttachment($file)
     {
-        $att = new Attachment();
-        $att->email_id = $this->id;
+        $file_name = $file->getClientOriginalName();
+        $att = $this->attachments()->make();
         $att->size = $file->getSize();
         $att->name = $file->getClientOriginalName();
-        $att->file = Storage::disk('local')->put('attachments/'.$this->uid, $file);
 
+        $path = $file->move(
+            $this->getAttachmentPath(),
+            $att->name
+        );
+        
+        $att->file = $this->getAttachmentPath($att->name);
         $att->save();
+
+        return $att;
+    }
+
+    /**
+     * Get attachment path.
+     */
+    public function getAttachmentPath($sub = '')
+    {
+        return $this->getEmailStoragePath(join_paths('attachment', $sub));
     }
 
     /**
@@ -220,7 +232,7 @@ class Email extends Model
         // find index
         $names = array('thumbnail.png', 'thumbnail.jpg', 'thumbnail.png', 'thumb.jpg', 'thumb.png');
         foreach ($names as $name) {
-            if (is_file($file = $this->getStoragePath().$name)) {
+            if (is_file($file = $this->getStoragePath($name))) {
                 return $name;
             }
         }
@@ -235,7 +247,7 @@ class Email extends Model
     {
         // find index
         if ($this->getThumbName()) {
-            return $this->getStoragePath().$this->getThumbName();
+            return $this->getStoragePath($this->getThumbName());
         }
 
         return;
@@ -338,17 +350,25 @@ class Email extends Model
     /**
      * Get public campaign upload dir.
      */
-    public function getEmailStoragePath()
+    public function getEmailStoragePath($sub = '')
     {
-        return storage_path('app/users/'.$this->automation->customer->uid.'/emails/'.$this->uid.'/');
+        $base = storage_path(join_paths('app/users/', $this->automation->customer->uid, '/emails/', $this->uid));
+        if (!\File::exists($base)) {
+            \File::makeDirectory($base, 0777, true, true);
+        }
+        return join_paths($base, $sub);
     }
 
     /**
      * Get public campaign upload dir.
      */
-    public function getStoragePath($path = '')
+    public function getStoragePath($sub = '')
     {
-        return $this->getEmailStoragePath().'content/'.$path;
+        $base = $this->getEmailStoragePath('content');
+        if (!\File::exists($base)) {
+            \File::makeDirectory($base, 0777, true, true);
+        }
+        return join_paths($base, $sub);
     }
 
     /**
@@ -578,7 +598,7 @@ class Email extends Model
         $customHeaders = $this->getCustomHeaders($subscriber, $this);
         $msgId = $customHeaders['X-Acelle-Message-Id'];
 
-        $message = new \Swift_Message();
+        $message = new ExtendedSwiftMessage();
         $message->setId($msgId);
 
         // fixed: HTML type only
@@ -607,13 +627,11 @@ class Email extends Model
             $message = $this->sign($message);
         }
 
-        //@todo attach function used for any attachment of Campaign
-        $path_campaign = public_path().'/campaign_attachment'.'/'.$this->uid;
-        if (is_dir($path_campaign)) {
-            $files = File::allFiles($path_campaign);
-            foreach ($files as $file) {
-                $message->attach(\Swift_Attachment::fromPath((string) $file));
-            }
+        foreach ($this->attachments as $file) {
+            $attachment = \Swift_Attachment::fromPath($file->file);
+            $message->attach($attachment);
+            // This is used by certain delivery services like ElasticEmail
+            $message->extAttachments[] = [ 'path' => $file->file, 'type' => $attachment->getContentType()];
         }
 
         return array($message, $msgId);
