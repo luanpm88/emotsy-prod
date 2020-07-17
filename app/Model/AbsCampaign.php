@@ -28,6 +28,7 @@ use Illuminate\Validation\ValidationException;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use Carbon\Carbon;
 use League\Csv\Writer;
+use Acelle\Library\ExtendedSwiftMessage;
 use Acelle\Library\Log as MailLog;
 use Acelle\Library\StringHelper;
 use Acelle\Library\Tool;
@@ -270,7 +271,7 @@ abstract class AbsCampaign extends Model
         $customHeaders = $this->getCustomHeaders($subscriber, $this);
         $msgId = $customHeaders['X-Acelle-Message-Id'];
 
-        $message = new \Swift_Message();
+        $message = new ExtendedSwiftMessage();
         $message->setId($msgId);
 
         if ($this->type == self::TYPE_REGULAR) {
@@ -315,7 +316,10 @@ abstract class AbsCampaign extends Model
         if (is_dir($path_campaign)) {
             $files = File::allFiles($path_campaign);
             foreach ($files as $file) {
-                $message->attach(\Swift_Attachment::fromPath((string) $file));
+                $attachment = \Swift_Attachment::fromPath((string) $file);
+                $message->attach($attachment);
+                // This is used by certain delivery services like ElasticEmail
+                $message->extAttachments[] = [ 'path' => (string) $file, 'type' => $attachment->getContentType()];
             }
         }
 
@@ -3100,11 +3104,6 @@ abstract class AbsCampaign extends Model
         $file_name = $file->getClientOriginalName();
 
         $new_name = $file_name;
-        $i = 1;
-        while (file_exists($this->getAttachmentPath().$new_name)) {
-            $new_name = $i.'_'.$file_name;
-            ++$i;
-        }
 
         $path = $file->move(
             $this->getAttachmentPath(),
