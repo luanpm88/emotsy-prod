@@ -24,7 +24,7 @@ class FileController extends Controller
         $user = \Auth::guard('api')->user();
 
         // Get path
-        $path = $user->storagePath();
+        $path = $user->getStoragePath();
 
         $files = json_decode($request->all()["files"]);
 
@@ -33,7 +33,7 @@ class FileController extends Controller
             $fileUrl = $file->url;
 
             // Check and merge custom path
-            $path = $user->storagePath();
+            $path = $user->getStoragePath();
             if ($file->subdirectory) {
                 $parts = explode('/', $file->subdirectory);
                 $validParts = [];
