@@ -556,11 +556,10 @@ class CampaignController extends Controller
     public function templateAsset(Request $request, $uid)
     {
         $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
-
-        $upload_path = $campaign->uploadAsset($request->file('file'));
+        $filename = $campaign->uploadAsset($request->file('file'));
 
         return response()->json([
-            'url' => route('campaign_assets', ['uid' => $campaign->uid, 'path' => $upload_path])
+            'url' => route('customer_files', ['uid' => $request->user()->uid, 'name' => $filename])
         ]);
     }
 

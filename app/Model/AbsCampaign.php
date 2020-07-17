@@ -2712,13 +2712,17 @@ abstract class AbsCampaign extends Model
         // 
 
         // Replace #2
-        if ($this->getTrackingHost() != config('app.url')) {
-            $html = str_replace(config('app.url'), $this->getTrackingHost(), $html);
+        $host = config('app.url'); // Default host
+        
+        if ($useTrackingHost) {
+            // Replace #2
+            $html = str_replace($host, $this->getTrackingHost(), $html);
+            $host = $this->getTrackingHost();
         }
 
         // Replace #1
-        $path = join_url($this->getTrackingHost(), route('campaign_assets', ['uid' => $this->uid, 'path' => ''], false));
-        $html = \Acelle\Library\Tool::replaceTemplateUrl($html, $path);
+        $path = join_url($host, route('campaign_assets', ['uid' => $this->uid, 'path' => ''], false));
+        $html = \Acelle\Library\Tool::replaceTemplateUrl($html, $path);    
 
         // By the way, fix <html>
         $html = tinyDocTypeTransform($html);
@@ -2750,9 +2754,13 @@ abstract class AbsCampaign extends Model
      */
     public function render()
     {
-        $this->transform();
+        $body = $this->transformWithoutUpdate($this->html, $useTrackingHost = false);
 
-        return $this->html;
+        if (Setting::isYes('rss.enabled')) {
+            $body = Rss::parse($body);
+        }
+
+        return $body;
     }
 
     /**
@@ -2760,22 +2768,7 @@ abstract class AbsCampaign extends Model
      */
     public function uploadAsset($file)
     {
-        $file_name = $file->getClientOriginalName();
-        $upload_dir = 'upload/';
-
-        $new_name = $file_name;
-        $i = 1;
-        while (file_exists($this->getStoragePath($upload_dir).$new_name)) {
-            $new_name = $i.'_'.$file_name;
-            ++$i;
-        }
-
-        $path = $file->move(
-            $this->getStoragePath($upload_dir),
-            $new_name
-        );
-
-        return $upload_dir.$new_name;
+        return $this->customer->uploadAsset($file);
     }
 
     /**
