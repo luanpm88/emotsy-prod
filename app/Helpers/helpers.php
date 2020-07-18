@@ -744,27 +744,6 @@ function checkEmail($email) {
     return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
 }
 
-function create_basedir($path, $createBasename = true)
-{
-    $dirname = pathinfo($path)['dirname'];
-
-    $a = explode(DIRECTORY_SEPARATOR, $dirname);
-    for ($i = 0; $i <= sizeof($a); $i += 1) { // @important: use <= here
-        $tmppath = implode(DIRECTORY_SEPARATOR, array_slice($a, 0, $i));
-        if (empty($tmppath)) {
-            continue;
-        }
-
-        if (!file_exists($tmppath)) {
-            mkdir($tmppath);
-        }
-    }
-
-    if ($createBasename) {
-        mkdir($path); // create the last file name
-    }
-}
-
 function tinyDocTypeTransform($content)
 {
     if(stripos(strtolower($content), '<!doctype') === false) { 
