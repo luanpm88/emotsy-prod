@@ -1202,6 +1202,7 @@ class MailList extends Model
     {
         try {
             $processed_count = 0;
+            $overQuotaAttempt = false;
             $logger = $system_job->getLogger();
             $logger->info(trans('messages.Start_importing_for_list_uid', ['uid' => $this->uid]));
 
@@ -1221,23 +1222,18 @@ class MailList extends Model
             $system_job->updateStatus(['total' => $lineCount]);
 
             // process by batches
-            each_batch($results, config('app.import_batch_size'), true, function ($batch) use ($logger, $availableFields, &$customer, &$processed_count, &$system_job) {
-                // increment count
-
-                $processed_count += sizeof($batch);
+            each_batch($results, config('app.import_batch_size'), true, function ($batch) use ($logger, $availableFields, &$customer, &$processed_count, &$system_job, &$overQuotaAttempt) {
 
                 // authorization
-                if (!$customer->user->can('addMoreSubscribers', [$this, config('app.import_batch_size')])) {
-                    // If use cannot create ANY other subscribers
-                    if (!$customer->user->can('addMoreSubscribers', [$this, 1])) {
-                        throw new \Exception(trans('messages.error_add_max_quota'));
-                    } else {
-                        $remaining = $this->getRemainingAddSubscribersQuota();
-                        if ($remaining != -1) {
-                            $batch = array_slice($batch, 0, $remaining);
-                        }
-                    }
+                if ($customer->user->can('addMoreSubscribers', [$this, sizeof($batch)])) {
+                    $insertLimit = sizeof($batch);
+                } else {
+                    $insertLimit = $this->getRemainingAddSubscribersQuota();
                 }
+
+                // if ($insertLimit == 0) { // only == 0 is enough
+                //     throw new \Exception(trans('messages.import.notice.over_quota'));
+                // }
 
                 // processing for every batch,
                 // using transaction to only commit at the end of the batch execution
@@ -1282,11 +1278,21 @@ class MailList extends Model
 
                 DB::table('__tmp_subscribers')->insert($data);
 
+                $newRecordCount = DB::select("SELECT COUNT(*) AS count FROM {$tmpTable} tmp LEFT JOIN ".table('subscribers')." main ON (tmp.email = main.email AND main.mail_list_id = {$this->id}) WHERE main.email IS NULL")[0]->count;
+
+                if ($newRecordCount > 0 && $insertLimit == 0) {
+                    // Only warning at this time 
+                    // when there is new records to INSERT but there is no more insert credit
+                    // It is just fine if $newRecordCount == 0, then only update existing subscribers
+                    // Just let it proceed until finishing
+                    $overQuotaAttempt = true;
+                }
+
                 // Insert new subscribers from temp table to the main table
                 // Use SUBSTRING(MD5(UUID()), 1, 13) to produce a UNIQUE ID which is similar to the output of PHP uniqid()
                 DB::statement('INSERT INTO '.table('subscribers').'(uid, mail_list_id, email, status, subscription_type, created_at, updated_at)
                                SELECT SUBSTRING(MD5(UUID()), 1, 13), ' .$this->id.', uniq.email, '.db_quote(Subscriber::STATUS_SUBSCRIBED).', '.db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED).", NOW(), NOW()
-                               FROM (SELECT tmp.email FROM {$tmpTable} tmp LEFT JOIN ".table('subscribers')." main ON (tmp.email = main.email AND main.mail_list_id = {$this->id}) WHERE main.email IS NULL) uniq");
+                               FROM (SELECT tmp.email FROM {$tmpTable} tmp LEFT JOIN ".table('subscribers')." main ON (tmp.email = main.email AND main.mail_list_id = {$this->id}) WHERE main.email IS NULL LIMIT {$insertLimit}) uniq");
 
                 // Insert subscribers' custom fields to the fields table
                 // OPTION 1: DELETE WHERE IN
@@ -1315,44 +1321,46 @@ class MailList extends Model
                 }
 
                 // update status, finish one batch
+                $processed_count += sizeof($batch);
                 $system_job->updateStatus(['processed' => $processed_count]);
 
                 // Cleanup
                 DB::statement("DROP TABLE IF EXISTS {$tmpTable};");
 
+                // Trigger updating related campaigns cache
+                $this->updateCachedInfo();
+
+                // blacklist new emails (if any)
+                Blacklist::doBlacklist($customer);
+
                 // Actually write to the database
                 DB::commit();
             });
-
-            // Update status, finish all batches
-            $system_job->updateStatus(['status' => self::IMPORT_STATUS_DONE, 'total' => $processed_count]);
-
-            // Trigger updating related campaigns cache
-            $this->updateCachedInfo();
-
-            // blacklist new emails (if any)
-            Blacklist::doBlacklist($customer);
-
-            // Action Log
-            $this->log('import_success', $customer, ['count' => $processed_count, 'error' => '']);
-            $logger->info(trans('messages.Finish_importing_for_list_uid', ['uid' => $this->uid]));
         } catch (\Exception $e) {
             // finish the transaction
             DB::rollBack();
 
-            $this->updateCachedInfo();
-
-            // update job status
+            // LOG ERROR MESSAGE
             $system_job->updateStatus([
-                'status' => self::IMPORT_STATUS_FAILED,
                 'error_message' => $e->getMessage(),
             ]);
 
-            // Action Log
-            $this->log('import_max_error', $customer, ['count' => $processed_count]);
-
-            // write to job's logger
+            // WRITE to job's logger
             $logger->error($e->getMessage());
+        } finally {
+            // UPDATE JOB STATUS "DONE" (so job is always DONE, with or without error_message)
+            // Hack, in case processed_count is not equal to total
+            $system_job->updateStatus(['status' => self::IMPORT_STATUS_DONE, 'total' => $processed_count]);
+            
+            if ($overQuotaAttempt) {
+                $system_job->updateStatus(['error_message' => trans('messages.import.notice.over_quota')]);    
+            }
+
+            $logger->info(trans('messages.Finish_importing_for_list_uid', ['uid' => $this->uid]));
+            
+            $this->log('import_success', $customer, ['count' => $processed_count,'error' => '']);
+            
+            $this->updateCachedInfo();
         }
     }
 

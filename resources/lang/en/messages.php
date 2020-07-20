@@ -289,6 +289,7 @@
   'complete' => 'Complete',
   'error_add_max_quota' => 'Error! Exceeding quota!',
   'import_export_statistics_line' => 'Processed: <span class="processed">:processed</span> / <span class="total">:total</span> subscribers<br />Success: <span class="success">:success</span><br /> Error: <span class="error">:error</span>',
+  'import.notice.over_quota' => 'Notice: list quota exceeded, certain records were skipped',
   'export_segments_statistics_line' => 'Processed: <span class="processed">:processed</span> / <span class="total">:total</span> subscribers<br />Success: <span class="success">:success</span><br /> Error: <span class="error">:error</span>',
   'invalid_csv_file' => 'Error! Invalid csv file. Please check the import file again',
   'import_another' => 'Import another',

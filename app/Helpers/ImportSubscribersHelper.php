@@ -26,6 +26,10 @@ class ImportSubscribersHelper
                 'success' => $data->processed,
                 'error' => 0,
             ]);
+
+            if (property_exists($data, "error_message")) {
+                $message .= '<br/><span style="color:red">'.$data->error_message.'</span>';
+            }
         }
 
         return $message;
