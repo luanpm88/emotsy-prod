@@ -482,6 +482,12 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
+            'spamassassin.enabled' => [
+                'cat' => 'others',
+                'value' => 'no',
+                'type' => 'text',
+                'not_required' => true,
+            ],
             'mta.api_endpoint' => [
                 'cat' => 'others',
                 'value' => null,

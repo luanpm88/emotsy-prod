@@ -338,6 +338,7 @@ class CampaignController extends Controller
 
         return view('campaigns.template.index', [
             'campaign' => $campaign,
+            'spamscore' => Setting::isYes('spamassassin.enabled'),
         ]);
 
         //// Required tags
@@ -555,11 +556,10 @@ class CampaignController extends Controller
     public function templateAsset(Request $request, $uid)
     {
         $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
-
-        $upload_path = $campaign->uploadAsset($request->file('file'));
+        $filename = $campaign->uploadAsset($request->file('file'));
 
         return response()->json([
-            'url' => route('campaign_assets', ['uid' => $campaign->uid, 'path' => $upload_path])
+            'url' => route('customer_files', ['uid' => $request->user()->uid, 'name' => $filename])
         ]);
     }
 
@@ -2249,7 +2249,7 @@ class CampaignController extends Controller
         try {
             $score = $campaign->score();
         } catch (\Exception $e) {
-            return response()->json('Cannot get score. Make sure you setup for SpamAssassin correctly', 500); // Status code here
+            return response()->json("Cannot get score. Make sure you setup for SpamAssassin correctly.\r\n".$e->getMessage(), 500); // Status code here
         }
 
         return view('campaigns.spam_score', [

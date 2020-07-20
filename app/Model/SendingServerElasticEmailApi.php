@@ -47,7 +47,7 @@ class SendingServerElasticEmailApi extends SendingServerElasticEmail
 
             $this->enableCustomHeaders();
 
-            $result = $this->sendElasticEmailV2($message);
+            $result = $this->sendElasticEmailV2Fixed($message);
 
             MailLog::info('Sent!');
 

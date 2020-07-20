@@ -28,11 +28,13 @@ use ZipArchive;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 use Acelle\Library\Tool;
+use Acelle\Library\Rss;
 use Acelle\Library\Storage\Contracts\Storable;
 use Illuminate\Validation\ValidationException;
 
 class Template extends Model implements Storable
 {
+    const STORAGE_DIR = 'templates';
     /**
      * The attributes that are mass assignable.
      *
@@ -458,12 +460,6 @@ class Template extends Model implements Storable
             }
         }
 
-        // // main file not found
-        // if ($main_file === null) {
-        //     $validator->errors()->add('file', 'Cannot find index file (index.html) in the template folder');
-        //     throw new ValidationException($validator);
-        // }
-
         // read main file content
         $html_content = trim(file_get_contents($main_file));
         $this->content = $html_content;
@@ -586,12 +582,12 @@ class Template extends Model implements Storable
     public function getPath()
     {
         if ($this->customer) {
-            $dir_id = $this->customer->uid;
+            $dir_id = $this->customer->user->uid;
         } else {
             $dir_id = 'admin';
         }
 
-        return join_paths($dir_id, 'templates', $this->uid);
+        return join_paths($dir_id, self::STORAGE_DIR, $this->uid);
     }
 
     /**
@@ -599,7 +595,21 @@ class Template extends Model implements Storable
      */
     public function getStoragePath($path = '/')
     {
-        return storage_path(join_paths('app/users/', $this->getPath(), $path));
+        if ($this->customer) {
+            // storage/app/users/{uid}/templates
+            $base = $this->customer->user->getStoragePath(self::STORAGE_DIR);
+        } else {
+            // storage/app/users/admin/templates
+            $base = $this->admin->user->getAdminStoragePath(self::STORAGE_DIR);
+        }
+
+        $base = join_paths($base, $this->uid);
+
+        if (!\File::exists($base)) {
+            \File::makeDirectory($base, 0777, true, true);
+        }
+
+        return join_paths($base, $path);
     }
 
     /**
@@ -646,18 +656,6 @@ class Template extends Model implements Storable
     /**
      * transform URL.
      */
-    public function transform()
-    {
-        // replace relative urls
-        $this->content = \Acelle\Library\Tool::replaceTemplateUrl(
-            tinyDocTypeTransform($this->content),
-            route('template_assets', ['uid' => $this->uid, 'path' => ''])
-        );
-    }
-
-    /**
-     * transform URL.
-     */
     public function untransform()
     {
         // replace absolute urls
@@ -671,11 +669,98 @@ class Template extends Model implements Storable
     /**
      * transform URL.
      */
+    public function transform($useTrackingHost = false)
+    {
+        $this->content = $this->transformWithoutUpdate($this->content, $useTrackingHost);
+        return $this->content;
+    }
+
+    /**
+     * transform URL.
+     */
+    public function transformWithoutUpdate($html, $useTrackingHost = false)
+    {
+        // Notice that there are 2 types of assets that need to untransform
+        // #1 Campaign relative URL
+        // #2 User assets (uploaded by file manager) absolute URL
+        // 
+        $host = config('app.url'); // Default host
+        
+        if ($useTrackingHost) {
+            // Replace #2
+            $html = str_replace($host, $this->getTrackingHost(), $html);
+            $host = $this->getTrackingHost();
+        }
+
+        // Replace #1
+        $path = join_url($host, route('template_assets', ['uid' => $this->uid, 'path' => ''], false));
+        $html = \Acelle\Library\Tool::replaceTemplateUrl($html, $path);    
+
+        // By the way, fix <html>
+        $html = tinyDocTypeTransform($html);
+
+        return $html;
+    }
+
+    /**
+     * transform URL.
+     */
     public function render()
     {
-        $this->transform();
+        $body = $this->transformWithoutUpdate($this->content, $useTrackingHost = false);
+        return $body;
+    }
 
-        return $this->content;
+    /**
+     * Build Email HTML content.
+     *
+     * @return string
+     */
+    public function getHtmlContent($subscriber = null, $msgId = null, $server = null)
+    {
+        // @note: IMPORTANT: the order must be as follows
+        // * addTrackingURL
+        // * appendOpenTrackingUrl
+        // * tagMessage
+         // STEP 01. Get RAW content
+        $body = $this->content;
+
+        // STEP 02. Append footer
+        // Not applied
+        
+        // STEP 03. Parse RSS
+        if (Setting::isYes('rss.enabled')) {
+            $body = Rss::parse($body);
+        }
+
+        // STEP 04. Replace Bare linefeed
+        // Replace bare line feed char which is not accepted by Outlook, Yahoo, AOL...
+        // Not applied
+
+        // STEP 05. Transform URLs
+        // Note that $useTrackingHost is not needed
+        $body = $this->transformWithoutUpdate($body, $useTrackingHost = false);
+
+        if (is_null($msgId)) {
+            $msgId = 'SAMPLE'; // for preview mode
+        }
+
+        // STEP 08. Transform Tags
+        if (!is_null($subscriber)) {
+            // Transform tags
+            $body = $this->tagMessage($body, $subscriber, $msgId, $server);
+        }
+
+        // STEP 09. Make CSS inline
+        //
+        // Transform CSS/HTML content to inline CSS
+        // Be carefule, it will make
+        //       <a href="{BUNSUBSCRIBE_URL}" 
+        // become
+        //       <a href="%7BUNSUBSCRIBE_URL%7D" 
+        $body = $this->inlineHtml($body);
+
+        return $body;
     }
 
     /**
@@ -683,22 +768,13 @@ class Template extends Model implements Storable
      */
     public function uploadAsset($file)
     {
-        $file_name = $file->getClientOriginalName();
-        $upload_dir = 'upload/';
-
-        $new_name = $file_name;
-        $i = 1;
-        while (file_exists($this->getStoragePath($upload_dir).$new_name)) {
-            $new_name = $i.'_'.$file_name;
-            ++$i;
+        if ($this->customer) {
+            // upload to user home/files/ folder
+            return $this->customer->user->uploadAsset($file);
+        } else {
+            // upload to template
+            return $this->admin->user->uploadAsset($file);
         }
-
-        $path = $file->move(
-            $this->getStoragePath($upload_dir),
-            $new_name
-        );
-
-        return $upload_dir.$new_name;
     }
 
     /**
@@ -878,5 +954,10 @@ class Template extends Model implements Storable
     {
         $contents = file_get_contents($url);
         file_put_contents($this->getStoragePath().'thumbnail.png', $contents);
+    }
+
+    public function inlineHtml($html)
+    {
+        return $html;
     }
 }

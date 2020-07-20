@@ -2029,12 +2029,9 @@ class Customer extends Model implements BillableUserInterface
         return $subscription->isActive();
     }
 
-    public function getHomePath($path = null)
+    public function getHomePath($path = '')
     {
-        $full = storage_path(join_paths("app/users/{$this->user->uid}/home", $path));
-        // false means => do not create the last element of path, which is normally a file
-        create_basedir($full, false);
-        return $full;
+        return $this->user->getHomePath($path);
     }
 
     public function allowUnverifiedFromEmailAddress()
@@ -2075,6 +2072,5 @@ class Customer extends Model implements BillableUserInterface
         return $this->trackingDomains()->verified()->get()->map(function ($domain) {
             return ['value' => $domain->uid, 'text' => $domain->name];
         });
-        
     }
 }

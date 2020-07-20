@@ -1,3 +1,6 @@
+@extends('layouts.popup.medium')
+
+@section('content')
 <div class="modal-header">    
     <h5 class="modal-title"><strong>{{ trans('messages.campaign.spam_score') }}</strong>
     
@@ -38,8 +41,7 @@
                 @endforeach
             </tbody>
         </table>
+        <p class="mt-20">Powered by SpamAssassin™</p>
     </div>
 </div>
-<div class="modal-footer text-left">
-    <a href="javascript:;" class="btn btn-primary bg-grey mr-10" data-dismiss="modal">{{ trans('messages.close') }}</a>
-</div>
+@endsection

@@ -28,6 +28,7 @@ use Illuminate\Validation\ValidationException;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use Carbon\Carbon;
 use League\Csv\Writer;
+use Acelle\Library\ExtendedSwiftMessage;
 use Acelle\Library\Log as MailLog;
 use Acelle\Library\StringHelper;
 use Acelle\Library\Tool;
@@ -63,7 +64,7 @@ abstract class AbsCampaign extends Model
     protected $dates = ['created_at', 'updated_at', 'run_at'];
 
     // parse content
-    protected $rssContent = null;
+    protected $parsedContent = null;
 
     /**
      * Get campaign's default mail list.
@@ -264,13 +265,13 @@ abstract class AbsCampaign extends Model
      *
      * @return MIME text message
      */
-    public function prepareEmail($subscriber, $server)
+    public function prepareEmail($subscriber, $server = null)
     {
         // build the message
         $customHeaders = $this->getCustomHeaders($subscriber, $this);
         $msgId = $customHeaders['X-Acelle-Message-Id'];
 
-        $message = new \Swift_Message();
+        $message = new ExtendedSwiftMessage();
         $message->setId($msgId);
 
         if ($this->type == self::TYPE_REGULAR) {
@@ -284,7 +285,7 @@ abstract class AbsCampaign extends Model
         }
 
         // @TODO for AWS, setting returnPath requires verified domain or email address
-        if ($server->allowCustomReturnPath()) {
+        if (!is_null($server) && $server->allowCustomReturnPath()) {
             $returnPath = $server->getVerp($subscriber->email);
             if ($returnPath) {
                 $message->setReturnPath($returnPath);
@@ -315,7 +316,10 @@ abstract class AbsCampaign extends Model
         if (is_dir($path_campaign)) {
             $files = File::allFiles($path_campaign);
             foreach ($files as $file) {
-                $message->attach(\Swift_Attachment::fromPath((string) $file));
+                $attachment = \Swift_Attachment::fromPath((string) $file);
+                $message->attach($attachment);
+                // This is used by certain delivery services like ElasticEmail
+                $message->extAttachments[] = [ 'path' => (string) $file, 'type' => $attachment->getContentType()];
             }
         }
 
@@ -511,54 +515,65 @@ abstract class AbsCampaign extends Model
         // * addTrackingURL
         // * appendOpenTrackingUrl
         // * tagMessage
-        $body = $this->html;
+        if (is_null($this->parsedContent)) {
+            // STEP 01. Get RAW content
+            $body = $this->html;
 
-        // Append footer
-        if ($this->footerEnabled()) {
-            $body = $this->appendFooter($body, $this->getHtmlFooter());
-        }
-
-        // this is required because the next function 'transform()' will use this->html value
-        $this->html = $body;
-        $body = $this->transform(true);
-
-        if (Setting::isYes('rss.enabled')) {
-            if (is_null($this->rssContent)) {
-                $this->rssContent = Rss::parse($body);
+            // STEP 02. Append footer
+            if ($this->footerEnabled()) {
+                $body = $this->appendFooter($body, $this->getHtmlFooter());
+            }
+            
+            // STEP 03. Parse RSS
+            if (Setting::isYes('rss.enabled')) {
+                $body = Rss::parse($body);
             }
 
-            $body = $this->rssContent;
+            // STEP 04. Replace Bare linefeed
+            // Replace bare line feed char which is not accepted by Outlook, Yahoo, AOL...
+            $body = StringHelper::replaceBareLineFeed($body);
+
+            // "Cache" it, do not repeat this task for every subscriber in the loop
+            $this->parsedContent = $body;
+        } else {
+            // Retrieve content from cache
+            $body = $this->parsedContent;
         }
+
+        // STEP 05. Transform URLs
+        $body = $this->transformWithoutUpdate($body, true);
 
         if (is_null($msgId)) {
             $msgId = 'SAMPLE'; // for preview mode
         }
 
+        // STEP 06. Add Click Tracking
+        //
         // @note: addTrackingUrl() must go before appendOpenTrackingUrl()
         // Enable click tracking
         if ($this->track_click) {
             $body = $this->addTrackingUrl($body, $msgId);
         }
 
-        // Enable open tracking
+        // STEP 07. Add Open Tracking
         if ($this->track_open) {
             $body = $this->appendOpenTrackingUrl($body, $msgId);
         }
 
+        // STEP 08. Transform Tags
         if (!is_null($subscriber)) {
             // Transform tags
             $body = $this->tagMessage($body, $subscriber, $msgId, $server);
         }
 
+        // STEP 09. Make CSS inline
+        //
         // Transform CSS/HTML content to inline CSS
         // Be carefule, it will make
         //       <a href="{BUNSUBSCRIBE_URL}" 
         // become
         //       <a href="%7BUNSUBSCRIBE_URL%7D" 
         $body = $this->inlineHtml($body);
-
-        // Replace bare line feed char which is not accepted by Outlook, Yahoo, AOL...
-        $body = StringHelper::replaceBareLineFeed($body);
 
         return $body;
     }
@@ -999,7 +1014,8 @@ abstract class AbsCampaign extends Model
      */
     public function notDeliveredCount()
     {
-        return $this->subscribersCount() - $this->trackingLogs()->count();
+        $subscribersCountUniq = distinctCount($this->subscribers([], ['email_verifications']), 'subscribers.email');
+        return $subscribersCountUniq - $this->deliveredCount();
     }
 
     /**
@@ -1689,23 +1705,16 @@ abstract class AbsCampaign extends Model
 
     public function buildPublicUrl($path)
     {
-        $host = config('app.url');
-
-        return join_url($host, $path);
+        return join_url($this->getTrackingHost(), $path);
     }
 
     public function getTrackingHost()
     {
-        $root = config('app.url');
-
-        if (!$this->trackingDomain()->exists()) {
-            return $root;
+        if ($this->trackingDomain()->exists()) {
+            return $this->trackingDomain->getUrl();
+        } else {
+            return config('app.url');
         }
-
-        preg_match('/^(?<scheme>https{0,1}:\/\/)/', $root, $result);
-        $protocol = $result['scheme'];
-
-        return sprintf('%s%s', $protocol, $this->trackingDomain->name);
     }
 
     /**
@@ -1811,6 +1820,9 @@ abstract class AbsCampaign extends Model
      */
     public function isLayout($html = null)
     {
+        return $html;
+
+        // TODO: review the stuffs below
         if (!$html) {
             $html = $this->render();
         }
@@ -2694,21 +2706,37 @@ abstract class AbsCampaign extends Model
      */
     public function transform($useTrackingHost = false)
     {
-        // IMPORTANT: since the untransform function presumes that the email is transform using the default hostname,
-        //            using tracking host will make it failed to untransform
-        //            this option is for campaign delivery and preview only
-        // replace relative urls
-        if ($useTrackingHost) {
-            $path = join_paths($this->getTrackingHost(), route('campaign_assets', ['uid' => $this->uid, 'path' => ''], false));
-        } else {
-            $path = route('campaign_assets', ['uid' => $this->uid, 'path' => '']);
-        }
-        $this->html = \Acelle\Library\Tool::replaceTemplateUrl(
-            tinyDocTypeTransform($this->html),
-            $path
-        );
-
+        $this->html = $this->transformWithoutUpdate($this->html, $useTrackingHost);
         return $this->html;
+    }
+
+    /**
+     * transform URL.
+     */
+    public function transformWithoutUpdate($html, $useTrackingHost = false)
+    {
+        // Notice that there are 2 types of assets that need to untransform
+        // #1 Campaign relative URL
+        // #2 User assets (uploaded by file manager) absolute URL
+        // 
+
+        // Replace #2
+        $host = config('app.url'); // Default host
+        
+        if ($useTrackingHost) {
+            // Replace #2
+            $html = str_replace($host, $this->getTrackingHost(), $html);
+            $host = $this->getTrackingHost();
+        }
+
+        // Replace #1
+        $path = join_url($host, route('campaign_assets', ['uid' => $this->uid, 'path' => ''], false));
+        $html = \Acelle\Library\Tool::replaceTemplateUrl($html, $path);    
+
+        // By the way, fix <html>
+        $html = tinyDocTypeTransform($html);
+
+        return $html;
     }
 
     /**
@@ -2716,7 +2744,13 @@ abstract class AbsCampaign extends Model
      */
     public function untransform()
     {
-        // replace absolute urls
+        // Notice that there are 2 types of assets that need to untransform
+        // #1 Campaign relative URL
+        // #2 User assets (uploaded by file manager) absolute URL
+        // 
+        // and only #1 will be untransformed while #2 is kept as is
+
+        // Replace relative URL with campaign URL
         $this->html = str_replace(
             route('campaign_assets', ['uid' => $this->uid, 'path' => '']).'/',
             '',
@@ -2729,9 +2763,8 @@ abstract class AbsCampaign extends Model
      */
     public function render()
     {
-        $this->transform();
-
-        return $this->html;
+        $body = $this->transformWithoutUpdate($this->html, $useTrackingHost = false);
+        return $body;
     }
 
     /**
@@ -2739,22 +2772,7 @@ abstract class AbsCampaign extends Model
      */
     public function uploadAsset($file)
     {
-        $file_name = $file->getClientOriginalName();
-        $upload_dir = 'upload/';
-
-        $new_name = $file_name;
-        $i = 1;
-        while (file_exists($this->getStoragePath($upload_dir).$new_name)) {
-            $new_name = $i.'_'.$file_name;
-            ++$i;
-        }
-
-        $path = $file->move(
-            $this->getStoragePath($upload_dir),
-            $new_name
-        );
-
-        return $upload_dir.$new_name;
+        return $this->customer->user->uploadAsset($file);
     }
 
     /**
@@ -3083,11 +3101,6 @@ abstract class AbsCampaign extends Model
         $file_name = $file->getClientOriginalName();
 
         $new_name = $file_name;
-        $i = 1;
-        while (file_exists($this->getAttachmentPath().$new_name)) {
-            $new_name = $i.'_'.$file_name;
-            ++$i;
-        }
 
         $path = $file->move(
             $this->getAttachmentPath(),

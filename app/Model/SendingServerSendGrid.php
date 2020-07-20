@@ -27,6 +27,7 @@ use Acelle\Library\StringHelper;
 use SendGrid\Mail;
 use SendGrid\Email;
 use SendGrid\Content;
+use SendGrid\Attachment;
 use Acelle\Library\SendingServer\DomainVerificationInterface;
 
 class SendingServerSendGrid extends SendingServer implements DomainVerificationInterface
@@ -127,24 +128,41 @@ class SendingServerSendGrid extends SendingServer implements DomainVerificationI
         $toName = (is_null($message->getTo())) ? null : array_values($message->getTo())[0];
         $replyToEmail = (is_null($message->getReplyTo())) ? $fromEmail : array_keys($message->getReplyTo())[0];
 
-        // Following RFC 1341, section 7.2, if either text/html or text/plain are to be sent in your email: text/plain needs to be first
+        // Following RFC 1341, section 7.2
+        //     If either text/html or text/plain are to be sent in your email
+        //     text/plain needs to be first, followed by text/html, followed by any other content
         // So, use array_shift instead of array_pop
         // Also, sort the parts so that text/plain comes before text/html
 
         $parts = $message->getChildren();
         usort($parts, function ($a, $b) {
-            return ($a->getContentType() == 'text/plain') ? -1 : 1;
+            if ($a->getContentType() == 'text/plain') {
+                return -1;
+            } else if ($a->getContentType() == 'text/html') {
+                return 0;
+            } else {
+                return 1;
+            }
         });
 
+        // skip attachment part
         $parts = array_map(function ($part) {
-            return new Content($part->getContentType(), $part->getBody());
+            if (method_exists($part, 'getDisposition')) { // only a part of type Swift_Mime_Attachment has this method
+                // add later on
+                return null;
+            } else {
+                return new Content($part->getContentType(), $part->getBody());
+            }
         }, $parts);
+
+        // remove null element
+        $parts = array_filter($parts);
 
         $mail = new Mail(
             new Email($fromName, $fromEmail),
             $message->getSubject(),
             new Email($toName, $toEmail),
-            array_shift($parts)
+            array_shift($parts) // first content only
         );
 
         // set Reply-To header
@@ -152,6 +170,19 @@ class SendingServerSendGrid extends SendingServer implements DomainVerificationI
 
         foreach ($parts as $part) {
             $mail->addContent($part);
+        }
+
+        foreach ($message->getChildren() as $part) {
+            if (method_exists($part, 'getDisposition')) {
+                $filename = basename($part->getFilename());
+                $encoded = base64_encode($part->getBody());
+                $attachment = new Attachment();
+                $attachment->setType($part->getContentType());
+                $attachment->setContent($encoded);
+                $attachment->setDisposition("attachment");
+                $attachment->setFilename($filename);
+                $mail->addAttachment($attachment);
+            }
         }
 
         $preserved = [

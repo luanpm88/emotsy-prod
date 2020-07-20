@@ -39,8 +39,10 @@ class JobServiceProvider extends ServiceProvider
 
         // mark the SystemJob record as FAILED
         \Queue::failing(function (JobFailed $event) {
-            $job = $this->getJobObject($event);
-            $job->setFailed();
+            $error = $event->exception->getMessage();
+            $error .= "\r\n".$event->exception->getTraceAsString();
+            $job = $this->getJobObject($event); // Job object, not SystemJob model
+            $job->setFailed($error);
         });
     }
 

@@ -58,8 +58,7 @@ class Attachment extends Model
      */
     public function remove()
     {
-        Storage::disk('local')->delete($this->file);
-
+        unlink($this->file);
         $this->delete();
     }
 }

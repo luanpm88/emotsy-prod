@@ -31,6 +31,8 @@ class User extends Authenticatable
 {
     use Notifiable;
 
+    const ASSET_DIR = 'files';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -189,16 +191,6 @@ class User extends Authenticatable
     }
 
     /**
-     * Get storage path.
-     *
-     * @return string
-     */
-    public function storagePath()
-    {
-        return base_path('public/source/'.$this->uid.'/');
-    }
-
-    /**
      * Send the password reset notification.
      *
      * @param  string  $token
@@ -208,14 +200,61 @@ class User extends Authenticatable
         $this->notify(new ResetPassword($token, url('password/reset', $token)));
     }
 
-    public function getStoragePath($path = '')
+    public function getAdminStoragePath($path = '')
     {
-        $base = storage_path('app/user/'.$this->uid);
+        $base = storage_path('app/users/admin');
 
         if (!\File::exists($base)) {
             \File::makeDirectory($base, 0777, true, true);
         }
 
         return join_paths($base, $path);
+
+    }
+
+    public function getStoragePath($path = '')
+    {
+        $base = storage_path('app/users/'.$this->uid);
+
+        if (!\File::exists($base)) {
+            \File::makeDirectory($base, 0777, true, true);
+        }
+
+        return join_paths($base, $path);
+    }
+
+    public function getHomePath($path = '')
+    {
+        $base = $this->getStoragePath('home');
+
+        if (!\File::exists($base)) {
+            \File::makeDirectory($base, 0777, true, true);
+        }
+
+        return join_paths($base, $path);
+    }
+
+    public function uploadAsset($file)
+    {
+        // store to storage/app/users/{uid}/home/files/
+        $assetdir = $this->getHomePath(self::ASSET_DIR);
+        $newname = $file->getClientOriginalName();
+        $newpath = join_paths($assetdir, $newname);
+
+        // In case file name conflicts
+        $i = 1;
+        while (file_exists($newpath)) {
+            $newname = $file->getClientOriginalName()."_".$i;
+            $newpath = join_paths($assetdir, $newname);
+            ++$i;
+        }
+
+        // Move uploaded file
+        $file->move(
+            $assetdir,
+            $newname
+        );
+
+        return $newname;
     }
 }

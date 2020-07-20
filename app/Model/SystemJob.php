@@ -40,7 +40,7 @@ class SystemJob extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'status', 'object_id', 'object_name'
+        'name', 'status', 'object_id', 'object_name', 'last_error'
     ];
 
     /**
@@ -72,8 +72,9 @@ class SystemJob extends Model
      *
      * @var array
      */
-    public function setFailed()
+    public function setFailed($msg = null)
     {
+        $this->last_error = $msg;
         $this->status = self::STATUS_FAILED;
         $this->end_at = \Carbon\Carbon::now();
         $this->save();

@@ -24,6 +24,7 @@ namespace Acelle\Model;
 
 use Acelle\Library\Log as MailLog;
 use Acelle\Library\StringHelper;
+use CurlFile;
 
 class SendingServerElasticEmail extends SendingServer
 {
@@ -239,8 +240,10 @@ class SendingServerElasticEmail extends SendingServer
         // @todo: what if there are more than 2 parts?
         $html = null;
         $plain = null;
+        
         foreach ($message->getChildren() as $part) {
             $contentType = $part->getContentType();
+
             if ($contentType == 'text/html') {
                 $html = $part->getBody();
             } elseif ($contentType == 'text/plain') {
@@ -258,7 +261,7 @@ class SendingServerElasticEmail extends SendingServer
         $toEmail = array_keys($message->getTo())[0];
         $replyToEmail = (is_null($message->getReplyTo())) ? null : array_keys($message->getReplyTo())[0];
 
-        $result = $this->client()->email()->send([
+        $params = [
             'to' => $toEmail,
             'replyTo' => $replyToEmail,
             'subject' => $message->getSubject(),
@@ -267,9 +270,93 @@ class SendingServerElasticEmail extends SendingServer
             'bodyHtml' => $html,
             'bodyText' => $plain,
             'charset' => 'utf-8',
-        ]);
+        ];
 
+        $attachmentKey = 1;
+        foreach($message->extAttachments as $file) {
+            $params['file_'.$attachmentKey] = new CurlFile($file['path'], $file['type'], basename($file['path']));
+            $attachmentKey += 1;
+        }
+
+        $result = $this->client()->email()->send($params);
         $jsonResponse = json_decode($result->getData());
+
+        // Use transactionid returned from ElasticEmail as runtime_message_id
+        return $jsonResponse->data->transactionid;
+    }
+
+    /**
+     * Delivery message.
+     *
+     * @return mixed
+     */
+    public function sendElasticEmailV2Fixed($message)
+    {
+        // @todo: what if there are more than 2 parts?
+        $html = null;
+        $plain = null;
+        
+        foreach ($message->getChildren() as $part) {
+            $contentType = $part->getContentType();
+
+            if ($contentType == 'text/html') {
+                $html = $part->getBody();
+            } elseif ($contentType == 'text/plain') {
+                $plain = $part->getBody();
+            }
+        }
+
+        if (!is_null($html)) {
+            $html = $this->unescapeUnsubscribeUrl($html);
+        }
+
+        // @todo: custom headers not correctly supported by Elastic Email API v2
+        $fromEmail = array_keys($message->getFrom())[0];
+        $fromName = (is_null($message->getFrom())) ? null : array_values($message->getFrom())[0];
+        $toEmail = array_keys($message->getTo())[0];
+        $replyToEmail = (is_null($message->getReplyTo())) ? null : array_keys($message->getReplyTo())[0];
+
+        $params = [
+            'apikey' => $this->api_key,
+            'to' => $toEmail,
+            'replyTo' => $replyToEmail,
+            'subject' => $message->getSubject(),
+            'from' => $fromEmail,
+            'fromName' => $fromName,
+            'bodyHtml' => $html,
+            'bodyText' => $plain,
+            'charset' => 'utf-8',
+        ];
+
+        $attachmentKey = 1;
+        foreach($message->extAttachments as $file) {
+            $params['file_'.$attachmentKey] = new CurlFile($file['path'], $file['type'], basename($file['path']));
+            $attachmentKey += 1;
+        }
+
+        $ch = curl_init();
+            
+        curl_setopt_array($ch, array(
+            CURLOPT_URL => 'https://api.elasticemail.com/v2/email/send',
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => $params,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HEADER => false,
+            CURLOPT_SSL_VERIFYPEER => false
+        ));
+        
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        if ($result === false || empty($result)) {
+            throw new \Exception("Cannot send using Elastic API, curl_exec returns false or empty");
+        }
+        
+        $jsonResponse = json_decode($result);
+        
+        if ($jsonResponse->success == false) {
+            throw new \Exception("ElasticEmail error: ".$result);
+        }
 
         // Use transactionid returned from ElasticEmail as runtime_message_id
         return $jsonResponse->data->transactionid;
