@@ -97,10 +97,10 @@
 
 
     <!-- Basic modal -->
-    <div id="server_types" class="modal fade">
+    <div id="server_types" class="modal fade new-modal">
         <div class="modal-dialog">
             <div class="modal-content">
-                    <div class="modal-header bg-teal">
+                    <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                         <h2 class="modal-title">{{ trans('messages.select_server_type') }}</h2>
                     </div>

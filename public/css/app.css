@@ -2508,7 +2508,7 @@ canvas[data-zr-dom-id='_zrender_hover_'] {
     padding-bottom: 10px;
     padding-top: 15px;
     border-bottom: solid 1px #e0e0e0;
-    background: #efefef;
+    background: #fff;
 }
 .modal-header {
     border-radius: 3px 3px 0 0;
@@ -3895,4 +3895,15 @@ textarea.bulk-delete {
 }
 .automation-header .last_save_time {
     color: #aaa;
+}
+.new-modal .modal-content {
+    box-shadow: none;
+    border-radius: 0 0 3px 3px;
+}
+.new-modal .modal-header .close[type=button] {
+    background: none;
+    color: #333;
+    font-size: 31px;
+    font-weight: normal;
+    margin-top: -16px;
 }
