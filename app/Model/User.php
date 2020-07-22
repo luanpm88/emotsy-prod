@@ -200,18 +200,6 @@ class User extends Authenticatable
         $this->notify(new ResetPassword($token, url('password/reset', $token)));
     }
 
-    public function getAdminStoragePath($path = '')
-    {
-        $base = storage_path('app/users/admin');
-
-        if (!\File::exists($base)) {
-            \File::makeDirectory($base, 0777, true, true);
-        }
-
-        return join_paths($base, $path);
-
-    }
-
     public function getStoragePath($path = '')
     {
         $base = storage_path('app/users/'.$this->uid);

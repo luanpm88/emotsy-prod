@@ -600,10 +600,22 @@ class Template extends Model implements Storable
             $base = $this->customer->user->getStoragePath(self::STORAGE_DIR);
         } else {
             // storage/app/users/admin/templates
-            $base = $this->admin->user->getAdminStoragePath(self::STORAGE_DIR);
+            // IMPORTANT: templates are created from migration without associating with an admin
+            $base = $this->getAdminStoragePath(self::STORAGE_DIR);
         }
 
         $base = join_paths($base, $this->uid);
+
+        if (!\File::exists($base)) {
+            \File::makeDirectory($base, 0777, true, true);
+        }
+
+        return join_paths($base, $path);
+    }
+
+    public function getAdminStoragePath($path = '')
+    {
+        $base = storage_path('app/users/admin');
 
         if (!\File::exists($base)) {
             \File::makeDirectory($base, 0777, true, true);
