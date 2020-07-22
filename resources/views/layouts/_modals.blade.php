@@ -137,10 +137,10 @@
 
 	<a style="display: none" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#copy_list"></a>
 	<!-- Basic modal -->
-	<div id="copy_list" class="modal fade">
+	<div id="copy_list" class="modal fade new-modal">
 		<div class="modal-dialog">
 			<div class="modal-content">
-				<div class="modal-header bg-teal">
+				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 					<h4 class="modal-title">{{ trans('messages.name_new_list') }}</h4>
 				</div>
@@ -249,10 +249,10 @@
 
 	<a style="display: none" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#copy_campaign"></a>
 	<!-- Basic modal -->
-	<div id="copy_campaign" class="modal fade">
+	<div id="copy_campaign" class="modal fade new-modal">
 		<div class="modal-dialog">
 			<div class="modal-content">
-				<div class="modal-header bg-teal">
+				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 					<h4 class="modal-title">{{ trans('messages.name_new_campaign') }}</h4>
 				</div>
@@ -289,9 +289,9 @@
 
 	<a style="display: none" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#send_a_test_email"></a>
 	<!-- Basic modal send a test email -->
-	<div id="send_a_test_email" class="modal fade">
+	<div id="send_a_test_email" class="modal fade new-modal">
 		<div class="modal-dialog">
-			<div class="modal-header bg-teal">
+			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
 				<h4 class="modal-title">{{ trans('messages.send_a_test_email') }}</h4>
 			</div>
@@ -401,7 +401,7 @@
 	<!-- Basic modal -->
 	<div id="list-form-modal" class="modal fade list-form-modal">
 		<div class="modal-dialog modal-md">
-			<div class="modal-header bg-teal">
+			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
 				<h4 class="modal-title">{{ trans('messages.are_you_sure') }}</h4>
 			</div>
@@ -434,9 +434,9 @@
 	<!-- /basic modal -->
 
 	<!-- Basic modal -->
-	<div id="paid-form-modal" class="modal fade list-form-modal">
+	<div id="paid-form-modal" class="modal fade list-form-modal new-modal">
 		<div class="modal-dialog modal-md">
-			<div class="modal-header bg-teal">
+			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
 				<h4 class="modal-title">{{ trans('messages.are_you_sure') }}</h4>
 			</div>
@@ -489,10 +489,10 @@
 
   <a style="display: none" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#copy_plan"></a>
   <!-- Basic modal -->
-  <div id="copy_plan" class="modal fade">
+  <div id="copy_plan" class="modal fade new-modal">
     <div class="modal-dialog">
       <div class="modal-content">
-        <div class="modal-header bg-teal">
+        <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal">&times;</button>
           <h4 class="modal-title">{{ trans('messages.name_new_plan') }}</h4>
         </div>

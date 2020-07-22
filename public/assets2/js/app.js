@@ -1988,7 +1988,7 @@ $(function() {
         // Finding modal
         var modal = $('#ajax-modal[rel="'+url+'"]');
         if (!modal.length) {
-            var html = '<div class="modal fade" role="dialog" id="ajax-modal" rel="'+url+'">'+
+            var html = '<div class="modal fade  new-modal" role="dialog" id="ajax-modal" rel="'+url+'">'+
                 '<div class="modal-dialog modal-'+size+' modal-select">'+
                     '<div class="modal-content">'+
                         '<div class="modal-body">'+

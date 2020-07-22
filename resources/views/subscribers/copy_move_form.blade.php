@@ -1,5 +1,5 @@
 <!-- Basic modal -->
-<div id="copy-move-subscribers-form" class="modal fade">
+<div id="copy-move-subscribers-form" class="modal fade new-modal">
     <div class="modal-dialog">
         <div class="modal-content">
             <form action="{{ action("SubscriberController@" . request()->action) }}" method="POST" class="form-validate-jquery">
@@ -15,7 +15,7 @@
                     @endif
                 @endforeach
 
-                <div class="modal-header bg-teal">
+                <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h2 class="modal-title">
                         {{ trans('messages.' . request()->action . '_subscriber') }}

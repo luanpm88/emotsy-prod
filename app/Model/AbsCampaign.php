@@ -1802,7 +1802,15 @@ abstract class AbsCampaign extends Model
         }
 
         // refresh to update cache (otherwise, list-segment information will not be available yet)
-        Campaign::find($copy->id)->updateCache();
+        $newCampaign = Campaign::find($copy->id);
+        $newCampaign->updateCache();
+
+        // copy template
+        \Acelle\Library\Tool::xcopy($this->getStoragePath(), $newCampaign->getStoragePath());
+        $newCampaign->html = $this->html;
+        $newCampaign->save();
+
+        return $newCampaign;
     }
 
     /**
