@@ -53,7 +53,7 @@
 								'email_uid' => $email->uid,
 							]) }}"
 						>
-							<i class="lnr lnr-user"></i>
+							<i class="lnr lnr-upload"></i>
 							<div class="list-body">
 								<label>{{ trans('messages.automation.template.upload') }}</label>
 								<p>{{ trans('messages.automation.template.upload.intro') }}</p>

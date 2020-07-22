@@ -66,7 +66,7 @@
                     </div>
                 </li>
                 <li class="template-start" data-url="{{ action('CampaignController@templateUpload', $campaign->uid) }}">
-                    <i class="lnr lnr-user"></i>
+                    <i class="lnr lnr-upload"></i>
                     <div class="list-body">
                         <h4>{{ trans('messages.campaign.template.upload') }}</h4>
                         <p>{{ trans('messages.campaign.template.upload.intro') }}</p>
