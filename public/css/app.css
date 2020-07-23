@@ -3907,3 +3907,10 @@ textarea.bulk-delete {
     font-weight: normal;
     margin-top: -16px;
 }
+.popup-body .select2 {
+    width: 100%!important;
+}
+.select2-selection--multiple .select2-search--inline .select2-search__field:focus {
+outline: none;
+box-shadow: none;
+}

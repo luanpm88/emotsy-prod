@@ -980,6 +980,19 @@ class Subscriber extends Model
     }
 
     /**
+     * Get tags.
+     */
+    public function getTagOptions()
+    {
+        $arr = [];
+        foreach($this->getTags() as $tag) {
+            $arr[] = ['text' => $tag, 'value' => $tag];
+        }
+
+        return $arr;
+    }
+
+    /**
      * Add tags.
      */
     public function addTags($arr)

@@ -24,7 +24,7 @@
                     'name' => 'tags[]',
                     'value' => $subscriber->getTags(),
                     'help_class' => 'trigger',
-                    'options' => [],
+                    'options' => $subscriber->getTagOptions(),
                     'rules' => ['tags' => 'required'],
                     'multiple' => 'true',
                     'placeholder' => trans('messages.automation.contact.choose_tags'),
@@ -69,6 +69,8 @@
 
                     // remove masking
                     removeMaskLoading();
+
+                    location.reload();
                 }
             });    
         });
