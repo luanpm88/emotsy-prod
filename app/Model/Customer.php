@@ -235,6 +235,11 @@ class Customer extends Model implements BillableUserInterface
         $plan = $this->activeSubscription()->plan;
         if ($plan->useSystemSendingServer()) {
             $server = $plan->primarySendingServer();
+
+            if (is_null($server)) {
+                throw new \Exception('No sending server available for plan #Customer::allSenders');
+            }
+
             $result = $this->senders()->whereRaw(sprintf("%s IS NULL OR %s = %s", table('senders.sending_server_id'), table('senders.sending_server_id'), $server->id));
         } else {
             $result = $this->senders();
@@ -249,6 +254,11 @@ class Customer extends Model implements BillableUserInterface
 
         if ($plan->useSystemSendingServer()) {
             $server = $plan->primarySendingServer();
+
+            if (is_null($server)) {
+                throw new \Exception('No sending server available for plan #Customer::activeVerifiedSendingDomains');
+            }
+
             return $this->sendingDomains()
                 ->where('status', '=', SendingDomain::STATUS_ACTIVE)
                 ->where('domain_verified', '=', SendingDomain::VERIFIED)
