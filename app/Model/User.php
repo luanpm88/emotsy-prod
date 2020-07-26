@@ -211,6 +211,17 @@ class User extends Authenticatable
         return join_paths($base, $path);
     }
 
+    public function getLockPath($path)
+    {
+        $base = $this->getHomePath('locks');
+
+        if (!\File::exists($base)) {
+            \File::makeDirectory($base, 0777, true, true);
+        }
+
+        return join_paths($base, $path);
+    }
+
     public function getHomePath($path = '')
     {
         $base = $this->getStoragePath('home');

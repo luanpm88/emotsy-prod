@@ -2044,6 +2044,11 @@ class Customer extends Model implements BillableUserInterface
         return $this->user->getHomePath($path);
     }
 
+    public function getLockPath($path)
+    {
+        return $this->user->getLockPath($path);
+    }
+
     public function allowUnverifiedFromEmailAddress()
     {
         $plan = $this->subscription->plan;
