@@ -27,8 +27,11 @@
 					</div>
 				</td>
 				<td>
-					<span class="no-margin kq_search">{{ $blacklist->email }}</span>
-					<span class="text-muted second-line-mobile">{{ trans('messages.email') }}</span>
+					<span class="no-margin kq_search"><a class="reason-link" href="{{ action('Admin\BlacklistController@reason', $blacklist->id) }}">{{ $blacklist->email }}</a></span>
+					<span class="text-muted second-line-mobile">
+					<a class="reason-link" href="{{ action('Admin\BlacklistController@reason', $blacklist->id) }}">
+						{{ trans('messages.email') }}
+					</a></span>
 				</td>
 				<td>
 					<span class="no-margin kq_search">{{ Tool::formatDateTime($blacklist->created_at) }}</span>
@@ -51,6 +54,15 @@
 	</table>
 	@include('elements/_per_page_select', ["items" => $blacklists])
 	{{ $blacklists->links() }}
+
+	<script>
+		$('.reason-link').click(function(e) {
+			e.preventDefault();
+
+			var bp = new Popup();
+			bp.load($(this).attr('href'));
+		});
+	</script>
 @elseif (!empty(request()->keyword) || !empty(request()->filters["campaign_uid"]))
 	<div class="empty-list">
 		<i class="glyphicon glyphicon-minus-sign"></i>

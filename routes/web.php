@@ -767,6 +767,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/unsubscribe_log/listing', 'UnsubscribeLogController@listing');
 
     // Blacklist
+    Route::get('admin/blacklists/{id}/reason', 'BlacklistController@reason');
     Route::post('admin/blacklists/job/{system_job_id}/cancel', 'BlacklistController@cancel');
     Route::get('admin/blacklists/import/process', 'BlacklistController@importProcess');
     Route::post('admin/blacklists/import', 'BlacklistController@import');

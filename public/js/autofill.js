@@ -241,6 +241,9 @@ $.fn.autofill = function(options) {
                 keyword: box.value()
             }
         })
+        .error(function(res) {
+            console.log(res);
+        })
         .done(function(data) {
             // box.dropbox.html(html);
             box.renderDropboxList(data);

@@ -169,4 +169,18 @@ class BlacklistController extends Controller
         $request->session()->flash('alert-success', trans('messages.blacklist.import.cancelled'));
         return redirect()->action('Admin\BlacklistController@index');
     }
+
+    /**
+     * Reason.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function reason(Request $request, $id)
+    {
+        $blacklist = \Acelle\Model\Blacklist::find($id);
+
+        return view('admin.blacklists.reason', [
+            'blacklist' => $blacklist,
+        ]);
+    }
 }
