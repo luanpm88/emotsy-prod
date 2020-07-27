@@ -2423,4 +2423,15 @@ class CampaignController extends Controller
 
         unlink($campaign->getAttachmentPath($request->name));
     }
+
+    /**
+     * Remove attachment.
+     *
+     */
+    public function run(Request $request, $uid)
+    {
+        $campaign = \Acelle\Model\Campaign::findByUid($uid);
+        $campaign->start();
+        echo $campaign->status;
+    }
 }
