@@ -3139,14 +3139,25 @@ abstract class AbsCampaign extends Model
         return $atts;
     }
 
+    public function arrayRandFixed($array, $count)
+    {
+        $result = array_rand($array, $count);
+        if (is_array($result)) {
+            return $result;
+        } else {
+            return [$result];
+        }
+    }
+
     public function makeSampleData($params = [])
     {
         $default = [
+            'unconfirmed' => 0.08,
             'delivery_failed' => 0.05, // against all deivered emails
-            'open' => 0.4, // against delivery_success
-            'click' => 0.5, // against open
-            'unsubscribe' => 0.04, // against open
-            'bounce' => 0.03, // against open
+            'open' => 0.41, // against delivery_success
+            'click' => 0.38, // against open
+            'unsubscribe' => 0.08, // against open
+            'bounce' => 0.04, // against open
             'feedback' => 0.02 // against open
         ];
 
@@ -3183,19 +3194,20 @@ abstract class AbsCampaign extends Model
         // Failed tracking log
         $failureCount = round($params['delivery_failed'] * $this->trackingLogs()->count());
         $allLogs = $this->trackingLogs()->get()->map(function($e){ return $e->id; })->toArray();
-        $failedLogs = array_values(array_intersect_key($allLogs, array_flip( array_rand( $allLogs, $failureCount ))));
+        $failedLogs = array_values(array_intersect_key($allLogs, array_flip( $this->arrayRandFixed( $allLogs, $failureCount ))));
         echo "Failed log count: ".$this->trackingLogs()->whereIn('id', $failedLogs)->count()."\n";
         $this->trackingLogs()->whereIn('id', $failedLogs)->update([
             'status' => 'failed',
-            'error' => array_rand(['Server replied: invalid email address', 'Server replied: email is already blocked by the server', 'RFC8343: mailbox does not exist']),
+            'error' => 'RFC8343: mailbox does not exist',
         ]);
 
         // Open log
-        $openCount = round($params['open'] * $this->trackingLogs()->where('status', 'sent')->count());
+        $sentCount = $this->trackingLogs()->where('status', 'sent')->count();
+        $openCount = round($params['open'] * $sentCount);
         $sentLogs = $this->trackingLogs()->where('status', 'sent')
                          ->select('tracking_logs.id')
                          ->get()->map(function($e){ return $e->id; })->toArray();
-        $openLogs = array_values(array_intersect_key($sentLogs, array_flip( array_rand( $sentLogs, $openCount ))));
+        $openLogs = array_values(array_intersect_key($sentLogs, array_flip( $this->arrayRandFixed( $sentLogs, $openCount ))));
         echo "Open log count: ".$openCount."\n";
         foreach($this->trackingLogs()->whereIn('id', $openLogs)->get() as $r) {
             $log = new \Acelle\Model\OpenLog();
@@ -3208,11 +3220,12 @@ abstract class AbsCampaign extends Model
 
         // Open log
         $clickCount = round($params['click'] * $openCount);
+
         $openLogs = $this->trackingLogs()
                          ->join('open_logs', 'tracking_logs.message_id', '=', 'open_logs.message_id')
                          ->select('tracking_logs.id')
                          ->get()->map(function($e){ return $e->id; })->toArray();
-        $clickLogs = array_values(array_intersect_key($openLogs, array_flip( array_rand( $openLogs, $clickCount ))));
+        $clickLogs = array_values(array_intersect_key($openLogs, array_flip( $this->arrayRandFixed( $openLogs, $clickCount ))));
         echo "Click log count: ".$this->trackingLogs()->whereIn('id', $clickLogs)->count()."\n";
         foreach($this->trackingLogs()->whereIn('id', $clickLogs)->get() as $r) {
             $log = new \Acelle\Model\ClickLog();
@@ -3222,11 +3235,11 @@ abstract class AbsCampaign extends Model
             $log->user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36';
             $log->url = 'https://app.clickfunnels.com/signupflow';
             $result = $log->save();
-        }
+        }        
 
         // Unsubscribe log
         $unsubscribeCount = round($params['unsubscribe'] * $openCount);
-        $unsubscribeLogs = array_values(array_intersect_key($openLogs, array_flip( array_rand( $openLogs, $unsubscribeCount ))));
+        $unsubscribeLogs = array_values(array_intersect_key($openLogs, array_flip( $this->arrayRandFixed( $openLogs, $unsubscribeCount ))));
         echo "Unsubscribe log count: ".$unsubscribeCount."\n";
         foreach($this->trackingLogs()->whereIn('id', $unsubscribeLogs)->get() as $r) {
             // Unsubscribe log
@@ -3238,21 +3251,43 @@ abstract class AbsCampaign extends Model
             $log->save();
         }
 
-        /*
+
         // Bounce log
         $bounceCount = round($params['bounce'] * $sentCount);
-        $bounceLogs = array_values(array_intersect_key($sentLogs, array_flip( array_rand( $sentLogs, $bounceCount ))));
+        $bounceLogs = array_values(array_intersect_key($sentLogs, array_flip( $this->arrayRandFixed( $sentLogs, $bounceCount ))));
         echo "Bounce log count: ".$bounceCount."\n";
         foreach($this->trackingLogs()->whereIn('id', $bounceLogs)->get() as $r) {
             // Unsubscribe log
-            $log = new \Acelle\Model\UnsubscribeLog();
-            $log->message_id = $r->message_id;
-            $location = \Acelle\Model\IpLocation::add('159.89.231.93');
-            $log->ip_address = $location->ip_address;
-            $log->user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36';
-            $log->save();
+            $bounceLog = new BounceLog();
+            $bounceLog->runtime_message_id = $r->message_id;
+            $bounceLog->message_id = $r->message_id;
+            // SendGrid only notifies in case of HARD bounce
+            $bounceLog->bounce_type = BounceLog::HARD;
+            $bounceLog->raw = 'RFC308433: mailbox is no longer valid or blocked';
+            $bounceLog->save();
+
+            // add subscriber's email to blacklist
+            $subscriber = $bounceLog->findSubscriberByRuntimeMessageId();
+            $subscriber->sendToBlacklist($bounceLog->raw);
         }
-        */
+
+        // Bounce log
+        $feedbackCount = round($params['feedback'] * $sentCount);
+        $feedbackLogs = array_values(array_intersect_key($sentLogs, array_flip( $this->arrayRandFixed( $sentLogs, $feedbackCount ))));
+        echo "Feedback log count: ".$feedbackCount."\n";
+        foreach($this->trackingLogs()->whereIn('id', $feedbackLogs)->get() as $r) {
+            // Unsubscribe log
+            $feedback = new FeedbackLog();
+            $feedback->runtime_message_id = $r->message_id;
+            $feedback->message_id = $r->message_id;
+            $feedback->feedback_type = 'spam';
+            $feedback->raw_feedback_content = 'RFC308433: mailbox is no longer valid or blocked';
+            $feedback->save();
+
+            // add subscriber's email to blacklist
+            $subscriber = $feedback->findSubscriberByRuntimeMessageId();
+            $subscriber->markAsSpamReported($feedback->raw);
+        }
 
         // Finalize
         $this->updateCache();
@@ -3260,6 +3295,8 @@ abstract class AbsCampaign extends Model
 
     public function cleanSampleData()
     {
+        $this->defaultMailList->subscribers()->update(['status' => 'subscribed']);
+        Blacklist::query()->delete();
         $this->trackingLogs()->delete();
     }
 }
