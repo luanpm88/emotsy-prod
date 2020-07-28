@@ -436,6 +436,7 @@ abstract class AbsCampaign extends Model
                 'campaign_id' => $this->id,
                 'message_id' => $msgId,
                 'subscriber_id' => $subscriber->id,
+                'mail_list_id' => $subscriber->mail_list_id,
                 'sending_server_id' => $server->id,
                 'customer_id' => $this->customer->id,
             ), $response);
@@ -3137,5 +3138,52 @@ abstract class AbsCampaign extends Model
         }
 
         return $atts;
+    }
+
+    public function makeSampleData($params = [])
+    {
+        $default = [
+            'delivery_success' => 0.95,
+            'open' => 0.4, // against delivery_success
+            'click' => 0.5, // against open
+            'unsubscribe' => 0.04, // against open
+            'bounce' => 0.03, // against open
+            'feedback' => 0.02 // against open
+        ];
+
+        $params = array_merge($default, $params);
+
+        // Tracking log
+        $this->getPendingSubscribers(null, function ($subscribers, $page, $total) use (&$i, $params) {
+            MailLog::info("Fetching page $page (count: {$subscribers->count()})");
+
+            $i = 0;
+            $success = round($params['delivery_success'] * $total);
+            foreach ($subscribers as $subscriber) {
+                $i += 1;
+                // Pick up an available sending server
+                // Throw exception in case no server available
+                $server = $this->pickSendingServer($this);
+                $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from_email));
+
+                if ($i <= $success) {
+                    $sent = [
+                        'status' => 'sent',
+                        'runtime_message_id' => $msgId
+                    ];
+                }
+
+                $this->trackMessage($sent, $subscriber, $server, $msgId);
+
+                // additional log
+                MailLog::info("Sending to subscriber `{$subscriber->email}` ({$i}/{$total})");
+            }
+        });
+
+    }
+
+    public function cleanSampleData()
+    {
+        $this->trackingLogs()->delete();
     }
 }
