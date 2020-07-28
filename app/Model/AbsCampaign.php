@@ -3151,6 +3151,8 @@ abstract class AbsCampaign extends Model
 
     public function makeSampleData($params = [])
     {
+        $this->cleanSampleData();
+
         $default = [
             'unconfirmed' => 0.08,
             'delivery_failed' => 0.05, // against all deivered emails
