@@ -436,7 +436,6 @@ abstract class AbsCampaign extends Model
                 'campaign_id' => $this->id,
                 'message_id' => $msgId,
                 'subscriber_id' => $subscriber->id,
-                'mail_list_id' => $subscriber->mail_list_id,
                 'sending_server_id' => $server->id,
                 'customer_id' => $this->customer->id,
             ), $response);
@@ -3143,7 +3142,7 @@ abstract class AbsCampaign extends Model
     public function makeSampleData($params = [])
     {
         $default = [
-            'delivery_success' => 0.95,
+            'delivery_failed' => 0.05, // against all deivered emails
             'open' => 0.4, // against delivery_success
             'click' => 0.5, // against open
             'unsubscribe' => 0.04, // against open
@@ -3155,10 +3154,12 @@ abstract class AbsCampaign extends Model
 
         // Tracking log
         $this->getPendingSubscribers(null, function ($subscribers, $page, $total) use (&$i, $params) {
+            if ($total == 0) {
+                throw new \Exception('No subscribers for campaign, are you sure mail list is set?');
+            }
             MailLog::info("Fetching page $page (count: {$subscribers->count()})");
 
             $i = 0;
-            $success = round($params['delivery_success'] * $total);
             foreach ($subscribers as $subscriber) {
                 $i += 1;
                 // Pick up an available sending server
@@ -3166,12 +3167,10 @@ abstract class AbsCampaign extends Model
                 $server = $this->pickSendingServer($this);
                 $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from_email));
 
-                if ($i <= $success) {
-                    $sent = [
-                        'status' => 'sent',
-                        'runtime_message_id' => $msgId
-                    ];
-                }
+                $sent = [
+                    'status' => 'sent',
+                    'runtime_message_id' => $msgId
+                ];
 
                 $this->trackMessage($sent, $subscriber, $server, $msgId);
 
@@ -3180,6 +3179,83 @@ abstract class AbsCampaign extends Model
             }
         });
 
+        echo "All tracking log count: ". $this->trackingLogs()->count()."\n";
+        // Failed tracking log
+        $failureCount = round($params['delivery_failed'] * $this->trackingLogs()->count());
+        $allLogs = $this->trackingLogs()->get()->map(function($e){ return $e->id; })->toArray();
+        $failedLogs = array_values(array_intersect_key($allLogs, array_flip( array_rand( $allLogs, $failureCount ))));
+        echo "Failed log count: ".$this->trackingLogs()->whereIn('id', $failedLogs)->count()."\n";
+        $this->trackingLogs()->whereIn('id', $failedLogs)->update([
+            'status' => 'failed',
+            'error' => array_rand(['Server replied: invalid email address', 'Server replied: email is already blocked by the server', 'RFC8343: mailbox does not exist']),
+        ]);
+
+        // Open log
+        $openCount = round($params['open'] * $this->trackingLogs()->where('status', 'sent')->count());
+        $sentLogs = $this->trackingLogs()->where('status', 'sent')
+                         ->select('tracking_logs.id')
+                         ->get()->map(function($e){ return $e->id; })->toArray();
+        $openLogs = array_values(array_intersect_key($sentLogs, array_flip( array_rand( $sentLogs, $openCount ))));
+        echo "Open log count: ".$openCount."\n";
+        foreach($this->trackingLogs()->whereIn('id', $openLogs)->get() as $r) {
+            $log = new \Acelle\Model\OpenLog();
+            $log->message_id = $r->message_id;
+            $location = \Acelle\Model\IpLocation::add(StringHelper::getRandomUSIpAddresses());
+            $log->ip_address = $location->ip_address;
+            $log->user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36';
+            $log->save();
+        }
+
+        // Open log
+        $clickCount = round($params['click'] * $openCount);
+        $openLogs = $this->trackingLogs()
+                         ->join('open_logs', 'tracking_logs.message_id', '=', 'open_logs.message_id')
+                         ->select('tracking_logs.id')
+                         ->get()->map(function($e){ return $e->id; })->toArray();
+        $clickLogs = array_values(array_intersect_key($openLogs, array_flip( array_rand( $openLogs, $clickCount ))));
+        echo "Click log count: ".$this->trackingLogs()->whereIn('id', $clickLogs)->count()."\n";
+        foreach($this->trackingLogs()->whereIn('id', $clickLogs)->get() as $r) {
+            $log = new \Acelle\Model\ClickLog();
+            $log->message_id = $r->message_id;
+            $location = \Acelle\Model\IpLocation::add(StringHelper::getRandomUSIpAddresses());
+            $log->ip_address = $location->ip_address;
+            $log->user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36';
+            $log->url = 'https://app.clickfunnels.com/signupflow';
+            $result = $log->save();
+        }
+
+        // Unsubscribe log
+        $unsubscribeCount = round($params['unsubscribe'] * $openCount);
+        $unsubscribeLogs = array_values(array_intersect_key($openLogs, array_flip( array_rand( $openLogs, $unsubscribeCount ))));
+        echo "Unsubscribe log count: ".$unsubscribeCount."\n";
+        foreach($this->trackingLogs()->whereIn('id', $unsubscribeLogs)->get() as $r) {
+            // Unsubscribe log
+            $log = new \Acelle\Model\UnsubscribeLog();
+            $log->message_id = $r->message_id;
+            $location = \Acelle\Model\IpLocation::add(StringHelper::getRandomUSIpAddresses());
+            $log->ip_address = $location->ip_address;
+            $log->user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36';
+            $log->save();
+        }
+
+        /*
+        // Bounce log
+        $bounceCount = round($params['bounce'] * $sentCount);
+        $bounceLogs = array_values(array_intersect_key($sentLogs, array_flip( array_rand( $sentLogs, $bounceCount ))));
+        echo "Bounce log count: ".$bounceCount."\n";
+        foreach($this->trackingLogs()->whereIn('id', $bounceLogs)->get() as $r) {
+            // Unsubscribe log
+            $log = new \Acelle\Model\UnsubscribeLog();
+            $log->message_id = $r->message_id;
+            $location = \Acelle\Model\IpLocation::add('159.89.231.93');
+            $log->ip_address = $location->ip_address;
+            $log->user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36';
+            $log->save();
+        }
+        */
+
+        // Finalize
+        $this->updateCache();
     }
 
     public function cleanSampleData()
