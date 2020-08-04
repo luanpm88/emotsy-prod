@@ -118,7 +118,7 @@ class TrackingDomainController extends Controller
     public function show($id)
     {
         $domain = TrackingDomain::findByUid($id);
-        $hostname = parse_url(Setting::get('url_root'), PHP_URL_HOST);
+        $hostname = parse_url(url('/'), PHP_URL_HOST);
 
         return view('tracking_domains.show', [
             'domain' => $domain,
