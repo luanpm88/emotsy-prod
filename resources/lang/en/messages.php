@@ -1749,7 +1749,7 @@
   'registration_recaptcha' => 'Registration captcha',
   'setting.registration_recaptcha.help' => 'Enable captcha for registration to block spammers and bots from accessing the webapp.',
   'frontend_dashboard_hello' => 'Hello, :name!',
-  'frontend_dashboard_welcome' => 'Welcome back to your account dashboard. Check out your email campaigns\' performance statistics and personalized tips from our insight reports.',
+  'frontend_dashboard_welcome' => 'Welcome back to your account dashboard.<br>Check out your email campaigns\' performance statistics and personalized tips from our insight reports.',
   'empty_record_message' => 'There are no records yet!',
   'backend_dashboard_hello' => 'Hello, :name!',
   'backend_dashboard_welcome' => 'Welcome back to admin dashboard. Check out these system statistics and notifications from our insight reports.',
