@@ -508,7 +508,7 @@ class Setting extends Model
             ],
             'rss.enabled' => [
                 'cat' => 'others',
-                'value' => 'no',
+                'value' => 'yes',
                 'type' => 'text',
                 'not_required' => true,
             ],
