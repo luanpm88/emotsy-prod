@@ -293,7 +293,11 @@ class SettingController extends Controller
                 if (empty($value)) {
                     $value = 'null';
                 }
-                \Acelle\Model\Setting::setEnv($key, $value);
+                if ($key == 'MAIL_PASSWORD') {
+                    \Acelle\Model\Setting::setEnv($key, quoteDotEnvValue($value));
+                } else {
+                    \Acelle\Model\Setting::setEnv($key, $value);
+                }
             }
 
             // update settings table
@@ -308,9 +312,7 @@ class SettingController extends Controller
 
             // Redirect to my lists page
             $next = action('Admin\SettingController@mailer');
-            \Artisan::call('config:cache');
             $request->session()->flash('alert-success', trans('messages.setting.updated'));
-            sleep(3);
 
             return redirect()->away($next);
         }
