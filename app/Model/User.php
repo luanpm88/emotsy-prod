@@ -25,6 +25,8 @@ namespace Acelle\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Acelle\Notifications\ResetPassword;
+use Acelle\Model\Setting;
+use App;
 
 class User extends Authenticatable
            // 5.7 implements MustVerifyEmail
@@ -197,7 +199,27 @@ class User extends Authenticatable
      */
     public function sendPasswordResetNotification($token)
     {
-        $this->notify(new ResetPassword($token, url('password/reset', $token)));
+        // $this->notify(new ResetPassword($token, url('password/reset', $token)));
+
+        $resetPasswordUrl = url('password/reset', $token);
+        $htmlContent = '<p>Please click the link below to reset your password:<br><a href="'.$resetPasswordUrl.'">'.$resetPasswordUrl.'</a>';
+
+        // build the message
+        $message = new \Swift_Message();
+        $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
+        $message->setContentType('text/html; charset=utf-8');
+
+        $message->setSubject('Password Reset');
+        $message->setTo($this->email);
+        $message->setReplyTo(Setting::get('mail.reply_to'));
+        $message->addPart($htmlContent, 'text/html');
+
+        $mailer = App::make('xmailer');
+        $result = $mailer->sendWithDefaultFromAddress($message);
+
+        if (array_key_exists('error', $result)) {
+            throw new \Exception($result['error']);
+        }
     }
 
     public function getStoragePath($path = '')
