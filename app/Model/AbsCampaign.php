@@ -3155,12 +3155,12 @@ abstract class AbsCampaign extends Model
 
         $default = [
             'unconfirmed' => 0.08,
-            'delivery_failed' => 0.05, // against all deivered emails
-            'open' => 0.41, // against delivery_success
-            'click' => 0.38, // against open
-            'unsubscribe' => 0.08, // against open
-            'bounce' => 0.04, // against open
-            'feedback' => 0.02 // against open
+            'delivery_failed' => 0.1, // against all deivered emails
+            'open' => 0.45, // against delivery_success
+            'click' => 0.85, // against open
+            'unsubscribe' => 0.2, // against open
+            'bounce' => 0.05,
+            'feedback' => 0.05
         ];
 
         $params = array_merge($default, $params);
