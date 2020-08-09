@@ -3291,6 +3291,60 @@ abstract class AbsCampaign extends Model
             $subscriber->markAsSpamReported($feedback->raw);
         }
 
+        // Adjust date/time
+        $sample = [
+            'subscriber_first_created' => '6 months ago',
+            'subscriber_last_created' => '2 day ago',
+            'first_open' => '24 hours ago',
+            'last_open' => '2 minutes ago',
+        ];
+
+        foreach($sample as $key => $value) {
+            $sample[$key] = new Carbon($value); 
+        }
+
+        DB::update(sprintf('UPDATE %s SET created_at = TIMESTAMPADD(SECOND, FLOOR(RAND() * TIMESTAMPDIFF(SECOND, \'%s\', \'%s\')), \'%s\')',
+            table('subscribers'),
+            $sample['subscriber_first_created'],
+            $sample['subscriber_last_created'],
+            $sample['subscriber_first_created'],
+        ));
+
+        DB::update(sprintf('UPDATE %s SET created_at = TIMESTAMPADD(SECOND, FLOOR(RAND() * TIMESTAMPDIFF(SECOND, \'%s\', \'%s\')), \'%s\')',
+            table('open_logs'),
+            $sample['first_open'],
+            $sample['last_open'],
+            $sample['first_open'],
+        ));
+
+        DB::update(sprintf('UPDATE %s SET created_at = TIMESTAMPADD(SECOND, FLOOR(RAND() * TIMESTAMPDIFF(SECOND, \'%s\', \'%s\')), \'%s\')',
+            table('click_logs'),
+            $sample['first_open'],
+            $sample['last_open'],
+            $sample['first_open'],
+        ));
+
+        DB::update(sprintf('UPDATE %s SET created_at = TIMESTAMPADD(SECOND, FLOOR(RAND() * TIMESTAMPDIFF(SECOND, \'%s\', \'%s\')), \'%s\')',
+            table('bounce_logs'),
+            $sample['first_open'],
+            $sample['last_open'],
+            $sample['first_open'],
+        ));
+
+        DB::update(sprintf('UPDATE %s SET created_at = TIMESTAMPADD(SECOND, FLOOR(RAND() * TIMESTAMPDIFF(SECOND, \'%s\', \'%s\')), \'%s\')',
+            table('feedback_logs'),
+            $sample['first_open'],
+            $sample['last_open'],
+            $sample['first_open'],
+        ));
+
+        DB::update(sprintf('UPDATE %s SET created_at = TIMESTAMPADD(SECOND, FLOOR(RAND() * TIMESTAMPDIFF(SECOND, \'%s\', \'%s\')), \'%s\')',
+            table('unsubscribe_logs'),
+            $sample['first_open'],
+            $sample['last_open'],
+            $sample['first_open'],
+        ));
+
         // Finalize
         $this->updateCache();
     }
