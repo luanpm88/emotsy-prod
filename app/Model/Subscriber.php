@@ -24,6 +24,7 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Log as MailLog;
+use DB;
 
 class Subscriber extends Model
 {
@@ -1168,5 +1169,53 @@ class Subscriber extends Model
     public function isSubscribed()
     {
         return $this->status == self::STATUS_SUBSCRIBED;
+    }
+
+    public function getHistory()
+    {
+        $openLogs = table('open_logs');
+        $clickLogs = table('click_logs');
+        $subscribeLogs = table('subscribe_logs');
+        $subscribers = table('subscribers');
+        $mailLists = table('mail_lists');
+        $campaigns = table('campaigns');
+        $trackingLogs = table('tracking_logs');
+
+        $sql = "
+            SELECT subscriber_id, activity, list_id, list_name, campaign_id, campaign_name, at
+            FROM
+            (
+                SELECT t.subscriber_id, 'open' as activity, null as list_id, null as list_name, t.campaign_id, c.name as campaign_name, open.created_at as at
+                FROM {$openLogs} open
+                JOIN {$trackingLogs} t on open.message_id = t.message_id
+                JOIN {$subscribers} s on s.id = t.subscriber_id
+                JOIN {$campaigns} c on c.id  = t.campaign_id
+                WHERE s.email = '{$this->email}'
+            ) AS open
+
+            UNION
+            (
+                SELECT t.subscriber_id, 'click' as activity, null as list_id, null as list_name, t.campaign_id, c.name as campaign_name, click.created_at as at
+                FROM {$clickLogs} click
+                JOIN {$trackingLogs} t on click.message_id = t.message_id
+                JOIN {$subscribers} s on s.id = t.subscriber_id
+                JOIN {$campaigns} c on c.id  = t.campaign_id
+                WHERE s.email = '{$this->email}'
+            )
+
+            UNION
+            (
+                SELECT s.id AS subscriber_id, 'subscribe' AS activity, l.id as list_id, l.name as list_name, null AS campaign_id, null AS campaign_name, s.created_at as at
+                FROM {$subscribers} s
+                JOIN {$mailLists} l on l.id  = s.mail_list_id
+                WHERE s.email = '{$this->email}'
+            )
+
+            ORDER BY at DESC;
+        ";
+
+        $result = DB::select($sql);
+
+        return json_decode(json_encode($result), true);
     }
 }
