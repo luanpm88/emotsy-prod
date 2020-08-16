@@ -63,7 +63,6 @@ mkdir storage/framework/cache/data/
 rm -fr storage/framework/sessions/*
 rm -fr storage/installed
 touch storage/recache
-touch storage/logs/mail.log
 rm -fr .authenticate
 rm -fr .git*
 rm -fr database/seeds/DatabaseSeeder.php
