@@ -64,9 +64,7 @@
         <div class="col-md-12">
             @if ($subscribers->count() >= 0)
                 <div class="filter-box">
-                    @include('helpers.select_tool', [
-                            'disable_all_items' => true
-                    ])
+                    @include('helpers.select_tool')
                     <div class="btn-group list_actions hide mr-10">
                         <button type="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
                             {{ trans('messages.actions') }} <span class="caret"></span>
