@@ -24,6 +24,7 @@
         "louis/log-viewer": "1.2.*",
         "louis/sendgrid": "dev-master",
         "mailgun/mailgun-php": "^2.1",
+        "mews/purifier": "^3.2",
         "mika56/spfcheck": "^1.1",
         "paypal/paypal-checkout-sdk": "1.0.1",
         "paypal/rest-api-sdk-php": "^1.11",
