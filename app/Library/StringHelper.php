@@ -22,6 +22,8 @@
 
 namespace Acelle\Library;
 
+use DOMDocument;
+
 class StringHelper
 {
     /**
@@ -330,5 +332,27 @@ class StringHelper
         ];
 
         return $ips[array_rand($ips)];
+    }
+
+    public static function purifyHtml($html, $tags = [])
+    {
+        $defaults = ['script'];
+        $defaults = array_merge($defaults, $tags);
+        $dom = new DOMDocument();
+        libxml_use_internal_errors(true); // disable warning for invalid tags
+        $dom->loadHTML($html);
+        foreach($defaults as $tag) {
+            $itemsToRemove = $dom->getElementsByTagName($tag);
+
+            $remove = [];
+            foreach($itemsToRemove as $item) {
+                $remove[] = $item;
+            }
+
+            foreach ($remove as $item) {
+                $item->parentNode->removeChild($item); 
+            }
+        }
+        return $dom->saveHTML();
     }
 }
