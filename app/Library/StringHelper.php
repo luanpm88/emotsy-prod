@@ -340,7 +340,7 @@ class StringHelper
         $defaults = array_merge($defaults, $tags);
         $dom = new DOMDocument();
         libxml_use_internal_errors(true); // disable warning for invalid tags
-        $dom->loadHTML($html);
+        $dom->loadHTML($html, LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED);
         foreach($defaults as $tag) {
             $itemsToRemove = $dom->getElementsByTagName($tag);
 
