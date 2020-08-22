@@ -479,6 +479,13 @@ class SendingDomain extends Model
 
         $this->spf_verified = ($check == SPFCheck::RESULT_PASS || $check == SPFCheck::RESULT_SOFTFAIL) ? self::VERIFIED : self::UNVERIFIED;
 
+        if ($this->spf_verified == false) {
+            // try again with another method
+            $checker = new SPFCheck(new DNSRecordGetter());
+            $check = $checker->isIPAllowed($this->getHostIpAddress(), $this->name);
+            $this->spf_verified = ($check == SPFCheck::RESULT_PASS || $check == SPFCheck::RESULT_SOFTFAIL) ? self::VERIFIED : self::UNVERIFIED;
+        }
+
         $this->save();
     }
 
