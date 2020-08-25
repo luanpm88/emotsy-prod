@@ -871,9 +871,14 @@ class Template extends Model implements Storable
             $fullPath = $themePath.'/'.$folder;
 
             if ($folder != '.' && $folder != '..' && is_dir($fullPath)) {
+                $files = glob($fullPath . "/index.html");
+                $content = file_get_contents($files[0]);
+                preg_match_all('/(<title\>([^<]*)\<\/title\>)/i', $content, $m);
+                $title = $m[2][0];
+
                 // Create admin template
                 $template = new self();
-                $template->name = $folder;
+                $template->name = $title;
                 $template->admin_id = 1;
 
                 $template->loadFromDirectory($fullPath);
