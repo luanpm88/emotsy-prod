@@ -429,6 +429,12 @@ class Automation2 extends Model
             case 'api-3-0':
                 // Just wait for API call
                 break;
+            case 'weekly-recurring':
+                $this->checkForWeeklyRecurring();
+                break;
+            case 'monthly-recurring':
+                $this->checkForMonthlyRecurring();
+                break;
             case 'others':
                 // others
                 break;
@@ -436,6 +442,86 @@ class Automation2 extends Model
                 throw new \Exception('Unknown Automation trigger type '.$this->getTriggerAction()->getOption('key'));
         }
         $this->logger()->info(sprintf('NEW > Finish checking for new trigger'));
+    }
+
+    public function checkForWeeklyRecurring()
+    {
+        $thisId = $this->id;
+        // TODAY + CURRENT TIME
+        $currentTime = new DateTime(null, new DateTimeZone($this->customer->timezone));
+        // TODAY + GIVEN TIME
+        $triggerTime = new DateTime($this->getTriggerAction()->getOptions()['at'], new DateTimeZone($this->customer->timezone));
+
+        if ($currentTime < $triggerTime) {
+            $this->logger()->info(sprintf('Not the right time: CURRENT %s < %s', $currentTime->format('Y-m-d H:i:s'), $triggerTime->format('Y-m-d H:i:s')));
+            return;
+        }
+
+        $selectedWeekDays = $this->getTriggerAction()->getOptions()['days_of_week'];
+
+        $today = Carbon::now($this->customer->timezone);
+
+        if (!in_array($today->dayOfWeek, $selectedWeekDays)) {
+            $this->logger()->info(sprintf('Not the right week day: CURRENT %s (%s) != %s', $today->dayOfWeek, $today->toString(), implode(' ', $selectedWeekDays)));
+            return;
+        }
+
+        // Only trigger once a day
+        // Counting by user timezone
+        $startOfDayUtc = $today->startOfDay()->timezone('UTC');
+
+        $subscribers = $this->subscribers()->leftJoin('auto_triggers', function($join) use ($thisId, $startOfDayUtc) {
+            $join->on('auto_triggers.subscriber_id', 'subscribers.id');
+            $join->where('auto_triggers.automation2_id', $thisId);
+            $join->where('auto_triggers.created_at', '>=', $startOfDayUtc);
+        })
+        ->whereNull('auto_triggers.subscriber_id')->get();
+
+        // init trigger
+        foreach ($subscribers as $subscriber) {
+            $this->initTrigger($subscriber);
+            $this->logger()->info(sprintf('NEW > ??? > Weekly recurring for %s, at %s', $subscriber->email, $startOfDayUtc->toString()));
+        }
+    }
+
+    public function checkForMonthlyRecurring()
+    {
+        $thisId = $this->id;
+        // TODAY + CURRENT TIME
+        $currentTime = new DateTime(null, new DateTimeZone($this->customer->timezone));
+        // TODAY + GIVEN TIME
+        $triggerTime = new DateTime($this->getTriggerAction()->getOptions()['at'], new DateTimeZone($this->customer->timezone));
+
+        if ($currentTime < $triggerTime) {
+            $this->logger()->info(sprintf('Not the right time: CURRENT %s < %s', $currentTime->format('Y-m-d H:i:s'), $triggerTime->format('Y-m-d H:i:s')));
+            return;
+        }
+
+        $selectedDays = $this->getTriggerAction()->getOptions()['days_of_month'];
+
+        $today = Carbon::now($this->customer->timezone);
+
+        if (!in_array($today->day, $selectedDays)) {
+            $this->logger()->info(sprintf('Not the right day: CURRENT %s (%s) != %s', $today->day, $today->toString(), implode(' ', $selectedDays)));
+            return;
+        }
+
+        // Only trigger once a day
+        // Counting by user timezone
+        $startOfDayUtc = $today->startOfDay()->timezone('UTC');
+
+        $subscribers = $this->subscribers()->leftJoin('auto_triggers', function($join) use ($thisId, $startOfDayUtc) {
+            $join->on('auto_triggers.subscriber_id', 'subscribers.id');
+            $join->where('auto_triggers.automation2_id', $thisId);
+            $join->where('auto_triggers.created_at', '>=', $startOfDayUtc);
+        })
+        ->whereNull('auto_triggers.subscriber_id')->get();
+
+        // init trigger
+        foreach ($subscribers as $subscriber) {
+            $this->initTrigger($subscriber);
+            $this->logger()->info(sprintf('NEW > ??? > Monthly recurring for %s, at %s', $subscriber->email, $startOfDayUtc->toString()));
+        }
     }
 
     public function checkForDateOfBirth()
@@ -674,7 +760,7 @@ class Automation2 extends Model
     {
         $formatter = new LineFormatter("[%datetime%] %channel%.%level_name%: %message%\n");
         if (getenv('LOGFILE') != false) {
-            $stream = new RotatingFileHandler(getenv('LOGFILE'), 0, Logger::WARNING);
+            $stream = new RotatingFileHandler(getenv('LOGFILE'), 0, Logger::DEBUG);
         } else {
             $logfile = storage_path('logs/' . php_sapi_name() . '/automation-'.$this->uid.'.log');
             $stream = new RotatingFileHandler($logfile, 0, Logger::WARNING);
