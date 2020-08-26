@@ -785,6 +785,7 @@ class SendingServer extends Model
         return [
             ['value' => '', 'text' => trans('messages.choose')],
             ['value' => 'us-east-1', 'text' => 'US East (N. Virginia)', 'host' => 'email-smtp.us-east-1.amazonaws.com'],
+            ['value' => 'us-east-2', 'text' => 'US East (Ohio)', 'host' => 'email-smtp.us-east-2.amazonaws.com'],
             ['value' => 'us-west-2', 'text' => 'US West (Oregon)', 'host' => 'email-smtp.us-west-2.amazonaws.com'],
             ['value' => 'ap-south-1', 'text' => 'Asia Pacific (Mumbai)', 'host' => 'email-smtp.ap-south-1.amazonaws.com'],
             ['value' => 'ap-southeast-1', 'text' => 'Asia Pacific (Singapore)', 'host' => 'email-smtp.ap-southeast-1.amazonaws.com'],
