@@ -427,7 +427,7 @@ class Setting extends Model
             ],
             'geoip.sqlite.source_url' => [
                 'cat' => 'others',
-                'value' => 'https://www.dropbox.com/s/l4n52l1hdvwlqsc/ip2locationdb11.db?dl=1',
+                'value' => 'https://www.dropbox.com/s/369w0clb7cu1uyz/ip2locationdb11.db?dl=1',
                 'type' => 'text',
                 'not_required' => true,
             ],
