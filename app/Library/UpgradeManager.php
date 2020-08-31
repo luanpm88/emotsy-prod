@@ -539,7 +539,13 @@ class UpgradeManager
                 continue;
             }
 
-            $target = include join_paths($lang->languageDir(), pathinfo($sourcePath)['basename']);
+            $targetPath = join_paths($lang->languageDir(), pathinfo($sourcePath)['basename']);
+
+            if (!file_exists($targetPath)) {
+                $this->copy($sourcePath, $targetPath);
+            }
+
+            $target = include $targetPath;
             $merged = array_diff_key($target + $source, array_diff_key($target, $source));
             $lang->updateFromYaml(pathinfo($sourcePath)['filename'], \Yaml::dump($merged));
         }
