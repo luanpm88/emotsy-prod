@@ -363,6 +363,16 @@ function language_code()
 }
 
 /**
+ * Get language code.
+ *
+ * @return string
+ */
+function language()
+{
+    return \Acelle\Model\Language::where('code', '=', language_code())->first();
+}
+
+/**
  * Format a number as percentage.
  *
  * @return string

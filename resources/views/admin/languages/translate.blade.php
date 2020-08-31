@@ -66,6 +66,11 @@
                         <i class="icon-menu6"></i> {{ trans('messages.auth') }}
                     </a>
                 </li>
+                <li class="{{ $filename == "auth" ? "active" : "" }} text-semibold">
+                    <a href="{{ action('Admin\LanguageController@translate', ["id" => $language->uid, "file" => "builder"]) }}">
+                        <i class="icon-menu6"></i> {{ trans('messages.builder') }}
+                    </a>
+                </li>
             </ul>
                 
             <div class="tab-content">

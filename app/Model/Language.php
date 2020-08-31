@@ -302,6 +302,16 @@ class Language extends Model
     }
 
     /**
+     * Update language file from yaml.
+     *
+     * @var text
+     */
+    public function getBuilderLang()
+    {
+        return include $this->languageDir().'builder.php';
+    }
+
+    /**
      * all language code.
      *
      * @return array

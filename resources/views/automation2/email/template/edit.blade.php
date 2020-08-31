@@ -20,6 +20,7 @@
             editor = new Editor({
                 buildMode: false,
                 legacyMode: true,
+                lang: {!! json_encode(language()->getBuilderLang()) !!},
                 url: '{{ action('Automation2Controller@templateContent', [
                   'uid' => $automation->uid,
                   'email_uid' => $email->uid,
