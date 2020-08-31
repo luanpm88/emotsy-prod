@@ -20,6 +20,7 @@
             editor = new Editor({
                 buildMode: false,
                 legacyMode: true,
+                lang: {!! json_encode(language()->getBuilderLang()) !!},
                 url: '{{ action('CampaignController@templateContent', $campaign->uid) }}',
                 backCallback: function() {
                   parent.$('.full-iframe-popup').fadeOut();
