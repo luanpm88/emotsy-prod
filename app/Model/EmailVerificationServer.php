@@ -67,12 +67,39 @@ class EmailVerificationServer extends Model
         $uri = array_key_exists('username', $options) ? str_replace('{USERNAME}', $options['username'], $uri) : $uri;
         $uri = array_key_exists('password', $options) ? str_replace('{PASSWORD}', $options['password'], $uri) : $uri;
 
-        // actually request to the service
-        $response = $client->request($config['request_type'], $uri, ['verify' => false]);
+        // build the request URI
+        // @todo not complete
+        if ($config['request_type'] == 'POST') {
+            $postdata = $config['post_data'];
+            $postdata = str_replace('{EMAIL}', $email, $postdata);
+            foreach ($config['fields'] as $field) {
+                if (array_key_exists($field, $options)) {
+                    $postdata = str_replace('{'.strtoupper($field).'}', $options[$field], $postdata);
+                }
+            }
+
+            $headers = $config['post_headers'];
+            foreach($headers as $header => $value) {
+                foreach ($config['fields'] as $field) {
+                    if (array_key_exists($field, $options)) {
+                        $value = str_replace('{'.strtoupper($field).'}', $options[$field], $value);
+                        $headers[$header] = $value;
+                    }
+                }
+            }
+
+            // make POST request
+            // @todo POST case not tested
+            $response = $client->request($config['request_type'], $uri, ['headers' => $headers, 'body' => $postdata]);
+        } else { // GET request
+            // actually request to the service
+            $response = $client->request($config['request_type'], $uri, ['verify' => false]);
+        }
 
         // fetch the result
         $raw = (string) $response->getBody();
         $jsonObject = new JsonObject($raw);
+
         $result = $jsonObject->get($config['result_xpath'])[0];
 
         // map the result value to those of Acelle Mail
