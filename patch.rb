@@ -5,8 +5,8 @@
 require 'json'
 
 # Settings
-last_supported = '4.0.19-p62'
-packages = ['acelle', 'twig', 'ezyang', 'mews']       # vendor packages to be replaced
+last_supported = '4.0.20-p63'
+packages = []       # vendor packages to be replaced
 dirs = ['public/builder', 'resources/lang/default']                   # 'resources/lang/default' for example
 
 # Auto setting
