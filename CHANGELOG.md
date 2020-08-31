@@ -1,3 +1,26 @@
+2.0.21 / 2020-09-01
+==================
+
+ * Added: tracking domain support
+ * Added: tracking domain with HTTPS support
+ * Added: purify users' HTML content
+ * Added: strict password reset policy
+ * Added: spam scoring improved
+ * Added: trailing comma clean up, better compatibility with PHP 7.3 or older
+ * Added: new Amazon Web Service regions support
+ * Added: more automation delay options
+ * Added: more timezone converting options
+ * Added: RSS feed support with advanced template engine
+ * Fixed: DNS record for tracking domain may not correctly show up
+ * Fixed: email attachement improved
+ * Fixed: InnoDB compatibility improved
+ * Fixed: list subscription performance improved
+ * Fixed: PRO builder translation improved
+ * Fixed: better RFC 1341 compliance
+ * Fixed: ENV file quoting
+ * Fixed: better load performance for JS/CSS
+ * Fixed: delivery attempt tracking improved
+
 4.0.20 / 2020-05-10
 ==================
 
