@@ -85,5 +85,16 @@ return [
             'result_xpath' => '$.deliverable',
             'result_map' => [ 'true' => 'deliverable', 'false' => 'undeliverable' ]
         ],
+        /*[
+            'id' => 'mailcheck.co',
+            'name' => 'mailcheck.co',
+            'uri' => 'https://api.mailcheck.co/v1/singleEmail:check',
+            'request_type' => 'POST',
+            'post_data' => '{ "email": "{EMAIL}" }',
+            'post_headers' => [ 'Authorization' => 'Bearer {API_KEY}' ],
+            'fields' => [ 'api_key' ],
+            'result_xpath' => '$.deliverable',
+            'result_map' => [ 'true' => 'deliverable', 'false' => 'undeliverable' ],
+        ],*/
     ]
 ];
