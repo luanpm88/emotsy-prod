@@ -98,5 +98,7 @@
 	</div>
 	<!-- /page container -->
 
+	{!! \Acelle\Model\Setting::get('custom_script') !!}
+
 </body>
 </html>
