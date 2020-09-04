@@ -76,7 +76,7 @@ class SettingController extends Controller
                     // Upload and save image
                     if ($name == 'site_logo_small' || $name == 'site_logo_big' || $name == 'site_favicon') {
                         if ($request->hasFile($name) && $request->file($name)->isValid()) {
-                            \Acelle\Model\Setting::uploadFile($request->file($name), $name);
+                            \Acelle\Model\Setting::uploadFile($request->file($name), $name, false);
                         }
                     } else {
                         if ($settings[$name]['cat'] == 'general' && $request->user()->admin->getPermission('setting_general') == 'yes') {

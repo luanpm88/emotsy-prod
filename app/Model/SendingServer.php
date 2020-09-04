@@ -1568,7 +1568,7 @@ class SendingServer extends Model
 
         $selectedEmails = array_key_exists('emails', $selected) ? $selected['emails'] : [];
         $selectedDomains = array_key_exists('domains', $selected) ? $selected['domains'] : [];
-        $identityStore = new identityStore($options['identities']);
+        $identityStore = new IdentityStore($options['identities']);
         $identityStore->select(array_merge($selectedEmails, $selectedDomains));
 
         $options['identities'] = $identityStore->get();
