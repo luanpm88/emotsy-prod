@@ -626,7 +626,7 @@ class Setting extends Model
      *
      * @var bool
      */
-    public static function uploadFile($file, $type = null)
+    public static function uploadFile($file, $type = null, $thumbnail = true)
     {
         $uploadPath = storage_path(self::UPLOAD_PATH);
 
@@ -642,7 +642,9 @@ class Setting extends Model
         $file->move($uploadPath, $filename);
 
         // create thumbnails
-        $img = \Image::make($uploadPath.$filename);
+        if ($thumbnail) {
+            $img = \Image::make($uploadPath.$filename);
+        }
 
         self::set($type, $filename);
 
