@@ -240,7 +240,7 @@ class Customer extends Model implements BillableUserInterface
                 throw new \Exception('No sending server available for plan #Customer::allSenders');
             }
 
-            $result = $this->senders()->whereRaw(sprintf("%s IS NULL OR %s = %s", table('senders.sending_server_id'), table('senders.sending_server_id'), $server->id));
+            $result = $this->senders()->whereRaw(sprintf("(%s IS NULL OR %s = %s)", table('senders.sending_server_id'), table('senders.sending_server_id'), $server->id));
         } else {
             $result = $this->senders();
         }
