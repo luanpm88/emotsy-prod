@@ -62,7 +62,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('system:cleanup')->daily();
 
         // GeoIp database check
-        $schedule->command('geoip:check')->everyMinute()->withoutOverlapping();
+        $schedule->command('geoip:check')->everyMinute()->withoutOverlapping(60);
 
         // Subscription
         $schedule->call(function () {
