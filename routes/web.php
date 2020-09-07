@@ -131,6 +131,8 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
 
 // Without authentication
 Route::group(['middleware' => ['not_installed']], function () {
+    Route::get('blank', function() { return; });
+
     Route::get('campaigns/{message_id}/open', 'CampaignController@open')->name('openTrackingUrl');
     Route::get('campaigns/{message_id}/click/{url}', 'CampaignController@click')->name('clickTrackingUrl');
     Route::get('campaigns/{message_id}/unsubscribe', 'CampaignController@unsubscribe')->name('unsubscribeUrl');
