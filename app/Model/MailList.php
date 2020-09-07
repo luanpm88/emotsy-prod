@@ -473,7 +473,7 @@ class MailList extends Model
             'customer_id' => $customer->id,
             'type' => 'list',
             'name' => $name,
-            'data' => json_encode($data),
+            'data' => json_encode($data)
         ]);
     }
 
