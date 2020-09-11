@@ -2099,7 +2099,7 @@
   'admin.notification.system_url_title' => 'Application URL',
   'admin.notification.system_url_not_match' => 'The current web URL (:current) does not match with the one stored in the system\'s cache (:cached). Please go to Admin > Setting > All Settings > System URL to verify and update your setting cache',
   'admin.notification.subscription.title' => 'Subscription',
-  'admin.notification.subscription.pending' => 'There are :count pending subscriptions that need your approval',
+  'admin.notification.subscription.pending' => 'There are :count pending subscription(s) that need your approval',
   'admin.settings.system_urls.not_match' => 'WARNING: The current web URL <code>:current</code> does not match with the one stored inthe system\'s cache <code>:cached</code>. Click the button below to update the system\'s cache',
   'admin.settings.system_urls.title' => 'Application URL',
   'admin.settings.system_urls.current_urls_wording' => 'Below are the current application URLs stored in the system\'s cache',
