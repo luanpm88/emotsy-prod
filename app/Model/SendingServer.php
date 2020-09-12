@@ -105,6 +105,16 @@ class SendingServer extends Model
     }
 
     /**
+     * Plans.
+     *
+     * @return collection
+     */
+    public function plansSendingServers()
+    {
+        return $this->hasMany('Acelle\Model\PlansSendingServer', 'sending_server_id');
+    }
+
+    /**
      * Get the bounce handler.
      */
     public function bounceHandler()

@@ -267,7 +267,7 @@ class SendingServerController extends Controller
             if ($request->user()->customer->can('delete', $item)) {
                 // Log
                 $item->log('deleted', $request->user()->customer);
-
+                $item->plansSendingServers()->delete(); // workaround in case of MyISAM, no cascade
                 $item->delete();
             }
         }
