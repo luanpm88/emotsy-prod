@@ -84,6 +84,14 @@ return [
             'fields' => [ 'api_key' ],
             'result_xpath' => '$.deliverable',
             'result_map' => [ 'true' => 'deliverable', 'false' => 'undeliverable' ]
+        ],[
+            'id' => 'cloudvision.io',
+            'name' => 'Cloud Vision',
+            'uri' => 'https://dev-marketing.cloudvision.io/api/v1/verify?email={EMAIL}&api_token={API_KEY}',
+            'request_type' => 'GET',
+            'fields' => [ 'api_key' ],
+            'result_xpath' => '$.result',
+            'result_map' => [ 'deliverable' => 'deliverable', 'undeliverable' => 'undeliverable' ]
         ],
         /*[
             'id' => 'mailcheck.co',
