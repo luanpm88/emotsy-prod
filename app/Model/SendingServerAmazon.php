@@ -215,9 +215,17 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
             'MaxItems' => 1000, # @todo, need pagination here
         ])->toArray()['Identities'];
 
-        $identities = $this->sesClient()->getIdentityVerificationAttributes([
-            'Identities' => $emailOrDomains,
-        ])->toArray()['VerificationAttributes'];
+        $identities = [];
+
+        // AWS: can only get verification attributes for up to 100 identities at a time
+        foreach(array_chunk($emailOrDomains, 100) as $chunk100) {
+            $identities100 = $this->sesClient()->getIdentityVerificationAttributes([
+                'Identities' => $chunk100,
+            ])->toArray()['VerificationAttributes'];
+            var_dump($identities100);
+
+            $identities = array_merge($identities, $identities100);
+        }
 
         // Domains added by users
         $domainsByUsers = $this->sendingDomains()->whereIn('name', $emailOrDomains)->get();
