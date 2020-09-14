@@ -2188,7 +2188,7 @@
     to help digital marketers and application developers send marketing, notification, and transactional emails.
     Obtain your Amazon SMTP settings and fill in the form below to get connected',
   'sending_servers.configuration_settings.aws.intro' => 'Set up a connection to your Amazon Web Service account to send email through Simple Email Service (SES).',
-  'sending_server.name.help' => 'For example: My AWS',
+  'sending_server.name.helpx' => 'For example: My AWS',
   'sending_servers.sending_limit.aws.intro' => 'Control how fast your application can send through this connection.
     Every Amazon SES account has its own set of sending limits. You can find the details of AWS limits here',
   'sending_servers.speed_limit' => 'Speed limit',

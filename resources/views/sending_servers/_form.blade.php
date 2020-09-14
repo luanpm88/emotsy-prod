@@ -61,6 +61,20 @@
 			])
 		</div>
 	@endif
+	@if (in_array(request()->type, ['mailgun-api', 'mailgun-smtp']))
+		<div class="col-sm-6 col-md-4">
+			@include('helpers.form_control', [
+				'type' => 'select',
+				'class' => '',
+				'name' => 'host',
+				'value' => $server->host,
+				'help_class' => 'sending_server',
+				'options' => Acelle\Model\SendingServer::mailgunRegionSelectOptions(),
+				'rules' => $server->getRules(),
+				'disabled' => ($server->id && $errors->isEmpty()),
+			])
+		</div>
+	@endif
 	@if (array_key_exists("aws_access_key_id", Acelle\Model\SendingServer::frontendTypes()[request()->type]["cols"]))
 		<div class="col-sm-6 col-md-4">
 			@include('helpers.form_control', [
@@ -169,7 +183,7 @@
 				'rules' => Acelle\Model\SendingServer::rules(request()->type)
 			])
 		</div>
-	@endif
+	@endif	
 </div>
 
 <h4 class="text-semibold text-teal-800">{{ trans('messages.sending_quota') }}</h4>

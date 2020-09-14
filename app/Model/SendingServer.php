@@ -388,6 +388,7 @@ class SendingServer extends Model
                 'cols' => [
                     'api_key' => 'required',
                     'domain' => 'required',
+                    'host' => 'required',
                 ],
                 'settings' => [
                     'name' => 'required',
@@ -546,7 +547,6 @@ class SendingServer extends Model
                     'name' => 'required',
                     'domain' => 'required',
                     'api_key' => 'required',
-                    'host' => 'required',
                     'smtp_username' => 'required',
                     'smtp_password' => 'required',
                     'smtp_port' => 'required',
