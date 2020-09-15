@@ -9,7 +9,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Acelle\Library\QuotaTrackerFile;
 use Carbon\Carbon;
 
-class QuotaTrackerFileArchiedTest extends TestCase
+class QuotaTrackerFileArchivedTest extends TestCase
 {
     /**
      * Test if the quota tracking system itself is correct
