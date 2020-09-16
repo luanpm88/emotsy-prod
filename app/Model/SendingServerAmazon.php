@@ -222,7 +222,6 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
             $identities100 = $this->sesClient()->getIdentityVerificationAttributes([
                 'Identities' => $chunk100,
             ])->toArray()['VerificationAttributes'];
-            var_dump($identities100);
 
             $identities = array_merge($identities, $identities100);
         }
