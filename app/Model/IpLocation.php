@@ -53,7 +53,7 @@ class IpLocation extends Model
         $geoip = App::make('Acelle\Library\Contracts\GeoIpInterface');
 
         try {
-            if (class_exists('SQLite3')) {
+            if (!class_exists('SQLite3')) {
                 throw new \Exception('The "php-sqlite3" PHP extension is not available on your hosting server. Please check with your hosting support staff to enable it');
             }
 
