@@ -119,7 +119,9 @@ $_SESSION['RF']['language_file'] = 'lang/en_EN.php';
 $user_uid = $_SESSION["user_uid"];
 $base_url = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] && ! in_array(strtolower($_SERVER['HTTPS']), array( 'off', 'no' ))) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
 $base_r_url = str_replace("filemanager2/dialog.php", "", str_replace($base_url, "", URL::to('/')));
-
+// echo $base_url;
+// echo $base_r_url;
+// die();
 $config = array(
 
     /*
@@ -139,8 +141,8 @@ $config = array(
     | with start and final /
     |
     */
-    'upload_dir' => $base_r_url . 'files/' . $user_uid . "/",
-    'thumb_dir' => $base_r_url . 'files/thumbs/' . $user_uid . "/",
+    'upload_dir' => $base_r_url . '/files/' . $user_uid . "/",
+    'thumb_dir' => $base_r_url . '/files/thumbs/' . $user_uid . "/",
     /*
     |--------------------------------------------------------------------------
     | relative path from filemanager folder to upload folder
