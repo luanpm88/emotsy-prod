@@ -93,6 +93,11 @@ class AppServiceProvider extends ServiceProvider
                     'cashier.end_period_last_days' => Setting::get('system.end_period_last_days') ? Setting::get('system.end_period_last_days') : config('cashier.end_period_last_days'),
                     'cashier.renew_free_plan' => Setting::get('system.renew_free_plan') ? Setting::get('system.renew_free_plan') : config('cashier.renew_free_plan'),
                     'cashier.recurring_charge_before_days' => Setting::get('system.recurring_charge_before_days') ? Setting::get('system.recurring_charge_before_days') : config('cashier.recurring_charge_before_days'),
+
+                    'cashier.card_payment' => Setting::get('system.card_payment') ? Setting::get('system.card_payment') : config('cashier.card_payment'),
+                    'cashier.offline_payment' => Setting::get('system.offline_payment') ? Setting::get('system.offline_payment') : config('cashier.offline_payment'),
+                    'cashier.digital_coin_payment' => Setting::get('system.digital_coin_payment') ? Setting::get('system.digital_coin_payment') : config('cashier.digital_coin_payment'),
+                    'cashier.paypal_payment' => Setting::get('system.paypal_payment') ? Setting::get('system.paypal_payment') : config('cashier.paypal_payment'),
                 ]);
 
                 // per payment configs

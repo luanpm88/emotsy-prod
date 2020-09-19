@@ -3814,4 +3814,22 @@
   'automation.subscriber.remove' => 'Remove from Automation',
   'automation.subscriber.removed' => 'Subscriber was successfully removed from automation',
   'automation.subscriber.restarted' => 'Subscriber was successfully restarted within automation',
+  'payment.all_available_gateways' => 'All available payment gateways',
+  'payment.all_available_gateways.wording' => 'Belows are all payment gateways that installed',
+  'payment.offline_payment' => 'Offline Payment',
+  'payment.offline_payment.intro' => 'Receive payments outside of the application',
+  'payment.card' => 'Use Card',
+  'payment.card.intro' => 'Receive payments from customer\'s card (credit, debit, master, visa,...)',
+  'payment.digital_coin' => 'Digital Coin',
+  'payment.digital_coin.intro' => 'Receive payment from a cryptocurrency like Bitcoin, Monero, ZCash, etc.',
+  'payment.paypal_payment' => 'Paypal',
+  'payment.paypal_payment.intro' => 'PayPal is the fast/safe way to send money, make an online
+      payment, receive money or set up a merchant account',
+  'payment.default_payment_gateway' => 'Default Gateways',
+  'payment.can_not_connect' => 'Can not connect to :name',
+  'payment.can_not_connect.desc' => '<p>Error: :error</p> <p class="">
+      <a class="btn btn-mc_primary mt-4" href=":link">Change setting</a><p>',
+  'subscription.choose_payment_method' => 'Choose payment method',
+  'subscription.choose_payment_method.intro' => 'Let select one of payment methods belows for paying your subscription',
+  'subscription.no_payment_method_selected' => 'No payment method selected!',
 ) ?>

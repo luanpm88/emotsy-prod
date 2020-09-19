@@ -76,6 +76,8 @@ class AccountSubscriptionController extends Controller
      **/
     public function create(Request $request)
     {
+        var_dump($request->payment_method);
+        die();
         // Get current customer
         $customer = $request->user()->customer;
         $plan = Plan::findByUid($request->plan_uid);

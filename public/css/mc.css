@@ -911,3 +911,15 @@ table.table-log tr th {
   align-items: center;
   margin-bottom: 5px;
 }
+.choose-payment-methods>div {
+  border-bottom: solid 1px #ddd;
+  cursor: pointer;
+  padding: 0 10px;
+  opacity: 0.7;
+}
+.choose-payment-methods>div:hover {
+  background-color: #f4f4f4;
+}
+.choose-payment-methods>div.current {
+  opacity: 1;
+}

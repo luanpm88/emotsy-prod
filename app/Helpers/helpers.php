@@ -803,3 +803,13 @@ function quoteDotEnvValue($value)
 
     return $value;
 }
+
+function isValidPaymentGateway($name) {
+    try {
+        \Acelle\Cashier\Cashier::getPaymentGateway($name)->validate();
+    } catch (\Exception $ex) {
+        return false;
+    }   
+    
+    return true;
+}
