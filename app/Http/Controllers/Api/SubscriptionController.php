@@ -68,7 +68,7 @@ class SubscriptionController extends Controller
     {
         // Get current subscription
         $subscription = \Acelle\Cashier\Subscription::findByUid($uid);
-        $gateway = \Acelle\Cashier\Cashier::getPaymentGateway();
+        $gateway = $subscription->getPaymentGateway();
 
         // check if item exists
         if (!is_object($subscription)) {

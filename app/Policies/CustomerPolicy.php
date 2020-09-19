@@ -103,10 +103,7 @@ class CustomerPolicy
         $ability = $user->admin->getPermission('customer_update');
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->admin->id == $item->admin_id);
-
-        $service = \Acelle\Cashier\Cashier::getPaymentGateway();
-        $can = $can;
-
+                
         return $can;
     }
 }

@@ -2020,8 +2020,6 @@ class Customer extends Model implements BillableUserInterface
      */
     public function hasSubscriptionNotice()
     {
-        $gateway = \Acelle\Cashier\Cashier::getPaymentGateway();
-
         if (is_object($this->subscription)) {
             return $this->subscription->hasError();
         }

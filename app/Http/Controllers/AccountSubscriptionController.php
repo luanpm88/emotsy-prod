@@ -29,7 +29,6 @@ class AccountSubscriptionController extends Controller
         }
 
         $customer = $request->user()->customer;
-        $gateway = Cashier::getPaymentGateway();
         
         // Get current subscription
         $subscription = $customer->subscription;
@@ -45,6 +44,9 @@ class AccountSubscriptionController extends Controller
                 'subscription' => $subscription,
             ]);
         }
+        
+        // get sub gateway
+        $gateway = $subscription->getPaymentGateway();
 
         if (!$subscription->plan->isActive()) {
             return view('account.subscription.error', ['message' => __('messages.subscription.error.plan-not-active', [ 'name' => $subscription->plan->name])]);
@@ -76,12 +78,10 @@ class AccountSubscriptionController extends Controller
      **/
     public function create(Request $request)
     {
-        var_dump($request->payment_method);
-        die();
         // Get current customer
         $customer = $request->user()->customer;
         $plan = Plan::findByUid($request->plan_uid);
-        $gateway = Cashier::getPaymentGateway();
+        $gateway = Cashier::getPaymentGateway($request->payment_method);
 
         // Create subscription
         $subscription = $gateway->create($customer, $plan);
@@ -131,7 +131,7 @@ class AccountSubscriptionController extends Controller
     {
         $customer = $request->user()->customer;
         $subscription = $customer->subscription;
-        $gateway = Cashier::getPaymentGateway();
+        $gateway = $subscription->getPaymentGateway();
         $plans = Plan::getAvailablePlans();
         
         // Authorization
@@ -157,7 +157,7 @@ class AccountSubscriptionController extends Controller
     {
         $customer = $request->user()->customer;
         $subscription = $customer->subscription;
-        $gateway = Cashier::getPaymentGateway();
+        $gateway = $subscription->getPaymentGateway();
 
         if ($request->user()->customer->can('cancel', $subscription)) {
             $gateway->cancel($subscription);
@@ -179,7 +179,7 @@ class AccountSubscriptionController extends Controller
     {
         $customer = $request->user()->customer;
         $subscription = $customer->subscription;
-        $gateway = Cashier::getPaymentGateway();
+        $gateway = $subscription->getPaymentGateway();
 
         if ($request->user()->customer->can('resume', $subscription)) {
             $gateway->resume($subscription);
@@ -202,7 +202,7 @@ class AccountSubscriptionController extends Controller
         $customer = $request->user()->customer;
         // Get current subscription
         $subscription = $customer->subscription;
-        $gateway = Cashier::getPaymentGateway();
+        $gateway = $subscription->getPaymentGateway();
         
         if ($request->user()->customer->can('cancelNow', $subscription)) {
             $gateway->cancelNow($subscription);
