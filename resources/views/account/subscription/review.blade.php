@@ -85,8 +85,8 @@
                 @if (config('cashier.card_payment') != 'none' && isValidPaymentGateway(config('cashier.card_payment')))    
                     <div class="d-flex align-items-center choose-payment">
                         <div class="mr-auto pr-4">
-                            <h4 class="font-weight-semibold mb-2">{{ trans('messages.payment.card') }}</h4>
-                            <p>{{ trans('messages.payment.card.intro') }}</p>
+                            <h4 class="font-weight-semibold mb-2">{{ trans('messages.payment.card_payment') }}</h4>
+                            <p>{{ trans('messages.payment.card_payment.intro') }}</p>
                         </div>
                         <div class="text-right pl-4">
                             <div>
