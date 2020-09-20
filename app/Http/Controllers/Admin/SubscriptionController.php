@@ -79,7 +79,7 @@ class SubscriptionController extends Controller
             // asign plan
             $customer = Customer::findByUid($request->customer_uid);
             $plan = Plan::findByUid($request->plan_uid);
-            $customer->assignPlan($plan);
+            $customer->assignPlan($plan, $request->gateway);            
             
             return response()->json([
                 'status' => 'success',

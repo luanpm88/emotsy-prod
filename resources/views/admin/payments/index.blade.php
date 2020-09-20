@@ -56,8 +56,8 @@
                     </div>
                     <div class="d-flex align-items-center">
                         <div class="mr-auto pr-4">
-                            <h4 class="font-weight-semibold mb-2">{{ trans('messages.payment.card') }}</h4>
-                            <p>{{ trans('messages.payment.card.intro') }}</p>
+                            <h4 class="font-weight-semibold mb-2">{{ trans('messages.payment.card_payment') }}</h4>
+                            <p>{{ trans('messages.payment.card_payment.intro') }}</p>
                         </div>
                         <div class="text-right pl-4">
                             <div  style="width: 200px">

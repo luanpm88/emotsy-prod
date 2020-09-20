@@ -558,7 +558,6 @@ class CustomerController extends Controller
     {
         $customer = \Acelle\Model\Customer::findByUid($uid);
         $plans = Plan::getAvailablePlans();
-        $gateway = Cashier::getPaymentGateway();
 
         // authorize
         if (\Gate::denies('assignPlan', $customer)) {
@@ -569,7 +568,7 @@ class CustomerController extends Controller
         if ($request->isMethod('post')) {
             $plan = Plan::findByUid($request->plan_uid);
 
-            $customer->assignPlan($plan);
+            $customer->assignPlan($plan, $request->gateway);
 
             return response()->json([
                 'status' => 'success',
@@ -583,7 +582,6 @@ class CustomerController extends Controller
         return view('admin.customers.assign_plan', [
             'customer' => $customer,
             'plans' => $plans,
-            'gateway' => $gateway,
         ]);
     }
 }

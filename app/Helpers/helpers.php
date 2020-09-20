@@ -813,3 +813,30 @@ function isValidPaymentGateway($name) {
     
     return true;
 }
+
+function getPaymentTypes() {
+    return ['offline_payment', 'card_payment', 'digital_coin_payment', 'paypal_payment'];
+}
+
+function getPayments() {
+    $options = [];
+
+    foreach(getPaymentTypes() as $type) {
+        $service = config('cashier.' . $type);
+        if ($service != 'none' && isValidPaymentGateway($service)) {
+            $options[] = $type;
+        }
+    }
+
+    return $options;
+}
+
+function getPaymentOptions() {
+    $options = [];
+
+    foreach(getPayments() as $type) {
+        $options[] = ['text' => trans('messages.payment.' . $type), 'value' => config('cashier.' . $type)];
+    }
+
+    return $options;
+}
