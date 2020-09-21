@@ -911,3 +911,38 @@ table.table-log tr th {
   align-items: center;
   margin-bottom: 5px;
 }
+.tox:not([dir=rtl]) .tox-toolbar__group:not(:last-of-type) {
+  border-right: none!important;
+}
+.tox .tox-statusbar {
+  border-top: none!important;
+  height: 10px!important;
+}
+.tox .tox-edit-area {
+  border-top: none!important;
+}
+.tox .tox-toolbar, .tox .tox-toolbar__overflow, .tox .tox-toolbar__primary {
+  border-top: none!important;
+  background-color: #fff!important;
+  padding-top: 2px!important;
+}
+.tox .tox-tbtn {
+  height: 28px!important;
+  border-radius: 2px!important;
+}
+.tox-tinymce {
+  border-radius: 3px!important;
+  background: #fff!important;
+}
+.tox .tox-tbtn:hover:not(.tox-tbtn--disabled) {
+  background: #ddd!important;
+}
+.tox .tox-statusbar {
+  background: transparent!important;
+}
+.tox .tox-edit-area__iframe {
+  background: transparent!important;
+}
+.tox-tinymce {
+  box-shadow: 0px 0px 5px rgba(0,0,0,0.1)!important;
+}
