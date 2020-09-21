@@ -7,7 +7,7 @@ function f_enabled($name) {
 }
 
 // fucntions that are required by Acelle Mail
-$required_functions = ['proc_close', 'proc_open', 'escapeshellarg', ];
+$required_functions = ['escapeshellarg', ];
 
 // Check required functions
 foreach ($required_functions as $f) {
