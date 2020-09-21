@@ -106,13 +106,16 @@ $(document).ready(function() {
         convert_urls: false,
         remove_script_host: false,
         forced_root_block: "",
-        skin: "oxide-dark",
-        plugins: [
-          'table advlist autolink lists link image charmap print preview anchor directionality',
-          'searchreplace visualblocks code fullscreen',
-          'insertdatetime media contextmenu paste code textcolor'
+        skin: "oxide",
+        menubar: false,
+        branding: false,
+        elementpath: false,
+        plugins: 'link textcolor lists autolink',
+            //toolbar: 'undo redo | bold italic underline | fontselect fontsizeselect | forecolor backcolor | alignleft aligncenter alignright alignfull | numlist bullist outdent indent',
+        toolbar: [
+            'bold italic underline forecolor link menuDateButton',
+            // 'forecolor backcolor | alignleft aligncenter alignright alignfull | numlist bullist outdent indent'
         ],
-        toolbar: 'insertfile undo redo | fontselect | fontsizeselect | styleselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | ltr rtl',
         valid_elements : '*[*],meta[*]',
         valid_children: '+h1[div],+h2[div],+h3[div],+h4[div],+h5[div],+h6[div],+a[div]',
         extended_valid_elements : "meta[*]",
