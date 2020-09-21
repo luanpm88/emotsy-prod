@@ -3833,4 +3833,5 @@
   'subscription.choose_payment_method.intro' => 'Let select one of payment methods belows for paying your subscription',
   'subscription.no_payment_method_selected' => 'No payment method selected!',
   'subscription.select_payment' => 'Select payment',
+  'current_service' => 'Gateway',
 ) ?>
