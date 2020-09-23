@@ -2176,7 +2176,6 @@
     to help digital marketers and application developers send marketing, notification, and transactional emails.
     Obtain your Amazon SMTP settings and fill in the form below to get connected',
   'sending_servers.configuration_settings.aws.intro' => 'Set up a connection to your Amazon Web Service account to send email through Simple Email Service (SES).',
-  'sending_server.name.help' => 'For example: My AWS',
   'sending_servers.sending_limit.aws.intro' => 'Control how fast your application can send through this connection.
     Every Amazon SES account has its own set of sending limits. You can find the details of AWS limits here',
   'sending_servers.speed_limit' => 'Speed limit',
@@ -3814,4 +3813,5 @@
   'automation.subscriber.restarted' => 'Subscriber was successfully restarted within automation',
   'import.notice.over_quota' => 'Notice: list quota exceeded, certain records were skipped',
   'campaign.score.intro' => 'Certain tests can be made against your email content and header to calculate an aggregate score which runs on a <strong>1 - 10 scale</strong>. The lower the score is, the more compliant your email is. Messages with a score at or below 5 are considered safe, while messages with score higher then 5 may be treated at spam by ISP.',
+  'sending_server.name.helpx' => 'For example: My AWS',
 ) ?>

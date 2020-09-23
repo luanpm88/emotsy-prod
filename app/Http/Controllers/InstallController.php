@@ -612,12 +612,14 @@ class InstallController extends Controller
                 'check' => extension_loaded('xml'),
                 'note' => 'PHP XML extension is required.',
             ],
+            /*
             [
                 'type' => 'requirement',
                 'name' => 'proc_close()',
                 'check' => func_enabled('proc_close'),
                 'note' => 'proc_close() must be enabled.',
             ],
+            */
             [
                 'type' => 'requirement',
                 'name' => 'escapeshellarg()',

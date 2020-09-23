@@ -2173,7 +2173,6 @@
   'sending_servers.amazon_smtp.intro' => 'Amazon Simple Email Service (Amazon SES) ist ein Cloud-basierter E-Mail-Sendedienst. Unterstützung von Digital Marketern und Anwendungsentwicklern beim Versenden von Marketing-, Benachrichtigungs- und Transaktions-E-Mails.
      Beziehen Sie Ihre Amazon SMTP-Einstellungen und füllen Sie das folgende Formular aus, um eine Verbindung herzustellen',
   'sending_servers.configuration_settings.aws.intro' => 'Richten Sie eine Verbindung zu Ihrem Amazon Web Service-Konto ein, um E-Mails über Simple Email Service (SES) zu senden.',
-  'sending_server.name.help' => 'For example: Mein AWS',
   'sending_servers.sending_limit.aws.intro' => 'Steuern Sie, wie schnell Ihre Anwendung über diese Verbindung senden kann. Für jedes Amazon SES-Konto gelten eigene Sendebeschränkungen. Einzelheiten zu den AWS-Grenzwerten finden Sie hier',
   'sending_servers.speed_limit' => 'Speed limit',
   'sending_servers.quota.100_per_minute' => '100 emails pro minute',
@@ -3775,4 +3774,5 @@
   'automation.subscriber.restarted' => 'Subscriber was successfully restarted within automation',
   'import.notice.over_quota' => 'Notice: list quota exceeded, certain records were skipped',
   'campaign.score.intro' => 'Certain tests can be made against your email content and header to calculate an aggregate score which runs on a <strong>1 - 10 scale</strong>. The lower the score is, the more compliant your email is. Messages with a score at or below 5 are considered safe, while messages with score higher then 5 may be treated at spam by ISP.',
+  'sending_server.name.helpx' => 'For example: My AWS',
 ) ?>

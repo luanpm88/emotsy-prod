@@ -68,6 +68,7 @@ if (!class_exists('SQLite3')) {
     $valid = false;
 }
 
+/*
 // proc_close() check =========
 $proc_close_enabled = true;
 try {
@@ -80,6 +81,7 @@ if (!$proc_close_enabled) {
     echo "ERROR: <strong>proc_close()</strong> must be enabled.<br />";
     $valid = false;
 }
+*/
 // =============================
 // escapeshellarg() check =========
 $escapeshellarg_enabled = true;
