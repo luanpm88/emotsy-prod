@@ -23,11 +23,6 @@ class AccountSubscriptionController extends Controller
      **/
     public function index(Request $request)
     {
-        // Check if system dosen't have payment gateway
-        if (!Setting::get('system.payment_gateway')) {
-            return view('noPrimaryPayment');
-        }
-
         $customer = $request->user()->customer;
         
         // Get current subscription

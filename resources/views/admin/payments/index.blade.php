@@ -73,6 +73,7 @@
                                         ['value' => 'stripe', 'text' => trans('messages.payments.stripe')],
                                         ['value' => 'braintree', 'text' => trans('messages.payments.braintree')],
                                         ['value' => 'razorpay', 'text' => trans('messages.payments.razorpay')],
+                                        ['value' => 'paystack', 'text' => trans('messages.payments.paystack')],
                                     ],
                                 ])
                             </div>

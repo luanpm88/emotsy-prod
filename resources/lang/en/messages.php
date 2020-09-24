@@ -3834,4 +3834,11 @@
   'subscription.no_payment_method_selected' => 'No payment method selected!',
   'subscription.select_payment' => 'Select payment',
   'current_service' => 'Gateway',
+  'payments.paystack' => 'Paystack',
+  'payments.paystack.list_intro' => 'Modern online and offline payments for Africa.
+      Paystack helps businesses in Africa get paid by anyone, anywhere in the world',
+  'payment.paystack.wording' => 'Modern online and offline payments for Africa.
+      Paystack helps businesses in Africa get paid by anyone, anywhere in the world',
+  'payment.paystack.public_key' => 'Public key',
+  'payment.paystack.secret_key' => 'Secret key',
 ) ?>
