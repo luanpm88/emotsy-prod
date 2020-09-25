@@ -1,4 +1,8 @@
-<div class="sub-h3">{{ trans('messages.campaign_open_click_rate_intro') }}</div>
+<div class="row">
+    <div class="col-md-8">
+        <div class="sub-h3">{{ trans('messages.campaign_open_click_rate_intro') }}</div>
+    </div>
+</div>
 <div class="row">
     <div class="col-md-6">
         <div class="content-group-sm">
