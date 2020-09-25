@@ -84,6 +84,8 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
     // Helper method to generate other routes for authentication
     Auth::routes();
 
+    Route::get('/login/token/{token}', 'Controller@tokenLogin');
+
     Route::get('user/activate/{token}', 'UserController@activate');
     Route::get('/disabled', 'Controller@userDisabled');
     Route::get('/offline', 'Controller@offline');

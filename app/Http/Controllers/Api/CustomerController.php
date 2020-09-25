@@ -343,4 +343,25 @@ class CustomerController extends Controller
             'plan_uid' => $plan->uid
         ), 200);
     }
+
+    /**
+     * Generate one time token.
+     *
+     * PATCH /api/v1/customers/{uid}/login-token
+     *
+     * @param int $id customer's uid
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function loginToken($uid)
+    {
+        $user = \Auth::guard('api')->user();
+        $customer = \Acelle\Model\Customer::findByUid($uid);
+
+        $customer->user->generateOneTimeToken();
+
+        return \Response::json(array(
+            'token' => $customer->user->one_time_api_token,
+        ), 200);
+    }
 }
