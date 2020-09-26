@@ -19,6 +19,16 @@
         >
             {{ trans('messages.automation.email.settings') }}
         </span>
+        <a
+                        onclick="popupwindow('{{ action('Automation2Controller@templatePreview', [
+                            'uid' => $automation->uid,
+                            'email_uid' => $email->uid,
+                        ]) }}', '{{ $automation->name }}', 800, 800)"
+                        href="javascript:;"
+                        class="btn btn-default"
+                    >
+                        {{ trans('messages.automation.template.preview') }}
+                    </a>
     </div>
     
 <form>

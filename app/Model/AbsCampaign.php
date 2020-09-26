@@ -543,6 +543,9 @@ abstract class AbsCampaign extends Model
         // STEP 05. Transform URLs
         $body = $this->transformWithoutUpdate($body, true);
 
+        // STEP 05.1. Remove title tag from html
+        $body = strip_tags_only($body, 'title');
+
         if (is_null($msgId)) {
             $msgId = 'SAMPLE'; // for preview mode
         }
@@ -574,6 +577,8 @@ abstract class AbsCampaign extends Model
         // become
         //       <a href="%7BUNSUBSCRIBE_URL%7D" 
         $body = $this->inlineHtml($body);
+
+        
 
         return $body;
     }
@@ -2756,6 +2761,9 @@ abstract class AbsCampaign extends Model
             '',
             tinyDocTypeUntransform($this->html)
         );
+
+        // remove title tag
+        $this->html = strip_tags_only($this->html, 'title');
     }
 
     /**

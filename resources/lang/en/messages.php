@@ -3841,4 +3841,6 @@
       Paystack helps businesses in Africa get paid by anyone, anywhere in the world',
   'payment.paystack.public_key' => 'Public key',
   'payment.paystack.secret_key' => 'Secret key',
+  'customer.one_time_token.generated' => 'One time token was generated',
+  'token_expired' => 'Token was expired or invalid',
 ) ?>

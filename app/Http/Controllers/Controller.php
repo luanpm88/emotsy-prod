@@ -116,6 +116,25 @@ class Controller extends BaseController
     }
 
     /**
+     * Login from outsite.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function tokenLogin($token)
+    {
+        $user = \Acelle\Model\User::where('one_time_api_token', $token)->first();
+
+        if (!$user) {
+            return view('somethingWentWrong', ['message' => trans('messages.token_expired')]);
+        }
+
+        \Auth::login($user);
+        $user->clearOneTimeToken();
+
+        return redirect()->action('HomeController@index');
+    }
+
+    /**
      * Translate datatable.
      *
      * @return text
