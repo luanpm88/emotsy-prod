@@ -3814,4 +3814,6 @@
   'automation.subscriber.remove' => 'Remove from Automation',
   'automation.subscriber.removed' => 'Subscriber was successfully removed from automation',
   'automation.subscriber.restarted' => 'Subscriber was successfully restarted within automation',
+  'customer.one_time_token.generated' => 'One time token was generated',
+  'token_expired' => 'Token was expired or invalid',
 ) ?>

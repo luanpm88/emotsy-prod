@@ -117,8 +117,9 @@ class LayoutController extends Controller
         $user = $request->user();
         $layout = \Acelle\Model\Layout::findByUid($id);
         
+        // Prenvent save from demo mod
         if ($this->isDemoMode()) {
-            return $this->notAuthorized();
+            return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
         }
 
         // authorize

@@ -225,8 +225,13 @@ class LanguageController extends Controller
         $parse_error = $request->session()->get("parse_error");
         $filename = $request->file;
         
-        if ($this->isDemoMode() && $language->is_default) {
+        if ($language->is_default) {
             return $this->notAuthorized();
+        }
+
+        // Prenvent save from demo mod
+        if ($this->isDemoMode()) {
+            return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
         }
         
         // authorize

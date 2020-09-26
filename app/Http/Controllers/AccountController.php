@@ -30,7 +30,7 @@ class AccountController extends Controller
         if ($request->isMethod('post')) {
             // Prenvent save from demo mod
             if ($this->isDemoMode()) {
-                return $this->notAuthorized();
+                return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
             $this->validate($request, $customer->rules());
@@ -99,8 +99,13 @@ class AccountController extends Controller
         // save posted data
         if ($request->isMethod('post')) {
             // Prenvent save contact
-            if (isset($contact->id) && $this->isDemoMode()) {
+            if (isset($contact->id)) {
                 return $this->notAuthorized();
+            }
+            
+            // Prenvent save from demo mod
+            if ($this->isDemoMode()) {
+                return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
             $this->validate($request, \Acelle\Model\Contact::$rules);

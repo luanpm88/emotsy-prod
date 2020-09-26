@@ -471,6 +471,9 @@ class Email extends Model
             '',
             tinyDocTypeUntransform($this->content)
         );
+
+        // remove title tag
+        $this->content = strip_tags_only($this->content, 'title');
     }
 
     /**

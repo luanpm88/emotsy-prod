@@ -108,11 +108,27 @@
                       }
                   };
 
-                  container.addClass('builder-class-tinymce');
-                  tinyconfig.selector = '.builder-class-tinymce';
-                  $("#builder_iframe")[0].contentWindow.tinymce.init(tinyconfig);
+                  var unsupported_types = 'td, table, img, body';
+                  if (!container.is(unsupported_types) && (container.is('[builder-inline-edit]') || !editor.buildMode)) {
+                      container.addClass('builder-class-tinymce');
+                      tinyconfig.selector = '.builder-class-tinymce';
+                      editor.tinymce = $("#builder_iframe")[0].contentWindow.tinymce.init(tinyconfig);
 
-                  container.removeClass('builder-class-tinymce');
+                      container.removeClass('builder-class-tinymce');
+                  }
+
+                  // fixing td tinymce
+                  if (container.is('td')) {
+                      if (!container.find('.tinymce-td-fix').length) {
+                          var span = $('<div class="tinymce-td-fix builder-class-tinymce">');
+                          span.html(container.html());
+
+                          container.html('');
+                          container.append(span);
+
+                          span.click();
+                      }
+                  }
                 }
             });
           

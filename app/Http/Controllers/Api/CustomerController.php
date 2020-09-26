@@ -108,8 +108,9 @@ class CustomerController extends Controller
 
         // save posted data
         if ($request->isMethod('patch')) {
+            // Prenvent save from demo mod
             if ($this->isDemoMode()) {
-                return $this->notAuthorized();
+                return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
             $rules = $customer->apiUpdateRules($request);
@@ -341,6 +342,27 @@ class CustomerController extends Controller
             'message' => 'Assigned '.$customer->displayName().' plan to '.$plan->name.' successfully.',
             'customer_uid' => $customer->uid,
             'plan_uid' => $plan->uid
+        ), 200);
+    }
+
+    /**
+     * Generate one time token.
+     *
+     * PATCH /api/v1/customers/{uid}/login-token
+     *
+     * @param int $id customer's uid
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function loginToken($uid)
+    {
+        $user = \Auth::guard('api')->user();
+        $customer = \Acelle\Model\Customer::findByUid($uid);
+
+        $customer->user->generateOneTimeToken();
+
+        return \Response::json(array(
+            'token' => $customer->user->one_time_api_token,
         ), 200);
     }
 }

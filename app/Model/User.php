@@ -278,4 +278,22 @@ class User extends Authenticatable
 
         return $newname;
     }
+
+    /**
+     * Generate one time token.
+     */
+    public function generateOneTimeToken()
+    {
+        $this->one_time_api_token = generateRandomString(32);
+        $this->save();
+    }
+
+    /**
+     * Clear one time token.
+     */
+    public function clearOneTimeToken()
+    {
+        $this->one_time_api_token = null;
+        $this->save();
+    }
 }
