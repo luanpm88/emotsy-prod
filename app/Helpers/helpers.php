@@ -813,3 +813,34 @@ function generateRandomString($length = 10) {
     }
     return $randomString;
 }
+
+/**
+ * Strip Tags Only
+ *
+ * Just like strip_tags, but only removes the HTML tags specified and not all of
+ * them.
+ *
+ * @param String $text The text to strip the tags from.
+ * @param String|Array $allowedTags This can either be one tag (eg. 'p') or an
+ *     array, (eg. ['p','br','h1']).
+ * @return String The text with the mentioned tags stripped.
+ * @author Aalaap Ghag <aalaap@gmail.com>
+ */
+function strip_tags_only($text, $allowedTags = [])
+{
+    if (!is_array($allowedTags)) {
+        $allowedTags = [
+            $allowedTags
+        ];
+    }
+    
+    array_map(
+        function($allowedTag) use (&$text) {
+            $regEx = '#<' . $allowedTag . '.*?>(.*?)</' . $allowedTag . '>#is';
+            $text = preg_replace($regEx, '', $text);
+        },
+        $allowedTags
+    );
+    
+    return $text;
+}

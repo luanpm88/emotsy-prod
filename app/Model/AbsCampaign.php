@@ -2756,6 +2756,9 @@ abstract class AbsCampaign extends Model
             '',
             tinyDocTypeUntransform($this->html)
         );
+
+        // remove title tag
+        $this->content = strip_tags_only($this->content, 'title');
     }
 
     /**
