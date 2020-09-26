@@ -367,6 +367,7 @@ abstract class AbsCampaign extends Model
     public function sending()
     {
         $this->status = self::STATUS_SENDING;
+        $this->running_pid = getmypid();
         $this->delivery_at = \Carbon\Carbon::now();
         $this->save();
     }
@@ -3354,5 +3355,10 @@ abstract class AbsCampaign extends Model
         $this->defaultMailList->subscribers()->update(['status' => 'subscribed']);
         Blacklist::query()->delete();
         $this->trackingLogs()->delete();
+    }
+
+    public function occupiedByOtherAnotherProcess()
+    {
+        return (!is_null($this->running_pid) && posix_getpgid($this->running_pid));
     }
 }
