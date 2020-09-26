@@ -209,15 +209,16 @@ class CustomerController extends Controller
             return $this->notAuthorized();
         }
 
-        // prevent action from demo mod
+        // Prenvent save from demo mod
         if ($this->isDemoMode()) {
-            return $this->notAuthorized();
+            return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
         }
 
         // save posted data
         if ($request->isMethod('patch')) {
+            // Prenvent save from demo mod
             if ($this->isDemoMode()) {
-                return $this->notAuthorized();
+                return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
             $rules = $customer->rules();

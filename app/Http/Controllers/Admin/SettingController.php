@@ -54,8 +54,9 @@ class SettingController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
+            // Prenvent save from demo mod
             if ($this->isDemoMode()) {
-                return $this->notAuthorized();
+                return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
             $rules = [
@@ -120,8 +121,9 @@ class SettingController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
+            // Prenvent save from demo mod
             if ($this->isDemoMode()) {
-                return $this->notAuthorized();
+                return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
             $rules = [
@@ -255,8 +257,9 @@ class SettingController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
+            // Prenvent save from demo mod
             if ($this->isDemoMode()) {
-                return $this->notAuthorized();
+                return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
             $env = $request->env;
@@ -334,8 +337,9 @@ class SettingController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
+            // Prenvent save from demo mod
             if ($this->isDemoMode()) {
-                return $this->notAuthorized();
+                return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
             
             // build the message
@@ -452,8 +456,9 @@ class SettingController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
+            // Prenvent save from demo mod
             if ($this->isDemoMode()) {
-                return $this->notAuthorized();
+                return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
             try {
@@ -678,8 +683,9 @@ class SettingController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
+            // Prenvent save from demo mod
             if ($this->isDemoMode()) {
-                return $this->notAuthorized();
+                return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
             $rules = [];

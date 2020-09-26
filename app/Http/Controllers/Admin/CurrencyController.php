@@ -168,9 +168,9 @@ class CurrencyController extends Controller
         $current_user = $request->user();
         $currency = \Acelle\Model\Currency::findByUid($id);
 
-        // prevent action from demo mod
+        // Prenvent save from demo mod
         if ($this->isDemoMode()) {
-            return $this->notAuthorized();
+            return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
         }
 
         // authorize
