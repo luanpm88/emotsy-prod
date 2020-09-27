@@ -3843,4 +3843,33 @@
   'payment.paystack.secret_key' => 'Secret key',
   'customer.one_time_token.generated' => 'One time token was generated',
   'token_expired' => 'Token was expired or invalid',
+  'payment.enable' => 'Enable',
+  'payment.disable' => 'Disable',
+  'payment.show' => 'Show',
+  'payment.hide' => 'Hide',
+  'save_and_show' => 'Save & Show',
+  'frontend_payment.direct' => 'Offline payment',
+  'frontend_payment.direct.desc' => 'Receive payments outside of the application',
+  'frontend_payment.stripe' => 'Use Card',
+  'frontend_payment.stripe.desc' => 'Receive payments from customer\'s
+      card (credit, debit, master, visa,...)',
+  'frontend_payment.braintree' => 'Use Card',
+  'frontend_payment.braintree.desc' => 'Receive payments from customer\'s
+      card (credit, debit, master, visa,...)',
+  'frontend_payment.zarorpay' => 'Use Card',
+  'frontend_payment.zarorpay.desc' => 'Receive payments from customer\'s
+      card (credit, debit, master, visa,...)',
+  'frontend_payment.paystack' => 'Use Card',
+  'frontend_payment.paystack.desc' => 'Receive payments from customer\'s
+      card (credit, debit, master, visa,...)',
+  'frontend_payment.coinpayments' => 'Digital Coin',
+  'frontend_payment.coinpayments.desc' => 'Receive payment from a cryptocurrency
+      like Bitcoin, Monero, ZCash, etc.',
+  'frontend_payment.paypal' => 'PayPal',
+  'frontend_payment.paypal.desc' => 'PayPal is the fast/safe way to send money, make an online
+      payment, receive money or set up a merchant account',
+  'frontend_payment.paypal.desc' => 'Receive payments outside of the application',
+  'frontend_payment.paypal_subscription' => 'PayPal Subscription',
+  'frontend_payment.paypal_subscription.desc' => 'With PayPal Subscriptions, you can bill customers for plans
+      at regular intervals via their PayPal account',
 ) ?>

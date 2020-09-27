@@ -58,12 +58,12 @@
             </div>
             <h2 class="mb-1">{{ trans('messages.subscription.choose_payment_method') }}</h2>
             <p>{{ trans('messages.plan.review.wording') }}</p>
-            <div class="sub-section mb-30 choose-payment-methods">       
-                @if (config('cashier.offline_payment') != 'none')         
+            <div class="sub-section mb-30 choose-payment-methods">      
+                @foreach(Acelle\Model\Setting::getEnabledPaymentGateways() as $gateway)
                     <div class="d-flex align-items-center choose-payment">
                         <div class="mr-auto pr-4">
-                            <h4 class="font-weight-semibold mb-2">{{ trans('messages.payment.offline_payment') }}</h4>
-                            <p>{{ trans('messages.payment.offline_payment.intro') }}</p>
+                            <h4 class="font-weight-semibold mb-2">{{ trans('messages.frontend_payment.' . $gateway) }}</h4>
+                            <p>{{ trans('messages.frontend_payment.' . $gateway . '.desc') }}</p>
                         </div>
                         <div class="text-right pl-4">
                             <div>
@@ -75,82 +75,13 @@
                                     'help_class' => 'setting',
                                     'rules' => ['payment_method' => 'required'],
                                     'options' => [
-                                        ['value' => config('cashier.offline_payment'), 'text' => ''],
+                                        ['value' => $gateway, 'text' => ''],
                                     ],
                                 ])
                             </div>
                         </div>
                     </div>
-                @endif
-                @if (config('cashier.card_payment') != 'none' && isValidPaymentGateway(config('cashier.card_payment')))    
-                    <div class="d-flex align-items-center choose-payment">
-                        <div class="mr-auto pr-4">
-                            <h4 class="font-weight-semibold mb-2">{{ trans('messages.payment.card_payment') }}</h4>
-                            <p>{{ trans('messages.payment.card_payment.intro') }}</p>
-                        </div>
-                        <div class="text-right pl-4">
-                            <div>
-                                @include('helpers.form_control', [
-                                    'type' => 'radio2',
-                                    'name' => 'payment_method',
-                                    'value' => '',
-                                    'label' => '',
-                                    'help_class' => 'setting',
-                                    'rules' => ['payment_method' => 'required'],
-                                    'options' => [
-                                        ['value' => config('cashier.card_payment'), 'text' => ''],
-                                    ],
-                                ])
-                            </div>
-                        </div>
-                    </div>
-                @endif
-                @if (config('cashier.digital_coin_payment') != 'none' && isValidPaymentGateway(config('cashier.digital_coin_payment')))
-                    <div class="d-flex align-items-center choose-payment">
-                        <div class="mr-auto pr-4">
-                            <h4 class="font-weight-semibold mb-2">{{ trans('messages.payment.digital_coin') }}</h4>
-                            <p>{{ trans('messages.payment.digital_coin.intro') }}</p>
-                        </div>
-                        <div class="text-right pl-4">
-                            <div>
-                                @include('helpers.form_control', [
-                                    'type' => 'radio2',
-                                    'name' => 'payment_method',
-                                    'value' => '',
-                                    'label' => '',
-                                    'help_class' => 'setting',
-                                    'rules' => ['payment_method' => 'required'],
-                                    'options' => [
-                                        ['value' => config('cashier.digital_coin_payment'), 'text' => ''],
-                                    ],
-                                ])
-                            </div>
-                        </div>
-                    </div>
-                @endif
-                @if (config('cashier.paypal_payment') != 'none' && isValidPaymentGateway(config('cashier.digital_coin_payment')))
-                    <div class="d-flex align-items-center choose-payment">
-                        <div class="mr-auto pr-4">
-                            <h4 class="font-weight-semibold mb-2">{{ trans('messages.payment.paypal_payment') }}</h4>
-                            <p>{{ trans('messages.payment.paypal_payment.intro') }}</p>
-                        </div>
-                        <div class="text-right pl-4">
-                            <div>
-                                @include('helpers.form_control', [
-                                    'type' => 'radio2',
-                                    'name' => 'payment_method',
-                                    'value' => '',
-                                    'label' => '',
-                                    'help_class' => 'setting',
-                                    'rules' => ['payment_method' => 'required'],
-                                    'options' => [
-                                        ['value' => config('cashier.paypal_payment'), 'text' => ''],
-                                    ],
-                                ])
-                            </div>
-                        </div>
-                    </div>
-                @endif
+                @endforeach
             </div>
             <div class="sub-section">
                 <div class="row">

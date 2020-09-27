@@ -518,6 +518,12 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
+            'gateways' => [
+                'cat' => 'others',
+                'value' => '["direct"]',
+                'type' => 'array',
+                'not_required' => true,
+            ],
         ];
     }
 
@@ -690,6 +696,16 @@ class Setting extends Model
     public static function getPaymentGateways()
     {
         return config('cashier.gateways');
+    }
+
+    /**
+     * Get enabled payments gateways.
+     *
+     * @var array
+     */
+    public static function getEnabledPaymentGateways()
+    {
+        return json_decode(self::get('gateways'), true);
     }
 
     /**

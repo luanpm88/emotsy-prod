@@ -926,6 +926,8 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/sub_accounts', 'SubAccountController');
 
     // Payment gateways
+    Route::post('admin/payment/gateways/{name}/disable', 'PaymentController@disable');
+    Route::post('admin/payment/gateways/{name}/enable', 'PaymentController@enable');
     Route::post('admin/payment/gateways/paypal-subscription/{plan_uid}/disconnect-plan', 'PaymentController@paypalSubscriptionDisconnectPlan');
     Route::post('admin/payment/gateways/paypal-subscription/{plan_uid}/connect-plan', 'PaymentController@paypalSubscriptionConnectPlan');
     Route::post('admin/payment/gateways/paypal-subscription/disconnect', 'PaymentController@paypalSubscriptionDisconnect');
