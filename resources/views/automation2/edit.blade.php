@@ -268,7 +268,7 @@
 		}
 		
 		function SelectActionConfirm(key, insertToTree) {
-			var url = '{{ action('Automation2Controller@actionSelectConfirm', $automation->uid) }}' + '?key=' + key;
+			var url = '{{ action('Automation2Controller@actionSelectConfirm', $automation->uid) }}' + '?key=' + key + '&trigger=' + tree.getTrigger().options.type;
 			
 			popup.load(url, function() {				
 				// when click confirm select trigger type

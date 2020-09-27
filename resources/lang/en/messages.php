@@ -3816,4 +3816,13 @@
   'automation.subscriber.restarted' => 'Subscriber was successfully restarted within automation',
   'customer.one_time_token.generated' => 'One time token was generated',
   'token_expired' => 'Token was expired or invalid',
+  'automation.trigger.icon.woo-abandoned-cart' => '',
+  'automation.trigger.woo-abandoned-cart' => 'Abandoned Cart Reminder',
+  'automation.trigger.woo-abandoned-cart.desc' => 'Send your buyer a reminder if they left
+      something in cart',
+  'automation.trigger.woo-abandoned-cart.intro' => 'Send your buyer a reminder if they left
+      something in cart.<br/>Enter your WordPress site\'s endpoint to connect. If you are not sure
+      what your WordPress endpoint is, please install
+      <a target="_blank" href="">WP2Acelle</a> plugin',
+  'automation.trigger.tree.woo-abandoned-cart' => 'Abandoned Cart Reminder',
 ) ?>

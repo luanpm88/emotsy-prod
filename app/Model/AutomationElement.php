@@ -157,4 +157,21 @@ class AutomationElement
             default:
         }
     }
+
+    /**
+     * Get abandoned cart.
+     *
+     * @return string
+     */
+    public function wooGetAbandonedCart()
+    {
+        $client = new \GuzzleHttp\Client();
+        $uri = $this->getOption('connect_url');
+        $response = $client->request('GET', $uri, [
+            'headers' => [
+                "content-type" => "application/json"
+            ],
+        ]);
+        return json_decode($response->getBody(), true);
+    }
 }

@@ -225,6 +225,7 @@ class Automation2Controller extends Controller
             'api-3-0',
             'weekly-recurring',
             'monthly-recurring',
+            'woo-abandoned-cart',
         ];
         
         return view('automation2.triggerSelectPupop', [
@@ -289,6 +290,9 @@ class Automation2Controller extends Controller
             'monthly-recurring' => [
                 'options.days_of_month' => 'required|array|min:1',
                 'options.at' => 'required',
+            ],
+            'woo-abandoned-cart' => [
+                'options.connect_url' => 'required|url',
             ],
         ];
     }
@@ -375,6 +379,19 @@ class Automation2Controller extends Controller
         // authorize
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
+        }
+
+        // if trigger is woocommerce and key = condition
+        if ($request->key == 'condition' && $request->trigger == 'woo-abandoned-cart') {
+            $trigger = $automation->getTrigger();
+            var_dump($trigger->wooGetAbandonedCart());
+            die();
+
+            return view('automation2.actionSelectConfirm', [
+                'key' => $request->key,
+                'automation' => $automation,
+                'element' => $automation->getElement(),
+            ]);
         }
         
         return view('automation2.actionSelectConfirm', [

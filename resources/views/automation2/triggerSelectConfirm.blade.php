@@ -8,7 +8,7 @@
                 {{ trans('messages.automation.trigger.' . $key) }}
             </h3>
             <p class="mb-10">
-                {{ trans('messages.automation.trigger.' . $key . '.intro') }}
+                {!! trans('messages.automation.trigger.' . $key . '.intro') !!}
 			</p>
 				
 			<form id="trigger-select" action="{{ action("Automation2Controller@triggerSelect", $automation->uid) }}" method="POST" class="form-validate-jqueryz">
