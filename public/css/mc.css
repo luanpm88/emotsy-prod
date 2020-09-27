@@ -920,7 +920,9 @@ table.table-log tr th {
   border-bottom: solid 1px #ddd;
   cursor: pointer;
   padding: 0 10px;
-  opacity: 0.7;
+}
+.choose-payment-methods>div:first-child {
+  border-top: solid 1px #ddd;
 }
 .choose-payment-methods>div:hover {
   background-color: #f4f4f4;
@@ -966,4 +968,134 @@ table.table-log tr th {
 }
 .tox .tox-statusbar__resize-handle svg {
   fill: rgba(34,47,62,.3)!important;
+}
+.custom-radio input[type=radio]{
+  position: absolute;
+  visibility: hidden;
+}
+
+.custom-radio:hover label{
+	color: #FFFFFF;
+}
+
+.custom-radio .check{
+  display: block;
+  position: absolute;
+  border: 2px solid #AAAAAA;
+  border-radius: 100%;
+  height: 20px;
+  width: 20px;
+  top: 0;
+  left: 0;
+	z-index: 5;
+	transition: border .25s linear;
+	-webkit-transition: border .25s linear;
+}
+
+.custom-radio:hover .check {
+  border: 5px solid #FFFFFF;
+}
+.custom-radio .check::before {
+  display: block;
+  position: absolute;
+  content: '';
+  border-radius: 100%;
+  height: 8px;
+  width: 8px;
+  top: 1px;
+  left: 1px;
+  margin: auto;
+  transition: background 0.25s linear;
+  -webkit-transition: background 0.25s linear;
+}
+
+.custom-radio input[type=radio]:checked ~ .check {
+  border: 8px solid #007c89;
+}
+
+.custom-radio input[type=radio]:checked ~ .check::before {
+  background: transparent;
+}
+
+.custom-radio input[type=radio]:checked ~ label{
+  color: #0DFF92;
+}
+.choose-payment h4 {
+  font-size: 20px;
+}
+.choose-payment p {
+  font-size: 14px;
+  color: #555;
+  max-width: 500px;
+}
+.choose-payment-stripe h4 {
+  color: transparent;
+  background-image: url(../images/stripe.svg);
+  background-size: 64px 28px;
+  background-repeat: no-repeat;
+  background-position: 0;
+}
+.choose-payment-paypal h4 {
+  color: transparent;
+  background-image: url(../images/PayPal_logo.svg);
+  background-size: 80px;
+  background-repeat: no-repeat;
+  background-position: 0px 3px;
+}
+.choose-payment-paypal_subscription h4 {
+  color: transparent;
+  background-image: url(../images/PayPal_logo.svg);
+  background-size: 80px;
+  background-repeat: no-repeat;
+  background-position: 0px 3px;
+}
+.choose-payment-braintree h4 {
+  color: transparent;
+  background-image: url(../images/braintree.svg);
+  background-size: 140px;
+  background-repeat: no-repeat;
+  background-position: 0px 3px;
+}
+.choose-payment-coinpayments h4 {
+  color: transparent;
+  background-image: url(../images/coinpayments.jpg);
+  background-size: 150px;
+  background-repeat: no-repeat;
+  background-position: 0px 0;
+  height: 41px;
+  margin-bottom: 0!important;
+}
+.choose-payment-paystack h4 {
+  color: transparent;
+  background-image: url(../images/paystack.svg);
+  background-size: 130px;
+  background-repeat: no-repeat;
+  background-position: 0px 0;
+}
+.choose-payment-razorpay h4 {
+  color: transparent;
+  background-image: url(../images/Razorpay_logo.svg);
+  background-size: 130px;
+  background-repeat: no-repeat;
+  background-position: 0px 0;
+}
+.choose-payment-stripe, .choose-payment-paypal, .choose-payment-paypal_subscription, .choose-payment-braintree, .choose-payment-paystack, .choose-payment-razorpay {
+  background-image: url(../images/cards.svg);
+  background-size: 238px;
+  background-repeat: no-repeat;
+  background-position: right 10px top 10px;
+}
+.choose-payment-direct {
+  background-image: url(../images/bank.svg);
+  background-size: 38px;
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+}
+.form-group-mb-0 .form-group {
+  margin-bottom: 0;
+}
+.badge-large {
+    font-size: 100% !important;
+    padding: 2px 10px;
+    border-radius: 100px;
 }

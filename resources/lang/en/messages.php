@@ -2557,7 +2557,7 @@
   'setting.renew_free_plan.help' => 'Customers who are subscribing to a Free plan can not renew the plan. Need to change to a no-free plan first.',
   'payment.direct.notice' => 'Payment instructions',
   'plans.subscriber_count' => ':count subscriber(s)',
-  'payment.direct' => 'Direct',
+  'payment.direct' => 'Offline Payment',
   'plan.info.subscriber_count' => 'There are <strong>:count</strong> customer(s) currently subscribed to this plan.
     Click <a href=":link"><strong>here</strong></a> to see more details.',
   'admin.no_primary_payment' => 'No Primary Payment Gateway selected. Click <a href=":link"><strong>here</strong></a> to select one.',
@@ -3872,4 +3872,7 @@
   'frontend_payment.paypal_subscription' => 'PayPal Subscription',
   'frontend_payment.paypal_subscription.desc' => 'With PayPal Subscriptions, you can bill customers for plans
       at regular intervals via their PayPal account',
+  'payment.connect' => 'Connect',
+  'payment.active' => 'active',
+  'payment.inactive' => 'inactive',
 ) ?>

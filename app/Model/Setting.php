@@ -524,6 +524,12 @@ class Setting extends Model
                 'type' => 'array',
                 'not_required' => true,
             ],
+            'payment.direct' => [
+                'cat' => 'others',
+                'value' => 'connected',
+                'type' => 'array',
+                'not_required' => true,
+            ],
         ];
     }
 
@@ -741,6 +747,9 @@ class Setting extends Model
      */
     public static function updatePaymentGateway($name, $params)
     {
+        $setting = 'payment.'.$name;
+        self::set($setting, 'connected');
+
         foreach ($params as $key => $value) {
             $setting = 'payment.'.$name.'.'.$key;
 

@@ -31,7 +31,7 @@
                 <div class="mc-list-setting mt-20">
                     @foreach ($gateways as $name => $gateway)
                         <div class="list-setting bg-{{ $gateway['name'] }}
-                            {{ in_array($name, $enabledGateways) ? 'current' : '' }}">
+                            {{ Acelle\Model\Setting::get('payment.' . $name) ? 'current' : '' }}">
                             <div class="list-setting-main">
                                 <div class="title">
                                     <label>{{ trans('messages.payments.' . $name) }}</label>
@@ -39,20 +39,32 @@
                                 <p>{{ trans('messages.payments.' . $name . '.list_intro') }}</p>
                             </div>
                             <div class="list-setting-footer text-nowrap pl-4">
-                                @if (in_array($name, $enabledGateways))
-                                    <a class="btn btn-mc_default ml-5"
-                                        link-method="post" href="{{ action('Admin\PaymentController@disable', $name) }}">
-                                        {{ trans('messages.payment.hide') }}
+                                @if (Acelle\Model\Setting::get('payment.' . $name))
+                                    @if (in_array($name, $enabledGateways))
+                                        <span class="badge badge-large badge-success">
+                                            {{ trans('messages.payment.active') }}
+                                        </span>
+                                        <a class="btn btn-mc_primary ml-5"
+                                            link-method="post" href="{{ action('Admin\PaymentController@disable', $name) }}">
+                                            {{ trans('messages.payment.disable') }}
+                                        </a>
+                                    @else
+                                        <span class="badge badge-large badge-warning">
+                                            {{ trans('messages.payment.inactive') }}
+                                        </span>
+                                        <a class="btn btn-mc_primary ml-5"
+                                            link-method="post" href="{{ action('Admin\PaymentController@enable', $name) }}">
+                                            {{ trans('messages.payment.enable') }}
+                                        </a>
+                                    @endif
+                                    <a class="btn btn-mc_default ml-5" href="{{ action('Admin\PaymentController@edit', $name) }}">
+                                        {{ trans('messages.payment.setting') }}
                                     </a>
                                 @else
-                                    <a class="btn btn-mc_primary ml-5"
-                                        link-method="post" href="{{ action('Admin\PaymentController@enable', $name) }}">
-                                        {{ trans('messages.payment.show') }}
+                                    <a class="btn btn-mc_primary ml-5" href="{{ action('Admin\PaymentController@edit', $name) }}">
+                                        {{ trans('messages.payment.connect') }}
                                     </a>
                                 @endif
-                                <a class="btn btn-mc_default ml-5" href="{{ action('Admin\PaymentController@edit', $name) }}">
-                                    {{ trans('messages.payment.setting') }}
-                                </a>
                             </div>
                         </div>
                     @endforeach

@@ -25,7 +25,7 @@
 <form action="{{ action('AccountSubscriptionController@create', ['plan_uid' => $plan->uid]) }}" method="POST" class="proceed_with_payment">
     {{ csrf_field() }}
     <div class="row">
-        <div class="col-md-7">
+        <div class="col-md-6">
             <div class="sub-section mb-30">
                 <p>{{ trans('messages.plan.review.wording') }}</p>
                 
@@ -56,17 +56,17 @@
                     </li>
                 </ul>
             </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
             <h2 class="mb-1">{{ trans('messages.subscription.choose_payment_method') }}</h2>
             <p>{{ trans('messages.plan.review.wording') }}</p>
             <div class="sub-section mb-30 choose-payment-methods">      
                 @foreach(Acelle\Model\Setting::getEnabledPaymentGateways() as $gateway)
-                    <div class="d-flex align-items-center choose-payment">
-                        <div class="mr-auto pr-4">
-                            <h4 class="font-weight-semibold mb-2">{{ trans('messages.frontend_payment.' . $gateway) }}</h4>
-                            <p>{{ trans('messages.frontend_payment.' . $gateway . '.desc') }}</p>
-                        </div>
-                        <div class="text-right pl-4">
-                            <div>
+                    <div class="d-flex align-items-center choose-payment choose-payment-{{ $gateway }}">
+                        <div class="text-right pl-2 pr-2">
+                            <div class="d-flex align-items-center form-group-mb-0">
                                 @include('helpers.form_control', [
                                     'type' => 'radio2',
                                     'name' => 'payment_method',
@@ -78,8 +78,13 @@
                                         ['value' => $gateway, 'text' => ''],
                                     ],
                                 ])
+                                <div class="check"></div>
                             </div>
                         </div>
+                        <div class="mr-auto pr-4">
+                            <h4 class="font-weight-semibold mb-2">{{ trans('messages.payments.' . $gateway) }}</h4>
+                            <p class="mb-3">{{ trans('messages.payments.' . $gateway . '.list_intro') }}</p>
+                        </div>                        
                     </div>
                 @endforeach
             </div>
