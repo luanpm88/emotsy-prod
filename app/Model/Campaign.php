@@ -40,7 +40,19 @@ class Campaign extends AbsCampaign
             // make sure the same campaign is not started twice
             if (!$this->refreshStatus()->isReady()) {
                 MailLog::info("Campaign ID: {$this->id} is not ready or already started");
+                return;
+            }
 
+            if ($this->refreshStatus()->occupiedByOtherAnotherProcess()) {
+                // In case user PAUSE a campaign
+                // then immediately makes it READY again
+                //
+                // However the running process does not even know about it (PAUSE signal) to end itself
+                // It could be waiting for 60 second intervals in case of quota exceeded for example...
+                //
+                // So this check prevents a new process from taking the campaign
+                // giving the running process the chance to resume
+                MailLog::info("Campaign ID: {$this->id} is occupied by another process PID: {$this->running_pid}");
                 return;
             }
 
@@ -85,7 +97,7 @@ class Campaign extends AbsCampaign
         $count = ($count > 2) ? 2 : $count; // @todo do not use more than 2 processes
 
         MailLog::info("Forking {$count} process(es)");
-        $parentPid = getmypid();
+        $parentPid = $this->running_pid; // set in sending() function
         $children = [];
         for ($i = 0; $i < $count; $i += 1) {
             $pid = pcntl_fork();
@@ -148,7 +160,7 @@ class Campaign extends AbsCampaign
      */
     public function run($partition = null)
     {
-        // check if the method is trigger by a child process (triggered by startMultiProcess method)
+        // check if the method is trigger by a child process (triggered by runMultiProcess method)
         $asChildProcess = !($partition == null);
 
         // try/catch to make sure child process does not stop without reporting any error

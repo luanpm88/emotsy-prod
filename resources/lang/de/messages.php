@@ -3775,4 +3775,6 @@
   'import.notice.over_quota' => 'Notice: list quota exceeded, certain records were skipped',
   'campaign.score.intro' => 'Certain tests can be made against your email content and header to calculate an aggregate score which runs on a <strong>1 - 10 scale</strong>. The lower the score is, the more compliant your email is. Messages with a score at or below 5 are considered safe, while messages with score higher then 5 may be treated at spam by ISP.',
   'sending_server.name.helpx' => 'For example: My AWS',
+  'customer.one_time_token.generated' => 'One time token was generated',
+  'token_expired' => 'Token was expired or invalid',
 ) ?>
