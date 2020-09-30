@@ -3825,4 +3825,15 @@
       what your WordPress endpoint is, please install
       <a target="_blank" href="">WP2Acelle</a> plugin',
   'automation.trigger.tree.woo-abandoned-cart' => 'Abandoned Cart Reminder',
+  'automation.condition.open' => 'Subscriber read an Email',
+  'automation.condition.click' => 'Subscriber clicks on a Link',
+  'automation.condition.cart_buy_anything' => 'Buy anything in cart',
+  'automation.condition.cart_buy_item' => 'Buy a particular item',
+  'automation.action.save' => 'Save',
+  'automation.action.condition.cart_buy_anything.title' => 'Condition: Buy anything in cart',
+  'automation.action.condition.cart_buy_item.title' => 'Condition: Buy “:item” item',
+  'condition.which_woo_item' => 'Which Woocommerce product',
+  'condition.select_woo_item' => 'Select item',
+  'automation.intro.woo-abandoned-cart' => 'Send your buyer a reminder if they left
+      something in cart',
 ) ?>

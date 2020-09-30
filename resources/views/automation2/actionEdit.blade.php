@@ -48,6 +48,8 @@
             data: data,
         }).always(function(response) {
             // set node title
+            console.log(response.title);
+            console.log(tree.getSelected());
             tree.getSelected().setTitle(response.title);
             // merge options with reponse options
             tree.getSelected().setOptions($.extend(tree.getSelected().getOptions(), response.options));

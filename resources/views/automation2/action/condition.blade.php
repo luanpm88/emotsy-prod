@@ -1,3 +1,19 @@
+@php
+    $options = [
+        ['text' => trans('messages.automation.condition.open'), 'value' => 'open'],
+        ['text' => trans('messages.automation.condition.click'), 'value' => 'click'],
+    ];
+
+    $trigger = $automation->getTrigger();
+
+    if ($trigger->getOption('type') == 'woo-abandoned-cart') {
+        $options = array_merge($options, [
+            ['text' => trans('messages.automation.condition.cart_buy_anything'), 'value' => 'cart_buy_anything'],
+            ['text' => trans('messages.automation.condition.cart_buy_item'), 'value' => 'cart_buy_item'],
+        ]);
+    }
+@endphp
+
 <h5 class="mb-3">
     {{ trans('messages.automation.action.set_up_your_condition') }}
 </h5>
@@ -13,56 +29,31 @@
         'name' => 'type',
         'value' => $element->getOption('type'),
         'help_class' => 'trigger',
-        'options' => [
-            ['text' => 'Subscriber read an Email', 'value' => 'open'],
-            ['text' => 'Subscriber clicks on a Link', 'value' => 'click']
-        ],
+        'options' => $options,
         'rules' => [],
     ])
 </div>
     
-<div class="mb-20" data-condition="open" style="display:none">
-    @include('helpers.form_control', [
-        'type' => 'select',
-        'class' => 'required',
-        'label' => 'Which email subscriber reads',
-        'name' => 'email',
-        'value' => $element->getOption('email'),
-        'help_class' => 'trigger',
-        'include_blank' => trans('messages.automation.condition.choose_email'),
-        'required' => true,
-        'options' => $automation->getEmailOptions(),
-        'rules' => [],
-    ])
-</div>
-    
-<div class="mb-20" data-condition="click" style="display:none">
-    @include('helpers.form_control', [
-        'type' => 'select',
-        'class' => 'required',
-        'label' => 'Which Link subscriber clicks',
-        'name' => 'email_link',
-        'value' => $element->getOption('email_link'),
-        'help_class' => 'trigger',
-        'options' => $automation->getEmailLinkOptions(),
-        'include_blank' => trans('messages.automation.condition.choose_link'),
-        'required' => true,
-        'rules' => [],
-    ])
+<div class="condition-setting">
 </div>
     
 <script>
-    function toggleCriterion() {
+    var settingBox = new Box($('.condition-setting'));
+
+    function showSetting() {
         var value = $('[name=type]').val();
-        
-        $('[data-condition]').hide();
-        $('[data-condition='+value+']').show();
+        var url = '{{ action('Automation2Controller@conditionSetting', [
+        'uid' => $automation->uid,
+        'element_id' => $element->get('id'),
+    ]) }}&type=' + value;
+
+        settingBox.load(url);
     }
 
     // Toggle condition options
     $(document).on('change', '[name=type]', function() {
-        toggleCriterion();
+        showSetting();
     });
     
-    toggleCriterion();
+    showSetting();
 </script>

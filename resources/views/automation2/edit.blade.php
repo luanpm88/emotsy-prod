@@ -268,7 +268,9 @@
 		}
 		
 		function SelectActionConfirm(key, insertToTree) {
-			var url = '{{ action('Automation2Controller@actionSelectConfirm', $automation->uid) }}' + '?key=' + key + '&trigger=' + tree.getTrigger().options.type;
+			window.insertToTree = insertToTree;
+
+			var url = '{{ action('Automation2Controller@actionSelectConfirm', $automation->uid) }}' + '?key=' + key;
 			
 			popup.load(url, function() {				
 				// when click confirm select trigger type
@@ -598,8 +600,11 @@
                     }
 
                     if (e.getType() == 'ElementCondition') {
-                        if (  e.getOptions()['type'] == null || 
-                        	 (e.getOptions()['email'] == null && e.getOptions()['email_link'] == null )) {
+                        if 	(  	e.getOptions()['type'] == null || 
+                        	 	(e.getOptions()['type'] == 'click' && e.getOptions()['email_link'] == null ) ||
+								(e.getOptions()['type'] == 'open' && e.getOptions()['email'] == null ) || 
+								(e.getOptions()['type'] == 'cart_buy_item' && !e.getOptions()['item_id'] )
+							) {
 							e.showNotice('Condition not set up yet');
                             e.setTitle('Condition not set up yet');
                         } else {

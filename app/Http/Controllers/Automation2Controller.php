@@ -380,24 +380,32 @@ class Automation2Controller extends Controller
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
         }
-
-        // if trigger is woocommerce and key = condition
-        if ($request->key == 'condition' && $request->trigger == 'woo-abandoned-cart') {
-            $trigger = $automation->getTrigger();
-            var_dump($trigger->wooGetAbandonedCart());
-            die();
-
-            return view('automation2.actionSelectConfirm', [
-                'key' => $request->key,
-                'automation' => $automation,
-                'element' => $automation->getElement(),
-            ]);
-        }
         
         return view('automation2.actionSelectConfirm', [
             'key' => $request->key,
             'automation' => $automation,
             'element' => $automation->getElement(),
+        ]);
+    }
+
+    /**
+     * Select action type confirm.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function conditionSetting(Request $request, $uid)
+    {
+        // init automation
+        $automation = Automation2::findByUid($uid);
+        
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+        
+        return view('automation2.condition.setting', [
+            'automation' => $automation,
+            'element' => $automation->getElement($request->element_id),
         ]);
     }
     
@@ -447,6 +455,30 @@ class Automation2Controller extends Controller
                         'key' => $request->key,
                         'type' => $request->type,
                         'email_link' => empty($request->email_link) ? null : $request->email_link,
+                    ],
+                ]);
+            } elseif ($request->type == 'cart_buy_anything') {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => trans('messages.automation.action.updated'),
+                    'title' => trans('messages.automation.action.condition.cart_buy_anything.title'),
+                    'options' => [
+                        'key' => $request->key,
+                        'type' => $request->type,
+                    ],
+                ]);
+            } elseif ($request->type == 'cart_buy_item') {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => trans('messages.automation.action.updated'),
+                    'title' => trans('messages.automation.action.condition.cart_buy_item.title', [
+                        'item' => $request->item_title,
+                    ]),
+                    'options' => [
+                        'key' => $request->key,
+                        'type' => $request->type,
+                        'item_id' => $request->item_id,
+                        'item_title' => $request->item_title,
                     ],
                 ]);
             }
@@ -563,6 +595,30 @@ class Automation2Controller extends Controller
                             'key' => $request->key,
                             'type' => $request->type,
                             'email_link' => empty($request->email_link) ? null : $request->email_link,
+                        ],
+                    ]);
+                } elseif ($request->type == 'cart_buy_anything') {
+                    return response()->json([
+                        'status' => 'success',
+                        'message' => trans('messages.automation.action.updated'),
+                        'title' => trans('messages.automation.action.condition.cart_buy_anything.title'),
+                        'options' => [
+                            'key' => $request->key,
+                            'type' => $request->type,
+                        ],
+                    ]);
+                } elseif ($request->type == 'cart_buy_item') {
+                    return response()->json([
+                        'status' => 'success',
+                        'message' => trans('messages.automation.action.updated'),
+                        'title' => trans('messages.automation.action.condition.cart_buy_item.title', [
+                            'item' => $request->item_title,
+                        ]),
+                        'options' => [
+                            'key' => $request->key,
+                            'type' => $request->type,
+                            'item_id' => $request->item_id,
+                            'item_title' => $request->item_title,
                         ],
                     ]);
                 }
