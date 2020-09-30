@@ -584,6 +584,10 @@ class Setting extends Model
         $env_file = fopen($file_path, 'w') or die('Unable to open file!');
         fwrite($env_file, implode('', $data));
         fclose($env_file);
+
+        if (file_exists(base_path('bootstrap/cache/config.php'))) {
+            unlink(base_path('bootstrap/cache/config.php'));
+        }
     }
 
     /**
