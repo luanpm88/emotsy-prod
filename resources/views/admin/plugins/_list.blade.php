@@ -15,13 +15,6 @@
                     <span class="text-muted">{{ trans('messages.plugin.version') }}: {{ $plugin->version }}</span>
                 </td>
                 <td>
-                    <div class="single-stat-box pull-left ml-20">
-                        <span class="no-margin stat-num kq_search">{{ trans('messages.plugin.type.' . $plugin->type) }}</span>
-                        <br />
-                        <span class="text-muted">{{ trans('messages.type') }}</span>
-                    </div>
-                </td>
-                <td>
                     <span class="text-muted2 list-status pull-left">
                         <span class="label label-flat bg-{{ $plugin->status }}">
                             {{ trans('messages.email_verification_server_status_' . $plugin->status) }}
