@@ -434,6 +434,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('campaigns/{uid}/edit', 'CampaignController@edit');
     Route::patch('campaigns/{uid}/update', 'CampaignController@update');
     Route::get('campaigns/{uid}/run', 'CampaignController@run');
+    Route::get('campaigns/{uid}/update-stats', 'CampaignController@updateStats');
 
     Route::get('users/login-back', 'UserController@loginBack');
 
@@ -926,6 +927,8 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/sub_accounts', 'SubAccountController');
 
     // Payment gateways
+    Route::post('admin/payment/gateways/{name}/disable', 'PaymentController@disable');
+    Route::post('admin/payment/gateways/{name}/enable', 'PaymentController@enable');
     Route::post('admin/payment/gateways/paypal-subscription/{plan_uid}/disconnect-plan', 'PaymentController@paypalSubscriptionDisconnectPlan');
     Route::post('admin/payment/gateways/paypal-subscription/{plan_uid}/connect-plan', 'PaymentController@paypalSubscriptionConnectPlan');
     Route::post('admin/payment/gateways/paypal-subscription/disconnect', 'PaymentController@paypalSubscriptionDisconnect');

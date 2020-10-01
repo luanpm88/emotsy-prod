@@ -473,6 +473,7 @@ class ApiHelper
                     'parameters' => [
                         ['name' => '$uid', 'description' => 'Customer\'s uid'],
                         ['name' => '$plan_uid', 'description' => 'Plan\'s uid'],
+                        ['name' => '$gateway', 'description' => 'Payment gateway: stripe|braintree|coinpayments|...'],
                     ],
                     'returns' => 'Action messages in json',
                     'example' => 'curl -X POST -H "accept:application/json" -G \
@@ -509,6 +510,7 @@ class ApiHelper
                         ['name' => '$plan_uid', 'description' => 'Plan\'s uid'],
                         ['name' => '$start_at', 'description' => 'Subscription\'s start date', 'optional' => true, 'default' => 'Next customer\'s subscription start date'],
                         ['name' => '$end_at', 'description' => 'Subscription\'s end date', 'optional' => true, 'default' => 'End date of the plan from start_at date'],
+                        ['name' => '$gateway', 'description' => 'Payment gateway: stripe|braintree|coinpayments|...'],
                     ],
                     'returns' => 'Action messages in json',
                     'example' => 'curl -X POST -H "accept:application/json" -G \

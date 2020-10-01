@@ -1501,13 +1501,13 @@ class Plan extends Model implements BillablePlanInterface
     public static function getAvailablePlans()
     {
         $plans = self::getAllActiveVisible()->get();
-        $service = \Acelle\Cashier\Cashier::getPaymentGateway();
+        $psService = \Acelle\Cashier\Cashier::getPaymentGateway('paypal_subscription');
 
         $aPlans = [];
         foreach ($plans as $plan) {
             if ($plan->isAvailable()) {
-                if (config('cashier.gateway') !== 'paypal_subscription' ||
-                    $service->findPlanConnection($plan)
+                if (config('cashier.paypal_payment') !== 'paypal_subscription' ||
+                    $psService->findPlanConnection($plan)
                 ) {
                     $aPlans[] = $plan;
                 }
@@ -1563,8 +1563,8 @@ class Plan extends Model implements BillablePlanInterface
             $errors[] = 'sending_server_empty';
         }
 
-        if (config('cashier.gateway') == 'paypal_subscription') {
-            $service = Cashier::getPaymentGateway();
+        if (config('cashier.paypal_payment') == 'paypal_subscription') {
+            $service = Cashier::getPaymentGateway('paypal_subscription');
 
             if (!$service->findPlanConnection($this)) {
                 $errors[] = 'plan_not_connected';
@@ -1591,8 +1591,8 @@ class Plan extends Model implements BillablePlanInterface
             $this->enable();
         }
 
-        if (config('cashier.gateway') == 'paypal_subscription') {
-            $service = Cashier::getPaymentGateway();
+        if (config('cashier.paypal_payment') == 'paypal_subscription') {
+            $service = Cashier::getPaymentGateway('paypal_subscription');
 
             if (!$service->findPlanConnection($this)) {
                 $this->disable();

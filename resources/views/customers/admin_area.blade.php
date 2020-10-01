@@ -73,7 +73,7 @@
                     <strong>{{ trans('messages.payment_method') }}</strong>
                 </div>
                 <div class="lastUnit size1of2">
-                    <mc:flag>{{ trans('messages.payment.' . Acelle\Model\Setting::get('system.payment_gateway')) }}</mc:flag>
+                    <mc:flag>{{ trans('messages.payment.' . $subscription->gateway) }}</mc:flag>
                 </div>
             </li>
             <li>

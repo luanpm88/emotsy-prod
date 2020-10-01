@@ -46,18 +46,31 @@
                                                         {{ trans('messages.plan.current_subscribed') }}
                                                 </a>
                                             @else
-                                                <a
-                                                    data-confirm="{{ trans('messages.customer.assign_plan.confirm', [
-                                                        'plan' => $plan->name,
-                                                        'customer' => $customer->displayName(),
-                                                    ]) }}"
-                                                    href="{{ action('Admin\CustomerController@assignPlan', [
-                                                        "uid" => $customer->uid,
-                                                        "plan_uid" => $plan->uid,
-                                                    ]) }}"
-                                                    class="btn btn-mc_primary btn-mc_mk mt-30 change-plan-button">
-                                                        {{ trans('messages.plan.select') }}
-                                                </a>
+                                                <div class="mt-4 submit-box">
+                                                    @include('helpers.form_control', [
+                                                        'type' => 'select',
+                                                        'class' => '',
+                                                        'value' => '',
+                                                        'name' => 'gateway',
+                                                        'label' => trans('messages.subscription.select_payment'),
+                                                        'help_class' => 'subscription',
+                                                        'rules' => [],
+                                                        'options' => getPaymentOptions(),
+                                                        'placeholder' => trans('messages.choose')
+                                                    ])
+                                                    <a
+                                                        data-confirm="{{ trans('messages.customer.assign_plan.confirm', [
+                                                            'plan' => $plan->name,
+                                                            'customer' => $customer->displayName(),
+                                                        ]) }}"
+                                                        href="{{ action('Admin\CustomerController@assignPlan', [
+                                                            "uid" => $customer->uid,
+                                                            "plan_uid" => $plan->uid,
+                                                        ]) }}"
+                                                        class="btn btn-mc_primary btn-mc_mk mt-2 change-plan-button">
+                                                            {{ trans('messages.plan.select') }}
+                                                    </a>
+                                                </div>
                                             @endif
                                         </div>
                                     </div>
@@ -80,6 +93,7 @@
 
                 var confirm = $(this).attr('data-confirm');
                 var url = $(this).attr('href');
+                var button = $(this);
 
                 var dialog = new Dialog('confirm', {
                     message: confirm,
@@ -89,6 +103,7 @@
                             method: 'POST',
                             data: {
                                 _token: CSRF_TOKEN,
+                                gateway: button.closest('.submit-box').find('[name=gateway]').val(),
                             },
                             statusCode: {
                                 // validate error

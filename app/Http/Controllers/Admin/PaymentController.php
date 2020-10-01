@@ -23,6 +23,7 @@ class PaymentController extends Controller
     {
         return view('admin.payments.index', [
             'gateways' => Setting::getPaymentGateways(),
+            'enabledGateways' => Setting::getEnabledPaymentGateways(),
         ]);
     }
 
@@ -41,10 +42,6 @@ class PaymentController extends Controller
         try {
             $service->validate();
             $isValid = true;
-
-            if ($name == 'paypal_subscription') {
-                $isValid = $isValid && $service->getData()['product_id'];
-            }
         } catch (\Exception $ex) {
             $isValid = false;
         }
@@ -73,14 +70,11 @@ class PaymentController extends Controller
             $gatewayService->validate();
             Setting::updatePaymentGateway($name, $request->options);
 
-            if ($request->save_and_set_primary) {
-                $sc = Subscription::count();
-
-                if ($sc > 0) {
-                    throw new \Exception(trans('messages.gateway.error.subscription_exist'));
-                }
-
-                Setting::set('system.payment_gateway', $name);
+            if ($request->save_and_enable) {
+                // enable gateway
+                $gateways = json_decode(Setting::get('gateways'), true);
+                $gateways = array_merge($gateways, [$name]);
+                Setting::set('gateways', json_encode($gateways));
             }
 
             $request->session()->flash('alert-success', trans('messages.payment_gateway.updated'));
@@ -153,6 +147,65 @@ class PaymentController extends Controller
             $request->session()->flash('alert-error', trans('messages.payment_gateway.not_valid', ['message' => $ex->getMessage()]));
             return redirect()->action('Admin\PaymentController@edit', $name);
         }
+    }
+
+    /**
+     * Enable payment.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $name
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function enable(Request $request, $name)
+    {
+        $service = Cashier::getPaymentGateway($name);
+
+        try {
+            $service->validate();
+
+            // enable gateway
+            $gateways = json_decode(Setting::get('gateways'), true);
+            $gateways = array_merge($gateways, [$name]);
+            Setting::set('gateways', json_encode($gateways));
+
+            // check all plan status
+            foreach (Plan::all() as $plan) {
+                $plan->checkStatus();
+            }
+
+            $request->session()->flash('alert-success', trans('messages.payment_gateway.updated'));
+            return redirect()->action('Admin\PaymentController@index');
+        } catch (\Exception $ex) {
+            $request->session()->flash('alert-error', trans('messages.payment_gateway.not_valid', ['message' => $ex->getMessage()]));
+            return redirect()->action('Admin\PaymentController@edit', $name);
+        }
+    }
+
+    /**
+     * Disable payment.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $name
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function disable(Request $request, $name)
+    {
+        $service = Cashier::getPaymentGateway($name);
+
+        // enable gateway
+        $gateways = json_decode(Setting::get('gateways'), true);
+        $gateways = array_diff($gateways, [$name]);
+        Setting::set('gateways', json_encode($gateways));
+
+        // check all plan status
+        foreach (Plan::all() as $plan) {
+            $plan->checkStatus();
+        }
+
+        $request->session()->flash('alert-success', trans('messages.payment_gateway.updated'));
+        return redirect()->action('Admin\PaymentController@index');
     }
     
     /**
