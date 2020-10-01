@@ -192,8 +192,8 @@ class Plugin extends Model
         $config = \Yaml::parse(file_get_contents($configFile));
 
         // new plugin
-        $plugin = self::where('name', '=', $config['name'])
-            ->where('type', '=', $config['type'])->first();
+        $plugin = self::where('name', '=', $config['name'])->first();
+            // ->where('type', '=', $config['type'])
         if (!$plugin) {
             $plugin = new \Acelle\Model\Plugin();
             $plugin->status = \Acelle\Model\Plugin::STATUS_ACTIVE;
@@ -226,5 +226,15 @@ class Plugin extends Model
         ];
 
         return $options;
+    }
+
+    /**
+     * Check if plugin is installed.
+     *
+     * @return array
+     */
+    public static function isInstalled($name)
+    {
+        return self::where('name', '=', $name)->count();
     }
 }
