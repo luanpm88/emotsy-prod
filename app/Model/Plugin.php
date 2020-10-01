@@ -237,4 +237,14 @@ class Plugin extends Model
     {
         return self::where('name', '=', $name)->count();
     }
+
+    /**
+     * Check if plugin is active.
+     *
+     * @return array
+     */
+    public static function isActive($name)
+    {
+        return self::where('name', '=', $name)->where('status', '=', self::STATUS_ACTIVE)->count();
+    }
 }

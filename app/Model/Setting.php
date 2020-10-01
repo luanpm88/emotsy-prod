@@ -24,6 +24,7 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Cashier\Cashier;
+use Acelle\Model\Plugin;
 
 class Setting extends Model
 {
@@ -705,7 +706,13 @@ class Setting extends Model
      */
     public static function getPaymentGateways()
     {
-        return config('cashier.gateways');
+        $gateways = config('cashier.gateways');
+
+        if (!Plugin::isActive('paystack')) {
+            unset($gateways['paystack']);
+        }
+
+        return $gateways;
     }
 
     /**

@@ -30,7 +30,7 @@
                 </td>
                 <td class="text-right text-nowrap">                    
                     @if (Auth::user()->admin->can('enable', $plugin))
-                        <a link-confirm="{{ trans('messages.enable_email_verification_servers_confirm') }}"
+                        <a link-confirm="{{ trans('messages.enable_plugins_confirm') }}"
                             href="{{ action('Admin\PluginController@enable', ["uids" => $plugin->uid]) }}"
                             class="btn btn-mc_primary"
                         >
@@ -38,14 +38,16 @@
                         </a>
                     @endif
                     @if (Auth::user()->admin->can('disable', $plugin))
-                        <a link-confirm="{{ trans('messages.disable_email_verification_servers_confirm') }}"
+                        <a link-confirm="{{ trans('messages.disable_plugins_confirm') }}"
                             href="{{ action('Admin\PluginController@disable', ["uids" => $plugin->uid]) }}"
                             class="btn btn-mc_primary mr-2"
                         >
                             {{ trans('messages.disable') }}
                         </a>
                     @endif
-                    <a href="{{ action('Admin\PluginController@edit', ["uid" => $plugin->uid]) }}"
+                    <a
+                        delete-confirm="{{ trans('messages.delete_plugins_confirm') }}"
+                        href="{{ action('Admin\PluginController@delete', ["uids" => $plugin->uid]) }}"
                         type="button" class="btn btn-mc_default">
                         {{ trans('messages.uninstall') }}
                     </a>
