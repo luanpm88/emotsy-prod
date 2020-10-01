@@ -3902,4 +3902,5 @@
   'plugin.type.payment' => 'Payment',
   'plugin.type.sending_server' => 'Sending Server',
   'plugin.type.email_verification' => 'Email Verification',
+  'plugin.version' => 'Version',
 ) ?>

@@ -44,8 +44,12 @@
                 ])
                     
                 <div class="text-right">
-                    <button class="btn btn-mc_primary mr-2"><i class="icon-check"></i> {{ trans('messages.upload') }}</button>
-                    <a href="{{ action('Admin\TemplateController@index') }}" class="btn btn-mc_default"><i class="icon-cross2"></i> {{ trans('messages.cancel') }}</a>
+                    <button class="btn btn-mc_primary mr-2">
+                        {{ trans('messages.upload') }}
+                    </button>
+                    <a href="{{ action('Admin\PluginController@index') }}" class="btn btn-mc_default">
+                        {{ trans('messages.cancel') }}
+                    </a>
                 </div>
                 
             </form>
