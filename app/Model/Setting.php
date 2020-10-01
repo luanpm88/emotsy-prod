@@ -708,6 +708,7 @@ class Setting extends Model
     {
         $gateways = config('cashier.gateways');
 
+        // Check plugin paystack
         if (!Plugin::isActive('paystack')) {
             unset($gateways['paystack']);
         }
@@ -722,7 +723,16 @@ class Setting extends Model
      */
     public static function getEnabledPaymentGateways()
     {
-        return json_decode(self::get('gateways'), true);
+        $gateways = json_decode(self::get('gateways'));
+
+        // Check plugin paystack
+        if (!Plugin::isActive('paystack')) {
+            if (($key = array_search('paystack', $gateways)) !== false) {
+                unset($gateways[$key]);
+            }
+        }
+
+        return $gateways;
     }
 
     /**
