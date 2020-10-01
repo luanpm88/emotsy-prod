@@ -203,7 +203,7 @@
 										<i class="icon-database-check"></i> {{ trans('messages.email_verification_servers') }}
 									</a>
 								</li>
-							@endif
+							@endif							
 						</ul>
 					</li>
 				@endif
@@ -254,6 +254,11 @@
 						<li rel0="PaymentController">
 							<a href="{{ action('Admin\PaymentController@index') }}">
 								<i class="icon-credit-card2"></i> {{ trans('messages.payment_gateways') }}
+							</a>
+						</li>
+						<li rel0="PluginController">
+							<a href="{{ action('Admin\PluginController@index') }}">
+								<i class="icon-power-cord"></i> {{ trans('messages.plugins') }}
 							</a>
 						</li>
                     </ul>
