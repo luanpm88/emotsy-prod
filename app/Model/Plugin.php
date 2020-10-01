@@ -18,6 +18,9 @@ class Plugin extends Model
     const STATUS_INACTIVE = 'inactive';
 
     protected $fillable = ['name', 'title', 'description', 'version'];
+    protected $requiredKeys = [
+        'name', 'version', 'app_version', 'xxxx'
+    ];
 
     /**
      * Items per page.
@@ -173,9 +176,7 @@ class Plugin extends Model
         // read zip file check if zip archive invalid
         $zip = new ZipArchive();
         if ($zip->open($tmp_zip, ZipArchive::CREATE) !== true) {
-            // @todo hack
-            // $validator = Validator::make([], []); // Empty data and rules fields
-            $validator->errors()->add('file', 'Cannot open .zip file');
+            $validator->errors()->add('file', 'Cannot open plugin package');
             throw new ValidationException($validator);
         }
 
@@ -186,10 +187,17 @@ class Plugin extends Model
 
         // read plugin file
         if (!is_file($configFile = $tmp_path.'/plugin.yml')) {
-            throw new \Exception('Plugin structure is not valid!');
+            throw new \Exception('Invalid plugin package. No meta data found');
         }
         
-        $config = \Yaml::parse(file_get_contents($configFile));
+        try {
+            $config = \Yaml::parse(file_get_contents($configFile));
+        } catch (\Exception $ex) {
+            throw new \Exception('Invalid plugin package. Cannot parse meta data');
+        }
+        
+        // throw exception if any required key is missing
+        self::validateMetaData($config);
 
         // new plugin
         $plugin = self::where('name', '=', $config['name'])->first();
@@ -199,9 +207,8 @@ class Plugin extends Model
             $plugin->status = \Acelle\Model\Plugin::STATUS_ACTIVE;
         }
         $plugin->name = $config['name'];
-        $plugin->type = $config['type'];
         $plugin->title = $config['title'];
-        $plugin->description = $config['description'];
+        $plugin->description = (array_key_exists('description', $config)) ? $config['description'] : null;
         $plugin->version = $config['version'];
 
         // remove tmp folder
@@ -209,6 +216,7 @@ class Plugin extends Model
         Tool::xdelete($tmp_path);
 
         $plugin->save();
+
         return $plugin;
     }
 
@@ -246,5 +254,38 @@ class Plugin extends Model
     public static function isActive($name)
     {
         return self::where('name', '=', $name)->where('status', '=', self::STATUS_ACTIVE)->count();
+    }
+
+    public static function validateMetaData($config = [])
+    {
+        // Check required keys
+        $requiredKeys = ['name', 'version', 'app_version'];
+        foreach($requiredKeys as $key) {
+            if (!array_key_exists($key, $config)) {
+                throw new \Exception("Invalid plugin package. Unknown '{$key}'");
+            }
+        }
+
+        if (self::where('name', $config['name'])->exists()) {
+            throw new \Exception("A plugin of the same name '{$config['name']}' already exists, please uninstall it first");
+        }
+
+        // Check app version
+        $currentVersion = app_version();
+        $requiredVersion = $config['app_version'];
+        $checked = version_compare($currentVersion, $requiredVersion, '>=');
+        if (!$checked) {
+            throw new \Exception("The uploaded plugin requires Acelle platform version {$requiredVersion} or higher. The current version is {$currentVersion}");
+        }
+
+        // Check license type
+        if (empty(Setting::get('license_type'))) {
+            throw new \Exception("The uploaded plugin requires a valid license of Acelle to proceed");
+        }
+
+        // Check license type
+        if (Setting::get('license_type') != 'extended') {
+            throw new \Exception("The uploaded plugin requires an 'Extended' license of Acelle to proceed, your current license is 'Regular'");
+        }
     }
 }
