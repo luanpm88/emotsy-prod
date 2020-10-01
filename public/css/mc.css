@@ -1122,3 +1122,6 @@ table.table-log tr th {
 .table-box tr td.plugin-title-paypal::after {
   background-image: url(../images/paypal.svg);
 }
+.table-box tr td.plugin-title-paystack::after {
+  background-image: url(../images/paystack.svg);
+}
