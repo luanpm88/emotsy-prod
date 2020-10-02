@@ -12,14 +12,7 @@
                         {{ $plugin->description }}
                     </span>
                     <br />
-                    <span class="text-muted">{{ trans('messages.installed_at') }}: {{ Tool::formatDateTime($plugin->created_at) }}</span>
-                </td>
-                <td>
-                    <div class="single-stat-box pull-left ml-20">
-                        <span class="no-margin stat-num kq_search">{{ trans('messages.plugin.type.' . $plugin->type) }}</span>
-                        <br />
-                        <span class="text-muted">{{ trans('messages.type') }}</span>
-                    </div>
+                    <span class="text-muted">{{ trans('messages.plugin.version') }}: {{ $plugin->version }}</span>
                 </td>
                 <td>
                     <span class="text-muted2 list-status pull-left">
@@ -68,7 +61,7 @@
     <div class="empty-list">
         <i class="icon-power-cord"></i>
         <span class="line-1">
-            {{ trans('messages.email_verification_server_empty_line_1') }}
+            {{ trans('messages.plugin_empty_line_1') }}
         </span>
     </div>
 @endif
