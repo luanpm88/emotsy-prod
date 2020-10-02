@@ -113,8 +113,6 @@ class User extends Authenticatable
         $layout->content = str_replace('{CUSTOMER_NAME}', $name, $layout->content);
 
         $name = is_null($name) ? trans('messages.to_email_name') : $name;
-        
-        // \Mail::to(json_decode(json_encode(['email' => $this->email, 'name' => $name])))->send(new \Acelle\Mail\RegistrationConfirmationMailer($layout->content, $layout->subject));
 
         // build the message
         $message = new \Swift_Message();
