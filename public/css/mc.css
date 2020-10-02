@@ -1124,4 +1124,13 @@ table.table-log tr th {
 }
 .table-box tr td.plugin-title-paystack::after {
   background-image: url(../images/paystack.svg);
+  background-color: #f5f5f5;
+  width: 80px;
+  height: 80px;
+  display: inline-block;
+  padding: 10px;
+  background-size: 270px;
+  background-position: 22px center;
+  border-radius: 100%;
+  top: 15px;
 }
