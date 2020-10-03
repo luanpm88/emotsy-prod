@@ -15,20 +15,20 @@
                 margin-left: -15px;
                 margin-right: -15px;
             ">
-                @foreach(Acelle\Model\Template::templateStyles() as $name => $style)
+                @foreach(Acelle\Model\Template::getTemplatesFromDisk() as $layout)
                     <div class="col-xxs-6 col-xs-4 col-sm-2 col-md-2">
                         <a data-method="POST"
 							href="{{ action('Automation2Controller@templateLayout', [
 								'uid' => $automation->uid,
 								'email_uid' => $email->uid,
-								'layout' => $name,
+								'layout' => $layout['name'],
 							]) }}"
 							class="select-layout"
 						>
                             <div class="panel panel-flat panel-template-style mb-4">
                                 <div class="panel-body">									
-									<img src="{{ url('images/template_styles/'.$name.'.png') }}" />
-									<label class="mb-20 text-center">{{ trans('messages.'.$name) }}</label>
+									<img src="{{ $layout['thumb'] }}" />
+									<label class="mb-20 text-center">{{ $layout['title'] }}</label>
                                 </div>
                             </div>
                         </a>

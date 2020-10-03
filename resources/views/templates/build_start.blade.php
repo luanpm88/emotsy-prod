@@ -25,13 +25,13 @@
 @section('content')
     
                 <div class="row">
-					@foreach(Acelle\Model\Template::templateStyles() as $name => $style)
+					@foreach(Acelle\Model\Template::getTemplatesFromDisk() as $layout)
 						<div class="col-xxs-12 col-xs-6 col-sm-3 col-md-2">
-							<a href="{{ action('TemplateController@build', ['style' => $name]) }}">
+							<a href="{{ action('TemplateController@build', ['style' => $layout['name']]) }}">
 								<div class="panel panel-flat panel-template-style">
 									<div class="panel-body">
-										<img src="{{ url('images/template_styles/'.$name.'.png') }}" />
-										<h5 class="mb-0 text-center">{{ trans('messages.'.$name) }}</h5>
+										<img src="{{ $layout['thumb'] }}" />
+										<h5 class="mb-0 text-center">{{ $layout['title'] }}</h5>
 									</div>
 								</div>
 							</a>

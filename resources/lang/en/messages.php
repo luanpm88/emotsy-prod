@@ -3836,4 +3836,8 @@
   'condition.select_woo_item' => 'Select item',
   'automation.intro.woo-abandoned-cart' => 'Send your buyer a reminder if they left
       something in cart',
+  'automation.cart_items' => 'Cart Items',
+  'automation.item_title' => '{PRODUCT_NAME}',
+  'automation.item_description' => '{PRODUCT_DESCRIPTION}',
+  'automation.view_more' => 'View more',
 ) ?>

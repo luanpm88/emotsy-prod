@@ -9,6 +9,115 @@
     
     <link href="{{ URL::asset('builder/builder.css') }}" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="{{ URL::asset('builder/builder.js') }}"></script>
+    @php
+      // check if content from layouts
+      $buildMode = strpos($email->content, 'AcelleSystemLayouts') !== false ? 'true' : 'false';
+    @endphp
+
+    <script>
+        // cart items element
+        class CartItemsElement extends SuperElement  {
+            name() {
+                return getI18n('block');
+            }
+            icon() {
+                return 'fal fa-font';
+            }
+
+            getControls() {
+                var element = this;
+
+                return [
+                    new FontFamilyControl(getI18n('font_family'), element.obj.css('font-family'), function(font_family) {
+                        element.obj.css('font-family', font_family);
+                        element.select();
+                    }),
+                    new BackgroundImageControl(getI18n('background_image'), {
+                        image: element.obj.css('background-image'),
+                        color: element.obj.css('background-color'),
+                        repeat: element.obj.css('background-repeat'),
+                        position: element.obj.css('background-position'),
+                        size: element.obj.css('background-size'),
+                    }, {
+                        setBackgroundImage: function (image) {
+                            element.obj.css('background-image', image);
+                        },
+                        setBackgroundColor: function (color) {
+                            element.obj.css('background-color', color);
+                        },
+                        setBackgroundRepeat: function (repeat) {
+                            element.obj.css('background-repeat', repeat);
+                        },
+                        setBackgroundPosition: function (position) {
+                            element.obj.css('background-position', position);
+                        },
+                        setBackgroundSize: function (size) {
+                            element.obj.css('background-size', size);
+                        },
+                    }),
+                    new BlockOptionControl(getI18n('block_options'), { padding: element.obj.css('padding'), top: element.obj.css('padding-top'), bottom: element.obj.css('padding-bottom'), right: element.obj.css('padding-right'), left: element.obj.css('padding-left') }, function(options) {
+                        element.obj.css('padding', options.padding);
+                        element.obj.css('padding-top', options.top);
+                        element.obj.css('padding-bottom', options.bottom);
+                        element.obj.css('padding-right', options.right);
+                        element.obj.css('padding-left', options.left);
+                        element.select();
+                    })
+                ];
+            }
+        }
+
+        // Woo Cart Item Widget
+        class CartItemWidget extends Widget {
+            getHtmlId() {
+                return "CartItemWidget";
+            }
+
+            init() {
+                // default button html
+                this.setButtonHtml(`
+                    <div class="_1content widget-text">
+                        <div class="panel__body" title="{{ trans('messages.automation.cart_items') }}">
+                            <div class="image-drag">
+                                <div ng-bind-html="::getModuleIcon(module)" class="ng-binding">
+                                    <i class="material-icons-outlined" style="font-size: 36px;display: inline-block;">money</i>
+                                </div>
+                            </div>
+                            <div class="body__title">{{ trans('messages.automation.cart_items') }}</div>
+                        </div>
+                    </div>
+                `);
+
+                // default content html
+                this.setContentHtml(`
+                    <div builder-element="CartItemsElement" builder-draggable class="py-3 px-3">
+                        <div builder-element class="d-flex mb-4">
+                        <a builder-element href="" class="mr-4"><img builder-element src="{{ url('images/cart_item.svg') }}" width="200px" /></a>
+                        <div class="">
+                            <h3 builder-element builder-inline-edit class="font-weight-normal">{{ trans('messages.automation.item_title') }}</h3>
+                            <p builder-element builder-inline-edit class="">{{ trans('messages.automation.item_description') }}</p>
+                            <a builder-element builder-inline-edit class="btn btn-primary text-white">{{ trans('messages.automation.view_more') }}</a>
+                        </div>
+                        </div>
+                    </div>
+                `);
+
+                // default dragging html
+                this.setDraggingHtml(`
+                    <div class="_1content widget-text">
+                        <div class="panel__body" title="{{ trans('messages.automation.cart_items') }}">
+                            <div class="image-drag">
+                                <div ng-bind-html="::getModuleIcon(module)" class="ng-binding">
+                                    <i class="material-icons-outlined" style="font-size: 36px;display: inline-block;">money</i>
+                                </div>
+                            </div>
+                            <div class="body__title">{{ trans('messages.automation.cart_items') }}</div>
+                        </div>
+                    </div>
+                `);
+            }
+        }
+    </script>
     
     <script>
         var CSRF_TOKEN = "{{ csrf_token() }}";
@@ -18,7 +127,7 @@
         
         $( document ).ready(function() {
             editor = new Editor({
-                buildMode: false,
+                buildMode: {{ $buildMode }},
                 legacyMode: true,
                 lang: {!! json_encode(language()->getBuilderLang()) !!},
                 url: '{{ action('Automation2Controller@templateContent', [
@@ -132,6 +241,9 @@
                           span.click();
                       }
                   }
+                },
+                loaded: function() {
+                    this.addContentWidget(new CartItemWidget(), 0);
                 }
             });
           

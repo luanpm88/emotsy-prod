@@ -67,13 +67,13 @@
 					margin-left: -20px;
 					margin-right: -20px;
 				">
-					@foreach(Acelle\Model\Template::templateStyles() as $name => $style)
+					@foreach(Acelle\Model\Template::getTemplatesFromDisk() as $layout)
 						<div class="col-xxs-12 col-xs-6 col-sm-3 col-md-2">
-							<a href="javascript:;" class="select-template-layout" data-layout="{{ $name }}">
+							<a href="javascript:;" class="select-template-layout" data-layout="{{ $layout['name'] }}">
 								<div class="panel panel-flat panel-template-style">
 									<div class="panel-body">
-										<img src="{{ url('images/template_styles/'.$name.'.png') }}" />
-										<h5 class="mb-20 text-center">{{ trans('messages.'.$name) }}</h5>
+										<img src="{{ $layout['thumb'] }}" />
+										<h5 class="mb-20 text-center">{{ $layout['title'] }}</h5>
 									</div>
 								</div>
 							</a>
