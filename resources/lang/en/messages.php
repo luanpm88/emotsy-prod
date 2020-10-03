@@ -898,14 +898,7 @@
   'ip' => 'IP',
   'area' => 'Area',
   'template_upload_guide' => '
-      Please upload your HTML template bundle. Normally, it should be a .zip file containing:
-      <ul>
-      <li>One single .html file and</li>
-      <li>One directory at the same level containing asset files (JS, CSS, Images, etc.)</li>
-      </ul>
-      <br />
-      Please click <a class="text-semibold" href=":link" target="_blank">[here]</a> to download a sample email template
-    ',
+      Please upload your plugin file. Select your plugin archive and upload it',
   'disable' => 'Disable',
   'enable' => 'Enable',
   'STYLE' => 'STYLE',
@@ -3866,8 +3859,6 @@
   'frontend_payment.coinpayments.desc' => 'Receive payment from a cryptocurrency
       like Bitcoin, Monero, ZCash, etc.',
   'frontend_payment.paypal' => 'PayPal',
-  'frontend_payment.paypal.desc' => 'PayPal is the fast/safe way to send money, make an online
-      payment, receive money or set up a merchant account',
   'frontend_payment.paypal.desc' => 'Receive payments outside of the application',
   'frontend_payment.paypal_subscription' => 'PayPal Subscription',
   'frontend_payment.paypal_subscription.desc' => 'With PayPal Subscriptions, you can bill customers for plans
@@ -3893,8 +3884,6 @@
   'plugin_status_active' => 'Active',
   'plugin_status_inactive' => 'Inactive',
   'install_plugin' => 'Install plugin',
-  'template_upload_guide' => '
-      Please upload your plugin file. Select your plugin archive and upload it',
   'plugin.installing' => '<strong>Installing...</strong><p>Your plugin is being uploaded
       and processed, please wait!</p>',
   'installed_at' => 'Installed at',
