@@ -305,15 +305,23 @@
                     }, {
                         updateImage: function(src) {
                             element.obj.find('img').attr('src', src);
+
+                            element.select();
                         },
                         updateName: function(name) {
                             element.obj.find('.product-name').html(name);
+
+                            element.select();
                         },
                         updateDescription: function(description) {
                             element.obj.find('.product-description').html(description);
+
+                            element.select();
                         },
                         updateLink: function(link) {
                             element.obj.find('.product-link').attr('href', link);
+
+                            element.select();
                         }
                     }),
                     new FontFamilyControl(getI18n('font_family'), element.obj.css('font-family'), function(font_family) {
@@ -368,7 +376,7 @@
                         <div class="panel__body" title="{{ trans('messages.automation.cart_item') }}">
                             <div class="image-drag">
                                 <div ng-bind-html="::getModuleIcon(module)" class="ng-binding">
-                                    <i class="material-icons-outlined" style="font-size: 36px;display: inline-block;">money</i>
+                                    <i class="material-icons-outlined" style="font-size: 36px;display: inline-block;">redeem</i>
                                 </div>
                             </div>
                             <div class="body__title">{{ trans('messages.automation.cart_item') }}</div>
@@ -532,8 +540,10 @@
                   }
                 },
                 loaded: function() {
-                    this.addContentWidget(new CartItemsWidget(), 0);
-                    this.addContentWidget(new CartItemWidget(), 0);
+                    @if ($automation->getTrigger()->getOption('type') == 'woo-abandoned-cart')
+                        this.addContentWidget(new CartItemsWidget(), 0);
+                        this.addContentWidget(new CartItemWidget(), 0);
+                    @endif
                 }
             });
           
