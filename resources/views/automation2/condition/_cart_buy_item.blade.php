@@ -6,13 +6,13 @@
 <input type="hidden" name="item_title" value="" />
 
 @include('helpers.form_control', [
-    'type' => 'select',
+    'type' => 'select_ajax',
     'class' => 'required',
     'label' => trans('messages.condition.which_woo_item'),
     'name' => 'item_id',
-    'value' => $element->getOption('item_id'),
+    'selected' => ['value' => $element->getOption('item_id'), 'text' => $element->getOption('item_title')],
     'help_class' => 'condition',
-    'options' => $items,
+    'url' => $trigger->getOption('connect_url'),
     'include_blank' => trans('messages.condition.select_woo_item'),
     'required' => true,
     'rules' => [],

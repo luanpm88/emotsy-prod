@@ -1397,3 +1397,6 @@ a.trigger-woo-abandoned-cart:hover {
   background-repeat: no-repeat;
   background-position: left 26px top 18px;
 }
+.form-group .select2-container {
+  width: 100%!important;
+}

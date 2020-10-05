@@ -3916,4 +3916,8 @@
   'plugin.type.sending_server' => 'Sending Server',
   'plugin.type.email_verification' => 'Email Verification',
   'plugin.version' => 'Version',
+  'cart_items.number_of_items' => 'Number of products',
+  'automation.cart_item' => 'Cart Item',
+  'cart_item' => 'Cart Item',
+  'cart_item.product' => 'Product',
 ) ?>

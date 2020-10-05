@@ -3,7 +3,7 @@
   <head>
     <title>{{ trans('messages.campaign.edit_template') }} - {{ $automation->name }}</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">    
     
     @include('layouts._favicon')
     
@@ -15,6 +15,66 @@
     @endphp
 
     <script>
+        // Cart items Control
+        class CartItemsControl extends Control {
+            renderHtml() {
+                var thisControl = this;
+                var html = `
+                    <div id="CartItemsControl">
+                        <div class="control-[ID]">
+                            <div class="widget-section d-flex align-items-center pr-3">
+                                <div class="label mr-auto">{{ trans('messages.cart_items.number_of_items') }}</div>
+                                <select class="items-number form-control">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                thisControl.selector = ".control-" + thisControl.id;
+
+                html = html.replace("[ID]", thisControl.id);
+                html = html.replace("[TITLE]", thisControl.title);
+
+                var div = $('<DIV>').html(html);
+                
+                return div.html();
+            }
+
+            getValues() {
+                var thisControl = this;
+                
+                $(thisControl.selector).find('.items-number').val(thisControl.value);
+            }
+
+            update() {
+                var thisControl = this;
+
+                thisControl.callback($(thisControl.selector).find('.items-number').val());
+            }
+
+            afterRender() {
+                var thisControl = this;
+
+                // copy url
+                $(thisControl.selector).find('.items-number').on('change', function(e) {
+                    thisControl.update();
+                });
+
+                // get values
+                thisControl.getValues();
+            }
+        }
+        
         // cart items element
         class CartItemsElement extends SuperElement  {
             name() {
@@ -28,6 +88,234 @@
                 var element = this;
 
                 return [
+                    new CartItemsControl('{{ trans('messages.cart_items.number_of_items') }}', element.obj.attr('data-items-number'), function(items_number) {
+                        element.obj.attr('data-items-number', items_number);
+
+                        element.select();
+                    }),
+                    new FontFamilyControl(getI18n('font_family'), element.obj.css('font-family'), function(font_family) {
+                        element.obj.css('font-family', font_family);
+                        element.select();
+                    }),
+                    new BackgroundImageControl(getI18n('background_image'), {
+                        image: element.obj.css('background-image'),
+                        color: element.obj.css('background-color'),
+                        repeat: element.obj.css('background-repeat'),
+                        position: element.obj.css('background-position'),
+                        size: element.obj.css('background-size'),
+                    }, {
+                        setBackgroundImage: function (image) {
+                            element.obj.css('background-image', image);
+                        },
+                        setBackgroundColor: function (color) {
+                            element.obj.css('background-color', color);
+                        },
+                        setBackgroundRepeat: function (repeat) {
+                            element.obj.css('background-repeat', repeat);
+                        },
+                        setBackgroundPosition: function (position) {
+                            element.obj.css('background-position', position);
+                        },
+                        setBackgroundSize: function (size) {
+                            element.obj.css('background-size', size);
+                        },
+                    }),
+                    new BlockOptionControl(getI18n('block_options'), { padding: element.obj.css('padding'), top: element.obj.css('padding-top'), bottom: element.obj.css('padding-bottom'), right: element.obj.css('padding-right'), left: element.obj.css('padding-left') }, function(options) {
+                        element.obj.css('padding', options.padding);
+                        element.obj.css('padding-top', options.top);
+                        element.obj.css('padding-bottom', options.bottom);
+                        element.obj.css('padding-right', options.right);
+                        element.obj.css('padding-left', options.left);
+                        element.select();
+                    })
+                ];
+            }
+        }
+
+        // Woo Cart Items Widget
+        class CartItemsWidget extends Widget {
+            getHtmlId() {
+                return "CartItemsWidget";
+            }
+
+            init() {
+                // default button html
+                this.setButtonHtml(`
+                    <div class="_1content widget-text">
+                        <div class="panel__body" title="{{ trans('messages.automation.cart_items') }}">
+                            <div class="image-drag">
+                                <div ng-bind-html="::getModuleIcon(module)" class="ng-binding">
+                                    <i class="material-icons-outlined" style="font-size: 36px;display: inline-block;">money</i>
+                                </div>
+                            </div>
+                            <div class="body__title">{{ trans('messages.automation.cart_items') }}</div>
+                        </div>
+                    </div>
+                `);
+
+                // default content html
+                this.setContentHtml(`
+                    <div data-items-number="3" builder-element="CartItemsElement" builder-draggable class="py-3 px-3">
+                        <div class="d-flex">
+                            <a builder-element href="{PRODUCT_URL}" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="200px" /></a>
+                            <div class="">
+                                <h3 builder-element builder-inline-edit class="font-weight-normal product-name">{PRODUCT_NAME}</h3>
+                                <p builder-element builder-inline-edit class=" product-description">{PRODUCT_DESCRIPTION}</p>
+                                <a builder-element builder-inline-edit class="btn btn-primary text-white" href="{PRODUCT_URL}">{{ trans('messages.automation.view_more') }}</a>
+                            </div>
+                        </div>
+                    </div>
+                `);
+
+                // default dragging html
+                this.setDraggingHtml(`
+                    <div class="_1content widget-text">
+                        <div class="panel__body" title="{{ trans('messages.automation.cart_items') }}">
+                            <div class="image-drag">
+                                <div ng-bind-html="::getModuleIcon(module)" class="ng-binding">
+                                    <i class="material-icons-outlined" style="font-size: 36px;display: inline-block;">money</i>
+                                </div>
+                            </div>
+                            <div class="body__title">{{ trans('messages.automation.cart_items') }}</div>
+                        </div>
+                    </div>
+                `);
+            }
+        }
+
+        // Cart items Control
+        class CartItemControl extends Control {
+            renderHtml() {
+                var thisControl = this;
+                var html = `
+                    <div id="CartItemsControl">
+                        <div class="control-[ID]">
+                            <div class="widget-section d-flex align-items-center pr-3">
+                                <div class="label mr-auto">{{ trans('messages.cart_item.product') }}</div>
+                                <select class="product_id form-control">
+                                    <option value="">Select product</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                thisControl.selector = ".control-" + thisControl.id;
+
+                html = html.replace("[ID]", thisControl.id);
+                html = html.replace("[TITLE]", thisControl.title);
+
+                var div = $('<DIV>').html(html);
+                
+                return div.html();
+            }
+
+            getValues() {
+                var thisControl = this;
+                
+                var url = 'http://wordpress.wsl/wp-json/acelle/connect';
+
+                // select2 control
+                $(thisControl.selector).find('.product_id').select2({
+                    placeholder: 'Select product',
+                    allowClear: true,
+                    width: 'resolve',
+                    ajax: {
+                        url: url,
+                        dataType: 'json',
+                        delay: 250,
+
+                        data: function (params) {
+                        return {
+                            q: params.term, // search term
+                            page: params.page
+                        };
+                        },
+                        processResults: function (data, params) {
+                            // parse the results into the format expected by Select2
+                            // since we are using custom formatting functions we do not need to
+                            // alter the remote JSON data, except to indicate that infinite
+                            // scrolling can be used
+                            params.page = params.page || 1;
+
+                            return {
+                                results: data.items,
+                                pagination: {
+                                    more: (params.page * 30) < data.total_count
+                                }
+                            };
+                        },
+                        cache: true
+                    },
+                    escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+                    minimumInputLength: 0,
+                });
+            }
+
+            update() {
+                var thisControl = this;
+
+                if ($(thisControl.selector).find('.product_id').val()) {
+                    var url = 'http://wordpress.wsl/wp-json/acelle/connect?product_id=' + $(thisControl.selector).find('.product_id').val();
+                    $.ajax({
+                        method: "GET",
+                        url: url
+                    })
+                    .done(function( data ) {
+                        thisControl.callback.updateImage(data.image);
+                        thisControl.callback.updateName(data.name);
+                        thisControl.callback.updateDescription(data.description);
+                        thisControl.callback.updateLink(data.link);
+                    });
+                } else {
+                    thisControl.callback.updateImage('{{ url('images/cart_item.svg') }}');
+                    thisControl.callback.updateName('{PRODUCT_NAME}');
+                    thisControl.callback.updateDescription('{PRODUCT_DESCRIPTION}');
+                    thisControl.callback.updateLink('{PRODUCT_URL}');
+                }
+            }
+
+            afterRender() {
+                var thisControl = this;
+
+                // copy url
+                $(thisControl.selector).find('.product_id').on('change', function(e) {
+                    thisControl.update();
+                });
+
+                // get values
+                thisControl.getValues();
+            }
+        }
+
+        // cart items element
+        class CartItemElement extends SuperElement  {
+            name() {
+                return getI18n('block');
+            }
+            icon() {
+                return 'fal fa-font';
+            }
+
+            getControls() {
+                var element = this;
+
+                return [
+                    new CartItemControl('{{ trans('messages.cart_item') }}', {
+                        image: element.obj.find('img').attr('src'),
+                    }, {
+                        updateImage: function(src) {
+                            element.obj.find('img').attr('src', src);
+                        },
+                        updateName: function(name) {
+                            element.obj.find('.product-name').html(name);
+                        },
+                        updateDescription: function(description) {
+                            element.obj.find('.product-description').html(description);
+                        },
+                        updateLink: function(link) {
+                            element.obj.find('.product-link').attr('href', link);
+                        }
+                    }),
                     new FontFamilyControl(getI18n('font_family'), element.obj.css('font-family'), function(font_family) {
                         element.obj.css('font-family', font_family);
                         element.select();
@@ -77,27 +365,27 @@
                 // default button html
                 this.setButtonHtml(`
                     <div class="_1content widget-text">
-                        <div class="panel__body" title="{{ trans('messages.automation.cart_items') }}">
+                        <div class="panel__body" title="{{ trans('messages.automation.cart_item') }}">
                             <div class="image-drag">
                                 <div ng-bind-html="::getModuleIcon(module)" class="ng-binding">
                                     <i class="material-icons-outlined" style="font-size: 36px;display: inline-block;">money</i>
                                 </div>
                             </div>
-                            <div class="body__title">{{ trans('messages.automation.cart_items') }}</div>
+                            <div class="body__title">{{ trans('messages.automation.cart_item') }}</div>
                         </div>
                     </div>
                 `);
 
                 // default content html
                 this.setContentHtml(`
-                    <div builder-element="CartItemsElement" builder-draggable class="py-3 px-3">
-                        <div builder-element class="d-flex mb-4">
-                        <a builder-element href="" class="mr-4"><img builder-element src="{{ url('images/cart_item.svg') }}" width="200px" /></a>
-                        <div class="">
-                            <h3 builder-element builder-inline-edit class="font-weight-normal">{{ trans('messages.automation.item_title') }}</h3>
-                            <p builder-element builder-inline-edit class="">{{ trans('messages.automation.item_description') }}</p>
-                            <a builder-element builder-inline-edit class="btn btn-primary text-white">{{ trans('messages.automation.view_more') }}</a>
-                        </div>
+                    <div data-items-number="3" builder-element="CartItemElement" builder-draggable class="py-3 px-3">
+                        <div class="d-flex">
+                            <a builder-element href="{PRODUCT_URL}" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="200px" /></a>
+                            <div class="">
+                                <h3 builder-element builder-inline-edit class="font-weight-normal product-name">{PRODUCT_NAME}</h3>
+                                <p builder-element builder-inline-edit class=" product-description">{PRODUCT_DESCRIPTION}</p>
+                                <a builder-element builder-inline-edit class="btn btn-primary text-white product-link" href="{PRODUCT_URL}">{{ trans('messages.automation.view_more') }}</a>
+                            </div>
                         </div>
                     </div>
                 `);
@@ -105,13 +393,13 @@
                 // default dragging html
                 this.setDraggingHtml(`
                     <div class="_1content widget-text">
-                        <div class="panel__body" title="{{ trans('messages.automation.cart_items') }}">
+                        <div class="panel__body" title="{{ trans('messages.automation.cart_item') }}">
                             <div class="image-drag">
                                 <div ng-bind-html="::getModuleIcon(module)" class="ng-binding">
                                     <i class="material-icons-outlined" style="font-size: 36px;display: inline-block;">money</i>
                                 </div>
                             </div>
-                            <div class="body__title">{{ trans('messages.automation.cart_items') }}</div>
+                            <div class="body__title">{{ trans('messages.automation.cart_item') }}</div>
                         </div>
                     </div>
                 `);
@@ -244,6 +532,7 @@
                   }
                 },
                 loaded: function() {
+                    this.addContentWidget(new CartItemsWidget(), 0);
                     this.addContentWidget(new CartItemWidget(), 0);
                 }
             });
@@ -251,6 +540,10 @@
             editor.init();
         });
     </script>
+
+    <script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery.min.js') }}"></script>
+    <link href="{{ URL::asset('assets2/lib/select2-4.0.12/css/select2.min.css') }}" rel="stylesheet" />
+    <script src="{{ URL::asset('assets2/lib/select2-4.0.12/js/select2.min.js') }}"></script>
   </head>
   <body>
   </body>
