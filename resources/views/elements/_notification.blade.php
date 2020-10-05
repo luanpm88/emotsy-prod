@@ -23,7 +23,7 @@
     </div>
     <div>
         @isset($title)
-            <h4>{{ $title }}</h4>
+            <h4 class="mb-2">{{ $title }}</h4>
         @endisset
         <p>{!! $message !!}</p>
     </div>

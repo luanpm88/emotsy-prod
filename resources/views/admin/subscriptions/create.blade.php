@@ -4,7 +4,7 @@
 	<div class="row">
         <div class="col-md-1"></div>
         <div class="col-md-10">
-            <h2>{{ trans('messages.subscription.create_new_subsctiption') }}</h2>
+            <h2 class="mt-0">{{ trans('messages.subscription.create_new_subsctiption') }}</h2>
             <p>{{ trans('messages.subscription.create_new_subsctiption.intro') }}</p>   
 
             <form enctype="multipart/form-data" action="{{ action('Admin\SubscriptionController@create') }}" method="POST" class="subscription-form form-validate-jqueryx">
@@ -32,6 +32,18 @@
                             'rules' => $rules,
                             'url' => action('Admin\PlanController@select2'),
                             'placeholder' => trans('messages.select_plan')
+                        ])
+
+                        @include('helpers.form_control', [
+                            'type' => 'select',
+                            'class' => '',
+                            'value' => '',
+                            'name' => 'gateway',
+                            'label' => trans('messages.subscription.select_payment'),
+                            'help_class' => 'subscription',
+                            'rules' => $rules,
+                            'options' => getPaymentOptions(),
+                            'placeholder' => trans('messages.choose')
                         ])
                     </div>
                 </div>

@@ -129,6 +129,7 @@
             editor = new Editor({
                 buildMode: {{ $buildMode }},
                 legacyMode: true,
+                showHelp: false,
                 lang: {!! json_encode(language()->getBuilderLang()) !!},
                 url: '{{ action('Automation2Controller@templateContent', [
                   'uid' => $automation->uid,

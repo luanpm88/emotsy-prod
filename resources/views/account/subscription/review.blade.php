@@ -22,8 +22,10 @@
 @endsection
 
 @section('content')
+<form action="{{ action('AccountSubscriptionController@create', ['plan_uid' => $plan->uid]) }}" method="POST" class="proceed_with_payment">
+    {{ csrf_field() }}
     <div class="row">
-        <div class="col-md-7">
+        <div class="col-md-6">
             <div class="sub-section mb-30">
                 <p>{{ trans('messages.plan.review.wording') }}</p>
                 
@@ -54,14 +56,45 @@
                     </li>
                 </ul>
             </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-8">
+            <h2 class="mb-1">{{ trans('messages.subscription.choose_payment_method') }}</h2>
+            <p>{{ trans('messages.plan.review.wording') }}</p>
+            <div class="sub-section mb-30 choose-payment-methods">      
+                @foreach(Acelle\Model\Setting::getEnabledPaymentGateways() as $gateway)
+                    <div class="d-flex align-items-center choose-payment choose-payment-{{ $gateway }}">
+                        <div class="text-right pl-2 pr-2">
+                            <div class="d-flex align-items-center form-group-mb-0">
+                                @include('helpers.form_control', [
+                                    'type' => 'radio2',
+                                    'name' => 'payment_method',
+                                    'value' => '',
+                                    'label' => '',
+                                    'help_class' => 'setting',
+                                    'rules' => ['payment_method' => 'required'],
+                                    'options' => [
+                                        ['value' => $gateway, 'text' => ''],
+                                    ],
+                                ])
+                                <div class="check"></div>
+                            </div>
+                        </div>
+                        <div class="mr-auto pr-4">
+                            <h4 class="font-weight-semibold mb-2">{{ trans('messages.payments.' . $gateway) }}</h4>
+                            <p class="mb-3">{{ trans('messages.payments.' . $gateway . '.list_intro') }}</p>
+                        </div>                        
+                    </div>
+                @endforeach
+            </div>
             <div class="sub-section">
                 <div class="row">
                     <div class="col-md-4">
-                        <a link-method="POST"
-                            href="{{ action('AccountSubscriptionController@create', ['plan_uid' => $plan->uid]) }}"
+                        <button link-method="POST"
                             class="btn btn-mc_primary">
                                 {{ trans('messages.payment.proceed_with_payment') }}
-                        </a>                         
+                        </button>
                     </div>
                     <div class="col-md-8">
                         {!! trans('messages.payment.agree_service_intro', ['plan' => $plan->name]) !!}
@@ -70,6 +103,38 @@
             </div>
         </div>
     </div>
-    
+</form>
+    <script>
+        $('.proceed_with_payment').on('submit', function(e) {
+            if (!$('.choose-payment-methods>div [type=radio]:checked').length) {
+                e.preventDefault();
+
+                swal({
+                    title: '{{ trans('messages.subscription.no_payment_method_selected') }}',
+                    text: "",
+                    confirmButtonColor: "#00695C",
+                    type: "error",
+                    allowOutsideClick: true,
+                    confirmButtonText: LANG_OK,
+                    customClass: "swl-success",
+                    html: true
+                });
+            }                
+        });
+
+        $('.choose-payment-methods>div').on('click', function() {
+            $(this).find('[type=radio]').prop('checked', true);
+
+            $('.choose-payment-methods>div').removeClass('current');
+            $('.choose-payment-methods>div [type=radio]:checked').closest('.choose-payment').addClass('current');
+        });
+
+        $('.choose-payment-methods>div').removeClass('current');
+        $('.choose-payment-methods>div [type=radio]:checked').closest('.choose-payment').addClass('current');        
+
+        if ($('.choose-payment-methods>div [type=radio]').length == 1) {
+            $('.choose-payment-methods>div').first().click();
+        }
+    </script>
 
 @endsection

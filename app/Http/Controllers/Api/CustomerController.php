@@ -335,7 +335,12 @@ class CustomerController extends Controller
             return \Response::json(array('status' => 0, 'message' => 'Plan is not active'), 404);
         }
 
-        $customer->assignPlan($plan);
+        // no gateway
+        if (!$request->gateway) {
+            return \Response::json(array('status' => 0, 'message' => 'Gateway not found'), 404);
+        }
+
+        $customer->assignPlan($plan, $request->gateway);
 
         return \Response::json(array(
             'status' => 1,

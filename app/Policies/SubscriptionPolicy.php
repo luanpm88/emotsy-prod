@@ -42,7 +42,7 @@ class SubscriptionPolicy
 
     public function cancel(User $user, Subscription $subscription, $role)
     {
-        $gateway = Cashier::getPaymentGateway();
+        $gateway = $subscription->getPaymentGateway();
         $can = $subscription->isActive() && $subscription->isRecurring() && $gateway->isSupportRecurring();
         switch ($role) {
             case 'admin':
@@ -56,7 +56,7 @@ class SubscriptionPolicy
 
     public function resume(User $user, Subscription $subscription, $role)
     {
-        $gateway = Cashier::getPaymentGateway();
+        $gateway = $subscription->getPaymentGateway();
         $can = $subscription->isActive() && $gateway->isSupportRecurring() && $subscription->cancelled() && !$subscription->isEnded();
 
         switch ($role) {
@@ -99,8 +99,6 @@ class SubscriptionPolicy
 
     public function changePlan(User $user, Subscription $subscription, $role)
     {
-        $gateway = Cashier::getPaymentGateway();
-        
         switch ($role) {
             case 'admin':
                 $can = false;
@@ -172,7 +170,6 @@ class SubscriptionPolicy
 
     public function setActive(User $user, Subscription $subscription, $role)
     {
-        $gateway = Cashier::getPaymentGateway();
         $can = $subscription->isPending();
 
         switch ($role) {
@@ -188,7 +185,6 @@ class SubscriptionPolicy
 
     public function approvePending(User $user, Subscription $subscription, $role)
     {
-        $gateway = Cashier::getPaymentGateway();
         $can = $subscription->hasError() && in_array($subscription->getError()["type"], ['renew', 'change_plan']);
 
         switch ($role) {
@@ -204,7 +200,6 @@ class SubscriptionPolicy
 
     public function rejectPending(User $user, Subscription $subscription, $role)
     {
-        $gateway = Cashier::getPaymentGateway();
         $can = $subscription->hasError() && in_array($subscription->getError()["type"], ['renew', 'change_plan']);
 
         switch ($role) {

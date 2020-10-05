@@ -79,7 +79,7 @@ class SubscriptionController extends Controller
             // asign plan
             $customer = Customer::findByUid($request->customer_uid);
             $plan = Plan::findByUid($request->plan_uid);
-            $customer->assignPlan($plan);
+            $customer->assignPlan($plan, $request->gateway);            
             
             return response()->json([
                 'status' => 'success',
@@ -100,12 +100,6 @@ class SubscriptionController extends Controller
      */
     public function listing(Request $request)
     {
-        $gateway = Cashier::getPaymentGateway();
-
-        if (!$gateway) {
-            return view('admin.subscriptions.no_gateway');
-        }
-
         // authorize
         if (!$request->user()->admin->can('read', new Subscription())) {
             return $this->notAuthorized();
@@ -136,7 +130,6 @@ class SubscriptionController extends Controller
 
         return view('admin.subscriptions._list', [
             'subscriptions' => $subscriptions,
-            'gateway' => $gateway,
         ]);
     }
 
@@ -151,7 +144,7 @@ class SubscriptionController extends Controller
     {
         // Get current subscription
         $subscription = Subscription::findByUid($request->id);
-        $gateway = Cashier::getPaymentGateway();
+        $gateway = $subscription->getPaymentGateway();
 
         if ($request->user()->admin->can('cancel', $subscription)) {
             $gateway->cancel($subscription);
@@ -171,7 +164,7 @@ class SubscriptionController extends Controller
     {
         // Get current subscription
         $subscription = Subscription::findByUid($request->id);
-        $gateway = Cashier::getPaymentGateway();
+        $gateway = $subscription->getPaymentGateway();
 
         if ($request->user()->admin->can('resume', $subscription)) {
             $gateway->resume($subscription);
@@ -191,7 +184,7 @@ class SubscriptionController extends Controller
     {
         // Get current subscription
         $subscription = Subscription::findByUid($request->id);
-        $gateway = Cashier::getPaymentGateway();
+        $gateway = $subscription->getPaymentGateway();
 
         if ($request->user()->admin->can('cancelNow', $subscription)) {
             try {
@@ -230,7 +223,7 @@ class SubscriptionController extends Controller
     {
         // Get current subscription
         $subscription = Subscription::findByUid($request->id);
-        $gateway = Cashier::getPaymentGateway();
+        $gateway = $subscription->getPaymentGateway();
 
         return view('admin.subscriptions.invoices', [
             'subscription' => $subscription,
@@ -249,7 +242,7 @@ class SubscriptionController extends Controller
     {
         // Get current subscription
         $subscription = Subscription::findByUid($request->id);
-        $gateway = Cashier::getPaymentGateway();
+        $gateway = $subscription->getPaymentGateway();
 
         // authorize
         if (!$request->user()->admin->can('setActive', $subscription)) {
@@ -284,7 +277,7 @@ class SubscriptionController extends Controller
     {
         // Get current subscription
         $subscription = Subscription::findByUid($request->id);
-        $gateway = Cashier::getPaymentGateway();
+        $gateway = $subscription->getPaymentGateway();
 
         // authorize
         if (!$request->user()->admin->can('approvePending', $subscription)) {
@@ -319,7 +312,7 @@ class SubscriptionController extends Controller
     {
         // Get current subscription
         $subscription = Subscription::findByUid($request->id);
-        $gateway = Cashier::getPaymentGateway();
+        $gateway = $subscription->getPaymentGateway();
 
         // authorize
         if (!$request->user()->admin->can('rejectPending', $subscription)) {

@@ -37,6 +37,11 @@ class SubscriptionController extends Controller
             return \Response::json(array('status' => 0, 'message' => 'Plan not found'), 404);
         }
 
+        // no gateway
+        if (!$request->gateway) {
+            return \Response::json(array('status' => 0, 'message' => 'Gateway not found'), 404);
+        }
+
         // authorize
         if (!$user->can('assignPlan', $customer)) {
             return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 401);
@@ -47,7 +52,7 @@ class SubscriptionController extends Controller
             return \Response::json(array('status' => 0, 'message' => 'Plan is not active'), 404);
         }
 
-        $customer->assignPlan($plan);
+        $customer->assignPlan($plan, $request->gateway);
 
         return \Response::json(array(
             'status' => 1,
@@ -68,7 +73,7 @@ class SubscriptionController extends Controller
     {
         // Get current subscription
         $subscription = \Acelle\Cashier\Subscription::findByUid($uid);
-        $gateway = \Acelle\Cashier\Cashier::getPaymentGateway();
+        $gateway = $subscription->getPaymentGateway();
 
         // check if item exists
         if (!is_object($subscription)) {

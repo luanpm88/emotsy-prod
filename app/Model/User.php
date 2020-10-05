@@ -25,6 +25,7 @@ namespace Acelle\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Acelle\Notifications\ResetPassword;
+use Acelle\Library\Log as MailLog;
 use Acelle\Model\Setting;
 use App;
 
@@ -112,7 +113,25 @@ class User extends Authenticatable
         $layout->content = str_replace('{CUSTOMER_NAME}', $name, $layout->content);
 
         $name = is_null($name) ? trans('messages.to_email_name') : $name;
-        \Mail::to(json_decode(json_encode(['email' => $this->email, 'name' => $name])))->send(new \Acelle\Mail\RegistrationConfirmationMailer($layout->content, $layout->subject));
+
+        // build the message
+        $message = new \Swift_Message();
+        $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
+        $message->setContentType('text/html; charset=utf-8');
+
+        $message->setSubject($layout->subject);
+        $message->setTo([$this->email => $name]);
+        $message->setReplyTo(Setting::get('mail.reply_to'));
+        $message->addPart($layout->content, 'text/html');
+
+        $mailer = App::make('xmailer');
+        $result = $mailer->sendWithDefaultFromAddress($message);
+
+        if (array_key_exists('error', $result)) {
+            throw new \Exception($result['error']);
+        }
+
+        MailLog::info('Sent activation email to '.$this->email);
     }
 
     /**

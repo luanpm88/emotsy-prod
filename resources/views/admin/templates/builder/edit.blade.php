@@ -20,6 +20,7 @@
             editor = new Editor({
                 buildMode: false,
                 legacyMode: true,
+                showHelp: false,
                 lang: {!! json_encode(language()->getBuilderLang()) !!},
                 url: '{{ action('Admin\TemplateController@builderEditContent', $template->uid) }}',
                 backCallback: function() {

@@ -73,7 +73,6 @@ class CustomerController extends Controller
     {
         $id = \Session::get('orig_customer_id');
         $orig_user = \Acelle\Model\User::findByUid($id);
-        $gateway = Cashier::getPaymentGateway();
         
         // Get current subscription
         $customer = $request->user()->customer;
@@ -91,7 +90,6 @@ class CustomerController extends Controller
             'customer' => $customer,
             'subscription' => $subscription,
             'next_billing_date' => $next_billing_date,
-            'gateway' => $gateway,
         ]);
     }
 }

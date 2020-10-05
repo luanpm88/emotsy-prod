@@ -2434,4 +2434,11 @@ class CampaignController extends Controller
         $campaign->start();
         echo $campaign->status;
     }
+
+    public function updateStats(Request $request, $uid)
+    {
+        $campaign = \Acelle\Model\Campaign::findByUid($uid);
+        $campaign->updateCache();
+        echo $campaign->status;
+    }
 }

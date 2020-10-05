@@ -898,14 +898,7 @@
   'ip' => 'IP',
   'area' => 'Area',
   'template_upload_guide' => '
-      Please upload your HTML template bundle. Normally, it should be a .zip file containing:
-      <ul>
-      <li>One single .html file and</li>
-      <li>One directory at the same level containing asset files (JS, CSS, Images, etc.)</li>
-      </ul>
-      <br />
-      Please click <a class="text-semibold" href=":link" target="_blank">[here]</a> to download a sample email template
-    ',
+      Please upload your plugin file. Select your plugin archive and upload it',
   'disable' => 'Disable',
   'enable' => 'Enable',
   'STYLE' => 'STYLE',
@@ -2557,7 +2550,7 @@
   'setting.renew_free_plan.help' => 'Customers who are subscribing to a Free plan can not renew the plan. Need to change to a no-free plan first.',
   'payment.direct.notice' => 'Payment instructions',
   'plans.subscriber_count' => ':count subscriber(s)',
-  'payment.direct' => 'Direct',
+  'payment.direct' => 'Offline Payment',
   'plan.info.subscriber_count' => 'There are <strong>:count</strong> customer(s) currently subscribed to this plan.
     Click <a href=":link"><strong>here</strong></a> to see more details.',
   'admin.no_primary_payment' => 'No Primary Payment Gateway selected. Click <a href=":link"><strong>here</strong></a> to select one.',
@@ -3814,6 +3807,33 @@
   'automation.subscriber.remove' => 'Remove from Automation',
   'automation.subscriber.removed' => 'Subscriber was successfully removed from automation',
   'automation.subscriber.restarted' => 'Subscriber was successfully restarted within automation',
+  'payment.all_available_gateways' => 'All available payment gateways',
+  'payment.all_available_gateways.wording' => 'Belows are all payment gateways that installed',
+  'payment.offline_payment' => 'Offline Payment',
+  'payment.offline_payment.intro' => 'Receive payments outside of the application',
+  'payment.card_payment' => 'Use Card',
+  'payment.card_payment.intro' => 'Receive payments from customer\'s card (credit, debit, master, visa,...)',
+  'payment.digital_coin' => 'Digital Coin',
+  'payment.digital_coin.intro' => 'Receive payment from a cryptocurrency like Bitcoin, Monero, ZCash, etc.',
+  'payment.paypal_payment' => 'Paypal',
+  'payment.paypal_payment.intro' => 'PayPal is the fast/safe way to send money, make an online
+      payment, receive money or set up a merchant account',
+  'payment.default_payment_gateway' => 'Default Gateways',
+  'payment.can_not_connect' => 'Can not connect to :name',
+  'payment.can_not_connect.desc' => '<p>Error: :error</p> <p class="">
+      <a class="btn btn-mc_primary mt-4" href=":link">Change setting</a><p>',
+  'subscription.choose_payment_method' => 'Choose payment method',
+  'subscription.choose_payment_method.intro' => 'Let select one of payment methods belows for paying your subscription',
+  'subscription.no_payment_method_selected' => 'No payment method selected!',
+  'subscription.select_payment' => 'Select payment',
+  'current_service' => 'Gateway',
+  'payments.paystack' => 'Paystack',
+  'payments.paystack.list_intro' => 'Modern online and offline payments for Africa.
+      Paystack helps businesses in Africa get paid by anyone, anywhere in the world',
+  'payment.paystack.wording' => 'Modern online and offline payments for Africa.
+      Paystack helps businesses in Africa get paid by anyone, anywhere in the world',
+  'payment.paystack.public_key' => 'Public key',
+  'payment.paystack.secret_key' => 'Secret key',
   'customer.one_time_token.generated' => 'One time token was generated',
   'token_expired' => 'Token was expired or invalid',
   'automation.trigger.icon.woo-abandoned-cart' => '',
@@ -3840,4 +3860,60 @@
   'automation.item_title' => '{PRODUCT_NAME}',
   'automation.item_description' => '{PRODUCT_DESCRIPTION}',
   'automation.view_more' => 'View more',
+  'payment.enable' => 'Enable',
+  'payment.disable' => 'Disable',
+  'payment.show' => 'Show',
+  'payment.hide' => 'Hide',
+  'save_and_show' => 'Save & Show',
+  'frontend_payment.direct' => 'Offline payment',
+  'frontend_payment.direct.desc' => 'Receive payments outside of the application',
+  'frontend_payment.stripe' => 'Use Card',
+  'frontend_payment.stripe.desc' => 'Receive payments from customer\'s
+      card (credit, debit, master, visa,...)',
+  'frontend_payment.braintree' => 'Use Card',
+  'frontend_payment.braintree.desc' => 'Receive payments from customer\'s
+      card (credit, debit, master, visa,...)',
+  'frontend_payment.zarorpay' => 'Use Card',
+  'frontend_payment.zarorpay.desc' => 'Receive payments from customer\'s
+      card (credit, debit, master, visa,...)',
+  'frontend_payment.paystack' => 'Use Card',
+  'frontend_payment.paystack.desc' => 'Receive payments from customer\'s
+      card (credit, debit, master, visa,...)',
+  'frontend_payment.coinpayments' => 'Digital Coin',
+  'frontend_payment.coinpayments.desc' => 'Receive payment from a cryptocurrency
+      like Bitcoin, Monero, ZCash, etc.',
+  'frontend_payment.paypal' => 'PayPal',
+  'frontend_payment.paypal.desc' => 'Receive payments outside of the application',
+  'frontend_payment.paypal_subscription' => 'PayPal Subscription',
+  'frontend_payment.paypal_subscription.desc' => 'With PayPal Subscriptions, you can bill customers for plans
+      at regular intervals via their PayPal account',
+  'payment.connect' => 'Connect',
+  'payment.active' => 'active',
+  'payment.inactive' => 'inactive',
+  'plugin' => 'Plugin',
+  'plugins' => 'Plugins',
+  'plugin.installed' => 'Plugin was successfully installed',
+  'plugin.updated' => 'Plugin was successfully updated',
+  'plugin.deleted' => 'Plugin was successfully deleted',
+  'plugin_empty_line_1' => 'You have no plugin',
+  'plugin.wording' => 'Empower your application with tons of awesome plugins developed by Acelle Mail Team.
+      Integration made easier than ever!',
+  'plugins.deleted' => 'One or more plugins were successfully deleted',
+  'plugins.disabled' => 'One or more plugins were successfully disabled',
+  'plugins.enabled' => 'One or more plugins were successfully enabled',
+  'delete_plugins_confirm' => 'You\'re about to delete :number plugin(s) from the list.',
+  'disable_plugins_confirm' => 'You\'re about to disable :number plugin(s) from the list.',
+  'enable_plugins_confirm' => 'You\'re about to enable :number plugin(s) from the list.',
+  'create_plugin' => 'Create new',
+  'plugin_status_active' => 'Active',
+  'plugin_status_inactive' => 'Inactive',
+  'install_plugin' => 'Install plugin',
+  'plugin.installing' => '<strong>Installing...</strong><p>Your plugin is being uploaded
+      and processed, please wait!</p>',
+  'installed_at' => 'Installed at',
+  'uninstall' => 'Uninstall',
+  'plugin.type.payment' => 'Payment',
+  'plugin.type.sending_server' => 'Sending Server',
+  'plugin.type.email_verification' => 'Email Verification',
+  'plugin.version' => 'Version',
 ) ?>

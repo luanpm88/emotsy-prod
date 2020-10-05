@@ -6,7 +6,7 @@ require 'json'
 
 # Settings
 last_supported = '4.0.20-p63'
-packages = []       # vendor packages to be replaced
+packages = ['acelle', 'mews', 'ezyang']       # vendor packages to be replaced
 dirs = ['public/builder', 'resources/lang/default']                   # 'resources/lang/default' for example
 
 # Auto setting

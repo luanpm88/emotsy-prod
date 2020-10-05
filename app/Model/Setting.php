@@ -24,6 +24,7 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Cashier\Cashier;
+use Acelle\Model\Plugin;
 
 class Setting extends Model
 {
@@ -518,6 +519,18 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
+            'gateways' => [
+                'cat' => 'others',
+                'value' => '["direct"]',
+                'type' => 'array',
+                'not_required' => true,
+            ],
+            'payment.direct' => [
+                'cat' => 'others',
+                'value' => 'connected',
+                'type' => 'array',
+                'not_required' => true,
+            ],
         ];
     }
 
@@ -572,6 +585,10 @@ class Setting extends Model
         $env_file = fopen($file_path, 'w') or die('Unable to open file!');
         fwrite($env_file, implode('', $data));
         fclose($env_file);
+
+        if (file_exists(base_path('bootstrap/cache/config.php'))) {
+            unlink(base_path('bootstrap/cache/config.php'));
+        }
     }
 
     /**
@@ -689,7 +706,33 @@ class Setting extends Model
      */
     public static function getPaymentGateways()
     {
-        return config('cashier.gateways');
+        $gateways = config('cashier.gateways');
+
+        // Check plugin paystack
+        if (!Plugin::isActive('paystack')) {
+            unset($gateways['paystack']);
+        }
+
+        return $gateways;
+    }
+
+    /**
+     * Get enabled payments gateways.
+     *
+     * @var array
+     */
+    public static function getEnabledPaymentGateways()
+    {
+        $gateways = json_decode(self::get('gateways'));
+
+        // Check plugin paystack
+        if (!Plugin::isActive('paystack')) {
+            if (($key = array_search('paystack', $gateways)) !== false) {
+                unset($gateways[$key]);
+            }
+        }
+
+        return $gateways;
     }
 
     /**
@@ -725,6 +768,9 @@ class Setting extends Model
      */
     public static function updatePaymentGateway($name, $params)
     {
+        $setting = 'payment.'.$name;
+        self::set($setting, 'connected');
+
         foreach ($params as $key => $value) {
             $setting = 'payment.'.$name.'.'.$key;
 
