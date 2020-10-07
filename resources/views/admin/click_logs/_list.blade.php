@@ -29,7 +29,7 @@
 											<span class="text-muted second-line-mobile">{{ trans('messages.ip_address') }}</span>
 										</td>
 										<td>
-											<span class="no-margin kq_search">{{ $item->trackingLog->campaign->name }}</span>
+											<span class="no-margin kq_search">{{ is_null($item->trackingLog->campaign) ? 'N/A' : $item->trackingLog->campaign->name }}</span>
 											<span class="text-muted second-line-mobile">{{ trans('messages.campaign') }}</span>
 										</td>
 										<td>
