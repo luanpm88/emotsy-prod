@@ -160,7 +160,7 @@
                             <div class="col-md-4">
                                 <div class="">
                                     <div class="mb-3">
-                                        <a href="{PRODUCT_URL}" class="mr-4"><img builder-element src="{{ url('images/cart_item.svg') }}" width="200px" /></a>
+                                        <a href="{PRODUCT_URL}" class="mr-4"><img builder-element src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
                                     </div>
                                     <div class="">
                                         <h5 builder-element class="font-weight-normal product-name">{PRODUCT_NAME}</h5>
@@ -175,7 +175,7 @@
                             <div class="col-md-4">
                                 <div class="">
                                     <div class="mb-3">
-                                        <a href="{PRODUCT_URL}" class="mr-4"><img builder-element src="{{ url('images/cart_item.svg') }}" width="200px" /></a>
+                                        <a href="{PRODUCT_URL}" class="mr-4"><img builder-element src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
                                     </div>
                                     <div class="">
                                         <h5 builder-element class="font-weight-normal product-name">{PRODUCT_NAME}</h5>
@@ -190,7 +190,7 @@
                             <div class="col-md-4">
                                 <div class="">
                                     <div class="mb-3">
-                                        <a href="{PRODUCT_URL}" class="mr-4"><img builder-element src="{{ url('images/cart_item.svg') }}" width="200px" /></a>
+                                        <a href="{PRODUCT_URL}" class="mr-4"><img builder-element src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
                                     </div>
                                     <div class="">
                                         <h5 builder-element class="font-weight-normal product-name">{PRODUCT_NAME}</h5>
@@ -427,7 +427,7 @@
                 this.setContentHtml(`
                     <div data-items-number="3" builder-element="CartItemElement" builder-draggable class="py-3 px-3">
                         <div class="d-flex">
-                            <a builder-element href="{PRODUCT_URL}" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="200px" /></a>
+                            <a builder-element href="{PRODUCT_URL}" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
                             <div class="">
                                 <h3 builder-element class="font-weight-normal product-name">{PRODUCT_NAME}</h3>
                                 <p builder-element class=" product-description">{PRODUCT_DESCRIPTION}</p>
