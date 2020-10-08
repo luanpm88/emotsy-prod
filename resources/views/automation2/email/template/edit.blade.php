@@ -156,12 +156,51 @@
                 // default content html
                 this.setContentHtml(`
                     <div data-items-number="3" builder-element="CartItemsElement" builder-draggable class="py-3 px-3">
-                        <div class="d-flex">
-                            <a builder-element href="{PRODUCT_URL}" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="200px" /></a>
-                            <div class="">
-                                <h3 builder-element builder-inline-edit class="font-weight-normal product-name">{PRODUCT_NAME}</h3>
-                                <p builder-element builder-inline-edit class=" product-description">{PRODUCT_DESCRIPTION}</p>
-                                <a builder-element builder-inline-edit class="btn btn-primary text-white" href="{PRODUCT_URL}">{{ trans('messages.automation.view_more') }}</a>
+                        <div class="row py-3">
+                            <div class="col-md-4">
+                                <div class="">
+                                    <div class="mb-3">
+                                        <a href="{PRODUCT_URL}" class="mr-4"><img builder-element src="{{ url('images/cart_item.svg') }}" width="200px" /></a>
+                                    </div>
+                                    <div class="">
+                                        <h5 builder-element class="font-weight-normal product-name">{PRODUCT_NAME}</h5>
+                                        <p builder-element class=" product-description">{PRODUCT_DESCRIPTION}</p>
+                                        <p builder-element><strong>{PRODUCT_PRICE}</strong></p>
+                                        <a builder-element builder-inline-edit href="{PRODUCT_URL}" class="btn btn-primary text-white">
+                                            {{ trans('messages.automation.view_more') }}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="">
+                                    <div class="mb-3">
+                                        <a href="{PRODUCT_URL}" class="mr-4"><img builder-element src="{{ url('images/cart_item.svg') }}" width="200px" /></a>
+                                    </div>
+                                    <div class="">
+                                        <h5 builder-element class="font-weight-normal product-name">{PRODUCT_NAME}</h5>
+                                        <p builder-element class=" product-description">{PRODUCT_DESCRIPTION}</p>
+                                        <p builder-element><strong>{PRODUCT_PRICE}</strong></p>
+                                        <a builder-element builder-inline-edit href="{PRODUCT_URL}" class="btn btn-primary text-white">
+                                            {{ trans('messages.automation.view_more') }}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="">
+                                    <div class="mb-3">
+                                        <a href="{PRODUCT_URL}" class="mr-4"><img builder-element src="{{ url('images/cart_item.svg') }}" width="200px" /></a>
+                                    </div>
+                                    <div class="">
+                                        <h5 builder-element class="font-weight-normal product-name">{PRODUCT_NAME}</h5>
+                                        <p builder-element class=" product-description">{PRODUCT_DESCRIPTION}</p>
+                                        <p builder-element><strong>{PRODUCT_PRICE}</strong></p>
+                                        <a builder-element builder-inline-edit href="{PRODUCT_URL}" class="btn btn-primary text-white">
+                                            {{ trans('messages.automation.view_more') }}
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -390,9 +429,12 @@
                         <div class="d-flex">
                             <a builder-element href="{PRODUCT_URL}" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="200px" /></a>
                             <div class="">
-                                <h3 builder-element builder-inline-edit class="font-weight-normal product-name">{PRODUCT_NAME}</h3>
-                                <p builder-element builder-inline-edit class=" product-description">{PRODUCT_DESCRIPTION}</p>
-                                <a builder-element builder-inline-edit class="btn btn-primary text-white product-link" href="{PRODUCT_URL}">{{ trans('messages.automation.view_more') }}</a>
+                                <h3 builder-element class="font-weight-normal product-name">{PRODUCT_NAME}</h3>
+                                <p builder-element class=" product-description">{PRODUCT_DESCRIPTION}</p>
+                                <p builder-element><strong>{PRODUCT_PRICE}</strong></p>
+                                <a builder-element builder-inline-edit href="{PRODUCT_URL}" class="btn btn-primary text-white">
+                                    {{ trans('messages.automation.view_more') }}
+                                </a>
                             </div>
                         </div>
                     </div>
