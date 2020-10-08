@@ -163,7 +163,9 @@
                                         <a href="{PRODUCT_URL}" class="mr-4"><img builder-element src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
                                     </div>
                                     <div class="">
-                                        <h5 builder-element class="font-weight-normal product-name">{PRODUCT_NAME}</h5>
+                                        <p builder-element class="font-weight-normal product-name mb-1">
+                                            <a href="{PRODUCT_URL}" class="mr-4">{PRODUCT_NAME}</a>
+                                        </p>
                                         <p builder-element class=" product-description">{PRODUCT_DESCRIPTION}</p>
                                         <p builder-element><strong>{PRODUCT_PRICE}</strong></p>
                                         <a builder-element builder-inline-edit href="{PRODUCT_URL}" class="btn btn-primary text-white">
@@ -178,7 +180,9 @@
                                         <a href="{PRODUCT_URL}" class="mr-4"><img builder-element src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
                                     </div>
                                     <div class="">
-                                        <h5 builder-element class="font-weight-normal product-name">{PRODUCT_NAME}</h5>
+                                        <h5 builder-element class="font-weight-normal product-name">
+                                            <a href="{PRODUCT_URL}" class="mr-4">{PRODUCT_NAME}</a>
+                                        </h5>
                                         <p builder-element class=" product-description">{PRODUCT_DESCRIPTION}</p>
                                         <p builder-element><strong>{PRODUCT_PRICE}</strong></p>
                                         <a builder-element builder-inline-edit href="{PRODUCT_URL}" class="btn btn-primary text-white">
@@ -193,9 +197,11 @@
                                         <a href="{PRODUCT_URL}" class="mr-4"><img builder-element src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
                                     </div>
                                     <div class="">
-                                        <h5 builder-element class="font-weight-normal product-name">{PRODUCT_NAME}</h5>
+                                        <h5 builder-element class="font-weight-normal product-name">
+                                            <a href="{PRODUCT_URL}" class="mr-4">{PRODUCT_NAME}</a>
+                                        </h5>
                                         <p builder-element class=" product-description">{PRODUCT_DESCRIPTION}</p>
-                                        <p builder-element><strong>{PRODUCT_PRICE}</strong></p>
+                                        <p builder-element><strong class="product-price">{PRODUCT_PRICE}</strong></p>
                                         <a builder-element builder-inline-edit href="{PRODUCT_URL}" class="btn btn-primary text-white">
                                             {{ trans('messages.automation.view_more') }}
                                         </a>
@@ -304,12 +310,14 @@
                         thisControl.callback.updateName(data.name);
                         thisControl.callback.updateDescription(data.description);
                         thisControl.callback.updateLink(data.link);
+                        thisControl.callback.updatePrice(data.price);
                     });
                 } else {
                     thisControl.callback.updateImage('{{ url('images/cart_item.svg') }}');
                     thisControl.callback.updateName('{PRODUCT_NAME}');
                     thisControl.callback.updateDescription('{PRODUCT_DESCRIPTION}');
                     thisControl.callback.updateLink('{PRODUCT_URL}');
+                    thisControl.callback.updatePrice('{PRODUCT_PRICE}');
                 }
             }
 
@@ -359,6 +367,11 @@
                         },
                         updateLink: function(link) {
                             element.obj.find('.product-link').attr('href', link);
+
+                            element.select();
+                        },
+                        updatePrice: function(price) {
+                            element.obj.find('.product-price').html(price);
 
                             element.select();
                         }
@@ -427,14 +440,24 @@
                 this.setContentHtml(`
                     <div data-items-number="3" builder-element="CartItemElement" builder-draggable class="py-3 px-3">
                         <div class="d-flex">
-                            <a builder-element href="{PRODUCT_URL}" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
                             <div class="">
-                                <h3 builder-element class="font-weight-normal product-name">{PRODUCT_NAME}</h3>
-                                <p builder-element class=" product-description">{PRODUCT_DESCRIPTION}</p>
-                                <p builder-element><strong>{PRODUCT_PRICE}</strong></p>
-                                <a builder-element builder-inline-edit href="{PRODUCT_URL}" class="btn btn-primary text-white">
-                                    {{ trans('messages.automation.view_more') }}
+                                <a href="{PRODUCT_URL}">
+                                    <img builder-element  class="mr-4" src="{{ url('images/cart_item.svg') }}" width="200px" />
                                 </a>
+                            </div>
+                            <div class="">
+                                <div class="">
+                                    <h3 class="font-weight-normal">
+                                        <a builder-element builder-inline-edit class="d-block product-name" href="{PRODUCT_URL}">
+                                            {PRODUCT_NAME}
+                                        </a>
+                                    </h3>
+                                    <p builder-element class=" product-description">{PRODUCT_DESCRIPTION}</p>
+                                    <h4 builder-element><strong class="product-price">{PRODUCT_PRICE}</strong></h4>
+                                    <a builder-element builder-inline-edit href="{PRODUCT_URL}" class="mt-4 btn btn-primary text-white">
+                                        {{ trans('messages.automation.view_more') }}
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
