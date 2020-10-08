@@ -541,8 +541,8 @@
                 },
                 loaded: function() {
                     @if ($automation->getTrigger()->getOption('type') == 'woo-abandoned-cart')
-                        this.addContentWidget(new CartItemsWidget(), 0);
-                        this.addContentWidget(new CartItemWidget(), 0);
+                        this.addContentWidget(new CartItemsWidget(), 0, 'WooCommerce');
+                        this.addContentWidget(new CartItemWidget(), 0, 'WooCommerce');
                     @endif
                 }
             });
