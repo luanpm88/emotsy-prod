@@ -24,7 +24,7 @@
                         <div class="control-[ID]">
                             <div class="widget-section d-flex align-items-center pr-3">
                                 <div class="label mr-auto">{{ trans('messages.cart_items.number_of_items') }}</div>
-                                <select class="items-number form-control">
+                                <select class="max-numbers form-control">
                                     <option value="1">1</option>
                                     <option value="2">2</option>
                                     <option value="3">3</option>
@@ -35,6 +35,24 @@
                                     <option value="8">8</option>
                                     <option value="9">9</option>
                                     <option value="10">10</option>
+                                </select>
+                            </div>
+                            <div class="widget-section d-flex align-items-center pr-3">
+                                <div class="label mr-auto">{{ trans('messages.cart_items.display_option') }}</div>
+                                <select class="display-option form-control">
+                                    <option value="1">{{ trans('messages.cart_items.display_option.1_column') }}</option>
+                                    <option value="2">{{ trans('messages.cart_items.display_option.2_column') }}</option>
+                                    <option value="3">{{ trans('messages.cart_items.display_option.3_column') }}</option>
+                                    <option value="4">{{ trans('messages.cart_items.display_option.4_column') }}</option>
+                                </select>
+                            </div>
+                            <div class="widget-section d-flex align-items-center pr-3">
+                                <div class="label mr-auto">{{ trans('messages.cart_items.sort_by') }}</div>
+                                <select class="sort-by form-control">
+                                    <option value="price_az">{{ trans('messages.cart_items.sort_by.price_az') }}</option>
+                                    <option value="price_za">{{ trans('messages.cart_items.sort_by.price_za') }}</option>
+                                    <option value="date_added_asc">{{ trans('messages.cart_items.sort_by.date_added_asc') }}</option>
+                                    <option value="date_added_desc">{{ trans('messages.cart_items.sort_by.date_added_desc') }}</option>
                                 </select>
                             </div>
                         </div>
@@ -241,6 +259,14 @@
                                     <option value="">Select product</option>
                                 </select>
                             </div>
+                        </div>
+                        <div class="widget-section d-flex align-items-center pr-3">
+                            <div class="label mr-auto">{{ trans('messages.cart_items.view_option') }}</div>
+                            <select class="items-number form-control">
+                                <option value="full">{{ trans('messages.cart_items.view_option.full') }}</option>
+                                <option value="compact">{{ trans('messages.cart_items.view_option.compact') }}</option>
+                                <option value="no_image">{{ trans('messages.cart_items.view_option.no_image') }}</option>
+                            </select>
                         </div>
                     </div>
                 `;
