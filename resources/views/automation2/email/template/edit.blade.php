@@ -202,11 +202,12 @@
                                     </div>
                                     <div class="">
                                         <p builder-element class="font-weight-normal product-name mb-1">
-                                            <a href="{PRODUCT_URL}" class="mr-4">{PRODUCT_NAME}</a>
+                                            <a style="color: #333;" href="{PRODUCT_URL}" class="mr-4">{PRODUCT_NAME}</a>
                                         </p>
                                         <p builder-element class=" product-description">{PRODUCT_DESCRIPTION}</p>
                                         <p builder-element><strong>{PRODUCT_PRICE}</strong></p>
-                                        <a builder-element builder-inline-edit href="{PRODUCT_URL}" class="btn btn-primary text-white">
+                                        <a builder-element builder-inline-edit href="{PRODUCT_URL}" style="background-color: #9b5c8f;
+    border-color: #9b5c8f;" class="btn btn-primary text-white">
                                             {{ trans('messages.automation.view_more') }}
                                         </a>
                                     </div>
@@ -219,11 +220,12 @@
                                     </div>
                                     <div class="">
                                         <h5 builder-element class="font-weight-normal product-name">
-                                            <a href="{PRODUCT_URL}" class="mr-4">{PRODUCT_NAME}</a>
+                                            <a style="color: #333;" href="{PRODUCT_URL}" class="mr-4">{PRODUCT_NAME}</a>
                                         </h5>
                                         <p builder-element class=" product-description">{PRODUCT_DESCRIPTION}</p>
                                         <p builder-element><strong>{PRODUCT_PRICE}</strong></p>
-                                        <a builder-element builder-inline-edit href="{PRODUCT_URL}" class="btn btn-primary text-white">
+                                        <a style="background-color: #9b5c8f;
+    border-color: #9b5c8f;" builder-element builder-inline-edit href="{PRODUCT_URL}" class="btn btn-primary text-white">
                                             {{ trans('messages.automation.view_more') }}
                                         </a>
                                     </div>
@@ -236,11 +238,12 @@
                                     </div>
                                     <div class="">
                                         <h5 builder-element class="font-weight-normal product-name">
-                                            <a href="{PRODUCT_URL}" class="mr-4">{PRODUCT_NAME}</a>
+                                            <a style="color: #333;" href="{PRODUCT_URL}" class="mr-4">{PRODUCT_NAME}</a>
                                         </h5>
                                         <p builder-element class=" product-description">{PRODUCT_DESCRIPTION}</p>
                                         <p builder-element><strong class="product-price">{PRODUCT_PRICE}</strong></p>
-                                        <a builder-element builder-inline-edit href="{PRODUCT_URL}" class="btn btn-primary text-white">
+                                        <a style="background-color: #9b5c8f;
+    border-color: #9b5c8f;" builder-element builder-inline-edit href="{PRODUCT_URL}" class="btn btn-primary text-white">
                                             {{ trans('messages.automation.view_more') }}
                                         </a>
                                     </div>
@@ -494,13 +497,14 @@
                             <div class="">
                                 <div class="">
                                     <h3 class="font-weight-normal">
-                                        <a builder-element builder-inline-edit class="d-block product-name" href="{PRODUCT_URL}">
-                                            {PRODUCT_NAME}
+                                        <a style="color:#333;" builder-element builder-inline-edit class="d-block product-name" href="{PRODUCT_URL}">
+                                            *|PRODUCT_NAME|*
                                         </a>
                                     </h3>
-                                    <p builder-element class=" product-description">{PRODUCT_DESCRIPTION}</p>
-                                    <h4 builder-element><strong class="product-price">{PRODUCT_PRICE}</strong></h4>
-                                    <a builder-element builder-inline-edit href="{PRODUCT_URL}" class="mt-4 btn btn-primary text-white">
+                                    <p builder-element class=" product-description">*|PRODUCT_DESCRIPTION|*</p>
+                                    <h4 builder-element><strong class="product-price">*|PRODUCT_PRICE|*</strong></h4>
+                                    <a style="background-color: #9b5c8f;
+    border-color: #9b5c8f;" builder-element builder-inline-edit href="{PRODUCT_URL}" class="mt-4 btn btn-primary text-white">
                                         {{ trans('messages.automation.view_more') }}
                                     </a>
                                 </div>
