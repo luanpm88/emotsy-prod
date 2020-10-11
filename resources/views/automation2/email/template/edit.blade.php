@@ -24,7 +24,7 @@
                         <div class="control-[ID]">
                             <div class="widget-section d-flex align-items-center pr-3">
                                 <div class="label mr-auto">{{ trans('messages.cart_items.number_of_items') }}</div>
-                                <select class="max-numbers form-control">
+                                <select class="max-items form-control">
                                     <option value="1">1</option>
                                     <option value="2">2</option>
                                     <option value="3">3</option>
@@ -71,21 +71,27 @@
             getValues() {
                 var thisControl = this;
                 
-                $(thisControl.selector).find('.items-number').val(thisControl.value);
-            }
-
-            update() {
-                var thisControl = this;
-
-                thisControl.callback($(thisControl.selector).find('.items-number').val());
+                $(thisControl.selector).find('.max-items').val(thisControl.value.max_items);
+                $(thisControl.selector).find('.display-option').val(thisControl.value.display);
+                $(thisControl.selector).find('.sort-by').val(thisControl.value.sort_by);
             }
 
             afterRender() {
                 var thisControl = this;
 
-                // copy url
-                $(thisControl.selector).find('.items-number').on('change', function(e) {
-                    thisControl.update();
+                // set max items
+                $(thisControl.selector).find('.max-items').on('change', function(e) {
+                    thisControl.callback.setMaxItems($(this).val());
+                });
+
+                // set display
+                $(thisControl.selector).find('.display-option').on('change', function(e) {
+                    thisControl.callback.setDisplay($(this).val());
+                });
+
+                // set sort by
+                $(thisControl.selector).find('.sort-by').on('change', function(e) {
+                    thisControl.callback.setSortBy($(this).val());
                 });
 
                 // get values
@@ -106,11 +112,25 @@
                 var element = this;
 
                 return [
-                    new CartItemsControl('{{ trans('messages.cart_items.number_of_items') }}', element.obj.attr('data-items-number'), function(items_number) {
-                        element.obj.attr('data-items-number', items_number);
-
-                        element.select();
-                    }),
+                    new CartItemsControl('{{ trans('messages.cart_items.number_of_items') }}', {
+                            max_items: element.obj.attr('data-max-items'),
+                            display: element.obj.attr('data-display'),
+                            sort_by: element.obj.attr('data-sort-by')
+                        } , {
+                            setMaxItems: function(max_items) {
+                                element.obj.attr('data-max-items', max_items);
+                                element.select();
+                            },
+                            setDisplay: function(display) {
+                                element.obj.attr('data-display', display);
+                                element.select();
+                            },
+                            setSortBy: function(sort_by) {
+                                element.obj.attr('data-sort-by', sort_by);
+                                element.select();
+                            }
+                        }
+                    ),
                     new FontFamilyControl(getI18n('font_family'), element.obj.css('font-family'), function(font_family) {
                         element.obj.css('font-family', font_family);
                         element.select();
@@ -173,7 +193,7 @@
 
                 // default content html
                 this.setContentHtml(`
-                    <div data-items-number="3" builder-element="CartItemsElement" builder-draggable class="py-3 px-3">
+                    <div data-items-number="3" builder-element="CartItemsElement" data-max-items="6" data-display="3" data-sort-by="date_added_desc" builder-draggable class="py-3 px-3">
                         <div class="row py-3">
                             <div class="col-md-4">
                                 <div class="">
