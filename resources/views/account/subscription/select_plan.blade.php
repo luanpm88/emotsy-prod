@@ -80,7 +80,8 @@
                                         <div>{{ $plan->displayFrequencyTime() }}</div>
 
                                         <a
-                                            href="{{ action('AccountSubscriptionController@review', ['plan_uid' => $plan->uid]) }}"
+                                            link-method="POST"
+                                            href="{{ action('AccountSubscriptionController@select', ['plan_uid' => $plan->uid]) }}"
                                             class="btn btn-mc_primary btn-mc_mk mt-30">
                                                 {{ trans('messages.plan.select') }}
                                         </a>

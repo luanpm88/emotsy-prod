@@ -2004,15 +2004,24 @@ class Customer extends Model implements BillableUserInterface
     /**
      * Assign plan to customer.
      */
-    public function assignPlan($plan, $gateway)
+    public function assignPlan($plan)
     {
         if ($this->activeSubscription()) {
             $this->activeSubscription()->cancelNow();
         }
 
-        // assign new plan
-        $gateway = \Acelle\Cashier\Cashier::getPaymentGateway($gateway);
-        $gateway->create($this, $plan);
+        // create/update subscription
+        if ($this->subscription) {
+            $subscription = $this->subscription;
+            $subscription->gateway = null;
+        } else {
+            $subscription = new Subscription();
+            $subscription->user_id = $this->getBillableId();
+        }
+        $subscription->plan_id = $plan->getBillableId();
+        $subscription->started_at = \Carbon\Carbon::now();        
+        $subscription->status = Subscription::STATUS_NEW;
+        $subscription->save();
     }
 
     /**

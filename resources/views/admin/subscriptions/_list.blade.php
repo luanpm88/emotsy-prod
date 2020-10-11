@@ -26,7 +26,7 @@
 				</td>
 				<td width="15%">
                     <h5 class="no-margin">
-                        <span class="kq_search">{{ trans('messages.payments.' . $subscription->gateway) }}</span>
+                        <span class="kq_search">{{ $subscription->gateway ? trans('messages.payments.' . $subscription->gateway) : '--' }}</span>
                     </h5>
                     <span class="text-muted2">{{ trans('messages.current_service') }}</span>
                 </td>

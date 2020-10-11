@@ -3892,4 +3892,5 @@
   'plugin.type.sending_server' => 'Sending Server',
   'plugin.type.email_verification' => 'Email Verification',
   'plugin.version' => 'Version',
+  'change_mind_cancel_subscription' => 'Change your mind? Choose another plan',
 ) ?>

@@ -173,10 +173,10 @@ Route::group(['middleware' => ['not_installed']], function () {
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function () {
     // Account subscription
+    Route::post('subscription/abort', 'AccountSubscriptionController@abort');
+    Route::post('subscription/plan/select', 'AccountSubscriptionController@select');
     Route::get('subscription/pending', 'AccountSubscriptionController@pending');
     Route::get('subscription/checkout', 'AccountSubscriptionController@checkout');
-    Route::get('subscription/review', 'AccountSubscriptionController@review');
-    Route::get('subscription/select-plan', 'AccountSubscriptionController@selectPlan');
     Route::get('subscription', 'AccountSubscriptionController@index');
 
 

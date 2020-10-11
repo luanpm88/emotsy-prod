@@ -100,9 +100,17 @@
                         {!! trans('messages.payment.agree_service_intro', ['plan' => $plan->name]) !!}
                     </div>
                 </div>
-            </div>
+            </div>            
         </div>
     </div>
+</form>
+<form class="" method="POST" action="{{ action('AccountSubscriptionController@abort') }}">
+    {{ csrf_field() }}
+    
+    <a href="javascript:;" onclick="$(this).closest('form').submit()"
+        class="text-muted mt-4"
+        style="font-size: 13px; text-decoration: underline;color:#333"
+    >{{ trans('messages.change_mind_cancel_subscription') }}</a>
 </form>
     <script>
         $('.proceed_with_payment').on('submit', function(e) {

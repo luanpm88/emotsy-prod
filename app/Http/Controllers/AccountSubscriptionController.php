@@ -39,6 +39,13 @@ class AccountSubscriptionController extends Controller
                 'subscription' => $subscription,
             ]);
         }
+
+        // not select payment
+        if (!$subscription->gateway) {
+            return view('account.subscription.review', [
+                'plan' => $subscription->plan,
+            ]);
+        }
         
         // get sub gateway
         $gateway = $subscription->getPaymentGateway();
@@ -90,29 +97,35 @@ class AccountSubscriptionController extends Controller
         // Check if subscriotion is new
         return redirect()->action('AccountSubscriptionController@index');
     }
-    
+
     /**
-     * Review customer subscription.
+     * Select plan.
      *
      * @param \Illuminate\Http\Request $request
      *
      * @return \Illuminate\Http\Response
      **/
-    public function review(Request $request)
+    public function select(Request $request)
     {
         // Get current customer
         $customer = $request->user()->customer;
-        $subscription = $customer->subscription;
         $plan = Plan::findByUid($request->plan_uid);
-        
-        if (isset($subscription) && !$subscription->isEnded()) {
-            $request->session()->flash('alert-error', 'Already subscribed a plan!');
-            return redirect()->action('AccountSubscriptionController@index');
+
+        // create/update subscription
+        if ($customer->subscription) {
+            $subscription = $customer->subscription;
+            $subscription->gateway = null;
+        } else {
+            $subscription = new Subscription();
+            $subscription->user_id = $customer->getBillableId();
         }
-        
-        return view('account.subscription.review', [
-            'plan' => $plan,
-        ]);
+        $subscription->plan_id = $plan->getBillableId();
+        $subscription->started_at = \Carbon\Carbon::now();        
+        $subscription->status = Subscription::STATUS_NEW;
+        $subscription->save();
+
+        // Check if subscriotion is new
+        return redirect()->action('AccountSubscriptionController@index');
     }
     
     /**
@@ -202,6 +215,27 @@ class AccountSubscriptionController extends Controller
         if ($request->user()->customer->can('cancelNow', $subscription)) {
             $gateway->cancelNow($subscription);
         }
+
+        // Redirect to my subscription page
+        $request->session()->flash('alert-success', trans('messages.subscription.cancelled_now'));
+        return redirect()->action('AccountSubscriptionController@index');
+    }
+
+    /**
+     * Change plan.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function abort(Request $request)
+    {
+        $customer = $request->user()->customer;
+        
+        // Get current subscription
+        $subscription = $customer->subscription;
+        
+        $subscription->setEnded();
 
         // Redirect to my subscription page
         $request->session()->flash('alert-success', trans('messages.subscription.cancelled_now'));

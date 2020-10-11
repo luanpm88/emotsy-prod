@@ -47,17 +47,6 @@
                                                 </a>
                                             @else
                                                 <div class="mt-4 submit-box">
-                                                    @include('helpers.form_control', [
-                                                        'type' => 'select',
-                                                        'class' => '',
-                                                        'value' => '',
-                                                        'name' => 'gateway',
-                                                        'label' => trans('messages.subscription.select_payment'),
-                                                        'help_class' => 'subscription',
-                                                        'rules' => [],
-                                                        'options' => getPaymentOptions(),
-                                                        'placeholder' => trans('messages.choose')
-                                                    ])
                                                     <a
                                                         data-confirm="{{ trans('messages.customer.assign_plan.confirm', [
                                                             'plan' => $plan->name,
