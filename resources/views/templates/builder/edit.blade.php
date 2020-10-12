@@ -24,8 +24,12 @@
                 lang: {!! json_encode(language()->getBuilderLang()) !!},
                 url: '{{ action('TemplateController@builderEditContent', $template->uid) }}',
                 backCallback: function() {
-                  parent.$('.full-iframe-popup').fadeOut();
-                  parent.$('body').removeClass('overflow-hidden');
+                    @if (actionName() != 'builderEdit')
+                        parent.$('.full-iframe-popup').fadeOut();
+                        parent.$('body').removeClass('overflow-hidden');
+                    @else
+                        window.location = '{{ action('TemplateController@index') }}';
+                    @endif
                 },
                 uploadAssetUrl: '{{ action('TemplateController@builderAsset', $template->uid) }}',
                 uploadAssetMethod: 'POST',

@@ -649,7 +649,7 @@ class TemplateController extends Controller
                 $template = $currentTemplate->copy($request->name, $customer);
             }
             
-            return redirect()->action('TemplateController@index');
+            return redirect()->action('TemplateController@builderEdit', $template->uid);
         }
 
         return view('templates.builder.create', [
