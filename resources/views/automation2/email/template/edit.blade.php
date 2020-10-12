@@ -26,6 +26,13 @@
             width: 42px;
             height: 51px;
         }
+        .btn-preview, .btn-unpreview {
+            padding: 3px 10px;
+            height: 28px;
+        }
+        .btn-preview span, .btn-unpreview span {
+            font-size: 20px;
+        }
     </style>
 
     <script>
@@ -281,18 +288,26 @@
                         <div class="control-[ID]">
                             <div class="widget-section d-flex align-items-center pr-3">
                                 <div class="label mr-auto">{{ trans('messages.cart_item.product') }}</div>
-                                <select class="product_id form-control">
-                                    <option value="">Select product</option>
+                                <div class="d-flex align-items-center">
+                                    <a href="javascript:;" class="btn btn-default btn-preview mr-1">
+                                        <span class="material-icons-outlined">visibility</span>
+                                    </a>
+                                    <a href="javascript:;" class="btn btn-default btn-unpreview mr-1">
+                                        <span class="material-icons-outlined">visibility_off</span>
+                                    </a>
+                                    <select class="product_id form-control">
+                                        <option value="">Select product</option>
+                                    </select>                                    
+                                </div>
+                            </div>
+                            <div class="widget-section d-flex align-items-center pr-3">
+                                <div class="label mr-auto">{{ trans('messages.cart_items.view_option') }}</div>
+                                <select class="items-number form-control">
+                                    <option value="full">{{ trans('messages.cart_items.view_option.full') }}</option>
+                                    <option value="compact">{{ trans('messages.cart_items.view_option.compact') }}</option>
+                                    <option value="no_image">{{ trans('messages.cart_items.view_option.no_image') }}</option>
                                 </select>
                             </div>
-                        </div>
-                        <div class="widget-section d-flex align-items-center pr-3">
-                            <div class="label mr-auto">{{ trans('messages.cart_items.view_option') }}</div>
-                            <select class="items-number form-control">
-                                <option value="full">{{ trans('messages.cart_items.view_option.full') }}</option>
-                                <option value="compact">{{ trans('messages.cart_items.view_option.compact') }}</option>
-                                <option value="no_image">{{ trans('messages.cart_items.view_option.no_image') }}</option>
-                            </select>
                         </div>
                     </div>
                 `;
@@ -310,6 +325,15 @@
                 var thisControl = this;
                 
                 var url = 'http://wordpress.wsl/wp-json/acelle/connect';
+
+                // set product id
+                if (thisControl.value.id) {
+                    $(thisControl.selector).find('.product_id').append('<option value="'+thisControl.value.id+'">'+thisControl.value.name+'</option>');
+                    $(thisControl.selector).find('.product_id').val(thisControl.value.id);
+                }
+
+                // 
+                thisControl.tooglePreview(thisControl.value.preview);
 
                 // select2 control
                 $(thisControl.selector).find('.product_id').select2({
@@ -348,29 +372,52 @@
                 });
             }
 
+            tooglePreview(value) {
+                var thisControl = this;
+
+                if (!$(thisControl.selector).find('.product_id').val()) {
+                    $(thisControl.selector).find('.btn-preview').hide();
+                    $(thisControl.selector).find('.btn-unpreview').hide();
+                    thisControl.callback.unpreview();
+                    return;
+                }
+
+                if (value && value == 'yes') {
+                    $(thisControl.selector).find('.btn-unpreview').show();
+                    $(thisControl.selector).find('.btn-preview').hide();
+                } else {
+                    $(thisControl.selector).find('.btn-preview').show();
+                    $(thisControl.selector).find('.btn-unpreview').hide();
+                }
+            }
+
             update() {
                 var thisControl = this;
 
                 if ($(thisControl.selector).find('.product_id').val()) {
-                    var url = 'http://wordpress.wsl/wp-json/acelle/connect?product_id=' + $(thisControl.selector).find('.product_id').val();
+                    var url = '{{ $automation->getTrigger()->getOption('connect_url') }}?product_id=' + $(thisControl.selector).find('.product_id').val();
                     $.ajax({
                         method: "GET",
                         url: url
                     })
                     .done(function( data ) {
-                        thisControl.callback.updateImage(data.image);
+                        thisControl.callback.updateId(data.id);                        
                         thisControl.callback.updateName(data.name);
+                        {{-- thisControl.callback.updateImage(data.image);
                         thisControl.callback.updateDescription(data.description);
                         thisControl.callback.updateLink(data.link);
-                        thisControl.callback.updatePrice(data.price);
+                        thisControl.callback.updatePrice(data.price); --}}
                     });
                 } else {
-                    thisControl.callback.updateImage('{{ url('images/cart_item.svg') }}');
-                    thisControl.callback.updateName('{PRODUCT_NAME}');
+                    thisControl.callback.updateId('');                    
+                    thisControl.callback.updateName('');
+                    {{-- thisControl.callback.updateImage('{{ url('images/cart_item.svg') }}');
                     thisControl.callback.updateDescription('{PRODUCT_DESCRIPTION}');
                     thisControl.callback.updateLink('{PRODUCT_URL}');
-                    thisControl.callback.updatePrice('{PRODUCT_PRICE}');
+                    thisControl.callback.updatePrice('{PRODUCT_PRICE}'); --}}
                 }
+
+                thisControl.tooglePreview(thisControl.value.preview);
             }
 
             afterRender() {
@@ -379,6 +426,20 @@
                 // copy url
                 $(thisControl.selector).find('.product_id').on('change', function(e) {
                     thisControl.update();
+                });
+                
+                // preview
+                $(thisControl.selector).find('.btn-preview').on('click', function(e) {
+                    thisControl.callback.preview(function() {
+                        thisControl.tooglePreview('yes');
+                    });                        
+                });
+
+                // unpreview
+                $(thisControl.selector).find('.btn-unpreview').on('click', function(e) {
+                    thisControl.callback.unpreview(function() {
+                        thisControl.tooglePreview('no');
+                    });
                 });
 
                 // get values
@@ -395,38 +456,66 @@
                 return 'fal fa-font';
             }
 
+            preview() {
+                var element = this;
+
+                var url = '{{ $automation->getTrigger()->getOption('connect_url') }}?product_id=' + element.obj.attr('product-id');
+                $.ajax({
+                    method: "GET",
+                    url: url
+                })
+                .done(function( data ) {
+                    element.obj.find('img').attr('src', data.image);
+                    element.obj.find('.product-name').html(data.name);
+                    element.obj.find('.product-description').html(data.description);
+                    element.obj.find('.product-link').attr('href', data.link);
+                    element.obj.find('.product-price').html(data.price);
+                });
+            }
+
+            unpreview() {
+                var element = this;
+                
+                element.obj.find('img').attr('src', '{{ url('images/cart_item.svg') }}');
+                element.obj.find('.product-name').html('{PRODUCT_NAME}');
+                element.obj.find('.product-description').html('{PRODUCT_DESCRIPTION}');
+                element.obj.find('.product-link').attr('href', '{PRODUCT_URL}');
+                element.obj.find('.product-price').html('{PRODUCT_PRICE}');
+            }
+
             getControls() {
                 var element = this;
 
                 return [
                     new CartItemControl('{{ trans('messages.cart_item') }}', {
-                        image: element.obj.find('img').attr('src'),
+                        id: element.obj.attr('product-id'),
+                        name: element.obj.attr('product-name'),
+                        preview: element.obj.attr('preview'),
                     }, {
-                        updateImage: function(src) {
-                            element.obj.find('img').attr('src', src);
+                        updateId: function(id) {
+                            element.obj.attr('product-id', id);
 
                             element.select();
                         },
                         updateName: function(name) {
-                            element.obj.find('.product-name').html(name);
+                            element.obj.attr('product-name', name);
 
                             element.select();
                         },
-                        updateDescription: function(description) {
-                            element.obj.find('.product-description').html(description);
-
-                            element.select();
+                        preview: function(callback) {
+                            element.preview();
+                            element.obj.attr('preview', 'yes');
+                            if (callback) {
+                                callback();
+                            }
                         },
-                        updateLink: function(link) {
-                            element.obj.find('.product-link').attr('href', link);
-
-                            element.select();
+                        unpreview: function(callback) {
+                            element.unpreview();
+                            element.obj.attr('preview', 'no');
+                            if (callback) {
+                                callback();
+                            }
                         },
-                        updatePrice: function(price) {
-                            element.obj.find('.product-price').html(price);
-
-                            element.select();
-                        }
                     }),
                     new FontFamilyControl(getI18n('font_family'), element.obj.css('font-family'), function(font_family) {
                         element.obj.css('font-family', font_family);
@@ -490,7 +579,7 @@
 
                 // default content html
                 this.setContentHtml(`
-                    <div data-items-number="3" builder-element="CartItemElement" builder-draggable class="py-3 px-3">
+                    <div builder-element="CartItemElement" builder-draggable class="py-3 px-3 woo-cart-item-widget">
                         <div class="d-flex">
                             <div class="">
                                 <a href="*|PRODUCT_URL|*">
