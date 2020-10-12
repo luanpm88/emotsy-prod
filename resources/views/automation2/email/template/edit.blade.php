@@ -212,15 +212,15 @@
                             <div class="col-md-4">
                                 <div class="">
                                     <div class="mb-3">
-                                        <a href="{PRODUCT_URL}" class="mr-4"><img builder-element src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
+                                        <a href="*|PRODUCT_URL|*" class="mr-4"><img builder-element src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
                                     </div>
                                     <div class="">
                                         <p builder-element class="font-weight-normal product-name mb-1">
-                                            <a style="color: #333;" href="{PRODUCT_URL}" class="mr-4">{PRODUCT_NAME}</a>
+                                            <a style="color: #333;" href="*|PRODUCT_URL|*" class="mr-4">*|PRODUCT_NAME|*</a>
                                         </p>
-                                        <p builder-element class=" product-description">{PRODUCT_DESCRIPTION}</p>
-                                        <p builder-element><strong>{PRODUCT_PRICE}</strong></p>
-                                        <a builder-element builder-inline-edit href="{PRODUCT_URL}" style="background-color: #9b5c8f;
+                                        <p builder-element class=" product-description">*|PRODUCT_DESCRIPTION|*</p>
+                                        <p builder-element><strong>*|PRODUCT_PRICE|*</strong></p>
+                                        <a builder-element builder-inline-edit href="*|PRODUCT_URL|*" style="background-color: #9b5c8f;
     border-color: #9b5c8f;" class="btn btn-primary text-white">
                                             {{ trans('messages.automation.view_more') }}
                                         </a>
@@ -230,16 +230,16 @@
                             <div class="col-md-4">
                                 <div class="">
                                     <div class="mb-3">
-                                        <a href="{PRODUCT_URL}" class="mr-4"><img builder-element src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
+                                        <a href="*|PRODUCT_URL|*" class="mr-4"><img builder-element src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
                                     </div>
                                     <div class="">
-                                        <h5 builder-element class="font-weight-normal product-name">
-                                            <a style="color: #333;" href="{PRODUCT_URL}" class="mr-4">{PRODUCT_NAME}</a>
-                                        </h5>
-                                        <p builder-element class=" product-description">{PRODUCT_DESCRIPTION}</p>
-                                        <p builder-element><strong>{PRODUCT_PRICE}</strong></p>
-                                        <a style="background-color: #9b5c8f;
-    border-color: #9b5c8f;" builder-element builder-inline-edit href="{PRODUCT_URL}" class="btn btn-primary text-white">
+                                        <p builder-element class="font-weight-normal product-name mb-1">
+                                            <a style="color: #333;" href="*|PRODUCT_URL|*" class="mr-4">*|PRODUCT_NAME|*</a>
+                                        </p>
+                                        <p builder-element class=" product-description">*|PRODUCT_DESCRIPTION|*</p>
+                                        <p builder-element><strong>*|PRODUCT_PRICE|*</strong></p>
+                                        <a builder-element builder-inline-edit href="*|PRODUCT_URL|*" style="background-color: #9b5c8f;
+    border-color: #9b5c8f;" class="btn btn-primary text-white">
                                             {{ trans('messages.automation.view_more') }}
                                         </a>
                                     </div>
@@ -248,16 +248,16 @@
                             <div class="col-md-4">
                                 <div class="">
                                     <div class="mb-3">
-                                        <a href="{PRODUCT_URL}" class="mr-4"><img builder-element src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
+                                        <a href="*|PRODUCT_URL|*" class="mr-4"><img builder-element src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
                                     </div>
                                     <div class="">
-                                        <h5 builder-element class="font-weight-normal product-name">
-                                            <a style="color: #333;" href="{PRODUCT_URL}" class="mr-4">{PRODUCT_NAME}</a>
-                                        </h5>
-                                        <p builder-element class=" product-description">{PRODUCT_DESCRIPTION}</p>
-                                        <p builder-element><strong class="product-price">{PRODUCT_PRICE}</strong></p>
-                                        <a style="background-color: #9b5c8f;
-    border-color: #9b5c8f;" builder-element builder-inline-edit href="{PRODUCT_URL}" class="btn btn-primary text-white">
+                                        <p builder-element class="font-weight-normal product-name mb-1">
+                                            <a style="color: #333;" href="*|PRODUCT_URL|*" class="mr-4">*|PRODUCT_NAME|*</a>
+                                        </p>
+                                        <p builder-element class=" product-description">*|PRODUCT_DESCRIPTION|*</p>
+                                        <p builder-element><strong>*|PRODUCT_PRICE|*</strong></p>
+                                        <a builder-element builder-inline-edit href="*|PRODUCT_URL|*" style="background-color: #9b5c8f;
+    border-color: #9b5c8f;" class="btn btn-primary text-white">
                                             {{ trans('messages.automation.view_more') }}
                                         </a>
                                     </div>
@@ -493,7 +493,7 @@
                     <div data-items-number="3" builder-element="CartItemElement" builder-draggable class="py-3 px-3">
                         <div class="d-flex">
                             <div class="">
-                                <a href="{PRODUCT_URL}">
+                                <a href="*|PRODUCT_URL|*">
                                     <img builder-element  class="mr-4" src="{{ url('images/cart_item.svg') }}" width="200px" />
                                 </a>
                             </div>
@@ -507,7 +507,7 @@
                                     <p builder-element class=" product-description">*|PRODUCT_DESCRIPTION|*</p>
                                     <h4 builder-element><strong class="product-price">*|PRODUCT_PRICE|*</strong></h4>
                                     <a style="background-color: #9b5c8f;
-    border-color: #9b5c8f;" builder-element builder-inline-edit href="{PRODUCT_URL}" class="mt-4 btn btn-primary text-white">
+    border-color: #9b5c8f;" builder-element builder-inline-edit href="*|PRODUCT_URL|*" class="mt-4 btn btn-primary text-white">
                                         {{ trans('messages.automation.view_more') }}
                                     </a>
                                 </div>
