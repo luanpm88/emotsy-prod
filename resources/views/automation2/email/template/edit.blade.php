@@ -14,6 +14,20 @@
       $buildMode = strpos($email->content, 'AcelleSystemLayouts') !== false ? 'true' : 'false';
     @endphp
 
+    <style>
+        .woo-cart-items-widget {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 40px;
+        }
+        .woo-cart-items-widget img {
+            padding: 3px;
+            width: 42px;
+            height: 51px;
+        }
+    </style>
+
     <script>
         // Cart items Control
         class CartItemsControl extends Control {
@@ -182,8 +196,8 @@
                     <div class="_1content widget-text">
                         <div class="panel__body" title="{{ trans('messages.automation.cart_items') }}">
                             <div class="image-drag">
-                                <div ng-bind-html="::getModuleIcon(module)" class="ng-binding">
-                                    <i class="material-icons-outlined" style="font-size: 36px;display: inline-block;">money</i>
+                                <div ng-bind-html="::getModuleIcon(module)" class="ng-binding woo-cart-items-widget">
+                                    <img builder-element src="{{ url('images/woo-products.svg') }}" width="100%" />
                                 </div>
                             </div>
                             <div class="body__title">{{ trans('messages.automation.cart_items') }}</div>
@@ -254,18 +268,7 @@
                 `);
 
                 // default dragging html
-                this.setDraggingHtml(`
-                    <div class="_1content widget-text">
-                        <div class="panel__body" title="{{ trans('messages.automation.cart_items') }}">
-                            <div class="image-drag">
-                                <div ng-bind-html="::getModuleIcon(module)" class="ng-binding">
-                                    <i class="material-icons-outlined" style="font-size: 36px;display: inline-block;">money</i>
-                                </div>
-                            </div>
-                            <div class="body__title">{{ trans('messages.automation.cart_items') }}</div>
-                        </div>
-                    </div>
-                `);
+                this.setDraggingHtml(this.getButtonHtml());
             }
         }
 
@@ -476,8 +479,8 @@
                     <div class="_1content widget-text">
                         <div class="panel__body" title="{{ trans('messages.automation.cart_item') }}">
                             <div class="image-drag">
-                                <div ng-bind-html="::getModuleIcon(module)" class="ng-binding">
-                                    <i class="material-icons-outlined" style="font-size: 36px;display: inline-block;">redeem</i>
+                                <div ng-bind-html="::getModuleIcon(module)" class="ng-binding woo-cart-items-widget">
+                                    <img builder-element src="{{ url('images/woo-product.svg') }}" width="100%" />
                                 </div>
                             </div>
                             <div class="body__title">{{ trans('messages.automation.cart_item') }}</div>
@@ -514,18 +517,7 @@
                 `);
 
                 // default dragging html
-                this.setDraggingHtml(`
-                    <div class="_1content widget-text">
-                        <div class="panel__body" title="{{ trans('messages.automation.cart_item') }}">
-                            <div class="image-drag">
-                                <div ng-bind-html="::getModuleIcon(module)" class="ng-binding">
-                                    <i class="material-icons-outlined" style="font-size: 36px;display: inline-block;">money</i>
-                                </div>
-                            </div>
-                            <div class="body__title">{{ trans('messages.automation.cart_item') }}</div>
-                        </div>
-                    </div>
-                `);
+                this.setDraggingHtml(this.getButtonHtml());
             }
         }
     </script>
