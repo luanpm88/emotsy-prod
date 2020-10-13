@@ -407,7 +407,11 @@
                         thisControl.callback.updateDescription(data.description);
                         thisControl.callback.updateLink(data.link);
                         thisControl.callback.updatePrice(data.price); --}}
-                    });
+
+                        thisControl.callback.preview(function() {
+                            thisControl.tooglePreview('yes');
+                        });  
+                    });                    
                 } else {
                     thisControl.callback.updateId('');                    
                     thisControl.callback.updateName('');
