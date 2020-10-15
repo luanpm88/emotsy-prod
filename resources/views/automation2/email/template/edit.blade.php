@@ -137,6 +137,116 @@
                 return 'fal fa-font';
             }
 
+            preview() {
+                var element = this;
+                element.obj.fadeOut(200, function() {
+                    var url = '{{ $automation->getTrigger()->getOption('connect_url') }}?action=list&max=' + element.obj.attr('data-max-items');
+                    $.ajax({
+                        method: "GET",
+                        url: url
+                    })
+                    .done(function( data ) {
+                        element.obj.attr('preview', 'yes');
+
+                        console.log(data);
+                        
+                        element.obj.find('.woo-items').html('');
+                        data.forEach( function(item) {
+                            var row = `
+                                <div class="woo-col-item col-md-` +(12/element.obj.attr('data-display'))+ `">
+                                    <div class="">
+                                        <div class="img-col mb-3">
+                                            <a href="`+item.link+`" class="mr-4"><img src="`+item.image+`" width="100%" /></a>
+                                        </div>
+                                        <div class="">
+                                            <p class="font-weight-normal product-name mb-1">
+                                                <a style="color: #333;" href="`+item.link+`" class="mr-4">`+item.name+`</a>
+                                            </p>
+                                            <p class=" product-description">`+item.description+`</p>
+                                            <p><strong>`+item.price+`</strong></p>
+                                            <a href="`+item.link+`" style="background-color: #9b5c8f;
+        border-color: #9b5c8f;" class="btn btn-primary text-white">
+                                                {{ trans('messages.automation.view_more') }}
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+
+                            element.obj.find('.woo-items').append(row);
+                        });
+
+                        if (element.obj.attr('data-display') == '1') {
+                            element.obj.find('.img-col').attr('style', 'float: left;margin-right: 20px;width: 150px;margin-bottom:0!important');
+                        } else {
+                            element.obj.find('.img-col').attr('style', '');
+                        }
+                    });
+
+                    element.obj.fadeIn(400, function() {
+                        if (editor.selected != null) {
+                            editor.selected.select();
+                        }
+                    });  
+                });                 
+            }
+
+            unpreview() {
+                var element = this;
+                element.obj.fadeOut(200, function() {
+                    element.display(element.obj.attr('data-display'));
+
+                    element.obj.attr('preview', 'no');
+
+                    element.obj.fadeIn(400, function() {
+                        if (editor.selected != null) {
+                            editor.selected.select();
+                        }
+                    }); 
+                }); 
+                
+            }
+
+            display(display) {
+                var element = this;
+
+                element.obj.find('.woo-items').html('');
+                for(var i=0; i<display;i++) {
+                    element.obj.find('.woo-items').append(`
+                        <div class="woo-col-item col-md-4">
+                            <div class="">
+                                <div class="img-col mb-3">
+                                    <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
+                                </div>
+                                <div class="">
+                                    <p class="font-weight-normal product-name mb-1">
+                                        <a style="color: #333;" href="*|PRODUCT_URL|*" class="mr-4">*|PRODUCT_NAME|*</a>
+                                    </p>
+                                    <p class=" product-description">*|PRODUCT_DESCRIPTION|*</p>
+                                    <p><strong>*|PRODUCT_PRICE|*</strong></p>
+                                    <a href="*|PRODUCT_URL|*" style="background-color: #9b5c8f;
+border-color: #9b5c8f;" class="btn btn-primary text-white">
+                                        {{ trans('messages.automation.view_more') }}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+                }
+
+                element.obj.find('.woo-col-item').removeClass(function (index, className) {
+                    return (className.match (/(^|\s)col-md-\S+/g) || []).join(' ');
+                });
+
+                element.obj.find('.woo-col-item').addClass('col-md-' + (12/display));
+
+                if (display == '1') {
+                    element.obj.find('.img-col').attr('style', 'float: left;margin-right: 20px;width: 150px;margin-bottom:0!important');
+                } else {
+                    element.obj.find('.img-col').attr('style', '');
+                }
+            }
+
             getControls() {
                 var element = this;
 
@@ -144,51 +254,24 @@
                     new WooItemsControl('{{ trans('messages.woo_items.number_of_items') }}', {
                             max_items: element.obj.attr('data-max-items'),
                             display: element.obj.attr('data-display'),
-                            sort_by: element.obj.attr('data-sort-by')
+                            sort_by: element.obj.attr('data-sort-by'),
+                            preview: element.obj.attr('preview'),
                         } , {
                             setMaxItems: function(max_items) {
                                 element.obj.attr('data-max-items', max_items);
                                 element.select();
                             },
                             setDisplay: function(display) {
-                                element.obj.attr('data-display', display);
-
-                                // more col
-                                if (element.obj.find('.woo-col-item').length < display) {
-                                    var times = display - element.obj.find('.woo-col-item').length;
-
-                                    for(var i=0; i<times;i++) {
-                                        element.obj.find('.woo-col-item').last().after(element.obj.find('.woo-col-item').last().clone());
-                                    }
-                                }
-
-                                // less col
-                                if (element.obj.find('.woo-col-item').length > display) {
-                                    var times = -display + element.obj.find('.woo-col-item').length;
-
-                                    for(var i=0; i<times;i++) {
-                                        element.obj.find('.woo-col-item').last().remove();
-                                    }
-                                }
-
-                                element.obj.find('.woo-col-item').removeClass(function (index, className) {
-                                    return (className.match (/(^|\s)col-md-\S+/g) || []).join(' ');
-                                });
-
-                                element.obj.find('.woo-col-item').addClass('col-md-' + (12/display));
-
-                                if (display == '1') {
-                                    element.obj.find('.img-col').attr('style', 'float: left;margin-right: 20px;width: 150px;');
-                                } else {
-                                    element.obj.find('.img-col').attr('style', '');
-                                }
-
-                                element.select();
+                                element.obj.attr('data-display', display);                                
+                                element.unpreview();
                             },
                             setSortBy: function(sort_by) {
                                 element.obj.attr('data-sort-by', sort_by);
                                 element.select();
-                            }
+                            },
+                            preview: function() {
+                                element.preview();
+                            },
                         }
                     ),
                     new FontFamilyControl(getI18n('font_family'), element.obj.css('font-family'), function(font_family) {
@@ -253,20 +336,22 @@
 
                 // default content html
                 this.setContentHtml(`
-                    <div data-items-number="3" builder-element="WooItemsElement" data-max-items="6" data-display="3" data-sort-by="date_added_desc" builder-draggable class="py-3 px-3">
-                        <div class="row py-3">
+                    <div data-items-number="3" builder-element="WooItemsElement" data-max-items="6" data-display="3" data-sort-by="date_added_desc" builder-draggable class="py-3 px-3 woo-cart-items-widget">
+                        <span class="woo-preview-but" style="display:none">visibility</span>
+                        <span class="woo-unpreview-but" style="display:none">visibility_off</span>
+                        <div class="row py-3 woo-items">
                             <div class="woo-col-item col-md-4">
                                 <div class="">
                                     <div class="img-col mb-3">
-                                        <a href="*|PRODUCT_URL|*" class="mr-4"><img builder-element src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
+                                        <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
                                     </div>
                                     <div class="">
-                                        <p builder-element class="font-weight-normal product-name mb-1">
+                                        <p class="font-weight-normal product-name mb-1">
                                             <a style="color: #333;" href="*|PRODUCT_URL|*" class="mr-4">*|PRODUCT_NAME|*</a>
                                         </p>
-                                        <p builder-element class=" product-description">*|PRODUCT_DESCRIPTION|*</p>
-                                        <p builder-element><strong>*|PRODUCT_PRICE|*</strong></p>
-                                        <a builder-element builder-inline-edit href="*|PRODUCT_URL|*" style="background-color: #9b5c8f;
+                                        <p class=" product-description">*|PRODUCT_DESCRIPTION|*</p>
+                                        <p><strong>*|PRODUCT_PRICE|*</strong></p>
+                                        <a href="*|PRODUCT_URL|*" style="background-color: #9b5c8f;
     border-color: #9b5c8f;" class="btn btn-primary text-white">
                                             {{ trans('messages.automation.view_more') }}
                                         </a>
@@ -276,15 +361,15 @@
                             <div class="woo-col-item col-md-4">
                                 <div class="">
                                     <div class="img-col mb-3">
-                                        <a href="*|PRODUCT_URL|*" class="mr-4"><img builder-element src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
+                                        <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
                                     </div>
                                     <div class="">
-                                        <p builder-element class="font-weight-normal product-name mb-1">
+                                        <p class="font-weight-normal product-name mb-1">
                                             <a style="color: #333;" href="*|PRODUCT_URL|*" class="mr-4">*|PRODUCT_NAME|*</a>
                                         </p>
-                                        <p builder-element class=" product-description">*|PRODUCT_DESCRIPTION|*</p>
-                                        <p builder-element><strong>*|PRODUCT_PRICE|*</strong></p>
-                                        <a builder-element builder-inline-edit href="*|PRODUCT_URL|*" style="background-color: #9b5c8f;
+                                        <p class=" product-description">*|PRODUCT_DESCRIPTION|*</p>
+                                        <p><strong>*|PRODUCT_PRICE|*</strong></p>
+                                        <a href="*|PRODUCT_URL|*" style="background-color: #9b5c8f;
     border-color: #9b5c8f;" class="btn btn-primary text-white">
                                             {{ trans('messages.automation.view_more') }}
                                         </a>
@@ -294,15 +379,15 @@
                             <div class="woo-col-item col-md-4">
                                 <div class="">
                                     <div class="img-col mb-3">
-                                        <a href="*|PRODUCT_URL|*" class="mr-4"><img builder-element src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
+                                        <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
                                     </div>
                                     <div class="">
-                                        <p builder-element class="font-weight-normal product-name mb-1">
+                                        <p class="font-weight-normal product-name mb-1">
                                             <a style="color: #333;" href="*|PRODUCT_URL|*" class="mr-4">*|PRODUCT_NAME|*</a>
                                         </p>
-                                        <p builder-element class=" product-description">*|PRODUCT_DESCRIPTION|*</p>
-                                        <p builder-element><strong>*|PRODUCT_PRICE|*</strong></p>
-                                        <a builder-element builder-inline-edit href="*|PRODUCT_URL|*" style="background-color: #9b5c8f;
+                                        <p class=" product-description">*|PRODUCT_DESCRIPTION|*</p>
+                                        <p><strong>*|PRODUCT_PRICE|*</strong></p>
+                                        <a href="*|PRODUCT_URL|*" style="background-color: #9b5c8f;
     border-color: #9b5c8f;" class="btn btn-primary text-white">
                                             {{ trans('messages.automation.view_more') }}
                                         </a>
@@ -423,8 +508,7 @@
 
                 if (!$(thisControl.selector).find('.product_id').val()) {
                     $(thisControl.selector).find('.btn-preview').hide();
-                    $(thisControl.selector).find('.btn-unpreview').hide();
-                    thisControl.callback.unpreview();
+                    $(thisControl.selector).find('.btn-unpreview').hide();                    
                     return;
                 }
 
@@ -461,10 +545,8 @@
                 } else {
                     thisControl.callback.updateId('');                    
                     thisControl.callback.updateName('');
-                    {{-- thisControl.callback.updateImage('{{ url('images/cart_item.svg') }}');
-                    thisControl.callback.updateDescription('{PRODUCT_DESCRIPTION}');
-                    thisControl.callback.updateLink('{PRODUCT_URL}');
-                    thisControl.callback.updatePrice('{PRODUCT_PRICE}'); --}}
+
+                    thisControl.callback.unpreview();
                 }
 
                 thisControl.tooglePreview(thisControl.value.preview);
@@ -513,6 +595,8 @@
 
             preview() {
                 var element = this;
+                element.obj.attr('preview', 'yes');
+
                 element.obj.fadeOut(200, function() {
                     var url = '{{ $automation->getTrigger()->getOption('connect_url') }}?product_id=' + element.obj.attr('product-id');
                     $.ajax({
@@ -525,26 +609,31 @@
                         element.obj.find('.product-description').html(data.description);
                         element.obj.find('.product-link').attr('href', data.link);
                         element.obj.find('.product-price').html(data.price);
-
-                        element.obj.attr('preview', 'yes');
                     });
 
-                    element.obj.fadeIn(400); 
+                    element.obj.fadeIn(400, function() {
+                        if (editor.selected != null) {
+                            editor.selected.select();
+                        }
+                    }); 
                 });                 
             }
 
             unpreview() {
                 var element = this;
+                element.obj.attr('preview', 'no');
                 element.obj.fadeOut(200, function() {
                     element.obj.find('img').attr('src', '{{ url('images/cart_item.svg') }}');
-                    element.obj.find('.product-name').html('{PRODUCT_NAME}');
-                    element.obj.find('.product-description').html('{PRODUCT_DESCRIPTION}');
-                    element.obj.find('.product-link').attr('href', '{PRODUCT_URL}');
-                    element.obj.find('.product-price').html('{PRODUCT_PRICE}');
-
-                    element.obj.attr('preview', 'no');
-
-                    element.obj.fadeIn(400); 
+                    element.obj.find('.product-name').html('*|PRODUCT_NAME|*');
+                    element.obj.find('.product-description').html('*|PRODUCT_DESCRIPTION|*');
+                    element.obj.find('.product-link').attr('href', '*|PRODUCT_URL|*');
+                    element.obj.find('.product-price').html('*|PRODUCT_PRICE|*');
+                    
+                    element.obj.fadeIn(400, function() {
+                        if (editor.selected != null) {
+                            editor.selected.select();
+                        }
+                    }); 
                 }); 
                 
             }
