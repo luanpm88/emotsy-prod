@@ -760,7 +760,7 @@
                         e.stopPropagation();
                         var element = thisEditor.elementFactory($(this).parent());
                         element.preview();
-                        thisEditor.select(element);
+                        {{-- thisEditor.select(element); --}}
                         thisEditor.handleSelect();
                         return false;
                     })
@@ -770,7 +770,7 @@
                         e.stopPropagation();
                         var element = thisEditor.elementFactory($(this).parent());
                         element.unpreview();
-                        thisEditor.select(element);
+                        {{-- thisEditor.select(element); --}}
                         thisEditor.handleSelect();
                         return false;
                     })
