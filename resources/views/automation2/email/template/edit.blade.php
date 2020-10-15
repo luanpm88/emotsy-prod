@@ -147,16 +147,16 @@
                     })
                     .done(function( data ) {
                         element.obj.attr('preview', 'yes');
-
-                        console.log(data);
                         
                         element.obj.find('.woo-items').html('');
                         data.forEach( function(item) {
                             var row = `
-                                <div class="woo-col-item col-md-` +(12/element.obj.attr('data-display'))+ `">
+                                <div class="woo-col-item mb-4 mt-4 col-md-` +(12/element.obj.attr('data-display'))+ `">
                                     <div class="">
                                         <div class="img-col mb-3">
-                                            <a href="`+item.link+`" class="mr-4"><img src="`+item.image+`" width="100%" /></a>
+                                            <div class="d-flex align-items-center justify-content-center" style="height: 200px;">
+                                                <a href="`+item.link+`" class="mr-4"><img src="`+item.image+`" width="100%" /></a>
+                                            </div>
                                         </div>
                                         <div class="">
                                             <p class="font-weight-normal product-name mb-1">
@@ -211,9 +211,9 @@
                 var element = this;
 
                 element.obj.find('.woo-items').html('');
-                for(var i=0; i<display;i++) {
+                for(var i=0; i<element.obj.attr('data-max-items');i++) {
                     element.obj.find('.woo-items').append(`
-                        <div class="woo-col-item col-md-4">
+                        <div class="woo-col-item mb-4 mt-4 col-md-4">
                             <div class="">
                                 <div class="img-col mb-3">
                                     <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
@@ -260,14 +260,30 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                             setMaxItems: function(max_items) {
                                 element.obj.attr('data-max-items', max_items);
                                 element.select();
+
+                                if (element.obj.attr('preview') == 'yes') {
+                                    element.preview();
+                                } else {
+                                    element.display(element.obj.attr('data-display'));
+                                }
                             },
                             setDisplay: function(display) {
-                                element.obj.attr('data-display', display);                                
-                                element.unpreview();
+                                element.obj.attr('data-display', display);     
+
+                                if (element.obj.attr('preview') == 'yes') {
+                                    element.preview();
+                                } else {
+                                    element.display(element.obj.attr('data-display'));
+                                }
                             },
                             setSortBy: function(sort_by) {
                                 element.obj.attr('data-sort-by', sort_by);
-                                element.select();
+
+                                if (element.obj.attr('preview') == 'yes') {
+                                    element.preview();
+                                } else {
+                                    element.display(element.obj.attr('data-display'));
+                                }
                             },
                             preview: function() {
                                 element.preview();
@@ -336,11 +352,11 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
 
                 // default content html
                 this.setContentHtml(`
-                    <div data-items-number="3" builder-element="WooItemsElement" data-max-items="6" data-display="3" data-sort-by="date_added_desc" builder-draggable class="py-3 px-3 woo-cart-items-widget">
+                    <div data-items-number="3" builder-element="WooItemsElement" data-max-items="3" data-display="3" data-sort-by="date_added_desc" builder-draggable class="py-3 px-3 woo-cart-items-widget">
                         <span class="woo-preview-but" style="display:none">visibility</span>
                         <span class="woo-unpreview-but" style="display:none">visibility_off</span>
                         <div class="row py-3 woo-items">
-                            <div class="woo-col-item col-md-4">
+                            <div class="woo-col-item mb-4 mt-4 col-md-4">
                                 <div class="">
                                     <div class="img-col mb-3">
                                         <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
@@ -358,7 +374,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                                     </div>
                                 </div>
                             </div>
-                            <div class="woo-col-item col-md-4">
+                            <div class="woo-col-item mb-4 mt-4 col-md-4">
                                 <div class="">
                                     <div class="img-col mb-3">
                                         <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
@@ -376,7 +392,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                                     </div>
                                 </div>
                             </div>
-                            <div class="woo-col-item col-md-4">
+                            <div class="woo-col-item mb-4 mt-4 col-md-4">
                                 <div class="">
                                     <div class="img-col mb-3">
                                         <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
