@@ -310,7 +310,7 @@
                             </div>
                             <div class="widget-section d-flex align-items-center pr-3">
                                 <div class="label mr-auto">{{ trans('messages.woo_items.view_option') }}</div>
-                                <select class="items-number form-control">
+                                <select class="display-option form-control">
                                     <option value="full">{{ trans('messages.woo_items.view_option.full') }}</option>
                                     <option value="compact">{{ trans('messages.woo_items.view_option.compact') }}</option>
                                     <option value="no_image">{{ trans('messages.woo_items.view_option.no_image') }}</option>
@@ -378,6 +378,13 @@
                     escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
                     minimumInputLength: 0,
                 });
+
+                // display
+                var display = 'full';
+                if (thisControl.value.display) {
+                    display = thisControl.value.display;
+                }
+                $(thisControl.selector).find('.display-option').val(display);
             }
 
             tooglePreview(value) {
@@ -453,6 +460,11 @@
                         thisControl.tooglePreview('no');
                     });
                 });
+                
+                // display
+                $(thisControl.selector).find('.display-option').on('change', function(e) {
+                    thisControl.callback.display($(this).val());
+                });
 
                 // get values
                 thisControl.getValues();
@@ -514,6 +526,7 @@
                         id: element.obj.attr('product-id'),
                         name: element.obj.attr('product-name'),
                         preview: element.obj.attr('preview'),
+                        display: element.obj.attr('display'),
                     }, {
                         updateId: function(id) {
                             element.obj.attr('product-id', id);
@@ -537,6 +550,26 @@
                                 callback();
                             }
                         },
+                        display: function(display) {
+                            element.obj.attr('display', display);
+
+                            if (display == 'full') {
+                                element.obj.find('img').show();
+                                element.obj.find('img').css('width', '200px');
+                                element.obj.find('.product-view-button').show();
+                            }
+
+                            if (display == 'compact') {
+                                element.obj.find('img').show();
+                                element.obj.find('img').css('width', '100px');
+                                element.obj.find('.product-view-button').hide();
+                            }
+
+                            if (display == 'no_image') {
+                                element.obj.find('img').hide();
+                                element.obj.find('.product-view-button').hide();
+                            }
+                        }
                     }),
                     new FontFamilyControl(getI18n('font_family'), element.obj.css('font-family'), function(font_family) {
                         element.obj.css('font-family', font_family);
@@ -619,7 +652,7 @@
                                     <p builder-element class=" product-description">*|PRODUCT_DESCRIPTION|*</p>
                                     <h4 builder-element><strong class="product-price">*|PRODUCT_PRICE|*</strong></h4>
                                     <a style="background-color: #9b5c8f;
-    border-color: #9b5c8f;" builder-element builder-inline-edit href="*|PRODUCT_URL|*" class="mt-4 btn btn-primary text-white">
+    border-color: #9b5c8f;" builder-element builder-inline-edit href="*|PRODUCT_URL|*" class="mt-4 btn btn-primary text-white product-view-button">
                                         {{ trans('messages.automation.view_more') }}
                                     </a>
                                 </div>
