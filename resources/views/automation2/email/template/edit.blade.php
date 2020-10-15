@@ -21,10 +21,18 @@
             align-items: center;
             height: 40px;
         }
+        .woo-cart-items-widget.single img {
+            padding: 3px;
+            width: 58px;
+            height: 81px;
+        }
         .woo-cart-items-widget img {
             padding: 3px;
-            width: 42px;
-            height: 51px;
+            width: 65px;
+            height: 81px;
+        }
+        .woo-panel__body {
+            background-color: #fff8fe!important;
         }
         .btn-preview, .btn-unpreview {
             padding: 3px 10px;
@@ -37,14 +45,14 @@
 
     <script>
         // Cart items Control
-        class CartItemsControl extends Control {
+        class WooItemsControl extends Control {
             renderHtml() {
                 var thisControl = this;
                 var html = `
-                    <div id="CartItemsControl">
+                    <div id="WooItemsControl">
                         <div class="control-[ID]">
                             <div class="widget-section d-flex align-items-center pr-3">
-                                <div class="label mr-auto">{{ trans('messages.cart_items.number_of_items') }}</div>
+                                <div class="label mr-auto">{{ trans('messages.woo_items.number_of_items') }}</div>
                                 <select class="max-items form-control">
                                     <option value="1">1</option>
                                     <option value="2">2</option>
@@ -59,21 +67,21 @@
                                 </select>
                             </div>
                             <div class="widget-section d-flex align-items-center pr-3">
-                                <div class="label mr-auto">{{ trans('messages.cart_items.display_option') }}</div>
+                                <div class="label mr-auto">{{ trans('messages.woo_items.display_option') }}</div>
                                 <select class="display-option form-control">
-                                    <option value="1">{{ trans('messages.cart_items.display_option.1_column') }}</option>
-                                    <option value="2">{{ trans('messages.cart_items.display_option.2_column') }}</option>
-                                    <option value="3">{{ trans('messages.cart_items.display_option.3_column') }}</option>
-                                    <option value="4">{{ trans('messages.cart_items.display_option.4_column') }}</option>
+                                    <option value="1">{{ trans('messages.woo_items.display_option.1_column') }}</option>
+                                    <option value="2">{{ trans('messages.woo_items.display_option.2_column') }}</option>
+                                    <option value="3">{{ trans('messages.woo_items.display_option.3_column') }}</option>
+                                    <option value="4">{{ trans('messages.woo_items.display_option.4_column') }}</option>
                                 </select>
                             </div>
                             <div class="widget-section d-flex align-items-center pr-3">
-                                <div class="label mr-auto">{{ trans('messages.cart_items.sort_by') }}</div>
+                                <div class="label mr-auto">{{ trans('messages.woo_items.sort_by') }}</div>
                                 <select class="sort-by form-control">
-                                    <option value="price_az">{{ trans('messages.cart_items.sort_by.price_az') }}</option>
-                                    <option value="price_za">{{ trans('messages.cart_items.sort_by.price_za') }}</option>
-                                    <option value="date_added_asc">{{ trans('messages.cart_items.sort_by.date_added_asc') }}</option>
-                                    <option value="date_added_desc">{{ trans('messages.cart_items.sort_by.date_added_desc') }}</option>
+                                    <option value="price_az">{{ trans('messages.woo_items.sort_by.price_az') }}</option>
+                                    <option value="price_za">{{ trans('messages.woo_items.sort_by.price_za') }}</option>
+                                    <option value="date_added_asc">{{ trans('messages.woo_items.sort_by.date_added_asc') }}</option>
+                                    <option value="date_added_desc">{{ trans('messages.woo_items.sort_by.date_added_desc') }}</option>
                                 </select>
                             </div>
                         </div>
@@ -121,7 +129,7 @@
         }
         
         // cart items element
-        class CartItemsElement extends SuperElement  {
+        class WooItemsElement extends SuperElement  {
             name() {
                 return getI18n('block');
             }
@@ -133,7 +141,7 @@
                 var element = this;
 
                 return [
-                    new CartItemsControl('{{ trans('messages.cart_items.number_of_items') }}', {
+                    new WooItemsControl('{{ trans('messages.woo_items.number_of_items') }}', {
                             max_items: element.obj.attr('data-max-items'),
                             display: element.obj.attr('data-display'),
                             sort_by: element.obj.attr('data-sort-by')
@@ -192,29 +200,29 @@
         }
 
         // Woo Cart Items Widget
-        class CartItemsWidget extends Widget {
+        class WooItemsWidget extends Widget {
             getHtmlId() {
-                return "CartItemsWidget";
+                return "WooItemsWidget";
             }
 
             init() {
                 // default button html
                 this.setButtonHtml(`
                     <div class="_1content widget-text">
-                        <div class="panel__body" title="{{ trans('messages.automation.cart_items') }}">
+                        <div class="panel__body woo-panel__body" title="{{ trans('messages.automation.woo_item') }}">
                             <div class="image-drag">
                                 <div ng-bind-html="::getModuleIcon(module)" class="ng-binding woo-cart-items-widget">
-                                    <img builder-element src="{{ url('images/woo-products.svg') }}" width="100%" />
+                                    <img builder-element src="{{ url('images/woo_items.svg') }}" width="100%" />
                                 </div>
                             </div>
-                            <div class="body__title">{{ trans('messages.automation.cart_items') }}</div>
+                            <div class="body__title">{{ trans('messages.automation.woo_items') }}</div>
                         </div>
                     </div>
                 `);
 
                 // default content html
                 this.setContentHtml(`
-                    <div data-items-number="3" builder-element="CartItemsElement" data-max-items="6" data-display="3" data-sort-by="date_added_desc" builder-draggable class="py-3 px-3">
+                    <div data-items-number="3" builder-element="WooItemsElement" data-max-items="6" data-display="3" data-sort-by="date_added_desc" builder-draggable class="py-3 px-3">
                         <div class="row py-3">
                             <div class="col-md-4">
                                 <div class="">
@@ -280,14 +288,14 @@
         }
 
         // Cart items Control
-        class CartItemControl extends Control {
+        class WooItemControl extends Control {
             renderHtml() {
                 var thisControl = this;
                 var html = `
-                    <div id="CartItemsControl">
+                    <div id="WooItemsControl">
                         <div class="control-[ID]">
                             <div class="widget-section d-flex align-items-center pr-3">
-                                <div class="label mr-auto">{{ trans('messages.cart_item.product') }}</div>
+                                <div class="label mr-auto">{{ trans('messages.woo_item.product') }}</div>
                                 <div class="d-flex align-items-center">
                                     <a href="javascript:;" class="btn btn-default btn-preview mr-1">
                                         <span class="material-icons-outlined">visibility</span>
@@ -301,11 +309,11 @@
                                 </div>
                             </div>
                             <div class="widget-section d-flex align-items-center pr-3">
-                                <div class="label mr-auto">{{ trans('messages.cart_items.view_option') }}</div>
+                                <div class="label mr-auto">{{ trans('messages.woo_items.view_option') }}</div>
                                 <select class="items-number form-control">
-                                    <option value="full">{{ trans('messages.cart_items.view_option.full') }}</option>
-                                    <option value="compact">{{ trans('messages.cart_items.view_option.compact') }}</option>
-                                    <option value="no_image">{{ trans('messages.cart_items.view_option.no_image') }}</option>
+                                    <option value="full">{{ trans('messages.woo_items.view_option.full') }}</option>
+                                    <option value="compact">{{ trans('messages.woo_items.view_option.compact') }}</option>
+                                    <option value="no_image">{{ trans('messages.woo_items.view_option.no_image') }}</option>
                                 </select>
                             </div>
                         </div>
@@ -452,7 +460,7 @@
         }
 
         // cart items element
-        class CartItemElement extends SuperElement  {
+        class WooItemElement extends SuperElement  {
             name() {
                 return getI18n('block');
             }
@@ -495,7 +503,7 @@
                 var element = this;
 
                 return [
-                    new CartItemControl('{{ trans('messages.cart_item') }}', {
+                    new WooItemControl('{{ trans('messages.woo_item') }}', {
                         id: element.obj.attr('product-id'),
                         name: element.obj.attr('product-name'),
                         preview: element.obj.attr('preview'),
@@ -563,29 +571,29 @@
         }
 
         // Woo Cart Item Widget
-        class CartItemWidget extends Widget {
+        class WooItemWidget extends Widget {
             getHtmlId() {
-                return "CartItemWidget";
+                return "WooItemWidget";
             }
 
             init() {
                 // default button html
                 this.setButtonHtml(`
                     <div class="_1content widget-text">
-                        <div class="panel__body" title="{{ trans('messages.automation.cart_item') }}">
+                        <div class="panel__body woo-panel__body" title="{{ trans('messages.automation.woo_item') }}">
                             <div class="image-drag">
-                                <div ng-bind-html="::getModuleIcon(module)" class="ng-binding woo-cart-items-widget">
-                                    <img builder-element src="{{ url('images/woo-product.svg') }}" width="100%" />
+                                <div ng-bind-html="::getModuleIcon(module)" class="ng-binding woo-cart-items-widget single">
+                                    <img builder-element src="{{ url('images/woo_item.svg') }}" width="100%" />
                                 </div>
                             </div>
-                            <div class="body__title">{{ trans('messages.automation.cart_item') }}</div>
+                            <div class="body__title">{{ trans('messages.automation.woo_item') }}</div>
                         </div>
                     </div>
                 `);
 
                 // default content html
                 this.setContentHtml(`
-                    <div builder-element="CartItemElement" builder-draggable class="py-3 px-3 woo-cart-item-widget">
+                    <div builder-element="WooItemElement" builder-draggable class="py-3 px-3 woo-cart-item-widget">
                         <span class="woo-preview-but" style="display:none">visibility</span>
                         <span class="woo-unpreview-but" style="display:none">visibility_off</span>
                         <div class="d-flex">
@@ -747,8 +755,8 @@
                     var thisEditor = this;
 
                     @if ($automation->getTrigger()->getOption('type') == 'woo-abandoned-cart')
-                        this.addContentWidget(new CartItemsWidget(), 0, 'WooCommerce');
-                        this.addContentWidget(new CartItemWidget(), 0, 'WooCommerce');
+                        this.addContentWidget(new WooItemsWidget(), 0, 'WooCommerce');
+                        this.addContentWidget(new WooItemWidget(), 0, 'WooCommerce');
                     @endif
 
                     // add custom css

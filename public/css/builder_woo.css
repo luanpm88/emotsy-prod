@@ -1,0 +1,34 @@
+.woo-cart-item-widget {
+    position: relative;
+}
+.woo-cart-item-widget .woo-preview-but, .woo-cart-item-widget .woo-unpreview-but {
+    top: 0;
+    font-family: Material Icons Outlined;
+    position: absolute;
+    right: 0;
+    border-radius: 3px;
+    height: 30px;
+    width: 30px;
+    border: solid 1px #999;
+    align-items: center;
+    justify-content: center;
+    font-size: 21px;
+    cursor: pointer;
+    z-index: 1;
+    visibility: hidden;
+}
+.woo-cart-item-widget[preview=no] .woo-preview-but {
+    display: flex!important;
+}
+.woo-cart-item-widget[preview=yes] .woo-unpreview-but {
+    display: flex!important;
+}
+.woo-cart-item-widget[product-id] .woo-preview-but, .woo-cart-item-widget[product-id] .woo-unpreview-but {
+    visibility: visible;
+}
+.woo-cart-item-widget[product-id=''] .woo-preview-but, .woo-cart-item-widget[product-id=''] .woo-unpreview-but {
+    visibility: hidden;
+}
+.woo-cart-item-widget .woo-preview-but {
+    background-color: #ddd;
+}
