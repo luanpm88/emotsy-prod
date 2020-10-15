@@ -470,33 +470,40 @@
 
             preview() {
                 var element = this;
+                element.obj.fadeOut(200, function() {
+                    var url = '{{ $automation->getTrigger()->getOption('connect_url') }}?product_id=' + element.obj.attr('product-id');
+                    $.ajax({
+                        method: "GET",
+                        url: url
+                    })
+                    .done(function( data ) {
+                        element.obj.find('img').attr('src', data.image);
+                        element.obj.find('.product-name').html(data.name);
+                        element.obj.find('.product-description').html(data.description);
+                        element.obj.find('.product-link').attr('href', data.link);
+                        element.obj.find('.product-price').html(data.price);
 
-                var url = '{{ $automation->getTrigger()->getOption('connect_url') }}?product_id=' + element.obj.attr('product-id');
-                $.ajax({
-                    method: "GET",
-                    url: url
-                })
-                .done(function( data ) {
-                    element.obj.find('img').attr('src', data.image);
-                    element.obj.find('.product-name').html(data.name);
-                    element.obj.find('.product-description').html(data.description);
-                    element.obj.find('.product-link').attr('href', data.link);
-                    element.obj.find('.product-price').html(data.price);
+                        element.obj.attr('preview', 'yes');
+                    });
 
-                    element.obj.attr('preview', 'yes');
-                });
+                    element.obj.fadeIn(400); 
+                });                 
             }
 
             unpreview() {
                 var element = this;
-                
-                element.obj.find('img').attr('src', '{{ url('images/cart_item.svg') }}');
-                element.obj.find('.product-name').html('{PRODUCT_NAME}');
-                element.obj.find('.product-description').html('{PRODUCT_DESCRIPTION}');
-                element.obj.find('.product-link').attr('href', '{PRODUCT_URL}');
-                element.obj.find('.product-price').html('{PRODUCT_PRICE}');
+                element.obj.fadeOut(200, function() {
+                    element.obj.find('img').attr('src', '{{ url('images/cart_item.svg') }}');
+                    element.obj.find('.product-name').html('{PRODUCT_NAME}');
+                    element.obj.find('.product-description').html('{PRODUCT_DESCRIPTION}');
+                    element.obj.find('.product-link').attr('href', '{PRODUCT_URL}');
+                    element.obj.find('.product-price').html('{PRODUCT_PRICE}');
 
-                element.obj.attr('preview', 'no');
+                    element.obj.attr('preview', 'no');
+
+                    element.obj.fadeIn(400); 
+                }); 
+                
             }
 
             getControls() {
