@@ -474,6 +474,8 @@
                     element.obj.find('.product-description').html(data.description);
                     element.obj.find('.product-link').attr('href', data.link);
                     element.obj.find('.product-price').html(data.price);
+
+                    element.obj.attr('preview', 'yes');
                 });
             }
 
@@ -485,6 +487,8 @@
                 element.obj.find('.product-description').html('{PRODUCT_DESCRIPTION}');
                 element.obj.find('.product-link').attr('href', '{PRODUCT_URL}');
                 element.obj.find('.product-price').html('{PRODUCT_PRICE}');
+
+                element.obj.attr('preview', 'no');
             }
 
             getControls() {
@@ -507,15 +511,13 @@
                             element.select();
                         },
                         preview: function(callback) {
-                            element.preview();
-                            element.obj.attr('preview', 'yes');
+                            element.preview();                            
                             if (callback) {
                                 callback();
                             }
                         },
                         unpreview: function(callback) {
                             element.unpreview();
-                            element.obj.attr('preview', 'no');
                             if (callback) {
                                 callback();
                             }
@@ -584,6 +586,8 @@
                 // default content html
                 this.setContentHtml(`
                     <div builder-element="CartItemElement" builder-draggable class="py-3 px-3 woo-cart-item-widget">
+                        <span class="woo-preview-but" style="display:none">visibility</span>
+                        <span class="woo-unpreview-but" style="display:none">visibility_off</span>
                         <div class="d-flex">
                             <div class="">
                                 <a href="*|PRODUCT_URL|*">
@@ -740,10 +744,36 @@
                   }
                 },
                 loaded: function() {
+                    var thisEditor = this;
+
                     @if ($automation->getTrigger()->getOption('type') == 'woo-abandoned-cart')
                         this.addContentWidget(new CartItemsWidget(), 0, 'WooCommerce');
                         this.addContentWidget(new CartItemWidget(), 0, 'WooCommerce');
                     @endif
+
+                    // add custom css
+                    $("#builder_iframe").contents().find('head').append('<link builder-helper="true" rel="stylesheet" href="{{ url('/css/builder_woo.css') }}">');
+
+                    // click preview button
+                    $("#builder_iframe").contents().find("body").on('click', '.woo-preview-but', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        var element = thisEditor.elementFactory($(this).parent());
+                        element.preview();
+                        thisEditor.select(element);
+                        thisEditor.handleSelect();
+                        return false;
+                    })
+
+                    $("#builder_iframe").contents().find("body").on('click', '.woo-unpreview-but', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        var element = thisEditor.elementFactory($(this).parent());
+                        element.unpreview();
+                        thisEditor.select(element);
+                        thisEditor.handleSelect();
+                        return false;
+                    })
                 }
             });
           
