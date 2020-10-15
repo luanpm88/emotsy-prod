@@ -140,7 +140,7 @@
             preview() {
                 var element = this;
                 element.obj.fadeOut(200, function() {
-                    var url = '{{ $automation->getTrigger()->getOption('connect_url') }}?action=list&max=' + element.obj.attr('data-max-items');
+                    var url = '{{ $automation->getTrigger()->getOption('connect_url') }}?action=list&max=' + element.obj.attr('data-max-items') + '&sort_by=' + element.obj.attr('data-sort-by');
                     $.ajax({
                         method: "GET",
                         url: url
