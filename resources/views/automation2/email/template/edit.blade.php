@@ -152,6 +152,37 @@
                             },
                             setDisplay: function(display) {
                                 element.obj.attr('data-display', display);
+
+                                // more col
+                                if (element.obj.find('.woo-col-item').length < display) {
+                                    var times = display - element.obj.find('.woo-col-item').length;
+
+                                    for(var i=0; i<times;i++) {
+                                        element.obj.find('.woo-col-item').last().after(element.obj.find('.woo-col-item').last().clone());
+                                    }
+                                }
+
+                                // less col
+                                if (element.obj.find('.woo-col-item').length > display) {
+                                    var times = -display + element.obj.find('.woo-col-item').length;
+
+                                    for(var i=0; i<times;i++) {
+                                        element.obj.find('.woo-col-item').last().remove();
+                                    }
+                                }
+
+                                element.obj.find('.woo-col-item').removeClass(function (index, className) {
+                                    return (className.match (/(^|\s)col-md-\S+/g) || []).join(' ');
+                                });
+
+                                element.obj.find('.woo-col-item').addClass('col-md-' + (12/display));
+
+                                if (display == '1') {
+                                    element.obj.find('.img-col').attr('style', 'float: left;margin-right: 20px;width: 150px;');
+                                } else {
+                                    element.obj.find('.img-col').attr('style', '');
+                                }
+
                                 element.select();
                             },
                             setSortBy: function(sort_by) {
@@ -224,9 +255,9 @@
                 this.setContentHtml(`
                     <div data-items-number="3" builder-element="WooItemsElement" data-max-items="6" data-display="3" data-sort-by="date_added_desc" builder-draggable class="py-3 px-3">
                         <div class="row py-3">
-                            <div class="col-md-4">
+                            <div class="woo-col-item col-md-4">
                                 <div class="">
-                                    <div class="mb-3">
+                                    <div class="img-col mb-3">
                                         <a href="*|PRODUCT_URL|*" class="mr-4"><img builder-element src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
                                     </div>
                                     <div class="">
@@ -242,9 +273,9 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="woo-col-item col-md-4">
                                 <div class="">
-                                    <div class="mb-3">
+                                    <div class="img-col mb-3">
                                         <a href="*|PRODUCT_URL|*" class="mr-4"><img builder-element src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
                                     </div>
                                     <div class="">
@@ -260,9 +291,9 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-4">
+                            <div class="woo-col-item col-md-4">
                                 <div class="">
-                                    <div class="mb-3">
+                                    <div class="img-col mb-3">
                                         <a href="*|PRODUCT_URL|*" class="mr-4"><img builder-element src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
                                     </div>
                                     <div class="">
