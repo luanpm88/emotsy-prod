@@ -27,9 +27,7 @@ use Acelle\Library\StringHelper;
 use Acelle\Library\Lockable;
 use Acelle\Library\IdentityStore;
 use Acelle\Library\SendingServer\DomainVerificationInterface;
-use Mika56\SPFCheck\SPFCheck;
-use Mika56\SPFCheck\DNSRecordGetterDirect;
-use Mika56\SPFCheck\DNSRecordGetter;
+use Acelle\Model\SendingDomain;
 
 class SendingServerAmazon extends SendingServer implements DomainVerificationInterface
 {
@@ -273,11 +271,9 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
         $dkim = 'Success' == $status;
 
         // SPF: hack
-        $checker = new SPFCheck(new DNSRecordGetterDirect('8.8.8.8'));
-        // $checker = new SPFCheck(new DNSRecordGetter());
-        $check = $checker->isIPAllowed(gethostbyname('amazonses.com'), $domain);
-
-        $spf = ($check == SPFCheck::RESULT_PASS || $check == SPFCheck::RESULT_SOFTFAIL);
+        $domainObj = SendingDomain::where('name', $domain)->first();
+        $domainObj->verifySpf();
+        $spf = ($domainObj->spf_verified);
 
         // Return all
         return [$identity, $dkim, $spf];
@@ -454,5 +450,10 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
     private function getCustomVerificationEmailTemplateNameFor($identity)
     {
         return "verification-email-{$identity->uid}";
+    }
+
+    public function getSpfHost()
+    {
+        return 'amazonses.com';
     }
 }

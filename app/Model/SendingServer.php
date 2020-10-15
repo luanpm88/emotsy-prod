@@ -1656,4 +1656,9 @@ class SendingServer extends Model
             $this->save();
         }
     }
+
+    public function getSpfHost()
+    {
+        return null;
+    }
 }
