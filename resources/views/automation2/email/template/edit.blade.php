@@ -155,7 +155,7 @@
                                     <div class="">
                                         <div class="img-col mb-3">
                                             <div class="d-flex align-items-center justify-content-center" style="height: 200px;">
-                                                <a href="`+item.link+`" class="mr-4"><img src="`+item.image+`" width="100%" /></a>
+                                                <a href="`+item.link+`" class="mr-4"><img src="`+item.image+`" style="max-height:200px;max-width:100%;" /></a>
                                             </div>
                                         </div>
                                         <div class="">
