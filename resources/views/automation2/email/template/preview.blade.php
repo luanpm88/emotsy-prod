@@ -20,6 +20,7 @@
                 top: 0;
                 width: 100%;
                 left: 0;
+                z-index: 2;
 
         }
 

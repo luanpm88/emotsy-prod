@@ -21,6 +21,7 @@
                 width: 100%;
                 left: 0;
             @endif
+            z-index: 2;
         }
 
         /* Style the buttons inside the tab */
