@@ -774,21 +774,21 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                         <span class="woo-unpreview-but" style="display:none">visibility_off</span>
                         <div class="d-flex">
                             <div class="">
-                                <a href="*|PRODUCT_URL|*">
+                                <a href="*|PRODUCT_URL|*" class="product-link">
                                     <img builder-element  class="mr-4" src="{{ url('images/cart_item.svg') }}" width="200px" />
                                 </a>
                             </div>
                             <div class="">
                                 <div class="">
                                     <h3 class="font-weight-normal">
-                                        <a style="color:#333;" builder-element builder-inline-edit class="d-block product-name" href="{PRODUCT_URL}">
-                                            *|PRODUCT_NAME|*
+                                        <a style="color:#333;" builder-element builder-inline-edit class="d-block product-link" href="{PRODUCT_URL}">
+                                            <span class="product-name">*|PRODUCT_NAME|*</span>
                                         </a>
                                     </h3>
                                     <p builder-element class=" product-description">*|PRODUCT_DESCRIPTION|*</p>
                                     <h4 builder-element><strong class="product-price">*|PRODUCT_PRICE|*</strong></h4>
                                     <a style="background-color: #9b5c8f;
-    border-color: #9b5c8f;" builder-element builder-inline-edit href="*|PRODUCT_URL|*" class="mt-4 btn btn-primary text-white product-view-button">
+    border-color: #9b5c8f;" builder-element builder-inline-edit href="*|PRODUCT_URL|*" class="mt-4 btn btn-primary text-white product-view-button product-link">
                                         {{ trans('messages.automation.view_more') }}
                                     </a>
                                 </div>

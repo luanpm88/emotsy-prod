@@ -837,6 +837,11 @@ class Email extends Model
             $body = $this->tagMessage($body, $subscriber, $msgId, $server);
         }
 
+        // STEP 08.1. Check woocommerce items
+        if ($this->automation->getTrigger()->getOption('type') == 'woo-abandoned-cart') {
+            $body = $this->wooTransform($body);            
+        }
+
         // STEP 09. Make CSS inline
         //
         // Transform CSS/HTML content to inline CSS
@@ -844,7 +849,86 @@ class Email extends Model
         //       <a href="{BUNSUBSCRIBE_URL}" 
         // become
         //       <a href="%7BUNSUBSCRIBE_URL%7D" 
-        $body = $this->inlineHtml($body);
+        $body = $this->inlineHtml($body);       
+
+        return $body;
+    }
+
+    public function wooTransform($body) {
+        if ($this->automation->getTrigger()->getOption('connect_url')) {
+            $client = new \GuzzleHttp\Client();
+
+            // find all links from contents
+            $document = HtmlDomParser::str_get_html($body);
+
+            // Woo Items List
+            foreach ($document->find('[builder-element=WooItemsElement]') as $element) {
+                $max = $element->getAttribute('data-max-items');
+                $display = $element->getAttribute('data-display');
+                $sort = $element->getAttribute('data-sort-by');
+
+                $uri =  $this->automation->getTrigger()->getOption('connect_url') . 
+                    '?action=list&max=' . $max . '&sort_by=' . $sort;
+
+                $response = $client->request('GET', $uri, [
+                    'Content-Type' => 'application/json',
+                ]);
+                
+                $items = json_decode($response->getBody(), true);
+                $itemsHtml = [];
+                foreach($items as $item) {
+                    // $element->find('.woo-items')[0]->innertext = 'dddddd';
+                    $itemsHtml[] = '
+                        <div class="woo-col-item mb-4 mt-4 col-md-' . (12/$display) . '">
+                            <div class="">
+                                <div class="img-col mb-3">
+                                    <div class="d-flex align-items-center justify-content-center" style="height: 200px;">
+                                        <a href="'.$item["link"].'" class="mr-4"><img src="'.$item["image"].'" width="100%" /></a>
+                                    </div>
+                                </div>
+                                <div class="">
+                                    <p class="font-weight-normal product-name mb-1">
+                                        <a style="color: #333;" href="'.$item["link"].'" class="mr-4">'.$item["name"].'</a>
+                                    </p>
+                                    <p class=" product-description">'.$item["description"].'</p>
+                                    <p><strong>'.$item["price"].'</strong></p>
+                                    <a href="'.$item["link"].'" style="background-color: #9b5c8f;
+        border-color: #9b5c8f;" class="btn btn-primary text-white">
+                                        ' . trans('messages.automation.view_more') . '
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    ';
+                }
+
+                $element->find('.woo-items')[0]->innertext = implode('', $itemsHtml);
+            }
+
+            // Woo Single Item
+            foreach ($document->find('[builder-element=WooItemElement]') as $element) {
+                $productId = $element->getAttribute('product-id');
+
+                if ($productId) {
+                    $uri =  $this->automation->getTrigger()->getOption('connect_url') . 
+                        '?product_id=' . $productId;
+
+                    $response = $client->request('GET', $uri, [
+                        'Content-Type' => 'application/json',
+                    ]);
+                    
+                    $item = json_decode($response->getBody(), true);
+
+                    $element->find('img', 0)->src = $item["image"];
+                    $element->find('.product-name', 0)->innertext = $item["name"];
+                    $element->find('.product-description', 0)->innertext = $item["description"];
+                    $element->find('.product-link', 0)->href = $item["link"];
+                    $element->find('.product-price', 0)->innertext = $item["price"];
+                }
+            }
+
+            $body = $document;
+        }
 
         return $body;
     }
