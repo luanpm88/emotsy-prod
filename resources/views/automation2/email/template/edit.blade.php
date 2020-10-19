@@ -353,8 +353,8 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                 // default content html
                 this.setContentHtml(`
                     <div data-items-number="3" builder-element="WooItemsElement" data-max-items="3" data-display="3" data-sort-by="date_added_desc" builder-draggable class="py-3 px-3 woo-cart-items-widget">
-                        <span class="woo-preview-but" style="display:none">visibility</span>
-                        <span class="woo-unpreview-but" style="display:none">visibility_off</span>
+                        <span class="woo-preview-but" style="display:none">Preview</span>
+                        <span class="woo-unpreview-but" style="display:none">close</span>
                         <div class="row py-3 woo-items">
                             <div class="woo-col-item mb-4 mt-4 col-md-4">
                                 <div class="">
@@ -770,8 +770,8 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                 // default content html
                 this.setContentHtml(`
                     <div builder-element="WooItemElement" builder-draggable class="py-3 px-3 woo-cart-item-widget">
-                        <span class="woo-preview-but" style="display:none">visibility</span>
-                        <span class="woo-unpreview-but" style="display:none">visibility_off</span>
+                        <span class="woo-preview-but" style="display:none">Preview</span>
+                        <span class="woo-unpreview-but" style="display:none">close</span>
                         <div class="d-flex">
                             <div class="">
                                 <a href="*|PRODUCT_URL|*" class="product-link">
