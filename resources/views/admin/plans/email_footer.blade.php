@@ -63,7 +63,7 @@
                     </div>
                     
                     @include('helpers.form_control', [
-                        'class' => 'builder-editor',
+                        'class' => 'setting-editor',
                         'type' => 'textarea',
                         'name' => 'plan[options][html_footer]',
                         'label' => trans('messages.plan.html_footer'),
