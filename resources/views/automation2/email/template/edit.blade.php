@@ -464,7 +464,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
             getValues() {
                 var thisControl = this;
                 
-                var url = 'http://wordpress.wsl/wp-json/acelle/connect';
+                var url = '{{ $automation->getTrigger()->getOption('connect_url') }}';
 
                 // set product id
                 if (thisControl.value.id) {
