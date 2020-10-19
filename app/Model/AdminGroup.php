@@ -199,10 +199,8 @@ class AdminGroup extends Model
             'plan_update' => 'own',
             'plan_delete' => 'own',
             'plan_copy' => 'all',
-            'payment_method_read' => 'own',
-            'payment_method_create' => 'yes',
-            'payment_method_update' => 'own',
-            'payment_method_delete' => 'own',
+            'payment_method_read' => 'yes',
+            'payment_method_update' => 'yes',
             'sending_server_read' => 'all',
             'sending_server_create' => 'yes',
             'sending_server_update' => 'own',
@@ -459,28 +457,13 @@ class AdminGroup extends Model
                 'read' => [
                     'options' => [
                         ['value' => 'no', 'text' => trans('messages.no')],
-                        ['value' => 'own', 'text' => trans('messages.own')],
-                        ['value' => 'all', 'text' => trans('messages.all')],
-                    ],
-                ],
-                'create' => [
-                    'options' => [
-                        ['value' => 'no', 'text' => trans('messages.no')],
                         ['value' => 'yes', 'text' => trans('messages.yes')],
                     ],
                 ],
                 'update' => [
                     'options' => [
                         ['value' => 'no', 'text' => trans('messages.no')],
-                        ['value' => 'own', 'text' => trans('messages.own')],
-                        ['value' => 'all', 'text' => trans('messages.all')],
-                    ],
-                ],
-                'delete' => [
-                    'options' => [
-                        ['value' => 'no', 'text' => trans('messages.no')],
-                        ['value' => 'own', 'text' => trans('messages.own')],
-                        ['value' => 'all', 'text' => trans('messages.all')],
+                        ['value' => 'yes', 'text' => trans('messages.yes')],
                     ],
                 ],
             ],
