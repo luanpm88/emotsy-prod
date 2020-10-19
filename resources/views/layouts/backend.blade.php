@@ -251,11 +251,13 @@
 								</a>
 							</li>
 						@endif
-						<li rel0="PaymentController">
-							<a href="{{ action('Admin\PaymentController@index') }}">
-								<i class="icon-credit-card2"></i> {{ trans('messages.payment_gateways') }}
-							</a>
-						</li>
+						@if (Auth::user()->admin->getPermission("payment_method_read") != 'no')
+							<li rel0="PaymentController">
+								<a href="{{ action('Admin\PaymentController@index') }}">
+									<i class="icon-credit-card2"></i> {{ trans('messages.payment_gateways') }}
+								</a>
+							</li>
+						@endif
 						<li rel0="PluginController">
 							<a href="{{ action('Admin\PluginController@index') }}">
 								<i class="icon-power-cord"></i> {{ trans('messages.plugins') }}
