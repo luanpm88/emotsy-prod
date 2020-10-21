@@ -82,8 +82,8 @@
                             </div>
                         </div>
                         <div class="mr-auto pr-4">
-                            <h4 class="font-weight-semibold mb-2">{{ trans('messages.payments.' . $gateway) }}</h4>
-                            <p class="mb-3">{{ trans('messages.payments.' . $gateway . '.list_intro') }}</p>
+                            <h4 class="font-weight-semibold mb-2">{{ trans('messages.frontend_payment.' . $gateway) }}</h4>
+                            <p class="mb-3">{{ trans('messages.frontend_payment.' . $gateway . '.desc') }}</p>
                         </div>                        
                     </div>
                 @endforeach

@@ -3842,7 +3842,7 @@
   'payment.hide' => 'Hide',
   'save_and_show' => 'Save & Show',
   'frontend_payment.direct' => 'Offline payment',
-  'frontend_payment.direct.desc' => 'Receive payments outside of the application',
+  'frontend_payment.direct.desc' => 'Make the payment outside of the application',
   'frontend_payment.stripe' => 'Use Card',
   'frontend_payment.stripe.desc' => 'Receive payments from customer\'s
       card (credit, debit, master, visa,...)',
