@@ -482,7 +482,7 @@ abstract class AbsCampaign extends Model
         $path = route('openTrackingUrl', ['message_id' => StringHelper::base64UrlEncode($msgId)], false);
         $url = $this->buildTrackingUrl($path);
 
-        return $this->appendToBody($body, '<img src="'.$url.'" width="0" height="0" alt="" style="visibility:hidden" />');
+        return $this->appendToBody($body, '<img alt="" src="'.$url.'" width="0" height="0" alt="" style="visibility:hidden" />');
     }
 
     /**
