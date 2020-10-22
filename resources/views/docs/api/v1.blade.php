@@ -40,7 +40,7 @@
                             <td></td>
                             <td>
                                 <div>
-                                    <div class="description detailed">
+                                    <div class="description detailed">                                        
                                         @if ($function['parameters'])
                                             <h4>{{ trans('messages.parameters') }}</h4>
                                                 <div class="list"><dl>
@@ -69,6 +69,10 @@
                               <td>
                                   <h4>Example:</h4>
                                   <pre class=""><code>{!! $function['example'] !!}</code></pre>
+                                  <br>
+                                    @if (isset($function['help']))
+                                        {!! $function['help'] !!}
+                                    @endif
                               </td>
                         </tr>
                     @endforeach

@@ -33,6 +33,27 @@ class ApiHelper
     {
         $docs = [];
 
+        // CUSTOMER
+        $docs[] = [
+            'view' => 'frontend',
+            'title' => trans('messages.customer'),
+            'functions' => [
+                [
+                    'method' => 'POST',
+                    'uri' => '/api/v1/login-token',
+                    'description' => 'Generate one time login token',
+                    'help' => 'User can login by visiting the following URL:<br>
+                        <code>' . action('Controller@tokenLogin', ['token' => '*|token_string|*']) . '</code>',
+                    'parameters' => [
+                    ],
+                    'returns' => 'Token string',
+                    'example' => 'curl -X POST -H "accept:application/json" -G \
+' .str_replace('-uid-', '<redbold>{uid}</redbold>', action("Api\CustomerController@loginToken")).'? \
+-d api_token=' .\Auth::user()->api_token,
+                ],
+            ],
+        ];
+
         // LIST
         $docs[] = [
             'view' => 'frontend',
@@ -483,14 +504,16 @@ class ApiHelper
 
                 [
                     'method' => 'POST',
-                    'uri' => '/api/v1/customers/{uid}/login-token',
+                    'uri' => '/api/v1/login-token',
                     'description' => 'Generate one time login token',
+                    'help' => 'User can login by visiting the following URL:<br>
+                        <code>' . action('Controller@tokenLogin', ['token' => '*|token_string|*']) . '</code>',
                     'parameters' => [
                         ['name' => '$uid', 'description' => 'Customer\'s uid'],
                     ],
                     'returns' => 'Token string',
                     'example' => 'curl -X POST -H "accept:application/json" -G \
-' .str_replace('-uid-', '<redbold>{uid}</redbold>', action("Api\CustomerController@loginToken", ['uid' => '-uid-'])).'? \
+' .str_replace('-uid-', '<redbold>{uid}</redbold>', action("Api\CustomerController@loginToken")).'? \
 -d api_token=' .\Auth::user()->api_token,
                 ],
             ],

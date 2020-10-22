@@ -52,7 +52,7 @@ Route::group(['namespace' => 'Api', 'prefix' => 'v1', 'middleware' => 'auth:api'
     Route::resource('plans', 'PlanController');
 
     // Customer
-    Route::post('customers/{uid}/login-token', 'CustomerController@loginToken');
+    Route::match(['get','post'], 'login-token', 'CustomerController@loginToken');
     Route::post('customers/{uid}/assign-plan/{plan_uid}', 'CustomerController@assignPlan');
     Route::patch('customers/{uid}/disable', 'CustomerController@disable');
     Route::patch('customers/{uid}/enable', 'CustomerController@enable');

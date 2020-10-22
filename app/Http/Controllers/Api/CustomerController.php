@@ -359,15 +359,14 @@ class CustomerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function loginToken($uid)
+    public function loginToken()
     {
         $user = \Auth::guard('api')->user();
-        $customer = \Acelle\Model\Customer::findByUid($uid);
 
-        $customer->user->generateOneTimeToken();
+        $user->generateOneTimeToken();
 
         return \Response::json(array(
-            'token' => $customer->user->one_time_api_token,
+            'token' => $user->one_time_api_token,
         ), 200);
     }
 }
