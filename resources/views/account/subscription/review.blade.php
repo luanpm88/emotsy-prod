@@ -91,10 +91,17 @@
             <div class="sub-section">
                 <div class="row">
                     <div class="col-md-4">
-                        <button link-method="POST"
-                            class="btn btn-mc_primary">
-                                {{ trans('messages.payment.proceed_with_payment') }}
-                        </button>
+                        @if (!$plan->isFree())
+                            <button link-method="POST"
+                                class="btn btn-mc_primary">
+                                    {{ trans('messages.payment.proceed_with_payment') }}
+                            </button>
+                        @else
+                            <button link-method="POST"
+                                class="btn btn-mc_primary">
+                                    {{ trans('messages.subscription.get_started') }}
+                            </button>
+                        @endif
                     </div>
                     <div class="col-md-8">
                         {!! trans('messages.payment.agree_service_intro', ['plan' => $plan->name]) !!}
