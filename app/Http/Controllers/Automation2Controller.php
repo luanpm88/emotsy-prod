@@ -1097,6 +1097,26 @@ class Automation2Controller extends Controller
             'email' => $email,
         ]);
     }
+
+    /**
+     * Template preview.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function templatePreviewContent(Request $request, $uid, $email_uid)
+    {
+        $automation = Automation2::findByUid($uid);
+        $email = Email::findByUid($request->email_uid);
+        
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+
+        echo $email->getHtmlContent();
+    }
     
     /**
      * Attachment upload.

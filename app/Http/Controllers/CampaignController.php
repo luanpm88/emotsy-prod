@@ -1998,6 +1998,25 @@ class CampaignController extends Controller
     }
 
     /**
+     * Preview content template.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function previewContent($id)
+    {
+        $campaign = \Acelle\Model\Campaign::findByUid($id);
+
+        // authorize
+        if (\Gate::denies('preview', $campaign)) {
+            return $this->not_authorized();
+        }
+
+        echo $campaign->getHtmlContent();
+    }
+
+    /**
      * Save campaign screenshot.
      *
      * @param \Illuminate\Http\Request $request
