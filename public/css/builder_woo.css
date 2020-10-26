@@ -86,3 +86,15 @@
 .woo-cart-items-widget[preview=yes] .woo-preview-but {
     display: none!important;
 }
+.woo-cart-items-widget[preview=no] .woo-items.more::after {
+    content: 'more_horiz';
+    display: block;
+    font-size: 40px;
+    margin: 10px 14px;
+    border: solid 1px #aaa;
+    padding: 9px 10px;
+    border-radius: 30px;
+    line-height: 10px;
+    font-family: 'Material Icons Outlined';
+    color: #555;
+}

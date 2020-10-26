@@ -211,7 +211,8 @@
                 var element = this;
 
                 element.obj.find('.woo-items').html('');
-                for(var i=0; i<element.obj.attr('data-max-items');i++) {
+                var preItems = element.obj.attr('data-max-items') > display ? display : element.obj.attr('data-max-items');
+                for(var i=0; i<preItems;i++) {
                     element.obj.find('.woo-items').append(`
                         <div class="woo-col-item mb-4 mt-4 col-md-4">
                             <div class="">
@@ -245,6 +246,12 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                 } else {
                     element.obj.find('.img-col').attr('style', '');
                 }
+
+                if (element.obj.attr('data-max-items') > display) {
+                    element.obj.find('.woo-items').addClass('more');
+                } else {
+                    element.obj.find('.woo-items').removeClass('more');
+                }
             }
 
             getControls() {
@@ -258,14 +265,15 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                             preview: element.obj.attr('preview'),
                         } , {
                             setMaxItems: function(max_items) {
-                                element.obj.attr('data-max-items', max_items);
-                                element.select();
+                                element.obj.attr('data-max-items', max_items);                                
 
                                 if (element.obj.attr('preview') == 'yes') {
                                     element.preview();
                                 } else {
                                     element.display(element.obj.attr('data-display'));
                                 }
+
+                                element.select();
                             },
                             setDisplay: function(display) {
                                 element.obj.attr('data-display', display);     
@@ -275,6 +283,8 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                                 } else {
                                     element.display(element.obj.attr('data-display'));
                                 }
+
+                                element.select();
                             },
                             setSortBy: function(sort_by) {
                                 element.obj.attr('data-sort-by', sort_by);
@@ -284,6 +294,8 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                                 } else {
                                     element.display(element.obj.attr('data-display'));
                                 }
+
+                                element.select();
                             },
                             preview: function() {
                                 element.preview();
