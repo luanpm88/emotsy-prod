@@ -948,7 +948,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                     @endif
 
                     // add custom css
-                    $("#builder_iframe").contents().find('head').append('<link builder-helper="true" rel="stylesheet" href="{{ url('/css/builder_woo.css') }}">');
+                    this.addCustomCss('{{ url('/css/builder_woo.css') }}');
 
                     // click preview button
                     $("#builder_iframe").contents().find("body").on('click', '.woo-preview-but', function(e) {
