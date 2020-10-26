@@ -106,17 +106,18 @@
 						\Auth::user()->admin->can('approvePending', $subscription) ||
 						\Auth::user()->admin->can('rejectPending', $subscription)
 					)
+						@if (\Auth::user()->admin->can('setActive', $subscription))
+							<a data-method="POST" link-confirm="{{ trans('messages.subscription.set_active.confirm') }}"
+								href="{{ action('Admin\SubscriptionController@setActive', $subscription->uid) }}"
+								class="btn btn-mc_primary"
+							>
+								{{ trans('messages.subscription.set_active') }}
+							</a>
+						@endif
 						<div class="btn-group">
+							
 							<button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret ml-0"></span></button>
-							<ul class="dropdown-menu dropdown-menu-right">								
-								@if (\Auth::user()->admin->can('setActive', $subscription))
-									<li>
-										<a data-method="POST" link-confirm="{{ trans('messages.subscription.set_active.confirm') }}"
-										  href="{{ action('Admin\SubscriptionController@setActive', $subscription->uid) }}">
-											{{ trans('messages.subscription.set_active') }}
-										</a>
-									</li>
-								@endif
+							<ul class="dropdown-menu dropdown-menu-right">
 								@if (\Auth::user()->admin->can('approvePending', $subscription))
 									<li>
 										<a data-method="POST" link-confirm="{{ trans('messages.subscription.set_active.confirm') }}"
