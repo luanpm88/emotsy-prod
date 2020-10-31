@@ -42,6 +42,7 @@ class CustomerController extends Controller
             // Create user account for customer
             $user = new \Acelle\Model\User();
             $user->email = $request->email;
+            $user->activated = true;
             // Update password
             if (!empty($request->password)) {
                 $user->password = bcrypt($request->password);
