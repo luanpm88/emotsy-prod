@@ -67,4 +67,7 @@ Route::group(['namespace' => 'Api', 'prefix' => 'v1', 'middleware' => 'auth:api'
 
     // File
     Route::post('automations/{uid}/execute', 'AutomationController@execute')->name('automation_execute');
+
+    // Subscription
+    Route::post('notification', 'NotificationController@index');
 });
