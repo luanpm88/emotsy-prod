@@ -723,7 +723,7 @@ class Setting extends Model
      */
     public static function getEnabledPaymentGateways()
     {
-        $gateways = json_decode(self::get('gateways'));
+        $gateways = json_decode(self::get('gateways'), true);
 
         // Check plugin paystack
         if (!Plugin::isActive('paystack')) {
