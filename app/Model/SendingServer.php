@@ -819,8 +819,8 @@ class SendingServer extends Model
     {
         return [
             ['value' => '', 'text' => trans('messages.choose')],
-            ['value' => 'https://api.mailgun.net/v3', 'text' => 'US/Global Server'],
-            ['value' => 'https://api.eu.mailgun.net/v3', 'text' => 'EU Server'],
+            ['value' => 'https://api.mailgun.net', 'text' => 'US/Global Server'],
+            ['value' => 'https://api.eu.mailgun.net', 'text' => 'EU Server'],
         ];
     }
 
