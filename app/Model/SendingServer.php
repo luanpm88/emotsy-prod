@@ -1630,7 +1630,7 @@ class SendingServer extends Model
     public function setDefaultFromEmailAddress()
     {
         if (!empty($this->default_from_email)) {
-            //    return;
+            return;
         }
 
         $identityStore = $this->getIdentityStore();
