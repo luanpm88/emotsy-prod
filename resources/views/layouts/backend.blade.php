@@ -155,7 +155,8 @@
 						rel1="FeedbackLoopHandlerController"
 						rel2="SendingServerController"
 						rel3="SendingDomainController"
-						rel3="SubAccountController"
+						rel4="SubAccountController"
+						rel5="EmailVerificationServerController"
 					>
 						<a class="dropdown-toggle" data-toggle="dropdown">
 							<i class="glyphicon glyphicon-transfer"></i> {{ trans('messages.sending') }}
@@ -212,6 +213,8 @@
 					rel1="LayoutController"
 					rel2="LanguageController"
 					rel3="SettingController"
+					rel4="PaymentController"
+					rel5="PluginController"
 				>
 					<a class="dropdown-toggle" data-toggle="dropdown">
 						<i class="icon-gear"></i> {{ trans('messages.setting') }}
