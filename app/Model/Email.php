@@ -505,6 +505,8 @@ class Email extends Model
         $links = [];
 
         // find all links from contents
+        // Fix: str_get_html returning false
+        defined('MAX_FILE_SIZE') || define('MAX_FILE_SIZE', 10000000);
         $document = HtmlDomParser::str_get_html($this->content);
         foreach ($document->find('a') as $element) {
             if (preg_match('/^http/', $element->href) != 0) {
