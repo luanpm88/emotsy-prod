@@ -24,21 +24,19 @@ class SubscriberController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request, $list_id)
+    public function index(Request $request)
     {
         $user = \Auth::guard('api')->user();
-        $list = \Acelle\Model\MailList::findByUid($list_id);
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
 
         // authorize
         if (!is_object($list)) {
-            return \Response::json(array('message' => trans('List not found')), 404);
+            return \Response::json(array('message' => trans('List not found')), 400);
         }
-
         // authorize
         if (!$user->can('read', $list)) {
             return \Response::json(array('message' => 'Unauthorized'), 401);
         }
-
         if (isset($request->per_page)) {
             $per_page = $request->per_page;
         } else {
@@ -80,15 +78,15 @@ class SubscriberController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $list_id)
+    public function store(Request $request)
     {
         try {
             $user = \Auth::guard('api')->user();
-            $list = \Acelle\Model\MailList::findByUid($list_id);
+            $list = \Acelle\Model\MailList::findByUid($request->list_uid);
     
             // authorize
             if (!is_object($list)) {
-                return \Response::json(array('message' => trans('List not found')), 404);
+                return \Response::json(array('message' => trans('List not found')), 400);
             }
     
             $subscriber = \Acelle\Model\Subscriber::where('mail_list_id', $list->id)->where('email', '=', $request->EMAIL)->first();
@@ -174,27 +172,13 @@ class SubscriberController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function show($list_id, $id)
+    public function show($list_id, $uid)
     {
         $user = \Auth::guard('api')->user();
 
-        $list = \Acelle\Model\MailList::findByUid($list_id);
-
-        // authorize
-        if (!is_object($list)) {
-            return \Response::json(array('message' => trans('List not found')), 404);
-        }
-
-        if (strpos($id, '@') !== false) {
-            $item = \Acelle\Model\Subscriber::
-                where('email', '=', $id)
-                ->where('mail_list_id', '=', $list->id)
-                ->first();
-        } else {
-            $item = \Acelle\Model\Subscriber::
-                where('uid', '=', $id)
-                ->first();
-        }
+        $item = \Acelle\Model\Subscriber::
+            where('uid', '=', $uid)
+            ->first();
 
         // check if item exists
         if (!is_object($item)) {
@@ -425,12 +409,11 @@ class SubscriberController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $uid)
     {
         $user = \Auth::guard('api')->user();
         $customer = $user->customer;
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
-        $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
+        $subscriber = \Acelle\Model\Subscriber::findByUid($uid);
 
         // authorize
         if (!$user->can('update', $subscriber)) {

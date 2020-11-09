@@ -187,7 +187,7 @@ class ApiHelper
             'functions' => [
                 [
                     'method' => 'GET',
-                    'uri' => '/api/v1/lists/{list_uid}/subscribers',
+                    'uri' => '/api/v1/subscribers',
                     'description' => 'Display list\'s subscribers',
                     'parameters' => [
                         ['name' => '$list_uid', 'description' => 'List\'s uid'],
@@ -198,23 +198,63 @@ class ApiHelper
                     ],
                     'returns' => 'List of all list\'s subscribers in json',
                     'example' => 'curl -X GET -H "accept:application/json" -G \
-' .str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@index", ['list_id' => '-LIST_ID-'])).'? \
+' .str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@index", ['list_uid' => '-LIST_ID-'])).'? \
 -d api_token=' .\Auth::user()->api_token.' \
 -d per_page=20 \
 -d page=1',
                 ],
 
                 [
+                    'method' => 'POST',
+                    'uri' => '/api/v1/subscribers',
+                    'description' => 'Create subscriber for a mail list',
+                    'parameters' => [
+                        ['name' => '$list_uid', 'description' => 'List\'s uid'],
+                        ['name' => '$EMAIL', 'description' => 'Subscriber\'s email'],
+                        ['name' => '$tag', 'description' => 'Subscriber\'s tags, seperated by a comma (,).', 'optional' => true],
+                        ['name' => '$[OTHER_FIELDS...]', 'description' => 'All subscriber\'s other fields: FIRST_NAME (?), LAST_NAME (?),... (depending on the list fields configuration)', 'optional' => true],
+                    ],
+                    'returns' => 'Creation messages in json',
+                    'example' => 'curl -X POST -H "accept:application/json" -G \
+' .str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@store", ['list_uid' => '-LIST_ID-'])).'? \
+-d api_token=' .\Auth::user()->api_token.' \
+-d EMAIL=test@gmail.com \
+-d tag=foo,bar,tag+with+space, \
+-d FIRST_NAME=Marine \
+-d LAST_NAME=Joze',
+                ],
+
+                [
                     'method' => 'GET',
-                    'uri' => '/api/v1/lists/{list_uid}/subscribers/{uid}',
+                    'uri' => '/api/v1/subscribers/{uid}',
                     'description' => 'Get information about a specific subscriber',
                     'parameters' => [
                         ['name' => '$uid', 'description' => 'Subsciber\'s uid or email'],
                     ],
                     'returns' => 'All subscriber information in json',
                     'example' => 'curl -X GET -H "accept:application/json" -G \
-' .str_replace('-ID-', '<redbold>{uid}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@show", ['list_id' => '-LIST_ID-',  'id' => '-ID-']))).'? \
+' .str_replace('-ID-', '<redbold>{uid}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@show", ['list_uid' => '-LIST_ID-',  'id' => '-ID-']))).'? \
 -d api_token=' .\Auth::user()->api_token,
+                ],
+
+                [
+                    'method' => 'PATCH',
+                    'uri' => '/api/v1/subscribers/{uid}',
+                    'description' => 'Update subscriber for a mail list',
+                    'parameters' => [
+                        ['name' => '$uid', 'description' => 'Subscriber\'s uid'],
+                        ['name' => '$EMAIL', 'description' => 'Subscriber\'s email'],
+                        ['name' => '$tag', 'description' => 'Subscriber\'s tags, seperated by a comma (,).', 'optional' => true],
+                        ['name' => '$[OTHER_FIELDS...]', 'description' => 'All subscriber\'s other fields: FIRST_NAME (?), LAST_NAME (?),... (depending on the list fields configuration)', 'optional' => true],
+                    ],
+                    'returns' => 'Update messages in json',
+                    'example' => 'curl -X PATCH -H "accept:application/json" -G \
+' .str_replace('-ID-', '<redbold>{uid}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@update", ['uid' => '-ID-']))).'? \
+-d api_token=' .\Auth::user()->api_token.' \
+-d EMAIL=test@gmail.com \
+-d tag=foo,bar,tag+with+space, \
+-d FIRST_NAME=Marine \
+-d LAST_NAME=Joze',
                 ],
 
                 [
@@ -228,44 +268,6 @@ class ApiHelper
                     'example' => 'curl -X GET -H "accept:application/json" -G \
 ' .str_replace('-ID-', '<redbold>{email}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@showByEmail", ['email' => '-ID-']))).'? \
 -d api_token=' .\Auth::user()->api_token,
-                ],
-
-                [
-                    'method' => 'POST',
-                    'uri' => '/api/v1/lists/{list_uid}/subscribers/store',
-                    'description' => 'Create subscriber for a mail list',
-                    'parameters' => [
-                        ['name' => '$EMAIL', 'description' => 'Subscriber\'s email'],
-                        ['name' => '$tag', 'description' => 'Subscriber\'s tags, seperated by a comma (,).', 'optional' => true],
-                        ['name' => '$[OTHER_FIELDS...]', 'description' => 'All subscriber\'s other fields: FIRST_NAME (?), LAST_NAME (?),... (depending on the list fields configuration)', 'optional' => true],
-                    ],
-                    'returns' => 'Creation messages in json',
-                    'example' => 'curl -X POST -H "accept:application/json" -G \
-' .str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@store", ['list_id' => '-LIST_ID-'])).'? \
--d api_token=' .\Auth::user()->api_token.' \
--d EMAIL=test@gmail.com \
--d tag=foo,bar,tag+with+space, \
--d FIRST_NAME=Marine \
--d LAST_NAME=Joze',
-                ],
-
-                [
-                    'method' => 'PATCH',
-                    'uri' => '/api/v1/lists/{list_uid}/subscribers',
-                    'description' => 'Update subscriber for a mail list',
-                    'parameters' => [
-                        ['name' => '$EMAIL', 'description' => 'Subscriber\'s email'],
-                        ['name' => '$tag', 'description' => 'Subscriber\'s tags, seperated by a comma (,).', 'optional' => true],
-                        ['name' => '$[OTHER_FIELDS...]', 'description' => 'All subscriber\'s other fields: FIRST_NAME (?), LAST_NAME (?),... (depending on the list fields configuration)', 'optional' => true],
-                    ],
-                    'returns' => 'Update messages in json',
-                    'example' => 'curl -X PATCH -H "accept:application/json" -G \
-' .str_replace('-ID-', '<redbold>{uid}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@update", ['list_uid' => '-LIST_ID-',  'uid' => '-ID-']))).'? \
--d api_token=' .\Auth::user()->api_token.' \
--d EMAIL=test@gmail.com \
--d tag=foo,bar,tag+with+space, \
--d FIRST_NAME=Marine \
--d LAST_NAME=Joze',
                 ],
 
                 [
