@@ -224,10 +224,6 @@ class LanguageController extends Controller
         $language = \Acelle\Model\Language::findByUid($id);
         $parse_error = $request->session()->get("parse_error");
         $filename = $request->file;
-        
-        if ($language->is_default) {
-            return $this->notAuthorized();
-        }
 
         // Prenvent save from demo mod
         if ($this->isDemoMode()) {
