@@ -95,6 +95,14 @@ class Automation2 extends Model
     }
 
     /**
+     * Association.
+     */
+    public function segment()
+    {
+        return $this->belongsTo('Acelle\Model\Segment');
+    }
+
+    /**
      * Association: triggers that have not finished
      */
     public function pendingAutoTriggers()
@@ -961,7 +969,12 @@ class Automation2 extends Model
     // if $actionId is provided, get only subscribers who have been triggered and have gone through the action
     public function subscribers($actionId = null)
     {
-        $query = $this->mailList->subscribers()->select('subscribers.*');
+        
+        if ($this->segment()->exists()) {
+            $query = $this->segment->subscribers();
+        } else {
+            $query = $this->mailList->subscribers()->select('subscribers.*');
+        }
 
         if (!is_null($actionId)) {
             // @deprecated, use the subscribersByLatestAction() method instead
