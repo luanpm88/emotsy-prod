@@ -25,8 +25,8 @@ class CreateEmailVerificationServersTable extends Migration
             $table->timestamps();
 
             // foreign
-            $table->foreign('admin_id', 'evs_admin_id_fk')->references('id')->on('admins')->onDelete('cascade');
-            $table->foreign('customer_id', 'evs_customer_id_fk')->references('id')->on('customers')->onDelete('cascade');
+            $table->foreign('admin_id', table('evs_admin_id_fk'))->references('id')->on('admins')->onDelete('cascade');
+            $table->foreign('customer_id', table('evs_customer_id_fk'))->references('id')->on('customers')->onDelete('cascade');
         });
     }
 

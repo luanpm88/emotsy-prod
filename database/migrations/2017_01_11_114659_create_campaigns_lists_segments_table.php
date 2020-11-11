@@ -19,9 +19,9 @@ class CreateCampaignsListsSegmentsTable extends Migration
             $table->integer('segment_id')->unsigned()->nullable();
             $table->timestamps();
 
-            $table->foreign('campaign_id', 'cls_campaign_id_fk')->references('id')->on('campaigns')->onDelete('cascade');
-            $table->foreign('mail_list_id', 'cls_mail_list_id_fk')->references('id')->on('mail_lists')->onDelete('cascade');
-            $table->foreign('segment_id', 'cls_segment_id_fk')->references('id')->on('segments')->onDelete('cascade');
+            $table->foreign('campaign_id', table('cls_campaign_id_fk'))->references('id')->on('campaigns')->onDelete('cascade');
+            $table->foreign('mail_list_id', table('cls_mail_list_id_fk'))->references('id')->on('mail_lists')->onDelete('cascade');
+            $table->foreign('segment_id', table('cls_segment_id_fk'))->references('id')->on('segments')->onDelete('cascade');
         });
     }
 

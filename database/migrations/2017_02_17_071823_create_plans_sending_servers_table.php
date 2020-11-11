@@ -20,7 +20,7 @@ class CreatePlansSendingServersTable extends Migration
 
             $table->timestamps();
 
-            $table->foreign('sending_server_id', 'pss_sending_server_id_fk')->references('id')->on('sending_servers')->onDelete('cascade');
+            $table->foreign('sending_server_id', table('pss_sending_server_id_fk'))->references('id')->on('sending_servers')->onDelete('cascade');
             $table->foreign('plan_id')->references('id')->on('plans')->onDelete('cascade');
         });
     }

@@ -20,8 +20,8 @@ class CreateMailListsSendingServersTable extends Migration
 
             $table->timestamps();
 
-            $table->foreign('sending_server_id', 'mlss_sending_server_id_fk')->references('id')->on('sending_servers')->onDelete('cascade');
-            $table->foreign('mail_list_id', 'mlss_mail_list_id_fk')->references('id')->on('mail_lists')->onDelete('cascade');
+            $table->foreign('sending_server_id', table('mlss_sending_server_id_fk'))->references('id')->on('sending_servers')->onDelete('cascade');
+            $table->foreign('mail_list_id', table('mlss_mail_list_id_fk'))->references('id')->on('mail_lists')->onDelete('cascade');
         });
     }
 
