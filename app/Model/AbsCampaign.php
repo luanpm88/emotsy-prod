@@ -847,7 +847,7 @@ abstract class AbsCampaign extends Model
     public function unsubscribe_url_valid()
     {
         if ($this->type != 'plain-text' &&
-           \Auth::user()->customer->getOption('unsubscribe_url_required') == 'yes' &&
+           $this->customer->getOption('unsubscribe_url_required') == 'yes' &&
             strpos($this->html, '{UNSUBSCRIBE_URL}') == false
         ) {
             return false;
