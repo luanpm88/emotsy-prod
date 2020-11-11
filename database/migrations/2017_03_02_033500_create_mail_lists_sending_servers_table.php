@@ -17,11 +17,11 @@ class CreateMailListsSendingServersTable extends Migration
             $table->integer('sending_server_id')->unsigned();
             $table->integer('mail_list_id')->unsigned();
             $table->integer('fitness');
-            
+
             $table->timestamps();
-            
-            $table->foreign('sending_server_id')->references('id')->on('sending_servers')->onDelete('cascade');
-            $table->foreign('mail_list_id')->references('id')->on('mail_lists')->onDelete('cascade');
+
+            $table->foreign('sending_server_id', 'mlss_sending_server_id_fk')->references('id')->on('sending_servers')->onDelete('cascade');
+            $table->foreign('mail_list_id', 'mlss_mail_list_id_fk')->references('id')->on('mail_lists')->onDelete('cascade');
         });
     }
 

@@ -19,8 +19,8 @@ class CreateSubscriptionsEmailVerificationServersTable extends Migration
 
             $table->timestamps();
 
-            $table->foreign('server_id')->references('id')->on('email_verification_servers')->onDelete('cascade');
-            $table->foreign('subscription_id')->references('id')->on('subscriptions')->onDelete('cascade');
+            $table->foreign('server_id', 'sevs_server_id_foreign')->references('id')->on('email_verification_servers')->onDelete('cascade');
+            $table->foreign('subscription_id', 'sevs_subscription_id_foreign')->references('id')->on('subscriptions')->onDelete('cascade');
         });
     }
 

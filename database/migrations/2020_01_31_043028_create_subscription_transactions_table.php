@@ -34,7 +34,7 @@ class CreateSubscriptionTransactionsTable extends Migration
 
             $table->timestamps();
 
-            $table->foreign('subscription_id')->references('id')->on('subscriptions')->onDelete('cascade');
+            $table->foreign('subscription_id', 'st_subscription_id_fk')->references('id')->on('subscriptions')->onDelete('cascade');
         });
     }
 
