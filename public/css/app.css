@@ -3920,3 +3920,7 @@ box-shadow: none;
     max-height: none;
     border-radius: 0;
 }
+.dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {
+    background-color: #a0d6d2;
+    color: #333;
+}
