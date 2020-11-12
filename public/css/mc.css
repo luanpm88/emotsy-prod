@@ -1134,3 +1134,14 @@ table.table-log tr th {
   border-radius: 100%;
   top: 15px;
 }
+.acelle-icon {
+  display: inline-block;
+  width: 20px;
+  height: 20px; 
+}
+.acelle-icon img {
+  display: block;
+}
+.d-flex {
+  display: flex!important;
+}
