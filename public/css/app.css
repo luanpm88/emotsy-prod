@@ -84,7 +84,8 @@ a {
 }
 .caret:after {
     font-size: 18px;
-    font-weight: 800;
+    font-weight: normal;
+    margin-left: 3px;
 }
 .sub_section {
     margin-bottom: 30px;
@@ -3913,4 +3914,9 @@ textarea.bulk-delete {
 .select2-selection--multiple .select2-search--inline .select2-search__field:focus {
 outline: none;
 box-shadow: none;
+}
+.navbar-nav > .dropdown-user .acelle-icon img {
+    margin: 0;
+    max-height: none;
+    border-radius: 0;
 }

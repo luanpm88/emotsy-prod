@@ -548,7 +548,7 @@ class Setting extends Model
             ['value' => 'brown', 'text' => trans('messages.brown')],
             ['value' => 'pink', 'text' => trans('messages.pink')],
             ['value' => 'grey', 'text' => trans('messages.grey')],
-            ['value' => 'white', 'text' => trans('messages.white')],
+            // ['value' => 'white', 'text' => trans('messages.white')],
         ];
     }
 

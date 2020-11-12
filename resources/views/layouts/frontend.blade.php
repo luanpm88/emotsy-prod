@@ -50,10 +50,10 @@
 			<ul class="nav navbar-nav">
 				<li rel0="HomeController">
 					<a href="{{ action('HomeController@index') }}" class="d-flex align-items-center">
-					<i class="acelle-icon mr-3">
-						<img src="{{ url('images/icons/SVG/home.svg') }}" />
-					</i>
-					{{ trans('messages.dashboard') }}
+						<i class="acelle-icon mr-3">
+							<img src="{{ url('images/icons/SVG/home.svg') }}" />
+						</i>
+						{{ trans('messages.dashboard') }}
 					</a>
 				</li>
 				<li rel0="CampaignController">
@@ -124,7 +124,7 @@
 							@endif
 							<li rel0="SenderController" rel1="SendingDomainController">
 								<a href="{{ action('SenderController@index') }}" class="d-flex align-items-center">
-								<i class="acelle-icon mr-3" style="width:20px">
+								<i class="acelle-icon mr-3" style="width:20	px">
 									<img src="{{ url('images/icons/SVG/identify.svg') }}" />
 									</i> {{ trans('messages.verified_senders') }}
 								</a>
@@ -197,30 +197,44 @@
 
 					<ul class="dropdown-menu dropdown-menu-right">
 						@can("admin_access", Auth::user())
-							<li><a href="{{ action("Admin\HomeController@index") }}"><i class="icon-enter2"></i> {{ trans('messages.admin_view') }}</a></li>
+							<li><a href="{{ action("Admin\HomeController@index") }}" class="d-flex align-items-center">
+							<i class="acelle-icon mr-3">
+								<img src="{{ url('images/icons/SVG/changeview.svg') }}" />
+							</i>{{ trans('messages.admin_view') }}</a></li>
 							<li class="divider"></li>
 						@endif
 						@if (request()->user()->customer->activeSubscription())
 							<li class="dropdown">
-								<a href="#" class="top-quota-button" data-url="{{ action("AccountController@quotaLog") }}">
-									<i class="icon-stats-bars4"></i>
+								<a href="#" class="top-quota-button d-flex align-items-center" data-url="{{ action("AccountController@quotaLog") }}">
+								<i class="acelle-icon mr-3">
+								<img src="{{ url('images/icons/SVG/sreport.svg') }}" />
+							</i>
 									<span class="">{{ trans('messages.used_quota') }}</span>
 								</a>
 							</li>
 						@endif
 						<li rel0="AccountSubscriptionController\index">
-							<a href="{{ action('AccountSubscriptionController@index') }}">
-								<i class="icon-quill4"></i> {{ trans('messages.subscriptions') }}
+							<a href="{{ action('AccountSubscriptionController@index') }}" class="d-flex align-items-center">
+							<i class="acelle-icon mr-3">
+								<img src="{{ url('images/icons/SVG/subscription.svg') }}" />
+							</i>{{ trans('messages.subscriptions') }}
 								@if (Auth::user()->customer->hasSubscriptionNotice())
 									<i class="material-icons-outlined subscription-warning-icon text-danger">info</i>
 								@endif
 							</a>
 						</li>
-						<li><a href="{{ action("AccountController@profile") }}"><i class="icon-profile"></i> {{ trans('messages.account') }}</a></li>
+						<li><a href="{{ action("AccountController@profile") }}" class="d-flex align-items-center">
+						<i class="acelle-icon mr-3">
+								<img src="{{ url('images/icons/SVG/account.svg') }}" />
+							</i>{{ trans('messages.account') }}
+						
+						</a></li>
 						@if (Auth::user()->customer->canUseApi())
 							<li rel0="AccountController/api">
-								<a href="{{ action("AccountController@api") }}" class="level-1">
-									<i class="icon-key position-left"></i> {{ trans('messages.api') }}
+								<a href="{{ action("AccountController@api") }}" class="level-1 d-flex align-items-center">
+								<i class="acelle-icon mr-3">
+								<img src="{{ url('images/icons/SVG/api.svg') }}" />
+							</i>{{ trans('messages.api') }}
 								</a>
 							</li>
 						@endif
