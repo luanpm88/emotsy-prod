@@ -267,7 +267,9 @@
 						)
 							<li rel0="SettingController">
 								<a href="{{ action('Admin\SettingController@index') }}" class="d-flex align-items-center">
-									<i class="icon-equalizer2"></i> {{ trans('messages.all_settings') }}
+								<i class="acelle-icon mr-3">
+								<img src="{{ url('images/icons/SVG/setting2.svg') }}" />
+							</i>{{ trans('messages.all_settings') }}
 								</a>
 							</li>
 						@endif
