@@ -37,8 +37,9 @@
 .color-scheme-blue ul.campaign-steps > li.active > a:hover,
 .color-scheme-blue .bg-teal
 {
-    background: rgb(20,130,160);
-    border-color: rgb(20,130,160);
+    background:rgba(20,130,160, 0.3);
+    border-color: rgba(20,130,160, 0.3);
+    color: #333;
 }
 .color-scheme-blue .select2-results__option[aria-selected=false]:hover,
 .color-scheme-blue .dropdown-menu > li > a:hover
@@ -101,8 +102,9 @@
 .color-scheme-green ul.campaign-steps > li.active > a:hover,
 .color-scheme-green .bg-teal
 {
-    background: rgb(0,140,110);
-    border-color: rgb(0,140,110);
+    background: rgba(0,140,110, 0.3);
+    border-color: rgba(0,140,110, 0.3);
+    color: #333;
 }
 .color-scheme-green .select2-results__option[aria-selected=false]:hover,
 .color-scheme- .dropdown-menu > li > a:hover
@@ -165,8 +167,9 @@
 .color-scheme-brown ul.campaign-steps > li.active > a:hover,
 .color-scheme-brown .bg-teal
 {
-    background: rgb(145,115,25);
-    border-color: rgb(145,115,25);
+    background: rgba(145,115,25, 0.3);
+    border-color:rgba(145,115,25, 0.3);
+    color: #333;
 }
 .color-scheme-brown .select2-results__option[aria-selected=false]:hover,
 .color-scheme-brown .dropdown-menu > li > a:hover
@@ -230,8 +233,9 @@
 .color-scheme-pink ul.campaign-steps > li.active > a:hover,
 .color-scheme-pink .bg-teal
 {
-    background: rgb(170,80,100);
-    border-color: rgb(170,80,100);
+    background:rgba(170,80,100, 0.3);
+    border-color: rgba(170,80,100, 0.3);
+    color: #333;
 }
 .color-scheme-pink .select2-results__option[aria-selected=false]:hover,
 .color-scheme-pink .dropdown-menu > li > a:hover
@@ -294,8 +298,9 @@
 .color-scheme-grey ul.campaign-steps > li.active > a:hover,
 .color-scheme-grey .bg-teal
 {
-    background: #666;
-    border-color: #666;
+    background: rgba(0,0,0, 0.2);
+    border-color: rgba(0,0,0, 0.2);
+    color: #333;
 }
 .color-scheme-grey .select2-results__option[aria-selected=false]:hover,
 .color-scheme-grey .dropdown-menu > li > a:hover
