@@ -364,7 +364,7 @@
 								<li rel0="BounceLogController">
 									<a href="{{ action('Admin\BounceLogController@index') }}" class="d-flex align-items-center">
 									<i class="acelle-icon mr-3">
-								<img src="{{ url('images/icons/SVG/sreport.svg') }}" />
+								<img src="{{ url('images/icons/SVG/bounce.svg') }}" />
 							</i>{{ trans('messages.bounce_log') }}
 									</a>
 								</li>
@@ -373,7 +373,7 @@
 								<li rel0="FeedbackLogController">
 									<a href="{{ action('Admin\FeedbackLogController@index') }}" class="d-flex align-items-center">
 									<i class="acelle-icon mr-3">
-								<img src="{{ url('images/icons/SVG/sreport.svg') }}" />
+								<img src="{{ url('images/icons/SVG/feedback.svg') }}" />
 							</i>{{ trans('messages.feedback_log') }}
 									</a>
 								</li>
@@ -382,7 +382,7 @@
 								<li rel0="OpenLogController">
 									<a href="{{ action('Admin\OpenLogController@index') }}" class="d-flex align-items-center">
 									<i class="acelle-icon mr-3">
-								<img src="{{ url('images/icons/SVG/sreport.svg') }}" />
+								<img src="{{ url('images/icons/SVG/open.svg') }}" />
 							</i>{{ trans('messages.open_log') }}
 									</a>
 								</li>
@@ -391,7 +391,7 @@
 								<li rel0="ClickLogController">
 									<a href="{{ action('Admin\ClickLogController@index') }}" class="d-flex align-items-center">
 									<i class="acelle-icon mr-3">
-								<img src="{{ url('images/icons/SVG/sreport.svg') }}" />
+								<img src="{{ url('images/icons/SVG/click.svg') }}" />
 							</i>{{ trans('messages.click_log') }}
 									</a>
 								</li>
@@ -400,7 +400,7 @@
 								<li rel0="UnsubscribeLogController">
 									<a href="{{ action('Admin\UnsubscribeLogController@index') }}" class="d-flex align-items-center">
 									<i class="acelle-icon mr-3">
-								<img src="{{ url('images/icons/SVG/sreport.svg') }}" />
+								<img src="{{ url('images/icons/SVG/unsubscribe.svg') }}" />
 							</i>{{ trans('messages.unsubscribe_log') }}
 									</a>
 								</li>
