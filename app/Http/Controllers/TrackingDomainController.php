@@ -115,8 +115,16 @@ class TrackingDomainController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
+        $debug = is_null($request->input('tracking_domain_debug')) ? false : true;
+
+        if ($debug) {
+            session()->put('tracking_domain_debug', $debug);
+        } else {
+            session()->forget('tracking_domain_debug', $debug);
+        }
+
         $domain = TrackingDomain::findByUid($id);
         $hostname = parse_url(url('/'), PHP_URL_HOST);
 
@@ -191,10 +199,11 @@ class TrackingDomainController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function verify($uid)
+    public function verify(Request $request, $uid)
     {
+        $debug = session()->has('tracking_domain_debug');
         $domain = TrackingDomain::findByUid($uid);
-        $domain->verify();
+        $domain->verify($debug);
         return redirect()->action('TrackingDomainController@show', ['uid' => $uid]);
     }
 
