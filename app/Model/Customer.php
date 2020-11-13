@@ -724,6 +724,10 @@ class Customer extends Model implements BillableUserInterface
     public function getColorScheme()
     {
         if (!empty($this->color_scheme)) {
+            if ($this->color_scheme == 'white') {
+                return 'default';
+            }
+
             return $this->color_scheme;
         } else {
             return \Acelle\Model\Setting::get('frontend_scheme');
@@ -744,7 +748,7 @@ class Customer extends Model implements BillableUserInterface
             ['value' => 'brown', 'text' => trans('messages.brown')],
             ['value' => 'pink', 'text' => trans('messages.pink')],
             ['value' => 'grey', 'text' => trans('messages.grey')],
-            ['value' => 'white', 'text' => trans('messages.white')],
+            // ['value' => 'white', 'text' => trans('messages.white')],
         ];
     }
 

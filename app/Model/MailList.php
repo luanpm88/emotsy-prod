@@ -621,7 +621,7 @@ class MailList extends Model
      */
     public function otherLists()
     {
-        return \Auth::user()->customer->lists()->where('id', '!=', $this->id)->get();
+        return $this->customer->lists()->where('id', '!=', $this->id)->get();
     }
 
     /**
