@@ -73,7 +73,7 @@
 								@if (\Acelle\Model\Setting::get('site_logo_big'))
 									<img src="{{ action('SettingController@file', \Acelle\Model\Setting::get('site_logo_big')) }}" alt="">
 								@else
-									<img src="{{ URL::asset('images/logo_big.png') }}" alt="">
+									<img src="{{ URL::asset('images/logo_big.svg') }}" alt="">
 								@endif
 							</a>
 						</div>

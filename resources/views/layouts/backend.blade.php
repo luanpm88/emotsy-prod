@@ -37,7 +37,7 @@
 				@if (\Acelle\Model\Setting::get('site_logo_small'))
                     <img src="{{ action('SettingController@file', \Acelle\Model\Setting::get('site_logo_small')) }}" alt="">
                 @else
-                    <img src="{{ URL::asset('images/default_site_logo_small_' . (Auth::user()->admin->getColorScheme() == "white" ? "dark" : "light") . '.png') }}" alt="">
+                    <img src="{{ URL::asset('images/logo-' . (Auth::user()->admin->getColorScheme() == "white" ? "dark" : "light") . '.svg') }}" alt="">
                 @endif
 			</a>
 

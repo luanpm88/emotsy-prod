@@ -2189,7 +2189,7 @@ input.mini-input {
 .navbar-brand > img {
     margin-top: 0px;
     max-height: 53px;
-    max-width: 140px;
+    max-width: 130px;
 }
 .navbar-brand {
     padding: 0;
@@ -2203,7 +2203,7 @@ input.mini-input {
 .navbar-brand > img {
     margin: 0 auto;
     max-height: 53px;
-    max-width: 140px;
+    max-width: 130px;
     vertical-align: middle;
     display: inline-block;
 }

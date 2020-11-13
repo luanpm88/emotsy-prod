@@ -206,7 +206,7 @@ $compatibilities =  [
 					
 						<div class="text-center login-header">
 							<a class="main-logo-big" href="http://local:8000">
-								<img src="http://local:8000/images/logo_big.png" alt="">
+								<img src="http://local:8000/images/logo_big.svg" alt="">
 							</a>
                             
               <h3 class="text-center text-muted2" style="color: #ccc">Installation</h3>

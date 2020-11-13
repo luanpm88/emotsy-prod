@@ -603,7 +603,7 @@ class ApiHelper
                     'example' => 'curl -X POST -H "accept:application/json" -G \
 ' .action("Api\FileController@upload").'? \
 -d api_token=' .\Auth::user()->api_token.'  \
--d files=\'[{"url":"http://demo.acellemail.com/images/logo_big.png","subdirectory":"path/to/file"},{"url":"http://demo.acellemail.com/images/logo_big.png","subdirectory":"path/to/file2"}]\'',
+-d files=\'[{"url":"http://demo.acellemail.com/images/logo_big.svg","subdirectory":"path/to/file"},{"url":"http://demo.acellemail.com/images/logo_big.svg","subdirectory":"path/to/file2"}]\'',
                 ],
             ],
         ];
