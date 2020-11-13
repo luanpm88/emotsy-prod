@@ -106,7 +106,7 @@
 						rel1="CurrencyGroupController"
 					>
 						<a class="dropdown-toggle d-flex align-items-center" data-toggle="dropdown">
-							<i class="acelle-icon mr-3" style="width: 22px;">
+							<i class="acelle-icon mr-3" style="width: 23px;">
 								<img src="{{ url('images/icons/'.$iconDir.'SVG/plan.svg') }}" />
 							</i>{{ trans('messages.plan') }}
 							<span class="caret"></span>
