@@ -346,9 +346,7 @@ function isSiteDemo()
  */
 function language_code()
 {
-    // Generate info
-    $user = \Auth::user();
-
+    // Get default language code from setting
     $default_language = \Acelle\Model\Language::find(\Acelle\Model\Setting::get('default_language'));
 
     if (isset($_COOKIE['last_language_code'])) {
