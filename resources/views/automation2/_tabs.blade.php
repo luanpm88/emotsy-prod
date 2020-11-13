@@ -19,8 +19,20 @@
         <a class="dropdown-item timeline" href="#" onclick="sidebar.load('{{ action('Automation2Controller@timeline', $automation->uid) }}')">
             <i class="material-icons mr-2">timeline</i> {{ trans('messages.automation.timeline') }}
         </a>
-        <a class="dropdown-item all_contacts" href="#" onclick="sidebar.load('{{ action('Automation2Controller@contacts', $automation->uid) }}')">
-            <i class="material-icons-outlined mr-2">people</i> {{ trans('messages.automation.all_contacts') }}
+        <a class="dropdown-item contacts_in_action" href="#" onclick="sidebar.load('{{ action('Automation2Controller@contacts', $automation->uid) }}')">
+            <i class="material-icons-outlined mr-2">people</i> {{ trans('messages.automation.contacts_in_action') }}
+            ({{ $automation->subscribers()->count() }})
+        </a>
+        <a class="dropdown-item contacts_done" href="#" onclick="sidebar.load('{{ action('Automation2Controller@contacts', $automation->uid) }}')">
+            <i class="material-icons-outlined mr-2">people</i> {{ trans('messages.automation.contacts_done') }}
+            ({{ $automation->subscribers()->count() }})
+        </a>
+        <a class="dropdown-item contacts_skip_pending" href="#" onclick="sidebar.load('{{ action('Automation2Controller@contacts', $automation->uid) }}')">
+            <i class="material-icons-outlined mr-2">people</i> {{ trans('messages.automation.contacts_skip_pending') }}
+            ({{ $automation->subscribers()->count() }})
+        </a>
+        <a class="dropdown-item contacts_error" href="#" onclick="sidebar.load('{{ action('Automation2Controller@contacts', $automation->uid) }}')">
+            <i class="material-icons-outlined mr-2">people</i> {{ trans('messages.automation.contacts_error') }}
             ({{ $automation->subscribers()->count() }})
         </a>
         <div class="dropdown-divider"></div>

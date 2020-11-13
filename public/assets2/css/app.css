@@ -1380,4 +1380,39 @@ a:hover label {
     margin-top: 0;
     color: inherit;
 }
-
+.contacts-stats-boxes {
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.contacts-stats-box {
+  padding: 10px 15px;
+  text-align: center;
+  border: dashed 2px #ccc;
+  margin-right: 10px;  
+  width: 400px;
+  border-radius: 3px;
+}
+.contacts-stats-box.skipped label {
+  color: #333;
+}
+.contacts-stats-box.error {
+  background: #ea4435;
+  color: #fff;
+}
+.contacts-stats-box .desc {
+  font-size: 13px;
+  white-space: nowrap;
+  color: #333;
+}
+.contacts-stats-box label {
+  font-size: 22px;
+  font-weight: 600;
+  color: #ed7c30;
+  margin-bottom: 2px;
+}
+.contacts-stats-box.error {
+  border-color: #ea4435;
+}
+.contacts-stats-box.error label, .contacts-stats-box.error .desc {
+  color: #fff;
+}
