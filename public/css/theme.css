@@ -6,7 +6,7 @@
 }
 .color-scheme-blue .navbar-inverse,
 .bg-slate-800.color-scheme-blue {
-    background-color: rgb(20,60,80);
+    background-color: rgba(20,60,80,0.95);
 }
 .color-scheme-blue .nav-tabs.nav-tabs-top > li.active > a,
 .color-scheme-blue .nav-tabs.nav-tabs-top > li.active > a:hover,
@@ -295,7 +295,7 @@
 }
 .color-scheme-grey .navbar-inverse,
 .bg-slate-800.color-scheme-grey {
-    background-color: #444;
+    background-color: rgba(68,68,68,0.95);
 }
 .color-scheme-grey .nav-tabs.nav-tabs-top > li.active > a,
 .color-scheme-grey .nav-tabs.nav-tabs-top > li.active > a:hover,

@@ -5,6 +5,10 @@
         clear: both;
     }
 }
+.navbar-inverse {
+    background-color: rgba(55,71,79,0.95);
+    border-color:  rgba(55,71,79,0.95);
+}
 .modal_link {
     cursor: pointer;
 }
