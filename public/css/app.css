@@ -6,8 +6,10 @@
     }
 }
 .navbar-inverse {
-    background-color: rgba(55,71,79,0.95);
-    border-color:  rgba(55,71,79,0.95);
+    background-color: rgba(0, 25, 39, 0.75);
+    border-color:  rgba(55,71,79,0.7);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
 }
 .modal_link {
     cursor: pointer;
