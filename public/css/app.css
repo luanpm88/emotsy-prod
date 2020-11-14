@@ -387,7 +387,7 @@ h2 [class^="icon-"] {
     padding-left: 35px;
 }
 .navbar-default {
-    background: rgba(245, 245, 245, 0.7);
+    background: rgba(240, 240, 240, 0.6);
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
 }
