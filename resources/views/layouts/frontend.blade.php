@@ -110,6 +110,7 @@
 						rel2="SenderController"
                         rel3="EmailVerificationServerController"
 						rel4="BlacklistController"
+						rel5="TrackingDomainController"
 					>
 						<a data-toggle="dropdown" class="dropdown-toggle d-flex align-items-center">
 							<i class="acelle-icon mr-3" style="width:19px">
