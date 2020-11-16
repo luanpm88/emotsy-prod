@@ -91,4 +91,7 @@
     @if (isset(request()->type))
         $('.dropdown-item.contacts_{{ request()->type }}').addClass('active');
     @endif
+    @if (isset($sub))
+        $('.dropdown-item.{{ $sub }}').addClass('active');
+    @endif
 </script>
