@@ -5,6 +5,12 @@
         clear: both;
     }
 }
+.navbar-inverse {
+    background-color: rgba(0, 25, 39, 0.75);
+    border-color:  rgba(55,71,79,0.7);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
 .modal_link {
     cursor: pointer;
 }
@@ -381,7 +387,9 @@ h2 [class^="icon-"] {
     padding-left: 35px;
 }
 .navbar-default {
-    background: #f5f5f5;
+    background: rgba(240, 240, 240, 0.6);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
 }
 @media (max-width: 600px) {
     .filter-box input.search {

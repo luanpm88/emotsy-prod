@@ -2,11 +2,13 @@
     color: rgb(20,130,160);
 }
 .color-scheme-blue .text-teal-800 {
-    color: rgb(20,130,160) !important;
+    color: rgb(20, 109, 160) !important;
 }
 .color-scheme-blue .navbar-inverse,
 .bg-slate-800.color-scheme-blue {
-    background-color: rgb(20,60,80);
+    background-color: rgba(0, 48, 71, 0.8);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
 }
 .color-scheme-blue .nav-tabs.nav-tabs-top > li.active > a,
 .color-scheme-blue .nav-tabs.nav-tabs-top > li.active > a:hover,
@@ -78,7 +80,9 @@
 }
 .color-scheme-green .navbar-inverse,
 .bg-slate-800.color-scheme-green {
-    background-color: rgba(0,60,40, 0.9);
+    background-color: rgba(0, 61, 41, 0.8);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
 }
 .color-scheme-green .nav-tabs.nav-tabs-top > li.active > a,
 .color-scheme-green .nav-tabs.nav-tabs-top > li.active > a:hover,
@@ -150,7 +154,9 @@
 }
 .color-scheme-brown .navbar-inverse,
 .bg-slate-800.color-scheme-brown {
-    background-color: rgba(55,45,10,0.9);
+    background-color: rgba(63, 23, 0, 0.7);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
 }
 .color-scheme-brown .nav-tabs.nav-tabs-top > li.active > a,
 .color-scheme-brown .nav-tabs.nav-tabs-top > li.active > a:hover,
@@ -223,7 +229,9 @@
 }
 .color-scheme-pink .navbar-inverse,
 .bg-slate-800.color-scheme-pink {
-    background-color: rgba(100,40,60,0.9);
+    background-color: rgba(105, 0, 35, 0.7);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
 }
 .color-scheme-pink .nav-tabs.nav-tabs-top > li.active > a,
 .color-scheme-pink .nav-tabs.nav-tabs-top > li.active > a:hover,
@@ -295,7 +303,9 @@
 }
 .color-scheme-grey .navbar-inverse,
 .bg-slate-800.color-scheme-grey {
-    background-color: #444;
+    background-color: rgba(40,40,40,0.7);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
 }
 .color-scheme-grey .nav-tabs.nav-tabs-top > li.active > a,
 .color-scheme-grey .nav-tabs.nav-tabs-top > li.active > a:hover,

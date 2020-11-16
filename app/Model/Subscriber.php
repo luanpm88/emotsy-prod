@@ -183,6 +183,13 @@ class Subscriber extends Model
      */
     public function updateFields($params)
     {
+        foreach ($this->mailList->getFields as $field) {
+            // Thank you John Wigley and acorna.com team for pointing this out
+            if (!isset($params[$field->tag])) {
+                $params[$field->tag] = null;  // Fix for inability to clear checkboxes and multiselects, add in null elements for those missing from the form submission but defined as custom fields for that mailing list
+            }
+        }
+
         foreach ($params as $tag => $value) {
             $field = $this->mailList->getFieldByTag(str_replace('[]', '', $tag));
             if (is_object($field)) {
@@ -986,7 +993,7 @@ class Subscriber extends Model
     public function getTagOptions()
     {
         $arr = [];
-        foreach($this->getTags() as $tag) {
+        foreach ($this->getTags() as $tag) {
             $arr[] = ['text' => $tag, 'value' => $tag];
         }
 

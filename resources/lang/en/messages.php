@@ -3926,4 +3926,5 @@
   'automation.update_stats' => 'Update stats',
   'automation.last_activity' => 'Last activity',
   'automation.retry' => 'Retry',
+  'authentication' => 'Authentication',
 ) ?>
