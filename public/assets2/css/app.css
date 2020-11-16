@@ -1392,9 +1392,11 @@ a:hover label {
   margin-right: 10px;  
   width: 400px;
   border-radius: 3px;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
 }
 .contacts-stats-box.skipped label {
-  color: #333;
+  /* color: #ed7c30; */
 }
 .contacts-stats-box.error {
   background: #ea4435;
@@ -1408,7 +1410,7 @@ a:hover label {
 .contacts-stats-box label {
   font-size: 22px;
   font-weight: 600;
-  color: #ed7c30;
+  color: #333;
   margin-bottom: 2px;
 }
 .contacts-stats-box.error {
@@ -1449,4 +1451,10 @@ a:hover label {
 .round-action-point:hover {
   background-color: #ddd;
   border: solid 6px #666;
+}
+.contacts-stats-box:hover {
+  border-style: solid;  
+}
+.contacts-stats-box:hover * {
+  cursor: pointer; 
 }

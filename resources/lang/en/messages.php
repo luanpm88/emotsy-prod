@@ -3924,4 +3924,6 @@
   'automation.box.contacts_error' => 'Error!!!',
   'automation.action' => 'Action',
   'automation.update_stats' => 'Update stats',
+  'automation.last_activity' => 'Last activity',
+  'automation.retry' => 'Retry',
 ) ?>

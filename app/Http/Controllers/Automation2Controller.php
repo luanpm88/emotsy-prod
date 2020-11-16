@@ -1342,7 +1342,7 @@ class Automation2Controller extends Controller
         
         list($contacts, $pagination) = pagination($request, $subscribers);
         
-        return view('automation2.contacts.list', [
+        return view('automation2.contacts.list.' . request()->type, [
             'automation' => $automation,
             'contacts' => $contacts,
             'pagination' => $pagination,
