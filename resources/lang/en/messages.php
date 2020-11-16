@@ -3914,4 +3914,5 @@
   'woo_items.sort_by.date_added_desc' => 'By date date added: older first',
   'subscription.get_started' => 'Get Started',
   'api.notification' => 'Notification',
+  'authentication' => 'Authentication',
 ) ?>

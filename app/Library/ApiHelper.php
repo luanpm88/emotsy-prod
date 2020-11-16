@@ -33,10 +33,10 @@ class ApiHelper
     {
         $docs = [];
 
-        // CUSTOMER
+        // AUTHENTICATION
         $docs[] = [
             'view' => 'frontend',
-            'title' => trans('messages.customer'),
+            'title' => trans('messages.authentication'),
             'functions' => [
                 [
                     'method' => 'POST',
@@ -314,6 +314,28 @@ class ApiHelper
             ],
         ];
 
+        // AUTHENTICATION
+        $docs[] = [
+            'view' => 'backend',
+            'title' => trans('messages.authentication'),
+            'functions' => [
+                [
+                    'method' => 'POST',
+                    'uri' => '/api/v1/login-token',
+                    'description' => 'Generate one time login token',
+                    'help' => 'User can login by visiting the following URL:<br>
+                        <code>' . action('Controller@tokenLogin', ['token' => '*|token_string|*']) . '</code>',
+                    'parameters' => [
+                        ['name' => '$uid', 'description' => 'Customer\'s uid'],
+                    ],
+                    'returns' => 'Token string',
+                    'example' => 'curl -X POST -H "accept:application/json" -G \
+' .str_replace('-uid-', '<redbold>{uid}</redbold>', action("Api\CustomerController@loginToken")).'? \
+-d api_token=' .\Auth::user()->api_token,
+                ],
+            ],
+        ];
+
         // PLAN
         $docs[] = [
             'view' => 'backend',
@@ -501,21 +523,6 @@ class ApiHelper
                     'returns' => 'Action messages in json',
                     'example' => 'curl -X POST -H "accept:application/json" -G \
 ' .str_replace('-plan_uid-', '<redbold>{plan_uid}</redbold>', str_replace('-uid-', '<redbold>{uid}</redbold>', action("Api\CustomerController@assignPlan", ['uid' => '-uid-', 'plan_uid' => '-plan_uid-']))).'? \
--d api_token=' .\Auth::user()->api_token,
-                ],
-
-                [
-                    'method' => 'POST',
-                    'uri' => '/api/v1/login-token',
-                    'description' => 'Generate one time login token',
-                    'help' => 'User can login by visiting the following URL:<br>
-                        <code>' . action('Controller@tokenLogin', ['token' => '*|token_string|*']) . '</code>',
-                    'parameters' => [
-                        ['name' => '$uid', 'description' => 'Customer\'s uid'],
-                    ],
-                    'returns' => 'Token string',
-                    'example' => 'curl -X POST -H "accept:application/json" -G \
-' .str_replace('-uid-', '<redbold>{uid}</redbold>', action("Api\CustomerController@loginToken")).'? \
 -d api_token=' .\Auth::user()->api_token,
                 ],
             ],
