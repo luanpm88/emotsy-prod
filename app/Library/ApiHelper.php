@@ -568,13 +568,13 @@ class ApiHelper
 
         // NOTIFICATION
         $docs[] = [
-            'view' => 'backend',
+            'view' => 'frontend',
             'title' => trans('messages.api.notification'),
             'functions' => [
                 [
                     'method' => 'POST',
                     'uri' => '/api/v1/notification',
-                    'description' => 'Subscribe customer to a plan',
+                    'description' => 'Send a delivery or abuse report to Acelle Mail which could be a success / bounce / feedback or abuse report',
                     'parameters' => [
                         ['name' => '$message_id', 'description' => 'Message\'s id'],
                         ['name' => '$type', 'description' => 'One of 4 types: sent | bounced | reported | failed'],
@@ -583,12 +583,35 @@ class ApiHelper
                         ['name' => '$description', 'description' => 'Notification message'],
                     ],
                     'returns' => 'Action messages in json',
-                    'example' => 'curl -X POST -H "accept:application/json" -G \
+                    'example' => [
+                        'curl -X POST -H "accept:application/json" -G \
+' .action("Api\NotificationController@index").'? \
+-d api_token=' .\Auth::user()->api_token.'  \
+-d type=sent',
+                        'curl -X POST -H "accept:application/json" -G \
 ' .action("Api\NotificationController@index").'? \
 -d api_token=' .\Auth::user()->api_token.'  \
 -d type=bounced \
 -d bounce_type=hard \
 -d description=Email+address+does+not+exist',
+                        'curl -X POST -H "accept:application/json" -G \
+' .action("Api\NotificationController@index").'? \
+-d api_token=' .\Auth::user()->api_token.'  \
+-d type=abuse \
+-d report_type=hard \
+-d description=Email+address+does+not+exist',
+                        'curl -X POST -H "accept:application/json" -G \
+' .action("Api\NotificationController@index").'? \
+-d api_token=' .\Auth::user()->api_token.'  \
+-d type=spam \
+-d report_type=hard \
+-d description=Email+address+does+not+exist',
+                        'curl -X POST -H "accept:application/json" -G \
+' .action("Api\NotificationController@index").'? \
+-d api_token=' .\Auth::user()->api_token.'  \
+-d type=failed \
+-d description=Email+address+does+not+exist',
+                    ],
                 ],
             ],
         ];

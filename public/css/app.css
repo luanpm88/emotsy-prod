@@ -3932,3 +3932,6 @@ box-shadow: none;
     background-color: #a0d6d2;
     color: #333;
 }
+.api-doc-table td {
+    vertical-align: top!important;
+}
