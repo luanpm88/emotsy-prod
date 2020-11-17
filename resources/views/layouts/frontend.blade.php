@@ -110,6 +110,7 @@
 						rel2="SenderController"
                         rel3="EmailVerificationServerController"
 						rel4="BlacklistController"
+						rel5="TrackingDomainController"
 					>
 						<a data-toggle="dropdown" class="dropdown-toggle d-flex align-items-center">
 							<i class="acelle-icon mr-3" style="width:19px">
@@ -243,7 +244,11 @@
 								</a>
 							</li>
 						@endif
-						<li><a href="{{ url("/logout") }}"><i class="icon-switch2"></i> {{ trans('messages.logout') }}</a></li>
+						<li><a href="{{ url("/logout") }}" class="d-flex align-items-center">
+							<i class="acelle-icon mr-3">
+								<img src="{{ url('images/icons/'.$iconDir.'SVG/logout.svg') }}" />
+							</i>{{ trans('messages.logout') }}
+						</a></li>
 					</ul>
 				</li>
 			</ul>

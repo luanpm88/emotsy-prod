@@ -1,6 +1,6 @@
 <li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-		<i class="icon-history"></i>
+	<a href="#" class="dropdown-toggle d-flex align-items-center" data-toggle="dropdown" style="padding-right:15px;">
+		<i class="acelle-icon"><img src="{{ url('images/icons/'.$iconDir.'SVG/history.svg') }}" /></i>
 		<span class="visible-xs-inline-block position-right">{{ trans('messages.activity_log') }}</span>
 	</a>
 	

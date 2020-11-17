@@ -11,7 +11,7 @@
         @foreach (\Acelle\Library\ApiHelper::docs() as $box)
             @if ($box['view'] == $view)
                 <h2 class="mt-40 mb-20" style='text-transform: uppercase;'>{{ $box['title'] }}</h2>
-                <table class="table table-box pml-table table-log">
+                <table class="table table-box pml-table table-log api-doc-table">
                     <tr>
                         <th width="1%" class="text-nowrap">{{ trans('messages.HTTP_method') }}</th>
                         <th width="40%">{{ trans('messages.Endpoint') }}</th>
@@ -68,7 +68,13 @@
                             </td>
                               <td>
                                   <h4>Example:</h4>
-                                  <pre class=""><code>{!! $function['example'] !!}</code></pre>
+                                    @if (is_array($function['example']))
+                                        @foreach ($function['example'] as $example)
+                                            <pre class="mb-3"><code>{!! $example !!}</code></pre>
+                                        @endforeach
+                                    @else
+                                        <pre class=""><code>{!! $function['example'] !!}</code></pre>
+                                    @endif
                                   <br>
                                     @if (isset($function['help']))
                                         {!! $function['help'] !!}
