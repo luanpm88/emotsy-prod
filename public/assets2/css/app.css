@@ -1439,14 +1439,14 @@ a:hover label {
   border: solid 0px #79acda;
 }
 .round-action-point.action-ElementTrigger {
-  background: #999;
+  background: #1e4f79;
 }
 .round-action-point.action-ElementWait {
-  background: #eee;
-  border: solid 1px #aaa;
+  /* background: #eee;
+  border: solid 1px #aaa; */
 }
 .round-action-point.action-ElementCondition {
-  background: #e47a50;
+  /* background: #e47a50; */
 }
 .round-action-point:hover {
   background-color: #ddd;
@@ -1457,4 +1457,23 @@ a:hover label {
 }
 .contacts-stats-box:hover * {
   cursor: pointer; 
+}
+.tooltipster-sidetip.tooltipster-light .tooltipster-box {
+  border-radius: 15px;
+  border: 1px solid #bbb;
+  background: #fff;
+  box-shadow: 2px 3px 2px rgba(0,0,0,0.1);
+}
+.tooltipster-sidetip .tooltipster-content {
+  padding: 10px 15px;
+  font-size: 13px;
+}
+.tooltipster-sidetip.tooltipster-light.tooltipster-top .tooltipster-arrow-background {
+  border-top-color: #fff;
+}
+.tooltipster-sidetip.tooltipster-light.tooltipster-top .tooltipster-arrow-border {
+  border-top-color: #bbb;
+}
+.tooltipster-sidetip.tooltipster-light .tooltipster-content {
+  color: #333;
 }
