@@ -58,6 +58,7 @@
 
                     tableFilterAll();
                 },
+                globalError: false,
                 error: function (res) {
                     // newSubscription.loadHtml(res.responseText);
                     // notify

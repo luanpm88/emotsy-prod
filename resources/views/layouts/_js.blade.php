@@ -74,3 +74,13 @@
 
 	<!-- display flash message -->
 	@include('common.flash')
+
+	<script>
+		$( document ).ajaxError(function( event, request, settings ) {
+			if(typeof(settings.globalError) != 'undefined' || settings.globalError == false) {
+				return;
+			}
+
+			alert(request.responseText);
+		});
+	</script>

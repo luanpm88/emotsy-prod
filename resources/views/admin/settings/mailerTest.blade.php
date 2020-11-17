@@ -76,6 +76,7 @@
                     url: url,
                     method: 'POST',
                     data: data,
+                    globalError: false,
                     error: function (response) {
                         removeMaskLoading();
 
