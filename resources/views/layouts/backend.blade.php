@@ -449,7 +449,10 @@
 							</i>{{ trans('messages.api') }}
 							</a>
 						</li>
-						<li><a href="{{ url("/logout") }}"><i class="icon-switch2"></i> {{ trans('messages.logout') }}</a></li>
+						<li><a href="{{ url("/logout") }}" class="d-flex align-items-center">
+							<i class="acelle-icon mr-3">
+								<img src="{{ url('images/icons/'.$iconDir.'SVG/logout.svg') }}" />
+							</i>{{ trans('messages.logout') }}</a></li>
 					</ul>
 				</li>
 			</ul>
