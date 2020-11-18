@@ -473,6 +473,8 @@ class SendingDomain extends Model
      */
     public function verifySpf()
     {
+        $host = null;
+
         if (!is_null($this->sendingServer)) {
             $host = $this->sendingServer->mapType()->getSpfHost();
         }
