@@ -14,7 +14,7 @@
 	<link href="{{ URL::asset('assets/css/core.css') }}" rel="stylesheet" type="text/css">
 	<link href="{{ URL::asset('assets/css/components.css') }}" rel="stylesheet" type="text/css">
 	<link href="{{ URL::asset('assets/css/colors.css') }}" rel="stylesheet" type="text/css">
-	<link href="{{ URL::asset('css/app.css') }}" rel="stylesheet" type="text/css">
+	<link href="{{ URL::asset('css/app.css') }}?v={{ app_version() }}" rel="stylesheet" type="text/css">
 	<!-- /global stylesheets -->
 
 	<!-- Core JS files -->
