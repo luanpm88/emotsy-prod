@@ -9,6 +9,13 @@
     
     <link href="{{ URL::asset('builder/builder.css') }}" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="{{ URL::asset('builder/builder.js') }}"></script>
+
+    <style>
+        .logo-img {
+            width: 120px!important;
+            margin-right: 15px;
+        }
+    </style>
     
     <script>
         var CSRF_TOKEN = "{{ csrf_token() }}";
@@ -38,7 +45,7 @@
                 tags: {!! json_encode(Acelle\Model\Template::builderTags((isset($list) ? $list : null))) !!},
                 root: '{{ URL::asset('builder') }}/',
                 templates: templates,
-                logo: '{{ \Acelle\Model\Setting::get('site_logo_small') ? action('SettingController@file', \Acelle\Model\Setting::get('site_logo_small')) : URL::asset('images/logo_light_builder.png') }}',
+                logo: '{{ \Acelle\Model\Setting::get('site_logo_small') ? action('SettingController@file', \Acelle\Model\Setting::get('site_logo_small')) : URL::asset('images/logo_light_blue.svg') }}',
                 backgrounds: [
                     '{{ url('/images/backgrounds/images1.jpg') }}',
                     '{{ url('/images/backgrounds/images2.jpg') }}',
