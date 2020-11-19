@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Validator;
 use Acelle\Library\Log as MailLog;
 use Acelle\Library\RouletteWheel;
 use Acelle\Library\StringHelper;
+use Acelle\Library\ExtendedSwiftMessage;
 use Acelle\Events\MailListSubscription;
 use Acelle\Model\Setting;
 use Acelle\Exceptions\VerificationProcessCancelledException;
@@ -1011,7 +1012,7 @@ class MailList extends Model
     public function sendUnsubscriptionNotificationEmailToListOwner($subscriber)
     {
         // Create a message
-        $message = new \Swift_Message();
+        $message = new ExtendedSwiftMessage();
         $message->setContentType('text/html; charset=utf-8');
         $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
         $message->setTo([ $this->customer->user->email => $this->customer->displayName()]);
@@ -1675,7 +1676,7 @@ class MailList extends Model
         $body = view('pages._email_content', ['page' => $page])->render();
 
         // Create a message
-        $message = new \Swift_Message($title);
+        $message = new ExtendedSwiftMessage($title);
         $message->setFrom(array($subscriber->mailList->from_email => $subscriber->mailList->from_name));
         $message->setTo(array($subscriber->email, $subscriber->email => $subscriber->getFullName(trans('messages.to_email_name'))));
         $message->addPart($body, 'text/html');

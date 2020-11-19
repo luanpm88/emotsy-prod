@@ -24,6 +24,7 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log as LaravelLog;
+use Acelle\Library\ExtendedSwiftMessage;
 use Acelle\Model\Setting;
 use App;
 
@@ -277,7 +278,7 @@ class Sender extends Model
         $htmlContent = str_replace('{VERIFICATION_LINK}', $this->generateVerificationUrl(), $htmlContent);
 
         // build the message
-        $message = new \Swift_Message();
+        $message = new ExtendedSwiftMessage();
         $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
         $message->setContentType('text/html; charset=utf-8');
 

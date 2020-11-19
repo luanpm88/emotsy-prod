@@ -5,6 +5,7 @@ namespace Acelle\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
 use Acelle\Library\UpgradeManager;
+use Acelle\Library\ExtendedSwiftMessage;
 use Illuminate\Support\Facades\Log;
 use Acelle\Model\Setting;
 use Illuminate\Support\Facades\Session;
@@ -343,7 +344,7 @@ class SettingController extends Controller
             }
             
             // build the message
-            $message = new \Swift_Message();
+            $message = new ExtendedSwiftMessage();
             $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
             $message->setContentType('text/html; charset=utf-8');
 
