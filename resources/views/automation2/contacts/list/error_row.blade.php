@@ -28,7 +28,7 @@
                 $action = $automation->getElement($key);
             @endphp
 
-            <span class="round-action-point action-{{ $action->get('type') }}" title="{{ $action->getName() }}">
+            <span class="xtooltip round-action-point action-{{ $action->get('type') }}" title="{{ $action->getName() }}">
             </span>
         @endforeach
     </div>
