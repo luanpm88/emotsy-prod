@@ -8,6 +8,7 @@ use Acelle\Library\QuotaTrackerStd;
 use Acelle\Library\QuotaTrackerRedis;
 use Acelle\Library\StringHelper;
 use Acelle\Library\QuotaTracker;
+use Acelle\Library\ExtendedSwiftMessage;
 use Acelle\Model\Campaign;
 use Acelle\Model\User;
 use Acelle\Model\MailList;
@@ -66,7 +67,7 @@ class TestCampaign extends Command
         $mailer = new \Swift_Mailer($transport);
 
         // Create a message
-        $message = new \Swift_Message('Wonderful Subject');
+        $message = new ExtendedSwiftMessage('Wonderful Subject');
         $message->setFrom(array('' => 'Asish'));
         $message->setTo(array('' => 'Louis'));
         $message->setBody('Here is the message itself');

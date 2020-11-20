@@ -77,7 +77,7 @@
 	<script src="{{ URL::asset('assets2/lib/automation.js') }}"></script>
 		
 	<!-- App -->
-	<link href="{{ URL::asset('assets2/css/app.css') }}" rel="stylesheet" type="text/css">
+	<link href="{{ URL::asset('assets2/css/app.css') }}?v={{ app_version() }}" rel="stylesheet" type="text/css">
 	
 	<!-- Dropzone -->
 	<script type="text/javascript" src="{{ URL::asset('assets2/lib/dropzone/dropzone.js') }}"></script>

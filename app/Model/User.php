@@ -26,6 +26,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Acelle\Notifications\ResetPassword;
 use Acelle\Library\Log as MailLog;
+use Acelle\Library\ExtendedSwiftMessage;
 use Acelle\Model\Setting;
 use App;
 
@@ -115,7 +116,7 @@ class User extends Authenticatable
         $name = is_null($name) ? trans('messages.to_email_name') : $name;
 
         // build the message
-        $message = new \Swift_Message();
+        $message = new ExtendedSwiftMessage();
         $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
         $message->setContentType('text/html; charset=utf-8');
 
@@ -224,7 +225,7 @@ class User extends Authenticatable
         $htmlContent = '<p>Please click the link below to reset your password:<br><a href="'.$resetPasswordUrl.'">'.$resetPasswordUrl.'</a>';
 
         // build the message
-        $message = new \Swift_Message();
+        $message = new ExtendedSwiftMessage();
         $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
         $message->setContentType('text/html; charset=utf-8');
 

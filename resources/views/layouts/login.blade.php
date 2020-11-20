@@ -18,7 +18,7 @@
 
         <link rel="stylesheet" href="{{ URL::asset('assets/ux/css/general.css') }}">
         <link rel="stylesheet" href="{{ URL::asset('assets/ux/css/responsive.css') }}">
-        <link rel="stylesheet" href="{{ URL::asset('assets/ux/css/app.css') }}">
+        <link rel="stylesheet" href="{{ URL::asset('assets/ux/css/app.css') }}?v={{ app_version() }}">
     </head>
     <body>
             <!-- main inner content -->
