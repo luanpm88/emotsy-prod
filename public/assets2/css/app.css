@@ -707,7 +707,6 @@ label.switchery-double.checkbox-switchery {
     border-radius: 15px;
     position: absolute;
     z-index: 100;
-    top: 100px;
     left: -10px;
 }
 .box-is-loading .lds-ellipsis div {
@@ -715,6 +714,7 @@ label.switchery-double.checkbox-switchery {
 }
 .box-is-loading {
   opacity: 0.5;
+  position: relative;
 }
 .dropdown.open .dropdown-menu {
   display: block;

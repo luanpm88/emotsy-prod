@@ -1931,4 +1931,25 @@ class Automation2Controller extends Controller
 
         return trans('messages.automation.designer.last_saved', ['time' => $automation->updated_at->diffForHumans()]);
     }
+    
+    /**
+     * Get last saved time.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function contactRetry(Request $request, $uid, $contact_uid)
+    {
+        $automation = Automation2::findByUid($uid);
+        $contact = Subscriber::findByUid($contact_uid);
+        
+        // authorize
+        if (\Gate::denies('view', $automation)) {
+            return $this->notAuthorized();
+        }
+
+        return view('automation2.contacts.list.error_row', [
+            'automation' => $automation,
+            'contact' => $contact,
+        ]);
+    }
 }
