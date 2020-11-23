@@ -81,6 +81,11 @@
 				return;
 			}
 
+			// abort ajax
+			if (request.statusText =='abort') {
+				return;
+			}
+
 			alert(request.responseText);
 		});
 	</script>
