@@ -299,50 +299,48 @@ class Campaign extends AbsCampaign
      */
     public function subscribers($params = [], $extra = ['email_verifications'])
     {
-        // get subscribers from auto campaign or normal campaign
-        if ($this->isAuto()) {
-            // Get subscriber from auto event -- deprecated
-        } else {
-            if ($this->listsSegments->isEmpty()) {
-                // this is a trick for returning an empty builder
-                return Subscriber::limit(0);
-            }
-            $query = Subscriber::select('subscribers.*');
-            // Tell MySQL to use the right index
-            // $query->from(\DB::raw(\DB::getTablePrefix() . 'subscribers FORCE INDEX (subscribers_mail_list_id_email_index)'));
-            // Email verification join
-            if (in_array('email_verifications', $extra)) {
-                $query = $query->leftJoin('email_verifications', 'email_verifications.subscriber_id', '=', 'subscribers.id');
-            }
-            // Get subscriber from mailist and segment
-            $conditions = [];
-            foreach ($this->listsSegments as $lists_segment) {
-                if (!empty($lists_segment->segment_id)) {
-                    // Segment
-                    $conds = $lists_segment->segment->getSubscribersConditions();
-                    if (!empty($conds['joins'])) {
-                        foreach ($conds['joins'] as $joining) {
-                            $query = $query->leftJoin($joining['table'], function ($join) use ($joining) {
-                                $join->on($joining['ons'][0][0], '=', $joining['ons'][0][1]);
-                                if (isset($joining['ons'][1])) {
-                                    $join->on($joining['ons'][1][0], '=', $joining['ons'][1][1]);
-                                }
-                            });
-                        }
+        if ($this->listsSegments->isEmpty()) {
+            // this is a trick for returning an empty builder
+            return Subscriber::limit(0);
+        }
+        $query = Subscriber::select('subscribers.*');
+        // Tell MySQL to use the right index
+        // $query->from(\DB::raw(\DB::getTablePrefix() . 'subscribers FORCE INDEX (subscribers_mail_list_id_email_index)'));
+        // Email verification join
+        if (in_array('email_verifications', $extra)) {
+            $query = $query->leftJoin('email_verifications', 'email_verifications.subscriber_id', '=', 'subscribers.id');
+        }
+        // Get subscriber from mailist and segment
+        $conditions = [];
+        foreach ($this->listsSegments as $lists_segment) {
+            if (!empty($lists_segment->segment_id)) {
+                // Segment
+                $conds = $lists_segment->segment->getSubscribersConditions();
+                if (!empty($conds['joins'])) {
+                    foreach ($conds['joins'] as $joining) {
+                        $query = $query->leftJoin($joining['table'], function ($join) use ($joining) {
+                            $join->on($joining['ons'][0][0], '=', $joining['ons'][0][1]);
+                            if (isset($joining['ons'][1])) {
+                                $join->on($joining['ons'][1][0], '=', $joining['ons'][1][1]);
+                            }
+                        });
                     }
-                    // WHERE...
-                    if (!empty($conds['conditions'])) {
-                        $conditions[] = $conds['conditions'];
-                    }
-                } else {
-                    // Entire list
-                    $conditions[] = '('.table('subscribers.mail_list_id').' = '.$lists_segment->mail_list_id.')';
                 }
-            }
+                // WHERE...
+                if (!empty($conds['conditions'])) {
+                    // IMPORTANT: segment condition does not include list_id constraints
+                    $conds['conditions'] = '('.table('subscribers.mail_list_id').' = '.$lists_segment->mail_list_id.' AND ('.$conds['conditions'].'))';
 
-            if (!empty($conditions)) {
-                $query = $query->whereRaw('('.implode(' OR ', $conditions).')');
+                    $conditions[] = $conds['conditions'];
+                }
+            } else {
+                // Entire list
+                $conditions[] = '('.table('subscribers.mail_list_id').' = '.$lists_segment->mail_list_id.')';
             }
+        }
+
+        if (!empty($conditions)) {
+            $query = $query->whereRaw('('.implode(' OR ', $conditions).')');
         }
 
         // Filters
