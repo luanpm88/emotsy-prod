@@ -131,6 +131,11 @@
 			if(typeof(settings.globalError) != 'undefined' || settings.globalError == false) {
 				return;
 			}
+			
+			// abort ajax
+			if (request.statusText =='abort') {
+				return;
+			}
 
 			alert(request.responseText);
 		});
