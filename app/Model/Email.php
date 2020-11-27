@@ -505,6 +505,8 @@ class Email extends Model
         $links = [];
 
         // find all links from contents
+        // Fix: str_get_html returning false
+        defined('MAX_FILE_SIZE') || define('MAX_FILE_SIZE', 10000000);
         $document = HtmlDomParser::str_get_html($this->content);
         foreach ($document->find('a') as $element) {
             if (preg_match('/^http/', $element->href) != 0) {
@@ -973,7 +975,7 @@ class Email extends Model
         $path = route('openTrackingUrl', ['message_id' => StringHelper::base64UrlEncode($msgId)], false);
         $url = $this->buildTrackingUrl($path);
 
-        return $body.'<img src="'.$url.'" width="0" height="0" alt="" style="visibility:hidden" />';
+        return $this->appendToBody($body, '<img alt="" src="'.$url.'" width="0" height="0" alt="" style="visibility:hidden" />');
     }
 
     public function buildTrackingUrl($path)
@@ -1019,8 +1021,7 @@ class Email extends Model
      */
     public function appendFooter($body, $footer)
     {
-        $body.$footer;
-        return preg_replace('/<\/\s*html\s*>/i', $footer.'</html>', $body);
+        return $this->appendToBody($body, $footer);
     }
 
     /**
@@ -1149,6 +1150,16 @@ class Email extends Model
             }
         } else {
             $this->tracking_domain_id = null;
+        }
+    }
+
+    public function appendToBody($html, $content)
+    {
+        $regexp = '/<\/body\s*>/i';
+        if (preg_match($regexp, $html) == true) {
+            return preg_replace($regexp, $content.'</body>', $html);
+        } else {
+            return $html.$content;
         }
     }
 }

@@ -470,7 +470,7 @@ abstract class AbsCampaign extends Model
      */
     public function appendFooter($body, $footer)
     {
-        return $body.$footer;
+        return $this->appendToBody($body, $footer);
     }
 
     /**
@@ -482,7 +482,7 @@ abstract class AbsCampaign extends Model
         $path = route('openTrackingUrl', ['message_id' => StringHelper::base64UrlEncode($msgId)], false);
         $url = $this->buildTrackingUrl($path);
 
-        return $body.'<img src="'.$url.'" width="0" height="0" alt="" style="visibility:hidden" />';
+        return $this->appendToBody($body, '<img alt="" src="'.$url.'" width="0" height="0" alt="" style="visibility:hidden" />');
     }
 
     /**
@@ -570,6 +570,9 @@ abstract class AbsCampaign extends Model
             $body = $this->tagMessage($body, $subscriber, $msgId, $server);
         }
 
+        
+        
+
         // STEP 09. Make CSS inline
         //
         // Transform CSS/HTML content to inline CSS
@@ -579,7 +582,6 @@ abstract class AbsCampaign extends Model
         //       <a href="%7BUNSUBSCRIBE_URL%7D" 
         $body = $this->inlineHtml($body);
 
-        
 
         return $body;
     }
@@ -845,7 +847,7 @@ abstract class AbsCampaign extends Model
     public function unsubscribe_url_valid()
     {
         if ($this->type != 'plain-text' &&
-           \Auth::user()->customer->getOption('unsubscribe_url_required') == 'yes' &&
+           $this->customer->getOption('unsubscribe_url_required') == 'yes' &&
             strpos($this->html, '{UNSUBSCRIBE_URL}') == false
         ) {
             return false;
@@ -1742,7 +1744,7 @@ abstract class AbsCampaign extends Model
     /**
      * Replace link in text by click tracking url.
      *
-     * @return text
+     * @return textaddTrackingUrl
      * @note addTrackingUrl() must go before appendOpenTrackingUrl()
      */
     public function addTrackingUrl($email_html_content, $msgId)
@@ -3368,5 +3370,15 @@ abstract class AbsCampaign extends Model
     public function occupiedByOtherAnotherProcess()
     {
         return (!is_null($this->running_pid) && posix_getpgid($this->running_pid));
+    }
+
+    public function appendToBody($html, $content)
+    {
+        $regexp = '/<\/body\s*>/i';
+        if (preg_match($regexp, $html) == true) {
+            return preg_replace($regexp, $content.'</body>', $html);
+        } else {
+            return $html.$content;
+        }
     }
 }

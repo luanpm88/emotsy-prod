@@ -77,7 +77,7 @@
 	<script src="{{ URL::asset('assets2/lib/automation.js') }}"></script>
 		
 	<!-- App -->
-	<link href="{{ URL::asset('assets2/css/app.css') }}" rel="stylesheet" type="text/css">
+	<link href="{{ URL::asset('assets2/css/app.css') }}?v={{ app_version() }}" rel="stylesheet" type="text/css">
 	
 	<!-- Dropzone -->
 	<script type="text/javascript" src="{{ URL::asset('assets2/lib/dropzone/dropzone.js') }}"></script>
@@ -124,6 +124,21 @@
 
 	<script>
 		$.cookie('last_language_code', '{{ Auth::user()->customer->getLanguageCode() }}');
+	</script>
+
+	<script>
+		$( document ).ajaxError(function( event, request, settings ) {
+			if(typeof(settings.globalError) != 'undefined' || settings.globalError == false) {
+				return;
+			}
+			
+			// abort ajax
+			if (request.statusText =='abort') {
+				return;
+			}
+
+			alert(request.responseText);
+		});
 	</script>
 
 </head>

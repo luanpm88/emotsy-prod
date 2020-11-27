@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Validator;
 use Acelle\Library\Log as MailLog;
 use Acelle\Library\RouletteWheel;
 use Acelle\Library\StringHelper;
+use Acelle\Library\ExtendedSwiftMessage;
 use Acelle\Events\MailListSubscription;
 use Acelle\Model\Setting;
 use Acelle\Exceptions\VerificationProcessCancelledException;
@@ -621,7 +622,7 @@ class MailList extends Model
      */
     public function otherLists()
     {
-        return \Auth::user()->customer->lists()->where('id', '!=', $this->id)->get();
+        return $this->customer->lists()->where('id', '!=', $this->id)->get();
     }
 
     /**
@@ -1011,7 +1012,7 @@ class MailList extends Model
     public function sendUnsubscriptionNotificationEmailToListOwner($subscriber)
     {
         // Create a message
-        $message = new \Swift_Message();
+        $message = new ExtendedSwiftMessage();
         $message->setContentType('text/html; charset=utf-8');
         $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
         $message->setTo([ $this->customer->user->email => $this->customer->displayName()]);
@@ -1135,12 +1136,20 @@ class MailList extends Model
             $headers = array_filter(array_map(function ($value) {
                 return strtolower(trim($value));
             }, $reader->fetchOne()));
+
+            // custom fields of the list
             $fields = collect($this->fields)->map(function ($field) {
                 return strtolower($field->tag);
             })->toArray();
 
             // list's fields found in the input CSV
             $availableFields = array_intersect($headers, $fields);
+
+            // Special fields go here
+            if (!in_array('tags', $availableFields)) {
+                $availableFields[] = 'tags';
+            }
+            // ==> email, first_name, last_name, tags
 
             // split the entire list into smaller batches
             $results = $reader->fetchAssoc($headers);
@@ -1258,6 +1267,10 @@ class MailList extends Model
                         $record['email'] = strtolower(preg_replace('/[ \s*]*/', '', trim($record['email'])));
                     }
 
+                    if (array_key_exists('tags', $record) && !empty($record['tags'])) {
+                        $record['tags'] = json_encode(array_filter(preg_split('/\s*,\s*/',$record['tags'])));
+                    }
+
                     return $record;
                 })->toArray();
 
@@ -1290,9 +1303,10 @@ class MailList extends Model
 
                 // Insert new subscribers from temp table to the main table
                 // Use SUBSTRING(MD5(UUID()), 1, 13) to produce a UNIQUE ID which is similar to the output of PHP uniqid()
-                DB::statement('INSERT INTO '.table('subscribers').'(uid, mail_list_id, email, status, subscription_type, created_at, updated_at)
-                               SELECT SUBSTRING(MD5(UUID()), 1, 13), ' .$this->id.', uniq.email, '.db_quote(Subscriber::STATUS_SUBSCRIBED).', '.db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED).", NOW(), NOW()
-                               FROM (SELECT tmp.email FROM {$tmpTable} tmp LEFT JOIN ".table('subscribers')." main ON (tmp.email = main.email AND main.mail_list_id = {$this->id}) WHERE main.email IS NULL LIMIT {$insertLimit}) uniq");
+                // @TODO LIMITATION: tags are not updated if subscribers already exist
+                DB::statement('INSERT INTO '.table('subscribers').'(uid, mail_list_id, email, status, subscription_type, tags, created_at, updated_at)
+                               SELECT SUBSTRING(MD5(UUID()), 1, 13), ' .$this->id.', uniq.email, '.db_quote(Subscriber::STATUS_SUBSCRIBED).', '.db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED).", uniq.tags, NOW(), NOW()
+                               FROM (SELECT tmp.email, tmp.tags FROM {$tmpTable} tmp LEFT JOIN ".table('subscribers')." main ON (tmp.email = main.email AND main.mail_list_id = {$this->id}) WHERE main.email IS NULL LIMIT {$insertLimit}) uniq");
 
                 // Insert subscribers' custom fields to the fields table
                 // OPTION 1: DELETE WHERE IN
@@ -1662,7 +1676,7 @@ class MailList extends Model
         $body = view('pages._email_content', ['page' => $page])->render();
 
         // Create a message
-        $message = new \Swift_Message($title);
+        $message = new ExtendedSwiftMessage($title);
         $message->setFrom(array($subscriber->mailList->from_email => $subscriber->mailList->from_name));
         $message->setTo(array($subscriber->email, $subscriber->email => $subscriber->getFullName(trans('messages.to_email_name'))));
         $message->addPart($body, 'text/html');

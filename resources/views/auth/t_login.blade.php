@@ -90,7 +90,11 @@
                 {{ csrf_field() }}
 
                 <h1 class="text-semibold text-center full-width mb-lvl4" style="margin: 0 0 60px 0">
-                    <img width="240" src="{{ url('images/logo_big.png') }}" alt="">
+                    @if (\Acelle\Model\Setting::get('site_logo_big'))
+                        <img width="240" src="{{ action('SettingController@file', \Acelle\Model\Setting::get('site_logo_big')) }}" alt="">
+                    @else
+                        <img style="margin: 10px 50px;" src="{{ URL::asset('images/logo_big.svg') }}" alt="">
+                    @endif
                 </h1>
 
                 @include('helpers.form_control', [

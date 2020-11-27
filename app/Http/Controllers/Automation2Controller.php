@@ -1170,6 +1170,26 @@ class Automation2Controller extends Controller
             'email' => $email,
         ]);
     }
+
+    /**
+     * Template preview.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function templatePreviewContent(Request $request, $uid, $email_uid)
+    {
+        $automation = Automation2::findByUid($uid);
+        $email = Email::findByUid($request->email_uid);
+        
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+
+        echo $email->getHtmlContent();
+    }
     
     /**
      * Attachment upload.
@@ -1983,5 +2003,25 @@ class Automation2Controller extends Controller
         }
 
         return trans('messages.automation.designer.last_saved', ['time' => $automation->updated_at->diffForHumans()]);
+    }
+
+    public function debug(Request $request, $uid)
+    {
+        $automation = Automation2::findByUid($uid);
+        $subscribers = $automation->getSubscribersWithDateOfBirth()->limit(50)->simplePaginate(50);
+
+        return view('automation2.debug', [
+            'automation' => $automation,
+            'subscribers' => $subscribers,
+        ]);
+    }
+
+    public function debugTrigger(Request $request, $uid)
+    {
+        $trigger = AutoTrigger::findByUid($uid);
+
+        return view('automation2.debug', [
+            'trigger' => $trigger,
+        ]);
     }
 }

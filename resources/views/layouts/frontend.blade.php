@@ -37,7 +37,7 @@
 				@if (\Acelle\Model\Setting::get('site_logo_small'))
                     <img src="{{ action('SettingController@file', \Acelle\Model\Setting::get('site_logo_small')) }}" alt="">
                 @else
-                    <img src="{{ URL::asset('images/default_site_logo_small_' . (Auth::user()->customer->getColorScheme() == "white" ? "dark" : "light") . '.png') }}" alt="">
+                    <img src="{{ URL::asset('images/logo-' . (Auth::user()->customer->getColorScheme() == "white" ? "dark" : "light") . '.svg') }}" alt="">
                 @endif
 			</a>
 
@@ -45,22 +45,36 @@
 				<li><a class="mobile-menu-button" data-toggle="collapse" data-target="#navbar-mobile"><i class="icon-menu7"></i></a></li>
 			</ul>
 		</div>
-
+		@php			
+			$iconDir = "";
+			if (Auth::user()->customer->getColorScheme() == 'white') {
+				$iconDir = "dark/";
+			}
+		@endphp
 		<div class="navbar-collapse collapse" id="navbar-mobile">
 			<ul class="nav navbar-nav">
 				<li rel0="HomeController">
-					<a href="{{ action('HomeController@index') }}">
-						<i class="icon-home"></i> {{ trans('messages.dashboard') }}
+					<a href="{{ action('HomeController@index') }}" class="d-flex align-items-center">
+						<i class="acelle-icon mr-3">
+							<img src="{{ url('images/icons/'.$iconDir.'SVG/home.svg') }}" />
+						</i>
+						{{ trans('messages.dashboard') }}
 					</a>
 				</li>
 				<li rel0="CampaignController">
-					<a href="{{ action('CampaignController@index') }}">
-						<i class="icon-paperplane"></i> {{ trans('messages.campaigns') }}
+					<a href="{{ action('CampaignController@index') }}" class="d-flex align-items-center">
+						<i class="acelle-icon mr-3">
+						<img src="{{ url('images/icons/'.$iconDir.'SVG/campaign.svg') }}" />
+						</i>
+						{{ trans('messages.campaigns') }}
 					</a>
 				</li>
 				<li rel0="Automation2Controller">
-					<a href="{{ action('Automation2Controller@index') }}">
-						<i class="icon-alarm-check"></i> {{ trans('messages.Automations') }}
+					<a href="{{ action('Automation2Controller@index') }}" class="d-flex align-items-center">
+						<i class="acelle-icon mr-3" style="width:18px;height:18px">
+						<img src="{{ url('images/icons/'.$iconDir.'SVG/automation.svg') }}" />
+						</i>
+						{{ trans('messages.Automations') }}
 					</a>
 				</li>
 				<li
@@ -69,11 +83,19 @@
 					rel2="SubscriberController"
 					rel3="SegmentController"
 				>
-					<a href="{{ action('MailListController@index') }}"><i class="icon-address-book2"></i> {{ trans('messages.lists') }}</a>
+					<a href="{{ action('MailListController@index') }}" class="d-flex align-items-center">
+						<i class="acelle-icon mr-3" style="width:22px">
+						<img src="{{ url('images/icons/'.$iconDir.'SVG/list.svg') }}" />
+						</i>
+						{{ trans('messages.lists') }}
+					</a>
 				</li>
                 <li rel0="TemplateController">
-					<a href="{{ action('TemplateController@index') }}">
-						<i class="icon-magazine"></i> {{ trans('messages.templates') }}
+					<a href="{{ action('TemplateController@index') }}" class="d-flex align-items-center">
+						<i class="acelle-icon mr-3" style="width:19px">
+						<img src="{{ url('images/icons/'.$iconDir.'SVG/template.svg') }}" />
+						</i>
+						{{ trans('messages.templates') }}
 					</a>
 				</li>
 				@if (
@@ -88,40 +110,53 @@
 						rel2="SenderController"
                         rel3="EmailVerificationServerController"
 						rel4="BlacklistController"
+						rel5="TrackingDomainController"
 					>
-						<a class="dropdown-toggle" data-toggle="dropdown">
-							<i class="glyphicon glyphicon-transfer"></i> {{ trans('messages.sending') }}
+						<a data-toggle="dropdown" class="dropdown-toggle d-flex align-items-center">
+							<i class="acelle-icon mr-3" style="width:19px">
+							<img src="{{ url('images/icons/'.$iconDir.'SVG/sending.svg') }}" />
+							</i> <span>{{ trans('messages.sending') }}</span>
 							<span class="caret"></span>
 						</a>
 						<ul class="dropdown-menu">
 							@if (Auth::user()->customer->can("read", new Acelle\Model\SendingServer()))
 								<li rel0="SendingServerController">
-									<a href="{{ action('SendingServerController@index') }}">
-										<i class="icon-server"></i> {{ trans('messages.sending_servers') }}
+									<a href="{{ action('SendingServerController@index') }}" class="d-flex align-items-center">
+										<i class="acelle-icon mr-3" style="width:19px">
+									<img src="{{ url('images/icons/'.$iconDir.'SVG/server.svg') }}" />
+									</i> {{ trans('messages.sending_servers') }}
 									</a>
 								</li>
 							@endif
 							<li rel0="SenderController" rel1="SendingDomainController">
-								<a href="{{ action('SenderController@index') }}">
-									<i class="icon-user-check"></i> {{ trans('messages.verified_senders') }}
+								<a href="{{ action('SenderController@index') }}" class="d-flex align-items-center">
+								<i class="acelle-icon mr-3" style="width:20	px">
+									<img src="{{ url('images/icons/'.$iconDir.'SVG/identify.svg') }}" />
+									</i> {{ trans('messages.verified_senders') }}
 								</a>
 							</li>
 							<li rel0="TrackingDomainController">
-								<a href="{{ action('TrackingDomainController@index') }}">
-									<i class="icon-earth"></i> {{ trans('messages.tracking_domains') }}
+								<a href="{{ action('TrackingDomainController@index') }}" class="d-flex align-items-center">
+								<i class="acelle-icon mr-3" style="width:20px">
+									<img src="{{ url('images/icons/'.$iconDir.'SVG/domain.svg') }}" />
+									</i> {{ trans('messages.tracking_domains') }}
 								</a>
 							</li>
                             @if (Auth::user()->customer->can("read", new Acelle\Model\EmailVerificationServer()))
 								<li rel0="EmailVerificationServerController">
-									<a href="{{ action('EmailVerificationServerController@index') }}">
-										<i class="icon-database-check"></i> {{ trans('messages.email_verification_servers') }}
+									<a href="{{ action('EmailVerificationServerController@index') }}" class="d-flex align-items-center">
+									<i class="acelle-icon mr-3" style="width:20px">
+									<img src="{{ url('images/icons/'.$iconDir.'SVG/server.svg') }}" />
+									</i> {{ trans('messages.email_verification_servers') }}
 									</a>
 								</li>
 							@endif
 							@if (Auth::user()->customer->can("read", new Acelle\Model\Blacklist()))
 								<li rel0="BlacklistController">
-									<a href="{{ action('BlacklistController@index') }}">
-										<i class="glyphicon glyphicon-minus-sign"></i> {{ trans('messages.blacklist') }}
+									<a href="{{ action('BlacklistController@index') }}" class="d-flex align-items-center">
+									<i class="acelle-icon mr-3" style="width:20px">
+									<img src="{{ url('images/icons/'.$iconDir.'SVG/blacklist.svg') }}" />
+									</i> {{ trans('messages.blacklist') }}
 									</a>
 								</li>
 							@endif
@@ -168,34 +203,52 @@
 
 					<ul class="dropdown-menu dropdown-menu-right">
 						@can("admin_access", Auth::user())
-							<li><a href="{{ action("Admin\HomeController@index") }}"><i class="icon-enter2"></i> {{ trans('messages.admin_view') }}</a></li>
+							<li><a href="{{ action("Admin\HomeController@index") }}" class="d-flex align-items-center">
+							<i class="acelle-icon mr-3">
+								<img src="{{ url('images/icons/'.$iconDir.'SVG/changeview.svg') }}" />
+							</i>{{ trans('messages.admin_view') }}</a></li>
 							<li class="divider"></li>
 						@endif
 						@if (request()->user()->customer->activeSubscription())
 							<li class="dropdown">
-								<a href="#" class="top-quota-button" data-url="{{ action("AccountController@quotaLog") }}">
-									<i class="icon-stats-bars4"></i>
+								<a href="#" class="top-quota-button d-flex align-items-center" data-url="{{ action("AccountController@quotaLog") }}">
+								<i class="acelle-icon mr-3">
+								<img src="{{ url('images/icons/'.$iconDir.'SVG/sreport.svg') }}" />
+							</i>
 									<span class="">{{ trans('messages.used_quota') }}</span>
 								</a>
 							</li>
 						@endif
 						<li rel0="AccountSubscriptionController\index">
-							<a href="{{ action('AccountSubscriptionController@index') }}">
-								<i class="icon-quill4"></i> {{ trans('messages.subscriptions') }}
+							<a href="{{ action('AccountSubscriptionController@index') }}" class="d-flex align-items-center">
+							<i class="acelle-icon mr-3">
+								<img src="{{ url('images/icons/'.$iconDir.'SVG/subscription.svg') }}" />
+							</i>{{ trans('messages.subscriptions') }}
 								@if (Auth::user()->customer->hasSubscriptionNotice())
 									<i class="material-icons-outlined subscription-warning-icon text-danger">info</i>
 								@endif
 							</a>
 						</li>
-						<li><a href="{{ action("AccountController@profile") }}"><i class="icon-profile"></i> {{ trans('messages.account') }}</a></li>
+						<li><a href="{{ action("AccountController@profile") }}" class="d-flex align-items-center">
+						<i class="acelle-icon mr-3">
+								<img src="{{ url('images/icons/'.$iconDir.'SVG/account.svg') }}" />
+							</i>{{ trans('messages.account') }}
+						
+						</a></li>
 						@if (Auth::user()->customer->canUseApi())
 							<li rel0="AccountController/api">
-								<a href="{{ action("AccountController@api") }}" class="level-1">
-									<i class="icon-key position-left"></i> {{ trans('messages.api') }}
+								<a href="{{ action("AccountController@api") }}" class="level-1 d-flex align-items-center">
+								<i class="acelle-icon mr-3">
+								<img src="{{ url('images/icons/'.$iconDir.'SVG/api.svg') }}" />
+							</i>{{ trans('messages.api') }}
 								</a>
 							</li>
 						@endif
-						<li><a href="{{ url("/logout") }}"><i class="icon-switch2"></i> {{ trans('messages.logout') }}</a></li>
+						<li><a href="{{ url("/logout") }}" class="d-flex align-items-center">
+							<i class="acelle-icon mr-3">
+								<img src="{{ url('images/icons/'.$iconDir.'SVG/logout.svg') }}" />
+							</i>{{ trans('messages.logout') }}
+						</a></li>
 					</ul>
 				</li>
 			</ul>

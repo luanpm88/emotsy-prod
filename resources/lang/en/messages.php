@@ -2534,7 +2534,8 @@
     The extra amount need to purchase amount for new plan is <strong>:amount</strong>. The subscription will be ended on <strong>:end_on</strong>',
   'subscription.download_raw_invoices' => 'Download invoices (raw)',
   'subscription.set_active' => 'Set active',
-  'subscription.set_active.confirm' => 'You are about to approve payment status for the subscription. This can not be un-done.',
+  'subscription.set_active.confirm' => 'You are going to confirm/approve the payment for this subscription and make
+      it active.',
   'subscription.set_active.success' => 'The subscription was activated successfully.',
   'subscription.renew.checkout' => 'Checkout',
   'subscription.renew.direct.wording' => 'Click the button bellow to renew the subscription for <strong>:plan</strong> plan.
@@ -3866,7 +3867,7 @@
   'payment.hide' => 'Hide',
   'save_and_show' => 'Save & Show',
   'frontend_payment.direct' => 'Offline payment',
-  'frontend_payment.direct.desc' => 'Receive payments outside of the application',
+  'frontend_payment.direct.desc' => 'Make the payment outside of the application',
   'frontend_payment.stripe' => 'Use Card',
   'frontend_payment.stripe.desc' => 'Receive payments from customer\'s
       card (credit, debit, master, visa,...)',
@@ -3916,6 +3917,7 @@
   'plugin.type.sending_server' => 'Sending Server',
   'plugin.type.email_verification' => 'Email Verification',
   'plugin.version' => 'Version',
+  'change_mind_cancel_subscription' => 'Change your mind? Choose another plan',
   'woo_items.number_of_items' => 'Max items',
   'automation.woo_item' => 'Woo Item',
   'woo_item' => 'WooCommerce Item',
@@ -3934,4 +3936,7 @@
   'woo_items.sort_by.price_za' => 'By price high to low',
   'woo_items.sort_by.date_added_asc' => 'By date date added: newer first',
   'woo_items.sort_by.date_added_desc' => 'By date date added: older first',
+  'subscription.get_started' => 'Get Started',
+  'api.notification' => 'Notification',
+  'authentication' => 'Authentication',
 ) ?>

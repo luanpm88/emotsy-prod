@@ -58,10 +58,8 @@ class PaymentMethod extends Model
         $rules = array(
             'status' => 'required',
         );
-
-        if (\Auth::user()->can('create', $this)) {
-            $rules['type'] = 'required';
-        }
+        
+        $rules['type'] = 'required';
 
         if ($this->type == self::TYPE_PAYPAL) {
             $rules['options.environment'] = 'required';

@@ -33,18 +33,6 @@
                             'url' => action('Admin\PlanController@select2'),
                             'placeholder' => trans('messages.select_plan')
                         ])
-
-                        @include('helpers.form_control', [
-                            'type' => 'select',
-                            'class' => '',
-                            'value' => '',
-                            'name' => 'gateway',
-                            'label' => trans('messages.subscription.select_payment'),
-                            'help_class' => 'subscription',
-                            'rules' => $rules,
-                            'options' => getPaymentOptions(),
-                            'placeholder' => trans('messages.choose')
-                        ])
                     </div>
                 </div>
 

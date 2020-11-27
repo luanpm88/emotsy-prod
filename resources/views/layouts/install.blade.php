@@ -45,7 +45,7 @@
 					
 						<div class="text-center login-header">
 							<a class="main-logo-big" href="{{ action('HomeController@index') }}">
-								<img src="{{ URL::asset('images/logo_big.png') }}" alt="">
+								<img src="{{ URL::asset('images/logo_big.svg') }}" alt="">
 							</a>
                             
                             <h3 class="text-center text-muted2" style="color: #ccc">{{ trans('messages.installation') }}</h3>

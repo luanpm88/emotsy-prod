@@ -33,11 +33,7 @@ class PaymentMethodPolicy
 
     public function update(User $user, PaymentMethod $payment_method)
     {
-        $ability = $user->admin->getPermission('payment_method_update');
-        $can = $ability == 'all'
-                || ($ability == 'own' && $user->admin->id == $payment_method->admin_id);
-
-        return $can;
+        return $user->admin->getPermission('payment_method_update') != 'no';
     }
 
     public function delete(User $user, PaymentMethod $payment_method)

@@ -82,8 +82,8 @@
                             </div>
                         </div>
                         <div class="mr-auto pr-4">
-                            <h4 class="font-weight-semibold mb-2">{{ trans('messages.payments.' . $gateway) }}</h4>
-                            <p class="mb-3">{{ trans('messages.payments.' . $gateway . '.list_intro') }}</p>
+                            <h4 class="font-weight-semibold mb-2">{{ trans('messages.frontend_payment.' . $gateway) }}</h4>
+                            <p class="mb-3">{{ trans('messages.frontend_payment.' . $gateway . '.desc') }}</p>
                         </div>                        
                     </div>
                 @endforeach
@@ -91,18 +91,33 @@
             <div class="sub-section">
                 <div class="row">
                     <div class="col-md-4">
-                        <button link-method="POST"
-                            class="btn btn-mc_primary">
-                                {{ trans('messages.payment.proceed_with_payment') }}
-                        </button>
+                        @if (!$plan->isFree())
+                            <button link-method="POST"
+                                class="btn btn-mc_primary">
+                                    {{ trans('messages.payment.proceed_with_payment') }}
+                            </button>
+                        @else
+                            <button link-method="POST"
+                                class="btn btn-mc_primary">
+                                    {{ trans('messages.subscription.get_started') }}
+                            </button>
+                        @endif
                     </div>
                     <div class="col-md-8">
                         {!! trans('messages.payment.agree_service_intro', ['plan' => $plan->name]) !!}
                     </div>
                 </div>
-            </div>
+            </div>            
         </div>
     </div>
+</form>
+<form class="" method="POST" action="{{ action('AccountSubscriptionController@abort') }}">
+    {{ csrf_field() }}
+    
+    <a href="javascript:;" onclick="$(this).closest('form').submit()"
+        class="text-muted mt-4"
+        style="font-size: 13px; text-decoration: underline;color:#333"
+    >{{ trans('messages.change_mind_cancel_subscription') }}</a>
 </form>
     <script>
         $('.proceed_with_payment').on('submit', function(e) {

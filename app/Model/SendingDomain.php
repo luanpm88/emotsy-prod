@@ -473,17 +473,27 @@ class SendingDomain extends Model
      */
     public function verifySpf()
     {
+        $host = null;
+
+        if (!is_null($this->sendingServer)) {
+            $host = $this->sendingServer->mapType()->getSpfHost();
+        }
+
+        if (is_null($host)) {
+            $host = $this->getHostIpAddress();
+        }
+
         $checker = new SPFCheck(new DNSRecordGetterDirect('8.8.8.8'));
         // $checker = new SPFCheck(new DNSRecordGetter());
-        $check = $checker->isIPAllowed($this->getHostIpAddress(), $this->name);
+        $check = $checker->isIPAllowed($host, $this->name);
 
-        $this->spf_verified = ($check == SPFCheck::RESULT_PASS || $check == SPFCheck::RESULT_SOFTFAIL) ? self::VERIFIED : self::UNVERIFIED;
+        $this->spf_verified = ($check == SPFCheck::RESULT_PASS) ? self::VERIFIED : self::UNVERIFIED;
 
         if ($this->spf_verified == false) {
             // try again with another method
             $checker = new SPFCheck(new DNSRecordGetter());
-            $check = $checker->isIPAllowed($this->getHostIpAddress(), $this->name);
-            $this->spf_verified = ($check == SPFCheck::RESULT_PASS || $check == SPFCheck::RESULT_SOFTFAIL) ? self::VERIFIED : self::UNVERIFIED;
+            $check = $checker->isIPAllowed($host, $this->name);
+            $this->spf_verified = ($check == SPFCheck::RESULT_PASS) ? self::VERIFIED : self::UNVERIFIED;
         }
 
         $this->save();

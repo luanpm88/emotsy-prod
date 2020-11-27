@@ -46,14 +46,14 @@ class CampaignController extends Controller
             where('uid', '=', $id)
             ->first();
 
-        // authorize
-        if (!$user->can('read', $item)) {
-            return \Response::json(array('message' => 'Unauthorized'), 401);
-        }
-
         // check if item exists
         if (!is_object($item)) {
             return \Response::json(array('message' => 'Item not found'), 404);
+        }
+
+        // authorize
+        if (!$user->can('read', $item)) {
+            return \Response::json(array('message' => 'Unauthorized'), 401);
         }
 
         // statistics

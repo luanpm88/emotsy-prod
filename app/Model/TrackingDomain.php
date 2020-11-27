@@ -189,7 +189,7 @@ class TrackingDomain extends Model
         $this->status = self::STATUS_VERIFIED;
     }
 
-    public function verify()
+    public function verify($debug = false)
     {
         try {
             $client = new Client();
@@ -199,10 +199,22 @@ class TrackingDomain extends Model
                 $this->setVerified();
                 $this->save();
             } else {
+                if ($debug) {
+                    echo "This app's identity: " . get_app_identity();
+                    echo "<br>";
+                    echo "Retrieved identity: " . $response->getBody();
+                    die;
+                }
                 throw new \Exception("Verification failed");
             }
             return true;
         } catch (\Exception $ex) {
+            if ($debug) {
+                echo "This app's identity: " . get_app_identity();
+                echo "<br>";
+                echo $ex->getMessage();
+                die;
+            }
             // loggging here
             return false;
         }

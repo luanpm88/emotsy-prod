@@ -19,7 +19,7 @@
 	<div class="navbar navbar-inverse navbar-fixed-top">
 		<div class="navbar-header">
 			<a class="navbar-brand" href="{{ action('HomeController@index') }}">
-				<img src="{{ URL::asset('assets/images/logo_light.png') }}" alt="">
+				<img src="{{ URL::asset('images/logo_light_blue.svg') }}" alt="">
 			</a>
 
 			<ul class="nav navbar-nav pull-right visible-xs-block">

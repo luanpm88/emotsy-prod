@@ -17,11 +17,11 @@ class CreateSubscriptionsSendingServersTable extends Migration
             $table->integer('sending_server_id')->unsigned();
             $table->integer('subscription_id')->unsigned();
             $table->integer('fitness');
-            
+
             $table->timestamps();
-            
-            $table->foreign('sending_server_id')->references('id')->on('sending_servers')->onDelete('cascade');
-            $table->foreign('subscription_id')->references('id')->on('subscriptions')->onDelete('cascade');
+
+            $table->foreign('sending_server_id', table('sss_sending_server_id_fk'))->references('id')->on('sending_servers')->onDelete('cascade');
+            $table->foreign('subscription_id', table('sss_subscription_id_fk'))->references('id')->on('subscriptions')->onDelete('cascade');
         });
     }
 

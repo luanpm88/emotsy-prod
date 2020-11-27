@@ -4,9 +4,9 @@
     <title>{{ trans('messages.campaign.edit_template') }} - {{ $automation->name }}</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">    
-    
+
     @include('layouts._favicon')
-    
+
     <link href="{{ URL::asset('builder/builder.css') }}" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="{{ URL::asset('builder/builder.js') }}"></script>
     @php
@@ -814,13 +814,19 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
             }
         }
     </script>
-    
+
+    <style>
+        .logo-img {
+            width: 120px!important;
+            margin-right: 15px;
+        }
+    </style>
+
     <script>
         var CSRF_TOKEN = "{{ csrf_token() }}";
         var editor;
-        
         var templates = {!! json_encode($templates) !!};
-        
+
         $( document ).ready(function() {
             editor = new Editor({
                 buildMode: {{ $buildMode }},
@@ -848,7 +854,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                 tags: {!! json_encode(Acelle\Model\Template::builderTags((isset($list) ? $list : null))) !!},
                 root: '{{ URL::asset('builder') }}/',
                 templates: templates,
-                logo: '{{ \Acelle\Model\Setting::get('site_logo_small') ? action('SettingController@file', \Acelle\Model\Setting::get('site_logo_small')) : URL::asset('images/logo_light_builder.png') }}',
+                logo: '{{ \Acelle\Model\Setting::get('site_logo_small') ? action('SettingController@file', \Acelle\Model\Setting::get('site_logo_small')) : URL::asset('images/logo_light_blue.svg') }}',
                 backgrounds: [
                     '{{ url('/images/backgrounds/images1.jpg') }}',
                     '{{ url('/images/backgrounds/images2.jpg') }}',
@@ -982,5 +988,38 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
     <script src="{{ URL::asset('assets2/lib/select2-4.0.12/js/select2.min.js') }}"></script>
   </head>
   <body>
+        <style>
+            .lds-dual-ring {
+                display: inline-block;
+                width: 80px;
+                height: 80px;
+            }
+            .lds-dual-ring:after {
+                content: " ";
+                display: block;
+                width: 30px;
+                height: 30px;
+                margin: 4px;
+                border-radius: 80%;
+                border: 2px solid #aaa;
+                border-color: #007bff transparent #007bff transparent;
+                animation: lds-dual-ring 1.2s linear infinite;
+            }
+            @keyframes lds-dual-ring {
+                0% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+        </style>
+        <div style="text-align: center;
+            height: 100vh;
+            vertical-align: middle;
+            padding: auto;
+            display: flex;">
+            <div style="margin:auto" class="lds-dual-ring"></div>
+        </div>
   </body>
 </html>

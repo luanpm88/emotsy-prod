@@ -19,8 +19,8 @@ class CreatePlansEmailVerificationServersTable extends Migration
 
             $table->timestamps();
 
-            $table->foreign('server_id')->references('id')->on('email_verification_servers')->onDelete('cascade');
-            $table->foreign('plan_id')->references('id')->on('plans')->onDelete('cascade');
+            $table->foreign('server_id', table('pevs_server_id_fk'))->references('id')->on('email_verification_servers')->onDelete('cascade');
+            $table->foreign('plan_id', table('pevs_plan_id_fk'))->references('id')->on('plans')->onDelete('cascade');
         });
     }
 

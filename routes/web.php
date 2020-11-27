@@ -173,10 +173,10 @@ Route::group(['middleware' => ['not_installed']], function () {
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function () {
     // Account subscription
+    Route::post('subscription/abort', 'AccountSubscriptionController@abort');
+    Route::post('subscription/plan/select', 'AccountSubscriptionController@select');
     Route::get('subscription/pending', 'AccountSubscriptionController@pending');
     Route::get('subscription/checkout', 'AccountSubscriptionController@checkout');
-    Route::get('subscription/review', 'AccountSubscriptionController@review');
-    Route::get('subscription/select-plan', 'AccountSubscriptionController@selectPlan');
     Route::get('subscription', 'AccountSubscriptionController@index');
 
 
@@ -379,6 +379,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('campaigns/select-type', 'CampaignController@selectType');
     Route::get('campaigns/{uid}/list-segment-form', 'CampaignController@listSegmentForm');
     Route::post('campaigns/{uid}/image/save', 'CampaignController@saveImage');
+    Route::get('campaigns/{uid}/preview/content', 'CampaignController@previewContent');
     Route::get('campaigns/{uid}/preview', 'CampaignController@preview');
     Route::get('campaigns/templates/list', 'CampaignController@templateList');
     Route::patch('campaigns/{uid}/templates/choose/from/{from_uid}', 'CampaignController@campaignTemplateChoose');
@@ -538,6 +539,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('automation2/{uid}/subscribers/list', 'Automation2Controller@subscribersList');
     Route::get('automation2/{uid}/subscribers/list', 'Automation2Controller@subscribersList');
     Route::get('automation2/{uid}/subscribers', 'Automation2Controller@subscribers');
+    Route::get('automation2/{uid}/template/{email_uid}/preview/content', 'Automation2Controller@templatePreviewContent');
     Route::get('automation2/{uid}/template/{email_uid}/preview', 'Automation2Controller@templatePreview');
     Route::match(['get', 'post'], 'automation2/{uid}/template/{email_uid}/plain-edit', 'Automation2Controller@templateEditPlain');
     Route::get('automation2/{uid}/template/{email_uid}/builder-select', 'Automation2Controller@templateBuilderSelect');
@@ -597,6 +599,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::delete('automation2/delete', 'Automation2Controller@delete');
     Route::get('automation2/listing', 'Automation2Controller@listing');
     Route::get('automation2', 'Automation2Controller@index');
+    Route::get('automation2/{uid}/debug', 'Automation2Controller@debug');
 
     Route::get('email/preview/{uid}/{subscriber_uid}', 'EmailController@preview');
 

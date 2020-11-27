@@ -569,7 +569,7 @@ class CustomerController extends Controller
         if ($request->isMethod('post')) {
             $plan = Plan::findByUid($request->plan_uid);
 
-            $customer->assignPlan($plan, $request->gateway);
+            $customer->assignPlan($plan);
 
             return response()->json([
                 'status' => 'success',

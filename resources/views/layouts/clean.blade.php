@@ -14,7 +14,7 @@
 	<link href="{{ URL::asset('assets/css/core.css') }}" rel="stylesheet" type="text/css">
 	<link href="{{ URL::asset('assets/css/components.css') }}" rel="stylesheet" type="text/css">
 	<link href="{{ URL::asset('assets/css/colors.css') }}" rel="stylesheet" type="text/css">
-	<link href="{{ URL::asset('css/app.css') }}" rel="stylesheet" type="text/css">
+	<link href="{{ URL::asset('css/app.css') }}?v={{ app_version() }}" rel="stylesheet" type="text/css">
 	<!-- /global stylesheets -->
 
 	<!-- Core JS files -->
@@ -73,7 +73,7 @@
 								@if (\Acelle\Model\Setting::get('site_logo_big'))
 									<img src="{{ action('SettingController@file', \Acelle\Model\Setting::get('site_logo_big')) }}" alt="">
 								@else
-									<img src="{{ URL::asset('images/logo_big.png') }}" alt="">
+									<img src="{{ URL::asset('images/logo_big.svg') }}" alt="">
 								@endif
 							</a>
 						</div>

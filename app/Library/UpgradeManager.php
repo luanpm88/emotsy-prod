@@ -304,7 +304,7 @@ class UpgradeManager
             // something wrong here
         }
 
-        artisan_config_cache();
+        // artisan_config_cache();
         artisan_migrate();
         LaravelLog::info('Done caching & migrating!');
     }
@@ -322,6 +322,10 @@ class UpgradeManager
      */
     private function mergeEnv($mainfile, $updatefile)
     {
+        if (!file_exists($updatefile)) {
+            return;
+        }
+
         $maindb = file($mainfile);
         $updatedb = file($updatefile);
 

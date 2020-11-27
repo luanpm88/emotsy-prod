@@ -346,9 +346,7 @@ function isSiteDemo()
  */
 function language_code()
 {
-    // Generate info
-    $user = \Auth::user();
-
+    // Get default language code from setting
     $default_language = \Acelle\Model\Language::find(\Acelle\Model\Setting::get('default_language'));
 
     if (isset($_COOKIE['last_language_code'])) {
@@ -879,4 +877,29 @@ function strip_tags_only($text, $allowedTags = [])
     );
     
     return $text;
+}
+
+/**
+ * Get controller action name
+ **/
+function controllerAction() {
+    // GET FROM SCREEN OPTION
+    $controller = explode('\\', request()->route()->getAction()['controller']);
+    return $controller[count($controller)-1];
+}
+
+/**
+ * Get controller name
+ **/
+function controllerName() {
+    $controllerAction = controllerAction();
+    return explode('@', $controllerAction)[0];
+}
+
+/**
+ * Get action name
+ **/
+function actionName() {
+    $controllerAction = controllerAction();
+    return explode('@', $controllerAction)[1];
 }

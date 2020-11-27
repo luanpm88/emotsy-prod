@@ -18,10 +18,10 @@ class CreateAutomationsListsSegmentsTable extends Migration
             $table->integer('mail_list_id')->unsigned();
             $table->integer('segment_id')->unsigned()->nullable();
             $table->timestamps();
-            
-            $table->foreign('automation_id')->references('id')->on('automations')->onDelete('cascade');
-            $table->foreign('mail_list_id')->references('id')->on('mail_lists')->onDelete('cascade');
-            $table->foreign('segment_id')->references('id')->on('segments')->onDelete('cascade');
+
+            $table->foreign('automation_id', table('als_automation_id_fk'))->references('id')->on('automations')->onDelete('cascade');
+            $table->foreign('mail_list_id', table('als_mail_list_id_fk'))->references('id')->on('mail_lists')->onDelete('cascade');
+            $table->foreign('segment_id', table('als_segment_id_fk'))->references('id')->on('segments')->onDelete('cascade');
         });
     }
 

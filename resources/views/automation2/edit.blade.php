@@ -52,7 +52,7 @@
 				@if (\Acelle\Model\Setting::get('site_logo_small'))
 					<img src="{{ action('SettingController@file', \Acelle\Model\Setting::get('site_logo_small')) }}" alt="">
 				@else
-					<img height="22" src="{{ URL::asset('images/logo_light.png') }}" alt="">
+					<img height="22" src="{{ URL::asset('images/logo_light_blue.svg') }}" alt="">
 				@endif
 			</a>
 			<div class="d-inline-block d-flex mr-auto align-items-center">

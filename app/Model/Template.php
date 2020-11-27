@@ -308,7 +308,7 @@ class Template extends Model implements Storable
         }
 
         $tags = array_merge($tags, [
-            ['name' => 'UNSUBSCRIBE_URL', 'required' => (\Auth::user()->customer && \Auth::user()->customer->getOption('unsubscribe_url_required') == 'yes' ? true : false)],
+            ['name' => 'UNSUBSCRIBE_URL', 'required' => false],
             ['name' => 'SUBSCRIBER_UID', 'required' => false],
             ['name' => 'WEB_VIEW_URL', 'required' => false],
             ['name' => 'CAMPAIGN_NAME', 'required' => false],

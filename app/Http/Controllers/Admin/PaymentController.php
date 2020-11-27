@@ -21,6 +21,10 @@ class PaymentController extends Controller
      */
     public function index(Request $request, MessageBag $message_bag)
     {
+        if (\Gate::denies('read', new \Acelle\Model\PaymentMethod())) {
+            return $this->notAuthorized();
+        }
+
         return view('admin.payments.index', [
             'gateways' => Setting::getPaymentGateways(),
             'enabledGateways' => Setting::getEnabledPaymentGateways(),
@@ -38,6 +42,11 @@ class PaymentController extends Controller
     {
         $service = Cashier::getPaymentGateway($name);
         $gateway = Setting::getPaymentGateway($name);
+
+        // authorize
+        if (\Gate::denies('update', new \Acelle\Model\PaymentMethod())) {
+            return $this->notAuthorized();
+        }
 
         try {
             $service->validate();
@@ -65,6 +74,11 @@ class PaymentController extends Controller
     {
         $errors = new MessageBag;
         $gatewayService = Cashier::getPaymentGateway($name, $request->options);
+
+        // authorize
+        if (\Gate::denies('update', new \Acelle\Model\PaymentMethod())) {
+            return $this->notAuthorized();
+        }
         
         try {
             $gatewayService->validate();
@@ -115,6 +129,11 @@ class PaymentController extends Controller
     {
         $service = Cashier::getPaymentGateway($name);
 
+        // authorize
+        if (\Gate::denies('update', new \Acelle\Model\PaymentMethod())) {
+            return $this->notAuthorized();
+        }
+
         try {
             $sc = Subscription::count();
 
@@ -161,6 +180,11 @@ class PaymentController extends Controller
     {
         $service = Cashier::getPaymentGateway($name);
 
+        // authorize
+        if (\Gate::denies('update', new \Acelle\Model\PaymentMethod())) {
+            return $this->notAuthorized();
+        }
+
         try {
             $service->validate();
 
@@ -194,6 +218,11 @@ class PaymentController extends Controller
     {
         $service = Cashier::getPaymentGateway($name);
 
+        // authorize
+        if (\Gate::denies('update', new \Acelle\Model\PaymentMethod())) {
+            return $this->notAuthorized();
+        }
+
         // enable gateway
         $gateways = json_decode(Setting::get('gateways'), true);
         $gateways = array_diff($gateways, [$name]);
@@ -220,6 +249,11 @@ class PaymentController extends Controller
     {
         $service = Cashier::getPaymentGateway('paypal_subscription');
         $plan = Plan::findByUid($plan_uid);
+
+        // authorize
+        if (\Gate::denies('update', new \Acelle\Model\PaymentMethod())) {
+            return $this->notAuthorized();
+        }
 
         try {
             $service->connectPlan($plan);
@@ -248,6 +282,11 @@ class PaymentController extends Controller
         $service = Cashier::getPaymentGateway('paypal_subscription');
         $plan = Plan::findByUid($plan_uid);
 
+        // authorize
+        if (\Gate::denies('update', new \Acelle\Model\PaymentMethod())) {
+            return $this->notAuthorized();
+        }
+
         try {
             $service->disconnectPlan($plan);
 
@@ -273,6 +312,11 @@ class PaymentController extends Controller
     public function paypalSubscriptionConnect(Request $request)
     {
         $service = Cashier::getPaymentGateway('paypal_subscription');
+
+        // authorize
+        if (\Gate::denies('update', new \Acelle\Model\PaymentMethod())) {
+            return $this->notAuthorized();
+        }
         
         try {
             $service->initPaypalProduct();
@@ -296,6 +340,11 @@ class PaymentController extends Controller
     public function paypalSubscriptionDisconnect(Request $request)
     {
         $service = Cashier::getPaymentGateway('paypal_subscription');
+
+        // authorize
+        if (\Gate::denies('update', new \Acelle\Model\PaymentMethod())) {
+            return $this->notAuthorized();
+        }
 
         try {
             $service->removePaypalProduct();

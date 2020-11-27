@@ -52,10 +52,16 @@
             border-top: none;
             border-bottom: none;
         }
+        .email_preview_frame {
+            margin: 0;
+            border: none;
+            width: 100%;
+            height: calc(100vh - 50px);
+        }
     </style>
 </head>
 
-<body>
+<body style="margin:0;padding:0;">
     @if ($campaign->type != 'plain-text')
         <div class="tab">
           <button class="tablinks active" onclick="openTab(event, 'html')">{{ trans('messages.web_view_html_tab') }}</button>
@@ -63,7 +69,7 @@
         </div>
 
         <div id="html" class="tabcontent" style="display: block">
-            {!! $campaign->getHtmlContent() !!}
+            <iframe class="email_preview_frame" src="{{ action('CampaignController@previewContent', $campaign->uid) }}"></iframe>
         </div>
     @endif
 

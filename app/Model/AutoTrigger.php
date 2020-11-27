@@ -128,8 +128,11 @@ class AutoTrigger extends Model
     public function check()
     {
         $this->logger()->info(sprintf('UPDATE > Trigger %s for "%s" - "%s" Start checking', $this->id, $this->automation2->name, $this->subscriber->email));
+        
+        // STEP #1: Get latest action
         $last = $this->getLatestAction();
 
+        // @WARNING why checking? getLatestAction is supposed to always return something
         if ($last == null) {
             $trigger = $this->getTrigger();
             $trigger->markAsLatest(true);

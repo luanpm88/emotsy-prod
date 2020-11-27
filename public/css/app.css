@@ -5,6 +5,12 @@
         clear: both;
     }
 }
+.navbar-inverse {
+    background-color: rgba(0, 25, 39, 0.75);
+    border-color:  rgba(55,71,79,0.7);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
 .modal_link {
     cursor: pointer;
 }
@@ -84,7 +90,8 @@ a {
 }
 .caret:after {
     font-size: 18px;
-    font-weight: 800;
+    font-weight: normal;
+    margin-left: 3px;
 }
 .sub_section {
     margin-bottom: 30px;
@@ -380,7 +387,9 @@ h2 [class^="icon-"] {
     padding-left: 35px;
 }
 .navbar-default {
-    background: #f5f5f5;
+    background: rgba(240, 240, 240, 0.6);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
 }
 @media (max-width: 600px) {
     .filter-box input.search {
@@ -3913,4 +3922,16 @@ textarea.bulk-delete {
 .select2-selection--multiple .select2-search--inline .select2-search__field:focus {
 outline: none;
 box-shadow: none;
+}
+.navbar-nav > .dropdown-user .acelle-icon img {
+    margin: 0;
+    max-height: none;
+    border-radius: 0;
+}
+.dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {
+    background-color: #a0d6d2;
+    color: #333;
+}
+.api-doc-table td {
+    vertical-align: top!important;
 }

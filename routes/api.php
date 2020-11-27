@@ -32,15 +32,13 @@ Route::group(['namespace' => 'Api', 'prefix' => 'v1', 'middleware' => 'auth:api'
     Route::resource('campaigns', 'CampaignController');
 
     // Subscriber
-    Route::patch('lists/{list_uid}/subscribers/{uid}/update', 'SubscriberController@update');
     Route::get('subscribers/email/{email}', 'SubscriberController@showByEmail');
-    Route::patch('lists/{list_uid}/subscribers/{uid}/update', 'SubscriberController@update');
-    Route::get('lists/{list_uid}/subscribers', 'SubscriberController@index');
     Route::get('lists/{list_uid}/subscribers/{uid}', 'SubscriberController@show')->name('subscriber');
     Route::patch('lists/{list_uid}/subscribers/{uid}/subscribe', 'SubscriberController@subscribe');
     Route::patch('lists/{list_uid}/subscribers/{uid}/unsubscribe', 'SubscriberController@unsubscribe');
     Route::delete('lists/{list_uid}/subscribers/{uid}/delete', 'SubscriberController@delete');
-    Route::post('lists/{list_uid}/subscribers/store', 'SubscriberController@store');
+
+    Route::resource('subscribers', 'SubscriberController');
 
     // Automation
     Route::post('automations/{uid}/api/call', 'AutomationController@apiCall');
@@ -52,7 +50,7 @@ Route::group(['namespace' => 'Api', 'prefix' => 'v1', 'middleware' => 'auth:api'
     Route::resource('plans', 'PlanController');
 
     // Customer
-    Route::post('customers/{uid}/login-token', 'CustomerController@loginToken');
+    Route::match(['get','post'], 'login-token', 'CustomerController@loginToken');
     Route::post('customers/{uid}/assign-plan/{plan_uid}', 'CustomerController@assignPlan');
     Route::patch('customers/{uid}/disable', 'CustomerController@disable');
     Route::patch('customers/{uid}/enable', 'CustomerController@enable');
@@ -67,4 +65,7 @@ Route::group(['namespace' => 'Api', 'prefix' => 'v1', 'middleware' => 'auth:api'
 
     // File
     Route::post('automations/{uid}/execute', 'AutomationController@execute')->name('automation_execute');
+
+    // Subscription
+    Route::post('notification', 'NotificationController@index');
 });
