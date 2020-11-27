@@ -1931,4 +1931,24 @@ class Automation2Controller extends Controller
 
         return trans('messages.automation.designer.last_saved', ['time' => $automation->updated_at->diffForHumans()]);
     }
+
+    public function debug(Request $request, $uid)
+    {
+        $automation = Automation2::findByUid($uid);
+        $subscribers = $automation->getSubscribersWithDateOfBirth()->limit(50)->simplePaginate(50);
+
+        return view('automation2.debug', [
+            'automation' => $automation,
+            'subscribers' => $subscribers,
+        ]);
+    }
+
+    public function debugTrigger(Request $request, $uid)
+    {
+        $trigger = AutoTrigger::findByUid($uid);
+
+        return view('automation2.debug', [
+            'trigger' => $trigger,
+        ]);
+    }
 }

@@ -189,7 +189,7 @@ class TrackingDomain extends Model
         $this->status = self::STATUS_VERIFIED;
     }
 
-    public function verify($debug)
+    public function verify($debug = false)
     {
         try {
             $client = new Client();

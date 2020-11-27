@@ -532,6 +532,52 @@ class Automation2 extends Model
         }
     }
 
+    public function getSubscribersWithDateOfBirth()
+    {
+        $formatSql = '%Y-%m-%d';
+        $formatCarbon  = 'Y-m-d';
+        // TODAY + CURRENT TIME
+        $currentTime = new DateTime(null, new DateTimeZone($this->customer->timezone));
+        // TODAY + GIVEN TIME
+        $triggerTime = new DateTime($this->getTriggerAction()->getOptions()['at'], new DateTimeZone($this->customer->timezone));
+
+        // Get the modify interval: 1 days, 2 days... for example
+        $interval = $this->getTriggerAction()->getOptions()['before'];
+        $thisId = $this->id;
+
+        $today = Carbon::now($this->customer->timezone)->modify($interval);
+        $todayStr = $today->format($formatCarbon);
+        $dobFieldUid = $this->getTriggerAction()->getOptions()['field'];
+        $dobFieldId = Field::findByUid($dobFieldUid)->id;
+        $query = $this->subscribers()
+            ->join('subscriber_fields', 'subscribers.id', 'subscriber_fields.subscriber_id')
+            ->where('subscriber_fields.field_id', $dobFieldId)
+            /*
+            ->whereIn(DB::raw(sprintf('SUBSTRING(%s, 1, 10)', table('subscriber_fields.value'))), [
+                $today->format('Y-m-d'),
+                $today->format('Y:m:d'),
+                $today->format('m/d/Y'),
+                $today->format('m-d-Y'),
+            ])
+            */
+            ->addSelect(DB::raw('auto_triggers.created_at AS trigger_at'))
+            ->addSelect(DB::raw(sprintf('SUBSTRING(%s, 1, 10) AS dob', table('subscriber_fields.value'))))
+            ->addSelect(
+                // IMPORTANT HARD CODED "-" as y/m/d separator
+                DB::raw(
+                    "DATEDIFF(STR_TO_DATE(CONCAT('".$today->format('Y')."', SUBSTRING(".table('subscriber_fields.value').", 5, 10)), '".$formatSql."'), STR_TO_DATE('".$todayStr."', '".$formatSql."')) AS datediff"
+                )
+            )
+            ->leftJoin('auto_triggers', function($join) use ($thisId) {
+                $join->on('auto_triggers.subscriber_id', 'subscribers.id');
+                $join->where('auto_triggers.automation2_id', $thisId);
+            })
+            ->orderBy('subscribers.email', 'ASC');
+            //->whereNull('auto_triggers.subscriber_id'); // chưa trigger
+            // 
+        return $query;
+    }
+
     public function checkForDateOfBirth()
     {
         // TODAY + CURRENT TIME
@@ -1055,6 +1101,7 @@ class Automation2 extends Model
      */
     public function produceSampleData()
     {
+        // Important: set DEMO=true
         // Reset all
         $this->resetListRelatedData();
 
@@ -1270,5 +1317,10 @@ class Automation2 extends Model
     {
         $this->last_error = $message;
         $this->save();
+    }
+
+    public function dump()
+    {
+        $this->subscribers();
     }
 }
