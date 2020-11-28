@@ -296,6 +296,42 @@ class Automation2Controller extends Controller
             ],
         ];
     }
+
+    /**
+     * Validate trigger.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function vaidateTrigger($request, $type) 
+    {
+        $valid = true;
+
+        $rules = $this->triggerRules()[$type];
+
+        // make validator
+        $validator = Validator::make($request->all(), $rules);
+
+        $valid = $valid && !$validator->fails();
+
+        if ($valid && $type == 'woo-abandoned-cart') {
+            $client = new \GuzzleHttp\Client();
+            $uri = $request->options['connect_url'];
+
+            try {
+                $response = $client->request('GET', $uri, [
+                    'headers' => [
+                        "content-type" => "application/json"
+                    ],
+                ]);
+            } catch (\Exception $e) {
+                $validator->errors()->add('options.connect_url', trans('messages.automation.can_not_connect_acelle_sync', ['error' => $e->getMessage()]));
+                $valid = false;
+            }
+            
+        }
+        
+        return [$validator,  $valid];
+    }
     
     /**
      * Select trigger type.
@@ -305,24 +341,22 @@ class Automation2Controller extends Controller
     public function triggerSelect(Request $request, $uid)
     {
         // init automation
-        $automation = Automation2::findByUid($uid);
-        $rules = $this->triggerRules()[$request->options['key']];
+        $automation = Automation2::findByUid($uid);        
         
         // authorize
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
         }
 
-        // make validator
-        $validator = Validator::make($request->all(), $rules);
+        list($validator, $result) = $this->vaidateTrigger($request, $request->options['key']);
             
         // redirect if fails
-        if ($validator->fails()) {
+        if (!$result) {
             return response()->view('automation2.triggerSelectConfirm', [
                 'key' => $request->options['key'],
                 'automation' => $automation,
                 'trigger' => $automation->getTrigger(),
-                'rules' => $rules,
+                'rules' => $this->triggerRules()[$request->options['key']],
                 'errors' => $validator->errors(),
             ], 400);
         }
@@ -334,7 +368,7 @@ class Automation2Controller extends Controller
                 'title' => trans('messages.automation.trigger.tree.' . $request->options["key"])
             ]),
             'options' => $request->options,
-            'rules' => $rules,
+            'rules' => $this->triggerRules()[$request->options['key']],
         ]);
     }
     
@@ -514,17 +548,15 @@ class Automation2Controller extends Controller
         }
         
         if ($request->isMethod('post')) {
-            // make validator
-            $validator = Validator::make($request->all(), $this->triggerRules()[$request->options['key']]);
-            $rules = $this->triggerRules()[$request->options['key']];
-                
+            list($validator, $result) = $this->vaidateTrigger($request, $request->options['key']);
+            
             // redirect if fails
-            if ($validator->fails()) {
+            if (!$result) {
                 return response()->view('automation2.triggerEdit', [
                     'key' => $request->options['key'],
                     'automation' => $automation,
                     'trigger' => $automation->getTrigger(),
-                    'rules' => $rules,
+                    'rules' => $this->triggerRules()[$request->options['key']],
                     'errors' => $validator->errors(),
                 ], 400);
             }
