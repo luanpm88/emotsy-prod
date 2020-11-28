@@ -3940,4 +3940,7 @@
   'api.notification' => 'Notification',
   'authentication' => 'Authentication',
   'automation.can_not_connect_acelle_sync' => 'Can not connect to Wordpress site. Error: :error',
+  'automation.shop_name' => 'Shop name',
+  'automation.shop_url' => 'URL',
+  'automation.connect_url.change' => 'Change',
 ) ?>
