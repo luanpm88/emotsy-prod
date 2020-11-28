@@ -548,17 +548,15 @@ class Automation2Controller extends Controller
         }
         
         if ($request->isMethod('post')) {
-            // make validator
-            $validator = Validator::make($request->all(), $this->triggerRules()[$request->options['key']]);
-            $rules = $this->triggerRules()[$request->options['key']];
-                
+            list($validator, $result) = $this->vaidateTrigger($request, $request->options['key']);
+            
             // redirect if fails
-            if ($validator->fails()) {
+            if (!$result) {
                 return response()->view('automation2.triggerEdit', [
                     'key' => $request->options['key'],
                     'automation' => $automation,
                     'trigger' => $automation->getTrigger(),
-                    'rules' => $rules,
+                    'rules' => $this->triggerRules()[$request->options['key']],
                     'errors' => $validator->errors(),
                 ], 400);
             }
