@@ -872,6 +872,8 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                     '{{ url('/images/backgrounds/images17.png') }}',
                 ],
                 customInlineEdit: function(container) {
+                    var thisEditor = this;
+
                   var tinyconfig = {
                       skin: 'oxide-dark',
                       inline: true,

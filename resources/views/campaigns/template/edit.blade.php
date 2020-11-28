@@ -63,6 +63,8 @@
                     '{{ url('/images/backgrounds/images17.png') }}',
                 ],
                 customInlineEdit: function(container) {
+                    thisEditor = this;
+                    
                   var tinyconfig = {
                       skin: 'oxide-dark',
                       inline: true,
