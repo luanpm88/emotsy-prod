@@ -17,8 +17,8 @@
                     <span class="text-muted second-line-mobile">{{ trans('messages.recipient') }}</span>
                 </td>
                 <td>
-                    <span class="no-margin kq_search">{{ $item->bounce_type }}</span>
-                    <span class="text-muted second-line-mobile">{{ trans('messages.bounce_type') }}</span>
+                    <span class="xtooltip tooltipstered no-margin kq_search" title="{{ trans('messages.raw') }}">{{ $item->bounce_type }}</span>
+                    <span class="xtooltip tooltipstered text-muted second-line-mobile" title="{{ trans('messages.raw') }}">{{ trans('messages.bounce_type') }}</span>
                 </td>
                 <!--
                 <td>
