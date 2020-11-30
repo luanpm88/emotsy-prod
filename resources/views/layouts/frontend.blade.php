@@ -128,7 +128,14 @@
 									</a>
 								</li>
 							@endif
-							<li rel0="SenderController" rel1="SendingDomainController">
+							<li rel1="SendingDomainController">
+								<a href="{{ action('SendingDomainController@index') }}" class="d-flex align-items-center">
+								<i class="acelle-icon mr-3" style="width:20	px">
+									<img src="{{ url('images/icons/'.$iconDir.'SVG/domain.svg') }}" />
+									</i> {{ trans('messages.sending_domains') }}
+								</a>
+							</li>
+							<li rel0="SenderController">
 								<a href="{{ action('SenderController@index') }}" class="d-flex align-items-center">
 								<i class="acelle-icon mr-3" style="width:20	px">
 									<img src="{{ url('images/icons/'.$iconDir.'SVG/identify.svg') }}" />
