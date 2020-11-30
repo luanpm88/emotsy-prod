@@ -2307,3 +2307,6 @@ input:checked + .slider:before {
 .logo-acelle .wide-logo-img {
   width: 120px;
 }
+.login-button {
+  cursor: pointer;
+}

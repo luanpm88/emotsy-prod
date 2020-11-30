@@ -3915,4 +3915,5 @@
   'subscription.get_started' => 'Get Started',
   'api.notification' => 'Notification',
   'authentication' => 'Authentication',
+  'login.please_wait' => 'Logging in, please wait...',
 ) ?>
