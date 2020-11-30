@@ -58,7 +58,7 @@
             {!! \Acelle\Library\Tool::showReCaptcha($errors) !!}
         @endif
 
-        <button type="submit" class="btn btn-lg bg-teal btn-block">{{ trans("messages.login") }} <i class="icon-circle-right2 position-right"></i></button>
+        <button type="submit" class="btn btn-lg bg-teal btn-block login-button">{{ trans("messages.login") }} <i class="icon-circle-right2 position-right"></i></button>
     </div>
 
     @if (\Acelle\Model\Setting::get('enable_user_registration') == 'yes')
@@ -70,5 +70,28 @@
     @endif
 </form>
 <!-- /advanced login -->
+
+<script>
+    function addButtonLoadingEffect(button) {
+        button.addClass('button-loading');
+        button.append('<div class="loader"></div>');
+    }
+
+    function removeButtonLoadingEffect(button) {
+        button.removeClass('button-loading');
+        button.find('.loader').remove();
+    }
+    $('.login-button').on('click', function(e) {
+        e.preventDefault();
+
+        $(this).html('{{ trans('messages.login.please_wait') }}');
+
+        $(this).closest('form').addClass('loading');
+
+        addButtonLoadingEffect($(this));
+
+        $(this).closest('form').submit();
+    });
+</script>
 
 @endsection

@@ -9,6 +9,16 @@
 *
 * ---------------------------------------------------------------------------- */
 
+function addButtonLoadingEffect(button) {
+    button.addClass('button-loading');
+    button.append('<div class="loader"></div>');
+}
+
+function removeButtonLoadingEffect(button) {
+    button.removeClass('button-loading');
+    button.find('.loader').remove();
+}
+
 function openBuilder(url) {
     var div = $('<div class="full-iframe-popup">').html(`
         <div class="loading classic-loader frame-classic-loader"><div class="text-center inner"><div class="box-loading"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div></div></div>

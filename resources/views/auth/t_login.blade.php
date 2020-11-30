@@ -227,6 +227,8 @@
             $(this).closest('form').addClass('loading');
 
             addButtonLoadingEffect($(this));
+
+            $(this).closest('form').submit();
         });
     </script>
 @endsection
