@@ -11,11 +11,8 @@
                     <h5 class="no-margin text-bold">
                         <a class="kq_search" href="{{ action('Admin\CustomerController@edit', $item->uid) }}">{{ $item->displayName() }}</a>
                     </h5>
-                    <span class="text-muted kq_search">{{ $item->user->email }}</span>
-                    @can('readAll', $item)
-                        <br />
-                        @include ('admin.modules.admin_line', ['admin' => $item->admin])
-                    @endcan
+                    <span class="text-muted kq_search">{{ $item->user->email }}</span><br>
+                    <span class="text-muted kq_search">{{ trans('messages.customer.bounce_feedback_rate') }} <span title="{{ trans('messages.customer.bounce_feedback_rate_desc') }}" class="xtooltip">{{ number_to_percentage($item->readCache('Bounce/FeedbackRate') ?? 0) }}</span></span>
                     <br />
                     <span class="text-muted2">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
                 </td>

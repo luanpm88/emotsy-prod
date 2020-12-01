@@ -3923,4 +3923,31 @@
   'subscription.get_started' => 'Get Started',
   'api.notification' => 'Notification',
   'authentication' => 'Authentication',
+  'customer.bounce_feedback_rate' => 'Bounce/Feedback rate:',
+  'customer.bounce_feedback_rate_desc' => 'Bounce / feedback rate refers to the percentage of email addresses in your subscriber list that didn\'t receive your message because it was returned by a recipient mail server or is reported as spam/abuse by the recipient.',
+  'automation.trigger.icon.woo-abandoned-cart' => '',
+  'automation.trigger.woo-abandoned-cart' => 'Abandoned Cart Reminder',
+  'automation.trigger.woo-abandoned-cart.desc' => 'Send your buyer a reminder if they left
+      something in cart',
+  'automation.trigger.woo-abandoned-cart.intro' => 'Send your buyer a reminder if they left
+      something in cart.<br/>Enter your WordPress site\'s endpoint to connect. If you are not sure
+      what your WordPress endpoint is, please install
+      <a target="_blank" href="https://1drv.ms/u/s!ApyR6ghcQzmdmOZVyzHYcqUHYJj2Vg?e=cQ4o5g">WP2Acelle</a> plugin',
+  'automation.trigger.tree.woo-abandoned-cart' => 'Abandoned Cart Reminder',
+  'automation.condition.open' => 'Subscriber read an Email',
+  'automation.condition.click' => 'Subscriber clicks on a Link',
+  'automation.condition.cart_buy_anything' => 'Buy anything in cart',
+  'automation.condition.cart_buy_item' => 'Buy a particular item',
+  'automation.action.save' => 'Save',
+  'automation.action.condition.cart_buy_anything.title' => 'Condition: Buy anything in cart',
+  'automation.action.condition.cart_buy_item.title' => 'Condition: Buy “:item” item',
+  'condition.which_woo_item' => 'Which Woocommerce product',
+  'condition.select_woo_item' => 'Select item',
+  'automation.intro.woo-abandoned-cart' => 'Send your buyer a reminder if they left
+      something in cart',
+  'automation.woo_items' => 'Woo Items',
+  'automation.item_title' => '{PRODUCT_NAME}',
+  'automation.item_description' => '{PRODUCT_DESCRIPTION}',
+  'automation.view_more' => 'View more',
+  'automation.can_not_connect_acelle_sync' => 'Can not connect to Wordpress site. Error: :error',
 ) ?>

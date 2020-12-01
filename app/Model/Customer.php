@@ -1121,6 +1121,9 @@ class Customer extends Model implements BillableUserInterface
             'MailListSelectOptions' => function (&$customer) {
                 return $customer->getMailListSelectOptions([], true);
             },
+            'Bounce/FeedbackRate' => function (&$customer) {
+                return $customer->getBounceFeedbackRate();
+            },
 
         ];
 
@@ -1171,6 +1174,20 @@ class Customer extends Model implements BillableUserInterface
         } else {
             return $default;
         }
+    }
+
+    public function getBounceFeedbackRate()
+    {
+        $delivery = $this->trackingLogs()->count();
+
+        if ($delivery == 0) {
+            return 0;
+        }
+
+        $bounce = DB::table('bounce_logs')->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'bounce_logs.message_id')->count();
+        $feedback = DB::table('feedback_logs')->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'feedback_logs.message_id')->count();
+
+        $percentage = ($feedback + $bounce) / $delivery;
     }
 
     /**

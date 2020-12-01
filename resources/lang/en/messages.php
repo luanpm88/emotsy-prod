@@ -958,6 +958,8 @@
   'customer_groups.custom_order.updated' => 'Customer groups order were successfully updated',
   'customer_group_empty_line_1' => 'You have no customer group',
   'create_customer' => 'New customer',
+  'customer.bounce_feedback_rate' => 'Bounce/Feedback rate:',
+  'customer.bounce_feedback_rate_desc' => 'Bounce / feedback rate refers to the percentage of email addresses in your subscriber list that didn\'t receive your message because it was returned by a recipient mail server or is reported as spam/abuse by the recipient.',
   'customer.updated' => 'Customer was successfully updated',
   'customer.created' => 'Customer was successfully created',
   'customers.disabled' => 'Customer was successfully disabled',
