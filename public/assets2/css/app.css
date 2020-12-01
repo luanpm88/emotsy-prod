@@ -1400,3 +1400,16 @@ a.trigger-woo-abandoned-cart:hover {
 .form-group .select2-container {
   width: 100%!important;
 }
+.wp-shop-info {
+  display: flex;
+  border: solid 1px #ddd;
+  padding: 10px 15px;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+.wp-shop-info .logo-col {
+  width: 48px;
+}
+.wp-shop-info .logo-col img {
+  width: 100%;
+}

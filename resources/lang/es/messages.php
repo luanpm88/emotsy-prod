@@ -3950,4 +3950,8 @@
   'automation.item_description' => '{PRODUCT_DESCRIPTION}',
   'automation.view_more' => 'View more',
   'automation.can_not_connect_acelle_sync' => 'Can not connect to Wordpress site. Error: :error',
+  'login.please_wait' => 'Logging in, please wait...',
+  'automation.shop_name' => 'Shop name',
+  'automation.shop_url' => 'URL',
+  'automation.connect_url.change' => 'Change',
 ) ?>
