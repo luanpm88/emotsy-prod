@@ -60,7 +60,7 @@ class SendingServerSparkPost extends SendingServer
     public function client()
     {
         if (!self::$client) {
-            $httpClient = new GuzzleAdapter(new Client());
+            $httpClient = new GuzzleAdapter(new Client(['verify' => false]));
             $sparky = new SparkPost($httpClient, ['key' => $this->api_key, 'host' => $this->host]);
             $sparky->setOptions(['async' => false]);
             self::$client = $sparky;

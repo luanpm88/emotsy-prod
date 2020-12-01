@@ -823,7 +823,7 @@ class Tool
         }
 
         // Check recaptch
-        $client = new \GuzzleHttp\Client();
+        $client = new \GuzzleHttp\Client(['verify' => false]);
         $res = $client->post('https://www.google.com/recaptcha/api/siteverify', ['verify' => false, 'form_params' => [
             'secret' => '6LfyISoTAAAAAC0hJ916unwi0m_B0p7fAvCRK4Kp',
             'remoteip' => $request->ip(),
