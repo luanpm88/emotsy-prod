@@ -9,6 +9,16 @@
     <script src="{{ URL::asset('assets/lib/lightslider/js/lightslider.js') }}"></script>
 
     <script>
+        function addButtonLoadingEffect(button) {
+            button.addClass('button-loading');
+            button.append('<div class="loader"></div>');
+        }
+
+        function removeButtonLoadingEffect(button) {
+            button.removeClass('button-loading');
+            button.find('.loader').remove();
+        }
+
         $(document).ready(function() {
             $(".login-slider").lightSlider({
                 item: 1,
@@ -20,6 +30,71 @@
             });
         });
     </script>
+
+    <style>
+        @-webkit-keyframes load8 {
+        0% {
+            -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+        }
+        100% {
+            -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+        }
+        }
+        @keyframes load8 {
+        0% {
+            -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+        }
+        100% {
+            -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+        }
+        }
+
+        .button-loading {
+        opacity: 0.8;
+        pointer-events: none;
+        padding-right: 32px!important;
+        position: relative;
+        }
+        .button-loading .loader, .button-loading .loader:after {
+        border-radius: 50%;
+        width: 2em;
+        height: 2em;
+        }
+        .button-loading .loader {
+        font-size: 10px;
+        z-index: 1000;
+        position: relative;
+        text-indent: -9999em;
+        border-top: 0.2em solid rgba(0, 0, 0, 0.4);
+        border-right: 0.2em solid rgba(0, 0, 0, 0.4);
+        border-bottom: 0.2em solid rgba(0, 0, 0, 0.4);
+        border-left: 0.2em solid #ddd;
+        -webkit-transform: translateZ(0);
+        -ms-transform: translateZ(0);
+        transform: translateZ(0);
+        -webkit-animation: load8 1.1s infinite linear;
+        animation: load8 1.1s infinite linear;
+        margin: 4px 0 0 5px;
+        position: absolute;
+        top: 6px;
+        }
+        .button-primary.button-loading .loader {
+        border-top: 0.2em solid rgba(255, 255, 255, 0.2);
+        border-right: 0.2em solid rgba(255, 255, 255, 0.2);
+        border-bottom: 0.2em solid rgba(255, 255, 255, 0.2);
+        border-left: 0.2em solid #ffffff;
+        }
+        form.loading {
+            pointer-events: none;
+        }
+        form.loading input {
+            background: rgba(255,255,255,0.7)
+        }
+    </style>
 
     <div class="login-container dark full-height flex">
         <div class="col-md-7 phone-hide right-col">
@@ -129,7 +204,7 @@
 
                 <div class="form-group">
                     <div class="">
-                        <button type="submit" class="btn btn-primary full-width">
+                        <button type="submit" class="btn btn-primary full-width login-button">
                             {{ trans("messages.login") }}
                         </button>
                         <div class="text-center mt-lvl3">
@@ -143,5 +218,18 @@
             </form>
         </div>
     </div>
+    <script>
+        $('.login-button').on('click', function(e) {
+            e.preventDefault();
+
+            $(this).html('{{ trans('messages.login.please_wait') }}');
+
+            $(this).closest('form').addClass('loading');
+
+            addButtonLoadingEffect($(this));
+
+            $(this).closest('form').submit();
+        });
+    </script>
 @endsection
 
