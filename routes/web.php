@@ -171,6 +171,18 @@ Route::group(['middleware' => ['not_installed']], function () {
     Route::get('appkey', 'Controller@appkey')->name('appkey');
 });
 
+Route::group(['middleware' => ['not_installed', 'auth']], function () {
+    // get files from download
+    Route::get('/download/{name?}', [ function ($name) {
+        $path = storage_path('app/download/' . $name);
+        if (\File::exists($path)) {
+            return response()->download($path);
+        } else {
+            abort(404);
+        }
+    }])->where('name', '.+')->name('download');
+});
+
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function () {
     // Account subscription
     Route::post('subscription/abort', 'AccountSubscriptionController@abort');
@@ -201,9 +213,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     // Customer login back
     Route::get('customers/login-back', 'CustomerController@loginBack');
     Route::get('customers/admin-area', 'CustomerController@adminArea');
-});
 
-Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function () {
     // Customer profile/information
     Route::get('account/profile', 'AccountController@profile');
     Route::post('account/profile', 'AccountController@profile');

@@ -3844,9 +3844,10 @@
   'automation.trigger.woo-abandoned-cart.desc' => 'Send your buyer a reminder if they left
       something in cart',
   'automation.trigger.woo-abandoned-cart.intro' => 'Send your buyer a reminder if they left
-      something in cart.<br/>Enter your WordPress site\'s endpoint to connect. If you are not sure
+      something in cart.<br/>Enter your WordPress site\'s endpoint to connect.',
+  'automation.trigger.woo-abandoned-cart.download_plugin' => 'If you are not sure
       what your WordPress endpoint is, please install
-      <a target="_blank" href="https://1drv.ms/u/s!ApyR6ghcQzmdmOZVyzHYcqUHYJj2Vg?e=cQ4o5g">AcelleSync</a> plugin',
+      <a target="_blank" href=":link">AcelleSync</a> plugin',
   'automation.trigger.tree.woo-abandoned-cart' => 'Abandoned Cart Reminder',
   'automation.condition.open' => 'Subscriber read an Email',
   'automation.condition.click' => 'Subscriber clicks on a Link',
