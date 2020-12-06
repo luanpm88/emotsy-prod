@@ -3369,6 +3369,10 @@ abstract class AbsCampaign extends Model
 
     public function occupiedByOtherAnotherProcess()
     {
+        if (!function_exists('posix_getpid')) {
+            MailLog::warning('posix_getpid() function not available, skip process checking');
+            return false;
+        }
         return (!is_null($this->running_pid) && posix_getpgid($this->running_pid));
     }
 

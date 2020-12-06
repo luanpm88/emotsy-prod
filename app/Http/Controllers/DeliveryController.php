@@ -163,7 +163,7 @@ class DeliveryController extends Controller
         if ($message['Type'] === 'SubscriptionConfirmation') {
             MailLog::info('subscription received');
             // Send a request to the SubscribeURL to complete subscription
-            (new Client())->get($message['SubscribeURL']);
+            (new Client(['verify' => false]))->get($message['SubscribeURL']);
 
             MailLog::info('subscription confirmed');
 

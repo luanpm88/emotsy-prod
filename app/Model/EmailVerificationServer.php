@@ -57,7 +57,7 @@ class EmailVerificationServer extends Model
         // retrieve the service settings
         $config = $this->getConfig();
         $options = $this->getOptions();
-        $client = new Client();
+        $client = new Client(['verify' => false]);
 
         // build the request URI
         $uri = $config['uri'];

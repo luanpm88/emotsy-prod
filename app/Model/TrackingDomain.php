@@ -192,7 +192,7 @@ class TrackingDomain extends Model
     public function verify($debug = false)
     {
         try {
-            $client = new Client();
+            $client = new Client(['verify' => false]);
             $response = $client->request('GET', $this->getVerificationUrl());
             
             if ($response->getBody() == get_app_identity()) {

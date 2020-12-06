@@ -68,7 +68,7 @@ class Campaign extends AbsCampaign
 
             // Only run multi-process if pcntl is enabled
             $processes = (int) $this->customer->getOption('max_process');
-            if (extension_loaded('pcntl') && $processes > 1) {
+            if (extension_loaded('pcntl') && function_exists('pcntl_fork') && $processes > 1) {
                 MailLog::info('Run in multi-process mode');
                 $this->runMultiProcesses();
             } else {
