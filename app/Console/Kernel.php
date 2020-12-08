@@ -5,10 +5,12 @@ namespace Acelle\Console;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Acelle\Model\Automation2;
+use Acelle\Model\Notification;
 use Acelle\Cashier\Cashier;
 use Acelle\Cashier\Subscription;
 use Acelle\Model\Setting;
 use Laravel\Tinker\Console\TinkerCommand;
+use Exception;
 
 class Kernel extends ConsoleKernel
 {
@@ -38,6 +40,16 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        $title = 'Server does not support PHP process';
+        $message = 'The Process class relies on proc_open, which is not available on your hosting server PHP installation. Please check with your hosting provider to enable it.';
+        if (!function_exists('proc_open')) {
+            Notification::cleanupDuplicateNotifications($title);
+            Notification::warning(['title' => $title, 'message' => $message]);
+            throw new Exception($message);
+        } else {
+            Notification::cleanupDuplicateNotifications($title);
+        }
+
         // Log last execution time
         // Move the event into a schedule::call to prevent it from triggering every time "php artisan" command is executed
         $schedule->call(function () {
