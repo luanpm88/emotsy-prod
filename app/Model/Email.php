@@ -885,7 +885,7 @@ class Email extends Model
                             <div class="">
                                 <div class="img-col mb-3">
                                     <div class="d-flex align-items-center justify-content-center" style="height: 200px;">
-                                        <a href="'.$item["link"].'" class="mr-4"><img src="'.$item["image"].'" style="max-height:200px;max-width:100%;" /></a>
+                                        <a style="width:100%" href="'.$item["link"].'" class="mr-4"><img width="100%" src="'.($item["image"] ? $item["image"] : url('images/cart_item.svg')).'" style="max-height:200px;max-width:100%;" /></a>
                                     </div>
                                 </div>
                                 <div class="">
@@ -921,7 +921,11 @@ class Email extends Model
                     
                     $item = json_decode($response->getBody(), true);
 
-                    $element->find('img', 0)->src = $item["image"];
+                    if ($item["image"]) {
+                        $element->find('img', 0)->src = $item["image"];
+                    } else {
+                        $element->find('img', 0)->src = url('images/cart_item.svg');
+                    }
                     $element->find('.product-name', 0)->innertext = $item["name"];
                     $element->find('.product-description', 0)->innertext = $item["description"];
                     $element->find('.product-link', 0)->href = $item["link"];

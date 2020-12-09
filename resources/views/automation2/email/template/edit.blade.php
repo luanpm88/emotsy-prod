@@ -221,7 +221,7 @@
                                     <div class="">
                                         <div class="img-col mb-3">
                                             <div class="d-flex align-items-center justify-content-center" style="height: 200px;">
-                                                <a href="`+item.link+`" class="mr-4"><img src="`+item.image+`" style="max-height:200px;max-width:100%;" /></a>
+                                                <a style="width:100%" href="`+item.link+`" class="mr-4"><img width="100%" src="`+(item.image ? item.image : '{{ url('images/cart_item.svg') }}')+`" style="max-height:200px;max-width:100%;" /></a>
                                             </div>
                                         </div>
                                         <div class="">
@@ -698,7 +698,11 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                         url: url
                     })
                     .done(function( data ) {
-                        element.obj.find('img').attr('src', data.image);
+                        if (data.image) {
+                            element.obj.find('img').attr('src', data.image);
+                        } else {
+                            element.obj.find('img').attr('src', '{{ url('images/cart_item.svg') }}');
+                        }
                         element.obj.find('.product-name').html(data.name);
                         element.obj.find('.product-description').html(data.description);
                         element.obj.find('.product-link').attr('href', data.link);
