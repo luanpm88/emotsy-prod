@@ -26,7 +26,11 @@ class FileController extends Controller
         // Get path
         $path = $user->getStoragePath();
 
-        $files = json_decode($request->all()["files"]);
+        if (!is_array($request->all()["files"])) {
+            $files = json_decode($request->all()["files"]);
+        } else {
+            $files = $request->all()["files"];
+        }
 
         $result = [];
         foreach ($files as $file) {
