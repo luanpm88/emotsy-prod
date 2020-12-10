@@ -232,7 +232,7 @@
                                             <p><strong>`+item.price+`</strong></p>
                                             <a href="`+item.link+`" style="background-color: #9b5c8f;
         border-color: #9b5c8f;" class="btn btn-primary text-white">
-                                                {{ trans('messages.automation.view_more') }}
+                                                {{ trans('messages.automation.buy_now') }}
                                             </a>
                                         </div>
                                     </div>
@@ -293,7 +293,7 @@
                                     <p><strong>*|PRODUCT_PRICE|*</strong></p>
                                     <a href="*|PRODUCT_URL|*" style="background-color: #9b5c8f;
 border-color: #9b5c8f;" class="btn btn-primary text-white">
-                                        {{ trans('messages.automation.view_more') }}
+                                        {{ trans('messages.automation.buy_now') }}
                                     </a>
                                 </div>
                             </div>
@@ -432,7 +432,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                 this.setContentHtml(`
                     <div data-items-number="4" builder-element="WooItemsElement" data-max-items="4" data-display="4" data-sort-by="date_added_desc" builder-draggable class="py-3 px-3 woo-cart-items-widget">
                         <span class="woo-preview-but" style="display:none">Preview</span>
-                        <span class="woo-unpreview-but" style="display:none">close</span>
+                        <span class="woo-unpreview-but" style="display:none">Close preview</span>
                         <div class="row py-3 woo-items">
                             <div class="woo-col-item mb-4 mt-4 col-md-3">
                                 <div class="">
@@ -447,7 +447,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                                         <p><strong>*|PRODUCT_PRICE|*</strong></p>
                                         <a href="*|PRODUCT_URL|*" style="background-color: #9b5c8f;
     border-color: #9b5c8f;" class="btn btn-primary text-white">
-                                            {{ trans('messages.automation.view_more') }}
+                                            {{ trans('messages.automation.buy_now') }}
                                         </a>
                                     </div>
                                 </div>
@@ -465,7 +465,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                                         <p><strong>*|PRODUCT_PRICE|*</strong></p>
                                         <a href="*|PRODUCT_URL|*" style="background-color: #9b5c8f;
     border-color: #9b5c8f;" class="btn btn-primary text-white">
-                                            {{ trans('messages.automation.view_more') }}
+                                            {{ trans('messages.automation.buy_now') }}
                                         </a>
                                     </div>
                                 </div>
@@ -483,7 +483,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                                         <p><strong>*|PRODUCT_PRICE|*</strong></p>
                                         <a href="*|PRODUCT_URL|*" style="background-color: #9b5c8f;
     border-color: #9b5c8f;" class="btn btn-primary text-white">
-                                            {{ trans('messages.automation.view_more') }}
+                                            {{ trans('messages.automation.buy_now') }}
                                         </a>
                                     </div>
                                 </div>
@@ -501,7 +501,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                                         <p><strong>*|PRODUCT_PRICE|*</strong></p>
                                         <a href="*|PRODUCT_URL|*" style="background-color: #9b5c8f;
     border-color: #9b5c8f;" class="btn btn-primary text-white">
-                                            {{ trans('messages.automation.view_more') }}
+                                            {{ trans('messages.automation.buy_now') }}
                                         </a>
                                     </div>
                                 </div>
@@ -871,7 +871,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                 this.setContentHtml(`
                     <div builder-element="WooItemElement" builder-draggable class="py-3 px-3 woo-cart-item-widget">
                         <span class="woo-preview-but" style="display:none">Preview</span>
-                        <span class="woo-unpreview-but" style="display:none">close</span>
+                        <span class="woo-unpreview-but" style="display:none">Close preview</span>
                         <div class="d-flex">
                             <div class="">
                                 <a href="*|PRODUCT_URL|*" class="product-link">
@@ -889,7 +889,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                                     <h4 builder-element><strong class="product-price">*|PRODUCT_PRICE|*</strong></h4>
                                     <a style="background-color: #9b5c8f;
     border-color: #9b5c8f;" builder-element builder-inline-edit href="*|PRODUCT_URL|*" class="mt-4 btn btn-primary text-white product-view-button product-link">
-                                        {{ trans('messages.automation.view_more') }}
+                                        {{ trans('messages.automation.buy_now') }}
                                     </a>
                                 </div>
                             </div>

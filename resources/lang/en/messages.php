@@ -3864,6 +3864,7 @@
   'automation.item_title' => '{PRODUCT_NAME}',
   'automation.item_description' => '{PRODUCT_DESCRIPTION}',
   'automation.view_more' => 'View more',
+  'automation.buy_now' => 'Buy now',
   'payment.enable' => 'Enable',
   'payment.disable' => 'Disable',
   'payment.show' => 'Show',
