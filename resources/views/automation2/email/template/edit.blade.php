@@ -430,11 +430,11 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
 
                 // default content html
                 this.setContentHtml(`
-                    <div data-items-number="3" builder-element="WooItemsElement" data-max-items="3" data-display="3" data-sort-by="date_added_desc" builder-draggable class="py-3 px-3 woo-cart-items-widget">
+                    <div data-items-number="4" builder-element="WooItemsElement" data-max-items="4" data-display="4" data-sort-by="date_added_desc" builder-draggable class="py-3 px-3 woo-cart-items-widget">
                         <span class="woo-preview-but" style="display:none">Preview</span>
                         <span class="woo-unpreview-but" style="display:none">close</span>
                         <div class="row py-3 woo-items">
-                            <div class="woo-col-item mb-4 mt-4 col-md-4">
+                            <div class="woo-col-item mb-4 mt-4 col-md-3">
                                 <div class="">
                                     <div class="img-col mb-3">
                                         <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
@@ -452,7 +452,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                                     </div>
                                 </div>
                             </div>
-                            <div class="woo-col-item mb-4 mt-4 col-md-4">
+                            <div class="woo-col-item mb-4 mt-4 col-md-3">
                                 <div class="">
                                     <div class="img-col mb-3">
                                         <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
@@ -470,7 +470,25 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                                     </div>
                                 </div>
                             </div>
-                            <div class="woo-col-item mb-4 mt-4 col-md-4">
+                            <div class="woo-col-item mb-4 mt-4 col-md-3">
+                                <div class="">
+                                    <div class="img-col mb-3">
+                                        <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
+                                    </div>
+                                    <div class="">
+                                        <p class="font-weight-normal product-name mb-1">
+                                            <a style="color: #333;" href="*|PRODUCT_URL|*" class="mr-4">*|PRODUCT_NAME|*</a>
+                                        </p>
+                                        <p class=" product-description">*|PRODUCT_DESCRIPTION|*</p>
+                                        <p><strong>*|PRODUCT_PRICE|*</strong></p>
+                                        <a href="*|PRODUCT_URL|*" style="background-color: #9b5c8f;
+    border-color: #9b5c8f;" class="btn btn-primary text-white">
+                                            {{ trans('messages.automation.view_more') }}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="woo-col-item mb-4 mt-4 col-md-3">
                                 <div class="">
                                     <div class="img-col mb-3">
                                         <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
