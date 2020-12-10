@@ -272,7 +272,7 @@ class ApiHelper
 
                 [
                     'method' => 'PATCH',
-                    'uri' => '/api/v1/lists/{list_uid}/subscribers/{uid}/subscribe',
+                    'uri' => '/api/v1/subscribers/{uid}/subscribe',
                     'description' => 'Subscribe a subscriber',
                     'parameters' => [
                         ['name' => '$list_uid', 'description' => 'List\'s uid'],
@@ -280,13 +280,13 @@ class ApiHelper
                     ],
                     'returns' => 'Result messages in json',
                     'example' => 'curl -X PATCH -H "accept:application/json" -G \
-' .str_replace('-ID-', '<redbold>{uid}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@subscribe", ['list_id' => '-LIST_ID-',  'id' => '-ID-']))).'? \
+' .str_replace('-ID-', '<redbold>{uid}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@subscribe", ['id' => '-ID-']))).'? \
 -d api_token=' .\Auth::user()->api_token,
                 ],
 
                 [
                     'method' => 'PATCH',
-                    'uri' => '/api/v1/lists/{list_uid}/subscribers/{uid}/unsubscribe',
+                    'uri' => '/api/v1/subscribers/{uid}/unsubscribe',
                     'description' => 'Unsubscribe a subscriber',
                     'parameters' => [
                         ['name' => '$list_uid', 'description' => 'List\'s uid'],
@@ -294,13 +294,13 @@ class ApiHelper
                     ],
                     'returns' => 'Result messages in json',
                     'example' => 'curl -X PATCH -H "accept:application/json" -G \
-' .str_replace('-ID-', '<redbold>{uid}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@unsubscribe", ['list_id' => '-LIST_ID-',  'id' => '-ID-']))).'? \
+' .str_replace('-ID-', '<redbold>{uid}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@unsubscribe", ['id' => '-ID-']))).'? \
 -d api_token=' .\Auth::user()->api_token,
                 ],
 
                 [
                     'method' => 'DELETE',
-                    'uri' => '/api/v1/lists/{list_uid}/subscribers/{uid}/delete',
+                    'uri' => '/api/v1/subscribers/{uid}',
                     'description' => 'Delete a subscriber',
                     'parameters' => [
                         ['name' => '$list_uid', 'description' => 'List\'s uid'],
@@ -308,7 +308,7 @@ class ApiHelper
                     ],
                     'returns' => 'Result messages in json',
                     'example' => 'curl -X DELETE -H "accept:application/json" -G \
-' .str_replace('-ID-', '<redbold>{uid}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@delete", ['list_id' => '-LIST_ID-',  'id' => '-ID-']))).'? \
+' .str_replace('-ID-', '<redbold>{uid}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@delete", ['id' => '-ID-']))).'? \
 -d api_token=' .\Auth::user()->api_token,
                 ],
             ],

@@ -220,23 +220,17 @@ class SubscriberController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function subscribe($list_id, $id)
+    public function subscribe($uid)
     {
         $user = \Auth::guard('api')->user();
-
-        $list = \Acelle\Model\MailList::findByUid($list_id);
-
-        // authorize
-        if (!is_object($list)) {
-            return \Response::json(array('status' => 0, 'message' => trans('List not found')), 404);
-        }
-
-        $subscriber = \Acelle\Model\Subscriber::findByUid($id);
+        $subscriber = \Acelle\Model\Subscriber::findByUid($uid);
 
         // check if item exists
         if (!is_object($subscriber)) {
             return \Response::json(array('status' => 0, 'message' => 'Item not found'), 404);
         }
+
+        $list = $subscriber->mailList;
 
         // check if item subscribed
         if ($subscriber->status == 'subscribed') {
@@ -268,23 +262,17 @@ class SubscriberController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function unsubscribe($list_id, $id)
+    public function unsubscribe($uid)
     {
         $user = \Auth::guard('api')->user();
-
-        $list = \Acelle\Model\MailList::findByUid($list_id);
-
-        // authorize
-        if (!is_object($list)) {
-            return \Response::json(array('status' => 0, 'message' => trans('List not found')), 404);
-        }
-
-        $subscriber = \Acelle\Model\Subscriber::findByUid($id);
+        $subscriber = \Acelle\Model\Subscriber::findByUid($uid);
 
         // check if item exists
         if (!is_object($subscriber)) {
             return \Response::json(array('status' => 0, 'message' => 'Item not found'), 404);
         }
+
+        $list = $subscriber->mailList;
 
         // check if item unsubscribed
         if ($subscriber->status == 'unsubscribed') {
@@ -316,21 +304,17 @@ class SubscriberController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function delete($list_id, $id)
+    public function delete($uid)
     {
         $user = \Auth::guard('api')->user();
-        $list = \Acelle\Model\MailList::findByUid($list_id);
+        $subscriber = \Acelle\Model\Subscriber::findByUid($uid);
 
-        // authorize
-        if (!is_object($list)) {
-            return \Response::json(array('message' => trans('List not found')), 404);
-        }
-
-        $subscriber = \Acelle\Model\Subscriber::findByUid($id);
-
+        // check if item exists
         if (!is_object($subscriber)) {
-            $subscriber = \Acelle\Model\Subscriber::where('mail_list_id', '=', $list->id)->where('email', '=', $id)->first();
+            return \Response::json(array('status' => 0, 'message' => 'Item not found'), 404);
         }
+
+        $list = $subscriber->mailList;
 
         // check if item exists
         if (!is_object($subscriber)) {
