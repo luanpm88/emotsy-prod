@@ -165,20 +165,22 @@ class SubscriberController extends Controller
     /**
      * Display the specified subscriber information.
      *
-     * GET /api/v1/lists/{list_id}/subscribers/{id}
+     * GET /api/v1/subscribers/{id}
      *
      * @param string $list_id List's id
      * @param string $id      Subsciber's id
      *
      * @return \Illuminate\Http\Response
      */
-    public function show($list_id, $uid)
+    public function show($uid)
     {
         $user = \Auth::guard('api')->user();
 
         $item = \Acelle\Model\Subscriber::
             where('uid', '=', $uid)
             ->first();
+
+        $list = $item->mailList;
 
         // check if item exists
         if (!is_object($item)) {

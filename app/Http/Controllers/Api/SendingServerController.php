@@ -22,7 +22,7 @@ class SendingServerController extends Controller
         $user = \Auth::guard('api')->user();
         
         // authorize
-        if (!$user->can('readAll', new \Acelle\Model\SendingServer())) {
+        if (!$user->admin->can('readAll', new \Acelle\Model\SendingServer())) {
             return \Response::json(array('message' => 'Unauthorized'), 401);
         }
         
