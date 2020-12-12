@@ -3954,4 +3954,7 @@
   'automation.shop_name' => 'Shop name',
   'automation.shop_url' => 'URL',
   'automation.connect_url.change' => 'Change',
+  'automation.trigger.woo-abandoned-cart.download_plugin' => 'If you are not sure
+      what your WordPress endpoint is, please install
+      <a target="_blank" href=":link">AcelleSync</a> plugin',
 ) ?>
