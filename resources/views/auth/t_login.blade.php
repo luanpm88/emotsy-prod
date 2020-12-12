@@ -11,7 +11,7 @@
     <script>
         function addButtonLoadingEffect(button) {
             button.addClass('button-loading');
-            button.append('<div class="loader"></div>');
+            button.prepend('<div class="loader"></div>');
         }
 
         function removeButtonLoadingEffect(button) {
@@ -65,22 +65,25 @@
         height: 2em;
         }
         .button-loading .loader {
-        font-size: 10px;
-        z-index: 1000;
-        position: relative;
-        text-indent: -9999em;
-        border-top: 0.2em solid rgba(0, 0, 0, 0.4);
-        border-right: 0.2em solid rgba(0, 0, 0, 0.4);
-        border-bottom: 0.2em solid rgba(0, 0, 0, 0.4);
-        border-left: 0.2em solid #ddd;
-        -webkit-transform: translateZ(0);
-        -ms-transform: translateZ(0);
-        transform: translateZ(0);
-        -webkit-animation: load8 1.1s infinite linear;
-        animation: load8 1.1s infinite linear;
-        margin: 4px 0 0 5px;
-        position: absolute;
-        top: 6px;
+            font-size: 10px;
+            z-index: 1000;
+            position: relative;
+            text-indent: -9999em;
+            border-top: 0.2em solid rgba(0, 0, 0, 0.4);
+            border-right: 0.2em solid rgba(0, 0, 0, 0.4);
+            border-bottom: 0.2em solid rgba(0, 0, 0, 0.4);
+            border-left: 0.2em solid #ddd;
+            -webkit-transform: translateZ(0);
+            -ms-transform: translateZ(0);
+            transform: translateZ(0);
+            -webkit-animation: load8 1.1s infinite linear;
+            animation: load8 1.1s infinite linear;
+            margin: 4px 0 0 5px;
+            /* position: absolute; */
+            display: inline-block;
+            top: 4px;
+            margin-top: -12px;
+            margin-right: 7px;
         }
         .button-primary.button-loading .loader {
         border-top: 0.2em solid rgba(255, 255, 255, 0.2);
@@ -204,7 +207,7 @@
 
                 <div class="form-group">
                     <div class="">
-                        <button type="submit" class="btn btn-primary full-width login-button">
+                        <button type="submit" class="btn btn-primary full-width login-button ">
                             {{ trans("messages.login") }}
                         </button>
                         <div class="text-center mt-lvl3">

@@ -3984,7 +3984,7 @@ animation: load8 1.1s infinite linear;
 margin: 4px 0 0 5px;
 position: absolute;
 top: 2px;
-right: 10px;
+left: 5px;
 }
 .button-primary.button-loading .loader {
 border-top: 0.2em solid rgba(255, 255, 255, 0.2);
