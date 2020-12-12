@@ -1,36 +1,25 @@
 .woo-cart-item-widget {
     position: relative;
 }
-.woo-cart-item-widget .woo-preview-but {
+.woo-cart-item-widget .woo-preview-but, .woo-cart-item-widget .woo-unpreview-but {
     top: 0;
-    padding: 0 6px;
-    position: absolute;
-    right: 0;
-    border-radius: 3px;
-    height: 23px;
-    border: solid 1px #999;
-    align-items: center;
-    justify-content: center;
-    font-size: small;
-    cursor: pointer;
-    z-index: 1;
-    visibility: hidden;
-}
-.woo-cart-item-widget .woo-unpreview-but {
-    top: 0;
-    font-family: Material Icons Outlined;
+    padding: 0 10px;
     position: absolute;
     right: 0;
     border-radius: 3px;
     height: 30px;
-    width: 30px;
     border: solid 1px #999;
     align-items: center;
     justify-content: center;
-    font-size: 21px;
     cursor: pointer;
     z-index: 1;
     visibility: hidden;
+    transition: all 0.2s ease-in-out;
+}
+.woo-cart-item-widget .woo-preview-but:hover, .woo-cart-item-widget .woo-unpreview-but:hover {
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+    background-color: rgba(155,92,143,0.9);
+    color: #fff;
 }
 .woo-cart-item-widget[preview=no] .woo-preview-but {
     display: flex!important;
@@ -48,34 +37,24 @@
 .woo-cart-items-widget {
     position: relative;
 }
-.woo-cart-items-widget .woo-preview-but {
+.woo-cart-items-widget .woo-preview-but, .woo-cart-items-widget .woo-unpreview-but {
     top: 0;
-    padding: 0 6px;
-    position: absolute;
-    right: 0;
-    border-radius: 3px;
-    height: 23px;
-    border: solid 1px #999;
-    align-items: center;
-    justify-content: center;
-    font-size: small;
-    cursor: pointer;
-    z-index: 1;
-}
-.woo-cart-items-widget .woo-unpreview-but {
-    top: 0;
-    font-family: Material Icons Outlined;
+    padding: 0 10px;
     position: absolute;
     right: 0;
     border-radius: 3px;
     height: 30px;
-    width: 30px;
     border: solid 1px #999;
     align-items: center;
     justify-content: center;
-    font-size: 21px;
     cursor: pointer;
     z-index: 1;
+    transition: all 0.2s ease-in-out;
+}
+.woo-cart-items-widget .woo-preview-but:hover , .woo-cart-items-widget .woo-unpreview-but:hover {
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+    background-color: rgba(155,92,143,0.9);
+    color: #fff;
 }
 .woo-cart-items-widget .woo-preview-but {
     display: flex!important;

@@ -216,8 +216,10 @@
                         
                         element.obj.find('.woo-items').html('');
                         data.forEach( function(item) {
+                            var cols = (12/element.obj.attr('data-display'));
+                            var midCols = cols > 6 ? 12 : 6;
                             var row = `
-                                <div class="woo-col-item mb-4 mt-4 col-md-` +(12/element.obj.attr('data-display'))+ `">
+                                <div class="woo-col-item mb-4 mt-4 col-12 col-sm-`+midCols+` col-md-` +(12/element.obj.attr('data-display'))+ `">
                                     <div class="">
                                         <div class="img-col mb-3">
                                             <div class="d-flex align-items-center justify-content-center" style="height: 200px;">
@@ -232,7 +234,7 @@
                                             <p><strong>`+item.price+`</strong></p>
                                             <a href="`+item.link+`" style="background-color: #9b5c8f;
         border-color: #9b5c8f;" class="btn btn-primary text-white">
-                                                {{ trans('messages.automation.view_more') }}
+                                                {{ trans('messages.automation.buy_now') }}
                                             </a>
                                         </div>
                                     </div>
@@ -280,7 +282,7 @@
                 var preItems = element.obj.attr('data-max-items') > display ? display : element.obj.attr('data-max-items');
                 for(var i=0; i<preItems;i++) {
                     element.obj.find('.woo-items').append(`
-                        <div class="woo-col-item mb-4 mt-4 col-md-4">
+                        <div class="woo-col-item mb-4 mt-4 col-12 col-sm-6 col-md-4">
                             <div class="">
                                 <div class="img-col mb-3">
                                     <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
@@ -293,7 +295,7 @@
                                     <p><strong>*|PRODUCT_PRICE|*</strong></p>
                                     <a href="*|PRODUCT_URL|*" style="background-color: #9b5c8f;
 border-color: #9b5c8f;" class="btn btn-primary text-white">
-                                        {{ trans('messages.automation.view_more') }}
+                                        {{ trans('messages.automation.buy_now') }}
                                     </a>
                                 </div>
                             </div>
@@ -305,7 +307,13 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                     return (className.match (/(^|\s)col-md-\S+/g) || []).join(' ');
                 });
 
+                element.obj.find('.woo-col-item').removeClass(function (index, className) {
+                    return (className.match (/(^|\s)col-sm-\S+/g) || []).join(' ');
+                });
+
                 element.obj.find('.woo-col-item').addClass('col-md-' + (12/display));
+
+                element.obj.find('.woo-col-item').addClass('col-sm-' + ((12/display) > 6 ? 12 : 6));
 
                 if (display == '1') {
                     element.obj.find('.img-col').attr('style', 'float: left;margin-right: 20px;width: 150px;margin-bottom:0!important');
@@ -432,9 +440,9 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                 this.setContentHtml(`
                     <div data-items-number="4" builder-element="WooItemsElement" data-max-items="4" data-display="4" data-sort-by="date_added_desc" builder-draggable class="py-3 px-3 woo-cart-items-widget">
                         <span class="woo-preview-but" style="display:none">Preview</span>
-                        <span class="woo-unpreview-but" style="display:none">close</span>
+                        <span class="woo-unpreview-but" style="display:none">Close preview</span>
                         <div class="row py-3 woo-items">
-                            <div class="woo-col-item mb-4 mt-4 col-md-3">
+                            <div class="woo-col-item mb-4 mt-4 col-12 col-sm-6 col-md-3">
                                 <div class="">
                                     <div class="img-col mb-3">
                                         <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
@@ -447,12 +455,12 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                                         <p><strong>*|PRODUCT_PRICE|*</strong></p>
                                         <a href="*|PRODUCT_URL|*" style="background-color: #9b5c8f;
     border-color: #9b5c8f;" class="btn btn-primary text-white">
-                                            {{ trans('messages.automation.view_more') }}
+                                            {{ trans('messages.automation.buy_now') }}
                                         </a>
                                     </div>
                                 </div>
                             </div>
-                            <div class="woo-col-item mb-4 mt-4 col-md-3">
+                            <div class="woo-col-item mb-4 mt-4 col-12 col-sm-6 col-md-3">
                                 <div class="">
                                     <div class="img-col mb-3">
                                         <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
@@ -465,12 +473,12 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                                         <p><strong>*|PRODUCT_PRICE|*</strong></p>
                                         <a href="*|PRODUCT_URL|*" style="background-color: #9b5c8f;
     border-color: #9b5c8f;" class="btn btn-primary text-white">
-                                            {{ trans('messages.automation.view_more') }}
+                                            {{ trans('messages.automation.buy_now') }}
                                         </a>
                                     </div>
                                 </div>
                             </div>
-                            <div class="woo-col-item mb-4 mt-4 col-md-3">
+                            <div class="woo-col-item mb-4 mt-4 col-12 col-sm-6 col-md-3">
                                 <div class="">
                                     <div class="img-col mb-3">
                                         <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
@@ -483,12 +491,12 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                                         <p><strong>*|PRODUCT_PRICE|*</strong></p>
                                         <a href="*|PRODUCT_URL|*" style="background-color: #9b5c8f;
     border-color: #9b5c8f;" class="btn btn-primary text-white">
-                                            {{ trans('messages.automation.view_more') }}
+                                            {{ trans('messages.automation.buy_now') }}
                                         </a>
                                     </div>
                                 </div>
                             </div>
-                            <div class="woo-col-item mb-4 mt-4 col-md-3">
+                            <div class="woo-col-item mb-4 mt-4 col-12 col-sm-6 col-md-3">
                                 <div class="">
                                     <div class="img-col mb-3">
                                         <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
@@ -501,7 +509,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                                         <p><strong>*|PRODUCT_PRICE|*</strong></p>
                                         <a href="*|PRODUCT_URL|*" style="background-color: #9b5c8f;
     border-color: #9b5c8f;" class="btn btn-primary text-white">
-                                            {{ trans('messages.automation.view_more') }}
+                                            {{ trans('messages.automation.buy_now') }}
                                         </a>
                                     </div>
                                 </div>
@@ -871,7 +879,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                 this.setContentHtml(`
                     <div builder-element="WooItemElement" builder-draggable class="py-3 px-3 woo-cart-item-widget">
                         <span class="woo-preview-but" style="display:none">Preview</span>
-                        <span class="woo-unpreview-but" style="display:none">close</span>
+                        <span class="woo-unpreview-but" style="display:none">Close preview</span>
                         <div class="d-flex">
                             <div class="">
                                 <a href="*|PRODUCT_URL|*" class="product-link">
@@ -889,7 +897,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                                     <h4 builder-element><strong class="product-price">*|PRODUCT_PRICE|*</strong></h4>
                                     <a style="background-color: #9b5c8f;
     border-color: #9b5c8f;" builder-element builder-inline-edit href="*|PRODUCT_URL|*" class="mt-4 btn btn-primary text-white product-view-button product-link">
-                                        {{ trans('messages.automation.view_more') }}
+                                        {{ trans('messages.automation.buy_now') }}
                                     </a>
                                 </div>
                             </div>
