@@ -3957,4 +3957,5 @@
   'automation.trigger.woo-abandoned-cart.download_plugin' => 'If you are not sure
       what your WordPress endpoint is, please install
       <a target="_blank" href=":link">AcelleSync</a> plugin',
+  'automation.buy_now' => 'Buy now',
 ) ?>
