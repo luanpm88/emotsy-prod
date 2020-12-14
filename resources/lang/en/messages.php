@@ -3948,4 +3948,5 @@
   'automation.shop_name' => 'Shop name',
   'automation.shop_url' => 'URL',
   'automation.connect_url.change' => 'Change',
+  'woo_item.please_select_product' => 'Please choose a product',
 ) ?>

@@ -719,6 +719,21 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
 
                 element.obj.find('.woo-button').addClass('loading');
 
+                if(element.obj.attr('product-id') == null || element.obj.attr('product-id') == '') {
+                    Swal.fire({
+                        title: '{{ trans('messages.woo_item.please_select_product') }}',
+                        text: '',
+                        type: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: '{{ trans('messages.ok') }}'
+                    }).then((result) => {
+                        element.obj.find('.woo-button').removeClass('loading');
+                    });
+                    return;
+                }
+
                 var url = '{{ $automation->getTrigger()->getOption('connect_url') }}?product_id=' + element.obj.attr('product-id');
                 $.ajax({
                     method: "GET",
@@ -879,7 +894,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
 
                 // default content html
                 this.setContentHtml(`
-                    <div builder-element="WooItemElement" builder-draggable class="py-3 px-3 woo-cart-item-widget">
+                    <div preview="no" builder-element="WooItemElement" builder-draggable class="py-3 px-3 woo-cart-item-widget">
                         <span class="woo-button woo-preview-but" style="display:none">Preview</span>
                         <span class="woo-button woo-unpreview-but" style="display:none">Close preview</span>
                         <div class="d-flex">

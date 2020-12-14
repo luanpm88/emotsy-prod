@@ -26,12 +26,12 @@
 .woo-cart-item-widget[preview=yes] .woo-unpreview-but {
     display: flex!important;
 }
-.woo-cart-item-widget[product-id] .woo-preview-but, .woo-cart-item-widget[product-id] .woo-unpreview-but {
+/* .woo-cart-item-widget[product-id] .woo-preview-but, .woo-cart-item-widget[product-id] .woo-unpreview-but {
     opacity: 1;
 }
 .woo-cart-item-widget[product-id=''] .woo-preview-but, .woo-cart-item-widget[product-id=''] .woo-unpreview-but {
     opacity: 0;
-}
+} */
 
 .woo-cart-items-widget {
     position: relative;
