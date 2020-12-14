@@ -428,7 +428,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                         <div class="panel__body woo-panel__body" title="{{ trans('messages.automation.woo_item') }}">
                             <div class="image-drag">
                                 <div ng-bind-html="::getModuleIcon(module)" class="ng-binding woo-cart-items-widget">
-                                    <img builder-element src="{{ url('images/woo_items.svg') }}" width="100%" />
+                                    <img builder-element src="{{ url('images/wooproductlist.svg') }}" width="100%" />
                                 </div>
                             </div>
                             <div class="body__title">{{ trans('messages.automation.woo_items') }}</div>
@@ -445,7 +445,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                             <div class="woo-col-item mb-4 mt-4 col-12 col-sm-6 col-md-3">
                                 <div class="">
                                     <div class="img-col mb-3">
-                                        <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
+                                        <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/wooproduct.svg') }}" width="100%" /></a>
                                     </div>
                                     <div class="">
                                         <p class="font-weight-normal product-name mb-1">
@@ -463,7 +463,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                             <div class="woo-col-item mb-4 mt-4 col-12 col-sm-6 col-md-3">
                                 <div class="">
                                     <div class="img-col mb-3">
-                                        <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
+                                        <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/wooproduct.svg') }}" width="100%" /></a>
                                     </div>
                                     <div class="">
                                         <p class="font-weight-normal product-name mb-1">
@@ -481,7 +481,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                             <div class="woo-col-item mb-4 mt-4 col-12 col-sm-6 col-md-3">
                                 <div class="">
                                     <div class="img-col mb-3">
-                                        <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
+                                        <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/wooproduct.svg') }}" width="100%" /></a>
                                     </div>
                                     <div class="">
                                         <p class="font-weight-normal product-name mb-1">
@@ -499,7 +499,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                             <div class="woo-col-item mb-4 mt-4 col-12 col-sm-6 col-md-3">
                                 <div class="">
                                     <div class="img-col mb-3">
-                                        <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
+                                        <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/wooproduct.svg') }}" width="100%" /></a>
                                     </div>
                                     <div class="">
                                         <p class="font-weight-normal product-name mb-1">
@@ -867,7 +867,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                         <div class="panel__body woo-panel__body" title="{{ trans('messages.automation.woo_item') }}">
                             <div class="image-drag">
                                 <div ng-bind-html="::getModuleIcon(module)" class="ng-binding woo-cart-items-widget single">
-                                    <img builder-element src="{{ url('images/woo_item.svg') }}" width="100%" />
+                                    <img builder-element src="{{ url('images/wooproduct.svg') }}" width="100%" />
                                 </div>
                             </div>
                             <div class="body__title">{{ trans('messages.automation.woo_item') }}</div>
