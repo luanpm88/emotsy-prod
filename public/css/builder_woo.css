@@ -14,7 +14,6 @@
     cursor: pointer;
     z-index: 1;
     visibility: hidden;
-    transition: all 0.2s ease-in-out;
 }
 .woo-cart-item-widget .woo-preview-but:hover, .woo-cart-item-widget .woo-unpreview-but:hover {
     box-shadow: 0 0 5px rgba(0,0,0,0.3);
@@ -90,4 +89,40 @@
 .woo-cart-item-widget.builder-class-element-selected .woo-unpreview-but,
 .woo-cart-item-widget.builder-class-element-selected .woo-preview-but {
     visibility: visible;
+}
+.woo-button.loading {
+    opacity: 0.6!important;
+    pointer-events: none;
+}
+.woo-button.loading:before {
+    content: 'refresh';
+    font-family: 'Material Icons Outlined';
+    -webkit-animation: spin 1.5s linear infinite;
+    animation: spin 1.5s linear infinite;
+    margin-right: 7px;
+} 
+/* include this only once */
+@-webkit-keyframes spin {
+    0%   {
+        -webkit-transform: rotate(0deg);  /* Chrome, Opera 15+, Safari 3.1+ */
+        -ms-transform: rotate(0deg);  /* IE 9 */
+        transform: rotate(0deg);  /* Firefox 16+, IE 10+, Opera */
+    }
+    100% {
+        -webkit-transform: rotate(360deg);  /* Chrome, Opera 15+, Safari 3.1+ */
+        -ms-transform: rotate(360deg);  /* IE 9 */
+        transform: rotate(360deg);  /* Firefox 16+, IE 10+, Opera */
+    }
+}
+@keyframes spin {
+    0%   {
+        -webkit-transform: rotate(0deg);  /* Chrome, Opera 15+, Safari 3.1+ */
+        -ms-transform: rotate(0deg);  /* IE 9 */
+        transform: rotate(0deg);  /* Firefox 16+, IE 10+, Opera */
+    }
+    100% {
+        -webkit-transform: rotate(360deg);  /* Chrome, Opera 15+, Safari 3.1+ */
+        -ms-transform: rotate(360deg);  /* IE 9 */
+        transform: rotate(360deg);  /* Firefox 16+, IE 10+, Opera */
+    }
 }
