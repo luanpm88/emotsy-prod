@@ -41,6 +41,13 @@
         .btn-preview span, .btn-unpreview span {
             font-size: 20px;
         }
+        .wrapper .content .content-right ._1content .panel__body {
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.18);
+            border-radius: 7px;
+        }
+        .wrapper .content .content-right ._1content .panel__body:hover {
+            box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.18);
+        }
     </style>
 
     <script>
