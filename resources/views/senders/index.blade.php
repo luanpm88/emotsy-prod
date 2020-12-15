@@ -10,26 +10,32 @@
 @endsection
 
 @section('page_header')
-    <div class="page-title">
-        <ul class="breadcrumb breadcrumb-caret position-right">
-            <li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-            <li><a href="{{ action("SenderController@index") }}">{{ trans('messages.verified_senders') }}</a></li>
-            <li><a href="{{ action("SenderController@index") }}">{{ trans('messages.email_addresses') }}</a></li>
-        </ul>
-        <h1>
-            <span class="text-semibold">{{ trans('messages.verified_senders') }}</span>
-        </h1>    
+    <div class="row">
+        <div class="col-md-{{ (null !== Session::get('orig_customer_id') && Auth::user()->customer) ? '6' : '12' }}">
+            <div class="page-title">
+                <ul class="breadcrumb breadcrumb-caret position-right">
+                    <li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+                    <li><a href="{{ action("SenderController@index") }}">{{ trans('messages.verified_senders') }}</a></li>
+                    <li><a href="{{ action("SenderController@index") }}">{{ trans('messages.email_addresses') }}</a></li>
+                </ul>
+                <h1>
+                    <span class="text-semibold">{{ trans('messages.verified_senders') }}</span>
+                </h1>    
+            </div>
+            @include('senders._menu')
+            <h2 class="text-semibold"><i class="icon-list2 mr-10"></i> {{ trans('messages.email_addresses') }}</h2>
+    
+            <p>{{ trans('messages.sender.wording') }}</p>
+        </div>
+        @if (null !== Session::get('orig_customer_id') && Auth::user()->customer)
+            <div class="col-md-6">
+                @include('quicktip.identity')
+            </div>
+        @endif
     </div>
 @endsection
 
 @section('content')
-    
-    @include('senders._menu')
-    
-    <h2 class="text-semibold"><i class="icon-list2 mr-10"></i> {{ trans('messages.email_addresses') }}</h2>
-    
-    <p>{{ trans('messages.sender.wording') }}</p>
-
     <form class="listing-form"
         data-url="{{ action('SenderController@listing') }}"
         per-page="{{ Acelle\Model\Sender::$itemsPerPage }}"

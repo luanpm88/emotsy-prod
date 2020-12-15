@@ -11,33 +11,42 @@
 
 @section('page_header')
 
-    <div class="page-title">
-        <ul class="breadcrumb breadcrumb-caret position-right">
-            <li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-            <li><a href="{{ action("SenderController@index") }}">{{ trans('messages.verified_senders') }}</a></li>
-            <li><a href="{{ action("SendingDomainController@index") }}">{{ trans('messages.domains') }}</a></li>
-        </ul>
-        <h1>
-            <span class="text-semibold">{{ trans('messages.verified_senders') }}</span>
-        </h1>           
+<div class="row">
+    <div class="col-md-{{ (null !== Session::get('orig_customer_id') && Auth::user()->customer) ? '6' : '12' }}">
+        <div class="page-title">
+            <ul class="breadcrumb breadcrumb-caret position-right">
+                <li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+                <li><a href="{{ action("SenderController@index") }}">{{ trans('messages.verified_senders') }}</a></li>
+                <li><a href="{{ action("SendingDomainController@index") }}">{{ trans('messages.domains') }}</a></li>
+            </ul>
+            <h1>
+                <span class="text-semibold">{{ trans('messages.verified_senders') }}</span>
+            </h1>           
+        </div>
+        @include('senders._menu')
+        
+        <h2>
+            <span class="text-semibold"><i class="icon-list2 mr-10"></i> {{ trans('messages.domains') }}</span>
+        </h2>
+        
+        <div class="row">
+            <div class="col-sm-12 col-md-10 col-lg-10">
+                <p>{!! trans('messages.sending_domain.wording') !!}</p>
+            </div>
+        </div>
     </div>
+    @if (null !== Session::get('orig_customer_id') && Auth::user()->customer)
+        <div class="col-md-6">
+            @include('quicktip.identity')
+        </div>
+    @endif
+</div>
+
+    
 
 @endsection
 
 @section('content')
-    
-    @include('senders._menu')
-    
-    <h2>
-        <span class="text-semibold"><i class="icon-list2 mr-10"></i> {{ trans('messages.domains') }}</span>
-    </h2>
-    
-	<div class="row">
-        <div class="col-sm-12 col-md-10 col-lg-10">
-            <p>{!! trans('messages.sending_domain.wording') !!}</p>
-        </div>
-    </div>
-
     <form class="listing-form"
         sort-url="{{ action('SendingDomainController@sort') }}"
         data-url="{{ action('SendingDomainController@listing') }}"

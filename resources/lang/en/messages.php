@@ -3916,4 +3916,12 @@
   'api.notification' => 'Notification',
   'authentication' => 'Authentication',
   'login.please_wait' => 'Logging in, please wait...',
+  'quicktip.quick_tips' => 'Quick tips',
+  'quicktip.identity.title' => 'Notes for administrator',
+  'quicktip.identity.tip' => 'Add sending domains or email addresses as identities for the 
+      corresponding sending servers and they will be listed here.
+      Then users will be able to use those as FROM EMAIL addresses for their campaign emails.
+      If you are integrated with Amazon Simple Email Service (SES) or SendGrid, your users will
+      also be able to add their own sending identities here.',
+  'go_to_admin_view' => 'Go to admin view',
 ) ?>
