@@ -41,6 +41,13 @@
         .btn-preview span, .btn-unpreview span {
             font-size: 20px;
         }
+        .wrapper .content .content-right ._1content .panel__body {
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.18);
+            border-radius: 7px;
+        }
+        .wrapper .content .content-right ._1content .panel__body:hover {
+            box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.18);
+        }
     </style>
 
     <script>
@@ -205,74 +212,75 @@
 
             preview() {
                 var element = this;
-                element.obj.fadeOut(200, function() {
-                    var url = '{{ $automation->getTrigger()->getOption('connect_url') }}?action=list&max=' + element.obj.attr('data-max-items') + '&sort_by=' + element.obj.attr('data-sort-by');
-                    $.ajax({
-                        method: "GET",
-                        url: url
-                    })
-                    .done(function( data ) {
-                        element.obj.attr('preview', 'yes');
-                        
-                        element.obj.find('.woo-items').html('');
-                        data.forEach( function(item) {
-                            var cols = (12/element.obj.attr('data-display'));
-                            var midCols = cols > 6 ? 12 : 6;
-                            var row = `
-                                <div class="woo-col-item mb-4 mt-4 col-12 col-sm-`+midCols+` col-md-` +(12/element.obj.attr('data-display'))+ `">
-                                    <div class="">
-                                        <div class="img-col mb-3">
-                                            <div class="d-flex align-items-center justify-content-center" style="height: 200px;">
-                                                <a style="width:100%" href="`+item.link+`" class="mr-4"><img width="100%" src="`+(item.image ? item.image : '{{ url('images/cart_item.svg') }}')+`" style="max-height:200px;max-width:100%;" /></a>
-                                            </div>
-                                        </div>
-                                        <div class="">
-                                            <p class="font-weight-normal product-name mb-1">
-                                                <a style="color: #333;" href="`+item.link+`" class="mr-4">`+item.name+`</a>
-                                            </p>
-                                            <p class=" product-description">`+item.description+`</p>
-                                            <p><strong>`+item.price+`</strong></p>
-                                            <a href="`+item.link+`" style="background-color: #9b5c8f;
-        border-color: #9b5c8f;" class="btn btn-primary text-white">
-                                                {{ trans('messages.automation.buy_now') }}
-                                            </a>
+
+                element.obj.find('.woo-button').addClass('loading');
+
+                var url = '{{ $automation->getTrigger()->getOption('connect_url') }}?action=list&max=' + element.obj.attr('data-max-items') + '&sort_by=' + element.obj.attr('data-sort-by');
+                $.ajax({
+                    method: "GET",
+                    url: url
+                })
+                .done(function( data ) {
+                    element.obj.attr('preview', 'yes');
+                    
+                    element.obj.find('.woo-items').html('');
+                    data.forEach( function(item) {
+                        var cols = (12/element.obj.attr('data-display'));
+                        var midCols = cols > 6 ? 12 : 6;
+                        var row = `
+                            <div class="woo-col-item mb-4 mt-4 col-12 col-sm-`+midCols+` col-md-` +(12/element.obj.attr('data-display'))+ `">
+                                <div class="">
+                                    <div class="img-col mb-3">
+                                        <div class="d-flex align-items-center justify-content-center" style="height: 200px;">
+                                            <a style="width:100%" href="`+item.link+`" class="mr-4"><img width="100%" src="`+(item.image ? item.image : '{{ url('images/cart_item.svg') }}')+`" style="max-height:200px;max-width:100%;" /></a>
                                         </div>
                                     </div>
+                                    <div class="">
+                                        <p class="font-weight-normal product-name mb-1">
+                                            <a style="color: #333;" href="`+item.link+`" class="mr-4">`+item.name+`</a>
+                                        </p>
+                                        <p class=" product-description">`+item.description+`</p>
+                                        <p><strong>`+item.price+`</strong></p>
+                                        <a href="`+item.link+`" style="background-color: #9b5c8f;
+    border-color: #9b5c8f;" class="btn btn-primary text-white">
+                                            {{ trans('messages.automation.buy_now') }}
+                                        </a>
+                                    </div>
                                 </div>
-                            `;
+                            </div>
+                        `;
 
-                            element.obj.find('.woo-items').append(row);
-                        });
-
-                        if (element.obj.attr('data-display') == '1') {
-                            element.obj.find('.img-col').attr('style', 'float: left;margin-right: 20px;width: 150px;margin-bottom:0!important');
-                        } else {
-                            element.obj.find('.img-col').attr('style', '');
-                        }
+                        element.obj.find('.woo-items').append(row);
                     });
 
-                    element.obj.fadeIn(400, function() {
-                        if (editor.selected != null) {
-                            editor.selected.select();
-                        }
-                    });  
-                });                 
+                    if (element.obj.attr('data-display') == '1') {
+                        element.obj.find('.img-col').attr('style', 'float: left;margin-right: 20px;width: 150px;margin-bottom:0!important');
+                    } else {
+                        element.obj.find('.img-col').attr('style', '');
+                    }
+
+                    if (editor.selected != null) {
+                        editor.selected.select();
+                    }
+
+                    element.obj.find('.woo-button').removeClass('loading');
+                });         
             }
 
             unpreview() {
                 var element = this;
-                element.obj.fadeOut(200, function() {
-                    element.display(element.obj.attr('data-display'));
 
-                    element.obj.attr('preview', 'no');
+                element.obj.find('.woo-button').addClass('loading');
 
-                    element.obj.fadeIn(400, function() {
-                        if (editor.selected != null) {
-                            editor.selected.select();
-                        }
-                    }); 
-                }); 
-                
+                element.display(element.obj.attr('data-display'));
+
+                element.obj.attr('preview', 'no');
+
+                if (editor.selected != null) {
+                    editor.selected.select();
+                }
+
+                element.obj.find('.woo-button').removeClass('loading');
             }
 
             display(display) {
@@ -428,7 +436,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                         <div class="panel__body woo-panel__body" title="{{ trans('messages.automation.woo_item') }}">
                             <div class="image-drag">
                                 <div ng-bind-html="::getModuleIcon(module)" class="ng-binding woo-cart-items-widget">
-                                    <img builder-element src="{{ url('images/woo_items.svg') }}" width="100%" />
+                                    <img builder-element src="{{ url('images/wooproductlist.svg') }}" width="100%" />
                                 </div>
                             </div>
                             <div class="body__title">{{ trans('messages.automation.woo_items') }}</div>
@@ -439,8 +447,8 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                 // default content html
                 this.setContentHtml(`
                     <div data-items-number="4" builder-element="WooItemsElement" data-max-items="4" data-display="4" data-sort-by="date_added_desc" builder-draggable class="py-3 px-3 woo-cart-items-widget">
-                        <span class="woo-preview-but" style="display:none">Preview</span>
-                        <span class="woo-unpreview-but" style="display:none">Close preview</span>
+                        <span class="woo-button woo-preview-but" style="display:none">Preview</span>
+                        <span class="woo-button woo-unpreview-but" style="display:none">Close preview</span>
                         <div class="row py-3 woo-items">
                             <div class="woo-col-item mb-4 mt-4 col-12 col-sm-6 col-md-3">
                                 <div class="">
@@ -714,52 +722,68 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
             }
 
             preview() {
-                var element = this;
-                element.obj.attr('preview', 'yes');
+                var element = this;                
 
-                element.obj.fadeOut(200, function() {
-                    var url = '{{ $automation->getTrigger()->getOption('connect_url') }}?product_id=' + element.obj.attr('product-id');
-                    $.ajax({
-                        method: "GET",
-                        url: url
-                    })
-                    .done(function( data ) {
-                        if (data.image) {
-                            element.obj.find('img').attr('src', data.image);
-                        } else {
-                            element.obj.find('img').attr('src', '{{ url('images/cart_item.svg') }}');
-                        }
-                        element.obj.find('.product-name').html(data.name);
-                        element.obj.find('.product-description').html(data.description);
-                        element.obj.find('.product-link').attr('href', data.link);
-                        element.obj.find('.product-price').html(data.price);
+                element.obj.find('.woo-button').addClass('loading');
+
+                if(element.obj.attr('product-id') == null || element.obj.attr('product-id') == '') {
+                    Swal.fire({
+                        title: '{{ trans('messages.woo_item.please_select_product') }}',
+                        text: '',
+                        type: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: '{{ trans('messages.ok') }}'
+                    }).then((result) => {
+                        element.obj.find('.woo-button').removeClass('loading');
                     });
+                    return;
+                }
 
-                    element.obj.fadeIn(400, function() {
-                        if (editor.selected != null) {
-                            editor.selected.select();
-                        }
-                    }); 
-                });                 
+                var url = '{{ $automation->getTrigger()->getOption('connect_url') }}?product_id=' + element.obj.attr('product-id');
+                $.ajax({
+                    method: "GET",
+                    url: url
+                })
+                .done(function( data ) {
+                    element.obj.attr('preview', 'yes');
+
+                    if (data.image) {
+                        element.obj.find('img').attr('src', data.image);
+                    } else {
+                        element.obj.find('img').attr('src', '{{ url('images/cart_item.svg') }}');
+                    }
+                    element.obj.find('.product-name').html(data.name);
+                    element.obj.find('.product-description').html(data.description);
+                    element.obj.find('.product-link').attr('href', data.link);
+                    element.obj.find('.product-price').html(data.price);
+
+                    if (editor.selected != null) {
+                        editor.selected.select();
+                    }
+
+                    element.obj.find('.woo-button').removeClass('loading');
+                });             
             }
 
             unpreview() {
                 var element = this;
+
+                element.obj.find('.woo-button').addClass('loading');
+
                 element.obj.attr('preview', 'no');
-                element.obj.fadeOut(200, function() {
-                    element.obj.find('img').attr('src', '{{ url('images/cart_item.svg') }}');
-                    element.obj.find('.product-name').html('*|PRODUCT_NAME|*');
-                    element.obj.find('.product-description').html('*|PRODUCT_DESCRIPTION|*');
-                    element.obj.find('.product-link').attr('href', '*|PRODUCT_URL|*');
-                    element.obj.find('.product-price').html('*|PRODUCT_PRICE|*');
-                    
-                    element.obj.fadeIn(400, function() {
-                        if (editor.selected != null) {
-                            editor.selected.select();
-                        }
-                    }); 
-                }); 
-                
+
+                element.obj.find('img').attr('src', '{{ url('images/cart_item.svg') }}');
+                element.obj.find('.product-name').html('*|PRODUCT_NAME|*');
+                element.obj.find('.product-description').html('*|PRODUCT_DESCRIPTION|*');
+                element.obj.find('.product-link').attr('href', '*|PRODUCT_URL|*');
+                element.obj.find('.product-price').html('*|PRODUCT_PRICE|*');
+                if (editor.selected != null) {
+                    editor.selected.select();
+                }
+
+                element.obj.find('.woo-button').removeClass('loading');
             }
 
             getControls() {
@@ -867,7 +891,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                         <div class="panel__body woo-panel__body" title="{{ trans('messages.automation.woo_item') }}">
                             <div class="image-drag">
                                 <div ng-bind-html="::getModuleIcon(module)" class="ng-binding woo-cart-items-widget single">
-                                    <img builder-element src="{{ url('images/woo_item.svg') }}" width="100%" />
+                                    <img builder-element src="{{ url('images/wooproduct.svg') }}" width="100%" />
                                 </div>
                             </div>
                             <div class="body__title">{{ trans('messages.automation.woo_item') }}</div>
@@ -877,9 +901,9 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
 
                 // default content html
                 this.setContentHtml(`
-                    <div builder-element="WooItemElement" builder-draggable class="py-3 px-3 woo-cart-item-widget">
-                        <span class="woo-preview-but" style="display:none">Preview</span>
-                        <span class="woo-unpreview-but" style="display:none">Close preview</span>
+                    <div preview="no" builder-element="WooItemElement" builder-draggable class="py-3 px-3 woo-cart-item-widget">
+                        <span class="woo-button woo-preview-but" style="display:none">Preview</span>
+                        <span class="woo-button woo-unpreview-but" style="display:none">Close preview</span>
                         <div class="d-flex">
                             <div class="">
                                 <a href="*|PRODUCT_URL|*" class="product-link">

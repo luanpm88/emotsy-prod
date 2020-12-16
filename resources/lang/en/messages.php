@@ -3860,7 +3860,7 @@
   'condition.select_woo_item' => 'Select item',
   'automation.intro.woo-abandoned-cart' => 'Send your buyer a reminder if they left
       something in cart',
-  'automation.woo_items' => 'Woo Items',
+  'automation.woo_items' => 'Product List',
   'automation.item_title' => '{PRODUCT_NAME}',
   'automation.item_description' => '{PRODUCT_DESCRIPTION}',
   'automation.view_more' => 'View more',
@@ -3923,7 +3923,7 @@
   'plugin.version' => 'Version',
   'change_mind_cancel_subscription' => 'Change your mind? Choose another plan',
   'woo_items.number_of_items' => 'Max items',
-  'automation.woo_item' => 'Woo Item',
+  'automation.woo_item' => 'Product',
   'woo_item' => 'WooCommerce Item',
   'woo_item.product' => 'Product',
   'woo_items.view_option' => 'Display',
@@ -3956,4 +3956,5 @@
       If you are integrated with Amazon Simple Email Service (SES) or SendGrid, your users will
       also be able to add their own sending identities here.',
   'go_to_admin_view' => 'Go to admin view',
+  'woo_item.please_select_product' => 'Please choose a product',
 ) ?>
