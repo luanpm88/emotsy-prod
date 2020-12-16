@@ -3998,3 +3998,38 @@ form.loading {
 form.loading input {
     background: rgba(0,0,0,0.1)
 }
+.quicktip-icon svg {
+    width: 75px;
+    fill: currentColor;
+}
+.quicktip {
+    border: solid 1px #cfcfcf;
+    padding: 20px;
+    box-shadow: 0 0 3px rgba(0,0,0,0.1);
+    border-radius: 2px;
+}
+.quicktip-icon {
+    padding: 0px 30px 50px 10px;
+    color: #999;
+    display: flex;
+    align-items: center;
+}
+.quicktip-content {
+    
+}
+.quicktip-content label {
+    margin: 0;
+    background: #f6cebf;
+    padding: 2px 7px;
+    font-size: small;
+    border-radius: 2px;
+}
+.quicktip-content h3 {
+    margin: 12px 0 10px 0;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+}
+.quicktip-content p {
+    font-size: small;
+}
