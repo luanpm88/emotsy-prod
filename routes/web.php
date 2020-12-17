@@ -79,6 +79,10 @@ Route::get('/assets/emails/{uid}/{name?}', [ function ($uid, $name) {
 Route::get('setting/{filename}', 'SettingController@file');
 Route::get('/no-plan', 'AccountSubscriptionController@noPlan');
 
+// Translation data
+Route::get('/datatable_locale', 'Controller@datatable_locale');
+Route::get('/jquery_validate_locale', 'Controller@jquery_validate_locale');
+
 // For visitor with Web UI, loading the right app language
 Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
     // Helper method to generate other routes for authentication
@@ -118,10 +122,6 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
     Route::get('paypal-payment-cancel', function () {
         return 'Payment has been canceled';
     });
-
-    // Translation data
-    Route::get('/datatable_locale', 'Controller@datatable_locale');
-    Route::get('/jquery_validate_locale', 'Controller@jquery_validate_locale');
 
     Route::get('payments/paddle/card/{subscription_uid}/hook', 'PaymentController@paddle_card_hook');
     Route::post('payments/paddle/card/{subscription_uid}/hook', 'PaymentController@paddle_card_hook');
