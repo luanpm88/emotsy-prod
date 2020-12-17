@@ -40,6 +40,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        if (!isInitiated()) {
+            return;
+        }
+
         $title = 'Server does not support PHP process';
         $message = 'The Process class relies on proc_open, which is not available on your hosting server PHP installation. Please check with your hosting provider to enable it.';
         if (!function_exists('proc_open')) {
