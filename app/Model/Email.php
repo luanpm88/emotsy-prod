@@ -813,6 +813,11 @@ class Email extends Model
             $body = $this->parsedContent;
         }
 
+        // STEP 04.1. Check woocommerce items
+        if ($this->automation->getTrigger()->getOption('type') == 'woo-abandoned-cart') {
+            $body = $this->wooTransform($body);            
+        }
+
         // STEP 05. Transform URLs
         $body = $this->transformWithoutUpdate($body, true);
 
@@ -837,11 +842,6 @@ class Email extends Model
         if (!is_null($subscriber)) {
             // Transform tags
             $body = $this->tagMessage($body, $subscriber, $msgId, $server);
-        }
-
-        // STEP 08.1. Check woocommerce items
-        if ($this->automation->getTrigger()->getOption('type') == 'woo-abandoned-cart') {
-            $body = $this->wooTransform($body);            
         }
 
         // STEP 09. Make CSS inline
@@ -926,10 +926,16 @@ class Email extends Model
                     } else {
                         $element->find('img', 0)->src = url('images/cart_item.svg');
                     }
-                    $element->find('.product-name', 0)->innertext = $item["name"];
-                    $element->find('.product-description', 0)->innertext = $item["description"];
-                    $element->find('.product-link', 0)->href = $item["link"];
-                    $element->find('.product-price', 0)->innertext = $item["price"];
+                    // $element->find('.product-name', 0)->innertext = $item["name"];
+                    // $element->find('.product-description', 0)->innertext = $item["description"];
+                    // $element->find('.product-link', 0)->href = $item["link"];
+                    // $element->find('.product-price', 0)->innertext = $item["price"];
+                    $html = $element->innertext;
+                    $html = str_replace('*|PRODUCT_NAME|*', $item["name"], $html);
+                    $html = str_replace('*|PRODUCT_DESCRIPTION|*', $item["description"], $html);
+                    $html = str_replace('*|PRODUCT_URL|*', $item["link"], $html);
+                    $html = str_replace('*|PRODUCT_PRICE|*', $item["price"], $html);
+                    $element->innertext = $html;
                 }
             }
 

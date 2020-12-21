@@ -213,7 +213,7 @@
             preview() {
                 var element = this;
 
-                element.obj.find('.woo-button').addClass('loading');
+                element.obj.addClass('loading');
 
                 var url = '{{ $automation->getTrigger()->getOption('connect_url') }}?action=list&max=' + element.obj.attr('data-max-items') + '&sort_by=' + element.obj.attr('data-sort-by');
                 $.ajax({
@@ -263,14 +263,14 @@
                         editor.selected.select();
                     }
 
-                    element.obj.find('.woo-button').removeClass('loading');
+                    element.obj.removeClass('loading');
                 });         
             }
 
             unpreview() {
                 var element = this;
 
-                element.obj.find('.woo-button').addClass('loading');
+                element.obj.addClass('loading');
 
                 element.display(element.obj.attr('data-display'));
 
@@ -280,7 +280,7 @@
                     editor.selected.select();
                 }
 
-                element.obj.find('.woo-button').removeClass('loading');
+                element.obj.removeClass('loading');
             }
 
             display(display) {
@@ -724,7 +724,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
             preview() {
                 var element = this;                
 
-                element.obj.find('.woo-button').addClass('loading');
+                element.obj.addClass('loading');
 
                 if(element.obj.attr('product-id') == null || element.obj.attr('product-id') == '') {
                     Swal.fire({
@@ -736,7 +736,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                         cancelButtonColor: '#d33',
                         confirmButtonText: '{{ trans('messages.ok') }}'
                     }).then((result) => {
-                        element.obj.find('.woo-button').removeClass('loading');
+                        element.obj.removeClass('loading');
                     });
                     return;
                 }
@@ -749,28 +749,30 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                 .done(function( data ) {
                     element.obj.attr('preview', 'yes');
 
+                    // replace
+                    var html = element.obj.find('.edit-container').html();
+                    html = html.replace(/\*\|PRODUCT_NAME\|\*/g, data.name);
+                    html = html.replace(/\*\|PRODUCT_DESCRIPTION\|\*/g, data.description);
+                    html = html.replace(/\*\|PRODUCT_PRICE\|\*/g, data.price);
+                    element.obj.find('.preview-container').html(html);
                     if (data.image) {
-                        element.obj.find('img').attr('src', data.image);
-                    } else {
-                        element.obj.find('img').attr('src', '{{ url('images/cart_item.svg') }}');
+                        console.log(element.obj.find('.preview-container img'));
+                        element.obj.find('.preview-container img').attr('src', data.image);
                     }
-                    element.obj.find('.product-name').html(data.name);
-                    element.obj.find('.product-description').html(data.description);
-                    element.obj.find('.product-link').attr('href', data.link);
-                    element.obj.find('.product-price').html(data.price);
+                    element.obj.find('.preview-container *').removeAttr('builder-element');
 
                     if (editor.selected != null) {
                         editor.selected.select();
                     }
 
-                    element.obj.find('.woo-button').removeClass('loading');
+                    element.obj.removeClass('loading');
                 });             
             }
 
             unpreview() {
                 var element = this;
 
-                element.obj.find('.woo-button').addClass('loading');
+                element.obj.addClass('loading');
 
                 element.obj.attr('preview', 'no');
 
@@ -783,7 +785,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                     editor.selected.select();
                 }
 
-                element.obj.find('.woo-button').removeClass('loading');
+                element.obj.removeClass('loading');
             }
 
             getControls() {
@@ -904,28 +906,34 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                     <div preview="no" builder-element="WooItemElement" builder-draggable class="py-3 px-3 woo-cart-item-widget">
                         <span class="woo-button woo-preview-but" style="display:none">Preview</span>
                         <span class="woo-button woo-unpreview-but" style="display:none">Close preview</span>
-                        <div class="d-flex">
-                            <div class="">
-                                <a href="*|PRODUCT_URL|*" class="product-link">
-                                    <img builder-element="WooImgElement" class="mr-4" src="{{ url('images/cart_item.svg') }}" width="200px" />
-                                </a>
-                            </div>
-                            <div class="">
+                        <div class="edit-container">
+                            <div class="d-flex">
                                 <div class="">
-                                    <h3 class="font-weight-normal">
-                                        <a style="color:#333;" builder-element builder-inline-edit class="d-block product-link" href="{PRODUCT_URL}">
-                                            <span class="product-name">*|PRODUCT_NAME|*</span>
-                                        </a>
-                                    </h3>
-                                    <p builder-element class=" product-description">*|PRODUCT_DESCRIPTION|*</p>
-                                    <h4 builder-element><strong class="product-price">*|PRODUCT_PRICE|*</strong></h4>
-                                    <a style="background-color: #9b5c8f;
-    border-color: #9b5c8f;" builder-element builder-inline-edit href="*|PRODUCT_URL|*" class="mt-4 btn btn-primary text-white product-view-button product-link">
-                                        {{ trans('messages.automation.buy_now') }}
+                                    <a href="*|PRODUCT_URL|*" class="product-link">
+                                        <img builder-element="WooImgElement" class="mr-4" src="{{ url('images/cart_item.svg') }}" width="200px" />
                                     </a>
+                                </div>
+                                
+                                <div builder-element="TextElement" class="" style="width:100%">
+                                    <div builder-element="TextElement">
+                                        <h3 class="font-weight-normal">
+                                            <a style="color:#333;" class="d-block product-link" href="*|PRODUCT_URL|*">
+                                                <span class="product-name">*|PRODUCT_NAME|*</span>
+                                            </a>
+                                        </h3>
+                                        <p class=" product-description">*|PRODUCT_DESCRIPTION|*</p>
+                                        <h4><strong class="product-price">*|PRODUCT_PRICE|*</strong></h4>
+                                    </div>
+                                    <div>
+                                        <a style="background-color: #9b5c8f;
+        border-color: #9b5c8f;" builder-element builder-inline-edit href="*|PRODUCT_URL|*" class="mt-4 btn btn-primary text-white product-view-button product-link">
+                                            {{ trans('messages.automation.buy_now') }}
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        <div class="preview-container" style="display:none"></div>
                     </div>
                 `);
 
