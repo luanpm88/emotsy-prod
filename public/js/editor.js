@@ -110,7 +110,7 @@ $(document).ready(function() {
         menubar: false,
         branding: false,
         elementpath: false,
-        plugins: 'link textcolor lists autolink',
+        plugins: 'link lists autolink',
             //toolbar: 'undo redo | bold italic underline | fontselect fontsizeselect | forecolor backcolor | alignleft aligncenter alignright alignfull | numlist bullist outdent indent',
         toolbar: [
             'bold italic underline forecolor link menuDateButton',

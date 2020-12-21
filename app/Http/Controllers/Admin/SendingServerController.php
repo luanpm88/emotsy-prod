@@ -720,4 +720,103 @@ class SendingServerController extends Controller
         $droplist = $server->verifiedIdentitiesDroplist(strtolower(trim($request->keyword)));
         return response()->json($droplist);
     }
+
+    /**
+     * Whitelabel.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function whitelabel(Request $request, $uid)
+    {
+        $server = SendingServer::findByUid($uid);
+
+        // authorize
+        if (!$request->user()->admin->can('update', $server)) {
+            return $this->notAuthorized();
+        }
+
+        return view('admin.sending_servers.whitelabel', [
+            'server' => $server,
+        ]);
+    }
+
+    /**
+     * Whitelabel settings.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function whitelabelSettings(Request $request, $uid)
+    {
+        $server = SendingServer::findByUid($uid);
+
+        // authorize
+        if (!$request->user()->admin->can('update', $server)) {
+            return $this->notAuthorized();
+        }
+
+        // validate and save posted data
+        if ($request->isMethod('post')) {
+            // make validator
+            $validator = \Validator::make($request->all(), [
+                'brand' => 'required',
+            ]);
+
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('admin.sending_servers.whitelabelSettings', [
+                    'server' => $server,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+            
+            // success
+            $whitelabel = $server->getOption('whitelabel');
+            $whitelabel['brand'] = $request->brand;
+            $whitelabel['enabled'] = true;
+            $server->setOption('whitelabel', $whitelabel);
+            $server->save();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.whitelable.updated'),
+            ]);
+        }
+
+        return view('admin.sending_servers.whitelabelSettings', [
+            'server' => $server,
+        ]);
+    }
+
+    /**
+     * Turn off Whitelabelling.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function whitelabelOff(Request $request, $uid)
+    {
+        $server = SendingServer::findByUid($uid);
+
+        // authorize
+        if (!$request->user()->admin->can('update', $server)) {
+            return $this->notAuthorized();
+        }
+
+        // success
+        $whitelabel = $server->getOption('whitelabel');
+        $whitelabel['brand'] = $request->brand;
+        $whitelabel['enabled'] = false;
+        $server->setOption('whitelabel', $whitelabel);
+        $server->save();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => trans('messages.whitelable.turned_of'),
+        ]);
+    }
 }

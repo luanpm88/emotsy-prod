@@ -2022,7 +2022,7 @@ ul.plans-intro li span {
     margin-top: 40px;
 }
 .form-groups-bottom-0 .form-group {
-    margin-bottom: 0;
+    margin-bottom: 0!important;
 }
 
 /* Start Nghi's section */
@@ -4032,4 +4032,12 @@ form.loading input {
 }
 .quicktip-content p {
     font-size: small;
+}
+.quicktip.grey {
+    background-color: #f5f6f5;
+    border: none;
+}
+.quicktip a.btn-mc_outline {
+    color: #333;
+    border: solid 2px #aaa;
 }
