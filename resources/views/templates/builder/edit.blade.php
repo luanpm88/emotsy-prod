@@ -78,7 +78,7 @@
                       remove_script_host : false,
                       valid_elements : '*[*],meta[*]',
                       valid_children: '+h1[div],+h2[div],+h3[div],+h4[div],+h5[div],+h6[div],+a[div]',
-                      plugins: 'image link textcolor lists autolink',
+                      plugins: 'image link lists autolink',
                       //toolbar: 'undo redo | bold italic underline | fontselect fontsizeselect | forecolor backcolor | alignleft aligncenter alignright alignfull | numlist bullist outdent indent',
                       toolbar: [
                           'undo redo | bold italic underline | fontselect fontsizeselect | link | menuDateButton',
