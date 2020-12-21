@@ -1,4 +1,5 @@
-<div class="quicktip d-flex">
+<div class="quicktip d-flex" style="    margin-top: 80px;
+margin-left: 20px;">
     <div class="quicktip-icon"><svg version="1.1"
         id="svg30" inkscape:version="0.92.2 5c3e80d, 2017-08-06" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:svg="http://www.w3.org/2000/svg"
         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 93.5 110"

@@ -1005,7 +1005,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                       relative_urls: false,
                         convert_urls: false,
                         remove_script_host : false,
-                      plugins: 'image link textcolor lists autolink',
+                      plugins: 'image link lists autolink',
                       //toolbar: 'undo redo | bold italic underline | fontselect fontsizeselect | forecolor backcolor | alignleft aligncenter alignright alignfull | numlist bullist outdent indent',
                       toolbar: [
                           'undo redo | bold italic underline | fontselect fontsizeselect | link | menuDateButton',
