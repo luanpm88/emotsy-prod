@@ -20,23 +20,32 @@
                         @endif
                     </a>
                 </div>
-                <div class="flex-fill flex-grow-1" style="width: 50%">
+                <div class="flex-fill" style="width: 40%">
                     <a href="javascript:;" onclick="popup.load('{{ action('Automation2Controller@profile', [
                         'uid' => $automation->uid,
                         'contact_uid' => $contact->uid,
                     ]) }}')" class="font-weight-semibold d-block">
-                        {{ $contact->email }}
+                        {{ $contact->email }} <span class="material-icons-outlined">launch</span>
                     </a>
                     <desc>{{ trans('messages.automation.contact.added_at', ['time' => $contact->created_at->diffForHumans()]) }}</desc>
                 </div>
-                    
+                <div class="actions-points">
+                    @foreach ($automation->getInsight() as $key => $element)
+                        @php
+                            $action = $automation->getElement($key);
+                        @endphp
+
+                        <span class="round-action-point action-{{ $action->get('type') }}" title="{{ $action->getName() }}">
+                        </span>
+                    @endforeach
+                </div>
                 @php
                     $field = $automation->mailList->getOneField();
                 @endphp
                 @if (is_object($field))
                     <?php $value = $contact->getValueByField($field); ?>
-                    <div class="flex-fill text-center">
-                        <label title="{{ empty($value) ? "--" : $value }}" class="font-weight-semibold text-center">
+                    <div class="flex-fill text-right">
+                        <label title="{{ empty($value) ? "--" : $value }}" class="font-weight-semibold text-right">
                             <span class="text-truncate d-block m-auto" style="max-width: 100px;">{{ empty($value) ? "--" : $value }}</span>
                         </label>
                         <desc>{{ $field->label }}</desc>

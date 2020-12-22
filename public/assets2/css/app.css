@@ -707,7 +707,6 @@ label.switchery-double.checkbox-switchery {
     border-radius: 15px;
     position: absolute;
     z-index: 100;
-    top: 100px;
     left: -10px;
 }
 .box-is-loading .lds-ellipsis div {
@@ -715,6 +714,7 @@ label.switchery-double.checkbox-switchery {
 }
 .box-is-loading {
   opacity: 0.5;
+  position: relative;
 }
 .dropdown.open .dropdown-menu {
   display: block;
@@ -1412,4 +1412,101 @@ a.trigger-woo-abandoned-cart:hover {
 }
 .wp-shop-info .logo-col img {
   width: 100%;
+}
+
+.contacts-stats-boxes {
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.contacts-stats-box {
+  padding: 10px 15px;
+  text-align: center;
+  border: dashed 2px #ccc;
+  margin-right: 10px;  
+  width: 400px;
+  border-radius: 3px;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+.contacts-stats-box.skipped label {
+  /* color: #ed7c30; */
+}
+.contacts-stats-box.error {
+  background: #ea4435;
+  color: #fff;
+}
+.contacts-stats-box .desc {
+  font-size: 13px;
+  white-space: nowrap;
+  color: #333;
+}
+.contacts-stats-box label {
+  font-size: 22px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 2px;
+}
+.contacts-stats-box.error {
+  border-color: #ea4435;
+}
+.contacts-stats-box.error label, .contacts-stats-box.error .desc {
+  color: #fff;
+}
+.actions-points {
+  margin-right: 10px;  
+  width: 110px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  height: 17px;
+}
+.round-action-point {
+  width: 15px;
+  height: 15px;
+  display: inline-block;
+  border-radius: 100%;
+  background: #5b9bd4;
+  margin-right: 0;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  border: solid 0px #79acda;
+}
+.round-action-point.action-ElementTrigger {
+  background: #1e4f79;
+}
+.round-action-point.action-ElementWait {
+  /* background: #eee;
+  border: solid 1px #aaa; */
+}
+.round-action-point.action-ElementCondition {
+  /* background: #e47a50; */
+}
+.round-action-point:hover {
+  background-color: #ddd;
+  border: solid 6px #666;
+}
+.contacts-stats-box:hover {
+  border-style: solid;  
+}
+.contacts-stats-box:hover * {
+  cursor: pointer; 
+}
+.tooltipster-sidetip.tooltipster-light .tooltipster-box {
+  border-radius: 15px;
+  border: 1px solid #bbb;
+  background: #fff;
+  box-shadow: 2px 3px 2px rgba(0,0,0,0.1);
+}
+.tooltipster-sidetip .tooltipster-content {
+  padding: 10px 15px;
+  font-size: 13px;
+}
+.tooltipster-sidetip.tooltipster-light.tooltipster-top .tooltipster-arrow-background {
+  border-top-color: #fff;
+}
+.tooltipster-sidetip.tooltipster-light.tooltipster-top .tooltipster-arrow-border {
+  border-top-color: #bbb;
+}
+.tooltipster-sidetip.tooltipster-light .tooltipster-content {
+  color: #333;
 }

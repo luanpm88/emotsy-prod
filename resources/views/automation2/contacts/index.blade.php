@@ -1,7 +1,38 @@
 @include('automation2._info')
 				
 @include('automation2._tabs', ['tab' => 'statistics', 'sub' => (request()->action_id ? 'contacts_action_' . request()->action_id : 'all_contacts')])
-    
+
+<div class="contacts-stats-boxes d-flex align-items-center">
+    <div class="contacts-stats-box" onclick="sidebar.load('{{ action('Automation2Controller@contacts', [
+        'uid' => $automation->uid,
+        'type' => 'in_action',
+    ]) }}')">
+        <label class="{{ request()->type == 'in_action' ? 'text-warning' : '' }}">308</label>
+        <div class="desc">{{ trans('messages.automation.box.contacts_in_action') }}</div>
+    </div>
+    <div class="contacts-stats-box" onclick="sidebar.load('{{ action('Automation2Controller@contacts', [
+        'uid' => $automation->uid,
+        'type' => 'done',
+    ]) }}')">
+        <label class="{{ request()->type == 'done' ? 'text-warning' : '' }}">854</label>
+        <div class="desc">{{ trans('messages.automation.box.contacts_done') }}</div>
+    </div>
+    <div class="contacts-stats-box skipped" onclick="sidebar.load('{{ action('Automation2Controller@contacts', [
+        'uid' => $automation->uid,
+        'type' => 'pending',
+    ]) }}')">
+        <label class="{{ request()->type == 'pending' ? 'text-warning' : '' }}">32,288</label>
+        <div class="desc">{{ trans('messages.automation.box.contacts_skip_pending') }}</div>
+    </div>
+    <div class="contacts-stats-box error" onclick="sidebar.load('{{ action('Automation2Controller@contacts', [
+        'uid' => $automation->uid,
+        'type' => 'error',
+    ]) }}')">
+        <label>2</label>
+        <div class="desc">{{ trans('messages.automation.box.contacts_error') }}</div>
+    </div>
+</div>
+
 <div class="insight-topine d-flex small align-items-center">
     <div class="insight-desc mr-auto">
         @if (request()->action_id)
@@ -17,11 +48,17 @@
         @endif        
     </div>
     <div class="insight-action">
+        <button  onclick="sidebar.load('{{ action('Automation2Controller@contacts', [
+            'uid' => $automation->uid,
+            'type' => request()->type,
+        ]) }}')" type="button" class="btn btn-outline-secondary btn-sm">
+            {{ trans('messages.automation.update_stats') }}
+        </button>
         @if ($subscribers->count())
             <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                 <div class="btn-group btn-group-sm" role="group">
                 <button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Action
+                    {{ trans('messages.automation.action') }}
                 </button>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnGroupDrop1">
                     <a class="dropdown-item list-export-contacts"
@@ -61,6 +98,7 @@
         url: '{{ action('Automation2Controller@contactsList', [
                 'uid' => $automation->uid,
                 'action_id' => request()->action_id,
+                'type' => request()->type,
             ]) }}',
         data: function() {
                 return {

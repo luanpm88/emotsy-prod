@@ -1,0 +1,1 @@
+@include('automation2.contacts.list.in_action')
