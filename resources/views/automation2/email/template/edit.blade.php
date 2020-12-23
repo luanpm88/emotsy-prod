@@ -776,7 +776,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
 
                 element.obj.attr('preview', 'no');
 
-                element.obj.find('img').attr('src', '{{ url('images/cart_item.svg') }}');
+                element.obj.find('.product-link img').attr('src', '{{ url('images/cart_item.svg') }}');
                 element.obj.find('.product-name').html('*|PRODUCT_NAME|*');
                 element.obj.find('.product-description').html('*|PRODUCT_DESCRIPTION|*');
                 element.obj.find('.product-link').attr('href', '*|PRODUCT_URL|*');
@@ -800,6 +800,10 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                     }, {
                         updateId: function(id) {
                             element.obj.attr('product-id', id);
+
+                            if (!id) {
+                                element.obj.removeAttr('product-id');
+                            }
 
                             element.select();
                         },
@@ -904,36 +908,44 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                 // default content html
                 this.setContentHtml(`
                     <div preview="no" builder-element="WooItemElement" builder-draggable class="py-3 px-3 woo-cart-item-widget">
-                        <span class="woo-button woo-preview-but" style="display:none">Preview</span>
-                        <span class="woo-button woo-unpreview-but" style="display:none">Close preview</span>
-                        <div class="edit-container">
-                            <div class="d-flex">
-                                <div class="">
-                                    <a href="*|PRODUCT_URL|*" class="product-link">
-                                        <img builder-element="WooImgElement" class="mr-4" src="{{ url('images/cart_item.svg') }}" width="200px" />
-                                    </a>
-                                </div>
-                                
-                                <div builder-element="TextElement" class="" style="width:100%">
-                                    <div builder-element="TextElement">
-                                        <h3 class="font-weight-normal">
-                                            <a style="color:#333;" class="d-block product-link" href="*|PRODUCT_URL|*">
-                                                <span class="product-name">*|PRODUCT_NAME|*</span>
-                                            </a>
-                                        </h3>
-                                        <p class=" product-description">*|PRODUCT_DESCRIPTION|*</p>
-                                        <h4><strong class="product-price">*|PRODUCT_PRICE|*</strong></h4>
-                                    </div>
-                                    <div>
-                                        <a style="background-color: #9b5c8f;
-        border-color: #9b5c8f;" builder-element builder-inline-edit href="*|PRODUCT_URL|*" class="mt-4 btn btn-primary text-white product-view-button product-link">
-                                            {{ trans('messages.automation.buy_now') }}
+                        <div class="woo-item-placeholder text-center" style="display:none">
+                            <img src="{{ url('images/wooproduct.svg') }}" width="100%" />
+                            <a style="" class="mt-4 btnx btnx-primary">
+                                {{ trans('messages.automation.choose_a_product') }}
+                            </a>
+                        </div>
+                        <div class="woo-item-content">
+                            <span class="woo-button woo-preview-but" style="display:none">Preview</span>
+                            <span class="woo-button woo-unpreview-but" style="display:none">Close preview</span>
+                            <div class="edit-container">
+                                <div class="d-flex">
+                                    <div class="">
+                                        <a href="*|PRODUCT_URL|*" class="product-link">
+                                            <img builder-element="WooImgElement" class="mr-4" src="{{ url('images/cart_item.svg') }}" width="200px" />
                                         </a>
+                                    </div>
+                                    
+                                    <div builder-element="TextElement" class="" style="width:100%">
+                                        <div builder-element="TextElement">
+                                            <h3 class="font-weight-normal">
+                                                <a style="color:#333;" class="d-block product-link" href="*|PRODUCT_URL|*">
+                                                    <span class="product-name">*|PRODUCT_NAME|*</span>
+                                                </a>
+                                            </h3>
+                                            <p class=" product-description">*|PRODUCT_DESCRIPTION|*</p>
+                                            <h4><strong class="product-price">*|PRODUCT_PRICE|*</strong></h4>
+                                        </div>
+                                        <div>
+                                            <a style="background-color: #9b5c8f;
+            border-color: #9b5c8f;" builder-element builder-inline-edit href="*|PRODUCT_URL|*" class="mt-4 btn btn-primary text-white product-view-button product-link">
+                                                {{ trans('messages.automation.buy_now') }}
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                            <div class="preview-container" style="display:none"></div>
                         </div>
-                        <div class="preview-container" style="display:none"></div>
                     </div>
                 `);
 

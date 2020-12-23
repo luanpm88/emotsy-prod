@@ -3997,4 +3997,5 @@
   'whitelabel.settings' => 'Settings',
   'whitelabel.turn_off' => 'Turn OFF whitelabelling',
   'whitelable.turned_of' => 'Whitelablling was successfully turned off',
+  'automation.choose_a_product' => 'Choose a Product',
 ) ?>
