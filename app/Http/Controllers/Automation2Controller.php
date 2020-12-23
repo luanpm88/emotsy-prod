@@ -2054,6 +2054,9 @@ class Automation2Controller extends Controller
 
         return view('automation2.debug', [
             'trigger' => $trigger,
+        ]);
+    }
+    
     /**
      * Get last saved time.
      *
