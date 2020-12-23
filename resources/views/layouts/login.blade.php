@@ -12,7 +12,6 @@
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i&amp;subset=cyrillic,cyrillic-ext,greek,greek-ext,latin-ext,vietnamese" rel="stylesheet">
 
         <link rel="stylesheet" href="{{ URL::asset('assets/lib/ionicons/css/ionicons.min.css') }}">
-        <link rel="stylesheet" href="{{ URL::asset('assets/lib/select2/css/select2.min.css') }}">
         <link rel="stylesheet" href="{{ URL::asset('assets/lib/datepicker/css/bootstrap-datepicker3.min.css') }}">
         <link rel="stylesheet" href="{{ URL::asset('assets/lib/loaders/loaders.css') }}">
 

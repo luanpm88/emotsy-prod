@@ -44,7 +44,7 @@
 			</tbody>
 		</table>
 	</div>
-	@if (null !== Session::get('orig_customer_id') && Auth::user()->customer)
+	@if ((null !== Session::get('orig_customer_id') && Auth::user()->customer) || Auth::user()->admin)
 		<div class="col-md-6">
 			@include('quicktip.identity')
 		</div>
