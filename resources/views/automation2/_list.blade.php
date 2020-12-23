@@ -74,7 +74,7 @@
                                     <li>
                                         <a                                            
                                             href="{{ action('Automation2Controller@subscribers', [
-                                                "uids" => $automation->uid
+                                                "uid" => $automation->uid
                                             ]) }}"
                                         >
                                             <i class="icon-users"></i> {{ trans('messages.subscribers') }}
