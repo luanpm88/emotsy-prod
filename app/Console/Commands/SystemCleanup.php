@@ -53,5 +53,6 @@ class SystemCleanup extends Command
             $query->delete();
         }
         */
+        return 0;
     }
 }

@@ -57,5 +57,7 @@ class ImportList extends Command
 
         $list = \Acelle\Model\MailList::findByUid($list_uid);
         $list->import3($path);
+
+        return 0;
     }
 }
