@@ -47,8 +47,10 @@ class GeoIpCheck extends Command
         $lock->getExclusiveLock(function() {
             $this->check();
         });
+
+        return 0;
     }
-    
+
     /**
      * Execute the console command.
      *
