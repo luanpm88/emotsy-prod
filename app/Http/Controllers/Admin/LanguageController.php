@@ -4,6 +4,7 @@ namespace Acelle\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
+use Acelle\Library\Tool;
 
 class LanguageController extends Controller
 {
@@ -320,13 +321,11 @@ class LanguageController extends Controller
     public function download(Request $request, $id)
     {
         $language = \Acelle\Model\Language::findByUid($id);
+        $tmpzip = storage_path("tmp/language-" . $language->code . ".zip");
         
-        // Create tmp language package
-        $files = glob($language->languageDir() . "*");
-        $zip = storage_path("tmp/language-" . $language->code . ".zip");
-        \Zipper::make($zip)->add($files)->close();
+        Tool::zip($language->languageDir(), $tmpzip);
        
-        return response()->download($zip);
+        return response()->download($tmpzip)->deleteFileAfterSend(true);;
     }
     
     /**
