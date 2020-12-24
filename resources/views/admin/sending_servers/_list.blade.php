@@ -24,7 +24,7 @@
                 </td>
                 <td>
                     <h5 class="no-margin text-bold">
-                        <a class="kq_search" href="{{ action('Admin\SendingServerController@edit', ["uid" => $item->uid, "type" => $item->type]) }}">{{ $item->name }}</a>
+                        <a class="kq_search" href="{{ action('Admin\SendingServerController@edit', ["id" => $item->uid, "type" => $item->type]) }}">{{ $item->name }}</a>
                     </h5>
                     <span class="text-muted">
                         {!! is_object($item->admin) ? '<i class="icon-user-tie"></i>' . $item->admin->displayName() : '' !!}
@@ -75,7 +75,7 @@
                 </td>
                 <td class="text-right text-nowrap">
                     @if (Auth::user()->admin->can('update', $item))
-                        <a href="{{ action('Admin\SendingServerController@edit', ["uid" => $item->uid, "type" => $item->type]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey btn-icon"><i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
+                        <a href="{{ action('Admin\SendingServerController@edit', ["id" => $item->uid, "type" => $item->type]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey btn-icon"><i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
                     @endif
                     @if (Auth::user()->admin->can('delete', $item) || Auth::user()->admin->can('disable', $item) || Auth::user()->admin->can('enable', $item))
                         <div class="btn-group">
