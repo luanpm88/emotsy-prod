@@ -325,7 +325,7 @@ class LanguageController extends Controller
         
         Tool::zip($language->languageDir(), $tmpzip);
        
-        return response()->download($tmpzip)->deleteFileAfterSend(true);;
+        return response()->download($tmpzip)->deleteFileAfterSend(true);
     }
     
     /**
