@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "85a4362a6582c5501c460d6cadd4a327",
+    "content-hash": "d635aa08b5de9809660bf0260274b1ae",
     "packages": [
         {
             "name": "acelle/cashier",
@@ -8958,7 +8958,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": "^7.1.3"
+        "php": ">=7.2.0"
     },
     "platform-dev": [],
     "plugin-api-version": "2.0.0"
