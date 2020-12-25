@@ -29,6 +29,10 @@ class AppServiceProvider extends ServiceProvider
         } elseif (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && strcasecmp($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') == 0 || !empty($_SERVER['HTTP_X_FORWARDED_SSL']) && strcasecmp($_SERVER['HTTP_X_FORWARDED_SSL'], 'on') == 0) {
             $isSecure = true;
         }
+        
+        if (isset($_SERVER['HTTP_UPGRADE_INSECURE_REQUESTS']) && strcasecmp($_SERVER['HTTP_UPGRADE_INSECURE_REQUESTS'], '1') == 0) {
+            $isSecure = true;
+        }
 
         if ($isSecure) {
             URL::forceScheme('https');
@@ -110,3 +114,4 @@ class AppServiceProvider extends ServiceProvider
         }
     }
 }
+
