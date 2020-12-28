@@ -99,7 +99,7 @@
         }
     </style>
 
-    <div class="login-container dark full-height flex">
+    <div class="login-container dark full-height flex" style="height:100%">
         <div class="col-md-7 phone-hide right-col">
             <div class="full-height full-width" style="display: flexs">
                 <!--<h1 class="login-bg-title full-width pd-lvl3 text-white">Acelle Funnel</h1>-->
