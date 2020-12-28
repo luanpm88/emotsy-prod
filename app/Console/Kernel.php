@@ -50,6 +50,8 @@ class Kernel extends ConsoleKernel
             Notification::cleanupDuplicateNotifications($title);
             Notification::warning(['title' => $title, 'message' => $message]);
             throw new Exception($message);
+        } else {
+            Notification::cleanupDuplicateNotifications($title);
         }
 
         $title = 'Server does not support PHP process';
