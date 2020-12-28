@@ -23,6 +23,7 @@
 @endsection
 
 @section('content')
+	<p>{{ trans('messages.templates.admin.intro') }}</p>
 				<form class="listing-form"
 					sort-url="{{ action('Admin\TemplateController@sort') }}"
 					data-url="{{ action('Admin\TemplateController@listing') }}"
