@@ -31,12 +31,16 @@
                 lang: {!! json_encode(language()->getBuilderLang()) !!},
                 url: '{{ action('TemplateController@builderEditContent', $template->uid) }}',
                 backCallback: function() {
-                    @if (actionName() != 'builderEdit')
-                        parent.$('.full-iframe-popup').fadeOut();
+                    if (parent.$('.full-iframe-popup').length) {
+                        parent.$('.full-iframe-popup').hide();
                         parent.$('body').removeClass('overflow-hidden');
-                    @else
-                        window.location = '{{ action('TemplateController@index') }}';
-                    @endif
+                    }
+                    
+                    if (parent.$('.listing-form').length) {
+                        parent.tableFilterAll();
+                    } else {
+                        window.location.reload();
+                    }    
                 },
                 uploadAssetUrl: '{{ action('TemplateController@builderAsset', $template->uid) }}',
                 uploadAssetMethod: 'POST',
