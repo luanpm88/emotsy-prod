@@ -44,8 +44,8 @@ class Kernel extends ConsoleKernel
             return;
         }
 
+        $title = 'PHP extension error';
         if (!class_exists('SQLite3')) {
-            $title = 'PHP extension error';
             $message = "Class 'SQLite3' not found, please check with your hosting provider to enable the related PHP package (php*-sqlite3 extension)";
             Notification::cleanupDuplicateNotifications($title);
             Notification::warning(['title' => $title, 'message' => $message]);
