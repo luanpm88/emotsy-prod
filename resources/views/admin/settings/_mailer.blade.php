@@ -64,11 +64,12 @@
                 </div>
                 <div class="col-md-6">
                     @include('helpers.form_control', [
-                        'type' => 'text',
+                        'type' => 'password',
                         'name' => 'env[MAIL_PASSWORD]',
                         'label' => trans('messages.password'),
                         'value' => (isset($env["MAIL_PASSWORD"]) ? $env["MAIL_PASSWORD"] : ""),
                         'help_class' => 'env',
+                        'eye' => true,
                         'rules' => $env_rules
                     ])
                 </div>
