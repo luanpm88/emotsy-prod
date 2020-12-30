@@ -8,7 +8,7 @@
 				<ul class="dropdown-menu dropdown-menu-left">
 					@forelse ($list->otherLists() as $l)
 						<li>
-							<a href="{{ action('MailListController@overview', ['list_uid' => $l->uid]) }}">
+							<a href="{{ action('MailListController@overview', ['uid' => $l->uid]) }}">
 								{{ $l->readCache('LongName', $l->name) }}
 							</a>
 						</li>

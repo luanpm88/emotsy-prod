@@ -259,7 +259,7 @@ class Email extends Model
     public function getThumbUrl()
     {
         if ($this->getThumbName()) {
-            return route('email_assets', ['uid' => $this->uid, 'path' => $this->getThumbName()]);
+            return route('email_assets', ['uid' => $this->uid, 'name' => $this->getThumbName()]);
         } else {
             return url('assets/images/placeholder.jpg');
         }
@@ -445,7 +445,7 @@ class Email extends Model
         }
 
         // Replace #1
-        $path = join_url($host, route('email_assets', ['uid' => $this->uid, 'path' => ''], false));
+        $path = join_url($host, route('email_assets', ['uid' => $this->uid], false));
         $html = \Acelle\Library\Tool::replaceTemplateUrl($html, $path);    
 
         // By the way, fix <html>
@@ -467,7 +467,7 @@ class Email extends Model
 
         // Replace relative URL with campaign URL
         $this->content = str_replace(
-            route('email_assets', ['uid' => $this->uid, 'path' => '']).'/',
+            route('email_assets', ['uid' => $this->uid]).'/',
             '',
             tinyDocTypeUntransform($this->content)
         );

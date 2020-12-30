@@ -44,6 +44,16 @@ class Kernel extends ConsoleKernel
             return;
         }
 
+        $title = 'PHP extension error';
+        if (!class_exists('SQLite3')) {
+            $message = "Class 'SQLite3' not found, please check with your hosting provider to enable the related PHP package (php*-sqlite3 extension)";
+            Notification::cleanupDuplicateNotifications($title);
+            Notification::warning(['title' => $title, 'message' => $message]);
+            throw new Exception($message);
+        } else {
+            Notification::cleanupDuplicateNotifications($title);
+        }
+
         $title = 'Server does not support PHP process';
         $message = 'The Process class relies on proc_open, which is not available on your hosting server PHP installation. Please check with your hosting provider to enable it.';
         if (!function_exists('proc_open')) {

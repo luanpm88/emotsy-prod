@@ -3998,4 +3998,7 @@
   'whitelabel.turn_off' => 'Turn OFF whitelabelling',
   'whitelable.turned_of' => 'Whitelablling was successfully turned off',
   'automation.choose_a_product' => 'Choose a Product',
+  'templates.admin.intro' => 'This is the application\'s global Template Gallery,
+      create your template here to have it available for all users to choose
+      from when they compose a campaign email.',
 ) ?>

@@ -185,11 +185,12 @@
 			</div>
 			<div class="col-md-6">
 				@include('helpers.form_control', [
-					'type' => 'text',
+					'type' => 'password',
 					'name' => 'smtp_password',
 					'label' => trans('messages.password'),
 					'value' => (isset($site_info["smtp_password"]) ? $site_info["smtp_password"] : ""),
 					'help_class' => 'install',
+					'eye' => true,
 					'rules' => $smtp_rules
 				])
 			</div>

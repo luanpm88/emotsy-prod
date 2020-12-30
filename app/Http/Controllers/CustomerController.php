@@ -54,6 +54,10 @@ class CustomerController extends Controller
      */
     public function loginBack(Request $request)
     {
+        if ($request->user()->admin) {
+            return redirect()->action('Admin\HomeController@index');
+        }
+
         $id = \Session::pull('orig_customer_id');
         $orig_user = \Acelle\Model\User::findByUid($id);
         
