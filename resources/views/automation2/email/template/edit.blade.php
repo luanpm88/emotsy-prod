@@ -776,11 +776,11 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
 
                 element.obj.attr('preview', 'no');
 
-                element.obj.find('.product-link img').attr('src', '{{ url('images/cart_item.svg') }}');
-                element.obj.find('.product-name').html('*|PRODUCT_NAME|*');
-                element.obj.find('.product-description').html('*|PRODUCT_DESCRIPTION|*');
-                element.obj.find('.product-link').attr('href', '*|PRODUCT_URL|*');
-                element.obj.find('.product-price').html('*|PRODUCT_PRICE|*');
+                // element.obj.find('.product-link img').attr('src', '{{ url('images/cart_item.svg') }}');
+                // element.obj.find('.product-name').html('*|PRODUCT_NAME|*');
+                // element.obj.find('.product-description').html('*|PRODUCT_DESCRIPTION|*');
+                // element.obj.find('.product-link').attr('href', '*|PRODUCT_URL|*');
+                // element.obj.find('.product-price').html('*|PRODUCT_PRICE|*');
                 if (editor.selected != null) {
                     editor.selected.select();
                 }
