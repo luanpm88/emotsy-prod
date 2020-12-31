@@ -4001,4 +4001,13 @@
   'templates.admin.intro' => 'This is the application\'s global Template Gallery,
       create your template here to have it available for all users to choose
       from when they compose a campaign email.',
+  'automation.connected_to_store' => 'Connected to WooCommerce<br> via AcelleSync',
+  'automation.connect_url.change_store' => 'Change Store',
+  'automation.visit_store' => 'Visit store',
+  'automation.site_administrator' => 'Site administrator',
+  'automation.associated_with_store.wording' => 'This automation is associated with :store powered by Wordpress.',
+  'woo.products' => 'Products',
+  'woo.orders' => 'Orders',
+  'woo.total_sales' => 'Total sales',
 ) ?>
+

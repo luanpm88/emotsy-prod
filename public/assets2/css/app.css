@@ -160,14 +160,14 @@ a {
     display: flex;
 }
 .automation2 .diagram {
-    width: 60%;
+    width: calc(100% - 520px);
     height: calc(100vh - 56px);
     margin: 56px 0 0 0;
     background: #f2f2f2;
     overflow: auto;
 }
 .automation2 .sidebar {
-    width: 40%;
+    width: 520px;
     height: calc(100vh - 56px);
     overflow: auto;
     margin-top: 56px;
@@ -1401,7 +1401,6 @@ a.trigger-woo-abandoned-cart:hover {
   width: 100%!important;
 }
 .wp-shop-info {
-  display: flex;
   border: solid 1px #ddd;
   padding: 10px 15px;
   border-radius: 5px;
@@ -1413,7 +1412,13 @@ a.trigger-woo-abandoned-cart:hover {
 .wp-shop-info .logo-col img {
   width: 100%;
 }
-
+.wp-shop-info .bottom-info {
+  margin-top: 15px;
+  padding-top: 15px;
+  border-top: solid 1px #ddd;
+  margin: 15px -15px 0 -15px;
+  padding: 15px;
+}
 .contacts-stats-boxes {
   justify-content: space-between;
   margin-bottom: 20px;
@@ -1509,4 +1514,16 @@ a.trigger-woo-abandoned-cart:hover {
 }
 .tooltipster-sidetip.tooltipster-light .tooltipster-content {
   color: #333;
+}
+.store-states label {
+  font-size: 20px;
+  font-weight: 600;
+}
+.store-states .store-icon span {
+  font-size: 33px;
+  color: #666;
+  margin-right: 12px;
+}
+.store-states {
+  justify-content: space-around;
 }

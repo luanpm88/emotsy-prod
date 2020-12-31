@@ -754,6 +754,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                     html = html.replace(/\*\|PRODUCT_NAME\|\*/g, data.name);
                     html = html.replace(/\*\|PRODUCT_DESCRIPTION\|\*/g, data.description);
                     html = html.replace(/\*\|PRODUCT_PRICE\|\*/g, data.price);
+                    html = html.replace(/\*\|PRODUCT_QUANTITY\|\*/g, data.quantity);
                     element.obj.find('.preview-container').html(html);
                     if (data.image) {
                         console.log(element.obj.find('.preview-container img'));
@@ -1118,6 +1119,35 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                         thisEditor.handleSelect();
                         return false;
                     })
+                },
+                customTinymceSetup: function(editor) {
+                    editor.ui.registry.addMenuButton('custom1', {
+                        text: 'WooCommerce Tags',
+                        fetch: function (callback) {
+                            var items = [];
+
+                            var tags = [
+                                '*|PRODUCT_NAME|*',
+                                '*|PRODUCT_DESCRIPTION|*',
+                                '*|PRODUCT_PRICE|*',
+                                '*|PRODUCT_URL|*',
+                                '*|PRODUCT_QUANTITY|*',
+                            ];
+
+                            tags.forEach(element => {
+                                items.push({
+                                    type: 'menuitem',
+                                    text: element,
+                                    onAction: function (_) {
+                                        editor.insertContent(element);                                          
+                                    }
+                                });
+                            });
+                                
+                            
+                            callback(items);
+                        }
+                    });
                 }
             });
           

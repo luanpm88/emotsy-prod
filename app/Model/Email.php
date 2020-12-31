@@ -935,6 +935,7 @@ class Email extends Model
                     $html = str_replace('*|PRODUCT_DESCRIPTION|*', $item["description"], $html);
                     $html = str_replace('*|PRODUCT_URL|*', $item["link"], $html);
                     $html = str_replace('*|PRODUCT_PRICE|*', $item["price"], $html);
+                    $html = str_replace('*|PRODUCT_QUANTITY|*', $item["quantity"], $html);
                     $element->innertext = $html;
                 }
             }
