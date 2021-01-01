@@ -768,7 +768,8 @@ class Automation2 extends Model
         return $this->subscribers()->whereRaw(table('subscribers.id').' NOT IN (SELECT subscriber_id FROM _new_subscribers_to_follow)')
                 ->where('subscribers.created_at', '>=', $this->created_at)
                 ->where('mail_list_id', $this->mailList->id)
-                ->whereRaw(sprintf('COALESCE('.table('subscribers.subscription_type').", '') <> %s", db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED)))->get();
+                ->whereRaw(sprintf('COALESCE('.table('subscribers.subscription_type').", '') <> %s", db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED)))
+                ->get();
     }
 
     /**
