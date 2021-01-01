@@ -341,16 +341,16 @@ class StringHelper
         $dom = new DOMDocument();
         libxml_use_internal_errors(true); // disable warning for invalid tags
         $dom->loadHTML($html, LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED);
-        foreach($defaults as $tag) {
+        foreach ($defaults as $tag) {
             $itemsToRemove = $dom->getElementsByTagName($tag);
 
             $remove = [];
-            foreach($itemsToRemove as $item) {
+            foreach ($itemsToRemove as $item) {
                 $remove[] = $item;
             }
 
             foreach ($remove as $item) {
-                $item->parentNode->removeChild($item); 
+                $item->parentNode->removeChild($item);
             }
         }
         return $dom->saveHTML();

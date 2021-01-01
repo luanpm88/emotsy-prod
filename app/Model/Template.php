@@ -700,7 +700,7 @@ class Template extends Model implements Storable
         // Notice that there are 2 types of assets that need to untransform
         // #1 Campaign relative URL
         // #2 User assets (uploaded by file manager) absolute URL
-        // 
+        //
         $host = config('app.url'); // Default host
         
         if ($useTrackingHost) {
@@ -711,7 +711,7 @@ class Template extends Model implements Storable
 
         // Replace #1
         $path = join_url($host, route('template_assets', ['uid' => $this->uid, 'name' => ''], false));
-        $html = \Acelle\Library\Tool::replaceTemplateUrl($html, $path);    
+        $html = \Acelle\Library\Tool::replaceTemplateUrl($html, $path);
 
         // By the way, fix <html>
         $html = tinyDocTypeTransform($html);
@@ -739,7 +739,7 @@ class Template extends Model implements Storable
         // * addTrackingURL
         // * appendOpenTrackingUrl
         // * tagMessage
-         // STEP 01. Get RAW content
+        // STEP 01. Get RAW content
         $body = $this->content;
 
         // STEP 02. Append footer
@@ -772,9 +772,9 @@ class Template extends Model implements Storable
         //
         // Transform CSS/HTML content to inline CSS
         // Be carefule, it will make
-        //       <a href="{BUNSUBSCRIBE_URL}" 
+        //       <a href="{BUNSUBSCRIBE_URL}"
         // become
-        //       <a href="%7BUNSUBSCRIBE_URL%7D" 
+        //       <a href="%7BUNSUBSCRIBE_URL%7D"
         $body = $this->inlineHtml($body);
 
         return $body;

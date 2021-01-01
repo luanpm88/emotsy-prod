@@ -79,7 +79,7 @@ class EmailVerificationServer extends Model
             }
 
             $headers = $config['post_headers'];
-            foreach($headers as $header => $value) {
+            foreach ($headers as $header => $value) {
                 foreach ($config['fields'] as $field) {
                     if (array_key_exists($field, $options)) {
                         $value = str_replace('{'.strtoupper($field).'}', $options[$field], $value);

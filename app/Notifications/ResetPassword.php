@@ -35,6 +35,6 @@ class ResetPassword extends BaseResetPassword
         return (new MailMessage)
             ->line(trans('messages.click_here_to_reset_password'))
             ->action(trans('messages.reset_password'), $this->resetPasswordUrl);
-            //->line('If you did not request a password reset, no further action is required.');
+        //->line('If you did not request a password reset, no further action is required.');
     }
 }
