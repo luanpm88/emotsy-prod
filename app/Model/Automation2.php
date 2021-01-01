@@ -108,7 +108,9 @@ class Automation2 extends Model
     public function pendingAutoTriggers()
     {
         $leaves = $this->getLeafActions();
-        $condition = '('.implode(' AND ', array_map(function($e) { return "executed_index NOT LIKE '%{$e}'"; }, $leaves)).')';
+        $condition = '('.implode(' AND ', array_map(function ($e) {
+            return "executed_index NOT LIKE '%{$e}'";
+        }, $leaves)).')';
         $query = $this->autoTriggers()->whereRaw($condition);
         return $query;
     }
@@ -478,7 +480,7 @@ class Automation2 extends Model
         // Counting by user timezone
         $startOfDayUtc = $today->startOfDay()->timezone('UTC');
 
-        $subscribers = $this->subscribers()->leftJoin('auto_triggers', function($join) use ($thisId, $startOfDayUtc) {
+        $subscribers = $this->subscribers()->leftJoin('auto_triggers', function ($join) use ($thisId, $startOfDayUtc) {
             $join->on('auto_triggers.subscriber_id', 'subscribers.id');
             $join->where('auto_triggers.automation2_id', $thisId);
             $join->where('auto_triggers.created_at', '>=', $startOfDayUtc);
@@ -518,7 +520,7 @@ class Automation2 extends Model
         // Counting by user timezone
         $startOfDayUtc = $today->startOfDay()->timezone('UTC');
 
-        $subscribers = $this->subscribers()->leftJoin('auto_triggers', function($join) use ($thisId, $startOfDayUtc) {
+        $subscribers = $this->subscribers()->leftJoin('auto_triggers', function ($join) use ($thisId, $startOfDayUtc) {
             $join->on('auto_triggers.subscriber_id', 'subscribers.id');
             $join->where('auto_triggers.automation2_id', $thisId);
             $join->where('auto_triggers.created_at', '>=', $startOfDayUtc);
@@ -568,13 +570,13 @@ class Automation2 extends Model
                     "DATEDIFF(STR_TO_DATE(CONCAT('".$today->format('Y')."', SUBSTRING(".table('subscriber_fields.value').", 5, 10)), '".$formatSql."'), STR_TO_DATE('".$todayStr."', '".$formatSql."')) AS datediff"
                 )
             )
-            ->leftJoin('auto_triggers', function($join) use ($thisId) {
+            ->leftJoin('auto_triggers', function ($join) use ($thisId) {
                 $join->on('auto_triggers.subscriber_id', 'subscribers.id');
                 $join->where('auto_triggers.automation2_id', $thisId);
             })
             ->orderBy('subscribers.email', 'ASC');
-            //->whereNull('auto_triggers.subscriber_id'); // chưa trigger
-            // 
+        //->whereNull('auto_triggers.subscriber_id'); // chưa trigger
+        //
         return $query;
     }
 
@@ -606,7 +608,7 @@ class Automation2 extends Model
                 $today->format('m/d/Y'),
                 $today->format('m-d-Y'),
             ])
-            ->leftJoin('auto_triggers', function($join) use ($thisId) {
+            ->leftJoin('auto_triggers', function ($join) use ($thisId) {
                 $join->on('auto_triggers.subscriber_id', 'subscribers.id');
                 $join->where('auto_triggers.automation2_id', $thisId);
             })
@@ -669,7 +671,7 @@ class Automation2 extends Model
             $trigger->check();
         }*/
 
-        foreach($this->pendingAutoTriggers as $trigger) {
+        foreach ($this->pendingAutoTriggers as $trigger) {
             $trigger->check();
         }
 
@@ -935,7 +937,7 @@ class Automation2 extends Model
         $leaves = $this->getLeafActions();
         $complete = 0;
         foreach ($leaves as $leaf) {
-            $complete += $this->subscribersByLatestAction($leaf)->count();    
+            $complete += $this->subscribersByLatestAction($leaf)->count();
         }
 
         $completePercentage = ($total == 0) ? 0 : $complete / $total;
@@ -1016,7 +1018,6 @@ class Automation2 extends Model
     // if $actionId is provided, get only subscribers who have been triggered and have gone through the action
     public function subscribers($actionId = null)
     {
-        
         if ($this->segment()->exists()) {
             $query = $this->segment->subscribers();
         } else {

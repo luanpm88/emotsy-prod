@@ -138,7 +138,7 @@ class SendingServerSendGrid extends SendingServer implements DomainVerificationI
         usort($parts, function ($a, $b) {
             if ($a->getContentType() == 'text/plain') {
                 return -1;
-            } else if ($a->getContentType() == 'text/html') {
+            } elseif ($a->getContentType() == 'text/html') {
                 return 0;
             } else {
                 return 1;

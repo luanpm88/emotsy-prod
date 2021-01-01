@@ -2019,7 +2019,7 @@ class Customer extends Model implements BillableUserInterface
             $subscription->user_id = $this->getBillableId();
         }
         $subscription->plan_id = $plan->getBillableId();
-        $subscription->started_at = \Carbon\Carbon::now();        
+        $subscription->started_at = \Carbon\Carbon::now();
         $subscription->status = Subscription::STATUS_NEW;
         $subscription->save();
     }

@@ -577,9 +577,9 @@ abstract class AbsCampaign extends Model
         //
         // Transform CSS/HTML content to inline CSS
         // Be carefule, it will make
-        //       <a href="{BUNSUBSCRIBE_URL}" 
+        //       <a href="{BUNSUBSCRIBE_URL}"
         // become
-        //       <a href="%7BUNSUBSCRIBE_URL%7D" 
+        //       <a href="%7BUNSUBSCRIBE_URL%7D"
         $body = $this->inlineHtml($body);
 
 
@@ -2726,7 +2726,7 @@ abstract class AbsCampaign extends Model
         // Notice that there are 2 types of assets that need to untransform
         // #1 Campaign relative URL
         // #2 User assets (uploaded by file manager) absolute URL
-        // 
+        //
 
         // Replace #2
         $host = config('app.url'); // Default host
@@ -2739,7 +2739,7 @@ abstract class AbsCampaign extends Model
 
         // Replace #1
         $path = join_url($host, route('campaign_assets', ['uid' => $this->uid], false));
-        $html = \Acelle\Library\Tool::replaceTemplateUrl($html, $path);    
+        $html = \Acelle\Library\Tool::replaceTemplateUrl($html, $path);
 
         // By the way, fix <html>
         $html = tinyDocTypeTransform($html);
@@ -2755,7 +2755,7 @@ abstract class AbsCampaign extends Model
         // Notice that there are 2 types of assets that need to untransform
         // #1 Campaign relative URL
         // #2 User assets (uploaded by file manager) absolute URL
-        // 
+        //
         // and only #1 will be untransformed while #2 is kept as is
 
         // Replace relative URL with campaign URL
@@ -3206,8 +3206,10 @@ abstract class AbsCampaign extends Model
         echo "All tracking log count: ". $this->trackingLogs()->count()."\n";
         // Failed tracking log
         $failureCount = round($params['delivery_failed'] * $this->trackingLogs()->count());
-        $allLogs = $this->trackingLogs()->get()->map(function($e){ return $e->id; })->toArray();
-        $failedLogs = array_values(array_intersect_key($allLogs, array_flip( $this->arrayRandFixed( $allLogs, $failureCount ))));
+        $allLogs = $this->trackingLogs()->get()->map(function ($e) {
+            return $e->id;
+        })->toArray();
+        $failedLogs = array_values(array_intersect_key($allLogs, array_flip($this->arrayRandFixed($allLogs, $failureCount))));
         echo "Failed log count: ".$this->trackingLogs()->whereIn('id', $failedLogs)->count()."\n";
         $this->trackingLogs()->whereIn('id', $failedLogs)->update([
             'status' => 'failed',
@@ -3219,10 +3221,12 @@ abstract class AbsCampaign extends Model
         $openCount = round($params['open'] * $sentCount);
         $sentLogs = $this->trackingLogs()->where('status', 'sent')
                          ->select('tracking_logs.id')
-                         ->get()->map(function($e){ return $e->id; })->toArray();
-        $openLogs = array_values(array_intersect_key($sentLogs, array_flip( $this->arrayRandFixed( $sentLogs, $openCount ))));
+                         ->get()->map(function ($e) {
+                             return $e->id;
+                         })->toArray();
+        $openLogs = array_values(array_intersect_key($sentLogs, array_flip($this->arrayRandFixed($sentLogs, $openCount))));
         echo "Open log count: ".$openCount."\n";
-        foreach($this->trackingLogs()->whereIn('id', $openLogs)->get() as $r) {
+        foreach ($this->trackingLogs()->whereIn('id', $openLogs)->get() as $r) {
             $log = new \Acelle\Model\OpenLog();
             $log->message_id = $r->message_id;
             $location = \Acelle\Model\IpLocation::add(StringHelper::getRandomUSIpAddresses());
@@ -3237,10 +3241,12 @@ abstract class AbsCampaign extends Model
         $openLogs = $this->trackingLogs()
                          ->join('open_logs', 'tracking_logs.message_id', '=', 'open_logs.message_id')
                          ->select('tracking_logs.id')
-                         ->get()->map(function($e){ return $e->id; })->toArray();
-        $clickLogs = array_values(array_intersect_key($openLogs, array_flip( $this->arrayRandFixed( $openLogs, $clickCount ))));
+                         ->get()->map(function ($e) {
+                             return $e->id;
+                         })->toArray();
+        $clickLogs = array_values(array_intersect_key($openLogs, array_flip($this->arrayRandFixed($openLogs, $clickCount))));
         echo "Click log count: ".$this->trackingLogs()->whereIn('id', $clickLogs)->count()."\n";
-        foreach($this->trackingLogs()->whereIn('id', $clickLogs)->get() as $r) {
+        foreach ($this->trackingLogs()->whereIn('id', $clickLogs)->get() as $r) {
             $log = new \Acelle\Model\ClickLog();
             $log->message_id = $r->message_id;
             $location = \Acelle\Model\IpLocation::add(StringHelper::getRandomUSIpAddresses());
@@ -3248,13 +3254,13 @@ abstract class AbsCampaign extends Model
             $log->user_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36';
             $log->url = 'https://app.clickfunnels.com/signupflow';
             $result = $log->save();
-        }        
+        }
 
         // Unsubscribe log
         $unsubscribeCount = round($params['unsubscribe'] * $openCount);
-        $unsubscribeLogs = array_values(array_intersect_key($openLogs, array_flip( $this->arrayRandFixed( $openLogs, $unsubscribeCount ))));
+        $unsubscribeLogs = array_values(array_intersect_key($openLogs, array_flip($this->arrayRandFixed($openLogs, $unsubscribeCount))));
         echo "Unsubscribe log count: ".$unsubscribeCount."\n";
-        foreach($this->trackingLogs()->whereIn('id', $unsubscribeLogs)->get() as $r) {
+        foreach ($this->trackingLogs()->whereIn('id', $unsubscribeLogs)->get() as $r) {
             // Unsubscribe log
             $log = new \Acelle\Model\UnsubscribeLog();
             $log->message_id = $r->message_id;
@@ -3267,9 +3273,9 @@ abstract class AbsCampaign extends Model
 
         // Bounce log
         $bounceCount = round($params['bounce'] * $sentCount);
-        $bounceLogs = array_values(array_intersect_key($sentLogs, array_flip( $this->arrayRandFixed( $sentLogs, $bounceCount ))));
+        $bounceLogs = array_values(array_intersect_key($sentLogs, array_flip($this->arrayRandFixed($sentLogs, $bounceCount))));
         echo "Bounce log count: ".$bounceCount."\n";
-        foreach($this->trackingLogs()->whereIn('id', $bounceLogs)->get() as $r) {
+        foreach ($this->trackingLogs()->whereIn('id', $bounceLogs)->get() as $r) {
             // Unsubscribe log
             $bounceLog = new BounceLog();
             $bounceLog->runtime_message_id = $r->message_id;
@@ -3286,9 +3292,9 @@ abstract class AbsCampaign extends Model
 
         // Bounce log
         $feedbackCount = round($params['feedback'] * $sentCount);
-        $feedbackLogs = array_values(array_intersect_key($sentLogs, array_flip( $this->arrayRandFixed( $sentLogs, $feedbackCount ))));
+        $feedbackLogs = array_values(array_intersect_key($sentLogs, array_flip($this->arrayRandFixed($sentLogs, $feedbackCount))));
         echo "Feedback log count: ".$feedbackCount."\n";
-        foreach($this->trackingLogs()->whereIn('id', $feedbackLogs)->get() as $r) {
+        foreach ($this->trackingLogs()->whereIn('id', $feedbackLogs)->get() as $r) {
             // Unsubscribe log
             $feedback = new FeedbackLog();
             $feedback->runtime_message_id = $r->message_id;
@@ -3310,46 +3316,52 @@ abstract class AbsCampaign extends Model
             'last_open' => '2 minutes ago',
         ];
 
-        foreach($sample as $key => $value) {
-            $sample[$key] = new Carbon($value); 
+        foreach ($sample as $key => $value) {
+            $sample[$key] = new Carbon($value);
         }
 
-        DB::update(sprintf('UPDATE %s SET created_at = TIMESTAMPADD(SECOND, FLOOR(RAND() * TIMESTAMPDIFF(SECOND, \'%s\', \'%s\')), \'%s\')',
+        DB::update(sprintf(
+            'UPDATE %s SET created_at = TIMESTAMPADD(SECOND, FLOOR(RAND() * TIMESTAMPDIFF(SECOND, \'%s\', \'%s\')), \'%s\')',
             table('subscribers'),
             $sample['subscriber_first_created'],
             $sample['subscriber_last_created'],
             $sample['subscriber_first_created']
         ));
 
-        DB::update(sprintf('UPDATE %s SET created_at = TIMESTAMPADD(SECOND, FLOOR(RAND() * TIMESTAMPDIFF(SECOND, \'%s\', \'%s\')), \'%s\')',
+        DB::update(sprintf(
+            'UPDATE %s SET created_at = TIMESTAMPADD(SECOND, FLOOR(RAND() * TIMESTAMPDIFF(SECOND, \'%s\', \'%s\')), \'%s\')',
             table('open_logs'),
             $sample['first_open'],
             $sample['last_open'],
             $sample['first_open']
         ));
 
-        DB::update(sprintf('UPDATE %s SET created_at = TIMESTAMPADD(SECOND, FLOOR(RAND() * TIMESTAMPDIFF(SECOND, \'%s\', \'%s\')), \'%s\')',
+        DB::update(sprintf(
+            'UPDATE %s SET created_at = TIMESTAMPADD(SECOND, FLOOR(RAND() * TIMESTAMPDIFF(SECOND, \'%s\', \'%s\')), \'%s\')',
             table('click_logs'),
             $sample['first_open'],
             $sample['last_open'],
             $sample['first_open']
         ));
 
-        DB::update(sprintf('UPDATE %s SET created_at = TIMESTAMPADD(SECOND, FLOOR(RAND() * TIMESTAMPDIFF(SECOND, \'%s\', \'%s\')), \'%s\')',
+        DB::update(sprintf(
+            'UPDATE %s SET created_at = TIMESTAMPADD(SECOND, FLOOR(RAND() * TIMESTAMPDIFF(SECOND, \'%s\', \'%s\')), \'%s\')',
             table('bounce_logs'),
             $sample['first_open'],
             $sample['last_open'],
             $sample['first_open']
         ));
 
-        DB::update(sprintf('UPDATE %s SET created_at = TIMESTAMPADD(SECOND, FLOOR(RAND() * TIMESTAMPDIFF(SECOND, \'%s\', \'%s\')), \'%s\')',
+        DB::update(sprintf(
+            'UPDATE %s SET created_at = TIMESTAMPADD(SECOND, FLOOR(RAND() * TIMESTAMPDIFF(SECOND, \'%s\', \'%s\')), \'%s\')',
             table('feedback_logs'),
             $sample['first_open'],
             $sample['last_open'],
             $sample['first_open']
         ));
 
-        DB::update(sprintf('UPDATE %s SET created_at = TIMESTAMPADD(SECOND, FLOOR(RAND() * TIMESTAMPDIFF(SECOND, \'%s\', \'%s\')), \'%s\')',
+        DB::update(sprintf(
+            'UPDATE %s SET created_at = TIMESTAMPADD(SECOND, FLOOR(RAND() * TIMESTAMPDIFF(SECOND, \'%s\', \'%s\')), \'%s\')',
             table('unsubscribe_logs'),
             $sample['first_open'],
             $sample['last_open'],
