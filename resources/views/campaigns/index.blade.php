@@ -23,12 +23,12 @@
 @endsection
 
 @section('content')
-    <form class="listing-form"
+    <form class="listing-form top-sticky"
         sort-url="{{ action('CampaignController@sort') }}"
         data-url="{{ action('CampaignController@listing') }}"
         per-page="{{ Acelle\Model\MailList::$itemsPerPage }}"
     >
-        <div class="row top-list-controls">
+        <div class="row top-list-controls top-sticky-content">
             <div class="col-md-10">
                 @if ($campaigns->count() >= 0)
                     <div class="filter-box">
