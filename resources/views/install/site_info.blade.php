@@ -91,10 +91,11 @@
         </div>
         <div class="col-md-6">
             @include('helpers.form_control', [
-                'type' => 'text',
+                'type' => 'password',
                 'name' => 'password',
                 'value' => (isset($site_info["password"]) ? $site_info["password"] : ""),
-                'help_class' => 'install',
+				'help_class' => 'install',
+				'eye' => true,
                 'rules' => $rules
             ])      
         </div>

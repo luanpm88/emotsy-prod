@@ -5,6 +5,10 @@
         clear: both;
     }
 }
+input::-ms-reveal,
+input::-ms-clear {
+display: none;
+}
 .navbar-inverse {
     background-color: rgba(0, 25, 39, 0.75);
     border-color:  rgba(55,71,79,0.7);
