@@ -435,7 +435,7 @@ class Email extends Model
         // Notice that there are 2 types of assets that need to untransform
         // #1 Campaign relative URL
         // #2 User assets (uploaded by file manager) absolute URL
-        // 
+        //
         $host = config('app.url'); // Default host
         
         if ($useTrackingHost) {
@@ -446,7 +446,7 @@ class Email extends Model
 
         // Replace #1
         $path = join_url($host, route('email_assets', ['uid' => $this->uid], false));
-        $html = \Acelle\Library\Tool::replaceTemplateUrl($html, $path);    
+        $html = \Acelle\Library\Tool::replaceTemplateUrl($html, $path);
 
         // By the way, fix <html>
         $html = tinyDocTypeTransform($html);
@@ -462,7 +462,7 @@ class Email extends Model
         // Notice that there are 2 types of assets that need to untransform
         // #1 Email relative URL
         // #2 User assets (uploaded by file manager) absolute URL
-        // 
+        //
         // and only #1 will be untransformed while #2 is kept as is
 
         // Replace relative URL with campaign URL
@@ -668,7 +668,7 @@ class Email extends Model
                 'subscriber_id' => $subscriber->id,
                 'sending_server_id' => $server->id,
                 'customer_id' => $this->automation->customer->id,
-                'auto_trigger_id' => $triggerId, 
+                'auto_trigger_id' => $triggerId,
             ), $response);
 
         if (!isset($params['runtime_message_id'])) {
@@ -848,10 +848,10 @@ class Email extends Model
         //
         // Transform CSS/HTML content to inline CSS
         // Be carefule, it will make
-        //       <a href="{BUNSUBSCRIBE_URL}" 
+        //       <a href="{BUNSUBSCRIBE_URL}"
         // become
-        //       <a href="%7BUNSUBSCRIBE_URL%7D" 
-        $body = $this->inlineHtml($body);       
+        //       <a href="%7BUNSUBSCRIBE_URL%7D"
+        $body = $this->inlineHtml($body);
 
         return $body;
     }
@@ -875,7 +875,7 @@ class Email extends Model
                 $response = $client->request('GET', $uri, [
                     'Content-Type' => 'application/json',
                 ]);
-                
+
                 $items = json_decode($response->getBody(), true);
                 $itemsHtml = [];
                 foreach($items as $item) {
@@ -918,7 +918,7 @@ class Email extends Model
                     $response = $client->request('GET', $uri, [
                         'Content-Type' => 'application/json',
                     ]);
-                    
+
                     $item = json_decode($response->getBody(), true);
 
                     if ($item["image"]) {

@@ -5,6 +5,10 @@
         clear: both;
     }
 }
+input::-ms-reveal,
+input::-ms-clear {
+display: none;
+}
 .navbar-inverse {
     background-color: rgba(0, 25, 39, 0.75);
     border-color:  rgba(55,71,79,0.7);
@@ -4040,4 +4044,14 @@ form.loading input {
 .quicktip a.btn-mc_outline {
     color: #333;
     border: solid 2px #aaa;
+}
+.top-sticky {
+
+}
+.top-sticky-content {
+    padding-top: 10px;
+    position: sticky;
+    top: 53px;
+    z-index: 2;
+    background-color: #fff;
 }

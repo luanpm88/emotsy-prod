@@ -24,7 +24,7 @@ class SendingDomainPolicy
                     $can = true;
                 } else {
                     $server = $subscription->plan->primarySendingServer();
-                    $can = $server->allowVerifyingOwnDomains() || $server->allowVerifyingOwnDomainsRemotely();    
+                    $can = $server->allowVerifyingOwnDomains() || $server->allowVerifyingOwnDomainsRemotely();
                 }
 
                 break;
@@ -60,7 +60,7 @@ class SendingDomainPolicy
                     $can = true;
                 } else {
                     $server = $subscription->plan->primarySendingServer();
-                    $can = $server->allowVerifyingOwnDomains() || $server->allowVerifyingOwnDomainsRemotely();    
+                    $can = $server->allowVerifyingOwnDomains() || $server->allowVerifyingOwnDomainsRemotely();
                 }
                 break;
         }
@@ -83,7 +83,7 @@ class SendingDomainPolicy
                     $can = true;
                 } else {
                     $server = $subscription->plan->primarySendingServer();
-                    $can = $server->allowVerifyingOwnDomains();    
+                    $can = $server->allowVerifyingOwnDomains();
                 }
 
                 $can = $can && $user->customer->id == $item->customer_id;
@@ -108,7 +108,7 @@ class SendingDomainPolicy
                     $can = true;
                 } else {
                     $server = $subscription->plan->primarySendingServer();
-                    $can = $server->allowVerifyingOwnDomains() || $server->allowVerifyingOwnDomainsRemotely();    
+                    $can = $server->allowVerifyingOwnDomains() || $server->allowVerifyingOwnDomainsRemotely();
                 }
                 
                 $can = $can && $user->customer->id == $item->customer_id;

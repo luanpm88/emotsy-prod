@@ -201,7 +201,7 @@ class Plugin extends Model
 
         // new plugin
         $plugin = self::where('name', '=', $config['name'])->first();
-            // ->where('type', '=', $config['type'])
+        // ->where('type', '=', $config['type'])
         if (!$plugin) {
             $plugin = new \Acelle\Model\Plugin();
             $plugin->status = \Acelle\Model\Plugin::STATUS_ACTIVE;
@@ -260,7 +260,7 @@ class Plugin extends Model
     {
         // Check required keys
         $requiredKeys = ['name', 'version', 'app_version'];
-        foreach($requiredKeys as $key) {
+        foreach ($requiredKeys as $key) {
             if (!array_key_exists($key, $config)) {
                 throw new \Exception("Invalid plugin package. Unknown '{$key}'");
             }

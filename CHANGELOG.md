@@ -1,4 +1,26 @@
-2.0.21 / 2020-09-01
+4.0.22 / 2020-12-23
+==================
+
+ * Added: plugin mechanism 1.0 is now available, embracing plugin development
+ * Added: more widgets for PRO builder
+ * Added: one-time login token generation (via API)
+ * Fixed: better SSL detection for shared hosting environment
+ * Fixed: better multi-process support & detection
+ * Fixed: faster authentication process
+ * Fixed: fixed Chrome browser glithes
+ * Fixed: better compatibility with PHP 7.4
+ * Fixed: better compatibility with different types of HTML email templates
+ * Fixed: email builder not working with legacy versions of Internet Explorer
+ * Fixed: better AWS bounce/feedback handling
+ * Fixed: sending domain verification not working properly with certain DNS providers
+ * Fixed: faster web page load in general
+ * Fixed: upgrade issue from version 3x to 4x
+ * Fixed: performance issue on servers with limited memory
+ * Fixed: performance issue with certain types of PCNTL setup
+ * Fixed: email builder not working well with SVG
+ * Fixed: better compatibility with older versions of Thunderbird
+
+4.0.21 / 2020-09-01
 ==================
 
  * Added: tracking domain support

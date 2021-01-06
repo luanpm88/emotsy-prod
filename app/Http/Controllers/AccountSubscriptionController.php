@@ -120,7 +120,7 @@ class AccountSubscriptionController extends Controller
             $subscription->user_id = $customer->getBillableId();
         }
         $subscription->plan_id = $plan->getBillableId();
-        $subscription->started_at = \Carbon\Carbon::now();        
+        $subscription->started_at = \Carbon\Carbon::now();
         $subscription->status = Subscription::STATUS_NEW;
         $subscription->save();
 
