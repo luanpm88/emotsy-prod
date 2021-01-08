@@ -55,7 +55,12 @@
         
     <div class="row">
         <div class="col-md-12">
-            <h3 class="text-semibold">{{ trans('messages.template.select_your_template') }}</h3>
+			<div class="d-flex align-items-bottom mt-4">
+				<h3 class="text-semibold mr-auto mb-3 mt-0">{{ trans('messages.template.select_your_template') }}</h3>
+				<div class="text-left">
+					<button class="btn bg-teal mr-10 start-design"><i class="icon-check"></i> {{ trans('messages.template.create_and_design') }}</button>
+				</div>
+			</div>
 				
 			<ul class="nav nav-tabs mc-tabs">
 				<li class="active"><a data-toggle="tab" href="#layout">{{ trans('messages.layouts') }}</a></li>
@@ -128,12 +133,6 @@
         </div>
     </div>
     
-
-    
-    <hr>
-    <div class="text-left">
-        <button class="btn bg-teal mr-10 start-design"><i class="icon-check"></i> {{ trans('messages.template.create_and_design') }}</button>
-    </div>
         
     <script>	
         $(document).ready(function() {
