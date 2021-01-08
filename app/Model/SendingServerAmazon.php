@@ -216,7 +216,7 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
         $identities = [];
 
         // AWS: can only get verification attributes for up to 100 identities at a time
-        foreach(array_chunk($emailOrDomains, 100) as $chunk100) {
+        foreach (array_chunk($emailOrDomains, 100) as $chunk100) {
             $identities100 = $this->sesClient()->getIdentityVerificationAttributes([
                 'Identities' => $chunk100,
             ])->toArray()['VerificationAttributes'];

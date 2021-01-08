@@ -273,7 +273,7 @@ class SendingServerElasticEmail extends SendingServer
         ];
 
         $attachmentKey = 1;
-        foreach($message->extAttachments as $file) {
+        foreach ($message->extAttachments as $file) {
             $params['file_'.$attachmentKey] = new CurlFile($file['path'], $file['type'], basename($file['path']));
             $attachmentKey += 1;
         }
@@ -329,7 +329,7 @@ class SendingServerElasticEmail extends SendingServer
         ];
 
         $attachmentKey = 1;
-        foreach($message->extAttachments as $file) {
+        foreach ($message->extAttachments as $file) {
             $params['file_'.$attachmentKey] = new CurlFile($file['path'], $file['type'], basename($file['path']));
             $attachmentKey += 1;
         }

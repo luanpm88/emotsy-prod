@@ -154,13 +154,14 @@ class PageController extends Controller
 
             if ($request->redirect_url) {
                 return redirect()->away($request->redirect_url);
-            } else if ($list->subscribe_confirmation && !$subscriber->isSubscribed()) {
+            } elseif ($list->subscribe_confirmation && !$subscriber->isSubscribed()) {
                 // tell subscriber to check email for confirmation
                 return redirect()->action('PageController@signUpThankyouPage', ['list_uid' => $list->uid, 'subscriber_uid' => $subscriber->uid]);
             } else {
                 // All done, confirmed
                 return redirect()->action(
-                    'PageController@signUpConfirmationThankyou', [
+                    'PageController@signUpConfirmationThankyou',
+                    [
                         'list_uid' => $list->uid,
                         'uid' => $subscriber->uid,
                         'code' => 'empty',

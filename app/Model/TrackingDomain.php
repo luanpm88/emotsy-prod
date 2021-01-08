@@ -171,7 +171,7 @@ class TrackingDomain extends Model
 
     public function getFQDN($trailingDot = true)
     {
-        return $this->name . (( $trailingDot ) ? '.' : '');
+        return $this->name . (($trailingDot) ? '.' : '');
     }
 
     public function getUrl()

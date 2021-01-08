@@ -1268,7 +1268,7 @@ class MailList extends Model
                     }
 
                     if (array_key_exists('tags', $record) && !empty($record['tags'])) {
-                        $record['tags'] = json_encode(array_filter(preg_split('/\s*,\s*/',$record['tags'])));
+                        $record['tags'] = json_encode(array_filter(preg_split('/\s*,\s*/', $record['tags'])));
                     }
 
                     return $record;
@@ -1294,7 +1294,7 @@ class MailList extends Model
                 $newRecordCount = DB::select("SELECT COUNT(*) AS count FROM {$tmpTable} tmp LEFT JOIN ".table('subscribers')." main ON (tmp.email = main.email AND main.mail_list_id = {$this->id}) WHERE main.email IS NULL")[0]->count;
 
                 if ($newRecordCount > 0 && $insertLimit == 0) {
-                    // Only warning at this time 
+                    // Only warning at this time
                     // when there is new records to INSERT but there is no more insert credit
                     // It is just fine if $newRecordCount == 0, then only update existing subscribers
                     // Just let it proceed until finishing
@@ -1367,7 +1367,7 @@ class MailList extends Model
             $system_job->updateStatus(['status' => self::IMPORT_STATUS_DONE, 'total' => $processed_count]);
             
             if ($overQuotaAttempt) {
-                $system_job->updateStatus(['error_message' => trans('messages.import.notice.over_quota')]);    
+                $system_job->updateStatus(['error_message' => trans('messages.import.notice.over_quota')]);
             }
 
             $logger->info(trans('messages.Finish_importing_for_list_uid', ['uid' => $this->uid]));

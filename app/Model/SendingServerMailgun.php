@@ -187,7 +187,7 @@ class SendingServerMailgun extends SendingServer
                 MailLog::info('Feedback recorded for message '.$feedbackLog->runtime_message_id);
                 $subscriber = $feedbackLog->findSubscriberByRuntimeMessageId();
                 if (!is_null($subscriber)) {
-                    $subscriber->sendToBlacklist($feedbackLog->raw_feedback_content);    
+                    $subscriber->sendToBlacklist($feedbackLog->raw_feedback_content);
                 }
             } elseif ($input['event-data']['event'] == 'failed') {
                 $bounceLog = new BounceLog();
@@ -201,7 +201,7 @@ class SendingServerMailgun extends SendingServer
                 MailLog::info('Adding email to blacklist');
                 $subscriber = $bounceLog->findSubscriberByRuntimeMessageId();
                 if (!is_null($subscriber)) {
-                    $subscriber->sendToBlacklist($bounceLog->raw);    
+                    $subscriber->sendToBlacklist($bounceLog->raw);
                 }
             }
         } else {

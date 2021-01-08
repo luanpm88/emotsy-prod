@@ -366,8 +366,9 @@ class CustomerController extends Controller
 
         $user->generateOneTimeToken();
 
-        return \Response::json(array(
+        echo json_encode(array(
             'token' => $user->one_time_api_token,
-        ), 200);
+            'url' => action('Controller@tokenLogin', ['token' => $user->one_time_api_token]),
+        ), JSON_UNESCAPED_SLASHES);
     }
 }
