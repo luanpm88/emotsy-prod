@@ -3921,4 +3921,45 @@
   'subscription.get_started' => 'Get Started',
   'api.notification' => 'Notification',
   'authentication' => 'Authentication',
+  'login.please_wait' => 'Logging in, please wait...',
+  'quicktip.quick_tips' => 'Quick tips',
+  'quicktip.identity.title' => 'Notes for administrator',
+  'quicktip.identity.tip' => 'Add sending domains or email addresses as identities for the 
+      corresponding sending servers and they will be listed here.
+      Then users will be able to use those as FROM EMAIL addresses for their campaign emails.
+      If you are integrated with Amazon Simple Email Service (SES) or SendGrid, your users will
+      also be able to add their own sending identities here.',
+  'go_to_admin_view' => 'Go to admin view',
+  'whitelabel.title' => 'Whitelable AWS so that it serves under your own brand',
+  'whitelabel.wording' => 'When user add a sending domain, they shall be required to add DNS record like amazon.domain.com
+      to their DNS management control. You can replace `amazoneses` with something line awsome.domain.com to make it your
+      own brand
+  ',
+  'whitelabel.enable' => 'Enable whitelabelling',
+  'whitelabel.setup.title' => 'Set up AWS whitelabelling',
+  'whitelabel.setup.intro' => 'Selector is used in DNS record that user will need to
+      add to your DNS management consol',
+  'whitelabel.choose_selector_name' => 'Choose a selector name',
+  'whitelable.updated' => 'Whitelablling was successfully updated',
+  'whitelabel.enabled.wording' => 'Your AWS sending server is
+      whitelabelled',
+  'whitelabel.enabled.intro' => 'AWS service is being provided to your users
+      transparently under your own brand.
+      When
+      user adds a sending domain, they shall be
+      required to add DNS
+      record of your own
+      brand
+      <strong>:selector.domain.com</strong>
+      to their DNS
+      management
+      control. No AWS selector or
+      message id shall show up to your users',
+  'whitelabel.settings' => 'Settings',
+  'whitelabel.turn_off' => 'Turn OFF whitelabelling',
+  'whitelable.turned_of' => 'Whitelablling was successfully turned off',
+  'templates.admin.intro' => 'This is the application\'s global Template Gallery,
+      create your template here to have it available for all users to choose
+      from when they compose a campaign email.',
+  'list.field_not_valid' => ':field is required',
 ) ?>
