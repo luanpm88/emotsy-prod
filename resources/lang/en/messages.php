@@ -3956,4 +3956,5 @@
       create your template here to have it available for all users to choose
       from when they compose a campaign email.',
   'list.field_not_valid' => ':field is required',
+  'subscriber.tag_added' => 'Tag was added successfully',
 ) ?>

@@ -258,6 +258,20 @@ class ApiHelper
                 ],
 
                 [
+                    'method' => 'POST',
+                    'uri' => '/api/v1/subscribers/{uid}/add-tag',
+                    'description' => 'Add tag(s) to subscriber',
+                    'parameters' => [
+                        ['name' => '$tag', 'description' => 'Subscriber\'s tags, seperated by a comma (,).', 'optional' => true],
+                    ],
+                    'returns' => 'Creation messages in json',
+                    'example' => 'curl -X POST -H "accept:application/json" -G \
+' .str_replace('-UID-', '<redbold>{uid}</redbold>', action("Api\SubscriberController@addTag", ['uid' => '-UID-'])).'? \
+-d api_token=' .\Auth::user()->api_token.' \
+-d tag=foo,bar,tag+with+space',
+                ],
+
+                [
                     'method' => 'GET',
                     'uri' => '/api/v1/subscribers/email/{email}',
                     'description' => 'Find subscribers with email',
