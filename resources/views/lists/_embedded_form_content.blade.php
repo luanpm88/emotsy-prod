@@ -12,7 +12,7 @@
 	@endif
 	<p class="text-sm text-right"><span class="text-danger">*</span> {{ trans('messages.indicates_required') }}</p>
 		@if (!isset($preview))
-			<form action="{{ action('MailListController@embeddedFormCaptcha', $list->uid) }}" method="POST" class="form-validate-jqueryz">
+			<form action="{{ action('MailListController@embeddedFormSubscribe', $list->uid) }}" method="POST" class="form-validate-jqueryz">
 		@endif
 
 			@foreach ($list->getFields as $field)
