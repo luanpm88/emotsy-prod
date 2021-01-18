@@ -2533,7 +2533,7 @@
   'subscription.change_plan.checkout.coinpayments' => 'You are about to change plan from <strong>:current_plan</strong> to <strong>:new_plan</strong>.
     The extra amount need to purchase amount for new plan is <strong>:amount</strong>. The subscription will be ended on <strong>:end_on</strong>',
   'subscription.download_raw_invoices' => 'Download invoices (raw)',
-  'subscription.set_active' => 'Set active',
+  'subscription.set_active' => 'Approve',
   'subscription.set_active.confirm' => 'You are going to confirm/approve the payment for this subscription and make
       it active.',
   'subscription.set_active.success' => 'The subscription was activated successfully.',
