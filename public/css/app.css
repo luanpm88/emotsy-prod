@@ -4058,3 +4058,11 @@ form.loading input {
 .api-copy-button, .api-token-copy-button {
     padding: 5px 16px!important;
 }
+.pointer-events-none button {
+    pointer-events: none;
+}
+.pointer-events-none.disabled button {
+    background-color: #666;
+    opacity: 0.6;
+    border: none;
+}
