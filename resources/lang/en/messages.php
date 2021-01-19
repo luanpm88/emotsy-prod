@@ -3957,4 +3957,6 @@
       from when they compose a campaign email.',
   'list.field_not_valid' => ':field is required',
   'subscriber.tag_added' => 'Tag was added successfully',
+  'api_token.copied' => 'API token was copied to clipboard',
+  'api_endpoint.copied' => 'API endpoint was copied to clipboard',
 ) ?>
