@@ -1814,7 +1814,9 @@ abstract class AbsCampaign extends Model
         $newCampaign->updateCache();
 
         // copy template
-        \Acelle\Library\Tool::xcopy($this->getStoragePath(), $newCampaign->getStoragePath());
+        if (file_exists($this->getStoragePath())) {
+            \Acelle\Library\Tool::xcopy($this->getStoragePath(), $newCampaign->getStoragePath());
+        }
         $newCampaign->html = $this->html;
         $newCampaign->save();
 

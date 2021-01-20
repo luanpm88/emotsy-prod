@@ -39,7 +39,7 @@
                     if (parent.$('.listing-form').length) {
                         parent.tableFilterAll();
                     } else {
-                        window.location.reload();
+                        window.location = '{{ action('TemplateController@index') }}';
                     }    
                 },
                 uploadAssetUrl: '{{ action('TemplateController@builderAsset', $template->uid) }}',

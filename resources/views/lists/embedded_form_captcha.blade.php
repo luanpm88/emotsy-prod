@@ -19,10 +19,12 @@
         @endforeach
 
 				@if (Acelle\Model\Setting::get('embedded_form_recaptcha') == 'yes')
+					<input type="hidden" name="hasCaptcha" value="1" />
 					<div style="margin: 100px auto; width: 300px;text-align:center">
 						{!! Acelle\Library\Tool::showReCaptcha() !!}
 						<br />
 						<input type="submit" class="btn btn-primary" value="{{ trans('messages.confirm') }}" />
+						<a href="javascript:;" onclick="window.history.back()" class="btn btn-default ml-2">{{ trans('messages.return_back') }}</a>
 					</div>
 				@endif
       </form>

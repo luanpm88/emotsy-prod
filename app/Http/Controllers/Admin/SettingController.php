@@ -762,10 +762,10 @@ class SettingController extends Controller
             'end_period_last_days' => 'required',
             'renew_free_plan' => 'required',
             'recurring_charge_before_days' => 'required',
-            'offline_payment' => 'required',
-            'card_payment' => 'required',
-            'digital_coin_payment' => 'required',
-            'paypal_payment' => 'required',
+            // 'offline_payment' => 'required',
+            // 'card_payment' => 'required',
+            // 'digital_coin_payment' => 'required',
+            // 'paypal_payment' => 'required',
         ];
         $this->validate($request, $rules);
 
@@ -773,10 +773,10 @@ class SettingController extends Controller
         \Acelle\Model\Setting::set('system.end_period_last_days', $request->end_period_last_days);
         \Acelle\Model\Setting::set('system.renew_free_plan', $request->renew_free_plan);
         \Acelle\Model\Setting::set('system.recurring_charge_before_days', $request->recurring_charge_before_days);
-        \Acelle\Model\Setting::set('system.card_payment', $request->card_payment);
-        \Acelle\Model\Setting::set('system.offline_payment', $request->offline_payment);
-        \Acelle\Model\Setting::set('system.digital_coin_payment', $request->digital_coin_payment);
-        \Acelle\Model\Setting::set('system.paypal_payment', $request->paypal_payment);
+        // \Acelle\Model\Setting::set('system.card_payment', $request->card_payment);
+        // \Acelle\Model\Setting::set('system.offline_payment', $request->offline_payment);
+        // \Acelle\Model\Setting::set('system.digital_coin_payment', $request->digital_coin_payment);
+        // \Acelle\Model\Setting::set('system.paypal_payment', $request->paypal_payment);
 
 
         // Redirect to my lists page

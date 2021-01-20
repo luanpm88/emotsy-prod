@@ -39,7 +39,7 @@
 										</button>
 										<ul class="dropdown-menu">
 											<li>
-												<a delete-confirm="{{ trans('messages.delete_templates_confirm') }}" href="{{ action('TemplateController@delete') }}">
+												<a delete-confirm="{{ trans('messages.delete_templates_confirm') }}" href="{{ action('Admin\TemplateController@delete') }}">
 													<i class="icon-trash"></i> {{ trans('messages.delete') }}
 												</a>
 											</li>

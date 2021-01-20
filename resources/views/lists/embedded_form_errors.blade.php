@@ -15,7 +15,7 @@
                     @endforeach
                 </ul>
             </div>
-            <a href="{{ $back_link }}" class="btn btn-primary">{{ trans('messages.return_back') }}</a>
+            <a href="javascript:;" onclick="window.history.back()" class="btn btn-primary">{{ trans('messages.return_back') }}</a>
         </div>
     </div>
   </div>
