@@ -649,7 +649,7 @@ class MailListController extends Controller
             return view('somethingWentWrong', ['message' => trans('messages.embedded_form.list_not_exsit')]);
         }
 
-        $request->session()->put('form_url', \URL::previous());
+        $request->session()->put('form_url', \URL::previous());        
 
         return view('lists.embedded_form_captcha', [
             'list' => $list,
@@ -665,13 +665,19 @@ class MailListController extends Controller
      */
     public function embeddedFormSubscribe(Request $request)
     {
+        $list = \Acelle\Model\MailList::findByUid($request->uid);
+
         if (\Acelle\Model\Setting::get('embedded_form_recaptcha') == 'yes') {
-            $success = \Acelle\Library\Tool::checkReCaptcha($request);
+            if ($request->hasCaptcha) {
+                $success = \Acelle\Library\Tool::checkReCaptcha($request);
+            } else {
+                return view('lists.embedded_form_captcha', [
+                    'list' => $list,
+                ]);
+            }
         } else {
             $success = true;
         }
-
-        $list = \Acelle\Model\MailList::findByUid($request->uid);
 
         // Language
         if (is_object($list->customer) && is_object($list->customer->language)) {
@@ -707,7 +713,10 @@ class MailListController extends Controller
             // $validator->errors()
             $errs = [];
             foreach ($validator->errors()->toArray() as $key => $error) {
-                $errs[] = $error[0];
+                $field = $list->getFieldByTag($key);
+                $errs[] = trans('messages.list.field_not_valid', [
+                    'field' => $field->label,
+                ]);
             }
 
             if (strpos($url, '?') !== false) {

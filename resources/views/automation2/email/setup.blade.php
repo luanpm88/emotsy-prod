@@ -135,9 +135,11 @@
     <script>
         function checkUnverified() {
 			if(!$('.autofill-error:visible').length) {
-				$('.unverified_next_but').show();
+				$('.unverified_next_but').removeClass('pointer-events-none');
+                $('.unverified_next_but').removeClass('disabled');
 			} else {
-				$('.unverified_next_but').hide();
+				$('.unverified_next_but').addClass('pointer-events-none');
+                $('.unverified_next_but').addClass('disabled');
 			}
 		}
 

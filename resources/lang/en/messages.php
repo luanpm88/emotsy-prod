@@ -10,8 +10,8 @@
   'stay_logged_in' => 'Stay logged in',
   'forgot_password' => 'Forgot Password?',
   'login' => 'Log In',
-  'copy_right_light' => '© 2020. <span class="text-white">Acelle Email Marketing Application</span> by <a href="http://acellemail.com" class="text-white" target="_blank">acellemail.com</a>',
-  'copy_right' => '© 2020. Acelle Email Marketing Application by <a title="Go to AcelleMail home page." class="xtooltip" href="http://acellemail.com" class="" target="_blank">acellemail.com</a>',
+  'copy_right_light' => '© 2021. <span class="text-white">Acelle Email Marketing Application</span> by <a href="http://acellemail.com" class="text-white" target="_blank">acellemail.com</a>',
+  'copy_right' => '© 2021. Acelle Email Marketing Application by <a title="Go to AcelleMail home page." class="xtooltip" href="http://acellemail.com" class="" target="_blank">acellemail.com</a>',
   'send_password_reset_link' => 'Send Password Reset Link',
   'password_reset' => 'Password Reset',
   'password_reset.help' => 'We\'ll email you instructions on how to reset your password.',
@@ -2535,7 +2535,7 @@
   'subscription.change_plan.checkout.coinpayments' => 'You are about to change plan from <strong>:current_plan</strong> to <strong>:new_plan</strong>.
     The extra amount need to purchase amount for new plan is <strong>:amount</strong>. The subscription will be ended on <strong>:end_on</strong>',
   'subscription.download_raw_invoices' => 'Download invoices (raw)',
-  'subscription.set_active' => 'Set active',
+  'subscription.set_active' => 'Approve',
   'subscription.set_active.confirm' => 'You are going to confirm/approve the payment for this subscription and make
       it active.',
   'subscription.set_active.success' => 'The subscription was activated successfully.',
@@ -4009,5 +4009,8 @@
   'woo.products' => 'Products',
   'woo.orders' => 'Orders',
   'woo.total_sales' => 'Total sales',
+  'list.field_not_valid' => ':field is required',
+  'subscriber.tag_added' => 'Tag was added successfully',
+  'api_token.copied' => 'API token was copied to clipboard',
+  'api_endpoint.copied' => 'API endpoint was copied to clipboard',
 ) ?>
-

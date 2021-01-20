@@ -434,4 +434,36 @@ class SubscriberController extends Controller
             ), 200);
         }
     }
+
+    /**
+     * Add subscriber tag.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function addTag(Request $request, $uid)
+    {
+        $user = \Auth::guard('api')->user();
+        $subscriber = \Acelle\Model\Subscriber::findByUid($uid);
+
+        // authorize
+        if (!$user->can('update', $subscriber)) {
+            return \Response::json(array('message' => 'Unauthorized'), 401);
+        }
+
+        // update tags
+        if ($request->tag) {
+            $subscriber->addTags(explode(',', $request->tag));
+        }
+
+        // add tag
+        return \Response::json(array(
+            'status' => 1,
+            'message' => trans('messages.subscriber.tag_added'),
+            'subscriber_uid' => $subscriber->uid,
+            'tags' => $subscriber->getTags(),
+        ), 200);
+    }
 }
