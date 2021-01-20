@@ -2023,6 +2023,8 @@ class Customer extends Model implements BillableUserInterface
      */
     public function assignPlan($plan)
     {
+        // subscription->current_Period_ends_at ==> should be set after payment is DONE
+
         if ($this->activeSubscription()) {
             $this->activeSubscription()->cancelNow();
         }
