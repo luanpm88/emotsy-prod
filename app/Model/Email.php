@@ -564,10 +564,19 @@ class Email extends Model
 
         list($message, $msgId) = $this->prepare($subscriber);
 
-        $sent = $server->send($message);
+        if (config('app.demo') == true) {
+            $sent = array(
+                'runtime_message_id' => $msgId,
+                'status' => SendingServer::DELIVERY_STATUS_SENT
+            );
+            // additional log
+            MailLog::info("[DEMO] Sent to subscriber `{$subscriber->email}`");
+        } else {
+            $sent = $server->send($message);
+            // additional log
+            MailLog::info("Sent to subscriber `{$subscriber->email}`");
+        }
 
-        // additional log
-        MailLog::info("Sent to subscriber `{$subscriber->email}`");
         $this->trackMessage($sent, $subscriber, $server, $msgId, $triggerId);
     }
 
