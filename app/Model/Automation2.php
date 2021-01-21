@@ -575,8 +575,7 @@ class Automation2 extends Model
             ->leftJoin('auto_triggers', function ($join) use ($thisId) {
                 $join->on('auto_triggers.subscriber_id', 'subscribers.id');
                 $join->where('auto_triggers.automation2_id', $thisId);
-            })
-            ->orderBy('subscribers.email', 'ASC');
+            });
         //->whereNull('auto_triggers.subscriber_id'); // chưa trigger
         //
         return $query;

@@ -1939,6 +1939,11 @@ class Automation2Controller extends Controller
         if ($request->input('email')) {
             $subscribers = $subscribers->searchByEmail($request->input('email'));
         }
+
+        if ($request->input('orderBy')) {
+            $subscribers = $subscribers->orderBy($request->input('orderBy'), $request->input('orderDir'));
+        }
+
         $subscribers = $subscribers->simplePaginate(50);
 
         return view('automation2.debug', [

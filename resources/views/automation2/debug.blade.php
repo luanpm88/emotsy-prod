@@ -1,7 +1,7 @@
 @extends('layouts.empty')
 
 @section('content')
-	{{ $subscribers->links() }}
+	{{ $subscribers->onEachSide(5)->appends(request()->input())->links() }}
 	<table class="table table-box pml-table table-log mt-10">
         <tbody>
 	        <tr>
