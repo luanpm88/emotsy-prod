@@ -24,7 +24,7 @@
                 </td>
                 <td>
                     <span class="no-margin kq_search">
-                        {{ is_null($subscriber->trigger_at) ? 'null' : $subscriber->trigger_at  }}
+                        <a href="{{ action('AutoTrigger@show', [ 'id' => $subscriber->auto_trigger_id ]) }}">{{ is_null($subscriber->trigger_at) ? 'null' : $subscriber->auto_trigger_id  }}</a>
                     </span>
                 </td>
                 <td>

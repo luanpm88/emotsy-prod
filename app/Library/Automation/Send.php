@@ -34,7 +34,7 @@ class Send extends Action
         $email = $this->getEmail();
 
         if (config('app.demo') == true) {
-            // do nothing
+            $email->queueDeliverTo($this->autoTrigger->subscriber, $this->autoTrigger->id);
         } else {
             sleep(1); // to avoid same date/time with previous wait, wrong timeline order
             // dispatch(new DeliverEmail($email, $this->autoTrigger->subscriber));

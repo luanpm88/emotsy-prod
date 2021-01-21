@@ -151,4 +151,14 @@ class Evaluate extends Action
     {
         return $this->childNo;
     }
+
+    public function isCondition()
+    {
+        return true;
+    }
+
+    public function getEvaluationResult()
+    {
+        return $this->evaluationResult;
+    }
 }

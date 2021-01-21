@@ -39,6 +39,7 @@ use Acelle\Library\Lockable;
 use Acelle\Model\SystemJob as SystemJobModel;
 use DateTime;
 use DateTimeZone;
+use Exception;
 
 class Automation2 extends Model
 {
@@ -140,12 +141,12 @@ class Automation2 extends Model
 
         // Create uid when creating automation.
         static::creating(function ($item) {
-            // Create new uid
-            $uid = uniqid();
-            while (self::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
-            $item->uid = $uid;
+            $item->uid = uniqid();
+        });
+
+        // Create uid when creating automation.
+        static::created(function ($item) {
+            $item->updateCache();
         });
     }
 
@@ -563,6 +564,7 @@ class Automation2 extends Model
             ])
             */
             ->addSelect(DB::raw('auto_triggers.created_at AS trigger_at'))
+            ->addSelect(DB::raw('auto_triggers.id AS auto_trigger_id'))
             ->addSelect(DB::raw(sprintf('SUBSTRING(%s, 1, 10) AS dob', table('subscriber_fields.value'))))
             ->addSelect(
                 // IMPORTANT HARD CODED "-" as y/m/d separator
@@ -1103,6 +1105,10 @@ class Automation2 extends Model
      */
     public function produceSampleData()
     {
+        if (is_null(config('app.demo')) || config('app.demo') == false) {
+            throw new Exception("Please switch to DEMO mode in .env");
+        }
+
         // Important: set DEMO=true
         // Reset all
         $this->resetListRelatedData();
@@ -1120,6 +1126,9 @@ class Automation2 extends Model
 
         // Run through trigger check
         $this->checkForExistingTriggersUpdate();
+
+        // Update cache
+        $this->updateCache();
     }
 
     /**
