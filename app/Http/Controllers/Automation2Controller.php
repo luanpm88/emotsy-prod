@@ -1935,7 +1935,11 @@ class Automation2Controller extends Controller
     public function debug(Request $request, $uid)
     {
         $automation = Automation2::findByUid($uid);
-        $subscribers = $automation->getSubscribersWithDateOfBirth()->limit(50)->simplePaginate(50);
+        $subscribers = $automation->getSubscribersWithDateOfBirth();
+        if ($request->input('email')) {
+            $subscribers = $subscribers->searchByEmail($request->input('email'));
+        }
+        $subscribers = $subscribers->simplePaginate(50);
 
         return view('automation2.debug', [
             'automation' => $automation,

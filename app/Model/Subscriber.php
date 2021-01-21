@@ -1225,4 +1225,9 @@ class Subscriber extends Model
 
         return json_decode(json_encode($result), true);
     }
+
+    public function scopeSearchByEmail($query, $email)
+    {
+        return $query->where('subscribers.email', $email);
+    }
 }
