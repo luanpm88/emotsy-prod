@@ -112,12 +112,11 @@ class Subscriber extends Model
 
         // Create uid when creating list.
         static::creating(function ($item) {
-            // Create new uid
-            $uid = uniqid();
-            while (Subscriber::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
-            $item->uid = $uid;
+            $item->uid = uniqid();
+        });
+
+        static::updated(function ($item) {
+            $item->reformatDateFields();
         });
     }
 
@@ -1229,5 +1228,10 @@ class Subscriber extends Model
     public function scopeSearchByEmail($query, $email)
     {
         return $query->where('subscribers.email', $email);
+    }
+
+    public function reformatDateFields()
+    {
+        $this->mailList->reformatDateFields($this->id);
     }
 }

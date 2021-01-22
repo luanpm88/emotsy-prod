@@ -537,8 +537,8 @@ class Automation2 extends Model
 
     public function getSubscribersWithDateOfBirth()
     {
-        $formatSql = '%Y-%m-%d';
-        $formatCarbon  = 'Y-m-d';
+        $formatSql = config('custom.date_format_sql');
+        $formatCarbon  = 'Y-m-d'; // DO NOT READ FROM config(), as it is used here only
         // TODAY + CURRENT TIME
         $currentTime = new DateTime(null, new DateTimeZone($this->customer->timezone));
         // TODAY + GIVEN TIME
@@ -563,13 +563,13 @@ class Automation2 extends Model
                 $today->format('m-d-Y'),
             ])
             */
-            ->addSelect(DB::raw('auto_triggers.created_at AS trigger_at'))
-            ->addSelect(DB::raw('auto_triggers.id AS auto_trigger_id'))
-            ->addSelect(DB::raw(sprintf('SUBSTRING(%s, 1, 10) AS dob', table('subscriber_fields.value'))))
+            ->addSelect('auto_triggers.created_at AS trigger_at')
+            ->addSelect('auto_triggers.id AS auto_trigger_id')
+            ->addSelect('subscriber_fields.value as dob')
             ->addSelect(
                 // IMPORTANT HARD CODED "-" as y/m/d separator
                 DB::raw(
-                    "DATEDIFF(STR_TO_DATE(CONCAT('".$today->format('Y')."', SUBSTRING(".table('subscriber_fields.value').", 5, 10)), '".$formatSql."'), STR_TO_DATE('".$todayStr."', '".$formatSql."')) AS datediff"
+                    "DATEDIFF(STR_TO_DATE(CONCAT('".$today->format('Y')."-', DATE_FORMAT(STR_TO_DATE(".table('subscriber_fields.value').", '{$formatSql}'), '%m-%d')), '".$formatSql."'), STR_TO_DATE('".$todayStr."', '".$formatSql."')) AS datediff"
                 )
             )
             ->leftJoin('auto_triggers', function ($join) use ($thisId) {
@@ -603,12 +603,10 @@ class Automation2 extends Model
         $subscribers = $this->subscribers()
             ->join('subscriber_fields', 'subscribers.id', 'subscriber_fields.subscriber_id')
             ->where('subscriber_fields.field_id', $dobFieldId)
-            ->whereIn(DB::raw(sprintf('SUBSTRING(%s, 1, 10)', table('subscriber_fields.value'))), [
-                $today->format('Y-m-d'),
-                $today->format('Y:m:d'),
-                $today->format('m/d/Y'),
-                $today->format('m-d-Y'),
-            ])
+            ->whereIn(
+                DB::raw("DATE_FORMAT(STR_TO_DATE(".table('subscriber_fields.value').", '".config('custom.date_format_sql')."'), '%m-%d')"),
+                [$today->format('m-d')]
+            )
             ->leftJoin('auto_triggers', function ($join) use ($thisId) {
                 $join->on('auto_triggers.subscriber_id', 'subscribers.id');
                 $join->where('auto_triggers.automation2_id', $thisId);

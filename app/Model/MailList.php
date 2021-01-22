@@ -30,12 +30,17 @@ use Acelle\Library\StringHelper;
 use Acelle\Library\ExtendedSwiftMessage;
 use Acelle\Events\MailListSubscription;
 use Acelle\Model\Setting;
+use Acelle\Model\SubscriberFields;
+use Acelle\Model\Fields;
 use Acelle\Exceptions\VerificationProcessCancelledException;
 use DB;
 use App;
+use Acelle\Library\Traits\QueryHelper;
 
 class MailList extends Model
 {
+    use QueryHelper;
+
     // Subscribers to import every time
     const IMPORT_STATUS_NEW = 'new';
     const IMPORT_STATUS_RUNNING = 'running';
@@ -135,6 +140,11 @@ class MailList extends Model
     public function campaigns()
     {
         return $this->belongsToMany('Acelle\Model\Campaign', 'campaigns_lists_segments', 'mail_list_id', 'campaign_id');
+    }
+
+    public function subscriberFields()
+    {
+        return $this->hasManyThrough(SubscriberField::class, Field::class);
     }
 
     /**
@@ -1373,7 +1383,7 @@ class MailList extends Model
             $logger->info(trans('messages.Finish_importing_for_list_uid', ['uid' => $this->uid]));
             
             $this->log('import_success', $customer, ['count' => $processed_count,'error' => '']);
-            
+            $this->reformatDateFields();
             $this->updateCachedInfo();
         }
     }
@@ -2110,5 +2120,62 @@ class MailList extends Model
         }
 
         return [$validator, $subscriber];
+    }
+
+    public function reformatDateFields($subscriber_id = null)
+    {
+        $type = 'date';
+
+        $query = $this->subscriberFields()
+                      ->where('fields.type', $type)
+                      ->select('subscriber_fields.id', 'subscriber_fields.value');
+        
+        if (!is_null($subscriber_id)) {
+            $query = $query->where('subscriber_id', $subscriber_id);
+        }
+
+        $query->perPage($pageSize = 1000, function($batch){
+            $fixedValues = $batch->get()->map(function($r){
+                return [
+                    'id' => $r->id,
+                    'value' => $this->customer->parseDateTime($r->value, true)->format(config('custom.date_format')),
+                ];
+            })->toArray();
+
+            $this->createTemporaryTableFromArray(
+                "_tmp_{$this->customer->uid}_date_values",
+                $fixedValues,
+                [
+                    'id BIGINT',
+                    'value VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci'
+                ],
+                function($table) {
+                    DB::statement(sprintf("UPDATE %s sf INNER JOIN %s t ON sf.id = t.id SET sf.value = t.value", table('subscriber_fields'), table($table)));
+                }
+            );
+        });
+
+        /****** The following method is not working
+
+        $sql = "DROP TABLE IF EXISTS __tmp__;
+            CREATE TABLE __tmp__ AS 
+            SELECT sf.id, DATE_FORMAT(COALESCE(
+                STR_TO_DATE(sf.value,'{$normalizedDateFormat}'),
+                STR_TO_DATE(sf.value,'%Y:%m:%d'),
+                STR_TO_DATE(sf.value,'%Y.%m.%d'),
+                STR_TO_DATE(sf.value,'%Y/%m/%d')
+            ), '{$normalizedDateFormat}') as pretty_date
+            FROM ".table('subscriber_fields')." sf
+            INNER JOIN ".table('fields')." f ON sf.field_id = f.id
+            WHERE f.`type` = 'date' 
+            AND DATE_FORMAT(STR_TO_DATE(sf.value,'{$normalizedDateFormat}'), '{$normalizedDateFormat}') != sf.value
+            AND f.mail_list_id = {$this->id};
+
+            UPDATE ".table('subscriber_fields')." sf
+            INNER JOIN __tmp__ tmp ON sf.id = tmp.id
+            SET value = tmp.pretty_date
+            WHERE value <> tmp.pretty_date";
+        DB::statement($sql);
+        **********/
     }
 }
