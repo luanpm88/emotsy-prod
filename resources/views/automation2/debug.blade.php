@@ -1,7 +1,16 @@
 @extends('layouts.empty')
 
 @section('content')
-	{{ $subscribers->onEachSide(5)->appends(request()->input())->links() }}
+	
+    <div>
+        <ul style="float:left" class="pagination" role="navigation">
+            <li class="page-item">
+                <a href="{{ action('Automation2Controller@debug', ['uid' => $automation->uid, 'orderBy' => 'datediff', 'orderDir' => 'ASC']) }}">Sort By DateDiff</a>
+            </li>
+        </ul>
+        {{ $subscribers->onEachSide(5)->appends(request()->input())->links() }}
+    </div>
+
 	<table class="table table-box pml-table table-log mt-10">
         <tbody>
 	        <tr>
