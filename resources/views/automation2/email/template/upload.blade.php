@@ -64,6 +64,7 @@
 				cache: false,
 				contentType: false,
 				processData: false,
+				globalError: false,
 				statusCode: {
                     // validate error
                     400: function (res) {
