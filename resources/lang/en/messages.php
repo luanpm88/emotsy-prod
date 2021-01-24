@@ -3959,4 +3959,6 @@
   'subscriber.tag_added' => 'Tag was added successfully',
   'api_token.copied' => 'API token was copied to clipboard',
   'api_endpoint.copied' => 'API endpoint was copied to clipboard',
+  'list.validation.required' => 'The :field is required',
+  'list.validation.not_email' => 'The :field must be a valid email address.',
 ) ?>
