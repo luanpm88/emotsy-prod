@@ -316,11 +316,15 @@ class QuotaTrackerFile
 
             // strip series coming before the start date
             $offset = null;
-            foreach ($this->series as $i => $value) {
-                if ($value >= $this->quota['start']) {
-                    $offset = $i;
-                    break;
+            try {
+                foreach ($this->series as $i => $value) {
+                    if ($value >= $this->quota['start']) {
+                        $offset = $i;
+                        break;
+                    }
                 }
+            } catch (\Exception $ex) {
+                throw new \Exception("Cannot read quota tracking file {$this->file}. Error ".$ex->getMessage());
             }
 
             $this->series = is_null($offset) ? [] : array_slice($this->series, $offset);
