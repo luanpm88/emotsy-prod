@@ -83,6 +83,7 @@
                 url: url,
                 method: 'POST',
                 data: form.serialize(),
+                globalError: false,
                 statusCode: {
                     // validate error
                     400: function (res) {

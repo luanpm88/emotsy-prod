@@ -73,6 +73,7 @@
                     data: {
                         _token: CSRF_TOKEN
                     },
+                    globalError: false,
                     statusCode: {
                         // validate error
                         400: function (res) {
