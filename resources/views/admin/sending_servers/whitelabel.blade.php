@@ -1,4 +1,4 @@
-@if($server->getOption('whitelabel') && $server->getOption('whitelabel')['enabled']) 
+@if($plugin->getData() && isset($plugin->getData()[$server->uid])) 
     <div class="quicktip d-flex" style="margin-left: 20px;">
         <div class="quicktip-icon"><svg version="1.1"
             id="svg30" inkscape:version="0.92.2 5c3e80d, 2017-08-06" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:svg="http://www.w3.org/2000/svg"
@@ -44,11 +44,11 @@
             <h3>{{ trans('messages.whitelabel.enabled.wording') }}</h3>
             <p>
                 {!! trans('messages.whitelabel.enabled.intro', [
-                    'selector' => $server->getOption('whitelabel')['brand'],
+                    'selector' => $plugin->getData()[$server->uid],
                 ]) !!}
             </p>
-            <a href="{{ action("Admin\SendingServerController@whitelabelSettings", $server->uid) }}"
-                class="btn btn-mc_primary btn-outline whitelabel-button">
+            <a href="{{ action("\Acelle\AwsWhitelabel\Controllers\AwsWhitelabelController@index") }}"
+                class="btn btn-mc_primary btn-outline">
                 {{ trans('messages.whitelabel.settings') }}
             </a>
             <a href="{{ action("Admin\SendingServerController@whitelabelOff", $server->uid) }}"

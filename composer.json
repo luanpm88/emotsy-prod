@@ -6,6 +6,7 @@
     "type": "project",
     "require": {
         "php": "^7.1.3",
+        "acelle/aws-whitelabel": "dev-master",
         "acelle/cashier": "dev-master",
         "aws/aws-php-sns-message-validator": "^1.1",
         "aws/aws-sdk-php": "^3.19",
@@ -121,6 +122,9 @@
         }, {
             "type": "vcs",
             "url" : "https://github.com/louisitvn/PHP-SPF-Check"
+        }, {
+            "type": "vcs",
+            "url": "https://github.com/luanpm88/aws-whitelabel"
         }
     ]
 }

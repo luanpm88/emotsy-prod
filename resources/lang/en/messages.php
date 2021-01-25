@@ -3932,8 +3932,8 @@
   'whitelabel.enable' => 'Enable whitelabelling',
   'whitelabel.setup.title' => 'Set up AWS whitelabelling',
   'whitelabel.setup.intro' => 'Selector is used in DNS record that user will need to
-      add to your DNS management consol',
-  'whitelabel.choose_selector_name' => 'Choose a selector name',
+      add to your DNS management console',
+  'whitelabel.choose_a_brand_domain' => 'Choose a brand domain',
   'whitelable.updated' => 'Whitelablling was successfully updated',
   'whitelabel.enabled.wording' => 'Your AWS sending server is
       whitelabelled',
@@ -3944,7 +3944,7 @@
       required to add DNS
       record of your own
       brand
-      <strong>:selector.domain.com</strong>
+      <strong>:selector</strong>
       to their DNS
       management
       control. No AWS selector or
@@ -3961,4 +3961,5 @@
   'api_endpoint.copied' => 'API endpoint was copied to clipboard',
   'list.validation.required' => 'The :field is required',
   'list.validation.not_email' => 'The :field must be a valid email address.',
+  'ok_enable' => 'OK, Enable',
 ) ?>

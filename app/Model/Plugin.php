@@ -256,6 +256,16 @@ class Plugin extends Model
         return self::where('name', '=', $name)->where('status', '=', self::STATUS_ACTIVE)->count();
     }
 
+    /**
+     * Get plugin by name.
+     *
+     * @return array
+     */
+    public static function getByName($name)
+    {
+        return self::where('name', '=', $name)->first();
+    }
+
     public static function validateMetaData($config = [])
     {
         // Check required keys
@@ -287,5 +297,32 @@ class Plugin extends Model
         if (Setting::get('license_type') != 'extended') {
             throw new \Exception("The uploaded plugin requires an 'Extended' license of Acelle to proceed, your current license is 'Regular'");
         }
+    }
+
+    /**
+     * Get data.
+     *
+     * @var object | collect
+     */
+    public function getData()
+    {
+        if (!$this['data']) {
+            return json_decode('{}', true);
+        }
+
+        return json_decode($this['data'], true);
+    }
+
+    /**
+     * Get data.
+     *
+     * @var object | collect
+     */
+    public function updateData($data)
+    {
+        $data = (object) array_merge((array) $this->getData(), $data);
+        $this['data'] = json_encode($data);
+
+        $this->save();
     }
 }
