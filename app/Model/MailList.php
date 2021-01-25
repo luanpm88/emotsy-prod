@@ -2068,7 +2068,21 @@ class MailList extends Model
         //        $rules['email_already_subscribed'] = 'required';
         //     }
 
-        $validator = \Validator::make($request->all(), $this->getFieldRules());
+        $messages = ['sss' => 'asas'];
+
+        foreach ($this->getFields as $field) {
+            if ($field->tag == 'EMAIL') {
+                $messages[$field->tag . '.required' ] = trans('messages.list.validation.required', ['field' => $field->label]);
+                $messages[$field->tag . '.email' ] = trans('messages.list.validation.not_email', ['field' => $field->label]);
+            } elseif ($field->required) {
+                $messages[$field->tag . '.required' ] = trans('messages.list.validation.required', ['field' => $field->label]);
+            }
+        }
+
+        // var_dump($messages);
+        // die();
+
+        $validator = \Validator::make($request->all(), $this->getFieldRules(), $messages);
         
         if ($validator->fails()) {
             return [$validator, null];

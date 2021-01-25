@@ -126,6 +126,12 @@ class PageController extends Controller
         $layout = \Acelle\Model\Layout::where('alias', 'sign_up_form')->first();
         $page = \Acelle\Model\Page::findPage($list, $layout);
 
+        // Language
+        if (is_object($list->customer) && is_object($list->customer->language)) {
+            \App::setLocale($list->customer->language->code);
+            \Carbon\Carbon::setLocale($list->customer->language->code);
+        }
+
         // Get old post values
         $values = [];
         if (null !== $request->old()) {
@@ -190,6 +196,12 @@ class PageController extends Controller
         $layout = \Acelle\Model\Layout::where('alias', 'sign_up_thankyou_page')->first();
         $page = \Acelle\Model\Page::findPage($list, $layout);
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->subscriber_uid);
+        
+        // Language
+        if (is_object($list->customer) && is_object($list->customer->language)) {
+            \App::setLocale($list->customer->language->code);
+            \Carbon\Carbon::setLocale($list->customer->language->code);
+        }
 
         // redirect if use outside url
         if ($page->use_outside_url) {
@@ -218,6 +230,12 @@ class PageController extends Controller
         $layout = \Acelle\Model\Layout::where('alias', 'sign_up_confirmation_thankyou')->first();
         $page = \Acelle\Model\Page::findPage($list, $layout);
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
+
+        // Language
+        if (is_object($list->customer) && is_object($list->customer->language)) {
+            \App::setLocale($list->customer->language->code);
+            \Carbon\Carbon::setLocale($list->customer->language->code);
+        }
 
         if (is_null($subscriber)) {
             echo "Subscriber no longer exists";
@@ -268,6 +286,12 @@ class PageController extends Controller
         $page = \Acelle\Model\Page::findPage($list, $layout);
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
 
+        // Language
+        if (is_object($list->customer) && is_object($list->customer->language)) {
+            \App::setLocale($list->customer->language->code);
+            \Carbon\Carbon::setLocale($list->customer->language->code);
+        }
+
         $page->renderContent(null, $subscriber);
 
         if ($request->isMethod('post')) {
@@ -314,6 +338,12 @@ class PageController extends Controller
         $page = \Acelle\Model\Page::findPage($list, $layout);
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
 
+        // Language
+        if (is_object($list->customer) && is_object($list->customer->language)) {
+            \App::setLocale($list->customer->language->code);
+            \Carbon\Carbon::setLocale($list->customer->language->code);
+        }
+
         $page->renderContent(null, $subscriber);
 
         // redirect if use outside url
@@ -342,6 +372,12 @@ class PageController extends Controller
         $layout = \Acelle\Model\Layout::where('alias', 'profile_update_form')->first();
         $page = \Acelle\Model\Page::findPage($list, $layout);
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
+
+        // Language
+        if (is_object($list->customer) && is_object($list->customer->language)) {
+            \App::setLocale($list->customer->language->code);
+            \Carbon\Carbon::setLocale($list->customer->language->code);
+        }
 
         $values = [];
 
@@ -404,6 +440,12 @@ class PageController extends Controller
         $page = \Acelle\Model\Page::findPage($list, $layout);
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
 
+        // Language
+        if (is_object($list->customer) && is_object($list->customer->language)) {
+            \App::setLocale($list->customer->language->code);
+            \Carbon\Carbon::setLocale($list->customer->language->code);
+        }
+
         $page->renderContent(null, $subscriber);
 
         // redirect if use outside url
@@ -432,6 +474,12 @@ class PageController extends Controller
         $layout = \Acelle\Model\Layout::where('alias', 'profile_update_email_sent')->first();
         $page = \Acelle\Model\Page::findPage($list, $layout);
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
+
+        // Language
+        if (is_object($list->customer) && is_object($list->customer->language)) {
+            \App::setLocale($list->customer->language->code);
+            \Carbon\Carbon::setLocale($list->customer->language->code);
+        }
 
         $page->renderContent(null, $subscriber);
 
