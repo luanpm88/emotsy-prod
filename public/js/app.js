@@ -1054,6 +1054,16 @@ $(function() {
         a_.append(' <div class="spinner a-loading"><div class="double-bounce1"></div><div class="double-bounce2"></div></div>');
         addMaskLoading(mask_text);
 
+        // uids
+        if ($(this).parents('.list_actions').length) {
+            var form = $(this).parents(".listing-form");
+            var vals = form.find("input[name='ids[]']:checked").map(function () {
+                return this.value;
+            }).get();
+
+            data.uids = vals.join(",");
+        }
+
         $.ajax({
             method: method,
             url: url,
