@@ -1466,6 +1466,11 @@ $(function() {
                 type: "POST",
                 url: url,
                 data: form.serialize(), // serializes the form's elements.
+                error: function(data) {
+                    form.removeClass("loading");
+                    form.find("button[type='submit']").removeClass("disabled");
+                    form.find('.loading-icon').remove();
+                },
                 success: function(data)
                 {
                     data = JSON.parse(data);
@@ -1480,7 +1485,7 @@ $(function() {
                         html: true
                     });
 
-                    form.addClass("loading");
+                    form.removeClass("loading");
                     form.find("button[type='submit']").removeClass("disabled");
                     form.find('.loading-icon').remove();
                     $(".copy-campaign-close").trigger("click");
