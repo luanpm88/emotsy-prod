@@ -4,70 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2b7cecbe0965c2b810b5def6db6b9835",
+    "content-hash": "4452375223140b67d9459a02495d3144",
     "packages": [
-        {
-            "name": "acelle/aws-whitelabel",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/luanpm88/aws-whitelabel.git",
-                "reference": "69ad9c0ca0fe9ad26e3aed10f152aa565c1a6ce1"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/luanpm88/aws-whitelabel/zipball/69ad9c0ca0fe9ad26e3aed10f152aa565c1a6ce1",
-                "reference": "69ad9c0ca0fe9ad26e3aed10f152aa565c1a6ce1",
-                "shasum": ""
-            },
-            "require-dev": {
-                "mockery/mockery": "~1.0",
-                "phpunit/phpunit": "~6.0",
-                "vlucas/phpdotenv": "~2.0"
-            },
-            "default-branch": true,
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "8.0-dev"
-                },
-                "laravel": {
-                    "providers": [
-                        "Acelle\\AwsWhitelabel\\AwsWhitelabelProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Acelle\\AwsWhitelabel\\": "src/"
-                }
-            },
-            "autoload-dev": {
-                "psr-4": {
-                    "Acelle\\AwsWhitelabel\\Tests\\": "tests/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Taylor Otwell",
-                    "email": "taylorotwell@gmail.com"
-                }
-            ],
-            "description": "AWS whitelabel.",
-            "keywords": [
-                "aws",
-                "laravel",
-                "whitelabel"
-            ],
-            "support": {
-                "issues": "https://github.com/laravel/cashier/issues",
-                "source": "https://github.com/laravel/cashier"
-            },
-            "time": "2021-01-25T16:48:31+00:00"
-        },
         {
             "name": "acelle/cashier",
             "version": "dev-master",
@@ -9226,7 +9164,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "acelle/aws-whitelabel": 20,
         "acelle/cashier": 20,
         "louis/sendgrid": 20
     },
