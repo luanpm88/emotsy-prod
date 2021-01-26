@@ -3962,4 +3962,5 @@
   'list.validation.required' => 'The :field is required',
   'list.validation.not_email' => 'The :field must be a valid email address.',
   'ok_enable' => 'OK, Enable',
+  'curl_example' => 'CURL example',
 ) ?>
