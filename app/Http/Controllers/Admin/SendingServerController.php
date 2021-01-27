@@ -731,6 +731,7 @@ class SendingServerController extends Controller
     public function whitelabel(Request $request, $uid)
     {
         $server = SendingServer::findByUid($uid);
+        $plugin = \Acelle\Model\Plugin::getByName('aws_whitelabel');
 
         // authorize
         if (!$request->user()->admin->can('update', $server)) {
@@ -739,6 +740,7 @@ class SendingServerController extends Controller
 
         return view('admin.sending_servers.whitelabel', [
             'server' => $server,
+            'plugin' => $plugin,
         ]);
     }
 
@@ -773,12 +775,11 @@ class SendingServerController extends Controller
                 ], 400);
             }
             
-            // success
-            $whitelabel = $server->getOption('whitelabel');
-            $whitelabel['brand'] = $request->brand;
-            $whitelabel['enabled'] = true;
-            $server->setOption('whitelabel', $whitelabel);
-            $server->save();
+            // update plugin data
+            $plugin = \Acelle\Model\Plugin::getByName('aws_whitelabel');
+            $plugin->updateData([
+                $server->uid => $request->brand,
+            ]);
 
             return response()->json([
                 'status' => 'success',
@@ -807,12 +808,12 @@ class SendingServerController extends Controller
             return $this->notAuthorized();
         }
 
-        // success
-        $whitelabel = $server->getOption('whitelabel');
-        $whitelabel['brand'] = $request->brand;
-        $whitelabel['enabled'] = false;
-        $server->setOption('whitelabel', $whitelabel);
-        $server->save();
+        // update plugin data
+        $plugin = \Acelle\Model\Plugin::getByName('aws_whitelabel');
+        $data = $plugin->getData();
+        unset($data[$server->uid]);
+        $plugin['data'] = json_encode($data);
+        $plugin->save();
 
         return response()->json([
             'status' => 'success',
