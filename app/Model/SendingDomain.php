@@ -173,15 +173,7 @@ class SendingDomain extends Model
         // Create uid when creating list.
         static::creating(function ($item) {
             // Create new uid
-            $uid = uniqid();
-            while (SendingDomain::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
-            $item->uid = $uid;
-
-            // SendingDomain custom order
-            SendingDomain::getAll()->increment('custom_order', 1);
-            $item->custom_order = 0;
+            $item->uid = uniqid();
 
             // Generate dkim keys
             $item->generateDkimKeys();
