@@ -72,6 +72,7 @@
                     data: new FormData(form[0]), // The form with the file inputs.
                     processData: false,
                     contentType: false                    // Using FormData, no need to process data.
+                    globalError: false,
                 }).done(function(res){
                     window.location = res.return;
                 }).fail(function(e){

@@ -121,6 +121,9 @@
         }, {
             "type": "vcs",
             "url" : "https://github.com/louisitvn/PHP-SPF-Check"
+        }, {
+            "type": "vcs",
+            "url": "https://github.com/luanpm88/aws-whitelabel"
         }
     ]
 }

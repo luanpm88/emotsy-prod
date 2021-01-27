@@ -1054,6 +1054,16 @@ $(function() {
         a_.append(' <div class="spinner a-loading"><div class="double-bounce1"></div><div class="double-bounce2"></div></div>');
         addMaskLoading(mask_text);
 
+        // uids
+        if ($(this).parents('.list_actions').length) {
+            var form = $(this).parents(".listing-form");
+            var vals = form.find("input[name='ids[]']:checked").map(function () {
+                return this.value;
+            }).get();
+
+            data.uids = vals.join(",");
+        }
+
         $.ajax({
             method: method,
             url: url,
@@ -1466,6 +1476,11 @@ $(function() {
                 type: "POST",
                 url: url,
                 data: form.serialize(), // serializes the form's elements.
+                error: function(data) {
+                    form.removeClass("loading");
+                    form.find("button[type='submit']").removeClass("disabled");
+                    form.find('.loading-icon').remove();
+                },
                 success: function(data)
                 {
                     data = JSON.parse(data);
@@ -1480,7 +1495,7 @@ $(function() {
                         html: true
                     });
 
-                    form.addClass("loading");
+                    form.removeClass("loading");
                     form.find("button[type='submit']").removeClass("disabled");
                     form.find('.loading-icon').remove();
                     $(".copy-campaign-close").trigger("click");

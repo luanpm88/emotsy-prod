@@ -10,9 +10,9 @@
                     {{ trans('messages.whitelabel.setup.intro') }}
                 </p>
 
-                <label class="font-weight-semibold text-muted">{{ trans('messages.whitelabel.choose_selector_name') }}</label>
+                <label class="font-weight-semibold text-muted">{{ trans('messages.whitelabel.choose_a_brand_domain') }}</label>
                 <div class="row mb-4">
-                    <div class="col-md-4 pr-0 form-groups-bottom-0">
+                    <div class="col-md-6 pr-0 form-groups-bottom-0">
                         @include('helpers.form_control', [
                             'type' => 'text',
                             'class' => '',
@@ -23,12 +23,9 @@
                             'rules' => ['brand' => 'required']
                         ])
                     </div>
-                    <div class="col-md-6 pl-1 pt-2">
-                        _domainkey.example.com
-                    </div>
                 </div>
                 <div class=" mt-4">
-                    <button class="btn btn-mc_primary mr-3 whitelabel-save">{{ trans('messages.save') }}</button>
+                    <button class="btn btn-mc_primary mr-3 whitelabel-save">{{ trans('messages.ok_enable') }}</button>
                     <button class="btn btn-link" onclick="whitelabelPopup.hide()">{{ trans('messages.cancel') }}</button>
                 </div>
             </form>

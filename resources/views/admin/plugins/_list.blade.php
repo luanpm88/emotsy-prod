@@ -31,6 +31,14 @@
                         </a>
                     @endif
                     @if (Auth::user()->admin->can('disable', $plugin))
+                        @if ($plugin->name == 'aws_whitelabel')
+                            <a
+                                href="{{ action('\Acelle\AwsWhitelabel\Controllers\AwsWhitelabelController@index') }}"
+                                class="btn btn-mc_default mr-2"
+                            >
+                                {{ trans('messages.setting') }}
+                            </a>
+                        @endif
                         <a link-confirm="{{ trans('messages.disable_plugins_confirm') }}"
                             href="{{ action('Admin\PluginController@disable', ["uids" => $plugin->uid]) }}"
                             class="btn btn-mc_primary mr-2"
@@ -41,7 +49,7 @@
                     <a
                         delete-confirm="{{ trans('messages.delete_plugins_confirm') }}"
                         href="{{ action('Admin\PluginController@delete', ["uids" => $plugin->uid]) }}"
-                        type="button" class="btn btn-mc_default">
+                        type="button" class="btn btn-link text-danger">
                         {{ trans('messages.uninstall') }}
                     </a>
                 </td>

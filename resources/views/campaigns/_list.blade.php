@@ -98,6 +98,10 @@
 									<li><a class="resend-campaign" href="{{ action('CampaignController@resend', ["uids" => $item->uid]) }}">
 										<i class="icon-reload-alt"></i> {{ trans("messages.campaign.resend") }}</a></li>
 								@endif
+								@if (\Gate::allows('send_test_email', $item))
+									<li><a class="send-a-test-email-link" data-uid="{{ $item->uid }}" href="javascript:;">
+										<i class="icon-envelop3"></i> {{ trans("messages.send_a_test_email") }}</a></li>
+								@endif
 								@if (\Gate::allows('pause', $item))
 									<li><a link-confirm="{{ trans('messages.pause_campaigns_confirm') }}" href="{{ action('CampaignController@pause', ["uids" => $item->uid]) }}"><i class="icon-pause"></i> {{ trans("messages.pause") }}</a></li>
 								@endif

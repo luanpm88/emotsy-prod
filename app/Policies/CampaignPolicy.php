@@ -90,4 +90,15 @@ class CampaignPolicy
         $customer = $user->customer;
         return $item->customer_id == $customer->id && $item->isDone();
     }
+
+    public function send_test_email(User $user, Campaign $item)
+    {
+        $customer = $user->customer;
+        return $item->customer_id == $customer->id && in_array($item->status, [
+            Campaign::STATUS_READY,
+            Campaign::STATUS_SENDING,
+            Campaign::STATUS_ERROR,
+            Campaign::STATUS_PAUSED,
+        ]);
+    }
 }
