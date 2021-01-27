@@ -2123,18 +2123,19 @@ class Customer extends Model implements BillableUserInterface
         return $dt;
     }
 
-    public function getDateTime($datetime) {
-        // IMPORTANT: datetime string must not contain timezone information
-        $dt = Carbon::parse($datetime, $this->timezone);
-        $dt = $dt->timezone($this->timezone);
-
-        // IMPORTANT
-        // Without ->timezone, it will remain at the default timezone detected in the given string
-        // For example
-        // ->getDateTime('2021-01-21 04:12:07.908362 UTC +00:00')
-        // ==> Carbon\Carbon @1611202327 {#4060
-        //         date: 2021-01-21 04:12:07.908362 UTC (+00:00),
-        //     }
+    public function parseDateTime($datetime, $fallback = false) {
+        // IMPORTANT: datetime string must NOT contain timezone information
+        try {
+            $dt = Carbon::parse($datetime, $this->timezone);
+            $dt = $dt->timezone($this->timezone);
+        } catch (\Exception $ex) {
+            // parse special chars, for example ('sadfh&#($783943') ==> exception
+            if ($fallback) {
+                $dt = $this->parseDateTime('1900-01-01');    
+            } else {
+                throw $ex;
+            }
+        }
         return $dt;
     }
 }
