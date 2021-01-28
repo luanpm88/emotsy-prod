@@ -256,6 +256,11 @@ class Plugin extends Model
         return self::where('name', '=', $name)->where('status', '=', self::STATUS_ACTIVE)->count();
     }
 
+    public function active()
+    {
+        return $this->status == self::STATUS_ACTIVE;
+    }
+
     /**
      * Get plugin by name.
      *
