@@ -33,7 +33,7 @@
                     @if (Auth::user()->admin->can('disable', $plugin))
                         @if ($plugin->name == 'aws_whitelabel')
                             <a
-                                href="{{ action('\Acelle\AwsWhitelabel\Controllers\AwsWhitelabelController@index') }}"
+                                href="{{ action('\Acelle\Plugin\AwsWhitelabel\Controllers\AwsWhitelabelController@index') }}"
                                 class="btn btn-mc_default mr-2"
                             >
                                 {{ trans('messages.setting') }}

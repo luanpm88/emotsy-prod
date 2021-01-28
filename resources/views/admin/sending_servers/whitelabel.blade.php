@@ -47,7 +47,7 @@
                     'selector' => $plugin->getData()[$server->uid],
                 ]) !!}
             </p>
-            <a href="{{ action("\Acelle\AwsWhitelabel\Controllers\AwsWhitelabelController@index") }}"
+            <a href="{{ action("\Acelle\Plugin\AwsWhitelabel\Controllers\AwsWhitelabelController@index") }}"
                 class="btn btn-mc_primary btn-outline">
                 {{ trans('messages.whitelabel.settings') }}
             </a>
