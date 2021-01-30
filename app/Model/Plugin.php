@@ -116,6 +116,12 @@ class Plugin extends Model
             }
             $item->uid = $uid;
         });
+
+        // While deleting
+        static::deleting(function ($item) {
+            // remove source code
+            Tool::xdelete($item->getPluginPath());
+        });
     }
 
     /**
@@ -155,6 +161,8 @@ class Plugin extends Model
      */
     public static function uploadAndSave($request)
     {
+        $pluginsPath = storage_path('app/plugins');
+
         $rules = array(
             'file' => 'required|mimetypes:application/zip,application/octet-stream,application/x-zip-compressed,multipart/x-zip',
         );
@@ -186,14 +194,43 @@ class Plugin extends Model
         unlink($tmp_zip);
 
         // read plugin file
-        if (!is_file($configFile = $tmp_path.'/plugin.yml')) {
+        if (!is_file($configFile = $tmp_path.'/composer.json')) {
             throw new \Exception('Invalid plugin package. No meta data found');
         }
         
         try {
-            $config = \Yaml::parse(file_get_contents($configFile));
+            $config = json_decode(file_get_contents($configFile), true);
         } catch (\Exception $ex) {
             throw new \Exception('Invalid plugin package. Cannot parse meta data');
+        }
+
+        $names = explode('/', $config['name']);
+        // check valid plugin name
+        if (count($names) != 2) {
+            throw new \Exception('Invalid plugin package. No meta data found');
+        }
+        $pluginVendor = $names[0];
+        $pluginName = $names[1];
+
+        // chek if plugin exist
+        $pluginsVendorPath = $pluginsPath . '/' . $pluginVendor;
+        $pluginsSourcePath = $pluginsVendorPath . '/' . $pluginName;
+
+        // create folders
+        $paths = [
+            $pluginsPath,
+            $pluginsVendorPath,
+            $pluginsSourcePath,
+        ];
+        foreach ($paths as $path) {
+            if (!file_exists($path)) {
+                mkdir($path, 0777, true);
+            }
+        }
+
+        // check if overwrite plugin
+        if ($request->overwrite) {
+            $config['overwrite'] = true;
         }
         
         // throw exception if any required key is missing
@@ -213,11 +250,37 @@ class Plugin extends Model
 
         // remove tmp folder
         // exec("rm -r {$tmp_path}");
+        Tool::xdelete($pluginsSourcePath);
+        if (!file_exists($pluginsSourcePath)) {
+            mkdir($pluginsSourcePath, 0777, true);
+        }
+        Tool::xcopy($tmp_path, $pluginsSourcePath);
         Tool::xdelete($tmp_path);
 
         $plugin->save();
 
         return $plugin;
+    }
+
+    /**
+     * Get plugin path.
+     *
+     * @return string
+     */
+    public function getPluginPath()
+    {
+        $pluginsPath = storage_path('app/plugins');
+
+        $names = explode('/', $this->name);
+
+        $pluginVendor = $names[0];
+        $pluginName = $names[1];
+
+        // chek if plugin exist
+        $pluginsVendorPath = $pluginsPath . '/' . $pluginVendor;
+        $pluginsSourcePath = $pluginsVendorPath . '/' . $pluginName;
+
+        return $pluginsSourcePath;
     }
 
     /**
@@ -269,15 +332,21 @@ class Plugin extends Model
     public static function validateMetaData($config = [])
     {
         // Check required keys
-        $requiredKeys = ['name', 'version', 'app_version'];
+        $requiredKeys = ['name', 'title', 'version', 'app_version']; // ['name', 'title', 'version', 'app_version'];
         foreach ($requiredKeys as $key) {
             if (!array_key_exists($key, $config)) {
                 throw new \Exception("Invalid plugin package. Unknown '{$key}'");
             }
         }
 
-        if (self::where('name', $config['name'])->exists()) {
-            throw new \Exception("A plugin of the same name '{$config['name']}' already exists, please uninstall it first");
+        $exist = self::where('name', $config['name'])->first();
+        if ($exist && !isset($config['overwrite']))  {
+            if (version_compare($exist->version, $config['version'], '>=')) {
+                throw new \Exception("An newer version of the acelle/aws-whitelabel plugin already exists (version : {$exist->version}), do you want to replace it?");
+            } else {
+                throw new \Exception("An older version of the acelle/aws-whitelabel plugin already exists (version : {$exist->version}), do you want to replace it?");
+            }
+                
         }
 
         // Check app version
@@ -288,15 +357,15 @@ class Plugin extends Model
             throw new \Exception("The uploaded plugin requires Acelle platform version {$requiredVersion} or higher. The current version is {$currentVersion}");
         }
 
-        // Check license type
-        if (empty(Setting::get('license_type'))) {
-            throw new \Exception("The uploaded plugin requires a valid license of Acelle to proceed");
-        }
+        // // Check license type
+        // if (empty(Setting::get('license_type'))) {
+        //     throw new \Exception("The uploaded plugin requires a valid license of Acelle to proceed");
+        // }
 
-        // Check license type
-        if (Setting::get('license_type') != 'extended') {
-            throw new \Exception("The uploaded plugin requires an 'Extended' license of Acelle to proceed, your current license is 'Regular'");
-        }
+        // // Check license type
+        // if (Setting::get('license_type') != 'extended') {
+        //     throw new \Exception("The uploaded plugin requires an 'Extended' license of Acelle to proceed, your current license is 'Regular'");
+        // }
     }
 
     /**

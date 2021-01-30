@@ -80,6 +80,8 @@ class PluginController extends Controller
         if ($request->isMethod('post')) {
             sleep(2);
             $plugin = Plugin::uploadAndSave($request);
+
+            
             
             $request->session()->flash('alert-success', trans('messages.plugin.installed'));
 
