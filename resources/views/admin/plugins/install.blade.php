@@ -57,39 +57,56 @@
     </div>
 
     <script>
+        function doInstall(url, data) {
+            addMaskLoading(`{!! trans('messages.plugin.installing') !!}`);
+
+            $.ajax({
+                url: url, 
+                type: 'POST',
+                data: data, // The form with the file inputs.
+                processData: false,
+                contentType: false,                    // Using FormData, no need to process data.
+                globalError: false,
+            }).done(function(res){
+                window.location = res.return;
+            }).fail(function(e){
+                var error = JSON.parse(e.responseText).message;
+                removeMaskLoading();
+
+                if (error.includes('already exists')) {
+                    var dialog = new Dialog('confirm', {
+                        message: error,
+                        ok: function(dialog) {       
+                            data.append('overwrite', true);             
+                            doInstall(url, data);
+                        },
+                        cancel: function(dialog) {
+
+                        },
+                    });
+                    return;
+                }
+
+                swal({
+                    title: error,
+                    text: "",
+                    confirmButtonColor: "#00695C",
+                    type: "error",
+                    allowOutsideClick: true,
+                    confirmButtonText: LANG_OK,
+                    customClass: "swl-success"
+                });
+            });
+        }
         $('.plugin-form').submit(function(e) {
             e.preventDefault();
 
             var url = $(this).attr('action');
             var form = $(this);
+            var data = new FormData(form[0]);
 
             if (form.valid()) {
-                addMaskLoading(`{!! trans('messages.plugin.installing') !!}`);
-
-                $.ajax({
-                    url: url, 
-                    type: 'POST',
-                    data: new FormData(form[0]), // The form with the file inputs.
-                    processData: false,
-                    contentType: false                    // Using FormData, no need to process data.
-                    globalError: false,
-                }).done(function(res){
-                    window.location = res.return;
-                }).fail(function(e){
-                    var error = JSON.parse(e.responseText).message;
-
-                    removeMaskLoading();
-
-                    swal({
-                        title: error,
-                        text: "",
-                        confirmButtonColor: "#00695C",
-                        type: "error",
-                        allowOutsideClick: true,
-                        confirmButtonText: LANG_OK,
-                        customClass: "swl-success"
-                    });
-                });
+                doInstall(url, data);
             }
         });
     </script>
