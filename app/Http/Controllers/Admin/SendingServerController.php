@@ -731,7 +731,7 @@ class SendingServerController extends Controller
     public function whitelabel(Request $request, $uid)
     {
         $server = SendingServer::findByUid($uid);
-        $plugin = \Acelle\Model\Plugin::getByName('aws_whitelabel');
+        $plugin = \Acelle\Model\Plugin::getByName('acelle/aws-whitelabel');
 
         // authorize
         if (!$request->user()->admin->can('update', $server)) {
@@ -776,7 +776,7 @@ class SendingServerController extends Controller
             }
             
             // update plugin data
-            $plugin = \Acelle\Model\Plugin::getByName('aws_whitelabel');
+            $plugin = \Acelle\Model\Plugin::getByName('acelle/aws-whitelabel');
             $plugin->updateData([
                 $server->uid => $request->brand,
             ]);
@@ -809,7 +809,7 @@ class SendingServerController extends Controller
         }
 
         // update plugin data
-        $plugin = \Acelle\Model\Plugin::getByName('aws_whitelabel');
+        $plugin = \Acelle\Model\Plugin::getByName('acelle/aws-whitelabel');
         $data = $plugin->getData();
         unset($data[$server->uid]);
         $plugin['data'] = json_encode($data);

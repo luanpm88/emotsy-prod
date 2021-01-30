@@ -31,7 +31,7 @@
                         </a>
                     @endif
                     @if (Auth::user()->admin->can('disable', $plugin))
-                        @if ($plugin->name == 'aws_whitelabel')
+                        @if ($plugin->name == 'acelle/aws-whitelabel')
                             <a
                                 href="{{ action('\Acelle\Plugin\AwsWhitelabel\Controllers\AwsWhitelabelController@index') }}"
                                 class="btn btn-mc_default mr-2"

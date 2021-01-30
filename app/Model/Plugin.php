@@ -342,9 +342,9 @@ class Plugin extends Model
         $exist = self::where('name', $config['name'])->first();
         if ($exist && !isset($config['overwrite']))  {
             if (version_compare($exist->version, $config['version'], '>=')) {
-                throw new \Exception("An newer version of the acelle/aws-whitelabel plugin already exists (version : {$exist->version}), do you want to replace it?");
+                throw new \Exception("An newer version of the {$confif['name']} plugin already exists (version : {$exist->version}), do you want to replace it?");
             } else {
-                throw new \Exception("An older version of the acelle/aws-whitelabel plugin already exists (version : {$exist->version}), do you want to replace it?");
+                throw new \Exception("An older version of the {$confif['name']} plugin already exists (version : {$exist->version}), do you want to replace it?");
             }
                 
         }
