@@ -16,6 +16,7 @@ use Acelle\Jobs\ExportCampaignLog;
 use Acelle\Model\SystemJob;
 use Acelle\Model\Setting;
 use Acelle\Library\Rss;
+use Acelle\Library\Facades\Plugin;
 
 class CampaignController extends Controller
 {

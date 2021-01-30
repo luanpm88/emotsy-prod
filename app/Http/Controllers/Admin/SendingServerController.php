@@ -5,6 +5,7 @@ namespace Acelle\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
 use Acelle\Model\SendingServer;
+use Acelle\Library\Facades\Plugin;
 
 class SendingServerController extends Controller
 {
@@ -237,8 +238,11 @@ class SendingServerController extends Controller
             $server->options = json_encode($request->old()['options']);
         }
 
+        $bigNotices = Plugin::executeHook('generate_big_notice_for_sending_server', [$server]);
+
         return view('admin.sending_servers.edit', [
             'server' => $server,
+            'bigNotices' => $bigNotices,
             'notices' => $notices,
             'identities' => $identities,
             'allIdentities' => $allIdentities,

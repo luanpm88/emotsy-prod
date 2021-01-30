@@ -8,28 +8,30 @@
         </tr>
     </thead>
     <tbody class="bg-white">
-        <tr>
-            <td width="1%">
-                <span class="text-muted2 list-status pull-left">
-                    <span class="label label-flat bg-ended square-tag">{{ $identity['type'] }}</span>
-                </span>
-            </td>
-            <td width="20%">
-                {{ $identity['name'] }}
-            </td>
-            <td>{{ $identity['value'] }}</td>
-            <td class="text-right" width="1%">
-                @if ($domain->domainVerified())
+        @if (!is_null($identity))
+            <tr>
+                <td width="1%">
                     <span class="text-muted2 list-status pull-left">
-                        <span class="label label-flat bg-active">{{ trans('messages.sending_domain.verified') }}</span>
+                        <span class="label label-flat bg-ended square-tag">{{ $identity['type'] }}</span>
                     </span>
-                @else
-                    <span class="text-muted2 list-status pull-left">
-                        <span class="label label-flat bg-inactive">{{ trans('messages.sending_domain.pending') }}</span>
-                    </span>
-                @endif
-            </td>
-        </tr>
+                </td>
+                <td width="20%">
+                    {{ $identity['name'] }}
+                </td>
+                <td>{{ $identity['value'] }}</td>
+                <td class="text-right" width="1%">
+                    @if ($domain->domainVerified())
+                        <span class="text-muted2 list-status pull-left">
+                            <span class="label label-flat bg-active">{{ trans('messages.sending_domain.verified') }}</span>
+                        </span>
+                    @else
+                        <span class="text-muted2 list-status pull-left">
+                            <span class="label label-flat bg-inactive">{{ trans('messages.sending_domain.pending') }}</span>
+                        </span>
+                    @endif
+                </td>
+            </tr>
+        @endif
 
         @foreach ($dkims as $dkim)
         <tr>
@@ -56,29 +58,31 @@
         </tr>
         @endforeach
 
-        @foreach ($spf as $r)
-        <tr>
-            <td>
-                <span class="text-muted2 list-status pull-left">
-                    <span class="label label-flat bg-ended square-tag">{{ $r['type'] }}</span>
-                </span>
-            </td>
-            <td>
-                {{ $r['name'] }}
-            </td>
-            <td>{{ $r['value'] }}</td>
-            <td class="text-right">
-                @if ($domain->spfVerified())
+        @if (!is_null($spf))
+            @foreach ($spf as $r)
+            <tr>
+                <td>
                     <span class="text-muted2 list-status pull-left">
-                        <span class="label label-flat bg-active">{{ trans('messages.sending_domain.verified') }}</span>
+                        <span class="label label-flat bg-ended square-tag">{{ $r['type'] }}</span>
                     </span>
-                @else
-                    <span class="text-muted2 list-status pull-left">
-                        <span class="label label-flat bg-inactive">{{ trans('messages.sending_domain.pending') }}</span>
-                    </span>
-                @endif
-            </td>
-        </tr>
-        @endforeach
+                </td>
+                <td>
+                    {{ $r['name'] }}
+                </td>
+                <td>{{ $r['value'] }}</td>
+                <td class="text-right">
+                    @if ($domain->spfVerified())
+                        <span class="text-muted2 list-status pull-left">
+                            <span class="label label-flat bg-active">{{ trans('messages.sending_domain.verified') }}</span>
+                        </span>
+                    @else
+                        <span class="text-muted2 list-status pull-left">
+                            <span class="label label-flat bg-inactive">{{ trans('messages.sending_domain.pending') }}</span>
+                        </span>
+                    @endif
+                </td>
+            </tr>
+            @endforeach
+        @endif
     </tbody>
 </table>
