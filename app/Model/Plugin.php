@@ -34,10 +34,9 @@ class Plugin extends Model
      *
      * @return collect
      */
-    public static function filter($request)
+    public static function scopeFilter($query, $request)
     {
         $user = $request->user();
-        $query = self::select('plugins.*');
 
         // Keyword
         if (!empty(trim($request->keyword))) {
@@ -66,7 +65,7 @@ class Plugin extends Model
      *
      * @return collect
      */
-    public static function search($request)
+    public static function scopeSearch($query, $request)
     {
         $query = self::filter($request);
 
