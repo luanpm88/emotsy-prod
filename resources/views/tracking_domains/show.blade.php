@@ -64,45 +64,49 @@
                                 <div>
                                     <strong>{{ $hostname }}</strong><br><span style="font-size:14px;">{{ trans('messages.tracking_domain.value') }}</span>
                                 </div>
-                                <a href="javascript:;" class="btn btn-mc_primary ml-auto tracking-domain-test">{{ trans('messages.tracking_domain.test') }}</a>
-                                <div class="tracking-domain-test-message" style="display:none">
-                                    <div class="popup-container" style="width: 600px">
-                                        <div class="popup-header">
-                                            <i class="lnr lnr-arrow-left back"></i>
-                                            <h2 class="title">{{ $domain->name }}</h2>
-                                            <i class="lnr lnr-cross close"></i>
-                                        </div>
-                                        <div class="popup-body scrollbar-inner">
-                                            <div class="popup-content">
-                                                {!! trans('messages.tracking_domain.test.wording', [
-                                                    'domain' => $domain->name,
-                                                ]) !!}
 
-                                                <div class="mt-4 pt-3 text-center">
-                                                    <a href="http://{{ $domain->name }}" class="btn btn-mc_primary mr-2" target="_blank">{{ trans('messages.tracking_domain.test.proceed') }}</a>
-                                                    <button class="btn btn-link tracking-domain-test-close" target="_blank">{{ trans('messages.close') }}</button>
+                                @if (!$domain->isVerified())
+                                    <a href="javascript:;" class="btn btn-mc_primary ml-auto tracking-domain-test">{{ trans('messages.tracking_domain.test') }}</a>
+                                    <div class="tracking-domain-test-message" style="display:none">
+                                        <div class="popup-container" style="width: 600px">
+                                            <div class="popup-header">
+                                                <i class="lnr lnr-arrow-left back"></i>
+                                                <h2 class="title">{{ $domain->name }}</h2>
+                                                <i class="lnr lnr-cross close"></i>
+                                            </div>
+                                            <div class="popup-body scrollbar-inner">
+                                                <div class="popup-content">
+                                                    {!! trans('messages.tracking_domain.test.wording', [
+                                                        'domain' => $domain->name,
+                                                    ]) !!}
+
+                                                    <div class="mt-4 pt-3 text-center">
+                                                        <a href="http://{{ $domain->name }}" class="btn btn-mc_primary mr-2" target="_blank">{{ trans('messages.tracking_domain.test.proceed') }}</a>
+                                                        <button class="btn btn-link tracking-domain-test-close" target="_blank">{{ trans('messages.close') }}</button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <script>
-                                    $('.tracking-domain-test').on('click', function(e) {
-                                        e.preventDefault();
-
-                                        var html = $('.tracking-domain-test-message').html();
-                                        var testPopup = new Popup();
-                                        testPopup.loadHtml(html);
-                                        testPopup.show();
-
-                                        $('.tracking-domain-test-close').on('click', function(e) {
+                                    <script>
+                                        $('.tracking-domain-test').on('click', function(e) {
                                             e.preventDefault();
 
-                                            testPopup.hide();
+                                            var html = $('.tracking-domain-test-message').html();
+                                            var testPopup = new Popup();
+                                            testPopup.loadHtml(html);
+                                            testPopup.show();
+
+                                            $('.tracking-domain-test-close').on('click', function(e) {
+                                                e.preventDefault();
+
+                                                testPopup.hide();
+                                            });
                                         });
-                                    });
+                                        
+                                    </script>
+                                @endif
                                     
-                                </script>
                             </div>
                         </div>
                     </li>
