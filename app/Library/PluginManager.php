@@ -127,11 +127,14 @@ class PluginManager
 
 	public function executeHook($name, $params = [])
 	{
+		$results = [];
 		if (array_key_exists($name, $this->hooks)) {
 			foreach($this->hooks[$name] as $callback) {
-				call_user_func_array($callback, $params);
+				$results[] = call_user_func_array($callback, $params);
 			}
 		}
+
+		return $results;
 	}
 
 	public function getHook($name)

@@ -46,14 +46,8 @@
                 ])
             </div>
             <div class="col-md-6">
-                @if (Acelle\Model\Plugin::isActive('acelle/aws-whitelabel'))
-                    <div class="whitelabel-box"></div>
-                    <script>
-                        var whitelabelBox = new Box($('.whitelabel-box'), '{{ action('Admin\SendingServerController@whitelabel', $server->uid) }}');
-
-                        whitelabelBox.load();
-
-                    </script>
+                @if (isset($bigNotices))
+                    {!! implode("", $bigNotices) !!}
                 @endif
             </div>
         </div>
