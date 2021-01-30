@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Schema;
 use URL;
 use Acelle\Model\Setting;
 use Acelle\Library\PluginManager;
+use Acelle\Library\Facades\Plugin;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -109,6 +110,9 @@ class AppServiceProvider extends ServiceProvider
                 // anything here?
             }
         }
+
+
+        Plugin::autoload();
     }
 
     /**

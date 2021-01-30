@@ -5,6 +5,7 @@ namespace Acelle\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
 use Acelle\Model\Plugin;
+use Acelle\Library\Facades\Plugin as PluginFacace;
 
 class PluginController extends Controller
 {
@@ -31,7 +32,7 @@ class PluginController extends Controller
         $plugins = \Acelle\Model\Plugin::search($request);
 
         return view('admin.plugins.index', [
-            'plugins' => $plugins,
+            'plugins' => $plugins
         ]);
     }
 
@@ -56,8 +57,26 @@ class PluginController extends Controller
 
         $plugins = \Acelle\Model\Plugin::search($request)->paginate($request->per_page);
 
+        
+        $settingUrls = [];
+        foreach ($plugins as $plugin) {
+            // Load inactive plugins (active plugins are already loaded)
+            // in order to execute hooks 'generate_plugin_setting_buttons_for_'
+            if (!$plugin->active()) {
+                PluginFacace::load($plugin->name);
+            }
+
+            // Generate setting buttons
+            $url = null;
+            PluginFacace::executeHook('generate_plugin_setting_url_for_'.$plugin->name, [ &$url ] );
+            $settingUrls[$plugin->name] = $url;
+        }
+
+
+
         return view('admin.plugins._list', [
             'plugins' => $plugins,
+            'settingUrls' => $settingUrls
         ]);
     }
 

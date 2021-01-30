@@ -25,7 +25,7 @@ class PluginManager
 		if (is_null($plugin)) {
 			return false;
 		} else {
-			return $plugin->active();
+			return $plugin->isActive();
 		}
 	}
 
@@ -54,12 +54,16 @@ class PluginManager
 			throw new \Exception("Cannot find {$composerFile} in plugin folder. Invalid plugin?");
 		}
 
-		$composerJson = json_decode(file_get_contents($composerFile), true);
+		try {
+			$composerJson = json_decode(file_get_contents($composerFile), true);	
+		} catch(\Exception $ex) {
+			throw new \Exception("Cannot parse {$composerFile}"); // for easy debugging
+		}
 
 		return $composerJson;
 	}
 
-	public function autoload()
+	public function autoload($includeInactivePlugin = false)
 	{
 		$activePlugins = PluginModel::active()->get();
 		foreach($activePlugins as $plugin) {
@@ -67,7 +71,7 @@ class PluginManager
 		}
 	}
 
-	public function load($name)
+	public function load($name, $boot = true)
 	{
 		$composerJson = $this->getComposerJson($name);
 
@@ -89,9 +93,11 @@ class PluginManager
 
 		$loader->register();
 
-		// Then:
-		// echo \Acelle\Plugin\Pluggy\Hello::VERSION;
+		if (!$boot) {
+			return;
+		}
 
+		// Load and boot ServiceProvider
 		$serviceProviders = [];
 		if (
 			array_key_exists('extra', $composerJson) && 
@@ -119,7 +125,7 @@ class PluginManager
 		}
 	}
 
-	public function executeHook($name, $params)
+	public function executeHook($name, $params = [])
 	{
 		if (array_key_exists($name, $this->hooks)) {
 			foreach($this->hooks[$name] as $callback) {
