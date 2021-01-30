@@ -11,6 +11,8 @@ class PluginManager
 	protected $hooks;
 	protected $plugins;
 
+	const STORAGE_PATH = 'app/plugins'; // do not use this constant, use getStoragePath instead
+
 	public function __construct()
 	{
 		$this->hooks = [];
@@ -27,41 +29,61 @@ class PluginManager
 		}
 	}
 
-	public function autoload()
+	public function getStoragePath($name, $subpath = null)
 	{
-		$loader = new ClassLoader();
-		$loader->addPsr4('Nghi\\Heo\\', '/tmp/src/');
-		$loader->register();
+		$base = storage_path(join_paths(self::STORAGE_PATH, $name));
+		$path = join_paths($base, $subpath);
+		return $path;
 	}
 
-	public function load($name)
+	public function getComposerJsonFilePath($name)
 	{
-		$pluginDir = storage_path("app/plugins/{$name}/");
+		return $this->getStoragePath($name, 'composer.json');
+	}
+
+	public function getComposerJson($name)
+	{
+		$pluginDir = $this->getStoragePath($name);
 		if (!file_exists($pluginDir)) {
 			throw new \Exception("Plugin folder '{$pluginDir}' missing");
 		}
 
-		$composerFile = join_paths($pluginDir, 'composer.json');
+		$composerFile = $this->getComposerJsonFilePath($name);
 
 		if (!file_exists($composerFile)) {
-			throw new \Exception("Cannot find {$composerFile}");
+			throw new \Exception("Cannot find {$composerFile} in plugin folder. Invalid plugin?");
 		}
 
-		$composer = json_decode(file_get_contents($composerFile), true);
-		
-		if (!array_key_exists('autoload', $composer)) {
+		$composerJson = json_decode(file_get_contents($composerFile), true);
+
+		return $composerJson;
+	}
+
+	public function autoload()
+	{
+		$activePlugins = PluginModel::active()->get();
+		foreach($activePlugins as $plugin) {
+			$this->load($plugin->name);
+		}
+	}
+
+	public function load($name)
+	{
+		$composerJson = $this->getComposerJson($name);
+
+		if (!array_key_exists('autoload', $composerJson)) {
 			throw new \Exception("Cannot boot plugin '{$name}'. No 'autoload' found it composer.json");
 		}
 
-		if (!array_key_exists('psr-4', $composer['autoload'])) {
+		if (!array_key_exists('psr-4', $composerJson['autoload'])) {
 			throw new \Exception("Cannot boot plugin '{$name}'. No 'autoload.psr4' found it composer.json");
 		}
 
 		$loader = new ClassLoader();
 
-		$psr4 = $composer['autoload']['psr-4'];
+		$psr4 = $composerJson['autoload']['psr-4'];
 		foreach ($psr4 as $prefix => $path) {
-			$realpath = join_paths($pluginDir, $path);
+			$realpath = $this->getStoragePath($name, $path);
 			$loader->addPsr4($prefix, $realpath);
 		}
 
@@ -70,10 +92,13 @@ class PluginManager
 		// Then:
 		// echo \Acelle\Plugin\Pluggy\Hello::VERSION;
 
-		try {
-			$serviceProviders = $composer['extra']['laravel']['providers'];
-		} catch(\Exception $ex) {
-			$serviceProviders = [];
+		$serviceProviders = [];
+		if (
+			array_key_exists('extra', $composerJson) && 
+			array_key_exists('laravel', $composerJson['extra']) && 
+			array_key_exists('providers', $composerJson['extra']['laravel'])) {
+			
+			$serviceProviders = $composerJson['extra']['laravel']['providers'];
 		}
 		
 		foreach ($serviceProviders as $service) {
