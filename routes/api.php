@@ -29,6 +29,7 @@ Route::group(['namespace' => 'Api', 'prefix' => 'v1', 'middleware' => 'auth:api'
     Route::resource('lists', 'MailListController');
 
     // Campaign
+    Route::post('campaigns/{uid}/pause', 'CampaignController@pause');
     Route::resource('campaigns', 'CampaignController');
 
     // Subscriber

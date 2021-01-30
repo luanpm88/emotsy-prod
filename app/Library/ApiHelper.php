@@ -177,6 +177,17 @@ class ApiHelper
 ' .str_replace('-ID-', '<redbold>{uid}</redbold>', action("Api\CampaignController@show", '-ID-')).'? \
 -d api_token=' .\Auth::user()->api_token,
                 ],
+
+                [
+                    'method' => 'POST',
+                    'uri' => '/api/v1/campaigns/{uid}/pause',
+                    'description' => 'Pause a specific campaign',
+                    'parameters' => [],
+                    'returns' => 'Action messages in json',
+                    'example' => 'curl -X POST -H "accept:application/json" -G \
+' .str_replace('-ID-', '<redbold>{uid}</redbold>', action("Api\CampaignController@pause", '-ID-')).'? \
+-d api_token=' .\Auth::user()->api_token,
+                ],
             ],
         ];
 

@@ -1781,8 +1781,7 @@ class CampaignController extends Controller
 
         foreach ($items->get() as $item) {
             if (\Gate::allows('pause', $item)) {
-                $item->status = 'paused';
-                $item->save();
+                $item->pause();
 
                 // Log
                 $item->log('paused', $customer);

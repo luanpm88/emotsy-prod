@@ -2229,6 +2229,17 @@ abstract class AbsCampaign extends Model
     }
 
     /**
+     * Pause campaign.
+     *
+     * @return bool
+     */
+    public function pause()
+    {
+        $this->status = self::STATUS_PAUSED;
+        $this->save();
+    }
+
+    /**
      * Check if campaign is paused.
      *
      * @return bool
