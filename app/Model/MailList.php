@@ -2148,8 +2148,8 @@ class MailList extends Model
             $query = $query->where('subscriber_id', $subscriber_id);
         }
 
-        $query->perPage($pageSize = 1000, function($batch){
-            $fixedValues = $batch->get()->map(function($r){
+        $query->perPage($pageSize = 1000, function ($batch) {
+            $fixedValues = $batch->get()->map(function ($r) {
                 return [
                     'id' => $r->id,
                     'value' => $this->customer->parseDateTime($r->value, true)->format(config('custom.date_format')),
@@ -2163,7 +2163,7 @@ class MailList extends Model
                     'id BIGINT',
                     'value VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci'
                 ],
-                function($table) {
+                function ($table) {
                     DB::statement(sprintf("UPDATE %s sf INNER JOIN %s t ON sf.id = t.id SET sf.value = t.value", table('subscriber_fields'), table($table)));
                 }
             );
@@ -2172,7 +2172,7 @@ class MailList extends Model
         /****** The following method is not working
 
         $sql = "DROP TABLE IF EXISTS __tmp__;
-            CREATE TABLE __tmp__ AS 
+            CREATE TABLE __tmp__ AS
             SELECT sf.id, DATE_FORMAT(COALESCE(
                 STR_TO_DATE(sf.value,'{$normalizedDateFormat}'),
                 STR_TO_DATE(sf.value,'%Y:%m:%d'),
@@ -2181,7 +2181,7 @@ class MailList extends Model
             ), '{$normalizedDateFormat}') as pretty_date
             FROM ".table('subscriber_fields')." sf
             INNER JOIN ".table('fields')." f ON sf.field_id = f.id
-            WHERE f.`type` = 'date' 
+            WHERE f.`type` = 'date'
             AND DATE_FORMAT(STR_TO_DATE(sf.value,'{$normalizedDateFormat}'), '{$normalizedDateFormat}') != sf.value
             AND f.mail_list_id = {$this->id};
 

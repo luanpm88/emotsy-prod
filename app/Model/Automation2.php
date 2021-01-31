@@ -100,12 +100,12 @@ class Automation2 extends Model
         $thisYear = $this->customer->getCurrentTime()->format('Y');
         $thisId = $this->id;
         return $this->subscribers()->leftJoin('auto_triggers', function ($join) use ($thisId) {
-                                            $join->on('auto_triggers.subscriber_id', 'subscribers.id');
-                                            $join->where('auto_triggers.automation2_id', $thisId);
-                                   })
-                                   ->where(function($query) use ($thisYear) {
+            $join->on('auto_triggers.subscriber_id', 'subscribers.id');
+            $join->where('auto_triggers.automation2_id', $thisId);
+        })
+                                   ->where(function ($query) use ($thisYear) {
                                        $query->whereNull('auto_triggers.id')
-                                             ->orWhereRaw(sprintf('year(%s) < %s', table('auto_triggers.created_at'), $thisYear)); 
+                                             ->orWhereRaw(sprintf('year(%s) < %s', table('auto_triggers.created_at'), $thisYear));
                                    });
     }
 
@@ -687,7 +687,7 @@ class Automation2 extends Model
 
         // Condition same date but after the specified time
         $format = 'Y-m-d';
-        $checked = $now->gte($eventDate) && $now->format($format) == $eventDate->format($format); 
+        $checked = $now->gte($eventDate) && $now->format($format) == $eventDate->format($format);
         
         if (!$checked) {
             $this->logger()->info(sprintf("It is now ({$now->toString('Y-m-d H:M:S')}) NOT the right date/time ({$eventDate->toString('Y-m-d H:M:S')}) for triggering "));

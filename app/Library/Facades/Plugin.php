@@ -7,5 +7,8 @@ use Acelle\Library\PluginManager;
 
 class Plugin extends Facade
 {
-    protected static function getFacadeAccessor() { return PluginManager::class; }
+    protected static function getFacadeAccessor()
+    {
+        return PluginManager::class;
+    }
 }
