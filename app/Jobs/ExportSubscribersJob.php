@@ -49,7 +49,7 @@ class ExportSubscribersJob extends ImportExportJob
         } catch (\Exception $e) {
         }
         
-        try {            
+        try {
             \Acelle\Model\MailList::export($job->mailList, $job->customer, $job);
         } catch (\Exception $e) {
             $systemJob = $this->getSystemJob();

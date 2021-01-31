@@ -11,7 +11,7 @@ class ExportSegmentsJob extends ImportExportJob
      *
      * @return void
      */
-    public function __construct($mailList, $customer,$fields,$uid)
+    public function __construct($mailList, $customer, $fields, $uid)
     {
         // call parent's constructor
         parent::__construct($mailList, $customer);

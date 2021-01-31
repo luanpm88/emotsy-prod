@@ -14,10 +14,10 @@ class ImportBlacklistJob extends ImportExportJob
      *
      * @return void
      */
-    public function __construct($file, $customer=NULL, $admin=NULL)
+    public function __construct($file, $customer=null, $admin=null)
     {
         // call parent's constructor
-        parent::__construct(NULL, $customer, $admin);
+        parent::__construct(null, $customer, $admin);
 
         // Upload csv
         $this->file = join_paths($this->path, 'data.txt');
@@ -27,8 +27,8 @@ class ImportBlacklistJob extends ImportExportJob
         // Update system job status
         // init the status
         $this->updateStatus([
-            'customer_id' => (isset($customer) ? $customer->id : NULL),
-            'admin_id' => (isset($admin) ? $admin->id : NULL),
+            'customer_id' => (isset($customer) ? $customer->id : null),
+            'admin_id' => (isset($admin) ? $admin->id : null),
             'status' => \Acelle\Model\Blacklist::IMPORT_STATUS_NEW,
             'error_message' => '',
             'total' => 0,
@@ -87,7 +87,7 @@ class ImportBlacklistJob extends ImportExportJob
     public function getLogger()
     {
         $log_name = 'importer';
-        $logger = CustomLog::create( $this->getLog(), $log_name );
+        $logger = CustomLog::create($this->getLog(), $log_name);
         return $logger;
     }
 }
