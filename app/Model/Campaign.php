@@ -28,6 +28,7 @@ use Acelle\Library\Log as MailLog;
 use DB;
 use Acelle\Exceptions\CampaignPausedException;
 use Acelle\Exceptions\CampaignErrorException;
+use Acelle\Model\SendingServer;
 
 class Campaign extends AbsCampaign
 {
@@ -195,10 +196,18 @@ class Campaign extends AbsCampaign
                         throw new CampaignPausedException();
                     }
 
-                    $sent = $server->send($message);
-
-                    // additional log
-                    MailLog::info("Sent to subscriber `{$subscriber->email}`");
+                    if (config('app.demo') == true) {
+                        $sent = array(
+                            'runtime_message_id' => $msgId,
+                            'status' => SendingServer::DELIVERY_STATUS_SENT
+                        );
+                        // additional log
+                        MailLog::info("[DEMO] Sent to subscriber `{$subscriber->email}`");
+                    } else {
+                        $sent = $server->send($message);
+                        // additional log
+                        MailLog::info("Sent to subscriber `{$subscriber->email}`");
+                    }
 
                     $this->trackMessage($sent, $subscriber, $server, $msgId);
                 }

@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Schema;
 use URL;
 use Acelle\Model\Setting;
+use Acelle\Library\PluginManager;
+use Acelle\Library\Facades\Plugin;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -108,5 +110,20 @@ class AppServiceProvider extends ServiceProvider
                 // anything here?
             }
         }
+
+
+        Plugin::autoload();
+    }
+
+    /**
+     * Register any application services.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        $this->app->singleton(PluginManager::class, function ($app) {
+            return new PluginManager();
+        });
     }
 }

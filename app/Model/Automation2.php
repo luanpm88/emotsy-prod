@@ -39,6 +39,7 @@ use Acelle\Library\Lockable;
 use Acelle\Model\SystemJob as SystemJobModel;
 use DateTime;
 use DateTimeZone;
+use Exception;
 
 class Automation2 extends Model
 {
@@ -94,6 +95,20 @@ class Automation2 extends Model
         return $this->hasMany('Acelle\Model\AutoTrigger');
     }
 
+    public function subscribersNotTriggeredThisYear()
+    {
+        $thisYear = $this->customer->getCurrentTime()->format('Y');
+        $thisId = $this->id;
+        return $this->subscribers()->leftJoin('auto_triggers', function ($join) use ($thisId) {
+                                            $join->on('auto_triggers.subscriber_id', 'subscribers.id');
+                                            $join->where('auto_triggers.automation2_id', $thisId);
+                                   })
+                                   ->where(function($query) use ($thisYear) {
+                                       $query->whereNull('auto_triggers.id')
+                                             ->orWhereRaw(sprintf('year(%s) < %s', table('auto_triggers.created_at'), $thisYear)); 
+                                   });
+    }
+
     /**
      * Association.
      */
@@ -140,12 +155,12 @@ class Automation2 extends Model
 
         // Create uid when creating automation.
         static::creating(function ($item) {
-            // Create new uid
-            $uid = uniqid();
-            while (self::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
-            $item->uid = $uid;
+            $item->uid = uniqid();
+        });
+
+        // Create uid when creating automation.
+        static::created(function ($item) {
+            $item->updateCache();
         });
     }
 
@@ -451,6 +466,7 @@ class Automation2 extends Model
             default:
                 throw new \Exception('Unknown Automation trigger type '.$this->getTriggerAction()->getOption('key'));
         }
+        $this->updateCache();
         $this->logger()->info(sprintf('NEW > Finish checking for new trigger'));
     }
 
@@ -536,8 +552,8 @@ class Automation2 extends Model
 
     public function getSubscribersWithDateOfBirth()
     {
-        $formatSql = '%Y-%m-%d';
-        $formatCarbon  = 'Y-m-d';
+        $formatSql = config('custom.date_format_sql');
+        $formatCarbon  = 'Y-m-d'; // DO NOT READ FROM config(), as it is used here only
         // TODAY + CURRENT TIME
         $currentTime = new DateTime(null, new DateTimeZone($this->customer->timezone));
         // TODAY + GIVEN TIME
@@ -562,19 +578,19 @@ class Automation2 extends Model
                 $today->format('m-d-Y'),
             ])
             */
-            ->addSelect(DB::raw('auto_triggers.created_at AS trigger_at'))
-            ->addSelect(DB::raw(sprintf('SUBSTRING(%s, 1, 10) AS dob', table('subscriber_fields.value'))))
+            ->addSelect('auto_triggers.created_at AS trigger_at')
+            ->addSelect('auto_triggers.id AS auto_trigger_id')
+            ->addSelect('subscriber_fields.value as dob')
             ->addSelect(
                 // IMPORTANT HARD CODED "-" as y/m/d separator
                 DB::raw(
-                    "DATEDIFF(STR_TO_DATE(CONCAT('".$today->format('Y')."', SUBSTRING(".table('subscriber_fields.value').", 5, 10)), '".$formatSql."'), STR_TO_DATE('".$todayStr."', '".$formatSql."')) AS datediff"
+                    "DATEDIFF(STR_TO_DATE(CONCAT('".$today->format('Y')."-', DATE_FORMAT(STR_TO_DATE(".table('subscriber_fields.value').", '{$formatSql}'), '%m-%d')), '".$formatSql."'), STR_TO_DATE('".$todayStr."', '".$formatSql."')) AS datediff"
                 )
             )
             ->leftJoin('auto_triggers', function ($join) use ($thisId) {
                 $join->on('auto_triggers.subscriber_id', 'subscribers.id');
                 $join->where('auto_triggers.automation2_id', $thisId);
-            })
-            ->orderBy('subscribers.email', 'ASC');
+            });
         //->whereNull('auto_triggers.subscriber_id'); // chưa trigger
         //
         return $query;
@@ -599,64 +615,19 @@ class Automation2 extends Model
         $today = Carbon::now($this->customer->timezone)->modify($interval);
         $dobFieldUid = $this->getTriggerAction()->getOptions()['field'];
         $dobFieldId = Field::findByUid($dobFieldUid)->id;
-        $subscribers = $this->subscribers()
+        $subscribers = $this->subscribersNotTriggeredThisYear()
             ->join('subscriber_fields', 'subscribers.id', 'subscriber_fields.subscriber_id')
             ->where('subscriber_fields.field_id', $dobFieldId)
-            ->whereIn(DB::raw(sprintf('SUBSTRING(%s, 1, 10)', table('subscriber_fields.value'))), [
-                $today->format('Y-m-d'),
-                $today->format('Y:m:d'),
-                $today->format('m/d/Y'),
-                $today->format('m-d-Y'),
-            ])
-            ->leftJoin('auto_triggers', function ($join) use ($thisId) {
-                $join->on('auto_triggers.subscriber_id', 'subscribers.id');
-                $join->where('auto_triggers.automation2_id', $thisId);
-            })
-            ->whereNull('auto_triggers.subscriber_id')->get();
+            ->whereIn(
+                DB::raw("DATE_FORMAT(STR_TO_DATE(".table('subscriber_fields.value').", '".config('custom.date_format_sql')."'), '%m-%d')"),
+                [$today->format('m-d')]
+            )->get();
 
         // init trigger
         foreach ($subscribers as $subscriber) {
             $this->initTrigger($subscriber);
             $this->logger()->info(sprintf('NEW > ??? > Say happy birthday (%s) to %s', $interval, $subscriber->email));
         }
-    }
-
-    public function checkForDateOfBirthDebug()
-    {
-        $debug = [];
-        // TODAY + CURRENT TIME
-        $currentTime = new DateTime(null, new DateTimeZone($this->customer->timezone));
-        // TODAY + GIVEN TIME
-        $triggerTime = new DateTime($this->getTriggerAction()->getOptions()['at'], new DateTimeZone($this->customer->timezone));
-
-        if ($currentTime < $triggerTime) {
-            $debug[] = sprintf('Not the right time: CURRENT %s < %s', $currentTime->format('Y-m-d H:i:s'), $triggerTime->format('Y-m-d H:i:s'));
-        }
-
-        // Get the modify interval: 1 days, 2 days... for example
-        $interval = $this->getTriggerAction()->getOptions()['before'];
-        $today = Carbon::now($this->customer->timezone)->modify($interval);
-        $debug[] = 'Before: '.$this->getTriggerAction()->getOptions()['before'];
-        $debug[] = 'So, look for those whose DOB is: '.$today->format('Y-m-d');
-
-        $dobFieldUid = $this->getTriggerAction()->getOptions()['field'];
-        $dobFieldId = Field::findByUid($dobFieldUid)->id;
-        $subscribers = $this->subscribers()
-            ->join('subscriber_fields', 'subscribers.id', 'subscriber_fields.subscriber_id')
-            ->where('subscriber_fields.field_id', $dobFieldId)
-            ->whereIn(DB::raw(sprintf('SUBSTRING(%s, 1, 10)', table('subscriber_fields.value'))), [
-                $today->format('Y-m-d'),
-                $today->format('Y:m:d'),
-                $today->format('m/d/Y'),
-                $today->format('m-d-Y'),
-            ])
-            ->leftJoin('auto_triggers', 'auto_triggers.subscriber_id', 'subscribers.id')
-            ->whereNull('auto_triggers.subscriber_id')->get();
-
-        $sql = "select `".table('subscribers')."`.* from `".table('subscribers')."` inner join `".table('subscriber_fields')."` on `".table('subscribers')."`.`id` = `".table('subscriber_fields')."`.`subscriber_id` left join `".table('auto_triggers')."` on `".table('auto_triggers')."`.`subscriber_id` = `".table('subscribers')."`.`id` and `".table('auto_triggers')."`.`automation2_id` = ".$this->id." where `".table('subscribers')."`.`mail_list_id` = ".$this->mailList->id." and `".table('subscribers')."`.`mail_list_id` is not null and `".table('subscriber_fields')."`.`field_id` = ".$dobFieldId." and SUBSTRING(".table('subscriber_fields').".value, 1, 10) in ('".$today->format('Y-m-d')."', '".$today->format('Y:m:d')."', '".$today->format('m/d/Y')."', '".$today->format('m-d-Y')."') and `".table('auto_triggers')."`.`subscriber_id` is null;";
-        $debug[] = $sql;
-
-        return $debug;
     }
 
     /**
@@ -702,28 +673,37 @@ class Automation2 extends Model
     public function checkForSpecificDatetime()
     {
         $this->logger()->info(sprintf('NEW > Check for Specific Date/Time'));
+        
         // this is a one-time triggered automation event
         // just abort if it is already triggered
-        if ($this->autoTriggers()->exists()) {
-            $this->logger()->info(sprintf('NEW > Already triggered'));
+        //if ($this->autoTriggers()->exists()) {
+        //    $this->logger()->info(sprintf('NEW > Already triggered'));
+        //    return;
+        //}
 
+        $trigger = $this->getTriggerAction();
+        $now = $this->customer->getCurrentTime();
+        $eventDate = $this->customer->parseDateTime(sprintf('%s %s', $trigger->getOption('date'), $trigger->getOption('at')));
+
+        // Condition same date but after the specified time
+        $format = 'Y-m-d';
+        $checked = $now->gte($eventDate) && $now->format($format) == $eventDate->format($format); 
+        
+        if (!$checked) {
+            $this->logger()->info(sprintf("It is now ({$now->toString('Y-m-d H:M:S')}) NOT the right date/time ({$eventDate->toString('Y-m-d H:M:S')}) for triggering "));
             return;
         }
 
-        $now = Carbon::now($this->customer->timezone);
-        $trigger = $this->getTriggerAction();
-        $eventDate = Carbon::parse(sprintf('%s %s %s', $trigger->getOption('date'), $trigger->getOption('at'), $this->customer->timezone));
-        $checked = $now->gte($eventDate);
+        $this->logger()->info(sprintf('NEW > It is %s hours due! triggering!', $now->diffInHours($eventDate)));
 
-        $total = $this->subscribers()->count();
+        $notTriggered = $this->getNotTriggeredSubscribers();
+        $total = $notTriggered->count();
         $i = 0;
-        if ($checked) {
-            $this->logger()->info(sprintf('NEW > It is %s hours due! triggering!', $now->diffInHours($eventDate)));
-            foreach ($this->subscribers()->get() as $subscriber) {
-                $i += 1;
-                $this->initTrigger($subscriber);
-                $this->logger()->info(sprintf('NEW > (%s/%s) > Adding new trigger for %s', $i, $total, $subscriber->email));
-            }
+
+        foreach ($notTriggered as $subscriber) {
+            $i += 1;
+            $this->initTrigger($subscriber);
+            $this->logger()->info(sprintf('NEW > (%s/%s) > Adding new trigger for %s', $i, $total, $subscriber->email));
         }
     }
 
@@ -816,11 +796,12 @@ class Automation2 extends Model
     public function logger()
     {
         $formatter = new LineFormatter("[%datetime%] %channel%.%level_name%: %message%\n");
+
         if (getenv('LOGFILE') != false) {
             $stream = new RotatingFileHandler(getenv('LOGFILE'), 0, Logger::DEBUG);
         } else {
             $logfile = storage_path('logs/' . php_sapi_name() . '/automation-'.$this->uid.'.log');
-            $stream = new RotatingFileHandler($logfile, 0, Logger::WARNING);
+            $stream = new RotatingFileHandler($logfile, 0, Logger::DEBUG);
         }
 
         $stream->setFormatter($formatter);
@@ -1021,7 +1002,7 @@ class Automation2 extends Model
         if ($this->segment()->exists()) {
             $query = $this->segment->subscribers();
         } else {
-            $query = $this->mailList->subscribers()->select('subscribers.*');
+            $query = $this->mailList->activeSubscribers()->select('subscribers.*');
         }
 
         if (!is_null($actionId)) {
@@ -1103,6 +1084,10 @@ class Automation2 extends Model
      */
     public function produceSampleData()
     {
+        if (is_null(config('app.demo')) || config('app.demo') == false) {
+            throw new Exception("Please switch to DEMO mode in .env");
+        }
+
         // Important: set DEMO=true
         // Reset all
         $this->resetListRelatedData();
@@ -1120,6 +1105,9 @@ class Automation2 extends Model
 
         // Run through trigger check
         $this->checkForExistingTriggersUpdate();
+
+        // Update cache
+        $this->updateCache();
     }
 
     /**

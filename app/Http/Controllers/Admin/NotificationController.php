@@ -49,12 +49,13 @@ class NotificationController extends Controller
         }
 
         $notifications = Notification::whereIn('uid', explode(',', $request->uids));
+        $count = $notifications->count();
 
         foreach ($notifications->get() as $notification) {
             $notifications->delete();
         }
 
         // Redirect to my lists page
-        echo trans('messages.notifications.deleted', ['number' => $notifications->count()]);
+        echo trans('messages.notifications.deleted', ['number' => $count]);
     }
 }

@@ -29,6 +29,8 @@ use Acelle\Cashier\Interfaces\BillableUserInterface;
 use Acelle\Cashier\Cashier;
 use Acelle\Cashier\Subscription;
 use Acelle\Model\SendingDomain;
+use DateTime;
+use DateTimeZone;
 
 class Customer extends Model implements BillableUserInterface
 {
@@ -2094,5 +2096,44 @@ class Customer extends Model implements BillableUserInterface
         return $this->trackingDomains()->verified()->get()->map(function ($domain) {
             return ['value' => $domain->uid, 'text' => $domain->name];
         });
+    }
+
+    // Get the current time in Customer timezone
+    public function getCurrentTime() {
+        $dt = $this->parseDateTime(null);
+        return $dt;
+    }
+
+    public function parseDateTime($datetime, $fallback = false) {
+        // IMPORTANT: datetime string must NOT contain timezone information
+        try {
+            $dt = Carbon::parse($datetime, $this->timezone);
+            $dt = $dt->timezone($this->timezone);
+        } catch (\Exception $ex) {
+            // parse special chars, for example ('sadfh&#($783943') ==> exception
+            if ($fallback) {
+                $dt = $this->parseDateTime('1900-01-01');    
+            } else {
+                throw $ex;
+            }
+        }
+
+        return $dt;
+
+        // @IMPORTANT
+        // Without ->timezone, it will remain at the default timezone detected in the given string
+        // For example
+        // ->getDateTime('2021-01-21 04:12:07.908362 UTC +00:00')
+        // ==> Carbon\Carbon @1611202327 {#4060
+        //         date: 2021-01-21 04:12:07.908362 UTC (+00:00),
+        //     }
+
+        // @IMPORTANT
+        // String size may vary, in case of negative date/time
+        // >>> \Carbon\Carbon::parse('0000/00/00')
+        //      => Carbon\Carbon @-62169984000 {#4065
+        //     date: -0001-11-30 00:00:00.0 UTC (+00:00)
+
+        return $dt;
     }
 }

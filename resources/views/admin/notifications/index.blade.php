@@ -38,7 +38,7 @@
 						</button>
 						<ul class="dropdown-menu">
 							<li>
-								<a delete-confirm="{{ trans('messages.notification.delete.confirm') }}" href="{{ action('Admin\NotificationController@delete') }}"><i class="icon-trash"></i> {{ trans('messages.delete') }}</a>
+								<a data-method="GET" href="{{ action('Admin\NotificationController@delete') }}" class="ajax_link"><i class="icon-trash"></i> {{ trans('messages.delete') }}</a>
 							</li>
 						</ul>
 					</div>

@@ -100,4 +100,54 @@ class CampaignController extends Controller
 
         return \Response::json(['campaign' => $campaign, 'statistics' => $statistics], 200);
     }
+
+    /**
+     * Pause campaign.
+     *
+     * GET /api/v1/campaigns/{id}
+     *
+     * @param int $id Campaign's id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function pause($id)
+    {
+        $user = \Auth::guard('api')->user();
+
+        $campaign = \Acelle\Model\Campaign::
+            where('uid', '=', $id)
+            ->first();
+
+        // check if item exists
+        if (!is_object($campaign)) {
+            return \Response::json(array('message' => 'Item not found'), 404);
+        }
+
+        // authorize
+        if (!$user->can('pause', $campaign)) {
+            return \Response::json(array('message' => 'Unauthorized'), 401);
+        }
+
+        $campaign->pause();
+
+        // statistics
+        $campaign = [
+            'uid' => $campaign->uid,
+            'name' => $campaign->name,
+            'list' => (is_object($campaign->mailList) ? $campaign->mailList->name : ''),
+            'segment' => (is_object($campaign->segment) ? $campaign->segment->name : ''),
+            'default_subject' => $campaign->default_subject,
+            'from_email' => $campaign->from_email,
+            'from_name' => $campaign->from_name,
+            'remind_message' => $campaign->remind_message,
+            'status' => $campaign->status,
+            'created_at' => $campaign->created_at,
+            'updated_at' => $campaign->updated_at,
+        ];
+
+        return \Response::json([
+            'status' => 'success',
+            'message' => 'The campaign was paused',
+            'campaign' => $campaign], 200);
+    }
 }

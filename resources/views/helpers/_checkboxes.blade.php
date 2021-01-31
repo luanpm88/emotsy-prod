@@ -3,7 +3,7 @@
         <div class="checkbox">
             <label>
                 <input{{ in_array($option['value'], explode(",", $value))  ? " checked" : "" }} type="checkbox" id="{{ $name }}" name="{{ $name }}" value="{{ $option['value'] }}" class="styled">
-                {{ htmlspecialchars($option['text']) }}
+                {!! $option['text'] !!}
             </label>
         </div>
 	@endforeach

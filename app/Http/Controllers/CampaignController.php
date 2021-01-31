@@ -16,6 +16,7 @@ use Acelle\Jobs\ExportCampaignLog;
 use Acelle\Model\SystemJob;
 use Acelle\Model\Setting;
 use Acelle\Library\Rss;
+use Acelle\Library\Facades\Plugin;
 
 class CampaignController extends Controller
 {
@@ -1781,8 +1782,7 @@ class CampaignController extends Controller
 
         foreach ($items->get() as $item) {
             if (\Gate::allows('pause', $item)) {
-                $item->status = 'paused';
-                $item->save();
+                $item->pause();
 
                 // Log
                 $item->log('paused', $customer);

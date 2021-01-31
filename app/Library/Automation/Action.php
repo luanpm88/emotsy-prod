@@ -8,7 +8,7 @@ abstract class Action
 {
     protected $id;
     protected $title;
-    protected $type;
+    protected $type; // ElementCondition (Evaluate), ElementTrigger (Trigger), ElementWait (Wait), ElementAction (Send)
     protected $latest = false;
     protected $child;
     protected $options;
@@ -128,5 +128,10 @@ abstract class Action
         });
 
         return $parent;
+    }
+
+    public function isCondition()
+    {
+        return false;
     }
 }
