@@ -74,6 +74,7 @@
     <script>
         var urlFill = new UrlAutoFill([
             {value: '{UNSUBSCRIBE_URL}', text: '{{ trans('messages.editor.unsubscribe_text') }}'},
+            {value: '{UPDATE_PROFILE_URL}', text: '{{ trans('messages.editor.update_profile_text') }}'},
             {value: '{WEB_VIEW_URL}', text: '{{ trans('messages.editor.click_view_web_version') }}'}
         ]);
 
