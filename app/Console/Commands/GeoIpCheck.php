@@ -44,7 +44,7 @@ class GeoIpCheck extends Command
     public function handle()
     {
         $lock = new Lockable(storage_path('locks/geoip-setup'));
-        $lock->getExclusiveLock(function() {
+        $lock->getExclusiveLock(function () {
             $this->check();
         });
     }

@@ -8,7 +8,6 @@ use Carbon\Carbon;
 use DB;
 use Illuminate\Support\Facades\Log as LaravelLog;
 
-
 class SystemCleanup extends Command
 {
     /**
@@ -45,7 +44,7 @@ class SystemCleanup extends Command
         /*
         // Delete old log
         Log::where('created_at', '<', new Carbon('1 year ago'))->delete();
-        
+
         // Delete orphan subscription
         $query = Subscription::leftJoin('customers', 'subscriptions.customer_id', '=', 'customers.id')->whereNull('customers.id');
         if ($query->count()) {

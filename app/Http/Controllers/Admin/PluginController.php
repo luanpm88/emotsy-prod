@@ -68,7 +68,7 @@ class PluginController extends Controller
 
             // Generate setting buttons
             $url = null;
-            PluginFacace::executeHook('generate_plugin_setting_url_for_'.$plugin->name, [ &$url ] );
+            PluginFacace::executeHook('generate_plugin_setting_url_for_'.$plugin->name, [ &$url ]);
             $settingUrls[$plugin->name] = $url;
         }
 

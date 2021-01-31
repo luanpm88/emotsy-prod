@@ -5,7 +5,6 @@ namespace Acelle\Console\Commands;
 use Illuminate\Console\Command;
 use Acelle\Model\Sender;
 
-
 class VerifySender extends Command
 {
     /**
@@ -40,7 +39,7 @@ class VerifySender extends Command
     public function handle()
     {
         $senders = Sender::pending()->get();
-        foreach($senders as $sender) {
+        foreach ($senders as $sender) {
             $sender->updateVerificationStatus();
         }
     }

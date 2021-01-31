@@ -57,11 +57,12 @@ class TestCampaign extends Command
         $this->testImap();
     }
 
-    public function testSmtp() {
+    public function testSmtp()
+    {
         $transport = new \Swift_SmtpTransport('smtp.elasticemail.com', 2525, 'tls');
         $transport->setUsername('');
         $transport->setPassword('');
-          ;
+        ;
 
         // Create the Mailer using your created Transport
         $mailer = new \Swift_Mailer($transport);
@@ -78,7 +79,8 @@ class TestCampaign extends Command
         var_dump($result);
     }
 
-    public function testImap() {
+    public function testImap()
+    {
         // Connect to IMAP server
         $imapPath = "{mail.example.com:993/imap/tls}INBOX";
 
