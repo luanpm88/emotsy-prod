@@ -11,6 +11,7 @@ use Validator;
 use ZipArchive;
 use Illuminate\Validation\ValidationException;
 use Acelle\Library\Tool;
+use Acelle\Library\Facades\Plugin as PluginManager;
 
 class Plugin extends Model
 {
@@ -399,5 +400,13 @@ class Plugin extends Model
 
         $record->status = self::STATUS_INACTIVE;
         $record->save();
+    }
+
+    public function activate()
+    {
+        PluginManager::executeHook("activate_plugin_{$this->name}");
+
+        $this->status = self::STATUS_ACTIVE;
+        $this->save();
     }
 }

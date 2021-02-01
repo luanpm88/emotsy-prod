@@ -65,7 +65,7 @@ class PluginManager
 
     public function autoload($includeInactivePlugin = false)
     {
-        $activePlugins = PluginModel::active()->get();
+        $activePlugins = PluginModel::all();
         foreach ($activePlugins as $plugin) {
             $this->load($plugin->name);
         }

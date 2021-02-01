@@ -111,7 +111,6 @@ class AppServiceProvider extends ServiceProvider
             }
         }
 
-
         Plugin::autoload();
     }
 

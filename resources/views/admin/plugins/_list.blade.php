@@ -21,7 +21,16 @@
                         </span>
                     </span>
                 </td>
-                <td class="text-right text-nowrap">                    
+                <td class="text-right text-nowrap">
+                    @if (isset($settingUrls[$plugin->name]))
+                        <a
+                            href="{{ $settingUrls[$plugin->name] }}"
+                            class="btn btn-mc_default mr-2"
+                        >
+                            {{ trans('messages.setting') }}
+                        </a>
+                    @endif
+
                     @if (Auth::user()->admin->can('enable', $plugin))
                         <a link-confirm="{{ trans('messages.enable_plugins_confirm') }}"
                             href="{{ action('Admin\PluginController@enable', ["uids" => $plugin->uid]) }}"
@@ -30,15 +39,8 @@
                             {{ trans('messages.enable') }}
                         </a>
                     @endif
+
                     @if (Auth::user()->admin->can('disable', $plugin))
-                        @if (isset($settingUrls[$plugin->name]))
-                            <a
-                                href="{{ $settingUrls[$plugin->name] }}"
-                                class="btn btn-mc_default mr-2"
-                            >
-                                {{ trans('messages.setting') }}
-                            </a>
-                        @endif
                         <a link-confirm="{{ trans('messages.disable_plugins_confirm') }}"
                             href="{{ action('Admin\PluginController@disable', ["uids" => $plugin->uid]) }}"
                             class="btn btn-mc_primary mr-2"
