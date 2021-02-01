@@ -387,4 +387,17 @@ class Plugin extends Model
 
         $this->save();
     }
+
+    public static function createFromComposerJson($composer)
+    {
+        $record = new self();
+
+        $record->name = $composer['name'];
+        $record->title = $composer['name'];
+        $record->description = $composer['description'];
+        $record->version = array_key_exists('version', $composer) ? $composer['version'] : '0.0.0';
+
+        $record->status = self::STATUS_INACTIVE;
+        $record->save();
+    }
 }

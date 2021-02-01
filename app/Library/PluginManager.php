@@ -140,4 +140,10 @@ class PluginManager
     {
         return $this->hooks[$name];
     }
+
+    public function installFromDir($name)
+    {
+    	$composer = $this->getComposerJson($name);
+    	$record = PluginModel::createFromComposerJson($composer);
+    }
 }
