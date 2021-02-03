@@ -112,12 +112,7 @@ class Plugin extends Model
 
         // Create uid when creating list.
         static::creating(function ($item) {
-            // Create new uid
-            $uid = uniqid();
-            while (self::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
-            $item->uid = $uid;
+            $item->uid = uniqid();
         });
 
         // While deleting
@@ -402,6 +397,10 @@ class Plugin extends Model
     {
         if (is_null($this->name)) {
             throw new \Exception("Plugin name is null");
+        }
+
+        if (preg_match('/^[a-z0-9\-]+\/[a-z0-9\-]+$/', $this->name) == 0) {
+            throw new \Exception("Plugin name must match 'author/name' pattern. Only lowercase letters, numbers and/or dash (-) are allowed for 'author' and 'name'");
         }
 
         $base = storage_path(join_paths(self::STORAGE_PATH, $this->name));
