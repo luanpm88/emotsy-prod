@@ -439,7 +439,8 @@ class Plugin extends Model
     {
         $activePlugins = self::all();
         foreach ($activePlugins as $plugin) {
-            $boot = $plugin->isActive();
+            // $boot = $plugin->isActive();
+            $boot = true; // need its route registration
             $plugin->load( $boot );
         }
     }
