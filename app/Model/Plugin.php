@@ -11,6 +11,8 @@ use Validator;
 use ZipArchive;
 use Illuminate\Validation\ValidationException;
 use Acelle\Library\Tool;
+use Composer\Autoload\ClassLoader;
+use App;
 
 class Plugin extends Model
 {
@@ -409,17 +411,17 @@ class Plugin extends Model
 
     public function getComposerJsonFilePath()
     {
-        return $this->getStoragePath($this->name, 'composer.json');
+        return $this->getStoragePath('composer.json');
     }
 
     public function getComposerJson()
     {
-        $pluginDir = $this->getStoragePath($this->name);
+        $pluginDir = $this->getStoragePath();
         if (!file_exists($pluginDir)) {
             throw new \Exception("Plugin folder '{$pluginDir}' missing");
         }
 
-        $composerFile = $this->getComposerJsonFilePath($this->name);
+        $composerFile = $this->getComposerJsonFilePath();
 
         if (!file_exists($composerFile)) {
             throw new \Exception("Cannot find {$composerFile} in plugin folder. Invalid plugin?");
@@ -458,7 +460,7 @@ class Plugin extends Model
 
         $psr4 = $composerJson['autoload']['psr-4'];
         foreach ($psr4 as $prefix => $path) {
-            $realpath = $this->getStoragePath($this->name, $path);
+            $realpath = $this->getStoragePath($path);
             $loader->addPsr4($prefix, $realpath);
         }
 
@@ -492,6 +494,10 @@ class Plugin extends Model
         // before we can get other information
         // Validation may throw an exception
         $composer = $plugin->getComposerJson();
+
+        if ($plugin->name != $composer['name']) {
+            throw new \Exception("Plugin name in composer.json is expected to be '{$plugin->name}', found '".$composer['name']."'");
+        }
 
         $plugin->title = $composer['title'];
         $plugin->description = array_key_exists('description', $composer) ? $composer['description'] : null;
