@@ -60,7 +60,8 @@ class PluginController extends Controller
         foreach ($plugins as $plugin) {
             // Generate setting buttons
             $composerJson = $plugin->getComposerJson($plugin->name);
-            if (array_key_exists('extra', $composerJson) && array_key_exists('setting-url', $composerJson['extra'])) {
+            if (array_key_exists('extra', $composerJson) && array_key_exists('setting-route', $composerJson['extra'])) {
+                $url = action($composerJson['extra']['setting-route']);
                 $settingUrls[$plugin->name] = $url;
             }
         }
