@@ -440,7 +440,8 @@ class Plugin extends Model
     {
         $activePlugins = self::all();
         foreach ($activePlugins as $plugin) {
-            $plugin->load();
+            $boot = $plugin->isActive();
+            $plugin->load( $boot );
         }
     }
 
