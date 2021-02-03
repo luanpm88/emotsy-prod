@@ -449,11 +449,11 @@ class Plugin extends Model
         $composerJson = $this->getComposerJson($this->name);
 
         if (!array_key_exists('autoload', $composerJson)) {
-            throw new \Exception("Cannot boot plugin '{$this->name}'. No 'autoload' found it composer.json");
+            throw new \Exception("Cannot boot plugin '{$this->name}'. No 'autoload' found in composer.json");
         }
 
         if (!array_key_exists('psr-4', $composerJson['autoload'])) {
-            throw new \Exception("Cannot boot plugin '{$this->name}'. No 'autoload.psr4' found it composer.json");
+            throw new \Exception("Cannot boot plugin '{$this->name}'. No 'autoload.psr4' found in composer.json");
         }
 
         $loader = new ClassLoader();
@@ -478,7 +478,8 @@ class Plugin extends Model
             array_key_exists('providers', $composerJson['extra']['laravel'])) {
             $serviceProviders = $composerJson['extra']['laravel']['providers'];
         }
-        
+
+        // Register service, bootstraping
         foreach ($serviceProviders as $service) {
             App::register($service);
         }
@@ -487,8 +488,7 @@ class Plugin extends Model
     public static function installFromDir($name)
     {
         // Instantiate the plugin object, not save yet
-        $plugin = new self();
-        $plugin->name = $name;
+        $plugin = self::firstOrNew(['name' => $name]);
 
         // plugin.name attribute is required 
         // before we can get other information
@@ -505,5 +505,7 @@ class Plugin extends Model
         $plugin->status = self::STATUS_INACTIVE;
 
         $plugin->save();
+
+        return $plugin;
     }
 }
