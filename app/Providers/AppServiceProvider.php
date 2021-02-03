@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Schema;
 use URL;
 use Acelle\Model\Setting;
-use Acelle\Library\PluginManager;
-use Acelle\Library\Facades\Plugin;
+use Acelle\Library\HookManager;
+use Acelle\Model\Plugin;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -121,8 +121,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(PluginManager::class, function ($app) {
-            return new PluginManager();
+        $this->app->singleton(HookManager::class, function ($app) {
+            return new HookManager();
         });
     }
 }

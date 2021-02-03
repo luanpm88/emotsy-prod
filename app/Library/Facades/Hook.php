@@ -3,12 +3,12 @@
 namespace Acelle\Library\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Acelle\Library\PluginManager;
+use Acelle\Library\HookManager;
 
-class Plugin extends Facade
+class Hook extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return PluginManager::class;
+        return HookManager::class;
     }
 }

@@ -11,12 +11,13 @@ use Validator;
 use ZipArchive;
 use Illuminate\Validation\ValidationException;
 use Acelle\Library\Tool;
-use Acelle\Library\Facades\Plugin as PluginManager;
 
 class Plugin extends Model
 {
     const STATUS_ACTIVE = 'active';
     const STATUS_INACTIVE = 'inactive';
+
+    const STORAGE_PATH = 'app/plugins'; // do not use this constant, use getStoragePath instead
 
     protected $fillable = ['name', 'title', 'description', 'version'];
     protected $requiredKeys = [
@@ -404,9 +405,89 @@ class Plugin extends Model
 
     public function activate()
     {
-        PluginManager::executeHook("activate_plugin_{$this->name}");
-
         $this->status = self::STATUS_ACTIVE;
         $this->save();
+    }
+
+    public function getStoragePath($subpath = null)
+    {
+        $base = storage_path(join_paths(self::STORAGE_PATH, $this->name));
+        $path = join_paths($base, $subpath);
+        return $path;
+    }
+
+    public function getComposerJsonFilePath()
+    {
+        return $this->getStoragePath($this->name, 'composer.json');
+    }
+
+    public function getComposerJson()
+    {
+        $pluginDir = $this->getStoragePath($this->name);
+        if (!file_exists($pluginDir)) {
+            throw new \Exception("Plugin folder '{$pluginDir}' missing");
+        }
+
+        $composerFile = $this->getComposerJsonFilePath($this->name);
+
+        if (!file_exists($composerFile)) {
+            throw new \Exception("Cannot find {$composerFile} in plugin folder. Invalid plugin?");
+        }
+
+        try {
+            $composerJson = json_decode(file_get_contents($composerFile), true);
+        } catch (\Exception $ex) {
+            throw new \Exception("Cannot parse {$composerFile}"); // for easy debugging
+        }
+
+        return $composerJson;
+    }
+
+    public static function autoload($includeInactivePlugin = false)
+    {
+        $activePlugins = self::all();
+        foreach ($activePlugins as $plugin) {
+            $this->load($plugin->name);
+        }
+    }
+
+    public function load($boot = true)
+    {
+        $composerJson = $this->getComposerJson($this->name);
+
+        if (!array_key_exists('autoload', $composerJson)) {
+            throw new \Exception("Cannot boot plugin '{$this->name}'. No 'autoload' found it composer.json");
+        }
+
+        if (!array_key_exists('psr-4', $composerJson['autoload'])) {
+            throw new \Exception("Cannot boot plugin '{$this->name}'. No 'autoload.psr4' found it composer.json");
+        }
+
+        $loader = new ClassLoader();
+
+        $psr4 = $composerJson['autoload']['psr-4'];
+        foreach ($psr4 as $prefix => $path) {
+            $realpath = $this->getStoragePath($path);
+            $loader->addPsr4($prefix, $realpath);
+        }
+
+        $loader->register();
+
+        if (!$boot) {
+            return;
+        }
+
+        // Load and boot ServiceProvider
+        $serviceProviders = [];
+        if (
+            array_key_exists('extra', $composerJson) &&
+            array_key_exists('laravel', $composerJson['extra']) &&
+            array_key_exists('providers', $composerJson['extra']['laravel'])) {
+            $serviceProviders = $composerJson['extra']['laravel']['providers'];
+        }
+        
+        foreach ($serviceProviders as $service) {
+            App::register($service);
+        }
     }
 }

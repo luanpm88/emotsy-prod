@@ -5,7 +5,6 @@ namespace Acelle\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
 use Acelle\Model\Plugin;
-use Acelle\Library\Facades\Plugin as PluginFacace;
 
 class PluginController extends Controller
 {
@@ -60,9 +59,10 @@ class PluginController extends Controller
         $settingUrls = [];
         foreach ($plugins as $plugin) {
             // Generate setting buttons
-            $url = null;
-            PluginFacace::executeHook('generate_plugin_setting_url_for_'.$plugin->name, [ &$url ]);
-            $settingUrls[$plugin->name] = $url;
+            $composerJson = $plugin->getComposerJson($plugin->name);
+            if (array_key_exists('extra', $composerJson) && array_key_exists('setting-url', $composerJson['extra'])) {
+                $settingUrls[$plugin->name] = $url;
+            }
         }
 
         return view('admin.plugins._list', [
@@ -84,10 +84,10 @@ class PluginController extends Controller
         }
 
         // Upload
-        PluginModel::upload($request);
+        Plugin::upload($request);
 
         // Install Plugin
-        PluginManager::installFromDir('author/plugin');
+        Plugin::installFromDir('author/plugin');
 
 
         return view('admin.plugins.install', [
