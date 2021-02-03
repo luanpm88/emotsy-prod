@@ -12,7 +12,7 @@ class HookManager
         $this->hooks = [];
     }
 
-    public function registerHook($name, $callback)
+    public function register($name, $callback)
     {
         // Example:
         // $manager->registerHook('hello', function($param1, $param2) { ... });
@@ -25,7 +25,7 @@ class HookManager
         }
     }
 
-    public function executeHook($name, $params = [])
+    public function execute($name, $params = [])
     {
         $results = [];
         if (array_key_exists($name, $this->hooks)) {
@@ -37,7 +37,7 @@ class HookManager
         return $results;
     }
 
-    public function getHook($name)
+    public function get($name)
     {
         return $this->hooks[$name];
     }

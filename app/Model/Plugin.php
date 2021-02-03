@@ -390,19 +390,6 @@ class Plugin extends Model
         $this->save();
     }
 
-    public static function createFromComposerJson($composer)
-    {
-        $record = new self();
-
-        $record->name = $composer['name'];
-        $record->title = $composer['name'];
-        $record->description = $composer['description'];
-        $record->version = array_key_exists('version', $composer) ? $composer['version'] : '0.0.0';
-
-        $record->status = self::STATUS_INACTIVE;
-        $record->save();
-    }
-
     public function activate()
     {
         $this->status = self::STATUS_ACTIVE;
@@ -411,6 +398,10 @@ class Plugin extends Model
 
     public function getStoragePath($subpath = null)
     {
+        if (is_null($this->name)) {
+            throw new \Exception("Plugin name is null");
+        }
+
         $base = storage_path(join_paths(self::STORAGE_PATH, $this->name));
         $path = join_paths($base, $subpath);
         return $path;
@@ -447,7 +438,7 @@ class Plugin extends Model
     {
         $activePlugins = self::all();
         foreach ($activePlugins as $plugin) {
-            $this->load($plugin->name);
+            $plugin->load();
         }
     }
 
@@ -467,7 +458,7 @@ class Plugin extends Model
 
         $psr4 = $composerJson['autoload']['psr-4'];
         foreach ($psr4 as $prefix => $path) {
-            $realpath = $this->getStoragePath($path);
+            $realpath = $this->getStoragePath($this->name, $path);
             $loader->addPsr4($prefix, $realpath);
         }
 
@@ -489,5 +480,24 @@ class Plugin extends Model
         foreach ($serviceProviders as $service) {
             App::register($service);
         }
+    }
+
+    public static function installFromDir($name)
+    {
+        // Instantiate the plugin object, not save yet
+        $plugin = new self();
+        $plugin->name = $name;
+
+        // plugin.name attribute is required 
+        // before we can get other information
+        // Validation may throw an exception
+        $composer = $plugin->getComposerJson();
+
+        $plugin->title = $composer['title'];
+        $plugin->description = array_key_exists('description', $composer) ? $composer['description'] : null;
+        $plugin->version = array_key_exists('version', $composer) ? $composer['version'] : '0.0.0';
+        $plugin->status = self::STATUS_INACTIVE;
+
+        $plugin->save();
     }
 }
