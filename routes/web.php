@@ -658,9 +658,6 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/layouts', 'LayoutController');
 
     // Sending servers
-    Route::get('admin/sending_servers/{uid}/whitelabel', 'SendingServerController@whitelabel');
-    Route::post('admin/sending_servers/{uid}/whitelabel-off', 'SendingServerController@whitelabelOff');
-    Route::match(['get','post'], 'admin/sending_servers/{uid}/whitelabel-settings', 'SendingServerController@whitelabelSettings');
     Route::get('admin/sending_servers/{uid}/senders/dropbox', 'SendingServerController@fromDropbox');
     Route::post('admin/sending_servers/{uid}/remove-domain/{domain}', 'SendingServerController@removeDomain');
     Route::post('admin/sending_servers/{uid}/add-domain', 'SendingServerController@addDomain');
