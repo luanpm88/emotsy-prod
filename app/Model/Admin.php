@@ -512,7 +512,11 @@ class Admin extends Model
      */
     public function can($action, $item=null)
     {
-        return $this->user->can($action, [$item, 'admin']);
+        if ($item) {
+            return $this->user->can($action, [$item, 'admin']);
+        } else {
+            return $this->user->can($action, ['admin']);
+        }
     }
 
     /**

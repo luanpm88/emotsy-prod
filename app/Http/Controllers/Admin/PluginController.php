@@ -84,16 +84,16 @@ class PluginController extends Controller
             return $this->notAuthorized();
         }
 
-        // Upload
-        Plugin::upload($request);
+        // do install
+        if ($request->isMethod('post')) {
+            // Upload
+            $pluginName = Plugin::upload($request);
 
-        // Install Plugin
-        Plugin::installFromDir('author/plugin');
+            // Install Plugin
+            Plugin::installFromDir($pluginName);
+        }
 
-
-        return view('admin.plugins.install', [
-            'server' => $plugin,
-        ]);
+        return view('admin.plugins.install');
     }
 
     /**

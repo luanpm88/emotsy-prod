@@ -155,6 +155,97 @@ class Plugin extends Model
     }
 
     /**
+     * Upload a plugin to tmp.
+     */
+    public static function upload($request)
+    {
+        $pluginsPath = storage_path('app/plugins');
+
+        $rules = array(
+            'file' => 'required|mimetypes:application/zip,application/octet-stream,application/x-zip-compressed,multipart/x-zip',
+        );
+
+        $validator = Validator::make($request->all(), $rules, [
+            'file.mimetypes' => 'Input must be a valid .zip file',
+        ]);
+
+        if ($validator->fails()) {
+            throw new ValidationException($validator);
+        }
+
+        // move file to temp place
+        $tmp_path = storage_path('tmp/uploaded_plugin_'.time());
+        $file_name = $request->file('file')->getClientOriginalName();
+        $request->file('file')->move($tmp_path, $file_name);
+        $tmp_zip = join_paths($tmp_path, $file_name);
+
+        // read zip file check if zip archive invalid
+        $zip = new ZipArchive();
+        if ($zip->open($tmp_zip, ZipArchive::CREATE) !== true) {
+            $validator->errors()->add('file', 'Cannot open plugin package');
+            throw new ValidationException($validator);
+        }
+
+        // unzip template archive and remove zip file
+        $zip->extractTo($tmp_path);
+        $zip->close();
+        unlink($tmp_zip);
+
+        // read plugin file
+        if (!is_file($configFile = $tmp_path.'/composer.json')) {
+            throw new \Exception('Invalid plugin package. No meta data found');
+        }
+        
+        try {
+            $config = json_decode(file_get_contents($configFile), true);
+        } catch (\Exception $ex) {
+            throw new \Exception('Invalid plugin package. Cannot parse meta data');
+        }
+
+        $names = explode('/', $config['name']);
+        // check valid plugin name
+        if (count($names) != 2) {
+            throw new \Exception('Invalid plugin package. No meta data found');
+        }
+        $pluginVendor = $names[0];
+        $pluginName = $names[1];
+
+        // chek if plugin exist
+        $pluginsVendorPath = $pluginsPath . '/' . $pluginVendor;
+        $pluginsSourcePath = $pluginsVendorPath . '/' . $pluginName;
+
+        // create folders
+        $paths = [
+            $pluginsPath,
+            $pluginsVendorPath,
+            $pluginsSourcePath,
+        ];
+        foreach ($paths as $path) {
+            if (!file_exists($path)) {
+                mkdir($path, 0777, true);
+            }
+        }
+
+        // check if overwrite plugin
+        if ($request->overwrite) {
+            $config['overwrite'] = true;
+        }
+        
+        // throw exception if any required key is missing
+        self::validateMetaData($config);
+
+        // move from tmp to storage/app/plugins
+        Tool::xdelete($pluginsSourcePath);
+        if (!file_exists($pluginsSourcePath)) {
+            mkdir($pluginsSourcePath, 0777, true);
+        }
+        Tool::xcopy($tmp_path, $pluginsSourcePath);
+        Tool::xdelete($tmp_path);
+
+        return $config['name'];
+    }
+
+    /**
      * Upload a template.
      */
     public static function uploadAndSave($request)
