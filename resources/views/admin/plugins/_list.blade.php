@@ -25,7 +25,7 @@
                     @if (isset($settingUrls[$plugin->name]))
                         <a
                             href="{{ $settingUrls[$plugin->name] }}"
-                            class="btn btn-mc_default mr-2"
+                            class="btn btn-mc_default"
                         >
                             {{ trans('messages.setting') }}
                         </a>
@@ -43,17 +43,30 @@
                     @if (Auth::user()->admin->can('disable', $plugin))
                         <a link-confirm="{{ trans('messages.disable_plugins_confirm') }}"
                             href="{{ action('Admin\PluginController@disable', ["uids" => $plugin->uid]) }}"
-                            class="btn btn-mc_primary mr-2"
+                            class="btn btn-mc_primary"
                         >
                             {{ trans('messages.disable') }}
                         </a>
                     @endif
-                    <a
-                        delete-confirm="{{ trans('messages.delete_plugins_confirm') }}"
-                        href="{{ action('Admin\PluginController@delete', ["uids" => $plugin->uid]) }}"
-                        type="button" class="btn btn-link text-danger">
-                        {{ trans('messages.uninstall') }}
-                    </a>
+
+                    <div class="btn-group">
+						<button type="button" class="btn btn-mc_default icon-only dropdown-toggle" data-toggle="dropdown">
+                            <span class="caret ml-0"></span>
+                        </button>
+						<ul class="dropdown-menu dropdown-menu-right">
+							<li>
+								<a
+                                    delete-confirm="{{ trans('messages.delete_plugins_confirm') }}"
+                                    href="{{ action('Admin\PluginController@delete', ["uids" => $plugin->uid]) }}"
+                                    type="button" class="">
+                                    <i class="material-icons-outlined">delete</i> {{ trans('messages.uninstall') }}
+                                </a>
+							</li>
+						</ul>
+					</div>
+
+                    
+                    
                 </td>
             </tr>
         @endforeach
