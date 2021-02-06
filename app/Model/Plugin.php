@@ -13,6 +13,7 @@ use Illuminate\Validation\ValidationException;
 use Acelle\Library\Tool;
 use Composer\Autoload\ClassLoader;
 use App;
+use Acelle\Library\Facades\Hook;
 
 class Plugin extends Model
 {
@@ -140,17 +141,6 @@ class Plugin extends Model
     public function disable()
     {
         $this->status = self::STATUS_INACTIVE;
-        $this->save();
-    }
-
-    /**
-     * Enable verification server.
-     *
-     * @return array
-     */
-    public function enable()
-    {
-        $this->status = self::STATUS_ACTIVE;
         $this->save();
     }
 
@@ -480,7 +470,17 @@ class Plugin extends Model
 
     public function activate()
     {
+        $hookName = 'activate_plugin_'.$this->name;
+        Hook::execute($hookName);
+
         $this->status = self::STATUS_ACTIVE;
+        $this->save();
+    }
+
+    public function reset()
+    {
+        $this->status = self::STATUS_INACTIVE;
+        $this->data = null;
         $this->save();
     }
 

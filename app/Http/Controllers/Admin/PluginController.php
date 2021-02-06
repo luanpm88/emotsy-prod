@@ -165,7 +165,7 @@ class PluginController extends Controller
         foreach ($items->get() as $item) {
             // authorize
             if ($request->user()->admin->can('enable', $item)) {
-                $item->enable();
+                $item->activate();
             }
         }
 
