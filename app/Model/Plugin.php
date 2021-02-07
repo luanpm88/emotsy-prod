@@ -537,7 +537,7 @@ class Plugin extends Model
         foreach ($activePlugins as $plugin) {
             // $boot = $plugin->isActive();
             $boot = true; // need its route registration
-            $plugin->load( $boot );
+            $plugin->load($boot);
         }
     }
 
@@ -587,7 +587,7 @@ class Plugin extends Model
         // Instantiate the plugin object, not save yet
         $plugin = self::firstOrNew(['name' => $name]);
 
-        // plugin.name attribute is required 
+        // plugin.name attribute is required
         // before we can get other information
         // Validation may throw an exception
         $composer = $plugin->getComposerJson();
@@ -610,7 +610,7 @@ class Plugin extends Model
     {
         $possibleFileNames = ['icon.jpg', 'icon.png', 'icon.gif'];
 
-        foreach($possibleFileNames as $file) {
+        foreach ($possibleFileNames as $file) {
             $absPath = $this->getStoragePath($file);
             if (file_exists($absPath)) {
                 $relativePath =  $this->getStoragePath($file, $absolute = false);
