@@ -44,7 +44,7 @@ class HookManager
 
     public function installFromDir($name)
     {
-    	$composer = $this->getComposerJson($name);
-    	$record = PluginModel::createFromComposerJson($composer);
+        $composer = $this->getComposerJson($name);
+        $record = PluginModel::createFromComposerJson($composer);
     }
 }

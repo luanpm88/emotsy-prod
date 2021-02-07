@@ -62,7 +62,8 @@
             "Acelle\\": "app/"
         },
         "files": [
-	    "app/Helpers/helpers.php"
+	    "app/Helpers/helpers.php",
+            "app/Helpers/namespaced_helpers.php"
         ]
     },
     "autoload-dev": {

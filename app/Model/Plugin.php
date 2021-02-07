@@ -484,7 +484,7 @@ class Plugin extends Model
         $this->save();
     }
 
-    public function getStoragePath($subpath = null)
+    public function getStoragePath($subpath = null, $absolute = true)
     {
         if (is_null($this->name)) {
             throw new \Exception("Plugin name is null");
@@ -494,7 +494,12 @@ class Plugin extends Model
             throw new \Exception("Plugin name must match 'author/name' pattern. Only lowercase letters, numbers and/or dash (-) are allowed for 'author' and 'name'");
         }
 
-        $base = storage_path(join_paths(self::STORAGE_PATH, $this->name));
+        $base = join_paths(self::STORAGE_PATH, $this->name);
+
+        if ($absolute) {
+            $base = storage_path($base);
+        }
+        
         $path = join_paths($base, $subpath);
         return $path;
     }
@@ -532,7 +537,7 @@ class Plugin extends Model
         foreach ($activePlugins as $plugin) {
             // $boot = $plugin->isActive();
             $boot = true; // need its route registration
-            $plugin->load( $boot );
+            $plugin->load($boot);
         }
     }
 
@@ -582,7 +587,7 @@ class Plugin extends Model
         // Instantiate the plugin object, not save yet
         $plugin = self::firstOrNew(['name' => $name]);
 
-        // plugin.name attribute is required 
+        // plugin.name attribute is required
         // before we can get other information
         // Validation may throw an exception
         $composer = $plugin->getComposerJson();
@@ -599,5 +604,20 @@ class Plugin extends Model
         $plugin->save();
 
         return $plugin;
+    }
+
+    public function getIconUrl()
+    {
+        $possibleFileNames = ['icon.jpg', 'icon.png', 'icon.gif'];
+
+        foreach ($possibleFileNames as $file) {
+            $absPath = $this->getStoragePath($file);
+            if (file_exists($absPath)) {
+                $relativePath =  $this->getStoragePath($file, $absolute = false);
+                return \Acelle\Helpers\generatePublicPath($relativePath);
+            }
+        }
+
+        return;
     }
 }
