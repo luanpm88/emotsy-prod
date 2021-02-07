@@ -24,7 +24,7 @@ class Plugin extends Model
 
     protected $fillable = ['name', 'title', 'description', 'version'];
     protected $requiredKeys = [
-        'name', 'version', 'app_version', 'xxxx'
+        'name', 'version', 'app_version'
     ];
 
     /**
@@ -416,7 +416,7 @@ class Plugin extends Model
         $exist = self::where('name', $config['name'])->first();
         if ($exist && !isset($config['overwrite'])) {
             if (version_compare($exist->version, $config['version'], '>=')) {
-                throw new \Exception("An newer version of the {$confif['name']} plugin already exists (version : {$exist->version}), do you want to replace it?");
+                throw new \Exception("A newer version of the {$confif['name']} plugin already exists (version : {$exist->version}), do you want to replace it?");
             } else {
                 throw new \Exception("An older version of the {$confif['name']} plugin already exists (version : {$exist->version}), do you want to replace it?");
             }
@@ -608,7 +608,7 @@ class Plugin extends Model
 
     public function getIconUrl()
     {
-        $possibleFileNames = ['icon.jpg', 'icon.png', 'icon.gif'];
+        $possibleFileNames = ['icon.svg', 'icon.jpg', 'icon.png', 'icon.gif'];
 
         foreach ($possibleFileNames as $file) {
             $absPath = $this->getStoragePath($file);

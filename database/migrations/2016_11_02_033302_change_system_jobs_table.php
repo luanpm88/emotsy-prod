@@ -27,7 +27,6 @@ class ChangeSystemJobsTable extends Migration
             
             $table->timestamps();
         });
-
     }
 
     /**

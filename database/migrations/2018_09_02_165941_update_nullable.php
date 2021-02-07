@@ -46,7 +46,7 @@ class UpdateNullable extends Migration
             $table->integer('resend')->nullable()->change();
             $table->integer('custom_order')->nullable()->change();
             $table->string('template_source')->nullable()->change();
-            $table->text('image')->nullable()->change();            
+            $table->text('image')->nullable()->change();
         });
         
         Schema::table('templates', function (Blueprint $table) {
@@ -54,7 +54,7 @@ class UpdateNullable extends Migration
             $table->text('image')->nullable()->change();
             $table->integer('custom_order')->nullable()->change();
             $table->integer('shared')->nullable()->change();
-            $table->string('source')->nullable()->change(); 
+            $table->string('source')->nullable()->change();
         });
         
         Schema::table('admin_groups', function (Blueprint $table) {

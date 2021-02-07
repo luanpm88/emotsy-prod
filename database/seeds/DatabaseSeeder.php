@@ -11,7 +11,7 @@ class DatabaseSeeder extends Seeder
     {
         // Insert from file
         $query = File::get(storage_path('install/database_init.sql'));
-        $query = str_replace('<<prefix>>', config('database.connections.mysql.prefix'), $query);        
+        $query = str_replace('<<prefix>>', config('database.connections.mysql.prefix'), $query);
         DB::statement($query);
         
         $created_at = Carbon\Carbon::now();

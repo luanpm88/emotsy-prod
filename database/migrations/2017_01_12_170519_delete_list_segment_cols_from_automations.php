@@ -32,7 +32,7 @@ class DeleteListSegmentColsFromAutomations extends Migration
             $table->integer('mail_list_id')->unsigned()->nullable();
             $table->integer('segment_id')->unsigned()->nullable();
             
-            $table->foreign('mail_list_id')->references('id')->on('mail_lists')->onDelete('cascade');            
+            $table->foreign('mail_list_id')->references('id')->on('mail_lists')->onDelete('cascade');
             $table->foreign('segment_id')->references('id')->on('segments')->onDelete('cascade');
         });
     }

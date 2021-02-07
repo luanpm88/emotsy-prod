@@ -82,7 +82,7 @@ Route::get('/p/assets/{token}', [ function ($token) {
     $decodedPath = \Acelle\Library\StringHelper::base64UrlDecode($token);
     $absPath = storage_path($decodedPath);
 
-    if (\File::exists($absPath)) {        
+    if (\File::exists($absPath)) {
         $mime_type = \Acelle\Library\File::getFileType($absPath);
         return response()->file($absPath, array('Content-Type' => $mime_type));
     } else {
@@ -148,7 +148,9 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
 
 // Without authentication
 Route::group(['middleware' => ['not_installed']], function () {
-    Route::get('blank', function() { return; });
+    Route::get('blank', function () {
+        return;
+    });
 
     Route::get('campaigns/{message_id}/open', 'CampaignController@open')->name('openTrackingUrl');
     Route::get('campaigns/{message_id}/click/{url}', 'CampaignController@click')->name('clickTrackingUrl');
@@ -237,7 +239,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
 
     // Update current user profile
     Route::get('account/api/renew', 'AccountController@renewToken');
-    Route::get('account/api', 'AccountController@api');    
+    Route::get('account/api', 'AccountController@api');
     Route::get('account/subscription', 'AccountController@subscription');
     Route::get('account/subscription/new', 'AccountController@subscriptionNew');
 
@@ -544,7 +546,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::resource('notifications', 'NotificationController');
     Route::post('notifications/{id}/hide', 'NotificationController@hide');
     
-    // Automation2    
+    // Automation2
     Route::get('automation2/{uid}/last-saved', 'Automation2Controller@lastSaved');
     Route::post('automation2/{uid}/subscribers/{subscriber_uid}/restart', 'Automation2Controller@subscribersRestart');
     Route::post('automation2/{uid}/subscribers/{subscriber_uid}/remove', 'Automation2Controller@subscribersRemove');
@@ -596,7 +598,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::match(['get', 'post'], 'automation2/{uid}/email/setup', 'Automation2Controller@emailSetup');
     Route::match(['get', 'post'], 'automation2/{uid}/email/{email_uid}/confirm', 'Automation2Controller@emailConfirm');
     Route::match(['get', 'post'], 'automation2/{uid}/email/{email_uid?}', 'Automation2Controller@email');
-    Route::match(['get', 'post'], 'automation2/{uid}/email/{email_uid}/template', 'Automation2Controller@emailTemplate');    
+    Route::match(['get', 'post'], 'automation2/{uid}/email/{email_uid}/template', 'Automation2Controller@emailTemplate');
     Route::match(['get', 'post'], 'automation2/{uid}/action/edit', 'Automation2Controller@actionEdit');
     Route::match(['get', 'post'], 'automation2/{uid}/trigger/edit', 'Automation2Controller@triggerEdit');
     Route::post('automation2/{uid}/action/select', 'Automation2Controller@actionSelect');
@@ -618,7 +620,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('email/preview/{uid}/{subscriber_uid}', 'EmailController@preview');
 
     // Sample UI/UX
-    Route::get('sample', 'SamplesController@index');    
+    Route::get('sample', 'SamplesController@index');
 });
 
 // ADMIN AREA

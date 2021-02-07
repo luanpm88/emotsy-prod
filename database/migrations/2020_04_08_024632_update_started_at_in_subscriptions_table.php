@@ -13,7 +13,7 @@ class UpdateStartedAtInSubscriptionsTable extends Migration
      */
     public function up()
     {
-        DB::table('subscriptions')->whereNull('started_at')->update(['started_at' => DB::raw( 'created_at' )]);
+        DB::table('subscriptions')->whereNull('started_at')->update(['started_at' => DB::raw('created_at')]);
     }
 
     /**
