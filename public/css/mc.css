@@ -1100,21 +1100,13 @@ table.table-log tr th {
     border-radius: 100px;
 }
 .table-box tr td.plugin-title-column {
-  padding-left: 100px;
   position: relative;
 }
-.table-box tr td.plugin-title-column::after {
-  content: "";
-  background-image: url(../images/plugin.svg);
-  background-size: 80px 80px;
-  background-repeat: no-repeat;
-  background-position: left center;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  position: absolute;
-  z-index: -1;
+.plugin-icon {
+  width: 70px;
+  height: 70px;
+  float: left;
+  margin-right: 20px;
 }
 .table-box tr td.plugin-title-coinpayments::after {
   background-image: url(../images/coinpayments-logo.png);

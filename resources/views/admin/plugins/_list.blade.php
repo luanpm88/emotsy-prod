@@ -4,7 +4,8 @@
     >
         @foreach ($plugins as $key => $plugin)
             <tr>
-                <td class="plugin-title-column plugin-title-{{ $plugin->name }}">
+                <td class="plugin-title-column plugin-title-{{ $plugin->name }}" >
+                    <img class="plugin-icon" src="{{ $plugin->getIconUrl() ? $plugin->getIconUrl() : url('/images/plugin.svg') }}" />
                     <h5 class="no-margin text-bold kq_search">
                         {{ $plugin->title }}
                     </h5>
