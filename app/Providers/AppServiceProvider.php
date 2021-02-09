@@ -109,9 +109,9 @@ class AppServiceProvider extends ServiceProvider
             } catch (\Exception $ex) {
                 // anything here?
             }
-        }
 
-        Plugin::autoload();
+            Plugin::autoload();
+        }
     }
 
     /**
