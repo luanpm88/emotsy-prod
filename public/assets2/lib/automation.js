@@ -896,6 +896,14 @@ class ElementCondition extends AutomationElement {
         return true;
     }
 
+    hasChildYes() {
+        return (this.childYes == null) ? false : true;
+    }
+
+    hasChildNo() {
+        return (this.childNo == null) ? false : true;
+    }
+
     drawCondition(left, top, container) {
         // A little bit confusing here
         var g = document.createElementNS("http://www.w3.org/2000/svg", "g");
