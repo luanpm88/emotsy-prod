@@ -10,6 +10,7 @@ use URL;
 use Acelle\Model\Setting;
 use Acelle\Library\HookManager;
 use Acelle\Model\Plugin;
+use Acelle\Model\Notification;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -110,7 +111,15 @@ class AppServiceProvider extends ServiceProvider
                 // anything here?
             }
 
-            Plugin::autoload();
+            try {
+                Plugin::autoload();
+            } catch (\Exception $ex) {
+                // Just in case 
+                Notification::warning([
+                    'message' => 'Cannot load Acelle plugins. Error: '.htmlspecialchars($ex->getMessage()),
+                    'title' => 'Plugin Error',
+                ]);
+            }
         }
     }
 
