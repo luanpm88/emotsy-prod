@@ -276,6 +276,11 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
 
         $dkim = 'Success' == $status;
 
+        // HACK: if DKIM is "verified" then Identity is automatically "verified" too
+        if ($dkim) {
+            $identity = $dkim;
+        }
+
         // SPF: hack
         $domainObj = SendingDomain::where('name', $domain)->first();
         $domainObj->verifySpf();
