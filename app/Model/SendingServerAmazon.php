@@ -29,6 +29,7 @@ use Acelle\Library\IdentityStore;
 use Acelle\Library\SendingServer\DomainVerificationInterface;
 use Acelle\Model\SendingDomain;
 use Aws\Route53\Route53Client;
+use Acelle\Library\Facades\Hook;
 
 class SendingServerAmazon extends SendingServer implements DomainVerificationInterface
 {
@@ -117,7 +118,7 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
 
         $tokens = $result->toArray()['DkimTokens'];
 
-        Plugin::registerHook('after_verify_dkim_against_aws_ses', [$this, $domain, $tokens]);
+        Hook::execute('after_verify_dkim_against_aws_ses', [$domain, $tokens]);
 
         return array_map(function ($token) use ($domain) {
             return [
