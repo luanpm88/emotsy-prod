@@ -32,7 +32,7 @@ class ExportCampaignLog extends SystemJob
      */
     public function handle()
     {
-        $this->campaign->generateTrackingLogCsv($this->logtype, function($progress) {
+        $this->campaign->generateTrackingLogCsv($this->logtype, function ($progress) {
             $this->updateStatus($progress);
         });
     }

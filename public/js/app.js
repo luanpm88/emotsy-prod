@@ -1067,7 +1067,21 @@ $(function() {
         $.ajax({
             method: method,
             url: url,
-            data: data
+            data: data,
+            globalError: false
+        })
+        .error(function(e) {
+            var error = JSON.parse(e.responseText);
+
+            var dialog = new Dialog('alert', {
+				message: error.message
+			})
+
+            // Remove loading effect
+            a_.removeClass('loading');
+            a_.find('.a-loading').remove();
+            removeMaskLoading();
+            $(".modal").modal('hide');
         })
         .done(function( msg ) {
             var type = 'success';

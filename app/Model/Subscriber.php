@@ -263,7 +263,11 @@ class Subscriber extends Model
                 $query = $query->where('subscribers.status', '=', $request->status);
             }
             if (!empty($request->verification_result)) {
-                $query = $query->where('email_verifications.result', '=', $request->verification_result);
+                if ($request->verification_result == 'unverified') {
+                    $query = $query->whereNull('email_verifications.result');
+                } else {
+                    $query = $query->where('email_verifications.result', '=', $request->verification_result);
+                }
             }
 
             // Open

@@ -78,12 +78,7 @@ class Currency extends Model
 
         // Create uid when creating list.
         static::creating(function ($item) {
-            // Create new uid
-            $uid = uniqid();
-            while (Currency::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
-            $item->uid = $uid;
+            $item->uid = uniqid();
 
             // uppercase for currency code
             $item->code = strtoupper($item->code);

@@ -185,16 +185,7 @@ class BounceHandler extends DeliveryHandler
 
         // Create uid when creating list.
         static::creating(function ($item) {
-            // Create new uid
-            $uid = uniqid();
-            while (BounceHandler::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
-            $item->uid = $uid;
-
-            // BounceHandler custom order
-            BounceHandler::getAll()->increment('custom_order', 1);
-            $item->custom_order = 0;
+            $item->uid = uniqid();
         });
     }
 

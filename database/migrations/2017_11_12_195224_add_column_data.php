@@ -13,7 +13,7 @@ class AddColumnData extends Migration
     public function up()
     {
         Schema::table('subscriptions', function (Blueprint $table) {
-              $table->text('data')->nullable();
+            $table->text('data')->nullable();
         });
     }
 

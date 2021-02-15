@@ -87,7 +87,7 @@ class ImportSubscribersJob extends ImportExportJob
     public function getLogger()
     {
         $log_name = 'importer';
-        $logger = CustomLog::create( $this->getLog(), $log_name );
+        $logger = CustomLog::create($this->getLog(), $log_name);
         return $logger;
     }
 }

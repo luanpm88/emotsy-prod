@@ -3900,7 +3900,6 @@
   'whitelabel.setup.title' => 'Set up AWS whitelabelling',
   'whitelabel.setup.intro' => 'Selector is used in DNS record that user will need to
       add to your DNS management consol',
-  'whitelabel.choose_selector_name' => 'Choose a selector name',
   'whitelable.updated' => 'Whitelablling was successfully updated',
   'whitelabel.enabled.wording' => 'Your AWS sending server is
       whitelabelled',
@@ -3926,4 +3925,20 @@
   'subscriber.tag_added' => 'Tag was added successfully',
   'api_token.copied' => 'API token was copied to clipboard',
   'api_endpoint.copied' => 'API endpoint was copied to clipboard',
+  'editor.update_profile_text' => 'Update your profile',
+  'whitelabel.choose_a_brand_domain' => 'Choose a brand domain',
+  'list.validation.required' => 'The :field is required',
+  'list.validation.not_email' => 'The :field must be a valid email address.',
+  'ok_enable' => 'OK, Enable',
+  'curl_example' => 'CURL example',
+  'tracking_domain.test' => 'Test',
+  'tracking_domain.test.wording' => 'We are taking you to the
+      <a href="http://:domain" target="_blank">http://:domain</a> page.
+      If you see it load the login page of Acelle,
+      then your DNS configuration is good and your tracking domain is ready to go.
+      Otherwise, please double check to make sure that your hosting server is
+      configured correctly so that traffic to 
+      <a href="http://:domain" target="_blank">http://:domain</a> are also redirected to Acelle source.
+      In other words, make it an alias URL or your Acelle webapp.',
+  'tracking_domain.test.proceed' => 'Proceed',
 ) ?>

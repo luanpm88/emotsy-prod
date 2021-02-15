@@ -44,10 +44,6 @@ class SenderController extends Controller
             $domain = $server->allowVerifyingOwnDomains() || $server->allowVerifyingOwnDomainsRemotely();
         }
 
-        return view('senders.available', [
-            'identities' => $subscription->plan->getVerifiedIdentities(),
-        ]);
-
         if (!$email && !$domain) {
             return view('senders.available', [
                 'identities' => $subscription->plan->getVerifiedIdentities(),

@@ -131,12 +131,7 @@ class Admin extends Model
 
         // Create uid when creating list.
         static::creating(function ($item) {
-            // Create new uid
-            $uid = uniqid();
-            while (Admin::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
-            $item->uid = $uid;
+            $item->uid = uniqid();
         });
     }
 
@@ -517,7 +512,11 @@ class Admin extends Model
      */
     public function can($action, $item=null)
     {
-        return $this->user->can($action, [$item, 'admin']);
+        if ($item) {
+            return $this->user->can($action, [$item, 'admin']);
+        } else {
+            return $this->user->can($action, ['admin']);
+        }
     }
 
     /**

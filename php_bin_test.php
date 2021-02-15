@@ -1,10 +1,10 @@
 <?php
 
 try {
-  // to prevent it that the output is compressed, resulting in invalid string
-  ini_set('zlib.output_compression', 'Off');
-} catch(\Exception $e) {
-  // just ignore it
+    // to prevent it that the output is compressed, resulting in invalid string
+    ini_set('zlib.output_compression', 'Off');
+} catch (\Exception $e) {
+    // just ignore it
 }
 
 $valid = true;
@@ -109,6 +109,6 @@ foreach ($dirs as $dir) {
 }
 
 // just finish
-if($valid) {
+if ($valid) {
     echo "ok";
 }

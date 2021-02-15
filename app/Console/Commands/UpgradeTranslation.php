@@ -40,7 +40,7 @@ class UpgradeTranslation extends Command
     {
         $manager = new UpgradeManager();
         $files = ['auth', 'messages', 'pagination', 'passwords', 'validation'];
-        foreach($files as $f) {
+        foreach ($files as $f) {
             $path = base_path("resources/lang/en/$f.php");
             $manager->upgradeLanguageFiles($path);
         }

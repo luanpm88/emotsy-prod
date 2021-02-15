@@ -25,7 +25,7 @@ class AutoTrigger extends Controller
         $info[] = sprintf('Subscriber {{ %s }}', $trigger->subscriber->email);
         
         $actions = [];
-        $trigger->getActions(function($a) use (&$actions, $trigger){
+        $trigger->getActions(function ($a) use (&$actions, $trigger) {
             $description = "+ [". (($a->getLastExecuted()) ? "Executed" : "Waiting") . "] " .  $a->getId() . ": " . $a->getTitle();
             if ($a->isCondition()) {
                 $description .= " (". $a->getEvaluationResult() .")";
@@ -54,12 +54,9 @@ class AutoTrigger extends Controller
                 } else {
                     $description .= "SystemJob ID: ".$sysJob->id.", SENT OK";
                 }
-
             }
 
             $actions[] = $description;
-
-
         });
 
         $info[] = implode('<br>', $actions);

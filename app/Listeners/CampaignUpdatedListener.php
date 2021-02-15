@@ -38,7 +38,9 @@ class CampaignUpdatedListener
             if (!$existed) {
                 $existed = SystemJobModel::getNewJobs()
                            ->where('name', UpdateMailListJob::class)
-                           ->whereIn('data', $event->campaign->mailLists->map(function($r) { return $r->id;  })->toArray())
+                           ->whereIn('data', $event->campaign->mailLists->map(function ($r) {
+                               return $r->id;
+                           })->toArray())
                            ->exists();
             }
 

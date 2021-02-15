@@ -28,7 +28,7 @@ class Subscription
         if ($subscription->plan->useSystemSendingServer()) {
             $server = $subscription->plan->primarySendingServer();
             if (is_null($server)) {
-               return response()->view('errors.general', [ 'message' => __('messages.plan.sending_server.no_sending_server_error', ['plan' => $subscription->plan->name]) ]);
+                return response()->view('errors.general', [ 'message' => __('messages.plan.sending_server.no_sending_server_error', ['plan' => $subscription->plan->name]) ]);
             }
         }
             

@@ -14,7 +14,7 @@ class InsertPayuToPaymentMethods extends Migration
     {
         // Insert some stuff
         DB::table('payment_methods')->insert(
-          array(
+            array(
               'uid' => uniqid(),
               'name' => 'PayU Money',
               'type' => \Acelle\Model\PaymentMethod::TYPE_PAYU_MONEY,
@@ -23,7 +23,7 @@ class InsertPayuToPaymentMethods extends Migration
               'created_at' => '2017-10-02 00:00:00',
               'updated_at' => '2017-10-02 00:00:00',
           )
-      );
+        );
     }
 
     /**

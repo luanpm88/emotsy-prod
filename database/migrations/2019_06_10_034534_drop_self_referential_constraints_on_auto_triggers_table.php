@@ -30,4 +30,3 @@ class DropSelfReferentialConstraintsOnAutoTriggersTable extends Migration
         });
     }
 }
-

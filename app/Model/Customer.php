@@ -2099,12 +2099,14 @@ class Customer extends Model implements BillableUserInterface
     }
 
     // Get the current time in Customer timezone
-    public function getCurrentTime() {
+    public function getCurrentTime()
+    {
         $dt = $this->parseDateTime(null);
         return $dt;
     }
 
-    public function parseDateTime($datetime, $fallback = false) {
+    public function parseDateTime($datetime, $fallback = false)
+    {
         // IMPORTANT: datetime string must NOT contain timezone information
         try {
             $dt = Carbon::parse($datetime, $this->timezone);
@@ -2112,7 +2114,7 @@ class Customer extends Model implements BillableUserInterface
         } catch (\Exception $ex) {
             // parse special chars, for example ('sadfh&#($783943') ==> exception
             if ($fallback) {
-                $dt = $this->parseDateTime('1900-01-01');    
+                $dt = $this->parseDateTime('1900-01-01');
             } else {
                 throw $ex;
             }

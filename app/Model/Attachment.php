@@ -32,12 +32,7 @@ class Attachment extends Model
 
         // Create uid when creating automation.
         static::creating(function ($item) {
-            // Create new uid
-            $uid = uniqid();
-            while (self::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
-            $item->uid = $uid;
+            $item->uid = uniqid();
         });
     }
 

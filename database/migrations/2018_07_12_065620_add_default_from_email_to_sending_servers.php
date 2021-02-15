@@ -13,7 +13,7 @@ class AddDefaultFromEmailToSendingServers extends Migration
     public function up()
     {
         Schema::table('sending_servers', function (Blueprint $table) {
-              $table->string('default_from_email');
+            $table->string('default_from_email');
         });
     }
 

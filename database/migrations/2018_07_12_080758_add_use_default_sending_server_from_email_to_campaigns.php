@@ -13,7 +13,7 @@ class AddUseDefaultSendingServerFromEmailToCampaigns extends Migration
     public function up()
     {
         Schema::table('campaigns', function (Blueprint $table) {
-              $table->boolean('use_default_sending_server_from_email')->default(false);
+            $table->boolean('use_default_sending_server_from_email')->default(false);
         });
     }
 

@@ -22,7 +22,7 @@ class AddEmailIdToTrackingLogsTable extends Migration
 
         Schema::table('tracking_logs', function (Blueprint $table) {
             $table->integer('campaign_id')->unsigned()->nullable()->change();
-            $table->foreign('campaign_id')->references('id')->on('campaigns')->onDelete('cascade'); 
+            $table->foreign('campaign_id')->references('id')->on('campaigns')->onDelete('cascade');
         });
     }
 

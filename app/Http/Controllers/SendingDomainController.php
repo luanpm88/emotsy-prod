@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
 use Acelle\Model\SendingDomain;
 use Acelle\Model\SendingServer;
-use Acelle\Library\Facades\Plugin;
+use Acelle\Library\Facades\Hook;
 
 class SendingDomainController extends Controller
 {
@@ -305,7 +305,7 @@ class SendingDomainController extends Controller
             $dkims = $options['dkim'];
             $spf = array_key_exists('spf', $options) ? $options['spf'] : [];
 
-            Plugin::executeHook(
+            Hook::executeHook(
                 'filter_aws_ses_dns_records',
                 [&$identity, &$dkims, &$spf]
             );

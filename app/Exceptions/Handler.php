@@ -37,7 +37,7 @@ class Handler extends ExceptionHandler
     {
         if (in_array(get_class($exception), $this->dontReport)) {
             // skip logging as those exceptions are handled by Laravel Auth
-        } else if (isInitiated()) {
+        } elseif (isInitiated()) {
             try {
                 // IMPORTANT: do not use Model here, what if DB connect is not initiated correctly, exception loop stack => "PHP Fatal error:  Uncaught Error: Maximum function nesting level of '256' reached, aborting"
                 // check if the exception does match the known list
@@ -127,7 +127,7 @@ class Handler extends ExceptionHandler
             \UnexpectedValueException::class => [
                 'match' => 'failed to open stream: Permission denied',
                 'title' => 'File system permission',
-                'message' => function($exception) {
+                'message' => function ($exception) {
                     return 'Failed to write to file system, please make sure the application source folder is writable. Error: ' . $exception->getMessage();
                 },
                 'notify' => true,

@@ -75,6 +75,21 @@ Route::get('/assets/emails/{uid}/{name?}', [ function ($uid, $name) {
     }
 }])->where('name', '.+')->name('email_assets');
 
+// assets path for email
+Route::get('/p/assets/{token}', [ function ($token) {
+    // Notice $path should be relative only for acellemail/storage/ folder
+    // For example, with a real path of /home/deploy/acellemail/storage/app/sub/example.png => $path = "app/sub/example.png"
+    $decodedPath = \Acelle\Library\StringHelper::base64UrlDecode($token);
+    $absPath = storage_path($decodedPath);
+
+    if (\File::exists($absPath)) {
+        $mime_type = \Acelle\Library\File::getFileType($absPath);
+        return response()->file($absPath, array('Content-Type' => $mime_type));
+    } else {
+        abort(404);
+    }
+}])->name('public_assets');
+
 // Setting upload path
 Route::get('setting/{filename}', 'SettingController@file');
 Route::get('/no-plan', 'AccountSubscriptionController@noPlan');
@@ -660,9 +675,6 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/layouts', 'LayoutController');
 
     // Sending servers
-    Route::get('admin/sending_servers/{uid}/whitelabel', 'SendingServerController@whitelabel');
-    Route::post('admin/sending_servers/{uid}/whitelabel-off', 'SendingServerController@whitelabelOff');
-    Route::match(['get','post'], 'admin/sending_servers/{uid}/whitelabel-settings', 'SendingServerController@whitelabelSettings');
     Route::get('admin/sending_servers/{uid}/senders/dropbox', 'SendingServerController@fromDropbox');
     Route::post('admin/sending_servers/{uid}/remove-domain/{domain}', 'SendingServerController@removeDomain');
     Route::post('admin/sending_servers/{uid}/add-domain', 'SendingServerController@addDomain');

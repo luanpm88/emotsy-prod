@@ -197,7 +197,7 @@ function exec_enabled()
 {
     try {
         // make a small test
-       exec('ls');
+        exec('ls');
 
         return function_exists('exec') && !in_array('exec', array_map('trim', explode(', ', ini_get('disable_functions'))));
     } catch (\Exception $ex) {
@@ -471,8 +471,8 @@ function optimized_paginate($builder, $perPage = 15, $columns = null, $pageName 
     $page = $page ?: \Illuminate\Pagination\Paginator::resolveCurrentPage($pageName);
     $columns = $columns ?: ['*'];
     $total = is_null($total) ? $builder->getCountForPagination() : $total;
-  // in case $total == 0
-  $results = $total ? $builder->forPage($page, $perPage)->get($columns) : collect([]);
+    // in case $total == 0
+    $results = $total ? $builder->forPage($page, $perPage)->get($columns) : collect([]);
 
     return new \Illuminate\Pagination\LengthAwarePaginator($results, $total, $perPage, $page, [
     'path' => \Illuminate\Pagination\Paginator::resolveCurrentPath(),
@@ -748,13 +748,14 @@ function toTimeString($datetime)
  *
  * @return object
  */
-function checkEmail($email) {
+function checkEmail($email)
+{
     return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
 }
 
 function tinyDocTypeTransform($content)
 {
-    if(stripos(strtolower($content), '<!doctype') === false) { 
+    if (stripos(strtolower($content), '<!doctype') === false) {
         $doctype = '<!DoCtYPe html>';
     } else {
         $doctype = '';
@@ -766,12 +767,14 @@ function tinyDocTypeTransform($content)
 function tinyDocTypeUntransform($content)
 {
     return str_replace(
-        '<!DoCtYPe html>', '', 
+        '<!DoCtYPe html>',
+        '',
         $content
     );
 }
 
-function demo_auth() {
+function demo_auth()
+{
     $auth = \Acelle\Model\User::getAuthenticateFromFile();
 
     return [
@@ -781,7 +784,8 @@ function demo_auth() {
 }
 
 // Make string pretty, used for printing debugging SQL
-function prettifystr($str) {
+function prettifystr($str)
+{
     return preg_replace('/\s+/', ' ', trim($str));
 }
 
@@ -802,24 +806,27 @@ function quoteDotEnvValue($value)
     return $value;
 }
 
-function isValidPaymentGateway($name) {
+function isValidPaymentGateway($name)
+{
     try {
         \Acelle\Cashier\Cashier::getPaymentGateway($name)->validate();
     } catch (\Exception $ex) {
         return false;
-    }   
+    }
     
     return true;
 }
 
-function getPaymentTypes() {
+function getPaymentTypes()
+{
     return ['offline_payment', 'card_payment', 'digital_coin_payment', 'paypal_payment'];
 }
 
-function getPayments() {
+function getPayments()
+{
     $options = [];
 
-    foreach(getPaymentTypes() as $type) {
+    foreach (getPaymentTypes() as $type) {
         $service = config('cashier.' . $type);
         if ($service != 'none' && isValidPaymentGateway($service)) {
             $options[] = $type;
@@ -829,16 +836,18 @@ function getPayments() {
     return $options;
 }
 
-function getPaymentOptions() {
+function getPaymentOptions()
+{
     $options = [];
 
-    foreach(getPayments() as $type) {
+    foreach (getPayments() as $type) {
         $options[] = ['text' => trans('messages.payment.' . $type), 'value' => config('cashier.' . $type)];
     }
 
     return $options;
 }
-function generateRandomString($length = 10) {
+function generateRandomString($length = 10)
+{
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $charactersLength = strlen($characters);
     $randomString = '';
@@ -869,7 +878,7 @@ function strip_tags_only($text, $allowedTags = [])
     }
     
     array_map(
-        function($allowedTag) use (&$text) {
+        function ($allowedTag) use (&$text) {
             $regEx = '#<' . $allowedTag . '.*?>(.*?)</' . $allowedTag . '>#is';
             $text = preg_replace($regEx, '', $text);
         },
@@ -882,7 +891,8 @@ function strip_tags_only($text, $allowedTags = [])
 /**
  * Get controller action name
  **/
-function controllerAction() {
+function controllerAction()
+{
     // GET FROM SCREEN OPTION
     $controller = explode('\\', request()->route()->getAction()['controller']);
     return $controller[count($controller)-1];
@@ -891,7 +901,8 @@ function controllerAction() {
 /**
  * Get controller name
  **/
-function controllerName() {
+function controllerName()
+{
     $controllerAction = controllerAction();
     return explode('@', $controllerAction)[0];
 }
@@ -899,7 +910,8 @@ function controllerName() {
 /**
  * Get action name
  **/
-function actionName() {
+function actionName()
+{
     $controllerAction = controllerAction();
     return explode('@', $controllerAction)[1];
 }
