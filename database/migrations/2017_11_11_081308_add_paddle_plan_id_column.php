@@ -13,7 +13,7 @@ class AddPaddlePlanIdColumn extends Migration
     public function up()
     {
         Schema::table('plans', function (Blueprint $table) {
-           $table->text('paddle_plan_id')->nullable();
+            $table->text('paddle_plan_id')->nullable();
         });
     }
 
@@ -25,7 +25,7 @@ class AddPaddlePlanIdColumn extends Migration
     public function down()
     {
         Schema::table('plans', function (Blueprint $table) {
-              $table->dropColumn('paddle_plan_id');
+            $table->dropColumn('paddle_plan_id');
         });
     }
 }

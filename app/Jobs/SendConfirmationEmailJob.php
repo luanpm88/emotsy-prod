@@ -13,7 +13,7 @@ class SendConfirmationEmailJob extends SystemJob
      * Create a new job instance.
      * @note: Parent constructors are not called implicitly if the child class defines a constructor.
      *        In order to run a parent constructor, a call to parent::__construct() within the child constructor is required.
-     * 
+     *
      * @return void
      */
     public function __construct($subscribers, $mailList)
@@ -46,7 +46,7 @@ class SendConfirmationEmailJob extends SystemJob
     public function handle()
     {
         MailLog::info(sprintf('Start re-sending confirmation email to %s contacts', sizeof($this->subscribers)));
-        foreach($this->subscribers as $subscriber) {
+        foreach ($this->subscribers as $subscriber) {
             try {
                 MailLog::info(sprintf('Re-sending confirmation email to %s (%s)', $subscriber->email, $subscriber->id));
                 $this->mailList->sendSubscriptionConfirmationEmail($subscriber);

@@ -14,7 +14,7 @@ class ImportExportJob extends SystemJob
      *
      * @return void
      */
-    public function __construct($mailList=NULL, $customer=NULL, $admin=NULL)
+    public function __construct($mailList=null, $customer=null, $admin=null)
     {
         // call parent's constructor
         parent::__construct();
@@ -61,7 +61,8 @@ class ImportExportJob extends SystemJob
      *
      * @return string file path
      */
-    public function getPath() {
+    public function getPath()
+    {
         return $this->path;
     }
 }

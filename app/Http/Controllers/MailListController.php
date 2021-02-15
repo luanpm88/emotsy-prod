@@ -649,7 +649,7 @@ class MailListController extends Controller
             return view('somethingWentWrong', ['message' => trans('messages.embedded_form.list_not_exsit')]);
         }
 
-        $request->session()->put('form_url', \URL::previous());        
+        $request->session()->put('form_url', \URL::previous());
 
         return view('lists.embedded_form_captcha', [
             'list' => $list,

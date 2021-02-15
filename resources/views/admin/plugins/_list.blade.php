@@ -4,7 +4,8 @@
     >
         @foreach ($plugins as $key => $plugin)
             <tr>
-                <td class="plugin-title-column plugin-title-{{ $plugin->name }}">
+                <td class="plugin-title-column plugin-title-{{ $plugin->name }}" >
+                    <img class="plugin-icon" src="{{ $plugin->getIconUrl() ? $plugin->getIconUrl() : url('/images/plugin.svg') }}" />
                     <h5 class="no-margin text-bold kq_search">
                         {{ $plugin->title }}
                     </h5>
@@ -21,7 +22,16 @@
                         </span>
                     </span>
                 </td>
-                <td class="text-right text-nowrap">                    
+                <td class="text-right text-nowrap">
+                    @if (isset($settingUrls[$plugin->name]))
+                        <a
+                            href="{{ $settingUrls[$plugin->name] }}"
+                            class="btn btn-mc_default"
+                        >
+                            {{ trans('messages.setting') }}
+                        </a>
+                    @endif
+
                     @if (Auth::user()->admin->can('enable', $plugin))
                         <a link-confirm="{{ trans('messages.enable_plugins_confirm') }}"
                             href="{{ action('Admin\PluginController@enable', ["uids" => $plugin->uid]) }}"
@@ -30,28 +40,31 @@
                             {{ trans('messages.enable') }}
                         </a>
                     @endif
+
                     @if (Auth::user()->admin->can('disable', $plugin))
-                        @if ($plugin->name == 'aws_whitelabel')
-                            <a
-                                href="{{ action('\Acelle\AwsWhitelabel\Controllers\AwsWhitelabelController@index') }}"
-                                class="btn btn-mc_default mr-2"
-                            >
-                                {{ trans('messages.setting') }}
-                            </a>
-                        @endif
                         <a link-confirm="{{ trans('messages.disable_plugins_confirm') }}"
                             href="{{ action('Admin\PluginController@disable', ["uids" => $plugin->uid]) }}"
-                            class="btn btn-mc_primary mr-2"
+                            class="btn btn-mc_primary"
                         >
                             {{ trans('messages.disable') }}
                         </a>
                     @endif
-                    <a
-                        delete-confirm="{{ trans('messages.delete_plugins_confirm') }}"
-                        href="{{ action('Admin\PluginController@delete', ["uids" => $plugin->uid]) }}"
-                        type="button" class="btn btn-link text-danger">
-                        {{ trans('messages.uninstall') }}
-                    </a>
+
+                    <div class="btn-group">
+						<button type="button" class="btn btn-mc_default icon-only dropdown-toggle" data-toggle="dropdown">
+                            <span class="caret ml-0"></span>
+                        </button>
+						<ul class="dropdown-menu dropdown-menu-right">
+							<li>
+								<a
+                                    delete-confirm="{{ trans('messages.delete_plugins_confirm') }}"
+                                    href="{{ action('Admin\PluginController@delete', ["uids" => $plugin->uid]) }}"
+                                    type="button" class="">
+                                    <i class="material-icons-outlined">delete</i> {{ trans('messages.uninstall') }}
+                                </a>
+							</li>
+						</ul>
+					</div>
                 </td>
             </tr>
         @endforeach

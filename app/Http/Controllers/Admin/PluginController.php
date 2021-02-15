@@ -31,7 +31,7 @@ class PluginController extends Controller
         $plugins = \Acelle\Model\Plugin::search($request);
 
         return view('admin.plugins.index', [
-            'plugins' => $plugins,
+            'plugins' => $plugins
         ]);
     }
 
@@ -56,8 +56,19 @@ class PluginController extends Controller
 
         $plugins = \Acelle\Model\Plugin::search($request)->paginate($request->per_page);
 
+        $settingUrls = [];
+        foreach ($plugins as $plugin) {
+            // Generate setting buttons
+            $composerJson = $plugin->getComposerJson($plugin->name);
+            if (array_key_exists('extra', $composerJson) && array_key_exists('setting-route', $composerJson['extra'])) {
+                $url = action($composerJson['extra']['setting-route']);
+                $settingUrls[$plugin->name] = $url;
+            }
+        }
+
         return view('admin.plugins._list', [
             'plugins' => $plugins,
+            'settingUrls' => $settingUrls
         ]);
     }
 
@@ -68,32 +79,21 @@ class PluginController extends Controller
      */
     public function install(Request $request)
     {
-        $plugin = new \Acelle\Model\Plugin();
-        $plugin->status = \Acelle\Model\Plugin::STATUS_ACTIVE;
-
         // authorize
-        if (!$request->user()->admin->can('install', $plugin)) {
+        if (!$request->user()->admin->can('install', Plugin::class)) {
             return $this->notAuthorized();
         }
 
-        // validate and save posted data
+        // do install
         if ($request->isMethod('post')) {
-            sleep(2);
-            $plugin = Plugin::uploadAndSave($request);
-            
-            $request->session()->flash('alert-success', trans('messages.plugin.installed'));
+            // Upload
+            $pluginName = Plugin::upload($request);
 
-            // success
-            return response()->json([
-                'status' => 'success',
-                'message' => trans('messages.plugin.installed'),
-                'return' => action('Admin\PluginController@index'),
-            ], 201);
+            // Install Plugin
+            Plugin::installFromDir($pluginName);
         }
 
-        return view('admin.plugins.install', [
-            'server' => $plugin,
-        ]);
+        return view('admin.plugins.install');
     }
 
     /**
@@ -165,7 +165,7 @@ class PluginController extends Controller
         foreach ($items->get() as $item) {
             // authorize
             if ($request->user()->admin->can('enable', $item)) {
-                $item->enable();
+                $item->activate();
             }
         }
 

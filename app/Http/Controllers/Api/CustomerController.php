@@ -226,8 +226,6 @@ class CustomerController extends Controller
                 'start_at' => $subscription->start_at,
                 'end_at' => $subscription->end_at,
                 'status' => $subscription->status,
-                'paid' => $subscription->paid,
-                'time_status' => $subscription->timeStatus(),
             ];
         }
 

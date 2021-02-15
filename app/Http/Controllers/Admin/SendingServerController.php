@@ -5,6 +5,7 @@ namespace Acelle\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
 use Acelle\Model\SendingServer;
+use Acelle\Library\Facades\Hook;
 
 class SendingServerController extends Controller
 {
@@ -237,8 +238,11 @@ class SendingServerController extends Controller
             $server->options = json_encode($request->old()['options']);
         }
 
+        $bigNotices = Hook::execute('generate_big_notice_for_sending_server', [$server]);
+
         return view('admin.sending_servers.edit', [
             'server' => $server,
+            'bigNotices' => $bigNotices,
             'notices' => $notices,
             'identities' => $identities,
             'allIdentities' => $allIdentities,
@@ -719,105 +723,5 @@ class SendingServerController extends Controller
         
         $droplist = $server->verifiedIdentitiesDroplist(strtolower(trim($request->keyword)));
         return response()->json($droplist);
-    }
-
-    /**
-     * Whitelabel.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function whitelabel(Request $request, $uid)
-    {
-        $server = SendingServer::findByUid($uid);
-        $plugin = \Acelle\Model\Plugin::getByName('aws_whitelabel');
-
-        // authorize
-        if (!$request->user()->admin->can('update', $server)) {
-            return $this->notAuthorized();
-        }
-
-        return view('admin.sending_servers.whitelabel', [
-            'server' => $server,
-            'plugin' => $plugin,
-        ]);
-    }
-
-    /**
-     * Whitelabel settings.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function whitelabelSettings(Request $request, $uid)
-    {
-        $server = SendingServer::findByUid($uid);
-
-        // authorize
-        if (!$request->user()->admin->can('update', $server)) {
-            return $this->notAuthorized();
-        }
-
-        // validate and save posted data
-        if ($request->isMethod('post')) {
-            // make validator
-            $validator = \Validator::make($request->all(), [
-                'brand' => 'required',
-            ]);
-
-            // redirect if fails
-            if ($validator->fails()) {
-                return response()->view('admin.sending_servers.whitelabelSettings', [
-                    'server' => $server,
-                    'errors' => $validator->errors(),
-                ], 400);
-            }
-            
-            // update plugin data
-            $plugin = \Acelle\Model\Plugin::getByName('aws_whitelabel');
-            $plugin->updateData([
-                $server->uid => $request->brand,
-            ]);
-
-            return response()->json([
-                'status' => 'success',
-                'message' => trans('messages.whitelable.updated'),
-            ]);
-        }
-
-        return view('admin.sending_servers.whitelabelSettings', [
-            'server' => $server,
-        ]);
-    }
-
-    /**
-     * Turn off Whitelabelling.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function whitelabelOff(Request $request, $uid)
-    {
-        $server = SendingServer::findByUid($uid);
-
-        // authorize
-        if (!$request->user()->admin->can('update', $server)) {
-            return $this->notAuthorized();
-        }
-
-        // update plugin data
-        $plugin = \Acelle\Model\Plugin::getByName('aws_whitelabel');
-        $data = $plugin->getData();
-        unset($data[$server->uid]);
-        $plugin['data'] = json_encode($data);
-        $plugin->save();
-
-        return response()->json([
-            'status' => 'success',
-            'message' => trans('messages.whitelable.turned_of'),
-        ]);
     }
 }

@@ -3274,6 +3274,7 @@
   'text_direction' => 'Text editor direction',
   'payment.paypal' => 'PayPal',
   'editor.unsubscribe_text' => 'Click here to unsubscribe',
+  'editor.update_profile_text' => 'Update your profile',
   'editor.click_view_web_version' => 'Click to view web version of this email',
   'setting.mailer.send_a_test_email' => 'Send a test email',
   'setting.mailer.email_content' => 'This is a test email.',
@@ -4017,4 +4018,14 @@
   'list.validation.not_email' => 'The :field must be a valid email address.',
   'ok_enable' => 'OK, Enable',
   'curl_example' => 'CURL example',
+  'tracking_domain.test' => 'Test',
+  'tracking_domain.test.wording' => 'We are taking you to the
+      <a href="http://:domain" target="_blank">http://:domain</a> page.
+      If you see it load the login page of Acelle,
+      then your DNS configuration is good and your tracking domain is ready to go.
+      Otherwise, please double check to make sure that your hosting server is
+      configured correctly so that traffic to 
+      <a href="http://:domain" target="_blank">http://:domain</a> are also redirected to Acelle source.
+      In other words, make it an alias URL or your Acelle webapp.',
+  'tracking_domain.test.proceed' => 'Proceed',
 ) ?>

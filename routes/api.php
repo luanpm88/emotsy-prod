@@ -15,12 +15,12 @@ use Illuminate\Http\Request;
 
 Route::group(['namespace' => 'Api', 'prefix' => 'v1', 'middleware' => 'auth:api'], function () {
     //
-    Route::get('', function(){
+    Route::get('', function () {
         return \Response::json(\Auth::guard('api')->user());
     });
 
     // Simple authentication
-    Route::get('me', function() {
+    Route::get('me', function () {
         return \Response::json(\Auth::guard('api')->user());
     });
 
@@ -29,6 +29,7 @@ Route::group(['namespace' => 'Api', 'prefix' => 'v1', 'middleware' => 'auth:api'
     Route::resource('lists', 'MailListController');
 
     // Campaign
+    Route::post('campaigns/{uid}/pause', 'CampaignController@pause');
     Route::resource('campaigns', 'CampaignController');
 
     // Subscriber

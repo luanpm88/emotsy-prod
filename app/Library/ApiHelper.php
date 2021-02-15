@@ -177,6 +177,17 @@ class ApiHelper
 ' .str_replace('-ID-', '<redbold>{uid}</redbold>', action("Api\CampaignController@show", '-ID-')).'? \
 -d api_token=' .\Auth::user()->api_token,
                 ],
+
+                [
+                    'method' => 'POST',
+                    'uri' => '/api/v1/campaigns/{uid}/pause',
+                    'description' => 'Pause a specific campaign',
+                    'parameters' => [],
+                    'returns' => 'Action messages in json',
+                    'example' => 'curl -X POST -H "accept:application/json" -G \
+' .str_replace('-ID-', '<redbold>{uid}</redbold>', action("Api\CampaignController@pause", '-ID-')).'? \
+-d api_token=' .\Auth::user()->api_token,
+                ],
             ],
         ];
 
@@ -576,6 +587,56 @@ class ApiHelper
                     'example' => 'curl -X POST -H "accept:application/json" -G \
 ' .str_replace('-uid-', '<redbold>{uid}</redbold>', action("Api\SubscriptionController@setActive", "-uid-")).'? \
 -d api_token=' .\Auth::user()->api_token,
+                ],
+            ],
+        ];
+
+        // NOTIFICATION
+        $docs[] = [
+            'view' => 'backend',
+            'title' => trans('messages.api.notification'),
+            'functions' => [
+                [
+                    'method' => 'POST',
+                    'uri' => '/api/v1/notification',
+                    'description' => 'Send a delivery or abuse report to Acelle Mail which could be a success / bounce / feedback or abuse report',
+                    'parameters' => [
+                        ['name' => '$message_id', 'description' => 'Message\'s id'],
+                        ['name' => '$type', 'description' => 'One of 4 types: sent | bounced | reported | failed'],
+                        ['name' => '$bounce_type', 'description' => 'Required if type is bounced'],
+                        ['name' => '$report_type', 'description' => 'Required if type is reported'],
+                        ['name' => '$description', 'description' => 'Notification message'],
+                    ],
+                    'returns' => 'Action messages in json',
+                    'example' => [
+                        'curl -X POST -H "accept:application/json" -G \
+' .action("Api\NotificationController@index").'? \
+-d api_token=' .\Auth::user()->api_token.'  \
+-d type=sent',
+                        'curl -X POST -H "accept:application/json" -G \
+' .action("Api\NotificationController@index").'? \
+-d api_token=' .\Auth::user()->api_token.'  \
+-d type=bounced \
+-d bounce_type=hard \
+-d description=Email+address+does+not+exist',
+                        'curl -X POST -H "accept:application/json" -G \
+' .action("Api\NotificationController@index").'? \
+-d api_token=' .\Auth::user()->api_token.'  \
+-d type=abuse \
+-d report_type=hard \
+-d description=Email+address+does+not+exist',
+                        'curl -X POST -H "accept:application/json" -G \
+' .action("Api\NotificationController@index").'? \
+-d api_token=' .\Auth::user()->api_token.'  \
+-d type=spam \
+-d report_type=hard \
+-d description=Email+address+does+not+exist',
+                        'curl -X POST -H "accept:application/json" -G \
+' .action("Api\NotificationController@index").'? \
+-d api_token=' .\Auth::user()->api_token.'  \
+-d type=failed \
+-d description=Email+address+does+not+exist',
+                    ],
                 ],
             ],
         ];

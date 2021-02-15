@@ -34,7 +34,7 @@ class PluginPolicy
         }
     }
 
-    public function install(User $user, Plugin $plugin, $role)
+    public function install(User $user, $role)
     {
         switch ($role) {
             case 'admin':

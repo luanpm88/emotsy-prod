@@ -60,7 +60,7 @@ class RunHandler extends Command
     public function handle()
     {
         $lock = new Lockable(storage_path('locks/bounce-feedback-handler'));
-        $lock->getExclusiveLock(function() {
+        $lock->getExclusiveLock(function () {
             $this->execRunHandler();
         });
         Log::info('Handlers finished!');

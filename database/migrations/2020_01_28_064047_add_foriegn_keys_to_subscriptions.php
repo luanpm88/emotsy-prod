@@ -39,7 +39,7 @@ class AddForiegnKeysToSubscriptions extends Migration
             $table->index('uid');
         });
 
-        Schema::table('customers', function ($table) {            
+        Schema::table('customers', function ($table) {
             $table->collation = 'utf8mb4_unicode_ci';
             $table->charset = 'utf8mb4';
             $table->uuid('uid')->collation('utf8mb4_unicode_ci')->charset('utf8mb4')->change();

@@ -35,6 +35,6 @@
 
 @section('content')
     
-    @include('admin.sending_servers.form.' . $server->type, ['identities' => $identities])
+    @include('admin.sending_servers.form.' . $server->type, ['identities' => $identities, 'bigNotices' => $bigNotices])
 
 @endsection

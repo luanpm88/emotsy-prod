@@ -19,7 +19,7 @@ class AddGerman extends Migration
         $newId = Language::max('id') + 1;
 
         // reserve ID of 1,2 for English and Spanish which will be loaded from the database_init.sql file
-        if ($newId < 3 ) {
+        if ($newId < 3) {
             $newId = 3;
         }
 
