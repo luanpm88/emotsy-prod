@@ -717,16 +717,6 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/feedback_loop_handlers/delete', 'FeedbackLoopHandlerController@delete');
     Route::resource('admin/feedback_loop_handlers', 'FeedbackLoopHandlerController');
 
-    // Sending domain
-    Route::post('admin/sending_domains/{id}/updateVerificationTxtName', 'SendingDomainController@updateVerificationTxtName');
-    Route::post('admin/sending_domains/{id}/updateDkimSelector', 'SendingDomainController@updateDkimSelector');
-    Route::get('admin/sending_domains/{id}/records', 'SendingDomainController@records');
-    Route::post('admin/sending_domains/{id}/verify', 'SendingDomainController@verify');
-    Route::get('admin/sending_domains/listing/{page?}', 'SendingDomainController@listing');
-    Route::get('admin/sending_domains/sort', 'SendingDomainController@sort');
-    Route::get('admin/sending_domains/delete', 'SendingDomainController@delete');
-    Route::resource('admin/sending_domains', 'SendingDomainController');
-
     // Language
     Route::get('admin/languages/delete/confirm', 'LanguageController@deleteConfirm');
     Route::get('admin/languages/listing/{page?}', 'LanguageController@listing');
