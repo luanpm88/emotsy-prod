@@ -88,38 +88,40 @@ class AppServiceProvider extends ServiceProvider
         });
 
         // Payment config load from database
-        if (isInitiated()) {
-            // update global configs
-            try {
-                config([
-                    'cashier.gateway' => Setting::get('system.payment_gateway') ? Setting::get('system.payment_gateway') : config('cashier.gateway'),
-                    'cashier.end_period_last_days' => Setting::get('system.end_period_last_days') ? Setting::get('system.end_period_last_days') : config('cashier.end_period_last_days'),
-                    'cashier.renew_free_plan' => Setting::get('system.renew_free_plan') ? Setting::get('system.renew_free_plan') : config('cashier.renew_free_plan'),
-                    'cashier.recurring_charge_before_days' => Setting::get('system.recurring_charge_before_days') ? Setting::get('system.recurring_charge_before_days') : config('cashier.recurring_charge_before_days'),
-                ]);
+        if (!isInitiated()) {
+            return;
+        }
 
-                // per payment configs
-                foreach (config('cashier.gateways') as $gw => $data) {
-                    foreach ($data['fields'] as $key => $value) {
-                        $con = Setting::get('payment.'.$gw.'.'.$key);
-                        if ($con != null) {
-                            config(['cashier.gateways.'.$gw.'.fields.'.$key => $con]);
-                        }
+        // The following configuration settings are for active & running application only
+        try {
+            config([
+                'cashier.gateway' => Setting::get('system.payment_gateway') ? Setting::get('system.payment_gateway') : config('cashier.gateway'),
+                'cashier.end_period_last_days' => Setting::get('system.end_period_last_days') ? Setting::get('system.end_period_last_days') : config('cashier.end_period_last_days'),
+                'cashier.renew_free_plan' => Setting::get('system.renew_free_plan') ? Setting::get('system.renew_free_plan') : config('cashier.renew_free_plan'),
+                'cashier.recurring_charge_before_days' => Setting::get('system.recurring_charge_before_days') ? Setting::get('system.recurring_charge_before_days') : config('cashier.recurring_charge_before_days'),
+            ]);
+
+            // per payment configs
+            foreach (config('cashier.gateways') as $gw => $data) {
+                foreach ($data['fields'] as $key => $value) {
+                    $con = Setting::get('payment.'.$gw.'.'.$key);
+                    if ($con != null) {
+                        config(['cashier.gateways.'.$gw.'.fields.'.$key => $con]);
                     }
                 }
-            } catch (\Exception $ex) {
-                // anything here?
             }
+        } catch (\Exception $ex) {
+            // anything here?
+        }
 
-            try {
-                Plugin::autoload();
-            } catch (\Exception $ex) {
-                // Just in case 
-                Notification::warning([
-                    'message' => 'Cannot load Acelle plugins. Error: '.htmlspecialchars($ex->getMessage()),
-                    'title' => 'Plugin Error',
-                ]);
-            }
+        try {
+            Plugin::autoload();
+        } catch (\Exception $ex) {
+            // Just in case 
+            Notification::warning([
+                'message' => 'Cannot load Acelle plugins. Error: '.htmlspecialchars($ex->getMessage()),
+                'title' => 'Plugin Error',
+            ]);
         }
     }
 
