@@ -206,6 +206,13 @@
         var sidebar = new Box($('.sidebar-content'));
         var lastSaved = new Box($('.last_save_time'), $('.last_save_time').attr('data-url'));
 
+        // timeline popup
+        var timelinePopup = new Popup(undefined, undefined, {
+            onclose: function() {
+                // sidebar.load();
+            }
+        });
+
         function toggleHistory() {
             var his = $('.history .history-list-items');
 

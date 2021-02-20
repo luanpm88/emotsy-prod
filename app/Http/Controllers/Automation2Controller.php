@@ -1438,12 +1438,21 @@ class Automation2Controller extends Controller
             return $this->notAuthorized();
         }
 
-        // all or action contacts
+        // list by action
         if ($request->action_id) {
             $subscribers = Subscriber::gSearch($automation->subscribers($request->action_id), $request);
-        } else {
-            $subscribers = Subscriber::gSearch($automation->subscribers(), $request);
+
+            list($contacts, $pagination) = pagination($request, $subscribers);
+
+            return view('automation2.contacts.list', [
+                'automation' => $automation,
+                'contacts' => $contacts,
+                'pagination' => $pagination,
+            ]);
         }
+
+        // list by type
+        $subscribers = Subscriber::gSearch($automation->subscribers(), $request);
         
         list($contacts, $pagination) = pagination($request, $subscribers);
         

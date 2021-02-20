@@ -1,180 +1,199 @@
-@include('automation2._info')
-				
-@include('automation2._tabs', ['tab' => 'statistics', 'sub' => (request()->action_id ? 'contacts_action_' . request()->action_id : 'all_contacts')])
+@extends('layouts.popup.small')
 
-<div class="contacts-stats-boxes d-flex align-items-center">
-    <div class="contacts-stats-box" onclick="sidebar.load('{{ action('Automation2Controller@contacts', [
-        'uid' => $automation->uid,
-        'type' => 'in_action',
-    ]) }}')">
-        <label class="{{ request()->type == 'in_action' ? 'text-warning' : '' }}">308</label>
-        <div class="desc">{{ trans('messages.automation.box.contacts_in_action') }}</div>
-    </div>
-    <div class="contacts-stats-box" onclick="sidebar.load('{{ action('Automation2Controller@contacts', [
-        'uid' => $automation->uid,
-        'type' => 'done',
-    ]) }}')">
-        <label class="{{ request()->type == 'done' ? 'text-warning' : '' }}">854</label>
-        <div class="desc">{{ trans('messages.automation.box.contacts_done') }}</div>
-    </div>
-    <div class="contacts-stats-box skipped" onclick="sidebar.load('{{ action('Automation2Controller@contacts', [
-        'uid' => $automation->uid,
-        'type' => 'pending',
-    ]) }}')">
-        <label class="{{ request()->type == 'pending' ? 'text-warning' : '' }}">32,288</label>
-        <div class="desc">{{ trans('messages.automation.box.contacts_skip_pending') }}</div>
-    </div>
-    <div class="contacts-stats-box error" onclick="sidebar.load('{{ action('Automation2Controller@contacts', [
-        'uid' => $automation->uid,
-        'type' => 'error',
-    ]) }}')">
-        <label>2</label>
-        <div class="desc">{{ trans('messages.automation.box.contacts_error') }}</div>
-    </div>
-</div>
+@section('content')
+    @include('automation2._info')
 
-<div class="insight-topine d-flex small align-items-center">
-    <div class="insight-desc mr-auto">
-        @if (request()->action_id)
-            {!! trans_choice('messages.automation.action.contacts_intro', $automation->subscribers(request()->action_id)->count(), [
-                'count' => format_number($subscribers->count()),
-                'name' => $automation->getElement(request()->action_id)->getName(),
-            ]) !!}
-        @else
-            {!! trans_choice('messages.automation.contacts_intro', $automation->subscribers()->count(), [
-                'count' => format_number($subscribers->count()),
-                'name' => $automation->name,
-            ]) !!}
-        @endif        
-    </div>
-    <div class="insight-action">
-        <button  onclick="sidebar.load('{{ action('Automation2Controller@contacts', [
-            'uid' => $automation->uid,
-            'type' => request()->type,
-        ]) }}')" type="button" class="btn btn-outline-secondary btn-sm">
-            {{ trans('messages.automation.update_stats') }}
-        </button>
-        @if ($subscribers->count())
-            <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-                <div class="btn-group btn-group-sm" role="group">
-                <button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    {{ trans('messages.automation.action') }}
-                </button>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnGroupDrop1">
-                    <a class="dropdown-item list-export-contacts"
-                        href="{{ action('Automation2Controller@exportContacts', [
-                            'uid' => $automation->uid,
-                            'action_id' => request()->action_id,
-                        ]) }}"
-                    >{{ trans('messages.automation.export_this_list') }}</a>
-                    <a class="dropdown-item list-copy-contacts-new-list"
-                        href="{{ action('Automation2Controller@copyToNewList', [
-                            'uid' => $automation->uid,
-                            'action_id' => request()->action_id,
-                        ]) }}"
-                    >{{ trans('messages.automation.copy_to_new_list') }}</a>
-                    <a class="dropdown-item list-tag-contacts"
-                        href="{{ action('Automation2Controller@tagContacts', [
-                            'uid' => $automation->uid,
-                            'action_id' => request()->action_id,
-                        ]) }}"
-                    >{{ trans('messages.automation.tag_those_contacts') }}</a>
-                </div>
-                </div>
-            </div>
-        @endif
-    </div>
-</div>
-
-<div class="input-with-icon mb-4">
-    <i class="material-icons">search</i>
-    <input class="form-control mt-3" name="contact_keyword" placeholder='Enter to search contacts...' />
-</div>
-    
-<div class="contacts_list ajax-list"></div>
-    
-<script>
-    var listContact = new List( $('.contacts_list'), {
-        url: '{{ action('Automation2Controller@contactsList', [
-                'uid' => $automation->uid,
-                'action_id' => request()->action_id,
-                'type' => request()->type,
-            ]) }}',
-        data: function() {
-                return {
-                    keyword: $('[name=contact_keyword]').val(),
-                };
-            },
-        per_page: 5,
-    });		
-    listContact.load();
-    
-    // filters
-    $('[name=contact_keyword]').keyup(function() {
-        listContact.load();
-    });
-
-    // tag contacts
-    var tagContact = new Popup(undefined, undefined, {
-        onclose: function() {
-            sidebar.load();
+    @php
+        if (request()->action_id) {
+            $action = $automation->getElement(request()->action_id);
+            $sub = $action->getName();
+            $actionId = request()->action_id;
+        } else {
+            $sub = trans('messages.automation.contacts_' . request()->type);
+            $actionId = '';
         }
-    });
-    $('.list-tag-contacts').click(function(e) {
-        e.preventDefault();
+    @endphp
+                    
+    @include('automation2._tabs_timeline', [
+        'tab' => 'statistics', 
+        'sub' => $sub,
+        'actionId' => $actionId,
+    ])
 
-        var url = $(this).attr('href');
+    <div class="contacts-stats-boxes d-flex align-items-center">
+        <div class="contacts-stats-box" onclick="timelinePopup.load('{{ action('Automation2Controller@contacts', [
+            'uid' => $automation->uid,
+            'type' => 'in_action',
+        ]) }}')">
+            <label class="{{ request()->type == 'in_action' ? 'text-warning' : '' }}">308</label>
+            <div class="desc">{{ trans('messages.automation.box.contacts_in_action') }}</div>
+        </div>
+        <div class="contacts-stats-box" onclick="timelinePopup.load('{{ action('Automation2Controller@contacts', [
+            'uid' => $automation->uid,
+            'type' => 'done',
+        ]) }}')">
+            <label class="{{ request()->type == 'done' ? 'text-warning' : '' }}">854</label>
+            <div class="desc">{{ trans('messages.automation.box.contacts_done') }}</div>
+        </div>
+        <div class="contacts-stats-box skipped" onclick="timelinePopup.load('{{ action('Automation2Controller@contacts', [
+            'uid' => $automation->uid,
+            'type' => 'pending',
+        ]) }}')">
+            <label class="{{ request()->type == 'pending' ? 'text-warning' : '' }}">32,288</label>
+            <div class="desc">{{ trans('messages.automation.box.contacts_skip_pending') }}</div>
+        </div>
+        <div class="contacts-stats-box error" onclick="timelinePopup.load('{{ action('Automation2Controller@contacts', [
+            'uid' => $automation->uid,
+            'type' => 'error',
+        ]) }}')">
+            <label>2</label>
+            <div class="desc">{{ trans('messages.automation.box.contacts_error') }}</div>
+        </div>
+    </div>
 
-        tagContact.load(url, function() {
-            console.log('Tag action type popup loaded!');				
+    <div class="insight-topine d-flex small align-items-center">
+        <div class="insight-desc mr-auto">
+            @if (request()->action_id)
+                {!! trans_choice('messages.automation.action.contacts_intro', $automation->subscribers(request()->action_id)->count(), [
+                    'count' => format_number($subscribers->count()),
+                    'name' => $automation->getElement(request()->action_id)->getName(),
+                ]) !!}
+            @else
+                {!! trans_choice('messages.automation.contacts_intro', $automation->subscribers()->count(), [
+                    'count' => format_number($subscribers->count()),
+                    'name' => $automation->name,
+                ]) !!}
+            @endif        
+        </div>
+        <div class="insight-action">
+            <button  onclick="timelinePopup.load('{{ action('Automation2Controller@contacts', [
+                'uid' => $automation->uid,
+                'type' => request()->type,
+            ]) }}')" type="button" class="btn btn-outline-secondary btn-sm">
+                {{ trans('messages.automation.update_stats') }}
+            </button>
+            @if ($subscribers->count())
+                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                    <div class="btn-group btn-group-sm" role="group">
+                    <button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{ trans('messages.automation.action') }}
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnGroupDrop1">
+                        <a class="dropdown-item list-export-contacts"
+                            href="{{ action('Automation2Controller@exportContacts', [
+                                'uid' => $automation->uid,
+                                'action_id' => request()->action_id,
+                            ]) }}"
+                        >{{ trans('messages.automation.export_this_list') }}</a>
+                        <a class="dropdown-item list-copy-contacts-new-list"
+                            href="{{ action('Automation2Controller@copyToNewList', [
+                                'uid' => $automation->uid,
+                                'action_id' => request()->action_id,
+                            ]) }}"
+                        >{{ trans('messages.automation.copy_to_new_list') }}</a>
+                        <a class="dropdown-item list-tag-contacts"
+                            href="{{ action('Automation2Controller@tagContacts', [
+                                'uid' => $automation->uid,
+                                'action_id' => request()->action_id,
+                            ]) }}"
+                        >{{ trans('messages.automation.tag_those_contacts') }}</a>
+                    </div>
+                    </div>
+                </div>
+            @endif
+        </div>
+    </div>
+
+    <div class="input-with-icon mb-4">
+        <i class="material-icons">search</i>
+        <input class="form-control mt-3" name="contact_keyword" placeholder='Enter to search contacts...' />
+    </div>
+        
+    <div class="contacts_list ajax-list"></div>
+        
+    <script>
+        var listContact = new List( $('.contacts_list'), {
+            url: '{{ action('Automation2Controller@contactsList', [
+                    'uid' => $automation->uid,
+                    'action_id' => request()->action_id,
+                    'type' => request()->type,
+                ]) }}',
+            data: function() {
+                    return {
+                        keyword: $('[name=contact_keyword]').val(),
+                    };
+                },
+            per_page: 5,
+        });		
+        listContact.load();
+        
+        // filters
+        $('[name=contact_keyword]').keyup(function() {
+            listContact.load();
         });
-    });
 
-    // export contacts
-    $('.list-export-contacts').click(function(e) {
-        e.preventDefault();
-
-        var url = $(this).attr('href');
-
-        addMaskLoading('{{ trans('messages.automation.exporting_contacts') }}');
-
-        $.ajax({
-            url: url,
-            method: 'POST',
-            data: {
-                _token: CSRF_TOKEN,
-            },
-            statusCode: {
-                // validate error
-                400: function (res) {
-                    alert('Something went wrong!');
-                }
-            },
-            success: function (response) {
-                // notify
-                notify('success', '{{ trans('messages.notify.success') }}', response.message);
-
-                // remove effects
-                removeMaskLoading();
-
-                popup.hide();
+        // tag contacts
+        var tagContact = new Popup(undefined, undefined, {
+            onclose: function() {
+                sidebar.load();
             }
         });
-    });
-    
-    // copy contacts
-    var copyContact = new Popup(undefined, undefined, {
-        onclose: function() {
-            sidebar.load();
-        }
-    });
-    $('.list-copy-contacts-new-list').click(function(e) {
-        e.preventDefault();
+        $('.list-tag-contacts').click(function(e) {
+            e.preventDefault();
 
-        var url = $(this).attr('href');
+            var url = $(this).attr('href');
 
-        copyContact.load(url, function() {
-            console.log('Copy to new list popup loaded!');				
+            tagContact.load(url, function() {
+                console.log('Tag action type popup loaded!');				
+            });
         });
-    });
-</script>
+
+        // export contacts
+        $('.list-export-contacts').click(function(e) {
+            e.preventDefault();
+
+            var url = $(this).attr('href');
+
+            addMaskLoading('{{ trans('messages.automation.exporting_contacts') }}');
+
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: {
+                    _token: CSRF_TOKEN,
+                },
+                statusCode: {
+                    // validate error
+                    400: function (res) {
+                        alert('Something went wrong!');
+                    }
+                },
+                success: function (response) {
+                    // notify
+                    notify('success', '{{ trans('messages.notify.success') }}', response.message);
+
+                    // remove effects
+                    removeMaskLoading();
+
+                    popup.hide();
+                }
+            });
+        });
+        
+        // copy contacts
+        var copyContact = new Popup(undefined, undefined, {
+            onclose: function() {
+                sidebar.load();
+            }
+        });
+        $('.list-copy-contacts-new-list').click(function(e) {
+            e.preventDefault();
+
+            var url = $(this).attr('href');
+
+            copyContact.load(url, function() {
+                console.log('Copy to new list popup loaded!');				
+            });
+        });
+    </script>
+@endsection

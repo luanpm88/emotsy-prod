@@ -3946,6 +3946,7 @@
   'automation.contacts_in_action' => 'Contacts in action',
   'automation.contacts_done' => 'Contacts done',
   'automation.contacts_skip_pending' => 'Contacts skipped or pending',
+  'automation.contacts_pending' => 'Contacts skipped or pending',
   'automation.contacts_error' => 'Error',
   'automation.box.contacts_in_action' => 'Contacts in action',
   'automation.box.contacts_done' => 'Contacts done',

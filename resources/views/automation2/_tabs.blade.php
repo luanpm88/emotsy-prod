@@ -11,11 +11,22 @@
         {{ trans('messages.automation.insight') }}
     </a>
 </li>
-<li class="nav-item dropdown">
-    <a class="nav-link statistics dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+<li class="nav-item">
+    <a href="javascript:;" onclick="timelinePopup.load('{{ action('Automation2Controller@timeline', $automation->uid) }}')" class="nav-link statistics">
         <i class="material-icons mr-2">multiline_chart</i> {{ trans('messages.automation.statistics') }}
     </a>
-    <div class="dropdown-menu dropdown-menu-right with-icon">
+    <script>
+        $('.nav-link.statistics').on('click', function(e) {
+            e.preventDefault();
+
+            var link = $(this);
+
+            setTimeout(function() {
+                link.removeClass('active');
+            }, 100);
+        });
+    </script>
+    {{-- <div class="dropdown-menu dropdown-menu-right with-icon">
         <a class="dropdown-item timeline" href="#" onclick="sidebar.load('{{ action('Automation2Controller@timeline', $automation->uid) }}')">
             <i class="material-icons mr-2">timeline</i> {{ trans('messages.automation.timeline') }}
         </a>
@@ -80,7 +91,7 @@
                 <count>({{ format_number($element['count']) }})</count>
             </a>                
         @endforeach
-    </div>
+    </div> --}}
 </li>
 </ul>
     
