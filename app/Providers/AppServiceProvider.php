@@ -117,7 +117,7 @@ class AppServiceProvider extends ServiceProvider
         try {
             Plugin::autoload();
         } catch (\Exception $ex) {
-            // Just in case 
+            // Just in case
             Notification::warning([
                 'message' => 'Cannot load Acelle plugins. Error: '.htmlspecialchars($ex->getMessage()),
                 'title' => 'Plugin Error',
