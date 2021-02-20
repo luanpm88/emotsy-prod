@@ -709,9 +709,9 @@ class Setting extends Model
         $gateways = config('cashier.gateways');
 
         // Check plugin paystack
-        if (!Plugin::isActive('paystack')) {
-            unset($gateways['paystack']);
-        }
+        // if (!Plugin::isActive('paystack')) {
+        //     unset($gateways['paystack']);
+        // }
 
         return $gateways;
     }
@@ -726,11 +726,11 @@ class Setting extends Model
         $gateways = json_decode(self::get('gateways'), true);
 
         // Check plugin paystack
-        if (!Plugin::isActive('paystack')) {
-            if (($key = array_search('paystack', $gateways)) !== false) {
-                unset($gateways[$key]);
-            }
-        }
+        // if (!Plugin::isActive('paystack')) {
+        //     if (($key = array_search('paystack', $gateways)) !== false) {
+        //         unset($gateways[$key]);
+        //     }
+        // }
 
         return $gateways;
     }
