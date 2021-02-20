@@ -114,15 +114,7 @@ class AppServiceProvider extends ServiceProvider
             // anything here?
         }
 
-        try {
-            Plugin::autoload();
-        } catch (\Exception $ex) {
-            // Just in case
-            Notification::warning([
-                'message' => 'Cannot load Acelle plugins. Error: '.htmlspecialchars($ex->getMessage()),
-                'title' => 'Plugin Error',
-            ]);
-        }
+        $this->loadPlugins();
     }
 
     /**
@@ -135,5 +127,18 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(HookManager::class, function ($app) {
             return new HookManager();
         });
+    }
+
+    private function loadPlugins()
+    {
+        try {
+            Plugin::autoload();
+        } catch (\Exception $ex) {
+            // Just in case
+            Notification::warning([
+                'message' => 'Cannot load Acelle plugins. Error: '.htmlspecialchars($ex->getMessage()),
+                'title' => 'Plugin Error',
+            ]);
+        }
     }
 }
