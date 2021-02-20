@@ -1,8 +1,6 @@
 @extends('layouts.popup.small')
 
 @section('content')
-    @include('automation2._info')
-
     @php
         if (request()->action_id) {
             $action = $automation->getElement(request()->action_id);
