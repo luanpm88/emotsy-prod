@@ -4,6 +4,7 @@ namespace Acelle\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
+use Acelle\Model\Customer;
 
 /**
  * /api/v1/customers - API controller for managing customers.
@@ -358,9 +359,21 @@ class CustomerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function loginToken()
+    public function loginToken(Request $request)
     {
         $user = \Auth::guard('api')->user();
+
+        // if for another customer
+        if ($request->customer_uid) {
+            $customer = Customer::findByUid($request->customer_uid);
+
+            // authorize
+            if (!$user->can('loginAs', $customer)) {
+                return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 401);
+            }
+            
+            $user = $customer->user;
+        }
 
         $user->generateOneTimeToken();
 
