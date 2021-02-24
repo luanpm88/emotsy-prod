@@ -51,12 +51,14 @@
                     <span class="text-muted2 list-status pull-left">
                         <span class="label label-flat bg-{{ $item->status }}">{{ trans('messages.sending_domain_status_' . $item->status) }}</span>
                     </span>
+
                     @if (Auth::user()->customer->can('read', $item))
                         <a href="{{ action('SendingDomainController@show', $item->uid) }}" data-popup="tooltip"
                             title="{{ trans('messages.sending_domain.view') }}" type="button" class="btn bg-grey btn-icon">
                                 {{ trans('messages.sending_domain.view') }}
                         </a>
                     @endif
+
                     @if (Auth::user()->customer->can('delete', $item))
                         <div class="btn-group">
                             <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>

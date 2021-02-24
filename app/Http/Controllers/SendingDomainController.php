@@ -305,7 +305,7 @@ class SendingDomainController extends Controller
             $dkims = $options['dkim'];
             $spf = array_key_exists('spf', $options) ? $options['spf'] : [];
 
-            Hook::executeHook(
+            Hook::execute(
                 'filter_aws_ses_dns_records',
                 [&$identity, &$dkims, &$spf]
             );

@@ -419,14 +419,6 @@ class Template extends Model implements Storable
                 $main_file = $file;
                 break;
             }
-            $dirs = array_filter(glob($tmp_path.'/'.'*'), 'is_dir');
-            foreach ($dirs as $sub) {
-                if (is_file($file = $sub.'/'.$name)) {
-                    $main_file = $file;
-                    $sub_path = explode('/', $sub)[count(explode('/', $sub)) - 1].'/';
-                    break;
-                }
-            }
         }
         // if not find any first html file
         if ($main_file === null) {
@@ -441,21 +433,13 @@ class Template extends Model implements Storable
                     }
                 }
             }
-            $dirs = array_filter(glob($tmp_path.'/'.'*'), 'is_dir');
-            foreach ($dirs as $sub) {
-                $objects = scandir($sub);
-                foreach ($objects as $object) {
-                    if ($object != '.' && $object != '..') {
-                        if (!is_dir($sub.'/'.$object)) {
-                            if (preg_match('/\.html?$/i', $object)) {
-                                $main_file = $sub.'/'.$object;
-                                $sub_path = explode('/', $sub)[count(explode('/', $sub)) - 1].'/';
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
+        }
+
+        // can not find main file
+        if ($main_file === null) {
+            $validator = Validator::make(['file' => ''], []);
+            $validator->errors()->add('file', 'Cannot find main HTML file');
+            throw new ValidationException($validator);
         }
 
         // read main file content

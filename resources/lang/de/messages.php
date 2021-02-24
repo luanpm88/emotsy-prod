@@ -3891,33 +3891,6 @@
       If you are integrated with Amazon Simple Email Service (SES) or SendGrid, your users will
       also be able to add their own sending identities here.',
   'go_to_admin_view' => 'Go to admin view',
-  'whitelabel.title' => 'Whitelable AWS so that it serves under your own brand',
-  'whitelabel.wording' => 'When user add a sending domain, they shall be required to add DNS record like amazon.domain.com
-      to their DNS management control. You can replace `amazoneses` with something line awsome.domain.com to make it your
-      own brand
-  ',
-  'whitelabel.enable' => 'Enable whitelabelling',
-  'whitelabel.setup.title' => 'Set up AWS whitelabelling',
-  'whitelabel.setup.intro' => 'Selector is used in DNS record that user will need to
-      add to your DNS management consol',
-  'whitelable.updated' => 'Whitelablling was successfully updated',
-  'whitelabel.enabled.wording' => 'Your AWS sending server is
-      whitelabelled',
-  'whitelabel.enabled.intro' => 'AWS service is being provided to your users
-      transparently under your own brand.
-      When
-      user adds a sending domain, they shall be
-      required to add DNS
-      record of your own
-      brand
-      <strong>:selector.domain.com</strong>
-      to their DNS
-      management
-      control. No AWS selector or
-      message id shall show up to your users',
-  'whitelabel.settings' => 'Settings',
-  'whitelabel.turn_off' => 'Turn OFF whitelabelling',
-  'whitelable.turned_of' => 'Whitelablling was successfully turned off',
   'templates.admin.intro' => 'This is the application\'s global Template Gallery,
       create your template here to have it available for all users to choose
       from when they compose a campaign email.',
@@ -3926,7 +3899,6 @@
   'api_token.copied' => 'API token was copied to clipboard',
   'api_endpoint.copied' => 'API endpoint was copied to clipboard',
   'editor.update_profile_text' => 'Update your profile',
-  'whitelabel.choose_a_brand_domain' => 'Choose a brand domain',
   'list.validation.required' => 'The :field is required',
   'list.validation.not_email' => 'The :field must be a valid email address.',
   'ok_enable' => 'OK, Enable',
