@@ -45,6 +45,8 @@ Route::get('/assets/templates/{uid}/{name?}', [ function ($uid, $name) {
     $mime_type = \Acelle\Library\File::getFileType($path);
     if (\File::exists($path)) {
         return response()->file($path, array('Content-Type' => $mime_type));
+    } else {
+        abort(404);
     }
 }])->where('name', '.+')->name('template_assets');
 
