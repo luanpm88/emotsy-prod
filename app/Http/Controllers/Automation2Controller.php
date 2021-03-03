@@ -518,7 +518,7 @@ class Automation2Controller extends Controller
             if ($request->key == 'wait') {
                 $delayOptions = $automation->getDelayOptions();
                 $parts = explode(' ', $request->time);
-                $title = $parts[0] . ' ' . trans_choice('messages.time.' . $parts[1], $parts[0]);
+                $title = trans('messages.time.wait_for') . ' ' . $parts[0] . ' ' . trans_choice('messages.time.' . $parts[1], $parts[0]);
 
                 foreach($delayOptions as $deplayOption) {
                     if ($deplayOption['value'] == $request->time) {

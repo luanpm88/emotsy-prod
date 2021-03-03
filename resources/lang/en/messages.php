@@ -3953,4 +3953,5 @@
   'time.week' => 'week|weeks',
   'time.month' => 'month|months',
   'time.year' => 'year|years',
+  'time.wait_for' => 'Wait for: ',
 ) ?>
