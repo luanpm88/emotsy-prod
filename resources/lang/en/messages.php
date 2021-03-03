@@ -2988,6 +2988,7 @@
   'automation.delay.hour' => '1 hour|:count hours',
   'automation.delay.week' => '1 week|:count weeks',
   'automation.delay.month' => '1 month|:count months',
+  'automation.delay.custom' => 'Custom',
   'automation.wait.delay.2 weeks' => 'Wait for 2 weeks',
   'automation.wait.delay.0' => 'Immediately',
   'automation.wait.delay.1 minute' => 'Wait for 1 minute',
@@ -3946,4 +3947,10 @@
       <a href="http://:domain" target="_blank">http://:domain</a> are also redirected to Acelle source.
       In other words, make it an alias URL or your Acelle webapp.',
   'tracking_domain.test.proceed' => 'Proceed',
+  'automation.wait' => 'Wait',
+  'automation.wait.wording' => 'Setting up custom wait time',
+  'time.day' => 'day|days',
+  'time.week' => 'week|weeks',
+  'time.month' => 'month|months',
+  'time.year' => 'year|years',
 ) ?>

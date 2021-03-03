@@ -561,6 +561,12 @@ label.switchery-double.checkbox-switchery {
     font-weight: 600;
     font-size: 94%;
 }
+.form-group label.error {
+  font-weight: 400;
+  font-size: 94%;
+  color: #dc3545;
+  margin: 0;
+}
 .control-time2 .time-selector, .control-date2 .date-selector {
     width: auto;
 }
