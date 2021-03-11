@@ -133,6 +133,7 @@ class AppServiceProvider extends ServiceProvider
     {
         try {
             Plugin::autoload();
+            Notification::cleanupDuplicateNotifications('Plugin Error');
         } catch (\Exception $ex) {
             // Just in case
             Notification::warning([

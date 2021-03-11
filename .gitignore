@@ -18,3 +18,4 @@ Homestead.json
 /composer.phar
 /public/campaign_attachment
 VERSION
+.DS_STORE

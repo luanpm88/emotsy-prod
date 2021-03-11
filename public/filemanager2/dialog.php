@@ -1156,7 +1156,7 @@ $files = $sorted;
                         </label>
                     </div>
                     <?php } ?>
-                <a href="javascript:void('')" class="link" data-file="<?php echo $file;?>" data-function="<?php echo $apply;?>">
+                <a href="javascript:void('')" class="link" data-url="<?php echo $cur_dir . $file;?>" data-file="<?php echo $file;?>" data-function="<?php echo $apply;?>">
                 <div class="img-precontainer">
                     <?php if($is_icon_thumb){ ?><div class="filetype"><?php echo $file_array['extension'] ?></div><?php } ?>
                     
@@ -1327,6 +1327,14 @@ $files = $sorted;
             replaceWith('<button class="tui-image-editor-save-btn" ><?php echo xtrans('Image_Editor_Save');?></button>');
             $('.tui-image-editor-save-btn').on('click', function() {
                 saveTUI();
+            });
+
+            $('figure a').on('click', function(e) {
+                
+                if (!$(this).hasClass('folder-link') && parent.filemanager_callback) {
+                    e.preventDefault();
+                    parent.filemanager_callback($(this).attr('data-url'));
+                }
             });
 
             function exitTUI()
