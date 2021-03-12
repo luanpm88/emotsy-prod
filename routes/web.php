@@ -637,6 +637,18 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
 
     // Sample UI/UX
     Route::get('sample', 'SamplesController@index');
+
+    // Products
+    Route::get('/products/image/{id}', 'ProductController@image');
+    Route::get('products/listing', 'ProductController@listing');
+    Route::resource('products', 'ProductController');
+
+    // Source
+    Route::post('sources/{uid}/sync', 'SourceController@sync');
+    Route::post('sources/delete', 'SourceController@delete');
+    Route::get('sources/connect', 'SourceController@connect');
+    Route::get('sources/listing', 'SourceController@listing');
+    Route::resource('sources', 'SourceController');
 });
 
 // ADMIN AREA

@@ -4037,4 +4037,16 @@
   'time.month' => 'month|months',
   'time.year' => 'year|years',
   'time.wait_for' => 'Wait for: ',
+  'products' => 'Products',
+  'stores_connections' => 'Stores & Connections',
+  'source.add_new' => 'Add new',
+  'source.empty' => 'You have no source',
+  'source.not_found' => 'There are no source found',
+  'source.select_source_type.wording' => 'Select one of the following
+      E-commerce belows to connect with:',
+  'source.lazada' => 'Lazada',
+  'source.last_sync_at' => 'Last synced at',
+  'source.sync' => 'Sync',
+  'source.delete.confirm' => 'You are about to delete this source',
+  'source.delete.can_not' => 'One or more source are not allowed to delete.',
 ) ?>

@@ -29,6 +29,7 @@ use Acelle\Cashier\Interfaces\BillableUserInterface;
 use Acelle\Cashier\Cashier;
 use Acelle\Cashier\Subscription;
 use Acelle\Model\SendingDomain;
+use Acelle\Model\Source;
 use DateTime;
 use DateTimeZone;
 
@@ -229,6 +230,14 @@ class Customer extends Model implements BillableUserInterface
     public function trackingDomains()
     {
         return $this->hasMany('Acelle\Model\TrackingDomain');
+    }
+
+    /**
+     * Get user sources.
+     */
+    public function sources()
+    {
+    	return $this->hasmany('Acelle\Model\Source');
     }
 
     // All senders, including ones that are not associated to a particular sending servers
@@ -2139,5 +2148,39 @@ class Customer extends Model implements BillableUserInterface
             }
         }
         return $dt;
+    }
+
+    /**
+     * Get customer product source.
+     *
+     * @var collect
+     */
+    public function newProductSource($type)
+    {
+        $source = new Source();
+            $source->customer_id = $this->id;
+            $source->type = $type;
+
+        return $source;
+    }
+
+    /**
+     * Get customer product source.
+     *
+     * @var collect
+     */
+    public function findProductSource($type)
+    {
+        $source = $this->sources()
+            ->where('type', '=', $type)
+            ->first();
+
+        if (!$source) {
+            $source = new Source();
+            $source->customer_id = $this->id;
+            $source->type = $type;
+        }
+
+        return $source;
     }
 }

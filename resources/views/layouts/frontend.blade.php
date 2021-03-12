@@ -98,6 +98,32 @@
 						{{ trans('messages.templates') }}
 					</a>
 				</li>
+				<li class="dropdown language-switch"
+						rel0="ProductController"
+					>
+					<a data-toggle="dropdown" class="dropdown-toggle d-flex align-items-center">
+						<i class="acelle-icon mr-3" style="width:19px">
+						<img src="{{ url('images/icons/'.$iconDir.'SVG/content.svg') }}" />
+						</i> <span>{{ trans('messages.content') }}</span>
+						<span class="caret"></span>
+					</a>
+					<ul class="dropdown-menu">
+						<li rel0="ProductController">
+							<a href="{{ action('ProductController@index') }}" class="d-flex align-items-center">
+								<i class="acelle-icon mr-3" style="width:19px">
+							<img src="{{ url('images/icons/'.$iconDir.'SVG/product.svg') }}" />
+							</i> {{ trans('messages.products') }}
+							</a>
+						</li>
+						<li rel0="SourceController">
+							<a href="{{ action('SourceController@index') }}" class="d-flex align-items-center">
+								<i class="acelle-icon mr-3" style="width:19px">
+							<img src="{{ url('images/icons/'.$iconDir.'SVG/server.svg') }}" />
+							</i> {{ trans('messages.stores_connections') }}
+							</a>
+						</li>
+					</ul>
+				</li>
 				@if (
 					Auth::user()->customer->can("read", new Acelle\Model\SendingServer()) ||					
                     Auth::user()->customer->can("read", new Acelle\Model\EmailVerificationServer()) ||

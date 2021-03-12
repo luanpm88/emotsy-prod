@@ -1,0 +1,131 @@
+<?php
+
+namespace Acelle\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Acelle\Model\MailList;
+use Acelle\Model\EmailVerificationServer;
+use Acelle\Events\MailListSubscription;
+use Acelle\Model\Setting;
+use Acelle\Model\Customer;
+use Acelle\Model\Product;
+use Acelle\Model\Source;
+
+class SourceController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Request $request)
+    {
+        return view('sources.index');
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function listing(Request $request)
+    {
+        $sources = Source::search($request)->paginate($request->per_page);
+
+        return view('sources._list', [
+            'sources' => $sources,
+        ]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create(Request $request)
+    {
+        // Generate info
+        $customer = $request->user()->customer;
+
+        // Get lazada connection
+        $lazadaSource = $request->user()->customer->newProductSource('lazada');
+
+        // authorize
+        if (\Gate::denies('create', Source::class)) {
+            return $this->notAuthorized();
+        }
+
+        return view('sources.create', [
+            'lazadaConnectLink' => $lazadaSource->service()->getConnectLink(),
+        ]);
+    }
+
+    /**
+     * Receive code and generate token. 
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function connect(Request $request)
+    {
+        // connection
+        $lazadaSource = $request->user()->customer->newProductSource('lazada');
+        $lazadaSource->getAccessToken($request->code);
+
+        // redirect
+        $request->session()->flash('success', 'Connected to Lazada!');
+        return redirect()->action('SourceController@index');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function delete(Request $request)
+    {
+        if (isSiteDemo()) {
+            echo trans('messages.operation_not_allowed_in_demo');
+            return;
+        }
+
+        $sources = \Acelle\Model\Source::whereIn('uid', explode(',', $request->uids));
+
+        foreach ($sources->get() as $source) {
+            // authorize
+            if (\Gate::allows('delete', $source)) {
+                $source->delete();
+            } else {
+                // Redirect to my lists page
+                return response()->json([
+                    'status' => 'error',
+                    'message' => trans('messages.source.delete.can_not'),
+                ]);
+            }
+        }
+
+        // Redirect to my lists page
+        return response()->json([
+            'status' => 'success',
+            'message' => trans('messages.source.deleted'),
+        ]);
+    }
+
+    /**
+     * Import product from source. 
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function sync(Request $request, $uid)
+    {
+        // connection
+        $source = Source::findByUid($uid);
+        $source->importProducts($request->user()->customer);
+
+        // redirect
+        $request->session()->flash('success', 'Lazada products were imported!');
+        return redirect()->action('SourceController@index');
+    }
+}

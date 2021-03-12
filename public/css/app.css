@@ -4075,3 +4075,36 @@ form.loading input {
     font-size: 19px;
     margin-right: 5px;
 }
+.btn.m-icon {
+    padding-left: 10px;
+}
+.btn.m-icon .material-icons-outlined, .btn.m-icon .material-icons {
+    float: left;
+    font-size: 21px;
+    margin-right: 5px;
+}
+.empty-list .material-icons-outlined {
+    font-size: 100px;
+    opacity: 0.2;
+}
+.product-image-list {
+    width: 80px;
+    height: 80px;
+    overflow: hidden;
+    border: solid 1px #ddd;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 0px 6px rgba(0,0,0,0.08);
+}
+.product-image-list img {
+    height: 100%;
+}
+.source_type img {
+    width: 200px;
+    border: solid 1px #ddd;
+    border-radius: 5px;
+    padding: 5px 15px;
+    box-shadow: 0px 0px 6px rgba(0,0,0,0.08);
+}
