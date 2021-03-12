@@ -38,7 +38,7 @@ class Frontend
         
         // If user is disabled
         if (
-            (isset($user) && is_object($user->customer) && !$user->customer->isActive())
+            (isset($user) && is_object($user->customer) && !$user->customer->isActive() && is_null($user->admin))
         ) {
             return redirect()->action('Controller@userDisabled');
         }
