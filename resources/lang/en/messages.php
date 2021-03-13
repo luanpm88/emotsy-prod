@@ -4048,5 +4048,12 @@
   'source.last_sync_at' => 'Last synced at',
   'source.sync' => 'Sync',
   'source.delete.confirm' => 'You are about to delete this source',
-  'source.delete.can_not' => 'One or more source are not allowed to delete.',
+  'source.delete.can_not' => 'One or more source are not allowed to.',
+  'source.woo.desc' => 'Enter your WordPress Acelle enpoint here to connect to exist WooCommerce stores.
+      If you are not sure what your WordPress endpoint is, please install
+      <a target="_blank" href=":link">AcelleSync</a> plugin',
+  'source.woo.connect' => 'Connect to WooCommerce',
+  'source.connect_url.help' => 'Your WordPress enpoint url',
+  'can_not_connect_acelle_sync' => 'Can not connect to Wordpress site. Error: :error',
+  'source.woocommerce' => 'WooCommerce',
 ) ?>

@@ -22,11 +22,29 @@
     <div class="row">
         <div class="col-md-12">
             <p>{{ trans('messages.source.select_source_type.wording') }}</p>
-            <div class="source_list">
-                <a class="source_type" href="{{ $lazadaConnectLink }}">
-                    <img width="200px" src="{{ url('images/lazada.png') }}" />
+            <div class="source_list d-flex align-items-center">
+                <a class="source_type mr-4" href="{{ $lazadaConnectLink }}">
+                    <img width="200px" src="{{ url('images/Lazada.svg') }}" />
+                </a>
+
+                <a class="source_type woocommerce-create"
+                    href="{{ action('SourceController@wooConnect') }}"
+                >
+                    <img width="200px" src="{{ url('images/woocommerce.svg') }}" />
                 </a>
             </div>
         </div>
     </div>
+    <script>
+        var wooPopup = new Popup();
+
+        $('.woocommerce-create').on('click', function(e) {
+            e.preventDefault();
+
+            var url = $(this).attr('href');
+
+            wooPopup.load(url);
+        });
+
+    </script>
 @endsection

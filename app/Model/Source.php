@@ -39,8 +39,22 @@ class Source extends Model
         return self::where('uid', '=', $uid)->first();
     }
 
+    /**
+     * Customer.
+     *
+     * @return object
+     */
     public function customer(){
     	return $this->belongsTo('Acelle\Model\Customer');
+    }
+
+    /**
+     * Products.
+     *
+     * @return object
+     */
+    public function products(){
+    	return $this->hasMany('Acelle\Model\Product');
     }
 
     /**
@@ -209,5 +223,14 @@ class Source extends Model
                 'progress' => 100,
             ]
         ]);
+    }
+
+    /**
+     * Products count.
+     *
+     * @return object
+     */
+    public function productsCount(){
+    	return $this->products()->count();
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Acelle\Http\Controllers;
 
+use Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Acelle\Model\MailList;
@@ -127,5 +128,60 @@ class SourceController extends Controller
         // redirect
         $request->session()->flash('success', 'Lazada products were imported!');
         return redirect()->action('SourceController@index');
+    }
+
+    /**
+     * Connect to WooCommerce. 
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function wooConnect(Request $request)
+    {
+        // saving
+        if ($request->isMethod('post')) {
+            // make validator
+            $validator = Validator::make($request->all(), [
+                'connect_url' => 'required|url',
+            ]);
+            
+            // check wordpress enpoint can connect
+            $uri = $request->connect_url;
+            $validator->after(function ($validator) use ($uri) {
+                $client = new \GuzzleHttp\Client();
+
+                try {
+                    $response = $client->request('GET', $uri, [
+                        'headers' => [
+                            "content-type" => "application/json"
+                        ],
+                    ]);
+                } catch (\Exception $e) {
+                    $validator->errors()->add('connect_url', trans('messages.can_not_connect_acelle_sync', ['error' => $e->getMessage()]));
+                    $valid = false;
+                }
+            });
+            
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('sources.wooConnect', [
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            // save source
+            $woocommerceSource = $request->user()->customer->newProductSource('woocommerce');
+            $woocommerceSource->updateData([
+                'connect_url' => $request->connect_url,
+            ]);
+
+            $request->session()->flash('success', 'Connected to WooCommerce!');
+
+            return response()->json([
+                'status' => 'success',
+                'redirect' => action('SourceController@index'),
+            ]);
+        }
+
+        return view('sources.wooConnect');
     }
 }

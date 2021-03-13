@@ -29,21 +29,6 @@
         <div class="row top-list-controls">
             <div class="col-md-9">
                 <div class="filter-box">
-                    <div class="btn-group list_actions hide">
-                        <button type="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
-                            {{ trans('messages.actions') }} <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a list-delete-confirm="{{ action('MailListController@deleteConfirm') }}" href="{{ action('MailListController@delete') }}"><i class="icon-trash"></i> {{ trans('messages.delete') }}</a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="checkbox inline check_all_list">
-                        <label>
-                            <input type="checkbox" class="styled check_all">
-                        </label>
-                    </div>
                     <span class="filter-group">
                         <span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
                         <select class="select" name="sort-order">

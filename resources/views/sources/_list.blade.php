@@ -10,7 +10,7 @@
 					</div>
 				</td>
 				<td>
-					<h5 class="no-margin text-normal">
+					<h5 class="no-margin text-normal m-0">
 						<span class="kq_search" href="javascript:;">
 							{{ trans('messages.source.' . $source->type) }}
 						</span>
@@ -19,12 +19,18 @@
 						{{ trans('messages.created_at') }}:
 						{{ Tool::formatDateTime($source->created_at) }}
 					</span>
+				</td>				
+				<td>
+					<h5 class="no-margin">
+						{{ format_number($source->productsCount()) }}
+					</h5>
+					<span class="text-muted d-block mt-2">{{ trans('messages.products') }}</span>
 				</td>
 				<td>
 					<h5 class="no-margin">
 						{{ Tool::formatDateTime($source->updated_at) }}
 					</h5>
-					<span class="text-muted">{{ trans('messages.source.last_sync_at') }}</span>
+					<span class="text-muted d-block mt-2">{{ trans('messages.source.last_sync_at') }}</span>
 				</td>
 				<td class="text-right">
 					<a href="{{ action('SourceController@sync', $source->uid) }}"
