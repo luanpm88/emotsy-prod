@@ -145,6 +145,63 @@ class Source extends Model
     }
 
     public function importProducts($customer) {
+        if ($this->type == 'woocommerce') {
+            $client = new \GuzzleHttp\Client();
+            $uri =  $this->getData()['connect_url'] . 
+                    '&action=list&max=100&sort_by=';
+
+            $response = $client->request('GET', $uri, [
+                'Content-Type' => 'application/json',
+            ]);
+            $products = json_decode($response->getBody(), true);
+
+            $total = count($products);
+            $imported = 0;
+
+            foreach ($products as $key => $product) {
+                try {
+                    // find exist product
+                    $p = Product::where('lazada_id', '=', $product["id"])->first();
+
+                    if (!$p) {
+                        $p = new Product();
+                        $p->lazada_id = $product["id"];
+                        $p->customer_id = $customer->id;
+                        $p->source_id = $this->id;
+                    }
+
+                    $p->title = $product["name"];
+                    $p->description = $product["description"];
+                    $p->lazada_data = json_encode($product);
+                    $p->save();
+
+                    // upload image
+                    if (isset($product["image"])) {
+                        $p->uploadImage($product["image"]);
+                    }
+                    
+                    $p->save();
+
+                    $imported++;
+                    // importing
+                    $this->updateData([
+                        'sync' => [
+                            'status' => 'importing',
+                            'imported' => $imported,
+                            'total' => $total,
+                            'progress' => round(($imported / $total) * 100, 2),
+                        ]
+                    ]);
+                } catch(\Exception $e) {
+                    // write error
+                    \Log::error($e->getMessage());
+                }
+                    
+            }
+
+            return;
+        }
+
         $data = $this->service()->getProducts(['offset' => 0, 'limit' => 1])['data'];
         $total = $data['total_products'];
 
