@@ -146,7 +146,8 @@ class SourceController extends Controller
             
             // check wordpress enpoint can connect
             $uri = $request->connect_url;
-            $validator->after(function ($validator) use ($uri) {
+            $wooData = null;
+            $validator->after(function ($validator) use ($uri, &$wooData) {
                 $client = new \GuzzleHttp\Client();
 
                 try {
@@ -157,9 +158,24 @@ class SourceController extends Controller
                     ]);
                 } catch (\Exception $e) {
                     $validator->errors()->add('connect_url', trans('messages.can_not_connect_acelle_sync', ['error' => $e->getMessage()]));
-                    $valid = false;
                 }
-            });
+
+                // Get woo shop info
+                // get woo shop info
+                $client = new \GuzzleHttp\Client();
+                $uri = $uri . '&action=shop_info';
+                try {
+                    $response = $client->request('GET', $uri, [
+                        'headers' => [
+                            "content-type" => "application/json"
+                        ],
+                    ]);
+
+                    $wooData = json_decode($response->getBody(), true);
+                } catch (\Exception $e) {
+                    $validator->errors()->add('connect_url', trans('messages.source.can_not_get_woo_data', ['error' => $e->getMessage()]));
+                }
+            });            
             
             // redirect if fails
             if ($validator->fails()) {
@@ -172,6 +188,7 @@ class SourceController extends Controller
             $woocommerceSource = $request->user()->customer->newProductSource('woocommerce');
             $woocommerceSource->updateData([
                 'connect_url' => $request->connect_url,
+                'data' => $wooData,
             ]);
 
             $request->session()->flash('success', 'Connected to WooCommerce!');

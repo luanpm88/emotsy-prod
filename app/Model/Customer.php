@@ -2183,4 +2183,21 @@ class Customer extends Model implements BillableUserInterface
 
         return $source;
     }
+
+    /**
+     * Get source select options.
+     *
+     * @return object
+     */
+    public function getSelectOptions($type=null){
+    	$query = $this->sources();
+
+        if ($type) {
+            $query = $query->where('type', '=', $type);
+        }
+
+        return $query->get()->map(function ($source) {
+            return ['text' => $source->getData()['data']['name'], 'value' => $source->uid];
+        });
+    }
 }

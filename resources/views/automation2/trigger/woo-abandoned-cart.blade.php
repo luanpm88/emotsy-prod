@@ -7,7 +7,8 @@
     
     @php
         $trigger = $automation->getTrigger();
-        $shopinfo = $trigger->wooGetShopInfo();
+        $data = $trigger->getOption('source_uid') ? Acelle\Model\Source::findByUid($trigger->getOption('source_uid'))->getData() : null;
+        $shopinfo = !$data ? [] : Acelle\Model\Source::findByUid($trigger->getOption('source_uid'))->getData()['data'];
     @endphp
     @if (isset($shopinfo['name']) && !request()->options)
         <div class="wp-shop-info mb-4 mt-4">
@@ -21,7 +22,7 @@
                     ]) !!}</p>
                     <div class="small">
                         <a target="_blank" href="{{ $shopinfo['url'] }}">{{ trans('messages.automation.visit_store') }}</a> |
-                        <a target="_blank" href="{{ $shopinfo['admin_url'] }}">{{ trans('messages.automation.site_administrator') }}</a>
+                        {{-- <a target="_blank" href="{{ $shopinfo['admin_url'] }}">{{ trans('messages.automation.site_administrator') }}</a> --}}
                     </div>
                 </div>
                 <div class="ml-auto">
@@ -84,11 +85,12 @@
 
     <div class="edit-connect-url {{ isset($shopinfo['name']) && !request()->options ? 'hide' : '' }}">
         @include('helpers.form_control', [
-            'type' => 'text',
+            'type' => 'select',
             'class' => '',
             'label' => '',
-            'name' => 'options[connect_url]',
-            'value' => $trigger->getOption('connect_url'),
+            'name' => 'options[source_uid]',
+            'value' => $trigger->getOption('source_uid'),
+            'options' => request()->user()->customer->getSelectOptions('woocommerce'),
             'help_class' => 'trigger',
             'rules' => [],
         ])

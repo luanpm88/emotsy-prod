@@ -290,4 +290,18 @@ class Source extends Model
     public function productsCount(){
     	return $this->products()->count();
     }
+    
+    /**
+     * Get display name.
+     *
+     * @return object
+     */
+    public function getName(){
+    	switch($this->type) {
+            case 'woocommerce':
+                return $this->getData()['data']['name'];
+            default:
+                return trans('messages.source.' . $this->type);
+        }
+    }
 }

@@ -12,7 +12,7 @@
 				<td>
 					<h5 class="no-margin text-normal m-0">
 						<span class="kq_search" href="javascript:;">
-							{{ trans('messages.source.' . $source->type) }}
+							{{ $source->getName() }}
 						</span>
 					</h5>
 					<span class="text-muted d-block mt-2">

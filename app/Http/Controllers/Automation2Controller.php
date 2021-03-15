@@ -292,7 +292,7 @@ class Automation2Controller extends Controller
                 'options.at' => 'required',
             ],
             'woo-abandoned-cart' => [
-                'options.connect_url' => 'required|url',
+                'options.source_uid' => 'required',
             ],
         ];
     }
@@ -312,23 +312,6 @@ class Automation2Controller extends Controller
         $validator = Validator::make($request->all(), $rules);
 
         $valid = $valid && !$validator->fails();
-
-        if ($valid && $type == 'woo-abandoned-cart') {
-            $client = new \GuzzleHttp\Client();
-            $uri = $request->options['connect_url'];
-
-            try {
-                $response = $client->request('GET', $uri, [
-                    'headers' => [
-                        "content-type" => "application/json"
-                    ],
-                ]);
-            } catch (\Exception $e) {
-                $validator->errors()->add('options.connect_url', trans('messages.automation.can_not_connect_acelle_sync', ['error' => $e->getMessage()]));
-                $valid = false;
-            }
-            
-        }
         
         return [$validator,  $valid];
     }
