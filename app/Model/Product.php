@@ -32,9 +32,23 @@ class Product extends Model
         });
     }
 
+    /**
+     * Find item by uid.
+     *
+     * @return object
+     */
+    public static function findByUid($uid)
+    {
+        return self::where('uid', '=', $uid)->first();
+    }
+
     public function scopeSearch($query, $request)
     {
         $query = $query->where('customer_id', '=', $request->user()->id);
+
+        if ($request->q) {
+            $query = $query->where('title', 'like', '%'.$request->q.'%');
+        }
         
         // Keyword
         if (!empty(trim($request->keyword))) {
@@ -43,6 +57,12 @@ class Product extends Model
                     $q->orwhere('products.title', 'like', '%'.strtolower($keyword).'%');
                 });
             }
+        }
+
+        // sort by
+        if ($request->sort_by) {
+            $sorts = explode('-', $request->sort_by);
+            $query = $query->orderBy($sorts[0], $sorts[1]);
         }
 
         return $query;

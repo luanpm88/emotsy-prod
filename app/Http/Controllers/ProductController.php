@@ -47,4 +47,55 @@ class ProductController extends Controller
             return response()->file(public_path('image/no-product-image.png'));
         }
     }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function json(Request $request)
+    {
+        // listing product for 
+        if ($request->action == 'list') {
+            return response()->json(
+                Product::search($request)->paginate($request->per_page)
+                    ->map(function ($product, $key) {                
+                        return [
+                            'id' => $product->uid,
+                            'name' => $product->title,
+                            'price' => $product->price,
+                            'image' => action('ProductController@image', $product->id),
+                            'description' => substr(strip_tags($product->description), 0, 100),
+                            'link' => action('ProductController@index'),
+                        ];
+                    })->toArray()
+            );
+        }
+
+        // return a product info
+        if ($request->product_id) {
+            $product = Product::findByUid($request->product_id);
+
+            return response()->json([
+                'id' => $product->uid,
+                'name' => $product->title,
+                'price' => $product->price,
+                'image' => action('ProductController@image', $product->id),
+                'description' => substr(strip_tags($product->description), 0, 100),
+                'link' => action('ProductController@index'),
+            ]);
+        }
+
+        $results = Product::search($request)->paginate($request->per_page)
+        ->map(function ($item, $key) {                
+            return ['text' => $item->title, 'id' => $item->uid];
+        })->toArray();
+
+        $json = '{
+            "items": ' .json_encode($results). ',
+            "more": ' . (empty($results) ? 'false' : 'true') . '
+        }';
+
+        return $json;
+    }
 }

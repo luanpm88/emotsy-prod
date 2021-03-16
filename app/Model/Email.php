@@ -878,7 +878,7 @@ class Email extends Model
                 $display = $element->getAttribute('data-display');
                 $sort = $element->getAttribute('data-sort-by');
 
-                $uri =  $this->automation->getTrigger()->getOption('connect_url') . 
+                $uri =  action('ProductController@json') . 
                     '?action=list&max=' . $max . '&sort_by=' . $sort;
 
                 $response = $client->request('GET', $uri, [
@@ -921,7 +921,7 @@ class Email extends Model
                 $productId = $element->getAttribute('product-id');
 
                 if ($productId) {
-                    $uri =  $this->automation->getTrigger()->getOption('connect_url') . 
+                    $uri =  action('ProductController@json') . 
                         '?product_id=' . $productId;
 
                     $response = $client->request('GET', $uri, [
