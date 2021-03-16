@@ -866,26 +866,33 @@ class Email extends Model
     }
 
     public function wooTransform($body) {
-        if ($this->automation->getTrigger()->getOption('connect_url')) {
+        if ($this->automation->getTrigger()->getOption('source_uid')) {
             $client = new \GuzzleHttp\Client();
 
             // find all links from contents
             $document = HtmlDomParser::str_get_html($body);
 
             // Woo Items List
-            foreach ($document->find('[builder-element=WooItemsElement]') as $element) {
+            foreach ($document->find('[builder-element=ProductListElement]') as $element) {
                 $max = $element->getAttribute('data-max-items');
                 $display = $element->getAttribute('data-display');
                 $sort = $element->getAttribute('data-sort-by');
 
-                $uri =  action('ProductController@json') . 
-                    '?action=list&max=' . $max . '&sort_by=' . $sort;
+                $request = request();
+                $request->merge(['per_page' => $max]);
+                $request->merge(['sort_by' => $sort]);
 
-                $response = $client->request('GET', $uri, [
-                    'Content-Type' => 'application/json',
-                ]);
-
-                $items = json_decode($response->getBody(), true);
+                $items = Product::search($request)->paginate($request->per_page)
+                    ->map(function ($product, $key) {                
+                        return [
+                            'id' => $product->uid,
+                            'name' => $product->title,
+                            'price' => $product->price,
+                            'image' => action('ProductController@image', $product->id),
+                            'description' => substr(strip_tags($product->description), 0, 100),
+                            'link' => action('ProductController@index'),
+                        ];
+                    })->toArray();
                 $itemsHtml = [];
                 foreach($items as $item) {
                     // $element->find('.woo-items')[0]->innertext = 'dddddd';
@@ -913,38 +920,35 @@ class Email extends Model
                     ';
                 }
 
-                $element->find('.woo-items')[0]->innertext = implode('', $itemsHtml);
+                $element->find('.products')[0]->innertext = implode('', $itemsHtml);
             }
 
             // Woo Single Item
-            foreach ($document->find('[builder-element=WooItemElement]') as $element) {
+            foreach ($document->find('[builder-element=ProductElement]') as $element) {
                 $productId = $element->getAttribute('product-id');
 
                 if ($productId) {
-                    $uri =  action('ProductController@json') . 
-                        '?product_id=' . $productId;
+                    $product = Product::findByUid($productId);
 
-                    $response = $client->request('GET', $uri, [
-                        'Content-Type' => 'application/json',
-                    ]);
-
-                    $item = json_decode($response->getBody(), true);
-
-                    if ($item["image"]) {
-                        $element->find('img', 0)->src = $item["image"];
-                    } else {
-                        $element->find('img', 0)->src = url('images/cart_item.svg');
-                    }
+                    $item = [
+                        'id' => $product->uid,
+                        'name' => $product->title,
+                        'price' => $product->price,
+                        'image' => action('ProductController@image', $product->id),
+                        'description' => substr(strip_tags($product->description), 0, 100),
+                        'link' => action('ProductController@index'),
+                    ];
                     // $element->find('.product-name', 0)->innertext = $item["name"];
                     // $element->find('.product-description', 0)->innertext = $item["description"];
                     // $element->find('.product-link', 0)->href = $item["link"];
                     // $element->find('.product-price', 0)->innertext = $item["price"];
+                    $element->find('.product-link img', 0)->src = $item["image"];
                     $html = $element->innertext;
                     $html = str_replace('*|PRODUCT_NAME|*', $item["name"], $html);
                     $html = str_replace('*|PRODUCT_DESCRIPTION|*', $item["description"], $html);
                     $html = str_replace('*|PRODUCT_URL|*', $item["link"], $html);
                     $html = str_replace('*|PRODUCT_PRICE|*', $item["price"], $html);
-                    $html = str_replace('*|PRODUCT_QUANTITY|*', $item["quantity"], $html);
+                    // $html = str_replace('*|PRODUCT_QUANTITY|*', $item["quantity"], $html);
                     $element->innertext = $html;
                 }
             }
