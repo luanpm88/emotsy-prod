@@ -5,7 +5,7 @@
 								@foreach ($items as $key => $item)
 									<tr>
 										<td width="1%">
-											<i class="glyphicon glyphicon-flag table-row-icon"></i>
+											<i class="icon icon-flag table-row-icon"></i>
 										</td>
 										<td>
 											<h5 class="no-margin text-bold">
@@ -89,14 +89,14 @@
 							{{ $items->links() }}
 						@elseif (!empty(request()->keyword))
 							<div class="empty-list">
-								<i class="glyphicon glyphicon-flag"></i>
+								<span class="material-icons-outlined">flag</span>
 								<span class="line-1">
 									{{ trans('messages.no_search_result') }}
 								</span>
 							</div>
 						@else					
 							<div class="empty-list">
-								<i class="glyphicon glyphicon-flag"></i>
+								<span class="material-icons-outlined">flag</span>
 								<span class="line-1">
 									{{ trans('messages.language_empty_line_1') }}
 								</span>
