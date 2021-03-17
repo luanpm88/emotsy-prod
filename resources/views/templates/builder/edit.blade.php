@@ -10,12 +10,23 @@
     <link href="{{ URL::asset('builder/builder.css') }}" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="{{ URL::asset('builder/builder.js') }}"></script>
 
+    <script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery.min.js') }}"></script>
+    <link href="{{ URL::asset('assets2/lib/select2-4.0.12/css/select2.min.css') }}" rel="stylesheet" />
+    <script src="{{ URL::asset('assets2/lib/select2-4.0.12/js/select2.min.js') }}"></script>
+
     <style>
         .logo-img {
             width: 120px!important;
             margin-right: 15px;
         }
     </style>
+
+    @include('helpers._builder_product_widgets')
+
+    @php
+        // check if content from layouts
+        $buildMode = strpos($template->content, 'AcelleSystemLayouts') !== false ? 'true' : 'false';
+    @endphp
     
     <script>
         var CSRF_TOKEN = "{{ csrf_token() }}";
@@ -25,8 +36,8 @@
         
         $( document ).ready(function() {
             editor = new Editor({
-                buildMode: false,
-                legacyMode: true,
+                buildMode: {{ $buildMode }},
+                legacyMode: false,
                 showHelp: false,
                 lang: {!! json_encode(language()->getBuilderLang()) !!},
                 url: '{{ action('TemplateController@builderEditContent', $template->uid) }}',
@@ -67,6 +78,37 @@
                     '{{ url('/images/backgrounds/images16.jpg') }}',
                     '{{ url('/images/backgrounds/images17.png') }}'
                 ],
+                loaded: function() {
+                    var thisEditor = this;
+
+                    // product widgets
+                    this.addContentWidget(new ProductListWidget(), 0, 'ProductCommerce');
+                    this.addContentWidget(new ProductWidget(), 0, 'ProductCommerce');
+
+                    // add custom css
+                    this.addCustomCss('{{ url('/css/builder_product.css') }}');
+
+                    // click preview button
+                    $("#builder_iframe").contents().find("body").on('click', '.product-preview-but', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        var element = thisEditor.elementFactory($(this).parent());
+                        element.preview();
+                        {{-- thisEditor.select(element); --}}
+                        thisEditor.handleSelect();
+                        return false;
+                    })
+
+                    $("#builder_iframe").contents().find("body").on('click', '.product-unpreview-but', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        var element = thisEditor.elementFactory($(this).parent());
+                        element.unpreview();
+                        {{-- thisEditor.select(element); --}}
+                        thisEditor.handleSelect();
+                        return false;
+                    })
+                },
                 customInlineEdit: function(container) {
                     var thisEditor = this;
 

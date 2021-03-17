@@ -31,6 +31,7 @@ use Acelle\Library\Tool;
 use Acelle\Library\Rss;
 use Acelle\Library\Storage\Contracts\Storable;
 use Illuminate\Validation\ValidationException;
+use KubAT\PhpSimple\HtmlDomParser;
 
 class Template extends Model implements Storable
 {
@@ -736,6 +737,9 @@ class Template extends Model implements Storable
         // Replace bare line feed char which is not accepted by Outlook, Yahoo, AOL...
         // Not applied
 
+        // STEP 04.1. Check woocommerce items
+        $body = $this->wooTransform($body);
+
         // STEP 05. Transform URLs
         // Note that $useTrackingHost is not needed
         $body = $this->transformWithoutUpdate($body, $useTrackingHost = false);
@@ -758,6 +762,96 @@ class Template extends Model implements Storable
         // become
         //       <a href="%7BUNSUBSCRIBE_URL%7D"
         $body = $this->inlineHtml($body);
+
+        return $body;
+    }
+
+    public function wooTransform($body) {
+        // find all links from contents
+        $document = HtmlDomParser::str_get_html($body);
+
+        // Woo Items List
+        foreach ($document->find('[builder-element=ProductListElement]') as $element) {
+            $max = $element->getAttribute('data-max-items');
+            $display = $element->getAttribute('data-display');
+            $sort = $element->getAttribute('data-sort-by');
+
+            $request = request();
+            $request->merge(['per_page' => $max]);
+            $request->merge(['sort_by' => $sort]);
+
+            $items = Product::search($request)->paginate($request->per_page)
+                ->map(function ($product, $key) {                
+                    return [
+                        'id' => $product->uid,
+                        'name' => $product->title,
+                        'price' => $product->price,
+                        'image' => action('ProductController@image', $product->id),
+                        'description' => substr(strip_tags($product->description), 0, 100),
+                        'link' => action('ProductController@index'),
+                    ];
+                })->toArray();
+            $itemsHtml = [];
+            foreach($items as $item) {
+                // $element->find('.woo-items')[0]->innertext = 'dddddd';
+                $itemsHtml[] = '
+                    <div class="woo-col-item mb-4 mt-4 col-md-' . (12/$display) . '">
+                        <div class="">
+                            <div class="img-col mb-3">
+                                <div class="d-flex align-items-center justify-content-center" style="height: 200px;">
+                                    <a style="width:100%" href="'.$item["link"].'" class="mr-4"><img width="100%" src="'.($item["image"] ? $item["image"] : url('images/cart_item.svg')).'" style="max-height:200px;max-width:100%;" /></a>
+                                </div>
+                            </div>
+                            <div class="">
+                                <p class="font-weight-normal product-name mb-1">
+                                    <a style="color: #333;" href="'.$item["link"].'" class="mr-4">'.$item["name"].'</a>
+                                </p>
+                                <p class=" product-description">'.$item["description"].'</p>
+                                <p><strong>'.$item["price"].'</strong></p>
+                                <a href="'.$item["link"].'" style="background-color: #9b5c8f;
+    border-color: #9b5c8f;" class="btn btn-primary text-white">
+                                    ' . trans('messages.automation.view_more') . '
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                ';
+            }
+
+            $element->find('.products')[0]->innertext = implode('', $itemsHtml);
+        }
+
+        // Woo Single Item
+        foreach ($document->find('[builder-element=ProductElement]') as $element) {
+            $productId = $element->getAttribute('product-id');
+
+            if ($productId) {
+                $product = Product::findByUid($productId);
+
+                $item = [
+                    'id' => $product->uid,
+                    'name' => $product->title,
+                    'price' => $product->price,
+                    'image' => action('ProductController@image', $product->id),
+                    'description' => substr(strip_tags($product->description), 0, 100),
+                    'link' => action('ProductController@index'),
+                ];
+                // $element->find('.product-name', 0)->innertext = $item["name"];
+                // $element->find('.product-description', 0)->innertext = $item["description"];
+                // $element->find('.product-link', 0)->href = $item["link"];
+                // $element->find('.product-price', 0)->innertext = $item["price"];
+                $element->find('.product-link img', 0)->src = $item["image"];
+                $html = $element->innertext;
+                $html = str_replace('*|PRODUCT_NAME|*', $item["name"], $html);
+                $html = str_replace('*|PRODUCT_DESCRIPTION|*', $item["description"], $html);
+                $html = str_replace('*|PRODUCT_URL|*', $item["link"], $html);
+                $html = str_replace('*|PRODUCT_PRICE|*', $item["price"], $html);
+                // $html = str_replace('*|PRODUCT_QUANTITY|*', $item["quantity"], $html);
+                $element->innertext = $html;
+            }
+        }
+
+        $body = $document;
 
         return $body;
     }

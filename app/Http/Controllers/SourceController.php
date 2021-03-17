@@ -126,7 +126,7 @@ class SourceController extends Controller
         $source->importProducts($request->user()->customer);
 
         // redirect
-        $request->session()->flash('success', 'Lazada products were imported!');
+        $request->session()->flash('alert-success', 'Products were imported!');
         return redirect()->action('SourceController@index');
     }
 

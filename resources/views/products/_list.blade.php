@@ -20,13 +20,19 @@
 						{{ Tool::formatDateTime($product->created_at) }}
 					</span>
 				</td>
+				<td>
+					<h5 class="no-margin">
+						{{ format_number($product->source->getName()) }}
+					</h5>
+					<span class="text-muted d-block mt-2">{{ trans('messages.source') }}</span>
+				</td>
 				<td class="text-right">
 					<a href="{{ action('SourceController@sync', $product->uid) }}"
 						link-method="POST"
-						type="button" class="btn bg-teal-600 m-icon">
+						type="button" class="btn btn-mc_primary m-icon pl-3">
 						<span class="material-icons">
 							sync
-							</span>{{ trans('messages.source.sync') }}</a>
+							</span>View</a>
 					<div class="btn-group">
 						<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 						<ul class="dropdown-menu dropdown-menu-right">

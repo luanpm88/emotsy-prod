@@ -14,6 +14,12 @@ class Product extends Model
         return $this->belongsTo('Acelle\Model\Customer');
     }
 
+    // belongs to source
+    public function source()
+    {
+        return $this->belongsTo('Acelle\Model\Source');
+    }
+
     /**
      * Bootstrap any application services.
      */

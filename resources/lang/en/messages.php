@@ -4059,4 +4059,5 @@
   'source.can_not_get_woo_data' => 'Could not get shop information from woocommerce. Error: ',
   'source.woo.connecting' => 'Connecting...',
   'automation.abandoned_cart' => 'Abandoned Cart',
+  'source' => 'Source',
 ) ?>
