@@ -157,8 +157,7 @@
                     this.addContentWidget(new ProductWidget(), 0, 'ProductCommerce');
 
                     @if ($automation->getTrigger()->getOption('type') == 'woo-abandoned-cart')
-                        // this.addContentWidget(new ProductListWidget(), 0, 'ProductCommerce');
-                        // this.addContentWidget(new ProductWidget(), 0, 'ProductCommerce');
+                        this.addContentWidget(new AbandonedCartWidget(), 0, 'ProductCommerce');
                     @endif
 
                     // add custom css
