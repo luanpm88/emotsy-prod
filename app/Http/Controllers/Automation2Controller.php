@@ -400,10 +400,20 @@ class Automation2Controller extends Controller
         }
         
         if ($request->key == 'wait') {
+            $delayOptions = $automation->getDelayOptions();
+            $parts = explode(' ', $request->time);
+            $title = trans('messages.time.wait_for') . ' ' . $parts[0] . ' ' . trans_choice('messages.time.' . $parts[1], $parts[0]);
+
+            foreach ($delayOptions as $deplayOption) {
+                if ($deplayOption['value'] == $request->time) {
+                    $title = trans('messages.automation.wait.delay.' . $request->time);
+                }
+            }
+
             return response()->json([
                 'status' => 'success',
                 'message' => trans('messages.automation.action.added'),
-                'title' => trans('messages.automation.wait.delay.' . $request->time),
+                'title' => $title,
                 'options' => [
                     'key' => $request->key,
                     'time' => $request->time,
