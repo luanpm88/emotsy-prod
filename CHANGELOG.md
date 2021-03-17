@@ -1,4 +1,4 @@
-4.0.22 / 2020-12-23
+4.0.22 / 2021-03-17
 ==================
 
  * Added: plugin mechanism 1.0 is now available, embracing plugin development
@@ -20,7 +20,7 @@
  * Fixed: email builder not working well with SVG
  * Fixed: better compatibility with older versions of Thunderbird
 
-4.0.21 / 2020-09-01
+4.0.21 / 2021-02-11
 ==================
 
  * Added: tracking domain support
