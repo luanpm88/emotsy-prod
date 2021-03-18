@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
-    public static $itemsPerPage = 25;
+    public static $itemsPerPage = 16;
 
     // belongs to customer
     public function customer()
