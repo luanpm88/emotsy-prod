@@ -100,6 +100,7 @@
 				</li>
 				<li class="dropdown language-switch"
 						rel0="ProductController"
+						rel1="SourceController"
 					>
 					<a data-toggle="dropdown" class="dropdown-toggle d-flex align-items-center">
 						<i class="acelle-icon mr-3" style="width:19px">
