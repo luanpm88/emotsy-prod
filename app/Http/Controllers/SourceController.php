@@ -98,15 +98,16 @@ class SourceController extends Controller
 
         foreach ($sources->get() as $source) {
             // authorize
-            if (\Gate::allows('delete', $source)) {
-                $source->delete();
-            } else {
+            if (!\Gate::allows('delete', $source)) {
                 // Redirect to my lists page
                 return response()->json([
                     'status' => 'error',
                     'message' => trans('messages.source.delete.can_not'),
-                ]);
+                ]);                
             }
+
+            // do delete
+            $source->delete();
         }
 
         // Redirect to my lists page
