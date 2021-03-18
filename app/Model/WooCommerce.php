@@ -26,12 +26,11 @@ class WooCommerce extends Source
         ]);
 
         // Step1: check endpoint can connect
-        $validator->after(function ($validator) use ($connectUrl, &$source, &$meta) {      
+        $validator->after(function ($validator) use ($connectUrl, &$source, &$meta) {
             $client = new \GuzzleHttp\Client();
 
-            // Step 1.1: check valid endpoint   
+            // Step 1.1: check valid endpoint
             try {
-                
                 $response = $client->request('GET', $connectUrl, [
                     'headers' => [
                         "content-type" => "application/json"
@@ -66,9 +65,10 @@ class WooCommerce extends Source
         return [$source, $validator];
     }
 
-    public function importProducts($customer) {
+    public function importProducts($customer)
+    {
         $client = new \GuzzleHttp\Client();
-        $uri =  $this->getData()['connect_url'] . 
+        $uri =  $this->getData()['connect_url'] .
                 '&action=list&max=100&sort_by=';
 
         $response = $client->request('GET', $uri, [
@@ -113,11 +113,10 @@ class WooCommerce extends Source
                         'progress' => round(($imported / $total) * 100, 2),
                     ]
                 ]);
-            } catch(\Exception $e) {
+            } catch (\Exception $e) {
                 // write error
                 \Log::error($e->getMessage());
             }
-                
         }
     }
 }

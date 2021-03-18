@@ -84,19 +84,19 @@ class Product extends Model
     {
         $path = storage_path("app/users/" . $this->customer->user->uid);
         // create product images folder if not exist
-        if(!\File::isDirectory($path)) {
+        if (!\File::isDirectory($path)) {
             \File::makeDirectory($path, 0777, true, true);
         }
 
         $path .= '/products';
         // create product images folder if not exist
-        if(!\File::isDirectory($path)) {
+        if (!\File::isDirectory($path)) {
             \File::makeDirectory($path, 0777, true, true);
         }
 
         $path .= '/' . $this->uid;
         // create product images folder if not exist
-        if(!\File::isDirectory($path)) {
+        if (!\File::isDirectory($path)) {
             \File::makeDirectory($path, 0777, true, true);
         }
 

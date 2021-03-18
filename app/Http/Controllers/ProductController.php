@@ -56,11 +56,11 @@ class ProductController extends Controller
      */
     public function json(Request $request)
     {
-        // listing product for 
+        // listing product for
         if ($request->action == 'list') {
             return response()->json(
                 Product::search($request)->paginate($request->per_page)
-                    ->map(function ($product, $key) {                
+                    ->map(function ($product, $key) {
                         return [
                             'id' => $product->uid,
                             'name' => $product->title,
@@ -88,7 +88,7 @@ class ProductController extends Controller
         }
 
         $results = Product::search($request)->paginate($request->per_page)
-        ->map(function ($item, $key) {                
+        ->map(function ($item, $key) {
             return ['text' => $item->title, 'id' => $item->uid];
         })->toArray();
 

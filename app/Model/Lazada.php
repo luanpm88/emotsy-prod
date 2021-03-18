@@ -39,7 +39,8 @@ class Lazada extends Source
         $this->updateData($this->service()->data);
     }
 
-    public function importProducts($customer) {
+    public function importProducts($customer)
+    {
         $data = $this->service()->getProducts(['offset' => 0, 'limit' => 1])['data'];
         $total = $data['total_products'];
 
@@ -60,38 +61,38 @@ class Lazada extends Source
             $products = $this->service()->getProducts(['offset' => $i*$perPage, 'limit' => $perPage])['data']['products'];
             foreach ($products as $key => $product) {
                 // try {
-                    // find exist product
-                    $p = Product::where('source_item_id', '=', $product["item_id"])->first();
+                // find exist product
+                $p = Product::where('source_item_id', '=', $product["item_id"])->first();
 
-                    if (!$p) {
-                        $p = new Product();
-                        $p->source_item_id = $product["item_id"];
-                        $p->customer_id = $customer->id;
-                        $p->source_id = $this->id;
-                    }
+                if (!$p) {
+                    $p = new Product();
+                    $p->source_item_id = $product["item_id"];
+                    $p->customer_id = $customer->id;
+                    $p->source_id = $this->id;
+                }
 
-                    $p->title = $product["attributes"]["name"];
-                    if (isset($product["attributes"]["short_description"])) {
-                        $p->description = $product["attributes"]["short_description"];
-                    }
-                    $p->meta = json_encode($product);
-                    $p->save();
+                $p->title = $product["attributes"]["name"];
+                if (isset($product["attributes"]["short_description"])) {
+                    $p->description = $product["attributes"]["short_description"];
+                }
+                $p->meta = json_encode($product);
+                $p->save();
 
-                    // upload image
-                    if (isset($product["skus"][0]["Images"]) && isset($product["skus"][0]["Images"][0])) {
-                        $p->uploadImage($product["skus"][0]["Images"][0]);
-                    }
+                // upload image
+                if (isset($product["skus"][0]["Images"]) && isset($product["skus"][0]["Images"][0])) {
+                    $p->uploadImage($product["skus"][0]["Images"][0]);
+                }
 
-                    // get price
-                    if (isset($product["skus"][0]["price"])) {
-                        $p->price = $product["skus"][0]["price"];
-                    }
+                // get price
+                if (isset($product["skus"][0]["price"])) {
+                    $p->price = $product["skus"][0]["price"];
+                }
 
-                    $p->save();
+                $p->save();
 
-                    $imported++;
-                    // importing
-                    $this->updateData([
+                $imported++;
+                // importing
+                $this->updateData([
                         'sync' => [
                             'status' => 'importing',
                             'imported' => $imported,
@@ -103,11 +104,10 @@ class Lazada extends Source
                 //     // write error
                 //     \Log::error($e->getMessage());
                 // }
-                    
             }
 
             sleep(3);
-        } 
+        }
 
         // done
         $this->updateData([

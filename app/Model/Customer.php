@@ -239,7 +239,7 @@ class Customer extends Model implements BillableUserInterface
      */
     public function sources()
     {
-    	return $this->hasmany('Acelle\Model\Source');
+        return $this->hasmany('Acelle\Model\Source');
     }
 
     // All senders, including ones that are not associated to a particular sending servers
@@ -2189,8 +2189,9 @@ class Customer extends Model implements BillableUserInterface
      *
      * @return object
      */
-    public function getSelectOptions($type=null){
-    	$query = $this->sources();
+    public function getSelectOptions($type=null)
+    {
+        $query = $this->sources();
 
         if ($type) {
             $query = $query->where('type', '=', $type);
