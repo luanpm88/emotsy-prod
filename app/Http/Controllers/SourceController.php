@@ -73,7 +73,7 @@ class SourceController extends Controller
     {
         // connection
         $lazadaSource = $request->user()->customer->newProductSource('Lazada');
-        $lazadaSource->connect($request->code);
+        $lazadaSource->init($request->code);
 
         // redirect
         $request->session()->flash('success', 'Connected to Lazada!');

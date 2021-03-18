@@ -30,7 +30,7 @@ class Lazada extends Source
      *
      * @var object | collect
      */
-    public function connect($code)
+    public function init($code)
     {
         // get access token by code
         $this->service()->getAccessToken($code);
