@@ -22,7 +22,7 @@
 				</td>
 				<td>
 					<h5 class="no-margin">
-						{{ format_number($product->source->getName()) }}
+						{{ $product->source->getName() }}
 					</h5>
 					<span class="text-muted d-block mt-2">{{ trans('messages.source') }}</span>
 				</td>
