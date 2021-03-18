@@ -4060,4 +4060,5 @@
   'source.woo.connecting' => 'Connecting...',
   'automation.abandoned_cart' => 'Abandoned Cart',
   'source' => 'Source',
+  'view.grid' => 'Grid',
 ) ?>

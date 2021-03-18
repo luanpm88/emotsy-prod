@@ -420,7 +420,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                     <div class="panel__body woo-panel__body" title="{{ trans('messages.automation.woo_item') }}">
                         <div class="image-drag">
                             <div ng-bind-html="::getModuleIcon(module)" class="ng-binding product-list-widget">
-                                <img builder-element src="{{ url('images/wooproductlist.svg') }}" width="100%" />
+                                <img builder-element src="{{ url('images/abandoned-cart.svg') }}" width="100%" />
                             </div>
                         </div>
                         <div class="body__title">{{ trans('messages.automation.abandoned_cart') }}</div>
@@ -546,7 +546,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                             <div class="">
                                 <div class="img-col mb-3">
                                     <div class="d-flex align-items-center justify-content-center" style="height: 200px;">
-                                        <a style="width:100%" href="`+item.link+`" class="mr-4"><img width="100%" src="`+(item.image ? item.image : '{{ url('images/cart_item.svg') }}')+`" style="max-height:200px;max-width:100%;" /></a>
+                                        <a style="width:100%" href="`+item.link+`" class="mr-4"><img width="100%" src="`+(item.image ? item.image : '{{ url('images/product-image-placeholder.svg') }}')+`" style="max-height:200px;max-width:100%;" /></a>
                                     </div>
                                 </div>
                                 <div class="">
@@ -607,7 +607,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                     <div class="woo-col-item mb-4 mt-4 col-12 col-sm-6 col-md-4">
                         <div class="">
                             <div class="img-col mb-3">
-                                <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
+                                <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/product-image-placeholder.svg') }}" width="100%" /></a>
                             </div>
                             <div class="">
                                 <p class="font-weight-normal product-name mb-1">
@@ -767,7 +767,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                         <div class="woo-col-item mb-4 mt-4 col-12 col-sm-6 col-md-3">
                             <div class="">
                                 <div class="img-col mb-3">
-                                    <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
+                                    <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/product-image-placeholder.svg') }}" width="100%" /></a>
                                 </div>
                                 <div class="">
                                     <p class="font-weight-normal product-name mb-1">
@@ -785,7 +785,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                         <div class="woo-col-item mb-4 mt-4 col-12 col-sm-6 col-md-3">
                             <div class="">
                                 <div class="img-col mb-3">
-                                    <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
+                                    <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/product-image-placeholder.svg') }}" width="100%" /></a>
                                 </div>
                                 <div class="">
                                     <p class="font-weight-normal product-name mb-1">
@@ -803,7 +803,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                         <div class="woo-col-item mb-4 mt-4 col-12 col-sm-6 col-md-3">
                             <div class="">
                                 <div class="img-col mb-3">
-                                    <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
+                                    <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/product-image-placeholder.svg') }}" width="100%" /></a>
                                 </div>
                                 <div class="">
                                     <p class="font-weight-normal product-name mb-1">
@@ -821,7 +821,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                         <div class="woo-col-item mb-4 mt-4 col-12 col-sm-6 col-md-3">
                             <div class="">
                                 <div class="img-col mb-3">
-                                    <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
+                                    <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/product-image-placeholder.svg') }}" width="100%" /></a>
                                 </div>
                                 <div class="">
                                     <p class="font-weight-normal product-name mb-1">
@@ -1224,7 +1224,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
             this.setContentHtml(`
                 <div preview="no" builder-element="ProductElement" builder-draggable class="py-3 px-3 product-widget">
                     <div class="product-placeholder text-center" style="display:none">
-                        <img src="{{ url('images/wooproduct.svg') }}" width="100%" />
+                        <img src="{{ url('images/product-image-placeholder.svg') }}" width="100%" />
                         <a style="" class="mt-4 btnx btnx-primary">
                             {{ trans('messages.automation.choose_a_product') }}
                         </a>
@@ -1236,7 +1236,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                             <div class="d-flex">
                                 <div class="">
                                     <a href="*|PRODUCT_URL|*" class="product-link">
-                                        <img builder-element="ProductImgElement" class="mr-4" src="{{ url('images/cart_item.svg') }}" width="200px" />
+                                        <img builder-element="ProductImgElement" class="mr-4" src="{{ url('images/product-image-placeholder.svg') }}" width="200px" />
                                     </a>
                                 </div>
                                 

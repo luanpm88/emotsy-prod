@@ -61,7 +61,12 @@
                     </span>
                 </div>
             </div>
-            <div class="col-md-3 text-right">
+            <div class="col-md-3 text-right d-flex align-items-center">
+                <div class="view-toggle">
+                    <a href="jaascript:;" class="btn btn-default view-toogle grid">
+                        {{ trans('messages.view.grid') }}
+                    </a>
+                </div>
                 <a href="{{ action("SourceController@index") }}" type="button" class="btn bg-info-800 m-icon">
                     <span class="material-icons-outlined">store</span> {{ trans('messages.stores_connections') }}
                 </a>
