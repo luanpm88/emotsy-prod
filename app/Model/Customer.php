@@ -30,6 +30,8 @@ use Acelle\Cashier\Cashier;
 use Acelle\Cashier\Subscription;
 use Acelle\Model\SendingDomain;
 use Acelle\Model\Source;
+use Acelle\Model\WooCommerce;
+use Acelle\Model\Lazada;
 use DateTime;
 use DateTimeZone;
 
@@ -2157,9 +2159,10 @@ class Customer extends Model implements BillableUserInterface
      */
     public function newProductSource($type)
     {
-        $source = new Source();
-            $source->customer_id = $this->id;
-            $source->type = $type;
+        $class = '\\Acelle\\Model\\' . $type;
+        $source = new $class();
+        $source->customer_id = $this->id;
+        $source->type = $type;
 
         return $source;
     }

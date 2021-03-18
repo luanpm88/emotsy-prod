@@ -42,6 +42,7 @@
             var form = $(this);
             var data = form.serialize();
             var url = form.attr('action');
+            console.log(url);
             
             addMaskLoading('{{ trans('messages.source.woo.connecting') }}');
 

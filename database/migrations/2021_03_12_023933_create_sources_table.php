@@ -18,7 +18,7 @@ class CreateSourcesTable extends Migration
             $table->uuid('uid');
             $table->string('type');
             $table->integer('customer_id')->unsigned();
-            $table->longtext('data')->nullable();
+            $table->longtext('meta')->nullable();
             $table->timestamps();
 
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');

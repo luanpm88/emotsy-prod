@@ -12,6 +12,8 @@ use Acelle\Model\Setting;
 use Acelle\Model\Customer;
 use Acelle\Model\Product;
 use Acelle\Model\Source;
+use Acelle\Model\WooCommerce;
+use Acelle\Model\Lazada;
 
 class SourceController extends Controller
 {
@@ -50,7 +52,7 @@ class SourceController extends Controller
         $customer = $request->user()->customer;
 
         // Get lazada connection
-        $lazadaSource = $request->user()->customer->newProductSource('lazada');
+        $lazadaSource = $request->user()->customer->newProductSource('Lazada');
 
         // authorize
         if (\Gate::denies('create', Source::class)) {
@@ -70,8 +72,8 @@ class SourceController extends Controller
     public function connect(Request $request)
     {
         // connection
-        $lazadaSource = $request->user()->customer->newProductSource('lazada');
-        $lazadaSource->getAccessToken($request->code);
+        $lazadaSource = $request->user()->customer->newProductSource('Lazada');
+        $lazadaSource->connect($request->code);
 
         // redirect
         $request->session()->flash('success', 'Connected to Lazada!');
@@ -123,6 +125,9 @@ class SourceController extends Controller
     {
         // connection
         $source = Source::findByUid($uid);
+        $source = $source->classMapping();
+
+        // import products
         $source->importProducts($request->user()->customer);
 
         // redirect
@@ -139,44 +144,8 @@ class SourceController extends Controller
     {
         // saving
         if ($request->isMethod('post')) {
-            // make validator
-            $validator = Validator::make($request->all(), [
-                'connect_url' => 'required|url',
-            ]);
-            
-            // check wordpress enpoint can connect
-            $uri = $request->connect_url;
-            $wooData = null;
-            $validator->after(function ($validator) use ($uri, &$wooData) {
-                $client = new \GuzzleHttp\Client();
+            list($source, $validator) = WooCommerce::init($request->connect_url, $request->user()->customer);
 
-                try {
-                    $response = $client->request('GET', $uri, [
-                        'headers' => [
-                            "content-type" => "application/json"
-                        ],
-                    ]);
-                } catch (\Exception $e) {
-                    $validator->errors()->add('connect_url', trans('messages.can_not_connect_acelle_sync', ['error' => $e->getMessage()]));
-                }
-
-                // Get woo shop info
-                // get woo shop info
-                $client = new \GuzzleHttp\Client();
-                $uri = $uri . '&action=shop_info';
-                try {
-                    $response = $client->request('GET', $uri, [
-                        'headers' => [
-                            "content-type" => "application/json"
-                        ],
-                    ]);
-
-                    $wooData = json_decode($response->getBody(), true);
-                } catch (\Exception $e) {
-                    $validator->errors()->add('connect_url', trans('messages.source.can_not_get_woo_data', ['error' => $e->getMessage()]));
-                }
-            });            
-            
             // redirect if fails
             if ($validator->fails()) {
                 return response()->view('sources.wooConnect', [
@@ -184,15 +153,7 @@ class SourceController extends Controller
                 ], 400);
             }
 
-            // save source
-            $woocommerceSource = $request->user()->customer->newProductSource('woocommerce');
-            $woocommerceSource->updateData([
-                'connect_url' => $request->connect_url,
-                'data' => $wooData,
-            ]);
-
-            $request->session()->flash('success', 'Connected to WooCommerce!');
-
+            // success
             return response()->json([
                 'status' => 'success',
                 'redirect' => action('SourceController@index'),
