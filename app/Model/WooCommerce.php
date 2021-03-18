@@ -44,7 +44,7 @@ class WooCommerce extends Source
 
             // Step 1.2: get shop information
             try {
-                $response = $client->request('GET', $connectUrl . '&action=shop_info', [
+                $response = $client->request('GET', $connectUrl . '?action=shop_info', [
                     'headers' => [
                         "content-type" => "application/json"
                     ],
