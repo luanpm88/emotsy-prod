@@ -79,7 +79,8 @@ class Handler extends ExceptionHandler
     {
         // With 404 error, no way to use response()->view
         if ($e instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
-            return \Response::make(sprintf('<h1>404 - Not found</h1><p>Go back to your home page at <a href="%1$s">%1$s</a></p>', url('/')), 404);
+            // Default to
+            // return view('errors.404');
         }
         
         // check if the exception does match the known list

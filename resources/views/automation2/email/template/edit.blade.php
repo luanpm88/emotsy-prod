@@ -216,6 +216,10 @@
             });
           
             editor.init();
+
+            //
+            $(document).on('click', '.filemanager-ok', function(e) {alert('Please click on the thumbnail to select the corresponding image');})
+            $(document).on('click', '.filemanager-cancel', function(e) {$('.PopUpCloseButton').click();})
         });
     </script>
 

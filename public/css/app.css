@@ -4076,6 +4076,7 @@ form.loading input {
     font-size: 19px;
     margin-right: 5px;
 }
+
 .btn.m-icon {
     padding-left: 10px;
 }
@@ -4119,4 +4120,8 @@ form.loading input {
 }
 .source_type img {
     width: 100%;
+}
+.empty-list .material-icons, .empty-list .material-icons-outlined {
+    font-size: 80px;
+    color: #bbb;
 }
