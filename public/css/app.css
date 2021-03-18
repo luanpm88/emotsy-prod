@@ -4078,11 +4078,12 @@ form.loading input {
 }
 .btn.m-icon {
     padding-left: 10px;
+    padding-right: 10px;
 }
 .btn.m-icon .material-icons-outlined, .btn.m-icon .material-icons {
     float: left;
     font-size: 21px;
-    margin-right: 5px;
+    margin-right: 0;
 }
 .empty-list .material-icons-outlined {
     font-size: 100px;
@@ -4119,4 +4120,39 @@ form.loading input {
 }
 .source_type img {
     width: 100%;
+}
+.view-grid .view-toogle.grid {
+    background-color: #eee!important;
+}
+.view-list .view-toogle.list {
+    background-color: #eee!important;
+}
+.view-toogle {
+    background-color: #fff!important;
+}
+.text-ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+a.btn-link {
+    color: #333!important;
+}
+.product-image-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 280px;
+    overflow: hidden;
+    background: #ddd;
+}
+@media (max-width: 992px) {
+    .product-image-box {
+        height: 460px;
+    }
+}
+@media (max-width: 768px) {
+    .product-image-box {
+        height: 660px;
+    }
 }

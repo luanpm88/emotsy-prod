@@ -22,12 +22,12 @@
 @endsection
 
 @section('content')
-    <form class="listing-form"
-        data-url="{{ action('ProductController@listing') }}"
+    <form class="listing-form view-{{ request()->view ? request()->view : 'grid' }}"
+        data-url="{{ action('ProductController@listing', ['view' => request()->view]) }}"
         per-page="{{ Acelle\Model\Product::$itemsPerPage }}"
     >
         <div class="row top-list-controls">
-            <div class="col-md-9">
+            <div class="col-md-8">
                 <div class="filter-box">
                     <div class="btn-group list_actions hide">
                         <button type="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
@@ -61,11 +61,20 @@
                     </span>
                 </div>
             </div>
-            <div class="col-md-3 text-right d-flex align-items-center">
-                <div class="view-toggle">
-                    <a href="jaascript:;" class="btn btn-default view-toogle grid">
-                        {{ trans('messages.view.grid') }}
-                    </a>
+            <div class="col-md-4 text-right d-flex align-items-center">
+                <div class="view-toggle d-flex ml-auto">
+                    <div class="btn-group" role="group" aria-label="Basic example">
+                        <a href="{{ action('ProductController@index') }}" class="btn btn-default view-toogle grid m-icon mr-1">
+                            <span class="material-icons">
+                                grid_view
+                            </span>
+                        </a>
+                        <a href="{{ action('ProductController@index', ['view' => 'list']) }}" class="btn btn-default view-toogle list m-icon mr-3">
+                            <span class="material-icons-outlined">
+                                reorder
+                            </span>
+                        </a>
+                    </div>
                 </div>
                 <a href="{{ action("SourceController@index") }}" type="button" class="btn bg-info-800 m-icon">
                     <span class="material-icons-outlined">store</span> {{ trans('messages.stores_connections') }}

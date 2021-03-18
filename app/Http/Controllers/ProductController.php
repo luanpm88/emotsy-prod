@@ -31,8 +31,9 @@ class ProductController extends Controller
     public function listing(Request $request)
     {
         $products = Product::search($request)->paginate($request->per_page);
+        $view = $request->view ? $request->view : 'grid';
 
-        return view('products._list', [
+        return view('products._list_' . $view, [
             'products' => $products,
         ]);
     }
@@ -63,7 +64,7 @@ class ProductController extends Controller
                         return [
                             'id' => $product->uid,
                             'name' => $product->title,
-                            'price' => $product->price,
+                            'price' => format_price($product->price),
                             'image' => action('ProductController@image', $product->id),
                             'description' => substr(strip_tags($product->description), 0, 100),
                             'link' => action('ProductController@index'),
@@ -79,7 +80,7 @@ class ProductController extends Controller
             return response()->json([
                 'id' => $product->uid,
                 'name' => $product->title,
-                'price' => $product->price,
+                'price' => format_price($product->price),
                 'image' => action('ProductController@image', $product->id),
                 'description' => substr(strip_tags($product->description), 0, 100),
                 'link' => action('ProductController@index'),

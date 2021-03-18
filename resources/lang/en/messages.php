@@ -4061,4 +4061,5 @@
   'automation.abandoned_cart' => 'Abandoned Cart',
   'source' => 'Source',
   'view.grid' => 'Grid',
+  'view' => 'View',
 ) ?>
