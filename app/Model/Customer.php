@@ -302,9 +302,6 @@ class Customer extends Model implements BillableUserInterface
         static::creating(function ($item) {
             // Create new uid
             $uid = uniqid();
-            while (Customer::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
             $item->uid = $uid;
         });
     }

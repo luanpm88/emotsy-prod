@@ -126,9 +126,6 @@ class PaymentMethod extends Model
         static::creating(function ($item) {
             // Create new uid
             $uid = uniqid();
-            while (PaymentMethod::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
             $item->uid = $uid;
 
             // Update custom order

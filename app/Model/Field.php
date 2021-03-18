@@ -70,9 +70,6 @@ class Field extends Model
         static::creating(function ($item) {
             // Create new uid
             $uid = uniqid();
-            while (Field::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
             $item->uid = $uid;
         });
     }

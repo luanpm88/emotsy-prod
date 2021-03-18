@@ -255,9 +255,6 @@ class Plan extends Model implements BillablePlanInterface
         static::creating(function ($item) {
             // Create new uid
             $uid = uniqid();
-            while (Plan::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
             $item->uid = $uid;
 
             // Update custom order

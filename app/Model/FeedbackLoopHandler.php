@@ -177,14 +177,7 @@ class FeedbackLoopHandler extends DeliveryHandler
         static::creating(function ($item) {
             // Create new uid
             $uid = uniqid();
-            while (FeedbackLoopHandler::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
             $item->uid = $uid;
-
-            // FeedbackLoopHandler custom order
-            FeedbackLoopHandler::getAll()->increment('custom_order', 1);
-            $item->custom_order = 0;
         });
     }
 

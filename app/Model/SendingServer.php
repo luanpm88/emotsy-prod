@@ -317,14 +317,7 @@ class SendingServer extends Model
         static::creating(function ($item) {
             // Create new uid
             $uid = uniqid();
-            while (SendingServer::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
             $item->uid = $uid;
-
-            // SendingServer custom order
-            SendingServer::getAll()->increment('custom_order', 1);
-            $item->custom_order = 0;
         });
     }
 

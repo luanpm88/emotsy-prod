@@ -63,14 +63,7 @@ class Template extends Model implements Storable
         static::creating(function ($item) {
             // Create new uid
             $uid = uniqid();
-            while (Template::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
             $item->uid = $uid;
-
-            // Update custom order
-            Template::getAll()->increment('custom_order', 1);
-            $item->custom_order = 0;
         });
 
         static::deleted(function ($item) {

@@ -189,9 +189,6 @@ class User extends Authenticatable
         static::creating(function ($item) {
             // Create new uid
             $uid = uniqid();
-            while (User::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
             $item->uid = $uid;
 
             // Add api token
