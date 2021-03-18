@@ -54,6 +54,11 @@ class AppServiceProvider extends ServiceProvider
             // See https://stackoverflow.com/questions/29549660/get-laravel-5-controller-name-in-view
             // @todo: fix this anti-pattern
             app('view')->composer('*', function ($view) {
+                $route = app('request')->route();
+                if (is_null($route)) {
+                    return;
+                }
+
                 $action = app('request')->route()->getAction();
                 $controller = class_basename($action['controller']);
                 list($controller, $action) = explode('@', $controller);
@@ -133,6 +138,7 @@ class AppServiceProvider extends ServiceProvider
     {
         try {
             Plugin::autoload();
+            Notification::cleanupDuplicateNotifications('Plugin Error');
         } catch (\Exception $ex) {
             // Just in case
             Notification::warning([

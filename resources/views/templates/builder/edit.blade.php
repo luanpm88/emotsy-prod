@@ -49,6 +49,7 @@
                 tags: {!! json_encode(Acelle\Model\Template::builderTags((isset($list) ? $list : null))) !!},
                 root: '{{ URL::asset('builder') }}/',
                 templates: templates,
+                filemanager: '{{ URL::asset('filemanager2/dialog.php') }}',
                 logo: '{{ \Acelle\Model\Setting::get('site_logo_small') ? action('SettingController@file', \Acelle\Model\Setting::get('site_logo_small')) : URL::asset('images/logo_light_blue.svg') }}',
                 backgrounds: [
                     '{{ url('/images/backgrounds/images1.jpg') }}',
@@ -147,6 +148,10 @@
             });
           
             editor.init();
+
+            //
+            $(document).on('click', '.filemanager-ok', function(e) {alert('Please click on the thumbnail to select the corresponding image');})
+            $(document).on('click', '.filemanager-cancel', function(e) {$('.PopUpCloseButton').click();})
         });
     </script>
   </head>

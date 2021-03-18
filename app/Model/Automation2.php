@@ -308,9 +308,9 @@ class Automation2 extends Model
     /**
      * Get delay options.
      */
-    public function getDelayOptions()
+    public function getDelayOptions($moreOptions=[])
     {
-        return [
+        return array_merge($moreOptions, [
             ['text' => trans_choice('messages.automation.delay.minute', 1), 'value' => '1 minute'],
             ['text' => trans_choice('messages.automation.delay.minute', 30), 'value' => '30 minutes'],
             ['text' => trans_choice('messages.automation.delay.hour', 1), 'value' => '1 hours'],
@@ -329,7 +329,9 @@ class Automation2 extends Model
             ['text' => trans_choice('messages.automation.delay.week', 2), 'value' => '2 weeks'],
             ['text' => trans_choice('messages.automation.delay.month', 1), 'value' => '1 month'],
             ['text' => trans_choice('messages.automation.delay.month', 2), 'value' => '2 months'],
-        ];
+
+            ['text' => trans('messages.automation.delay.custom'), 'value' => 'custom'],
+        ]);
     }
 
     /**
@@ -1312,5 +1314,20 @@ class Automation2 extends Model
     public function dump()
     {
         $this->subscribers();
+    }
+
+    /**
+     * Frequency time unit options.
+     *
+     * @return array
+     */
+    public static function waitTimeUnitOptions($moreOptions=[])
+    {
+        return array_merge($moreOptions, [
+            ['value' => 'day', 'text' => trans('messages.day')],
+            ['value' => 'week', 'text' => trans('messages.week')],
+            ['value' => 'month', 'text' => trans('messages.month')],
+            ['value' => 'year', 'text' => trans('messages.year')],
+        ]);
     }
 }

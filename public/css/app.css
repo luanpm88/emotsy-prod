@@ -4075,3 +4075,7 @@ form.loading input {
     font-size: 19px;
     margin-right: 5px;
 }
+.empty-list .material-icons, .empty-list .material-icons-outlined {
+    font-size: 80px;
+    color: #bbb;
+}

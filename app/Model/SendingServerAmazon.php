@@ -304,6 +304,10 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
             'EmailAddress' => $identity->email,
             'TemplateName' => $this->getCustomVerificationEmailTemplateNameFor($identity),
         ]);
+
+        // Amazon limit for custom verification email template is 50
+        // So we have to clean it up after using
+        $this->deleteCustomVerificationEmailTemplateFor($identity);
     }
 
     /**
