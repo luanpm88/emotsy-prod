@@ -25,8 +25,8 @@ class CreateProductsTable extends Migration
             $table->string('photo')->nullable();
             $table->timestamps();
 
-            $table->string('lazada_id')->nullable();
-            $table->longText('lazada_data')->nullable();
+            $table->string('source_item_id')->nullable();
+            $table->longText('meta')->nullable();
 
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
             $table->foreign('source_id')->references('id')->on('sources')->onDelete('cascade');

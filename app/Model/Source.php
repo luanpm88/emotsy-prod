@@ -161,18 +161,18 @@ class Source extends Model
             foreach ($products as $key => $product) {
                 try {
                     // find exist product
-                    $p = Product::where('lazada_id', '=', $product["id"])->first();
+                    $p = Product::where('source_item_id', '=', $product["id"])->first();
 
                     if (!$p) {
                         $p = new Product();
-                        $p->lazada_id = $product["id"];
+                        $p->source_item_id = $product["id"];
                         $p->customer_id = $customer->id;
                         $p->source_id = $this->id;
                     }
 
                     $p->title = $product["name"];
                     $p->description = $product["description"];
-                    $p->lazada_data = json_encode($product);
+                    $p->meta = json_encode($product);
                     $p->save();
 
                     // upload image
@@ -223,11 +223,11 @@ class Source extends Model
             foreach ($products as $key => $product) {
                 // try {
                     // find exist product
-                    $p = Product::where('lazada_id', '=', $product["item_id"])->first();
+                    $p = Product::where('source_item_id', '=', $product["item_id"])->first();
 
                     if (!$p) {
                         $p = new Product();
-                        $p->lazada_id = $product["item_id"];
+                        $p->source_item_id = $product["item_id"];
                         $p->customer_id = $customer->id;
                         $p->source_id = $this->id;
                     }
@@ -236,7 +236,7 @@ class Source extends Model
                     if (isset($product["attributes"]["short_description"])) {
                         $p->description = $product["attributes"]["short_description"];
                     }
-                    $p->lazada_data = json_encode($product);
+                    $p->meta = json_encode($product);
                     $p->save();
 
                     // upload image
