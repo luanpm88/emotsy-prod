@@ -754,13 +754,8 @@ abstract class AbsCampaign extends Model
 
         // Create uid when creating list.
         static::creating(function ($item) {
-            // Create new uid
             $uid = uniqid();
             $item->uid = $uid;
-
-            // Update custom order
-            Campaign::getAll()->increment('custom_order', 1);
-            $item->custom_order = 0;
         });
 
         // Created
@@ -1800,7 +1795,6 @@ abstract class AbsCampaign extends Model
         $copy->created_at = \Carbon\Carbon::now();
         $copy->updated_at = \Carbon\Carbon::now();
         $copy->status = self::STATUS_NEW;
-        $copy->custom_order = 0;
         $copy->save();
 
         // Lists segments

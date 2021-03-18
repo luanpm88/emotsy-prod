@@ -124,13 +124,8 @@ class PaymentMethod extends Model
 
         // Create uid when creating list.
         static::creating(function ($item) {
-            // Create new uid
             $uid = uniqid();
             $item->uid = $uid;
-
-            // Update custom order
-            PaymentMethod::getAll()->increment('custom_order', 1);
-            $item->custom_order = 0;
         });
     }
 
@@ -252,7 +247,7 @@ class PaymentMethod extends Model
     {
         $data = ['items' => [], 'more' => true];
 
-        $query = \Acelle\Model\PaymentMethod::getAll()->orderBy('custom_order', 'asc');
+        $query = \Acelle\Model\PaymentMethod::getAll();
         if (isset($request->q)) {
             $keyword = $request->q;
             $query = $query->where(function ($q) use ($keyword) {
@@ -275,7 +270,7 @@ class PaymentMethod extends Model
     {
         return self::getAll()
             ->where('payment_methods.status', '=', self::STATUS_ACTIVE)
-            ->orderBy('custom_order', 'asc')->get();
+            ->get();
     }
 
     /**

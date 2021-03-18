@@ -159,10 +159,6 @@ class MailList extends Model
             // Create new uid
             $uid = uniqid();
             $item->uid = $uid;
-
-            // Update custom order
-            MailList::getAll()->increment('custom_order', 1);
-            $item->custom_order = 0;
         });
 
         // Create uid when list created.
@@ -245,7 +241,7 @@ class MailList extends Model
      */
     public function getFields()
     {
-        return $this->fields()->orderBy('custom_order');
+        return $this->fields();
     }
 
     /**
@@ -653,7 +649,6 @@ class MailList extends Model
         $copy->name = $name;
         $copy->created_at = \Carbon\Carbon::now();
         $copy->updated_at = \Carbon\Carbon::now();
-        $copy->custom_order = 0;
 
         if ($customer) {
             $copy->customer_id = $customer->id;
@@ -1996,7 +1991,6 @@ class MailList extends Model
         $copy->name = $name;
         $copy->created_at = \Carbon\Carbon::now();
         $copy->updated_at = \Carbon\Carbon::now();
-        $copy->custom_order = 0;
 
         if ($customer) {
             $copy->customer_id = $customer->id;

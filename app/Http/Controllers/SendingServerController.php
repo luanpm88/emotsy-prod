@@ -244,7 +244,6 @@ class SendingServerController extends Controller
                 return $this->notAuthorized();
             }
 
-            $item->custom_order = $row[1];
             $item->save();
         }
 

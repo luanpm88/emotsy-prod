@@ -127,9 +127,7 @@ class AdminGroup extends Model
 
         // Create uid when creating list.
         static::creating(function ($item) {
-            // Update custom order
-            AdminGroup::getAll()->increment('custom_order', 1);
-            $item->custom_order = 0;
+            //
         });
     }
 

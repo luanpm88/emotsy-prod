@@ -359,7 +359,6 @@ class Template extends Model implements Storable
         $copy->name = $name;
         $copy->created_at = \Carbon\Carbon::now();
         $copy->updated_at = \Carbon\Carbon::now();
-        $copy->custom_order = 0;
         if ($customer) {
             $copy->admin_id = null;
             $copy->customer_id = $customer->id;

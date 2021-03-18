@@ -256,10 +256,6 @@ class Plan extends Model implements BillablePlanInterface
             // Create new uid
             $uid = uniqid();
             $item->uid = $uid;
-
-            // Update custom order
-            Plan::getAll()->increment('custom_order', 1);
-            $item->custom_order = 0;
         });
     }
 
@@ -788,7 +784,7 @@ class Plan extends Model implements BillablePlanInterface
     {
         $data = ['items' => [], 'more' => true];
 
-        $query = \Acelle\Model\Plan::getAllActive()->orderBy('custom_order', 'asc');
+        $query = \Acelle\Model\Plan::getAllActive();
         if (isset($request->q)) {
             $keyword = $request->q;
             $query = $query->where(function ($q) use ($keyword) {
@@ -831,7 +827,7 @@ class Plan extends Model implements BillablePlanInterface
             $query = $query->where('plans.admin_id', '=', $admin->id);
         }
 
-        $query = $query->orderBy('custom_order', 'asc');
+        $query = $query;
 
         return $query;
     }
@@ -845,7 +841,7 @@ class Plan extends Model implements BillablePlanInterface
     {
         $query = self::getAll()
             ->where('plans.status', '=', self::STATUS_ACTIVE);
-        $query = $query->orderBy('custom_order', 'asc');
+        $query = $query;
 
         return $query;
     }
@@ -865,7 +861,7 @@ class Plan extends Model implements BillablePlanInterface
             $query = $query->where('plans.admin_id', '=', $admin->id);
         }
 
-        $query = $query->orderBy('custom_order', 'asc');
+        $query = $query;
 
         return $query;
     }
@@ -1150,7 +1146,6 @@ class Plan extends Model implements BillablePlanInterface
         $copy->created_at = \Carbon\Carbon::now();
         $copy->updated_at = \Carbon\Carbon::now();
         $copy->status = PaymentMethod::STATUS_ACTIVE;
-        $copy->custom_order = 0;
         $copy->save();
 
         // check status

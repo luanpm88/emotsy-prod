@@ -32,7 +32,7 @@ class Field extends Model
      * @var array
      */
     protected $fillable = [
-        'mail_list_id', 'type', 'label', 'tag', 'default_value', 'visible', 'required', 'custom_order',
+        'mail_list_id', 'type', 'label', 'tag', 'default_value', 'visible', 'required',
     ];
 
     /**

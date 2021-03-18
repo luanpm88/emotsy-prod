@@ -295,7 +295,6 @@ class MailListController extends Controller
                 return $this->notAuthorized();
             }
 
-            $list->custom_order = $row[1];
             $list->save();
         }
 
