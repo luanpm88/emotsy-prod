@@ -640,7 +640,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
 
     // Products
     Route::get('/products/json', 'ProductController@json');
-    Route::get('/products/image/{id}', 'ProductController@image');
+    Route::get('/products/image/{uid}', 'ProductController@image');
     Route::get('products/listing', 'ProductController@listing');
     Route::resource('products', 'ProductController');
 

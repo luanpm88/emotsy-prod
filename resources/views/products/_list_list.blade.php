@@ -6,7 +6,7 @@
 			<tr>
 				<td width="1%">
 					<div class="product-image-list mr-3">
-						<img src="{{ action('ProductController@image', $product->id) }}" />
+						<img src="{{ action('ProductController@image', $product->uid) }}" />
 					</div>
 				</td>
 				<td width="50%">

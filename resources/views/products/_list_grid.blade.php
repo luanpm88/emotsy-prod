@@ -4,7 +4,7 @@
 			<div class="col-md-3 col-sm-6 mb-4">
 				<div class="card mb-4 box-shadow">
 					<span class="product-image-box">
-						<img class="card-img-top" src="{{ action('ProductController@image', $product->id) }}" style="height: 100%; width: auto; display: block;">
+						<img class="card-img-top" src="{{ action('ProductController@image', $product->uid) }}" style="height: 100%; width: auto; display: block;">
 					</span>
 					<div class="card-body p-3">
 						<h5 title="{{ $product->title }}" class="text-semibold mt-1 mb-2 text-ellipsis">{{ $product->title }}</h5>

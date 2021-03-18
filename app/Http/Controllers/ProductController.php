@@ -38,9 +38,9 @@ class ProductController extends Controller
         ]);
     }
 
-    public function image(Request $request, $id)
+    public function image(Request $request, $uid)
     {
-        $product = Product::find($id);
+        $product = Product::findByUid($uid);
 
         if ($product->getImagePath()) {
             return response()->file($product->getImagePath());
@@ -65,7 +65,7 @@ class ProductController extends Controller
                             'id' => $product->uid,
                             'name' => $product->title,
                             'price' => format_price($product->price),
-                            'image' => action('ProductController@image', $product->id),
+                            'image' => action('ProductController@image', $product->uid),
                             'description' => substr(strip_tags($product->description), 0, 100),
                             'link' => action('ProductController@index'),
                         ];
@@ -81,7 +81,7 @@ class ProductController extends Controller
                 'id' => $product->uid,
                 'name' => $product->title,
                 'price' => format_price($product->price),
-                'image' => action('ProductController@image', $product->id),
+                'image' => action('ProductController@image', $product->uid),
                 'description' => substr(strip_tags($product->description), 0, 100),
                 'link' => action('ProductController@index'),
             ]);

@@ -3,6 +3,7 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Acelle\Model\Source;
 
 class Product extends Model
 {
@@ -69,6 +70,15 @@ class Product extends Model
         if ($request->sort_by) {
             $sorts = explode('-', $request->sort_by);
             $query = $query->orderBy($sorts[0], $sorts[1]);
+        }
+        
+        $filters = $request->filters;
+        if (!empty($filters)) {
+            // source
+            if (isset($filters['source_uid'])) {
+                $source = Source::findByUid($filters['source_uid']);
+                $query = $query->where('source_id', '=', $source->id);
+            }
         }
 
         return $query;

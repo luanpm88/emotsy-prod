@@ -4062,4 +4062,5 @@
   'source' => 'Source',
   'view.grid' => 'Grid',
   'view' => 'View',
+  'all_source' => 'All sources',
 ) ?>

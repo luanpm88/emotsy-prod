@@ -55,6 +55,15 @@
                             <i class="icon-sort-amount-asc"></i>
                         </button>
                     </span>
+                    <span class="filter-group">
+                        <span class="title text-semibold text-muted">{{ trans('messages.source') }}</span>
+                        <select class="select" name="source_uid">
+                            <option value="" class="active">{{ trans('messages.all_source') }}</option>
+                            @foreach (Acelle\Model\Source::all() as $source)
+                                <option value="{{ $source->uid }}" class="active">{{ $source->getName() }}</option>
+                            @endforeach
+                        </select>
+                    </span>
                     <span class="text-nowrap">
                         <input name="search_keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
                         <i class="icon-search4 keyword_search_button"></i>
