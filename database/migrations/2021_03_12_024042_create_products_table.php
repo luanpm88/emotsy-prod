@@ -22,7 +22,6 @@ class CreateProductsTable extends Migration
             $table->mediumText('description')->nullable();
             $table->longtext('content')->nullable();
             $table->double('price', 16, 2)->nullable();
-            $table->string('photo')->nullable();
             $table->timestamps();
 
             $table->string('source_item_id')->nullable();
