@@ -3849,7 +3849,7 @@
       something in cart.<br/>Enter your WordPress site\'s endpoint to connect.',
   'automation.trigger.woo-abandoned-cart.download_plugin' => 'If you are not sure
       what your WordPress endpoint is, please install
-      <a target="_blank" href=":link">AcelleSync</a> plugin',
+      <a target="_blank" href=":link">WordPress Plugin for Acelle</a> plugin',
   'automation.trigger.tree.woo-abandoned-cart' => 'Abandoned Cart Reminder',
   'automation.condition.open' => 'Subscriber read an Email',
   'automation.condition.click' => 'Subscriber clicks on a Link',
@@ -4004,7 +4004,7 @@
   'templates.admin.intro' => 'This is the application\'s global Template Gallery,
       create your template here to have it available for all users to choose
       from when they compose a campaign email.',
-  'automation.connected_to_store' => 'Connected to WooCommerce<br> via AcelleSync',
+  'automation.connected_to_store' => 'Connected to WooCommerce<br> via WordPress Plugin for Acelle',
   'automation.connect_url.change_store' => 'Change Store',
   'automation.visit_store' => 'Visit store',
   'automation.site_administrator' => 'Site administrator',
@@ -4051,7 +4051,7 @@
   'source.delete.can_not' => 'One or more source are not allowed to.',
   'source.woo.desc' => 'Enter your WordPress Acelle enpoint here to connect to exist WooCommerce stores.
       If you are not sure what your WordPress endpoint is, please install
-      <a target="_blank" href=":link">AcelleSync</a> plugin',
+      <a target="_blank" href=":link">WordPress Plugin for Acelle</a> plugin',
   'source.woo.connect' => 'Connect to WooCommerce',
   'source.connect_url.help' => 'Your WordPress enpoint url',
   'can_not_connect_acelle_sync' => 'Can not connect to Wordpress site. Error: :error',
