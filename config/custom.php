@@ -8,5 +8,5 @@ return [
     'date_format_sql' => '%Y-%m-%d',
 
     // Minimum supported PHP version
-    'php' => '7.1.3',
+    'php' => '7.2.5',
 ];
