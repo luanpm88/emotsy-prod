@@ -824,7 +824,7 @@ class Email extends Model
 
         // STEP 04.1. Check woocommerce items
         if ($this->automation->getTrigger()->getOption('type') == 'woo-abandoned-cart') {
-            $body = $this->wooTransform($body);            
+            $body = $this->wooTransform($body);
         }
 
         // STEP 05. Transform URLs
@@ -865,7 +865,8 @@ class Email extends Model
         return $body;
     }
 
-    public function wooTransform($body) {
+    public function wooTransform($body)
+    {
         if ($this->automation->getTrigger()->getOption('source_uid')) {
             $client = new \GuzzleHttp\Client();
 
@@ -883,7 +884,7 @@ class Email extends Model
                 $request->merge(['sort_by' => $sort]);
 
                 $items = Product::search($request)->paginate($request->per_page)
-                    ->map(function ($product, $key) {                
+                    ->map(function ($product, $key) {
                         return [
                             'id' => $product->uid,
                             'name' => $product->title,
@@ -894,7 +895,7 @@ class Email extends Model
                         ];
                     })->toArray();
                 $itemsHtml = [];
-                foreach($items as $item) {
+                foreach ($items as $item) {
                     // $element->find('.woo-items')[0]->innertext = 'dddddd';
                     $itemsHtml[] = '
                         <div class="woo-col-item mb-4 mt-4 col-md-' . (12/$display) . '">

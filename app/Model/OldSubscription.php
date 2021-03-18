@@ -191,9 +191,6 @@ class OldSubscription extends Model
         static::creating(function ($subscription) {
             // Create new uid
             $uid = uniqid();
-            while (Subscription::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
             $subscription->uid = $uid;
         });
 

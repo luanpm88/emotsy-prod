@@ -302,7 +302,7 @@ class Automation2Controller extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function vaidateTrigger($request, $type) 
+    public function vaidateTrigger($request, $type)
     {
         $valid = true;
 
@@ -324,7 +324,7 @@ class Automation2Controller extends Controller
     public function triggerSelect(Request $request, $uid)
     {
         // init automation
-        $automation = Automation2::findByUid($uid);        
+        $automation = Automation2::findByUid($uid);
         
         // authorize
         if (\Gate::denies('update', $automation)) {

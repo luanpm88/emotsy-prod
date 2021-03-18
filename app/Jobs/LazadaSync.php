@@ -11,7 +11,6 @@ use Illuminate\Queue\SerializesModels;
 use Acelle\Model\Source;
 use Acelle\Model\Customer;
 
-
 class LazadaSync implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;

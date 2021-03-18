@@ -63,14 +63,7 @@ class Template extends Model implements Storable
         static::creating(function ($item) {
             // Create new uid
             $uid = uniqid();
-            while (Template::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
             $item->uid = $uid;
-
-            // Update custom order
-            Template::getAll()->increment('custom_order', 1);
-            $item->custom_order = 0;
         });
 
         static::deleted(function ($item) {
@@ -366,7 +359,6 @@ class Template extends Model implements Storable
         $copy->name = $name;
         $copy->created_at = \Carbon\Carbon::now();
         $copy->updated_at = \Carbon\Carbon::now();
-        $copy->custom_order = 0;
         if ($customer) {
             $copy->admin_id = null;
             $copy->customer_id = $customer->id;
@@ -766,7 +758,8 @@ class Template extends Model implements Storable
         return $body;
     }
 
-    public function wooTransform($body) {
+    public function wooTransform($body)
+    {
         // find all links from contents
         $document = HtmlDomParser::str_get_html($body);
 
@@ -781,7 +774,7 @@ class Template extends Model implements Storable
             $request->merge(['sort_by' => $sort]);
 
             $items = Product::search($request)->paginate($request->per_page)
-                ->map(function ($product, $key) {                
+                ->map(function ($product, $key) {
                     return [
                         'id' => $product->uid,
                         'name' => $product->title,
@@ -792,7 +785,7 @@ class Template extends Model implements Storable
                     ];
                 })->toArray();
             $itemsHtml = [];
-            foreach($items as $item) {
+            foreach ($items as $item) {
                 // $element->find('.woo-items')[0]->innertext = 'dddddd';
                 $itemsHtml[] = '
                     <div class="woo-col-item mb-4 mt-4 col-md-' . (12/$display) . '">

@@ -30,12 +30,7 @@ class Product extends Model
 
         // Create uid when creating list.
         static::creating(function ($item) {
-            // Create new uid
-            $uid = uniqid();
-            while (self::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
-            $item->uid = $uid;
+            $item->uid = uniqid();
         });
     }
 
@@ -89,19 +84,19 @@ class Product extends Model
     {
         $path = storage_path("app/users/" . $this->customer->user->uid);
         // create product images folder if not exist
-        if(!\File::isDirectory($path)) {
+        if (!\File::isDirectory($path)) {
             \File::makeDirectory($path, 0777, true, true);
         }
 
         $path .= '/products';
         // create product images folder if not exist
-        if(!\File::isDirectory($path)) {
+        if (!\File::isDirectory($path)) {
             \File::makeDirectory($path, 0777, true, true);
         }
 
         $path .= '/' . $this->uid;
         // create product images folder if not exist
-        if(!\File::isDirectory($path)) {
+        if (!\File::isDirectory($path)) {
             \File::makeDirectory($path, 0777, true, true);
         }
 

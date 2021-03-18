@@ -17,9 +17,6 @@ class SubAccount extends Model
         static::creating(function ($account) {
             // Create new uid
             $uid = uniqid();
-            while (self::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
             $account->uid = $uid;
         });
     }

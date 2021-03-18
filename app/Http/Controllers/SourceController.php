@@ -65,7 +65,7 @@ class SourceController extends Controller
     }
 
     /**
-     * Receive code and generate token. 
+     * Receive code and generate token.
      *
      * @return \Illuminate\Http\Response
      */
@@ -103,7 +103,7 @@ class SourceController extends Controller
                 return response()->json([
                     'status' => 'error',
                     'message' => trans('messages.source.delete.can_not'),
-                ]);                
+                ]);
             }
 
             // do delete
@@ -118,7 +118,7 @@ class SourceController extends Controller
     }
 
     /**
-     * Import product from source. 
+     * Import product from source.
      *
      * @return \Illuminate\Http\Response
      */
@@ -137,7 +137,7 @@ class SourceController extends Controller
     }
 
     /**
-     * Connect to WooCommerce. 
+     * Connect to WooCommerce.
      *
      * @return \Illuminate\Http\Response
      */

@@ -32,7 +32,7 @@ class Field extends Model
      * @var array
      */
     protected $fillable = [
-        'mail_list_id', 'type', 'label', 'tag', 'default_value', 'visible', 'required', 'custom_order',
+        'mail_list_id', 'type', 'label', 'tag', 'default_value', 'visible', 'required',
     ];
 
     /**
@@ -70,9 +70,6 @@ class Field extends Model
         static::creating(function ($item) {
             // Create new uid
             $uid = uniqid();
-            while (Field::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
             $item->uid = $uid;
         });
     }

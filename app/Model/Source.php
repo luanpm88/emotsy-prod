@@ -26,11 +26,7 @@ class Source extends Model
 
         // Create uid when creating list.
         static::creating(function ($item) {
-            // Create new uid
             $uid = uniqid();
-            while (self::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
             $item->uid = $uid;
         });
     }
@@ -50,8 +46,9 @@ class Source extends Model
      *
      * @return object
      */
-    public function customer(){
-    	return $this->belongsTo('Acelle\Model\Customer');
+    public function customer()
+    {
+        return $this->belongsTo('Acelle\Model\Customer');
     }
 
     /**
@@ -59,8 +56,9 @@ class Source extends Model
      *
      * @return object
      */
-    public function products(){
-    	return $this->hasMany('Acelle\Model\Product');
+    public function products()
+    {
+        return $this->hasMany('Acelle\Model\Product');
     }
 
     /**
@@ -126,8 +124,9 @@ class Source extends Model
      *
      * @return object
      */
-    public function productsCount(){
-    	return $this->products()->count();
+    public function productsCount()
+    {
+        return $this->products()->count();
     }
     
     /**
@@ -135,8 +134,9 @@ class Source extends Model
      *
      * @return object
      */
-    public function getName(){
-    	switch($this->type) {
+    public function getName()
+    {
+        switch ($this->type) {
             case 'woocommerce':
                 return $this->getData()['data']['name'];
             default:
@@ -149,8 +149,9 @@ class Source extends Model
      *
      * @return object
      */
-    public function classMapping() {
-    	$class = '\\Acelle\\Model\\' . $this->type;
+    public function classMapping()
+    {
+        $class = '\\Acelle\\Model\\' . $this->type;
         return $class::find($this->id);
     }
 }
