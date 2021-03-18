@@ -63,7 +63,14 @@
                 success: function (response) {
                     $('.custom-wait-time').html(`<input type="hidden" name="time" value="`+response.amount+` `+response.unit+`" />`);
                     waitTimePopup.hide();
-                    $('.action-save-change').click();
+                    
+                    setTimeout(function() {
+                        if($('.select-action-confirm').is(':visible')) {
+                            $('.select-action-confirm').click();
+                        } else {
+                            $('.action-save-change').click();
+                        }
+                    },100);
                 }
             });
         });

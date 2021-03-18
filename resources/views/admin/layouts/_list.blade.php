@@ -41,7 +41,7 @@
     {{ $items->links() }}
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
-        <i class="glyphicon glyphicon-file"></i>
+        <i class="icon icon-file"></i>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
         </span>

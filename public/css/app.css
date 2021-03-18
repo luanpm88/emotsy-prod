@@ -4076,6 +4076,7 @@ form.loading input {
     font-size: 19px;
     margin-right: 5px;
 }
+
 .btn.m-icon {
     padding-left: 10px;
     padding-right: 10px;
@@ -4155,4 +4156,8 @@ a.btn-link {
     .product-image-box {
         height: 660px;
     }
+}
+.empty-list .material-icons, .empty-list .material-icons-outlined {
+    font-size: 80px;
+    color: #bbb;
 }

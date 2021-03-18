@@ -8,9 +8,7 @@
 <div class="row">
     @php
         $delayOptions = $automation->getDelayOptions();
-        $parts = explode(' ', $element->getOption('time'));
         $exist = false;
-        $text = trans('messages.time.wait_for') . ' ' . $parts[0] . ' ' . trans_choice('messages.time.' . $parts[1], (int) $parts[0]);
 
         foreach($delayOptions as $deplayOption) {
             if ($deplayOption['value'] == $element->getOption('time')) {
@@ -19,7 +17,9 @@
         }
 
         $moreOptions = [];
-        if (!$exist) {
+        if (!$exist && $element->getOption('time')) {
+            $parts = explode(' ', $element->getOption('time'));
+            $text = $parts[0] . ' ' . trans_choice('messages.time.' . $parts[1], (int) $parts[0]);
             $moreOptions = [['text' => $text, 'value' => $text]];
         }
     @endphp

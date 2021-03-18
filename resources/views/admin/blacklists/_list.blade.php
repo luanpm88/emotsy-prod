@@ -65,14 +65,14 @@
 	</script>
 @elseif (!empty(request()->keyword) || !empty(request()->filters["campaign_uid"]))
 	<div class="empty-list">
-		<i class="glyphicon glyphicon-minus-sign"></i>
+		<i class="icon icon-blocked"></i>
 		<span class="line-1">
 			{{ trans('messages.no_search_result') }}
 		</span>
 	</div>
 @else
 	<div class="empty-list">
-		<i class="glyphicon glyphicon-minus-sign"></i>
+		<i class="icon icon-blocked"></i>
 		<span class="line-1">
 			{{ trans('messages.blacklist_empty_line_1') }}
 		</span>
