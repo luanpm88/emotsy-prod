@@ -120,8 +120,8 @@
 						</li>
 						<li rel0="SourceController">
 							<a href="{{ action('SourceController@index') }}" class="d-flex align-items-center">
-								<i class="acelle-icon mr-3" style="width:21px;margin-left: -3px;
-								margin-right: 9px!important;">
+								<i class="acelle-icon mr-3" style="width:21px;margin-left: -4px;
+								margin-right: 10px!important;">
 							<img src="{{ url('images/icons/'.$iconDir.'SVG/store.svg') }}" />
 							</i> {{ trans('messages.stores_connections') }}
 							</a>
