@@ -137,7 +137,7 @@ class Source extends Model
     public function getName()
     {
         switch ($this->type) {
-            case 'woocommerce':
+            case 'WooCommerce':
                 return $this->getData()['data']['name'];
             default:
                 return trans('messages.source.' . $this->type);
