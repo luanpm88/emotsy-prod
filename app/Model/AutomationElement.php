@@ -175,29 +175,4 @@ class AutomationElement
         
         return json_decode($response->getBody(), true);
     }
-
-    /**
-     * Get shop info.
-     *
-     * @return string
-     */
-    public function wooGetShopInfo()
-    {
-        $client = new \GuzzleHttp\Client();
-        $uri = $this->getOption('connect_url') . '?action=shop_info';
-
-        try {
-            $response = $client->request('GET', $uri, [
-                'headers' => [
-                    "content-type" => "application/json"
-                ],
-            ]);
-            
-            return json_decode($response->getBody(), true);
-        } catch (\Exception $e) {
-            return [
-                'error' => $e->getMessage(),
-            ];
-        }
-    }
 }

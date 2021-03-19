@@ -29,6 +29,8 @@ class WooCommerce extends Source
         $validator->after(function ($validator) use ($connectUrl, &$source, &$meta) {
             $client = new \GuzzleHttp\Client();
 
+            $sign = (strpos($connectUrl, '?') !== false) ? '&' : '?';
+
             // Step 1.1: check valid endpoint
             try {
                 $response = $client->request('GET', $connectUrl, [
@@ -43,7 +45,7 @@ class WooCommerce extends Source
 
             // Step 1.2: get shop information
             try {
-                $response = $client->request('GET', $connectUrl . '&action=shop_info', [
+                $response = $client->request('GET', $connectUrl . $sign . 'action=shop_info', [
                     'headers' => [
                         "content-type" => "application/json"
                     ],
@@ -68,8 +70,9 @@ class WooCommerce extends Source
     public function importProducts($customer)
     {
         $client = new \GuzzleHttp\Client();
-        $uri =  $this->getData()['connect_url'] .
-                '&action=list&max=100&sort_by=';
+        $sign = (strpos($this->getData()['connect_url'], '?') !== false) ? '&' : '?';
+        $uri =  $this->getData()['connect_url'] . $sign .
+                'action=list&max=100&sort_by=';
 
         $response = $client->request('GET', $uri, [
             'Content-Type' => 'application/json',
