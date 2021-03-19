@@ -85,7 +85,9 @@ class WooCommerce extends Source
         foreach ($products as $key => $product) {
             try {
                 // find exist product
-                $p = Product::findOrNew('source_item_id', '=', $product["id"]);
+                $p = Product::firstOrNew([
+                    'source_item_id' => $product["id"]
+                ]);
                 $p->customer_id = $customer->id;
                 $p->source_id = $this->id;
 

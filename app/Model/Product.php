@@ -9,6 +9,13 @@ class Product extends Model
 {
     public static $itemsPerPage = 16;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = ['source_item_id'];
+
     // belongs to customer
     public function customer()
     {
