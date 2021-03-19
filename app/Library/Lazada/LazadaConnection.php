@@ -80,7 +80,11 @@ class LazadaConnection
             $request->addApiParam($key, $value);
         }
 
-        return json_decode($this->service->execute($request, $this->data['access_token']), true);
+        if (isset($this->data['access_token'])) {
+            return json_decode($this->service->execute($request, $this->data['access_token']), true);
+        } else {
+            return json_decode($this->service->execute($request), true);
+        }
     }
 
     public function getProducts($options=[])
