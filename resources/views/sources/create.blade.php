@@ -23,10 +23,12 @@
         <div class="col-md-12">
             <p>{{ trans('messages.source.select_source_type.wording') }}</p>
             <div class="source_list d-flex align-items-center">
-                <a class="source_type mr-4" href="{{ $lazadaConnectLink }}">
-                    <img width="200px" src="{{ url('images/Lazada.svg') }}" />
-                </a>
-
+                @if (Acelle\Model\Plugin::enabled('acelle/lazada'))
+                    <a class="source_type mr-4" href="{{ $lazadaConnectLink }}">
+                        <img width="200px" src="{{ url('images/Lazada.svg') }}" />
+                    </a>
+                @endif
+                
                 <a class="source_type woocommerce-create"
                     href="{{ action('SourceController@wooConnect') }}"
                 >

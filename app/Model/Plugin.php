@@ -620,4 +620,16 @@ class Plugin extends Model
 
         return;
     }
+
+    /**
+     * Check if plugin enabled.
+     *
+     * @return array
+     */
+    public static function enabled($name)
+    {
+        return self::where('name', '=', $name)
+            ->where('status', '=', self::STATUS_ACTIVE)
+            ->exists();
+    }
 }

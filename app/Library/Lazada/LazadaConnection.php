@@ -26,8 +26,8 @@ class LazadaConnection
 
     public function __construct($appKey=false, $appSecret=false, $data=[])
     {
-        $this->appKey = env('LAZADA_KEY');
-        $this->appSecret = env('LAZADA_SECRET');
+        $this->appKey = config('lazada.key');
+        $this->appSecret = config('lazada.secret');
 
         if ($appKey) {
             $this->appKey = $appKey;
