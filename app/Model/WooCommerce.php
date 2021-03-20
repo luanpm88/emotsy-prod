@@ -67,7 +67,7 @@ class WooCommerce extends Source
         return [$source, $validator];
     }
 
-    public function importProducts($customer)
+    public function importProducts()
     {
         $client = new \GuzzleHttp\Client();
         $sign = (strpos($this->getData()['connect_url'], '?') !== false) ? '&' : '?';
@@ -88,7 +88,7 @@ class WooCommerce extends Source
                 $p = Product::firstOrNew([
                     'source_item_id' => $product["id"]
                 ]);
-                $p->customer_id = $customer->id;
+                $p->customer_id = $this->customer_id;
                 $p->source_id = $this->id;
 
                 $p->title = $product["name"];

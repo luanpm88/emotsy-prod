@@ -39,7 +39,7 @@ class Lazada extends Source
         $this->updateData($this->service()->data);
     }
 
-    public function importProducts($customer)
+    public function importProducts()
     {
         $data = $this->service()->getProducts(['offset' => 0, 'limit' => 1])['data'];
         $total = $data['total_products'];
@@ -65,7 +65,7 @@ class Lazada extends Source
                 $p = Product::firstOrNew([
                     'source_item_id' => $product["item_id"]
                 ]);
-                $p->customer_id = $customer->id;
+                $p->customer_id = $this->customer_id;
                 $p->source_id = $this->id;
 
                 $p->title = $product["attributes"]["name"];

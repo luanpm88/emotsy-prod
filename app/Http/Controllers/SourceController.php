@@ -129,7 +129,7 @@ class SourceController extends Controller
         $source = $source->classMapping();
 
         // import products
-        $source->importProducts($request->user()->customer);
+        $source->importProducts();
 
         // redirect
         $request->session()->flash('alert-success', 'Products were imported!');

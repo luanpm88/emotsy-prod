@@ -30,9 +30,9 @@
 					<a href="{{ action('SourceController@sync', $product->uid) }}"
 						link-method="POST"
 						type="button" class="btn btn-mc_primary m-icon pl-3">
-						<span class="material-icons">
-							sync
-							</span>View</a>
+						<span class="material-icons-outlined mr-2">
+							link
+							</span>{{ trans('messages.view') }}</a>
 					<div class="btn-group">
 						<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 						<ul class="dropdown-menu dropdown-menu-right">

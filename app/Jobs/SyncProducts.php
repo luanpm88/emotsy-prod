@@ -11,23 +11,21 @@ use Illuminate\Queue\SerializesModels;
 use Acelle\Model\Source;
 use Acelle\Model\Customer;
 
-class LazadaSync implements ShouldQueue
+class SyncProducts implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $lazadaSource;
-    protected $customer;
+    protected $source;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Source $lazadaSource, Customer $customer)
+    public function __construct(Source $source)
     {
         //
-        $this->lazadaSource = $lazadaSource;
-        $this->customer = $customer;
+        $this->source = $source;
     }
 
     /**
@@ -38,6 +36,7 @@ class LazadaSync implements ShouldQueue
     public function handle()
     {
         // import all lazada products
-        $this->lazadaSource->importProducts($this->customer);
+        $this->source->classMapping();
+        $this->source->importProducts();
     }
 }
