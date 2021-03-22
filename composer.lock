@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4452375223140b67d9459a02495d3144",
+    "content-hash": "443b2653163dffc291e12ffb72efb6b5",
     "packages": [
         {
             "name": "acelle/cashier",
@@ -2489,16 +2489,16 @@
         },
         {
             "name": "louis/log-viewer",
-            "version": "1.2.2",
+            "version": "1.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/louisitvn/log-viewer.git",
-                "reference": "2b0cf5b7a3fd281b60c3a412a0839f92c47c581b"
+                "reference": "4b893a61a1b13a55d4b4be5aa4aa2c237b785588"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/louisitvn/log-viewer/zipball/2b0cf5b7a3fd281b60c3a412a0839f92c47c581b",
-                "reference": "2b0cf5b7a3fd281b60c3a412a0839f92c47c581b",
+                "url": "https://api.github.com/repos/louisitvn/log-viewer/zipball/4b893a61a1b13a55d4b4be5aa4aa2c237b785588",
+                "reference": "4b893a61a1b13a55d4b4be5aa4aa2c237b785588",
                 "shasum": ""
             },
             "require": {
@@ -2527,10 +2527,10 @@
             ],
             "description": "Log Viewer",
             "support": {
-                "source": "https://github.com/louisitvn/log-viewer/tree/1.2.2",
+                "source": "https://github.com/louisitvn/log-viewer/tree/1.2.4",
                 "issues": "https://github.com/louisitvn/log-viewer/issues"
             },
-            "time": "2020-04-24T20:20:07+00:00"
+            "time": "2021-03-22T02:35:55+00:00"
         },
         {
             "name": "louis/sendgrid",

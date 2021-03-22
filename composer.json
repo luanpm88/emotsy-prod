@@ -21,7 +21,7 @@
         "laravel/tinker": "^1.0",
         "lawepham/geoip": "1.6",
         "league/csv": "^8.0",
-        "louis/log-viewer": "1.2.*",
+        "louis/log-viewer": "1.2.4",
         "louis/sendgrid": "dev-master",
         "louis/spfcheck": "1.1.8",
         "mailgun/mailgun-php": "3.1.0",
