@@ -593,9 +593,12 @@ class TemplateController extends Controller
      */
     public function builderTemplates(Request $request)
     {
-        $request->merge(array("customer_id" => $request->user()->customer->id));
+        if (!is_null($request->user()->customer)) {
+            $request->merge(array("customer_id" => $request->user()->customer->id));
+        }
+
         $templates = Template::search($request)->paginate($request->per_page);
-        
+
         // authorize
         if (!$request->user()->admin->can('create', Template::class)) {
             return $this->notAuthorized();
