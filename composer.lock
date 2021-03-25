@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4452375223140b67d9459a02495d3144",
+    "content-hash": "0ecdccaf57c04ffbe9102ccdd0a591aa",
     "packages": [
         {
             "name": "acelle/cashier",
@@ -2315,16 +2315,16 @@
         },
         {
             "name": "lawepham/geoip",
-            "version": "1.6",
+            "version": "1.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/luanpm88/lawepham-geoip.git",
-                "reference": "1a94ad9c99f7a0872ce7f81f8e54248194e2d209"
+                "reference": "a427e638a64bd5d67a1dfe23eabaf768550cb502"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/luanpm88/lawepham-geoip/zipball/1a94ad9c99f7a0872ce7f81f8e54248194e2d209",
-                "reference": "1a94ad9c99f7a0872ce7f81f8e54248194e2d209",
+                "url": "https://api.github.com/repos/luanpm88/lawepham-geoip/zipball/a427e638a64bd5d67a1dfe23eabaf768550cb502",
+                "reference": "a427e638a64bd5d67a1dfe23eabaf768550cb502",
                 "shasum": ""
             },
             "type": "library",
@@ -2341,10 +2341,10 @@
             ],
             "description": "Get location information from IP",
             "support": {
-                "source": "https://github.com/luanpm88/lawepham-geoip/tree/1.6",
+                "source": "https://github.com/luanpm88/lawepham-geoip/tree/1.6.1",
                 "issues": "https://github.com/luanpm88/lawepham-geoip/issues"
             },
-            "time": "2019-02-12T02:13:04+00:00"
+            "time": "2021-03-25T01:51:09+00:00"
         },
         {
             "name": "league/csv",
