@@ -19,7 +19,7 @@
         "kub-at/php-simple-html-dom-parser": "^1.9",
         "laravel/framework": "5.8.*",
         "laravel/tinker": "^1.0",
-        "lawepham/geoip": "1.6",
+        "lawepham/geoip": "^1.6.1",
         "league/csv": "^8.0",
         "louis/log-viewer": "1.2.4",
         "louis/sendgrid": "dev-master",
