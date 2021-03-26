@@ -1,6 +1,5 @@
-@include('automation2._info')
-
-@include('automation2._tabs', ['tab' => 'settings'])
+<a href="#"><< Back to automation</a>
+<br><br>
     
 <h5 class="mb-20 mt-3"h5>
     {{ trans('messages.automation.action.send-an-email') }}
