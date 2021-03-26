@@ -21,8 +21,7 @@
                         'store' => $shopinfo['name']
                     ]) !!}</p>
                     <div class="small">
-                        <a target="_blank" href="{{ $shopinfo['url'] }}">{{ trans('messages.automation.visit_store') }}</a> |
-                        {{-- <a target="_blank" href="{{ $shopinfo['admin_url'] }}">{{ trans('messages.automation.site_administrator') }}</a> --}}
+                        <a target="_blank" href="{{ $shopinfo['url'] }}">{{ trans('messages.automation.visit_store') }}</a>
                     </div>
                 </div>
                 <div class="ml-auto">
@@ -32,10 +31,6 @@
                 </div>
             </div>
             <div class="bottom-info">
-                <div class="d-flex align-items-center">
-                    <h5 class="mb-1">{{ $shopinfo['name'] }}</h5>
-                    <span class="badge badge-success ml-2">{{ trans('messages.active') }}</span>
-                </div>
                 <p>{{ trans('messages.automation.associated_with_store.wording', [
                     'store' => $shopinfo['name']
                 ]) }}</p>
