@@ -1,6 +1,4 @@
-@include('automation2._info')
-
-@include('automation2._tabs', ['tab' => 'settings'])
+@include('automation2._back')
 
 <form class="action-edit" action="{{ action("Automation2Controller@actionEdit", ['uid' => $automation->uid, 'key' => $key]) }}" method="POST" class="form-validate-jqueryz">
     {{ csrf_field() }}

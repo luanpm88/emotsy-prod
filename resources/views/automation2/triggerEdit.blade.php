@@ -1,6 +1,4 @@
-@include('automation2._info')
-
-@include('automation2._tabs', ['tab' => 'settings'])
+@include('automation2._back')
                         
 <h5 class="mb-3 mt-4">
     {{ trans('messages.automation.trigger.' . $key) }}

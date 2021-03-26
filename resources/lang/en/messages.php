@@ -3954,4 +3954,5 @@
   'time.month' => 'month|months',
   'time.year' => 'year|years',
   'time.wait_for' => 'Wait for: ',
+  'automation.back_to_automation' => 'Back to automation',
 ) ?>
