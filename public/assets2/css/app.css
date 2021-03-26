@@ -176,7 +176,7 @@ a {
     overflow: auto;
 }
 .automation2 .sidebar {
-    width: 520px;
+    width: 600px;
     height: calc(100vh - 56px);
     overflow: auto;
     margin-top: 56px;
