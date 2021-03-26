@@ -2871,7 +2871,7 @@
   'automation.statistics' => 'Statistics',
   'automation.settings.intro' => 'Below is general information of the automation. You can update the settings and click
     `<span class="font-weight-semibold">Save</span>` button.',
-  'automation.change_mail_list' => 'Change Mail List',
+  'automation.change_mail_list' => 'Audience',
   'automation.automation_name' => 'Automation name',
   'automation.settings.save' => 'Save',
   'automation.delete_this_action' => 'Delete this Action',
