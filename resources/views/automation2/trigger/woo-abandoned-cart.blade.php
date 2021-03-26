@@ -1,7 +1,7 @@
 <div class="mb-20">
     <input type="hidden" name="options[type]" value="woo-abandoned-cart" />
 
-    <p class="small">{!! trans('messages.automation.trigger.woo-abandoned-cart.download_plugin', [
+    <p>{!! trans('messages.automation.trigger.woo-abandoned-cart.download_plugin', [
         'link' => route('download', ['name' => 'acelle-sync.zip']),
     ]) !!}</p>
     
