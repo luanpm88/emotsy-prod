@@ -1,5 +1,4 @@
-<a href="#"><< Back to automation</a>
-
+@include('automation2._back')
 
 <h5 class="mb-3 mt-4">
     {{ trans('messages.automation.trigger.' . $key) }}

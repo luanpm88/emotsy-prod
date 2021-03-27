@@ -4063,4 +4063,5 @@
   'view.grid' => 'Grid',
   'view' => 'View',
   'all_source' => 'All sources',
+  'automation.back_to_automation' => 'Back to automation',
 ) ?>

@@ -1,6 +1,5 @@
-<a href="#"><< Back to automation</a>
-<br><br>
-    
+@include('automation2._back')
+
 <h5 class="mb-20 mt-3"h5>
     {{ trans('messages.automation.action.send-an-email') }}
 </h5>
@@ -32,19 +31,28 @@
     
 <form>
 
-<h6 class="mb-2 mt-5 text-danger">
-    {{ trans('messages.automation.dangerous_zone') }}
-</h6>
-<p class="">
-    {{ trans('messages.automation.action.delete.confirm') }}        
-</p>
-<div class="mt-3">
-    <a href="{{ action('Automation2Controller@emailDelete', [
-        'uid' => $automation->uid,
-        'email_uid' => $email->uid,
-    ]) }}" data-confirm="{{ trans('messages.automation.email.delete.confirm') }}" class="btn btn-danger email-action-delete">
-        <i class='lnr lnr-trash mr-2'></i> {{ trans('messages.automation.delete_this_action') }}
-    </a>
+<div class="alert alert-warning mt-5 d-flex py-3">
+    <div class="mr-3 mt-1">
+        <span class="material-icons-outlined text-warning">
+            warning_amber
+        </span>
+    </div>
+    <div>
+        <h6 class="mb-1">
+            {{ trans('messages.automation.dangerous_zone') }}
+        </h6>
+        <p class="">
+            {{ trans('messages.automation.action.delete.confirm') }}         
+        </p>
+        <div class="mt-3">
+            <a href="{{ action('Automation2Controller@emailDelete', [
+                'uid' => $automation->uid,
+                'email_uid' => $email->uid,
+            ]) }}" data-confirm="{{ trans('messages.automation.email.delete.confirm') }}" class="btn btn-secondary email-action-delete">
+                <i class='lnr lnr-trash mr-0'></i> {{ trans('messages.automation.delete_this_action') }}
+            </a>
+        </div>
+    </div>
 </div>
 
 <script>
