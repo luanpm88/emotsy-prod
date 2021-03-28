@@ -10,46 +10,46 @@
 
 @section('page_header')
 
-			@include("campaigns._header")
+    @include("campaigns._header")
 
 @endsection
 
 @section('content')
 
-            @include("campaigns._menu")
+    @include("campaigns._menu")
 
-			@include("campaigns._info")
+    @include("campaigns._info")
 
-            <br />
+    <br />
 
-            @include("campaigns._chart")
+    @include("campaigns._chart")
 
-            <hr />
+    <hr />
 
-			@include("campaigns._open_click_rate")
+    @include("campaigns._open_click_rate")
 
-			@include("campaigns._count_boxes")
+    @include("campaigns._count_boxes")
 
-            <br />
+    <br />
 
-            @include("campaigns._24h_chart")
+    @include("campaigns._24h_chart")
 
 
-            <br />
+    <br />
 
-			@include("campaigns._top_link")
+    @include("campaigns._top_link")
 
-            <br />
+    <br />
 
-			@include("campaigns._most_click_country")
+    @include("campaigns._most_click_country")
 
-            <br />
+    <br />
 
-			@include("campaigns._most_open_country")
+    @include("campaigns._most_open_country")
 
-			<br />
+    <br />
 
-			@include("campaigns._most_open_location")
+    @include("campaigns._most_open_location")
 
-            <br />
+    <br />
 @endsection
