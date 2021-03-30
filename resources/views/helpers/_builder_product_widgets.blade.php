@@ -420,7 +420,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                     <div class="panel__body woo-panel__body" title="{{ trans('messages.automation.woo_item') }}">
                         <div class="image-drag">
                             <div ng-bind-html="::getModuleIcon(module)" class="ng-binding product-list-widget">
-                                <img builder-element src="{{ url('images/abandoned-cart.svg') }}" width="100%" />
+                                <img builder-element style="width:58px" src="{{ url('images/woo_cart.svg') }}" width="100%" />
                             </div>
                         </div>
                         <div class="body__title">{{ trans('messages.automation.abandoned_cart') }}</div>
