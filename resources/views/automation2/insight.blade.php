@@ -12,19 +12,31 @@
 </div>
     
 <div class="insight-stat-brief d-flex mt-3 mb-4">
-    <a title="{{ trans('messages.automation.go_contacts') }}" href="javascript:;" onclick="sidebar.load('{{ action('Automation2Controller@contacts', $automation->uid) }}')" class="xtooltip insight-stat-col flex-fill">
+    <a title="{{ trans('messages.automation.go_contacts') }}" href="javascript:;"
+      onclick="timelinePopup.load('{{ action('Automation2Controller@contacts', [
+        'uid' => $automation->uid,
+        'type' => 'in_action',
+      ]) }}')" class="xtooltip insight-stat-col flex-fill">
         <number>{{ format_number($stats['total']) }}</number>
         <desc class="text-muted text-center">
             <span class="stats-title">{{ trans_choice('messages.automation.contacts', $stats['total']) }}</span>
         </desc>
     </a>
-    <a title="{{ trans('messages.automation.go_contacts') }}" href="javascript:;" onclick="sidebar.load('{{ action('Automation2Controller@contacts', $automation->uid) }}')" class="xtooltip insight-stat-col flex-fill">
+    <a title="{{ trans('messages.automation.go_contacts') }}" href="javascript:;"
+      onclick="timelinePopup.load('{{ action('Automation2Controller@contacts', [
+        'uid' => $automation->uid,
+        'type' => 'in_action',
+      ]) }}')" class="xtooltip insight-stat-col flex-fill">
         <number>{{ number_with_delimiter($stats['involed']) }}</number>
         <desc class="text-muted text-center">
             <span class="stats-title">{{ trans_choice('messages.automation.involved', $stats['total']) }}</span>
         </desc>
     </a>
-    <a title="{{ trans('messages.automation.go_contacts') }}" href="javascript:;" onclick="sidebar.load('{{ action('Automation2Controller@contacts', $automation->uid) }}')" class="xtooltip insight-stat-col flex-fill">
+    <a title="{{ trans('messages.automation.go_contacts') }}" href="javascript:;"
+      onclick="timelinePopup.load('{{ action('Automation2Controller@contacts', [
+        'uid' => $automation->uid,
+        'type' => 'in_action',
+      ]) }}')" class="xtooltip insight-stat-col flex-fill">
         <number>{{ number_to_percentage($stats['complete']) }}</number>
         <desc class="text-muted text-center">
             <span class="stats-title">{{ trans_choice('messages.automation.complete_percent', $stats['total']) }}</span>
