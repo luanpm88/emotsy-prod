@@ -3917,7 +3917,6 @@
       what your WordPress endpoint is, please install
       <a target="_blank" href=":link">AcelleSync</a> plugin',
   'automation.buy_now' => 'Buy now',
-  'login.please_wait' => 'Logging in, please wait...',
   'quicktip.quick_tips' => 'Quick tips',
   'quicktip.identity.title' => 'Notes for administrator',
   'quicktip.identity.tip' => 'Add sending domains or email addresses as identities for the 
@@ -3948,4 +3947,90 @@
       <a href="http://:domain" target="_blank">http://:domain</a> are also redirected to Acelle source.
       In other words, make it an alias URL or your Acelle webapp.',
   'tracking_domain.test.proceed' => 'Proceed',
+  'automation.delay.custom' => 'Custom',
+  'automation.contacts_in_action' => 'Contacts in action',
+  'automation.contacts_done' => 'Contacts done',
+  'automation.contacts_skip_pending' => 'Contacts skipped or pending',
+  'automation.contacts_pending' => 'Contacts skipped or pending',
+  'automation.contacts_error' => 'Error',
+  'automation.box.contacts_in_action' => 'Contacts in action',
+  'automation.box.contacts_done' => 'Contacts done',
+  'automation.box.contacts_skip_pending' => 'Skipped / Pending',
+  'automation.box.contacts_error' => 'Error!!!',
+  'automation.action' => 'Action',
+  'automation.update_stats' => 'Update stats',
+  'automation.last_activity' => 'Last activity',
+  'automation.retry' => 'Retry',
+  'woo_item.please_select_product' => 'Please choose a product',
+  'whitelabel.title' => 'Whitelable AWS so that it serves under your own brand',
+  'whitelabel.wording' => 'When user add a sending domain, they shall be required to add DNS record like amazon.domain.com
+      to their DNS management control. You can replace `amazoneses` with something line awsome.domain.com to make it your
+      own brand
+  ',
+  'whitelabel.enable' => 'Enable whitelabelling',
+  'whitelabel.setup.title' => 'Set up AWS whitelabelling',
+  'whitelabel.setup.intro' => 'Selector is used in DNS record that user will need to
+      add to your DNS management console',
+  'whitelabel.choose_a_brand_domain' => 'Choose a brand domain',
+  'whitelable.updated' => 'Whitelablling was successfully updated',
+  'whitelabel.enabled.wording' => 'Your AWS sending server is
+      whitelabelled',
+  'whitelabel.enabled.intro' => 'AWS service is being provided to your users
+      transparently under your own brand.
+      When
+      user adds a sending domain, they shall be
+      required to add DNS
+      record of your own
+      brand
+      <strong>:selector</strong>
+      to their DNS
+      management
+      control. No AWS selector or
+      message id shall show up to your users',
+  'whitelabel.settings' => 'Settings',
+  'whitelabel.turn_off' => 'Turn OFF whitelabelling',
+  'whitelable.turned_of' => 'Whitelablling was successfully turned off',
+  'automation.choose_a_product' => 'Choose a Product',
+  'automation.connected_to_store' => 'Connected to WooCommerce<br> via WordPress Plugin for Acelle',
+  'automation.connect_url.change_store' => 'Change Store',
+  'automation.visit_store' => 'Visit store',
+  'automation.site_administrator' => 'Site administrator',
+  'automation.associated_with_store.wording' => 'This automation is associated with :store powered by Wordpress.',
+  'woo.products' => 'Products',
+  'woo.orders' => 'Orders',
+  'woo.total_sales' => 'Total sales',
+  'automation.wait' => 'Wait',
+  'automation.wait.wording' => 'Setting up custom wait time',
+  'time.day' => 'day|days',
+  'time.week' => 'week|weeks',
+  'time.month' => 'month|months',
+  'time.year' => 'year|years',
+  'time.wait_for' => 'Wait for: ',
+  'products' => 'Products',
+  'stores_connections' => 'Stores & Connections',
+  'source.add_new' => 'Add new',
+  'source.empty' => 'You have no source',
+  'source.not_found' => 'There are no source found',
+  'source.select_source_type.wording' => 'Select one of the following
+      E-commerce belows to connect with:',
+  'source.Lazada' => 'Lazada',
+  'source.last_sync_at' => 'Last synced at',
+  'source.sync' => 'Sync',
+  'source.delete.confirm' => 'You are about to delete this source',
+  'source.delete.can_not' => 'One or more source are not allowed to.',
+  'source.woo.desc' => 'Enter your WordPress Acelle enpoint here to connect to exist WooCommerce stores.
+      If you are not sure what your WordPress endpoint is, please install
+      <a target="_blank" href=":link">WordPress Plugin for Acelle</a> plugin',
+  'source.woo.connect' => 'Connect to WooCommerce',
+  'source.connect_url.help' => 'Your WordPress enpoint url',
+  'can_not_connect_acelle_sync' => 'Can not connect to Wordpress site. Error: :error',
+  'source.WooCommerce' => 'WooCommerce',
+  'source.can_not_get_woo_data' => 'Could not get shop information from woocommerce. Error: :error',
+  'source.woo.connecting' => 'Connecting...',
+  'automation.abandoned_cart' => 'Abandoned Cart',
+  'source' => 'Source',
+  'view.grid' => 'Grid',
+  'view' => 'View',
+  'all_source' => 'All sources',
+  'automation.back_to_automation' => 'Back to automation',
 ) ?>

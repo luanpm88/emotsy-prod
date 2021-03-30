@@ -748,8 +748,8 @@ input.error {
     color: #000;
 }
 .bg-future, .bg-new {
-    background-color: #f25f24;
-    border-color: #f25f24;
+    background-color: #ef906a;
+    border-color: #ef906a;
     color: #fff;
 }
 .bg-undeliverable, .bg-outdated, .bg-error, .bg-failed {

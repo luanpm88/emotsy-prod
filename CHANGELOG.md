@@ -43,7 +43,7 @@
  * Fixed: better load performance for JS/CSS
  * Fixed: delivery attempt tracking improved
 
-4.0.20 / 2020-05-10
+4.0.20 / 2020-11-11
 ==================
 
  * Fixed: default template missing
@@ -63,7 +63,7 @@
  * Added: assign plan to customer support
  * Added: reorganization of users assets storage
 
-4.0.19 / 2020-03-04
+4.0.19 / 2020-09-10
 ==================
 
  + Fixed: automation elements are not well organized
@@ -82,7 +82,7 @@
  + Added: subscription notification for admin
  + Added: notification management dashboard
 
-4.0.18 / 2020-02-10
+4.0.18 / 2020-06-08
 ==================
 
  * Fixed: sending identity not working in certain cases

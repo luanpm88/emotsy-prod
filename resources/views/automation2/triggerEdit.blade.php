@@ -1,14 +1,11 @@
-@include('automation2._info')
+@include('automation2._back')
 
-@include('automation2._tabs', ['tab' => 'settings'])
-                        
 <h5 class="mb-3 mt-4">
     {{ trans('messages.automation.trigger.' . $key) }}
 </h5>
 <p class="mb-10">
     {!! trans('messages.automation.trigger.' . $key . '.intro') !!}
 </p>
-    
 <form id="trigger-select" action="{{ action("Automation2Controller@triggerEdit", ['uid' => $automation->uid, 'key' => $key]) }}" method="POST" class="form-validate-jqueryz">
     {{ csrf_field() }}
     

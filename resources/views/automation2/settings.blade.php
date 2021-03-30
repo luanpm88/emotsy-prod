@@ -50,19 +50,28 @@
     <button class="btn btn-secondary mt-20">{{ trans('messages.automation.settings.save') }}</button>            
 </form>
 
-<h6 class="mb-2 mt-5 text-danger">
-    {{ trans('messages.automation.dangerous_zone') }}
-</h6>
-<p class="">
-    {{ trans('messages.automation.delete.wording') }}        
-</p>
-<div class="mt-3">
-    <a href="{{ action('Automation2Controller@delete', ['uids' => $automation->uid]) }}"
-        data-confirm="{{ trans('messages.automation.delete.confirm') }}"
-        class="btn btn-danger automation-delete"
-    >
-        <i class='lnr lnr-trash mr-2'></i> {{ trans('messages.automation.delete_automation') }}
-    </a>
+<div class="alert alert-warning mt-5 d-flex py-3">
+    <div class="mr-3 mt-1">
+        <span class="material-icons-outlined text-warning">
+            warning_amber
+        </span>
+    </div>
+    <div>
+        <h6 class="mb-1">
+            {{ trans('messages.automation.dangerous_zone') }}
+        </h6>
+        <p class="">
+            {{ trans('messages.automation.delete.wording') }}        
+        </p>
+        <div class="mt-3">
+            <a href="{{ action('Automation2Controller@delete', ['uids' => $automation->uid]) }}"
+                data-confirm="{{ trans('messages.automation.delete.confirm') }}"
+                class="btn btn-secondary automation-delete"
+            >
+                <i class='lnr lnr-trash mr-0'></i> {{ trans('messages.automation.delete_automation') }}
+            </a>
+        </div>
+    </div>
 </div>
     
 <script>
