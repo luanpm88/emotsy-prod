@@ -3843,10 +3843,8 @@
   'token_expired' => 'Token was expired or invalid',
   'automation.trigger.icon.woo-abandoned-cart' => '',
   'automation.trigger.woo-abandoned-cart' => 'Abandoned Cart Reminder',
-  'automation.trigger.woo-abandoned-cart.desc' => 'Send your buyer a reminder if they left
-      something in cart',
-  'automation.trigger.woo-abandoned-cart.intro' => 'Send your buyer a reminder if they left
-      something in cart.<br/>Enter your WordPress site\'s endpoint to connect.',
+  'automation.trigger.woo-abandoned-cart.desc' => 'Send follow-up email to someone who has added items to their cart and left the site without purchasing',
+  'automation.trigger.woo-abandoned-cart.intro' => 'Send follow-up email to someone who has added items to their cart and gotten through a portion of the checkout and then left the site without purchasing',
   'automation.trigger.woo-abandoned-cart.download_plugin' => 'If you are not sure
       what your WordPress endpoint is, please install
       <a target="_blank" href=":link">WordPress Plugin for Acelle</a> plugin',
