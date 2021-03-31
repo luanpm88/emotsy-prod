@@ -3846,7 +3846,7 @@
   'automation.trigger.woo-abandoned-cart.desc' => 'Send your buyer a reminder if they left
       something in cart',
   'automation.trigger.woo-abandoned-cart.intro' => 'Send your buyer a reminder if they left
-      something in cart.<br/>Enter your WordPress site\'s endpoint to connect.',
+      something in cart.<br/>Select your WordPress Store source to connect.',
   'automation.trigger.woo-abandoned-cart.download_plugin' => 'If you are not sure
       what your WordPress endpoint is, please install
       <a target="_blank" href=":link">WordPress Plugin for Acelle</a> plugin',
