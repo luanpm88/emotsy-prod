@@ -34,6 +34,7 @@ use Acelle\Model\WooCommerce;
 use Acelle\Model\Lazada;
 use DateTime;
 use DateTimeZone;
+use Exception;
 
 class Customer extends Model implements BillableUserInterface
 {
@@ -800,9 +801,12 @@ class Customer extends Model implements BillableUserInterface
      */
     public function getSendingQuotaUsage()
     {
-        $tracker = $this->getQuotaTracker();
-
-        return $tracker->getUsage();
+        try {
+            $tracker = $this->getQuotaTracker();
+            return $tracker->getUsage();
+        } catch (Exception $ex) {
+            throw new Exception("Error processing quota tracking file: ".$this->getSendingQuotaLockFile()." Error: ".$ex->getMessage());
+        }
     }
 
     /**
