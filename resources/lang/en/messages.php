@@ -2754,7 +2754,7 @@
   'campaign.email_content' => 'Email Content',
   'campaign.email_content.intro' => 'Create your email from scratch or start from our pre-built templates / themes.
         Customize the content the way you desire with our powerful but easy-to-use HTML email builder.',
-  'campaign.template.from_layout' => 'Build from a layout draft',
+  'campaign.template.from_layout' => 'Create new email',
   'campaign.template.from_layout.intro' => 'Craft your email based off a pre-built layout we made for you',
   'campaign.template.from_theme' => 'Customize a template',
   'campaign.template.from_theme.intro' => 'No need to create an email from scratch. Start from a beautiful template we have',
