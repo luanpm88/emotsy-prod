@@ -659,7 +659,7 @@ class Email extends Model
         $path = route('unsubscribeUrl', ['message_id' => StringHelper::base64UrlEncode($msgId)], false);
 
         // OPTION 2: unsubscribe form
-        $path = route('unsubscribeForm', ['list_uid' => $subscriber->mailList->uid, 'code' => $subscriber->getSecurityToken('unsubscribe'), 'uid' => $subscriber->uid], false);
+        // $path = route('unsubscribeForm', ['list_uid' => $subscriber->mailList->uid, 'code' => $subscriber->getSecurityToken('unsubscribe'), 'uid' => $subscriber->uid], false);
 
         return $this->buildPublicUrl($path);
     }
