@@ -174,6 +174,11 @@ class SettingController extends Controller
         $current = url('/');
         $cached = config('app.url');
 
+        if (!is_null($request->input('debug'))) {
+            echo "Current: {$current} vs. Cached: {$cached}";
+            return;
+        }
+
         return view('admin.settings.urls', [
             'settings' => $settings,
             'matched' => ($cached == $current),
