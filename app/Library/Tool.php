@@ -915,9 +915,13 @@ class Tool
 
             if (preg_match('/https?/i', $src) || preg_match('/^\{/i', $src) || preg_match('/^\%/i', $src) || preg_match('/^https?/i', $src) || preg_match('/^#/i', $src) || strpos($src, '//') === 0 || preg_match('/^mailto:/i', $src) || preg_match('/^tel:/i', $src)) {
                 // nothing
+            } else if (preg_match('/^\//', $src)) {
+                // if it is an absolute path, like /files/208394398/some-thing.jpg
+                // then do nothing
+                // this is for the case when file is added via file manager
             } else {
                 // Build the full path
-                $new_src = $path.'/'.$new_src;
+                $new_src = join_paths($path, $new_src);
             }
 
             // using a quote in replacement to avoid replacing twice
