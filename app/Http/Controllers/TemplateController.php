@@ -352,7 +352,7 @@ class TemplateController extends Controller
 
         // authorize
         if (!$request->user()->customer->can('preview', $template)) {
-            return $this->not_authorized();
+            return $this->notAuthorized();
         }
 
         return view('templates.preview', [
@@ -374,7 +374,7 @@ class TemplateController extends Controller
 
         // authorize
         if (!$request->user()->customer->can('saveImage', $template)) {
-            return $this->not_authorized();
+            return $this->notAuthorized();
         }
         
         // if thumb is default

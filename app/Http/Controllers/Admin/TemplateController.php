@@ -349,7 +349,7 @@ class TemplateController extends Controller
 
         // authorize
         if (!$request->user()->admin->can('preview', $template)) {
-            return $this->not_authorized();
+            return $this->notAuthorized();
         }
 
         return view('admin.templates.preview', [
@@ -371,7 +371,7 @@ class TemplateController extends Controller
 
         // authorize
         if (!$request->user()->admin->can('saveImage', $template)) {
-            return $this->not_authorized();
+            return $this->notAuthorized();
         }
 
         $upload_loca = 'app/email_templates/';
