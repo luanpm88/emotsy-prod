@@ -921,7 +921,7 @@ class Tool
                 // this is for the case when file is added via file manager
             } else {
                 // Build the full path
-                $new_src = join_paths($path, $new_src);
+                $new_src = join_url($path, $new_src);
             }
 
             // using a quote in replacement to avoid replacing twice
