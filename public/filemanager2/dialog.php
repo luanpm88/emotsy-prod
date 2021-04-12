@@ -1332,7 +1332,7 @@ $files = $sorted;
             $('figure a').on('click', function(e) {
                 if (!$(this).hasClass('folder-link') && parent.filemanager_callback && $(this).attr('data-url')) {
                     e.preventDefault();
-                    parent.filemanager_callback($(this).attr('data-url'));
+                    parent.filemanager_callback('<?php echo url('') ?>' + $(this).attr('data-url'));
                 }
             });
 
