@@ -1988,7 +1988,7 @@ class CampaignController extends Controller
 
         // authorize
         if (\Gate::denies('preview', $campaign)) {
-            return $this->not_authorized();
+            return $this->notAuthorized();
         }
 
         return view('campaigns.preview', [
@@ -2009,7 +2009,7 @@ class CampaignController extends Controller
 
         // authorize
         if (\Gate::denies('preview', $campaign)) {
-            return $this->not_authorized();
+            return $this->notAuthorized();
         }
 
         echo $campaign->getHtmlContent();
@@ -2029,7 +2029,7 @@ class CampaignController extends Controller
 
         // authorize
         if (\Gate::denies('saveImage', $campaign)) {
-            return $this->not_authorized();
+            return $this->notAuthorized();
         }
 
         $upload_loca = 'app/campaign_templates/';
