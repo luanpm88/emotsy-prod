@@ -1421,10 +1421,11 @@ a.trigger-woo-abandoned-cart:hover {
   box-shadow: 0 0 5px rgba(0,0,0,0.1);
 }
 .wp-shop-info .logo-col {
-  width: 48px;
+  width: 55px;
 }
 .wp-shop-info .logo-col img {
   width: 100%;
+  height: auto;
 }
 .wp-shop-info .bottom-info {
   margin-top: 15px;
