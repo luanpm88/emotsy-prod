@@ -1262,6 +1262,11 @@ class Subscriber extends Model
         }
         
         // do assign
+        if ($request->assign_type == 'single') {
+            // do assign a value: $request->single_value
+        } else {
+            // do assign a list: $request->list_value
+        }
 
         return $validator;
     }
