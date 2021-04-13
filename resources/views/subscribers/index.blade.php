@@ -22,7 +22,7 @@
 
 	<h2 class="text-bold text-teal-800 mb-10"><i class="icon-users4"></i> {{ trans('messages.subscribers') }}</h2>
 
-	<form class="listing-form"
+	<form class="listing-form subscribers-list"
 		data-url="{{ action('SubscriberController@listing', $list->uid) }}"
 		per-page="{{ Acelle\Model\Subscriber::$itemsPerPage }}"
 	>
@@ -38,6 +38,11 @@
 								{{ trans('messages.actions') }} <span class="caret"></span>
 							</button>
 							<ul class="dropdown-menu">
+								<li>
+									<a class="assign-values-button" href="{{ action('SubscriberController@assignValues', $list->uid) }}">
+										<i class="icon-add"></i> {{ trans('messages.subscriber.assign_values') }}
+									</a>
+								</li>
 								<li>
 									<a link-confirm="{{ trans('messages.subscribe_subscribers_confirm') }}" href="{{ action('SubscriberController@subscribe', $list->uid) }}">
 										<i class="icon-enter"></i> {{ trans('messages.subscribe') }}
@@ -184,6 +189,19 @@
 			var url = $(this).attr('href');
 			
 			bulkDeletePopup.load(url);
+		});
+		
+		var assignValues = new Popup();
+		$('.assign-values-button').click(function(e) {
+			e.preventDefault();
+
+        	var vals = $(".subscribers-list input[name='ids[]']:checked").map(function () {
+				return this.value;
+			}).get();
+
+			var url = $(this).attr('href');
+			
+			assignValues.load(url, null, {uids: vals});
 		});
 	</script>
 @endsection

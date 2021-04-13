@@ -1085,6 +1085,21 @@ class MailList extends Model
     }
 
     /**
+     * Get subscriber's fields select options.
+     *
+     * @return array
+     */
+    public function getFieldSelectOptions()
+    {
+        $options = [];
+        foreach ($this->getFields()->get() as $field) {
+            $options[] = ['text' => $field->label, 'value' => $field->uid];
+        }
+
+        return $options;
+    }
+
+    /**
      * Read a CSV file, returning the meta information.
      *
      * @param string file path
