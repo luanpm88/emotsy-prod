@@ -39,6 +39,12 @@ class Lazada extends Source
         $this->updateData($this->service()->data);
     }
 
+    public function sync()
+    {
+        // import products
+        $this->importProducts();
+    }
+
     public function importProducts()
     {
         $data = $this->service()->getProducts(['offset' => 0, 'limit' => 1])['data'];

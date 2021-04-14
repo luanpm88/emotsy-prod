@@ -67,6 +67,39 @@ class WooCommerce extends Source
         return [$source, $validator];
     }
 
+    public function getShopInfo()
+    {
+        $client = new \GuzzleHttp\Client();
+        $connectUrl = $this->getData()['connect_url'];
+
+        $sign = (strpos($connectUrl, '?') !== false) ? '&' : '?';
+
+        // Get shop information
+        try {
+            $response = $client->request('GET', $connectUrl . $sign . 'action=shop_info', [
+                'headers' => [
+                    "content-type" => "application/json"
+                ],
+            ]);
+
+            $meta = json_decode($response->getBody(), true);
+            $this->updateData([
+                'data' => $meta,
+            ]);
+        } catch (\Exception $e) {
+            throw new \Exception('Can not connect to WooCommerce Store: ' . $e->getMessage());
+        }
+    }
+
+    public function sync()
+    {
+        // import products
+        $this->importProducts();
+
+        // get shopinfo
+        $this->getShopInfo();
+    }
+
     public function importProducts()
     {
         $client = new \GuzzleHttp\Client();

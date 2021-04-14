@@ -10,7 +10,11 @@
         <div class="wp-shop-info mb-4 mt-4">
             <div class="d-flex align-items-center">
                 <div class="logo-col mr-3">
-                    <img src="{{ $shopinfo['logo'] ? $shopinfo['logo'] : url('images/Wordpress-Logo.svg') }}" class="shop_logo" />
+                    @if (!$shopinfo['logo'])
+                        <img src="{{ url('images/Wordpress-Logo.svg') }}" class="shop_logo" />
+                    @else
+                        {!! $shopinfo['logo'] !!}
+                    @endif
                 </div>
                 <div class="logo-info" style="line-height: 19px">
                     <p class="mb-1">{!! trans('messages.automation.connected_to_store', [
