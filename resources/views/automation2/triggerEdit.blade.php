@@ -1,6 +1,6 @@
 @include('automation2._back')
 
-<h5 class="mb-3 mt-4">
+<h5 class="mb-2 mt-4">
     {{ trans('messages.automation.trigger.' . $key) }}
 </h5>
 <p class="mb-10">
