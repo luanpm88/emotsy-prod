@@ -1238,4 +1238,36 @@ class Subscriber extends Model
     {
         $this->mailList->reformatDateFields($this->id);
     }
+
+    /**
+     * assgin values.
+     */
+    public static function assginValues($subscribers, $request)
+    {
+        if ($request->assign_type == 'single') {
+            $rules = [
+                'single_value' => 'required',
+            ];
+        } else {
+            $rules = [
+                'list_value' => 'required',
+            ];
+        }
+        // make validator
+        $validator = \Validator::make($request->all(), $rules);
+
+        // redirect if fails
+        if ($validator->fails()) {
+            return $validator;
+        }
+        
+        // do assign
+        if ($request->assign_type == 'single') {
+            // do assign a value: $request->single_value
+        } else {
+            // do assign a list: $request->list_value
+        }
+
+        return $validator;
+    }
 }

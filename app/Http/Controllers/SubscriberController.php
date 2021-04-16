@@ -957,4 +957,47 @@ class SubscriberController extends Controller
             'list' => $list,
         ]);
     }
+
+    /**
+     * Bulk assign values to subscribers.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function assignValues(Request $request, $list_uid)
+    {
+        // init
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $subscribers = \Acelle\Model\Subscriber::whereIn('uid', $request->uids);
+
+        // Select all items
+        if ($request->select_tool == 'all_items') {
+            $subscribers = $this->search($list, $request);
+        }
+
+        // validate and save posted data
+        if ($request->isMethod('post')) {
+            $validator = \Acelle\Model\Subscriber::assginValues($subscribers, $request);
+            
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('subscribers.assignValues', [
+                    'list' => $list,
+                    'subscribers' => $subscribers,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+            
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.subscribers.values_assigned'),
+            ]);
+        }
+
+        return view('subscribers.assignValues', [
+            'list' => $list,
+            'subscribers' => $subscribers,
+        ]);
+    }
 }

@@ -4,36 +4,36 @@
 
 @section('page_script')
     <script src="{{ URL::asset('assets2/js/UrlAutoFill.js') }}"></script>
-	<script type="text/javascript" src="{{ URL::asset('js/tinymce/tinymce.min.js') }}"></script>        
+    <script type="text/javascript" src="{{ URL::asset('js/tinymce/tinymce.min.js') }}"></script>        
     <script type="text/javascript" src="{{ URL::asset('js/editor.js') }}"></script>    
 @endsection
 
 @section('content')
     <header>
-		<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" style="height: 56px;">
-			<a class="navbar-brand left-logo mr-0" href="#">
-				@if (\Acelle\Model\Setting::get('site_logo_small'))
-					<img src="{{ action('SettingController@file', \Acelle\Model\Setting::get('site_logo_small')) }}" alt="">
-				@else
-					<img height="22" src="{{ URL::asset('images/logo_light_blue.svg') }}" alt="">
-				@endif
-			</a>
-			<div class="d-inline-block d-flex mr-auto align-items-center">
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" style="height: 56px;">
+            <a class="navbar-brand left-logo mr-0" href="#">
+                @if (\Acelle\Model\Setting::get('site_logo_small'))
+                    <img src="{{ action('SettingController@file', \Acelle\Model\Setting::get('site_logo_small')) }}" alt="">
+                @else
+                    <img height="22" src="{{ URL::asset('images/logo_light_blue.svg') }}" alt="">
+                @endif
+            </a>
+            <div class="d-inline-block d-flex mr-auto align-items-center">
                 <a href="javascript:;" onclick="parent.$('body').removeClass('overflow-hidden');parent.$('.full-iframe-popup').fadeOut()" class="action black-back-button mr-3">
-					<i class="material-icons-outlined">arrow_back</i>
-				</a>
+                    <i class="material-icons-outlined">arrow_back</i>
+                </a>
                 <h1 class="">{{ $template->name }}</h1>
-				<i class="material-icons-outlined automation-head-icon ml-2">web</i>
-			</div>
-			<div class="automation-top-menu">
-				<button class="btn btn-primary" onclick="$('#classic-builder-form').submit()">{{ trans('messages.save') }}</button>
-			</div>
+                <i class="material-icons-outlined automation-head-icon ml-2">web</i>
+            </div>
+            <div class="automation-top-menu">
+                <button class="btn btn-primary" onclick="$('#classic-builder-form').submit()">{{ trans('messages.save') }}</button>
+            </div>
             <a href="javascript:;" onclick="parent.$('body').removeClass('overflow-hidden');parent.$('.full-iframe-popup').fadeOut()"
                 class="action black-close-button ml-2" style="margin-right: -15px">
                 <i class="material-icons-outlined">close</i>
             </a>
-		</nav>
-	</header>
+        </nav>
+    </header>
     <form id="classic-builder-form" style="margin-top: 56px;" action="{{ action('TemplateController@update', $template->uid) }}" method="POST" class="ajax_upload_form form-validate-jquery builder-classic-form">
         {{ csrf_field() }}
         <input type="hidden" name="_method" value="PATCH">
