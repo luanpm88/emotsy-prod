@@ -1452,8 +1452,7 @@ a.trigger-woo-abandoned-cart:hover {
   /* color: #ed7c30; */
 }
 .contacts-stats-box.error {
-  background: #ea4435;
-  color: #fff;
+  background: rgb(251, 238, 202);
 }
 .contacts-stats-box .desc {
   font-size: 13px;
@@ -1465,12 +1464,6 @@ a.trigger-woo-abandoned-cart:hover {
   font-weight: 600;
   color: #333;
   margin-bottom: 2px;
-}
-.contacts-stats-box.error {
-  border-color: #ea4435;
-}
-.contacts-stats-box.error label, .contacts-stats-box.error .desc {
-  color: #fff;
 }
 .actions-points {
   margin-right: 10px;  
