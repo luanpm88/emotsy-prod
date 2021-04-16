@@ -4077,8 +4077,11 @@
   'cart.auto_add_buyer.select_list' => 'Select list',
   'cart.list_updated' => 'The list was updated',
   'cart.wait_updated' => 'Wait time was updated',
+  'cart.store_updated' => 'Store source was updated',
   'cart.wait' => 'Wait',
   'cart.wait.wording' => 'Set the waiting time after items is left in cart to send notification emails',
   'cart.list' => 'Mail List',
   'cart.list.wording' => 'Choose the list for automatically adding buyer contacts',
+  'cart.store' => 'Mail List',
+  'cart.store.wording' => 'Choose a WooCommerce Store source for connecting to Acelle Mail',
 ) ?>

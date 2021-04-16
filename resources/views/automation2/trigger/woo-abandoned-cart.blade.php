@@ -108,7 +108,10 @@
                     </div>
                 </div>
                 <div class="ml-auto">
-                    <a href="javascript:;" class="btn btn-secondary change-connect-url text-nowrap" onclick="$('.edit-connect-url').removeClass('hide');$('.wp-shop-info').hide();$('.trigger-save-change').show()">
+                    <a href="{{ action('Automation2Controller@cartChangeStore', $automation->uid) }}"
+                        class="btn btn-secondary change-connect-url text-nowrap"
+                        {{-- onclick="$('.edit-connect-url').removeClass('hide');$('.wp-shop-info').hide();$('.trigger-save-change').show()" --}}
+                    >
                         {{ trans('messages.automation.connect_url.change_store') }}
                     </a>
                 </div>
@@ -162,6 +165,7 @@
         <script>
             var listSelect = new Popup();
             var cartWait = new Popup();
+            var changeStore = new Popup();
 
             $('.cart-change-list').on('click', function(e) {
                 e.preventDefault();
@@ -187,6 +191,13 @@
                     $(this).addClass('is-show');
                     $('.wp-shop-info').show();
                 }
+            });
+
+            $('.change-connect-url').on('click', function(e) {
+                e.preventDefault();
+                var url = $(this).attr('href');
+
+                changeStore.load(url);
             });
         </script>
     @endif

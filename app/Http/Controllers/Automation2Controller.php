@@ -2197,4 +2197,41 @@ class Automation2Controller extends Controller
             'trigger' => $automation->getTrigger(),
         ]);
     }
+    
+    /**
+     * Change cart automation2 list for auto adding byuer.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function cartChangeStore(Request $request, $uid)
+    {
+        $automation = Automation2::findByUid($uid);
+
+        // saving
+        if ($request->isMethod('post')) {
+            // make validator
+            $validator = Validator::make($request->all(), [
+                'options.source_uid' => 'required',
+            ]);
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('automation2.cartChangeSore', [
+                    'automation' => $automation,
+                    'trigger' => $automation->getTrigger(),
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.cart.store_updated'),
+                'options' => $request->options
+            ]);
+        }
+
+        return view('automation2.cartChangeSore', [
+            'automation' => $automation,
+            'trigger' => $automation->getTrigger(),
+        ]);
+    }
 }
