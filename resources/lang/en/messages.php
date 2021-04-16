@@ -4075,4 +4075,6 @@
   'cart.choose_list' => 'Choose a list',
   'cart.auto_add_buyer_to_list.none' => 'Select list for automatically adding buyer contacts to',
   'cart.auto_add_buyer.select_list' => 'Select list',
+  'cart.list_updated' => 'The list was updated',
+  'cart.wait_updated' => 'Wait time was updated',
 ) ?>
