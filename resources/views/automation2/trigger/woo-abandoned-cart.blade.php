@@ -55,8 +55,8 @@
                         </div>
                     @else
                         <div class="check-icon mr-4 pt-1">
-                            <span class="material-icons-outlined text-muted">
-                                radio_button_unchecked
+                            <span class="material-icons-outlined text-success">
+                                check_circle
                             </span>
                         </div>
                         <div class="setting-content">
@@ -78,7 +78,7 @@
                     </div>
                     <div class="setting-content">
                         {!! trans('messages.cart.connected_to_store', [
-                            'store' => 'Hello Ketty',
+                            'store' => $shopinfo['name'],
                         ]) !!}
                         <div>
                             <a href="javascript:;" class="text-underline show-hide-store-info">
