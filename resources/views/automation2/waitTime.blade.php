@@ -37,7 +37,7 @@
                     </div>
                     <hr>
                     <button class="btn btn-secondary mr-10">{{ trans('messages.save') }}</button>
-                    <a href="javascript:;" onclick="waitTimePopup.hide()" class="btn btn-mc_inline mr-10" data-dismiss="modal">{{ trans('messages.close') }}</a>
+                    <a href="javascript:;" onclick="waitTimePopup.hide()" class="btn btn-mc_inline mr-10">{{ trans('messages.close') }}</a>
                 </form>
             </div>
         </div>

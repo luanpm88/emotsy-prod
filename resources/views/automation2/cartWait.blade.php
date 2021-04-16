@@ -10,9 +10,9 @@
                     
                     <input type="hidden" name="plan[options][billing_cycle]" value="other" />
                     
-                    <h2 class="text-semibold">{{ trans('messages.automation.wait') }}</h2>
+                    <h2 class="text-semibold">{{ trans('messages.cart.wait') }}</h2>
                     
-                    <p>{!! trans('messages.automation.wait.wording') !!}</p>
+                    <p>{!! trans('messages.cart.wait.wording') !!}</p>
                         
                     <div class="row">
                         <div class="col-md-6">
@@ -37,7 +37,7 @@
                     </div>
                     <hr>
                     <button class="btn btn-secondary mr-10">{{ trans('messages.save') }}</button>
-                    <a href="javascript:;" onclick="waitTimePopup.hide()" class="btn btn-mc_inline mr-10" data-dismiss="modal">{{ trans('messages.close') }}</a>
+                    <a href="javascript:;" onclick="cartWait.hide()" class="btn btn-mc_inline mr-10" data-dismiss="modal">{{ trans('messages.close') }}</a>
                 </form>
             </div>
         </div>
