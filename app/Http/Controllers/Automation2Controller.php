@@ -2120,4 +2120,81 @@ class Automation2Controller extends Controller
             'automation' => $automation,
         ]);
     }
+    
+    /**
+     * Change cart automation2 list for auto adding byuer.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function cartWait(Request $request, $uid)
+    {
+        $automation = Automation2::findByUid($uid);
+
+        // saving
+        if ($request->isMethod('post')) {
+            // make validator
+            $validator = Validator::make($request->all(), [
+                'amount' => 'required',
+                'unit' => 'required',
+            ]);
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('automation2.cartWait', [
+                    'automation' => $automation,
+                    'trigger' => $automation->getTrigger(),
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.cart.wait_updated'),
+                'options' => [
+                    'wait' => $request->amount . "_" . $request->unit,
+                ]
+            ]);
+        }
+
+        return view('automation2.cartWait', [
+            'automation' => $automation,
+            'trigger' => $automation->getTrigger(),
+        ]);
+    }
+
+    /**
+     * Change cart automation2 list for auto adding byuer.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function cartChangeList(Request $request, $uid)
+    {
+        $automation = Automation2::findByUid($uid);
+
+        // saving
+        if ($request->isMethod('post')) {
+            // make validator
+            $validator = Validator::make($request->all(), [
+                'options.list_uid' => 'required',
+            ]);
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('automation2.cartChangeList', [
+                    'automation' => $automation,
+                    'trigger' => $automation->getTrigger(),
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.cart.list_updated'),
+                'options' => $request->options
+            ]);
+        }
+
+        return view('automation2.cartChangeList', [
+            'automation' => $automation,
+            'trigger' => $automation->getTrigger(),
+        ]);
+    }
 }

@@ -7,7 +7,90 @@
         $shopinfo = !$data ? [] : Acelle\Model\Source::findByUid($trigger->getOption('source_uid'))->getData()['data'];
     @endphp
     @if (isset($shopinfo['name']) && !request()->options)
-        <div class="wp-shop-info mb-4 mt-4">
+        <div class="cart-settings mb-4">
+            <div class="settings">
+                <div class="d-flex my-2 py-1">
+                    @php
+                        $waitTime = $trigger->getOption('wait') ? $trigger->getOption('wait') : '24_hour'
+                    @endphp
+                    <div class="check-icon mr-4 pt-1">
+                        <span class="material-icons-outlined text-success">
+                            check_circle
+                        </span>
+                    </div>
+                    <div class="setting-content">
+                        {!! trans('messages.cart.send_notification_email_after', [
+                            'time' => trans_choice(
+                                'messages.automation.delay.' . explode('_', $waitTime)[1]
+                                , explode('_', $waitTime)[0]),
+                        ]) !!}
+                        <div>
+                            <a href="{{ action('Automation2Controller@cartWait', $automation->uid) }}"
+                                class="text-underline cart-change-wait">
+                                <u>{{ trans('messages.cart.wait.click_change') }}</u>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex my-2 py-1">
+                    @if ($trigger->getOption('list_uid'))
+                        @php
+                            $list = Acelle\Model\MailList::findByUid($trigger->getOption('list_uid'));
+                        @endphp
+                        <div class="check-icon mr-4 pt-1">
+                            <span class="material-icons-outlined text-success">
+                                check_circle
+                            </span>
+                        </div>
+                        <div class="setting-content">
+                            {!! trans('messages.cart.auto_add_buyer_to_list', [
+                                'list' => $list->name,
+                            ]) !!}
+                            <div>
+                                <a href="{{ action('Automation2Controller@cartChangeList', $automation->uid) }}"
+                                    class="text-underline cart-change-list">
+                                    <u>{{ trans('messages.cart.auto_add_buyer.click_change') }}</u>
+                                </a>
+                            </div>
+                        </div>
+                    @else
+                        <div class="check-icon mr-4 pt-1">
+                            <span class="material-icons-outlined text-muted">
+                                radio_button_unchecked
+                            </span>
+                        </div>
+                        <div class="setting-content">
+                            {!! trans('messages.cart.auto_add_buyer_to_list.none') !!}
+                            <div>
+                                <a href="{{ action('Automation2Controller@cartChangeList', $automation->uid) }}"
+                                    class="text-underline cart-change-list">
+                                    <u>{{ trans('messages.cart.auto_add_buyer.select_list') }}</u>
+                                </a>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+                <div class="d-flex my-2 py-1">
+                    <div class="check-icon mr-4 pt-1">
+                        <span class="material-icons-outlined text-success">
+                            check_circle
+                        </span>
+                    </div>
+                    <div class="setting-content">
+                        {!! trans('messages.cart.connected_to_store', [
+                            'store' => 'Hello Ketty',
+                        ]) !!}
+                        <div>
+                            <a href="javascript:;" class="text-underline show-hide-store-info">
+                                <u class="show-but">{{ trans('messages.cart.connected_to_store.show') }}</u>
+                                <u class="hide-but">{{ trans('messages.cart.connected_to_store.hide') }}</u>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="wp-shop-info mb-4 mt-4" style="display:none">
             <div class="d-flex align-items-center">
                 <div class="logo-col mr-3">
                     @if (!$shopinfo['logo'])
@@ -37,9 +120,9 @@
                 <div class="d-flex align-items-center store-states justify-content-space-between mt-4">
                     <div class="d-flex align-items-center">
                         <span class="store-icon">
-                            <span class="material-icons-outlined">
+                            {{-- <span class="material-icons-outlined">
                                 loyalty
-                            </span>
+                            </span> --}}
                         </span>
                         <div class="">
                             <label class="mb-0 display-1">{{ $shopinfo['products_count'] }}</label>
@@ -48,9 +131,9 @@
                     </div>
                     <div class="d-flex align-items-center store-states">
                         <span class="store-icon">
-                            <span class="material-icons-outlined">
+                            {{-- <span class="material-icons-outlined">
                                 assignment
-                            </span>
+                            </span> --}}
                         </span>
                         <div class="">
                             <label class="mb-0 display-1">{{ $shopinfo['orders_count'] }}</label>
@@ -59,9 +142,9 @@
                     </div>
                     <div class="d-flex align-items-center store-states">
                         <span class="store-icon">
-                            <span class="material-icons">
+                            {{-- <span class="material-icons">
                                 insights
-                            </span>
+                            </span> --}}
                         </span>
                         <div class="">
                             <label class="mb-0 display-1">{!! $shopinfo['total_sales'] !!}</label>
@@ -76,6 +159,36 @@
                 display: none;
             }
         </style>
+        <script>
+            var listSelect = new Popup();
+            var cartWait = new Popup();
+
+            $('.cart-change-list').on('click', function(e) {
+                e.preventDefault();
+                var url = $(this).attr('href');
+
+                listSelect.load(url);
+            });
+
+            $('.cart-change-wait').on('click', function(e) {
+                e.preventDefault();
+                var url = $(this).attr('href');
+
+                cartWait.load(url);
+            });
+
+            $('.show-hide-store-info').on('click', function(e) {
+                var showed = $('.wp-shop-info').is(':visible');
+
+                if (showed) {
+                    $(this).removeClass('is-show');
+                    $('.wp-shop-info').hide();
+                } else {
+                    $(this).addClass('is-show');
+                    $('.wp-shop-info').show();
+                }
+            });
+        </script>
     @endif
 
     <div class="edit-connect-url {{ isset($shopinfo['name']) && !request()->options ? 'hide' : '' }}">
@@ -89,5 +202,6 @@
             'help_class' => 'trigger',
             'rules' => [],
         ])
+        <input type="hidden" name="options[wait]" value="24_hour" />
     </div>
 </div>

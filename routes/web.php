@@ -559,6 +559,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('notifications/{id}/hide', 'NotificationController@hide');
 
     // Automation2
+    Route::match(['get', 'post'], 'automation2/{uid}/car/wait', 'Automation2Controller@cartWait');
+    Route::match(['get', 'post'], 'automation2/{uid}/car/change-list', 'Automation2Controller@cartChangeList');
     Route::get('automation2/{uid}/condition/setting', 'Automation2Controller@conditionSetting');
     Route::post('automation2/{uid}/wait-time', 'Automation2Controller@waitTime');
     Route::get('automation2/{uid}/wait-time', 'Automation2Controller@waitTime');

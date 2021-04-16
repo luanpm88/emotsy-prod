@@ -4062,4 +4062,17 @@
   'view' => 'View',
   'all_source' => 'All sources',
   'automation.back_to_automation' => 'Back to automation',
+  'cart.send_notification_email_after' => 'Send notification emails 
+      <span class="text-semibold">:time</span> after items is left in cart',
+  'cart.wait.click_change' => 'Click here to change',
+  'cart.auto_add_buyer_to_list' => 'Automatically add buyer contacts to list:
+      <span class="text-semibold">:list</span>',
+  'cart.wait.click_change' => 'Click here to change',
+  'cart.connected_to_store' => 'Connected to store <span class="text-semibold">:store</span>',
+  'cart.auto_add_buyer.click_change' => 'Change list',
+  'cart.connected_to_store.show' => 'Show store information',
+  'cart.connected_to_store.hide' => 'Hide store information',
+  'cart.choose_list' => 'Choose a list',
+  'cart.auto_add_buyer_to_list.none' => 'Select list for automatically adding buyer contacts to',
+  'cart.auto_add_buyer.select_list' => 'Select list',
 ) ?>

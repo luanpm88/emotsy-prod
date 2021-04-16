@@ -1330,4 +1330,21 @@ class Automation2 extends Model
             ['value' => 'year', 'text' => trans('messages.year')],
         ]);
     }
+
+    /**
+     * Frequency time unit options.
+     *
+     * @return array
+     */
+    public static function cartWaitTimeUnitOptions($moreOptions=[])
+    {
+        return array_merge($moreOptions, [
+            ['value' => 'minute', 'text' => trans('messages.minute')],
+            ['value' => 'hour', 'text' => trans('messages.hour')],
+            ['value' => 'day', 'text' => trans('messages.day')],
+            ['value' => 'week', 'text' => trans('messages.week')],
+            ['value' => 'month', 'text' => trans('messages.month')],
+            ['value' => 'year', 'text' => trans('messages.year')],
+        ]);
+    }
 }

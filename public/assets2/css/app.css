@@ -1545,3 +1545,18 @@ a.trigger-woo-abandoned-cart:hover {
 .back-to-automation .material-icons {
   font-size: 20px;
 }
+.cart-settings .material-icons-outlined {
+  font-size: 27px;
+}
+.text-semibold {
+  font-weight: 600;
+}
+.show-hide-store-info .hide-but {
+  display: none;
+}
+.show-hide-store-info.is-show .show-but {
+  display: none;
+}
+.show-hide-store-info.is-show .hide-but {
+  display: block;
+}
