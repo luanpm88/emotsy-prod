@@ -22,7 +22,8 @@
 	<link href="{{ URL::asset('assets2/css/dialog.css') }}" rel="stylesheet" type="text/css">
 	
 	<!-- Google icons -->
-	<link href="{{ URL::asset('assets/css/material_icons.css') }}" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
     
 	
 	
@@ -103,6 +104,8 @@
 	<script type="text/javascript" src="{{ URL::asset('assets2/js/dialog.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('assets2/js/list.js') }}"></script>
 	<!-- /theme JS files -->
+
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@3.1.0/dist/chart.min.js"></script>
 
 	@include('layouts._script_vars')
 	@include('layouts._menu_script')

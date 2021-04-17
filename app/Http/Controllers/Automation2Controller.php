@@ -2234,4 +2234,46 @@ class Automation2Controller extends Controller
             'trigger' => $automation->getTrigger(),
         ]);
     }
+
+    /**
+     * Cart stats.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function cartStats(Request $request, $uid)
+    {
+        $automation = Automation2::findByUid($uid);
+
+        return view('automation2.cart.stats', [
+            'automation' => $automation,
+        ]);
+    }
+
+    /**
+     * Cart list.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function cartList(Request $request, $uid)
+    {
+        $automation = Automation2::findByUid($uid);
+
+        return view('automation2.cart.list', [
+            'automation' => $automation,
+        ]);
+    }
+
+    /**
+     * Cart list.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function cartItems(Request $request, $uid)
+    {
+        $automation = Automation2::findByUid($uid);
+
+        return view('automation2.cart.items', [
+            'automation' => $automation,
+        ]);
+    }
 }

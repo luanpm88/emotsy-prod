@@ -806,7 +806,7 @@ label.switchery-double.checkbox-switchery {
   padding-top: 10px;
 }
 .font-weight-semibold {
-  font-weight: 600!important;
+  font-weight: 500!important;
 }
 .input-with-icon {
     position: relative;
@@ -1552,4 +1552,52 @@ a.trigger-woo-abandoned-cart:hover {
 }
 .show-hide-store-info.is-show .hide-but {
   display: block;
+}
+.email-row .material-icons-outlined {
+  font-size: 30px;
+  color: #999;
+}
+.email-row {
+  padding-top: 13px;
+  padding-bottom: 13px;
+  border: solid 1px #ddd;
+  border-width: 1px 0;
+}
+.prate .percent {
+  font-size: 20px;
+}
+.tab-boxes {
+  justify-content: space-between;
+}
+.tab-box {
+  padding: 15px;
+  background: #f4f6f7;
+  border: solid 1px #ccc;
+  width: 32%;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.1s ease-in-out;
+}
+.tab-box:hover {
+  box-shadow: 1px 1px 10px rgba(0,0,0,0.1);
+}
+.tab-box .number {
+  font-size: 24px;
+}
+.tab-box .desc {
+ 
+}
+.bg-yellow-light {
+  background: #FFF2CC;
+}
+.cart .cicon {
+  font-size: 40px;
+}
+.c-item {
+  justify-content: space-between;
+}
+.cart {
+  padding-top: 15px;
+  padding-bottom: 0;
+  border-top: solid 1px #ddd;
 }

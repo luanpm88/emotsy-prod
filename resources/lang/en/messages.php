@@ -4084,4 +4084,5 @@
   'cart.list.wording' => 'Choose the list for automatically adding buyer contacts',
   'cart.store' => 'Mail List',
   'cart.store.wording' => 'Choose a WooCommerce Store source for connecting to Acelle Mail',
+  'automation.back_to_overview' => 'Back to campaign overview',
 ) ?>
