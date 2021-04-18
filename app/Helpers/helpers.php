@@ -113,6 +113,10 @@ function join_paths()
 {
     $paths = array();
     foreach (func_get_args() as $arg) {
+        if (preg_match('/http:\/\//i', $arg)) {
+            throw new \Exception('Path contains http://! Use `join_url` instead. Error for '.implode('/', func_get_args()));
+        }
+
         if ($arg !== '') {
             $paths[] = $arg;
         }
