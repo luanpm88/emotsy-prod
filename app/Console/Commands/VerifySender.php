@@ -42,5 +42,6 @@ class VerifySender extends Command
         foreach ($senders as $sender) {
             $sender->updateVerificationStatus();
         }
+        return 0;
     }
 }
