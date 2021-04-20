@@ -6,8 +6,8 @@ require 'json'
 
 # Settings
 last_supported = '4.0.20-p63'
-packages = ['lawepham', 'ocramius', 'acelle', 'mews', 'ezyang', 'louis', 'symfony', 'mailgun', 'nyholm', 'psr', 'purplepixie', 'php-http']       # vendor packages to be replaced
-dirs = ['public/builder', 'resources/lang/default']                   # 'resources/lang/default' for example
+packages = ['lawepham', 'acelle']       # vendor packages to be replaced
+dirs = ['public/builder', 'resources/lang/default', 'vendor']                   # 'resources/lang/default' for example
 
 # Auto setting
 release_date = Time.now.to_s
