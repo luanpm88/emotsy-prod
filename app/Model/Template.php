@@ -658,7 +658,7 @@ class Template extends Model implements Storable
     {
         // replace absolute urls
         $this->content = str_replace(
-            route('template_assets', ['uid' => $this->uid, 'name' => '']).'/',
+            route('template_assets', ['uid' => $this->uid]).'/',
             '',
             tinyDocTypeUntransform($this->content)
         );

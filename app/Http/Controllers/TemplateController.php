@@ -637,8 +637,9 @@ class TemplateController extends Controller
                 $template = new Template();
                 $template->customer_id = $customer->id;
                 $template->name = $request->name;
+                $template->save(); // generate the uid first, which is required by untransform() function
                 $template->untransform();
-                $template->save();
+                $template->save(); // odd! save again
 
                 $template->addTemplateFromLayout($request->layout);
             }
