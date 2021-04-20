@@ -16,6 +16,11 @@
             margin-right: 15px;
         }
     </style>
+
+    @php
+        // check if content from layouts
+        $buildMode = strpos($template->content, 'AcelleSystemLayouts') !== false ? 'true' : 'false';
+    @endphp
     
     <script>
         var CSRF_TOKEN = "{{ csrf_token() }}";
@@ -25,8 +30,8 @@
         
         $( document ).ready(function() {
             editor = new Editor({
-                buildMode: false,
-                legacyMode: true,
+                buildMode: {{ $buildMode }},
+                legacyMode: {{ $buildMode ? 'true' : 'false' }},
                 showHelp: false,
                 lang: {!! json_encode(language()->getBuilderLang()) !!},
                 url: '{{ action('TemplateController@builderEditContent', $template->uid) }}',
