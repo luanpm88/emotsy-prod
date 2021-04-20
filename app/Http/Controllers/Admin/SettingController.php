@@ -562,6 +562,14 @@ class SettingController extends Controller
             if (file_exists(base_path('bootstrap/cache/config.php'))) {
                 unlink(base_path('bootstrap/cache/config.php'));
             }
+
+            if (file_exists(base_path('bootstrap/cache/packages.php'))) {
+                unlink(base_path('bootstrap/cache/packages.php'));
+            }
+
+            if (file_exists(base_path('bootstrap/cache/services.php'))) {
+                unlink(base_path('bootstrap/cache/services.php'));
+            }
             
             $manager->run();
             Log::info('System successfully upgraded to the new version');
