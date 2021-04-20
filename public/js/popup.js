@@ -107,15 +107,20 @@ class Popup {
         });
     }
     
-    load(url, callback) {
+    load(url, callback, data) {
         var _this = this;
         
         if (typeof(url) !== 'undefined') {
             this.url = url;
         }
         
-        if (typeof(callback) !== 'undefined') {
+        if (typeof(callback) !== 'undefined' && callback !== null) {
             this.callback = callback;
+        }
+
+        var formData = _this.data;
+        if (typeof(data) !== 'undefined') {
+            formData = $.extend({}, data, formData);;
         }
         
         this.loading();
@@ -126,7 +131,7 @@ class Popup {
             url: _this.url,
             type: 'GET',
             dataType: 'html',
-            data: _this.data,
+            data: formData,
         }).done(function(response) {
             _this.popup.html(response);
             
