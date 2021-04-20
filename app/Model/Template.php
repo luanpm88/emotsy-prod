@@ -694,7 +694,7 @@ class Template extends Model implements Storable
         }
 
         // Replace #1
-        $path = join_url($host, route('template_assets', ['uid' => $this->uid, 'name' => ''], false));
+        $path = join_url($host, route('template_assets', ['uid' => $this->uid], false));
         $html = \Acelle\Library\Tool::replaceTemplateUrl($html, $path);
 
         // By the way, fix <html>
