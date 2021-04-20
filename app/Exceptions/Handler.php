@@ -6,6 +6,7 @@ use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Closure;
+use Throwable;
 use Acelle\Library\Notification\BackendError as BackendErrorNotification;
 
 class Handler extends ExceptionHandler
@@ -32,7 +33,7 @@ class Handler extends ExceptionHandler
      * @param  \Exception  $exception
      * @return void
      */
-    public function report(Exception $exception)
+    public function report(Throwable $exception)
     {
         if (in_array(get_class($exception), $this->dontReport)) {
             // skip logging as those exceptions are handled by Laravel Auth
@@ -75,7 +76,7 @@ class Handler extends ExceptionHandler
      *
      * @return \Illuminate\Http\Response
      */
-    public function render($request, Exception $e)
+    public function render($request, Throwable $e)
     {
         // With 404 error, no way to use response()->view
         if ($e instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {

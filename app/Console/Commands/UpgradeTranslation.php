@@ -44,5 +44,6 @@ class UpgradeTranslation extends Command
             $path = base_path("resources/lang/en/$f.php");
             $manager->upgradeLanguageFiles($path);
         }
+        return 0;
     }
 }

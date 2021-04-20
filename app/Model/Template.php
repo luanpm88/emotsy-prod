@@ -504,7 +504,11 @@ class Template extends Model implements Storable
         }
 
         $template->fill($request->all());
+
+        // UID is critically required by untransform()
+        $template->uid = uniqid();
         $template->untransform();
+
         $template->save();
 
         $template->loadFromDirectory($tmp_path);
@@ -636,7 +640,7 @@ class Template extends Model implements Storable
     public function getThumbUrl()
     {
         if ($this->getThumbName()) {
-            return route('template_assets', ['uid' => $this->uid, 'path' => $this->getThumbName()]);
+            return route('template_assets', ['uid' => $this->uid, 'name' => $this->getThumbName()]);
         } else {
             return url('assets/images/placeholder.jpg');
         }
@@ -649,7 +653,7 @@ class Template extends Model implements Storable
     {
         // replace absolute urls
         $this->content = str_replace(
-            route('template_assets', ['uid' => $this->uid, 'path' => '']).'/',
+            route('template_assets', ['uid' => $this->uid, 'name' => '']).'/',
             '',
             tinyDocTypeUntransform($this->content)
         );
@@ -685,7 +689,7 @@ class Template extends Model implements Storable
         }
 
         // Replace #1
-        $path = join_url($host, route('template_assets', ['uid' => $this->uid, 'path' => ''], false));
+        $path = join_url($host, route('template_assets', ['uid' => $this->uid, 'name' => ''], false));
         $html = \Acelle\Library\Tool::replaceTemplateUrl($html, $path);
 
         // By the way, fix <html>

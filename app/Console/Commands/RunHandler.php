@@ -64,6 +64,8 @@ class RunHandler extends Command
             $this->execRunHandler();
         });
         Log::info('Handlers finished!');
+
+        return 0;
     }
 
     /**
