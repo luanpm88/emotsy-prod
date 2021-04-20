@@ -55,6 +55,7 @@ class TestCampaign extends Command
     public function handle()
     {
         $this->testImap();
+        return 0;
     }
 
     public function testSmtp()
