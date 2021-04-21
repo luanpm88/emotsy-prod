@@ -8,7 +8,8 @@ return [
     'date_format_sql' => '%Y-%m-%d',    // 2020-12-25
 
     // Minimum recommended PHP version
-    'php_recommended' => '7.2.5',
+    // which is required by Laravel 8
+    'php_recommended' => '7.3.0',
 
     // Minimum supported PHP version
     'php' => '7.2.5',
