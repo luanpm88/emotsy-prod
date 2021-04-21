@@ -1940,54 +1940,7 @@ class Customer extends Model implements BillableUserInterface
         return $droplist;
     }
 
-    /**
-     * Begin creating a new subscription.
-     *
-     * @param string $subscription
-     * @param string $plan
-     *
-     * @return \Laravel\Cashier\SubscriptionBuilder
-     */
-    public function createSubscription($plan, $gateway)
-    {
-        // update subscription model
-        $subscription = new Subscription();
-        $subscription->user_id = $this->getBillableId();
-        $subscription->plan_id = $plan->getBillableId();
-        $subscription->status = Subscription::STATUS_NEW;
-
-        // Always set ends at if gateway dose not support recurring
-        if (!$gateway->isSupportRecurring()) {
-            $interval = $plan->getBillableInterval();
-            $intervalCount = $plan->getBillableIntervalCount();
-
-            switch ($interval) {
-                case 'month':
-                    $endsAt = \Carbon\Carbon::now()->addMonth($intervalCount)->timestamp;
-                    break;
-                case 'day':
-                    $endsAt = \Carbon\Carbon::now()->addDay($intervalCount)->timestamp;
-                    // no break
-                case 'week':
-                    $endsAt = \Carbon\Carbon::now()->addWeek($intervalCount)->timestamp;
-                    break;
-                case 'year':
-                    $endsAt = \Carbon\Carbon::now()->addYear($intervalCount)->timestamp;
-                    break;
-                default:
-                    $endsAt = null;
-            }
-
-            $subscription->ends_at = $endsAt;
-        }
-
-        $subscription->save();
-
-        $gateway->createSubscription($subscription);
-
-        return $subscription;
-    }
-
+    
     public function getCurrentSubscription()
     {
         return $this->subscription;
