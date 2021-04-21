@@ -37,7 +37,11 @@
         $( document ).ready(function() {
             editor = new Editor({
                 buildMode: {{ $buildMode }},
+<<<<<<< HEAD
                 legacyMode: false,
+=======
+                legacyMode: {{ $buildMode ? 'true' : 'false' }},
+>>>>>>> origin/develop
                 showHelp: false,
                 lang: {!! json_encode(language()->getBuilderLang()) !!},
                 url: '{{ action('TemplateController@builderEditContent', $template->uid) }}',

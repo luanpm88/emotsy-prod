@@ -95,7 +95,7 @@
 							<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 							<ul class="dropdown-menu dropdown-menu-right">
 								@if (\Gate::allows('resend', $item))
-									<li><a class="resend-campaign" href="{{ action('CampaignController@resend', ["uids" => $item->uid]) }}">
+									<li><a class="resend-campaign" href="{{ action('CampaignController@resend', ["uid" => $item->uid]) }}">
 										<i class="icon-reload-alt"></i> {{ trans("messages.campaign.resend") }}</a></li>
 								@endif
 								@if (\Gate::allows('send_test_email', $item))

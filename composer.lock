@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/luanpm88/acelle-cashier.git",
-                "reference": "e5e923433e97bd02d3c6ec0252a3c041d1cde14e"
+                "reference": "9a36b1e977560c6e3ee82541c9d35de27785f89a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/luanpm88/acelle-cashier/zipball/e5e923433e97bd02d3c6ec0252a3c041d1cde14e",
-                "reference": "e5e923433e97bd02d3c6ec0252a3c041d1cde14e",
+                "url": "https://api.github.com/repos/luanpm88/acelle-cashier/zipball/9a36b1e977560c6e3ee82541c9d35de27785f89a",
+                "reference": "9a36b1e977560c6e3ee82541c9d35de27785f89a",
                 "shasum": ""
             },
             "require": {
@@ -69,7 +69,7 @@
                 "issues": "https://github.com/laravel/cashier/issues",
                 "source": "https://github.com/laravel/cashier"
             },
-            "time": "2021-04-16T08:43:49+00:00"
+            "time": "2021-04-20T04:21:25+00:00"
         },
         {
             "name": "aws/aws-php-sns-message-validator",
@@ -2340,16 +2340,16 @@
         },
         {
             "name": "lawepham/geoip",
-            "version": "1.6.1",
+            "version": "1.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/luanpm88/lawepham-geoip.git",
-                "reference": "a427e638a64bd5d67a1dfe23eabaf768550cb502"
+                "reference": "8abede716d5f7e17a1901388fdd3b5450d674d58"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/luanpm88/lawepham-geoip/zipball/a427e638a64bd5d67a1dfe23eabaf768550cb502",
-                "reference": "a427e638a64bd5d67a1dfe23eabaf768550cb502",
+                "url": "https://api.github.com/repos/luanpm88/lawepham-geoip/zipball/8abede716d5f7e17a1901388fdd3b5450d674d58",
+                "reference": "8abede716d5f7e17a1901388fdd3b5450d674d58",
                 "shasum": ""
             },
             "type": "library",
@@ -2366,10 +2366,10 @@
             ],
             "description": "Get location information from IP",
             "support": {
-                "source": "https://github.com/luanpm88/lawepham-geoip/tree/1.6.1",
+                "source": "https://github.com/luanpm88/lawepham-geoip/tree/1.6.2",
                 "issues": "https://github.com/luanpm88/lawepham-geoip/issues"
             },
-            "time": "2021-03-25T01:51:09+00:00"
+            "time": "2021-04-21T03:14:28+00:00"
         },
         {
             "name": "league/commonmark",

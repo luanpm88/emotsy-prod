@@ -1,3 +1,23 @@
+4.0.23 / 2021-04-20
+==================
+
+ * Added: upgrade to Laravel 7, the required PHP version is now 7.2.5 or higher
+ * Added: upgrade to Carbon 2
+ * Added: refined automation UI
+ * Added: updated GeoIP dataset
+ * Added: multiple payment options supported
+ * Added: mass assign values to custom fields
+ * Added: more PRO builder widgets
+ * Added: more campaign setup options
+ * Added: improved sending domain verification process
+ * Added: plugin mechanism now allows hooking into the core application
+ * Added: better PHP CLI detection
+ * Added: file manager is now supported in PRO builder
+ * Added: user's space for storing assets
+ * Added: more plan setup options
+ * Added: easier form generation options
+ * Added: more unsubscription options
+
 4.0.22 / 2021-03-17
 ==================
 
