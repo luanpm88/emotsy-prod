@@ -112,6 +112,7 @@ a {
     padding: 2px 10px;
     margin: 2px 0;
     border-radius: 20px;
+    min-width: 60px;
 }
 .page-title {
     padding: 20px 0 20px 0;
@@ -747,9 +748,9 @@ input.error {
     color: #000;
 }
 .bg-future, .bg-new {
-    background-color: #f25f24;
-    border-color: #f25f24;
-    color: #fff;
+    background-color: #ffe1d5;
+    border-color: #ffe1d5;
+    color: #231c15;
 }
 .bg-undeliverable, .bg-outdated, .bg-error, .bg-failed {
     background-color: #D84315;
