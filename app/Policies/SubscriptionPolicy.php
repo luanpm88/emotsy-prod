@@ -42,8 +42,7 @@ class SubscriptionPolicy
 
     public function cancel(User $user, Subscription $subscription, $role)
     {
-        $gateway = $subscription->getPaymentGateway();
-        $can = $subscription->isActive() && $subscription->isRecurring() && $gateway->isSupportRecurring();
+        $can = $subscription->isActive() && $subscription->isRecurring();
         switch ($role) {
             case 'admin':
                 break;
@@ -56,9 +55,7 @@ class SubscriptionPolicy
 
     public function resume(User $user, Subscription $subscription, $role)
     {
-        $gateway = $subscription->getPaymentGateway();
-        $can = $subscription->isActive() && $gateway->isSupportRecurring() && $subscription->cancelled() && !$subscription->isEnded();
-
+        $can = $subscription->isActive() && $subscription->cancelled() && !$subscription->isEnded();
         switch ($role) {
             case 'admin':
                 break;

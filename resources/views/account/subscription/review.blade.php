@@ -14,19 +14,72 @@
             <li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
             <li class="active">{{ trans('messages.subscription') }}</li>
         </ul>
-        <h1>
-            <span class="text-semibold">{{ trans('messages.plan.review') }}</span>
-        </h1>
     </div>
-
+    
 @endsection
 
 @section('content')
-<form action="{{ action('AccountSubscriptionController@create', ['plan_uid' => $plan->uid]) }}" method="POST" class="proceed_with_payment">
-    {{ csrf_field() }}
+
     <div class="row">
         <div class="col-md-6">
-            <div class="sub-section mb-30">
+            <form action="{{ action('AccountSubscriptionController@create', ['plan_uid' => $plan->uid]) }}" method="POST" class="proceed_with_payment">
+                {{ csrf_field() }}
+                <h2 class="mb-3 mt-0">{{ trans('messages.subscription.choose_payment_method') }}</h2>
+                <p>{{ trans('messages.plan.review.wording') }}</p>
+                <div class="sub-section mb-30 choose-payment-methods">      
+                    @foreach(Acelle\Model\Setting::getEnabledPaymentGateways() as $gateway)
+                        <div class="d-flex align-items-center choose-payment choose-payment-{{ $gateway }}">
+                            <div class="text-right pl-2 pr-2">
+                                <div class="d-flex align-items-center form-group-mb-0">
+                                    @include('helpers.form_control', [
+                                        'type' => 'radio2',
+                                        'name' => 'payment_method',
+                                        'value' => '',
+                                        'label' => '',
+                                        'help_class' => 'setting',
+                                        'rules' => ['payment_method' => 'required'],
+                                        'options' => [
+                                            ['value' => $gateway, 'text' => ''],
+                                        ],
+                                    ])
+                                    <div class="check"></div>
+                                </div>
+                            </div>
+                            <div class="mr-auto pr-4">
+                                <h4 class="font-weight-semibold mb-2">{{ trans('messages.frontend_payment.' . $gateway) }}</h4>
+                                <p class="mb-3">{{ trans('messages.frontend_payment.' . $gateway . '.desc') }}</p>
+                            </div>                        
+                        </div>
+                    @endforeach
+                </div>
+                <div class="sub-section">
+                    <div class="row">
+                        <div class="col-md-4">
+                            @if (!$plan->isFree())
+                                <button link-method="POST"
+                                    class="btn btn-mc_primary">
+                                        {{ trans('messages.payment.proceed_with_payment') }}
+                                </button>
+                            @else
+                                <button link-method="POST"
+                                    class="btn btn-mc_primary">
+                                        {{ trans('messages.subscription.get_started') }}
+                                </button>
+                            @endif
+                        </div>
+                        <div class="col-md-8">
+                            {!! trans('messages.payment.agree_service_intro', ['plan' => $plan->name]) !!}
+                        </div>
+                    </div>
+                </div>     
+            </form>       
+        </div>
+        <div class="col-md-6">
+            <div class="sub-section mb-30 plan-review-block pt-0">
+                <h2 class="mb-3">
+                    <span class="text-semibold">{{ trans('messages.plan.review') }}</span>
+                </h2>
+
                 <p>{{ trans('messages.plan.review.wording') }}</p>
                 
                 <ul class="mc-inline-list">
@@ -55,70 +108,22 @@
                         <value>{{ $plan->displayMaxCampaign() }}</value>
                     </li>
                 </ul>
+                <form class="mt-4 pt-4" method="POST" action="{{ action('AccountSubscriptionController@abort') }}">
+                    {{ csrf_field() }}
+                    
+                    <a href="javascript:;" onclick="$(this).closest('form').submit()"
+                        class="text-muted mt-4"
+                        style="font-size: 16px; text-decoration: underline;color:#333"
+                    >{{ trans('messages.change_mind_cancel_subscription') }}</a>
+                </form>
             </div>
         </div>
     </div>
     <div class="row">
-        <div class="col-md-8">
-            <h2 class="mb-1">{{ trans('messages.subscription.choose_payment_method') }}</h2>
-            <p>{{ trans('messages.plan.review.wording') }}</p>
-            <div class="sub-section mb-30 choose-payment-methods">      
-                @foreach(Acelle\Model\Setting::getEnabledPaymentGateways() as $gateway)
-                    <div class="d-flex align-items-center choose-payment choose-payment-{{ $gateway }}">
-                        <div class="text-right pl-2 pr-2">
-                            <div class="d-flex align-items-center form-group-mb-0">
-                                @include('helpers.form_control', [
-                                    'type' => 'radio2',
-                                    'name' => 'payment_method',
-                                    'value' => '',
-                                    'label' => '',
-                                    'help_class' => 'setting',
-                                    'rules' => ['payment_method' => 'required'],
-                                    'options' => [
-                                        ['value' => $gateway, 'text' => ''],
-                                    ],
-                                ])
-                                <div class="check"></div>
-                            </div>
-                        </div>
-                        <div class="mr-auto pr-4">
-                            <h4 class="font-weight-semibold mb-2">{{ trans('messages.frontend_payment.' . $gateway) }}</h4>
-                            <p class="mb-3">{{ trans('messages.frontend_payment.' . $gateway . '.desc') }}</p>
-                        </div>                        
-                    </div>
-                @endforeach
-            </div>
-            <div class="sub-section">
-                <div class="row">
-                    <div class="col-md-4">
-                        @if (!$plan->isFree())
-                            <button link-method="POST"
-                                class="btn btn-mc_primary">
-                                    {{ trans('messages.payment.proceed_with_payment') }}
-                            </button>
-                        @else
-                            <button link-method="POST"
-                                class="btn btn-mc_primary">
-                                    {{ trans('messages.subscription.get_started') }}
-                            </button>
-                        @endif
-                    </div>
-                    <div class="col-md-8">
-                        {!! trans('messages.payment.agree_service_intro', ['plan' => $plan->name]) !!}
-                    </div>
-                </div>
-            </div>            
-        </div>
+        
     </div>
-</form>
-<form class="" method="POST" action="{{ action('AccountSubscriptionController@abort') }}">
-    {{ csrf_field() }}
-    
-    <a href="javascript:;" onclick="$(this).closest('form').submit()"
-        class="text-muted mt-4"
-        style="font-size: 13px; text-decoration: underline;color:#333"
-    >{{ trans('messages.change_mind_cancel_subscription') }}</a>
-</form>
+
+
     <script>
         $('.proceed_with_payment').on('submit', function(e) {
             if (!$('.choose-payment-methods>div [type=radio]:checked').length) {

@@ -113,6 +113,7 @@ a {
     padding: 2px 10px;
     margin: 2px 0;
     border-radius: 20px;
+    min-width: 60px;
 }
 .page-title {
     padding: 20px 0 20px 0;
@@ -748,9 +749,9 @@ input.error {
     color: #000;
 }
 .bg-future, .bg-new {
-    background-color: #ef906a;
-    border-color: #ef906a;
-    color: #fff;
+    background-color: #ffe1d5;
+    border-color: #ffe1d5;
+    color: #231c15;
 }
 .bg-undeliverable, .bg-outdated, .bg-error, .bg-failed {
     background-color: #D84315;
@@ -4218,4 +4219,10 @@ label:hover .checkmark, .checkmark-container:hover .checkmark {
     top: -4px;
     left: 0;
     color: #fff;
+}
+.plan-review-block {
+    padding: 30px;
+    border: solid 1px #aaa;
+    border-radius: 3px;
+    box-shadow: 1px 1px 5px rgba(0,0,0,0.1);    
 }

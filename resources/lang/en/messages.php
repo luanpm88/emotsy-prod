@@ -1094,7 +1094,7 @@
   'spam_reported' => 'Spam reported',
   'reported' => 'Reported',
   'not_open_per_total' => ':count / :total subscribers',
-  'campaign_table_chart_intro' => 'The key email marketing metrics of your campaign are visualized in the tables/charts below. You can look at those metrics to assess the overall success of your email marketing campaigns.',
+  'campaign_table_chart_intro' => 'The key email marketing metrics of your campaign are visualized in the tables/charts below.<br>You can look at those metrics to assess the overall success of your email marketing campaigns.',
   'campaign_open_click_rate_intro' => 'Open rate is a measure that tells you how many delivered emails were opened by subscribers.Click rate is a measure of how many people clicked on one of the links in your email campaign.',
   'campaign_24h_intro' => 'Below are the details of subscriber activity (opens and clicks) measured for this campaign during the last 24 hours.',
   'count_clicked_opened' => ':count / :total unique opens',

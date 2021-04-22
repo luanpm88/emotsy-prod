@@ -4074,4 +4074,13 @@
   'view' => 'View',
   'all_source' => 'All sources',
   'automation.back_to_automation' => 'Back to automation',
+  'subscriber.assign_values' => 'Assign Values',
+  'subscriber.a_fixed_value_for_contacts' => 'A fixed value for all contacts',
+  'subscriber.unique_values_for_all_the_list' => 'Unique values from a list',
+  'subscriber.assign_values.value' => 'Field Value',
+  'subscriber.enter_field_value' => 'Enter field value',
+  'subscribers.assign_values' => 'Assign Values',
+  'subscribers.values_assigned' => 'Subscribers were updated',
+  'subscriber.assign_to_subscriber' => 'Your are about to assign values to
+      <span class="font-weight-semibold">:count</span> contacts',
 ) ?>

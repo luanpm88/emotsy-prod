@@ -1,7 +1,7 @@
 @extends('layouts.popup.small')
 
 @section('content')
-	<div class="row">
+    <div class="row">
         <div class="col-md-12">
             <div class="d-flex align-items-center">
                 <h3 class="mr-auto mb-4">{{ trans('messages.automation.contact.profile') }}</h3>
@@ -167,18 +167,18 @@
         });
 
         var tagContact = new Popup(undefined, undefined, {
-			onclose: function() {
-				sidebar.load();
-			}
-		});
+            onclose: function() {
+                sidebar.load();
+            }
+        });
         $('.profile-tag-contact').click(function(e) {
             e.preventDefault();
 
             var url = $(this).attr('href');
 
             tagContact.load(url, function() {
-				console.log('Confirm action type popup loaded!');				
-			});
+                console.log('Confirm action type popup loaded!');                
+            });
         });
         
         $('.remove-contact-tag').click(function(e) {
