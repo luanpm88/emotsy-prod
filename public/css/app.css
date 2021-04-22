@@ -4137,3 +4137,9 @@ label:hover .checkmark, .checkmark-container:hover .checkmark {
     left: 0;
     color: #fff;
 }
+.plan-review-block {
+    padding: 30px;
+    border: solid 1px #aaa;
+    border-radius: 3px;
+    box-shadow: 1px 1px 5px rgba(0,0,0,0.1);    
+}

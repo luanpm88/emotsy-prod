@@ -30,7 +30,7 @@
         
         $( document ).ready(function() {
             editor = new Editor({
-                buildMode: {{ $buildMode }},
+                buildMode: false,
                 legacyMode: {{ $buildMode ? 'true' : 'false' }},
                 showHelp: false,
                 lang: {!! json_encode(language()->getBuilderLang()) !!},
