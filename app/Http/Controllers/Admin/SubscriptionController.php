@@ -142,9 +142,10 @@ class SubscriptionController extends Controller
      */
     public function cancel(Request $request)
     {
+        $customer = $request->user()->customer;
         // Get current subscription
         $subscription = Subscription::findByUid($request->id);
-        $gateway = $subscription->getPaymentGateway();
+        $gateway = $customer->getPaymentGateway();
 
         if ($request->user()->admin->can('cancel', $subscription)) {
             $gateway->cancel($subscription);
@@ -162,9 +163,10 @@ class SubscriptionController extends Controller
      */
     public function resume(Request $request)
     {
+        $customer = $request->user()->customer;
         // Get current subscription
         $subscription = Subscription::findByUid($request->id);
-        $gateway = $subscription->getPaymentGateway();
+        $gateway = $customer->getPaymentGateway();
 
         if ($request->user()->admin->can('resume', $subscription)) {
             $gateway->resume($subscription);
@@ -182,9 +184,10 @@ class SubscriptionController extends Controller
      */
     public function cancelNow(Request $request)
     {
+        $customer = $request->user()->customer;
         // Get current subscription
         $subscription = Subscription::findByUid($request->id);
-        $gateway = $subscription->getPaymentGateway();
+        $gateway = $customer->getPaymentGateway();
 
         if ($request->user()->admin->can('cancelNow', $subscription)) {
             try {
@@ -221,9 +224,10 @@ class SubscriptionController extends Controller
      **/
     public function invoices(Request $request, $id)
     {
+        $customer = $request->user()->customer;
         // Get current subscription
         $subscription = Subscription::findByUid($request->id);
-        $gateway = $subscription->getPaymentGateway();
+        $gateway = $customer->getPaymentGateway();
 
         return view('admin.subscriptions.invoices', [
             'subscription' => $subscription,
@@ -240,9 +244,10 @@ class SubscriptionController extends Controller
      **/
     public function setActive(Request $request, $id)
     {
+        $customer = $request->user()->customer;
         // Get current subscription
         $subscription = Subscription::findByUid($request->id);
-        $gateway = $subscription->getPaymentGateway();
+        $gateway = $customer->getPaymentGateway();
 
         // authorize
         if (!$request->user()->admin->can('setActive', $subscription)) {
@@ -275,9 +280,10 @@ class SubscriptionController extends Controller
      **/
     public function approvePending(Request $request, $id)
     {
+        $customer = $request->user()->customer;
         // Get current subscription
         $subscription = Subscription::findByUid($request->id);
-        $gateway = $subscription->getPaymentGateway();
+        $gateway = $customer->getPaymentGateway();
 
         // authorize
         if (!$request->user()->admin->can('approvePending', $subscription)) {
@@ -310,9 +316,10 @@ class SubscriptionController extends Controller
      **/
     public function rejectPending(Request $request, $id)
     {
+        $customer = $request->user()->customer;
         // Get current subscription
         $subscription = Subscription::findByUid($request->id);
-        $gateway = $subscription->getPaymentGateway();
+        $gateway = $customer->getPaymentGateway();
 
         // authorize
         if (!$request->user()->admin->can('rejectPending', $subscription)) {

@@ -47,7 +47,7 @@ class SubscriptionController extends Controller
             return \Response::json(array('status' => 0, 'message' => 'Plan is not active'), 404);
         }
 
-        $customer->assignPlan($plan, $request->gateway);
+        $customer->assignPlan($plan);
 
         return \Response::json(array(
             'status' => 1,
@@ -66,9 +66,10 @@ class SubscriptionController extends Controller
      **/
     public function setActive(Request $request, $uid)
     {
+        $customer = $request->user()->customer;
         // Get current subscription
         $subscription = \Acelle\Cashier\Subscription::findByUid($uid);
-        $gateway = $subscription->getPaymentGateway();
+        $gateway = $customer->getPaymentGateway();
 
         // check if item exists
         if (!is_object($subscription)) {

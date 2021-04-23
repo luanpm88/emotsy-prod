@@ -231,6 +231,12 @@ class Customer extends Model implements BillableUserInterface
         return $this->hasMany('Acelle\Model\TrackingDomain');
     }
 
+    // billing addresses
+    public function billingAddresses()
+    {
+        return $this->hasMany('Acelle\Model\BillingAddress');
+    }
+
     // All senders, including ones that are not associated to a particular sending servers
     public function allSenders()
     {
@@ -1968,7 +1974,6 @@ class Customer extends Model implements BillableUserInterface
         // create/update subscription
         if ($this->subscription) {
             $subscription = $this->subscription;
-            $subscription->gateway = null;
         } else {
             $subscription = new Subscription();
             $subscription->user_id = $this->getBillableId();
@@ -2090,5 +2095,85 @@ class Customer extends Model implements BillableUserInterface
         //     date: -0001-11-30 00:00:00.0 UTC (+00:00)
 
         return $dt;
+    }
+
+    /**
+     * Get payment method.
+     *
+     * @var object | collect
+     */
+    public function getPaymentMethod()
+    {
+        if (!$this['payment_method']) {
+            return null;
+        }
+
+        return json_decode($this['payment_method'], true);
+    }
+
+    /**
+     * Get gateway.
+     *
+     * @return gateway
+     */
+    public function getPaymentGateway()
+    {
+        if ($this->getPaymentMethod() == null) {
+            return null;
+        }
+
+        return \Acelle\Cashier\Cashier::getPaymentGateway($this->getPaymentMethod()['method']);
+    }
+
+    /**
+     * Update payment method.
+     *
+     * @var object | collect
+     */
+    public function updatePaymentMethod($data=[])
+    {
+        // $paymentMethod = $this->getPaymentMethod();
+
+        // if (!isset($paymentMethod)) {
+        //     $paymentMethod = [];
+        // }
+        
+        // $data = (object) array_merge((array) $paymentMethod, $data);
+        $this['payment_method'] = json_encode($data);
+
+        $this->save();
+    }
+    
+    /**
+     * Remove payment method.
+     *
+     * @var object | collect
+     */
+    public function removePaymentMethod()
+    {
+        $this->payment_method = null;
+        $this->save();
+    }
+    
+    /**
+     * Get default billing address.
+     *
+     * @var object
+     */
+    public function newBillingAddress()
+    {
+        $address = new \Acelle\Model\BillingAddress();
+        $address->customer_id = $this->id;
+        return $address;
+    }
+
+    /**
+     * Get default billing address.
+     *
+     * @var object
+     */
+    public function getDefaultBillingAddress()
+    {
+        return $this->billingAddresses()->first();
     }
 }

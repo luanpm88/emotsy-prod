@@ -243,4 +243,92 @@ class AccountController extends Controller
 
         return redirect()->action('AccountController@api');
     }
+
+    /**
+     * Billing.
+     */
+    public function billing(Request $request)
+    {
+        return view('account.billing', [
+            'customer' => $request->user()->customer,
+        ]);
+    }
+    
+    /**
+     * Edit billing address.
+     */
+    public function editBillingAddress(Request $request)
+    {
+        $customer = $request->user()->customer;
+        $billingAddress = $customer->getDefaultBillingAddress();
+
+        // has no address yet
+        if (!$billingAddress) {
+            $billingAddress = $customer->newBillingAddress();
+        }
+
+        // copy from contacy
+        if ($request->same_as_contact == 'true') {
+            $billingAddress->copyFromContact();
+        }
+
+        // Save posted data
+        if ($request->isMethod('post')) {
+            list($validator, $billingAddress) = $billingAddress->updateAll($request);
+            
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('account.editBillingAddress', [
+                    'billingAddress' => $billingAddress,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            $request->session()->flash('alert-success', trans('messages.billing_address.updated'));
+
+            return;
+        }
+
+        return view('account.editBillingAddress', [
+            'billingAddress' => $billingAddress,
+        ]);
+    }
+
+    /**
+     * Remove payment method
+     */
+    public function removePaymentMethod(Request $request)
+    {
+        $customer = $request->user()->customer;
+        
+        $customer->removePaymentMethod();
+    }
+    
+    /**
+     * Edit payment method
+     */
+    public function editPaymentMethod(Request $request)
+    {
+        // Save posted data
+        if ($request->isMethod('post')) {
+            $gateway = \Acelle\Cashier\Cashier::getPaymentGateway($request->payment_method);
+
+            // exception for PayStack
+            if ($request->payment_method == 'paystack') {
+                $subscription = $request->user()->customer->subscription;
+
+                // subscribing
+                if(is_object($subscription) && $subscription->isNew()) {
+                    // Paystack create subscription
+                    $subscription = $gateway->create($request->user()->customer, $subscription->plan);
+
+                    return redirect()->away($gateway->getCheckoutUrl($subscription, $request->return_url));
+                }
+            }
+            
+            return redirect()->away($gateway->getConnectUrl($request->return_url));
+        }
+
+        return view('account.editPaymentMethod');
+    }
 }

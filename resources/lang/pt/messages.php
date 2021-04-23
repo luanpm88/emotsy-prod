@@ -3952,4 +3952,7 @@
       <a href="http://:domain" target="_blank">http://:domain</a> are also redirected to Acelle source.
       In other words, make it an alias URL or your Acelle webapp.',
   'tracking_domain.test.proceed' => 'Proceed',
+  'bill.user_id' => 'ID',
+  'bill.last4' => 'Last 4 number',
+  'bill.next_period_ends_on' => 'Next period ends on :date',
 ) ?>

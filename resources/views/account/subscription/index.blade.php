@@ -26,7 +26,7 @@
     @include("account._menu")
 
     <div class="row">
-        <div class="col-sm-12 col-md-6 col-lg-6">
+        <div class="col-sm-12 col-md-8 col-lg-8">
 
             @if ($subscription->hasError())
                 @include('elements._notification', [
@@ -97,21 +97,80 @@
                     @endif
                 @endif
             </div>
+            @include('account.subscription._invoices')
+
+            <div class="sub-section">
+                <div class="row">
+                    <div class="col-sm-12 col-md-6 col-lg-6">
+                        <h2 class="text-semibold">{{ trans('messages.plan_details') }} </h2>
+                        <p>{{ trans('messages.plan_details.intro') }}</p>
+
+                        @include('plans._details', ['plan' => $plan])
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+        <div class="col-sm-12 col-md-4 col-lg-4">
+            @php
+                $upComingBill = $subscription->getUpComingBill();
+            @endphp
+            <div class="upcoming-bill-box">
+                <div class="header">
+                    <h4 class="mt-0 font-weight-semibold mb-1">{{ trans('messages.upcoming_bill') }}</h4>
+                    @if ($upComingBill['total'] == 0)
+                        <div class="m-0">{{ trans('messages.upcoming_bill.no_fee_description', [
+                            'plan' => $upComingBill['plan']->name,
+                        ]) }}</div>
+                    @else
+                        <div class="m-0">{{ trans('messages.upcoming_bill.description', [
+                            'plan' => $upComingBill['plan']->name,
+                        ]) }}</div>
+                    @endif
+                </div>
+                <div class="body">
+                    <div>
+                        @foreach ($upComingBill['bill'] as $item)
+                            <div class="bill_item d-flex">
+                                <div class="mr-auto">
+                                    <div class="font-weight-semibold">{{ $item['name'] }}</div>
+                                    @if(isset($item['plan'])) 
+                                        <div class="mt-2">
+                                            <div>
+                                                {{ trans('messages.sending_total_quota_label') }}: {{ $item['plan']->displayTotalQuota() }}
+                                            </div>
+                                            <div>
+                                                {{ trans('messages.max_lists_label') }}: {{ $item['plan']->displayMaxList() }}
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
+                                <div class="font-weight-semibold">{{ format_price($item['amount'],  $upComingBill['plan']->currency->format)}}</div>
+                            </div>
+                        @endforeach
+                    </div>
+                    <hr>
+                    <div>
+                        <div class="total d-flex ">
+                            <div class="mr-auto">
+                                <div class="font-weight-semibold">{{ trans('messages.bill.estimated_total') }}</div>
+                                @if($gateway !== null && $gateway->isSupportRecurring())
+                                    <div>{{ trans('messages.bill.autopay_on', ['date' => $upComingBill['charge_on']]) }}</div>
+                                @else
+                                    <div>{{ trans('messages.bill.will_expire', ['date' => $upComingBill['charge_on']]) }}</div>
+                                @endif
+                            </div>
+                            <div class="bill-total">{{ format_price($upComingBill['total'],  $upComingBill['plan']->currency->format)}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-    @include('account.subscription._invoices')
-
-    <div class="sub-section">
-        <div class="row">
-            <div class="col-sm-12 col-md-6 col-lg-6">
-                <h2 class="text-semibold">{{ trans('messages.plan_details') }} </h2>
-                <p>{{ trans('messages.plan_details.intro') }}</p>
-
-                @include('plans._details', ['plan' => $plan])
+            <div class="mt-4">
+                @include('account._payment_info')
             </div>
         </div>
     </div>
+    
 
     <script>
         var changePlanModal = new IframeModal();

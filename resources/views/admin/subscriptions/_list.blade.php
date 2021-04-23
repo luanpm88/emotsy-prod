@@ -26,12 +26,6 @@
 				</td>
 				<td width="15%">
                     <h5 class="no-margin">
-                        <span class="kq_search">{{ $subscription->gateway ? trans('messages.payments.' . $subscription->gateway) : '--' }}</span>
-                    </h5>
-                    <span class="text-muted2">{{ trans('messages.current_service') }}</span>
-                </td>
-				<td width="15%">
-                    <h5 class="no-margin">
                         <span class="kq_search">{{ Acelle\Library\Tool::dateTime($subscription->created_at)->format('M d, Y') }}</span>
                     </h5>
                     <span class="text-muted2">{{ trans('messages.subscribed_on') }}</span>

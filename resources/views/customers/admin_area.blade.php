@@ -70,14 +70,6 @@
             </li>
             <li>
                 <div class="unit size1of2">
-                    <strong>{{ trans('messages.payment_method') }}</strong>
-                </div>
-                <div class="lastUnit size1of2">
-                    <mc:flag>{{ trans('messages.payment.' . $subscription->gateway) }}</mc:flag>
-                </div>
-            </li>
-            <li>
-                <div class="unit size1of2">
                     <strong>{{ trans('messages.subscription.start_from') }}</strong>
                 </div>
                 <div class="lastUnit size1of2">

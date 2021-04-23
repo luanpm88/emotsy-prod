@@ -192,6 +192,9 @@ Route::group(['middleware' => ['not_installed']], function () {
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function () {
     // Account subscription
+    Route::get('subscription/do-renew', 'AccountSubscriptionController@doRenew');
+    Route::get('subscription/renew', 'AccountSubscriptionController@renew');
+    Route::get('subscription/payment', 'AccountSubscriptionController@payment');
     Route::post('subscription/abort', 'AccountSubscriptionController@abort');
     Route::post('subscription/plan/select', 'AccountSubscriptionController@select');
     Route::get('subscription/pending', 'AccountSubscriptionController@pending');
@@ -213,7 +216,6 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
 
     Route::match(['get', 'post'], 'subscription/pay', 'AccountSubscriptionController@pay');
     Route::get('subscription/card', 'AccountSubscriptionController@card');
-    Route::post('subscription/create', 'AccountSubscriptionController@create');
     Route::get('subscription/new', 'AccountSubscriptionController@new');
 
 
@@ -224,6 +226,10 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function () {
     // Customer profile/information
+    Route::post('account/payment/remove', 'AccountController@removePaymentMethod');
+    Route::match(['get', 'post'], 'account/payment/edit', 'AccountController@editPaymentMethod');
+    Route::match(['get', 'post'], 'account/billing/edit', 'AccountController@editBillingAddress');
+    Route::get('account/billing', 'AccountController@billing');
     Route::get('account/profile', 'AccountController@profile');
     Route::post('account/profile', 'AccountController@profile');
     Route::get('account/contact', 'AccountController@contact');

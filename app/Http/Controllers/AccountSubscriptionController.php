@@ -27,6 +27,8 @@ class AccountSubscriptionController extends Controller
         
         // Get current subscription
         $subscription = $customer->subscription;
+        // get sub gateway
+        $gateway = $customer->getPaymentGateway();
 
         // Customer dose not have subscription
         if (!is_object($subscription) || $subscription->isEnded()) {
@@ -40,23 +42,17 @@ class AccountSubscriptionController extends Controller
             ]);
         }
 
-        // not select payment
-        if (!$subscription->gateway) {
-            return view('account.subscription.review', [
-                'plan' => $subscription->plan,
-            ]);
-        }
-        
-        // get sub gateway
-        $gateway = $subscription->getPaymentGateway();
-
         if (!$subscription->plan->isActive()) {
             return view('account.subscription.error', ['message' => __('messages.subscription.error.plan-not-active', [ 'name' => $subscription->plan->name])]);
         }
         
         // Check if subscription is new
         if ($subscription->isNew()) {
-            return redirect()->away($gateway->getCheckoutUrl($subscription, action('AccountSubscriptionController@index')));
+            return view('account.subscription.payment', [
+                'subscription' => $subscription,
+                'gateway' => $gateway,
+                'plan' => $subscription->plan,
+            ]);
         }
         
         // Check if subscription is new
@@ -69,33 +65,6 @@ class AccountSubscriptionController extends Controller
             'gateway' => $gateway,
             'plan' => $subscription->plan,
         ]);
-    }
-    
-    /**
-     * Store customer subscription.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     **/
-    public function create(Request $request)
-    {
-        // Get current customer
-        $customer = $request->user()->customer;
-        $plan = Plan::findByUid($request->plan_uid);
-        $gateway = Cashier::getPaymentGateway($request->payment_method);
-
-        // Create subscription
-        $subscription = $gateway->create($customer, $plan);
-
-        try {
-            \Mail::to($customer->user->email)->send(new \Acelle\Mail\SubscriptionDoneMailer($subscription));
-        } catch (\Exception $e) {
-            $request->session()->flash('alert-error', 'Can not send email: ' . $e->getMessage());
-        }
-        
-        // Check if subscriotion is new
-        return redirect()->action('AccountSubscriptionController@index');
     }
 
     /**
@@ -111,21 +80,102 @@ class AccountSubscriptionController extends Controller
         $customer = $request->user()->customer;
         $plan = Plan::findByUid($request->plan_uid);
 
-        // create/update subscription
+        // create tmp subscription
         if ($customer->subscription) {
             $subscription = $customer->subscription;
-            $subscription->gateway = null;
         } else {
             $subscription = new Subscription();
             $subscription->user_id = $customer->getBillableId();
         }
         $subscription->plan_id = $plan->getBillableId();
+        $subscription->current_period_ends_at = $subscription->getPeriodEndsAt(Carbon::now());
         $subscription->started_at = \Carbon\Carbon::now();
         $subscription->status = Subscription::STATUS_NEW;
         $subscription->save();
 
         // Check if subscriotion is new
-        return redirect()->action('AccountSubscriptionController@index');
+        return redirect()->action('AccountSubscriptionController@payment');
+    }
+
+    /**
+     * Review plan.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     **/
+    public function payment(Request $request)
+    {
+        // Get current customer
+        $customer = $request->user()->customer;
+        $subscription = $customer->subscription;
+        $gateway = $customer->getPaymentGateway();
+
+        return view('account.subscription.payment', [
+            'subscription' => $subscription,
+            'gateway' => $gateway,
+            'plan' => $subscription->plan,
+        ]);
+    }
+
+    /**
+     * Renew plan.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     **/
+    public function renew(Request $request)
+    {
+        // Get current customer
+        $customer = $request->user()->customer;
+        $subscription = $customer->subscription;
+        $gateway = $customer->getPaymentGateway();
+
+        return view('account.subscription.renew', [
+            'subscription' => $subscription,
+            'gateway' => $gateway,
+            'plan' => $subscription->plan,
+        ]);
+    }
+
+    /**
+     * Renew plan.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     **/
+    public function doRenew(Request $request)
+    {
+        // Get current customer
+        $customer = $request->user()->customer;
+        $gateway = $customer->getPaymentGateway();
+        $subscription = $customer->subscription;
+
+        // redirect to service checkout
+        return redirect()->away($gateway->getRenewUrl($subscription, action('AccountSubscriptionController@index')));
+    }
+
+    /**
+     * Store customer subscription.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     **/
+    public function checkout(Request $request)
+    {
+        // Get current customer
+        $customer = $request->user()->customer;
+        $gateway = $customer->getPaymentGateway();
+        $subscription = $customer->subscription;
+
+        // Create subscription
+        $subscription = $gateway->create($customer, $subscription->plan);
+
+        // redirect to service checkout
+        return redirect()->away($gateway->getCheckoutUrl($subscription, action('AccountSubscriptionController@index')));
     }
     
     /**
@@ -139,7 +189,7 @@ class AccountSubscriptionController extends Controller
     {
         $customer = $request->user()->customer;
         $subscription = $customer->subscription;
-        $gateway = $subscription->getPaymentGateway();
+        $gateway = $customer->getPaymentGateway();
         $plans = Plan::getAvailablePlans();
         
         // Authorization
@@ -165,7 +215,7 @@ class AccountSubscriptionController extends Controller
     {
         $customer = $request->user()->customer;
         $subscription = $customer->subscription;
-        $gateway = $subscription->getPaymentGateway();
+        $gateway = $customer->getPaymentGateway();
 
         if ($request->user()->customer->can('cancel', $subscription)) {
             $gateway->cancel($subscription);
@@ -187,7 +237,7 @@ class AccountSubscriptionController extends Controller
     {
         $customer = $request->user()->customer;
         $subscription = $customer->subscription;
-        $gateway = $subscription->getPaymentGateway();
+        $gateway = $customer->getPaymentGateway();
 
         if ($request->user()->customer->can('resume', $subscription)) {
             $gateway->resume($subscription);
@@ -210,7 +260,7 @@ class AccountSubscriptionController extends Controller
         $customer = $request->user()->customer;
         // Get current subscription
         $subscription = $customer->subscription;
-        $gateway = $subscription->getPaymentGateway();
+        $gateway = $customer->getPaymentGateway();
         
         if ($request->user()->customer->can('cancelNow', $subscription)) {
             $gateway->cancelNow($subscription);
