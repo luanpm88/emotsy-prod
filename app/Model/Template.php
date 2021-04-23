@@ -639,6 +639,12 @@ class Template extends Model implements Storable
      */
     public function getThumbUrl()
     {
+        // @todo workaround
+        // to avoid exception thrown by route(template_assets)
+        if (is_null($this->uid)) {
+            return;
+        }
+
         if ($this->getThumbName()) {
             return route('template_assets', ['uid' => $this->uid, 'name' => $this->getThumbName()]);
         } else {
@@ -651,6 +657,12 @@ class Template extends Model implements Storable
      */
     public function untransform()
     {
+        // @todo workaround
+        // to avoid exception thrown by route(template_assets)
+        if (is_null($this->uid)) {
+            return;
+        }
+
         // replace absolute urls
         $this->content = str_replace(
             route('template_assets', ['uid' => $this->uid]).'/',
@@ -676,6 +688,12 @@ class Template extends Model implements Storable
      */
     public function transformWithoutUpdate($html, $useTrackingHost = false)
     {
+        // @todo workaround
+        // to avoid exception thrown by route(template_assets)
+        if (is_null($this->uid)) {
+            return;
+        }
+
         // Notice that there are 2 types of assets that need to untransform
         // #1 Campaign relative URL
         // #2 User assets (uploaded by file manager) absolute URL

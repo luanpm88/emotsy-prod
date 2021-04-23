@@ -14,7 +14,7 @@
         <ul class="breadcrumb breadcrumb-caret position-right">
             <li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
             <li><a href="{{ action("Admin\PlanController@index") }}">{{ trans('messages.plans') }}</a></li>
-            <li><a href="{{ action('Admin\PlanController@sendingServer', $plan->uid) }}">
+            <li><a href="{{ action('Admin\PlanController@sendingServer', [ 'uid' => $plan->uid ]) }}">
                     {{ $plan->name }}
                 </a>
             </li>
@@ -41,7 +41,7 @@
                 </div>
                 <div class="col-md-4 text-right">
                     <a class="btn btn-mc_primary mr-20 mc-modal-control" modal-size="lg" href="{{ action('Admin\PlanController@sendingServerOption', [
-                        'id' => $plan->uid]) }}">
+                        'uid' => $plan->uid]) }}">
                             {{ trans('messages.plan_option.change') }}</a>
                 </div>
             </div>
@@ -55,7 +55,7 @@
                 <p>{{ trans('messages.plan.sending_servers.list_intro') }}</p>
             </div>
             <div class="col-md-4 text-right">
-                <a href="{{ action('Admin\PlanController@addSendingServer', $plan->uid) }}" class="btn btn-primary mr-5 bg-grey mc-modal-control">
+                <a href="{{ action('Admin\PlanController@addSendingServer', [ 'id' => $plan->uid ]) }}" class="btn btn-primary mr-5 bg-grey mc-modal-control">
                     {{ trans('messages.plan.sending_servers.add') }}
                 </a>
             </div>
@@ -98,12 +98,12 @@
                             </stat>
                             <actions style='width: 30%; text-align: right'>                                
                                 @if (!$planSendingServer->isPrimary())
-                                    <a link-method="POST" href="{{ action('Admin\PlanController@setPrimarySendingServer', ['id' => $plan->uid, 'sending_server_id' => $planSendingServer->sendingServer->uid]) }}" class="btn btn-mc_default">{{ trans('messages.sending_servers.set_primary') }}</a>
+                                    <a link-method="POST" href="{{ action('Admin\PlanController@setPrimarySendingServer', ['id' => $plan->uid, 'sending_server_uid' => $planSendingServer->sendingServer->uid]) }}" class="btn btn-mc_default">{{ trans('messages.sending_servers.set_primary') }}</a>
                                 @endif
                                 @if (Auth::user()->admin->can('update', $planSendingServer->sendingServer))
-                                    <a href="{{ action('Admin\SendingServerController@edit', ["uid" => $planSendingServer->sendingServer->uid, "type" => $planSendingServer->sendingServer->type]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn btn-mc_default">{{ trans('messages.edit') }}</a>
+                                    <a href="{{ action('Admin\SendingServerController@edit', ["id" => $planSendingServer->sendingServer->uid, "type" => $planSendingServer->sendingServer->type]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn btn-mc_default">{{ trans('messages.edit') }}</a>
                                 @endif
-                                <a link-method="POST" href="{{ action('Admin\PlanController@removeSendingServer', ['id' => $plan->uid, 'sending_server_id' => $planSendingServer->sendingServer->uid]) }}" class="btn btn-mc_default">{{ trans('messages.remove') }}</a>
+                                <a link-method="POST" href="{{ action('Admin\PlanController@removeSendingServer', ['id' => $plan->uid, 'sending_server_uid' => $planSendingServer->sendingServer->uid]) }}" class="btn btn-mc_default">{{ trans('messages.remove') }}</a>
                             </actions>
                         </li>
                     @endforeach
@@ -157,7 +157,7 @@
                                         <a class="direct-link"
                                           confirm-button='{{ trans('messages.go_to') }}'
                                           link-confirm="{{ trans('messages.go_to_sending_server_page') }}"
-                                          href="{{ action('Admin\SendingServerController@edit', ["uid" => $plan->primarySendingServer()->uid, "type" => $plan->primarySendingServer()->type]) }}">
+                                          href="{{ action('Admin\SendingServerController@edit', ["id" => $plan->primarySendingServer()->uid, "type" => $plan->primarySendingServer()->type]) }}">
                                             <input type="checkbox" name="options[domains][]" value="{{ $domain }}" class="switchery"
                                                 checked readonly
                                             />
