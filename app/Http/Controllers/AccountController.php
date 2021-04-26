@@ -329,6 +329,8 @@ class AccountController extends Controller
             return redirect()->away($gateway->getConnectUrl($request->return_url));
         }
 
-        return view('account.editPaymentMethod');
+        return view('account.editPaymentMethod', [
+            'redirect' => $request->redirect,
+        ]);
     }
 }

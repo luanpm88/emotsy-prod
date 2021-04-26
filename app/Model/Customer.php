@@ -125,7 +125,7 @@ class Customer extends Model implements BillableUserInterface
     public function subscription()
     {
         return $this->hasOne('Acelle\Cashier\Subscription', 'user_id', 'uid')
-            // ->where('status', '<>', Subscription::STATUS_ENDED)
+            // ->where('status', '!=', Subscription::STATUS_ENDED)
             ->orderBy('created_at', 'desc');
     }
 
@@ -835,9 +835,9 @@ class Customer extends Model implements BillableUserInterface
     {
         $current = $this->getCurrentSubscription();
 
-        if (is_null($current->started_at)) {
-            throw new \Exception('Application error: subscription started_at not set!');
-        }
+        // if (is_null($current->started_at)) {
+        //     throw new \Exception('Application error: subscription started_at not set!');
+        // }
         
         $quota = [
             'start' => (isset($current->started_at) ? $current->started_at->timestamp : null),
@@ -1962,27 +1962,27 @@ class Customer extends Model implements BillableUserInterface
         return $this->automation2s()->count();
     }
 
-    /**
-     * Assign plan to customer.
-     */
-    public function assignPlan($plan)
-    {
-        if ($this->activeSubscription()) {
-            $this->activeSubscription()->cancelNow();
-        }
+    // /**
+    //  * Assign plan to customer.
+    //  */
+    // public function assignPlan($plan)
+    // {
+    //     if ($this->activeSubscription()) {
+    //         $this->activeSubscription()->cancelNow();
+    //     }
 
-        // create/update subscription
-        if ($this->subscription) {
-            $subscription = $this->subscription;
-        } else {
-            $subscription = new Subscription();
-            $subscription->user_id = $this->getBillableId();
-        }
-        $subscription->plan_id = $plan->getBillableId();
-        $subscription->started_at = \Carbon\Carbon::now();
-        $subscription->status = Subscription::STATUS_NEW;
-        $subscription->save();
-    }
+    //     // create/update subscription
+    //     if ($this->subscription) {
+    //         $subscription = $this->subscription;
+    //     } else {
+    //         $subscription = new Subscription();
+    //         $subscription->user_id = $this->getBillableId();
+    //     }
+    //     $subscription->plan_id = $plan->getBillableId();
+    //     $subscription->started_at = \Carbon\Carbon::now();
+    //     $subscription->status = Subscription::STATUS_NEW;
+    //     $subscription->save();
+    // }
 
     /**
      * Check customer if has notice.
@@ -2123,6 +2123,21 @@ class Customer extends Model implements BillableUserInterface
         }
 
         return \Acelle\Cashier\Cashier::getPaymentGateway($this->getPaymentMethod()['method']);
+    }
+
+    /**
+     * Check if payment support recurring.
+     *
+     * @return boolean
+     */
+    public function paymentCanAutoCharge()
+    {
+        $gateway = $this->getPaymentGateway();
+        if ($gateway == null) {
+            return false;
+        }
+
+        return $gateway->canAutoCharge();
     }
 
     /**

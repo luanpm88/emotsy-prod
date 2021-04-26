@@ -35,7 +35,7 @@
                         'payment' => trans('messages.payments.' . request()->user()->customer->getPaymentMethod()['method'])
                     ]) !!}</p>
 
-                    <form action="{{ action('AccountSubscriptionController@doRenew') }}" method="GET" class="proceed_with_payment">
+                    <form action="{{ action('AccountSubscriptionController@renew') }}" method="POST" class="proceed_with_payment">
                         {{ csrf_field() }}  
                         <div class="text-left">
                             <input type="submit" name="checkout"
@@ -53,7 +53,7 @@
                     method="POST">
                     {{ csrf_field() }}
 
-                    <input type="hidden" name="return_url" value="{{ action('AccountSubscriptionController@doRenew') }}" />
+                    <input type="hidden" name="return_url" value="{{ action('AccountSubscriptionController@renew') }}" />
 
                     <div class="sub-section mb-30 choose-payment-methods">      
                         @foreach(Acelle\Model\Setting::getEnabledPaymentGateways() as $gateway)
@@ -115,67 +115,11 @@
                         </div>
                     @endif
                 </form>
-                
-
-                <form class="mt-4 pt-4" method="POST" action="{{ action('AccountSubscriptionController@abort') }}">
-                    {{ csrf_field() }}
-                    
-                    <a href="javascript:;" onclick="$(this).closest('form').submit()"
-                        class="text-muted mt-4"
-                        style="font-size: 16px; text-decoration: underline;color:#333"
-                    >{{ trans('messages.change_mind_cancel_subscription') }}</a>
-                </form>
         </div>
         <div class="col-md-4">
-            @php
-                $currentBill = $subscription->getRenewBillingInfo();
-            @endphp
-            <div class="upcoming-bill-box">
-                <div class="header">
-                    <h4 class="mt-0 font-weight-semibold mb-1">{{ trans('messages.renew_bill_details') }}</h4>
-                    @if ($currentBill['total'] == 0)
-                        <div class="m-0">{{ trans('messages.renew_bill.no_fee_description', [
-                            'plan' => $currentBill['plan']->name,
-                        ]) }}</div>
-                    @else
-                        <div class="m-0">{{ trans('messages.renew_bill.description', [
-                            'plan' => $currentBill['plan']->name,
-                        ]) }}</div>
-                    @endif
-                </div>
-                <div class="body">
-                    <div>
-                        @foreach ($currentBill['bill'] as $item)
-                            <div class="bill_item d-flex">
-                                <div class="mr-auto">
-                                    <div class="font-weight-semibold">{{ $item['name'] }}</div>
-                                    @if(isset($item['plan'])) 
-                                        <div class="mt-2">
-                                            <div>
-                                                {{ trans('messages.sending_total_quota_label') }}: {{ $item['plan']->displayTotalQuota() }}
-                                            </div>
-                                            <div>
-                                                {{ trans('messages.max_lists_label') }}: {{ $item['plan']->displayMaxList() }}
-                                            </div>
-                                        </div>
-                                    @endif
-                                </div>
-                                <div class="font-weight-semibold">{{ format_price($item['amount'],  $currentBill['plan']->currency->format)}}</div>
-                            </div>
-                        @endforeach
-                    </div>
-                    <hr>
-                    <div>
-                        <div class="total d-flex ">
-                            <div class="mr-auto">
-                                <div class="font-weight-semibold">{{ trans('messages.bill.estimated_total') }}</div>
-                                <div>{{ trans('messages.bill.next_period_ends_on', ['date' => $currentBill['charge_on']]) }}</div>
-                            </div>
-                            <div class="bill-total">{{ format_price($currentBill['total'],  $currentBill['plan']->currency->format)}}</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            @include('invoices.bill', [
+                'bill' => $renewInvoice->getBillingInfo(),
+            ])
 
             <div class="mt-4">
                 @include('account._payment_info')

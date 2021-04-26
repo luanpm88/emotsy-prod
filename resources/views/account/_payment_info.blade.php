@@ -39,7 +39,9 @@
         </div>
     </div>
 
-    <a href="{{ action('AccountController@editPaymentMethod') }}" class="btn btn-mc_primary payment-method-edit mt-4">
+    <a href="{{ action('AccountController@editPaymentMethod', [
+        'redirect' => isset($redirect) ? $redirect : action('AccountController@billing'),
+    ]) }}" class="btn btn-mc_primary payment-method-edit mt-4">
         {{ trans('messages.change_payment_method') }}
     </a>
 @else

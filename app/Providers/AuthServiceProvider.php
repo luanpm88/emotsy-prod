@@ -45,6 +45,7 @@ class AuthServiceProvider extends ServiceProvider
         \Acelle\Model\Automation2::class => \Acelle\Policies\Automation2Policy::class,
         \Acelle\Model\TrackingDomain::class => \Acelle\Policies\TrackingDomainPolicy::class,
         \Acelle\Model\Plugin::class => \Acelle\Policies\PluginPolicy::class,
+        \Acelle\Model\Invoice::class => \Acelle\Policies\InvoicePolicy::class,
     ];
 
     /**

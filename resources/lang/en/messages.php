@@ -1713,7 +1713,7 @@
   'file.uploaded' => 'File was successfully uploaded.',
   'current_plan' => 'Current plan',
   'current_plan_intro' => '<p>Thank you for doing your email marketing with us.
-      You are currently subscribed to the <strong>:plan</strong> plan.
+      You are currently subscribed to the <strong>:plan</strong> plan. <br>
       Your subscription will expire in <strong>:remain</strong>, on <strong>:end_at</strong></p>
       <p>Please find your current plan details below</p>',
   'current_plan_intro_unlimited' => '<p>Thank you for doing your email marketing with us.
@@ -2402,7 +2402,7 @@
   'subscription.renew.confirm' => 'You\'re about to renew :number subscription.',
   'subscription.cancelled' => 'The subscription was successfully cancelled',
   'subscription.current_subscription.cancel_at_end_of_period.wording' => 'You are currently subscribed to <strong>:plan</strong> plan (<strong>:money</strong>).
-      Your subscription will expire in <strong>:remain</strong>, on <strong>:end_at</strong>',
+      <br>Your subscription will expire in <strong>:remain</strong>, on <strong>:end_at</strong>',
   'subscription.resume' => 'Resume',
   'subscription.error.plan-not-active' => 'The plan <strong>:name</strong> you subscribed to is currently not active. Please check with your system administrator',
   'plan_details' => 'Plan details',
@@ -2487,7 +2487,7 @@
   'invoice.description' => 'Description',
   'invoice.status' => 'Status',
   'subscription.logs' => 'Logs',
-  'subscription.logs.intro' => 'All your payment transactions are logged here. Let check them for details of your invoices / billing history.',
+  'subscription.logs.intro' => 'All your subscription activities are logged here. Let check them for details of your invoices / billing history.',
   'subscription.logs.empty' => 'No records found',
   'no_plan.title' => 'You are not subscribed to any plan!',
   'select_plan.wording' => 'You need to subscribe to a plan in order to experience the application. Choose one of plans below to subscribe for using the app:',
@@ -2616,7 +2616,9 @@
   'subscription.status.active_pending' => 'Update pending',
   'subscription.status.change_plan_pending' => 'Changing Plan',
   'subscription.status.renew_pending' => 'Renewing',
-  'subscription.status.change_pending' => 'Renewing/Changing',
+  'subscription.status.renew_claimed' => 'Renew Claimed',
+  'subscription.status.change_plan_pending' => 'Changing Plan',
+  'subscription.status.change_plan_claimed' => 'Change Plan Claimed',
   'campaign.check_spam_score' => 'Calculate Spam Score',
   'campaign.spam_score' => 'Spam Score',
   'plan.setting' => 'Email Settings',
@@ -3130,8 +3132,8 @@
   'notification.level.info' => 'Info',
   'no_action_notifications' => 'No notification',
   'subscription.reject_pending' => 'Reject',
-  'subscription.reject_pending.confirm' => 'Do you want to reject the pending renew/change plan. This can not be un-done.',
-  'subscription.reject_pending.success' => 'The pending renew/change plan was rejected.',
+  'subscription.reject_pending.confirm' => 'Do you want to reject the pending invoice. This can not be un-done.',
+  'subscription.reject_pending.success' => 'The pending invoice was rejected.',
   'subscription.new' => 'New subscription',
   'subscription.create_new_subsctiption' => 'Create new subscription',
   'subscription.create_new_subsctiption.intro' => 'Let\'s select customer and plan below to assign customer to plan',
@@ -4008,4 +4010,57 @@
   'renew_bill.no_fee_description' => 'Your\'re :plan plan, so you don\'t have charge for renewing current plan.',
   'renew_bill.description' => 'Your\'re :plan plan. See the information below for renewing current plan.',
   'bill.next_period_ends_on' => 'Next period ends on :date',
+  'invoice_type.subscription_init' => 'Subscribe to a Plan',
+  'subscription_init.bill_details' => 'New Subscription',
+  'subscription_init.bill_desc' => 'You’re subscring to plan <strong>:plan</strong>, and
+      your subscription will be due on <strong>:date</strong>',
+  'subscription.current_subscription.wording' => 'Thank you for being with us, you are
+      currently subscribed to <strong>:plan</strong> plan.<br>
+      Your next invoice will be billed in <strong>:remain</strong>, on <strong>:next_on</strong>.',
+  'subscription_renew.bill_details' => 'Renew Plan',
+  'subscription_renew.bill_desc' => 'You’re subscring to plan <strong>:plan</strong>, and
+          your subscription will be due on <strong>:date</strong>',
+  'bill.charge_before' => 'Charge before <strong>:date</strong>',
+  'bill.auto_charge' => 'Auto charge on <strong>:date</strong>',
+  'upcoming_bill.title' => 'Upcoming Invoice',
+  'upcoming_bill.desc' => 'You’re subscring to plan <strong>:plan</strong>, and
+          your subscription will be due on <strong>:date</strong>',
+  'subscription_change_plan.bill_details' => 'Change Plan',
+  'subscription_change_plan.bill_desc' => 'You’re changing from <strong>:plan</strong>
+      plan to <strong>:newPlan</strong> plan',
+  'change_to_plan' => 'Change to :plan plan',
+  'ends_on' => 'Ends on',
+  'invoices' => 'Invoices',
+  'invoice.status.new' => 'New',
+  'invoice.status.pending' => 'Pending',
+  'invoice.status.claimed' => 'Claimed',
+  'invoice.status.done' => 'Done',
+  'invoice.status.canceled' => 'Canceled',
+  'invoice.status.rejected' => 'Rejected',
+  'invoices_logs' => 'Invoices / Logs',
+  'invoice_rejected_reason' => 'Invoice rejected. Reason: :reason.
+      Check the logs below for more information',
+  'have_no_upcoming_bill' => 'You have no upcoming bill!',
+  'bill.charge_now' => 'Charge Now',
+  'error.has_waiting_invoices' => 'Subscription has waiting invoices!',
+  'transaction.pending' => 'Pending',
+  'transaction.success' => 'Success',
+  'transaction.failed' => 'Failed',
+  'invoices_transactions' => 'Invoices / Transactions',
+  'invoice' => 'Invoice',
+  'transactions' => 'Transactions',
+  'pay_invoice' => 'Pay invoice: :id (:title)',
+  'transaction.amount' => 'Amount',
+  'invoice.cancel.confirm' => 'You are about to cancel this invoice.',
+  'invoice.cancelled' => 'Invoice was canceled',
+  'cancel_invoice' => 'Cancel Invoice',
+  'subscription.cancel_now_change_other_plan' => 'You want to change other plan?
+      Click here to cancel this subscription.',
+  'invoice.renew_transaction_failed' => 'Something went wrong when charge renew invoice. Error: :error.
+      <br>Check transactions for more information.',
+  'invoice.renew_transaction_failed.reconnect' => 'Something went wrong when charge renew invoice. Error: :error.
+      <a href=":link">Click here</a> to check the payment serivce connection.',
+  'transaction.method' => 'Method',
+  'transaction.method.direct' => 'Direct',
+  'transaction.method.stripe' => 'Stripe',
 ) ?>

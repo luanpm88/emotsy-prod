@@ -46,54 +46,6 @@ class SubscriptionController extends Controller
     }
 
     /**
-     * Admin create new subscription for customer.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create(Request $request)
-    {
-        // authorize
-        if (!$request->user()->admin->can('create', new Subscription())) {
-            return $this->notAuthorized();
-        }
-
-        $subscription = new Subscription();
-        $rules = [
-            'customer_uid' => 'required',
-            'plan_uid' => 'required',
-        ];
-
-        // save posted data
-        if ($request->isMethod('post')) {
-            $validator = \Validator::make($request->all(), $rules);
-
-            // redirect if fails
-            if ($validator->fails()) {
-                return response()->view('admin.subscriptions.create', [
-                    'subscription' => $subscription,
-                    'rules' => $rules,
-                    'errors' => $validator->errors(),
-                ], 400);
-            }
-
-            // asign plan
-            $customer = Customer::findByUid($request->customer_uid);
-            $plan = Plan::findByUid($request->plan_uid);
-            $customer->assignPlan($plan);
-            
-            return response()->json([
-                'status' => 'success',
-                'message' => trans('messages.subscription.created'),
-            ]);
-        }
-
-        return view('admin.subscriptions.create', [
-            'subscription' => $subscription,
-            'rules' => $rules,
-        ]);
-    }
-
-    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -134,6 +86,98 @@ class SubscriptionController extends Controller
     }
 
     /**
+     * Approve pending subscription.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     **/
+    public function approve(Request $request, $id)
+    {
+        $customer = $request->user()->customer;
+        $subscription = Subscription::findByUid($request->id);
+
+        // authorize
+        if (!$request->user()->admin->can('approve', $subscription)) {
+            return $this->notAuthorized();
+        }
+
+        try {
+            // approve subscription
+            $subscription->approveWaitInvoice();
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ]);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => trans('messages.subscription.set_active.success'),
+        ]);
+    }
+
+
+
+
+
+
+
+
+
+
+    // /**
+    //  * Admin create new subscription for customer.
+    //  *
+    //  * @return \Illuminate\Http\Response
+    //  */
+    // public function create(Request $request)
+    // {
+    //     // authorize
+    //     if (!$request->user()->admin->can('create', new Subscription())) {
+    //         return $this->notAuthorized();
+    //     }
+
+    //     $subscription = new Subscription();
+    //     $rules = [
+    //         'customer_uid' => 'required',
+    //         'plan_uid' => 'required',
+    //     ];
+
+    //     // save posted data
+    //     if ($request->isMethod('post')) {
+    //         $validator = \Validator::make($request->all(), $rules);
+
+    //         // redirect if fails
+    //         if ($validator->fails()) {
+    //             return response()->view('admin.subscriptions.create', [
+    //                 'subscription' => $subscription,
+    //                 'rules' => $rules,
+    //                 'errors' => $validator->errors(),
+    //             ], 400);
+    //         }
+
+    //         // asign plan
+    //         $customer = Customer::findByUid($request->customer_uid);
+    //         $plan = Plan::findByUid($request->plan_uid);
+    //         $customer->assignPlan($plan);
+            
+    //         return response()->json([
+    //             'status' => 'success',
+    //             'message' => trans('messages.subscription.created'),
+    //         ]);
+    //     }
+
+    //     return view('admin.subscriptions.create', [
+    //         'subscription' => $subscription,
+    //         'rules' => $rules,
+    //     ]);
+    // }
+
+    
+
+    /**
      * Cancel subscription at the end of current period.
      *
      * @param \Illuminate\Http\Request $request
@@ -145,10 +189,9 @@ class SubscriptionController extends Controller
         $customer = $request->user()->customer;
         // Get current subscription
         $subscription = Subscription::findByUid($request->id);
-        $gateway = $customer->getPaymentGateway();
 
         if ($request->user()->admin->can('cancel', $subscription)) {
-            $gateway->cancel($subscription);
+            $subscription->cancel();
         }
 
         echo trans('messages.subscription.cancelled');
@@ -166,10 +209,9 @@ class SubscriptionController extends Controller
         $customer = $request->user()->customer;
         // Get current subscription
         $subscription = Subscription::findByUid($request->id);
-        $gateway = $customer->getPaymentGateway();
 
         if ($request->user()->admin->can('resume', $subscription)) {
-            $gateway->resume($subscription);
+            $subscription->resume();
         }
 
         echo trans('messages.subscription.resumed');
@@ -185,13 +227,11 @@ class SubscriptionController extends Controller
     public function cancelNow(Request $request)
     {
         $customer = $request->user()->customer;
-        // Get current subscription
         $subscription = Subscription::findByUid($request->id);
-        $gateway = $customer->getPaymentGateway();
 
         if ($request->user()->admin->can('cancelNow', $subscription)) {
             try {
-                $gateway->cancelNow($subscription);
+                $subscription->cancelNow();
             } catch (\Exception $ex) {
                 echo json_encode([
                     'status' => 'error',
@@ -204,16 +244,16 @@ class SubscriptionController extends Controller
         echo trans('messages.subscription.cancelled_now');
     }
 
-    /**
-     * Change plan.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     **/
-    public function changePlan(Request $request, $id)
-    {
-    }
+    // /**
+    //  * Change plan.
+    //  *
+    //  * @param \Illuminate\Http\Request $request
+    //  *
+    //  * @return \Illuminate\Http\Response
+    //  **/
+    // public function changePlan(Request $request, $id)
+    // {
+    // }
 
     /**
      * Subscription invoices.
@@ -235,77 +275,77 @@ class SubscriptionController extends Controller
         ]);
     }
 
-    /**
-     * Approve subscription pending.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     **/
-    public function setActive(Request $request, $id)
-    {
-        $customer = $request->user()->customer;
-        // Get current subscription
-        $subscription = Subscription::findByUid($request->id);
-        $gateway = $customer->getPaymentGateway();
+    // /**
+    //  * Approve subscription pending.
+    //  *
+    //  * @param \Illuminate\Http\Request $request
+    //  *
+    //  * @return \Illuminate\Http\Response
+    //  **/
+    // public function setActive(Request $request, $id)
+    // {
+    //     $customer = $request->user()->customer;
+    //     // Get current subscription
+    //     $subscription = Subscription::findByUid($request->id);
+    //     $gateway = $customer->getPaymentGateway();
 
-        // authorize
-        if (!$request->user()->admin->can('setActive', $subscription)) {
-            return $this->notAuthorized();
-        }
+    //     // authorize
+    //     if (!$request->user()->admin->can('setActive', $subscription)) {
+    //         return $this->notAuthorized();
+    //     }
 
-        try {
-            $gateway->setActive($subscription);
-        } catch (\Exception $ex) {
-            echo json_encode([
-                'status' => 'error',
-                'message' => $ex->getMessage(),
-            ]);
-            return;
-        }
+    //     try {
+    //         $gateway->setActive($subscription);
+    //     } catch (\Exception $ex) {
+    //         echo json_encode([
+    //             'status' => 'error',
+    //             'message' => $ex->getMessage(),
+    //         ]);
+    //         return;
+    //     }
 
-        echo json_encode([
-            'status' => 'success',
-            'message' => trans('messages.subscription.set_active.success'),
-        ]);
-        return;
-    }
+    //     echo json_encode([
+    //         'status' => 'success',
+    //         'message' => trans('messages.subscription.set_active.success'),
+    //     ]);
+    //     return;
+    // }
 
-    /**
-     * Approve subscription pending.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     **/
-    public function approvePending(Request $request, $id)
-    {
-        $customer = $request->user()->customer;
-        // Get current subscription
-        $subscription = Subscription::findByUid($request->id);
-        $gateway = $customer->getPaymentGateway();
+    // /**
+    //  * Approve subscription pending.
+    //  *
+    //  * @param \Illuminate\Http\Request $request
+    //  *
+    //  * @return \Illuminate\Http\Response
+    //  **/
+    // public function approvePending(Request $request, $id)
+    // {
+    //     $customer = $request->user()->customer;
+    //     // Get current subscription
+    //     $subscription = Subscription::findByUid($request->id);
+    //     $gateway = $customer->getPaymentGateway();
 
-        // authorize
-        if (!$request->user()->admin->can('approvePending', $subscription)) {
-            return $this->notAuthorized();
-        }
+    //     // authorize
+    //     if (!$request->user()->admin->can('approvePending', $subscription)) {
+    //         return $this->notAuthorized();
+    //     }
 
-        try {
-            $gateway->approvePending($subscription);
-        } catch (\Exception $ex) {
-            echo json_encode([
-                'status' => 'error',
-                'message' => $ex->getMessage(),
-            ]);
-            return;
-        }
+    //     try {
+    //         $gateway->approvePending($subscription);
+    //     } catch (\Exception $ex) {
+    //         echo json_encode([
+    //             'status' => 'error',
+    //             'message' => $ex->getMessage(),
+    //         ]);
+    //         return;
+    //     }
 
-        echo json_encode([
-            'status' => 'success',
-            'message' => trans('messages.subscription.approve_pending.success'),
-        ]);
-        return;
-    }
+    //     echo json_encode([
+    //         'status' => 'success',
+    //         'message' => trans('messages.subscription.approve_pending.success'),
+    //     ]);
+    //     return;
+    // }
 
     /**
      * Reject subscription pending.
@@ -317,9 +357,7 @@ class SubscriptionController extends Controller
     public function rejectPending(Request $request, $id)
     {
         $customer = $request->user()->customer;
-        // Get current subscription
         $subscription = Subscription::findByUid($request->id);
-        $gateway = $customer->getPaymentGateway();
 
         // authorize
         if (!$request->user()->admin->can('rejectPending', $subscription)) {
@@ -340,7 +378,8 @@ class SubscriptionController extends Controller
             
             // try reject
             try {
-                $gateway->rejectPending($subscription, $request->reason);
+                // reject pending invoice
+                $subscription->rejectWaitInvoice($request->reason);
             } catch (\Exception $ex) {
                 $validator->errors()->add('reason', $ex->getMessage());
                 
@@ -360,7 +399,6 @@ class SubscriptionController extends Controller
 
         return view('admin.subscriptions.rejectPending', [
             'subscription' => $subscription,
-            'gateway' => $gateway,
         ]);
     }
 

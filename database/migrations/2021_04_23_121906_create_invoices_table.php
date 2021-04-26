@@ -19,6 +19,8 @@ class CreateInvoicesTable extends Migration
             $table->integer('customer_id')->unsigned();
             $table->integer('currency_id')->unsigned();
             $table->string('status');
+            $table->text('description');
+            $table->longText('metadata')->nullable();
 
             $table->timestamps();
 

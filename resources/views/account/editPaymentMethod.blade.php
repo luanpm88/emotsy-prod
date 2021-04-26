@@ -11,7 +11,7 @@
         method="POST">
         {{ csrf_field() }}
 
-        <input type="hidden" name="return_url" value="{{ action('AccountController@billing') }}" />
+        <input type="hidden" name="return_url" value="{{ $redirect }}" />
 
         <div class="sub-section mb-30 choose-payment-methods">      
             @foreach(Acelle\Model\Setting::getEnabledPaymentGateways() as $gateway)

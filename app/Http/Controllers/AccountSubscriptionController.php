@@ -23,47 +23,73 @@ class AccountSubscriptionController extends Controller
      **/
     public function index(Request $request)
     {
+        // init
         $customer = $request->user()->customer;
-        
-        // Get current subscription
         $subscription = $customer->subscription;
-        // get sub gateway
         $gateway = $customer->getPaymentGateway();
 
-        // Customer dose not have subscription
-        if (!is_object($subscription) || $subscription->isEnded()) {
+        // 1. SELECT PLAN: No active subscription
+        if (!$subscription || $subscription->isEnded()) {
             $plans = Plan::getAvailablePlans();
-            $planCount = Plan::getAllActive()->count();
-            $colWidth = ($planCount == 0) ? 0 :  round(85 / $planCount);
+            $planCount = count($plans);
+
             return view('account.subscription.select_plan', [
-                'plans' => $plans,
-                'colWidth' => $colWidth,
+                'plans' => Plan::getAvailablePlans(),
+                'colWidth' => ($planCount == 0) ? 0 :  round(85 / $planCount),
                 'subscription' => $subscription,
             ]);
         }
 
+        // check subscription status. @todo: move to cron
+        $subscription->check();
+
+        // 2. IF PLAN NOT ACTIVE
         if (!$subscription->plan->isActive()) {
             return view('account.subscription.error', ['message' => __('messages.subscription.error.plan-not-active', [ 'name' => $subscription->plan->name])]);
         }
         
-        // Check if subscription is new
-        if ($subscription->isNew()) {
-            return view('account.subscription.payment', [
-                'subscription' => $subscription,
-                'gateway' => $gateway,
-                'plan' => $subscription->plan,
-            ]);
+        // 3. NEW/PENDING SUBSCRIPTION
+        if ($subscription->isNew() || $subscription->isPending()) {
+            $invoice = $subscription->initInvoice();
+
+            // PAYMENT: init invoice is new
+            if ($invoice->isNew()) {
+                return view('account.subscription.payment', [
+                    'subscription' => $subscription,
+                    'gateway' => $gateway,
+                    'invoice' => $invoice,
+                ]);
+            }
+
+            // CHECKOUT: init invoice is pending || claimed
+            if ($invoice->isPending() || $invoice->isClaimed()) {
+                // 3.3 CHECK GATEWAY. need gateway for charging
+                if ($gateway == null) {
+                    return view('account.subscription.payment', [
+                        'subscription' => $subscription,
+                        'gateway' => $gateway,
+                        'plan' => $subscription->plan,
+                    ]);
+                }
+                
+                // redirect to service checkout
+                return redirect()->away($gateway->getCheckoutUrl(
+                    $invoice,
+                    action('AccountSubscriptionController@index')
+                ));     
+            }
         }
         
-        // Check if subscription is new
-        if ($subscription->isPending()) {
-            return redirect()->away($gateway->getPendingUrl($subscription, action('AccountSubscriptionController@index')));
-        }
+        // // Check if subscription is new
+        // if ($subscription->isPending()) {
+        //     return redirect()->away($gateway->getPendingUrl($subscription, action('AccountSubscriptionController@index')));
+        // }
         
         return view('account.subscription.index', [
             'subscription' => $subscription,
             'gateway' => $gateway,
             'plan' => $subscription->plan,
+            'renewInvoice' => $subscription->renewInvoice(),
         ]);
     }
 
@@ -74,48 +100,37 @@ class AccountSubscriptionController extends Controller
      *
      * @return \Illuminate\Http\Response
      **/
-    public function select(Request $request)
+    public function init(Request $request)
     {
         // Get current customer
         $customer = $request->user()->customer;
         $plan = Plan::findByUid($request->plan_uid);
 
-        // create tmp subscription
-        if ($customer->subscription) {
-            $subscription = $customer->subscription;
-        } else {
-            $subscription = new Subscription();
-            $subscription->user_id = $customer->getBillableId();
-        }
-        $subscription->plan_id = $plan->getBillableId();
-        $subscription->current_period_ends_at = $subscription->getPeriodEndsAt(Carbon::now());
-        $subscription->started_at = \Carbon\Carbon::now();
-        $subscription->status = Subscription::STATUS_NEW;
-        $subscription->save();
+        // create new subscription
+        $subscription = Subscription::initNew($customer, $plan);
 
         // Check if subscriotion is new
-        return redirect()->action('AccountSubscriptionController@payment');
+        return redirect()->action('AccountSubscriptionController@index');
     }
 
     /**
-     * Review plan.
+     * Checkout subscription.
      *
      * @param \Illuminate\Http\Request $request
      *
      * @return \Illuminate\Http\Response
      **/
-    public function payment(Request $request)
+    public function checkout(Request $request)
     {
         // Get current customer
-        $customer = $request->user()->customer;
-        $subscription = $customer->subscription;
-        $gateway = $customer->getPaymentGateway();
+        $subscription = $request->user()->customer->subscription;
+        $initInvoice = $subscription->initInvoice();
 
-        return view('account.subscription.payment', [
-            'subscription' => $subscription,
-            'gateway' => $gateway,
-            'plan' => $subscription->plan,
-        ]);
+        // set invoice as pending
+        $initInvoice->setPending();
+
+        // return to subscription
+        return redirect()->action('AccountSubscriptionController@index');
     }
 
     /**
@@ -131,52 +146,80 @@ class AccountSubscriptionController extends Controller
         $customer = $request->user()->customer;
         $subscription = $customer->subscription;
         $gateway = $customer->getPaymentGateway();
+        $renewInvoice = $subscription->renewInvoice();
+
+        if ($request->isMethod('post')) {
+            // set invoice as pending
+            $renewInvoice->setPending();
+
+            // redirect to service checkout
+            return redirect()->away($gateway->getCheckoutUrl(
+                $renewInvoice,
+                action('AccountSubscriptionController@index')
+            )); 
+        }
 
         return view('account.subscription.renew', [
             'subscription' => $subscription,
             'gateway' => $gateway,
             'plan' => $subscription->plan,
+            'renewInvoice' => $renewInvoice,
         ]);
     }
 
     /**
-     * Renew plan.
+     * Change plan payment.
      *
      * @param \Illuminate\Http\Request $request
      *
      * @return \Illuminate\Http\Response
      **/
-    public function doRenew(Request $request)
+    public function changePlanPayment(Request $request)
     {
         // Get current customer
         $customer = $request->user()->customer;
-        $gateway = $customer->getPaymentGateway();
         $subscription = $customer->subscription;
+        $gateway = $customer->getPaymentGateway();
+        $changePlanInvoice = $subscription->changePlanInvoice();
+        $changePlanInvoiceItem = $subscription->changePlanInvoiceItem();
+        $newPlan = Plan::findByUid($changePlanInvoiceItem->getMetadata()['plan_uid']);
 
-        // redirect to service checkout
-        return redirect()->away($gateway->getRenewUrl($subscription, action('AccountSubscriptionController@index')));
+        if ($request->isMethod('post')) {
+            // set invoice as pending
+            $changePlanInvoice->setPending();
+
+            // redirect to service checkout
+            return redirect()->away($gateway->getCheckoutUrl(
+                $changePlanInvoice,
+                action('AccountSubscriptionController@index')
+            )); 
+        }
+
+        return view('account.subscription.changePlanPayment', [
+            'subscription' => $subscription,
+            'gateway' => $gateway,
+            'plan' => $newPlan,
+            'changePlanInvoice' => $changePlanInvoice,
+        ]);
     }
 
-    /**
-     * Store customer subscription.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     **/
-    public function checkout(Request $request)
-    {
-        // Get current customer
-        $customer = $request->user()->customer;
-        $gateway = $customer->getPaymentGateway();
-        $subscription = $customer->subscription;
+    // /**
+    //  * Renew plan.
+    //  *
+    //  * @param \Illuminate\Http\Request $request
+    //  *
+    //  * @return \Illuminate\Http\Response
+    //  **/
+    // public function doRenew(Request $request)
+    // {
+    //     // Get current customer
+    //     $customer = $request->user()->customer;
+    //     $gateway = $customer->getPaymentGateway();
+    //     $subscription = $customer->subscription;
 
-        // Create subscription
-        $subscription = $gateway->create($customer, $subscription->plan);
-
-        // redirect to service checkout
-        return redirect()->away($gateway->getCheckoutUrl($subscription, action('AccountSubscriptionController@index')));
-    }
+    //     // redirect to service checkout
+    //     return redirect()->away($gateway->getRenewUrl($subscription, action('AccountSubscriptionController@index')));
+    // }
     
     /**
      * Change plan.
@@ -195,6 +238,29 @@ class AccountSubscriptionController extends Controller
         // Authorization
         if (!$request->user()->customer->can('changePlan', $subscription)) {
             return $this->notAuthorized();
+        }
+
+        //
+        if ($request->isMethod('post')) {
+            $newPlan = Plan::findByUid($request->plan_uid);
+
+            try {
+                // set invoice as pending
+                $subscription->createChangePlanInvoice($newPlan, 
+                    array_merge(
+                        \Acelle\Cashier\Cashier::calcChangePlan($subscription, $newPlan),
+                        [
+                            'plan_uid' => $newPlan->uid,
+                        ]
+                    )
+                );
+            } catch (\Exception $e) {
+                $request->session()->flash('alert-error', $e->getMessage());
+                return redirect()->action('AccountSubscriptionController@index');
+            }
+
+            // return to subscription
+            return redirect()->action('AccountSubscriptionController@changePlanPayment');
         }
         
         return view('account.subscription.change_plan', [
@@ -215,10 +281,9 @@ class AccountSubscriptionController extends Controller
     {
         $customer = $request->user()->customer;
         $subscription = $customer->subscription;
-        $gateway = $customer->getPaymentGateway();
 
-        if ($request->user()->customer->can('cancel', $subscription)) {
-            $gateway->cancel($subscription);
+        if (!$request->user()->customer->can('cancel', $subscription)) {
+            $subscription->cancel();
         }
 
         // Redirect to my subscription page
@@ -233,14 +298,42 @@ class AccountSubscriptionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function cancelInvoice(Request $request, $uid)
+    {
+        $invoice = \Acelle\Model\Invoice::findByUid($uid);
+        $subscription = $request->user()->customer->subscription;
+
+        if (!$request->user()->customer->can('cancel', $invoice)) {
+            return $this->notAuthorized();
+        }
+
+        $invoice->setCanceled();
+
+        // log
+        $subscription->addLog(SubscriptionLog::TYPE_PLAN_CHANGE_CANCELED, [
+            'plan' => $subscription->plan->getBillableName(),
+            'price' => $subscription->plan->getBillableFormattedPrice(),
+        ]);
+
+        // Redirect to my subscription page
+        $request->session()->flash('alert-success', trans('messages.invoice.cancelled'));
+        return redirect()->action('AccountSubscriptionController@index');
+    }
+
+    /**
+     * Cancel subscription at the end of current period.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function resume(Request $request)
     {
         $customer = $request->user()->customer;
         $subscription = $customer->subscription;
-        $gateway = $customer->getPaymentGateway();
 
         if ($request->user()->customer->can('resume', $subscription)) {
-            $gateway->resume($subscription);
+            $subscription->resume();
         }
 
         // Redirect to my subscription page
@@ -258,34 +351,11 @@ class AccountSubscriptionController extends Controller
     public function cancelNow(Request $request)
     {
         $customer = $request->user()->customer;
-        // Get current subscription
         $subscription = $customer->subscription;
-        $gateway = $customer->getPaymentGateway();
         
         if ($request->user()->customer->can('cancelNow', $subscription)) {
-            $gateway->cancelNow($subscription);
+            $subscription->cancelNow();
         }
-
-        // Redirect to my subscription page
-        $request->session()->flash('alert-success', trans('messages.subscription.cancelled_now'));
-        return redirect()->action('AccountSubscriptionController@index');
-    }
-
-    /**
-     * Change plan.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function abort(Request $request)
-    {
-        $customer = $request->user()->customer;
-        
-        // Get current subscription
-        $subscription = $customer->subscription;
-        
-        $subscription->setEnded();
 
         // Redirect to my subscription page
         $request->session()->flash('alert-success', trans('messages.subscription.cancelled_now'));

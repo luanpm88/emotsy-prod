@@ -35,7 +35,7 @@
                         'payment' => trans('messages.payments.' . request()->user()->customer->getPaymentMethod()['method'])
                     ]) !!}</p>
 
-                    <form action="{{ action('AccountSubscriptionController@checkout') }}" method="GET" class="proceed_with_payment">
+                    <form action="{{ action('AccountSubscriptionController@checkout') }}" method="POST" class="proceed_with_payment">
                         {{ csrf_field() }}  
                         <div class="text-left">
                             <input type="submit" name="checkout"
@@ -52,7 +52,7 @@
                     method="POST">
                     {{ csrf_field() }}
 
-                    <input type="hidden" name="return_url" value="{{ action('AccountSubscriptionController@checkout') }}" />
+                    <input type="hidden" name="return_url" value="{{ action('AccountSubscriptionController@index') }}" />
 
                     <div class="sub-section mb-30 choose-payment-methods">      
                         @foreach(Acelle\Model\Setting::getEnabledPaymentGateways() as $gateway)
@@ -91,7 +91,7 @@
                                     >
                                 </div>
                                 <div class="col-md-8">
-                                    {!! trans('messages.payment.agree_service_intro', ['plan' => $plan->name]) !!}
+                                    {!! trans('messages.payment.agree_service_intro', ['plan' => $subscription->plan->name]) !!}
                                 </div>
                             </div>
                         </div>
@@ -107,72 +107,25 @@
                                     </div>
                                 </div>
                                 <div class="col-md-8">
-                                    {!! trans('messages.payment.agree_service_intro', ['plan' => $plan->name]) !!}
+                                    {!! trans('messages.payment.agree_service_intro', ['plan' => $subscription->plan->name]) !!}
                                 </div>
                             </div>
                         </div>
                     @endif
                 </form>
 
-                <form class="mt-4 pt-4" method="POST" action="{{ action('AccountSubscriptionController@abort') }}">
-                    {{ csrf_field() }}
-                    
-                    <a href="javascript:;" onclick="$(this).closest('form').submit()"
-                        class="text-muted mt-4"
-                        style="font-size: 16px; text-decoration: underline;color:#333"
-                    >{{ trans('messages.change_mind_cancel_subscription') }}</a>
-                </form>
+                <div class="my-4">
+                    <hr>
+                    <a class="" link-method="POST" link-confirm="{{ trans('messages.subscription.cancel_now.confirm') }}"
+                        href="{{ action('AccountSubscriptionController@cancelNow') }}">
+                        {{ trans('messages.subscription.cancel_now_change_other_plan') }}
+                    </a>
+                </div>
         </div>
         <div class="col-md-4">
-            @php
-                $currentBill = $subscription->getLatestBillingInfo();
-            @endphp
-            <div class="upcoming-bill-box">
-                <div class="header">
-                    <h4 class="mt-0 font-weight-semibold mb-1">{{ trans('messages.lastest_bill') }}</h4>
-                    @if ($currentBill['total'] == 0)
-                        <div class="m-0">{{ trans('messages.lastest_bill.no_fee_description', [
-                            'plan' => $currentBill['plan']->name,
-                        ]) }}</div>
-                    @else
-                        <div class="m-0">{{ trans('messages.lastest_bill.description', [
-                            'plan' => $currentBill['plan']->name,
-                        ]) }}</div>
-                    @endif
-                </div>
-                <div class="body">
-                    <div>
-                        @foreach ($currentBill['bill'] as $item)
-                            <div class="bill_item d-flex">
-                                <div class="mr-auto">
-                                    <div class="font-weight-semibold">{{ $item['name'] }}</div>
-                                    @if(isset($item['plan'])) 
-                                        <div class="mt-2">
-                                            <div>
-                                                {{ trans('messages.sending_total_quota_label') }}: {{ $item['plan']->displayTotalQuota() }}
-                                            </div>
-                                            <div>
-                                                {{ trans('messages.max_lists_label') }}: {{ $item['plan']->displayMaxList() }}
-                                            </div>
-                                        </div>
-                                    @endif
-                                </div>
-                                <div class="font-weight-semibold">{{ format_price($item['amount'],  $currentBill['plan']->currency->format)}}</div>
-                            </div>
-                        @endforeach
-                    </div>
-                    <hr>
-                    <div>
-                        <div class="total d-flex ">
-                            <div class="mr-auto">
-                                <div class="font-weight-semibold">{{ trans('messages.bill.estimated_total') }}</div>
-                                <div>{{ trans('messages.bill.current_period_ends_on', ['date' => $currentBill['charge_on']]) }}</div>
-                            </div>
-                            <div class="bill-total">{{ format_price($currentBill['total'],  $currentBill['plan']->currency->format)}}</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            @include('invoices.bill', [
+                'bill' => $invoice->getBillingInfo(),
+            ])
 
             <div class="mt-4">
                 @include('account._payment_info')

@@ -583,7 +583,7 @@ class ApiHelper
                     ],
                     'returns' => 'Action messages in json',
                     'example' => 'curl -X POST -H "accept:application/json" -G \
-' .str_replace('-uid-', '<redbold>{uid}</redbold>', action("Api\SubscriptionController@setActive", "-uid-")).' \
+' .str_replace('-uid-', '<redbold>{uid}</redbold>', action("Api\SubscriptionController@approve", "-uid-")).' \
 -d api_token=' .\Auth::user()->api_token,
                 ],
             ],

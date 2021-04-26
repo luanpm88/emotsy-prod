@@ -39,15 +39,26 @@
 
             <div class="sub-section">
                 @if ($subscription->isActive())
-                    @if ($subscription->isRecurring())
-                        <p>
-                            {!! trans('messages.subscription.current_subscription.recurring.wording', [
-                                'plan' => $plan->name,
-                                'money' => Acelle\Library\Tool::format_price($plan->price, $plan->currency->format),
-                                'remain' => $subscription->current_period_ends_at->diffForHumans(),
-                                'next_on' => \Acelle\Library\Tool::formatDate($subscription->current_period_ends_at)
-                            ]) !!}
-                        </p>
+                    @if (!$subscription->cancelled())
+                        @if (\Auth::user()->customer->paymentCanAutoCharge())
+                            <p>
+                                {!! trans('messages.subscription.current_subscription.recurring.wording', [
+                                    'plan' => $plan->name,
+                                    'money' => Acelle\Library\Tool::format_price($plan->price, $plan->currency->format),
+                                    'remain' => $subscription->current_period_ends_at->diffForHumans(),
+                                    'next_on' => \Acelle\Library\Tool::formatDate($subscription->current_period_ends_at)
+                                ]) !!}
+                            </p>
+                        @else
+                            <p>
+                                {!! trans('messages.subscription.current_subscription.wording', [
+                                    'plan' => $plan->name,
+                                    'money' => Acelle\Library\Tool::format_price($plan->price, $plan->currency->format),
+                                    'remain' => $subscription->current_period_ends_at->diffForHumans(),
+                                    'next_on' => \Acelle\Library\Tool::formatDate($subscription->current_period_ends_at)
+                                ]) !!}
+                            </p>
+                        @endif
                     @else
                         <p>
                             {!! trans('messages.subscription.current_subscription.cancel_at_end_of_period.wording', [
@@ -57,7 +68,7 @@
                                 'end_at' => \Acelle\Library\Tool::formatDate($subscription->current_period_ends_at)
                             ]) !!}
                         </p>
-                    @endif
+                    @endif                        
 
                     @if (\Auth::user()->customer->can('cancel', $subscription))
                         <a link-method="POST" link-confirm="{{ trans('messages.subscription.cancel.confirm') }}"
@@ -90,7 +101,7 @@
                     @if (\Auth::user()->customer->can('cancelNow', $subscription))
                         <a link-method="POST" link-confirm="{{ trans('messages.subscription.cancel_now.confirm') }}"
                             href="{{ action('AccountSubscriptionController@cancelNow') }}"
-                            class="btn btn-mc_inline mr-10"
+                            class="btn btn-danger mr-10"
                         >
                             {{ trans('messages.subscription.cancel_now') }}
                         </a>
@@ -111,62 +122,14 @@
             </div>
         </div>
         <div class="col-sm-12 col-md-4 col-lg-4">
-            @php
-                $upComingBill = $subscription->getUpComingBill();
-            @endphp
-            <div class="upcoming-bill-box">
-                <div class="header">
-                    <h4 class="mt-0 font-weight-semibold mb-1">{{ trans('messages.upcoming_bill') }}</h4>
-                    @if ($upComingBill['total'] == 0)
-                        <div class="m-0">{{ trans('messages.upcoming_bill.no_fee_description', [
-                            'plan' => $upComingBill['plan']->name,
-                        ]) }}</div>
-                    @else
-                        <div class="m-0">{{ trans('messages.upcoming_bill.description', [
-                            'plan' => $upComingBill['plan']->name,
-                        ]) }}</div>
-                    @endif
-                </div>
-                <div class="body">
-                    <div>
-                        @foreach ($upComingBill['bill'] as $item)
-                            <div class="bill_item d-flex">
-                                <div class="mr-auto">
-                                    <div class="font-weight-semibold">{{ $item['name'] }}</div>
-                                    @if(isset($item['plan'])) 
-                                        <div class="mt-2">
-                                            <div>
-                                                {{ trans('messages.sending_total_quota_label') }}: {{ $item['plan']->displayTotalQuota() }}
-                                            </div>
-                                            <div>
-                                                {{ trans('messages.max_lists_label') }}: {{ $item['plan']->displayMaxList() }}
-                                            </div>
-                                        </div>
-                                    @endif
-                                </div>
-                                <div class="font-weight-semibold">{{ format_price($item['amount'],  $upComingBill['plan']->currency->format)}}</div>
-                            </div>
-                        @endforeach
-                    </div>
-                    <hr>
-                    <div>
-                        <div class="total d-flex ">
-                            <div class="mr-auto">
-                                <div class="font-weight-semibold">{{ trans('messages.bill.estimated_total') }}</div>
-                                @if($gateway !== null && $gateway->isSupportRecurring())
-                                    <div>{{ trans('messages.bill.autopay_on', ['date' => $upComingBill['charge_on']]) }}</div>
-                                @else
-                                    <div>{{ trans('messages.bill.will_expire', ['date' => $upComingBill['charge_on']]) }}</div>
-                                @endif
-                            </div>
-                            <div class="bill-total">{{ format_price($upComingBill['total'],  $upComingBill['plan']->currency->format)}}</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            @include('invoices.bill', [
+                'bill' => $subscription->getUpcomingBillingInfo(),
+            ])
 
             <div class="mt-4">
-                @include('account._payment_info')
+                @include('account._payment_info', [
+                    'redirect' => action('AccountSubscriptionController@index'),
+                ])
             </div>
         </div>
     </div>

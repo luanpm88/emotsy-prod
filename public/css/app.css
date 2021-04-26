@@ -714,7 +714,7 @@ input.error {
 }
 .table-sub .label {
 }
-.bg-submitted_for_settlement, .bg-authorized, .bg-pending, .bg-waiting, .bg-ready, .bg-sent, .bg-finished, .bg-pending_active {
+.bg-rejected, .bg-renew_pending, .bg-submitted_for_settlement, .bg-authorized, .bg-pending, .bg-waiting, .bg-ready, .bg-sent, .bg-finished, .bg-pending_active {
     background-color: #ffd7d4;
     border-color: #f7c9c6;
     color: #231c15;
@@ -3463,7 +3463,7 @@ p.link-inline a {
 .text-muted {
     color: rgba(0,0,0,0.7);
 }
-.bg-m-warning {
+.bg-m-warning, .bg-renew_pending, .bg-change_plan_pending, .bg-change_plan_claimed, .bg-renew_claimed {
     background-color: #FFF3E0!important;
     color: #333;
     border-color: #FFF3E0;
