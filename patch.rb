@@ -11,7 +11,7 @@ dirs = ['public/builder', 'resources/lang/default', 'vendor']                   
 
 # Auto setting
 release_date = Time.now.to_s
-packages += ['autoload.php', 'composer'] unless packages.empty?
+packages += ['autoload.php', 'composer'] unless (packages.empty? && dirs.empty?)
 
 # Retrieve input
 new_version = ARGV[2]
