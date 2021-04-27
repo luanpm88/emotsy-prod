@@ -8,8 +8,8 @@ use Acelle\Http\Requests;
 use Acelle\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Log as LaravelLog;
 use Acelle\Cashier\Cashier;
-use Acelle\Cashier\Subscription;
-use Acelle\Cashier\SubscriptionLog;
+use Acelle\Model\Subscription;
+use Acelle\Model\SubscriptionLog;
 use Acelle\Model\Plan;
 use Acelle\Model\Customer;
 
@@ -103,8 +103,8 @@ class SubscriptionController extends Controller
         }
 
         try {
-            // approve subscription
-            $subscription->approveWaitInvoice();
+            // approve last claimed invoice ~ pay last invoice
+            $subscription->claimedInvoice()->pay();
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -378,8 +378,7 @@ class SubscriptionController extends Controller
             
             // try reject
             try {
-                // reject pending invoice
-                $subscription->rejectWaitInvoice($request->reason);
+                $subscription->claimedInvoice()->payFailed($request->reason);
             } catch (\Exception $ex) {
                 $validator->errors()->add('reason', $ex->getMessage());
                 

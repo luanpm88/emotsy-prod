@@ -10,7 +10,7 @@ use Acelle\Model\Setting;
 use Acelle\Model\Plan;
 use Illuminate\Support\MessageBag;
 use Acelle\Cashier\Cashier;
-use Acelle\Cashier\Subscription;
+use Acelle\Model\Subscription;
 
 class PaymentController extends Controller
 {

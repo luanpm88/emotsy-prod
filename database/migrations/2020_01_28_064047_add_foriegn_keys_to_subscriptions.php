@@ -46,7 +46,7 @@ class AddForiegnKeysToSubscriptions extends Migration
             $table->index('uid');
         });
 
-        \Acelle\Cashier\Subscription::whereRaw(sprintf('(%s NOT IN (SELECT uid FROM %s) OR %s NOT IN (SELECT uid FROM %s))', 'user_id', table('customers'), 'plan_id', table('plans')))->delete();
+        \Acelle\Model\Subscription::whereRaw(sprintf('(%s NOT IN (SELECT uid FROM %s) OR %s NOT IN (SELECT uid FROM %s))', 'user_id', table('customers'), 'plan_id', table('plans')))->delete();
 
         Schema::table('subscriptions', function ($table) {
             $table->collation = 'utf8mb4_unicode_ci';

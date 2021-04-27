@@ -130,20 +130,9 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <div class="btn-group">
-							
-                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                            <span class="caret ml-0"></span>
-                                        </button>
-                                        <ul class="dropdown-menu dropdown-menu-right">
-                                            <li>
-                                                <a link-method="POST" link-confirm="{{ trans('messages.invoice.cancel.confirm') }}"
-                                                  href="{{ action('AccountSubscriptionController@cancelInvoice', $invoice->uid) }}">
-                                                    {{ trans('messages.cancel') }}
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
+                                    <button class="btn btn-mc_default btn-disabled" disabled>
+                                        {{ trans('messages.edit') }}
+                                    </button>
                                 </td>
                             </tr>
                         @empty

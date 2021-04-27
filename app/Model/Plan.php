@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 use Validator;
 use Illuminate\Validation\ValidationException;
 use Acelle\Cashier\Interfaces\BillablePlanInterface;
-use Acelle\Cashier\Subscription;
+use Acelle\Model\Subscription;
 use Acelle\Cashier\Cashier;
 use Acelle\Model\SendingServer;
 
@@ -231,7 +231,7 @@ class Plan extends Model implements BillablePlanInterface
 
     public function subscriptions()
     {
-        return $this->hasMany('Acelle\Cashier\Subscription', 'plan_id', 'uid')
+        return $this->hasMany('Acelle\Model\Subscription', 'plan_id', 'uid')
             ->where(function ($query) {
                 $query->whereNull('ends_at')
                       ->orWhere('ends_at', '>=', \Carbon\Carbon::now());

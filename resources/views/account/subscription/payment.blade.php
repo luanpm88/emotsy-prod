@@ -23,7 +23,7 @@
     <div class="row">
         <div class="col-md-8">
             
-                <h2 class="mb-3 mt-0">{{ trans('messages.plan.review.title') }}</h2>
+                <h2 class="mb-3 mt-0">{{ $invoice->title }}</h2>
 
                 @if (request()->user()->customer->getPaymentMethod() == null)
                     <p>{{ trans('messages.plan.review.do_not_have_payment_yet') }}</p>
@@ -116,8 +116,10 @@
 
                 <div class="my-4">
                     <hr>
-                    <a class="" link-method="POST" link-confirm="{{ trans('messages.subscription.cancel_now.confirm') }}"
-                        href="{{ action('AccountSubscriptionController@cancelNow') }}">
+                    <a class="" link-method="POST" link-confirm="{{ trans('messages.invoice.cancel.confirm') }}"
+                        href="{{ action('AccountSubscriptionController@cancelInvoice', [
+                            'invoice_uid' => $subscription->lastInvoice()->uid,
+                        ]) }}">
                         {{ trans('messages.subscription.cancel_now_change_other_plan') }}
                     </a>
                 </div>

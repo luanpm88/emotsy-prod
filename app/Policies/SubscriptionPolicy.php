@@ -6,7 +6,7 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 use Acelle\Model\User;
 use Acelle\Model\Setting;
 use Acelle\Cashier\Cashier;
-use Acelle\Cashier\Subscription;
+use Acelle\Model\Subscription;
 
 class SubscriptionPolicy
 {
@@ -16,7 +16,7 @@ class SubscriptionPolicy
     {
         switch ($role) {
             case 'admin':
-                $can = $subscription->isPending() || $subscription->waitInvoice();
+                $can = $subscription->claimedInvoice();
                 break;
             case 'customer':
                 $can = false;
@@ -200,7 +200,7 @@ class SubscriptionPolicy
     {
         switch ($role) {
             case 'admin':
-                $can = $subscription->waitInvoice();
+                $can = $subscription->claimedInvoice();
                 break;
             case 'customer':
                 $can = false;

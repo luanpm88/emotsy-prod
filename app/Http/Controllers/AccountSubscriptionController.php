@@ -4,13 +4,13 @@ namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log as LaravelLog;
-use Acelle\Cashier\Subscription;
+use Acelle\Model\Subscription;
 use Acelle\Model\Setting;
 use Acelle\Model\Plan;
 use Acelle\Cashier\Cashier;
 use Acelle\Cashier\Services\StripeGatewayService;
 use Carbon\Carbon;
-use Acelle\Cashier\SubscriptionLog;
+use Acelle\Model\SubscriptionLog;
 
 class AccountSubscriptionController extends Controller
 {
@@ -28,14 +28,16 @@ class AccountSubscriptionController extends Controller
         $subscription = $customer->subscription;
         $gateway = $customer->getPaymentGateway();
 
-        // 1. SELECT PLAN: No active subscription
-        if (!$subscription || $subscription->isEnded()) {
+        // No active subscription
+        if (!$subscription ||
+            $subscription->isEnded() ||
+            ($subscription->isNew() && !$subscription->pendingInvoice())
+        ) {
             $plans = Plan::getAvailablePlans();
             $planCount = count($plans);
 
             return view('account.subscription.select_plan', [
                 'plans' => Plan::getAvailablePlans(),
-                'colWidth' => ($planCount == 0) ? 0 :  round(85 / $planCount),
                 'subscription' => $subscription,
             ]);
         }
@@ -48,48 +50,30 @@ class AccountSubscriptionController extends Controller
             return view('account.subscription.error', ['message' => __('messages.subscription.error.plan-not-active', [ 'name' => $subscription->plan->name])]);
         }
         
-        // 3. NEW/PENDING SUBSCRIPTION
-        if ($subscription->isNew() || $subscription->isPending()) {
-            $invoice = $subscription->initInvoice();
+        // 3. NEW SUBSCRIPTION
+        if ($subscription->isNew()) {
+            $invoice = $subscription->lastInvoice();
 
-            // PAYMENT: init invoice is new
-            if ($invoice->isNew()) {
+            // new invoice do not have any transaction
+            if ($invoice->isNew() && (!$invoice->lastTransaction() || $invoice->lastTransaction()->isFailed())) {
                 return view('account.subscription.payment', [
                     'subscription' => $subscription,
-                    'gateway' => $gateway,
                     'invoice' => $invoice,
                 ]);
             }
 
-            // CHECKOUT: init invoice is pending || claimed
-            if ($invoice->isPending() || $invoice->isClaimed()) {
-                // 3.3 CHECK GATEWAY. need gateway for charging
-                if ($gateway == null) {
-                    return view('account.subscription.payment', [
-                        'subscription' => $subscription,
-                        'gateway' => $gateway,
-                        'plan' => $subscription->plan,
-                    ]);
-                }
-                
-                // redirect to service checkout
-                return redirect()->away($gateway->getCheckoutUrl(
-                    $invoice,
-                    action('AccountSubscriptionController@index')
-                ));     
-            }
+            // redirect to service checkout
+            return redirect()->away($gateway->getCheckoutUrl(
+                $invoice,
+                action('AccountSubscriptionController@index')
+            ));
         }
         
-        // // Check if subscription is new
-        // if ($subscription->isPending()) {
-        //     return redirect()->away($gateway->getPendingUrl($subscription, action('AccountSubscriptionController@index')));
-        // }
         
         return view('account.subscription.index', [
             'subscription' => $subscription,
             'gateway' => $gateway,
             'plan' => $subscription->plan,
-            'renewInvoice' => $subscription->renewInvoice(),
         ]);
     }
 
@@ -109,6 +93,11 @@ class AccountSubscriptionController extends Controller
         // create new subscription
         $subscription = Subscription::initNew($customer, $plan);
 
+        // create init invoice
+        if (!$subscription->pendingInvoice()) {
+            $subscription->createInitInvoice();
+        }
+
         // Check if subscriotion is new
         return redirect()->action('AccountSubscriptionController@index');
     }
@@ -124,102 +113,73 @@ class AccountSubscriptionController extends Controller
     {
         // Get current customer
         $subscription = $request->user()->customer->subscription;
-        $initInvoice = $subscription->initInvoice();
+        $invoice = $subscription->lastInvoice();
+        $gateway = $request->user()->customer->getPaymentGateway();
 
-        // set invoice as pending
-        $initInvoice->setPending();
+        // add pending transaction for invoice
+        if (!$invoice->isPaid()) {
+            $invoice->addTransaction([
+                'status' => \Acelle\Model\Transaction::STATUS_PENDING,
+                'message' => trans('messages.pay_invoice', [
+                    'id' => $invoice->uid,
+                    'title' => $invoice->title,
+                ]),
+            ]);
+        }
 
         // return to subscription
-        return redirect()->action('AccountSubscriptionController@index');
+        return redirect()->away($gateway->getCheckoutUrl(
+            $invoice,
+            action('AccountSubscriptionController@index')
+        ));
     }
 
     /**
-     * Renew plan.
+     * Invoice payment.
      *
      * @param \Illuminate\Http\Request $request
      *
      * @return \Illuminate\Http\Response
      **/
-    public function renew(Request $request)
+    public function payment(Request $request)
     {
         // Get current customer
         $customer = $request->user()->customer;
         $subscription = $customer->subscription;
         $gateway = $customer->getPaymentGateway();
-        $renewInvoice = $subscription->renewInvoice();
+        $invoice = $subscription->lastInvoice();
+
+        // check if invoice has pending transaction
+        if ($invoice->pendingTransaction()) {
+            // return to subscription
+            return redirect()->away($gateway->getCheckoutUrl(
+                $invoice,
+                action('AccountSubscriptionController@index')
+            ));
+        }
 
         if ($request->isMethod('post')) {
-            // set invoice as pending
-            $renewInvoice->setPending();
+            // add pending transaction for invoice
+            $invoice->addTransaction([
+                'status' => \Acelle\Model\Transaction::STATUS_PENDING,
+                'message' => trans('messages.pay_invoice', [
+                    'id' => $invoice->uid,
+                    'title' => $invoice->title,
+                ]),
+            ]);
 
             // redirect to service checkout
             return redirect()->away($gateway->getCheckoutUrl(
-                $renewInvoice,
+                $invoice,
                 action('AccountSubscriptionController@index')
             )); 
         }
 
-        return view('account.subscription.renew', [
+        return view('account.subscription.payment', [
             'subscription' => $subscription,
-            'gateway' => $gateway,
-            'plan' => $subscription->plan,
-            'renewInvoice' => $renewInvoice,
+            'invoice' => $invoice,
         ]);
     }
-
-    /**
-     * Change plan payment.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     **/
-    public function changePlanPayment(Request $request)
-    {
-        // Get current customer
-        $customer = $request->user()->customer;
-        $subscription = $customer->subscription;
-        $gateway = $customer->getPaymentGateway();
-        $changePlanInvoice = $subscription->changePlanInvoice();
-        $changePlanInvoiceItem = $subscription->changePlanInvoiceItem();
-        $newPlan = Plan::findByUid($changePlanInvoiceItem->getMetadata()['plan_uid']);
-
-        if ($request->isMethod('post')) {
-            // set invoice as pending
-            $changePlanInvoice->setPending();
-
-            // redirect to service checkout
-            return redirect()->away($gateway->getCheckoutUrl(
-                $changePlanInvoice,
-                action('AccountSubscriptionController@index')
-            )); 
-        }
-
-        return view('account.subscription.changePlanPayment', [
-            'subscription' => $subscription,
-            'gateway' => $gateway,
-            'plan' => $newPlan,
-            'changePlanInvoice' => $changePlanInvoice,
-        ]);
-    }
-
-    // /**
-    //  * Renew plan.
-    //  *
-    //  * @param \Illuminate\Http\Request $request
-    //  *
-    //  * @return \Illuminate\Http\Response
-    //  **/
-    // public function doRenew(Request $request)
-    // {
-    //     // Get current customer
-    //     $customer = $request->user()->customer;
-    //     $gateway = $customer->getPaymentGateway();
-    //     $subscription = $customer->subscription;
-
-    //     // redirect to service checkout
-    //     return redirect()->away($gateway->getRenewUrl($subscription, action('AccountSubscriptionController@index')));
-    // }
     
     /**
      * Change plan.
@@ -246,21 +206,14 @@ class AccountSubscriptionController extends Controller
 
             try {
                 // set invoice as pending
-                $subscription->createChangePlanInvoice($newPlan, 
-                    array_merge(
-                        \Acelle\Cashier\Cashier::calcChangePlan($subscription, $newPlan),
-                        [
-                            'plan_uid' => $newPlan->uid,
-                        ]
-                    )
-                );
+                $subscription->createChangePlanInvoice($newPlan);
             } catch (\Exception $e) {
                 $request->session()->flash('alert-error', $e->getMessage());
                 return redirect()->action('AccountSubscriptionController@index');
             }
 
             // return to subscription
-            return redirect()->action('AccountSubscriptionController@changePlanPayment');
+            return redirect()->action('AccountSubscriptionController@payment');
         }
         
         return view('account.subscription.change_plan', [
@@ -303,17 +256,11 @@ class AccountSubscriptionController extends Controller
         $invoice = \Acelle\Model\Invoice::findByUid($uid);
         $subscription = $request->user()->customer->subscription;
 
-        if (!$request->user()->customer->can('cancel', $invoice)) {
+        if (!$request->user()->customer->can('delete', $invoice)) {
             return $this->notAuthorized();
         }
 
-        $invoice->setCanceled();
-
-        // log
-        $subscription->addLog(SubscriptionLog::TYPE_PLAN_CHANGE_CANCELED, [
-            'plan' => $subscription->plan->getBillableName(),
-            'price' => $subscription->plan->getBillableFormattedPrice(),
-        ]);
+        $invoice->delete();
 
         // Redirect to my subscription page
         $request->session()->flash('alert-success', trans('messages.invoice.cancelled'));

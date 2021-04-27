@@ -1,12 +1,5 @@
 @if (!$bill)
-    <div class="upcoming-bill-box">
-        <div class="header">
-            <h4 class="mt-0 font-weight-semibold mb-1">{{ trans('messages.upcoming_bill') }}</h4>
-        </div>
-        <div class="body">
-            {{ trans('messages.have_no_upcoming_bill') }}
-        </div>
-    </div>
+    
 @else
     <div class="upcoming-bill-box">
         <div class="header">
@@ -18,8 +11,8 @@
                 @foreach ($bill['bill'] as $item)
                     <div class="bill_item d-flex">
                         <div class="mr-auto">
-                            <div class="font-weight-semibold">{{ $item['name'] }}</div>
-                            {!! $item['desc'] !!}
+                            <div class="font-weight-semibold">{{ $item['title'] }}</div>
+                            {!! $item['description'] !!}
                         </div>
                         <div class="font-weight-semibold">{{ $item['price'] }}</div>
                     </div>

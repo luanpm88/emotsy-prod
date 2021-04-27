@@ -2,7 +2,7 @@
 
 namespace Acelle\Mail;
 
-use Acelle\Cashier\Subscription;
+use Acelle\Model\Subscription;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;

@@ -6,16 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Invoice extends Model
 {
-    // wait status
+    // statuses
     const STATUS_NEW = 'new';
-    const STATUS_PENDING = 'pending';
     const STATUS_CLAIMED = 'claimed';
     const STATUS_PAID = 'paid';
 
-    // done status
-    const STATUS_DONE = 'done';
-    const STATUS_CANCELED = 'canceled';
-    const STATUS_REJECTED = 'rejected';
+    // type
+    const TYPE_RENEW_SUBSCRIPTION = 'renew_subscription';
+    const TYPE_NEW_SUBSCRIPTION = 'new_subscription';
+    const TYPE_CHANGE_PLAN = 'change_plan';
 
     /**
      * Find item by uid.
@@ -74,6 +73,17 @@ class Invoice extends Model
     }
 
     /**
+     * Get pending transaction.
+     */
+    public function pendingTransaction()
+    {
+        return $this->transactions()
+            ->where('status', \Acelle\Model\Transaction::STATUS_PENDING)
+            ->orderBy('created_at', 'desc')
+            ->first();
+    }
+
+    /**
      * Last transaction.
      */
     public function lastTransaction()
@@ -104,6 +114,28 @@ class Invoice extends Model
         $this->status = Invoice::STATUS_PAID;
         $this->save();
     }
+
+    // /**
+    //  * Finish.
+    //  *
+    //  * @return void
+    //  */
+    // public function finish()
+    // {
+    //     // transaction
+    //     $this->addTransaction([
+    //         'status' => \Acelle\Model\Transaction::STATUS_SUCCESS,
+    //         'message' => trans('messages.pay_invoice', [
+    //             'id' => $this->uid,
+    //             'title' => $this->getBillingInfo()['title'],
+    //         ]),
+    //     ]);
+
+    //     // reset invoice to new
+    //     $this->setPaid();
+
+    //     $this->execute(onPaid);
+    // }
 
     /**
      * Set as rejected.
@@ -142,28 +174,6 @@ class Invoice extends Model
     public function setCanceled()
     {
         $this->status = Invoice::STATUS_CANCELED;
-        $this->save();
-    }
-
-    /**
-     * Set as pending.
-     *
-     * @return void
-     */
-    public function setClaimed()
-    {
-        $this->status = Invoice::STATUS_CLAIMED;
-        $this->save();
-    }
-
-    /**
-     * Set as pending.
-     *
-     * @return void
-     */
-    public function setNew()
-    {
-        $this->status = Invoice::STATUS_NEW;
         $this->save();
     }
 
@@ -230,15 +240,15 @@ class Invoice extends Model
         $this->save();
     }
 
-    /**
-     * Get type.
-     *
-     * @return void
-     */
-    public function getType()
-    {
-        return $this->invoiceItems()->first()->item_type;
-    }
+    // /**
+    //  * Get type.
+    //  *
+    //  * @return void
+    //  */
+    // public function getType()
+    // {
+    //     return $this->invoiceItems()->first()->item_type;
+    // }
 
     /**
      * Check new.
@@ -248,16 +258,6 @@ class Invoice extends Model
     public function isNew()
     {
         return $this->status == self::STATUS_NEW;
-    }
-
-    /**
-     * Check pending.
-     *
-     * @return void
-     */
-    public function isPending()
-    {
-        return $this->status == self::STATUS_PENDING;
     }
 
     /**
@@ -271,6 +271,103 @@ class Invoice extends Model
     }
 
     /**
+     * set status as claimed.
+     *
+     * @return void
+     */
+    public function setClaimed()
+    {
+        $this->status = self::STATUS_CLAIMED;
+        $this->save();
+    }
+
+    /**
+     * set status as new.
+     *
+     * @return void
+     */
+    public function setNew()
+    {
+        $this->status = self::STATUS_NEW;
+        $this->save();
+    }
+
+    /**
+     * Claim invoice.
+     *
+     * @return void
+     */
+    public function claim()
+    {
+        // set status as claimed
+        $this->setClaimed();
+
+        // just log
+        $this->customer->subscription->addLog(SubscriptionLog::TYPE_CLAIMED, [
+            'plan' => $this->customer->subscription->plan->getBillableName(),
+            'price' => $this->customer->subscription->amount,
+        ]);
+    }
+    
+    /**
+     * Pay invoice.
+     *
+     * @return void
+     */
+    public function pay()
+    {
+        // set status as claimed
+        $this->setPaid();
+
+        // set transaction as success
+        $this->pendingTransaction()->setSuccess();
+        
+        // invoice after pay actions
+        $this->process();
+    }
+    
+    /**
+     * Pay invoice failed.
+     *
+     * @return void
+     */
+    public function payFailed($error)
+    {
+        // set status as new
+        $this->setNew();
+
+        // set transaction as failed
+        $this->pendingTransaction()->setFailed($error);
+    }
+
+    /**
+     * Process invoice.
+     *
+     * @return void
+     */
+    public function process()
+    {
+        $data = $this->getMetadata();
+        switch ($this->type) {
+            case \Acelle\Model\Invoice::TYPE_NEW_SUBSCRIPTION:
+                $subscription = \Acelle\Model\Subscription::findByUid($data['subscription_uid']);
+                $subscription->setActive();
+                break;
+            case \Acelle\Model\Invoice::TYPE_RENEW_SUBSCRIPTION:
+                $subscription = \Acelle\Model\Subscription::findByUid($data['subscription_uid']);
+                $subscription->renew();
+                break;
+            case \Acelle\Model\Invoice::TYPE_CHANGE_PLAN:
+                $subscription = \Acelle\Model\Subscription::findByUid($data['subscription_uid']);
+                $newPlan = \Acelle\Model\Plan::findByUid($data['new_plan_uid']);
+                $subscription->changePlan($newPlan, \Carbon\Carbon::parse($data['new_ends_at']));
+                break;
+            default:
+                throw new \Exception('Invoice type is not valid: ' . $this->type);
+        }
+    }
+
+    /**
      * Check paid.
      *
      * @return void
@@ -278,6 +375,16 @@ class Invoice extends Model
     public function isPaid()
     {
         return $this->status == self::STATUS_PAID;
+    }
+
+    /**
+     * Check claimed.
+     *
+     * @return void
+     */
+    public function claimed()
+    {
+        return false;
     }
 
     /**
@@ -301,94 +408,50 @@ class Invoice extends Model
     }
 
     /**
-     * Get wait statuses.
-     *
-     * @return array
-     */
-    public static function waitStatuses()
-    {
-        return [
-            self::STATUS_NEW,
-            self::STATUS_PENDING,
-            self::STATUS_CLAIMED,
-            self::STATUS_PAID,
-        ];
-    }
-
-    /**
-     * Check wait.
-     *
-     * @return void
-     */
-    public function isWait()
-    {
-        return in_array($this->status, self::waitStatuses());
-    }
-
-    /**
      * Get billing info.
      *
      * @return void
      */
     public function getBillingInfo()
     {
-        // subscription init
-        if ($this->getType() == \Acelle\Model\InvoiceItem::TYPE_SUBSCRIPTION_INIT) {
-            $subscription = \Acelle\Cashier\Subscription::findByUid(
-                $this->invoiceItems()
-                    ->where('item_type', \Acelle\Model\InvoiceItem::TYPE_SUBSCRIPTION_INIT)
-                    ->first()
-                    ->item_id
-            );
-            return  [
-                'title' => trans('messages.subscription_init.bill_details'),
-                'description' => $this->description,
-                'bill' => $this->invoiceItems()->billMapping(),
-                'charge_info' => trans('messages.bill.charge_now'),
-                'total' => format_price($this->total(), $this->currency->format),
-            ];
+        switch ($this->type) {
+            case self::TYPE_RENEW_SUBSCRIPTION:
+                $subscription = \Acelle\Model\Subscription::findByUid($this->getMetadata()['subscription_uid']);
+                if (!$this->customer->supportsAutoBilling()) {
+                    $chargeInfo = trans('messages.bill.charge_before', [
+                        'date' => \Acelle\Library\Tool::formatDate($subscription->current_period_ends_at),
+                    ]);
+                } else {
+                    $chargeInfo = trans('messages.bill.auto_charge', [
+                        'date' => \Acelle\Library\Tool::formatDate($subscription->current_period_ends_at),
+                    ]);
+                }
+                break;
+            case self::TYPE_NEW_SUBSCRIPTION:
+                $chargeInfo = trans('messages.bill.charge_now');
+                break;
+            case self::TYPE_CHANGE_PLAN:
+                $chargeInfo = trans('messages.bill.charge_now');
+                break;
+            default:
+                $chargeInfo = '';
         }
-
-        // subscription init
-        if ($this->getType() == \Acelle\Model\InvoiceItem::TYPE_SUBSCRIPTION_RENEW) {
-            $subscription = \Acelle\Cashier\Subscription::findByUid(
-                $this->invoiceItems()
-                    ->where('item_type', \Acelle\Model\InvoiceItem::TYPE_SUBSCRIPTION_RENEW)
-                    ->first()
-                    ->item_id
-            );
-            return  [
-                'title' => trans('messages.subscription_renew.bill_details'),
-                'description' => $this->description,
-                'bill' => $this->invoiceItems()->billMapping(),
-                'charge_info' => $this->customer->paymentCanAutoCharge() ? trans('messages.bill.auto_charge', ['date' => $subscription->nextPeriod()]) : trans('messages.bill.charge_before', ['date' => $subscription->nextPeriod()]),
-                'total' => format_price($this->total(), $this->currency->format),
-            ];
-        }
-
-        // subscription change plan
-        if ($this->getType() == \Acelle\Model\InvoiceItem::TYPE_SUBSCRIPTION_CHANGE_PLAN) {
-            $subscription = \Acelle\Cashier\Subscription::findByUid(
-                $this->invoiceItems()
-                    ->where('item_type', \Acelle\Model\InvoiceItem::TYPE_SUBSCRIPTION_CHANGE_PLAN)
-                    ->first()
-                    ->item_id
-            );
-
-            // plan
-            $data = $this->invoiceItems()->first()->getMetadata();
-            $plan = \Acelle\Model\Plan::findByUid($data['plan_uid']);
-
-            return  [
-                'title' => trans('messages.subscription_change_plan.bill_details'),
-                'description' => $this->description,
-                'bill' => $this->invoiceItems()->billMapping(),
-                'charge_info' => '',
-                'total' => format_price($this->total(), $this->currency->format),
-            ];
-        }
-
-        return 'unknown';
+        
+        return  [
+            'title' => $this->title,
+            'description' => $this->description,
+            'bill' => $this->invoiceItems()->get()->map(function($item) {
+                return [
+                    'title' => $item->title,
+                    'description' => $item->description,
+                    'price' => format_price($item->amount, $item->invoice->currency->format),
+                    'tax' => format_price($item->tax, $item->invoice->currency->format),
+                    'discount' => format_price($item->discount, $item->invoice->currency->format),
+                ];
+            }),
+            'charge_info' => $chargeInfo,
+            'total' => format_price($this->total(), $this->currency->format),
+        ];
     }
 
     /**
@@ -418,6 +481,7 @@ class Invoice extends Model
      */
     public function addTransaction($data=[])
     {
+        // @todo: dung transactions()->new....
         $transaction = new \Acelle\Model\Transaction();
         $transaction->invoice_id = $this->id;
         $transaction->amount = $this->formattedTotal();
@@ -426,11 +490,6 @@ class Invoice extends Model
         $transaction->error = isset($data['error']) ? $data['error'] : null;
         $transaction->status = isset($data['status']) ? $data['status'] : \Acelle\Model\Transaction::STATUS_PENDING;
         $transaction->save();
-
-        // metadata
-        if (isset($data['metadata'])) {
-            $transaction->updateData($data['metadata']);
-        }
 
         return $transaction;
     }

@@ -23,7 +23,7 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Acelle\Cashier\Subscription;
+use Acelle\Model\Subscription;
 
 class Admin extends Model
 {

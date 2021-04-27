@@ -59,4 +59,23 @@ class Transaction extends Model
     {
         return $this->status == self::STATUS_FAILED;
     }
+
+    /**
+     * Set failed.
+     */
+    public function setFailed($error=null)
+    {
+        $this->status = self::STATUS_FAILED;
+        $this->error = $error;
+        $this->save();
+    }
+
+    /**
+     * Set as success.
+     */
+    public function setSuccess()
+    {
+        $this->status = self::STATUS_SUCCESS;
+        $this->save();
+    }
 }

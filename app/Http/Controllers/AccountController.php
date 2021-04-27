@@ -312,19 +312,6 @@ class AccountController extends Controller
         // Save posted data
         if ($request->isMethod('post')) {
             $gateway = \Acelle\Cashier\Cashier::getPaymentGateway($request->payment_method);
-
-            // exception for PayStack
-            if ($request->payment_method == 'paystack') {
-                $subscription = $request->user()->customer->subscription;
-
-                // subscribing
-                if(is_object($subscription) && $subscription->isNew()) {
-                    // Paystack create subscription
-                    $subscription = $gateway->create($request->user()->customer, $subscription->plan);
-
-                    return redirect()->away($gateway->getCheckoutUrl($subscription, $request->return_url));
-                }
-            }
             
             return redirect()->away($gateway->getConnectUrl($request->return_url));
         }

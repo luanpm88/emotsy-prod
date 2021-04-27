@@ -28,10 +28,30 @@
     <div class="row">
         <div class="col-sm-12 col-md-8 col-lg-8">
 
-            @if ($subscription->hasError())
+            @if ($subscription->renewInvoice() && !$subscription->renewInvoice()->isPaid() && !$subscription->user->supportsAutoBilling())
                 @include('elements._notification', [
-                    'level' => $subscription->getError()["status"],
-                    'message' => $subscription->getError()["message"]
+                    'level' => 'warning',
+                    'message' => trans('messages.have_new_renew_invoice', [
+                        'link' => action('AccountSubscriptionController@payment'),
+                    ])
+                ])
+            @endif
+
+            @if ($subscription->changePlanInvoice() && !$subscription->changePlanInvoice()->isPaid())
+                @include('elements._notification', [
+                    'level' => 'warning',
+                    'message' => trans('messages.have_new_change_plan_invoice', [
+                        'link' => action('AccountSubscriptionController@payment'),
+                    ])
+                ])
+            @endif
+
+            @if ($subscription->lastInvoice() && $subscription->lastInvoice()->lastTransaction() && $subscription->lastInvoice()->lastTransaction()->isFailed())
+                @include('elements._notification', [
+                    'level' => 'error',
+                    'message' => trans('messages.has_transaction_error', [
+                        'error' => $subscription->lastInvoice()->lastTransaction()->error,
+                    ])
                 ])
             @endif
 
@@ -40,7 +60,7 @@
             <div class="sub-section">
                 @if ($subscription->isActive())
                     @if (!$subscription->cancelled())
-                        @if (\Auth::user()->customer->paymentCanAutoCharge())
+                        @if (\Auth::user()->customer->supportsAutoBilling())
                             <p>
                                 {!! trans('messages.subscription.current_subscription.recurring.wording', [
                                     'plan' => $plan->name,

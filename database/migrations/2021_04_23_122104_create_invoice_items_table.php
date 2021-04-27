@@ -22,7 +22,8 @@ class CreateInvoiceItemsTable extends Migration
             $table->double('amount', 16, 2)->default(0);            
             $table->double('tax', 16, 2)->default(0);
             $table->double('discount', 16, 2)->default(0);
-            $table->longText('metadata')->nullable();
+            $table->string('title');
+            $table->text('description');
             $table->timestamps();
 
             $table->foreign('invoice_id')->references('id')->on('invoices')->onDelete('cascade');            

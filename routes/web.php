@@ -192,39 +192,15 @@ Route::group(['middleware' => ['not_installed']], function () {
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function () {
     // Account subscription
-    Route::post('subscription/invoice/{uid}/cancel', 'AccountSubscriptionController@cancelInvoice');
-    Route::match(['get', 'post'], 'subscription/change-plan/payment', 'AccountSubscriptionController@changePlanPayment');
+    Route::post('subscription/invoice/{invoice_uid}/cancel', 'AccountSubscriptionController@cancelInvoice');
     Route::match(['get', 'post'], 'subscription/change-plan', 'AccountSubscriptionController@changePlan');
     Route::post('subscription/checkout', 'AccountSubscriptionController@checkout');
     Route::post('subscription/init', 'AccountSubscriptionController@init');
     Route::get('subscription', 'AccountSubscriptionController@index');
-
-
-
-    // Route::get('subscription/do-renew', 'AccountSubscriptionController@doRenew');
-    Route::match(['get', 'post'], 'subscription/renew', 'AccountSubscriptionController@renew');
-    // Route::get('subscription/payment', 'AccountSubscriptionController@payment');
-    
-    // Route::get('subscription/pending', 'AccountSubscriptionController@pending');
-    // 
-    
-
-
-    // Route::post('subscription/payment-claim', 'AccountSubscriptionController@paymentClaim');
-    // Route::match(['get', 'post'], 'subscription/renew', 'AccountSubscriptionController@renew');
-    // Route::get('subscription/pending', 'AccountSubscriptionController@pending');
-    // Route::post('subscription/change-plan', 'AccountSubscriptionController@changePlan');
-    // Route::get('subscription/change-plan', 'AccountSubscriptionController@changePlan');
+    Route::match(['get', 'post'], 'subscription/payment', 'AccountSubscriptionController@payment');
     Route::post('subscription/cancel-now', 'AccountSubscriptionController@cancelNow');
     Route::post('subscription/resume', 'AccountSubscriptionController@resume');
     Route::post('subscription/cancel', 'AccountSubscriptionController@cancel');
-    // Route::match(['get', 'post'], 'subscription/update-card', 'AccountSubscriptionController@updateCard');
-    // Route::get('subscription/preview', 'AccountSubscriptionController@preview');
-
-
-    // Route::match(['get', 'post'], 'subscription/pay', 'AccountSubscriptionController@pay');
-    // Route::get('subscription/card', 'AccountSubscriptionController@card');
-    // Route::get('subscription/new', 'AccountSubscriptionController@new');
 
 
     // Customer login back
@@ -918,13 +894,6 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::post('admin/subscriptions/{id}/cancel-now', 'SubscriptionController@cancelNow');
     Route::post('admin/subscriptions/{id}/resume', 'SubscriptionController@resume');
     Route::post('admin/subscriptions/{id}/cancel', 'SubscriptionController@cancel');
-
-    // Route::patch('admin/subscriptions/unpaid', 'SubscriptionController@unpaid');
-    // Route::patch('admin/subscriptions/paid', 'SubscriptionController@paid');
-    // Route::get('admin/subscriptions/{uid}/payments', 'SubscriptionController@payments');
-    // Route::patch('admin/subscriptions/enable', 'SubscriptionController@enable');
-    // Route::patch('admin/subscriptions/disable', 'SubscriptionController@disable');
-    // Route::get('admin/subscriptions/preview', 'SubscriptionController@preview');
     Route::get('admin/subscriptions/listing/{page?}', 'SubscriptionController@listing');
     Route::get('admin/subscriptions/sort', 'SubscriptionController@sort');
     Route::delete('admin/subscriptions/delete', 'SubscriptionController@delete');

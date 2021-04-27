@@ -5,13 +5,16 @@
 		@foreach ($subscriptions as $key => $subscription)
 			<tr>
 				<td width="1%">
-					@if ($subscription->isEnded())
-						<i class="icon-dash subscription-status-icon"></i>
-					@elseif ($subscription->isPending() || $subscription->isNew())
-						<i class="lnr lnr-sync subscription-status-icon"></i>
-					@else
-						<i class="lnr lnr-checkmark-circle subscription-status-icon"></i>
-					@endif
+					@switch($subscription->status)
+						@case(Acelle\Model\Subscription::STATUS_ACTIVE)
+							<i class="lnr lnr-sync subscription-status-icon"></i>
+							@break
+						@case(Acelle\Model\Subscription::STATUS_NEW)
+							<i class="lnr lnr-sync subscription-status-icon"></i>
+							@break
+						@default
+							<i class="icon-dash subscription-status-icon"></i>
+					@endswitch
 				</td>
 				<td>
 					<h5 class="no-margin text-bold">
@@ -59,19 +62,57 @@
 					@endif
 				</td>
 				<td>
-                    <span class="text-muted2 list-status pull-left">
-						<span style="cursor:pointer" href="{{ action('Admin\SubscriptionController@invoices', $subscription->uid) }}"
-							class="view_invoices label bg-{{ $subscription->getShowStatus() }}"
-						>{{ trans('messages.subscription.status.' . $subscription->getShowStatus()) }}</span>
-					</span>
+					@switch($subscription->status)
+						@case(Acelle\Model\Subscription::STATUS_ACTIVE)
+							<span style="cursor:pointer" href="{{ action('Admin\SubscriptionController@invoices', $subscription->uid) }}"
+								class="view_invoices label bg-success"
+							>
+								{{ trans('messages.subscription.status.active') }}
+							</span>
+
+							@if ($subscription->changePlanInvoice() && $subscription->changePlanInvoice()->isClaimed())
+								<div class="mini text-warning">
+									{{ trans('messages.change_plan.pending_for_approval') }}
+								</div>
+							@endif
+
+							@if ($subscription->renewInvoice() && $subscription->renewInvoice()->isClaimed())
+								<div class="mini text-warning">
+									{{ trans('messages.renew_subscription.pending_for_approval') }}
+								</div>
+							@endif
+
+							@break
+						@case(Acelle\Model\Subscription::STATUS_NEW)
+							@if ($subscription->lastInvoice()->isClaimed())
+								<span style="cursor:pointer" href="{{ action('Admin\SubscriptionController@invoices', $subscription->uid) }}"
+									class="view_invoices label bg-m-warning"
+								>
+									{{ trans('messages.subscription.status.pending_for_approval') }}
+								</span>	
+							@else
+								<span style="cursor:pointer" href="{{ action('Admin\SubscriptionController@invoices', $subscription->uid) }}"
+									class="view_invoices label bg-m-warning"
+								>
+									{{ trans('messages.subscription.status.wait_for_payment') }}
+								</span>
+							@endif
+							@break
+						@default
+							<span style="cursor:pointer" href="{{ action('Admin\SubscriptionController@invoices', $subscription->uid) }}"
+								class="view_invoices label bg-{{ $subscription->status }}"
+							>
+								{{ trans('messages.subscription.status.' . $subscription->status) }}
+							</span>
+					@endswitch
                 </td>
 				<td class="text-right">
 					@if (\Auth::user()->admin->can('approve', $subscription))
-						<a data-method="POST" link-confirm="{{ trans('messages.subscription.set_active.confirm') }}"
+						<a data-method="POST" link-confirm="{{ trans('messages.subscription.approve.confirm') }}"
 							href="{{ action('Admin\SubscriptionController@approve', $subscription->uid) }}"
 							class="btn btn-primary bg-teal-800"
 						>
-							{{ trans('messages.subscription.set_active') }}
+							{{ trans('messages.subscription.approve') }}
 						</a>
 						<span class="text-muted">|</span>
 					@endif

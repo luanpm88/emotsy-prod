@@ -27,7 +27,7 @@ use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use Acelle\Cashier\Interfaces\BillableUserInterface;
 use Acelle\Cashier\Cashier;
-use Acelle\Cashier\Subscription;
+use Acelle\Model\Subscription;
 use Acelle\Model\SendingDomain;
 use DateTime;
 use DateTimeZone;
@@ -124,7 +124,7 @@ class Customer extends Model implements BillableUserInterface
      */
     public function subscription()
     {
-        return $this->hasOne('Acelle\Cashier\Subscription', 'user_id', 'uid')
+        return $this->hasOne('Acelle\Model\Subscription', 'user_id', 'uid')
             // ->where('status', '!=', Subscription::STATUS_ENDED)
             ->orderBy('created_at', 'desc');
     }
@@ -1962,27 +1962,13 @@ class Customer extends Model implements BillableUserInterface
         return $this->automation2s()->count();
     }
 
-    // /**
-    //  * Assign plan to customer.
-    //  */
-    // public function assignPlan($plan)
-    // {
-    //     if ($this->activeSubscription()) {
-    //         $this->activeSubscription()->cancelNow();
-    //     }
-
-    //     // create/update subscription
-    //     if ($this->subscription) {
-    //         $subscription = $this->subscription;
-    //     } else {
-    //         $subscription = new Subscription();
-    //         $subscription->user_id = $this->getBillableId();
-    //     }
-    //     $subscription->plan_id = $plan->getBillableId();
-    //     $subscription->started_at = \Carbon\Carbon::now();
-    //     $subscription->status = Subscription::STATUS_NEW;
-    //     $subscription->save();
-    // }
+    /**
+     * Assign plan to customer.
+     */
+    public function assignPlan($plan)
+    {
+        \Acelle\Model\Subscription::initNew($this, $plan);
+    }
 
     /**
      * Check customer if has notice.
@@ -2130,14 +2116,14 @@ class Customer extends Model implements BillableUserInterface
      *
      * @return boolean
      */
-    public function paymentCanAutoCharge()
+    public function supportsAutoBilling()
     {
         $gateway = $this->getPaymentGateway();
         if ($gateway == null) {
             return false;
         }
 
-        return $gateway->canAutoCharge();
+        return $gateway->supportsAutoBilling();
     }
 
     /**
@@ -2154,6 +2140,25 @@ class Customer extends Model implements BillableUserInterface
         // }
         
         // $data = (object) array_merge((array) $paymentMethod, $data);
+        $this['payment_method'] = json_encode($data);
+
+        $this->save();
+    }
+
+    /**
+     * Update payment method.
+     *
+     * @var object | collect
+     */
+    public function updatePaymentMethodData($data=[])
+    {
+        $paymentMethod = $this->getPaymentMethod();
+
+        if (!isset($paymentMethod)) {
+            $paymentMethod = [];
+        }
+        
+        $data = (object) array_merge((array) $paymentMethod, $data);
         $this['payment_method'] = json_encode($data);
 
         $this->save();

@@ -2533,8 +2533,8 @@
   'subscription.change_plan.checkout.coinpayments' => 'You are about to change plan from <strong>:current_plan</strong> to <strong>:new_plan</strong>.
     The extra amount need to purchase amount for new plan is <strong>:amount</strong>. The subscription will be ended on <strong>:end_on</strong>',
   'subscription.download_raw_invoices' => 'Download invoices (raw)',
-  'subscription.set_active' => 'Approve',
-  'subscription.set_active.confirm' => 'You are going to confirm/approve the payment for this subscription and make
+  'subscription.approve' => 'Approve',
+  'subscription.approve.confirm' => 'You are going to confirm/approve the payment for this subscription and make
       it active.',
   'subscription.set_active.success' => 'The subscription was activated successfully.',
   'subscription.renew.checkout' => 'Checkout',
@@ -2543,7 +2543,8 @@
   'subscription.approve_pending' => 'Approve',
   'subscription.approve_pending.confirm' => 'You have pending invoice. Do you want to approve it. This can not be un-done.',
   'subscription.approve_pending.success' => 'The pending invoice was approved successfully.',
-  'invoice.status.pending' => 'invoice pending',
+  'invoice.status.pending' => 'Pending',
+  'invoice.status.paid' => 'Paid',
   'subscription.change_now' => 'Change now',
   'subscription.plan_changed.lower_error' => 'Can not change from higher plan to lower one',
   'payment.settings' => 'Settings',
@@ -3542,7 +3543,7 @@
   'coinpayments.pending.intro' => 'You are subscribing to <strong>:plan</strong> plan.
         Click on the <strong>checkout url</strong> to pay or <strong>status url</strong> below to pay/check your payment status',
   'subscription.log.subscribe' => 'Subscribing to <strong>:plan</strong> plan',
-  'subscription.log.claimed' => 'The payment (<strong>:price</strong>) was <strong>claimed</strong> by customer',
+  'subscription.log.claimed' => 'The payment was <strong>claimed</strong> by customer',
   'subscription.log.admin_approved' => 'Subscription for <strong>:plan</strong> plan was
         <strong>approved</strong> by Admin',
   'subscription.log.admin_cancelled_now' => 'Subscription for <strong>:plan</strong> plan was
@@ -3553,12 +3554,12 @@
   'subscription.log.admin_renew_approved' => 'Renew <strong>:plan</strong> plan was <strong>approved</strong> by Admin',
   'subscription.log.renew' => 'Renewing <strong>:plan</strong> plan (<strong>:price</strong>)',
   'subscription.log.cancelled_now' => 'Subscription for <strong>:plan</strong> plan was <strong>cancelled now</strong>',
-  'subscription.log.paid' => 'Paid for <strong>:plan</strong> plan (<strong>:price</strong>)',
+  'subscription.log.paid' => 'Paid for <strong>:plan</strong> plan',
   'subscription.log.subscribed' => 'Subscribed to <strong>:plan</strong> plan',
   'subscription.log.cancelled' => 'Subscription for <strong>:plan</strong> plan was <strong>cancelled</strong>',
   'subscription.log.resumed' => 'Subscription for <strong>:plan</strong> plan was <strong>resumed</strong>',
-  'subscription.log.plan_changed' => 'Changed plan to
-        <strong>:plan</strong> (<strong>:price</strong>)',
+  'subscription.log.plan_changed' => 'Changed to
+        <strong>:plan</strong> plan',
   'subscription.log.renewed' => 'Renewed <strong>:plan</strong> plan (<strong>:price</strong>)',
   'subscription.log.renew_failed' => 'Can not renew <strong>:plan</strong> plan. Error: :error',
   'subscription.log.expired' => 'Subscription for <strong>:plan</strong> plan was <strong>expired</strong>',
@@ -4012,21 +4013,20 @@
   'bill.next_period_ends_on' => 'Next period ends on :date',
   'invoice_type.subscription_init' => 'Subscribe to a Plan',
   'subscription_init.bill_details' => 'New Subscription',
-  'subscription_init.bill_desc' => 'You’re subscring to plan <strong>:plan</strong>, and
+  'invoice.init_subscription.desc' => 'You’re subscring to plan <strong>:plan</strong>, and
       your subscription will be due on <strong>:date</strong>',
   'subscription.current_subscription.wording' => 'Thank you for being with us, you are
       currently subscribed to <strong>:plan</strong> plan.<br>
       Your next invoice will be billed in <strong>:remain</strong>, on <strong>:next_on</strong>.',
-  'subscription_renew.bill_details' => 'Renew Plan',
-  'subscription_renew.bill_desc' => 'You’re subscring to plan <strong>:plan</strong>, and
+  'renew_subscription.desc' => 'You’re renewing <strong>:plan</strong> plan, and
           your subscription will be due on <strong>:date</strong>',
   'bill.charge_before' => 'Charge before <strong>:date</strong>',
-  'bill.auto_charge' => 'Auto charge on <strong>:date</strong>',
+  'bill.auto_charge' => 'Auto charge before <strong>:date</strong>',
   'upcoming_bill.title' => 'Upcoming Invoice',
   'upcoming_bill.desc' => 'You’re subscring to plan <strong>:plan</strong>, and
           your subscription will be due on <strong>:date</strong>',
   'subscription_change_plan.bill_details' => 'Change Plan',
-  'subscription_change_plan.bill_desc' => 'You’re changing from <strong>:plan</strong>
+  'change_plan.desc' => 'You’re changing from <strong>:plan</strong>
       plan to <strong>:newPlan</strong> plan',
   'change_to_plan' => 'Change to :plan plan',
   'ends_on' => 'Ends on',
@@ -4054,8 +4054,8 @@
   'invoice.cancel.confirm' => 'You are about to cancel this invoice.',
   'invoice.cancelled' => 'Invoice was canceled',
   'cancel_invoice' => 'Cancel Invoice',
-  'subscription.cancel_now_change_other_plan' => 'You want to change other plan?
-      Click here to cancel this subscription.',
+  'subscription.cancel_now_change_other_plan' => 'Change your mind?
+      Click here to cancel this invoice.',
   'invoice.renew_transaction_failed' => 'Something went wrong when charge renew invoice. Error: :error.
       <br>Check transactions for more information.',
   'invoice.renew_transaction_failed.reconnect' => 'Something went wrong when charge renew invoice. Error: :error.
@@ -4063,4 +4063,20 @@
   'transaction.method' => 'Method',
   'transaction.method.direct' => 'Direct',
   'transaction.method.stripe' => 'Stripe',
+  'invoice.init_subscription' => 'New Subscription',
+  'invoice.renew_subscription' => 'Renew Subscription',
+  'invoice.change_plan' => 'Change Plan',
+  'subscription.status.wait_for_payment' => 'Wait for payment',
+  'subscription.status.pending_for_approval' => 'Pending for approval',
+  'change_plan.pending_for_approval' => 'Change plan wait for approval',
+  'renew_subscription.pending_for_approval' => 'Renew wait for approval',
+  'have_new_renew_invoice' => 'You have a pending renew invoice. <a href=":link">Click here</a>
+      to check details',
+  'have_new_change_plan_invoice' => 'You have a pending change plan invoice. <a href=":link">Click here</a>
+      to check details',
+  'invoice.cancel.confirm' => 'You are about to cancel this invoice. This can not be undone!',
+  'transaction.method.braintree' => 'Braintree',
+  'transaction.method.coinpayments' => 'Coinpayments',
+  'transaction.method.paystack' => 'Paystack',
+  'has_transaction_error' => 'There is error transaction: :error',
 ) ?>

@@ -23,7 +23,7 @@
 namespace Acelle\Library\Notification;
 
 use Acelle\Model\Notification;
-use Acelle\Cashier\Subscription as CashierSubscription;
+use Acelle\Model\Subscription as CashierSubscription;
 
 class Subscription extends Notification
 {
@@ -32,14 +32,14 @@ class Subscription extends Notification
      */
     public static function check()
     {
-        self::cleanupSimilarNotifications();
+        // self::cleanupSimilarNotifications();
 
-        $count = CashierSubscription::where('status', CashierSubscription::STATUS_PENDING)->count();
-        if ($count > 0) {
-            self::info([
-                'title' => trans('messages.admin.notification.subscription.title'),
-                'message' => trans('messages.admin.notification.subscription.pending', ['count' => $count]),
-            ]);
-        }
+        // $count = CashierSubscription::where('status', CashierSubscription::STATUS_PENDING)->count();
+        // if ($count > 0) {
+        //     self::info([
+        //         'title' => trans('messages.admin.notification.subscription.title'),
+        //         'message' => trans('messages.admin.notification.subscription.pending', ['count' => $count]),
+        //     ]);
+        // }
     }
 }

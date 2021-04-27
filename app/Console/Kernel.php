@@ -7,7 +7,7 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Acelle\Model\Automation2;
 use Acelle\Model\Notification;
 use Acelle\Cashier\Cashier;
-use Acelle\Cashier\Subscription;
+use Acelle\Model\Subscription;
 use Acelle\Model\Setting;
 use Laravel\Tinker\Console\TinkerCommand;
 use Exception;

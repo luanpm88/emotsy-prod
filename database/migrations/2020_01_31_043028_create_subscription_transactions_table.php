@@ -14,7 +14,7 @@ class CreateSubscriptionTransactionsTable extends Migration
     public function up()
     {
         // Clean up all subscriptions!!!!!
-        \Acelle\Cashier\Subscription::whereRaw('true')->delete();
+        \Acelle\Model\Subscription::whereRaw('true')->delete();
 
         DB::statement(sprintf('ALTER TABLE %s CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;', table('subscriptions')));
         DB::statement(sprintf("ALTER TABLE %s ENGINE = 'InnoDB'", table('subscriptions')));
