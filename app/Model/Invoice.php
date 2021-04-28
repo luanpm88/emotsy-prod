@@ -349,15 +349,15 @@ class Invoice extends Model
     {
         $data = $this->getMetadata();
         switch ($this->type) {
-            case \Acelle\Model\Invoice::TYPE_NEW_SUBSCRIPTION:
+            case self::TYPE_NEW_SUBSCRIPTION:
                 $subscription = \Acelle\Model\Subscription::findByUid($data['subscription_uid']);
                 $subscription->setActive();
                 break;
-            case \Acelle\Model\Invoice::TYPE_RENEW_SUBSCRIPTION:
+            case self::TYPE_RENEW_SUBSCRIPTION:
                 $subscription = \Acelle\Model\Subscription::findByUid($data['subscription_uid']);
                 $subscription->renew();
                 break;
-            case \Acelle\Model\Invoice::TYPE_CHANGE_PLAN:
+            case self::TYPE_CHANGE_PLAN:
                 $subscription = \Acelle\Model\Subscription::findByUid($data['subscription_uid']);
                 $newPlan = \Acelle\Model\Plan::findByUid($data['new_plan_uid']);
                 $subscription->changePlan($newPlan, \Carbon\Carbon::parse($data['new_ends_at']));

@@ -478,7 +478,7 @@ class Subscription extends Model
                 }
 
                 // check expiring
-                if ($this->isExpiring() && $this->canRenewPlan()) {
+                else if ($this->isExpiring() && $this->canRenewPlan()) {
                     $renewInvoice = $this->pendingInvoice();
 
                     // create renew invoice
@@ -544,29 +544,6 @@ class Subscription extends Model
             'old_plan' => $this->plan->getBillableName(),
             'plan' => $newPlan->getBillableName(),
         ]);
-    }
-
-    /**
-     * Get subscription meaning status.
-     *
-     * @param  Int  $subscriptionId
-     * @return date
-     */
-    public function getShowStatus()
-    {
-        // others
-        if ($this->isNew() || $this->isEnded()) {
-            return $this->status;
-        }
-
-        // active
-        if ($this->isActive()) {
-            if ($this->pendingInvoice()) {
-                return 'pending';
-            }
-        }
-
-        return $this->status;
     }
 
     /**
