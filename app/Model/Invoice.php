@@ -320,6 +320,7 @@ class Invoice extends Model
         $this->setPaid();
 
         // set transaction as success
+        // Important: according to current design, the rule is: one invoice only has one pending transaction
         $this->pendingTransaction()->setSuccess();
         
         // invoice after pay actions
