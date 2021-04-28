@@ -4079,4 +4079,6 @@
   'transaction.method.coinpayments' => 'Coinpayments',
   'transaction.method.paystack' => 'Paystack',
   'has_transaction_error' => 'There is error transaction: :error',
+  'transaction.method.razorpay' => 'Razorpay',
+  'transaction.method.paypal' => 'Paypal',
 ) ?>

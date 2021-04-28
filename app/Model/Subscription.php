@@ -54,11 +54,7 @@ class Subscription extends Model
         // Create uid when creating list.
         static::creating(function ($item) {
             // Create new uid
-            $uid = uniqid();
-            while (self::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
-            $item->uid = $uid;
+            $item->uid = uniqid();
         });
     }
 
@@ -70,33 +66,6 @@ class Subscription extends Model
     public static function findByUid($uid)
     {
         return self::where('uid', '=', $uid)->first();
-    }
-
-    /**
-     * Get metadata.
-     *
-     * @var object | collect
-     */
-    public function getMetadata()
-    {
-        if (!$this['metadata']) {
-            return json_decode('{}', true);
-        }
-
-        return json_decode($this['metadata'], true);
-    }
-
-    /**
-     * Get metadata.
-     *
-     * @var object | collect
-     */
-    public function updateMetadata($data)
-    {
-        $metadata = (object) array_merge((array) $this->getMetadata(), $data);
-        $this['metadata'] = json_encode($metadata);
-
-        $this->save();
     }
 
     /**
@@ -509,7 +478,7 @@ class Subscription extends Model
                 }
 
                 // check expiring
-                if ($this->isExpiring() && $this->canRenewPlan()) {
+                else if ($this->isExpiring() && $this->canRenewPlan()) {
                     $renewInvoice = $this->pendingInvoice();
 
                     // create renew invoice
@@ -578,29 +547,6 @@ class Subscription extends Model
     }
 
     /**
-     * Get subscription meaning status.
-     *
-     * @param  Int  $subscriptionId
-     * @return date
-     */
-    public function getShowStatus()
-    {
-        // others
-        if ($this->isNew() || $this->isEnded()) {
-            return $this->status;
-        }
-
-        // active
-        if ($this->isActive()) {
-            if ($this->pendingInvoice()) {
-                return 'pending';
-            }
-        }
-
-        return $this->status;
-    }
-
-    /**
      * Check subscription status.
      *
      * @param  Int  $subscriptionId
@@ -611,70 +557,8 @@ class Subscription extends Model
         $subscriptions = self::whereNull('ends_at')->orWhere('ends_at', '>=', \Carbon\Carbon::now())->get();
         foreach ($subscriptions as $subscription) {
             $subscription->check();
-
-            // // check expired
-            // if ($subscription->isExpired()) {
-            //     $subscription->cancelNow();
-
-            //     // add log
-            //     $subscription->addLog(SubscriptionLog::TYPE_EXPIRED, [
-            //         'plan' => $subscription->plan->getBillableName(),
-            //         'price' => $subscription->plan->getBillableFormattedPrice(),
-            //     ]);
-            // }
-
-            // // get sub gateway
-            // $subGateway = $subscription->user->getPaymentGateway();
-
-            // // can not find payment gateway
-            // if (!isset($subGateway)) {
-            //     // set subscription last_error_type
-            //     $subscription->setError([
-            //         'status' => 'error',
-            //         'type' => 'payment_missing',
-            //         'message' => trans('cashier::messages.gateway_not_found'),
-            //     ]);
-
-            //     break;
-            // } else {
-            //     $subscription->removeError('payment_missing');                
-            // }
-
-            // // normal check
-            // $subGateway->check($subscription);
-
-            // // check plans
-            // if (method_exists($subGateway, 'checkAll')) {
-            //     $subGateway->checkAll();
-            // }
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // /**
-    //  * Associations.
-    //  *
-    //  * @var object | collect
-    //  */
-    // public function subscriptionTransactions()
-    // {
-    //     // @todo dependency injection
-    //     return $this->hasMany('\Acelle\Model\SubscriptionTransaction');
-    // }
 
     /**
      * Associations.
@@ -707,18 +591,6 @@ class Subscription extends Model
         return ! $this->cancelled();
     }
 
-    // /**
-    //  * Get the model related to the subscription.
-    //  *
-    //  * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-    //  */
-    // public function owner()
-    // {
-    //     $class = Cashier::stripeModel();
-
-    //     return $this->belongsTo($class, (new $class)->getForeignKey());
-    // }
-
     /**
      * Determine if the subscription is active.
      *
@@ -738,28 +610,6 @@ class Subscription extends Model
     {
         return $this->status == self::STATUS_NEW;
     }
-
-    // /**
-    //  * Determine if the subscription is active.
-    //  *
-    //  * @return bool
-    //  */
-    // public function isDone()
-    // {
-    //     return $this->status == self::STATUS_DONE;
-    // }
-
-    // /**
-    //  * Determine if the subscription is recurring and not on trial.
-    //  *
-    //  * @return bool
-    //  */
-    // public function recurring()
-    // {
-    //     return ! $this->onTrial() && ! $this->cancelled();
-    // }
-
-
 
     /**
      * Determine if the subscription is no longer active.
@@ -800,79 +650,6 @@ class Subscription extends Model
             'price' => $this->plan->getBillableFormattedPrice(),
         ]);
     }
-
-    // /**
-    //  * Determine if the subscription is within its trial period.
-    //  *
-    //  * @return bool
-    //  */
-    // public function onTrial()
-    // {
-    //     return $this->trial_ends_at && $this->trial_ends_at->isFuture();
-    // }
-
-    // /**
-    //  * Determine if the subscription is within its grace period after cancellation.
-    //  *
-    //  * @return bool
-    //  */
-    // public function onGracePeriod()
-    // {
-    //     return $this->ends_at && $this->ends_at->isFuture();
-    // }
-
-    // /**
-    //  * Indicate that the plan change should not be prorated.
-    //  *
-    //  * @return $this
-    //  */
-    // public function noProrate()
-    // {
-    //     $this->prorate = false;
-
-    //     return $this;
-    // }
-
-    // /**
-    //  * Change the billing cycle anchor on a plan change.
-    //  *
-    //  * @param  \DateTimeInterface|int|string  $date
-    //  * @return $this
-    //  */
-    // public function anchorBillingCycleOn($date = 'now')
-    // {
-    //     if ($date instanceof DateTimeInterface) {
-    //         $date = $date->getTimestamp();
-    //     }
-
-    //     $this->billingCycleAnchor = $date;
-
-    //     return $this;
-    // }
-
-    // /**
-    //  * Force the trial to end immediately.
-    //  *
-    //  * This method must be combined with swap, resume, etc.
-    //  *
-    //  * @return $this
-    //  */
-    // public function skipTrial()
-    // {
-    //     $this->trial_ends_at = null;
-
-    //     return $this;
-    // }
-
-    // /**
-    //  * Mark the subscription as cancelled.
-    //  *
-    //  * @return void
-    //  */
-    // public function markAsCancelled()
-    // {
-    //     $this->fill(['ends_at' => Carbon::now()->startOfDay()])->save();
-    // }
 
     /**
      * Next one period to subscription.
@@ -916,43 +693,6 @@ class Subscription extends Model
         return $startAt;
     }
 
-    // /**
-    //  * Add one period to subscription.
-    //  *
-    //  * @param  Gateway    $gateway
-    //  * @return Boolean
-    //  */
-    // public function addPeriod()
-    // {
-    //     $this->ends_at = $this->nextPeriod();
-    //     $this->save();
-    // }
-
-    // /**
-    //  * Check if payment is claimed.
-    //  *
-    //  * @param  Int  $subscriptionId
-    //  * @return date
-    //  */
-    // public function isPaymentClaimed()
-    // {
-    //     return $this->payment_claimed;
-    // }
-
-    // /**
-    //  * Claim payment.
-    //  *
-    //  * @param  Int  $subscriptionId
-    //  * @return date
-    //  */
-    // public function claimPayment()
-    // {
-    //     $this->payment_claimed = true;
-    //     $this->save();
-    // }
-
-    
-
     /**
      * Check if subscription is expired.
      *
@@ -963,31 +703,6 @@ class Subscription extends Model
     {
         return isset($this->ends_at) && \Carbon\Carbon::now()->endOfDay() > $this->ends_at;
     }
-    
-    // /**
-    //  * Start subscription.
-    //  *
-    //  * @param  date  $date
-    //  * @return date
-    //  */
-    // public function start()
-    // {
-    //     $this->ends_at = null;
-    //     $this->current_period_ends_at = $this->getPeriodEndsAt(\Carbon\Carbon::now());
-    //     $this->status = self::STATUS_ACTIVE;
-    //     $this->started_at = \Carbon\Carbon::now();
-    //     $this->save();
-    // }
-
-    // /**
-    //  * Subscription transactions.
-    //  *
-    //  * @return array
-    //  */
-    // public function getTransactions()
-    // {
-    //     return $this->subscriptionTransactions()->orderBy('created_at', 'desc')->get();
-    // }
 
     /**
      * Subscription transactions.
@@ -998,27 +713,6 @@ class Subscription extends Model
     {
         return $this->subscriptionLogs()->orderBy('created_at', 'desc')->get();
     }
-
-    // /**
-    //  * Subscription transactions.
-    //  *
-    //  * @return array
-    //  */
-    // public function addTransaction($type, $data)
-    // {
-    //     $transaction = new SubscriptionTransaction();
-    //     $transaction->subscription_id = $this->id;
-    //     $transaction->type = $type;
-    //     $transaction->fill($data);
-
-    //     if (isset($data['metadata'])) {
-    //         $transaction['metadata'] = json_encode($data['metadata']);
-    //     }
-
-    //     $transaction->save();
-
-    //     return $transaction;
-    // }
 
     /**
      * Subscription transactions.
@@ -1081,32 +775,6 @@ class Subscription extends Model
             'price' => $this->plan->getBillableFormattedPrice(),
         ]);
     }
-
-    // public function changePlan($newPlan, $amount=null) {
-    //     // calc when change plan
-    //     $result = Cashier::calcChangePlan($this, $newPlan);
-
-    //     // set new amount to plan
-    //     $newPlan->price = $result['amount'];
-    //     if ($amount) {
-    //         $newPlan->price = $amount;
-    //     }
-
-    //     // update subscription date
-    //     if ($this->current_period_ends_at != $result['endsAt']) {
-    //         // save last period
-    //         $this->last_period_ends_at = $this->current_period_ends_at;
-    //         // set new current period
-    //         $this->current_period_ends_at = $result['endsAt'];
-    //     }
-
-    //     if (isset($this->ends_at) && $this->ends_at < $result['endsAt']) {
-    //         $this->ends_at = $result['endsAt'];
-    //     }
-    //     $this->plan_id = $newPlan->getBillableId();
-    //     $this->save();
-    // }
-
 
     /**
      * Renew subscription
@@ -1178,26 +846,6 @@ class Subscription extends Model
         }
     }
 
-    // /**
-    //  * Check if is renew pending
-    //  *
-    //  * @return void
-    //  */
-    // public function hasRenewPending()
-    // {
-    //     return ($this->hasError() &&  in_array($this->getError()["type"], ['renew']));
-    // }
-
-    // /**
-    //  * Check if is renew pending
-    //  *
-    //  * @return void
-    //  */
-    // public function hasChangePlanPending()
-    // {
-    //     return ($this->hasError() &&  in_array($this->getError()["type"], ['change_plan']));
-    // }
-
     /**
      * Check if can renew free plan. amount > 0 or == 0 && renew_free_plan setting = true
      *
@@ -1209,91 +857,6 @@ class Subscription extends Model
             (config('cashier.renew_free_plan') == 'yes' && $this->plan->getBillableAmount() == 0)
         );
     }
-
-    /**
-     * Add error
-     *
-     * @return void
-     */
-    public function setError($data)
-    {
-        $this->error = json_encode($data);
-        $this->save();
-    }
-
-    /**
-     * remove error
-     *
-     * @return void
-     */
-    public function removeError($type=null)
-    {
-        if ($type) {
-            if (
-                $this->getError($type) != null
-            ) {
-                $this->error = null;
-            }
-        } else {
-            $this->error = null;
-        }
-
-        $this->save();
-    }
-
-    // /**
-    //  * Get upcomming bill information
-    //  *
-    //  * @return void
-    //  */
-    // public function getUpComingBill()
-    // {
-    //     return  [
-    //         'plan' => $this->plan,
-    //         'bill' => [
-    //             ['name' => $this->plan->getBillableName(), 'amount' => $this->plan->getBillableAmount(), 'plan' => $this->plan],
-    //             ['name' => trans('messages.bill.tax'), 'amount' => 0],
-    //         ],
-    //         'charge_on' => $this->current_period_ends_at,
-    //         'total' => $this->plan->getBillableAmount(),
-    //     ];
-    // }
-
-    // /**
-    //  * Get lastest bill information
-    //  *
-    //  * @return void
-    //  */
-    // public function getLatestBillingInfo()
-    // {
-    //     return  [
-    //         'plan' => $this->plan,
-    //         'bill' => [
-    //             ['name' => $this->plan->getBillableName(), 'amount' => $this->plan->getBillableAmount(), 'plan' => $this->plan],
-    //             ['name' => trans('messages.bill.tax'), 'amount' => 0],
-    //         ],
-    //         'charge_on' => $this->started_at,
-    //         'total' => $this->plan->getBillableAmount(),
-    //     ];
-    // }
-    
-    // /**
-    //  * Get lastest bill information
-    //  *
-    //  * @return void
-    //  */
-    // public function getRenewBillingInfo()
-    // {
-    //     return  [
-    //         'plan' => $this->plan,
-    //         'bill' => [
-    //             ['name' => $this->plan->getBillableName(), 'amount' => $this->plan->getBillableAmount(), 'plan' => $this->plan],
-    //             ['name' => trans('messages.bill.tax'), 'amount' => 0],
-    //         ],
-    //         'charge_on' => $this->nextPeriod()->format('d M, Y'),
-    //         'total' => $this->plan->getBillableAmount(),
-    //     ];
-    // }
 
     /**
      * user want to change plan.

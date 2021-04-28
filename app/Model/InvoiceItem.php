@@ -60,31 +60,4 @@ class InvoiceItem extends Model
     {
         return $this->amount + $this->tax - $this->discount;
     }
-
-    // /**
-    //  * Get metadata.
-    //  *
-    //  * @var object | collect
-    //  */
-    // public function getMetadata()
-    // {
-    //     if (!$this['metadata']) {
-    //         return json_decode('{}', true);
-    //     }
-
-    //     return json_decode($this['metadata'], true);
-    // }
-
-    // /**
-    //  * Get metadata.
-    //  *
-    //  * @var object | collect
-    //  */
-    // public function updateMetadata($data)
-    // {
-    //     $metadata = (object) array_merge((array) $this->getMetadata(), $data);
-    //     $this['metadata'] = json_encode($metadata);
-
-    //     $this->save();
-    // }
 }
