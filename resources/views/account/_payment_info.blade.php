@@ -15,6 +15,11 @@
         </div>
         <div class="body">
             <div class="bill_info">
+                @if (isset(request()->user()->customer->getPaymentMethod()['description']))
+                    <div class="line d-flex my-2">
+                        {{ request()->user()->customer->getPaymentMethod()['description'] }}
+                    </div>
+                @endif
                 @if (isset(request()->user()->customer->getPaymentMethod()['user_id']))
                     <div class="line d-flex my-3">
                         <div class="data mr-auto">

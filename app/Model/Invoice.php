@@ -100,7 +100,7 @@ class Invoice extends Model
      */
     public function setPending()
     {
-        $this->status = Invoice::STATUS_PENDING;
+        $this->status = self::STATUS_PENDING;
         $this->save();
     }
 
@@ -111,48 +111,8 @@ class Invoice extends Model
      */
     public function setPaid()
     {
-        $this->status = Invoice::STATUS_PAID;
+        $this->status = self::STATUS_PAID;
         $this->save();
-    }
-
-    // /**
-    //  * Finish.
-    //  *
-    //  * @return void
-    //  */
-    // public function finish()
-    // {
-    //     // transaction
-    //     $this->addTransaction([
-    //         'status' => \Acelle\Model\Transaction::STATUS_SUCCESS,
-    //         'message' => trans('messages.pay_invoice', [
-    //             'id' => $this->uid,
-    //             'title' => $this->getBillingInfo()['title'],
-    //         ]),
-    //     ]);
-
-    //     // reset invoice to new
-    //     $this->setPaid();
-
-    //     $this->execute(onPaid);
-    // }
-
-    /**
-     * Set as rejected.
-     *
-     * @return void
-     */
-    public function setRejected($reason=null)
-    {
-        $this->status = Invoice::STATUS_REJECTED;
-        $this->save();
-
-        // reason
-        if ($reason) {
-            $this->updateMetadata([
-                'reason' => trans('messages.invoice_rejected_reason', ['reason' => $reason]),
-            ]);
-        }
     }
 
     /**
@@ -314,7 +274,7 @@ class Invoice extends Model
      *
      * @return void
      */
-    public function pay()
+    public function fulfill()
     {
         // set status as claimed
         $this->setPaid();
@@ -472,6 +432,26 @@ class Invoice extends Model
         }
 
         return $log;
+    }
+
+    /**
+     * Check is renew subscription invoice.
+     *
+     * @return boolean
+     */
+    public function isRenewSubscriptionInvoice()
+    {
+        return $this->type == self::TYPE_RENEW_SUBSCRIPTION;
+    }
+
+    /**
+     * Check is change plan invoice.
+     *
+     * @return boolean
+     */
+    public function isChangePlanInvoice()
+    {
+        return $this->type == self::TYPE_CHANGE_PLAN;
     }
 
     /**

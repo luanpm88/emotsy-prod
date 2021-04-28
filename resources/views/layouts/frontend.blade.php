@@ -236,8 +236,14 @@
 								@endif
 							</a>
 						</li>
+						<li><a href="{{ action("AccountController@billing") }}" class="d-flex align-items-center">
+							<i class="acelle-icon mr-3">
+								<img src="{{ url('images/icons/'.$iconDir.'SVG/billing.svg') }}" />
+							</i>{{ trans('messages.billing') }}
+						
+						</a></li>
 						<li><a href="{{ action("AccountController@profile") }}" class="d-flex align-items-center">
-						<i class="acelle-icon mr-3">
+							<i class="acelle-icon mr-3">
 								<img src="{{ url('images/icons/'.$iconDir.'SVG/account.svg') }}" />
 							</i>{{ trans('messages.account') }}
 						

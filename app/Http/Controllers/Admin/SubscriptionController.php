@@ -104,7 +104,7 @@ class SubscriptionController extends Controller
 
         try {
             // approve last claimed invoice ~ pay last invoice
-            $subscription->claimedInvoice()->pay();
+            $subscription->claimedInvoice()->fulfill();
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',

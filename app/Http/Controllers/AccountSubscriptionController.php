@@ -235,7 +235,7 @@ class AccountSubscriptionController extends Controller
         $customer = $request->user()->customer;
         $subscription = $customer->subscription;
 
-        if (!$request->user()->customer->can('cancel', $subscription)) {
+        if ($request->user()->customer->can('cancel', $subscription)) {
             $subscription->cancel();
         }
 

@@ -27,32 +27,13 @@
 
                 @if (request()->user()->customer->getPaymentMethod() == null)
                     <p>{{ trans('messages.plan.review.do_not_have_payment_yet') }}</p>
-
-                    <h4 class="mb-3 mt-0 font-weight-semibold">{{ trans('messages.subscription.choose_payment_method') }}</h4>
-                    <p>{{ trans('messages.plan.review.select_payment_method') }}</p>
-                @else
-                    <p>{!! trans('messages.plan.review.pay_with_current_payment', [
-                        'payment' => trans('messages.payments.' . request()->user()->customer->getPaymentMethod()['method'])
-                    ]) !!}</p>
-
-                    <form action="{{ action('AccountSubscriptionController@checkout') }}" method="POST" class="proceed_with_payment">
-                        {{ csrf_field() }}  
-                        <div class="text-left">
-                            <input type="submit" name="checkout"
-                                class="btn btn-primary btn-large bg-teal-800"
-                                value="{{ trans('messages.proceed_to_checkout') }}"
-                            >
-                        </div>
-                    </form>
-
-                    <p class="mt-4">{!! trans('messages.plan.review.or_other_payment') !!}</p>
                 @endif
                 
-                <form class="edit-payment" action="{{ action('AccountController@editPaymentMethod') }}"
+                <form class="edit-payment" action="{{ request()->user()->customer->getPaymentMethod() ? action('AccountSubscriptionController@checkout') : action('AccountController@editPaymentMethod') }}"
                     method="POST">
                     {{ csrf_field() }}
 
-                    <input type="hidden" name="return_url" value="{{ action('AccountSubscriptionController@index') }}" />
+                    <input type="hidden" name="return_url" value="{{ action('AccountSubscriptionController@checkout') }}" />
 
                     <div class="sub-section mb-30 choose-payment-methods">      
                         @foreach(Acelle\Model\Setting::getEnabledPaymentGateways() as $gateway)
@@ -81,37 +62,20 @@
                         @endforeach
                     </div>
                     
-                    @if (request()->user()->customer->getPaymentMethod() !== null)
-                        <div class="sub-section">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <input type="submit" name="new_payment"
-                                        class="btn btn-mc_primary"
-                                        value="{{ trans('messages.proceed_with_payment') }}"
-                                    >
-                                </div>
-                                <div class="col-md-8">
-                                    {!! trans('messages.payment.agree_service_intro', ['plan' => $subscription->plan->name]) !!}
-                                </div>
+                    
+                    <div class="sub-section">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <input type="submit" name="new_payment"
+                                    class="btn btn-primary bg-teal-800 py-3 px-4"
+                                    value="{{ trans('messages.save_payment_method_proceed') }}"
+                                >
+                            </div>
+                            <div class="col-md-8">
+                                {!! trans('messages.payment.agree_service_intro', ['plan' => $subscription->plan->name]) !!}
                             </div>
                         </div>
-                    @else
-                        <div class="sub-section">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="text-right">
-                                        <input type="submit" name="checkout"
-                                            class="btn btn-primary btn-large bg-teal-800"
-                                            value="{{ trans('messages.proceed_to_checkout') }}"
-                                        >
-                                    </div>
-                                </div>
-                                <div class="col-md-8">
-                                    {!! trans('messages.payment.agree_service_intro', ['plan' => $subscription->plan->name]) !!}
-                                </div>
-                            </div>
-                        </div>
-                    @endif
+                    </div>
                 </form>
 
                 <div class="my-4">
@@ -128,10 +92,6 @@
             @include('invoices.bill', [
                 'bill' => $invoice->getBillingInfo(),
             ])
-
-            <div class="mt-4">
-                @include('account._payment_info')
-            </div>
         </div>
     </div>
     <div class="row">
@@ -162,6 +122,12 @@
 
             $('.choose-payment-methods>div').removeClass('current');
             $('.choose-payment-methods>div [type=radio]:checked').closest('.choose-payment').addClass('current');
+
+            if ($('.choose-payment-methods>div [type=radio]:checked').val() == '{{ request()->user()->customer->getPaymentMethod() ? request()->user()->customer->getPaymentMethod()['method'] : 'none' }}') {
+                $('.edit-payment').attr('action', '{!! action('AccountSubscriptionController@checkout') !!}');
+            } else {
+                $('.edit-payment').attr('action', '{!! action('AccountController@editPaymentMethod') !!}');
+            }
         });
 
         $('.choose-payment-methods>div').removeClass('current');

@@ -46,12 +46,12 @@
             <div class="row">
                 <div class="col-md-4">
                     <button link-method="POST"
-                        class="btn btn-mc_primary">
-                            {{ trans('messages.ok') }}
+                        class="btn btn-mc_primary py-3 px-4">
+                            {{ trans('messages.save_payment_method') }}
                     </button>
                 </div>
                 <div class="col-md-8">
-                    {!! trans('messages.payment.agree_service_intro') !!}
+                    
                 </div>
             </div>
         </div>     

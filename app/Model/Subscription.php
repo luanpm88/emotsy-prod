@@ -478,12 +478,17 @@ class Subscription extends Model
                 }
 
                 // check expiring
-                else if ($this->isExpiring() && $this->canRenewPlan()) {
-                    $renewInvoice = $this->pendingInvoice();
+                else if ($this->isExpiring() && $this->canRenewPlan() && !$this->cancelled()) {
+                    $pendingInvoice = $this->pendingInvoice();
 
-                    // create renew invoice
-                    if (!$this->pendingInvoice()) {
-                        $renewInvoice = $this->createRenewInvoice();
+                    // create renew invoice if no pending invoice
+                    if (!$pendingInvoice) {
+                        $pendingInvoice = $this->createRenewInvoice();
+                    }
+
+                    // check if invoice is change plan -> do nothing
+                    if ($pendingInvoice->isChangePlanInvoice()) {
+                        return;
                     }
 
                     // service auto charge
@@ -492,16 +497,16 @@ class Subscription extends Model
                         $this->reachDueDate() // check charge day before
                     ) {
                         // add pending transaction for invoice
-                        $renewInvoice->addTransaction([
+                        $pendingInvoice->addTransaction([
                             'status' => \Acelle\Model\Transaction::STATUS_PENDING,
                             'message' => trans('messages.pay_invoice', [
-                                'id' => $renewInvoice->uid,
-                                'title' => $renewInvoice->title,
+                                'id' => $pendingInvoice->uid,
+                                'title' => $pendingInvoice->title,
                             ]),
                         ]);
                         
                         // charge invoice
-                        $this->user->getPaymentGateway()->charge($renewInvoice);
+                        $this->user->getPaymentGateway()->charge($pendingInvoice);
                     }
                 }
                 break;
@@ -743,6 +748,9 @@ class Subscription extends Model
     {
         $this->ends_at = $this->current_period_ends_at;
         $this->save();
+
+        // delete pending invoice
+        $this->pendingInvoice()->delete();
     }
 
     /**
