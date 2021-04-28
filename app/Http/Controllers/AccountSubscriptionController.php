@@ -172,7 +172,7 @@ class AccountSubscriptionController extends Controller
             return redirect()->away($gateway->getCheckoutUrl(
                 $invoice,
                 action('AccountSubscriptionController@index')
-            )); 
+            ));
         }
 
         return view('account.subscription.payment', [

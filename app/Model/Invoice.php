@@ -186,7 +186,7 @@ class Invoice extends Model
     {
         $total = 0;
 
-        foreach($this->invoiceItems as $item) {
+        foreach ($this->invoiceItems as $item) {
             $total += $item->total();
         }
 
@@ -441,7 +441,7 @@ class Invoice extends Model
         return  [
             'title' => $this->title,
             'description' => $this->description,
-            'bill' => $this->invoiceItems()->get()->map(function($item) {
+            'bill' => $this->invoiceItems()->get()->map(function ($item) {
                 return [
                     'title' => $item->title,
                     'description' => $item->description,

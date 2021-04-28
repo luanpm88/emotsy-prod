@@ -1509,7 +1509,7 @@ class Plan extends Model implements BillablePlanInterface
                 // if (config('cashier.paypal_payment') !== 'paypal_subscription' ||
                 //     $psService->findPlanConnection($plan)
                 // ) {
-                    $aPlans[] = $plan;
+                $aPlans[] = $plan;
                 // }
             }
         }
