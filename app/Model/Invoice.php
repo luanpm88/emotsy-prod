@@ -4,6 +4,8 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
+use Acelle\Model\Subscription;
+
 class Invoice extends Model
 {
     // statuses
@@ -323,17 +325,19 @@ class Invoice extends Model
         $data = $this->getMetadata();
         switch ($this->type) {
             case self::TYPE_NEW_SUBSCRIPTION:
-                $subscription = \Acelle\Model\Subscription::findByUid($data['subscription_uid']);
+                $subscription = Subscription::findByUid($data['subscription_uid']);
                 $subscription->setActive();
                 break;
             case self::TYPE_RENEW_SUBSCRIPTION:
-                $subscription = \Acelle\Model\Subscription::findByUid($data['subscription_uid']);
+                $subscription = Subscription::findByUid($data['subscription_uid']);
                 $subscription->renew();
                 break;
             case self::TYPE_CHANGE_PLAN:
-                $subscription = \Acelle\Model\Subscription::findByUid($data['subscription_uid']);
+                $subscription = Subscription::findByUid($data['subscription_uid']);
                 $newPlan = \Acelle\Model\Plan::findByUid($data['new_plan_uid']);
+                
                 $subscription->changePlan($newPlan, \Carbon\Carbon::parse($data['new_ends_at']));
+                
                 break;
             default:
                 throw new \Exception('Invoice type is not valid: ' . $this->type);
@@ -389,7 +393,7 @@ class Invoice extends Model
     {
         switch ($this->type) {
             case self::TYPE_RENEW_SUBSCRIPTION:
-                $subscription = \Acelle\Model\Subscription::findByUid($this->getMetadata()['subscription_uid']);
+                $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
                 if (!$this->customer->supportsAutoBilling()) {
                     $chargeInfo = trans('messages.bill.charge_before', [
                         'date' => \Acelle\Library\Tool::formatDate($subscription->current_period_ends_at),
