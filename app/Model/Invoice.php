@@ -118,28 +118,6 @@ class Invoice extends Model
     }
 
     /**
-     * Set as paid.
-     *
-     * @return void
-     */
-    public function setDone()
-    {
-        $this->status = Invoice::STATUS_DONE;
-        $this->save();
-    }
-
-    /**
-     * Set as canceled.
-     *
-     * @return void
-     */
-    public function setCanceled()
-    {
-        $this->status = Invoice::STATUS_CANCELED;
-        $this->save();
-    }
-
-    /**
      * Total items.
      *
      * @return void
