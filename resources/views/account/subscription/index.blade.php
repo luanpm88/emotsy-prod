@@ -49,9 +49,7 @@
             @if ($subscription->lastInvoice() && $subscription->lastInvoice()->lastTransaction() && $subscription->lastInvoice()->lastTransaction()->isFailed())
                 @include('elements._notification', [
                     'level' => 'error',
-                    'message' => trans('messages.has_transaction_error', [
-                        'error' => $subscription->lastInvoice()->lastTransaction()->error,
-                    ])
+                    'message' => $subscription->lastInvoice()->lastTransaction()->error,
                 ])
             @endif
 
