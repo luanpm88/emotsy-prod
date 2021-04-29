@@ -133,6 +133,11 @@ class Subscription extends Model
             ]);
     }
 
+    public function hasPendingInvoice()
+    {
+        return $this->pendingInvoice() != null;
+    }
+
     /**
      * Get pending invoice. (last invoice that is NEW/CLAIMED)
      *
@@ -649,7 +654,7 @@ class Subscription extends Model
     public function activate()
     {
         if (!$this->isNew()) {
-            throw new \Exception( "Only new subscription can be activated, double check your code to make sure you only call activate() on a new subscription" );
+            throw new \Exception("Only new subscription can be activated, double check your code to make sure you only call activate() on a new subscription");
         }
 
         $this->current_period_ends_at = $this->getPeriodEndsAt(Carbon::now());

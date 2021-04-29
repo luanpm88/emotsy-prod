@@ -328,7 +328,7 @@ class Invoice extends Model
                 break;
             case self::TYPE_CHANGE_PLAN:
                 $subscription = Subscription::findByUid($data['subscription_uid']);
-                $newPlan = \Acelle\Model\Plan::findByUid($data['new_plan_uid']); 
+                $newPlan = \Acelle\Model\Plan::findByUid($data['new_plan_uid']);
                 $subscription->changePlan($newPlan);
                 break;
             default:
