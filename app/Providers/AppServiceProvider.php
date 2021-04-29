@@ -31,21 +31,6 @@ class AppServiceProvider extends ServiceProvider
             return;
         }
 
-        // The following configuration settings are for active & running application only
-        try {
-            // per payment configs
-            foreach (config('cashier.gateways') as $gw => $data) {
-                foreach ($data['fields'] as $key => $value) {
-                    $con = Setting::get('payment.'.$gw.'.'.$key);
-                    if ($con != null) {
-                        config(['cashier.gateways.'.$gw.'.fields.'.$key => $con]);
-                    }
-                }
-            }
-        } catch (\Exception $ex) {
-            // anything here?
-        }
-
         // Load application's plugins
         // Disabled plugin may also register hooks
         $this->loadPlugins();

@@ -262,7 +262,7 @@ class Invoice extends Model
         }
 
         // fulfill invoice
-        $this->approve();
+        $this->fulfill();
     }
     
     /**

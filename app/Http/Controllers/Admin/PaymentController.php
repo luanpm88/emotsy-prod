@@ -26,7 +26,7 @@ class PaymentController extends Controller
         }
 
         return view('admin.payments.index', [
-            'gateways' => Setting::getPaymentGateways(),
+            'gateways' => Setting::getPayments(),
             'enabledGateways' => Setting::getEnabledPaymentGateways(),
         ]);
     }
@@ -40,8 +40,8 @@ class PaymentController extends Controller
      */
     public function edit($name)
     {
-        $service = Cashier::getPaymentGateway($name);
-        $gateway = Setting::getPaymentGateway($name);
+        $service = \Acelle\Model\Setting::getPaymentGateway($name);
+        $gateway = Setting::getPayment($name);
 
         // authorize
         if (\Gate::denies('update', new \Acelle\Model\PaymentMethod())) {
@@ -73,7 +73,7 @@ class PaymentController extends Controller
     public function update(Request $request, MessageBag $message_bag, $name)
     {
         $errors = new MessageBag;
-        $gatewayService = Cashier::getPaymentGateway($name, $request->options);
+        $gatewayService = \Acelle\Model\Setting::getPaymentGateway($name, $request->options);
 
         // authorize
         if (\Gate::denies('update', new \Acelle\Model\PaymentMethod())) {
@@ -109,7 +109,7 @@ class PaymentController extends Controller
             );
 
             return view('admin.payments.edit', [
-                'gateway' => Setting::getPaymentGateway($name),
+                'gateway' => Setting::getPayment($name),
                 'errors' => $errors,
                 'service' => $gatewayService,
                 'isValid' => false,
@@ -127,7 +127,7 @@ class PaymentController extends Controller
      */
     public function setPrimary(Request $request, $name)
     {
-        $service = Cashier::getPaymentGateway($name);
+        $service = \Acelle\Model\Setting::getPaymentGateway($name);
 
         // authorize
         if (\Gate::denies('update', new \Acelle\Model\PaymentMethod())) {
@@ -178,7 +178,7 @@ class PaymentController extends Controller
      */
     public function enable(Request $request, $name)
     {
-        $service = Cashier::getPaymentGateway($name);
+        $service = \Acelle\Model\Setting::getPaymentGateway($name);
 
         // authorize
         if (\Gate::denies('update', new \Acelle\Model\PaymentMethod())) {
@@ -216,7 +216,7 @@ class PaymentController extends Controller
      */
     public function disable(Request $request, $name)
     {
-        $service = Cashier::getPaymentGateway($name);
+        $service = \Acelle\Model\Setting::getPaymentGateway($name);
 
         // authorize
         if (\Gate::denies('update', new \Acelle\Model\PaymentMethod())) {
@@ -247,7 +247,7 @@ class PaymentController extends Controller
      */
     public function paypalSubscriptionConnectPlan(Request $request, $plan_uid)
     {
-        $service = Cashier::getPaymentGateway('paypal_subscription');
+        $service = \Acelle\Model\Setting::getPaymentGateway('paypal_subscription');
         $plan = Plan::findByUid($plan_uid);
 
         // authorize
@@ -279,7 +279,7 @@ class PaymentController extends Controller
      */
     public function paypalSubscriptionDisconnectPlan(Request $request, $plan_uid)
     {
-        $service = Cashier::getPaymentGateway('paypal_subscription');
+        $service = \Acelle\Model\Setting::getPaymentGateway('paypal_subscription');
         $plan = Plan::findByUid($plan_uid);
 
         // authorize
@@ -311,7 +311,7 @@ class PaymentController extends Controller
      */
     public function paypalSubscriptionConnect(Request $request)
     {
-        $service = Cashier::getPaymentGateway('paypal_subscription');
+        $service = \Acelle\Model\Setting::getPaymentGateway('paypal_subscription');
 
         // authorize
         if (\Gate::denies('update', new \Acelle\Model\PaymentMethod())) {
@@ -339,7 +339,7 @@ class PaymentController extends Controller
      */
     public function paypalSubscriptionDisconnect(Request $request)
     {
-        $service = Cashier::getPaymentGateway('paypal_subscription');
+        $service = \Acelle\Model\Setting::getPaymentGateway('paypal_subscription');
 
         // authorize
         if (\Gate::denies('update', new \Acelle\Model\PaymentMethod())) {
