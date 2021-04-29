@@ -84,7 +84,7 @@
 
 							@break
 						@case(Acelle\Model\Subscription::STATUS_NEW)
-							@if ($subscription->lastInvoice()->isClaimed())
+							@if ($subscription->pendingInvoice()->isClaimed())
 								<span style="cursor:pointer" href="{{ action('Admin\SubscriptionController@invoices', $subscription->uid) }}"
 									class="view_invoices label bg-m-warning"
 								>
