@@ -7,10 +7,10 @@
         <hr class="my-3">
     @endif
     <div>
-        {{ trans('messages.sending_total_quota_label') }}: {{ $plan->displayTotalQuota() }}
+        {{ $plan->displayTotalQuota() }} {{ trans('messages.sending_total_quota_label') }}
     </div>
     <div>
-        {{ trans('messages.max_lists_label') }}: {{ $plan->displayMaxList() }}
+        {{ $plan->displayMaxSubscriber() }} {{ trans('messages.contacts') }}
     </div>
     
 </div>

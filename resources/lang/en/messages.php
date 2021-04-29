@@ -1703,7 +1703,7 @@
   'max_size_upload_total_label' => 'Maximum size of all files',
   'max_file_size_upload_label' => 'Maximum upload file size',
   'sending_quota_label' => 'Sending credits',
-  'sending_total_quota_label' => 'Sending credits',
+  'sending_total_quota_label' => 'sending credits',
   'allow_create_sending_servers_label' => 'Create sending servers',
   'allow_create_sending_domains_label' => 'Create sending domains',
   'plan_actions' => 'Plan Actions',
@@ -4085,5 +4085,7 @@
   'payment.direct.description' => 'Pay for your subscription outside of the application,
       via wire transfer or bank deposit for example',
   'payment.cannot_charge' => 'Acelle cannot charge the invoice #:id. Error from :service: :error',
-  'payment.cannot_auto_charge' => 'Acelle cannot automatically charge the invoice #:id. Error from :service: :error',
+  'payment.cannot_auto_charge' => 'Acelle cannot automatically charge the
+      invoice #:id. Error from :service: :error',
+  'contacts' => 'contacts',
 ) ?>
