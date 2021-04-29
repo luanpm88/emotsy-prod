@@ -325,7 +325,7 @@ class Subscription extends Model
         }
 
         // calculate change plan amout ends at
-        $metadata = self::calcChangePlan($newPlan);
+        $metadata = $this->calcChangePlan($newPlan);
 
         // create invoice
         $invoice = new \Acelle\Model\Invoice();
@@ -531,13 +531,16 @@ class Subscription extends Model
     /**
      * Change plan.
      */
-    public function changePlan($newPlan, $endsAt)
+    public function changePlan($newPlan)
     {
+        // calculate change plan amout ends at
+        $metadata = $this->calcChangePlan($newPlan);
+
         // new plan
         $this->plan_id = $newPlan->uid;
 
         // new end period
-        $this->current_period_ends_at = $endsAt;
+        $this->current_period_ends_at = $metadata['endsAt'];
         
         // update ends at if it exist
         if ($this->ends_at != null) {

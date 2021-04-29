@@ -312,12 +312,8 @@ class Invoice extends Model
                 break;
             case self::TYPE_CHANGE_PLAN:
                 $subscription = Subscription::findByUid($data['subscription_uid']);
-                $newPlan = \Acelle\Model\Plan::findByUid($data['new_plan_uid']);
-
-                // find new ends at day
-                $result = $subscription->calcChangePlan($newPlan);                
-                $subscription->changePlan($newPlan, \Carbon\Carbon::parse($result['endsAt']));
-                
+                $newPlan = \Acelle\Model\Plan::findByUid($data['new_plan_uid']); 
+                $subscription->changePlan($newPlan);
                 break;
             default:
                 throw new \Exception('Invoice type is not valid: ' . $this->type);
