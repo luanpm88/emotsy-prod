@@ -292,13 +292,25 @@ class Invoice extends Model
      *
      * @return void
      */
-    public function payFailed($error)
+    public function payFailed($error, $auto=false)
     {
         // set status as new
         $this->setNew();
 
         // set transaction as failed
-        $this->pendingTransaction()->setFailed($error);
+        if ($auto) {
+            $this->pendingTransaction()->setFailed(trans('messages.payment.cannot_charge', [
+                'id' => $this->uid,
+                'error' => $error,
+                'service' => trans('messages.transaction.method.' . $this->pendingTransaction()->method),
+            ]));
+        } else {
+            $this->pendingTransaction()->setFailed(trans('messages.payment.cannot_auto_charge', [
+                'id' => $this->uid,
+                'error' => $error,
+                'service' => trans('messages.transaction.method.' . $this->pendingTransaction()->method),
+            ]));
+        }
     }
 
     /**

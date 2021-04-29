@@ -507,7 +507,7 @@ class Subscription extends Model
                         ]);
                         
                         // charge invoice
-                        $this->user->getPaymentGateway()->charge($pendingInvoice);
+                        $this->user->getPaymentGateway()->charge($pendingInvoice, true);
                     }
                 }
                 break;

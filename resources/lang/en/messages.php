@@ -4086,5 +4086,8 @@
   'transaction.method.paypal' => 'Paypal',
   'save_payment_method_proceed' => 'Save Payment Method & Proceed',
   'save_payment_method' => 'Save Payment Method',
-  'payment.direct.description' => 'Pay for your subscription outside of the application, via wire transfer or bank deposit for example',
+  'payment.direct.description' => 'Pay for your subscription outside of the application,
+      via wire transfer or bank deposit for example',
+  'payment.cannot_charge' => 'Acelle cannot charge the invoice #:id. Error from :service: :error',
+  'payment.cannot_auto_charge' => 'Acelle cannot automatically charge the invoice #:id. Error from :service: :error',
 ) ?>
