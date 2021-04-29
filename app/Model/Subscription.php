@@ -98,7 +98,7 @@ class Subscription extends Model
     public function invoices()
     {
         $uid = $this->uid;
-        return \Acelle\Model\Invoice::whereIn('id', function($query) use ($uid) {
+        return \Acelle\Model\Invoice::whereIn('id', function ($query) use ($uid) {
             $query->select('invoice_id')
             ->from(with(new \Acelle\Model\InvoiceItem)->getTable())
             ->where('item_id', $uid);
@@ -233,7 +233,7 @@ class Subscription extends Model
      */
     public function createInitInvoice()
     {
-        // 
+        //
         if ($this->pendingInvoice()) {
             throw new \Exception(trans('messages.error.has_waiting_invoices'));
         }
@@ -275,7 +275,7 @@ class Subscription extends Model
      */
     public function createRenewInvoice()
     {
-        // 
+        //
         if ($this->pendingInvoice()) {
             throw new \Exception(trans('messages.error.has_waiting_invoices'));
         }
@@ -317,7 +317,7 @@ class Subscription extends Model
      */
     public function createChangePlanInvoice($newPlan)
     {
-        // 
+        //
         if ($this->pendingInvoice()) {
             $this->pendingInvoice()->delete();
         }
@@ -424,7 +424,7 @@ class Subscription extends Model
      * @return date
      */
     public function getPeriodEndsAt($startDate)
-    {        
+    {
         // dose not support recurring, update ends at column
         $interval = $this->plan->getBillableInterval();
         $intervalCount = $this->plan->getBillableIntervalCount();
@@ -435,6 +435,7 @@ class Subscription extends Model
                 break;
             case 'day':
                 $endsAt = $startDate->addDay($intervalCount);
+                // no break
             case 'week':
                 $endsAt = $startDate->addWeek($intervalCount);
                 break;
@@ -535,7 +536,7 @@ class Subscription extends Model
         $this->plan_id = $newPlan->uid;
 
         // new end period
-        $this->current_period_ends_at = $endsAt;    
+        $this->current_period_ends_at = $endsAt;
         
         // update ends at if it exist
         if ($this->ends_at != null) {
@@ -685,6 +686,7 @@ class Subscription extends Model
                 break;
             case 'day':
                 $startAt = $startAt->subDay($intervalCount);
+                // no break
             case 'week':
                 $startAt = $startAt->subWeek($intervalCount);
                 break;
@@ -789,9 +791,10 @@ class Subscription extends Model
      *
      * @return void
      */
-    public function renew() {
+    public function renew()
+    {
         // set new current period
-        $this->current_period_ends_at = $this->getPeriodEndsAt($this->current_period_ends_at);    
+        $this->current_period_ends_at = $this->getPeriodEndsAt($this->current_period_ends_at);
         
         // ends at
         if ($this->ends_at != null) {
@@ -807,7 +810,8 @@ class Subscription extends Model
         ]);
     }
 
-    public function isExpiring() {
+    public function isExpiring()
+    {
         // check if recurring accur
         if (\Carbon\Carbon::now()->greaterThanOrEqualTo($this->current_period_ends_at->subDays(config('cashier.end_period_last_days')))) {
             return true;

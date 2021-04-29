@@ -146,7 +146,7 @@ class Invoice extends Model
     {
         $total = 0;
 
-        foreach($this->invoiceItems as $item) {
+        foreach ($this->invoiceItems as $item) {
             $total += $item->total();
         }
 
@@ -280,6 +280,7 @@ class Invoice extends Model
         $this->setPaid();
 
         // set transaction as success
+        // Important: according to current design, the rule is: one invoice only has one pending transaction
         $this->pendingTransaction()->setSuccess();
         
         // invoice after pay actions
@@ -400,7 +401,7 @@ class Invoice extends Model
         return  [
             'title' => $this->title,
             'description' => $this->description,
-            'bill' => $this->invoiceItems()->get()->map(function($item) {
+            'bill' => $this->invoiceItems()->get()->map(function ($item) {
                 return [
                     'title' => $item->title,
                     'description' => $item->description,
