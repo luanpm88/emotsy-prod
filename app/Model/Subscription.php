@@ -343,7 +343,6 @@ class Subscription extends Model
         $invoice->updateMetadata([
             'subscription_uid' => $this->uid,
             'new_plan_uid' => $newPlan->uid,
-            'new_ends_at' => $metadata['endsAt'],
         ]);
 
         // add item
@@ -497,17 +496,17 @@ class Subscription extends Model
                         $this->user->supportsAutoBilling() &&
                         $this->reachDueDate() // check charge day before
                     ) {
-                        // add pending transaction for invoice
-                        $pendingInvoice->addTransaction([
-                            'status' => \Acelle\Model\Transaction::STATUS_PENDING,
-                            'message' => trans('messages.automatically_charge', [
-                                'id' => $pendingInvoice->uid,
-                                'title' => $pendingInvoice->title,
-                            ]),
-                        ]);
+                        // // add pending transaction for invoice
+                        // $pendingInvoice->addTransaction([
+                        //     'status' => \Acelle\Model\Transaction::STATUS_PENDING,
+                        //     'message' => trans('messages.automatically_charge', [
+                        //         'id' => $pendingInvoice->uid,
+                        //         'title' => $pendingInvoice->title,
+                        //     ]),
+                        // ]);
                         
-                        // charge invoice
-                        $this->user->getPaymentGateway()->charge($pendingInvoice, true);
+                        // // charge invoice
+                        // $this->user->getPaymentGateway()->charge($pendingInvoice, true);
                     }
                 }
                 break;

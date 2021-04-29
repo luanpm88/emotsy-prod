@@ -300,7 +300,7 @@ class Invoice extends Model
         $this->setNew();
 
         // set transaction as failed
-        if ($auto) {
+        if ($auto == false) {
             $this->pendingTransaction()->setFailed(trans('messages.payment.cannot_charge', [
                 'id' => $this->uid,
                 'error' => $error,
@@ -335,8 +335,10 @@ class Invoice extends Model
             case self::TYPE_CHANGE_PLAN:
                 $subscription = Subscription::findByUid($data['subscription_uid']);
                 $newPlan = \Acelle\Model\Plan::findByUid($data['new_plan_uid']);
-                
-                $subscription->changePlan($newPlan, \Carbon\Carbon::parse($data['new_ends_at']));
+
+                // find new ends at day
+                $result = $subscription->calcChangePlan($newPlan);                
+                $subscription->changePlan($newPlan, \Carbon\Carbon::parse($result['endsAt']));
                 
                 break;
             default:

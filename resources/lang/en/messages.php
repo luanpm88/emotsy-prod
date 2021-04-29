@@ -4029,7 +4029,7 @@
           your subscription will be due on <strong>:date</strong>',
   'subscription_change_plan.bill_details' => 'Change Plan',
   'change_plan.desc' => 'You’re changing from <strong>:plan</strong>
-      plan to <strong>:newPlan</strong> plan',
+      plan to <strong>:newPlan</strong> plan. Next end period date is <strong>:date</strong>',
   'change_to_plan' => 'Change to :plan plan',
   'ends_on' => 'Ends on',
   'invoices' => 'Invoices',

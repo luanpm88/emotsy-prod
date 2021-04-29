@@ -206,7 +206,7 @@ class AccountSubscriptionController extends Controller
 
             try {
                 // set invoice as pending
-                $subscription->createChangePlanInvoice($newPlan);
+                $changePlanInvoice = $subscription->createChangePlanInvoice($newPlan);
             } catch (\Exception $e) {
                 $request->session()->flash('alert-error', $e->getMessage());
                 return redirect()->action('AccountSubscriptionController@index');
