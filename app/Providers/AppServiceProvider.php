@@ -19,6 +19,102 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // Teak default settings (PHP, Laravel, etc.)
+        $this->changeDefaultSettings();
+
+        // Add custom validation rules
+        // @deprecated
+        $this->addCustomValidationRules();
+
+        // Just finish if the application is not set up
+        if (!isInitiated()) {
+            return;
+        }
+
+        // The following configuration settings are for active & running application only
+        try {
+            config([
+                'cashier.end_period_last_days' => Setting::get('system.end_period_last_days') ? Setting::get('system.end_period_last_days') : config('cashier.end_period_last_days'),
+                'cashier.renew_free_plan' => Setting::get('system.renew_free_plan') ? Setting::get('system.renew_free_plan') : config('cashier.renew_free_plan'),
+                'cashier.recurring_charge_before_days' => Setting::get('system.recurring_charge_before_days') ? Setting::get('system.recurring_charge_before_days') : config('cashier.recurring_charge_before_days'),
+            ]);
+
+            // per payment configs
+            foreach (config('cashier.gateways') as $gw => $data) {
+                foreach ($data['fields'] as $key => $value) {
+                    $con = Setting::get('payment.'.$gw.'.'.$key);
+                    if ($con != null) {
+                        config(['cashier.gateways.'.$gw.'.fields.'.$key => $con]);
+                    }
+                }
+            }
+        } catch (\Exception $ex) {
+            // anything here?
+        }
+
+        // Load application's plugins
+        // Disabled plugin may also register hooks
+        $this->loadPlugins();
+    }
+
+    /**
+     * Register any application services.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        $this->app->singleton(HookManager::class, function ($app) {
+            return new HookManager();
+        });
+    }
+
+    private function loadPlugins()
+    {
+        try {
+            Plugin::autoload();
+            Notification::cleanupDuplicateNotifications('Plugin Error');
+        } catch (\Exception $ex) {
+            // Just in case
+            Notification::warning([
+                'message' => 'Cannot load Acelle plugins. Error: '.htmlspecialchars($ex->getMessage()),
+                'title' => 'Plugin Error',
+            ]);
+        }
+    }
+
+    // @deprecated
+    private function addCustomValidationRules()
+    {
+        // extend substring validator
+        Validator::extend('substring', function ($attribute, $value, $parameters, $validator) {
+            $tag = $parameters[0];
+            if (strpos($value, $tag) === false) {
+                return false;
+            }
+
+            return true;
+        });
+        Validator::replacer('substring', function ($message, $attribute, $rule, $parameters) {
+            return str_replace(':tag', $parameters[0], $message);
+        });
+
+        // License validator
+        Validator::extend('license', function ($attribute, $value, $parameters, $validator) {
+            return $value == '' || true;
+        });
+
+        // License error validator
+        Validator::extend('license_error', function ($attribute, $value, $parameters, $validator) {
+            return false;
+        });
+        Validator::replacer('license_error', function ($message, $attribute, $rule, $parameters) {
+            return str_replace(':error', $parameters[0], $message);
+        });
+    }
+
+    private function changeDefaultSettings()
+    {
         ini_set('memory_limit', '-1');
         ini_set('pcre.backtrack_limit', 1000000000);
 
@@ -64,86 +160,6 @@ class AppServiceProvider extends ServiceProvider
                 list($controller, $action) = explode('@', $controller);
                 $view->with(compact('controller', 'action'));
             });
-        }
-
-        // extend substring validator
-        Validator::extend('substring', function ($attribute, $value, $parameters, $validator) {
-            $tag = $parameters[0];
-            if (strpos($value, $tag) === false) {
-                return false;
-            }
-
-            return true;
-        });
-        Validator::replacer('substring', function ($message, $attribute, $rule, $parameters) {
-            return str_replace(':tag', $parameters[0], $message);
-        });
-
-        // License validator
-        Validator::extend('license', function ($attribute, $value, $parameters, $validator) {
-            return $value == '' || true;
-        });
-
-        // License error validator
-        Validator::extend('license_error', function ($attribute, $value, $parameters, $validator) {
-            return false;
-        });
-        Validator::replacer('license_error', function ($message, $attribute, $rule, $parameters) {
-            return str_replace(':error', $parameters[0], $message);
-        });
-
-        // Payment config load from database
-        if (!isInitiated()) {
-            return;
-        }
-
-        // The following configuration settings are for active & running application only
-        try {
-            config([
-                'cashier.end_period_last_days' => Setting::get('system.end_period_last_days') ? Setting::get('system.end_period_last_days') : config('cashier.end_period_last_days'),
-                'cashier.renew_free_plan' => Setting::get('system.renew_free_plan') ? Setting::get('system.renew_free_plan') : config('cashier.renew_free_plan'),
-                'cashier.recurring_charge_before_days' => Setting::get('system.recurring_charge_before_days') ? Setting::get('system.recurring_charge_before_days') : config('cashier.recurring_charge_before_days'),
-            ]);
-
-            // per payment configs
-            foreach (config('cashier.gateways') as $gw => $data) {
-                foreach ($data['fields'] as $key => $value) {
-                    $con = Setting::get('payment.'.$gw.'.'.$key);
-                    if ($con != null) {
-                        config(['cashier.gateways.'.$gw.'.fields.'.$key => $con]);
-                    }
-                }
-            }
-        } catch (\Exception $ex) {
-            // anything here?
-        }
-
-        $this->loadPlugins();
-    }
-
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
-    {
-        $this->app->singleton(HookManager::class, function ($app) {
-            return new HookManager();
-        });
-    }
-
-    private function loadPlugins()
-    {
-        try {
-            Plugin::autoload();
-            Notification::cleanupDuplicateNotifications('Plugin Error');
-        } catch (\Exception $ex) {
-            // Just in case
-            Notification::warning([
-                'message' => 'Cannot load Acelle plugins. Error: '.htmlspecialchars($ex->getMessage()),
-                'title' => 'Plugin Error',
-            ]);
         }
     }
 }
