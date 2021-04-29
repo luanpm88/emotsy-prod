@@ -6,10 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class InvoiceItem extends Model
 {
-    const TYPE_SUBSCRIPTION_INIT = 'subscription_init';
-    const TYPE_SUBSCRIPTION_RENEW = 'subscription_renew';
-    const TYPE_SUBSCRIPTION_CHANGE_PLAN = 'subscription_change_plan';
-
     /**
      * The attributes that are mass assignable.
      *
