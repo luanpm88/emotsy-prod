@@ -500,7 +500,7 @@ class Subscription extends Model
                         // add pending transaction for invoice
                         $pendingInvoice->addTransaction([
                             'status' => \Acelle\Model\Transaction::STATUS_PENDING,
-                            'message' => trans('messages.pay_invoice', [
+                            'message' => trans('messages.automatically_charge', [
                                 'id' => $pendingInvoice->uid,
                                 'title' => $pendingInvoice->title,
                             ]),
