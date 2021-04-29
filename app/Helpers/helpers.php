@@ -806,46 +806,6 @@ function quoteDotEnvValue($value)
     return $value;
 }
 
-function isValidPaymentGateway($name)
-{
-    try {
-        \Acelle\Cashier\Cashier::getPaymentGateway($name)->validate();
-    } catch (\Exception $ex) {
-        return false;
-    }
-    
-    return true;
-}
-
-function getPaymentTypes()
-{
-    return ['offline_payment', 'card_payment', 'digital_coin_payment', 'paypal_payment'];
-}
-
-function getPayments()
-{
-    $options = [];
-
-    foreach (getPaymentTypes() as $type) {
-        $service = config('cashier.' . $type);
-        if ($service != 'none' && isValidPaymentGateway($service)) {
-            $options[] = $type;
-        }
-    }
-
-    return $options;
-}
-
-function getPaymentOptions()
-{
-    $options = [];
-
-    foreach (getPayments() as $type) {
-        $options[] = ['text' => trans('messages.payment.' . $type), 'value' => config('cashier.' . $type)];
-    }
-
-    return $options;
-}
 function generateRandomString($length = 10)
 {
     $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';

@@ -248,6 +248,22 @@ class Invoice extends Model
             'price' => $this->customer->subscription->amount,
         ]);
     }
+
+    /**
+     * Approve invoice.
+     *
+     * @return void
+     */
+    public function approve()
+    {
+        // for only new|claimed invoice
+        if (!$this->isNew() && !$this->isClaimed()) {
+            throw new \Exception('Trying to approve an invoice that is not new or claimed');
+        }
+
+        // fulfill invoice
+        $this->approve();
+    }
     
     /**
      * Pay invoice.
