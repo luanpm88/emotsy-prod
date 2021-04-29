@@ -304,7 +304,7 @@ class Invoice extends Model
         switch ($this->type) {
             case self::TYPE_NEW_SUBSCRIPTION:
                 $subscription = Subscription::findByUid($data['subscription_uid']);
-                $subscription->setActive();
+                $subscription->activate();
                 break;
             case self::TYPE_RENEW_SUBSCRIPTION:
                 $subscription = Subscription::findByUid($data['subscription_uid']);

@@ -616,7 +616,7 @@ class Subscription extends Model
      *
      * @return bool
      */
-    public function isNEW()
+    public function isNew()
     {
         return $this->status == self::STATUS_NEW;
     }
@@ -646,8 +646,12 @@ class Subscription extends Model
      *
      * @return bool
      */
-    public function setActive()
+    public function activate()
     {
+        if (!$this->isNew()) {
+            throw new \Exception( "Only new subscription can be activated, double check your code to make sure you only call activate() on a new subscription" );
+        }
+
         $this->current_period_ends_at = $this->getPeriodEndsAt(Carbon::now());
         $this->ends_at = null;
         $this->status = self::STATUS_ACTIVE;
