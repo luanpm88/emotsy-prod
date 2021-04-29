@@ -98,9 +98,11 @@ class Subscription extends Model
     public function invoices()
     {
         $uid = $this->uid;
-        return \Acelle\Model\Invoice::whereIn('id', function ($query) use ($uid) {
+        $type = get_class($this);
+        return \Acelle\Model\Invoice::whereIn('id', function ($query) use ($uid, $type) {
             $query->select('invoice_id')
             ->from(with(new \Acelle\Model\InvoiceItem)->getTable())
+            ->where('item_type', $type)
             ->where('item_id', $uid);
         });
     }
