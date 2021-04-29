@@ -47,7 +47,7 @@ class AccountSubscriptionController extends Controller
 
         // 2. IF PLAN NOT ACTIVE
         if (!$subscription->plan->isActive()) {
-            return view('account.subscription.error', ['message' => __('messages.subscription.error.plan-not-active', [ 'name' => $subscription->plan->name])]);
+            return response()->view('errors.general', [ 'message' => __('messages.subscription.error.plan-not-active', [ 'name' => $subscription->plan->name]) ]);
         }
         
         // 3. NEW SUBSCRIPTION
