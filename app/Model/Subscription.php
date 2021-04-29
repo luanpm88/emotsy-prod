@@ -479,7 +479,7 @@ class Subscription extends Model
                 }
 
                 // check expiring
-                else if ($this->isExpiring() && $this->canRenewPlan() && !$this->cancelled()) {
+                elseif ($this->isExpiring() && $this->canRenewPlan() && !$this->cancelled()) {
                     $pendingInvoice = $this->pendingInvoice();
 
                     // create renew invoice if no pending invoice
