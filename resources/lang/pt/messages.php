@@ -2497,7 +2497,7 @@
   'subscription.next_invoice' => 'Next invoice',
   'subscription.next_invoice.empty' => 'No invoices found',
   'subscription.renew' => 'Renew',
-  'system.end_period_last_days' => 'Number of days before subscription period end',
+  'end_period_last_days' => 'Number of days before subscription period end',
   'subscription.renew.warning' => 'The subscription is going to expired in <strong>:remain</strong>, on <strong>:next_on</strong>.
     You should renew the plan for not interrupted when using app',
   'invoice.created_at' => 'Created at',
@@ -2516,7 +2516,7 @@
   'subscription.change_now' => 'Change now',
   'subscription.plan_changed.lower_error' => 'Can not change from higher plan to lower one',
   'payment.settings' => 'Settings',
-  'system.renew_free_plan' => 'Allow users to renew FREE plans',
+  'renew_free_plan' => 'Allow users to renew FREE plans',
   'setting.renew_free_plan.help' => 'Customers who are subscribing to a Free plan can not renew the plan. Need to change to a no-free plan first.',
   'payment.direct.notice' => 'Payment instructions',
   'plans.subscriber_count' => ':count subscriber(s)',
@@ -3058,7 +3058,7 @@
   'subscription.log.message' => 'Message',
   'subscription.ended_intro' => 'The subscription to <strong>:plan</strong> plan was ended at <strong>:ended_at</strong>.
     Please renew or choose an other plan.',
-  'system.recurring_charge_before_days' => 'Auto recurring charge before',
+  'recurring_charge_before_days' => 'Auto recurring charge before',
   'setting.recurring_charge_before_days.help' => 'The number of days before the subscription end of period date.
     System will automatically charge the subscription',
   'buider.builder_classic' => 'Classic Builder',

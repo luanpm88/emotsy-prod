@@ -82,7 +82,7 @@
                     @include('helpers.form_control', [
                         'type' => 'number',
                         'name' => 'end_period_last_days',
-                        'value' => config('cashier.end_period_last_days'),
+                        'value' => \Acelle\Model\Setting::get('end_period_last_days'),
                         'label' => trans('messages.system.end_period_last_days'),
                         'help_class' => 'setting',
                         'rules' => ['end_period_last_days' => 'required'],
@@ -95,7 +95,7 @@
                         @include('helpers.form_control', [
                             'type' => 'checkbox',
                             'name' => 'renew_free_plan',
-                            'value' => config('cashier.renew_free_plan'),
+                            'value' => \Acelle\Model\Setting::get('renew_free_plan'),
                             'label' => trans('messages.system.renew_free_plan'),
                             'help_class' => 'setting',
                             'options' => ['no', 'yes'],
@@ -110,7 +110,7 @@
                         @include('helpers.form_control', [
                             'type' => 'number',
                             'name' => 'recurring_charge_before_days',
-                            'value' => config('cashier.recurring_charge_before_days'),
+                            'value' => \Acelle\Model\Setting::get('recurring_charge_before_days'),
                             'label' => trans('messages.system.recurring_charge_before_days'),
                             'help_class' => 'setting',
                             'options' => ['no', 'yes'],

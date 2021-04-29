@@ -2481,7 +2481,7 @@
   'subscription.next_invoice' => 'Nächste Rechnung',
   'subscription.next_invoice.empty' => 'Keine Rechnungen gefunden',
   'subscription.renew' => 'Erneuern',
-  'system.end_period_last_days' => 'Anzahl der Tage vor Ablauf der Abonnementlaufzeit',
+  'end_period_last_days' => 'Anzahl der Tage vor Ablauf der Abonnementlaufzeit',
   'subscription.renew.warning' => 'Das Abonnement ist abgelaufen in <strong>:remain</strong> auf <strong>:next_on </strong>.
      Sie sollten den Plan nicht unterbrechen und frühzeitig erneuern, wenn Sie App verwenden',
   'invoice.created_at' => 'Hergestellt in',
@@ -2499,7 +2499,7 @@
   'subscription.change_now' => 'Jetzt ändern',
   'subscription.plan_changed.lower_error' => 'Sie können nicht von einem höheren Plan zu einem niedrigeren Plan wechseln',
   'payment.settings' => 'Einstellungen',
-  'system.renew_free_plan' => 'Ermöglichen Sie Benutzern, KOSTENLOSE Pläne zu verlängern',
+  'renew_free_plan' => 'Ermöglichen Sie Benutzern, KOSTENLOSE Pläne zu verlängern',
   'setting.renew_free_plan.help' => 'Kunden, die einen kostenlosen Tarif abonnieren, können den Tarif nicht verlängern. Müssen zuerst zu einem No-Free-Plan wechseln.',
   'payment.direct.notice' => 'Zahlungsanweisungen',
   'plans.subscriber_count' => ':count Teilnehmer',
@@ -3015,7 +3015,7 @@
   'subscription.log.message' => 'Nachricht',
   'subscription.ended_intro' => 'Das Abo für <strong>:plan </strong> Plan, wurde am <strong>:ended_at </strong> beendet.
  Bitte verlängern Sie das Abo oder wählen Sie einen anderen Plan aus.',
-  'system.recurring_charge_before_days' => 'Wiederkehrende und automatische Einladung eistellen',
+  'recurring_charge_before_days' => 'Wiederkehrende und automatische Einladung eistellen',
   'setting.recurring_charge_before_days.help' => 'Die Anzahl der Tage vor Ablauf des Abonnements.
  Das Abonnement wird vom System automatisch belastet',
   'buider.builder_classic' => 'Klassik Editor',

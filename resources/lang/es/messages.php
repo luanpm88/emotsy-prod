@@ -2499,7 +2499,7 @@
   'subscription.next_invoice' => 'Siguiente factura',
   'subscription.next_invoice.empty' => 'No hay facturas',
   'subscription.renew' => 'Renovar',
-  'system.end_period_last_days' => 'Número de días antes de que finalice el período de suscripción',
+  'end_period_last_days' => 'Número de días antes de que finalice el período de suscripción',
   'subscription.renew.warning' => 'La suscripción expirará en <strong>:remain</strong>,en<strong>:next_on</strong>.  	  
       Debe renovar su plan para no ser suspendido cuando use la plataforma',
   'invoice.created_at' => 'Creado en',
@@ -2518,7 +2518,7 @@
   'subscription.change_now' => 'Cambiar ahora',
   'subscription.plan_changed.lower_error' => 'No se puede cambiar de un plan superior a uno inferior.',
   'payment.settings' => 'Configuración',
-  'system.renew_free_plan' => 'Permitir a usuarios renovar planes gratuitos',
+  'renew_free_plan' => 'Permitir a usuarios renovar planes gratuitos',
   'setting.renew_free_plan.help' => 'Los clientes que se suscriben a un plan gratuito no pueden renovar el plan. Primero necesita cambiar a un plan no gratuito.',
   'payment.direct.notice' => 'Instrucciones de pago',
   'plans.subscriber_count' => ':count subscriber(s)',
@@ -3060,7 +3060,7 @@
   'subscription.log.message' => 'Mensaje',
   'subscription.ended_intro' => 'La suscripcion al plan <strong>:plan</strong> a finalizado en <strong>:ended_at</strong>.
     Por favor renueve o elija otro plan.',
-  'system.recurring_charge_before_days' => 'Carga recurrente automática antes',
+  'recurring_charge_before_days' => 'Carga recurrente automática antes',
   'setting.recurring_charge_before_days.help' => 'El número de días antes de la fecha de finalización del período de suscripción.
    El sistema cargará automáticamente la suscripción',
   'buider.builder_classic' => 'Constructor clasico',

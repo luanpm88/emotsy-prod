@@ -33,12 +33,6 @@ class AppServiceProvider extends ServiceProvider
 
         // The following configuration settings are for active & running application only
         try {
-            config([
-                'cashier.end_period_last_days' => Setting::get('system.end_period_last_days') ? Setting::get('system.end_period_last_days') : config('cashier.end_period_last_days'),
-                'cashier.renew_free_plan' => Setting::get('system.renew_free_plan') ? Setting::get('system.renew_free_plan') : config('cashier.renew_free_plan'),
-                'cashier.recurring_charge_before_days' => Setting::get('system.recurring_charge_before_days') ? Setting::get('system.recurring_charge_before_days') : config('cashier.recurring_charge_before_days'),
-            ]);
-
             // per payment configs
             foreach (config('cashier.gateways') as $gw => $data) {
                 foreach ($data['fields'] as $key => $value) {

@@ -524,7 +524,7 @@ class Subscription extends Model
     public function reachDueDate()
     {
         return \Carbon\Carbon::now()->greaterThanOrEqualTo(
-            $this->current_period_ends_at->subDays(config('cashier.recurring_charge_before_days'))
+            $this->current_period_ends_at->subDays(Acelle\Model\Setting::get('recurring_charge_before_days'))
         );
     }
     
@@ -817,7 +817,7 @@ class Subscription extends Model
     public function isExpiring()
     {
         // check if recurring accur
-        if (\Carbon\Carbon::now()->greaterThanOrEqualTo($this->current_period_ends_at->subDays(config('cashier.end_period_last_days')))) {
+        if (\Carbon\Carbon::now()->greaterThanOrEqualTo($this->current_period_ends_at->subDays(Setting::get('end_period_last_days')))) {
             return true;
         }
 
@@ -870,7 +870,7 @@ class Subscription extends Model
     public function canRenewPlan()
     {
         return ($this->plan->getBillableAmount() > 0 ||
-            (config('cashier.renew_free_plan') == 'yes' && $this->plan->getBillableAmount() == 0)
+            (Setting::get('renew_free_plan') == 'yes' && $this->plan->getBillableAmount() == 0)
         );
     }
 
