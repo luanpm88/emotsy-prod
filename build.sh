@@ -59,7 +59,7 @@ rm -fr storage/import/*
 rm -fr storage/export/*
 rm -fr storage/framework/views/*
 rm -fr storage/framework/cache/*
-mkdir storage/framework/cache/data/
+test -e  storage/framework/cache/data || mkdir storage/framework/cache/data/
 rm -fr storage/framework/sessions/*
 rm -fr storage/installed
 touch storage/recache
