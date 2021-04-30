@@ -4092,4 +4092,5 @@
       via wire transfer or bank deposit for example',
   'payment.cannot_charge' => 'Acelle cannot charge the invoice #:id. Error from :service: :error',
   'payment.cannot_auto_charge' => 'Acelle cannot automatically charge the invoice #:id. Error from :service: :error',
+  'contacts' => 'contacts',
 ) ?>
