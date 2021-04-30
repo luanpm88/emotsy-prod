@@ -1,7 +1,7 @@
 @extends('layouts.popup.small')
 
 @section('content')
-	<div class="row">
+    <div class="row">
         <div class="col-md-1"></div>
         <div class="col-md-10">
             <h2>{{ trans('messages.list.select_customer_for_clone_list', ['list' => $list->name]) }}</h2>
@@ -41,12 +41,12 @@
                 addMaskLoading();
             
                 $.ajax({
-                	method: "POST",
-                	url: url,
-                	data: form.serialize(),
+                    method: "POST",
+                    url: url,
+                    data: form.serialize(),
                 })
                 .done(function( data ) {
-                	removeMaskLoading();
+                    removeMaskLoading();
                     
                     // Success alert
                     swal({
