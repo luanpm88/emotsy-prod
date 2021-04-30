@@ -35,6 +35,9 @@ fi
 
 CURPATH=$(pwd)
 
+# Execute composer install --no-dev
+php composer.phar install --no-dev
+
 # cp -r $CURPATH $OUTPUT
 # 
 rsync -qavr --exclude="/vendor" --exclude='.git' $CURPATH/ $OUTPUT
