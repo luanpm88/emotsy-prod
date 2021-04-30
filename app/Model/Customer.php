@@ -1967,7 +1967,7 @@ class Customer extends Model implements BillableUserInterface
      */
     public function assignPlan($plan)
     {
-        \Acelle\Model\Subscription::initNew($this, $plan);
+        return \Acelle\Model\Subscription::initNew($this, $plan);
     }
 
     /**
