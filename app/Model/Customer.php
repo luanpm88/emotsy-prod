@@ -2108,7 +2108,7 @@ class Customer extends Model implements BillableUserInterface
             return null;
         }
 
-        return \Acelle\Cashier\Cashier::getPaymentGateway($this->getPaymentMethod()['method']);
+        return \Acelle\Model\Setting::getPaymentGateway($this->getPaymentMethod()['method']);
     }
 
     /**

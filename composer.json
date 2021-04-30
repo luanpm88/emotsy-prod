@@ -17,6 +17,7 @@
         "intervention/image": "^2.3",
         "kub-at/php-simple-html-dom-parser": "^1.9",
         "laravel/framework": "^7.0",
+        "laravel/helpers": "^1.4",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.0",
         "lawepham/geoip": "^1.6",

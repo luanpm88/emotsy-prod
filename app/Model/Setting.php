@@ -704,14 +704,9 @@ class Setting extends Model
      *
      * @var array
      */
-    public static function getPaymentGateways()
+    public static function getPayments()
     {
-        $gateways = config('cashier.gateways');
-
-        // Check plugin paystack
-        // if (!Plugin::isActive('paystack')) {
-        //     unset($gateways['paystack']);
-        // }
+        $gateways = self::defaultPayments();
 
         return $gateways;
     }
@@ -740,15 +735,32 @@ class Setting extends Model
      *
      * @var array
      */
-    public static function getPaymentGateway($name)
+    public static function getPayment($name)
     {
-        if (!isset(config('cashier.gateways')[$name])) {
+        if (!isset(self::defaultPayments()[$name])) {
             return;
         }
 
-        $gateway = config('cashier.gateways')[$name];
+        $gateway = self::defaultPayments()[$name];
+
+        // fetch value from db
+        foreach ($gateway['fields'] as $key => $value) {
+            $gateway['fields'][$key] = Setting::get('payment.'.$name.'.'.$key);
+        }
 
         return $gateway;
+    }
+
+    /**
+     * Get payments gateway by name.
+     *
+     * @var array
+     */
+    public static function getPaymentGateway($name, $options=null)
+    {
+        $meta = self::getPayment($name);
+
+        return Cashier::getPaymentGateway($meta, $options);
     }
 
     /**
@@ -776,5 +788,82 @@ class Setting extends Model
 
             self::set($setting, $value);
         }
+    }
+    
+    /**
+     * Default payment methods.
+     *
+     * @var void
+     */
+    public static function defaultPayments()
+    {
+        return [
+            'direct' => [
+                'name' => 'direct',
+                'fields' => [
+                    'payment_instruction' => '',
+                    'confirmation_message' => '',
+                ],
+            ],
+            'stripe' => [
+                'name' => 'stripe',
+                'fields' => [
+                    'publishable_key' => null,
+                    'secret_key' => null,
+                    'always_ask_for_valid_card' => 'no',
+                    'billing_address_required' => 'no',
+                ],
+            ],
+            'braintree' => [
+                'name' => 'braintree',
+                'fields' => [
+                    'environment' => 'sandbox',
+                    'merchant_id' => null,
+                    'public_key' => null,
+                    'private_key' => null,
+                    'always_ask_for_valid_card' => 'no',
+                ],
+            ],
+            'coinpayments' => [
+                'name' => 'coinpayments',
+                'fields' => [
+                    'merchant_id' => null,
+                    'public_key' => null,
+                    'private_key' => null,
+                    'ipn_secret' => null,
+                    'receive_currency' => 'BTC',
+                ],
+            ],
+            'paypal' => [
+                'name' => 'paypal',
+                'fields' => [
+                    'environment' => 'sandbox',
+                    'client_id' => null,
+                    'secret' => null,
+                ],
+            ],
+            // 'paypal_subscription' => [
+            //     'name' => 'paypal_subscription',
+            //     'fields' => [
+            //         'environment' => 'sandbox',
+            //         'client_id' => null,
+            //         'secret' => null,
+            //     ],
+            // ],
+            'razorpay' => [
+                'name' => 'razorpay',
+                'fields' => [                
+                    'key_id' => null,
+                    'key_secret' => null,
+                ],
+            ],
+            'paystack' => [
+                'name' => 'paystack',
+                'fields' => [                
+                    'public_key' => null,
+                    'secret_key' => null,
+                ],
+            ],
+        ];
     }
 }

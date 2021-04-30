@@ -311,7 +311,7 @@ class AccountController extends Controller
     {
         // Save posted data
         if ($request->isMethod('post')) {
-            $gateway = \Acelle\Cashier\Cashier::getPaymentGateway($request->payment_method);
+            $gateway = \Acelle\Model\Setting::getPaymentGateway($request->payment_method);
             
             return redirect()->away($gateway->getConnectUrl($request->return_url));
         }

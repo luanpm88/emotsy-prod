@@ -221,6 +221,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('account/quota_log_2', 'AccountController@quotaLog2');
     Route::get('account/quota_log', 'AccountController@quotaLog');
     Route::get('account/billing', 'AccountController@billing');
+    Route::match(['get', 'post'], 'account/billing/edit', 'AccountController@editBillingAddress');
 });
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscription']], function () {
@@ -228,7 +229,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('frontend/docs/api/v1', 'Controller@docsApiV1');
     Route::get('/current_user_uid', 'UserController@showUid');
     // Update current user profile
-    Route::match(['get', 'post'], 'account/billing/edit', 'AccountController@editBillingAddress');
+    
     
     Route::get('account/api/renew', 'AccountController@renewToken');
     Route::get('account/api', 'AccountController@api');

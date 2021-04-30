@@ -1123,11 +1123,11 @@ class Plan extends Model implements BillablePlanInterface
 
         $this->fillAll($request);
 
-        // sync remote plan
-        if (config('cashier.gateway') == 'paypal_subscription' && isset($request->plan) && isset($request->plan['general'])) {
-            $service = \Acelle\Cashier\Cashier::getPaymentGateway('paypal_subscription');
-            $service->syncPlan($this, $oldPlan);
-        }
+        // // sync remote plan
+        // if (config('cashier.gateway') == 'paypal_subscription' && isset($request->plan) && isset($request->plan['general'])) {
+        //     $service = \Acelle\Model\Setting::getPaymentGateway('paypal_subscription');
+        //     $service->syncPlan($this, $oldPlan);
+        // }
 
         $validator = $this->validate($request);
 
@@ -1503,7 +1503,7 @@ class Plan extends Model implements BillablePlanInterface
         $plans = self::getAllActiveVisible()->get();
 
         $aPlans = [];
-        // $psService = \Acelle\Cashier\Cashier::getPaymentGateway('paypal_subscription');
+        // $psService = \Acelle\Model\Setting::getPaymentGateway('paypal_subscription');
         foreach ($plans as $plan) {
             if ($plan->isAvailable()) {
                 // if (config('cashier.paypal_payment') !== 'paypal_subscription' ||
@@ -1563,13 +1563,13 @@ class Plan extends Model implements BillablePlanInterface
             $errors[] = 'sending_server_empty';
         }
 
-        if (config('cashier.paypal_payment') == 'paypal_subscription') {
-            $service = Cashier::getPaymentGateway('paypal_subscription');
+        // if (config('cashier.paypal_payment') == 'paypal_subscription') {
+        //     $service = \Acelle\Model\Setting::getPaymentGateway('paypal_subscription');
 
-            if (!$service->findPlanConnection($this)) {
-                $errors[] = 'plan_not_connected';
-            }
-        }
+        //     if (!$service->findPlanConnection($this)) {
+        //         $errors[] = 'plan_not_connected';
+        //     }
+        // }
 
         // else return true
         return $errors;
@@ -1591,14 +1591,14 @@ class Plan extends Model implements BillablePlanInterface
             $this->enable();
         }
 
-        if (config('cashier.paypal_payment') == 'paypal_subscription') {
-            $service = Cashier::getPaymentGateway('paypal_subscription');
+        // if (config('cashier.paypal_payment') == 'paypal_subscription') {
+        //     $service = \Acelle\Model\Setting::getPaymentGateway('paypal_subscription');
 
-            if (!$service->findPlanConnection($this)) {
-                $this->disable();
-                $this->visibleOff();
-            }
-        }
+        //     if (!$service->findPlanConnection($this)) {
+        //         $this->disable();
+        //         $this->visibleOff();
+        //     }
+        // }
     }
 
     /**

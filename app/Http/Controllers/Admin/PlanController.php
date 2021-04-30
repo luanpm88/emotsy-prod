@@ -34,7 +34,7 @@ class PlanController extends Controller
 
         return view('admin.plans.index', [
             'plans' => $plans,
-            'gateway' => Setting::getPaymentGateway(Setting::get('system.payment_gateway')),
+            'gateway' => Setting::getPayment(Setting::get('system.payment_gateway')),
         ]);
     }
 
@@ -354,14 +354,14 @@ class PlanController extends Controller
         }
 
         foreach ($items->get() as $item) {
-            // disconnect plan
-            if (config('cashier.gateway') == 'paypal_subscription') {
-                $service = \Acelle\Cashier\Cashier::getPaymentGateway('paypal_subscription');
-                $service->disconnectPlan($item);
+            // // disconnect plan
+            // if (config('cashier.gateway') == 'paypal_subscription') {
+            //     $service = \Acelle\Model\Setting::getPaymentGateway('paypal_subscription');
+            //     $service->disconnectPlan($item);
 
-                // check plan status
-                $item->checkStatus();
-            }
+            //     // check plan status
+            //     $item->checkStatus();
+            // }
 
             $item->delete();
         }
