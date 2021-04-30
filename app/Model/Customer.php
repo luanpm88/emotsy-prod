@@ -27,7 +27,7 @@ use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use Acelle\Cashier\Interfaces\BillableUserInterface;
 use Acelle\Cashier\Cashier;
-use Acelle\Cashier\Subscription;
+use Acelle\Model\Subscription;
 use Acelle\Model\SendingDomain;
 use Acelle\Model\Source;
 use Acelle\Model\WooCommerce;
@@ -128,8 +128,8 @@ class Customer extends Model implements BillableUserInterface
      */
     public function subscription()
     {
-        return $this->hasOne('Acelle\Cashier\Subscription', 'user_id', 'uid')
-            // ->where('status', '<>', Subscription::STATUS_ENDED)
+        return $this->hasOne('Acelle\Model\Subscription', 'user_id', 'uid')
+            // ->where('status', '!=', Subscription::STATUS_ENDED)
             ->orderBy('created_at', 'desc');
     }
 
@@ -241,6 +241,12 @@ class Customer extends Model implements BillableUserInterface
     public function sources()
     {
         return $this->hasmany('Acelle\Model\Source');
+    }
+
+    // billing addresses
+    public function billingAddresses()
+    {
+        return $this->hasMany('Acelle\Model\BillingAddress');
     }
 
     // All senders, including ones that are not associated to a particular sending servers
@@ -841,9 +847,9 @@ class Customer extends Model implements BillableUserInterface
     {
         $current = $this->getCurrentSubscription();
 
-        if (is_null($current->started_at)) {
-            throw new \Exception('Application error: subscription started_at not set!');
-        }
+        // if (is_null($current->started_at)) {
+        //     throw new \Exception('Application error: subscription started_at not set!');
+        // }
         
         $quota = [
             'start' => (isset($current->started_at) ? $current->started_at->timestamp : null),
@@ -1990,24 +1996,7 @@ class Customer extends Model implements BillableUserInterface
      */
     public function assignPlan($plan)
     {
-        // subscription->current_Period_ends_at ==> should be set after payment is DONE
-
-        if ($this->activeSubscription()) {
-            $this->activeSubscription()->cancelNow();
-        }
-
-        // create/update subscription
-        if ($this->subscription) {
-            $subscription = $this->subscription;
-            $subscription->gateway = null;
-        } else {
-            $subscription = new Subscription();
-            $subscription->user_id = $this->getBillableId();
-        }
-        $subscription->plan_id = $plan->getBillableId();
-        $subscription->started_at = \Carbon\Carbon::now();
-        $subscription->status = Subscription::STATUS_NEW;
-        $subscription->save();
+        \Acelle\Model\Subscription::initNew($this, $plan);
     }
 
     /**
@@ -2157,5 +2146,119 @@ class Customer extends Model implements BillableUserInterface
         return $query->get()->map(function ($source) {
             return ['text' => $source->getData()['data']['name'], 'value' => $source->uid];
         });
+    }
+
+    /**
+     * Get payment method.
+     *
+     * @var object | collect
+     */
+    public function getPaymentMethod()
+    {
+        if (!$this['payment_method']) {
+            return null;
+        }
+
+        return json_decode($this['payment_method'], true);
+    }
+
+    /**
+     * Get gateway.
+     *
+     * @return gateway
+     */
+    public function getPaymentGateway()
+    {
+        if ($this->getPaymentMethod() == null) {
+            return null;
+        }
+
+        return \Acelle\Model\Setting::getPaymentGateway($this->getPaymentMethod()['method']);
+    }
+
+    /**
+     * Check if payment support recurring.
+     *
+     * @return boolean
+     */
+    public function supportsAutoBilling()
+    {
+        $gateway = $this->getPaymentGateway();
+        if ($gateway == null) {
+            return false;
+        }
+
+        return $gateway->supportsAutoBilling();
+    }
+
+    /**
+     * Update payment method.
+     *
+     * @var object | collect
+     */
+    public function updatePaymentMethod($data=[])
+    {
+        // $paymentMethod = $this->getPaymentMethod();
+
+        // if (!isset($paymentMethod)) {
+        //     $paymentMethod = [];
+        // }
+        
+        // $data = (object) array_merge((array) $paymentMethod, $data);
+        $this['payment_method'] = json_encode($data);
+
+        $this->save();
+    }
+
+    /**
+     * Update payment method.
+     *
+     * @var object | collect
+     */
+    public function updatePaymentMethodData($data=[])
+    {
+        $paymentMethod = $this->getPaymentMethod();
+
+        if (!isset($paymentMethod)) {
+            $paymentMethod = [];
+        }
+        
+        $data = (object) array_merge((array) $paymentMethod, $data);
+        $this['payment_method'] = json_encode($data);
+
+        $this->save();
+    }
+    
+    /**
+     * Remove payment method.
+     *
+     * @var object | collect
+     */
+    public function removePaymentMethod()
+    {
+        $this->payment_method = null;
+        $this->save();
+    }
+    
+    /**
+     * Get default billing address.
+     *
+     * @var object
+     */
+    public function newBillingAddress()
+    {
+        $address = new \Acelle\Model\BillingAddress();
+        $address->customer_id = $this->id;
+        return $address;
+    }
+
+    /**
+     * Get default billing address.
+     *
+     * @var object
+     */
+    public function getDefaultBillingAddress()
+    {
+        return $this->billingAddresses()->first();
     }
 }

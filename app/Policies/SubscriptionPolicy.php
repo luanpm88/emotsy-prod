@@ -6,11 +6,25 @@ use Illuminate\Auth\Access\HandlesAuthorization;
 use Acelle\Model\User;
 use Acelle\Model\Setting;
 use Acelle\Cashier\Cashier;
-use Acelle\Cashier\Subscription;
+use Acelle\Model\Subscription;
 
 class SubscriptionPolicy
 {
     use HandlesAuthorization;
+
+    public function approve(User $user, Subscription $subscription, $role)
+    {
+        switch ($role) {
+            case 'admin':
+                $can = $subscription->claimedInvoice();
+                break;
+            case 'customer':
+                $can = false;
+                break;
+        }
+
+        return $can;
+    }
 
     public function readAll(User $user, Subscription $subscription, $role)
     {
@@ -68,7 +82,7 @@ class SubscriptionPolicy
 
     public function cancelNow(User $user, Subscription $subscription, $role)
     {
-        $can = !$subscription->isEnded() && !$subscription->isNew();
+        $can = !$subscription->isEnded();
 
         switch ($role) {
             case 'admin':
@@ -108,99 +122,85 @@ class SubscriptionPolicy
         return $can;
     }
 
-    ////
-    public function create(User $user, Subscription $subscription, $role)
-    {
-        switch ($role) {
-            case 'admin':
-                $can = true;
-                break;
-            case 'customer':
-                $can = !isset($subscription);
-                break;
-        }
+    // ////
+    // public function create(User $user, Subscription $subscription, $role)
+    // {
+    //     switch ($role) {
+    //         case 'admin':
+    //             $can = true;
+    //             break;
+    //         case 'customer':
+    //             $can = !isset($subscription);
+    //             break;
+    //     }
 
-        return $can;
-    }
+    //     return $can;
+    // }
 
-    public function subscribe(User $user, Subscription $subscription, $role)
-    {
-        switch ($role) {
-            case 'admin':
-                $can = false;
-                break;
-            case 'customer':
-                $can = $subscription->isPending();
-                break;
-        }
+    // public function subscribe(User $user, Subscription $subscription, $role)
+    // {
+    //     switch ($role) {
+    //         case 'admin':
+    //             $can = false;
+    //             break;
+    //         case 'customer':
+    //             $can = $subscription->isPending();
+    //             break;
+    //     }
 
-        return $can;
-    }
+    //     return $can;
+    // }
 
-    public function checkout(User $user, Subscription $subscription, $role)
-    {
-        switch ($role) {
-            case 'admin':
-                $can = false;
-                break;
-            case 'customer':
-                $can = $subscription->isNew() || $subscription->isPending();
-                break;
-        }
+    // public function checkout(User $user, Subscription $subscription, $role)
+    // {
+    //     switch ($role) {
+    //         case 'admin':
+    //             $can = false;
+    //             break;
+    //         case 'customer':
+    //             $can = $subscription->isNew() || $subscription->isPending();
+    //             break;
+    //     }
 
-        return $can;
-    }
+    //     return $can;
+    // }
 
-    public function updateCard(User $user, Subscription $subscription, $role)
-    {
-        switch ($role) {
-            case 'admin':
-                $can = false;
-                break;
-            case 'customer':
-                $can = $subscription->isPending();
-                break;
-        }
+    // public function updateCard(User $user, Subscription $subscription, $role)
+    // {
+    //     switch ($role) {
+    //         case 'admin':
+    //             $can = false;
+    //             break;
+    //         case 'customer':
+    //             $can = $subscription->isPending();
+    //             break;
+    //     }
 
-        return $can;
-    }
+    //     return $can;
+    // }
 
-    public function setActive(User $user, Subscription $subscription, $role)
-    {
-        $can = $subscription->isPending();
+    
 
-        switch ($role) {
-            case 'admin':
-                break;
-            case 'customer':
-                $can = false;
-                break;
-        }
+    // public function approvePending(User $user, Subscription $subscription, $role)
+    // {
+    //     $can = $subscription->hasError() && in_array($subscription->getError()["type"], ['renew', 'change_plan']);
 
-        return $can;
-    }
+    //     switch ($role) {
+    //         case 'admin':
+    //             break;
+    //         case 'customer':
+    //             $can = false;
+    //             break;
+    //     }
 
-    public function approvePending(User $user, Subscription $subscription, $role)
-    {
-        $can = $subscription->hasError() && in_array($subscription->getError()["type"], ['renew', 'change_plan']);
-
-        switch ($role) {
-            case 'admin':
-                break;
-            case 'customer':
-                $can = false;
-                break;
-        }
-
-        return $can;
-    }
+    //     return $can;
+    // }
 
     public function rejectPending(User $user, Subscription $subscription, $role)
     {
-        $can = $subscription->hasError() && in_array($subscription->getError()["type"], ['renew', 'change_plan']);
-
         switch ($role) {
             case 'admin':
+                $can = $subscription->claimedInvoice();
                 break;
             case 'customer':
                 $can = false;
@@ -212,12 +212,13 @@ class SubscriptionPolicy
 
     public function delete(User $user, Subscription $subscription, $role)
     {
-        $can = $subscription->isEnded() || $subscription->isNew();
+        $can = $subscription->isEnded();
 
         switch ($role) {
             case 'admin':
                 break;
             case 'customer':
+                $can = false;
                 break;
         }
 

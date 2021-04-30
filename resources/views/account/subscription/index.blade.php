@@ -26,12 +26,30 @@
     @include("account._menu")
 
     <div class="row">
-        <div class="col-sm-12 col-md-6 col-lg-6">
+        <div class="col-sm-12 col-md-8 col-lg-8">
 
-            @if ($subscription->hasError())
+            @if ($subscription->renewInvoice() && !$subscription->renewInvoice()->isPaid() && !$subscription->user->supportsAutoBilling())
                 @include('elements._notification', [
-                    'level' => $subscription->getError()["status"],
-                    'message' => $subscription->getError()["message"]
+                    'level' => 'warning',
+                    'message' => trans('messages.have_new_renew_invoice', [
+                        'link' => action('AccountSubscriptionController@payment'),
+                    ])
+                ])
+            @endif
+
+            @if ($subscription->changePlanInvoice() && !$subscription->changePlanInvoice()->isPaid())
+                @include('elements._notification', [
+                    'level' => 'warning',
+                    'message' => trans('messages.have_new_change_plan_invoice', [
+                        'link' => action('AccountSubscriptionController@payment'),
+                    ])
+                ])
+            @endif
+
+            @if ($subscription->lastInvoice() && $subscription->lastInvoice()->lastTransaction() && $subscription->lastInvoice()->lastTransaction()->isFailed())
+                @include('elements._notification', [
+                    'level' => 'error',
+                    'message' => $subscription->lastInvoice()->lastTransaction()->error,
                 ])
             @endif
 
@@ -39,15 +57,26 @@
 
             <div class="sub-section">
                 @if ($subscription->isActive())
-                    @if ($subscription->isRecurring())
-                        <p>
-                            {!! trans('messages.subscription.current_subscription.recurring.wording', [
-                                'plan' => $plan->name,
-                                'money' => Acelle\Library\Tool::format_price($plan->price, $plan->currency->format),
-                                'remain' => $subscription->current_period_ends_at->diffForHumans(),
-                                'next_on' => \Acelle\Library\Tool::formatDate($subscription->current_period_ends_at)
-                            ]) !!}
-                        </p>
+                    @if (!$subscription->cancelled())
+                        @if (\Auth::user()->customer->supportsAutoBilling())
+                            <p>
+                                {!! trans('messages.subscription.current_subscription.recurring.wording', [
+                                    'plan' => $plan->name,
+                                    'money' => Acelle\Library\Tool::format_price($plan->price, $plan->currency->format),
+                                    'remain' => $subscription->current_period_ends_at->diffForHumans(),
+                                    'next_on' => \Acelle\Library\Tool::formatDate($subscription->current_period_ends_at)
+                                ]) !!}
+                            </p>
+                        @else
+                            <p>
+                                {!! trans('messages.subscription.current_subscription.wording', [
+                                    'plan' => $plan->name,
+                                    'money' => Acelle\Library\Tool::format_price($plan->price, $plan->currency->format),
+                                    'remain' => $subscription->current_period_ends_at->diffForHumans(),
+                                    'next_on' => \Acelle\Library\Tool::formatDate($subscription->current_period_ends_at)
+                                ]) !!}
+                            </p>
+                        @endif
                     @else
                         <p>
                             {!! trans('messages.subscription.current_subscription.cancel_at_end_of_period.wording', [
@@ -57,7 +86,7 @@
                                 'end_at' => \Acelle\Library\Tool::formatDate($subscription->current_period_ends_at)
                             ]) !!}
                         </p>
-                    @endif
+                    @endif                        
 
                     @if (\Auth::user()->customer->can('cancel', $subscription))
                         <a link-method="POST" link-confirm="{{ trans('messages.subscription.cancel.confirm') }}"
@@ -90,28 +119,39 @@
                     @if (\Auth::user()->customer->can('cancelNow', $subscription))
                         <a link-method="POST" link-confirm="{{ trans('messages.subscription.cancel_now.confirm') }}"
                             href="{{ action('AccountSubscriptionController@cancelNow') }}"
-                            class="btn btn-mc_inline mr-10"
+                            class="btn btn-danger mr-10"
                         >
                             {{ trans('messages.subscription.cancel_now') }}
                         </a>
                     @endif
                 @endif
             </div>
+            @include('account.subscription._invoices')
+
+            <div class="sub-section">
+                <div class="row">
+                    <div class="col-sm-12 col-md-6 col-lg-6">
+                        <h2 class="text-semibold">{{ trans('messages.plan_details') }} </h2>
+                        <p>{{ trans('messages.plan_details.intro') }}</p>
+
+                        @include('plans._details', ['plan' => $plan])
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
+        <div class="col-sm-12 col-md-4 col-lg-4">
+            @include('invoices.bill', [
+                'bill' => $subscription->getUpcomingBillingInfo(),
+            ])
 
-    @include('account.subscription._invoices')
-
-    <div class="sub-section">
-        <div class="row">
-            <div class="col-sm-12 col-md-6 col-lg-6">
-                <h2 class="text-semibold">{{ trans('messages.plan_details') }} </h2>
-                <p>{{ trans('messages.plan_details.intro') }}</p>
-
-                @include('plans._details', ['plan' => $plan])
+            <div class="mt-4">
+                @include('account._payment_info', [
+                    'redirect' => action('AccountSubscriptionController@index'),
+                ])
             </div>
         </div>
     </div>
+    
 
     <script>
         var changePlanModal = new IframeModal();

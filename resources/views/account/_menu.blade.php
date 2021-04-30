@@ -12,6 +12,11 @@
                         <i class="icon-office position-left"></i> {{ trans('messages.contact_information') }}
                     </a>
                 </li>
+                <li rel0="AccountController/billing">
+                    <a href="{{ action("AccountController@billing") }}" class="level-1">
+                        <i class="icon-credit-card position-left"></i> {{ trans('messages.billing') }}
+                    </a>
+                </li>
                 <li rel0="AccountController/subscription"
                     rel1="PaymentController"
                     rel2="AccountController/subscriptionNew"

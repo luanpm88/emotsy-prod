@@ -47,7 +47,7 @@ class SubscriptionController extends Controller
             return \Response::json(array('status' => 0, 'message' => 'Plan is not active'), 404);
         }
 
-        $customer->assignPlan($plan, $request->gateway);
+        $customer->assignPlan($plan);
 
         return \Response::json(array(
             'status' => 1,
@@ -55,48 +55,5 @@ class SubscriptionController extends Controller
             'customer_uid' => $customer->uid,
             'plan_uid' => $plan->uid
         ), 200);
-    }
-
-    /**
-     * Approve subscription pending.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     **/
-    public function setActive(Request $request, $uid)
-    {
-        // Get current subscription
-        $subscription = \Acelle\Cashier\Subscription::findByUid($uid);
-        $gateway = $subscription->getPaymentGateway();
-
-        // check if item exists
-        if (!is_object($subscription)) {
-            return \Response::json(array('status' => 0, 'message' => 'Can not find subscription with uid: ' . $uid), 404);
-        }
-
-        // check if item is pending
-        if (!$subscription->isPending()) {
-            return \Response::json(array('status' => 0, 'message' => 'Can not set active for subscription. Subscription is not pending.'), 403);
-        }
-
-        // authorize
-        if (!$request->user()->admin->can('setActive', $subscription)) {
-            return \Response::json(array('message' => 'Unauthorized'), 401);
-        }
-
-        try {
-            $gateway->setActive($subscription);
-        } catch (\Exception $ex) {
-            return \Response::json([
-                'status' => 'error',
-                'message' => $ex->getMessage(),
-            ], 403);
-        }
-
-        return \Response::json([
-            'status' => 'success',
-            'message' => trans('messages.subscription.set_active.success'),
-        ]);
     }
 }

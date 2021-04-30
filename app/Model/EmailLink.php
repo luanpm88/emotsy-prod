@@ -33,8 +33,7 @@ class EmailLink extends Model
         // Create uid when creating automation.
         static::creating(function ($item) {
             // Create new uid
-            $uid = uniqid();
-            $item->uid = $uid;
+            $item->uid = uniqid();
         });
     }
 

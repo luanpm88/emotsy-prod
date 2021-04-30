@@ -5,13 +5,16 @@
 		@foreach ($subscriptions as $key => $subscription)
 			<tr>
 				<td width="1%">
-					@if ($subscription->isEnded())
-						<i class="icon-dash subscription-status-icon"></i>
-					@elseif ($subscription->isPending() || $subscription->isNew())
-						<i class="lnr lnr-sync subscription-status-icon"></i>
-					@else
-						<i class="lnr lnr-checkmark-circle subscription-status-icon"></i>
-					@endif
+					@switch($subscription->status)
+						@case(Acelle\Model\Subscription::STATUS_ACTIVE)
+							<i class="lnr lnr-sync subscription-status-icon"></i>
+							@break
+						@case(Acelle\Model\Subscription::STATUS_NEW)
+							<i class="lnr lnr-sync subscription-status-icon"></i>
+							@break
+						@default
+							<i class="icon-dash subscription-status-icon"></i>
+					@endswitch
 				</td>
 				<td>
 					<h5 class="no-margin text-bold">
@@ -24,12 +27,6 @@
 						'customer_link' => action('Admin\CustomerController@edit', $subscription->user->uid)
 					]) !!}</div>
 				</td>
-				<td width="15%">
-                    <h5 class="no-margin">
-                        <span class="kq_search">{{ $subscription->gateway ? trans('messages.payments.' . $subscription->gateway) : '--' }}</span>
-                    </h5>
-                    <span class="text-muted2">{{ trans('messages.current_service') }}</span>
-                </td>
 				<td width="15%">
                     <h5 class="no-margin">
                         <span class="kq_search">{{ Acelle\Library\Tool::dateTime($subscription->created_at)->format('M d, Y') }}</span>
@@ -65,27 +62,61 @@
 					@endif
 				</td>
 				<td>
-                    <span class="text-muted2 list-status pull-left">
-						@if ($subscription->isActive() && $subscription->hasRenewPending())
-							<span href="{{ action('Admin\SubscriptionController@invoices', $subscription->uid) }}"
-								class="modal_link label bg-m-warning"
+					@switch($subscription->status)
+						@case(Acelle\Model\Subscription::STATUS_ACTIVE)
+							<span style="cursor:pointer" href="{{ action('Admin\SubscriptionController@invoices', $subscription->uid) }}"
+								class="view_invoices label bg-success"
 							>
-								{{ trans('messages.subscription.status.renew_pending') }}
+								{{ trans('messages.subscription.status.active') }}
 							</span>
-						@elseif ($subscription->isActive() && $subscription->hasChangePlanPending())
-							<span href="{{ action('Admin\SubscriptionController@invoices', $subscription->uid) }}"
-								class="modal_link label bg-m-warning"
-							>
-								{{ trans('messages.subscription.status.change_plan_pending') }}
-							</span>
-						@else
+
+							@if ($subscription->changePlanInvoice() && $subscription->changePlanInvoice()->isClaimed())
+								<div class="mini text-warning">
+									{{ trans('messages.change_plan.pending_for_approval') }}
+								</div>
+							@endif
+
+							@if ($subscription->renewInvoice() && $subscription->renewInvoice()->isClaimed())
+								<div class="mini text-warning">
+									{{ trans('messages.renew_subscription.pending_for_approval') }}
+								</div>
+							@endif
+
+							@break
+						@case(Acelle\Model\Subscription::STATUS_NEW)
+							@if ($subscription->hasPendingInvoice() && $subscription->pendingInvoice()->isClaimed())
+								<span style="cursor:pointer" href="{{ action('Admin\SubscriptionController@invoices', $subscription->uid) }}"
+									class="view_invoices label bg-m-warning"
+								>
+									{{ trans('messages.subscription.status.pending_for_approval') }}
+								</span>	
+							@else
+								<span style="cursor:pointer" href="{{ action('Admin\SubscriptionController@invoices', $subscription->uid) }}"
+									class="view_invoices label bg-m-warning"
+								>
+									{{ trans('messages.subscription.status.wait_for_payment') }}
+								</span>
+							@endif
+							@break
+						@default
 							<span style="cursor:pointer" href="{{ action('Admin\SubscriptionController@invoices', $subscription->uid) }}"
 								class="view_invoices label bg-{{ $subscription->status }}"
-							>{{ trans('messages.subscription.status.' . $subscription->status) }}</span>
-						@endif
-					</span>
+							>
+								{{ trans('messages.subscription.status.' . $subscription->status) }}
+							</span>
+					@endswitch
                 </td>
 				<td class="text-right">
+					@if (\Auth::user()->admin->can('approve', $subscription))
+						<a data-method="POST" link-confirm="{{ trans('messages.subscription.approve.confirm') }}"
+							href="{{ action('Admin\SubscriptionController@approve', $subscription->uid) }}"
+							class="btn btn-primary bg-teal-800"
+						>
+							{{ trans('messages.subscription.approve') }}
+						</a>
+						<span class="text-muted">|</span>
+					@endif
+					
 					@if (\Auth::user()->admin->can('cancel', $subscription))
 						<a data-method="POST" link-confirm="{{ trans('messages.subscription.cancel.confirm') }}"
 						  href="{{ action('Admin\SubscriptionController@cancel', $subscription->uid) }}" class="btn bg-grey-600">
@@ -100,20 +131,13 @@
 					@endif
 					@if(
 						\Auth::user()->admin->can('cancelNow', $subscription) ||
-						\Auth::user()->admin->can('changePlan', $subscription) ||
+						// \Auth::user()->admin->can('changePlan', $subscription) ||
 						\Auth::user()->admin->can('invoices', $subscription) ||
-						\Auth::user()->admin->can('setActive', $subscription) ||
-						\Auth::user()->admin->can('approvePending', $subscription) ||
-						\Auth::user()->admin->can('rejectPending', $subscription)
+						\Auth::user()->admin->can('approve', $subscription) ||
+						\Auth::user()->admin->can('delete', $subscription)
+						// \Auth::user()->admin->can('approvePending', $subscription) ||
+						// \Auth::user()->admin->can('rejectPending', $subscription)
 					)
-						@if (\Auth::user()->admin->can('setActive', $subscription))
-							<a data-method="POST" link-confirm="{{ trans('messages.subscription.set_active.confirm') }}"
-								href="{{ action('Admin\SubscriptionController@setActive', $subscription->uid) }}"
-								class="btn btn-mc_primary"
-							>
-								{{ trans('messages.subscription.set_active') }}
-							</a>
-						@endif
 						<div class="btn-group">
 							
 							<button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret ml-0"></span></button>

@@ -160,8 +160,7 @@ class Sender extends Model
         // Create uid when creating list.
         static::creating(function ($item) {
             // Create new uid
-            $uid = uniqid();
-            $item->uid = $uid;
+            $item->uid = uniqid();
         });
     }
 

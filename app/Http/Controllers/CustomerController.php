@@ -3,7 +3,7 @@
 namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Acelle\Cashier\Subscription;
+use Acelle\Model\Subscription;
 use Acelle\Cashier\Cashier;
 
 class CustomerController extends Controller

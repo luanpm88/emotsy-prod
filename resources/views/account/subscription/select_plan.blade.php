@@ -81,7 +81,7 @@
 
                                         <a
                                             link-method="POST"
-                                            href="{{ action('AccountSubscriptionController@select', ['plan_uid' => $plan->uid]) }}"
+                                            href="{{ action('AccountSubscriptionController@init', ['plan_uid' => $plan->uid]) }}"
                                             class="btn btn-mc_primary btn-mc_mk mt-30">
                                                 {{ trans('messages.plan.select') }}
                                         </a>

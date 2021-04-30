@@ -715,7 +715,7 @@ input.error {
 }
 .table-sub .label {
 }
-.bg-submitted_for_settlement, .bg-authorized, .bg-pending, .bg-waiting, .bg-ready, .bg-sent, .bg-finished, .bg-pending_active {
+.bg-rejected, .bg-renew_pending, .bg-submitted_for_settlement, .bg-authorized, .bg-pending, .bg-waiting, .bg-ready, .bg-sent, .bg-finished, .bg-pending_active {
     background-color: #ffd7d4;
     border-color: #f7c9c6;
     color: #231c15;
@@ -3464,7 +3464,7 @@ p.link-inline a {
 .text-muted {
     color: rgba(0,0,0,0.7);
 }
-.bg-m-warning {
+.bg-m-warning, .bg-renew_pending, .bg-change_plan_pending, .bg-change_plan_claimed, .bg-renew_claimed {
     background-color: #FFF3E0!important;
     color: #333;
     border-color: #FFF3E0;
@@ -4225,4 +4225,75 @@ label:hover .checkmark, .checkmark-container:hover .checkmark {
     border: solid 1px #aaa;
     border-radius: 3px;
     box-shadow: 1px 1px 5px rgba(0,0,0,0.1);    
+}
+.bill-total {
+    font-size: 18px;
+    font-weight: 600;
+}
+.bill_item {
+    margin-bottom: 15px;
+}
+.upcoming-bill-box {    
+    border: solid 1px #aaa;
+    border-radius: 3px;
+    box-shadow: 1px 1px 5px rgba(0,0,0,0.1);
+}
+.upcoming-bill-box .header {
+    padding: 20px;
+    background: #f5f5f5;
+}
+.upcoming-bill-box .body {
+    padding: 20px;
+}
+.bg-white {
+    background: #fff!important;
+}
+.payment-box {    
+    border: solid 1px #aaa;
+    border-radius: 3px;
+    box-shadow: 1px 1px 5px rgba(0,0,0,0.1);
+}
+.payment-box .header {
+    padding: 10px 20px;
+    border-bottom: solid 1px #aaa;
+}
+.payment-box .body {
+    padding: 10px 20px;
+}
+.payment-box i {
+    width: 60px;
+    height: 33px;
+    display: inline-block;
+}
+.payment-box i::after {
+    background-size: 46px!important;
+    margin-right: 0;
+    background-position: left!important;
+}
+.payment-box i.bg-direct {
+    width: 42px;
+}
+.payment-box i.bg-direct::after {
+    background-size: 46px!important;
+    margin-right: 0!important;
+    background-position: -2px 4px!important;
+}
+.btn-large {
+    font-size: 20px;
+    padding: 10px 24px;
+}
+.payment-box i.bg-paypal {
+    width: 50px;
+    height: 43px;
+    display: inline-block;
+    margin-top: -10px;
+    margin-bottom: -10px;
+}
+.payment-box i.bg-paypal::after {
+    background-size: 39px!important;
+    background-position: left!important;
+    margin: 0;
+}
+.payment-box i.bg-razorpay {
+    width: 50px;
 }

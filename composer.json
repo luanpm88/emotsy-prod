@@ -5,7 +5,7 @@
     "license": "MIT",
     "type": "project",
     "require": {
-        "php": ">=7.2.5",
+        "php": "^7.2.5||^8",
         "acelle/cashier": "dev-master",
         "aws/aws-php-sns-message-validator": "^1.1",
         "aws/aws-sdk-php": "^3.19",
@@ -17,6 +17,7 @@
         "intervention/image": "^2.3",
         "kub-at/php-simple-html-dom-parser": "^1.9",
         "laravel/framework": "^7.0",
+        "laravel/helpers": "^1.4",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.0",
         "lawepham/geoip": "^1.6",

@@ -63,7 +63,7 @@
                     </div>
                 @endif
             </div>
-            @if (\Auth::user()->admin->can('create', new Acelle\Cashier\Subscription()))
+            @if (\Auth::user()->admin->can('create', new Acelle\Model\Subscription()))
                 <div class="col-md-2 text-right">
                     <a href="{{ action("Admin\SubscriptionController@create") }}" type="button"
                         class="btn bg-info-800 modal-action new-subscription"

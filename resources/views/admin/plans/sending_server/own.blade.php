@@ -43,8 +43,9 @@
                         <p>{{ trans('messages.plan_option.own_sending_server.intro') }}</p>
                     </div>
                     <div class="col-md-4 text-right">
-                        <a class="btn btn-mc_primary mr-20 mc-modal-control" modal-size="lg" href="{{ action('Admin\PlanController@sendingServerOption', [
-                            'id' => $plan->uid]) }}">
+                        <a class="btn btn-mc_primary mr-20 mc-modal-control" modal-size="lg"
+                            href="{{ action('Admin\PlanController@sendingServerOption', [
+                            'uid' => $plan->uid]) }}">
                                 {{ trans('messages.plan_option.change') }}</a>
                     </div>
                 </div>

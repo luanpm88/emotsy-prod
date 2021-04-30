@@ -36,7 +36,7 @@ class AuthServiceProvider extends ServiceProvider
         \Acelle\Model\Plan::class => \Acelle\Policies\PlanPolicy::class,
         \Acelle\Model\Currency::class => \Acelle\Policies\CurrencyPolicy::class,
         \Acelle\Model\SystemJob::class => \Acelle\Policies\SystemJobPolicy::class,
-        \Acelle\Cashier\Subscription::class => \Acelle\Policies\SubscriptionPolicy::class,
+        \Acelle\Model\Subscription::class => \Acelle\Policies\SubscriptionPolicy::class,
         \Acelle\Model\PaymentMethod::class => \Acelle\Policies\PaymentMethodPolicy::class,
         \Acelle\Model\EmailVerificationServer::class => \Acelle\Policies\EmailVerificationServerPolicy::class,
         \Acelle\Model\Blacklist::class => \Acelle\Policies\BlacklistPolicy::class,
@@ -46,6 +46,7 @@ class AuthServiceProvider extends ServiceProvider
         \Acelle\Model\TrackingDomain::class => \Acelle\Policies\TrackingDomainPolicy::class,
         \Acelle\Model\Plugin::class => \Acelle\Policies\PluginPolicy::class,
         \Acelle\Model\Source::class => \Acelle\Policies\SourcePolicy::class,
+        \Acelle\Model\Invoice::class => \Acelle\Policies\InvoicePolicy::class,
     ];
 
     /**
