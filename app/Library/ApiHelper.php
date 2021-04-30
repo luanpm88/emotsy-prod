@@ -244,7 +244,7 @@ class ApiHelper
                     ],
                     'returns' => 'All subscriber information in json',
                     'example' => 'curl -X GET -H "accept:application/json" -G \
-' .str_replace('-ID-', '<redbold>{uid}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@show", ['list_uid' => '-LIST_ID-',  'id' => '-ID-']))).' \
+' .str_replace('-ID-', '<redbold>{uid}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@show", ['subscriber' => '-ID-']))).' \
 -d api_token=' .\Auth::user()->api_token,
                 ],
 
@@ -260,7 +260,7 @@ class ApiHelper
                     ],
                     'returns' => 'Update messages in json',
                     'example' => 'curl -X PATCH -H "accept:application/json" -G \
-' .str_replace('-ID-', '<redbold>{uid}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@update", ['uid' => '-ID-']))).' \
+' .str_replace('-ID-', '<redbold>{uid}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@update", ['subscriber' => '-ID-']))).' \
 -d api_token=' .\Auth::user()->api_token.' \
 -d EMAIL=test@gmail.com \
 -d tag=foo,bar,tag+with+space, \
@@ -305,7 +305,7 @@ class ApiHelper
                     ],
                     'returns' => 'Result messages in json',
                     'example' => 'curl -X PATCH -H "accept:application/json" -G \
-' .str_replace('-ID-', '<redbold>{uid}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@subscribe", ['id' => '-ID-']))).' \
+' .str_replace('-ID-', '<redbold>{uid}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@subscribe", ['uid' => '-ID-']))).' \
 -d api_token=' .\Auth::user()->api_token,
                 ],
 
@@ -319,7 +319,7 @@ class ApiHelper
                     ],
                     'returns' => 'Result messages in json',
                     'example' => 'curl -X PATCH -H "accept:application/json" -G \
-' .str_replace('-ID-', '<redbold>{uid}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@unsubscribe", ['id' => '-ID-']))).' \
+' .str_replace('-ID-', '<redbold>{uid}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@unsubscribe", ['uid' => '-ID-']))).' \
 -d api_token=' .\Auth::user()->api_token,
                 ],
 
@@ -333,7 +333,7 @@ class ApiHelper
                     ],
                     'returns' => 'Result messages in json',
                     'example' => 'curl -X DELETE -H "accept:application/json" -G \
-' .str_replace('-ID-', '<redbold>{uid}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@delete", ['id' => '-ID-']))).' \
+' .str_replace('-ID-', '<redbold>{uid}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\SubscriberController@delete", ['uid' => '-ID-']))).' \
 -d api_token=' .\Auth::user()->api_token,
                 ],
             ],
