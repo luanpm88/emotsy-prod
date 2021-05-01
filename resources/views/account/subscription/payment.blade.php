@@ -27,9 +27,30 @@
 
                 @if (request()->user()->customer->getPaymentMethod() == null)
                     <p>{{ trans('messages.plan.review.do_not_have_payment_yet') }}</p>
+                @else
+                    <p class="mb-3">{!! trans('messages.payment.you_currenly_payment', [
+                        'method' => trans('messages.transaction.method.' . request()->user()->customer->getPaymentMethod()['method']),
+                    ]) !!}</p>
+                    <form class="edit-payment" action="{{ action('AccountSubscriptionController@checkout') }}"
+                        method="POST">
+                        {{ csrf_field() }}
+
+                        <input type="submit" name="new_payment"
+                            class="btn btn-primary bg-teal-800 py-3 px-4"
+                            value="{{ trans('messages.proceed_to_checkout') }}"
+                        >
+
+                        <div class="row">
+                            <div class="mt-4 col-md-8">{!! trans('messages.payment.agree_service_intro', ['plan' => $subscription->plan->name]) !!}</div>
+                        </div>
+                    </form>
+
+                    <div class="mt-4 pt-3 other-payment-click">
+                        <a href="javascript:;">{{ trans('messages.or_click_choose_another_method') }}</a>
+                    </div>
                 @endif
                 
-                <form class="edit-payment" action="{{ request()->user()->customer->getPaymentMethod() ? action('AccountSubscriptionController@checkout') : action('AccountController@editPaymentMethod') }}"
+                <form class="edit-payment mt-4 pt-4" {!! (request()->user()->customer->getPaymentMethod() == null) ? '' : 'style="display:none"' !!} action="{{ request()->user()->customer->getPaymentMethod() ? action('AccountSubscriptionController@checkout') : action('AccountController@editPaymentMethod') }}"
                     method="POST">
                     {{ csrf_field() }}
 
@@ -78,7 +99,7 @@
                     </div>
                 </form>
 
-                <div class="my-4">
+                <div class="my-4 pt-3">
                     <hr>
                     <a class="" link-method="POST" link-confirm="{{ trans('messages.invoice.cancel.confirm') }}"
                         href="{{ action('AccountSubscriptionController@cancelInvoice', [
@@ -136,6 +157,11 @@
         if ($('.choose-payment-methods>div [type=radio]').length == 1) {
             $('.choose-payment-methods>div').first().click();
         }
+
+        $('.other-payment-click').on('click', function() {
+            $('.edit-payment').show();
+            $(this).hide();
+        });
     </script>
 
 @endsection
