@@ -1967,7 +1967,28 @@ class Customer extends Model implements BillableUserInterface
      */
     public function assignPlan($plan)
     {
-        return \Acelle\Model\Subscription::initNew($this, $plan);
+        $subscription = $this->subscription;
+        // create tmp subscription
+        if (!$subscription) {
+            $subscription = new self();
+            $subscription->user_id = $this->getBillableId();
+        }
+
+        // cancel all pending invoices (new|claimed)
+        $subscription->pendingInvoices()->delete();
+
+        // reset value
+        $subscription->plan_id = $plan->getBillableId();
+        $subscription->current_period_ends_at = null;
+        $subscription->ends_at = null;
+        $subscription->started_at = null;
+        $subscription->status = Subscription::STATUS_NEW;
+        $subscription->save();
+
+        // create init invoice
+        $subscription->createInitInvoice();
+
+        return $subscription;
     }
 
     /**

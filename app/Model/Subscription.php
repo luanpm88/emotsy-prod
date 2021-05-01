@@ -203,37 +203,6 @@ class Subscription extends Model
     }
 
     /**
-     * Init new subscription.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public static function initNew($customer, $plan)
-    {
-        $subscription = $customer->subscription;
-        // create tmp subscription
-        if (!$subscription) {
-            $subscription = new self();
-            $subscription->user_id = $customer->getBillableId();
-        }
-
-        // cancel all pending invoices (new|claimed)
-        $subscription->pendingInvoices()->delete();
-
-        // reset value
-        $subscription->plan_id = $plan->getBillableId();
-        $subscription->current_period_ends_at = null;
-        $subscription->ends_at = null;
-        $subscription->started_at = null;
-        $subscription->status = Subscription::STATUS_NEW;
-        $subscription->save();
-
-        // create init invoice
-        $subscription->createInitInvoice();
-
-        return $subscription;
-    }
-
-    /**
      * Create init invoice.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
