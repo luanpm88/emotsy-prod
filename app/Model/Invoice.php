@@ -256,8 +256,8 @@ class Invoice extends Model
      */
     public function approve()
     {
-        // for only new|claimed invoice
-        if (!$this->isNew() && !$this->isClaimed()) {
+        // for only claimed invoice
+        if (!$this->isClaimed()) {
             throw new \Exception('Trying to approve an invoice that is not new or claimed');
         }
 
