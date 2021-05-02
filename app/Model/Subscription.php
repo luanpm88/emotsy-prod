@@ -489,7 +489,7 @@ class Subscription extends Model
     public function reachDueDate()
     {
         return \Carbon\Carbon::now()->greaterThanOrEqualTo(
-            $this->current_period_ends_at->subDays(Acelle\Model\Setting::get('recurring_charge_before_days'))
+            $this->current_period_ends_at->subDays(\Acelle\Model\Setting::get('recurring_charge_before_days'))
         );
     }
     
