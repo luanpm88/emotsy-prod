@@ -7,6 +7,8 @@ use LogicException;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
 
+use Acelle\Model\Invoice;
+
 class Subscription extends Model
 {
     const STATUS_NEW = 'new';
@@ -99,9 +101,9 @@ class Subscription extends Model
     {
         $uid = $this->uid;
         $type = self::class;
-        return \Acelle\Model\Invoice::whereIn('id', function ($query) use ($uid, $type) {
+        return Invoice::whereIn('id', function ($query) use ($uid, $type) {
             $query->select('invoice_id')
-            ->from(with(new \Acelle\Model\InvoiceItem)->getTable())
+            ->from(with(new InvoiceItem)->getTable())
             ->where('item_type', $type)
             ->where('item_id', $uid);
         });
@@ -128,8 +130,8 @@ class Subscription extends Model
     {
         return $this->invoices()
             ->whereIn('status', [
-                \Acelle\Model\Invoice::STATUS_NEW,
-                \Acelle\Model\Invoice::STATUS_CLAIMED,
+                Invoice::STATUS_NEW,
+                Invoice::STATUS_CLAIMED,
             ]);
     }
 
@@ -159,7 +161,7 @@ class Subscription extends Model
     {
         return $this->invoices()
             ->orderBy('created_at', 'desc')
-            ->where('type', \Acelle\Model\Invoice::TYPE_CHANGE_PLAN)
+            ->where('type', Invoice::TYPE_CHANGE_PLAN)
             ->first();
     }
 
@@ -172,7 +174,7 @@ class Subscription extends Model
     {
         return $this->invoices()
             ->orderBy('created_at', 'desc')
-            ->where('type', \Acelle\Model\Invoice::TYPE_RENEW_SUBSCRIPTION)
+            ->where('type', Invoice::TYPE_RENEW_SUBSCRIPTION)
             ->first();
     }
 
@@ -185,7 +187,7 @@ class Subscription extends Model
     {
         return $this->invoices()
             ->orderBy('created_at', 'desc')
-            ->where('status', \Acelle\Model\Invoice::STATUS_NEW)
+            ->where('status', Invoice::STATUS_NEW)
             ->first();
     }
 
@@ -198,7 +200,7 @@ class Subscription extends Model
     {
         return $this->invoices()
             ->orderBy('created_at', 'desc')
-            ->where('status', \Acelle\Model\Invoice::STATUS_CLAIMED)
+            ->where('status', Invoice::STATUS_CLAIMED)
             ->first();
     }
 
@@ -215,9 +217,9 @@ class Subscription extends Model
         }
 
         // create invoice
-        $invoice = new \Acelle\Model\Invoice();
-        $invoice->status = \Acelle\Model\Invoice::STATUS_NEW;
-        $invoice->type = \Acelle\Model\Invoice::TYPE_NEW_SUBSCRIPTION;
+        $invoice = new Invoice();
+        $invoice->status = Invoice::STATUS_NEW;
+        $invoice->type = Invoice::TYPE_NEW_SUBSCRIPTION;
         $invoice->title = trans('messages.invoice.init_subscription');
         $invoice->description = trans('messages.invoice.init_subscription.desc', [
             'plan' => $this->plan->name,
@@ -257,9 +259,9 @@ class Subscription extends Model
         }
 
         // create invoice
-        $invoice = new \Acelle\Model\Invoice();
-        $invoice->status = \Acelle\Model\Invoice::STATUS_NEW;
-        $invoice->type = \Acelle\Model\Invoice::TYPE_RENEW_SUBSCRIPTION;
+        $invoice = new Invoice();
+        $invoice->status = Invoice::STATUS_NEW;
+        $invoice->type = Invoice::TYPE_RENEW_SUBSCRIPTION;
         $invoice->title = trans('messages.invoice.renew_subscription');
         $invoice->description = trans('messages.renew_subscription.desc', [
             'plan' => $this->plan->name,
@@ -302,9 +304,9 @@ class Subscription extends Model
         $metadata = $this->calcChangePlan($newPlan);
 
         // create invoice
-        $invoice = new \Acelle\Model\Invoice();
-        $invoice->status = \Acelle\Model\Invoice::STATUS_NEW;
-        $invoice->type = \Acelle\Model\Invoice::TYPE_CHANGE_PLAN;
+        $invoice = new Invoice();
+        $invoice->status = Invoice::STATUS_NEW;
+        $invoice->type = Invoice::TYPE_CHANGE_PLAN;
         $invoice->title = trans('messages.invoice.change_plan');
         $invoice->description = trans('messages.change_plan.desc', [
             'plan' => $this->plan->name,

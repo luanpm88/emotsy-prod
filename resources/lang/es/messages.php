@@ -4095,4 +4095,6 @@
   'payment.cannot_charge' => 'Acelle cannot charge the invoice #:id. Error from :service: :error',
   'payment.cannot_auto_charge' => 'Acelle cannot automatically charge the invoice #:id. Error from :service: :error',
   'contacts' => 'contacts',
+  'payment.you_currenly_payment' => 'Your current payment method is: <strong>:method</strong>',
+  'or_click_choose_another_method' => 'Or click here to choose another payment method',
 ) ?>
