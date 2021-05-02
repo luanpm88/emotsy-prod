@@ -794,44 +794,6 @@ class Subscription extends Model
     }
 
     /**
-     * Check if has error
-     *
-     * @return void
-     */
-    public function hasError($type=null)
-    {
-        if ($this->getError($type) == null) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    /**
-     * Get error
-     *
-     * @return void
-     */
-    public function getError($type=null)
-    {
-        if (!$this->error) {
-            return null;
-        }
-
-        $error = json_decode($this->error, true);
-
-        if ($type != null) {
-            if (isset($error['type']) && $error['type'] == $type) {
-                return $error;
-            } else {
-                return null;
-            }
-        } else {
-            return $error;
-        }
-    }
-
-    /**
      * Check if can renew free plan. amount > 0 or == 0 && renew_free_plan setting = true
      *
      * @return void

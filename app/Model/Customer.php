@@ -1996,8 +1996,18 @@ class Customer extends Model implements BillableUserInterface
      */
     public function hasSubscriptionNotice()
     {
-        if (is_object($this->subscription)) {
-            return $this->subscription->hasError();
+        $subscription = $this->subscription;
+
+        if (!is_object($subscription)) {
+            return false;
+        }
+
+        if ($subscription->renewInvoice() && !$subscription->renewInvoice()->isPaid() && !$subscription->user->supportsAutoBilling()) {
+            return true;
+        }
+
+        if ($subscription->changePlanInvoice() && !$subscription->changePlanInvoice()->isPaid()) {
+            return true;
         }
 
         return false;
