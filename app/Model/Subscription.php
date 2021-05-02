@@ -424,17 +424,6 @@ class Subscription extends Model
         return $endsAt;
     }
 
-    // /**
-    //  * Set as pending.
-    //  *
-    //  * @return void
-    //  */
-    // public function setNew()
-    // {
-    //     $this->status = self::STATUS_NEW;
-    //     $this->save();
-    // }
-
     /**
      * Check subscription status.
      *
@@ -472,17 +461,17 @@ class Subscription extends Model
                         $this->user->supportsAutoBilling() &&
                         $this->reachDueDate() // check charge day before
                     ) {
-                        // // add pending transaction for invoice
-                        // $pendingInvoice->addTransaction([
-                        //     'status' => \Acelle\Model\Transaction::STATUS_PENDING,
-                        //     'message' => trans('messages.automatically_charge', [
-                        //         'id' => $pendingInvoice->uid,
-                        //         'title' => $pendingInvoice->title,
-                        //     ]),
-                        // ]);
+                        // add pending transaction for invoice
+                        $pendingInvoice->addTransaction([
+                            'status' => \Acelle\Model\Transaction::STATUS_PENDING,
+                            'message' => trans('messages.automatically_charge', [
+                                'id' => $pendingInvoice->uid,
+                                'title' => $pendingInvoice->title,
+                            ]),
+                        ]);
                         
-                        // // charge invoice
-                        // $this->user->getPaymentGateway()->charge($pendingInvoice, true);
+                        // charge invoice
+                        $this->user->getPaymentGateway()->charge($pendingInvoice, true);
                     }
                 }
                 break;
