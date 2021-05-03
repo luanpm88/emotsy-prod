@@ -373,6 +373,7 @@ class Automation2Controller extends Controller
         $types = [
             'send-an-email',
             'wait',
+            'operation',
             'condition',
         ];
         
@@ -2274,6 +2275,103 @@ class Automation2Controller extends Controller
 
         return view('automation2.cart.items', [
             'automation' => $automation,
+        ]);
+    }
+
+    /**
+     * Operation select popup.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function operationSelect(Request $request, $uid)
+    {
+        $automation = Automation2::findByUid($uid);
+
+        // saving
+        if ($request->isMethod('post')) {
+            // return response()->json([
+            //     'status' => 'success',
+            //     'amount' => $request->amount,
+            //     'unit' => $request->unit
+            // ]);
+        }
+
+        return view('automation2.operationSelect', [
+            'automation' => $automation,
+            'types' => [
+                'update_contact',
+                'tag_contact',
+                'copy_contact',
+            ],
+        ]);
+    }
+
+    /**
+     * Operation edit popup.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function operationCreate(Request $request, $uid)
+    {
+        $automation = Automation2::findByUid($uid);
+
+        // saving
+        if ($request->isMethod('post')) {
+            return response()->json([
+                'status' => 'success',
+                'title' => trans('messages.automation.operation.' . $request->options['operation_type']),
+                'options' => $request->options,
+                'message' => trans('messages.automation.operation.added'),
+            ]);
+        }
+
+        return view('automation2.operationCreate', [
+            'automation' => $automation,
+            'types' => [
+                'update_contact',
+                'tag_contact',
+                'copy_contact',
+            ],
+        ]);
+    }
+
+    /**
+     * Operation edit popup.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function operationShow(Request $request, $uid)
+    {
+        $automation = Automation2::findByUid($uid);
+
+        return view('automation2.operationShow', [
+            'automation' => $automation,
+            'element' => $automation->getElement($request->id),
+        ]);
+    }
+
+    /**
+     * Operation edit popup.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function operationEdit(Request $request, $uid)
+    {
+        $automation = Automation2::findByUid($uid);
+
+        // saving
+        if ($request->isMethod('post')) {
+            return response()->json([
+                'status' => 'success',
+                'title' => trans('messages.automation.operation.' . $request->options['operation_type']),
+                'options' => $request->options,
+                'message' => trans('messages.automation.operation.updated'),
+            ]);
+        }
+
+        return view('automation2.operationEdit', [
+            'automation' => $automation,
+            'element' => $automation->getElement($request->id),
         ]);
     }
 }

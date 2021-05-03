@@ -41,6 +41,20 @@ class AutomationElement
      *
      * @return string
      */
+    public function getOptions()
+    {
+        if (isset($this->data) && isset($this->data->options)) {
+            return (array) $this->data->options;
+        }
+
+        return;
+    }
+
+    /**
+     * Get options.
+     *
+     * @return string
+     */
     public function getOption($name)
     {
         if (isset($this->data) && isset($this->data->options) && isset($this->data->options->$name)) {

@@ -1601,3 +1601,15 @@ a.trigger-woo-abandoned-cart:hover {
   padding-bottom: 0;
   border-top: solid 1px #ddd;
 }
+.popup-body .form-group label.validation-error-label {
+  font-weight: normal;
+  font-size: 90%;
+  color: #bf3e1b;
+  display: block;
+}
+.validation-valid-label {
+  display: none!important;
+}
+.update_list .row:first-child .remove-item {
+  display: none;
+}

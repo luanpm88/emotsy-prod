@@ -596,6 +596,14 @@
                     EmailSetup(e.getId());
                 }
             }
+            // is Email
+            else if (e.getType() == 'ElementOperation') {
+                var type = $(this).attr('data-type');
+                var url = '{{ action('Automation2Controller@operationShow', $automation->uid) }}?operation=' + e.getOptions().operation_type + '&id=' + e.getId();
+                
+                // Open trigger types select list
+                sidebar.load(url);
+            }
         }
 
         (function() {

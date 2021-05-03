@@ -558,6 +558,10 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::match(['get', 'post'], 'automation2/{uid}/car/wait', 'Automation2Controller@cartWait');
     Route::match(['get', 'post'], 'automation2/{uid}/car/change-list', 'Automation2Controller@cartChangeList');
     Route::get('automation2/{uid}/condition/setting', 'Automation2Controller@conditionSetting');
+    Route::get('automation2/{uid}/operation/show', 'Automation2Controller@operationShow');
+    Route::match(['get', 'post'], 'automation2/{uid}/operation/edit', 'Automation2Controller@operationEdit');
+    Route::match(['get', 'post'], 'automation2/{uid}/operation/create', 'Automation2Controller@operationCreate');
+    Route::get('automation2/{uid}/operation/select', 'Automation2Controller@operationSelect');
     Route::post('automation2/{uid}/wait-time', 'Automation2Controller@waitTime');
     Route::get('automation2/{uid}/wait-time', 'Automation2Controller@waitTime');
     Route::get('automation2/{uid}/last-saved', 'Automation2Controller@lastSaved');

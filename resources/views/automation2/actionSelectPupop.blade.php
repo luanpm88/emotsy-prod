@@ -12,7 +12,7 @@
                     @php
                         $disabled = ($type == 'condition' && $hasChildren == "true") ? 'd-disabled' : '';
                     @endphp
-                    <div class="line-item action-select-but {{ $disabled }}" data-key="{{ $type }}">
+                    <div class="line-item action-select-but action-select-{{ $type }} {{ $disabled }}" data-key="{{ $type }}">
                         <div class="line-icon">
                             <i class="lnr lnr-{{ trans('messages.automation.action.' . $type . '.icon') }}"></i>
                         </div>
@@ -30,4 +30,15 @@
             </div>
         </div>
     </div>
+    <script>
+        $('.action-select-operation').on('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+
+            var url = '{!! action('Automation2Controller@operationSelect', $automation->uid) !!}';
+            popup.load(url);
+        });
+    </script>
+
 @endsection
