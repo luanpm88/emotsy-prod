@@ -306,7 +306,7 @@ class SubscriptionController extends Controller
             
             // try reject
             try {
-                $subscription->claimedInvoice()->payFailed($request->reason);
+                $subscription->claimedInvoice()->reject($request->reason);
             } catch (\Exception $ex) {
                 $validator->errors()->add('reason', $ex->getMessage());
                 

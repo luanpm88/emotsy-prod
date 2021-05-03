@@ -264,6 +264,22 @@ class Invoice extends Model
         // fulfill invoice
         $this->fulfill();
     }
+
+    /**
+     * Reject invoice.
+     *
+     * @return void
+     */
+    public function reject($error, $auto=false)
+    {
+        // for only new|claimed invoice
+        if (!$this->isNew() && !$this->isClaimed()) {
+            throw new \Exception("Trying to reject an invoice that is not 'claimed' (Invoice ID: {$this->id}, status: {$this->status}");
+        }
+
+        // fulfill invoice
+        $this->payFailed($error, $auto);
+    }
     
     /**
      * Pay invoice.
