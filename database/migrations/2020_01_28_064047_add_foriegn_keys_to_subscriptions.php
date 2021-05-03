@@ -16,7 +16,7 @@ class AddForiegnKeysToSubscriptions extends Migration
         // Just in case of "Unknown database type enum requested, Doctrine\DBAL\Platforms\MySQL57Platform may not support it." error
         DB::connection()->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
 
-        \Doctrine\DBAL\Types\Type::addType('uuid', 'Ramsey\Uuid\Doctrine\UuidType');
+        // \Doctrine\DBAL\Types\Type::addType('uuid', 'Ramsey\Uuid\Doctrine\UuidType');
 
         DB::statement(sprintf('ALTER TABLE %s CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;', table('customers')));
         DB::statement(sprintf('ALTER TABLE %s MODIFY uid CHAR(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;', table('customers')));
