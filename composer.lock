@@ -1909,16 +1909,16 @@
         },
         {
             "name": "lawepham/geoip",
-            "version": "1.6.2",
+            "version": "1.6.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/luanpm88/lawepham-geoip.git",
-                "reference": "8abede716d5f7e17a1901388fdd3b5450d674d58"
+                "reference": "e629d342f773f7271234f4d281d875c1e32bd539"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/luanpm88/lawepham-geoip/zipball/8abede716d5f7e17a1901388fdd3b5450d674d58",
-                "reference": "8abede716d5f7e17a1901388fdd3b5450d674d58",
+                "url": "https://api.github.com/repos/luanpm88/lawepham-geoip/zipball/e629d342f773f7271234f4d281d875c1e32bd539",
+                "reference": "e629d342f773f7271234f4d281d875c1e32bd539",
                 "shasum": ""
             },
             "type": "library",
@@ -1935,10 +1935,10 @@
             ],
             "description": "Get location information from IP",
             "support": {
-                "source": "https://github.com/luanpm88/lawepham-geoip/tree/1.6.2",
+                "source": "https://github.com/luanpm88/lawepham-geoip/tree/1.6.3",
                 "issues": "https://github.com/luanpm88/lawepham-geoip/issues"
             },
-            "time": "2021-04-21T03:14:28+00:00"
+            "time": "2021-05-03T15:14:01+00:00"
         },
         {
             "name": "league/commonmark",
