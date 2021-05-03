@@ -257,7 +257,7 @@ class Invoice extends Model
     public function approve()
     {
         // for only new|claimed invoice
-        if (!$this->isNew() && !$this->isClaimed()) {
+        if (!$this->isClaimed()) {
             throw new \Exception("Trying to approve an invoice that is not 'claimed' (Invoice ID: {$this->id}, status: {$this->status}");
         }
 
@@ -273,7 +273,7 @@ class Invoice extends Model
     public function reject($error, $auto=false)
     {
         // for only new|claimed invoice
-        if (!$this->isNew() && !$this->isClaimed()) {
+        if (!$this->isClaimed()) {
             throw new \Exception("Trying to reject an invoice that is not 'claimed' (Invoice ID: {$this->id}, status: {$this->status}");
         }
 
