@@ -531,6 +531,12 @@ class Setting extends Model
                 'type' => 'array',
                 'not_required' => true,
             ],
+            'automation.trigger_imported_contacts' => [
+                'cat' => 'others',
+                'value' => 'no',
+                'type' => 'text',
+                'not_required' => true,
+            ],
         ];
     }
 
