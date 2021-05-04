@@ -4264,6 +4264,6 @@
   'automation.operation.copy.desc' => 'Copy contact to list <strong>:list_name</strong>',
   'automation.operation.update.desc' => 'Update contact',
   'automation.operation.move.desc' => 'Move contact to list <strong>:list_name</strong>',
-  'automation.operation.tag.desc' => 'Tag contact',
-  'automation.operation.delete.desc' => 'Delete contact from list <strong>:list_name</strong>',
+  'automation.operation.tag.desc' => 'Tag contact with: :tags',
+  'automation.operation.delete.desc' => 'Delete contact',
 ) ?>

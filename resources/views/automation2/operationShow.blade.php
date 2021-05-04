@@ -2,10 +2,11 @@
 
 <h3 class="mb-3">{{ trans('messages.automation.operation.' . $element->getOption('operation_type')) }}</h3>
 <p>{!! trans('messages.automation.operation.' .$element->getOption('operation_type'). '.desc', [
-    'list_name' => $element->getOption('list_uid') ? \Acelle\Model\MailList::findByUid($element->getOption('list_uid'))->name : '',
+    'list_name' => $element->getOption('target_list_uid') ? \Acelle\Model\MailList::findByUid($element->getOption('target_list_uid'))->name : '',
+    'tags' => $element->getOption('tags') ? '<span class="badge badge-info mr-1">' . implode('</span><span class="badge badge-info mr-1">', $element->getOption('tags')) . '</span>' : '',
 ]) !!}</p>
 
-@if (request()->operation == 'update')
+@if (request()->operation == 'update' && $element->getOption('update'))
     <table class="table my-3 table-bordered">
         <thead class="thead-light">
             <tr>

@@ -25,12 +25,12 @@
             'type' => 'select',
             'class' => '',
             'label' => trans('messages.operation.target_list'),
-            'name' => 'options[list_uid]',
-            'value' => isset($element) ? $element->getOption('list_uid') : [],
+            'name' => 'options[target_list_uid]',
+            'value' => isset($element) ? $element->getOption('target_list_uid') : [],
             'options' => \Acelle\Model\MailList::getAll()->get()->map(function($list) {
                 return ['text' => $list->name, 'value' => $list->uid];
             }),
-            'rules' => ['options.list_uid' => 'required'],
+            'rules' => ['options.target_list_uid' => 'required'],
             'include_blank' => trans('messages.choose_a_list'),
         ])
     </div>

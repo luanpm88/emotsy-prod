@@ -49,13 +49,15 @@
                     tree.getSelected().insert(newE);
 
                     newE.validate();
-
-                    doSelect(newE);
                     
                     // save tree
                     saveData(function() {
                         // hide popup
                         popup.hide();
+
+                        setTimeout(function() {
+                            doSelect(newE);
+                        }, 200);
                         
                         notify('success', '{{ trans('messages.notify.success') }}', response.message);
                     });

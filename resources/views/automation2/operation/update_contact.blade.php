@@ -81,6 +81,15 @@
             this.items.push({field_uid: '', value: ''});
         }
 
+        update() {
+            var index = 0;
+            var _this = this;
+            _this.items.forEach(function(item) {
+                _this.items[index].field_uid = $('[name="options[update]['+index+'][field_uid]"]').val();
+                _this.items[index].value = $('[name="options[update]['+index+'][value]"]').val();
+            });
+        }
+
         render() {
             var _this = this;
             $('.update_list').html('');
@@ -95,6 +104,10 @@
 
             $('.remove-item').on('click', function(e) {
                 _this.remove($(this).attr('data-index'));
+            });
+
+            $('.update_list input, .update_list select').on('change', function(e) {
+                _this.update();
             });
         }
 
