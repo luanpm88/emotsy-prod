@@ -19,12 +19,10 @@
 									class="btn btn-link">
 									{{ trans('messages.delete') }}
 								</a>
-								<span class="text-muted ml-auto text-teal-800 m-icon">
-									<span style="font-size: 20px;
-									float: left;
-									margin-right: 2px;" class="material-icons-outlined">
-									store
-									</span> {{ $product->source->getName() }}</span>
+								<span class="text-muted ml-auto text-teal-800 m-icon d-flex align-items-center">
+									<img width="20px" class="mr-2 list-source-img" src="{{ url('images/' . $product->source->type . '_list.png') }}" />
+									<span>{{ $product->source->getName() }}</span>
+								</span>
 							</div>
 						</div>
 					</div>

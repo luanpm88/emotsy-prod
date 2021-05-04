@@ -19,7 +19,7 @@
     </div>
 </div>
 
-<div class="row my-2">
+<div class="row my-2 operation-list-select" {!! isset($element) && $element->getOption('operation_type') == 'delete' ? 'style="display:none"' : '' !!}>
     <div class="col-md-8">
         @include('helpers.form_control', [
             'type' => 'select',
@@ -43,5 +43,20 @@
         e.preventDefault();
 
         $('#operation-edit').valid();
+    });
+
+    function checkDelete(value) {
+        if(value == 'delete') {
+            $('.operation-list-select').hide();
+        } else {
+            $('.operation-list-select').show();
+        }
+    }
+    
+    $('[name="options[operation_type]"]').on('change', function(e) {
+        e.preventDefault();
+        var value = $(this).val();
+
+        checkDelete(value);
     });
 </script>
