@@ -4297,3 +4297,7 @@ label:hover .checkmark, .checkmark-container:hover .checkmark {
 .payment-box i.bg-razorpay {
     width: 50px;
 }
+.list-source-img {
+    border-radius: 3px;
+    box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+}
