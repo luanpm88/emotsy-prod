@@ -11,7 +11,7 @@
 
 function customValidate(selector) {
     selector.validate({
-        ignore: 'input[type=hidden], .select2-input', // ignore hidden fields
+        ignore: 'input[type=hidden], .select2-input, :not(:visible)', // ignore hidden fields
         errorClass: 'validation-error-label',
         successClass: 'validation-valid-label',
         highlight: function(element, errorClass) {
