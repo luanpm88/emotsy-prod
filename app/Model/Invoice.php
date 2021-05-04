@@ -257,12 +257,28 @@ class Invoice extends Model
     public function approve()
     {
         // for only new|claimed invoice
-        if (!$this->isNew() && !$this->isClaimed()) {
-            throw new \Exception('Trying to approve an invoice that is not new or claimed');
+        if (!$this->isClaimed()) {
+            throw new \Exception("Trying to approve an invoice that is not 'claimed' (Invoice ID: {$this->id}, status: {$this->status}");
         }
 
         // fulfill invoice
         $this->fulfill();
+    }
+
+    /**
+     * Reject invoice.
+     *
+     * @return void
+     */
+    public function reject($error, $auto=false)
+    {
+        // for only new|claimed invoice
+        if (!$this->isClaimed()) {
+            throw new \Exception("Trying to reject an invoice that is not 'claimed' (Invoice ID: {$this->id}, status: {$this->status}");
+        }
+
+        // fulfill invoice
+        $this->payFailed($error, $auto);
     }
     
     /**

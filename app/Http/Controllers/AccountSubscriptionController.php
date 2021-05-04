@@ -91,7 +91,7 @@ class AccountSubscriptionController extends Controller
         $plan = Plan::findByUid($request->plan_uid);
 
         // create new subscription
-        $subscription = Subscription::initNew($customer, $plan);
+        $subscription = $customer->assignPlan($plan);
 
         // create init invoice
         if (!$subscription->pendingInvoice()) {

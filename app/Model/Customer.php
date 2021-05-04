@@ -1996,7 +1996,28 @@ class Customer extends Model implements BillableUserInterface
      */
     public function assignPlan($plan)
     {
-        \Acelle\Model\Subscription::initNew($this, $plan);
+        $subscription = $this->subscription;
+        // create tmp subscription
+        if (!$subscription) {
+            $subscription = new self();
+            $subscription->user_id = $this->getBillableId();
+        }
+
+        // cancel all pending invoices (new|claimed)
+        $subscription->pendingInvoices()->delete();
+
+        // reset value
+        $subscription->plan_id = $plan->getBillableId();
+        $subscription->current_period_ends_at = null;
+        $subscription->ends_at = null;
+        $subscription->started_at = null;
+        $subscription->status = Subscription::STATUS_NEW;
+        $subscription->save();
+
+        // create init invoice
+        $subscription->createInitInvoice();
+
+        return $subscription;
     }
 
     /**
@@ -2004,8 +2025,18 @@ class Customer extends Model implements BillableUserInterface
      */
     public function hasSubscriptionNotice()
     {
-        if (is_object($this->subscription)) {
-            return $this->subscription->hasError();
+        $subscription = $this->subscription;
+
+        if (!is_object($subscription)) {
+            return false;
+        }
+
+        if ($subscription->renewInvoice() && !$subscription->renewInvoice()->isPaid() && !$subscription->user->supportsAutoBilling()) {
+            return true;
+        }
+
+        if ($subscription->changePlanInvoice() && !$subscription->changePlanInvoice()->isPaid()) {
+            return true;
         }
 
         return false;

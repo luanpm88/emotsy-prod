@@ -37,6 +37,7 @@ use Monolog\Handler\RotatingFileHandler;
 use Monolog\Formatter\LineFormatter;
 use Acelle\Library\Lockable;
 use Acelle\Model\SystemJob as SystemJobModel;
+use Acelle\Model\Setting;
 use DateTime;
 use DateTimeZone;
 use Exception;
@@ -749,11 +750,14 @@ class Automation2 extends Model
             CREATE INDEX _new_subscribers_to_follow_index ON _new_subscribers_to_follow(subscriber_id);', table('auto_triggers'), $this->id)
         );
 
-        return $this->subscribers()->whereRaw(table('subscribers.id').' NOT IN (SELECT subscriber_id FROM _new_subscribers_to_follow)')
+        $query = $this->subscribers()->whereRaw(table('subscribers.id').' NOT IN (SELECT subscriber_id FROM _new_subscribers_to_follow)')
                 ->where('subscribers.created_at', '>=', $this->created_at)
-                ->where('mail_list_id', $this->mailList->id)
-                ->whereRaw(sprintf('COALESCE('.table('subscribers.subscription_type').", '') <> %s", db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED)))
-                ->get();
+                ->where('mail_list_id', $this->mailList->id);
+        if (!Setting::isYes('trigger_imported_contacts')) {
+            $query = $query->whereRaw(sprintf('COALESCE('.table('subscribers.subscription_type').", '') <> %s", db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED)));
+        }
+
+        return $query->get();
     }
 
     /**

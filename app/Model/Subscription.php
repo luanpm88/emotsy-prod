@@ -7,6 +7,8 @@ use LogicException;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
 
+use Acelle\Model\Invoice;
+
 class Subscription extends Model
 {
     const STATUS_NEW = 'new';
@@ -99,9 +101,9 @@ class Subscription extends Model
     {
         $uid = $this->uid;
         $type = self::class;
-        return \Acelle\Model\Invoice::whereIn('id', function ($query) use ($uid, $type) {
+        return Invoice::whereIn('id', function ($query) use ($uid, $type) {
             $query->select('invoice_id')
-            ->from(with(new \Acelle\Model\InvoiceItem)->getTable())
+            ->from(with(new InvoiceItem)->getTable())
             ->where('item_type', $type)
             ->where('item_id', $uid);
         });
@@ -128,8 +130,8 @@ class Subscription extends Model
     {
         return $this->invoices()
             ->whereIn('status', [
-                \Acelle\Model\Invoice::STATUS_NEW,
-                \Acelle\Model\Invoice::STATUS_CLAIMED,
+                Invoice::STATUS_NEW,
+                Invoice::STATUS_CLAIMED,
             ]);
     }
 
@@ -159,7 +161,7 @@ class Subscription extends Model
     {
         return $this->invoices()
             ->orderBy('created_at', 'desc')
-            ->where('type', \Acelle\Model\Invoice::TYPE_CHANGE_PLAN)
+            ->where('type', Invoice::TYPE_CHANGE_PLAN)
             ->first();
     }
 
@@ -172,7 +174,7 @@ class Subscription extends Model
     {
         return $this->invoices()
             ->orderBy('created_at', 'desc')
-            ->where('type', \Acelle\Model\Invoice::TYPE_RENEW_SUBSCRIPTION)
+            ->where('type', Invoice::TYPE_RENEW_SUBSCRIPTION)
             ->first();
     }
 
@@ -185,7 +187,7 @@ class Subscription extends Model
     {
         return $this->invoices()
             ->orderBy('created_at', 'desc')
-            ->where('status', \Acelle\Model\Invoice::STATUS_NEW)
+            ->where('status', Invoice::STATUS_NEW)
             ->first();
     }
 
@@ -198,39 +200,8 @@ class Subscription extends Model
     {
         return $this->invoices()
             ->orderBy('created_at', 'desc')
-            ->where('status', \Acelle\Model\Invoice::STATUS_CLAIMED)
+            ->where('status', Invoice::STATUS_CLAIMED)
             ->first();
-    }
-
-    /**
-     * Init new subscription.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public static function initNew($customer, $plan)
-    {
-        $subscription = $customer->subscription;
-        // create tmp subscription
-        if (!$subscription) {
-            $subscription = new self();
-            $subscription->user_id = $customer->getBillableId();
-        }
-
-        // cancel all pending invoices (new|claimed)
-        $subscription->pendingInvoices()->delete();
-
-        // reset value
-        $subscription->plan_id = $plan->getBillableId();
-        $subscription->current_period_ends_at = null;
-        $subscription->ends_at = null;
-        $subscription->started_at = null;
-        $subscription->status = Subscription::STATUS_NEW;
-        $subscription->save();
-
-        // create init invoice
-        $subscription->createInitInvoice();
-
-        return $subscription;
     }
 
     /**
@@ -246,9 +217,9 @@ class Subscription extends Model
         }
 
         // create invoice
-        $invoice = new \Acelle\Model\Invoice();
-        $invoice->status = \Acelle\Model\Invoice::STATUS_NEW;
-        $invoice->type = \Acelle\Model\Invoice::TYPE_NEW_SUBSCRIPTION;
+        $invoice = new Invoice();
+        $invoice->status = Invoice::STATUS_NEW;
+        $invoice->type = Invoice::TYPE_NEW_SUBSCRIPTION;
         $invoice->title = trans('messages.invoice.init_subscription');
         $invoice->description = trans('messages.invoice.init_subscription.desc', [
             'plan' => $this->plan->name,
@@ -288,9 +259,9 @@ class Subscription extends Model
         }
 
         // create invoice
-        $invoice = new \Acelle\Model\Invoice();
-        $invoice->status = \Acelle\Model\Invoice::STATUS_NEW;
-        $invoice->type = \Acelle\Model\Invoice::TYPE_RENEW_SUBSCRIPTION;
+        $invoice = new Invoice();
+        $invoice->status = Invoice::STATUS_NEW;
+        $invoice->type = Invoice::TYPE_RENEW_SUBSCRIPTION;
         $invoice->title = trans('messages.invoice.renew_subscription');
         $invoice->description = trans('messages.renew_subscription.desc', [
             'plan' => $this->plan->name,
@@ -333,9 +304,9 @@ class Subscription extends Model
         $metadata = $this->calcChangePlan($newPlan);
 
         // create invoice
-        $invoice = new \Acelle\Model\Invoice();
-        $invoice->status = \Acelle\Model\Invoice::STATUS_NEW;
-        $invoice->type = \Acelle\Model\Invoice::TYPE_CHANGE_PLAN;
+        $invoice = new Invoice();
+        $invoice->status = Invoice::STATUS_NEW;
+        $invoice->type = Invoice::TYPE_CHANGE_PLAN;
         $invoice->title = trans('messages.invoice.change_plan');
         $invoice->description = trans('messages.change_plan.desc', [
             'plan' => $this->plan->name,
@@ -455,17 +426,6 @@ class Subscription extends Model
         return $endsAt;
     }
 
-    // /**
-    //  * Set as pending.
-    //  *
-    //  * @return void
-    //  */
-    // public function setNew()
-    // {
-    //     $this->status = self::STATUS_NEW;
-    //     $this->save();
-    // }
-
     /**
      * Check subscription status.
      *
@@ -482,10 +442,11 @@ class Subscription extends Model
                 // check expired
                 if ($this->isExpired()) {
                     $this->cancelNow();
+                    return;
                 }
 
                 // check expiring
-                elseif ($this->isExpiring() && $this->canRenewPlan() && !$this->cancelled()) {
+                if ($this->isExpiring() && $this->canRenewPlan() && !$this->cancelled()) {
                     $pendingInvoice = $this->pendingInvoice();
 
                     // create renew invoice if no pending invoice
@@ -503,17 +464,17 @@ class Subscription extends Model
                         $this->user->supportsAutoBilling() &&
                         $this->reachDueDate() // check charge day before
                     ) {
-                        // // add pending transaction for invoice
-                        // $pendingInvoice->addTransaction([
-                        //     'status' => \Acelle\Model\Transaction::STATUS_PENDING,
-                        //     'message' => trans('messages.automatically_charge', [
-                        //         'id' => $pendingInvoice->uid,
-                        //         'title' => $pendingInvoice->title,
-                        //     ]),
-                        // ]);
+                        // add pending transaction for invoice
+                        $pendingInvoice->addTransaction([
+                            'status' => \Acelle\Model\Transaction::STATUS_PENDING,
+                            'message' => trans('messages.automatically_charge', [
+                                'id' => $pendingInvoice->uid,
+                                'title' => $pendingInvoice->title,
+                            ]),
+                        ]);
                         
-                        // // charge invoice
-                        // $this->user->getPaymentGateway()->charge($pendingInvoice, true);
+                        // charge invoice
+                        $this->user->getPaymentGateway()->charge($pendingInvoice, true);
                     }
                 }
                 break;
@@ -529,7 +490,7 @@ class Subscription extends Model
     public function reachDueDate()
     {
         return \Carbon\Carbon::now()->greaterThanOrEqualTo(
-            $this->current_period_ends_at->subDays(Acelle\Model\Setting::get('recurring_charge_before_days'))
+            $this->current_period_ends_at->subDays(\Acelle\Model\Setting::get('recurring_charge_before_days'))
         );
     }
     
@@ -831,44 +792,6 @@ class Subscription extends Model
         }
 
         return false;
-    }
-
-    /**
-     * Check if has error
-     *
-     * @return void
-     */
-    public function hasError($type=null)
-    {
-        if ($this->getError($type) == null) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    /**
-     * Get error
-     *
-     * @return void
-     */
-    public function getError($type=null)
-    {
-        if (!$this->error) {
-            return null;
-        }
-
-        $error = json_decode($this->error, true);
-
-        if ($type != null) {
-            if (isset($error['type']) && $error['type'] == $type) {
-                return $error;
-            } else {
-                return null;
-            }
-        } else {
-            return $error;
-        }
     }
 
     /**

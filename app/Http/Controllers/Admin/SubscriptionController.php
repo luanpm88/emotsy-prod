@@ -94,7 +94,6 @@ class SubscriptionController extends Controller
      **/
     public function approve(Request $request, $id)
     {
-        $customer = $request->user()->customer;
         $subscription = Subscription::findByUid($request->id);
 
         // authorize
@@ -118,65 +117,6 @@ class SubscriptionController extends Controller
         ]);
     }
 
-
-
-
-
-
-
-
-
-
-    // /**
-    //  * Admin create new subscription for customer.
-    //  *
-    //  * @return \Illuminate\Http\Response
-    //  */
-    // public function create(Request $request)
-    // {
-    //     // authorize
-    //     if (!$request->user()->admin->can('create', new Subscription())) {
-    //         return $this->notAuthorized();
-    //     }
-
-    //     $subscription = new Subscription();
-    //     $rules = [
-    //         'customer_uid' => 'required',
-    //         'plan_uid' => 'required',
-    //     ];
-
-    //     // save posted data
-    //     if ($request->isMethod('post')) {
-    //         $validator = \Validator::make($request->all(), $rules);
-
-    //         // redirect if fails
-    //         if ($validator->fails()) {
-    //             return response()->view('admin.subscriptions.create', [
-    //                 'subscription' => $subscription,
-    //                 'rules' => $rules,
-    //                 'errors' => $validator->errors(),
-    //             ], 400);
-    //         }
-
-    //         // asign plan
-    //         $customer = Customer::findByUid($request->customer_uid);
-    //         $plan = Plan::findByUid($request->plan_uid);
-    //         $customer->assignPlan($plan);
-            
-    //         return response()->json([
-    //             'status' => 'success',
-    //             'message' => trans('messages.subscription.created'),
-    //         ]);
-    //     }
-
-    //     return view('admin.subscriptions.create', [
-    //         'subscription' => $subscription,
-    //         'rules' => $rules,
-    //     ]);
-    // }
-
-    
-
     /**
      * Cancel subscription at the end of current period.
      *
@@ -186,8 +126,6 @@ class SubscriptionController extends Controller
      */
     public function cancel(Request $request)
     {
-        $customer = $request->user()->customer;
-        // Get current subscription
         $subscription = Subscription::findByUid($request->id);
 
         if ($request->user()->admin->can('cancel', $subscription)) {
@@ -206,8 +144,6 @@ class SubscriptionController extends Controller
      */
     public function resume(Request $request)
     {
-        $customer = $request->user()->customer;
-        // Get current subscription
         $subscription = Subscription::findByUid($request->id);
 
         if ($request->user()->admin->can('resume', $subscription)) {
@@ -226,7 +162,6 @@ class SubscriptionController extends Controller
      */
     public function cancelNow(Request $request)
     {
-        $customer = $request->user()->customer;
         $subscription = Subscription::findByUid($request->id);
 
         if ($request->user()->admin->can('cancelNow', $subscription)) {
@@ -244,17 +179,6 @@ class SubscriptionController extends Controller
         echo trans('messages.subscription.cancelled_now');
     }
 
-    // /**
-    //  * Change plan.
-    //  *
-    //  * @param \Illuminate\Http\Request $request
-    //  *
-    //  * @return \Illuminate\Http\Response
-    //  **/
-    // public function changePlan(Request $request, $id)
-    // {
-    // }
-
     /**
      * Subscription invoices.
      *
@@ -264,14 +188,10 @@ class SubscriptionController extends Controller
      **/
     public function invoices(Request $request, $id)
     {
-        $customer = $request->user()->customer;
-        // Get current subscription
         $subscription = Subscription::findByUid($request->id);
-        $gateway = $customer->getPaymentGateway();
 
         return view('admin.subscriptions.invoices', [
             'subscription' => $subscription,
-            'gateway' => $gateway,
         ]);
     }
 
@@ -284,7 +204,6 @@ class SubscriptionController extends Controller
      **/
     public function rejectPending(Request $request, $id)
     {
-        $customer = $request->user()->customer;
         $subscription = Subscription::findByUid($request->id);
 
         // authorize
@@ -306,7 +225,7 @@ class SubscriptionController extends Controller
             
             // try reject
             try {
-                $subscription->claimedInvoice()->payFailed($request->reason);
+                $subscription->claimedInvoice()->reject($request->reason);
             } catch (\Exception $ex) {
                 $validator->errors()->add('reason', $ex->getMessage());
                 
