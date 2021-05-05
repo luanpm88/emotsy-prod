@@ -4263,6 +4263,6 @@
   'automation.operation.copy.desc' => 'Copy contact to list <strong>:list_name</strong>',
   'automation.operation.update.desc' => 'Update contact',
   'automation.operation.move.desc' => 'Move contact to list <strong>:list_name</strong>',
-  'automation.operation.tag.desc' => 'Tag contact with: :tags',
+  'automation.operation.tag.desc' => 'Tag your contacts who reach this point of the automation workflow using the tags below. Tags are helpful when you want to filter your contacts later on. You can also create dynamic segments for your list using tags.<br>Selected tags: :tags',
   'automation.operation.delete.desc' => 'Delete contact',
 ) ?>
