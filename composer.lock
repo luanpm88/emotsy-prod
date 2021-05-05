@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bd857fe910f5e0236b0d079770d91c09",
+    "content-hash": "f453d8624b53f8a5d49826152bd5928a",
     "packages": [
         {
             "name": "acelle/cashier",
@@ -1348,6 +1348,58 @@
                 "source": "https://github.com/facebook/facebook-php-business-sdk/tree/10.0.1"
             },
             "time": "2021-04-28T21:23:27+00:00"
+        },
+        {
+            "name": "galbar/jsonpath",
+            "version": "1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Galbar/JsonPath-PHP.git",
+                "reference": "2d166b0293f82f6bf3f96afa6729e317016ce3c1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Galbar/JsonPath-PHP/zipball/2d166b0293f82f6bf3f96afa6729e317016ce3c1",
+                "reference": "2d166b0293f82f6bf3f96afa6729e317016ce3c1",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0",
+                "sami/sami": ">=3.3.0",
+                "satooshi/php-coveralls": ">=1.0.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "JsonPath\\": "src/Galbar/",
+                    "Utilities\\": "src/Galbar/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Alessio Linares",
+                    "email": "alessio@alessio.cc",
+                    "role": "Software Engineer"
+                }
+            ],
+            "description": "JSONPath implementation for querying and updating JSON objects",
+            "keywords": [
+                "json",
+                "jsonpath",
+                "path"
+            ],
+            "support": {
+                "issues": "https://github.com/Galbar/JsonPath-PHP/issues",
+                "source": "https://github.com/Galbar/JsonPath-PHP/tree/1.2"
+            },
+            "time": "2021-04-07T17:10:18+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -4642,64 +4694,6 @@
                 "source": "https://github.com/sendgrid/smtpapi-php/tree/master"
             },
             "time": "2015-04-14T02:37:45+00:00"
-        },
-        {
-            "name": "skyscanner/jsonpath",
-            "version": "0.7.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Skyscanner/JsonPath-PHP.git",
-                "reference": "dbb9140b7d27638f747c0a889388f492a20f41e4"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Skyscanner/JsonPath-PHP/zipball/dbb9140b7d27638f747c0a889388f492a20f41e4",
-                "reference": "dbb9140b7d27638f747c0a889388f492a20f41e4",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "~4.0",
-                "sami/sami": ">=3.3.0",
-                "satooshi/php-coveralls": ">=1.0.1"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "JsonPath\\": "src/Skyscanner/",
-                    "Utilities\\": "src/Skyscanner/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache 2.0"
-            ],
-            "authors": [
-                {
-                    "name": "Alessio Linares",
-                    "email": "alessio@alessio.cc",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Tudor Barbu",
-                    "email": "tudor.barbu@skyscanner.net",
-                    "role": "Senior Developer"
-                }
-            ],
-            "description": "JSONPath implementation for querying and updating JSON objects",
-            "keywords": [
-                "json",
-                "jsonpath",
-                "path"
-            ],
-            "support": {
-                "issues": "https://github.com/Skyscanner/JsonPath-PHP/issues",
-                "source": "https://github.com/Skyscanner/JsonPath-PHP/tree/master"
-            },
-            "abandoned": "galbar/jsonpath",
-            "time": "2016-12-02T08:05:10+00:00"
         },
         {
             "name": "sparkpost/sparkpost",
