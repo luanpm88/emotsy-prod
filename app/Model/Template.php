@@ -1079,20 +1079,21 @@ class Template extends Model implements Storable
      *
      * All availabel form tags
      */
-    public static function getTemplatesFromDisk($keyword=null)
+    public static function getTemplatesFromDisk($keyword=null, $subPath='layouts/')
     {
         $templates = [];
-        $dir = database_path("layouts/");
+        $dir = database_path($subPath);
         $templateUrl = array_diff(scandir($dir), array('..', '.', 'empty'));
         foreach ($templateUrl as $name) {
             $path = join_paths($dir, $name);
             $files = glob($path . "/index.html");
             $content = file_get_contents($files[0]);
+            
             $preg_matchs = preg_match_all('/(<title\>([^<]*)\<\/title\>)/i', $content, $m);
             $title = $m[2][0];
 
             // encode image
-            $path = database_path('layouts/' . $name . '/thumb.png');
+            $path = database_path($subPath . $name . '/thumb.png');
             $type = pathinfo($path, PATHINFO_EXTENSION);
             $data = file_get_contents($path);
             $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
@@ -1107,5 +1108,15 @@ class Template extends Model implements Storable
         }
 
         return $templates;
+    }
+
+    /**
+     * Get forms template from disk.
+     *
+     * All availabel form tags
+     */
+    public static function getWooTemplatesFromDisk($keyword=null)
+    {
+        return self::getTemplatesFromDisk($keyword, 'woos/');
     }
 }

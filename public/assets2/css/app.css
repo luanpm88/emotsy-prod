@@ -1613,3 +1613,16 @@ a.trigger-woo-abandoned-cart:hover {
 .update_list .row:first-child .remove-item {
   display: none;
 }
+.template_recommended {
+  position: absolute;
+  top: 151px;
+  width: 100%;
+  text-align: center;
+  background: rgba(237, 134, 32, 0.9);
+  color: #fff;
+  padding: 8px;
+  font-size: 13px;
+}
+.panel-template-style .panel-body {
+  position: relative;
+}

@@ -150,9 +150,9 @@ class Email extends Model
      *
      * All availabel template tags
      */
-    public function addTemplateFromLayout($layout)
+    public function addTemplateFromLayout($layout, $dir='layouts/')
     {
-        $sDir = database_path('layouts/'.$layout);
+        $sDir = database_path($dir.$layout);
         $this->loadFromDirectory($sDir);
     }
 
