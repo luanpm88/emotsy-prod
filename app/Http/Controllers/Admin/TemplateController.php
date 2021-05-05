@@ -253,7 +253,7 @@ class TemplateController extends Controller
             return response()->json([
                 'status' => 'notice',
                 'message' => trans('messages.operation_not_allowed_in_demo'),
-            ]);
+            ], 403);
         }
 
         $items = \Acelle\Model\Template::whereIn('uid', explode(',', $request->uids));
