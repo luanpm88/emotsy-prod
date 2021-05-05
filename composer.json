@@ -50,9 +50,9 @@
         "fideloper/proxy": "^4.0",
         "filp/whoops": "~2.0",
         "mockery/mockery": "^1.0",
-        "phpunit/php-code-coverage": "^7.0.7",
-        "phpunit/phpunit": "^8.5",
-        "sebastian/global-state": "^3.0.0"
+        "phpunit/php-code-coverage": "^9.0",
+        "phpunit/phpunit": "^9.5",
+        "sebastian/global-state": "^5.0"
     },
     "autoload": {
         "classmap": [
