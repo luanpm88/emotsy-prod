@@ -1358,7 +1358,7 @@ class Automation2Controller extends Controller
             return response()->json([
                 'status' => 'notice',
                 'message' => trans('messages.operation_not_allowed_in_demo'),
-            ]);
+            ], 403);
         }
         
         $automations = Automation2::whereIn('uid', explode(',', $request->uids));
