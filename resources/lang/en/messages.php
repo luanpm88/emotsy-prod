@@ -2742,8 +2742,7 @@
   'automation.action.condition.icon' => 'code',
   'automation.action.wait.intro' => 'Set your automation workflow wait for a while before proceeding with next action.
         How long do you want to wait, please choose below.',
-  'automation.action.send-an-email.intro' => 'Choose one of the conditions below for your workflow. We will evaluate the condition
-        and branch off your workflow accordingly.',
+  'automation.action.send-an-email.intro' => 'Send an email to your contacts who reach this point of the automation workflow. Set up a perfonalized email and have it ready to shoot',
   'automation.action.condition.intro' => 'Choose one of the conditions below for your workflow. We will evaluate the condition
         and branch off your workflow accordingly.',
   'automation.action.set_up_your_condition' => 'Set up your condition',
@@ -2842,9 +2841,9 @@
   'automation.template.email_content' => 'Email Content',
   'automation.template.email_content.intro' => 'Create your email from scratch or start from our pre-built templates / themes.
         Customize the content the way you desire with our powerful but easy-to-use HTML email builder.',
-  'automation.template.from_layout' => 'From a Template Layout',
+  'automation.template.from_layout' => 'Create new email',
   'automation.template.from_layout.intro' => 'Craft your email based off a pre-built layout we made for you',
-  'automation.template.from_theme' => 'From a theme',
+  'automation.template.from_theme' => 'Choose from a theme',
   'automation.template.from_theme.intro' => 'No need to create an email from scratch. Start from a beautiful template we have',
   'automation.template.start' => 'Start',
   'automation.template.upload' => 'Upload own template',
