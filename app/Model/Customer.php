@@ -1999,7 +1999,7 @@ class Customer extends Model implements BillableUserInterface
         $subscription = $this->subscription;
         // create tmp subscription
         if (!$subscription) {
-            $subscription = new self();
+            $subscription = new Subscription();
             $subscription->user_id = $this->getBillableId();
         }
 
