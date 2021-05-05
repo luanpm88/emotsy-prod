@@ -2740,8 +2740,7 @@
   'automation.action.send-an-email.icon' => 'envelope',
   'automation.action.wait.icon' => 'alarm',
   'automation.action.condition.icon' => 'code',
-  'automation.action.wait.intro' => 'Set your automation workflow wait for a while before proceeding with next action.
-        How long do you want to wait, please choose below.',
+  'automation.action.wait.intro' => 'Set up your automation workflow to wait for a while when contacts reach this point of the automationw workflow. You can set up how long to have it wait before proceeding with next actions',
   'automation.action.send-an-email.intro' => 'Send an email to your contacts who reach this point of the automation workflow. Set up a perfonalized email and have it ready to shoot',
   'automation.action.condition.intro' => 'Choose one of the conditions below for your workflow. We will evaluate the condition
         and branch off your workflow accordingly.',
@@ -4263,6 +4262,6 @@
   'automation.operation.copy.desc' => 'Copy contact to list <strong>:list_name</strong>',
   'automation.operation.update.desc' => 'Update contact',
   'automation.operation.move.desc' => 'Move contact to list <strong>:list_name</strong>',
-  'automation.operation.tag.desc' => 'Tag your contacts who reach this point of the automation workflow using the tags below. Tags are helpful when you want to filter your contacts later on. You can also create dynamic segments for your list using tags.<br>Selected tags: :tags',
+  'automation.operation.tag.desc' => 'Tag your contacts who reach this point of the automation workflow using the tags below. Tags are helpful when you want to filter your contacts later on. You can also create dynamic segments for your list using tags. Selected tags:<br><br>:tags<br><br>',
   'automation.operation.delete.desc' => 'Delete contact',
 ) ?>
