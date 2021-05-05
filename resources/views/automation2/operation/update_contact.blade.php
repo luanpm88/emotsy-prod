@@ -87,6 +87,7 @@
             _this.items.forEach(function(item) {
                 _this.items[index].field_uid = $('[name="options[update]['+index+'][field_uid]"]').val();
                 _this.items[index].value = $('[name="options[update]['+index+'][value]"]').val();
+                index += 1;
             });
         }
 
