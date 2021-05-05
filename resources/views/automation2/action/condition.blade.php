@@ -45,7 +45,7 @@
         var url = '{{ action('Automation2Controller@conditionSetting', [
         'uid' => $automation->uid,
         'element_id' => $element->get('id'),
-    ]) }}&type=' + value;
+    ]) }}?type=' + value;
 
         settingBox.load(url);
     }

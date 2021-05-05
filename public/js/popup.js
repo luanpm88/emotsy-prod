@@ -6,6 +6,7 @@ class Popup {
         this.popup = $('.popup[id='+this.id+']');
         this.loadingHtml = '<div class="popup-loading"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>';
         this.data = {};
+        this.backs = [];
         
         // url
         if (typeof(url) !== 'undefined') {
@@ -62,6 +63,9 @@ class Popup {
         if (this.onclose != null) {
             this.onclose();
         }
+
+        // clear backs
+        this.backs = [];
     }
     
     loading() {
@@ -91,12 +95,13 @@ class Popup {
         
         // set back button
         // back button
-        if (typeof(_this.back) !== 'undefined') {
-            _this.popup.find('.back').click( function() {                    
-                _this.back();
+        if (_this.backs.length > 1) {
+            _this.popup.find('.back').on('click', function() {
+                var backing = _this.backs.pop();
+                _this.load(backing.url, backing.callback, $.extend({}, backing.data, {back: true}));
             });
         } else {
-            _this.popup.find('.back').click( function() {                    
+            _this.popup.find('.back').on('click', function() {                    
                 _this.hide();
             });
         }
@@ -111,6 +116,14 @@ class Popup {
         var _this = this;
         
         if (typeof(url) !== 'undefined') {
+            if (typeof(data) == 'undefined' || !data.back) {
+                this.backs.push({
+                    url: this.url,
+                    callback: this.callback,
+                    data: this.data,
+                });
+            }
+
             this.url = url;
         }
         
@@ -120,7 +133,7 @@ class Popup {
 
         var formData = _this.data;
         if (typeof(data) !== 'undefined') {
-            formData = $.extend({}, data, formData);;
+            formData = $.extend({}, data, formData);
         }
         
         this.loading();

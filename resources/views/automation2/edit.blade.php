@@ -324,10 +324,10 @@
             var url = '{{ action('Automation2Controller@emailSetup', $automation->uid) }}' + '?action_id=' + id;
             
             popup.load(url, function() {
-                // set back event
-                popup.back = function() {
-                    Popup.hide();
-                };
+                // // set back event
+                // popup.back = function() {
+                //     Popup.hide();
+                // };
             });
         }
     
@@ -405,10 +405,10 @@
             popup.load('{{ action('Automation2Controller@actionSelectPupop', $automation->uid) }}?hasChildren=' + hasChildren, function() {
                 console.log('Select action popup loaded!');
                 
-                // set back event
-                popup.back = function() {
-                    Popup.hide();
-                };
+                // // set back event
+                // popup.back = function() {
+                //     Popup.hide();
+                // };
                 
                 // when click on action type
                 popup.popup.find('.action-select-but').click(function() {
@@ -443,10 +443,10 @@
             popup.load('{{ action('Automation2Controller@triggerSelectPupop', $automation->uid) }}', function() {
                 console.log('Select trigger popup loaded!');
                 
-                // set back event
-                popup.back = function() {
-                    Popup.hide();
-                };
+                // // set back event
+                // popup.back = function() {
+                //     Popup.hide();
+                // };
                 
                 // when click on trigger type
                 popup.popup.find('.trigger-select-but').click(function() {
