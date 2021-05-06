@@ -2331,6 +2331,6 @@ class Customer extends Model implements BillableUserInterface
         $email->save();
         $auto->save();
 
-        return $auto;
+        return $email;
     }
 }
