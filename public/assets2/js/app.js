@@ -1757,9 +1757,9 @@ $(function() {
         $('input[name="payment_method_uid"]').val(value);
     });
 
-    // load locale js
-    $.getScript(JVALIDATE_TRANSLATE_URL, function(){
-    });
+    // // load locale js
+    // $.getScript(JVALIDATE_TRANSLATE_URL, function(){
+    // });
 
     // Campaign quickview dashboard
     $(document).on('click', '.payments-button', function() {
