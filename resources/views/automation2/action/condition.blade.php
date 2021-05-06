@@ -21,39 +21,42 @@
     {{ trans('messages.automation.action.condition.intro') }}
 </p>
 
-<div class="mb-20">
-    @include('helpers.form_control', [
-        'type' => 'select',
-        'class' => '',
-        'label' => 'Select criterion',
-        'name' => 'type',
-        'value' => $element->getOption('type'),
-        'help_class' => 'trigger',
-        'options' => $options,
-        'rules' => [],
-    ])
-</div>
-    
-<div class="condition-setting">
+<div class="condition-type">
+    <div class="mb-20">
+        @include('helpers.form_control', [
+            'type' => 'select',
+            'class' => '',
+            'label' => 'Select criterion',
+            'name' => 'type',
+            'value' => $element->getOption('type'),
+            'help_class' => 'trigger',
+            'options' => $options,
+            'rules' => [],
+        ])
+    </div>
+        
+    <div class="condition-setting">
+    </div>
 </div>
     
 <script>
-    var settingBox = new Box($('.condition-setting'));
 
-    function showSetting() {
-        var value = $('[name=type]').val();
+    function showSetting(container) {
+        var box = new Box(container.find('.condition-setting'));
+        var type = container.find('[name=type]').val();
         var url = '{{ action('Automation2Controller@conditionSetting', [
         'uid' => $automation->uid,
-        'element_id' => $element->get('id'),
-    ]) }}?type=' + value;
+    ]) }}?type=' + type + '&element_id={{ $element->get('id') }}';
 
-        settingBox.load(url);
+        box.load(url);
     }
 
     // Toggle condition options
-    $(document).on('change', '[name=type]', function() {
-        showSetting();
+    $(document).on('change', '.condition-type [name=type]', function() {
+        showSetting($(this).closest('.condition-type'));
     });
     
-    showSetting();
+    $('.condition-type').each(function() {
+        showSetting($(this));
+    });
 </script>
