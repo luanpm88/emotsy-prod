@@ -11,7 +11,7 @@
         "aws/aws-sdk-php": "^3.19",
         "braintree/braintree_php": "^3.22",
         "coinpaymentsnet/coinpayments-php": "^1.0",
-        "doctrine/dbal": "^3.0",
+        "doctrine/dbal": "^2.10",
         "facebook/graph-sdk": "^5.7",
         "facebook/php-ads-sdk": "^10.0",
         "galbar/jsonpath": "^1.2",
