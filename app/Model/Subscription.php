@@ -726,7 +726,9 @@ class Subscription extends Model
         $this->save();
 
         // delete pending invoice
-        $this->pendingInvoice()->delete();
+        if ($this->pendingInvoice()) {
+            $this->pendingInvoice()->delete();
+        }
     }
 
     /**
