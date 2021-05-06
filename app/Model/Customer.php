@@ -32,6 +32,7 @@ use Acelle\Model\SendingDomain;
 use Acelle\Model\Source;
 use Acelle\Model\WooCommerce;
 use Acelle\Model\Lazada;
+use Acelle\Model\MailList;
 use DateTime;
 use DateTimeZone;
 use Exception;
@@ -2291,5 +2292,45 @@ class Customer extends Model implements BillableUserInterface
     public function getDefaultBillingAddress()
     {
         return $this->billingAddresses()->first();
+    }
+
+    public function createAbandonedEmailAutomation($store)
+    {
+        $auto = $this->automation2s()->create([
+            'name' => 'Abandoned Cart Notification - Auto',
+            'mail_list_id' => MailList::first()->id,
+            'status' => 'inactive',
+        ]);
+
+        $email = $auto->emails()->create();
+        $auto->data = json_encode([
+            [
+                "title" => "Abandoned Cart Reminder",
+                "id" => "trigger",
+                "type" => "ElementTrigger",
+                "child" => "1000000001",
+                "options" => [
+                    "key" => "woo-abandoned-cart",
+                    "type" => "woo-abandoned-cart",
+                    "source_uid" => "6076f03620408",
+                    "wait" => "24_hour",
+                    "init"  => "true"
+                ]
+            ], [
+                "title" => "Hey, you have an item left in cart",
+                "id" => "1000000001",
+                "type" => "ElementAction",
+                "child" => null,
+                "options" => [
+                    "init" => "true",
+                    "email_uid" => $email->uid
+                ]
+            ]
+        ]);
+
+        $email->save();
+        $auto->save();
+
+        return $auto;
     }
 }

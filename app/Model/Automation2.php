@@ -38,6 +38,7 @@ use Monolog\Formatter\LineFormatter;
 use Acelle\Library\Lockable;
 use Acelle\Model\SystemJob as SystemJobModel;
 use Acelle\Model\Setting;
+use Acelle\Model\MailList;
 use DateTime;
 use DateTimeZone;
 use Exception;
@@ -61,7 +62,7 @@ class Automation2 extends Model
      * @var array
      */
     protected $fillable = [
-        'name',
+        'name', 'mail_list_id', 'status'
     ];
 
     /**
