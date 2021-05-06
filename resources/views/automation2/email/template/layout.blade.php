@@ -15,7 +15,7 @@
                 margin-left: -15px;
                 margin-right: -15px;
             ">
-				@if ($automation->getTrigger()->getOption('type') == 'woo-abandoned-cart') {
+				@if ($automation->getTrigger()->getOption('type') == 'woo-abandoned-cart')
 					@foreach(Acelle\Model\Template::getWooTemplatesFromDisk() as $layout)
 						<div class="col-xxs-6 col-xs-4 col-sm-2 col-md-2">
 							<a data-method="POST"
