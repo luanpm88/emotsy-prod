@@ -1187,4 +1187,9 @@ class Email extends Model
             return $html.$content;
         }
     }
+
+    public function isSetup()
+    {
+        return $this->subject && $this->reply_to && $this->from && $this->content;
+    }
 }

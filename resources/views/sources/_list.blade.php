@@ -10,11 +10,11 @@
 					</div>
 				</td>
 				<td>
-					<h5 class="no-margin text-normal m-0">
-						<span class="kq_search" href="javascript:;">
+					<a href="{{ action('SourceController@show', $source->uid) }}">
+						<h5 class="no-margin text-normal m-0"><span class="kq_search" href="javascript:;">
 							{{ $source->getName() }}
-						</span>
-					</h5>
+						</span></h5>
+					</a>
 					<span class="text-muted d-block mt-2">
 						{{ trans('messages.created_at') }}:
 						{{ Tool::formatDateTime($source->created_at) }}

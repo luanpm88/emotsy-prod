@@ -42,6 +42,22 @@ class SourceController extends Controller
     }
 
     /**
+     * Show source details.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Request $request, $uid)
+    {
+        $source = Source::findByUid($uid);
+        $automation = $request->user()->customer->getAbandonedEmailAutomation($source);
+
+        return view('sources.show', [
+            'source' => $source,
+            'automation' => $automation,
+        ]);
+    }
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response

@@ -1,10 +1,10 @@
 <div class="d-flex align-items-center mb-4">
     <div style="width: 70%" class="mr-auto">
-        <h2 class="mb-2">{{ trans('messages.automation.automation_email') }}</h2>
+        <h2 class="mb-2 email_title">{{ trans('messages.automation.automation_email') }}</h2>
         <p>{{ trans('messages.automation.automation_email.intro') }}</p>
     </div>    
     <div class="header-action">
-        <button class="btn btn-secondary d-flex align-items-center" onclick="sidebar.load(); popup.hide()">
+        <button class="btn btn-secondary d-flex align-items-center back_to_workflow" onclick="sidebar.load(); popup.hide()">
             <i class="material-icons-outlined mr-2">
                 multiline_chart
             </i>

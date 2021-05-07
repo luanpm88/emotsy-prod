@@ -2298,7 +2298,7 @@ class Customer extends Model implements BillableUserInterface
     {
         $auto = $this->automation2s()->create([
             'name' => 'Abandoned Cart Notification - Auto',
-            'mail_list_id' => MailList::first()->id,
+            'mail_list_id' => $store->mail_list_id,
             'status' => 'inactive',
         ]);
 
@@ -2332,5 +2332,14 @@ class Customer extends Model implements BillableUserInterface
         $auto->save();
 
         return $email;
+    }
+
+    public function getAbandonedEmailAutomation($store)
+    {
+        $auto = $this->automation2s()->where('mail_list_id', '=', $store->mail_list_id)->first();
+        if (!$auto) {
+            $auto = $this->createAbandonedEmailAutomation($store);
+        }
+        return $auto;
     }
 }

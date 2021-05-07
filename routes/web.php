@@ -647,6 +647,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::resource('products', 'ProductController');
 
     // Source
+    Route::get('sources/{uid}/detail', 'SourceController@show');
     Route::match(['get', 'post'], 'sources/woo-connect', 'SourceController@wooConnect');
     Route::post('sources/{uid}/sync', 'SourceController@sync');
     Route::post('sources/delete', 'SourceController@delete');

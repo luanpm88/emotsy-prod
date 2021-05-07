@@ -1087,6 +1087,7 @@ class Template extends Model implements Storable
         foreach ($templateUrl as $name) {
             $path = join_paths($dir, $name);
             $files = glob($path . "/index.html");
+            // var_dump($path . "/index.html");die();
             $content = file_get_contents($files[0]);
             
             $preg_matchs = preg_match_all('/(<title\>([^<]*)\<\/title\>)/i', $content, $m);

@@ -60,7 +60,7 @@
                         <select class="select" name="source_uid">
                             <option value="" class="active">{{ trans('messages.all_source') }}</option>
                             @foreach (Acelle\Model\Source::all() as $source)
-                                <option value="{{ $source->uid }}" class="active">{{ $source->getName() }}</option>
+                                <option {!! request()->source_uid == $source->uid ? 'selected' : '' !!} value="{{ $source->uid }}" class="active">{{ $source->getName() }}</option>
                             @endforeach
                         </select>
                     </span>

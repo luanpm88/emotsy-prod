@@ -147,7 +147,7 @@
 
 </head>
 
-<body class="">
+<body class="{{ request()->auto_popup ? 'auto_popup' : '' }}">
 
 	<!-- display flash message -->
 	@include('common.errors')

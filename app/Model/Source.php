@@ -52,6 +52,16 @@ class Source extends Model
     }
 
     /**
+     * Mail List.
+     *
+     * @return object
+     */
+    public function mailList()
+    {
+        return $this->belongsTo('Acelle\Model\MailList');
+    }
+
+    /**
      * Products.
      *
      * @return object
@@ -153,5 +163,39 @@ class Source extends Model
     {
         $class = '\\Acelle\\Model\\' . $this->type;
         return $class::find($this->id);
+    }
+
+    /**
+     * Get source list.
+     *
+     * @return object
+     */
+    public function getList()
+    {
+        if ($this->mailList) {
+            return $this->mailList;
+        }
+
+        // contact
+        $contact = new \Acelle\Model\Contact();
+        $contact->address_1 = 'empty';
+        $contact->country_id = $this->customer->country_id;
+        $contact->save();
+        
+        // list
+        $list = new \Acelle\Model\MailList();
+        $list->customer_id = $this->customer_id;
+        $list->contact_id = $contact->id;
+        $list->name = trans('messages.source.list.default_name', [
+            'source' => $this->getName(),
+        ]);
+        $list->default_subject = $this->getName();
+        $list->save();
+
+        // list assign
+        $this->mail_list_id = $list->id;
+        $this->save();
+
+        return $list;
     }
 }

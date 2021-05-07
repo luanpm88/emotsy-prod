@@ -4301,3 +4301,31 @@ label:hover .checkmark, .checkmark-container:hover .checkmark {
     border-radius: 3px;
     box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
 }
+.source-logo img {
+    width: 100px;
+    border-radius: 3px;
+    box-shadow: 1px 1px 5px rgba(0,0,0,0.1);
+}
+.source-desc-line {
+    border-top: solid 1px #ddd;
+}
+.source-desc-line .desc-icon span {
+    font-size: 25px;
+    color: #777;
+}
+.btn-mc_outline {
+    background: none!important;
+    border-color: #bbb!important;
+}
+.trans_frame {
+    position: fixed;
+    z-index: 100000;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    border: none;
+}
+.display-4 {
+    font-size: 20px;
+}

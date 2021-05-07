@@ -66,6 +66,10 @@ class Popup {
 
         // clear backs
         this.backs = [];
+
+        if (typeof(this.onHide) !== 'undefined') {
+            this.onHide();
+        }
     }
     
     loading() {

@@ -1352,4 +1352,14 @@ class Automation2 extends Model
             ['value' => 'year', 'text' => trans('messages.year')],
         ]);
     }
+
+    /**
+     * Get first email.
+     *
+     * @return email
+     */
+    public function getAbandonedCartEmail()
+    {
+        return \Acelle\Model\Email::findByUid($this->getElements()[1]->options->email_uid);
+    }
 }

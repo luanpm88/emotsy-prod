@@ -1626,3 +1626,12 @@ a.trigger-woo-abandoned-cart:hover {
 .panel-template-style .panel-body {
   position: relative;
 }
+.auto_popup {
+ background: transparent;
+}
+.auto_popup header, .auto_popup main {
+  opacity: 0;
+}
+.auto_popup .back_to_workflow {
+  display: none!important;
+}

@@ -4266,4 +4266,23 @@
   'automation.operation.delete.desc' => 'Delete contact',
   'payment.choose_new_payment_method_to_proceed' => 'Please choose a new payment method below to 
       proceed with the payment',
+  'source.intro.WooCommerce' => 'WooCommerce Store, powered by WordPress',
+  'source.intro.Lazada' => 'Online Store, powered by Lazada',
+  'source.connected_on' => 'Connected on :date',
+  'source.visit_store' => 'Visit store',
+  'source.disconnect' => 'Disconnect',
+  'source.switch_store' => 'Switch store',
+  'source.have_products' => 'You have <strong>:count</strong> product(s)',
+  'source.your_store_synchronized' => 'your store\'s products are being synchronized to Acelle',
+  'source.products.manage' => 'Manage',
+  'source.launch' => 'Launch',
+  'source.list.synchronized_to_this' => 'Contacts are automatically synchronized to your list',
+  'source.list.default_name' => ':source List',
+  'source.abandoned_cart_email' => 'Abandoned Cart Email',
+  'source.abandoned_cart_email.desc' => 'Encourage customers to complete their purchase if they leave
+      items in their cart',
+  'source.abandoned_cart_email.all_setup' => 'Your abandoned cart email is all setup',
+  'rate.opens' => 'Open rate',
+  'rate.clicks' => 'Click rate',
+  'rate.send' => 'Send',
 ) ?>
