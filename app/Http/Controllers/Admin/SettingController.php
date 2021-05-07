@@ -535,6 +535,7 @@ class SettingController extends Controller
             $pageUrl = action('Admin\SettingController@upgrade');
             Log::info('Run migration...');
             artisan_migrate();
+            sleep(5);
             Log::info('Run migration: done!');
 
             $request->session()->forget('reset');
@@ -583,6 +584,7 @@ class SettingController extends Controller
             // Redirect to an entirely new page
             // Then make a new request from browser to load new config
             // Simple using redirect() will retain the current setting
+            sleep(1);
             echo '<html>
                 <head>
                     <meta http-equiv="refresh" content="3;'.$pageUrl.'" />
@@ -593,7 +595,7 @@ class SettingController extends Controller
                 </body>
                 </html>';
 
-            return;
+            die;
         } else {
             Log::warning('Cannot upgrade, certain files are not writable');
 
