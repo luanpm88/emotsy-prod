@@ -1955,21 +1955,42 @@ class Automation2Controller extends Controller
     public function debug(Request $request, $uid)
     {
         $automation = Automation2::findByUid($uid);
-        $subscribers = $automation->getSubscribersWithDateOfBirth();
-        if ($request->input('email')) {
-            $subscribers = $subscribers->searchByEmail($request->input('email'));
+        $type = $automation->getTriggerAction()->getOption('key');
+
+        switch ($type) {
+            case 'welcome-new-subscriber':
+                
+                
+                return view('automation2.debug_list_subscription', [
+                    'automation' => $automation,
+                    'subscribers' => [],
+                ]);
+
+                break;
+
+            case 'say-happy-birthday':
+                $subscribers = $automation->getSubscribersWithDateOfBirth();
+                if ($request->input('email')) {
+                    $subscribers = $subscribers->searchByEmail($request->input('email'));
+                }
+
+                if ($request->input('orderBy')) {
+                    $subscribers = $subscribers->orderBy($request->input('orderBy'), $request->input('orderDir'));
+                }
+
+                $subscribers = $subscribers->simplePaginate(50);
+
+                return view('automation2.debug', [
+                    'automation' => $automation,
+                    'subscribers' => $subscribers,
+                ]);
+
+                break;
+            
+            default:
+                # code...
+                break;
         }
-
-        if ($request->input('orderBy')) {
-            $subscribers = $subscribers->orderBy($request->input('orderBy'), $request->input('orderDir'));
-        }
-
-        $subscribers = $subscribers->simplePaginate(50);
-
-        return view('automation2.debug', [
-            'automation' => $automation,
-            'subscribers' => $subscribers,
-        ]);
     }
 
     public function debugTrigger(Request $request, $uid)
