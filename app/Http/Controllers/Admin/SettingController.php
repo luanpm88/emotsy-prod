@@ -496,14 +496,13 @@ class SettingController extends Controller
      */
     public function upgrade(Request $request)
     {
-        if ($request->user()->admin->getPermission('setting_upgrade_manager') != 'yes') {
-            return $this->notAuthorized();
-        }
+        Log::info('Going to @upgrade page');
 
         // secret key to send to the verification server
         session(['secret' => $request->input('secret')]);
 
         // Upgrade manager
+        Log::info('Initiate upgrade manager');
         $manager = new UpgradeManager();
 
         // Redirect URL
@@ -512,6 +511,8 @@ class SettingController extends Controller
         // If upgrade done successfully, perform config:cache
         // The config:cache must be done in a subsequent process, not in the 'doUpgrade' one
         if ($request->session()->has('upgraded')) {
+            Log::info('Upgraded session');
+
             $request->session()->forget('upgraded');
             $request->session()->put('reset', true);
             Session::save();
@@ -523,7 +524,7 @@ class SettingController extends Controller
                 <title>Page Moved</title>
                 </head>
                 <body>
-                    Upgrade done, redirecting...
+                    Upgrade done, migrating...
                 </body>
                 </html>';
 
@@ -532,6 +533,10 @@ class SettingController extends Controller
 
         if ($request->session()->has('reset')) {
             $pageUrl = action('Admin\SettingController@upgrade');
+            Log::info('Run migration...');
+            artisan_migrate();
+            Log::info('Run migration: done!');
+
             $request->session()->forget('reset');
             Session::save();
             $request->session()->flash('alert-success', trans('messages.upgrade.alert.upgrade_success'));
@@ -574,6 +579,7 @@ class SettingController extends Controller
             $manager->run();
             Log::info('System successfully upgraded to the new version');
             $request->session()->put('upgraded', true);
+            Log::info('Redirecting to work with new request');
             // Redirect to an entirely new page
             // Then make a new request from browser to load new config
             // Simple using redirect() will retain the current setting
