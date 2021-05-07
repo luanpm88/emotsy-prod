@@ -4264,4 +4264,6 @@
   'automation.operation.move.desc' => 'Move contact to list <strong>:list_name</strong>',
   'automation.operation.tag.desc' => 'Tag your contacts who reach this point of the automation workflow using the tags below. Tags are helpful when you want to filter your contacts later on. You can also create dynamic segments for your list using tags. Selected tags:<br><br>:tags<br><br>',
   'automation.operation.delete.desc' => 'Delete contact',
+  'payment.choose_new_payment_method_to_proceed' => 'Please choose a new payment method below to 
+      proceed with the payment',
 ) ?>

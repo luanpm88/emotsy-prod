@@ -304,8 +304,6 @@ class UpgradeManager
             // something wrong here
         }
 
-        // artisan_config_cache();
-        artisan_migrate();
         LaravelLog::info('Done caching & migrating!');
     }
 

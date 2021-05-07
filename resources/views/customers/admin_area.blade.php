@@ -20,7 +20,7 @@
                 </div>
             </li>
             @if ($subscription->isActive())
-                @if ($subscription->recurring())
+                @if ($subscription->isRecurring())
                     <li>
                         <div class="unit size1of2">
                             <strong>{{ trans('messages.subscription.status.recurring') }}</strong>
@@ -59,7 +59,7 @@
 								@endif
 							@endif
 						@else
-							@if ($subscription->recurring())
+							@if ($subscription->isRecurring())
 								<span class="label label-flat bg-info">{{ trans('messages.subscription.status.recurring') }}</span>
 							@else
 								<span class="label label-flat bg-active">{{ trans('messages.subscription.status.active') }}</span>
