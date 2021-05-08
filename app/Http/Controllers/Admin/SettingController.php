@@ -508,6 +508,11 @@ class SettingController extends Controller
         // Redirect URL
         $pageUrl = action('Admin\SettingController@upgrade');
 
+        // Just in case: upgrade from Laravel 5.8 to 7x ==> session reset
+        // Remove the following line after a while when upgrading from 7x to 7x
+        artisan_migrate();
+        sleep(2);
+
         // If upgrade done successfully, perform config:cache
         // The config:cache must be done in a subsequent process, not in the 'doUpgrade' one
         if ($request->session()->has('upgraded')) {
