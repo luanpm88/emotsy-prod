@@ -262,6 +262,10 @@ class UpgradeManager
                 return $errors;
             }
 
+            // reload the config & run migration
+            LaravelLog::info('Updating .env file');
+            $this->mergeEnv(base_path('.env'), base_path('.env.example'));
+
             // cleanup
             LaravelLog::info('Cleaning up');
             $this->cleanup();
@@ -283,11 +287,7 @@ class UpgradeManager
 
     public function refreshConfig()
     {
-        // reload the config & run migration
-        LaravelLog::info('Updating .env file');
-        $this->mergeEnv(base_path('.env'), base_path('.env.example'));
-
-        LaravelLog::info('Start caching & migrating');
+        LaravelLog::info('Refresh config');
         $files = ['bootstrap/cache/config.php', 'bootstrap/cache/services.php', 'bootstrap/cache/compiled.php'];
         foreach ($files as $file) {
             $path = base_path($file);

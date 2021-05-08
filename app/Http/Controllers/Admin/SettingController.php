@@ -508,11 +508,6 @@ class SettingController extends Controller
         // Redirect URL
         $pageUrl = action('Admin\SettingController@upgrade');
 
-        // Just in case: upgrade from Laravel 5.8 to 7x ==> session reset
-        // Remove the following line after a while when upgrading from 7x to 7x
-        artisan_migrate();
-        sleep(2);
-
         // If upgrade done successfully, perform config:cache
         // The config:cache must be done in a subsequent process, not in the 'doUpgrade' one
         if ($request->session()->has('upgraded')) {
@@ -521,8 +516,11 @@ class SettingController extends Controller
             $request->session()->forget('upgraded');
             $request->session()->put('reset', true);
             Session::save();
+
+            // 2 tasks: refresh config and write settings
             $manager->refreshConfig();
             Setting::writeDefaultSettings();
+
             echo '<html>
                 <head>
                     <meta http-equiv="refresh" content="3;'.$pageUrl.'" />
@@ -539,8 +537,10 @@ class SettingController extends Controller
         if ($request->session()->has('reset')) {
             $pageUrl = action('Admin\SettingController@upgrade');
             Log::info('Run migration...');
+
             artisan_migrate();
-            sleep(5);
+            sleep(3);
+
             Log::info('Run migration: done!');
 
             $request->session()->forget('reset');
@@ -582,7 +582,13 @@ class SettingController extends Controller
                 unlink(base_path('bootstrap/cache/services.php'));
             }
             
+            Log::info('Actually run.....');
+
             $manager->run();
+            $manager->refreshConfig();
+            artisan_migrate();  /// just in case it cannot go back to the upgrade page again (session reset)
+            sleep(3);
+            
             Log::info('System successfully upgraded to the new version');
             $request->session()->put('upgraded', true);
             Log::info('Redirecting to work with new request');
