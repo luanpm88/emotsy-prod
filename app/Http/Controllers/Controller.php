@@ -214,7 +214,7 @@ class Controller extends BaseController
      *
      * @todo only authenticated user can execute this
      */
-    public function runMigration()
+    public function runMigration(Request $request)
     {
         // Run migration
         Artisan::call('migrate', ['--force' => true]);
