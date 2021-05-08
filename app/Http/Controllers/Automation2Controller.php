@@ -2058,10 +2058,11 @@ class Automation2Controller extends Controller
         switch ($type) {
             case 'welcome-new-subscriber':
                 
-                
+                $subscribers = $automation->getNewSubscribersToFollow();
+
                 return view('automation2.debug_list_subscription', [
                     'automation' => $automation,
-                    'subscribers' => [],
+                    'subscribers' => $subscribers,
                 ]);
 
                 break;

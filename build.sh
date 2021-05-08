@@ -86,7 +86,6 @@ rm -fr vendor/lawepham/geoip/composer.phar
 # Reduce file size
 rm -fr vendor/paypal/rest-api-sdk-php/sample
 rm -fr vendor/paypal/rest-api-sdk-php/tests
-rm vendor/paypal/paypal-checkout-sdk/composer.phar
 
 # copy default lang
 rm -fr resources/lang/default

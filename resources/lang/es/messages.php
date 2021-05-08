@@ -4208,4 +4208,6 @@
   'contacts' => 'contacts',
   'payment.you_currenly_payment' => 'Your current payment method is: <strong>:method</strong>',
   'or_click_choose_another_method' => 'Or click here to choose another payment method',
+  'payment.choose_new_payment_method_to_proceed' => 'Please choose a new payment method below to 
+      proceed with the payment',
 ) ?>
