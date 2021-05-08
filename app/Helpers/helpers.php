@@ -239,66 +239,6 @@ function reset_app_url($force = false)
 }
 
 /**
- * Run artisan config cache.
- *
- * @return bool
- */
-function artisan_config_cache()
-{
-    // Artisan config:cache generate the following two files
-    // Since config:cache runs in the background
-    // to determine if it is done, we just check if the files modified time have been changed
-    $files = ['bootstrap/cache/config.php', 'bootstrap/cache/services.php'];
-
-    // get the last modified time of the files
-    $last = 0;
-    foreach ($files as $file) {
-        $path = base_path($file);
-        if (file_exists($path)) {
-            if (filemtime($path) > $last) {
-                $last = filemtime($path);
-            }
-        }
-    }
-
-    // prepare to run
-    $timeout = 5;
-    $start = time();
-
-    // actually call the Artisan command
-    \Artisan::call('config:cache');
-
-    // Check if Artisan call is done
-    while (true) {
-        // just finish if timeout
-        if (time() - $start >= $timeout) {
-            echo "Timeout\n";
-            break;
-        }
-
-        // if any file is still missing, keep waiting
-        // if any file is not updated, keep waiting
-        // @todo: services.php file keeps unchanged after artisan config:cache
-        foreach ($files as $file) {
-            $path = base_path($file);
-            if (!file_exists($path)) {
-                sleep(1);
-                continue;
-            } else {
-                if (filemtime($path) == $last) {
-                    sleep(1);
-                    continue;
-                }
-            }
-        }
-
-        // just wait another extra 3 seconds before finishing
-        sleep(3);
-        break;
-    }
-}
-
-/**
  * Run artisan migrate.
  *
  * @return bool
@@ -306,27 +246,6 @@ function artisan_config_cache()
 function artisan_migrate()
 {
     \Artisan::call('migrate', ['--force' => true]);
-}
-
-/**
- * Run artisan storage link.
- *
- * @return bool
- */
-function artisan_storage_link()
-{
-    \Artisan::call('storage:link');
-}
-
-/**
- * Run artisan clean up.
- *
- * @return bool
- */
-function artisan_clear()
-{
-    \Artisan::call('view:clear');
-    \Artisan::call('route:clear');
 }
 
 /**

@@ -54,7 +54,6 @@ class InstallController extends Controller
     public function starting(Request $request)
     {
         $next = action('InstallController@systemCompatibility');
-        artisan_config_cache();
         return redirect()->away($next);
     }
 
@@ -85,7 +84,6 @@ class InstallController extends Controller
             ]);
         } catch (\Exception $e) {
             $next_page = action('InstallController@systemCompatibility');
-            artisan_config_cache();
             return redirect()->away($next_page);
         }
     }
@@ -500,7 +498,6 @@ class InstallController extends Controller
     public function finishing(Request $request)
     {
         $next_page = action('InstallController@finish');
-        artisan_config_cache();
         AppNotification::cleanup();
         return redirect()->away($next_page);
     }
@@ -772,9 +769,6 @@ MAIL_FROM_NAME="'.(isset($smtp['mail_from_name']) ? $smtp['mail_from_name'] : ''
         $config_string;
         fwrite($env_file, $config_string);
         fclose($env_file);
-
-        // Reload .env
-        artisan_config_cache();
     }
 
     public function importDatabase($database)
