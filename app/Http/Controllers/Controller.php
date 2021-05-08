@@ -223,6 +223,7 @@ class Controller extends BaseController
         // Upgrade post-processing
         if ($request->session()->has('upgraded')) {
             $request->session()->forget('upgraded');
+            Session::save();
 
             // WRITE new settings too
             Setting::writeDefaultSettings();
