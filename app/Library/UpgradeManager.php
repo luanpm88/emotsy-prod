@@ -150,6 +150,8 @@ class UpgradeManager
      */
     public function run($test = false)
     {
+        $this->refreshConfig();
+
         $old = umask(0);
 
         try {
@@ -157,8 +159,6 @@ class UpgradeManager
                 LaravelLog::info('Start upgrading (test)');
             } else {
                 LaravelLog::info('Start upgrading');
-                LaravelLog::info('Clearing old assets');
-                artisan_clear();
             }
 
             if (!$test) {
@@ -287,21 +287,28 @@ class UpgradeManager
 
     public function refreshConfig()
     {
-        LaravelLog::info('Refresh config');
-        $files = ['bootstrap/cache/config.php', 'bootstrap/cache/services.php', 'bootstrap/cache/compiled.php'];
-        foreach ($files as $file) {
-            $path = base_path($file);
-            if (file_exists($path)) {
-                $this->rm($path);
-            }
-        }
-
         try {
             \Artisan::call('cache:clear');
             \Artisan::call('route:clear');
             \Artisan::call('view:clear');
         } catch (\Exception $e) {
-            // something wrong here
+            // something wrong here, just ignore
+        }
+
+        // GO AFTER ARTISAN CALL
+        LaravelLog::info('Delete cached config files');
+        $files = [
+            'bootstrap/cache/packages.php',
+            'bootstrap/cache/config.php',
+            'bootstrap/cache/services.php',
+            'bootstrap/cache/compiled.php'
+        ];
+
+        foreach ($files as $file) {
+            $path = base_path($file);
+            if (file_exists($path)) {
+                $this->rm($path);
+            }
         }
 
         LaravelLog::info('Done caching & migrating!');
