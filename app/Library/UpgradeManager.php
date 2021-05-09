@@ -194,7 +194,7 @@ class UpgradeManager
                         }
                     }
                 } else {
-                    LaravelLog::info("Replacing {$target}");
+                    // LaravelLog::info("Replacing {$target}");
 
                     if ($this->isEnFile($source)) {
                         $langFiles[] = $source;
