@@ -310,8 +310,6 @@ class UpgradeManager
                 $this->rm($path);
             }
         }
-
-        LaravelLog::info('Done caching & migrating!');
     }
 
     /**
