@@ -44,7 +44,7 @@
                     </div>
                     <div class="col-md-4 text-right">
                         <a class="btn btn-mc_primary mr-20 mc-modal-control" modal-size="lg" href="{{ action('Admin\PlanController@sendingServerOption', [
-                            'id' => $plan->uid]) }}">
+                            'uid' => $plan->uid]) }}">
                                 {{ trans('messages.plan_option.change') }}</a>
                     </div>
                 </div>
