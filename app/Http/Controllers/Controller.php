@@ -8,6 +8,7 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
+use Illuminate\Support\Facades\Log;
 use Acelle\Model\Setting;
 use Artisan;
 
@@ -216,15 +217,17 @@ class Controller extends BaseController
      */
     public function runMigration(Request $request)
     {
+        Log::info('Start migration');
         // Run migration
         Artisan::call('migrate', ['--force' => true]);
         sleep(5);
-
+        Log::info('Done migration');
         // Upgrade post-processing
         if ($request->session()->has('upgraded')) {
             $request->session()->forget('upgraded');
             Session::save();
 
+            Log::info('Write settings...');
             // WRITE new settings too
             Setting::writeDefaultSettings();
 
