@@ -28,7 +28,7 @@
 
         <div class="col-sm-12 col-md-8">
             @if ($sender->isPending())
-                <form action="{{ action('SenderController@show', ['id' => $sender->uid ]) }}">
+                <form action="{{ action('SenderController@show', ['sender' => $sender->uid ]) }}">
                 <div data-type="admin-notification" class="alert alert-warning" style="display: flex; flex-direction: row; align-items: center; cursor: pointer; justify-content: space-between;">
                     <div style="display: flex; flex-direction: row; align-items: center;">
                         <div style="margin-right:15px">
