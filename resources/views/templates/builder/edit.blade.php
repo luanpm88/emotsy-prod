@@ -33,6 +33,7 @@
                 buildMode: false,
                 legacyMode: {{ $buildMode ? 'true' : 'false' }},
                 showHelp: false,
+                showInlineToolbar: false,
                 lang: {!! json_encode(language()->getBuilderLang()) !!},
                 url: '{{ action('TemplateController@builderEditContent', $template->uid) }}',
                 backCallback: function() {
@@ -91,7 +92,7 @@
                       plugins: 'image link lists autolink',
                       //toolbar: 'undo redo | bold italic underline | fontselect fontsizeselect | forecolor backcolor | alignleft aligncenter alignright alignfull | numlist bullist outdent indent',
                       toolbar: [
-                          'undo redo | bold italic underline | fontselect fontsizeselect | link | menuDateButton',
+                          // 'undo redo | bold italic underline | fontselect fontsizeselect | link | menuDateButton',
                           // 'forecolor backcolor | alignleft aligncenter alignright alignfull | numlist bullist outdent indent'
                       ],
                       external_filemanager_path:'{{ url('/') }}'.replace('/index.php','')+"/filemanager2/",
