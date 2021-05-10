@@ -117,6 +117,7 @@ class InstallController extends Controller
             'sendmail' => [
                 'mail_from_email' => 'required|email',
                 'mail_from_name' => 'required',
+                'sendmail_path' => 'required',
             ],
         ];
         $smtp_rules = $mail_rules['smtp'];
@@ -436,6 +437,8 @@ class InstallController extends Controller
         \Acelle\Model\Setting::set('mailer.password', $site_info['smtp_password']);
         \Acelle\Model\Setting::set('mailer.from.name', $site_info['mail_from_name']);
         \Acelle\Model\Setting::set('mailer.from.address', $site_info['mail_from_email']);
+        \Acelle\Model\Setting::set('mailer.sendmail_path', $site_info['sendmail_path']);
+
 
         $request->session()->flash('alert-success', trans('messages.install.database_import.success'));
 

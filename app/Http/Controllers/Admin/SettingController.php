@@ -232,6 +232,7 @@ class SettingController extends Controller
             'MAIL_ENCRYPTION' => config('mail.encryption'),
             'MAIL_FROM_ADDRESS' => config('mail.from')['address'],
             'MAIL_FROM_NAME' => config('mail.from')['name'],
+            'sendmail_path' => (\Acelle\Model\Setting::get('mailer.sendmail_path') ? \Acelle\Model\Setting::get('mailer.sendmail_path') : "/usr/sbin/sendmail"),
         ];
 
         if (null !== $request->old() && isset($request->old()['env'])) {
@@ -253,6 +254,7 @@ class SettingController extends Controller
             'sendmail' => [
                 'env.MAIL_FROM_ADDRESS' => 'required|email',
                 'env.MAIL_FROM_NAME' => 'required',
+                'env.sendmail_path' => 'required',
             ],
         ];
 
@@ -311,6 +313,7 @@ class SettingController extends Controller
             \Acelle\Model\Setting::set('mailer.password', $env['MAIL_PASSWORD']);
             \Acelle\Model\Setting::set('mailer.from.name', $env['MAIL_FROM_NAME']);
             \Acelle\Model\Setting::set('mailer.from.address', $env['MAIL_FROM_ADDRESS']);
+            \Acelle\Model\Setting::set('mailer.sendmail_path', $env['sendmail_path']);
 
             // Redirect to my lists page
             $next = action('Admin\SettingController@mailer');
