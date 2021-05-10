@@ -91,7 +91,9 @@
                             <span class="icon-alarm"></span>
                         </div>
                         <div class="desc">
-                            <h5 class="mt-0 mb-1 text-teal-800">{{ trans('messages.source.abandoned_cart_email') }}</h5>
+                            <h5 class="mt-0 mb-1 text-teal-800">{{ trans('messages.source.abandoned_cart_email') }}
+                                <span class="badge badge-success ml-2">{{ trans('messages.active') }}</span></h5>
+                            
                             <div class="">{{ trans('messages.source.abandoned_cart_email.all_setup') }}</div>
                             <div class="email-rates my-4 d-flex">
                                 <div class="email-rate mr-4 pr-3">
