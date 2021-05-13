@@ -92,6 +92,16 @@ return [
             'fields' => [ 'api_key' ],
             'result_xpath' => '$.result',
             'result_map' => [ 'deliverable' => 'deliverable', 'undeliverable' => 'undeliverable' ]
+        ],[
+            'id' => 'cloudmersive.com',
+            'name' => 'Cloudmersive',
+            'uri' => 'https://api.cloudmersive.com/validate/email/address/full',
+            'request_type' => 'POST',
+            'post_data' => '{EMAIL}',
+            'post_headers' => [ 'Content-Type' => 'application/json', "Apikey" => "{API_KEY}" ],
+            'fields' => [ 'api_key' ],
+            'result_xpath' => '$.ValidAddress',
+            'result_map' => [ 'true' => 'deliverable', 'false' => 'undeliverable' ]
         ],
         /*[
             'id' => 'mailcheck.co',
