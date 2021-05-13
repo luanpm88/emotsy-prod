@@ -154,9 +154,9 @@ class EmailVerificationServerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function edit(Request $request, $id)
+    public function edit(Request $request, $uid)
     {
-        $server = \Acelle\Model\EmailVerificationServer::findByUid($id);
+        $server = \Acelle\Model\EmailVerificationServer::findByUid($uid);
 
         // authorize
         if (!$request->user()->admin->can('update', $server)) {

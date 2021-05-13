@@ -49,7 +49,7 @@
                 </td>
                 <td class="text-right text-nowrap">
                     @if (Auth::user()->admin->can('update', $server))
-                        <a href="{{ action('Admin\EmailVerificationServerController@edit', ["uid" => $server->uid]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey btn-icon"><i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
+                        <a href="{{ action('Admin\EmailVerificationServerController@edit', ["email_verification_server" => $server->uid]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey btn-icon"><i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
                     @endif
                     @if (Auth::user()->admin->can('delete', $server) || Auth::user()->admin->can('disable', $server) || Auth::user()->admin->can('enable', $server))
                         <div class="btn-group">

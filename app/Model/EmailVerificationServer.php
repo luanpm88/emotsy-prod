@@ -90,7 +90,11 @@ class EmailVerificationServer extends Model
 
             // make POST request
             // @todo POST case not tested
-            $response = $client->request($config['request_type'], $uri, ['headers' => $headers, 'body' => $postdata]);
+            $response = $client->request(
+                $config['request_type'],
+                $uri,
+                [ 'headers' => $headers, 'body' => $postdata, 'verify' => false]
+            );
         } else { // GET request
             // actually request to the service
             $response = $client->request($config['request_type'], $uri, ['verify' => false]);
