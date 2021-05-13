@@ -26,7 +26,7 @@
     @include("account._menu")
 
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-6">
             <h2>{{ trans('messages.billing_information') }}</h2>
             @if (!$customer->getDefaultBillingAddress())
                 <p>{{ trans('messages.has_no_billing_address') }}</p>

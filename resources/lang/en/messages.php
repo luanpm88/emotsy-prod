@@ -4062,7 +4062,7 @@
   'invoice.renew_transaction_failed.reconnect' => 'Something went wrong when charge renew invoice. Error: :error.
       <a href=":link">Click here</a> to check the payment serivce connection.',
   'transaction.method' => 'Method',
-  'transaction.method.direct' => 'Direct',
+  'transaction.method.direct' => 'Offline',
   'transaction.method.stripe' => 'Stripe',
   'invoice.init_subscription' => 'New Subscription',
   'invoice.renew_subscription' => 'Renew Subscription',
