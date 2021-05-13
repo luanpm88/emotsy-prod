@@ -103,15 +103,17 @@
                     </div>
                 </form>
 
-                <div class="my-4 pt-3">
-                    <hr>
-                    <a class="" link-method="POST" link-confirm="{{ trans('messages.invoice.cancel.confirm') }}"
-                        href="{{ action('AccountSubscriptionController@cancelInvoice', [
-                            'invoice_uid' => $subscription->lastInvoice()->uid,
-                        ]) }}">
-                        {{ trans('messages.subscription.cancel_now_change_other_plan') }}
-                    </a>
-                </div>
+                @if ($subscription->lastInvoice()->type !== \Acelle\Model\Invoice::TYPE_RENEW_SUBSCRIPTION)
+                    <div class="my-4 pt-3">
+                        <hr>
+                        <a class="" link-method="POST" link-confirm="{{ trans('messages.invoice.cancel.confirm') }}"
+                            href="{{ action('AccountSubscriptionController@cancelInvoice', [
+                                'invoice_uid' => $subscription->lastInvoice()->uid,
+                            ]) }}">
+                            {{ trans('messages.subscription.cancel_now_change_other_plan') }}
+                        </a>
+                    </div>
+                @endif
         </div>
         <div class="col-md-4">
             @include('invoices.bill', [

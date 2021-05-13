@@ -68,7 +68,6 @@ class EmailVerificationServer extends Model
         $uri = array_key_exists('password', $options) ? str_replace('{PASSWORD}', $options['password'], $uri) : $uri;
 
         // build the request URI
-        // @todo not complete
         if ($config['request_type'] == 'POST') {
             $postdata = $config['post_data'];
             $postdata = str_replace('{EMAIL}', $email, $postdata);
@@ -89,8 +88,11 @@ class EmailVerificationServer extends Model
             }
 
             // make POST request
-            // @todo POST case not tested
-            $response = $client->request($config['request_type'], $uri, ['headers' => $headers, 'body' => $postdata]);
+            $response = $client->request(
+                $config['request_type'],
+                $uri,
+                [ 'headers' => $headers, 'body' => $postdata, 'verify' => false]
+            );
         } else { // GET request
             // actually request to the service
             $response = $client->request($config['request_type'], $uri, ['verify' => false]);

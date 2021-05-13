@@ -217,6 +217,16 @@
 					'rules' => $smtp_rules
 				])
 			</div>
+			<div class="col-md-6 mailer-setting sendmail">
+				@include('helpers.form_control', [
+					'type' => 'text',
+					'name' => 'sendmail_path',
+					'label' => trans('messages.sendmail_path'),
+					'value' => (isset($site_info["sendmail_path"]) ? $site_info["sendmail_path"] : "/usr/sbin/sendmail"),
+					'help_class' => 'env',
+					'rules' => ['mailer.sendmail_path' => 'required']
+				])  
+			</div>
 		</div>
 	</div>
 	

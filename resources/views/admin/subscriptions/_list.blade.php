@@ -64,7 +64,7 @@
 				<td>
 					@switch($subscription->status)
 						@case(Acelle\Model\Subscription::STATUS_ACTIVE)
-							<span style="cursor:pointer" href="{{ action('Admin\SubscriptionController@invoices', $subscription->uid) }}"
+							<span style="cursor:pointer" href="{{ action('Admin\SubscriptionController@invoices', ['id' => $subscription->uid]) }}"
 								class="view_invoices label bg-success"
 							>
 								{{ trans('messages.subscription.status.active') }}
@@ -85,13 +85,13 @@
 							@break
 						@case(Acelle\Model\Subscription::STATUS_NEW)
 							@if ($subscription->hasPendingInvoice() && $subscription->pendingInvoice()->isClaimed())
-								<span style="cursor:pointer" href="{{ action('Admin\SubscriptionController@invoices', $subscription->uid) }}"
+								<span style="cursor:pointer" href="{{ action('Admin\SubscriptionController@invoices', ['id' => $subscription->uid]) }}"
 									class="view_invoices label bg-m-warning"
 								>
 									{{ trans('messages.subscription.status.pending_for_approval') }}
 								</span>	
 							@else
-								<span style="cursor:pointer" href="{{ action('Admin\SubscriptionController@invoices', $subscription->uid) }}"
+								<span style="cursor:pointer" href="{{ action('Admin\SubscriptionController@invoices', ['id' => $subscription->uid]) }}"
 									class="view_invoices label bg-m-warning"
 								>
 									{{ trans('messages.subscription.status.wait_for_payment') }}
@@ -99,7 +99,7 @@
 							@endif
 							@break
 						@default
-							<span style="cursor:pointer" href="{{ action('Admin\SubscriptionController@invoices', $subscription->uid) }}"
+							<span style="cursor:pointer" href="{{ action('Admin\SubscriptionController@invoices', ['id' => $subscription->uid]) }}"
 								class="view_invoices label bg-{{ $subscription->status }}"
 							>
 								{{ trans('messages.subscription.status.' . $subscription->status) }}
@@ -164,7 +164,7 @@
 								@if (\Auth::user()->admin->can('invoices', $subscription))
 									<li>
 										<a class="view_invoices"
-										  href="{{ action('Admin\SubscriptionController@invoices', $subscription->uid) }}">
+										  href="{{ action('Admin\SubscriptionController@invoices', ['id' => $subscription->uid]) }}">
 											{{ trans('messages.subscription.logs') }}
 										</a>
 									</li>

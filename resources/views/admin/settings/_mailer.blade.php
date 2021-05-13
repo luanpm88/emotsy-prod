@@ -96,6 +96,16 @@
                         'rules' => $env_rules
                     ])  
                 </div>
+                <div class="col-md-6 mailer-setting sendmail">
+                    @include('helpers.form_control', [
+                        'type' => 'text',
+                        'name' => 'env[sendmail_path]',
+                        'label' => trans('messages.sendmail_path'),
+                        'value' => (isset($env["sendmail_path"]) ? $env["sendmail_path"] : ""),
+                        'help_class' => 'env',
+                        'rules' => ['mailer.sendmail_path' => 'required']
+                    ])  
+                </div>
             </div>
         </div>
         

@@ -237,6 +237,7 @@ class SettingController extends Controller
             'MAIL_ENCRYPTION' => config('mail.encryption'),
             'MAIL_FROM_ADDRESS' => config('mail.from')['address'],
             'MAIL_FROM_NAME' => config('mail.from')['name'],
+            'sendmail_path' => (\Acelle\Model\Setting::get('mailer.sendmail_path') ? \Acelle\Model\Setting::get('mailer.sendmail_path') : "/usr/sbin/sendmail"),
         ];
 
         if (null !== $request->old() && isset($request->old()['env'])) {
@@ -258,6 +259,7 @@ class SettingController extends Controller
             'sendmail' => [
                 'env.MAIL_FROM_ADDRESS' => 'required|email',
                 'env.MAIL_FROM_NAME' => 'required',
+                'env.sendmail_path' => 'required',
             ],
         ];
 
@@ -316,6 +318,7 @@ class SettingController extends Controller
             \Acelle\Model\Setting::set('mailer.password', $env['MAIL_PASSWORD']);
             \Acelle\Model\Setting::set('mailer.from.name', $env['MAIL_FROM_NAME']);
             \Acelle\Model\Setting::set('mailer.from.address', $env['MAIL_FROM_ADDRESS']);
+            \Acelle\Model\Setting::set('mailer.sendmail_path', $env['sendmail_path']);
 
             // Redirect to my lists page
             $next = action('Admin\SettingController@mailer');
@@ -513,46 +516,6 @@ class SettingController extends Controller
         // Redirect URL
         $pageUrl = action('Admin\SettingController@upgrade');
 
-        // Just in case: upgrade from Laravel 5.8 to 7x ==> session reset
-        // Remove the following line after a while when upgrading from 7x to 7x
-        artisan_migrate();
-        sleep(2);
-
-        // If upgrade done successfully, perform config:cache
-        // The config:cache must be done in a subsequent process, not in the 'doUpgrade' one
-        if ($request->session()->has('upgraded')) {
-            Log::info('Upgraded session');
-
-            $request->session()->forget('upgraded');
-            $request->session()->put('reset', true);
-            Session::save();
-            $manager->refreshConfig();
-            Setting::writeDefaultSettings();
-            echo '<html>
-                <head>
-                    <meta http-equiv="refresh" content="3;'.$pageUrl.'" />
-                <title>Page Moved</title>
-                </head>
-                <body>
-                    Upgrade done, migrating...
-                </body>
-                </html>';
-
-            return;
-        }
-
-        if ($request->session()->has('reset')) {
-            $pageUrl = action('Admin\SettingController@upgrade');
-            Log::info('Run migration...');
-            artisan_migrate();
-            sleep(5);
-            Log::info('Run migration: done!');
-
-            $request->session()->forget('reset');
-            Session::save();
-            $request->session()->flash('alert-success', trans('messages.upgrade.alert.upgrade_success'));
-        }
-
         return view('admin.settings.upgrade', [
             'any' => 'any',
             'manager' => $manager,
@@ -570,45 +533,37 @@ class SettingController extends Controller
         if ($request->user()->admin->getPermission('setting_upgrade_manager') != 'yes') {
             return $this->notAuthorized();
         }
+
         $manager = new UpgradeManager();
         $failed = $manager->test();
+
         if (empty($failed)) {
-            $pageUrl = action('Admin\SettingController@upgrade');
-
-            if (file_exists(base_path('bootstrap/cache/config.php'))) {
-                unlink(base_path('bootstrap/cache/config.php'));
-            }
-
-            if (file_exists(base_path('bootstrap/cache/packages.php'))) {
-                unlink(base_path('bootstrap/cache/packages.php'));
-            }
-
-            if (file_exists(base_path('bootstrap/cache/services.php'))) {
-                unlink(base_path('bootstrap/cache/services.php'));
-            }
-            
+            // RUN UPGRADE
+            Log::info('Actually run.....');
             $manager->run();
+            
             Log::info('System successfully upgraded to the new version');
-            $request->session()->put('upgraded', true);
             Log::info('Redirecting to work with new request');
-            // Redirect to an entirely new page
+            $request->session()->put('upgraded', true);
+
+            // REFRESH by redirecting to an entirely new page
             // Then make a new request from browser to load new config
-            // Simple using redirect() will retain the current setting
-            sleep(1);
+            // A normal redirect() will retain the current setting
+            $pageUrl = action('Controller@runMigration');
             echo '<html>
                 <head>
                     <meta http-equiv="refresh" content="3;'.$pageUrl.'" />
-                <title>Page Moved</title>
+                <title>Application Upgrade...</title>
                 </head>
                 <body>
                     Upgrade is in progress, please wait...
                 </body>
                 </html>';
 
-            die;
+            return;
+
         } else {
             Log::warning('Cannot upgrade, certain files are not writable');
-
             return view('admin.settings.upgrade', [
                 'any' => 'any',
                 'manager' => $manager,

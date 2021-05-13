@@ -4285,4 +4285,7 @@
   'rate.opens' => 'Open rate',
   'rate.clicks' => 'Click rate',
   'rate.send' => 'Send',
+  'system.end_period_last_days' => 'End period last days',
+  'system.renew_free_plan' => 'Can renew free plan',
+  'system.recurring_charge_before_days' => 'Auto charge renew invoice before',
 ) ?>

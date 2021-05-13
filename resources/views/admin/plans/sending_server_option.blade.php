@@ -1,4 +1,4 @@
-<form enctype="multipart/form-data" action="{{ action('Admin\PlanController@sendingServerOption', $plan->uid) }}" method="POST" class="form-validate-jquery">
+<form enctype="multipart/form-data" action="{{ action('Admin\PlanController@sendingServerOption', ['uid' => $plan->uid]) }}" method="POST" class="form-validate-jquery">
     {{ csrf_field() }}
     <div class="modal-header">
       <h5 class="modal-title">{{ trans('messages.plan.sending_server.option') }}</h5>

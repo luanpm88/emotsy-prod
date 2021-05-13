@@ -8,6 +8,11 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
+use Acelle\Model\Setting;
+use Artisan;
+
 class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
@@ -211,12 +216,29 @@ class Controller extends BaseController
      *
      * @todo only authenticated user can execute this
      */
-    public function runMigration()
+    public function runMigration(Request $request)
     {
-        \Artisan::call('migrate', ['--force' => true]);
-        \Acelle\Model\Notification::truncate();
+        Log::info('Start migration');
+        // Run migration
+        Artisan::call('migrate', ['--force' => true]);
         sleep(5);
-        echo "Migration done! Redirecting...<meta http-equiv=\"refresh\" content=\"5;URL='".url('/')."'\" />";
+        Log::info('Done migration');
+        // Upgrade post-processing
+        if ($request->session()->has('upgraded')) {
+            $request->session()->forget('upgraded');
+            Session::save();
+
+            Log::info('Write settings...');
+            // WRITE new settings too
+            Setting::writeDefaultSettings();
+
+            // Redirect with success message
+            $request->session()->flash('alert-success', trans('messages.upgrade.alert.upgrade_success'));
+            return redirect()->action('Admin\SettingController@upgrade');
+        } else {
+            echo "Migration done! Redirecting...<meta http-equiv=\"refresh\" content=\"5;URL='".url('/')."'\" />";
+        }
+        
     }
 
     /**

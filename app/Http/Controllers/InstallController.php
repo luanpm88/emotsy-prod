@@ -54,7 +54,6 @@ class InstallController extends Controller
     public function starting(Request $request)
     {
         $next = action('InstallController@systemCompatibility');
-        artisan_config_cache();
         return redirect()->away($next);
     }
 
@@ -85,7 +84,6 @@ class InstallController extends Controller
             ]);
         } catch (\Exception $e) {
             $next_page = action('InstallController@systemCompatibility');
-            artisan_config_cache();
             return redirect()->away($next_page);
         }
     }
@@ -119,6 +117,7 @@ class InstallController extends Controller
             'sendmail' => [
                 'mail_from_email' => 'required|email',
                 'mail_from_name' => 'required',
+                'sendmail_path' => 'required',
             ],
         ];
         $smtp_rules = $mail_rules['smtp'];
@@ -438,6 +437,8 @@ class InstallController extends Controller
         \Acelle\Model\Setting::set('mailer.password', $site_info['smtp_password']);
         \Acelle\Model\Setting::set('mailer.from.name', $site_info['mail_from_name']);
         \Acelle\Model\Setting::set('mailer.from.address', $site_info['mail_from_email']);
+        \Acelle\Model\Setting::set('mailer.sendmail_path', $site_info['sendmail_path']);
+
 
         $request->session()->flash('alert-success', trans('messages.install.database_import.success'));
 
@@ -500,7 +501,6 @@ class InstallController extends Controller
     public function finishing(Request $request)
     {
         $next_page = action('InstallController@finish');
-        artisan_config_cache();
         AppNotification::cleanup();
         return redirect()->away($next_page);
     }
@@ -772,9 +772,6 @@ MAIL_FROM_NAME="'.(isset($smtp['mail_from_name']) ? $smtp['mail_from_name'] : ''
         $config_string;
         fwrite($env_file, $config_string);
         fclose($env_file);
-
-        // Reload .env
-        artisan_config_cache();
     }
 
     public function importDatabase($database)
