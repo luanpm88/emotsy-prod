@@ -37,19 +37,19 @@ class QuotaTrackerMultiProcessTest extends TestCase
 
                 $tracker = new QuotaTrackerFile($file, null, ['1 hour' => 100000]);
 
-                $result = $this->nTimes(300, $tracker, function($tracker) {
+                $result = $this->nTimes(300, $tracker, function ($tracker) {
                     return $tracker->add(Carbon::now());
                 });
 
                 exit($i + 1);
-                // end child process
+            // end child process
             } else {
                 $children[] = $pid;
             }
         }
 
         // wait for child processes to finish
-        foreach($children as $child) {
+        foreach ($children as $child) {
             $pid = pcntl_wait($status);
             $this->assertTrue(pcntl_wifexited($status));
         }
@@ -212,9 +212,10 @@ class QuotaTrackerMultiProcessTest extends TestCase
      *
      * @return void
      */
-    private function nTimes($try, $tracker, $func) {
+    private function nTimes($try, $tracker, $func)
+    {
         $success = true;
-        for($i = 0; $i < $try; $i++) {
+        for ($i = 0; $i < $try; $i++) {
             $success = $func($tracker);
             if (!$success) {
                 return false;

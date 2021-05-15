@@ -1,4 +1,4 @@
-<?php return array (
+<?php return array(
   'datetime_format' => 'M dS, Y H:i',
   'datetime_format_2' => 'M dS, Y H:i:s',
   'time_format' => 'H:i',
@@ -4095,4 +4095,4 @@
   'system.end_period_last_days' => 'End period last days',
   'system.renew_free_plan' => 'Can renew free plan',
   'system.recurring_charge_before_days' => 'Auto charge renew invoice before',
-) ?>
+);

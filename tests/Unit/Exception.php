@@ -16,10 +16,11 @@ class Exception extends TestCase
     public function testExample()
     {
         $this->expectException(\ErrorException::class);
-        preg_replace('/' . preg_quote($this->generateRandomString(100000), '/' ) . '/', '', '');
+        preg_replace('/' . preg_quote($this->generateRandomString(100000), '/') . '/', '', '');
     }
 
-    function generateRandomString($length = 10) {
-        return substr(str_shuffle(str_repeat($x='0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil($length/strlen($x)) )),1,$length);
+    public function generateRandomString($length = 10)
+    {
+        return substr(str_shuffle(str_repeat($x='0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil($length/strlen($x)))), 1, $length);
     }
 }

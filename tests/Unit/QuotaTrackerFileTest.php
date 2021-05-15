@@ -27,7 +27,7 @@ class QuotaTrackerFileTest extends TestCase
         $tracker = new QuotaTrackerFile($file, null, ['5 seconds' => 6]);
         $tracker->reset();
 
-        $result = $this->nTimes(10, $tracker, function($tracker) {
+        $result = $this->nTimes(10, $tracker, function ($tracker) {
             return $tracker->add(Carbon::now());
         });
 
@@ -40,7 +40,7 @@ class QuotaTrackerFileTest extends TestCase
         $tracker = new QuotaTrackerFile($file, ['start' => (new Carbon('first day of March 2016'))->timestamp, 'max' => 9], ['5 seconds' => 6]);
         $tracker->reset();
 
-        $result = $this->nTimes(9, $tracker, function($tracker) {
+        $result = $this->nTimes(9, $tracker, function ($tracker) {
             return $tracker->add(Carbon::now());
         });
 
@@ -53,7 +53,7 @@ class QuotaTrackerFileTest extends TestCase
          */
         $tracker = new QuotaTrackerFile($file, null, ['5 second' => 4]);
         $tracker->reset();
-        $result = $this->nTimes(5, $tracker, function($tracker) {
+        $result = $this->nTimes(5, $tracker, function ($tracker) {
             $tracker->add(Carbon::now());
             return $tracker->check();
         });
@@ -65,7 +65,7 @@ class QuotaTrackerFileTest extends TestCase
          */
         $tracker = new QuotaTrackerFile($file, null, ['1 hour' => 0]);
         $tracker->reset();
-        $result = $this->nTimes(1, $tracker, function($tracker) {
+        $result = $this->nTimes(1, $tracker, function ($tracker) {
             $tracker->add(Carbon::now());
             $tracker->check();
         });
@@ -77,7 +77,7 @@ class QuotaTrackerFileTest extends TestCase
          */
         $tracker = new QuotaTrackerFile($file, null, ['1 days' => 1]);
         $tracker->reset();
-        $result = $this->nTimes(1, $tracker, function($tracker) {
+        $result = $this->nTimes(1, $tracker, function ($tracker) {
             return $tracker->add(Carbon::now());
         });
         $this->assertTrue($result);
@@ -88,7 +88,7 @@ class QuotaTrackerFileTest extends TestCase
          */
         $tracker = new QuotaTrackerFile($file, null, ['1 days' => 1]);
         $tracker->reset();
-        $result = $this->nTimes(2, $tracker, function($tracker) {
+        $result = $this->nTimes(2, $tracker, function ($tracker) {
             $tracker->add(Carbon::now());
             return $tracker->check();
         });
@@ -135,9 +135,10 @@ class QuotaTrackerFileTest extends TestCase
      *
      * @return void
      */
-    private function nTimes($try, $tracker, $func) {
+    private function nTimes($try, $tracker, $func)
+    {
         $success = true;
-        for($i = 0; $i < $try; $i++) {
+        for ($i = 0; $i < $try; $i++) {
             $success = $func($tracker);
             if (!$success) {
                 return false;

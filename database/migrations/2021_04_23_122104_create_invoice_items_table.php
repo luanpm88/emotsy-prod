@@ -19,14 +19,14 @@ class CreateInvoiceItemsTable extends Migration
             $table->integer('invoice_id')->unsigned();
             $table->string('item_id');
             $table->string('item_type');
-            $table->double('amount', 16, 2)->default(0);            
+            $table->double('amount', 16, 2)->default(0);
             $table->double('tax', 16, 2)->default(0);
             $table->double('discount', 16, 2)->default(0);
             $table->string('title');
             $table->text('description');
             $table->timestamps();
 
-            $table->foreign('invoice_id')->references('id')->on('invoices')->onDelete('cascade');            
+            $table->foreign('invoice_id')->references('id')->on('invoices')->onDelete('cascade');
         });
     }
 

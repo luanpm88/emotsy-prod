@@ -11,8 +11,12 @@
     }
 
     if (isset($params)) {
-        $paramsString = implode(' ', collect($params)
-            ->map(function($value, $key) { return "$key=\"$value\""; })
+        $paramsString = implode(
+            ' ',
+            collect($params)
+            ->map(function ($value, $key) {
+                return "$key=\"$value\"";
+            })
             ->values()->all()
         );
     }

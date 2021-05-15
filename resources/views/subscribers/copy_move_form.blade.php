@@ -29,7 +29,9 @@
                     <input type="hidden" name="uids" value="{{ request()->uids }}" />
                     <?php
                         $lists = collect(Auth::user()->customer->readCache('MailListSelectOptions', []));
-                        $lists = $lists->filter(function ($record, $key) use($from_list) { return $record['id'] != $from_list->id; });
+                        $lists = $lists->filter(function ($record, $key) use ($from_list) {
+                            return $record['id'] != $from_list->id;
+                        });
                     ?>
                     @include('helpers.form_control', [
                         'type' => 'select',
