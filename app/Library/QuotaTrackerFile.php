@@ -50,6 +50,7 @@ class QuotaTrackerFile
         $this->file = $file;
         $this->quota = $quota;
         $this->limits = $limits;
+        $this->load();
         $this->createLogFile();
     }
 
@@ -438,6 +439,7 @@ class QuotaTrackerFile
     {
         $series = file_get_contents($this->file);
         preg_match('/(?<archived>^[^\|]{1,24})\|/', $series, $matched);
+
         if (array_key_exists('archived', $matched)) {
             $this->archived = array_map('intval', explode(':', $matched['archived'])); // [ $start, $value]
         } else {
@@ -450,7 +452,6 @@ class QuotaTrackerFile
 
         // REXP to replace anything before the pipe or leading/trailing comma
         $this->series = json_decode('['.preg_replace('/(^(.*\|,*|,+)|,+$)/', '', $series).']');
-
         return $this->series;
     }
 

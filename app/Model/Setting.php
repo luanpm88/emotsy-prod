@@ -858,14 +858,14 @@ class Setting extends Model
             // ],
             'razorpay' => [
                 'name' => 'razorpay',
-                'fields' => [                
+                'fields' => [
                     'key_id' => null,
                     'key_secret' => null,
                 ],
             ],
             'paystack' => [
                 'name' => 'paystack',
-                'fields' => [                
+                'fields' => [
                     'public_key' => null,
                     'secret_key' => null,
                 ],

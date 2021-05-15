@@ -1,4 +1,4 @@
-<?php return array (
+<?php return array(
   'accepted' => 'Das :attribute muss akzeptiert werden.',
   'active_url' => 'Das :attribute ist keine gültige URL.',
   'after' => 'Das :attribute muss ein Datum nach dem :date sein.',
@@ -7,8 +7,8 @@
   'alpha_num' => 'Das :attribute darf nur Buchstaben und Zahlen enthalten.',
   'array' => 'Das :attribute muss ein Array sein.',
   'before' => 'Das :attribute muss ein Datum vor dem :date.',
-  'between' => 
-  array (
+  'between' =>
+  array(
     'numeric' => 'Das :attribute muss zwischen :min und :max sein.',
     'file' => 'Das :attribute muss zwischen :min und :max Kilobytes haben.',
     'string' => 'Das :attribute muss zwischen :min und :max Zeichen haben.',
@@ -31,16 +31,16 @@
   'integer' => 'Das :attribute muss eine ganze Zahl sein.',
   'ip' => 'Das :attribute muss eine gültige IP-Adresse sein.',
   'json' => 'Das :attribute muss ein gültiger JSON-String sein.',
-  'max' => 
-  array (
+  'max' =>
+  array(
     'numeric' => 'Das :attribute darf nicht mehr als :max haben.',
     'file' => 'Das :attribute darf nicht mehr als :max Kilobytes haben.',
     'string' => 'Das :attribute darf nicht mehr als :max Zeichen haben.',
     'array' => 'Das :attribute darf nicht mehr als :max Objekte haben.',
   ),
   'mimes' => 'Das :attribute muss eine Datei des Typs :values sein.',
-  'min' => 
-  array (
+  'min' =>
+  array(
     'numeric' => 'Das :attribute muss mindestens :min haben.',
     'file' => 'Das :attribute muss mindestens :min Kilobytes groß sein.',
     'string' => 'Das :attribute muss mindestens :min Zeichen haben.',
@@ -58,8 +58,8 @@
   'required_without' => 'Das :attribute Feld ist erforderlich, wenn keine :values vorhanden sind.',
   'required_without_all' => 'Das :attribute Feld ist erforderlich, wenn keine :values vorhanden sind.',
   'same' => ' :attribute und :other müssen gleich sein.',
-  'size' => 
-  array (
+  'size' =>
+  array(
     'numeric' => 'Das :attribute muss :size groß sein.',
     'file' => 'Das :attribute muss :size Kilobytes groß sein.',
     'string' => 'Das :attribute muss :size Character haben .',
@@ -72,77 +72,77 @@
   'substring' => 'Der :tag Tag, wurde nicht in :attribute gefunden.',
   'license' => 'Die Lizenz ist nicht gültig.',
   'license_error' => ':error',
-  'custom' => 
-  array (
-    'miss_main_field_tag' => 
-    array (
+  'custom' =>
+  array(
+    'miss_main_field_tag' =>
+    array(
       'required' => 'Fehlender Tag für E-MAIL-Feld ',
     ),
-    'conflict_field_tags' => 
-    array (
+    'conflict_field_tags' =>
+    array(
       'required' => 'Die Feld Tags können nicht gleich sein',
     ),
-    'segment_conditions_empty' => 
-    array (
+    'segment_conditions_empty' =>
+    array(
       'required' => 'Die Konditionsliste kann nicht leer sein',
     ),
-    'mysql_connection' => 
-    array (
+    'mysql_connection' =>
+    array(
       'required' => 'Kann keine Verbindung zum MySQL-Server herstellen',
     ),
-    'database_not_empty' => 
-    array (
+    'database_not_empty' =>
+    array(
       'required' => 'Die Datenbank ist nicht leer',
     ),
-    'promo_code_not_valid' => 
-    array (
+    'promo_code_not_valid' =>
+    array(
       'required' => 'Der Promo-Code ist nicht gültig',
     ),
-    'smtp_valid' => 
-    array (
+    'smtp_valid' =>
+    array(
       'required' => 'Kann keine Verbindung zum SMTP-Server herstellen',
     ),
-    'yaml_parse_error' => 
-    array (
+    'yaml_parse_error' =>
+    array(
       'required' => 'Kann nicht analysiert werden. Bitte überprüfen Sie die Syntax',
     ),
-    'file_not_found' => 
-    array (
+    'file_not_found' =>
+    array(
       'required' => 'Datei nicht gefunden.',
     ),
-    'not_zip_archive' => 
-    array (
+    'not_zip_archive' =>
+    array(
       'required' => 'Die Datei ist kein Zip-Paket.',
     ),
-    'zip_archive_unvalid' => 
-    array (
+    'zip_archive_unvalid' =>
+    array(
       'required' => 'Das Paket kann nicht gelesen werden.',
     ),
-    'custom_criteria_empty' => 
-    array (
+    'custom_criteria_empty' =>
+    array(
       'required' => 'Benutzerdefinierte Kriterien können nicht leer sein',
     ),
-    'php_bin_path_invalid' => 
-    array (
+    'php_bin_path_invalid' =>
+    array(
       'required' => 'Ungültige ausführbare PHP-Datei. Bitte überprüfen Sie es noch einmal.',
     ),
-    'can_not_empty_database' => 
-    array (
+    'can_not_empty_database' =>
+    array(
       'required' => 'Bestimmte Tabellen können nicht verschoben werden, bitte reinigen Sie Ihre Datenbank manuell und versuchen Sie es erneut.',
     ),
-    'recaptcha_invalid' => 
-    array (
+    'recaptcha_invalid' =>
+    array(
       'required' => 'Ungültige reCAPTCHA-Prüfung.',
     ),
-    'payment_method_not_valid' => 
-    array (
+    'payment_method_not_valid' =>
+    array(
       'required' => 'Etwas ist mit den Zahlungsmethoden Einstellungen fehlerhaft. Bitte überprüfen Sie es noch einmal.',
     ),
   ),
-  'attributes' => 
-  array (
-    'options' => 
-    array (
+  'attributes' =>
+  array(
+    'options' =>
+    array(
       'limit_value' => 'Limit value',
       'limit_base' => 'Limit base',
       'limit_unit' => 'Limit time unit',
@@ -154,48 +154,48 @@
     'quota_value' => 'Sendelimit',
     'quota_base' => 'Zeitbasis',
     'quota_unit' => 'Zeitangabe',
-    'lists_segments' => 
-    array (
-      0 => 
-      array (
+    'lists_segments' =>
+    array(
+      0 =>
+      array(
         'mail_list_uid' => 'List',
       ),
-      1 => 
-      array (
+      1 =>
+      array(
         'mail_list_uid' => 'List',
       ),
-      2 => 
-      array (
+      2 =>
+      array(
         'mail_list_uid' => 'List',
       ),
-      3 => 
-      array (
+      3 =>
+      array(
         'mail_list_uid' => 'List',
       ),
-      4 => 
-      array (
+      4 =>
+      array(
         'mail_list_uid' => 'List',
       ),
-      5 => 
-      array (
+      5 =>
+      array(
         'mail_list_uid' => 'List',
       ),
-      6 => 
-      array (
+      6 =>
+      array(
         'mail_list_uid' => 'List',
       ),
-      7 => 
-      array (
+      7 =>
+      array(
         'mail_list_uid' => 'List',
       ),
-      8 => 
-      array (
+      8 =>
+      array(
         'mail_list_uid' => 'List',
       ),
-      9 => 
-      array (
+      9 =>
+      array(
         'mail_list_uid' => 'List',
       ),
     ),
   ),
-) ?>
+);

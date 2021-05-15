@@ -561,7 +561,6 @@ class SettingController extends Controller
                 </html>';
 
             return;
-
         } else {
             Log::warning('Cannot upgrade, certain files are not writable');
             return view('admin.settings.upgrade', [

@@ -1,9 +1,10 @@
 <?php
 
 // check if a function is disable
-function f_enabled($name) {
-  $disabled = preg_split('/[\s,]+/', ini_get('disable_functions'));
-  return function_exists($name) && !in_array($name, $disabled);
+function f_enabled($name)
+{
+    $disabled = preg_split('/[\s,]+/', ini_get('disable_functions'));
+    return function_exists($name) && !in_array($name, $disabled);
 }
 
 // fucntions that are required by Acelle Mail

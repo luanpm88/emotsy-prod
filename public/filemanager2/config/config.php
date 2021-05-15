@@ -59,53 +59,54 @@ define('DEBUG_ERROR_MESSAGE', false); // TRUE or FALSE
 
 class Uidd
 {
-    static public function get() {
-	require '../../bootstrap/autoload.php';
-    $app = require_once '../../bootstrap/app.php';
+    public static function get()
+    {
+        require '../../bootstrap/autoload.php';
+        $app = require_once '../../bootstrap/app.php';
 
-    $kernel = $app->make('Illuminate\Contracts\Http\Kernel');
-    $response = $kernel->handle(
-        $request = Acelle\Framework\LaravelRequest::capture('/blank')
-    );
+        $kernel = $app->make('Illuminate\Contracts\Http\Kernel');
+        $response = $kernel->handle(
+            $request = Acelle\Framework\LaravelRequest::capture('/blank')
+        );
 
-    /*
-    $id = $app['encrypter']->decrypt($_COOKIE[$app['config']['session.cookie']]);
-    $app['session']->driver()->setId($id);
-    $app['session']->driver()->start();
-	*/
+        /*
+        $id = $app['encrypter']->decrypt($_COOKIE[$app['config']['session.cookie']]);
+        $app['session']->driver()->setId($id);
+        $app['session']->driver()->start();
+        */
 
-	// $user_uid = Auth::user()->uid;
-	if (is_object($app['auth']->user())) {
-		$user_uid = Auth::user()->uid;
-		$max_size_upload_total = is_object($app['auth']->user()->customer) && $app['auth']->user()->customer->getOption("max_size_upload_total") > 0 ? $app['auth']->user()->customer->getOption("max_size_upload_total") : 999999999;
-		$max_file_size_upload = is_object($app['auth']->user()->customer) && $app['auth']->user()->customer->getOption("max_file_size_upload") > 0 ? $app['auth']->user()->customer->getOption("max_file_size_upload") : 999999999;
-	} else {
-		$user_uid = $_SESSION["user_uid"];
-		$max_size_upload_total = $_SESSION["max_size_upload_total"];
-		$max_file_size_upload = $_SESSION["max_file_size_upload"];
-	}
+        // $user_uid = Auth::user()->uid;
+        if (is_object($app['auth']->user())) {
+            $user_uid = Auth::user()->uid;
+            $max_size_upload_total = is_object($app['auth']->user()->customer) && $app['auth']->user()->customer->getOption("max_size_upload_total") > 0 ? $app['auth']->user()->customer->getOption("max_size_upload_total") : 999999999;
+            $max_file_size_upload = is_object($app['auth']->user()->customer) && $app['auth']->user()->customer->getOption("max_file_size_upload") > 0 ? $app['auth']->user()->customer->getOption("max_file_size_upload") : 999999999;
+        } else {
+            $user_uid = $_SESSION["user_uid"];
+            $max_size_upload_total = $_SESSION["max_size_upload_total"];
+            $max_file_size_upload = $_SESSION["max_file_size_upload"];
+        }
 
-    // Make folder if not exist	
-	$paths = [
-		storage_path('/app/users'),
-		storage_path('/app/users/' . $user_uid),
-		storage_path('/app/users/' . $user_uid . '/home'),
-		storage_path('/app/users/' . $user_uid . '/home/files'),
-		storage_path('/app/users/' . $user_uid . '/home/thumbs'),
-	];
-	foreach ($paths as $path) {
-		if (!file_exists($path)) {
-			mkdir($path, 0777, true);
-		}
-	}
+        // Make folder if not exist
+        $paths = [
+        storage_path('/app/users'),
+        storage_path('/app/users/' . $user_uid),
+        storage_path('/app/users/' . $user_uid . '/home'),
+        storage_path('/app/users/' . $user_uid . '/home/files'),
+        storage_path('/app/users/' . $user_uid . '/home/thumbs'),
+    ];
+        foreach ($paths as $path) {
+            if (!file_exists($path)) {
+                mkdir($path, 0777, true);
+            }
+        }
 
-    return [
-		"user_uid" => $user_uid,
-		"max_size_upload_total" => $max_size_upload_total,
-		"max_file_size_upload" => $max_file_size_upload,
-		"storage_path" => storage_path('/app/users/' . $user_uid . '/home'),
-	];
-  }
+        return [
+        "user_uid" => $user_uid,
+        "max_size_upload_total" => $max_size_upload_total,
+        "max_file_size_upload" => $max_file_size_upload,
+        "storage_path" => storage_path('/app/users/' . $user_uid . '/home'),
+    ];
+    }
 }
 
 $db_config = Uidd::get();
@@ -634,9 +635,9 @@ return array_merge(
         'tui_defaults_config' => array(
             //'common.bi.image'                   => $config['common.bi.image'],
             //'common.bisize.width'               => $config['common.bisize.width'],
-            //'common.bisize.height'              => $config['common.bisize.height'], 
+            //'common.bisize.height'              => $config['common.bisize.height'],
             'common.backgroundImage'            => $config['common.backgroundImage'],
-            'common.backgroundColor'            => $config['common.backgroundColor'], 
+            'common.backgroundColor'            => $config['common.backgroundColor'],
             'common.border'                     => $config['common.border'],
             'header.backgroundImage'            => $config['header.backgroundImage'],
             'header.backgroundColor'            => $config['header.backgroundColor'],

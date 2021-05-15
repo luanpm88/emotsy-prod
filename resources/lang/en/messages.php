@@ -1,4 +1,4 @@
-<?php return array (
+<?php return array(
   'datetime_format' => 'M dS, Y H:i',
   'datetime_format_2' => 'M dS, Y H:i:s',
   'time_format' => 'H:i',
@@ -4190,7 +4190,7 @@
   'invoice.renew_transaction_failed.reconnect' => 'Something went wrong when charge renew invoice. Error: :error.
       <a href=":link">Click here</a> to check the payment serivce connection.',
   'transaction.method' => 'Method',
-  'transaction.method.direct' => 'Direct',
+  'transaction.method.direct' => 'Offline',
   'transaction.method.stripe' => 'Stripe',
   'invoice.init_subscription' => 'New Subscription',
   'invoice.renew_subscription' => 'Renew Subscription',
@@ -4288,4 +4288,4 @@
   'system.end_period_last_days' => 'End period last days',
   'system.renew_free_plan' => 'Can renew free plan',
   'system.recurring_charge_before_days' => 'Auto charge renew invoice before',
-) ?>
+);

@@ -238,7 +238,6 @@ class Controller extends BaseController
         } else {
             echo "Migration done! Redirecting...<meta http-equiv=\"refresh\" content=\"5;URL='".url('/')."'\" />";
         }
-        
     }
 
     /**
