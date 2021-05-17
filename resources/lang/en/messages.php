@@ -1,4 +1,4 @@
-<?php return array(
+<?php return array (
   'datetime_format' => 'M dS, Y H:i',
   'datetime_format_2' => 'M dS, Y H:i:s',
   'time_format' => 'H:i',
@@ -3816,7 +3816,7 @@
   'automation.subscriber.removed' => 'Subscriber was successfully removed from automation',
   'automation.subscriber.restarted' => 'Subscriber was successfully restarted within automation',
   'payment.all_available_gateways' => 'All available payment gateways',
-  'payment.all_available_gateways.wording' => 'Belows are all payment gateways that installed',
+  'payment.all_available_gateways.wording' => 'Connect with your preferred payment gateways to receive payments by your users<br>Your users can pay by cash, Debit/Credit cards, PayPal, etc.',
   'payment.offline_payment' => 'Offline Payment',
   'payment.offline_payment.intro' => 'Receive payments outside of the application',
   'payment.card_payment' => 'Use Card',
@@ -4288,4 +4288,4 @@
   'system.end_period_last_days' => 'End period last days',
   'system.renew_free_plan' => 'Can renew free plan',
   'system.recurring_charge_before_days' => 'Auto charge renew invoice before',
-);
+) ?>

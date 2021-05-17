@@ -6,7 +6,7 @@ require 'json'
 
 # Settings
 last_supported = '4.0.22-p22'
-packages = ['lawepham', 'acelle']       # vendor packages to be replaced
+packages = ['acelle']       # vendor packages to be replaced
 dirs = ['public/builder', 'resources/lang/default', 'vendor']                   # 'resources/lang/default' for example
 
 # Auto setting

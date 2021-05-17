@@ -1,4 +1,4 @@
-<?php return array(
+<?php return array (
   'datetime_format' => 'Y-m-d, H:i',
   'datetime_format_2' => 'Y-m-d, H:i:s',
   'time_format' => 'H:i',
@@ -4208,4 +4208,7 @@
   'or_click_choose_another_method' => 'Or click here to choose another payment method',
   'payment.choose_new_payment_method_to_proceed' => 'Please choose a new payment method below to 
       proceed with the payment',
-);
+  'system.end_period_last_days' => 'End period last days',
+  'system.renew_free_plan' => 'Can renew free plan',
+  'system.recurring_charge_before_days' => 'Auto charge renew invoice before',
+) ?>
