@@ -3816,7 +3816,7 @@
   'automation.subscriber.removed' => 'Subscriber was successfully removed from automation',
   'automation.subscriber.restarted' => 'Subscriber was successfully restarted within automation',
   'payment.all_available_gateways' => 'All available payment gateways',
-  'payment.all_available_gateways.wording' => 'Belows are all payment gateways that installed',
+  'payment.all_available_gateways.wording' => 'Connect with your preferred payment gateways to receive payments by your users',
   'payment.offline_payment' => 'Offline Payment',
   'payment.offline_payment.intro' => 'Receive payments outside of the application',
   'payment.card_payment' => 'Use Card',
