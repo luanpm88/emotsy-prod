@@ -26,9 +26,9 @@
     <div class="row">
         <div class="col-md-12">
             <div class="sub-section">
-                <h2>{{ trans('messages.payment.all_available_gateways') }}</h2>
-                <p>{{ trans('messages.payment.all_available_gateways.wording') }}</p>
-                <div class="mc-list-setting mt-20">
+                <h2 style="margin-bottom: 10px;margin-top: 0">{{ trans('messages.payment.all_available_gateways') }}</h2>
+                <p>{!! trans('messages.payment.all_available_gateways.wording') !!}</p>
+                <div class="mc-list-setting mt-40">
                     @foreach ($gateways as $name => $gateway)
                         <div class="list-setting bg-{{ $gateway['name'] }}
                             {{ Acelle\Model\Setting::get('payment.' . $name) ? 'current' : '' }}">
