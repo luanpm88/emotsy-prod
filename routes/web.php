@@ -400,7 +400,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('campaigns/select-type', 'CampaignController@selectType');
     Route::get('campaigns/{uid}/list-segment-form', 'CampaignController@listSegmentForm');
     Route::post('campaigns/{uid}/image/save', 'CampaignController@saveImage');
-    Route::get('campaigns/{uid}/preview/content', 'CampaignController@previewContent');
+    Route::get('campaigns/{uid}/preview/content/{subscriber_uid?}', 'CampaignController@previewContent');
     Route::get('campaigns/{uid}/preview', 'CampaignController@preview');
     Route::get('campaigns/templates/list', 'CampaignController@templateList');
     Route::patch('campaigns/{uid}/templates/choose/from/{from_uid}', 'CampaignController@campaignTemplateChoose');

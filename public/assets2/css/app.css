@@ -1635,3 +1635,18 @@ a.trigger-woo-abandoned-cart:hover {
 .auto_popup .back_to_workflow {
   display: none!important;
 }
+.tox:not([dir=rtl]) .tox-toolbar__group:not(:last-of-type) {
+  border: none!important;
+}
+.tox .tox-toolbar, .tox .tox-toolbar__overflow, .tox .tox-toolbar__primary {
+  background: none!important;
+}
+.tox .tox-tbtn svg {
+  transform: scale(0.8);
+}
+.tox .tox-tbtn__select-label {
+  font-size: 13px;
+}
+.tox-tinymce:not(.tox-tinymce-inline) .tox-editor-header:not(:first-child) .tox-toolbar-overlord:first-child .tox-toolbar__primary, .tox-tinymce:not(.tox-tinymce-inline) .tox-editor-header:not(:first-child) .tox-toolbar:first-child {
+  border-top: none!important;
+}

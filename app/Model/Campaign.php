@@ -288,7 +288,13 @@ class Campaign extends AbsCampaign
             # Subscriber custom fields
             foreach ($this->defaultMailList->fields as $field) {
                 $tags['SUBSCRIBER_'.$field->tag] = $subscriber->getValueByField($field);
+                $tags[$field->tag] = $subscriber->getValueByField($field);
             }
+
+            // Special / shortcut fields
+            $tags['NAME'] = $subscriber->getFullName();
+            $tags['FULL_NAME'] = $subscriber->getFullName();
+
         } else {
             $tags['SUBSCRIBER_EMAIL'] = $subscriber->email;
         }
