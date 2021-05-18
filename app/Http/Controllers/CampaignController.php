@@ -9,12 +9,14 @@ use Illuminate\Support\Facades\Log as LaravelLog;
 use Gate;
 use Validator;
 use Illuminate\Validation\ValidationException;
-use Acelle\Model\TrackingLog;
 use Acelle\Library\StringHelper;
-use Acelle\Model\Template;
 use Acelle\Jobs\ExportCampaignLog;
+use Acelle\Model\Template;
+use Acelle\Model\TrackingLog;
 use Acelle\Model\SystemJob;
 use Acelle\Model\Setting;
+use Acelle\Model\Subscriber;
+use Acelle\Model\Campaign;
 use Acelle\Library\Rss;
 
 class CampaignController extends Controller
@@ -42,7 +44,7 @@ class CampaignController extends Controller
      */
     public function listing(Request $request)
     {
-        $campaigns = \Acelle\Model\Campaign::search($request)->paginate($request->per_page);
+        $campaigns = Campaign::search($request)->paginate($request->per_page);
 
         return view('campaigns._list', [
             'campaigns' => $campaigns,
@@ -57,7 +59,7 @@ class CampaignController extends Controller
     public function create(Request $request)
     {
         $customer = $request->user()->customer;
-        $campaign = new \Acelle\Model\Campaign([
+        $campaign = new Campaign([
             'track_open' => true,
             'track_click' => true,
             'sign_dkim' => true,
@@ -70,7 +72,7 @@ class CampaignController extends Controller
 
         $campaign->name = trans('messages.untitled');
         $campaign->customer_id = $customer->id;
-        $campaign->status = \Acelle\Model\Campaign::STATUS_NEW;
+        $campaign->status = Campaign::STATUS_NEW;
         $campaign->type = $request->type;
         $campaign->save();
 
@@ -97,7 +99,7 @@ class CampaignController extends Controller
      */
     public function show($id)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($id);
+        $campaign = Campaign::findByUid($id);
 
         // Trigger the CampaignUpdate event to update the campaign cache information
         // The second parameter of the constructor function is false, meanining immediate update
@@ -128,7 +130,7 @@ class CampaignController extends Controller
      */
     public function edit($id)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($id);
+        $campaign = Campaign::findByUid($id);
 
         // authorize
         if (\Gate::denies('update', $campaign)) {
@@ -183,7 +185,7 @@ class CampaignController extends Controller
     {
         $sort = json_decode($request->sort);
         foreach ($sort as $row) {
-            $item = \Acelle\Model\Campaign::findByUid($row[0]);
+            $item = Campaign::findByUid($row[0]);
 
             // authorize
             if (\Gate::denies('sort', $item)) {
@@ -206,7 +208,7 @@ class CampaignController extends Controller
      */
     public function recipients(Request $request)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('update', $campaign)) {
@@ -240,7 +242,7 @@ class CampaignController extends Controller
         //if ($request->isMethod('post')) {
         //
         //    // Check validation
-        //    $this->validate($request, \Acelle\Model\Campaign::$rules);
+        //    $this->validate($request, Campaign::$rules);
         //
         //    // Save campaign
         //    $campaign->mail_list_id = \Acelle\Model\MailList::findByUid($request->mail_list_uid)->id;
@@ -270,7 +272,7 @@ class CampaignController extends Controller
     public function setup(Request $request)
     {
         $customer = $request->user()->customer;
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (Gate::denies('update', $campaign)) {
@@ -320,7 +322,7 @@ class CampaignController extends Controller
     public function template(Request $request)
     {
         $customer = $request->user()->customer;
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('update', $campaign)) {
@@ -410,7 +412,7 @@ class CampaignController extends Controller
      */
     public function templateCreate(Request $request)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('update', $campaign)) {
@@ -432,7 +434,7 @@ class CampaignController extends Controller
     public function templateSelect(Request $request)
     {
         $user = $request->user();
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('update', $campaign)) {
@@ -453,7 +455,7 @@ class CampaignController extends Controller
      */
     public function templateLayout(Request $request)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('update', $campaign)) {
@@ -491,7 +493,7 @@ class CampaignController extends Controller
      */
     public function templateBuilderSelect(Request $request, $uid)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($uid);
+        $campaign = Campaign::findByUid($uid);
 
         // authorize
         if (\Gate::denies('update', $campaign)) {
@@ -512,7 +514,7 @@ class CampaignController extends Controller
      */
     public function templateEdit(Request $request)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('update', $campaign)) {
@@ -555,7 +557,7 @@ class CampaignController extends Controller
      */
     public function templateAsset(Request $request, $uid)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
         $filename = $campaign->uploadAsset($request->file('file'));
 
         return response()->json([
@@ -572,7 +574,7 @@ class CampaignController extends Controller
      */
     public function templateContent(Request $request)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('update', $campaign)) {
@@ -593,7 +595,7 @@ class CampaignController extends Controller
      */
     public function templateTheme(Request $request)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('update', $campaign)) {
@@ -628,7 +630,7 @@ class CampaignController extends Controller
      */
     public function templateThemeList(Request $request)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
         $request->merge(array("customer_id" => $request->user()->customer->id));
         $templates = Template::search($request)->paginate($request->per_page);
 
@@ -647,7 +649,7 @@ class CampaignController extends Controller
      */
     public function templateUpload(Request $request)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('update', $campaign)) {
@@ -684,7 +686,7 @@ class CampaignController extends Controller
     public function templateChoose(Request $request)
     {
         $user = $request->user();
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
         $template = \Acelle\Model\Template::findByUid($request->template_uid);
 
         // authorize
@@ -710,7 +712,7 @@ class CampaignController extends Controller
     public function plain(Request $request)
     {
         $user = $request->user();
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('update', $campaign)) {
@@ -744,7 +746,7 @@ class CampaignController extends Controller
     public function templatePreview(Request $request)
     {
         $user = $request->user();
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         $rules = [];
 
@@ -769,7 +771,7 @@ class CampaignController extends Controller
     public function templateIframe(Request $request)
     {
         $user = $request->user();
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('update', $campaign)) {
@@ -790,7 +792,7 @@ class CampaignController extends Controller
      */
     public function schedule(Request $request)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // check step
         if ($campaign->step() < 3) {
@@ -846,7 +848,7 @@ class CampaignController extends Controller
     public function confirm(Request $request)
     {
         $customer = $request->user()->customer;
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // check step
         if ($campaign->step() < 4) {
@@ -899,7 +901,7 @@ class CampaignController extends Controller
             return;
         }
 
-        $items = \Acelle\Model\Campaign::whereIn('uid', explode(',', $request->uids));
+        $items = Campaign::whereIn('uid', explode(',', $request->uids));
 
         foreach ($items->get() as $item) {
             // authorize
@@ -923,7 +925,7 @@ class CampaignController extends Controller
      */
     public function overview(Request $request)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // Trigger the CampaignUpdate event to update the campaign cache information
         // The second parameter of the constructor function is false, meanining immediate update
@@ -952,7 +954,7 @@ class CampaignController extends Controller
      */
     public function links(Request $request)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -973,7 +975,7 @@ class CampaignController extends Controller
      */
     public function chart24h(Request $request)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -1040,7 +1042,7 @@ class CampaignController extends Controller
      */
     public function chart(Request $request)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -1176,7 +1178,7 @@ class CampaignController extends Controller
      */
     public function chartCountry(Request $request)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -1231,7 +1233,7 @@ class CampaignController extends Controller
      */
     public function chartClickCountry(Request $request)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -1285,7 +1287,7 @@ class CampaignController extends Controller
      */
     public function quickView(Request $request)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -1309,7 +1311,7 @@ class CampaignController extends Controller
         $data = ['items' => [], 'more' => true];
 
         $data['items'][] = ['id' => 0, 'text' => trans('messages.all')];
-        foreach (\Acelle\Model\Campaign::getAll()->get() as $campaign) {
+        foreach (Campaign::getAll()->get() as $campaign) {
             $data['items'][] = ['id' => $campaign->uid, 'text' => $campaign->name];
         }
 
@@ -1446,7 +1448,7 @@ class CampaignController extends Controller
      */
     public function trackingLog(Request $request)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -1466,7 +1468,7 @@ class CampaignController extends Controller
      */
     public function trackingLogListing(Request $request)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -1486,7 +1488,7 @@ class CampaignController extends Controller
      */
     public function trackingLogDownload(Request $request)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -1539,7 +1541,7 @@ class CampaignController extends Controller
      */
     public function bounceLog(Request $request)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -1559,7 +1561,7 @@ class CampaignController extends Controller
      */
     public function bounceLogListing(Request $request)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -1579,7 +1581,7 @@ class CampaignController extends Controller
      */
     public function feedbackLog(Request $request)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -1599,7 +1601,7 @@ class CampaignController extends Controller
      */
     public function feedbackLogListing(Request $request)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -1619,7 +1621,7 @@ class CampaignController extends Controller
      */
     public function openLog(Request $request)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -1639,7 +1641,7 @@ class CampaignController extends Controller
      */
     public function openLogListing(Request $request)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -1659,7 +1661,7 @@ class CampaignController extends Controller
      */
     public function clickLog(Request $request)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -1679,7 +1681,7 @@ class CampaignController extends Controller
      */
     public function clickLogListing(Request $request)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -1699,7 +1701,7 @@ class CampaignController extends Controller
      */
     public function unsubscribeLog(Request $request)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -1719,7 +1721,7 @@ class CampaignController extends Controller
      */
     public function unsubscribeLogListing(Request $request)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -1739,7 +1741,7 @@ class CampaignController extends Controller
      */
     public function openMap(Request $request)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -1760,7 +1762,7 @@ class CampaignController extends Controller
      */
     public function deleteConfirm(Request $request)
     {
-        $lists = \Acelle\Model\Campaign::whereIn('uid', explode(',', $request->uids));
+        $lists = Campaign::whereIn('uid', explode(',', $request->uids));
 
         return view('campaigns.delete_confirm', [
             'lists' => $lists,
@@ -1777,7 +1779,7 @@ class CampaignController extends Controller
     public function pause(Request $request)
     {
         $customer = $request->user()->customer;
-        $items = \Acelle\Model\Campaign::whereIn('uid', explode(',', $request->uids));
+        $items = Campaign::whereIn('uid', explode(',', $request->uids));
 
         foreach ($items->get() as $item) {
             if (\Gate::allows('pause', $item)) {
@@ -1802,7 +1804,7 @@ class CampaignController extends Controller
     public function restart(Request $request)
     {
         $customer = $request->user()->customer;
-        $items = \Acelle\Model\Campaign::whereIn('uid', explode(',', $request->uids));
+        $items = Campaign::whereIn('uid', explode(',', $request->uids));
 
         foreach ($items->get() as $item) {
             if (\Gate::allows('restart', $item)) {
@@ -1822,7 +1824,7 @@ class CampaignController extends Controller
      */
     public function subscribers(Request $request)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -1843,7 +1845,7 @@ class CampaignController extends Controller
      */
     public function subscribersListing(Request $request)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -1871,7 +1873,7 @@ class CampaignController extends Controller
      */
     public function templateBuild(Request $request)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('update', $campaign)) {
@@ -1899,7 +1901,7 @@ class CampaignController extends Controller
      */
     public function templateRebuild(Request $request)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('update', $campaign)) {
@@ -1921,7 +1923,7 @@ class CampaignController extends Controller
      */
     public function copy(Request $request)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->copy_campaign_uid);
+        $campaign = Campaign::findByUid($request->copy_campaign_uid);
 
         // authorize
         if (\Gate::denies('copy', $campaign)) {
@@ -1942,7 +1944,7 @@ class CampaignController extends Controller
      */
     public function sendTestEmail(Request $request)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->send_test_email_campaign_uid);
+        $campaign = Campaign::findByUid($request->send_test_email_campaign_uid);
 
         // authorize
         if (\Gate::denies('update', $campaign)) {
@@ -1961,10 +1963,10 @@ class CampaignController extends Controller
      */
     public function templateList(Request $request)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
         $request->request->add(['source' => 'template']);
 
-        $campaigns = \Acelle\Model\Campaign::search($request, 'all')
+        $campaigns = Campaign::search($request, 'all')
             ->where('id', '!=', $campaign->id)
             ->where('html', '!=', '')
             ->paginate($request->per_page);
@@ -1984,7 +1986,7 @@ class CampaignController extends Controller
      */
     public function preview($id)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($id);
+        $campaign = Campaign::findByUid($id);
 
         // authorize
         if (\Gate::denies('preview', $campaign)) {
@@ -2003,16 +2005,17 @@ class CampaignController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function previewContent($id)
+    public function previewContent(Request $request)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($id);
+        $campaign = Campaign::findByUid($request->uid);
+        $subscriber = Subscriber::findByUid($request->subscriber_uid);
 
         // authorize
         if (\Gate::denies('preview', $campaign)) {
             return $this->notAuthorized();
         }
 
-        echo $campaign->getHtmlContent();
+        echo $campaign->getHtmlContent($subscriber);
     }
 
     /**
@@ -2025,7 +2028,7 @@ class CampaignController extends Controller
      */
     public function saveImage(Request $request, $id)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($id);
+        $campaign = Campaign::findByUid($id);
 
         // authorize
         if (\Gate::denies('saveImage', $campaign)) {
@@ -2064,8 +2067,8 @@ class CampaignController extends Controller
     public function campaignTemplateChoose(Request $request)
     {
         $user = $request->user();
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
-        $from_campaign = \Acelle\Model\Campaign::findByUid($request->from_uid);
+        $campaign = Campaign::findByUid($request->uid);
+        $from_campaign = Campaign::findByUid($request->from_uid);
 
         // authorize
         if (\Gate::denies('update', $campaign)) {
@@ -2090,7 +2093,7 @@ class CampaignController extends Controller
     public function listSegmentForm(Request $request)
     {
         // Get current user
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('update', $campaign)) {
@@ -2148,7 +2151,7 @@ class CampaignController extends Controller
     public function selectType(Request $request)
     {
         // authorize
-        if (\Gate::denies('create', new \Acelle\Model\Campaign())) {
+        if (\Gate::denies('create', new Campaign())) {
             return $this->notAuthorized();
         }
 
@@ -2165,7 +2168,7 @@ class CampaignController extends Controller
     public function templateReview(Request $request)
     {
         // Get current user
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -2187,7 +2190,7 @@ class CampaignController extends Controller
     public function templateReviewIframe(Request $request)
     {
         // Get current user
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $campaign = Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -2209,7 +2212,7 @@ class CampaignController extends Controller
     public function resend(Request $request, $uid)
     {
         $customer = $request->user()->customer;
-        $campaign = \Acelle\Model\Campaign::findByUid($uid);
+        $campaign = Campaign::findByUid($uid);
 
         // do resend with option: $request->option : not_receive|not_open|not_click
         if ($request->isMethod('post')) {
@@ -2262,7 +2265,7 @@ class CampaignController extends Controller
     public function spamScore(Request $request, $uid)
     {
         // Get current user
-        $campaign = \Acelle\Model\Campaign::findByUid($uid);
+        $campaign = Campaign::findByUid($uid);
 
         try {
             $score = $campaign->score();
@@ -2282,7 +2285,7 @@ class CampaignController extends Controller
     public function templateChangeTemplate(Request $request, $uid, $template_uid)
     {
         // Generate info
-        $campaign = \Acelle\Model\Campaign::findByUid($uid);
+        $campaign = Campaign::findByUid($uid);
         $changeTemplate = Template::findByUid($template_uid);
 
         // authorize
@@ -2300,7 +2303,7 @@ class CampaignController extends Controller
     public function builderClassic(Request $request, $uid)
     {
         // Generate info
-        $campaign = \Acelle\Model\Campaign::findByUid($uid);
+        $campaign = Campaign::findByUid($uid);
 
         // authorize
         if (!$request->user()->customer->can('update', $campaign)) {
@@ -2350,7 +2353,7 @@ class CampaignController extends Controller
     public function builderPlainEdit(Request $request, $uid)
     {
         // Generate info
-        $campaign = \Acelle\Model\Campaign::findByUid($uid);
+        $campaign = Campaign::findByUid($uid);
 
         // authorize
         if (!$request->user()->customer->can('update', $campaign)) {
@@ -2396,7 +2399,7 @@ class CampaignController extends Controller
     public function uploadAttachment(Request $request, $uid)
     {
         // Generate info
-        $campaign = \Acelle\Model\Campaign::findByUid($uid);
+        $campaign = Campaign::findByUid($uid);
 
         // authorize
         if (!$request->user()->customer->can('update', $campaign)) {
@@ -2415,7 +2418,7 @@ class CampaignController extends Controller
     public function downloadAttachment(Request $request, $uid)
     {
         // Generate info
-        $campaign = \Acelle\Model\Campaign::findByUid($uid);
+        $campaign = Campaign::findByUid($uid);
 
         // authorize
         if (!$request->user()->customer->can('update', $campaign)) {
@@ -2432,7 +2435,7 @@ class CampaignController extends Controller
     public function removeAttachment(Request $request, $uid)
     {
         // Generate info
-        $campaign = \Acelle\Model\Campaign::findByUid($uid);
+        $campaign = Campaign::findByUid($uid);
 
         // authorize
         if (!$request->user()->customer->can('update', $campaign)) {
@@ -2448,14 +2451,14 @@ class CampaignController extends Controller
      */
     public function run(Request $request, $uid)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($uid);
+        $campaign = Campaign::findByUid($uid);
         $campaign->start();
         echo $campaign->status;
     }
 
     public function updateStats(Request $request, $uid)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($uid);
+        $campaign = Campaign::findByUid($uid);
         $campaign->updateCache();
         echo $campaign->status;
     }
