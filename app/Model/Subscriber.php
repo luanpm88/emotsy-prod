@@ -25,6 +25,7 @@ namespace Acelle\Model;
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Log as MailLog;
 use Acelle\Model\MailList;
+use Acelle\Events\SubscriberAdded;
 use DB;
 
 class Subscriber extends Model
@@ -1291,10 +1292,11 @@ class Subscriber extends Model
         $subscriber->save();
         $subscriber->updateFields($request->all());
 
-        // update MailList cache
+        // Dispatch related events
         event(new \Acelle\Events\MailListUpdated($subscriber->mailList));
+        SubscriberAdded::dispatch($subscriber);
 
-        // Log
+        // Logging
         $subscriber->log('created', $customer);
         return $subscriber;
     }

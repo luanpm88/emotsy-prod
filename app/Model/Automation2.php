@@ -1342,4 +1342,9 @@ class Automation2 extends Model
     {
         return $this->getTriggerAction()->getOption('key');
     }
+
+    public function isActive()
+    {
+        return $this->status == self::STATUS_ACTIVE;
+    }
 }
