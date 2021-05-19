@@ -29,7 +29,7 @@ class SubscriberController extends Controller
      */
     public function index(Request $request)
     {
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $list = MailList::findByUid($request->list_uid);
 
         return view('subscribers.index', [
             'list' => $list
@@ -43,7 +43,7 @@ class SubscriberController extends Controller
      */
     public function listing(Request $request)
     {
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $list = MailList::findByUid($request->list_uid);
 
         // authorize
         if (\Gate::denies('read', $list)) {
@@ -73,7 +73,7 @@ class SubscriberController extends Controller
      */
     public function create(Request $request)
     {
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $list = MailList::findByUid($request->list_uid);
         $subscriber = new \Acelle\Model\Subscriber();
         $subscriber->mail_list_id = $list->id;
 
@@ -146,7 +146,7 @@ class SubscriberController extends Controller
      */
     public function edit(Request $request)
     {
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $list = MailList::findByUid($request->list_uid);
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
 
         // authorize
@@ -187,7 +187,7 @@ class SubscriberController extends Controller
     public function update(Request $request, $id)
     {
         $customer = $request->user()->customer;
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $list = MailList::findByUid($request->list_uid);
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
 
         // authorize
@@ -253,7 +253,7 @@ class SubscriberController extends Controller
             $uids = explode(',', $request->uids);
         }
         $subscribers = \Acelle\Model\Subscriber::whereIn('uid', $uids);
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $list = MailList::findByUid($request->list_uid);
 
         // Select all items
         if ($request->select_tool == 'all_items') {
@@ -262,7 +262,7 @@ class SubscriberController extends Controller
 
         // get related mail lists to update the cached information
         $lists = $subscribers->get()->map(function ($e) {
-            return \Acelle\Model\MailList::find($e->mail_list_id);
+            return MailList::find($e->mail_list_id);
         })->unique();
 
         // actually delete the subscriber
@@ -296,7 +296,7 @@ class SubscriberController extends Controller
      */
     public function subscribe(Request $request)
     {
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $list = MailList::findByUid($request->list_uid);
         $customer = $request->user()->customer;
 
         if ($request->select_tool == 'all_items') {
@@ -331,7 +331,7 @@ class SubscriberController extends Controller
      */
     public function unsubscribe(Request $request)
     {
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $list = MailList::findByUid($request->list_uid);
         $customer = $request->user()->customer;
 
         if ($request->select_tool == 'all_items') {
@@ -368,7 +368,7 @@ class SubscriberController extends Controller
     public function import(Request $request)
     {
         $customer = $request->user()->customer;
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $list = MailList::findByUid($request->list_uid);
 
         $system_jobs = $list->importJobs();
 
@@ -406,7 +406,7 @@ class SubscriberController extends Controller
      */
     public function importProccess(Request $request)
     {
-        $list = \Acelle\Model\MailList::findByUid($request->current_list_uid);
+        $list = MailList::findByUid($request->current_list_uid);
         $system_job = $list->getLastImportJob();
 
         // authorize
@@ -444,7 +444,7 @@ class SubscriberController extends Controller
      */
     public function downloadImportLog(Request $request)
     {
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $list = MailList::findByUid($request->list_uid);
 
         // authorize
         if (\Gate::denies('import', $list)) {
@@ -464,7 +464,7 @@ class SubscriberController extends Controller
      */
     public function importList(Request $request)
     {
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $list = MailList::findByUid($request->list_uid);
 
         // authorize
         if (\Gate::denies('import', $list)) {
@@ -490,7 +490,7 @@ class SubscriberController extends Controller
      */
     public function export(Request $request)
     {
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $list = MailList::findByUid($request->list_uid);
 
         // authorize
         if (\Gate::denies('export', $list)) {
@@ -531,7 +531,7 @@ class SubscriberController extends Controller
      */
     public function exportProccess(Request $request)
     {
-        $list = \Acelle\Model\MailList::findByUid($request->current_list_uid);
+        $list = MailList::findByUid($request->current_list_uid);
         $system_job = $list->getLastExportJob();
 
         // authorize
@@ -564,7 +564,7 @@ class SubscriberController extends Controller
      */
     public function downloadExportedCsv(Request $request)
     {
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $list = MailList::findByUid($request->list_uid);
 
         // authorize
         if (\Gate::denies('export', $list)) {
@@ -583,7 +583,7 @@ class SubscriberController extends Controller
      */
     public function exportList(Request $request)
     {
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $list = MailList::findByUid($request->list_uid);
 
         // authorize
         if (\Gate::denies('export', $list)) {
@@ -609,8 +609,8 @@ class SubscriberController extends Controller
      */
     public function copy(Request $request)
     {
-        $from_list = \Acelle\Model\MailList::findByUid($request->from_uid);
-        $to_list = \Acelle\Model\MailList::findByUid($request->to_uid);
+        $from_list = MailList::findByUid($request->from_uid);
+        $to_list = MailList::findByUid($request->to_uid);
 
         if ($request->select_tool == 'all_items') {
             $subscribers = $this->search($from_list, $request)->select('subscribers.*');
@@ -650,8 +650,8 @@ class SubscriberController extends Controller
      */
     public function move(Request $request)
     {
-        $from_list = \Acelle\Model\MailList::findByUid($request->from_uid);
-        $to_list = \Acelle\Model\MailList::findByUid($request->to_uid);
+        $from_list = MailList::findByUid($request->from_uid);
+        $to_list = MailList::findByUid($request->to_uid);
 
         if ($request->select_tool == 'all_items') {
             $subscribers = $this->search($from_list, $request)->select('subscribers.*');
@@ -692,7 +692,7 @@ class SubscriberController extends Controller
      */
     public function copyMoveForm(Request $request)
     {
-        $from_list = \Acelle\Model\MailList::findByUid($request->from_uid);
+        $from_list = MailList::findByUid($request->from_uid);
 
         if ($request->select_tool == 'all_items') {
             $subscribers = $this->search($from_list, $request);
@@ -782,7 +782,7 @@ class SubscriberController extends Controller
     public function resendConfirmationEmail(Request $request)
     {
         $subscribers = \Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $list = MailList::findByUid($request->list_uid);
 
         // Select all items
         if ($request->select_tool == 'all_items') {
@@ -868,7 +868,7 @@ class SubscriberController extends Controller
     public function bulkDelete(Request $request)
     {
         // init
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $list = MailList::findByUid($request->list_uid);
 
         // validate and save posted data
         if ($request->isMethod('post')) {
@@ -910,7 +910,7 @@ class SubscriberController extends Controller
     public function bulkDeleteConfirm(Request $request)
     {
         // init
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $list = MailList::findByUid($request->list_uid);
 
         // validate and save posted data
         if ($request->isMethod('post')) {
@@ -950,7 +950,7 @@ class SubscriberController extends Controller
     public function assignValues(Request $request, $list_uid)
     {
         // init
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $list = MailList::findByUid($request->list_uid);
         $subscribers = \Acelle\Model\Subscriber::whereIn('uid', $request->uids);
 
         // Select all items
