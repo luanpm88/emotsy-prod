@@ -110,38 +110,20 @@ class SubscriberController extends Controller
      */
     public function store(Request $request)
     {
+        $list = MailList::findByUid($request->list_uid);
         $customer = $request->user()->customer;
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
-        $subscriber = new \Acelle\Model\Subscriber();
-        $subscriber->mail_list_id = $list->id;
-        $subscriber->status = 'subscribed';
 
-        // authorize
-        if (\Gate::denies('create', $subscriber)) {
+        if (!$customer->user->can('addMoreSubscribers', [ $list, $more = 1 ])) {
             return $this->noMoreItem();
         }
 
-        // validate and save posted data
-        if ($request->isMethod('post')) {
-            $this->validate($request, $subscriber->getRules());
+        // Validate & and create subscriber
+        // Throw ValidationError exception in case of failure
+        Subscriber::addFromRequest($request);
 
-            // Save subscriber
-            $subscriber->email = $request->EMAIL;
-            $subscriber->save();
-            // Update field
-            $subscriber->updateFields($request->all());
-
-            // update MailList cache
-            event(new \Acelle\Events\MailListUpdated($subscriber->mailList));
-
-            // Log
-            $subscriber->log('created', $customer);
-
-            // Redirect to my lists page
-            $request->session()->flash('alert-success', trans('messages.subscriber.created'));
-
-            return redirect()->action('SubscriberController@index', $list->uid);
-        }
+        // Redirect to my lists page
+        $request->session()->flash('alert-success', trans('messages.subscriber.created'));
+        return redirect()->action('SubscriberController@index', $list->uid);
     }
 
     /**
