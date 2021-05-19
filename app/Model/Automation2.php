@@ -48,6 +48,8 @@ class Automation2 extends Model
     const STATUS_ACTIVE = 'active';
     const STATUS_INACTIVE = 'inactive';
 
+    const TRIGGER_TYPE_WELCOME_NEW_SUBSCRIBER = 'welcome-new-subscriber';
+
     /**
      * Items per page.
      *
@@ -394,6 +396,7 @@ class Automation2 extends Model
             $trigger->subscriber()->associate($subscriber); // assign to subscriber_id field
             $trigger->updateWorkflow();
             $trigger->save();
+            $this->logger()->info(sprintf('[%s] NEW TRIGGER for %s', $this->getTriggerType(), $subscriber->email));
         });
 
         return $trigger;
@@ -1333,5 +1336,10 @@ class Automation2 extends Model
             ['value' => 'month', 'text' => trans('messages.month')],
             ['value' => 'year', 'text' => trans('messages.year')],
         ]);
+    }
+
+    public function getTriggerType()
+    {
+        return $this->getTriggerAction()->getOption('key');
     }
 }
