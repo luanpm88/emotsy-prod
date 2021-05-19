@@ -3,10 +3,10 @@
 namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Acelle\Model\Subscriber;
-use Acelle\Model\EmailVerificationServer;
 use Acelle\Library\Log as MailLog;
+use Acelle\Model\EmailVerificationServer;
 use Acelle\Model\MailList;
+use Acelle\Model\Subscriber;
 
 class SubscriberController extends Controller
 {
@@ -119,7 +119,13 @@ class SubscriberController extends Controller
 
         // Validate & and create subscriber
         // Throw ValidationError exception in case of failure
-        Subscriber::addFromRequest($request);
+        list($validator, $subscriber) = $list->subscribe($request, Subscriber::SUBSCRIPTION_TYPE_ADDED);
+
+        // @IMPORTANT: do not use $validator->fails() again,
+        // if validation runs again, it is now TRUE! subscriber's email inserted => no longer unique
+        if (is_null($subscriber)) {
+            return back()->withInput()->withErrors($validator);
+        }
 
         // Redirect to my lists page
         $request->session()->flash('alert-success', trans('messages.subscriber.created'));

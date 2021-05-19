@@ -1273,31 +1273,4 @@ class Subscriber extends Model
 
         return $validator;
     }
-
-    public static function addFromRequest($request)
-    {
-        $customer = $request->user()->customer;
-        $list = MailList::findByUid($request->list_uid);
-
-        $subscriber = new self();
-        $subscriber->mail_list_id = $list->id; // associate
-        $subscriber->email = $request->EMAIL;
-        $subscriber->subscription_type = self::SUBSCRIPTION_TYPE_ADDED;
-        $subscriber->status = self::STATUS_SUBSCRIBED;
-
-        // The code below will throw an exception if validation fails
-        $request->validate($subscriber->getRules());
-
-        // Actually write to DB
-        $subscriber->save();
-        $subscriber->updateFields($request->all());
-
-        // Dispatch related events
-        event(new \Acelle\Events\MailListUpdated($subscriber->mailList));
-        SubscriberAdded::dispatch($subscriber);
-
-        // Logging
-        $subscriber->log('created', $customer);
-        return $subscriber;
-    }
 }
