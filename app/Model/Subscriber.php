@@ -1273,4 +1273,12 @@ class Subscriber extends Model
 
         return $validator;
     }
+
+    public function confirm()
+    {
+        $this->status = self::STATUS_SUBSCRIBED;
+        $this->save();
+
+        SubscriberAdded::dispatch($this);
+    }
 }

@@ -37,6 +37,8 @@ class TriggerAutomation
 
         foreach ($automations as $auto) {
             // Trigger automation for the newly added subscriber
+            // Why not check? ->autoTriggers()->where(['subscriber_id' => 1392])->exists()
+            // No, keep it simple, the Listener's responsibility is to trigger, not validation
             $auto->initTrigger($event->subscriber);
         }
     }

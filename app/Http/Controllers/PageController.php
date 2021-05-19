@@ -245,8 +245,7 @@ class PageController extends Controller
         $page->renderContent(null, $subscriber);
 
         if ($subscriber->getSecurityToken('subscribe-confirm') == $request->code && $subscriber->status == 'unconfirmed') {
-            $subscriber->status = 'subscribed';
-            $subscriber->save();
+            $subscriber->confirm();
 
             // Send welcome email
             if ($list->send_welcome_email) {
@@ -296,8 +295,7 @@ class PageController extends Controller
 
         if ($request->isMethod('post')) {
             if ($subscriber->getSecurityToken('unsubscribe') == $request->code && $subscriber->status == 'subscribed') {
-                $subscriber->status = 'unsubscribed';
-                $subscriber->save();
+                $subscriber->unsubscribe();
 
                 // Send goodbye email
                 if ($list->unsubscribe_notification) {
