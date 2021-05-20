@@ -19,7 +19,7 @@
                 </td>
                 <td>
                     <h5 class="no-margin text-bold">
-                        <a class="kq_search" href="{{ action('Admin\EmailVerificationServerController@edit', $server->uid) }}">{{ $server->name }}</a>
+                        <a class="kq_search" href="{{ action('Admin\EmailVerificationServerController@edit', ['email_verification_server' => $server->uid ]) }}">{{ $server->name }}</a>
                     </h5>
                     <span class="text-muted">
                         {!! is_object($server->admin) ? '<i class="icon-user-tie"></i>' . $server->admin->displayName() : '' !!}
