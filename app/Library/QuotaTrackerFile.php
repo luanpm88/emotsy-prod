@@ -50,8 +50,8 @@ class QuotaTrackerFile
         $this->file = $file;
         $this->quota = $quota;
         $this->limits = $limits;
-        $this->load();
         $this->createLogFile();
+        $this->load();
     }
 
     /**
