@@ -204,7 +204,7 @@ class TrackingDomainController extends Controller
         $debug = session()->has('tracking_domain_debug');
         $domain = TrackingDomain::findByUid($uid);
         $domain->verify($debug);
-        return redirect()->action('TrackingDomainController@show', ['uid' => $uid]);
+        return redirect()->action('TrackingDomainController@show', ['tracking_domain' => $uid]);
     }
 
     /**
