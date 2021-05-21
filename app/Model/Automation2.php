@@ -49,6 +49,8 @@ class Automation2 extends Model
     const STATUS_ACTIVE = 'active';
     const STATUS_INACTIVE = 'inactive';
 
+    const TRIGGER_TYPE_WELCOME_NEW_SUBSCRIBER = 'welcome-new-subscriber';
+
     /**
      * Items per page.
      *
@@ -395,6 +397,7 @@ class Automation2 extends Model
             $trigger->subscriber()->associate($subscriber); // assign to subscriber_id field
             $trigger->updateWorkflow();
             $trigger->save();
+            $this->logger()->info(sprintf('[%s] NEW TRIGGER for %s', $this->getTriggerType(), $subscriber->email));
         });
 
         return $trigger;
@@ -754,7 +757,7 @@ class Automation2 extends Model
         $query = $this->subscribers()->whereRaw(table('subscribers.id').' NOT IN (SELECT subscriber_id FROM _new_subscribers_to_follow)')
                 ->where('subscribers.created_at', '>=', $this->created_at)
                 ->where('mail_list_id', $this->mailList->id);
-        if (!Setting::isYes('trigger_imported_contacts')) {
+        if (!Setting::isYes('automation.trigger_imported_contacts')) {
             $query = $query->whereRaw(sprintf('COALESCE('.table('subscribers.subscription_type').", '') <> %s", db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED)));
         }
 
@@ -1361,5 +1364,15 @@ class Automation2 extends Model
     public function getAbandonedCartEmail()
     {
         return \Acelle\Model\Email::findByUid($this->getElements()[1]->options->email_uid);
+    }
+
+    public function getTriggerType()
+    {
+        return $this->getTriggerAction()->getOption('key');
+    }
+
+    public function isActive()
+    {
+        return $this->status == self::STATUS_ACTIVE;
     }
 }

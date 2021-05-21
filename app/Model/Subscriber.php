@@ -24,6 +24,8 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Log as MailLog;
+use Acelle\Model\MailList;
+use Acelle\Events\SubscriberAdded;
 use DB;
 
 class Subscriber extends Model
@@ -34,6 +36,7 @@ class Subscriber extends Model
     const STATUS_SPAM_REPORTED = 'spam-reported';
     const STATUS_UNCONFIRMED = 'unconfirmed';
 
+    const SUBSCRIPTION_TYPE_ADDED = 'added';
     const SUBSCRIPTION_TYPE_DOUBLE_OPTIN = 'double';
     const SUBSCRIPTION_TYPE_SINGLE_OPTIN = 'single';
     const SUBSCRIPTION_TYPE_IMPORTED = 'imported';
@@ -1269,5 +1272,13 @@ class Subscriber extends Model
         }
 
         return $validator;
+    }
+
+    public function confirm()
+    {
+        $this->status = self::STATUS_SUBSCRIBED;
+        $this->save();
+
+        SubscriberAdded::dispatch($this);
     }
 }

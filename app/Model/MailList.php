@@ -24,11 +24,13 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Acelle\Library\Log as MailLog;
 use Acelle\Library\RouletteWheel;
 use Acelle\Library\StringHelper;
 use Acelle\Library\ExtendedSwiftMessage;
 use Acelle\Events\MailListSubscription;
+use Acelle\Events\SubscriberAdded;
 use Acelle\Model\Setting;
 use Acelle\Model\SubscriberFields;
 use Acelle\Model\Fields;
@@ -49,6 +51,7 @@ class MailList extends Model
 
     const SOURCE_EMBEDDED_FORM = 'embedded-form';
     const SOURCE_WEB = 'web';
+    const SOURCE_API = 'api';
 
     /**
      * The attributes that are mass assignable.
@@ -655,6 +658,8 @@ class MailList extends Model
         }
 
         $copy->save();
+
+        // @todo: trigger SubscriberAdded event here?
 
         // Contact
         if (is_object($this->contact)) {
@@ -2069,13 +2074,12 @@ class MailList extends Model
     public function subscribe($request, $source)
     {
         // Validation
-        // it is ok to have subscriber subscribe again without any confusing message
+        // It is ok to have subscriber subscribe again without any confusing message
         //     if (is_object($subscriber) && $subscriber->status == \Acelle\Model\Subscriber::STATUS_SUBSCRIBED) {
         //        $rules['email_already_subscribed'] = 'required';
         //     }
 
-        $messages = ['sss' => 'asas'];
-
+        $messages = [];
         foreach ($this->getFields as $field) {
             if ($field->tag == 'EMAIL') {
                 $messages[$field->tag . '.required' ] = trans('messages.list.validation.required', ['field' => $field->label]);
@@ -2085,10 +2089,25 @@ class MailList extends Model
             }
         }
 
-        // var_dump($messages);
-        // die();
+        // List rules
+        $rules = $this->getFieldRules();
 
-        $validator = \Validator::make($request->all(), $this->getFieldRules(), $messages);
+        // Do not allow duplicate email if added by admin (throw an exception)
+        // If imported / api / web / embedded-form THEN just overwrite
+        if ( $source == Subscriber::SUBSCRIPTION_TYPE_ADDED || $source == self::SOURCE_API ) {
+            // @important
+            // DO NOT USE "UNIQUE" validator of Laravel
+            // Otherwise, it will fails after the subscriber with given email address is added
+            $rules['EMAIL'] = [
+                'required',
+                'email',
+                Rule::unique('subscribers')->where(function ($query) {
+                    return $query->where('mail_list_id', $this->id);
+                }),
+            ];
+        }
+        
+        $validator = \Validator::make($request->all(), $rules, $messages);
         
         if ($validator->fails()) {
             return [$validator, null];
@@ -2114,10 +2133,19 @@ class MailList extends Model
         }
         $subscriber->ip = $request->ip();
         $subscriber->save();
+
+        // @IMPORTANT
+        // After the $subscriber->save(), $validator->fails() becomes TRUE!!!!
+        // Because the email address is now not available
+        // This is a problem of Laravel
+
         $subscriber->updateFields($request->all());
 
         // update MailList cache
         event(new \Acelle\Events\MailListUpdated($this));
+        if ($subscriber->isSubscribed()) {
+            SubscriberAdded::dispatch($subscriber);
+        }
         
         MailLog::info("Subscriber {$subscriber->email} is added to list {$this->name} via {$source}");
 

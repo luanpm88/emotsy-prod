@@ -30,6 +30,9 @@ class EventServiceProvider extends ServiceProvider
         'Acelle\Events\MailListSubscription' => [
             'Acelle\Listeners\MailListSubscriptionListener',
         ],
+        'Acelle\Events\SubscriberAdded' => [
+            'Acelle\Listeners\TriggerAutomation',
+        ],
     ];
 
     /**
