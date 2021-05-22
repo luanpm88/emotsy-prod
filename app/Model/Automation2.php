@@ -50,6 +50,7 @@ class Automation2 extends Model
     const STATUS_INACTIVE = 'inactive';
 
     const TRIGGER_TYPE_WELCOME_NEW_SUBSCRIBER = 'welcome-new-subscriber';
+    const TRIGGER_TYPE_SAY_GOODBYE_TO_SUBSCRIBER = 'say-goodbye-subscriber';
 
     /**
      * Items per page.
@@ -446,7 +447,7 @@ class Automation2 extends Model
         $this->logger()->info(sprintf('NEW > Start checking for new trigger'));
 
         switch ($this->getTriggerAction()->getOption('key')) {
-            case 'welcome-new-subscriber':
+            case self::TRIGGER_TYPE_WELCOME_NEW_SUBSCRIBER:
                 $this->checkForListSubscription();
                 break;
             case 'specific-date':
@@ -1374,5 +1375,13 @@ class Automation2 extends Model
     public function isActive()
     {
         return $this->status == self::STATUS_ACTIVE;
+    }
+
+    public function getSubscribersWithSubscriptionInfo()
+    {
+        return $this->subscribers()
+             ->leftJoin('auto_triggers', 'subscribers.id', 'auto_triggers.subscriber_id')
+             ->addSelect('auto_triggers.id as auto_trigger_id')
+             ->addSelect('auto_triggers.created_at as triggered_at');
     }
 }
