@@ -1960,7 +1960,13 @@ class Automation2Controller extends Controller
         switch ($type) {
             case 'welcome-new-subscriber':
                 
-                $subscribers = $automation->getNewSubscribersToFollow();
+                $subscribers = $automation->getSubscribersWithSubscriptionInfo();
+
+                if ($request->input('orderBy')) {
+                    $subscribers = $subscribers->orderBy($request->input('orderBy'), $request->input('orderDir'));
+                }
+
+                $subscribers = $subscribers->simplePaginate(50);
 
                 return view('automation2.debug_list_subscription', [
                     'automation' => $automation,
@@ -2001,6 +2007,18 @@ class Automation2Controller extends Controller
         return view('automation2.debug', [
             'trigger' => $trigger,
         ]);
+    }
+
+    public function triggerNow(Request $request)
+    {
+        $automation = Automation2::findByUid($request->automation);
+        $subscriber = Subscriber::findByUid($request->subscriber);
+
+        // Manually trigger
+        $automation->logger()->info(sprintf('Manually trigger contact %s', $subscriber->email));
+        $trigger = $automation->initTrigger($subscriber);
+
+        return redirect()->action('AutoTrigger@show', [ 'id' => $trigger->id ]);
     }
 
     /**
