@@ -50,6 +50,7 @@ class Automation2 extends Model
 
     const TRIGGER_TYPE_WELCOME_NEW_SUBSCRIBER = 'welcome-new-subscriber';
     const TRIGGER_TYPE_SAY_GOODBYE_TO_SUBSCRIBER = 'say-goodbye-subscriber';
+    const TRIGGER_TYPE_SAY_HAPPY_BIRTHDAY = 'say-happy-birthday';
 
     /**
      * Items per page.

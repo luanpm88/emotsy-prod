@@ -393,8 +393,8 @@ class MailList extends Model
      */
     public function unsubscribeCount()
     {
-        // return distinctCount($this->subscribers()->where('status', '=', 'unsubscribed'), 'subscribers.email');
-        return $this->subscribers()->where('status', '=', 'unsubscribed')->count();
+        // return distinctCount($this->subscribers()->unsubscribed(), 'subscribers.email');
+        return $this->subscribers()->unsubscribed()->count();
     }
 
     /**

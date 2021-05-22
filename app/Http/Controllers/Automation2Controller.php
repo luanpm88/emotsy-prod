@@ -1958,7 +1958,7 @@ class Automation2Controller extends Controller
         $type = $automation->getTriggerAction()->getOption('key');
 
         switch ($type) {
-            case 'welcome-new-subscriber':
+            case Automation2::TRIGGER_TYPE_WELCOME_NEW_SUBSCRIBER:
                 
                 $subscribers = $automation->getSubscribersWithSubscriptionInfo();
 
@@ -1975,8 +1975,26 @@ class Automation2Controller extends Controller
 
                 break;
 
-            case 'say-happy-birthday':
+            case Automation2::TRIGGER_TYPE_SAY_GOODBYE_TO_SUBSCRIBER:
+
+                $subscribers = $automation->getSubscribersWithSubscriptionInfo();
+
+                if ($request->input('orderBy')) {
+                    $subscribers = $subscribers->orderBy($request->input('orderBy'), $request->input('orderDir'));
+                }
+
+                $subscribers = $subscribers->simplePaginate(50);
+
+                return view('automation2.debug_list_subscription', [
+                    'automation' => $automation,
+                    'subscribers' => $subscribers,
+                ]);
+
+                break;
+
+            case Automation2::TRIGGER_TYPE_SAY_HAPPY_BIRTHDAY:
                 $subscribers = $automation->getSubscribersWithDateOfBirth();
+
                 if ($request->input('email')) {
                     $subscribers = $subscribers->searchByEmail($request->input('email'));
                 }
@@ -1993,7 +2011,7 @@ class Automation2Controller extends Controller
                 ]);
 
                 break;
-            
+
             default:
                 # code...
                 break;

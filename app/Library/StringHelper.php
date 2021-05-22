@@ -48,6 +48,10 @@ class StringHelper
      */
     public static function base64UrlDecode($val)
     {
+        if (is_null($val)) {
+            return null;
+        }
+
         return base64_decode(strtr($val, '-_,', '+/='));
     }
 
