@@ -78,7 +78,7 @@ Route::get('/assets/emails/{uid}/{name?}', [ function ($uid, $name) {
 }])->where('name', '.+')->name('email_assets');
 
 // assets path for email
-Route::get('/p/assets/{token}', [ function ($token) {
+Route::get('/p/assets/{path}', [ function ($token) {
     // Notice $path should be relative only for acellemail/storage/ folder
     // For example, with a real path of /home/deploy/acellemail/storage/app/sub/example.png => $path = "app/sub/example.png"
     $decodedPath = \Acelle\Library\StringHelper::base64UrlDecode($token);
