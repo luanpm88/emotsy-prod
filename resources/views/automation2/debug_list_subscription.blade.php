@@ -14,7 +14,7 @@
 	<table class="table table-box pml-table table-log mt-10">
         <tbody>
 	        <tr>
-	            <th width="200px">Subscriber</th>
+	            <th width="50%">Subscriber</th>
 	            <th>Subscribe At</th>
 	            <th>Triggered At</th>
 	        </tr>
@@ -22,7 +22,7 @@
 	        <tr>
                 <td>
                     <span class="no-margin kq_search">
-                        {{ $subscriber->email }}<br>
+                        {{ $subscriber->email }}
                         <span class="label label-flat bg-{{ $subscriber->status }}">{{ $subscriber->status }}</span>
                     </span>
                 </td>
