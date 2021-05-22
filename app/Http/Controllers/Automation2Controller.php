@@ -2014,6 +2014,13 @@ class Automation2Controller extends Controller
         $automation = Automation2::findByUid($request->automation);
         $subscriber = Subscriber::findByUid($request->subscriber);
 
+        $existingTrigger = $automation->getAutoTriggerFor($subscriber);
+
+        if (!is_null($existingTrigger)) {
+            echo sprintf("%s already triggered. Click <a href='%s'>here</a> for more details", $subscriber->email, action('AutoTrigger@show', [ 'id' => $existingTrigger->id ]));
+            return;
+        }
+
         // Manually trigger
         $automation->logger()->info(sprintf('Manually trigger contact %s', $subscriber->email));
         $trigger = $automation->initTrigger($subscriber);

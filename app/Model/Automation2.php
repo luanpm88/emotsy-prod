@@ -1356,4 +1356,10 @@ class Automation2 extends Model
              ->addSelect('auto_triggers.id as auto_trigger_id')
              ->addSelect('auto_triggers.created_at as triggered_at');
     }
+
+    public function getAutoTriggerFor($subscriber)
+    {
+        $trigger = $this->autoTriggers()->where('subscriber_id', $subscriber->id)->latest()->first();
+        return $trigger;
+    }
 }
