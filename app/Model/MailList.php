@@ -2151,7 +2151,7 @@ class MailList extends Model
         $subscriber->updateFields($request->all());
 
         // update MailList cache
-        MailListUpdated::dispatch($this));
+        MailListUpdated::dispatch($this);
 
         if ($subscriber->isSubscribed()) {
             MailListSubscription::dispatch($subscriber);
