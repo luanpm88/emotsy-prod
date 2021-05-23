@@ -1330,5 +1330,7 @@ class Subscriber extends Model
     {
         $this->status = self::STATUS_SUBSCRIBED;
         $this->save();
+
+        MailListSubscription::dispatch($this);
     }
 }

@@ -1960,7 +1960,7 @@ class Automation2Controller extends Controller
         switch ($type) {
             case Automation2::TRIGGER_TYPE_WELCOME_NEW_SUBSCRIBER:
                 
-                $subscribers = $automation->getSubscribersWithSubscriptionInfo();
+                $subscribers = $automation->getSubscribersWithTriggerInfo();
 
                 if ($request->input('orderBy')) {
                     $subscribers = $subscribers->orderBy($request->input('orderBy'), $request->input('orderDir'));
@@ -1977,7 +1977,7 @@ class Automation2Controller extends Controller
 
             case Automation2::TRIGGER_TYPE_SAY_GOODBYE_TO_SUBSCRIBER:
 
-                $subscribers = $automation->getSubscribersWithSubscriptionInfo();
+                $subscribers = $automation->getSubscribersWithTriggerInfo()->where('subscribers.status', '=', 'unsubscribed');
 
                 if ($request->input('orderBy')) {
                     $subscribers = $subscribers->orderBy($request->input('orderBy'), $request->input('orderDir'));

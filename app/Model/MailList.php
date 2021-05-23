@@ -2154,6 +2154,7 @@ class MailList extends Model
         MailListUpdated::dispatch($this);
 
         if ($subscriber->isSubscribed()) {
+            // Only trigger MailListSubscription event if subscribe is immediately subscribed
             MailListSubscription::dispatch($subscriber);
         }
         

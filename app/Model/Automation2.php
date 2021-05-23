@@ -1013,7 +1013,7 @@ class Automation2 extends Model
         if ($this->segment()->exists()) {
             $query = $this->segment->subscribers();
         } else {
-            $query = $this->mailList->activeSubscribers()->select('subscribers.*');
+            $query = $this->mailList->subscribers()->select('subscribers.*');
         }
 
         if (!is_null($actionId)) {
@@ -1350,7 +1350,7 @@ class Automation2 extends Model
         return $this->status == self::STATUS_ACTIVE;
     }
 
-    public function getSubscribersWithSubscriptionInfo()
+    public function getSubscribersWithTriggerInfo()
     {
         return $this->subscribers()
              ->leftJoin('auto_triggers', 'subscribers.id', 'auto_triggers.subscriber_id')
