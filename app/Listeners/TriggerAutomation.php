@@ -3,6 +3,7 @@
 namespace Acelle\Listeners;
 
 use Acelle\Events\MailListSubscription;
+use Acelle\Events\MailListUnsubscription;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Acelle\Library\Log as MailLog;
@@ -27,13 +28,37 @@ class TriggerAutomation
      * @param  MailListSubscription  $event
      * @return void
      */
-    public function handle(MailListSubscription $event)
+    public function handleMailListSubscription(MailListSubscription $event)
     {
         MailLog::info('[MailListSubscription::TriggerAutomation] triggered');
         $automations = $event->subscriber->mailList->automations;
         $automations = $automations->filter(function ($auto, $key) {
             return $auto->isActive() && (
-                $auto->getTriggerType() == Automation2::TRIGGER_TYPE_WELCOME_NEW_SUBSCRIBER || 
+                $auto->getTriggerType() == Automation2::TRIGGER_TYPE_WELCOME_NEW_SUBSCRIBER
+            );
+        });
+
+        foreach ($automations as $auto) {
+            // Trigger automation for the newly added subscriber or leaving subscriber
+            // Why not check? ->autoTriggers()->where(['subscriber_id' => 1392])->exists()
+            // No, keep it simple, the Listener's responsibility is to trigger, not validation
+            // and, moreover, there might be triggers that occur more than one time
+            $auto->initTrigger($event->subscriber);
+        }
+    }
+
+    /**
+     * Handle the event.
+     *
+     * @param  MailListSubscription  $event
+     * @return void
+     */
+    public function handleMailListUnsubscription(MailListUnsubscription $event)
+    {
+        MailLog::info('[MailListUnsubscription::TriggerAutomation] triggered');
+        $automations = $event->subscriber->mailList->automations;
+        $automations = $automations->filter(function ($auto, $key) {
+            return $auto->isActive() && (
                 $auto->getTriggerType() == Automation2::TRIGGER_TYPE_SAY_GOODBYE_TO_SUBSCRIBER
             );
         });
@@ -45,5 +70,19 @@ class TriggerAutomation
             // and, moreover, there might be triggers that occur more than one time
             $auto->initTrigger($event->subscriber);
         }
+    }
+
+    // Subscribe to many events
+    public function subscribe($events)
+    {
+        $events->listen(
+            'Acelle\Events\MailListSubscription',
+            [TriggerAutomation::class, 'handleMailListSubscription']
+        );
+
+        $events->listen(
+            'Acelle\Events\MailListUnsubscription',
+            [TriggerAutomation::class, 'handleMailListUnsubscription']
+        );
     }
 }
