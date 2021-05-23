@@ -28,9 +28,7 @@ class EventServiceProvider extends ServiceProvider
             'Acelle\Listeners\AdminLoggedInListener',
         ],
         'Acelle\Events\MailListSubscription' => [
-            'Acelle\Listeners\MailListSubscriptionListener',
-        ],
-        'Acelle\Events\SubscriberAdded' => [
+            'Acelle\Listeners\SendNotificationToListOwner',
             'Acelle\Listeners\TriggerAutomation',
         ],
     ];

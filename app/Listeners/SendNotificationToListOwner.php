@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Mail;
 use Acelle\Events\MailListSubscription;
 use Acelle\Mail\MailListSubscriptionNotificationMailer;
 
-class MailListSubscriptionListener
+class SendNotificationToListOwner  // SendSubscriptionNotificationToListOwner
 {
     /**
      * Create the event listener.
@@ -30,7 +30,10 @@ class MailListSubscriptionListener
     {
         // Send notification
         Mail::to(
-            json_decode(json_encode(['email' => $event->user->email, 'name' => $event->user->customer->displayName()]))
+            json_decode(json_encode([
+                'email' => $event->subscriber->mailList->customer->user->email,
+                'name'  => $event->subscriber->mailList->customer->displayName()])
+            )
         )->send(
             new MailListSubscriptionNotificationMailer($event->subscriber)
         );

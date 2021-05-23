@@ -2,15 +2,20 @@
 
 namespace Acelle\Events;
 
-use Acelle\Events\Event;
-use Illuminate\Queue\SerializesModels;
+use Illuminate\Broadcasting\Channel;
+use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PresenceChannel;
+use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
+
+use Acelle\Model\Subscriber;
 
 class MailListSubscription extends Event
 {
-    use SerializesModels;
+    use Dispatchable, InteractsWithSockets, SerializesModels;
     
-    public $user;
     public $subscriber;
 
     /**
@@ -18,19 +23,18 @@ class MailListSubscription extends Event
      *
      * @return void
      */
-    public function __construct($user, $subscriber)
+    public function __construct(Subscriber $subscriber)
     {
-        $this->user = $user;
         $this->subscriber = $subscriber;
     }
 
     /**
-     * Get the channels the event should be broadcast on.
+     * Get the channels the event should broadcast on.
      *
-     * @return array
+     * @return \Illuminate\Broadcasting\Channel|array
      */
     public function broadcastOn()
     {
-        return [];
+        return new PrivateChannel('channel-name');
     }
 }
