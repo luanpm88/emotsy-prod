@@ -27,6 +27,7 @@ use Acelle\Library\Log as MailLog;
 use Acelle\Model\MailList;
 use Acelle\Model\Setting;
 use Acelle\Events\MailListSubscription;
+use Acelle\Events\MailListUnsubscription;
 use Acelle\Library\StringHelper;
 use DB;
 use Exception;
@@ -178,9 +179,14 @@ class Subscriber extends Model
     {
         // Transaction safe
         DB::transaction(function() use($trackingInfo) {
+            // Update status
             $this->status = self::STATUS_UNSUBSCRIBED;
             $this->save();
 
+            // Trigger events
+            MailListUnsubscription::dispatch($this);
+
+            // Create log
             $this->unsubscribeLogs()->create($trackingInfo);
         });
 
