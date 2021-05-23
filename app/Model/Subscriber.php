@@ -27,6 +27,7 @@ use Acelle\Library\Log as MailLog;
 use Acelle\Model\MailList;
 use Acelle\Model\Setting;
 use Acelle\Events\SubscriberAdded;
+use Acelle\Library\StringHelper;
 use DB;
 use Exception;
 
@@ -173,18 +174,15 @@ class Subscriber extends Model
     /**
      * Unsubscribe to the list.
      */
-    public function unsubscribe($logInfo)
+    public function unsubscribe($trackingInfo)
     {
-        // Currently, unsubscription is considered "from an email address"
-        // However, this is no longer correct, users can unsubscribe following a known URL that is not associated with a particular message
-        if (!array_key_exists('message_id', $logInfo)) {
-            throw new Exception("message_id is required for unsubscription. This is required by current design, need improving...");
-        }
+        // Transaction safe
+        DB::transaction(function() use($trackingInfo) {
+            $this->status = self::STATUS_UNSUBSCRIBED;
+            $this->save();
 
-        $this->status = self::STATUS_UNSUBSCRIBED;
-        $this->save();
-
-        $this->unsubscribeLogs()->create($logInfo);   
+            $this->unsubscribeLogs()->create($trackingInfo);
+        });
 
         // Send goodbye email
         if ($this->mailList->unsubscribe_notification) {
@@ -1307,5 +1305,24 @@ class Subscriber extends Model
     public function scopeUnsubscribed()
     {
         return self::where('status', '=', self::STATUS_UNSUBSCRIBED);
+    }
+
+    public function generateUnsubscribeUrl($messageId = null)
+    {
+        $url = route('unsubscribeUrl', [
+            'message_id' => StringHelper::base64UrlEncode($messageId),
+            'subscriber' => $this->uid
+        ]);
+
+        return $url;
+    }
+
+
+    // Change status to SUBSCRIBED
+    // @important: need subscription log in the future?
+    public function subscribe()
+    {
+        $this->status = self::STATUS_SUBSCRIBED;
+        $this->save();
     }
 }

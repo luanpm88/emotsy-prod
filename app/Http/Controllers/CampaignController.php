@@ -1394,25 +1394,31 @@ class CampaignController extends Controller
     public function unsubscribe(Request $request)
     {
         $subscriber = Subscriber::findByUid($request->subscriber);
+        $message_id = StringHelper::base64UrlDecode($request->message_id);
 
         if (is_null($subscriber)) {
             LaravelLog::error('Subscriber does not exist');
             return view('somethingWentWrong', ['message' => trans('subscriber.invalid')]);
         }
 
-        if (!$subscriber->isUnsubscribed()) {
+        if ($subscriber->isUnsubscribed()) {
             return view('notice', ['message' => trans('messages.you_are_already_unsubscribed')]);
         }
 
-        $message_id = StringHelper::base64UrlDecode($request->message_id);
-        $location = IpLocation::add($_SERVER['REMOTE_ADDR']);
-
-        // Set unsubscribed
-        $subscriber->unsubscribe([
+        // User Tracking Information
+        $trackingInfo = [
             'message_id' => $message_id,
-            'ip_address' => $location->ip_address,
             'user_agent' => $_SERVER['HTTP_USER_AGENT'],
-        ]);
+        ];
+        
+        // GeoIP information
+        $location = IpLocation::add($_SERVER['REMOTE_ADDR']);
+        if (!is_null($location)) {
+            $trackingInfo['ip_address'] = $location->ip_address;
+        }
+
+        // Actually Unsubscribe with tracking information
+        $subscriber->unsubscribe($trackingInfo);
 
         // Page content
         $list = $subscriber->mailList;
