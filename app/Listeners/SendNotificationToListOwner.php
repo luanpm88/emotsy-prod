@@ -7,6 +7,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Mail;
 use Acelle\Events\MailListSubscription;
 use Acelle\Mail\MailListSubscriptionNotificationMailer;
+use Acelle\Model\Setting;
 
 class SendNotificationToListOwner  // SendSubscriptionNotificationToListOwner
 {
@@ -28,6 +29,7 @@ class SendNotificationToListOwner  // SendSubscriptionNotificationToListOwner
      */
     public function handle(MailListSubscription $event)
     {
+        /*
         // Send notification
         Mail::to(
             json_decode(json_encode([
@@ -37,5 +39,13 @@ class SendNotificationToListOwner  // SendSubscriptionNotificationToListOwner
         )->send(
             new MailListSubscriptionNotificationMailer($event->subscriber)
         );
+        */
+
+        // trigger the event
+        if (Setting::isYes('send_notification_email_for_list_subscription')) {
+            // Sendmail here
+        } else {
+            // No notificaiton email sent, enable "send_notification_email_for_list_subscription" setting
+        }
     }
 }

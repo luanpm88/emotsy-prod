@@ -2159,14 +2159,6 @@ class MailList extends Model
         
         MailLog::info("Subscriber {$subscriber->email} is added to list {$this->name} via {$source}");
 
-        // trigger the event
-        if (Setting::isYes('send_notification_email_for_list_subscription')) {
-            MailLog::info("Sending notification email for subscriber {$subscriber->email}, list {$this->name}");
-            event(new MailListSubscription($this->customer->user, $subscriber));
-        } else {
-            MailLog::info("No notification email for subscriber {$subscriber->email}, list {$this->name}");
-        }
-
         if ($this->subscribe_confirmation && !$subscriber->isSubscribed()) {
             MailLog::info("Send subscription confirmation email to {$subscriber->email}, list {$this->name}");
             $this->sendSubscriptionConfirmationEmail($subscriber);
