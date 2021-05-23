@@ -25,8 +25,12 @@ namespace Acelle\Model;
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Log as MailLog;
 use Acelle\Model\MailList;
-use Acelle\Events\SubscriberAdded;
+use Acelle\Model\Setting;
+use Acelle\Events\MailListSubscription;
+use Acelle\Events\MailListUnsubscription;
+use Acelle\Library\StringHelper;
 use DB;
+use Exception;
 
 class Subscriber extends Model
 {
@@ -171,13 +175,30 @@ class Subscriber extends Model
     /**
      * Unsubscribe to the list.
      */
-    public function unsubscribe()
+    public function unsubscribe($trackingInfo)
     {
-        $this->status = 'unsubscribed';
-        $this->save();
-        $this->unsubscribeLogs()->create([
-            //
-        ]);
+        // Transaction safe
+        DB::transaction(function() use($trackingInfo) {
+            // Update status
+            $this->status = self::STATUS_UNSUBSCRIBED;
+            $this->save();
+
+            // Trigger events
+            MailListUnsubscription::dispatch($this);
+
+            // Create log
+            $this->unsubscribeLogs()->create($trackingInfo);
+        });
+
+        // Send goodbye email
+        if ($this->mailList->unsubscribe_notification) {
+            // SEND subscription confirmation email
+            $this->mailList->sendUnsubscriptionNotificationEmail($this);
+        }
+
+        if (Setting::isYes('send_notification_email_for_list_subscription')) {
+            $this->mailList->sendUnsubscriptionNotificationEmailToListOwner($this);
+        }
     }
 
     /**
@@ -1184,6 +1205,11 @@ class Subscriber extends Model
         return $this->status == self::STATUS_SUBSCRIBED;
     }
 
+    public function isUnsubscribed()
+    {
+        return $this->status == self::STATUS_UNSUBSCRIBED;
+    }
+
     public function getHistory()
     {
         $openLogs = table('open_logs');
@@ -1279,6 +1305,30 @@ class Subscriber extends Model
         $this->status = self::STATUS_SUBSCRIBED;
         $this->save();
 
-        SubscriberAdded::dispatch($this);
+        MailListSubscription::dispatch($this);
+    }
+
+    public function scopeUnsubscribed()
+    {
+        return self::where('status', '=', self::STATUS_UNSUBSCRIBED);
+    }
+
+    public function generateUnsubscribeUrl($messageId = null)
+    {
+        $url = route('unsubscribeUrl', [
+            'message_id' => StringHelper::base64UrlEncode($messageId),
+            'subscriber' => $this->uid
+        ]);
+
+        return $url;
+    }
+
+
+    // Change status to SUBSCRIBED
+    // @important: need subscription log in the future?
+    public function subscribe()
+    {
+        $this->status = self::STATUS_SUBSCRIBED;
+        $this->save();
     }
 }

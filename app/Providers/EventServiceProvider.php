@@ -27,12 +27,24 @@ class EventServiceProvider extends ServiceProvider
         'Acelle\Events\AdminLoggedIn' => [
             'Acelle\Listeners\AdminLoggedInListener',
         ],
+        /* User subscriber instead 
         'Acelle\Events\MailListSubscription' => [
-            'Acelle\Listeners\MailListSubscriptionListener',
-        ],
-        'Acelle\Events\SubscriberAdded' => [
+            'Acelle\Listeners\SendNotificationToListOwner',
             'Acelle\Listeners\TriggerAutomation',
         ],
+        'Acelle\Events\MailListUnsubscription' => [
+            'Acelle\Listeners\TriggerAutomation',
+        ],
+        */
+    ];
+
+    /**
+     * The subscriber classes to register.
+     *
+     * @var array
+     */
+    protected $subscribe = [
+        'Acelle\Listeners\TriggerAutomation',
     ];
 
     /**

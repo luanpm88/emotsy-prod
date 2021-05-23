@@ -10,18 +10,22 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
+use Acelle\Model\Subscriber;
+
 class MailListUnsubscription
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
+
+    public $subscriber;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Subscriber $subscriber)
     {
-        //
+        $this->subscriber = $subscriber;
     }
 
     /**
