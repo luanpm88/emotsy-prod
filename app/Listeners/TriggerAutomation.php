@@ -2,7 +2,7 @@
 
 namespace Acelle\Listeners;
 
-use Acelle\Events\SubscriberAdded;
+use Acelle\Events\MailListSubscription;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Acelle\Library\Log as MailLog;
@@ -24,12 +24,12 @@ class TriggerAutomation
     /**
      * Handle the event.
      *
-     * @param  SubscriberAdded  $event
+     * @param  MailListSubscription  $event
      * @return void
      */
-    public function handle(SubscriberAdded $event)
+    public function handle(MailListSubscription $event)
     {
-        MailLog::info('[SubscriberAdded::TriggerAutomation] triggered');
+        MailLog::info('[MailListSubscription::TriggerAutomation] triggered');
         $automations = $event->subscriber->mailList->automations;
         $automations = $automations->filter(function ($auto, $key) {
             return $auto->isActive() && (

@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Log as MailLog;
 use Acelle\Model\MailList;
 use Acelle\Model\Setting;
-use Acelle\Events\SubscriberAdded;
+use Acelle\Events\MailListSubscription;
 use Acelle\Library\StringHelper;
 use DB;
 use Exception;
@@ -1299,7 +1299,7 @@ class Subscriber extends Model
         $this->status = self::STATUS_SUBSCRIBED;
         $this->save();
 
-        SubscriberAdded::dispatch($this);
+        MailListSubscription::dispatch($this);
     }
 
     public function scopeUnsubscribed()

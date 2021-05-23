@@ -30,7 +30,7 @@ use Acelle\Library\RouletteWheel;
 use Acelle\Library\StringHelper;
 use Acelle\Library\ExtendedSwiftMessage;
 use Acelle\Events\MailListSubscription;
-use Acelle\Events\SubscriberAdded;
+use Acelle\Events\MailListUpdated;
 use Acelle\Model\Setting;
 use Acelle\Model\SubscriberFields;
 use Acelle\Model\Fields;
@@ -667,7 +667,7 @@ class MailList extends Model
 
         $copy->save();
 
-        // @todo: trigger SubscriberAdded event here?
+        // @todo: trigger MailListSubscription event here?
 
         // Contact
         if (is_object($this->contact)) {
@@ -2151,9 +2151,10 @@ class MailList extends Model
         $subscriber->updateFields($request->all());
 
         // update MailList cache
-        event(new \Acelle\Events\MailListUpdated($this));
+        MailListUpdated::dispatch($this));
+
         if ($subscriber->isSubscribed()) {
-            SubscriberAdded::dispatch($subscriber);
+            MailListSubscription::dispatch($subscriber);
         }
         
         MailLog::info("Subscriber {$subscriber->email} is added to list {$this->name} via {$source}");
