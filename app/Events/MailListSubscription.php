@@ -12,7 +12,7 @@ use Illuminate\Queue\SerializesModels;
 
 use Acelle\Model\Subscriber;
 
-class MailListSubscription extends Event
+class MailListSubscription
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
     
