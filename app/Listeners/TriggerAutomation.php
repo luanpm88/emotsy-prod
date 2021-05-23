@@ -39,11 +39,9 @@ class TriggerAutomation
         });
 
         foreach ($automations as $auto) {
-            // Trigger automation for the newly added subscriber or leaving subscriber
-            // Why not check? ->autoTriggers()->where(['subscriber_id' => 1392])->exists()
-            // No, keep it simple, the Listener's responsibility is to trigger, not validation
-            // and, moreover, there might be triggers that occur more than one time
-            $auto->initTrigger($event->subscriber);
+            if (is_null($auto->getAutoTriggerFor($event->subscriber))) {
+                $auto->initTrigger($event->subscriber);
+            }
         }
     }
 
@@ -64,11 +62,9 @@ class TriggerAutomation
         });
 
         foreach ($automations as $auto) {
-            // Trigger automation for the newly added subscriber or leaving subscriber
-            // Why not check? ->autoTriggers()->where(['subscriber_id' => 1392])->exists()
-            // No, keep it simple, the Listener's responsibility is to trigger, not validation
-            // and, moreover, there might be triggers that occur more than one time
-            $auto->initTrigger($event->subscriber);
+            if (is_null($auto->getAutoTriggerFor($event->subscriber))) {
+                $auto->initTrigger($event->subscriber);
+            }
         }
     }
 
