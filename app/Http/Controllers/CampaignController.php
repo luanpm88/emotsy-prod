@@ -17,6 +17,7 @@ use Acelle\Model\SystemJob;
 use Acelle\Model\Setting;
 use Acelle\Model\Subscriber;
 use Acelle\Model\Campaign;
+use Acelle\Model\IpLocation;
 use Acelle\Library\Rss;
 
 class CampaignController extends Controller
@@ -1332,7 +1333,7 @@ class CampaignController extends Controller
 
         $log = new \Acelle\Model\OpenLog();
         $log->message_id = $messageId;
-        $location = \Acelle\Model\IpLocation::add($this->getRemoteIPAddress());
+        $location = IpLocation::add($this->getRemoteIPAddress());
         $log->ip_address = $location->ip_address;
         $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
 
@@ -1356,7 +1357,7 @@ class CampaignController extends Controller
      */
     public function click(Request $request)
     {
-        $decoded_url = \Acelle\Library\StringHelper::base64UrlDecode($request->url);
+        $decoded_url = StringHelper::base64UrlDecode($request->url);
         $messageId = StringHelper::base64UrlDecode($request->message_id);
 
         if (!TrackingLog::where('message_id', $messageId)->exists()) {
@@ -1367,7 +1368,7 @@ class CampaignController extends Controller
         // redirect base64_decode($url);
         $log = new \Acelle\Model\ClickLog();
         $log->message_id = $messageId;
-        $location = \Acelle\Model\IpLocation::add($_SERVER['REMOTE_ADDR']);
+        $location = IpLocation::add($_SERVER['REMOTE_ADDR']);
         $log->ip_address = $location->ip_address;
         $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
         $log->url = $decoded_url;
@@ -1392,55 +1393,45 @@ class CampaignController extends Controller
      */
     public function unsubscribe(Request $request)
     {
-        $message_id = \Acelle\Library\StringHelper::base64UrlDecode($request->message_id);
-        $tracking_log = \Acelle\Model\TrackingLog::where('message_id', '=', $message_id)->first();
+        $subscriber = Subscriber::findByUid($request->subscriber);
+        $message_id = StringHelper::base64UrlDecode($request->message_id);
 
-        if (!is_object($tracking_log)) {
-            LaravelLog::error('Tracking log not exists');
-
-            return view('somethingWentWrong', ['message' => trans('messages.the_email_no_longer_exists')]);
+        if (is_null($subscriber)) {
+            LaravelLog::error('Subscriber does not exist');
+            return view('somethingWentWrong', ['message' => trans('subscriber.invalid')]);
         }
 
-        $subscriber = $tracking_log->subscriber;
-
-        if ($subscriber->status != 'unsubscribed') {
-            // Unsubcribe
-            $subscriber->status = 'unsubscribed';
-            $subscriber->save();
-
-            // Page content
-            $list = $subscriber->mailList;
-            $layout = \Acelle\Model\Layout::where('alias', 'unsubscribe_success_page')->first();
-            $page = \Acelle\Model\Page::findPage($list, $layout);
-
-            $page->renderContent(null, $subscriber);
-
-            // Unsubscribe log
-            $log = new \Acelle\Model\UnsubscribeLog();
-            $log->message_id = $message_id;
-            $location = \Acelle\Model\IpLocation::add($_SERVER['REMOTE_ADDR']);
-            $log->ip_address = $location->ip_address;
-            $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
-            $log->save();
-
-            // Send goodbye email
-            if ($list->unsubscribe_notification) {
-                // SEND subscription confirmation email
-                $list->sendUnsubscriptionNotificationEmail($subscriber);
-            }
-
-            if (Setting::isYes('send_notification_email_for_list_subscription')) {
-                $list->sendUnsubscriptionNotificationEmailToListOwner($subscriber);
-            }
-
-            return view('pages.default', [
-                'list' => $list,
-                'page' => $page,
-                'subscriber' => $subscriber,
-            ]);
-        } else {
+        if ($subscriber->isUnsubscribed()) {
             return view('notice', ['message' => trans('messages.you_are_already_unsubscribed')]);
         }
+
+        // User Tracking Information
+        $trackingInfo = [
+            'message_id' => $message_id,
+            'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+        ];
+        
+        // GeoIP information
+        $location = IpLocation::add($_SERVER['REMOTE_ADDR']);
+        if (!is_null($location)) {
+            $trackingInfo['ip_address'] = $location->ip_address;
+        }
+
+        // Actually Unsubscribe with tracking information
+        $subscriber->unsubscribe($trackingInfo);
+
+        // Page content
+        $list = $subscriber->mailList;
+        $layout = \Acelle\Model\Layout::where('alias', 'unsubscribe_success_page')->first();
+        $page = \Acelle\Model\Page::findPage($list, $layout);
+
+        $page->renderContent(null, $subscriber);
+
+        return view('pages.default', [
+            'list' => $list,
+            'page' => $page,
+            'subscriber' => $subscriber,
+        ]);
     }
 
     /**
@@ -1475,7 +1466,7 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = \Acelle\Model\TrackingLog::search($request, $campaign)->paginate($request->per_page);
+        $items = TrackingLog::search($request, $campaign)->paginate($request->per_page);
 
         return view('admin.tracking_logs._list', [
             'items' => $items,
@@ -2114,8 +2105,8 @@ class CampaignController extends Controller
      */
     public function webView(Request $request)
     {
-        $message_id = \Acelle\Library\StringHelper::base64UrlDecode($request->message_id);
-        $tracking_log = \Acelle\Model\TrackingLog::where('message_id', '=', $message_id)->first();
+        $message_id = StringHelper::base64UrlDecode($request->message_id);
+        $tracking_log = TrackingLog::where('message_id', '=', $message_id)->first();
 
         try {
             if (!is_object($tracking_log)) {

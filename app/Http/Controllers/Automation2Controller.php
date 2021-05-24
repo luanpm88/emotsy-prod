@@ -2056,9 +2056,15 @@ class Automation2Controller extends Controller
         $type = $automation->getTriggerAction()->getOption('key');
 
         switch ($type) {
-            case 'welcome-new-subscriber':
+            case Automation2::TRIGGER_TYPE_WELCOME_NEW_SUBSCRIBER:
                 
-                $subscribers = $automation->getNewSubscribersToFollow();
+                $subscribers = $automation->getSubscribersWithTriggerInfo();
+
+                if ($request->input('orderBy')) {
+                    $subscribers = $subscribers->orderBy($request->input('orderBy'), $request->input('orderDir'));
+                }
+
+                $subscribers = $subscribers->simplePaginate(50);
 
                 return view('automation2.debug_list_subscription', [
                     'automation' => $automation,
@@ -2067,8 +2073,26 @@ class Automation2Controller extends Controller
 
                 break;
 
-            case 'say-happy-birthday':
+            case Automation2::TRIGGER_TYPE_SAY_GOODBYE_TO_SUBSCRIBER:
+
+                $subscribers = $automation->getSubscribersWithTriggerInfo()->where('subscribers.status', '=', 'unsubscribed');
+
+                if ($request->input('orderBy')) {
+                    $subscribers = $subscribers->orderBy($request->input('orderBy'), $request->input('orderDir'));
+                }
+
+                $subscribers = $subscribers->simplePaginate(50);
+
+                return view('automation2.debug_list_unsubscription', [
+                    'automation' => $automation,
+                    'subscribers' => $subscribers,
+                ]);
+
+                break;
+
+            case Automation2::TRIGGER_TYPE_SAY_HAPPY_BIRTHDAY:
                 $subscribers = $automation->getSubscribersWithDateOfBirth();
+
                 if ($request->input('email')) {
                     $subscribers = $subscribers->searchByEmail($request->input('email'));
                 }
@@ -2085,7 +2109,7 @@ class Automation2Controller extends Controller
                 ]);
 
                 break;
-            
+
             default:
                 # code...
                 break;
@@ -2099,6 +2123,25 @@ class Automation2Controller extends Controller
         return view('automation2.debug', [
             'trigger' => $trigger,
         ]);
+    }
+
+    public function triggerNow(Request $request)
+    {
+        $automation = Automation2::findByUid($request->automation);
+        $subscriber = Subscriber::findByUid($request->subscriber);
+
+        $existingTrigger = $automation->getAutoTriggerFor($subscriber);
+
+        if (!is_null($existingTrigger)) {
+            echo sprintf("%s already triggered. Click <a href='%s'>here</a> for more details", $subscriber->email, action('AutoTrigger@show', [ 'id' => $existingTrigger->id ]));
+            return;
+        }
+
+        // Manually trigger
+        $automation->logger()->info(sprintf('Manually trigger contact %s', $subscriber->email));
+        $trigger = $automation->initTrigger($subscriber);
+
+        return redirect()->action('AutoTrigger@show', [ 'id' => $trigger->id ]);
     }
 
     /**

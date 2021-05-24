@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Acelle\Events\MailListSubscription;
 use Acelle\Model\Setting;
 use Acelle\Model\MailList;
+use Acelle\Model\IpLocation;
 
 /**
  * /api/v1/lists/{list_id}/subscribers - API controller for managing list's subscribers.
@@ -197,9 +198,19 @@ class SubscriberController extends Controller
             return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 401);
         }
 
-        // Unsubscribe
-        $subscriber->status = 'subscribed';
-        $subscriber->save();
+        // User Tracking Information
+        $trackingInfo = [
+            'message_id' => null,
+            'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+        ];
+        
+        // GeoIP information
+        $location = IpLocation::add($_SERVER['REMOTE_ADDR']);
+        if (!is_null($location)) {
+            $trackingInfo['ip_address'] = $location->ip_address;
+        }
+
+        $subscriber->subscribe($trackingInfo);
 
         // Log
         $subscriber->log('subscribed', $user->customer);
@@ -239,9 +250,20 @@ class SubscriberController extends Controller
             return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 401);
         }
 
-        // Unsubscribe
-        $subscriber->status = 'unsubscribed';
-        $subscriber->save();
+        // User Tracking Information
+        $trackingInfo = [
+            'message_id' => null,
+            'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+        ];
+        
+        // GeoIP information
+        $location = IpLocation::add($_SERVER['REMOTE_ADDR']);
+        if (!is_null($location)) {
+            $trackingInfo['ip_address'] = $location->ip_address;
+        }
+
+        // Actually Unsubscribe with tracking information
+        $subscriber->unsubscribe($trackingInfo);
 
         // Log
         $subscriber->log('unsubscribed', $user->customer);

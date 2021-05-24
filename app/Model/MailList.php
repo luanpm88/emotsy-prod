@@ -30,7 +30,7 @@ use Acelle\Library\RouletteWheel;
 use Acelle\Library\StringHelper;
 use Acelle\Library\ExtendedSwiftMessage;
 use Acelle\Events\MailListSubscription;
-use Acelle\Events\SubscriberAdded;
+use Acelle\Events\MailListUpdated;
 use Acelle\Model\Setting;
 use Acelle\Model\SubscriberFields;
 use Acelle\Model\Fields;
@@ -38,6 +38,7 @@ use Acelle\Exceptions\VerificationProcessCancelledException;
 use DB;
 use App;
 use Acelle\Library\Traits\QueryHelper;
+use Acelle\Events\MailListImported;
 
 class MailList extends Model
 {
@@ -386,8 +387,8 @@ class MailList extends Model
      */
     public function unsubscribeCount()
     {
-        // return distinctCount($this->subscribers()->where('status', '=', 'unsubscribed'), 'subscribers.email');
-        return $this->subscribers()->where('status', '=', 'unsubscribed')->count();
+        // return distinctCount($this->subscribers()->unsubscribed(), 'subscribers.email');
+        return $this->subscribers()->unsubscribed()->count();
     }
 
     /**
@@ -659,7 +660,7 @@ class MailList extends Model
 
         $copy->save();
 
-        // @todo: trigger SubscriberAdded event here?
+        // @todo: trigger MailListSubscription event here?
 
         // Contact
         if (is_object($this->contact)) {
@@ -1371,6 +1372,9 @@ class MailList extends Model
 
                 // Actually write to the database
                 DB::commit();
+
+                // Trigger
+                MailListImported::dispatch($this);
             });
         } catch (\Exception $e) {
             // finish the transaction
@@ -2094,7 +2098,7 @@ class MailList extends Model
 
         // Do not allow duplicate email if added by admin (throw an exception)
         // If imported / api / web / embedded-form THEN just overwrite
-        if ( $source == Subscriber::SUBSCRIPTION_TYPE_ADDED || $source == self::SOURCE_API ) {
+        if ($source == Subscriber::SUBSCRIPTION_TYPE_ADDED || $source == self::SOURCE_API) {
             // @important
             // DO NOT USE "UNIQUE" validator of Laravel
             // Otherwise, it will fails after the subscriber with given email address is added
@@ -2142,29 +2146,18 @@ class MailList extends Model
         $subscriber->updateFields($request->all());
 
         // update MailList cache
-        event(new \Acelle\Events\MailListUpdated($this));
+        MailListUpdated::dispatch($this);
+
         if ($subscriber->isSubscribed()) {
-            SubscriberAdded::dispatch($subscriber);
+            // Only trigger MailListSubscription event if subscribe is immediately subscribed
+            MailListSubscription::dispatch($subscriber);
         }
         
         MailLog::info("Subscriber {$subscriber->email} is added to list {$this->name} via {$source}");
 
-        // trigger the event
-        if (Setting::isYes('send_notification_email_for_list_subscription')) {
-            MailLog::info("Sending notification email for subscriber {$subscriber->email}, list {$this->name}");
-            event(new MailListSubscription($this->customer->user, $subscriber));
-        } else {
-            MailLog::info("No notification email for subscriber {$subscriber->email}, list {$this->name}");
-        }
-
         if ($this->subscribe_confirmation && !$subscriber->isSubscribed()) {
             MailLog::info("Send subscription confirmation email to {$subscriber->email}, list {$this->name}");
             $this->sendSubscriptionConfirmationEmail($subscriber);
-        }
-
-        if ($this->send_welcome_email && $subscriber->isSubscribed()) {
-            MailLog::info("Send subscription 'All done!' email to {$subscriber->email}, list {$this->name}");
-            $this->sendSubscriptionWelcomeEmail($subscriber);
         }
 
         return [$validator, $subscriber];

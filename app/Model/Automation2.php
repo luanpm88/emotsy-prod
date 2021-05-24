@@ -50,6 +50,8 @@ class Automation2 extends Model
     const STATUS_INACTIVE = 'inactive';
 
     const TRIGGER_TYPE_WELCOME_NEW_SUBSCRIBER = 'welcome-new-subscriber';
+    const TRIGGER_TYPE_SAY_GOODBYE_TO_SUBSCRIBER = 'say-goodbye-subscriber';
+    const TRIGGER_TYPE_SAY_HAPPY_BIRTHDAY = 'say-happy-birthday';
 
     /**
      * Items per page.
@@ -446,14 +448,14 @@ class Automation2 extends Model
         $this->logger()->info(sprintf('NEW > Start checking for new trigger'));
 
         switch ($this->getTriggerAction()->getOption('key')) {
-            case 'welcome-new-subscriber':
-                $this->checkForListSubscription();
+            case self::TRIGGER_TYPE_WELCOME_NEW_SUBSCRIBER:
+                /* triggered immediately by MailListSubscription event */
                 break;
             case 'specific-date':
                 $this->checkForSpecificDatetime();
                 break;
             case 'say-goodbye-subscriber':
-                $this->checkForListUnsubscription();
+                /* triggered immediately by MailListSubscription event */
                 break;
             case 'say-happy-birthday':
                 $this->checkForDateOfBirth();
@@ -659,18 +661,18 @@ class Automation2 extends Model
     /**
      * Check for list-subscription events.
      */
-    public function checkForListSubscription()
+    public function triggerImportedContacts()
     {
-        $this->logger()->info(sprintf('NEW > Check for List Subscription'));
-        $subscribers = $this->getNewSubscribersToFollow();
+        $this->logger()->info(sprintf('Start triggering imported contacts'));
+        $subscribers = $this->getNotTriggeredSubscribers()->where('subscribers.subscription_type', '=', Subscriber::SUBSCRIPTION_TYPE_IMPORTED)->get();
         $total = count($subscribers);
-        $this->logger()->info(sprintf('NEW > There are %s new subscriber(s) found', $total));
+        $this->logger()->info(sprintf('Triggering %s imported contacts', $total));
 
         $i = 0;
         foreach ($subscribers as $subscriber) {
             $i += 1;
             $this->initTrigger($subscriber);
-            $this->logger()->info(sprintf('NEW > (%s/%s) > Adding new trigger for %s', $i, $total, $subscriber->email));
+            $this->logger()->info(sprintf('(%s/%s) triggered imported contact: %s', $i, $total, $subscriber->email));
         }
     }
 
@@ -703,7 +705,7 @@ class Automation2 extends Model
 
         $this->logger()->info(sprintf('NEW > It is %s hours due! triggering!', $now->diffInHours($eventDate)));
 
-        $notTriggered = $this->getNotTriggeredSubscribers();
+        $notTriggered = $this->getNotTriggeredSubscribers()->get();
         $total = $notTriggered->count();
         $i = 0;
 
@@ -712,95 +714,6 @@ class Automation2 extends Model
             $this->initTrigger($subscriber);
             $this->logger()->info(sprintf('NEW > (%s/%s) > Adding new trigger for %s', $i, $total, $subscriber->email));
         }
-    }
-
-    /**
-     * Check for follow-up-clicked events.
-     */
-    public function checkForListUnsubscription()
-    {
-        $this->logger()->info(sprintf('NEW > Check for List Unsubscription'));
-        $subscribers = $this->getUnsubscribersToFollow();
-        $total = count($subscribers);
-        $this->logger()->info(sprintf('NEW > %s new unsubscribers found', $total));
-        $i = 0;
-        foreach ($subscribers as $subscriber) {
-            $i += 1;
-            $this->initTrigger($subscriber);
-            $this->logger()->info(sprintf('NEW > (%s/%s) > Adding new trigger for %s', $i, $total, $subscriber->email));
-        }
-    }
-
-    /**
-     * Get previous event's opened messages to follow up.
-     *
-     * @return collection
-     */
-    public function getNewSubscribersToFollow()
-    {
-        // Boot performance with temporary table + index
-        try {
-            \DB::statement('DROP TEMPORARY TABLE `_new_subscribers_to_follow`');
-        } catch (\Exception $ex) {
-            // just ignore, in case 2 queries in the same MySQL connection session
-        }
-
-        \DB::statement(
-            sprintf('
-            CREATE TEMPORARY TABLE `_new_subscribers_to_follow` AS
-            SELECT COALESCE(subscriber_id, 0) AS subscriber_id
-            FROM %s WHERE automation2_id = %s;
-
-            CREATE INDEX _new_subscribers_to_follow_index ON _new_subscribers_to_follow(subscriber_id);', table('auto_triggers'), $this->id)
-        );
-
-        $query = $this->subscribers()->whereRaw(table('subscribers.id').' NOT IN (SELECT subscriber_id FROM _new_subscribers_to_follow)')
-                ->where('subscribers.created_at', '>=', $this->created_at)
-                ->where('mail_list_id', $this->mailList->id);
-        if (!Setting::isYes('automation.trigger_imported_contacts')) {
-            $query = $query->whereRaw(sprintf('COALESCE('.table('subscribers.subscription_type').", '') <> %s", db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED)));
-        }
-
-        return $query->get();
-    }
-
-    /**
-     * Get previous event's opened messages to follow up.
-     *
-     * @return collection
-     */
-    public function getNewSubscribersToFollowDebug()
-    {
-        $tmpSql = sprintf('
-            CREATE TEMPORARY TABLE `_new_subscribers_to_follow` AS
-            SELECT COALESCE(subscriber_id, 0) AS subscriber_id
-            FROM %s WHERE automation2_id = %s;
-
-            CREATE INDEX _new_subscribers_to_follow_index ON _new_subscribers_to_follow(subscriber_id);', table('auto_triggers'), $this->id);
-     
-        $newSubscribersSql = $this->subscribers()->whereRaw(table('subscribers.id').' NOT IN (SELECT subscriber_id FROM _new_subscribers_to_follow)')
-                ->where('subscribers.created_at', '>=', $this->created_at)
-                ->where('mail_list_id', $this->mailList->id)
-                ->whereRaw(sprintf('COALESCE('.table('subscribers.subscription_type').", '') <> %s", db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED)))
-                ->toSql();
-
-        return prettifystr($tmpSql."; ".$newSubscribersSql);
-    }
-
-    /**
-     * Get previous event's unsubscribed messages to follow up.
-     *
-     * @return collection
-     */
-    public function getUnsubscribersToFollow()
-    {
-        return $this->subscribers()
-                    ->select('subscribers.*')
-                    ->join('unsubscribe_logs', 'subscribers.id', '=', 'unsubscribe_logs.subscriber_id')
-                    ->leftJoin('auto_triggers', 'subscribers.id', '=', 'auto_triggers.subscriber_id')
-                    ->whereNull('auto_triggers.id')
-                    ->where('unsubscribe_logs.created_at', '>=', $this->created_at)
-                    ->get();
     }
 
     public function logger()
@@ -1012,7 +925,7 @@ class Automation2 extends Model
         if ($this->segment()->exists()) {
             $query = $this->segment->subscribers();
         } else {
-            $query = $this->mailList->activeSubscribers()->select('subscribers.*');
+            $query = $this->mailList->subscribers()->select('subscribers.*');
         }
 
         if (!is_null($actionId)) {
@@ -1216,7 +1129,7 @@ class Automation2 extends Model
      */
     public function execute()
     {
-        $subscribers = $this->getNotTriggeredSubscribers();
+        $subscribers = $this->getNotTriggeredSubscribers()->get();
         foreach ($subscribers as $subscriber) {
             $this->initTrigger($subscriber);
         }
@@ -1228,7 +1141,7 @@ class Automation2 extends Model
                                       ->leftJoin('auto_triggers', function ($join) {
                                           $join->on('subscribers.id', '=', 'auto_triggers.subscriber_id')->where('auto_triggers.automation2_id', '=', $this->id);
                                       })
-                                      ->whereNull('auto_triggers.id')->select('subscribers.*')->get();
+                                      ->whereNull('auto_triggers.id')->select('subscribers.*');
     }
 
     public function allowApiCall()
@@ -1374,5 +1287,19 @@ class Automation2 extends Model
     public function isActive()
     {
         return $this->status == self::STATUS_ACTIVE;
+    }
+
+    public function getSubscribersWithTriggerInfo()
+    {
+        return $this->subscribers()
+             ->leftJoin('auto_triggers', 'subscribers.id', 'auto_triggers.subscriber_id')
+             ->addSelect('auto_triggers.id as auto_trigger_id')
+             ->addSelect('auto_triggers.created_at as triggered_at');
+    }
+
+    public function getAutoTriggerFor($subscriber)
+    {
+        $trigger = $this->autoTriggers()->where('subscriber_id', $subscriber->id)->latest()->first();
+        return $trigger;
     }
 }

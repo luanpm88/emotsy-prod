@@ -34,10 +34,10 @@ class SubscriberPolicy
         return $item->mailList->customer_id == $customer->id;
     }
 
-    public function subscribe(User $user, Subscriber $item)
+    public function subscribe(User $user, Subscriber $subscriber)
     {
         $customer = $user->customer;
-        return $item->mailList->customer_id == $customer->id && $item->status == 'unsubscribed';
+        return $subscriber->mailList->customer_id == $customer->id && $subscriber->isUnsubscribed();
     }
 
     public function unsubscribe(User $user, Subscriber $item)

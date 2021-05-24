@@ -246,16 +246,6 @@ class PageController extends Controller
 
         if ($subscriber->getSecurityToken('subscribe-confirm') == $request->code && $subscriber->status == 'unconfirmed') {
             $subscriber->confirm();
-
-            // Send welcome email
-            if ($list->send_welcome_email) {
-                // SEND subscription confirmation email
-                try {
-                    $list->sendSubscriptionWelcomeEmail($subscriber);
-                } catch (\Exception $ex) {
-                    return view('somethingWentWrong', ['message' => $ex->getMessage()]);
-                }
-            }
         }
 
         // redirect if use outside url
@@ -296,20 +286,6 @@ class PageController extends Controller
         if ($request->isMethod('post')) {
             if ($subscriber->getSecurityToken('unsubscribe') == $request->code && $subscriber->status == 'subscribed') {
                 $subscriber->unsubscribe();
-
-                // Send goodbye email
-                if ($list->unsubscribe_notification) {
-                    // SEND subscription confirmation email
-                    try {
-                        $list->sendUnsubscriptionNotificationEmail($subscriber);
-                    } catch (\Exception $ex) {
-                        return view('somethingWentWrong', ['message' => $ex->getMessage()]);
-                    }
-                }
-
-                if (Setting::isYes('send_notification_email_for_list_subscription')) {
-                    $list->sendUnsubscriptionNotificationEmailToListOwner($subscriber);
-                }
             }
 
             return redirect()->action('PageController@unsubscribeSuccessPage', ['list_uid' => $list->uid, 'uid' => $subscriber->uid]);

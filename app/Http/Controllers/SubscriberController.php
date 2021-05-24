@@ -314,8 +314,11 @@ class SubscriberController extends Controller
         foreach ($subscribers->get() as $subscriber) {
             // authorize
             if (\Gate::allows('subscribe', $subscriber)) {
-                $subscriber->status = 'subscribed';
-                $subscriber->save();
+                $subscriber->subscribe([
+                    'message_id' => null,
+                    'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+                ]);
+
                 // update MailList cache
                 event(new \Acelle\Events\MailListUpdated($subscriber->mailList));
 
@@ -349,8 +352,10 @@ class SubscriberController extends Controller
         foreach ($subscribers->get() as $subscriber) {
             // authorize
             if (\Gate::allows('unsubscribe', $subscriber)) {
-                $subscriber->status = 'unsubscribed';
-                $subscriber->save();
+                $subscriber->unsubscribe([
+                    'message_id' => null,
+                    'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+                ]);
 
                 // Log
                 $subscriber->log('unsubscribed', $customer);

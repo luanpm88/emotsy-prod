@@ -1,39 +1,18 @@
 <?php
 
-/**
- * SystemJob class.
- *
- * The abstract class for Laravel Jobs
- * All jobs created shall extend this
- *
- * LICENSE: This product includes software developed at
- * the Acelle Co., Ltd. (http://acellemail.com/).
- *
- * @category   MVC Model
- *
- * @author     N. Pham <n.pham@acellemail.com>
- * @author     L. Pham <l.pham@acellemail.com>
- * @copyright  Acelle Co., Ltd
- * @license    Acelle Co., Ltd
- *
- * @version    1.0
- *
- * @link       http://acellemail.com
- */
-
 namespace Acelle\Jobs;
 
-use Acelle\Jobs\Job;
+use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
 
 use Acelle\Model\SystemJob as SystemJobModel;
 
-class SystemJob extends Job implements ShouldQueue
+class SystemJob implements ShouldQueue
 {
-    use InteractsWithQueue, SerializesModels, Dispatchable;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $systemJob;
 

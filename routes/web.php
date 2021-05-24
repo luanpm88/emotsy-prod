@@ -156,7 +156,7 @@ Route::group(['middleware' => ['not_installed']], function () {
 
     Route::get('campaigns/{message_id}/open', 'CampaignController@open')->name('openTrackingUrl');
     Route::get('campaigns/{message_id}/click/{url}', 'CampaignController@click')->name('clickTrackingUrl');
-    Route::get('campaigns/{message_id}/unsubscribe', 'CampaignController@unsubscribe')->name('unsubscribeUrl');
+    Route::get('c/{subscriber}/unsubscribe/{message_id?}', 'CampaignController@unsubscribe')->name('unsubscribeUrl');
     Route::get('campaigns/{message_id}/web-view', 'CampaignController@webView')->name('webViewerUrl');
     Route::post('lists/{uid}/embedded-form-subscribe', 'MailListController@embeddedFormSubscribe');
     Route::post('lists/{uid}/embedded-form-subscribe-captcha', 'MailListController@embeddedFormSubscribe');
@@ -633,6 +633,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('automation2/listing', 'Automation2Controller@listing');
     Route::get('automation2', 'Automation2Controller@index');
     Route::get('automation2/{uid}/debug', 'Automation2Controller@debug');
+    Route::get('automation2/{automation}/{subscriber}/trigger', 'Automation2Controller@triggerNow');
     Route::get('trigger/{id}', 'AutoTrigger@show');
 
     Route::get('email/preview/{uid}/{subscriber_uid}', 'EmailController@preview');

@@ -69,8 +69,7 @@ class IpLocation extends Model
                 'message' => $e->getMessage(),
             ]);
 
-            $ip = '0.0.0.0';
-            $geoip->resolveIp($ip); // to safely generate location info
+            return;
         }
 
         $location->ip_address = $ip;

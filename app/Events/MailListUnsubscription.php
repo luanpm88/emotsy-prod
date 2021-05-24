@@ -12,7 +12,7 @@ use Illuminate\Queue\SerializesModels;
 
 use Acelle\Model\Subscriber;
 
-class SubscriberAdded
+class MailListUnsubscription
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 

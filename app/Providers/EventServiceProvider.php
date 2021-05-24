@@ -28,11 +28,31 @@ class EventServiceProvider extends ServiceProvider
             'Acelle\Listeners\AdminLoggedInListener',
         ],
         'Acelle\Events\MailListSubscription' => [
-            'Acelle\Listeners\MailListSubscriptionListener',
+            /* Use subscriber instead */
+            // 'Acelle\Listeners\SendListNotificationToOwner',
+            // 'Acelle\Listeners\SendListNotificationToSubscriber',
+            // 'Acelle\Listeners\TriggerAutomation',
         ],
-        'Acelle\Events\SubscriberAdded' => [
-            'Acelle\Listeners\TriggerAutomation',
+        'Acelle\Events\MailListUnsubscription' => [
+            /* Use subscriber instead */
+            // 'Acelle\Listeners\SendListNotificationToOwner',
+            // 'Acelle\Listeners\SendListNotificationToSubscriber',
+            // 'Acelle\Listeners\TriggerAutomation',
         ],
+        'Acelle\Events\MailListImported' => [
+            'Acelle\Listeners\TriggerAutomationForImportedContacts',
+        ],
+    ];
+
+    /**
+     * The subscriber classes to register.
+     *
+     * @var array
+     */
+    protected $subscribe = [
+        'Acelle\Listeners\TriggerAutomation',
+        'Acelle\Listeners\SendListNotificationToOwner',
+        'Acelle\Listeners\SendListNotificationToSubscriber',
     ];
 
     /**
@@ -41,7 +61,5 @@ class EventServiceProvider extends ServiceProvider
     public function boot()
     {
         parent::boot();
-
-        //
     }
 }

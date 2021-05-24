@@ -35,6 +35,10 @@ class StringHelper
      */
     public static function base64UrlEncode($val)
     {
+        if (is_null($val)) {
+            return null;
+        }
+
         return strtr(base64_encode($val), '+/=', '-_,');
     }
 
@@ -48,6 +52,10 @@ class StringHelper
      */
     public static function base64UrlDecode($val)
     {
+        if (is_null($val)) {
+            return null;
+        }
+
         return base64_decode(strtr($val, '-_,', '+/='));
     }
 
