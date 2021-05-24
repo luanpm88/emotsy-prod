@@ -448,12 +448,14 @@ class Automation2 extends Model
 
         switch ($this->getTriggerAction()->getOption('key')) {
             case self::TRIGGER_TYPE_WELCOME_NEW_SUBSCRIBER:
+                /* triggered immediately by MailListSubscription event */
                 // $this->checkForListSubscription();
                 break;
             case 'specific-date':
                 $this->checkForSpecificDatetime();
                 break;
             case 'say-goodbye-subscriber':
+                /* triggered immediately by MailListSubscription event */
                 // $this->checkForListUnsubscription();
                 break;
             case 'say-happy-birthday':

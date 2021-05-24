@@ -1985,7 +1985,7 @@ class Automation2Controller extends Controller
 
                 $subscribers = $subscribers->simplePaginate(50);
 
-                return view('automation2.debug_list_subscription', [
+                return view('automation2.debug_list_unsubscription', [
                     'automation' => $automation,
                     'subscribers' => $subscribers,
                 ]);
