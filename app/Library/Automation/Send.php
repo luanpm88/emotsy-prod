@@ -59,6 +59,12 @@ class Send extends Action
         return $email;
     }
 
+    function fixInvalidEmailUid()
+    {
+        $this->setOption('email_uid', null);
+        $this->setOption('init', false);
+    }
+
     public function getActionDescription()
     {
         $nameOrEmail = $this->autoTrigger->subscriber->getFullNameOrEmail();

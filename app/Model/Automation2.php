@@ -38,6 +38,7 @@ use Monolog\Formatter\LineFormatter;
 use Acelle\Library\Lockable;
 use Acelle\Model\SystemJob as SystemJobModel;
 use Acelle\Model\Setting;
+use Acelle\Model\Email;
 use DateTime;
 use DateTimeZone;
 use Exception;
@@ -256,8 +257,28 @@ class Automation2 extends Model
      */
     public function saveData($data)
     {
-        $this->data = $data;
+        $this->data = $this->validateData($data);
         $this->save();
+    }
+
+    public function validateData($data)
+    {
+        // Check Element Action => if email UID is no longer valid => remove Action
+        $entries = json_decode($data, true);
+        $newData = [];
+
+        foreach ($entries as $entry) {
+            $action = $this->getAction($entry);
+            if ($action->getType() == 'ElementAction') {
+                if ($action->getOption('init') == "true") { // @IMPORTANT VERY IMPORTANT! Use "true", it is because even "false" == true!!!!
+                    if (!$this->emails()->where('uid', $action->getOption('email_uid'))->exists()) {
+                        $action->fixInvalidEmailUid();
+                    }
+                }
+            }
+            $newData[] = $action->toJson();
+        }
+        return json_encode($newData);
     }
 
     /**
