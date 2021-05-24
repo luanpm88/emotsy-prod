@@ -2186,7 +2186,7 @@ class Automation2Controller extends Controller
             'automation' => $automation,
         ]);
     }
-    
+
     /**
      * Change cart automation2 list for auto adding byuer.
      *
@@ -2438,5 +2438,12 @@ class Automation2Controller extends Controller
             'automation' => $automation,
             'element' => $automation->getElement($request->id),
         ]);
+    }
+
+    public function run(Request $request)
+    {
+        $automation = Automation2::findByUid($request->automation);
+        $automation->check();
+        echo "Done";
     }
 }

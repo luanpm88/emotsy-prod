@@ -39,6 +39,7 @@ use Acelle\Library\Lockable;
 use Acelle\Model\SystemJob as SystemJobModel;
 use Acelle\Model\Setting;
 use Acelle\Model\MailList;
+use Acelle\Model\Email;
 use DateTime;
 use DateTimeZone;
 use Exception;
@@ -239,6 +240,11 @@ class Automation2 extends Model
      */
     public function enable()
     {
+        // @IMPORTANT: need more validation like this
+        if (empty($this->getTriggerType())) {
+            throw new \Exception("Automation trigger not set up");
+        }
+
         $this->status = self::STATUS_ACTIVE;
         $this->save();
     }
@@ -257,8 +263,28 @@ class Automation2 extends Model
      */
     public function saveData($data)
     {
-        $this->data = $data;
+        $this->data = $this->validateData($data);
         $this->save();
+    }
+
+    public function validateData($data)
+    {
+        // Check Element Action => if email UID is no longer valid => remove Action
+        $entries = json_decode($data, true);
+        $newData = [];
+
+        foreach ($entries as $entry) {
+            $action = $this->getAction($entry);
+            if ($action->getType() == 'ElementAction') {
+                if ($action->getOption('init') == "true") { // @IMPORTANT VERY IMPORTANT! Use "true", it is because even "false" == true!!!!
+                    if (!$this->emails()->where('uid', $action->getOption('email_uid'))->exists()) {
+                        $action->fixInvalidEmailUid();
+                    }
+                }
+            }
+            $newData[] = $action->toJson();
+        }
+        return json_encode($newData);
     }
 
     /**
@@ -421,23 +447,29 @@ class Automation2 extends Model
                 $timeout = 5; // seconds
 
                 $lock->getExclusiveLock(function ($f) use ($customer, $automation) {
-                    try {
-                        if ($customer->isSubscriptionActive()) {
-                            $automation->logger()->info(sprintf('Checking automation "%s"', $automation->name));
-                            $automation->checkForNewTriggers();
-                            $automation->checkForExistingTriggersUpdate();
-                            $automation->updateCache();
-                            $automation->setLastError(null);
-                        } else {
-                            $automation->logger()->warning(sprintf('Automation "%s" skipped, user "%s" not on active subscription', $automation->name, $customer->displayName()));
-                        }
-                    } catch (\Exception $ex) {
-                        $automation->setLastError($ex->getMessage());
-                        $automation->logger()->warning(sprintf('Error while executing automation "%s". %s', $automation->name, $ex->getMessage()));
+                    if ($customer->isSubscriptionActive()) {
+                        $automation->logger()->info(sprintf('Checking automation "%s"', $automation->name));
+                        $automation->check();
+                    } else {
+                        $automation->logger()->warning(sprintf('Automation "%s" skipped, user "%s" not on active subscription', $automation->name, $customer->displayName()));
                     }
                 }, $timeout);
             }
         }
+    }
+
+    public function check()
+    {
+        try {
+            $this->checkForNewTriggers();
+            $this->checkForExistingTriggersUpdate();
+            $this->updateCache();
+            $this->setLastError(null);
+        } catch (\Exception $ex) {
+            $this->setLastError($ex->getMessage());
+            $this->logger()->warning(sprintf('Error while executing automation "%s". %s', $this->name, $ex->getMessage()));
+        }
+        
     }
 
     /**

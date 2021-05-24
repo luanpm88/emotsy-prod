@@ -635,6 +635,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('automation2/{uid}/debug', 'Automation2Controller@debug');
     Route::get('automation2/{automation}/{subscriber}/trigger', 'Automation2Controller@triggerNow');
     Route::get('trigger/{id}', 'AutoTrigger@show');
+    Route::get('automation2/{automation}/run', 'Automation2Controller@run');
 
     Route::get('email/preview/{uid}/{subscriber_uid}', 'EmailController@preview');
 

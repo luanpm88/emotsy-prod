@@ -30,7 +30,7 @@ class Send extends Action
 
             return true; // in case of adding new element after this, but duplicate log
         }
-
+        
         $email = $this->getEmail();
 
         if (config('app.demo') == true) {
@@ -52,7 +52,17 @@ class Send extends Action
 
     public function getEmail()
     {
-        return Email::findByUid($this->options['email_uid']);
+        $email = Email::findByUid($this->options['email_uid']);
+        if (is_null($email)) {
+            throw new \Exception(sprintf("Cannot find email with UID %s for Action ID %s, title: '%s', AutoTrigger: #%s", $this->options['email_uid'], $this->getId(), $this->getTitle(), $this->autoTrigger->id ));
+        }
+        return $email;
+    }
+
+    function fixInvalidEmailUid()
+    {
+        $this->setOption('email_uid', null);
+        $this->setOption('init', false);
     }
 
     public function getActionDescription()
