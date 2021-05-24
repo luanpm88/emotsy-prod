@@ -2165,11 +2165,6 @@ class MailList extends Model
             $this->sendSubscriptionConfirmationEmail($subscriber);
         }
 
-        if ($this->send_welcome_email && $subscriber->isSubscribed()) {
-            MailLog::info("Send subscription 'All done!' email to {$subscriber->email}, list {$this->name}");
-            $this->sendSubscriptionWelcomeEmail($subscriber);
-        }
-
         return [$validator, $subscriber];
     }
 

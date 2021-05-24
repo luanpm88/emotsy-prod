@@ -27,13 +27,17 @@ class EventServiceProvider extends ServiceProvider
         'Acelle\Events\AdminLoggedIn' => [
             'Acelle\Listeners\AdminLoggedInListener',
         ],
-        /* User subscriber instead 
         'Acelle\Events\MailListSubscription' => [
-            'Acelle\Listeners\SendNotificationToListOwner',
-            'Acelle\Listeners\TriggerAutomation',
+            /* Use subscriber instead */
+            // 'Acelle\Listeners\SendListNotificationToOwner',
+            // 'Acelle\Listeners\SendListNotificationToSubscriber',
+            // 'Acelle\Listeners\TriggerAutomation',
         ],
         'Acelle\Events\MailListUnsubscription' => [
-            'Acelle\Listeners\TriggerAutomation',
+            /* Use subscriber instead */
+            // 'Acelle\Listeners\SendListNotificationToOwner',
+            // 'Acelle\Listeners\SendListNotificationToSubscriber',
+            // 'Acelle\Listeners\TriggerAutomation', 
         ],
         */
     ];
@@ -45,6 +49,8 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $subscribe = [
         'Acelle\Listeners\TriggerAutomation',
+        'Acelle\Listeners\SendListNotificationToOwner',
+        'Acelle\Listeners\SendListNotificationToSubscriber',
     ];
 
     /**

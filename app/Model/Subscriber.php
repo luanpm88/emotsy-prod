@@ -189,16 +189,6 @@ class Subscriber extends Model
             // Create log
             $this->unsubscribeLogs()->create($trackingInfo);
         });
-
-        // Send goodbye email
-        if ($this->mailList->unsubscribe_notification) {
-            // SEND subscription confirmation email
-            $this->mailList->sendUnsubscriptionNotificationEmail($this);
-        }
-
-        if (Setting::isYes('send_notification_email_for_list_subscription')) {
-            $this->mailList->sendUnsubscriptionNotificationEmailToListOwner($this);
-        }
     }
 
     /**
