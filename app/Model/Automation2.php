@@ -239,6 +239,11 @@ class Automation2 extends Model
      */
     public function enable()
     {
+        // @IMPORTANT: need more validation like this
+        if (empty($this->getTriggerType())) {
+            throw new \Exception("Automation trigger not set up");
+        }
+
         $this->status = self::STATUS_ACTIVE;
         $this->save();
     }
