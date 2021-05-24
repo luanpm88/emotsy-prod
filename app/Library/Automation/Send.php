@@ -56,6 +56,7 @@ class Send extends Action
         if (is_null($email)) {
             throw new \Exception(sprintf("Cannot find email with UID %s for Action ID %s, title: '%s', AutoTrigger: #%s", $this->options['email_uid'], $this->getId(), $this->getTitle(), $this->autoTrigger->id ));
         }
+        return $email;
     }
 
     public function getActionDescription()
