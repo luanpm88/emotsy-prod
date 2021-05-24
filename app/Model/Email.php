@@ -754,7 +754,6 @@ class Email extends Model
             // Special / shortcut fields
             $tags['NAME'] = $subscriber->getFullName();
             $tags['FULL_NAME'] = $subscriber->getFullName();
-
         } else {
             $tags['SUBSCRIBER_EMAIL'] = $subscriber->email;
         }

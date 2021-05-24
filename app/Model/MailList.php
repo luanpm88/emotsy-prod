@@ -2103,7 +2103,7 @@ class MailList extends Model
 
         // Do not allow duplicate email if added by admin (throw an exception)
         // If imported / api / web / embedded-form THEN just overwrite
-        if ( $source == Subscriber::SUBSCRIPTION_TYPE_ADDED || $source == self::SOURCE_API ) {
+        if ($source == Subscriber::SUBSCRIPTION_TYPE_ADDED || $source == self::SOURCE_API) {
             // @important
             // DO NOT USE "UNIQUE" validator of Laravel
             // Otherwise, it will fails after the subscriber with given email address is added

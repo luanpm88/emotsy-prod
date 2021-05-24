@@ -178,7 +178,7 @@ class Subscriber extends Model
     public function unsubscribe($trackingInfo)
     {
         // Transaction safe
-        DB::transaction(function() use($trackingInfo) {
+        DB::transaction(function () use ($trackingInfo) {
             // Update status
             $this->status = self::STATUS_UNSUBSCRIBED;
             $this->save();
