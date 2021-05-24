@@ -2068,4 +2068,11 @@ class Automation2Controller extends Controller
             'automation' => $automation,
         ]);
     }
+
+    public function run(Request $request)
+    {
+        $automation = Automation2::findByUid($request->automation);
+        $automation->check();
+        echo "Done";
+    }
 }

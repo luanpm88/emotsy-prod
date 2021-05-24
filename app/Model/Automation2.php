@@ -420,23 +420,29 @@ class Automation2 extends Model
                 $timeout = 5; // seconds
 
                 $lock->getExclusiveLock(function ($f) use ($customer, $automation) {
-                    try {
-                        if ($customer->isSubscriptionActive()) {
-                            $automation->logger()->info(sprintf('Checking automation "%s"', $automation->name));
-                            $automation->checkForNewTriggers();
-                            $automation->checkForExistingTriggersUpdate();
-                            $automation->updateCache();
-                            $automation->setLastError(null);
-                        } else {
-                            $automation->logger()->warning(sprintf('Automation "%s" skipped, user "%s" not on active subscription', $automation->name, $customer->displayName()));
-                        }
-                    } catch (\Exception $ex) {
-                        $automation->setLastError($ex->getMessage());
-                        $automation->logger()->warning(sprintf('Error while executing automation "%s". %s', $automation->name, $ex->getMessage()));
+                    if ($customer->isSubscriptionActive()) {
+                        $automation->logger()->info(sprintf('Checking automation "%s"', $automation->name));
+                        $automation->check();
+                    } else {
+                        $automation->logger()->warning(sprintf('Automation "%s" skipped, user "%s" not on active subscription', $automation->name, $customer->displayName()));
                     }
                 }, $timeout);
             }
         }
+    }
+
+    public function check()
+    {
+        try {
+            $this->checkForNewTriggers();
+            $this->checkForExistingTriggersUpdate();
+            $this->updateCache();
+            $this->setLastError(null);
+        } catch (\Exception $ex) {
+            $this->setLastError($ex->getMessage());
+            $this->logger()->warning(sprintf('Error while executing automation "%s". %s', $this->name, $ex->getMessage()));
+        }
+        
     }
 
     /**
