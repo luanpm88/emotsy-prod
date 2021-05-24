@@ -64,7 +64,7 @@ class SendListNotificationToOwner
      * @param  AdminLoggedIn  $event
      * @return void
      */
-    public function handle(MailListSubscription $event)
+    public function subscribe($events)
     {
         $events->listen(
             'Acelle\Events\MailListSubscription',
