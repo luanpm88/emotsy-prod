@@ -39,6 +39,9 @@ class EventServiceProvider extends ServiceProvider
             // 'Acelle\Listeners\SendListNotificationToSubscriber',
             // 'Acelle\Listeners\TriggerAutomation',
         ],
+        'Acelle\Events\MailListImported' => [
+            'Acelle\Listeners\TriggerAutomationForImportedContacts',
+        ],
     ];
 
     /**

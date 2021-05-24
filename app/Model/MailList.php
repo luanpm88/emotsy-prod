@@ -38,6 +38,7 @@ use Acelle\Exceptions\VerificationProcessCancelledException;
 use DB;
 use App;
 use Acelle\Library\Traits\QueryHelper;
+use Acelle\Events\MailListImported;
 
 class MailList extends Model
 {
@@ -1379,6 +1380,9 @@ class MailList extends Model
 
                 // Actually write to the database
                 DB::commit();
+
+                // Trigger
+                MailListImported::dispatch($this);
             });
         } catch (\Exception $e) {
             // finish the transaction
