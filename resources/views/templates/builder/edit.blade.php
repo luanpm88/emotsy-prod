@@ -30,8 +30,8 @@
         
         $( document ).ready(function() {
             editor = new Editor({
-                buildMode: false,
-                legacyMode: {{ $buildMode ? 'true' : 'false' }},
+                buildMode: {{ $buildMode }},
+                legacyMode: {{ !$buildMode ? 'true' : 'false' }},
                 showHelp: false,
                 showInlineToolbar: false,
                 lang: {!! json_encode(language()->getBuilderLang()) !!},
