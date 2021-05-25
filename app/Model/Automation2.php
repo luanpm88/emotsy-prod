@@ -820,7 +820,7 @@ class Automation2 extends Model
         } elseif ($action->getType() == 'ElementOperation') {
             $count = 0;
             foreach ($this->autoTriggers as $trigger) {
-                $count += ($trigger->isLatest($action->getId())) ? 1 : 0;
+                $count += (is_null($trigger->getActionById($action->getId())->getLastExecuted())) ? 0 : 1;
             }
 
             $insight = [
