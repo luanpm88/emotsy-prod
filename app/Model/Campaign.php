@@ -400,7 +400,7 @@ class Campaign extends AbsCampaign
      * Get Pending Subscribers
      * Select only subscribers that are ready for sending. Those whose status is `blacklisted`, `pending` or `unconfirmed` are not included.
      */
-    public function getPendingSubscribers($partition = null, $callback)
+    public function getPendingSubscribers($partition, $callback)
     {
         /* *
          *
