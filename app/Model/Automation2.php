@@ -468,7 +468,6 @@ class Automation2 extends Model
             $this->setLastError($ex->getMessage());
             $this->logger()->warning(sprintf('Error while executing automation "%s". %s', $this->name, $ex->getMessage()));
         }
-        
     }
 
     /**
