@@ -189,14 +189,14 @@ class AutoTrigger extends Model
         $origins = json_decode($this->automation2->data, true);
         $newJson = [];
 
-        foreach ($origins as $origin) {
-            $newAction = $this->getAction($origin);
-            $currentAction = $this->getActionById($newAction->getId());
+        foreach ($origins as $r) {
+            $tmp = $this->getAction($r);
+            $currentAction = $this->getActionById($tmp->getId());
 
             if (is_null($currentAction)) {
-                $newJson[$newAction->getId()] = $newAction->toJson();
+                $newJson[$tmp->getId()] = $tmp->toJson();
             } else {
-                $currentAction->update($origin);
+                $currentAction->update($r);
                 $newJson[$currentAction->getId()] = $currentAction->toJson();
             }
         }
