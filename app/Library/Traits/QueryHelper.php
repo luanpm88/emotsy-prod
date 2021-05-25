@@ -6,7 +6,7 @@ use DB;
 
 trait QueryHelper
 {
-    public function scopePerPage($query, $size = 1000, $callback)
+    public function scopePerPage($query, $size, $callback)
     {
         $count = $query->count();
         $pages = (int)ceil($query->count()/$size);
