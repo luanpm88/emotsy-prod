@@ -275,4 +275,25 @@ class AutoTrigger extends Model
 
         return $action;
     }
+
+    public function getLatestAction()
+    {
+        $action = $this->getTrigger();
+
+        if (is_null($action->getLastExecuted())) {
+            return null;
+        }
+
+        while (!is_null($action->getLastExecuted())) {
+            $nextId = $action->getNextActionId();
+
+            if (is_null($nextId)) {
+                return $action;
+            }
+
+            $action = $this->getActionById($nextId);
+        }
+
+        return $action->getParent();
+    }
 }
