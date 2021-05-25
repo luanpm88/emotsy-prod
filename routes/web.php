@@ -590,6 +590,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('automation2/{uid}/timeline/list', 'Automation2Controller@timelineList');
     Route::get('automation2/{uid}/timeline', 'Automation2Controller@timeline');
     Route::post('automation2/{uid}/contacts/list', 'Automation2Controller@contactsList');
+    Route::get('automation2/{uid}/contacts/list', 'Automation2Controller@contactsList');
     Route::get('automation2/{uid}/contacts', 'Automation2Controller@contacts');
     
     Route::get('automation2/{uid}/insight', 'Automation2Controller@insight');

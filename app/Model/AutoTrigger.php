@@ -127,23 +127,23 @@ class AutoTrigger extends Model
 
     public function check()
     {
-        $this->logger()->info(sprintf('UPDATE > Trigger %s for "%s" - "%s" Start checking', $this->id, $this->automation2->name, $this->subscriber->email));
+        $this->logger()->info(sprintf('Trigger [#%s - %s]: [%s] starts checking', $this->id, $this->subscriber->email, $this->automation2->name));
         
         // STEP #1: Get latest action
-        $last = $this->getLatestAction();
+        $latest = $this->getLatestAction();
 
         // @WARNING why checking? getLatestAction is supposed to always return something
-        if ($last == null) {
-            $trigger = $this->getTrigger();
-            $trigger->markAsLatest(true);
-            $this->updateAction($trigger);
-            $last = $trigger;
+        if ($latest == null) {
+            $this->logger()->info(sprintf('Trigger [#%s - %s]: start from beginning', $this->id, $this->subscriber->email));
+            $latest = $this->getTrigger();
+            $latest->markAsLatest(true); // IMPORTANT: SET AS LATEST
+            $this->updateAction($latest); // SAVE: update 'last_checked_at' field of Wait for example
         }
 
-        $this->logger()->info(sprintf('UPDATE > %s >Start checking "%s" from last action', $this->id, $last->getTitle()));
+        $this->logger()->info(sprintf('Trigger [#%s - %s]: start from lastest action [%s]', $this->id, $this->subscriber->email, $latest->getTitle()));
 
-        // For examxple, if Send already executed but it is the last element
-        if (is_null($last->getLastExecuted())) {
+        // For examxple, if Send already executed but it is the latest element
+        if (is_null($latest->getLastExecuted())) {
             $firstCheck = true;
         } else {
             $firstCheck = false;
@@ -153,31 +153,31 @@ class AutoTrigger extends Model
         // * Evaluation => always true
         // * Trigger => always true
         // * Wait => true or false
-        while ($last->execute() == true) { // true means: done with this step, should proceed next
+        while ($latest->execute() == true) { // true means: done with this step, should proceed next while false means stop, wait for next check
             $this->updateAction($last); // update 'last_checked_at' field of Wait for example
 
             if ($firstCheck) {
-                $this->recordToTimeline($last);
+                $this->recordToTimeline($latest);
             }
 
-            $last = $this->moveToNextAction();
-            if ($last == null) {
+            $latest = $this->moveToNextAction();
+            if ($latest == null) {
                 $this->logger()->info(sprintf('UPDATE > %s > End of flow, no more action to check', $this->id, $this->automation2->name, $this->subscriber->email));
                 break;
             }
 
-            if (is_null($last->getLastExecuted())) {
+            if (is_null($latest->getLastExecuted())) {
                 $firstCheck = true;
             } else {
                 $firstCheck = false;
             }
 
-            $this->logger()->info(sprintf('UPDATE > %s > Checking "%s"', $this->id, $last->getTitle()));
+            $this->logger()->info(sprintf('Trigger [#%s - %s]: continue with action [%s]', $this->id, $this->subscriber->email, $latest->getTitle()));
         }
 
-        if (!is_null($last)) {
-            $this->updateAction($last); // update 'last_checked_at' field of Wait in case it returns false and jump here
-            $this->logger()->info(sprintf('UPDATE > %s > Pending at "%s"', $this->id, $last->getTitle()));
+        if (!is_null($latest)) {
+            $this->updateAction($latest); // update 'last_checked_at' field of Wait in case it returns false and jump here
+            $this->logger()->info(sprintf('UPDATE > %s > Pending at "%s"', $this->id, $latest->getTitle()));
         }
     }
 
@@ -193,7 +193,6 @@ class AutoTrigger extends Model
         }
 
         $this->data = json_encode($json);
-
         $this->save();
     }
 
@@ -237,8 +236,8 @@ class AutoTrigger extends Model
             if (is_null($currentAction)) {
                 $newJson[$newAction->getId()] = $newAction->toJson();
             } else {
-                $mergedJson = array_merge($currentAction->toJson(), $origin); // IMPORTANT: do not use newAction->toJson() --> null values will overwrite existing values
-                $newJson[$newAction->getId()] = $mergedJson;
+                $currentAction->update($origin);
+                $newJson[$currentAction->getId()] = $currentAction->toJson();
             }
         }
 
