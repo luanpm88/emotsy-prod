@@ -7,6 +7,19 @@ use Acelle\Model\EmailLink;
 
 class Evaluate extends Action
 {
+    /*****
+
+        Evaluate action may result in the following cases:
+          + Check OK (result is true or false, no care)
+          + Exception (email UID not found for example, other exception...)
+        In case of Exception, it is better to stop the whole automation process and write error log to the automation
+        so that the responsible person can check it
+
+        Then, "last_executed" is used as a flag indicating that the process is done
+        Execution always returns TRUE
+
+    ****/
+
     protected $childYes;
     protected $childNo;
 
@@ -29,37 +42,40 @@ class Evaluate extends Action
         return $json;
     }
 
-    public function execute()
+    public function execute($callback = null)
     {
-        try {
-            // IMPORTANT
-            // If this is the latest also the last action of the workflow
-            // no more execute, just return true
-            // UPDATE: check always, wait for open/click anyway! if it is the last action
-            // if (!is_null($this->last_executed)) {
-            //     $this->autoTrigger->logger()->info('Latest also last action');
-            //     return true;
-            // }
-
-            $result = $this->evaluateCondition();
-
-            if (config('app.demo') == true) {
-                $result = (bool) random_int(0, 1);
-            }
-
-            $this->evaluationResult = $result;
-
-            $this->recordLastExecutedTime();
-
-            // always return true, not evaluation result!
-            return true;
-        } catch (\Exception $ex) {
-            // @todo automation error
-            // show it up to UI
-            $this->autoTrigger->logger()->warning(sprintf('Error while executing Condition %s. Error message: %s', $this->getId(), $ex->getMessage()));
-
-            return false;
+        // IMPORTANT
+        // If this is the latest also the last action of the workflow
+        // no more execute, just return true
+        if (!is_null($this->last_executed)) {
+            throw new Exception("Action already executed");
         }
+
+        // IMPORTANT
+        // If this is the latest also the last action of the workflow
+        // no more execute, just return true
+        // UPDATE: check always, wait for open/click anyway! if it is the last action
+        // if (!is_null($this->last_executed)) {
+        //     $this->autoTrigger->logger()->info('Latest also last action');
+        //     return true;
+        // }
+
+        $result = $this->evaluateCondition();
+
+        if (config('app.demo') == 'true') {
+            $result = (bool) random_int(0, 1);
+        }
+
+        $this->evaluationResult = $result;
+
+        // always return true, not evaluation result!
+        $this->recordLastExecutedTime();
+
+        if (!is_null($callback)) {
+            $callback($this);
+        }
+
+        return true;
     }
 
     public function evaluateCondition()

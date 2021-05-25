@@ -13,7 +13,6 @@ abstract class Action
     protected $options;
 
     // Own attributes that should be kept
-    protected $latest = false;
     protected $last_executed = null;
     protected $evaluationResult = null;
 
@@ -28,7 +27,6 @@ abstract class Action
         $this->child = array_key_exists('child', $params) ? $params['child'] : null;
         $this->options = array_key_exists('options', $params) ? $params['options'] : [];
 
-        $this->latest = array_key_exists('latest', $params) ? $params['latest'] : null;
         $this->last_executed = array_key_exists('last_executed', $params) ? $params['last_executed'] : null;
         $this->evaluationResult = array_key_exists('evaluationResult', $params) ? $params['evaluationResult'] : null;
     }
@@ -46,7 +44,6 @@ abstract class Action
             'type' => $this->type,
             'child' => $this->child,
             'options' => $this->getOptions(),
-            'latest' => $this->isLatest(),
             'last_executed' => $this->getLastExecuted(),
             'evaluationResult' => $this->evaluationResult,
         ];
@@ -97,16 +94,6 @@ abstract class Action
         return $this->evaluationResult;
     }
 
-    public function isLatest()
-    {
-        return $this->latest;
-    }
-
-    public function markAsLatest($latest = true)
-    {
-        $this->latest = $latest;
-    }
-
     public function recordLastExecutedTime()
     {
         $this->last_executed = Carbon::now()->timestamp;
@@ -141,7 +128,7 @@ abstract class Action
     public function update(Array $json)
     {
         // Keep the following attributes, do not overwrite
-        $keep = [ 'latest', 'last_executed', 'evaluationResult' ];
+        $keep = [ 'last_executed', 'evaluationResult' ];
 
         foreach ($json as $key => $value) {
             if (!in_array($key, $keep)) {

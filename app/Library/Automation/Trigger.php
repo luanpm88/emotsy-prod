@@ -4,10 +4,13 @@ namespace Acelle\Library\Automation;
 
 class Trigger extends Action
 {
-    public function execute()
+    public function execute($callback = null)
     {
         $this->recordLastExecutedTime();
-        $this->evaluationResult = true;
+        
+        if (!is_null($callback)) {
+            $callback($this);
+        }
 
         return true;
     }

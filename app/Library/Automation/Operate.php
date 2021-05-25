@@ -4,29 +4,41 @@ namespace Acelle\Library\Automation;
 
 class Operate extends Action
 {
-    public function execute()
+    /*****
+
+        Operate action may result in the following cases:
+          + Done OK
+          + Exception (any type of exception...)
+        In case of Exception, it is better to stop the whole automation process and write error log to the automation
+        so that the responsible person can check it
+
+        Then, "last_executed" is used as a flag indicating that the process is done
+        Execution always returns TRUE
+
+    ****/
+    public function execute($callback = null)
     {
         // IMPORTANT
         // If this is the latest also the last action of the workflow
         // no more execute, just return true
         if (!is_null($this->last_executed)) {
-            $this->autoTrigger->logger()->info('Already executed, I\'m the latest also the last action');
-
-            return true;
+            throw new Exception("Action already executed");
         }
 
-        sleep(1); // to avoid same date/time with previous wait, wrong timeline order
-
         if (config('app.demo') == true) {
-            // do nothing
+            // Do nothing here
         } else {
-            dispatch(new DeliverEmail($email, $this->autoTrigger->subscriber));
+            // Do something here
+            sleep(1);
         }
 
         $this->autoTrigger->logger()->info(sprintf('Perform an action...'));
 
         $this->recordLastExecutedTime();
-        $this->evaluationResult = true;
+
+        if (!is_null($callback)) {
+            $callback($this);
+        }
 
         return true;
     }

@@ -27,6 +27,7 @@ use Acelle\Library\Automation\Action;
 use Acelle\Library\Automation\Trigger;
 use Acelle\Library\Automation\Send;
 use Acelle\Library\Automation\Wait;
+use Exception;
 
 class AutoTrigger extends Model
 {
@@ -80,39 +81,11 @@ class AutoTrigger extends Model
         return $this->hasMany('Acelle\Model\Timeline')->orderBy('created_at', 'DESC');
     }
 
-    // getLatestAction from trigger
-    public function getLatestAction()
-    {
-        $action = null;
-        $this->getActions(function ($instance) use (&$action) {
-            if ($instance->isLatest()) {
-                $action = $instance;
-            }
-        });
-
-        return $action;
-    }
-
     // Mark the next action as "latest" and return it
-    public function moveToNextAction()
+    public function getNextAction($action)
     {
-        $nextId = $this->getLatestAction()->getNextActionId();
-        if (is_null($nextId)) {
-            return;
-        }
-
-        $selected = null;
-        $this->getActions(function ($instance) use ($nextId, &$selected) {
-            if ($instance->getId() == $nextId) {
-                $instance->markAsLatest(true);
-                $selected = $instance;
-            } else {
-                $instance->markAsLatest(false);
-            }
-            $this->updateAction($instance);
-        });
-
-        return $selected;
+        $nextId = $action->getNextActionId();
+        return $this->getActionById($nextId);
     }
 
     public function recordToTimeline($action)
@@ -127,57 +100,44 @@ class AutoTrigger extends Model
 
     public function check()
     {
-        $this->logger()->info(sprintf('Trigger [#%s - %s]: [%s] starts checking', $this->id, $this->subscriber->email, $this->automation2->name));
+        $this->logger()->info(sprintf('Trigger [#%s - %s]: Automation [%s] starts checking', $this->id, $this->subscriber->email, $this->automation2->name));
         
         // STEP #1: Get latest action
-        $latest = $this->getLatestAction();
+        $latest = $this->findLastActionToExecute();
 
-        // @WARNING why checking? getLatestAction is supposed to always return something
         if ($latest == null) {
-            $this->logger()->info(sprintf('Trigger [#%s - %s]: start from beginning', $this->id, $this->subscriber->email));
-            $latest = $this->getTrigger();
-            $latest->markAsLatest(true); // IMPORTANT: SET AS LATEST
-            $this->updateAction($latest); // SAVE: update 'last_checked_at' field of Wait for example
+            $this->logger()->info(sprintf('Trigger [#%s - %s]: already reached last asction', $this->id, $this->subscriber->email, $this->automation2->name));
+            return;
         }
 
         $this->logger()->info(sprintf('Trigger [#%s - %s]: start from lastest action [%s]', $this->id, $this->subscriber->email, $latest->getTitle()));
 
-        // For examxple, if Send already executed but it is the latest element
-        if (is_null($latest->getLastExecuted())) {
-            $firstCheck = true;
-        } else {
-            $firstCheck = false;
-        }
+        // Save to DB and Record to timeline every time we pass an action
+        $passedCallback = function($action) {
+            $this->updateAction($action);
+            $this->recordToTimeline($action);
+        };
 
-        // * Send => always true
-        // * Evaluation => always true
         // * Trigger => always true
+        // * Send => always true
+        // * Operation => always true
+        // * Evaluation => always true
         // * Wait => true or false
-        while ($latest->execute() == true) { // true means: done with this step, should proceed next while false means stop, wait for next check
-            $this->updateAction($last); // update 'last_checked_at' field of Wait for example
 
-            if ($firstCheck) {
-                $this->recordToTimeline($latest);
-            }
+        // true means: done with this step, should proceed next while false means stop, wait for next check
+        while ($latest->execute($passedCallback) == 'true') {
+            $latest = $this->getNextAction($latest);
 
-            $latest = $this->moveToNextAction();
             if ($latest == null) {
-                $this->logger()->info(sprintf('UPDATE > %s > End of flow, no more action to check', $this->id, $this->automation2->name, $this->subscriber->email));
+                $this->logger()->info(sprintf('Trigger [#%s - %s]: Reach last action, END!', $this->id, $this->subscriber->email));
                 break;
-            }
-
-            if (is_null($latest->getLastExecuted())) {
-                $firstCheck = true;
-            } else {
-                $firstCheck = false;
             }
 
             $this->logger()->info(sprintf('Trigger [#%s - %s]: continue with action [%s]', $this->id, $this->subscriber->email, $latest->getTitle()));
         }
 
         if (!is_null($latest)) {
-            $this->updateAction($latest); // update 'last_checked_at' field of Wait in case it returns false and jump here
-            $this->logger()->info(sprintf('UPDATE > %s > Pending at "%s"', $this->id, $latest->getTitle()));
+            $this->logger()->info(sprintf('Trigger [#%s - %s]: pending at [%s]', $this->id, $this->subscriber->email, $latest->getTitle()));
         }
     }
 
@@ -260,6 +220,10 @@ class AutoTrigger extends Model
             }
         });
 
+        if ($trigger == null) {
+            throw new Exception("Automation does not have a trigger!!!!");
+        }
+
         return  $trigger;
     }
 
@@ -285,22 +249,30 @@ class AutoTrigger extends Model
         return !is_null($this->getActionById($id)->getLastExecuted());
     }
 
-    public function isLatest($id)
-    {
-        return $this->getActionById($id)->isLatest();
-    }
-
     public function isComplete()
     {
-        $last = $this->getLatestAction();
-        if ($last == null) {
-            $last = $this->getTrigger();
+        $last = $this->findLastActionToExecute();
+        return is_null($last);
+    }
+
+    public function findLastActionToExecute()
+    {
+        $action = $this->getTrigger();
+
+        if (is_null($action->getLastExecuted())) {
+            return $action;
         }
-        $nextId = $last->getNextActionId();
-        if (is_null($nextId)) {
-            return true;
-        } else {
-            return false;
+
+        while (!is_null($action->getLastExecuted())) {
+            $nextId = $action->getNextActionId();
+
+            if (is_null($nextId)) {
+                return null;
+            }
+
+            $action = $this->getActionById($nextId);
         }
+
+        return $action;
     }
 }

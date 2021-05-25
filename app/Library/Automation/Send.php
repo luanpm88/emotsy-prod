@@ -4,49 +4,66 @@ namespace Acelle\Library\Automation;
 
 use Acelle\Model\Email;
 use Acelle\Jobs\DeliverEmail;
+use Exception;
 
 class Send extends Action
 {
-    public function execute()
+    /*****
+
+        Send action may result in the following cases:
+          + Send OK (email queued, do not care about delivery status)
+          + Exception (email UID not found for example, other exception...)
+        In case of Exception, it is better to stop the whole automation process and write error log to the automation
+        so that the responsible person can check it
+
+        Then, "last_executed" is used as a flag indicating that the process is done
+        Execution always returns TRUE
+
+    ****/
+
+    public function execute($callback = null)
     {
-        $subscriber = $this->autoTrigger->subscriber;
+        /*** do not care if subscriber is active() or not ***/
+        /*
         if (!$subscriber->isActive()) {
             $this->autoTrigger->logger()->warning(sprintf('Subscriber "%s" is not active (current status: "%s")', $subscriber->email, $subscriber->status));
 
             return false;
         }
-
-        if ($this->options['init'] == 'false' || $this->options['init'] == false) {
-            $this->autoTrigger->logger()->warning('Email not set up yet');
-
-            return false;
-        }
+        */
 
         // IMPORTANT
         // If this is the latest also the last action of the workflow
         // no more execute, just return true
         if (!is_null($this->last_executed)) {
-            $this->autoTrigger->logger()->warning('Send action already executed');
-
-            return true; // in case of adding new element after this, but duplicate log
+            throw new Exception("Action already executed");
         }
-        
-        $email = $this->getEmail();
 
-        if (config('app.demo') == true) {
+        if ($this->options['init'] == 'false' || $this->options['init'] == false) {
+            throw new Exception("Email not set up yet");
+        }
+
+        $email = $this->getEmail();
+        $subscriber = $this->autoTrigger->subscriber;
+
+        if (config('app.demo') == 'true') {
             $email->queueDeliverTo($this->autoTrigger->subscriber, $this->autoTrigger->id);
         } else {
             sleep(1); // to avoid same date/time with previous wait, wrong timeline order
             // dispatch(new DeliverEmail($email, $this->autoTrigger->subscriber));
-            $queue = true;
             $email->queueDeliverTo($this->autoTrigger->subscriber, $this->autoTrigger->id); // queue, do not send immediately
         }
 
+        
         $this->autoTrigger->logger()->info(sprintf('Send email entitled "%s" to "%s", queued', $email->subject, $this->autoTrigger->subscriber->email));
-
+        
+        // The last three statements
         $this->recordLastExecutedTime();
-        $this->evaluationResult = true;
-
+        
+        if (!is_null($callback)) {
+            $callback($this);
+        }
+        
         return true;
     }
 

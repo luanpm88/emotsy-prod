@@ -6,31 +6,56 @@ use Carbon\Carbon;
 
 class Wait extends Action
 {
-    public function execute()
+    /*****
+
+        Wait action may result in the following cases:
+          + True - pass, go to next step
+          + False - not pass, wait...
+          + Exception - for any reason
+        In case of Exception, it is better to stop the whole automation process and write error log to the automation
+        so that the responsible person can check it
+
+        Then, "last_executed" is used as a flag indicating that the process is done
+        Return FALSE or TRUE (update last_executed before returning true)
+
+    ****/
+
+    public function execute($callback = null)
     {
         if (config('app.demo') == true) {
-            $this->evaluationResult = (bool) random_int(0, 1);
-            $this->recordLastExecutedTime();
+            $check = (bool) random_int(0, 1);
+            
+            if ($check) {
+                $this->recordLastExecutedTime();
 
-            return $this->evaluationResult;
+                if (!is_null($callback)) {
+                    $callback($this);
+                }
+            }
+            return $check;
         }
 
         $now = Carbon::now();
         $waitDuration = $this->getOption('time');  // 1 hour, 1 day, 2 days
-        $parentExecutionTime = $carbon = Carbon::createFromTimestamp($this->getParent()->getLastExecuted());
+        $parentExecutionTime = Carbon::createFromTimestamp($this->getParent()->getLastExecuted());
         $due = $parentExecutionTime->modify($waitDuration);
 
-        $this->evaluationResult = $now->gte($due);
-        $this->recordLastExecutedTime();
+        $check = $now->gte($due);
 
-        if ($this->evaluationResult) {
+        if ($check) {
             sleep(1); // to avoid same day with previous action when modifying (n days)
+            $this->recordLastExecutedTime();
+
+            if (!is_null($callback)) {
+                $callback($this);
+            }
+
             $this->autoTrigger->logger()->info(sprintf('---> It is already %s minutes (or %s hours) due! move to next action!', $now->diffInMinutes($due), $now->diffInHours($due)));
         } else {
             $this->autoTrigger->logger()->info(sprintf('---> Waiting for another %s minutes (or %s hours)...', $now->diffInMinutes($due), $now->diffInHours($due)));
         }
 
-        return $this->evaluationResult;
+        return $check;
     }
 
     public function getActionDescription()
