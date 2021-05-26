@@ -168,6 +168,23 @@ class AutoTrigger extends Model
         $this->executed_index = implode(',', $executed);
     }
 
+    // Get actions in the RIGHT order and with the right branch
+    // Use this method instead of #getActions which is for loading the first Trigger only
+    public function traverseExecutedPath($callback)
+    {
+        // Starting point
+        $action = $this->getTrigger();
+        
+        do {
+            if (is_null($action->getLastExecuted())) {
+                break;
+            }
+
+            $callback($action);
+            $action = $this->getNextAction($action);
+        } while (!is_null($action));
+    }
+
     public function getActions($callback)
     {
         $json = $this->getJson();

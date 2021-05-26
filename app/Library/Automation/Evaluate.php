@@ -182,7 +182,11 @@ class Evaluate extends Action
 
     public function getNextActionId()
     {
-        if ($this->evaluationResult) {
+        // IMPORTANT: if action is not yet executed, return NULL
+        // IMPORTANT: evaluationResult has 3 (not 2) possible values: NULL | YES | NO
+        if ($this->evaluationResult == null) {
+            return null;
+        } elseif ($this->evaluationResult) {
             return $this->childYes;
         } else {
             return $this->childNo;
