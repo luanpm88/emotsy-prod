@@ -1449,15 +1449,7 @@ class Automation2Controller extends Controller
 
         // list by action
         if ($request->action_id) {
-            $subscribers = Subscriber::gSearch($automation->subscribers($request->action_id), $request);
-
-            list($contacts, $pagination) = pagination($request, $subscribers);
-
-            return view('automation2.contacts.list', [
-                'automation' => $automation,
-                'contacts' => $contacts,
-                'pagination' => $pagination,
-            ]);
+            //
         }
 
         // list by type
@@ -1465,7 +1457,7 @@ class Automation2Controller extends Controller
         
         $contacts = $subscribers->paginate($request->per_page);
         
-        return view('automation2.contacts.list.' . request()->type, [
+        return view('automation2.contacts.list', [
             'automation' => $automation,
             'contacts' => $contacts,
         ]);

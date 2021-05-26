@@ -1,10 +1,13 @@
 @if ($contacts->count() > 0)
     <p class="insight-intro mb-2 small">
-        {{ trans('messages.automation.contact.all_count', ['count' => format_number($contacts->lastPage())]) }}
+        {{ trans('messages.automation.contact.all_count', ['count' => format_number($contacts->total())]) }}
     </p>
         
     <div class="mc-table small border-top">
         @foreach ($contacts as $key => $contact)
+            @php
+                $trigger = $automation->getAutoTriggerFor($contact);
+            @endphp
             <div class="mc-row d-flex align-items-center">
                 <div class="media trigger">
                     <a href="javascript:;" onclick="popup.load('{{ action('Automation2Controller@profile', [
@@ -25,37 +28,50 @@
                         'uid' => $automation->uid,
                         'contact_uid' => $contact->uid,
                     ]) }}')" class="font-weight-semibold d-block">
-                        {{ $contact->email }} <span class="material-icons-outlined">launch</span>
+                        {{ $contact->getFullName() }}
                     </a>
-                    <desc>{{ trans('messages.automation.contact.added_at', ['time' => $contact->created_at->diffForHumans()]) }}</desc>
+                    <desc>{{ $contact->email }}</desc>
                 </div>
+                
                 <div class="actions-points">
-                    @foreach ($automation->getInsight() as $key => $element)
-                        @php
-                            $action = $automation->getElement($key);
-                        @endphp
-
-                        <span class="round-action-point action-{{ $action->get('type') }}" title="{{ $action->getName() }}">
-                        </span>
-                    @endforeach
+                    @if (!is_null($trigger))
+                        @foreach ($trigger->getExecutedActions() as $action)
+                            <span class="xtooltip round-action-point action-{{ $action->getType() }}" title="{{ $action->getProgressDescription(). sprintf(' (%s)', $action->getLastExecutedHumanReadable()) }}">
+                            </span>
+                        @endforeach
+                    @endif
                 </div>
-                @php
-                    $field = $automation->mailList->getOneField();
-                @endphp
-                @if (is_object($field))
-                    <?php $value = $contact->getValueByField($field); ?>
-                    <div class="flex-fill text-right">
-                        <label title="{{ empty($value) ? "--" : $value }}" class="font-weight-semibold text-right">
-                            <span class="text-truncate d-block m-auto" style="max-width: 100px;">{{ empty($value) ? "--" : $value }}</span>
+                <div class="flex-fill text-right">
+                    @if (is_null($trigger))
+                        <label title="" class="text-right">
+                            <span class="">
+                                <span class="text-warning">Waiting...</span>
+                            </span>
                         </label>
-                        <desc>{{ $field->label }}</desc>
-                    </div>
-                @endif
+                        <desc><a target="_blank" style="color:blue;text-decoration: underline;" href="{{ action('Automation2Controller@triggerNow', [ 'automation' => $automation->uid, 'subscriber' => $contact->uid ]) }}">Trigger Now</a></desc>
+                    @else
+                        <label title="" class="text-right">
+                            <span class="text-truncate" style="max-width: 100px;margin-right:0px">
+                                @php
+                                    $latestAction = $trigger->getLatestAction() ?: $trigger->getTrigger();
+                                    $lastUpdate = $latestAction->getLastExecutedHumanReadable();
+
+                                    if (is_null($lastUpdate)) {
+                                        $lastUpdate = $trigger->created_at->diffForHumans(); // Triggered but not yet executed
+                                    }
+                                @endphp
+
+                                {{ $lastUpdate }}
+                            </span>
+                        </label>
+                        <desc>Last activity • <a target="_blank" target="_blank" style="color:blue;text-decoration: underline;" href="{{ action('AutoTrigger@check', [ 'id' => $trigger->id ]) }}">Check</a></desc>
+                    @endif
+                    
+                </div>
             </div>
         @endforeach
         
-        @include('helpers._pagination', ['paginator' => $contacts])
-    </div>
+    @include('helpers._pagination', ['paginator' => $contacts] )
 @else
     <div class="empty-list">
         <i class="lnr lnr-users"></i>
