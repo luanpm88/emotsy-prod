@@ -113,6 +113,7 @@ class AutoTrigger extends Model
         $this->logger()->info(sprintf('Trigger [#%s - %s]: start from lastest action [%s]', $this->id, $this->subscriber->email, $latest->getTitle()));
 
         // Save to DB and Record to timeline every time we pass an action
+        // IMPORTANT: if action is not saved (with last_executed flag not null), it MIGHT execute again! sending duplicate emails for example
         $passedCallback = function($action) {
             $this->updateAction($action);
             $this->recordToTimeline($action);

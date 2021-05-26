@@ -20,19 +20,27 @@ class Wait extends Action
 
     ****/
 
-    public function execute($callback = null)
+    public function execute($callback)
     {
+        // IMPORTANT
+        // If this is the latest also the last action of the workflow
+        // no more execute, just return true
+        if (!is_null($this->last_executed)) {
+            throw new Exception("Action already executed");
+        }
+
         if (config('app.demo') == true) {
             $check = (bool) random_int(0, 1);
             
             if ($check) {
                 $this->recordLastExecutedTime();
 
-                if (!is_null($callback)) {
-                    $callback($this);
-                }
+                $callback($this);
+
+                return true;
+            } else {
+                return false;
             }
-            return $check;
         }
 
         $now = Carbon::now();
@@ -46,11 +54,11 @@ class Wait extends Action
             sleep(1); // to avoid same day with previous action when modifying (n days)
             $this->recordLastExecutedTime();
 
-            if (!is_null($callback)) {
-                $callback($this);
-            }
+            // IMPORTANT: if action is not saved (with last_executed flag not null), it MIGHT execute again! sending duplicate emails for example
+            // Or, if wait is not saved after record last_executed, it will be recorded over and over again every time trigger#action is loaded (then last_executed is still null)
+            $callback($this);
 
-            $this->autoTrigger->logger()->info(sprintf('---> It is already %s minutes (or %s hours) due! move to next action!', $now->diffInMinutes($due), $now->diffInHours($due)));
+            $this->autoTrigger->logger()->info(sprintf('---> It is already %s minutes (or %s hours) due! do save me and move to next action!', $now->diffInMinutes($due), $now->diffInHours($due)));
         } else {
             $this->autoTrigger->logger()->info(sprintf('---> Waiting for another %s minutes (or %s hours)...', $now->diffInMinutes($due), $now->diffInHours($due)));
         }
@@ -71,6 +79,6 @@ class Wait extends Action
             return '* Wait';
         }
 
-        return $this->getParent()->getProgressDescription() . ' WAITING#'.$this->getId();
+        return 'Hold on for '.$this->getOption('time');
     }
 }

@@ -21,7 +21,7 @@ class Send extends Action
 
     ****/
 
-    public function execute($callback = null)
+    public function execute($callback)
     {
         /*** do not care if subscriber is active() or not ***/
         /*
@@ -59,11 +59,10 @@ class Send extends Action
         
         // The last three statements
         $this->recordLastExecutedTime();
-        
-        if (!is_null($callback)) {
-            $callback($this);
-        }
-        
+
+        // IMPORTANT: if action is not saved (with last_executed flag not null), it MIGHT execute again! sending duplicate emails for example
+        $callback($this);
+
         return true;
     }
 

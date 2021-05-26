@@ -42,7 +42,7 @@ class Evaluate extends Action
         return $json;
     }
 
-    public function execute($callback = null)
+    public function execute($callback)
     {
         // IMPORTANT
         // If this is the latest also the last action of the workflow
@@ -71,9 +71,9 @@ class Evaluate extends Action
         // always return true, not evaluation result!
         $this->recordLastExecutedTime();
 
-        if (!is_null($callback)) {
-            $callback($this);
-        }
+        // IMPORTANT: if action is not saved (with last_executed flag not null), it MIGHT execute again! sending duplicate emails for example
+        // In case of Evaluate: it keeps being executed over and over again and result may CHANGE (email gets clicked/opened)
+        $callback($this);
 
         return true;
     }
@@ -184,7 +184,8 @@ class Evaluate extends Action
     {
         // IMPORTANT: if action is not yet executed, return NULL
         // IMPORTANT: evaluationResult has 3 (not 2) possible values: NULL | YES | NO
-        if ($this->evaluationResult == null) {
+        // IMPORTANT: use is_null instead of "== null" because [false == null]
+        if (is_null($this->evaluationResult)) {
             return null;
         } elseif ($this->evaluationResult) {
             return $this->childYes;

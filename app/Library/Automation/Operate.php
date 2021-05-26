@@ -16,7 +16,7 @@ class Operate extends Action
         Execution always returns TRUE
 
     ****/
-    public function execute($callback = null)
+    public function execute($callback)
     {
         // IMPORTANT
         // If this is the latest also the last action of the workflow
@@ -36,9 +36,8 @@ class Operate extends Action
 
         $this->recordLastExecutedTime();
 
-        if (!is_null($callback)) {
-            $callback($this);
-        }
+        // IMPORTANT: if action is not saved (with last_executed flag not null), it MIGHT execute again! Send duplicate emails or perform actions more than one time for example
+        $callback($this);
 
         return true;
     }
