@@ -141,4 +141,13 @@ abstract class Action
     {
         return null;
     }
+
+    public function getLastExecutedHumanReadable()
+    {
+        if (is_null($this->getLastExecuted())) {
+            return null;
+        }
+
+        return Carbon::createFromTimestamp($this->getLastExecuted())->diffForHumans();
+    }
 }

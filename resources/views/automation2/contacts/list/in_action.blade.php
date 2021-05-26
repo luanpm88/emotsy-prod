@@ -28,7 +28,7 @@
                         'uid' => $automation->uid,
                         'contact_uid' => $contact->uid,
                     ]) }}')" class="font-weight-semibold d-block">
-                        {{ $contact->email }}
+                        {{ $contact->getFullName() }}
                     </a>
                     <desc>{{ trans('messages.automation.contact.added_at', ['time' => $contact->created_at->diffForHumans()]) }}</desc>
                 </div>
@@ -36,7 +36,7 @@
                 <div class="actions-points">
                     @if (!is_null($trigger))
                         @foreach ($trigger->getExecutedActions() as $action)
-                            <span class="xtooltip round-action-point action-{{ $action->getType() }}" title="{{ $action->getProgressDescription() }}">
+                            <span class="xtooltip round-action-point action-{{ $action->getType() }}" title="{{ $action->getProgressDescription(). sprintf(' (%s)', $action->getLastExecutedHumanReadable()) }}">
                             </span>
                         @endforeach
                     @endif
@@ -44,8 +44,8 @@
                 <div class="flex-fill text-right">
                     @if (is_null($trigger))
                         <label title="" class="text-right">
-                            <span class="text-truncate" style="max-width: 100px;margin-right:0px">
-                                not triggered
+                            <span class="">
+                                <span class="text-warning">Waiting...</span>
                             </span>
                         </label>
                         <desc><a target="_blank" style="color:blue;text-decoration: underline;" href="{{ action('Automation2Controller@triggerNow', [ 'automation' => $automation->uid, 'subscriber' => $contact->uid ]) }}">Trigger Now</a></desc>
@@ -54,15 +54,14 @@
                             <span class="text-truncate" style="max-width: 100px;margin-right:0px">
                                 @php
                                     $latestAction = $trigger->getLatestAction() ?: $trigger->getTrigger();
+                                    $lastUpdate = $latestAction->getLastExecutedHumanReadable();
 
-                                    if (!is_null($latestAction->getLastExecuted())) {
-                                        $update = \Carbon\Carbon::createFromTimestamp($latestAction->getLastExecuted());
-                                    } else {
-                                        $update = $trigger->created_at;
+                                    if (is_null($lastUpdate)) {
+                                        $lastUpdate = $trigger->created_at->diffForHumans(); // Triggered but not yet executed
                                     }
                                 @endphp
 
-                                {{ $update->diffForHumans() }}
+                                {{ $lastUpdate }}
                             </span>
                         </label>
                         <desc>Last activity • <a target="_blank" target="_blank" style="color:blue;text-decoration: underline;" href="{{ action('AutoTrigger@check', [ 'id' => $trigger->id ]) }}">Check</a></desc>
