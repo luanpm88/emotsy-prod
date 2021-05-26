@@ -13,4 +13,6 @@ return [
 
     // Minimum supported PHP version
     'php' => '7.2.5',
+
+    'woo' => true,
 ];

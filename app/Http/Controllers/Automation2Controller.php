@@ -225,8 +225,11 @@ class Automation2Controller extends Controller
             'api-3-0',
             'weekly-recurring',
             'monthly-recurring',
-            'woo-abandoned-cart',
         ];
+
+        if (config('custom.woo')) {
+            $types[] = 'woo-abandoned-cart';
+        }
         
         return view('automation2.triggerSelectPupop', [
             'types' => $types,
@@ -373,9 +376,12 @@ class Automation2Controller extends Controller
         $types = [
             'send-an-email',
             'wait',
-            'operation',
             'condition',
         ];
+
+        if (config('custom.woo')) {
+            $types[] = 'operation';
+        }
         
         return view('automation2.actionSelectPupop', [
             'types' => $types,
