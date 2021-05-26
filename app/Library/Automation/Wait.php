@@ -64,4 +64,13 @@ class Wait extends Action
 
         return sprintf('Wait for 24 hours before proceeding with the next event for user %s', $nameOrEmail);
     }
+
+    public function getProgressDescription()
+    {
+        if (is_null($this->getLastExecuted())) {
+            return '* Wait';
+        }
+
+        return $this->getParent()->getProgressDescription() . ' WAITING#'.$this->getId();
+    }
 }

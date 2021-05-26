@@ -7,7 +7,7 @@ class Trigger extends Action
     public function execute($callback = null)
     {
         $this->recordLastExecutedTime();
-        
+
         if (!is_null($callback)) {
             $callback($this);
         }
@@ -20,5 +20,14 @@ class Trigger extends Action
         $nameOrEmail = $this->autoTrigger->subscriber->getFullNameOrEmail();
 
         return sprintf('User %s subscribes to mail list, automation triggered!', $nameOrEmail);
+    }
+
+    public function getProgressDescription()
+    {
+        if (is_null($this->getLastExecuted())) {
+            return "* Triggering automation";
+        } else {
+            return "Automation triggered";
+        }
     }
 }

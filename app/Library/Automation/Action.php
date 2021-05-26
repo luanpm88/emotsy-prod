@@ -136,4 +136,9 @@ abstract class Action
             }
         }
     }
+
+    public function getProgressDescription()
+    {
+        return null;
+    }
 }

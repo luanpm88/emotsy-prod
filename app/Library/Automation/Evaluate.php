@@ -130,14 +130,45 @@ class Evaluate extends Action
             $email = Email::findByUid($emailUid);
         } else {
             $linkUid = $this->getOption('email_link');
-            $email = EmailLink::findByUid($linkUid)->email;
+            $link = EmailLink::findByUid($linkUid);
         }
 
         if ($this->getOption('type') == 'open') {
             return sprintf('Tracking: waiting for user %s to READ email entitled "%s"', $nameOrEmail, $email->subject);
         } else {
-            return sprintf('Tracking: waiting for user %s to CLICK email entitled "%s"', $nameOrEmail, $email->subject);
+            return sprintf('Tracking: waiting for user %s to CLICK link "%s"', $nameOrEmail, $link->link);
         }
+    }
+
+    public function getProgressDescription()
+    {
+        if (is_null($this->getLastExecuted())) {
+            if ($this->getOption('type') == 'open') {
+                return "* Check if email is opened";
+            } else {
+                return "* Check if link is clicked";
+            }
+        }
+
+        if ($this->getOption('type') == 'open') {
+            $emailUid = $this->getOption('email');
+            $email = Email::findByUid($emailUid);
+            if ($this->evaluationResult == 'true') {
+                return sprintf('Opened email "%s"', $email->subject);
+            } else {
+                return sprintf('Did not open email "%s"', $email->subject);
+            }
+        } else {
+            $linkUid = $this->getOption('email_link');
+            $link = EmailLink::findByUid($linkUid);
+            
+            if ($this->evaluationResult == 'true') {
+                return sprintf('Clicked: "%s"', $link->link);
+            } else {
+                return sprintf('Did not click: "%s"', $link->link);
+            }  
+        }
+
     }
 
     public function hasChild($e)

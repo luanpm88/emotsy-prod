@@ -88,4 +88,17 @@ class Send extends Action
 
         return sprintf('User %s receives email entitled "%s"', $nameOrEmail, $this->getEmail()->subject);
     }
+
+    public function getProgressDescription()
+    {
+        $email = $this->getEmail();
+        $subscriber = $this->autoTrigger->subscriber;
+
+        if (is_null($this->getLastExecuted())) {
+            return sprintf('* Send email "%s" to "%s"', $email->subject, $subscriber->email);
+        }
+
+        return sprintf('Sent email "%s" to "%s"', $email->subject, $subscriber->email);
+
+    }
 }

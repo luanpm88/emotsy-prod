@@ -50,4 +50,15 @@ class Operate extends Action
 
         return sprintf('Perform an operation');
     }
+
+    public function getProgressDescription()
+    {
+        $subscriber = $this->autoTrigger->subscriber;
+
+        if (is_null($this->getLastExecuted())) {
+            return sprintf('* Update contact "%s"', $subscriber->email);
+        }
+
+        return sprintf('Updated contact "%s"', $subscriber->email);
+    }
 }
