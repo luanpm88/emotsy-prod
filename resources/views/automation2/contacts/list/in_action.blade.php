@@ -28,7 +28,7 @@
                         'uid' => $automation->uid,
                         'contact_uid' => $contact->uid,
                     ]) }}')" class="font-weight-semibold d-block">
-                        {{ $contact->email }} <span class="material-icons-outlined">launch</span>
+                        {{ $contact->email }}
                     </a>
                     <desc>{{ trans('messages.automation.contact.added_at', ['time' => $contact->created_at->diffForHumans()]) }}</desc>
                 </div>
@@ -54,9 +54,15 @@
                             <span class="text-truncate" style="max-width: 100px;margin-right:0px">
                                 @php
                                     $latestAction = $trigger->getLatestAction() ?: $trigger->getTrigger();
+
+                                    if (!is_null($latestAction->getLastExecuted())) {
+                                        $update = \Carbon\Carbon::createFromTimestamp($latestAction->getLastExecuted());
+                                    } else {
+                                        $update = $trigger->created_at;
+                                    }
                                 @endphp
 
-                                {{ $latestAction->getProgressDescription() }}
+                                {{ $update->diffForHumans() }}
                             </span>
                         </label>
                         <desc>Last activity • <a target="_blank" target="_blank" style="color:blue;text-decoration: underline;" href="{{ action('AutoTrigger@check', [ 'id' => $trigger->id ]) }}">Check</a></desc>
