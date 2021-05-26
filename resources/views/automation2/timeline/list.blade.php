@@ -1,6 +1,6 @@
 <div class="insight-topine d-flex small align-items-center">
     <div class="insight-desc mr-auto">
-        {!! trans('messages.automation.timline.intro', ['count' => format_number($pagination["total"])]) !!}        
+        {!! trans('messages.automation.timline.intro', ['count' => format_number($timelines->lastPage())]) !!}        
     </div>
     <div class="insight-action">
         <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
@@ -20,7 +20,7 @@
 
 @if ($timelines->count() > 0)
         <p class="insight-intro mb-2 mt-3 small">
-        {{ trans('messages.automation.all_activities') }} ({{ format_number($pagination["total"]) }})
+        {{ trans('messages.automation.all_activities') }} ({{ format_number($timelines->lastPage()) }})
     </p>
         
     <div class="mc-table small border-top">
@@ -56,7 +56,7 @@
         @endforeach
     </div>
         
-    @include('helpers._pagination')
+    @include('helpers._pagination', ['paginator' => $timelines])
 @else
     <div class="empty-list">
         <i class="material-icons">timeline</i>

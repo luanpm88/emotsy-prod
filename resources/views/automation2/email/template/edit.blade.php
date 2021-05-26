@@ -23,6 +23,11 @@
         }
     </style>
 
+    @php
+        // check if content from layouts
+        $buildMode = strpos($email->content, 'AcelleSystemLayouts') !== false ? 'true' : 'false';
+    @endphp
+
     <script>
         var CSRF_TOKEN = "{{ csrf_token() }}";
         var editor;
@@ -31,7 +36,7 @@
         $( document ).ready(function() {
             editor = new Editor({
                 buildMode: {{ $buildMode }},
-                legacyMode: true,
+                legacyMode: {{ !$buildMode ? 'true' : 'false' }},
                 showHelp: false,
                 showInlineToolbar: false,
                 lang: {!! json_encode(language()->getBuilderLang()) !!},

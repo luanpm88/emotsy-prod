@@ -1102,13 +1102,12 @@ class Automation2Controller extends Controller
         }
         
         $request->merge(array("customer_id" => $request->user()->customer->id));
-        list($templates, $pagination) = pagination($request, Template::search($request));
+        $templates = Template::search($request)->paginate($request->per_page);
         
         return view('automation2.email.template.themeList', [
             'automation' => $automation,
             'email' => $email,
             'templates' => $templates,
-            'pagination' => $pagination,
         ]);
     }
 
@@ -1458,12 +1457,11 @@ class Automation2Controller extends Controller
         // list by type
         $subscribers = Subscriber::gSearch($automation->subscribers(), $request);
         
-        list($contacts, $pagination) = pagination($request, $subscribers);
+        $contacts = $subscribers->paginate($request->per_page);
         
         return view('automation2.contacts.list.' . request()->type, [
             'automation' => $automation,
             'contacts' => $contacts,
-            'pagination' => $pagination,
         ]);
     }
     
@@ -1502,12 +1500,11 @@ class Automation2Controller extends Controller
             return $this->notAuthorized();
         }
         
-        list($timelines, $pagination) = pagination($request, $automation->timelines());
+        $timelines = $automation->timelines()->paginate($request->per_page);
         
         return view('automation2.timeline.list', [
             'automation' => $automation,
             'timelines' => $timelines,
-            'pagination' => $pagination,
         ]);
     }
     

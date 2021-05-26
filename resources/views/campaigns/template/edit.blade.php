@@ -24,20 +24,20 @@
     @include('helpers._builder_product_widgets')
 
     @php
-      // check if content from layouts
-      $buildMode = strpos($campaign->html, 'AcelleSystemLayouts') !== false ? 'true' : 'false';
+        // check if content from layouts
+        $buildMode = strpos($campaign->html, 'AcelleSystemLayouts') !== false ? 'true' : 'false';
     @endphp
-    
+
     <script>
         var CSRF_TOKEN = "{{ csrf_token() }}";
         var editor;
-        
+
         var templates = {!! json_encode($templates) !!};
-        
+
         $( document ).ready(function() {
             editor = new Editor({
                 buildMode: {{ $buildMode }},
-                legacyMode: false,
+                legacyMode: {{ !$buildMode ? 'true' : 'false' }},
                 showHelp: false,
                 showInlineToolbar: false,
                 lang: {!! json_encode(language()->getBuilderLang()) !!},

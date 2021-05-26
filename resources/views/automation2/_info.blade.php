@@ -45,8 +45,6 @@
     $('[name="automation_status"]').change(function() {
         var value = $(this).is(":checked");
         var url, confirm;
-
-        console.log(value);
         
         if (value) {
             url = '{{ action('Automation2Controller@enable', ["uids" => $automation->uid]) }}';
@@ -62,10 +60,11 @@
                 $.ajax({
                     url: url,
                     type: 'PATCH',
+                    globalError: false,
                     data: {
                         _token: CSRF_TOKEN
                     }
-                }).always(function(response) {
+                }).done(function(response) {
                     if (!value) {
                         notify(response.status, '{{ trans('messages.notify.success') }}', response.message);
                     } else {
@@ -84,6 +83,10 @@
                         });
                     }
                 
+                    sidebar.load();
+                }).error(function(e) {
+                    var error = JSON.parse(e.responseText);
+                    notify('error', '{{ trans('messages.notify.error') }}', error.message);
                     sidebar.load();
                 });      
             },
