@@ -5,7 +5,7 @@
     <div>
         <ul style="float:left" class="pagination" role="navigation">
             <li class="page-item">
-                <a href="{{ action('Automation2Controller@debug', ['uid' => $automation->uid, 'orderBy' => 'triggered_at', 'orderDir' => 'ASC']) }}">Sort By Trigger Date</a>
+                <a href="{{ action('Automation2Controller@debug', ['uid' => $automation->uid, 'orderBy' => 'triggered_at', 'orderDir' => 'DESC']) }}">Sort By Trigger Date</a>
             </li>
         </ul>
         {{ $subscribers->onEachSide(5)->appends(request()->input())->links() }}

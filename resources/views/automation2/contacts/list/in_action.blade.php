@@ -5,6 +5,9 @@
         
     <div class="mc-table small border-top">
         @foreach ($contacts as $key => $contact)
+            @php
+                $trigger = $automation->getAutoTriggerFor($contact);
+            @endphp
             <div class="mc-row d-flex align-items-center">
                 <div class="media trigger">
                     <a href="javascript:;" onclick="popup.load('{{ action('Automation2Controller@profile', [
@@ -29,21 +32,36 @@
                     </a>
                     <desc>{{ trans('messages.automation.contact.added_at', ['time' => $contact->created_at->diffForHumans()]) }}</desc>
                 </div>
+                
                 <div class="actions-points">
-                    @foreach ($automation->getInsight() as $key => $element)
-                        @php
-                            $action = $automation->getElement($key);
-                        @endphp
-
-                        <span class="xtooltip round-action-point action-{{ $action->get('type') }}" title="{{ $action->getName() }}">
-                        </span>
-                    @endforeach
+                    @if (!is_null($trigger))
+                        @foreach ($trigger->getExecutedActions() as $action)
+                            <span class="xtooltip round-action-point action-{{ $action->getType() }}" title="{{ $action->getProgressDescription() }}">
+                            </span>
+                        @endforeach
+                    @endif
                 </div>
                 <div class="flex-fill text-right">
-                    <label title="" class="text-right">
-                        <span class="text-truncate d-block m-auto" style="max-width: 100px;">{{ $contact->created_at->diffForHumans() }}</span>
-                    </label>
-                    <desc>{{ trans('messages.automation.last_activity') }}</desc>
+                    @if (is_null($trigger))
+                        <label title="" class="text-right">
+                            <span class="text-truncate" style="max-width: 100px;margin-right:0px">
+                                not triggered
+                            </span>
+                        </label>
+                        <desc><a target="_blank" style="color:blue;text-decoration: underline;" href="{{ action('Automation2Controller@triggerNow', [ 'automation' => $automation->uid, 'subscriber' => $contact->uid ]) }}">Trigger Now</a></desc>
+                    @else
+                        <label title="" class="text-right">
+                            <span class="text-truncate" style="max-width: 100px;margin-right:0px">
+                                @php
+                                    $latestAction = $trigger->getLatestAction() ?: $trigger->getTrigger();
+                                @endphp
+
+                                {{ $latestAction->getProgressDescription() }}
+                            </span>
+                        </label>
+                        <desc>Last activity • <a target="_blank" target="_blank" style="color:blue;text-decoration: underline;" href="{{ action('AutoTrigger@check', [ 'id' => $trigger->id ]) }}">Check</a></desc>
+                    @endif
+                    
                 </div>
             </div>
         @endforeach

@@ -63,4 +63,11 @@ class AutoTrigger extends Controller
 
         echo implode('<br>', $info);
     }
+
+    public function check(Request $request)
+    {
+        $trigger = AutoTriggerModel::find($request->id);
+        $trigger->check();
+        echo "Done";
+    }
 }

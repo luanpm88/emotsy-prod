@@ -186,6 +186,16 @@ class AutoTrigger extends Model
         } while (!is_null($action));
     }
 
+    public function getExecutedActions()
+    {
+        $list = [];
+        $this->traverseExecutedPath(function($action) use (&$list) {
+            $list[] = $action;
+        });
+
+        return $list;
+    }
+
     public function getActions($callback)
     {
         $json = $this->getJson();
