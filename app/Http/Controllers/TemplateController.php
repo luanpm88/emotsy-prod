@@ -645,7 +645,7 @@ class TemplateController extends Controller
             }
             
             if ($request->template) {
-                $currentTemplate = Template::findByUid($request->template);                
+                $currentTemplate = Template::findByUid($request->template);
                 $template = $currentTemplate->copy($request->name, $customer);
             }
             

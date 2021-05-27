@@ -166,9 +166,8 @@ class Evaluate extends Action
                 return sprintf('Clicked: "%s"', $link->link);
             } else {
                 return sprintf('Did not click: "%s"', $link->link);
-            }  
+            }
         }
-
     }
 
     public function hasChild($e)

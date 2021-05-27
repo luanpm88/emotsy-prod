@@ -125,7 +125,7 @@ abstract class Action
         return false;
     }
 
-    public function update(Array $json)
+    public function update(array $json)
     {
         // Keep the following attributes, do not overwrite
         $keep = [ 'last_executed', 'evaluationResult' ];

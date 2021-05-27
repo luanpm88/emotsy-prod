@@ -98,6 +98,5 @@ class Send extends Action
         }
 
         return sprintf('Sent email "%s" to "%s"', $email->subject, $subscriber->email);
-
     }
 }
