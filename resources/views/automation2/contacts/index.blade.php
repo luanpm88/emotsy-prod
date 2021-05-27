@@ -1,5 +1,9 @@
 @extends('layouts.popup.small')
 
+@section('class') 
+full-height
+@endsection
+
 @section('content')
     @php
         if (request()->action_id) {

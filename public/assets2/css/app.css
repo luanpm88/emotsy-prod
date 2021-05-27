@@ -1653,3 +1653,8 @@ a.trigger-woo-abandoned-cart:hover {
 .timeline-sort-direction[data-direction="desc"] span {
   transform: none!important;
 }
+.popup-body.full-height {
+  max-height: calc(100vh - 100px)!important;
+  height: calc(100vh - 100px)!important;
+  
+}
