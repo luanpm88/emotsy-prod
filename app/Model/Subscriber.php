@@ -1303,12 +1303,12 @@ class Subscriber extends Model
         return self::where('status', '=', self::STATUS_UNSUBSCRIBED);
     }
 
-    public function generateUnsubscribeUrl($messageId = null)
+    public function generateUnsubscribeUrl($messageId = null, $absoluteUrl = true)
     {
         $url = route('unsubscribeUrl', [
             'message_id' => StringHelper::base64UrlEncode($messageId),
             'subscriber' => $this->uid
-        ]);
+        ], $absoluteUrl);
 
         return $url;
     }

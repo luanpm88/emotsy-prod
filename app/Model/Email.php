@@ -655,11 +655,18 @@ class Email extends Model
 
     public function generateUnsubscribeUrl($msgId, $subscriber)
     {
-        // OPTION 1: immediately opt out
-        $path = route('unsubscribeUrl', ['message_id' => StringHelper::base64UrlEncode($msgId)], false);
+        // in case of a fake object, for sending test email
+        if (is_a($subscriber, 'stdClass')) {
+            $path = $subscriber->generateUnsubscribeUrl($msgId, $absoluteUrl = false);
 
-        // OPTION 2: unsubscribe form
-        // $path = route('unsubscribeForm', ['list_uid' => $subscriber->mailList->uid, 'code' => $subscriber->getSecurityToken('unsubscribe'), 'uid' => $subscriber->uid], false);
+            return $path;
+        }
+
+        // OPTION 1: immediately opt out
+        $path = $subscriber->generateUnsubscribeUrl($msgId, $absoluteUrl = false);
+
+        // OPTION 2: unsubscribe form, @IMPORTANT: it does not produce tracking log!!
+        //$path = route('unsubscribeForm', ['list_uid' => $subscriber->mailList->uid, 'code' => $subscriber->getSecurityToken('unsubscribe'), 'uid' => $subscriber->uid], false);
 
         return $this->buildPublicUrl($path);
     }
