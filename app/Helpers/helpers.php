@@ -177,22 +177,6 @@ function utc_offset($timezone)
 }
 
 /**
- * Get Database UTC offset.
- *
- * @return string UTC offset (+02:00 for example)
- */
-function db_utc_offset()
-{
-    $zone = DB::select("SELECT TIME_FORMAT(TIMEDIFF(NOW(), UTC_TIMESTAMP), '%H:%i') AS zone")[0]->zone;
-
-    if (!preg_match('/^-/', $zone)) {
-        $zone = "+$zone";
-    }
-
-    return $zone;
-}
-
-/**
  * Check if exec() function is available.
  *
  * @return bool
