@@ -4289,4 +4289,13 @@
   'system.end_period_last_days' => 'End period last days',
   'system.renew_free_plan' => 'Can renew free plan',
   'system.recurring_charge_before_days' => 'Auto charge renew invoice before',
+  'timeline.sort.recent_activities' => 'Most recent activities first',
+  'timeline.sort.recent_triggered' => 'Most recently triggered first',
+  'timeline.sort.new_contacts' => 'New contacts first',
+  'timeline.sort' => 'Sort',
+  'automation.trigger_now' => 'Trigger Now',
+  'automation.trigger_now.confirm' => 'You are trying to manually trigger the automation for this
+      contact, although trigger criteria may not meet. Are you sure?',
+  'trigger.check' => 'Check',
+  'automation.audience' => 'Audience',
 ) ?>

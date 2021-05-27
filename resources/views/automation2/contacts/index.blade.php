@@ -18,7 +18,7 @@
         'actionId' => $actionId,
     ])
 
-    <div class="contacts-stats-boxes d-flex align-items-center">
+    <div class="contacts-stats-boxes d-flex align-items-center" style="pointer-events: none;">
         <div class="contacts-stats-box" onclick="timelinePopup.load('{{ action('Automation2Controller@contacts', [
             'uid' => $automation->uid,
             'type' => 'in_action',

@@ -48,7 +48,13 @@
                                 <span class="text-warning">Waiting...</span>
                             </span>
                         </label>
-                        <desc><a target="_blank" style="color:blue;text-decoration: underline;" href="{{ action('Automation2Controller@triggerNow', [ 'automation' => $automation->uid, 'subscriber' => $contact->uid ]) }}">Trigger Now</a></desc>
+                        <desc>
+                            <a target="_blank" style="color:blue;text-decoration: underline;"
+                                href="{{ action('Automation2Controller@triggerNow', [ 'automation' => $automation->uid, 'subscriber' => $contact->uid ]) }}"
+                                class="timeline-trigger-now">
+                                {{ trans('messages.automation.trigger_now') }}
+                            </a>
+                        </desc>
                     @else
                         <label title="" class="text-right">
                             <span class="text-truncate" style="max-width: 100px;margin-right:0px">
@@ -64,7 +70,14 @@
                                 {{ $lastUpdate }}
                             </span>
                         </label>
-                        <desc>Last activity • <a target="_blank" target="_blank" style="color:blue;text-decoration: underline;" href="{{ action('AutoTrigger@check', [ 'id' => $trigger->id ]) }}">Check</a></desc>
+                        <desc>Last activity •
+                            <a target="_blank" target="_blank" style="color:blue;text-decoration: underline;"
+                                href="{{ action('AutoTrigger@check', [ 'id' => $trigger->id ]) }}"
+                                class="trigger-check"
+                            >
+                                {{ trans('messages.trigger.check') }}
+                            </a>
+                        </desc>
                     @endif
                     
                 </div>
@@ -80,3 +93,63 @@
         </span>
     </div>
 @endif
+
+<script>
+    $('.timeline-trigger-now').on('click', function(e) {
+        e.preventDefault();
+        var url = $(this).attr('href');
+
+        var dia = new Dialog('confirm', {
+            message: `{{ trans('messages.automation.trigger_now.confirm') }}`,
+            ok: function() {
+                $.ajax({
+                    url: url,
+                    method: 'GET',
+                    success: function (response) {
+                        // notify
+                        // notify(response.status, '{{ trans('messages.notify.success') }}', response.message); 
+
+                        listContact.load();
+                    }
+                });
+            }
+        });
+    });
+
+    $('.timeline-trigger-now').on('click', function(e) {
+        e.preventDefault();
+        var url = $(this).attr('href');
+
+        var dia = new Dialog('confirm', {
+            message: `{{ trans('messages.automation.trigger_now.confirm') }}`,
+            ok: function() {
+                $.ajax({
+                    url: url,
+                    method: 'GET',
+                    success: function (response) {
+                        // notify
+                        // notify(response.status, '{{ trans('messages.notify.success') }}', response.message); 
+
+                        listContact.load();
+                    }
+                });
+            }
+        });
+    });
+
+    $('.trigger-check').on('click', function(e) {
+        e.preventDefault();
+        var url = $(this).attr('href');
+
+        $.ajax({
+            url: url,
+            method: 'GET',
+            success: function (response) {
+                // notify
+                // notify(response.status, '{{ trans('messages.notify.success') }}', response.message); 
+
+                listContact.load();
+            }
+        });
+    });
+</script>

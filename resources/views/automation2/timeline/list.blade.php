@@ -5,15 +5,25 @@
     <div class="insight-action">
         <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
             <div class="btn-group btn-group-sm" role="group">
-              <button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Action
-              </button>
-              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnGroupDrop1">
-                <a class="dropdown-item" href="#">Export this list</a>
-                <a class="dropdown-item" href="#">Copy to a new list</a>
-                <a class="dropdown-item" href="#">Tag those contacts</a>
-              </div>
+                <button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle timeline-sort-title" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    @if (request()->sortBy) 
+                        {{ trans('messages.timeline.sort.' . request()->sortBy) }}
+                    @else
+                        {{ trans('messages.timeline.sort') }}
+                    @endif
+                </button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnGroupDrop1">
+                    <a class="dropdown-item timeline-sort" href="#" data-sort="recent_activities">{{ trans('messages.timeline.sort.recent_activities') }}</a>
+                    <a class="dropdown-item timeline-sort" href="#" data-sort="recent_triggered">{{ trans('messages.timeline.sort.recent_triggered') }}</a>
+                    <a class="dropdown-item timeline-sort" href="#" data-sort="new_contacts">{{ trans('messages.timeline.sort.new_contacts') }}</a>
+                </div>
             </div>
+            <button type="button" class="btn btn-outline-secondary timeline-sort-direction px-2" data-direction="{{ request()->sortDirection == 'desc' ? 'desc' : 'asc' }}">
+                <span class="material-icons-outlined" style="font-size: 20px;transform: scaleY(-1);
+                    display: block;">
+                    sort
+                </span>
+            </button>
         </div>
     </div>
 </div>
@@ -65,4 +75,39 @@
         </span>
     </div>
 @endif
+
+<script>
+    function timelineSort(newData) {
+        var currentData = listTimeline.data();
+        listTimeline.data = function() {
+            $.extend( currentData, newData);
+            return currentData;
+        };
+
+        listTimeline.load();
+    }
+
+    $('.timeline-sort-direction').on('click', function(e) {
+        e.preventDefault();
+        var direction = $(this).attr('data-direction');
+
+        if (direction == 'asc') {
+            $(this).attr('data-direction', 'desc');
+            timelineSort({sortDirection: 'desc'});
+        } else {
+            $(this).attr('data-direction', 'asc');
+            timelineSort({sortDirection: 'asc'});
+        }
+    });
+
+    $('.timeline-sort').on('click', function(e) {
+        e.preventDefault();
+        var sortBy = $(this).attr('data-sort');
+        var text = $(this).html();
+
+        timelineSort({sortBy: sortBy});
+
+        $('.timeline-sort-title').html(text);
+    });
+</script>
     
