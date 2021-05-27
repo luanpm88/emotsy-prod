@@ -1,5 +1,9 @@
 @extends('layouts.popup.small')
 
+@section('class') 
+full-height
+@endsection
+
 @section('content')
                     
     @include('automation2._tabs_timeline', [

@@ -25,7 +25,6 @@
     <a title="{{ trans('messages.automation.go_contacts') }}" href="javascript:;"
       onclick="timelinePopup.load('{{ action('Automation2Controller@contacts', [
         'uid' => $automation->uid,
-        'type' => 'in_action',
       ]) }}')" class="xtooltip insight-stat-col flex-fill">
         <number>{{ number_with_delimiter($stats['involed']) }}</number>
         <desc class="text-muted text-center">
@@ -59,24 +58,24 @@
                 {!! $action->getIcon() !!}
             </div>
             <div class="flex-fill" style="width: 35%">
-                <label title="{{ trans('messages.automation.go_contacts') }}" onclick="sidebar.load('{{ action('Automation2Controller@contacts', [
-                        'uid' => $automation->uid,
-                        'action_id' => $key
-                    ]) }}')" class="cursor-pointer xtooltip font-weight-semibold"
+                <label title="{{ trans('messages.automation.go_contacts') }}" onclick="timelinePopup.load('{{ action('Automation2Controller@contacts', [
+                    'uid' => $automation->uid,
+                  ]) }}')" class="cursor-pointer xtooltip font-weight-semibold"
                 >
                     {{ $action->getName() }}
                 </label>
-                <desc title="{{ trans('messages.automation.go_contacts') }}" onclick="sidebar.load('{{ action('Automation2Controller@contacts', [
+                <desc title="{{ trans('messages.automation.go_contacts') }}" onclick="timelinePopup.load('{{ action('Automation2Controller@contacts', [
                     'uid' => $automation->uid,
-                    'action_id' => $key
-                ]) }}')" class="cursor-pointer xtooltip">
+                  ]) }}')" class="cursor-pointer xtooltip">
                     {{ $element['subtitle'] }}
                 </desc>
             </div>
             <a 
                 title="{{ trans('messages.automation.go_timeline') }}"
                 href="javascript:;"
-                onclick="sidebar.load('{{ action('Automation2Controller@timeline', $automation->uid) }}')"
+                onclick="timelinePopup.load('{{ action('Automation2Controller@timeline', [
+                    'uid' => $automation->uid,
+                  ]) }}')"
                 class="xtooltip flex-fill"
             >
                 <label class="font-weight-semibold">
@@ -85,10 +84,9 @@
                 <desc>{{ trans('messages.automation.action.last_updated') }}</desc>
             </a>
             <div class="flex-fill text-center">
-                <h3 title="{{ trans('messages.automation.insight.percent_tip') }}" onclick="sidebar.load('{{ action('Automation2Controller@contacts', [
-                        'uid' => $automation->uid,
-                        'action_id' => $key
-                    ]) }}')" class="cursor-pointer xtooltip font-weight-semibold"
+                <h3 title="{{ trans('messages.automation.insight.percent_tip') }}" onclick="timelinePopup.load('{{ action('Automation2Controller@contacts', [
+                    'uid' => $automation->uid,
+                  ]) }}')" class="cursor-pointer xtooltip font-weight-semibold"
                 >
                     {{ number_to_percentage($element['percentage']) }}
                 </h3>

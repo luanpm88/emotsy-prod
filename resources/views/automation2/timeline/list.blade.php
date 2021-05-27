@@ -18,12 +18,6 @@
                     <a class="dropdown-item timeline-sort" href="#" data-sort="new_contacts">{{ trans('messages.timeline.sort.new_contacts') }}</a>
                 </div>
             </div>
-            <button type="button" class="btn btn-outline-secondary timeline-sort-direction px-2" data-direction="{{ request()->sortDirection == 'desc' ? 'desc' : 'asc' }}">
-                <span class="material-icons-outlined" style="font-size: 20px;transform: scaleY(-1);
-                    display: block;">
-                    sort
-                </span>
-            </button>
         </div>
     </div>
 </div>
