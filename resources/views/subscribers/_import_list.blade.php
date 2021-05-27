@@ -17,7 +17,7 @@
 				<br />
 				
 				<span class="text-muted">{{ trans('messages.run_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
-				@if ($data->status == 'done')
+				@if ($item->status == 'done')
 					<br />
 					<span class="text-muted">{{ trans('messages.finished_at') }}: {{ Tool::formatDateTime($item->updated_at) }}</span>
 				@endif
@@ -39,7 +39,7 @@
 					@if ($item->status == 'cancelled')
 						<span class="label label-flat bg-{{ $item->status }}">{{ trans('messages.system_job_status_' . $item->status) }}</span>
 					@else
-						<span class="label label-flat bg-{{ $data->status }}">{{ trans('messages.system_job_status_' . $item->status) }}</span>
+						<span class="label label-flat bg-{{ $item->status }}">{{ trans('messages.system_job_status_' . $item->status) }}</span>
 					@endif
 				</span>
 			</td>

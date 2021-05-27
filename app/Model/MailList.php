@@ -1399,6 +1399,10 @@ class MailList extends Model
             $logger->info(trans('messages.Finish_importing_for_list_uid', ['uid' => $this->uid]));
             
             $this->log('import_success', $customer, ['count' => $processed_count,'error' => '']);
+
+            // @IMPORTANT: if process fails here, something weird occurs
+            // Job done, system_job.data does not have any information!!!
+            // Only errors found in failed_logs and system_job.status = failed
             $this->reformatDateFields();
             $this->updateCachedInfo();
         }

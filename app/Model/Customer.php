@@ -36,6 +36,7 @@ use Acelle\Model\MailList;
 use DateTime;
 use DateTimeZone;
 use Exception;
+use DB;
 
 class Customer extends Model implements BillableUserInterface
 {
