@@ -44,52 +44,35 @@ class Kernel extends ConsoleKernel
             return;
         }
 
-        $errorTitle = 'PHP CLI error';
+        $schedule->call(function () {
+            event(new \Acelle\Events\CronJobExecuted());
+        })->name('cronjob_event:log')->everyMinute();
 
-        try {
-            // Log last execution time
-            // Move the event into a schedule::call to prevent it from triggering every time "php artisan" command is executed
-            $schedule->call(function () {
-                event(new \Acelle\Events\CronJobExecuted());
-            })->name('cronjob_event:log')->everyMinute();
+        // Automation2
+        $schedule->call(function () {
+            Automation2::run();
+        })->name('automation:run')->everyFiveMinutes();
 
-            // Automation2
-            $schedule->call(function () {
-                Automation2::run();
-            })->name('automation:run')->everyFiveMinutes();
+        // Bounce/feedback handler
+        $schedule->command('handler:run')->everyThirtyMinutes();
 
-            // Bounce/feedback handler
-            $schedule->command('handler:run')->everyThirtyMinutes();
+        // Queued import/export/campaign
+        $schedule->command('queue:work --once --tries=1')->everyMinute();
 
-            // Queued import/export/campaign
-            $schedule->command('queue:work --once --tries=1')->everyMinute();
+        // Sender verifying
+        $schedule->command('sender:verify')->everyFiveMinutes();
 
-            // Sender verifying
-            $schedule->command('sender:verify')->everyFiveMinutes();
+        // System clean up
+        $schedule->command('system:cleanup')->daily();
 
-            // System clean up
-            $schedule->command('system:cleanup')->daily();
+        // GeoIp database check
+        $schedule->command('geoip:check')->everyMinute()->withoutOverlapping(60);
 
-            // GeoIp database check
-            $schedule->command('geoip:check')->everyMinute()->withoutOverlapping(60);
+        // Subscription
+        $schedule->call(function () {
+            Subscription::checkAll();
+        })->name('subscription:run')->everyFiveMinutes();
 
-            // Subscription
-            $schedule->call(function () {
-                Subscription::checkAll();
-            })->name('subscription:run')->everyFiveMinutes();
-
-            // Clean up any previous error
-            Notification::cleanupDuplicateNotifications($errorTitle);
-        } catch (\Throwable $t) {
-            // IMPORTANT: make sure you have the slash before Throwable
-            // Otherwise PHP unders it as Acelle\Console\Throwable and it never catches anything!
-            Notification::cleanupDuplicateNotifications($errorTitle);
-            Notification::warning(['title' => $errorTitle, 'message' => $t->getMessage()]);
-
-            // Throw it to trigger other LINUX mechanism (command failure for example)
-            throw new Exception($t->getMessage());
-        }
-        
     }
 
     /**

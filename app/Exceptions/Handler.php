@@ -8,6 +8,7 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Closure;
 use Throwable;
 use Acelle\Library\Notification\BackendError as BackendErrorNotification;
+use App;
 
 class Handler extends ExceptionHandler
 {
@@ -35,17 +36,23 @@ class Handler extends ExceptionHandler
      */
     public function report(Throwable $exception)
     {
+
         if (in_array(get_class($exception), $this->dontReport)) {
-            // skip logging as those exceptions are handled by Laravel Auth
-        } elseif (isInitiated()) {
+ 
+            // Do nothing
+
+        } elseif (App::runningInConsole() && isInitiated()) {
             try {
-                // IMPORTANT: do not use Model here, what if DB connect is not initiated correctly, exception loop stack => "PHP Fatal error:  Uncaught Error: Maximum function nesting level of '256' reached, aborting"
-                // check if the exception does match the known list
-                // $errorTitle = $exception->getMessage();
-                // BackendErrorNotification::cleanupDuplicateNotifications($errorTitle);
-                // BackendErrorNotification::warning([ 'title' => $errorTitle, 'message' => date('Y-m-d').' ('.get_class($exception).') '.$exception->getMessage() ], false);
-            } catch (Exception $e) {
-                // just keep silent
+                // IMPORTANT: do not use Model here, what if DB connect is not initiated correctly
+                // resulting in "exception loop stack" => "PHP Fatal error:  Uncaught Error: Maximum function nesting level of '256' reached, aborting"
+                $title = 'PHP CLI ERROR';
+                BackendErrorNotification::cleanupDuplicateNotifications($title); // keep last error only, otherwise, get overwhelmed
+                BackendErrorNotification::warning([
+                    'title' => $title,
+                    'message' => sprintf("[%s] %s: %s", date('Y-m-d'), get_class($exception), $exception->getMessage())]
+                , false); // false: also clean up other notification logged by BackendErrorNotification
+            } catch (Throwable $t) {
+                // just keep silent in case of even ErrorNotification cannot work, in case of DB connect for example
             }
         }
 
