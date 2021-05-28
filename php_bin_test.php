@@ -51,10 +51,14 @@ if (!(extension_loaded('gd') && function_exists('gd_info'))) {
     echo "ERROR: PHP GD Library is required.<br />";
     $valid = false;
 }
+
+/*** not required for PHP CLI
 if (!extension_loaded('fileinfo')) {
     echo "ERROR: PHP Fileinfo extension is required.<br />";
     $valid = false;
 }
+***/
+
 if (!extension_loaded('curl')) {
     echo "ERROR: PHP CURL extension is required.<br />";
     $valid = false;
