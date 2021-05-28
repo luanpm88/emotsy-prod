@@ -657,7 +657,7 @@ class Email extends Model
     {
         // in case of a fake object, for sending test email
         if (is_a($subscriber, 'stdClass')) {
-            $path = $subscriber->generateUnsubscribeUrl($msgId, $absoluteUrl = false);
+            $path = route('unsubscribeUrl', [ 'subscriber' => 'unknown', 'message_id' => StringHelper::base64UrlEncode($msgId)], false);
 
             return $path;
         }
