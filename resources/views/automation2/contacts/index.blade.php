@@ -1,4 +1,4 @@
-@extends('layouts.popup.small')
+@extends('layouts.popup.medium')
 
 @section('class') 
 full-height
@@ -67,15 +67,33 @@ full-height
                 ]) !!}
             @endif        
         </div>
-        <div class="insight-action">
-            <button  onclick="timelinePopup.load('{{ action('Automation2Controller@contacts', [
-                'uid' => $automation->uid,
-                'type' => request()->type,
-            ]) }}')" type="button" class="btn btn-outline-secondary btn-sm">
-                {{ trans('messages.automation.update_stats') }}
-            </button>
+        <div class="insight-action d-flex align-items-center">
+            <div class="btn-group btn-group-sm" role="group">
+                <button onclick="timelinePopup.load('{{ action('Automation2Controller@contacts', [
+                    'uid' => $automation->uid,
+                    'type' => request()->type,
+                ]) }}')" type="button" class="btn btn-secondary btn-sm mr-1">
+                    {{ trans('messages.automation.update_stats') }}
+                </button>
+            </div>
+            <div class="mr-1" role="group" aria-label="Button group with nested dropdown">
+                <div class="btn-group btn-group-sm" role="group">
+                    <button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle contacts-sort-title" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        @if (request()->sortBy) 
+                            {{ trans('messages.timeline.sort.' . request()->sortBy) }}
+                        @else
+                            {{ trans('messages.timeline.sort') }}
+                        @endif
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnGroupDrop1">
+                        <a class="dropdown-item contacts-sort" href="#" data-sort="recent_activities">{{ trans('messages.timeline.sort.recent_activities') }}</a>
+                        <a class="dropdown-item contacts-sort" href="#" data-sort="recent_triggered">{{ trans('messages.timeline.sort.recent_triggered') }}</a>
+                        <a class="dropdown-item contacts-sort" href="#" data-sort="new_contacts">{{ trans('messages.timeline.sort.new_contacts') }}</a>
+                    </div>
+                </div>
+            </div>
             @if ($subscribers->count())
-                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+                <div class="" role="group" aria-label="Button group with nested dropdown">
                     <div class="btn-group btn-group-sm" role="group">
                     <button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {{ trans('messages.automation.action') }}
@@ -196,6 +214,26 @@ full-height
             copyContact.load(url, function() {
                 console.log('Copy to new list popup loaded!');				
             });
+        });
+
+        function contactsSort(newData) {
+            var currentData = listContact.data();
+            listContact.data = function() {
+                $.extend( currentData, newData);
+                return currentData;
+            };
+
+            listContact.load();
+        }
+
+        $('.contacts-sort').on('click', function(e) {
+            e.preventDefault();
+            var sortBy = $(this).attr('data-sort');
+            var text = $(this).html();
+
+            contactsSort({sortBy: sortBy});
+
+            $('.contacts-sort-title').html(text);
         });
     </script>
 @endsection
