@@ -4,7 +4,7 @@
         <h2 class="title">@yield('title')</h2>
         <i class="lnr lnr-cross close"></i>
     </div>
-    <div class="popup-body scrollbar-inner">
+    <div class="popup-body scrollbar-inner @yield('class')">
         <div class="popup-content">
             <!-- display flash message -->
             @include('common.errors')
