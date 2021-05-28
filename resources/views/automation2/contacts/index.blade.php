@@ -1,21 +1,9 @@
 @extends('layouts.popup.small')
 
 @section('content')
-    @php
-        if (request()->action_id) {
-            $action = $automation->getElement(request()->action_id);
-            $sub = $action->getName();
-            $actionId = request()->action_id;
-        } else {
-            $sub = trans('messages.automation.contacts_' . request()->type);
-            $actionId = '';
-        }
-    @endphp
                     
     @include('automation2._tabs_timeline', [
-        'tab' => 'statistics', 
-        'sub' => $sub,
-        'actionId' => $actionId,
+        'tab' => 'statistics'
     ])
 
     <div class="contacts-stats-boxes d-flex align-items-center" style="pointer-events: none;">
@@ -51,17 +39,8 @@
 
     <div class="insight-topine d-flex small align-items-center">
         <div class="insight-desc mr-auto">
-            @if (request()->action_id)
-                {!! trans_choice('messages.automation.action.contacts_intro', $automation->subscribers(request()->action_id)->count(), [
-                    'count' => format_number($subscribers->count()),
-                    'name' => $automation->getElement(request()->action_id)->getName(),
-                ]) !!}
-            @else
-                {!! trans_choice('messages.automation.contacts_intro', $automation->subscribers()->count(), [
-                    'count' => format_number($subscribers->count()),
-                    'name' => $automation->name,
-                ]) !!}
-            @endif        
+            {!! trans('messages.automation.contacts_intro', ['count' => number_with_delimiter($count)])
+            !!}
         </div>
         <div class="insight-action">
             <button  onclick="timelinePopup.load('{{ action('Automation2Controller@contacts', [
@@ -70,7 +49,7 @@
             ]) }}')" type="button" class="btn btn-outline-secondary btn-sm">
                 {{ trans('messages.automation.update_stats') }}
             </button>
-            @if ($subscribers->count())
+            @if ($count)
                 <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
                     <div class="btn-group btn-group-sm" role="group">
                     <button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

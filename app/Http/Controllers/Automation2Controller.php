@@ -1421,9 +1421,11 @@ class Automation2Controller extends Controller
         }
 
         $subscribers = $automation->subscribers();
+        $count = $subscribers->count();
 
         return view('automation2.contacts.index', [
             'automation' => $automation,
+            'count' => $count,
             'stats' => $automation->getSummaryStats(),
             'subscribers' => $subscribers,
         ]);
@@ -1449,8 +1451,7 @@ class Automation2Controller extends Controller
         }
 
         // list by type
-        $subscribers = Subscriber::gSearch($automation->subscribers(), $request);
-        
+        $subscribers = $automation->subscribers();
         $contacts = $subscribers->paginate($request->per_page);
         
         return view('automation2.contacts.list', [
@@ -1593,13 +1594,7 @@ class Automation2Controller extends Controller
     public function tagContacts(Request $request, $uid)
     {
         $automation = Automation2::findByUid($uid);
-
-        // subscribers list
-        if ($request->action_id) {
-            $subscribers = Subscriber::gSearch($automation->subscribers($request->action_id), $request);
-        } else {
-            $subscribers = Subscriber::gSearch($automation->subscribers(), $request);
-        }
+        $subscribers = $automation->subscribers();
         
         // authorize
         if (\Gate::denies('update', $automation)) {
@@ -1684,12 +1679,7 @@ class Automation2Controller extends Controller
             return $this->notAuthorized();
         }
 
-        // subscribers list
-        if ($request->action_id) {
-            $subscribers = Subscriber::gSearch($automation->subscribers($request->action_id), $request);
-        } else {
-            $subscribers = Subscriber::gSearch($automation->subscribers(), $request);
-        }
+        $subscribers = $automation->subscribers();
 
         // saving
         if ($request->isMethod('post')) {
@@ -1716,12 +1706,7 @@ class Automation2Controller extends Controller
             return $this->notAuthorized();
         }
 
-        // subscribers list
-        if ($request->action_id) {
-            $subscribers = Subscriber::gSearch($automation->subscribers($request->action_id), $request);
-        } else {
-            $subscribers = Subscriber::gSearch($automation->subscribers(), $request);
-        }
+        $subscribers = $subscribers = $automation->subscribers();
 
         // saving
         if ($request->isMethod('post')) {

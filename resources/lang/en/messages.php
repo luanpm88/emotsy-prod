@@ -1357,7 +1357,7 @@
   'auto_event_api-call' => 'API call',
   'events' => 'Events',
   'triggers' => 'Triggers',
-  'disable_automation_before_add_event_confirm' => 'Automation <span class="text-semibold text-teal-800">:name</span> is already running. Please disable the automation before editing its workflow. You can enable it again once you are done.',
+  'disable_automation_before_add_event_confirm' => 'Automation <span class="text-semibold text-teal-800">:name</span> is already running. Please disable the automation before editing its workfflow. You can enable it again once you are done.',
   'automation.designer.intro' => 'Automation starts when the following trigger condition is met',
   'automation.designer.last_saved' => 'Last saved: :time',
   'automations.disabled' => 'One or more automations were successfully disabled',
@@ -2949,7 +2949,7 @@
   'automation.action.last_updated' => 'Last updated',
   'automation.action.contacts_count' => ':count contact|:count contacts',
   'automation.contacts_intro' => 'There are <span class="font-weight-semibold">:count</span>
-    contacts who involved in this automation',
+    contacts in total targeted for this automation / campaign',
   'automation.action.contacts_intro' => 'There are <span class="font-weight-semibold">:count</span> contacts who involved in action
     `<span class="font-weight-semibold">:name</span>`',
   'automation.profile_timeline_head' => 'Timeline',

@@ -17,10 +17,4 @@
     @if (isset($tab))
         $('.timeline-tab .nav-link.{{ $tab }}').addClass('active');
     @endif
-    @if (isset(request()->type))
-        $('.timeline-tab .dropdown-item.contacts_{{ request()->type }}').addClass('active');
-    @endif
-    @if (isset($actionId))
-        $('.timeline-tab .dropdown-item.contacts_action_{{ $actionId }}').addClass('active');
-    @endif
 </script>
