@@ -4071,7 +4071,6 @@
   'cart.wait.click_change' => 'Click here to change',
   'cart.auto_add_buyer_to_list' => 'Automatically add buyer contacts to list:
       <span class="text-semibold">:list</span>',
-  'cart.wait.click_change' => 'Click here to change',
   'cart.connected_to_store' => 'Connected to store <span class="text-semibold">:store</span>',
   'cart.auto_add_buyer.click_change' => 'Change list',
   'cart.connected_to_store.show' => 'Show store information',
@@ -4296,6 +4295,6 @@
   'automation.trigger_now' => 'Trigger Now',
   'automation.trigger_now.confirm' => 'You are trying to manually trigger the automation for this
       contact, although trigger criteria may not meet. Are you sure?',
-  'trigger.check' => 'Check',
+  'trigger.check' => 'Refresh',
   'automation.audience' => 'Audience',
 ) ?>
