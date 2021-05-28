@@ -23,28 +23,28 @@
             'uid' => $automation->uid,
             'type' => 'in_action',
         ]) }}')">
-            <label class="{{ request()->type == 'in_action' ? 'text-warning' : '' }}">308</label>
+            <label class="{{ request()->type == 'in_action' ? 'text-warning' : '' }}">{{ number_with_delimiter($stats['involed']) }}</label>
             <div class="desc">{{ trans('messages.automation.box.contacts_in_action') }}</div>
         </div>
         <div class="contacts-stats-box" onclick="timelinePopup.load('{{ action('Automation2Controller@contacts', [
             'uid' => $automation->uid,
             'type' => 'done',
         ]) }}')">
-            <label class="{{ request()->type == 'done' ? 'text-warning' : '' }}">854</label>
+            <label class="{{ request()->type == 'done' ? 'text-warning' : '' }}">{{ number_to_percentage($stats['complete']) }}</label>
             <div class="desc">{{ trans('messages.automation.box.contacts_done') }}</div>
         </div>
         <div class="contacts-stats-box skipped" onclick="timelinePopup.load('{{ action('Automation2Controller@contacts', [
             'uid' => $automation->uid,
             'type' => 'pending',
         ]) }}')">
-            <label class="{{ request()->type == 'pending' ? 'text-warning' : '' }}">32,288</label>
+            <label class="{{ request()->type == 'pending' ? 'text-warning' : '' }}">{{ number_with_delimiter($stats['pending']) }}</label>
             <div class="desc">{{ trans('messages.automation.box.contacts_skip_pending') }}</div>
         </div>
         <div class="contacts-stats-box error" onclick="timelinePopup.load('{{ action('Automation2Controller@contacts', [
             'uid' => $automation->uid,
             'type' => 'error',
         ]) }}')">
-            <label>2</label>
+            <label>0</label>
             <div class="desc">{{ trans('messages.automation.box.contacts_error') }}</div>
         </div>
     </div>

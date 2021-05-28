@@ -465,7 +465,7 @@ class Automation2 extends Model
             $this->checkForExistingTriggersUpdate();
             $this->updateCache();
             $this->setLastError(null);
-        } catch (\Exception $ex) {
+        } catch (\Throwable $ex) {
             $this->setLastError($ex->getMessage());
             $this->logger()->warning(sprintf('Error while executing automation "%s". %s', $this->name, $ex->getMessage()));
         }
@@ -881,6 +881,7 @@ class Automation2 extends Model
             'total' => $total,
             'involed' => $involved,
             'complete' => $completePercentage,
+            'pending' => $this->getSubscribersWithTriggerInfo()->whereNull('auto_triggers.id')->count(),
         ];
     }
 
