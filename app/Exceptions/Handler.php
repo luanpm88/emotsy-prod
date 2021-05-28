@@ -36,11 +36,9 @@ class Handler extends ExceptionHandler
      */
     public function report(Throwable $exception)
     {
-
         if (in_array(get_class($exception), $this->dontReport)) {
  
             // Do nothing
-
         } elseif (App::runningInConsole() && isInitiated()) {
             try {
                 // IMPORTANT: do not use Model here, what if DB connect is not initiated correctly
@@ -49,8 +47,7 @@ class Handler extends ExceptionHandler
                 BackendErrorNotification::cleanupDuplicateNotifications($title); // keep last error only, otherwise, get overwhelmed
                 BackendErrorNotification::warning([
                     'title' => $title,
-                    'message' => sprintf("[%s] %s: %s", date('Y-m-d'), get_class($exception), $exception->getMessage())]
-                , false); // false: also clean up other notification logged by BackendErrorNotification
+                    'message' => sprintf("[%s] %s: %s", date('Y-m-d'), get_class($exception), $exception->getMessage())], false); // false: also clean up other notification logged by BackendErrorNotification
             } catch (Throwable $t) {
                 // just keep silent in case of even ErrorNotification cannot work, in case of DB connect for example
             }

@@ -72,7 +72,6 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             Subscription::checkAll();
         })->name('subscription:run')->everyFiveMinutes();
-
     }
 
     /**
