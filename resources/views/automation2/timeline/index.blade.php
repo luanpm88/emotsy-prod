@@ -1,4 +1,4 @@
-@extends('layouts.popup.small')
+@extends('layouts.popup.medium')
 
 @section('class') 
 full-height
