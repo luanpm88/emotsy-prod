@@ -1264,6 +1264,8 @@ class Subscriber extends Model
         return $validator;
     }
 
+
+    // Confirm a subscription via double opt-in form
     public function confirm()
     {
         $this->status = self::STATUS_SUBSCRIBED;

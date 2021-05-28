@@ -866,7 +866,7 @@ class Automation2 extends Model
 
     public function getSummaryStats()
     {
-        $total = $this->mailList->subscribersCount();
+        $total = $this->subscribers()->count();
         $involved = $this->autoTriggers()->count();
 
         $leaves = $this->getLeafActions();
