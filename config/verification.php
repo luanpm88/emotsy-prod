@@ -18,14 +18,6 @@ return [
             'fields' => [ 'api_key' ],
             'result_xpath' => '$.result',
             'result_map' => [ 'deliverable' => 'deliverable', 'undeliverable' => 'undeliverable', 'risky' => 'risky', 'unknown' => 'unknown' ]
-        ], [
-            'id' => 'thechecker.co',
-            'name' => 'TheChecker CO',
-            'uri' => 'https://api.thechecker.co/v1/verify?email={EMAIL}&api_key={API_KEY}',
-            'request_type' => 'GET',
-            'fields' => [ 'api_key' ],
-            'result_xpath' => '$.result',
-            'result_map' => [ 'deliverable' => 'deliverable', 'undeliverable' => 'undeliverable', 'risky' => 'risky', 'unknown' => 'unknown' ]
         ],
         /*[
             'id' => 'verify-email.org',
