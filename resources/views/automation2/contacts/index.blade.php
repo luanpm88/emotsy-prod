@@ -46,17 +46,6 @@ full-height
             {!! trans('messages.automation.contacts_intro', ['count' => number_with_delimiter($count)])
             !!}
         </div>
-<<<<<<< HEAD
-        <div class="insight-action">
-            <button  onclick="timelinePopup.load('{{ action('Automation2Controller@contacts', [
-                'uid' => $automation->uid,
-                'type' => request()->type,
-            ]) }}')" type="button" class="btn btn-outline-secondary btn-sm">
-                {{ trans('messages.automation.update_stats') }}
-            </button>
-            @if ($count)
-                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
-=======
         <div class="insight-action d-flex align-items-center">
             <div class="btn-group btn-group-sm" role="group">
                 <button onclick="timelinePopup.load('{{ action('Automation2Controller@contacts', [
@@ -84,7 +73,6 @@ full-height
             </div>
             @if ($subscribers->count())
                 <div class="" role="group" aria-label="Button group with nested dropdown">
->>>>>>> 3959cf536 (copy sort)
                     <div class="btn-group btn-group-sm" role="group">
                     <button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {{ trans('messages.automation.action') }}
