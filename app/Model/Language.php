@@ -26,6 +26,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Language extends Model
 {
+    const STATUS_ACTIVE = 'active';
+
     /**
      * Get users.
      *
