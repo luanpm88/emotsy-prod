@@ -3,6 +3,14 @@
 return [
     'services' => [
         [
+            'id' => 'emailable.com',
+            'name' => 'Emailable, LLC. (recommended)',
+            'uri' => 'https://api.emailable.com/v1/verify?email={EMAIL}&api_key={API_KEY}',
+            'request_type' => 'GET',
+            'fields' => [ 'api_key' ],
+            'result_xpath' => '$.state',
+            'result_map' => [ 'deliverable' => 'deliverable', 'undeliverable' => 'undeliverable', 'risky' => 'risky', 'unknown' => 'unknown' ]
+        ],[
             'id' => 'kickbox.io',
             'name' => 'Kickbox IO',
             'uri' => 'https://api.kickbox.io/v2/verify?email={EMAIL}&apikey={API_KEY}',
