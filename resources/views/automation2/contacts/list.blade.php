@@ -102,27 +102,8 @@
         var dia = new Dialog('confirm', {
             message: `{{ trans('messages.automation.trigger_now.confirm') }}`,
             ok: function() {
-                $.ajax({
-                    url: url,
-                    method: 'GET',
-                    success: function (response) {
-                        // notify
-                        // notify(response.status, '{{ trans('messages.notify.success') }}', response.message); 
-
-                        listContact.load();
-                    }
-                });
-            }
-        });
-    });
-
-    $('.timeline-trigger-now').on('click', function(e) {
-        e.preventDefault();
-        var url = $(this).attr('href');
-
-        var dia = new Dialog('confirm', {
-            message: `{{ trans('messages.automation.trigger_now.confirm') }}`,
-            ok: function() {
+                $(this).addClass('link-disabled');
+                
                 $.ajax({
                     url: url,
                     method: 'GET',
@@ -140,6 +121,8 @@
     $('.trigger-check').on('click', function(e) {
         e.preventDefault();
         var url = $(this).attr('href');
+
+        $(this).addClass('link-disabled');
 
         $.ajax({
             url: url,
