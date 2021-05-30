@@ -13,20 +13,6 @@
 				'help_class' => 'payment',
 				'rules' => ['options.payment_instruction' => 'required'],
 			])
-			
-			
-		</div>
-
-		<div class="col-md-6">
-			@include('helpers.form_control', [
-				'type' => 'textarea',
-				'class' => 'setting-editor',
-				'name' => 'options[confirmation_message]',
-				'value' => $service->getPaymentConfirmationMessage(),
-				'label' => trans('messages.payment.direct.confirmation_message'),
-				'help_class' => 'payment',
-				'rules' => ['options.confirmation_message' => 'required'],
-			])
 		</div>
 	</div>
 

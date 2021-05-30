@@ -54,21 +54,38 @@ class AccountSubscriptionController extends Controller
         if ($subscription->isNew()) {
             $invoice = $subscription->lastInvoice();
 
-            // new invoice do not have any transaction
-            if ($invoice->isNew() && (!$invoice->lastTransaction() || $invoice->lastTransaction()->isFailed())) {
-                return view('account.subscription.payment', [
+            // new invoice
+            if ($invoice->isNew()) {
+                // has pending invoice
+                if ($invoice->pendingTransaction()) {
+                    // redirect to service checkout
+                    return redirect()->away($gateway->getCheckoutUrl(
+                        $invoice,
+                        action('AccountSubscriptionController@index')
+                    ));
+
+                // invoice has no transaction or has pending invoice
+                } else {
+                    return view('account.subscription.payment', [
+                        'subscription' => $subscription,
+                        'invoice' => $invoice,
+                    ]);
+                }
+            }
+
+            // invoice was claimed
+            else if ($invoice->isClaimed()) {
+                return view('account.subscription.claimed', [
                     'subscription' => $subscription,
                     'invoice' => $invoice,
                 ]);
             }
 
-            // redirect to service checkout
-            return redirect()->away($gateway->getCheckoutUrl(
-                $invoice,
-                action('AccountSubscriptionController@index')
-            ));
+            // invoice was paid
+            else if ($invoice->isPaid()) {
+                // nothing to do
+            }
         }
-        
         
         return view('account.subscription.index', [
             'subscription' => $subscription,
@@ -103,38 +120,6 @@ class AccountSubscriptionController extends Controller
     }
 
     /**
-     * Checkout subscription.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     **/
-    public function checkout(Request $request)
-    {
-        // Get current customer
-        $subscription = $request->user()->customer->subscription;
-        $invoice = $subscription->lastInvoice();
-        $gateway = $request->user()->customer->getPaymentGateway();
-
-        // add pending transaction for invoice
-        if (!$invoice->isPaid()) {
-            $invoice->addTransaction([
-                'status' => \Acelle\Model\Transaction::STATUS_PENDING,
-                'message' => trans('messages.pay_invoice', [
-                    'id' => $invoice->uid,
-                    'title' => $invoice->title,
-                ]),
-            ]);
-        }
-
-        // return to subscription
-        return redirect()->away($gateway->getCheckoutUrl(
-            $invoice,
-            action('AccountSubscriptionController@index')
-        ));
-    }
-
-    /**
      * Invoice payment.
      *
      * @param \Illuminate\Http\Request $request
@@ -148,15 +133,6 @@ class AccountSubscriptionController extends Controller
         $subscription = $customer->subscription;
         $gateway = $customer->getPaymentGateway();
         $invoice = $subscription->lastInvoice();
-
-        // check if invoice has pending transaction
-        if ($invoice->pendingTransaction()) {
-            // return to subscription
-            return redirect()->away($gateway->getCheckoutUrl(
-                $invoice,
-                action('AccountSubscriptionController@index')
-            ));
-        }
 
         if ($request->isMethod('post')) {
             // add pending transaction for invoice
@@ -173,6 +149,38 @@ class AccountSubscriptionController extends Controller
                 $invoice,
                 action('AccountSubscriptionController@index')
             ));
+        }
+
+        // new invoice
+        if ($invoice->isNew()) {
+            // has pending invoice
+            if ($invoice->pendingTransaction()) {
+                // redirect to service checkout
+                return redirect()->away($gateway->getCheckoutUrl(
+                    $invoice,
+                    action('AccountSubscriptionController@index')
+                ));
+
+            // invoice has no transaction or has pending invoice
+            } else {
+                return view('account.subscription.payment', [
+                    'subscription' => $subscription,
+                    'invoice' => $invoice,
+                ]);
+            }
+        }
+
+        // invoice was claimed
+        else if ($invoice->isClaimed()) {
+            return view('account.subscription.claimed', [
+                'subscription' => $subscription,
+                'invoice' => $invoice,
+            ]);
+        }
+
+        // invoice was paid
+        else if ($invoice->isPaid()) {
+            // nothing to do
         }
 
         return view('account.subscription.payment', [

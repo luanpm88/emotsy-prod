@@ -808,7 +808,6 @@ class Setting extends Model
                 'name' => 'direct',
                 'fields' => [
                     'payment_instruction' => '',
-                    'confirmation_message' => '',
                 ],
             ],
             'stripe' => [

@@ -32,7 +32,7 @@
                         <p class="mb-3">{!! trans('messages.payment.you_currenly_payment', [
                             'method' => trans('messages.transaction.method.' . request()->user()->customer->getPaymentMethod()['method']),
                         ]) !!}</p>
-                        <form class="edit-payment" action="{{ action('AccountSubscriptionController@checkout') }}"
+                        <form class="edit-payment" action="{{ action('AccountSubscriptionController@payment') }}"
                             method="POST">
                             {{ csrf_field() }}
 
@@ -52,13 +52,13 @@
                     @endif
                 </div>
                 
-                <form class="edit-payment mt-4 pt-4" {!! (request()->user()->customer->getPaymentMethod() == null) ? '' : 'style="display:none"' !!} action="{{ request()->user()->customer->getPaymentMethod() ? action('AccountSubscriptionController@checkout') : action('AccountController@editPaymentMethod') }}"
+                <form class="edit-payment mt-4 pt-4" {!! (request()->user()->customer->getPaymentMethod() == null) ? '' : 'style="display:none"' !!} action="{{ request()->user()->customer->getPaymentMethod() ? action('AccountSubscriptionController@payment') : action('AccountController@editPaymentMethod') }}"
                     method="POST">
                     {{ csrf_field() }}
 
                     <p>{{ trans('messages.payment.choose_new_payment_method_to_proceed') }}</p>
 
-                    <input type="hidden" name="return_url" value="{{ action('AccountSubscriptionController@checkout') }}" />
+                    <input type="hidden" name="return_url" value="{{ action('AccountSubscriptionController@payment') }}" />
 
                     <div class="sub-section mb-30 choose-payment-methods">      
                         @foreach(Acelle\Model\Setting::getEnabledPaymentGateways() as $gateway)
@@ -151,7 +151,7 @@
             $('.choose-payment-methods>div [type=radio]:checked').closest('.choose-payment').addClass('current');
 
             if ($('.choose-payment-methods>div [type=radio]:checked').val() == '{{ request()->user()->customer->getPaymentMethod() ? request()->user()->customer->getPaymentMethod()['method'] : 'none' }}') {
-                $('.edit-payment').attr('action', '{!! action('AccountSubscriptionController@checkout') !!}');
+                $('.edit-payment').attr('action', '{!! action('AccountSubscriptionController@payment') !!}');
             } else {
                 $('.edit-payment').attr('action', '{!! action('AccountController@editPaymentMethod') !!}');
             }

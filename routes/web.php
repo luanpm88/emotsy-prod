@@ -206,14 +206,12 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     // Account subscription
     Route::post('subscription/invoice/{invoice_uid}/cancel', 'AccountSubscriptionController@cancelInvoice');
     Route::match(['get', 'post'], 'subscription/change-plan', 'AccountSubscriptionController@changePlan');
-    Route::match(['get', 'post'], 'subscription/checkout', 'AccountSubscriptionController@checkout');
     Route::post('subscription/init', 'AccountSubscriptionController@init');
     Route::get('subscription', 'AccountSubscriptionController@index');
     Route::match(['get', 'post'], 'subscription/payment', 'AccountSubscriptionController@payment');
     Route::post('subscription/cancel-now', 'AccountSubscriptionController@cancelNow');
     Route::post('subscription/resume', 'AccountSubscriptionController@resume');
     Route::post('subscription/cancel', 'AccountSubscriptionController@cancel');
-
 
     // Customer login back
     Route::get('customers/login-back', 'CustomerController@loginBack');

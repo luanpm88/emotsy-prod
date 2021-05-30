@@ -65,9 +65,9 @@ full-height
                         @endif
                     </button>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnGroupDrop1">
-                        <a class="dropdown-item contacts-sort" href="#" data-sort="recent_activities">{{ trans('messages.timeline.sort.recent_activities') }}</a>
-                        <a class="dropdown-item contacts-sort" href="#" data-sort="recent_triggered">{{ trans('messages.timeline.sort.recent_triggered') }}</a>
-                        <a class="dropdown-item contacts-sort" href="#" data-sort="new_contacts">{{ trans('messages.timeline.sort.new_contacts') }}</a>
+                        <a class="dropdown-item contacts-sort" href="#" data-sort="auto_triggers.updated_at">{{ trans('messages.timeline.sort.auto_triggers.updated_at') }}</a>
+                        <a class="dropdown-item contacts-sort" href="#" data-sort="auto_triggers.created_at">{{ trans('messages.timeline.sort.auto_triggers.created_at') }}</a>
+                        <a class="dropdown-item contacts-sort" href="#" data-sort="suscribers.created_at">{{ trans('messages.timeline.sort.suscribers.created_at') }}</a>
                     </div>
                 </div>
             </div>
