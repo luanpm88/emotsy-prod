@@ -164,6 +164,8 @@ abstract class Action
     // Just to record the current action information in case of any error
     public function execute($callback)
     {
+        // IMPORTANT: this should be placed outside of the try/catch
+        // Otherwise, error again in catch block (no trigger information to log)
         if (is_null($this->autoTrigger)) {
             throw new Exception('There is no AutoTrigger associated with this action');
         }

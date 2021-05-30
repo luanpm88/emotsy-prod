@@ -43,6 +43,7 @@ use Acelle\Model\Email;
 use DateTime;
 use DateTimeZone;
 use Exception;
+use Throwable;
 
 class Automation2 extends Model
 {
@@ -466,9 +467,10 @@ class Automation2 extends Model
             $this->checkForExistingTriggersUpdate();
             $this->updateCache();
             $this->setLastError(null);
-        } catch (\Throwable $ex) {
+        } catch (Throwable $ex) {
             $this->setLastError($ex->getMessage());
             $this->logger()->warning(sprintf('Error while executing automation "%s". %s', $this->name, $ex->getMessage()));
+            throw new Exception($ex);
         }
     }
 
