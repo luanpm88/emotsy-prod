@@ -42,39 +42,24 @@ class Evaluate extends Action
         return $json;
     }
 
-    public function execute($callback)
+    protected function doExecute()
     {
-        // IMPORTANT
-        // If this is the latest also the last action of the workflow
-        // no more execute, just return true
-        if (!is_null($this->last_executed)) {
-            throw new Exception("Action already executed");
-        }
-
         // IMPORTANT
         // If this is the latest also the last action of the workflow
         // no more execute, just return true
         // UPDATE: check always, wait for open/click anyway! if it is the last action
         // if (!is_null($this->last_executed)) {
-        //     $this->autoTrigger->logger()->info('Latest also last action');
+        //     $this->logger->info('Latest also last action');
         //     return true;
         // }
 
-        $result = $this->evaluateCondition();
-
         if (config('app.demo') == 'true') {
-            $result = (bool) random_int(0, 1);
+            $this->evaluationResult = (bool) random_int(0, 1);
+        } else {
+            $this->evaluationResult = $this->evaluateCondition();    
         }
 
-        $this->evaluationResult = $result;
-
-        // always return true, not evaluation result!
-        $this->recordLastExecutedTime();
-
-        // IMPORTANT: if action is not saved (with last_executed flag not null), it MIGHT execute again! sending duplicate emails for example
-        // In case of Evaluate: it keeps being executed over and over again and result may CHANGE (email gets clicked/opened)
-        $callback($this);
-
+        // always return true, indicating DONE
         return true;
     }
 

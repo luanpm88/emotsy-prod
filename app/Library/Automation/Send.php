@@ -21,23 +21,16 @@ class Send extends Action
 
     ****/
 
-    public function execute($callback)
+    protected function doExecute()
     {
         /*** do not care if subscriber is active() or not ***/
         /*
         if (!$subscriber->isActive()) {
-            $this->autoTrigger->logger()->warning(sprintf('Subscriber "%s" is not active (current status: "%s")', $subscriber->email, $subscriber->status));
+            $this->logger->warning(sprintf('Subscriber "%s" is not active (current status: "%s")', $subscriber->email, $subscriber->status));
 
             return false;
         }
         */
-
-        // IMPORTANT
-        // If this is the latest also the last action of the workflow
-        // no more execute, just return true
-        if (!is_null($this->last_executed)) {
-            throw new Exception("Action already executed");
-        }
 
         if ($this->options['init'] == 'false' || $this->options['init'] == false) {
             throw new Exception("Email not set up yet");
@@ -54,14 +47,7 @@ class Send extends Action
             $email->queueDeliverTo($this->autoTrigger->subscriber, $this->autoTrigger->id); // queue, do not send immediately
         }
 
-        
-        $this->autoTrigger->logger()->info(sprintf('Send email entitled "%s" to "%s", queued', $email->subject, $this->autoTrigger->subscriber->email));
-        
-        // The last three statements
-        $this->recordLastExecutedTime();
-
-        // IMPORTANT: if action is not saved (with last_executed flag not null), it MIGHT execute again! sending duplicate emails for example
-        $callback($this);
+        $this->logger->info(sprintf('Send email entitled "%s" to "%s", queued', $email->subject, $this->autoTrigger->subscriber->email));
 
         return true;
     }

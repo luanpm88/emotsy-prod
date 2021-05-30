@@ -3,6 +3,8 @@
 namespace Acelle\Library\Automation;
 
 use Carbon\Carbon;
+use Exception;
+use Throwable;
 
 abstract class Action
 {
@@ -18,6 +20,7 @@ abstract class Action
 
     // parent object
     protected $autoTrigger;
+    protected $logger;
 
     public function __construct($params = [])
     {
@@ -34,6 +37,7 @@ abstract class Action
     public function setAutoTrigger($autoTrigger)
     {
         $this->autoTrigger = $autoTrigger;
+        $this->logger = $autoTrigger->logger();
     }
 
     public function toJson()
@@ -108,8 +112,13 @@ abstract class Action
         return $e->getId() == $this->child;
     }
 
+    // Only use it when an autotrigger is available
     public function getParent()
     {
+        if (is_null($this->autoTrigger)) {
+            throw new Exception('There is no AutoTrigger associated with this action');
+        }
+
         $parent = null;
         $this->autoTrigger->getActions(function ($action) use (&$parent) {
             if ($action->hasChild($this)) {
@@ -149,5 +158,50 @@ abstract class Action
         }
 
         return Carbon::createFromTimestamp($this->getLastExecuted())->diffForHumans();
+    }
+
+    // Template Pattern, execute will in turn call doExecute of inherited classes
+    // Just to record the current action information in case of any error
+    public function execute($callback)
+    {
+        if (is_null($this->autoTrigger)) {
+            throw new Exception('There is no AutoTrigger associated with this action');
+        }
+
+        try {
+
+            // Execute once only
+            if (!is_null($this->getLastExecuted())) {
+                throw new Exception("Action already executed");
+            }
+
+            // Actually execute, implemented by child classes
+            $result = $this->doExecute();
+
+            if ($result) {
+                // Only record last_executed and execute callback if success
+                // IMPORTANT: callback is normally used for saving the current action status
+                // IMPORTANT: if action is not saved at this point (with last_executed flag not null),
+                //            it MIGHT execute again! sending duplicate emails for example.
+                //            Or, in case of Evaluate: it keeps being executed over and over again
+                //            and evaluation result may CHANGE over time (email gets clicked/opened)
+
+                $this->recordLastExecutedTime();
+                $callback($this);
+            }
+
+            return $result;
+
+        } catch (Throwable $t) {
+            throw new Exception(sprintf(
+                '[%s] Error executing trigger#%s for %s, at action "#%s %s": %s',
+                Carbon::now()->toString(),
+                $this->autoTrigger->id,
+                $this->autoTrigger->subscriber->email,
+                $this->getId(),
+                $this->getTitle(),
+                $t->getMessage()
+            ));
+        }
     }
 }

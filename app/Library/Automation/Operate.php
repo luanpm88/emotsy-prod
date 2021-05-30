@@ -16,29 +16,16 @@ class Operate extends Action
         Execution always returns TRUE
 
     ****/
-    public function execute($callback)
+    protected function doExecute()
     {
-        // IMPORTANT
-        // If this is the latest also the last action of the workflow
-        // no more execute, just return true
-        if (!is_null($this->last_executed)) {
-            throw new Exception("Action already executed");
+        if (config('app.demo') == 'true') {
+            return true;
         }
 
-        if (config('app.demo') == true) {
-            // Do nothing here
-        } else {
-            // Do something here
-            sleep(1);
-        }
+        // DO HERE
+        $this->logger->info(sprintf('Perform an action...'));
 
-        $this->autoTrigger->logger()->info(sprintf('Perform an action...'));
-
-        $this->recordLastExecutedTime();
-
-        // IMPORTANT: if action is not saved (with last_executed flag not null), it MIGHT execute again! Send duplicate emails or perform actions more than one time for example
-        $callback($this);
-
+        sleep(1);
         return true;
     }
 
