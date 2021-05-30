@@ -3061,7 +3061,6 @@
   'subscribers.profile.manage_tags' => 'タグを管理する',
   'subscriber.delete.confirm' => 'このサブスクライバーを削除しようとしています。',
   'subscriber.deleted.redirect' => 'サブスクライバーが削除されました。 リストページにリダイレクトしています...',
-  'payment.direct.confirmation_message' => '支払い確認メッセージ',
   'payment.direct.payment_instruction' => 'お支払い方法',
   'automation.action.condition.select_criterion' => '基準を選択',
   'automation.action.operation.select_action' => 'アクションを選択します',
@@ -3341,14 +3340,6 @@
   'braintree.checkout.processing_payment' => 'お支払いを処理しています...お待ちください！',
   'direct.checkout.page_title' => 'チェックアウト',
   'direct.title' => '手動チェックアウト',
-  'direct.checkout.intro' => 'You are checking out <strong>:plan</strong> with <strong>:price</strong>.
-        Please follow the guide below to finish your payment before using plan:',
-  'direct.claimed.intro' => '<p>You claimed that you paid for <strong>:plan</strong>, the amount is <strong>:price</strong>.
-        Please wait for the payment confirmation.</p>
-        <p>Normally it may take 1 - 2 days for subscription to be reviewed and approved. Should you have any question, please contact us at:<br>
-        - <strong>mobile</strong>: +88900200300<br>
-        - <strong>Email</strong>: admin@acellemail.com</p>
-        ',
   'direct.payment_instruction.demo' => '
         <p>Please make a deposit to our bank account at:</p>
 
@@ -3367,22 +3358,6 @@
         </p>
         
         <p class="text-danger" style="color: red">* Above is sample payment information, you can change it in your payment gateway setting page</p>
-    ',
-  'direct.confirmation_message.demo' => '
-        <p>Thank you for the payment! Your subscription is now under review and will be activated
-        as soon as the payment is verified. Normally it may take 1 - 2 business days to process.
-        <br>
-        Should you have any question, contact us at:<br><br>
-        
-        <strong>YOUR COMPANY NAME</strong><br>
-        
-        38 Green Lake Court
-        Hoffman Estates, IL 60169<br>---
-        <br>
-        Mobile: +1 (000) 000-0000 <br>
-        Email: support@yourcompany.com</p>
-        
-        <p class="text-danger" style="color: red">* Above is sample confirmation message, you can change it in your payment gateway setting page</p>
     ',
   'direct.cancel_new_subscription' => '別のプランを選択するには、ここをクリックしてください',
   'direct.claim_payment' => 'もう払った！',
@@ -4284,13 +4259,29 @@
   'rate.opens' => 'Open rate',
   'rate.clicks' => 'Click rate',
   'rate.send' => 'Send',
-  'timeline.sort.recent_activities' => 'Most recent activities first',
-  'timeline.sort.recent_triggered' => 'Most recently triggered first',
-  'timeline.sort.new_contacts' => 'New contacts first',
   'timeline.sort' => 'Sort',
   'automation.trigger_now' => 'Trigger Now',
   'automation.trigger_now.confirm' => 'You are trying to manually trigger the automation for this
       contact, although trigger criteria may not meet. Are you sure?',
   'trigger.check' => 'Refresh',
   'automation.audience' => 'Audience',
+  'timeline.sort.auto_triggers.updated_at' => 'Most recent activities first',
+  'timeline.sort.auto_triggers.created_at' => 'Most recently triggered first',
+  'timeline.sort.suscribers.created_at' => 'New contacts first',
+  'subscription.claimed' => '
+      <p>Thank you for the payment! Your subscription is now under review and will be activated
+      as soon as the payment is verified. Normally it may take 1 - 2 business days to process.
+      <br>
+      Should you have any question, contact us at:<br><br>
+      
+      <strong>YOUR COMPANY NAME</strong><br>
+      
+      38 Green Lake Court
+      Hoffman Estates, IL 60169<br>---
+      <br>
+      Mobile: +1 (000) 000-0000 <br>
+      Email: support@yourcompany.com</p>
+      
+      <p class="text-danger" style="color: red">* Above is sample confirmation message, you can change it in your payment gateway setting page</p>
+  ',
 ) ?>
