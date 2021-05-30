@@ -193,15 +193,19 @@ abstract class Action
             return $result;
 
         } catch (Throwable $t) {
-            throw new Exception(sprintf(
-                '[%s] Error executing trigger#%s for %s, at action "#%s %s": %s',
+            $msg = sprintf(
+                '[%s] Error executing trigger #%s for %s, at action [#%s %s]: %s',
                 Carbon::now()->toString(),
                 $this->autoTrigger->id,
                 $this->autoTrigger->subscriber->email,
                 $this->getId(),
                 $this->getTitle(),
                 $t->getMessage()
-            ));
+            );
+
+            $this->logger->error($msg);
+
+            throw new Exception($msg);
         }
     }
 }

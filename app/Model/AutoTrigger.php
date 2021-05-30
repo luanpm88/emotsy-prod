@@ -98,6 +98,8 @@ class AutoTrigger extends Model
         ]);
     }
 
+    // Notice that this method my be called from an automation or individually
+    // As a result, try catch is needed
     public function check()
     {
         $this->logger()->info(sprintf('Trigger [#%s - %s]: Automation [%s] starts checking', $this->id, $this->subscriber->email, $this->automation2->name));

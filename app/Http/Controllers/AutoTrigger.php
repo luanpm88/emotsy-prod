@@ -67,6 +67,9 @@ class AutoTrigger extends Controller
     public function check(Request $request)
     {
         $trigger = AutoTriggerModel::find($request->id);
+
+        // Execute AutoTrigger#check
+        // Notice that calling check() directly against AutoTrigger will not update automation's lastError 
         $trigger->check();
         echo "Done";
     }

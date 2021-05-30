@@ -458,6 +458,7 @@ class Automation2 extends Model
         }
     }
 
+    // Automation::check() ==> AutoTrigger::check() ==> Action::execute()
     public function check()
     {
         try {
