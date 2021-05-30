@@ -61,6 +61,9 @@
 
 					// validate
 					tree.validate();
+
+					// FLAG for resetting trigger
+					var flag = { resetTrigger: true }
 					
 					// save tree
 					saveData(function() {
@@ -75,7 +78,7 @@
 						
 						// Edit Trigger
 						EditTrigger('{{ action('Automation2Controller@triggerEdit', $automation->uid) }}' + '?key=' + tree.getOptions().key);
-					});
+					}, flag);
 				}
 			});
 		}

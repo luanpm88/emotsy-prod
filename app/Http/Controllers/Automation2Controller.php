@@ -157,7 +157,11 @@ class Automation2Controller extends Controller
             return $this->notAuthorized();
         }
 
-        $automation->saveData($request->data);
+        if ($request->resetTrigger) {
+            $automation->saveDataAndResetTriggers($request->data);
+        } else {
+            $automation->saveData($request->data);
+        }
     }
     
     /**
@@ -210,7 +214,7 @@ class Automation2Controller extends Controller
     {
         // init automation
         $automation = Automation2::findByUid($uid);
-        
+
         // authorize
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();

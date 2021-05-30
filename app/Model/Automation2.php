@@ -259,6 +259,15 @@ class Automation2 extends Model
         $this->save();
     }
 
+    public function saveDataAndResetTriggers($data)
+    {
+        DB::transaction(function() use ($data) {
+            $this->resetListRelatedData();
+            $this->autoTriggers()->delete();
+            $this->saveData($data);
+        });
+    }
+
     /**
      * disable automation.
      */
@@ -276,6 +285,8 @@ class Automation2 extends Model
 
         foreach ($entries as $entry) {
             $action = $this->getAction($entry);
+
+            // @TODO should be transparent in Action element
             if ($action->getType() == 'ElementAction') {
                 if ($action->getOption('init') == "true") { // @IMPORTANT VERY IMPORTANT! Use "true", it is because even "false" == true!!!!
                     if (!$this->emails()->where('uid', $action->getOption('email_uid'))->exists()) {
@@ -1080,6 +1091,7 @@ class Automation2 extends Model
         // + timelines
         $this->autoTriggers()->delete();
         $this->updateCache();
+        $this->setLastError(null);
     }
 
     /**

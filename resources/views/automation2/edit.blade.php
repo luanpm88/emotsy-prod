@@ -254,16 +254,30 @@
             });
         }
         
-        function saveData(callback) {
+        function saveData(callback, extra = {}) {
+            if (!(extra instanceof Object)) {
+                alert("A hash is required");
+                return false;
+            }
+
+            if ('data' in extra) {
+                alert("data key is not allowed");
+                return false;
+            }
+
             var url = '{{ action('Automation2Controller@saveData', $automation->uid) }}';
         
+            var postContent = {
+                _token: CSRF_TOKEN,
+                data: JSON.stringify(tree.toJson()),
+            }
+
+            postContent = {...extra, ...postContent};
+
             $.ajax({
                 url: url,
                 type: 'POST',
-                data: {
-                    _token: CSRF_TOKEN,
-                    data: JSON.stringify(tree.toJson()),
-                },
+                data: postContent
             }).always(function() {
                 if (callback != null) {
                     callback();
