@@ -15,7 +15,7 @@ full-height
                 url: '{{ action('Automation2Controller@timelineList', [
                         'uid' => $automation->uid,
                     ]) }}',
-                per_page: 5,
+                per_page: 10,
             });		
             listTimeline.load();
 

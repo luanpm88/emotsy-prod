@@ -122,7 +122,7 @@ full-height
                         keyword: $('[name=contact_keyword]').val(),
                     };
                 },
-            per_page: 5,
+            per_page: 10,
         });		
         listContact.load();
         
