@@ -47,6 +47,9 @@
 .popup-container.medium{
     width: 960px;
 }
+.popup-container.large{
+    width: 1150px;
+}
 .popup-header {
     display: flex;
     align-items: center;

@@ -38,16 +38,11 @@
     'id' => request()->id,
 ]) }}')" class="btn btn-secondary">{{ trans('messages.automation.edit_operation') }}</a>
 
-<div class="alert alert-warning mt-5 d-flex py-3">
-    <div class="mr-3 mt-1">
-        <span class="material-icons-outlined text-warning">
-            warning_amber
-        </span>
-    </div>
+<div class="mt-5 d-flex py-3">
     <div>
-        <h6 class="mb-1">
+        <h5 class="mb-2">
             {{ trans('messages.automation.dangerous_zone') }}
-        </h6>
+        </h5>
         <p class="">
             {{ trans('messages.automation.action.delete.wording') }}                
         </p>

@@ -50,16 +50,11 @@
     <button class="btn btn-secondary mt-20">{{ trans('messages.automation.settings.save') }}</button>            
 </form>
 
-<div class="alert alert-warning mt-5 d-flex py-3">
-    <div class="mr-3 mt-1">
-        <span class="material-icons-outlined text-warning">
-            warning_amber
-        </span>
-    </div>
+<div class="mt-5 d-flex py-3">
     <div>
-        <h6 class="mb-1">
+        <h5 class="mb-2">
             {{ trans('messages.automation.dangerous_zone') }}
-        </h6>
+        </h5>
         <p class="">
             {{ trans('messages.automation.delete.wording') }}        
         </p>
@@ -68,7 +63,7 @@
                 data-confirm="{{ trans('messages.automation.delete.confirm') }}"
                 class="btn btn-secondary automation-delete"
             >
-                <i class='lnr lnr-trash mr-0'></i> {{ trans('messages.automation.delete_automation') }}
+                <i class='lnr lnr-trash mr-0'></i> {{ trans('messages.remove') }}
             </a>
         </div>
     </div>
