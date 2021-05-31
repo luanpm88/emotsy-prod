@@ -2878,7 +2878,7 @@
   'automation.change_mail_list' => 'Audience',
   'automation.automation_name' => 'Automation name',
   'automation.settings.save' => 'Save',
-  'automation.delete_this_action' => 'Delete this Action',
+  'automation.remove_this_action' => 'Remove this Action',
   'automation.action.deteled' => 'Action was successfully removed',
   'automation.email.delete.confirm' => 'You are about to delete this email.',
   'automation.email.deteled' => 'Email was successfully removed',
