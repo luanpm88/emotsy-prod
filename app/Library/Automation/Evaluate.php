@@ -56,7 +56,7 @@ class Evaluate extends Action
         if (config('app.demo') == 'true') {
             $this->evaluationResult = (bool) random_int(0, 1);
         } else {
-            $this->evaluationResult = $this->evaluateCondition();    
+            $this->evaluationResult = $this->evaluateCondition();
         }
 
         // always return true, indicating DONE

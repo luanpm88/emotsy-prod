@@ -261,7 +261,7 @@ class Automation2 extends Model
 
     public function saveDataAndResetTriggers($data)
     {
-        DB::transaction(function() use ($data) {
+        DB::transaction(function () use ($data) {
             $this->resetListRelatedData();
             $this->autoTriggers()->delete();
             $this->saveData($data);

@@ -193,7 +193,6 @@ abstract class Action
             }
 
             return $result;
-
         } catch (Throwable $t) {
             $msg = sprintf(
                 '[%s] Error executing trigger #%s for %s, at action [#%s %s]: %s',

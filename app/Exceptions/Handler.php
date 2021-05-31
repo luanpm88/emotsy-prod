@@ -27,6 +27,16 @@ class Handler extends ExceptionHandler
     ];
 
     /**
+     * A list of the inputs that are never flashed for validation exceptions.
+     *
+     * @var array
+     */
+    protected $dontFlash = [
+        'password',
+        'password_confirmation',
+    ];
+
+    /**
      * Report or log an exception.
      *
      * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
@@ -87,56 +97,7 @@ class Handler extends ExceptionHandler
             // Default to
             // return view('errors.404');
         }
-        
-        // check if the exception does match the known list
-        foreach ($this->customErrors() as $key => $value) {
-            if ($key == get_class($e)) {
-                // if the exception message does match
-                if (array_key_exists('match', $value)) {
-                    if (strpos($e->getMessage(), $value['match']) !== false) {
-                        // error description does match, ok
-                    } else {
-                        continue;
-                    }
-                }
-                
-                // If message is a string, that's fine
-                // If message is a Closure, execute it to get the actual message
-                // Normally, we pass the exception instance to the closure to generate more detailed/specific message
-                if ($value['message'] instanceof Closure) {
-                    $value['message'] = $value['message']($e);
-                }
-                
-                return response()->view('errors.custom', $value, 500);
-            }
-        }
-        
+
         return parent::render($request, $e);
-    }
-    
-    private function customErrors()
-    {
-        return [
-            \Illuminate\Database\QueryException::class => [
-                'title' => 'Cannot connect to MySQL',
-                'message' => 'Make sure MySQL service <code>is running</code> and MySQL connection settings in <code>.env</code> and <code>bootstrap/cache/config.php</code> files are correct',
-                'match' => 'SQLSTATE[HY000] [2002] No such file or directory (SQL: select * from `m_users`',
-                'notify' => false,
-            ],
-            \RuntimeException::class => [
-                'match' => 'The only supported ciphers are AES-128-CBC and AES-256-CBC with the correct key lengths.',
-                'title' => 'File missing',
-                'message' => 'The <code>.env</code> file is missing. Make sure you have uploaded the file to the server',
-                'notify' => false,
-            ],
-            \UnexpectedValueException::class => [
-                'match' => 'failed to open stream: Permission denied',
-                'title' => 'File system permission',
-                'message' => function ($exception) {
-                    return 'Failed to write to file system, please make sure the application source folder is writable. Error: ' . $exception->getMessage();
-                },
-                'notify' => true,
-            ],
-        ];
     }
 }

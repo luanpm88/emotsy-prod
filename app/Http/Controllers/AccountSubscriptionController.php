@@ -74,7 +74,7 @@ class AccountSubscriptionController extends Controller
             }
 
             // invoice was claimed
-            else if ($invoice->isClaimed()) {
+            elseif ($invoice->isClaimed()) {
                 return view('account.subscription.claimed', [
                     'subscription' => $subscription,
                     'invoice' => $invoice,
@@ -82,7 +82,7 @@ class AccountSubscriptionController extends Controller
             }
 
             // invoice was paid
-            else if ($invoice->isPaid()) {
+            elseif ($invoice->isPaid()) {
                 // nothing to do
             }
         }
@@ -171,7 +171,7 @@ class AccountSubscriptionController extends Controller
         }
 
         // invoice was claimed
-        else if ($invoice->isClaimed()) {
+        elseif ($invoice->isClaimed()) {
             return view('account.subscription.claimed', [
                 'subscription' => $subscription,
                 'invoice' => $invoice,
@@ -179,7 +179,7 @@ class AccountSubscriptionController extends Controller
         }
 
         // invoice was paid
-        else if ($invoice->isPaid()) {
+        elseif ($invoice->isPaid()) {
             // nothing to do
         }
 
