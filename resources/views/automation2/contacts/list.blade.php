@@ -23,7 +23,7 @@
                         @endif
                     </a>
                 </div>
-                <div class="flex-fill" style="width: 40%">
+                <div class="flex-fill" style="width: 20%">
                     <a href="javascript:;" onclick="popup.load('{{ action('Automation2Controller@profile', [
                         'uid' => $automation->uid,
                         'contact_uid' => $contact->uid,
@@ -103,7 +103,7 @@
             message: `{{ trans('messages.automation.trigger_now.confirm') }}`,
             ok: function() {
                 $(this).addClass('link-disabled');
-                
+
                 $.ajax({
                     url: url,
                     method: 'GET',
