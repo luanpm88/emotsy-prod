@@ -19,7 +19,7 @@
                 </td>
                 <td>
                     <h5 class="no-margin text-bold">
-                        <a class="kq_search" href="{{ action('EmailVerificationServerController@edit', $server->uid) }}">{{ $server->name }}</a>
+                        <a class="kq_search" href="{{ action('EmailVerificationServerController@edit', ["email_verification_server" => $server->uid]) }}">{{ $server->name }}</a>
                     </h5>
                     <span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($server->created_at) }}</span>
                 </td>
@@ -44,7 +44,7 @@
                 </td>
                 <td class="text-right text-nowrap">
                     @if (Auth::user()->customer->can('update', $server))
-                        <a href="{{ action('EmailVerificationServerController@edit', ["uid" => $server->uid]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey btn-icon"><i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
+                        <a href="{{ action('EmailVerificationServerController@edit', ["email_verification_server" => $server->uid]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey btn-icon"><i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
                     @endif
                     @if (Auth::user()->customer->can('delete', $server) || Auth::user()->customer->can('disable', $server) || Auth::user()->customer->can('enable', $server))
                         <div class="btn-group">
