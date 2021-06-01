@@ -2,8 +2,6 @@
 
 namespace Acelle\Jobs;
 
-use Acelle\Jobs\Job;
-
 class ExportSubscribersJob extends ImportExportJob
 {
     /**

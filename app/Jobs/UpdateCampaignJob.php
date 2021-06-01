@@ -4,7 +4,7 @@ namespace Acelle\Jobs;
 
 use Acelle\Library\Log as MailLog;
 
-class UpdateCampaignJob extends SystemJob
+class UpdateCampaignJob extends Base
 {
     protected $campaign;
 

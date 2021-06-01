@@ -4,7 +4,7 @@ namespace Acelle\Jobs;
 
 use Exception;
 
-class RunAutomation extends SystemJob
+class RunAutomation extends Base
 {
     protected $automation;
 

@@ -2,7 +2,7 @@
 
 namespace Acelle\Jobs;
 
-class ExportCampaignLog extends SystemJob
+class ExportCampaignLog extends Base
 {
     protected $campaign;
     protected $logtype;

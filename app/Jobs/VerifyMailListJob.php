@@ -5,7 +5,7 @@ namespace Acelle\Jobs;
 use Acelle\Library\Log as MailLog;
 use Acelle\Model\MailList;
 
-class VerifyMailListJob extends SystemJob
+class VerifyMailListJob extends Base
 {
     protected $mailListId;
     protected $serverId;

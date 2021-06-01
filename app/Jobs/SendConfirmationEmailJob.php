@@ -4,7 +4,7 @@ namespace Acelle\Jobs;
 
 use Acelle\Library\Log as MailLog;
 
-class SendConfirmationEmailJob extends SystemJob
+class SendConfirmationEmailJob extends Base
 {
     protected $subscribers;
     protected $mailList;

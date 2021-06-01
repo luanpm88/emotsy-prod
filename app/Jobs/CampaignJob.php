@@ -4,7 +4,7 @@ namespace Acelle\Jobs;
 
 use Acelle\Library\Log as MailLog;
 
-class CampaignJob extends SystemJob
+class CampaignJob extends Base
 {
     /**
      * Create a new job instance.

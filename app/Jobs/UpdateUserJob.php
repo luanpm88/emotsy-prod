@@ -4,7 +4,7 @@ namespace Acelle\Jobs;
 
 use Acelle\Library\Log as MailLog;
 
-class UpdateUserJob extends SystemJob
+class UpdateUserJob extends Base
 {
     protected $customer;
 

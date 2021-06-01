@@ -2,7 +2,7 @@
 
 namespace Acelle\Jobs;
 
-class ImportExportJob extends SystemJob
+class ImportExportJob extends Base
 {
     protected $mailList;
     protected $customer;

@@ -2,7 +2,7 @@
 
 namespace Acelle\Jobs;
 
-class UpdateSegmentJob extends SystemJob
+class UpdateSegmentJob extends Base
 {
     protected $segment;
 

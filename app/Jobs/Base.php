@@ -10,7 +10,7 @@ use Illuminate\Queue\InteractsWithQueue;
 
 use Acelle\Model\SystemJob as SystemJobModel;
 
-class SystemJob implements ShouldQueue
+class Base implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 

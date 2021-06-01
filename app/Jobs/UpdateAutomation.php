@@ -10,7 +10,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Acelle\Model\Automation2;
 use Acelle\Library\Log as MailLog;
 
-class UpdateAutomation extends SystemJob implements ShouldQueue
+class UpdateAutomation extends Base
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 

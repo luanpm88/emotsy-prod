@@ -5,7 +5,7 @@ namespace Acelle\Jobs;
 use Acelle\Library\Log as MailLog;
 use Acelle\Model\Blacklist;
 
-class UpdateMailListJob extends SystemJob
+class UpdateMailListJob extends Base
 {
     protected $list;
 

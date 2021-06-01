@@ -2,7 +2,7 @@
 
 namespace Acelle\Jobs;
 
-class DeliverEmail extends SystemJob
+class DeliverEmail extends Base
 {
     protected $email;
     protected $subscriber;
