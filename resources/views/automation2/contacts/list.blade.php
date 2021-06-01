@@ -35,7 +35,15 @@
                 
                 <div class="actions-points">
                     @if (!is_null($trigger))
-                        @foreach ($trigger->getExecutedActions() as $action)
+                        @php
+                            $points = $trigger->getExecutedActions();
+                        @endphp
+
+                        @if (empty($points))
+                            <span>{{ trans('messages.automation.status.triggered.desc') }}</span>
+                        @endif
+
+                        @foreach ($points as $action)
                             <span class="xtooltip round-action-point action-{{ $action->getType() }}" title="{{ $action->getProgressDescription(). sprintf(' (%s)', $action->getLastExecutedHumanReadable()) }}">
                             </span>
                         @endforeach

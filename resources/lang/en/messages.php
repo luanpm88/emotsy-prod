@@ -3093,6 +3093,7 @@
   'automation.action.operation.deactivate_contact.title' => 'Deactivate contact',
   'automation.action.operation.unsubscribe_contact.title' => 'Unsubscribe contact',
   'automation.action.operation.choose_list' => 'Choose mail list',
+  'automation.status.triggered.desc' => 'Triggered, processing...',
   'payments.paypal' => 'PayPal',
   'payments.paypal.list_intro' => 'PayPal is the fast/safe way to send money, make an online payment,
       receive money or set up a merchant account',
