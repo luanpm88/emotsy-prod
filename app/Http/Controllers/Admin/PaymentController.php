@@ -21,10 +21,6 @@ class PaymentController extends Controller
      */
     public function index(Request $request, MessageBag $message_bag)
     {
-        if (\Gate::denies('read', new \Acelle\Model\PaymentMethod())) {
-            return $this->notAuthorized();
-        }
-
         return view('admin.payments.index', [
             'gateways' => Setting::getPayments(),
             'enabledGateways' => Setting::getEnabledPaymentGateways(),
@@ -42,11 +38,6 @@ class PaymentController extends Controller
     {
         $service = \Acelle\Model\Setting::getPaymentGateway($name);
         $gateway = Setting::getPayment($name);
-
-        // authorize
-        if (\Gate::denies('update', new \Acelle\Model\PaymentMethod())) {
-            return $this->notAuthorized();
-        }
 
         try {
             $service->validate();
@@ -74,11 +65,6 @@ class PaymentController extends Controller
     {
         $errors = new MessageBag;
         $gatewayService = \Acelle\Model\Setting::getPaymentGateway($name, $request->options);
-
-        // authorize
-        if (\Gate::denies('update', new \Acelle\Model\PaymentMethod())) {
-            return $this->notAuthorized();
-        }
         
         try {
             $gatewayService->validate();
@@ -129,11 +115,6 @@ class PaymentController extends Controller
     {
         $service = \Acelle\Model\Setting::getPaymentGateway($name);
 
-        // authorize
-        if (\Gate::denies('update', new \Acelle\Model\PaymentMethod())) {
-            return $this->notAuthorized();
-        }
-
         try {
             $sc = Subscription::count();
 
@@ -180,11 +161,6 @@ class PaymentController extends Controller
     {
         $service = \Acelle\Model\Setting::getPaymentGateway($name);
 
-        // authorize
-        if (\Gate::denies('update', new \Acelle\Model\PaymentMethod())) {
-            return $this->notAuthorized();
-        }
-
         try {
             $service->validate();
 
@@ -218,11 +194,6 @@ class PaymentController extends Controller
     {
         $service = \Acelle\Model\Setting::getPaymentGateway($name);
 
-        // authorize
-        if (\Gate::denies('update', new \Acelle\Model\PaymentMethod())) {
-            return $this->notAuthorized();
-        }
-
         // enable gateway
         $gateways = json_decode(Setting::get('gateways'), true);
         $gateways = array_diff($gateways, [$name]);
@@ -249,11 +220,6 @@ class PaymentController extends Controller
     {
         $service = \Acelle\Model\Setting::getPaymentGateway('paypal_subscription');
         $plan = Plan::findByUid($plan_uid);
-
-        // authorize
-        if (\Gate::denies('update', new \Acelle\Model\PaymentMethod())) {
-            return $this->notAuthorized();
-        }
 
         try {
             $service->connectPlan($plan);
@@ -282,11 +248,6 @@ class PaymentController extends Controller
         $service = \Acelle\Model\Setting::getPaymentGateway('paypal_subscription');
         $plan = Plan::findByUid($plan_uid);
 
-        // authorize
-        if (\Gate::denies('update', new \Acelle\Model\PaymentMethod())) {
-            return $this->notAuthorized();
-        }
-
         try {
             $service->disconnectPlan($plan);
 
@@ -312,11 +273,6 @@ class PaymentController extends Controller
     public function paypalSubscriptionConnect(Request $request)
     {
         $service = \Acelle\Model\Setting::getPaymentGateway('paypal_subscription');
-
-        // authorize
-        if (\Gate::denies('update', new \Acelle\Model\PaymentMethod())) {
-            return $this->notAuthorized();
-        }
         
         try {
             $service->initPaypalProduct();
@@ -340,11 +296,6 @@ class PaymentController extends Controller
     public function paypalSubscriptionDisconnect(Request $request)
     {
         $service = \Acelle\Model\Setting::getPaymentGateway('paypal_subscription');
-
-        // authorize
-        if (\Gate::denies('update', new \Acelle\Model\PaymentMethod())) {
-            return $this->notAuthorized();
-        }
 
         try {
             $service->removePaypalProduct();
