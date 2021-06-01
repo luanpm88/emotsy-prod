@@ -87,10 +87,10 @@
 
         if (direction == 'asc') {
             $(this).attr('data-direction', 'desc');
-            timelineSort({sortDirection: 'desc'});
+            timelineSort({sortOrder: 'desc'});
         } else {
             $(this).attr('data-direction', 'asc');
-            timelineSort({sortDirection: 'asc'});
+            timelineSort({sortOrder: 'asc'});
         }
     });
 
@@ -99,7 +99,7 @@
         var sortBy = $(this).attr('data-sort');
         var text = $(this).html();
 
-        timelineSort({sortBy: sortBy});
+        timelineSort({sortBy: sortBy, sortOrder: 'desc'});
 
         $('.timeline-sort-title').html(text);
     });

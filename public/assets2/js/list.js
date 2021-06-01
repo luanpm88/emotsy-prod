@@ -5,6 +5,7 @@ class List {
         this.data = function() { return {}; };
         this.list = selector;
         this.loadingHtml = '<div class="list-loading"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>';
+        this.method = 'POST';
         
         if (options !== null) {
             this.options = options;
@@ -28,6 +29,11 @@ class List {
         // data        
         if (this.options.data !== null && typeof(this.options.data) != 'undefined') {
             this.data = this.options.data;
+        }
+
+        // data        
+        if (this.options.method !== null && typeof(this.options.method) != 'undefined') {
+            this.method = this.options.method;
         }
     }
     
@@ -81,7 +87,7 @@ class List {
         }
         _this.xhr = $.ajax({
             url: _this.url,
-            type: 'POST',
+            type: _this.method,
             dataType: 'html',
             data: data,
         }).always(function(response) {

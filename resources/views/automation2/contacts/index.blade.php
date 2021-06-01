@@ -48,10 +48,7 @@ full-height
         </div>
         <div class="insight-action d-flex align-items-center">
             <div class="btn-group btn-group-sm" role="group">
-                <button onclick="timelinePopup.load('{{ action('Automation2Controller@contacts', [
-                    'uid' => $automation->uid,
-                    'type' => request()->type,
-                ]) }}')" type="button" class="btn btn-secondary btn-sm mr-1">
+                <button type="button" class="btn btn-secondary btn-sm mr-1 contacts-refresh-button">
                     {{ trans('messages.automation.update_stats') }}
                 </button>
             </div>
@@ -123,6 +120,7 @@ full-height
                     };
                 },
             per_page: 10,
+            method: 'GET',
         });		
         listContact.load();
         
@@ -210,9 +208,15 @@ full-height
             var sortBy = $(this).attr('data-sort');
             var text = $(this).html();
 
-            contactsSort({sortBy: sortBy});
+            contactsSort({sortBy: sortBy, sortOrder: 'desc'});
 
             $('.contacts-sort-title').html(text);
+        });
+        
+        $('.contacts-refresh-button').on('click', function(e) {
+            e.preventDefault();
+
+            contactsSort({});
         });
     </script>
 @endsection

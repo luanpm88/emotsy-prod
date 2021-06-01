@@ -16,6 +16,7 @@ full-height
                         'uid' => $automation->uid,
                     ]) }}',
                 per_page: 10,
+                method: 'GET',
             });		
             listTimeline.load();
 
