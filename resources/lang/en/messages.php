@@ -2953,7 +2953,7 @@
   'automation.action.contacts_intro' => 'There are <span class="font-weight-semibold">:count</span> contacts who involved in action
     `<span class="font-weight-semibold">:name</span>`',
   'automation.profile_timeline_head' => 'Timeline',
-  'automation.timline.intro' => 'There are <span class="font-weight-semibold">:count</span> activities recorded for your campaign.',
+  'automation.timline.intro' => 'Audience\' activities recorded for your automated campaign.',
   'automation.all_activities' => 'All activities',
   'automation.trigger.icon.welcome-new-subscriber' => 'accessibility_new',
   'automation.trigger.icon.say-happy-birthday' => 'cake',

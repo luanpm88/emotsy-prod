@@ -1,6 +1,6 @@
 <div class="insight-topine d-flex small align-items-center">
     <div class="insight-desc mr-auto">
-        {!! trans('messages.automation.timline.intro', ['count' => format_number($timelines->lastPage())]) !!}        
+        {{ trans('messages.automation.timline.intro') }}
     </div>
     <div class="insight-action">
         <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
@@ -24,7 +24,7 @@
 
 @if ($timelines->count() > 0)
         <p class="insight-intro mb-2 mt-3 small">
-        {{ trans('messages.automation.all_activities') }} ({{ format_number($timelines->lastPage()) }})
+        {{ trans('messages.automation.all_activities') }}
     </p>
         
     <div class="mc-table small border-top">
