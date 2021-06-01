@@ -56,6 +56,17 @@ class SystemJob extends Model
     }
 
     /**
+     * Set job as started.
+     *
+     * @var array
+     */
+    public function setNew()
+    {
+        $this->status = self::STATUS_NEW;
+        $this->save();
+    }
+
+    /**
      * Set job as finished.
      *
      * @var array
