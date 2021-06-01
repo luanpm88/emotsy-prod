@@ -18,7 +18,6 @@ class CreateSubscriptionsTable extends Migration
             $table->integer('plan_id')->unsigned();
             $table->integer('customer_id')->unsigned();
             $table->integer('admin_id')->unsigned()->nullable();
-            $table->integer('payment_method_id')->unsigned()->nullable();
             $table->text('options');
             $table->decimal('price', 16, 2);
             $table->string('currency_code');

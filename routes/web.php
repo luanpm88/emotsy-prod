@@ -133,16 +133,6 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
     // Plan
     Route::get('plans/select2', 'PlanController@select2');
 
-    // Payments
-    Route::get('paypal-payment-cancel/{subscription_uid}', 'PaymentController@paypalCancel');
-    Route::get('paypal-payment-status/{subscription_uid}', 'PaymentController@paypalStatus');
-    Route::get('paypal-payment-cancel', function () {
-        return 'Payment has been canceled';
-    });
-
-    Route::get('payments/paddle/card/{subscription_uid}/hook', 'PaymentController@paddle_card_hook');
-    Route::post('payments/paddle/card/{subscription_uid}/hook', 'PaymentController@paddle_card_hook');
-
     // Customer registration
     Route::post('users/register', 'UserController@register');
     Route::get('users/register', 'UserController@register');
@@ -172,7 +162,6 @@ Route::group(['middleware' => ['not_installed']], function () {
     Route::post('lists/{list_uid}/update-profile/{uid}/{code}', 'PageController@profileUpdateForm');
     Route::get('lists/{list_uid}/update-profile-success/{uid}', 'PageController@profileUpdateSuccessPage');
     Route::get('lists/{list_uid}/profile-update-email-sent/{uid}', 'PageController@profileUpdateEmailSent');
-    Route::post('payments/paddle/card/webhook', 'PaymentController@paddle_webhook');
 
     // Notification handler
     Route::post('delivery/notify/{stype?}', 'DeliveryController@notify');
@@ -496,28 +485,6 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('tracking_domains/delete', 'TrackingDomainController@delete');
     Route::get('tracking_domains/{uid}/verify', 'TrackingDomainController@verify');
     Route::resource('tracking_domains', 'TrackingDomainController');
-
-    // Payment
-    Route::get('payments/paddle/card/{subscription_uid}', 'PaymentController@paddle_card');
-    Route::post('payments/billing-information/{subscription_uid}', 'PaymentController@billingInformation');
-    Route::get('payments/billing-information/{subscription_uid}', 'PaymentController@billingInformation');
-    Route::post('payments/stripe/credit-card/{subscription_uid}', 'PaymentController@stripe_credit_card');
-    Route::get('payments/stripe/credit-card/{subscription_uid}', 'PaymentController@stripe_credit_card');
-    Route::post('payments/braintree/paypal/{subscription_uid}', 'PaymentController@braintree_paypal');
-    Route::get('payments/braintree/paypal/{subscription_uid}', 'PaymentController@braintree_paypal');
-    Route::get('payments/success/{subscription_uid}', 'PaymentController@success');
-    Route::post('payments/braintree/credit-card/{subscription_uid}', 'PaymentController@braintree_credit_card');
-    Route::get('payments/braintree/credit-card/{subscription_uid}', 'PaymentController@braintree_credit_card');
-    Route::get('payments/cash/{subscription_uid}', 'PaymentController@cash');
-    Route::post('payments/paypal/{subscription_uid}', 'PaymentController@paypal');
-    Route::get('payments/paypal/{subscription_uid}', 'PaymentController@paypal');
-    Route::post('payments/payumoney/{subscription_uid}', 'PaymentController@payumoney');
-    Route::get('payments/payumoney/{subscription_uid}', 'PaymentController@payumoney');
-    Route::get('payments/payumoney-success/{subscription_uid}', 'PaymentController@payumoney_success');
-    Route::post('payments/payumoney-success/{subscription_uid}', 'PaymentController@payumoney_success');
-    Route::get('payments/payumoney-fail/{subscription_uid}', 'PaymentController@payumoney_fail');
-    Route::post('payments/payumoney-fail/{subscription_uid}', 'PaymentController@payumoney_fail');
-    Route::get('payments/failure/{subscription_uid}', 'PaymentController@failure');
 
     // Email verification servers
     Route::get('email_verification_servers/options', 'EmailVerificationServerController@options');
