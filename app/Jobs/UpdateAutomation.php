@@ -12,8 +12,6 @@ use Acelle\Library\Log as MailLog;
 
 class UpdateAutomation extends Base
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
     protected $automation;
 
     /**
