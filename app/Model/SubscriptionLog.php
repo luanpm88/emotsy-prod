@@ -78,12 +78,6 @@ class SubscriptionLog extends Model
         return $this->belongsTo('\Acelle\Model\Subscription');
     }
 
-    public function transaction()
-    {
-        // @todo dependency injection
-        return $this->belongsTo('\Acelle\Model\SubscriptionTransaction', 'subscription_transactions');
-    }
-
     /**
      * Get metadata.
      *

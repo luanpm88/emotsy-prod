@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
 use Acelle\Model\Plan;
 use Acelle\Cashier\Cashier;
-use Acelle\Model\SubscriptionTransaction;
 
 class CustomerController extends Controller
 {
