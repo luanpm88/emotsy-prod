@@ -939,17 +939,6 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::delete('admin/subscriptions/delete', 'SubscriptionController@delete');
     Route::resource('admin/subscriptions', 'SubscriptionController');
 
-    // Payment method
-    Route::get('admin/payment_methods/braintree/merchant-accounts/select/{uid?}', 'PaymentMethodController@braintreeMerchantAccountSelect');
-    Route::get('admin/payment_methods/options/{uid?}', 'PaymentMethodController@options');
-    Route::get('admin/payment_methods/select2', 'PaymentMethodController@select2');
-    Route::get('admin/payment_methods/listing/{page?}', 'PaymentMethodController@listing');
-    Route::get('admin/payment_methods/sort', 'PaymentMethodController@sort');
-    Route::get('admin/payment_methods/delete', 'PaymentMethodController@delete');
-    Route::get('admin/payment_methods/disable', 'PaymentMethodController@disable');
-    Route::get('admin/payment_methods/enable', 'PaymentMethodController@enable');
-    Route::resource('admin/payment_methods', 'PaymentMethodController');
-
     // Email verification servers
     Route::get('admin/email_verification_servers/options', 'EmailVerificationServerController@options');
     Route::get('admin/email_verification_servers/listing/{page?}', 'EmailVerificationServerController@listing');

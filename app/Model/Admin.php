@@ -556,23 +556,6 @@ class Admin extends Model
     }
 
     /**
-     * Get all payment methods.
-     *
-     * @return int
-     */
-    public function getAllPaymentMethods()
-    {
-        $query = \Acelle\Model\PaymentMethod::getAll()
-            ->where('payment_methods.status', '=', \Acelle\Model\PaymentMethod::STATUS_ACTIVE);
-
-        if (!$this->can('readAll', new \Acelle\Model\PaymentMethod())) {
-            $query = $query->where('payment_methods.admin_id', '=', $this->id);
-        }
-
-        return $query;
-    }
-
-    /**
      * Get all admin.
      *
      * @return int

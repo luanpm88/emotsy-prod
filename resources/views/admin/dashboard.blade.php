@@ -211,14 +211,6 @@
                     </li>
                     <li>
                         <div class="unit size1of2">
-                            <strong><i class="icon-credit-card2"></i> {{ trans('messages.payment_methods') }}</strong>
-                        </div>
-                        <div class="lastUnit size1of2">
-                            <mc:flag>{{ Auth::user()->admin->getAllPaymentMethods()->count() }}</mc:flag>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="unit size1of2">
                             <strong><i class="icon-address-book2"></i> {{ trans('messages.lists') }}</strong>
                         </div>
                         <div class="lastUnit size1of2">
