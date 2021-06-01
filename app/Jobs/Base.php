@@ -14,7 +14,7 @@ class Base implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $systemJob;
+    protected $systemJobId;
 
     /**
      * Create a new job instance.
@@ -31,7 +31,7 @@ class Base implements ShouldQueue
             'object_name' => $objectName,
         ));
         
-        $this->systemJob = $systemJob;
+        $this->systemJobId = $systemJob->id;
     }
 
     /**
@@ -51,7 +51,7 @@ class Base implements ShouldQueue
      */
     public function getSystemJob()
     {
-        return SystemJobModel::find($this->systemJob->id);
+        return SystemJobModel::find($this->systemJobId);
         // @todo: what if job cannot be found?
     }
 
