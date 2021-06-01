@@ -321,31 +321,6 @@ class Plan extends Model implements BillablePlanInterface
     }
 
     /**
-     * Disable plan.
-     *
-     * @return bool
-     */
-    public function disable()
-    {
-        $this->status = PaymentMethod::STATUS_INACTIVE;
-        $this['visible'] = false;
-
-        return $this->save();
-    }
-
-    /**
-     * Enable plan.
-     *
-     * @return bool
-     */
-    public function enable()
-    {
-        $this->status = PaymentMethod::STATUS_ACTIVE;
-
-        return $this->save();
-    }
-
-    /**
      * Color array.
      *
      * @return array
@@ -1145,34 +1120,11 @@ class Plan extends Model implements BillablePlanInterface
         $copy->name = $name;
         $copy->created_at = \Carbon\Carbon::now();
         $copy->updated_at = \Carbon\Carbon::now();
-        $copy->status = PaymentMethod::STATUS_ACTIVE;
+        $copy->status = self::STATUS_ACTIVE;
         $copy->save();
 
         // check status
         $copy->checkStatus();
-    }
-
-    /**
-     **All Payment Methods: create plan on server.
-     **/
-    public function createPlanOnServer($data, $plan)
-    {
-        $planMethodlist = \Acelle\Model\PaymentMethod::getAllActive();
-        if (count($planMethodlist) > 0) {
-            foreach ($planMethodlist as $payment_method) {
-                if ($payment_method->type == PaymentMethod::TYPE_PADDLE_CARD) {
-                    if ($data !== 'unlimited') {
-                        $vendorId = $payment_method->getOption('vendor_id');
-                        $vendor_auth_code = $payment_method->getOption('vendor_auth_code');
-                        // plan_type: accepts day, week, month, year
-                        $json_body = 'vendor_id='.$vendorId.'&vendor_auth_code='.$vendor_auth_code.'&plan_name='.$data['name'].'&plan_trial_days=0&plan_type='.$data['frequency_unit'].'&plan_length='.$data['frequency_amount'].'&main_currency_code=USD&initial_price_usd=0.00&recurring_price_usd='.$data['price'];
-                        $this->createPaddlePlan($json_body, $plan);
-                    }
-                }
-            }
-        }
-
-        return true;
     }
 
     /**
