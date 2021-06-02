@@ -54,7 +54,7 @@ full-height
             </div>
             <div class="mr-1" role="group" aria-label="Button group with nested dropdown">
                 <div class="btn-group btn-group-sm" role="group">
-                    <button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle contacts-sort-title" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle contacts-sort-title" data-value="{{ request()->sortBy }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         @if (request()->sortBy) 
                             {{ trans('messages.timeline.sort.' . request()->sortBy) }}
                         @else
@@ -117,6 +117,8 @@ full-height
             data: function() {
                     return {
                         keyword: $('[name=contact_keyword]').val(),
+                        sortBy: $('.contacts-sort-title').attr('data-value'),
+                        sortOrder: 'desc',
                     };
                 },
             per_page: 10,
@@ -193,30 +195,21 @@ full-height
             });
         });
 
-        function contactsSort(newData) {
-            var currentData = listContact.data();
-            listContact.data = function() {
-                $.extend( currentData, newData);
-                return currentData;
-            };
-
-            listContact.load();
-        }
-
         $('.contacts-sort').on('click', function(e) {
             e.preventDefault();
             var sortBy = $(this).attr('data-sort');
             var text = $(this).html();
 
-            contactsSort({sortBy: sortBy, sortOrder: 'desc'});
-
             $('.contacts-sort-title').html(text);
+            $('.contacts-sort-title').attr('data-value', sortBy);
+
+            listContact.load();
         });
         
         $('.contacts-refresh-button').on('click', function(e) {
             e.preventDefault();
 
-            contactsSort({});
+            listContact.load();
         });
     </script>
 @endsection

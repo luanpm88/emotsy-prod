@@ -19,8 +19,6 @@ full-height
                 method: 'GET',
             });		
             listTimeline.load();
-
-            $()
         </script>
     </div>
 @endsection

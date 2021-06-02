@@ -74,12 +74,17 @@ class List {
         
         // post data
         var data = {
-            _token: CSRF_TOKEN,
             page: _this.page,
             per_page: _this.per_page,
         };
         
         $.extend( data, _this.data() );
+
+        if (_this.method.toLowerCase().trim() != 'get') {
+            $.extend( data, {
+                _token: CSRF_TOKEN,
+            });
+        }
         
         if(_this.xhr && _this.xhr.readyState != 4) {
             _this.xhr.abort();
