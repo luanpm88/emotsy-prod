@@ -4266,7 +4266,7 @@
   'system.recurring_charge_before_days' => 'Auto charge renew invoice before',
   'timeline.sort.auto_triggers.updated_at' => 'Most recent activities first',
   'timeline.sort.auto_triggers.created_at' => 'Most recently triggered first',
-  'timeline.sort.suscribers.created_at' => 'New contacts first',
+  'timeline.sort.subscribers.created_at' => 'New contacts first',
   'timeline.sort' => 'Sort',
   'automation.trigger_now' => 'Trigger Now',
   'automation.trigger_now.confirm' => 'You are trying to manually trigger the automation for this

@@ -1449,13 +1449,14 @@ class Automation2Controller extends Controller
             return $this->notAuthorized();
         }
 
-        // list by action
-        if ($request->action_id) {
-            //
-        }
+        $sortBy = $request->sortBy ?: 'subscribers.id';
+        $sortOrder = $request->sortOrder ?: 'DESC';
 
         // list by type
-        $subscribers = $automation->subscribers();
+        $subscribers = $automation->getSubscribersWithTriggerInfo()
+                                  ->addSelect('subscribers.created_at')
+                                  ->addSelect('auto_triggers.updated_at')
+                                  ->orderBy($sortBy, $sortOrder);
         $contacts = $subscribers->paginate($request->per_page);
         
         return view('automation2.contacts.list', [

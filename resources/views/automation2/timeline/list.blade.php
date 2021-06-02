@@ -15,7 +15,7 @@
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnGroupDrop1">
                     <a class="dropdown-item timeline-sort" href="#" data-sort="auto_triggers.updated_at">{{ trans('messages.timeline.sort.auto_triggers.updated_at') }}</a>
                     <a class="dropdown-item timeline-sort" href="#" data-sort="auto_triggers.created_at">{{ trans('messages.timeline.sort.auto_triggers.created_at') }}</a>
-                    <a class="dropdown-item timeline-sort" href="#" data-sort="suscribers.created_at">{{ trans('messages.timeline.sort.suscribers.created_at') }}</a>
+                    <a class="dropdown-item timeline-sort" href="#" data-sort="subscribers.created_at">{{ trans('messages.timeline.sort.subscribers.created_at') }}</a>
                 </div>
             </div>
         </div>
