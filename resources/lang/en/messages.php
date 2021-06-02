@@ -3355,7 +3355,7 @@
   'braintree.checkout.processing_payment' => 'Processing your payment... please wait!',
   'direct.checkout.page_title' => 'Checkout',
   'direct.title' => 'Manual Checkout',
-  'direct.payment_instruction.demo' => '
+  'payment.claimed.wording' => '
       <p>Please make a deposit to our bank account at:</p>
 
       <p><strong>FIRST CENTURY BANK USA</strong><br>
@@ -4273,20 +4273,15 @@
       contact, although trigger criteria may not meet. Are you sure?',
   'trigger.check' => 'Refresh',
   'automation.audience' => 'Audience',
-  'subscription.claimed' => '
+  'invoice.claimed' => 'Payment was claimed',
+  'invoice.claimed.wording' => '
       <p>Thank you for the payment! Your subscription is now under review and will be activated
-      as soon as the payment is verified. Normally it may take 1 - 2 business days to process.
-      <br>
-      Should you have any question, contact us at:<br><br>
-      
-      <strong>YOUR COMPANY NAME</strong><br>
-      
-      38 Green Lake Court
-      Hoffman Estates, IL 60169<br>---
-      <br>
-      Mobile: +1 (000) 000-0000 <br>
-      Email: support@yourcompany.com</p>
-      
-      <p class="text-danger" style="color: red">* Above is sample confirmation message, you can change it in your payment gateway setting page</p>
+      as soon as the payment is verified.</p>
   ',
+  'invoice.pending' => 'Payment is pending',
+  'invoice.pending.wording' => '
+      <p>You are paying for a pending subscription invoice.
+        Click the button below to go to the payment.</p>
+  ',
+  'payment.continue' => 'Go',
 ) ?>

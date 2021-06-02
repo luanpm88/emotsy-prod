@@ -19,7 +19,7 @@ class InvoicePolicy
                 $can = $invoice->isNew() || $invoice->isClaimed();
                 break;
             case 'customer':
-                $can = ($invoice->isNew() || $invoice->isClaimed()) && $invoice->customer_id == $user->customer->id;
+                $can = ($invoice->isNew() || $invoice->isPending() || $invoice->isClaimed()) && $invoice->customer_id == $user->customer->id;
                 break;
         }
 

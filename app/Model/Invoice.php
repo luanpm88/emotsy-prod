@@ -10,6 +10,7 @@ class Invoice extends Model
 {
     // statuses
     const STATUS_NEW = 'new';
+    const STATUS_PENDING = 'pending';
     const STATUS_CLAIMED = 'claimed';
     const STATUS_PAID = 'paid';
 
@@ -102,8 +103,21 @@ class Invoice extends Model
      */
     public function setPending()
     {
+        if (!$this->isNew()) {
+            throw new \Exception("Can not set invoice as PENDING. Error: Invoice is not NEW.");
+        }
+
         $this->status = self::STATUS_PENDING;
         $this->save();
+
+        // always create pending transaction
+        $this->addTransaction([
+            'status' => \Acelle\Model\Transaction::STATUS_PENDING,
+            'message' => trans('messages.pay_invoice', [
+                'id' => $this->uid,
+                'title' => $this->title,
+            ]),
+        ]);
     }
 
     /**
@@ -370,6 +384,16 @@ class Invoice extends Model
     public function claimed()
     {
         return false;
+    }
+
+    /**
+     * Check pending.
+     *
+     * @return void
+     */
+    public function isPending()
+    {
+        return $this->status == self::STATUS_PENDING;
     }
 
     /**

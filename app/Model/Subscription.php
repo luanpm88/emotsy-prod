@@ -131,6 +131,7 @@ class Subscription extends Model
         return $this->invoices()
             ->whereIn('status', [
                 Invoice::STATUS_NEW,
+                Invoice::STATUS_PENDING,
                 Invoice::STATUS_CLAIMED,
             ]);
     }

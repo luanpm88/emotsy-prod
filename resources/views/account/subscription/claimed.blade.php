@@ -24,10 +24,10 @@
 
     <div class="row">
         <div class="col-md-6">
-            <h2>{!! trans('cashier::messages.direct.invoice.claimed') !!}</h2>  
+            <h2>{!! trans('messages.invoice.claimed') !!}</h2>  
 
             <div class="alert alert-info bg-grey-light">
-                {!! trans('messages.subscription.claimed') !!}
+                {!! trans('messages.invoice.claimed.wording') !!}
             </div>
         </div>
         <div class="col-md-2"></div>
