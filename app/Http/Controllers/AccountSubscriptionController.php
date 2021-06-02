@@ -34,7 +34,7 @@ class AccountSubscriptionController extends Controller
         //   + Invoice claimed: (for offline payment), tell users to "wait for admin to verify and approve the payment..."
         //   + Invoice new: show payment page
         //
-        // 
+        //
         // NOTICE
         // Why do we have to check invoice status?
         // Answer: because we have a design rule: ONE subscription has ONLY ONE active (pending/new/claimed) invoice
