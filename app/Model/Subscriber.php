@@ -1299,4 +1299,15 @@ class Subscriber extends Model
 
         MailListSubscription::dispatch($this);
     }
+
+    public function scopeSimpleSearch($query, $keyword)
+    {
+        if (empty($keyword)) {
+            return $query;
+        }
+
+        return $query->where(function($query) use ($keyword) {
+            $query->where('subscribers.email', 'LIKE', sprintf('%%s%', $keyword));
+        });
+    }
 }
