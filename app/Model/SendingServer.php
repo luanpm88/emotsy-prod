@@ -30,6 +30,7 @@ use Acelle\Library\ExtendedSwiftMessage;
 use Carbon\Carbon;
 use Acelle\Library\StringHelper;
 use Acelle\Library\Notification\BackendError as BackendErrorNotification;
+use Acelle\Library\Facades\Hook;
 
 class SendingServer extends Model
 {
@@ -147,7 +148,21 @@ class SendingServer extends Model
      */
     public static function mapServerType($server)
     {
-        $class_name = '\Acelle\Model\\'.self::$serverMapping[$server->type];
+        if (array_key_exists($server->type, self::$serverMapping)) {
+            // Old sending server types
+            $class_name = '\Acelle\Model\\'.self::$serverMapping[$server->type];
+        } else {
+            $extendedTypes = Hook::execute('register_sending_server');
+            foreach($extendedTypes as $meta) {
+                if ($meta['type'] == $server->type) {
+                    $class_name = $meta['class'];    
+                }
+            }
+        }
+
+        if (is_null($class_name)) {
+            throw new Exception('Unknown sending server type '.$server->type);
+        }
 
         if ($server->id) {
             $instance = $class_name::find($server->id);
@@ -156,24 +171,8 @@ class SendingServer extends Model
         }
 
         $instance->fill($server->getAttributes());
-
+        
         return $instance;
-    }
-
-    /**
-     * Map a server to its class type and initiate an instance.
-     *
-     * @return object sending server of its particular type
-     */
-    public static function getInstance($server)
-    {
-        $class_name = '\Acelle\Model\\'.self::$serverMapping[$server->type];
-        $attributes = $server->toArray();
-        if (array_key_exists('id', $attributes)) {
-            unset($attributes['id']);
-        }
-
-        return new $class_name($attributes);
     }
 
     /**
@@ -1001,7 +1000,7 @@ class SendingServer extends Model
         // $message->setEncoder(\Swift_Encoding::get8bitEncoding());
         $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
         $message->addPart($params['plain'], 'text/plain');
-        $result = self::getInstance($this)->send($message);
+        $result = $this->send($message);
 
         if (array_key_exists('error', $result)) {
             throw new \Exception($result['error']);
@@ -1656,6 +1655,16 @@ class SendingServer extends Model
     }
 
     public function getSpfHost()
+    {
+        return null;
+    }
+
+    public function isExtended()
+    {
+        return false;
+    }
+
+    public function getIconUrl()
     {
         return null;
     }

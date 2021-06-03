@@ -82,7 +82,8 @@ class SendingServerController extends Controller
     {
         $server = new \Acelle\Model\SendingServer();
         $server->type = $request->type;
-        $server = \Acelle\Model\SendingServer::mapServerType($server);
+        $server = $server->mapType();
+
         $server->status = 'active';
         $server->uid = '0';
         $server->quota_value = '1000';
@@ -100,6 +101,7 @@ class SendingServerController extends Controller
         return view('admin.sending_servers.create', [
             'server' => $server,
         ]);
+        
     }
 
     /**
@@ -119,52 +121,58 @@ class SendingServerController extends Controller
             return $this->notAuthorized();
         }
 
-        // save posted data
-        if ($request->isMethod('post')) {
-            // options
-            $options = [];
-            
-            // fill values
-            $server->fill($request->all());
-            $server = \Acelle\Model\SendingServer::mapServerType($server);
-            
-            // validation
-            $validator = $server->validConnection($request); //\Validator::make($request->all(), $server->getRules());
-                      
-            if ($validator->fails()) {
+        // options
+        $options = [];
+        
+        // fill values
+        $server->fill($request->all());
+        $server = \Acelle\Model\SendingServer::mapServerType($server);
+        
+        // validation
+        $validator = $server->validConnection($request); //\Validator::make($request->all(), $server->getRules());
+
+        if ($validator->fails()) {
+            if ($server->isExtended()) {
+                return redirect()->back()->withErrors($validator)
+                        ->withInput();
+            } else {
                 return redirect()->action('Admin\SendingServerController@create', $server->type)
-                            ->withErrors($validator)
-                            ->withInput();
+                        ->withErrors($validator)
+                        ->withInput();
             }
-            
-            $server->admin_id = $request->user()->admin->id;
-            $server->status = SendingServer::STATUS_ACTIVE;
-            
-            // default name
-            if (!$server->name) {
-                $server->name = trans('messages.' . $server->type);
-            }
-            
-            // default sever quota
-            if (!$server->quota_value) {
-                $server->quota_value = 1000;
-                $server->quota_base = 1;
-                $server->quota_unit = 'hour';
-                $options['sending_limit'] = '1000_per_hour';
-            }
-            
-            $server->options = json_encode($options);
+        }
+        
+        $server->admin_id = $request->user()->admin->id;
+        $server->status = SendingServer::STATUS_ACTIVE;
+        
+        // default name
+        if (!$server->name) {
+            $server->name = trans('messages.' . $server->type);
+        }
+        
+        // default sever quota
+        if (!$server->quota_value) {
+            $server->quota_value = 1000;
+            $server->quota_base = 1;
+            $server->quota_unit = 'hour';
+            $options['sending_limit'] = '1000_per_hour';
+        }
+        
+        $server->options = json_encode($options);
 
-            // bounce / feedback hanlder nullable
-            if (empty($request->bounce_handler_id)) {
-                $server->bounce_handler_id = null;
-            }
-            if (empty($request->feedback_loop_handler_id)) {
-                $server->feedback_loop_handler_id = null;
-            }
+        // bounce / feedback hanlder nullable
+        if (empty($request->bounce_handler_id)) {
+            $server->bounce_handler_id = null;
+        }
+        if (empty($request->feedback_loop_handler_id)) {
+            $server->feedback_loop_handler_id = null;
+        }
 
-            if ($server->save()) {
-                $request->session()->flash('alert-success', trans('messages.sending_server.created'));
+        if ($server->save()) {
+            $request->session()->flash('alert-success', trans('messages.sending_server.created'));
+            if ($server->isExtended()) {
+                return redirect($server->getEditUrl());
+            } else {
                 return redirect()->action('Admin\SendingServerController@edit', [$server->uid, $server->type]);
             }
         }
@@ -280,9 +288,14 @@ class SendingServerController extends Controller
             $validator = $server->validConnection($request);
             
             if ($validator->fails()) {
-                return redirect()->action('Admin\SendingServerController@edit', [$server->uid, $server->type])
+                if ($server->isExtended()) {
+                    return redirect($server->getEditUrl())->withErrors($validator)
+                            ->withInput();
+                } else {
+                    return redirect()->action('Admin\SendingServerController@edit', [$server->uid, $server->type])
                             ->withErrors($validator)
                             ->withInput();
+                }
             }
 
             // bounce / feedback hanlder nullable
@@ -296,7 +309,12 @@ class SendingServerController extends Controller
             if ($server->save()) {
                 $request->session()->flash('alert-success', trans('messages.sending_server.updated'));
 
-                return redirect()->action('Admin\SendingServerController@edit', [$server->uid, $server->type]);
+                if ($server->isExtended()) {
+                    return redirect($server->getEditUrl());
+                } else {
+                    return redirect()->action('Admin\SendingServerController@edit', [$server->uid, $server->type]);
+                }
+                
             }
         }
     }
@@ -434,7 +452,7 @@ class SendingServerController extends Controller
         if ($request->isMethod('post')) {
             // @todo testing method and return result here. Ex: echo json_encode($server->test())
             try {
-                $server->sendTestEmail([
+                $server->mapType()->sendTestEmail([
                     'from_email' => $request->from_email,
                     'to_email' => $request->to_email,
                     'subject' => $request->subject,
@@ -567,7 +585,7 @@ class SendingServerController extends Controller
     public function config(Request $request, $uid)
     {
         // find server
-        $server = SendingServer::findByUid($uid);
+        $server = SendingServer::findByUid($uid)->mapType();
 
         // authorize
         if (!$request->user()->admin->can('update', $server)) {
@@ -605,7 +623,11 @@ class SendingServerController extends Controller
         if ($server->save()) {
             $request->session()->flash('alert-success', trans('messages.sending_server.updated'));
 
-            return redirect()->action('Admin\SendingServerController@edit', [$server->uid, $server->type]);
+            if ($server->isExtended()) {
+                return redirect($server->getEditUrl());
+            } else {
+                return redirect()->action('Admin\SendingServerController@edit', [$server->uid, $server->type]);
+            }
         }
     }
     
@@ -705,11 +727,15 @@ class SendingServerController extends Controller
      */
     public function removeDomain(Request $request, $uid, $identity)
     {
-        $server = SendingServer::findByUid($request->uid);
+        $server = SendingServer::findByUid($request->uid)->mapType();
         $server->removeIdentity(base64_decode($identity));
 
         $request->session()->flash('alert-success', trans('messages.sending_server.domain.removed'));
-        return redirect()->action('Admin\SendingServerController@edit', [$server->uid, $server->type]);
+        if ($server->isExtended()) {
+            return redirect($server->getEditUrl());
+        } else {
+            return redirect()->action('Admin\SendingServerController@edit', [$server->uid, $server->type]);    
+        }
     }
     
     /**

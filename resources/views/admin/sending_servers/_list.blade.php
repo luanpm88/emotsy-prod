@@ -18,14 +18,30 @@
                     </div>
                 </td>
                 <td>
-                    <span class="server-avatar server-avatar-{{ $item->type }} mr-0">
-                        <i class="icon-server"></i>
-                    </span>
+                    @php
+                        $server = $item->mapType();
+                    @endphp
+
+                    @if ($server->isExtended())
+                        <span class="mc-server-avatar server-avatar" style="background: url({{ $server->getIconUrl() }}) top left/36px 36px no-repeat transparent;">
+                            <i class="icon-server"></i>
+                        </span>
+                    @else
+                        <span class="server-avatar server-avatar-{{ $item->type }} mr-0">
+                            <i class="icon-server"></i>
+                        </span>
+                    @endif
                 </td>
                 <td>
-                    <h5 class="no-margin text-bold">
-                        <a class="kq_search" href="{{ action('Admin\SendingServerController@edit', ["id" => $item->uid, "type" => $item->type]) }}">{{ $item->name }}</a>
-                    </h5>
+                    @if ($server->isExtended())
+                        <h5 class="no-margin text-bold">
+                            <a class="kq_search" href="{{ $server->getEditUrl() }}">{{ $item->name }}</a>
+                        </h5>
+                    @else
+                        <h5 class="no-margin text-bold">
+                            <a class="kq_search" href="{{ action('Admin\SendingServerController@edit', ["id" => $item->uid, "type" => $item->type]) }}">{{ $item->name }}</a>
+                        </h5>
+                    @endif
                     <span class="text-muted">
                         {!! is_object($item->admin) ? '<i class="icon-user-tie"></i>' . $item->admin->displayName() : '' !!}
                         {!! is_object($item->customer) ? '<i class="icon-user"></i>' . $item->customer->displayName() : '' !!}
@@ -35,9 +51,14 @@
                 </td>
                 <td>
                     <div class="single-stat-box pull-left ml-20">
-                        <span class="no-margin stat-num kq_search">{{ trans('messages.' . $item->type) }}</span>
+                        @if ($server->isExtended())
+                            <span class="no-margin stat-num kq_search">{{ $server->getTypeName() }}</span>
+                        @else
+                            <span class="no-margin stat-num kq_search">{{ trans('messages.' . $item->type) }}</span>
+                        @endif
                         <br />
                         <span class="text-muted">{{ trans('messages.type') }}</span>
+                        
                     </div>
                 </td>
                 <td>
@@ -75,7 +96,11 @@
                 </td>
                 <td class="text-right text-nowrap">
                     @if (Auth::user()->admin->can('update', $item))
-                        <a href="{{ action('Admin\SendingServerController@edit', ["id" => $item->uid, "type" => $item->type]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey btn-icon"><i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
+                        @if ($server->isExtended())
+                            <a href="{{ $server->getEditUrl() }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey btn-icon"><i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
+                        @else
+                            <a href="{{ action('Admin\SendingServerController@edit', ["id" => $item->uid, "type" => $item->type]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey btn-icon"><i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
+                        @endif
                     @endif
                     @if (Auth::user()->admin->can('delete', $item) || Auth::user()->admin->can('disable', $item) || Auth::user()->admin->can('enable', $item))
                         <div class="btn-group">
