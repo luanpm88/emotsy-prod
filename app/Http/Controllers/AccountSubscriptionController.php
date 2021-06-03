@@ -50,8 +50,7 @@ class AccountSubscriptionController extends Controller
 
         // 1. HAVE NOT HAD SUBSCRIPTION YET OR SUBSCRIPTION IS ENDED
         if (!$subscription ||
-            $subscription->isEnded() ||
-            ($subscription->isNew() && !$subscription->pendingInvoice())
+            $subscription->isEnded()
         ) {
             return view('account.subscription.select_plan', [
                 'plans' => Plan::getAvailablePlans(),
@@ -274,6 +273,11 @@ class AccountSubscriptionController extends Controller
         }
 
         $invoice->delete();
+
+        // if subscription is new
+        if ($subscription->isNew()) {
+            $subscription->cancelNow();
+        }
 
         // Redirect to my subscription page
         $request->session()->flash('alert-success', trans('messages.invoice.cancelled'));
