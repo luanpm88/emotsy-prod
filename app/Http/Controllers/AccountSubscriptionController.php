@@ -274,7 +274,8 @@ class AccountSubscriptionController extends Controller
 
         $invoice->delete();
 
-        // if subscription is new
+        // if subscription is new -> cancel now subscription.
+        // Make sure a new subscription must have a pending invoice
         if ($subscription->isNew()) {
             $subscription->cancelNow();
         }
