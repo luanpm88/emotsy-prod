@@ -4283,5 +4283,8 @@
       <p>You are paying for a pending subscription invoice.
         Click the button below to go to the payment.</p>
   ',
-  'payment.continue' => 'Go',
+  'invoice.pending.no_payment' => '<p>You have a pending subscription invoice.
+    Click the button below to update the payment.</p>',
+  'payment.check_payment' => 'Check the payment',
+  'payment.update_payment' => 'Update payment',
 ) ?>

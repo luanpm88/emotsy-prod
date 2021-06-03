@@ -109,15 +109,6 @@ class Invoice extends Model
 
         $this->status = self::STATUS_PENDING;
         $this->save();
-
-        // always create pending transaction
-        $this->addTransaction([
-            'status' => \Acelle\Model\Transaction::STATUS_PENDING,
-            'message' => trans('messages.pay_invoice', [
-                'id' => $this->uid,
-                'title' => $this->title,
-            ]),
-        ]);
     }
 
     /**
@@ -521,5 +512,35 @@ class Invoice extends Model
         $transaction->save();
 
         return $transaction;
+    }
+
+    /**
+     * Checkout.
+     *
+     * @return array
+     */
+    public function checkout()
+    {
+        // if invoice is pending aka already checkout
+        if ($this->isNew()) {
+            // set invoice as pending
+            $this->setPending();
+
+            // always create pending transaction
+            $this->addTransaction([
+                'status' => \Acelle\Model\Transaction::STATUS_PENDING,
+                'message' => trans('messages.pay_invoice', [
+                    'id' => $this->uid,
+                    'title' => $this->title,
+                ]),
+            ]);
+
+        // invoice is pending
+        } elseif ($this->isPending()) {
+            // clear service callback
+            $this->pendingTransaction()->updateMetadata([
+                'service' => null,
+            ]);
+        }
     }
 }

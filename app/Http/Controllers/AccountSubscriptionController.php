@@ -47,16 +47,12 @@ class AccountSubscriptionController extends Controller
         // init
         $customer = $request->user()->customer;
         $subscription = $customer->subscription;
-        $gateway = $customer->getPaymentGateway();
 
-        // No active subscription
+        // 1. HAVE NOT HAD SUBSCRIPTION YET OR SUBSCRIPTION IS ENDED
         if (!$subscription ||
             $subscription->isEnded() ||
             ($subscription->isNew() && !$subscription->pendingInvoice())
         ) {
-            $plans = Plan::getAvailablePlans();
-            $planCount = count($plans);
-
             return view('account.subscription.select_plan', [
                 'plans' => Plan::getAvailablePlans(),
                 'subscription' => $subscription,
@@ -71,11 +67,10 @@ class AccountSubscriptionController extends Controller
             return response()->view('errors.general', [ 'message' => __('messages.subscription.error.plan-not-active', [ 'name' => $subscription->plan->name]) ]);
         }
         
-        // 3. NEW SUBSCRIPTION
+        // 3. SUBSCRIPTION IS NEW
         if ($subscription->isNew()) {
             $invoice = $subscription->lastInvoice();
 
-            // new invoice
             if ($invoice->isNew()) {
                 return view('account.subscription.payment', [
                     'subscription' => $subscription,
@@ -97,16 +92,11 @@ class AccountSubscriptionController extends Controller
                     'invoice' => $invoice,
                 ]);
             }
-
-            // invoice was paid
-            elseif ($invoice->isPaid()) {
-                // nothing to do
-            }
         }
-        
+
+        // 3. SUBSCRIPTION IS ACTIVE, SHOW DETAILS PAGE        
         return view('account.subscription.index', [
             'subscription' => $subscription,
-            'gateway' => $gateway,
             'plan' => $subscription->plan,
         ]);
     }
@@ -151,8 +141,7 @@ class AccountSubscriptionController extends Controller
         $gateway = $customer->getPaymentGateway();
         $invoice = $subscription->lastInvoice();
 
-        // set invoice as pending
-        $invoice->setPending();
+        $invoice->checkout();
 
         // redirect to service checkout
         return redirect()->away($gateway->getCheckoutUrl(

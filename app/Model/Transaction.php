@@ -78,4 +78,68 @@ class Transaction extends Model
         $this->status = self::STATUS_SUCCESS;
         $this->save();
     }
+
+    /**
+     * Get metadata.
+     *
+     * @var object | collect
+     */
+    public function getMetadata($name=null)
+    {
+        if (!$this['metadata']) {
+            return json_decode('{}', true);
+        }
+
+        $data = json_decode($this['metadata'], true);
+
+        if ($name != null) {
+            if (isset($data[$name])) {
+                return $data[$name];
+            } else {
+                return null;
+            }
+        } else {
+            return $data;
+        }
+    }
+
+    /**
+     * Get metadata.
+     *
+     * @var object | collect
+     */
+    public function updateMetadata($data)
+    {
+        $metadata = (object) array_merge((array) $this->getMetadata(), $data);
+        $this['metadata'] = json_encode($metadata);
+
+        $this->save();
+    }
+
+    /**
+     * Check .
+     *
+     * @var object | collect
+     */
+    public function check()
+    {
+        $data = $this->getMetadata();
+
+        // not found service
+        if (!isset($data['service'])) {
+            return true;
+        }
+
+        // for each service
+        switch ($data['service']) {
+            case 'coinpayments':
+                $service = \Acelle\Model\Setting::getPaymentGateway('coinpayments');
+                $service->checkPay($this->invoice);
+                break;
+            default:
+                throw new \Exception('No service found with name: ' . $data['service']);
+        }
+
+        return true;
+    }
 }
