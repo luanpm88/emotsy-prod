@@ -39,7 +39,8 @@ class SendingServerPostal extends SendingServer
  
     public static function handle($request)
     {
-
+        $data = $request->json()->all();
+        var_dump($data);
     }
 
     public static function send()

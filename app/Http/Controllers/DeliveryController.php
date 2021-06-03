@@ -15,6 +15,7 @@ use Acelle\Model\SendingServerMailgun;
 use Acelle\Model\SendingServerSendGrid;
 use Acelle\Model\SendingServerElasticEmail;
 use Acelle\Model\SendingServerSparkPost;
+use Acelle\Model\SendingServerPostal;
 use Acelle\Model\FeedbackLog;
 use Acelle\Model\Blacklist;
 use Acelle\Library\Notification\BackendError as BackendErrorNotification;
@@ -53,6 +54,9 @@ class DeliveryController extends Controller
         } elseif ($type == SendingServerSparkPost::WEBHOOK) {
             MailLog::configure(storage_path().'/logs/handler-sparkpost.log');
             return SendingServerSparkPost::handleNotification($_GET);
+        } elseif ($type == 'postal') {
+            MailLog::configure(storage_path().'/logs/handler-postal.log');
+            return SendingServerPostal::handle($request);
         } else {
             return;
         }
