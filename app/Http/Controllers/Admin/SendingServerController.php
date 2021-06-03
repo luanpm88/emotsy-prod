@@ -68,7 +68,9 @@ class SendingServerController extends Controller
      */
     public function select(Request $request)
     {
-        return view('admin.sending_servers.select');
+        // Sending servers added by Plugins
+        $more = Hook::execute('register_sending_server');
+        return view('admin.sending_servers.select', ['more' => $more]);
     }
 
     /**

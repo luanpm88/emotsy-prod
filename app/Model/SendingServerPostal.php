@@ -31,6 +31,7 @@ namespace Acelle\Model;
 use Acelle\Library\Log as MailLog;
 use Postal\Client;
 use Postal\SendRawMessage;
+use Exception;
 
 class SendingServerPostal extends SendingServer
 {
@@ -39,8 +40,48 @@ class SendingServerPostal extends SendingServer
  
     public static function handle($request)
     {
-        $data = $request->json()->all();
-        var_dump($data);
+        MailLog::info('Notification received!');
+        $json = $request->json()->all();
+
+        MailLog::info(json_encode($json));
+
+        if (array_key_exists('bounce', $json)) {
+            self::handleBounce($json);
+        } else {
+            MailLog::warning('Not a bounce notification');            
+        }
+    }
+
+    public static function handleBounce(Array $json)
+    {
+        $bounceLog = new BounceLog();
+
+        // use Elastic Email transaction id as runtime-message-id
+        try {
+            $bounceLog->runtime_message_id = $json['bounce']['message_id'];
+        } catch (\Exception $e) {
+            MailLog::warning('Cannot retrive runtime_message_id');
+            throw new Exception('Cannot retrive message_id in bounce notification');
+        }
+
+        $trackingLog = TrackingLog::where('runtime_message_id', $bounceLog->runtime_message_id)->first();
+        if ($trackingLog) {
+            $bounceLog->message_id = $trackingLog->message_id;
+        }
+
+        $bounceLog->bounce_type = BounceLog::HARD;
+        $bounceLog->raw = json_encode($json);
+        $bounceLog->save();
+        MailLog::info('Bounce recorded for message '.$bounceLog->runtime_message_id);
+
+        // add subscriber's email to blacklist
+        $subscriber = $bounceLog->findSubscriberByRuntimeMessageId();
+        if ($subscriber) {
+            $subscriber->sendToBlacklist($bounceLog->raw);
+            MailLog::info('Email added to blacklist');
+        } else {
+            MailLog::warning('Cannot find associated tracking log for message '.$bounceLog->runtime_message_id);
+        }
     }
 
     public static function send()

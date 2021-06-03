@@ -21,6 +21,7 @@ use Acelle\Model\Blacklist;
 use Acelle\Library\Notification\BackendError as BackendErrorNotification;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Validator;
+use Exception;
 
 class DeliveryController extends Controller
 {
@@ -42,23 +43,36 @@ class DeliveryController extends Controller
 
         $type = $request->stype;
 
-        if ($type == 'amazon') { // @TODO hard-coded here, seeking for a solution
-            $this->handleAws();
-        } elseif ($type == SendingServerMailgun::WEBHOOK) {
-            SendingServerMailgun::handleNofification();
-        } elseif ($type == SendingServerSendGrid::WEBHOOK) {
-            $this->handleSendGrid();
-        } elseif ($type == SendingServerElasticEmail::WEBHOOK) {
-            MailLog::configure(storage_path().'/logs/handler-elasticemail.log');
-            SendingServerElasticEmail::handleNotification($_GET);
-        } elseif ($type == SendingServerSparkPost::WEBHOOK) {
-            MailLog::configure(storage_path().'/logs/handler-sparkpost.log');
-            return SendingServerSparkPost::handleNotification($_GET);
-        } elseif ($type == 'postal') {
-            MailLog::configure(storage_path().'/logs/handler-postal.log');
-            return SendingServerPostal::handle($request);
-        } else {
-            return;
+        try {
+            if ($type == 'amazon') { // @TODO hard-coded here, seeking for a solution
+                $this->handleAws();
+            } elseif ($type == SendingServerMailgun::WEBHOOK) {
+                SendingServerMailgun::handleNofification();
+            } elseif ($type == SendingServerSendGrid::WEBHOOK) {
+                $this->handleSendGrid();
+            } elseif ($type == SendingServerElasticEmail::WEBHOOK) {
+                MailLog::configure(storage_path().'/logs/handler-elasticemail.log');
+                SendingServerElasticEmail::handleNotification($_GET);
+            } elseif ($type == SendingServerSparkPost::WEBHOOK) {
+                MailLog::configure(storage_path().'/logs/handler-sparkpost.log');
+                SendingServerSparkPost::handleNotification($_GET);
+            } elseif ($type == 'postal') {
+                MailLog::configure(storage_path('logs/handler-postal.log'));
+                SendingServerPostal::handle($request);
+            } else {
+                throw new Exception('Unknown notification type');
+            }
+
+            return response()->json(['success' => 'OK']);
+
+        } catch(Exception $ex) {
+
+            return response()->json([
+                'success' => false,
+                'error' => $ex->getMessage(),
+                'debug' => $ex->getTraceAsString(),
+            ], 500);
+
         }
     }
 

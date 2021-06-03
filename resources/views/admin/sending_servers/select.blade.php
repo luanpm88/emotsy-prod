@@ -46,6 +46,21 @@
 
                 @endforeach
 
+                @foreach($more as $server)
+                    <li>
+                        <a href="{{ $server['create_url'] }}" class="btn btn-info bg-info-800">{{ trans('messages.choose') }}</a>
+                        <a href="{{ $server['create_url'] }}">
+                            <span class="mc-server-avatar server-avatar" style="background: url({{ $server['icon_url']  }}) top left/36px 36px no-repeat transparent;">
+                                <i class="icon-server"></i>
+                            </span>
+                        </a>
+                        <h4><a href="{{ $server['create_url'] }}">{{  $server['name']  }}</a></h4>
+                        <p>
+                            {{  $server['description']  }}
+                        </p>
+                    </li>                    
+                @endforeach
+
             </ul>
             <div class="">
                 <a href="{{ action('Admin\SendingServerController@index') }}" type="button" class="btn bg-grey">
