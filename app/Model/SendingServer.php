@@ -1106,7 +1106,8 @@ class SendingServer extends Model
                     'disabled' => true,
                 ];
             } else {
-                $data['items'][] = ['id' => $server->uid, 'text' => $server->name.'|||'.trans('messages.'.$server->type)];
+                $type = ($server->mapType()->isExtended()) ? $server->mapType()->getTypeName() : trans('messages.'.$server->type);
+                $data['items'][] = ['id' => $server->uid, 'text' => $server->name.'|||'.$type ];
             }
         }
 
