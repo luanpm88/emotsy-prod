@@ -1717,4 +1717,9 @@ class SendingServer extends Model
 
         return [ $validator, $server ];
     }
+
+    public function getTypeName()
+    {
+        return trans('messages.' . $this->type);
+    }
 }

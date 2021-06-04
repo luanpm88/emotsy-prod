@@ -41,7 +41,7 @@
                     @if (!$plan->useSystemSendingServer())
                         <span class="text-muted small" class="">{{ trans('messages.plan.sending_server.' . $plan->getOption('sending_server_option')) }}  &bull; {{ trans('messages.plans.subscriber_count', ['count' => $plan->customersCount()]) }}</span>
                     @elseif ($plan->hasPrimarySendingServer())
-                        <span class="text-muted small">{{ trans('messages.plans.send_via.wording', ['server' => trans('messages.' . $plan->primarySendingServer()->type)]) }} &bull; {{ trans('messages.plans.subscriber_count', ['count' => $plan->customersCount()]) }}</span>
+                        <span class="text-muted small">{{ trans('messages.plans.send_via.wording', ['server' => $plan->primarySendingServer()->getTypeName() ]) }} &bull; {{ trans('messages.plans.subscriber_count', ['count' => $plan->customersCount()]) }}</span>
                     @endif
 
                     @foreach ($plan->errors() as $error)
