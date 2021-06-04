@@ -74,9 +74,18 @@
                     @foreach ($plan->plansSendingServers as $planSendingServer)
                         <li>
                             <content width="50%">
-                                <span class="mc_list_media mc-server-avatar server-avatar server-avatar-{{ $planSendingServer->sendingServer->type }} mr-0">
-                                    <i class="icon-server"></i>
-                                </span>
+                                @php
+                                    $server = $planSendingServer->sendingServer->mapType();
+                                @endphp
+                                @if ($server->isExtended())
+                                    <span class="mc_list_media mc-server-avatar server-avatar mr-0" style="background: url({{ $server->getIconUrl()  }}) top left/36px 36px no-repeat transparent;">
+                                        <i class="icon-server"></i>
+                                    </span>
+                                @else
+                                    <span class="mc_list_media mc-server-avatar server-avatar server-avatar-{{ $planSendingServer->sendingServer->type }} mr-0">
+                                        <i class="icon-server"></i>
+                                    </span>
+                                @endif
                                 <h4>{{ $planSendingServer->sendingServer->name }}
                                     @if ($planSendingServer->isPrimary())
                                         &nbsp;&nbsp;<span class="badge badge-info bg-grey">{{ trans('messages.sending_servers.primary') }}</span>
@@ -101,7 +110,12 @@
                                     <a link-method="POST" href="{{ action('Admin\PlanController@setPrimarySendingServer', ['id' => $plan->uid, 'sending_server_uid' => $planSendingServer->sendingServer->uid]) }}" class="btn btn-mc_default">{{ trans('messages.sending_servers.set_primary') }}</a>
                                 @endif
                                 @if (Auth::user()->admin->can('update', $planSendingServer->sendingServer))
-                                    <a href="{{ action('Admin\SendingServerController@edit', ["id" => $planSendingServer->sendingServer->uid, "type" => $planSendingServer->sendingServer->type]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn btn-mc_default">{{ trans('messages.edit') }}</a>
+                                    
+                                    @if ($server->isExtended())
+                                        <a href="{{ $server->getEditUrl() }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn btn-mc_default">{{ trans('messages.edit') }}</a>
+                                    @else
+                                        <a href="{{ action('Admin\SendingServerController@edit', ["id" => $planSendingServer->sendingServer->uid, "type" => $planSendingServer->sendingServer->type]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn btn-mc_default">{{ trans('messages.edit') }}</a>
+                                    @endif
                                 @endif
                                 <a link-method="POST" href="{{ action('Admin\PlanController@removeSendingServer', ['id' => $plan->uid, 'sending_server_uid' => $planSendingServer->sendingServer->uid]) }}" class="btn btn-mc_default">{{ trans('messages.remove') }}</a>
                             </actions>
@@ -113,14 +127,20 @@
     </div>
     
     @if (is_object($plan->primarySendingServer()))
+        @php
+            $server = $plan->primarySendingServer()->mapType();
+        @endphp
         <div class="mc-section">
             <div class="row">
                 <div class="col-md-6">
                     <h2 class="mc-h2 mt-0">
                         <span class="text-semibold">{{ trans('messages.plan.sending_identify') }}</span>
                     </h2>
-                
-                    <p>{!! trans('messages.plan.sending_identify.intro.' . $plan->primarySendingServer()->type) !!}</p>
+                    @if ($server->isExtended())
+                        <p>{!! trans('messages.plan.sending_identify.intro.sendmail') !!}</p>
+                    @else
+                        <p>{!! trans('messages.plan.sending_identify.intro.' . $plan->primarySendingServer()->type) !!}</p>
+                    @endif
                 </div>
             </div>
             <div class="row">

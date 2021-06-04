@@ -81,7 +81,14 @@
                                 @if ($plan->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SYSTEM)
                                     @if ($plan->primarySendingServer())
                                         <a href="{{ action('Admin\PlanController@sendingServers', $plan->uid) }}">
-                                            {{ trans('messages.' . $plan->primarySendingServer()->type) }}
+                                            @php
+                                                $server = $plan->primarySendingServer()->mapType();
+                                            @endphp
+                                            @if ($server->isExtended())
+                                                {{ $server->getTypeName() }}
+                                            @else
+                                                {{ trans('messages.' . $plan->primarySendingServer()->type) }}
+                                            @endif
                                         </a>
                                     @else
                                         <a class="text-warning" href="{{ action('Admin\PlanController@sendingServers', $plan->uid) }}">
