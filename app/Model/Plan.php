@@ -1566,4 +1566,29 @@ class Plan extends Model implements BillablePlanInterface
         $this['visible'] = true;
         $this->save();
     }
+
+    /**
+     * Disable plan.
+     *
+     * @return bool
+     */
+    public function disable()
+    {
+        $this->status = self::STATUS_INACTIVE;
+        $this['visible'] = false;
+
+        return $this->save();
+    }
+
+    /**
+     * Enable plan.
+     *
+     * @return bool
+     */
+    public function enable()
+    {
+        $this->status = self::STATUS_ACTIVE;
+
+        return $this->save();
+    }
 }

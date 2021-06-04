@@ -16,12 +16,12 @@ class SendingServerController extends Controller
      */
     public function index(Request $request)
     {
-        if (!$request->user()->admin->can('read', new \Acelle\Model\SendingServer())) {
+        if (!$request->user()->admin->can('read', new SendingServer())) {
             return $this->notAuthorized();
         }
 
         // If admin can view all sending domains
-        if (!$request->user()->admin->can("readAll", new \Acelle\Model\SendingServer())) {
+        if (!$request->user()->admin->can("readAll", new SendingServer())) {
             $request->merge(array("admin_id" => $request->user()->admin->id));
         }
 
@@ -42,19 +42,19 @@ class SendingServerController extends Controller
      */
     public function listing(Request $request)
     {
-        if (!$request->user()->admin->can('read', new \Acelle\Model\SendingServer())) {
+        if (!$request->user()->admin->can('read', new SendingServer())) {
             return $this->notAuthorized();
         }
 
         // If admin can view all sending domains
-        if (!$request->user()->admin->can("readAll", new \Acelle\Model\SendingServer())) {
+        if (!$request->user()->admin->can("readAll", new SendingServer())) {
             $request->merge(array("admin_id" => $request->user()->admin->id));
         }
 
         // exlude customer seding servers
         $request->merge(array("no_customer" => true));
 
-        $items = \Acelle\Model\SendingServer::search($request)->paginate($request->per_page);
+        $items = SendingServer::search($request)->paginate($request->per_page);
 
         return view('admin.sending_servers._list', [
             'items' => $items,
@@ -80,7 +80,7 @@ class SendingServerController extends Controller
      */
     public function create(Request $request)
     {
-        $server = new \Acelle\Model\SendingServer();
+        $server = new SendingServer();
         $server->type = $request->type;
         $server = $server->mapType();
 
@@ -94,7 +94,7 @@ class SendingServerController extends Controller
         $server->name = trans('messages.' . $request->type);
 
         // authorize
-        if (!$request->user()->admin->can('create', $server)) {
+        if (!$request->user()->admin->can('create', SendingServer::class)) {
             return $this->notAuthorized();
         }
 
@@ -163,8 +163,8 @@ class SendingServerController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        $server = \Acelle\Model\SendingServer::findByUid($id);
-        $server = \Acelle\Model\SendingServer::mapServerType($server);
+        $server = SendingServer::findByUid($id);
+        $server = SendingServer::mapServerType($server);
         // authorize
         if (!$request->user()->admin->can('update', $server)) {
             return $this->notAuthorized();
@@ -236,8 +236,8 @@ class SendingServerController extends Controller
     {
         // Get current user
         $current_user = $request->user();
-        $server = \Acelle\Model\SendingServer::findByUid($id);
-        $server = \Acelle\Model\SendingServer::mapServerType($server);
+        $server = SendingServer::findByUid($id);
+        $server = SendingServer::mapServerType($server);
 
         // authorize
         if (!$request->user()->admin->can('update', $server)) {
@@ -306,7 +306,7 @@ class SendingServerController extends Controller
     {
         $sort = json_decode($request->sort);
         foreach ($sort as $row) {
-            $item = \Acelle\Model\SendingServer::findByUid($row[0]);
+            $item = SendingServer::findByUid($row[0]);
 
             // authorize
             if (!$request->user()->admin->can('update', $item)) {
@@ -329,7 +329,7 @@ class SendingServerController extends Controller
      */
     public function delete(Request $request)
     {
-        $items = \Acelle\Model\SendingServer::whereIn('uid', explode(',', $request->uids));
+        $items = SendingServer::whereIn('uid', explode(',', $request->uids));
 
         foreach ($items->get() as $item) {
             // authorize
@@ -351,7 +351,7 @@ class SendingServerController extends Controller
      */
     public function disable(Request $request)
     {
-        $items = \Acelle\Model\SendingServer::whereIn('uid', explode(',', $request->uids));
+        $items = SendingServer::whereIn('uid', explode(',', $request->uids));
 
         foreach ($items->get() as $item) {
             // authorize
@@ -373,7 +373,7 @@ class SendingServerController extends Controller
      */
     public function enable(Request $request)
     {
-        $items = \Acelle\Model\SendingServer::whereIn('uid', explode(',', $request->uids));
+        $items = SendingServer::whereIn('uid', explode(',', $request->uids));
 
         foreach ($items->get() as $item) {
             // authorize
@@ -401,9 +401,9 @@ class SendingServerController extends Controller
 
         // Fill new server info
         if ($uid) {
-            $server = \Acelle\Model\SendingServer::findByUid($uid);
+            $server = SendingServer::findByUid($uid);
         } else {
-            $server = new \Acelle\Model\SendingServer();
+            $server = new SendingServer();
             $server->uid = 0;
         }
 
@@ -453,8 +453,8 @@ class SendingServerController extends Controller
      */
     public function testConnection(Request $request, $uid)
     {
-        $server = \Acelle\Model\SendingServer::findByUid($uid);
-        $server = \Acelle\Model\SendingServer::mapServerType($server);
+        $server = SendingServer::findByUid($uid);
+        $server = SendingServer::mapServerType($server);
 
         // authorize
         if (!$request->user()->admin->can('update', $server)) {
@@ -494,7 +494,7 @@ class SendingServerController extends Controller
      */
     public function select2(Request $request)
     {
-        echo \Acelle\Model\SendingServer::adminSelect2($request);
+        echo SendingServer::adminSelect2($request);
     }
     
     /**
@@ -507,9 +507,9 @@ class SendingServerController extends Controller
     public function sendingLimit(Request $request)
     {
         if (!$request->uid) {
-            $server = new \Acelle\Model\SendingServer();
+            $server = new SendingServer();
         } else {
-            $server = \Acelle\Model\SendingServer::findByUid($request->uid);
+            $server = SendingServer::findByUid($request->uid);
         }
         
         $server->fill($request->all());
