@@ -2819,7 +2819,6 @@
   'automation.change_mail_list' => 'Cambiar lista de email',
   'automation.automation_name' => 'Nombre automatización',
   'automation.settings.save' => 'Guardar',
-  'automation.delete_this_action' => 'Eliminar esta acción',
   'automation.action.deteled' => 'La acción ha sido removida',
   'automation.email.delete.confirm' => 'Estás a punto de eliminar este correo electrónico.',
   'automation.email.deteled' => 'El correo electrónico se eliminó correctamente',
@@ -3347,25 +3346,6 @@
   'braintree.checkout.processing_payment' => 'Processing your payment... please wait!',
   'direct.checkout.page_title' => 'Checkout',
   'direct.title' => 'Manual Checkout',
-  'direct.payment_instruction.demo' => '
-        <p>Please make a deposit to our bank account at:</p>
-
-        <p><strong>FIRST CENTURY BANK USA</strong><br>
-        Routing (ABA): 061120084<br>
-        Account number: 4013000067378<br>
-        Beneficiary name: Jolie Kennedy<br>
-        </p>
-
-        <p>---</p>
-        
-        <p><strong>CITIBANK UK</strong><br>
-        SWIFT CODE: CIBLBDDHXXX<br>
-        Account number: 9000110067378<br>
-        Beneficiary name: Jolie Kennedy<br>
-        </p>
-        
-        <p class="text-danger" style="color: red">* Above is sample payment information, you can change it in your payment gateway setting page</p>
-    ',
   'direct.cancel_new_subscription' => 'Click here to choose another plan',
   'direct.claim_payment' => 'I paid already!',
   'direct.unclaim_payment' => 'Sorry! I claimed by mistake. Click to undo.',
@@ -4284,21 +4264,37 @@
   'automation.audience' => 'Audience',
   'timeline.sort.auto_triggers.updated_at' => 'Most recent activities first',
   'timeline.sort.auto_triggers.created_at' => 'Most recently triggered first',
-  'timeline.sort.suscribers.created_at' => 'New contacts first',
-  'subscription.claimed' => '
-      <p>Thank you for the payment! Your subscription is now under review and will be activated
-      as soon as the payment is verified. Normally it may take 1 - 2 business days to process.
-      <br>
-      Should you have any question, contact us at:<br><br>
+  'automation.remove_this_action' => 'Remove this Action',
+  'automation.status.triggered.desc' => 'Triggered, processing...',
+  'payment.claimed.wording' => '
+      <p>Please make a deposit to our bank account at:</p>
+
+      <p><strong>FIRST CENTURY BANK USA</strong><br>
+      Routing (ABA): 061120084<br>
+      Account number: 4013000067378<br>
+      Beneficiary name: Jolie Kennedy<br>
+      </p>
+
+      <p>---</p>
       
-      <strong>YOUR COMPANY NAME</strong><br>
+      <p><strong>CITIBANK UK</strong><br>
+      SWIFT CODE: CIBLBDDHXXX<br>
+      Account number: 9000110067378<br>
+      Beneficiary name: Jolie Kennedy<br>
+      </p>
       
-      38 Green Lake Court
-      Hoffman Estates, IL 60169<br>---
-      <br>
-      Mobile: +1 (000) 000-0000 <br>
-      Email: support@yourcompany.com</p>
-      
-      <p class="text-danger" style="color: red">* Above is sample confirmation message, you can change it in your payment gateway setting page</p>
+      <p class="text-danger" style="color: red">* Above is sample payment information, you can change it in your payment gateway setting page</p>
   ',
+  'timeline.sort.subscribers.created_at' => 'New contacts first',
+  'invoice.claimed' => 'Your payment is under verification...',
+  'invoice.claimed.wording' => 'Thank you for the payment! Your subscription is now under review and will be activated as soon as the payment is verified.',
+  'invoice.pending' => 'Payment is pending',
+  'invoice.pending.wording' => '
+      <p>You are paying for a pending subscription invoice.
+        Click the button below to go to the payment.</p>
+  ',
+  'invoice.pending.no_payment' => '<p>You have a pending subscription invoice.
+    Click the button below to update the payment.</p>',
+  'payment.check_payment' => 'Check the payment',
+  'payment.update_payment' => 'Update payment',
 ) ?>
