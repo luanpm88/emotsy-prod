@@ -3490,7 +3490,7 @@
         to re enter your payment information.',
   'transaction.renew_plan' => 'Renew :plan plan',
   'direct.payment_is_not_claimed' => 'Payment is not claimed',
-  'direct.payment_was_claimed' => 'Payment was claimed',
+  'direct.payment_was_claimed' => 'Payment is under review...',
   'stripe.next_period_day' => 'Next period end day',
   'transaction.recurring_charge' => 'Recurring Charge for :plan plan',
   'stripe.payment_error.recurring_charge_error' => '<p class="mb-3"><strong>Error!</p></strong>Something went wrong when
@@ -4273,11 +4273,8 @@
       contact, although trigger criteria may not meet. Are you sure?',
   'trigger.check' => 'Refresh',
   'automation.audience' => 'Audience',
-  'invoice.claimed' => 'Payment was claimed',
-  'invoice.claimed.wording' => '
-      <p>Thank you for the payment! Your subscription is now under review and will be activated
-      as soon as the payment is verified.</p>
-  ',
+  'invoice.claimed' => 'Your payment is under verification...',
+  'invoice.claimed.wording' => 'Thank you for the payment! Your subscription is now under review and will be activated as soon as the payment is verified.',
   'invoice.pending' => 'Payment is pending',
   'invoice.pending.wording' => '
       <p>You are paying for a pending subscription invoice.
