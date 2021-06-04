@@ -25,6 +25,7 @@ namespace Acelle\Library;
 use ZipArchive;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
+use Illuminate\Support\Facades\File;
 
 class Tool
 {
@@ -81,20 +82,16 @@ class Tool
      *
      * @return bool Returns true on success, false on failure
      */
-    public static function xdelete($dir)
+    public static function xdelete($file)
     {
-        if (is_dir($dir)) {
-            $objects = scandir($dir);
-            foreach ($objects as $object) {
-                if ($object != '.' && $object != '..') {
-                    if (is_dir($dir.'/'.$object)) {
-                        self::xdelete($dir.'/'.$object);
-                    } else {
-                        unlink($dir.'/'.$object);
-                    }
-                }
-            }
-            rmdir($dir);
+        if (!file_exists($file)) {
+            return;
+        }
+
+        if (is_link($file) || is_file($file)) {
+            File::delete($file);
+        } else {
+            File::deleteDirectory($file);
         }
 
         return true;
