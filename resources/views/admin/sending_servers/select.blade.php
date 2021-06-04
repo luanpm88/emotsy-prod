@@ -11,15 +11,15 @@
 
 @section('page_header')
 
-            <div class="page-title">
-                <ul class="breadcrumb breadcrumb-caret position-right">
-                    <li><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-                </ul>
+    <div class="page-title">
+        <ul class="breadcrumb breadcrumb-caret position-right">
+            <li><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+        </ul>
 
-                <h1>
-                    <span class="text-semibold"><i class="icon-plus2"></i> {{ trans('messages.select_sending_servers_type') }}</span>
-                </h1>
-            </div>
+        <h1>
+            <span class="text-semibold"><i class="icon-plus2"></i> {{ trans('messages.select_sending_servers_type') }}</span>
+        </h1>
+    </div>
 
 @endsection
 
@@ -28,6 +28,22 @@
         <div class="col-md-1"></div>
         <div class="col-md-10">
             <ul class="modern-listing big-icon no-top-border-list mt-0">
+                @foreach($more as $server)
+                    <li>
+                        <a href="{{ $server['create_url'] }}" class="btn btn-info bg-info-800">{{ trans('messages.choose') }}</a>
+                        <a href="{{ $server['create_url'] }}">
+                            <span class="mc-server-avatar server-avatar" style="background: url({{ $server['icon_url']  }}) top left/36px 36px no-repeat transparent;">
+                                <i class="icon-server"></i>
+                            </span>
+                        </a>
+                        <h4><a href="{{ $server['create_url'] }}">{{  $server['name']  }}</a> <span class="label label-flat bg-verified">
+                            {{ trans('messages.plugin') }}
+                        </span> </h4>
+                        <p>
+                            {{  $server['description']  }}
+                        </p>
+                    </li>                    
+                @endforeach
 
                 @foreach (Acelle\Model\SendingServer::types() as $key => $type)
 
@@ -43,24 +59,7 @@
                             {{ trans('messages.sending_server_intro_' . $key) }}
                         </p>
                     </li>
-
                 @endforeach
-
-                @foreach($more as $server)
-                    <li>
-                        <a href="{{ $server['create_url'] }}" class="btn btn-info bg-info-800">{{ trans('messages.choose') }}</a>
-                        <a href="{{ $server['create_url'] }}">
-                            <span class="mc-server-avatar server-avatar" style="background: url({{ $server['icon_url']  }}) top left/36px 36px no-repeat transparent;">
-                                <i class="icon-server"></i>
-                            </span>
-                        </a>
-                        <h4><a href="{{ $server['create_url'] }}">{{  $server['name']  }}</a></h4>
-                        <p>
-                            {{  $server['description']  }}
-                        </p>
-                    </li>                    
-                @endforeach
-
             </ul>
             <div class="">
                 <a href="{{ action('Admin\SendingServerController@index') }}" type="button" class="btn bg-grey">
