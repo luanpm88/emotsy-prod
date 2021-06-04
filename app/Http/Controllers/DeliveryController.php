@@ -56,9 +56,6 @@ class DeliveryController extends Controller
             } elseif ($type == SendingServerSparkPost::WEBHOOK) {
                 MailLog::configure(storage_path().'/logs/handler-sparkpost.log');
                 SendingServerSparkPost::handleNotification($_GET);
-            } elseif ($type == 'postal') {
-                MailLog::configure(storage_path('logs/handler-postal.log'));
-                SendingServerPostal::handle($request);
             } else {
                 throw new Exception('Unknown notification type');
             }
