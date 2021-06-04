@@ -113,68 +113,33 @@ class SendingServerController extends Controller
      */
     public function store(Request $request)
     {
-        // New sending server
-        $server = new SendingServer();
-
         // authorize
-        if (!$request->user()->admin->can('create', $server)) {
+        if (!$request->user()->admin->can('create', SendingServer::class)) {
             return $this->notAuthorized();
         }
 
-        // options
-        $options = [];
-        
-        // fill values
-        $server->fill($request->all());
-        $server = \Acelle\Model\SendingServer::mapServerType($server);
-        
-        // validation
-        $validator = $server->validConnection($request); //\Validator::make($request->all(), $server->getRules());
+        // New sending server
+        list($validator, $server) = SendingServer::createFromRequest($request);
 
+        // Failed
         if ($validator->fails()) {
             if ($server->isExtended()) {
-                return redirect()->back()->withErrors($validator)
-                        ->withInput();
+                // Redirect to plugin's create page
+                return redirect()->back()->withErrors($validator)->withInput();
             } else {
                 return redirect()->action('Admin\SendingServerController@create', $server->type)
-                        ->withErrors($validator)
-                        ->withInput();
+                        ->withErrors($validator)->withInput();
             }
         }
-        
-        $server->admin_id = $request->user()->admin->id;
-        $server->status = SendingServer::STATUS_ACTIVE;
-        
-        // default name
-        if (!$server->name) {
-            $server->name = trans('messages.' . $server->type);
-        }
-        
-        // default sever quota
-        if (!$server->quota_value) {
-            $server->quota_value = 1000;
-            $server->quota_base = 1;
-            $server->quota_unit = 'hour';
-            $options['sending_limit'] = '1000_per_hour';
-        }
-        
-        $server->options = json_encode($options);
 
-        // bounce / feedback hanlder nullable
-        if (empty($request->bounce_handler_id)) {
-            $server->bounce_handler_id = null;
-        }
-        if (empty($request->feedback_loop_handler_id)) {
-            $server->feedback_loop_handler_id = null;
-        }
+        // Success
+        $request->session()->flash('alert-success', trans('messages.sending_server.created'));
 
-        if ($server->save()) {
-            $request->session()->flash('alert-success', trans('messages.sending_server.created'));
-            if ($server->isExtended()) {
-                return redirect($server->getEditUrl());
-            } else {
-                return redirect()->action('Admin\SendingServerController@edit', [$server->uid, $server->type]);
-            }
+        // Redirect to Edit page
+        if ($server->isExtended()) {
+            return redirect($server->getEditUrl());
+        } else {
+            return redirect()->action('Admin\SendingServerController@edit', [$server->uid, $server->type]);
         }
     }
 

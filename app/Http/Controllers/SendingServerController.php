@@ -72,11 +72,6 @@ class SendingServerController extends Controller
         $server->type = $request->type;
         $server->fill($request->old());
 
-        // authorize
-        if (!$request->user()->customer->can('create', $server)) {
-            return $this->notAuthorized();
-        }
-
         return view('sending_servers.create', [
             'server' => $server,
         ]);
@@ -95,11 +90,6 @@ class SendingServerController extends Controller
         $current_user = $request->user();
         $server = new \Acelle\Model\SendingServer();
         $server->type = $request->type;
-
-        // authorize
-        if (!$request->user()->customer->can('create', $server)) {
-            return $this->notAuthorized();
-        }
 
         // save posted data
         if ($request->isMethod('post')) {

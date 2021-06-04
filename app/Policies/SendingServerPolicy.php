@@ -38,7 +38,7 @@ class SendingServerPolicy
         return $can;
     }
 
-    public function create(User $user, SendingServer $item, $role)
+    public function create(User $user, $role)
     {
         switch ($role) {
             case 'admin':

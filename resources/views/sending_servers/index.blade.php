@@ -76,7 +76,7 @@
                     </div>
                 @endif
             </div>
-            @if (Auth::user()->customer->can('create', new Acelle\Model\SendingServer()))
+            @if (Auth::user()->customer->can('create', Acelle\Model\SendingServer::class))
                 <div class="col-md-2 text-right">
                     <a href="{{ action('SendingServerController@select') }}" type="button" class="btn bg-info-800">
                         <i class="icon icon-plus2"></i> {{ trans('messages.create_sending_server') }}

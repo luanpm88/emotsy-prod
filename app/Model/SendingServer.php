@@ -1668,4 +1668,53 @@ class SendingServer extends Model
     {
         return null;
     }
+
+    public function getDefaultName()
+    {
+        return null;
+    }
+
+    public static function createFromRequest($request)
+    {
+        $server = new self();
+        $server->fill($request->all());
+        $server = $server->mapType();
+        
+        // validation
+        $validator = $server->validConnection($request); //\Validator::make($request->all(), $server->getRules());
+
+        if ($validator->fails()) {
+            return [$validator, null];
+        }
+        
+        $server->admin_id = $request->user()->admin->id;
+        $server->status = self::STATUS_ACTIVE;
+        
+        // default name
+        if (!$server->name) {
+            $server->name = $server->getDefaultName() ?: trans('messages.' . $server->type);
+        }
+        
+        // default sever quota
+        if (!$server->quota_value) {
+            $server->quota_value = 1000;
+            $server->quota_base = 1;
+            $server->quota_unit = 'hour';
+            $options = ['sending_limit' => '1000_per_hour'];
+        }
+        
+        $server->options = json_encode($options);
+
+        // bounce / feedback hanlder nullable
+        if (empty($request->bounce_handler_id)) {
+            $server->bounce_handler_id = null;
+        }
+        if (empty($request->feedback_loop_handler_id)) {
+            $server->feedback_loop_handler_id = null;
+        }
+
+        $server->save();
+
+        return [ $validator, $server ];
+    }
 }

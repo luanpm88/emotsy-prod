@@ -82,7 +82,7 @@
                     </div>
                 @endif
             </div>
-            @if (Auth::user()->admin->can('create', new Acelle\Model\SendingServer()))
+            @if (Auth::user()->admin->can('create', Acelle\Model\SendingServer::class))
                 <div class="col-md-2 text-right">
                     <a href="{{ action('Admin\SendingServerController@select') }}" type="button" class="btn bg-info-800">
                         <i class="icon icon-plus2"></i> {{ trans('messages.create_sending_server') }}
