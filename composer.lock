@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "239625bf6a4a2eab8c595917dc8f6e79",
+    "content-hash": "300daf9cbaf174060caa1b85fdf5a1fd",
     "packages": [
         {
             "name": "acelle/cashier",
@@ -3855,52 +3855,6 @@
                 }
             ],
             "time": "2020-07-20T17:29:33+00:00"
-        },
-        {
-            "name": "postal/postal",
-            "version": "v1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/atech/postal-php.git",
-                "reference": "cddd9c5f34ec5234ccfcd9ce9193f7327802c2a6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/atech/postal-php/zipball/cddd9c5f34ec5234ccfcd9ce9193f7327802c2a6",
-                "reference": "cddd9c5f34ec5234ccfcd9ce9193f7327802c2a6",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.4",
-                "rmccue/requests": ">=1.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Postal\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Adam Cooke",
-                    "email": "me@adamcooke.io"
-                }
-            ],
-            "description": "Postal for PHP library.",
-            "homepage": "https://github.com/atech/postal",
-            "keywords": [
-                "mail",
-                "postal"
-            ],
-            "support": {
-                "issues": "https://github.com/atech/postal-php/issues",
-                "source": "https://github.com/atech/postal-php/tree/master"
-            },
-            "time": "2017-05-08T14:02:29+00:00"
         },
         {
             "name": "psr/container",
