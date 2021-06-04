@@ -14,6 +14,7 @@ use Acelle\Library\Tool;
 use Composer\Autoload\ClassLoader;
 use App;
 use Acelle\Library\Facades\Hook;
+use Illuminate\Support\Facades\File;
 
 class Plugin extends Model
 {
@@ -114,12 +115,6 @@ class Plugin extends Model
         // Create uid when creating list.
         static::creating(function ($item) {
             $item->uid = uniqid();
-        });
-
-        // While deleting
-        static::deleting(function ($item) {
-            // remove source code
-            Tool::xdelete($item->getPluginPath());
         });
     }
 
@@ -348,18 +343,7 @@ class Plugin extends Model
      */
     public function getPluginPath()
     {
-        $pluginsPath = storage_path('app/plugins');
-
-        $names = explode('/', $this->name);
-
-        $pluginVendor = $names[0];
-        $pluginName = $names[1];
-
-        // chek if plugin exist
-        $pluginsVendorPath = $pluginsPath . '/' . $pluginVendor;
-        $pluginsSourcePath = $pluginsVendorPath . '/' . $pluginName;
-
-        return $pluginsSourcePath;
+        return storage_path(join_paths('app/plugins', $this->name));
     }
 
     /**
@@ -631,5 +615,29 @@ class Plugin extends Model
         return self::where('name', '=', $name)
             ->where('status', '=', self::STATUS_ACTIVE)
             ->exists();
+    }
+
+    public function deleteAndCleanup()
+    {
+        Hook::execute('delete_plugin_'.$this->name);
+
+        $this->deletePluginDirectory();
+
+        return $this->delete();
+    }
+
+    public function deletePluginDirectory()
+    {
+        $file = $this->getPluginPath();
+
+        if (!file_exists($file)) {
+            return;
+        }
+
+        if (is_link($file) || is_file($file)) {
+            File::delete($file);
+        } else {
+            File::deleteDirectory($file);
+        }
     }
 }

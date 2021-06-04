@@ -121,7 +121,7 @@ class PluginController extends Controller
         foreach ($items->get() as $item) {
             // authorize
             if ($request->user()->admin->can('delete', $item)) {
-                $item->delete();
+                $item->deleteAndCleanup();
             }
         }
 
