@@ -68,7 +68,7 @@
                 contentType: false,                    // Using FormData, no need to process data.
                 globalError: false,
             }).done(function(res){
-                window.location = res.return;
+                window.location = res.url;
             }).fail(function(e){
                 var error = JSON.parse(e.responseText).message;
                 removeMaskLoading();

@@ -91,6 +91,8 @@ class PluginController extends Controller
 
             // Install Plugin
             Plugin::installFromDir($pluginName);
+
+            return response()->json([ 'url' => action('Admin\PluginController@index') ]);
         }
 
         return view('admin.plugins.install');

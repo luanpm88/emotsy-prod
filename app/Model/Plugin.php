@@ -226,7 +226,6 @@ class Plugin extends Model
         }
         Tool::xcopy($tmp_path, $pluginsSourcePath);
         Tool::xdelete($tmp_path);
-
         return $config['name'];
     }
 
@@ -397,14 +396,16 @@ class Plugin extends Model
             }
         }
 
+        /*
         $exist = self::where('name', $config['name'])->first();
         if ($exist && !isset($config['overwrite'])) {
-            if (version_compare($exist->version, $config['version'], '>=')) {
-                throw new \Exception("A newer version of the {$config['name']} plugin already exists (version : {$exist->version}), do you want to replace it?");
+            if (version_compare($exist->version, $config['version'], '>')) {
+                throw new \Exception("A newer version of the {$config['name']} plugin already exists ({$exist->version}), do you want to replace it?");
             } else {
-                throw new \Exception("An older version of the {$config['name']} plugin already exists (version : {$exist->version}), do you want to replace it?");
+                throw new \Exception("Are you sure you want to overwrite the plugin {$config['name']}, version {$exist->version} with the newer one ({$config['version']})");
             }
         }
+        */
 
         // Check app version
         $currentVersion = app_version();
