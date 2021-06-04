@@ -717,6 +717,11 @@ class SendingServer extends Model
         return $rules;
     }
 
+    public function getCustomValidationError()
+    {
+        return [];
+    }
+
     /**
      * Test connection.
      *
@@ -724,7 +729,7 @@ class SendingServer extends Model
      */
     public function validConnection($request)
     {
-        $validator = \Validator::make($request->all(), $this->getRules());
+        $validator = \Validator::make($request->all(), $this->getRules(), $this->getCustomValidationError());
 
         // test amazon api connection
         $validator->after(function ($validator) {
