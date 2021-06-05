@@ -4,9 +4,9 @@
             <div class="col-md-6">
                 @include('helpers.form_control', [
                     'type' => 'select',
-                    'name' => 'env[MAIL_DRIVER]',
+                    'name' => 'env[MAIL_MAILER]',
                     'label' => trans('messages.mail_driver'),
-                    'value' => (isset($env["MAIL_DRIVER"]) ? $env["MAIL_DRIVER"] : ""),
+                    'value' => (isset($env["MAIL_MAILER"]) ? $env["MAIL_MAILER"] : ""),
                     'options' => [["value" => "sendmail", "text" => trans('messages.sendmail')],["value" => "smtp", "text" => trans('messages.smtp')]],
                     'help_class' => 'env',
                     'rules' => $env_rules

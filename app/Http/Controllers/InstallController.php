@@ -126,7 +126,7 @@ class InstallController extends Controller
         if ($request->isMethod('post')) {
             $request->session()->forget('site_info');
 
-            $rules = array_merge($rules, $mail_rules[$request->mail_driver]);
+            $rules = array_merge($rules, $mail_rules[$request->mail_mailer]);
             $this->validate($request, $rules);
 
             $site_info = $request->all();
@@ -144,7 +144,7 @@ class InstallController extends Controller
             }
 
             // Check SMTP connection
-            if ($request->mail_driver == 'smtp') {
+            if ($request->mail_mailer == 'smtp') {
                 $rules = [];
                 try {
                     $transport = new \Swift_SmtpTransport($request->smtp_hostname, $request->smtp_port, $request->smtp_encryption);
@@ -429,7 +429,7 @@ class InstallController extends Controller
                         ('license_type', '".$site_info['license_type']."', '".$date."', '".$date."');");
 
         // mail setting
-        \Acelle\Model\Setting::set('mailer.driver', $site_info['mail_driver']);
+        \Acelle\Model\Setting::set('mailer.driver', $site_info['mail_mailer']);
         \Acelle\Model\Setting::set('mailer.host', $site_info['smtp_hostname']);
         \Acelle\Model\Setting::set('mailer.port', $site_info['smtp_port']);
         \Acelle\Model\Setting::set('mailer.encryption', $site_info['smtp_encryption']);
@@ -760,7 +760,7 @@ REDIS_HOST=localhost
 REDIS_PASSWORD=null
 REDIS_PORT=6379
 
-MAIL_DRIVER='.(isset($smtp['mail_driver']) ? $smtp['mail_driver'] : 'mail').'
+MAIL_MAILER='.(isset($smtp['mail_mailer']) ? $smtp['mail_mailer'] : 'mail').'
 MAIL_HOST='.(isset($smtp['smtp_hostname']) ? $smtp['smtp_hostname'] : '').'
 MAIL_PORT='.(isset($smtp['smtp_port']) ? $smtp['smtp_port'] : '').'
 MAIL_USERNAME="'.(isset($smtp['smtp_username']) ? $smtp['smtp_username'] : '').'"

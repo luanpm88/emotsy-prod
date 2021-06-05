@@ -52,7 +52,7 @@
         
     <script>
         function toogleMailer() {
-            var value = $("select[name='env[MAIL_DRIVER]']").val();
+            var value = $("select[name='env[MAIL_MAILER]']").val();
             $('.mailer-setting').hide();
             $('.mailer-setting.' + value).show();
         }
@@ -60,7 +60,8 @@
         $(document).ready(function() {
             // SMTP toogle
             toogleMailer();
-            $("select[name='env[MAIL_DRIVER]']").change(function() {
+
+            $("select[name='env[MAIL_MAILER]']").change(function() {
                 toogleMailer();
             });
         });

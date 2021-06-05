@@ -126,9 +126,9 @@
         <div class="col-md-6">
             @include('helpers.form_control', [
                 'type' => 'select',
-                'name' => 'mail_driver',
-								'label' => trans('messages.mail_driver'),
-                'value' => (isset($site_info["mail_driver"]) ? $site_info["mail_driver"] : ""),
+                'name' => 'mail_mailer',
+								'label' => trans('messages.mail_mailer'),
+                'value' => (isset($site_info["mail_mailer"]) ? $site_info["mail_mailer"] : ""),
 								'options' => [["value" => "sendmail", "text" => trans('messages.sendmail')],["value" => "smtp", "text" => trans('messages.smtp')]],
                 'help_class' => 'install',
                 'rules' => $rules
@@ -238,13 +238,13 @@
 </form>
 <script>
 	function toogleMailer() {
-		var value = $("select[name='mail_driver']").val();
+		var value = $("select[name='mail_mailer']").val();
 		$('.mailer-setting').hide();
         $('.mailer-setting.' + value).show();
 	}
 	$(document).ready(function() {	
 		toogleMailer();
-		$("select[name='mail_driver']").change(function() {
+		$("select[name='mail_mailer']").change(function() {
 			toogleMailer();
 		});
 	});

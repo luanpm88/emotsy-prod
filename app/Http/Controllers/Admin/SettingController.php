@@ -43,8 +43,8 @@ class SettingController extends Controller
             return $this->notAuthorized();
         }
 
-        // \Acelle\Model\Setting::updateAll();
-        $settings = \Acelle\Model\Setting::getAll();
+        // Setting::updateAll();
+        $settings = Setting::getAll();
         if (null !== $request->old()) {
             foreach ($request->old() as $name => $value) {
                 if (isset($settings[$name])) {
@@ -78,11 +78,11 @@ class SettingController extends Controller
                     // Upload and save image
                     if ($name == 'site_logo_small' || $name == 'site_logo_big' || $name == 'site_favicon') {
                         if ($request->hasFile($name) && $request->file($name)->isValid()) {
-                            \Acelle\Model\Setting::uploadFile($request->file($name), $name, false);
+                            Setting::uploadFile($request->file($name), $name, false);
                         }
                     } else {
                         if ($settings[$name]['cat'] == 'general' && $request->user()->admin->getPermission('setting_general') == 'yes') {
-                            \Acelle\Model\Setting::set($name, $value);
+                            Setting::set($name, $value);
                         }
                     }
                 }
@@ -110,8 +110,8 @@ class SettingController extends Controller
             return $this->notAuthorized();
         }
 
-        // \Acelle\Model\Setting::updateAll();
-        $settings = \Acelle\Model\Setting::getAll();
+        // Setting::updateAll();
+        $settings = Setting::getAll();
         if (null !== $request->old()) {
             foreach ($request->old() as $name => $value) {
                 if (isset($settings[$name])) {
@@ -141,7 +141,7 @@ class SettingController extends Controller
             foreach ($request->all() as $name => $value) {
                 if ($name != '_token' && isset($settings[$name])) {
                     if ($settings[$name]['cat'] == 'sending' && $request->user()->admin->getPermission('setting_sending') == 'yes') {
-                        \Acelle\Model\Setting::set($name, $value);
+                        Setting::set($name, $value);
                     }
                 }
             }
@@ -168,7 +168,7 @@ class SettingController extends Controller
             return $this->notAuthorized();
         }
 
-        $settings = \Acelle\Model\Setting::getAll();
+        $settings = Setting::getAll();
 
         // Check URL
         $current = url('/');
@@ -201,7 +201,7 @@ class SettingController extends Controller
         // Re-generate remote job url
         if ($request->re_generate_remote_job_url) {
             $remote_job_token = str_random(60);
-            \Acelle\Model\Setting::set('remote_job_token', $remote_job_token);
+            Setting::set('remote_job_token', $remote_job_token);
             echo action('Controller@remoteJob', ['remote_job_token' => $remote_job_token]);
 
             return;
@@ -229,15 +229,15 @@ class SettingController extends Controller
 
         // SMTP
         $env = [
-            'MAIL_DRIVER' => config('mail.driver'),
-            'MAIL_HOST' => config('mail.host'),
-            'MAIL_PORT' => config('mail.port'),
-            'MAIL_USERNAME' => config('mail.username'),
-            'MAIL_PASSWORD' => config('mail.password'),
-            'MAIL_ENCRYPTION' => config('mail.encryption'),
-            'MAIL_FROM_ADDRESS' => config('mail.from')['address'],
-            'MAIL_FROM_NAME' => config('mail.from')['name'],
-            'sendmail_path' => (\Acelle\Model\Setting::get('mailer.sendmail_path') ? \Acelle\Model\Setting::get('mailer.sendmail_path') : "/usr/sbin/sendmail"),
+            'MAIL_MAILER' => Setting::get('mailer.mailer') ?: Setting::get('mailer.driver'), // Laravel 5.8 compatibility
+            'MAIL_HOST' => Setting::get('mailer.host'),
+            'MAIL_PORT' => Setting::get('mailer.port'),
+            'MAIL_USERNAME' => Setting::get('mailer.username'),
+            'MAIL_PASSWORD' => Setting::get('mailer.password'),
+            'MAIL_ENCRYPTION' => Setting::get('mailer.encryption'),
+            'MAIL_FROM_ADDRESS' => Setting::get('mailer.from.address'),
+            'MAIL_FROM_NAME' => Setting::get('mailer.from.name'),
+            'sendmail_path' => Setting::get('mailer.sendmail_path') ?: "/usr/sbin/sendmail",
         ];
 
         if (null !== $request->old() && isset($request->old()['env'])) {
@@ -248,7 +248,7 @@ class SettingController extends Controller
 
         $env_rules = [
             'smtp' => [
-                'env.MAIL_DRIVER' => 'required',
+                'env.MAIL_MAILER' => 'required',
                 'env.MAIL_HOST' => 'required',
                 'env.MAIL_PORT' => 'required',
                 'env.MAIL_USERNAME' => 'required',
@@ -272,11 +272,11 @@ class SettingController extends Controller
 
             $env = $request->env;
 
-            $this->validate($request, $env_rules[$env['MAIL_DRIVER']]);
+            $this->validate($request, $env_rules[$env['MAIL_MAILER']]);
 
             // Check SMTP connection
             $site_info = $request->all();
-            if ($env['MAIL_DRIVER'] == 'smtp') {
+            if ($env['MAIL_MAILER'] == 'smtp') {
                 $rules = [];
                 $messages = [];
                 try {
@@ -303,22 +303,22 @@ class SettingController extends Controller
                     $value = 'null';
                 }
                 if ($key == 'MAIL_PASSWORD') {
-                    \Acelle\Model\Setting::setEnv($key, quoteDotEnvValue($value));
+                    Setting::setEnv($key, quoteDotEnvValue($value));
                 } else {
-                    \Acelle\Model\Setting::setEnv($key, $value);
+                    Setting::setEnv($key, $value);
                 }
             }
 
             // update settings table
-            \Acelle\Model\Setting::set('mailer.driver', $env['MAIL_DRIVER']);
-            \Acelle\Model\Setting::set('mailer.host', $env['MAIL_HOST']);
-            \Acelle\Model\Setting::set('mailer.port', $env['MAIL_PORT']);
-            \Acelle\Model\Setting::set('mailer.encryption', $env['MAIL_ENCRYPTION']);
-            \Acelle\Model\Setting::set('mailer.username', $env['MAIL_USERNAME']);
-            \Acelle\Model\Setting::set('mailer.password', $env['MAIL_PASSWORD']);
-            \Acelle\Model\Setting::set('mailer.from.name', $env['MAIL_FROM_NAME']);
-            \Acelle\Model\Setting::set('mailer.from.address', $env['MAIL_FROM_ADDRESS']);
-            \Acelle\Model\Setting::set('mailer.sendmail_path', $env['sendmail_path']);
+            Setting::set('mailer.mailer', $env['MAIL_MAILER']);
+            Setting::set('mailer.host', $env['MAIL_HOST']);
+            Setting::set('mailer.port', $env['MAIL_PORT']);
+            Setting::set('mailer.encryption', $env['MAIL_ENCRYPTION']);
+            Setting::set('mailer.username', $env['MAIL_USERNAME']);
+            Setting::set('mailer.password', $env['MAIL_PASSWORD']);
+            Setting::set('mailer.from.name', $env['MAIL_FROM_NAME']);
+            Setting::set('mailer.from.address', $env['MAIL_FROM_ADDRESS']);
+            Setting::set('mailer.sendmail_path', $env['sendmail_path']);
 
             // Redirect to my lists page
             $next = action('Admin\SettingController@mailer');
@@ -390,18 +390,18 @@ class SettingController extends Controller
             return $this->notAuthorized();
         }
 
-        \Acelle\Model\Setting::set('url_unsubscribe', action('CampaignController@unsubscribe', ['message_id' => 'MESSAGE_ID', 'subscriber' => 'SUBSCRIBER']));
-        \Acelle\Model\Setting::set('url_open_track', action('CampaignController@open', ['message_id' => 'MESSAGE_ID']));
-        \Acelle\Model\Setting::set('url_click_track', action('CampaignController@click', ['message_id' => 'MESSAGE_ID', 'url' => 'URL']));
-        \Acelle\Model\Setting::set('url_delivery_handler', action('DeliveryController@notify', ['stype' => '']));
-        \Acelle\Model\Setting::set(
+        Setting::set('url_unsubscribe', action('CampaignController@unsubscribe', ['message_id' => 'MESSAGE_ID', 'subscriber' => 'SUBSCRIBER']));
+        Setting::set('url_open_track', action('CampaignController@open', ['message_id' => 'MESSAGE_ID']));
+        Setting::set('url_click_track', action('CampaignController@click', ['message_id' => 'MESSAGE_ID', 'url' => 'URL']));
+        Setting::set('url_delivery_handler', action('DeliveryController@notify', ['stype' => '']));
+        Setting::set(
             'url_update_profile',
             action('PageController@profileUpdateForm', array(
             'list_uid' => 'LIST_UID',
             'uid' => 'SUBSCRIBER_UID',
             'code' => 'SECURE_CODE', ))
         );
-        \Acelle\Model\Setting::set('url_web_view', action('CampaignController@webView', ['message_id' => 'MESSAGE_ID']));
+        Setting::set('url_web_view', action('CampaignController@webView', ['message_id' => 'MESSAGE_ID']));
 
         // Redirect to my lists page
         $request->session()->flash('alert-success', trans('messages.setting.updated'));
@@ -453,8 +453,8 @@ class SettingController extends Controller
             return $this->notAuthorized();
         }
 
-        // \Acelle\Model\Setting::updateAll();
-        $settings = \Acelle\Model\Setting::getAll();
+        // Setting::updateAll();
+        $settings = Setting::getAll();
         if (null !== $request->old()) {
             foreach ($request->old() as $name => $value) {
                 if (isset($settings[$name])) {
@@ -472,12 +472,12 @@ class SettingController extends Controller
 
             try {
                 // Update license type
-                \Acelle\Model\Setting::updateLicense($request->license);
+                Setting::updateLicense($request->license);
 
                 // Save settings
                 foreach ($request->all() as $name => $value) {
                     if ($name != '_token' && isset($settings[$name])) {
-                        \Acelle\Model\Setting::set($name, $value);
+                        Setting::set($name, $value);
                     }
                 }
 
@@ -492,7 +492,7 @@ class SettingController extends Controller
 
         return view('admin.settings.license', [
             'settings' => $settings,
-            'current_license' => \Acelle\Model\Setting::get('license'),
+            'current_license' => Setting::get('license'),
             'license_error' => isset($license_error) ? $license_error : '',
         ]);
     }
@@ -652,8 +652,8 @@ class SettingController extends Controller
             return $this->notAuthorized();
         }
 
-        // \Acelle\Model\Setting::updateAll();
-        $settings = \Acelle\Model\Setting::getAll();
+        // Setting::updateAll();
+        $settings = Setting::getAll();
         if (null !== $request->old()) {
             foreach ($request->old() as $name => $value) {
                 if (isset($settings[$name])) {
@@ -678,11 +678,11 @@ class SettingController extends Controller
                     // Upload and save image
                     if ($name == 'site_logo_small' || $name == 'site_logo_big') {
                         if ($request->hasFile($name) && $request->file($name)->isValid()) {
-                            \Acelle\Model\Setting::uploadSiteLogo($request->file($name), $name);
+                            Setting::uploadSiteLogo($request->file($name), $name);
                         }
                     } else {
                         if ($settings[$name]['cat'] == 'advanced' && $request->user()->admin->getPermission('setting_general') == 'yes') {
-                            \Acelle\Model\Setting::set($name, $value);
+                            Setting::set($name, $value);
                         }
                     }
                 }
@@ -715,7 +715,7 @@ class SettingController extends Controller
         }
 
         // update setting value
-        \Acelle\Model\Setting::set($name, $request->value);
+        Setting::set($name, $request->value);
 
         echo trans('messages.setting.update.success', ['name' => $name]);
     }
@@ -731,8 +731,8 @@ class SettingController extends Controller
             return $this->notAuthorized();
         }
 
-        // \Acelle\Model\Setting::updateAll();
-        $settings = \Acelle\Model\Setting::getAll();
+        // Setting::updateAll();
+        $settings = Setting::getAll();
 
         if ($this->isDemoMode()) {
             return $this->notAuthorized();
@@ -746,9 +746,9 @@ class SettingController extends Controller
         $this->validate($request, $rules);
 
         // Save settings
-        \Acelle\Model\Setting::set('end_period_last_days', $request->end_period_last_days);
-        \Acelle\Model\Setting::set('renew_free_plan', $request->renew_free_plan);
-        \Acelle\Model\Setting::set('recurring_charge_before_days', $request->recurring_charge_before_days);
+        Setting::set('end_period_last_days', $request->end_period_last_days);
+        Setting::set('renew_free_plan', $request->renew_free_plan);
+        Setting::set('recurring_charge_before_days', $request->recurring_charge_before_days);
 
 
         // Redirect to my lists page
