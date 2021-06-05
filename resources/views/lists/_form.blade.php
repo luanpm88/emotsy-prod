@@ -115,7 +115,7 @@
 </div>
 
 
-@if (Auth::user()->customer->can('create', new Acelle\Model\SendingServer()))
+@if (Auth::user()->customer->can('create', \Acelle\Model\SendingServer::class))
     <div class="sub_section">
         <h3 class="text-semibold">{{ trans('messages.sending_servers') }}</h3>
         <div class="row mb-20 form-groups-bottom-0">

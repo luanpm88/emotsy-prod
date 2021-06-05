@@ -100,7 +100,7 @@
                 </div>
             </div>
 
-            @if (Auth::user()->customer->can("create", new Acelle\Model\SendingServer()))
+            @if (Auth::user()->customer->can("create", \Acelle\Model\SendingServer::class ))
                 <div class="col-md-12 mb-4">
                     <div class="content-group-sm">
                         <div class="pull-right text-teal-800 text-semibold">
