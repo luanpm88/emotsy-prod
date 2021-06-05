@@ -38,6 +38,7 @@ class SendingServerAmazonApi extends SendingServerAmazon
     public function send($message, $params = array())
     {
         $this->setupSnsThreadSafe($message);
+
         try {
             $sent = $this->sesClient()->sendRawEmail(array(
                 'RawMessage' => array(
@@ -52,7 +53,11 @@ class SendingServerAmazonApi extends SendingServerAmazon
                 'status' => self::DELIVERY_STATUS_SENT,
             );
         } catch (\Exception $e) {
-            $this->raiseSendingError($e);
+            $errorTitle = "Server `{$this->name}` ({$this->uid}) failed to send";
+            Notification::cleanupDuplicateNotifications($errorTitle);
+            Notification::warning([
+                'title' => $errorTitle,
+                'message' => date('Y-m-d').' '.$errorTitle.': '.$e->getMessage()."\n=>".json_encode($message->getTo())], false);
 
             return array(
                 'status' => self::DELIVERY_STATUS_FAILED,

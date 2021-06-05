@@ -1541,22 +1541,6 @@ class SendingServer extends Model
     }
 
     /**
-     * Show up sending notification to admin dashboard.
-     *
-     * @return array
-     * @note the scope of this function is private, use public only for inheritance
-     */
-    public function raiseSendingError($exception)
-    {
-        MailLog::warning('Sending failed');
-        MailLog::warning($exception->getMessage());
-
-        $errorTitle = "Server `{$this->name}` ({$this->uid}) failed to send";
-        BackendErrorNotification::cleanupDuplicateNotifications($errorTitle);
-        BackendErrorNotification::warning(['title' => $errorTitle, 'message' => date('Y-m-d').' '.$errorTitle.': '.$exception->getMessage()], false);
-    }
-
-    /**
      * Delete sending server.
      */
     public function doDelete()
