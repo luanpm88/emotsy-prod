@@ -104,8 +104,14 @@ class EmailVerificationServer extends Model
         $jsonObject = new JsonObject($raw);
 
         try {
-            $result = $jsonObject->get($config['result_xpath'])[0];
-        } catch(Exception $ex) {
+            $result = $jsonObject->get($config['result_xpath']);
+
+            if (empty($result)) {
+                throw new Exception('Empty response after parse XPATH')
+            }
+
+            $result = $result[0];
+        } catch(\Throwable $ex) {
             $message = sprintf("[Verification Server #%s, %s] Cannot parse result with XPATH: `%s`\n", $this->id, $this->type, $config['result_xpath']);
             $message .= sprintf("Raw:\n%s\n", $raw);
             $message .= sprintf("Error: %s", $ex->getMessage());
