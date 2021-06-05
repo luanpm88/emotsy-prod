@@ -15,6 +15,7 @@ use Composer\Autoload\ClassLoader;
 use App;
 use Acelle\Library\Facades\Hook;
 use Illuminate\Support\Facades\File;
+use Exception;
 
 class Plugin extends Model
 {
@@ -522,7 +523,17 @@ class Plugin extends Model
         foreach ($activePlugins as $plugin) {
             // $boot = $plugin->isActive();
             $boot = true; // need its route registration
-            $plugin->load($boot);
+            $errorTitle = 'Cannot load plugin '.$plugin->name;
+
+            try {
+                Notification::cleanupDuplicateNotifications($errorTitle);
+                $plugin->load($boot);
+            } catch (Exception $ex) {
+                Notification::error([
+                    'title' => $errorTitle,
+                    'message' => $ex->getMessage(),
+                ], false);
+            }
         }
     }
 

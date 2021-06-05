@@ -5,6 +5,7 @@ namespace Acelle\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
 use Acelle\Model\Plugin;
+use Exception;
 
 class PluginController extends Controller
 {
@@ -57,18 +58,27 @@ class PluginController extends Controller
         $plugins = \Acelle\Model\Plugin::search($request)->paginate($request->per_page);
 
         $settingUrls = [];
+        $blacklist = [];
         foreach ($plugins as $plugin) {
             // Generate setting buttons
-            $composerJson = $plugin->getComposerJson($plugin->name);
-            if (array_key_exists('extra', $composerJson) && array_key_exists('setting-route', $composerJson['extra'])) {
-                $url = action($composerJson['extra']['setting-route']);
-                $settingUrls[$plugin->name] = $url;
+            try {
+                $composerJson = $plugin->getComposerJson($plugin->name);
+                if (array_key_exists('extra', $composerJson) && array_key_exists('setting-route', $composerJson['extra'])) {
+                    $url = action($composerJson['extra']['setting-route']);
+                    $settingUrls[$plugin->name] = $url;
+                } else {
+                    throw new Exception('extra/setting-route not found');
+                }    
+            } catch (Exception $ex) {
+                $blacklist[$plugin->name] = 'Something went wrong with the plugin: '.$ex->getMessage();
             }
+            
         }
 
         return view('admin.plugins._list', [
             'plugins' => $plugins,
-            'settingUrls' => $settingUrls
+            'settingUrls' => $settingUrls,
+            'blacklist' => $blacklist,
         ]);
     }
 

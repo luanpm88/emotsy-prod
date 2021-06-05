@@ -16,11 +16,19 @@
                     <span class="text-muted">{{ trans('messages.plugin.version') }}: {{ $plugin->version }}</span>
                 </td>
                 <td>
-                    <span class="text-muted2 list-status pull-left">
-                        <span class="label label-flat bg-{{ $plugin->status }}">
-                            {{ trans('messages.email_verification_server_status_' . $plugin->status) }}
+                    @if (array_key_exists($plugin->name, $blacklist))
+                        <span style="cursor:pointer" class="text-muted2 list-status pull-left">
+                            <span title="{{ $blacklist[$plugin->name] }}" class="xtooltip tooltipstered label label-flat bg-risky">
+                                error
+                            </span>
                         </span>
-                    </span>
+                    @else
+                        <span class="text-muted2 list-status pull-left">
+                            <span class="label label-flat bg-{{ $plugin->status }}">
+                                {{ trans('messages.email_verification_server_status_' . $plugin->status) }}
+                            </span>
+                        </span>
+                    @endif
                 </td>
                 <td class="text-right text-nowrap">
                     @if (isset($settingUrls[$plugin->name]))

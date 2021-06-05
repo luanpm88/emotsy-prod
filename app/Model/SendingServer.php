@@ -31,6 +31,7 @@ use Carbon\Carbon;
 use Acelle\Library\StringHelper;
 use Acelle\Library\Notification\BackendError as BackendErrorNotification;
 use Acelle\Library\Facades\Hook;
+use Exception;
 
 class SendingServer extends Model
 {
@@ -160,7 +161,7 @@ class SendingServer extends Model
             }
         }
 
-        if (is_null($class_name)) {
+        if (!isset($class_name)) {
             throw new Exception('Unknown sending server type '.$server->type);
         }
 
