@@ -7,6 +7,7 @@ use GuzzleHttp\Client;
 use JsonPath\JsonObject;
 use Acelle\Library\QuotaTrackerFile;
 use Acelle\Library\Log as MailLog;
+use Exception;
 
 class EmailVerificationServer extends Model
 {
@@ -102,7 +103,15 @@ class EmailVerificationServer extends Model
         $raw = (string) $response->getBody();
         $jsonObject = new JsonObject($raw);
 
-        $result = $jsonObject->get($config['result_xpath'])[0];
+        try {
+            $result = $jsonObject->get($config['result_xpath'])[0];
+        } catch(Exception $ex) {
+            $message = sprintf("[Verification Server #%s, %s] Cannot parse result with XPATH: `%s`\n", $this->id, $this->type, $config['result_xpath']);
+            $message .= sprintf("Raw:\n%s\n", $raw);
+            $message .= sprintf("Error: %s", $ex->getMessage());
+
+            throw new Exception($message);
+        }
 
         // map the result value to those of Acelle Mail
         $result = is_bool($result) ? json_encode($result) : $result;
