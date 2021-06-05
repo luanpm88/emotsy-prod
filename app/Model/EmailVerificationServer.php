@@ -107,7 +107,7 @@ class EmailVerificationServer extends Model
             $result = $jsonObject->get($config['result_xpath']);
 
             if (empty($result)) {
-                throw new Exception('Empty response after parse XPATH')
+                throw new Exception('Empty response after parse XPATH');
             }
 
             $result = $result[0];
