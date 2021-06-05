@@ -1338,10 +1338,14 @@ class Automation2 extends Model
 
     public function getSubscribersWithTriggerInfo()
     {
+        $thisId = $this->id;
         return $this->subscribers()
-             ->leftJoin('auto_triggers', 'subscribers.id', 'auto_triggers.subscriber_id')
-             ->addSelect('auto_triggers.id as auto_trigger_id')
-             ->addSelect('auto_triggers.created_at as triggered_at');
+                ->leftJoin('auto_triggers', function ($join) use ($thisId) {
+                    $join->on('auto_triggers.subscriber_id', 'subscribers.id');
+                    $join->where('auto_triggers.automation2_id', $thisId);
+                })
+                ->addSelect('auto_triggers.id as auto_trigger_id')
+                ->addSelect('auto_triggers.created_at as triggered_at');
     }
 
     public function getAutoTriggerFor($subscriber)
