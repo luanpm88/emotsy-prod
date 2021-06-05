@@ -192,9 +192,6 @@ class CampaignController extends Controller
             if (\Gate::denies('sort', $item)) {
                 return $this->notAuthorized();
             }
-
-            $item->custom_order = $row[1];
-            $item->save();
         }
 
         echo trans('messages.campaigns.custom_order.updated');
