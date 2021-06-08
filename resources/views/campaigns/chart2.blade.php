@@ -73,11 +73,11 @@
                                 formatter: '{d}%',
                             },
                             data: [
-                                {value: 45, name: 'Work', itemStyle: { color: '#6a7796' } },
-                                {value: 27, name: 'Eat', itemStyle: { color: '#906659' }},
-                                {value: 11, name: 'Commute', itemStyle: { color: '#a5895d' }},
-                                {value: 22, name: 'Watch TV', itemStyle: { color: '#476844' }},
-                                {value: 28, name: 'Sleep', itemStyle: { color: '#5f3763' }}
+                                {value: 45, name: 'Work', itemStyle: { color: '#6a7796', borderWidth: 1,  borderType: 'solid', borderColor: '#fff' } },
+                                {value: 27, name: 'Eat', itemStyle: { color: '#906659', borderWidth: 1,  borderType: 'solid', borderColor: '#fff' }},
+                                {value: 11, name: 'Commute', itemStyle: { color: '#a5895d', borderWidth: 1,  borderType: 'solid', borderColor: '#fff' }},
+                                {value: 22, name: 'Watch TV', itemStyle: { color: '#476844', borderWidth: 1,  borderType: 'solid', borderColor: '#fff' }},
+                                {value: 28, name: 'Sleep', itemStyle: { color: '#5f3763', borderWidth: 1,  borderType: 'solid', borderColor: '#fff' }}
                             ],
                         }
                     ]
