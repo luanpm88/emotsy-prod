@@ -1971,7 +1971,7 @@ abstract class AbsCampaign extends Model
     public function cleanupNotOpenLog()
     {
         // clean up failed log so that they will be included in resend
-        $recipients = Campaign::first()->trackingLogs()
+        $recipients = $this->trackingLogs()
                          ->leftJoin('open_logs', 'tracking_logs.message_id', 'open_logs.message_id')
                          ->whereNull('open_logs.id');
         MailLog::warning('Resend to those who did not open: '.$recipients->count());
@@ -1981,7 +1981,7 @@ abstract class AbsCampaign extends Model
     public function cleanupNotClickLog()
     {
         // clean up failed log so that they will be included in resend
-        $recipients = Campaign::first()->trackingLogs()
+        $recipients = $this->trackingLogs()
                          ->leftJoin('click_logs', 'tracking_logs.message_id', 'click_logs.message_id')
                          ->whereNull('click_logs.id');
         MailLog::warning('Resend to those who did not click: '.$recipients->count());
