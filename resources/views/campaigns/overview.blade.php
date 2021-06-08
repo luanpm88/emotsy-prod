@@ -23,7 +23,7 @@
 
     @include("campaigns._chart")
 
-    {{-- @include("campaigns._chart2") --}}
+    @include("campaigns._chart2")
 
     <hr />
 
