@@ -4,7 +4,7 @@ return [
     'services' => [
         [
             'id' => 'emailable.com',
-            'name' => 'Emailable, LLC. (recommended)',
+            'name' => 'Emailable (recommended)',
             'uri' => 'https://api.emailable.com/v1/verify?email={EMAIL}&api_key={API_KEY}',
             'request_type' => 'GET',
             'fields' => [ 'api_key' ],
