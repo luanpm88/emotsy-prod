@@ -26,7 +26,6 @@ use App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log as LaravelLog;
 use Acelle\Library\Notification\BackendError;
-use Acelle\Library\Notification\GeoIp as GeoIpNotification;
 
 class IpLocation extends Model
 {
@@ -58,18 +57,17 @@ class IpLocation extends Model
             }
 
             $geoip->resolveIp($ip);
-            GeoIpNotification::cleanupSimilarNotifications();
         } catch (\Exception $e) {
             // Note log
             $title = 'GeoIP Error';
             LaravelLog::warning('Cannot get IP location info for '.$ip.'. Error: '.$e->getMessage());
 
-            GeoIpNotification::warning([
-                'title' => 'GeoIP error',
+            Notification::warning([
+                'title' => $title,
                 'message' => $e->getMessage(),
             ]);
 
-            return;
+            throw $e;
         }
 
         $location->ip_address = $ip;

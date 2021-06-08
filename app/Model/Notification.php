@@ -101,7 +101,7 @@ class Notification extends Model
         ];
         $attributes = array_merge($default, $attributes);
         if ($cleanup) {
-            self::cleanupSimilarNotifications();
+            self::cleanupDuplicateNotifications($attributes['title']);
         }
 
         return self::create($attributes);
@@ -115,14 +115,6 @@ class Notification extends Model
     public static function top($limit = 3)
     {
         return static::where('visibility', true)->limit($limit)->get();
-    }
-
-    /**
-     * Clean up notifications of the same type as the called class.
-     */
-    public static function cleanupSimilarNotifications()
-    {
-        static::where('type', get_called_class())->delete();
     }
 
     /**

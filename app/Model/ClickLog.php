@@ -23,9 +23,43 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Acelle\Events\MailListUpdated;
+use Acelle\Library\StringHelper;
+use Exception;
 
 class ClickLog extends Model
 {
+    public static function createFromRequest($request)
+    {
+        $url = StringHelper::base64UrlDecode($request->url);
+        $messageId = StringHelper::base64UrlDecode($request->message_id);
+
+        if (!TrackingLog::where('message_id', $messageId)->exists()) {
+            return $url;
+        }
+
+        $log = new self();
+        $log->message_id = $messageId;
+        $log->url = $url;
+        $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
+
+        try {
+            $location = IpLocation::add($request->ip());
+            $log->ip_address = $location->ip_address;
+        } catch(Exception $ex) {
+            // Then no ip_address information
+        }
+
+        // Save anyway
+        $log->save();
+
+        if ($log->trackingLog) {
+            event(new MailListUpdated($log->trackingLog->subscriber->mailList));
+        }
+
+        return $url;
+    }
+
     /**
      * Associations.
      *
