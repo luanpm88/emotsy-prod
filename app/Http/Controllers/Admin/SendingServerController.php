@@ -101,7 +101,6 @@ class SendingServerController extends Controller
         return view('admin.sending_servers.create', [
             'server' => $server,
         ]);
-        
     }
 
     /**
@@ -279,7 +278,6 @@ class SendingServerController extends Controller
                 } else {
                     return redirect()->action('Admin\SendingServerController@edit', [$server->uid, $server->type]);
                 }
-                
             }
         }
     }
@@ -699,7 +697,7 @@ class SendingServerController extends Controller
         if ($server->isExtended()) {
             return redirect($server->getEditUrl());
         } else {
-            return redirect()->action('Admin\SendingServerController@edit', [$server->uid, $server->type]);    
+            return redirect()->action('Admin\SendingServerController@edit', [$server->uid, $server->type]);
         }
     }
     

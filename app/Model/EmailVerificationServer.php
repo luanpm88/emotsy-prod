@@ -111,7 +111,7 @@ class EmailVerificationServer extends Model
             }
 
             $result = $result[0];
-        } catch(\Throwable $ex) {
+        } catch (\Throwable $ex) {
             $message = sprintf("[Verification Server #%s, %s] Cannot parse result with XPATH: `%s`\n", $this->id, $this->type, $config['result_xpath']);
             $message .= sprintf("Raw:\n%s\n", $raw);
             $message .= sprintf("Error: %s", $ex->getMessage());

@@ -61,15 +61,12 @@ class DeliveryController extends Controller
             }
 
             return response()->json(['success' => 'OK']);
-
-        } catch(Exception $ex) {
-
+        } catch (Exception $ex) {
             return response()->json([
                 'success' => false,
                 'error' => $ex->getMessage(),
                 'debug' => $ex->getTraceAsString(),
             ], 500);
-
         }
     }
 

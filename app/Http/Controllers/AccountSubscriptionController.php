@@ -75,9 +75,7 @@ class AccountSubscriptionController extends Controller
                     'subscription' => $subscription,
                     'invoice' => $invoice,
                 ]);
-            }
-
-            elseif ($invoice->isPending()) {
+            } elseif ($invoice->isPending()) {
                 return view('account.subscription.pending', [
                     'subscription' => $subscription,
                     'invoice' => $invoice,
@@ -93,7 +91,7 @@ class AccountSubscriptionController extends Controller
             }
         }
 
-        // 3. SUBSCRIPTION IS ACTIVE, SHOW DETAILS PAGE        
+        // 3. SUBSCRIPTION IS ACTIVE, SHOW DETAILS PAGE
         return view('account.subscription.index', [
             'subscription' => $subscription,
             'plan' => $subscription->plan,
@@ -170,9 +168,7 @@ class AccountSubscriptionController extends Controller
                 'subscription' => $subscription,
                 'invoice' => $invoice,
             ]);
-        }
-
-        elseif ($invoice->isPending()) {
+        } elseif ($invoice->isPending()) {
             return view('account.subscription.pending', [
                 'subscription' => $subscription,
                 'invoice' => $invoice,

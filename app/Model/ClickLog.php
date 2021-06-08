@@ -46,7 +46,7 @@ class ClickLog extends Model
         try {
             $location = IpLocation::add($request->ip());
             $log->ip_address = $location->ip_address;
-        } catch(Exception $ex) {
+        } catch (Exception $ex) {
             // Then no ip_address information
         }
 

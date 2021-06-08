@@ -1306,7 +1306,7 @@ class Subscriber extends Model
             return $query;
         }
 
-        return $query->where(function($query) use ($keyword) {
+        return $query->where(function ($query) use ($keyword) {
             $query->where('subscribers.email', 'LIKE', sprintf('%%s%', $keyword));
         });
     }

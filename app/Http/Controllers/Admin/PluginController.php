@@ -68,11 +68,10 @@ class PluginController extends Controller
                     $settingUrls[$plugin->name] = $url;
                 } else {
                     throw new Exception('extra/setting-route not found');
-                }    
+                }
             } catch (Exception $ex) {
                 $blacklist[$plugin->name] = 'Something went wrong with the plugin: '.$ex->getMessage();
             }
-            
         }
 
         return view('admin.plugins._list', [

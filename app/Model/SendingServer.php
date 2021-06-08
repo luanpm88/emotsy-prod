@@ -154,9 +154,9 @@ class SendingServer extends Model
             $class_name = '\Acelle\Model\\'.self::$serverMapping[$server->type];
         } else {
             $extendedTypes = Hook::execute('register_sending_server');
-            foreach($extendedTypes as $meta) {
+            foreach ($extendedTypes as $meta) {
                 if ($meta['type'] == $server->type) {
-                    $class_name = $meta['class'];    
+                    $class_name = $meta['class'];
                 }
             }
         }
