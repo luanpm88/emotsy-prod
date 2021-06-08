@@ -23,6 +23,8 @@
 
     @include("campaigns._chart")
 
+    {{-- @include("campaigns._chart2") --}}
+
     <hr />
 
     @include("campaigns._open_click_rate")

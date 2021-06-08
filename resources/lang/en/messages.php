@@ -4284,4 +4284,5 @@
     Click the button below to update the payment.</p>',
   'payment.check_payment' => 'Check the payment',
   'payment.update_payment' => 'Update payment',
+  'campaign.started_ago' => 'Started :time ago',
 ) ?>

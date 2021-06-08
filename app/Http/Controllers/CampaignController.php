@@ -2450,4 +2450,19 @@ class CampaignController extends Controller
         $campaign->updateCache();
         echo $campaign->status;
     }
+
+    /**
+     * Chart 2.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function chart2(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+        return view('campaigns.chart2', [
+            'campaign' => $campaign,
+        ]);
+    }
 }

@@ -4,7 +4,13 @@
     <div class="col-md-6 campaigns-summary">
         <div class="mb-10">
             <span class="text-bold text-muted">{{ trans('messages.from') }}:</span>
-            {!! $campaign->displayRecipients() !!}
+            @if (is_object($campaign->defaultMailList))
+                <a href="{{ action('MailListController@overview', ['uid' => $campaign->defaultMailList->uid]) }}">
+                    {!! $campaign->displayRecipients() !!}
+                </a>
+            @else
+                {!! $campaign->displayRecipients() !!}
+            @endif
         </div>
         <div class="mb-10">
             <span class="text-bold text-muted">{{ trans('messages.subject') }}:</span>
