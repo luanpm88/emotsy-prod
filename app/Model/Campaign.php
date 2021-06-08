@@ -29,9 +29,14 @@ use DB;
 use Acelle\Exceptions\CampaignPausedException;
 use Acelle\Exceptions\CampaignErrorException;
 use Acelle\Model\SendingServer;
+use Monolog\Logger;
+use Monolog\Handler\RotatingFileHandler;
+use Monolog\Formatter\LineFormatter;
 
 class Campaign extends AbsCampaign
 {
+    protected $logger;
+
     /**
      * Start the campaign.
      */
@@ -527,5 +532,25 @@ class Campaign extends AbsCampaign
         // replace image url
         $this->html = str_replace($template->getUploadUri(), $this->getUploadUri(), $this->html);
         $this->save();
+    }
+
+    public function logger()
+    {
+        if (!is_null($this->logger)) {
+            return $this->logger;
+        }
+
+        $formatter = new LineFormatter("[%datetime%] %channel%.%level_name%: %message%\n");
+
+        $logfile = storage_path('logs/' . php_sapi_name() . '/campaign-'.$this->uid.'.log');
+        $stream = new RotatingFileHandler($logfile, 0, Logger::DEBUG);
+        $stream->setFormatter($formatter);
+
+        $pid = getmypid();
+        $logger = new Logger($pid);
+        $logger->pushHandler($stream);
+        $this->logger = $logger;
+
+        return $this->logger;
     }
 }
