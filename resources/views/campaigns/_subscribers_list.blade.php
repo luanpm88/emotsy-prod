@@ -21,13 +21,15 @@
                         <a class="kq_search" href="{{ action('SubscriberController@edit', ['list_uid' => $list->uid ,'uid' => $item->uid]) }}">
                             {{ $item->email }}
                         </a>
-                        @if (null !== $item->trackingLog($campaign))
-                            <br />
-                            <span data-popup="tooltip" title="{{ $item->trackingLog($campaign)->error }}" class="label label-flat bg-{{ $item->trackingLog($campaign)->status }} kq_search">{{ trans('messages.tracking_log_status_' . $item->trackingLog($campaign)->status) }}</span>
-                        @else
-                            <br />
-                            <span data-popup="tooltip" class="label label-flat bg-not_sent kq_search">{{ trans('messages.not_sent') }}</span>
-                        @endif
+                        <br />
+                        <span data-popup="tooltip" title="{{ 
+                            $item->bounced_message ?:
+                            $item->feedback_message ?:
+                            $item->failed_message ?:
+                            $item->skipped_message ?:
+                            $item->new_message
+                        }}" class="label label-flat bg-{{ $item->delivery_status }} kq_search">{{ trans('messages.tracking_log_status_' . $item->delivery_status) }}
+                        </span>
                     </div>
                 </td>
 

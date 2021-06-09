@@ -21,6 +21,7 @@ use Acelle\Model\IpLocation;
 use Acelle\Model\ClickLog;
 use Acelle\Model\OpenLog;
 use Acelle\Library\Rss;
+use DB;
 
 class CampaignController extends Controller
 {
@@ -1791,7 +1792,11 @@ class CampaignController extends Controller
             return;
         }
 
-        $subscribers = $campaign->subscribers($request->all())->groupBy('subscribers.email')
+        $subscribers = $campaign->getDeliveryReport()
+                                ->addSelect('subscribers.*')
+                                ->addSelect('bounce_logs.raw AS bounced_message')
+                                ->addSelect('feedback_logs.feedback_type AS feedback_message')
+                                ->addSelect('tracking_logs.error AS failed_message')
                                 ->paginate($request->per_page);
         $fields = $campaign->defaultMailList->getFields->whereIn('uid', explode(',', $request->columns));
 

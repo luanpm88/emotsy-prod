@@ -715,12 +715,12 @@ input.error {
 }
 .table-sub .label {
 }
-.bg-rejected, .bg-renew_pending, .bg-submitted_for_settlement, .bg-authorized, .bg-pending, .bg-waiting, .bg-ready, .bg-sent, .bg-finished, .bg-pending_active {
+.bg-rejected, .bg-renew_pending, .bg-submitted_for_settlement, .bg-authorized, .bg-pending, .bg-waiting, .bg-ready, .bg-finished, .bg-pending_active {
     background-color: #ffd7d4;
     border-color: #f7c9c6;
     color: #231c15;
 }
-.bg-settled, .bg-recurring, .bg-deliverable, .bg-current_active, .bg-current, .bg-cron-running, .bg-running, .bg-starting, .bg-pending-sending, .bg-active, .bg-confirmed, .bg-paid, .bg-sending, .bg-subscribed {
+.bg-settled, .bg-sent, .bg-recurring, .bg-deliverable, .bg-current_active, .bg-current, .bg-cron-running, .bg-running, .bg-starting, .bg-pending-sending, .bg-active, .bg-confirmed, .bg-paid, .bg-sending, .bg-subscribed {
     background-color: #c4efab;
     border-color: #c4efab;
     color: #231c15;
@@ -730,12 +730,19 @@ input.error {
     border-color: #c4efab;
     color: #231c15;
 }
-.bg-unverified, .bg-ended, .bg-unknown, .bg-expired, .bg-past, .bg-spam-reported, .bg-not_sent, .bg-canceled, .bg-cancelled, .bg-unactive, .bg-disabled, .bg-unsubscribed, .bg-unconfirmed, .bg-draft, .bg-blacklisted, .bg-done {
+.bg-unverified, .bg-ended, .bg-unknown, .bg-expired, .bg-past, .bg-spam-reported, .bg-not_sent, .bg-canceled, .bg-cancelled, .bg-unactive, .bg-disabled, .bg-unsubscribed, .bg-unconfirmed, .bg-draft, .bg-blacklisted, .bg-done, .bg-bounced {
     background-color: #777;
     border-color: #777;
     color: #fff;
 }
-.bg-risky, .bg-paused {
+
+.bg-new {
+    background-color: #95beec;
+    border-color: #84a9d4;
+    color: #000;
+}
+
+.bg-risky, .bg-paused, .bg-feedback {
     background-color: #E91E63;
     border-color: #E91E63;
     color: #fff;
@@ -743,12 +750,12 @@ input.error {
 .bg-expired {
     opacity: 0.5;
 }
-.bg-inactive, .bg-current_inactive, .bg-pending_inactive, .bg-current_disabled, .bg-pending_disabled {
+.bg-inactive, .bg-skipped, .bg-current_inactive, .bg-pending_inactive, .bg-current_disabled, .bg-pending_disabled {
     background-color: #ddd;
     border-color: #ddd;
     color: #000;
 }
-.bg-future, .bg-new {
+.bg-future {
     background-color: #ffe1d5;
     border-color: #ffe1d5;
     color: #231c15;
