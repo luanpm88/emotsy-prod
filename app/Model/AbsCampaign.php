@@ -3511,7 +3511,7 @@ abstract class AbsCampaign extends Model
          *     + sent
          *     + failed
          *     + new
-         *     + not
+         *     + skipped
          * 
          * Assumption
          *     + subscribers 1:1 email_verification
