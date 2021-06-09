@@ -62,6 +62,8 @@ abstract class AbsCampaign extends Model
     const DELIVERY_STATUS_SENT = 'sent';
     const DELIVERY_STATUS_NEW = 'new';
     const DELIVERY_STATUS_SKIPPED = 'skipped';
+    const DELIVERY_STATUS_BOUNCED = 'bounced';
+    const DELIVERY_STATUS_FEEDBACK = 'feedback';
 
     /**
      * The attributes that should be mutated to dates.
@@ -3518,42 +3520,53 @@ abstract class AbsCampaign extends Model
          *     + [campaign, subscriber] 1:1 tracking_logs
          * */
         $query = $this->subscribers()->leftJoinSub(
+            // Why joinSub? Notice that this->subscribers() does not have campaign_id constraint!
+            // while this->trackingLogs() does have
             $this->trackingLogs(),
             'tracking_logs',
             function($join) {
                 $join->on('tracking_logs.subscriber_id', 'subscribers.id');
             }
-        );
+        )->leftJoin('bounce_logs', 'tracking_logs.message_id', 'bounce_logs.message_id')
+         ->leftJoin('feedback_logs', 'tracking_logs.message_id', 'feedback_logs.message_id');
 
         $query->select(DB::raw(strtr("
-            CASE `%tracking_logs`.`status`
-            WHEN '%sent'            THEN '%sent'
-            WHEN '%failed'          THEN '%failed'
+            CASE WHEN `%bounce_logs`.`id` IS NOT NULL THEN '%bounced'
             ELSE
-                CASE `%subscribers`.`status`
-                WHEN '%subscribed'
-                THEN
-                    CASE COALESCE(`%email_verifications`.`result`, '0')
-                    WHEN '0'            THEN '%new'
-                    WHEN '%deliverable' THEN '%new'
-                    ELSE                     '%skipped'
-                    END
+                CASE WHEN `%feedback_logs`.`id` IS NOT NULL THEN '%feedback'
                 ELSE
-                    '%skipped'
+                    CASE `%tracking_logs`.`status`
+                    WHEN '%sent'            THEN '%sent'
+                    WHEN '%failed'          THEN '%failed'
+                    ELSE
+                        CASE `%subscribers`.`status`
+                        WHEN '%subscribed' THEN
+                            CASE COALESCE(`%email_verifications`.`result`, '-1')
+                            WHEN '-1'           THEN '%new'
+                            WHEN '%deliverable' THEN '%new'
+                            ELSE                     '%skipped'
+                            END
+                        ELSE
+                            '%skipped'
+                        END
+                    END
                 END
             END
-
             AS delivery_status
         ", [
             '%sent' => self::DELIVERY_STATUS_SENT,
             '%failed' => self::DELIVERY_STATUS_FAILED,
             '%new' => self::DELIVERY_STATUS_NEW,
             '%skipped' => self::DELIVERY_STATUS_SKIPPED,
+            '%bounced' => self::DELIVERY_STATUS_BOUNCED,
+            '%feedback' => self::DELIVERY_STATUS_FEEDBACK,
             '%subscribed' => Subscriber::STATUS_SUBSCRIBED,
             '%deliverable' => EmailVerification::RESULT_DELIVERABLE,
             '%tracking_logs' => table('tracking_logs'),
             '%subscribers' => table('subscribers'),
             '%email_verifications' => table('email_verifications'),
+            '%bounce_logs' => table('bounce_logs'),
+            '%feedback_logs' => table('feedback_logs')
         ])));
 
         return $query;
