@@ -19,7 +19,7 @@
 
     @php
         // check if content from layouts
-        $buildMode = strpos($template->content, 'AcelleSystemLayouts') !== false ? 'true' : 'false';
+        $strict = strpos($template->content, 'AcelleSystemLayouts') !== false ? 'true' : 'false';
     @endphp
     
     <script>
@@ -30,8 +30,7 @@
         
         $( document ).ready(function() {
             editor = new Editor({
-                buildMode: {{ $buildMode }},
-                legacyMode: {{ !$buildMode ? 'true' : 'false' }},
+                strict: {{ $strict }},
                 showHelp: false,
                 showInlineToolbar: false,
                 lang: {!! json_encode(language()->getBuilderLang()) !!},
@@ -130,7 +129,7 @@
                   };
 
                   var unsupported_types = 'td, table, img, body';
-                  if (!container.is(unsupported_types) && (container.is('[builder-inline-edit]') || !editor.buildMode)) {
+                  if (!container.is(unsupported_types) && (container.is('[builder-inline-edit]') || !editor.strict)) {
                       container.addClass('builder-class-tinymce');
                       tinyconfig.selector = '.builder-class-tinymce';
                       editor.tinymce = $("#builder_iframe")[0].contentWindow.tinymce.init(tinyconfig);
