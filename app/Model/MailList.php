@@ -1154,11 +1154,12 @@ class MailList extends Model
             // Read CSV files
             $lineCount = line_count($file) - 1; // do not count the header
             $reader = \League\Csv\Reader::createFromPath($file);
+            $reader->setHeaderOffset(0);
             // get the headers, using array_filter to strip empty/null header
             // to avoid the error of "InvalidArgumentException: Use a flat array with unique string values in /home/nghi/mailixa/vendor/league/csv/src/Reader.php:305"
             $headers = array_filter(array_map(function ($value) {
                 return strtolower(trim($value));
-            }, $reader->fetchOne()));
+            }, $reader->getHeader()));
 
             // custom fields of the list
             $fields = collect($this->fields)->map(function ($field) {
@@ -1175,7 +1176,7 @@ class MailList extends Model
             // ==> email, first_name, last_name, tags
 
             // split the entire list into smaller batches
-            $results = $reader->fetchAssoc($headers);
+            $results = $reader->getRecords($headers);
 
             return [$headers, $availableFields, $lineCount, $results];
         } catch (\Exception $ex) {
@@ -1405,120 +1406,6 @@ class MailList extends Model
             // Only errors found in failed_logs and system_job.status = failed
             $this->reformatDateFields();
             $this->updateCachedInfo();
-        }
-    }
-
-    /**
-     * Import subscriber from a CSV file (beta, for console only).
-     *
-     * @param string original value
-     *
-     * @return string quoted value
-     * @todo: use MySQL escape function to correctly escape string with astrophe
-     */
-    public function import3($file)
-    {
-        try {
-            echo "Importing...\n";
-            // Read CSV files
-            list($headers, $availableFields, $lineCount, $results) = $this->readCsv($file);
-
-            // validate headers, check for required fields
-            // throw an exception in case of error
-            $this->validateCsvHeader($availableFields);
-
-            // process by batches
-            each_batch($results, config('app.import_batch_size'), true, function ($batch) use ($availableFields) {
-
-                // authorization
-                if (!$this->customer->user->can('addMoreSubscribers', [$this, config('app.import_batch_size')])) {
-                    // If use cannot create ANY other subscribers
-                    if (!$this->customer->user->can('addMoreSubscribers', [$this, 1])) {
-                        throw new \Exception('Quota exceeded');
-                    } else {
-                        $remaining = $this->getRemainingAddSubscribersQuota();
-                        if ($remaining != -1) {
-                            $batch = array_slice($batch, 0, $remaining);
-                        }
-                    }
-                }
-
-                // processing for every batch,
-                // using transaction to only commit at the end of the batch execution
-                DB::beginTransaction();
-
-                // create a temporary table containing the input subscribers
-                $tmpTable = table('__tmp_subscribers');
-                // @todo: hard-coded charset and COLLATE
-                $tmpFields = implode(',', array_map(function ($field) {
-                    return "`{$field}` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci";
-                }, $availableFields));
-                DB::statement("DROP TABLE IF EXISTS {$tmpTable};
-                               CREATE TABLE {$tmpTable}({$tmpFields});
-                               CREATE INDEX _index_email_{$tmpTable} ON {$tmpTable}(`email`);");
-
-                // Insert subscriber fields from the batch to the temporary table
-                // extract only fields whose name matches TAG NAME of MailList
-                $data = collect($batch)->map(function ($r) use ($availableFields) {
-                    $record = array_only($r, $availableFields);
-                    if (!is_null($record['email'])) {
-                        // replace the non-break space (not a normal space) as well as all other spaces
-                        $record['email'] = preg_replace('/[ \s*]*/', '', trim($record['email']));
-                    }
-
-                    return $record;
-                })->toArray();
-
-                // make the import data table unique by email
-                $data = array_unique_by($data, function ($r) {
-                    return $r['email'];
-                });
-
-                // validate amd remove invalid records
-                $data = array_where($data, function ($record) {
-                    list($valid, $errors) = $this->validateCsvRecord($record);
-                    if (!$valid) {
-                        echo 'Warning: '.$record['email'].': '.implode(', ', $errors)."\n";
-                    }
-
-                    return $valid;
-                });
-                DB::table('__tmp_subscribers')->insert($data);
-
-                // Insert new subscribers from temp table to the main table
-                DB::statement('INSERT INTO '.table('subscribers').'(uid, mail_list_id, email, status, subscription_type, created_at, updated_at)
-                               SELECT SUBSTRING(MD5(UUID()), 1, 13), ' .$this->id.', uniq.email, '.db_quote(Subscriber::STATUS_SUBSCRIBED).', '.db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED).", NOW(), NOW()
-                               FROM (SELECT tmp.email FROM {$tmpTable} tmp LEFT JOIN ".table('subscribers')." main ON (tmp.email = main.email AND main.mail_list_id = {$this->id}) WHERE main.email IS NULL) uniq");
-
-                // Insert subscribers' custom fields to the fields table
-                DB::statement('DELETE FROM '.table('subscriber_fields').' WHERE subscriber_id IN (SELECT main.id FROM '.table('subscribers')." main JOIN {$tmpTable} tmp ON main.email = tmp.email WHERE mail_list_id = ".$this->id.')');
-                foreach ($availableFields as $field) {
-                    $sql = 'INSERT INTO '.table('subscriber_fields')."(subscriber_id, field_id, value, created_at, updated_at)
-                    SELECT t.subscriber_id, f.id, t.`{$field}`, NOW(), NOW()
-                    FROM (SELECT main.id AS subscriber_id, tmp.{$field} FROM ".table('subscribers')." main JOIN {$tmpTable} tmp ON tmp.email = main.email WHERE main.mail_list_id = ".$this->id.') t
-                    JOIN ' .table('fields')." f ON f.tag = '{$field}' AND f.mail_list_id = ".$this->id;
-                    DB::statement($sql);
-                }
-
-                // Cleanup
-                DB::statement("DROP TABLE IF EXISTS {$tmpTable};");
-
-                // Actually write to the database
-                DB::commit();
-            });
-
-            // Trigger updating related campaigns cache
-            $this->updateCachedInfo();
-
-            // Action Log
-            echo "Import complete\n";
-        } catch (\Exception $e) {
-            // finish the transaction
-            DB::rollBack();
-
-            $this->updateCachedInfo();
-
-            echo 'Error: '.$e->getMessage()."\n";
         }
     }
 
