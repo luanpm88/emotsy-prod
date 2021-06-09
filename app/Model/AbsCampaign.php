@@ -57,6 +57,12 @@ abstract class AbsCampaign extends Model
     // Campaign settings
     const WORKER_DELAY = 1;
 
+    // 4 types of delivery status for a given contact
+    const DELIVERY_STATUS_FAILED = 'failed';
+    const DELIVERY_STATUS_SENT = 'sent';
+    const DELIVERY_STATUS_NEW = 'new';
+    const DELIVERY_STATUS_SKIPPED = 'skipped';
+
     /**
      * The attributes that should be mutated to dates.
      *
@@ -3496,5 +3502,64 @@ abstract class AbsCampaign extends Model
         $body = $document;
 
         return $body;
+    }
+
+    public function getDeliveryReport()
+    {
+        /****
+         * Important: there are 4 possible values of `delivery_stats`
+         *     + sent
+         *     + failed
+         *     + new
+         *     + not
+         * 
+         * Assumption
+         *     + subscribers 1:1 email_verification
+         *     + [campaign, subscriber] 1:1 tracking_logs
+         * */
+        $query = $this->subscribers()->leftJoinSub(
+            $this->trackingLogs(),
+            'tracking_logs',
+            function($join) {
+                $join->on('tracking_logs.subscriber_id', 'subscribers.id');
+            }
+        );
+
+        $query->select(DB::raw(strtr("
+            CASE `tracking_logs`.`status`
+            WHEN '%sent'            THEN '%sent'
+            WHEN '%failed'          THEN '%failed'
+            ELSE
+                CASE `subscribers`.`status`
+                WHEN '%subscribed'
+                THEN
+                    CASE COALESCE(`email_verifications`.`result`, '0')
+                    WHEN '0'            THEN '%new'
+                    WHEN '%deliverable' THEN '%new'
+                    ELSE                     '%skipped'
+                    END
+                ELSE
+                    '%skipped'
+                END
+            END
+
+            AS delivery_status
+        ", [
+            '%sent' => self::DELIVERY_STATUS_SENT,
+            '%failed' => self::DELIVERY_STATUS_FAILED,
+            '%new' => self::DELIVERY_STATUS_NEW,
+            '%skipped' => self::DELIVERY_STATUS_SKIPPED,
+            '%subscribed' => Subscriber::STATUS_SUBSCRIBED,
+            '%deliverable' => EmailVerification::RESULT_DELIVERABLE,
+        ])));
+
+        return $query;
+    }
+
+    public function getDeliveryReportSummary()
+    {
+        $query = DB::query()->fromSub($this->getDeliveryReport(), 'subscribers')->groupBy('delivery_status')->select(DB::raw('delivery_status, COUNT(1)'));
+
+        return $query;
     }
 }
