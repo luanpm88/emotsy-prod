@@ -3526,14 +3526,14 @@ abstract class AbsCampaign extends Model
         );
 
         $query->select(DB::raw(strtr("
-            CASE `tracking_logs`.`status`
+            CASE `%tracking_logs`.`status`
             WHEN '%sent'            THEN '%sent'
             WHEN '%failed'          THEN '%failed'
             ELSE
-                CASE `subscribers`.`status`
+                CASE `%subscribers`.`status`
                 WHEN '%subscribed'
                 THEN
-                    CASE COALESCE(`email_verifications`.`result`, '0')
+                    CASE COALESCE(`%email_verifications`.`result`, '0')
                     WHEN '0'            THEN '%new'
                     WHEN '%deliverable' THEN '%new'
                     ELSE                     '%skipped'
@@ -3551,6 +3551,9 @@ abstract class AbsCampaign extends Model
             '%skipped' => self::DELIVERY_STATUS_SKIPPED,
             '%subscribed' => Subscriber::STATUS_SUBSCRIBED,
             '%deliverable' => EmailVerification::RESULT_DELIVERABLE,
+            '%tracking_logs' => table('tracking_logs'),
+            '%subscribers' => table('subscribers'),
+            '%email_verifications' => table('email_verifications'),
         ])));
 
         return $query;
@@ -3558,7 +3561,7 @@ abstract class AbsCampaign extends Model
 
     public function getDeliveryReportSummary()
     {
-        $query = DB::query()->fromSub($this->getDeliveryReport(), 'subscribers')->groupBy('delivery_status')->select(DB::raw('delivery_status, COUNT(1)'));
+        $query = DB::query()->fromSub($this->getDeliveryReport(), 'campaign_subscribers')->groupBy('delivery_status')->select(DB::raw('delivery_status, COUNT(1)'));
 
         return $query;
     }
