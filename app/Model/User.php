@@ -31,7 +31,6 @@ use Acelle\Model\Setting;
 use App;
 
 class User extends Authenticatable
-           // 5.7 implements MustVerifyEmail
 {
     use Notifiable;
 
