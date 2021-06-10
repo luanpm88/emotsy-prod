@@ -38,7 +38,7 @@
     'id' => request()->id,
 ]) }}')" class="btn btn-secondary">{{ trans('messages.automation.edit_operation') }}</a>
 
-<div class="mt-5 d-flex py-3">
+<div class="mt-4 d-flex py-3">
     <div>
         <h5 class="mb-2">
             {{ trans('messages.automation.dangerous_zone') }}
