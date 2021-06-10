@@ -4367,6 +4367,7 @@ label:hover .checkmark, .checkmark-container:hover .checkmark {
     width: 100%;
     height: auto;
     max-width: none!important;   
+    border-radius: 0!important;
 }
 .popup-body .panel-template-placeholder {
     height: 166px;
