@@ -45,7 +45,7 @@ class SendingServerElasticEmail extends SendingServer
     public function client()
     {
         if (!self::$client) {
-            self::$client = new \ElasticEmail\ElasticEmailV2($this->api_key);
+            self::$client = new \ElasticEmail\ElasticEmail($this->api_key);
         }
 
         return self::$client;

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "89a88d9525aafe62678d9c8fac1edf07",
+    "content-hash": "bf143e459ca1ee24e9da41770969acfe",
     "packages": [
         {
             "name": "acelle/cashier",
@@ -1319,37 +1319,44 @@
         },
         {
             "name": "guzzlehttp/guzzle",
-            "version": "6.5.5",
+            "version": "7.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "9d4290de1cfd701f38099ef7e183b64b4b7b0c5e"
+                "reference": "7008573787b430c1c1f650e3722d9bba59967628"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/9d4290de1cfd701f38099ef7e183b64b4b7b0c5e",
-                "reference": "9d4290de1cfd701f38099ef7e183b64b4b7b0c5e",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/7008573787b430c1c1f650e3722d9bba59967628",
+                "reference": "7008573787b430c1c1f650e3722d9bba59967628",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "guzzlehttp/promises": "^1.0",
-                "guzzlehttp/psr7": "^1.6.1",
-                "php": ">=5.5",
-                "symfony/polyfill-intl-idn": "^1.17.0"
+                "guzzlehttp/promises": "^1.4",
+                "guzzlehttp/psr7": "^1.7 || ^2.0",
+                "php": "^7.2.5 || ^8.0",
+                "psr/http-client": "^1.0"
+            },
+            "provide": {
+                "psr/http-client-implementation": "1.0"
             },
             "require-dev": {
+                "bamarni/composer-bin-plugin": "^1.4.1",
                 "ext-curl": "*",
-                "phpunit/phpunit": "^4.8.35 || ^5.7 || ^6.4 || ^7.0",
+                "php-http/client-integration-tests": "^3.0",
+                "phpunit/phpunit": "^8.5.5 || ^9.3.5",
                 "psr/log": "^1.1"
             },
             "suggest": {
+                "ext-curl": "Required for CURL handler support",
+                "ext-intl": "Required for Internationalized Domain Name (IDN) support",
                 "psr/log": "Required for using the Log middleware"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "6.5-dev"
+                    "dev-master": "7.3-dev"
                 }
             },
             "autoload": {
@@ -1369,6 +1376,11 @@
                     "name": "Michael Dowling",
                     "email": "mtdowling@gmail.com",
                     "homepage": "https://github.com/mtdowling"
+                },
+                {
+                    "name": "Márk Sági-Kazár",
+                    "email": "mark.sagikazar@gmail.com",
+                    "homepage": "https://sagikazarmark.hu"
                 }
             ],
             "description": "Guzzle is a PHP HTTP client library",
@@ -1379,14 +1391,34 @@
                 "framework",
                 "http",
                 "http client",
+                "psr-18",
+                "psr-7",
                 "rest",
                 "web service"
             ],
             "support": {
                 "issues": "https://github.com/guzzle/guzzle/issues",
-                "source": "https://github.com/guzzle/guzzle/tree/6.5"
+                "source": "https://github.com/guzzle/guzzle/tree/7.3.0"
             },
-            "time": "2020-06-16T21:01:06+00:00"
+            "funding": [
+                {
+                    "url": "https://github.com/GrahamCampbell",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/Nyholm",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/alexeyshockov",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/gmponos",
+                    "type": "github"
+                }
+            ],
+            "time": "2021-03-23T11:33:13+00:00"
         },
         {
             "name": "guzzlehttp/promises",
@@ -3434,73 +3466,6 @@
             "time": "2020-11-27T14:49:42+00:00"
         },
         {
-            "name": "php-http/guzzle6-adapter",
-            "version": "v2.0.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-http/guzzle6-adapter.git",
-                "reference": "9d1a45eb1c59f12574552e81fb295e9e53430a56"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-http/guzzle6-adapter/zipball/9d1a45eb1c59f12574552e81fb295e9e53430a56",
-                "reference": "9d1a45eb1c59f12574552e81fb295e9e53430a56",
-                "shasum": ""
-            },
-            "require": {
-                "guzzlehttp/guzzle": "^6.0",
-                "php": "^7.1 || ^8.0",
-                "php-http/httplug": "^2.0",
-                "psr/http-client": "^1.0"
-            },
-            "provide": {
-                "php-http/async-client-implementation": "1.0",
-                "php-http/client-implementation": "1.0",
-                "psr/http-client-implementation": "1.0"
-            },
-            "require-dev": {
-                "ext-curl": "*",
-                "php-http/client-integration-tests": "^2.0 || ^3.0",
-                "phpunit/phpunit": "^7.4 || ^8.4"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Http\\Adapter\\Guzzle6\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "David de Boer",
-                    "email": "david@ddeboer.nl"
-                },
-                {
-                    "name": "Márk Sági-Kazár",
-                    "email": "mark.sagikazar@gmail.com"
-                }
-            ],
-            "description": "Guzzle 6 HTTP Adapter",
-            "homepage": "http://httplug.io",
-            "keywords": [
-                "Guzzle",
-                "http"
-            ],
-            "support": {
-                "issues": "https://github.com/php-http/guzzle6-adapter/issues",
-                "source": "https://github.com/php-http/guzzle6-adapter/tree/v2.0.2"
-            },
-            "time": "2021-03-02T10:52:33+00:00"
-        },
-        {
             "name": "php-http/httplug",
             "version": "2.2.0",
             "source": {
@@ -4572,34 +4537,34 @@
         },
         {
             "name": "rdok/elasticemail-php",
-            "version": "v1.0.2",
+            "version": "v2.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rdok/elasticemail-php.git",
-                "reference": "5b3d5650e4be925d4850705d07d8c88d4c447cde"
+                "reference": "211f089a36decb147963776b6880684c7b4f9abd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rdok/elasticemail-php/zipball/5b3d5650e4be925d4850705d07d8c88d4c447cde",
-                "reference": "5b3d5650e4be925d4850705d07d8c88d4c447cde",
+                "url": "https://api.github.com/repos/rdok/elasticemail-php/zipball/211f089a36decb147963776b6880684c7b4f9abd",
+                "reference": "211f089a36decb147963776b6880684c7b4f9abd",
                 "shasum": ""
             },
             "require": {
-                "guzzlehttp/guzzle": "^6.2",
-                "php": ">=5.5.9"
+                "guzzlehttp/guzzle": "^7.2",
+                "php": "^7.2 | ^8.0"
             },
             "require-dev": {
-                "fzaninotto/faker": "^1.6",
-                "php-vcr/php-vcr": "^1.2",
-                "php-vcr/phpunit-testlistener-vcr": "^1.1",
-                "phpunit/phpunit": "4.8.*",
-                "vlucas/phpdotenv": "^2.2",
-                "whatthejeff/nyancat-phpunit-resultprinter": "^1.2"
+                "larapack/dd": "^1.1",
+                "mikey179/vfsstream": "^1.6",
+                "phpunit/phpunit": "^8.5",
+                "spatie/phpunit-watcher": "^1.23",
+                "squizlabs/php_codesniffer": "^3.5",
+                "vlucas/phpdotenv": "^5.3"
             },
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "ElasticEmail\\": "src/ElasticEmail/"
+                    "ElasticEmail\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -4608,15 +4573,18 @@
             ],
             "authors": [
                 {
-                    "name": "Rizart Dokollari"
+                    "name": "Rizart Dokollari",
+                    "email": "r.dokollari@gmail.com",
+                    "homepage": "https://rdok.co.uk/",
+                    "role": "Maintainer"
                 }
             ],
             "description": "Integration to the Elastic Email API http://api.elasticemail.com/public/help",
             "support": {
                 "issues": "https://github.com/rdok/elasticemail-php/issues",
-                "source": "https://github.com/rdok/elasticemail-php/tree/v1.0.2"
+                "source": "https://github.com/rdok/elasticemail-php/tree/v2.2.0"
             },
-            "time": "2016-09-03T11:07:20+00:00"
+            "time": "2021-03-18T21:08:38+00:00"
         },
         {
             "name": "rmccue/requests",
