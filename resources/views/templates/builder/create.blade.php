@@ -63,30 +63,32 @@
 				</div>
 			</div>
 
-			<div class="subsection">
-				<h2 class="font-weight-semibold mb-0">{{ trans('messages.template.featured') }}</h2>
-				<hr>
+			@if (count(Acelle\Model\Template::getTemplatesFromDisk(null, 'featured')))
+				<div class="subsection">
+					<h2 class="font-weight-semibold mb-0">{{ trans('messages.template.featured') }}</h2>
+					<hr>
 
-				<div class="template-boxes" style="
-					margin-left: -20px;
-					margin-right: -20px;
-					clear: both;
-				">
-					@foreach(Acelle\Model\Template::getTemplatesFromDisk(null, 'featured') as $layout)
-						<div class="col-xxs-12 col-xs-6 col-sm-3 col-md-2">
-							<a href="javascript:;" class="select-template-layout" data-layout="{{ $layout['name'] }}" data-type="featured">
-								<div class="panel panel-flat panel-template-style">
-									<div class="panel-body">
-										<img src="{{ $layout['thumb'] }}" />
-										<h5 class="mb-20 text-center">{{ $layout['title'] }}</h5>
+					<div class="template-boxes" style="
+						margin-left: -20px;
+						margin-right: -20px;
+						clear: both;
+					">
+						@foreach(Acelle\Model\Template::getTemplatesFromDisk(null, 'featured') as $layout)
+							<div class="col-xxs-12 col-xs-6 col-sm-3 col-md-2">
+								<a href="javascript:;" class="select-template-layout" data-layout="{{ $layout['name'] }}" data-type="featured">
+									<div class="panel panel-flat panel-template-style">
+										<div class="panel-body">
+											<img src="{{ $layout['thumb'] }}" />
+											<h5 class="mb-20 text-center">{{ $layout['title'] }}</h5>
+										</div>
 									</div>
-								</div>
-							</a>
-						</div>
-					@endforeach
+								</a>
+							</div>
+						@endforeach
+					</div>
+					<br style="clear:both" />
 				</div>
-				<br style="clear:both" />
-			</div>
+			@endif
 
 			<div class="subsection">
 				<h2 class="font-weight-semibold mb-0">{{ trans('messages.template.basic') }}</h2>
