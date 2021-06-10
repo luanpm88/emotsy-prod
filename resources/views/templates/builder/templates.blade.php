@@ -8,7 +8,9 @@
                 <a href="javascript:;" class="select-template-layout" data-template="{{ $template->uid }}">
                     <div class="panel panel-flat panel-template-style">
                         <div class="panel-body">
-                            <img src="{{ $template->getThumbUrl() }}?v={{ rand(0,10) }}" />
+                            <div class="panel-template-placeholder">
+                                <img src="{{ $template->getThumbUrl() }}?v={{ rand(0,10) }}" />
+                            </div>
                             <h5 class="mb-20 text-center">{{ $template->name }}</h5>
                         </div>
                     </div>

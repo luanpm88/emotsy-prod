@@ -78,7 +78,9 @@
 								<a href="javascript:;" class="select-template-layout" data-layout="{{ $layout['name'] }}" data-type="featured">
 									<div class="panel panel-flat panel-template-style">
 										<div class="panel-body">
-											<img src="{{ $layout['thumb'] }}" />
+											<div class="panel-template-placeholder">
+												<img src="{{ $layout['thumb'] }}" />
+											</div>
 											<h5 class="mb-20 text-center">{{ $layout['title'] }}</h5>
 										</div>
 									</div>
