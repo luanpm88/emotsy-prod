@@ -74,7 +74,7 @@
                         @include('elements._notification', [
                             'level' => 'warning',
                             'title' => 'PHP version not supported',
-                            'message' => 'You are running on PHP version '.PHP_VERSION.' which is too old. Please upgrade to PHP 7.2.5 or higher in order to proceed with application upgrade'
+                            'message' => 'You are running on PHP version '.PHP_VERSION.' which is too old. Please upgrade to PHP '.config('custom.php_recommended').' or higher in order to proceed with application upgrade'
                         ])
                     @else
                         <h3>{{ trans('messages.upgrade.title.current') }}</h3>
