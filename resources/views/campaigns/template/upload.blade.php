@@ -2,9 +2,8 @@
 
 @section('content')
 	<div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
-            <h2>{{ trans('messages.campaign.choose_your_template_layout') }}</h2>
+        <div class="col-md-12">
+            <h2>{{ trans('messages.campaign.upload_custom_template') }}</h2>
                 
             <ul class="nav nav-tabs mc-nav campaign-template-tabs">
                 <li><a href="{{ action('CampaignController@templateLayout', $campaign->uid) }}">Layouts</a></li>

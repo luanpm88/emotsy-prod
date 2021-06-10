@@ -2793,6 +2793,7 @@ canvas[data-zr-dom-id='_zrender_hover_'] {
     display: block;
     color: #333;
     margin: 8px;
+    white-space: nowrap;
 }
 .template-boxes .panel-body img {
     border: solid 1px #aaa;
@@ -4341,4 +4342,12 @@ label:hover .checkmark, .checkmark-container:hover .checkmark {
     height: 480px;
     border: none;
     overflow: hidden;
+}
+.template-create-sticky {
+    position: sticky;
+    top: 53px;
+    background: #fff;
+    z-index: 1;
+    padding: 10px 0;
+    box-shadow: 1px 1px 50px rgb(255,255,255,0.8);
 }

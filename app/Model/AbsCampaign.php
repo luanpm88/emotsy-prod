@@ -2589,10 +2589,10 @@ abstract class AbsCampaign extends Model
      *
      * All availabel template tags
      */
-    public function addTemplateFromLayout($layout)
+    public function addTemplateFromDisk($layout, $subPath='basic')
     {
-        $sDir = database_path('layouts/'.$layout);
-
+        $sDir = database_path(join_paths('templates', $subPath, $layout));
+        
         // delete old template
         Tool::xdelete($this->getStoragePath());
 

@@ -1,9 +1,8 @@
-@extends('layouts.popup.medium')
+@extends('layouts.popup.large')
 
 @section('content')
 	<div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
+        <div class="col-md-12">
             <h2>{{ trans('messages.campaign.choose_your_template_layout') }}</h2>
                 
             <ul class="nav nav-tabs mc-nav campaign-template-tabs">
@@ -11,31 +10,74 @@
                 <li><a href="{{ action('CampaignController@templateTheme', $campaign->uid) }}">Themes</a></li>
                 <li><a href="{{ action('CampaignController@templateUpload', $campaign->uid) }}">Upload</a></li>
             </ul>
-                
-            <div id="layout" class="tab-pane fade in active template-boxes layout" style="
-                margin-left: -20px;
-                margin-right: -20px;
-            ">
-                @foreach(Acelle\Model\Template::getTemplatesFromDisk() as $layout)
-                    <div class="col-xxs-12 col-xs-6 col-sm-3 col-md-2">
-                        <a href="javascript:;" class="select-template-layout" data-layout="{{ $layout['name'] }}">
-                            <div class="panel panel-flat panel-template-style">
-                                <div class="panel-body">
-									<a 
-										href="{{ action('CampaignController@templateLayout', [
-                                            'uid' => $campaign->uid,
-                                            'layout' => $layout['name']]) }}"
-                                        class="choose-layout"
-									>
-										<img src="{{ $layout['thumb'] }}" />
-										<label class="mb-20 text-center">{{ $layout['title'] }}</label>
-									</a>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                @endforeach
-            </div>
+
+            <div class="subsection">
+				<h2 class="font-weight-semibold mb-0">{{ trans('messages.template.featured') }}</h2>
+				<hr>
+
+				<div class="template-boxes" style="
+					margin-left: -20px;
+					margin-right: -20px;
+					clear: both;
+				">
+					@foreach(Acelle\Model\Template::getTemplatesFromDisk(null, 'featured') as $layout)
+						<div class="col-xxs-12 col-xs-6 col-sm-3 col-md-2">
+							<a href="javascript:;" class="select-template-layout" data-layout="{{ $layout['name'] }}" data-type="featured">
+								<div class="panel panel-flat panel-template-style">
+									<div class="panel-body">
+                                        <a 
+                                            href="{{ action('CampaignController@templateLayout', [
+                                                'uid' => $campaign->uid,
+                                                'layout' => $layout['name'],
+                                                'type' => 'featured',
+                                            ]) }}",
+                                            class="choose-layout"
+                                        >
+                                            <img src="{{ $layout['thumb'] }}" />
+                                            <label class="mb-20 text-center">{{ $layout['title'] }}</label>
+                                        </a>
+									</div>
+								</div>
+							</a>
+						</div>
+					@endforeach
+				</div>
+				<br style="clear:both" />
+			</div>
+
+			<div class="subsection">
+				<h2 class="font-weight-semibold mb-0">{{ trans('messages.template.basic') }}</h2>
+				<hr>
+
+				<div class="template-boxes" style="
+					margin-left: -20px;
+					margin-right: -20px;
+					clear: both;
+				">
+					@foreach(Acelle\Model\Template::getTemplatesFromDisk() as $layout)
+						<div class="col-xxs-12 col-xs-6 col-sm-3 col-md-2">
+							<a href="javascript:;" class="select-template-layout" data-layout="{{ $layout['name'] }}" data-type="basic">
+								<div class="panel panel-flat panel-template-style">
+									<div class="panel-body">
+                                        <a 
+                                            href="{{ action('CampaignController@templateLayout', [
+                                                'uid' => $campaign->uid,
+                                                'layout' => $layout['name'],
+                                                'type' => 'basic',
+                                            ]) }}",
+                                            class="choose-layout"
+                                        >
+                                            <img src="{{ $layout['thumb'] }}" />
+                                            <label class="mb-20 text-center">{{ $layout['title'] }}</label>
+                                        </a>
+									</div>
+								</div>
+							</a>
+						</div>
+					@endforeach
+				</div>
+				<br style="clear:both" />
+			</div>
         </div>
     </div>
         

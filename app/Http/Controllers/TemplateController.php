@@ -641,7 +641,7 @@ class TemplateController extends Controller
                 $template->untransform();
                 $template->save(); // odd! save again
 
-                $template->addTemplateFromLayout($request->layout);
+                $template->addTemplateFromDisk($request->layout, $request->type);
             }
             
             if ($request->template) {

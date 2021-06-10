@@ -932,9 +932,9 @@ class Template extends Model implements Storable
      *
      * All availabel template tags
      */
-    public function addTemplateFromLayout($layout)
+    public function addTemplateFromDisk($layout, $subPath='basic')
     {
-        $sDir = database_path('layouts/'.$layout);
+        $sDir = database_path(join_paths('templates', $subPath, $layout));
         $this->loadFromDirectory($sDir);
     }
 
@@ -1079,10 +1079,10 @@ class Template extends Model implements Storable
      *
      * All availabel form tags
      */
-    public static function getTemplatesFromDisk($keyword=null, $subPath='layouts/')
+    public static function getTemplatesFromDisk($keyword=null, $subPath='basic')
     {
         $templates = [];
-        $dir = database_path($subPath);
+        $dir = database_path(join_paths('templates', $subPath));
         $templateUrl = array_diff(scandir($dir), array('..', '.', 'empty'));
         foreach ($templateUrl as $name) {
             $path = join_paths($dir, $name);
@@ -1094,7 +1094,7 @@ class Template extends Model implements Storable
             $title = $m[2][0];
 
             // encode image
-            $path = database_path($subPath . $name . '/thumb.png');
+            $path = join_paths($dir, $name, '/thumb.png');
             $type = pathinfo($path, PATHINFO_EXTENSION);
             $data = file_get_contents($path);
             $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);

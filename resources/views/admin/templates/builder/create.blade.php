@@ -35,7 +35,8 @@
             <form action="{{ action('Admin\TemplateController@builderCreate') }}" method="POST" class="template-form form-validate-jquery">
                 {{ csrf_field() }}
                 
-                <input type="hidden" value="" name="layout" />
+                <input type="hidden" value="" name="type" />
+				<input type="hidden" value="" name="layout" />
 				<input type="hidden" value="" name="template" />
                 
                 <div class="sub_section">
@@ -54,27 +55,26 @@
     </div>
         
     <div class="row">
-        <div class="col-md-12">
-            <div class="d-flex align-items-bottom mt-4">
-				<h3 class="text-semibold mr-auto mb-3 mt-0">{{ trans('messages.template.select_your_template') }}</h3>
+        <div class="col-md-12" style="position: relative;">
+            <div class="d-flex align-items-center mt-4 template-create-sticky">
+				<h3 class="text-semibold mr-auto mb-0 mt-0">{{ trans('messages.template.select_your_template') }}</h3>
 				<div class="text-left">
 					<button class="btn bg-teal mr-10 start-design"><i class="icon-check"></i> {{ trans('messages.template.create_and_design') }}</button>
 				</div>
 			</div>
-				
-			<ul class="nav nav-tabs mc-tabs">
-				<li class="active"><a data-toggle="tab" href="#layout">{{ trans('messages.layouts') }}</a></li>
-				<li><a data-toggle="tab" href="#gallery">{{ trans('messages.templates') }}</a></li>
-			</ul>
-			  
-			<div class="tab-content">
-				<div id="layout" class="tab-pane fade in active template-boxes" style="
+
+			<div class="subsection">
+				<h2 class="font-weight-semibold mb-0">{{ trans('messages.template.featured') }}</h2>
+				<hr>
+
+				<div class="template-boxes" style="
 					margin-left: -20px;
 					margin-right: -20px;
+					clear: both;
 				">
-					@foreach(Acelle\Model\Template::getTemplatesFromDisk() as $layout)
+					@foreach(Acelle\Model\Template::getTemplatesFromDisk(null, 'featured') as $layout)
 						<div class="col-xxs-12 col-xs-6 col-sm-3 col-md-2">
-							<a href="javascript:;" class="select-template-layout" data-layout="{{ $layout['name'] }}">
+							<a href="javascript:;" class="select-template-layout" data-layout="{{ $layout['name'] }}" data-type="featured">
 								<div class="panel panel-flat panel-template-style">
 									<div class="panel-body">
 										<img src="{{ $layout['thumb'] }}" />
@@ -85,7 +85,39 @@
 						</div>
 					@endforeach
 				</div>
-				<div id="gallery" class="tab-pane fade">
+				<br style="clear:both" />
+			</div>
+
+			<div class="subsection">
+				<h2 class="font-weight-semibold mb-0">{{ trans('messages.template.basic') }}</h2>
+				<hr>
+
+				<div class="template-boxes" style="
+					margin-left: -20px;
+					margin-right: -20px;
+					clear: both;
+				">
+					@foreach(Acelle\Model\Template::getTemplatesFromDisk() as $layout)
+						<div class="col-xxs-12 col-xs-6 col-sm-3 col-md-2">
+							<a href="javascript:;" class="select-template-layout" data-layout="{{ $layout['name'] }}" data-type="basic">
+								<div class="panel panel-flat panel-template-style">
+									<div class="panel-body">
+										<img src="{{ $layout['thumb'] }}" />
+										<h5 class="mb-20 text-center">{{ $layout['title'] }}</h5>
+									</div>
+								</div>
+							</a>
+						</div>
+					@endforeach
+				</div>
+				<br style="clear:both" />
+			</div>
+
+			<div class="subsection">
+				<h2 class="font-weight-semibold mb-0">{{ trans('messages.template.themes') }}</h2>
+				<hr>
+
+				<div id="gallery" class="">
 					<form class="listing-form"
 						data-url="{{ action('Admin\TemplateController@builderTemplates') }}"
 						per-page="{{ Acelle\Model\Template::$itemsPerPage }}"					
@@ -135,6 +167,8 @@
         $(document).ready(function() {
             $(document).on('click', '.select-template-layout', function() {
                 var layout = $(this).attr('data-layout');
+				var type = $(this).attr('data-type');
+
 				var template = $(this).attr('data-template');
                 
                 // unselect all layouts
@@ -142,14 +176,16 @@
                 
                 // select this
                 $(this).addClass('selected');
-				
+
 				// unselect all
 				$('[name=layout]').val('');
+				$('[name=type]').val('');
 				$('[name=template]').val('');
                 
                 // update layout value
 				if (typeof(layout) !== 'undefined') {
 					$('[name=layout]').val(layout);
+					$('[name=type]').val(type);
 				}
 				
 				// update template value

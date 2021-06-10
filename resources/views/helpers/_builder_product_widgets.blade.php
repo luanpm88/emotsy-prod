@@ -430,79 +430,81 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
 
             // default content html
             this.setContentHtml(`
-                <div data-items-number="4" builder-element="AbandonedCartElement" data-max-items="4" data-display="4" data-sort-by="created_at-desc" builder-draggable class="py-3 px-3 product-list-widget">
-                    <span class="woo-button product-preview-but" style="display:none">Preview</span>
-                    <span class="woo-button product-unpreview-but" style="display:none">Close preview</span>
-                    <div class="row py-3 products">
-                        <div class="woo-col-item mb-4 mt-4 col-12 col-sm-6 col-md-3">
-                            <div class="">
-                                <div class="img-col mb-3">
-                                    <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
-                                </div>
+                <div data-items-number="4" builder-element="AbandonedCartElement" data-max-items="4" data-display="4" data-sort-by="created_at-desc" builder-draggable class="product-list-widget">
+                    <div class="container py-3">
+                        <span class="woo-button product-preview-but" style="display:none">Preview</span>
+                        <span class="woo-button product-unpreview-but" style="display:none">Close preview</span>
+                        <div class="row py-3 products">
+                            <div class="woo-col-item mb-4 mt-4 col-12 col-sm-6 col-md-3">
                                 <div class="">
-                                    <p class="font-weight-normal product-name mb-1">
-                                        <a style="color: #333;" href="*|PRODUCT_URL|*" class="mr-4">*|PRODUCT_NAME|*</a>
-                                    </p>
-                                    <p class=" product-description">*|PRODUCT_DESCRIPTION|*</p>
-                                    <p><strong>*|PRODUCT_PRICE|*</strong></p>
-                                    <a href="*|PRODUCT_URL|*" style="background-color: #9b5c8f;
-border-color: #9b5c8f;" class="btn btn-primary text-white">
-                                        {{ trans('messages.automation.buy_now') }}
-                                    </a>
+                                    <div class="img-col mb-3">
+                                        <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
+                                    </div>
+                                    <div class="">
+                                        <p class="font-weight-normal product-name mb-1">
+                                            <a style="color: #333;" href="*|PRODUCT_URL|*" class="mr-4">*|PRODUCT_NAME|*</a>
+                                        </p>
+                                        <p class=" product-description">*|PRODUCT_DESCRIPTION|*</p>
+                                        <p><strong>*|PRODUCT_PRICE|*</strong></p>
+                                        <a href="*|PRODUCT_URL|*" style="background-color: #9b5c8f;
+    border-color: #9b5c8f;" class="btn btn-primary text-white">
+                                            {{ trans('messages.automation.buy_now') }}
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="woo-col-item mb-4 mt-4 col-12 col-sm-6 col-md-3">
-                            <div class="">
-                                <div class="img-col mb-3">
-                                    <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
-                                </div>
+                            <div class="woo-col-item mb-4 mt-4 col-12 col-sm-6 col-md-3">
                                 <div class="">
-                                    <p class="font-weight-normal product-name mb-1">
-                                        <a style="color: #333;" href="*|PRODUCT_URL|*" class="mr-4">*|PRODUCT_NAME|*</a>
-                                    </p>
-                                    <p class=" product-description">*|PRODUCT_DESCRIPTION|*</p>
-                                    <p><strong>*|PRODUCT_PRICE|*</strong></p>
-                                    <a href="*|PRODUCT_URL|*" style="background-color: #9b5c8f;
-border-color: #9b5c8f;" class="btn btn-primary text-white">
-                                        {{ trans('messages.automation.buy_now') }}
-                                    </a>
+                                    <div class="img-col mb-3">
+                                        <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
+                                    </div>
+                                    <div class="">
+                                        <p class="font-weight-normal product-name mb-1">
+                                            <a style="color: #333;" href="*|PRODUCT_URL|*" class="mr-4">*|PRODUCT_NAME|*</a>
+                                        </p>
+                                        <p class=" product-description">*|PRODUCT_DESCRIPTION|*</p>
+                                        <p><strong>*|PRODUCT_PRICE|*</strong></p>
+                                        <a href="*|PRODUCT_URL|*" style="background-color: #9b5c8f;
+    border-color: #9b5c8f;" class="btn btn-primary text-white">
+                                            {{ trans('messages.automation.buy_now') }}
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="woo-col-item mb-4 mt-4 col-12 col-sm-6 col-md-3">
-                            <div class="">
-                                <div class="img-col mb-3">
-                                    <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
-                                </div>
+                            <div class="woo-col-item mb-4 mt-4 col-12 col-sm-6 col-md-3">
                                 <div class="">
-                                    <p class="font-weight-normal product-name mb-1">
-                                        <a style="color: #333;" href="*|PRODUCT_URL|*" class="mr-4">*|PRODUCT_NAME|*</a>
-                                    </p>
-                                    <p class=" product-description">*|PRODUCT_DESCRIPTION|*</p>
-                                    <p><strong>*|PRODUCT_PRICE|*</strong></p>
-                                    <a href="*|PRODUCT_URL|*" style="background-color: #9b5c8f;
-border-color: #9b5c8f;" class="btn btn-primary text-white">
-                                        {{ trans('messages.automation.buy_now') }}
-                                    </a>
+                                    <div class="img-col mb-3">
+                                        <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
+                                    </div>
+                                    <div class="">
+                                        <p class="font-weight-normal product-name mb-1">
+                                            <a style="color: #333;" href="*|PRODUCT_URL|*" class="mr-4">*|PRODUCT_NAME|*</a>
+                                        </p>
+                                        <p class=" product-description">*|PRODUCT_DESCRIPTION|*</p>
+                                        <p><strong>*|PRODUCT_PRICE|*</strong></p>
+                                        <a href="*|PRODUCT_URL|*" style="background-color: #9b5c8f;
+    border-color: #9b5c8f;" class="btn btn-primary text-white">
+                                            {{ trans('messages.automation.buy_now') }}
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="woo-col-item mb-4 mt-4 col-12 col-sm-6 col-md-3">
-                            <div class="">
-                                <div class="img-col mb-3">
-                                    <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
-                                </div>
+                            <div class="woo-col-item mb-4 mt-4 col-12 col-sm-6 col-md-3">
                                 <div class="">
-                                    <p class="font-weight-normal product-name mb-1">
-                                        <a style="color: #333;" href="*|PRODUCT_URL|*" class="mr-4">*|PRODUCT_NAME|*</a>
-                                    </p>
-                                    <p class=" product-description">*|PRODUCT_DESCRIPTION|*</p>
-                                    <p><strong>*|PRODUCT_PRICE|*</strong></p>
-                                    <a href="*|PRODUCT_URL|*" style="background-color: #9b5c8f;
-border-color: #9b5c8f;" class="btn btn-primary text-white">
-                                        {{ trans('messages.automation.buy_now') }}
-                                    </a>
+                                    <div class="img-col mb-3">
+                                        <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/cart_item.svg') }}" width="100%" /></a>
+                                    </div>
+                                    <div class="">
+                                        <p class="font-weight-normal product-name mb-1">
+                                            <a style="color: #333;" href="*|PRODUCT_URL|*" class="mr-4">*|PRODUCT_NAME|*</a>
+                                        </p>
+                                        <p class=" product-description">*|PRODUCT_DESCRIPTION|*</p>
+                                        <p><strong>*|PRODUCT_PRICE|*</strong></p>
+                                        <a href="*|PRODUCT_URL|*" style="background-color: #9b5c8f;
+    border-color: #9b5c8f;" class="btn btn-primary text-white">
+                                            {{ trans('messages.automation.buy_now') }}
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -760,79 +762,81 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
 
             // default content html
             this.setContentHtml(`
-                <div data-items-number="4" builder-element="ProductListElement" data-max-items="4" data-display="4" data-sort-by="created_at-desc" builder-draggable class="py-3 px-3 product-list-widget">
-                    <span class="woo-button product-preview-but" style="display:none">Preview</span>
-                    <span class="woo-button product-unpreview-but" style="display:none">Close preview</span>
-                    <div class="row py-3 products">
-                        <div class="woo-col-item mb-4 mt-4 col-12 col-sm-6 col-md-3">
-                            <div class="">
-                                <div class="img-col mb-3">
-                                    <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/product-image-placeholder.svg') }}" width="100%" /></a>
-                                </div>
+                <div data-items-number="4" builder-element="ProductListElement" data-max-items="4" data-display="4" data-sort-by="created_at-desc" builder-draggable class="product-list-widget">
+                    <div class="container py-3">
+                        <span class="woo-button product-preview-but" style="display:none">Preview</span>
+                        <span class="woo-button product-unpreview-but" style="display:none">Close preview</span>
+                        <div class="row py-3 products">
+                            <div class="woo-col-item mb-4 mt-4 col-12 col-sm-6 col-md-3">
                                 <div class="">
-                                    <p class="font-weight-normal product-name mb-1">
-                                        <a style="color: #333;" href="*|PRODUCT_URL|*" class="mr-4">*|PRODUCT_NAME|*</a>
-                                    </p>
-                                    <p class=" product-description">*|PRODUCT_DESCRIPTION|*</p>
-                                    <p><strong>*|PRODUCT_PRICE|*</strong></p>
-                                    <a href="*|PRODUCT_URL|*" style="background-color: #9b5c8f;
-border-color: #9b5c8f;" class="btn btn-primary text-white">
-                                        {{ trans('messages.automation.buy_now') }}
-                                    </a>
+                                    <div class="img-col mb-3">
+                                        <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/product-image-placeholder.svg') }}" width="100%" /></a>
+                                    </div>
+                                    <div class="">
+                                        <p class="font-weight-normal product-name mb-1">
+                                            <a style="color: #333;" href="*|PRODUCT_URL|*" class="mr-4">*|PRODUCT_NAME|*</a>
+                                        </p>
+                                        <p class=" product-description">*|PRODUCT_DESCRIPTION|*</p>
+                                        <p><strong>*|PRODUCT_PRICE|*</strong></p>
+                                        <a href="*|PRODUCT_URL|*" style="background-color: #9b5c8f;
+    border-color: #9b5c8f;" class="btn btn-primary text-white">
+                                            {{ trans('messages.automation.buy_now') }}
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="woo-col-item mb-4 mt-4 col-12 col-sm-6 col-md-3">
-                            <div class="">
-                                <div class="img-col mb-3">
-                                    <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/product-image-placeholder.svg') }}" width="100%" /></a>
-                                </div>
+                            <div class="woo-col-item mb-4 mt-4 col-12 col-sm-6 col-md-3">
                                 <div class="">
-                                    <p class="font-weight-normal product-name mb-1">
-                                        <a style="color: #333;" href="*|PRODUCT_URL|*" class="mr-4">*|PRODUCT_NAME|*</a>
-                                    </p>
-                                    <p class=" product-description">*|PRODUCT_DESCRIPTION|*</p>
-                                    <p><strong>*|PRODUCT_PRICE|*</strong></p>
-                                    <a href="*|PRODUCT_URL|*" style="background-color: #9b5c8f;
-border-color: #9b5c8f;" class="btn btn-primary text-white">
-                                        {{ trans('messages.automation.buy_now') }}
-                                    </a>
+                                    <div class="img-col mb-3">
+                                        <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/product-image-placeholder.svg') }}" width="100%" /></a>
+                                    </div>
+                                    <div class="">
+                                        <p class="font-weight-normal product-name mb-1">
+                                            <a style="color: #333;" href="*|PRODUCT_URL|*" class="mr-4">*|PRODUCT_NAME|*</a>
+                                        </p>
+                                        <p class=" product-description">*|PRODUCT_DESCRIPTION|*</p>
+                                        <p><strong>*|PRODUCT_PRICE|*</strong></p>
+                                        <a href="*|PRODUCT_URL|*" style="background-color: #9b5c8f;
+    border-color: #9b5c8f;" class="btn btn-primary text-white">
+                                            {{ trans('messages.automation.buy_now') }}
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="woo-col-item mb-4 mt-4 col-12 col-sm-6 col-md-3">
-                            <div class="">
-                                <div class="img-col mb-3">
-                                    <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/product-image-placeholder.svg') }}" width="100%" /></a>
-                                </div>
+                            <div class="woo-col-item mb-4 mt-4 col-12 col-sm-6 col-md-3">
                                 <div class="">
-                                    <p class="font-weight-normal product-name mb-1">
-                                        <a style="color: #333;" href="*|PRODUCT_URL|*" class="mr-4">*|PRODUCT_NAME|*</a>
-                                    </p>
-                                    <p class=" product-description">*|PRODUCT_DESCRIPTION|*</p>
-                                    <p><strong>*|PRODUCT_PRICE|*</strong></p>
-                                    <a href="*|PRODUCT_URL|*" style="background-color: #9b5c8f;
-border-color: #9b5c8f;" class="btn btn-primary text-white">
-                                        {{ trans('messages.automation.buy_now') }}
-                                    </a>
+                                    <div class="img-col mb-3">
+                                        <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/product-image-placeholder.svg') }}" width="100%" /></a>
+                                    </div>
+                                    <div class="">
+                                        <p class="font-weight-normal product-name mb-1">
+                                            <a style="color: #333;" href="*|PRODUCT_URL|*" class="mr-4">*|PRODUCT_NAME|*</a>
+                                        </p>
+                                        <p class=" product-description">*|PRODUCT_DESCRIPTION|*</p>
+                                        <p><strong>*|PRODUCT_PRICE|*</strong></p>
+                                        <a href="*|PRODUCT_URL|*" style="background-color: #9b5c8f;
+    border-color: #9b5c8f;" class="btn btn-primary text-white">
+                                            {{ trans('messages.automation.buy_now') }}
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="woo-col-item mb-4 mt-4 col-12 col-sm-6 col-md-3">
-                            <div class="">
-                                <div class="img-col mb-3">
-                                    <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/product-image-placeholder.svg') }}" width="100%" /></a>
-                                </div>
+                            <div class="woo-col-item mb-4 mt-4 col-12 col-sm-6 col-md-3">
                                 <div class="">
-                                    <p class="font-weight-normal product-name mb-1">
-                                        <a style="color: #333;" href="*|PRODUCT_URL|*" class="mr-4">*|PRODUCT_NAME|*</a>
-                                    </p>
-                                    <p class=" product-description">*|PRODUCT_DESCRIPTION|*</p>
-                                    <p><strong>*|PRODUCT_PRICE|*</strong></p>
-                                    <a href="*|PRODUCT_URL|*" style="background-color: #9b5c8f;
-border-color: #9b5c8f;" class="btn btn-primary text-white">
-                                        {{ trans('messages.automation.buy_now') }}
-                                    </a>
+                                    <div class="img-col mb-3">
+                                        <a href="*|PRODUCT_URL|*" class="mr-4"><img src="{{ url('images/product-image-placeholder.svg') }}" width="100%" /></a>
+                                    </div>
+                                    <div class="">
+                                        <p class="font-weight-normal product-name mb-1">
+                                            <a style="color: #333;" href="*|PRODUCT_URL|*" class="mr-4">*|PRODUCT_NAME|*</a>
+                                        </p>
+                                        <p class=" product-description">*|PRODUCT_DESCRIPTION|*</p>
+                                        <p><strong>*|PRODUCT_PRICE|*</strong></p>
+                                        <a href="*|PRODUCT_URL|*" style="background-color: #9b5c8f;
+    border-color: #9b5c8f;" class="btn btn-primary text-white">
+                                            {{ trans('messages.automation.buy_now') }}
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1222,44 +1226,46 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
 
             // default content html
             this.setContentHtml(`
-                <div preview="no" builder-element="ProductElement" builder-draggable class="py-3 px-3 product-widget">
-                    <div class="product-placeholder text-center" style="display:none">
-                        <img src="{{ url('images/product-image-placeholder.svg') }}" width="100%" />
-                        <a style="" class="mt-4 btnx btnx-primary">
-                            {{ trans('messages.automation.choose_a_product') }}
-                        </a>
-                    </div>
-                    <div class="product-content">
-                        <span class="woo-button product-preview-but" style="display:none">Preview</span>
-                        <span class="woo-button product-unpreview-but" style="display:none">Close preview</span>
-                        <div class="edit-container">
-                            <div class="d-flex">
-                                <div class="">
-                                    <a href="*|PRODUCT_URL|*" class="product-link">
-                                        <img builder-element="ProductImgElement" class="mr-4" src="{{ url('images/product-image-placeholder.svg') }}" width="200px" />
-                                    </a>
-                                </div>
-                                
-                                <div builder-element="TextElement" class="" style="width:100%">
-                                    <div builder-element="TextElement">
-                                        <h3 class="font-weight-normal">
-                                            <a style="color:#333;" class="d-block product-link" href="*|PRODUCT_URL|*">
-                                                <span class="product-name">*|PRODUCT_NAME|*</span>
-                                            </a>
-                                        </h3>
-                                        <p class=" product-description">*|PRODUCT_DESCRIPTION|*</p>
-                                        <h4><strong class="product-price">*|PRODUCT_PRICE|*</strong></h4>
-                                    </div>
-                                    <div>
-                                        <a style="background-color: #9b5c8f;
-        border-color: #9b5c8f;" builder-element builder-inline-edit href="*|PRODUCT_URL|*" class="mt-4 btn btn-primary text-white product-view-button product-link">
-                                            {{ trans('messages.automation.buy_now') }}
+                <div preview="no" builder-element="ProductElement" builder-draggable class="product-widget">
+                    <div class="container py-3">
+                        <div class="product-placeholder text-center" style="display:none">
+                            <img src="{{ url('images/product-image-placeholder.svg') }}" width="100%" />
+                            <a style="" class="mt-4 btnx btnx-primary">
+                                {{ trans('messages.automation.choose_a_product') }}
+                            </a>
+                        </div>
+                        <div class="product-content">
+                            <span class="woo-button product-preview-but" style="display:none">Preview</span>
+                            <span class="woo-button product-unpreview-but" style="display:none">Close preview</span>
+                            <div class="edit-container">
+                                <div class="d-flex">
+                                    <div class="">
+                                        <a href="*|PRODUCT_URL|*" class="product-link">
+                                            <img builder-element="ProductImgElement" class="mr-4" src="{{ url('images/product-image-placeholder.svg') }}" width="200px" />
                                         </a>
+                                    </div>
+                                    
+                                    <div builder-element="TextElement" class="" style="width:100%">
+                                        <div builder-element="TextElement">
+                                            <h3 class="font-weight-normal">
+                                                <a style="color:#333;" class="d-block product-link" href="*|PRODUCT_URL|*">
+                                                    <span class="product-name">*|PRODUCT_NAME|*</span>
+                                                </a>
+                                            </h3>
+                                            <p class=" product-description">*|PRODUCT_DESCRIPTION|*</p>
+                                            <h4><strong class="product-price">*|PRODUCT_PRICE|*</strong></h4>
+                                        </div>
+                                        <div>
+                                            <a style="background-color: #9b5c8f;
+            border-color: #9b5c8f;" builder-element builder-inline-edit href="*|PRODUCT_URL|*" class="mt-4 btn btn-primary text-white product-view-button product-link">
+                                                {{ trans('messages.automation.buy_now') }}
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                            <div class="preview-container" style="display:none"></div>
                         </div>
-                        <div class="preview-container" style="display:none"></div>
                     </div>
                 </div>
             `);

@@ -914,7 +914,7 @@ class Automation2Controller extends Controller
         // add layout to campaign template
         if ($request->isMethod('post')) {
             if ($request->layout) {
-                $email->addTemplateFromLayout($request->layout, $request->dir);
+                $email->addTemplateFromDisk($request->layout, $request->dir);
 
                 // update email plain text
                 $email->updatePlainFromContent();

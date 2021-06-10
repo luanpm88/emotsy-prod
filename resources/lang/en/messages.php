@@ -4288,4 +4288,8 @@
   'payment.check_payment' => 'Check the payment',
   'payment.update_payment' => 'Update payment',
   'campaign.started_ago' => 'Started :time ago',
+  'template.basic' => 'Basic',
+  'template.featured' => 'Featured',
+  'template.themes' => 'Themes',
+  'campaign.upload_custom_template' => 'Upload custom template',
 ) ?>

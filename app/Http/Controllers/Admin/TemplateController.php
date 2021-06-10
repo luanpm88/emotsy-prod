@@ -568,7 +568,7 @@ class TemplateController extends Controller
                 $template->name = $request->name;
                 $template->save();
 
-                $template->addTemplateFromLayout($request->layout);
+                $template->addTemplateFromDisk($request->layout, $request->type);
             }
             
             if ($request->template) {

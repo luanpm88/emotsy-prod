@@ -466,7 +466,7 @@ class CampaignController extends Controller
         // add layout to campaign template
         if ($request->isMethod('post')) {
             if ($request->layout) {
-                $campaign->addTemplateFromLayout($request->layout);
+                $campaign->addTemplateFromDisk($request->layout, $request->type);
 
                 // update plain
                 $campaign->updatePlainFromHtml();
