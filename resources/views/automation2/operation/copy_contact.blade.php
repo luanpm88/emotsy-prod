@@ -1,4 +1,4 @@
-<h3 class="mb-3">{{ trans('messages.automation.operation.' . request()->operation) }}</h3>
+<h5 class="mb-3">{{ trans('messages.automation.operation.' . request()->operation) }}</h5>
 <p>{{ trans('messages.automation.operation.' .request()->operation. '.desc') }}</p>
 
 <div class="row my-2">
