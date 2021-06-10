@@ -1306,8 +1306,10 @@ class Subscriber extends Model
             return $query;
         }
 
-        return $query->where(function ($query) use ($keyword) {
-            $query->where('subscribers.email', 'LIKE', sprintf('%%s%', $keyword));
+        $cleanKeyword = preg_replace('/[^a-z0-9_\.@]+/i', ' ', $keyword);
+
+        return $query->where(function ($query) use ($cleanKeyword) {
+            $query->where('subscribers.email', 'LIKE', "%{$cleanKeyword}%");
         });
     }
 }
