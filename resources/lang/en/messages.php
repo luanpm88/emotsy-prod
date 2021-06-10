@@ -4239,7 +4239,7 @@
   'automation.operation.tag' => 'Tag contact',
   'automation.operation.delete' => 'Delete contact',
   'automation.operation.copy.desc' => 'Copy contact to list <strong>:list_name</strong>',
-  'automation.operation.update.desc' => 'Update contact',
+  'automation.operation.update.desc' => 'Update attributes or tags of contacts who reach this point of the automation workflow. For example, you may want to tag a contact as "VIP" when he or she opens a previous email. Below are attributes that shall be updated.',
   'automation.operation.move.desc' => 'Move contact to list <strong>:list_name</strong>',
   'automation.operation.tag.desc' => 'Tag your contacts who reach this point of the automation workflow using the tags below. Tags are helpful when you want to filter your contacts later on. You can also create dynamic segments for your list using tags. Selected tags:<br><br>:tags<br><br>',
   'automation.operation.delete.desc' => 'Delete contact',
