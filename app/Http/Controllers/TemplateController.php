@@ -19,12 +19,7 @@ class TemplateController extends Controller
      */
     public function index(Request $request)
     {
-        $request->merge(array("customer_id" => $request->user()->customer->id));
-        $templates = Template::search($request);
-
-        return view('templates.index', [
-            'templates' => $templates,
-        ]);
+        return view('templates.index');
     }
 
     /**
@@ -34,8 +29,10 @@ class TemplateController extends Controller
      */
     public function listing(Request $request)
     {
-        $request->merge(array("customer_id" => $request->user()->customer->id));
-        $templates = Template::search($request)->paginate($request->per_page);
+        $templates = Template::search($request->keyword)
+            ->filter($request)
+            ->orderBy($request->sort_order, $request->sort_direction)
+            ->paginate($request->per_page);
 
         return view('templates._list', [
             'templates' => $templates,
@@ -49,8 +46,11 @@ class TemplateController extends Controller
      */
     public function choosing(Request $request)
     {
-        $request->merge(array("customer_id" => $request->user()->customer->id));
-        $templates = Template::search($request)->paginate($request->per_page);
+        $templates = Template::search($request->keyword)
+            ->filter($request)
+            ->orderBy($request->sort_order, $request->sort_direction)
+            ->paginate($request->per_page);
+
         $campaign = \Acelle\Model\Campaign::findByUid($request->campaign_uid);
 
         return view('templates._list_choose', [
@@ -665,8 +665,10 @@ class TemplateController extends Controller
      */
     public function builderTemplates(Request $request)
     {
-        $request->merge(array("customer_id" => $request->user()->customer->id));
-        $templates = Template::search($request)->paginate($request->per_page);
+        $templates = Template::search($request->keyword)
+            ->filter($request)
+            ->orderBy($request->sort_order, $request->sort_direction)
+            ->paginate($request->per_page);
         
         // authorize
         if (!$request->user()->customer->can('create', Template::class)) {

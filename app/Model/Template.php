@@ -88,13 +88,42 @@ class Template extends Model implements Storable
     }
 
     /**
-     * Get all items.
+     * Search.
      *
      * @return collect
      */
-    public static function getAll()
+    public static function scopeSearch($query, $keyword)
     {
-        return self::select('*');
+        // Keyword
+        if (!empty($keyword)) {
+            $query = $query->where('name', 'like', '%'.trim($keyword).'%');
+        }
+
+        return $query;
+    }
+
+    /**
+     * Customer templates.
+     *
+     * @return collect
+     */
+    public static function scopeCustom($query)
+    {
+        $query = $query->where('customer_id', '!=', null);
+
+        return $query;
+    }
+
+    /**
+     * Public/Gallery templates.
+     *
+     * @return collect
+     */
+    public static function scopePublic($query)
+    {
+        $query = $query->where('customer_id', '=', null);
+
+        return $query;
     }
 
     /**
@@ -102,96 +131,24 @@ class Template extends Model implements Storable
      *
      * @return collect
      */
-    public static function filter($request)
+    public static function scopeFilter($query, $request)
     {
-        $query = self::select('templates.*');
-
-        // Keyword
-        if (!empty(trim($request->keyword))) {
-            $query = $query->where('name', 'like', '%'.$request->keyword.'%');
-        }
-
         // filters
-        $filters = $request->filters;
-
-        // Customer
-        if (!empty($request->customer_id)) {
-            if (!empty($filters) && !empty($filters['from'])) {
-                if ($filters['from'] == 'mine') {
-                    $query = $query->where('customer_id', '=', $request->customer_id);
-                } elseif ($filters['from'] == 'gallery') {
-                    $query = $query->where('customer_id', '=', null);
-                } else {
-                    $query = $query->where('customer_id', '=', null)
-                        ->orWhere('customer_id', '=', $request->customer_id);
-                }
-            }
+        if ($request->filters && isset($request->filters['from'])) {
+            $request->from = $request->filters['from'];
         }
 
         // from
         if ($request->from) {
             if ($request->from == 'mine') {
-                $query = $query->where('customer_id', '=', $request->customer_id);
+                $query = $query->where('customer_id', '=', $request->user()->customer->id);
             } elseif ($request->from == 'gallery') {
-                $query = $query->where('customer_id', '=', null);
+                $query = $query->public();
             } else {
-                $query = $query->where('customer_id', '=', null)
-                    ->orWhere('customer_id', '=', $request->customer_id);
+                $query = $query->public()
+                    ->orWhere('customer_id', '=', $request->user()->customer->id);
             }
         }
-
-        // Admin
-        if (!empty($request->admin_id)) {
-            $query = $query->where('admin_id', '=', $request->admin_id);
-        }
-
-        return $query;
-    }
-
-    /**
-     * Search items.
-     *
-     * @return collect
-     */
-    public static function search($request)
-    {
-        $query = self::filter($request);
-
-        if (!empty($request->sort_order)) {
-            $query = $query->orderBy($request->sort_order, $request->sort_direction);
-        }
-
-        return $query;
-    }
-
-    /**
-     * Filter items.
-     *
-     * @return collect
-     */
-    public static function adminFilter($request)
-    {
-        $user = $request->user();
-        $query = self::where('shared', '=', true);
-
-        // Keyword
-        if (!empty(trim($request->keyword))) {
-            $query = $query->where('name', 'like', '%'.$request->keyword.'%');
-        }
-
-        return $query;
-    }
-
-    /**
-     * Search items.
-     *
-     * @return collect
-     */
-    public static function adminSearch($request)
-    {
-        $query = self::adminFilter($request);
-
-        $query = $query->orderBy($request->sort_order, $request->sort_direction);
 
         return $query;
     }

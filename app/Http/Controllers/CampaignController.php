@@ -632,8 +632,11 @@ class CampaignController extends Controller
     public function templateThemeList(Request $request)
     {
         $campaign = Campaign::findByUid($request->uid);
-        $request->merge(array("customer_id" => $request->user()->customer->id));
-        $templates = Template::search($request)->paginate($request->per_page);
+
+        $templates = Template::search($request->keyword)
+            ->filter($request)
+            ->orderBy($request->sort_order, $request->sort_direction)
+            ->paginate($request->per_page);
 
         return view('campaigns.template.themeList', [
             'campaign' => $campaign,
