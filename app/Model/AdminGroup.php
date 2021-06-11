@@ -614,8 +614,7 @@ class AdminGroup extends Model
                 'read' => [
                     'options' => [
                         ['value' => 'no', 'text' => trans('messages.no')],
-                        ['value' => 'own', 'text' => trans('messages.own')],
-                        ['value' => 'all', 'text' => trans('messages.all')],
+                        ['value' => 'own', 'text' => trans('messages.yes')],
                     ],
                 ],
                 'create' => [

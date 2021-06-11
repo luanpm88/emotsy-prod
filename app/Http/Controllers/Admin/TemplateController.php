@@ -24,16 +24,7 @@ class TemplateController extends Controller
             return $this->notAuthorized();
         }
 
-        // If admin can view all sending domains
-        if (!$request->user()->admin->can("read_all", new \Acelle\Model\Template())) {
-            $request->merge(array("admin_id" => $request->user()->admin->id));
-        }
-
-        $templates = \Acelle\Model\Template::search($request);
-
-        return view('admin.templates.index', [
-            'templates' => $templates,
-        ]);
+        return view('admin.templates.index');
     }
 
     /**
@@ -47,12 +38,10 @@ class TemplateController extends Controller
             return $this->notAuthorized();
         }
 
-        // If admin can view all sending domains
-        if (!$request->user()->admin->can("read_all", new \Acelle\Model\Template())) {
-            $request->merge(array("admin_id" => $request->user()->admin->id));
-        }
-
-        $templates = \Acelle\Model\Template::search($request)->paginate($request->per_page);
+        $templates = \Acelle\Model\Template::public()->search($request->keyword)
+            ->filter($request)
+            ->orderBy($request->sort_order, $request->sort_direction)
+            ->paginate($request->per_page);
 
         return view('admin.templates._list', [
             'templates' => $templates,
@@ -593,7 +582,10 @@ class TemplateController extends Controller
      */
     public function builderTemplates(Request $request)
     {
-        $templates = Template::search($request)->paginate($request->per_page);
+        $templates = Template::search($request->keyword)
+            ->filter($request)
+            ->orderBy($request->sort_order, $request->sort_direction)
+            ->paginate($request->per_page);
 
         // authorize
         if (!$request->user()->admin->can('create', Template::class)) {

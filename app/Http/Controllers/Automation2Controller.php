@@ -1111,8 +1111,10 @@ class Automation2Controller extends Controller
             return $this->notAuthorized();
         }
         
-        $request->merge(array("customer_id" => $request->user()->customer->id));
-        $templates = Template::search($request)->paginate($request->per_page);
+        $templates = Template::search($request->keyword)
+            ->filter($request)
+            ->orderBy($request->sort_order, $request->sort_direction)
+            ->paginate($request->per_page);
         
         return view('automation2.email.template.themeList', [
             'automation' => $automation,

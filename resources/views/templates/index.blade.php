@@ -29,51 +29,49 @@
         per-page="{{ Acelle\Model\Template::$itemsPerPage }}"                    
     >                
         <div class="row top-list-controls">
-            <div class="col-md-9">
-                @if ($templates->count() >= 0)                    
-                    <div class="filter-box">
-                        <div class="btn-group list_actions hide">
-                            <button type="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
-                                {{ trans('messages.actions') }} <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a delete-confirm="{{ trans('messages.delete_templates_confirm') }}" href="{{ action('TemplateController@delete') }}">
-                                        <i class="icon-trash"></i> {{ trans('messages.delete') }}
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="checkbox inline check_all_list">
-                            <label>
-                                <input type="checkbox" class="styled check_all">
-                            </label>
-                        </div>
-                        <span class="filter-group">
-                            <span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
-                            <select class="select" name="sort-order">
-                                <option value="created_at">{{ trans('messages.created_at') }}</option>
-                                <option value="custom_order" class="active">{{ trans('messages.custom_order') }}</option>
-                                <option value="name">{{ trans('messages.name') }}</option>
-                            </select>                                        
-                            <button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
-                                <i class="icon-sort-amount-desc"></i>
-                            </button>
-                        </span>
-                        <span class="filter-group">
-                            <span class="title text-semibold text-muted">{{ trans('messages.from') }}</span>
-                            <select class="select" name="from">
-                                <option value="all">{{ trans('messages.all') }}</option>
-                                <option value="mine" selected='selected'>{{ trans('messages.my_templates') }}</option>
-                                <option value="gallery">{{ trans('messages.gallery') }}</option>
-                            </select>                                        
-                        </span>
-                        <span class="text-nowrap">
-                            <input name="search_keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
-                            <i class="icon-search4 keyword_search_button"></i>
-                        </span>
+            <div class="col-md-9">                
+                <div class="filter-box">
+                    <div class="btn-group list_actions hide">
+                        <button type="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
+                            {{ trans('messages.actions') }} <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a delete-confirm="{{ trans('messages.delete_templates_confirm') }}" href="{{ action('TemplateController@delete') }}">
+                                    <i class="icon-trash"></i> {{ trans('messages.delete') }}
+                                </a>
+                            </li>
+                        </ul>
                     </div>
-                @endif
+                    <div class="checkbox inline check_all_list">
+                        <label>
+                            <input type="checkbox" class="styled check_all">
+                        </label>
+                    </div>
+                    <span class="filter-group">
+                        <span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
+                        <select class="select" name="sort-order">
+                            <option value="created_at">{{ trans('messages.created_at') }}</option>
+                            <option value="custom_order" class="active">{{ trans('messages.custom_order') }}</option>
+                            <option value="name">{{ trans('messages.name') }}</option>
+                        </select>                                        
+                        <button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
+                            <i class="icon-sort-amount-desc"></i>
+                        </button>
+                    </span>
+                    <span class="filter-group">
+                        <span class="title text-semibold text-muted">{{ trans('messages.from') }}</span>
+                        <select class="select" name="from">
+                            <option value="all">{{ trans('messages.all') }}</option>
+                            <option value="mine" selected='selected'>{{ trans('messages.my_templates') }}</option>
+                            <option value="gallery">{{ trans('messages.gallery') }}</option>
+                        </select>                                        
+                    </span>
+                    <span class="text-nowrap">
+                        <input name="search_keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
+                        <i class="icon-search4 keyword_search_button"></i>
+                    </span>
+                </div>
             </div>
             <div class="col-md-3 text-right">
                 <a href="{{ action('TemplateController@upload') }}" type="button" class="btn bg-info-800">

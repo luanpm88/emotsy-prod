@@ -24,20 +24,6 @@ class TemplatePolicy
         return $can;
     }
 
-    public function readAll(User $user, Template $item, $role)
-    {
-        switch ($role) {
-            case 'admin':
-                $can = $user->admin->getPermission('template_read') == 'all';
-                break;
-            case 'customer':
-                $can = false;
-                break;
-        }
-
-        return $can;
-    }
-
     public function create(User $user, $role)
     {
         switch ($role) {

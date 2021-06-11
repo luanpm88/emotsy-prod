@@ -18,27 +18,27 @@
                 >				
                     <div class="row top-list-controls">
                         <div class="col-md-9">		
-                                <div class="filter-box">										
-                                    <span class="filter-group">
-                                        <span class="title text-semibold text-muted">{{ trans('messages.from') }}</span>
+                                <div class="filter-box d-flex align-items-center">										
+                                    <span class="d-flex align-items-center mr-4">
+                                        <span class="title text-semibold text-muted mr-2">{{ trans('messages.from') }}</span>
                                         <select class="select" name="from">
                                             <option value="all">{{ trans('messages.all') }}</option>
                                             <option value="mine">{{ trans('messages.my_templates') }}</option>
                                             <option value="gallery" selected='selected'>{{ trans('messages.gallery') }}</option>
                                         </select>										
                                     </span>
-                                    <span class="filter-group">
-                                        <span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
+                                    <span class="d-flex align-items-center mr-4">
+                                        <span class="title text-semibold text-muted text-nowrap mr-2">{{ trans('messages.sort_by') }}</span>
                                         <select class="select" name="sort-order">
                                             <option value="created_at">{{ trans('messages.created_at') }}</option>
                                             <option value="custom_order" class="active">{{ trans('messages.custom_order') }}</option>
                                             <option value="name">{{ trans('messages.name') }}</option>                                            
                                         </select>										
-                                        <button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
+                                        <button class="btn btn-xs sort-direction ml-1" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
                                             <i class="icon-sort-amount-desc"></i>
                                         </button>
                                     </span>
-                                    <span class="text-nowrap">
+                                    <span class="text-nowrap d-flex align-items-center">
                                         <input name="search_keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
                                         <i class="icon-search4 keyword_search_button"></i>
                                     </span>
