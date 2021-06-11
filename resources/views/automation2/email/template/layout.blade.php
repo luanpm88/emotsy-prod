@@ -40,7 +40,7 @@
 							</a>
 						</div>
 					@endforeach
-					@foreach(Acelle\Model\Template::getTemplatesFromDisk(null, 'featured') as $layout)
+					{{-- @foreach(Acelle\Model\Template::getTemplatesFromDisk(null, 'featured') as $layout)
 						<div class="col-xxs-12 col-xs-6 col-sm-3 col-md-2">
 							<a data-method="POST"
 								href="{{ action('Automation2Controller@templateLayout', [
@@ -59,7 +59,7 @@
 								</div>
 							</a>
 						</div>
-					@endforeach
+					@endforeach --}}
 				</div>
 				<br style="clear:both" />
 			</div>
