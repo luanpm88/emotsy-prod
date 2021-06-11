@@ -1662,3 +1662,7 @@ a.trigger-woo-abandoned-cart:hover {
   color: #ddd!important;
   pointer-events: none;
 }
+.table .thead-light th {
+  font-weight: 500;
+  font-size: 95%;
+}
