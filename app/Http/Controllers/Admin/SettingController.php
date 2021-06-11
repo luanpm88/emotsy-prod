@@ -519,7 +519,7 @@ class SettingController extends Controller
         return view('admin.settings.upgrade', [
             'any' => 'any',
             'manager' => $manager,
-            'phpversion' => version_compare(PHP_VERSION, '7.2.5', '>='),
+            'phpversion' => version_compare(PHP_VERSION, config('custom.php_recommended'), '>='),
         ]);
     }
 
