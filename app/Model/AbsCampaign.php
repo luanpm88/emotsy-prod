@@ -3514,7 +3514,7 @@ abstract class AbsCampaign extends Model
          *     + failed
          *     + new
          *     + skipped
-         * 
+         *
          * Assumption
          *     + subscribers 1:1 email_verification
          *     + [campaign, subscriber] 1:1 tracking_logs
@@ -3524,7 +3524,7 @@ abstract class AbsCampaign extends Model
             // while this->trackingLogs() does have
             $this->trackingLogs(),
             'tracking_logs',
-            function($join) {
+            function ($join) {
                 $join->on('tracking_logs.subscriber_id', 'subscribers.id');
             }
         )->leftJoin('bounce_logs', 'tracking_logs.message_id', 'bounce_logs.message_id')
