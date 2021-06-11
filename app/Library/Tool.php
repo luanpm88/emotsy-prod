@@ -26,6 +26,7 @@ use ZipArchive;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 use Illuminate\Support\Facades\File;
+use Exception;
 
 class Tool
 {
@@ -85,7 +86,7 @@ class Tool
     public static function xdelete($file)
     {
         if (!file_exists($file)) {
-            return;
+            throw new Exception("File {$file} does not exist");
         }
 
         if (is_link($file) || is_file($file)) {
@@ -165,44 +166,6 @@ class Tool
     }
 
     /**
-     * Format display datetime.
-     *
-     * @var string
-     */
-    public static function customerDateTime($datetime)
-    {
-        $timezone = is_object(\Auth::user()) && is_object(\Auth::user()->customer) ? \Auth::user()->customer->timezone : '';
-        $result = $datetime;
-        if (!empty($timezone)) {
-            $result = $result->timezone($timezone);
-        }
-
-        return $result;
-    }
-
-    /**
-     * Format display datetime.
-     *
-     * @var string
-     */
-    public static function dateTimeFromString($time_string)
-    {
-        return self::dateTime(\Carbon\Carbon::parse($time_string));
-    }
-
-    /**
-     * For mat human time.
-     *
-     * @param       DateTime
-     *
-     * @return string
-     */
-    public static function formatHumanTime($time)
-    {
-        return $time->diffForHumans();
-    }
-
-    /**
      * Change singular to plural.
      *
      * @param       string
@@ -225,18 +188,6 @@ class Tool
         }
 
         return $phrase;
-    }
-
-    /**
-     * Get file/folder permissions.
-     *
-     * @param       string
-     *
-     * @return string
-     */
-    public static function getPerms($path)
-    {
-        return substr(sprintf('%o', fileperms($path)), -4);
     }
 
     /**
@@ -476,83 +427,6 @@ class Tool
         }
 
         return $result;
-    }
-
-    /**
-     * Convert numbers array to weekdays array.
-     *
-     * @param timestamp
-     *
-     * @return string
-     */
-    public static function numberArrayToWeekdaysArray($numbers)
-    {
-        $weekdays_texts = self::weekdaysArray();
-        $weekdays = [];
-        foreach ($numbers as $number) {
-            $weekdays[] = $weekdays_texts[$number];
-        }
-
-        return $weekdays;
-    }
-
-    /**
-     * Convert numbers array to weeks array.
-     *
-     * @param timestamp
-     *
-     * @return string
-     */
-    public static function numberArrayToWeeksArray($numbers)
-    {
-        $weeks_texts = self::weeksArray();
-        $weeks = [];
-        foreach ($numbers as $number) {
-            $weeks[] = $weeks_texts[$number];
-        }
-
-        return $weeks;
-    }
-
-    /**
-     * Convert numbers array to months array.
-     *
-     * @param timestamp
-     *
-     * @return string
-     */
-    public static function numberArrayToMonthsArray($numbers)
-    {
-        $month_texts = self::monthsArray();
-        $months = [];
-        foreach ($numbers as $number) {
-            $months[] = $month_texts[$number];
-        }
-
-        return $months;
-    }
-
-    /**
-     * Get day names from array of numbers.
-     *
-     * @param timestamp
-     *
-     * @return string
-     */
-    public static function getDayNamesFromArrayOfNumber($numbers)
-    {
-        $names = [];
-
-        $ends = array('th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th');
-        foreach ($numbers as $number) {
-            if (($number % 100) >= 11 && ($number % 100) <= 13) {
-                $names[] = $number.'th';
-            } else {
-                $names[] = $number.$ends[$number % 10];
-            }
-        }
-
-        return $names;
     }
 
     /**
@@ -832,24 +706,6 @@ class Tool
         ]]);
 
         return json_decode($res->getBody(), true)['success'];
-    }
-
-    /**
-     * Number select options.
-     *
-     * @param string
-     *
-     * @return array
-     */
-    public static function numberSelectOptions($min = 1, $max = 100)
-    {
-        $options = [];
-
-        for ($i = $min; $i <= $max; ++$i) {
-            $options[] = ['value' => $i, 'text' => $i];
-        }
-
-        return $options;
     }
 
     /**
