@@ -111,6 +111,7 @@
             message: `{{ trans('messages.automation.trigger_now.confirm') }}`,
             ok: function() {
                 $(this).addClass('link-disabled');
+                addMaskLoading();
 
                 $.ajax({
                     url: url,
@@ -120,6 +121,8 @@
                         // notify(response.status, '{{ trans('messages.notify.success') }}', response.message); 
 
                         listContact.load();
+
+                        removeMaskLoading();
                     }
                 });
             }
@@ -131,6 +134,7 @@
         var url = $(this).attr('href');
 
         $(this).addClass('link-disabled');
+        addMaskLoading();
 
         $.ajax({
             url: url,
@@ -140,6 +144,8 @@
                 // notify(response.status, '{{ trans('messages.notify.success') }}', response.message); 
 
                 listContact.load();
+
+                removeMaskLoading();
             }
         });
     });
