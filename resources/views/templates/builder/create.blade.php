@@ -63,7 +63,7 @@
 				</div>
 			</div>
 
-			@if (count(Acelle\Model\Template::getTemplatesFromDisk(null, 'featured')))
+			{{-- @if (count(Acelle\Model\Template::getTemplatesFromDisk(null, 'featured')))
 				<div class="subsection">
 					<h2 class="font-weight-semibold mb-0">{{ trans('messages.template.featured') }}</h2>
 					<hr>
@@ -92,7 +92,7 @@
 					</div>
 					<br style="clear:both" />
 				</div>
-			@endif
+			@endif --}}
 
 			<div class="subsection">
 				<h2 class="font-weight-semibold mb-0">{{ trans('messages.template.basic') }}</h2>
