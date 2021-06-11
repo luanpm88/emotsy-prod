@@ -7,7 +7,7 @@
 ]) !!}</p>
 
 @if (request()->operation == 'update' && $element->getOption('update'))
-    <table class="table my-3 table-bordered">
+    <table class="table my-3" style="border-bottom: solid 1px #ddd">
         <thead class="thead-light">
             <tr>
                 <th width="40%" scope="col">{{ trans('messages.field') }}</th>
