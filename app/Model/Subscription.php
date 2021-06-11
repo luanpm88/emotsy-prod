@@ -109,6 +109,18 @@ class Subscription extends Model
         });
     }
 
+    public function scopeClaimed($query)
+    {
+        $type = self::class;
+        return $query->whereIn('uid', function ($q) use ($type) {
+            $q->select('invoice_items.item_id')
+                ->from('invoice_items')
+                ->join('invoices', 'invoice_items.invoice_id', 'invoices.id')
+                ->where('invoice_items.item_type', $type)
+                ->where('invoices.status', Invoice::STATUS_CLAIMED);
+        });
+    }
+
     /**
      * Get last invoice.
      *
