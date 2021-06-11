@@ -41,8 +41,8 @@
                             <select class="select" name="sort-order">
                                 <option value="created_at">{{ trans('messages.created_at') }}</option>
                             </select>                                        
-                            <button class="btn btn-xs sort-direction" rel="asc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
-                                <i class="icon-sort-amount-asc"></i>
+                            <button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
+                                <i class="icon-sort-amount-desc"></i>
                             </button>
                         </span>
                     </div>

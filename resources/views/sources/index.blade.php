@@ -32,12 +32,12 @@
                     <span class="filter-group">
                         <span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
                         <select class="select" name="sort-order">
-                            <option value="custom_order" class="active">{{ trans('messages.custom_order') }}</option>
-                            <option value="name">{{ trans('messages.name') }}</option>
                             <option value="created_at">{{ trans('messages.created_at') }}</option>
+                            <option value="custom_order">{{ trans('messages.custom_order') }}</option>
+                            <option value="name">{{ trans('messages.name') }}</option>                            
                         </select>
-                        <button class="btn btn-xs sort-direction" rel="asc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
-                            <i class="icon-sort-amount-asc"></i>
+                        <button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
+                            <i class="icon-sort-amount-desc"></i>
                         </button>
                     </span>
                     <span class="text-nowrap">
