@@ -1113,7 +1113,7 @@ class Automation2Controller extends Controller
         
         $templates = Template::search($request->keyword)
             ->filter($request)
-            ->orderBy($request->sort_order, $request->sort_direction)
+            ->orderBy('created_at', 'desc')
             ->paginate($request->per_page);
         
         return view('automation2.email.template.themeList', [
