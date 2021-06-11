@@ -95,57 +95,6 @@
 				</div>
 				<br style="clear:both" />
 			</div>
-                
-            <div id="layout" class="tab-pane row template-boxes layout mt-4" style="
-                margin-left: -15px;
-                margin-right: -15px;
-            ">
-				@if ($automation->getTrigger()->getOption('type') == 'woo-abandoned-cart')
-					@foreach(Acelle\Model\Template::getWooTemplatesFromDisk() as $layout)
-						<div class="col-xxs-6 col-xs-4 col-sm-2 col-md-2">
-							<a data-method="POST"
-								href="{{ action('Automation2Controller@templateLayout', [
-									'uid' => $automation->uid,
-									'email_uid' => $email->uid,
-									'layout' => $layout['name'],
-									'dir' => 'woos/',
-								]) }}"
-								class="select-layout"
-							>
-								<div class="panel panel-flat panel-template-style mb-4">
-									<div class="panel-body">									
-										<img src="{{ $layout['thumb'] }}" />
-										<label class="mb-20 text-center">{{ $layout['title'] }}</label>
-										<span class="template_recommended">Recommended</span>
-									</div>
-								</div>
-							</a>
-						</div>
-					@endforeach
-				@endif
-
-
-                @foreach(Acelle\Model\Template::getTemplatesFromDisk() as $layout)
-                    <div class="col-xxs-6 col-xs-4 col-sm-2 col-md-2">
-                        <a data-method="POST"
-							href="{{ action('Automation2Controller@templateLayout', [
-								'uid' => $automation->uid,
-								'email_uid' => $email->uid,
-								'layout' => $layout['name'],
-								'dir' => 'layouts/',
-							]) }}"
-							class="select-layout"
-						>
-                            <div class="panel panel-flat panel-template-style mb-4">
-                                <div class="panel-body">									
-									<img src="{{ $layout['thumb'] }}" />
-									<label class="mb-20 text-center">{{ $layout['title'] }}</label>
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                @endforeach
-            </div>
         </div>
     </div>
         
