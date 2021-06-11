@@ -43,6 +43,11 @@ class Invoice extends Model
         });
     }
 
+    public function scopeClaimed($query)
+    {
+        return $query->where('status', self::STATUS_CLAIMED);
+    }
+
     /**
      * Invoice currency.
      */
