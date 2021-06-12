@@ -19,7 +19,7 @@
 
     @php
         // check if content from layouts
-        $strict = strpos($template->content, 'AcelleSystemLayouts') !== false ? 'true' : 'false';
+        $strict = $template->isStandard() ? 'true' : 'false';
     @endphp
     
     <script>
@@ -44,7 +44,7 @@
                     if (parent.$('.listing-form').length) {
                         parent.tableFilterAll();
                     } else {
-                        window.location = '{{ action('TemplateController@index') }}';
+                        window.location = '{{ action('Admin\TemplateController@index') }}';
                     }    
                 },
                 uploadAssetUrl: '{{ action('Admin\TemplateController@builderAsset', $template->uid) }}',

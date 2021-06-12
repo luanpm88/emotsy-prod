@@ -4292,4 +4292,6 @@
   'template.featured' => 'Featured',
   'template.themes' => 'Themes',
   'campaign.upload_custom_template' => 'Upload custom template',
+  'template_type_standard' => 'Standard',
+  'template_type_uploaded' => 'Uploaded',
 ) ?>

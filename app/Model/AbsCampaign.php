@@ -2585,99 +2585,6 @@ abstract class AbsCampaign extends Model
     }
 
     /**
-     * Create template from layout.
-     *
-     * All availabel template tags
-     */
-    public function addTemplateFromDisk($layout, $subPath='basic')
-    {
-        $sDir = database_path(join_paths('templates', $subPath, $layout));
-        
-        // delete old template
-        Tool::xdelete($this->getStoragePath());
-
-        // load
-        $this->loadFromDirectory($sDir);
-    }
-
-    /**
-     * Load from directory.
-     */
-    public function loadFromDirectory($tmp_path)
-    {
-        // try to find the main file, index.html | index.html | file_name.html | ...
-        $main_file = null;
-        $sub_path = '';
-        $possible_main_file_names = array('index.html', 'index.htm');
-
-        $possible_main_file_names = array('index.html', 'index.htm');
-        foreach ($possible_main_file_names as $name) {
-            if (is_file($file = $tmp_path.'/'.$name)) {
-                $main_file = $file;
-                break;
-            }
-            $dirs = array_filter(glob($tmp_path.'/'.'*'), 'is_dir');
-            foreach ($dirs as $sub) {
-                if (is_file($file = $sub.'/'.$name)) {
-                    $main_file = $file;
-                    $sub_path = explode('/', $sub)[count(explode('/', $sub)) - 1].'/';
-                    break;
-                }
-            }
-        }
-        // try to find first htm|html file
-        if ($main_file === null) {
-            $objects = scandir($tmp_path);
-            foreach ($objects as $object) {
-                if ($object != '.' && $object != '..') {
-                    if (!is_dir($tmp_path.'/'.$object)) {
-                        if (preg_match('/\.html?$/i', $object)) {
-                            $main_file = $tmp_path.'/'.$object;
-                            break;
-                        }
-                    }
-                }
-            }
-            $dirs = array_filter(glob($tmp_path.'/'.'*'), 'is_dir');
-            foreach ($dirs as $sub) {
-                $objects = scandir($sub);
-                foreach ($objects as $object) {
-                    if ($object != '.' && $object != '..') {
-                        if (!is_dir($sub.'/'.$object)) {
-                            if (preg_match('/\.html?$/i', $object)) {
-                                $main_file = $sub.'/'.$object;
-                                $sub_path = explode('/', $sub)[count(explode('/', $sub)) - 1].'/';
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        // // main file not found
-        // if ($main_file === null) {
-        //     $validator->errors()->add('file', 'Cannot find index file (index.html) in the template folder');
-        //     throw new ValidationException($validator);
-        // }
-
-        // read main file content
-        $html_content = trim(file_get_contents($main_file));
-        $this->html = $html_content;
-        $this->save();
-
-        // upload path
-        $upload_path = $this->getStoragePath();
-
-        // copy all folder to public path
-        if (!file_exists($upload_path)) {
-            mkdir($upload_path, 0777, true);
-        }
-        // exec("cp -r {$tmp_path}/* {$public_upload_path}/");
-        Tool::xcopy($tmp_path, $upload_path);
-    }
-
-    /**
      * Get public campaign upload dir.
      */
     public function getStoragePath($path = '')
@@ -2808,47 +2715,8 @@ abstract class AbsCampaign extends Model
      */
     public function uploadTemplate($request)
     {
-        $rules = array(
-            'file' => 'required|mimetypes:application/zip,application/octet-stream,application/x-zip-compressed,multipart/x-zip',
-        );
-
-        $validator = Validator::make($request->all(), $rules, [
-            'file.mimetypes' => 'Input must be a valid .zip file',
-        ]);
-
-        if ($validator->fails()) {
-            throw new ValidationException($validator);
-        }
-
-        // move file to temp place
-        $tmp_path = storage_path('tmp/uploaded_template_'.$this->uid.'_'.time());
-        $file_name = $request->file('file')->getClientOriginalName();
-        $request->file('file')->move($tmp_path, $file_name);
-        $tmp_zip = join_paths($tmp_path, $file_name);
-
-        // read zip file check if zip archive invalid
-        $zip = new ZipArchive();
-        if ($zip->open($tmp_zip, ZipArchive::CREATE) !== true) {
-            // @todo hack
-            // $validator = Validator::make([], []); // Empty data and rules fields
-            $validator->errors()->add('file', 'Cannot open .zip file');
-            throw new ValidationException($validator);
-        }
-
-        // unzip template archive and remove zip file
-        $zip->extractTo($tmp_path);
-        $zip->close();
-        unlink($tmp_zip);
-
-        // delete old template
-        Tool::xdelete($this->getStoragePath());
-
-        // load template
-        $this->loadFromDirectory($tmp_path);
-
-        // remove tmp folder
-        // exec("rm -r {$tmp_path}");
-        Tool::xdelete($tmp_path);
+        $template = \Acelle\Model\Template::upload($request);
+        $this->copyFromTemplate($template);
 
         // update plain
         $this->updatePlainFromHtml();

@@ -19,7 +19,7 @@
 
     @php
         // check if content from layouts
-        $strict = strpos($template->content, 'AcelleSystemLayouts') !== false ? 'true' : 'false';
+        $strict = $template->isStandard() ? 'true' : 'false';
     @endphp
     
     <script>

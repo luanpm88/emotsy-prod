@@ -463,23 +463,6 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        // add layout to campaign template
-        if ($request->isMethod('post')) {
-            if ($request->layout) {
-                $campaign->addTemplateFromDisk($request->layout, $request->type);
-
-                // update plain
-                $campaign->updatePlainFromHtml();
-            }
-
-            // return redirect()->action('CampaignController@templateEdit', $campaign->uid);
-            return response()->json([
-                'status' => 'success',
-                'message' => trans('messages.campaign.layout.selected'),
-                'url' => action('CampaignController@templateBuilderSelect', $campaign->uid),
-            ]);
-        }
-
         return view('campaigns.template.layout', [
             'campaign' => $campaign,
         ]);
@@ -633,7 +616,7 @@ class CampaignController extends Controller
     {
         $campaign = Campaign::findByUid($request->uid);
 
-        $templates = Template::search($request->keyword)
+        $templates = Template::theme()->search($request->keyword)
             ->filter($request)
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);

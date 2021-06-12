@@ -36,6 +36,15 @@ use KubAT\PhpSimple\HtmlDomParser;
 class Template extends Model implements Storable
 {
     const STORAGE_DIR = 'templates';
+
+    const SOURCE_STANDARD = 'standard';
+    const SOURCE_UPLOADED = 'uploaded';
+
+    const CATEGORY_WOO = 'woo';
+    const CATEGORY_BASIC = 'basic';
+    const CATEGORY_FEATURED = 'featured';
+    const CATEGORY_THEME = 'theme';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -88,6 +97,66 @@ class Template extends Model implements Storable
     }
 
     /**
+     * Standard.
+     *
+     * @return collect
+     */
+    public static function scopeStandard($query)
+    {
+        $query = $query->where('source', '=', self::SOURCE_STANDARD);
+    }
+
+    /**
+     * Uploaded.
+     *
+     * @return collect
+     */
+    public static function scopeUploaded($query)
+    {
+        $query = $query->where('source', '=', self::SOURCE_UPLOADED);
+    }
+
+    /**
+     * Basic.
+     *
+     * @return collect
+     */
+    public static function scopeBasic($query)
+    {
+        $query = $query->where('category', '=', self::CATEGORY_BASIC);
+    }
+
+    /**
+     * Featured.
+     *
+     * @return collect
+     */
+    public static function scopeFeatured($query)
+    {
+        $query = $query->where('category', '=', self::CATEGORY_FEATURED);
+    }
+
+    /**
+     * Themes.
+     *
+     * @return collect
+     */
+    public static function scopeTheme($query)
+    {
+        $query = $query->where('category', '=', self::CATEGORY_THEME);
+    }
+
+    /**
+     * Woo.
+     *
+     * @return collect
+     */
+    public static function scopeWoo($query)
+    {
+        $query = $query->where('category', '=', self::CATEGORY_WOO);
+    }
+
+    /**
      * Search.
      *
      * @return collect
@@ -98,8 +167,6 @@ class Template extends Model implements Storable
         if (!empty($keyword)) {
             $query = $query->where('name', 'like', '%'.trim($keyword).'%');
         }
-
-        return $query;
     }
 
     /**
@@ -110,8 +177,6 @@ class Template extends Model implements Storable
     public static function scopeCustom($query)
     {
         $query = $query->where('customer_id', '!=', null);
-
-        return $query;
     }
 
     /**
@@ -122,8 +187,16 @@ class Template extends Model implements Storable
     public static function scopePublic($query)
     {
         $query = $query->where('customer_id', '=', null);
+    }
 
-        return $query;
+    /**
+     * Check if standard.
+     *
+     * @return collect
+     */
+    public function isStandard()
+    {
+        return $this->source == self::SOURCE_STANDARD;
     }
 
     /**
@@ -149,8 +222,6 @@ class Template extends Model implements Storable
                     ->orWhere('customer_id', '=', $request->user()->customer->id);
             }
         }
-
-        return $query;
     }
 
     /**
@@ -453,9 +524,11 @@ class Template extends Model implements Storable
 
         // Save new template
         $template = new self();
+        $template->source = self::SOURCE_UPLOADED;
+        $template->category = self::CATEGORY_THEME;
+
         if ($asAdmin) {
             $template->admin_id = $user->admin->id;
-            $template->source = 'upload';
         } else {
             $template->customer_id = $user->customer->id;
         }
@@ -885,17 +958,6 @@ class Template extends Model implements Storable
     }
 
     /**
-     * Create template from layout.
-     *
-     * All availabel template tags
-     */
-    public function addTemplateFromDisk($layout, $subPath='basic')
-    {
-        $sDir = database_path(join_paths('templates', $subPath, $layout));
-        $this->loadFromDirectory($sDir);
-    }
-
-    /**
      * Load templates from folder.
      *
      * @return mixed
@@ -908,35 +970,6 @@ class Template extends Model implements Storable
         $this->replaceHtmlUrl('/'.$this->getUploadUri().'/');
         $this->untransform();
         $this->save();
-    }
-
-    /**
-     * Load demo templates from storage/themes.
-     *
-     * @return mixed
-     */
-    public static function loadFromThemes()
-    {
-        $themePath = database_path('themes');
-        $folders = scandir($themePath);
-
-        foreach ($folders as $folder) {
-            $fullPath = $themePath.'/'.$folder;
-
-            if ($folder != '.' && $folder != '..' && is_dir($fullPath)) {
-                $files = glob($fullPath . "/index.html");
-                $content = file_get_contents($files[0]);
-                preg_match_all('/(<title\>([^<]*)\<\/title\>)/i', $content, $m);
-                $title = $m[2][0];
-
-                // Create admin template
-                $template = new self();
-                $template->name = $title;
-                $template->admin_id = 1;
-
-                $template->loadFromDirectory($fullPath);
-            }
-        }
     }
 
     /**
@@ -1032,49 +1065,19 @@ class Template extends Model implements Storable
     }
 
     /**
-     * Get forms template from disk.
+     * Create template from dir.
      *
-     * All availabel form tags
+     * @return Template
      */
-    public static function getTemplatesFromDisk($keyword=null, $subPath='basic')
+    public static function createFromDir($attributes, $dir)
     {
-        $templates = [];
-        $dir = database_path(join_paths('templates', $subPath));
-        $templateUrl = array_diff(scandir($dir), array('..', '.', 'empty'));
-        foreach ($templateUrl as $name) {
-            $path = join_paths($dir, $name);
-            $files = glob($path . "/index.html");
-            // var_dump($path . "/index.html");die();
-            $content = file_get_contents($files[0]);
-            
-            $preg_matchs = preg_match_all('/(<title\>([^<]*)\<\/title\>)/i', $content, $m);
-            $title = $m[2][0];
+        $template = new self();
+        $template->name = $attributes['name'];
+        $template->source = $attributes['source'];
+        $template->category = $attributes['category'];
 
-            // encode image
-            $path = join_paths($dir, $name, '/thumb.png');
-            $type = pathinfo($path, PATHINFO_EXTENSION);
-            $data = file_get_contents($path);
-            $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+        $template->save();
 
-            if (!$keyword || strpos(strtolower($title), strtolower(trim($keyword))) !== false) {
-                $templates[] = [
-                    'name' => $name,
-                    'title' => $title,
-                    'thumb' => $base64,
-                ];
-            }
-        }
-
-        return $templates;
-    }
-
-    /**
-     * Get forms template from disk.
-     *
-     * All availabel form tags
-     */
-    public static function getWooTemplatesFromDisk($keyword=null)
-    {
-        return self::getTemplatesFromDisk($keyword, 'woos/');
+        $template->loadFromDirectory($dir);
     }
 }

@@ -19,47 +19,26 @@
 					margin-left: -15px;
 					margin-right: -15px;
 				">
-					@foreach(Acelle\Model\Template::getWooTemplatesFromDisk() as $layout)
+					@foreach(Acelle\Model\Template::woo()->get() as $layout)
 						<div class="col-xxs-6 col-xs-4 col-sm-2 col-md-2">
 							<a data-method="POST"
-								href="{{ action('Automation2Controller@templateLayout', [
+								href="{{ action('Automation2Controller@templateTheme', [
 									'uid' => $automation->uid,
 									'email_uid' => $email->uid,
-									'layout' => $layout['name'],
-									'dir' => 'woos',
+									'template_uid' => $layout->uid,
 								]) }}"
 								class="select-layout"
 							>
 								<div class="panel panel-flat panel-template-style mb-4">
 									<div class="panel-body">									
-										<img src="{{ $layout['thumb'] }}" />
-										<label class="mb-20 text-center">{{ $layout['title'] }}</label>
+										<img src="{{ $layout->getThumbUrl() }}?v={{ rand(0,10) }}" />
+										<label class="mb-20 text-center">{{ $layout->name }}</label>
 										<span class="template_recommended">Recommended</span>
 									</div>
 								</div>
 							</a>
 						</div>
 					@endforeach
-					{{-- @foreach(Acelle\Model\Template::getTemplatesFromDisk(null, 'featured') as $layout)
-						<div class="col-xxs-12 col-xs-6 col-sm-3 col-md-2">
-							<a data-method="POST"
-								href="{{ action('Automation2Controller@templateLayout', [
-									'uid' => $automation->uid,
-									'email_uid' => $email->uid,
-									'layout' => $layout['name'],
-									'dir' => 'featured',
-								]) }}"
-								class="select-layout"
-							>
-								<div class="panel panel-flat panel-template-style mb-4">
-									<div class="panel-body">									
-										<img src="{{ $layout['thumb'] }}" />
-										<label class="mb-20 text-center">{{ $layout['title'] }}</label>
-									</div>
-								</div>
-							</a>
-						</div>
-					@endforeach --}}
 				</div>
 				<br style="clear:both" />
 			</div>
@@ -72,21 +51,20 @@
 					margin-left: -15px;
 					margin-right: -15px;
 				">
-					@foreach(Acelle\Model\Template::getTemplatesFromDisk() as $layout)
-						<div class="col-xxs-12 col-xs-6 col-sm-3 col-md-2">
+					@foreach(Acelle\Model\Template::basic()->get() as $layout)
+						<div class="col-xxs-6 col-xs-4 col-sm-2 col-md-2">
 							<a data-method="POST"
-								href="{{ action('Automation2Controller@templateLayout', [
+								href="{{ action('Automation2Controller@templateTheme', [
 									'uid' => $automation->uid,
 									'email_uid' => $email->uid,
-									'layout' => $layout['name'],
-									'dir' => 'basic',
+									'template_uid' => $layout->uid,
 								]) }}"
 								class="select-layout"
 							>
 								<div class="panel panel-flat panel-template-style mb-4">
 									<div class="panel-body">									
-										<img src="{{ $layout['thumb'] }}" />
-										<label class="mb-20 text-center">{{ $layout['title'] }}</label>
+										<img src="{{ $layout->getThumbUrl() }}?v={{ rand(0,10) }}" />
+										<label class="mb-20 text-center">{{ $layout->name }}</label>
 									</div>
 								</div>
 							</a>
@@ -109,30 +87,26 @@
             var url = $(this).attr('href');
 			
 			popup.loading();
-        
-            $.ajax({
+			
+			// loading popup
+			popup.loading();
+			
+			$.ajax({
 				url: url,
 				type: 'POST',
 				data: {
-					_token: CSRF_TOKEN
+					_token: CSRF_TOKEN,
 				}
 			}).always(function(response) {
-				//// set node title
-				//tree.getSelected().setTitle(response.title);
-				//// merge options with reponse options
-				//tree.getSelected().setOptions($.extend(tree.getOptions(), response.options));
-				//tree.getSelected().setOptions($.extend(tree.getOptions(), {init: true}));
-				//
-				//popup.hide();
-				//
-				//notify('success', '{{ trans('messages.notify.success') }}', response.message);
-				
 				popup.load('{{ action('Automation2Controller@emailTemplate', [
 					'uid' => $automation->uid,
 					'email_uid' => $email->uid,
 				]) }}');
 
-				builderSelectPopup.load(response.url);
+				builderSelectPopup.load('{{ action('Automation2Controller@templateBuilderSelect', [
+					'uid' => $automation->uid,
+					'email_uid' => $email->uid,
+				]) }}');
 
 				// notify
 				notify('success', '{{ trans('messages.notify.success') }}', response.message);

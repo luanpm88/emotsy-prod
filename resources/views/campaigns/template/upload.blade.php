@@ -18,6 +18,8 @@
             <form enctype="multipart/form-data" action="{{ action('CampaignController@templateUpload', $campaign->uid) }}" method="POST" class="ajax_upload_form form-validate-jquery">
                 {{ csrf_field() }}
 
+                <input type="hidden" name="name" value="{{ $campaign->name }}" />
+
                 @include('helpers.form_control', ['required' => true, 'type' => 'file', 'label' => trans('messages.upload_file'), 'name' => 'file'])
 				
                 <div class="mt-20">
