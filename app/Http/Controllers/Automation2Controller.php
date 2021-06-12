@@ -911,28 +911,6 @@ class Automation2Controller extends Controller
             return $this->notAuthorized();
         }
 
-        // add layout to campaign template
-        if ($request->isMethod('post')) {
-            if ($request->layout) {
-                $email->addTemplateFromDisk($request->layout, $request->dir);
-
-                // update email plain text
-                $email->updatePlainFromContent();
-
-                // update links
-                $email->updateLinks();
-            }
-            
-            return response()->json([
-                'status' => 'success',
-                'message' => trans('messages.automation.email.template.layout.selected'),
-                'url' => action('Automation2Controller@templateBuilderSelect', [
-                    'uid' => $automation->uid,
-                    'email_uid' => $email->uid,
-                ]),
-            ], 201);
-        }
-
         return view('automation2.email.template.layout', [
             'automation' => $automation,
             'email' => $email,
@@ -1111,7 +1089,7 @@ class Automation2Controller extends Controller
             return $this->notAuthorized();
         }
         
-        $templates = Template::search($request->keyword)
+        $templates = Template::theme()->search($request->keyword)
             ->filter($request)
             ->orderBy('created_at', 'desc')
             ->paginate($request->per_page);

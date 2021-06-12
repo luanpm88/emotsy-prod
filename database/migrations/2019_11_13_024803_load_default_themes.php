@@ -13,7 +13,7 @@ class LoadDefaultThemes extends Migration
      */
     public function up()
     {
-        \Acelle\Model\Template::loadFromThemes();
+        // \Acelle\Model\Template::loadFromThemes();
     }
 
     /**

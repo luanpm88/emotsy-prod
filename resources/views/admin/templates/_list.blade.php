@@ -31,11 +31,10 @@
 							{{ $template->name }}
 						</a>
 					</h5>
-					<span class="text-muted">
+					<div class="text-muted">
 						{!! is_object($template->admin) ? '<i class="icon-user-tie"></i>' . $template->admin->displayName() : '' !!}
 						{!! is_object($template->customer) ? '<i class="icon-user"></i>' . $template->customer->displayName() : '' !!}
-					</span>
-					<br />
+					</div>
 					<span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($template->created_at) }}</span>
 				</td>
 				<td>

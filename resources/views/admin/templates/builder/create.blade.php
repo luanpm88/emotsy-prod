@@ -34,9 +34,7 @@
         <div class="col-md-6">
             <form action="{{ action('Admin\TemplateController@builderCreate') }}" method="POST" class="template-form form-validate-jquery">
                 {{ csrf_field() }}
-                
-                <input type="hidden" value="" name="type" />
-				<input type="hidden" value="" name="layout" />
+
 				<input type="hidden" value="" name="template" />
                 
                 <div class="sub_section">
@@ -63,35 +61,6 @@
 				</div>
 			</div>
 
-			{{-- @if (count(Acelle\Model\Template::getTemplatesFromDisk(null, 'featured')))
-				<div class="subsection">
-					<h2 class="font-weight-semibold mb-0">{{ trans('messages.template.featured') }}</h2>
-					<hr>
-
-					<div class="template-boxes" style="
-						margin-left: -20px;
-						margin-right: -20px;
-						clear: both;
-					">
-						@foreach(Acelle\Model\Template::getTemplatesFromDisk(null, 'featured') as $layout)
-							<div class="col-xxs-12 col-xs-6 col-sm-3 col-md-2">
-								<a href="javascript:;" class="select-template-layout" data-layout="{{ $layout['name'] }}" data-type="featured">
-									<div class="panel panel-flat panel-template-style">
-										<div class="panel-body">
-											<div class="panel-template-placeholder">
-												<img src="{{ $layout['thumb'] }}" />
-											</div>
-											<h5 class="mb-20 text-center">{{ $layout['title'] }}</h5>
-										</div>
-									</div>
-								</a>
-							</div>
-						@endforeach
-					</div>
-					<br style="clear:both" />
-				</div>
-			@endif --}}
-
 			<div class="subsection">
 				<h2 class="font-weight-semibold mb-0">{{ trans('messages.template.basic') }}</h2>
 				<hr>
@@ -101,13 +70,17 @@
 					margin-right: -20px;
 					clear: both;
 				">
-					@foreach(Acelle\Model\Template::getTemplatesFromDisk() as $layout)
+					@foreach(Acelle\Model\Template::basic()->get() as $layout)
 						<div class="col-xxs-12 col-xs-6 col-sm-3 col-md-2">
-							<a href="javascript:;" class="select-template-layout" data-layout="{{ $layout['name'] }}" data-type="basic">
+							<a href="javascript:;" class="select-template-layout" data-template="{{ $layout->uid }}">
 								<div class="panel panel-flat panel-template-style">
 									<div class="panel-body">
-										<img src="{{ $layout['thumb'] }}" />
-										<h5 class="mb-20 text-center">{{ $layout['title'] }}</h5>
+										<div class="panel-body">
+											<div class="panel-template-placeholder">
+												<img src="{{ $layout->getThumbUrl() }}?v={{ rand(0,10) }}" />
+											</div>
+											<h5 class="mb-20 text-center">{{ $layout->name }}</h5>
+										</div>
 									</div>
 								</div>
 							</a>
@@ -170,10 +143,7 @@
     <script>	
         $(document).ready(function() {
             $(document).on('click', '.select-template-layout', function() {
-                var layout = $(this).attr('data-layout');
-				var type = $(this).attr('data-type');
-
-				var template = $(this).attr('data-template');
+                var template = $(this).attr('data-template');
                 
                 // unselect all layouts
                 $('.select-template-layout').removeClass('selected');
@@ -182,15 +152,7 @@
                 $(this).addClass('selected');
 
 				// unselect all
-				$('[name=layout]').val('');
-				$('[name=type]').val('');
 				$('[name=template]').val('');
-                
-                // update layout value
-				if (typeof(layout) !== 'undefined') {
-					$('[name=layout]').val(layout);
-					$('[name=type]').val(type);
-				}
 				
 				// update template value
 				if (typeof(template) !== 'undefined') {

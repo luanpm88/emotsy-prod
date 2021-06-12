@@ -20,6 +20,8 @@
             ]) }}" method="POST" class="template-upload-form">
                 {{ csrf_field() }}
 
+                <input type="hidden" name="name" value="{{ trans('messages.untitled') }}" />
+
                 <div class="input-group mb-4 mt-4">
                     <div class="input-group-prepend">
                       <span class="input-group-text">{{ trans('messages.automation.email.template.upload') }}</span>

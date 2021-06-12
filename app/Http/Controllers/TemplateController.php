@@ -29,7 +29,7 @@ class TemplateController extends Controller
      */
     public function listing(Request $request)
     {
-        $templates = Template::search($request->keyword)
+        $templates = Template::theme()->search($request->keyword)
             ->filter($request)
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
@@ -46,7 +46,7 @@ class TemplateController extends Controller
      */
     public function choosing(Request $request)
     {
-        $templates = Template::search($request->keyword)
+        $templates = Template::theme()->search($request->keyword)
             ->filter($request)
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
@@ -134,7 +134,8 @@ class TemplateController extends Controller
 
             // Save template
             $template->fill($request->all());
-            $template->source = 'editor';
+            $template->source = Template::SOURCE_STANDARD;
+            $template->category = Template::CATEGORY_THEME;
             if (isset($request->source)) {
                 $template->source = $request->source;
             }
@@ -633,21 +634,13 @@ class TemplateController extends Controller
         
         // validate and save posted data
         if ($request->isMethod('post')) {
-            if ($request->layout) {
-                $template = new Template();
-                $template->customer_id = $customer->id;
-                $template->name = $request->name;
-                $template->save(); // generate the uid first, which is required by untransform() function
-                $template->untransform();
-                $template->save(); // odd! save again
+            $currentTemplate = Template::findByUid($request->template);
+            $template = $currentTemplate->copy($request->name, $customer);
 
-                $template->addTemplateFromDisk($request->layout, $request->type);
-            }
-            
-            if ($request->template) {
-                $currentTemplate = Template::findByUid($request->template);
-                $template = $currentTemplate->copy($request->name, $customer);
-            }
+            // save
+            $template->source = Template::SOURCE_STANDARD;
+            $template->category = Template::CATEGORY_THEME;
+            $template->save();
             
             return redirect()->action('TemplateController@builderEdit', $template->uid);
         }
@@ -665,7 +658,7 @@ class TemplateController extends Controller
      */
     public function builderTemplates(Request $request)
     {
-        $templates = Template::search($request->keyword)
+        $templates = Template::theme()->search($request->keyword)
             ->filter($request)
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
