@@ -38,6 +38,11 @@
     'id' => request()->id,
 ]) }}')" class="btn btn-secondary">{{ trans('messages.automation.edit_operation') }}</a>
 
+<a href="javascript:;" onclick="popup.load('{{ action('Automation2Controller@operationSelect', [
+    'uid' => $automation->uid,
+    'id' => request()->id,
+]) }}')" class="btn btn-outline-secondary">{{ trans('messages.automation.operation.change') }}</a>
+
 <div class="mt-4 d-flex py-3">
     <div>
         <h5 class="mb-2">

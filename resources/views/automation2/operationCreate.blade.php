@@ -44,23 +44,38 @@
                     }
                 },
                 success: function (response) {
-                    var newE = new ElementOperation({title: response.title, options: response.options});
+                    @if (!request()->operation_id)
+                        var newE = new ElementOperation({title: response.title, options: response.options});
 
-                    tree.getSelected().insert(newE);
+                        tree.getSelected().insert(newE);
 
-                    newE.validate();
-                    
-                    // save tree
-                    saveData(function() {
-                        // hide popup
-                        popup.hide();
-
-                        setTimeout(function() {
-                            doSelect(newE);
-                        }, 200);
+                        newE.validate();
                         
-                        notify('success', '{{ trans('messages.notify.success') }}', response.message);
-                    });
+                        // save tree
+                        saveData(function() {
+                            // hide popup
+                            popup.hide();
+
+                            setTimeout(function() {
+                                doSelect(newE);
+                            }, 200);
+                            
+                            notify('success', '{{ trans('messages.notify.success') }}', response.message);
+                        });
+                    @else
+                        tree.getSelected().setOptions(response.options);
+                        tree.getSelected().setTitle(response.title);
+                        
+                        // save tree
+                        saveData(function() {
+                            popup.hide();
+                            
+                            // reload sidebar
+                            sidebar.load();
+                            
+                            notify('success', '{{ trans('messages.notify.success') }}', response.message);
+                        });
+                    @endif
                 },
                 error: function (res) {
                     // newSubscription.loadHtml(res.responseText);

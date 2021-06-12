@@ -4231,7 +4231,7 @@
   'operation.target_list' => 'Target list',
   'automation.operation.updated' => 'Operation was updated',
   'automation.operation.added' => 'Operation was added',
-  'automation.edit_operation' => 'Edit Operation',
+  'automation.edit_operation' => 'Edit',
   'field' => 'Field',
   'automation.operation.copy' => 'Copy contact',
   'automation.operation.update' => 'Update contact',
@@ -4294,4 +4294,5 @@
   'campaign.upload_custom_template' => 'Upload custom template',
   'template_type_standard' => 'Standard',
   'template_type_uploaded' => 'Uploaded',
+  'automation.operation.change' => 'Change operation',
 ) ?>

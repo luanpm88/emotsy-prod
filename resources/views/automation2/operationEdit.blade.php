@@ -14,7 +14,7 @@
             
             @include('automation2.operation.' . request()->operation)
             
-            <button class="btn btn-secondary select-action-confirm mt-2">
+            <button class="btn btn-secondary select-action-confirm">
                     {{ trans('messages.automation.operation.save') }}
             </button>
         </form>
