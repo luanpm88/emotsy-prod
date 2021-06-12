@@ -23,12 +23,7 @@ class Automation2Controller extends Controller
      */
     public function index(Request $request)
     {
-        $user = $request->user();
-        $automations = $user->customer->automation2s();
-
-        return view('automation2.index', [
-            'automations' => $automations,
-        ]);
+        return view('automation2.index');
     }
     
     /**
@@ -38,7 +33,10 @@ class Automation2Controller extends Controller
      */
     public function listing(Request $request)
     {
-        $automations = Automation2::search($request)->paginate($request->per_page);
+        $automations = $request->user()->customer->automation2s()
+            ->search($request->keyword)
+            ->orderBy($request->sort_order, $request->sort_direction)
+            ->paginate($request->per_page);
 
         return view('automation2._list', [
             'automations' => $automations,
