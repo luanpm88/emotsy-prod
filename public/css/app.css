@@ -2794,6 +2794,9 @@ canvas[data-zr-dom-id='_zrender_hover_'] {
     color: #333;
     margin: 8px;
     white-space: nowrap;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .template-boxes .panel-body img {
     border: solid 1px #aaa;

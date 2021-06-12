@@ -23,6 +23,7 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use Validator;
 use ZipArchive;
 use RecursiveIteratorIterator;
@@ -37,13 +38,10 @@ class Template extends Model implements Storable
 {
     const STORAGE_DIR = 'templates';
 
-    const SOURCE_STANDARD = 'standard';
-    const SOURCE_UPLOADED = 'uploaded';
-    const SOURCE_SYSTEM = 'system';
-
     const CATEGORY_WOO = 'woo';
     const CATEGORY_BASIC = 'basic';
     const CATEGORY_FEATURED = 'featured';
+    const CATEGORY_THEME = 'theme';
 
     /**
      * The attributes that are mass assignable.
@@ -97,26 +95,6 @@ class Template extends Model implements Storable
     }
 
     /**
-     * Standard.
-     *
-     * @return collect
-     */
-    public static function scopeStandard($query)
-    {
-        $query = $query->where('source', '=', self::SOURCE_STANDARD);
-    }
-
-    /**
-     * Uploaded.
-     *
-     * @return collect
-     */
-    public static function scopeUploaded($query)
-    {
-        $query = $query->where('source', '=', self::SOURCE_UPLOADED);
-    }
-
-    /**
      * Basic.
      *
      * @return collect
@@ -147,14 +125,22 @@ class Template extends Model implements Storable
     }
 
     /**
+     * noCat.
+     *
+     * @return collect
+     */
+    public static function scopeTheme($query)
+    {
+        $query = $query->where('category', '=', self::CATEGORY_THEME);
+    }
+
+    /**
      * Search.
      *
      * @return collect
      */
     public static function scopeSearch($query, $keyword)
     {
-        $query = $query->where('source', '!=', self::SOURCE_SYSTEM);
-
         // Keyword
         if (!empty($keyword)) {
             $query = $query->where('name', 'like', '%'.trim($keyword).'%');
@@ -176,54 +162,9 @@ class Template extends Model implements Storable
      *
      * @return collect
      */
-    public static function scopePublic($query)
+    public static function scopeShared($query)
     {
         $query = $query->where('customer_id', '=', null);
-    }
-
-    /**
-     * Check if standard.
-     *
-     * @return collect
-     */
-    public function isStandard()
-    {
-        return $this->source == self::SOURCE_STANDARD;
-    }
-
-    /**
-     * Check if system.
-     *
-     * @return collect
-     */
-    public function isSystem()
-    {
-        return $this->source == self::SOURCE_SYSTEM;
-    }
-
-    /**
-     * Filter items.
-     *
-     * @return collect
-     */
-    public static function scopeFilter($query, $request)
-    {
-        // filters
-        if ($request->filters && isset($request->filters['from'])) {
-            $request->from = $request->filters['from'];
-        }
-
-        // from
-        if ($request->from) {
-            if ($request->from == 'mine') {
-                $query = $query->where('customer_id', '=', $request->user()->customer->id);
-            } elseif ($request->from == 'gallery') {
-                $query = $query->public();
-            } else {
-                $query = $query->public()
-                    ->orWhere('customer_id', '=', $request->user()->customer->id);
-            }
-        }
     }
 
     /**
@@ -234,81 +175,6 @@ class Template extends Model implements Storable
     public static function findByUid($uid)
     {
         return self::where('uid', '=', $uid)->first();
-    }
-
-    /**
-     * Define all template styles.
-     *
-     * @return object
-     */
-    public static function templateStyles()
-    {
-        return [
-            '1_column' => [
-                'full_width_banner',
-                'single_text_row',
-                'footer',
-            ],
-            '1_2_column' => [
-                'full_width_banner',
-                'single_text_row',
-                'two_image_text_columns',
-                'footer',
-            ],
-            '1_2_1_column' => [
-                'full_width_banner',
-                'single_text_row',
-                'two_image_text_columns',
-                'single_text_row',
-                'footer',
-            ],
-            '1_3_column' => [
-                'full_width_banner',
-                'single_text_row',
-                'three_image_text_columns',
-                'single_text_row',
-                'footer',
-            ],
-            '1_3_1_column' => [
-                'full_width_banner',
-                'single_text_row',
-                'three_image_text_columns',
-                'single_text_row',
-                'footer',
-            ],
-            '1_3_2_column' => [
-                'full_width_banner',
-                'single_text_row',
-                'three_image_text_columns',
-                'two_image_text_columns',
-                'footer',
-            ],
-            '2_column' => [
-                'full_width_banner',
-                'two_image_text_columns',
-                'footer',
-            ],
-            '2_1_column' => [
-                'full_width_banner',
-                'two_image_text_columns',
-                'single_text_row',
-                'footer',
-            ],
-            '2_1_2_column' => [
-                'full_width_banner',
-                'two_image_text_columns',
-                'single_text_row',
-                'two_image_text_columns',
-                'footer',
-            ],
-            '3_1_3_column' => [
-                'full_width_banner',
-                'three_image_text_columns',
-                'single_text_row',
-                'three_image_text_columns',
-                'footer',
-            ],
-        ];
     }
 
     /**
@@ -383,18 +249,20 @@ class Template extends Model implements Storable
     /**
      * Copy new template.
      */
-    public function copy($name, $customer = null, $admin = null)
+    public function copy($attributes=[])
     {
         $copy = $this->replicate();
-        $copy->name = $name;
+        if (isset($attributes['name'])) {
+            $copy->name = $attributes['name'];
+        }
         $copy->created_at = \Carbon\Carbon::now();
         $copy->updated_at = \Carbon\Carbon::now();
-        if ($customer) {
+        if (isset($attributes['customer_id'])) {
             $copy->admin_id = null;
-            $copy->customer_id = $customer->id;
+            $copy->customer_id = $attributes['customer_id'];
         }
-        if ($admin) {
-            $copy->admin_id = $admin->id;
+        if (isset($attributes['admin_id'])) {
+            $copy->admin_id = $attributes['admin_id'];
             $copy->customer_id = null;
         }
         $copy->save();
@@ -409,22 +277,6 @@ class Template extends Model implements Storable
         }
 
         return $copy;
-    }
-
-    /**
-     * Get public template upload uri.
-     */
-    public function getUploadUri()
-    {
-        return 'app/templates/template_'.$this->uid;
-    }
-
-    /**
-     * Get public template upload dir.
-     */
-    public function getUploadDir()
-    {
-        return storage_path($this->getUploadUri());
     }
 
     /**
@@ -589,17 +441,6 @@ class Template extends Model implements Storable
         $zip->close();
 
         return $outputPath;
-    }
-
-    public function getPath()
-    {
-        if ($this->customer) {
-            $dir_id = $this->customer->user->uid;
-        } else {
-            $dir_id = 'admin';
-        }
-
-        return join_paths($dir_id, self::STORAGE_DIR, $this->uid);
     }
 
     /**
@@ -959,21 +800,6 @@ class Template extends Model implements Storable
     }
 
     /**
-     * Load templates from folder.
-     *
-     * @return mixed
-     */
-    public function load($path)
-    {
-        // copy file and get thumb
-        \Acelle\Library\Tool::xcopy($path, $this->getUploadDir());
-        $this->image = $this->getUploadDir().'/thumb.png';
-        $this->replaceHtmlUrl('/'.$this->getUploadUri().'/');
-        $this->untransform();
-        $this->save();
-    }
-
-    /**
      * Get builder templates.
      *
      * @return mixed
@@ -983,7 +809,7 @@ class Template extends Model implements Storable
         $result = [];
 
         // Gallery
-        $templates = self::where('customer_id', '=', null)
+        $templates = self::shared()
             ->orWhere('customer_id', '=', $customer->id)
             ->orderBy('customer_id')
             ->get();
@@ -1009,7 +835,7 @@ class Template extends Model implements Storable
         $result = [];
 
         // Gallery
-        $templates = self::where('customer_id', '=', null)
+        $templates = self::shared()
             ->get();
 
         foreach ($templates as $template) {
@@ -1062,6 +888,17 @@ class Template extends Model implements Storable
 
     public function inlineHtml($html)
     {
+        // Convert to inline css if template source is builder
+        if ($this->isLayout($html)) {
+            $cssToInlineStyles = new CssToInlineStyles();
+            $css = file_get_contents(public_path('assets2/css/email/main.css'));
+            // output
+            $html = $cssToInlineStyles->convert(
+                $html,
+                $css
+            );
+        }
+
         return $html;
     }
 
@@ -1074,7 +911,7 @@ class Template extends Model implements Storable
     {
         $template = new self();
         $template->name = $attributes['name'];
-        $template->source = $attributes['source'];
+        $template->builder = $attributes['builder'];
 
         if (isset($attributes['category'])) {
             $template->category = $attributes['category'];

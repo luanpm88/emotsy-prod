@@ -616,8 +616,18 @@ class CampaignController extends Controller
     {
         $campaign = Campaign::findByUid($request->uid);
 
-        $templates = Template::search($request->keyword)
-            ->filter($request)
+        // from
+        if ($request->from == 'mine') {
+            $templates = $request->user()->customer->templates();
+        } elseif ($request->from == 'gallery') {
+            $templates = Template::shared();
+        } else {
+            $templates = Template::shared()
+                ->orWhere('customer_id', '=', $request->user()->customer->id);
+        }
+
+        // sort, pagination
+        $templates = $templates->theme()->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
 

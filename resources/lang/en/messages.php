@@ -4295,4 +4295,5 @@
   'template_type_standard' => 'Standard',
   'template_type_uploaded' => 'Uploaded',
   'automation.operation.change' => 'Change operation',
+  'template.category' => 'Category',
 ) ?>

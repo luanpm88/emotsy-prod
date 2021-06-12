@@ -155,6 +155,11 @@ class Customer extends Model implements BillableUserInterface
         return $this->hasMany('Acelle\Model\MailList')->orderBy('created_at', 'desc');
     }
 
+    public function templates()
+    {
+        return $this->hasMany('Acelle\Model\Template')->orderBy('created_at', 'desc');
+    }
+
     public function language()
     {
         return $this->belongsTo('Acelle\Model\Language');

@@ -105,14 +105,14 @@ function tableFilter(form, custom_url) {
     datalists[id] = $.ajax({
         method: "GET",
         url: url,
-        data: {
+        data: $.extend({}, {
             per_page: per_page,
             sort_order: sort_order,
             sort_direction: sort_direction,
             keyword: keyword,
             columns: columns,
             filters: d
-        }
+        }, d)
     })
     .done(function( msg ) {
         container.html(msg);
