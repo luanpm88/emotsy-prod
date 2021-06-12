@@ -205,33 +205,16 @@ class Automation2 extends Model
     }
 
     /**
-     * Filter items.
-     *
-     * @return collect
-     */
-    public static function filter($request)
-    {
-        $user = $request->user();
-        $query = self::where('customer_id', '=', $user->customer->id);
-
-        // Keyword
-        if (!empty(trim($request->keyword))) {
-            $query = $query->where('name', 'like', '%'.$request->keyword.'%');
-        }
-
-        return $query;
-    }
-
-    /**
      * Search items.
      *
      * @return collect
      */
-    public static function search($request)
+    public static function scopeSearch($query, $keyword)
     {
-        $query = self::filter($request);
-
-        $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        // Keyword
+        if (!empty(trim($keyword))) {
+            $query = $query->where('name', 'like', '%'.trim($keyword).'%');
+        }
 
         return $query;
     }
