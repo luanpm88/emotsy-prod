@@ -49,7 +49,7 @@
 						<a href="#preview" class="btn bg-teal-600 btn-icon" onclick="popupwindow('{{ action('Admin\TemplateController@preview', $template->uid) }}', '{{ $template->name }}', 800, 800)"><i class="icon-zoomin3"></i></a>
 					@endif
 					@if (Auth::user()->admin->can('update', $template))
-						@if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']))
+						@if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']) && ($template->isStandard() || $template->isSystem()))
 							<a href="{{ action('Admin\TemplateController@builderEdit', $template->uid) }}"
 								type="button" class="btn btn-default btn-icon template-compose">
 								{{ trans('messages.template.pro_builder') }}

@@ -48,7 +48,7 @@
 
                 <td class="text-right">
                     @if (Auth::user()->customer->can('update', $template))
-                        @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']))
+                        @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']) && ($template->isStandard() || $template->isSystem()))
                             <a href="{{ action('TemplateController@builderEdit', $template->uid) }}" type="button" class="btn btn-default btn-icon template-compose">
                                 {{ trans('messages.template.pro_builder') }}
                             </a>

@@ -30,7 +30,7 @@
         
         $( document ).ready(function() {
             editor = new Editor({
-                strict: {{ $strict }},
+                strict: true,
                 showHelp: false,
                 showInlineToolbar: false,
                 lang: {!! json_encode(language()->getBuilderLang()) !!},

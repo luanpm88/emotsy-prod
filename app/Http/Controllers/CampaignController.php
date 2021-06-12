@@ -616,7 +616,7 @@ class CampaignController extends Controller
     {
         $campaign = Campaign::findByUid($request->uid);
 
-        $templates = Template::theme()->search($request->keyword)
+        $templates = Template::search($request->keyword)
             ->filter($request)
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
