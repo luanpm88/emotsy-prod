@@ -39,11 +39,11 @@ class Template extends Model implements Storable
 
     const SOURCE_STANDARD = 'standard';
     const SOURCE_UPLOADED = 'uploaded';
+    const SOURCE_SYSTEM = 'system';
 
     const CATEGORY_WOO = 'woo';
     const CATEGORY_BASIC = 'basic';
     const CATEGORY_FEATURED = 'featured';
-    const CATEGORY_THEME = 'theme';
 
     /**
      * The attributes that are mass assignable.
@@ -137,16 +137,6 @@ class Template extends Model implements Storable
     }
 
     /**
-     * Themes.
-     *
-     * @return collect
-     */
-    public static function scopeTheme($query)
-    {
-        $query = $query->where('category', '=', self::CATEGORY_THEME);
-    }
-
-    /**
      * Woo.
      *
      * @return collect
@@ -163,6 +153,8 @@ class Template extends Model implements Storable
      */
     public static function scopeSearch($query, $keyword)
     {
+        $query = $query->where('source', '!=', self::SOURCE_SYSTEM);
+
         // Keyword
         if (!empty($keyword)) {
             $query = $query->where('name', 'like', '%'.trim($keyword).'%');
@@ -197,6 +189,16 @@ class Template extends Model implements Storable
     public function isStandard()
     {
         return $this->source == self::SOURCE_STANDARD;
+    }
+
+    /**
+     * Check if system.
+     *
+     * @return collect
+     */
+    public function isSystem()
+    {
+        return $this->source == self::SOURCE_SYSTEM;
     }
 
     /**
@@ -525,7 +527,6 @@ class Template extends Model implements Storable
         // Save new template
         $template = new self();
         $template->source = self::SOURCE_UPLOADED;
-        $template->category = self::CATEGORY_THEME;
 
         if ($asAdmin) {
             $template->admin_id = $user->admin->id;
@@ -1074,7 +1075,10 @@ class Template extends Model implements Storable
         $template = new self();
         $template->name = $attributes['name'];
         $template->source = $attributes['source'];
-        $template->category = $attributes['category'];
+
+        if (isset($attributes['category'])) {
+            $template->category = $attributes['category'];
+        }
 
         $template->save();
 

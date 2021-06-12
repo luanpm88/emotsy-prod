@@ -48,7 +48,7 @@
                                 <a href="{{ action('CampaignController@templateCreate', $campaign->uid) }}" class="btn btn-primary bg-grey-600 mr-5">
                                     {{ trans('messages.campaign.change_template') }}
                                 </a>
-                                @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']))
+                                @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']) && strpos($campaign->html, 'AcelleSystemLayouts'))
                                     <a href="{{ action('CampaignController@templateEdit', $campaign->uid) }}" class="btn btn-primary mr-5 template-compose">
                                         {{ trans('messages.campaign.email_builder_pro') }}
                                     </a>

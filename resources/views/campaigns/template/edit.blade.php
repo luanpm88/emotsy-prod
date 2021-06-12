@@ -23,11 +23,6 @@
 
     @include('helpers._builder_product_widgets')
 
-    @php
-        // check if content from layouts
-        $strict = strpos($campaign->html, 'AcelleSystemLayouts') !== false ? 'true' : 'false';
-    @endphp
-
     <script>
         var CSRF_TOKEN = "{{ csrf_token() }}";
         var editor;
@@ -36,7 +31,7 @@
 
         $( document ).ready(function() {
             editor = new Editor({
-                strict: {{ $strict }},
+                strict: true,
                 showHelp: false,
                 showInlineToolbar: false,
                 lang: {!! json_encode(language()->getBuilderLang()) !!},

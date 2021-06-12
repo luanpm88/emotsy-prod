@@ -1089,7 +1089,7 @@ class Automation2Controller extends Controller
             return $this->notAuthorized();
         }
         
-        $templates = Template::theme()->search($request->keyword)
+        $templates = Template::search($request->keyword)
             ->filter($request)
             ->orderBy('created_at', 'desc')
             ->paginate($request->per_page);

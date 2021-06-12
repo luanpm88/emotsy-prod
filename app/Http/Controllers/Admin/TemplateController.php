@@ -38,7 +38,7 @@ class TemplateController extends Controller
             return $this->notAuthorized();
         }
 
-        $templates = \Acelle\Model\Template::theme()->public()->search($request->keyword)
+        $templates = \Acelle\Model\Template::public()->search($request->keyword)
             ->filter($request)
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
@@ -105,7 +105,6 @@ class TemplateController extends Controller
             // Save template
             $template->fill($request->all());
             $template->source = Template::SOURCE_STANDARD;
-            $template->category = Template::CATEGORY_THEME;
             if (isset($request->source)) {
                 $template->source = $request->source;
             }
@@ -557,7 +556,6 @@ class TemplateController extends Controller
 
             // save
             $template->source = Template::SOURCE_STANDARD;
-            $template->category = Template::CATEGORY_THEME;
             $template->save();
             
             return redirect()->action('Admin\TemplateController@builderEdit', $template->uid);
@@ -576,7 +574,7 @@ class TemplateController extends Controller
      */
     public function builderTemplates(Request $request)
     {
-        $templates = Template::theme()->search($request->keyword)
+        $templates = Template::search($request->keyword)
             ->filter($request)
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);

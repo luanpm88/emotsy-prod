@@ -16,11 +16,6 @@
             margin-right: 15px;
         }
     </style>
-
-    @php
-        // check if content from layouts
-        $strict = $template->isStandard() ? 'true' : 'false';
-    @endphp
     
     <script>
         var CSRF_TOKEN = "{{ csrf_token() }}";
@@ -30,7 +25,7 @@
         
         $( document ).ready(function() {
             editor = new Editor({
-                strict: {{ $strict }},
+                strict: true,
                 showHelp: false,
                 showInlineToolbar: false,
                 lang: {!! json_encode(language()->getBuilderLang()) !!},
