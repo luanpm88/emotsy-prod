@@ -1,4 +1,4 @@
-@extends('layouts.popup.medium')
+@extends('layouts.popup.large')
 
 @section('content')
 	<div class="row">
@@ -14,6 +14,7 @@
                             data-url="{{ action('Automation2Controller@operationCreate', [
                                 'uid' => $automation->uid,
                                 'operation' => $type,
+                                'operation_id' => request()->id,
                             ]) }}"					
                         >							
                             <h6 class="d-flex align-items-center text-center justify-content-center">
