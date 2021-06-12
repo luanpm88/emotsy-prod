@@ -99,13 +99,13 @@ class Subscription extends Model
      */
     public function invoices()
     {
-        $uid = $this->uid;
+        $id = $this->id;
         $type = self::class;
-        return Invoice::whereIn('id', function ($query) use ($uid, $type) {
+        return Invoice::whereIn('id', function ($query) use ($id, $type) {
             $query->select('invoice_id')
             ->from(with(new InvoiceItem)->getTable())
             ->where('item_type', $type)
-            ->where('item_id', $uid);
+            ->where('item_id', $id);
         });
     }
 
@@ -249,7 +249,7 @@ class Subscription extends Model
 
         // add item
         $invoiceItem = $invoice->invoiceItems()->create([
-            'item_id' => $this->uid,
+            'item_id' => $this->id,
             'item_type' => get_class($this),
             'amount' => $this->plan->price,
             'title' => $this->plan->name,
@@ -291,7 +291,7 @@ class Subscription extends Model
 
         // add item
         $invoiceItem = $invoice->invoiceItems()->create([
-            'item_id' => $this->uid,
+            'item_id' => $this->id,
             'item_type' => get_class($this),
             'amount' => $this->plan->price,
             'title' => $this->plan->name,
@@ -338,7 +338,7 @@ class Subscription extends Model
 
         // add item
         $invoiceItem = $invoice->invoiceItems()->create([
-            'item_id' => $this->uid,
+            'item_id' => $this->id,
             'item_type' => get_class($this),
             'amount' => $metadata['amount'],
             'title' => $this->plan->name,
