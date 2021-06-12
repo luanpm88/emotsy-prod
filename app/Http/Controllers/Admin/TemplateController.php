@@ -38,8 +38,8 @@ class TemplateController extends Controller
             return $this->notAuthorized();
         }
 
-        $templates = \Acelle\Model\Template::public()->search($request->keyword)
-            ->filter($request)
+        $templates = \Acelle\Model\Template::shared()
+            ->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
 
@@ -72,54 +72,6 @@ class TemplateController extends Controller
         return view('admin.templates.create', [
             'template' => $template,
         ]);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        // Generate info
-        $user = $request->user();
-        $template = new \Acelle\Model\Template();
-        $template->admin_id = $request->user()->admin->id;
-
-        // authorize
-        if (!$request->user()->admin->can('create', Template::class)) {
-            return $this->notAuthorized();
-        }
-
-        // validate and save posted data
-        if ($request->isMethod('post')) {
-            $rules = array(
-                'name' => 'required',
-                'content' => 'required',
-            );
-
-            $this->validate($request, $rules);
-
-            // Save template
-            $template->fill($request->all());
-            $template->source = Template::SOURCE_STANDARD;
-            if (isset($request->source)) {
-                $template->source = $request->source;
-            }
-            $template->untransform();
-            $template->save();
-
-            if (!empty(Setting::get('storage.s3'))) {
-                App::make('xstore')->store($template);
-            }
-
-            // Redirect to my lists page
-            $request->session()->flash('alert-success', trans('messages.template.created'));
-
-            return redirect()->action('Admin\TemplateController@index');
-        }
     }
 
     /**
@@ -259,73 +211,6 @@ class TemplateController extends Controller
     }
 
     /**
-     * Buiding email template.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function build(Request $request)
-    {
-        $template = new Template();
-        $template->name = trans('messages.untitled_template');
-
-        // authorize
-        if (!$request->user()->admin->can('create', Template::class)) {
-            return $this->notAuthorized();
-        }
-
-        $elements = [];
-        if (isset($request->style)) {
-            $elements = \Acelle\Model\Template::templateStyles()[$request->style];
-        }
-
-        return view('admin.templates.build', [
-            'template' => $template,
-            'elements' => $elements
-        ]);
-    }
-
-    /**
-     * Buiding email template.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function rebuild(Request $request)
-    {
-        // Generate info
-        $user = $request->user();
-        $template = \Acelle\Model\Template::findByUid($request->uid);
-
-        // authorize
-        if (!$request->user()->admin->can('update', $template)) {
-            return $this->notAuthorized();
-        }
-
-        return view('admin.templates.rebuild', [
-            'template' => $template,
-        ]);
-    }
-
-    /**
-     * Select template style.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function buildSelect(Request $request)
-    {
-        $template = new \Acelle\Model\Template();
-
-        return view('admin.templates.build_start', [
-            'template' => $template,
-        ]);
-    }
-
-    /**
      * Preview template.
      *
      * @param int $id
@@ -344,46 +229,6 @@ class TemplateController extends Controller
         return view('admin.templates.preview', [
             'template' => $template,
         ]);
-    }
-
-    /**
-     * Save template screenshot.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int                      $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function saveImage(Request $request, $id)
-    {
-        $template = \Acelle\Model\Template::findByUid($id);
-
-        // authorize
-        if (!$request->user()->admin->can('saveImage', $template)) {
-            return $this->notAuthorized();
-        }
-
-        $upload_loca = 'app/email_templates/';
-        $upload_path = storage_path($upload_loca);
-        if (!file_exists($upload_path)) {
-            mkdir($upload_path, 0777, true);
-        }
-        $filename = 'screenshot-'.$id.'.png';
-
-        // remove "data:image/png;base64,"
-        $uri = substr($request->data, strpos($request->data, ',') + 1);
-
-        // save to file
-        file_put_contents($upload_path.$filename, base64_decode($uri));
-
-        // create thumbnails
-        $img = \Image::make($upload_path.$filename);
-        $img->fit(178, 200)->save($upload_path.$filename.'.thumb.jpg');
-
-        // save
-        $template->image = $upload_loca.$filename;
-        $template->untransform();
-        $template->save();
     }
 
     /**
@@ -536,8 +381,6 @@ class TemplateController extends Controller
      */
     public function builderCreate(Request $request)
     {
-        $admin = $request->user()->admin;
-        
         $template = new Template();
         $template->name = trans('messages.untitled_template');
         
@@ -552,10 +395,14 @@ class TemplateController extends Controller
         // validate and save posted data
         if ($request->isMethod('post')) {
             $currentTemplate = Template::findByUid($request->template);
-            $template = $currentTemplate->copy($request->name, null, $admin);
+
+            // create from template
+            $template = $currentTemplate->copy([
+                'name' => $request->name,
+                'admin_id' => $request->user()->admin->id,
+            ]);
 
             // save
-            $template->source = Template::SOURCE_STANDARD;
             $template->save();
             
             return redirect()->action('Admin\TemplateController@builderEdit', $template->uid);
@@ -574,8 +421,8 @@ class TemplateController extends Controller
      */
     public function builderTemplates(Request $request)
     {
-        $templates = Template::search($request->keyword)
-            ->filter($request)
+        $templates = Template::theme()->shared()
+            ->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
 

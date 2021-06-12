@@ -29,51 +29,25 @@ class TemplateController extends Controller
      */
     public function listing(Request $request)
     {
-        $templates = Template::search($request->keyword)
-            ->filter($request)
+        // from
+        if ($request->from == 'mine') {
+            $templates = $request->user()->customer->templates();
+        } elseif ($request->from == 'gallery') {
+            $templates = Template::shared();
+        } else {
+            $templates = Template::shared()
+                ->orWhere('customer_id', '=', $request->user()->customer->id);
+        }
+
+        // sort, pagination
+        $templates = $templates->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
+            
 
         return view('templates._list', [
             'templates' => $templates,
         ]);
-    }
-
-    /**
-     * Display a listing of the resource for choose one.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function choosing(Request $request)
-    {
-        $templates = Template::search($request->keyword)
-            ->filter($request)
-            ->orderBy($request->sort_order, $request->sort_direction)
-            ->paginate($request->per_page);
-
-        $campaign = \Acelle\Model\Campaign::findByUid($request->campaign_uid);
-
-        return view('templates._list_choose', [
-            'templates' => $templates,
-            'campaign' => $campaign,
-        ]);
-    }
-
-    /**
-     * Content of template.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function content(Request $request)
-    {
-        $template = Template::findByUid($request->uid);
-
-        // authorize
-        if (!$request->user()->customer->can('view', $template)) {
-            return $this->notAuthorized();
-        }
-
-        echo $template->content;
     }
 
     /**
@@ -100,71 +74,6 @@ class TemplateController extends Controller
         return view('templates.create', [
             'template' => $template,
         ]);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        // Generate info
-        $user = $request->user();
-        $customer = $request->user()->customer;
-
-        $template = new Template();
-        $template->customer_id = $customer->id;
-
-        // authorize
-        if (!$request->user()->customer->can('update', $template)) {
-            return $this->notAuthorized();
-        }
-
-        // validate and save posted data
-        if ($request->isMethod('post')) {
-            $rules = array(
-                'name' => 'required',
-                'content' => 'required',
-            );
-
-            $this->validate($request, $rules);
-
-            // Save template
-            $template->fill($request->all());
-            $template->source = Template::SOURCE_STANDARD;
-            if (isset($request->source)) {
-                $template->source = $request->source;
-            }
-
-            //// update content
-            //$template->content = preg_replace('/href\=\'([^\']*\{)/',"href='{", $template->content);
-            //$template->content = preg_replace('/href\=\"([^\"]*\{)/','href="{', $template->content);
-            $template->untransform();
-            $template->save();
-
-            if (!empty(Setting::get('storage.s3'))) {
-                App::make('xstore')->store($template);
-            }
-
-            // Redirect to my lists page
-            $request->session()->flash('alert-success', trans('messages.template.created'));
-
-            return redirect()->action('TemplateController@index');
-        }
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
     }
 
     /**
@@ -242,43 +151,6 @@ class TemplateController extends Controller
                 'message' => trans('messages.template.updated'),
             ], 201);
         }
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-    }
-
-    /**
-     * Custom sort items.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function sort(Request $request)
-    {
-        $sort = json_decode($request->sort);
-        foreach ($sort as $row) {
-            $item = Template::findByUid($row[0]);
-
-            // authorize
-            if (!$request->user()->customer->can('update', $item)) {
-                return $this->notAuthorized();
-            }
-
-            $item->custom_order = $row[1];
-            $item->untransform();
-            $item->save();
-        }
-
-        echo trans('messages.templates.custom_order.updated');
     }
 
     /**
@@ -361,118 +233,6 @@ class TemplateController extends Controller
     }
 
     /**
-     * Save template screenshot.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int                      $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function saveImage(Request $request, $id)
-    {
-        $template = Template::findByUid($id);
-
-        // authorize
-        if (!$request->user()->customer->can('saveImage', $template)) {
-            return $this->notAuthorized();
-        }
-        
-        // if thumb is default
-        if (substr($template->image, 0, 1) == '/') {
-            return;
-        }
-
-        $upload_loca = 'app/email_templates/';
-        $upload_path = storage_path($upload_loca);
-        if (!file_exists($upload_path)) {
-            mkdir($upload_path, 0777, true);
-        }
-        $filename = 'screenshot-'.$id.'.png';
-
-        // remove "data:image/png;base64,"
-        $uri = substr($request->data, strpos($request->data, ',') + 1);
-
-        // save to file
-        file_put_contents($upload_path.$filename, base64_decode($uri));
-
-        // create thumbnails
-        $img = \Image::make($upload_path.$filename);
-        $img->fit(178, 200)->save($upload_path.$filename.'.thumb.jpg');
-
-        // save
-        $template->image = $upload_loca.$filename;
-        $template->untransform();
-        $template->save();
-    }
-
-    /**
-     * Buiding email template.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function build(Request $request)
-    {
-        $template = new Template();
-        $template->name = trans('messages.untitled_template');
-
-        // authorize
-        if (!$request->user()->customer->can('create', Template::class)) {
-            return $this->notAuthorized();
-        }
-
-        $elements = [];
-        if (isset($request->style)) {
-            $elements = Template::templateStyles()[$request->style];
-        }
-
-        return view('templates.build', [
-            'template' => $template,
-            'elements' => $elements
-        ]);
-    }
-
-    /**
-     * Buiding email template.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function rebuild(Request $request)
-    {
-        // Generate info
-        $user = $request->user();
-        $template = Template::findByUid($request->uid);
-
-        // authorize
-        if (!$request->user()->customer->can('update', $template)) {
-            return $this->notAuthorized();
-        }
-
-        return view('templates.rebuild', [
-            'template' => $template,
-        ]);
-    }
-
-    /**
-     * Select template style.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function buildSelect(Request $request)
-    {
-        $template = new Template();
-
-        return view('templates.build_start', [
-            'template' => $template,
-        ]);
-    }
-
-    /**
      * Copy template.
      *
      * @param \Illuminate\Http\Request $request
@@ -489,7 +249,10 @@ class TemplateController extends Controller
                 return $this->notAuthorized();
             }
 
-            $template->copy($request->name, $request->user()->customer);
+            $template->copy([
+                'name' => $request->name,
+                'customer_id' => $request->user()->customer->id,
+            ]);
 
             echo trans('messages.template.copied');
             return;
@@ -617,9 +380,7 @@ class TemplateController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function builderCreate(Request $request)
-    {
-        $customer = $request->user()->customer;
-        
+    {        
         $template = new Template();
         $template->name = trans('messages.untitled_template');
         
@@ -634,11 +395,12 @@ class TemplateController extends Controller
         // validate and save posted data
         if ($request->isMethod('post')) {
             $currentTemplate = Template::findByUid($request->template);
-            $template = $currentTemplate->copy($request->name, $customer);
-
-            // save
-            $template->source = Template::SOURCE_STANDARD;
-            $template->save();
+            
+            // copy from template
+            $template = $currentTemplate->copy([
+                'name' => $request->name,
+                'customer_id' => $request->user()->customer->id,
+            ]);
             
             return redirect()->action('TemplateController@builderEdit', $template->uid);
         }
@@ -656,8 +418,18 @@ class TemplateController extends Controller
      */
     public function builderTemplates(Request $request)
     {
-        $templates = Template::search($request->keyword)
-            ->filter($request)
+        // from
+        if ($request->from == 'mine') {
+            $templates = $request->user()->customer->templates();
+        } elseif ($request->from == 'gallery') {
+            $templates = Template::shared();
+        } else {
+            $templates = Template::shared()
+                ->orWhere('customer_id', '=', $request->user()->customer->id);
+        }
+
+        // sort, pagination
+        $templates = $templates->theme()->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
         

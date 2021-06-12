@@ -97,7 +97,7 @@
 				<div id="gallery" class="">
 					<form class="listing-form"
 						data-url="{{ action('TemplateController@builderTemplates') }}"
-						per-page="{{ Acelle\Model\Template::$itemsPerPage }}"					
+						per-page="12"					
 					>				
 						<div class="row top-list-controls">
 							<div class="col-md-9">

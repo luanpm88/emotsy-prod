@@ -14,9 +14,6 @@
                                 />
                             </label>
                         </div>
-                        @if (request()->sort_order == 'custom_order' && request()->from == 'mine' && empty(request()->keyword))
-                            <i data-action="move" class="icon icon-more2 list-drag-button"></i>
-                        @endif
                     </div>
                 </td>
                 <td width="1%">
@@ -30,11 +27,10 @@
                             {{ $template->name }}
                         </a>
                     </h5>
-                    <span class="text-muted">
+                    <div class="text-muted">
                         {!! is_object($template->admin) ? '<i class="icon-user-tie"></i>' . $template->admin->displayName() : '' !!}
                         {!! is_object($template->customer) ? '<i class="icon-user"></i>' . $template->customer->displayName() : '' !!}
-                    </span>
-                    <br>
+                    </div>
                     <span class="text-muted">{{ trans('messages.updated_at') }}: {{ Tool::formatDateTime($template->created_at) }}</span>
                 </td>
 
@@ -42,13 +38,13 @@
                     <div class="single-stat-box pull-left">
                         <span class="no-margin stat-num">{{ trans('messages.template_type_' . $template->source) }}</span>
                         <br>
-                        <span class="text-muted text-nowrap">{{ trans('messages.type') }}</span>
+                        <span class="text-muted text-nowrap">{{ trans('messages.template.category') }}</span>
                     </div>
                 </td>
 
                 <td class="text-right">
                     @if (Auth::user()->customer->can('update', $template))
-                        @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']) && ($template->isStandard() || $template->isSystem()))
+                        @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']) && $template->builder)
                             <a href="{{ action('TemplateController@builderEdit', $template->uid) }}" type="button" class="btn btn-default btn-icon template-compose">
                                 {{ trans('messages.template.pro_builder') }}
                             </a>

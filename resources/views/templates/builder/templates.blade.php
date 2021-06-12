@@ -11,7 +11,7 @@
                             <div class="panel-template-placeholder">
                                 <img src="{{ $template->getThumbUrl() }}?v={{ rand(0,10) }}" />
                             </div>
-                            <h5 class="mb-20 text-center">{{ $template->name }}</h5>
+                            <label class="mb-20 text-center">{{ $template->name }}</label>
                         </div>
                     </div>
                 </a>
