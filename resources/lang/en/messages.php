@@ -3027,8 +3027,8 @@
   'automation.intro.' => 'There are no trigger selected. Click on trigger in right screen to select one for your automation.',
   'automation.choose_birthday_field' => 'If your mail list has `Date of Birth` field, please choose it from the list below',
   'automation.choose_list_field' => 'Choose a list field',
-  'automation.delete.wording' => 'You are about to delete this automation. This can be undone.',
-  'automation.delete.confirm' => 'You are about to delete this automation. This can be undone.',
+  'automation.delete.wording' => 'Click to completely delete this automation along with its data. This action cannot be undone',
+  'automation.delete.confirm' => 'Are you sure you want to delete this automation? This action cannot be undone.',
   'automation.delete_automation' => 'Delete',
   'automation.redirect_to_index' => 'Redirecting to automation list...',
   'automation.contacts.copied_to_new_list' => '<span class="font-weight-semibold">:count</span> contacts were copied to
