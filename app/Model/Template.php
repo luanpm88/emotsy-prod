@@ -252,6 +252,11 @@ class Template extends Model implements Storable
         }
         $copy->save();
 
+        // categories
+        foreach($this->categories as $category) {
+            $copy->categories()->attach($category->id);
+        }
+
         // Copy uploaded folder
         if (file_exists($this->getStoragePath())) {
             if (!file_exists($copy->getStoragePath())) {
