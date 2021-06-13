@@ -335,7 +335,7 @@ class CampaignController extends Controller
         }
 
         // check if campagin does not have template
-        if (!$campaign->html) {
+        if (!$campaign->getTemplateContent()) {
             return redirect()->action('CampaignController@templateCreate', ['uid' => $campaign->uid]);
         }
 
@@ -380,7 +380,7 @@ class CampaignController extends Controller
         //    $campaign->fill($request->all());
         //    // convert html to plain text if plain text is empty
         //    if (trim($request->plain) == '') {
-        //        $campaign->plain = preg_replace('/\s+/', ' ', preg_replace('/\r\n/', ' ', strip_tags($request->html)));
+        //        $campaign->plain = preg_replace('/\s+/', ' ', preg_replace('/\r\n/', ' ', strip_tags($request->getTemplateContent())));
         //    }
         //    $campaign->save();
         //
@@ -392,7 +392,7 @@ class CampaignController extends Controller
         //}
         //
         //// redirect page
-        //if (!empty($campaign->html) || $campaign->type == 'plain-text') {
+        //if (!empty($campaign->getTemplateContent()) || $campaign->type == 'plain-text') {
         //    return redirect()->action('CampaignController@templatePreview', ['uid' => $campaign->uid]);
         //} else {
         //    return redirect()->action('CampaignController@templateSelect', ['uid' => $campaign->uid]);
@@ -463,6 +463,21 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
+        if ($request->isMethod('post')) {
+            $template = \Acelle\Model\Template::findByUid($request->template);
+            $campaign->setTemplate($template);
+
+            // update plain
+            $campaign->updatePlainFromHtml();
+
+            // return redirect()->action('CampaignController@templateEdit', $campaign->uid);
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.campaign.theme.selected'),
+                'url' => action('CampaignController@templateBuilderSelect', $campaign->uid),
+            ]);
+        }
+
         return view('campaigns.template.layout', [
             'campaign' => $campaign,
         ]);
@@ -513,7 +528,7 @@ class CampaignController extends Controller
 
             $this->validate($request, $rules);
 
-            $campaign->html = $request->content;
+            $campaign->setTemplateContent($request->content);
             $campaign->untransform();
             $campaign->save();
 
@@ -529,23 +544,6 @@ class CampaignController extends Controller
             'campaign' => $campaign,
             'list' => $campaign->defaultMailList,
             'templates' => $campaign->getBuilderTemplates($request->user()->customer),
-        ]);
-    }
-
-    /**
-     * Upload asset to builder.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function templateAsset(Request $request, $uid)
-    {
-        $campaign = Campaign::findByUid($request->uid);
-        $filename = $campaign->uploadAsset($request->file('file'));
-
-        return response()->json([
-            'url' => route('customer_files', ['uid' => $request->user()->uid, 'name' => $filename])
         ]);
     }
 
@@ -588,7 +586,7 @@ class CampaignController extends Controller
 
         if ($request->isMethod('post')) {
             $template = \Acelle\Model\Template::findByUid($request->template);
-            $campaign->copyFromTemplate($template);
+            $campaign->setTemplate($template);
 
             // update plain
             $campaign->updatePlainFromHtml();
@@ -612,6 +610,26 @@ class CampaignController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function templateLayoutList(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+
+        $templates = Template::shared()->search($request->keyword)
+            ->filter($request)
+            ->orderBy($request->sort_order, $request->sort_direction)
+            ->paginate($request->per_page);
+
+        return view('campaigns.template.layoutList', [
+            'campaign' => $campaign,
+            'templates' => $templates,
+        ]);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function templateThemeList(Request $request)
     {
         $campaign = Campaign::findByUid($request->uid);
@@ -628,6 +646,7 @@ class CampaignController extends Controller
 
         // sort, pagination
         $templates = $templates->search($request->keyword)
+            ->filter($request)
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
 
@@ -671,32 +690,6 @@ class CampaignController extends Controller
         return view('campaigns.template.upload', [
             'campaign' => $campaign,
         ]);
-    }
-
-    /**
-     * Choose an existed template.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function templateChoose(Request $request)
-    {
-        $user = $request->user();
-        $campaign = Campaign::findByUid($request->uid);
-        $template = \Acelle\Model\Template::findByUid($request->template_uid);
-
-        // authorize
-        if (\Gate::denies('update', $campaign)) {
-            return $this->notAuthorized();
-        }
-
-        $campaign->html = $template->content;
-        $campaign->template_source = $template->source;
-        // $campaign->plain = preg_replace('/\s+/',' ',preg_replace('/\r\n/',' ',strip_tags($campaign->html)));
-        $campaign->save();
-
-        return redirect()->action('CampaignController@templatePreview', ['uid' => $campaign->uid]);
     }
 
     /**
@@ -1998,32 +1991,6 @@ class CampaignController extends Controller
     }
 
     /**
-     * Choose an existed campaign template.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function campaignTemplateChoose(Request $request)
-    {
-        $user = $request->user();
-        $campaign = Campaign::findByUid($request->uid);
-        $from_campaign = Campaign::findByUid($request->from_uid);
-
-        // authorize
-        if (\Gate::denies('update', $campaign)) {
-            return $this->notAuthorized();
-        }
-
-        $campaign->html = $from_campaign->html;
-        $campaign->template_source = $from_campaign->template_source;
-        // $campaign->plain = preg_replace('/\s+/',' ',preg_replace('/\r\n/',' ',strip_tags($campaign->html)));
-        $campaign->save();
-
-        return redirect()->action('CampaignController@templatePreview', ['uid' => $campaign->uid]);
-    }
-
-    /**
      * List segment form.
      *
      * @param \Illuminate\Http\Request $request
@@ -2249,7 +2216,7 @@ class CampaignController extends Controller
             }
             
             // Save template
-            $campaign->html = $request->html;
+            $campaign->setTemplateContent($request->html);
             $campaign->preheader = $request->preheader;
             $campaign->untransform();
             $campaign->save();

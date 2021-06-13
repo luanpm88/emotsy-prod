@@ -82,14 +82,14 @@
 	                @endif
 
 	                @if ($campaign->template_source == 'builder')
-	                    <textarea class="hide" name="html">{{ $campaign->html }}</textarea>
+	                    <textarea class="hide" name="html">{{ $campaign->getTemplateContent() }}</textarea>
 	                    <iframe class="template_preview" src="{{ action('CampaignController@templateIframe', $campaign->uid) }}"></iframe>
 	                @else
 	                    @include('helpers.form_control', ['type' => 'textarea',
 	                        'class' => 'clean-editor',
 	                        'name' => 'html',
 	                        'label' => '',
-	                        'value' => $campaign->html,
+	                        'value' => $campaign->getTemplateContent(),
 	                        'rules' => $rules,
 	                        'help_class' => 'campaign'
 	                    ])

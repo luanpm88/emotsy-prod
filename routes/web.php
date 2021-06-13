@@ -323,6 +323,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('lists/{list_uid}/pages/{alias}/preview', 'PageController@preview');
 
     // Template
+    Route::match(['get','post'], 'templates/{uid}/categories', 'TemplateController@categories');
+
     Route::match(['get','post'], 'templates/{uid}/update-thumb-url', 'TemplateController@updateThumbUrl');
     Route::match(['get','post'], 'templates/{uid}/update-thumb', 'TemplateController@updateThumb');
 
@@ -366,6 +368,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::match(['get', 'post'], 'campaigns/{uid}/template/upload', 'CampaignController@templateUpload');
     Route::get('campaigns/{uid}/template/theme/list', 'CampaignController@templateThemeList');
     Route::match(['get', 'post'], 'campaigns/{uid}/template/theme', 'CampaignController@templateTheme');
+    Route::get('campaigns/{uid}/template/layout/list', 'CampaignController@templateLayoutList');
     Route::match(['get', 'post'], 'campaigns/{uid}/template/layout', 'CampaignController@templateLayout');
     Route::get('campaigns/{uid}/template/create', 'CampaignController@templateCreate');
 
@@ -637,6 +640,8 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/users', 'UserController');
 
     // Template
+    Route::match(['get','post'], 'admin/templates/{uid}/categories', 'TemplateController@categories');
+
     Route::match(['get','post'], 'admin/templates/{uid}/update-thumb-url', 'TemplateController@updateThumbUrl');
     Route::match(['get','post'], 'admin/templates/{uid}/update-thumb', 'TemplateController@updateThumb');
 

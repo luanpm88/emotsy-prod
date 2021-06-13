@@ -92,11 +92,65 @@ abstract class AbsCampaign extends Model
     }
 
     /**
+     * Campaign has one template.
+     */
+    public function template()
+    {
+        return $this->belongsTo('Acelle\Model\Template');
+    }
+
+    /**
      * Get campaign's associated tracking domain.
      */
     public function trackingDomain()
     {
         return $this->belongsTo('Acelle\Model\TrackingDomain', 'tracking_domain_id');
+    }
+
+    /**
+     * Get template.
+     */
+    public function setTemplate($template)
+    {   
+        $campaignTemplate = $template->copy([
+            'name' => trans('messages.campaign.template_name', ['name' => $this->name]),
+            'customer_id' => $this->customer_id,
+        ]);
+        
+        // remove exist template
+        if ($this->template) {
+            $this->template->delete();
+        }
+
+        $this->template_id = $campaignTemplate->id;
+
+        $this->save();
+    }
+    
+    /**
+     * Get template content.
+     */
+    public function getTemplateContent()
+    {   
+        if (!$this->template) {
+            return false;
+        }
+
+        return $this->template->content;
+    }
+
+    /**
+     * Set template content.
+     */
+    public function setTemplateContent($content)
+    {   
+        if (!$this->template) {
+            throw new \Exception('Campaign does not have template!');
+        }
+
+        $template = $this->template;
+        $template->content = $content;
+        $template->save();
     }
 
     /**
@@ -527,7 +581,7 @@ abstract class AbsCampaign extends Model
         // * tagMessage
         if (is_null($this->parsedContent)) {
             // STEP 01. Get RAW content
-            $body = $this->html;
+            $body = $this->getTemplateContent();
 
             // STEP 02. Append footer
             if ($this->footerEnabled()) {
@@ -797,7 +851,7 @@ abstract class AbsCampaign extends Model
     public function getUrls()
     {
         // Find all links in campaign content
-        preg_match_all('/<a[^>]*href=["\'](?<url>http[^"\']*)["\']/i', $this->html, $matches);
+        preg_match_all('/<a[^>]*href=["\'](?<url>http[^"\']*)["\']/i', $this->getTemplateContent(), $matches);
         $hrefs = array_unique($matches['url']);
 
         $urls = [];
@@ -852,7 +906,7 @@ abstract class AbsCampaign extends Model
     {
         if ($this->type != 'plain-text' &&
            $this->customer->getOption('unsubscribe_url_required') == 'yes' &&
-            strpos($this->html, '{UNSUBSCRIBE_URL}') == false
+            strpos($this->getTemplateContent(), '{UNSUBSCRIBE_URL}') == false
         ) {
             return false;
         } else {
@@ -885,8 +939,8 @@ abstract class AbsCampaign extends Model
         }
 
         // Step 3
-        // if ((!empty($this->html) || $this->type == 'plain-text') && !empty($this->plain) && $this->unsubscribe_url_valid()) {
-        if ((!empty($this->html) || $this->type == 'plain-text') && !empty($this->plain)) {
+        // if ((!empty($this->getTemplateContent()) || $this->type == 'plain-text') && !empty($this->plain) && $this->unsubscribe_url_valid()) {
+        if ((!empty($this->getTemplateContent()) || $this->type == 'plain-text') && !empty($this->plain)) {
             $step = 3;
         } else {
             return $step;
@@ -1818,11 +1872,7 @@ abstract class AbsCampaign extends Model
         $newCampaign->updateCache();
 
         // copy template
-        if (file_exists($this->getStoragePath())) {
-            \Acelle\Library\Tool::xcopy($this->getStoragePath(), $newCampaign->getStoragePath());
-        }
-        $newCampaign->html = $this->html;
-        $newCampaign->save();
+        $newCampaign->setTemplate($this->template);
 
         return $newCampaign;
     }
@@ -2048,7 +2098,7 @@ abstract class AbsCampaign extends Model
         $cond = (!empty($this->name) && !empty($this->subject) && !empty($this->from_name)
             && !empty($this->from_email) && !empty($this->reply_to));
 
-        $cond = $cond && ((!empty($this->html) || $this->type == 'plain-text') && !empty($this->plain) && $this->unsubscribe_url_valid());
+        $cond = $cond && ((!empty($this->getTemplateContent()) || $this->type == 'plain-text') && !empty($this->plain) && $this->unsubscribe_url_valid());
 
         return $cond;
     }
@@ -2568,7 +2618,7 @@ abstract class AbsCampaign extends Model
     public function updatePlainFromHtml()
     {
         if (!$this->plain) {
-            $this->plain = preg_replace('/\s+/', ' ', preg_replace('/\r\n/', ' ', strip_tags($this->html)));
+            $this->plain = preg_replace('/\s+/', ' ', preg_replace('/\r\n/', ' ', strip_tags($this->getTemplateContent())));
             $this->save();
         }
     }
@@ -2627,8 +2677,8 @@ abstract class AbsCampaign extends Model
      */
     public function transform($useTrackingHost = false)
     {
-        $this->html = $this->transformWithoutUpdate($this->html, $useTrackingHost);
-        return $this->html;
+        $this->setTemplateContent($this->transformWithoutUpdate($this->getTemplateContent(), $useTrackingHost));
+        return $this->getTemplateContent();
     }
 
     /**
@@ -2672,14 +2722,14 @@ abstract class AbsCampaign extends Model
         // and only #1 will be untransformed while #2 is kept as is
 
         // Replace relative URL with campaign URL
-        $this->html = str_replace(
+        $this->setTemplateContent(str_replace(
             route('campaign_assets', ['uid' => $this->uid]).'/',
             '',
-            tinyDocTypeUntransform($this->html)
-        );
+            tinyDocTypeUntransform($this->getTemplateContent())
+        ));
 
         // remove title tag
-        $this->html = strip_tags_only($this->html, 'title');
+        $this->setTemplateContent(strip_tags_only($this->getTemplateContent(), 'title'));
     }
 
     /**
@@ -2687,7 +2737,7 @@ abstract class AbsCampaign extends Model
      */
     public function render()
     {
-        $body = $this->transformWithoutUpdate($this->html, $useTrackingHost = false);
+        $body = $this->transformWithoutUpdate($this->getTemplateContent(), $useTrackingHost = false);
         return $body;
     }
 
@@ -2709,21 +2759,6 @@ abstract class AbsCampaign extends Model
 
         // update plain
         $this->updatePlainFromHtml();
-    }
-
-    /**
-     * Copy new template.
-     */
-    public function copyFromTemplate($template)
-    {
-        // delete old template
-        Tool::xdelete($this->getStoragePath());
-
-        \Acelle\Library\Tool::xcopy($template->getStoragePath(), $this->getStoragePath());
-
-        // replace image url
-        $this->html = $template->content;
-        $this->save();
     }
 
     /**

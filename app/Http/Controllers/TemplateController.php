@@ -419,7 +419,7 @@ class TemplateController extends Controller
         $category = \Acelle\Model\TemplateCategory::findByUid($request->category_uid);
         
         // sort, pagination
-        $templates = $category->templates()->search($request->keyword)
+        $templates = $category->templates()->shared()->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
         
@@ -513,6 +513,36 @@ class TemplateController extends Controller
         }
 
         return view('templates.updateThumbUrl', [
+            'template' => $template,
+        ]);
+    }
+
+    /**
+     * Template categories.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function categories(Request $request, $uid)
+    {
+        $template = Template::findByUid($uid);
+        
+        // authorize
+        if (!$request->user()->customer->can('update', $template)) {
+            return $this->notAuthorized();
+        }
+
+        if ($request->isMethod('post')) {
+            foreach ($request->categories as $key => $value) {
+                $category = \Acelle\Model\TemplateCategory::findByUid($key);
+                if ($value == 'true') {
+                    $template->addCategory($category);
+                } else {
+                    $template->removeCategory($category);
+                }
+            }
+        }
+
+        return view('templates.categories', [
             'template' => $template,
         ]);
     }

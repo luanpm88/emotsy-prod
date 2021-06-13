@@ -232,6 +232,40 @@ class Template extends Model implements Storable
     }
 
     /**
+     * Contain category
+     *
+     * @return void
+     */
+    public function hasCategory($category)
+    {
+        return $this->categories()->where('template_categories.id', $category->id)->exists();
+    }
+
+    /**
+     * Add category
+     *
+     * @return void
+     */
+    public function addCategory($category)
+    {
+        if (!$this->hasCategory($category)) {
+            $this->categories()->attach($category->id);
+        }
+    }
+
+    /**
+     * Remove category
+     *
+     * @return void
+     */
+    public function removeCategory($category)
+    {
+        if ($this->hasCategory($category)) {
+            $this->categories()->detach($category->id);
+        }
+    }
+
+    /**
      * Copy new template.
      */
     public function copy($attributes=[])
@@ -254,7 +288,7 @@ class Template extends Model implements Storable
 
         // categories
         foreach($this->categories as $category) {
-            $copy->categories()->attach($category->id);
+            $copy->addCategory($category);
         }
 
         // Copy uploaded folder

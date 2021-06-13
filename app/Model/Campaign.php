@@ -519,21 +519,6 @@ class Campaign extends AbsCampaign
         return $result;
     }
 
-    /**
-     * Get builder templates.
-     *
-     * @return mixed
-     */
-    public function changeTemplate($template)
-    {
-        \Acelle\Library\Tool::xcopy($template->getStoragePath(), $this->getUploadDir());
-        $this->html = $template->content;
-        $this->image = $template->image;
-        // replace image url
-        $this->html = str_replace($template->getUploadUri(), $this->getUploadUri(), $this->html);
-        $this->save();
-    }
-
     public function logger()
     {
         if (!is_null($this->logger)) {

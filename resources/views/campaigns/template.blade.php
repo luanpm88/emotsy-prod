@@ -57,7 +57,7 @@
                         'class' => 'clean-editor',
                         'name' => 'html',
                         'label' => '',
-                        'value' => $campaign->html,
+                        'value' => $campaign->getTemplateContent(),
                         'rules' => $rules,
                         'help_class' => 'campaign'
                     ])
