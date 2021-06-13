@@ -564,7 +564,7 @@ class CampaignController extends Controller
         }
 
         return view('campaigns.template.content', [
-            'content' => $campaign->render(),
+            'content' => $campaign->getParsedContent(),
         ]);
     }
 

@@ -15,7 +15,7 @@ class AddTemplateIdToCampaigns extends Migration
     {
         Schema::table('campaigns', function (Blueprint $table) {
             $table->integer('template_id')->unsigned()->nullable();
-            $table->foreign('template_id')->references('id')->on('templates')->onDelete('cascade');
+            $table->foreign('template_id')->references('id')->on('templates')->onDelete('set null');
         });
     }
 

@@ -615,7 +615,7 @@ class Template extends Model implements Storable
     /**
      * transform URL.
      */
-    public function render()
+    public function getParsedContent()
     {
         $body = $this->transformWithoutUpdate($this->content, $useTrackingHost = false);
         return $body;

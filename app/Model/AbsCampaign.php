@@ -1885,17 +1885,6 @@ abstract class AbsCampaign extends Model
     public function isLayout($html = null)
     {
         return $html;
-
-        // TODO: review the stuffs below
-        if (!$html) {
-            $html = $this->render();
-        }
-
-        if (strpos($html, 'AcelleSystemLayouts') !== false) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     /**
@@ -2665,8 +2654,8 @@ abstract class AbsCampaign extends Model
      */
     public function getThumbUrl()
     {
-        if ($this->getThumbName()) {
-            return route('campaign_assets', ['uid' => $this->uid, 'name' => $this->getThumbName()]);
+        if ($this->template) {
+            return $this->template->getThumbUrl();
         } else {
             return url('assets/images/placeholder.jpg');
         }
@@ -2735,9 +2724,9 @@ abstract class AbsCampaign extends Model
     /**
      * transform URL.
      */
-    public function render()
+    public function getParsedContent()
     {
-        $body = $this->transformWithoutUpdate($this->getTemplateContent(), $useTrackingHost = false);
+        $body = $this->template->transformWithoutUpdate($this->getTemplateContent(), $useTrackingHost = false);
         return $body;
     }
 
