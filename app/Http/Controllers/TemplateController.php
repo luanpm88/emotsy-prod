@@ -346,7 +346,7 @@ class TemplateController extends Controller
         }
 
         return view('templates.builder.content', [
-            'content' => $template->render(),
+            'content' => $template->getParsedContent(),
         ]);
     }
     
