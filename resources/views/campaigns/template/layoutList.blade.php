@@ -5,18 +5,18 @@
     ">
         @foreach ($templates as $key => $template)
             <div class="col-xxs-12 col-xs-6 col-sm-3 col-md-2">
-                <a href="javascript:;" class="select-template-layout" data-template="{{ $template->uid }}">
-                    <div class="panel panel-flat panel-template-style">
+                <a 
+                    href="{{ action('CampaignController@templateLayout', ['uid' => $campaign->uid, 'template' => $template->uid]) }}"
+                    class="choose-theme"
+                >
+                    <div class="panel panel-flat">
                         <div class="panel-body">
-                            <a 
-                                href="{{ action('CampaignController@templateLayout', ['uid' => $campaign->uid, 'template' => $template->uid]) }}"
-                                class="choose-theme"
-                            >
+                            <div>
                                 <div class="panel-template-placeholder">
-                                <img src="{{ $template->getThumbUrl() }}?v={{ rand(0,10) }}" />
-                            </div>
+                                    <img src="{{ $template->getThumbUrl() }}?v={{ rand(0,10) }}" />
+                                </div>
                                 <label class="mb-20 text-center">{{ $template->name }}</label>
-                            </a>
+                            </div>
                         </div>
                     </div>
                 </a>
@@ -33,37 +33,6 @@
         var builderSelectPopup = new Popup(null, undefined, {onclose: function() {
             window.location = '{{ action('CampaignController@template', $campaign->uid) }}';
         }});
-
-        $('.choose-theme').click(function(e) {
-            e.preventDefault();        
-            var url = $(this).attr('href');
-
-            addMaskLoading();
-
-            // 
-            $.ajax({
-                url: url,
-                method: 'POST',
-                data: {
-                    _token: CSRF_TOKEN,
-                },
-                statusCode: {
-                    // validate error
-                    400: function (res) {
-                        alert('Something went wrong!');
-                    }
-                },
-                success: function (response) {
-                    removeMaskLoading();
-
-                    // notify
-                    notify('success', '{{ trans('messages.notify.success') }}', response.message);
-
-                    builderSelectPopup.load(response.url);
-                    templatePopup.hide();
-                }
-            });
-        });
     </script>
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
