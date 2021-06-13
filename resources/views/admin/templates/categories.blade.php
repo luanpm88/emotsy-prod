@@ -10,8 +10,8 @@
     ]) }}"
         method="POST">
 
-        <h2 class="mt-0 mb-2">{{ trans('messages.template.set_template_category') }}</h2>
-        <p class="mt-0">{{ trans('messages.template.set_template_category.intro') }}</p>
+        <h2 class="mt-0 mb-4">{{ trans('messages.template.set_template_category') }}</h2>
+        <p class="mt-0 pb-2">{{ trans('messages.template.set_template_category.intro') }}</p>
 
         {{ csrf_field() }}
 
