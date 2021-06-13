@@ -1128,32 +1128,6 @@ class Plan extends Model implements BillablePlanInterface
     }
 
     /**
-     ** Create paddle plan on servers.
-     **/
-    public function createPaddlePlan($json_body, $plan)
-    {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://vendors.paddle.com/api/2.0/subscription/plans_create');
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $json_body);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        $headers = array();
-        $headers[] = 'Content-Type: application/x-www-form-urlencoded';
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        $result = curl_exec($ch);
-        //close connection
-        curl_close($ch);
-        $result = json_decode($result);
-        if ($result->success) {
-            $paddle_plan_id = $result->response->product_id;
-            $plan->paddle_plan_id = $paddle_plan_id;
-            $plan->save();
-        }
-
-        return true;
-    }
-
-    /**
      ** Add sending server by uid.
      **/
     public function addSendingServerByUid($sendinServerUid)
@@ -1261,35 +1235,6 @@ class Plan extends Model implements BillablePlanInterface
     public function isFree()
     {
         return $this->price == 0;
-    }
-
-    /**
-     * Get stripe price.
-     *
-     * @return string
-     */
-    public function stripePrice()
-    {
-        $currency_rates = [
-            'CLP' => 1,
-            'DJF' => 1,
-            'JPY' => 1,
-            'KMF' => 1,
-            'RWF' => 1,
-            'VUV' => 1,
-            'XAF' => 1,
-            'XOF' => 1,
-            'BIF' => 1,
-            'GNF' => 1,
-            'KRW' => 1,
-            'MGA' => 1,
-            'PYG' => 1,
-            'VND' => 1,
-            'XPF' => 1,
-        ];
-        $rate = isset($currency_rates[$this->currency->code]) ? $currency_rates[$this->currency->code] : 100;
-
-        return $this->price * $rate;
     }
 
     /**
@@ -1507,15 +1452,6 @@ class Plan extends Model implements BillablePlanInterface
             $errors[] = 'sending_server_empty';
         }
 
-        // if (config('cashier.paypal_payment') == 'paypal_subscription') {
-        //     $service = \Acelle\Model\Setting::getPaymentGateway('paypal_subscription');
-
-        //     if (!$service->findPlanConnection($this)) {
-        //         $errors[] = 'plan_not_connected';
-        //     }
-        // }
-
-        // else return true
         return $errors;
     }
 
@@ -1534,15 +1470,6 @@ class Plan extends Model implements BillablePlanInterface
         } else {
             $this->enable();
         }
-
-        // if (config('cashier.paypal_payment') == 'paypal_subscription') {
-        //     $service = \Acelle\Model\Setting::getPaymentGateway('paypal_subscription');
-
-        //     if (!$service->findPlanConnection($this)) {
-        //         $this->disable();
-        //         $this->visibleOff();
-        //     }
-        // }
     }
 
     /**
