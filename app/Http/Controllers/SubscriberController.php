@@ -418,14 +418,14 @@ class SubscriberController extends Controller
     public function importProccess(Request $request)
     {
         $list = MailList::findByUid($request->current_list_uid);
-        $system_job = $list->getLastImportJob();
+        $job = $list->getLastImportJob();
 
         // authorize
         if (\Gate::denies('import', $list)) {
             return $this->notAuthorized();
         }
 
-        if (!is_object($system_job)) {
+        if (!is_object($job)) {
             return "none";
         }
 
@@ -435,12 +435,12 @@ class SubscriberController extends Controller
         }
 
         // Messages
-        $message = \Acelle\Helpers\ImportSubscribersHelper::getMessage($system_job);
+        $message = $job->getMessage();
 
         return response()->json([
-            "job" => $system_job,
-            "data" => json_decode($system_job->data),
-            "timer" => $system_job->runTime(),
+            "job" => $job,
+            "data" => json_decode($job->data),
+            "timer" => $job->runTime(),
             "message" => $message,
         ]);
     }
