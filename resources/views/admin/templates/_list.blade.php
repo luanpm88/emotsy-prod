@@ -39,9 +39,11 @@
 				</td>
 				<td>
 					<div class="single-stat-box pull-left">
-						<span class="no-margin stat-num">{{ trans('messages.template_type_' . $template->source) }}</span>
-						<br>
-						<span class="text-muted text-nowrap">{{ trans('messages.template.category') }}</span>
+						<span class="no-margin stat-num">{{ $template->categories->map(function ($cat) {
+                            return $cat->name;
+                        })->join(', ') }}</span>
+                        <br>
+                        <span class="text-muted text-nowrap">{{ trans('messages.template.category') }}</span>
 					</div>
 				</td>
 				<td class="text-right">

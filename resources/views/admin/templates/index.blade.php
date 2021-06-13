@@ -59,7 +59,6 @@
 									</button>
 								</span>
 								<span class="filter-group">
-									<span class="title text-semibold text-muted">{{ trans('messages.template.category') }}</span>
 									<select class="select" name="category_uid">
 										<option value="">{{ trans('messages.template.all_categories') }}</option>
 										@foreach (\Acelle\Model\TemplateCategory::all() as $category)
