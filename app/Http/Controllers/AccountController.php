@@ -177,58 +177,6 @@ class AccountController extends Controller
     }
 
     /**
-     * Api token.
-     */
-    public function subscription(Request $request)
-    {
-        $customer = $request->user()->customer;
-
-        // Get current subscription
-        $subscription = $customer->getCurrentSubscriptionIgnoreStatus();
-        
-        // Get next subscription
-        $nextSubscription = $customer->getNextSubscription();
-
-        // If has no subscription
-        if (!$subscription) {
-            return redirect()->action('AccountController@subscriptionNew');
-        }
-
-        return view('account.subscription', [
-            'subscription' => $subscription,
-            'nextSubscription' => $nextSubscription,
-        ]);
-    }
-
-    /**
-     * Api token.
-     */
-    public function subscriptionNew(Request $request)
-    {
-        $customer = $request->user()->customer;
-
-        $subscription = new \Acelle\Model\Subscription();
-        $subscription->customer_id = $customer->id;
-
-        if ($request->plan_uid) {
-            $subscription->fillAttributes($request->all());
-        }
-
-        // authorize
-        if (!$request->user()->customer->can('create', $subscription)) {
-            return $this->notAuthorized();
-        }
-
-        if (!empty($request->old())) {
-            $subscription->fillAttributes($request->old());
-        }
-
-        return view('account.subscription_new', [
-            'subscription' => $subscription
-        ]);
-    }
-
-    /**
      * Renew api token.
      */
     public function renewToken(Request $request)
