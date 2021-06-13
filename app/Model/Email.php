@@ -938,20 +938,6 @@ class Email extends Model
     public function inlineHtml($html)
     {
         return $html;
-
-        // TODO: review this stuff!
-        if ($this->isLayout($html)) {
-            // Convert to inline css if template source is builder
-            $cssToInlineStyles = new CssToInlineStyles();
-            $css = file_get_contents(public_path('assets2/css/email/main.css'));
-            // output
-            $html = $cssToInlineStyles->convert(
-                $html,
-                $css
-            );
-        }
-
-        return $html;
     }
 
     /**

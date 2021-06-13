@@ -39,6 +39,7 @@ class TemplateController extends Controller
         }
 
         $templates = \Acelle\Model\Template::shared()
+            ->filter($request)
             ->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
@@ -421,15 +422,18 @@ class TemplateController extends Controller
      */
     public function builderTemplates(Request $request)
     {
-        $templates = Template::theme()->shared()
-            ->search($request->keyword)
-            ->orderBy($request->sort_order, $request->sort_direction)
-            ->paginate($request->per_page);
-
         // authorize
         if (!$request->user()->admin->can('create', Template::class)) {
             return $this->notAuthorized();
         }
+
+        // category
+        $category = \Acelle\Model\TemplateCategory::findByUid($request->category_uid);
+        
+        // sort, pagination
+        $templates = $category->templates()->search($request->keyword)
+            ->orderBy($request->sort_order, $request->sort_direction)
+            ->paginate($request->per_page);
 
         return view('admin.templates.builder.templates', [
             'templates' => $templates,

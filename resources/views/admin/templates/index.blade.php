@@ -58,17 +58,26 @@
 										<i class="icon-sort-amount-desc"></i>
 									</button>
 								</span>
+								<span class="filter-group">
+									<span class="title text-semibold text-muted">{{ trans('messages.template.category') }}</span>
+									<select class="select" name="category_uid">
+										<option value="">{{ trans('messages.template.all_categories') }}</option>
+										@foreach (\Acelle\Model\TemplateCategory::all() as $category)
+											<option value="{{ $category->uid }}">{{ $category->name }}</option>
+										@endforeach
+									</select>
+								</span>
 								<span class="text-nowrap">
 									<input name="search_keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
 									<i class="icon-search4 keyword_search_button"></i>
 								</span>
 							</div>
 						</div>
-						<div class="col-md-3 text-right">
-							<a href="{{ action('Admin\TemplateController@upload') }}" type="button" class="btn bg-info-800">
+						<div class="col-md-3 text-right d-flex align-items-center">
+							<a href="{{ action('Admin\TemplateController@upload') }}" class="btn bg-info-800 mr-2 ml-auto">
 								<i class="icon icon-upload"></i> {{ trans('messages.upload') }}
 							</a>
-							<a href="{{ action('Admin\TemplateController@builderCreate') }}" type="button" class="btn bg-info-800">
+							<a href="{{ action('Admin\TemplateController@builderCreate') }}" class="btn bg-info-800">
 								<i class="icon icon-plus2"></i> {{ trans('messages.create') }}
 							</a>
 						</div>

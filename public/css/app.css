@@ -4372,3 +4372,6 @@ label:hover .checkmark, .checkmark-container:hover .checkmark {
 .popup-body .panel-template-placeholder {
     height: 166px;
 }
+.btn.sort-direction {
+    background: #ddd;;
+}

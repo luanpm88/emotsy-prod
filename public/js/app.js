@@ -103,6 +103,8 @@ function initJs(container) {
         minimumResultsForSearch: 101,
         templateResult: formatSelect2TextOption,
         templateSelection: formatSelect2TextSelected,
+        dropdownAutoWidth : true,
+        width: 'auto',
         // placeholder: function(){
         //     $(this).attr('data-placeholder');
         // }
@@ -622,14 +624,18 @@ $(function() {
     $('.select').select2({
         minimumResultsForSearch: 101,
         templateResult: formatSelect2TextOption,
-        templateSelection: formatSelect2TextSelected
+        templateSelection: formatSelect2TextSelected,
+        dropdownAutoWidth : true,
+        width: 'auto',
     });
 
     // Select with search
     $('.select-search').select2({
         minimumResultsForSearch: 101,
         templateResult: formatSelect2TextOption,
-        templateSelection: formatSelect2TextSelected
+        templateSelection: formatSelect2TextSelected,
+        dropdownAutoWidth : true,
+        width: 'auto',
     });
 
 
@@ -1215,7 +1221,9 @@ $(function() {
                 // Select with search
                 $('.select-search').select2({
                     templateResult: formatSelect2TextOption,
-                    templateSelection: formatSelect2TextSelected
+                    templateSelection: formatSelect2TextSelected,
+                    dropdownAutoWidth : true,
+                    width: 'auto',
                 });
             });
         } else {
@@ -1562,7 +1570,9 @@ $(function() {
             var new_line = container.find('.condition-line').last();
             new_line.find('select').select2({
                 templateResult: formatSelect2TextOption,
-                templateSelection: formatSelect2TextSelected
+                templateSelection: formatSelect2TextSelected,
+                dropdownAutoWidth : true,
+                width: 'auto',
             });
             new_line.find('.styled').uniform({
                 radioClass: 'choice'
@@ -1880,7 +1890,9 @@ $(function() {
             $('#copy-move-subscribers-form').find('select').select2({
                 minimumResultsForSearch: 101,
                 templateResult: formatSelect2TextOption,
-                templateSelection: formatSelect2TextSelected
+                templateSelection: formatSelect2TextSelected,
+                dropdownAutoWidth : true,
+                width: 'auto',
             });
             $('#copy-move-subscribers-form').find('.styled').uniform({
                 radioClass: 'choice'

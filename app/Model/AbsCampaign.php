@@ -1855,17 +1855,6 @@ abstract class AbsCampaign extends Model
      */
     public function inlineHtml($html)
     {
-        // Convert to inline css if template source is builder
-        if ($this->isLayout($html)) {
-            $cssToInlineStyles = new CssToInlineStyles();
-            $css = file_get_contents(public_path('assets2/css/email/main.css'));
-            // output
-            $html = $cssToInlineStyles->convert(
-                $html,
-                $css
-            );
-        }
-
         return $html;
     }
 
