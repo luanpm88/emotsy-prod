@@ -231,8 +231,6 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     
     Route::get('account/api/renew', 'AccountController@renewToken');
     Route::get('account/api', 'AccountController@api');
-    Route::get('account/subscription', 'AccountController@subscription');
-    Route::get('account/subscription/new', 'AccountController@subscriptionNew');
 
     // User avatar
     Route::get('assets/images/avatar/user-{uid?}.jpg', 'UserController@avatar');
