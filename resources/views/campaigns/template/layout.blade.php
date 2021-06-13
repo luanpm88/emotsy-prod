@@ -71,36 +71,5 @@
         var builderSelectPopup = new Popup(null, undefined, {onclose: function() {
             window.location = '{{ action('CampaignController@template', $campaign->uid) }}';
         }});
-
-        $('.choose-layout').click(function(e) {
-            e.preventDefault();        
-            var url = $(this).attr('href');
-
-            addMaskLoading();
-
-            // 
-            $.ajax({
-                url: url,
-                method: 'POST',
-                data: {
-                    _token: CSRF_TOKEN,
-                },
-                statusCode: {
-                    // validate error
-                    400: function (res) {
-                        alert('Something went wrong!');
-                    }
-                },
-                success: function (response) {
-                    removeMaskLoading();
-
-                    // notify
-                    notify('success', '{{ trans('messages.notify.success') }}', response.message);
-
-                    builderSelectPopup.load(response.url);
-                    templatePopup.hide();
-                }
-            });
-        });
     </script>
 @endsection

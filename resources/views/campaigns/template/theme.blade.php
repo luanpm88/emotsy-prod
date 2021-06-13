@@ -63,6 +63,6 @@
             var url = $(this).attr('href');
         
             templatePopup.load(url);
-        });        
+        });
     </script>
 @endsection
