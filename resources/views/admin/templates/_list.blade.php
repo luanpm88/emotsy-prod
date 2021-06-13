@@ -39,11 +39,17 @@
 				</td>
 				<td>
 					<div class="single-stat-box pull-left">
-						<a href="{{ action('Admin\TemplateController@categories', [
-							'uid' => $template->uid,
-						]) }}" class="no-margin stat-num template-categories">{{ $template->categories->map(function ($cat) {
-                            return $cat->name;
-                        })->join(', ') }}</a>
+						@if (Auth::user()->admin->can('update', $template))
+                            <a href="{{ action('Admin\TemplateController@categories', [
+                                'uid' => $template->uid,
+                            ]) }}" class="no-margin stat-num template-categories">{{ $template->categories()->count() ? $template->categories->map(function ($cat) {
+                                return $cat->name;
+                            })->join(', ') : 'N/A' }}</a>
+                        @else
+                            <span class="no-margin stat-num template-categories">{{ $template->categories()->count() ? $template->categories->map(function ($cat) {
+                                return $cat->name;
+                            })->join(', ') : 'N/A' }}</span>
+                        @endif
                         <br>
                         <span class="text-muted text-nowrap">{{ trans('messages.template.category') }}</span>
 					</div>
