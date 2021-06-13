@@ -544,4 +544,34 @@ class TemplateController extends Controller
             'template' => $template,
         ]);
     }
+
+    /**
+     * Template categories.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function categories(Request $request, $uid)
+    {
+        $template = Template::findByUid($uid);
+        
+        // authorize
+        if (!$request->user()->admin->can('update', $template)) {
+            return $this->notAuthorized();
+        }
+
+        if ($request->isMethod('post')) {
+            foreach ($request->categories as $key => $value) {
+                $category = \Acelle\Model\TemplateCategory::findByUid($key);
+                if ($value == 'true') {
+                    $template->addCategory($category);
+                } else {
+                    $template->removeCategory($category);
+                }
+            }
+        }
+
+        return view('admin.templates.categories', [
+            'template' => $template,
+        ]);
+    }
 }

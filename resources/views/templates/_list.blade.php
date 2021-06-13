@@ -36,9 +36,11 @@
 
                 <td>
                     <div class="single-stat-box pull-left">
-                        <span class="no-margin stat-num">{{ $template->categories->map(function ($cat) {
+                        <a href="{{ action('TemplateController@categories', [
+							'uid' => $template->uid,
+						]) }}" class="no-margin stat-num template-categories">{{ $template->categories->map(function ($cat) {
                             return $cat->name;
-                        })->join(', ') }}</span>
+                        })->join(', ') }}</a>
                         <br>
                         <span class="text-muted text-nowrap">{{ trans('messages.template.category') }}</span>
                     </div>
@@ -74,6 +76,15 @@
                                         </a>
                                     </li>
                                 @endif
+                                @if (Auth::user()->customer->can('update', $template))
+                                    <li>
+                                        <a class="template-categories" href="{{ action('TemplateController@categories', [
+											'uid' => $template->uid,
+										]) }}">
+                                            <i class="icon-files-empty"></i> {{ trans("messages.template.categories") }}
+                                        </a>
+                                    </li>
+                                @endif
                                 @if (Auth::user()->customer->can('copy', $template))
                                     <li>
                                         <a
@@ -100,7 +111,8 @@
     {{ $templates->links() }}
     
     <script>
-		var thumbPopup = new Popup();        
+		var thumbPopup = new Popup();    
+        var categoriesPopup = new Popup();           
     
         $('.upload-thumb-button').click(function(e) {
             e.preventDefault();
@@ -108,6 +120,14 @@
             var url = $(this).attr('href');
             
             thumbPopup.load(url);
+        });
+
+        $('.template-categories').click(function(e) {
+            e.preventDefault();
+            
+            var url = $(this).attr('href');
+            
+            categoriesPopup.load(url);
         });
     </script>
 

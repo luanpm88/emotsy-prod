@@ -44,7 +44,7 @@
                     parent.builderSelectPopup.hide();
                   }
                 },
-                uploadAssetUrl: '{{ action('CampaignController@templateAsset', $campaign->uid) }}',
+                uploadAssetUrl: '{{ action('TemplateController@builderAsset', $campaign->template->uid) }}',
                 uploadAssetMethod: 'POST',
                 saveUrl: '{{ action('CampaignController@templateEdit', $campaign->uid) }}',
                 saveMethod: 'POST',

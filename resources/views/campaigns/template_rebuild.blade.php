@@ -23,6 +23,6 @@
 
 @section('template_content')
 
-    {!! $campaign->html !!}
+    {!! $campaign->getTemplateContent() !!}
     
 @endsection

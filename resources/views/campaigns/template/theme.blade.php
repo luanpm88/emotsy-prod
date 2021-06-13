@@ -23,8 +23,8 @@
                                         <span class="title text-semibold text-muted mr-2">{{ trans('messages.from') }}</span>
                                         <select class="select" name="from">
                                             <option value="all">{{ trans('messages.all') }}</option>
-                                            <option value="mine">{{ trans('messages.my_templates') }}</option>
-                                            <option value="gallery" selected='selected'>{{ trans('messages.gallery') }}</option>
+                                            <option value="mine" selected='selected'>{{ trans('messages.my_templates') }}</option>
+                                            <option value="gallery">{{ trans('messages.gallery') }}</option>
                                         </select>										
                                     </span>
                                     <span class="d-flex align-items-center mr-4">
