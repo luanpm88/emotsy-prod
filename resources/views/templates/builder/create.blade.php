@@ -61,84 +61,50 @@
 				</div>
 			</div>
 
-			<div class="subsection">
-				<h2 class="font-weight-semibold mb-0">{{ trans('messages.template.basic') }}</h2>
-				<hr>
+			@foreach (Acelle\Model\TemplateCategory::all() as $category)
+				@if ($category->templates()->count())
+					<div class="subsection pb-4">
+						<h2 class="font-weight-semibold mb-0">{{ $category->name }}</h2>
+						<hr>
 
-				<div class="template-boxes" style="
-					margin-left: -20px;
-					margin-right: -20px;
-					clear: both;
-				">
-					@foreach(Acelle\Model\Template::basic()->get() as $layout)
-						<div class="col-xxs-12 col-xs-6 col-sm-3 col-md-2">
-							<a href="javascript:;" class="select-template-layout" data-template="{{ $layout->uid }}">
-								<div class="panel panel-flat panel-template-style">
-									<div class="panel-body">
-										<div class="panel-body">
-											<div class="panel-template-placeholder">
-												<img src="{{ $layout->getThumbUrl() }}?v={{ rand(0,10) }}" />
-											</div>
-											<h5 class="mb-20 text-center">{{ $layout->name }}</h5>
+						<div id="gallery" class="pb-4">
+							<form class="listing-form"
+								data-url="{{ action('TemplateController@builderTemplates', [
+									'category_uid' => $category->uid,
+								]) }}"
+								per-page="25"					
+							>				
+								<div class="row top-list-controls">
+									<div class="col-md-9">
+										<div class="filter-box">
+											<span class="filter-group">
+												<span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
+												<select class="select" name="sort-order">
+													<option value="id">{{ trans('messages.default') }}</option>
+													<option value="created_at">{{ trans('messages.created_at') }}</option>
+													<option value="custom_order" class="active">{{ trans('messages.custom_order') }}</option>
+													<option value="name">{{ trans('messages.name') }}</option>
+												</select>										
+												<button class="btn btn-xs sort-direction" rel="asc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
+													<i class="icon-sort-amount-asc"></i>
+												</button>
+											</span>
+											<span class="text-nowrap">
+												<input name="search_keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
+												<i class="icon-search4 keyword_search_button"></i>
+											</span>
 										</div>
 									</div>
 								</div>
-							</a>
+								
+								<div class="pml-table-container">
+								</div>
+							</form>
 						</div>
-					@endforeach
-				</div>
-				<br style="clear:both" />
-			</div>
-
-			<div class="subsection">
-				<h2 class="font-weight-semibold mb-0">{{ trans('messages.template.themes') }}</h2>
-				<hr>
-
-				<div id="gallery" class="">
-					<form class="listing-form"
-						data-url="{{ action('TemplateController@builderTemplates') }}"
-						per-page="12"					
-					>				
-						<div class="row top-list-controls">
-							<div class="col-md-9">
-								@if ($templates->count() >= 0)					
-									<div class="filter-box">										
-										<span class="filter-group">
-											<span class="title text-semibold text-muted">{{ trans('messages.from') }}</span>
-											<select class="select" name="from">
-												<option value="all">{{ trans('messages.all') }}</option>
-												<option value="mine">{{ trans('messages.my_templates') }}</option>
-												<option value="gallery" selected='selected'>{{ trans('messages.gallery') }}</option>
-											</select>										
-										</span>
-										<span class="filter-group">
-											<span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
-											<select class="select" name="sort-order">
-												<option value="created_at">{{ trans('messages.created_at') }}</option>
-												<option value="custom_order" class="active">{{ trans('messages.custom_order') }}</option>
-												<option value="name">{{ trans('messages.name') }}</option>
-											</select>										
-											<button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
-												<i class="icon-sort-amount-desc"></i>
-											</button>
-										</span>
-										<span class="text-nowrap">
-											<input name="search_keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
-											<i class="icon-search4 keyword_search_button"></i>
-										</span>
-									</div>
-								@endif
-							</div>
-						</div>
-						
-						<div class="pml-table-container">
-							
-							
-							
-						</div>
-					</form>
-				</div>
-			</div>
+						<br style="clear:both" /><br style="clear:both" />
+					</div>
+				@endif
+			@endforeach
         </div>
     </div>
     

@@ -329,7 +329,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::match(['get','post'], 'templates/{uid}/update-thumb', 'TemplateController@updateThumb');
 
     Route::get('templates/{uid}/builder/change-template/{change_uid}', 'TemplateController@builderChangeTemplate');
-    Route::get('templates/builder/templates', 'TemplateController@builderTemplates');
+    Route::get('templates/builder/templates/{category_uid?}', 'TemplateController@builderTemplates');
     Route::post('templates/builder/create', 'TemplateController@builderCreate');
     Route::get('templates/builder/create', 'TemplateController@builderCreate');
     Route::post('templates/{uid}/builder/edit/asset', 'TemplateController@builderAsset');
@@ -643,7 +643,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::match(['get','post'], 'admin/templates/{uid}/update-thumb', 'TemplateController@updateThumb');
 
     Route::get('admin/templates/{uid}/builder/change-template/{change_uid}', 'TemplateController@builderChangeTemplate');
-    Route::get('admin/templates/builder/templates', 'TemplateController@builderTemplates');
+    Route::get('admin/templates/builder/templates/{category_uid}', 'TemplateController@builderTemplates');
     Route::post('admin/templates/builder/create', 'TemplateController@builderCreate');
     Route::get('admin/templates/builder/create', 'TemplateController@builderCreate');
     Route::post('admin/templates/{uid}/builder/edit/asset', 'TemplateController@builderAsset');

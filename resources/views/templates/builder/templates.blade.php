@@ -19,9 +19,9 @@
         @endforeach
     </div>
         
-    <hr style="clear: both">
-        
-    @include('elements/_per_page_select', ["items" => $templates])
+    <div style="clear:both">
+        @include('elements/_per_page_select', ["items" => $templates])
+    </div>
     {{ $templates->links() }}
 @elseif (!empty(request()->keyword))
     <div class="empty-list">

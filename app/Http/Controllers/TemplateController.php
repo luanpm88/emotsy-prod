@@ -389,9 +389,6 @@ class TemplateController extends Controller
             return $this->notAuthorized();
         }
         
-        // Gallery
-        $templates = Template::where('customer_id', '=', null);
-        
         // validate and save posted data
         if ($request->isMethod('post')) {
             $currentTemplate = Template::findByUid($request->template);
@@ -407,7 +404,6 @@ class TemplateController extends Controller
 
         return view('templates.builder.create', [
             'template' => $template,
-            'templates' => $templates,
         ]);
     }
     
@@ -418,18 +414,11 @@ class TemplateController extends Controller
      */
     public function builderTemplates(Request $request)
     {
-        // from
-        if ($request->from == 'mine') {
-            $templates = $request->user()->customer->templates();
-        } elseif ($request->from == 'gallery') {
-            $templates = Template::shared();
-        } else {
-            $templates = Template::shared()
-                ->orWhere('customer_id', '=', $request->user()->customer->id);
-        }
-
+        // category
+        $category = \Acelle\Model\TemplateCategory::findByUid($request->category_uid);
+        
         // sort, pagination
-        $templates = $templates->theme()->search($request->keyword)
+        $templates = $category->templates()->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
         

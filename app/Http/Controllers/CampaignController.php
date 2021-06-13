@@ -627,7 +627,7 @@ class CampaignController extends Controller
         }
 
         // sort, pagination
-        $templates = $templates->theme()->search($request->keyword)
+        $templates = $templates->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
 

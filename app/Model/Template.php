@@ -95,43 +95,28 @@ class Template extends Model implements Storable
     }
 
     /**
-     * Basic.
-     *
-     * @return collect
+     * The template that belong to the categories.
      */
-    public static function scopeBasic($query)
+    public function categories()
     {
-        $query = $query->where('category', '=', self::CATEGORY_BASIC);
+        return $this->belongsToMany('Acelle\Model\TemplateCategory', 'templates_categories', 'template_id', 'category_id');
     }
 
     /**
-     * Featured.
+     * Search.
      *
      * @return collect
      */
-    public static function scopeFeatured($query)
+    public static function scopeFilter($query, $request)
     {
-        $query = $query->where('category', '=', self::CATEGORY_FEATURED);
-    }
+        // Category
+        if ($request->category_uid) {
+            $category = \Acelle\Model\TemplateCategory::findByUid($request->category_uid);
 
-    /**
-     * Woo.
-     *
-     * @return collect
-     */
-    public static function scopeWoo($query)
-    {
-        $query = $query->where('category', '=', self::CATEGORY_WOO);
-    }
-
-    /**
-     * noCat.
-     *
-     * @return collect
-     */
-    public static function scopeTheme($query)
-    {
-        $query = $query->where('category', '=', self::CATEGORY_THEME);
+            $query = $query->whereHas('categories', function($q) use($category) {
+                $q->whereIn('template_categories.id', [$category->id]);
+            })->get();
+        }
     }
 
     /**
@@ -888,17 +873,6 @@ class Template extends Model implements Storable
 
     public function inlineHtml($html)
     {
-        // Convert to inline css if template source is builder
-        if ($this->isLayout($html)) {
-            $cssToInlineStyles = new CssToInlineStyles();
-            $css = file_get_contents(public_path('assets2/css/email/main.css'));
-            // output
-            $html = $cssToInlineStyles->convert(
-                $html,
-                $css
-            );
-        }
-
         return $html;
     }
 
@@ -913,12 +887,12 @@ class Template extends Model implements Storable
         $template->name = $attributes['name'];
         $template->builder = $attributes['builder'];
 
-        if (isset($attributes['category'])) {
-            $template->category = $attributes['category'];
-        }
-
         $template->save();
 
         $template->loadFromDirectory($dir);
+
+        if (isset($attributes['category'])) {
+            $attributes['category']->templates()->attach($template->id);
+        }
     }
 }
