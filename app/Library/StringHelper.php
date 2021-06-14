@@ -39,7 +39,7 @@ class StringHelper
             return null;
         }
 
-        return strtr(base64_encode($val), '+/=', '-_,');
+        return urlencode(base64_encode($val));
     }
 
     /**
@@ -56,7 +56,7 @@ class StringHelper
             return null;
         }
 
-        return base64_decode(strtr($val, '-_,', '+/='));
+        return base64_decode(urldecode($val));
     }
 
     /**
