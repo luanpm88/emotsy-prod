@@ -100,6 +100,14 @@ abstract class AbsCampaign extends Model
     }
 
     /**
+     * Campaign has many campaign links.
+     */
+    public function campaignLinks()
+    {
+        return $this->hasMany('Acelle\Model\CampaignLink');
+    }
+
+    /**
      * Get campaign's associated tracking domain.
      */
     public function trackingDomain()
@@ -870,18 +878,12 @@ abstract class AbsCampaign extends Model
     public function updateLinks()
     {
         foreach ($this->getUrls() as $url) {
-            $link = Link::where('url', '=', $url)->first();
-            if (!is_object($link)) {
-                $link = new Link();
-                $link->url = $url;
-                $link->save();
-            }
-
             // Campaign link
             if ($this->links()->where('url', '=', $url)->count() == 0) {
                 $cl = new CampaignLink();
                 $cl->campaign_id = $this->id;
                 $cl->link_id = $link->id;
+                $cl->url = $url;
                 $cl->save();
             }
         }
@@ -1589,12 +1591,11 @@ abstract class AbsCampaign extends Model
      */
     public static function topLinks($number = 5, $customer = null)
     {
-        $records = Link::select(DB::raw(DB::getTablePrefix().'links.*, count(*) as `aggregate`'))
-            ->join('campaign_links', 'campaign_links.link_id', '=', 'links.id')
+        $records = CampaignLink::select(DB::raw(table('campaign_links.*').', count(*) as `aggregate`'))
             ->join('tracking_logs', 'tracking_logs.campaign_id', '=', 'campaign_links.campaign_id')
             ->join('click_logs', function ($join) {
                 $join->on('click_logs.message_id', '=', 'tracking_logs.message_id')
-                ->on('click_logs.url', '=', 'links.url');
+                ->on('click_logs.url', '=', 'campaign_links.url');
             });
 
         if (isset($customer)) {
@@ -1602,7 +1603,7 @@ abstract class AbsCampaign extends Model
                 ->where('campaigns.customer_id', '=', $customer->id);
         }
 
-        $records = $records->groupBy('links.id')
+        $records = $records->groupBy('campaign_links.url')
             ->orderBy('aggregate', 'desc');
 
         return $records->take($number);
