@@ -916,16 +916,6 @@ class Customer extends Model implements BillableUserInterface
     }
 
     /**
-     * Get not auto campaign.
-     *
-     * @return array
-     */
-    public function getNormalCampaigns()
-    {
-        return $this->campaigns()->where('is_auto', '=', false);
-    }
-
-    /**
      * Get customer timezone.
      *
      * @return string

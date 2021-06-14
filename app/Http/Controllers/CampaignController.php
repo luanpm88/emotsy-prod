@@ -34,7 +34,7 @@ class CampaignController extends Controller
     public function index(Request $request)
     {
         $customer = $request->user()->customer;
-        $campaigns = $customer->getNormalCampaigns();
+        $campaigns = $customer->campaigns();
 
         return view('campaigns.index', [
             'campaigns' => $campaigns,
