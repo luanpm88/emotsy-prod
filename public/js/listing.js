@@ -76,7 +76,7 @@ function tableFilter(form, custom_url) {
     }
 
     // showed columns
-    var columns = form.find("input[name='columns[]']:checked").map(function () {
+    var columns = form.find("input[name='columns_[]']:checked").map(function () {
         return this.value;
     }).get().join(",");
 

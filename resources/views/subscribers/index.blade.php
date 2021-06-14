@@ -135,7 +135,7 @@
 									<li>
 										<div class="checkbox">
 											<label>
-												<input {{ (true ? "checked='checked'" : "") }} type="checkbox" id="{{ $field->tag }}" name="columns[]" value="{{ $field->uid }}" class="styled">
+												<input {{ (true ? "checked='checked'" : "") }} type="checkbox" id="{{ $field->tag }}" name="columns_[]" value="{{ $field->uid }}" class="styled">
 												{{ $field->label }}
 											</label>
 										</div>
@@ -145,7 +145,7 @@
 							<li>
 								<div class="checkbox">
 									<label>
-										<input checked="checked" type="checkbox" id="created_at" name="columns[]" value="created_at" class="styled">
+										<input checked="checked" type="checkbox" id="created_at" name="columns_[]" value="created_at" class="styled">
 										{{ trans('messages.created_at') }}
 									</label>
 								</div>
@@ -153,7 +153,7 @@
 							<li>
 								<div class="checkbox">
 									<label>
-										<input checked="checked" type="checkbox" id="updated_at" name="columns[]" value="updated_at" class="styled">
+										<input checked="checked" type="checkbox" id="updated_at" name="columns_[]" value="updated_at" class="styled">
 										{{ trans('messages.updated_at') }}
 									</label>
 								</div>
