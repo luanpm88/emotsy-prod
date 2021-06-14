@@ -144,6 +144,9 @@ class AutomationElement
             case 'ElementCondition':
                 return '<i class="material-icons bg-warning">call_split</i>';
                 break;
+            case 'ElementOperation':
+                return '<i class="material-icons bg-info">checklist_rtl</i>';
+                break;
             default:
         }
     }
