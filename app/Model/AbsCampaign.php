@@ -189,14 +189,6 @@ abstract class AbsCampaign extends Model
     }
 
     /**
-     * Get the links for campaign.
-     */
-    public function links()
-    {
-        return $this->belongsToMany('Acelle\Model\Link', 'campaign_links');
-    }
-
-    /**
      * Get the customer.
      */
     public function customer()
@@ -850,7 +842,7 @@ abstract class AbsCampaign extends Model
      */
     public function getLinks()
     {
-        return $this->links()->whereIn('url', $this->getUrls())->get();
+        return $this->campaignLinks()->get();
     }
 
     /**
@@ -879,7 +871,7 @@ abstract class AbsCampaign extends Model
     {
         foreach ($this->getUrls() as $url) {
             // Campaign link
-            if ($this->links()->where('url', '=', $url)->count() == 0) {
+            if ($this->campaignLinks()->where('url', '=', $url)->count() == 0) {
                 $cl = new CampaignLink();
                 $cl->campaign_id = $this->id;
                 $cl->link_id = $link->id;
@@ -979,8 +971,6 @@ abstract class AbsCampaign extends Model
         // Get campaign from ... (all|normal|automated)
         if ($request->source == 'template') {
             $query = $query->where('html', '!=', null);
-        } else {
-            $query = $query->where('is_auto', '=', false);
         }
 
         // Keyword
@@ -1160,7 +1150,7 @@ abstract class AbsCampaign extends Model
      */
     public function urlCount()
     {
-        return $this->links()->count();
+        return $this->campaignLinks()->count();
     }
 
     /**
@@ -1549,8 +1539,7 @@ abstract class AbsCampaign extends Model
     {
         $records = self::select(DB::raw(DB::getTablePrefix().'campaigns.*, count(*) as `aggregate`'))
             ->join('tracking_logs', 'tracking_logs.campaign_id', '=', 'campaigns.id')
-            ->join('open_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')
-            ->where('is_auto', false);
+            ->join('open_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id');
 
         if (isset($customer)) {
             $records = $records->where('campaigns.customer_id', '=', $customer->id);
@@ -1571,8 +1560,7 @@ abstract class AbsCampaign extends Model
     {
         $records = self::select(DB::raw(DB::getTablePrefix().'campaigns.*, count(*) as `aggregate`'))
             ->join('tracking_logs', 'tracking_logs.campaign_id', '=', 'campaigns.id')
-            ->join('click_logs', 'click_logs.message_id', '=', 'tracking_logs.message_id')
-            ->where('is_auto', false);
+            ->join('click_logs', 'click_logs.message_id', '=', 'tracking_logs.message_id');
 
         if (isset($customer)) {
             $records = $records->where('campaigns.customer_id', '=', $customer->id);
