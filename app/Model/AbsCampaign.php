@@ -2079,21 +2079,6 @@ abstract class AbsCampaign extends Model
     }
 
     /**
-     * Check if auto campaign designed.
-     *
-     * @return object
-     */
-    public function autoCampaignDesigned()
-    {
-        $cond = (!empty($this->name) && !empty($this->subject) && !empty($this->from_name)
-            && !empty($this->from_email) && !empty($this->reply_to));
-
-        $cond = $cond && ((!empty($this->getTemplateContent()) || $this->type == 'plain-text') && !empty($this->plain) && $this->unsubscribe_url_valid());
-
-        return $cond;
-    }
-
-    /**
      * Get type select options.
      *
      * @return array
@@ -2104,16 +2089,6 @@ abstract class AbsCampaign extends Model
             ['text' => trans('messages.'.self::TYPE_REGULAR), 'value' => self::TYPE_REGULAR],
             ['text' => trans('messages.'.self::TYPE_PLAIN_TEXT), 'value' => self::TYPE_PLAIN_TEXT],
         ];
-    }
-
-    /**
-     * Check if campaign is automated.
-     *
-     * @return bool
-     */
-    public function isAuto()
-    {
-        return $this->is_auto;
     }
 
     /**
