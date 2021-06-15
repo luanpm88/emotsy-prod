@@ -58,8 +58,12 @@ class AccountSubscriptionController extends Controller
             ]);
         }
 
-        // check subscription status. @todo: move to cron
+        // @todo không để đây, chỉ test thôi, cần move qua cronjob
+        // 1. 1 End luôn subscription nếu đã hết hạn
+        //    2 Sinh ra RENEW invoice
+        //    3 Xử lý thanh toán
         $subscription->check();
+        $subscription->processInvoices();
 
         // 2. IF PLAN NOT ACTIVE
         if (!$subscription->plan->isActive()) {
@@ -68,13 +72,14 @@ class AccountSubscriptionController extends Controller
         
         // 3. SUBSCRIPTION IS NEW
         if ($subscription->isNew()) {
-            $invoice = $subscription->lastInvoice();
+            $invoice = $subscription->getItsOnlyUnpaidInitInvoice();
 
             if ($invoice->isNew()) {
                 return view('account.subscription.payment', [
                     'subscription' => $subscription,
                     'invoice' => $invoice,
                 ]);
+                
             } elseif ($invoice->isPending()) {
                 return view('account.subscription.pending', [
                     'subscription' => $subscription,
@@ -88,6 +93,10 @@ class AccountSubscriptionController extends Controller
                     'subscription' => $subscription,
                     'invoice' => $invoice,
                 ]);
+            }
+
+            else {
+                throw new \Exception('There is no such case: New subscription does not have paid invoice');
             }
         }
 
@@ -136,15 +145,12 @@ class AccountSubscriptionController extends Controller
         $customer = $request->user()->customer;
         $subscription = $customer->subscription;
         $gateway = $customer->getPaymentGateway();
-        $invoice = $subscription->lastInvoice();
+        $invoice = $subscription->getUnpaidInvoice();
 
         $invoice->checkout();
 
         // redirect to service checkout
-        return redirect()->away($gateway->getCheckoutUrl(
-            $invoice,
-            action('AccountSubscriptionController@index')
-        ));
+        return redirect()->away($gateway->getCheckoutUrl($invoice));
     }
 
     /**
@@ -159,8 +165,7 @@ class AccountSubscriptionController extends Controller
         // Get current customer
         $customer = $request->user()->customer;
         $subscription = $customer->subscription;
-        $gateway = $customer->getPaymentGateway();
-        $invoice = $subscription->lastInvoice();
+        $invoice = $subscription->getUnpaidInvoice();
 
         // check invoice
         if ($invoice->isNew()) {
@@ -185,7 +190,7 @@ class AccountSubscriptionController extends Controller
 
         // invoice was paid
         elseif ($invoice->isPaid()) {
-            // nothing to do
+            throw new \Exception('Paid invoice do not need payment screen!');
         }
     }
     

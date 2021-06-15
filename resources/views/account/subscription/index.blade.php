@@ -28,7 +28,7 @@
     <div class="row">
         <div class="col-sm-12 col-md-8 col-lg-8">
 
-            @if ($subscription->renewInvoice() && !$subscription->renewInvoice()->isPaid() && !$subscription->user->supportsAutoBilling())
+            @if ($subscription->renewInvoice() && !$subscription->renewInvoice()->isPaid() && !$subscription->customer->supportsAutoBilling())
                 @include('elements._notification', [
                     'level' => 'warning',
                     'message' => trans('messages.have_new_renew_invoice', [
@@ -46,10 +46,10 @@
                 ])
             @endif
 
-            @if ($subscription->lastInvoice() && $subscription->lastInvoice()->lastTransaction() && $subscription->lastInvoice()->lastTransaction()->isFailed())
+            @if ($subscription->getUnpaidInvoice() && $subscription->getUnpaidInvoice()->lastTransaction() && $subscription->getUnpaidInvoice()->lastTransaction()->isFailed())
                 @include('elements._notification', [
                     'level' => 'error',
-                    'message' => $subscription->lastInvoice()->lastTransaction()->error,
+                    'message' => $subscription->getUnpaidInvoice()->lastTransaction()->error,
                 ])
             @endif
 

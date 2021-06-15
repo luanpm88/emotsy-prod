@@ -31,10 +31,7 @@
 
                 @if (request()->user()->customer->getPaymentGateway() !== null)
                     {!! trans('messages.invoice.pending.wording') !!}
-                    <a href="{{ request()->user()->customer->getPaymentGateway()->getCheckoutUrl(
-                        $invoice,
-                        action('AccountSubscriptionController@index')
-                    ) }}" class="btn btn-mc_primary mt-4">{{ trans('messages.payment.check_payment') }}</a>
+                    <a href="{{ request()->user()->customer->getPaymentGateway()->getCheckoutUrl($invoice) }}" class="btn btn-mc_primary mt-4">{{ trans('messages.payment.check_payment') }}</a>
                 @else
                     {!! trans('messages.invoice.pending.no_payment') !!}
                     <a href="{{ action('AccountController@editPaymentMethod', [

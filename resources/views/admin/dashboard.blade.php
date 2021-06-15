@@ -38,7 +38,7 @@
                         <div class="row">
                             <div class="col-sm-5 col-md-5">
                                 <h6 class="mt-0 mb-0 text-semibold">
-                                    <a href="{{ action('Admin\CustomerController@subscriptions', $subscription->user->uid) }}">
+                                    <a href="{{ action('Admin\CustomerController@subscriptions', $subscription->customer->uid) }}">
                                         <i class="icon-clipboard2"></i>
                                         {{ $subscription->plan->name }}
                                     </a>
@@ -49,7 +49,7 @@
                                         padding: 0;
                                         margin: 5px 0 0 -8px;
                                         height: auto;"></i>
-                                    {{ $subscription->user->displayName() }}
+                                    {{ $subscription->customer->displayName() }}
                                 </p>
                             </div>
                             <div class="col-sm-4 col-md-4 text-left">
