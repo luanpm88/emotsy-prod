@@ -273,12 +273,12 @@ class AccountSubscriptionController extends Controller
             return $this->notAuthorized();
         }
 
-        $invoice->delete();
-
         // if subscription is new -> cancel now subscription.
         // Make sure a new subscription must have a pending invoice
         if ($subscription->isNew()) {
-            $subscription->cancelNow();
+            $subscription->abortNew();
+        } else {
+            $invoice->delete();
         }
 
         // Redirect to my subscription page
