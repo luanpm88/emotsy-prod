@@ -4,6 +4,8 @@ namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log as LaravelLog;
+use Acelle\Library\Facades\Billing;
+
 
 class AccountController extends Controller
 {
@@ -259,9 +261,17 @@ class AccountController extends Controller
     {
         // Save posted data
         if ($request->isMethod('post')) {
-            $gateway = \Acelle\Model\Setting::getPaymentGateway($request->payment_method);
+            $gateway = Billing::getGateway($request->payment_method);
+
+            $request->user()->customer->updatePaymentMethod([
+                'method' => $request->payment_method,
+            ]);
             
-            return redirect()->away($gateway->getConnectUrl($request->return_url));
+            if ($gateway->supportsAutoBilling()) {
+                return redirect()->away($gateway->getAutoBillingDataUpdateUrl($request->return_url));
+            }
+
+            return redirect()->away($request->return_url);
         }
 
         return view('account.editPaymentMethod', [

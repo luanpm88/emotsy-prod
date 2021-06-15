@@ -133,6 +133,7 @@ abstract class AbsCampaign extends Model
         $this->template_id = $campaignTemplate->id;
 
         $this->save();
+        $this->refresh(); 
     }
     
     /**
@@ -141,7 +142,7 @@ abstract class AbsCampaign extends Model
     public function getTemplateContent()
     {   
         if (!$this->template) {
-            return false;
+            throw new \Exception('Campaign does not have template!');
         }
 
         return $this->template->content;
@@ -823,12 +824,16 @@ abstract class AbsCampaign extends Model
         // Created
         static::created(function ($item) {
             // Update links
-            $item->updateLinks();
+            if ($item->template) {
+                $item->updateLinks();
+            }
         });
 
         static::updating(function ($item) {
             // Update links
-            $item->updateLinks();
+            if ($item->template) {
+                $item->updateLinks();
+            }
         });
 
         static::deleted(function ($item) {
@@ -933,8 +938,7 @@ abstract class AbsCampaign extends Model
         }
 
         // Step 3
-        // if ((!empty($this->getTemplateContent()) || $this->type == 'plain-text') && !empty($this->plain) && $this->unsubscribe_url_valid()) {
-        if ((!empty($this->getTemplateContent()) || $this->type == 'plain-text') && !empty($this->plain)) {
+        if (($this->template || $this->type == 'plain-text') && !empty($this->plain)) {
             $step = 3;
         } else {
             return $step;
@@ -2067,6 +2071,24 @@ abstract class AbsCampaign extends Model
     }
 
     /**
+<<<<<<< HEAD
+=======
+     * Check if auto campaign designed.
+     *
+     * @return object
+     */
+    public function autoCampaignDesigned()
+    {
+        $cond = (!empty($this->name) && !empty($this->subject) && !empty($this->from_name)
+            && !empty($this->from_email) && !empty($this->reply_to));
+
+        $cond = $cond && (($this->template || $this->type == 'plain-text') && !empty($this->plain) && $this->unsubscribe_url_valid());
+
+        return $cond;
+    }
+
+    /**
+>>>>>>> d981bf98e (cashier 3.0)
      * Get type select options.
      *
      * @return array

@@ -1,11 +1,9 @@
-@if (request()->user()->customer->getPaymentMethod() !== null)
+@if (request()->user()->customer->getPaymentGateway() !== null)
     <div class="payment-box">
         <div class="header py-4 d-flex align-items-center">
             <div class="d-flex align-items-center">
-                <i class="payment-icon bg-{{ request()->user()->customer->getPaymentMethod()['method'] }}"></i>
-                <span class="font-weight-semibold">{{ trans('messages.pay_with', [
-                    'method' => trans('messages.payments.' . request()->user()->customer->getPaymentMethod()['method'])
-                ]) }}</span>
+                <i class="payment-icon bg-{{ request()->user()->customer->getPaymentGateway()->getType() }}"></i>
+                <span class="font-weight-semibold">{{ request()->user()->customer->getPaymentGateway()->getName() }}</span>
             </div>
             <div class="ml-auto">
                 <a href="{{ action('AccountController@removePaymentMethod') }}" class="payment-method-remove">
@@ -15,31 +13,9 @@
         </div>
         <div class="body">
             <div class="bill_info">
-                @if (isset(request()->user()->customer->getPaymentMethod()['description']))
-                    <div class="line d-flex my-2">
-                        {{ request()->user()->customer->getPaymentMethod()['description'] }}
-                    </div>
-                @endif
-                @if (isset(request()->user()->customer->getPaymentMethod()['user_id']))
-                    <div class="line d-flex my-3">
-                        <div class="data mr-auto">
-                            {{ trans('messages.bill.user_id') }}
-                        </div>
-                        <div class="value font-weight-semibold">
-                            {{ request()->user()->customer->getPaymentMethod()['user_id'] }}
-                        </div>
-                    </div>
-                @endif
-                @if (isset(request()->user()->customer->getPaymentMethod()['card_last4']))
-                    <div class="line d-flex my-3">
-                        <div class="data mr-auto">
-                            {{ trans('messages.bill.last4') }}
-                        </div>
-                        <div class="value">
-                            ***{{ request()->user()->customer->getPaymentMethod()['card_last4'] }}
-                        </div>
-                    </div>
-                @endif
+                <div class="line d-flex my-2">
+                    {{ request()->user()->customer->getPaymentGateway()->getDescription() }}
+                </div>
             </div>
         </div>
     </div>

@@ -1,4 +1,4 @@
-@if (!empty($campaign->getTemplateContent()))
+@if ($campaign->template)
     <div class="pull-right">
         <a href="{{ action('CampaignController@templatePreview', $campaign->uid) }}" class="btn btn-info bg-grey">
             <i class="icon-cross2"></i> {{ trans('messages.cancel') }}

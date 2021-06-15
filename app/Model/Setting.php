@@ -25,6 +25,7 @@ namespace Acelle\Model;
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Cashier\Cashier;
 use Acelle\Model\Plugin;
+use Acelle\Library\Facades\Billing;
 
 class Setting extends Model
 {
@@ -724,14 +725,12 @@ class Setting extends Model
      */
     public static function getEnabledPaymentGateways()
     {
-        $gateways = json_decode(self::get('gateways'), true);
+        $gateways = [];
+        $types = json_decode(self::get('gateways'), true);
 
-        // Check plugin paystack
-        // if (!Plugin::isActive('paystack')) {
-        //     if (($key = array_search('paystack', $gateways)) !== false) {
-        //         unset($gateways[$key]);
-        //     }
-        // }
+        foreach ($types as $type) {
+            $gateways[] = Billing::getGateway($type);
+        }
 
         return $gateways;
     }
@@ -755,18 +754,6 @@ class Setting extends Model
         }
 
         return $gateway;
-    }
-
-    /**
-     * Get payments gateway by name.
-     *
-     * @var array
-     */
-    public static function getPaymentGateway($name, $options=null)
-    {
-        $meta = self::getPayment($name);
-
-        return Cashier::getPaymentGateway($meta, $options);
     }
 
     /**
@@ -870,5 +857,29 @@ class Setting extends Model
                 ],
             ],
         ];
+    }
+
+    /**
+     * Enable payment gateway.
+     *
+     * @var void
+     */
+    public static function enablePaymentGateway($gatewayType)
+    {
+        $gateways = json_decode(self::get('gateways'), true);
+        $gateways = array_merge($gateways, [$gatewayType]);
+        Setting::set('gateways', json_encode($gateways));
+    }
+    
+    /**
+     * Disable payment gateway.
+     *
+     * @var void
+     */
+    public static function disablePaymentGateway($gatewayType)
+    {
+        $gateways = json_decode(self::get('gateways'), true);
+        $gateways = array_diff($gateways, [$gatewayType]);
+        Setting::set('gateways', json_encode($gateways));
     }
 }

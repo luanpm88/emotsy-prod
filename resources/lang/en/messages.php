@@ -2474,21 +2474,9 @@
   'subscription.future_pending.coinpayments' => 'You have currently payment pending. Please wait for processing your payment.
     If you haven\'t purchase the plan, please follow the checkout guide from CoinPayments.net in your
     mailbox with title <strong class="text-nowrap">[CoinPayments.net] ...</strong>.',
-  'subscription.future_pending.direct' => 'You are currently subscribed to <strong>:plan</strong> (<strong>:money</strong>).
-    Please follow the steps bellow to purchase your plan:',
-  'subscription.claimed.direct' => 'Please wait for processing your subscription.
-    If you haven\'t purchase the plan, please review the payment guide bellow:',
   'subscription.payment.checkout_again' => 'Checkout again',
   'subscription.current_subscription.cancel_at_end_of_period_no_recurring_supported.wording' => 'You are currently subscribed to <strong>:plan</strong> (<strong>:money</strong>).<br>
       The subscription will be end in <strong>:remain</strong>, on <strong>:end_at</strong>.',
-  'payments.direct' => 'Offline payment',
-  'payments.direct.list_intro' => 'Receive payments outside of the application',
-  'payment.direct.wording' => 'Write instructions for your users to make a payment outside of the application. For example: deposit to your bank account or pay by cash. Use this option when you do not have any payment gateway account like Stripe, Braintree or PayPal',
-  'payment.direct.database_path' => 'Database file path',
-  'payment_gateway.not_valid' => 'Something went wrong: :message',
-  'subscription.pending.direct.wording' => 'You are currently subscribed to <strong>:plan</strong> (<strong>:money</strong>).
-    Please wait for processing your subscription.
-    If you haven\'t purchase the plan, please follow the steps bellow: <br/>',
   'invoice.datetime' => 'Datetime',
   'invoice.amount' => 'Amount',
   'invoice.description' => 'Description',
@@ -2545,8 +2533,6 @@
       it active.',
   'subscription.set_active.success' => 'The subscription was activated successfully.',
   'subscription.renew.checkout' => 'Checkout',
-  'subscription.renew.direct.wording' => 'Click the button bellow to renew the subscription for <strong>:plan</strong> plan.
-    The total amount is <strong>:price</strong>.',
   'subscription.approve_pending' => 'Approve',
   'subscription.approve_pending.confirm' => 'You have pending invoice. Do you want to approve it. This can not be un-done.',
   'subscription.approve_pending.success' => 'The pending invoice was approved successfully.',
@@ -2557,9 +2543,7 @@
   'payment.settings' => 'Settings',
   'renew_free_plan' => 'Allow users to renew FREE plans',
   'setting.renew_free_plan.help' => 'Customers who are subscribing to a Free plan can not renew the plan. Need to change to a no-free plan first.',
-  'payment.direct.notice' => 'Payment instructions',
   'plans.subscriber_count' => ':count subscriber(s)',
-  'payment.direct' => 'Offline Payment',
   'plan.info.subscriber_count' => 'There are <strong>:count</strong> customer(s) currently subscribed to this plan.
     Click <a href=":link"><strong>here</strong></a> to see more details.',
   'admin.no_primary_payment' => 'No Primary Payment Gateway selected. Click <a href=":link"><strong>here</strong></a> to select one.',
@@ -2600,7 +2584,6 @@
   'notify.error' => 'Error',
   'notify.confirmation' => 'Confirmation',
   'subscription.finished' => 'Thank you! You are now subscribed to <strong>:plan</strong> plan.',
-  'subscription.direct.confirm' => 'Confirm',
   'subscription.click_here_to_cancel_now' => 'Click here if you want to change other plan',
   'payment.stripe' => 'Stripe',
   'subscription.pay_with_stripe' => 'Pay with Stripe',
@@ -3077,7 +3060,6 @@
   'subscribers.profile.manage_tags' => 'Manage tags',
   'subscriber.delete.confirm' => 'You\'re about to delete this subscriber.',
   'subscriber.deleted.redirect' => 'Subscriber was deleted. Redirecting to list page...',
-  'payment.direct.payment_instruction' => 'Payment instructions',
   'automation.action.condition.select_criterion' => 'Select criterion',
   'automation.action.operation.select_action' => 'Select an action',
   'automation.action.operation.remove_contact.desc' => 'Remove contact',
@@ -3853,28 +3835,6 @@
   'payment.show' => 'Show',
   'payment.hide' => 'Hide',
   'save_and_show' => 'Save & Show',
-  'frontend_payment.direct' => 'Offline payment',
-  'frontend_payment.direct.desc' => 'Make the payment outside of the application',
-  'frontend_payment.stripe' => 'Use Card',
-  'frontend_payment.stripe.desc' => 'Receive payments from customer\'s
-      card (credit, debit, master, visa,...)',
-  'frontend_payment.braintree' => 'Use Card',
-  'frontend_payment.braintree.desc' => 'Receive payments from customer\'s
-      card (credit, debit, master, visa,...)',
-  'frontend_payment.razorpay' => 'Use Card',
-  'frontend_payment.razorpay.desc' => 'Receive payments from customer\'s
-      card (credit, debit, master, visa,...)',
-  'frontend_payment.paystack' => 'Use Card',
-  'frontend_payment.paystack.desc' => 'Receive payments from customer\'s
-      card (credit, debit, master, visa,...)',
-  'frontend_payment.coinpayments' => 'Digital Coin',
-  'frontend_payment.coinpayments.desc' => 'Receive payment from a cryptocurrency
-      like Bitcoin, Monero, ZCash, etc.',
-  'frontend_payment.paypal' => 'PayPal',
-  'frontend_payment.paypal.desc' => 'Receive payments outside of the application',
-  'frontend_payment.paypal_subscription' => 'PayPal Subscription',
-  'frontend_payment.paypal_subscription.desc' => 'With PayPal Subscriptions, you can bill customers for plans
-      at regular intervals via their PayPal account',
   'payment.connect' => 'Connect',
   'payment.active' => 'active',
   'payment.inactive' => 'inactive',
@@ -4169,8 +4129,6 @@
   'invoice.renew_transaction_failed.reconnect' => 'Something went wrong when charge renew invoice. Error: :error.
       <a href=":link">Click here</a> to check the payment serivce connection.',
   'transaction.method' => 'Method',
-  'transaction.method.direct' => 'Offline',
-  'transaction.method.stripe' => 'Stripe',
   'invoice.init_subscription' => 'New Subscription',
   'invoice.renew_subscription' => 'Renew Subscription',
   'subscription.status.wait_for_payment' => 'Wait for payment',
@@ -4189,8 +4147,6 @@
   'transaction.method.paypal' => 'Paypal',
   'save_payment_method_proceed' => 'Save Payment Method & Proceed',
   'save_payment_method' => 'Save Payment Method',
-  'payment.direct.description' => 'Pay for your subscription outside of the application,
-      via wire transfer or bank deposit for example',
   'payment.cannot_charge' => 'Acelle cannot charge the invoice #:id. Error from :service: :error',
   'payment.cannot_auto_charge' => 'Acelle cannot automatically charge the
       invoice #:id. Error from :service: :error',
@@ -4302,4 +4258,11 @@
   'template.set_template_category.intro' => 'Choose one or more categories for your template
     <br>Notice: if your template does not fall upon any category, it will not be visible to users.',
   'template.categories' => 'Categories',
+  'transaction.method.offline' => 'Offline',
+  'transaction.method.stripe' => 'Stripe',
+  'transaction.method.braintree' => 'Braintree',
+  'transaction.method.coinpayments' => 'Coinpayments',
+  'transaction.method.paystack' => 'Paystack',
+  'transaction.method.razorpay' => 'Razorpay',
+  'transaction.method.paypal' => 'Paypal',
 ) ?>

@@ -4278,10 +4278,10 @@ label:hover .checkmark, .checkmark-container:hover .checkmark {
     margin-right: 0;
     background-position: left!important;
 }
-.payment-box i.bg-direct {
+.payment-box i.bg-offline {
     width: 42px;
 }
-.payment-box i.bg-direct::after {
+.payment-box i.bg-offline::after {
     background-size: 46px!important;
     margin-right: 0!important;
     background-position: -2px 4px!important;

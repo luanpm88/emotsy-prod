@@ -78,7 +78,7 @@ class Subscription extends Model
     public function plan()
     {
         // @todo dependency injection
-        return $this->belongsTo('\Acelle\Model\Plan', 'plan_id', 'uid');
+        return $this->belongsTo('\Acelle\Model\Plan');
     }
 
     /**
@@ -86,10 +86,10 @@ class Subscription extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function user()
+    public function customer()
     {
         // @todo dependency injection
-        return $this->belongsTo('\Acelle\Model\Customer', 'user_id', 'uid');
+        return $this->belongsTo('\Acelle\Model\Customer');
     }
 
     /**
@@ -126,11 +126,35 @@ class Subscription extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function lastInvoice()
+    public function getItsOnlyUnpaidInitInvoice()
     {
-        return $this->invoices()
-            ->orderBy('created_at', 'desc')
-            ->first();
+        if (!$this->isNew()) {
+            throw new \Exception('Method getItsOnlyUnpaidInitInvoice() only use for NEW subscription');
+        }
+
+        $query = $this->invoices()
+            ->newSubscription()
+            ->unpaid();
+        
+        // more than on invoice
+        if ($query->count() != 1) {
+            throw new \Exception('New Subscription must have only one unpaid TYPE_NEW_SUBSCRIPTION invoice!');
+        }
+
+        return $query->first();
+    }
+
+    /**
+     * Get last invoice.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function getUnpaidInvoice()
+    {
+        $query = $this->invoices()
+            ->unpaid();
+
+        return $query->first();
     }
 
     /**
@@ -238,7 +262,7 @@ class Subscription extends Model
             'plan' => $this->plan->name,
             'date' => \Acelle\Library\Tool::formatDate($this->getPeriodEndsAt(\Carbon\Carbon::now())),
         ]);
-        $invoice->customer_id = $this->user->id;
+        $invoice->customer_id = $this->customer->id;
         $invoice->currency_id = $this->plan->currency_id;
         $invoice->save();
 
@@ -280,7 +304,7 @@ class Subscription extends Model
             'plan' => $this->plan->name,
             'date' => \Acelle\Library\Tool::formatDate($this->nextPeriod()),
         ]);
-        $invoice->customer_id = $this->user->id;
+        $invoice->customer_id = $this->customer->id;
         $invoice->currency_id = $this->plan->currency_id;
         $invoice->save();
 
@@ -326,7 +350,7 @@ class Subscription extends Model
             'newPlan' => $newPlan->name,
             'date' => \Acelle\Library\Tool::formatDate(\Carbon\Carbon::parse($metadata['endsAt'])),
         ]);
-        $invoice->customer_id = $this->user->id;
+        $invoice->customer_id = $this->customer->id;
         $invoice->currency_id = $this->plan->currency_id;
         $invoice->save();
 
@@ -401,7 +425,7 @@ class Subscription extends Model
         //                 'discount' => format_price(0, $this->plan->currency->format),
         //             ]
         //         ],
-        //         'charge_info' => $this->user->supportsAutoBilling() ? trans('messages.bill.auto_charge', ['date' => $this->nextPeriod()]) : trans('messages.bill.charge_before', ['date' => $this->nextPeriod()]),
+        //         'charge_info' => $this->customer->supportsAutoBilling() ? trans('messages.bill.auto_charge', ['date' => $this->nextPeriod()]) : trans('messages.bill.charge_before', ['date' => $this->nextPeriod()]),
         //         'total' => format_price($this->plan->price, $this->plan->currency->format),
         //     ];
         // }
@@ -439,12 +463,9 @@ class Subscription extends Model
         return $endsAt;
     }
 
-    /**
-     * Check subscription status.
-     *
-     * @param  Int  $subscriptionId
-     * @return date
-     */
+    // 1 End luôn subscription nếu đã hết hạn
+    // 2 Sinh ra RENEW invoice
+    // 3 Xử lý thanh toán ==> #todo tach ra thành processInvoices()
     public function check()
     {
         switch ($this->status) {
@@ -472,28 +493,38 @@ class Subscription extends Model
                         return;
                     }
 
-                    // service auto charge
-                    if (
-                        $this->user->supportsAutoBilling() &&
-                        $this->reachDueDate() // check charge day before
-                    ) {
-                        // add pending transaction for invoice
-                        $pendingInvoice->addTransaction([
-                            'status' => \Acelle\Model\Transaction::STATUS_PENDING,
-                            'message' => trans('messages.automatically_charge', [
-                                'id' => $pendingInvoice->uid,
-                                'title' => $pendingInvoice->title,
-                            ]),
-                        ]);
+                    // // service auto charge
+                    // if (
+                    //     $this->customer->supportsAutoBilling() &&
+                    //     $this->reachDueDate() // check charge day before
+                    // ) {
+                    //     // add pending transaction for invoice
+                    //     $pendingInvoice->checkout();
                         
-                        // charge invoice
-                        $this->user->getPaymentGateway()->charge($pendingInvoice, true);
-                    }
+                    //     // charge invoice
+                    //     $this->customer->getPaymentGateway()->autoCharge($pendingInvoice, true);
+                    // }
                 }
                 break;
             case self::STATUS_ENDED:
                 // nothing to check
                 break;
+        }
+    }
+
+    public function processInvoices()
+    {
+        // Auto pay renew unpaid pending invoice when subscription is ACTIVE
+        if (
+            $this->isActive() &&
+            $this->pendingInvoice() && 
+            $this->pendingInvoice()->isRenewSubscriptionInvoice() &&
+            $this->customer->supportsAutoBilling() &&
+            $this->reachDueDate()
+        ) {
+            $this->pendingInvoice()->checkout();
+            // charge invoice
+            $this->customer->getPaymentGateway()->autoCharge($this->pendingInvoice());
         }
     }
 
@@ -516,7 +547,7 @@ class Subscription extends Model
         $metadata = $this->calcChangePlan($newPlan);
 
         // new plan
-        $this->plan_id = $newPlan->uid;
+        $this->plan_id = $newPlan->id;
 
         // new end period
         $this->current_period_ends_at = $metadata['endsAt'];
@@ -565,7 +596,6 @@ class Subscription extends Model
      */
     public function transactions()
     {
-        $uid = $this->uid;
         return \Acelle\Model\Transaction::whereIn('invoice_id', $this->invoices()->select('id'))
             ->orderBy('created_at', 'desc');
     }

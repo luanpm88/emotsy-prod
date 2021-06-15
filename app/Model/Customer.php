@@ -25,7 +25,6 @@ namespace Acelle\Model;
 use Acelle\Library\QuotaTrackerFile;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
-use Acelle\Cashier\Interfaces\BillableUserInterface;
 use Acelle\Cashier\Cashier;
 use Acelle\Model\Subscription;
 use Acelle\Model\SendingDomain;
@@ -37,8 +36,10 @@ use DateTime;
 use DateTimeZone;
 use Exception;
 use DB;
+use Acelle\Library\Facades\Billing;
+use Acelle\Library\AutoBillingData;
 
-class Customer extends Model implements BillableUserInterface
+class Customer extends Model
 {
     protected $quotaTracker;
 
@@ -130,8 +131,8 @@ class Customer extends Model implements BillableUserInterface
      */
     public function subscription()
     {
-        return $this->hasOne('Acelle\Model\Subscription', 'user_id', 'uid')
-            // ->where('status', '!=', Subscription::STATUS_ENDED)
+        return $this->hasOne('Acelle\Model\Subscription')
+            ->where('status', '!=', Subscription::STATUS_ENDED)
             ->orderBy('created_at', 'desc');
     }
 
@@ -1997,14 +1998,14 @@ class Customer extends Model implements BillableUserInterface
         // create tmp subscription
         if (!$subscription) {
             $subscription = new Subscription();
-            $subscription->user_id = $this->getBillableId();
+            $subscription->customer_id = $this->id;
         }
 
         // cancel all pending invoices (new|claimed)
         $subscription->pendingInvoices()->delete();
 
         // reset value
-        $subscription->plan_id = $plan->getBillableId();
+        $subscription->plan_id = $plan->id;
         $subscription->current_period_ends_at = null;
         $subscription->ends_at = null;
         $subscription->started_at = null;
@@ -2028,7 +2029,7 @@ class Customer extends Model implements BillableUserInterface
             return false;
         }
 
-        if ($subscription->renewInvoice() && !$subscription->renewInvoice()->isPaid() && !$subscription->user->supportsAutoBilling()) {
+        if ($subscription->renewInvoice() && !$subscription->renewInvoice()->isPaid() && !$subscription->customer->supportsAutoBilling()) {
             return true;
         }
 
@@ -2181,27 +2182,15 @@ class Customer extends Model implements BillableUserInterface
      *
      * @var object | collect
      */
-    public function getPaymentMethod()
+    public function getPaymentGateway()
     {
         if (!$this['payment_method']) {
             return null;
         }
 
-        return json_decode($this['payment_method'], true);
-    }
+        $paymentData = json_decode($this['payment_method'], true);
 
-    /**
-     * Get gateway.
-     *
-     * @return gateway
-     */
-    public function getPaymentGateway()
-    {
-        if ($this->getPaymentMethod() == null) {
-            return null;
-        }
-
-        return \Acelle\Model\Setting::getPaymentGateway($this->getPaymentMethod()['method']);
+        return Billing::getGateway($paymentData['method']);
     }
 
     /**
@@ -2337,5 +2326,30 @@ class Customer extends Model implements BillableUserInterface
             $auto = $this->createAbandonedEmailAutomation($store);
         }
         return $auto;
+    }
+
+    /**
+     * Get auto billing data.
+     *
+     * @var object
+     */
+    public function getAutoBillingData()
+    {
+        if ($this->auto_billing_data == null) {
+            return null;
+        }
+
+        return AutoBillingData::fromJson($this->auto_billing_data);
+    }
+
+    /**
+     * Get auto billing data.
+     *
+     * @var object
+     */
+    public function setAutoBillingData(AutoBillingData $autoBillingData)
+    {
+        $this->auto_billing_data = $autoBillingData->toJson();
+        $this->save();
     }
 }

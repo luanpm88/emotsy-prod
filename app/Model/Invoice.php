@@ -9,9 +9,9 @@ use Acelle\Model\Subscription;
 class Invoice extends Model
 {
     // statuses
-    const STATUS_NEW = 'new';
-    const STATUS_PENDING = 'pending';
-    const STATUS_CLAIMED = 'claimed';
+    const STATUS_NEW = 'new';               // unpaid
+    const STATUS_PENDING = 'pending';       // unpaid    
+    const STATUS_CLAIMED = 'claimed';       // unpaid
     const STATUS_PAID = 'paid';
 
     // type
@@ -27,6 +27,22 @@ class Invoice extends Model
     public static function findByUid($uid)
     {
         return self::where('uid', '=', $uid)->first();
+    }
+
+    function scopeUnpaid($query)
+    {
+        $query->whereIn('status', [
+            self::STATUS_NEW,
+            self::STATUS_PENDING,
+            self::STATUS_CLAIMED,
+        ]);
+    }
+
+    function scopeNewSubscription($query)
+    {
+        $query->whereIn('type', [
+            self::TYPE_NEW_SUBSCRIPTION,
+        ]);
     }
 
     /**
@@ -511,7 +527,7 @@ class Invoice extends Model
         $transaction->invoice_id = $this->id;
         $transaction->amount = $this->formattedTotal();
         $transaction->message = $data['message'];
-        $transaction->method = $this->customer->getPaymentMethod() ? $this->customer->getPaymentMethod()['method'] : trans('messages.payment_manual');
+        $transaction->method = $this->customer->getPaymentGateway() ? $this->customer->getPaymentGateway()->getName() : trans('messages.payment_manual');
         $transaction->error = isset($data['error']) ? $data['error'] : null;
         $transaction->status = isset($data['status']) ? $data['status'] : \Acelle\Model\Transaction::STATUS_PENDING;
         $transaction->save();
