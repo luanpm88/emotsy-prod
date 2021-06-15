@@ -918,10 +918,6 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     // Payment gateways
     Route::post('admin/payment/gateways/{name}/disable', 'PaymentController@disable');
     Route::post('admin/payment/gateways/{name}/enable', 'PaymentController@enable');
-    Route::post('admin/payment/gateways/paypal-subscription/{plan_uid}/disconnect-plan', 'PaymentController@paypalSubscriptionDisconnectPlan');
-    Route::post('admin/payment/gateways/paypal-subscription/{plan_uid}/connect-plan', 'PaymentController@paypalSubscriptionConnectPlan');
-    Route::post('admin/payment/gateways/paypal-subscription/disconnect', 'PaymentController@paypalSubscriptionDisconnect');
-    Route::post('admin/payment/gateways/paypal-subscription/connect', 'PaymentController@paypalSubscriptionConnect');
     Route::post('admin/payment/gateways/{name}/set-primary', 'PaymentController@setPrimary');
     Route::post('admin/payment/gateways/update/{name}', 'PaymentController@update');
     Route::get('admin/payment/gateways/edit/{name}', 'PaymentController@edit');
