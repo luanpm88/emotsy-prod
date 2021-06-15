@@ -895,4 +895,18 @@ class Subscription extends Model
             'endsAt' => $newEndsAt,
         ];
     }
+
+    public function abortNew()
+    {
+        if (!$this->isNew())
+        {
+            throw new \Exception('This subscription is not NEW. Can not abortNew!');
+        }
+
+        $this->getItsOnlyUnpaidInitInvoice()->delete();
+
+        // if subscription is new -> cancel now subscription.
+        // Make sure a new subscription must have a pending invoice
+        $this->cancelNow();
+    }
 }
