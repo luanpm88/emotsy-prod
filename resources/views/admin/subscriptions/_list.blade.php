@@ -70,13 +70,13 @@
 								{{ trans('messages.subscription.status.active') }}
 							</span>
 
-							@if ($subscription->changePlanInvoice() && $subscription->changePlanInvoice()->isClaimed())
+							@if ($subscription->changePlanInvoice() && $subscription->changePlanInvoice()->isClaimed() && !$subscription->changePlanInvoice()->lastTransactionIsFailed())
 								<div class="mini text-warning">
 									{{ trans('messages.change_plan.pending_for_approval') }}
 								</div>
 							@endif
 
-							@if ($subscription->renewInvoice() && $subscription->renewInvoice()->isClaimed())
+							@if ($subscription->renewInvoice() && $subscription->renewInvoice()->isClaimed() && !$subscription->renewInvoice()->lastTransactionIsFailed())
 								<div class="mini text-warning">
 									{{ trans('messages.renew_subscription.pending_for_approval') }}
 								</div>
@@ -84,18 +84,26 @@
 
 							@break
 						@case(Acelle\Model\Subscription::STATUS_NEW)
-							@if ($subscription->hasPendingInvoice() && $subscription->pendingInvoice()->isClaimed())
-								<span style="cursor:pointer" href="{{ action('Admin\SubscriptionController@invoices', ['id' => $subscription->uid]) }}"
-									class="view_invoices label bg-m-warning"
-								>
-									{{ trans('messages.subscription.status.pending_for_approval') }}
-								</span>	
-							@else
-								<span style="cursor:pointer" href="{{ action('Admin\SubscriptionController@invoices', ['id' => $subscription->uid]) }}"
-									class="view_invoices label bg-m-warning"
-								>
-									{{ trans('messages.subscription.status.wait_for_payment') }}
-								</span>
+							@if ($subscription->hasUnpaidInvoice())
+								@if ($subscription->unpaidInvoice()->lastTransactionIsFailed())
+									<span style="cursor:pointer" href="{{ action('Admin\SubscriptionController@invoices', ['id' => $subscription->uid]) }}"
+										class="view_invoices label bg-m-warning"
+									>
+										{{ trans('messages.subscription.status.wait_for_payment') }}
+									</span>	
+								@elseif ($subscription->unpaidInvoice()->isClaimed())
+									<span style="cursor:pointer" href="{{ action('Admin\SubscriptionController@invoices', ['id' => $subscription->uid]) }}"
+										class="view_invoices label bg-m-warning"
+									>
+										{{ trans('messages.subscription.status.pending_for_approval') }}
+									</span>	
+								@else
+									<span style="cursor:pointer" href="{{ action('Admin\SubscriptionController@invoices', ['id' => $subscription->uid]) }}"
+										class="view_invoices label bg-m-warning"
+									>
+										{{ trans('messages.subscription.status.wait_for_payment') }}
+									</span>
+								@endif
 							@endif
 							@break
 						@default

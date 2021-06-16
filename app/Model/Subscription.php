@@ -162,7 +162,7 @@ class Subscription extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function pendingInvoices()
+    public function unpaidInvoices()
     {
         return $this->invoices()
             ->whereIn('status', [
@@ -172,9 +172,9 @@ class Subscription extends Model
             ]);
     }
 
-    public function hasPendingInvoice()
+    public function hasUnpaidInvoice()
     {
-        return $this->pendingInvoice() != null;
+        return $this->unpaidInvoice() != null;
     }
 
     /**
@@ -182,9 +182,9 @@ class Subscription extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function pendingInvoice()
+    public function unpaidInvoice()
     {
-        return $this->pendingInvoices()
+        return $this->unpaidInvoices()
             ->orderBy('created_at', 'desc')
             ->first();
     }
@@ -249,7 +249,7 @@ class Subscription extends Model
     public function createInitInvoice()
     {
         //
-        if ($this->pendingInvoice()) {
+        if ($this->unpaidInvoice()) {
             throw new \Exception(trans('messages.error.has_waiting_invoices'));
         }
 
@@ -291,7 +291,7 @@ class Subscription extends Model
     public function createRenewInvoice()
     {
         //
-        if ($this->pendingInvoice()) {
+        if ($this->unpaidInvoice()) {
             throw new \Exception(trans('messages.error.has_waiting_invoices'));
         }
 
@@ -333,8 +333,8 @@ class Subscription extends Model
     public function createChangePlanInvoice($newPlan)
     {
         //
-        if ($this->pendingInvoice()) {
-            $this->pendingInvoice()->delete();
+        if ($this->unpaidInvoice()) {
+            $this->unpaidInvoice()->delete();
         }
 
         // calculate change plan amout ends at
@@ -392,11 +392,11 @@ class Subscription extends Model
      */
     public function getUpcomingBillingInfo()
     {
-        if (!$this->pendingInvoice()) {
+        if (!$this->unpaidInvoice()) {
             return null;
         }
 
-        return $this->pendingInvoice()->getBillingInfo();
+        return $this->unpaidInvoice()->getBillingInfo();
 
         // if ($this->cancelled()) {
         //     return null;
@@ -481,7 +481,7 @@ class Subscription extends Model
 
                 // check expiring
                 if ($this->isExpiring() && $this->canRenewPlan() && !$this->cancelled()) {
-                    $pendingInvoice = $this->pendingInvoice();
+                    $pendingInvoice = $this->unpaidInvoice();
 
                     // create renew invoice if no pending invoice
                     if (!$pendingInvoice) {
@@ -517,14 +517,14 @@ class Subscription extends Model
         // Auto pay renew unpaid pending invoice when subscription is ACTIVE
         if (
             $this->isActive() &&
-            $this->pendingInvoice() && 
-            $this->pendingInvoice()->isRenewSubscriptionInvoice() &&
+            $this->unpaidInvoice() && 
+            $this->unpaidInvoice()->isRenewSubscriptionInvoice() &&
             $this->customer->supportsAutoBilling() &&
             $this->reachDueDate()
         ) {
-            $this->pendingInvoice()->checkout();
+            $this->unpaidInvoice()->checkout();
             // charge invoice
-            $this->customer->getPaymentGateway()->autoCharge($this->pendingInvoice());
+            $this->customer->getPaymentGateway()->autoCharge($this->unpaidInvoice());
         }
     }
 
@@ -769,8 +769,8 @@ class Subscription extends Model
         $this->save();
 
         // delete pending invoice
-        if ($this->pendingInvoice()) {
-            $this->pendingInvoice()->delete();
+        if ($this->unpaidInvoice()) {
+            $this->unpaidInvoice()->delete();
         }
     }
 
@@ -796,7 +796,7 @@ class Subscription extends Model
         $this->setEnded();
 
         // cancel all pending invoices (new|claimed)
-        $this->pendingInvoices()->delete();
+        $this->unpaidInvoices()->delete();
 
         // add log
         $this->addLog(SubscriptionLog::TYPE_CANCELLED_NOW, [
