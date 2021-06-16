@@ -7,18 +7,24 @@ use Acelle\Library\Contracts\PaymentGatewayInterface;
 class BillingManager {
     protected $gateways = [];
 
-    private function validate(PaymentGatewayInterface $gateway)
+    public function isGatewayTypeRegistered(string $type) : bool
     {
+        $registered = false;
         foreach ($this->gateways as $gw) {
-            if ($gw->getType() == $gateway->getType()) {
-                throw new Exception('Gateways type is already registered: ' . $gateway->getType());
+            if ($gw->getType() == $type) {
+                $registered = true;
             }
         }
+
+        return $registered;
     }
-    
+
     public function register(PaymentGatewayInterface $gateway)
     {   
-        $this->validate($gateway);
+        if ($this->isGatewayTypeRegistered($gateway->getType())) {
+            throw new Exception(sprintf('Gateways type "%s" is already registered', $gateway->getType()));
+        }
+
         $this->gateways[] = $gateway;
     }
 
@@ -28,12 +34,13 @@ class BillingManager {
     }
 
     public function getGateway(string $type) : PaymentGatewayInterface
-    {
-        
+    {        
         foreach ($this->gateways as $gw) {
             if ($gw->getType() == $type) {
                 return $gw;
             }
         }
+
+        throw new Exception(sprintf('Billing manager: payment gateway type "%s" is not registered', $type));
     }
 }
