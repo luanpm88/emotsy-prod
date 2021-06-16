@@ -1241,7 +1241,7 @@ class Plan extends Model
      *
      * @return string
      */
-    public function getBillableFormattedPrice()
+    public function getFormattedPrice()
     {
         return \Acelle\Library\Tool::format_price($this->price, $this->currency->format);
     }
