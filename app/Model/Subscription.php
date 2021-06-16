@@ -862,7 +862,7 @@ class Subscription extends Model
             ($this->plan->getBillableIntervalCount() != $plan->getBillableIntervalCount()) ||
             ($this->plan->getBillableCurrency() != $plan->getBillableCurrency())
         ) {
-            throw new \Exception(trans('cashier::messages.can_not_change_to_diff_currency_period_plan'));
+            throw new \Exception(trans('messages.can_not_change_to_diff_currency_period_plan'));
         }
         
         // new ends at
