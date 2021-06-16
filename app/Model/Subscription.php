@@ -492,18 +492,6 @@ class Subscription extends Model
                     if ($pendingInvoice->isChangePlanInvoice()) {
                         return;
                     }
-
-                    // // service auto charge
-                    // if (
-                    //     $this->customer->supportsAutoBilling() &&
-                    //     $this->reachDueDate() // check charge day before
-                    // ) {
-                    //     // add pending transaction for invoice
-                    //     $pendingInvoice->checkout();
-                        
-                    //     // charge invoice
-                    //     $this->customer->getPaymentGateway()->autoCharge($pendingInvoice, true);
-                    // }
                 }
                 break;
             case self::STATUS_ENDED:

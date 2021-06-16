@@ -158,7 +158,7 @@ class AccountSubscriptionController extends Controller
         // Get current customer
         $customer = $request->user()->customer;
         $subscription = $customer->subscription;
-        $gateway = $customer->getPaymentGateway();
+        $gateway = $customer->getPreferredPaymentGateway();
         $invoice = $subscription->getUnpaidInvoice();
 
         $invoice->checkout();
@@ -233,7 +233,7 @@ class AccountSubscriptionController extends Controller
     {
         $customer = $request->user()->customer;
         $subscription = $customer->subscription;
-        $gateway = $customer->getPaymentGateway();
+        $gateway = $customer->getPreferredPaymentGateway();
         $plans = Plan::getAvailablePlans();
         
         // Authorization

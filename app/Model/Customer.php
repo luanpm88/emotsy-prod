@@ -2123,15 +2123,33 @@ class Customer extends Model
      *
      * @var object | collect
      */
-    public function getPaymentGateway()
+    public function getPreferredPaymentGateway()
     {
         if (!$this['payment_method']) {
             return null;
         }
 
-        $paymentData = json_decode($this['payment_method'], true);
+        // For example, the user preferred method is "paddle", but paddle is no longer available
+        // Then simply return null
+        // So, in the web UI, this user does not have a preferred payment method
+        $meta = json_decode($this['payment_method'], true);
 
-        return Billing::getGateway($paymentData['method']);
+        if (!array_key_exists('method', $meta)) {
+            throw new Exception("The 'method' key is required for payment data");
+        }
+
+        $type = $meta['method'];
+
+        if (Billing::isGatewayTypeRegistered($type)) {
+            return Billing::getGateway($type);
+        } else {
+            throw new Exception(sprintf("User's preferred payment gateway type is '%s'. However, it is not registered", $type));
+        }
+    }
+
+    public function findPaymentGatewayFromAutoBillingData()
+    {
+
     }
 
     /**
