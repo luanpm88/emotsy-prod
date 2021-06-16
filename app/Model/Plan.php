@@ -1090,12 +1090,6 @@ class Plan extends Model
 
         $this->fillAll($request);
 
-        // // sync remote plan
-        // if (config('cashier.gateway') == 'paypal_subscription' && isset($request->plan) && isset($request->plan['general'])) {
-        //     $service = \Acelle\Model\Setting::getPaymentGateway('paypal_subscription');
-        //     $service->syncPlan($this, $oldPlan);
-        // }
-
         $validator = $this->validate($request);
 
         if ($validator->fails()) {
