@@ -13,9 +13,6 @@ class ResetSubscriptionsTable extends Migration
      */
     public function up()
     {
-        Schema::disableForeignKeyConstraints();
-        Schema::dropIfExists('subscriptions');
-        
         Schema::create('subscriptions', function ($table) {
             $table->increments('id');
             $table->uuid('uid');
@@ -24,7 +21,7 @@ class ResetSubscriptionsTable extends Migration
             $table->string('status');
             $table->timestampTz('trial_ends_at')->nullable();
             $table->timestampTz('ends_at')->nullable();
-            
+
             $table->timestamps();
         });
     }
