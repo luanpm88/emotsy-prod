@@ -96,7 +96,7 @@ class AccountSubscriptionController extends Controller
             }
 
             else {
-                throw new \Exception('There is no such case: new subscription must always have ONE unpaid invoice, and the getItsOnlyUnpaidInitInvoice() method above is supposed to throw an exception before reaching this point.');
+                throw new \Exception('There is no such case: new subscription must always have ONE unpaid invoice (which is either "new" or "pending" or "claimed", and the getItsOnlyUnpaidInitInvoice() method above is supposed to throw an exception before reaching this point.');
             }
         }
 
