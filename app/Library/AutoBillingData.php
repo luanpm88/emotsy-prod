@@ -5,7 +5,8 @@ use Exception;
 use Acelle\Library\Contracts\PaymentGatewayInterface;
 use Acelle\Library\Facades\Billing;
 
-class AutoBillingData {
+class AutoBillingData
+{
     protected $gateway;
     protected $data;
 

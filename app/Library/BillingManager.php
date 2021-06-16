@@ -4,7 +4,8 @@ namespace Acelle\Library;
 use Exception;
 use Acelle\Library\Contracts\PaymentGatewayInterface;
 
-class BillingManager {
+class BillingManager
+{
     protected $gateways = [];
 
     public function isGatewayTypeRegistered(string $type) : bool
@@ -20,7 +21,7 @@ class BillingManager {
     }
 
     public function register(PaymentGatewayInterface $gateway)
-    {   
+    {
         if ($this->isGatewayTypeRegistered($gateway->getType())) {
             throw new Exception(sprintf('Gateways type "%s" is already registered', $gateway->getType()));
         }
@@ -34,7 +35,7 @@ class BillingManager {
     }
 
     public function getGateway(string $type) : PaymentGatewayInterface
-    {        
+    {
         foreach ($this->gateways as $gw) {
             if ($gw->getType() == $type) {
                 return $gw;

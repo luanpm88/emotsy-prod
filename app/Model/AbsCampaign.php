@@ -119,7 +119,7 @@ abstract class AbsCampaign extends Model
      * Get template.
      */
     public function setTemplate($template)
-    {   
+    {
         $campaignTemplate = $template->copy([
             'name' => trans('messages.campaign.template_name', ['name' => $this->name]),
             'customer_id' => $this->customer_id,
@@ -133,14 +133,14 @@ abstract class AbsCampaign extends Model
         $this->template_id = $campaignTemplate->id;
 
         $this->save();
-        $this->refresh(); 
+        $this->refresh();
     }
     
     /**
      * Get template content.
      */
     public function getTemplateContent()
-    {   
+    {
         if (!$this->template) {
             throw new \Exception('Campaign does not have template!');
         }
@@ -152,7 +152,7 @@ abstract class AbsCampaign extends Model
      * Set template content.
      */
     public function setTemplateContent($content)
-    {   
+    {
         if (!$this->template) {
             throw new \Exception('Campaign does not have template!');
         }

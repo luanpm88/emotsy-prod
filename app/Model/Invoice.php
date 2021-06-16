@@ -10,7 +10,7 @@ class Invoice extends Model
 {
     // statuses
     const STATUS_NEW = 'new';               // unpaid
-    const STATUS_PENDING = 'pending';       // unpaid    
+    const STATUS_PENDING = 'pending';       // unpaid
     const STATUS_CLAIMED = 'claimed';       // unpaid
     const STATUS_PAID = 'paid';
 
@@ -29,7 +29,7 @@ class Invoice extends Model
         return self::where('uid', '=', $uid)->first();
     }
 
-    function scopeUnpaid($query)
+    public function scopeUnpaid($query)
     {
         $query->whereIn('status', [
             self::STATUS_NEW,
@@ -38,7 +38,7 @@ class Invoice extends Model
         ]);
     }
 
-    function scopeNewSubscription($query)
+    public function scopeNewSubscription($query)
     {
         $query->whereIn('type', [
             self::TYPE_NEW_SUBSCRIPTION,

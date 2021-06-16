@@ -381,7 +381,7 @@ class TemplateController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function builderCreate(Request $request)
-    {        
+    {
         $template = new Template();
         $template->name = trans('messages.untitled_template');
         

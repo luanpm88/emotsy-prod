@@ -510,7 +510,7 @@ class Subscription extends Model
         // Auto pay renew unpaid pending invoice when subscription is ACTIVE
         if (
             $this->isActive() &&
-            $this->unpaidInvoice() && 
+            $this->unpaidInvoice() &&
             $this->unpaidInvoice()->isRenewSubscriptionInvoice() &&
             $this->reachDueDate()
         ) {
@@ -890,8 +890,7 @@ class Subscription extends Model
 
     public function abortNew()
     {
-        if (!$this->isNew())
-        {
+        if (!$this->isNew()) {
             throw new \Exception('This subscription is not NEW. Can not abortNew!');
         }
 
