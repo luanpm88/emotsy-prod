@@ -839,7 +839,7 @@ class Subscription extends Model
     public function canRenewPlan()
     {
         return ($this->plan->price > 0 ||
-            (Setting::get('renew_free_plan') == 'yes' && $this->plan->price == 0)
+            (Setting::isYes('renew_free_plan') && $this->plan->price == 0)
         );
     }
 
