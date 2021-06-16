@@ -2135,7 +2135,7 @@ class Customer extends Model
         $meta = json_decode($this['payment_method'], true);
 
         if (!array_key_exists('method', $meta)) {
-            throw new Exception("The 'method' key is required for payment data");
+            throw new Exception("The 'method' key is required for 'preferred payment' data");
         }
 
         $type = $meta['method'];

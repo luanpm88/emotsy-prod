@@ -29,9 +29,9 @@
             <div class="alert alert-info bg-grey-light">
                 
 
-                @if (request()->user()->customer->getPaymentGateway() !== null)
+                @if (request()->user()->customer->getPreferredPaymentGateway() !== null)
                     {!! trans('messages.invoice.pending.wording') !!}
-                    <a href="{{ request()->user()->customer->getPaymentGateway()->getCheckoutUrl($invoice) }}" class="btn btn-mc_primary mt-4">{{ trans('messages.payment.check_payment') }}</a>
+                    <a href="{{ request()->user()->customer->getPreferredPaymentGateway()->getCheckoutUrl($invoice) }}" class="btn btn-mc_primary mt-4">{{ trans('messages.payment.check_payment') }}</a>
                 @else
                     {!! trans('messages.invoice.pending.no_payment') !!}
                     <a href="{{ action('AccountController@editPaymentMethod', [

@@ -532,7 +532,7 @@ class Invoice extends Model
         $transaction->invoice_id = $this->id;
         $transaction->amount = $this->formattedTotal();
         $transaction->message = $data['message'];
-        $transaction->method = $this->customer->getPaymentGateway() ? $this->customer->getPaymentGateway()->getName() : trans('messages.payment_manual');
+        $transaction->method = $this->customer->getPreferredPaymentGateway() ? $this->customer->getPreferredPaymentGateway()->getName() : trans('messages.payment_manual');
         $transaction->error = isset($data['error']) ? $data['error'] : null;
         $transaction->status = isset($data['status']) ? $data['status'] : \Acelle\Model\Transaction::STATUS_PENDING;
         $transaction->save();
