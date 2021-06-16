@@ -1793,65 +1793,6 @@ class Customer extends Model
         return \Acelle\Model\SendingDomain::getAllActive();
     }
 
-    //====================================== BILLABLE USER INTERFACE =======================================
-
-    /**
-     * Customer get email.
-     *
-     * @return string
-     */
-    public function getBillableEmail()
-    {
-        return $this->email();
-    }
-
-    /**
-     * Customer get remote owner id.
-     *
-     * @return string
-     */
-    public function getBillableId()
-    {
-        return $this->uid;
-    }
-
-    /**
-     * Customer get local owner id.
-     *
-     * @return string
-     */
-    public function getLocalOwnerId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * Update billable owner id.
-     */
-    public function updateRemoteOwnerId($ownerId)
-    {
-        $this->remote_owner_id = $ownerId;
-        $this->save();
-    }
-
-    /**
-     * Update billable card brand.
-     */
-    public function updateBillableCardBrand($cardBrand)
-    {
-        $this->billable_card_brand = $cardBrand;
-        $this->save();
-    }
-
-    /**
-     * Update billable card last four.
-     */
-    public function updateBillableCardLastFour($cardLastFour)
-    {
-        $this->billable_card_last_four = $cardLastFour;
-        $this->save();
-    }
-
     /**
      * Get customer options.
      *

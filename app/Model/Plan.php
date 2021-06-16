@@ -1237,66 +1237,6 @@ class Plan extends Model
     }
 
     /**
-     * PlanInterface: get remote plan id.
-     *
-     * @return string
-     */
-    public function getBillableId()
-    {
-        return $this->uid;
-    }
-
-    /**
-     * PlanInterface: get name.
-     *
-     * @return string
-     */
-    public function getBillableName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * PlanInterface: get interval.
-     *
-     * @return string
-     */
-    public function getBillableInterval()
-    {
-        return $this->frequency_unit;
-    }
-
-    /**
-     * PlanInterface: get interval count.
-     *
-     * @return string
-     */
-    public function getBillableIntervalCount()
-    {
-        return $this->frequency_amount;
-    }
-
-    /**
-     * PlanInterface: get currency.
-     *
-     * @return string
-     */
-    public function getBillableCurrency()
-    {
-        return $this->currency->code;
-    }
-
-    /**
-     * PlanInterface: get interval count.
-     *
-     * @return string
-     */
-    public function getBillableAmount()
-    {
-        return $this->price;
-    }
-
-    /**
      * PlanInterface: get interval count.
      *
      * @return string
