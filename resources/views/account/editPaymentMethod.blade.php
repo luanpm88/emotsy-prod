@@ -21,7 +21,7 @@
                             @include('helpers.form_control', [
                                 'type' => 'radio2',
                                 'name' => 'payment_method',
-                                'value' => request()->user()->customer->getPaymentGateway() ? request()->user()->customer->getPaymentGateway()->getType() : '',
+                                'value' => request()->user()->customer->getPreferredPaymentGateway() ? request()->user()->customer->getPreferredPaymentGateway()->getType() : '',
                                 'label' => '',
                                 'help_class' => 'setting',
                                 'rules' => ['payment_method' => 'required'],

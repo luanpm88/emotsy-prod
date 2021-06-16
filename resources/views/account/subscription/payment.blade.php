@@ -19,9 +19,6 @@
 @endsection
 
 @section('content')
-
-    
-
     <div class="row">
         <div class="col-md-8">
             @if ($subscription->getUnpaidInvoice() && $subscription->getUnpaidInvoice()->lastTransaction() && $subscription->getUnpaidInvoice()->lastTransaction()->isFailed())
@@ -34,11 +31,11 @@
             <h2 class="mb-3 mt-0">{{ $invoice->title }}</h2>
 
             <div class="current_payment">
-                @if (request()->user()->customer->getPaymentGateway() == null)
+                @if (request()->user()->customer->getPreferredPaymentGateway() == null)
                     <p>{{ trans('messages.plan.review.do_not_have_payment_yet') }}</p>
                 @else
                     <p class="mb-3">{!! trans('messages.payment.you_currenly_payment', [
-                        'method' => request()->user()->customer->getPaymentGateway()->getName(),
+                        'method' => request()->user()->customer->getPreferredPaymentGateway()->getName(),
                     ]) !!}</p>
                     <form class="edit-payment" action="{{ action('AccountSubscriptionController@checkout') }}"
                         method="POST">
@@ -60,7 +57,7 @@
                 @endif
             </div>
             
-            <form class="edit-payment mt-4 pt-4" {!! (request()->user()->customer->getPaymentGateway() == null) ? '' : 'style="display:none"' !!} action="{{ request()->user()->customer->getPaymentGateway() ? action('AccountSubscriptionController@checkout') : action('AccountController@editPaymentMethod') }}"
+            <form class="edit-payment mt-4 pt-4" {!! (request()->user()->customer->getPreferredPaymentGateway() == null) ? '' : 'style="display:none"' !!} action="{{ request()->user()->customer->getPreferredPaymentGateway() ? action('AccountSubscriptionController@checkout') : action('AccountController@editPaymentMethod') }}"
                 method="POST">
                 {{ csrf_field() }}
 
@@ -76,7 +73,7 @@
                                     @include('helpers.form_control', [
                                         'type' => 'radio2',
                                         'name' => 'payment_method',
-                                        'value' => request()->user()->customer->getPaymentGateway() ? request()->user()->customer->getPaymentGateway()->getType() : '',
+                                        'value' => request()->user()->customer->getPreferredPaymentGateway() ? request()->user()->customer->getPreferredPaymentGateway()->getType() : '',
                                         'label' => '',
                                         'help_class' => 'setting',
                                         'rules' => ['payment_method' => 'required'],
@@ -158,7 +155,7 @@
             $('.choose-payment-methods>div').removeClass('current');
             $('.choose-payment-methods>div [type=radio]:checked').closest('.choose-payment').addClass('current');
 
-            if ($('.choose-payment-methods>div [type=radio]:checked').val() == '{{ request()->user()->customer->getPaymentGateway() ? request()->user()->customer->getPaymentGateway()->getName() : 'none' }}') {
+            if ($('.choose-payment-methods>div [type=radio]:checked').val() == '{{ request()->user()->customer->getPreferredPaymentGateway() ? request()->user()->customer->getPreferredPaymentGateway()->getName() : 'none' }}') {
                 $('.edit-payment').attr('action', '{!! action('AccountSubscriptionController@checkout') !!}');
             } else {
                 $('.edit-payment').attr('action', '{!! action('AccountController@editPaymentMethod') !!}');
