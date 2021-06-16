@@ -34,7 +34,6 @@ class PlanController extends Controller
 
         return view('admin.plans.index', [
             'plans' => $plans,
-            'gateway' => Setting::getPayment(Setting::get('system.payment_gateway')),
         ]);
     }
 
@@ -45,16 +44,6 @@ class PlanController extends Controller
      */
     public function listing(Request $request)
     {
-        // authorize
-        if (\Gate::denies('read', new \Acelle\Model\Plan())) {
-            return $this->notAuthorized();
-        }
-
-        // If admin can view all sending domains
-        if (!$request->user()->admin->can("readAll", new \Acelle\Model\Plan())) {
-            $request->merge(array("admin_id" => $request->user()->admin->id));
-        }
-
         $plans = \Acelle\Model\Plan::search($request)->paginate($request->per_page);
 
         return view('admin.plans._list', [

@@ -884,7 +884,7 @@ class Plan extends Model
      */
     public function customersCount()
     {
-        return $this->subscriptions()->distinct('user_id')->count('user_id');
+        return $this->subscriptions()->distinct('customer_id')->count('customer_id');
     }
 
     /**
@@ -1391,14 +1391,9 @@ class Plan extends Model
         $plans = self::getAllActiveVisible()->get();
 
         $aPlans = [];
-        // $psService = \Acelle\Model\Setting::getPaymentGateway('paypal_subscription');
         foreach ($plans as $plan) {
             if ($plan->isAvailable()) {
-                // if (config('cashier.paypal_payment') !== 'paypal_subscription' ||
-                //     $psService->findPlanConnection($plan)
-                // ) {
                 $aPlans[] = $plan;
-                // }
             }
         }
 
@@ -1435,23 +1430,6 @@ class Plan extends Model
 
         // else return true
         return true;
-    }
-
-    /**
-     * Check plan error status.
-     *
-     * @var array
-     */
-    public function errors()
-    {
-        $errors = [];
-
-        // use system sending server but has no primary sending server
-        if ($this->useSystemSendingServer() && !$this->hasPrimarySendingServer()) {
-            $errors[] = 'sending_server_empty';
-        }
-
-        return $errors;
     }
 
     /**
