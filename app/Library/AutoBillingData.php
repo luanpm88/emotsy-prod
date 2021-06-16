@@ -9,7 +9,7 @@ class AutoBillingData {
     protected $gateway;
     protected $data;
 
-    public function __construct(PaymentGatewayInterface $gateway, $data=[])
+    public function __construct(PaymentGatewayInterface $gateway, $data = [])
     {
         $this->gateway = $gateway;
         $this->data = $data;
