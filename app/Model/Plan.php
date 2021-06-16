@@ -25,12 +25,11 @@ namespace Acelle\Model;
 use Illuminate\Database\Eloquent\Model;
 use Validator;
 use Illuminate\Validation\ValidationException;
-use Acelle\Cashier\Interfaces\BillablePlanInterface;
 use Acelle\Model\Subscription;
 use Acelle\Cashier\Cashier;
 use Acelle\Model\SendingServer;
 
-class Plan extends Model implements BillablePlanInterface
+class Plan extends Model
 {
     // Plan status
     const STATUS_INACTIVE = 'inactive';

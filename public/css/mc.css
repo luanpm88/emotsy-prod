@@ -501,10 +501,10 @@ stat .stat-head {
   background: #777;
   border-color: #777;
 }
-.bg-paystack, .bg-coinpayments, .bg-stripe, .bg-braintree, .bg-direct, .bg-paypal, .bg-paypal_subscription, .bg-rezorpay {
+.bg-paystack, .bg-coinpayments, .bg-stripe, .bg-braintree, .bg-offline, .bg-paypal, .bg-paypal_subscription, .bg-rezorpay {
   position: relative;
 }
-.bg-paystack::after, .bg-razorpay::after, .bg-coinpayments::after, .bg-stripe::after, .bg-braintree::after, .bg-direct::after, .bg-paypal::after, .bg-paypal_subscription::after {
+.bg-paystack::after, .bg-razorpay::after, .bg-coinpayments::after, .bg-stripe::after, .bg-braintree::after, .bg-offline::after, .bg-paypal::after, .bg-paypal_subscription::after {
   content: "";
   background-image: url("../images/coinpayments-logo.png");
   background-size: 140px auto;
@@ -532,7 +532,7 @@ stat .stat-head {
     background-size: 93px;
     background-position: -2px 10px;
 }
-.bg-direct::after {
+.bg-offline::after {
     background-image: url(../images/direct-payment-logo.jpg);
     background-size: 85px;
     margin-top: -10px;
@@ -1085,7 +1085,7 @@ table.table-log tr th {
   background-repeat: no-repeat;
   background-position: right 10px top 10px;
 }
-.choose-payment-direct {
+.choose-payment-offline {
   background-image: url(../images/bank.svg);
   background-size: 38px;
   background-repeat: no-repeat;

@@ -29,23 +29,23 @@
                 <h2 style="margin-bottom: 10px;margin-top: 0">{{ trans('messages.payment.all_available_gateways') }}</h2>
                 <p>{!! trans('messages.payment.all_available_gateways.wording') !!}</p>
                 <div class="mc-list-setting mt-40">
-                    @foreach ($gateways as $name => $gateway)
-                        <div class="list-setting bg-{{ $gateway['name'] }}
-                            {{ Acelle\Model\Setting::get('payment.' . $name) ? 'current' : '' }}">
+                    @foreach ($gateways as $gateway)
+                        <div class="list-setting bg-{{ $gateway->getType() }}
+                            {{ in_array($gateway, $enabledGateways) ? 'current' : '' }}">
                             <div class="list-setting-main">
                                 <div class="title">
-                                    <label>{{ trans('messages.payments.' . $name) }}</label>
+                                    <label>{{ $gateway->getName() }}</label>
                                 </div>
-                                <p>{{ trans('messages.payments.' . $name . '.list_intro') }}</p>
+                                <p>{{ $gateway->getDescription() }}</p>
                             </div>
                             <div class="list-setting-footer text-nowrap pl-4">
-                                @if (Acelle\Model\Setting::get('payment.' . $name))
-                                    @if (in_array($name, $enabledGateways))
+                                @if ($gateway->isActive())
+                                    @if (in_array($gateway, $enabledGateways))
                                         <span class="badge badge-large badge-success">
                                             {{ trans('messages.payment.active') }}
                                         </span>
                                         <a class="btn btn-mc_primary ml-5"
-                                            link-method="post" href="{{ action('Admin\PaymentController@disable', $name) }}">
+                                            link-method="post" href="{{ action('Admin\PaymentController@disable', $gateway->getType()) }}">
                                             {{ trans('messages.payment.disable') }}
                                         </a>
                                     @else
@@ -53,15 +53,15 @@
                                             {{ trans('messages.payment.inactive') }}
                                         </span>
                                         <a class="btn btn-mc_primary ml-5"
-                                            link-method="post" href="{{ action('Admin\PaymentController@enable', $name) }}">
+                                            link-method="post" href="{{ action('Admin\PaymentController@enable', $gateway->getType()) }}">
                                             {{ trans('messages.payment.enable') }}
                                         </a>
                                     @endif
-                                    <a class="btn btn-mc_default ml-5" href="{{ action('Admin\PaymentController@edit', $name) }}">
+                                    <a class="btn btn-mc_default ml-5" href="{{ $gateway->getSettingsUrl() }}">
                                         {{ trans('messages.payment.setting') }}
                                     </a>
                                 @else
-                                    <a class="btn btn-mc_primary ml-5" href="{{ action('Admin\PaymentController@edit', $name) }}">
+                                    <a class="btn btn-mc_primary ml-5" href="{{ $gateway->getSettingsUrl() }}">
                                         {{ trans('messages.payment.connect') }}
                                     </a>
                                 @endif

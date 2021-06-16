@@ -1,0 +1,46 @@
+<?php
+namespace Acelle\Library;
+
+use Exception;
+use Acelle\Library\Contracts\PaymentGatewayInterface;
+
+class BillingManager {
+    protected $gateways = [];
+
+    public function isGatewayTypeRegistered(string $type) : bool
+    {
+        $registered = false;
+        foreach ($this->gateways as $gw) {
+            if ($gw->getType() == $type) {
+                $registered = true;
+            }
+        }
+
+        return $registered;
+    }
+
+    public function register(PaymentGatewayInterface $gateway)
+    {   
+        if ($this->isGatewayTypeRegistered($gateway->getType())) {
+            throw new Exception(sprintf('Gateways type "%s" is already registered', $gateway->getType()));
+        }
+
+        $this->gateways[] = $gateway;
+    }
+
+    public function getGateways() : array
+    {
+        return $this->gateways;
+    }
+
+    public function getGateway(string $type) : PaymentGatewayInterface
+    {        
+        foreach ($this->gateways as $gw) {
+            if ($gw->getType() == $type) {
+                return $gw;
+            }
+        }
+
+        throw new Exception(sprintf('Billing manager: payment gateway type "%s" is not registered', $type));
+    }
+}

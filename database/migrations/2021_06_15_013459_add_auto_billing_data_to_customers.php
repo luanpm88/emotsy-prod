@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class RemoveMetadataFromSubscriptions extends Migration
+class AddAutoBillingDataToCustomers extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class RemoveMetadataFromSubscriptions extends Migration
      */
     public function up()
     {
-        Schema::table('subscriptions', function (Blueprint $table) {
-            $table->dropColumn('metadata');
+        Schema::table('customers', function (Blueprint $table) {
+            $table->longText('auto_billing_data')->nullable();
         });
     }
 
@@ -25,8 +25,8 @@ class RemoveMetadataFromSubscriptions extends Migration
      */
     public function down()
     {
-        Schema::table('subscriptions', function (Blueprint $table) {
-            $table->text('metadata');
+        Schema::table('customers', function (Blueprint $table) {
+            $table->dropColumn('auto_billing_data');
         });
     }
 }

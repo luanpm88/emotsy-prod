@@ -100,6 +100,14 @@ abstract class AbsCampaign extends Model
     }
 
     /**
+     * Campaign has many campaign links.
+     */
+    public function campaignLinks()
+    {
+        return $this->hasMany('Acelle\Model\CampaignLink');
+    }
+
+    /**
      * Get campaign's associated tracking domain.
      */
     public function trackingDomain()
@@ -125,6 +133,7 @@ abstract class AbsCampaign extends Model
         $this->template_id = $campaignTemplate->id;
 
         $this->save();
+        $this->refresh(); 
     }
     
     /**
@@ -133,7 +142,7 @@ abstract class AbsCampaign extends Model
     public function getTemplateContent()
     {   
         if (!$this->template) {
-            return false;
+            throw new \Exception('Campaign does not have template!');
         }
 
         return $this->template->content;
@@ -178,14 +187,6 @@ abstract class AbsCampaign extends Model
         }
 
         return $rules;
-    }
-
-    /**
-     * Get the links for campaign.
-     */
-    public function links()
-    {
-        return $this->belongsToMany('Acelle\Model\Link', 'campaign_links');
     }
 
     /**
@@ -823,12 +824,16 @@ abstract class AbsCampaign extends Model
         // Created
         static::created(function ($item) {
             // Update links
-            $item->updateLinks();
+            if ($item->template) {
+                $item->updateLinks();
+            }
         });
 
         static::updating(function ($item) {
             // Update links
-            $item->updateLinks();
+            if ($item->template) {
+                $item->updateLinks();
+            }
         });
 
         static::deleted(function ($item) {
@@ -842,7 +847,7 @@ abstract class AbsCampaign extends Model
      */
     public function getLinks()
     {
-        return $this->links()->whereIn('url', $this->getUrls())->get();
+        return $this->campaignLinks()->get();
     }
 
     /**
@@ -870,18 +875,12 @@ abstract class AbsCampaign extends Model
     public function updateLinks()
     {
         foreach ($this->getUrls() as $url) {
-            $link = Link::where('url', '=', $url)->first();
-            if (!is_object($link)) {
-                $link = new Link();
-                $link->url = $url;
-                $link->save();
-            }
-
             // Campaign link
-            if ($this->links()->where('url', '=', $url)->count() == 0) {
+            if ($this->campaignLinks()->where('url', '=', $url)->count() == 0) {
                 $cl = new CampaignLink();
                 $cl->campaign_id = $this->id;
                 $cl->link_id = $link->id;
+                $cl->url = $url;
                 $cl->save();
             }
         }
@@ -939,8 +938,7 @@ abstract class AbsCampaign extends Model
         }
 
         // Step 3
-        // if ((!empty($this->getTemplateContent()) || $this->type == 'plain-text') && !empty($this->plain) && $this->unsubscribe_url_valid()) {
-        if ((!empty($this->getTemplateContent()) || $this->type == 'plain-text') && !empty($this->plain)) {
+        if (($this->template || $this->type == 'plain-text') && !empty($this->plain)) {
             $step = 3;
         } else {
             return $step;
@@ -977,8 +975,6 @@ abstract class AbsCampaign extends Model
         // Get campaign from ... (all|normal|automated)
         if ($request->source == 'template') {
             $query = $query->where('html', '!=', null);
-        } else {
-            $query = $query->where('is_auto', '=', false);
         }
 
         // Keyword
@@ -1158,7 +1154,7 @@ abstract class AbsCampaign extends Model
      */
     public function urlCount()
     {
-        return $this->links()->count();
+        return $this->campaignLinks()->count();
     }
 
     /**
@@ -1547,8 +1543,7 @@ abstract class AbsCampaign extends Model
     {
         $records = self::select(DB::raw(DB::getTablePrefix().'campaigns.*, count(*) as `aggregate`'))
             ->join('tracking_logs', 'tracking_logs.campaign_id', '=', 'campaigns.id')
-            ->join('open_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')
-            ->where('is_auto', false);
+            ->join('open_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id');
 
         if (isset($customer)) {
             $records = $records->where('campaigns.customer_id', '=', $customer->id);
@@ -1569,8 +1564,7 @@ abstract class AbsCampaign extends Model
     {
         $records = self::select(DB::raw(DB::getTablePrefix().'campaigns.*, count(*) as `aggregate`'))
             ->join('tracking_logs', 'tracking_logs.campaign_id', '=', 'campaigns.id')
-            ->join('click_logs', 'click_logs.message_id', '=', 'tracking_logs.message_id')
-            ->where('is_auto', false);
+            ->join('click_logs', 'click_logs.message_id', '=', 'tracking_logs.message_id');
 
         if (isset($customer)) {
             $records = $records->where('campaigns.customer_id', '=', $customer->id);
@@ -1589,12 +1583,11 @@ abstract class AbsCampaign extends Model
      */
     public static function topLinks($number = 5, $customer = null)
     {
-        $records = Link::select(DB::raw(DB::getTablePrefix().'links.*, count(*) as `aggregate`'))
-            ->join('campaign_links', 'campaign_links.link_id', '=', 'links.id')
+        $records = CampaignLink::select(DB::raw(table('campaign_links.*').', count(*) as `aggregate`'))
             ->join('tracking_logs', 'tracking_logs.campaign_id', '=', 'campaign_links.campaign_id')
             ->join('click_logs', function ($join) {
                 $join->on('click_logs.message_id', '=', 'tracking_logs.message_id')
-                ->on('click_logs.url', '=', 'links.url');
+                ->on('click_logs.url', '=', 'campaign_links.url');
             });
 
         if (isset($customer)) {
@@ -1602,7 +1595,7 @@ abstract class AbsCampaign extends Model
                 ->where('campaigns.customer_id', '=', $customer->id);
         }
 
-        $records = $records->groupBy('links.id')
+        $records = $records->groupBy('campaign_links.url')
             ->orderBy('aggregate', 'desc');
 
         return $records->take($number);
@@ -2078,6 +2071,8 @@ abstract class AbsCampaign extends Model
     }
 
     /**
+<<<<<<< HEAD
+=======
      * Check if auto campaign designed.
      *
      * @return object
@@ -2087,12 +2082,13 @@ abstract class AbsCampaign extends Model
         $cond = (!empty($this->name) && !empty($this->subject) && !empty($this->from_name)
             && !empty($this->from_email) && !empty($this->reply_to));
 
-        $cond = $cond && ((!empty($this->getTemplateContent()) || $this->type == 'plain-text') && !empty($this->plain) && $this->unsubscribe_url_valid());
+        $cond = $cond && (($this->template || $this->type == 'plain-text') && !empty($this->plain) && $this->unsubscribe_url_valid());
 
         return $cond;
     }
 
     /**
+>>>>>>> d981bf98e (cashier 3.0)
      * Get type select options.
      *
      * @return array
@@ -2103,16 +2099,6 @@ abstract class AbsCampaign extends Model
             ['text' => trans('messages.'.self::TYPE_REGULAR), 'value' => self::TYPE_REGULAR],
             ['text' => trans('messages.'.self::TYPE_PLAIN_TEXT), 'value' => self::TYPE_PLAIN_TEXT],
         ];
-    }
-
-    /**
-     * Check if campaign is automated.
-     *
-     * @return bool
-     */
-    public function isAuto()
-    {
-        return $this->is_auto;
     }
 
     /**

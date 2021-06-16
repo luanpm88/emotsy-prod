@@ -23,8 +23,8 @@
 						</span>
 					</h5>
 					<div class="text-muted">{!! trans('messages.subscribed_by', [
-						'name' => $subscription->user->displayName(),
-						'customer_link' => action('Admin\CustomerController@edit', $subscription->user->uid)
+						'name' => $subscription->customer->displayName(),
+						'customer_link' => action('Admin\CustomerController@edit', $subscription->customer->uid)
 					]) !!}</div>
 				</td>
 				<td width="15%">

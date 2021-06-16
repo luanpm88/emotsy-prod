@@ -26,12 +26,16 @@ use Illuminate\Database\Eloquent\Model;
 use Acelle\Events\MailListUpdated;
 use Acelle\Library\StringHelper;
 use Exception;
+use Illuminate\Support\Facades\Validator;
 
 class ClickLog extends Model
 {
     public static function createFromRequest($request)
     {
         $url = StringHelper::base64UrlDecode($request->url);
+
+        self::validateUrl($url); // throw an exception if failed
+
         $messageId = StringHelper::base64UrlDecode($request->message_id);
 
         if (!TrackingLog::where('message_id', $messageId)->exists()) {
@@ -58,6 +62,17 @@ class ClickLog extends Model
         }
 
         return $url;
+    }
+
+    private static function validateUrl($url)
+    {
+        $value = [ 'url' => $url ];
+        $rules = [ 'url' => 'required|url' ];
+        $validator = Validator::make($value, $rules);
+
+        if ($validator->fails()) {
+            throw new Exception('Invalid URL: '.$url);
+        }
     }
 
     /**

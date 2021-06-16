@@ -70,7 +70,7 @@
                                 </td> 
                                 <td>
                                     <span class="no-margin kq_search">
-                                        {!! trans('messages.transaction.method.' . $transaction->method) !!}
+                                        {!! $transaction->method !!}
                                     </span>
                                 </td> 
                                 <td>

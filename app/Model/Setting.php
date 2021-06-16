@@ -25,6 +25,7 @@ namespace Acelle\Model;
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Cashier\Cashier;
 use Acelle\Model\Plugin;
+use Acelle\Library\Facades\Billing;
 
 class Setting extends Model
 {
@@ -706,67 +707,13 @@ class Setting extends Model
     }
 
     /**
-     * Get payments gateways.
-     *
-     * @var array
-     */
-    public static function getPayments()
-    {
-        $gateways = self::defaultPayments();
-
-        return $gateways;
-    }
-
-    /**
      * Get enabled payments gateways.
      *
      * @var array
      */
     public static function getEnabledPaymentGateways()
     {
-        $gateways = json_decode(self::get('gateways'), true);
-
-        // Check plugin paystack
-        // if (!Plugin::isActive('paystack')) {
-        //     if (($key = array_search('paystack', $gateways)) !== false) {
-        //         unset($gateways[$key]);
-        //     }
-        // }
-
-        return $gateways;
-    }
-
-    /**
-     * Get payments gateway by name.
-     *
-     * @var array
-     */
-    public static function getPayment($name)
-    {
-        if (!isset(self::defaultPayments()[$name])) {
-            return;
-        }
-
-        $gateway = self::defaultPayments()[$name];
-
-        // fetch value from db
-        foreach ($gateway['fields'] as $key => $value) {
-            $gateway['fields'][$key] = Setting::get('payment.'.$name.'.'.$key);
-        }
-
-        return $gateway;
-    }
-
-    /**
-     * Get payments gateway by name.
-     *
-     * @var array
-     */
-    public static function getPaymentGateway($name, $options=null)
-    {
-        $meta = self::getPayment($name);
-
-        return Cashier::getPaymentGateway($meta, $options);
+        throw new \Exception("Move vào BillingManager rồi delete method này luôn");
     }
 
     /**
@@ -795,80 +742,28 @@ class Setting extends Model
             self::set($setting, $value);
         }
     }
-    
+
     /**
-     * Default payment methods.
+     * Enable payment gateway.
      *
      * @var void
      */
-    public static function defaultPayments()
+    public static function enablePaymentGateway($gatewayType)
     {
-        return [
-            'direct' => [
-                'name' => 'direct',
-                'fields' => [
-                    'payment_instruction' => '',
-                ],
-            ],
-            'stripe' => [
-                'name' => 'stripe',
-                'fields' => [
-                    'publishable_key' => null,
-                    'secret_key' => null,
-                    'always_ask_for_valid_card' => 'no',
-                    'billing_address_required' => 'no',
-                ],
-            ],
-            'braintree' => [
-                'name' => 'braintree',
-                'fields' => [
-                    'environment' => 'sandbox',
-                    'merchant_id' => null,
-                    'public_key' => null,
-                    'private_key' => null,
-                    'always_ask_for_valid_card' => 'no',
-                ],
-            ],
-            'coinpayments' => [
-                'name' => 'coinpayments',
-                'fields' => [
-                    'merchant_id' => null,
-                    'public_key' => null,
-                    'private_key' => null,
-                    'ipn_secret' => null,
-                    'receive_currency' => 'BTC',
-                ],
-            ],
-            'paypal' => [
-                'name' => 'paypal',
-                'fields' => [
-                    'environment' => 'sandbox',
-                    'client_id' => null,
-                    'secret' => null,
-                ],
-            ],
-            // 'paypal_subscription' => [
-            //     'name' => 'paypal_subscription',
-            //     'fields' => [
-            //         'environment' => 'sandbox',
-            //         'client_id' => null,
-            //         'secret' => null,
-            //     ],
-            // ],
-            'razorpay' => [
-                'name' => 'razorpay',
-                'fields' => [
-                    'key_id' => null,
-                    'key_secret' => null,
-                ],
-            ],
-            'paystack' => [
-                'name' => 'paystack',
-                'fields' => [
-                    'public_key' => null,
-                    'secret_key' => null,
-                ],
-            ],
-        ];
+        $gateways = json_decode(self::get('gateways'), true);
+        $gateways = array_merge($gateways, [$gatewayType]);
+        Setting::set('gateways', json_encode($gateways));
+    }
+    
+    /**
+     * Disable payment gateway.
+     *
+     * @var void
+     */
+    public static function disablePaymentGateway($gatewayType)
+    {
+        $gateways = json_decode(self::get('gateways'), true);
+        $gateways = array_diff($gateways, [$gatewayType]);
+        Setting::set('gateways', json_encode($gateways));
     }
 }

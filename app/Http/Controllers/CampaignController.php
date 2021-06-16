@@ -34,7 +34,7 @@ class CampaignController extends Controller
     public function index(Request $request)
     {
         $customer = $request->user()->customer;
-        $campaigns = $customer->getNormalCampaigns();
+        $campaigns = $customer->campaigns();
 
         return view('campaigns.index', [
             'campaigns' => $campaigns,
@@ -335,7 +335,7 @@ class CampaignController extends Controller
         }
 
         // check if campagin does not have template
-        if (!$campaign->getTemplateContent()) {
+        if (!$campaign->template) {
             return redirect()->action('CampaignController@templateCreate', ['uid' => $campaign->uid]);
         }
 
@@ -343,65 +343,6 @@ class CampaignController extends Controller
             'campaign' => $campaign,
             'spamscore' => Setting::isYes('spamassassin.enabled'),
         ]);
-
-        //// Required tags
-        //$validate = 'required';
-        //
-        //// @todo hard-coded here
-        //$requiredTags = array(
-        //    array('name' => '{UNSUBSCRIBE_URL}', 'required' => true),
-        //);
-        //
-        //foreach ($requiredTags as $tag) {
-        //    if ($tag['required']) {
-        //        $validate .= '|substring:"'.$tag['name'].'"';
-        //    }
-        //}
-        //
-        //$rules = [];
-        //
-        //// if campaign type is not plain text
-        //if ($campaign->type != 'plain-text' && $customer->getOption('unsubscribe_url_required') == 'yes') {
-        //    $rules['html'] = $validate;
-        //}
-        //
-        //// Get old post values
-        //if (null !== $request->old()) {
-        //    $campaign->fill($request->old());
-        //}
-        //
-        //$rules = [];
-        //// validate and save posted data
-        //if ($request->isMethod('post')) {
-        //    // Check validation
-        //    $this->validate($request, $rules);
-        //
-        //    // Save campaign
-        //    $campaign->fill($request->all());
-        //    // convert html to plain text if plain text is empty
-        //    if (trim($request->plain) == '') {
-        //        $campaign->plain = preg_replace('/\s+/', ' ', preg_replace('/\r\n/', ' ', strip_tags($request->getTemplateContent())));
-        //    }
-        //    $campaign->save();
-        //
-        //    if (isset($request->template_source)) {
-        //        return redirect()->action('CampaignController@templatePreview', ['uid' => $campaign->uid]);
-        //    } else {
-        //        return redirect()->action('CampaignController@schedule', ['uid' => $campaign->uid]);
-        //    }
-        //}
-        //
-        //// redirect page
-        //if (!empty($campaign->getTemplateContent()) || $campaign->type == 'plain-text') {
-        //    return redirect()->action('CampaignController@templatePreview', ['uid' => $campaign->uid]);
-        //} else {
-        //    return redirect()->action('CampaignController@templateSelect', ['uid' => $campaign->uid]);
-        //}
-        //
-        //return view('campaigns.template', [
-        //    'campaign' => $campaign,
-        //    'rules' => $rules,
-        //]);
     }
 
     /**

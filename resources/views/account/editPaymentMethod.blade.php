@@ -15,26 +15,26 @@
 
         <div class="sub-section mb-30 choose-payment-methods">      
             @foreach(Acelle\Model\Setting::getEnabledPaymentGateways() as $gateway)
-                <div class="d-flex align-items-center choose-payment choose-payment-{{ $gateway }}">
+                <div class="d-flex align-items-center choose-payment choose-payment-{{ $gateway->getType() }}">
                     <div class="text-right pl-2 pr-2">
                         <div class="d-flex align-items-center form-group-mb-0">
                             @include('helpers.form_control', [
                                 'type' => 'radio2',
                                 'name' => 'payment_method',
-                                'value' => '',
+                                'value' => request()->user()->customer->getPaymentGateway() ? request()->user()->customer->getPaymentGateway()->getType() : '',
                                 'label' => '',
                                 'help_class' => 'setting',
                                 'rules' => ['payment_method' => 'required'],
                                 'options' => [
-                                    ['value' => $gateway, 'text' => ''],
+                                    ['value' => $gateway->getType(), 'text' => ''],
                                 ],
                             ])
                             <div class="check"></div>
                         </div>
                     </div>
                     <div class="mr-auto pr-4">
-                        <h4 class="font-weight-semibold mb-2">{{ trans('messages.frontend_payment.' . $gateway) }}</h4>
-                        <p class="mb-3">{{ trans('messages.frontend_payment.' . $gateway . '.desc') }}</p>
+                        <h4 class="font-weight-semibold mb-2">{{ $gateway->getName() }}</h4>
+                        <p class="mb-3">{{ $gateway->getDescription() }}</p>
                     </div>                        
                 </div>
             @endforeach

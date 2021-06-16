@@ -383,10 +383,10 @@ class Admin extends Model
     public function getAllSubscriptions()
     {
         if ($this->user->can('readAll', new \Acelle\Model\Customer())) {
-            $query = Subscription::select('subscriptions.*')->leftJoin('customers', 'customers.uid', '=', 'subscriptions.user_id');
+            $query = Subscription::select('subscriptions.*')->leftJoin('customers', 'customers.id', '=', 'subscriptions.customer_id');
         } else {
             $query = Subscription::select('subscriptions.*')
-                ->join('customers', 'customers.uid', '=', 'subscriptions.user_id')
+                ->join('customers', 'customers.id', '=', 'subscriptions.customer_id')
                 ->where('customers.admin_id', '=', $this->id);
             /* ERROR
             $query = $query->where(function ($q) {
@@ -542,7 +542,7 @@ class Admin extends Model
      */
     public function getAllSubscriptionsByPlan($plan)
     {
-        return $this->getAllSubscriptions()->where('subscriptions.plan_id', '=', $plan->uid);
+        return $this->getAllSubscriptions()->where('subscriptions.plan_id', '=', $plan->id);
     }
 
     /**
