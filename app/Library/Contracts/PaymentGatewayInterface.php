@@ -11,7 +11,8 @@ interface PaymentGatewayInterface
     public function getSettingsUrl() : string;
     public function getCheckoutUrl($invoice) : string;
 
+    // auto
     public function supportsAutoBilling() : bool;
-    public function autoCharge($invoice);
+    public function autoCharge($invoice); // dành cho cronjob của core gọi
     public function getAutoBillingDataUpdateUrl() : string;
 }

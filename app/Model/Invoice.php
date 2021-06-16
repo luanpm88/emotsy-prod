@@ -118,16 +118,24 @@ class Invoice extends Model
     }
 
     /**
+     * Last transaction is failed.
+     */
+    public function lastTransactionIsFailed()
+    {
+        if ($this->lastTransaction()) {
+            return $this->lastTransaction()->isFailed();
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * Set as pending.
      *
      * @return void
      */
     public function setPending()
     {
-        if (!$this->isNew()) {
-            throw new \Exception("Can not set invoice as PENDING. Error: Invoice is not NEW.");
-        }
-
         $this->status = self::STATUS_PENDING;
         $this->save();
     }
@@ -332,21 +340,18 @@ class Invoice extends Model
      */
     public function payFailed($error, $auto=false)
     {
-        // set status as new
-        $this->setNew();
-
         // set transaction as failed
         if ($auto == false) {
             $this->pendingTransaction()->setFailed(trans('messages.payment.cannot_charge', [
                 'id' => $this->uid,
                 'error' => $error,
-                'service' => trans('messages.transaction.method.' . $this->pendingTransaction()->method),
+                'service' => $this->pendingTransaction()->method,
             ]));
         } else {
             $this->pendingTransaction()->setFailed(trans('messages.payment.cannot_auto_charge', [
                 'id' => $this->uid,
                 'error' => $error,
-                'service' => trans('messages.transaction.method.' . $this->pendingTransaction()->method),
+                'service' => $this->pendingTransaction()->method,
             ]));
         }
     }
@@ -535,6 +540,15 @@ class Invoice extends Model
         return $transaction;
     }
 
+    public function isUnpaid()
+    {
+        return in_array($this->status, [
+            self::STATUS_NEW,
+            self::STATUS_PENDING,
+            self::STATUS_CLAIMED,
+        ]);
+    }
+
     /**
      * Checkout.
      *
@@ -542,26 +556,22 @@ class Invoice extends Model
      */
     public function checkout()
     {
-        // if invoice is pending aka already checkout
-        if ($this->isNew()) {
-            // set invoice as pending
-            $this->setPending();
-
-            // always create pending transaction
-            $this->addTransaction([
-                'status' => \Acelle\Model\Transaction::STATUS_PENDING,
-                'message' => trans('messages.pay_invoice', [
-                    'id' => $this->uid,
-                    'title' => $this->title,
-                ]),
-            ]);
-
-        // invoice is pending
-        } elseif ($this->isPending()) {
-            // clear service callback
-            $this->pendingTransaction()->updateMetadata([
-                'service' => null,
-            ]);
+        if (!$this->isUnpaid()) {
+            throw new Exception('Invoice is not unpaid');
         }
+
+        if ($this->pendingTransaction()) {
+            throw new Exception('Invoice already has pending transaction!');
+        }
+
+        $this->setPending();
+
+        $this->addTransaction([
+            'status' => \Acelle\Model\Transaction::STATUS_PENDING,
+            'message' => trans('messages.pay_invoice', [
+                'id' => $this->uid,
+                'title' => $this->title,
+            ]),
+        ]);
     }
 }

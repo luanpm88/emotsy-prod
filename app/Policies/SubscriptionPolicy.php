@@ -16,7 +16,7 @@ class SubscriptionPolicy
     {
         switch ($role) {
             case 'admin':
-                $can = $subscription->claimedInvoice();
+                $can = $subscription->claimedInvoice() && !$subscription->claimedInvoice()->lastTransactionIsFailed();
                 break;
             case 'customer':
                 $can = false;
@@ -200,7 +200,7 @@ class SubscriptionPolicy
     {
         switch ($role) {
             case 'admin':
-                $can = $subscription->claimedInvoice();
+                $can = $subscription->claimedInvoice() && !$subscription->claimedInvoice()->lastTransactionIsFailed();
                 break;
             case 'customer':
                 $can = false;
