@@ -44,11 +44,11 @@
                         <span class="text-muted small">{{ trans('messages.plans.send_via.wording', ['server' => $plan->primarySendingServer()->getTypeName() ]) }} &bull; {{ trans('messages.plans.subscriber_count', ['count' => $plan->customersCount()]) }}</span>
                     @endif
 
-                    @foreach ($plan->errors() as $error)
+                    @if ($plan->useSystemSendingServer() && !$plan->hasPrimarySendingServer())
                         <div class="text-muted"><span class="text-danger"><i class="fa fa-minus-circle"></i>
-                            {{ trans('messages.plan.' . $error) }}
+                            {{ trans('messages.plan.sending_server_empty') }}
                         </span></div>
-                    @endforeach
+                    @endif
                 </td>
                 <td>
                     <h5 class="no-margin text-bold kq_search">
