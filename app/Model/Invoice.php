@@ -278,7 +278,7 @@ class Invoice extends Model
 
         // just log
         $this->customer->subscription->addLog(SubscriptionLog::TYPE_CLAIMED, [
-            'plan' => $this->customer->subscription->plan->getBillableName(),
+            'plan' => $this->customer->subscription->plan->name,
             'price' => $this->customer->subscription->amount,
         ]);
     }

@@ -440,8 +440,8 @@ class Subscription extends Model
     public function getPeriodEndsAt($startDate)
     {
         // dose not support recurring, update ends at column
-        $interval = $this->plan->getBillableInterval();
-        $intervalCount = $this->plan->getBillableIntervalCount();
+        $interval = $this->plan->frequency_unit;
+        $intervalCount = $this->plan->frequency_amount;
 
         switch ($interval) {
             case 'month':
@@ -561,8 +561,8 @@ class Subscription extends Model
 
         // logs
         $this->addLog(SubscriptionLog::TYPE_PLAN_CHANGED, [
-            'old_plan' => $this->plan->getBillableName(),
-            'plan' => $newPlan->getBillableName(),
+            'old_plan' => $this->plan->name,
+            'plan' => $newplan->name,
         ]);
     }
 
@@ -669,7 +669,7 @@ class Subscription extends Model
 
         // add log
         $this->addLog(SubscriptionLog::TYPE_SUBSCRIBED, [
-            'plan' => $this->plan->getBillableName(),
+            'plan' => $this->plan->name,
             'price' => $this->plan->getBillableFormattedPrice(),
         ]);
     }
@@ -694,8 +694,8 @@ class Subscription extends Model
     public function periodStartAt()
     {
         $startAt = $this->current_period_ends_at;
-        $interval = $this->plan->getBillableInterval();
-        $intervalCount = $this->plan->getBillableIntervalCount();
+        $interval = $this->plan->frequency_unit;
+        $intervalCount = $this->plan->frequency_amount;
 
         switch ($interval) {
             case 'month':
@@ -800,7 +800,7 @@ class Subscription extends Model
 
         // add log
         $this->addLog(SubscriptionLog::TYPE_CANCELLED_NOW, [
-            'plan' => $this->plan->getBillableName(),
+            'plan' => $this->plan->name,
             'price' => $this->plan->getBillableFormattedPrice(),
         ]);
     }
@@ -824,7 +824,7 @@ class Subscription extends Model
 
         // logs
         $this->addLog(SubscriptionLog::TYPE_RENEWED, [
-            'plan' => $this->plan->getBillableName(),
+            'plan' => $this->plan->name,
             'price' => $this->plan->getBillableFormattedPrice(),
         ]);
     }
@@ -846,8 +846,8 @@ class Subscription extends Model
      */
     public function canRenewPlan()
     {
-        return ($this->plan->getBillableAmount() > 0 ||
-            (Setting::get('renew_free_plan') == 'yes' && $this->plan->getBillableAmount() == 0)
+        return ($this->plan->price > 0 ||
+            (Setting::get('renew_free_plan') == 'yes' && $this->plan->price == 0)
         );
     }
 
@@ -858,9 +858,9 @@ class Subscription extends Model
      */
     public function calcChangePlan($plan)
     {
-        if (($this->plan->getBillableInterval() != $plan->getBillableInterval()) ||
-            ($this->plan->getBillableIntervalCount() != $plan->getBillableIntervalCount()) ||
-            ($this->plan->getBillableCurrency() != $plan->getBillableCurrency())
+        if (($this->plan->frequency_unit != $plan->frequency_unit) ||
+            ($this->plan->frequency_amount != $plan->frequency_amount) ||
+            ($this->plan->currency->code != $plan->currency->code)
         ) {
             throw new \Exception(trans('messages.can_not_change_to_diff_currency_period_plan'));
         }
@@ -869,7 +869,7 @@ class Subscription extends Model
         $newEndsAt = $this->current_period_ends_at;
 
         // amout per day of current plan
-        $currentAmount = $this->plan->getBillableAmount();
+        $currentAmount = $this->plan->price;
         $periodDays = $this->current_period_ends_at->diffInDays($this->periodStartAt()->startOfDay());
         $remainDays = $this->current_period_ends_at->diffInDays(\Carbon\Carbon::now()->startOfDay());
         $currentPerDayAmount = ($currentAmount/$periodDays);
@@ -885,7 +885,7 @@ class Subscription extends Model
             $newEndsAt->addDays($days);
             
             // if free plan
-            if ($plan->getBillableAmount() == 0) {
+            if ($plan->price == 0) {
                 $newEndsAt = $this->current_period_ends_at;
             }
         }
