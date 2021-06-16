@@ -670,7 +670,7 @@ class Subscription extends Model
         // add log
         $this->addLog(SubscriptionLog::TYPE_SUBSCRIBED, [
             'plan' => $this->plan->name,
-            'price' => $this->plan->getBillableFormattedPrice(),
+            'price' => $this->plan->getFormattedPrice(),
         ]);
     }
 
@@ -801,7 +801,7 @@ class Subscription extends Model
         // add log
         $this->addLog(SubscriptionLog::TYPE_CANCELLED_NOW, [
             'plan' => $this->plan->name,
-            'price' => $this->plan->getBillableFormattedPrice(),
+            'price' => $this->plan->getFormattedPrice(),
         ]);
     }
 
@@ -825,7 +825,7 @@ class Subscription extends Model
         // logs
         $this->addLog(SubscriptionLog::TYPE_RENEWED, [
             'plan' => $this->plan->name,
-            'price' => $this->plan->getBillableFormattedPrice(),
+            'price' => $this->plan->getFormattedPrice(),
         ]);
     }
 
