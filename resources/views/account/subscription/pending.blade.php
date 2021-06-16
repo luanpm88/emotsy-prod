@@ -27,7 +27,6 @@
             <h2>{!! trans('messages.invoice.pending') !!}</h2>  
 
             <div class="alert alert-info bg-grey-light">
-                
 
                 @if (request()->user()->customer->getPreferredPaymentGateway() !== null)
                     {!! trans('messages.invoice.pending.wording') !!}

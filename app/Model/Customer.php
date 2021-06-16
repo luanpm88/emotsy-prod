@@ -2149,7 +2149,6 @@ class Customer extends Model
 
     public function findPaymentGatewayFromAutoBillingData()
     {
-
     }
 
     /**

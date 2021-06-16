@@ -79,7 +79,6 @@ class AccountSubscriptionController extends Controller
                     'subscription' => $subscription,
                     'invoice' => $invoice,
                 ]);
-                
             } elseif ($invoice->isPending()) {
                 if ($invoice->lastTransactionIsFailed()) {
                     return view('account.subscription.payment', [
@@ -107,9 +106,7 @@ class AccountSubscriptionController extends Controller
                         'invoice' => $invoice,
                     ]);
                 }
-            }
-
-            else {
+            } else {
                 throw new \Exception('There is no such case: new subscription must always have ONE unpaid invoice (which is either "new" or "pending" or "claimed", and the getItsOnlyUnpaidInitInvoice() method above is supposed to throw an exception before reaching this point.');
             }
         }
@@ -186,7 +183,6 @@ class AccountSubscriptionController extends Controller
                 'subscription' => $subscription,
                 'invoice' => $invoice,
             ]);
-            
         } elseif ($invoice->isPending()) {
             if ($invoice->lastTransactionIsFailed()) {
                 return view('account.subscription.payment', [
