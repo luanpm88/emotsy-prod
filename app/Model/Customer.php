@@ -2143,7 +2143,7 @@ class Customer extends Model
         if (Billing::isGatewayTypeRegistered($type)) {
             return Billing::getGateway($type);
         } else {
-            throw new Exception(sprintf("User's preferred payment gateway type is '%s'. However, it is not registered", $type));
+            throw new Exception(sprintf("User's preferred payment gateway type is '%s'. However, it is not registered in Billing Manager", $type));
         }
     }
 
@@ -2159,12 +2159,7 @@ class Customer extends Model
      */
     public function supportsAutoBilling()
     {
-        $gateway = $this->getPaymentGateway();
-        if ($gateway == null) {
-            return false;
-        }
-
-        return $gateway->supportsAutoBilling();
+        throw new Exception('Do not call this method');
     }
 
     /**

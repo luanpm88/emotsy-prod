@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use LogicException;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
-
+use Exception;
 use Acelle\Model\Invoice;
 
 class Subscription extends Model
@@ -164,6 +164,9 @@ class Subscription extends Model
      */
     public function unpaidInvoices()
     {
+        throw new Exception('Không dùng hàm này, theo design / flow hiện tại thì subscription chỉ có duy nhất 1 unpaid invoice, dùng hàm getUnpaidInvoice() luôn, remove method này');
+
+
         return $this->invoices()
             ->whereIn('status', [
                 Invoice::STATUS_NEW,
@@ -184,6 +187,8 @@ class Subscription extends Model
      */
     public function unpaidInvoice()
     {
+        throw new Exception('Theo design / flow hiện tại thì subscription chỉ có duy nhất ONE unpaid invoice ==> dùng hàm getUnpaidInvoice() luôn, remove method này');
+
         return $this->unpaidInvoices()
             ->orderBy('created_at', 'desc')
             ->first();
@@ -507,7 +512,6 @@ class Subscription extends Model
             $this->isActive() &&
             $this->unpaidInvoice() && 
             $this->unpaidInvoice()->isRenewSubscriptionInvoice() &&
-            $this->customer->supportsAutoBilling() &&
             $this->reachDueDate()
         ) {
             $this->unpaidInvoice()->checkout();

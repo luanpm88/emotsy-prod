@@ -123,23 +123,6 @@ class Transaction extends Model
      */
     public function check()
     {
-        $data = $this->getMetadata();
-
-        // not found service
-        if (!isset($data['service'])) {
-            return true;
-        }
-
-        // for each service
-        switch ($data['service']) {
-            case 'coinpayments':
-                $service = \Acelle\Model\Setting::getPaymentGateway('coinpayments');
-                $service->checkPay($this->invoice);
-                break;
-            default:
-                throw new \Exception('No service found with name: ' . $data['service']);
-        }
-
-        return true;
+        
     }
 }
