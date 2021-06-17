@@ -24,7 +24,7 @@ class PaymentController extends Controller
     {
         return view('admin.payments.index', [
             'gateways' => Billing::getGateways(),
-            'enabledGateways' => Setting::getEnabledPaymentGateways(),
+            'enabledGateways' => Billing::getEnabledPaymentGateways(),
         ]);
     }
 

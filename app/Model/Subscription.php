@@ -109,16 +109,24 @@ class Subscription extends Model
         });
     }
 
-    public function scopeClaimed($query)
+    /**
+     * Get related invoices.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function newInvoices()
     {
-        $type = self::class;
-        return $query->whereIn('id', function ($q) use ($type) {
-            $q->select('invoice_items.item_id')
-                ->from('invoice_items')
-                ->join('invoices', 'invoice_items.invoice_id', 'invoices.id')
-                ->where('invoice_items.item_type', $type)
-                ->where('invoices.status', Invoice::STATUS_CLAIMED);
-        });
+        return $this->invoices()->newInvoices();
+    }
+
+    /**
+     * Subscription only has one new invoice.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function newInvoice()
+    {
+        return $this->newInvoices()->first();
     }
 
     /**
@@ -134,7 +142,7 @@ class Subscription extends Model
 
         $query = $this->invoices()
             ->newSubscription()
-            ->unpaid();
+            ->where('status', '=', self::STATUS_NEW);
         
         // more than on invoice
         if ($query->count() != 1) {
@@ -142,56 +150,6 @@ class Subscription extends Model
         }
 
         return $query->first();
-    }
-
-    /**
-     * Get last invoice.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function getUnpaidInvoice()
-    {
-        $query = $this->invoices()
-            ->unpaid();
-
-        return $query->first();
-    }
-
-    /**
-     * Get pending invoices. (NEW|CLAIMED)
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function unpaidInvoices()
-    {
-        throw new Exception('Không dùng hàm này, theo design / flow hiện tại thì subscription chỉ có duy nhất 1 unpaid invoice, dùng hàm getUnpaidInvoice() luôn, remove method này');
-
-
-        return $this->invoices()
-            ->whereIn('status', [
-                Invoice::STATUS_NEW,
-                Invoice::STATUS_PENDING,
-                Invoice::STATUS_CLAIMED,
-            ]);
-    }
-
-    public function hasUnpaidInvoice()
-    {
-        return $this->unpaidInvoice() != null;
-    }
-
-    /**
-     * Get pending invoice. (last invoice that is NEW/CLAIMED)
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function unpaidInvoice()
-    {
-        throw new Exception('Theo design / flow hiện tại thì subscription chỉ có duy nhất ONE unpaid invoice ==> dùng hàm getUnpaidInvoice() luôn, remove method này');
-
-        return $this->unpaidInvoices()
-            ->orderBy('created_at', 'desc')
-            ->first();
     }
 
     /**
@@ -221,19 +179,6 @@ class Subscription extends Model
     }
 
     /**
-     * Get new invoice.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function newInvoice()
-    {
-        return $this->invoices()
-            ->orderBy('created_at', 'desc')
-            ->where('status', Invoice::STATUS_NEW)
-            ->first();
-    }
-
-    /**
      * Get claimed invoice.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -254,7 +199,7 @@ class Subscription extends Model
     public function createInitInvoice()
     {
         //
-        if ($this->unpaidInvoice()) {
+        if ($this->newInvoice()) {
             throw new \Exception(trans('messages.error.has_waiting_invoices'));
         }
 
@@ -296,7 +241,7 @@ class Subscription extends Model
     public function createRenewInvoice()
     {
         //
-        if ($this->unpaidInvoice()) {
+        if ($this->newInvoice()) {
             throw new \Exception(trans('messages.error.has_waiting_invoices'));
         }
 
@@ -338,8 +283,8 @@ class Subscription extends Model
     public function createChangePlanInvoice($newPlan)
     {
         //
-        if ($this->unpaidInvoice()) {
-            $this->unpaidInvoice()->delete();
+        if ($this->newInvoice()) {
+            $this->newInvoice()->delete();
         }
 
         // calculate change plan amout ends at
@@ -397,43 +342,11 @@ class Subscription extends Model
      */
     public function getUpcomingBillingInfo()
     {
-        if (!$this->unpaidInvoice()) {
+        if (!$this->newInvoice()) {
             return null;
         }
 
-        return $this->unpaidInvoice()->getBillingInfo();
-
-        // if ($this->cancelled()) {
-        //     return null;
-        // }
-
-        // if (!$this->canRenewPlan()) {
-        //     return null;
-        // }
-
-        // // has wait renew invoice
-        // if ($this->waitRenewInvoice()) {
-        //     return $this->waitRenewInvoice()->getBillingInfo();
-        // } else {
-        //     return [
-        //         'title' => trans('messages.upcoming_bill.title'),
-        //         'description' => trans('messages.upcoming_bill.desc', [
-        //             'plan' => $this->plan->name,
-        //             'date' => $this->current_period_ends_at,
-        //         ]),
-        //         'bill' => [
-        //             [
-        //                 'name' => $this->plan->name,
-        //                 'desc' => view('plans._bill_desc', ['plan' => $this->plan]),
-        //                 'price' => format_price($this->plan->price, $this->plan->currency->format),
-        //                 'tax' => format_price(0, $this->plan->currency->format),
-        //                 'discount' => format_price(0, $this->plan->currency->format),
-        //             ]
-        //         ],
-        //         'charge_info' => $this->customer->supportsAutoBilling() ? trans('messages.bill.auto_charge', ['date' => $this->nextPeriod()]) : trans('messages.bill.charge_before', ['date' => $this->nextPeriod()]),
-        //         'total' => format_price($this->plan->price, $this->plan->currency->format),
-        //     ];
-        // }
+        return $this->newInvoice()->getBillingInfo();
     }
 
     /**
@@ -486,7 +399,7 @@ class Subscription extends Model
 
                 // check expiring
                 if ($this->isExpiring() && $this->canRenewPlan() && !$this->cancelled()) {
-                    $pendingInvoice = $this->unpaidInvoice();
+                    $pendingInvoice = $this->newInvoice();
 
                     // create renew invoice if no pending invoice
                     if (!$pendingInvoice) {
@@ -525,8 +438,24 @@ class Subscription extends Model
             return;
         }
 
+        // support auto billing
+        if (!$this->customer->getPreferredPaymentGateway()->supportsAutoBilling()) {
+            return;
+        }
+
+        // check auto billing data
+        if ($this->customer->getPreferredPaymentGateway() == null) {
+            // throw new \Exception('Customer\'s gateway supports auto recurring but customer do not have auto billing data');
+            $invoice->payFailed('Customer\'s gateway supports auto recurring but customer do not have auto billing data');
+        }
+
+        // check payment
+        if ($this->customer->getPreferredPaymentGateway()->getType() != $this->customer->getAutoBillingData()->getGateway()->getType()) {
+            $invoice->payFailed('Customer\'s gateway is not the gateway from customer auto billing data');
+        }
+
         // auto charge
-        $this->customer->getPaymentGateway()->autoCharge($invoice);
+        $this->customer->getPreferredPaymentGateway()->autoCharge($invoice);
     }
 
     /**
@@ -770,8 +699,8 @@ class Subscription extends Model
         $this->save();
 
         // delete pending invoice
-        if ($this->unpaidInvoice()) {
-            $this->unpaidInvoice()->delete();
+        if ($this->newInvoice()) {
+            $this->newInvoice()->delete();
         }
     }
 
@@ -797,7 +726,7 @@ class Subscription extends Model
         $this->setEnded();
 
         // cancel all pending invoices (new|claimed)
-        $this->unpaidInvoices()->delete();
+        $this->newInvoices()->delete();
 
         // add log
         $this->addLog(SubscriptionLog::TYPE_CANCELLED_NOW, [

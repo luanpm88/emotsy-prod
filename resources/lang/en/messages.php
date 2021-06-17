@@ -3652,7 +3652,7 @@
   'invoice.pending' => 'Payment is pending',
   'invoice.pending.wording' => '
       <p>You are paying for a pending subscription invoice.
-        Click the button below to go to the payment.</p>
+        Please wait for confirmation.</p>
   ',
   'invoice.pending.no_payment' => '<p>You have a pending subscription invoice.
     Click the button below to update the payment.</p>',

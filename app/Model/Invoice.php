@@ -10,8 +10,6 @@ class Invoice extends Model
 {
     // statuses
     const STATUS_NEW = 'new';               // unpaid
-    const STATUS_PENDING = 'pending';       // unpaid
-    const STATUS_CLAIMED = 'claimed';       // unpaid
     const STATUS_PAID = 'paid';
 
     // type
@@ -29,12 +27,10 @@ class Invoice extends Model
         return self::where('uid', '=', $uid)->first();
     }
 
-    public function scopeUnpaid($query)
+    public function scopeNewInvoices($query)
     {
         $query->whereIn('status', [
             self::STATUS_NEW,
-            self::STATUS_PENDING,
-            self::STATUS_CLAIMED,
         ]);
     }
 
@@ -57,11 +53,6 @@ class Invoice extends Model
             // Create new uid
             $item->uid = uniqid();
         });
-    }
-
-    public function scopeClaimed($query)
-    {
-        return $query->where('status', self::STATUS_CLAIMED);
     }
 
     /**
@@ -235,27 +226,6 @@ class Invoice extends Model
     }
 
     /**
-     * Check claimed.
-     *
-     * @return void
-     */
-    public function isClaimed()
-    {
-        return $this->status == self::STATUS_CLAIMED;
-    }
-
-    /**
-     * set status as claimed.
-     *
-     * @return void
-     */
-    public function setClaimed()
-    {
-        $this->status = self::STATUS_CLAIMED;
-        $this->save();
-    }
-
-    /**
      * set status as new.
      *
      * @return void
@@ -267,23 +237,6 @@ class Invoice extends Model
     }
 
     /**
-     * Claim invoice.
-     *
-     * @return void
-     */
-    public function claim()
-    {
-        // set status as claimed
-        $this->setClaimed();
-
-        // just log
-        $this->customer->subscription->addLog(SubscriptionLog::TYPE_CLAIMED, [
-            'plan' => $this->customer->subscription->plan->name,
-            'price' => $this->customer->subscription->amount,
-        ]);
-    }
-
-    /**
      * Approve invoice.
      *
      * @return void
@@ -291,8 +244,8 @@ class Invoice extends Model
     public function approve()
     {
         // for only new|claimed invoice
-        if (!$this->isClaimed()) {
-            throw new \Exception("Trying to approve an invoice that is not 'claimed' (Invoice ID: {$this->id}, status: {$this->status}");
+        if (!$this->isNew() || !$this->pendingTransaction()) {
+            throw new \Exception("Trying to approve an invoice that is not NEW and has pending transaction (Invoice ID: {$this->id}, status: {$this->status}");
         }
 
         // fulfill invoice
@@ -304,15 +257,15 @@ class Invoice extends Model
      *
      * @return void
      */
-    public function reject($error, $auto=false)
+    public function reject($error)
     {
         // for only new|claimed invoice
-        if (!$this->isClaimed()) {
-            throw new \Exception("Trying to reject an invoice that is not 'claimed' (Invoice ID: {$this->id}, status: {$this->status}");
+        if (!$this->isNew() || !$this->pendingTransaction()) {
+            throw new \Exception("Trying to approve an invoice that is not NEW and has pending transaction (Invoice ID: {$this->id}, status: {$this->status}");
         }
 
         // fulfill invoice
-        $this->payFailed($error, $auto);
+        $this->payFailed($error);
     }
     
     /**
@@ -394,26 +347,6 @@ class Invoice extends Model
     }
 
     /**
-     * Check claimed.
-     *
-     * @return void
-     */
-    public function claimed()
-    {
-        return false;
-    }
-
-    /**
-     * Check pending.
-     *
-     * @return void
-     */
-    public function isPending()
-    {
-        return $this->status == self::STATUS_PENDING;
-    }
-
-    /**
      * Check done.
      *
      * @return void
@@ -443,15 +376,9 @@ class Invoice extends Model
         switch ($this->type) {
             case self::TYPE_RENEW_SUBSCRIPTION:
                 $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
-                if (!$this->customer->supportsAutoBilling()) {
-                    $chargeInfo = trans('messages.bill.charge_before', [
-                        'date' => \Acelle\Library\Tool::formatDate($subscription->current_period_ends_at),
-                    ]);
-                } else {
-                    $chargeInfo = trans('messages.bill.auto_charge', [
-                        'date' => \Acelle\Library\Tool::formatDate($subscription->current_period_ends_at),
-                    ]);
-                }
+                $chargeInfo = trans('messages.bill.charge_before', [
+                    'date' => \Acelle\Library\Tool::formatDate($subscription->current_period_ends_at),
+                ]);
                 break;
             case self::TYPE_NEW_SUBSCRIPTION:
                 $chargeInfo = trans('messages.bill.charge_now');
@@ -549,22 +476,11 @@ class Invoice extends Model
         ]);
     }
 
-    /**
-     * Checkout.
-     *
-     * @return array
-     */
-    public function confirmPayment()
+    public function addPendingTransaction()
     {
-        if (!$this->isUnpaid()) {
-            throw new Exception('Invoice is not unpaid');
-        }
-
         if ($this->pendingTransaction()) {
-            throw new Exception('Invoice already has pending transaction!');
+            throw new \Exception('Invoice already have pending transaction!');
         }
-
-        $this->setPending();
 
         $this->addTransaction([
             'status' => \Acelle\Model\Transaction::STATUS_PENDING,
@@ -573,5 +489,27 @@ class Invoice extends Model
                 'title' => $this->title,
             ]),
         ]);
+    }
+
+    /**
+     * Checkout.
+     *
+     * @return array
+     */
+    public function checkout($callback)
+    {
+        try {
+            $this->addPendingTransaction();
+
+            $paid = $callback($this);
+            
+            // if service paid
+            if ($paid) {
+                $this->fulfill();
+            }
+        } catch (\Exception $e) {
+            // pay failed
+            $this->payFailed($e->getMessage());
+        }
     }
 }

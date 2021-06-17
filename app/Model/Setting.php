@@ -707,16 +707,6 @@ class Setting extends Model
     }
 
     /**
-     * Get enabled payments gateways.
-     *
-     * @var array
-     */
-    public static function getEnabledPaymentGateways()
-    {
-        throw new \Exception("Move vào BillingManager rồi delete method này luôn");
-    }
-
-    /**
      * Get payment status select options.
      *
      * @var array

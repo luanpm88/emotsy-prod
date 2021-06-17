@@ -3,6 +3,7 @@ namespace Acelle\Library;
 
 use Exception;
 use Acelle\Library\Contracts\PaymentGatewayInterface;
+use Acelle\Model\Setting;
 
 class BillingManager
 {
@@ -43,5 +44,33 @@ class BillingManager
         }
 
         throw new Exception(sprintf('Billing manager: payment gateway type "%s" is not registered', $type));
+    }
+
+    public function isGatewayRegisterd($type)
+    {
+        foreach ($this->gateways as $gw) {
+            if ($gw->getType() == $type) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function getEnabledPaymentGateways()
+    {
+        if (!Setting::get('gateways')) {
+            return [];
+        }
+
+        $enabledTypes = json_decode(Setting::get('gateways'));
+        $list = [];
+
+        foreach($enabledTypes as $t) {
+            if ($this->isGatewayRegisterd($t)) {
+                $list[] = $this->getGateway($t);
+            }
+        }
+        return $list;
     }
 }

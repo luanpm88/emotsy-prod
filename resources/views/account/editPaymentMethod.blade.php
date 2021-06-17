@@ -14,7 +14,7 @@
         <input type="hidden" name="return_url" value="{{ $redirect }}" />
 
         <div class="sub-section mb-30 choose-payment-methods">      
-            @foreach(Acelle\Model\Setting::getEnabledPaymentGateways() as $gateway)
+            @foreach(Acelle\Library\Facades\Billing::getEnabledPaymentGateways() as $gateway)
                 <div class="d-flex align-items-center choose-payment choose-payment-{{ $gateway->getType() }}">
                     <div class="text-right pl-2 pr-2">
                         <div class="d-flex align-items-center form-group-mb-0">
