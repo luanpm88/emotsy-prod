@@ -224,7 +224,7 @@ class SubscriptionController extends Controller
             
             // try reject
             try {
-                $subscription->renewInvoice()->reject($request->reason);
+                $subscription->newInvoice()->reject($request->reason);
             } catch (\Exception $ex) {
                 $validator->errors()->add('reason', $ex->getMessage());
                 

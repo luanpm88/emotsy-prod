@@ -17,7 +17,7 @@ class TransactionVerificationResult
 	public function __construct($result, $error = null)
 	{
 		$this->result = $result;
-		$this->error = $result;
+		$this->error = $error;
 	}
 
 	public function isDone() {

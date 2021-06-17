@@ -17,7 +17,10 @@ interface PaymentGatewayInterface
 
     // auto
     public function supportsAutoBilling() : bool;
-    public function autoCharge(Invoice $invoice) : TransactionVerificationResult; // dành cho cronjob của core gọi
+    public function autoCharge(Invoice $invoice); // dành cho cronjob của core gọi
     public function getAutoBillingDataUpdateUrl() : string;
     public function verify(Transaction $transaction) : TransactionVerificationResult;
+
+    // 
+    public function needApproval() : bool;
 }

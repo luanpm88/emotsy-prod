@@ -51,6 +51,14 @@
                     <div class="stats-boxes">
                         <div class="width1of4 stats-box">
                             <h3>
+                                
+                                {{ $plan->name }}
+                                
+                            </h3>
+                            <p>{{ trans('messages.plan') }}</p>
+                        </div>
+                        <div class="width1of4 stats-box">
+                            <h3>
                                 {{ $plan->displayPrice() }}
                             </h3>
                             <p>{{ trans('messages.plan.quota_time.wording', [
@@ -63,18 +71,6 @@
                                 <a href="{{ action('Admin\PlanController@quota', $plan->uid) }}">{{ $plan->displayTotalQuota() }}</a>
                             </h3>
                             <p>{{ trans('messages.plan.sending_credits') }}</p>
-                        </div>
-                        <div class="width1of4 stats-box">
-                            <h3>
-                                
-                                @if (Acelle\Model\Setting::get('system.payment_gateway'))
-                                    <a href="{{ action('Admin\PaymentController@index') }}">{{ trans('messages.payment.' . Acelle\Model\Setting::get('system.payment_gateway')) }}</a>
-                                @else
-                                    <a class="text-warning" href="{{ action('Admin\PaymentController@index') }}">{{ trans('messages.payment.not_set') }}</a>
-                                @endif
-                                
-                            </h3>
-                            <p>{{ trans('messages.plan.payment') }}</p>
                         </div>
                         <div class="width1of4 stats-box">
                             <h3>

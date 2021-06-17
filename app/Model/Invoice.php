@@ -5,6 +5,7 @@ namespace Acelle\Model;
 use Illuminate\Database\Eloquent\Model;
 
 use Acelle\Model\Subscription;
+use Acelle\Model\Transaction;
 
 class Invoice extends Model
 {
@@ -449,12 +450,14 @@ class Invoice extends Model
             throw new \Exception('Invoice already has a pending transaction!');
         }
 
-        // This information is needed for verifying a transaction status later on
-        $transaction->method = $gateway->getType();
-
         // @todo: dung transactions()->new....
         $transaction = new Transaction();
         $transaction->invoice_id = $this->id;
+        $transaction->status = Transaction::STATUS_PENDING;
+
+        // This information is needed for verifying a transaction status later on
+        $transaction->method = $gateway->getType();
+
         $transaction->save();
 
         return $transaction;
@@ -474,8 +477,9 @@ class Invoice extends Model
      */
     public function checkout($gateway, $payCallback)
     {
-        \DB::transaction(function() {
-            $this->addPendingTransaction($gateway);
+        $invoice = $this;
+        // \DB::transaction(function() use ($gateway, $invoice) {
+            $invoice->addPendingTransaction($gateway);
 
             try {
                 $result = $payCallback($invoice);
@@ -498,42 +502,9 @@ class Invoice extends Model
                 
             } catch (\Exception $e) {
                 // pay failed
-                $this->payFailed($e->getMessage());
+                $invoice->payFailed($e->getMessage());
             }
-        });
+        // });
         
-    }
-}
-
-
-/*
-COIN
-User thấy:
----------------------------------------
-Subscription::new 
-Invoice::new 
-+ Pending transaction....
-==========> "Vui lòng chờ, payment is in progress...."          PENDING.BLADE
-
-
-OFFLINE
-Subscription::new 
-Invoice::new 
-+ Pending transaction....
-==========> "Thank you for paying, please wait for reviewing..."         PENDING.BLADE
-
-
-Subscription::new
-Invoice::new
-+ Pending transaction, method == offline  [ APPROVE | REJECT ] => gọi 2 hàm fulfill | payFailed respectively
-
-
-CRONJOB
-
-// Coin: những gateway mà status phải check lại
-TransactionMonitor::function () {
-    $transactions = Transaction::where( 'status', 'pending' )
-    foreach($transactions as $t) {
-        $t->check();
     }
 }
