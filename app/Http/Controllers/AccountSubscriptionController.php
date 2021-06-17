@@ -54,7 +54,7 @@ class AccountSubscriptionController extends Controller
             $invoice = $subscription->getItsOnlyUnpaidInitInvoice();
 
             if ($invoice->isNew()) {
-                if (!$invoice->pendingTransaction()) {
+                if (!$invoice->getPendingTransaction()) {
                     return view('account.subscription.payment', [
                         'subscription' => $subscription,
                         'invoice' => $invoice,
