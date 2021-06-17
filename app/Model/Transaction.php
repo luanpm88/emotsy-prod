@@ -3,6 +3,7 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Acelle\Library\Facades\Billing;
 
 class Transaction extends Model
 {
@@ -133,7 +134,7 @@ class Transaction extends Model
         $gateway = Billing::getGateway($this->method);
 
         try {
-            $result = $gateway->check($this);
+            $result = $gateway->verify($this);
 
             if ($result->isDone()) {
                 // Coin only
@@ -148,8 +149,21 @@ class Transaction extends Model
             } elseif ( $result->isVerificationNotNeeded() ) {
                 // Do nothing, just wait for the service to finish it itself (Stripe)
             }
+
+            return $result;
         } catch(\Exception $e) {
             $invoice->payFailed($e->getMessage());
         }
     }
+
+    public function needApproval()
+	{
+		if (!Billing::isGatewayRegistered($this->method)) {
+			throw new \Exception('Gateway for ' . $this->method . ' is not registered!');
+		}
+
+		$gateway = Billing::getGateway($this->method);
+
+		return $gateway->needApproval();
+	}
 }

@@ -70,14 +70,30 @@
 								{{ trans('messages.subscription.status.active') }}
 							</span>
 
+							@if ($subscription->newInvoice() && $subscription->newInvoice()->getPendingTransaction() && $subscription->newInvoice()->getPendingTransaction()->needApproval())
+								<div style="cursor:pointer"
+									class="text-warning mini"
+								>
+									{{ trans('messages.subscription.status.pending_for_approval') }}
+								</div>	
+							@endif
+
 							@break
 						@case(Acelle\Model\Subscription::STATUS_NEW)
 							@if ($subscription->newInvoice())
-								<span style="cursor:pointer" href="{{ action('Admin\SubscriptionController@invoices', ['id' => $subscription->uid]) }}"
-									class="view_invoices label bg-m-warning"
-								>
-									{{ trans('messages.subscription.status.wait_for_payment') }}
-								</span>	
+								@if ($subscription->newInvoice()->getPendingTransaction() && $subscription->newInvoice()->getPendingTransaction()->needApproval())
+									<span style="cursor:pointer" href="{{ action('Admin\SubscriptionController@invoices', ['id' => $subscription->uid]) }}"
+										class="view_invoices label bg-m-warning"
+									>
+										{{ trans('messages.subscription.status.pending_for_approval') }}
+									</span>	
+								@else
+									<span style="cursor:pointer" href="{{ action('Admin\SubscriptionController@invoices', ['id' => $subscription->uid]) }}"
+										class="view_invoices label bg-m-warning"
+									>
+										{{ trans('messages.subscription.status.wait_for_payment') }}
+									</span>	
+								@endif
 							@endif
 							
 							@break

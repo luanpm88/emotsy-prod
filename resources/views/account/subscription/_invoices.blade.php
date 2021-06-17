@@ -57,20 +57,19 @@
                                 </td> 
                                 <td>
                                     <span class="no-margin kq_search">
-                                        {!! $transaction->message !!}
-                                        {{-- @if ($transaction->error)
-                                            <div class="mini text-danger">{{ $transaction->error }}</div>
-                                        @endif --}}
+                                        {!! trans('messages.transaction_for_invoice', [
+                                            'uid' => $transaction->invoice->uid
+                                        ]) !!}
                                     </span>
                                 </td> 
                                 <td>
                                     <span class="no-margin kq_search">
-                                        {!! $transaction->amount !!}
+                                    {!! $transaction->invoice->formattedTotal() !!}
                                     </span>
                                 </td> 
                                 <td>
                                     <span class="no-margin kq_search">
-                                        {!! $transaction->method !!}
+                                        {!! trans('messages.transaction.method.' . $transaction->method) !!}
                                     </span>
                                 </td> 
                                 <td>

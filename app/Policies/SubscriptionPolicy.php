@@ -16,7 +16,9 @@ class SubscriptionPolicy
     {
         switch ($role) {
             case 'admin':
-                $can = $subscription->newInvoice() && $subscription->newInvoice()->pendingTransaction();
+                $can = $subscription->newInvoice() && 
+                    $subscription->newInvoice()->getPendingTransaction() && 
+                    $subscription->newInvoice()->getPendingTransaction()->needApproval();
                 break;
             case 'customer':
                 $can = false;
@@ -126,7 +128,9 @@ class SubscriptionPolicy
     {
         switch ($role) {
             case 'admin':
-                $can = $subscription->newInvoice() && $subscription->newInvoice()->pendingTransaction();
+                $can = $subscription->newInvoice() && 
+                    $subscription->newInvoice()->getPendingTransaction() && 
+                    $subscription->newInvoice()->getPendingTransaction()->needApproval();
                 break;
             case 'customer':
                 $can = false;
