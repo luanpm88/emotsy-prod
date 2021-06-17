@@ -154,6 +154,7 @@ class Transaction extends Model
     }
 }
 
+/*
 
 
 Stripe::check() {
@@ -169,3 +170,5 @@ Coin::check($t) {
         return;
     };
 }
+
+*/
