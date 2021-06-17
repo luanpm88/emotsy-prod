@@ -158,7 +158,7 @@ class AccountSubscriptionController extends Controller
         $gateway = $customer->getPreferredPaymentGateway();
         $invoice = $subscription->getUnpaidInvoice();
 
-        $invoice->checkout();
+        $invoice->confirmPayment();
 
         // redirect to service checkout
         return redirect()->away($gateway->getCheckoutUrl($invoice));
