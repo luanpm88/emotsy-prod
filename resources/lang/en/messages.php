@@ -3675,4 +3675,6 @@
   'template.categories' => 'Categories',
   'transaction.method.offline' => 'Offline',
   'transaction.method.stripe' => 'Stripe',
+  'plan.sending_server_empty' => 'No delivery server selected',
+  'plan.sending_server_empty.setting' => 'No delivery server selected',
 ) ?>
