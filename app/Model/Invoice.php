@@ -554,7 +554,7 @@ class Invoice extends Model
      *
      * @return array
      */
-    public function checkout()
+    public function confirmPayment()
     {
         if (!$this->isUnpaid()) {
             throw new Exception('Invoice is not unpaid');

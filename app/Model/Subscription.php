@@ -505,19 +505,28 @@ class Subscription extends Model
         }
     }
 
-    public function processInvoices()
+    public function processRenewInvoice()
     {
-        // Auto pay renew unpaid pending invoice when subscription is ACTIVE
-        if (
-            $this->isActive() &&
-            $this->unpaidInvoice() &&
-            $this->unpaidInvoice()->isRenewSubscriptionInvoice() &&
-            $this->reachDueDate()
-        ) {
-            $this->unpaidInvoice()->checkout();
-            // charge invoice
-            $this->customer->getPaymentGateway()->autoCharge($this->unpaidInvoice());
+        if (!$this->isActive()) {
+            return;
         }
+
+        $invoice = $this->invoices()
+            ->where('status', '=', Invoice::STATUS_NEW)
+            ->where('type', '=', Invoice::TYPE_RENEW_SUBSCRIPTION)
+            ->first();
+
+        if (!$invoice) {
+            return;
+        }
+
+        // not reach due date
+        if (!$this->reachDueDate()) {
+            return;
+        }
+
+        // auto charge
+        $this->customer->getPaymentGateway()->autoCharge($invoice);
     }
 
     /**
