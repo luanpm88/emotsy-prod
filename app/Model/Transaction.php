@@ -153,22 +153,3 @@ class Transaction extends Model
         }
     }
 }
-
-/*
-
-
-Stripe::check() {
-    return; // chẳng làm gì được hết
-}
-
-Offline::check() {
-    return; // chờ admin
-}
-
-Coin::check($t) {
-    if ($this->verify($t->meta[.......])) {
-        return;
-    };
-}
-
-*/
