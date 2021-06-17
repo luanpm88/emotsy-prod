@@ -499,14 +499,15 @@ class Invoice extends Model
     public function checkout($callback)
     {
         try {
-            $this->addPendingTransaction();
+            // \DB::transaction(function() use ($request) {
+                $this->addPendingTransaction();
 
-            $paid = $callback($this);
-            
-            // if service paid
-            if ($paid) {
+                $paid = $callback($this);
+                
+                // Problem 1: DB transaction make invoice transaction not save to db so fulfill can not get pending transaction and set success
+                // Problem 2: most of gateways have waiting time before real charged accur so can fulfill in one block?
                 $this->fulfill();
-            }
+            //});
         } catch (\Exception $e) {
             // pay failed
             $this->payFailed($e->getMessage());
