@@ -90,7 +90,7 @@ class Invoice extends Model
     /**
      * Get pending transaction.
      */
-    public function pendingTransaction()
+    public function getPendingTransaction()
     {
         return $this->transactions()
             ->where('status', \Acelle\Model\Transaction::STATUS_PENDING)
@@ -244,7 +244,7 @@ class Invoice extends Model
     public function approve()
     {
         // for only new invoice
-        if (!$this->isNew() || !$this->pendingTransaction()) {
+        if (!$this->isNew() || !$this->getPendingTransaction()) {
             throw new \Exception("Trying to approve an invoice that is not NEW and has pending transaction (Invoice ID: {$this->id}, status: {$this->status}");
         }
 
@@ -260,7 +260,7 @@ class Invoice extends Model
     public function reject($error)
     {
         // for only new invoice
-        if (!$this->isNew() || !$this->pendingTransaction()) {
+        if (!$this->isNew() || !$this->getPendingTransaction()) {
             throw new \Exception("Trying to approve an invoice that is not NEW and has pending transaction (Invoice ID: {$this->id}, status: {$this->status}");
         }
 
@@ -280,7 +280,7 @@ class Invoice extends Model
 
         // set transaction as success
         // Important: according to current design, the rule is: one invoice only has one pending transaction
-        $this->pendingTransaction()->setSuccess();
+        $this->getPendingTransaction()->setSuccess();
         
         // invoice after pay actions
         $this->process();
@@ -291,22 +291,13 @@ class Invoice extends Model
      *
      * @return void
      */
-    public function payFailed($error, $auto=false)
+    public function payFailed($error)
     {
-        // set transaction as failed
-        if ($auto == false) {
-            $this->pendingTransaction()->setFailed(trans('messages.payment.cannot_charge', [
-                'id' => $this->uid,
-                'error' => $error,
-                'service' => $this->pendingTransaction()->method,
-            ]));
-        } else {
-            $this->pendingTransaction()->setFailed(trans('messages.payment.cannot_auto_charge', [
-                'id' => $this->uid,
-                'error' => $error,
-                'service' => $this->pendingTransaction()->method,
-            ]));
-        }
+        $this->getPendingTransaction()->setFailed(trans('messages.payment.cannot_charge', [
+            'id' => $this->uid,
+            'error' => $error,
+            'service' => $this->getPendingTransaction()->method,
+        ]));
     }
 
     /**
@@ -452,16 +443,18 @@ class Invoice extends Model
      *
      * @return array
      */
-    public function addTransaction($data=[])
+    public function addPendingTransaction($gateway)
     {
+        if ($this->getPendingTransaction()) {
+            throw new \Exception('Invoice already has a pending transaction!');
+        }
+
+        // This information is needed for verifying a transaction status later on
+        $transaction->method = $gateway->getType();
+
         // @todo: dung transactions()->new....
-        $transaction = new \Acelle\Model\Transaction();
+        $transaction = new Transaction();
         $transaction->invoice_id = $this->id;
-        $transaction->amount = $this->formattedTotal();
-        $transaction->message = $data['message'];
-        $transaction->method = $this->customer->getPreferredPaymentGateway() ? $this->customer->getPreferredPaymentGateway()->getName() : trans('messages.payment_manual');
-        $transaction->error = isset($data['error']) ? $data['error'] : null;
-        $transaction->status = isset($data['status']) ? $data['status'] : \Acelle\Model\Transaction::STATUS_PENDING;
         $transaction->save();
 
         return $transaction;
@@ -474,39 +467,73 @@ class Invoice extends Model
         ]);
     }
 
-    public function addPendingTransaction()
-    {
-        if ($this->pendingTransaction()) {
-            throw new \Exception('Invoice already have pending transaction!');
-        }
-
-        $this->addTransaction([
-            'status' => \Acelle\Model\Transaction::STATUS_PENDING,
-            'message' => trans('messages.pay_invoice', [
-                'id' => $this->uid,
-                'title' => $this->title,
-            ]),
-        ]);
-    }
-
     /**
      * Checkout.
      *
      * @return array
      */
-    public function checkout($callback)
+    public function checkout($gateway, $payCallback)
     {
-        $invoice = $this;
-        $invoice->addPendingTransaction();
+        \DB::transaction(function() {
+            $this->addPendingTransaction($gateway);
 
-        try {
-            $paid = $callback($invoice);
-            
-            // Problem: most of gateways have waiting time before real charged accur so can fulfill in one block?
-            $invoice->fulfill();
-        } catch (\Exception $e) {
-            // pay failed
-            $invoice->payFailed($e->getMessage());
-        }
+            try {
+                $result = $payCallback($invoice);
+
+                if ($result->isDone()) {
+                    // Stripe, PayPal, Braintree for example
+                    $invoice->fulfill();
+
+                } elseif ( $result->isFailed() ) {
+                    // Stripe, PayPal, Braintree for example
+                    $invoice->payFailed($result->error);
+
+                } elseif ( $result->isStillPending() ) {
+                    // Wait more, check again later....
+                    // Coinpayment, offline
+                } elseif ( $result->isVerificationNotNeeded() ) {
+                    // Do nothing, just wait for the service to finish it itself (Stripe)
+                    // Service should not return this status, it is used for verification only
+                }
+                
+            } catch (\Exception $e) {
+                // pay failed
+                $this->payFailed($e->getMessage());
+            }
+        });
+        
+    }
+}
+
+
+/*
+COIN
+User thấy:
+---------------------------------------
+Subscription::new 
+Invoice::new 
++ Pending transaction....
+==========> "Vui lòng chờ, payment is in progress...."          PENDING.BLADE
+
+
+OFFLINE
+Subscription::new 
+Invoice::new 
++ Pending transaction....
+==========> "Thank you for paying, please wait for reviewing..."         PENDING.BLADE
+
+
+Subscription::new
+Invoice::new
++ Pending transaction, method == offline  [ APPROVE | REJECT ] => gọi 2 hàm fulfill | payFailed respectively
+
+
+CRONJOB
+
+// Coin: những gateway mà status phải check lại
+TransactionMonitor::function () {
+    $transactions = Transaction::where( 'status', 'pending' )
+    foreach($transactions as $t) {
+        $t->check();
     }
 }

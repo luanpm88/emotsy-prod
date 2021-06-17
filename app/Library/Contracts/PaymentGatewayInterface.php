@@ -2,6 +2,10 @@
 
 namespace Acelle\Library\Contracts;
 
+use Acelle\Model\Invoice;
+use Acelle\Model\Transaction;
+use Acelle\Library\TransactionVerificationResult;
+
 interface PaymentGatewayInterface
 {
     public function getName() : string;
@@ -9,10 +13,11 @@ interface PaymentGatewayInterface
     public function getDescription() : string;
     public function isActive() : bool;
     public function getSettingsUrl() : string;
-    public function getCheckoutUrl($invoice) : string;
+    public function getCheckoutUrl(Invoice $invoice) : string;
 
     // auto
     public function supportsAutoBilling() : bool;
-    public function autoCharge($invoice); // dành cho cronjob của core gọi
+    public function autoCharge(Invoice $invoice) : TransactionVerificationResult; // dành cho cronjob của core gọi
     public function getAutoBillingDataUpdateUrl() : string;
+    public function verify(Transaction $transaction) : TransactionVerificationResult;
 }
