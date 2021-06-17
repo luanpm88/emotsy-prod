@@ -509,8 +509,6 @@ class Invoice extends Model
         } catch (\Exception $e) {
             // pay failed
             $invoice->payFailed($e->getMessage());
-
-            throw new \Exception($e->getMessage());
         }
     }
 }
