@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use LogicException;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model;
-
+use Exception;
 use Acelle\Model\Invoice;
 
 class Subscription extends Model
@@ -162,8 +162,11 @@ class Subscription extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function pendingInvoices()
+    public function unpaidInvoices()
     {
+        throw new Exception('Không dùng hàm này, theo design / flow hiện tại thì subscription chỉ có duy nhất 1 unpaid invoice, dùng hàm getUnpaidInvoice() luôn, remove method này');
+
+
         return $this->invoices()
             ->whereIn('status', [
                 Invoice::STATUS_NEW,
@@ -172,9 +175,9 @@ class Subscription extends Model
             ]);
     }
 
-    public function hasPendingInvoice()
+    public function hasUnpaidInvoice()
     {
-        return $this->pendingInvoice() != null;
+        return $this->unpaidInvoice() != null;
     }
 
     /**
@@ -182,9 +185,11 @@ class Subscription extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function pendingInvoice()
+    public function unpaidInvoice()
     {
-        return $this->pendingInvoices()
+        throw new Exception('Theo design / flow hiện tại thì subscription chỉ có duy nhất ONE unpaid invoice ==> dùng hàm getUnpaidInvoice() luôn, remove method này');
+
+        return $this->unpaidInvoices()
             ->orderBy('created_at', 'desc')
             ->first();
     }
@@ -249,7 +254,7 @@ class Subscription extends Model
     public function createInitInvoice()
     {
         //
-        if ($this->pendingInvoice()) {
+        if ($this->unpaidInvoice()) {
             throw new \Exception(trans('messages.error.has_waiting_invoices'));
         }
 
@@ -291,7 +296,7 @@ class Subscription extends Model
     public function createRenewInvoice()
     {
         //
-        if ($this->pendingInvoice()) {
+        if ($this->unpaidInvoice()) {
             throw new \Exception(trans('messages.error.has_waiting_invoices'));
         }
 
@@ -333,8 +338,8 @@ class Subscription extends Model
     public function createChangePlanInvoice($newPlan)
     {
         //
-        if ($this->pendingInvoice()) {
-            $this->pendingInvoice()->delete();
+        if ($this->unpaidInvoice()) {
+            $this->unpaidInvoice()->delete();
         }
 
         // calculate change plan amout ends at
@@ -392,11 +397,11 @@ class Subscription extends Model
      */
     public function getUpcomingBillingInfo()
     {
-        if (!$this->pendingInvoice()) {
+        if (!$this->unpaidInvoice()) {
             return null;
         }
 
-        return $this->pendingInvoice()->getBillingInfo();
+        return $this->unpaidInvoice()->getBillingInfo();
 
         // if ($this->cancelled()) {
         //     return null;
@@ -440,8 +445,8 @@ class Subscription extends Model
     public function getPeriodEndsAt($startDate)
     {
         // dose not support recurring, update ends at column
-        $interval = $this->plan->getBillableInterval();
-        $intervalCount = $this->plan->getBillableIntervalCount();
+        $interval = $this->plan->frequency_unit;
+        $intervalCount = $this->plan->frequency_amount;
 
         switch ($interval) {
             case 'month':
@@ -481,7 +486,7 @@ class Subscription extends Model
 
                 // check expiring
                 if ($this->isExpiring() && $this->canRenewPlan() && !$this->cancelled()) {
-                    $pendingInvoice = $this->pendingInvoice();
+                    $pendingInvoice = $this->unpaidInvoice();
 
                     // create renew invoice if no pending invoice
                     if (!$pendingInvoice) {
@@ -492,18 +497,6 @@ class Subscription extends Model
                     if ($pendingInvoice->isChangePlanInvoice()) {
                         return;
                     }
-
-                    // // service auto charge
-                    // if (
-                    //     $this->customer->supportsAutoBilling() &&
-                    //     $this->reachDueDate() // check charge day before
-                    // ) {
-                    //     // add pending transaction for invoice
-                    //     $pendingInvoice->checkout();
-                        
-                    //     // charge invoice
-                    //     $this->customer->getPaymentGateway()->autoCharge($pendingInvoice, true);
-                    // }
                 }
                 break;
             case self::STATUS_ENDED:
@@ -517,14 +510,13 @@ class Subscription extends Model
         // Auto pay renew unpaid pending invoice when subscription is ACTIVE
         if (
             $this->isActive() &&
-            $this->pendingInvoice() && 
-            $this->pendingInvoice()->isRenewSubscriptionInvoice() &&
-            $this->customer->supportsAutoBilling() &&
+            $this->unpaidInvoice() &&
+            $this->unpaidInvoice()->isRenewSubscriptionInvoice() &&
             $this->reachDueDate()
         ) {
-            $this->pendingInvoice()->checkout();
+            $this->unpaidInvoice()->checkout();
             // charge invoice
-            $this->customer->getPaymentGateway()->autoCharge($this->pendingInvoice());
+            $this->customer->getPaymentGateway()->autoCharge($this->unpaidInvoice());
         }
     }
 
@@ -561,8 +553,8 @@ class Subscription extends Model
 
         // logs
         $this->addLog(SubscriptionLog::TYPE_PLAN_CHANGED, [
-            'old_plan' => $this->plan->getBillableName(),
-            'plan' => $newPlan->getBillableName(),
+            'old_plan' => $this->plan->name,
+            'plan' => $newplan->name,
         ]);
     }
 
@@ -669,8 +661,8 @@ class Subscription extends Model
 
         // add log
         $this->addLog(SubscriptionLog::TYPE_SUBSCRIBED, [
-            'plan' => $this->plan->getBillableName(),
-            'price' => $this->plan->getBillableFormattedPrice(),
+            'plan' => $this->plan->name,
+            'price' => $this->plan->getFormattedPrice(),
         ]);
     }
 
@@ -694,8 +686,8 @@ class Subscription extends Model
     public function periodStartAt()
     {
         $startAt = $this->current_period_ends_at;
-        $interval = $this->plan->getBillableInterval();
-        $intervalCount = $this->plan->getBillableIntervalCount();
+        $interval = $this->plan->frequency_unit;
+        $intervalCount = $this->plan->frequency_amount;
 
         switch ($interval) {
             case 'month':
@@ -769,8 +761,8 @@ class Subscription extends Model
         $this->save();
 
         // delete pending invoice
-        if ($this->pendingInvoice()) {
-            $this->pendingInvoice()->delete();
+        if ($this->unpaidInvoice()) {
+            $this->unpaidInvoice()->delete();
         }
     }
 
@@ -796,12 +788,12 @@ class Subscription extends Model
         $this->setEnded();
 
         // cancel all pending invoices (new|claimed)
-        $this->pendingInvoices()->delete();
+        $this->unpaidInvoices()->delete();
 
         // add log
         $this->addLog(SubscriptionLog::TYPE_CANCELLED_NOW, [
-            'plan' => $this->plan->getBillableName(),
-            'price' => $this->plan->getBillableFormattedPrice(),
+            'plan' => $this->plan->name,
+            'price' => $this->plan->getFormattedPrice(),
         ]);
     }
 
@@ -824,8 +816,8 @@ class Subscription extends Model
 
         // logs
         $this->addLog(SubscriptionLog::TYPE_RENEWED, [
-            'plan' => $this->plan->getBillableName(),
-            'price' => $this->plan->getBillableFormattedPrice(),
+            'plan' => $this->plan->name,
+            'price' => $this->plan->getFormattedPrice(),
         ]);
     }
 
@@ -846,8 +838,8 @@ class Subscription extends Model
      */
     public function canRenewPlan()
     {
-        return ($this->plan->getBillableAmount() > 0 ||
-            (Setting::get('renew_free_plan') == 'yes' && $this->plan->getBillableAmount() == 0)
+        return ($this->plan->price > 0 ||
+            (Setting::isYes('renew_free_plan') && $this->plan->price == 0)
         );
     }
 
@@ -858,18 +850,18 @@ class Subscription extends Model
      */
     public function calcChangePlan($plan)
     {
-        if (($this->plan->getBillableInterval() != $plan->getBillableInterval()) ||
-            ($this->plan->getBillableIntervalCount() != $plan->getBillableIntervalCount()) ||
-            ($this->plan->getBillableCurrency() != $plan->getBillableCurrency())
+        if (($this->plan->frequency_unit != $plan->frequency_unit) ||
+            ($this->plan->frequency_amount != $plan->frequency_amount) ||
+            ($this->plan->currency->code != $plan->currency->code)
         ) {
-            throw new \Exception(trans('cashier::messages.can_not_change_to_diff_currency_period_plan'));
+            throw new \Exception(trans('messages.can_not_change_to_diff_currency_period_plan'));
         }
         
         // new ends at
         $newEndsAt = $this->current_period_ends_at;
 
         // amout per day of current plan
-        $currentAmount = $this->plan->getBillableAmount();
+        $currentAmount = $this->plan->price;
         $periodDays = $this->current_period_ends_at->diffInDays($this->periodStartAt()->startOfDay());
         $remainDays = $this->current_period_ends_at->diffInDays(\Carbon\Carbon::now()->startOfDay());
         $currentPerDayAmount = ($currentAmount/$periodDays);
@@ -885,7 +877,7 @@ class Subscription extends Model
             $newEndsAt->addDays($days);
             
             // if free plan
-            if ($plan->getBillableAmount() == 0) {
+            if ($plan->price == 0) {
                 $newEndsAt = $this->current_period_ends_at;
             }
         }
@@ -898,8 +890,7 @@ class Subscription extends Model
 
     public function abortNew()
     {
-        if (!$this->isNew())
-        {
+        if (!$this->isNew()) {
             throw new \Exception('This subscription is not NEW. Can not abortNew!');
         }
 

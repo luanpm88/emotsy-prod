@@ -5,11 +5,12 @@ use Exception;
 use Acelle\Library\Contracts\PaymentGatewayInterface;
 use Acelle\Library\Facades\Billing;
 
-class AutoBillingData {
+class AutoBillingData
+{
     protected $gateway;
     protected $data;
 
-    public function __construct(PaymentGatewayInterface $gateway, $data=[])
+    public function __construct(PaymentGatewayInterface $gateway, $data = [])
     {
         $this->gateway = $gateway;
         $this->data = $data;

@@ -884,7 +884,7 @@ class Plan extends Model
      */
     public function customersCount()
     {
-        return $this->subscriptions()->distinct('user_id')->count('user_id');
+        return $this->subscriptions()->distinct('customer_id')->count('customer_id');
     }
 
     /**
@@ -1090,12 +1090,6 @@ class Plan extends Model
 
         $this->fillAll($request);
 
-        // // sync remote plan
-        // if (config('cashier.gateway') == 'paypal_subscription' && isset($request->plan) && isset($request->plan['general'])) {
-        //     $service = \Acelle\Model\Setting::getPaymentGateway('paypal_subscription');
-        //     $service->syncPlan($this, $oldPlan);
-        // }
-
         $validator = $this->validate($request);
 
         if ($validator->fails()) {
@@ -1237,71 +1231,11 @@ class Plan extends Model
     }
 
     /**
-     * PlanInterface: get remote plan id.
-     *
-     * @return string
-     */
-    public function getBillableId()
-    {
-        return $this->uid;
-    }
-
-    /**
-     * PlanInterface: get name.
-     *
-     * @return string
-     */
-    public function getBillableName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * PlanInterface: get interval.
-     *
-     * @return string
-     */
-    public function getBillableInterval()
-    {
-        return $this->frequency_unit;
-    }
-
-    /**
      * PlanInterface: get interval count.
      *
      * @return string
      */
-    public function getBillableIntervalCount()
-    {
-        return $this->frequency_amount;
-    }
-
-    /**
-     * PlanInterface: get currency.
-     *
-     * @return string
-     */
-    public function getBillableCurrency()
-    {
-        return $this->currency->code;
-    }
-
-    /**
-     * PlanInterface: get interval count.
-     *
-     * @return string
-     */
-    public function getBillableAmount()
-    {
-        return $this->price;
-    }
-
-    /**
-     * PlanInterface: get interval count.
-     *
-     * @return string
-     */
-    public function getBillableFormattedPrice()
+    public function getFormattedPrice()
     {
         return \Acelle\Library\Tool::format_price($this->price, $this->currency->format);
     }
@@ -1391,14 +1325,9 @@ class Plan extends Model
         $plans = self::getAllActiveVisible()->get();
 
         $aPlans = [];
-        // $psService = \Acelle\Model\Setting::getPaymentGateway('paypal_subscription');
         foreach ($plans as $plan) {
             if ($plan->isAvailable()) {
-                // if (config('cashier.paypal_payment') !== 'paypal_subscription' ||
-                //     $psService->findPlanConnection($plan)
-                // ) {
                 $aPlans[] = $plan;
-                // }
             }
         }
 
@@ -1435,23 +1364,6 @@ class Plan extends Model
 
         // else return true
         return true;
-    }
-
-    /**
-     * Check plan error status.
-     *
-     * @var array
-     */
-    public function errors()
-    {
-        $errors = [];
-
-        // use system sending server but has no primary sending server
-        if ($this->useSystemSendingServer() && !$this->hasPrimarySendingServer()) {
-            $errors[] = 'sending_server_empty';
-        }
-
-        return $errors;
     }
 
     /**

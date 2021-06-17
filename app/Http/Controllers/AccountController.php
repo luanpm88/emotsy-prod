@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log as LaravelLog;
 use Acelle\Library\Facades\Billing;
 
-
 class AccountController extends Controller
 {
 

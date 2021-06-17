@@ -87,17 +87,6 @@
 
 @section('content')
 
-    @if (!$gateway)
-        @include('admin.subscriptions.no_gateway')
-    @else
-        <div class="alert alert-info">
-            {!! trans('messages.current_payment_intro', [
-                'name' => $gateway['name'],
-                'link' => action('Admin\PaymentController@index'),
-            ]) !!}
-        </div>
-    @endif
-
 	<p>{{ trans('messages.plan_create_message') }}</p>
 
     <form class="listing-form"

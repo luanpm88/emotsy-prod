@@ -1559,10 +1559,7 @@
   'payment_method_type' => 'Payment method type',
   'cash' => 'Cash',
   'paypal' => 'PayPal',
-  'payment_method_type_cash_button' => '<i class="fa fa-money"></i> Pay in Cash',
-  'payment_method_type_paypal_button' => '<i class="icon-paypal"></i> Pay with PayPal',
   'subscription.cash.created' => 'Subscription was successfully created. Please wait for the payment confirmation',
-  'paypal_merchant_id' => 'PayPal merchant ID',
   'no_plan' => 'No plan yet!',
   'all_status' => 'All statuses',
   'features' => 'Features',
@@ -1590,9 +1587,6 @@
   'resources_quota' => 'Resources',
   'automation' => 'Automation',
   'created_by' => 'Created by',
-  'braintree_credit_card' => 'Braintree / Credit Card',
-  'braintree_paypal' => 'Braintree / PayPal',
-  'pay_with_paypal' => '<i class="icon-paypal"></i>  Pay with Paypal',
   'expiration_date' => 'Expiration Date',
   'card_number' => 'Card number',
   'cvv' => 'CVV',
@@ -1600,14 +1594,7 @@
   'subscription_paid_finish_messages' => '<h2 class="text-semibold mt-0 text-teal-800">Congratulation!</h2>
       <p>You are successfully subscribed to the plan <span class="text-bold">:plan</span>. Now your account is activated.<br />Let choose an action below for next step.</p>',
   'something_error_accur' => 'An unexpected error occurred. Please check again.',
-  'payment_method_type_braintree_credit_card_button' => '<i class="icon-credit-card"></i> Pay by Credit card',
-  'payment_method_type_braintree_credit_card' => 'Pay by Braintree / Credit card',
-  'payment_method_type_braintree_paypal' => 'Pay with Paypal',
-  'payment_method_type_cash' => 'Pay in Cash',
-  'subscription_paid_status_paid' => 'Paid',
-  'subscription_paid_status_notpaid' => 'Not-Paid',
   'customer_contact.updated' => 'Contact information was successfully updated!',
-  'payment_method_type_braintree_paypal_button' => '<i class="icon-paypal"></i> Pay with Paypal',
   'environment' => 'Environment',
   'merchant_id' => 'Merchant ID',
   'public_key' => 'Public key',
@@ -1731,11 +1718,8 @@
       Please finish the payment or wait for the payment confirmation to activate your subscription',
   'next_plan_notactive_intro' => 'You have a pending subscription for <a><strong>:plan plan</strong></a>.
       Please finish the payment or wait for the payment confirmation to activate your subscription',
-  'purchasing_intro_braintree_credit_card' => 'Please fill out the below information so we can setup your account for purchasing the <a><strong>:plan plan</strong></a> with the pay by Credit Card option
-          . Your plan price is: <a><strong>:price</strong></a>',
   'subscribe_to_a_plan_intro' => 'Thank you for signing up with us. You are not currently subscribed to any plan yet. Below are the available plans for you to choose from:',
   'subscribe_plan' => 'Subscribe',
-  'purchasing_intro_braintree_paypal' => 'Please click the PayPal checkout button below to proceed with the payment for your subscription to <a><strong>:plan plan</strong></a>, the price is <a><strong>:price</strong></a>',
   'next_plan' => 'Next plan',
   'available_plans' => 'Available plans',
   'next_plan_active_intro' => 'You have successfully subscribed to the <a><strong>:plan plan</strong></a>.
@@ -1771,23 +1755,6 @@
   'subscription_status_pending_disabled' => 'Pending & Disabled',
   'all_times' => 'All times',
   'all_payments' => 'All payments',
-  'stripe_api_key' => 'API Key',
-  'stripe_api_publishable_key' => 'API Publishable Key',
-  'stripe_api_secret_key' => 'API Secret Key',
-  'stripe_credit_card' => 'Stripe / Credit Card',
-  'payment_method_type_stripe_credit_card_button' => '<i class="icon-credit-card"></i> Pay by Credit card',
-  'purchasing_intro_stripe_credit_card' => 'Please click the button below so we can setup your account for purchasing the <a><strong>:plan plan</strong></a> with the Pay by Credit Card option
-          . Your plan price is: <a><strong>:price</strong></a>',
-  'pay_with_strip_label_button' => 'Click to pay',
-  'stripe_checkout_description' => 'Pay for order #:order',
-  'payment_method_type_stripe_credit_card' => 'Pay by Stripe / Credit card',
-  'purchasing_intro_paypal' => 'Please click the button below so we can setup your account for purchasing the <a><strong>:plan plan</strong></a> with the Pay with PayPal option
-      . Your plan price is: <a><strong>:price</strong></a>',
-  'paypal_client_id' => 'PayPal Client ID',
-  'paypal_secret' => 'PayPal Secret',
-  'paypal_error_amount_not_equal' => 'Payment amount is not valid. Please contact the provider for more information.',
-  'paypal_error_cannot_get_access_token' => 'Cannot retrieve PayPal access token',
-  'paypal_error_unknown' => 'Unknown',
   'added_by' => 'Added by',
   'email_verification_server.credits_usage' => 'Credits used: :count',
   'email_verification_server' => 'Email verification server',
@@ -1854,15 +1821,6 @@
   'verification.error.job_failed' => 'Something went wrong with the verification process, please stop the job and try again later',
   'can_import_list' => 'Customer can import list',
   'can_export_list' => 'Customer can export list',
-  'cash.wording' => 'Enable the cash payment option to allow payment to take place outside of the system. i.e. user can somehow make the payment for the subscription and then click on the "Pay In Cash" button to claim the payment.
-      As the administrator, you can then go to the Subscription dashboard to review and confirm the payment.',
-  'braintree_credit_card.wording' => 'Enter your Braintree merchant account\'s information to accept payments by credit card',
-  'braintree_paypal.wording' => 'Enter your Braintree merchant account\'s information to accept PayPal payments.
-      Please make sure you also have a PayPal business account and link it with your Braintree account.
-      See the Braintree documentation <a target="_blank" href="https://articles.braintreepayments.com/support/guides/payment-methods/paypal/setup-guide">here</a>.',
-  'paypal.wording' => 'Setup your PayPal account to receive PayPal payments.',
-  'stripe_credit_card.wording' => 'Setup your Stripe account to receive payments by credit cards.',
-  'loading_paypal' => 'loading PayPal button... Please wait.',
   'domain_name' => 'Domain name',
   'something_wrong_with_license_check' => ':error',
   'license_is_not_valid' => 'License check failed: License is not valid. Please try again.',
@@ -2370,39 +2328,15 @@
     Click <a target="_blank" href=":link"><strong>here</strong></a> to add one.',
   'plan.sending_server.custom' => 'Custom',
   'plan.sending_server.change_confirm' => 'You are about to change plan sending server setting',
-  'plan.payment.intro' => 'Connect your plan to a payment gateway like Stripe or Braintree/Paypal,
-    to accept payment online',
   'payment_gateways' => 'Payment gateways',
   'payment_gateways.wording' => 'To accept payments from your users, you will need to use a supported payment gateway. Please choose  your preferred payment gateway from the list below',
   'payment.status.active' => 'active',
   'payment.status.inactive' => 'inactive',
-  'payments.cash' => 'Cash',
-  'payments.stripe' => 'Stripe',
-  'payments.cash.list_intro' => 'Pay by Cash',
-  'payments.stripe.list_intro' => 'Receive payments from Credit / Debit card to your Stripe account',
-  'payment.cash.wording' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-    Sed ac ultrices nibh. Mauris porta, augue id condimentum feugiat, ipsum lectus sagittis est, accumsan blandit
-    sapien eros tincidunt nulla. Nam massa nisl, facilisis quis rhoncus quis, blandit ac sem.
-    Pellentesque ornare ante sit amet dolor cursus, nec egestas nisi scelerisque.',
-  'payment.stripe.wording' => 'Stripe is a technology company based in San Francisco, California. Its software allows individuals and businesses to make and receive payments over the Internet. Stripe provides the technical, fraud prevention, and banking infrastructure required to operate online payment systems.',
-  'payment.status' => 'Status',
-  'payment.stripe.publishable_key' => 'Publishable key',
-  'payment.stripe.secret_key' => 'Secret key',
-  'payment_gateway.updated' => 'Payment gateway was successfully updated',
-  'payment.options[cash].help' => 'Enable/disable cash payment',
-  'payment.options[status].help' => 'Enable/disable payment',
-  'payment.options' => 'Payment settings',
   'subscription.payment' => 'Payment',
   'subscription.payment.wording' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.
     Sed ac ultrices nibh. Mauris porta, augue id condimentum feugiat, ipsum lectus sagittis est, accumsan blandit
     sapien eros tincidunt nulla. Nam massa nisl, facilisis quis rhoncus quis, blandit ac sem.
     Pellentesque ornare ante sit amet dolor cursus, nec egestas nisi scelerisque.',
-  'purchasing_intro_stripe' => 'You are subscribing to <span class="text-nowrap text-big text-semibold">:plan</span> plan
-          . Your plan price is: <span class="text-nowrap text-big text-bold">:price</span>
-          . Please select your card bellow to process the payment.',
-  'purchasing_intro_direct' => 'You are subscribing to <span class="text-nowrap text-big text-semibold">:plan</span> plan
-          . Your plan price is: <span class="text-nowrap text-big text-bold">:price</span>
-          . Click confirm button below to accept and get payment guide.',
   'subscription.current_subscription.recurring.wording' => 'Thank you for being with us, you are currently subscribed to <strong>:plan</strong> plan.<br>
       Your next invoice will automatically be billed in <strong>:remain</strong>, on <strong>:next_on</strong>.',
   'subscription.cancel.confirm' => 'You\'re about to cancel :number subscription. You\'re still subscribed until the end of period',
@@ -2422,61 +2356,23 @@
   'subscription.cancelled_now' => 'The subscription was successfully cancelled',
   'subscription.change_plan' => 'Change plan',
   'subscription.change_plan.wording' => 'Select plan below to change',
-  'payments.braintree' => 'Braintree',
-  'payments.braintree.list_intro' => 'Receive payments from Credit / Debit card to your Braintree account',
-  'payment.braintree.environment' => 'Environment',
-  'payment.braintree.merchant_id' => 'Merchant ID',
-  'payment.braintree.public_key' => 'Public key',
-  'payment.braintree.private_key' => 'Private key',
-  'payment.braintree.wording' => 'Braintree is a full-stack payments platform that makes it easy to accept online payments. You will need to sign up for a Braintree account, obtain your integration ID and keys and set it up below',
-  'purchasing_intro_braintree' => 'Please fill out the below information so we can setup your account for purchasing the <a><strong>:plan plan</strong></a> with the Pay with Braintree option
-      . Your plan price is: <a><strong>:price</strong></a>',
-  'payment.braintree.request_payment_method' => 'Request payment method',
-  'payment.braintree.pay' => 'Pay',
-  'plan.choose_a_payment_gateway' => 'Choose a payment gateway',
-  'plan.choose_a_payment_gateway.help' => 'You are connecting to Stripe, which allows you to get paid from users\' credit cards (VISA, Master, etc.)',
-  'payment.edit' => 'Edit',
-  'payment.set_primary' => 'Set Primary',
-  'payment.primary' => 'Primary',
-  'payment.pay_now' => 'Pay now',
-  'subscription.plan_changed' => 'Subscription plan was successfully changed',
   'subscription.ends_at' => 'Ends at',
   'subscription.ends_on' => 'Ends on',
   'subscription.ended_on' => 'Ended on',
   'subscription.status.ended' => 'Ended',
   'subscription.status.active' => 'Active',
   'subscription.status.cancelled' => 'Cancelled',
-  'subscription.status.recurring' => 'Recurring',
   'subscription.status.new' => 'New',
   'subscription.status.pending' => 'Pending',
   'subscription.status.done' => 'Done',
   'subscription.created_at' => 'Created at',
   'subscription.updated_at' => 'Updated at',
-  'payment.braintree' => 'Braintree',
-  'payments.coinpayments' => 'Coin-Payments',
-  'payments.coinpayments.list_intro' => 'Receive payment from a cryptocurrency like Bitcoin, Monero, ZCash, etc.',
-  'payment.coinpayments.wording' => 'You can accept payments from many cryptocurrencies like Bitcoin, Monero, ZCash, etc. You will need to sign up for a Coin-Payments account, obtain your integration ID and keys and set it up below',
-  'payment.coinpayments.merchant_id' => 'Merchant ID',
-  'payment.coinpayments.public_key' => 'Public key',
-  'payment.coinpayments.private_key' => 'Private key',
-  'payment.coinpayments.ipn_secret' => 'IPN secret',
-  'purchasing_intro_coinpayments' => 'Please click the button below so we can setup your account for purchasing the <span class="text-nowrap text-big text-semibold">:plan plan</span>
-    . Your plan price is: <span class="text-nowrap text-big text-bold">:price</span>',
   'subscription.checkout' => 'Checkout',
   'subscription.checkout.intro' => 'Your subscription was successfully created. Click <strong>Pay now</strong> button bellow to purchase the plan',
   'subscription.plan' => 'Plan',
   'subscription.plan.wording' => 'Your are currently subscribing to <strong>:plan</strong> plan. Let take a quick look over it.',
   'subscription.payment.checkout' => 'Checkout',
   'subscription.pending.intro' => '',
-  'subscription.pending.coinpayments.wording' => 'You are currently subscribed to <strong>:plan</strong> (<strong>:money</strong>). Please wait for processing your subscription.
-    If you haven\'t purchase the plan, please follow the checkout guide from CoinPayments.net in your
-    mailbox with title <strong class="text-nowrap">[CoinPayments.net] New Payment Submitted</strong>.<br/><br/> <strong>OR</strong> <br/>',
-  'subscription.future_pending.coinpayments' => 'You have currently payment pending. Please wait for processing your payment.
-    If you haven\'t purchase the plan, please follow the checkout guide from CoinPayments.net in your
-    mailbox with title <strong class="text-nowrap">[CoinPayments.net] ...</strong>.',
-  'subscription.payment.checkout_again' => 'Checkout again',
-  'subscription.current_subscription.cancel_at_end_of_period_no_recurring_supported.wording' => 'You are currently subscribed to <strong>:plan</strong> (<strong>:money</strong>).<br>
-      The subscription will be end in <strong>:remain</strong>, on <strong>:end_at</strong>.',
   'invoice.datetime' => 'Datetime',
   'invoice.amount' => 'Amount',
   'invoice.description' => 'Description',
@@ -2487,7 +2383,6 @@
   'no_plan.title' => 'You are not subscribed to any plan!',
   'select_plan.wording' => 'You need to subscribe to a plan in order to experience the application. Choose one of plans below to subscribe for using the app:',
   'manage_your_subscription' => 'Manage your subscription',
-  'payment.coinpayments' => 'CoinPayments',
   'sending_server.add_domain.wording' => 'Enter new domain name here to add domain to sending server',
   'sending_server.add_email_domain.wording' => 'Enter new email/domain name here to add domain to sending server',
   'sending_server.add_domain' => 'Add domain',
@@ -2501,14 +2396,9 @@
     So you should pay top-up for the next period.
     Click the button bellow to process.',
   'subscription.payment.pay_top_up' => 'Pay top-up',
-  'subscription.renew.coinpayments.wording' => 'Select button bellow and fill your payment information to pay top-up fees.',
-  'subscription_done.coinpayments.email' => 'Hello :customer, <br/>Your subscription to :plan plan was successfully processed. Thanks for your purchasing.<br>
-    Click <a href=":link">here</a> to check your subscription status.',
   'subscription_done.email_subject' => 'Subscription was created successfully',
   'no_primary_payment' => 'No Payment Gateway selected. Please go to Admin / Setting / Payment Gateways to select one',
   'subscription_done.direct.email' => 'Hello :customer, <br/>Your subscription to :plan plan was successfully created.<br>
-    Click <a href=":link">here</a> to check your subscription status and process with payment.',
-  'subscription_done.paypal_subscription.email' => 'Hello :customer, <br/>Your subscription to :plan plan was successfully created.<br>
     Click <a href=":link">here</a> to check your subscription status and process with payment.',
   'subscription_done.stripe.email' => 'Hello :customer, <br/>Your subscription to :plan plan was successfully created.<br>
     Click <a href=":link">here</a> to check your subscription status and process with payment.',
@@ -2525,9 +2415,6 @@
   'invoice.subscribe_to_plan' => 'Subscribe to plan <strong>:plan</strong>',
   'invoice.renew_plan' => 'Renew plan <strong>:plan</strong>',
   'invoice.change_plan' => 'Change Plan',
-  'subscription.change_plan.checkout.coinpayments' => 'You are about to change plan from <strong>:current_plan</strong> to <strong>:new_plan</strong>.
-    The extra amount need to purchase amount for new plan is <strong>:amount</strong>. The subscription will be ended on <strong>:end_on</strong>',
-  'subscription.download_raw_invoices' => 'Download invoices (raw)',
   'subscription.approve' => 'Approve',
   'subscription.approve.confirm' => 'You are going to confirm/approve the payment for this subscription and make
       it active.',
@@ -2585,8 +2472,6 @@
   'notify.confirmation' => 'Confirmation',
   'subscription.finished' => 'Thank you! You are now subscribed to <strong>:plan</strong> plan.',
   'subscription.click_here_to_cancel_now' => 'Click here if you want to change other plan',
-  'payment.stripe' => 'Stripe',
-  'subscription.pay_with_stripe' => 'Pay with Stripe',
   'notify.clear_all' => 'Clear all',
   'payment.not_set' => 'Not set!',
   'subscription.checkout.processing_payment.intro' => 'This process is automatic. Please do not close this browser/tab or change page.<br>
@@ -2606,7 +2491,6 @@
   'payment.agree_service_intro.no_plan' => 'By clicking the <strong><i>Proceed with payment</i></strong> button,
        you agree to our <i>Term of Use</i> and <i>Privacy Policy</i>.',
   'plan.review' => 'Plan review',
-  'payment.coinpayments.receive_currency' => 'Receive Currency Code',
   'subscription.status.active_pending' => 'Update pending',
   'subscription.status.change_plan_pending' => 'Changing Plan',
   'subscription.status.renew_pending' => 'Renewing',
@@ -2682,10 +2566,6 @@
   'email_confirmation' => 'Email Confirmation',
   'sending_server.added' => 'added',
   'plan.sending_server.already_added' => 'The sending server was already added',
-  'braintree.plan_mapping' => 'Plan mapping',
-  'braintree.plan_mapping.intro' => 'Mapping remote plans to local plans so Braintree can know how to add subscription.
-    This will change local plan price and billing recycle time too.',
-  'payment_gateway.braintree.mapping_updated' => 'Braintree plans were mapped',
   'payment.setting' => 'Setting',
   'automation.create' => 'Add new',
   'automation.automation_trigger' => 'Automation Trigger',
@@ -3079,14 +2959,6 @@
   'automation.action.operation.unsubscribe_contact.title' => 'Unsubscribe contact',
   'automation.action.operation.choose_list' => 'Choose mail list',
   'automation.status.triggered.desc' => 'Triggered, processing...',
-  'payments.paypal' => 'PayPal',
-  'payments.paypal.list_intro' => 'PayPal is the fast/safe way to send money, make an online payment,
-      receive money or set up a merchant account',
-  'payment.paypal.client_id' => 'Client ID',
-  'payment.paypal.secret' => 'Secret',
-  'payment.paypal.environment' => 'Environment',
-  'payment.paypal.wording' => 'PayPal is the fast/safe way to send money, make an online payment,
-  receive money or set up a merchant account.',
   'campaign.email_content_plain' => 'Email Content',
   'campaign.email_content_plain.intro' => 'Enter your email plain text via text box below.',
   'campaign.plain.save' => 'Save & Next',
@@ -3127,24 +2999,11 @@
   'subscription.create_new_subsctiption' => 'Create new subscription',
   'subscription.create_new_subsctiption.intro' => 'Let\'s select customer and plan below to assign customer to plan',
   'subscription.create' => 'Create',
-  'stripe.require_valid_card' => 'Require a valid card',
-  'stripe.require_valid_card.intro' => 'Any customer subscribing to a plan will need to add his or her credit or
-    debit card which will be automatically charged, even for FREE plan',
-  'stripe.always_ask_for_valid_card' => 'Always ask for valid card',
-  'braintree.require_valid_card' => 'Require a valid card',
-  'braintree.require_valid_card.intro' => 'Any customer subscribing to a plan will need to add his or her credit or
-    debit card which will be automatically charged, even for FREE plan',
-  'braintree.always_ask_for_valid_card' => 'Always ask for valid card',
   'notification.delete.confirm' => 'You\'re about to delete :number notification(s).',
   'notifications.deleted' => '<strong>:number</strong> notification(s) was successfully deleted',
   'no_notifications' => 'There are no notifications yet',
   'subscription.reject_pending_payment' => 'Reject payment',
   'subscription.reject_pending_payment.leave_note' => 'Leave a note to your customer regarding the reason the payment is rejected',
-  'payments.paypal_subscription' => 'PayPal Subscription',
-  'payments.paypal_subscription.list_intro' => 'With PayPal Subscriptions, you can bill customers for
-    plans at regular intervals via their PayPal account',
-  'payment.paypal_subscription.wording' => 'With PayPal Subscriptions, you can bill customers for
-    plans at regular intervals via their PayPal account',
   'plans.hide.confirm' => 'Are you sure you want to set your plan to invisible? Your users will no longer see this plan',
   'plan.hidden' => 'The plan was hidden successfully',
   'plan.showed' => 'The plan was showed successfully',
@@ -3174,48 +3033,14 @@
   'template.thumb.upload_thumbnail_url' => 'Select thumbnail url',
   'template.thumb.upload_thumbnail_url.intro' => 'Enter image url below which will be used as template thumbnail',
   'template.thumb.uploaded' => 'Template thumbnail was uploaded successfully',
-  'payment.paypal.connect_your_plans' => 'Connect your plans',
-  'payment.paypal.connect_your_plans.intro' => 'Connect your plans with PayPal in order to enable recurring payment',
-  'payment.paypal_subscription.connect' => 'Connect',
-  'payment.paypal_subscription.connect_plan' => 'Connect',
-  'payment.paypal_subscription.disconnect_plan' => 'Disconnect',
-  'payment.paypal_subscription.connection' => 'Connection',
-  'payment.paypal_subscription.connected_to_paypal' => 'Connected to PayPal',
-  'payment.paypal_subscription.connected_to_paypal.wording' => 'You are now connected to PayPal subscription service through
-    the `:name`. Click <a target="_blank" href=":dashboard">HERE</a> to go to PayPal application dashboard or
-    <a link-method="POST" link-confirm="You are about to disconnect from PayPal. This can not be undone" href=":disconnect">
-    click here to disconnect from PayPal</a>.
-    <span class="badge badge-primary bg-grey badge-large mt-4">PayPal Service ID: :product_id</span>',
-  'payment.paypal_subscription.connect_to_paypal' => 'Connect to PayPal',
-  'payment.paypal_subscription.connect_to_paypal.wording' => 'You are not connected to PayPal subscription service. Click button
-    bellow to connect.',
-  'payment_gateway.paypal_subscription.connected' => 'Connected from PayPal service successfully',
-  'payment_gateway.paypal_subscription.disconnected' => 'Disconnected from PayPal service successfully',
-  'payment_gateway.paypal_subscription.plan.connected' => 'Connected from PayPal plan successfully',
-  'payment_gateway.paypal_subscription.plan.disconnected' => 'Disconnected from PayPal plan successfully',
-  'payment.paypal_subscription.plan.connected' => 'connected',
-  'payment.paypal_subscription.plan.connected.intro' => 'This plan is connected to the remote PayPal ID: :id',
-  'payment.paypal_subscription.disconnect_plan.confirm' => 'Disconnect PayPal will also delete all (remote)
-    PayPal subscriptions. Are you sure you want to proceed anyway?',
-  'payment.paypal_subscription' => 'PayPal Subscription',
-  'plan.save_error' => 'Something went wrong when updating plan: :error',
-  'plan.cant_show' => 'Your plan is inactive, please fix your plan issues first before set it to visible',
-  'plan.go_to_plans' => 'Please go to your Plans Management page to change visibility',
-  'payment.paypal_subscription.no_mapping_plans' => 'You have no plans. Please go to <a href=":link">
-    Plans Management</a> page to create a plan first',
   'campaign.plain_text_editor' => 'Plain text editor',
   'campaign.html_editor' => 'HTML Editor',
   'email.plain_text_editor' => 'Plain text editor',
   'email.html_editor' => 'HTML Editor',
   'automation.email.plain.updated' => 'Email plain text was upadated.',
   'automation.email.content.updated' => 'Email content was upadated.',
-  'plans.paypal_not_connected' => 'Plan not connected, go to PayPal settings to fix',
   'plan.save_and_connect' => 'Save & Connect',
   'customer.no_active_subscription' => 'no active subscription',
-  'plan.sending_server_empty' => 'No sending server selected',
-  'plan.plan_not_connected' => 'Plan not connected, go to PayPal settings to fix',
-  'plan.sending_server_empty.setting' => 'No sending server selected',
-  'plan.plan_not_connected.setting' => 'Plan not connected to PayPal, click Connect button',
   'template.pro_builder' => 'PRO builder',
   'template.classic_builder' => 'Classic builder',
   'editor.insert_tag' => 'Insert Custom Tags',
@@ -3226,17 +3051,9 @@
   'builder.both' => 'Both',
   'builder.pro' => 'Pro',
   'builder.classic' => 'Classic',
-  'payments.razorpay' => 'Razorpay',
-  'payments.razorpay.list_intro' => 'Start Accepting Payments Instantly with Razorpay\'s
-    Free Payment Gateway. Supports Netbanking, Credit, Debit Cards etc',
-  'payment.razorpay.wording' => 'Start Accepting Payments Instantly with Razorpay\'s
-    Free Payment Gateway. Supports Netbanking, Credit, Debit Cards etc',
-  'payment.razorpay.key_secret' => 'Key Secret',
-  'payment.razorpay.key_id' => 'Key ID',
   'field.created' => 'List\'s field was created',
   'subscription.has_renew_pending.warning' => 'The subscription is going to expired soon!
     You should extend current plan by clicking on the <strong>Renew</strong> button bellow.',
-  'payment.razorpay' => 'Razorpay',
   'sending_server.default_email_verification.content' => '<!DOCTYPE html>
     <html>
     <head>
@@ -3262,7 +3079,6 @@
   'text_direction.ltr' => 'LTR - Left to Right',
   'text_direction.rtl' => 'RTL - Right to Left',
   'text_direction' => 'Text editor direction',
-  'payment.paypal' => 'PayPal',
   'editor.unsubscribe_text' => 'Click here to unsubscribe',
   'editor.update_profile_text' => 'Update your profile',
   'editor.click_view_web_version' => 'Click to view web version of this email',
@@ -3288,224 +3104,9 @@
   'campaign.resend.option.not_click' => 'Did not click on any link in the email',
   'campaign.resend.cancel' => 'Cancel',
   'unsubscribe_notification_for_list_owner' => 'Unsubscription notification email (for mail list owner)',
-  'stripe.billing_address_required' => 'Require address information',
   'campaign.preheader.intro' => '<strong>Preheader</strong> is the short summary text that follows the subject line
     when viewing an email from the inbox',
   'automation.trigger.change.confirm' => 'Changing trigger will erase your automation history, are you sure?',
-  'stripe.checkout.page_title' => 'Checkout',
-  'stripe.checkout_with_stripe' => 'Checkout with Stripe',
-  'stripe.card_list' => 'Your card information',
-  'stripe.click_bellow_to_pay' => 'You are checking out <strong>:plan</strong> with Stripe with <strong>:price</strong>.
-        Please click the button bellow to proceed with the payment information.',
-  'stripe.checkout.tree_plan' => 'You are checking out <strong>:plan</strong> with Stripe with <strong>:price</strong>.
-        Please click the button bellow to proceed.',
-  'stripe.pay' => 'Pay',
-  'stripe.pay_with_new_card' => 'Pay with new card',
-  'stripe.pay_with_this_card' => 'Pay with this card',
-  'stripe.click_or_choose_card_bellow_to_pay' => 'You are checking out <strong>:plan</strong> with Stripe with <strong>:price</strong>.
-        Please choose to pay with exist card or pay with new card.',
-  'stripe.change_plan_confirmation' => 'You are about to change current subscription plan to <strong>:plan</strong>.
-        Click the proceed button below to change.',
-  'stripe.change_plan_proceed' => 'Proceed',
-  'stripe.return_back' => 'Return back',
-  'stripe.change_plan' => 'Change plan',
-  'stripe.new_plan' => 'New plan',
-  'stripe.amount' => 'Amount',
-  'stripe.checkout.processing_payment.intro' => 'This process is automatic. Please do not close this browser/tab or change page.
-        <br> Your browser will redirect to next page shortly.',
-  'stripe.checkout.processing_payment' => 'Processing your payment... please wait!',
-  'stripe.cancel_new_subscription' => 'Click here to choose another plan',
-  'stripe.invoice.manual' => 'Manual updated',
-  'stripe.invoice.subscription_create' => 'Subscribed to plan',
-  'stripe.invoice.subscription_update' => 'Subscription updated',
-  'stripe.invoice.subscription' => 'Subscription updated',
-  'stripe.invoice.upcoming' => 'Upcoming invoice',
-  'stripe.invoice.subscription_threshold' => 'Billing threshold being reached',
-  'stripe.has_transaction_pending' => 'There are pending transaction.
-        <br><a href=":url"><strong>Click here</strong></a> to see more details.',
-  'braintree.cancel_subscription' => 'Click here to cancel the transaction. This can be undone.',
-  'braintree.pending.intro' => 'There is a pending transaction. Please wait for validating your payment.',
-  'braintree.pending.page_title' => 'Transaction is pending',
-  'braintree.checkout.page_title' => 'Checkout',
-  'braintree.checkout_with_braintree' => 'Checkout with Braintree',
-  'braintree.click_bellow_to_pay' => 'You are checking out <strong>:plan</strong> with Braintree with <strong>:price</strong>.
-        Find your card information below and click Pay button to proceed with the payment.',
-  'braintree.current_card' => 'Your current card',
-  'braintree.pay' => 'Pay',
-  'braintree.card_list' => 'Your card information',
-  'braintree.pay_with_new_card' => 'Pay with new card',
-  'braintree.pay_with_this_card' => 'Pay with this card',
-  'braintree.checkout.processing_payment.intro' => 'This process is automatic. Please do not close this browser/tab or change page.
-        <br> Your browser will redirect to next page shortly.',
-  'braintree.checkout.processing_payment' => 'Processing your payment... please wait!',
-  'direct.checkout.page_title' => 'Checkout',
-  'direct.title' => 'Manual Checkout',
-  'payment.claimed.wording' => '
-      <p>Please make a deposit to our bank account at:</p>
-
-      <p><strong>FIRST CENTURY BANK USA</strong><br>
-      Routing (ABA): 061120084<br>
-      Account number: 4013000067378<br>
-      Beneficiary name: Jolie Kennedy<br>
-      </p>
-
-      <p>---</p>
-      
-      <p><strong>CITIBANK UK</strong><br>
-      SWIFT CODE: CIBLBDDHXXX<br>
-      Account number: 9000110067378<br>
-      Beneficiary name: Jolie Kennedy<br>
-      </p>
-      
-      <p class="text-danger" style="color: red">* Above is sample payment information, you can change it in your payment gateway setting page</p>
-  ',
-  'direct.cancel_new_subscription' => 'Click here to choose another plan',
-  'direct.claim_payment' => 'I paid already!',
-  'direct.unclaim_payment' => 'Sorry! I claimed by mistake. Click to undo.',
-  'direct.subscribed_to_plan' => 'Subscribe to plan <strong>:plan</strong>',
-  'direct.renew_plan.intro' => 'You are about to renew :plan plan. Please check the renew information below before proceeding.',
-  'coinpayments.renew_plan.intro' => 'You are about to renew :plan plan. Please check the renew information below before proceeding.',
-  'coinpayments.checkout.page_title' => 'Checkout',
-  'coinpayments.title' => 'Checkout',
-  'coinpayments.checkout.intro' => 'You are checking out <strong>:plan</strong> with <strong>:price</strong>.
-        Please click the button bellow to proceed with the payment information.',
-  'coinpayments.subscribe_to_plan' => 'Subscribe to plan <strong>:plan</strong>',
-  'coinpayments.pay_now' => 'Pay now',
-  'coinpayments.checkout.processing_payment.intro' => 'This process is automatic. Please do not close this browser/tab or change page.
-        <br> Your browser will redirect to next page shortly.',
-  'coinpayments.checkout.processing_payment' => 'Processing your payment... please wait!',
-  'coinpayments.checkout.pay_intro' => 'You are checking out <strong>:plan</strong> plan.
-        Let continue the payment by following the links below:',
-  'coinpayments.checkout_link' => '<strong>Checkout url:</strong><br> <a href=":url" target="_blank">:url</a>',
-  'coinpayments.status_link' => '<strong>Status url:</strong><br> <a href=":url" target="_blank">:url</a>',
-  'coinpayments.checkout_status' => '<strong>Payment status:</strong> <i>:message</i>',
-  'coinpayments.return_back' => 'Back to My Subscription',
-  'coinpayments.thank_you' => 'Thank you for your purchase!',
-  'coinpayments.checkout.complete' => 'The payment successfully completed.
-        Now you are subscribed to <strong>:plan</strong> plan. Click button below to go back your subscription status page.',
-  'coinpayments.complete' => 'Welcome',
-  'direct.can_not_change_to_lower_plan' => 'Can not change to lower plan!',
-  'direct.change_plan_to' => 'Change from <strong>:current_plan</strong> to <strong>:new_plan</strong> plan',
-  'direct.transaction_pending.not_claimed' => 'There are pending transaction: <strong>:message</strong> with amount: <strong>:amount</strong>.
-        Please follow the guide below to finish your payment.',
-  'direct.claim_payment.confirm' => 'You are about to confirm that you finish the payment.',
-  'direct.has_transaction_pending' => 'There are pending transaction: <strong>:description</strong> with amount: <strong>:amount</strong>.
-        <br><a href=":url"><strong>Click here</strong></a> to see more details.',
-  'direct.pending_transaction' => 'Transaction',
-  'direct.plan' => 'Plan',
-  'direct.description' => 'Description',
-  'direct.amount' => 'Amount',
-  'direct.pending.intro' => 'Thank you for subscribing to our <strong>:plan</strong> plan, your billing
-        amount is <strong>:price</strong>. Please make the payment following the guideline bellow and your
-        subscription will be activated quickly.',
-  'coinpayments.plan' => 'Plan',
-  'coinpayments.next_period_day' => 'Next period end day',
-  'coinpayments.amount' => 'Amount',
-  'direct.next_period_day' => 'Next period end day',
-  'direct.pending.claimed.intro' => 'You claimed that you paid for the below transaction.
-        Please wait for the payment confirmation.',
-  'direct.pending.claimed.please_wait' => 'Subscription for <strong>:plan</strong> plan is being reviewed, please wait. Read the
-        payment details below for more information',
-  'direct.renew_plan_desc' => 'Renew <strong>:plan</strong> plan',
-  'coinpayments.renew_plan_desc' => 'Renew <strong>:plan</strong> plan',
-  'direct.return_back' => 'Return back',
-  'coinpayments.pending_transaction' => 'Transaction',
-  'coinpayments.change_plan_to' => 'Change from <strong>:current_plan</strong> to <strong>:new_plan</strong> plan',
-  'direct.renew_subscription' => 'Renew subscription',
-  'direct.renew_proceed' => 'Proceed',
-  'coinpayments.renew_subscription' => 'Renew subscription',
-  'coinpayments.renew_proceed' => 'Proceed',
-  'direct.change_plan.intro' => 'You are about to change <strong>:plan</strong> plan to <strong>:new_plan</strong> plan.
-        Please check the information below before proceeding.',
-  'direct.new_plan' => 'New plan',
-  'direct.change_plan' => 'Change plan',
-  'coinpayments.change_plan.intro' => 'You are about to change <strong>:plan</strong> plan to <strong>:new_plan</strong> plan.
-        Please check the information below before proceeding.',
-  'coinpayments.new_plan' => 'New plan',
-  'coinpayments.change_plan' => 'Change plan',
-  'can_not_change_to_diff_currency_period_plan' => 'Can not change to plan which have different currency/period time!',
-  'braintree.subscribed_to_plan' => 'Subscribed to :plan',
-  'braintree.change_plan' => 'Change plan',
-  'braintree.change_plan_to' => 'Change to :plan plan',
-  'braintree.renew_plan' => 'Renew :plan plan',
-  'braintree.change_plan.intro' => 'You are about to change <strong>:plan</strong> plan to <strong>:new_plan</strong> plan.
-        Please check the information below before proceeding.',
-  'braintree.new_plan' => 'New plan',
-  'braintree.amount' => 'Amount',
-  'braintree.next_period_day' => 'Next period end day',
-  'braintree.change_plan_proceed' => 'Proceed',
-  'braintree.return_back' => 'Return back',
-  'braintree.payment' => 'Payment',
-  'braintree.payment.intro' => 'Let select the payment method below to proceed.',
-  'braintree.has_transaction_pending' => 'There are pending transaction: <strong>:description</strong> with amount: <strong>:amount</strong>.',
-  'braintree.status' => 'Status',
-  'braintree.renew_proceed' => 'Proceed',
-  'braintree.renew_subscription' => 'Renew subscription',
-  'stripe.create_subscription' => 'Subscribed to <strong>:plan</strong> plan',
-  'stripe.change_plan_to' => 'Change to <strong>:plan</strong> plan',
-  'stripe.cancel_plan' => 'Cancel <strong>:plan</strong> plan',
-  'stripe.resume_plan' => 'Resume <strong>:plan</strong> plan',
-  'stripe.cancel_now_plan' => 'Cancel now <strong>:plan</strong> plan',
-  'paypal.title' => 'Pay with PayPal',
-  'paypal.checkout.intro' => 'You are checking out <strong>:plan</strong> with <strong>:price</strong>.
-        Click on the button below to finish your payment with PayPal before using plan.',
-  'paypal.subscribe_to_plan' => 'Subscribe to plan <strong>:plan</strong>',
-  'paypal.new_plan' => 'New plan',
-  'paypal.change_plan' => 'Change plan',
-  'paypal.next_period_day' => 'Next period end day',
-  'paypal.plan' => 'Plan',
-  'paypal.description' => 'Description',
-  'paypal.amount' => 'Amount',
-  'paypal.renew_proceed' => 'Proceed',
-  'paypal.change_plan_proceed' => 'Proceed',
-  'paypal.return_back' => 'Return back',
-  'paypal.click_to_proceed' => 'Click on one of options below to proceed with payment.',
-  'paypal.change_plan_to' => 'Change from <strong>:current_plan</strong> to <strong>:new_plan</strong> plan',
-  'paypal.renew_plan.intro' => 'You are about to renew :plan plan. Please check the renew information below before proceeding.',
-  'paypal.renew_plan_desc' => 'Renew <strong>:plan</strong> plan',
-  'paypal.renew_subscription' => 'Renew subscription',
-  'transaction.subscribed_to_plan' => 'Subscribed to :plan plan',
-  'stripe.free_proceed' => 'Proceed',
-  'stripe.change_plan.intro' => 'You are about to change <strong>:plan</strong> plan to <strong>:new_plan</strong> plan.
-        Please check the information below before proceeding.',
-  'stripe.change_plan.proceed' => 'Proceed',
-  'transaction.change_plan' => 'Change to :plan plan',
-  'stripe.update_payment_and_proceed' => 'Update payment & Proceed',
-  'stripe.payment_outdated.alert' => 'Your payment method is outdated. Click update payment button below
-        to re enter your payment information.',
-  'transaction.renew_plan' => 'Renew :plan plan',
-  'direct.payment_is_not_claimed' => 'Payment is not claimed',
-  'direct.payment_was_claimed' => 'Payment is under review...',
-  'stripe.next_period_day' => 'Next period end day',
-  'transaction.recurring_charge' => 'Recurring Charge for :plan plan',
-  'stripe.payment_error.recurring_charge_error' => '<p class="mb-3"><strong>Error!</p></strong>Something went wrong when
-        charging your subscription. <a href=":url"><strong>Click here</strong></a> to update the payment.',
-  'stripe.error.something_went_wrong' => '<p class="mb-3"><strong>Error!</p></strong>Something went wrong with transaction(s).
-        Please check the logs/transactions below for more details.',
-  'transaction.title' => 'Action',
-  'stripe.transaction.payment' => 'Payment',
-  'stripe.fix_payment.intro' => 'You are about to charge <strong>:plan</strong> plan for new period.
-        Please check the information below before proceeding.',
-  'stripe.payment' => 'Pay with Stripe',
-  'braintree.payment_error.recurring_charge_error' => '<p class="mb-3"><strong>Error!</p></strong>Something went wrong when
-        charging your subscription. <a href=":url"><strong>Click here</strong></a> to update the payment.',
-  'braintree.error.something_went_wrong' => '<p class="mb-3"><strong>Error!</p></strong>Something went wrong with transaction(s).
-        Please check the logs/transactions below for more details.',
-  'braintree.transaction.payment' => 'Payment',
-  'braintree.payment_error.something_went_wrong' => '<p class="mb-3"><strong>Error!</p></strong>Something went wrong with payment.
-        <a href=":url"><strong>Click here</strong></a> to see more details.',
-  'braintree.fix_payment.intro' => 'You are about to charge <strong>:plan</strong> plan for new period.
-        Please check the information below before proceeding.',
-  'paypal.checkout.processing_payment.intro' => 'This process is automatic. Please do not close this browser/tab or change page.
-        <br> Your browser will redirect to next page shortly.',
-  'paypal.checkout.processing_payment' => 'Processing your payment... please wait!',
-  'paypal.checkout.page_title' => 'Checkout',
-  'coinpayments.pay_with_coinpayments' => 'Pay with Coinpayments',
-  'coinpayments.checkout_url' => 'Checkout URL',
-  'coinpayments.status_url' => 'Status URL',
-  'coinpayments.status' => 'Status',
-  'coinpayments.pending.intro' => 'You are subscribing to <strong>:plan</strong> plan.
-        Click on the <strong>checkout url</strong> to pay or <strong>status url</strong> below to pay/check your payment status',
   'subscription.log.subscribe' => 'Subscribing to <strong>:plan</strong> plan',
   'subscription.log.claimed' => 'The payment was <strong>claimed</strong> by customer',
   'subscription.log.admin_approved' => 'Subscription for <strong>:plan</strong> plan was
@@ -3532,176 +3133,10 @@
   'subscription.log.admin_renew_rejected' => 'Renew <strong>:plan</strong> plan was <strong>rejected</strong>
         by Admin. Reason: ":reason"',
   'subscription.log.admin_plan_assigned' => '<strong>Assigned</strong> to <strong>:plan</strong> plan by Admin',
-  'direct.subscription.details' => 'Subscription details',
-  'direct.pending.title' => 'Pay for subscription',
-  'direct.change_mind_cancel_subscription' => 'Change your mind? Choose another plan',
-  'direct.pending.claimed.title' => 'Please wait...',
-  'direct.pending_renew.title' => 'Renew subscription',
-  'direct.pending_renew.claimed.title' => 'Please wait...',
-  'direct.pending_renew.claimed.please_wait' => 'Renewing subscription for <strong>:plan</strong> plan is being reviewed, please wait. Read the
-        payment details below for more information',
-  'direct.pending_renew.intro' => 'You are renewing subscription for <strong>:plan</strong> plan, your billing
-        amount is <strong>:price</strong>. Please make the payment following the guideline bellow and your
-        subscription will be renewed quickly.',
-  'direct.transaction.details' => 'Transaction details',
-  'direct.pending_plan_change.title' => 'Change plan',
-  'direct.pending_plan_change.claimed.title' => 'Please wait...',
-  'direct.pending_plan_change.claimed.please_wait' => 'Changing plan to <strong>:plan</strong> plan is being reviewed, please wait. Read the
-        payment details below for more information',
-  'direct.pending_plan_change.intro' => 'You are changing to <strong>:plan</strong> plan, your billing
-        amount is <strong>:price</strong>. Please make the payment following the guideline bellow and your
-        subscription will be renewed quickly.',
-  'last_payment_failed' => 'Your last payment did not succeed, comment from administrator: ":reason"',
-  'paypal.interval' => 'Interval',
   'interval.day' => ':count day|:count days',
   'interval.month' => ':count month|:count months',
   'interval.year' => ':count year|:count years',
   'interval.week' => ':count week|:count weeks',
-  'paypal_subscription.pending.title' => 'Your subscription is currently reviewing...',
-  'paypal_subscription.pending.intro' => 'Thank you for subscribing to our <strong>:plan</strong>, your billing
-        amount is <strong>:price</strong>. Your subscription is currently reviewing by PayPal. It is going to be approved soon.
-        Please wait.',
-  'paypal_subscription.subscribe_to_plan' => 'Subscribe to plan <strong>:plan</strong>',
-  'paypal_subscription.new_plan' => 'New plan',
-  'paypal_subscription.change_plan' => 'Change plan',
-  'paypal_subscription.next_period_day' => 'Next period end day',
-  'paypal_subscription.plan' => 'Plan',
-  'paypal_subscription.description' => 'Description',
-  'paypal_subscription.amount' => 'Amount',
-  'paypal_subscription.renew_proceed' => 'Proceed',
-  'paypal_subscription.change_plan_proceed' => 'Proceed',
-  'paypal_subscription.return_back' => 'Return back',
-  'paypal_subscription.click_to_proceed' => 'Click on one of options below to proceed with payment.',
-  'paypal_subscription.paypal_status' => 'PayPal Status',
-  'paypal_subscription.start_time' => 'Start time',
-  'paypal_subscription.change_mind_cancel_subscription' => 'Change your mind? Choose another plan',
-  'transaction.subscribe_to_plan' => 'Subscribe to :plan plan',
-  'paypal_subscription.status.message' => 'Message',
-  'paypal_subscription.status.message.APPROVAL_PENDING' => 'The subscription is created but not yet approved by the buyer',
-  'paypal_subscription.status.message.APPROVED' => 'The buyer has approved the subscription',
-  'paypal_subscription.status.message.ACTIVE' => 'The subscription is active',
-  'paypal_subscription.status.message.SUSPENDED' => 'The subscription is suspended',
-  'paypal_subscription.status.message.CANCELLED' => 'The subscription is cancelled',
-  'paypal_subscription.status.message.EXPIRED' => 'The subscription is expired',
-  'paypal.not_support_change_plan_yet' => 'PayPal subscription service does not support change plan yet.
-        You can only <strong>Cancel now</strong> and subscribe to other plan.',
-  'paypal.remain_amount' => 'Remain amount of current period',
-  'paypal.new_amount' => 'New plan price',
-  'paypal.not_support_set_active' => 'PayPal subscription service does not support manual set active.',
-  'paypal.not_support_asign_plan' => 'PayPal subscription service does not support manual asign plan.',
-  'payu.checkout.page_title' => 'Checkout',
-  'payu.checkout_with_payu' => 'Checkout with PayU',
-  'payu.card_list' => 'Your card information',
-  'payu.click_bellow_to_pay' => 'You are checking out <strong>:plan</strong> with PayU with <strong>:price</strong>.
-        Please click the button bellow to proceed with the payment information.',
-  'payu.checkout.tree_plan' => 'You are checking out <strong>:plan</strong> with PayU with <strong>:price</strong>.
-        Please click the button bellow to proceed.',
-  'payu.pay' => 'Pay',
-  'payu.pay_with_new_card' => 'Pay with new card',
-  'payu.pay_with_this_card' => 'Pay with this card',
-  'payu.click_or_choose_card_bellow_to_pay' => 'You are checking out <strong>:plan</strong> with PayU with <strong>:price</strong>.
-        Please choose to pay with exist card or pay with new card.',
-  'payu.change_plan_confirmation' => 'You are about to change current subscription plan to <strong>:plan</strong>.
-        Click the proceed button below to change.',
-  'payu.change_plan_proceed' => 'Proceed',
-  'payu.return_back' => 'Return back',
-  'payu.change_plan' => 'Change plan',
-  'payu.new_plan' => 'New plan',
-  'payu.amount' => 'Amount',
-  'payu.checkout.processing_payment.intro' => 'This process is automatic. Please do not close this browser/tab or change page.
-        <br> Your browser will redirect to next page shortly.',
-  'payu.checkout.processing_payment' => 'Processing your payment... please wait!',
-  'payu.cancel_new_subscription' => 'Click here to choose another plan',
-  'subscription.log.plan_change_failed' => 'Can not change to <strong>:plan</strong> plan. Error: :error',
-  'stripe.payment_error.charge_error' => '<p class="mb-3"><strong>Error!</p></strong>Something went wrong with the payment.
-        <a href=":url"><strong>Click here</strong></a> to update the payment.',
-  'braintree.payment_error.charge_error' => '<p class="mb-3"><strong>Error!</p></strong>Something went wrong with the payment.
-        <a href=":url"><strong>Click here</strong></a> to update the payment.',
-  'paypal.error.something_went_wrong' => '<p class="mb-3"><strong>Error!</p></strong>Something went wrong with transaction(s).
-        Please check the logs/transactions below for more details.',
-  'paypal_subscription.error.something_went_wrong' => '<p class="mb-3"><strong>Error!</p></strong>Something went wrong with transaction(s).
-        Please check the logs/transactions below for more details.',
-  'paypal_subscription.transaction.pending.title' => 'There is a transaction which is currently reviewing...',
-  'paypal_subscription.transaction.pending.intro' => 'The transaction `:message` is waiting for approval, your billing
-        amount is <strong>:price</strong>. Your subscription is currently reviewing by PayPal. It is going to be approved soon.
-        Please wait.',
-  'paypal_subscription.transaction.period_ends_at' => 'End date',
-  'paypal_subscription.has_transaction_pending' => 'There are pending transaction.
-        <a href=":url"><strong>Click here</strong></a> to see more details.',
-  'paypal_subscription.has_transaction_pending.change_plan' => 'You are changing to :plan plan.
-        <a href=":url"><strong>Click here</strong></a> to see more details.',
-  'paypal_subscription.cancel_new_subscription' => 'Click here to choose another plan',
-  'paypal_subscription.not_support_set_active' => 'Cannot activate subscription. User needs to complete PayPal payment process first.',
-  'paypal_subscription.not_support_approve' => 'PayPal subscription service does not support manual approve pending transaction.',
-  'transaction.paypal_subscription.remote_transaction' => '[REMOTE] Synced from remote PayPal Subscription server.',
-  'paypal_subscription.create_paypal_subscription_error' => 'Can not create PayPal subscription. Error: :error',
-  'paypal_subscription.remote_sub_not_found' => 'Could not found PayPal subscription with id: :id',
-  'subscription.log.error' => 'Something went wrong. Error: :message',
-  'paypal_subscription.remote_subscription_not_found' => 'Paypal subscription does not exist!',
-  'razorpay.checkout.page_title' => 'Checkout',
-  'razorpay.checkout_with_razorpay' => 'Checkout with Razorpay',
-  'razorpay.card_list' => 'Your card information',
-  'razorpay.click_bellow_to_pay' => 'You are checking out <strong>:plan</strong> with Razorpay with <strong>:price</strong>.
-        Please click the button bellow to proceed with the payment information.',
-  'razorpay.checkout.tree_plan' => 'You are checking out <strong>:plan</strong> with Razorpay with <strong>:price</strong>.
-        Please click the button bellow to proceed.',
-  'razorpay.pay' => 'Pay',
-  'razorpay.pay_with_new_card' => 'Pay with new card',
-  'razorpay.pay_with_this_card' => 'Pay with this card',
-  'razorpay.click_or_choose_card_bellow_to_pay' => 'You are checking out <strong>:plan</strong> with Razorpay with <strong>:price</strong>.
-        Please choose to pay with exist card or pay with new card.',
-  'razorpay.change_plan_confirmation' => 'You are about to change current subscription plan to <strong>:plan</strong>.
-        Click the proceed button below to change.',
-  'razorpay.change_plan_proceed' => 'Proceed',
-  'razorpay.return_back' => 'Return back',
-  'razorpay.change_plan' => 'Change plan',
-  'razorpay.new_plan' => 'New plan',
-  'razorpay.amount' => 'Amount',
-  'razorpay.checkout.processing_payment.intro' => 'This process is automatic. Please do not close this browser/tab or change page.
-        <br> Your browser will redirect to next page shortly.',
-  'razorpay.checkout.processing_payment' => 'Processing your payment... please wait!',
-  'razorpay.cancel_new_subscription' => 'Click here to choose another plan',
-  'razorpay.plan' => 'Plan',
-  'razorpay.next_period_day' => 'Next period end day',
-  'razorpay.checkout.intro' => 'You are checking out <strong>:plan</strong> with <strong>:price</strong>.
-        Please click the button bellow to proceed with the payment information.',
-  'razorpay.pay_with_razorpay' => 'Pay with Razorpay',
-  'razorpay.subscribe_to_plan' => 'Subscribe to plan <strong>:plan</strong>',
-  'razorpay.description' => 'Description',
-  'razorpay.renew_proceed' => 'Proceed',
-  'razorpay.click_to_proceed' => 'Click on the button below to proceed with payment.',
-  'razorpay.change_plan_to' => 'Change from <strong>:current_plan</strong> to <strong>:new_plan</strong> plan',
-  'razorpay.renew_plan.intro' => 'You are about to renew :plan plan. Please check the renew information below before proceeding.',
-  'razorpay.renew_plan_desc' => 'Renew <strong>:plan</strong> plan',
-  'razorpay.renew_subscription' => 'Renew subscription',
-  'razorpay.change_plan.intro' => 'You are about to change <strong>:plan</strong> plan to <strong>:new_plan</strong> plan.
-        Please check the information below before proceeding.',
-  'create_transaction.failed' => 'Something went wrong when creating transaction: :message',
-  'renew.warning' => 'The subscription is going to expired soon on :date!
-        Click <a href=":link">here</a> to extend current plan.',
-  'renew_rejected' => 'Your last payment was not confirmed by us with reason: :reason. Are you sure you want to
-        make it? Click <a href=":link">HERE</a> to try again.',
-  'renew_failed_with_error' => 'Your last payment was failed with error: :error. Are you
-        sure you did make it? Click <a href=":link">HERE</a> to try again.',
-  'change_plan_rejected' => 'Your last payment was not confirmed by us with reason: :reason. Are you sure you want to
-        make it? You can change plan again.',
-  'change_plan_failed_with_error' => 'Your last payment was failed with error: :error. Are you
-        sure you did make it? You can change plan again.',
-  'change_plan_rejected_with_renew' => 'Your last payment for was rejected with reason: :reason,
-        please TRY again by clicking the CHANGE PLAN button below. Or you can now click <a href=":link">HERE</a>
-        to RENEW your current plan which is going to expire in a few days on :date',
-  'change_plan_failed_with_renew' => 'Your last payment was failed with error: :error,
-        please TRY again by clicking the CHANGE PLAN button below. Or you can now click <a href=":link">HERE</a>
-        to RENEW your current plan which is going to expire in a few days on :date',
-  'charge.something_went_wrong' => 'Something went wrong while charging: :error',
-  'renew.error' => 'Something went wrong when renewing your subscription. Please contact admin for more information.',
-  'renew.card_error' => 'Something went wrong with the payment when renewing your subscription. Error: :error.
-        <a href=":link"><strong>Click here</strong></a> to update the payment.',
-  'renew_pending' => 'You are renewing <strong>:plan</strong> plan with amount: <strong>:amount</strong>.
-        <br><a href=":url"><strong>Click here</strong></a> to see more details.',
-  'change_plan_pending' => 'You are changing to <strong>:plan</strong> plan with amount: <strong>:amount</strong>.
-        <br><a href=":url"><strong>Click here</strong></a> to see more details.',
-  'change_plan.failed' => 'Can not change plan: :error',
   'tracking_domains' => 'Tracking domains',
   'tracking_domain.created' => 'Sending domain was successfully created',
   'tracking_domain.updated' => 'Sending domain was successfully updated',
@@ -3779,31 +3214,11 @@
   'automation.subscriber.restarted' => 'Subscriber was successfully restarted within automation',
   'payment.all_available_gateways' => 'All available payment gateways',
   'payment.all_available_gateways.wording' => 'Connect with your preferred payment gateways to receive payments by your users<br>Your users can pay by cash, Debit/Credit cards, PayPal, etc.',
-  'payment.offline_payment' => 'Offline Payment',
-  'payment.offline_payment.intro' => 'Receive payments outside of the application',
-  'payment.card_payment' => 'Use Card',
-  'payment.card_payment.intro' => 'Receive payments from customer\'s card (credit, debit, master, visa,...)',
-  'payment.digital_coin' => 'Digital Coin',
-  'payment.digital_coin.intro' => 'Receive payment from a cryptocurrency like Bitcoin, Monero, ZCash, etc.',
-  'payment.paypal_payment' => 'Paypal',
-  'payment.paypal_payment.intro' => 'PayPal is the fast/safe way to send money, make an online
-      payment, receive money or set up a merchant account',
-  'payment.default_payment_gateway' => 'Default Gateways',
-  'payment.can_not_connect' => 'Can not connect to :name',
-  'payment.can_not_connect.desc' => '<p>Error: :error</p> <p class="">
-      <a class="btn btn-mc_primary mt-4" href=":link">Change setting</a><p>',
   'subscription.choose_payment_method' => 'Choose payment method',
   'subscription.choose_payment_method.intro' => 'Let select one of payment methods belows for paying your subscription',
   'subscription.no_payment_method_selected' => 'No payment method selected!',
   'subscription.select_payment' => 'Select payment',
   'current_service' => 'Gateway',
-  'payments.paystack' => 'Paystack',
-  'payments.paystack.list_intro' => 'Modern online and offline payments for Africa.
-      Paystack helps businesses in Africa get paid by anyone, anywhere in the world',
-  'payment.paystack.wording' => 'Modern online and offline payments for Africa.
-      Paystack helps businesses in Africa get paid by anyone, anywhere in the world',
-  'payment.paystack.public_key' => 'Public key',
-  'payment.paystack.secret_key' => 'Secret key',
   'customer.one_time_token.generated' => 'One time token was generated',
   'token_expired' => 'Token was expired or invalid',
   'automation.trigger.icon.woo-abandoned-cart' => '',
@@ -4260,9 +3675,4 @@
   'template.categories' => 'Categories',
   'transaction.method.offline' => 'Offline',
   'transaction.method.stripe' => 'Stripe',
-  'transaction.method.braintree' => 'Braintree',
-  'transaction.method.coinpayments' => 'Coinpayments',
-  'transaction.method.paystack' => 'Paystack',
-  'transaction.method.razorpay' => 'Razorpay',
-  'transaction.method.paypal' => 'Paypal',
 ) ?>

@@ -11,7 +11,7 @@
 
     <div class="page-title">
         <ul class="breadcrumb breadcrumb-caret position-right">
-            <li><a href="{{ \Acelle\Cashier\Cashier::lr_action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
             <li class="active">{{ trans('messages.subscription') }}</li>
         </ul>
     </div>
@@ -27,11 +27,10 @@
             <h2>{!! trans('messages.invoice.pending') !!}</h2>  
 
             <div class="alert alert-info bg-grey-light">
-                
 
-                @if (request()->user()->customer->getPaymentGateway() !== null)
+                @if (request()->user()->customer->getPreferredPaymentGateway() !== null)
                     {!! trans('messages.invoice.pending.wording') !!}
-                    <a href="{{ request()->user()->customer->getPaymentGateway()->getCheckoutUrl($invoice) }}" class="btn btn-mc_primary mt-4">{{ trans('messages.payment.check_payment') }}</a>
+                    <a href="{{ request()->user()->customer->getPreferredPaymentGateway()->getCheckoutUrl($invoice) }}" class="btn btn-mc_primary mt-4">{{ trans('messages.payment.check_payment') }}</a>
                 @else
                     {!! trans('messages.invoice.pending.no_payment') !!}
                     <a href="{{ action('AccountController@editPaymentMethod', [

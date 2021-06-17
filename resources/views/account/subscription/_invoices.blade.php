@@ -26,7 +26,7 @@
                                 </td>
                                 <td>
                                     <span class="no-margin kq_search">
-                                        {!! trans('cashier::messages.subscription.log.' . $log->type, $log->getData()) !!}
+                                        {!! trans('messages.subscription.log.' . $log->type, $log->getData()) !!}
                                     </span>
                                 </td>                                
                             </tr>

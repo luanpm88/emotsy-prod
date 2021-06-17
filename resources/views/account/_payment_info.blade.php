@@ -1,9 +1,9 @@
-@if (request()->user()->customer->getPaymentGateway() !== null)
+@if (request()->user()->customer->getPreferredPaymentGateway() !== null)
     <div class="payment-box">
         <div class="header py-4 d-flex align-items-center">
             <div class="d-flex align-items-center">
-                <i class="payment-icon bg-{{ request()->user()->customer->getPaymentGateway()->getType() }}"></i>
-                <span class="font-weight-semibold">{{ request()->user()->customer->getPaymentGateway()->getName() }}</span>
+                <i class="payment-icon bg-{{ request()->user()->customer->getPreferredPaymentGateway()->getType() }}"></i>
+                <span class="font-weight-semibold">{{ request()->user()->customer->getPreferredPaymentGateway()->getName() }}</span>
             </div>
             <div class="ml-auto">
                 <a href="{{ action('AccountController@removePaymentMethod') }}" class="payment-method-remove">
@@ -14,7 +14,7 @@
         <div class="body">
             <div class="bill_info">
                 <div class="line d-flex my-2">
-                    {{ request()->user()->customer->getPaymentGateway()->getDescription() }}
+                    {{ request()->user()->customer->getPreferredPaymentGateway()->getDescription() }}
                 </div>
             </div>
         </div>

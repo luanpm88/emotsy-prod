@@ -79,24 +79,35 @@ class AccountSubscriptionController extends Controller
                     'subscription' => $subscription,
                     'invoice' => $invoice,
                 ]);
-                
             } elseif ($invoice->isPending()) {
-                return view('account.subscription.pending', [
-                    'subscription' => $subscription,
-                    'invoice' => $invoice,
-                ]);
+                if ($invoice->lastTransactionIsFailed()) {
+                    return view('account.subscription.payment', [
+                        'subscription' => $subscription,
+                        'invoice' => $invoice,
+                    ]);
+                } else {
+                    return view('account.subscription.pending', [
+                        'subscription' => $subscription,
+                        'invoice' => $invoice,
+                    ]);
+                }
             }
 
             // invoice was claimed
             elseif ($invoice->isClaimed()) {
-                return view('account.subscription.claimed', [
-                    'subscription' => $subscription,
-                    'invoice' => $invoice,
-                ]);
-            }
-
-            else {
-                throw new \Exception('There is no such case: New subscription does not have paid invoice');
+                if ($invoice->lastTransactionIsFailed()) {
+                    return view('account.subscription.payment', [
+                        'subscription' => $subscription,
+                        'invoice' => $invoice,
+                    ]);
+                } else {
+                    return view('account.subscription.claimed', [
+                        'subscription' => $subscription,
+                        'invoice' => $invoice,
+                    ]);
+                }
+            } else {
+                throw new \Exception('There is no such case: new subscription must always have ONE unpaid invoice (which is either "new" or "pending" or "claimed", and the getItsOnlyUnpaidInitInvoice() method above is supposed to throw an exception before reaching this point.');
             }
         }
 
@@ -124,7 +135,7 @@ class AccountSubscriptionController extends Controller
         $subscription = $customer->assignPlan($plan);
 
         // create init invoice
-        if (!$subscription->pendingInvoice()) {
+        if (!$subscription->unpaidInvoice()) {
             $subscription->createInitInvoice();
         }
 
@@ -144,7 +155,7 @@ class AccountSubscriptionController extends Controller
         // Get current customer
         $customer = $request->user()->customer;
         $subscription = $customer->subscription;
-        $gateway = $customer->getPaymentGateway();
+        $gateway = $customer->getPreferredPaymentGateway();
         $invoice = $subscription->getUnpaidInvoice();
 
         $invoice->checkout();
@@ -167,25 +178,38 @@ class AccountSubscriptionController extends Controller
         $subscription = $customer->subscription;
         $invoice = $subscription->getUnpaidInvoice();
 
-        // check invoice
         if ($invoice->isNew()) {
             return view('account.subscription.payment', [
                 'subscription' => $subscription,
                 'invoice' => $invoice,
             ]);
         } elseif ($invoice->isPending()) {
-            return view('account.subscription.pending', [
-                'subscription' => $subscription,
-                'invoice' => $invoice,
-            ]);
+            if ($invoice->lastTransactionIsFailed()) {
+                return view('account.subscription.payment', [
+                    'subscription' => $subscription,
+                    'invoice' => $invoice,
+                ]);
+            } else {
+                return view('account.subscription.pending', [
+                    'subscription' => $subscription,
+                    'invoice' => $invoice,
+                ]);
+            }
         }
 
         // invoice was claimed
         elseif ($invoice->isClaimed()) {
-            return view('account.subscription.claimed', [
-                'subscription' => $subscription,
-                'invoice' => $invoice,
-            ]);
+            if ($invoice->lastTransactionIsFailed()) {
+                return view('account.subscription.payment', [
+                    'subscription' => $subscription,
+                    'invoice' => $invoice,
+                ]);
+            } else {
+                return view('account.subscription.claimed', [
+                    'subscription' => $subscription,
+                    'invoice' => $invoice,
+                ]);
+            }
         }
 
         // invoice was paid
@@ -205,7 +229,7 @@ class AccountSubscriptionController extends Controller
     {
         $customer = $request->user()->customer;
         $subscription = $customer->subscription;
-        $gateway = $customer->getPaymentGateway();
+        $gateway = $customer->getPreferredPaymentGateway();
         $plans = Plan::getAvailablePlans();
         
         // Authorization

@@ -113,7 +113,7 @@ class Template extends Model implements Storable
         if ($request->category_uid) {
             $category = \Acelle\Model\TemplateCategory::findByUid($request->category_uid);
 
-            $query = $query->whereHas('categories', function($q) use($category) {
+            $query = $query->whereHas('categories', function ($q) use ($category) {
                 $q->whereIn('template_categories.id', [$category->id]);
             })->get();
         }
@@ -287,7 +287,7 @@ class Template extends Model implements Storable
         $copy->save();
 
         // categories
-        foreach($this->categories as $category) {
+        foreach ($this->categories as $category) {
             $copy->addCategory($category);
         }
 

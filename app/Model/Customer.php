@@ -1793,65 +1793,6 @@ class Customer extends Model
         return \Acelle\Model\SendingDomain::getAllActive();
     }
 
-    //====================================== BILLABLE USER INTERFACE =======================================
-
-    /**
-     * Customer get email.
-     *
-     * @return string
-     */
-    public function getBillableEmail()
-    {
-        return $this->email();
-    }
-
-    /**
-     * Customer get remote owner id.
-     *
-     * @return string
-     */
-    public function getBillableId()
-    {
-        return $this->uid;
-    }
-
-    /**
-     * Customer get local owner id.
-     *
-     * @return string
-     */
-    public function getLocalOwnerId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * Update billable owner id.
-     */
-    public function updateRemoteOwnerId($ownerId)
-    {
-        $this->remote_owner_id = $ownerId;
-        $this->save();
-    }
-
-    /**
-     * Update billable card brand.
-     */
-    public function updateBillableCardBrand($cardBrand)
-    {
-        $this->billable_card_brand = $cardBrand;
-        $this->save();
-    }
-
-    /**
-     * Update billable card last four.
-     */
-    public function updateBillableCardLastFour($cardLastFour)
-    {
-        $this->billable_card_last_four = $cardLastFour;
-        $this->save();
-    }
-
     /**
      * Get customer options.
      *
@@ -2002,7 +1943,7 @@ class Customer extends Model
         }
 
         // cancel all pending invoices (new|claimed)
-        $subscription->pendingInvoices()->delete();
+        $subscription->unpaidInvoices()->delete();
 
         // reset value
         $subscription->plan_id = $plan->id;
@@ -2182,15 +2123,32 @@ class Customer extends Model
      *
      * @var object | collect
      */
-    public function getPaymentGateway()
+    public function getPreferredPaymentGateway()
     {
         if (!$this['payment_method']) {
             return null;
         }
 
-        $paymentData = json_decode($this['payment_method'], true);
+        // For example, the user preferred method is "paddle", but paddle is no longer available
+        // Then simply return null
+        // So, in the web UI, this user does not have a preferred payment method
+        $meta = json_decode($this['payment_method'], true);
 
-        return Billing::getGateway($paymentData['method']);
+        if (!array_key_exists('method', $meta)) {
+            throw new Exception("The 'method' key is required for 'preferred payment' data");
+        }
+
+        $type = $meta['method'];
+
+        if (Billing::isGatewayTypeRegistered($type)) {
+            return Billing::getGateway($type);
+        } else {
+            throw new Exception(sprintf("User's preferred payment gateway type is '%s'. However, it is not registered in Billing Manager", $type));
+        }
+    }
+
+    public function findPaymentGatewayFromAutoBillingData()
+    {
     }
 
     /**
@@ -2200,12 +2158,7 @@ class Customer extends Model
      */
     public function supportsAutoBilling()
     {
-        $gateway = $this->getPaymentGateway();
-        if ($gateway == null) {
-            return false;
-        }
-
-        return $gateway->supportsAutoBilling();
+        throw new Exception('Do not call this method');
     }
 
     /**
