@@ -16,7 +16,7 @@ class SubscriptionPolicy
     {
         switch ($role) {
             case 'admin':
-                $can = $subscription->claimedInvoice() && !$subscription->claimedInvoice()->lastTransactionIsFailed();
+                $can = $subscription->newInvoice() && $subscription->newInvoice()->pendingTransaction();
                 break;
             case 'customer':
                 $can = false;
@@ -122,85 +122,11 @@ class SubscriptionPolicy
         return $can;
     }
 
-    // ////
-    // public function create(User $user, Subscription $subscription, $role)
-    // {
-    //     switch ($role) {
-    //         case 'admin':
-    //             $can = true;
-    //             break;
-    //         case 'customer':
-    //             $can = !isset($subscription);
-    //             break;
-    //     }
-
-    //     return $can;
-    // }
-
-    // public function subscribe(User $user, Subscription $subscription, $role)
-    // {
-    //     switch ($role) {
-    //         case 'admin':
-    //             $can = false;
-    //             break;
-    //         case 'customer':
-    //             $can = $subscription->isPending();
-    //             break;
-    //     }
-
-    //     return $can;
-    // }
-
-    // public function checkout(User $user, Subscription $subscription, $role)
-    // {
-    //     switch ($role) {
-    //         case 'admin':
-    //             $can = false;
-    //             break;
-    //         case 'customer':
-    //             $can = $subscription->isNew() || $subscription->isPending();
-    //             break;
-    //     }
-
-    //     return $can;
-    // }
-
-    // public function updateCard(User $user, Subscription $subscription, $role)
-    // {
-    //     switch ($role) {
-    //         case 'admin':
-    //             $can = false;
-    //             break;
-    //         case 'customer':
-    //             $can = $subscription->isPending();
-    //             break;
-    //     }
-
-    //     return $can;
-    // }
-
-    
-
-    // public function approvePending(User $user, Subscription $subscription, $role)
-    // {
-    //     $can = $subscription->hasError() && in_array($subscription->getError()["type"], ['renew', 'change_plan']);
-
-    //     switch ($role) {
-    //         case 'admin':
-    //             break;
-    //         case 'customer':
-    //             $can = false;
-    //             break;
-    //     }
-
-    //     return $can;
-    // }
-
     public function rejectPending(User $user, Subscription $subscription, $role)
     {
         switch ($role) {
             case 'admin':
-                $can = $subscription->claimedInvoice() && !$subscription->claimedInvoice()->lastTransactionIsFailed();
+                $can = $subscription->newInvoice() && $subscription->newInvoice()->pendingTransaction();
                 break;
             case 'customer':
                 $can = false;

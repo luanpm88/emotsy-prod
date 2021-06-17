@@ -1942,7 +1942,7 @@ class Customer extends Model
             $subscription->customer_id = $this->id;
         }
 
-        // cancel all pending invoices (new|claimed)
+        // cancel all pending invoices (new)
         $subscription->newInvoices()->delete();
 
         // reset value

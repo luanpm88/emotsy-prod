@@ -114,12 +114,10 @@
 					@endif
 					@if(
 						\Auth::user()->admin->can('cancelNow', $subscription) ||
-						// \Auth::user()->admin->can('changePlan', $subscription) ||
 						\Auth::user()->admin->can('invoices', $subscription) ||
 						\Auth::user()->admin->can('approve', $subscription) ||
-						\Auth::user()->admin->can('delete', $subscription)
-						// \Auth::user()->admin->can('approvePending', $subscription) ||
-						// \Auth::user()->admin->can('rejectPending', $subscription)
+						\Auth::user()->admin->can('delete', $subscription) ||
+						\Auth::user()->admin->can('rejectPending', $subscription)
 					)
 						<div class="btn-group">
 							
