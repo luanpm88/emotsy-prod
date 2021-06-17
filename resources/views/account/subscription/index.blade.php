@@ -28,7 +28,7 @@
     <div class="row">
         <div class="col-sm-12 col-md-8 col-lg-8">
 
-            @if ($subscription->renewInvoice() && !$subscription->renewInvoice()->isPaid() && !$subscription->customer->supportsAutoBilling())
+            @if ($subscription->renewInvoice() && $subscription->renewInvoice()->isNew())
                 @include('elements._notification', [
                     'level' => 'warning',
                     'message' => trans('messages.have_new_renew_invoice', [
@@ -37,7 +37,7 @@
                 ])
             @endif
 
-            @if ($subscription->changePlanInvoice() && !$subscription->changePlanInvoice()->isPaid())
+            @if ($subscription->changePlanInvoice() && $subscription->changePlanInvoice()->isNew())
                 @include('elements._notification', [
                     'level' => 'warning',
                     'message' => trans('messages.have_new_change_plan_invoice', [
@@ -46,10 +46,10 @@
                 ])
             @endif
 
-            @if ($subscription->getUnpaidInvoice() && $subscription->getUnpaidInvoice()->lastTransaction() && $subscription->getUnpaidInvoice()->lastTransaction()->isFailed())
+            @if ($subscription->newInvoice() && $subscription->newInvoice()->lastTransactionIsFailed())
                 @include('elements._notification', [
                     'level' => 'error',
-                    'message' => $subscription->getUnpaidInvoice()->lastTransaction()->error,
+                    'message' => $subscription->newInvoice()->lastTransaction()->error,
                 ])
             @endif
 
@@ -58,7 +58,7 @@
             <div class="sub-section">
                 @if ($subscription->isActive())
                     @if (!$subscription->cancelled())
-                        @if (\Auth::user()->customer->supportsAutoBilling())
+                        {{-- @if (\Auth::user()->customer->supportsAutoBilling())
                             <p>
                                 {!! trans('messages.subscription.current_subscription.recurring.wording', [
                                     'plan' => $plan->name,
@@ -67,7 +67,7 @@
                                     'next_on' => \Acelle\Library\Tool::formatDate($subscription->current_period_ends_at)
                                 ]) !!}
                             </p>
-                        @else
+                        @else --}}
                             <p>
                                 {!! trans('messages.subscription.current_subscription.wording', [
                                     'plan' => $plan->name,
@@ -76,7 +76,7 @@
                                     'next_on' => \Acelle\Library\Tool::formatDate($subscription->current_period_ends_at)
                                 ]) !!}
                             </p>
-                        @endif
+                        {{-- @endif --}}
                     @else
                         <p>
                             {!! trans('messages.subscription.current_subscription.cancel_at_end_of_period.wording', [

@@ -1943,7 +1943,7 @@ class Customer extends Model
         }
 
         // cancel all pending invoices (new|claimed)
-        $subscription->unpaidInvoices()->delete();
+        $subscription->newInvoices()->delete();
 
         // reset value
         $subscription->plan_id = $plan->id;
@@ -1966,15 +1966,11 @@ class Customer extends Model
     {
         $subscription = $this->subscription;
 
-        if (!is_object($subscription)) {
+        if (!$subscription) {
             return false;
         }
 
-        if ($subscription->renewInvoice() && !$subscription->renewInvoice()->isPaid() && !$subscription->customer->supportsAutoBilling()) {
-            return true;
-        }
-
-        if ($subscription->changePlanInvoice() && !$subscription->changePlanInvoice()->isPaid()) {
+        if ($subscription->newInvoice()) {
             return true;
         }
 
@@ -2149,16 +2145,6 @@ class Customer extends Model
 
     public function findPaymentGatewayFromAutoBillingData()
     {
-    }
-
-    /**
-     * Check if payment support recurring.
-     *
-     * @return boolean
-     */
-    public function supportsAutoBilling()
-    {
-        throw new Exception('Do not call this method');
     }
 
     /**

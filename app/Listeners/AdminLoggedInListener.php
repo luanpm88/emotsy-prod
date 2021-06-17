@@ -36,25 +36,8 @@ class AdminLoggedInListener
         // Check System URL
         SystemUrl::check();
 
-        // Check for pending subscriptions
-        $this->checkForClaimedSubscriptions();
-
         // Check for PHP version
         $this->checkForPhpVersion();
-    }
-
-    public function checkForClaimedSubscriptions()
-    {
-        $title = trans('messages.admin.notification.subscription.pending.title');
-        $count = Subscription::claimed()->count();
-        if ($count > 0) {
-            Notification::info([
-                'title' => $title,
-                'message' => trans('messages.admin.notification.subscription.pending', [ 'count' => $count ]),
-            ]);
-        } else {
-            Notification::cleanupDuplicateNotifications($title);
-        }
     }
 
     public function checkForPhpVersion()

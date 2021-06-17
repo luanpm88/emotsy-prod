@@ -24,6 +24,11 @@ class AutoBillingData
         ]);
     }
 
+    public function getGateway()
+    {
+        return $this->gateway;
+    }
+
     public function getData()
     {
         return $this->data['data'];

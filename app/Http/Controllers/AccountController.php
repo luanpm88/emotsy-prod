@@ -260,6 +260,7 @@ class AccountController extends Controller
     {
         // Save posted data
         if ($request->isMethod('post')) {
+            
             $gateway = Billing::getGateway($request->payment_method);
 
             $request->user()->customer->updatePaymentMethod([
