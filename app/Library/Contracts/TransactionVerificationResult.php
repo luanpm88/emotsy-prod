@@ -8,8 +8,8 @@ class TransactionVerificationResult
 	const RESULT_FAILED = 'failed';
 	const RESULT_STILL_PENDING = 'still-pending';
 
-    // chỉ dành cho Stripe
-	const RESULT_VERIFICATION_NOT_NEEDED = 'not-supported';
+    // For Stripe / PayPal / Braintree only when the service will start and finish the transaction immediately
+	const RESULT_VERIFICATION_NOT_NEEDED = 'not-needed';
 
 	public $result;
 	public $error;
