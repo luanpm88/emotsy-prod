@@ -12,7 +12,7 @@ return [
     'php_recommended' => '7.3.0',
 
     // Minimum supported PHP version
-    'php' => '7.2.5',
+    'php' => '7.3.0',
 
     'woo' => true,
 ];
