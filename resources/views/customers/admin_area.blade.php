@@ -19,52 +19,38 @@
                     <mc:flag><strong>{{ $subscription->plan->name }}</strong></mc:flag>
                 </div>
             </li>
-            @if ($subscription->isActive())
-                @if ($subscription->isRecurring())
-                    <li>
-                        <div class="unit size1of2">
-                            <strong>{{ trans('messages.subscription.status.recurring') }}</strong>
-                        </div>
-                        <div class="lastUnit size1of2">
-                            <mc:flag><strong>{{ trans('messages.yes') }}</strong></mc:flag>
-                        </div>
-                    </li>
-                @else
-                    <li>
-                        <div class="unit size1of2">
-                            <strong>{{ trans('messages.subscription.status.recurring') }}</strong>
-                        </div>
-                        <div class="lastUnit size1of2">
-                            <mc:flag><strong>{{ trans('messages.no') }}</strong></mc:flag>
-                        </div>
-                    </li>
-                @endif
-            @endif
             <li>
                 <div class="unit size1of2">
                     <strong>{{ trans('messages.status') }}</strong>
                 </div>
                 <div class="lastUnit size1of2">
                     <mc:flag>
-                        @if (!$subscription->isActive())
-							@if ($subscription->isEnded())
-								<span class="label label-flat bg-cancelled">{{ trans('messages.subscription.status.ended') }}</span>
-							@elseif ($subscription->isNew())
-								<span class="label label-flat bg-new">{{ trans('messages.subscription.status.new') }}</span>
-							@elseif ($subscription->isPending())								
-								@if ($subscription->isPaymentClaimed())
-									<span class="label label-flat bg-pending">{{ trans('messages.invoice.status.claimed') }}</span>
-								@else
-									<span class="label label-flat bg-pending">{{ trans('messages.subscription.status.pending') }}</span>
-								@endif
-							@endif
-						@else
-							@if ($subscription->isRecurring())
-								<span class="label label-flat bg-info">{{ trans('messages.subscription.status.recurring') }}</span>
-							@else
-								<span class="label label-flat bg-active">{{ trans('messages.subscription.status.active') }}</span>
-							@endif
-						@endif
+                        @switch($subscription->status)
+                            @case(Acelle\Model\Subscription::STATUS_ACTIVE)
+                                <span style="cursor:pointer"
+                                    class=" label bg-success"
+                                >
+                                    {{ trans('messages.subscription.status.active') }}
+                                </span>
+
+                                @break
+                            @case(Acelle\Model\Subscription::STATUS_NEW)
+                                @if ($subscription->newInvoice())
+                                    <span style="cursor:pointer"
+                                        class="label bg-m-warning"
+                                    >
+                                        {{ trans('messages.subscription.status.wait_for_payment') }}
+                                    </span>	
+                                @endif
+                                
+                                @break
+                            @default
+                                <span style="cursor:pointer"
+                                    class="label bg-{{ $subscription->status }}"
+                                >
+                                    {{ trans('messages.subscription.status.' . $subscription->status) }}
+                                </span>
+                        @endswitch
                     </mc:flag>
                 </div>
             </li>

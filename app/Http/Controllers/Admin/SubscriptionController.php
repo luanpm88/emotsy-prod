@@ -102,7 +102,7 @@ class SubscriptionController extends Controller
         }
 
         try {
-            // approve last claimed invoice ~ pay last invoice
+            // approve last new invoice ~ pay last invoice
             $subscription->newInvoice()->approve();
         } catch (\Exception $e) {
             return response()->json([
@@ -224,7 +224,7 @@ class SubscriptionController extends Controller
             
             // try reject
             try {
-                $subscription->claimedInvoice()->reject($request->reason);
+                $subscription->renewInvoice()->reject($request->reason);
             } catch (\Exception $ex) {
                 $validator->errors()->add('reason', $ex->getMessage());
                 

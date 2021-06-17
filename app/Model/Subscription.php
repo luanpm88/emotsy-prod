@@ -179,19 +179,6 @@ class Subscription extends Model
     }
 
     /**
-     * Get claimed invoice.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function claimedInvoice()
-    {
-        return $this->invoices()
-            ->orderBy('created_at', 'desc')
-            ->where('status', Invoice::STATUS_CLAIMED)
-            ->first();
-    }
-
-    /**
      * Create init invoice.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -725,7 +712,7 @@ class Subscription extends Model
         // set status = ended
         $this->setEnded();
 
-        // cancel all pending invoices (new|claimed)
+        // cancel all pending invoices (new)
         $this->newInvoices()->delete();
 
         // add log

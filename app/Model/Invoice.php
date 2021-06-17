@@ -243,7 +243,7 @@ class Invoice extends Model
      */
     public function approve()
     {
-        // for only new|claimed invoice
+        // for only new invoice
         if (!$this->isNew() || !$this->pendingTransaction()) {
             throw new \Exception("Trying to approve an invoice that is not NEW and has pending transaction (Invoice ID: {$this->id}, status: {$this->status}");
         }
@@ -259,7 +259,7 @@ class Invoice extends Model
      */
     public function reject($error)
     {
-        // for only new|claimed invoice
+        // for only new invoice
         if (!$this->isNew() || !$this->pendingTransaction()) {
             throw new \Exception("Trying to approve an invoice that is not NEW and has pending transaction (Invoice ID: {$this->id}, status: {$this->status}");
         }
@@ -275,7 +275,7 @@ class Invoice extends Model
      */
     public function fulfill()
     {
-        // set status as claimed
+        // set status as paid
         $this->setPaid();
 
         // set transaction as success
@@ -471,8 +471,6 @@ class Invoice extends Model
     {
         return in_array($this->status, [
             self::STATUS_NEW,
-            self::STATUS_PENDING,
-            self::STATUS_CLAIMED,
         ]);
     }
 
