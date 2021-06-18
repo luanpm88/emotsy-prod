@@ -74,8 +74,6 @@ class BillingManager
         return $list;
     }
 
-    
-
     /**
      * Enable payment gateway.
      *
@@ -98,5 +96,16 @@ class BillingManager
         $gateways = json_decode(Setting::get('gateways'), true);
         $gateways = array_diff($gateways, [$gatewayType]);
         Setting::set('gateways', json_encode($gateways));
+    }
+    
+    public function isGatewayEnabled($gateway) : bool
+    {
+        foreach ($this->getEnabledPaymentGateways() as $gw) {
+            if ($gw->getType() == $gateway->getType()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
