@@ -199,12 +199,12 @@ class TemplateController extends Controller
             ], 403);
         }
 
-        $items = Template::whereIn('uid', explode(',', $request->uids));
+        $templates = Template::whereIn('uid', explode(',', $request->uids));
 
-        foreach ($items->get() as $item) {
+        foreach ($templates->get() as $template) {
             // authorize
-            if ($request->user()->customer->can('delete', $item)) {
-                $item->delete();
+            if ($request->user()->customer->can('delete', $template)) {
+                $template->deleteAndCleanup();
             }
         }
 

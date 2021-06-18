@@ -200,10 +200,10 @@ class TemplateController extends Controller
 
         $items = \Acelle\Model\Template::whereIn('uid', explode(',', $request->uids));
 
-        foreach ($items->get() as $item) {
+        foreach ($templates->get() as $template) {
             // authorize
-            if ($request->user()->admin->can('delete', $item)) {
-                $item->delete();
+            if ($request->user()->customer->can('delete', $template)) {
+                $template->deleteAndCleanup();
             }
         }
 

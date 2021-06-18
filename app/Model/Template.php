@@ -72,11 +72,6 @@ class Template extends Model implements Storable
             $uid = uniqid();
             $item->uid = $uid;
         });
-
-        static::deleted(function ($item) {
-            $uploaded_dir = $item->getStoragePath();
-            \Acelle\Library\Tool::xdelete($uploaded_dir);
-        });
     }
 
     /**
@@ -940,5 +935,16 @@ class Template extends Model implements Storable
         if (isset($attributes['category'])) {
             $attributes['category']->templates()->attach($template->id);
         }
+    }
+
+    public function clearStorage()
+    {
+        \Acelle\Library\Tool::xdelete($this->getStoragePath());
+    }
+
+    public function deleteAndCleanup()
+    {
+        $this->clearStorage();
+        $this->delete();
     }
 }

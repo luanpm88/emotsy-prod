@@ -127,7 +127,7 @@ abstract class AbsCampaign extends Model
         
         // remove exist template
         if ($this->template) {
-            $this->template->delete();
+            $this->template->deleteAndCleanup();
         }
 
         $this->template_id = $campaignTemplate->id;
