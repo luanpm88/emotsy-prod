@@ -156,7 +156,7 @@ class Transaction extends Model
         }
     }
 
-    public function needApproval()
+    public function allowManualReviewingOfTransaction()
 	{
 		if (!Billing::isGatewayRegistered($this->method)) {
 			throw new \Exception('Gateway for ' . $this->method . ' is not registered!');
@@ -164,6 +164,6 @@ class Transaction extends Model
 
 		$gateway = Billing::getGateway($this->method);
 
-		return $gateway->needApproval();
+		return $gateway->allowManualReviewingOfTransaction();
 	}
 }

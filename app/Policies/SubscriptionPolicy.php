@@ -18,7 +18,7 @@ class SubscriptionPolicy
             case 'admin':
                 $can = $subscription->newInvoice() && 
                     $subscription->newInvoice()->getPendingTransaction() && 
-                    $subscription->newInvoice()->getPendingTransaction()->needApproval();
+                    $subscription->newInvoice()->getPendingTransaction()->allowManualReviewingOfTransaction();
                 break;
             case 'customer':
                 $can = false;
@@ -130,7 +130,7 @@ class SubscriptionPolicy
             case 'admin':
                 $can = $subscription->newInvoice() && 
                     $subscription->newInvoice()->getPendingTransaction() && 
-                    $subscription->newInvoice()->getPendingTransaction()->needApproval();
+                    $subscription->newInvoice()->getPendingTransaction()->allowManualReviewingOfTransaction();
                 break;
             case 'customer':
                 $can = false;
