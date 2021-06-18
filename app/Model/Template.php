@@ -880,13 +880,20 @@ class Template extends Model implements Storable
      */
     public function changeTemplate($template)
     {
-        \Acelle\Library\Tool::xcopy($template->getUploadDir(), $this->getUploadDir());
         $this->content = $template->content;
-        $this->image = $template->image;
-        // replace image url
-        $this->content = str_replace($template->getUploadUri(), $this->getUploadUri(), $this->content);
-        $this->untransform();
         $this->save();
+
+        // delete current template folder
+        \Acelle\Library\Tool::xdelete($this->getStoragePath());
+        
+        // Copy uploaded folder
+        if (file_exists($this->getStoragePath())) {
+            if (!file_exists($this->getStoragePath())) {
+                mkdir($this->getStoragePath(), 0777, true);
+            }
+
+            \Acelle\Library\Tool::xcopy($template->getStoragePath(), $this->getStoragePath());
+        }
     }
 
     /**
