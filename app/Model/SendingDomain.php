@@ -273,7 +273,8 @@ class SendingDomain extends Model
      */
     public function getQuotedSpf()
     {
-        return sprintf('%s', doublequote($this->getSpf()));
+        // If a "spf" setting is available, it will take precedence
+        return Setting::get('spf') ?: sprintf('%s', doublequote($this->getSpf()));
     }
 
     /**
@@ -465,9 +466,13 @@ class SendingDomain extends Model
      */
     public function verifySpf()
     {
-        $host = null;
+        // There are 3 possible SPF and they will be taken in the following precedence
+        // + Setting
+        // + Server related
+        // + Domain
+        $host = Setting::get('spf');
 
-        if (!is_null($this->sendingServer)) {
+        if (is_null($host) && !is_null($this->sendingServer)) {
             $host = $this->sendingServer->mapType()->getSpfHost();
         }
 
