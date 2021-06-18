@@ -451,11 +451,6 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
-            'system.payment_gateway' => [
-                'cat' => 'others',
-                'value' => '',
-                'type' => 'text',
-            ],
             'end_period_last_days' => [
                 'cat' => 'payment',
                 'value' => '10',
@@ -725,29 +720,5 @@ class Setting extends Model
 
             self::set($setting, $value);
         }
-    }
-
-    /**
-     * Enable payment gateway.
-     *
-     * @var void
-     */
-    public static function enablePaymentGateway($gatewayType)
-    {
-        $gateways = json_decode(self::get('gateways'), true);
-        $gateways = array_merge($gateways, [$gatewayType]);
-        Setting::set('gateways', json_encode($gateways));
-    }
-    
-    /**
-     * Disable payment gateway.
-     *
-     * @var void
-     */
-    public static function disablePaymentGateway($gatewayType)
-    {
-        $gateways = json_decode(self::get('gateways'), true);
-        $gateways = array_diff($gateways, [$gatewayType]);
-        Setting::set('gateways', json_encode($gateways));
     }
 }

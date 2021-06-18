@@ -73,4 +73,30 @@ class BillingManager
         }
         return $list;
     }
+
+    
+
+    /**
+     * Enable payment gateway.
+     *
+     * @var void
+     */
+    public static function enablePaymentGateway($gatewayType)
+    {
+        $gateways = json_decode(Setting::get('gateways'), true);
+        $gateways = array_merge($gateways, [$gatewayType]);
+        Setting::set('gateways', json_encode($gateways));
+    }
+    
+    /**
+     * Disable payment gateway.
+     *
+     * @var void
+     */
+    public static function disablePaymentGateway($gatewayType)
+    {
+        $gateways = json_decode(Setting::get('gateways'), true);
+        $gateways = array_diff($gateways, [$gatewayType]);
+        Setting::set('gateways', json_encode($gateways));
+    }
 }
