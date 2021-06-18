@@ -66,7 +66,7 @@ class BillingManager
         $enabledTypes = json_decode(Setting::get('gateways'));
         $list = [];
 
-        foreach($enabledTypes as $t) {
+        foreach ($enabledTypes as $t) {
             if ($this->isGatewayRegistered($t)) {
                 $list[] = $this->getGateway($t);
             }

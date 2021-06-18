@@ -479,32 +479,28 @@ class Invoice extends Model
     {
         $invoice = $this;
         // \DB::transaction(function() use ($gateway, $invoice) {
-            $invoice->addPendingTransaction($gateway);
+        $invoice->addPendingTransaction($gateway);
 
-            try {
-                $result = $payCallback($invoice);
+        try {
+            $result = $payCallback($invoice);
 
-                if ($result->isDone()) {
-                    // Stripe, PayPal, Braintree for example
-                    $invoice->fulfill();
-
-                } elseif ( $result->isFailed() ) {
-                    // Stripe, PayPal, Braintree for example
-                    $invoice->payFailed($result->error);
-
-                } elseif ( $result->isStillPending() ) {
-                    // Wait more, check again later....
+            if ($result->isDone()) {
+                // Stripe, PayPal, Braintree for example
+                $invoice->fulfill();
+            } elseif ($result->isFailed()) {
+                // Stripe, PayPal, Braintree for example
+                $invoice->payFailed($result->error);
+            } elseif ($result->isStillPending()) {
+                // Wait more, check again later....
                     // Coinpayment, offline
-                } elseif ( $result->isVerificationNotNeeded() ) {
-                    // Do nothing, just wait for the service to finish it itself (Stripe)
+            } elseif ($result->isVerificationNotNeeded()) {
+                // Do nothing, just wait for the service to finish it itself (Stripe)
                     // Service should not return this status, it is used for verification only
-                }
-                
-            } catch (\Exception $e) {
-                // pay failed
-                $invoice->payFailed($e->getMessage());
             }
+        } catch (\Exception $e) {
+            // pay failed
+            $invoice->payFailed($e->getMessage());
+        }
         // });
-        
     }
 }

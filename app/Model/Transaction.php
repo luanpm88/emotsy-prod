@@ -139,31 +139,29 @@ class Transaction extends Model
             if ($result->isDone()) {
                 // Coin only
                 $invoice->fulfill();
-
-            } elseif ( $result->isFailed() ) {
+            } elseif ($result->isFailed()) {
                 // Coin only
                 $invoice->payFailed($result->error);
-
-            } elseif ( $result->isStillPending() ) {
+            } elseif ($result->isStillPending()) {
                 // Wait more, check again later.... Coin, Offline
-            } elseif ( $result->isVerificationNotNeeded() ) {
+            } elseif ($result->isVerificationNotNeeded()) {
                 // Do nothing, just wait for the service to finish it itself (Stripe)
             }
 
             return $result;
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $invoice->payFailed($e->getMessage());
         }
     }
 
     public function allowManualReviewingOfTransaction()
-	{
-		if (!Billing::isGatewayRegistered($this->method)) {
-			throw new \Exception('Gateway for ' . $this->method . ' is not registered!');
-		}
+    {
+        if (!Billing::isGatewayRegistered($this->method)) {
+            throw new \Exception('Gateway for ' . $this->method . ' is not registered!');
+        }
 
-		$gateway = Billing::getGateway($this->method);
+        $gateway = Billing::getGateway($this->method);
 
-		return $gateway->allowManualReviewingOfTransaction();
-	}
+        return $gateway->allowManualReviewingOfTransaction();
+    }
 }
