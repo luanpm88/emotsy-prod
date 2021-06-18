@@ -18,7 +18,7 @@ class Transaction extends Model
      * @var array
      */
     protected $fillable = [
-        'message', 'error', 'status'
+        'error', 'status'
     ];
 
     /**
