@@ -22,5 +22,5 @@ interface PaymentGatewayInterface
     public function verify(Transaction $transaction) : TransactionVerificationResult;
 
     // 
-    public function needApproval() : bool;
+    public function allowManualReviewingOfTransaction() : bool;
 }
