@@ -39,7 +39,7 @@ class PaymentController extends Controller
     public function enable(Request $request, $name)
     {
         // enable gateway
-        Setting::enablePaymentGateway($name);
+        Billing::enablePaymentGateway($name);
 
         $request->session()->flash('alert-success', trans('messages.payment_gateway.updated'));
         return redirect()->action('Admin\PaymentController@index');
@@ -56,7 +56,7 @@ class PaymentController extends Controller
     public function disable(Request $request, $name)
     {
         // disable gateway
-        Setting::disablePaymentGateway($name);
+        Billing::disablePaymentGateway($name);
 
         $request->session()->flash('alert-success', trans('messages.payment_gateway.updated'));
         return redirect()->action('Admin\PaymentController@index');
