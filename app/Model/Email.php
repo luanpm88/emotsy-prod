@@ -283,7 +283,7 @@ class Email extends Model
      */
     public function uploadTemplate($request)
     {
-        $template = \Acelle\Model\Template::upload($request);
+        $template = \Acelle\Model\Template::uploadTemplate($request);
         $this->copyFromTemplate($template);
     }
 

@@ -161,7 +161,7 @@ class TemplateController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function upload(Request $request)
+    public function uploadTemplate(Request $request)
     {
         // authorize
         if (!$request->user()->customer->can('create', Template::class)) {
@@ -170,7 +170,7 @@ class TemplateController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
-            $template = Template::upload($request);
+            $template = Template::uploadTemplate($request);
 
             if (!empty(Setting::get('storage.s3'))) {
                 App::make('xstore')->store($template);
@@ -357,7 +357,7 @@ class TemplateController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function builderAsset(Request $request, $uid)
+    public function uploadTemplateAssets(Request $request, $uid)
     {
         $template = Template::findByUid($uid);
         

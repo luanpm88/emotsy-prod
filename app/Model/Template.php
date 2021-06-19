@@ -358,7 +358,15 @@ class Template extends Model implements Storable
     /**
      * Upload a template.
      */
-    public static function upload($request, $asAdmin = false)
+    public static function uploadSystemTemplate($request)
+    {
+        return self::uploadTemplate($request, true);
+    }
+
+    /**
+     * Upload a template.
+     */
+    public static function uploadTemplate($request, $asAdmin = false)
     {
         $user = $request->user();
 
@@ -487,7 +495,7 @@ class Template extends Model implements Storable
 
     public function getAdminStoragePath($path = '')
     {
-        $base = storage_path('app/users/admin');
+        $base = storage_path('app/system');
 
         if (!\File::exists($base)) {
             \File::makeDirectory($base, 0777, true, true);

@@ -332,7 +332,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('templates/builder/templates/{category_uid?}', 'TemplateController@builderTemplates');
     Route::post('templates/builder/create', 'TemplateController@builderCreate');
     Route::get('templates/builder/create', 'TemplateController@builderCreate');
-    Route::post('templates/{uid}/builder/edit/asset', 'TemplateController@builderAsset');
+    Route::post('templates/{uid}/builder/edit/asset', 'TemplateController@uploadTemplateAssets');
     Route::get('templates/{uid}/builder/edit/content', 'TemplateController@builderEditContent');
     Route::post('templates/{uid}/builder/edit', 'TemplateController@builderEdit');
     Route::get('templates/{uid}/builder/edit', 'TemplateController@builderEdit');
@@ -341,8 +341,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('templates/{uid}/copy', 'TemplateController@copy');
     Route::get('templates/listing/{page?}', 'TemplateController@listing');
     Route::get('templates/choosing/{campaign_uid}/{page?}', 'TemplateController@choosing');
-    Route::get('templates/upload', 'TemplateController@upload');
-    Route::post('templates/upload', 'TemplateController@upload');
+    Route::get('templates/upload', 'TemplateController@uploadTemplate');
+    Route::post('templates/upload', 'TemplateController@uploadTemplate');
     Route::get('templates/{uid}/preview', 'TemplateController@preview');
     Route::get('templates/delete', 'TemplateController@delete');
     Route::resource('templates', 'TemplateController');
@@ -649,7 +649,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/templates/builder/templates/{category_uid}', 'TemplateController@builderTemplates');
     Route::post('admin/templates/builder/create', 'TemplateController@builderCreate');
     Route::get('admin/templates/builder/create', 'TemplateController@builderCreate');
-    Route::post('admin/templates/{uid}/builder/edit/asset', 'TemplateController@builderAsset');
+    Route::post('admin/templates/{uid}/builder/edit/asset', 'TemplateController@uploadTemplateAssets');
     Route::get('admin/templates/{uid}/builder/edit/content', 'TemplateController@builderEditContent');
     Route::post('admin/templates/{uid}/builder/edit', 'TemplateController@builderEdit');
     Route::get('admin/templates/{uid}/builder/edit', 'TemplateController@builderEdit');
@@ -658,8 +658,8 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/templates/{uid}/copy', 'TemplateController@copy');
     Route::get('admin/templates/{uid}/preview', 'TemplateController@preview');
     Route::get('admin/templates/listing/{page?}', 'TemplateController@listing');
-    Route::get('admin/templates/upload', 'TemplateController@upload');
-    Route::post('admin/templates/upload', 'TemplateController@upload');
+    Route::get('admin/templates/upload', 'TemplateController@uploadTemplate');
+    Route::post('admin/templates/upload', 'TemplateController@uploadTemplate');
     Route::get('admin/templates/delete', 'TemplateController@delete');
     Route::resource('admin/templates', 'TemplateController');
     Route::get('admin/templates/{uid}/edit', 'TemplateController@edit');

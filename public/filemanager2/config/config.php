@@ -88,12 +88,17 @@ class Uidd
 
         // Make folder if not exist
         $paths = [
-        storage_path('/app/users'),
-        storage_path('/app/users/' . $user_uid),
-        storage_path('/app/users/' . $user_uid . '/home'),
-        storage_path('/app/users/' . $user_uid . '/home/files'),
-        storage_path('/app/users/' . $user_uid . '/home/thumbs'),
-    ];
+            storage_path('/app/users'),
+            storage_path('/app/users/' . $user_uid),
+            storage_path('/app/users/' . $user_uid . '/home'),
+            storage_path('/app/users/' . $user_uid . '/home/files'),
+            storage_path('/app/users/' . $user_uid . '/home/thumbs'),
+
+            storage_path('/app/system'),
+            storage_path('/app/system/home'),
+            storage_path('/app/system/home/files'),
+            storage_path('/app/system/home/thumbs'),
+        ];
         foreach ($paths as $path) {
             if (!file_exists($path)) {
                 mkdir($path, 0777, true);
@@ -101,11 +106,11 @@ class Uidd
         }
 
         return [
-        "user_uid" => $user_uid,
-        "max_size_upload_total" => $max_size_upload_total,
-        "max_file_size_upload" => $max_file_size_upload,
-        "storage_path" => storage_path('/app/users/' . $user_uid . '/home'),
-    ];
+            "user_uid" => $user_uid,
+            "max_size_upload_total" => $max_size_upload_total,
+            "max_file_size_upload" => $max_file_size_upload,
+            "storage_path" => storage_path('/app/users/' . $user_uid . '/home'),
+        ];
     }
 }
 
@@ -123,6 +128,14 @@ $base_r_url = str_replace("filemanager2/dialog.php", "", str_replace($base_url, 
 // echo $base_url;
 // echo $base_r_url;
 // die();
+
+
+$l_upload_dir = $base_r_url . '/files/' . $user_uid . "/";
+$l_thumb_dir = $base_r_url . '/files/thumbs/' . $user_uid . "/";
+$l_current_path = '../../storage/app/users/' . $user_uid . '/home/files/';
+$l_thumbs_base_path = '../../storage/app/users/' . $user_uid . '/home/thumbs/';
+$l_thumbs_upload_dir = $base_r_url . '/files/thumbs/' . $user_uid . "/";
+
 $config = array(
 
     /*
@@ -142,8 +155,8 @@ $config = array(
     | with start and final /
     |
     */
-    'upload_dir' => $base_r_url . '/files/' . $user_uid . "/",
-    'thumb_dir' => $base_r_url . '/files/thumbs/' . $user_uid . "/",
+    'upload_dir' => $l_upload_dir,
+    'thumb_dir' => $l_thumb_dir,
     /*
     |--------------------------------------------------------------------------
     | relative path from filemanager folder to upload folder
@@ -152,7 +165,7 @@ $config = array(
     | with final /
     |
     */
-    'current_path' => '../../storage/app/users/' . $user_uid . '/home/files/',
+    'current_path' => $l_current_path,
 
     /*
     |--------------------------------------------------------------------------
@@ -163,7 +176,7 @@ $config = array(
     | DO NOT put inside upload folder
     |
     */
-    'thumbs_base_path' => '../../storage/app/users/' . $user_uid . '/home/thumbs/',
+    'thumbs_base_path' => $l_thumbs_base_path,
 
     /*
     |--------------------------------------------------------------------------
@@ -174,7 +187,7 @@ $config = array(
     | DO NOT put inside upload folder
     |
     */
-    'thumbs_upload_dir' => $base_r_url . 'thumbs/' . $user_uid . "/",
+    'thumbs_upload_dir' => $l_thumbs_upload_dir,
 
     /*
     |--------------------------------------------------------------------------

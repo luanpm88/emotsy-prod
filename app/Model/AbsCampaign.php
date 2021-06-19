@@ -2603,7 +2603,7 @@ abstract class AbsCampaign extends Model
      */
     public function getStoragePath($path = '')
     {
-        return storage_path('app/users/'.$this->customer->uid.'/campaigns/'.$this->uid.'/'.$path);
+        return $this->customer->user->getStoragePath(join_paths('campaigns', $this->uid, $path));
     }
 
     /**

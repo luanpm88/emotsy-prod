@@ -159,7 +159,7 @@ class TemplateController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function upload(Request $request)
+    public function uploadTemplate(Request $request)
     {
         // authorize
         if (!$request->user()->admin->can('create', Template::class)) {
@@ -169,7 +169,7 @@ class TemplateController extends Controller
         // validate and save posted data
         if ($request->isMethod('post')) {
             $asAdmin = true;
-            $template = Template::upload($request, $asAdmin);
+            $template = Template::uploadSystemTemplate($request, $asAdmin);
 
             if (!empty(Setting::get('storage.s3'))) {
                 App::make('xstore')->store($template);
@@ -357,7 +357,7 @@ class TemplateController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function builderAsset(Request $request, $uid)
+    public function uploadTemplateAssets(Request $request, $uid)
     {
         $template = Template::findByUid($uid);
         
