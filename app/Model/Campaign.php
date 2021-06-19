@@ -2972,16 +2972,13 @@ class Campaign extends Model
      */
     public function uploadAttachment($file)
     {
-        $file_name = $file->getClientOriginalName();
-
-        $new_name = $file_name;
-
+        $filename = $file->getClientOriginalName();
         $path = $file->move(
             $this->getAttachmentPath(),
-            $new_name
+            $filename
         );
 
-        return $this->getAttachmentPath().$new_name;
+        return $this->getAttachmentPath().$filename;
     }
 
     /**
