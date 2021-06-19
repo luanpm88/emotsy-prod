@@ -366,8 +366,6 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('campaigns/{uid}/template/content', 'CampaignController@templateContent');
     Route::match(['get', 'post'], 'campaigns/{uid}/template/edit', 'CampaignController@templateEdit');
     Route::match(['get', 'post'], 'campaigns/{uid}/template/upload', 'CampaignController@templateUpload');
-    Route::get('campaigns/{uid}/template/theme/list', 'CampaignController@templateThemeList');
-    Route::match(['get', 'post'], 'campaigns/{uid}/template/theme', 'CampaignController@templateTheme');
     Route::get('campaigns/{uid}/template/layout/list', 'CampaignController@templateLayoutList');
     Route::match(['get', 'post'], 'campaigns/{uid}/template/layout', 'CampaignController@templateLayout');
     Route::get('campaigns/{uid}/template/create', 'CampaignController@templateCreate');

@@ -5,11 +5,7 @@
         <div class="col-md-12">
             <h2>{{ trans('messages.campaign.upload_custom_template') }}</h2>
                 
-            <ul class="nav nav-tabs mc-nav campaign-template-tabs">
-                <li><a href="{{ action('CampaignController@templateLayout', $campaign->uid) }}">Layouts</a></li>
-                <li><a href="{{ action('CampaignController@templateTheme', $campaign->uid) }}">Themes</a></li>
-                <li class="active"><a href="{{ action('CampaignController@templateUpload', $campaign->uid) }}">Upload</a></li>
-            </ul>
+            @include('campaigns.template._tabs')
             
             <div class="alert alert-info">
                 {!! trans('messages.template_upload_guide', ["link" => 'https://s3.amazonaws.com/acellemail/newsletter-template-green.zip']) !!}
@@ -31,7 +27,7 @@
     </div>
         
     <script>
-        $('.campaign-template-tabs a').click(function(e) {
+        $('a.choose-template-tab').click(function(e) {
             e.preventDefault();
         
             var url = $(this).attr('href');
