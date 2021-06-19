@@ -114,17 +114,6 @@ class PluginController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function delete(Request $request)
     {
         $items = \Acelle\Model\Plugin::whereIn('uid', explode(',', $request->uids));

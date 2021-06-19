@@ -267,17 +267,6 @@ class AdminController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-    }
-
     public function select2(Request $request)
     {
         $result = [['id' => '1', 'text' => 'One'], ['id' => '2', 'text' => 'Two']];
