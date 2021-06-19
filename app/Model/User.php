@@ -62,7 +62,7 @@ class User extends Authenticatable
      */
     public function customer()
     {
-        return $this->hasOne('Acelle\Model\Customer');
+        return $this->belongsTo('Acelle\Model\Customer');
     }
 
     public function admin()

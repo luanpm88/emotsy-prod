@@ -143,7 +143,7 @@ class Customer extends Model
 
     public function user()
     {
-        return $this->belongsTo('Acelle\Model\User');
+        return $this->hasOne('Acelle\Model\User');
     }
 
     public function admin()
