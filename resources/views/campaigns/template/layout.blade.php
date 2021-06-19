@@ -40,7 +40,7 @@
 														<option value="mine">{{ trans('messages.my_templates') }}</option>
 														<option value="gallery">{{ trans('messages.gallery') }}</option>
 													</select>
-													<input name="search_keyword ml-3" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
+													<input name="search_keyword ml-3" style="margin-left: 15px" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
 													<i class="icon-search4 keyword_search_button"></i>
 												</span>
 											</div>
