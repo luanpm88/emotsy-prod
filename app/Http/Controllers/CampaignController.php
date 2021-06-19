@@ -20,6 +20,7 @@ use Acelle\Model\Campaign;
 use Acelle\Model\IpLocation;
 use Acelle\Model\ClickLog;
 use Acelle\Model\OpenLog;
+use Acelle\Model\TemplateCategory;
 use Acelle\Library\Rss;
 use DB;
 
@@ -387,6 +388,11 @@ class CampaignController extends Controller
     public function templateLayout(Request $request)
     {
         $campaign = Campaign::findByUid($request->uid);
+        if ($request->category_uid) { 
+            $category = TemplateCategory::findByUid($request->category_uid);
+        } else {
+            $category = TemplateCategory::first();
+        }
 
         // authorize
         if (\Gate::denies('update', $campaign)) {
@@ -410,6 +416,37 @@ class CampaignController extends Controller
 
         return view('campaigns.template.layout', [
             'campaign' => $campaign,
+            'category' => $category,
+        ]);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function templateLayoutList(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+
+        // from
+        if ($request->from == 'mine') {
+            $templates = $request->user()->customer->templates();
+        } elseif ($request->from == 'gallery') {
+            $templates = Template::shared();
+        } else {
+            $templates = Template::shared()
+                ->orWhere('customer_id', '=', $request->user()->customer->id);
+        }
+
+        $templates = $templates->search($request->keyword)
+            ->filter($request)
+            ->orderBy($request->sort_order, $request->sort_direction)
+            ->paginate($request->per_page);
+
+        return view('campaigns.template.layoutList', [
+            'campaign' => $campaign,
+            'templates' => $templates,
         ]);
     }
 
@@ -495,94 +532,6 @@ class CampaignController extends Controller
 
         return view('campaigns.template.content', [
             'content' => $campaign->getParsedContent(),
-        ]);
-    }
-
-    /**
-     * Create template from theme.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function templateTheme(Request $request)
-    {
-        $campaign = Campaign::findByUid($request->uid);
-
-        // authorize
-        if (\Gate::denies('update', $campaign)) {
-            return $this->notAuthorized();
-        }
-
-        if ($request->isMethod('post')) {
-            $template = \Acelle\Model\Template::findByUid($request->template);
-            $campaign->setTemplate($template);
-
-            // update plain
-            $campaign->updatePlainFromHtml();
-
-            // return redirect()->action('CampaignController@templateEdit', $campaign->uid);
-            return response()->json([
-                'status' => 'success',
-                'message' => trans('messages.campaign.theme.selected'),
-                'url' => action('CampaignController@templateBuilderSelect', $campaign->uid),
-            ]);
-        }
-
-        return view('campaigns.template.theme', [
-            'campaign' => $campaign,
-        ]);
-    }
-
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function templateLayoutList(Request $request)
-    {
-        $campaign = Campaign::findByUid($request->uid);
-
-        $templates = Template::shared()->search($request->keyword)
-            ->filter($request)
-            ->orderBy($request->sort_order, $request->sort_direction)
-            ->paginate($request->per_page);
-
-        return view('campaigns.template.layoutList', [
-            'campaign' => $campaign,
-            'templates' => $templates,
-        ]);
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function templateThemeList(Request $request)
-    {
-        $campaign = Campaign::findByUid($request->uid);
-
-        // from
-        if ($request->from == 'mine') {
-            $templates = $request->user()->customer->templates();
-        } elseif ($request->from == 'gallery') {
-            $templates = Template::shared();
-        } else {
-            $templates = Template::shared()
-                ->orWhere('customer_id', '=', $request->user()->customer->id);
-        }
-
-        // sort, pagination
-        $templates = $templates->search($request->keyword)
-            ->filter($request)
-            ->orderBy($request->sort_order, $request->sort_direction)
-            ->paginate($request->per_page);
-
-        return view('campaigns.template.themeList', [
-            'campaign' => $campaign,
-            'templates' => $templates,
         ]);
     }
 
