@@ -512,7 +512,7 @@ class Admin extends Model
      *
      * @return bool
      */
-    public function deleteRecursive()
+    public function deleteAccount()
     {
         // unset all customers
         $this->customers()->update(['admin_id' => null]);

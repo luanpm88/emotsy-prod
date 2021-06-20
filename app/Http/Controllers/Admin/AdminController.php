@@ -341,7 +341,7 @@ class AdminController extends Controller
         }
 
         foreach ($items->get() as $item) {
-            $item->deleteRecursive();
+            $item->deleteAccount();
         }
 
         // Redirect to my lists page
