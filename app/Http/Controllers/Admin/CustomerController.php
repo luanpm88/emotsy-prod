@@ -71,10 +71,11 @@ class CustomerController extends Controller
 
         if (!empty($request->old())) {
             $customer->fill($request->old());
-            // User info
-            $customer->user = new \Acelle\Model\User();
-            $customer->user->fill($request->old());
         }
+
+        // User info
+        $customer->user = new \Acelle\Model\User();
+        $customer->user->fill($request->old());
 
         // authorize
         if (\Gate::denies('create', $customer)) {

@@ -66,12 +66,12 @@ class AdminController extends Controller
         $admin = new \Acelle\Model\Admin();
         $admin->status = 'active';
         $admin->uid = '0';
+        // User info
+        $admin->user = new \Acelle\Model\User();
 
         if (!empty($request->old())) {
             $admin->fill($request->old());
             $admin->admin_group_id = $request->old()["admin_group_id"];
-            // User info
-            $admin->user = new \Acelle\Model\User();
             $admin->user->fill($request->old());
         }
 
