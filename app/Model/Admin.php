@@ -39,30 +39,6 @@ class Admin extends Model
     ];
 
     /**
-     * The rules for validation.
-     *
-     * @var array
-     */
-    public function rules()
-    {
-        $rules = array(
-            'email' => 'required|email|unique:users,email,'.$this->user_id.',id',
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'timezone' => 'required',
-            'language_id' => 'required',
-        );
-
-        if (isset($this->id)) {
-            $rules['password'] = 'confirmed|min:5';
-        } else {
-            $rules['password'] = 'required|confirmed|min:5';
-        }
-
-        return $rules;
-    }
-
-    /**
      * Admin email.
      *
      * @return string
