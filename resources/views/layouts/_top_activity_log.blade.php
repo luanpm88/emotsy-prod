@@ -25,7 +25,7 @@
 
 					<div class="media-body">
 						<a href="#" class="media-heading">
-							<span class="text-semibold">{{ $log->customer->displayName() }}</span>
+							<span class="text-semibold">{{ $log->customer->user->displayName() }}</span>
 							<span class="media-annotation pull-right">{{ $log->created_at->diffForHumans() }}</span>
 						</a>
 

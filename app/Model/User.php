@@ -136,6 +136,16 @@ class User extends Authenticatable
     }
 
     /**
+     * Display customer name: first_name last_name.
+     *
+     * @var string
+     */
+    public function displayName()
+    {
+        return htmlspecialchars(trim($this->first_name.' '.$this->last_name));
+    }
+
+    /**
      * User activation.
      *
      * @return string

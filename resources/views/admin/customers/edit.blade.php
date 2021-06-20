@@ -1,6 +1,6 @@
 @extends('layouts.backend')
 
-@section('title', $customer->displayName())
+@section('title', $customer->user->displayName())
 	
 @section('page_script')
 	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>		
@@ -16,7 +16,7 @@
 					<li class="active">{{ trans('messages.update') }}</li>
 				</ul>
 				<h1>
-					<span class="text-semibold"><i class="icon-profile"></i> {{ $customer->displayName() }}</span>
+					<span class="text-semibold"><i class="icon-profile"></i> {{ $customer->user->displayName() }}</span>
 				</h1>
 			</div>
 				

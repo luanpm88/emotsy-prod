@@ -75,6 +75,7 @@ class AccountController extends Controller
 
         return view('admin.account.profile', [
             'admin' => $admin,
+            'user' => $request->user(),
         ]);
     }
 

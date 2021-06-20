@@ -35,7 +35,7 @@ class Admin extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'first_name', 'last_name', 'timezone', 'language_id', 'color_scheme', 'text_direction'
+        'name', 'timezone', 'language_id', 'color_scheme', 'text_direction'
     ];
 
     /**
@@ -133,16 +133,6 @@ class Admin extends Model
         static::creating(function ($item) {
             $item->uid = uniqid();
         });
-    }
-
-    /**
-     * Display admin name: first_name last_name.
-     *
-     * @var string
-     */
-    public function displayName()
-    {
-        return $this->first_name.' '.$this->last_name;
     }
 
     /**
@@ -473,8 +463,8 @@ class Admin extends Model
         $customer = new \Acelle\Model\Customer();
         $customer->admin_id = $this->id;
         $customer->language_id = $this->language_id;
-        $customer->first_name = $this->first_name;
-        $customer->last_name = $this->last_name;
+        // [moved] $customer->first_name = $this->first_name;
+        // [moved] $customer->last_name = $this->last_name;
         $customer->image = $this->image;
         $customer->timezone = $this->timezone;
         $customer->status = $this->status;

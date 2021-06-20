@@ -1023,7 +1023,7 @@ class MailList extends Model
         $message = new ExtendedSwiftMessage();
         $message->setContentType('text/html; charset=utf-8');
         $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
-        $message->setTo([ $this->customer->user->email => $this->customer->displayName()]);
+        $message->setTo([ $this->customer->user->email => $this->customer->user->displayName()]);
 
         $template = \Acelle\Model\Layout::where('alias', 'unsubscribe_notification_for_list_owner')->first();
         $htmlContent = $template->content;

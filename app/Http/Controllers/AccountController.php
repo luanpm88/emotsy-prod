@@ -76,6 +76,7 @@ class AccountController extends Controller
 
         return view('account.profile', [
             'customer' => $customer,
+            'user' => $request->user(),
         ]);
     }
 
@@ -200,6 +201,7 @@ class AccountController extends Controller
     {
         return view('account.billing', [
             'customer' => $request->user()->customer,
+            'user' => $request->user(),
         ]);
     }
     

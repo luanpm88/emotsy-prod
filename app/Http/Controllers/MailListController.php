@@ -842,7 +842,7 @@ class MailListController extends Controller
         
         $options = [];
         foreach ($customers->get() as $customer) {
-            $options[] = ['text' => $customer->displayName(), 'value' => $customer->uid];
+            $options[] = ['text' => $customer->user->displayName(), 'value' => $customer->uid];
         }
         
         return view('lists.cloneForCustomersChoose', [

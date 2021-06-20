@@ -479,9 +479,9 @@ class CustomerController extends Controller
             $contact = $customer->contact;
         } else {
             $contact = new \Acelle\Model\Contact([
-                'first_name' => $customer->first_name,
-                'last_name' => $customer->last_name,
-                'email' => $customer->user->email,
+                'first_name' => $request->user()->first_name,
+                'last_name' => $request->user()->last_name,
+                'email' => $request->user()->email,
             ]);
         }
 
@@ -561,7 +561,7 @@ class CustomerController extends Controller
                 'status' => 'success',
                 'message' => trans('messages.customer.plan.assigned', [
                     'plan' => $plan->name,
-                    'customer' => $customer->displayName(),
+                    'customer' => $customer->user->displayName(),
                 ]),
             ], 201);
         }

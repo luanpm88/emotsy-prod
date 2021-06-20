@@ -189,8 +189,8 @@ class CustomerController extends Controller
         // Customer info
         $result = [
             'uid' => $customer->uid,
-            'first_name' => $customer->first_name,
-            'last_name' => $customer->last_name,
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
             'image' => $customer->image,
             'timezone' => $customer->timezone,
             'status' => $customer->status,
@@ -340,7 +340,7 @@ class CustomerController extends Controller
 
         return \Response::json(array(
             'status' => 1,
-            'message' => 'Assigned '.$customer->displayName().' plan to '.$plan->name.' successfully.',
+            'message' => 'Assigned '.$customer->user->displayName().' plan to '.$plan->name.' successfully.',
             'customer_uid' => $customer->uid,
             'plan_uid' => $plan->uid
         ), 200);

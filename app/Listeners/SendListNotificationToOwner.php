@@ -36,7 +36,7 @@ class SendListNotificationToOwner
         if (Setting::isYes('send_notification_email_for_list_subscription')) {
             // Send notification
             Mail::to(
-                json_decode(json_encode(['email' => $user->email, 'name' => $user->customer->displayName()]))
+                json_decode(json_encode(['email' => $user->email, 'name' => $user->displayName()]))
             )->send(
                 new MailListSubscriptionNotificationMailer($subscriber)
             );

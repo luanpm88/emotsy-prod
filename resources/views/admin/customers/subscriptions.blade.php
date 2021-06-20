@@ -1,6 +1,6 @@
 @extends('layouts.backend')
 
-@section('title', $customer->displayName())
+@section('title', $customer->user->displayName())
 
 @section('page_script')
 	<script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/interactions.min.js') }}"></script>
@@ -14,16 +14,16 @@
 
 @section('page_header')
 
-			<div class="page-title">
-				<ul class="breadcrumb breadcrumb-caret position-right">
-					<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-					<li><a href="{{ action("Admin\CustomerController@index") }}">{{ trans('messages.customers') }}</a></li>
-					<li class="active">{{ trans('messages.update') }}</li>
-				</ul>
-				<h1>
-					<span class="text-semibold"><i class="icon-profile"></i> {{ $customer->displayName() }}</span>
-				</h1>
-			</div>
+	<div class="page-title">
+		<ul class="breadcrumb breadcrumb-caret position-right">
+			<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+			<li><a href="{{ action("Admin\CustomerController@index") }}">{{ trans('messages.customers') }}</a></li>
+			<li class="active">{{ trans('messages.update') }}</li>
+		</ul>
+		<h1>
+			<span class="text-semibold"><i class="icon-profile"></i> {{ $customer->user->displayName() }}</span>
+		</h1>
+	</div>
 
 @endsection
 

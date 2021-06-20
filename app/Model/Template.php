@@ -223,7 +223,7 @@ class Template extends Model implements Storable
      */
     public function displayCreatorName()
     {
-        return is_object($this->admin) ? $this->admin->displayName() : (is_object($this->customer) ? $this->customer->displayName() : '');
+        return is_object($this->admin) ? $this->admin->user->displayName() : (is_object($this->customer) ? $this->customer->user->displayName() : '');
     }
 
     /**

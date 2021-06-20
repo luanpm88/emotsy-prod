@@ -322,16 +322,6 @@ class Customer extends Model
     }
 
     /**
-     * Display customer name: first_name last_name.
-     *
-     * @var string
-     */
-    public function displayName()
-    {
-        return htmlspecialchars(trim($this->first_name.' '.$this->last_name));
-    }
-
-    /**
      * Upload and resize avatar.
      *
      * @var void
@@ -1525,16 +1515,6 @@ class Customer extends Model
     }
 
     /**
-     * Custom name + email.
-     *
-     * @return string
-     */
-    public function displayNameEmail()
-    {
-        return $this->displayName().' ('.$this->user->email.')';
-    }
-
-    /**
      * Get customer contact.
      *
      * @return Contact
@@ -1561,7 +1541,7 @@ class Customer extends Model
      */
     public function displayNameEmailOption()
     {
-        return $this->displayName().'|||'.$this->user->email;
+        return $this->user->displayName().'|||'.$this->user->email;
     }
 
     /**
