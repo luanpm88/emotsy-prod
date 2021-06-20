@@ -24,7 +24,7 @@
         <div class="sub_section">
             <h2 class="text-semibold text-teal-800">{{ trans('messages.account') }}</h2>
 
-            @include('helpers.form_control', ['type' => 'text', 'name' => 'email', 'value' => $customer->email(), 'help_class' => 'profile', 'rules' => $customer->user->rules()])
+            @include('helpers.form_control', ['type' => 'text', 'name' => 'email', 'value' => $customer->user->email, 'help_class' => 'profile', 'rules' => $customer->user->rules()])
 
             @include('helpers.form_control', ['type' => 'password', 'label'=> trans('messages.new_password'), 'name' => 'password', 'rules' => $customer->user->rules()])
 
@@ -38,10 +38,10 @@
 
             <div class="row">
                 <div class="col-md-6">
-                    @include('helpers.form_control', ['type' => 'text', 'name' => 'first_name', 'value' => $customer->first_name, 'rules' => $customer->user->rules()])
+                    @include('helpers.form_control', ['type' => 'text', 'name' => 'first_name', 'value' => $customer->user->first_name, 'rules' => $customer->user->rules()])
                 </div>
                 <div class="col-md-6">
-                    @include('helpers.form_control', ['type' => 'text', 'name' => 'last_name', 'value' => $customer->last_name, 'rules' => $customer->user->rules()])
+                    @include('helpers.form_control', ['type' => 'text', 'name' => 'last_name', 'value' => $customer->user->last_name, 'rules' => $customer->user->rules()])
                 </div>
             </div>
 
