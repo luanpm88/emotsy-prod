@@ -107,13 +107,12 @@ class CustomerController extends Controller
 
         // save posted data
         if ($request->isMethod('post')) {
-            $rules = $customer->rules();
-            $this->validate($request, $rules);
-
-            // Create user account for customer
             $user = new \Acelle\Model\User();
-            $user->email = $request->email;
+            $user->fill($request->all());
             $user->activated = true;
+
+            $this->validate($request, $user->rules());
+
             // Update password
             if (!empty($request->password)) {
                 $user->password = bcrypt($request->password);
@@ -221,13 +220,11 @@ class CustomerController extends Controller
                 return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
-            $rules = $customer->rules();
-
-            $this->validate($request, $rules);
-
-            // Update user account for customer
             $user = $customer->user;
-            $user->email = $request->email;
+            $user->fill($request->all());
+
+            $this->validate($request, $user->rules());
+
             // Update password
             if (!empty($request->password)) {
                 $user->password = bcrypt($request->password);

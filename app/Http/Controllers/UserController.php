@@ -118,13 +118,15 @@ class UserController extends Controller
 
         // Initiate customer object for filling the form
         $customer = new Customer();
+        $user = new Customer();
         if (!empty($request->old())) {
             $customer->fill($request->old());
         }
 
         // save posted data
         if ($request->isMethod('post')) {
-            $rules = $customer->registerRules();
+            $user->fill($request->all());
+            $rules = $user->registerRules();
 
             // Captcha check
             if (\Acelle\Model\Setting::get('registration_recaptcha') == 'yes') {
