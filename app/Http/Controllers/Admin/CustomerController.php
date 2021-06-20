@@ -313,21 +313,18 @@ class CustomerController extends Controller
      */
     public function delete(Request $request)
     {
-        $items = \Acelle\Model\Customer::whereIn('uid', explode(',', $request->uids));
+        $customers = \Acelle\Model\Customer::whereIn('uid', explode(',', $request->uids));
 
-        foreach ($items->get() as $item) {
+        foreach ($customers->get() as $customer) {
             // authorize
-            if (\Gate::denies('delete', $item)) {
+            if (\Gate::denies('delete', $customer)) {
                 return;
             }
         }
 
-        foreach ($items->get() as $item) {
-            $user = $item->user;
-            $item->delete();
-            if (!is_object($user->admin)) {
-                $user->delete();
-            }
+        foreach ($customers->get() as $customer) {
+            // Delete Customer account but KEEP user account if it is associated with an Admin
+            $customer->deleteAccount();
         }
 
         // Redirect to my lists page

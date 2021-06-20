@@ -481,6 +481,7 @@ class Admin extends Model
         $customer->save();
 
         return $customer;
+    }
 
     /**
      * Check if customer is disabled.
@@ -518,8 +519,12 @@ class Admin extends Model
 
         // Delete admin and user
         $user = $this->user;
+
         $this->delete();
-        $user->delete();
+        
+        if (!$user->customer()->exists()) {
+            $user->delete();
+        }
     }
 
     /**

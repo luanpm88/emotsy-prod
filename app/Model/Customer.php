@@ -2293,4 +2293,18 @@ class Customer extends Model
         $this->auto_billing_data = $autoBillingData->toJson();
         $this->save();
     }
+
+    // Do not call delete() directly on Customer
+    // This method helps delete Customer account but KEEP
+    // the associated User account if it is also associated with an Admin
+    public function deleteAccount()
+    {
+        DB::transaction(function () {
+            $user = $this->user;
+            $this->delete();
+            if (!$user->admin()->exists()) {
+                $user->delete();
+            }
+        });
+    }
 }
