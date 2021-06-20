@@ -468,32 +468,19 @@ class Admin extends Model
     /**
      * Create customer account.
      */
-    public function createCustomerAccount($admin)
+    public function createCustomerAccount()
     {
-        if (!$this->hasCustomerAccount()) {
-            // Create customer
-            $customer = new \Acelle\Model\Customer();
-            $customer->user_id = $this->user_id;
-            $customer->admin_id = $this->id;
-            $customer->language_id = $this->language_id;
-            $customer->first_name = $this->first_name;
-            $customer->last_name = $this->last_name;
-            $customer->image = $this->image;
-            $customer->timezone = $this->timezone;
-            $customer->status = $this->status;
-            $customer->save();
-        }
-    }
+        $customer = new \Acelle\Model\Customer();
+        $customer->admin_id = $this->id;
+        $customer->language_id = $this->language_id;
+        $customer->first_name = $this->first_name;
+        $customer->last_name = $this->last_name;
+        $customer->image = $this->image;
+        $customer->timezone = $this->timezone;
+        $customer->status = $this->status;
+        $customer->save();
 
-    /**
-     * Check if admin has customer account.
-     *
-     * @return bool
-     */
-    public function hasCustomerAccount()
-    {
-        return is_object($this->user) && is_object($this->user->customer);
-    }
+        return $customer;
 
     /**
      * Check if customer is disabled.

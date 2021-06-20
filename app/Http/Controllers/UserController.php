@@ -112,6 +112,7 @@ class UserController extends Controller
         // Customer account
         $user = $request->user();
         $is_customer_logged_in = is_object($user) && is_object($user->customer);
+        
         if ($is_customer_logged_in) {
             return redirect()->action('AccountSubscriptionController@index');
         } else {
@@ -130,6 +131,7 @@ class UserController extends Controller
         if ($request->isMethod('post')) {
             // Validation
             if ($is_customer_logged_in) {
+            
             } else {
                 $rules = $customer->registerRules();
 

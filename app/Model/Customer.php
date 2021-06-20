@@ -988,6 +988,7 @@ class Customer extends Model
         // Create user account for customer
         $user = is_object($this->user) ? $this->user : new \Acelle\Model\User();
         $user->email = $request->email;
+
         // Update password
         if (!empty($request->password)) {
             $user->password = bcrypt($request->password);
@@ -996,7 +997,8 @@ class Customer extends Model
 
         // Save current user info
         if (!$this->id) {
-            $this->user_id = $user->id;
+            $user->customer_id = $this->id;
+            $user->save();
             $this->admin_id = is_object($request->user()) ? $request->user()->admin->id : null;
             $this->status = 'active';
         }

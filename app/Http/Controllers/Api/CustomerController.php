@@ -51,12 +51,13 @@ class CustomerController extends Controller
             $user->save();
 
             // Save current user info
-            $customer->user_id = $user->id;
             $customer->admin_id = $current_user->admin->id;
             $customer->fill($request->all());
             $customer->status = 'active';
 
             if ($customer->save()) {
+                $user->customer_id = $customer->id;
+                $user->save();
                 // Upload and save image
                 if ($request->hasFile('image')) {
                     if ($request->file('image')->isValid()) {

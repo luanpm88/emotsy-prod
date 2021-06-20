@@ -392,7 +392,10 @@ class InstallController extends Controller
             $mysqli->query('DELETE FROM `'.$database['tables_prefix'].'customers` WHERE 1');
             // Subscribe to default plan
             $admin = \Acelle\Model\Admin::find(1);
-            $admin->createCustomerAccount($admin);
+            $user = \Acelle\Model\User::find(1);
+            $customer = $admin->createCustomerAccount();
+            $user->customer_id = $customer->id;
+            $user->save();
         }
 
         // Insert system urls
