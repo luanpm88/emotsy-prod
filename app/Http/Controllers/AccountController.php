@@ -19,7 +19,8 @@ class AccountController extends Controller
     public function profile(Request $request)
     {
         // Get current user
-        $customer = $request->user()->customer;
+        $user = $request->user();
+        $customer = $user->customer;
         $customer->getColorScheme();
 
         // Authorize
@@ -34,15 +35,15 @@ class AccountController extends Controller
                 return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
-            $this->validate($request, $customer->rules());
+            $this->validate($request, $user->rules());
 
             // Update user account for customer
-            $user = $customer->user;
-            $user->email = $request->email;
+            $user->fill($request->all());
             // Update password
             if (!empty($request->password)) {
                 $user->password = bcrypt($request->password);
             }
+            
             $user->save();
 
             // Save current user info
