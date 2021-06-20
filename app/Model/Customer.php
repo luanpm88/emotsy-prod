@@ -414,7 +414,7 @@ class Customer extends Model
     public static function filter($request)
     {
         $query = self::select('customers.*')
-            ->leftJoin('users', 'users.id', '=', 'customers.user_id');
+            ->leftJoin('users', 'users.customer_id', '=', 'customers.id');
 
         // Keyword
         if (!empty(trim($request->keyword))) {
@@ -956,7 +956,7 @@ class Customer extends Model
     {
         $data = ['items' => [], 'more' => true];
 
-        $query = \Acelle\Model\Customer::getAll()->leftJoin('users', 'users.id', '=', 'customers.user_id');
+        $query = \Acelle\Model\Customer::getAll()->leftJoin('users', 'users.customer_id', '=', 'customers.id');
         if (isset($request->q)) {
             $keyword = $request->q;
             $query = $query->where(function ($q) use ($keyword) {
@@ -983,45 +983,26 @@ class Customer extends Model
      *
      * @return object
      */
-    public function updateInformation($request)
+    public function createAccountAndUser($request)
     {
-        // Create user account for customer
-        $user = is_object($this->user) ? $this->user : new \Acelle\Model\User();
-        $user->email = $request->email;
+        $user = new User();
 
-        // Update password
-        if (!empty($request->password)) {
+        DB::transaction(function () use ($request, &$user) {
+            // Customer
+            $this->fill($request->all());
+            $this->status = self::STATUS_ACTIVE;
+            $this->save();
+
+            // User
+            $user = new User();
+            $user->fill($request->all());
             $user->password = bcrypt($request->password);
-        }
-        $user->save();
-
-        // Save current user info
-        if (!$this->id) {
-            $user->customer_id = $this->id;
+            $user->customer()->associate($this);
             $user->save();
-            $this->admin_id = is_object($request->user()) ? $request->user()->admin->id : null;
-            $this->status = 'active';
-        }
+        });
 
-        $this->fill($request->all());
-
-        $this->save();
-
-        // Upload and save image
-        if ($request->hasFile('image')) {
-            if ($request->file('image')->isValid()) {
-                // Remove old images
-                $this->removeImage();
-                $this->image = $this->uploadImage($request->file('image'));
-                $this->save();
-            }
-        }
-
-        // Remove image
-        if ($request->_remove_image == 'true') {
-            $this->removeImage();
-            $this->image = '';
-        }
+        // Important: return the newly created USER
+        return $user;
     }
 
     public function sendingServers()
