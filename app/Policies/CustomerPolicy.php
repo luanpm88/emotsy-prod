@@ -31,9 +31,9 @@ class CustomerPolicy
         return $can;
     }
 
-    public function profile(User $user, Customer $item)
+    public function profile(User $user, Customer $customer)
     {
-        return $user->id == $item->user_id;
+        return $user->customer_id == $customer->id;
     }
 
     public function update(User $user, Customer $item)
@@ -57,10 +57,8 @@ class CustomerPolicy
     public function loginAs(User $user, Customer $item)
     {
         $ability = $user->admin->getPermission('customer_login_as');
-        $can = $ability == 'all'
-                || ($ability == 'own' && $user->admin->id == $item->admin_id);
-
-        return $can && $user->admin->user_id != $item->user_id;
+        $can = ($ability == 'all');
+        return $can;
     }
 
     public function disable(User $user, Customer $item)
