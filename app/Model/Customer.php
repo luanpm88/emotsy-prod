@@ -362,8 +362,8 @@ class Customer extends Model
         if (!empty(trim($request->keyword))) {
             foreach (explode(' ', trim($request->keyword)) as $keyword) {
                 $query = $query->where(function ($q) use ($keyword) {
-                    $q->orwhere('customers.first_name', 'like', '%'.$keyword.'%')
-                        ->orWhere('customers.last_name', 'like', '%'.$keyword.'%')
+                    $q->orwhere('users.first_name', 'like', '%'.$keyword.'%')
+                        ->orWhere('users.last_name', 'like', '%'.$keyword.'%')
                         ->orWhere('users.email', 'like', '%'.$keyword.'%');
                 });
             }
@@ -902,8 +902,8 @@ class Customer extends Model
         if (isset($request->q)) {
             $keyword = $request->q;
             $query = $query->where(function ($q) use ($keyword) {
-                $q->orwhere('customers.first_name', 'like', '%'.$keyword.'%')
-                    ->orWhere('customers.last_name', 'like', '%'.$keyword.'%')
+                $q->orwhere('users.first_name', 'like', '%'.$keyword.'%')
+                    ->orWhere('users.last_name', 'like', '%'.$keyword.'%')
                     ->orWhere('users.email', 'like', '%'.$keyword.'%');
             });
         }
@@ -974,54 +974,6 @@ class Customer extends Model
             ->where('customers.created_at', '<=', $end);
 
         return $query->count();
-    }
-
-    /**
-     * The rules for validation via api.
-     *
-     * @var array
-     */
-    public function apiRules()
-    {
-        return array(
-            'email' => 'required|email|unique:users,email,'.$this->user_id.',id',
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'timezone' => 'required',
-            'language_id' => 'required',
-            'password' => 'required|min:5',
-        );
-    }
-
-    /**
-     * The rules for validation via api.
-     *
-     * @var array
-     */
-    public function apiUpdateRules($request)
-    {
-        $arr = [];
-
-        if (isset($request->email)) {
-            $arr['email'] = 'required|email|unique:users,email,'.$this->user_id.',id';
-        }
-        if (isset($request->first_name)) {
-            $arr['first_name'] = 'required';
-        }
-        if (isset($request->last_name)) {
-            $arr['last_name'] = 'required';
-        }
-        if (isset($request->timezone)) {
-            $arr['timezone'] = 'required';
-        }
-        if (isset($request->language_id)) {
-            $arr['language_id'] = 'required';
-        }
-        if (isset($request->password)) {
-            $arr['password'] = 'min:5';
-        }
-
-        return $arr;
     }
 
     public function getSubscriberCountByStatus($status)
@@ -1925,11 +1877,6 @@ class Customer extends Model
         }
 
         return true;
-    }
-
-    public function getFullName()
-    {
-        return trim($this->first_name.' '.$this->last_name);
     }
 
     /**

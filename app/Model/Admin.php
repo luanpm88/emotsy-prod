@@ -201,9 +201,9 @@ class Admin extends Model
         if (!empty(trim($request->keyword))) {
             foreach (explode(' ', trim($request->keyword)) as $keyword) {
                 $query = $query->where(function ($q) use ($keyword) {
-                    $q->orwhere('admins.first_name', 'like', '%'.$keyword.'%')
+                    $q->orwhere('users.first_name', 'like', '%'.$keyword.'%')
                         ->orWhere('admin_groups.name', 'like', '%'.$keyword.'%')
-                        ->orWhere('admins.last_name', 'like', '%'.$keyword.'%');
+                        ->orWhere('users.last_name', 'like', '%'.$keyword.'%');
                 });
             }
         }

@@ -184,6 +184,54 @@ class User extends Authenticatable
     }
 
     /**
+     * The rules for validation via api.
+     *
+     * @var array
+     */
+    public function apiRules()
+    {
+        return array(
+            'email' => 'required|email|unique:users,email,'.$this->id.',id',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'timezone' => 'required',
+            'language_id' => 'required',
+            'password' => 'required|min:5',
+        );
+    }
+
+    /**
+     * The rules for validation via api.
+     *
+     * @var array
+     */
+    public function apiUpdateRules($request)
+    {
+        $arr = [];
+
+        if (isset($request->email)) {
+            $arr['email'] = 'required|email|unique:users,email,'.$this->id.',id';
+        }
+        if (isset($request->first_name)) {
+            $arr['first_name'] = 'required';
+        }
+        if (isset($request->last_name)) {
+            $arr['last_name'] = 'required';
+        }
+        if (isset($request->timezone)) {
+            $arr['timezone'] = 'required';
+        }
+        if (isset($request->language_id)) {
+            $arr['language_id'] = 'required';
+        }
+        if (isset($request->password)) {
+            $arr['password'] = 'min:5';
+        }
+
+        return $arr;
+    }
+
+    /**
      * Display customer name: first_name last_name.
      *
      * @var string

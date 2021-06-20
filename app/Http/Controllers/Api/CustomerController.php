@@ -25,6 +25,7 @@ class CustomerController extends Controller
         // Get current user
         $current_user = \Auth::guard('api')->user();
         $customer = new \Acelle\Model\Customer();
+        $user = new \Acelle\Model\User();
 
         // authorize
         if (!$current_user->can('create', $customer)) {
@@ -33,7 +34,7 @@ class CustomerController extends Controller
 
         // save posted data
         if ($request->isMethod('post')) {
-            $rules = $customer->apiRules();
+            $rules = $user->apiRules();
 
             $validator = \Validator::make($request->all(), $rules);
             if ($validator->fails()) {
@@ -112,22 +113,21 @@ class CustomerController extends Controller
         // save posted data
         if ($request->isMethod('patch')) {
             // Prenvent save from demo mod
+            $user = $customer->user;
+            $user->fill($request->all());
+
             if ($this->isDemoMode()) {
                 return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
-            $rules = $customer->apiUpdateRules($request);
+            $rules = $user->apiUpdateRules($request);
 
             $validator = \Validator::make($request->all(), $rules);
+            
             if ($validator->fails()) {
                 return response()->json($validator->messages(), 403);
             }
 
-            // Update user account for customer
-            $user = $customer->user;
-            if (!empty($request->email)) {
-                $user->email = $request->email;
-            }
             // Update password
             if (!empty($request->password)) {
                 $user->password = bcrypt($request->password);
