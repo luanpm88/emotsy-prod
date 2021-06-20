@@ -35,18 +35,8 @@ class Admin extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'timezone', 'language_id', 'color_scheme', 'text_direction'
+        'timezone', 'language_id', 'color_scheme', 'text_direction'
     ];
-
-    /**
-     * Admin email.
-     *
-     * @return string
-     */
-    public function email()
-    {
-        return is_object($this->user) ? $this->user->email : '';
-    }
 
     /**
      * Find item by uid.
@@ -135,6 +125,16 @@ class Admin extends Model
         $img->fit(120, 120)->save($upload_path.$filename.'.thumb.jpg');
 
         return $path.$filename;
+    }
+
+    /**
+     * Check if admin has customer account.
+     *
+     * @return bool
+     */
+    public function hasCustomerAccount()
+    {
+        return is_object($this->user) && is_object($this->user->customer);
     }
 
     /**

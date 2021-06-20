@@ -106,16 +106,17 @@ class AdminController extends Controller
 
         // save posted data
         if ($request->isMethod('post')) {
-            $rules = $admin->rules();
+            $user = new \Acelle\Model\User();
+            $user->fill($request->all());
+            $user->activated = true;
+
+            $rules = $user->rules();
             $rules = array_merge($rules, [
                 'admin_group_id' => 'required',
             ]);
+
             $this->validate($request, $rules);
 
-            // Create user account for admin
-            $user = new \Acelle\Model\User();
-            $user->email = $request->email;
-            $user->activated = true;
             // Update password
             if (!empty($request->password)) {
                 $user->password = bcrypt($request->password);
@@ -221,19 +222,22 @@ class AdminController extends Controller
 
         // save posted data
         if ($request->isMethod('patch')) {
-            $rules = $admin->rules();
+            $user = $admin->user;
+            $user->fill($request->all());
+
+            // Update password
+            if (!empty($request->password)) {
+                $user->password = bcrypt($request->password);
+            }
+
+            $rules = $user->rules();
             $rules = array_merge($rules, [
                 'admin_group_id' => 'required',
             ]);
             $this->validate($request, $rules);
 
             // Update user account for admin
-            $user = $admin->user;
-            $user->email = $request->email;
-            // Update password
-            if (!empty($request->password)) {
-                $user->password = bcrypt($request->password);
-            }
+            
             $user->save();
 
             // Save current user info
