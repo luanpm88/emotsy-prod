@@ -57,16 +57,6 @@ class Customer extends Model
     ];
 
     /**
-     * Customer email.
-     *
-     * @return string
-     */
-    public function email()
-    {
-        return is_object($this->user) ? $this->user->email : '';
-    }
-
-    /**
      * Find item by uid.
      *
      * @return object

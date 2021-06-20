@@ -118,9 +118,10 @@ class UserController extends Controller
 
         // Initiate customer object for filling the form
         $customer = new Customer();
-        $user = new Customer();
+        $user = new User();
         if (!empty($request->old())) {
             $customer->fill($request->old());
+            $user->fill($request->old());
         }
 
         // save posted data
@@ -153,6 +154,7 @@ class UserController extends Controller
 
         return view('users.register', [
             'customer' => $customer,
+            'user' => $user,
         ]);
     }
 }

@@ -33,30 +33,30 @@
                 @include('helpers.form_control', [
                     'type' => 'text',
                     'name' => 'email',
-                    'value' => $customer->email(),
+                    'value' => $user->email,
                     'help_class' => 'profile',
-                    'rules' => $customer->registerRules()
+                    'rules' => $user->registerRules()
                 ])
                 
                 @include('helpers.form_control', [
                     'type' => 'text',
                     'name' => 'first_name',
-                    'value' => $customer->first_name,
-                    'rules' => $customer->registerRules()
+                    'value' => $user->first_name,
+                    'rules' => $user->registerRules()
                 ])
                 
                 @include('helpers.form_control', [
                     'type' => 'text',
                     'name' => 'last_name',
-                    'value' => $customer->last_name,
-                    'rules' => $customer->registerRules()
+                    'value' => $user->last_name,
+                    'rules' => $user->registerRules()
                 ])
                 
                 @include('helpers.form_control', [
                     'type' => 'password',
                     'label'=> trans('messages.new_password'),
                     'name' => 'password',
-                    'rules' => $customer->registerRules(),
+                    'rules' => $user->registerRules(),
                     'eye' => true,
                 ])
                 
@@ -66,7 +66,7 @@
                     'value' => $customer->timezone,
                     'options' => Tool::getTimezoneSelectOptions(),
                     'include_blank' => trans('messages.choose'),
-                    'rules' => $customer->registerRules()
+                    'rules' => $user->registerRules()
                 ])								
                 
                 @include('helpers.form_control', [
@@ -76,7 +76,7 @@
                     'value' => $customer->language_id,
                     'options' => Acelle\Model\Language::getSelectOptions(),
                     'include_blank' => trans('messages.choose'),
-                    'rules' => $customer->registerRules()
+                    'rules' => $user->registerRules()
                 ])
                 
                 @if (Acelle\Model\Setting::get('registration_recaptcha') == 'yes')
