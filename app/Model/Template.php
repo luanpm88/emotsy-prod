@@ -975,6 +975,7 @@ class Template extends Model
         
         $template->uid = uniqid();
         $template->loadContent($directory); // already saved!
+        return $template;
     }
 
     public function clearStorage()
