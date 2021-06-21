@@ -25,5 +25,5 @@ function generatePublicPath($absPath)
     $relativePath = substr($absPath, strlen($excludeBase));
     $encodedUrl = StringHelper::base64UrlEncode($relativePath);
 
-    return route('public_assets', [ 'path' => $encodedUrl ]);
+    return route('public_assets', [ 'path' => $encodedUrl ], false);
 }

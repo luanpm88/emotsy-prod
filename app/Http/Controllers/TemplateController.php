@@ -366,10 +366,10 @@ class TemplateController extends Controller
             return $this->notAuthorized();
         }
         
-        $filename = $template->uploadAsset($request->file('file'));
+        $assetUrl = $template->uploadAsset($request->file('file'));
 
         return response()->json([
-            'url' => route('customer_files', ['uid' => $request->user()->uid, 'name' => $filename])
+            'url' => $assetUrl
         ]);
     }
     

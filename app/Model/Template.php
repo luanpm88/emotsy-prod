@@ -32,6 +32,7 @@ use Acelle\Library\Rss;
 use Illuminate\Validation\ValidationException;
 use KubAT\PhpSimple\HtmlDomParser;
 use Acelle\Library\Tool;
+use Acelle\Library\StringHelper;
 
 class Template extends Model
 {
@@ -806,14 +807,8 @@ class Template extends Model
 
         // Move uploaded file
         $file->move($this->getStoragePath(), $name);
-        return $name;
-    }
-
-    public function getAssetPublicUrl($name)
-    {
-        $exclude = storage_path('app');
-        $this->getStoragePath($name);
-        return \Acelle\Helpers\generatePublicPath();
+        $assetUrl = \Acelle\Helpers\generatePublicPath($this->getStoragePath($name));
+        return $assetUrl;
     }
 
     /**
