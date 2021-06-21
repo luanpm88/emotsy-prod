@@ -887,7 +887,6 @@ class Campaign extends Model
             if ($this->campaignLinks()->where('url', '=', $url)->count() == 0) {
                 $cl = new CampaignLink();
                 $cl->campaign_id = $this->id;
-                $cl->link_id = $link->id;
                 $cl->url = $url;
                 $cl->save();
             }
