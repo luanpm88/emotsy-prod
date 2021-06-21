@@ -143,7 +143,6 @@ class TemplateController extends Controller
                 return response()->json($validator->errors(), 400);
             }
             
-            $template->untransform();
             $template->save();
 
             // success
@@ -291,7 +290,6 @@ class TemplateController extends Controller
             $this->validate($request, $rules);
             
             $template->content = $request->content;
-            $template->untransform();
             $template->save();
             
             return response()->json([
@@ -346,7 +344,7 @@ class TemplateController extends Controller
         }
 
         return view('templates.builder.content', [
-            'content' => $template->getParsedContent(),
+            'content' => $template->content,
         ]);
     }
     

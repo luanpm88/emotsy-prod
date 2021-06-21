@@ -74,6 +74,14 @@ class Campaign extends Model
     const DELIVERY_STATUS_BOUNCED = 'bounced';
     const DELIVERY_STATUS_FEEDBACK = 'feedback';
 
+    // Content processing handler
+    const HANDLE_PARSE_RSS = 'parse-rss';
+    const HANDLE_TRACK_OPEN_CLICK = 'track-open-click';
+    const HANDLE_TRANSFORM_TAG = 'transform-tag';
+    const HANDLE_INLINE_CSS = 'inline-css';
+    const HANDLE_TRANSFORM_URL = 'transform-url';
+    const HANDLE_UNTRANSFORM_URL = 'untransfrom-url';
+
     /**
      * The attributes that should be mutated to dates.
      *
@@ -584,12 +592,8 @@ class Campaign extends Model
      *
      * @return string
      */
-    public function getHtmlContent($subscriber = null, $msgId = null, $server = null)
+    public function getHtmlContent($subscriber = null, $msgId = null, $server = null, $handlers = [])
     {
-        // @note: IMPORTANT: the order must be as follows
-        // * addTrackingURL
-        // * appendOpenTrackingUrl
-        // * tagMessage
         if (is_null($this->parsedContent)) {
             // STEP 01. Get RAW content
             $body = $this->getTemplateContent();
@@ -619,7 +623,7 @@ class Campaign extends Model
         $body = $this->wooTransform($body);
 
         // STEP 05. Transform URLs
-        $body = $this->transformWithoutUpdate($body, true);
+        $body = $this->template->getContentWithTransformedAssetsUrls($this->getTrackingHost());
 
         // STEP 05.1. Remove title tag from html
         $body = strip_tags_only($body, 'title');
@@ -2607,75 +2611,6 @@ class Campaign extends Model
         } else {
             return url('assets/images/placeholder.jpg');
         }
-    }
-
-    /**
-     * transform URL.
-     */
-    public function transform($useTrackingHost = false)
-    {
-        $this->setTemplateContent($this->transformWithoutUpdate($this->getTemplateContent(), $useTrackingHost));
-        return $this->getTemplateContent();
-    }
-
-    /**
-     * transform URL.
-     */
-    public function transformWithoutUpdate($html, $useTrackingHost = false)
-    {
-        // Notice that there are 2 types of assets that need to untransform
-        // #1 Campaign relative URL
-        // #2 User assets (uploaded by file manager) absolute URL
-        //
-
-        // Replace #2
-        $host = config('app.url'); // Default host
-        
-        if ($useTrackingHost) {
-            // Replace #2
-            $html = str_replace($host, $this->getTrackingHost(), $html);
-            $host = $this->getTrackingHost();
-        }
-
-        // Replace #1
-        $path = join_url($host, route('campaign_assets', ['uid' => $this->uid], false));
-        $html = \Acelle\Library\Tool::replaceTemplateUrl($html, $path);
-
-        // By the way, fix <html>
-        $html = tinyDocTypeTransform($html);
-
-        return $html;
-    }
-
-    /**
-     * transform URL.
-     */
-    public function untransform()
-    {
-        // Notice that there are 2 types of assets that need to untransform
-        // #1 Campaign relative URL
-        // #2 User assets (uploaded by file manager) absolute URL
-        //
-        // and only #1 will be untransformed while #2 is kept as is
-
-        // Replace relative URL with campaign URL
-        $this->setTemplateContent(str_replace(
-            route('campaign_assets', ['uid' => $this->uid]).'/',
-            '',
-            tinyDocTypeUntransform($this->getTemplateContent())
-        ));
-
-        // remove title tag
-        $this->setTemplateContent(strip_tags_only($this->getTemplateContent(), 'title'));
-    }
-
-    /**
-     * transform URL.
-     */
-    public function getParsedContent()
-    {
-        $body = $this->template->transformWithoutUpdate($this->getTemplateContent(), $useTrackingHost = false);
-        return $body;
     }
 
     /**

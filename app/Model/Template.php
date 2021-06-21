@@ -335,7 +335,8 @@ class Template extends Model
         $html_content = trim(file_get_contents($indexFile));
         $this->content = $html_content;
         Tool::xcopy($directory, $this->getStoragePath());
-        return $this->save();
+        $this->transformAssetsUrls(); // already save
+        return $this;
     }
 
     /**
@@ -518,191 +519,43 @@ class Template extends Model
         }
     }
 
+    public function transformAssetsUrls()
+    {
+        $this->content = $this->getContentWithTransformedAssetsUrls();
+        return $this->save();
+    }
+
     /**
-     * transform URL.
+     * Transform template's relative URLs to application's absolute URL, without hostname.
+     * Execute this every time the template is SAVED
      */
-    public function untransform()
+    public function getContentWithTransformedAssetsUrls($host = null)
     {
         // @todo workaround
         // to avoid exception thrown by route(template_assets)
         if (is_null($this->uid)) {
-            return;
-        }
-
-        // replace absolute urls
-        $this->content = str_replace(
-            route('template_assets', ['uid' => $this->uid]).'/',
-            '',
-            tinyDocTypeUntransform($this->content)
-        );
-
-        // remove title tag
-        $this->content = strip_tags_only($this->content, 'title');
-    }
-
-    /**
-     * transform URL.
-     */
-    public function transform($useTrackingHost = false)
-    {
-        $this->content = $this->transformWithoutUpdate($this->content, $useTrackingHost);
-        return $this->content;
-    }
-
-    /**
-     * transform URL.
-     */
-    public function transformWithoutUpdate($html, $useTrackingHost = false)
-    {
-        // @todo workaround
-        // to avoid exception thrown by route(template_assets)
-        if (is_null($this->uid)) {
-            return;
-        }
-
-        // Notice that there are 2 types of assets that need to untransform
-        // #1 Campaign relative URL
-        // #2 User assets (uploaded by file manager) absolute URL
-        //
-        $host = config('app.url'); // Default host
-        
-        if ($useTrackingHost) {
-            // Replace #2
-            $html = str_replace($host, $this->getTrackingHost(), $html);
-            $host = $this->getTrackingHost();
+            throw new Exception('Template does not have a UID, cannot transform content');
         }
 
         // Replace #1
-        $html = $this->replaceTemplateUrl();
+        $content = Tool::replaceTemplateUrl($this->content, function($assetPath, $isRoot) use ($host) {
+            if ($isRoot) {
+                // If it is a root path like "/files/....", then do nothing
+                return ($host) ? join_url($host, $assetPath) : $assetPath;
+            } else {
+                // Transform relative URLs to PUBLIC ABSOLUTE URLs, but without hostname
+                $url = \Acelle\Helpers\generatePublicPath(
+                    $this->getStoragePath($assetPath),
+                    $absolute = false
+                );
+
+                return ($host) ? join_url($host, $url) : $url;
+            }
+        });
 
         // By the way, fix <html>
-        $html = tinyDocTypeTransform($html);
-
-        return $html;
-    }
-
-    /**
-     * Replace HTML url.
-     *
-     * @return text
-     */
-    public function replaceTemplateUrl()
-    {
-        $content = $this->content;
-
-        // find all asset links in html content
-        preg_match_all('/(?<=src=|background=|href=|url\()(\'|")?(?<url>.*?)(?=\1|\))/i', $content, $matches);
-        $srcs = array_unique($matches['url']);
-
-        foreach ($srcs as $src) {
-            if (empty(trim($src))) {
-                continue;
-            }
-            
-            $assetUrl = str_replace('"', '', $src);
-            $assetUrl = str_replace('\'', '', $assetUrl);
-            // Convert &amp; back to & (which was encoded by TinyMCE)
-            $assetUrl = htmlspecialchars_decode($assetUrl);
-
-            // Only transform relative asset URLs
-            if (preg_match('/https?/i', $src) || preg_match('/^\{/i', $src) || preg_match('/^\%/i', $src) || preg_match('/^https?/i', $src) || preg_match('/^#/i', $src) || strpos($src, '//') === 0 || preg_match('/^mailto:/i', $src) || preg_match('/^tel:/i', $src)) {
-                // nothing
-            } elseif (preg_match('/^\//', $src)) {
-                // if it is an absolute path, like /files/208394398/some-thing.jpg
-                // then do nothing
-                // this is for the case when file is added via file manager
-            } else {
-                // Build the full path
-                $assetUrl = \Acelle\Helpers\generatePublicPath($this->getStoragePath($assetUrl));
-            }
-
-            // using a quote in replacement to avoid replacing twice
-            // for example
-            //
-            // dir/assets/2984023984320
-            //    ==> http://$path/dir/assets/2984023984320
-            // dir/assets
-            //    ==> http://$path/http://$path/2984023984320
-            // Example of quote: href="http://, href=http://, or url: (http://)
-
-            try {
-                // @important: the following line of code is very likely to get an "preg_replace(): Compilation failed: regular expression is too large at offset" error. That's the reason why we need try..catch here
-                $content = preg_replace('/(src=|background=|href=|url\s*\()([\'"]?\s*)'.preg_quote($src, '/').'(\s*[\s\'"\)])/', "$1$2$assetUrl$3", $content);
-            } catch (\ErrorException $ex) {
-                // preg_replace(): Compilation failed: regular expression is too large at offset
-
-                // use the old and non-safe way!!!!
-                $content = str_replace($src, $assetUrl, $content);
-            }
-        }
-
-        $content = str_replace('&quot;', '', $content);
-
+        $content = tinyDocTypeTransform($content);
         return $content;
-    }
-
-    /**
-     * transform URL.
-     */
-    public function getParsedContent()
-    {
-        $body = $this->transformWithoutUpdate($this->content, $useTrackingHost = false);
-        return $body;
-    }
-
-    /**
-     * Build Email HTML content.
-     *
-     * @return string
-     */
-    public function getHtmlContent($subscriber = null, $msgId = null, $server = null)
-    {
-        // @note: IMPORTANT: the order must be as follows
-        // * addTrackingURL
-        // * appendOpenTrackingUrl
-        // * tagMessage
-        // STEP 01. Get RAW content
-        $body = $this->content;
-
-        // STEP 02. Append footer
-        // Not applied
-        
-        // STEP 03. Parse RSS
-        if (Setting::isYes('rss.enabled')) {
-            $body = Rss::parse($body);
-        }
-
-        // STEP 04. Replace Bare linefeed
-        // Replace bare line feed char which is not accepted by Outlook, Yahoo, AOL...
-        // Not applied
-
-        // STEP 04.1. Check woocommerce items
-        $body = $this->wooTransform($body);
-
-        // STEP 05. Transform URLs
-        // Note that $useTrackingHost is not needed
-        $body = $this->transformWithoutUpdate($body, $useTrackingHost = false);
-
-        if (is_null($msgId)) {
-            $msgId = 'SAMPLE'; // for preview mode
-        }
-
-        // STEP 08. Transform Tags
-        if (!is_null($subscriber)) {
-            // Transform tags
-            $body = $this->tagMessage($body, $subscriber, $msgId, $server);
-        }
-
-        // STEP 09. Make CSS inline
-        //
-        // Transform CSS/HTML content to inline CSS
-        // Be carefule, it will make
-        //       <a href="{BUNSUBSCRIBE_URL}"
-        // become
-        //       <a href="%7BUNSUBSCRIBE_URL%7D"
-        $body = $this->inlineHtml($body);
-
-        return $body;
     }
 
     public function wooTransform($body)

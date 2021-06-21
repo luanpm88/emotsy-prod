@@ -755,7 +755,7 @@ class Tool
      *
      * @return text
      */
-    public static function replaceTemplateUrl($content, $path)
+    public static function replaceTemplateUrl($content, $callback)
     {
         // find all asset links in html content
         preg_match_all('/(?<=src=|background=|href=|url\()(\'|")?(?<url>.*?)(?=\1|\))/i', $content, $matches);
@@ -776,9 +776,10 @@ class Tool
                 // if it is an absolute path, like /files/208394398/some-thing.jpg
                 // then do nothing
                 // this is for the case when file is added via file manager
+                $new_src = $callback($new_src, $root = true);
             } else {
                 // Build the full path
-                $new_src = join_url($path, $new_src);
+                $new_src = $callback($new_src, $root = false);
             }
 
             // using a quote in replacement to avoid replacing twice

@@ -452,7 +452,6 @@ class CampaignController extends Controller
             $this->validate($request, $rules);
 
             $campaign->setTemplateContent($request->content);
-            $campaign->untransform();
             $campaign->save();
 
             // update plain
@@ -487,7 +486,7 @@ class CampaignController extends Controller
         }
 
         return view('campaigns.template.content', [
-            'content' => $campaign->getParsedContent(),
+            'content' => $campaign->template->content,
         ]);
     }
 
@@ -2050,7 +2049,6 @@ class CampaignController extends Controller
             // Save template
             $campaign->setTemplateContent($request->html);
             $campaign->preheader = $request->preheader;
-            $campaign->untransform();
             $campaign->save();
 
             // update plain
@@ -2099,7 +2097,6 @@ class CampaignController extends Controller
 
             // Save template
             $campaign->plain = $request->plain;
-            $campaign->untransform();
             $campaign->save();
 
             // success

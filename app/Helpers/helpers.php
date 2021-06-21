@@ -136,7 +136,7 @@ function join_url()
 {
     $paths = array();
     foreach (func_get_args() as $arg) {
-        if ($arg !== '') {
+        if (!empty($arg)) {
             $paths[] = $arg;
         }
     }

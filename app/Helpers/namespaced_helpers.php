@@ -5,7 +5,7 @@ namespace Acelle\Helpers;
 use Acelle\Library\StringHelper;
 use Exception;
 
-function generatePublicPath($absPath)
+function generatePublicPath($absPath, $absolute = false)
 {
     // Notice: $relativePath must be relative to storage/ folder
     // For example, with a real path of /home/deploy/acellemail/storage/app/sub/example.png
@@ -25,5 +25,5 @@ function generatePublicPath($absPath)
     $relativePath = substr($absPath, strlen($excludeBase));
     $encodedUrl = StringHelper::base64UrlEncode($relativePath);
 
-    return route('public_assets', [ 'path' => $encodedUrl ], false);
+    return route('public_assets', [ 'path' => $encodedUrl ], $absolute);
 }
