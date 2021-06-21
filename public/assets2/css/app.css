@@ -1666,3 +1666,6 @@ a.trigger-woo-abandoned-cart:hover {
   font-weight: 500;
   font-size: 95%;
 }
+.tox:not(.tox-tinymce-inline) .tox-editor-header {
+  box-shadow: 0 0 15px rgb(0 0 0 / 10%) !important;
+}

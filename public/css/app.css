@@ -4375,3 +4375,6 @@ label:hover .checkmark, .checkmark-container:hover .checkmark {
 .btn.sort-direction {
     background: #ddd;;
 }
+.tox:not(.tox-tinymce-inline) .tox-editor-header {
+    box-shadow: 0 0 15px rgb(0 0 0 / 10%);
+}
