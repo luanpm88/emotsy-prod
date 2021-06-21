@@ -363,4 +363,27 @@ class StringHelper
         }
         return $dom->saveHTML();
     }
+
+    public static function generateUniqueName($directory, $name) {
+        $count = 1;
+        $path = join_paths($directory, $name);
+        $newName = $name;
+        while (file_exists($path)) {
+            $regxp = '/(?<ext>\.[^\/\.]+$)/';
+            preg_match($regxp, $name, $matched);
+
+            if (array_key_exists('ext', $matched)) {
+                $fileExt = $matched['ext'];
+            } else {
+                $fileExt = '';
+            }
+
+            $base = preg_replace($regxp, '', $name);
+            $newName = $base.'_'.$count.$fileExt;
+            $path = join_paths($directory, $newName);
+            $count += 1;
+        }
+
+        return $newName;
+    }
 }

@@ -47,6 +47,10 @@ class Customer extends Model
     const STATUS_INACTIVE = 'inactive';
     const STATUS_ACTIVE = 'active';
 
+    const BASE_DIR = 'app/customers'; // storage/customers/000000
+    const ATTACHMENTS_DIR = 'home/attachments';  // storage/customers/000000/home/files
+    const TEMPLATES_DIR = 'home/templates';  // storage/customers/000000/home/files
+
     /**
      * The attributes that are mass assignable.
      *
@@ -217,6 +221,40 @@ class Customer extends Model
         
         return $result;
     }
+
+    public function getBasePath($path = null)
+    {
+        $base = storage_path(join_paths(self::BASE_DIR, $this->uid)); // storage/app/customers/000000/
+
+        if (!\File::exists($base)) {
+            \File::makeDirectory($base, 0777, true, true);
+        }
+
+        return join_paths($base, $path);
+    }
+
+    public function getTemplatesPath($path = null)
+    {
+        $base = $this->getBasePath(self::TEMPLATES_DIR);
+
+        if (!\File::exists($base)) {
+            \File::makeDirectory($base, 0777, true, true);
+        }
+
+        return join_paths($base, $path);
+    }
+
+    public function getAttachmentsPath($path = null)
+    {
+        $base = $this->getBasePath(self::ATTACHMENTS_DIR);
+
+        if (!\File::exists($base)) {
+            \File::makeDirectory($base, 0777, true, true);
+        }
+
+        return join_paths($base, $path);
+    }
+
 
     public function activeVerifiedSendingDomains()
     {
@@ -1842,11 +1880,6 @@ class Customer extends Model
         }
 
         return $subscription->isActive();
-    }
-
-    public function getHomePath($path = '')
-    {
-        return $this->user->getHomePath($path);
     }
 
     public function getLockPath($path)

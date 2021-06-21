@@ -35,7 +35,21 @@ class User extends Authenticatable
 {
     use Notifiable;
 
-    const ASSET_DIR = 'files';
+    /*******
+     * Important: Storage location: User vs Customer
+     * One customer (account) may have one or more users
+     * 
+     * User has its own location for storing:
+     * + Lock files
+     * + Assets (which is used by File Manager)
+     * 
+     * Customer has a common place to store account's assets (available to all users of the same account)
+     * + Templates
+     * + Attachments (account-wide, not individual user)
+     * 
+     */
+    const BASE_DIR = 'app/users'; // storage/customers/000000
+    const ASSETS_DIR = 'files';
 
     /**
      * The attributes that are mass assignable.
@@ -345,20 +359,9 @@ class User extends Authenticatable
         }
     }
 
-    public function getStoragePath($path = '')
-    {
-        $base = storage_path('app/users/'.$this->uid);
-
-        if (!\File::exists($base)) {
-            \File::makeDirectory($base, 0777, true, true);
-        }
-
-        return join_paths($base, $path);
-    }
-
     public function getLockPath($path)
     {
-        $base = $this->getHomePath('locks');
+        $base = $this->getBasePath('locks');
 
         if (!\File::exists($base)) {
             \File::makeDirectory($base, 0777, true, true);
@@ -367,9 +370,20 @@ class User extends Authenticatable
         return join_paths($base, $path);
     }
 
-    public function getHomePath($path = '')
+    public function getAssetsPath($path = null)
     {
-        $base = $this->getStoragePath('home');
+        $base = $this->getBasePath(self::ASSETS_DIR);
+
+        if (!\File::exists($base)) {
+            \File::makeDirectory($base, 0777, true, true);
+        }
+
+        return join_paths($base, $path);
+    }
+
+    public function getBasePath($path = null)
+    {
+        $base = storage_path(join_paths(self::BASE_DIR, $this->uid));
 
         if (!\File::exists($base)) {
             \File::makeDirectory($base, 0777, true, true);
@@ -381,7 +395,7 @@ class User extends Authenticatable
     public function uploadAsset($file)
     {
         // store to storage/app/users/{uid}/home/files/
-        $assetdir = $this->getHomePath(self::ASSET_DIR);
+        $assetdir = $this->getAssetsPath(self::ASSETS_DIR);
         $newname = $file->getClientOriginalName();
         $newpath = join_paths($assetdir, $newname);
 
