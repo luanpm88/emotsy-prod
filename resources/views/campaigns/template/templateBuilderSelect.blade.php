@@ -7,7 +7,7 @@
             <h2>{{ trans('messages.campaign.template.builder.select') }}</h2>
             <p>{{ trans('messages.campaign.template.builder.select.intro') }}</p>
             
-            @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']))
+            @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']) && $campaign->template->builder)
                 <a href="{{ action('CampaignController@templateEdit', $campaign->uid) }}" class="btn btn-primary mr-10 template-compose">
                     {{ trans('messages.campaign.email_builder_pro') }}
                 </a>
