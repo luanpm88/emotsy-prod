@@ -521,7 +521,7 @@ class Template extends Model
         }
 
         // Replace #1
-        $content = Tool::replaceTemplateUrl($this->content, function($assetPath, $isRoot) use ($host) {
+        $content = Tool::replaceTemplateUrl($this->content, function ($assetPath, $isRoot) use ($host) {
             if ($isRoot) {
                 // If it is a root path like "/files/....", then do nothing
                 return ($host) ? join_url($host, $assetPath) : $assetPath;

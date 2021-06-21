@@ -209,7 +209,7 @@ class TemplateController extends Controller
         }
 
         // Redirect to my lists page
-        echo trans('messages.templates.deleted', [ 'deleted' => $deleted, 'total' => $total] );
+        echo trans('messages.templates.deleted', [ 'deleted' => $deleted, 'total' => $total]);
     }
 
     /**
