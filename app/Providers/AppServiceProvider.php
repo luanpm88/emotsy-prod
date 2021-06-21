@@ -140,6 +140,11 @@ class AppServiceProvider extends ServiceProvider
                 }
 
                 $action = app('request')->route()->getAction();
+
+                if (!array_key_exists('controller', $action)) {
+                    return;
+                }
+
                 $controller = class_basename($action['controller']);
                 list($controller, $action) = explode('@', $controller);
                 $view->with(compact('controller', 'action'));
