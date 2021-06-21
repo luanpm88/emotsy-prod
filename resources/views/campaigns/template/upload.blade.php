@@ -51,7 +51,7 @@
                 url: url,
                 method: 'POST',
                 data: formData,
-                async: false,
+                async: true,
                 cache: false,
                 contentType: false,
                 processData: false,
@@ -60,6 +60,10 @@
                     400: function (res) {
                         alert('Something went wrong!');
                     }
+                },
+                error: function (data) {
+                    alert(data.responseText);
+                    removeMaskLoading();
                 },
                 success: function (response) {
                     removeMaskLoading();
