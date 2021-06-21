@@ -28,36 +28,6 @@ Route::group(['middleware' => ['installed']], function () {
     Route::get('install/finish', 'InstallController@finish');
 });
 
-// assets path for template
-Route::get('/assets/campaigns/{uid}/{name?}', [ function ($uid, $name) {
-    $campaign = \Acelle\Model\Campaign::findByUid($uid);
-    $path = $campaign->getStoragePath($name);
-    $mime_type = \Acelle\Library\File::getFileType($path);
-    if (\File::exists($path)) {
-        return response()->file($path, array('Content-Type' => $mime_type));
-    }
-}])->where('name', '.+')->name('campaign_assets');
-
-// assets path for template
-Route::get('/assets/templates/{uid}/{name?}', [ function ($uid, $name) {
-    $template = \Acelle\Model\Template::findByUid($uid);
-    $path = $template->getStoragePath($name);
-    $mime_type = \Acelle\Library\File::getFileType($path);
-    if (\File::exists($path)) {
-        return response()->file($path, array('Content-Type' => $mime_type));
-    } else {
-        abort(404);
-    }
-}])->where('name', '.+')->name('template_assets');
-
-// assets path for customer thumbs
-Route::get('/files/thumbs/{uid}/{name?}', [ function ($uid, $name) {
-    $path = storage_path('app/users/' . $uid . '/home/thumbs/' . $name);
-    $mime_type = \Acelle\Library\File::getFileType($path);
-    if (\File::exists($path)) {
-        return response()->file($path, array('Content-Type' => $mime_type));
-    }
-}])->where('name', '.+')->name('customer_thumbs');
 // assets path for customer files
 Route::get('/files/{uid}/{name?}', [ function ($uid, $name) {
     $path = storage_path('app/users/' . $uid . '/home/files/' . $name);

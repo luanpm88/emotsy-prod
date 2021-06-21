@@ -491,29 +491,14 @@ class Template extends Model
     /**
      * Get thumb.
      */
-    public function getThumb()
-    {
-        // find index
-        if ($this->getThumbName()) {
-            return $this->getStoragePath().$this->getThumbName();
-        }
-
-        return;
-    }
-
-    /**
-     * Get thumb.
-     */
     public function getThumbUrl()
     {
-        // @todo workaround
-        // to avoid exception thrown by route(template_assets)
         if (is_null($this->uid)) {
-            return;
+            throw new Exception('Cannot getThumbUrl(), template does not have a UID, cannot transform content');
         }
 
         if ($this->getThumbName()) {
-            return route('template_assets', ['uid' => $this->uid, 'name' => $this->getThumbName()]);
+            return \Acelle\Helpers\generatePublicPath($this->getStoragePath($this->getThumbName()));
         } else {
             return url('assets/images/placeholder.jpg');
         }
@@ -531,8 +516,6 @@ class Template extends Model
      */
     public function getContentWithTransformedAssetsUrls($host = null)
     {
-        // @todo workaround
-        // to avoid exception thrown by route(template_assets)
         if (is_null($this->uid)) {
             throw new Exception('Template does not have a UID, cannot transform content');
         }
