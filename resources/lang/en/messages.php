@@ -262,7 +262,7 @@
   'sending_servers.disabled' => 'One or more sending servers were successfully disabled',
   'sending_servers.enabled' => 'One or more sending servers were successfully enabled',
   'segments.deleted' => 'One or more segments were successfully deleted',
-  'templates.deleted' => 'One or more templates were successfully deleted',
+  'templates.deleted' => ':deleted/:total template(s) were successfully deleted',
   'blacklists.deleted' => 'One or more emails were successfully removed from blacklist',
   'edit_segment' => 'Update segment',
   'all' => 'All',
