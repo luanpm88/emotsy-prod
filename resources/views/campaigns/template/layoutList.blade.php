@@ -45,7 +45,7 @@
     <div class="empty-list">
         <i class="icon-magazine"></i>
         <span class="line-1">
-            {{ trans('messages.template_empty_line_1') }}
+            {{ trans('messages.no_template_available') }}
         </span>
     </div>
 @endif

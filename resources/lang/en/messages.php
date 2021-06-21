@@ -3678,4 +3678,5 @@
   'plan.sending_server_empty' => 'No delivery server selected',
   'plan.sending_server_empty.setting' => 'No delivery server selected',
   'transaction_for_invoice' => 'Transaction for invoice <span class="font-weight-semibold">#:uid</span>',
+  'no_template_available' => 'No template availabel',
 ) ?>
