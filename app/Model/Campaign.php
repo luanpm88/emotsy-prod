@@ -2962,9 +2962,9 @@ class Campaign extends Model
     /**
      * Get attachment path.
      */
-    public function getAttachmentPath($path='')
+    public function getAttachmentPath($path = null)
     {
-        return $this->getStoragePath('attachment/' . $path);
+        return $this->customer->getAttachmentsPath($path);
     }
 
     /**
@@ -2973,12 +2973,14 @@ class Campaign extends Model
     public function uploadAttachment($file)
     {
         $filename = $file->getClientOriginalName();
+        $filename = StringHelper::generateUniqueName($this->getAttachmentPath(), $filename);
+
         $path = $file->move(
             $this->getAttachmentPath(),
             $filename
         );
 
-        return $this->getAttachmentPath().$filename;
+        return $this->getAttachmentPath($filename);
     }
 
     /**
