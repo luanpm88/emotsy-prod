@@ -260,7 +260,7 @@ class Template extends Model
             $copy->name = $attributes['name'];
         }
     
-        // Important: overwrite the UID attributes        
+        // Important: overwrite the UID attributes
         $copy->uid = uniqid();
         $copy->created_at = \Carbon\Carbon::now();
         $copy->updated_at = \Carbon\Carbon::now();

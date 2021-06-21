@@ -38,15 +38,15 @@ class User extends Authenticatable
     /*******
      * Important: Storage location: User vs Customer
      * One customer (account) may have one or more users
-     * 
+     *
      * User has its own location for storing:
      * + Lock files
      * + Assets (which is used by File Manager)
-     * 
+     *
      * Customer has a common place to store account's assets (available to all users of the same account)
      * + Templates
      * + Attachments (account-wide, not individual user)
-     * 
+     *
      */
     const BASE_DIR = 'app/users'; // storage/customers/000000
     const ASSETS_DIR = 'files';

@@ -388,7 +388,7 @@ class CampaignController extends Controller
     public function templateLayout(Request $request)
     {
         $campaign = Campaign::findByUid($request->uid);
-        if ($request->category_uid) { 
+        if ($request->category_uid) {
             $category = TemplateCategory::findByUid($request->category_uid);
         } else {
             $category = TemplateCategory::first();

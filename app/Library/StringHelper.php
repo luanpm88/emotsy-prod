@@ -364,7 +364,8 @@ class StringHelper
         return $dom->saveHTML();
     }
 
-    public static function generateUniqueName($directory, $name) {
+    public static function generateUniqueName($directory, $name)
+    {
         $count = 1;
         $path = join_paths($directory, $name);
         $newName = $name;

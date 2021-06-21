@@ -18,19 +18,25 @@ class AddUserDetailsToUsersTable extends Migration
             $table->text('last_name')->text()->nullable();
         });
 
-        \DB::statement(sprintf('
+        \DB::statement(sprintf(
+            '
             UPDATE %s u SET 
             first_name = (SELECT first_name FROM %s c WHERE u.customer_id = c.id LIMIT 1),
             last_name = (SELECT last_name FROM %s c WHERE u.customer_id = c.id LIMIT 1)',
-            table('users'), table('customers'), table('customers')
+            table('users'),
+            table('customers'),
+            table('customers')
         ));
 
-        \DB::statement(sprintf('
+        \DB::statement(sprintf(
+            '
             UPDATE %s u SET 
             first_name = (SELECT first_name FROM %s a WHERE a.user_id = u.id LIMIT 1),
             last_name = (SELECT last_name FROM %s a WHERE a.user_id = u.id LIMIT 1)
             WHERE u.customer_id IS NULL;',
-            table('users'), table('admins'), table('admins')
+            table('users'),
+            table('admins'),
+            table('admins')
         ));
 
         Schema::table('customers', function (Blueprint $table) {

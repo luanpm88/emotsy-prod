@@ -19,16 +19,15 @@ class AddUrlToCampaignLinksTable extends Migration
 
         try {
             $table->dropForeign(['link_id']);
-        } catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             // ignore
         }
 
         try {
             $table->dropColumn(['link_id']);
-        } catch(\Exception $ex) {
+        } catch (\Exception $ex) {
             // ignore
         }
-
     }
 
     /**

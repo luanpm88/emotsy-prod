@@ -2190,7 +2190,8 @@ class Customer extends Model
         });
     }
 
-    public function copyTemplateAs(Template $template, $name) {
+    public function copyTemplateAs(Template $template, $name)
+    {
         $copy = $template->copy([
             'name' => $name,
             'customer_id' => $this->id

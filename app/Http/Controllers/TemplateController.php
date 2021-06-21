@@ -402,7 +402,7 @@ class TemplateController extends Controller
         
             return view('templates.builder.create', [
                 'template' => $template,
-            ]);    
+            ]);
         }
     }
     
