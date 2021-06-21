@@ -382,30 +382,28 @@ class TemplateController extends Controller
      */
     public function builderCreate(Request $request)
     {
-        $template = new Template();
-        $template->name = trans('messages.untitled_template');
-        
         // authorize
         if (!$request->user()->customer->can('create', Template::class)) {
             return $this->notAuthorized();
         }
-        
+
         // validate and save posted data
         if ($request->isMethod('post')) {
-            $currentTemplate = Template::findByUid($request->template);
+            // Get selected template
+            $selectedTemplate = Template::findByUid($request->template);
             
-            // copy from template
-            $template = $currentTemplate->copy([
-                'name' => $request->name,
-                'customer_id' => $request->user()->customer->id,
-            ]);
+            // Copy
+            $template = $request->user()->customer->copyTemplateAs($selectedTemplate, $request->name);
             
             return redirect()->action('TemplateController@builderEdit', $template->uid);
+        } else {
+            $template = new Template();
+            $template->name = trans('messages.untitled_template');
+        
+            return view('templates.builder.create', [
+                'template' => $template,
+            ]);    
         }
-
-        return view('templates.builder.create', [
-            'template' => $template,
-        ]);
     }
     
     /**

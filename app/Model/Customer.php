@@ -255,7 +255,6 @@ class Customer extends Model
         return join_paths($base, $path);
     }
 
-
     public function activeVerifiedSendingDomains()
     {
         $plan = $this->activeSubscription()->plan;
@@ -2189,5 +2188,14 @@ class Customer extends Model
                 $user->delete();
             }
         });
+    }
+
+    public function copyTemplateAs(Template $template, $name) {
+        $copy = $template->copy([
+            'name' => $name,
+            'customer_id' => $this->id
+        ]);
+
+        return $copy;
     }
 }

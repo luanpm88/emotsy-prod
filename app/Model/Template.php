@@ -252,38 +252,41 @@ class Template extends Model
     /**
      * Copy new template.
      */
-    public function copy($attributes=[])
+    public function copy($attributes = [])
     {
         $copy = $this->replicate();
+        
         if (isset($attributes['name'])) {
             $copy->name = $attributes['name'];
         }
+    
+        // Important: overwrite the UID attributes        
+        $copy->uid = uniqid();
         $copy->created_at = \Carbon\Carbon::now();
         $copy->updated_at = \Carbon\Carbon::now();
+        
         if (isset($attributes['customer_id'])) {
             $copy->admin_id = null;
             $copy->customer_id = $attributes['customer_id'];
         }
+
         if (isset($attributes['admin_id'])) {
             $copy->admin_id = $attributes['admin_id'];
             $copy->customer_id = null;
         }
+
+        // Copy directory
+        Tool::xcopy($this->getStoragePath(), $copy->getStoragePath());
+
+        // Then finally save
         $copy->save();
 
-        // categories
+        // Important: save before adding categories
         foreach ($this->categories as $category) {
             $copy->addCategory($category);
         }
 
-        // Copy uploaded folder
-        if (file_exists($this->getStoragePath())) {
-            if (!file_exists($copy->getStoragePath())) {
-                mkdir($copy->getStoragePath(), 0777, true);
-            }
-
-            \Acelle\Library\Tool::xcopy($this->getStoragePath(), $copy->getStoragePath());
-        }
-
+        // return
         return $copy;
     }
 
