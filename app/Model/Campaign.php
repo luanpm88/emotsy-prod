@@ -140,9 +140,10 @@ class Campaign extends Model
         }
 
         $this->template_id = $campaignTemplate->id;
-
         $this->save();
         $this->refresh();
+        $this->updatePlainFromHtml();
+        $this->updateLinks();
     }
     
     /**
@@ -829,25 +830,6 @@ class Campaign extends Model
             $uid = uniqid();
             $item->uid = $uid;
         });
-
-        // Created
-        static::created(function ($item) {
-            // Update links
-            if ($item->template) {
-                $item->updateLinks();
-            }
-        });
-
-        static::updating(function ($item) {
-            // Update links
-            if ($item->template) {
-                $item->updateLinks();
-            }
-        });
-
-        static::deleted(function ($item) {
-            $uploaded_dir = $item->getStoragePath();
-        });
     }
 
     /**
@@ -882,6 +864,8 @@ class Campaign extends Model
      */
     public function updateLinks()
     {
+        $this->campaignLinks()->delete();
+
         foreach ($this->getUrls() as $url) {
             // Campaign link
             if ($this->campaignLinks()->where('url', '=', $url)->count() == 0) {
@@ -2695,23 +2679,12 @@ class Campaign extends Model
     }
 
     /**
-     * Upload asset.
-     */
-    public function uploadAsset($file)
-    {
-        return $this->customer->user->uploadAsset($file);
-    }
-
-    /**
      * Upload a template.
      */
     public function uploadTemplate($request)
     {
-        $template = \Acelle\Model\Template::upload($request);
-        $this->copyFromTemplate($template);
-
-        // update plain
-        $this->updatePlainFromHtml();
+        $template = Template::uploadTemplate($request);
+        $this->setTemplate($template);
     }
 
     /**

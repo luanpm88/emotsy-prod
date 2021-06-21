@@ -85,17 +85,6 @@ class CampaignController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-    }
-
-    /**
      * Display the specified resource.
      *
      * @param int $id
@@ -154,18 +143,6 @@ class CampaignController extends Controller
         } elseif ($campaign->step() >= 4) {
             return redirect()->action('CampaignController@confirm', ['uid' => $campaign->uid]);
         }
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int                      $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
     }
 
     /**
@@ -228,24 +205,6 @@ class CampaignController extends Controller
             // redirect to the next step
             return redirect()->action('CampaignController@setup', ['uid' => $campaign->uid]);
         }
-
-        //// validate and save posted data
-        //if ($request->isMethod('post')) {
-        //
-        //    // Check validation
-        //    $this->validate($request, Campaign::$rules);
-        //
-        //    // Save campaign
-        //    $campaign->mail_list_id = \Acelle\Model\MailList::findByUid($request->mail_list_uid)->id;
-        //    if ($request->segment_uid) {
-        //        $campaign->segment_id = \Acelle\Model\Segment::findByUid($request->segment_uid)->id;
-        //    } else {
-        //        $campaign->segment_id = null;
-        //    }
-        //    $campaign->save();
-        //
-        //    return redirect()->action('CampaignController@setup', ['uid' => $campaign->uid]);
-        //}
 
         return view('campaigns.recipients', [
             'campaign' => $campaign,
@@ -403,9 +362,6 @@ class CampaignController extends Controller
             $template = \Acelle\Model\Template::findByUid($request->template);
             $campaign->setTemplate($template);
 
-            // update plain
-            $campaign->updatePlainFromHtml();
-
             // return redirect()->action('CampaignController@templateEdit', $campaign->uid);
             return response()->json([
                 'status' => 'success',
@@ -554,9 +510,6 @@ class CampaignController extends Controller
         // validate and save posted data
         if ($request->isMethod('post')) {
             $campaign->uploadTemplate($request);
-
-            // update plain
-            $campaign->updatePlainFromHtml();
 
             // return redirect()->action('CampaignController@template', $campaign->uid);
             return response()->json([

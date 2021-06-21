@@ -392,30 +392,6 @@ class User extends Authenticatable
         return join_paths($base, $path);
     }
 
-    public function uploadAsset($file)
-    {
-        // store to storage/app/users/{uid}/home/files/
-        $assetdir = $this->getAssetsPath(self::ASSETS_DIR);
-        $newname = $file->getClientOriginalName();
-        $newpath = join_paths($assetdir, $newname);
-
-        // In case file name conflicts
-        $i = 1;
-        while (file_exists($newpath)) {
-            $newname = $file->getClientOriginalName()."_".$i;
-            $newpath = join_paths($assetdir, $newname);
-            ++$i;
-        }
-
-        // Move uploaded file
-        $file->move(
-            $assetdir,
-            $newname
-        );
-
-        return $newname;
-    }
-
     /**
      * Generate one time token.
      */
