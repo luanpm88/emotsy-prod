@@ -1083,7 +1083,7 @@ class Automation2Controller extends Controller
         }
 
         return view('automation2.email.template.content', [
-            'content' => $email->render(),
+            'content' => $email->getTemplateContent(),
         ]);
     }
 
@@ -1173,26 +1173,15 @@ class Automation2Controller extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
-            list($result, $validator) = $email->uploadTemplate($request);
-            
-            if (!$result) {
-                // update email plain text
-                $email->updatePlainFromContent();
+            $email->uploadTemplate($request);
 
-                return response()->view('automation2.email.template.upload', [
-                    'automation' => $automation,
-                    'email' => $email,
-                    'errors' => $validator->errors(),
-                ], 400);
-            } else {
-                // update links
-                $email->updateLinks();
+            // return redirect()->action('CampaignController@template', $campaign->uid);
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.automation.email.template.uploaded')
+            ]);
 
-                return response()->json([
-                    'status' => 'success',
-                    'message' => trans('messages.automation.email.template.uploaded'),
-                ], 201);
-            }
+            // throw a validation error otherwise
         }
 
         return view('automation2.email.template.upload', [
@@ -1814,15 +1803,8 @@ class Automation2Controller extends Controller
             );
             
             $this->validate($request, $rules);
-            
-            $email->setTemplateContent($request->content);
-            $email->save();
 
-            // update email plain text
-            $email->updatePlainFromContent();
-            
-            // update links
-            $email->updateLinks();
+            $email->setTemplateContent($request->content);
 
             return response()->json([
                 'status' => 'success',
