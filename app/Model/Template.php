@@ -710,32 +710,6 @@ class Template extends Model
      *
      * @return mixed
      */
-    public function getBuilderTemplates($customer)
-    {
-        $result = [];
-
-        // Gallery
-        $templates = self::shared()
-            ->orWhere('customer_id', '=', $customer->id)
-            ->orderBy('customer_id')
-            ->get();
-
-        foreach ($templates as $template) {
-            $result[] = [
-                'name' => $template->name,
-                'url' => action('TemplateController@builderChangeTemplate', ['uid' => $this->uid, 'change_uid' => $template->uid]),
-                'thumbnail' => $template->getThumbUrl(),
-            ];
-        }
-
-        return $result;
-    }
-
-    /**
-     * Get builder templates.
-     *
-     * @return mixed
-     */
     public function getBuilderAdminTemplates()
     {
         $result = [];

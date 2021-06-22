@@ -2199,4 +2199,30 @@ class Customer extends Model
 
         return $copy;
     }
+
+    /**
+     * Get builder templates.
+     *
+     * @return mixed
+     */
+    public function getBuilderTemplates()
+    {
+        $result = [];
+
+        // Gallery
+        $templates = \Acelle\Model\Template::where('customer_id', '=', null)
+            ->orWhere('customer_id', '=', $this->id)
+            ->orderBy('customer_id')
+            ->get();
+
+        foreach ($templates as $template) {
+            $result[] = [
+                'name' => $template->name,
+                'url' => action('CampaignController@templateChangeTemplate', ['uid' => $this->uid, 'template_uid' => $template->uid]),
+                'thumbnail' => $template->getThumbUrl(),
+            ];
+        }
+
+        return $result;
+    }
 }

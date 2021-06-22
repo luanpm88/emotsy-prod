@@ -139,31 +139,6 @@ class Email extends Model
     }
 
     /**
-     * Get builder templates.
-     *
-     * @return mixed
-     */
-    public function getBuilderTemplates($customer)
-    {
-        $result = [];
-
-        // Gallery
-        $templates = Template::where('customer_id', '=', null)
-            ->orWhere('customer_id', '=', $customer->id)
-            ->orderBy('customer_id')
-            ->get();
-
-        foreach ($templates as $template) {
-            $result[] = [
-                'name' => $template->name,
-                'thumbnail' => $template->getThumbUrl(),
-            ];
-        }
-
-        return $result;
-    }
-
-    /**
      * Upload attachment.
      */
     public function uploadAttachment($file)

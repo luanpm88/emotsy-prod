@@ -465,7 +465,7 @@ class CampaignController extends Controller
         return view('campaigns.template.edit', [
             'campaign' => $campaign,
             'list' => $campaign->defaultMailList,
-            'templates' => $campaign->getBuilderTemplates($request->user()->customer),
+            'templates' => $request->user()->customer->getBuilderTemplates(),
         ]);
     }
 

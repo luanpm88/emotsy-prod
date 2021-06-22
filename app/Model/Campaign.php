@@ -3685,32 +3685,6 @@ class Campaign extends Model
         return $this->defaultMailList->pickSendingServer();
     }
 
-    /**
-     * Get builder templates.
-     *
-     * @return mixed
-     */
-    public function getBuilderTemplates($customer)
-    {
-        $result = [];
-
-        // Gallery
-        $templates = Template::where('customer_id', '=', null)
-            ->orWhere('customer_id', '=', $customer->id)
-            ->orderBy('customer_id')
-            ->get();
-
-        foreach ($templates as $template) {
-            $result[] = [
-                'name' => $template->name,
-                'url' => action('CampaignController@templateChangeTemplate', ['uid' => $this->uid, 'template_uid' => $template->uid]),
-                'thumbnail' => $template->getThumbUrl(),
-            ];
-        }
-
-        return $result;
-    }
-
     public function logger()
     {
         if (!is_null($this->logger)) {

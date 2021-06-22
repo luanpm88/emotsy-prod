@@ -1027,7 +1027,7 @@ class Automation2Controller extends Controller
             'automation' => $automation,
             'list' => $automation->mailList,
             'email' => $email,
-            'templates' => $email->getBuilderTemplates($request->user()->customer),
+            'templates' => $request->user()->customer->getBuilderTemplates(),
         ]);
     }
 
