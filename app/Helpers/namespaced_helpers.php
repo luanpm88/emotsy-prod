@@ -22,8 +22,23 @@ function generatePublicPath($absPath, $absolute = false)
         throw new Exception(sprintf("Invalid path '%s', cannot make it public", $absPath));
     }
 
+    // Do not use string replace, as path parts may occur more than once
+    // For example: abc/xyz/abc/xyz...
     $relativePath = substr($absPath, strlen($excludeBase));
     $encodedUrl = StringHelper::base64UrlEncode($relativePath);
 
-    return route('public_assets', [ 'path' => $encodedUrl ], $absolute);
+    // If Laravel is under a subdirectory
+    $appUrlInfo = parse_url(url('/'));
+    $subdirectory = array_key_exists('path', $appUrlInfo) ? $appUrlInfo['path'] : null;
+
+    if (empty($subdirectory) || $absolute) {
+        // Return something like
+        //     "http://localhost/{subdirectory if any}/p/assets/ef99238abc92f43e038efb"   # absolute = true, OR
+        //     "/p/assets/ef99238abc92f43e038efb"                   # absolute = false
+        $url = route('public_assets', [ 'path' => $encodedUrl ], $absolute);
+    } else {
+        $url = join_paths($subdirectory, route('public_assets', [ 'path' => $encodedUrl ], $absolute));
+    }
+
+    return $url;
 }
