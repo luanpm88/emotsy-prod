@@ -143,7 +143,6 @@ class TemplateController extends Controller
                 return response()->json($validator->errors(), 400);
             }
             
-            $template->untransform();
             $template->save();
 
             // success
@@ -291,7 +290,6 @@ class TemplateController extends Controller
             $this->validate($request, $rules);
             
             $template->content = $request->content;
-            $template->untransform();
             $template->save();
             
             return response()->json([
@@ -346,7 +344,7 @@ class TemplateController extends Controller
         }
 
         return view('templates.builder.content', [
-            'content' => $template->getParsedContent(),
+            'content' => $template->content,
         ]);
     }
     
@@ -366,10 +364,10 @@ class TemplateController extends Controller
             return $this->notAuthorized();
         }
         
-        $filename = $template->uploadAsset($request->file('file'));
+        $assetUrl = $template->uploadAsset($request->file('file'));
 
         return response()->json([
-            'url' => route('customer_files', ['uid' => $request->user()->uid, 'name' => $filename])
+            'url' => $assetUrl
         ]);
     }
     
@@ -382,30 +380,28 @@ class TemplateController extends Controller
      */
     public function builderCreate(Request $request)
     {
-        $template = new Template();
-        $template->name = trans('messages.untitled_template');
-        
         // authorize
         if (!$request->user()->customer->can('create', Template::class)) {
             return $this->notAuthorized();
         }
-        
+
         // validate and save posted data
         if ($request->isMethod('post')) {
-            $currentTemplate = Template::findByUid($request->template);
+            // Get selected template
+            $selectedTemplate = Template::findByUid($request->template);
             
-            // copy from template
-            $template = $currentTemplate->copy([
-                'name' => $request->name,
-                'customer_id' => $request->user()->customer->id,
-            ]);
+            // Copy
+            $template = $request->user()->customer->copyTemplateAs($selectedTemplate, $request->name);
             
             return redirect()->action('TemplateController@builderEdit', $template->uid);
+        } else {
+            $template = new Template();
+            $template->name = trans('messages.untitled_template');
+        
+            return view('templates.builder.create', [
+                'template' => $template,
+            ]);
         }
-
-        return view('templates.builder.create', [
-            'template' => $template,
-        ]);
     }
     
     /**

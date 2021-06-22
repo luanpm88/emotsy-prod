@@ -38,7 +38,7 @@ class TemplateController extends Controller
             return $this->notAuthorized();
         }
 
-        $templates = \Acelle\Model\Template::shared()
+        $templates = Template::shared()
             ->filter($request)
             ->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)
@@ -86,7 +86,7 @@ class TemplateController extends Controller
     {
         // Generate info
         $user = $request->user();
-        $template = \Acelle\Model\Template::findByUid($uid);
+        $template = Template::findByUid($uid);
 
         // authorize
         if (!$request->user()->admin->can('update', $template)) {
@@ -115,7 +115,7 @@ class TemplateController extends Controller
     {
         // Generate info
         $user = $request->user();
-        $template = \Acelle\Model\Template::findByUid($request->uid);
+        $template = Template::findByUid($request->uid);
 
         // authorize
         if (!$request->user()->admin->can('update', $template)) {
@@ -141,7 +141,6 @@ class TemplateController extends Controller
                 return response()->json($validator->errors(), 400);
             }
             
-            $template->untransform();
             $template->save();
 
             // success
@@ -198,17 +197,19 @@ class TemplateController extends Controller
             ], 403);
         }
 
-        $items = \Acelle\Model\Template::whereIn('uid', explode(',', $request->uids));
-
+        $templates = Template::whereIn('uid', explode(',', $request->uids));
+        $total = $templates->count();
+        $deleted = 0;
         foreach ($templates->get() as $template) {
             // authorize
-            if ($request->user()->customer->can('delete', $template)) {
+            if ($request->user()->admin->can('delete', $template)) {
                 $template->deleteAndCleanup();
+                $deleted += 1;
             }
         }
 
         // Redirect to my lists page
-        echo trans('messages.templates.deleted');
+        echo trans('messages.templates.deleted', [ 'deleted' => $deleted, 'total' => $total]);
     }
 
     /**
@@ -220,7 +221,7 @@ class TemplateController extends Controller
      */
     public function preview(Request $request, $id)
     {
-        $template = \Acelle\Model\Template::findByUid($id);
+        $template = Template::findByUid($id);
 
         // authorize
         if (!$request->user()->admin->can('preview', $template)) {
@@ -243,7 +244,7 @@ class TemplateController extends Controller
     {
         $sort = json_decode($request->sort);
         foreach ($sort as $row) {
-            $item = \Acelle\Model\Template::findByUid($row[0]);
+            $item = Template::findByUid($row[0]);
 
             // authorize
             if (!$request->user()->admin->can('update', $item)) {
@@ -251,7 +252,6 @@ class TemplateController extends Controller
             }
 
             $item->custom_order = $row[1];
-            $item->untransform();
             $item->save();
         }
 
@@ -267,7 +267,7 @@ class TemplateController extends Controller
      */
     public function copy(Request $request)
     {
-        $template = \Acelle\Model\Template::findByUid($request->uid);
+        $template = Template::findByUid($request->uid);
 
         if ($request->isMethod('post')) {
             // authorize
@@ -313,7 +313,6 @@ class TemplateController extends Controller
             $this->validate($request, $rules);
             
             $template->content = $request->content;
-            $template->untransform();
             $template->save();
 
             return response()->json([
@@ -346,7 +345,7 @@ class TemplateController extends Controller
         }
 
         return view('admin.templates.builder.content', [
-            'content' => $template->getParsedContent(),
+            'content' => $template->content,
         ]);
     }
     
@@ -366,10 +365,10 @@ class TemplateController extends Controller
             return $this->notAuthorized();
         }
         
-        $filename = $template->uploadAsset($request->file('file'));
+        $assetUrl = $template->uploadAsset($request->file('file'));
 
         return response()->json([
-            'url' => route('customer_files', ['uid' => $request->user()->uid, 'name' => $filename])
+            'url' => $assetUrl
         ]);
     }
     

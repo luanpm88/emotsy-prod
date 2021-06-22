@@ -15,7 +15,7 @@
             <li class="active">{{ trans('messages.contact_information') }}</li>
         </ul>
         <h1>
-            <span class="text-semibold"><i class="icon-address-book3"></i> {{ $customer->displayName() }}</span>
+            <span class="text-semibold"><i class="icon-address-book3"></i> {{ $user->displayName() }}</span>
         </h1>
     </div>
 

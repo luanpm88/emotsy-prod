@@ -609,8 +609,7 @@ class Plugin extends Model
         foreach ($possibleFileNames as $file) {
             $absPath = $this->getStoragePath($file);
             if (file_exists($absPath)) {
-                $relativePath =  $this->getStoragePath($file, $absolute = false);
-                return \Acelle\Helpers\generatePublicPath($relativePath);
+                return \Acelle\Helpers\generatePublicPath($absPath);
             }
         }
 

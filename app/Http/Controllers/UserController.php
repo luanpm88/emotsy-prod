@@ -4,6 +4,8 @@ namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Acelle\Library\Log as MailLog;
+use Acelle\Model\Customer;
+use Acelle\Model\User;
 
 class UserController extends Controller
 {
@@ -15,9 +17,9 @@ class UserController extends Controller
     {
         // Get current user
         if ($request->uid != '0') {
-            $user = \Acelle\Model\User::findByUid($request->uid);
+            $user = User::findByUid($request->uid);
         } else {
-            $user = new \Acelle\Model\User();
+            $user = new User();
         }
         if (!empty($user->imagePath()) && file_exists($user->imagePath())) {
             $img = \Image::make($user->imagePath());
@@ -47,7 +49,7 @@ class UserController extends Controller
     public function loginBack(Request $request)
     {
         $id = \Session::pull('orig_user_id');
-        $orig_user = \Acelle\Model\User::findByUid($id);
+        $orig_user = User::findByUid($id);
 
         \Auth::login($orig_user);
 
@@ -89,7 +91,7 @@ class UserController extends Controller
      */
     public function resendActivationEmail(Request $request)
     {
-        $user = \Acelle\Model\User::findByUid($request->uid);
+        $user = User::findByUid($request->uid);
 
         try {
             $user->sendActivationMail($user->email, action('HomeController@index'));
@@ -109,65 +111,50 @@ class UserController extends Controller
             return $this->notAuthorized();
         }
 
-        // Customer account
-        $user = $request->user();
-        $is_customer_logged_in = is_object($user) && is_object($user->customer);
-        if ($is_customer_logged_in) {
+        // If already logged in
+        if (!is_null($request->user())) {
             return redirect()->action('AccountSubscriptionController@index');
-        } else {
-            $customer = new \Acelle\Model\Customer();
-            $customer->uid = 0;
-            $customer->status = \Acelle\Model\Customer::STATUS_ACTIVE;
-            if (!empty($request->old())) {
-                $customer->fill($request->old());
-                // User info
-                $customer->user = new \Acelle\Model\User();
-                $customer->user->fill($request->old());
-            }
+        }
+
+        // Initiate customer object for filling the form
+        $customer = new Customer();
+        $user = new User();
+        if (!empty($request->old())) {
+            $customer->fill($request->old());
+            $user->fill($request->old());
         }
 
         // save posted data
         if ($request->isMethod('post')) {
-            // Validation
-            if ($is_customer_logged_in) {
-            } else {
-                $rules = $customer->registerRules();
+            $user->fill($request->all());
+            $rules = $user->registerRules();
 
-                // Captcha check
-                if (\Acelle\Model\Setting::get('registration_recaptcha') == 'yes') {
-                    $success = \Acelle\Library\Tool::checkReCaptcha($request);
-                    if (!$success) {
-                        $rules['recaptcha_invalid'] = 'required';
-                    }
+            // Captcha check
+            if (\Acelle\Model\Setting::get('registration_recaptcha') == 'yes') {
+                $success = \Acelle\Library\Tool::checkReCaptcha($request);
+                if (!$success) {
+                    $rules['recaptcha_invalid'] = 'required';
                 }
-
-                $this->validate($request, $rules);
             }
 
-            // Save customer
-            if (!$is_customer_logged_in) {
-                $customer->updateInformation($request);
-            }
+            $this->validate($request, $rules);
+
+            // Okay, create it
+            $user = $customer->createAccountAndUser($request);
 
             // Send registration confirmation email
-            if ($is_customer_logged_in) {
-            } else {
-                $user = \Acelle\Model\User::find($customer->user_id);
-
-                try {
-                    $user->sendActivationMail($customer->displayName());
-                } catch (\Exception $e) {
-                    $error = $e->getMessage();
-                    MailLog::error($error);
-                    return view('somethingWentWrong', ['message' => trans('messages.something_went_wrong_with_email_service') . ": " . $error]);
-                }
-
-                return view('users.register_confirmation_notice');
+            try {
+                $user->sendActivationMail($user->displayName());
+            } catch (\Exception $e) {
+                return view('somethingWentWrong', ['message' => trans('messages.something_went_wrong_with_email_service') . ": " . $e->getMessage()]);
             }
+
+            return view('users.register_confirmation_notice');
         }
 
         return view('users.register', [
             'customer' => $customer,
+            'user' => $user,
         ]);
     }
 }

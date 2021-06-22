@@ -8,7 +8,7 @@
 @endsection
 
 @section('content')
-    <h1 class="mb-10">{!! trans('messages.frontend_dashboard_hello', ['name' => Auth::user()->customer->displayName()]) !!}</h1>
+    <h1 class="mb-10">{!! trans('messages.frontend_dashboard_hello', ['name' => Auth::user()->displayName()]) !!}</h1>
     <p>{!! trans('messages.frontend_dashboard_welcome') !!}</p>
 
     <h3 class=" mb-10 mt-40"><i class="icon-stats-bars4"></i> {{ trans("messages.used_quota") }}</h3>
@@ -288,7 +288,7 @@
 
                                 <div class="panel panel-flat timeline-content">
                                     <div class="panel-heading">
-                                        <h6 class="panel-title text-semibold">{{ $log->customer->displayName() }}</h6>
+                                        <h6 class="panel-title text-semibold">{{ $log->customer->user->displayName() }}</h6>
                                         <div class="heading-elements">
                                             <span class="heading-text"><i class="icon-history position-left text-success"></i> {{ Tool::dateTime($log->created_at)->diffForHumans() }}</span>
                                         </div>

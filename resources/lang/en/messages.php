@@ -262,7 +262,7 @@
   'sending_servers.disabled' => 'One or more sending servers were successfully disabled',
   'sending_servers.enabled' => 'One or more sending servers were successfully enabled',
   'segments.deleted' => 'One or more segments were successfully deleted',
-  'templates.deleted' => 'One or more templates were successfully deleted',
+  'templates.deleted' => ':deleted/:total template(s) were successfully deleted',
   'blacklists.deleted' => 'One or more emails were successfully removed from blacklist',
   'edit_segment' => 'Update segment',
   'all' => 'All',
@@ -3668,7 +3668,7 @@
   'automation.operation.change' => 'Change operation',
   'template.category' => 'Category',
   'template.all_categories' => 'All categories',
-  'campaign.template_name' => 'Campaign: :name',
+  'campaign.template_name' => '[Campaign: ":name"]',
   'template.set_template_category' => 'Set template category',
   'template.set_template_category.intro' => 'Choose one or more categories for your template
     <br>Notice: if your template does not fall upon any category, it will not be visible to users.',
@@ -3678,4 +3678,5 @@
   'plan.sending_server_empty' => 'No delivery server selected',
   'plan.sending_server_empty.setting' => 'No delivery server selected',
   'transaction_for_invoice' => 'Transaction for invoice <span class="font-weight-semibold">#:uid</span>',
+  'no_template_available' => 'No template availabel',
 ) ?>

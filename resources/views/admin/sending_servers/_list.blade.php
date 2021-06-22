@@ -42,11 +42,6 @@
                             <a class="kq_search" href="{{ action('Admin\SendingServerController@edit', ["id" => $item->uid, "type" => $item->type]) }}">{{ $item->name }}</a>
                         </h5>
                     @endif
-                    <span class="text-muted">
-                        {!! is_object($item->admin) ? '<i class="icon-user-tie"></i>' . $item->admin->displayName() : '' !!}
-                        {!! is_object($item->customer) ? '<i class="icon-user"></i>' . $item->customer->displayName() : '' !!}
-                    </span>
-                    <br />
                     <span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
                 </td>
                 <td>

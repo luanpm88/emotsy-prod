@@ -185,7 +185,7 @@
 		<div class="btn-close-pnotify">{{ trans('messages.notify.clear_all') }}</div>
 		@if (null !== Session::get('orig_admin_id') && Auth::user()->admin)
 			<div class="alert ui-pnotify-container alert-warning ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
-				<h4 class="ui-pnotify-title">{!! trans('messages.current_login_as', ["name" => Auth::user()->admin->displayName()]) !!}</h4>
+				<h4 class="ui-pnotify-title">{!! trans('messages.current_login_as', ["name" => Auth::user()->displayName()]) !!}</h4>
 				<div class="ui-pnotify-text">
 					{!! trans('messages.click_to_return_to_origin_user', ["link" => action("Admin\AdminController@loginBack")]) !!}
 				</div>

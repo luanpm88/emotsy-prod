@@ -92,7 +92,7 @@ class TemplatePolicy
             case 'admin':
                 $ability = $user->admin->getPermission('template_delete');
                 $can = $ability == 'all'
-                    || ($ability == 'own' && $user->admin->id == $item->admin_id);
+                    || ($ability == 'own');
                 break;
             case 'customer':
                 $can = $user->customer->id == $item->customer_id;

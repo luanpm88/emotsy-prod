@@ -32,8 +32,8 @@
 						</a>
 					</h5>
 					<div class="text-muted">
-						{!! is_object($template->admin) ? '<i class="icon-user-tie"></i>' . $template->admin->displayName() : '' !!}
-						{!! is_object($template->customer) ? '<i class="icon-user"></i>' . $template->customer->displayName() : '' !!}
+						{!! is_object($template->admin) ? '<i class="icon-user-tie"></i>' . $template->admin->id : '' !!}
+						{!! is_object($template->customer) ? '<i class="icon-user"></i>' . $template->customer->id : '' !!}
 					</div>
 					<span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($template->created_at) }}</span>
 				</td>

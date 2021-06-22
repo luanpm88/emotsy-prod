@@ -17,18 +17,23 @@ class AddUrlToCampaignLinksTable extends Migration
             $table->text('url');
         });
 
+        Schema::dropIfExists('links');
+
         try {
-            $table->dropForeign(['link_id']);
-        } catch(\Exception $ex) {
+            Schema::table('campaign_links', function (Blueprint $table) {
+                $table->dropForeign(['link_id']);
+            });
+        } catch (\Exception $ex) {
             // ignore
         }
 
         try {
-            $table->dropColumn(['link_id']);
-        } catch(\Exception $ex) {
+            Schema::table('campaign_links', function (Blueprint $table) {
+                $table->dropColumn(['link_id']); 
+            });
+        } catch (\Exception $ex) {
             // ignore
         }
-
     }
 
     /**

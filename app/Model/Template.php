@@ -28,20 +28,16 @@ use Validator;
 use ZipArchive;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
-use Acelle\Library\Tool;
 use Acelle\Library\Rss;
-use Acelle\Library\Storage\Contracts\Storable;
 use Illuminate\Validation\ValidationException;
 use KubAT\PhpSimple\HtmlDomParser;
+use Acelle\Library\Tool;
+use Acelle\Library\StringHelper;
 
-class Template extends Model implements Storable
+class Template extends Model
 {
-    const STORAGE_DIR = 'templates';
-
-    const CATEGORY_WOO = 'woo';
-    const CATEGORY_BASIC = 'basic';
-    const CATEGORY_FEATURED = 'featured';
-    const CATEGORY_THEME = 'theme';
+    const BUILDER_ENABLED = true;
+    const BUILDER_DISABLED = false;
 
     /**
      * The attributes that are mass assignable.
@@ -49,7 +45,7 @@ class Template extends Model implements Storable
      * @var array
      */
     protected $fillable = [
-        'name', 'content',
+        'name', 'content', 'builder'
     ];
 
     /**
@@ -70,7 +66,9 @@ class Template extends Model implements Storable
         static::creating(function ($item) {
             // Create new uid
             $uid = uniqid();
-            $item->uid = $uid;
+            if (is_null($item->uid)) {
+                $item->uid = $uid;
+            }
         });
     }
 
@@ -209,21 +207,13 @@ class Template extends Model implements Storable
     }
 
     /**
-     * Replace url from content.
-     */
-    public function replaceHtmlUrl($template_path)
-    {
-        $this->content = \Acelle\Library\Tool::replaceTemplateUrl($this->content, $template_path);
-    }
-
-    /**
      * Display creator name.
      *
      * @return string
      */
     public function displayCreatorName()
     {
-        return is_object($this->admin) ? $this->admin->displayName() : (is_object($this->customer) ? $this->customer->displayName() : '');
+        return is_object($this->admin) ? $this->admin->user->displayName() : (is_object($this->customer) ? $this->customer->user->displayName() : '');
     }
 
     /**
@@ -263,67 +253,70 @@ class Template extends Model implements Storable
     /**
      * Copy new template.
      */
-    public function copy($attributes=[])
+    public function copy($attributes = [])
     {
         $copy = $this->replicate();
+        
         if (isset($attributes['name'])) {
             $copy->name = $attributes['name'];
         }
+    
+        // Important: overwrite the UID attributes
+        $copy->uid = uniqid();
         $copy->created_at = \Carbon\Carbon::now();
         $copy->updated_at = \Carbon\Carbon::now();
+        
         if (isset($attributes['customer_id'])) {
             $copy->admin_id = null;
             $copy->customer_id = $attributes['customer_id'];
         }
+
         if (isset($attributes['admin_id'])) {
             $copy->admin_id = $attributes['admin_id'];
             $copy->customer_id = null;
         }
+
+        // Copy directory
+        Tool::xcopy($this->getStoragePath(), $copy->getStoragePath());
+
+        // Then finally save
         $copy->save();
 
-        // categories
+        // Important: save before adding categories
         foreach ($this->categories as $category) {
             $copy->addCategory($category);
         }
 
-        // Copy uploaded folder
-        if (file_exists($this->getStoragePath())) {
-            if (!file_exists($copy->getStoragePath())) {
-                mkdir($copy->getStoragePath(), 0777, true);
-            }
-
-            \Acelle\Library\Tool::xcopy($this->getStoragePath(), $copy->getStoragePath());
-        }
-
+        // return
         return $copy;
     }
 
     /**
      * Load from directory.
      */
-    public function loadFromDirectory($tmp_path)
+    public function loadContent($directory)
     {
         // try to find the main file, index.html | index.html | file_name.html | ...
-        $main_file = null;
+        $indexFile = null;
         $thumb = null;
         $sub_path = '';
 
         // find index
-        $possible_main_file_names = array('index.html', 'index.htm');
-        foreach ($possible_main_file_names as $name) {
-            if (is_file($file = $tmp_path.'/'.$name)) {
-                $main_file = $file;
+        $possible_indexFile_names = array('index.html', 'index.htm');
+        foreach ($possible_indexFile_names as $name) {
+            if (is_file($file = join_paths($directory, $name))) {
+                $indexFile = $file;
                 break;
             }
         }
         // if not find any first html file
-        if ($main_file === null) {
-            $objects = scandir($tmp_path);
+        if ($indexFile === null) {
+            $objects = scandir($directory);
             foreach ($objects as $object) {
                 if ($object != '.' && $object != '..') {
-                    if (!is_dir($tmp_path.'/'.$object)) {
+                    if (!is_dir(join_paths($directory, $object))) {
                         if (preg_match('/\.html?$/i', $object)) {
-                            $main_file = $tmp_path.'/'.$object;
+                            $indexFile = $directory.'/'.$object;
                             break;
                         }
                     }
@@ -332,27 +325,18 @@ class Template extends Model implements Storable
         }
 
         // can not find main file
-        if ($main_file === null) {
+        if ($indexFile === null) {
             $validator = Validator::make(['file' => ''], []);
-            $validator->errors()->add('file', 'Cannot find main HTML file');
+            $validator->errors()->add('file', 'Cannot find index HTML file');
             throw new ValidationException($validator);
         }
 
         // read main file content
-        $html_content = trim(file_get_contents($main_file));
+        $html_content = trim(file_get_contents($indexFile));
         $this->content = $html_content;
-        $this->untransform();
-        $this->save();
-
-        // upload path
-        $upload_path = $this->getStoragePath();
-
-        // copy all folder to upload path
-        if (!file_exists($upload_path)) {
-            mkdir($upload_path, 0777, true);
-        }
-        // exec("cp -r {$tmp_path}/* {$public_upload_path}/");
-        Tool::xcopy($tmp_path, $upload_path);
+        Tool::xcopy($directory, $this->getStoragePath());
+        $this->transformAssetsUrls(); // already save
+        return $this;
     }
 
     /**
@@ -384,14 +368,14 @@ class Template extends Model implements Storable
         }
 
         // move file to temp place
-        $tmp_path = storage_path('tmp/uploaded_template_'.$user->id.'_'.time());
-        $file_name = $request->file('file')->getClientOriginalName();
-        $request->file('file')->move($tmp_path, $file_name);
-        $tmp_zip = join_paths($tmp_path, $file_name);
+        $tmpPath = storage_path('tmp/uploaded_template_'.$user->id.'_'.time());
+        $tmpName = $request->file('file')->getClientOriginalName();
+        $request->file('file')->move($tmpPath, $tmpName);
+        $tmpZip = join_paths($tmpPath, $tmpName);
 
         // read zip file check if zip archive invalid
         $zip = new ZipArchive();
-        if ($zip->open($tmp_zip, ZipArchive::CREATE) !== true) {
+        if ($zip->open($tmpZip, ZipArchive::CREATE) !== true) {
             // @todo hack
             // $validator = Validator::make([], []); // Empty data and rules fields
             $validator->errors()->add('file', 'Cannot open .zip file');
@@ -399,40 +383,25 @@ class Template extends Model implements Storable
         }
 
         // unzip template archive and remove zip file
-        $zip->extractTo($tmp_path);
+        $zip->extractTo($tmpPath);
         $zip->close();
-        unlink($tmp_zip);
+        unlink($tmpZip);
 
-        // Save new template
-        $template = new self();
-        $template->source = self::SOURCE_UPLOADED;
+        // Build template's attributes
+        $attributes = $request->all();
+        $attributes['builder'] = self::BUILDER_DISABLED;
 
         if ($asAdmin) {
-            $template->admin_id = $user->admin->id;
+            $attributes['admin_id'] = $request->user()->admin->id;
         } else {
-            $template->customer_id = $user->customer->id;
+            $attributes['customer_id'] = $request->user()->customer->id;
         }
 
-        $template->fill($request->all());
-
-        // UID is critically required by untransform()
-        $template->uid = uniqid();
-        $template->untransform();
-
-        $template->save();
-
-        $template->loadFromDirectory($tmp_path);
-
-        // remove tmp folder
-        // exec("rm -r {$tmp_path}");
-        Tool::xdelete($tmp_path);
+        // Save new template
+        $template = self::createFromDirectory($attributes, $tmpPath);
+        Tool::xdelete($tmpPath);
 
         return $template;
-    }
-
-    public function getArchivePath() : string
-    {
-        return join_paths('users', $this->getPath().'.zip');
     }
 
     public function toZip() : string
@@ -477,14 +446,12 @@ class Template extends Model implements Storable
     {
         if ($this->customer) {
             // storage/app/users/{uid}/templates
-            $base = $this->customer->user->getStoragePath(self::STORAGE_DIR);
+            $base = $this->customer->getTemplatesPath($this->uid);
         } else {
             // storage/app/users/admin/templates
             // IMPORTANT: templates are created from migration without associating with an admin
-            $base = $this->getAdminStoragePath(self::STORAGE_DIR);
+            $base = $this->getSystemStoragePath($this->uid);
         }
-
-        $base = join_paths($base, $this->uid);
 
         if (!\File::exists($base)) {
             \File::makeDirectory($base, 0777, true, true);
@@ -493,9 +460,9 @@ class Template extends Model implements Storable
         return join_paths($base, $path);
     }
 
-    public function getAdminStoragePath($path = '')
+    private function getSystemStoragePath($path = null)
     {
-        $base = storage_path('app/system');
+        $base = storage_path('app/templates/');
 
         if (!\File::exists($base)) {
             \File::makeDirectory($base, 0777, true, true);
@@ -510,9 +477,10 @@ class Template extends Model implements Storable
     public function getThumbName()
     {
         // find index
-        $names = array('thumbnail.png', 'thumbnail.jpg', 'thumbnail.png', 'thumb.jpg', 'thumb.png');
+        $names = array('thumbnail.svg', 'thumbnail.png', 'thumbnail.jpg', 'thumb.svg', 'thumb.png', 'thumb.jpg');
         foreach ($names as $name) {
-            if (is_file($file = $this->getStoragePath().$name)) {
+            $path = $this->getStoragePath($name);
+            if (file_exists($path)) {
                 return $name;
             }
         }
@@ -523,160 +491,54 @@ class Template extends Model implements Storable
     /**
      * Get thumb.
      */
-    public function getThumb()
-    {
-        // find index
-        if ($this->getThumbName()) {
-            return $this->getStoragePath().$this->getThumbName();
-        }
-
-        return;
-    }
-
-    /**
-     * Get thumb.
-     */
     public function getThumbUrl()
     {
-        // @todo workaround
-        // to avoid exception thrown by route(template_assets)
         if (is_null($this->uid)) {
-            return;
+            throw new Exception('Cannot getThumbUrl(), template does not have a UID, cannot transform content');
         }
 
         if ($this->getThumbName()) {
-            return route('template_assets', ['uid' => $this->uid, 'name' => $this->getThumbName()]);
+            return \Acelle\Helpers\generatePublicPath($this->getStoragePath($this->getThumbName()));
         } else {
             return url('assets/images/placeholder.jpg');
         }
     }
 
-    /**
-     * transform URL.
-     */
-    public function untransform()
+    public function transformAssetsUrls()
     {
-        // @todo workaround
-        // to avoid exception thrown by route(template_assets)
-        if (is_null($this->uid)) {
-            return;
-        }
-
-        // replace absolute urls
-        $this->content = str_replace(
-            route('template_assets', ['uid' => $this->uid]).'/',
-            '',
-            tinyDocTypeUntransform($this->content)
-        );
-
-        // remove title tag
-        $this->content = strip_tags_only($this->content, 'title');
+        $this->content = $this->getContentWithTransformedAssetsUrls();
+        return $this->save();
     }
 
     /**
-     * transform URL.
+     * Transform template's relative URLs to application's absolute URL, without hostname.
+     * Execute this every time the template is SAVED
      */
-    public function transform($useTrackingHost = false)
+    public function getContentWithTransformedAssetsUrls($host = null)
     {
-        $this->content = $this->transformWithoutUpdate($this->content, $useTrackingHost);
-        return $this->content;
-    }
-
-    /**
-     * transform URL.
-     */
-    public function transformWithoutUpdate($html, $useTrackingHost = false)
-    {
-        // @todo workaround
-        // to avoid exception thrown by route(template_assets)
         if (is_null($this->uid)) {
-            return;
-        }
-
-        // Notice that there are 2 types of assets that need to untransform
-        // #1 Campaign relative URL
-        // #2 User assets (uploaded by file manager) absolute URL
-        //
-        $host = config('app.url'); // Default host
-        
-        if ($useTrackingHost) {
-            // Replace #2
-            $html = str_replace($host, $this->getTrackingHost(), $html);
-            $host = $this->getTrackingHost();
+            throw new Exception('Template does not have a UID, cannot transform content');
         }
 
         // Replace #1
-        $path = join_url($host, route('template_assets', ['uid' => $this->uid], false));
-        $html = \Acelle\Library\Tool::replaceTemplateUrl($html, $path);
+        $content = Tool::replaceTemplateUrl($this->content, function ($assetPath, $isRoot) use ($host) {
+            if ($isRoot) {
+                // If it is a root path like "/files/....", then do nothing
+                return ($host) ? join_url($host, $assetPath) : $assetPath;
+            } else {
+                // Transform relative URLs to PUBLIC ABSOLUTE URLs, but without hostname
+                $url = \Acelle\Helpers\generatePublicPath(
+                    $this->getStoragePath($assetPath),
+                    $absolute = false
+                );
+
+                return ($host) ? join_url($host, $url) : $url;
+            }
+        });
 
         // By the way, fix <html>
-        $html = tinyDocTypeTransform($html);
-
-        return $html;
-    }
-
-    /**
-     * transform URL.
-     */
-    public function getParsedContent()
-    {
-        $body = $this->transformWithoutUpdate($this->content, $useTrackingHost = false);
-        return $body;
-    }
-
-    /**
-     * Build Email HTML content.
-     *
-     * @return string
-     */
-    public function getHtmlContent($subscriber = null, $msgId = null, $server = null)
-    {
-        // @note: IMPORTANT: the order must be as follows
-        // * addTrackingURL
-        // * appendOpenTrackingUrl
-        // * tagMessage
-        // STEP 01. Get RAW content
-        $body = $this->content;
-
-        // STEP 02. Append footer
-        // Not applied
-        
-        // STEP 03. Parse RSS
-        if (Setting::isYes('rss.enabled')) {
-            $body = Rss::parse($body);
-        }
-
-        // STEP 04. Replace Bare linefeed
-        // Replace bare line feed char which is not accepted by Outlook, Yahoo, AOL...
-        // Not applied
-
-        // STEP 04.1. Check woocommerce items
-        $body = $this->wooTransform($body);
-
-        // STEP 05. Transform URLs
-        // Note that $useTrackingHost is not needed
-        $body = $this->transformWithoutUpdate($body, $useTrackingHost = false);
-
-        if (is_null($msgId)) {
-            $msgId = 'SAMPLE'; // for preview mode
-        }
-
-        // STEP 08. Transform Tags
-        if (!is_null($subscriber)) {
-            // Transform tags
-            $body = $this->tagMessage($body, $subscriber, $msgId, $server);
-        }
-
-        // STEP 09. Make CSS inline
-        //
-        // Transform CSS/HTML content to inline CSS
-        // Be carefule, it will make
-        //       <a href="{BUNSUBSCRIBE_URL}"
-        // become
-        //       <a href="%7BUNSUBSCRIBE_URL%7D"
-        $body = $this->inlineHtml($body);
-
-        return $body;
+        $content = tinyDocTypeTransform($content);
+        return $content;
     }
 
     public function wooTransform($body)
@@ -775,13 +637,14 @@ class Template extends Model implements Storable
      */
     public function uploadAsset($file)
     {
-        if ($this->customer) {
-            // upload to user home/files/ folder
-            return $this->customer->user->uploadAsset($file);
-        } else {
-            // upload to template
-            return $this->admin->user->uploadAsset($file);
-        }
+        // Store to template storage storage/app/customers/000000/templates/111111/ASSET.JPG
+        $name = escapeshellarg($file->getClientOriginalName());
+        $name = StringHelper::generateUniqueName($this->getStoragePath(), $name);
+
+        // Move uploaded file
+        $file->move($this->getStoragePath(), $name);
+        $assetUrl = \Acelle\Helpers\generatePublicPath($this->getStoragePath($name));
+        return $assetUrl;
     }
 
     /**
@@ -887,7 +750,7 @@ class Template extends Model implements Storable
         $this->save();
 
         // delete current template folder
-        \Acelle\Library\Tool::xdelete($this->getStoragePath());
+        $this->clearStorage();
         
         // Copy uploaded folder
         if (file_exists($this->getStoragePath())) {
@@ -895,7 +758,7 @@ class Template extends Model implements Storable
                 mkdir($this->getStoragePath(), 0777, true);
             }
 
-            \Acelle\Library\Tool::xcopy($template->getStoragePath(), $this->getStoragePath());
+            Tool::xcopy($template->getStoragePath(), $this->getStoragePath());
         }
     }
 
@@ -917,7 +780,7 @@ class Template extends Model implements Storable
     public function uploadThumbnailUrl($url)
     {
         $contents = file_get_contents($url);
-        file_put_contents($this->getStoragePath().'thumbnail.png', $contents);
+        file_put_contents($this->getStoragePath('thumbnail.png'), $contents);
     }
 
     public function inlineHtml($html)
@@ -930,24 +793,25 @@ class Template extends Model implements Storable
      *
      * @return Template
      */
-    public static function createFromDir($attributes, $dir)
+    public static function createFromDirectory($attributes, $directory)
     {
         $template = new self();
         $template->name = $attributes['name'];
-        $template->builder = $attributes['builder'];
+        $template->builder = $attributes['builder']; // whether or not this template can be modified using a builder
 
-        $template->save();
-
-        $template->loadFromDirectory($dir);
-
-        if (isset($attributes['category'])) {
-            $attributes['category']->templates()->attach($template->id);
+        // System or Customer template
+        if (array_key_exists('customer_id', $attributes)) {
+            $template->customer_id = $attributes['customer_id'];
         }
+        
+        $template->uid = uniqid();
+        $template->loadContent($directory); // already saved!
+        return $template;
     }
 
     public function clearStorage()
     {
-        \Acelle\Library\Tool::xdelete($this->getStoragePath());
+        Tool::xdelete($this->getStoragePath());
     }
 
     public function deleteAndCleanup()

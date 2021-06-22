@@ -71,10 +71,11 @@ class CustomerController extends Controller
 
         if (!empty($request->old())) {
             $customer->fill($request->old());
-            // User info
-            $customer->user = new \Acelle\Model\User();
-            $customer->user->fill($request->old());
         }
+
+        // User info
+        $customer->user = new \Acelle\Model\User();
+        $customer->user->fill($request->old());
 
         // authorize
         if (\Gate::denies('create', $customer)) {
@@ -107,13 +108,12 @@ class CustomerController extends Controller
 
         // save posted data
         if ($request->isMethod('post')) {
-            $rules = $customer->rules();
-            $this->validate($request, $rules);
-
-            // Create user account for customer
             $user = new \Acelle\Model\User();
-            $user->email = $request->email;
+            $user->fill($request->all());
             $user->activated = true;
+
+            $this->validate($request, $user->rules());
+
             // Update password
             if (!empty($request->password)) {
                 $user->password = bcrypt($request->password);
@@ -121,12 +121,13 @@ class CustomerController extends Controller
             $user->save();
 
             // Save current user info
-            $customer->user_id = $user->id;
             $customer->admin_id = $request->user()->admin->id;
             $customer->fill($request->all());
             $customer->status = 'active';
 
             if ($customer->save()) {
+                $user->customer_id = $customer->id;
+                $user->save();
                 // Upload and save image
                 if ($request->hasFile('image')) {
                     if ($request->file('image')->isValid()) {
@@ -220,13 +221,11 @@ class CustomerController extends Controller
                 return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
-            $rules = $customer->rules();
-
-            $this->validate($request, $rules);
-
-            // Update user account for customer
             $user = $customer->user;
-            $user->email = $request->email;
+            $user->fill($request->all());
+
+            $this->validate($request, $user->rules());
+
             // Update password
             if (!empty($request->password)) {
                 $user->password = bcrypt($request->password);
@@ -312,21 +311,18 @@ class CustomerController extends Controller
      */
     public function delete(Request $request)
     {
-        $items = \Acelle\Model\Customer::whereIn('uid', explode(',', $request->uids));
+        $customers = \Acelle\Model\Customer::whereIn('uid', explode(',', $request->uids));
 
-        foreach ($items->get() as $item) {
+        foreach ($customers->get() as $customer) {
             // authorize
-            if (\Gate::denies('delete', $item)) {
+            if (\Gate::denies('delete', $customer)) {
                 return;
             }
         }
 
-        foreach ($items->get() as $item) {
-            $user = $item->user;
-            $item->delete();
-            if (!is_object($user->admin)) {
-                $user->delete();
-            }
+        foreach ($customers->get() as $customer) {
+            // Delete Customer account but KEEP user account if it is associated with an Admin
+            $customer->deleteAccount();
         }
 
         // Redirect to my lists page
@@ -481,9 +477,9 @@ class CustomerController extends Controller
             $contact = $customer->contact;
         } else {
             $contact = new \Acelle\Model\Contact([
-                'first_name' => $customer->first_name,
-                'last_name' => $customer->last_name,
-                'email' => $customer->user->email,
+                'first_name' => $request->user()->first_name,
+                'last_name' => $request->user()->last_name,
+                'email' => $request->user()->email,
             ]);
         }
 
@@ -563,7 +559,7 @@ class CustomerController extends Controller
                 'status' => 'success',
                 'message' => trans('messages.customer.plan.assigned', [
                     'plan' => $plan->name,
-                    'customer' => $customer->displayName(),
+                    'customer' => $customer->user->displayName(),
                 ]),
             ], 201);
         }

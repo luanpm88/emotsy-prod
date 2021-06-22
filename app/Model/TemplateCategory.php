@@ -7,6 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 class TemplateCategory extends Model
 {
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name'
+    ];
+
+    /**
      * Find item by uid.
      *
      * @return object

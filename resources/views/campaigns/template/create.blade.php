@@ -51,20 +51,6 @@
                         </button>
                     </div>
                 </li>
-                <li class="template-start" data-url="{{ action('CampaignController@templateTheme', $campaign->uid) }}">
-                    <i class="lnr lnr-license"></i>
-                    <div class="list-body">
-                        <h4>{{ trans('messages.campaign.template.from_theme') }}</h4>
-                        <p>{{ trans('messages.campaign.template.from_theme.intro') }}</p>
-                    </div>
-                    <div class="list-action">
-                        <button
-							class="btn btn-primary bg-grey-800"
-						>
-                            {{ trans('messages.campaign.template.start') }}
-                        </button>
-                    </div>
-                </li>
                 <li class="template-start" data-url="{{ action('CampaignController@templateUpload', $campaign->uid) }}">
                     <i class="lnr lnr-upload"></i>
                     <div class="list-body">

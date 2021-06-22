@@ -4,7 +4,7 @@
     @foreach ($account->subscriptions as $subscription)
         <li>
             <i class="icon-quill4 text-danger"></i>
-            <h4 class="text-danger">{{ $subscription->customer->displayName() }}</h4>
+            <h4 class="text-danger">{{ $subscription->customer->user->displayName() }}</h4>
             <p>{{ $subscription->plan_name }} - {{ trans('messages.subscription.from_to_date', [
                 'start' => Tool::formatDate($subscription->start_at),
                 'end' => Tool::formatDate($subscription->end_at),

@@ -31,7 +31,7 @@
                 <div class="mc-list-setting mt-40">
                     @foreach ($gateways as $gateway)
                         <div class="list-setting bg-{{ $gateway->getType() }}
-                            {{ in_array($gateway, $enabledGateways) ? 'current' : '' }}">
+                            {{ $gateway->isActive() && in_array($gateway, $enabledGateways) ? 'current' : '' }}">
                             <div class="list-setting-main">
                                 <div class="title">
                                     <label>{{ $gateway->getName() }}</label>

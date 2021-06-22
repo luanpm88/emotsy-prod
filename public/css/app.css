@@ -2749,6 +2749,7 @@ canvas[data-zr-dom-id='_zrender_hover_'] {
 .select-template-layout .panel-template-style {
   border-width: 1px;
   padding: 2px;
+  transition: all 0.2s ease-in-out;
 }
 .select-template-layout.selected .panel-template-style {
   border-color: #166dba;
@@ -2791,7 +2792,7 @@ canvas[data-zr-dom-id='_zrender_hover_'] {
 .template-boxes .panel-body label {
     text-align: center;
     display: block;
-    color: #333;
+    color: #666;
     margin: 8px;
     white-space: nowrap;
     max-width: 100%;
@@ -4371,10 +4372,20 @@ label:hover .checkmark, .checkmark-container:hover .checkmark {
 }
 .popup-body .panel-template-placeholder {
     height: 166px;
+    transition: all 0.2s ease-in-out;
 }
 .btn.sort-direction {
     background: #ddd;;
 }
 .tox:not(.tox-tinymce-inline) .tox-editor-header {
     box-shadow: 0 0 15px rgb(0 0 0 / 10%);
+.popup .panel {
+    border: solid 1px transparent;
+}
+.panel:hover .panel-template-placeholder {
+    box-shadow: 1px 1px 15px rgba(0,0,0,0.2);
+}
+.choose-theme:hover label {
+    cursor: pointer;
+    color: #000;
 }

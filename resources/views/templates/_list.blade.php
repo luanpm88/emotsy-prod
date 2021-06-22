@@ -28,8 +28,8 @@
                         </a>
                     </h5>
                     <div class="text-muted">
-                        {!! is_object($template->admin) ? '<i class="icon-user-tie"></i>' . $template->admin->displayName() : '' !!}
-                        {!! is_object($template->customer) ? '<i class="icon-user"></i>' . $template->customer->displayName() : '' !!}
+                        {!! is_object($template->admin) ? '<i class="icon-user-tie" data="admin"></i>' . $template->admin->uid : '' !!}
+                        {!! is_object($template->customer) ? '<i class="icon-user" data="customer"></i>' . $template->customer->uid : '' !!}
                     </div>
                     <span class="text-muted">{{ trans('messages.updated_at') }}: {{ Tool::formatDateTime($template->created_at) }}</span>
                 </td>

@@ -330,6 +330,8 @@ class InstallController extends Controller
                 `uid`,
                 `api_token`,
                 `email`,
+                `first_name`,
+                `last_name`,
                 `password`,
                 `remember_token`,
                 `status`,
@@ -341,6 +343,8 @@ class InstallController extends Controller
                 '" .uniqid()."',
                 '".str_random(60)."',
                 '".$site_info['email']."',
+                '".$site_info['first_name']."',
+                '".$site_info['last_name']."',
                 '".bcrypt($site_info['password'])."',
                 '',
                 'active',
@@ -361,8 +365,6 @@ class InstallController extends Controller
                 `contact_id`,
                 `admin_group_id`,
                 `language_id`,
-                `first_name`,
-                `last_name`,
                 `image`,
                 `timezone`,
                 `status`,
@@ -377,8 +379,6 @@ class InstallController extends Controller
                 NULL,
                 1,
                 1,
-                '".$site_info['first_name']."',
-                '".$site_info['last_name']."',
                 NULL,
                 '".$site_info['timezone']."',
                 'active',
@@ -392,7 +392,10 @@ class InstallController extends Controller
             $mysqli->query('DELETE FROM `'.$database['tables_prefix'].'customers` WHERE 1');
             // Subscribe to default plan
             $admin = \Acelle\Model\Admin::find(1);
-            $admin->createCustomerAccount($admin);
+            $user = \Acelle\Model\User::find(1);
+            $customer = $admin->createCustomerAccount();
+            $user->customer_id = $customer->id;
+            $user->save();
         }
 
         // Insert system urls

@@ -11,7 +11,7 @@
 
     @include('admin.notifications._top', ['notifications' => $notifications])
 
-    <h1 class="mb-10">{{ trans('messages.backend_dashboard_hello', ['name' => Auth::user()->admin->displayName()]) }}</h1>
+    <h1 class="mb-10">{{ trans('messages.backend_dashboard_hello', ['name' => Auth::user()->displayName()]) }}</h1>
     <p>{{ trans('messages.backend_dashboard_welcome') }}</p>
 
     <div class="row">
@@ -49,7 +49,7 @@
                                         padding: 0;
                                         margin: 5px 0 0 -8px;
                                         height: auto;"></i>
-                                    {{ $subscription->customer->displayName() }}
+                                    {{ $subscription->customer->user->displayName() }}
                                 </p>
                             </div>
                             <div class="col-sm-4 col-md-4 text-left">
@@ -98,7 +98,7 @@
                                 <img width="40" class="img-circle mr-10 pull-left" src="{{ action('CustomerController@avatar', $customer->uid) }}" alt="">
                                 <h6 class="mt-0 mb-0 text-semibold">
                                     <a href="{{ action('Admin\CustomerController@edit', $customer->uid) }}">
-                                        {{ $customer->displayName() }}
+                                        {{ $customer->user->displayName() }}
                                     </a>
                                 </h6>
                                 <p class="mb-0 admin-line admin-recent-sencond-line" title="{{ $customer->user->email }}">
@@ -153,7 +153,7 @@
 
                                 <div class="panel panel-flat timeline-content">
                                     <div class="panel-heading">
-                                        <h6 class="panel-title text-semibold">{{ $log->customer->displayName() }}</h6>
+                                        <h6 class="panel-title text-semibold">{{ $log->customer->user->displayName() }}</h6>
                                         <div class="heading-elements">
                                             <span class="heading-text"><i class="position-left text-bold lnr lnr-clock"></i>
                                                 @if ($log->created_at)

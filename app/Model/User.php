@@ -35,7 +35,21 @@ class User extends Authenticatable
 {
     use Notifiable;
 
-    const ASSET_DIR = 'files';
+    /*******
+     * Important: Storage location: User vs Customer
+     * One customer (account) may have one or more users
+     *
+     * User has its own location for storing:
+     * + Lock files
+     * + Assets (which is used by File Manager)
+     *
+     * Customer has a common place to store account's assets (available to all users of the same account)
+     * + Templates
+     * + Attachments (account-wide, not individual user)
+     *
+     */
+    const BASE_DIR = 'app/users'; // storage/customers/000000
+    const ASSETS_DIR = 'files';
 
     /**
      * The attributes that are mass assignable.
@@ -43,7 +57,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'email', 'first_name', 'last_name', 'password',
     ];
 
     /**
@@ -62,7 +76,7 @@ class User extends Authenticatable
      */
     public function customer()
     {
-        return $this->hasOne('Acelle\Model\Customer');
+        return $this->belongsTo('Acelle\Model\Customer');
     }
 
     public function admin()
@@ -133,6 +147,112 @@ class User extends Authenticatable
         }
 
         MailLog::info('Sent activation email to '.$this->email);
+    }
+
+    /**
+     * The rules for validation.
+     *
+     * @var array
+     */
+    public function rules()
+    {
+        $rules = array(
+            'email' => 'required|email|unique:users,email,'.$this->id.',id',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'timezone' => 'required',
+            'language_id' => 'required',
+        );
+
+        if (isset($this->id)) {
+            $rules['password'] = 'confirmed|min:5';
+        } else {
+            $rules['password'] = 'required|confirmed|min:5';
+        }
+
+        return $rules;
+    }
+
+    /**
+     * The rules for validation.
+     *
+     * @var array
+     */
+    public function registerRules()
+    {
+        $rules = array(
+            'email' => 'required|email|unique:users,email,'.$this->id.',id',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'timezone' => 'required',
+            'language_id' => 'required',
+        );
+
+        if (isset($this->id)) {
+            $rules['password'] = 'min:5';
+        } else {
+            $rules['password'] = 'required|min:5';
+        }
+
+        return $rules;
+    }
+
+    /**
+     * The rules for validation via api.
+     *
+     * @var array
+     */
+    public function apiRules()
+    {
+        return array(
+            'email' => 'required|email|unique:users,email,'.$this->id.',id',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'timezone' => 'required',
+            'language_id' => 'required',
+            'password' => 'required|min:5',
+        );
+    }
+
+    /**
+     * The rules for validation via api.
+     *
+     * @var array
+     */
+    public function apiUpdateRules($request)
+    {
+        $arr = [];
+
+        if (isset($request->email)) {
+            $arr['email'] = 'required|email|unique:users,email,'.$this->id.',id';
+        }
+        if (isset($request->first_name)) {
+            $arr['first_name'] = 'required';
+        }
+        if (isset($request->last_name)) {
+            $arr['last_name'] = 'required';
+        }
+        if (isset($request->timezone)) {
+            $arr['timezone'] = 'required';
+        }
+        if (isset($request->language_id)) {
+            $arr['language_id'] = 'required';
+        }
+        if (isset($request->password)) {
+            $arr['password'] = 'min:5';
+        }
+
+        return $arr;
+    }
+
+    /**
+     * Display customer name: first_name last_name.
+     *
+     * @var string
+     */
+    public function displayName()
+    {
+        return htmlspecialchars(trim($this->first_name.' '.$this->last_name));
     }
 
     /**
@@ -239,20 +359,9 @@ class User extends Authenticatable
         }
     }
 
-    public function getStoragePath($path = '')
-    {
-        $base = storage_path('app/users/'.$this->uid);
-
-        if (!\File::exists($base)) {
-            \File::makeDirectory($base, 0777, true, true);
-        }
-
-        return join_paths($base, $path);
-    }
-
     public function getLockPath($path)
     {
-        $base = $this->getHomePath('locks');
+        $base = $this->getBasePath('locks');
 
         if (!\File::exists($base)) {
             \File::makeDirectory($base, 0777, true, true);
@@ -261,9 +370,9 @@ class User extends Authenticatable
         return join_paths($base, $path);
     }
 
-    public function getHomePath($path = '')
+    public function getAssetsPath($path = null)
     {
-        $base = $this->getStoragePath('home');
+        $base = $this->getBasePath(self::ASSETS_DIR);
 
         if (!\File::exists($base)) {
             \File::makeDirectory($base, 0777, true, true);
@@ -272,28 +381,15 @@ class User extends Authenticatable
         return join_paths($base, $path);
     }
 
-    public function uploadAsset($file)
+    public function getBasePath($path = null)
     {
-        // store to storage/app/users/{uid}/home/files/
-        $assetdir = $this->getHomePath(self::ASSET_DIR);
-        $newname = $file->getClientOriginalName();
-        $newpath = join_paths($assetdir, $newname);
+        $base = storage_path(join_paths(self::BASE_DIR, $this->uid));
 
-        // In case file name conflicts
-        $i = 1;
-        while (file_exists($newpath)) {
-            $newname = $file->getClientOriginalName()."_".$i;
-            $newpath = join_paths($assetdir, $newname);
-            ++$i;
+        if (!\File::exists($base)) {
+            \File::makeDirectory($base, 0777, true, true);
         }
 
-        // Move uploaded file
-        $file->move(
-            $assetdir,
-            $newname
-        );
-
-        return $newname;
+        return join_paths($base, $path);
     }
 
     /**
