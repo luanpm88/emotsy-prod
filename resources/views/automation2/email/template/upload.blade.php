@@ -67,11 +67,8 @@
                 contentType: false,
                 processData: false,
                 globalError: false,
-                statusCode: {
-                    // validate error
-                    400: function (res) {
-                       popup.loadHtml(res.responseText);
-                    }
+                error: function(response) {
+                    alert(response.responseText);
                 },
                 success: function(data) {
                     popup.load('{{ action('Automation2Controller@emailTemplate', [

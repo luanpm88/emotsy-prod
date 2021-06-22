@@ -28,24 +28,34 @@ Route::group(['middleware' => ['installed']], function () {
     Route::get('install/finish', 'InstallController@finish');
 });
 
-// assets path for customer files
+/*
+ * The following routes
+ * + customer_files
+ * + customer_thumbs
+ * 
+ * are used to retrieved files through filemanager
+ *
+ */
 Route::get('/files/{uid}/{name?}', [ function ($uid, $name) {
     $path = storage_path('app/users/' . $uid . '/home/files/' . $name);
     $mime_type = \Acelle\Library\File::getFileType($path);
     if (\File::exists($path)) {
         return response()->file($path, array('Content-Type' => $mime_type));
+    } else {
+        abort(404);
     }
-}])->where('name', '.+')->name('customer_files');
+}])->where('name', '.+')->name('user_files');
 
-// assets path for email
-Route::get('/assets/emails/{uid}/{name?}', [ function ($uid, $name) {
-    $email = \Acelle\Model\Email::findByUid($uid);
-    $path = $email->getStoragePath($name);
-    $mime_type = \Acelle\Library\File::getFileType($path);
+// assets path for customer thumbs
+Route::get('/thumbs/{uid}/{name?}', [ function ($uid, $name) {
+    $path = storage_path('app/users/' . $uid . '/home/thumbs/' . $name);
     if (\File::exists($path)) {
+        $mime_type = \Acelle\Library\File::getFileType($path);
         return response()->file($path, array('Content-Type' => $mime_type));
+    } else {
+        abort(404);
     }
-}])->where('name', '.+')->name('email_assets');
+}])->where('name', '.+')->name('user_thumbs');
 
 // assets path for email
 Route::get('/p/assets/{path}', [ function ($token) {
@@ -533,8 +543,6 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     
     Route::post('automation2/{uid}/template/{email_uid}/attachment', 'Automation2Controller@emailAttachmentUpload');
     Route::post('automation2/{uid}/template/{email_uid}/remove-template', 'Automation2Controller@templateRemove');
-    Route::post('automation2/{uid}/template/{email_uid}/asset', 'Automation2Controller@templateAsset');
-    Route::post('automation2/{uid}/template/{email_uid}/asset', 'Automation2Controller@templateAsset');
     Route::get('automation2/{uid}/template/{email_uid}/content', 'Automation2Controller@templateContent');
     Route::match(['get', 'post'], 'automation2/{uid}/template/{email_uid}/edit', 'Automation2Controller@templateEdit');
     Route::match(['get', 'post'], 'automation2/{uid}/template/{email_uid}/upload', 'Automation2Controller@templateUpload');

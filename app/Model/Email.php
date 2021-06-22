@@ -100,9 +100,7 @@ class Email extends Model
         });
 
         static::deleted(function ($item) {
-            if (is_dir($item->getEmailStoragePath())) {
-                File::deleteDirectory($item->getEmailStoragePath());
-            }
+            // Need reviewing...
         });
     }
 
@@ -277,76 +275,8 @@ class Email extends Model
      */
     public function uploadTemplate($request)
     {
-        $template = \Acelle\Model\Template::uploadTemplate($request);
-        $this->copyFromTemplate($template);
-    }
-
-    /**
-     * transform URL.
-     */
-    public function transform($useTrackingHost = false)
-    {
-        return $this->transformWithoutUpdate($this->getTemplateContent(), $useTrackingHost);
-    }
-
-    /**
-     * transform URL.
-     */
-    public function transformWithoutUpdate($html, $useTrackingHost = false)
-    {
-        // Notice that there are 2 types of assets that need to untransform
-        // #1 email relative URL
-        // #2 User assets (uploaded by file manager) absolute URL
-        //
-        $host = config('app.url'); // Default host
-        
-        if ($useTrackingHost) {
-            // Replace #2
-            $html = str_replace($host, $this->getTrackingHost(), $html);
-            $host = $this->getTrackingHost();
-        }
-
-        // Replace #1
-        $path = join_url($host, route('email_assets', ['uid' => $this->uid], false));
-        // $html = \Acelle\Library\Tool::replaceTemplateUrl($html, $path);
-
-        // By the way, fix <html>
-        $html = tinyDocTypeTransform($html);
-
-        return $html;
-    }
-
-    /**
-     * transform URL.
-     */
-    public function untransform()
-    {
-        // Notice that there are 2 types of assets that need to untransform
-        // #1 Email relative URL
-        // #2 User assets (uploaded by file manager) absolute URL
-        //
-        // and only #1 will be untransformed while #2 is kept as is
-
-        // Replace relative URL with email URL
-        $html = $this->getTemplateContent();
-
-        $html = str_replace(
-            route('email_assets', ['uid' => $this->uid]).'/',
-            '',
-            tinyDocTypeUntransform($html)
-        );
-
-        // remove title tag
-        return strip_tags_only($html, 'title');
-    }
-
-    /**
-     * Render email content for BUILDER EDIT
-     */
-    public function render()
-    {
-        $body = $this->transformWithoutUpdate($this->getTemplateContent(), $useTrackingHost = false);
-        return $body;
+        $template = Template::uploadTemplate($request);
+        $this->setTemplate($template);
     }
 
     /**
@@ -704,7 +634,7 @@ class Email extends Model
         }
 
         // STEP 05. Transform URLs
-        // $body = $this->transformWithoutUpdate($body, true);
+        $body = $this->template->getContentWithTransformedAssetsUrls($this->getTrackingHost());
 
         if (is_null($msgId)) {
             $msgId = 'SAMPLE'; // for preview mode
@@ -1060,7 +990,7 @@ class Email extends Model
     {
         $emailTemplate = $template->copy([
             'name' => trans('messages.email.template_name', ['name' => $this->name]),
-            'customer_id' => $this->customer_id,
+            'customer_id' => $this->automation->customer_id,
         ]);
         
         // remove exist template

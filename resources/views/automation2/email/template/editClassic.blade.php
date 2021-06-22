@@ -56,7 +56,7 @@
                     'label' => '',
                     'type' => 'textarea',
                     'name' => 'content',
-                    'value' => $email->render(),
+                    'value' => $email->getTemplateContent(),
                     'rules' => ['content' => 'required']
                 ])           
             </div>

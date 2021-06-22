@@ -905,21 +905,14 @@ class Automation2Controller extends Controller
         $automation = Automation2::findByUid($uid);
         $email = Email::findByUid($request->email_uid);
 
-        if ($request->category_uid) {
-            $category = TemplateCategory::findByUid($request->category_uid);
-        } else {
-            $category = TemplateCategory::first();
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
         }
 
         if ($request->isMethod('post')) {
             $template = Template::findByUid($request->template_uid);
             $email->setTemplate($template);
-
-            // update email plain text
-            $email->updatePlainFromContent();
-
-            // update links
-            $email->updateLinks();
 
             return response()->json([
                 'status' => 'success',
@@ -927,9 +920,11 @@ class Automation2Controller extends Controller
             ], 201);
         }
 
-        // authorize
-        if (\Gate::denies('update', $automation)) {
-            return $this->notAuthorized();
+        // GET goes here
+        if ($request->category_uid) {
+            $category = TemplateCategory::findByUid($request->category_uid);
+        } else {
+            $category = TemplateCategory::first();
         }
 
         return view('automation2.email.template.layout', [
@@ -1042,30 +1037,6 @@ class Automation2Controller extends Controller
     }
 
     /**
-     * Upload asset to builder.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function templateAsset(Request $request, $uid, $email_uid)
-    {
-        $automation = Automation2::findByUid($uid);
-        $email = Email::findByUid($request->email_uid);
-
-        // authorize
-        if (\Gate::denies('update', $automation)) {
-            return $this->notAuthorized();
-        }
-        
-        $filename = $email->uploadAsset($request->file('file'));
-
-        return response()->json([
-            'url' => route('customer_files', ['uid' => $request->user()->uid, 'name' => $filename])
-        ]);
-    }
-
-    /**
      * Campaign html content.
      *
      * @param \Illuminate\Http\Request $request
@@ -1083,7 +1054,7 @@ class Automation2Controller extends Controller
         }
 
         return view('automation2.email.template.content', [
-            'content' => $email->render(),
+            'content' => $email->getTemplateContent(),
         ]);
     }
 
@@ -1173,26 +1144,15 @@ class Automation2Controller extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
-            list($result, $validator) = $email->uploadTemplate($request);
-            
-            if (!$result) {
-                // update email plain text
-                $email->updatePlainFromContent();
+            $email->uploadTemplate($request);
 
-                return response()->view('automation2.email.template.upload', [
-                    'automation' => $automation,
-                    'email' => $email,
-                    'errors' => $validator->errors(),
-                ], 400);
-            } else {
-                // update links
-                $email->updateLinks();
+            // return redirect()->action('CampaignController@template', $campaign->uid);
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.automation.email.template.uploaded')
+            ]);
 
-                return response()->json([
-                    'status' => 'success',
-                    'message' => trans('messages.automation.email.template.uploaded'),
-                ], 201);
-            }
+            // throw a validation error otherwise
         }
 
         return view('automation2.email.template.upload', [
@@ -1814,15 +1774,8 @@ class Automation2Controller extends Controller
             );
             
             $this->validate($request, $rules);
-            
-            $email->setTemplateContent($request->content);
-            $email->save();
 
-            // update email plain text
-            $email->updatePlainFromContent();
-            
-            // update links
-            $email->updateLinks();
+            $email->setTemplateContent($request->content);
 
             return response()->json([
                 'status' => 'success',
@@ -1873,7 +1826,6 @@ class Automation2Controller extends Controller
             }
             
             $email->plain = $request->plain;
-            $email->untransform();
             $email->save();
 
             return response()->json([
