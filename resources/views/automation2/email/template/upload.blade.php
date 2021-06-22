@@ -86,6 +86,18 @@
 
                     // notify
                     notify(data.status, '{{ trans('messages.notify.success') }}', data.message);
+                },
+                error: function(res) {
+                    
+
+                    // notify
+                    var dia = new Dialog('alert', {
+                        title: '{{ trans('messages.notify.error') }}',
+                        message: res.responseText,
+                        ok: function() {
+                            popup.load();
+                        }   
+                    });
                 }                
             });
         });
