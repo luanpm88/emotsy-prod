@@ -212,8 +212,13 @@ class LanguageController extends Controller
     public function translate(Request $request, $id)
     {
         $language = \Acelle\Model\Language::findByUid($id);
-        $parse_error = $request->session()->get("parse_error");
-        $filename = $request->file;
+        $langFiles = $language->getAllLanguageFiles();
+
+        if ($request->file_id) {
+            $currentFile = $langFiles[$request->file_id];
+        } else {
+            $currentFile = array_shift($langFiles);
+        }
 
         // Prenvent save from demo mod
         if ($this->isDemoMode()) {
@@ -224,35 +229,48 @@ class LanguageController extends Controller
         if (\Gate::denies('translate', $language)) {
             return $this->notAuthorized();
         }
+
+        // Get current values
+        $content = \Acelle\Model\Language::fileToYaml($currentFile['path']);
         
         // save posted data
         if ($request->isMethod('post')) {
-            $rules = [];
-            try {
-                $language->updateFromYaml($filename, $request->all()[$filename]);
-            } catch (\Symfony\Component\Yaml\Exception\ParseException $e) {
-                $request->session()->put("parse_error", $e->getMessage());
-                $rules = ['yaml_parse_error' => 'required'];
+
+            // make validator
+            $validator = \Validator::make($request->all(), [
+                'content' => 'required',
+            ]);
+
+            // test amazon api connection
+            $validator->after(function ($validator) use ($currentFile, $request) {
+                try {
+                    \Acelle\Model\Language::yamlToFile($currentFile['path'], $request->content);
+                } catch (\Exception $e) {
+                    $validator->errors()->add('content', $e->getMessage());
+                }
+            });
+            
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('admin.languages.translate', [
+                    'language' => $language,
+                    'langFiles' => $langFiles,
+                    'currentFile' => $currentFile,
+                    'content' => $request->content,
+                    'errors' => $validator->errors(),
+                ], 400);
             }
-            $this->validate($request, $rules);
             
             $request->session()->flash('alert-success', trans('messages.language.updated'));
-            return redirect()->action('Admin\LanguageController@translate', ["id" => $language->uid, "file" => $filename]);
-        }
-        
-        // Get current values
-        $content = \Yaml::dump($language->getLocaleArrayFromFile($filename));
-        
-        // Get old post values
-        if (!empty($request->old())) {
-            $content = $request->old()[$filename];
+            return redirect()->action('Admin\LanguageController@translate', ["id" => $language->uid, "file_id" => $currentFile['id']]);
         }
         
         return view('admin.languages.translate', [
             'language' => $language,
+            'langFiles' => $langFiles,
             'content' => $content,
-            'filename' => $filename,
-            'parse_error' => $parse_error
+            'currentFile' => $currentFile,
+            'content' => $content,
         ]);
     }
     

@@ -23,6 +23,7 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Acelle\Library\Facades\Hook;
 
 class Language extends Model
 {
@@ -261,7 +262,7 @@ class Language extends Model
             opcache_invalidate($this->languageDir().$filename.'.php');
         }
 
-        $arr = \File::getRequire($this->languageDir().$filename.'.php');
+        $arr = self::fileToArray($this->languageDir().$filename.'.php');
         return $arr;
     }
 
@@ -296,8 +297,7 @@ class Language extends Model
      */
     public function updateFromYaml($filename, $yaml)
     {
-        $content = '<?php return '.var_export(\Yaml::parse($yaml), true).' ?>';
-        $bytes_written = \File::put($this->languageDir().$filename.'.php', $content);
+        self::yamlToFile($this->languageDir().$filename.'.php', $yaml);
     }
 
     /**
@@ -535,5 +535,66 @@ class Language extends Model
     {
         $this->status = 'active';
         $this->save();
+    }
+
+    public static function fileToArray($pathToFile)
+    {
+        return \File::getRequire($pathToFile);
+    }
+
+    public static function arrayToYaml($array)
+    {
+        return \Yaml::dump($array);
+    }
+
+    public static function fileToYaml($path)
+    {
+        return self::arrayToYaml(self::fileToArray($path));
+    }
+
+    public static function yamlToFile($pathToFile, $yaml) {
+        $content = '<?php return '.var_export(\Yaml::parse($yaml), true).' ?>';
+        $bytes_written = \File::put($pathToFile, $content);
+    }
+
+    public function getAllLanguageFiles()
+    {
+        $paths = [];
+
+        // default lang files
+        $defaultDir = base_path(join_paths('resources/lang', $this->code));
+        $defaultFiles = scandir($defaultDir);
+        foreach ($defaultFiles as $file) {
+            if ($file != '.' && $file != '..') {
+                $path = join_paths($defaultDir, $file);
+                $paths[md5($path)] = [
+                    'id' => md5($path),
+                    'type' => 'default',
+                    'path' => $path,
+                    'name' => str_replace('.php', '', $file),
+                ];
+            }
+        }
+
+        $pluginFiles = Hook::execute('add_translation_file');
+        foreach ($pluginFiles as $file) {
+            $path = join_paths($file['translation_folder'], $this->code, $file['file_name']);
+
+            if (!file_exists($path)) {
+                \Acelle\Library\Tool::xcopy(
+                    join_paths($file['translation_folder'], $file['default']),
+                    join_paths($file['translation_folder'], $this->code),
+                );
+            }
+
+            $paths[md5($path)] = [
+                'id' => md5($path),
+                'type' => 'plugin',
+                'path' => $path,
+                'name' => $file['file_title'],
+            ];
+        }
+
+        return $paths;
     }
 }
