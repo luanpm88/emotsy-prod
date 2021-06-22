@@ -5,9 +5,10 @@ namespace Acelle\Library\Traits;
 use Acelle\Model\Template;
 use Exception;
 
-trait HasTemplate {
+trait HasTemplate
+{
 
-	/**
+    /**
      * Campaign has one template.
      */
     public function template()

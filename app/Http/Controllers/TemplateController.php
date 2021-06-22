@@ -172,9 +172,8 @@ class TemplateController extends Controller
             $request->session()->flash('alert-success', trans('messages.template.uploaded'));
             return redirect()->action('TemplateController@index');
         } else {
-            return view('templates.upload');    
+            return view('templates.upload');
         }
-        
     }
 
     /**
