@@ -905,21 +905,14 @@ class Automation2Controller extends Controller
         $automation = Automation2::findByUid($uid);
         $email = Email::findByUid($request->email_uid);
 
-        if ($request->category_uid) {
-            $category = TemplateCategory::findByUid($request->category_uid);
-        } else {
-            $category = TemplateCategory::first();
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
         }
 
         if ($request->isMethod('post')) {
             $template = Template::findByUid($request->template_uid);
             $email->setTemplate($template);
-
-            // update email plain text
-            $email->updatePlainFromContent();
-
-            // update links
-            $email->updateLinks();
 
             return response()->json([
                 'status' => 'success',
@@ -927,9 +920,11 @@ class Automation2Controller extends Controller
             ], 201);
         }
 
-        // authorize
-        if (\Gate::denies('update', $automation)) {
-            return $this->notAuthorized();
+        // GET goes here
+        if ($request->category_uid) {
+            $category = TemplateCategory::findByUid($request->category_uid);
+        } else {
+            $category = TemplateCategory::first();
         }
 
         return view('automation2.email.template.layout', [
