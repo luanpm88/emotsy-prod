@@ -722,14 +722,12 @@ class CampaignController extends Controller
             return;
         }
 
-        $items = Campaign::whereIn('uid', explode(',', $request->uids));
+        $campaigns = Campaign::whereIn('uid', explode(',', $request->uids));
 
-        foreach ($items->get() as $item) {
+        foreach ($campaigns->get() as $campaign) {
             // authorize
-            if (\Gate::allows('delete', $item)) {
-                $item->delete();
-                // Log
-                $item->log('deleted', $customer);
+            if (\Gate::allows('delete', $campaign)) {
+                $campaign->deleteAndCleanup();
             }
         }
 

@@ -783,9 +783,9 @@ class Automation2Controller extends Controller
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
         }
-        
+
         // delete email
-        $email->delete();
+        $email->deleteAndCleanup();
 
         return response()->json([
             'status' => 'success',
