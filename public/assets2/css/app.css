@@ -935,7 +935,6 @@ label.switchery-double.checkbox-switchery {
 .template-list-item {
     width: 148px;
     padding: 3px;
-    border: solid 1px #aaa;
     border-radius: 4px;
     float: left;
     margin-right: 20px;
@@ -951,7 +950,7 @@ label.switchery-double.checkbox-switchery {
     line-height: normal;
 }
 .template-list-item img {
-    height: 140px;
+    height: 160px;
     width: 100%;
 }
 .empty-list {
