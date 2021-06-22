@@ -1831,7 +1831,6 @@ class Automation2Controller extends Controller
             }
             
             $email->plain = $request->plain;
-            $email->untransform();
             $email->save();
 
             return response()->json([
