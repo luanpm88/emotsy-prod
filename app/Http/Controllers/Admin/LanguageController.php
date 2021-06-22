@@ -244,12 +244,12 @@ class LanguageController extends Controller
             // test amazon api connection
             $validator->after(function ($validator) use ($currentFile, $request) {
                 try {
-                    \Acelle\Model\Language::yamlToFile($currentFile['path'], $request->content);
+                    var_export(\Yaml::parse($request->content), true);
                 } catch (\Exception $e) {
                     $validator->errors()->add('content', $e->getMessage());
                 }
             });
-            
+
             // redirect if fails
             if ($validator->fails()) {
                 return response()->view('admin.languages.translate', [
@@ -260,6 +260,12 @@ class LanguageController extends Controller
                     'errors' => $validator->errors(),
                 ], 400);
             }
+
+            // save
+            \Acelle\Model\Language::yamlToFile($currentFile['path'], $request->content);
+
+            \Artisan::call('cache:clear');
+            sleep(5);
             
             $request->session()->flash('alert-success', trans('messages.language.updated'));
             return redirect()->action('Admin\LanguageController@translate', ["id" => $language->uid, "file_id" => $currentFile['id']]);
