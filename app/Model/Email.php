@@ -990,7 +990,7 @@ class Email extends Model
     {
         $emailTemplate = $template->copy([
             'name' => trans('messages.email.template_name', ['name' => $this->name]),
-            'customer_id' => $this->customer_id,
+            'customer_id' => $this->automation->customer_id,
         ]);
         
         // remove exist template

@@ -1042,30 +1042,6 @@ class Automation2Controller extends Controller
     }
 
     /**
-     * Upload asset to builder.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function templateAsset(Request $request, $uid, $email_uid)
-    {
-        $automation = Automation2::findByUid($uid);
-        $email = Email::findByUid($request->email_uid);
-
-        // authorize
-        if (\Gate::denies('update', $automation)) {
-            return $this->notAuthorized();
-        }
-        
-        $filename = $email->uploadAsset($request->file('file'));
-
-        return response()->json([
-            'url' => route('customer_files', ['uid' => $request->user()->uid, 'name' => $filename])
-        ]);
-    }
-
-    /**
      * Campaign html content.
      *
      * @param \Illuminate\Http\Request $request
