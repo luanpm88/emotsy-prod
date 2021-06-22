@@ -746,6 +746,7 @@ class Automation2Controller extends Controller
             
             // pass validation and save
             $email->automation2_id = $automation->id;
+            $email->customer_id = $automation->customer_id;
             $email->save();
             
             return response()->json([
@@ -1016,12 +1017,6 @@ class Automation2Controller extends Controller
             
             $email->setTemplateContent($request->content);
             $email->save();
-
-            // update email plain text
-            $email->updatePlainFromContent();
-
-            // update links
-            $email->updateLinks();
             
             return response()->json([
                 'status' => 'success',
@@ -1055,73 +1050,6 @@ class Automation2Controller extends Controller
 
         return view('automation2.email.template.content', [
             'content' => $email->getTemplateContent(),
-        ]);
-    }
-
-    /**
-     * Create template from theme.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function templateTheme(Request $request, $uid, $email_uid)
-    {
-        $automation = Automation2::findByUid($uid);
-        $email = Email::findByUid($request->email_uid);
-
-        // authorize
-        if (\Gate::denies('update', $automation)) {
-            return $this->notAuthorized();
-        }
-
-        if ($request->isMethod('post')) {
-            $template = Template::findByUid($request->template_uid);
-            $email->copyFromTemplate($template);
-
-            // update email plain text
-            $email->updatePlainFromContent();
-
-            // update links
-            $email->updateLinks();
-
-            return response()->json([
-                'status' => 'success',
-                'message' => trans('messages.automation.email.template.theme.selected'),
-            ], 201);
-        }
-
-        return view('automation2.email.template.theme', [
-            'automation' => $automation,
-            'email' => $email,
-        ]);
-    }
-
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function templateThemeList(Request $request, $uid, $email_uid)
-    {
-        $automation = Automation2::findByUid($uid);
-        $email = Email::findByUid($request->email_uid);
-        
-        // authorize
-        if (\Gate::denies('update', $automation)) {
-            return $this->notAuthorized();
-        }
-        
-        $templates = Template::search($request->keyword)
-            ->filter($request)
-            ->orderBy('created_at', 'desc')
-            ->paginate($request->per_page);
-        
-        return view('automation2.email.template.themeList', [
-            'automation' => $automation,
-            'email' => $email,
-            'templates' => $templates,
         ]);
     }
 
