@@ -5,7 +5,7 @@
 require 'json'
 
 # Settings
-last_supported = '4.0.22-p22'
+last_supported = '4.0.24-p4'
 packages = ['acelle']       # vendor packages to be replaced
 dirs = ['public/builder', 'database', 'resources/lang/default', 'vendor']                   # 'resources/lang/default' for example
 
