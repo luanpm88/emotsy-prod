@@ -13,6 +13,7 @@ use Acelle\Model\Attachment;
 use Acelle\Model\Template;
 use Acelle\Model\Subscriber;
 use Illuminate\Support\Facades\Storage;
+use Acelle\Model\TemplateCategory;
 
 class Automation2Controller extends Controller
 {
@@ -904,6 +905,28 @@ class Automation2Controller extends Controller
         $automation = Automation2::findByUid($uid);
         $email = Email::findByUid($request->email_uid);
 
+        if ($request->category_uid) {
+            $category = TemplateCategory::findByUid($request->category_uid);
+        } else {
+            $category = TemplateCategory::first();
+        }
+
+        if ($request->isMethod('post')) {
+            $template = Template::findByUid($request->template_uid);
+            $email->setTemplate($template);
+
+            // update email plain text
+            $email->updatePlainFromContent();
+
+            // update links
+            $email->updateLinks();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.automation.email.template.theme.selected'),
+            ], 201);
+        }
+
         // authorize
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
@@ -912,6 +935,39 @@ class Automation2Controller extends Controller
         return view('automation2.email.template.layout', [
             'automation' => $automation,
             'email' => $email,
+            'category' => $category,
+        ]);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function templateLayoutList(Request $request)
+    {
+        $automation = Automation2::findByUid($request->uid);
+        $email = Email::findByUid($request->email_uid);
+
+        // from
+        if ($request->from == 'mine') {
+            $templates = $request->user()->customer->templates();
+        } elseif ($request->from == 'gallery') {
+            $templates = Template::shared();
+        } else {
+            $templates = Template::shared()
+                ->orWhere('customer_id', '=', $request->user()->customer->id);
+        }
+
+        $templates = $templates->search($request->keyword)
+            ->filter($request)
+            ->orderBy($request->sort_order, $request->sort_direction)
+            ->paginate($request->per_page);
+
+        return view('automation2.email.template.layoutList', [
+            'automation' => $automation,
+            'email' => $email,
+            'templates' => $templates,
         ]);
     }
 
@@ -963,8 +1019,7 @@ class Automation2Controller extends Controller
             
             $this->validate($request, $rules);
             
-            $email->content = $request->content;
-            $email->untransform();
+            $email->setTemplateContent($request->content);
             $email->save();
 
             // update email plain text

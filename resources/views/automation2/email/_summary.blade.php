@@ -103,7 +103,7 @@
                 {{ trans('messages.automation.email.summary.content') }}
             </label>
             <div class="value">
-                @if($email->content)
+                @if($email->template)
                     {{ trans('messages.automation.email.content.last_edit', [
                         'time' => $email->updated_at->diffForHumans(),
                     ]) }}

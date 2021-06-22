@@ -49,6 +49,14 @@ class Email extends Model
     }
 
     /**
+     * Email has one template.
+     */
+    public function template()
+    {
+        return $this->belongsTo('Acelle\Model\Template');
+    }
+
+    /**
      * Association with email links.
      */
     public function emailLinks()
@@ -130,7 +138,7 @@ class Email extends Model
     }
 
     /**
-     * Get public campaign upload uri.
+     * Get public email upload uri.
      */
     public function getUploadUri()
     {
@@ -138,7 +146,7 @@ class Email extends Model
     }
 
     /**
-     * Get public campaign upload dir.
+     * Get public email upload dir.
      */
     public function getUploadDir()
     {
@@ -200,20 +208,6 @@ class Email extends Model
     }
 
     /**
-     * Copy new template.
-     */
-    public function copyFromTemplate($template)
-    {
-        Tool::xdelete($this->getStoragePath());
-
-        \Acelle\Library\Tool::xcopy($template->getStoragePath(), $this->getStoragePath());
-
-        // replace image url
-        $this->content = $template->content;
-        $this->save();
-    }
-
-    /**
      * Get thumb.
      */
     public function getThumbName()
@@ -247,15 +241,15 @@ class Email extends Model
      */
     public function getThumbUrl()
     {
-        if ($this->getThumbName()) {
-            return route('email_assets', ['uid' => $this->uid, 'name' => $this->getThumbName()]);
+        if ($this->template) {
+            return $this->template->getThumbUrl();
         } else {
             return url('assets/images/placeholder.jpg');
         }
     }
 
     /**
-     * Get public campaign upload dir.
+     * Get public email upload dir.
      */
     public function getEmailStoragePath($sub = '')
     {
@@ -267,7 +261,7 @@ class Email extends Model
     }
 
     /**
-     * Get public campaign upload dir.
+     * Get public email upload dir.
      */
     public function getStoragePath($sub = '')
     {
@@ -292,8 +286,7 @@ class Email extends Model
      */
     public function transform($useTrackingHost = false)
     {
-        $this->content = $this->transformWithoutUpdate($this->content, $useTrackingHost);
-        return $this->content;
+        return $this->transformWithoutUpdate($this->getTemplateContent(), $useTrackingHost);
     }
 
     /**
@@ -302,7 +295,7 @@ class Email extends Model
     public function transformWithoutUpdate($html, $useTrackingHost = false)
     {
         // Notice that there are 2 types of assets that need to untransform
-        // #1 Campaign relative URL
+        // #1 email relative URL
         // #2 User assets (uploaded by file manager) absolute URL
         //
         $host = config('app.url'); // Default host
@@ -315,7 +308,7 @@ class Email extends Model
 
         // Replace #1
         $path = join_url($host, route('email_assets', ['uid' => $this->uid], false));
-        $html = \Acelle\Library\Tool::replaceTemplateUrl($html, $path);
+        // $html = \Acelle\Library\Tool::replaceTemplateUrl($html, $path);
 
         // By the way, fix <html>
         $html = tinyDocTypeTransform($html);
@@ -334,15 +327,17 @@ class Email extends Model
         //
         // and only #1 will be untransformed while #2 is kept as is
 
-        // Replace relative URL with campaign URL
-        $this->content = str_replace(
+        // Replace relative URL with email URL
+        $html = $this->getTemplateContent();
+
+        $html = str_replace(
             route('email_assets', ['uid' => $this->uid]).'/',
             '',
-            tinyDocTypeUntransform($this->content)
+            tinyDocTypeUntransform($html)
         );
 
         // remove title tag
-        $this->content = strip_tags_only($this->content, 'title');
+        return strip_tags_only($html, 'title');
     }
 
     /**
@@ -350,7 +345,7 @@ class Email extends Model
      */
     public function render()
     {
-        $body = $this->transformWithoutUpdate($this->content, $useTrackingHost = false);
+        $body = $this->transformWithoutUpdate($this->getTemplateContent(), $useTrackingHost = false);
         return $body;
     }
 
@@ -367,7 +362,7 @@ class Email extends Model
      */
     public function updateLinks()
     {
-        if (!$this->content) {
+        if (!$this->getTemplateContent()) {
             return false;
         }
 
@@ -376,7 +371,7 @@ class Email extends Model
         // find all links from contents
         // Fix: str_get_html returning false
         defined('MAX_FILE_SIZE') || define('MAX_FILE_SIZE', 10000000);
-        $document = HtmlDomParser::str_get_html($this->content);
+        $document = HtmlDomParser::str_get_html($this->getTemplateContent());
         foreach ($document->find('a') as $element) {
             if (preg_match('/^http/', $element->href) != 0) {
                 $links[] = trim($element->href);
@@ -512,7 +507,7 @@ class Email extends Model
         $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from));
 
         return array(
-            'X-Acelle-Campaign-Id' => $this->uid,
+            'X-Acelle-email-Id' => $this->uid,
             'X-Acelle-Subscriber-Id' => $subscriber->uid,
             'X-Acelle-Customer-Id' => $this->automation->customer->uid,
             'X-Acelle-Message-Id' => $msgId,
@@ -643,7 +638,7 @@ class Email extends Model
     }
 
     /**
-     * Check if the given variable is a subscriber object (for actually sending a campaign)
+     * Check if the given variable is a subscriber object (for actually sending a email)
      * Or a stdClass subscriber (for sending test email).
      *
      * @param object $object
@@ -680,7 +675,7 @@ class Email extends Model
         // * tagMessage
         if (is_null($this->parsedContent)) {
             // STEP 01. Get RAW content
-            $body = $this->content;
+            $body = $this->getTemplateContent();
 
             // STEP 02. Append footer
             if ($this->footerEnabled()) {
@@ -709,7 +704,7 @@ class Email extends Model
         }
 
         // STEP 05. Transform URLs
-        $body = $this->transformWithoutUpdate($body, true);
+        // $body = $this->transformWithoutUpdate($body, true);
 
         if (is_null($msgId)) {
             $msgId = 'SAMPLE'; // for preview mode
@@ -1001,7 +996,7 @@ class Email extends Model
      */
     public function hasTemplate()
     {
-        return $this->content;
+        return $this->template;
     }
 
     /**
@@ -1009,9 +1004,7 @@ class Email extends Model
      */
     public function removeTemplate()
     {
-        $this->content = null;
-        \Acelle\Library\Tool::xdelete($this->getStoragePath());
-        $this->save();
+        $this->template->deleteAndCleanup();
     }
 
     /**
@@ -1020,7 +1013,7 @@ class Email extends Model
     public function updatePlainFromContent()
     {
         if (!$this->plain) {
-            $this->plain = preg_replace('/\s+/', ' ', preg_replace('/\r\n/', ' ', strip_tags($this->content)));
+            $this->plain = preg_replace('/\s+/', ' ', preg_replace('/\r\n/', ' ', strip_tags($this->getTemplateContent())));
             $this->save();
         }
     }
@@ -1057,6 +1050,54 @@ class Email extends Model
 
     public function isSetup()
     {
-        return $this->subject && $this->reply_to && $this->from && $this->content;
+        return $this->subject && $this->reply_to && $this->from && $this->template;
+    }
+
+    /**
+     * Get template.
+     */
+    public function setTemplate($template)
+    {
+        $emailTemplate = $template->copy([
+            'name' => trans('messages.email.template_name', ['name' => $this->name]),
+            'customer_id' => $this->customer_id,
+        ]);
+        
+        // remove exist template
+        if ($this->template) {
+            $this->template->deleteAndCleanup();
+        }
+
+        $this->template_id = $emailTemplate->id;
+        $this->save();
+        $this->refresh();
+        $this->updatePlainFromContent();
+        $this->updateLinks();
+    }
+
+    /**
+     * Get template content.
+     */
+    public function getTemplateContent()
+    {
+        if (!$this->template) {
+            throw new \Exception('Email does not have template!');
+        }
+
+        return $this->template->content;
+    }
+
+    /**
+     * Set template content.
+     */
+    public function setTemplateContent($content)
+    {
+        if (!$this->template) {
+            throw new \Exception('Campaign does not have template!');
+        }
+
+        $template = $this->template;
+        $template->content = $content;
+        $template->save();
     }
 }

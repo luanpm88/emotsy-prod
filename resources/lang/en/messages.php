@@ -3669,6 +3669,7 @@
   'template.category' => 'Category',
   'template.all_categories' => 'All categories',
   'campaign.template_name' => '[Campaign: ":name"]',
+  'email.template_name' => '[Email: ":name"]',
   'template.set_template_category' => 'Set template category',
   'template.set_template_category.intro' => 'Choose one or more categories for your template
     <br>Notice: if your template does not fall upon any category, it will not be visible to users.',

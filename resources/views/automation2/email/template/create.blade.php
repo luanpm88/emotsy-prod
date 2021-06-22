@@ -30,7 +30,7 @@
                                 </button>
                             </div>
                         </li>
-                        <li class="template-start" data-url="{{ action('Automation2Controller@templateTheme', [
+                        {{-- <li class="template-start" data-url="{{ action('Automation2Controller@templateTheme', [
                                 'uid' => $automation->uid,
                                 'email_uid' => $email->uid,
                             ]) }}"
@@ -47,7 +47,7 @@
                                     {{ trans('messages.automation.template.start') }}
                                 </button>
                             </div>
-                        </li>
+                        </li> --}}
                         <li class="template-start" data-url="{{ action('Automation2Controller@templateUpload', [
                                 'uid' => $automation->uid,
                                 'email_uid' => $email->uid,
