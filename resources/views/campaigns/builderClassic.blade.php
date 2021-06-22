@@ -50,7 +50,7 @@
                     'class' => 'template-editor',
                     'name' => 'html',
                     'label' => '',
-                    'value' => $campaign->getParsedContent(),
+                    'value' => $campaign->template->content,
                     'rules' => [],
                     'help_class' => 'campaign'
                 ])             

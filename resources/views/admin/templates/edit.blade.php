@@ -48,7 +48,7 @@
                     'required' => true,
                     'type' => 'textarea',
                     'name' => 'content',
-                    'value' => $template->getParsedContent(),
+                    'value' => $template->content,
                     'rules' => ['content' => 'required']
                 ])                
             </div>
