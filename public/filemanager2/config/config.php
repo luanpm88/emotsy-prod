@@ -131,7 +131,7 @@ $base_r_url = str_replace("filemanager2/dialog.php", "", str_replace($base_url, 
 
 
 $l_upload_dir = $base_r_url . '/files/' . $user_uid . "/";
-$l_thumb_dir = $base_r_url . '/files/thumbs/' . $user_uid . "/";
+$l_thumb_dir = $base_r_url . '/thumbs/' . $user_uid . "/";
 $l_current_path = '../../storage/app/users/' . $user_uid . '/home/files/';
 $l_thumbs_base_path = '../../storage/app/users/' . $user_uid . '/home/thumbs/';
 $l_thumbs_upload_dir = $base_r_url . '/files/thumbs/' . $user_uid . "/";
