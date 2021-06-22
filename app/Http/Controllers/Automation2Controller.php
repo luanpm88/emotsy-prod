@@ -1815,8 +1815,7 @@ class Automation2Controller extends Controller
             
             $this->validate($request, $rules);
             
-            $email->content = $request->content;
-            $email->untransform();
+            $email->setTemplateContent($request->content);
             $email->save();
 
             // update email plain text
