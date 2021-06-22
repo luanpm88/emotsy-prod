@@ -3264,7 +3264,7 @@
   'plugins.deleted' => 'One or more plugins were successfully deleted',
   'plugins.disabled' => 'One or more plugins were successfully disabled',
   'plugins.enabled' => 'One or more plugins were successfully enabled',
-  'delete_plugins_confirm' => 'You\'re about to delete :number plugin(s) from the list.',
+  'delete_plugins_confirm' => 'Deleting a plugin might also erase all its data added to the application. Are you sure you want to delete it',
   'disable_plugins_confirm' => 'You\'re about to disable :number plugin(s) from the list.',
   'enable_plugins_confirm' => 'You\'re about to enable :number plugin(s) from the list.',
   'create_plugin' => 'Create new',
