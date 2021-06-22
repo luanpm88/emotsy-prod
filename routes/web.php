@@ -44,7 +44,7 @@ Route::get('/files/{uid}/{name?}', [ function ($uid, $name) {
     } else {
         abort(404);
     }
-}])->where('name', '.+')->name('customer_files');
+}])->where('name', '.+')->name('user_files');
 
 // assets path for customer thumbs
 Route::get('/thumbs/{uid}/{name?}', [ function ($uid, $name) {
@@ -55,19 +55,7 @@ Route::get('/thumbs/{uid}/{name?}', [ function ($uid, $name) {
     } else {
         abort(404);
     }
-}])->where('name', '.+')->name('customer_thumbs');
-
-// assets path for email
-Route::get('/assets/emails/{uid}/{name?}', [ function ($uid, $name) {
-    $email = \Acelle\Model\Email::findByUid($uid);
-    $path = $email->getStoragePath($name);
-    $mime_type = \Acelle\Library\File::getFileType($path);
-    if (\File::exists($path)) {
-        return response()->file($path, array('Content-Type' => $mime_type));
-    } else {
-        abort(404);
-    }
-}])->where('name', '.+')->name('email_assets');
+}])->where('name', '.+')->name('user_thumbs');
 
 // assets path for email
 Route::get('/p/assets/{path}', [ function ($token) {
