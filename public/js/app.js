@@ -9,6 +9,13 @@
 *
 * ---------------------------------------------------------------------------- */
 
+var MyApp = {};
+
+MyApp.sample = function(message) {
+    // Call me by MyApp.sample('hello');
+    alert('This is a global method. ' + message);
+}
+
 function copyToClipboard(text) {
     var $temp = $("<input>");
     $("body").append($temp);

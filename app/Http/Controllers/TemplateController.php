@@ -124,33 +124,30 @@ class TemplateController extends Controller
             return $this->notAuthorized();
         }
 
-        // validate and save posted data
-        if ($request->isMethod('patch')) {
-            // Save template
-            $template->fill($request->all());
+        // Save template
+        $template->fill($request->all());
 
-            $rules = array(
-                'name' => 'required',
-                'content' => 'required',
-            );
+        $rules = array(
+            'name' => 'required',
+            'content' => 'required',
+        );
 
-            // make validator
-            $validator = \Validator::make($request->all(), $rules);
-            
-            // redirect if fails
-            if ($validator->fails()) {
-                // faled
-                return response()->json($validator->errors(), 400);
-            }
-            
-            $template->save();
-
-            // success
-            return response()->json([
-                'status' => 'success',
-                'message' => trans('messages.template.updated'),
-            ], 201);
+        // make validator
+        $validator = \Validator::make($request->all(), $rules);
+        
+        // redirect if fails
+        if ($validator->fails()) {
+            // faled
+            return response()->json($validator->errors(), 400);
         }
+        
+        $template->save();
+
+        // success
+        return response()->json([
+            'status' => 'success',
+            'message' => trans('messages.template.updated'),
+        ], 201);
     }
 
     /**
@@ -171,15 +168,12 @@ class TemplateController extends Controller
         if ($request->isMethod('post')) {
             $template = Template::uploadTemplate($request);
 
-            if (!empty(Setting::get('storage.s3'))) {
-                App::make('xstore')->store($template);
-            }
-
             $request->session()->flash('alert-success', trans('messages.template.uploaded'));
             return redirect()->action('TemplateController@index');
+        } else {
+            return view('templates.upload');    
         }
-
-        return view('templates.upload');
+        
     }
 
     /**
@@ -199,16 +193,17 @@ class TemplateController extends Controller
         }
 
         $templates = Template::whereIn('uid', explode(',', $request->uids));
-
+        $total = $templates->count();
+        $deleted = 0;
         foreach ($templates->get() as $template) {
             // authorize
             if ($request->user()->customer->can('delete', $template)) {
                 $template->deleteAndCleanup();
+                $deleted += 1;
             }
         }
 
-        // Redirect to my lists page
-        echo trans('messages.templates.deleted');
+        echo trans('messages.templates.deleted', [ 'deleted' => $deleted, 'total' => $total]);
     }
 
     /**
