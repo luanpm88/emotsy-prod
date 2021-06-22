@@ -92,7 +92,7 @@ end
 ## copy files
 for file in meta[:updated]
   if File.exists?(file)
-    `cp --parent #{file} #{File.join(output, subdir)}`
+    `cp -r --parent #{file} #{File.join(output, subdir)}`
   else
     puts "File #{file} skipped!"
   end
