@@ -41,7 +41,7 @@
                             <div class="list-setting-footer text-nowrap pl-4">
                                 @if ($gateway->isActive())
                                     @if (in_array($gateway, $enabledGateways))
-                                        <span class="badge badge-large badge-success">
+                                        <span class="label label-flat bg-active">
                                             {{ trans('messages.payment.active') }}
                                         </span>
                                         <a class="btn btn-mc_primary ml-5"
@@ -49,7 +49,7 @@
                                             {{ trans('messages.payment.disable') }}
                                         </a>
                                     @else
-                                        <span class="badge badge-large badge-warning">
+                                        <span class="label label-flat bg-inactive">
                                             {{ trans('messages.payment.inactive') }}
                                         </span>
                                         <a class="btn btn-mc_primary ml-5"
