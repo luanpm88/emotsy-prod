@@ -108,8 +108,24 @@ class Template extends Model
 
             $query = $query->whereHas('categories', function ($q) use ($category) {
                 $q->whereIn('template_categories.id', [$category->id]);
-            })->get();
+            });
         }
+    }
+
+    /**
+     * Search.
+     *
+     * @return collect
+     */
+    public static function scopeNotAssociated($query)
+    {
+        $query->whereNotIn('id', function ($q) {
+            $q->select('template_id')->from('emails')->whereNotNull('template_id');
+        });
+
+        $query->whereNotIn('id', function ($q) {
+            $q->select('template_id')->from('campaigns')->whereNotNull('template_id');
+        });
     }
 
     /**

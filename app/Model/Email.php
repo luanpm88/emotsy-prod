@@ -17,9 +17,12 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use Acelle\Jobs\DeliverEmail;
+use Acelle\Library\Traits\HasTemplate;
 
 class Email extends Model
 {
+    use HasTemplate;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -41,19 +44,19 @@ class Email extends Model
     }
 
     /**
+     * Get the customer.
+     */
+    public function customer()
+    {
+        return $this->belongsTo('Acelle\Model\Customer');
+    }
+
+    /**
      * Association with attachments.
      */
     public function attachments()
     {
         return $this->hasMany('Acelle\Model\Attachment');
-    }
-
-    /**
-     * Email has one template.
-     */
-    public function template()
-    {
-        return $this->belongsTo('Acelle\Model\Template');
     }
 
     /**
@@ -136,22 +139,6 @@ class Email extends Model
     }
 
     /**
-     * Get public email upload uri.
-     */
-    public function getUploadUri()
-    {
-        return 'app/email/template_'.$this->uid;
-    }
-
-    /**
-     * Get public email upload dir.
-     */
-    public function getUploadDir()
-    {
-        return storage_path('app/email/template_'.$this->uid);
-    }
-
-    /**
      * Get builder templates.
      *
      * @return mixed
@@ -200,91 +187,9 @@ class Email extends Model
     /**
      * Get attachment path.
      */
-    public function getAttachmentPath($sub = '')
+    public function getAttachmentPath($path = null)
     {
-        return $this->getEmailStoragePath(join_paths('attachment', $sub));
-    }
-
-    /**
-     * Get thumb.
-     */
-    public function getThumbName()
-    {
-        // find index
-        $names = array('thumbnail.png', 'thumbnail.jpg', 'thumbnail.png', 'thumb.jpg', 'thumb.png');
-        foreach ($names as $name) {
-            if (is_file($file = $this->getStoragePath($name))) {
-                return $name;
-            }
-        }
-
-        return;
-    }
-
-    /**
-     * Get thumb.
-     */
-    public function getThumb()
-    {
-        // find index
-        if ($this->getThumbName()) {
-            return $this->getStoragePath($this->getThumbName());
-        }
-
-        return;
-    }
-
-    /**
-     * Get thumb.
-     */
-    public function getThumbUrl()
-    {
-        if ($this->template) {
-            return $this->template->getThumbUrl();
-        } else {
-            return url('assets/images/placeholder.jpg');
-        }
-    }
-
-    /**
-     * Get public email upload dir.
-     */
-    public function getEmailStoragePath($sub = '')
-    {
-        $base = storage_path(join_paths('app/users/', $this->automation->customer->uid, '/emails/', $this->uid));
-        if (!\File::exists($base)) {
-            \File::makeDirectory($base, 0777, true, true);
-        }
-        return join_paths($base, $sub);
-    }
-
-    /**
-     * Get public email upload dir.
-     */
-    public function getStoragePath($sub = '')
-    {
-        $base = $this->getEmailStoragePath('content');
-        if (!\File::exists($base)) {
-            \File::makeDirectory($base, 0777, true, true);
-        }
-        return join_paths($base, $sub);
-    }
-
-    /**
-     * Upload a template.
-     */
-    public function uploadTemplate($request)
-    {
-        $template = Template::uploadTemplate($request);
-        $this->setTemplate($template);
-    }
-
-    /**
-     * Upload asset.
-     */
-    public function uploadAsset($file)
-    {
-        return $this->automation->customer->user->uploadAsset($file);
+        return $this->customer->getAttachmentsPath($path);
     }
 
     /**
@@ -384,6 +289,8 @@ class Email extends Model
      */
     public function prepare($subscriber)
     {
+        $this->updateLinks();
+
         // build the message
         $customHeaders = $this->getCustomHeaders($subscriber, $this);
         $msgId = $customHeaders['X-Acelle-Message-Id'];
@@ -922,33 +829,6 @@ class Email extends Model
     }
 
     /**
-     * Check if email has template.
-     */
-    public function hasTemplate()
-    {
-        return $this->template;
-    }
-
-    /**
-     * Remove email template.
-     */
-    public function removeTemplate()
-    {
-        $this->template->deleteAndCleanup();
-    }
-
-    /**
-     * Update email plain text.
-     */
-    public function updatePlainFromContent()
-    {
-        if (!$this->plain) {
-            $this->plain = preg_replace('/\s+/', ' ', preg_replace('/\r\n/', ' ', strip_tags($this->getTemplateContent())));
-            $this->save();
-        }
-    }
-
-    /**
      * Fill email's fields from request.
      */
     public function fillAttributes($params)
@@ -983,51 +863,12 @@ class Email extends Model
         return $this->subject && $this->reply_to && $this->from && $this->template;
     }
 
-    /**
-     * Get template.
-     */
-    public function setTemplate($template)
+    public function deleteAndCleanup()
     {
-        $emailTemplate = $template->copy([
-            'name' => trans('messages.email.template_name', ['name' => $this->name]),
-            'customer_id' => $this->automation->customer_id,
-        ]);
-        
-        // remove exist template
         if ($this->template) {
             $this->template->deleteAndCleanup();
         }
 
-        $this->template_id = $emailTemplate->id;
-        $this->save();
-        $this->refresh();
-        $this->updatePlainFromContent();
-        $this->updateLinks();
-    }
-
-    /**
-     * Get template content.
-     */
-    public function getTemplateContent()
-    {
-        if (!$this->template) {
-            throw new \Exception('Email does not have template!');
-        }
-
-        return $this->template->content;
-    }
-
-    /**
-     * Set template content.
-     */
-    public function setTemplateContent($content)
-    {
-        if (!$this->template) {
-            throw new \Exception('Campaign does not have template!');
-        }
-
-        $template = $this->template;
-        $template->content = $content;
-        $template->save();
+        $this->delete();
     }
 }

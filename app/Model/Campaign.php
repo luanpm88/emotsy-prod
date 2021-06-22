@@ -46,9 +46,12 @@ use File;
 use ZipArchive;
 use KubAT\PhpSimple\HtmlDomParser;
 use Exception;
+use Acelle\Library\Traits\HasTemplate;
 
 class Campaign extends Model
 {
+    use HasTemplate;
+
     protected $logger;
 
     // Campaign status
@@ -109,14 +112,6 @@ class Campaign extends Model
     }
 
     /**
-     * Campaign has one template.
-     */
-    public function template()
-    {
-        return $this->belongsTo('Acelle\Model\Template');
-    }
-
-    /**
      * Campaign has many campaign links.
      */
     public function campaignLinks()
@@ -130,54 +125,6 @@ class Campaign extends Model
     public function trackingDomain()
     {
         return $this->belongsTo('Acelle\Model\TrackingDomain', 'tracking_domain_id');
-    }
-
-    /**
-     * Get template.
-     */
-    public function setTemplate($template)
-    {
-        $campaignTemplate = $template->copy([
-            'name' => trans('messages.campaign.template_name', ['name' => $this->name]),
-            'customer_id' => $this->customer_id,
-        ]);
-        
-        // remove exist template
-        if ($this->template) {
-            $this->template->deleteAndCleanup();
-        }
-
-        $this->template_id = $campaignTemplate->id;
-        $this->save();
-        $this->refresh();
-        $this->updatePlainFromHtml();
-        $this->updateLinks();
-    }
-    
-    /**
-     * Get template content.
-     */
-    public function getTemplateContent()
-    {
-        if (!$this->template) {
-            throw new \Exception('Campaign does not have template!');
-        }
-
-        return $this->template->content;
-    }
-
-    /**
-     * Set template content.
-     */
-    public function setTemplateContent($content)
-    {
-        if (!$this->template) {
-            throw new \Exception('Campaign does not have template!');
-        }
-
-        $template = $this->template;
-        $template->content = $content;
-        $template->save();
     }
 
     /**
@@ -349,6 +296,8 @@ class Campaign extends Model
      */
     public function prepareEmail($subscriber, $server = null)
     {
+        $this->updateLinks();
+
         // build the message
         $customHeaders = $this->getCustomHeaders($subscriber, $this);
         $msgId = $customHeaders['X-Acelle-Message-Id'];
@@ -2066,8 +2015,6 @@ class Campaign extends Model
     }
 
     /**
-<<<<<<< HEAD
-=======
      * Check if auto campaign designed.
      *
      * @return object
@@ -2083,7 +2030,6 @@ class Campaign extends Model
     }
 
     /**
->>>>>>> d981bf98e (cashier 3.0)
      * Get type select options.
      *
      * @return array
@@ -2567,59 +2513,11 @@ class Campaign extends Model
     }
 
     /**
-     * Get public campaign upload uri.
-     */
-    public function getUploadUri()
-    {
-        return 'app/campaigns/template_'.$this->uid;
-    }
-
-    /**
-     * Get public campaign upload dir.
-     */
-    public function getUploadDir()
-    {
-        return storage_path('app/campaigns/template_'.$this->uid);
-    }
-
-    /**
-     * Update campaign plain text.
-     */
-    public function updatePlainFromHtml()
-    {
-        if (!$this->plain) {
-            $this->plain = preg_replace('/\s+/', ' ', preg_replace('/\r\n/', ' ', strip_tags($this->getTemplateContent())));
-            $this->save();
-        }
-    }
-
-    /**
      * Get public campaign upload dir.
      */
     public function getStoragePath($path = '')
     {
         return $this->customer->user->getStoragePath(join_paths('campaigns', $this->uid, $path));
-    }
-
-    /**
-     * Get thumb.
-     */
-    public function getThumbUrl()
-    {
-        if ($this->template) {
-            return $this->template->getThumbUrl();
-        } else {
-            return url('assets/images/placeholder.jpg');
-        }
-    }
-
-    /**
-     * Upload a template.
-     */
-    public function uploadTemplate($request)
-    {
-        $template = Template::uploadTemplate($request);
-        $this->setTemplate($template);
     }
 
     /**
@@ -3831,5 +3729,14 @@ class Campaign extends Model
         $this->logger = $logger;
 
         return $this->logger;
+    }
+
+    public function deleteAndCleanup()
+    {
+        if ($this->template) {
+            $this->template->deleteAndCleanup();
+        }
+
+        $this->delete();
     }
 }

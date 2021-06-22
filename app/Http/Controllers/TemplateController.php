@@ -42,6 +42,7 @@ class TemplateController extends Controller
         // sort, pagination
         $templates = $templates->search($request->keyword)
             ->filter($request)
+            ->notAssociated()
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
             
