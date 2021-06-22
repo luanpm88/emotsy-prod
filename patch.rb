@@ -7,7 +7,7 @@ require 'json'
 # Settings
 last_supported = '4.0.22-p22'
 packages = ['acelle']       # vendor packages to be replaced
-dirs = ['public/builder', 'resources/lang/default', 'vendor']                   # 'resources/lang/default' for example
+dirs = ['public/builder', 'database', 'resources/lang/default', 'vendor']                   # 'resources/lang/default' for example
 
 # Auto setting
 release_date = Time.now.to_s
