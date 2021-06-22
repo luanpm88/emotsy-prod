@@ -17,8 +17,6 @@ class AddUrlToCampaignLinksTable extends Migration
             $table->text('url');
         });
 
-        Schema::dropIfExists('links');
-
         try {
             Schema::table('campaign_links', function (Blueprint $table) {
                 $table->dropForeign(['link_id']);
@@ -34,6 +32,8 @@ class AddUrlToCampaignLinksTable extends Migration
         } catch (\Exception $ex) {
             // ignore
         }
+
+        Schema::dropIfExists('links');
     }
 
     /**

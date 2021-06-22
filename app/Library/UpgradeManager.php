@@ -24,6 +24,7 @@ namespace Acelle\Library;
 
 use ZipArchive;
 use Illuminate\Support\Facades\Log as LaravelLog; // something wrong, cannot use the default name Log
+use Illuminate\Support\Facades\File;
 
 class UpgradeManager
 {
@@ -458,57 +459,32 @@ class UpgradeManager
     }
 
     /**
-     * Copy a directory recursively.
+     * Copy file or directory to a destination (always REMOVE and REPLACE the destination).
+     * Make sure parent directories are always created, similarly to "cp -p"
+     * 
      */
-    private function copy($src, $dst)
+    public function copy($src, $dst)
     {
-        // create the base directory for the destination if it does not exist yet
-        $this->createBaseDir($dst);
+        if (File::exists($dst)) {
+            // Delete the file or link or directory
+            if (is_link($dst) || is_file($dst)) {
+                File::delete($dst);
+            } else {
+                File::deleteDirectory($dst);
+            }    
+        } else {
+            // Make sure the PARENT directory exists
+            $dirname = pathinfo($dst)['dirname'];
+            if (!File::exists($dirname)) {
+                File::makeDirectory($dirname, 0777, true, true);
+            }
+        }
 
         // if source is a file, just copy it
-        if (!is_dir($src)) {
-            copy($src, $dst);
-
-            return;
-        }
-
-        // if source is a directory, copy recursively all its child files/directories
-        $dir = opendir($src);
-        mkdir($dst);
-
-        while (false !== ($file = readdir($dir))) {
-            if (($file != '.') && ($file != '..')) {
-                if (is_dir(join_paths($src, $file))) {
-                    $this->copy(join_paths($src, $file), join_paths($dst, $file));
-                } else {
-                    copy(join_paths($src, $file), join_paths($dst, $file));
-                }
-            }
-        }
-        closedir($dir);
-    }
-
-    /**
-     * Create base directory for a given path.
-     */
-    public function createBaseDir($path)
-    {
-        $dirname = pathinfo($path)['dirname'];
-        $a = explode(DIRECTORY_SEPARATOR, $dirname);
-        for ($i = 0; $i <= sizeof($a); $i += 1) { // @important: use <= here
-            $tmppath = implode(DIRECTORY_SEPARATOR, array_slice($a, 0, $i));
-            if (empty($tmppath)) {
-                continue;
-            }
-
-            try {
-                if (!file_exists($tmppath)) {
-                    mkdir($tmppath);
-                }
-            } catch (\Exception $ex) {
-                LaravelLog::warning($tmppath.' not in open_basedir (skip mkdir): '.ini_get('open_basedir'));
-                $parent = $tmppath;
-            }
+        if (File::isFile($src)) {
+            File::copy($src, $dst);
+        } else {
+            File::copyDirectory($src, $dst);
         }
     }
 
