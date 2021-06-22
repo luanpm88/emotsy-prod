@@ -32,26 +32,33 @@
                     @foreach ($gateways as $gateway)
                         <div class="list-setting bg-{{ $gateway->getType() }}
                             {{ $gateway->isActive() && in_array($gateway, $enabledGateways) ? 'current' : '' }}">
-                            <div class="list-setting-main">
+                            <div class="list-setting-main" style="width: 50%">
                                 <div class="title">
                                     <label>{{ $gateway->getName() }}</label>
                                 </div>
                                 <p>{{ $gateway->getDescription() }}</p>
                             </div>
-                            <div class="list-setting-footer text-nowrap pl-4">
+                            <div class="list-setting-status text-nowrap pl-4">
                                 @if ($gateway->isActive())
                                     @if (in_array($gateway, $enabledGateways))
                                         <span class="label label-flat bg-active">
                                             {{ trans('messages.payment.active') }}
                                         </span>
+                                    @else
+                                        <span class="label label-flat bg-inactive">
+                                            {{ trans('messages.payment.inactive') }}
+                                        </span>
+                                    @endif
+                                @endif
+                            </div>
+                            <div class="list-setting-actions text-nowrap pl-4">
+                                @if ($gateway->isActive())
+                                    @if (in_array($gateway, $enabledGateways))
                                         <a class="btn btn-mc_primary ml-5"
                                             link-method="post" href="{{ action('Admin\PaymentController@disable', $gateway->getType()) }}">
                                             {{ trans('messages.payment.disable') }}
                                         </a>
                                     @else
-                                        <span class="label label-flat bg-inactive">
-                                            {{ trans('messages.payment.inactive') }}
-                                        </span>
                                         <a class="btn btn-mc_primary ml-5"
                                             link-method="post" href="{{ action('Admin\PaymentController@enable', $gateway->getType()) }}">
                                             {{ trans('messages.payment.enable') }}
