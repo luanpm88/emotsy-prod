@@ -45,7 +45,10 @@ function generatePublicPath($absPath, $absolute = false)
 
 function getAppSubdirectory()
 {
-    $appUrlInfo = parse_url(url('/'));
+    // IMPORTANT: do not use url('/') as it will not work correctly
+    // when calling from another file (like filemanager/config/config.php for example)
+    // Otherwise, it will always return 'http://localhost' --> without subdirectory
+    $appUrlInfo = parse_url(config('app.url'));
     $subdirectory = array_key_exists('path', $appUrlInfo) ? $appUrlInfo['path'] : null;
     return $subdirectory;
 }

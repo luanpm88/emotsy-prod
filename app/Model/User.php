@@ -460,14 +460,13 @@ class User extends Authenticatable
             'base_url' => $baseUrl,
             'upload_dir' => join_paths('/', $this->getAssetsSubUrl(), '/'),
             'thumb_dir' => join_paths('/', $this->getThumbsSubUrl(), '/'),
-            'thumbs_upload_dir' => $this->getThumbsSubUrl(),
+            'thumbs_upload_dir' => join_paths('/', $this->getThumbsSubUrl(), '/'),
             // relative path from filemanager folder to upload folder, WITH FINAL /
             'current_path' => join_paths('../../storage/', self::BASE_DIR, $this->uid, self::ASSETS_DIR, '/'),
             // relative path from filemanager folder to upload folder, WITH FINAL /
             'thumbs_base_path' => join_paths('../../storage/', self::BASE_DIR, $this->uid, self::ASSETS_THUMB_DIR, '/'),
             'MaxSizeTotal' => $maxSizeTotal,
             'MaxSizeUpload' => $maxSizeUpload,
-            'relative_url' => "1",
         ];
 
         return $config;
