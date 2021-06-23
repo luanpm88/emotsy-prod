@@ -597,4 +597,16 @@ class Language extends Model
 
         return $paths;
     }
+
+    public function getLanguageFilesByType($type)
+    {
+        $langFiles = $this->getAllLanguageFiles();
+        foreach ($langFiles as $key => $langFile) {
+            if ($langFile['type'] != $type) {
+                unset($langFiles[$key]);
+            }
+        }
+
+        return $langFiles;
+    }
 }

@@ -49,7 +49,8 @@ class User extends Authenticatable
      *
      */
     const BASE_DIR = 'app/users'; // storage/customers/000000
-    const ASSETS_DIR = 'files';
+    const ASSETS_DIR = 'home/files';
+    const ASSETS_THUMB_DIR = 'home/thumbs';
 
     /**
      * The attributes that are mass assignable.
@@ -408,5 +409,59 @@ class User extends Authenticatable
     {
         $this->one_time_api_token = null;
         $this->save();
+    }
+
+    public function getAssetsSubUrl()
+    {
+        $appSubDirectory = \Acelle\Helpers\getAppSubdirectory();
+        $appSubDirectory = (is_null($appSubDirectory)) ? '' : $appSubDirectory;
+
+        // Returns a relative subpath like "/files/000000"
+        $subpath = route('user_files', ['uid' => $this->uid], false);
+        return join_paths($appSubDirectory, $subpath);
+    }
+
+    public function getThumbsSubUrl()
+    {
+        $appSubDirectory = \Acelle\Helpers\getAppSubdirectory();
+        $appSubDirectory = (is_null($appSubDirectory)) ? '' : $appSubDirectory;
+
+        // Returns a relative subpath like "/thumbs/000000"
+        $subpath = route('user_thumbs', ['uid' => $this->uid], false) ;
+        return join_paths($appSubDirectory, $subpath);
+    }
+
+    public function getFilemanagerConfig()
+    {
+        //return \URL::asset('filemanager2/dialog.php')."?id=238948394";
+        // Base URL with port, but without subpath
+        $baseUrl = parse_url(url('/'));
+
+        // port may be null
+        if (!array_key_exists('port', $baseUrl)) {
+            $baseUrl['port'] = '';
+        }
+
+        $baseUrl = "{$baseUrl['scheme']}://{$baseUrl['host']}{$baseUrl['port']}";
+
+        $config = [
+            'base_url' => $baseUrl,
+            'upload_dir' => join_paths('/', $this->getAssetsSubUrl(), '/'),
+            'thumb_dir' => join_paths('/', $this->getThumbsSubUrl(), '/'),
+            'thumbs_upload_dir' => $this->getThumbsSubUrl(),
+            // relative path from filemanager folder to upload folder, WITH FINAL /
+            'current_path' => join_paths('../../storage/', self::BASE_DIR, $this->uid, self::ASSETS_DIR, '/'),
+            // relative path from filemanager folder to upload folder, WITH FINAL /
+            'thumbs_base_path' => join_paths('../../storage/', self::BASE_DIR, $this->uid, self::ASSETS_THUMB_DIR, '/'),
+            'MaxSizeTotal' => $this->customer->getOption("max_size_upload_total") > 0 ? $this->customer->getOption("max_size_upload_total") : 2048,
+            'MaxSizeUpload' => $this->customer->getOption("max_file_size_upload") > 0 ? $this->customer->getOption("max_file_size_upload") : 2048,
+            'relative_url' => "1",
+        ];
+
+        //$filemanager = \URL::asset('filemanager2/dialog.php');
+
+        //return $filemanager."?".http_build_query($config);
+        return $config;
+
     }
 }
