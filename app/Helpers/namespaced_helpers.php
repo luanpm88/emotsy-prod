@@ -28,8 +28,7 @@ function generatePublicPath($absPath, $absolute = false)
     $encodedUrl = StringHelper::base64UrlEncode($relativePath);
 
     // If Laravel is under a subdirectory
-    $appUrlInfo = parse_url(url('/'));
-    $subdirectory = array_key_exists('path', $appUrlInfo) ? $appUrlInfo['path'] : null;
+    $subdirectory = getAppSubdirectory();
 
     if (empty($subdirectory) || $absolute) {
         // Return something like
@@ -41,4 +40,12 @@ function generatePublicPath($absPath, $absolute = false)
     }
 
     return $url;
+}
+
+
+function getAppSubdirectory()
+{
+    $appUrlInfo = parse_url(url('/'));
+    $subdirectory = array_key_exists('path', $appUrlInfo) ? $appUrlInfo['path'] : null;
+    return $subdirectory;
 }
