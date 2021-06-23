@@ -433,7 +433,6 @@ class User extends Authenticatable
 
     public function getFilemanagerConfig()
     {
-        //return \URL::asset('filemanager2/dialog.php')."?id=238948394";
         // Base URL with port, but without subpath
         $baseUrl = parse_url(url('/'));
 
@@ -444,6 +443,16 @@ class User extends Authenticatable
 
         $baseUrl = "{$baseUrl['scheme']}://{$baseUrl['host']}{$baseUrl['port']}";
 
+        if ($this->customer) {
+            // Limited by plan
+            $maxSizeTotal = $this->customer->getOption("max_size_upload_total") > 0 ? $this->customer->getOption("max_size_upload_total") : 2048;
+            $maxSizeUpload = $this->customer->getOption("max_file_size_upload") > 0 ? $this->customer->getOption("max_file_size_upload") : 2048;
+        } else {
+            // Virtually unlimited
+            $maxSizeTotal = 4096;
+            $maxSizeUpload = 4096;
+        }
+
         $config = [
             'base_url' => $baseUrl,
             'upload_dir' => join_paths('/', $this->getAssetsSubUrl(), '/'),
@@ -453,15 +462,11 @@ class User extends Authenticatable
             'current_path' => join_paths('../../storage/', self::BASE_DIR, $this->uid, self::ASSETS_DIR, '/'),
             // relative path from filemanager folder to upload folder, WITH FINAL /
             'thumbs_base_path' => join_paths('../../storage/', self::BASE_DIR, $this->uid, self::ASSETS_THUMB_DIR, '/'),
-            'MaxSizeTotal' => $this->customer->getOption("max_size_upload_total") > 0 ? $this->customer->getOption("max_size_upload_total") : 2048,
-            'MaxSizeUpload' => $this->customer->getOption("max_file_size_upload") > 0 ? $this->customer->getOption("max_file_size_upload") : 2048,
+            'MaxSizeTotal' => $maxSizeTotal,
+            'MaxSizeUpload' => $maxSizeUpload,
             'relative_url' => "1",
         ];
 
-        //$filemanager = \URL::asset('filemanager2/dialog.php');
-
-        //return $filemanager."?".http_build_query($config);
         return $config;
-
     }
 }
