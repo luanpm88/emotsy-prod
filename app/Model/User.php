@@ -443,14 +443,17 @@ class User extends Authenticatable
 
         $baseUrl = "{$baseUrl['scheme']}://{$baseUrl['host']}{$baseUrl['port']}";
 
+        // Limitation
+        // Since this method is called from within the dialog.php file, there is no way to know if whether or not it is an admin or customer session
+        // So, there is no chance to apply quota here
         if ($this->customer) {
             // Limited by plan
             $maxSizeTotal = $this->customer->getOption("max_size_upload_total") > 0 ? $this->customer->getOption("max_size_upload_total") : 2048;
             $maxSizeUpload = $this->customer->getOption("max_file_size_upload") > 0 ? $this->customer->getOption("max_file_size_upload") : 2048;
         } else {
             // Virtually unlimited
-            $maxSizeTotal = 4096;
-            $maxSizeUpload = 4096;
+            $maxSizeTotal = 2048;
+            $maxSizeUpload = 2048;
         }
 
         $config = [
