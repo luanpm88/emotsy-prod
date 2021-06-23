@@ -431,7 +431,7 @@ class User extends Authenticatable
         return join_paths($appSubDirectory, $subpath);
     }
 
-    public function getFileManagerUrl()
+    public function getFilemanagerConfig()
     {
         //return \URL::asset('filemanager2/dialog.php')."?id=238948394";
         // Base URL with port, but without subpath
@@ -458,9 +458,10 @@ class User extends Authenticatable
             'relative_url' => "1",
         ];
 
-        $filemanager = \URL::asset('filemanager2/dialog.php');
+        //$filemanager = \URL::asset('filemanager2/dialog.php');
 
-        return $filemanager."?".http_build_query($config);
+        //return $filemanager."?".http_build_query($config);
+        return $config;
 
     }
 }
