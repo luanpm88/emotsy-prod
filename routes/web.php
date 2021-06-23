@@ -120,7 +120,7 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
 
 // Without authentication
 Route::group(['middleware' => ['not_installed']], function () {
-    Route::get('blank', function () {
+    Route::match(['get', 'post'], 'blank', function () {
         return;
     });
 
