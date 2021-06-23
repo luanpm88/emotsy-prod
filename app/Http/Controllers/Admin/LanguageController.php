@@ -212,12 +212,12 @@ class LanguageController extends Controller
     public function translate(Request $request, $id)
     {
         $language = \Acelle\Model\Language::findByUid($id);
-        $langFiles = $language->getAllLanguageFiles();
 
         if ($request->file_id) {
-            $currentFile = $langFiles[$request->file_id];
+            $currentFile = $language->getAllLanguageFiles()[$request->file_id];
         } else {
-            $currentFile = array_shift($langFiles);
+            $defaultFiles = $language->getAllLanguageFiles();
+            $currentFile = array_shift($defaultFiles);
         }
 
         // Prenvent save from demo mod
@@ -254,7 +254,6 @@ class LanguageController extends Controller
             if ($validator->fails()) {
                 return response()->view('admin.languages.translate', [
                     'language' => $language,
-                    'langFiles' => $langFiles,
                     'currentFile' => $currentFile,
                     'content' => $request->content,
                     'errors' => $validator->errors(),
@@ -273,7 +272,6 @@ class LanguageController extends Controller
         
         return view('admin.languages.translate', [
             'language' => $language,
-            'langFiles' => $langFiles,
             'content' => $content,
             'currentFile' => $currentFile,
             'content' => $content,
