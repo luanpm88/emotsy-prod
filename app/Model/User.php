@@ -455,6 +455,7 @@ class User extends Authenticatable
             'thumbs_base_path' => join_paths('../../storage/', self::BASE_DIR, $this->uid, self::ASSETS_THUMB_DIR, '/'),
             'MaxSizeTotal' => $this->customer->getOption("max_size_upload_total") > 0 ? $this->customer->getOption("max_size_upload_total") : 2048,
             'MaxSizeUpload' => $this->customer->getOption("max_file_size_upload") > 0 ? $this->customer->getOption("max_file_size_upload") : 2048,
+            'relative_url' => "1",
         ];
 
         $filemanager = \URL::asset('filemanager2/dialog.php');
