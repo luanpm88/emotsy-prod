@@ -1,6 +1,7 @@
 <?php
 
 $version = "9.14.0";
+
 if (session_id() == '') {
     session_start();
 }
@@ -13,25 +14,16 @@ mb_regex_encoding('UTF-8');
 ob_start('mb_output_handler');
 date_default_timezone_set('Europe/Rome');
 setlocale(LC_CTYPE, 'en_US'); //correct transliteration
-// ACELLE INJECTED
-define('FILE_MANAGER_MODE', microtime(true));
 
+// ACELLE INJECTED
 require '../../bootstrap/autoload.php';
 $app = require_once '../../bootstrap/app.php';
-
 $kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
 $response = $kernel->handle(
     $request = Acelle\Framework\LaravelRequest::capture('/blank')
 );
-// END ACELLE INJECTED
 
-if (is_object($app['auth']->user())) {
-    $user = Auth::user();
-} else {
-    $user = \Acelle\Model\User::findByUid($_SESSION["user_uid"]);
-}
-
-$mainAppConfig = $user->getFilemanagerConfig();
+$mainAppConfig = Auth::user()->getFilemanagerConfig();
 
 /*
 |--------------------------------------------------------------------------
@@ -59,7 +51,7 @@ define('USE_ACCESS_KEYS', false); // TRUE or FALSE
 |--------------------------------------------------------------------------
 */
 
-define('DEBUG_ERROR_MESSAGE', false); // TRUE or FALSE
+define('DEBUG_ERROR_MESSAGE', true); // TRUE or FALSE
 
 /*
 |--------------------------------------------------------------------------
