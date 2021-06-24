@@ -58,7 +58,6 @@ Route::group(['namespace' => 'Api', 'prefix' => 'v1', 'middleware' => 'auth:api'
     Route::resource('customers', 'CustomerController');
 
     // Subscription
-    Route::post('subscriptions/{id}/approve', 'SubscriptionController@approve');
     Route::resource('subscriptions', 'SubscriptionController');
 
     // File
