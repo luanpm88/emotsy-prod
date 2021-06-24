@@ -527,6 +527,12 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
+            'campaign.bcc' => [
+                'cat' => 'others',
+                'value' => '',
+                'type' => 'text',
+                'not_required' => true,
+            ],
         ];
     }
 

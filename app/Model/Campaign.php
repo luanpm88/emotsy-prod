@@ -331,6 +331,11 @@ class Campaign extends Model
         }
 
         $message->setTo($subscriber->email);
+
+        if (!empty(Setting::get('campaign.bcc'))) {
+            $message->setBcc(Setting::get('campaign.bcc'));
+        }
+
         $message->setReplyTo($this->reply_to);
         $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
         $message->addPart($this->getPlainContent($subscriber, $msgId, $server), 'text/plain');
