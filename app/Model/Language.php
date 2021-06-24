@@ -599,7 +599,7 @@ class Language extends Model
 
         // redirect if fails
         if ($validator->fails()) {
-            return [$language, $validator];
+            return $validator;
         }
 
         // rename locale folder
@@ -612,7 +612,7 @@ class Language extends Model
         // save
         $language->save();
 
-        return [$language, true];
+        return true;
     }
 
     public function deleteAndCleanup()
@@ -720,6 +720,6 @@ class Language extends Model
             unlink($tmp_zip);
         });
 
-        return [$this, $validator];
+        return $validator;
     }
 }

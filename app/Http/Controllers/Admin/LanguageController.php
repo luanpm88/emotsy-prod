@@ -139,7 +139,7 @@ class LanguageController extends Controller
             return $this->notAuthorized();
         }
 
-        list($language, $validator) = Language::updateFromRequest($language, $request);
+        $validator = Language::updateFromRequest($language, $request);
 
         if ($validator !== true) {
             return response()->view('admin.languages.edit', [
@@ -293,7 +293,7 @@ class LanguageController extends Controller
         
         // validate and save posted data
         if ($request->isMethod('post')) {
-            list($language, $validator) = $language->upload($request);
+            $validator = $language->upload($request);
 
             if ($validator->fails()) {
                 return response()->view('admin.languages.upload', [
