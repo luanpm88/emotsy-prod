@@ -12,6 +12,7 @@ use Acelle\Library\HookManager;
 use Acelle\Model\Plugin;
 use Acelle\Model\Notification;
 use Acelle\Library\BillingManager;
+use Acelle\Library\Facades\Hook;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -50,6 +51,78 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->singleton(BillingManager::class, function ($app) {
             return new BillingManager();
+        });
+
+        Hook::register('add_translation_file', function() {
+            return [
+                "id" => "acelle_messages",
+                "plugin_name" => "Acelle/Core",
+                "file_title" => "Messages",
+                "translation_folder" => base_path('resources/lang'),
+                "file_name" => "messages.php",
+                "default" => "en",
+                "type" => 'default',
+            ];
+        });
+
+        Hook::register('add_translation_file', function() {
+            return [
+                "id" => "acelle_auth",
+                "plugin_name" => "Acelle/Core",
+                "file_title" => "Auth",
+                "translation_folder" => base_path('resources/lang'),
+                "file_name" => "auth.php",
+                "default" => "en",
+                "type" => 'default',
+            ];
+        });
+
+        Hook::register('add_translation_file', function() {
+            return [
+                "id" => "acelle_pagination",
+                "plugin_name" => "Acelle/Core",
+                "file_title" => "Pagination",
+                "translation_folder" => base_path('resources/lang'),
+                "file_name" => "pagination.php",
+                "default" => "en",
+                "type" => 'default',
+            ];
+        });
+
+        Hook::register('add_translation_file', function() {
+            return [
+                "id" => "acelle_passwords",
+                "plugin_name" => "Acelle/Core",
+                "file_title" => "Passwords",
+                "translation_folder" => base_path('resources/lang'),
+                "file_name" => "passwords.php",
+                "default" => "en",
+                "type" => 'default',
+            ];
+        });
+
+        Hook::register('add_translation_file', function() {
+            return [
+                "id" => "acelle_builder",
+                "plugin_name" => "Acelle/Core",
+                "file_title" => "Builder",
+                "translation_folder" => base_path('resources/lang'),
+                "file_name" => "builder.php",
+                "default" => "en",
+                "type" => 'default',
+            ];
+        });
+
+        Hook::register('add_translation_file', function() {
+            return [
+                "id" => "acelle_validation",
+                "plugin_name" => "Acelle/Core",
+                "file_title" => "Validation",
+                "translation_folder" => base_path('resources/lang'),
+                "file_name" => "validation.php",
+                "default" => "en",
+                "type" => 'default',
+            ];
         });
     }
 

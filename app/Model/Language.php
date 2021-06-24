@@ -28,6 +28,7 @@ use Acelle\Library\Facades\Hook;
 class Language extends Model
 {
     const STATUS_ACTIVE = 'active';
+    const STATUS_INACTIVE = 'inactive';
 
     /**
      * Get users.
@@ -106,18 +107,16 @@ class Language extends Model
     }
 
     /**
-     * Filter items.
+     * Search items.
      *
      * @return collect
      */
-    public static function filter($request)
+    public static function scopeSearch($query, $keyword)
     {
-        $user = $request->user();
-        $query = self::select('languages.*');
-
         // Keyword
-        if (!empty(trim($request->keyword))) {
-            foreach (explode(' ', trim($request->keyword)) as $keyword) {
+        if (!empty(trim($keyword))) {
+            $keyword = trim($keyword);
+            foreach (explode(' ', $keyword) as $keyword) {
                 $query = $query->where(function ($q) use ($keyword) {
                     $q->orwhere('languages.name', 'like', '%'.$keyword.'%')
                         ->orwhere('languages.code', 'like', '%'.$keyword.'%')
@@ -125,22 +124,6 @@ class Language extends Model
                 });
             }
         }
-
-        return $query;
-    }
-
-    /**
-     * Search items.
-     *
-     * @return collect
-     */
-    public static function search($request)
-    {
-        $query = self::filter($request);
-
-        $query = $query->orderBy($request->sort_order, $request->sort_direction);
-
-        return $query;
     }
 
     /**
@@ -172,36 +155,6 @@ class Language extends Model
             // Create new uid
             $uid = uniqid();
             $item->uid = $uid;
-        });
-
-        // After created
-        static::created(function ($item) {
-            // Create language folder if not exists
-            $des = $item->languageDir();
-            if (!file_exists($des)) {
-                $oldmask = umask(0);
-                mkdir($des, 0775, true);
-                $sou = Language::getDefaultLanguage()->languageDir();
-                \Acelle\Library\Tool::xcopy($sou, $des);
-                umask($oldmask);
-            }
-        });
-
-        // While deleting
-        static::deleting(function ($item) {
-            // Change deleting language's users to the default langauge
-            $default_language = Language::getIsDefaultLanguage();
-            $item->customers()->update(['language_id' => $default_language->id]);
-            $item->admins()->update(['language_id' => $default_language->id]);
-        });
-
-        // After deleted
-        static::deleted(function ($item) {
-            // Create language folder if not exists
-            $des = $item->languageDir();
-            if (file_exists($des)) {
-                \Acelle\Library\Tool::xdelete($des);
-            }
         });
     }
 
@@ -522,7 +475,7 @@ class Language extends Model
      */
     public function disable()
     {
-        $this->status = 'inactive';
+        $this->status = self::STATUS_INACTIVE;
         $this->save();
     }
 
@@ -533,7 +486,7 @@ class Language extends Model
      */
     public function enable()
     {
-        $this->status = 'active';
+        $this->status = self::STATUS_ACTIVE;
         $this->save();
     }
 
@@ -561,24 +514,14 @@ class Language extends Model
     {
         $paths = [];
 
-        // default lang files
-        $defaultDir = base_path(join_paths('resources/lang', $this->code));
-        $defaultFiles = scandir($defaultDir);
-        foreach ($defaultFiles as $file) {
-            if ($file != '.' && $file != '..') {
-                $path = join_paths($defaultDir, $file);
-                $paths[md5($path)] = [
-                    'id' => md5($path),
-                    'type' => 'default',
-                    'path' => $path,
-                    'name' => str_replace('.php', '', $file),
-                ];
-            }
-        }
-
-        $pluginFiles = Hook::execute('add_translation_file');
-        foreach ($pluginFiles as $file) {
+        $files = Hook::execute('add_translation_file');
+        foreach ($files as $file) {
             $path = join_paths($file['translation_folder'], $this->code, $file['file_name']);
+
+            if (in_array($file['id'], array_keys($paths)) )
+            {
+                throw new \Exception('Translation file id already exists: ' . $file['id']);
+            }
 
             if (!file_exists($path)) {
                 \Acelle\Library\Tool::xcopy(
@@ -587,11 +530,11 @@ class Language extends Model
                 );
             }
 
-            $paths[md5($path)] = [
-                'id' => md5($path),
-                'type' => 'plugin',
+            $paths[$file['id']] = [
+                'id' => $file['id'],
+                'type' => isset($file['type']) ? $file['type'] : 'plugin',
                 'path' => $path,
-                'name' => $file['file_title'],
+                'file_title' => $file['file_title'],
             ];
         }
 
@@ -608,5 +551,175 @@ class Language extends Model
         }
 
         return $langFiles;
+    }
+
+    public static function newDefaultLanguage()
+    {
+        $language = new self();
+        $language->status = self::STATUS_ACTIVE;
+
+        return $language;
+    }
+
+    public static function createFromRequest($request)
+    {
+        $language = self::newDefaultLanguage();
+
+        $language->fill($request->all());
+        $language->status = self::STATUS_INACTIVE;
+
+        // make validator
+        $validator = \Validator::make($request->all(), $language->rules());
+
+        // redirect if fails
+        if ($validator->fails()) {
+            return [$language, $validator];
+        }
+
+        // save
+        $language->save();
+
+        // copy from default language folder
+        $des = $language->languageDir();
+        if (!file_exists($des)) {
+            $oldmask = umask(0);
+            mkdir($des, 0775, true);
+            $sou = self::getDefaultLanguage()->languageDir();
+            \Acelle\Library\Tool::xcopy($sou, $des);
+            umask($oldmask);
+        }
+
+        return [$language, true];
+    }
+    
+    public static function updateFromRequest($language, $request)
+    {
+        // make validator
+        $validator = \Validator::make($request->all(), $language->rules());
+
+        // redirect if fails
+        if ($validator->fails()) {
+            return [$language, $validator];
+        }
+
+        // rename locale folder
+        if ($language->code != $request->code) {
+            rename(base_path("resources/lang/") . $language->code, base_path("resources/lang/") . $request->code);
+        }
+
+        $language->fill($request->all());
+
+        // save
+        $language->save();
+
+        return [$language, true];
+    }
+
+    public function deleteAndCleanup()
+    {
+        // Change deleting language's users to the default langauge
+        $default_language = Language::getIsDefaultLanguage();
+        $this->customers()->update(['language_id' => $default_language->id]);
+        $this->admins()->update(['language_id' => $default_language->id]);
+
+        // delete language folder
+        $des = $this->languageDir();
+        if (file_exists($des)) {
+            \Acelle\Library\Tool::xdelete($des);
+        }
+
+        $this->delete();
+    }
+
+    public function translateFile($file, $content)
+    {
+        // make validator
+        $validator = \Validator::make(['content' => $content], [
+            'content' => 'required',
+        ]);
+
+        // test amazon api connection
+        $validator->after(function ($validator) use ($file, $content) {
+            try {
+                var_export(\Yaml::parse($content), true);
+            } catch (\Exception $e) {
+                $validator->errors()->add('content', $e->getMessage());
+            }
+        });
+
+        // redirect if fails
+        if ($validator->fails()) {
+            return [$file, $validator];
+        }
+
+        // save
+        self::yamlToFile($file['path'], $content);
+
+        \Artisan::call('cache:clear');
+
+        // @todo
+        // make sure language file updated.
+        sleep(5);
+
+        return [$file, $validator];
+    }
+
+    public function findFileById($id)
+    {
+        if (!isset($this->getAllLanguageFiles()[$id]))
+        {
+            throw new \Exception('Can not find translation file with id: ' . $id);
+        }
+
+        return $this->getAllLanguageFiles()[$id];
+    }
+
+    public function getDefaultFile()
+    {
+        $files = $this->getAllLanguageFiles();
+        return array_shift($files);
+    }
+
+    public function upload($request)
+    {
+        // make validator
+        $validator = \Validator::make($request->all(), [
+            'file' => 'required',
+        ]);
+
+        // test amazon api connection
+        $validator->after(function ($validator) use ($request) {
+            $zip = new \ZipArchive();
+
+            // check if file is zip achive
+            $file_ext = $request->file('file')->guessExtension();
+            if ($file_ext != 'zip') {
+                $validator->errors()->add('content', 'Upload file is not zip file');
+                return;
+            }
+            
+            // move file to temp place
+            $tmp_path = storage_path('tmp');
+            $file_name = 'language-package';
+            $request->file('file')->move($tmp_path, $file_name);
+            
+            // after moving, request['file'] will no longer be there
+            $rules = [];
+            $tmp_zip = storage_path("tmp/{$file_name}");
+            $openZip = $zip->open($tmp_zip, \ZipArchive::CREATE);
+
+            // read zip file check if zip archive invalid
+            if ($openZip !== true) {
+                $validator->errors()->add('content', 'Upload file is not valide archive file');
+                return;
+            }
+
+            // unzip template archive and remove zip file
+            $zip->extractTo($this->languageDir());
+            $zip->close();
+            unlink($tmp_zip);
+        });
+
+        return [$this, $validator];
     }
 }

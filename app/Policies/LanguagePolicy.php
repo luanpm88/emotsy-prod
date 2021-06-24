@@ -24,7 +24,7 @@ class LanguagePolicy
         return $can;
     }
 
-    public function create(User $user, Language $item)
+    public function create(User $user)
     {
         $can = $user->admin->getPermission('language_create') == 'yes';
 

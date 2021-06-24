@@ -37,7 +37,7 @@
                 @foreach ($language->getLanguageFilesByType('default') as $langFile)
                     <li class="{{ $langFile['id'] == $currentFile['id'] ? "active" : "" }} text-semibold">
                         <a class="level-1" href="{{ action('Admin\LanguageController@translate', ["id" => $language->uid, "file_id" => $langFile['id']]) }}">
-                            <i class="icon-menu6"></i> {{ $langFile['name'] }}
+                            <i class="icon-menu6"></i> {{ $langFile['file_title'] }}
                         </a>
                     </li>
                 @endforeach
@@ -51,7 +51,7 @@
                             @foreach ($language->getLanguageFilesByType('plugin') as $langFile)
                                 <li class="sub-menu {{ $langFile['id'] == $currentFile['id'] ? "active" : "" }} text-semibold">
                                     <a class="" href="{{ action('Admin\LanguageController@translate', ["id" => $language->uid, "file_id" => $langFile['id']]) }}">
-                                        <i class="icon-menu6"></i> {{ $langFile['name'] }}
+                                        <i class="icon-menu6"></i> {{ $langFile['file_title'] }}
                                     </a>
                                 </li>
                             @endforeach
