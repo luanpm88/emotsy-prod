@@ -139,7 +139,7 @@ class LanguageController extends Controller
             return $this->notAuthorized();
         }
 
-        $validator = Language::updateFromRequest($language, $request);
+        $validator = $language->updateFromRequest($request);
 
         if ($validator !== true) {
             return response()->view('admin.languages.edit', [

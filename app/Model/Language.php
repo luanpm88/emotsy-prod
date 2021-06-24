@@ -592,10 +592,10 @@ class Language extends Model
         return [$language, true];
     }
     
-    public static function updateFromRequest($language, $request)
+    public function updateFromRequest($request)
     {
         // make validator
-        $validator = \Validator::make($request->all(), $language->rules());
+        $validator = \Validator::make($request->all(), $this->rules());
 
         // redirect if fails
         if ($validator->fails()) {
@@ -603,14 +603,14 @@ class Language extends Model
         }
 
         // rename locale folder
-        if ($language->code != $request->code) {
-            rename(base_path("resources/lang/") . $language->code, base_path("resources/lang/") . $request->code);
+        if ($this->code != $request->code) {
+            rename(base_path("resources/lang/") . $this->code, base_path("resources/lang/") . $request->code);
         }
 
-        $language->fill($request->all());
+        $this->fill($request->all());
 
         // save
-        $language->save();
+        $this->save();
 
         return true;
     }
