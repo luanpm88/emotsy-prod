@@ -67,9 +67,6 @@
                 contentType: false,
                 processData: false,
                 globalError: false,
-                error: function(response) {
-                    alert(response.responseText);
-                },
                 success: function(data) {
                     popup.load('{{ action('Automation2Controller@emailTemplate', [
                         'uid' => $automation->uid,
@@ -85,8 +82,6 @@
                     notify(data.status, '{{ trans('messages.notify.success') }}', data.message);
                 },
                 error: function(res) {
-                    
-
                     // notify
                     var dia = new Dialog('alert', {
                         title: '{{ trans('messages.notify.error') }}',
