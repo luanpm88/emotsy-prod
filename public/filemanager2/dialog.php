@@ -1290,7 +1290,7 @@ $files = $sorted;
                     } ?>"></i></a>
 
                     <?php if ($is_img && $src_thumb!="") { ?>
-                    <a class="tip-right preview" title="<?php echo xtrans('Preview')?>" data-featherlight="<?php echo str_replace('/thumbs', '', $src_thumb);?>"  href="#"><i class=" icon-eye-open"></i></a>
+                    <a class="tip-right preview" title="<?php echo xtrans('Preview')?>" data-featherlight-disabled="<?php echo str_replace('/thumbs', '', $src_thumb);?>"  href="#"><i class=" icon-eye-open"></i></a>
                     <?php } elseif (($is_video || $is_audio) && in_array($file_array['extension'], $config['jplayer_exts'])) { ?>
                     <a class="tip-right modalAV <?php if ($is_audio) {
                         echo "audio";
