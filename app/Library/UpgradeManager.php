@@ -461,7 +461,7 @@ class UpgradeManager
     /**
      * Copy file or directory to a destination (always REMOVE and REPLACE the destination).
      * Make sure parent directories are always created, similarly to "cp -p"
-     * 
+     *
      */
     public function copy($src, $dst)
     {
@@ -471,7 +471,7 @@ class UpgradeManager
                 File::delete($dst);
             } else {
                 File::deleteDirectory($dst);
-            }    
+            }
         } else {
             // Make sure the PARENT directory exists
             $dirname = pathinfo($dst)['dirname'];
