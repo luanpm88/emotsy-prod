@@ -87,6 +87,11 @@ class Customer extends Model
         return $this->belongsTo('Acelle\Model\Contact');
     }
 
+    public function subscriptions()
+    {
+        return $this->hasMany('Acelle\Model\Subscription');
+    }
+
     public function user()
     {
         return $this->hasOne('Acelle\Model\User');
