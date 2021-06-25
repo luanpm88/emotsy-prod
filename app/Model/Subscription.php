@@ -129,6 +129,11 @@ class Subscription extends Model
         return $this->newInvoices()->first();
     }
 
+    public function scopeActive($query)
+    {
+        $query->where('status', self::STATUS_ACTIVE);
+    }
+
     /**
      * Get last invoice.
      *

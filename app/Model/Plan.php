@@ -230,12 +230,12 @@ class Plan extends Model
 
     public function subscriptions()
     {
-        return $this->hasMany('Acelle\Model\Subscription', 'plan_id', 'uid')
-            ->where(function ($query) {
-                $query->whereNull('ends_at')
-                      ->orWhere('ends_at', '>=', \Carbon\Carbon::now());
-            })
-            ->orderBy('created_at', 'desc');
+        return $this->hasMany('Acelle\Model\Subscription');
+    }
+
+    public function activeSubscriptions()
+    {
+        return $this->subscriptions()->active();
     }
 
     public function plansEmailVerificationServers()
@@ -884,7 +884,7 @@ class Plan extends Model
      */
     public function customersCount()
     {
-        return $this->subscriptions()->distinct('customer_id')->count('customer_id');
+        return $this->activeSubscriptions()->count();
     }
 
     /**
