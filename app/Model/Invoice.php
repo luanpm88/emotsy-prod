@@ -246,7 +246,7 @@ class Invoice extends Model
     {
         // for only new invoice
         if (!$this->isNew() || !$this->getPendingTransaction()) {
-            throw new \Exception("Trying to approve an invoice that is not NEW and has pending transaction (Invoice ID: {$this->id}, status: {$this->status}");
+            throw new \Exception("Trying to approve an invoice that is not NEW or does not have a pending transaction (Invoice ID: {$this->id}, status: {$this->status}");
         }
 
         // fulfill invoice
@@ -262,7 +262,7 @@ class Invoice extends Model
     {
         // for only new invoice
         if (!$this->isNew() || !$this->getPendingTransaction()) {
-            throw new \Exception("Trying to approve an invoice that is not NEW and has pending transaction (Invoice ID: {$this->id}, status: {$this->status}");
+            throw new \Exception("Trying to approve an invoice that is not NEW or does not have a pending transaction (Invoice ID: {$this->id}, status: {$this->status}");
         }
 
         // fulfill invoice
