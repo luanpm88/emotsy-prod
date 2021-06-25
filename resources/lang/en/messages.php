@@ -3681,4 +3681,10 @@
   'transaction_for_invoice' => 'Transaction for invoice <span class="font-weight-semibold">#:uid</span>',
   'no_template_available' => 'No template availabel',
   'language.plugins' => 'Plugged in content',
+  'bounce_rate_theshold' => 'Bounce rate theshold',
+  'bounce_rate_theshold.wording' => 'Bounce rate is the percentage of email addresses that your users\' campaigns could not be delivered to.<br>
+      Email providers and anti-spam networks monitor bounce rates for every campaign you send, and use that information to decide if they\'ll
+      accept mail from you in the future.
+      You can set up a specific value below, which shall apply to any users subscribing to this plan.',
+  'bounce_rate_theshold.set_a_limit' => 'Set a limit',
 ) ?>

@@ -351,6 +351,18 @@ class Plan extends Model
         ];
     }
 
+    public static function bounceRateThesholdOptions()
+    {
+        $options = [
+            ['value' => '', 'text' => trans('messages.none')],
+        ];
+        for ($i=1; $i <= 100; $i++) {
+            $options[] = ['value' => $i, 'text' => $i . '%'];
+        }
+
+        return $options;
+    }
+
     /**
      * Get sending limit types.
      *
@@ -526,6 +538,7 @@ class Plan extends Model
             'html_footer' => '',
             'plain_text_footer' => '',
             'payment_gateway' => '',
+            'bounce_rate_theshold' => '',
         ];
 
         // Sending server types
