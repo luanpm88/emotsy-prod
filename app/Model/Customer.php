@@ -2028,12 +2028,9 @@ class Customer extends Model
         if (Billing::isGatewayTypeRegistered($type)) {
             return Billing::getGateway($type);
         } else {
-            throw new Exception(sprintf("User's preferred payment gateway type is '%s'. However, it is not registered in Billing Manager", $type));
+            // payment method was previously stored but it is dropped in the current version
+            return null;
         }
-    }
-
-    public function findPaymentGatewayFromAutoBillingData()
-    {
     }
 
     /**
