@@ -309,17 +309,16 @@ class Invoice extends Model
     public function process()
     {
         $data = $this->getMetadata();
+        $subscription = Subscription::findByUid($data['subscription_uid']);
+
         switch ($this->type) {
             case self::TYPE_NEW_SUBSCRIPTION:
-                $subscription = Subscription::findByUid($data['subscription_uid']);
                 $subscription->activate();
                 break;
             case self::TYPE_RENEW_SUBSCRIPTION:
-                $subscription = Subscription::findByUid($data['subscription_uid']);
                 $subscription->renew();
                 break;
             case self::TYPE_CHANGE_PLAN:
-                $subscription = Subscription::findByUid($data['subscription_uid']);
                 $newPlan = \Acelle\Model\Plan::findByUid($data['new_plan_uid']);
                 $subscription->changePlan($newPlan);
                 break;
@@ -491,11 +490,14 @@ class Invoice extends Model
                 // Stripe, PayPal, Braintree for example
                 $invoice->payFailed($result->error);
             } elseif ($result->isStillPending()) {
+                // Coin, offline shouls return this status
                 // Wait more, check again later....
-                    // Coinpayment, offline
+                // Coinpayment, offline
             } elseif ($result->isVerificationNotNeeded()) {
+                // IMPORTANT: this special status is used for checking (pending) transaction status only
+                //          **** SERVICES SHOULD NOT RETURN THIS STATUS IN CHECKOUT method ****
                 // Do nothing, just wait for the service to finish it itself (Stripe)
-                    // Service should not return this status, it is used for verification only
+                // Service should not return this status, it is used for verification only
             }
         } catch (\Exception $e) {
             // pay failed
