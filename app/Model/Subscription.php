@@ -134,6 +134,11 @@ class Subscription extends Model
         $query->where('status', self::STATUS_ACTIVE);
     }
 
+    public function scopeEnded($query)
+    {
+        $query->where('status', self::STATUS_ENDED);
+    }
+
     /**
      * Get last invoice.
      *
@@ -714,6 +719,10 @@ class Subscription extends Model
      */
     public function cancelNow()
     {
+        if ($this->isEnded()) {
+            throw new Exception('Subscription is already ended');
+        }
+
         // set status = ended
         $this->setEnded();
 
