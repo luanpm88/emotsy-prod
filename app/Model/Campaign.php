@@ -1455,23 +1455,6 @@ class Campaign extends Model
     }
 
     /**
-     * Get most open subscribers.
-     *
-     * @param number $number
-     *
-     * @return collect
-     */
-    public function mostOpenSubscribers($number)
-    {
-        return \Acelle\Web\Subscriber::selectRaw(DB::getTablePrefix().'list_subscriber.*, COUNT('.DB::getTablePrefix().'campaign_track_unsubscribe.id) AS openCount')
-                            ->leftJoin('campaign_track_unsubscribe', 'campaign_track_unsubscribe.subscriber_id', '=', 'list_subscriber.subscriber_id')
-                            ->where('campaign_track_unsubscribe.campaign_id', '=', $this->campaign_id)
-                            ->groupBy('list_subscriber.subscriber_id')
-                            ->orderBy('openCount', 'desc')
-                            ->limit($number);
-    }
-
-    /**
      * Get last opened time.
      *
      * @return datetime
@@ -1481,73 +1464,6 @@ class Campaign extends Model
         $last = $this->campaign_track_opens()->orderBy('created_at', 'desc')->first();
 
         return is_object($last) ? $last->created_at : null;
-    }
-
-    /**
-     * Campaign top 5 opens.
-     *
-     * @return datetime
-     */
-    public static function topOpens($number = 5, $customer = null)
-    {
-        $records = self::select(DB::raw(DB::getTablePrefix().'campaigns.*, count(*) as `aggregate`'))
-            ->join('tracking_logs', 'tracking_logs.campaign_id', '=', 'campaigns.id')
-            ->join('open_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id');
-
-        if (isset($customer)) {
-            $records = $records->where('campaigns.customer_id', '=', $customer->id);
-        }
-
-        $records = $records->groupBy('campaigns.id')
-            ->orderBy('aggregate', 'desc');
-
-        return $records->take($number);
-    }
-
-    /**
-     * Campaign top 5 clicks.
-     *
-     * @return datetime
-     */
-    public static function topClicks($number = 5, $customer = null)
-    {
-        $records = self::select(DB::raw(DB::getTablePrefix().'campaigns.*, count(*) as `aggregate`'))
-            ->join('tracking_logs', 'tracking_logs.campaign_id', '=', 'campaigns.id')
-            ->join('click_logs', 'click_logs.message_id', '=', 'tracking_logs.message_id');
-
-        if (isset($customer)) {
-            $records = $records->where('campaigns.customer_id', '=', $customer->id);
-        }
-
-        $records = $records->groupBy('campaigns.id')
-                    ->orderBy('aggregate', 'desc');
-
-        return $records->take($number);
-    }
-
-    /**
-     * Campaign top 5 clicks.
-     *
-     * @return datetime
-     */
-    public static function topLinks($number = 5, $customer = null)
-    {
-        $records = CampaignLink::select(DB::raw(table('campaign_links.*').', count(*) as `aggregate`'))
-            ->join('tracking_logs', 'tracking_logs.campaign_id', '=', 'campaign_links.campaign_id')
-            ->join('click_logs', function ($join) {
-                $join->on('click_logs.message_id', '=', 'tracking_logs.message_id')
-                ->on('click_logs.url', '=', 'campaign_links.url');
-            });
-
-        if (isset($customer)) {
-            $records = $records->join('campaigns', 'campaign_links.campaign_id', '=', 'campaigns.id')
-                ->where('campaigns.customer_id', '=', $customer->id);
-        }
-
-        $records = $records->groupBy('campaign_links.url')
-            ->orderBy('aggregate', 'desc');
-
-        return $records->take($number);
     }
 
     /**

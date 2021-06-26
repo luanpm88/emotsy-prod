@@ -1589,7 +1589,7 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $subscribers = $campaign->subscribers()->groupBy('subscribers.email');
+        $subscribers = $campaign->subscribers();
 
         return view('campaigns.subscribers', [
             'subscribers' => $subscribers,

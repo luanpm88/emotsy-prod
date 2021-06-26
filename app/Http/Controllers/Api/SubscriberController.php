@@ -47,7 +47,6 @@ class SubscriberController extends Controller
 
         $items = \Acelle\Model\Subscriber::search($request, $user->customer)
             ->where('mail_list_id', '=', $list->id)
-            ->groupBy('subscribers.id')
             ->paginate($per_page);
 
         $subscribers = [];
