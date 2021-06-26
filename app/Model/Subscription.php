@@ -578,7 +578,7 @@ class Subscription extends Model
     public function activate()
     {
         if (!$this->isNew()) {
-            throw new \Exception("Only new subscription can be activated, double check your code to make sure you only call activate() on a new subscription");
+            throw new \Exception("Only new subscription can be activated, double check your code to make sure you call activate() on a new subscription");
         }
 
         $this->current_period_ends_at = $this->getPeriodEndsAt(Carbon::now());
