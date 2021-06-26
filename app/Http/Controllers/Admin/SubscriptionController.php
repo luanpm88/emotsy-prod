@@ -105,7 +105,7 @@ class SubscriptionController extends Controller
 
         try {
             // approve last new invoice ~ pay last invoice
-            $subscription->newInvoice()->approve();
+            $subscription->getUnpaidInvoice()->approve();
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -226,7 +226,7 @@ class SubscriptionController extends Controller
             
             // try reject
             try {
-                $subscription->newInvoice()->reject($request->reason);
+                $subscription->getUnpaidInvoice()->reject($request->reason);
             } catch (\Exception $ex) {
                 $validator->errors()->add('reason', $ex->getMessage());
                 

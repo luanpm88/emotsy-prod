@@ -21,10 +21,10 @@
 @section('content')
     <div class="row">
         <div class="col-md-8">
-            @if ($subscription->newInvoice() && $subscription->newInvoice()->lastTransaction() && $subscription->newInvoice()->lastTransaction()->isFailed())
+            @if ($subscription->getUnpaidInvoice() && $subscription->getUnpaidInvoice()->lastTransaction() && $subscription->getUnpaidInvoice()->lastTransaction()->isFailed())
                 @include('elements._notification', [
                     'level' => 'error',
-                    'message' => $subscription->newInvoice()->lastTransaction()->error,
+                    'message' => $subscription->getUnpaidInvoice()->lastTransaction()->error,
                 ])
             @endif
                 
@@ -111,12 +111,12 @@
                 </div>
             </form>
 
-            @if ($subscription->newInvoice()->type !== \Acelle\Model\Invoice::TYPE_RENEW_SUBSCRIPTION)
+            @if ($subscription->getUnpaidInvoice()->type !== \Acelle\Model\Invoice::TYPE_RENEW_SUBSCRIPTION)
                 <div class="my-4 pt-3">
                     <hr>
                     <a class="" link-method="POST" link-confirm="{{ trans('messages.invoice.cancel.confirm') }}"
                         href="{{ action('AccountSubscriptionController@cancelInvoice', [
-                            'invoice_uid' => $subscription->newInvoice()->uid,
+                            'invoice_uid' => $subscription->getUnpaidInvoice()->uid,
                         ]) }}">
                         {{ trans('messages.subscription.cancel_now_change_other_plan') }}
                     </a>

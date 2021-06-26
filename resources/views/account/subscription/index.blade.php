@@ -46,10 +46,10 @@
                 ])
             @endif
 
-            @if ($subscription->newInvoice() && $subscription->newInvoice()->lastTransactionIsFailed())
+            @if ($subscription->getUnpaidInvoice() && $subscription->getUnpaidInvoice()->lastTransactionIsFailed())
                 @include('elements._notification', [
                     'level' => 'error',
-                    'message' => $subscription->newInvoice()->lastTransaction()->error,
+                    'message' => $subscription->getUnpaidInvoice()->lastTransaction()->error,
                 ])
             @endif
 

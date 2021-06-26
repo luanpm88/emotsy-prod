@@ -35,7 +35,7 @@
 
                                 @break
                             @case(Acelle\Model\Subscription::STATUS_NEW)
-                                @if ($subscription->newInvoice())
+                                @if ($subscription->getUnpaidInvoice())
                                     <span style="cursor:pointer"
                                         class="label bg-m-warning"
                                     >

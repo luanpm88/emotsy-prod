@@ -114,7 +114,7 @@ class AccountSubscriptionController extends Controller
         $customer = $request->user()->customer;
         $subscription = $customer->subscription;
         $gateway = $customer->getPreferredPaymentGateway();
-        $invoice = $subscription->newInvoice();
+        $invoice = $subscription->getUnpaidInvoice();
 
         // redirect to service checkout
         return redirect()->away($gateway->getCheckoutUrl($invoice));
@@ -132,7 +132,7 @@ class AccountSubscriptionController extends Controller
         // Get current customer
         $customer = $request->user()->customer;
         $subscription = $customer->subscription;
-        $invoice = $subscription->newInvoice();
+        $invoice = $subscription->getUnpaidInvoice();
 
         if ($invoice->isNew()) {
             if ($invoice->getPendingTransaction()) {

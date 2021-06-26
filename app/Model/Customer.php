@@ -1811,7 +1811,7 @@ class Customer extends Model
             return false;
         }
 
-        if ($subscription->newInvoice()) {
+        if ($subscription->getUnpaidInvoice()) {
             return true;
         }
 

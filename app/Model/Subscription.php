@@ -114,9 +114,11 @@ class Subscription extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function newInvoice()
+    public function getUnpaidInvoice()
     {
-        return $this->invoices()->newInvoices()->first();
+        return $this->invoices()
+            ->unpaid()
+            ->first();
     }
 
     public function scopeActive($query)
@@ -142,7 +144,7 @@ class Subscription extends Model
 
         $query = $this->invoices()
             ->newSubscription()
-            ->where('status', '=', self::STATUS_NEW);
+            ->unpaid();
         
         // more than on invoice
         if ($query->count() != 1) {
@@ -188,7 +190,7 @@ class Subscription extends Model
     public function createInitInvoice()
     {
         //
-        if ($this->newInvoice()) {
+        if ($this->getUnpaidInvoice()) {
             throw new \Exception(trans('messages.error.has_waiting_invoices'));
         }
 
@@ -230,7 +232,7 @@ class Subscription extends Model
     public function createRenewInvoice()
     {
         //
-        if ($this->newInvoice()) {
+        if ($this->getUnpaidInvoice()) {
             throw new \Exception(trans('messages.error.has_waiting_invoices'));
         }
 
@@ -272,8 +274,8 @@ class Subscription extends Model
     public function createChangePlanInvoice($newPlan)
     {
         //
-        if ($this->newInvoice()) {
-            $this->newInvoice()->delete();
+        if ($this->getUnpaidInvoice()) {
+            $this->getUnpaidInvoice()->delete();
         }
 
         // calculate change plan amout ends at
@@ -331,11 +333,11 @@ class Subscription extends Model
      */
     public function getUpcomingBillingInfo()
     {
-        if (!$this->newInvoice()) {
+        if (!$this->getUnpaidInvoice()) {
             return null;
         }
 
-        return $this->newInvoice()->getBillingInfo();
+        return $this->getUnpaidInvoice()->getBillingInfo();
     }
 
     /**
@@ -388,7 +390,7 @@ class Subscription extends Model
 
                 // check expiring
                 if ($this->isExpiring() && $this->canRenewPlan() && !$this->cancelled()) {
-                    $pendingInvoice = $this->newInvoice();
+                    $pendingInvoice = $this->getUnpaidInvoice();
 
                     // create renew invoice if no pending invoice
                     if (!$pendingInvoice) {
@@ -687,8 +689,8 @@ class Subscription extends Model
         $this->save();
 
         // delete pending invoice
-        if ($this->newInvoice()) {
-            $this->newInvoice()->delete();
+        if ($this->getUnpaidInvoice()) {
+            $this->getUnpaidInvoice()->delete();
         }
     }
 
