@@ -28,6 +28,7 @@ use Acelle\Notifications\ResetPassword;
 use Acelle\Library\Log as MailLog;
 use Acelle\Library\ExtendedSwiftMessage;
 use Acelle\Model\Setting;
+use Illuminate\Http\UploadedFile;
 use App;
 use URL;
 use File;
@@ -514,7 +515,7 @@ class User extends Authenticatable
      *
      * @var void
      */
-    public function uploadProfileImage($file)
+    public function uploadProfileImage(UploadedFile $file)
     {
         // Full path: /storage/app/users/000000/home/avatar
         $path = $this->getProfileImagePath();

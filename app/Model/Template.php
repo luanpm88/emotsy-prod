@@ -464,7 +464,7 @@ class Template extends Model
             // storage/app/users/{uid}/templates
             $base = $this->customer->getTemplatesPath($this->uid);
         } else {
-            // storage/app/users/admin/templates
+            // storage/app/templates/templates
             // IMPORTANT: templates are created from migration without associating with an admin
             $base = $this->getSystemStoragePath($this->uid);
         }
