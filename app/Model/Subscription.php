@@ -435,15 +435,14 @@ class Subscription extends Model
             return;
         }
 
-        // support auto billing
-        if (!$this->customer->getPreferredPaymentGateway()->supportsAutoBilling()) {
+        // check auto billing data
+        if ($this->customer->getPreferredPaymentGateway() == null) {
             return;
         }
 
-        // check auto billing data
-        if ($this->customer->getPreferredPaymentGateway() == null) {
-            // throw new \Exception('Customer\'s gateway supports auto recurring but customer do not have auto billing data');
-            $invoice->payFailed('Customer\'s gateway supports auto recurring but customer do not have auto billing data');
+        // support auto billing
+        if (!$this->customer->getPreferredPaymentGateway()->supportsAutoBilling()) {
+            return;
         }
 
         // check payment
