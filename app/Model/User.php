@@ -530,9 +530,8 @@ class User extends Authenticatable
         $file->move($dirname, $filename);
 
         // create thumbnails
-        $thumbPath = $this->getProfileThumbPath();
         $img = \Image::make($path);
-        $img->fit(120, 120)->save($thumbPath);
+        $img->fit(120, 120)->save($path);
 
         return $path;
     }
