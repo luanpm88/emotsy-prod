@@ -70,18 +70,6 @@ class Language extends Model
         return resource_path(join_paths('lang', $this->code));
     }
 
-    /**
-     * Get language by code.
-     *
-     * @param string $code
-     *
-     * @return collect
-     */
-    public static function getByCode($code)
-    {
-        return self::where('code', '=', $code)->first();
-    }
-
     public static function scopeActive($query)
     {
         $query->where('status', '=', self::STATUS_ACTIVE);
