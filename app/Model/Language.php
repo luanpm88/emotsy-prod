@@ -84,7 +84,7 @@ class Language extends Model
 
     public static function scopeActive($query)
     {
-        $query->where('code', '=', self::STATUS_ACTIVE);
+        $query->where('status', '=', self::STATUS_ACTIVE);
     }
 
     /**
