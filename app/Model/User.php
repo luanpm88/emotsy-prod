@@ -56,7 +56,7 @@ class User extends Authenticatable
     const ASSETS_DIR = 'home/files';
     const ASSETS_THUMB_DIR = 'home/thumbs';
     const PROFILE_IMAGE_PATH = 'home/avatar';
-    const PROFILE_THUMB_PATH = 'home/thumb';
+    const PROFILE_THUMB_PATH = 'home/avatar-thumb';
 
     /**
      * The attributes that are mass assignable.
