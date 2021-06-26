@@ -67,7 +67,7 @@ class Language extends Model
      */
     public function languageDir()
     {
-        return base_path(join_paths('resources', 'lang', $this->code));
+        return resource_path(join_paths('lang', $this->code));
     }
 
     /**
