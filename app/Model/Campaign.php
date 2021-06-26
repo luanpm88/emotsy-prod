@@ -78,12 +78,12 @@ class Campaign extends Model
     const DELIVERY_STATUS_FEEDBACK = 'feedback';
 
     // Content processing handler
+    // Chain-of-Responsibilties pattern
     const HANDLE_PARSE_RSS = 'parse-rss';
     const HANDLE_TRACK_OPEN_CLICK = 'track-open-click';
     const HANDLE_TRANSFORM_TAG = 'transform-tag';
     const HANDLE_INLINE_CSS = 'inline-css';
-    const HANDLE_TRANSFORM_URL = 'transform-url';
-    const HANDLE_UNTRANSFORM_URL = 'untransfrom-url';
+    const HANDLE_TRANSFORM_URL = 'transform-url'; // make assets publicly available
 
     /**
      * The attributes that should be mutated to dates.

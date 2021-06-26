@@ -3,6 +3,7 @@
         'level' => $n->level,
         'title' => $n->title,
         'message' => $n->message,
+        'debug' => $n->debug,
         'params' => ['id' => $n->uid, 'data-type' => 'admin-notification']
     ])
 @endforeach
