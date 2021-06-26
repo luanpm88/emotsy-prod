@@ -23,8 +23,6 @@ class SubAccountController extends Controller
         }
 
         return \Acelle\Model\SubAccount::search($request);
-        //->groupBy('sub_accounts.customer_id')
-            //->groupBy('sub_accounts.sending_server_id');
     }
 
     /**
