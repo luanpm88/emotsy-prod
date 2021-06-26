@@ -17,7 +17,7 @@ class LanguageController extends Controller
      */
     public function index(Request $request)
     {
-        if (\Gate::denies('read', new Language())) {
+        if (\Gate::denies('list', Language::class)) {
             return $this->notAuthorized();
         }
 
@@ -31,7 +31,7 @@ class LanguageController extends Controller
      */
     public function listing(Request $request)
     {
-        if (\Gate::denies('read', new Language())) {
+        if (\Gate::denies('list', Language::class)) {
             return $this->notAuthorized();
         }
 

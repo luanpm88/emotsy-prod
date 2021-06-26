@@ -207,27 +207,6 @@
 			</ul>
 
 			<ul class="nav navbar-nav navbar-right">
-				<!--<li class="dropdown language-switch">
-					<a class="dropdown-toggle" data-toggle="dropdown">
-						{{ Acelle\Model\Language::getByCode(Config::get('app.locale'))->name }}
-						<span class="caret"></span>
-					</a>
-
-					<ul class="dropdown-menu">
-						@foreach(Acelle\Model\Language::getAll() as $language)
-							<li class="{{ Acelle\Model\Language::getByCode(Config::get('app.locale'))->code == $language->code ? "active" : "" }}">
-								<a>{{ $language->name }}</a>
-							</li>
-						@endforeach
-					</ul>
-                </li>-->
-
-				<!--<li class="dropdown">
-					<a href="#" class="dropdown-toggle top-quota-button" data-toggle="dropdown" data-url="{{ action("AccountController@quotaLog") }}">
-						<i class="icon-stats-bars4"></i>
-						<span class="visible-xs-inline-block position-right">{{ trans('messages.used_quota') }}</span>
-					</a>
-				</li>-->
 
 				@include('layouts._top_activity_log')
 
