@@ -60,7 +60,7 @@ class AppServiceProvider extends ServiceProvider
                 "file_title" => "Messages",
                 "translation_folder" => base_path('resources/lang'),
                 "file_name" => "messages.php",
-                "default" => "en",
+                "default" => "default",
                 "type" => 'default',
             ];
         });
@@ -72,7 +72,7 @@ class AppServiceProvider extends ServiceProvider
                 "file_title" => "Auth",
                 "translation_folder" => base_path('resources/lang'),
                 "file_name" => "auth.php",
-                "default" => "en",
+                "default" => "default",
                 "type" => 'default',
             ];
         });
@@ -84,7 +84,7 @@ class AppServiceProvider extends ServiceProvider
                 "file_title" => "Pagination",
                 "translation_folder" => base_path('resources/lang'),
                 "file_name" => "pagination.php",
-                "default" => "en",
+                "default" => "default",
                 "type" => 'default',
             ];
         });
@@ -96,7 +96,7 @@ class AppServiceProvider extends ServiceProvider
                 "file_title" => "Passwords",
                 "translation_folder" => base_path('resources/lang'),
                 "file_name" => "passwords.php",
-                "default" => "en",
+                "default" => "default",
                 "type" => 'default',
             ];
         });
@@ -108,7 +108,7 @@ class AppServiceProvider extends ServiceProvider
                 "file_title" => "Builder",
                 "translation_folder" => base_path('resources/lang'),
                 "file_name" => "builder.php",
-                "default" => "en",
+                "default" => "default",
                 "type" => 'default',
             ];
         });
@@ -120,7 +120,7 @@ class AppServiceProvider extends ServiceProvider
                 "file_title" => "Validation",
                 "translation_folder" => base_path('resources/lang'),
                 "file_name" => "validation.php",
-                "default" => "en",
+                "default" => "default",
                 "type" => 'default',
             ];
         });

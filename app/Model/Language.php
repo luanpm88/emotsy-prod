@@ -70,6 +70,11 @@ class Language extends Model
         return resource_path(join_paths('lang', $this->code));
     }
 
+    public static function getDirWhichNewLanguageCopyFrom()
+    {
+        return base_path(join_paths('resources', 'lang', 'default'));
+    }
+
     public static function scopeActive($query)
     {
         $query->where('status', '=', self::STATUS_ACTIVE);
@@ -374,7 +379,7 @@ class Language extends Model
         if (!file_exists($des)) {
             $oldmask = umask(0);
             mkdir($des, 0775, true);
-            $sou = self::getFirstDefaultLanguage()->languageDir();
+            $sou = self::getDirWhichNewLanguageCopyFrom();
             \Acelle\Library\Tool::xcopy($sou, $des);
             umask($oldmask);
         }
