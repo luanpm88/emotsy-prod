@@ -1025,7 +1025,7 @@ class Campaign extends Model
      */
     public function notDeliveredCount()
     {
-        $subscribersCountUniq = distinctCount($this->subscribers([], ['email_verifications']), 'subscribers.email');
+        $subscribersCountUniq = $this->subscribers([], ['email_verifications'])->count();
         return $subscribersCountUniq - $this->deliveredCount();
     }
 
@@ -1475,7 +1475,7 @@ class Campaign extends Model
     {
         $records = $this->clickLogs()
             ->select('click_logs.url')
-            ->addSelect(DB::raw('count(*)'))
+            ->addSelect(DB::raw('count(*) as aggregate'))
             ->groupBy('click_logs.url');
 
         return $records->take($number);
@@ -1495,24 +1495,6 @@ class Campaign extends Model
                         ->orderBy('count', 'desc');
 
         return $query->take($number);
-    }
-
-    /**
-     * Recent subscriber opens.
-     *
-     * @return datetime
-     */
-    public function getRecentOpenSubscribers($number = 5)
-    {
-        $records = Subscriber::select(DB::raw(DB::getTablePrefix().'subscribers.*, count(*) as `aggregate`'))
-            ->join('tracking_logs', 'tracking_logs.subscriber_id', '=', 'subscribers.id')
-            ->join('open_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')
-            ->where('campaign_id', '=', $this->id);
-
-        $records = $records->groupBy('tracking_logs.message_id')
-            ->orderBy('aggregate', 'desc');
-
-        return $records->take($number);
     }
 
     /**
@@ -1546,7 +1528,8 @@ class Campaign extends Model
      */
     public function topCountries($number = 5, $customer = null)
     {
-        $records = IpLocation::select(DB::raw(DB::getTablePrefix().'ip_locations.country_name, ip_locations.country_code, ip_locations.ip_address, count(*) as `aggregate`'))
+        $records = IpLocation::select('ip_locations.country_name', 'ip_locations.country_code', 'ip_locations.ip_address')
+            ->addSelect(DB::raw('count(*) as aggregate'))
             ->join('open_logs', 'open_logs.ip_address', '=', 'ip_locations.ip_address')
             ->join('tracking_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')
             ->where('tracking_logs.campaign_id', '=', $this->id);
@@ -1558,7 +1541,7 @@ class Campaign extends Model
         }
 
         $records = $records
-            ->groupBy(DB::raw('ip_locations.country_name, ip_locations.country_code, ip_locations.ip_address'))
+            ->groupBy('ip_locations.country_name', 'ip_locations.country_code', 'ip_locations.ip_address')
             ->orderBy('aggregate', 'desc');
 
         return $records->take($number);
@@ -1571,7 +1554,8 @@ class Campaign extends Model
      */
     public function topClickCountries($number = 5, $customer = null)
     {
-        $records = IpLocation::select(DB::raw(DB::getTablePrefix().'ip_locations.*, count(*) as `aggregate`'))
+        $records = IpLocation::select('ip_locations.country_name', 'ip_locations.country_code', 'ip_locations.ip_address')
+            ->addSelect(DB::raw('count(*) as aggregate'))
             ->join('click_logs', 'click_logs.ip_address', '=', 'ip_locations.ip_address')
             ->join('tracking_logs', 'click_logs.message_id', '=', 'tracking_logs.message_id')
             ->where('tracking_logs.campaign_id', '=', $this->id);
@@ -1581,7 +1565,7 @@ class Campaign extends Model
                 ->where('campaigns.customer_id', '=', $customer->id);
         }
 
-        $records = $records->groupBy('ip_locations.country_name')
+        $records = $records->groupBy('ip_locations.country_name', 'ip_locations.country_code', 'ip_locations.ip_address')
             ->orderBy('aggregate', 'desc');
 
         return $records->take($number);
@@ -3544,7 +3528,6 @@ class Campaign extends Model
         }
 
         $total = $builder->count(); // IMPORTNT: Count before group, otherwise it will always return 0 or 1
-        $builder = $builder->groupBy(DB::raw(table('subscribers.email')));
 
         // the array_unique_by functions out-perform the Collection::unique of Laravel!!!
         // The following code snipet is no longer needed as the list is already unique by email
