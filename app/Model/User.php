@@ -526,10 +526,10 @@ class User extends Authenticatable
         // The base dir: /storage/app/users/000000/home/
         $dirname = dirname($path);
 
-        // save to server
+        // save to server at /storage/app/users/000000/home/avatar
         $file->move($dirname, $filename);
 
-        // create thumbnails
+        // create thumbnails and replace the original image with the the small-sized thumbnail
         $img = \Image::make($path);
         $img->fit(120, 120)->save($path);
 
