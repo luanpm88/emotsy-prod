@@ -57,9 +57,11 @@ class Handler extends ExceptionHandler
                 BackendErrorNotification::cleanupDuplicateNotifications($title); // keep last error only, otherwise, get overwhelmed
                 BackendErrorNotification::warning([
                     'title' => $title,
-                    'message' => sprintf("[%s] %s: %s", date('Y-m-d'), get_class($exception), $exception->getMessage())], false); // false: also clean up other notification logged by BackendErrorNotification
+                    'message' => sprintf("[%s] %s: %s", date('Y-m-d'), get_class($exception), $exception->getMessage()),
+                    'debug' => $exception->getTraceAsString(),
+                ], false); // false: also clean up other notification logged by BackendErrorNotification
             } catch (Throwable $t) {
-                // just keep silent in case of even ErrorNotification cannot work, in case of DB connect for example
+                // just keep silent in case of DB connection issue, cannot write to notification table
             }
         }
 
