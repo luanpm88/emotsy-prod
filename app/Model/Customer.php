@@ -2129,7 +2129,7 @@ class Customer extends Model
             $user = $this->user;
             $this->delete();
             if (!$user->admin()->exists()) {
-                $user->delete();
+                $user->deleteAndCleanup();
             }
         });
     }

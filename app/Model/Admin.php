@@ -431,7 +431,7 @@ class Admin extends Model
         $this->delete();
         
         if (!$user->customer()->exists()) {
-            $user->delete();
+            $user->deleteAndCleanup();
         }
     }
 

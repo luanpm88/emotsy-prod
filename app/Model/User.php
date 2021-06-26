@@ -31,6 +31,7 @@ use Acelle\Model\Setting;
 use App;
 use URL;
 use File;
+use Acelle\Library\Tool;
 
 class User extends Authenticatable
            // 5.7 implements MustVerifyEmail
@@ -546,5 +547,17 @@ class User extends Authenticatable
         if (file_exists($thumb)) {
             File::delete($thumb);
         }        
+    }
+
+    public function deleteAndCleanup()
+    {
+        // User's storage location
+        // For example: storage/app/users/000000/
+        $path = $this->getBasePath();
+        if (file_exists($path)) {
+            Tool::xdelete($path);
+        }
+
+        $this->delete();
     }
 }
