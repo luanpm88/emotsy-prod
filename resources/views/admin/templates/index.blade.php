@@ -73,7 +73,7 @@
 							</div>
 						</div>
 						<div class="col-md-3 text-right d-flex align-items-center">
-							<a href="{{ action('Admin\TemplateController@upload') }}" class="btn bg-info-800 mr-2 ml-auto">
+							<a href="{{ action('Admin\TemplateController@uploadTemplate') }}" class="btn bg-info-800 mr-2 ml-auto">
 								<i class="icon icon-upload"></i> {{ trans('messages.upload') }}
 							</a>
 							<a href="{{ action('Admin\TemplateController@builderCreate') }}" class="btn bg-info-800">

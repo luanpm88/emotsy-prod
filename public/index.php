@@ -20,7 +20,7 @@ foreach ($required_functions as $f) {
 
 // Check PHP version
 if (!version_compare(PHP_VERSION, '7.3.0', '>=')) {
-    echo "ERROR: Your current PHP version is ".PHP_VERSION.". However, Acelle requires PHP version 7.2.5 or higher.<br />";
+    echo "ERROR: Your current PHP version is ".PHP_VERSION.". However, Acelle requires PHP version 7.3.0 or higher.<br />";
     exit(0);
 }
 

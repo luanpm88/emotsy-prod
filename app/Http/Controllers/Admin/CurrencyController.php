@@ -195,17 +195,6 @@ class CurrencyController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-    }
-
-    /**
      * Enable item.
      *
      * @param \Illuminate\Http\Request $request

@@ -47,72 +47,18 @@ class Customer extends Model
     const STATUS_INACTIVE = 'inactive';
     const STATUS_ACTIVE = 'active';
 
+    const BASE_DIR = 'app/customers'; // storage/customers/000000
+    const ATTACHMENTS_DIR = 'home/attachments';  // storage/customers/000000/home/files
+    const TEMPLATES_DIR = 'home/templates';  // storage/customers/000000/home/files
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'first_name', 'last_name', 'timezone', 'language_id', 'color_scheme', 'text_direction'
+        'name', 'timezone', 'language_id', 'color_scheme', 'text_direction'
     ];
-
-    /**
-     * The rules for validation.
-     *
-     * @var array
-     */
-    public function rules()
-    {
-        $rules = array(
-            'email' => 'required|email|unique:users,email,'.$this->user_id.',id',
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'timezone' => 'required',
-            'language_id' => 'required',
-        );
-
-        if (isset($this->id)) {
-            $rules['password'] = 'confirmed|min:5';
-        } else {
-            $rules['password'] = 'required|confirmed|min:5';
-        }
-
-        return $rules;
-    }
-
-    /**
-     * The rules for validation.
-     *
-     * @var array
-     */
-    public function registerRules()
-    {
-        $rules = array(
-            'email' => 'required|email|unique:users,email,'.$this->user_id.',id',
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'timezone' => 'required',
-            'language_id' => 'required',
-        );
-
-        if (isset($this->id)) {
-            $rules['password'] = 'min:5';
-        } else {
-            $rules['password'] = 'required|min:5';
-        }
-
-        return $rules;
-    }
-
-    /**
-     * Customer email.
-     *
-     * @return string
-     */
-    public function email()
-    {
-        return is_object($this->user) ? $this->user->email : '';
-    }
 
     /**
      * Find item by uid.
@@ -141,9 +87,14 @@ class Customer extends Model
         return $this->belongsTo('Acelle\Model\Contact');
     }
 
+    public function subscriptions()
+    {
+        return $this->hasMany('Acelle\Model\Subscription');
+    }
+
     public function user()
     {
-        return $this->belongsTo('Acelle\Model\User');
+        return $this->hasOne('Acelle\Model\User');
     }
 
     public function admin()
@@ -276,6 +227,39 @@ class Customer extends Model
         return $result;
     }
 
+    public function getBasePath($path = null)
+    {
+        $base = storage_path(join_paths(self::BASE_DIR, $this->uid)); // storage/app/customers/000000/
+
+        if (!\File::exists($base)) {
+            \File::makeDirectory($base, 0777, true, true);
+        }
+
+        return join_paths($base, $path);
+    }
+
+    public function getTemplatesPath($path = null)
+    {
+        $base = $this->getBasePath(self::TEMPLATES_DIR);
+
+        if (!\File::exists($base)) {
+            \File::makeDirectory($base, 0777, true, true);
+        }
+
+        return join_paths($base, $path);
+    }
+
+    public function getAttachmentsPath($path = null)
+    {
+        $base = $this->getBasePath(self::ATTACHMENTS_DIR);
+
+        if (!\File::exists($base)) {
+            \File::makeDirectory($base, 0777, true, true);
+        }
+
+        return join_paths($base, $path);
+    }
+
     public function activeVerifiedSendingDomains()
     {
         $plan = $this->activeSubscription()->plan;
@@ -322,74 +306,6 @@ class Customer extends Model
     }
 
     /**
-     * Display customer name: first_name last_name.
-     *
-     * @var string
-     */
-    public function displayName()
-    {
-        return htmlspecialchars(trim($this->first_name.' '.$this->last_name));
-    }
-
-    /**
-     * Upload and resize avatar.
-     *
-     * @var void
-     */
-    public function uploadImage($file)
-    {
-        $path = 'app/customers/';
-        $upload_path = storage_path($path);
-
-        if (!file_exists($upload_path)) {
-            mkdir($upload_path, 0777, true);
-        }
-
-        $filename = 'avatar-'.$this->id.'.'.$file->getClientOriginalExtension();
-
-        // save to server
-        $file->move($upload_path, $filename);
-
-        // create thumbnails
-        $img = \Image::make($upload_path.$filename);
-        $img->fit(120, 120)->save($upload_path.$filename.'.thumb.jpg');
-
-        return $path.$filename;
-    }
-
-    /**
-     * Get image thumb path.
-     *
-     * @var string
-     */
-    public function imagePath()
-    {
-        if (!empty($this->image) && !empty($this->id)) {
-            return storage_path($this->image).'.thumb.jpg';
-        } else {
-            return '';
-        }
-    }
-
-    /**
-     * Get image thumb path.
-     *
-     * @var string
-     */
-    public function removeImage()
-    {
-        if (!empty($this->image) && !empty($this->id)) {
-            $path = storage_path($this->image);
-            if (is_file($path)) {
-                unlink($path);
-            }
-            if (is_file($path.'.thumb.jpg')) {
-                unlink($path.'.thumb.jpg');
-            }
-        }
-    }
-
-    /**
      * Get all items.
      *
      * @return collect
@@ -414,14 +330,14 @@ class Customer extends Model
     public static function filter($request)
     {
         $query = self::select('customers.*')
-            ->leftJoin('users', 'users.id', '=', 'customers.user_id');
+            ->leftJoin('users', 'users.customer_id', '=', 'customers.id');
 
         // Keyword
         if (!empty(trim($request->keyword))) {
             foreach (explode(' ', trim($request->keyword)) as $keyword) {
                 $query = $query->where(function ($q) use ($keyword) {
-                    $q->orwhere('customers.first_name', 'like', '%'.$keyword.'%')
-                        ->orWhere('customers.last_name', 'like', '%'.$keyword.'%')
+                    $q->orwhere('users.first_name', 'like', '%'.$keyword.'%')
+                        ->orWhere('users.last_name', 'like', '%'.$keyword.'%')
                         ->orWhere('users.email', 'like', '%'.$keyword.'%');
                 });
             }
@@ -956,12 +872,12 @@ class Customer extends Model
     {
         $data = ['items' => [], 'more' => true];
 
-        $query = \Acelle\Model\Customer::getAll()->leftJoin('users', 'users.id', '=', 'customers.user_id');
+        $query = \Acelle\Model\Customer::getAll()->leftJoin('users', 'users.customer_id', '=', 'customers.id');
         if (isset($request->q)) {
             $keyword = $request->q;
             $query = $query->where(function ($q) use ($keyword) {
-                $q->orwhere('customers.first_name', 'like', '%'.$keyword.'%')
-                    ->orWhere('customers.last_name', 'like', '%'.$keyword.'%')
+                $q->orwhere('users.first_name', 'like', '%'.$keyword.'%')
+                    ->orWhere('users.last_name', 'like', '%'.$keyword.'%')
                     ->orWhere('users.email', 'like', '%'.$keyword.'%');
             });
         }
@@ -983,43 +899,26 @@ class Customer extends Model
      *
      * @return object
      */
-    public function updateInformation($request)
+    public function createAccountAndUser($request)
     {
-        // Create user account for customer
-        $user = is_object($this->user) ? $this->user : new \Acelle\Model\User();
-        $user->email = $request->email;
-        // Update password
-        if (!empty($request->password)) {
+        $user = new User();
+
+        DB::transaction(function () use ($request, &$user) {
+            // Customer
+            $this->fill($request->all());
+            $this->status = self::STATUS_ACTIVE;
+            $this->save();
+
+            // User
+            $user = new User();
+            $user->fill($request->all());
             $user->password = bcrypt($request->password);
-        }
-        $user->save();
+            $user->customer()->associate($this);
+            $user->save();
+        });
 
-        // Save current user info
-        if (!$this->id) {
-            $this->user_id = $user->id;
-            $this->admin_id = is_object($request->user()) ? $request->user()->admin->id : null;
-            $this->status = 'active';
-        }
-
-        $this->fill($request->all());
-
-        $this->save();
-
-        // Upload and save image
-        if ($request->hasFile('image')) {
-            if ($request->file('image')->isValid()) {
-                // Remove old images
-                $this->removeImage();
-                $this->image = $this->uploadImage($request->file('image'));
-                $this->save();
-            }
-        }
-
-        // Remove image
-        if ($request->_remove_image == 'true') {
-            $this->removeImage();
-            $this->image = '';
-        }
+        // Important: return the newly created USER
+        return $user;
     }
 
     public function sendingServers()
@@ -1049,54 +948,6 @@ class Customer extends Model
             ->where('customers.created_at', '<=', $end);
 
         return $query->count();
-    }
-
-    /**
-     * The rules for validation via api.
-     *
-     * @var array
-     */
-    public function apiRules()
-    {
-        return array(
-            'email' => 'required|email|unique:users,email,'.$this->user_id.',id',
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'timezone' => 'required',
-            'language_id' => 'required',
-            'password' => 'required|min:5',
-        );
-    }
-
-    /**
-     * The rules for validation via api.
-     *
-     * @var array
-     */
-    public function apiUpdateRules($request)
-    {
-        $arr = [];
-
-        if (isset($request->email)) {
-            $arr['email'] = 'required|email|unique:users,email,'.$this->user_id.',id';
-        }
-        if (isset($request->first_name)) {
-            $arr['first_name'] = 'required';
-        }
-        if (isset($request->last_name)) {
-            $arr['last_name'] = 'required';
-        }
-        if (isset($request->timezone)) {
-            $arr['timezone'] = 'required';
-        }
-        if (isset($request->language_id)) {
-            $arr['language_id'] = 'required';
-        }
-        if (isset($request->password)) {
-            $arr['password'] = 'min:5';
-        }
-
-        return $arr;
     }
 
     public function getSubscriberCountByStatus($status)
@@ -1542,16 +1393,6 @@ class Customer extends Model
     }
 
     /**
-     * Custom name + email.
-     *
-     * @return string
-     */
-    public function displayNameEmail()
-    {
-        return $this->displayName().' ('.$this->user->email.')';
-    }
-
-    /**
      * Get customer contact.
      *
      * @return Contact
@@ -1578,7 +1419,7 @@ class Customer extends Model
      */
     public function displayNameEmailOption()
     {
-        return $this->displayName().'|||'.$this->user->email;
+        return $this->user->displayName().'|||'.$this->user->email;
     }
 
     /**
@@ -1943,7 +1784,7 @@ class Customer extends Model
         }
 
         // cancel all pending invoices (new)
-        $subscription->newInvoices()->delete();
+        $subscription->invoices()->newInvoices()->delete();
 
         // reset value
         $subscription->plan_id = $plan->id;
@@ -1987,11 +1828,6 @@ class Customer extends Model
         return $subscription->isActive();
     }
 
-    public function getHomePath($path = '')
-    {
-        return $this->user->getHomePath($path);
-    }
-
     public function getLockPath($path)
     {
         return $this->user->getLockPath($path);
@@ -2010,11 +1846,6 @@ class Customer extends Model
         }
 
         return true;
-    }
-
-    public function getFullName()
-    {
-        return trim($this->first_name.' '.$this->last_name);
     }
 
     /**
@@ -2139,12 +1970,9 @@ class Customer extends Model
         if (Billing::isGatewayTypeRegistered($type)) {
             return Billing::getGateway($type);
         } else {
-            throw new Exception(sprintf("User's preferred payment gateway type is '%s'. However, it is not registered in Billing Manager", $type));
+            // payment method was previously stored but it is dropped in the current version
+            return null;
         }
-    }
-
-    public function findPaymentGatewayFromAutoBillingData()
-    {
     }
 
     /**
@@ -2290,5 +2118,55 @@ class Customer extends Model
     {
         $this->auto_billing_data = $autoBillingData->toJson();
         $this->save();
+    }
+
+    // Do not call delete() directly on Customer
+    // This method helps delete Customer account but KEEP
+    // the associated User account if it is also associated with an Admin
+    public function deleteAccount()
+    {
+        DB::transaction(function () {
+            $user = $this->user;
+            $this->delete();
+            if (!$user->admin()->exists()) {
+                $user->deleteAndCleanup();
+            }
+        });
+    }
+
+    public function copyTemplateAs(Template $template, $name)
+    {
+        $copy = $template->copy([
+            'name' => $name,
+            'customer_id' => $this->id
+        ]);
+
+        return $copy;
+    }
+
+    /**
+     * Get builder templates.
+     *
+     * @return mixed
+     */
+    public function getBuilderTemplates()
+    {
+        $result = [];
+
+        // Gallery
+        $templates = \Acelle\Model\Template::where('customer_id', '=', null)
+            ->orWhere('customer_id', '=', $this->id)
+            ->orderBy('customer_id')
+            ->get();
+
+        foreach ($templates as $template) {
+            $result[] = [
+                'name' => $template->name,
+                'url' => action('CampaignController@templateChangeTemplate', ['uid' => $this->uid, 'template_uid' => $template->uid]),
+                'thumbnail' => $template->getThumbUrl(),
+            ];
+        }
+
+        return $result;
     }
 }

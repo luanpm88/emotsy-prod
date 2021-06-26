@@ -28,13 +28,34 @@ use Acelle\Notifications\ResetPassword;
 use Acelle\Library\Log as MailLog;
 use Acelle\Library\ExtendedSwiftMessage;
 use Acelle\Model\Setting;
+use Illuminate\Http\UploadedFile;
 use App;
+use URL;
+use File;
+use Acelle\Library\Tool;
 
 class User extends Authenticatable
 {
     use Notifiable;
 
-    const ASSET_DIR = 'files';
+    /*******
+     * Important: Storage location: User vs Customer
+     * One customer (account) may have one or more users
+     *
+     * User has its own location for storing:
+     * + Lock files
+     * + Assets (which is used by File Manager)
+     *
+     * Customer has a common place to store account's assets (available to all users of the same account)
+     * + Templates
+     * + Attachments (account-wide, not individual user)
+     *
+     */
+    const BASE_DIR = 'app/users';
+    const ASSETS_DIR = 'home/files';
+    const ASSETS_THUMB_DIR = 'home/thumbs';
+    const PROFILE_IMAGE_PATH = 'home/avatar';
+    const PROFILE_THUMB_PATH = 'home/thumb';
 
     /**
      * The attributes that are mass assignable.
@@ -42,7 +63,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'email', 'first_name', 'last_name', 'password',
     ];
 
     /**
@@ -61,7 +82,7 @@ class User extends Authenticatable
      */
     public function customer()
     {
-        return $this->hasOne('Acelle\Model\Customer');
+        return $this->belongsTo('Acelle\Model\Customer');
     }
 
     public function admin()
@@ -132,6 +153,112 @@ class User extends Authenticatable
         }
 
         MailLog::info('Sent activation email to '.$this->email);
+    }
+
+    /**
+     * The rules for validation.
+     *
+     * @var array
+     */
+    public function rules()
+    {
+        $rules = array(
+            'email' => 'required|email|unique:users,email,'.$this->id.',id',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'timezone' => 'required',
+            'language_id' => 'required',
+        );
+
+        if (isset($this->id)) {
+            $rules['password'] = 'confirmed|min:5';
+        } else {
+            $rules['password'] = 'required|confirmed|min:5';
+        }
+
+        return $rules;
+    }
+
+    /**
+     * The rules for validation.
+     *
+     * @var array
+     */
+    public function registerRules()
+    {
+        $rules = array(
+            'email' => 'required|email|unique:users,email,'.$this->id.',id',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'timezone' => 'required',
+            'language_id' => 'required',
+        );
+
+        if (isset($this->id)) {
+            $rules['password'] = 'min:5';
+        } else {
+            $rules['password'] = 'required|min:5';
+        }
+
+        return $rules;
+    }
+
+    /**
+     * The rules for validation via api.
+     *
+     * @var array
+     */
+    public function apiRules()
+    {
+        return array(
+            'email' => 'required|email|unique:users,email,'.$this->id.',id',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'timezone' => 'required',
+            'language_id' => 'required',
+            'password' => 'required|min:5',
+        );
+    }
+
+    /**
+     * The rules for validation via api.
+     *
+     * @var array
+     */
+    public function apiUpdateRules($request)
+    {
+        $arr = [];
+
+        if (isset($request->email)) {
+            $arr['email'] = 'required|email|unique:users,email,'.$this->id.',id';
+        }
+        if (isset($request->first_name)) {
+            $arr['first_name'] = 'required';
+        }
+        if (isset($request->last_name)) {
+            $arr['last_name'] = 'required';
+        }
+        if (isset($request->timezone)) {
+            $arr['timezone'] = 'required';
+        }
+        if (isset($request->language_id)) {
+            $arr['language_id'] = 'required';
+        }
+        if (isset($request->password)) {
+            $arr['password'] = 'min:5';
+        }
+
+        return $arr;
+    }
+
+    /**
+     * Display customer name: first_name last_name.
+     *
+     * @var string
+     */
+    public function displayName()
+    {
+        return htmlspecialchars(trim($this->first_name.' '.$this->last_name));
     }
 
     /**
@@ -238,20 +365,9 @@ class User extends Authenticatable
         }
     }
 
-    public function getStoragePath($path = '')
-    {
-        $base = storage_path('app/users/'.$this->uid);
-
-        if (!\File::exists($base)) {
-            \File::makeDirectory($base, 0777, true, true);
-        }
-
-        return join_paths($base, $path);
-    }
-
     public function getLockPath($path)
     {
-        $base = $this->getHomePath('locks');
+        $base = $this->getBasePath('locks');
 
         if (!\File::exists($base)) {
             \File::makeDirectory($base, 0777, true, true);
@@ -260,9 +376,9 @@ class User extends Authenticatable
         return join_paths($base, $path);
     }
 
-    public function getHomePath($path = '')
+    public function getAssetsPath($path = null)
     {
-        $base = $this->getStoragePath('home');
+        $base = $this->getBasePath(self::ASSETS_DIR);
 
         if (!\File::exists($base)) {
             \File::makeDirectory($base, 0777, true, true);
@@ -271,28 +387,15 @@ class User extends Authenticatable
         return join_paths($base, $path);
     }
 
-    public function uploadAsset($file)
+    public function getBasePath($path = null)
     {
-        // store to storage/app/users/{uid}/home/files/
-        $assetdir = $this->getHomePath(self::ASSET_DIR);
-        $newname = $file->getClientOriginalName();
-        $newpath = join_paths($assetdir, $newname);
+        $base = storage_path(join_paths(self::BASE_DIR, $this->uid));
 
-        // In case file name conflicts
-        $i = 1;
-        while (file_exists($newpath)) {
-            $newname = $file->getClientOriginalName()."_".$i;
-            $newpath = join_paths($assetdir, $newname);
-            ++$i;
+        if (!\File::exists($base)) {
+            \File::makeDirectory($base, 0777, true, true);
         }
 
-        // Move uploaded file
-        $file->move(
-            $assetdir,
-            $newname
-        );
-
-        return $newname;
+        return join_paths($base, $path);
     }
 
     /**
@@ -311,5 +414,149 @@ class User extends Authenticatable
     {
         $this->one_time_api_token = null;
         $this->save();
+    }
+
+    public function getAssetsSubUrl()
+    {
+        $appSubDirectory = \Acelle\Helpers\getAppSubdirectory();
+        $appSubDirectory = (is_null($appSubDirectory)) ? '' : $appSubDirectory;
+
+        // Returns a relative subpath like "/files/000000"
+        $subpath = route('user_files', ['uid' => $this->uid], false);
+        return join_paths($appSubDirectory, $subpath);
+    }
+
+    public function getThumbsSubUrl()
+    {
+        $appSubDirectory = \Acelle\Helpers\getAppSubdirectory();
+        $appSubDirectory = (is_null($appSubDirectory)) ? '' : $appSubDirectory;
+
+        // Returns a relative subpath like "/thumbs/000000"
+        $subpath = route('user_thumbs', ['uid' => $this->uid], false) ;
+        return join_paths($appSubDirectory, $subpath);
+    }
+
+    public function getFilemanagerConfig()
+    {
+        // Base URL with port, but without subpath
+        $baseUrl = parse_url(url('/'));
+
+        // port may be null
+        if (!array_key_exists('port', $baseUrl)) {
+            $baseUrl['port'] = '';
+        }
+
+        $baseUrl = "{$baseUrl['scheme']}://{$baseUrl['host']}{$baseUrl['port']}";
+
+        // Limitation
+        // Since this method is called from within the dialog.php file, there is no way to know if whether or not it is an admin or customer session
+        // So, there is no chance to apply quota here
+        if ($this->customer) {
+            // Limited by plan
+            $maxSizeTotal = $this->customer->getOption("max_size_upload_total") > 0 ? $this->customer->getOption("max_size_upload_total") : 2048;
+            $maxSizeUpload = $this->customer->getOption("max_file_size_upload") > 0 ? $this->customer->getOption("max_file_size_upload") : 2048;
+        } else {
+            // Virtually unlimited
+            $maxSizeTotal = 2048;
+            $maxSizeUpload = 2048;
+        }
+
+        $config = [
+            'base_url' => $baseUrl,
+            'upload_dir' => join_paths('/', $this->getAssetsSubUrl(), '/'),
+            'thumb_dir' => join_paths('/', $this->getThumbsSubUrl(), '/'),
+            'thumbs_upload_dir' => join_paths('/', $this->getThumbsSubUrl(), '/'),
+            // relative path from filemanager folder to upload folder, WITH FINAL /
+            'current_path' => join_paths('../../storage/', self::BASE_DIR, $this->uid, self::ASSETS_DIR, '/'),
+            // relative path from filemanager folder to upload folder, WITH FINAL /
+            'thumbs_base_path' => join_paths('../../storage/', self::BASE_DIR, $this->uid, self::ASSETS_THUMB_DIR, '/'),
+            'MaxSizeTotal' => $maxSizeTotal,
+            'MaxSizeUpload' => $maxSizeUpload,
+        ];
+
+        return $config;
+    }
+
+    public function getProfileImageUrl()
+    {
+        $path = $this->getProfileImagePath();
+        if (file_exists($path)) {
+            return \Acelle\Helpers\generatePublicPath($path);    
+        } else {
+            return URL::asset('assets/images/placeholder.jpg');
+        }
+        
+    }
+
+    public function getProfileThumbUrl()
+    {
+        $path = $this->getProfileThumbPath();
+        if (file_exists($path)) {
+            return \Acelle\Helpers\generatePublicPath($path);    
+        } else {
+            return URL::asset('assets/images/placeholder.jpg');
+        }
+        
+    }
+
+    public function getProfileImagePath()
+    {
+        return $this->getBasePath(self::PROFILE_IMAGE_PATH);
+    }
+
+    public function getProfileThumbPath()
+    {
+        return $this->getBasePath(self::PROFILE_THUMB_PATH);
+    }
+
+    /**
+     * Upload and resize avatar.
+     *
+     * @var void
+     */
+    public function uploadProfileImage(UploadedFile $file)
+    {
+        // Full path: /storage/app/users/000000/home/avatar
+        $path = $this->getProfileImagePath();
+
+        // File name: avatar
+        $filename = basename($path);
+
+        // The base dir: /storage/app/users/000000/home/
+        $dirname = dirname($path);
+
+        // save to server
+        $file->move($dirname, $filename);
+
+        // create thumbnails
+        $img = \Image::make($path);
+        $img->fit(120, 120)->save($path);
+
+        return $path;
+    }
+
+    public function removeProfileImage()
+    {
+        $path = $this->getProfileImagePath();
+        if (file_exists($path)) {
+            File::delete($path);
+        }
+
+        $thumb = $this->getProfileThumbPath();
+        if (file_exists($thumb)) {
+            File::delete($thumb);
+        }        
+    }
+
+    public function deleteAndCleanup()
+    {
+        // User's storage location
+        // For example: storage/app/users/000000/
+        $path = $this->getBasePath();
+        if (file_exists($path)) {
+            Tool::xdelete($path);
+        }
+
+        $this->delete();
     }
 }

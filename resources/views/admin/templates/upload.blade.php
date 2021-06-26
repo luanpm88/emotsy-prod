@@ -31,7 +31,7 @@
                 {!! trans('messages.template_upload_guide', ["link" => 'https://s3.amazonaws.com/acellemail/newsletter-template-green.zip']) !!}
             </div>
         
-            <form enctype="multipart/form-data" action="{{ action('Admin\TemplateController@upload') }}" method="POST" class="ajax_upload_form form-validate-jquery">
+            <form enctype="multipart/form-data" action="{{ action('Admin\TemplateController@uploadTemplate') }}" method="POST" class="ajax_upload_form form-validate-jquery">
                 {{ csrf_field() }}
                 
                 @include('helpers.form_control', ['required' => true, 'type' => 'text', 'label' => trans('messages.template_name'), 'name' => 'name', 'value' => old('name'), 'rules' => ['name' => 'required']])

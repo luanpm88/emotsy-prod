@@ -66,12 +66,12 @@ class AdminController extends Controller
         $admin = new \Acelle\Model\Admin();
         $admin->status = 'active';
         $admin->uid = '0';
+        // User info
+        $admin->user = new \Acelle\Model\User();
 
         if (!empty($request->old())) {
             $admin->fill($request->old());
             $admin->admin_group_id = $request->old()["admin_group_id"];
-            // User info
-            $admin->user = new \Acelle\Model\User();
             $admin->user->fill($request->old());
         }
 
@@ -106,16 +106,17 @@ class AdminController extends Controller
 
         // save posted data
         if ($request->isMethod('post')) {
-            $rules = $admin->rules();
+            $user = new \Acelle\Model\User();
+            $user->fill($request->all());
+            $user->activated = true;
+
+            $rules = $user->rules();
             $rules = array_merge($rules, [
                 'admin_group_id' => 'required',
             ]);
+
             $this->validate($request, $rules);
 
-            // Create user account for admin
-            $user = new \Acelle\Model\User();
-            $user->email = $request->email;
-            $user->activated = true;
             // Update password
             if (!empty($request->password)) {
                 $user->password = bcrypt($request->password);
@@ -134,21 +135,20 @@ class AdminController extends Controller
                 if ($request->hasFile('image')) {
                     if ($request->file('image')->isValid()) {
                         // Remove old images
-                        $admin->removeImage();
-                        $admin->image = $admin->uploadImage($request->file('image'));
-                        $admin->save();
+                        $user->uploadProfileImage($request->file('image'));
                     }
                 }
 
                 // Remove image
                 if ($request->_remove_image == 'true') {
-                    $admin->removeImage();
-                    $admin->image = '';
+                    $user->removeProfileImage();
                 }
 
                 // create customer account
                 if (!empty($request->create_customer_account) && $request->create_customer_account == 'yes') {
-                    $admin->createCustomerAccount($current_user->admin);
+                    $customer = $admin->createCustomerAccount();
+                    $user->customer_id = $customer->id;
+                    $user->save();
                 }
 
                 $request->session()->flash('alert-success', trans('messages.admin.created'));
@@ -219,19 +219,22 @@ class AdminController extends Controller
 
         // save posted data
         if ($request->isMethod('patch')) {
-            $rules = $admin->rules();
+            $user = $admin->user;
+            $user->fill($request->all());
+
+            // Update password
+            if (!empty($request->password)) {
+                $user->password = bcrypt($request->password);
+            }
+
+            $rules = $user->rules();
             $rules = array_merge($rules, [
                 'admin_group_id' => 'required',
             ]);
             $this->validate($request, $rules);
 
             // Update user account for admin
-            $user = $admin->user;
-            $user->email = $request->email;
-            // Update password
-            if (!empty($request->password)) {
-                $user->password = bcrypt($request->password);
-            }
+            
             $user->save();
 
             // Save current user info
@@ -244,20 +247,20 @@ class AdminController extends Controller
             if ($request->hasFile('image')) {
                 if ($request->file('image')->isValid()) {
                     // Remove old images
-                    $admin->removeImage();
-                    $admin->image = $admin->uploadImage($request->file('image'));
+                    $user->uploadProfileImage($request->file('image'));
                 }
             }
 
             // Remove image
             if ($request->_remove_image == 'true') {
-                $admin->removeImage();
-                $admin->image = '';
+                $user->removeProfileImage();
             }
 
             // create customer account
             if (!empty($request->create_customer_account) && $request->create_customer_account == 'yes') {
-                $admin->createCustomerAccount($current_user->admin);
+                $customer = $admin->createCustomerAccount();
+                $user->customer_id = $customer->id;
+                $user->save();
             }
 
             if ($admin->save()) {
@@ -265,17 +268,6 @@ class AdminController extends Controller
                 return redirect()->action('Admin\AdminController@index');
             }
         }
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
     }
 
     public function select2(Request $request)
@@ -348,7 +340,7 @@ class AdminController extends Controller
         }
 
         foreach ($items->get() as $item) {
-            $item->deleteRecursive();
+            $item->deleteAccount();
         }
 
         // Redirect to my lists page
@@ -393,25 +385,5 @@ class AdminController extends Controller
         \Auth::login($orig_user);
 
         return redirect()->action('Admin\AdminController@index');
-    }
-
-    /**
-     * Render user image.
-     */
-    public function avatar(Request $request)
-    {
-        // Get current user
-        if ($request->uid != '0') {
-            $user = \Acelle\Model\Admin::findByUid($request->uid);
-        } else {
-            $user = new \Acelle\Model\Admin();
-        }
-        if (!empty($user->imagePath())) {
-            $img = \Image::make($user->imagePath());
-        } else {
-            $img = \Image::make(public_path('assets/images/placeholder.jpg'));
-        }
-
-        return $img->response();
     }
 }

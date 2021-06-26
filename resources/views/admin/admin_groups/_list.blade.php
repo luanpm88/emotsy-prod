@@ -20,10 +20,6 @@
                     <h5 class="no-margin text-bold">
                         <a class="kq_search" href="{{ action('Admin\AdminGroupController@edit', $item->id) }}">{{ $item->name }}</a>
                     </h5>
-                    @if (Auth::user()->can('readAll', $item) && $item->creator)
-                        @include ('admin.modules.admin_line', ['admin' => $item->creator->admin])
-                        <br />
-                    @endif
                     <span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
                 </td>
                 <td>

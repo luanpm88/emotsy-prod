@@ -416,8 +416,8 @@
 
 				<li class="dropdown dropdown-user">
 					<a class="dropdown-toggle" data-toggle="dropdown">
-						<img src="{{ action('AdminController@avatar', Auth::user()->admin->uid) }}" alt="">
-						<span>{{ Auth::user()->admin->displayName() }}</span>
+						<img src="{{ Auth::user()->getProfileImageUrl() }}" alt="">
+						<span>{{ Auth::user()->displayName() }}</span>
 						<i class="caret"></i>
 					</a>
 

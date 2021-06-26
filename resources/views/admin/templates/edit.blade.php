@@ -48,7 +48,7 @@
                     'required' => true,
                     'type' => 'textarea',
                     'name' => 'content',
-                    'value' => $template->getParsedContent(),
+                    'value' => $template->content,
                     'rules' => ['content' => 'required']
                 ])                
             </div>
@@ -128,7 +128,7 @@
                     'ltr rtl | acelletags | undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify',
                     'outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | fullscreen  preview save print | insertfile image media template link anchor codesample | ltr rtl'
                 ],
-                toolbar_location: 'bottom',
+                toolbar_location: 'top',
                 menubar: false,
                 statusbar: false,
                 toolbar_sticky: true,

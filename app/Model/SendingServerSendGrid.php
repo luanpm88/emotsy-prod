@@ -236,7 +236,7 @@ class SendingServerSendGrid extends SendingServer implements DomainVerificationI
         foreach ($addedByUsers as $domain) {
             if (array_key_exists($domain->name, $identities)) {
                 $identities[$domain->name]['UserId'] = $domain->customer->id;
-                $identities[$domain->name]['UserName'] = $domain->customer->getFullName();
+                $identities[$domain->name]['UserName'] = $domain->customer->user->displayName();
             }
         }
 

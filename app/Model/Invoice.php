@@ -35,6 +35,23 @@ class Invoice extends Model
         ]);
     }
 
+    public function scopeUnpaid($query)
+    {
+        $query->whereIn('status', [
+            self::STATUS_NEW,
+        ]);
+    }
+
+    public function scopeChangePlan($query)
+    {
+        $query->where('type', self::TYPE_CHANGE_PLAN);
+    }
+
+    public function scopeRenew($query)
+    {
+        $query->where('type', self::TYPE_RENEW_SUBSCRIPTION);
+    }
+
     public function scopeNewSubscription($query)
     {
         $query->whereIn('type', [
@@ -246,7 +263,7 @@ class Invoice extends Model
     {
         // for only new invoice
         if (!$this->isNew() || !$this->getPendingTransaction()) {
-            throw new \Exception("Trying to approve an invoice that is not NEW and has pending transaction (Invoice ID: {$this->id}, status: {$this->status}");
+            throw new \Exception("Trying to approve an invoice that is not NEW or does not have a pending transaction (Invoice ID: {$this->id}, status: {$this->status}");
         }
 
         // fulfill invoice
@@ -262,7 +279,7 @@ class Invoice extends Model
     {
         // for only new invoice
         if (!$this->isNew() || !$this->getPendingTransaction()) {
-            throw new \Exception("Trying to approve an invoice that is not NEW and has pending transaction (Invoice ID: {$this->id}, status: {$this->status}");
+            throw new \Exception("Trying to approve an invoice that is not NEW or does not have a pending transaction (Invoice ID: {$this->id}, status: {$this->status}");
         }
 
         // fulfill invoice
@@ -309,17 +326,16 @@ class Invoice extends Model
     public function process()
     {
         $data = $this->getMetadata();
+        $subscription = Subscription::findByUid($data['subscription_uid']);
+
         switch ($this->type) {
             case self::TYPE_NEW_SUBSCRIPTION:
-                $subscription = Subscription::findByUid($data['subscription_uid']);
                 $subscription->activate();
                 break;
             case self::TYPE_RENEW_SUBSCRIPTION:
-                $subscription = Subscription::findByUid($data['subscription_uid']);
                 $subscription->renew();
                 break;
             case self::TYPE_CHANGE_PLAN:
-                $subscription = Subscription::findByUid($data['subscription_uid']);
                 $newPlan = \Acelle\Model\Plan::findByUid($data['new_plan_uid']);
                 $subscription->changePlan($newPlan);
                 break;
@@ -479,32 +495,30 @@ class Invoice extends Model
     {
         $invoice = $this;
         // \DB::transaction(function() use ($gateway, $invoice) {
-            $invoice->addPendingTransaction($gateway);
+        $invoice->addPendingTransaction($gateway);
 
-            try {
-                $result = $payCallback($invoice);
+        try {
+            $result = $payCallback($invoice);
 
-                if ($result->isDone()) {
-                    // Stripe, PayPal, Braintree for example
-                    $invoice->fulfill();
-
-                } elseif ( $result->isFailed() ) {
-                    // Stripe, PayPal, Braintree for example
-                    $invoice->payFailed($result->error);
-
-                } elseif ( $result->isStillPending() ) {
-                    // Wait more, check again later....
-                    // Coinpayment, offline
-                } elseif ( $result->isVerificationNotNeeded() ) {
-                    // Do nothing, just wait for the service to finish it itself (Stripe)
-                    // Service should not return this status, it is used for verification only
-                }
-                
-            } catch (\Exception $e) {
-                // pay failed
-                $invoice->payFailed($e->getMessage());
+            if ($result->isDone()) {
+                // Stripe, PayPal, Braintree for example
+                $invoice->fulfill();
+            } elseif ($result->isFailed()) {
+                // Stripe, PayPal, Braintree for example
+                $invoice->payFailed($result->error);
+            } elseif ($result->isStillPending()) {
+                // Coin, offline shouls return this status
+                // Wait more, check again later....
+                // Coinpayment, offline
+            } elseif ($result->isVerificationNotNeeded()) {
+                // IMPORTANT: this special status is used for checking (pending) transaction status only
+                //          **** SERVICES SHOULD NOT RETURN THIS STATUS IN CHECKOUT method ****
+                // Do nothing, just wait for the service to finish it itself (Stripe)
+                // Service should not return this status, it is used for verification only
             }
-        // });
-        
+        } catch (\Exception $e) {
+            // pay failed
+            $invoice->payFailed($e->getMessage());
+        }
     }
 }

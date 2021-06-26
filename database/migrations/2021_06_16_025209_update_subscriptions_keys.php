@@ -4,6 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Acelle\Model\Subscription;
+
 class UpdateSubscriptionsKeys extends Migration
 {
     /**
@@ -15,7 +16,7 @@ class UpdateSubscriptionsKeys extends Migration
     {
         // Clean up all subscription
         $subscriptions = Subscription::all();
-        foreach($subscriptions as $s) {
+        foreach ($subscriptions as $s) {
             $s->delete();
         }
 
@@ -24,24 +25,23 @@ class UpdateSubscriptionsKeys extends Migration
         $columns = ['customer_id', 'plan_id', 'user_id'];
 
         // Drop foreign keys
-        foreach($columns as $column) {
+        foreach ($columns as $column) {
             try {
                 Schema::table('subscriptions', function (Blueprint $table) use ($column) {
                     $table->dropForeign([$column]);
                 });
-            } catch(\Exception $ex) {
+            } catch (\Exception $ex) {
                 // ignore
             }
-            
         }
 
         // Drop columns
-        foreach($columns as $column) {
+        foreach ($columns as $column) {
             try {
                 Schema::table('subscriptions', function (Blueprint $table) use ($column) {
                     $table->dropColumn($column);
                 });
-            } catch(\Exception $ex) {
+            } catch (\Exception $ex) {
                 // ignore
             }
         }

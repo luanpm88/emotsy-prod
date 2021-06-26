@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Log;
 use Acelle\Events\MailListSubscription;
 use Acelle\Model\Setting;
 use Acelle\Model\MailList;
+use Acelle\Model\IpLocation;
 
 class PageController extends Controller
 {
@@ -285,7 +286,20 @@ class PageController extends Controller
 
         if ($request->isMethod('post')) {
             if ($subscriber->getSecurityToken('unsubscribe') == $request->code && $subscriber->status == 'subscribed') {
-                $subscriber->unsubscribe();
+
+                // User Tracking Information
+                $trackingInfo = [
+                    'message_id' => null,
+                    'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+                ];
+
+                // GeoIP information
+                $location = IpLocation::add($_SERVER['REMOTE_ADDR']);
+                if (!is_null($location)) {
+                    $trackingInfo['ip_address'] = $location->ip_address;
+                }
+
+                $subscriber->unsubscribe($trackingInfo);
             }
 
             return redirect()->action('PageController@unsubscribeSuccessPage', ['list_uid' => $list->uid, 'uid' => $subscriber->uid]);

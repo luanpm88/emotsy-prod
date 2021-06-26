@@ -258,17 +258,6 @@ class PlanController extends Controller
         return redirect()->back()->with('alert-success', trans('messages.plan.updated'));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-    }
-
     // /**
     //  * Enable item.
     //  *

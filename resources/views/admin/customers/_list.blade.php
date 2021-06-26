@@ -5,11 +5,11 @@
         @foreach ($customers as $key => $item)
             <tr>
                 <td width="1%">
-                    <img width="80" class="img-circle mr-10" src="{{ action('CustomerController@avatar', $item->uid) }}" alt="">
+                    <img width="80" class="img-circle mr-10" src="{{ $item->user->getProfileImageUrl() }}" alt="">
                 </td>
                 <td>
                     <h5 class="no-margin text-bold">
-                        <a class="kq_search" href="{{ action('Admin\CustomerController@edit', $item->uid) }}">{{ $item->displayName() }}</a>
+                        <a class="kq_search" href="{{ action('Admin\CustomerController@edit', $item->uid) }}">{{ $item->user->displayName() }}</a>
                     </h5>
                     <span class="text-muted kq_search">{{ $item->user->email }}</span><br>
                     <span class="text-muted kq_search">{{ trans('messages.customer.bounce_feedback_rate') }} <span title="{{ trans('messages.customer.bounce_feedback_rate_desc') }}" class="xtooltip">{{ number_to_percentage($item->readCache('Bounce/FeedbackRate') ?? 0) }}</span></span>

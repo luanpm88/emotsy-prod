@@ -18,7 +18,7 @@
                                 'date' => Acelle\Library\Tool::formatDateTime($email->updated_at),
                             ]) }}</p>
                             
-                            @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']) && strpos($email->content, 'AcelleSystemLayouts'))
+                            @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']) && $email->template->builder)
                                 <a href="{{ action('Automation2Controller@templateEdit', [
                                         'uid' => $automation->uid,
                                         'email_uid' => $email->uid,

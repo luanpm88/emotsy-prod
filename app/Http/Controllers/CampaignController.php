@@ -20,6 +20,7 @@ use Acelle\Model\Campaign;
 use Acelle\Model\IpLocation;
 use Acelle\Model\ClickLog;
 use Acelle\Model\OpenLog;
+use Acelle\Model\TemplateCategory;
 use Acelle\Library\Rss;
 use DB;
 
@@ -84,17 +85,6 @@ class CampaignController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-    }
-
-    /**
      * Display the specified resource.
      *
      * @param int $id
@@ -153,29 +143,6 @@ class CampaignController extends Controller
         } elseif ($campaign->step() >= 4) {
             return redirect()->action('CampaignController@confirm', ['uid' => $campaign->uid]);
         }
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int                      $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
     }
 
     /**
@@ -238,24 +205,6 @@ class CampaignController extends Controller
             // redirect to the next step
             return redirect()->action('CampaignController@setup', ['uid' => $campaign->uid]);
         }
-
-        //// validate and save posted data
-        //if ($request->isMethod('post')) {
-        //
-        //    // Check validation
-        //    $this->validate($request, Campaign::$rules);
-        //
-        //    // Save campaign
-        //    $campaign->mail_list_id = \Acelle\Model\MailList::findByUid($request->mail_list_uid)->id;
-        //    if ($request->segment_uid) {
-        //        $campaign->segment_id = \Acelle\Model\Segment::findByUid($request->segment_uid)->id;
-        //    } else {
-        //        $campaign->segment_id = null;
-        //    }
-        //    $campaign->save();
-        //
-        //    return redirect()->action('CampaignController@setup', ['uid' => $campaign->uid]);
-        //}
 
         return view('campaigns.recipients', [
             'campaign' => $campaign,
@@ -398,6 +347,11 @@ class CampaignController extends Controller
     public function templateLayout(Request $request)
     {
         $campaign = Campaign::findByUid($request->uid);
+        if ($request->category_uid) {
+            $category = TemplateCategory::findByUid($request->category_uid);
+        } else {
+            $category = TemplateCategory::first();
+        }
 
         // authorize
         if (\Gate::denies('update', $campaign)) {
@@ -407,9 +361,6 @@ class CampaignController extends Controller
         if ($request->isMethod('post')) {
             $template = \Acelle\Model\Template::findByUid($request->template);
             $campaign->setTemplate($template);
-
-            // update plain
-            $campaign->updatePlainFromHtml();
 
             // return redirect()->action('CampaignController@templateEdit', $campaign->uid);
             return response()->json([
@@ -421,6 +372,37 @@ class CampaignController extends Controller
 
         return view('campaigns.template.layout', [
             'campaign' => $campaign,
+            'category' => $category,
+        ]);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function templateLayoutList(Request $request)
+    {
+        $campaign = Campaign::findByUid($request->uid);
+
+        // from
+        if ($request->from == 'mine') {
+            $templates = $request->user()->customer->templates();
+        } elseif ($request->from == 'gallery') {
+            $templates = Template::shared();
+        } else {
+            $templates = Template::shared()
+                ->orWhere('customer_id', '=', $request->user()->customer->id);
+        }
+
+        $templates = $templates->search($request->keyword)
+            ->filter($request)
+            ->orderBy($request->sort_order, $request->sort_direction)
+            ->paginate($request->per_page);
+
+        return view('campaigns.template.layoutList', [
+            'campaign' => $campaign,
+            'templates' => $templates,
         ]);
     }
 
@@ -470,7 +452,6 @@ class CampaignController extends Controller
             $this->validate($request, $rules);
 
             $campaign->setTemplateContent($request->content);
-            $campaign->untransform();
             $campaign->save();
 
             // update plain
@@ -484,7 +465,7 @@ class CampaignController extends Controller
         return view('campaigns.template.edit', [
             'campaign' => $campaign,
             'list' => $campaign->defaultMailList,
-            'templates' => $campaign->getBuilderTemplates($request->user()->customer),
+            'templates' => $request->user()->customer->getBuilderTemplates(),
         ]);
     }
 
@@ -505,95 +486,7 @@ class CampaignController extends Controller
         }
 
         return view('campaigns.template.content', [
-            'content' => $campaign->getParsedContent(),
-        ]);
-    }
-
-    /**
-     * Create template from theme.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function templateTheme(Request $request)
-    {
-        $campaign = Campaign::findByUid($request->uid);
-
-        // authorize
-        if (\Gate::denies('update', $campaign)) {
-            return $this->notAuthorized();
-        }
-
-        if ($request->isMethod('post')) {
-            $template = \Acelle\Model\Template::findByUid($request->template);
-            $campaign->setTemplate($template);
-
-            // update plain
-            $campaign->updatePlainFromHtml();
-
-            // return redirect()->action('CampaignController@templateEdit', $campaign->uid);
-            return response()->json([
-                'status' => 'success',
-                'message' => trans('messages.campaign.theme.selected'),
-                'url' => action('CampaignController@templateBuilderSelect', $campaign->uid),
-            ]);
-        }
-
-        return view('campaigns.template.theme', [
-            'campaign' => $campaign,
-        ]);
-    }
-
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function templateLayoutList(Request $request)
-    {
-        $campaign = Campaign::findByUid($request->uid);
-
-        $templates = Template::shared()->search($request->keyword)
-            ->filter($request)
-            ->orderBy($request->sort_order, $request->sort_direction)
-            ->paginate($request->per_page);
-
-        return view('campaigns.template.layoutList', [
-            'campaign' => $campaign,
-            'templates' => $templates,
-        ]);
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function templateThemeList(Request $request)
-    {
-        $campaign = Campaign::findByUid($request->uid);
-
-        // from
-        if ($request->from == 'mine') {
-            $templates = $request->user()->customer->templates();
-        } elseif ($request->from == 'gallery') {
-            $templates = Template::shared();
-        } else {
-            $templates = Template::shared()
-                ->orWhere('customer_id', '=', $request->user()->customer->id);
-        }
-
-        // sort, pagination
-        $templates = $templates->search($request->keyword)
-            ->filter($request)
-            ->orderBy($request->sort_order, $request->sort_direction)
-            ->paginate($request->per_page);
-
-        return view('campaigns.template.themeList', [
-            'campaign' => $campaign,
-            'templates' => $templates,
+            'content' => $campaign->template->content,
         ]);
     }
 
@@ -616,9 +509,6 @@ class CampaignController extends Controller
         // validate and save posted data
         if ($request->isMethod('post')) {
             $campaign->uploadTemplate($request);
-
-            // update plain
-            $campaign->updatePlainFromHtml();
 
             // return redirect()->action('CampaignController@template', $campaign->uid);
             return response()->json([
@@ -832,14 +722,12 @@ class CampaignController extends Controller
             return;
         }
 
-        $items = Campaign::whereIn('uid', explode(',', $request->uids));
+        $campaigns = Campaign::whereIn('uid', explode(',', $request->uids));
 
-        foreach ($items->get() as $item) {
+        foreach ($campaigns->get() as $campaign) {
             // authorize
-            if (\Gate::allows('delete', $item)) {
-                $item->delete();
-                // Log
-                $item->log('deleted', $customer);
+            if (\Gate::allows('delete', $campaign)) {
+                $campaign->deleteAndCleanup();
             }
         }
 
@@ -2159,7 +2047,6 @@ class CampaignController extends Controller
             // Save template
             $campaign->setTemplateContent($request->html);
             $campaign->preheader = $request->preheader;
-            $campaign->untransform();
             $campaign->save();
 
             // update plain
@@ -2208,7 +2095,6 @@ class CampaignController extends Controller
 
             // Save template
             $campaign->plain = $request->plain;
-            $campaign->untransform();
             $campaign->save();
 
             // success

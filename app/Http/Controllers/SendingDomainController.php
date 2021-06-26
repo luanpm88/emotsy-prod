@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
 use Acelle\Model\SendingDomain;
 use Acelle\Model\SendingServer;
+use Acelle\Model\Setting;
 use Acelle\Library\Facades\Hook;
 
 class SendingDomainController extends Controller
@@ -215,17 +216,6 @@ class SendingDomainController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-    }
-
-    /**
      * Custom sort items.
      *
      * @param \Illuminate\Http\Request $request
@@ -303,7 +293,8 @@ class SendingDomainController extends Controller
             $options = $domain->getOptions()['verification'];
             $identity = $options['identity'];
             $dkims = $options['dkim'];
-            $spf = array_key_exists('spf', $options) ? $options['spf'] : [];
+            // Server spf will be replaced by Setting
+            $spf = Setting::get('spf') ?: (array_key_exists('spf', $options) ? $options['spf'] : []);
 
             Hook::execute(
                 'filter_aws_ses_dns_records',

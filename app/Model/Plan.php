@@ -230,12 +230,12 @@ class Plan extends Model
 
     public function subscriptions()
     {
-        return $this->hasMany('Acelle\Model\Subscription', 'plan_id', 'uid')
-            ->where(function ($query) {
-                $query->whereNull('ends_at')
-                      ->orWhere('ends_at', '>=', \Carbon\Carbon::now());
-            })
-            ->orderBy('created_at', 'desc');
+        return $this->hasMany('Acelle\Model\Subscription');
+    }
+
+    public function activeSubscriptions()
+    {
+        return $this->subscriptions()->active();
     }
 
     public function plansEmailVerificationServers()
@@ -349,6 +349,18 @@ class Plan extends Model
             ['value' => 'year', 'text' => trans('messages.year')],
             // ['value' => 'unlimited', 'text' => trans('messages.plan_time_unlimited')],
         ];
+    }
+
+    public static function bounceRateThesholdOptions()
+    {
+        $options = [
+            ['value' => '', 'text' => trans('messages.none')],
+        ];
+        for ($i=1; $i <= 100; $i++) {
+            $options[] = ['value' => $i, 'text' => $i . '%'];
+        }
+
+        return $options;
     }
 
     /**
@@ -526,6 +538,7 @@ class Plan extends Model
             'html_footer' => '',
             'plain_text_footer' => '',
             'payment_gateway' => '',
+            'bounce_rate_theshold' => '',
         ];
 
         // Sending server types
@@ -884,7 +897,7 @@ class Plan extends Model
      */
     public function customersCount()
     {
-        return $this->subscriptions()->distinct('customer_id')->count('customer_id');
+        return $this->activeSubscriptions()->count();
     }
 
     /**

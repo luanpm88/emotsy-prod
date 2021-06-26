@@ -30,24 +30,6 @@
                                 </button>
                             </div>
                         </li>
-                        <li class="template-start" data-url="{{ action('Automation2Controller@templateTheme', [
-                                'uid' => $automation->uid,
-                                'email_uid' => $email->uid,
-                            ]) }}"
-                        >
-                            <i class="lnr lnr-license"></i>
-                            <div class="list-body">
-                                <label>{{ trans('messages.automation.template.from_theme') }}</label>
-                                <p>{{ trans('messages.automation.template.from_theme.intro') }}</p>
-                            </div>
-                            <div class="list-action">
-                                <button
-                                    class="btn btn-secondary"
-                                >
-                                    {{ trans('messages.automation.template.start') }}
-                                </button>
-                            </div>
-                        </li>
                         <li class="template-start" data-url="{{ action('Automation2Controller@templateUpload', [
                                 'uid' => $automation->uid,
                                 'email_uid' => $email->uid,

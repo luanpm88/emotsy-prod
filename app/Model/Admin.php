@@ -35,42 +35,8 @@ class Admin extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'first_name', 'last_name', 'timezone', 'language_id', 'color_scheme', 'text_direction'
+        'timezone', 'language_id', 'color_scheme', 'text_direction'
     ];
-
-    /**
-     * The rules for validation.
-     *
-     * @var array
-     */
-    public function rules()
-    {
-        $rules = array(
-            'email' => 'required|email|unique:users,email,'.$this->user_id.',id',
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'timezone' => 'required',
-            'language_id' => 'required',
-        );
-
-        if (isset($this->id)) {
-            $rules['password'] = 'confirmed|min:5';
-        } else {
-            $rules['password'] = 'required|confirmed|min:5';
-        }
-
-        return $rules;
-    }
-
-    /**
-     * Admin email.
-     *
-     * @return string
-     */
-    public function email()
-    {
-        return is_object($this->user) ? $this->user->email : '';
-    }
 
     /**
      * Find item by uid.
@@ -136,71 +102,13 @@ class Admin extends Model
     }
 
     /**
-     * Display admin name: first_name last_name.
+     * Check if admin has customer account.
      *
-     * @var string
+     * @return bool
      */
-    public function displayName()
+    public function hasCustomerAccount()
     {
-        return $this->first_name.' '.$this->last_name;
-    }
-
-    /**
-     * Upload and resize avatar.
-     *
-     * @var void
-     */
-    public function uploadImage($file)
-    {
-        $path = 'app/admins/';
-        $upload_path = storage_path($path);
-
-        if (!file_exists($upload_path)) {
-            mkdir($upload_path, 0777, true);
-        }
-
-        $filename = 'avatar-'.$this->id.'.'.$file->getClientOriginalExtension();
-
-        // save to server
-        $file->move($upload_path, $filename);
-
-        // create thumbnails
-        $img = \Image::make($upload_path.$filename);
-        $img->fit(120, 120)->save($upload_path.$filename.'.thumb.jpg');
-
-        return $path.$filename;
-    }
-
-    /**
-     * Get image thumb path.
-     *
-     * @var string
-     */
-    public function imagePath()
-    {
-        if (!empty($this->image) && !empty($this->id)) {
-            return storage_path($this->image).'.thumb.jpg';
-        } else {
-            return '';
-        }
-    }
-
-    /**
-     * Get image thumb path.
-     *
-     * @var string
-     */
-    public function removeImage()
-    {
-        if (!empty($this->image) && !empty($this->id)) {
-            $path = storage_path($this->image);
-            if (is_file($path)) {
-                unlink($path);
-            }
-            if (is_file($path.'.thumb.jpg')) {
-                unlink($path.'.thumb.jpg');
-            }
-        }
+        return is_object($this->user) && is_object($this->user->customer);
     }
 
     /**
@@ -235,9 +143,9 @@ class Admin extends Model
         if (!empty(trim($request->keyword))) {
             foreach (explode(' ', trim($request->keyword)) as $keyword) {
                 $query = $query->where(function ($q) use ($keyword) {
-                    $q->orwhere('admins.first_name', 'like', '%'.$keyword.'%')
+                    $q->orwhere('users.first_name', 'like', '%'.$keyword.'%')
                         ->orWhere('admin_groups.name', 'like', '%'.$keyword.'%')
-                        ->orWhere('admins.last_name', 'like', '%'.$keyword.'%');
+                        ->orWhere('users.last_name', 'like', '%'.$keyword.'%');
                 });
             }
         }
@@ -468,31 +376,18 @@ class Admin extends Model
     /**
      * Create customer account.
      */
-    public function createCustomerAccount($admin)
+    public function createCustomerAccount()
     {
-        if (!$this->hasCustomerAccount()) {
-            // Create customer
-            $customer = new \Acelle\Model\Customer();
-            $customer->user_id = $this->user_id;
-            $customer->admin_id = $this->id;
-            $customer->language_id = $this->language_id;
-            $customer->first_name = $this->first_name;
-            $customer->last_name = $this->last_name;
-            $customer->image = $this->image;
-            $customer->timezone = $this->timezone;
-            $customer->status = $this->status;
-            $customer->save();
-        }
-    }
+        $customer = new \Acelle\Model\Customer();
+        $customer->admin_id = $this->id;
+        $customer->language_id = $this->language_id;
+        // [moved] $customer->first_name = $this->first_name;
+        // [moved] $customer->last_name = $this->last_name;
+        $customer->timezone = $this->timezone;
+        $customer->status = $this->status;
+        $customer->save();
 
-    /**
-     * Check if admin has customer account.
-     *
-     * @return bool
-     */
-    public function hasCustomerAccount()
-    {
-        return is_object($this->user) && is_object($this->user->customer);
+        return $customer;
     }
 
     /**
@@ -524,15 +419,19 @@ class Admin extends Model
      *
      * @return bool
      */
-    public function deleteRecursive()
+    public function deleteAccount()
     {
         // unset all customers
         $this->customers()->update(['admin_id' => null]);
 
         // Delete admin and user
         $user = $this->user;
+
         $this->delete();
-        $user->delete();
+        
+        if (!$user->customer()->exists()) {
+            $user->deleteAndCleanup();
+        }
     }
 
     /**

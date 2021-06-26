@@ -16,7 +16,7 @@
 			<li class="active">{{ trans('messages.customer.sub_account') }}</li>
 		</ul>
 		<h1>
-            <span class="text-semibold"><i class="icon-profile"></i> {{ $customer->displayName() }}</span>
+            <span class="text-semibold"><i class="icon-profile"></i> {{ $customer->user->displayName() }}</span>
         </h1>
 	</div>
 

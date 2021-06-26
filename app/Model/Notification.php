@@ -38,6 +38,7 @@ class Notification extends Model
         'message',
         'level',
         'uid',
+        'debug',
     ];
 
     /**

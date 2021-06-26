@@ -1,5 +1,7 @@
 <?php
+
 $version = "9.14.0";
+
 if (session_id() == '') {
     session_start();
 }
@@ -12,6 +14,16 @@ mb_regex_encoding('UTF-8');
 ob_start('mb_output_handler');
 date_default_timezone_set('Europe/Rome');
 setlocale(LC_CTYPE, 'en_US'); //correct transliteration
+
+// ACELLE INJECTED
+require '../../bootstrap/autoload.php';
+$app = require_once '../../bootstrap/app.php';
+$kernel = $app->make(Illuminate\Contracts\Http\Kernel::class);
+$response = $kernel->handle(
+    $request = Acelle\Framework\LaravelRequest::capture('/blank')
+);
+
+$mainAppConfig = Auth::user()->getFilemanagerConfig();
 
 /*
 |--------------------------------------------------------------------------
@@ -39,7 +51,7 @@ define('USE_ACCESS_KEYS', false); // TRUE or FALSE
 |--------------------------------------------------------------------------
 */
 
-define('DEBUG_ERROR_MESSAGE', false); // TRUE or FALSE
+define('DEBUG_ERROR_MESSAGE', true); // TRUE or FALSE
 
 /*
 |--------------------------------------------------------------------------
@@ -57,72 +69,6 @@ define('DEBUG_ERROR_MESSAGE', false); // TRUE or FALSE
 |    |   |   |   |   |- plugin.min.js
 */
 
-class Uidd
-{
-    public static function get()
-    {
-        require '../../bootstrap/autoload.php';
-        $app = require_once '../../bootstrap/app.php';
-
-        $kernel = $app->make('Illuminate\Contracts\Http\Kernel');
-        $response = $kernel->handle(
-            $request = Acelle\Framework\LaravelRequest::capture('/blank')
-        );
-
-        /*
-        $id = $app['encrypter']->decrypt($_COOKIE[$app['config']['session.cookie']]);
-        $app['session']->driver()->setId($id);
-        $app['session']->driver()->start();
-        */
-
-        // $user_uid = Auth::user()->uid;
-        if (is_object($app['auth']->user())) {
-            $user_uid = Auth::user()->uid;
-            $max_size_upload_total = is_object($app['auth']->user()->customer) && $app['auth']->user()->customer->getOption("max_size_upload_total") > 0 ? $app['auth']->user()->customer->getOption("max_size_upload_total") : 999999999;
-            $max_file_size_upload = is_object($app['auth']->user()->customer) && $app['auth']->user()->customer->getOption("max_file_size_upload") > 0 ? $app['auth']->user()->customer->getOption("max_file_size_upload") : 999999999;
-        } else {
-            $user_uid = $_SESSION["user_uid"];
-            $max_size_upload_total = $_SESSION["max_size_upload_total"];
-            $max_file_size_upload = $_SESSION["max_file_size_upload"];
-        }
-
-        // Make folder if not exist
-        $paths = [
-        storage_path('/app/users'),
-        storage_path('/app/users/' . $user_uid),
-        storage_path('/app/users/' . $user_uid . '/home'),
-        storage_path('/app/users/' . $user_uid . '/home/files'),
-        storage_path('/app/users/' . $user_uid . '/home/thumbs'),
-    ];
-        foreach ($paths as $path) {
-            if (!file_exists($path)) {
-                mkdir($path, 0777, true);
-            }
-        }
-
-        return [
-        "user_uid" => $user_uid,
-        "max_size_upload_total" => $max_size_upload_total,
-        "max_file_size_upload" => $max_file_size_upload,
-        "storage_path" => storage_path('/app/users/' . $user_uid . '/home'),
-    ];
-    }
-}
-
-$db_config = Uidd::get();
-$storage_path = $db_config['storage_path'];
-$_SESSION["user_uid"] = $db_config["user_uid"];
-$_SESSION["max_size_upload_total"] = $db_config["max_size_upload_total"];
-$_SESSION["max_file_size_upload"] = $db_config["max_file_size_upload"];
-$_SESSION['RF']['language'] = "en_EN";
-$_SESSION['RF']['language_file'] = 'lang/en_EN.php';
-
-$user_uid = $_SESSION["user_uid"];
-$base_url = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] && ! in_array(strtolower($_SERVER['HTTPS']), array( 'off', 'no' ))) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
-$base_r_url = str_replace("filemanager2/dialog.php", "", str_replace($base_url, "", URL::to('/')));
-// echo $base_url;
-// echo $base_r_url;
-// die();
 $config = array(
 
     /*
@@ -133,7 +79,7 @@ $config = array(
     | without final / (DON'T TOUCH)
     |
     */
-    'base_url' => $base_url,
+    'base_url' => $mainAppConfig['base_url'],
     /*
     |--------------------------------------------------------------------------
     | path from base_url to base of upload folder
@@ -142,8 +88,8 @@ $config = array(
     | with start and final /
     |
     */
-    'upload_dir' => $base_r_url . '/files/' . $user_uid . "/",
-    'thumb_dir' => $base_r_url . '/files/thumbs/' . $user_uid . "/",
+    'upload_dir' => $mainAppConfig['upload_dir'],
+    'thumb_dir' => $mainAppConfig['thumb_dir'],
     /*
     |--------------------------------------------------------------------------
     | relative path from filemanager folder to upload folder
@@ -152,7 +98,7 @@ $config = array(
     | with final /
     |
     */
-    'current_path' => '../../storage/app/users/' . $user_uid . '/home/files/',
+    'current_path' => $mainAppConfig['current_path'],
 
     /*
     |--------------------------------------------------------------------------
@@ -163,7 +109,7 @@ $config = array(
     | DO NOT put inside upload folder
     |
     */
-    'thumbs_base_path' => '../../storage/app/users/' . $user_uid . '/home/thumbs/',
+    'thumbs_base_path' => $mainAppConfig['thumbs_base_path'],
 
     /*
     |--------------------------------------------------------------------------
@@ -174,7 +120,7 @@ $config = array(
     | DO NOT put inside upload folder
     |
     */
-    'thumbs_upload_dir' => $base_r_url . 'thumbs/' . $user_uid . "/",
+    'thumbs_upload_dir' => $mainAppConfig['thumbs_upload_dir'],
 
     /*
     |--------------------------------------------------------------------------
@@ -267,7 +213,7 @@ $config = array(
     | in Megabytes
     |
     */
-    'MaxSizeTotal' => $db_config["max_size_upload_total"],
+    'MaxSizeTotal' => $mainAppConfig['MaxSizeTotal'],
 
 
     /*
@@ -278,7 +224,7 @@ $config = array(
     | in Megabytes
     |
     */
-    'MaxSizeUpload' => $db_config["max_file_size_upload"],
+    'MaxSizeUpload' => $mainAppConfig['MaxSizeUpload'],
 
     /*
     |--------------------------------------------------------------------------

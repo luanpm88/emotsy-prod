@@ -15,7 +15,7 @@
             <li class="active">{{ trans('messages.subscription') }}</li>
         </ul>
         <h1>
-            <span class="text-semibold">{{ Auth::user()->customer->displayName() }}</span>
+            <span class="text-semibold">{{ Auth::user()->displayName() }}</span>
         </h1>
     </div>
 
@@ -28,7 +28,7 @@
     <div class="row">
         <div class="col-sm-12 col-md-8 col-lg-8">
 
-            @if ($subscription->renewInvoice() && $subscription->renewInvoice()->isNew())
+            @if ($subscription->getItsOnlyUnpaidRenewInvoice())
                 @include('elements._notification', [
                     'level' => 'warning',
                     'message' => trans('messages.have_new_renew_invoice', [
@@ -37,7 +37,7 @@
                 ])
             @endif
 
-            @if ($subscription->changePlanInvoice() && $subscription->changePlanInvoice()->isNew())
+            @if ($subscription->getItsOnlyUnpaidChangePlanInvoice())
                 @include('elements._notification', [
                     'level' => 'warning',
                     'message' => trans('messages.have_new_change_plan_invoice', [

@@ -27,55 +27,42 @@
 
 @section('content')
     
-    @if (count($errors) > 0)
-        <!-- Form Error List -->
-        <div class="alert alert-danger alert-noborder">                
-            <ul>
-                <li>{{ $parse_error }}</li>
-            </ul>
-        </div>
-    @endif
-    
-    <form enctype="multipart/form-data" action="{{ action('Admin\LanguageController@translate', ["id" => $language->uid, "file" => $filename]) }}" method="POST" class="form-validate-jqueryx">
+    <form enctype="multipart/form-data" action="{{ action('Admin\LanguageController@translate', ["id" => $language->uid, "file_id" => $currentFile['id']]) }}" method="POST" class="form-validate-jqueryx">
         {{ csrf_field() }}
+
+        <input type="hidden" name="file_id" value="{{ $currentFile['id'] }}" />
         
         <div class="tabbable">
-            <ul class="nav nav-tabs nav-tabs-top">
-                <li class="{{ $filename == "messages" ? "active" : "" }} text-semibold">
-                    <a href="{{ action('Admin\LanguageController@translate', ["id" => $language->uid, "file" => "messages"]) }}">
-                        <i class="icon-menu6"></i> {{ trans('messages.messages') }}
-                    </a>
-                </li>
-                <li class="{{ $filename == "validation" ? "active" : "" }} text-semibold">
-                    <a href="{{ action('Admin\LanguageController@translate', ["id" => $language->uid, "file" => "validation"]) }}">
-                        <i class="icon-menu6"></i> {{ trans('messages.validation') }}
-                    </a>
-                </li>
-                <li class="{{ $filename == "pagination" ? "active" : "" }} text-semibold">
-                    <a href="{{ action('Admin\LanguageController@translate', ["id" => $language->uid, "file" => "pagination"]) }}">
-                        <i class="icon-menu6"></i> {{ trans('messages.pagination') }}
-                    </a>
-                </li>
-                <li class="{{ $filename == "passwords" ? "active" : "" }} text-semibold">
-                    <a href="{{ action('Admin\LanguageController@translate', ["id" => $language->uid, "file" => "passwords"]) }}">
-                        <i class="icon-menu6"></i> {{ trans('messages.passwords') }}
-                    </a>
-                </li>
-                <li class="{{ $filename == "auth" ? "active" : "" }} text-semibold">
-                    <a href="{{ action('Admin\LanguageController@translate', ["id" => $language->uid, "file" => "auth"]) }}">
-                        <i class="icon-menu6"></i> {{ trans('messages.auth') }}
-                    </a>
-                </li>
-                <li class="{{ $filename == "auth" ? "active" : "" }} text-semibold">
-                    <a href="{{ action('Admin\LanguageController@translate', ["id" => $language->uid, "file" => "builder"]) }}">
-                        <i class="icon-menu6"></i> {{ trans('messages.builder') }}
-                    </a>
-                </li>
+            <ul class="nav nav-tabs nav-tabs-top page-second-nav">
+                @foreach ($language->getLanguageFilesByType('default') as $langFile)
+                    <li class="{{ $langFile['id'] == $currentFile['id'] ? "active" : "" }} text-semibold">
+                        <a class="level-1" href="{{ action('Admin\LanguageController@translate', ["id" => $language->uid, "file_id" => $langFile['id']]) }}">
+                            <i class="icon-menu6"></i> {{ $langFile['file_title'] }}
+                        </a>
+                    </li>
+                @endforeach
+                @if (count($language->getLanguageFilesByType('plugin')))
+                    <li rel0="SubscriberController" class="dropdown">
+                        <a href="https://acelle.com/account/contact" class="level-1" data-toggle="dropdown">
+                            {{ trans('messages.language.plugins') }}
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            @foreach ($language->getLanguageFilesByType('plugin') as $langFile)
+                                <li class="sub-menu {{ $langFile['id'] == $currentFile['id'] ? "active" : "" }} text-semibold">
+                                    <a class="" href="{{ action('Admin\LanguageController@translate', ["id" => $language->uid, "file_id" => $langFile['id']]) }}">
+                                        <i class="icon-menu6"></i> {{ $langFile['file_title'] }}
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </li>
+                @endif
             </ul>
                 
             <div class="tab-content">
                 <div class="tab-pane active" id="top-tab1">
-                    <textarea name="{{ $filename }}" class="my-code-messages" rows="20" style="width: 100%">{!! $content !!}</textarea>
+                    <textarea name="content" class="my-code-messages" rows="20" style="width: 100%">{!! $content !!}</textarea>
                 </div>                            
             </div>
         </div>
@@ -92,6 +79,11 @@
     
     <script>
         $('.my-code-messages').ace({ theme: 'twilight', lang: 'yaml' });
+        $('.sub-menu.active').each(function() {
+            if ($(this).closest('li.dropdown').length) {
+                $(this).closest('li.dropdown').addClass('active');
+            }
+        });
     </script>
     
 @endsection

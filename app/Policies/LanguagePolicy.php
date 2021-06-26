@@ -17,14 +17,14 @@ class LanguagePolicy
         return $can;
     }
     
-    public function read_all(User $user, Language $item)
+    public function list(User $user)
     {
-        $can = $user->admin->getPermission('language_read') == 'all';
+        $can = $user->admin->getPermission('language_read') != 'no';
 
         return $can;
     }
 
-    public function create(User $user, Language $item)
+    public function create(User $user)
     {
         $can = $user->admin->getPermission('language_create') == 'yes';
 

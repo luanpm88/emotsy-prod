@@ -54,6 +54,19 @@
                             </div>
                         </div>
                     </div>
+                    <h2 class="text-semibold mt-4">{{ trans('messages.bounce_rate_theshold') }}</h2>
+            
+                    <p>{!! trans('messages.bounce_rate_theshold.wording') !!}</p>
+
+                    @include('helpers.form_control', ['type' => 'select',
+                        'name' => 'plan[options][bounce_rate_theshold]',
+                        'value' => $plan->getOption('bounce_rate_theshold'),
+                        'label' => trans('messages.bounce_rate_theshold.set_a_limit'),
+                        'options' => \Acelle\Model\Plan::bounceRateThesholdOptions(),
+                        'help_class' => 'plan',
+                        'rules' => $plan->validationRules()['general'],
+                    ])
+                    <hr>
                     <button class="btn btn-mc_primary mr-10">{{ trans('messages.save') }}</button>
                     <a href="{{ action('Admin\PlanController@index') }}" type="button" class="btn btn-mc_inline">
                         {{ trans('messages.cancel') }}

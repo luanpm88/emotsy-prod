@@ -7,7 +7,7 @@
             <h2>{{ trans('messages.automation.template.builder.select') }}</h2>
             <p>{{ trans('messages.automation.template.builder.select.intro') }}</p>
             
-            @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']))
+            @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']) && $email->template->builder)
                 <a href="{{ action('Automation2Controller@templateEdit', [
                         'uid' => $automation->uid,
                         'email_uid' => $email->uid,

@@ -42,6 +42,7 @@ class TemplateController extends Controller
         // sort, pagination
         $templates = $templates->search($request->keyword)
             ->filter($request)
+            ->notAssociated()
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
             
@@ -124,34 +125,30 @@ class TemplateController extends Controller
             return $this->notAuthorized();
         }
 
-        // validate and save posted data
-        if ($request->isMethod('patch')) {
-            // Save template
-            $template->fill($request->all());
+        // Save template
+        $template->fill($request->all());
 
-            $rules = array(
-                'name' => 'required',
-                'content' => 'required',
-            );
+        $rules = array(
+            'name' => 'required',
+            'content' => 'required',
+        );
 
-            // make validator
-            $validator = \Validator::make($request->all(), $rules);
-            
-            // redirect if fails
-            if ($validator->fails()) {
-                // faled
-                return response()->json($validator->errors(), 400);
-            }
-            
-            $template->untransform();
-            $template->save();
-
-            // success
-            return response()->json([
-                'status' => 'success',
-                'message' => trans('messages.template.updated'),
-            ], 201);
+        // make validator
+        $validator = \Validator::make($request->all(), $rules);
+        
+        // redirect if fails
+        if ($validator->fails()) {
+            // faled
+            return response()->json($validator->errors(), 400);
         }
+        
+        $template->save();
+
+        // success
+        return response()->json([
+            'status' => 'success',
+            'message' => trans('messages.template.updated'),
+        ], 201);
     }
 
     /**
@@ -161,7 +158,7 @@ class TemplateController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function upload(Request $request)
+    public function uploadTemplate(Request $request)
     {
         // authorize
         if (!$request->user()->customer->can('create', Template::class)) {
@@ -170,17 +167,13 @@ class TemplateController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
-            $template = Template::upload($request);
-
-            if (!empty(Setting::get('storage.s3'))) {
-                App::make('xstore')->store($template);
-            }
+            $template = Template::uploadTemplate($request);
 
             $request->session()->flash('alert-success', trans('messages.template.uploaded'));
             return redirect()->action('TemplateController@index');
+        } else {
+            return view('templates.upload');
         }
-
-        return view('templates.upload');
     }
 
     /**
@@ -199,17 +192,18 @@ class TemplateController extends Controller
             ], 403);
         }
 
-        $items = Template::whereIn('uid', explode(',', $request->uids));
-
-        foreach ($items->get() as $item) {
+        $templates = Template::whereIn('uid', explode(',', $request->uids));
+        $total = $templates->count();
+        $deleted = 0;
+        foreach ($templates->get() as $template) {
             // authorize
-            if ($request->user()->customer->can('delete', $item)) {
-                $item->delete();
+            if ($request->user()->customer->can('delete', $template)) {
+                $template->deleteAndCleanup();
+                $deleted += 1;
             }
         }
 
-        // Redirect to my lists page
-        echo trans('messages.templates.deleted');
+        echo trans('messages.templates.deleted', [ 'deleted' => $deleted, 'total' => $total]);
     }
 
     /**
@@ -291,7 +285,6 @@ class TemplateController extends Controller
             $this->validate($request, $rules);
             
             $template->content = $request->content;
-            $template->untransform();
             $template->save();
             
             return response()->json([
@@ -301,7 +294,7 @@ class TemplateController extends Controller
 
         return view('templates.builder.edit', [
             'template' => $template,
-            'templates' => $template->getBuilderTemplates($user->customer),
+            'templates' => $request->user()->customer->getBuilderTemplates(),
         ]);
     }
     
@@ -346,7 +339,7 @@ class TemplateController extends Controller
         }
 
         return view('templates.builder.content', [
-            'content' => $template->getParsedContent(),
+            'content' => $template->content,
         ]);
     }
     
@@ -357,7 +350,7 @@ class TemplateController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function builderAsset(Request $request, $uid)
+    public function uploadTemplateAssets(Request $request, $uid)
     {
         $template = Template::findByUid($uid);
         
@@ -366,10 +359,10 @@ class TemplateController extends Controller
             return $this->notAuthorized();
         }
         
-        $filename = $template->uploadAsset($request->file('file'));
+        $assetUrl = $template->uploadAsset($request->file('file'));
 
         return response()->json([
-            'url' => route('customer_files', ['uid' => $request->user()->uid, 'name' => $filename])
+            'url' => $assetUrl
         ]);
     }
     
@@ -382,30 +375,28 @@ class TemplateController extends Controller
      */
     public function builderCreate(Request $request)
     {
-        $template = new Template();
-        $template->name = trans('messages.untitled_template');
-        
         // authorize
         if (!$request->user()->customer->can('create', Template::class)) {
             return $this->notAuthorized();
         }
-        
+
         // validate and save posted data
         if ($request->isMethod('post')) {
-            $currentTemplate = Template::findByUid($request->template);
+            // Get selected template
+            $selectedTemplate = Template::findByUid($request->template);
             
-            // copy from template
-            $template = $currentTemplate->copy([
-                'name' => $request->name,
-                'customer_id' => $request->user()->customer->id,
-            ]);
+            // Copy
+            $template = $request->user()->customer->copyTemplateAs($selectedTemplate, $request->name);
             
             return redirect()->action('TemplateController@builderEdit', $template->uid);
+        } else {
+            $template = new Template();
+            $template->name = trans('messages.untitled_template');
+        
+            return view('templates.builder.create', [
+                'template' => $template,
+            ]);
         }
-
-        return view('templates.builder.create', [
-            'template' => $template,
-        ]);
     }
     
     /**

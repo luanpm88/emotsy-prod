@@ -39,7 +39,7 @@ class UserPolicy
     {
         $ability = $user->admin->getPermission('user_update');
         $can = $ability == 'all'
-                || ($ability == 'own' && $user->id == $item->user_id);
+                || ($ability == 'own' && $user->id == $item->id);
 
         return $can;
     }
@@ -48,18 +48,8 @@ class UserPolicy
     {
         $ability = $user->admin->getPermission('user_delete');
         $can = $ability == 'all'
-                || ($ability == 'own' && $user->id == $item->user_id);
+                || ($ability == 'own' && $user->id == $item->id);
         $can = $can && $user->id != $item->id;
-
-        return $can;
-    }
-
-    public function switch_user(User $user, User $item)
-    {
-        $ability = $user->admin->getPermission('user_switch');
-        $can = $ability == 'all'
-                || ($ability == 'own' && $user->id == $item->user_id);
-        $can = $can && $item->id != $user->id;
 
         return $can;
     }

@@ -15,7 +15,7 @@
             <li class="active">{{ trans('messages.subscription') }}</li>
         </ul>
         <h1>
-            <span class="text-semibold">{{ Auth::user()->customer->displayName() }}</span>
+            <span class="text-semibold">{{ Auth::user()->displayName() }}</span>
         </h1>
     </div>
 

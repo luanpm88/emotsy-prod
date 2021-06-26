@@ -229,7 +229,7 @@ if (isset($_GET["descending"])) {
 
 $boolarray = array(false => 'false', true => 'true');
 
-$return_relative_url = isset($_GET['relative_url']) && $_GET['relative_url'] == "1" ? true : false;
+$return_relative_url = true; // isset($_GET['relative_url']) && $_GET['relative_url'] == "1" ? true : false;
 
 if (!isset($_GET['type'])) {
     $_GET['type'] = 0;
@@ -1290,7 +1290,7 @@ $files = $sorted;
                     } ?>"></i></a>
 
                     <?php if ($is_img && $src_thumb!="") { ?>
-                    <a class="tip-right preview" title="<?php echo xtrans('Preview')?>" data-featherlight="<?php echo str_replace('/thumbs', '', $src_thumb);?>"  href="#"><i class=" icon-eye-open"></i></a>
+                    <a class="tip-right preview" title="<?php echo xtrans('Preview')?>" data-featherlight-disabled="<?php echo str_replace('/thumbs', '', $src_thumb);?>"  href="#"><i class=" icon-eye-open"></i></a>
                     <?php } elseif (($is_video || $is_audio) && in_array($file_array['extension'], $config['jplayer_exts'])) { ?>
                     <a class="tip-right modalAV <?php if ($is_audio) {
                         echo "audio";
@@ -1437,7 +1437,7 @@ $files = $sorted;
             $('figure a').on('click', function(e) {
                 if (!$(this).hasClass('folder-link') && parent.filemanager_callback && $(this).attr('data-url')) {
                     e.preventDefault();
-                    parent.filemanager_callback('<?php echo url('') ?>' + $(this).attr('data-url'));
+                    parent.filemanager_callback($(this).attr('data-url'));
                 }
             });
 

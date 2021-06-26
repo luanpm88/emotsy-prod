@@ -28,54 +28,34 @@ Route::group(['middleware' => ['installed']], function () {
     Route::get('install/finish', 'InstallController@finish');
 });
 
-// assets path for template
-Route::get('/assets/campaigns/{uid}/{name?}', [ function ($uid, $name) {
-    $campaign = \Acelle\Model\Campaign::findByUid($uid);
-    $path = $campaign->getStoragePath($name);
-    $mime_type = \Acelle\Library\File::getFileType($path);
-    if (\File::exists($path)) {
-        return response()->file($path, array('Content-Type' => $mime_type));
-    }
-}])->where('name', '.+')->name('campaign_assets');
-
-// assets path for template
-Route::get('/assets/templates/{uid}/{name?}', [ function ($uid, $name) {
-    $template = \Acelle\Model\Template::findByUid($uid);
-    $path = $template->getStoragePath($name);
+/*
+ * The following routes
+ * + customer_files
+ * + customer_thumbs
+ * 
+ * are used to retrieved files through filemanager
+ *
+ */
+Route::get('/files/{uid}/{name?}', [ function ($uid, $name) {
+    $path = storage_path('app/users/' . $uid . '/home/files/' . $name);
     $mime_type = \Acelle\Library\File::getFileType($path);
     if (\File::exists($path)) {
         return response()->file($path, array('Content-Type' => $mime_type));
     } else {
         abort(404);
     }
-}])->where('name', '.+')->name('template_assets');
+}])->where('name', '.+')->name('user_files');
 
 // assets path for customer thumbs
-Route::get('/files/thumbs/{uid}/{name?}', [ function ($uid, $name) {
+Route::get('/thumbs/{uid}/{name?}', [ function ($uid, $name) {
     $path = storage_path('app/users/' . $uid . '/home/thumbs/' . $name);
-    $mime_type = \Acelle\Library\File::getFileType($path);
     if (\File::exists($path)) {
+        $mime_type = \Acelle\Library\File::getFileType($path);
         return response()->file($path, array('Content-Type' => $mime_type));
+    } else {
+        abort(404);
     }
-}])->where('name', '.+')->name('customer_thumbs');
-// assets path for customer files
-Route::get('/files/{uid}/{name?}', [ function ($uid, $name) {
-    $path = storage_path('app/users/' . $uid . '/home/files/' . $name);
-    $mime_type = \Acelle\Library\File::getFileType($path);
-    if (\File::exists($path)) {
-        return response()->file($path, array('Content-Type' => $mime_type));
-    }
-}])->where('name', '.+')->name('customer_files');
-
-// assets path for email
-Route::get('/assets/emails/{uid}/{name?}', [ function ($uid, $name) {
-    $email = \Acelle\Model\Email::findByUid($uid);
-    $path = $email->getStoragePath($name);
-    $mime_type = \Acelle\Library\File::getFileType($path);
-    if (\File::exists($path)) {
-        return response()->file($path, array('Content-Type' => $mime_type));
-    }
-}])->where('name', '.+')->name('email_assets');
+}])->where('name', '.+')->name('user_thumbs');
 
 // assets path for email
 Route::get('/p/assets/{path}', [ function ($token) {
@@ -118,14 +98,8 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
     Route::get('/migrate/run', 'Controller@runMigration');
     Route::post('/remote-job/{remote_job_token}', 'Controller@remoteJob');
 
-    // Customer avatar
-    Route::get('assets/images/avatar/customer-{uid?}.jpg', 'CustomerController@avatar');
-
     //Subscriber avatar
     Route::get('assets/images/avatar/subscriber-{uid?}.jpg', 'SubscriberController@avatar');
-
-    // Admin avatar
-    Route::get('assets/images/avatar/admin-{uid?}.jpg', 'AdminController@avatar');
 
     // User resend activation email
     Route::get('users/resend-activation-email', 'UserController@resendActivationEmail');
@@ -140,7 +114,7 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
 
 // Without authentication
 Route::group(['middleware' => ['not_installed']], function () {
-    Route::get('blank', function () {
+    Route::match(['get', 'post'], 'blank', function () {
         return;
     });
 
@@ -224,16 +198,10 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscription']], function () {
     Route::get('/', 'HomeController@index');
-    Route::get('frontend/docs/api/v1', 'Controller@docsApiV1');
-    Route::get('/current_user_uid', 'UserController@showUid');
-    // Update current user profile
-    
+    Route::get('frontend/docs/api/v1', 'Controller@docsApiV1');    
     
     Route::get('account/api/renew', 'AccountController@renewToken');
     Route::get('account/api', 'AccountController@api');
-
-    // User avatar
-    Route::get('assets/images/avatar/user-{uid?}.jpg', 'UserController@avatar');
 
     // Mail list
     Route::get('lists/{uid}/clone-to-customers/choose', 'MailListController@cloneForCustomersChoose');
@@ -332,7 +300,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('templates/builder/templates/{category_uid?}', 'TemplateController@builderTemplates');
     Route::post('templates/builder/create', 'TemplateController@builderCreate');
     Route::get('templates/builder/create', 'TemplateController@builderCreate');
-    Route::post('templates/{uid}/builder/edit/asset', 'TemplateController@builderAsset');
+    Route::post('templates/{uid}/builder/edit/asset', 'TemplateController@uploadTemplateAssets');
     Route::get('templates/{uid}/builder/edit/content', 'TemplateController@builderEditContent');
     Route::post('templates/{uid}/builder/edit', 'TemplateController@builderEdit');
     Route::get('templates/{uid}/builder/edit', 'TemplateController@builderEdit');
@@ -341,8 +309,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('templates/{uid}/copy', 'TemplateController@copy');
     Route::get('templates/listing/{page?}', 'TemplateController@listing');
     Route::get('templates/choosing/{campaign_uid}/{page?}', 'TemplateController@choosing');
-    Route::get('templates/upload', 'TemplateController@upload');
-    Route::post('templates/upload', 'TemplateController@upload');
+    Route::get('templates/upload', 'TemplateController@uploadTemplate');
+    Route::post('templates/upload', 'TemplateController@uploadTemplate');
     Route::get('templates/{uid}/preview', 'TemplateController@preview');
     Route::get('templates/delete', 'TemplateController@delete');
     Route::resource('templates', 'TemplateController');
@@ -366,8 +334,6 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('campaigns/{uid}/template/content', 'CampaignController@templateContent');
     Route::match(['get', 'post'], 'campaigns/{uid}/template/edit', 'CampaignController@templateEdit');
     Route::match(['get', 'post'], 'campaigns/{uid}/template/upload', 'CampaignController@templateUpload');
-    Route::get('campaigns/{uid}/template/theme/list', 'CampaignController@templateThemeList');
-    Route::match(['get', 'post'], 'campaigns/{uid}/template/theme', 'CampaignController@templateTheme');
     Route::get('campaigns/{uid}/template/layout/list', 'CampaignController@templateLayoutList');
     Route::match(['get', 'post'], 'campaigns/{uid}/template/layout', 'CampaignController@templateLayout');
     Route::get('campaigns/{uid}/template/create', 'CampaignController@templateCreate');
@@ -565,14 +531,11 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     
     Route::post('automation2/{uid}/template/{email_uid}/attachment', 'Automation2Controller@emailAttachmentUpload');
     Route::post('automation2/{uid}/template/{email_uid}/remove-template', 'Automation2Controller@templateRemove');
-    Route::post('automation2/{uid}/template/{email_uid}/asset', 'Automation2Controller@templateAsset');
-    Route::post('automation2/{uid}/template/{email_uid}/asset', 'Automation2Controller@templateAsset');
     Route::get('automation2/{uid}/template/{email_uid}/content', 'Automation2Controller@templateContent');
     Route::match(['get', 'post'], 'automation2/{uid}/template/{email_uid}/edit', 'Automation2Controller@templateEdit');
     Route::match(['get', 'post'], 'automation2/{uid}/template/{email_uid}/upload', 'Automation2Controller@templateUpload');
-    Route::post('automation2/{uid}/template/{email_uid}/theme/list', 'Automation2Controller@templateThemeList');
-    Route::match(['get', 'post'], 'automation2/{uid}/template/{email_uid}/theme', 'Automation2Controller@templateTheme');
     Route::match(['get', 'post'], 'automation2/{uid}/template/{email_uid}/layout', 'Automation2Controller@templateLayout');
+    Route::post('automation2/{uid}/template/{email_uid}/layout/list', 'Automation2Controller@templateLayoutList');
     Route::get('automation2/{uid}/template/{email_uid}/create', 'Automation2Controller@templateCreate');
     
     Route::post('automation2/{uid}/email/{email_uid}/delete', 'Automation2Controller@emailDelete');
@@ -649,7 +612,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/templates/builder/templates/{category_uid}', 'TemplateController@builderTemplates');
     Route::post('admin/templates/builder/create', 'TemplateController@builderCreate');
     Route::get('admin/templates/builder/create', 'TemplateController@builderCreate');
-    Route::post('admin/templates/{uid}/builder/edit/asset', 'TemplateController@builderAsset');
+    Route::post('admin/templates/{uid}/builder/edit/asset', 'TemplateController@uploadTemplateAssets');
     Route::get('admin/templates/{uid}/builder/edit/content', 'TemplateController@builderEditContent');
     Route::post('admin/templates/{uid}/builder/edit', 'TemplateController@builderEdit');
     Route::get('admin/templates/{uid}/builder/edit', 'TemplateController@builderEdit');
@@ -658,8 +621,8 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/templates/{uid}/copy', 'TemplateController@copy');
     Route::get('admin/templates/{uid}/preview', 'TemplateController@preview');
     Route::get('admin/templates/listing/{page?}', 'TemplateController@listing');
-    Route::get('admin/templates/upload', 'TemplateController@upload');
-    Route::post('admin/templates/upload', 'TemplateController@upload');
+    Route::get('admin/templates/upload', 'TemplateController@uploadTemplate');
+    Route::post('admin/templates/upload', 'TemplateController@uploadTemplate');
     Route::get('admin/templates/delete', 'TemplateController@delete');
     Route::resource('admin/templates', 'TemplateController');
     Route::get('admin/templates/{uid}/edit', 'TemplateController@edit');
@@ -717,8 +680,8 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/languages/delete/confirm', 'LanguageController@deleteConfirm');
     Route::get('admin/languages/listing/{page?}', 'LanguageController@listing');
     Route::get('admin/languages/delete', 'LanguageController@delete');
-    Route::get('admin/languages/{id}/translate/{file}', 'LanguageController@translate');
-    Route::post('admin/languages/{id}/translate/{file}', 'LanguageController@translate');
+    Route::get('admin/languages/{id}/translate', 'LanguageController@translate');
+    Route::post('admin/languages/{id}/translate', 'LanguageController@translate');
     Route::get('admin/languages/disable', 'LanguageController@disable');
     Route::get('admin/languages/enable', 'LanguageController@enable');
     Route::get('admin/languages/{id}/download', 'LanguageController@download');

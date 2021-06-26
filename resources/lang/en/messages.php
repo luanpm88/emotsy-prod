@@ -262,7 +262,7 @@
   'sending_servers.disabled' => 'One or more sending servers were successfully disabled',
   'sending_servers.enabled' => 'One or more sending servers were successfully enabled',
   'segments.deleted' => 'One or more segments were successfully deleted',
-  'templates.deleted' => 'One or more templates were successfully deleted',
+  'templates.deleted' => ':deleted/:total template(s) were successfully deleted',
   'blacklists.deleted' => 'One or more emails were successfully removed from blacklist',
   'edit_segment' => 'Update segment',
   'all' => 'All',
@@ -3264,7 +3264,7 @@
   'plugins.deleted' => 'One or more plugins were successfully deleted',
   'plugins.disabled' => 'One or more plugins were successfully disabled',
   'plugins.enabled' => 'One or more plugins were successfully enabled',
-  'delete_plugins_confirm' => 'You\'re about to delete :number plugin(s) from the list.',
+  'delete_plugins_confirm' => 'Deleting a plugin might also erase all its data added to the application. Are you sure you want to delete it',
   'disable_plugins_confirm' => 'You\'re about to disable :number plugin(s) from the list.',
   'enable_plugins_confirm' => 'You\'re about to enable :number plugin(s) from the list.',
   'create_plugin' => 'Create new',
@@ -3668,7 +3668,8 @@
   'automation.operation.change' => 'Change operation',
   'template.category' => 'Category',
   'template.all_categories' => 'All categories',
-  'campaign.template_name' => 'Campaign: :name',
+  'campaign.template_name' => '[Campaign: ":name"]',
+  'email.template_name' => '[Email: ":name"]',
   'template.set_template_category' => 'Set template category',
   'template.set_template_category.intro' => 'Choose one or more categories for your template
     <br>Notice: if your template does not fall upon any category, it will not be visible to users.',
@@ -3678,4 +3679,12 @@
   'plan.sending_server_empty' => 'No delivery server selected',
   'plan.sending_server_empty.setting' => 'No delivery server selected',
   'transaction_for_invoice' => 'Transaction for invoice <span class="font-weight-semibold">#:uid</span>',
+  'no_template_available' => 'No template availabel',
+  'language.plugins' => 'Plugged in content',
+  'bounce_rate_theshold' => 'Bounce rate theshold',
+  'bounce_rate_theshold.wording' => 'Bounce rate is the percentage of email addresses that your users\' campaigns could not be delivered to.<br>
+      Email providers and anti-spam networks monitor bounce rates for every campaign you send, and use that information to decide if they\'ll
+      accept mail from you in the future.
+      You can set up a specific value below, which shall apply to any users subscribing to this plan.',
+  'bounce_rate_theshold.set_a_limit' => 'Set a limit',
 ) ?>

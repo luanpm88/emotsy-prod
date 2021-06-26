@@ -22,8 +22,8 @@
 		<div class="text-right user-top-right">
 			@if (is_object(\Auth::user()))
 				<a class="dropdown-toggle" data-toggle="dropdown">
-					<img src="{{ action('CustomerController@avatar', Auth::user()->customer->uid) }}" alt="">
-					<span>{{ Auth::user()->customer->displayName() }}</span>
+					<img src="{{ Auth::user()->getProfileImageUrl() }}" alt="">
+					<span>{{ Auth::user()->displayName() }}</span>
 				</a>
 				/
 				<a href="{{ url("/logout") }}"><i class="icon-switch2"></i> {{ trans('messages.logout') }}</a>

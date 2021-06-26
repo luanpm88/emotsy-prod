@@ -9,74 +9,50 @@
             <h5 class="mb-3 mt-2">{{ trans('messages.automation.choose_your_template_layout') }}</h5>
 			<p class="mb-4">{{ trans('messages.automation.choose_your_template_layout.intro') }}</p>
                 
-            @include('automation2.email.template._tabs', ['tab' => 'layout'])
+            @include('automation2.email.template._tabs')
 
-			<div class="subsection pt-4">
-				<h4 class="font-weight-semibold mb-0">{{ trans('messages.template.featured') }}</h4>
-				<hr>
+			<h5 class="font-weight-semibold mb-0 mt-4">{{ $category->name }}</h5>
 
-				<div id="layout" class="tab-pane row template-boxes layout mt-4" style="
-					margin-left: -15px;
-					margin-right: -15px;
-				">
-					@foreach(Acelle\Model\Template::woo()->get() as $layout)
-						<div class="col-xxs-6 col-xs-4 col-sm-2 col-md-2">
-							<a data-method="POST"
-								href="{{ action('Automation2Controller@templateTheme', [
-									'uid' => $automation->uid,
-									'email_uid' => $email->uid,
-									'template_uid' => $layout->uid,
-								]) }}"
-								class="select-layout"
-							>
-								<div class="panel panel-flat panel-template-style mb-4">
-									<div class="panel-body">									
-										<img src="{{ $layout->getThumbUrl() }}?v={{ rand(0,10) }}" />
-										<label class="mb-20 text-center">{{ $layout->name }}</label>
-										<span class="template_recommended">Recommended</span>
-									</div>
-								</div>
-							</a>
-						</div>
-					@endforeach
+			<div class="template-filter pt-4">
+				<div class="d-flex align-items-center">
+					<label class="font-weight-semibold mr-2">From</label>
+					<select class="select" name="from">
+						<option value="all" selected='selected'>{{ trans('messages.all') }}</option>
+						<option value="mine">{{ trans('messages.my_templates') }}</option>
+						<option value="gallery">{{ trans('messages.gallery') }}</option>
+					</select>	
 				</div>
-				<br style="clear:both" />
 			</div>
-
-			<div class="subsection">
-				<h4 class="font-weight-semibold mb-0">{{ trans('messages.template.basic') }}</h2>
-				<hr>
-
-				<div id="layout" class="tab-pane row template-boxes layout mt-4" style="
-					margin-left: -15px;
-					margin-right: -15px;
-				">
-					@foreach(Acelle\Model\Template::basic()->get() as $layout)
-						<div class="col-xxs-6 col-xs-4 col-sm-2 col-md-2">
-							<a data-method="POST"
-								href="{{ action('Automation2Controller@templateTheme', [
-									'uid' => $automation->uid,
-									'email_uid' => $email->uid,
-									'template_uid' => $layout->uid,
-								]) }}"
-								class="select-layout"
-							>
-								<div class="panel panel-flat panel-template-style mb-4">
-									<div class="panel-body">									
-										<img src="{{ $layout->getThumbUrl() }}?v={{ rand(0,10) }}" />
-										<label class="mb-20 text-center">{{ $layout->name }}</label>
-									</div>
-								</div>
-							</a>
-						</div>
-					@endforeach
-				</div>
-				<br style="clear:both" />
+			<div class="template-list ajax-list">
+				
 			</div>
         </div>
     </div>
         
     <script>
+		var listTheme = new List( $('.template-list'), {
+			url: '{{ action('Automation2Controller@templateLayoutList', [
+					'uid' => $automation->uid,
+					'email_uid' => $email->uid,
+					'category_uid' => $category->uid,
+				]) }}',
+			per_page: 12,
+			data: function() {
+					return {
+						from: $('[name=from]').val(),
+						sort_direction: 'asc',
+						sort_order: 'id',
+					};
+				},
+		});
+		
+		listTheme.load();
+		
+		// filters
+		$('[name=from]').change(function() {
+			listTheme.load();
+		});
+
 		var builderSelectPopup = new Popup(null, undefined, {onclose: function() {
             
         }});

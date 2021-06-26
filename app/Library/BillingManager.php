@@ -66,15 +66,13 @@ class BillingManager
         $enabledTypes = json_decode(Setting::get('gateways'));
         $list = [];
 
-        foreach($enabledTypes as $t) {
-            if ($this->isGatewayRegistered($t)) {
+        foreach ($enabledTypes as $t) {
+            if ($this->isGatewayRegistered($t) && $this->getGateway($t)->isActive()) {
                 $list[] = $this->getGateway($t);
             }
         }
         return $list;
     }
-
-    
 
     /**
      * Enable payment gateway.
@@ -84,7 +82,7 @@ class BillingManager
     public static function enablePaymentGateway($gatewayType)
     {
         $gateways = json_decode(Setting::get('gateways'), true);
-        $gateways = array_merge($gateways, [$gatewayType]);
+        $gateways = array_unique(array_merge($gateways, [$gatewayType]));
         Setting::set('gateways', json_encode($gateways));
     }
     
@@ -98,5 +96,16 @@ class BillingManager
         $gateways = json_decode(Setting::get('gateways'), true);
         $gateways = array_diff($gateways, [$gatewayType]);
         Setting::set('gateways', json_encode($gateways));
+    }
+    
+    public function isGatewayEnabled($gateway) : bool
+    {
+        foreach ($this->getEnabledPaymentGateways() as $gw) {
+            if ($gw->getType() == $gateway->getType()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

@@ -267,17 +267,6 @@ class MailListController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-    }
-
-    /**
      * Custom sort items.
      *
      * @param \Illuminate\Http\Request $request
@@ -853,7 +842,7 @@ class MailListController extends Controller
         
         $options = [];
         foreach ($customers->get() as $customer) {
-            $options[] = ['text' => $customer->displayName(), 'value' => $customer->uid];
+            $options[] = ['text' => $customer->user->displayName(), 'value' => $customer->uid];
         }
         
         return view('lists.cloneForCustomersChoose', [

@@ -26,7 +26,7 @@
 
         $( document ).ready(function() {
             editor = new Editor({
-                strict: {true,
+                strict: true,
                 showHelp: false,
                 showInlineToolbar: false,
                 lang: {!! json_encode(language()->getBuilderLang()) !!},
@@ -38,10 +38,7 @@
                   parent.$('.full-iframe-popup').remove();
                   popup.load();
                 },
-                uploadAssetUrl: '{{ action('Automation2Controller@templateAsset', [
-                  'uid' => $automation->uid,
-                  'email_uid' => $email->uid,
-                ]) }}',
+                uploadAssetUrl: '{{ action('TemplateController@uploadTemplateAssets', $email->template->uid) }}',
                 uploadAssetMethod: 'POST',
                 saveUrl: '{{ action('Automation2Controller@templateEdit', [
                   'uid' => $automation->uid,

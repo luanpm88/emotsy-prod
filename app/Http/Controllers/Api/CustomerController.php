@@ -25,6 +25,7 @@ class CustomerController extends Controller
         // Get current user
         $current_user = \Auth::guard('api')->user();
         $customer = new \Acelle\Model\Customer();
+        $user = new \Acelle\Model\User();
 
         // authorize
         if (!$current_user->can('create', $customer)) {
@@ -33,7 +34,7 @@ class CustomerController extends Controller
 
         // save posted data
         if ($request->isMethod('post')) {
-            $rules = $customer->apiRules();
+            $rules = $user->apiRules();
 
             $validator = \Validator::make($request->all(), $rules);
             if ($validator->fails()) {
@@ -51,26 +52,23 @@ class CustomerController extends Controller
             $user->save();
 
             // Save current user info
-            $customer->user_id = $user->id;
             $customer->admin_id = $current_user->admin->id;
             $customer->fill($request->all());
             $customer->status = 'active';
 
             if ($customer->save()) {
+                $user->customer_id = $customer->id;
+                $user->save();
                 // Upload and save image
                 if ($request->hasFile('image')) {
                     if ($request->file('image')->isValid()) {
-                        // Remove old images
-                        $customer->removeImage();
-                        $customer->image = $customer->uploadImage($request->file('image'));
-                        $customer->save();
+                        $user->uploadProfileImage($request->file('image'));
                     }
                 }
 
                 // Remove image
                 if ($request->_remove_image == 'true') {
-                    $customer->removeImage();
-                    $customer->image = '';
+                    $user->removeProfileImage();
                 }
 
                 return \Response::json(array(
@@ -111,22 +109,21 @@ class CustomerController extends Controller
         // save posted data
         if ($request->isMethod('patch')) {
             // Prenvent save from demo mod
+            $user = $customer->user;
+            $user->fill($request->all());
+
             if ($this->isDemoMode()) {
                 return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
-            $rules = $customer->apiUpdateRules($request);
+            $rules = $user->apiUpdateRules($request);
 
             $validator = \Validator::make($request->all(), $rules);
+            
             if ($validator->fails()) {
                 return response()->json($validator->messages(), 403);
             }
 
-            // Update user account for customer
-            $user = $customer->user;
-            if (!empty($request->email)) {
-                $user->email = $request->email;
-            }
             // Update password
             if (!empty($request->password)) {
                 $user->password = bcrypt($request->password);
@@ -140,16 +137,13 @@ class CustomerController extends Controller
             // Upload and save image
             if ($request->hasFile('image')) {
                 if ($request->file('image')->isValid()) {
-                    // Remove old images
-                    $customer->removeImage();
-                    $customer->image = $customer->uploadImage($request->file('image'));
+                    $user->uploadProfileImage($request->file('image'));
                 }
             }
 
             // Remove image
             if ($request->_remove_image == 'true') {
-                $customer->removeImage();
-                $customer->image = '';
+                $user->removeProfileImage();
             }
 
             return \Response::json(array(
@@ -188,9 +182,8 @@ class CustomerController extends Controller
         // Customer info
         $result = [
             'uid' => $customer->uid,
-            'first_name' => $customer->first_name,
-            'last_name' => $customer->last_name,
-            'image' => $customer->image,
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
             'timezone' => $customer->timezone,
             'status' => $customer->status,
             'options' => $customer->getOptions(),
@@ -339,7 +332,7 @@ class CustomerController extends Controller
 
         return \Response::json(array(
             'status' => 1,
-            'message' => 'Assigned '.$customer->displayName().' plan to '.$plan->name.' successfully.',
+            'message' => 'Assigned '.$customer->user->displayName().' plan to '.$plan->name.' successfully.',
             'customer_uid' => $customer->uid,
             'plan_uid' => $plan->uid
         ), 200);

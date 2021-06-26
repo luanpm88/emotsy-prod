@@ -87,8 +87,8 @@
                     <ul class="navbar-nav mr-auto navbar-dark bg-dark"">                        
                         <li class="nav-item dropdown">
                             <a class="account-item nav-link dropdown-toggle px-2" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img class="avatar" src="{{ action('CustomerController@avatar', Auth::user()->customer->uid) }}" alt="">
-                                {{ Auth::user()->customer->displayName() }}
+                                <img class="avatar" src="{{ Auth::user()->getProfileImageUrl() }}" alt="">
+                                {{ Auth::user()->displayName() }}
                             </a>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                 @can("admin_access", Auth::user())

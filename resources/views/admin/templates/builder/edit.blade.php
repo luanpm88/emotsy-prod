@@ -42,7 +42,7 @@
                         window.location = '{{ action('Admin\TemplateController@index') }}';
                     }    
                 },
-                uploadAssetUrl: '{{ action('Admin\TemplateController@builderAsset', $template->uid) }}',
+                uploadAssetUrl: '{{ action('Admin\TemplateController@uploadTemplateAssets', $template->uid) }}',
                 uploadAssetMethod: 'POST',
                 saveUrl: '{{ action('Admin\TemplateController@builderEdit', $template->uid) }}',
                 saveMethod: 'POST',

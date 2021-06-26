@@ -24,7 +24,7 @@
     }});
 
     $('.template-choose').click(function() {
-        var url = '{{ action('Automation2Controller@templateTheme', [
+        var url = '{{ action('Automation2Controller@templateLayout', [
             'uid' => $automation->uid,
             'email_uid' => $email->uid,
         ]) }}';

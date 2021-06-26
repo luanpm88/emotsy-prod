@@ -67,12 +67,6 @@
                 contentType: false,
                 processData: false,
                 globalError: false,
-                statusCode: {
-                    // validate error
-                    400: function (res) {
-                       popup.loadHtml(res.responseText);
-                    }
-                },
                 success: function(data) {
                     popup.load('{{ action('Automation2Controller@emailTemplate', [
                         'uid' => $automation->uid,
@@ -86,6 +80,16 @@
 
                     // notify
                     notify(data.status, '{{ trans('messages.notify.success') }}', data.message);
+                },
+                error: function(res) {
+                    // notify
+                    var dia = new Dialog('alert', {
+                        title: '{{ trans('messages.notify.error') }}',
+                        message: res.responseText,
+                        ok: function() {
+                            popup.load();
+                        }   
+                    });
                 }                
             });
         });

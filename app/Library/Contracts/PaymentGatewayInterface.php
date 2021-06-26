@@ -21,6 +21,6 @@ interface PaymentGatewayInterface
     public function getAutoBillingDataUpdateUrl() : string;
     public function verify(Transaction $transaction) : TransactionVerificationResult;
 
-    // 
+    //
     public function allowManualReviewingOfTransaction() : bool;
 }

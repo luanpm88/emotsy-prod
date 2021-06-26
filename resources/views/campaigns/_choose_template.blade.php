@@ -82,7 +82,7 @@
                     @endif
                 </div>
                 <div class="col-md-3 text-right">
-                    <a target="_blank" href="{{ action('TemplateController@upload') }}" type="button" class="btn bg-info-800">
+                    <a target="_blank" href="{{ action('TemplateController@uploadTemplate') }}" type="button" class="btn bg-info-800">
                         <i class="icon icon-upload"></i> {{ trans('messages.upload_template') }}
                     </a>
                 </div>
@@ -139,7 +139,7 @@
                     @endif
                 </div>
                 <div class="col-md-3 text-right">
-                    <a target="_blank" href="{{ action('TemplateController@upload') }}" type="button" class="btn bg-info-800">
+                    <a target="_blank" href="{{ action('TemplateController@uploadTemplate') }}" type="button" class="btn bg-info-800">
                         <i class="icon icon-upload"></i> {{ trans('messages.upload_template') }}
                     </a>
                 </div>

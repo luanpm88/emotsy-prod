@@ -1,6 +1,7 @@
-4.0.23 / 2021-04-20
+4.0.24 / 2021-06-22
 ==================
 
+ * Added: better compliance with Laravel 8, ready to upgrade
  * Added: upgrade to Laravel 7, the required PHP version is now 7.2.5 or higher
  * Added: upgrade to Carbon 2
  * Added: refined automation UI
@@ -18,7 +19,7 @@
  * Added: easier form generation options
  * Added: more unsubscription options
 
-4.0.22 / 2021-03-17
+4.0.23 / 2021-03-17
 ==================
 
  * Added: plugin mechanism 1.0 is now available, embracing plugin development
@@ -40,7 +41,7 @@
  * Fixed: email builder not working well with SVG
  * Fixed: better compatibility with older versions of Thunderbird
 
-4.0.21 / 2021-02-11
+4.0.22 / 2021-02-11
 ==================
 
  * Added: tracking domain support
@@ -63,7 +64,7 @@
  * Fixed: better load performance for JS/CSS
  * Fixed: delivery attempt tracking improved
 
-4.0.20 / 2020-11-11
+4.0.21 / 2020-11-11
 ==================
 
  * Fixed: default template missing

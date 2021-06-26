@@ -110,23 +110,23 @@ class Subscription extends Model
     }
 
     /**
-     * Get related invoices.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function newInvoices()
-    {
-        return $this->invoices()->newInvoices();
-    }
-
-    /**
      * Subscription only has one new invoice.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function newInvoice()
     {
-        return $this->newInvoices()->first();
+        return $this->invoices()->newInvoices()->first();
+    }
+
+    public function scopeActive($query)
+    {
+        $query->where('status', self::STATUS_ACTIVE);
+    }
+
+    public function scopeEnded($query)
+    {
+        $query->where('status', self::STATUS_ENDED);
     }
 
     /**
@@ -157,11 +157,12 @@ class Subscription extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function changePlanInvoice()
+    public function getItsOnlyUnpaidChangePlanInvoice()
     {
         return $this->invoices()
-            ->orderBy('created_at', 'desc')
-            ->where('type', Invoice::TYPE_CHANGE_PLAN)
+            ->changePlan()
+            ->unpaid()
+            ->orderBy('created_at', 'desc')            
             ->first();
     }
 
@@ -170,11 +171,12 @@ class Subscription extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function renewInvoice()
+    public function getItsOnlyUnpaidRenewInvoice()
     {
         return $this->invoices()
+            ->renew()
+            ->unpaid()
             ->orderBy('created_at', 'desc')
-            ->where('type', Invoice::TYPE_RENEW_SUBSCRIPTION)
             ->first();
     }
 
@@ -425,20 +427,19 @@ class Subscription extends Model
             return;
         }
 
+        // check auto billing data
+        if ($this->customer->getPreferredPaymentGateway() == null) {
+            return;
+        }
+
         // support auto billing
         if (!$this->customer->getPreferredPaymentGateway()->supportsAutoBilling()) {
             return;
         }
 
-        // check auto billing data
-        if ($this->customer->getPreferredPaymentGateway() == null) {
-            // throw new \Exception('Customer\'s gateway supports auto recurring but customer do not have auto billing data');
-            $invoice->payFailed('Customer\'s gateway supports auto recurring but customer do not have auto billing data');
-        }
-
         // check payment
         if ($this->customer->getPreferredPaymentGateway()->getType() != $this->customer->getAutoBillingData()->getGateway()->getType()) {
-            $invoice->payFailed('Customer\'s gateway is not the gateway from customer auto billing data');
+            return;
         }
 
         // auto charge
@@ -479,7 +480,7 @@ class Subscription extends Model
         // logs
         $this->addLog(SubscriptionLog::TYPE_PLAN_CHANGED, [
             'old_plan' => $this->plan->name,
-            'plan' => $newplan->name,
+            'plan' => $newPlan->name,
         ]);
     }
 
@@ -698,6 +699,10 @@ class Subscription extends Model
      */
     public function resume()
     {
+        if (!$this->cancelled()) {
+            throw new Exception('Subscription is not cancelled. No need to resume again.');
+        }
+        
         $this->ends_at = null;
         $this->save();
     }
@@ -709,11 +714,15 @@ class Subscription extends Model
      */
     public function cancelNow()
     {
+        if ($this->isEnded()) {
+            throw new Exception('Subscription is already ended');
+        }
+
         // set status = ended
         $this->setEnded();
 
         // cancel all pending invoices (new)
-        $this->newInvoices()->delete();
+        $this->invoices()->newInvoices()->delete();
 
         // add log
         $this->addLog(SubscriptionLog::TYPE_CANCELLED_NOW, [

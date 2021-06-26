@@ -17,9 +17,12 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use Acelle\Jobs\DeliverEmail;
+use Acelle\Library\Traits\HasTemplate;
 
 class Email extends Model
 {
+    use HasTemplate;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -38,6 +41,14 @@ class Email extends Model
     public function automation()
     {
         return $this->belongsTo('Acelle\Model\Automation2', 'automation2_id');
+    }
+
+    /**
+     * Get the customer.
+     */
+    public function customer()
+    {
+        return $this->belongsTo('Acelle\Model\Customer');
     }
 
     /**
@@ -92,9 +103,7 @@ class Email extends Model
         });
 
         static::deleted(function ($item) {
-            if (is_dir($item->getEmailStoragePath())) {
-                File::deleteDirectory($item->getEmailStoragePath());
-            }
+            // Need reviewing...
         });
     }
 
@@ -130,47 +139,6 @@ class Email extends Model
     }
 
     /**
-     * Get public campaign upload uri.
-     */
-    public function getUploadUri()
-    {
-        return 'app/email/template_'.$this->uid;
-    }
-
-    /**
-     * Get public campaign upload dir.
-     */
-    public function getUploadDir()
-    {
-        return storage_path('app/email/template_'.$this->uid);
-    }
-
-    /**
-     * Get builder templates.
-     *
-     * @return mixed
-     */
-    public function getBuilderTemplates($customer)
-    {
-        $result = [];
-
-        // Gallery
-        $templates = Template::where('customer_id', '=', null)
-            ->orWhere('customer_id', '=', $customer->id)
-            ->orderBy('customer_id')
-            ->get();
-
-        foreach ($templates as $template) {
-            $result[] = [
-                'name' => $template->name,
-                'thumbnail' => $template->getThumbUrl(),
-            ];
-        }
-
-        return $result;
-    }
-
-    /**
      * Upload attachment.
      */
     public function uploadAttachment($file)
@@ -194,172 +162,9 @@ class Email extends Model
     /**
      * Get attachment path.
      */
-    public function getAttachmentPath($sub = '')
+    public function getAttachmentPath($path = null)
     {
-        return $this->getEmailStoragePath(join_paths('attachment', $sub));
-    }
-
-    /**
-     * Copy new template.
-     */
-    public function copyFromTemplate($template)
-    {
-        Tool::xdelete($this->getStoragePath());
-
-        \Acelle\Library\Tool::xcopy($template->getStoragePath(), $this->getStoragePath());
-
-        // replace image url
-        $this->content = $template->content;
-        $this->save();
-    }
-
-    /**
-     * Get thumb.
-     */
-    public function getThumbName()
-    {
-        // find index
-        $names = array('thumbnail.png', 'thumbnail.jpg', 'thumbnail.png', 'thumb.jpg', 'thumb.png');
-        foreach ($names as $name) {
-            if (is_file($file = $this->getStoragePath($name))) {
-                return $name;
-            }
-        }
-
-        return;
-    }
-
-    /**
-     * Get thumb.
-     */
-    public function getThumb()
-    {
-        // find index
-        if ($this->getThumbName()) {
-            return $this->getStoragePath($this->getThumbName());
-        }
-
-        return;
-    }
-
-    /**
-     * Get thumb.
-     */
-    public function getThumbUrl()
-    {
-        if ($this->getThumbName()) {
-            return route('email_assets', ['uid' => $this->uid, 'name' => $this->getThumbName()]);
-        } else {
-            return url('assets/images/placeholder.jpg');
-        }
-    }
-
-    /**
-     * Get public campaign upload dir.
-     */
-    public function getEmailStoragePath($sub = '')
-    {
-        $base = storage_path(join_paths('app/users/', $this->automation->customer->uid, '/emails/', $this->uid));
-        if (!\File::exists($base)) {
-            \File::makeDirectory($base, 0777, true, true);
-        }
-        return join_paths($base, $sub);
-    }
-
-    /**
-     * Get public campaign upload dir.
-     */
-    public function getStoragePath($sub = '')
-    {
-        $base = $this->getEmailStoragePath('content');
-        if (!\File::exists($base)) {
-            \File::makeDirectory($base, 0777, true, true);
-        }
-        return join_paths($base, $sub);
-    }
-
-    /**
-     * Upload a template.
-     */
-    public function uploadTemplate($request)
-    {
-        $template = \Acelle\Model\Template::upload($request);
-        $this->copyFromTemplate($template);
-    }
-
-    /**
-     * transform URL.
-     */
-    public function transform($useTrackingHost = false)
-    {
-        $this->content = $this->transformWithoutUpdate($this->content, $useTrackingHost);
-        return $this->content;
-    }
-
-    /**
-     * transform URL.
-     */
-    public function transformWithoutUpdate($html, $useTrackingHost = false)
-    {
-        // Notice that there are 2 types of assets that need to untransform
-        // #1 Campaign relative URL
-        // #2 User assets (uploaded by file manager) absolute URL
-        //
-        $host = config('app.url'); // Default host
-        
-        if ($useTrackingHost) {
-            // Replace #2
-            $html = str_replace($host, $this->getTrackingHost(), $html);
-            $host = $this->getTrackingHost();
-        }
-
-        // Replace #1
-        $path = join_url($host, route('email_assets', ['uid' => $this->uid], false));
-        $html = \Acelle\Library\Tool::replaceTemplateUrl($html, $path);
-
-        // By the way, fix <html>
-        $html = tinyDocTypeTransform($html);
-
-        return $html;
-    }
-
-    /**
-     * transform URL.
-     */
-    public function untransform()
-    {
-        // Notice that there are 2 types of assets that need to untransform
-        // #1 Email relative URL
-        // #2 User assets (uploaded by file manager) absolute URL
-        //
-        // and only #1 will be untransformed while #2 is kept as is
-
-        // Replace relative URL with campaign URL
-        $this->content = str_replace(
-            route('email_assets', ['uid' => $this->uid]).'/',
-            '',
-            tinyDocTypeUntransform($this->content)
-        );
-
-        // remove title tag
-        $this->content = strip_tags_only($this->content, 'title');
-    }
-
-    /**
-     * Render email content for BUILDER EDIT
-     */
-    public function render()
-    {
-        $body = $this->transformWithoutUpdate($this->content, $useTrackingHost = false);
-        return $body;
-    }
-
-    /**
-     * Upload asset.
-     */
-    public function uploadAsset($file)
-    {
-        return $this->automation->customer->user->uploadAsset($file);
+        return $this->customer->getAttachmentsPath($path);
     }
 
     /**
@@ -367,7 +172,7 @@ class Email extends Model
      */
     public function updateLinks()
     {
-        if (!$this->content) {
+        if (!$this->getTemplateContent()) {
             return false;
         }
 
@@ -376,7 +181,7 @@ class Email extends Model
         // find all links from contents
         // Fix: str_get_html returning false
         defined('MAX_FILE_SIZE') || define('MAX_FILE_SIZE', 10000000);
-        $document = HtmlDomParser::str_get_html($this->content);
+        $document = HtmlDomParser::str_get_html($this->getTemplateContent());
         foreach ($document->find('a') as $element) {
             if (preg_match('/^http/', $element->href) != 0) {
                 $links[] = trim($element->href);
@@ -459,6 +264,8 @@ class Email extends Model
      */
     public function prepare($subscriber)
     {
+        $this->updateLinks();
+
         // build the message
         $customHeaders = $this->getCustomHeaders($subscriber, $this);
         $msgId = $customHeaders['X-Acelle-Message-Id'];
@@ -512,7 +319,7 @@ class Email extends Model
         $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from));
 
         return array(
-            'X-Acelle-Campaign-Id' => $this->uid,
+            'X-Acelle-email-Id' => $this->uid,
             'X-Acelle-Subscriber-Id' => $subscriber->uid,
             'X-Acelle-Customer-Id' => $this->automation->customer->uid,
             'X-Acelle-Message-Id' => $msgId,
@@ -643,7 +450,7 @@ class Email extends Model
     }
 
     /**
-     * Check if the given variable is a subscriber object (for actually sending a campaign)
+     * Check if the given variable is a subscriber object (for actually sending a email)
      * Or a stdClass subscriber (for sending test email).
      *
      * @param object $object
@@ -680,7 +487,7 @@ class Email extends Model
         // * tagMessage
         if (is_null($this->parsedContent)) {
             // STEP 01. Get RAW content
-            $body = $this->content;
+            $body = $this->getTemplateContent();
 
             // STEP 02. Append footer
             if ($this->footerEnabled()) {
@@ -709,7 +516,7 @@ class Email extends Model
         }
 
         // STEP 05. Transform URLs
-        $body = $this->transformWithoutUpdate($body, true);
+        $body = $this->template->getContentWithTransformedAssetsUrls($this->getTrackingHost());
 
         if (is_null($msgId)) {
             $msgId = 'SAMPLE'; // for preview mode
@@ -997,35 +804,6 @@ class Email extends Model
     }
 
     /**
-     * Check if email has template.
-     */
-    public function hasTemplate()
-    {
-        return $this->content;
-    }
-
-    /**
-     * Remove email template.
-     */
-    public function removeTemplate()
-    {
-        $this->content = null;
-        \Acelle\Library\Tool::xdelete($this->getStoragePath());
-        $this->save();
-    }
-
-    /**
-     * Update email plain text.
-     */
-    public function updatePlainFromContent()
-    {
-        if (!$this->plain) {
-            $this->plain = preg_replace('/\s+/', ' ', preg_replace('/\r\n/', ' ', strip_tags($this->content)));
-            $this->save();
-        }
-    }
-
-    /**
      * Fill email's fields from request.
      */
     public function fillAttributes($params)
@@ -1057,6 +835,15 @@ class Email extends Model
 
     public function isSetup()
     {
-        return $this->subject && $this->reply_to && $this->from && $this->content;
+        return $this->subject && $this->reply_to && $this->from && $this->template;
+    }
+
+    public function deleteAndCleanup()
+    {
+        if ($this->template) {
+            $this->template->deleteAndCleanup();
+        }
+
+        $this->delete();
     }
 }

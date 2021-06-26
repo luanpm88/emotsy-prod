@@ -20,10 +20,6 @@
 					<h5 class="no-margin text-bold">
 						<a class="kq_search" href="{{ action('Admin\CurrencyController@edit', $item->uid) }}">{{ $item->name }}</a>
 					</h5>
-					@if (Auth::user()->can('readAll', $item))
-						@include ('admin.modules.admin_line', ['admin' => $item->admin])
-						<br />
-					@endif
 					<span class="text-muted">
 						{{ trans('messages.updated_at') }}
 						{{ Acelle\Library\Tool::formatDateTime($item->updated_at) }}

@@ -33,15 +33,17 @@ class AccountController extends Controller
                 return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
-            $this->validate($request, $admin->rules());
-
             // Update user account for admin
-            $user = $admin->user;
-            $user->email = $request->email;
+            $user = $request->user();
+            $user->fill($request->all());
+
+            $this->validate($request, $user->rules());
+
             // Update password
             if (!empty($request->password)) {
                 $user->password = bcrypt($request->password);
             }
+
             $user->save();
 
             // Save current user info
@@ -50,16 +52,13 @@ class AccountController extends Controller
             // Upload and save image
             if ($request->hasFile('image')) {
                 if ($request->file('image')->isValid()) {
-                    // Remove old images
-                    $admin->removeImage();
-                    $admin->image = $admin->uploadImage($request->file('image'));
+                    $user->uploadProfileImage($request->file('image'));
                 }
             }
 
             // Remove image
             if ($request->_remove_image == 'true') {
-                $admin->removeImage();
-                $admin->image = '';
+                $user->removeProfileImage();
             }
 
             if ($admin->save()) {
@@ -75,6 +74,7 @@ class AccountController extends Controller
 
         return view('admin.account.profile', [
             'admin' => $admin,
+            'user' => $request->user(),
         ]);
     }
 
@@ -93,9 +93,9 @@ class AccountController extends Controller
             $contact = $admin->contact;
         } else {
             $contact = new \Acelle\Model\Contact([
-                                        'first_name' => $admin->first_name,
-                                        'last_name' => $admin->last_name,
-                                        'email' => $admin->user->email,
+                                        'first_name' => $request->user()->first_name,
+                                        'last_name' => $request->user()->last_name,
+                                        'email' => $request->user()->email,
                                     ]);
         }
 
