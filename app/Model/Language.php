@@ -125,13 +125,6 @@ class Language extends Model
     }
 
     /**
-     * Items per page.
-     *
-     * @var array
-     */
-    public static $itemsPerPage = 25;
-
-    /**
      * Bootstrap any application services.
      */
     public static function boot()
