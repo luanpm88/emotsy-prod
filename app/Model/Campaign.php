@@ -1466,6 +1466,61 @@ class Campaign extends Model
         return is_object($last) ? $last->created_at : null;
     }
 
+    public static function topOpens($number = 5, $customer = null)
+    {
+        $records = self::select('campaigns.name', 'campaigns.id', 'campaigns.uid')
+            ->addSelect(DB::raw('count(*) as aggregate'))
+            ->join('tracking_logs', 'tracking_logs.campaign_id', '=', 'campaigns.id')
+            ->join('open_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id');
+
+        if (isset($customer)) {
+            $records = $records->where('campaigns.customer_id', '=', $customer->id);
+        }
+
+        $records = $records->groupBy('campaigns.name', 'campaigns.id', 'campaigns.uid')
+            ->orderBy('aggregate', 'desc');
+
+        return $records->take($number);
+    }
+
+    public static function topClicks($number = 5, $customer = null)
+    {
+        $records = self::select('campaigns.name', 'campaigns.id', 'campaigns.uid')
+            ->addSelect(DB::raw('count(*) as aggregate'))
+            ->join('tracking_logs', 'tracking_logs.campaign_id', '=', 'campaigns.id')
+            ->join('click_logs', 'click_logs.message_id', '=', 'tracking_logs.message_id');
+
+        if (isset($customer)) {
+            $records = $records->where('campaigns.customer_id', '=', $customer->id);
+        }
+
+        $records = $records->groupBy('campaigns.name', 'campaigns.id', 'campaigns.uid')
+                    ->orderBy('aggregate', 'desc');
+
+        return $records->take($number);
+    }
+
+    public static function topLinks($number = 5, $customer = null)
+    {
+        $records = CampaignLink::select('campaign_links.url')
+            ->addSelect(DB::raw('count(*) as aggregate'))
+            ->join('tracking_logs', 'tracking_logs.campaign_id', '=', 'campaign_links.campaign_id')
+            ->join('click_logs', function ($join) {
+                $join->on('click_logs.message_id', '=', 'tracking_logs.message_id')
+                ->on('click_logs.url', '=', 'campaign_links.url');
+            });
+
+        if (isset($customer)) {
+            $records = $records->join('campaigns', 'campaign_links.campaign_id', '=', 'campaigns.id')
+                ->where('campaigns.customer_id', '=', $customer->id);
+        }
+
+        $records = $records->groupBy('campaign_links.url')
+            ->orderBy('aggregate', 'desc');
+
+        return $records->take($number);
+    }
+
     /**
      * Campaign top 5 clicks.
      *
