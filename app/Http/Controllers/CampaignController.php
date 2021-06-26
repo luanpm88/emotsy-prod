@@ -1023,7 +1023,7 @@ class CampaignController extends Controller
             $count += $location->aggregate;
         }
 
-        // others
+        // Others
         if ($total > $count) {
             $result['bar_names'][] = trans('messages.others');
             $datas[] = ['value' => $total - $count, 'name' => trans('messages.others')];

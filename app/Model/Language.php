@@ -70,16 +70,9 @@ class Language extends Model
         return resource_path(join_paths('lang', $this->code));
     }
 
-    /**
-     * Get language by code.
-     *
-     * @param string $code
-     *
-     * @return collect
-     */
-    public static function getByCode($code)
+    public static function getDirWhichNewLanguageCopyFrom()
     {
-        return self::where('code', '=', $code)->first();
+        return base_path(join_paths('resources', 'lang', 'default'));
     }
 
     public static function scopeActive($query)
@@ -130,13 +123,6 @@ class Language extends Model
     {
         return self::where('uid', '=', $uid)->first();
     }
-
-    /**
-     * Items per page.
-     *
-     * @var array
-     */
-    public static $itemsPerPage = 25;
 
     /**
      * Bootstrap any application services.
@@ -386,7 +372,7 @@ class Language extends Model
         if (!file_exists($des)) {
             $oldmask = umask(0);
             mkdir($des, 0775, true);
-            $sou = self::getFirstDefaultLanguage()->languageDir();
+            $sou = self::getDirWhichNewLanguageCopyFrom();
             \Acelle\Library\Tool::xcopy($sou, $des);
             umask($oldmask);
         }
