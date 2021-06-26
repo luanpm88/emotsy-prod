@@ -1842,7 +1842,7 @@ class Customer extends Model
         }
 
         // cancel all pending invoices (new)
-        $subscription->newInvoices()->delete();
+        $subscription->invoices()->newInvoices()->delete();
 
         // reset value
         $subscription->plan_id = $plan->id;

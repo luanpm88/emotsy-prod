@@ -35,6 +35,23 @@ class Invoice extends Model
         ]);
     }
 
+    public function scopeUnpaid($query)
+    {
+        $query->whereIn('status', [
+            self::STATUS_NEW,
+        ]);
+    }
+
+    public function scopeChangePlan($query)
+    {
+        $query->where('type', self::TYPE_CHANGE_PLAN);
+    }
+
+    public function scopeRenew($query)
+    {
+        $query->where('type', self::TYPE_RENEW_SUBSCRIPTION);
+    }
+
     public function scopeNewSubscription($query)
     {
         $query->whereIn('type', [
@@ -503,6 +520,5 @@ class Invoice extends Model
             // pay failed
             $invoice->payFailed($e->getMessage());
         }
-        // });
     }
 }
