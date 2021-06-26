@@ -1473,12 +1473,10 @@ class Campaign extends Model
      */
     public function getTopLinks($number = 5)
     {
-        $records = ClickLog::select(DB::raw(DB::getTablePrefix().'click_logs.*, count(*) as `aggregate`'))
-            ->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'click_logs.message_id')
-            ->where('tracking_logs.campaign_id', '=', $this->id);
-
-        $records = $records->groupBy('click_logs.url')
-            ->orderBy('aggregate', 'desc');
+        $records = $this->clickLogs()
+            ->select('click_logs.url')
+            ->addSelect(DB::raw('count(*)'))
+            ->groupBy('click_logs.url');
 
         return $records->take($number);
     }
@@ -1490,15 +1488,13 @@ class Campaign extends Model
      */
     public function getTopOpenSubscribers($number = 5)
     {
-        $records = Subscriber::select(DB::raw(DB::getTablePrefix().'subscribers.*, count(*) as `aggregate`'))
-            ->join('tracking_logs', 'tracking_logs.subscriber_id', '=', 'subscribers.id')
-            ->join('open_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')
-            ->where('campaign_id', '=', $this->id);
+        $query = $this->openLogs()->select('subscribers.email','subscribers.id')
+                        ->addSelect(DB::raw('count(*) as count'))
+                        ->join('subscribers', 'subscribers.id', '=', 'tracking_logs.subscriber_id')
+                        ->groupBy('subscribers.email', 'subscribers.id')
+                        ->orderBy('count', 'desc');
 
-        $records = $records->groupBy('tracking_logs.message_id')
-            ->orderBy('aggregate', 'desc');
-
-        return $records->take($number);
+        return $query->take($number);
     }
 
     /**
@@ -1526,7 +1522,8 @@ class Campaign extends Model
      */
     public function topLocations($number = 5, $customer = null)
     {
-        $records = IpLocation::select(DB::raw(DB::getTablePrefix().'ip_locations.*, count(*) as `aggregate`'))
+        $records = IpLocation::select('ip_locations.ip_address', 'ip_locations.country_code', 'ip_locations.country_name')
+            ->addSelect(DB::raw('count(*) as aggregate'))
             ->join('open_logs', 'open_logs.ip_address', '=', 'ip_locations.ip_address')
             ->join('tracking_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')
             ->where('tracking_logs.campaign_id', '=', $this->id);
@@ -1536,7 +1533,7 @@ class Campaign extends Model
                 ->where('campaigns.customer_id', '=', $customer->id);
         }
 
-        $records = $records->groupBy('open_logs.ip_address')
+        $records = $records->groupBy('ip_locations.ip_address', 'ip_locations.country_code', 'ip_locations.country_name')
             ->orderBy('aggregate', 'desc');
 
         return $records->take($number);
@@ -1549,17 +1546,19 @@ class Campaign extends Model
      */
     public function topCountries($number = 5, $customer = null)
     {
-        $records = IpLocation::select(DB::raw(DB::getTablePrefix().'ip_locations.*, count(*) as `aggregate`'))
+        $records = IpLocation::select(DB::raw(DB::getTablePrefix().'ip_locations.country_name, ip_locations.country_code, ip_locations.ip_address, count(*) as `aggregate`'))
             ->join('open_logs', 'open_logs.ip_address', '=', 'ip_locations.ip_address')
             ->join('tracking_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')
             ->where('tracking_logs.campaign_id', '=', $this->id);
 
         if (isset($customer)) {
-            $records = $records->join('campaigns', 'tracking_logs.campaign_id', '=', 'campaigns.id')
+            $records = $records
+                ->join('campaigns', 'tracking_logs.campaign_id', '=', 'campaigns.id')
                 ->where('campaigns.customer_id', '=', $customer->id);
         }
 
-        $records = $records->groupBy('ip_locations.country_name')
+        $records = $records
+            ->groupBy(DB::raw('ip_locations.country_name, ip_locations.country_code, ip_locations.ip_address'))
             ->orderBy('aggregate', 'desc');
 
         return $records->take($number);

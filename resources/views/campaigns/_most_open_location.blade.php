@@ -9,7 +9,7 @@
                 @foreach ($campaign->getTopOpenSubscribers()->get() as $subscriber)
                     <div class="stat-row">
                         <div class="pull-right num">
-                            {{ $subscriber->aggregate }}
+                            {{ $subscriber->count }}
                         </div>
                         <p class="text-muted">{{ $subscriber->email }}</p>
                     </div>
