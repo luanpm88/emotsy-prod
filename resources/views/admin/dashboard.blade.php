@@ -95,7 +95,7 @@
                     <li class="">
                         <div class="row">
                             <div class="col-sm-5 col-md-5">
-                                <img width="40" class="img-circle mr-10 pull-left" src="{{ action('CustomerController@avatar', $customer->uid) }}" alt="">
+                                <img width="40" class="img-circle mr-10 pull-left" src="{{ $customer->user->getProfileImageUrl() }}" alt="">
                                 <h6 class="mt-0 mb-0 text-semibold">
                                     <a href="{{ action('Admin\CustomerController@edit', $customer->uid) }}">
                                         {{ $customer->user->displayName() }}
@@ -148,7 +148,7 @@
                             <!-- Sales stats -->
                             <div class="timeline-row">
                                 <div class="timeline-icon">
-                                    <a href="#"><img src="{{ action('CustomerController@avatar', $log->customer->uid) }}" alt=""></a>
+                                    <a href="#"><img src="{{ $log->customer->user->getProfileImageUrl() }}" alt=""></a>
                                 </div>
 
                                 <div class="panel panel-flat timeline-content">

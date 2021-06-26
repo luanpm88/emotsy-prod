@@ -8,43 +8,6 @@ use Acelle\Cashier\Cashier;
 
 class CustomerController extends Controller
 {
-
-    /**
-     * Render customer image.
-     */
-    public function avatar(Request $request)
-    {
-        // Get current customer
-        if ($request->uid != '0') {
-            $customer = \Acelle\Model\Customer::findByUid($request->uid);
-        } else {
-            $customer = new \Acelle\Model\Customer();
-        }
-        if (!empty($customer->imagePath())) {
-            try {
-                $img = \Image::make($customer->imagePath());
-            } catch (\Intervention\Image\Exception\NotReadableException $ex) {
-                // file not found
-                $customer->image = null;
-                $customer->save();
-                $img = \Image::make(public_path('assets/images/placeholder.jpg'));
-            }
-        } else {
-            $img = \Image::make(public_path('assets/images/placeholder.jpg'));
-        }
-
-        return $img->response();
-    }
-    
-    /**
-     * User uid for editor
-     */
-    public function showUid(Request $request)
-    {
-        $user = $request->user();
-        echo $user->uid;
-    }
-    
     /**
      * Log in back user.
      *

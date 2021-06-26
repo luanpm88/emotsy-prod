@@ -135,16 +135,13 @@ class AdminController extends Controller
                 if ($request->hasFile('image')) {
                     if ($request->file('image')->isValid()) {
                         // Remove old images
-                        $admin->removeImage();
-                        $admin->image = $admin->uploadImage($request->file('image'));
-                        $admin->save();
+                        $user->uploadProfileImage($request->file('image'));
                     }
                 }
 
                 // Remove image
                 if ($request->_remove_image == 'true') {
-                    $admin->removeImage();
-                    $admin->image = '';
+                    $user->removeProfileImage();
                 }
 
                 // create customer account
@@ -250,15 +247,13 @@ class AdminController extends Controller
             if ($request->hasFile('image')) {
                 if ($request->file('image')->isValid()) {
                     // Remove old images
-                    $admin->removeImage();
-                    $admin->image = $admin->uploadImage($request->file('image'));
+                    $user->uploadProfileImage($request->file('image'));
                 }
             }
 
             // Remove image
             if ($request->_remove_image == 'true') {
-                $admin->removeImage();
-                $admin->image = '';
+                $user->removeProfileImage();
             }
 
             // create customer account
@@ -390,25 +385,5 @@ class AdminController extends Controller
         \Auth::login($orig_user);
 
         return redirect()->action('Admin\AdminController@index');
-    }
-
-    /**
-     * Render user image.
-     */
-    public function avatar(Request $request)
-    {
-        // Get current user
-        if ($request->uid != '0') {
-            $user = \Acelle\Model\Admin::findByUid($request->uid);
-        } else {
-            $user = new \Acelle\Model\Admin();
-        }
-        if (!empty($user->imagePath())) {
-            $img = \Image::make($user->imagePath());
-        } else {
-            $img = \Image::make(public_path('assets/images/placeholder.jpg'));
-        }
-
-        return $img->response();
     }
 }

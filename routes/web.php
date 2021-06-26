@@ -98,14 +98,8 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
     Route::get('/migrate/run', 'Controller@runMigration');
     Route::post('/remote-job/{remote_job_token}', 'Controller@remoteJob');
 
-    // Customer avatar
-    Route::get('assets/images/avatar/customer-{uid?}.jpg', 'CustomerController@avatar');
-
     //Subscriber avatar
     Route::get('assets/images/avatar/subscriber-{uid?}.jpg', 'SubscriberController@avatar');
-
-    // Admin avatar
-    Route::get('assets/images/avatar/admin-{uid?}.jpg', 'AdminController@avatar');
 
     // User resend activation email
     Route::get('users/resend-activation-email', 'UserController@resendActivationEmail');
@@ -204,16 +198,10 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscription']], function () {
     Route::get('/', 'HomeController@index');
-    Route::get('frontend/docs/api/v1', 'Controller@docsApiV1');
-    Route::get('/current_user_uid', 'UserController@showUid');
-    // Update current user profile
-    
+    Route::get('frontend/docs/api/v1', 'Controller@docsApiV1');    
     
     Route::get('account/api/renew', 'AccountController@renewToken');
     Route::get('account/api', 'AccountController@api');
-
-    // User avatar
-    Route::get('assets/images/avatar/user-{uid?}.jpg', 'UserController@avatar');
 
     // Mail list
     Route::get('lists/{uid}/clone-to-customers/choose', 'MailListController@cloneForCustomersChoose');

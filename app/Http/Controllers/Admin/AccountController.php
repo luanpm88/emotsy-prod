@@ -52,16 +52,13 @@ class AccountController extends Controller
             // Upload and save image
             if ($request->hasFile('image')) {
                 if ($request->file('image')->isValid()) {
-                    // Remove old images
-                    $admin->removeImage();
-                    $admin->image = $admin->uploadImage($request->file('image'));
+                    $user->uploadProfileImage($request->file('image'));
                 }
             }
 
             // Remove image
             if ($request->_remove_image == 'true') {
-                $admin->removeImage();
-                $admin->image = '';
+                $user->removeProfileImage();
             }
 
             if ($admin->save()) {

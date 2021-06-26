@@ -9,36 +9,6 @@ use Acelle\Model\User;
 
 class UserController extends Controller
 {
-
-    /**
-     * Render user image.
-     */
-    public function avatar(Request $request)
-    {
-        // Get current user
-        if ($request->uid != '0') {
-            $user = User::findByUid($request->uid);
-        } else {
-            $user = new User();
-        }
-        if (!empty($user->imagePath()) && file_exists($user->imagePath())) {
-            $img = \Image::make($user->imagePath());
-        } else {
-            $img = \Image::make(public_path('assets/images/placeholder.jpg'));
-        }
-
-        return $img->response();
-    }
-
-    /**
-     * User uid for editor
-     */
-    public function showUid(Request $request)
-    {
-        $user = $request->user();
-        echo $user->uid;
-    }
-
     /**
      * Log in back user.
      *

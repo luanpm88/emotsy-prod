@@ -20,7 +20,7 @@
 			@foreach (Auth::user()->customer->logs()->take(20)->get() as $log)
 				<li class="media">
 					<div class="media-left">
-						<img src="{{ action('CustomerController@avatar', $log->customer->uid) }}" class="img-circle img-sm" alt="">
+						<img src="{{ $log->customer->user->getProfileImageUrl() }}" class="img-circle img-sm" alt="">
 					</div>
 
 					<div class="media-body">

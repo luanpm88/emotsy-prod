@@ -29,6 +29,8 @@ use Acelle\Library\Log as MailLog;
 use Acelle\Library\ExtendedSwiftMessage;
 use Acelle\Model\Setting;
 use App;
+use URL;
+use File;
 
 class User extends Authenticatable
            // 5.7 implements MustVerifyEmail
@@ -48,9 +50,11 @@ class User extends Authenticatable
      * + Attachments (account-wide, not individual user)
      *
      */
-    const BASE_DIR = 'app/users'; // storage/customers/000000
+    const BASE_DIR = 'app/users';
     const ASSETS_DIR = 'home/files';
     const ASSETS_THUMB_DIR = 'home/thumbs';
+    const PROFILE_IMAGE_PATH = 'home/avatar';
+    const PROFILE_THUMB_PATH = 'home/avatar';
 
     /**
      * The attributes that are mass assignable.
@@ -470,5 +474,77 @@ class User extends Authenticatable
         ];
 
         return $config;
+    }
+
+    public function getProfileImageUrl()
+    {
+        $path = $this->getProfileImagePath();
+        if (file_exists($path)) {
+            return \Acelle\Helpers\generatePublicPath($path);    
+        } else {
+            return URL::asset('assets/images/placeholder.jpg');
+        }
+        
+    }
+
+    public function getProfileThumbUrl()
+    {
+        $path = $this->getProfileThumbPath();
+        if (file_exists($path)) {
+            return \Acelle\Helpers\generatePublicPath($path);    
+        } else {
+            return URL::asset('assets/images/placeholder.jpg');
+        }
+        
+    }
+
+    public function getProfileImagePath()
+    {
+        return $this->getBasePath(self::PROFILE_IMAGE_PATH);
+    }
+
+    public function getProfileThumbPath()
+    {
+        return $this->getBasePath(self::PROFILE_THUMB_PATH);
+    }
+
+    /**
+     * Upload and resize avatar.
+     *
+     * @var void
+     */
+    public function uploadProfileImage($file)
+    {
+        // Full path: /storage/app/users/000000/home/avatar
+        $path = $this->getProfileImagePath();
+
+        // File name: avatar
+        $filename = basename($path);
+
+        // The base dir: /storage/app/users/000000/home/
+        $dirname = dirname($path);
+
+        // save to server
+        $file->move($dirname, $filename);
+
+        // create thumbnails
+        $thumbPath = $this->getProfileThumbPath();
+        $img = \Image::make($path);
+        $img->fit(120, 120)->save($thumbPath);
+
+        return $path;
+    }
+
+    public function removeProfileImage()
+    {
+        $path = $this->getProfileImagePath();
+        if (file_exists($path)) {
+            File::delete($path);
+        }
+
+        $thumb = $this->getProfileThumbPath();
+        if (file_exists($thumb)) {
+            File::delete($thumb);
+        }        
     }
 }

@@ -62,17 +62,13 @@ class CustomerController extends Controller
                 // Upload and save image
                 if ($request->hasFile('image')) {
                     if ($request->file('image')->isValid()) {
-                        // Remove old images
-                        $customer->removeImage();
-                        $customer->image = $customer->uploadImage($request->file('image'));
-                        $customer->save();
+                        $user->uploadProfileImage($request->file('image'));
                     }
                 }
 
                 // Remove image
                 if ($request->_remove_image == 'true') {
-                    $customer->removeImage();
-                    $customer->image = '';
+                    $user->removeProfileImage();
                 }
 
                 return \Response::json(array(
@@ -141,16 +137,13 @@ class CustomerController extends Controller
             // Upload and save image
             if ($request->hasFile('image')) {
                 if ($request->file('image')->isValid()) {
-                    // Remove old images
-                    $customer->removeImage();
-                    $customer->image = $customer->uploadImage($request->file('image'));
+                    $user->uploadProfileImage($request->file('image'));
                 }
             }
 
             // Remove image
             if ($request->_remove_image == 'true') {
-                $customer->removeImage();
-                $customer->image = '';
+                $user->removeProfileImage();
             }
 
             return \Response::json(array(

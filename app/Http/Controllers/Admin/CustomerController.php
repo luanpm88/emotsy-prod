@@ -132,16 +132,13 @@ class CustomerController extends Controller
                 if ($request->hasFile('image')) {
                     if ($request->file('image')->isValid()) {
                         // Remove old images
-                        $customer->removeImage();
-                        $customer->image = $customer->uploadImage($request->file('image'));
-                        $customer->save();
+                        $user->uploadProfileImage($request->file('image'));
                     }
                 }
 
                 // Remove image
                 if ($request->_remove_image == 'true') {
-                    $customer->removeImage();
-                    $customer->image = '';
+                    $user->removeProfileImage();
                 }
 
                 $request->session()->flash('alert-success', trans('messages.customer.created'));
@@ -240,15 +237,13 @@ class CustomerController extends Controller
             if ($request->hasFile('image')) {
                 if ($request->file('image')->isValid()) {
                     // Remove old images
-                    $customer->removeImage();
-                    $customer->image = $customer->uploadImage($request->file('image'));
+                    $user->uploadProfileImage($request->file('image'));
                 }
             }
 
             // Remove image
             if ($request->_remove_image == 'true') {
-                $customer->removeImage();
-                $customer->image = '';
+                $user->removeProfileImage();
             }
 
             if ($customer->save()) {

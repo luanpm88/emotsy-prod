@@ -306,64 +306,6 @@ class Customer extends Model
     }
 
     /**
-     * Upload and resize avatar.
-     *
-     * @var void
-     */
-    public function uploadImage($file)
-    {
-        $path = 'app/customers/';
-        $upload_path = storage_path($path);
-
-        if (!file_exists($upload_path)) {
-            mkdir($upload_path, 0777, true);
-        }
-
-        $filename = 'avatar-'.$this->id.'.'.$file->getClientOriginalExtension();
-
-        // save to server
-        $file->move($upload_path, $filename);
-
-        // create thumbnails
-        $img = \Image::make($upload_path.$filename);
-        $img->fit(120, 120)->save($upload_path.$filename.'.thumb.jpg');
-
-        return $path.$filename;
-    }
-
-    /**
-     * Get image thumb path.
-     *
-     * @var string
-     */
-    public function imagePath()
-    {
-        if (!empty($this->image) && !empty($this->id)) {
-            return storage_path($this->image).'.thumb.jpg';
-        } else {
-            return '';
-        }
-    }
-
-    /**
-     * Get image thumb path.
-     *
-     * @var string
-     */
-    public function removeImage()
-    {
-        if (!empty($this->image) && !empty($this->id)) {
-            $path = storage_path($this->image);
-            if (is_file($path)) {
-                unlink($path);
-            }
-            if (is_file($path.'.thumb.jpg')) {
-                unlink($path.'.thumb.jpg');
-            }
-        }
-    }
-
-    /**
      * Get all items.
      *
      * @return collect

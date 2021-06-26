@@ -283,7 +283,7 @@
                             <!-- Sales stats -->
                             <div class="timeline-row">
                                 <div class="timeline-icon">
-                                    <a href="#"><img src="{{ action('CustomerController@avatar', $log->customer->uid) }}" alt=""></a>
+                                    <a href="#"><img src="{{ $log->customer->user->getProfileImageUrl() }}" alt=""></a>
                                 </div>
 
                                 <div class="panel panel-flat timeline-content">
