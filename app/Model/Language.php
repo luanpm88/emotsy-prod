@@ -72,7 +72,7 @@ class Language extends Model
 
     public static function getDirWhichNewLanguageCopyFrom()
     {
-        return base_path(join_paths('resources', 'lang', 'default'));
+        return base_path('resources/lang/default');
     }
 
     public static function scopeActive($query)
