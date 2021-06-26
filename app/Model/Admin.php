@@ -383,7 +383,6 @@ class Admin extends Model
         $customer->language_id = $this->language_id;
         // [moved] $customer->first_name = $this->first_name;
         // [moved] $customer->last_name = $this->last_name;
-        $customer->image = $this->image;
         $customer->timezone = $this->timezone;
         $customer->status = $this->status;
         $customer->save();

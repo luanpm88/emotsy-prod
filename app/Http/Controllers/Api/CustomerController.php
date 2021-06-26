@@ -184,7 +184,6 @@ class CustomerController extends Controller
             'uid' => $customer->uid,
             'first_name' => $user->first_name,
             'last_name' => $user->last_name,
-            'image' => $customer->image,
             'timezone' => $customer->timezone,
             'status' => $customer->status,
             'options' => $customer->getOptions(),
