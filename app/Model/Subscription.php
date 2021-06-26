@@ -724,7 +724,7 @@ class Subscription extends Model
         $this->setEnded();
 
         // cancel all pending invoices (new)
-        $this->invoices()->newInvoices()->delete();
+        $this->invoices()->new()->delete();
 
         // add log
         $this->addLog(SubscriptionLog::TYPE_CANCELLED_NOW, [

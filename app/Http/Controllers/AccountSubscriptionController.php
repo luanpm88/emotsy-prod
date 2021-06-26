@@ -93,7 +93,7 @@ class AccountSubscriptionController extends Controller
         $subscription = $customer->assignPlan($plan);
 
         // create init invoice
-        if (!$subscription->invoices()->newInvoices()->count()) {
+        if (!$subscription->invoices()->new()->count()) {
             $subscription->createInitInvoice();
         }
 

@@ -28,7 +28,7 @@ class Invoice extends Model
         return self::where('uid', '=', $uid)->first();
     }
 
-    public function scopeNewInvoices($query)
+    public function scopeNew($query)
     {
         $query->whereIn('status', [
             self::STATUS_NEW,
