@@ -178,7 +178,6 @@ class Subscription extends Model
         return $this->invoices()
             ->renew()
             ->unpaid()
-            ->orderBy('created_at', 'desc')
             ->first();
     }
 
@@ -415,10 +414,7 @@ class Subscription extends Model
             return;
         }
 
-        $invoice = $this->invoices()
-            ->where('status', '=', Invoice::STATUS_NEW)
-            ->where('type', '=', Invoice::TYPE_RENEW_SUBSCRIPTION)
-            ->first();
+        $invoice = $this->getItsOnlyUnpaidRenewInvoice();
 
         if (!$invoice) {
             return;
