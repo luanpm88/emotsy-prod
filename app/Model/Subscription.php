@@ -155,7 +155,7 @@ class Subscription extends Model
     }
 
     /**
-     * Get new invoice.
+     * Get renew invoice.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -163,13 +163,12 @@ class Subscription extends Model
     {
         return $this->invoices()
             ->changePlan()
-            ->unpaid()
-            ->orderBy('created_at', 'desc')            
+            ->unpaid()      
             ->first();
     }
 
     /**
-     * Get new invoice.
+     * Get change plan invoice.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -697,6 +696,10 @@ class Subscription extends Model
      */
     public function resume()
     {
+        if ($this->isEnded()) {
+            throw new Exception('Subscription is ended. Can not change ended subscription state!');
+        }
+
         if (!$this->cancelled()) {
             throw new Exception('Subscription is not cancelled. No need to resume again.');
         }
