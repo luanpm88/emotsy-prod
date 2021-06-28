@@ -26,8 +26,6 @@ namespace Acelle\Model;
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Log as MailLog;
 use DB;
-use Acelle\Exceptions\CampaignPausedException;
-use Acelle\Exceptions\CampaignErrorException;
 use Acelle\Model\SendingServer;
 use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
@@ -3463,7 +3461,7 @@ class Campaign extends Model
                 $job->delete();
             }
 
-            $this->jobMonitor->delete();    
+            $this->jobMonitor->delete();
         }
     }
 
@@ -3497,7 +3495,16 @@ class Campaign extends Model
     // Called by ScheduleCampaign job
     public function launch()
     {
-        $this->cleanJobMonitors();
+        while ($this->refresh()->jobMonitor) {
+            if ($batch = $this->jobMonitor->getBatch()) {
+                $batch->cancel();
+            } else {
+                // Notice that the jobMonitor->getJob() is the one who called this method
+                // So, do not delete the job record itself with jobMonitor->getJob()->delete()
+            }
+
+            $this->jobMonitor->delete();
+        }
 
         DB::transaction(function() {
             // Create the booting job

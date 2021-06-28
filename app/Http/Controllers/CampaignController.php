@@ -1954,7 +1954,6 @@ class CampaignController extends Controller
         if ($request->isMethod('post')) {
             // authorize
             if (\Gate::allows('resend', $campaign)) {
-                $campaign->ready();
                 $campaign->resend($request->option);
                 // Redirect to my lists page
                 return response()->json([
