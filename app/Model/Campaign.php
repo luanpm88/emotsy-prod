@@ -3724,8 +3724,9 @@ class Campaign extends Model
         return JobMonitor::launch($this, $batch);
     }
 
+    // Currently, only one monitor per campaign (soft business)
     public function jobMonitor()
     {
-        return $this->hasOne('\Acelle\Model\JobMonitor', 'subject_id')->where('subject_name', self::class);
+        return $this->hasOne(JobMonitor::class, 'subject_id')->where('subject_name', self::class);
     }
 }
