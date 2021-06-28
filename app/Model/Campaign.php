@@ -3723,4 +3723,9 @@ class Campaign extends Model
         // Add to JobMonitor in order to retrieve it
         return JobMonitor::launch($this, $batch);
     }
+
+    public function jobMonitor()
+    {
+        return $this->hasOne('\Acelle\Model\JobMonitor', 'subject_id')->where('subject_name', self::class);
+    }
 }
