@@ -50,6 +50,7 @@ use Acelle\Library\Traits\HasTemplate;
 use Acelle\Jobs\LoadCampaign;
 use Illuminate\Bus\Batch;
 use Illuminate\Support\Facades\Bus;
+use Acelle\Library\RouletteWheel;
 
 class Campaign extends Model
 {
@@ -443,6 +444,7 @@ class Campaign extends Model
     {
         $this->status = self::STATUS_READY;
         $this->save();
+        return $this;
     }
 
     /**
@@ -3195,211 +3197,32 @@ class Campaign extends Model
     /**
      * Start the campaign.
      */
-    public function start($trigger = null)
+    public function prepare($callback)
     {
-        try {
-            // make sure the same campaign is not started twice
-            if (!$this->refreshStatus()->isReady()) {
-                MailLog::info("Campaign ID: {$this->id} is not ready or already started");
-                return;
-            }
-
-            if ($this->refreshStatus()->occupiedByOtherAnotherProcess()) {
-                // In case user PAUSE a campaign
-                // then immediately makes it READY again
-                //
-                // However the running process does not even know about it (PAUSE signal) to end itself
-                // It could be waiting for 60 second intervals in case of quota exceeded for example...
-                //
-                // So this check prevents a new process from taking the campaign
-                // giving the running process the chance to resume
-                MailLog::info("Campaign ID: {$this->id} is occupied by another process PID: {$this->running_pid}");
-                return;
-            }
-
-            // clean up the tracker to prevent the log file from growing very big
-            $this->customer->cleanupQuotaTracker();
-
-            // lock the campaign, marked as sending
-            $this->sending();
-            MailLog::info('Starting campaign `'.$this->name.'`');
-
-            // Reset max_execution_time so that command can run for a long time without being terminated
-            self::resetMaxExecutionTime();
-
-            // Only run multi-process if pcntl is enabled
-            $processes = (int) $this->customer->getOption('max_process');
-            if (extension_loaded('pcntl') && function_exists('pcntl_fork') && $processes > 1) {
-                MailLog::info('Run in multi-process mode');
-                $this->runMultiProcesses();
-            } else {
-                MailLog::info('Run in single-process mode');
-                $this->run();
-            }
-            MailLog::info('Finish campaign `'.$this->name.'`');
-
-            // runMultiProcesses() and run() are responsible for setting DONE status
-        } catch (\Exception $ex) {
-            // Set ERROR status
-            $this->error($ex->getMessage());
-            MailLog::error('Starting campaign failed. '.$ex->getMessage());
-        }
-    }
-
-    /**
-     * Start the campaign, using PHP fork() to launch multiple processes.
-     *
-     * @return mixed
-     */
-    public function runMultiProcesses()
-    {
-        // processes to fork
-        $count = (int) $this->customer->getOption('max_process');
-        $count = ($count > 3) ? 3 : $count; // @todo do not use more than 2 processes
-
-        MailLog::info("Forking {$count} process(es)");
-        $parentPid = $this->running_pid; // set in sending() function
-        $children = [];
-        for ($i = 0; $i < $count; $i += 1) {
-            $pid = pcntl_fork();
-
-            // for child process only
-            if (!$pid) {
-                // Reconnect to the DB to prevent connection closed issue when using fork
-                DB::reconnect('mysql');
-
-                // Re-initialize logging to capture the child process' PID
-                MailLog::fork();
-
-                MailLog::info(sprintf('Start child process %s of %s (forked from %s)', $i + 1, $count, $parentPid));
-                sleep(self::WORKER_DELAY);
-                $partition = [$i, $count];
-                $this->run($partition);
-
-                exit($i + 1);
-            // end child process
-            } else {
-                $children[] = $pid;
-            }
+        // make sure the same campaign is not started twice
+        if (!$this->refreshStatus()->isReady()) {
+            throw new Exception("Campaign ID: {$this->id} is not ready or already started. Status: {$this->status}");
         }
 
-        // wait for child processes to finish
-        foreach ($children as $child) {
-            $pid = pcntl_wait($status);
-            if (pcntl_wifexited($status)) {
-                $code = pcntl_wexitstatus($status);
-                MailLog::info("Child process $pid finished, status code: $code");
-            } else {
-                MailLog::warning("Child process $pid did not normally exit");
-                $this->error("Child process $pid did not normally exit");
+        $sendingServersPool = $this->defaultMailList->getSendingServers();
+
+        // clean up the tracker to prevent the log file from growing very big
+        $this->customer->cleanupQuotaTracker();
+
+        // lock the campaign, marked as sending
+        $this->sending();
+
+        // Reset max_execution_time so that command can run for a long time without being terminated
+        self::resetMaxExecutionTime();
+
+        $this->iterateThroughSubscribers(function ($subscribers) use (&$i, &$sendingServersPool, $callback) {
+            foreach ($subscribers as $subscriber) {
+                $serverId = RouletteWheel::take($sendingServersPool);
+                $server = SendingServer::find($serverId)->mapType();
+
+                $callback($this, $subscriber, $server);
             }
-        }
-
-        // after all child processes are done
-        $this->refreshStatus();
-
-        // If all child processes finish sucessfully, just mark campaign as done
-        // Otherwise, mark campaign with error status (by child process)
-        //
-        // There are conventions here:
-        //   + Child process does not update status from SENDING to DONE, it is left for the parent process
-        //   + Child process only updates status from SENDING to ERROR
-        //   + Parent process only updates status to DONE when current status is SENDING
-        //     indicating that all child processes finish sucessfully
-        //   + In case one child process update the status from SENDING to ERROR, it is left as the final status
-        //     the latest error is kept
-        if ($this->status == self::STATUS_SENDING) {
-            $this->done();
-        } else {
-            // leave the latest error reported by child process
-        }
-    }
-
-    /**
-     * Send Campaign
-     * Iterate through all subscribers and send email.
-     */
-    public function run($partition = null)
-    {
-        // check if the method is trigger by a child process (triggered by runMultiProcess method)
-        $asChildProcess = !($partition == null);
-
-        // try/catch to make sure child process does not stop without reporting any error
-        try {
-            $i = 0;
-            $this->getPendingSubscribers($partition, function ($subscribers, $page, $total) use (&$i) {
-                MailLog::info("Fetching page $page (count: {$subscribers->count()})");
-
-                foreach ($subscribers as $subscriber) {
-                    // @todo: customerneedcheck
-                    while ($this->customer->overQuota()) {
-                        // throw new \Exception('Customer has reached sending limit');
-                        MailLog::warning(sprintf('Campaign `%s` (%s) halted, user exceeds sending limit', $this->name, $this->uid));
-                        sleep(60);
-                    }
-
-                    $i += 1;
-                    MailLog::info("Sending to subscriber `{$subscriber->email}` ({$i}/{$total})");
-
-                    // Pick up an available sending server
-                    // Throw exception in case no server available
-                    $server = $this->pickSendingServer($this);
-
-                    list($message, $msgId) = $this->prepareEmail($subscriber, $server);
-
-                    // randomly check for campaign PAUSED status after 10 emails
-                    // @todo performance concern here
-                    // @todo need an exclusive lock, what if the campaign is PAUSED, then RESTARTED
-                    //       after the status check and before actually sending?
-                    if ($this->refreshStatus()->isPaused()) {
-                        $this->updateCache();
-                        throw new CampaignPausedException();
-                    }
-
-                    if (config('app.demo') == true) {
-                        $sent = array(
-                            'runtime_message_id' => $msgId,
-                            'status' => SendingServer::DELIVERY_STATUS_SENT
-                        );
-                        // additional log
-                        MailLog::info("[DEMO] Sent to subscriber `{$subscriber->email}`");
-                    } else {
-                        $sent = $server->send($message);
-                        // additional log
-                        MailLog::info("Sent to subscriber `{$subscriber->email}`");
-                    }
-
-                    $this->trackMessage($sent, $subscriber, $server, $msgId);
-                }
-            });
-
-            MailLog::info("{$i} emails sent for the process");
-
-            // only mark campaign as done when running as its own process
-            // as a child process, just finish and leave the parent process to update campaign status
-            if (!$asChildProcess) {
-                $this->done();
-            }
-        } catch (CampaignPausedException $e) {
-            // just finish
-            MailLog::warning('Campaign paused');
-        } catch (CampaignErrorException $e) {
-            // just finish
-            MailLog::warning('Campaign terminated: '.$e->getMessage());
-        } catch (\Exception $e) {
-            MailLog::error($e->getMessage());
-            $this->error($e->getMessage());
-        } finally {
-            // reset server pools: just in case DeliveryServerAmazonSesWebApi
-            // --> setup SNS requires using from_email of the corresponding campaign
-            // but SNS is only made once when the server is initiated
-            // UPDATE: this is no longer the case as one process now only deals with one campaign
-            //         however, the method is still needed to save sending servers''
-            MailList::resetServerPools();
-
-            // update the campaign cache information
-            $this->updateCache();
-        }
+        }, $perPage = 100);
     }
 
     /**
@@ -3561,57 +3384,19 @@ class Campaign extends Model
      * Get Pending Subscribers
      * Select only subscribers that are ready for sending. Those whose status is `blacklisted`, `pending` or `unconfirmed` are not included.
      */
-    public function getPendingSubscribers($partition, $callback)
+    public function iterateThroughSubscribers($callback, $perPage = 100)
     {
-        /* *
-         *
-         * Using LEFT JOIN is much slower than NOT IN
-         *
-        $subscribers = $this->subscribers()
-                ->leftJoin(DB::raw('(SELECT * FROM '.DB::getTablePrefix().'tracking_logs WHERE campaign_id = '.$this->id.') log'), 'subscribers.id', '=', 'subscriber_id')
-                ->whereRaw('log.id IS NULL')
-                ->whereRaw(DB::getTablePrefix()."subscribers.status = '".Subscriber::STATUS_SUBSCRIBED."'")
-                ->select('subscribers.*')
-                ->get();
-        */
-
-        $builder = $this->subscribers([], ['email_verifications'])
+        $query = $this->subscribers([], ['email_verifications'])
                 ->whereRaw(sprintf(table('subscribers').'.email NOT IN (SELECT email FROM %s t JOIN %s s ON t.subscriber_id = s.id WHERE t.campaign_id = %s)', table('tracking_logs'), table('subscribers'), $this->id))
-                ->whereRaw(DB::getTablePrefix()."subscribers.status = '".Subscriber::STATUS_SUBSCRIBED."'");
+                ->subscribed();
 
-        if (!is_null($partition)) {
-            // retrieve the subscribers list for this partition only
-            // partitioning is based on email to prevent one email from being taken by more than one process
-            // The idea is to generate a unique integer for an email address, then partition base on the number
-            list($partitionId, $count) = $partition;
-            $builder = $builder->whereRaw(sprintf('CONV(SUBSTR(MD5(%s),1, 4), 16, 10) MOD %s = %s', table('subscribers.email'), $count, $partitionId));
-        }
-
-        $total = $builder->count(); // IMPORTNT: Count before group, otherwise it will always return 0 or 1
-
-        // the array_unique_by functions out-perform the Collection::unique of Laravel!!!
-        // The following code snipet is no longer needed as the list is already unique by email
-        //     $unique = array_unique_by($subscribers, function ($r) {
-        //         return $r['email'];
-        //     });
-
-        $page = 1;
-        $limit = 2000;
-        while ($builder->count()) { // IMPORTANT: count() for a grouped query will always return 0 or 1
-            // @note eager loading will result in a very long query
-            // which could exceed the [max_allowed_packet] setting of MySQL
-            // so the value of $limit must be considered carefully
-            $subscribers = $builder->limit($limit)->with(['mailList', 'subscriberFields'])->get();
-            $callback($subscribers, $page, $total);
-            $page += 1;
-        }
-
-        /*
-         * @todo the paginate helper does not work here since data table will be changed during the retrieving process
-        paginate($subscribers, function ($subset, $page) use ($callback, $total) {
-            $callback($subset, $page, $total);
-        }, ['count' => $total]);
-        */
+        $cursor = null;
+        do {
+            // The 4th parameter contains the offset cursor
+            $list = $query->orderBy('subscribers.id')->cursorPaginate($perPage, ['*'], 'cursor', $cursor);
+            $callback($list->items());
+            $cursor = $list->nextCursor();
+        } while ($list->hasMorePages());
     }
 
     /**

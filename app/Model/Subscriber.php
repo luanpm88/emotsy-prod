@@ -1164,6 +1164,11 @@ class Subscriber extends Model
         return $query;
     }
 
+    public function scopeSubscribed($query)
+    {
+        return $query->where('subscribers.status', self::STATUS_SUBSCRIBED);
+    }
+
     public function isSubscribed()
     {
         return $this->status == self::STATUS_SUBSCRIBED;

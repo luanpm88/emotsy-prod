@@ -40,16 +40,16 @@ class LoadCampaign implements ShouldQueue
             return;
         }
 
+        /*
         Collection::times(3, function () {
             sleep(2);
             $subscriber = Subscriber::first();
-            $this->batch()->add(new SendMessage($subscriber));
+            $this->batch()->add(new SendMessage($campaign, $subscriber, $server));
         });
+        */
 
-        Collection::times(3, function () {
-            sleep(2);
-            $subscriber = Subscriber::first();
-            $this->batch()->add(new SendMessage($subscriber));
+        $this->campaign->prepare(function($campaign, $subscriber, $server) {
+            $this->batch()->add(new SendMessage($campaign, $subscriber, $server));
         });
     }
 }

@@ -31,4 +31,12 @@ class JobServiceProvider extends ServiceProvider
             //
         });
     }
+
+    /**
+     * Init the MailLog.
+     */
+    private function initMailLog()
+    {
+        MailLog::configure(storage_path().'/logs/' . php_sapi_name() . '/mail.log');
+    }
 }

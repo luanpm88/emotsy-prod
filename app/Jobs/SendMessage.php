@@ -10,22 +10,25 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Acelle\Model\Subscriber;
-use Acelle\Library\Log as MailLog;
 
 class SendMessage implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $subscriber;
+    protected $server;
+    protected $campaign;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(Subscriber $subscriber)
+    public function __construct($campaign, Subscriber $subscriber, $server)
     {
+        $this->campaign = $campaign;
         $this->subscriber = $subscriber;
+        $this->server = $server;
     }
 
     /**
@@ -39,7 +42,27 @@ class SendMessage implements ShouldQueue
             return;
         }
 
-        sleep(1);
-        MailLog::warning('Job done!');
+        echo "[{$this->subscriber->email}]) : server {$this->server->id}\n";
+        return;
+
+        // Check customer quota
+        while ($this->campaign->customer->overQuota()) {
+            // throw new \Exception('Customer has reached sending limit');
+            sleep(60);
+        }
+
+        // Check sending server quota
+        while ($this->server->overQuota()) {
+            sleep(60);    
+        }
+
+        // Prepare the email message to send
+        list($message, $msgId) = $campaign->prepareEmail($this->subscriber, $this->server);
+
+        // Actually send!
+        $sent = $this->server->send($message);
+
+        // Log
+        $this->campaign->trackMessage($sent, $this->subscriber, $this->server, $msgId);
     }
 }
