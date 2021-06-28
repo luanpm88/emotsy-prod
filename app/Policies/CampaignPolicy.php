@@ -95,7 +95,8 @@ class CampaignPolicy
     {
         $customer = $user->customer;
         return $item->customer_id == $customer->id && in_array($item->status, [
-            Campaign::STATUS_READY,
+            Campaign::STATUS_QUEUING,
+            Campaign::STATUS_QUEUED,
             Campaign::STATUS_SENDING,
             Campaign::STATUS_ERROR,
             Campaign::STATUS_PAUSED,

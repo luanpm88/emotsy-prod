@@ -48,9 +48,13 @@ use KubAT\PhpSimple\HtmlDomParser;
 use Exception;
 use Acelle\Library\Traits\HasTemplate;
 use Acelle\Jobs\LoadCampaign;
+use Acelle\Jobs\ScheduleCampaign;
 use Illuminate\Bus\Batch;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Support\Facades\Bus;
 use Acelle\Library\RouletteWheel;
+use Illuminate\Contracts\Bus\Dispatcher;
+
 
 class Campaign extends Model
 {
@@ -60,7 +64,8 @@ class Campaign extends Model
 
     // Campaign status
     const STATUS_NEW = 'new';
-    const STATUS_READY = 'ready'; // equiv. to 'queue'
+    const STATUS_QUEUING = 'queuing'; // equiv. to 'queue'
+    const STATUS_QUEUED = 'queued'; // equiv. to 'queue'
     const STATUS_SENDING = 'sending';
     const STATUS_ERROR = 'error';
     const STATUS_DONE = 'done';
@@ -395,7 +400,7 @@ class Campaign extends Model
     /**
      * Mark the campaign as 'done' or 'sent'.
      */
-    public function done()
+    public function setDone()
     {
         $this->status = self::STATUS_DONE;
         $this->last_error = null;
@@ -405,7 +410,7 @@ class Campaign extends Model
     /**
      * Mark the campaign as 'sending'.
      */
-    public function sending()
+    public function setSending()
     {
         $this->status = self::STATUS_SENDING;
         $this->running_pid = getmypid();
@@ -432,17 +437,27 @@ class Campaign extends Model
     /**
      * Check if the campaign is ready to start.
      */
-    public function isReady()
+    public function isQueued()
     {
-        return $this->status == self::STATUS_READY;
+        return $this->status == self::STATUS_QUEUED;
     }
 
     /**
      * Mark the campaign as 'ready' (which is equiv. to 'queued').
      */
-    public function ready()
+    public function setQueued()
     {
-        $this->status = self::STATUS_READY;
+        $this->status = self::STATUS_QUEUED;
+        $this->save();
+        return $this;
+    }
+
+    /**
+     * Mark the campaign as 'ready' (which is equiv. to 'queued').
+     */
+    public function setQueuing()
+    {
+        $this->status = self::STATUS_QUEUING;
         $this->save();
         return $this;
     }
@@ -450,22 +465,11 @@ class Campaign extends Model
     /**
      * Mark the campaign as 'done' or 'sent'.
      */
-    public function error($error = null)
+    public function setError($error = null)
     {
         $this->status = self::STATUS_ERROR;
         $this->last_error = $error;
         $this->save();
-    }
-
-    /**
-     * Mark the campaign as 'done' or 'sent'.
-     */
-    public function refreshStatus()
-    {
-        $me = self::find($this->id);
-        $this->status = $me->status;
-        $this->save();
-
         return $this;
     }
 
@@ -610,9 +614,6 @@ class Campaign extends Model
             // Transform tags
             $body = $this->tagMessage($body, $subscriber, $msgId, $server);
         }
-
-        
-        
 
         // STEP 09. Make CSS inline
         //
@@ -1857,18 +1858,6 @@ class Campaign extends Model
     }
 
     /**
-     * Re-queue the campaign for sending.
-     */
-    public function requeue()
-    {
-        // clear all campaign's sending jobs which are being queued
-        $this->clearAllJobs();
-
-        // and queue again
-        $this->queue();
-    }
-
-    /**
      * Re-send the campaign for sending.
      */
     public function resend($filter = 'not_receive') // not_receive | not_open | not_click
@@ -1892,7 +1881,7 @@ class Campaign extends Model
         }
 
         // and queue again
-        $this->requeue();
+        $this->queue();
     }
 
     /**
@@ -2159,8 +2148,20 @@ class Campaign extends Model
      */
     public function pause()
     {
+        // mark the batch as canceled
+        if ($this->jobMonitor && $this->jobMonitor->getBatch()) {
+            $this->jobMonitor->getBatch()->cancel();
+        }
+
+        $this->setPaused();
+    }
+
+    private function setPaused()
+    {
+        // set campaign status
         $this->status = self::STATUS_PAUSED;
         $this->save();
+        return $this;
     }
 
     /**
@@ -2418,6 +2419,9 @@ class Campaign extends Model
      */
     private function execSpamc()
     {
+        // @todo: temporarily disable SPAMC
+        return;
+
         $message = $this->getSampleMessage()->toString();
 
         // Execute SPAMC
@@ -3195,22 +3199,15 @@ class Campaign extends Model
     }
 
     /**
-     * Start the campaign.
+     * Start the campaign. called by daemon job
      */
     public function prepare($callback)
     {
-        // make sure the same campaign is not started twice
-        if (!$this->refreshStatus()->isReady()) {
-            throw new Exception("Campaign ID: {$this->id} is not ready or already started. Status: {$this->status}");
-        }
-
+        // Available sending servers
         $sendingServersPool = $this->defaultMailList->getSendingServers();
 
         // clean up the tracker to prevent the log file from growing very big
         $this->customer->cleanupQuotaTracker();
-
-        // lock the campaign, marked as sending
-        $this->sending();
 
         // Reset max_execution_time so that command can run for a long time without being terminated
         self::resetMaxExecutionTime();
@@ -3402,16 +3399,6 @@ class Campaign extends Model
     /**
      * Queue campaign for sending.
      */
-    public function queue($trigger = null, $subscribers = null, $delay = 0)
-    {
-        $this->ready();
-        $job = (new \Acelle\Jobs\RunCampaignJob($this))->delay($this->getDelayInSeconds());
-        dispatch($job);
-    }
-
-    /**
-     * Queue campaign for sending.
-     */
     public function clearAllJobs()
     {
         // cleanup jobs and system_jobs
@@ -3462,56 +3449,120 @@ class Campaign extends Model
         $this->delete();
     }
 
-    public function dispatch()
+    public function isError()
     {
-        // Create the booting job
-        $campaignLoader = new LoadCampaign($this);
+        return $this->status == self::STATUS_ERROR;
+    }
 
-        // Dispatch job through a batch
-        $batch = Bus::batch($campaignLoader)->then(function (Batch $batch) {
-            // Important:
-            // Notice that if user manually cancels a batch, it still reaches trigger "then" callback 
-            // Only when an exception is thrown, no "then" trigger
-            // So, if the campaign is paused by user, do not update its status to done once its batch finishes, keep it as paused
-            if (!$this->isPaused()) {
-                $this->done();
+    public function cleanJobMonitors()
+    {
+        while ($this->refresh()->jobMonitor) {
+            if ($batch = $this->jobMonitor->getBatch()) {
+                $batch->cancel();
+            } elseif ($job = $this->jobMonitor->getJob()) {
+                $job->delete();
             }
-        })->catch(function (Batch $batch, \Throwable $e) {
-            $errorMsg = $e->getMessage()."\n".$e->getTraceAsString();
-            $this->error( $errorMsg );
-        })->finally(function (Batch $batch) {
-            //
-            // Important: in case one of the batch's jobs hits an error
-            // the batch is automatically set to cancelled and, therefore, all remaining jobs will just finish (return)
-            // resulting in the "finally" event to be triggered
-            // So, do not update satus here, otherwise it will overwrite any status logged by "catch" event
-            // Notice that: if a batch fails (automatically canceled due to one failed job)
-            // then, after all jobs finishes (return), [failed job] = [pending job] = 1
-            // +------------+--------------+-------------+---------------------------------------------------------------------------------+-------------+
-            // | total_jobs | pending_jobs | failed_jobs | failed_job_ids                                                                  | finished_at |
-            // +------------+--------------+-------------+---------------------------------------------------------------------------------+-------------+
-            // |          7 |            0 |           0 | []                                                                              |  1624848887 | success
-            // |          7 |            1 |           1 | ["302130fd-ba78-4a37-8a3b-2304cc3f3455"]                                        |  1624849156 | failed
-            // |          7 |            2 |           2 | ["6a17f9bf-96d4-48e5-86a0-73e7bac07e74","7e1b3b3d-a5f4-45b4-be1e-ba5f1cc2e3f3"] |  1624849222 | (*)
-            // |          7 |            3 |           2 | ["6a17f9bf-96d4-48e5-86a0-73e7bac07e74","7e1b3b3d-a5f4-45b4-be1e-ba5f1cc2e3f3"] |  1624849222 | (**)
-            // +------------+--------------+-------------+---------------------------------------------------------------------------------+-------------+
-            // 
-            // (*) There is no batch cancelation check in every job
-            // as a result, remaining jobs still execute even after the batch is automatically cancelled (due to one failed job)
-            // resulting in 2 (or more) failed / pending jobs
-            // (**) 2 jobs already failed, there is 1 remaining job to finish (so 3 pending jobs)
-            // That is, pending_jobs = failed jobs + remaining jobs
-            //
 
-        })->dispatch();
+            $this->jobMonitor->delete();    
+        }
+    }
 
-        // Add to JobMonitor in order to retrieve it
-        return JobMonitor::launch($this, $batch);
+    public function queue()
+    {
+        DB::transaction(function() {
+            // Check coonditions here
+            // + Campaign settings
+            // + Current jobs
+            //
+            // Check 1: there is monitor for job with a waiting jobid
+            // Check 2: there is batch waiting for 
+
+            // Delete previous job monitor
+            $this->cleanJobMonitors();
+
+            // Schedule
+            $scheduler = (new ScheduleCampaign($this))->delay($this->run_at);
+            $jobId = app(Dispatcher::class)->dispatch($scheduler);
+
+            JobMonitor::forJob($this, $jobId, get_class($scheduler));
+            $this->setQueuing();    
+        });
+    }
+
+    public function resume()
+    {
+        $this->queue();
+    }
+
+    // Called by ScheduleCampaign job
+    public function launch()
+    {
+        $this->cleanJobMonitors();
+
+        DB::transaction(function() {
+            // Create the booting job
+            $campaignLoader = new LoadCampaign($this);
+
+            // Dispatch job through a batch
+            $batch = Bus::batch($campaignLoader)->then(function (Batch $batch) {
+                // Important:
+                // Notice that if user manually cancels a batch, it still reaches trigger "then" callback 
+                // Only when an exception is thrown, no "then" trigger
+                // So, if the campaign is paused by user, do not update its status to done once its batch finishes, keep it as paused
+
+                // IMPORTANT: refresh() is required!
+                if (!$this->refresh()->isPaused()) {
+                    $this->setDone();
+                } else {
+                    // previously paused, no need to update its status
+                }
+
+            })->catch(function (Batch $batch, \Throwable $e) {
+                $errorMsg = $e->getMessage()."\n".$e->getTraceAsString();
+                $this->setError( $errorMsg );
+            })->finally(function (Batch $batch) {
+                //
+                // Important: in case one of the batch's jobs hits an error
+                // the batch is automatically set to cancelled and, therefore, all remaining jobs will just finish (return)
+                // resulting in the "finally" event to be triggered
+                // So, do not update satus here, otherwise it will overwrite any status logged by "catch" event
+                // Notice that: if a batch fails (automatically canceled due to one failed job)
+                // then, after all jobs finishes (return), [failed job] = [pending job] = 1
+                // +------------+--------------+-------------+---------------------------------------------------------------------------------+-------------+
+                // | total_jobs | pending_jobs | failed_jobs | failed_job_ids                                                                  | finished_at |
+                // +------------+--------------+-------------+---------------------------------------------------------------------------------+-------------+
+                // |          7 |            0 |           0 | []                                                                              |  1624848887 | success
+                // |          7 |            1 |           1 | ["302130fd-ba78-4a37-8a3b-2304cc3f3455"]                                        |  1624849156 | failed
+                // |          7 |            2 |           2 | ["6a17f9bf-96d4-48e5-86a0-73e7bac07e74","7e1b3b3d-a5f4-45b4-be1e-ba5f1cc2e3f3"] |  1624849222 | (*)
+                // |          7 |            3 |           2 | ["6a17f9bf-96d4-48e5-86a0-73e7bac07e74","7e1b3b3d-a5f4-45b4-be1e-ba5f1cc2e3f3"] |  1624849222 | (**)
+                // +------------+--------------+-------------+---------------------------------------------------------------------------------+-------------+
+                // 
+                // (*) There is no batch cancelation check in every job
+                // as a result, remaining jobs still execute even after the batch is automatically cancelled (due to one failed job)
+                // resulting in 2 (or more) failed / pending jobs
+                // (**) 2 jobs already failed, there is 1 remaining job to finish (so 3 pending jobs)
+                // That is, pending_jobs = failed jobs + remaining jobs
+                //
+
+            })->dispatch();
+
+            // Add to JobMonitor in order to retrieve it
+            JobMonitor::forBatch($this, $batch, 'run');
+
+            $this->setQueued();
+        });
     }
 
     // Currently, only one monitor per campaign (soft business)
     public function jobMonitor()
     {
         return $this->hasOne(JobMonitor::class, 'subject_id')->where('subject_name', self::class);
+    }
+
+
+    public function testMe()
+    {
+        $x = app(\Illuminate\Contracts\Bus\Dispatcher::class)->dispatch(new ScheduleCampaign($this));
+        var_dump($x);
     }
 }

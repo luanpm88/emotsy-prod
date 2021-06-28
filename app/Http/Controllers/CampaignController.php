@@ -685,7 +685,7 @@ class CampaignController extends Controller
         if ($request->isMethod('post') && $campaign->step() >= 5) {
             // Save campaign
             // @todo: check campaign status before requeuing. Otherwise, several jobs shall be created and campaign will get sent several times
-            $campaign->requeue();
+            $campaign->queue();
 
             // Log
             $campaign->log('started', $customer);
@@ -1566,7 +1566,7 @@ class CampaignController extends Controller
 
         foreach ($items->get() as $item) {
             if (\Gate::allows('restart', $item)) {
-                $item->requeue();
+                $item->resume();
 
                 // Log
                 $item->log('restarted', $customer);
@@ -2169,7 +2169,7 @@ class CampaignController extends Controller
     public function run(Request $request, $uid)
     {
         $campaign = Campaign::findByUid($uid);
-        $campaign->start();
+        $campaign->dispatch();
         echo $campaign->status;
     }
 

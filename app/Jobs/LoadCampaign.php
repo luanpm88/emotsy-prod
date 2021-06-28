@@ -12,6 +12,7 @@ use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Collection;
 use Acelle\Model\Campaign;
 use Acelle\Model\Subscriber;
+use Illuminate\Support\Carbon;
 
 class LoadCampaign implements ShouldQueue
 {
@@ -40,13 +41,7 @@ class LoadCampaign implements ShouldQueue
             return;
         }
 
-        /*
-        Collection::times(3, function () {
-            sleep(2);
-            $subscriber = Subscriber::first();
-            $this->batch()->add(new SendMessage($campaign, $subscriber, $server));
-        });
-        */
+        $this->campaign->setSending();
 
         $this->campaign->prepare(function($campaign, $subscriber, $server) {
             $this->batch()->add(new SendMessage($campaign, $subscriber, $server));

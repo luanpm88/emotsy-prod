@@ -19,6 +19,7 @@ class JobMonitor extends Migration
             $table->mediumText('job_type')->nullable();
             $table->string('subject_name');
             $table->bigInteger('subject_id');
+            $table->bigInteger('job_id')->nullable();
             $table->timestamps();
         });
     }

@@ -42,9 +42,6 @@ class SendMessage implements ShouldQueue
             return;
         }
 
-        echo "[{$this->subscriber->email}]) : server {$this->server->id}\n";
-        return;
-
         // Check customer quota
         while ($this->campaign->customer->overQuota()) {
             // throw new \Exception('Customer has reached sending limit');
@@ -57,7 +54,11 @@ class SendMessage implements ShouldQueue
         }
 
         // Prepare the email message to send
-        list($message, $msgId) = $campaign->prepareEmail($this->subscriber, $this->server);
+        list($message, $msgId) = $this->campaign->prepareEmail($this->subscriber, $this->server);
+
+        sleep(1);
+        echo "[{$this->subscriber->email}]) : server {$this->server->id}\n";
+        return;
 
         // Actually send!
         $sent = $this->server->send($message);
