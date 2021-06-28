@@ -3679,11 +3679,18 @@ class Campaign extends Model
 
     public function dispatch()
     {
+        // Create the booting job
         $campaignLoader = new LoadCampaign($this);
 
         // Dispatch job through a batch
         $batch = Bus::batch($campaignLoader)->then(function (Batch $batch) {
-            $this->done();
+            // Important:
+            // Notice that if user manually cancels a batch, it still reaches trigger "then" callback 
+            // Only when an exception is thrown, no "then" trigger
+            // So, if the campaign is paused by user, do not update its status to done once its batch finishes, keep it as paused
+            if (!$this->isPaused()) {
+                $this->done();
+            }
         })->catch(function (Batch $batch, \Throwable $e) {
             $errorMsg = $e->getMessage()."\n".$e->getTraceAsString();
             $this->error( $errorMsg );
