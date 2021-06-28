@@ -47,6 +47,9 @@ use ZipArchive;
 use KubAT\PhpSimple\HtmlDomParser;
 use Exception;
 use Acelle\Library\Traits\HasTemplate;
+use Acelle\Jobs\LoadCampaign;
+use Illuminate\Bus\Batch;
+use Illuminate\Support\Facades\Bus;
 
 class Campaign extends Model
 {
@@ -394,6 +397,7 @@ class Campaign extends Model
     public function done()
     {
         $this->status = self::STATUS_DONE;
+        $this->last_error = null;
         $this->save();
     }
 
@@ -3473,6 +3477,7 @@ class Campaign extends Model
             // this is a trick for returning an empty builder
             return Subscriber::limit(0);
         }
+
         $query = Subscriber::select('subscribers.*');
         // Tell MySQL to use the right index
         // $query->from(\DB::raw(\DB::getTablePrefix() . 'subscribers FORCE INDEX (subscribers_mail_list_id_email_index)'));
@@ -3670,5 +3675,45 @@ class Campaign extends Model
         }
 
         $this->delete();
+    }
+
+    public function dispatch()
+    {
+        $campaignLoader = new LoadCampaign($this);
+
+        // Dispatch job through a batch
+        $batch = Bus::batch($campaignLoader)->then(function (Batch $batch) {
+            $this->done();
+        })->catch(function (Batch $batch, \Throwable $e) {
+            $errorMsg = $e->getMessage()."\n".$e->getTraceAsString();
+            $this->error( $errorMsg );
+        })->finally(function (Batch $batch) {
+            //
+            // Important: in case one of the batch's jobs hits an error
+            // the batch is automatically set to cancelled and, therefore, all remaining jobs will just finish (return)
+            // resulting in the "finally" event to be triggered
+            // So, do not update satus here, otherwise it will overwrite any status logged by "catch" event
+            // Notice that: if a batch fails (automatically canceled due to one failed job)
+            // then, after all jobs finishes (return), [failed job] = [pending job] = 1
+            // +------------+--------------+-------------+---------------------------------------------------------------------------------+-------------+
+            // | total_jobs | pending_jobs | failed_jobs | failed_job_ids                                                                  | finished_at |
+            // +------------+--------------+-------------+---------------------------------------------------------------------------------+-------------+
+            // |          7 |            0 |           0 | []                                                                              |  1624848887 | success
+            // |          7 |            1 |           1 | ["302130fd-ba78-4a37-8a3b-2304cc3f3455"]                                        |  1624849156 | failed
+            // |          7 |            2 |           2 | ["6a17f9bf-96d4-48e5-86a0-73e7bac07e74","7e1b3b3d-a5f4-45b4-be1e-ba5f1cc2e3f3"] |  1624849222 | (*)
+            // |          7 |            3 |           2 | ["6a17f9bf-96d4-48e5-86a0-73e7bac07e74","7e1b3b3d-a5f4-45b4-be1e-ba5f1cc2e3f3"] |  1624849222 | (**)
+            // +------------+--------------+-------------+---------------------------------------------------------------------------------+-------------+
+            // 
+            // (*) There is no batch cancelation check in every job
+            // as a result, remaining jobs still execute even after the batch is automatically cancelled (due to one failed job)
+            // resulting in 2 (or more) failed / pending jobs
+            // (**) 2 jobs already failed, there is 1 remaining job to finish (so 3 pending jobs)
+            // That is, pending_jobs = failed jobs + remaining jobs
+            //
+
+        })->dispatch();
+
+        // Add to JobMonitor in order to retrieve it
+        return JobMonitor::launch($this, $batch);
     }
 }
