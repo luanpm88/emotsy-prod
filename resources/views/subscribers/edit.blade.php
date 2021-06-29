@@ -24,34 +24,36 @@
                     {{ csrf_field() }}
                     <input type="hidden" name="_method" value="PATCH">
                     <input type="hidden" name="list_uid" value="{{ $list->uid }}" />
-                    
+                    <h2 class="font-weight-semibold">{{ $subscriber->getFullName() }}</h2>
+                    <div class="tags mb-4" style="clear:both">
+                        <span class="font-weight-semibold mr-3">{{ trans('messages.tags') }}:</span>
+                        @if ($subscriber->getTags())
+                            @foreach ($subscriber->getTags() as $tag)
+                                <a href="{{ action('SubscriberController@removeTag', [
+                                    'list_uid' => $subscriber->mailList->uid,
+                                    'uid' => $subscriber->uid,
+                                    'tag' => $tag,
+                                ]) }}" class="btn-group remove-contact-tag" role="group" aria-label="Basic example">
+                                    <button type="button" class="btn btn-light btn-tag font-weight-semibold">{{ $tag }}</button>
+                                    <button type="button" class="btn btn-light btn-tag font-weight-semibold ml-0">
+                                        <i class="lnr lnr-cross"></i>
+                                    </button>
+                                </a>
+                            @endforeach
+                        @else
+                            <a href="" class="btn-group profile-tag-contact" role="group" aria-label="Basic example">
+                                <button type="button" class="btn btn-light btn-tag d-flex align-items-center">
+                                    <i class="material-icons mr-2">add</i>
+                                    <span class="font-italic">{{ trans('messages.automation.profile.click_to_add_tag') }}<span>
+                                </button>
+                            </a>
+                        @endif
+                    </div>
                     <div class="d-flex align-items-top">
                         <div>
                             @include('helpers._upload',['src' => (isSiteDemo() ? 'https://i.pravatar.cc/300' : action('SubscriberController@avatar',  $subscriber->uid)), 'dragId' => 'upload-avatar', 'preview' => 'image'])
                             
-                            <div class="tags" style="clear:both">
-                                @if ($subscriber->getTags())
-                                    @foreach ($subscriber->getTags() as $tag)
-                                        <a href="{{ action('SubscriberController@removeTag', [
-                                            'list_uid' => $subscriber->mailList->uid,
-                                            'uid' => $subscriber->uid,
-                                            'tag' => $tag,
-                                        ]) }}" class="btn-group remove-contact-tag" role="group" aria-label="Basic example">
-                                            <button type="button" class="btn btn-light btn-tag font-weight-semibold">{{ $tag }}</button>
-                                            <button type="button" class="btn btn-light btn-tag font-weight-semibold ml-0">
-                                                <i class="lnr lnr-cross"></i>
-                                            </button>
-                                        </a>
-                                    @endforeach
-                                @else
-                                    <a href="" class="btn-group profile-tag-contact" role="group" aria-label="Basic example">
-                                        <button type="button" class="btn btn-light btn-tag d-flex align-items-center">
-                                            <i class="material-icons mr-2">add</i>
-                                            <span class="font-italic">{{ trans('messages.automation.profile.click_to_add_tag') }}<span>
-                                        </button>
-                                    </a>
-                                @endif
-                            </div>
+                            
                         </div>
                         <div class="mt-20">
                             <div class="dropdown">
