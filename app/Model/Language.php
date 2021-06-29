@@ -424,8 +424,10 @@ class Language extends Model
         $this->delete();
     }
 
-    public function translateFile($file, $content)
+    public function translateFile($fileId, $content)
     {
+        $file = $this->findFileById($fileId);
+
         // make validator
         $validator = \Validator::make(['content' => $content], [
             'content' => 'required',
