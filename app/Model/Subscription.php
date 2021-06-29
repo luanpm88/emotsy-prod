@@ -697,6 +697,10 @@ class Subscription extends Model
      */
     public function resume()
     {
+        if (!$this->isActive()) {
+            throw new Exception('Subscription is not active.');
+        }
+
         if (!$this->cancelled()) {
             throw new Exception('Subscription is not cancelled. No need to resume again.');
         }
