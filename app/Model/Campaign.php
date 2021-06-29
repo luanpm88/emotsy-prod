@@ -73,9 +73,6 @@ class Campaign extends Model
     const TYPE_REGULAR = 'regular';
     const TYPE_PLAIN_TEXT = 'plain-text';
 
-    // Campaign settings
-    const WORKER_DELAY = 1;
-
     // 4 types of delivery status for a given contact
     const DELIVERY_STATUS_FAILED = 'failed';
     const DELIVERY_STATUS_SENT = 'sent';
@@ -1918,7 +1915,7 @@ class Campaign extends Model
      */
     public function delete()
     {
-        $this->clearAllJobs();
+        $this->cleanJobMonitors();
         parent::delete();
     }
 
@@ -3395,20 +3392,6 @@ class Campaign extends Model
     }
 
     /**
-     * Queue campaign for sending.
-     */
-    public function clearAllJobs()
-    {
-        // cleanup jobs and system_jobs
-        // @todo data should be a JSON field instead
-        $systemJobs = SystemJob::where('name', 'Acelle\Jobs\RunCampaignJob')->where('data', $this->id)->get();
-        foreach ($systemJobs as $systemJob) {
-            // @todo what if jobs were already started? check `reserved` field?
-            $systemJob->clear();
-        }
-    }
-
-    /**
      * Pick up a delivery server for the campaign.
      *
      * @return mixed
@@ -3483,7 +3466,7 @@ class Campaign extends Model
             $jobId = app(Dispatcher::class)->dispatch($scheduler);
 
             JobMonitor::forJob($this, $jobId, get_class($scheduler));
-            $this->setQueuing();    
+            $this->setQueuing();
         });
     }
 
@@ -3525,7 +3508,7 @@ class Campaign extends Model
                 }
 
             })->catch(function (Batch $batch, \Throwable $e) {
-                $errorMsg = $e->getMessage()."\n".$e->getTraceAsString();
+                $errorMsg = "Error sending messages. ".$e->getMessage()."\n".$e->getTraceAsString();
                 $this->setError( $errorMsg );
             })->finally(function (Batch $batch) {
                 //
@@ -3566,10 +3549,8 @@ class Campaign extends Model
         return $this->hasOne(JobMonitor::class, 'subject_id')->where('subject_name', self::class);
     }
 
-
-    public function testMe()
+    public function extractErrorMessage()
     {
-        $x = app(\Illuminate\Contracts\Bus\Dispatcher::class)->dispatch(new ScheduleCampaign($this));
-        var_dump($x);
+        return explode("\n", $this->last_error)[0];
     }
 }

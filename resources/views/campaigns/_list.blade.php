@@ -75,9 +75,10 @@
 					<td></td>
 				@endif
 				<td>
-					<span class="text-muted2 list-status pull-left" title='{{ $item->status == Acelle\Model\Campaign::STATUS_ERROR ? $item->last_error : '' }}' data-popup='tooltip'>
+					<span class="text-muted2 list-status pull-left" title='{{ $item->isError() ? $item->extractErrorMessage() : '' }}' data-popup='tooltip'>
 						<span class="label label-flat bg-{{ $item->status }}">{{ trans('messages.campaign_status_' . $item->status) }}</span>
 					</span>
+					<pre style="display:none">{{ $item->last_error }}</pre>
 				</td>
 				<td class="text-right text-nowrap">
 					@if (\Gate::allows('update', $item))
