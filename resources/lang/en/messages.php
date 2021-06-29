@@ -2558,7 +2558,7 @@
   'subscription.change_plan.select_below' => 'Select the plan you want to change below. Changing plan can be un-done so make sure you want to change.',
   'subscription.select_a_plan' => 'Select a Plan',
   'plan.current_subscribed' => 'Current subscribed',
-  'create_your_account' => 'Create your your account',
+  'create_your_account' => 'Create your account',
   'register.intro' => 'Manage your contacts, generate leads, run a marketing campaign,... Join us to enjoy doing
     every day sales & marketing without any hassle. If you already have an account? <a href=":login">Login</a>',
   'register.agreement_intro' => 'By clicking the "Get Started!" button, you are creating an account at our system,
