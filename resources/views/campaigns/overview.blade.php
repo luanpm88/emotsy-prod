@@ -23,8 +23,11 @@
 
     @include("campaigns._chart")
 
-    @include("campaigns._chart2")
+    @if (config('custom.woo'))
 
+        @include("campaigns._chart2")
+
+    @endif
     <hr />
 
     @include("campaigns._open_click_rate")
