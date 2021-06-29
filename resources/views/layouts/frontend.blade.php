@@ -266,7 +266,7 @@
 								<a href="{{ action("AccountController@api") }}" class="level-1 d-flex align-items-center">
 								<i class="acelle-icon mr-3">
 								<img src="{{ url('images/icons/'.$iconDir.'SVG/api.svg') }}" />
-							</i>{{ trans('messages.api') }}
+							</i>{{ trans('messages.campaign_api') }}
 								</a>
 							</li>
 						@endif

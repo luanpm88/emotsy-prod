@@ -3688,4 +3688,6 @@
       You can set up a specific value below, which shall apply to any users subscribing to this plan.',
   'bounce_rate_theshold.set_a_limit' => 'Set a limit',
   'tags' => 'Tags',
+  'campaign_api' => 'Campaign API',
+  'admin_api' => 'Admin API',
 ) ?>
