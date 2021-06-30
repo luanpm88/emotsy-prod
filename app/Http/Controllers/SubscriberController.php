@@ -370,6 +370,8 @@ class SubscriberController extends Controller
         $customer = $request->user()->customer;
         $list = MailList::findByUid($request->list_uid);
 
+        $currentJob = $list->jobMonitors()->first();
+
         // authorize
         if (\Gate::denies('import', $list)) {
             return $this->notAuthorized();
@@ -385,7 +387,9 @@ class SubscriberController extends Controller
             ]);
         } else {
             return view('subscribers.import', [
-                'list' => $list
+                'list' => $list,
+                'currentJobUid' => $currentJob->uid,
+                'progressCheckUrl' => action('SubscriberController@importProgress', ['job_uid' => $currentJob->uid]),
             ]);
         }
     }

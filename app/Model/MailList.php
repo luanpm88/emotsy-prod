@@ -2174,4 +2174,9 @@ class MailList extends Model
     {
         return $this->hasMany(JobMonitor::class, 'subject_id')->where('subject_name', self::class);
     }
+
+    public function activeImportJobs()
+    {
+        return $this->jobMonitors()->orderBy('job_monitors.id', 'DESC')->active()->where('job_type', ImportSubscribersJob::class);
+    }
 }

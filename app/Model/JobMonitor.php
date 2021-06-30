@@ -99,6 +99,11 @@ class JobMonitor extends Model
         $this->save();
     }
 
+    public function scopeActive($query)
+    {
+        return $query->whereIn('status', [self::STATUS_RUNNING, self::STATUS_QUEUED]);
+    }
+
     // @TODO: for batch, store the association only, do not use any other feature of the JobMonitor
     public static function forBatch($subject, Batch $batch, $jobType)
     {
