@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Bus\Batch;
 use Illuminate\Support\Facades\Bus;
+use Exception;
 
 class JobMonitor extends Model
 {
@@ -134,5 +135,27 @@ class JobMonitor extends Model
         $json = $this->getJsonData();
         $json = array_merge($json, $data);
         $this->setJsonData($json);
+    }
+
+    public function isActive()
+    {
+        return $this->status == self::STATUS_QUEUED || self::STATUS_RUNNING;
+    }
+
+    public function cancel()
+    {
+        // @TODO: more checking here: if job is actually running (with a record in jobs table --> do not allow cancel)
+        if (!$this->isActive()) {
+            throw new Exception('Cannot cancel job. Job status is: '.$this->status);
+        }
+
+        $job = $this->getJob();
+
+        if ($job) {
+            $job->delete();
+        }
+
+        // For now, do not store cancelled job
+        $this->delete();
     }
 }

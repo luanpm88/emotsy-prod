@@ -377,20 +377,53 @@ class SubscriberController extends Controller
             return $this->notAuthorized();
         }
 
+        // POST
         if ($request->isMethod('post')) {
             $monitor = $list->importUploadedCsv($request->file('file'));
             return response()->json([
                 'job_uid' => $monitor->uid,
                 'progress_check_url' => action('SubscriberController@importProgress', [
                     'job_uid' => $monitor->uid, 
-                ])
+                ]),
+                'cancel_url' => action('SubscriberController@cancelImport', [
+                    'job_uid' => $monitor->uid, 
+                ]),
             ]);
-        } else {
+        }
+
+        // GET, has a current job
+        if ($currentJob) {
             return view('subscribers.import', [
                 'list' => $list,
                 'currentJobUid' => $currentJob->uid,
                 'progressCheckUrl' => action('SubscriberController@importProgress', ['job_uid' => $currentJob->uid]),
+                'cancelUrl' => action('SubscriberController@cancelImport', ['job_uid' => $currentJob->uid]),
             ]);
+        // GET, do not have any job
+        } else {
+            return view('subscribers.import', [
+                'list' => $list,
+            ]);
+        }
+    }
+
+    /**
+     * Import from file.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function cancelImport(Request $request)
+    {
+        $job = JobMonitor::findByUid($request->job_uid);
+
+        try {
+            $job->cancel();            
+            return response()->json(['status' => 'done']);
+        } catch (\Exception $ex) {
+            $job->delete(); // delete anyway if already done or failed, to make it simple to user
+            return response()->json(['status' => '']);
         }
     }
 

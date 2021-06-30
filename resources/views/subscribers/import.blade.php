@@ -23,7 +23,7 @@
 
     <div class="row">
         <div class="col-md-8">
-            <form
+            <form id="importForm"
                 action="{{ action('SubscriberController@import', $list->uid) }}" method="POST" class="ajax_upload_form form-validate-jquery">
                 {{ csrf_field() }}
 
@@ -76,7 +76,7 @@
                         </div>
                     </div>
                     <label></label>
-                    <a data-method="POST" link-confirm="{{ trans('messages.cancel_system_jobs_confirm') }}" data-href="{{ action('SystemJobController@cancel', ["uids" => ""]) }}" type="button" class="btn bg-grey btn-icon cancel processing">
+                    <a id="cancelBtn" class="btn bg-grey btn-icon cancel processing">
                         {{ trans('messages.cancel') }}
                     </a>
                 </div>
@@ -101,6 +101,8 @@
             currentImportJobUid: null,
             progressCheckUrl: null,
             cancelUrl: null,
+
+            progressCheck: null,
 
             // Update import progress
             updateProgressBar: function(percentage, message) { // percentage from 0 to 100
@@ -137,6 +139,72 @@
                 form.find('.cancel').addClass('hide');
             },
 
+            checkProgress: function(completeAlert = true) {
+            	var form = $("form.ajax_upload_form");
+	            var bar = form.find('.progress-total');
+	            var bar_s = form.find('.progress-success');
+	            var bar_e = form.find('.progress-error');
+
+	            $.ajax({
+	                url : AcelleImport.progressCheckUrl,
+	                type: "GET",
+	                success: function(result, textStatus, jqXHR) {
+	                    // Upgrade progress, no matter which status is
+	                    AcelleImport.showProgressBar();
+	                    AcelleImport.updateProgressBar(result.percentage, result.message);
+
+	                    if (result.status == "failed") {
+	                        AcelleImport.hideCancelButton();
+	                        form.find('.finish').removeClass("hide");
+	                        form.find('.success').addClass("hide");
+	                    } else if (result.status == "done") {
+	                        AcelleImport.hideCancelButton();
+	                        form.find('.upload_file .progress-bar').addClass('success');
+	                        form.find('.finish').removeClass('hide');
+	                        form.find('.success').removeClass("hide");
+	                        form.find(".processing h4").html('{{ trans('messages.import_completed') }}');
+
+	                        if (completeAlert) {
+	                            // Success alert
+	                            swal({
+	                                title: '{{ trans('messages.import_completed') }}',
+	                                text: "",
+	                                confirmButtonColor: "#00695C",
+	                                type: "success",
+	                                allowOutsideClick: true,
+	                                confirmButtonText: LANG_OK,
+	                            });
+	                        }
+	                    } else if (result.status == "cancelled") {
+	                        /*
+	                        AcelleImport.hideProgressBar();
+	                        form.find('.finish').addClass("hide");
+	                        form.find('.success').removeClass("hide");
+	                        */
+	                    } else if (result.status == "running" || result.status == "queued") {
+	                        AcelleImport.showProgressBar();
+	                        AcelleImport.progressCheck = setTimeout(function() {
+	                        	 AcelleImport.checkProgress();
+	                        }, 2000);
+	                    }
+
+	                    return false;
+	                }
+	            });
+            },
+
+            showFinishButtonBar: function() {
+            	$(".finish").removeClass('hide');
+            },
+
+            hideFinishButtonBar: function() {
+            	$(".finish").addClass('hide');
+            },
+
+            stopCheckingProgress: function() {
+            	clearTimeout(AcelleImport.progressCheck);
+            },
+
             upload: function() {
                 var form = $("form.ajax_upload_form");
 
@@ -160,26 +228,9 @@
                         // Make another request to query progress
                         AcelleImport.currentImportJobUid = data.job_uid;
                         AcelleImport.progressCheckUrl = data.progress_check_url;
-                        check_process();
+                        AcelleImport.cancelUrl = data.cancel_url;
 
-                        console.log(data);
-                        
-                        return true;
-
-                        if (data == 'max_file_upload') {
-                            // Success alert
-                            swal({
-                                title: '{{ trans('messages.file_import_to_large') }}',
-                                text: "",
-                                confirmButtonColor: "#00695C",
-                                type: "error",
-                                allowOutsideClick: true,
-                                confirmButtonText: LANG_OK,
-                            });
-
-                            form.find('.retry').trigger('click');
-                            return;
-                        }
+                        AcelleImport.checkProgress();
                     },
                     cache: false,
                     contentType: false,
@@ -193,67 +244,74 @@
                         allowOutsideClick: true,
                         confirmButtonText: LANG_OK,
                     });
-
-                    form.find('.retry').trigger('click');
                     return;
                 });
 
                 return false;
+            },
+
+            importAnotherFile: function() {
+            	AcelleImport.stopCheckingProgress();
+            	var token = $('form#importForm').find('input[name="_token"]').val();
+
+                $.ajax({
+                    url : AcelleImport.cancelUrl,
+                    type: "POST",
+                    data: {
+                    	'_token': token
+                    },
+                    success: function(result, textStatus, jqXHR) {
+                        AcelleImport.hideFinishButtonBar();
+                        AcelleImport.hideProgressBar();
+                    }
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    swal({
+                        title: errorThrown,
+                        text: "",
+                        confirmButtonColor: "#00695C",
+                        type: "error",
+                        allowOutsideClick: true,
+                        confirmButtonText: LANG_OK,
+                    });
+
+                    // Resume progress checking
+                    AcelleImport.checkProgress();
+                });
+            },
+
+            cancel: function() {
+            	AcelleImport.stopCheckingProgress();
+            	var token = $('form#importForm').find('input[name="_token"]').val();
+
+                $.ajax({
+                    url : AcelleImport.cancelUrl,
+                    type: "POST",
+                    data: {
+                    	'_token': token
+                    },
+                    success: function(result, textStatus, jqXHR) {
+                        AcelleImport.hideFinishButtonBar();
+                        AcelleImport.hideProgressBar();
+                    }
+                }).fail(function(jqXHR, textStatus, errorThrown) {
+                    swal({
+                        title: errorThrown,
+                        text: "",
+                        confirmButtonColor: "#00695C",
+                        type: "error",
+                        allowOutsideClick: true,
+                        confirmButtonText: LANG_OK,
+                    });
+
+                    // Resume progress checking
+                    AcelleImport.checkProgress();
+
+                    return false;
+                });
             }
         }
 
         var listUID = '{{ $list->uid }}';
-
-        function check_process() {
-            var form = $("form.ajax_upload_form")
-            var bar = form.find('.progress-total');
-            var bar_s = form.find('.progress-success');
-            var bar_e = form.find('.progress-error');
-
-            $.ajax({
-                url : AcelleImport.progressCheckUrl,
-                type: "GET",
-                success: function(result, textStatus, jqXHR) {
-                    // Upgrade progress, no matter which status is
-                    AcelleImport.showProgressBar();
-                    AcelleImport.updateProgressBar(result.percentage, result.message);
-
-                    // Update cancel link
-                    form.find('.cancel').attr('href', '*******cancel-url-here');
-
-                    if (result.status == "failed") {
-                        AcelleImport.hideCancelButton();
-                        form.find('.finish').removeClass("hide");
-                        form.find('.success').addClass("hide");
-                    } else if (result.status == "done") {
-                        AcelleImport.hideCancelButton();
-                        form.find('.upload_file .progress-bar').addClass('success');
-                        form.find('.finish').removeClass('hide');
-                        form.find('.success').removeClass("hide");
-                        form.find(".processing h4").html('{{ trans('messages.import_completed') }}');
-
-                        if (!form.find('.finish').hasClass('hide')) {
-                            // Success alert
-                            swal({
-                                title: '{{ trans('messages.import_completed') }}',
-                                text: "",
-                                confirmButtonColor: "#00695C",
-                                type: "success",
-                                allowOutsideClick: true,
-                                confirmButtonText: LANG_OK,
-                            });
-                        }
-                    } else if (result.status == "cancelled") {
-                        AcelleImport.hideProgressBar();
-                        form.find('.finish').addClass("hide");
-                        form.find('.success').removeClass("hide");
-                    } else if (result.status == "running" || result.status == "queued") {
-                        AcelleImport.showProgressBar();
-                        setTimeout("check_process()", 2000);
-                    }
-                }
-            });
-        }
 
         $(document).on("submit", "form.ajax_upload_form", function() {
             AcelleImport.upload();
@@ -261,10 +319,18 @@
         });
 
         $(document).on("click", ".retry", function() {
-            $(".input[type=file]").val("");
-            $(".finish").addClass('hide');
-            AcelleImport.hideProgressBar();
-            AcelleImport.updateProgressBar(0, '');
+            AcelleImport.importAnotherFile();
+            return false;
+        });
+
+        $(document).on("click", "#cancelBtn", function() {
+            var cancelConfirm = confirm("{{ trans('messages.list.import.cancel') }}");
+
+            if (cancelConfirm) {
+                AcelleImport.cancel();
+            }
+
+            return false;
         });
 
         $(document).ready(function() {
@@ -274,8 +340,9 @@
 
                 AcelleImport.currentImportJobUid = '{{ $currentJobUid }}';
                 AcelleImport.progressCheckUrl = '{{ $progressCheckUrl }}';
-                
-                check_process();
+                AcelleImport.cancelUrl = '{{ $cancelUrl }}';
+
+                AcelleImport.checkProgress(false);
             @endif
         });
     </script>

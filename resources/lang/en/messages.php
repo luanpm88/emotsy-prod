@@ -1349,7 +1349,7 @@
   'import_missing_header_field' => 'The following fields are required: :fields',
   'Failed' => 'Failed',
   'system_jobs.cancelled' => 'One or more jobs were successfully cancelled',
-  'cancel_system_jobs_confirm' => 'You\'re about to cancel :number job(s).',
+  'list.import.cancel' => 'Are you sure you want to cancel the import job?',
   'cancelled' => 'cancelled',
   'import_failed_message' => '<span class="text-danger">:error</span>',
   'workflow_overview' => 'Workflow overview',
