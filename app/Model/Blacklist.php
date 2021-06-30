@@ -23,6 +23,7 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use File;
 
 class Blacklist extends Model
 {

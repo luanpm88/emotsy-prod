@@ -2,71 +2,36 @@
 
 namespace Acelle\Jobs;
 
-use Acelle\Library\Log as CustomLog;
+use Acelle\Library\Traits\Trackable;
 
-class ImportSubscribersJob extends ImportExportJob
+class ImportSubscribersJob extends Base
 {
+    use Trackable;
+
     // @todo this should better be a constant
-    protected $file;
+    protected $list;
+    protected $file; // Example: /home/acelle/storage/app/tmp/import-000000.csv
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($mailList, $customer, $file)
+    public function __construct($list, $file)
     {
-        // call parent's constructor
-        parent::__construct($mailList, $customer);
+        $this->list = $list;
+        $this->file = $file;
 
-        // Upload csv
-        $this->file = join_paths($this->path, 'data.csv');
-        rename($file, $this->file);
-        chmod($this->file, 0777);
-
-        // Update system job status
-        // init the status
-        $this->updateStatus([
-            'mail_list_uid' => $mailList->uid,
-            'customer_id' => $customer->id,
-            'status' => \Acelle\Model\MailList::IMPORT_STATUS_NEW,
-            'error_message' => '',
-            'total' => 0,
-            'processed' => 0,
-        ]);
-    }
-
-    /**
-     * Get import file name.
-     *
-     * @return string file path
-     */
-    public function getFile()
-    {
-        return $this->file;
-    }
-
-    /**
-     * Get import file name.
-     *
-     * @return void
-     */
-    public function updateStatus($data)
-    {
-        $systemJobModel = $this->getSystemJob();
-        $json = ($systemJobModel->data) ? json_decode($systemJobModel->data, true) : [ 'log' => $this->getLog() ];
-        $systemJobModel->data = json_encode(array_merge($json, $data));
-        $systemJobModel->save();
-    }
-
-    /**
-     * Get import log file
-     *
-     * @return string file path
-     */
-    public function getLog()
-    {
-        return join_paths($this->getPath(), 'import.log');
+        // Set the initial value for progress check
+        $this->afterDispatched(function($thisJob, $monitor) {
+            $monitor->setJsonData([
+                'percentage' => 0,
+                'total' => 0,
+                'processed' => 0,
+                'failed' => 0,
+                'message' => 'Import is being queued for processing...',
+            ]);
+        });
     }
 
     /**
@@ -76,18 +41,19 @@ class ImportSubscribersJob extends ImportExportJob
      */
     public function handle()
     {
-        $this->mailList->import2($this->file, $this->customer, $this);
-    }
+        // File path: 
+        $this->list->import2($this->file, function($processed, $total, $failed, $message) {
+            $percentage = ($total && $processed) ? (int)($processed*100/$total) : 0;
 
-    /**
-     * Get the job's logger
-     *
-     * @return object job logger
-     */
-    public function getLogger()
-    {
-        $log_name = 'importer';
-        $logger = CustomLog::create($this->getLog(), $log_name);
-        return $logger;
+            $this->monitor->updateJsonData([
+                'percentage' => $percentage,
+                'total' => $total,
+                'processed' => $processed,
+                'failed' => $failed,
+                'message' => $message,
+            ]);
+        });
+
+        // Once import has finished successfully, set the status to
     }
 }

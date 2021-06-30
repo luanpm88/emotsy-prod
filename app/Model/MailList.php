@@ -39,10 +39,17 @@ use DB;
 use App;
 use Acelle\Library\Traits\QueryHelper;
 use Acelle\Events\MailListImported;
+use Acelle\Library\Traits\TrackJobs;
+use File;
+use Acelle\Jobs\ImportSubscribersJob;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+use Monolog\Formatter\LineFormatter;
+use Exception;
 
 class MailList extends Model
 {
-    use QueryHelper;
+    use QueryHelper, TrackJobs;
 
     // Subscribers to import every time
     const IMPORT_STATUS_NEW = 'new';
@@ -53,6 +60,9 @@ class MailList extends Model
     const SOURCE_EMBEDDED_FORM = 'embedded-form';
     const SOURCE_WEB = 'web';
     const SOURCE_API = 'api';
+
+    const IMPORT_TEMP_DIR = 'app/tmp/';
+
 
     /**
      * The attributes that are mass assignable.
@@ -178,9 +188,6 @@ class MailList extends Model
                 $item->contact->delete();
             }
 
-            // Delete import jobs
-            $item->importJobs()->delete();
-
             // Delete export jobs
             $item->exportJobs()->delete();
         });
@@ -194,6 +201,57 @@ class MailList extends Model
     public static function getAll()
     {
         return self::select('*');
+    }
+
+    /**
+     * Get all items.
+     *
+     * @return collect
+     */
+    public function importUploadedCsv(\Illuminate\Http\UploadedFile $httpFile)
+    {
+        $filename = "import-".uniqid().".csv";
+
+        // store it to storage/
+        $httpFile->move($this->getImportFilePath(), $filename);
+
+        // Example: /home/acelle/storage/app/tmp/import-000000.csv
+        $filepath = $this->getImportFilePath($filename);
+        $job = new ImportSubscribersJob($this, $filepath);
+        $monitor = $this->dispatchWithMonitor($job);
+        return $monitor;
+    }
+
+    public function getImportTempDir($file = null)
+    {
+        $base = storage_path(self::IMPORT_TEMP_DIR);
+        if (!File::exists($base)) {
+            File::makeDirectory($base, 0777, true, true);
+        }
+
+        return join_paths($base, $file);   
+    }
+
+    public function getImportFilePath($filename = null)
+    {
+        return $this->getImportTempDir($filename);
+    }
+
+    // Return the logger for import file
+    // If import file is .../.../import-000000.csv
+    // Then the log file is .../.../import-000000.csv.log
+    public function getImportLogger($filename = null)
+    {
+        $formatter = new LineFormatter("[%datetime%] %channel%.%level_name%: %message%\n");
+        $logfile = $this->getImportTempDir($filename.".log");
+        $stream = new StreamHandler($logfile, Logger::DEBUG);
+        $stream->setFormatter($formatter);
+
+        $pid = getmypid();
+        $logger = new Logger($pid);
+        $logger->pushHandler($stream);
+
+        return $logger;
     }
 
     /**
@@ -695,29 +753,6 @@ class MailList extends Model
     }
 
     /**
-     * Get import jobs.
-     *
-     * @return number
-     */
-    public function importJobs()
-    {
-        return \Acelle\Model\SystemJob::where('name', '=', "Acelle\Jobs\ImportSubscribersJob")
-            ->where('data', 'like', '%"mail_list_uid":"'.$this->uid.'"%');
-    }
-
-    /**
-     * Get last export job.
-     *
-     * @return number
-     */
-    public function getLastImportJob()
-    {
-        return $this->importJobs()
-            ->orderBy('created_at', 'DESC')
-            ->first();
-    }
-
-    /**
      * Get export jobs.
      *
      * @return number
@@ -1102,7 +1137,7 @@ class MailList extends Model
      *
      * @param string file path
      *
-     * @return array [$headers, $availableFields, $lineCount, $results]
+     * @return array [$headers, $availableFields, $total, $results]
      */
     public function getRemainingAddSubscribersQuota()
     {
@@ -1128,7 +1163,7 @@ class MailList extends Model
      *
      * @param string file path
      *
-     * @return array [$headers, $availableFields, $lineCount, $results]
+     * @return array [$headers, $availableFields, $total, $results]
      */
     private function readCsv($file)
     {
@@ -1152,7 +1187,6 @@ class MailList extends Model
             }
 
             // Read CSV files
-            $lineCount = line_count($file) - 1; // do not count the header
             $reader = \League\Csv\Reader::createFromPath($file);
             $reader->setHeaderOffset(0);
             // get the headers, using array_filter to strip empty/null header
@@ -1178,7 +1212,7 @@ class MailList extends Model
             // split the entire list into smaller batches
             $results = $reader->getRecords($headers);
 
-            return [$headers, $availableFields, $lineCount, $results];
+            return [$headers, $availableFields, iterator_count($results), $results];
         } catch (\Exception $ex) {
             // @todo: translation here
             throw new \Exception('Invalid headers. Original error message is: '.$ex->getMessage());
@@ -1231,34 +1265,45 @@ class MailList extends Model
      * @return string quoted value
      * @todo: use MySQL escape function to correctly escape string with astrophe
      */
-    public function import2($file, $customer, $system_job)
+    public function import2($file, $progressCallback = null)
     {
-        try {
-            $processed_count = 0;
-            $overQuotaAttempt = false;
-            $logger = $system_job->getLogger();
-            $logger->info(trans('messages.Start_importing_for_list_uid', ['uid' => $this->uid]));
+        $processed = 0;
+        $failed = 0;
+        $total = 0;
 
-            // init the status
-            $system_job->updateStatus([
-                'status' => self::IMPORT_STATUS_RUNNING,
-            ]);
+        try {            
+            $overQuotaAttempt = false;
+
+            if (!is_null($progressCallback)) {
+                $progressCallback($processed, $total, $failed, $message = 'Import is starting...');
+            }
+            
+            $logger = $this->getImportLogger($file);
+            $logger->info(trans('messages.list.import.start', ['uid' => $this->uid]));
 
             // Read CSV files
-            list($headers, $availableFields, $lineCount, $results) = $this->readCsv($file);
+            list($headers, $availableFields, $total, $results) = $this->readCsv($file);
+            
+            if (!is_null($progressCallback)) {
+                $progressCallback($processed, $total, $failed, $message = 'Validating file headers...');
+            }
 
             // validate headers, check for required fields
             // throw an exception in case of error
             $this->validateCsvHeader($availableFields);
 
+            if (!is_null($progressCallback)) {
+                $progressCallback($processed, $total, $failed, $message = 'Loading records from file...');
+            }
+
             // update status, line count
-            $system_job->updateStatus(['total' => $lineCount]);
+            // $system_job->updateStatus(['total' => $total]);
 
             // process by batches
-            each_batch($results, config('app.import_batch_size'), true, function ($batch) use ($logger, $availableFields, &$customer, &$processed_count, &$system_job, &$overQuotaAttempt) {
+            each_batch($results, config('app.import_batch_size'), false, function ($batch) use ($availableFields, &$processed, &$failed, $total, &$overQuotaAttempt, $logger, $progressCallback) {
 
                 // authorization
-                if ($customer->user->can('addMoreSubscribers', [$this, sizeof($batch)])) {
+                if ($this->customer->user->can('addMoreSubscribers', [$this, sizeof($batch)])) {
                     $insertLimit = sizeof($batch);
                 } else {
                     $insertLimit = $this->getRemainingAddSubscribersQuota();
@@ -1268,19 +1313,17 @@ class MailList extends Model
                 //     throw new \Exception(trans('messages.import.notice.over_quota'));
                 // }
 
-                // processing for every batch,
-                // using transaction to only commit at the end of the batch execution
-                DB::beginTransaction();
-
                 // create a temporary table containing the input subscribers
                 $tmpTable = table('__tmp_subscribers');
                 // @todo: hard-coded charset and COLLATE
                 $tmpFields = implode(',', array_map(function ($field) {
                     return "`{$field}` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci";
                 }, $availableFields));
-                DB::statement("DROP TABLE IF EXISTS {$tmpTable};
-                               CREATE TABLE {$tmpTable}({$tmpFields});
-                               CREATE INDEX _index_email_{$tmpTable} ON {$tmpTable}(`email`);");
+
+                // Drop table, create table and create index
+                DB::statement("DROP TABLE IF EXISTS {$tmpTable};");
+                DB::statement("CREATE TABLE {$tmpTable}({$tmpFields})");
+                DB::statement("CREATE INDEX _index_email_{$tmpTable} ON {$tmpTable}(`email`);");
 
                 // Insert subscriber fields from the batch to the temporary table
                 // extract only fields whose name matches TAG NAME of MailList
@@ -1307,14 +1350,15 @@ class MailList extends Model
                 $data = array_where($data, function ($record) use ($logger) {
                     list($valid, $errors) = $this->validateCsvRecord($record);
                     if (!$valid) {
-                        $logger->warning($record['email'].': '.implode(', ', $errors));
+                        // $logger->warning($record['email'].': '.implode(', ', $errors));
+                        $failed += 1;
                     }
 
                     return $valid;
                 });
 
+                // INSERT TO tmp TABLE
                 DB::table('__tmp_subscribers')->insert($data);
-
                 $newRecordCount = DB::select("SELECT COUNT(*) AS count FROM {$tmpTable} tmp LEFT JOIN ".table('subscribers')." main ON (tmp.email = main.email AND main.mail_list_id = {$this->id}) WHERE main.email IS NULL")[0]->count;
 
                 if ($newRecordCount > 0 && $insertLimit == 0) {
@@ -1324,6 +1368,10 @@ class MailList extends Model
                     // Just let it proceed until finishing
                     $overQuotaAttempt = true;
                 }
+
+                // processing for every batch,
+                // using transaction to only commit at the end of the batch execution
+                DB::beginTransaction();
 
                 // Insert new subscribers from temp table to the main table
                 // Use SUBSTRING(MD5(UUID()), 1, 13) to produce a UNIQUE ID which is similar to the output of PHP uniqid()
@@ -1359,8 +1407,13 @@ class MailList extends Model
                 }
 
                 // update status, finish one batch
-                $processed_count += sizeof($batch);
-                $system_job->updateStatus(['processed' => $processed_count]);
+                $processed += sizeof($batch);
+                if (!is_null($progressCallback)) {
+                    $progressCallback($processed, $total, $failed, $message = 'Inserting contacts to database...');
+                }
+                
+                // Actually write to the database
+                DB::commit();
 
                 // Cleanup
                 DB::statement("DROP TABLE IF EXISTS {$tmpTable};");
@@ -1369,43 +1422,48 @@ class MailList extends Model
                 $this->updateCachedInfo();
 
                 // blacklist new emails (if any)
-                Blacklist::doBlacklist($customer);
-
-                // Actually write to the database
-                DB::commit();
+                Blacklist::doBlacklist($this->customer);
 
                 // Trigger
                 MailListImported::dispatch($this);
             });
-        } catch (\Exception $e) {
-            // finish the transaction
+        } catch (\Throwable $e) {
+            // IMPORTANT: rollback first before throwing, otherwise it will be a deadlock
             DB::rollBack();
 
+            throw $e;
+            // finish the transaction
+            
+
             // LOG ERROR MESSAGE
-            $system_job->updateStatus([
-                'error_message' => $e->getMessage(),
-            ]);
+            // $system_job->updateStatus([
+            //    'error_message' => $e->getMessage(),
+            // ]);
 
             // WRITE to job's logger
-            $logger->error($e->getMessage());
+            // $logger->error($e->getMessage());
         } finally {
             // UPDATE JOB STATUS "DONE" (so job is always DONE, with or without error_message)
             // Hack, in case processed_count is not equal to total
-            $system_job->updateStatus(['status' => self::IMPORT_STATUS_DONE, 'total' => $processed_count]);
+            // $system_job->updateStatus(['status' => self::IMPORT_STATUS_DONE, 'total' => $processed]);
             
-            if ($overQuotaAttempt) {
-                $system_job->updateStatus(['error_message' => trans('messages.import.notice.over_quota')]);
-            }
+            //if ($overQuotaAttempt) {
+            //    $system_job->updateStatus(['error_message' => trans('messages.import.notice.over_quota')]);
+            // }
 
-            $logger->info(trans('messages.Finish_importing_for_list_uid', ['uid' => $this->uid]));
+            //$logger->info(trans('messages.Finish_importing_for_list_uid', ['uid' => $this->uid]));
             
-            $this->log('import_success', $customer, ['count' => $processed_count,'error' => '']);
+            //$this->log('import_success', $customer, ['count' => $processed,'error' => '']);
 
             // @IMPORTANT: if process fails here, something weird occurs
             // Job done, system_job.data does not have any information!!!
             // Only errors found in failed_logs and system_job.status = failed
             $this->reformatDateFields();
             $this->updateCachedInfo();
+
+            if (!is_null($progressCallback)) {
+                $progressCallback($processed, $total, $failed, $message = 'Import complete!');
+            }
         }
     }
 
@@ -2109,5 +2167,11 @@ class MailList extends Model
             WHERE value <> tmp.pretty_date";
         DB::statement($sql);
         **********/
+    }
+
+    // Currently, only one monitor per campaign (soft business)
+    public function jobMonitors()
+    {
+        return $this->hasMany(JobMonitor::class, 'subject_id')->where('subject_name', self::class);
     }
 }

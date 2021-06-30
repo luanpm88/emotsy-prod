@@ -31,6 +31,7 @@ use Acelle\Events\MailListUnsubscription;
 use Acelle\Library\StringHelper;
 use DB;
 use Exception;
+use File;
 
 class Subscriber extends Model
 {

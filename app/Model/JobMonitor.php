@@ -11,6 +11,33 @@ class JobMonitor extends Model
 {
     use HasFactory;
 
+    const STATUS_QUEUED = 'queued';
+    const STATUS_RUNNING = 'running';
+    const STATUS_DONE = 'done';
+    const STATUS_FAILED = 'failed';
+
+     /**
+     * Bootstrap any application services.
+     */
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($me) {
+            $me->uid = uniqid();
+        });
+    }
+
+    /**
+     * Find item by uid.
+     *
+     * @return object
+     */
+    public static function findByUid($uid)
+    {
+        return self::where('uid', '=', $uid)->first();
+    }
+
     public function getBatch()
     {
         if (is_null($this->batch_id)) {
@@ -50,6 +77,29 @@ class JobMonitor extends Model
         return $query->whereNotNull('batch_id');
     }
 
+    public function setFailed($exception) {
+        $this->status = self::STATUS_FAILED;
+        $errorMsg = "Error executing job. ".$exception->getMessage()."\n".$exception->getTraceAsString();        
+        $this->error = $errorMsg;
+        $this->save();
+    }
+
+    public function setRunning() {
+        $this->status = self::STATUS_RUNNING;
+        $this->save();
+    }
+
+    public function setDone() {
+        $this->status = self::STATUS_DONE;
+        $this->save();
+    }
+
+    public function setQueued() {
+        $this->status = self::STATUS_QUEUED;
+        $this->save();
+    }
+
+    // @TODO: for batch, store the association only, do not use any other feature of the JobMonitor
     public static function forBatch($subject, Batch $batch, $jobType)
     {
         $monitor = new self();
@@ -62,15 +112,22 @@ class JobMonitor extends Model
         return $monitor;
     }
 
-    public static function forJob($subject, $job_id, $jobType)
+    public function getJsonData()
     {
-        $monitor = new self();
-        $monitor->subject_name = get_class($subject);
-        $monitor->subject_id = $subject->id;
-        $monitor->job_id = $job_id;
-        $monitor->job_type = $jobType;
-        $monitor->save();
+        // Also convert null or empty string to an empty array ([])
+        return json_decode($this->data, true) ?: [];
+    }
 
-        return $monitor;
+    public function setJsonData($data)
+    {
+        $this->data = json_encode($data);
+        $this->save();
+    }
+
+    public function updateJsonData($data)
+    {
+        $json = $this->getJsonData();
+        $json = array_merge($json, $data);
+        $this->setJsonData($json);
     }
 }

@@ -4,6 +4,7 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Model\Source;
+use File;
 
 class Product extends Model
 {

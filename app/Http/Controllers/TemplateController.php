@@ -8,6 +8,7 @@ use Acelle\Model\Template;
 use Acelle\Library\Rss;
 use Acelle\Model\Setting;
 use App;
+use File;
 
 class TemplateController extends Controller
 {

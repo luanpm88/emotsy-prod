@@ -38,6 +38,7 @@ use Exception;
 use DB;
 use Acelle\Library\Facades\Billing;
 use Acelle\Library\AutoBillingData;
+use File;
 
 class Customer extends Model
 {

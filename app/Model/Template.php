@@ -33,6 +33,7 @@ use Illuminate\Validation\ValidationException;
 use KubAT\PhpSimple\HtmlDomParser;
 use Acelle\Library\Tool;
 use Acelle\Library\StringHelper;
+use File;
 
 class Template extends Model
 {

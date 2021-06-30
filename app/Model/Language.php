@@ -24,6 +24,7 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Facades\Hook;
+use File;
 
 class Language extends Model
 {

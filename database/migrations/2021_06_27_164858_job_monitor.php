@@ -15,11 +15,15 @@ class JobMonitor extends Migration
     {
         Schema::create('job_monitors', function (Blueprint $table) {
             $table->id();
-            $table->string('batch_id')->nullable();
-            $table->mediumText('job_type')->nullable();
+            $table->uuid('uid');
             $table->string('subject_name');
             $table->bigInteger('subject_id');
+            $table->string('batch_id')->nullable();
             $table->bigInteger('job_id')->nullable();
+            $table->string('job_type')->nullable();
+            $table->mediumText('error')->nullable();
+            $table->mediumText('data')->nullable();
+            $table->string('status')->nullable();
             $table->timestamps();
         });
     }
