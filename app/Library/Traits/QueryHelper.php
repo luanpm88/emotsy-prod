@@ -27,8 +27,8 @@ trait QueryHelper
             $table = table($tableName); // with prefix
             $fieldsSql = implode(',', $fields);
 
-            DB::statement("DROP TABLE IF EXISTS {$table};
-                       CREATE TABLE {$table}({$fieldsSql});");
+            DB::statement("DROP TABLE IF EXISTS {$table};");
+            DB::statement("CREATE TABLE {$table}({$fieldsSql});");
 
             // Actually insert data
             DB::table($tableName)->insert($data);
