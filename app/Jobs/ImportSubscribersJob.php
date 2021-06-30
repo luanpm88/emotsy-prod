@@ -3,6 +3,10 @@
 namespace Acelle\Jobs;
 
 use Acelle\Library\Traits\Trackable;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+use Monolog\Formatter\LineFormatter;
+use Exception;
 
 class ImportSubscribersJob extends Base
 {
@@ -30,6 +34,7 @@ class ImportSubscribersJob extends Base
                 'processed' => 0,
                 'failed' => 0,
                 'message' => 'Import is being queued for processing...',
+                'logfile' => null,
             ]);
         });
     }
@@ -41,17 +46,40 @@ class ImportSubscribersJob extends Base
      */
     public function handle()
     {
-        // File path: 
-        $this->list->import($this->file, function($processed, $total, $failed, $message) {
-            $percentage = ($total && $processed) ? (int)($processed*100/$total) : 0;
 
-            $this->monitor->updateJsonData([
-                'percentage' => $percentage,
-                'total' => $total,
-                'processed' => $processed,
-                'failed' => $failed,
-                'message' => $message,
-            ]);
-        });
+        // Use a logger to log failed 
+        $formatter = new LineFormatter("[%datetime%] %channel%.%level_name%: %message%\n");
+        $logfile = $this->file.".log";
+        $stream = new StreamHandler($logfile, Logger::DEBUG);
+        $stream->setFormatter($formatter);
+
+        $pid = getmypid();
+        $logger = new Logger($pid);
+        $logger->pushHandler($stream);
+
+        $this->monitor->updateJsonData([
+            'logfile' => $logfile,
+        ]);
+
+        // File path: 
+        $this->list->import(
+            $this->file,
+
+            function ($processed, $total, $failed, $message) {
+                $percentage = ($total && $processed) ? (int)($processed*100/$total) : 0;
+
+                $this->monitor->updateJsonData([
+                    'percentage' => $percentage,
+                    'total' => $total,
+                    'processed' => $processed,
+                    'failed' => $failed,
+                    'message' => $message,
+                ]);
+            },
+
+            function ($invalidRecord, $error) use ($logger) {
+                $logger->warning('Invalid record: [' . implode(",", array_values($invalidRecord)) . "] | Validation error: " . implode(";", $error));
+            }
+        );
     }
 }

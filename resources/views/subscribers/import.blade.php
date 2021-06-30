@@ -61,7 +61,19 @@
                 </div>
 
                 <div class="form-group processing hide">
-                    <h4>{{ trans('messages.please_wait_import') }}</h4>
+                    <h4 style="margin-bottom: 20px" id="notice">{!! trans('messages.please_wait_import') !!}</h4>
+                    <div id="errorBox" class="alert alert-danger" style="display: none; flex-direction: row; align-items: center; justify-content: space-between;">
+		                <div style="display: flex; flex-direction: row; align-items: center;">
+		                    <div style="margin-right:15px">
+		                        <i class="lnr lnr-circle-minus"></i>
+		                    </div>
+		                    <div style="padding-right: 40px">
+		                        <h4>ERROR</h4>
+		                        <p id="errorMsg">We have sent an email to this sender's email address. Please click on the link included in the email to activate</p>
+		                    </div>
+		                </div>
+		            </div>
+
                     <div class="progress progress-lg">
                         <!--<div class="progress-bar progress-success bg-success-400" style="width: 20%">
                             <span class="sr-only"><span class="number">20</span>% Complete</span>
@@ -75,7 +87,7 @@
                             <span><span class="number">0</span>% {{ trans('messages.complete') }}</span>
                         </div>
                     </div>
-                    <label></label>
+                    <label style="margin-bottom:20px;font-style:italic;" id="bottomNotice"></label>
                     <a id="cancelBtn" class="btn bg-grey btn-icon cancel processing">
                         {{ trans('messages.cancel') }}
                     </a>
@@ -83,8 +95,8 @@
 
                 <div class="form-group finish hide">
                     <div class="text-left">
-                        <a target="_blank" href="{{ action('SubscriberController@downloadImportLog', ["list_uid" => $list->uid]) }}" type="button" class="btn bg-teal success">
-                            <i class="icon-download"></i> {{ trans('messages.download_import_log') }}
+                    	<a id="downloadLog" target="_blank" href="#" type="button" class="btn bg-teal $
+                                <i class="icon-download"></i> {{ trans('messages.download_import_log') }}
                         </a>
                         <a href="#retry" class="btn bg-grey-800 mr-10 retry"><i class="icon-reload-alt"></i> {{ trans('messages.import_another') }}</a>
                     </div>
@@ -101,6 +113,7 @@
             currentImportJobUid: null,
             progressCheckUrl: null,
             cancelUrl: null,
+            logDownloadUrl: null,
 
             progressCheck: null,
 
@@ -109,24 +122,43 @@
                 var form = $("form.ajax_upload_form");
                 var bar = form.find('.progress-total');
 
-                form.find(".processing label").html(message);
+                form.find("#bottomNotice").show();
+                form.find("#bottomNotice").html(message);
                 bar.find(".number").html(percentage);
                 bar.css({
                     width: (percentage) + '%'
                 });
             },
 
+            resetCurrentJob: function() {
+            	AcelleImport.currentImportJobUid = null;
+                AcelleImport.progressCheckUrl = null;
+                AcelleImport.cancelUrl = null;
+                AcelleImport.logDownloadUrl = null;
+            },
+
+            setCurrentJob: function(data) {
+            	AcelleImport.currentImportJobUid = data.currentImportJobUid;
+                AcelleImport.progressCheckUrl = data.progressCheckUrl;
+                AcelleImport.cancelUrl = data.cancelUrl;
+                AcelleImport.logDownloadUrl = data.logDownloadUrl;
+            },
+
             // Toggle: show progress bar, hide input upload bar
             showProgressBar: function() {
+            	// Also hide upload input
                 var form = $("form.ajax_upload_form");
                 form.find('.before').addClass("hide");
                 form.find(".processing").removeClass('hide');
+                $('#errorBox').hide();
             },
 
             hideProgressBar: function() {
+            	// Also show upload input
                 var form = $("form.ajax_upload_form");
                 form.find('.before').removeClass("hide");
                 form.find(".processing").addClass('hide');
+                $('#errorBox').hide();
             },
 
             showCancelButton: function() {
@@ -154,15 +186,22 @@
 	                    AcelleImport.updateProgressBar(result.percentage, result.message);
 
 	                    if (result.status == "failed") {
+	                        AcelleImport.showFinishButtonBar();
 	                        AcelleImport.hideCancelButton();
-	                        form.find('.finish').removeClass("hide");
-	                        form.find('.success').addClass("hide");
+	                        $("#notice").hide();
+	                        $("#bottomNotice").hide();
+	                        $('#errorBox').show();
+	                        $('#errorMsg').html(result.error);
 	                    } else if (result.status == "done") {
 	                        AcelleImport.hideCancelButton();
+	                        $("#notice").show();
+	                        $("#notice").html('{!! trans('messages.import_completed') !!}');
+	                        $('#bottomNotice').show();
+	                        $("#bottomNotice").html(result.message);
 	                        form.find('.upload_file .progress-bar').addClass('success');
 	                        form.find('.finish').removeClass('hide');
 	                        form.find('.success').removeClass("hide");
-	                        form.find(".processing h4").html('{{ trans('messages.import_completed') }}');
+	                        
 
 	                        if (completeAlert) {
 	                            // Success alert
@@ -226,16 +265,14 @@
                         // Set the JobID to query progress
                         // Upon receiving the response containing the job_id as well as progress_check_url
                         // Make another request to query progress
-                        AcelleImport.currentImportJobUid = data.job_uid;
-                        AcelleImport.progressCheckUrl = data.progress_check_url;
-                        AcelleImport.cancelUrl = data.cancel_url;
-
+                        AcelleImport.setCurrentJob(data);
                         AcelleImport.checkProgress();
                     },
                     cache: false,
                     contentType: false,
                     processData: false
                 }).fail(function( jqXHR, textStatus, errorThrown ) {
+                    AcelleImport.hideProgressBar();
                     swal({
                         title: errorThrown,
                         text: "",
@@ -251,6 +288,7 @@
             },
 
             importAnotherFile: function() {
+            	// Same as cancel, simply delete the only import job associated with list
             	AcelleImport.stopCheckingProgress();
             	var token = $('form#importForm').find('input[name="_token"]').val();
 
@@ -263,6 +301,7 @@
                     success: function(result, textStatus, jqXHR) {
                         AcelleImport.hideFinishButtonBar();
                         AcelleImport.hideProgressBar();
+                        AcelleImport.resetCurrentJob();
                     }
                 }).fail(function(jqXHR, textStatus, errorThrown) {
                     swal({
@@ -292,6 +331,7 @@
                     success: function(result, textStatus, jqXHR) {
                         AcelleImport.hideFinishButtonBar();
                         AcelleImport.hideProgressBar();
+                        AcelleImport.resetCurrentJob();
                     }
                 }).fail(function(jqXHR, textStatus, errorThrown) {
                     swal({
@@ -310,8 +350,6 @@
                 });
             }
         }
-
-        var listUID = '{{ $list->uid }}';
 
         $(document).on("submit", "form.ajax_upload_form", function() {
             AcelleImport.upload();
@@ -333,15 +371,27 @@
             return false;
         });
 
+        $(document).on("click", "#downloadLog", function() {
+            window.location.href = AcelleImport.logDownloadUrl;
+            return false;
+        });
+
         $(document).ready(function() {
             @if (isset($currentJobUid))
+            	// Temporary show the progress bar of 0 percentage, waiting for the checkProgress() call to update it
                 AcelleImport.showProgressBar();
                 AcelleImport.updateProgressBar(0, 'Checking...');
 
-                AcelleImport.currentImportJobUid = '{{ $currentJobUid }}';
-                AcelleImport.progressCheckUrl = '{{ $progressCheckUrl }}';
-                AcelleImport.cancelUrl = '{{ $cancelUrl }}';
+                // Set up current job information
+                AcelleImport.setCurrentJob({
+					currentImportJobUid: '{{ $currentJobUid }}',
+	                progressCheckUrl: '{{ $progressCheckUrl }}',
+	                cancelUrl: '{{ $cancelUrl }}',
+	                logDownloadUrl: '{{ $logDownloadUrl }}'
+                });
 
+                // false means do not show the alert popup when progress is complete
+                // Don't worry, this is for the first check only
                 AcelleImport.checkProgress(false);
             @endif
         });

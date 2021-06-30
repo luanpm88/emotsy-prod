@@ -259,8 +259,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('lists/{list_uid}/subscribers/unsubscribe', 'SubscriberController@unsubscribe');
     Route::get('lists/{list_uid}/subscribers/import', 'SubscriberController@import');
     Route::post('lists/{list_uid}/subscribers/import', 'SubscriberController@import');
-    Route::get('lists/{list_uid}/subscribers/import/log', 'SubscriberController@downloadImportLog');
     Route::get('lists/import/{job_uid}/progress', 'SubscriberController@importProgress');
+    Route::get('lists/import/{job_uid}/log/download', 'SubscriberController@downloadImportLog');
     Route::post('lists/import/{job_uid}/cancel', 'SubscriberController@cancelImport');
     Route::get('lists/{list_uid}/subscribers/export', 'SubscriberController@export');
     Route::post('lists/{list_uid}/subscribers/export', 'SubscriberController@export');

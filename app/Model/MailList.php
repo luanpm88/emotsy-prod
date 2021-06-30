@@ -229,29 +229,12 @@ class MailList extends Model
             File::makeDirectory($base, 0777, true, true);
         }
 
-        return join_paths($base, $file);   
+        return join_paths($base, $file);
     }
 
     public function getImportFilePath($filename = null)
     {
         return $this->getImportTempDir($filename);
-    }
-
-    // Return the logger for import file
-    // If import file is .../.../import-000000.csv
-    // Then the log file is .../.../import-000000.csv.log
-    public function getImportLogger($filename = null)
-    {
-        $formatter = new LineFormatter("[%datetime%] %channel%.%level_name%: %message%\n");
-        $logfile = $this->getImportTempDir($filename.".log");
-        $stream = new StreamHandler($logfile, Logger::DEBUG);
-        $stream->setFormatter($formatter);
-
-        $pid = getmypid();
-        $logger = new Logger($pid);
-        $logger->pushHandler($stream);
-
-        return $logger;
     }
 
     /**
@@ -1265,21 +1248,19 @@ class MailList extends Model
      * @return string quoted value
      * @todo: use MySQL escape function to correctly escape string with astrophe
      */
-    public function import($file, $progressCallback = null)
+    public function import($file, $progressCallback = null, $invalidRecordCallback = null)
     {
         $processed = 0;
         $failed = 0;
         $total = 0;
+        $message = null;
 
-        try {            
+        try {
             $overQuotaAttempt = false;
 
             if (!is_null($progressCallback)) {
                 $progressCallback($processed, $total, $failed, $message = 'Import is starting...');
             }
-            
-            $logger = $this->getImportLogger($file);
-            $logger->info(trans('messages.list.import.start', ['uid' => $this->uid]));
 
             // Read CSV files
             list($headers, $availableFields, $total, $results) = $this->readCsv($file);
@@ -1300,7 +1281,7 @@ class MailList extends Model
             // $system_job->updateStatus(['total' => $total]);
 
             // process by batches
-            each_batch($results, config('app.import_batch_size'), false, function ($batch) use ($availableFields, &$processed, &$failed, $total, &$overQuotaAttempt, $logger, $progressCallback) {
+            each_batch($results, config('app.import_batch_size'), false, function ($batch) use ($availableFields, &$processed, &$failed, $total, &$overQuotaAttempt, &$message, $progressCallback, $invalidRecordCallback) {
 
                 // authorization
                 if ($this->customer->user->can('addMoreSubscribers', [$this, sizeof($batch)])) {
@@ -1308,6 +1289,8 @@ class MailList extends Model
                 } else {
                     $insertLimit = $this->getRemainingAddSubscribersQuota();
                 }
+
+
 
                 // if ($insertLimit == 0) { // only == 0 is enough
                 //     throw new \Exception(trans('messages.import.notice.over_quota'));
@@ -1347,11 +1330,13 @@ class MailList extends Model
                 });
 
                 // validate amd remove invalid records
-                $data = array_where($data, function ($record) use ($logger) {
+                $data = array_where($data, function ($record) use (&$failed, $invalidRecordCallback) {
                     list($valid, $errors) = $this->validateCsvRecord($record);
                     if (!$valid) {
-                        // $logger->warning($record['email'].': '.implode(', ', $errors));
                         $failed += 1;
+                        if (!is_null($invalidRecordCallback)) {
+                            $invalidRecordCallback($record, $errors);
+                        }
                     }
 
                     return $valid;
@@ -1427,9 +1412,17 @@ class MailList extends Model
                 // Trigger
                 MailListImported::dispatch($this);
             });
+
+            if (!is_null($progressCallback)) {
+                $progressCallback($processed, $total, $failed, $message = "Processed: {$processed}/{$total} records, skipped: {$failed} records.");
+            }
         } catch (\Throwable $e) {
             // IMPORTANT: rollback first before throwing, otherwise it will be a deadlock
             DB::rollBack();
+
+            if (!is_null($progressCallback)) {
+                $progressCallback($processed, $total, $failed, $message = $e->getMessage());
+            }
 
             throw $e;
             // finish the transaction
@@ -1462,7 +1455,7 @@ class MailList extends Model
             $this->updateCachedInfo();
 
             if (!is_null($progressCallback)) {
-                $progressCallback($processed, $total, $failed, $message = 'Import complete!');
+                $progressCallback($processed, $total, $failed, $message);
             }
         }
     }

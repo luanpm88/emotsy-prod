@@ -381,11 +381,14 @@ class SubscriberController extends Controller
         if ($request->isMethod('post')) {
             $monitor = $list->importUploadedCsv($request->file('file'));
             return response()->json([
-                'job_uid' => $monitor->uid,
-                'progress_check_url' => action('SubscriberController@importProgress', [
+                'currentJobUid' => $monitor->uid,
+                'progressCheckUrl' => action('SubscriberController@importProgress', [
                     'job_uid' => $monitor->uid, 
                 ]),
-                'cancel_url' => action('SubscriberController@cancelImport', [
+                'cancelUrl' => action('SubscriberController@cancelImport', [
+                    'job_uid' => $monitor->uid, 
+                ]),
+                'logDownloadUrl' => action('SubscriberController@downloadImportLog', [
                     'job_uid' => $monitor->uid, 
                 ]),
             ]);
@@ -398,6 +401,9 @@ class SubscriberController extends Controller
                 'currentJobUid' => $currentJob->uid,
                 'progressCheckUrl' => action('SubscriberController@importProgress', ['job_uid' => $currentJob->uid]),
                 'cancelUrl' => action('SubscriberController@cancelImport', ['job_uid' => $currentJob->uid]),
+                'logDownloadUrl' => action('SubscriberController@downloadImportLog', [
+                    'job_uid' => $currentJob->uid, 
+                ]),
             ]);
         // GET, do not have any job
         } else {
@@ -427,6 +433,14 @@ class SubscriberController extends Controller
         }
     }
 
+    public function downloadImportLog(Request $request)
+    {
+        $job = JobMonitor::findByUid($request->job_uid);
+
+        // Only available if job has moved out of queued status
+        return response()->download($job->getJsonData()['logfile']);
+    }
+
     /**
      * Check import proccessing.
      *
@@ -441,31 +455,9 @@ class SubscriberController extends Controller
         // Get progress updated by the import process and status of the final job monitor
         $progress = $job->getJsonData();
         $progress['status'] = $job->status;
+        $progress['error'] = $job->error;
 
         return response()->json($progress);
-    }
-
-    /**
-     * Download import log.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     * @todo move this to the MailList controller
-     */
-    public function downloadImportLog(Request $request)
-    {
-        $list = MailList::findByUid($request->list_uid);
-
-        // authorize
-        if (\Gate::denies('import', $list)) {
-            return $this->notAuthorized();
-        }
-
-        // @todo: should be the exact MailList here
-        $log = $list->getLastImportLog();
-        // @todo what if log does not exist (removed)?
-        return response()->download($log);
     }
 
     /**

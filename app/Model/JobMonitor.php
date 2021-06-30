@@ -80,7 +80,7 @@ class JobMonitor extends Model
 
     public function setFailed($exception) {
         $this->status = self::STATUS_FAILED;
-        $errorMsg = "Error executing job. ".$exception->getMessage()."\n".$exception->getTraceAsString();        
+        $errorMsg = "Error executing job. ".$exception->getMessage();
         $this->error = $errorMsg;
         $this->save();
     }
