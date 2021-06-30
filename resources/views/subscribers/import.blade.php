@@ -24,7 +24,7 @@
     <div class="row">
         <div class="col-md-8">
             <form id="importForm"
-                action="{{ action('SubscriberController@import', $list->uid) }}" method="POST" class="ajax_upload_form form-validate-jquery">
+                action="{{ action('SubscriberController@dispatchImportJob', ['list_uid' => $list->uid]) }}" method="POST" class="ajax_upload_form form-validate-jquery">
                 {{ csrf_field() }}
 
                 <div class="alert alert-info">

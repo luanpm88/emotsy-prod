@@ -61,11 +61,14 @@ class ImportSubscribersJob extends Base
             'logfile' => $logfile,
         ]);
 
+        // Write log, to make sure the file is created
+        $logger->info('Initiated');
+
         // File path: 
         $this->list->import(
             $this->file,
 
-            function ($processed, $total, $failed, $message) {
+            function ($processed, $total, $failed, $message) use ($logger) {
                 $percentage = ($total && $processed) ? (int)($processed*100/$total) : 0;
 
                 $this->monitor->updateJsonData([
@@ -75,11 +78,17 @@ class ImportSubscribersJob extends Base
                     'failed' => $failed,
                     'message' => $message,
                 ]);
+
+                // Write log, to make sure the file is created
+                $logger->info($message);
+                $logger->info(sprintf('Processed: %s/%s, Skipped: %s', $processed, $total, $failed));
             },
 
             function ($invalidRecord, $error) use ($logger) {
                 $logger->warning('Invalid record: [' . implode(",", array_values($invalidRecord)) . "] | Validation error: " . implode(";", $error));
             }
         );
+
+        $logger->info('Finished');
     }
 }

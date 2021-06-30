@@ -377,23 +377,6 @@ class SubscriberController extends Controller
             return $this->notAuthorized();
         }
 
-        // POST
-        if ($request->isMethod('post')) {
-            $monitor = $list->importUploadedCsv($request->file('file'));
-            return response()->json([
-                'currentJobUid' => $monitor->uid,
-                'progressCheckUrl' => action('SubscriberController@importProgress', [
-                    'job_uid' => $monitor->uid, 
-                ]),
-                'cancelUrl' => action('SubscriberController@cancelImport', [
-                    'job_uid' => $monitor->uid, 
-                ]),
-                'logDownloadUrl' => action('SubscriberController@downloadImportLog', [
-                    'job_uid' => $monitor->uid, 
-                ]),
-            ]);
-        }
-
         // GET, has a current job
         if ($currentJob) {
             return view('subscribers.import', [
@@ -401,9 +384,7 @@ class SubscriberController extends Controller
                 'currentJobUid' => $currentJob->uid,
                 'progressCheckUrl' => action('SubscriberController@importProgress', ['job_uid' => $currentJob->uid]),
                 'cancelUrl' => action('SubscriberController@cancelImport', ['job_uid' => $currentJob->uid]),
-                'logDownloadUrl' => action('SubscriberController@downloadImportLog', [
-                    'job_uid' => $currentJob->uid, 
-                ]),
+                'logDownloadUrl' => action('SubscriberController@downloadImportLog', ['job_uid' => $currentJob->uid]),
             ]);
         // GET, do not have any job
         } else {
@@ -411,6 +392,23 @@ class SubscriberController extends Controller
                 'list' => $list,
             ]);
         }
+    }
+
+    public function dispatchImportJob(Request $request)
+    {
+        // Get the list
+        $list = MailList::findByUid($request->list_uid);
+
+        // Dispatch import job
+        $currentJob = $list->importUploadedCsv($request->file('file'));
+
+        // Return the job information
+        return response()->json([
+            'currentJobUid' => $currentJob->uid,
+            'progressCheckUrl' => action('SubscriberController@importProgress', ['job_uid' => $currentJob->uid]),
+            'cancelUrl' => action('SubscriberController@cancelImport', ['job_uid' => $currentJob->uid]),
+            'logDownloadUrl' => action('SubscriberController@downloadImportLog', ['job_uid' => $currentJob->uid]),
+        ]);
     }
 
     /**
