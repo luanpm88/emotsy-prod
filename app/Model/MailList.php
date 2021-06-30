@@ -1265,7 +1265,7 @@ class MailList extends Model
      * @return string quoted value
      * @todo: use MySQL escape function to correctly escape string with astrophe
      */
-    public function import2($file, $progressCallback = null)
+    public function import($file, $progressCallback = null)
     {
         $processed = 0;
         $failed = 0;

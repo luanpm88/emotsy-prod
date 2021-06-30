@@ -42,7 +42,7 @@ class ImportSubscribersJob extends Base
     public function handle()
     {
         // File path: 
-        $this->list->import2($this->file, function($processed, $total, $failed, $message) {
+        $this->list->import($this->file, function($processed, $total, $failed, $message) {
             $percentage = ($total && $processed) ? (int)($processed*100/$total) : 0;
 
             $this->monitor->updateJsonData([
@@ -53,7 +53,5 @@ class ImportSubscribersJob extends Base
                 'message' => $message,
             ]);
         });
-
-        // Once import has finished successfully, set the status to
     }
 }
