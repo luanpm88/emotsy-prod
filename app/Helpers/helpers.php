@@ -750,3 +750,20 @@ function actionName()
     $controllerAction = controllerAction();
     return explode('@', $controllerAction)[1];
 }
+
+/*
+ *  Iterate through a Eloquent $query using cursor paginate
+ *  The $orderBy parameter is critically required for a cursor pagination
+ */
+function cursorIterate($query, $orderBy, $size, $callback)
+{
+    $cursor = null;
+    $page = 1;
+    do {
+        // The 4th parameter contains the offset cursor
+        $list = $query->orderBy($orderBy)->cursorPaginate($size, ['*'], 'cursor', $cursor);
+        $callback($list->items(), $page);
+        $cursor = $list->nextCursor();
+        $page += 1;
+    } while ($list->hasMorePages());
+}
