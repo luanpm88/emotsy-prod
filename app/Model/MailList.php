@@ -748,41 +748,6 @@ class MailList extends Model
         return $copy;
     }
 
-    /**
-     * Get export segment jobs.
-     *
-     * @return number
-     */
-    public function exportSegmentJobs($uid)
-    {
-        return \Acelle\Model\SystemJob::where('name', '=', "Acelle\Jobs\ExportSegmentsJob")
-            ->where('data', 'like', '%"uid":"'.$uid.'"%');
-    }
-
-    /**
-     * Get last export job.
-     *
-     * @return number
-     */
-    public function getLastExportJob()
-    {
-        return $this->exportJobs()
-            ->orderBy('created_at', 'DESC')
-            ->first();
-    }
-
-    /**
-     * Get last export log file.
-     *
-     * @return string file path
-     */
-    public function getLastImportLog()
-    {
-        $data = json_decode($this->getLastImportJob()->data, true);
-
-        return $data['log'];
-    }
-
     public function getExportFilePath()
     {
         $name = preg_replace('/[^a-zA-Z0-9_\-]+/', '_', "{$this->uid}-{$this->name}.csv");
@@ -883,88 +848,7 @@ class MailList extends Model
      */
     public static function exportSegments($list, $customer, $job)
     {
-        // Info from job
-        $systemJob = $job->getSystemJob();
-        $directory = $job->getPath();
-
-        $file_path = $directory.'data.csv';
-
-        // Import to database
-
-        $json = json_decode($systemJob->data);
-        $fields = preg_split('/,/', $json->fields);
-        $headers = $json->fields;
-        $segment = \Acelle\Model\Segment::findByUid($json->uid);
-        $total = $segment->subscribersCount(); // no cache
-        $success = 0;
-        $error = 0;
-        // write csv
-        $myfile = file_put_contents($file_path, $headers.PHP_EOL, FILE_APPEND | LOCK_EX);
-
-        $num = 100;
-        for ($page = 0; $page <= ceil($total / $num); ++$page) { // ceil($total/$num)
-            $data = [];
-            foreach ($segment->subscribers()->skip($page * $num)->take($num)->get() as $key => $item) {
-                $cols = [];
-                foreach ($fields as $key2 => $field) {
-                    $value = $item->getValueByTag($field);
-                    $cols[] = $value;
-                }
-                $data[] = \Acelle\Library\Tool::arrayToCsv($cols, ',');
-
-                ++$success;
-            }
-
-            // write csv
-            $myfile = file_put_contents($file_path, implode("\r\n", $data).PHP_EOL, FILE_APPEND | LOCK_EX);
-
-            $content_cache = trans('messages.export_segments_statistics_line', [
-                'total' => $total,
-                'processed' => $success + $error,
-                'success' => $success,
-                'error' => $error,
-            ]);
-
-            // update system job
-            $systemJob->data = json_encode([
-                'mail_list_uid' => $list->uid,
-                'customer_id' => $customer->id,
-                'status' => 'running',
-                'message' => $content_cache,
-                'total' => $total,
-                'success' => $success,
-                'error' => $error,
-                'percent' => round((($success + $error) / $total) * 100, 0),
-                'fields' => $json->fields,
-                'uid' => $json->uid,
-            ]);
-            $systemJob->save();
-        }
-
-        $content_cache = trans('messages.export_segments_statistics_line', [
-            'total' => $total,
-            'processed' => $success + $error,
-            'success' => $success,
-            'error' => $error,
-        ]);
-
-        // update system job
-        $systemJob->data = json_encode([
-            'mail_list_uid' => $list->uid,
-            'customer_id' => $customer->id,
-            'status' => 'done',
-            'message' => $content_cache,
-            'total' => $total,
-            'success' => $success,
-            'error' => $error,
-            'percent' => 100,
-            'fields' => $json->fields,
-            'uid' => $json->uid,
-        ]);
-        $systemJob->save();
-
-        // Action Log
-        $list->log('export_success', $customer, ['count' => $success, 'error' => $error]);
+        // todo
     }
 
     /**
