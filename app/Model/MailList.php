@@ -830,7 +830,7 @@ class MailList extends Model
             $writer->insertAll($records);
 
             // Increment
-            $processed += $pageSize;
+            $processed += sizeof($records);
 
             // Callback
             if (!is_null($progressCallback)) {
