@@ -27,16 +27,6 @@ class UserUpdatedListener
      */
     public function handle(UserUpdated $event)
     {
-        if ($event->delayed) {
-            $existed = SystemJobModel::getNewJobs()
-                           ->where('name', \Acelle\Jobs\UpdateUserJob::class)
-                           ->where('data', $event->customer->id)
-                           ->exists();
-            if (!$existed) {
-                dispatch(new \Acelle\Jobs\UpdateUserJob($event->customer));
-            }
-        } else {
-            $event->customer->updateCache();
-        }
+        dispatch(new \Acelle\Jobs\UpdateUserJob($event->customer));
     }
 }
