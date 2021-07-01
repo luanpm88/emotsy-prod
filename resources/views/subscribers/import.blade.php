@@ -226,8 +226,6 @@
 	                        	 AcelleImport.checkProgress();
 	                        }, 2000);
 	                    }
-
-	                    return false;
 	                }
 	            });
             },
@@ -281,10 +279,7 @@
                         allowOutsideClick: true,
                         confirmButtonText: LANG_OK,
                     });
-                    return;
                 });
-
-                return false;
             },
 
             importAnotherFile: function() {

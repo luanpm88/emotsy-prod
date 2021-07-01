@@ -42,6 +42,7 @@ use Acelle\Events\MailListImported;
 use Acelle\Library\Traits\TrackJobs;
 use File;
 use Acelle\Jobs\ImportSubscribersJob;
+use Acelle\Jobs\ExportSubscribersJob;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Monolog\Formatter\LineFormatter;
@@ -748,17 +749,6 @@ class MailList extends Model
     }
 
     /**
-     * Get export jobs.
-     *
-     * @return number
-     */
-    public function exportJobs()
-    {
-        return \Acelle\Model\SystemJob::where('name', '=', "Acelle\Jobs\ExportSubscribersJob")
-            ->where('data', 'like', '%"mail_list_uid":"'.$this->uid.'"%');
-    }
-
-    /**
      * Get export segment jobs.
      *
      * @return number
@@ -799,11 +789,27 @@ class MailList extends Model
         return $this->getExportTempDir($name);
     }
 
+    public function dispatchExportJob()
+    {
+        return $this->dispatchWithMonitor(new ExportSubscribersJob($this));
+    }
+
     /**
      * Export subscribers.
      */
-    public function export()
+    public function export($progressCallback = null)
     {
+        $processed = 0;
+        $total = 0;
+        $message = null;
+        $failed = 0;
+
+        $pageSize = 1000;
+
+        if (!is_null($progressCallback)) {
+            $progressCallback($processed, $total, $failed, $message = 'Export is in progress...');
+        }
+
         $file = $this->getExportFilePath();
         if (file_exists($file)) {
             File::delete($file);
@@ -814,6 +820,7 @@ class MailList extends Model
 
         // Query subscribers
         $query = $this->subscribers();
+        $total = $query->count();
 
         // Get an associative array of [ 'tag' => null ]
         // Trick: pass '' as 1st parameter to have it result in null value
@@ -821,10 +828,17 @@ class MailList extends Model
 
         // write the header
         $headers = array_keys($listFields);
+
+        // Additional attributes
+        $headers[] = 'status';
+        $headers[] = 'uid';
+        $headers[] = 'created_at';
+        $headers[] = 'updated_at';
+
         $writer->insertOne($headers);
 
         // Iterate through the list and write to file, 1000 records each time
-        cursorIterate($query, $orderBy = 'subscribers.id', $size = 1000,  function($subscribers, $page) use ($writer, $listFields) {
+        cursorIterate($query, $orderBy = 'subscribers.id', $pageSize,  function($subscribers, $page) use ($writer, $listFields, &$processed, &$total, &$failed, &$message, $pageSize, $progressCallback) {
             $records = collect($subscribers)->map(function($subscriber) use ($listFields) {
                 $attributes = $subscriber->subscriberFields()
                                          ->orderBy('fields.id', 'ASC')
@@ -838,13 +852,30 @@ class MailList extends Model
                 // results in something like [ 'EMAIL' => 'example@example.io', 'OTHER' => null ]
                 $attributes = array_merge($listFields, $attributes);
 
+                $attributes['status'] = $subscriber->status;
+                $attributes['uid'] = $subscriber->uid;
+                $attributes['created_at'] = $subscriber->created_at->toString();
+                $attributes['updated_at'] = $subscriber->updated_at->toString();
+
                 // return the filtered array
                 return $attributes;
             })->toArray();
 
             // Write the batch to file (append mode)
             $writer->insertAll($records);
+
+            // Increment
+            $processed += $pageSize;
+
+            // Callback
+            if (!is_null($progressCallback)) {
+                $progressCallback($processed, $total, $failed = 0, $message = sprintf('Export is in progress, %s / %s records written', $processed, $total));
+            }
         });
+
+        if (!is_null($progressCallback)) {
+            $progressCallback($processed, $total, $failed = 0, $message = sprintf('Export complete, processed: %s / %s', $processed, $total));
+        }
     }
 
     /**
@@ -2143,8 +2174,13 @@ class MailList extends Model
         return $this->hasMany(JobMonitor::class, 'subject_id')->where('subject_name', self::class);
     }
 
-    public function activeImportJobs()
+    public function importJobs()
     {
-        return $this->jobMonitors()->orderBy('job_monitors.id', 'DESC')->active()->where('job_type', ImportSubscribersJob::class);
+        return $this->jobMonitors()->orderBy('job_monitors.id', 'DESC')->where('job_type', ImportSubscribersJob::class);
+    }
+
+    public function exportJobs()
+    {
+        return $this->jobMonitors()->orderBy('job_monitors.id', 'DESC')->where('job_type', ExportSubscribersJob::class);   
     }
 }

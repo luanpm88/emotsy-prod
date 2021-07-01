@@ -46,7 +46,9 @@ trait TrackJobs
 
             // Execute callback
             foreach($events as $closure) {
-                $closure($job, $monitor);
+                if (!is_null($closure)) {
+                    $closure($job, $monitor);
+                }
             }
         });
 
