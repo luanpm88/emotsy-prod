@@ -197,7 +197,7 @@ class LanguageController extends Controller
         
         // save posted data
         if ($request->isMethod('post')) {
-            list($currentFile, $validator) = $language->translateFile($currentFile, $request->content);
+            list($currentFile, $validator) = $language->translateFile($request->file_id, $request->content);
 
             if ($validator->fails()) {
                 return response()->view('admin.languages.translate', [

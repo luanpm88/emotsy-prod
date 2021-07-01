@@ -439,7 +439,7 @@
 							<a href="{{ action("Admin\AccountController@api") }}" class="level-1 d-flex align-items-center">
 							<i class="acelle-icon mr-3">
 								<img src="{{ url('images/icons/'.$iconDir.'SVG/api.svg') }}" />
-							</i>{{ trans('messages.api') }}
+							</i>{{ trans('messages.admin_api') }}
 							</a>
 						</li>
 						<li><a href="{{ url("/logout") }}" class="d-flex align-items-center">

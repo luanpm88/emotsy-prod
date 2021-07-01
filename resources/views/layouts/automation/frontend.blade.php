@@ -95,7 +95,7 @@
 								@if (Auth::user()->customer->canUseApi())
 									<a href="{{ action("AccountController@api") }}" class="dropdown-item d-flex align-items-center">
 										<i class="material-icons-outlined mr-2">code</i>
-										<span>{{ trans('messages.api') }}</span>
+										<span>{{ trans('messages.campaign_api') }}</span>
 									</a>
 								@endif
 								<div class="dropdown-divider"></div>
