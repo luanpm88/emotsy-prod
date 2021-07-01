@@ -88,7 +88,7 @@ class CampaignPolicy
     public function resend(User $user, Campaign $item)
     {
         $customer = $user->customer;
-        return $item->customer_id == $customer->id && $item->isDone();
+        return $item->customer_id == $customer->id && ($item->isDone() || $item->isPaused());
     }
 
     public function send_test_email(User $user, Campaign $item)

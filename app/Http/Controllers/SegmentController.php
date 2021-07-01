@@ -452,29 +452,4 @@ class SegmentController extends Controller
             'segment' => $segment,
         ]);
     }
-
-    /**
-     * Display a listing of segment export  job.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function exportList(Request $request)
-    {
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
-
-        // authorize
-        if (\Gate::denies('export', $list)) {
-            return $this->notAuthorized();
-        }
-
-        $system_jobs = $list->exportSegmentJobs($request->uid);
-        $system_jobs = $system_jobs->orderBy($request->sort_order, $request->sort_direction);
-        $system_jobs = $system_jobs->paginate($request->per_page);
-
-        return view('helpers._export_list', [
-            'system_jobs' => $system_jobs,
-            'list' => $list,
-            'label' => trans('messages.export_segments')
-        ]);
-    }
 }

@@ -13,7 +13,6 @@ use Acelle\Library\StringHelper;
 use Acelle\Jobs\ExportCampaignLog;
 use Acelle\Model\Template;
 use Acelle\Model\TrackingLog;
-use Acelle\Model\SystemJob;
 use Acelle\Model\Setting;
 use Acelle\Model\Subscriber;
 use Acelle\Model\Campaign;
@@ -1260,7 +1259,6 @@ class CampaignController extends Controller
 
         return view('campaigns.download_tracking_log', [
             'campaign' => $campaign,
-            'job' => $job->getSystemJob()
         ]);
     }
 
@@ -1269,7 +1267,6 @@ class CampaignController extends Controller
      */
     public function trackingLogExportProgress(Request $request)
     {
-        $job = SystemJob::find($request->uid);
         $json = json_decode($job->data, true);
 
         $output = [
@@ -1288,7 +1285,6 @@ class CampaignController extends Controller
      */
     public function download(Request $request)
     {
-        $job = SystemJob::find($request->uid);
         $json = json_decode($job->data, true);
         $path = $json['path'];
         return response()->download($path)->deleteFileAfterSend(true);

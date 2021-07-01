@@ -558,51 +558,6 @@ class SubscriberController extends Controller
     }
 
     /**
-     * Download exported csv file after exporting.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function downloadExportedCsv(Request $request)
-    {
-        $list = MailList::findByUid($request->list_uid);
-
-        // authorize
-        if (\Gate::denies('export', $list)) {
-            return $this->notAuthorized();
-        }
-
-        $system_job = $list->getLastExportJob();
-
-        return response()->download(storage_path('job/'.$system_job->id.'/data.csv'));
-    }
-
-    /**
-     * Display a listing of subscriber import job.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function exportList(Request $request)
-    {
-        $list = MailList::findByUid($request->list_uid);
-
-        // authorize
-        if (\Gate::denies('export', $list)) {
-            return $this->notAuthorized();
-        }
-
-        $system_jobs = $list->exportJobs();
-        $system_jobs = $system_jobs->orderBy($request->sort_order, $request->sort_direction);
-        $system_jobs = $system_jobs->paginate($request->per_page);
-
-        return view('subscribers._export_list', [
-            'system_jobs' => $system_jobs,
-            'list' => $list
-        ]);
-    }
-
-    /**
      * Copy subscribers to lists.
      *
      * @param \Illuminate\Http\Request $request

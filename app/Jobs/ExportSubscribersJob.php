@@ -38,7 +38,7 @@ class ExportSubscribersJob extends Base
      * @return void
      */
     public function handle()
-    {   
+    {
         $this->mailList->export(function($processed, $total, $failed, $message) {
             $percentage = ($total && $processed) ? (int)($processed*100/$total) : 0;
 

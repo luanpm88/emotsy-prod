@@ -601,8 +601,7 @@ class Admin extends Model
      */
     public function getImportBlacklistJobs()
     {
-        return \Acelle\Model\SystemJob::where('name', '=', "Acelle\Jobs\ImportBlacklistJob")
-            ->where('data', 'like', '%"admin_id":'.$this->id.'%');
+        ///
     }
 
     /**

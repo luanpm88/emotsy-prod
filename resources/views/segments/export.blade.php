@@ -24,7 +24,7 @@
     <div class="text-left">
         <button data-toggle="modal" data-target="#export-segments-modal" class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.export') }}</button>
     </div>
-    @include("helpers._export",['url' => action('SegmentController@exportList', ["list_uid" => $list->uid, "uid" => $segment->uid]) ])
-    @include("lists._modals_export",['list' => $list, 'uid' => $segment->uid])
+
+    
 
 @endsection

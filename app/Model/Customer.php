@@ -1578,8 +1578,7 @@ class Customer extends Model
      */
     public function getImportBlacklistJobs()
     {
-        return \Acelle\Model\SystemJob::where('name', '=', "Acelle\Jobs\ImportBlacklistJob")
-            ->where('data', 'like', '%"customer_id":'.$this->id.'%');
+       ///
     }
 
     /**

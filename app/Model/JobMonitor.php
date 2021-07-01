@@ -131,6 +131,11 @@ class JobMonitor extends Model
         $this->setJsonData($json);
     }
 
+    public function cancelWithoutDeleteBatch()
+    {
+        $this->cancelBatch();
+    }
+
     public function cancel()
     {
         $this->cancelJob(); // if any

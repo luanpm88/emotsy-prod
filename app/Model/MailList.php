@@ -1168,7 +1168,6 @@ class MailList extends Model
             }
 
             // update status, line count
-            // $system_job->updateStatus(['total' => $total]);
 
             // process by batches
             each_batch($results, config('app.import_batch_size'), false, function ($batch) use ($availableFields, &$processed, &$failed, $total, &$overQuotaAttempt, &$message, $progressCallback, $invalidRecordCallback) {
@@ -1315,32 +1314,12 @@ class MailList extends Model
             }
 
             throw $e;
-            // finish the transaction
-            
-
-            // LOG ERROR MESSAGE
-            // $system_job->updateStatus([
-            //    'error_message' => $e->getMessage(),
-            // ]);
-
-            // WRITE to job's logger
-            // $logger->error($e->getMessage());
         } finally {
-            // UPDATE JOB STATUS "DONE" (so job is always DONE, with or without error_message)
-            // Hack, in case processed_count is not equal to total
-            // $system_job->updateStatus(['status' => self::IMPORT_STATUS_DONE, 'total' => $processed]);
-            
             //if ($overQuotaAttempt) {
-            //    $system_job->updateStatus(['error_message' => trans('messages.import.notice.over_quota')]);
+            //    $syssss_job->updateStatus(['error_message' => trans('messages.import.notice.over_quota')]);
             // }
 
-            //$logger->info(trans('messages.Finish_importing_for_list_uid', ['uid' => $this->uid]));
-            
-            //$this->log('import_success', $customer, ['count' => $processed,'error' => '']);
-
             // @IMPORTANT: if process fails here, something weird occurs
-            // Job done, system_job.data does not have any information!!!
-            // Only errors found in failed_logs and system_job.status = failed
             $this->reformatDateFields();
             $this->updateCachedInfo();
 
@@ -1772,12 +1751,7 @@ class MailList extends Model
      */
     public function getRunningVerificationJob()
     {
-        $job = SystemJob::where('name', 'Acelle\Jobs\VerifyMailListJob')
-                        ->whereIn('status', [SystemJob::STATUS_NEW, SystemJob::STATUS_RUNNING, SystemJob::STATUS_FAILED])
-                        ->where('data', $this->id)
-                        ->first();
-
-        return $job;
+        ///
     }
 
     /**

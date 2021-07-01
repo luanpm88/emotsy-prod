@@ -90,11 +90,6 @@ class User extends Authenticatable
         return $this->hasOne('Acelle\Model\Admin');
     }
 
-    public function systemJobs()
-    {
-        return $this->hasMany('Acelle\Model\SystemJob')->orderBy('created_at', 'desc');
-    }
-
     /**
      * Get authenticate from file.
      *

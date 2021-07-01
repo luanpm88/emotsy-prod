@@ -3472,6 +3472,13 @@ class Campaign extends Model
     // Should be called by ScheduleCampaign
     public function launch()
     {
+        // Pause any previous batch no matter what status it is
+        // Notice that batches without a job_monitor will not be retrieved
+        $jobs = $this->jobMonitors()->byJobType(LoadCampaign::class)->get();
+        foreach($jobs as $job) {
+            $job->cancelWithoutDeleteBatch();
+        }
+
         // Create the booting job
         $campaignLoader = new LoadCampaign($this);
         $batch = Bus::batch($campaignLoader)->then(function (Batch $batch) {

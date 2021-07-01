@@ -312,57 +312,10 @@ class SenderController extends Controller
             }
         }
 
-        // Get current job
-        $system_job = $customer->getLastActiveImportSenderJob();
 
         return view('senders.import', [
-            'system_job' => $system_job
+
         ]);
-    }
-
-    /**
-     * Check import proccessing.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function importProcess(Request $request)
-    {
-        $customer = $request->user()->customer;
-        $system_job = \Acelle\Model\SystemJob::find($request->system_job_id);
-
-        // authorize
-        if (\Gate::denies('read', new Sender())) {
-            return $this->notAuthorized();
-        }
-
-        return view('senders.import_process', [
-            'system_job' => $system_job
-        ]);
-    }
-
-    /**
-     * Cancel importing job.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function cancel(Request $request)
-    {
-        $customer = $request->user()->customer;
-        $system_job = $customer->getLastActiveImportSenderJob();
-
-        // authorize
-        if (\Gate::denies('importCancel', new Sender())) {
-            return $this->notAuthorized();
-        }
-
-        $system_job->setCancelled();
-
-        $request->session()->flash('alert-success', trans('messages.sender.import.cancelled'));
-        return redirect()->action('SenderController@index');
     }
 
     /**
