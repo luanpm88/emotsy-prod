@@ -53,12 +53,6 @@ class MailList extends Model
 {
     use QueryHelper, TrackJobs;
 
-    // Subscribers to import every time
-    const IMPORT_STATUS_NEW = 'new';
-    const IMPORT_STATUS_RUNNING = 'running';
-    const IMPORT_STATUS_FAILED = 'failed';
-    const IMPORT_STATUS_DONE = 'done';
-
     const SOURCE_EMBEDDED_FORM = 'embedded-form';
     const SOURCE_WEB = 'web';
     const SOURCE_API = 'api';
