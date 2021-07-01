@@ -29,6 +29,23 @@ class JobMonitor extends Model
         });
     }
 
+    public static function makeInstance($subject, $jobType)
+    {
+        $monitor = new self();
+        $monitor->status = self::STATUS_QUEUED;
+        $monitor->subject_name = get_class($subject);
+        $monitor->subject_id = $subject->id;
+        $monitor->job_type = $jobType;
+
+        // Return
+        return $monitor;
+    }
+
+    public function scopeByJobType($query, $jobType)
+    {
+        return $query->where('job_type', $jobType);
+    }
+
     /**
      * Find item by uid.
      *
@@ -68,16 +85,6 @@ class JobMonitor extends Model
         return ! is_null($this->batch_id);
     }
 
-    public function scopeJob($query)
-    {
-        return $query->whereNotNull('job_id');
-    }
-
-    public function scopeBatch($query)
-    {
-        return $query->whereNotNull('batch_id');
-    }
-
     public function setFailed($exception) {
         $this->status = self::STATUS_FAILED;
         $errorMsg = "Error executing job. ".$exception->getMessage();
@@ -105,19 +112,6 @@ class JobMonitor extends Model
         return $query->whereIn('status', [self::STATUS_RUNNING, self::STATUS_QUEUED]);
     }
 
-    // @TODO: for batch, store the association only, do not use any other feature of the JobMonitor
-    public static function forBatch($subject, Batch $batch, $jobType)
-    {
-        $monitor = new self();
-        $monitor->subject_name = get_class($subject);
-        $monitor->subject_id = $subject->id;
-        $monitor->batch_id = $batch->id;
-        $monitor->job_type = $jobType;
-        $monitor->save();
-
-        return $monitor;
-    }
-
     public function getJsonData()
     {
         // Also convert null or empty string to an empty array ([])
@@ -137,25 +131,36 @@ class JobMonitor extends Model
         $this->setJsonData($json);
     }
 
-    public function isActive()
-    {
-        return $this->status == self::STATUS_QUEUED || self::STATUS_RUNNING;
-    }
-
     public function cancel()
     {
-        // @TODO: more checking here: if job is actually running (with a record in jobs table --> do not allow cancel)
-        if (!$this->isActive()) {
-            throw new Exception('Cannot cancel job. Job status is: '.$this->status);
-        }
-
-        $job = $this->getJob();
-
-        if ($job) {
-            $job->delete();
-        }
+        $this->cancelJob(); // if any
+        $this->cancelBatch(); // if any
 
         // For now, do not store cancelled job
+        // So, just delete the record
         $this->delete();
+    }
+
+    private function cancelJob()
+    {
+        // Get the job record in the `jobs` database table
+        $job = $this->getJob();
+
+        // Remove it from queue, if any
+        if (!is_null($job)) {
+            $job->delete(); 
+        }
+    }
+
+    private function cancelBatch()
+    {
+        // Then get the batch
+        // This is not the batch record in job_batches model
+        // So we can just cancel it to have its remaining jobs perish!
+        // It will be pruned with queue:prune-batches command
+        $batch = $this->getBatch();
+        if (!is_null($batch)) {
+            $batch->cancel();    
+        }
     }
 }

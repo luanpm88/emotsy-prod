@@ -53,17 +53,17 @@ class SendMessage implements ShouldQueue
             sleep(60);    
         }
 
+        $logger = $this->campaign->logger();
+
         // Prepare the email message to send
         list($message, $msgId) = $this->campaign->prepareEmail($this->subscriber, $this->server);
 
-        sleep(1);
-        echo "[{$this->subscriber->email}]) : server {$this->server->id}\n";
-        return;
-
         // Actually send!
+        $logger->info(sprintf('Sending to %s [Server "%s"]', $this->subscriber->email, $this->server->name));
         $sent = $this->server->send($message);
 
         // Log
         $this->campaign->trackMessage($sent, $this->subscriber, $this->server, $msgId);
+        $logger->info(sprintf('Sent to %s [Server "%s"]', $this->subscriber->email, $this->server->name));
     }
 }

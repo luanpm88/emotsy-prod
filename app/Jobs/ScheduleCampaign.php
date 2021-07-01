@@ -10,12 +10,13 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Acelle\Model\Campaign;
 use Illuminate\Support\Carbon;
+use Acelle\Library\Traits\Trackable;
 
 class ScheduleCampaign implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Trackable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $campaign; 
+    protected $campaign;
 
     /**
      * Create a new job instance.

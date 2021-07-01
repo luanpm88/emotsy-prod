@@ -441,9 +441,7 @@ class SegmentController extends Controller
             return $this->notAuthorized();
         }
 
-        $system_jobs = $list->exportSegmentJobs($request->uid);
         $segment = \Acelle\Model\Segment::findByUid($request->uid);
-
 
         // authorize
         if (\Gate::denies('export', $list)) {
@@ -452,7 +450,6 @@ class SegmentController extends Controller
         return view('segments.export', [
             'list' => $list,
             'segment' => $segment,
-            'system_jobs' => $system_jobs
         ]);
     }
 
