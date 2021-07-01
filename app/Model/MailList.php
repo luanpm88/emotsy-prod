@@ -46,6 +46,7 @@ use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Monolog\Formatter\LineFormatter;
 use Exception;
+use League\Csv\Writer;
 
 class MailList extends Model
 {
@@ -61,7 +62,8 @@ class MailList extends Model
     const SOURCE_WEB = 'web';
     const SOURCE_API = 'api';
 
-    const IMPORT_TEMP_DIR = 'app/tmp/';
+    const IMPORT_TEMP_DIR = 'app/tmp/import/';
+    const EXPORT_TEMP_DIR = 'app/tmp/export/';
 
 
     /**
@@ -208,7 +210,7 @@ class MailList extends Model
      *
      * @return collect
      */
-    public function importUploadedCsv(\Illuminate\Http\UploadedFile $httpFile)
+    public function uploadAndDispatchImportJob(\Illuminate\Http\UploadedFile $httpFile)
     {
         $filename = "import-".uniqid().".csv";
 
@@ -225,6 +227,16 @@ class MailList extends Model
     public function getImportTempDir($file = null)
     {
         $base = storage_path(self::IMPORT_TEMP_DIR);
+        if (!File::exists($base)) {
+            File::makeDirectory($base, 0777, true, true);
+        }
+
+        return join_paths($base, $file);
+    }
+
+    public function getExportTempDir($file = null)
+    {
+        $base = storage_path(self::EXPORT_TEMP_DIR);
         if (!File::exists($base)) {
             File::makeDirectory($base, 0777, true, true);
         }
@@ -781,95 +793,58 @@ class MailList extends Model
         return $data['log'];
     }
 
+    public function getExportFilePath()
+    {
+        $name = preg_replace('/[^a-zA-Z0-9_\-]+/', '_', "{$this->uid}-{$this->name}.csv");
+        return $this->getExportTempDir($name);
+    }
+
     /**
      * Export subscribers.
      */
-    public static function export($list, $customer, $job)
+    public function export()
     {
-        // Info from job
-        $systemJob = $job->getSystemJob();
-        $directory = $job->getPath();
-
-        $file_path = $directory.'data.csv';
-
-        // Import to database
-        $total = $list->subscribersCount(); // no cache
-        $success = 0;
-        $error = 0;
-        $lines_per_second = 1;
-        $headers = [];
-        $headers[] = trans('messages.list.exported_file.headers.uid');
-        $headers[] = trans('messages.list.exported_file.headers.status');
-        foreach ($list->getFields as $key => $field) {
-            $headers[] = $field->tag;
-        }
-        $headers = implode(',', $headers);
-
-        // write csv
-        $myfile = file_put_contents($file_path, $headers.PHP_EOL, FILE_APPEND | LOCK_EX);
-
-        $num = 100;
-        for ($page = 0; $page <= ceil($total / $num); ++$page) { // ceil($total/$num)
-            $data = [];
-            foreach ($list->subscribers()->skip($page * $num)->take($num)->get() as $key => $item) {
-                $cols = [];
-                $cols[] = $item->uid;
-                $cols[] = trans('messages.list.exported_file.status.'.$item->status);
-                foreach ($list->getFields as $key2 => $field) {
-                    $value = $item->getValueByField($field);
-                    $cols[] = $value;
-                }
-                $data[] = \Acelle\Library\Tool::arrayToCsv($cols, ',');
-
-                ++$success;
-            }
-
-            // write csv
-            $myfile = file_put_contents($file_path, implode("\r\n", $data).PHP_EOL, FILE_APPEND | LOCK_EX);
-
-            $content_cache = trans('messages.import_export_statistics_line', [
-                'total' => $total,
-                'processed' => $success + $error,
-                'success' => $success,
-                'error' => $error,
-            ]);
-
-            // update system job
-            $systemJob->data = json_encode([
-                'mail_list_uid' => $list->uid,
-                'customer_id' => $customer->id,
-                'status' => 'running',
-                'message' => $content_cache,
-                'total' => $total,
-                'success' => $success,
-                'error' => $error,
-                'percent' => round((($success + $error) / $total) * 100, 0),
-            ]);
-            $systemJob->save();
+        $file = $this->getExportFilePath();
+        if (file_exists($file)) {
+            File::delete($file);
         }
 
-        $content_cache = trans('messages.import_export_statistics_line', [
-            'total' => $total,
-            'processed' => $success + $error,
-            'success' => $success,
-            'error' => $error,
-        ]);
+        // CSV writer
+        $writer = Writer::createFromPath($file, 'w+');
 
-        // update system job
-        $systemJob->data = json_encode([
-            'mail_list_uid' => $list->uid,
-            'customer_id' => $customer->id,
-            'status' => 'done',
-            'message' => $content_cache,
-            'total' => $total,
-            'success' => $success,
-            'error' => $error,
-            'percent' => 100,
-        ]);
-        $systemJob->save();
+        // Query subscribers
+        $query = $this->subscribers();
 
-        // Action Log
-        $list->log('export_success', $customer, ['count' => $success, 'error' => $error]);
+        // Get an associative array of [ 'tag' => null ]
+        // Trick: pass '' as 1st parameter to have it result in null value
+        $listFields = $this->fields->pluck('', 'tag')->toArray();
+
+        // write the header
+        $headers = array_keys($listFields);
+        $writer->insertOne($headers);
+
+        // Iterate through the list and write to file, 1000 records each time
+        cursorIterate($query, $orderBy = 'subscribers.id', $size = 1000,  function($subscribers, $page) use ($writer, $listFields) {
+            $records = collect($subscribers)->map(function($subscriber) use ($listFields) {
+                $attributes = $subscriber->subscriberFields()
+                                         ->orderBy('fields.id', 'ASC')
+                                         ->join('fields', 'fields.id', 'subscriber_fields.field_id')
+                                         ->pluck('subscriber_fields.value', 'fields.tag')->toArray();
+
+                // Only take pairs that match the listFields' keys
+                $attributes = array_intersect_key($attributes, $listFields); 
+                
+                // merge the valid attributes to the base list of all keys
+                // results in something like [ 'EMAIL' => 'example@example.io', 'OTHER' => null ]
+                $attributes = array_merge($listFields, $attributes);
+
+                // return the filtered array
+                return $attributes;
+            })->toArray();
+
+            // Write the batch to file (append mode)
+            $writer->insertAll($records);
+        });
     }
 
     /**
