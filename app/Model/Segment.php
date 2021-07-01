@@ -23,7 +23,6 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Acelle\Model\SystemJob as SystemJobModel;
 
 class Segment extends Model
 {
@@ -441,22 +440,7 @@ class Segment extends Model
      */
     public function updateCacheDelayed()
     {
-        $existed = SystemJobModel::getNewJobs()
-                       ->where('name', \Acelle\Jobs\UpdateSegmentJob::class)
-                       ->where('data', $this->id)
-                       ->exists();
-
-        // check if a pending cache updating process is already there for the list
-        if (!$existed) {
-            $existed = SystemJobModel::getNewJobs()
-                       ->where('name', \Acelle\Jobs\UpdateMailListJob::class)
-                       ->where('data', $this->mailList->id)
-                       ->exists();
-        }
-
-        if (!$existed) {
-            dispatch(new \Acelle\Jobs\UpdateSegmentJob($this));
-        }
+        dispatch(new \Acelle\Jobs\UpdateSegmentJob($this));
     }
 
     /**

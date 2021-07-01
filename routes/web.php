@@ -412,13 +412,6 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
 
     Route::get('users/login-back', 'UserController@loginBack');
 
-    // System job
-    Route::post('systems/jobs/cancel', 'SystemJobController@cancel');
-    Route::get('systems/jobs/{type}/listing', 'SystemJobController@listing');
-    Route::get('systems/jobs/delete', 'SystemJobController@delete');
-    Route::get('systems/jobs/{id}/download/log', 'SystemJobController@downloadLog');
-    Route::get('systems/jobs/{id}/download/csv', 'SystemJobController@downloadCsv');
-
     // Sending servers
     Route::post('sending_servers/{uid}/test-connection', 'SendingServerController@testConnection');
     Route::post('sending_servers/{uid}/test', 'SendingServerController@test');
