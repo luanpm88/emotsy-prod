@@ -744,7 +744,7 @@ class MailList extends Model
 
     public function getExportFilePath()
     {
-        $name = preg_replace('/[^a-zA-Z0-9_\-]+/', '_', "{$this->uid}-{$this->name}.csv");
+        $name = preg_replace('/[^a-zA-Z0-9_\-\.]+/', '_', "{$this->uid}-{$this->name}.csv");
         return $this->getExportTempDir($name);
     }
 
