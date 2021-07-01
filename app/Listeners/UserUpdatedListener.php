@@ -5,7 +5,6 @@ namespace Acelle\Listeners;
 use Acelle\Events\UserUpdated;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Acelle\Model\SystemJob as SystemJobModel;
 
 class UserUpdatedListener
 {
