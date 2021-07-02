@@ -56,7 +56,10 @@
                             @endif
                             @if (\Gate::allows('export', $item))
                                 <li>
-                                    <a href="{{ action('SegmentController@viewExport', ['list_uid' => $list->uid, 'uid' => $item->uid]) }}"><i
+                                    <a href="{{ action('SubscriberController@export', [
+                                        'list_uid' => $list->uid,
+                                        'segment_uid' => $item->uid,
+                                    ]) }}"><i
                                                 class="icon-upload4"></i> {{ trans("messages.export") }}</a></li>
                             @endif
                         </ul>
