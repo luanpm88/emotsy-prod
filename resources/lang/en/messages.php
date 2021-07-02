@@ -298,7 +298,7 @@
   'please_wait_import' => 'Please wait for import to complete...',
   'please_wait_export' => 'Please wait for export to complete...',
   'error' => 'Error',
-  'click_to_start_export' => 'Click the "Export" button to start export. Total <span class="badge bg-teal badge-big">:total</span> subscribers.',
+  'click_to_start_export' => 'Select what do you want to export then click the <strong>Export</strong> button below to start export.',
   'export_subscribers' => 'Export subscribers',
   'export_segments' => 'Export segments',
   'download_export' => 'Download exported file',
@@ -3690,4 +3690,7 @@
   'tags' => 'Tags',
   'campaign_api' => 'Campaign API',
   'admin_api' => 'Admin API',
+  'export.choose_segment' => 'Choose segment',
+  'export.whole_list' => 'Whole list',
+  'export.choose_segment' => 'Choose segment',
 ) ?>
