@@ -5,7 +5,7 @@
         @foreach ($admins as $key => $item)
             <tr>
                 <td width="1%">
-                    <img width="80" class="img-circle mr-10" src="{{ action('AdminController@avatar', $item->uid) }}" alt="">
+                    <img width="80" class="img-circle mr-10" src="{{ $item->user->getProfileImageUrl() }}" alt="">
                 </td>
                 <td>
                     <h5 class="no-margin text-bold">
