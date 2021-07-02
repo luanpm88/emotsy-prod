@@ -130,6 +130,16 @@
                         'help_class' => 'plan',
                         'rules' => $plan->generalRules()
                     ])
+
+                    @include('helpers.form_control', [
+                        'class' => 'numeric',
+                        'type' => 'text',
+                        'name' => 'plan[general][vat]',
+                        'label' => trans('messages.plan.vat'),
+                        'value' => $plan->vat,
+                        'help_class' => 'plan',
+                        'rules' => $plan->generalRules()
+                    ])
                     
                     @include('helpers.form_control', [
                         'type' => 'select_ajax',
@@ -170,7 +180,7 @@
                         'label' => trans('messages.plan.tax_billing_required'),
                         'help' => trans('messages.plan.tax_billing_required.help'),
                         'value' => $plan->tax_billing_required,
-                        'options' => [false,true],
+                        'options' => ['0','1'],
                         'help_class' => 'plan',
                         'rules' => $plan->generalRules()
                     ])

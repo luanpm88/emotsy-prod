@@ -3693,4 +3693,6 @@
   'export.choose_segment' => 'Choose segment',
   'export.whole_list' => 'Whole list',
   'export.choose_segment' => 'Choose segment',
+  'plan.save_error' => 'Can not save plan. Error: :error',
+  'plan.vat' => 'VAT',
 ) ?>

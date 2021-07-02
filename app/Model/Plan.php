@@ -51,6 +51,7 @@ class Plan extends Model
         'frequency_amount',
         'frequency_unit',
         'price',
+        'vat',
         'color',
         'currency_id',
         'tax_billing_required',
@@ -71,6 +72,7 @@ class Plan extends Model
             'frequency_amount' => 'required|min:1',
             'frequency_unit' => 'required',
             'price' => 'required|min:0',
+            'vat' => 'required|min:0',
             'color' => 'required',
         );
 
@@ -102,6 +104,7 @@ class Plan extends Model
                 'plan.general.frequency_amount' => 'sometimes|required|min:1',
                 'plan.general.frequency_unit' => 'sometimes|required',
                 'plan.general.price' => 'required|min:0',
+                'plan.general.vat' => 'required|min:0',
                 'plan.general.color' => 'sometimes|required',
             ],
             'options' => [],
