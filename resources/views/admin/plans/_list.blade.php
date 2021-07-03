@@ -6,9 +6,6 @@
             <tr>
                 <td width="1%">
                     <div class="text-nowrap d-flex align-items-canter">
-                        @if (request()->sort_order == 'custom_order' && empty(request()->keyword))
-                            <i data-action="move" class="icon icon-more2 list-drag-button"></i>
-                        @endif
                         @if (!$plan->visible)
                             <a
                                 title="{{ trans('messages.plan.show') }}"

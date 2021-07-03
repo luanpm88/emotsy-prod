@@ -2,9 +2,6 @@
 	<table>
 		<tr rel="__index__">
 			<td>
-				<input type="hidden" class="custom_order"
-					value="__index__" name="fields[__index__][custom_order]"
-				/>
 				<input type="hidden"
 					value="__index__"
 					name="fields[__index__][uid]"
