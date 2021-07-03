@@ -80,7 +80,6 @@ class MailListController extends Controller
                 'default_value' => $field->default_value,
                 'visible' => $field->visible,
                 'required' => $field->required ? true : false,
-                'custom_order' => $field->custom_order,
             ];
         }
 

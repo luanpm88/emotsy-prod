@@ -287,7 +287,7 @@ class MailListController extends Controller
             $list->save();
         }
 
-        echo trans('messages.lists.custom_order.updated');
+        echo trans('messages.lists._deleted_');
     }
 
     /**

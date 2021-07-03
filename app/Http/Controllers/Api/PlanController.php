@@ -41,7 +41,6 @@ class PlanController extends Controller
                 'status' => $plan->status,
                 'color' => $plan->color,
                 'quota' => $plan->quota,
-                'custom_order' => $plan->custom_order,
                 'created_at' => $plan->created_at,
                 'updated_at' => $plan->updated_at,
             ];

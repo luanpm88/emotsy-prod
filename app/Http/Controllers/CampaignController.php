@@ -154,17 +154,7 @@ class CampaignController extends Controller
      */
     public function sort(Request $request)
     {
-        $sort = json_decode($request->sort);
-        foreach ($sort as $row) {
-            $item = Campaign::findByUid($row[0]);
-
-            // authorize
-            if (\Gate::denies('sort', $item)) {
-                return $this->notAuthorized();
-            }
-        }
-
-        echo trans('messages.campaigns.custom_order.updated');
+        echo trans('messages._deleted_');
     }
 
     /**
