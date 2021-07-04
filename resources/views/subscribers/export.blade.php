@@ -28,6 +28,36 @@
 
                 <div class="upload_file before">
                     <p>{!! trans('messages.click_to_start_export', ['total' => $list->readCache('SubscriberCount', 0)]) !!}</p>
+                    <div class="form-group control-radio">
+                        <div class="radio_box mb-4" data-popup='tooltip' title="">
+                            <label class="main-control d-flex align-items-center">
+                                <input type="radio"
+                                    {{ request()->segment_uid ? '' : 'checked' }}
+                                    name="which"
+                                    value="whole_list" class="styled" /><rtitle>{{ trans('messages.export.whole_list') }} ({{ $list->readCache('SubscriberCount', 0) }} {{ strtolower(trans('messages.subscribers')) }})</rtitle>
+                            </label>
+                        </div>
+                        <div class="radio_box" data-popup='tooltip' title="">
+                            <label class="main-control d-flex align-items-center">
+                                <input type="radio"
+                                    {{ request()->segment_uid ? 'checked' : '' }}
+                                    {{ $list->segments()->count() ? '' : 'disabled' }}
+                                    name="which"
+                                    value="segment" class="styled" /><rtitle>{{ trans('messages.export.choose_segment') }}</rtitle>
+                            </label>
+                            <div class="radio_more_box pt-3">
+                                @include('helpers.form_control', [
+                                    'value' => '',
+                                    'type' => 'select',
+                                    'name' => 'segment_uid[]',
+                                    'label' => '',
+                                    'value' => request()->segment_uid,
+                                    'options' => $list->getSegmentSelectOptions(),
+                                    'placeholder' => trans('messages.export.choose_segment'),
+                                ])
+                            </div>
+                        </div>                        
+                    </div>
                     <div class="text-left">
                         <button class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.export') }}</button>
                     </div>

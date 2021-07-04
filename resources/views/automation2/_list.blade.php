@@ -9,15 +9,11 @@
                         <div class="checkbox inline">
                             <label>
                                 <input type="checkbox" class="node styled"
-                                    custom-order="{{ $automation->custom_order }}"
                                     name="ids[]"
                                     value="{{ $automation->uid }}"
                                 />
                             </label>
                         </div>
-                        @if (request()->sort_order == 'custom_order' && empty(request()->keyword))
-                            <i data-action="move" class="icon icon-more2 list-drag-button"></i>
-                        @endif
                     </div>
                 </td>
                 <td>

@@ -226,7 +226,7 @@ class SendingServerController extends Controller
             $item->save();
         }
 
-        echo trans('messages.sending_server.custom_order.updated');
+        echo trans('messages.sending_server._deleted_');
     }
 
     /**

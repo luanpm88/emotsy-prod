@@ -27,7 +27,6 @@
 												<select class="select mr-3" name="sort-order">
 													<option value="id">{{ trans('messages.default') }}</option>
 													<option value="created_at">{{ trans('messages.created_at') }}</option>
-													<option value="custom_order" class="active">{{ trans('messages.custom_order') }}</option>
 													<option value="name">{{ trans('messages.name') }}</option>
 												</select>										
 												<button class="btn btn-xs sort-direction mr-3 ml-2" rel="asc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">

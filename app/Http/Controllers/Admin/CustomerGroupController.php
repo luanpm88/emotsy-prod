@@ -262,20 +262,7 @@ class CustomerGroupController extends Controller
      */
     public function sort(Request $request)
     {
-        $sort = json_decode($request->sort);
-        foreach ($sort as $row) {
-            $item = \Acelle\Model\CustomerGroup::find($row[0]);
-
-            // authorize
-            if (\Gate::denies('sort', $item)) {
-                return $this->notAuthorized();
-            }
-
-            $item->custom_order = $row[1];
-            $item->save();
-        }
-
-        echo trans('messages.customer_groups.custom_order.updated');
+        echo trans('messages.customer_groups._deleted_');
     }
 
     /**

@@ -241,20 +241,7 @@ class TemplateController extends Controller
      */
     public function sort(Request $request)
     {
-        $sort = json_decode($request->sort);
-        foreach ($sort as $row) {
-            $item = Template::findByUid($row[0]);
-
-            // authorize
-            if (!$request->user()->admin->can('update', $item)) {
-                return $this->notAuthorized();
-            }
-
-            $item->custom_order = $row[1];
-            $item->save();
-        }
-
-        echo trans('messages.templates.custom_order.updated');
+        echo trans('messages._deleted_');
     }
 
     /**

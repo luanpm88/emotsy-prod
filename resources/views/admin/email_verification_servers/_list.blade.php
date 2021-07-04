@@ -9,7 +9,6 @@
                         <div class="checkbox inline">
                             <label>
                                 <input type="checkbox" class="node styled"
-                                    custom-order="{{ $server->custom_order }}"
                                     name="ids[]"
                                     value="{{ $server->uid }}"
                                 />

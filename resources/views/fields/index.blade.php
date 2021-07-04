@@ -56,15 +56,6 @@
 				@foreach ($fields as $key => $item)
 					<tr class="draggable" rel="{{ $item->uid }}">
 						<td>
-							<input type="hidden" class="custom_order"
-								value="{{ $item->custom_order }}"
-								name="fields[{{ $item->uid }}][custom_order]"
-							/>
-							<input type="hidden" class="node"
-								custom-order="{{ $item->custom_order }}"
-								value="{{ $item->uid }}"
-								name="fields[{{ $item->uid }}][uid]"
-							/>
 							<i data-action="move" class="icon icon-more2 list-drag-button"></i>
 						</td>
 						<td class="text-nowrap">

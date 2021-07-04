@@ -147,7 +147,6 @@ class FieldController extends Controller
                     }
                 } else {
                     $field->label = $item['label'];
-                    $field->custom_order = $item['custom_order'];
                     $field->default_value = $item['default_value'];
                     $field->save();
                 }
@@ -212,20 +211,7 @@ class FieldController extends Controller
      */
     public function sort(Request $request)
     {
-        $sort = json_decode($request->sort);
-        foreach ($sort as $row) {
-            $field = \Acelle\Model\Field::findByUid($row[0]);
-
-            // authorize
-            if (\Gate::denies('update', $field->mailList)) {
-                return $this->notAuthorized();
-            }
-
-            $field->custom_order = $row[1];
-            $field->save();
-        }
-
-        echo trans('messages.fields.custom_order.updated');
+        echo trans('messages.fields._deleted_');
     }
 
     /**

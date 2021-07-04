@@ -224,20 +224,7 @@ class SendingDomainController extends Controller
      */
     public function sort(Request $request)
     {
-        $sort = json_decode($request->sort);
-        foreach ($sort as $row) {
-            $item = SendingDomain::findByUid($row[0]);
-
-            // authorize
-            if (!$request->user()->customer->can('update', $item)) {
-                return $this->notAuthorized();
-            }
-
-            $item->custom_order = $row[1];
-            $item->save();
-        }
-
-        echo trans('messages.sending_domain.custom_order.updated');
+        echo trans('messages.sending_domain._deleted_');
     }
 
     /**

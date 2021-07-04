@@ -6,14 +6,7 @@
             <tr>
                 <td width="1%">
                     <div class="text-nowrap">
-                        @if (request()->sort_order == 'custom_order' && empty(request()->keyword))
-                            <input type="hidden" class="node styled"
-                                    custom-order="{{ $item->custom_order }}"
-                                    name="ids[]"
-                                    value="{{ $item->id }}"
-                                />
-                            <i data-action="move" class="icon icon-more2 list-drag-button"></i>
-                        @endif
+                        
                     </div>
                 </td>
                 <td>

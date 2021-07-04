@@ -143,20 +143,7 @@ class TrackingDomainController extends Controller
      */
     public function sort(Request $request)
     {
-        $sort = json_decode($request->sort);
-        foreach ($sort as $row) {
-            $item = TrackingDomain::findByUid($row[0]);
-
-            // authorize
-            if (!$request->user()->customer->can('update', $item)) {
-                return $this->notAuthorized();
-            }
-
-            $item->custom_order = $row[1];
-            $item->save();
-        }
-
-        echo trans('messages.tracking_domain.custom_order.updated');
+        echo trans('messages.tracking_domain._deleted_');
     }
 
     /**
