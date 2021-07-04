@@ -14,12 +14,14 @@ class UpdateSubscriptionsKeys extends Migration
      */
     public function up()
     {
-        // Clean up all subscription
-        $subscriptions = Subscription::all();
-        foreach ($subscriptions as $s) {
-            $s->delete();
-        }
+        // Create temporary table
+        \DB::statement(sprintf('CREATE TABLE _tmp_subscriptions as SELECT * FROM %s', table('subscriptions')));
 
+        // Clean up all subscription
+        // $subscriptions = Subscription::all();
+        // foreach ($subscriptions as $s) {
+        //     $s->delete();
+        // }
 
         // Columns to change
         $columns = ['customer_id', 'plan_id', 'user_id'];
@@ -47,8 +49,21 @@ class UpdateSubscriptionsKeys extends Migration
         }
 
         Schema::table('subscriptions', function (Blueprint $table) {
-            $table->integer('customer_id')->unsigned();
-            $table->integer('plan_id')->unsigned();
+            $table->integer('customer_id')->unsigned()->nullable();
+            $table->integer('plan_id')->unsigned()->nullable();
+        });
+
+        \DB::statement(sprintf('
+            UPDATE %s s 
+            INNER JOIN _tmp_subscriptions t ON s.id = t.id 
+            INNER JOIN %s p ON t.plan_id = p.uid 
+            INNER JOIN %s c ON t.user_id = c.uid 
+            SET s.plan_id = p.id, s.customer_id = c.id;
+        ', table('subscriptions'), table('plans'), table('customers') ));
+
+        Schema::table('subscriptions', function (Blueprint $table) {
+            $table->integer('customer_id')->unsigned()->change();
+            $table->integer('plan_id')->unsigned()->change();
 
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
             $table->foreign('plan_id')->references('id')->on('plans')->onDelete('cascade');
