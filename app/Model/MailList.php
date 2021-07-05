@@ -1408,10 +1408,7 @@ class MailList extends Model
     {
         list($valid, $errors) = $this->validateCsvRecord($attributes);
         if (!$valid) {
-            // $failed += 1;
-            // if (!is_null($invalidRecordCallback)) {
-            //     $invalidRecordCallback($record, $errors);
-            // }
+            throw new Exception("Invalid record: ".implode(";", $errors));
         }
 
         // Create or update the subscriber record
