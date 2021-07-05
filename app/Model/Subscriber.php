@@ -229,6 +229,30 @@ class Subscriber extends Model
         }
     }
 
+    public function updateFields2($attributes)
+    {
+        foreach ($attributes as $tag => $value) {
+            $field = $this->mailList->getFieldByTag($tag);
+            if (!is_null($field)) {
+                $fv = $this->subscriberFields()->where('field_id', '=', $field->id)->first();
+
+                if (is_null($fv)) {
+                    $fv = $this->subscriberFields()->make();
+                    $fv->field()->associate($field);
+                }
+
+                $fv->value = $value;
+                $fv->save();
+
+                // update email attribute of subscriber
+                if (strcasecmp($field->tag, 'EMAIL') == 0) {
+                    $this->email = $fv->value;
+                    $this->save();
+                }
+            }
+        }
+    }
+
     /**
      * Filter items.
      *

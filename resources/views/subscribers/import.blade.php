@@ -225,7 +225,10 @@
 	                        AcelleImport.progressCheck = setTimeout(function() {
 	                        	 AcelleImport.checkProgress();
 	                        }, 2000);
-	                    }
+	                    } else {
+                            alert('Invalid result status');
+                            console.log(result);
+                        }
 	                }
 	            });
             },

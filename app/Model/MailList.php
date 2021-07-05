@@ -42,12 +42,15 @@ use Acelle\Events\MailListImported;
 use Acelle\Library\Traits\TrackJobs;
 use File;
 use Acelle\Jobs\ImportSubscribersJob;
+use Acelle\Jobs\ImportSubscribers2;
 use Acelle\Jobs\ExportSubscribersJob;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Monolog\Formatter\LineFormatter;
 use Exception;
 use League\Csv\Writer;
+use Illuminate\Bus\Batch;
+use Illuminate\Support\Facades\Bus;
 
 class MailList extends Model
 {
@@ -346,7 +349,8 @@ class MailList extends Model
      */
     public function getFieldByTag($tag)
     {
-        return $this->fields()->where('tag', '=', $tag)->first();
+        // Case insensitive search
+        return $this->fields()->where(DB::raw('LOWER(tag)'), '=', strtolower($tag))->first();
     }
 
     /**
@@ -1323,6 +1327,104 @@ class MailList extends Model
         }
     }
 
+    public function uploadAndDispatchImportJob2(\Illuminate\Http\UploadedFile $httpFile)
+    {
+        $filename = "import-".uniqid().".csv";
+
+        // store it to storage/
+        $httpFile->move($this->getImportFilePath(), $filename);
+
+        // Example: /home/acelle/storage/app/tmp/import-000000.csv
+        $filepath = $this->getImportFilePath($filename);
+        $importJob = new ImportSubscribers2($this, $filepath);
+
+        $monitor = $this->dispatchWithBatchMonitor(
+            $importJob,
+            $jobType = ImportSubscribers2::class,
+            $then = null,
+            $catch = null,
+            $finally = function($batch) {
+                // Finally
+                // Trigger updating related campaigns cache
+                $this->updateCachedInfo();
+
+                // blacklist new emails (if any)
+                Blacklist::doBlacklist($this->customer);
+
+                // Trigger
+                MailListImported::dispatch($this);
+                $this->reformatDateFields();
+            }
+        );
+
+        return $monitor;
+    }
+
+    // Call by the LoadImportJobs JOB
+    public function parseCsvFile($file, $callback)
+    {
+        $processed = 0;
+        $failed = 0;
+        $total = 0;
+        $message = null;
+
+        // Read CSV files
+        list($headers, $availableFields, $total, $results) = $this->readCsv($file);
+
+        // validate headers, check for required fields
+        // throw an exception in case of error
+        $this->validateCsvHeader($availableFields);
+
+        // update status, line count
+
+        // process by batches
+        each_batch($results, config('app.import_batch_size'), false, function ($batch) use ($availableFields, $callback) {
+            $data = collect($batch)->map(function ($r) use ($availableFields) {
+                $record = array_only($r, $availableFields);
+                if (!is_null($record['email'])) {
+                    // replace the non-break space (not a normal space) as well as all other spaces
+                    $record['email'] = strtolower(preg_replace('/[ \s*]*/', '', trim($record['email'])));
+                }
+
+                if (array_key_exists('tags', $record) && !empty($record['tags'])) {
+                    $record['tags'] = json_encode(array_filter(preg_split('/\s*,\s*/', $record['tags'])));
+                }
+
+                return $record;
+            })->toArray();
+
+            // make the import data table unique by email
+            $data = array_unique_by($data, function ($r) {
+                return $r['email'];
+            });
+
+            foreach($data as $record) {
+                $callback($record);
+            }
+        });
+    }
+
+    public function addSubscriberFromArray($attributes)
+    {
+        list($valid, $errors) = $this->validateCsvRecord($attributes);
+        if (!$valid) {
+            // $failed += 1;
+            // if (!is_null($invalidRecordCallback)) {
+            //     $invalidRecordCallback($record, $errors);
+            // }
+        }
+
+        // Create or update the subscriber record
+        $subscriber = $this->subscribers()->where('email', $attributes['email'])->firstOrNew();
+        $subscriber->fill($attributes);
+        $subscriber->save();
+
+        // Create or update subscriber fields
+        $subscriber->updateFields2($attributes);
+
+        return $subscriber;
+    }
+
     /**
      * Update List related cache.
      */
@@ -2028,11 +2130,32 @@ class MailList extends Model
 
     public function importJobs()
     {
-        return $this->jobMonitors()->orderBy('job_monitors.id', 'DESC')->where('job_type', ImportSubscribersJob::class);
+        return $this->jobMonitors()->orderBy('job_monitors.id', 'DESC')
+                                   ->where('job_type', ImportSubscribersJob::class)
+                                   ->orWhere('job_type', ImportSubscribers2::class);
     }
 
     public function exportJobs()
     {
         return $this->jobMonitors()->orderBy('job_monitors.id', 'DESC')->where('job_type', ExportSubscribersJob::class);   
+    }
+
+    public function getProgress($job)
+    {
+        if ($job->job_type == ImportSubscribersJob::class) {
+            $progress = $job->getJsonData();
+            $progress['status'] = $job->status;
+            $progress['error'] = $job->error;
+        } elseif ($job->job_type == ImportSubscribers2::class) {
+            $progress = [];
+            $progress['status'] = $job->status;
+            $progress['error'] = $job->error;
+            $progress['percentage'] = $job->getBatch()->progress();
+            $progress['total'] = $job->getBatch()->totalJobs;
+            $progress['processed'] = $job->getBatch()->processedJobs();
+            $progress['failed'] = $job->getBatch()->failedJobs;
+        }
+
+        return $progress;
     }
 }

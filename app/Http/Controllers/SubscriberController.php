@@ -382,7 +382,7 @@ class SubscriberController extends Controller
             return view('subscribers.import', [
                 'list' => $list,
                 'currentJobUid' => $currentJob->uid,
-                'progressCheckUrl' => action('SubscriberController@importProgress', ['job_uid' => $currentJob->uid]),
+                'progressCheckUrl' => action('SubscriberController@importProgress', ['job_uid' => $currentJob->uid, 'list_uid' => $list->uid]),
                 'cancelUrl' => action('SubscriberController@cancelImport', ['job_uid' => $currentJob->uid]),
                 'logDownloadUrl' => action('SubscriberController@downloadImportLog', ['job_uid' => $currentJob->uid]),
             ]);
@@ -405,7 +405,7 @@ class SubscriberController extends Controller
         // Return the job information
         return response()->json([
             'currentJobUid' => $currentJob->uid,
-            'progressCheckUrl' => action('SubscriberController@importProgress', ['job_uid' => $currentJob->uid]),
+            'progressCheckUrl' => action('SubscriberController@importProgress', ['job_uid' => $currentJob->uid, 'list_uid' => $list->uid]),
             'cancelUrl' => action('SubscriberController@cancelImport', ['job_uid' => $currentJob->uid]),
             'logDownloadUrl' => action('SubscriberController@downloadImportLog', ['job_uid' => $currentJob->uid]),
         ]);
@@ -476,13 +476,12 @@ class SubscriberController extends Controller
      */
     public function importProgress(Request $request)
     {
-        $job = JobMonitor::findByUid($request->job_uid);
+        $list = MailList::findByUid($request->list_uid);
+        $job = $list->jobMonitors()->where('uid', $request->job_uid)->first();
+
+        $progress = $list->getProgress($job);
 
         // Get progress updated by the import process and status of the final job monitor
-        $progress = $job->getJsonData();
-        $progress['status'] = $job->status;
-        $progress['error'] = $job->error;
-
         return response()->json($progress);
     }
 

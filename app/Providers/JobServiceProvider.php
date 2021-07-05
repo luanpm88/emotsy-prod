@@ -16,12 +16,16 @@ class JobServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // IMPORTANT: 
+        // ONLY TRIGGER QUEUE EVENTS FOR JOB_MONITORS THAT DO NOT HAVE BATCH
+        // IT IS BECAUSE ONES WIH A BATCH WILL BE UPDATED BY BATCH EVENTS, EXCEPT FOR "BEFORE"
         // Initialize the MailLog which writes logs to mail.log
         $this->initMailLog();
 
         Queue::before(function (JobProcessing $event) {
             $job = $this->getJobObject($event);
             if (property_exists($job, 'monitor')) {
+                // 'before' events should be applied to both JOB and BATCH monitor
                 $monitor = $job->monitor;
                 $monitor->setRunning();
             }
@@ -31,7 +35,9 @@ class JobServiceProvider extends ServiceProvider
             $job = $this->getJobObject($event);
             if (property_exists($job, 'monitor')) {
                 $monitor = $job->monitor;
-                $monitor->setDone();
+                if (is_null($monitor->batch_id)) {
+                    $monitor->setDone();
+                }
             }
         });
 
@@ -39,7 +45,9 @@ class JobServiceProvider extends ServiceProvider
             $job = $this->getJobObject($event);
             if (property_exists($job, 'monitor')) {
                 $monitor = $job->monitor;
-                $monitor->setFailed($event->exception);
+                if (is_null($monitor->batch_id)) {
+                    $monitor->setFailed($event->exception);
+                }
             }
         });
     }
