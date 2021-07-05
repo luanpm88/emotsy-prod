@@ -203,22 +203,55 @@ class MailList extends Model
         return self::select('*');
     }
 
-    /**
-     * Get all items.
-     *
-     * @return collect
-     */
-    public function uploadAndDispatchImportJob(\Illuminate\Http\UploadedFile $httpFile)
+    public function uploadCsv(\Illuminate\Http\UploadedFile $httpFile)
     {
         $filename = "import-".uniqid().".csv";
 
         // store it to storage/
         $httpFile->move($this->getImportFilePath(), $filename);
 
-        // Example: /home/acelle/storage/app/tmp/import-000000.csv
+        // Example of outcome: /home/acelle/storage/app/tmp/import-000000.csv
         $filepath = $this->getImportFilePath($filename);
+
+        return $filepath;
+    }
+
+    /**
+     * Get all items.
+     *
+     * @return collect
+     */
+    public function dispatchImportJob($filePath)
+    {
+        // Example: /home/acelle/storage/app/tmp/import-000000.csv
         $job = new ImportSubscribersJob($this, $filepath);
         $monitor = $this->dispatchWithMonitor($job);
+        return $monitor;
+    }
+
+    public function dispatchImportJob2($filepath)
+    {
+        $importJob = new ImportSubscribers2($this, $filepath);
+
+        $monitor = $this->dispatchWithBatchMonitor(
+            $importJob,
+            $jobType = ImportSubscribers2::class,
+            $then = null,
+            $catch = null,
+            $finally = function($batch) {
+                // Finally
+                // Trigger updating related campaigns cache
+                $this->updateCachedInfo();
+
+                // blacklist new emails (if any)
+                Blacklist::doBlacklist($this->customer);
+
+                // Trigger
+                MailListImported::dispatch($this);
+                $this->reformatDateFields();
+            }
+        );
+
         return $monitor;
     }
 
@@ -1327,39 +1360,6 @@ class MailList extends Model
         }
     }
 
-    public function uploadAndDispatchImportJob2(\Illuminate\Http\UploadedFile $httpFile)
-    {
-        $filename = "import-".uniqid().".csv";
-
-        // store it to storage/
-        $httpFile->move($this->getImportFilePath(), $filename);
-
-        // Example: /home/acelle/storage/app/tmp/import-000000.csv
-        $filepath = $this->getImportFilePath($filename);
-        $importJob = new ImportSubscribers2($this, $filepath);
-
-        $monitor = $this->dispatchWithBatchMonitor(
-            $importJob,
-            $jobType = ImportSubscribers2::class,
-            $then = null,
-            $catch = null,
-            $finally = function($batch) {
-                // Finally
-                // Trigger updating related campaigns cache
-                $this->updateCachedInfo();
-
-                // blacklist new emails (if any)
-                Blacklist::doBlacklist($this->customer);
-
-                // Trigger
-                MailListImported::dispatch($this);
-                $this->reformatDateFields();
-            }
-        );
-
-        return $monitor;
-    }
-
     // Call by the LoadImportJobs JOB
     public function parseCsvFile($file, $callback)
     {
@@ -1378,7 +1378,7 @@ class MailList extends Model
         // update status, line count
 
         // process by batches
-        each_batch($results, config('app.import_batch_size'), false, function ($batch) use ($availableFields, $callback) {
+        each_batch($results, $batchSize = 100, false, function ($batch) use ($availableFields, $callback) {
             $data = collect($batch)->map(function ($r) use ($availableFields) {
                 $record = array_only($r, $availableFields);
                 if (!is_null($record['email'])) {
@@ -2139,20 +2139,21 @@ class MailList extends Model
         return $this->jobMonitors()->orderBy('job_monitors.id', 'DESC')->where('job_type', ExportSubscribersJob::class);   
     }
 
+    // Strategy pattern here
     public function getProgress($job)
     {
-        if ($job->job_type == ImportSubscribersJob::class) {
+        if ($job->hasBatch()) {
             $progress = $job->getJsonData();
-            $progress['status'] = $job->status;
-            $progress['error'] = $job->error;
-        } elseif ($job->job_type == ImportSubscribers2::class) {
-            $progress = [];
             $progress['status'] = $job->status;
             $progress['error'] = $job->error;
             $progress['percentage'] = $job->getBatch()->progress();
             $progress['total'] = $job->getBatch()->totalJobs;
             $progress['processed'] = $job->getBatch()->processedJobs();
             $progress['failed'] = $job->getBatch()->failedJobs;
+        } else {
+            $progress = $job->getJsonData();
+            $progress['status'] = $job->status;
+            $progress['error'] = $job->error;
         }
 
         return $progress;

@@ -95,11 +95,13 @@ trait TrackJobs
         // Store the closures (for executing after dispatched) to a temporary place
         // It is because Jobs are not allowed to store closures (not serializable)
         $events = [ 
-            $job->eventAfterDispatched
+            'afterDispatched' => $job->eventAfterDispatched,
+            'afterFinished' => $job->eventAfterFinished,
         ];
 
         // Destroy closure attributes which cannot be serialized
         $job->eventAfterDispatched = null; // Destroy the closure
+        $job->eventAfterFinished = null;
 
         $batch = Bus::batch($job)->then(function (Batch $batch) use ($monitor, $thenCallback) {
             // Finish successfully
@@ -117,9 +119,17 @@ trait TrackJobs
                 $catchCallback($batch);
             }
 
-        })->finally(function (Batch $batch) use ($monitor, $finallyCallback) {
+        })->finally(function (Batch $batch) use ($monitor, $finallyCallback, $events, $job) {
             if (!is_null($finallyCallback)) {
                 $finallyCallback($batch);
+            }
+
+            // Execute job's callback
+            if (array_key_exists('afterFinished', $events)) {
+                $closure = $events['afterFinished'];
+                if (!is_null($closure)) {
+                    $closure($job, $monitor);
+                }
             }
 
         })->dispatch();
@@ -128,7 +138,8 @@ trait TrackJobs
         $monitor->save();
 
         // Execute job's callback
-        foreach($events as $closure) {
+        if (array_key_exists('afterDispatched', $events)) {
+            $closure = $events['afterDispatched'];
             if (!is_null($closure)) {
                 $closure($job, $monitor);
             }

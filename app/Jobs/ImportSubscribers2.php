@@ -25,6 +25,23 @@ class ImportSubscribers2 extends Base
     {
         $this->list = $list;
         $this->file = $file;
+
+        // Set the initial value which must be available for periodical progress checks
+        // Important: only the first log should use setJsonData
+        //            other calls should use update....
+        $this->afterDispatched(function($thisJob, $monitor) {
+            $monitor->setJsonData([
+                'message' => 'Import is being queued for processing (job dispatched)...',
+            ]);
+        });
+
+        // After the batch has finished
+        // This is the place for the job itself to log
+        $this->afterFinished(function($thisJob, $monitor) {
+            $monitor->updateJsonData([
+                'message' => 'Import complete!',
+            ]);
+        });
     }
 
     /**
@@ -46,6 +63,7 @@ class ImportSubscribers2 extends Base
 
         $this->monitor->updateJsonData([
             'logfile' => $logfile,
+            'message' => 'Import is running...',
         ]);
 
         // Write log, to make sure the file is created

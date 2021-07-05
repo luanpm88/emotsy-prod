@@ -8,6 +8,7 @@ use Acelle\Model\EmailVerificationServer;
 use Acelle\Model\MailList;
 use Acelle\Model\Subscriber;
 use Acelle\Model\JobMonitor;
+use Acelle\Library\Facades\Hook;
 
 class SubscriberController extends Controller
 {
@@ -369,7 +370,6 @@ class SubscriberController extends Controller
     {
         $customer = $request->user()->customer;
         $list = MailList::findByUid($request->list_uid);
-
         $currentJob = $list->importJobs()->first();
 
         // authorize
@@ -399,8 +399,12 @@ class SubscriberController extends Controller
         // Get the list
         $list = MailList::findByUid($request->list_uid);
 
-        // Dispatch import job
-        $currentJob = $list->uploadAndDispatchImportJob($request->file('file'));
+        // Upload to server
+        // Example of outcome: /home/acelle/storage/app/tmp/import-000000.csv
+        $filepath = $list->uploadCsv($request->file('file'));
+        
+        // Dispatch the import job
+        $currentJob = $list->dispatchImportJob2($filepath);
 
         // Return the job information
         return response()->json([
@@ -477,7 +481,7 @@ class SubscriberController extends Controller
     public function importProgress(Request $request)
     {
         $list = MailList::findByUid($request->list_uid);
-        $job = $list->jobMonitors()->where('uid', $request->job_uid)->first();
+        $job = $list->importJobs()->first();
 
         $progress = $list->getProgress($job);
 
