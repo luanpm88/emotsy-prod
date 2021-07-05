@@ -59,13 +59,13 @@ function tableFilter(form, custom_url) {
     var loading_mask = form.attr("loading-mask");
 
     // Remove sort direction when sort order == custom_order
-    if(sort_order == 'custom_order') {
-        form.find(".sort-direction").attr("rel", "asc");
-        form.find(".sort-direction").find("i").attr("class", "icon-sort-amount-asc");
-        form.find(".sort-direction").hide();
-    } else {
+    //if(sort_order == 'custom_order') {
+    //    form.find(".sort-direction").attr("rel", "asc");
+    //    form.find(".sort-direction").find("i").attr("class", "icon-sort-amount-asc");
+    //    form.find(".sort-direction").hide();
+    //} else {
         form.find(".sort-direction").show();
-    }
+    //}
 
     var sort_direction = form.find(".sort-direction").attr("rel");
     var keyword = form.find("input[name='search_keyword'], input[name='keyword']").val();
@@ -239,9 +239,9 @@ function updateCustomOrder(form) {
         row.push(num);
         sort.push(row);
         // if row has custom order input
-        if ($(this).parents('tr').find('input.custom_order').length) {
-            $(this).parents('tr').find('input.custom_order').val(num);
-        }
+        //if ($(this).parents('tr').find('input.custom_order').length) {
+        //    $(this).parents('tr').find('input.custom_order').val(num);
+        //}
     });
     console.log(JSON.stringify(sort));
 
