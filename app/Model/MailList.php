@@ -221,7 +221,7 @@ class MailList extends Model
      *
      * @return collect
      */
-    public function dispatchImportJob($filePath)
+    public function dispatchImportJob($filepath)
     {
         // Example: /home/acelle/storage/app/tmp/import-000000.csv
         $job = new ImportSubscribersJob($this, $filepath);
