@@ -34,6 +34,10 @@
                     ]) !!}
                 </div>
 
+                <div class="alert alert-info">
+                    <strong>Notice.</strong> Email address shall be validated during import progress. Only valid ones will get added
+                </div>
+
                 <div class="upload_file before">
 
                     @include('helpers.form_control', ['required' => true, 'type' => 'file', 'label' => trans('messages.upload_file'), 'name' => 'file', 'value' => $list->name])
