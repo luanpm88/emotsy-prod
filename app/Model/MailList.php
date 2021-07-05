@@ -2131,8 +2131,7 @@ class MailList extends Model
     public function importJobs()
     {
         return $this->jobMonitors()->orderBy('job_monitors.id', 'DESC')
-                                   ->where('job_type', ImportSubscribersJob::class)
-                                   ->orWhere('job_type', ImportSubscribers2::class);
+                                   ->whereIn('job_type', [ ImportSubscribersJob::class, ImportSubscribers2::class ]);
     }
 
     public function exportJobs()
