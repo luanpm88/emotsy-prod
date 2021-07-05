@@ -8,6 +8,15 @@ class Timeline extends Model
 {
     protected $fillable = ['automation2_id', 'subscriber_id', 'auto_trigger_id', 'activity', 'activity_type'];
 
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($me) {
+            $me->uid = uniqid();
+        });
+    }
+
     /**
      * Associations.
      *
