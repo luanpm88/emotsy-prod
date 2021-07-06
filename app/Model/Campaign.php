@@ -2485,7 +2485,7 @@ class Campaign extends Model
     public function generateTrackingLogCsv($logtype, $progressCallback = null)
     {
         $tmpTableName = 'log_'.$this->uid.'_'.md5(rand());
-        $filePath = $this->customer->user->getStoragePath($tmpTableName.'.csv');
+        $filePath = storage_path(join_paths('app', $tmpTableName.'.csv'));
 
         DB::statement('DROP TABLE IF EXISTS '.table($tmpTableName));
         
@@ -2711,13 +2711,13 @@ class Campaign extends Model
             // callback progress
             if (!is_null($progressCallback)) {
                 $percentage = ($i + 1) / $pages;
-                $progressCallback(['progress' => $percentage, 'path' => $filePath]);
+                $progressCallback($percentage, $filePath);
             }
         }
 
         // callback progress
         if (!is_null($progressCallback)) {
-            $progressCallback(['progress' => 1, 'path' => $filePath]);
+            $progressCallback($percentage = 100, $filePath);
         }
 
         return $filePath;

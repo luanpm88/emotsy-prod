@@ -282,8 +282,6 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('lists/{list_uid}/segments/{uid}/edit', 'SegmentController@edit');
     Route::patch('lists/{list_uid}/segments/{uid}/update', 'SegmentController@update');
     Route::get('lists/{list_uid}/segments/delete', 'SegmentController@delete');
-    Route::post('lists/{list_uid}/segments/{uid}/export', 'SegmentController@export');
-    Route::get('lists/{list_uid}/segments/{uid}/export', 'SegmentController@viewExport');
     Route::get('lists/{list_uid}/segments/sample_condition', 'SegmentController@sample_condition');
 
     // Page

@@ -21,6 +21,7 @@ use Acelle\Model\ClickLog;
 use Acelle\Model\OpenLog;
 use Acelle\Model\TemplateCategory;
 use Acelle\Library\Rss;
+use Acelle\Model\JobMonitor;
 use DB;
 
 class CampaignController extends Controller
@@ -1245,10 +1246,11 @@ class CampaignController extends Controller
         $logtype = $request->input('logtype');
 
         $job = new ExportCampaignLog($campaign, $logtype);
-        dispatch($job);
+        $monitor = $campaign->dispatchWithMonitor($job);
 
         return view('campaigns.download_tracking_log', [
             'campaign' => $campaign,
+            'job' => $monitor,
         ]);
     }
 
@@ -1257,17 +1259,14 @@ class CampaignController extends Controller
      */
     public function trackingLogExportProgress(Request $request)
     {
-        $json = json_decode($job->data, true);
+        $job = JobMonitor::findByUid($request->uid);
 
-        $output = [
-            'progress' => $json['progress']
-        ];
+        $progress = $job->getJsonData();
+        $progress['status'] = $job->status;
+        $progress['error'] = $job->error;
+        $progress['download'] = action('CampaignController@download', ['uid' => $job->uid]);
 
-        if ($json['progress'] == 1) {
-            $output['download_url'] = action('CampaignController@download', ['uid' => $job->id]);
-        }
-
-        return response()->json($output);
+        return response()->json($progress);
     }
 
     /**
@@ -1275,8 +1274,8 @@ class CampaignController extends Controller
      */
     public function download(Request $request)
     {
-        $json = json_decode($job->data, true);
-        $path = $json['path'];
+        $job = JobMonitor::findByUid($request->uid);
+        $path = $job->getJsonData()['path'];
         return response()->download($path)->deleteFileAfterSend(true);
     }
 
