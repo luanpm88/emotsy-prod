@@ -159,19 +159,7 @@
                         @include ('admin.plans._billing_cycle', [
                             'plan' => $plan,
                         ])
-                    </div>                    
-                    <!--
-                    @include('helpers.form_control', [
-                        'type' => 'select',
-                        'class' => '',
-                        'name' => 'plan[general][color]',
-                        'label' => trans('messages.plan.color'),
-                        'value' => $plan->color,
-                        'help_class' => 'admin',
-                        'options' => $plan->colors("color"),
-                        'rules' => '',
-                    ])
-                    -->
+                    </div>
                     
                     @include('helpers.form_control', [
                         'class' => '',

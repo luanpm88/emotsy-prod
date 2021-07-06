@@ -13,19 +13,6 @@
     <div class="col-md-4">
         <div class="">
             @include('helpers.form_control', [
-                'type' => 'select',
-                'class' => '',
-                'name' => 'color',
-                'value' => $plan->color,
-                'help_class' => 'admin',
-                'options' => $plan->colors("color"),
-                'rules' => '',
-            ])
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="">
-            @include('helpers.form_control', [
                 'type' => 'select_ajax',
                 'name' => 'currency_id',
                 'label' => trans('messages.currency'),
