@@ -8,6 +8,11 @@ class UpdateCampaignJob extends Base
 {
     protected $campaign;
 
+    public function __construct($campaign)
+    {
+        $this->campaign = $campaign;
+    }
+
     /**
      * Execute the job.
      *
