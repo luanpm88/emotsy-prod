@@ -689,10 +689,6 @@ $(function() {
         }
     });
 
-    // Bootstrap switch
-    // ------------------------------
-    $(".switch").bootstrapSwitch();
-
 
     // Action list event
     // ------------------------------
@@ -1297,9 +1293,6 @@ $(function() {
         dashboardQuickview($(this), $('.list-quickview-container'));
     });
     $('.dashboard-list-select').trigger("change");
-
-    // scrollbar
-    $('.scrollbar-box').mCustomScrollbar({theme:"minimal"});
 
     // Select2 ajax
     $(".select2-ajax").each(function() {
@@ -2437,9 +2430,6 @@ $(function() {
         
         input.focus();
     });
-    
-    // bootstrap switch    
-    $(".boostrap-switch").bootstrapSwitch();
     
     // Toogle control
     $('[toggle-control]').each(function() {
