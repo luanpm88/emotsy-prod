@@ -1653,7 +1653,7 @@ class MailList extends Model
         $blacklisted = [];
 
         while (true) {
-            $id = RouletteWheel::generate($selection);
+            $id = RouletteWheel::take($selection);
             if (empty(self::$serverPools[$id])) {
                 $server = SendingServer::find($id);
                 $server->cleanupQuotaTracker();

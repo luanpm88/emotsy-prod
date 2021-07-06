@@ -15,12 +15,11 @@ class DeliverEmail extends Base
      *
      * @return void
      */
-    public function __construct($email, $subscriber, $triggerId, $objectId, $objectName)
+    public function __construct($email, $subscriber, $triggerId)
     {
         $this->email = $email;
         $this->subscriber = $subscriber;
         $this->triggerId = $triggerId;
-        parent::__construct($objectId, $objectName);
     }
 
     /**

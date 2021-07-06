@@ -204,21 +204,11 @@ class Email extends Model
 
     public function queueDeliverTo($subscriber, $triggerId = null)
     {
-        $deliveryAttempt = $this->deliveryAttempts()->create([
-            'subscriber_id' => $subscriber->id,
-            'auto_trigger_id' => $triggerId,
-            // 'email_id' already included
-        ]);
-        
         dispatch(new DeliverEmail(
             $this,
             $subscriber,
             $triggerId,
-            $deliveryAttempt->id,
-            get_class($deliveryAttempt)
         ));
-
-        return $deliveryAttempt;
     }
 
     // @note: complicated dependencies

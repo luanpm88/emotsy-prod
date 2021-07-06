@@ -1588,10 +1588,10 @@ class Customer extends Model
      */
     public function getActiveImportBlacklistJobs()
     {
-        return $this->getImportBlacklistJobs()
-            ->where('status', '!=', \Acelle\Model\SystemJob::STATUS_DONE)
-            ->where('status', '!=', \Acelle\Model\SystemJob::STATUS_FAILED)
-            ->where('status', '!=', \Acelle\Model\SystemJob::STATUS_CANCELLED);
+        // return $this->getImportBlacklistJobs()
+        //    ->where('status', '!=', \Acelle\Model\SystemJob::STATUS_DONE)
+        //    ->where('status', '!=', \Acelle\Model\SystemJob::STATUS_FAILED)
+        //     ->where('status', '!=', \Acelle\Model\SystemJob::STATUS_CANCELLED);
     }
 
     /**
