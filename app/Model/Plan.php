@@ -1445,4 +1445,13 @@ class Plan extends Model
 
         return $this->save();
     }
+
+    public static function newDefaultPlan()
+    {
+        $plan = new self();
+        $plan->status = self::STATUS_INACTIVE;
+        $plan->vat = 0;
+
+        return $plan;
+    }
 }

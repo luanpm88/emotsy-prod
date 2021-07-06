@@ -232,6 +232,7 @@
         'frequency_unit' => 'frequency unit',
         'price' => 'price',
         'color' => 'color',
+        'vat' => 'VAT',
       ),
     ),
   ),

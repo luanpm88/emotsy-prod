@@ -37,6 +37,16 @@
                         'help_class' => 'plan',
                         'rules' => $plan->generalRules()
                     ])
+
+                    @include('helpers.form_control', [
+                        'class' => 'numeric',
+                        'type' => 'text',
+                        'name' => 'plan[general][vat]',
+                        'label' => trans('messages.plan.vat'),
+                        'value' => $plan->vat,
+                        'help_class' => 'plan',
+                        'rules' => $plan->generalRules()
+                    ])
                     
                     <div class="select-custom-2" data-url="{{ action('Admin\PlanController@billingCycle', '00') }}">
                         @include ('admin.plans._billing_cycle', [

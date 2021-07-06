@@ -39,7 +39,6 @@ class PlanController extends Controller
                 'frequency_unit' => $plan->frequency_unit,
                 'options' => $plan->getOptions(),
                 'status' => $plan->status,
-                'color' => $plan->color,
                 'quota' => $plan->quota,
                 'created_at' => $plan->created_at,
                 'updated_at' => $plan->updated_at,

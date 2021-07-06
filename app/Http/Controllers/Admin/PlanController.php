@@ -900,12 +900,10 @@ class PlanController extends Controller
     public function wizard(Request $request)
     {
         if (!$request->uid) {
-            $plan = new Plan();
+            $plan = Plan::newDefaultPlan();
         } else {
             $plan = Plan::findByUid($request->uid);
         }
-
-        $plan->status = Plan::STATUS_INACTIVE;
 
         // fill all
         $plan->fillAll($request);
