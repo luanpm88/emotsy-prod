@@ -404,7 +404,7 @@ class SubscriberController extends Controller
         $filepath = $list->uploadCsv($request->file('file'));
         
         // Dispatch the import job
-        $currentJob = $list->dispatchImportJob2($filepath);
+        $currentJob = $list->dispatchImportJob($filepath);
 
         // Return the job information
         return response()->json([

@@ -1414,6 +1414,7 @@ class MailList extends Model
         // Create or update the subscriber record
         $subscriber = $this->subscribers()->where('email', $attributes['email'])->firstOrNew();
         $subscriber->fill($attributes);
+        $subscriber->status = Subscriber::STATUS_SUBSCRIBED;
         $subscriber->save();
 
         // Create or update subscriber fields
