@@ -58,7 +58,7 @@
             <hr>
 
             <label class="text-bold">{!! trans('messages.cron_jobs_guide') !!} </label>
-            <pre style="font-size: 16px;background:#f5f5f5">* * * * * <span class="current_path_value">{!! $php_bin_path_value !!}</span> -q {{ base_path() }}/artisan schedule:run 2&gt;&amp;1    </pre>
+            <pre style="font-size: 16px;background:#f5f5f5">* * * * * <span class="current_path_value">{!! $php_bin_path_value !!}</span> -q {{ base_path() }}/artisan schedule:run 2&gt;&amp;1</pre>
 
             <!--<hr>
             <label class="text-bold">{!! trans('messages.remote_job_guide') !!} </label>
