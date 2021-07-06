@@ -244,11 +244,12 @@ class Subscriber extends Model
                 $fv->value = $value;
                 $fv->save();
 
+                // @IMPORTANT: avoid updating 'subscribers' table, especially for jobs!
                 // update email attribute of subscriber
-                if (strcasecmp($field->tag, 'EMAIL') == 0) {
-                    $this->email = $fv->value;
-                    $this->save();
-                }
+                // if (strcasecmp($field->tag, 'EMAIL') == 0) {
+                //     $this->email = $fv->value;
+                //     $this->save();
+                // }
             }
         }
     }
