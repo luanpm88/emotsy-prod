@@ -38,18 +38,6 @@ class AutoTrigger extends Controller
 
                 $id = $attempt->id;
                 $description .= " (Attempt: ".$id.", ";
-
-                if (is_null($sysJob)) {
-                    $description .= 'Something went wrong: DeliveryAttempt without SystemJob?';
-                }
-
-                if (is_null($sysJob->job_id) && empty($sysJob->last_error)) {
-                    $description .= "SystemJob ID: ".$sysJob->id." (waiting...)";
-                } elseif (!empty($sysJob->last_error)) {
-                    $description .= "SystemJob ID: ".$sysJob->id.", ERROR: ".$sysJob->last_error;
-                } else {
-                    $description .= "SystemJob ID: ".$sysJob->id.", SENT OK";
-                }
             }
 
             $actions[] = $description;

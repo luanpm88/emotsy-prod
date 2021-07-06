@@ -1048,7 +1048,14 @@ class Subscriber extends Model
             return !empty($val);
         });
 
-        $this->tags = json_encode($arr);
+        // Without JSON_UNESCAPED_UNICODE specified
+        // Results of json_encode(['русский']) may look like this
+        // 
+        //     ["\u0440\u0443\u0441\u0441\u043a\u0438\u0439"]
+        //
+        // which cannot be searched for
+        //
+        $this->tags = json_encode($arr, JSON_UNESCAPED_UNICODE);
         $this->save();
     }
 
