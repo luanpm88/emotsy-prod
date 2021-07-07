@@ -34,7 +34,14 @@ class ClickLog extends Model
     {
         $url = StringHelper::base64UrlDecode($request->url);
 
-        self::validateUrl($url); // throw an exception if failed
+        try {
+            self::validateUrl($url); // throw an exception if failed
+        } catch (Exception $ex) {
+            // just ignore and let users go
+            // the 'url' validation of Laravel does not work with UTF8
+            // For example: https://algeriestore.com/content/Algérie-Store-Catalogue-FR.pdf
+            return; 
+        }
 
         $messageId = StringHelper::base64UrlDecode($request->message_id);
 
