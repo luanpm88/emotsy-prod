@@ -48,7 +48,7 @@ class Contact extends Model
         'address_1' => 'required',
         'city' => 'required',
         'zip' => 'required',
-        'url' => 'regex:/^https{0,1}:\/\//',
+        'url' => 'nullable|regex:/^https{0,1}:\/\//',
         //'url' => 'url', # do not use the default 'url' validator of Laravel, otherwise, error: preg_match(): Compilation failed: invalid range in character class at offset 20
         'company' => 'required',
         'country_id' => 'required',
