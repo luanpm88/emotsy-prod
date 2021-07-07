@@ -22,15 +22,6 @@
 
 @section('content')
 
-    @if (is_object($system_job))
-        <div class="alert alert-warning mb-30">
-            <button data-dismiss="alert" class="close" type="button"><span>×</span><span class="sr-only">Close</span></button>
-            {!! trans('messages.blacklist.an_import_job_is_running', [
-                'link' => action('Admin\BlacklistController@import')
-            ]) !!}
-        </div>
-    @endif
-
     <form class="listing-form"
         data-url="{{ action('Admin\BlacklistController@listing') }}"
         per-page="{{ Acelle\Model\Blacklist::$itemsPerPage }}"

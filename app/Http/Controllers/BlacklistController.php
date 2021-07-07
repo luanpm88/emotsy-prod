@@ -34,12 +34,8 @@ class BlacklistController extends Controller
 
         $blacklists = $this->search($request);
 
-        # Get current job
-        $system_job = $customer->getLastActiveImportBlacklistJob();
-
         return view('blacklists.index', [
             'blacklists' => $blacklists,
-            'system_job' => $system_job,
         ]);
     }
 
