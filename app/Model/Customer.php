@@ -38,6 +38,7 @@ use Exception;
 use DB;
 use Acelle\Library\Facades\Billing;
 use Acelle\Library\AutoBillingData;
+use File;
 
 class Customer extends Model
 {
@@ -1577,8 +1578,7 @@ class Customer extends Model
      */
     public function getImportBlacklistJobs()
     {
-        return \Acelle\Model\SystemJob::where('name', '=', "Acelle\Jobs\ImportBlacklistJob")
-            ->where('data', 'like', '%"customer_id":'.$this->id.'%');
+       ///
     }
 
     /**
@@ -1588,10 +1588,10 @@ class Customer extends Model
      */
     public function getActiveImportBlacklistJobs()
     {
-        return $this->getImportBlacklistJobs()
-            ->where('status', '!=', \Acelle\Model\SystemJob::STATUS_DONE)
-            ->where('status', '!=', \Acelle\Model\SystemJob::STATUS_FAILED)
-            ->where('status', '!=', \Acelle\Model\SystemJob::STATUS_CANCELLED);
+        // return $this->getImportBlacklistJobs()
+        //    ->where('status', '!=', \Acelle\Model\SystemJob::STATUS_DONE)
+        //    ->where('status', '!=', \Acelle\Model\SystemJob::STATUS_FAILED)
+        //     ->where('status', '!=', \Acelle\Model\SystemJob::STATUS_CANCELLED);
     }
 
     /**

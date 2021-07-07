@@ -39,20 +39,30 @@ use DB;
 use App;
 use Acelle\Library\Traits\QueryHelper;
 use Acelle\Events\MailListImported;
+use Acelle\Library\Traits\TrackJobs;
+use File;
+use Acelle\Jobs\ImportSubscribersJob;
+use Acelle\Jobs\ImportSubscribers2;
+use Acelle\Jobs\ExportSubscribersJob;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+use Monolog\Formatter\LineFormatter;
+use Exception;
+use League\Csv\Writer;
+use Illuminate\Bus\Batch;
+use Illuminate\Support\Facades\Bus;
 
 class MailList extends Model
 {
-    use QueryHelper;
-
-    // Subscribers to import every time
-    const IMPORT_STATUS_NEW = 'new';
-    const IMPORT_STATUS_RUNNING = 'running';
-    const IMPORT_STATUS_FAILED = 'failed';
-    const IMPORT_STATUS_DONE = 'done';
+    use QueryHelper, TrackJobs;
 
     const SOURCE_EMBEDDED_FORM = 'embedded-form';
     const SOURCE_WEB = 'web';
     const SOURCE_API = 'api';
+
+    const IMPORT_TEMP_DIR = 'app/tmp/import/';
+    const EXPORT_TEMP_DIR = 'app/tmp/export/';
+
 
     /**
      * The attributes that are mass assignable.
@@ -178,9 +188,6 @@ class MailList extends Model
                 $item->contact->delete();
             }
 
-            // Delete import jobs
-            $item->importJobs()->delete();
-
             // Delete export jobs
             $item->exportJobs()->delete();
         });
@@ -194,6 +201,83 @@ class MailList extends Model
     public static function getAll()
     {
         return self::select('*');
+    }
+
+    public function uploadCsv(\Illuminate\Http\UploadedFile $httpFile)
+    {
+        $filename = "import-".uniqid().".csv";
+
+        // store it to storage/
+        $httpFile->move($this->getImportFilePath(), $filename);
+
+        // Example of outcome: /home/acelle/storage/app/tmp/import-000000.csv
+        $filepath = $this->getImportFilePath($filename);
+
+        return $filepath;
+    }
+
+    /**
+     * Get all items.
+     *
+     * @return collect
+     */
+    public function dispatchImportJob($filepath)
+    {
+        // Example: /home/acelle/storage/app/tmp/import-000000.csv
+        $job = new ImportSubscribersJob($this, $filepath);
+        $monitor = $this->dispatchWithMonitor($job);
+        return $monitor;
+    }
+
+    public function dispatchImportJob2($filepath)
+    {
+        $importJob = new ImportSubscribers2($this, $filepath);
+
+        $monitor = $this->dispatchWithBatchMonitor(
+            $importJob,
+            $jobType = ImportSubscribers2::class,
+            $then = null,
+            $catch = null,
+            $finally = function($batch) {
+                // Finally
+                // Trigger updating related campaigns cache
+                $this->updateCachedInfo();
+
+                // blacklist new emails (if any)
+                Blacklist::doBlacklist($this->customer);
+
+                // Trigger
+                MailListImported::dispatch($this);
+                $this->reformatDateFields();
+            }
+        );
+
+        return $monitor;
+    }
+
+    public function getImportTempDir($file = null)
+    {
+        $base = storage_path(self::IMPORT_TEMP_DIR);
+        if (!File::exists($base)) {
+            File::makeDirectory($base, 0777, true, true);
+        }
+
+        return join_paths($base, $file);
+    }
+
+    public function getExportTempDir($file = null)
+    {
+        $base = storage_path(self::EXPORT_TEMP_DIR);
+        if (!File::exists($base)) {
+            File::makeDirectory($base, 0777, true, true);
+        }
+
+        return join_paths($base, $file);
+    }
+
+    public function getImportFilePath($filename = null)
+    {
+        return $this->getImportTempDir($filename);
     }
 
     /**
@@ -298,7 +382,8 @@ class MailList extends Model
      */
     public function getFieldByTag($tag)
     {
-        return $this->fields()->where('tag', '=', $tag)->first();
+        // Case insensitive search
+        return $this->fields()->where(DB::raw('LOWER(tag)'), '=', strtolower($tag))->first();
     }
 
     /**
@@ -694,164 +779,99 @@ class MailList extends Model
         return $copy;
     }
 
-    /**
-     * Get import jobs.
-     *
-     * @return number
-     */
-    public function importJobs()
+    public function getExportFilePath()
     {
-        return \Acelle\Model\SystemJob::where('name', '=', "Acelle\Jobs\ImportSubscribersJob")
-            ->where('data', 'like', '%"mail_list_uid":"'.$this->uid.'"%');
+        $name = preg_replace('/[^a-zA-Z0-9_\-\.]+/', '_', "{$this->uid}-{$this->name}.csv");
+        return $this->getExportTempDir($name);
     }
 
-    /**
-     * Get last export job.
-     *
-     * @return number
-     */
-    public function getLastImportJob()
+    public function dispatchExportJob()
     {
-        return $this->importJobs()
-            ->orderBy('created_at', 'DESC')
-            ->first();
-    }
-
-    /**
-     * Get export jobs.
-     *
-     * @return number
-     */
-    public function exportJobs()
-    {
-        return \Acelle\Model\SystemJob::where('name', '=', "Acelle\Jobs\ExportSubscribersJob")
-            ->where('data', 'like', '%"mail_list_uid":"'.$this->uid.'"%');
-    }
-
-    /**
-     * Get export segment jobs.
-     *
-     * @return number
-     */
-    public function exportSegmentJobs($uid)
-    {
-        return \Acelle\Model\SystemJob::where('name', '=', "Acelle\Jobs\ExportSegmentsJob")
-            ->where('data', 'like', '%"uid":"'.$uid.'"%');
-    }
-
-    /**
-     * Get last export job.
-     *
-     * @return number
-     */
-    public function getLastExportJob()
-    {
-        return $this->exportJobs()
-            ->orderBy('created_at', 'DESC')
-            ->first();
-    }
-
-    /**
-     * Get last export log file.
-     *
-     * @return string file path
-     */
-    public function getLastImportLog()
-    {
-        $data = json_decode($this->getLastImportJob()->data, true);
-
-        return $data['log'];
+        return $this->dispatchWithMonitor(new ExportSubscribersJob($this));
     }
 
     /**
      * Export subscribers.
      */
-    public static function export($list, $customer, $job)
+    public function export($progressCallback = null)
     {
-        // Info from job
-        $systemJob = $job->getSystemJob();
-        $directory = $job->getPath();
+        $processed = 0;
+        $total = 0;
+        $message = null;
+        $failed = 0;
 
-        $file_path = $directory.'data.csv';
+        $pageSize = 1000;
 
-        // Import to database
-        $total = $list->subscribersCount(); // no cache
-        $success = 0;
-        $error = 0;
-        $lines_per_second = 1;
-        $headers = [];
-        $headers[] = trans('messages.list.exported_file.headers.uid');
-        $headers[] = trans('messages.list.exported_file.headers.status');
-        foreach ($list->getFields as $key => $field) {
-            $headers[] = $field->tag;
+        if (!is_null($progressCallback)) {
+            $progressCallback($processed, $total, $failed, $message = 'Export is in progress...');
         }
-        $headers = implode(',', $headers);
 
-        // write csv
-        $myfile = file_put_contents($file_path, $headers.PHP_EOL, FILE_APPEND | LOCK_EX);
+        $file = $this->getExportFilePath();
+        if (file_exists($file)) {
+            File::delete($file);
+        }
 
-        $num = 100;
-        for ($page = 0; $page <= ceil($total / $num); ++$page) { // ceil($total/$num)
-            $data = [];
-            foreach ($list->subscribers()->skip($page * $num)->take($num)->get() as $key => $item) {
-                $cols = [];
-                $cols[] = $item->uid;
-                $cols[] = trans('messages.list.exported_file.status.'.$item->status);
-                foreach ($list->getFields as $key2 => $field) {
-                    $value = $item->getValueByField($field);
-                    $cols[] = $value;
-                }
-                $data[] = \Acelle\Library\Tool::arrayToCsv($cols, ',');
+        // CSV writer
+        $writer = Writer::createFromPath($file, 'w+');
 
-                ++$success;
+        // Query subscribers
+        $query = $this->subscribers();
+        $total = $query->count();
+
+        // Get an associative array of [ 'tag' => null ]
+        // Trick: pass '' as 1st parameter to have it result in null value
+        $listFields = $this->fields->pluck('', 'tag')->toArray();
+
+        // write the header
+        $headers = array_keys($listFields);
+
+        // Additional attributes
+        $headers[] = 'status';
+        $headers[] = 'uid';
+        $headers[] = 'created_at';
+        $headers[] = 'updated_at';
+
+        $writer->insertOne($headers);
+
+        // Iterate through the list and write to file, 1000 records each time
+        cursorIterate($query, $orderBy = 'subscribers.id', $pageSize,  function($subscribers, $page) use ($writer, $listFields, &$processed, &$total, &$failed, &$message, $pageSize, $progressCallback) {
+            $records = collect($subscribers)->map(function($subscriber) use ($listFields) {
+                $attributes = $subscriber->subscriberFields()
+                                         ->orderBy('fields.id', 'ASC')
+                                         ->join('fields', 'fields.id', 'subscriber_fields.field_id')
+                                         ->pluck('subscriber_fields.value', 'fields.tag')->toArray();
+
+                // Only take pairs that match the listFields' keys
+                $attributes = array_intersect_key($attributes, $listFields); 
+                
+                // merge the valid attributes to the base list of all keys
+                // results in something like [ 'EMAIL' => 'example@example.io', 'OTHER' => null ]
+                $attributes = array_merge($listFields, $attributes);
+
+                $attributes['status'] = $subscriber->status;
+                $attributes['uid'] = $subscriber->uid;
+                $attributes['created_at'] = $subscriber->created_at->toString();
+                $attributes['updated_at'] = $subscriber->updated_at->toString();
+
+                // return the filtered array
+                return $attributes;
+            })->toArray();
+
+            // Write the batch to file (append mode)
+            $writer->insertAll($records);
+
+            // Increment
+            $processed += sizeof($records);
+
+            // Callback
+            if (!is_null($progressCallback)) {
+                $progressCallback($processed, $total, $failed = 0, $message = sprintf('Export is in progress, %s / %s records written', $processed, $total));
             }
+        });
 
-            // write csv
-            $myfile = file_put_contents($file_path, implode("\r\n", $data).PHP_EOL, FILE_APPEND | LOCK_EX);
-
-            $content_cache = trans('messages.import_export_statistics_line', [
-                'total' => $total,
-                'processed' => $success + $error,
-                'success' => $success,
-                'error' => $error,
-            ]);
-
-            // update system job
-            $systemJob->data = json_encode([
-                'mail_list_uid' => $list->uid,
-                'customer_id' => $customer->id,
-                'status' => 'running',
-                'message' => $content_cache,
-                'total' => $total,
-                'success' => $success,
-                'error' => $error,
-                'percent' => round((($success + $error) / $total) * 100, 0),
-            ]);
-            $systemJob->save();
+        if (!is_null($progressCallback)) {
+            $progressCallback($processed, $total, $failed = 0, $message = sprintf('Export complete, processed: %s / %s', $processed, $total));
         }
-
-        $content_cache = trans('messages.import_export_statistics_line', [
-            'total' => $total,
-            'processed' => $success + $error,
-            'success' => $success,
-            'error' => $error,
-        ]);
-
-        // update system job
-        $systemJob->data = json_encode([
-            'mail_list_uid' => $list->uid,
-            'customer_id' => $customer->id,
-            'status' => 'done',
-            'message' => $content_cache,
-            'total' => $total,
-            'success' => $success,
-            'error' => $error,
-            'percent' => 100,
-        ]);
-        $systemJob->save();
-
-        // Action Log
-        $list->log('export_success', $customer, ['count' => $success, 'error' => $error]);
     }
 
     /**
@@ -859,88 +879,7 @@ class MailList extends Model
      */
     public static function exportSegments($list, $customer, $job)
     {
-        // Info from job
-        $systemJob = $job->getSystemJob();
-        $directory = $job->getPath();
-
-        $file_path = $directory.'data.csv';
-
-        // Import to database
-
-        $json = json_decode($systemJob->data);
-        $fields = preg_split('/,/', $json->fields);
-        $headers = $json->fields;
-        $segment = \Acelle\Model\Segment::findByUid($json->uid);
-        $total = $segment->subscribersCount(); // no cache
-        $success = 0;
-        $error = 0;
-        // write csv
-        $myfile = file_put_contents($file_path, $headers.PHP_EOL, FILE_APPEND | LOCK_EX);
-
-        $num = 100;
-        for ($page = 0; $page <= ceil($total / $num); ++$page) { // ceil($total/$num)
-            $data = [];
-            foreach ($segment->subscribers()->skip($page * $num)->take($num)->get() as $key => $item) {
-                $cols = [];
-                foreach ($fields as $key2 => $field) {
-                    $value = $item->getValueByTag($field);
-                    $cols[] = $value;
-                }
-                $data[] = \Acelle\Library\Tool::arrayToCsv($cols, ',');
-
-                ++$success;
-            }
-
-            // write csv
-            $myfile = file_put_contents($file_path, implode("\r\n", $data).PHP_EOL, FILE_APPEND | LOCK_EX);
-
-            $content_cache = trans('messages.export_segments_statistics_line', [
-                'total' => $total,
-                'processed' => $success + $error,
-                'success' => $success,
-                'error' => $error,
-            ]);
-
-            // update system job
-            $systemJob->data = json_encode([
-                'mail_list_uid' => $list->uid,
-                'customer_id' => $customer->id,
-                'status' => 'running',
-                'message' => $content_cache,
-                'total' => $total,
-                'success' => $success,
-                'error' => $error,
-                'percent' => round((($success + $error) / $total) * 100, 0),
-                'fields' => $json->fields,
-                'uid' => $json->uid,
-            ]);
-            $systemJob->save();
-        }
-
-        $content_cache = trans('messages.export_segments_statistics_line', [
-            'total' => $total,
-            'processed' => $success + $error,
-            'success' => $success,
-            'error' => $error,
-        ]);
-
-        // update system job
-        $systemJob->data = json_encode([
-            'mail_list_uid' => $list->uid,
-            'customer_id' => $customer->id,
-            'status' => 'done',
-            'message' => $content_cache,
-            'total' => $total,
-            'success' => $success,
-            'error' => $error,
-            'percent' => 100,
-            'fields' => $json->fields,
-            'uid' => $json->uid,
-        ]);
-        $systemJob->save();
-
-        // Action Log
-        $list->log('export_success', $customer, ['count' => $success, 'error' => $error]);
+        // todo
     }
 
     /**
@@ -1102,7 +1041,7 @@ class MailList extends Model
      *
      * @param string file path
      *
-     * @return array [$headers, $availableFields, $lineCount, $results]
+     * @return array [$headers, $availableFields, $total, $results]
      */
     public function getRemainingAddSubscribersQuota()
     {
@@ -1128,7 +1067,7 @@ class MailList extends Model
      *
      * @param string file path
      *
-     * @return array [$headers, $availableFields, $lineCount, $results]
+     * @return array [$headers, $availableFields, $total, $results]
      */
     private function readCsv($file)
     {
@@ -1152,7 +1091,6 @@ class MailList extends Model
             }
 
             // Read CSV files
-            $lineCount = line_count($file) - 1; // do not count the header
             $reader = \League\Csv\Reader::createFromPath($file);
             $reader->setHeaderOffset(0);
             // get the headers, using array_filter to strip empty/null header
@@ -1178,7 +1116,7 @@ class MailList extends Model
             // split the entire list into smaller batches
             $results = $reader->getRecords($headers);
 
-            return [$headers, $availableFields, $lineCount, $results];
+            return [$headers, $availableFields, iterator_count($results), $results];
         } catch (\Exception $ex) {
             // @todo: translation here
             throw new \Exception('Invalid headers. Original error message is: '.$ex->getMessage());
@@ -1231,46 +1169,52 @@ class MailList extends Model
      * @return string quoted value
      * @todo: use MySQL escape function to correctly escape string with astrophe
      */
-    public function import2($file, $customer, $system_job)
+    public function import($file, $progressCallback = null, $invalidRecordCallback = null)
     {
-        try {
-            $processed_count = 0;
-            $overQuotaAttempt = false;
-            $logger = $system_job->getLogger();
-            $logger->info(trans('messages.Start_importing_for_list_uid', ['uid' => $this->uid]));
+        $processed = 0;
+        $failed = 0;
+        $total = 0;
+        $message = null;
 
-            // init the status
-            $system_job->updateStatus([
-                'status' => self::IMPORT_STATUS_RUNNING,
-            ]);
+        try {
+            $overQuotaAttempt = false;
+
+            if (!is_null($progressCallback)) {
+                $progressCallback($processed, $total, $failed, $message = 'Import is starting...');
+            }
 
             // Read CSV files
-            list($headers, $availableFields, $lineCount, $results) = $this->readCsv($file);
+            list($headers, $availableFields, $total, $results) = $this->readCsv($file);
+            
+            if (!is_null($progressCallback)) {
+                $progressCallback($processed, $total, $failed, $message = 'Validating file headers...');
+            }
 
             // validate headers, check for required fields
             // throw an exception in case of error
             $this->validateCsvHeader($availableFields);
 
+            if (!is_null($progressCallback)) {
+                $progressCallback($processed, $total, $failed, $message = 'Loading records from file...');
+            }
+
             // update status, line count
-            $system_job->updateStatus(['total' => $lineCount]);
 
             // process by batches
-            each_batch($results, config('app.import_batch_size'), true, function ($batch) use ($logger, $availableFields, &$customer, &$processed_count, &$system_job, &$overQuotaAttempt) {
+            each_batch($results, config('app.import_batch_size'), false, function ($batch) use ($availableFields, &$processed, &$failed, $total, &$overQuotaAttempt, &$message, $progressCallback, $invalidRecordCallback) {
 
                 // authorization
-                if ($customer->user->can('addMoreSubscribers', [$this, sizeof($batch)])) {
+                if ($this->customer->user->can('addMoreSubscribers', [$this, sizeof($batch)])) {
                     $insertLimit = sizeof($batch);
                 } else {
                     $insertLimit = $this->getRemainingAddSubscribersQuota();
                 }
 
+
+
                 // if ($insertLimit == 0) { // only == 0 is enough
                 //     throw new \Exception(trans('messages.import.notice.over_quota'));
                 // }
-
-                // processing for every batch,
-                // using transaction to only commit at the end of the batch execution
-                DB::beginTransaction();
 
                 // create a temporary table containing the input subscribers
                 $tmpTable = table('__tmp_subscribers');
@@ -1278,9 +1222,11 @@ class MailList extends Model
                 $tmpFields = implode(',', array_map(function ($field) {
                     return "`{$field}` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci";
                 }, $availableFields));
-                DB::statement("DROP TABLE IF EXISTS {$tmpTable};
-                               CREATE TABLE {$tmpTable}({$tmpFields});
-                               CREATE INDEX _index_email_{$tmpTable} ON {$tmpTable}(`email`);");
+
+                // Drop table, create table and create index
+                DB::statement("DROP TABLE IF EXISTS {$tmpTable};");
+                DB::statement("CREATE TABLE {$tmpTable}({$tmpFields})");
+                DB::statement("CREATE INDEX _index_email_{$tmpTable} ON {$tmpTable}(`email`);");
 
                 // Insert subscriber fields from the batch to the temporary table
                 // extract only fields whose name matches TAG NAME of MailList
@@ -1304,17 +1250,20 @@ class MailList extends Model
                 });
 
                 // validate amd remove invalid records
-                $data = array_where($data, function ($record) use ($logger) {
+                $data = array_where($data, function ($record) use (&$failed, $invalidRecordCallback) {
                     list($valid, $errors) = $this->validateCsvRecord($record);
                     if (!$valid) {
-                        $logger->warning($record['email'].': '.implode(', ', $errors));
+                        $failed += 1;
+                        if (!is_null($invalidRecordCallback)) {
+                            $invalidRecordCallback($record, $errors);
+                        }
                     }
 
                     return $valid;
                 });
 
+                // INSERT TO tmp TABLE
                 DB::table('__tmp_subscribers')->insert($data);
-
                 $newRecordCount = DB::select("SELECT COUNT(*) AS count FROM {$tmpTable} tmp LEFT JOIN ".table('subscribers')." main ON (tmp.email = main.email AND main.mail_list_id = {$this->id}) WHERE main.email IS NULL")[0]->count;
 
                 if ($newRecordCount > 0 && $insertLimit == 0) {
@@ -1324,6 +1273,10 @@ class MailList extends Model
                     // Just let it proceed until finishing
                     $overQuotaAttempt = true;
                 }
+
+                // processing for every batch,
+                // using transaction to only commit at the end of the batch execution
+                DB::beginTransaction();
 
                 // Insert new subscribers from temp table to the main table
                 // Use SUBSTRING(MD5(UUID()), 1, 13) to produce a UNIQUE ID which is similar to the output of PHP uniqid()
@@ -1359,8 +1312,13 @@ class MailList extends Model
                 }
 
                 // update status, finish one batch
-                $processed_count += sizeof($batch);
-                $system_job->updateStatus(['processed' => $processed_count]);
+                $processed += sizeof($batch);
+                if (!is_null($progressCallback)) {
+                    $progressCallback($processed, $total, $failed, $message = 'Inserting contacts to database...');
+                }
+                
+                // Actually write to the database
+                DB::commit();
 
                 // Cleanup
                 DB::statement("DROP TABLE IF EXISTS {$tmpTable};");
@@ -1369,44 +1327,100 @@ class MailList extends Model
                 $this->updateCachedInfo();
 
                 // blacklist new emails (if any)
-                Blacklist::doBlacklist($customer);
-
-                // Actually write to the database
-                DB::commit();
+                Blacklist::doBlacklist($this->customer);
 
                 // Trigger
                 MailListImported::dispatch($this);
             });
-        } catch (\Exception $e) {
-            // finish the transaction
+
+            if (!is_null($progressCallback)) {
+                $progressCallback($processed, $total, $failed, $message = "Processed: {$processed}/{$total} records, skipped: {$failed} records.");
+            }
+        } catch (\Throwable $e) {
+            // IMPORTANT: rollback first before throwing, otherwise it will be a deadlock
             DB::rollBack();
 
-            // LOG ERROR MESSAGE
-            $system_job->updateStatus([
-                'error_message' => $e->getMessage(),
-            ]);
-
-            // WRITE to job's logger
-            $logger->error($e->getMessage());
-        } finally {
-            // UPDATE JOB STATUS "DONE" (so job is always DONE, with or without error_message)
-            // Hack, in case processed_count is not equal to total
-            $system_job->updateStatus(['status' => self::IMPORT_STATUS_DONE, 'total' => $processed_count]);
-            
-            if ($overQuotaAttempt) {
-                $system_job->updateStatus(['error_message' => trans('messages.import.notice.over_quota')]);
+            if (!is_null($progressCallback)) {
+                $progressCallback($processed, $total, $failed, $message = $e->getMessage());
             }
 
-            $logger->info(trans('messages.Finish_importing_for_list_uid', ['uid' => $this->uid]));
-            
-            $this->log('import_success', $customer, ['count' => $processed_count,'error' => '']);
+            throw $e;
+        } finally {
+            //if ($overQuotaAttempt) {
+            //    $syssss_job->updateStatus(['error_message' => trans('messages.import.notice.over_quota')]);
+            // }
 
             // @IMPORTANT: if process fails here, something weird occurs
-            // Job done, system_job.data does not have any information!!!
-            // Only errors found in failed_logs and system_job.status = failed
             $this->reformatDateFields();
             $this->updateCachedInfo();
+
+            if (!is_null($progressCallback)) {
+                $progressCallback($processed, $total, $failed, $message);
+            }
         }
+    }
+
+    // Call by the LoadImportJobs JOB
+    public function parseCsvFile($file, $callback)
+    {
+        $processed = 0;
+        $failed = 0;
+        $total = 0;
+        $message = null;
+
+        // Read CSV files
+        list($headers, $availableFields, $total, $results) = $this->readCsv($file);
+
+        // validate headers, check for required fields
+        // throw an exception in case of error
+        $this->validateCsvHeader($availableFields);
+
+        // update status, line count
+
+        // process by batches
+        each_batch($results, $batchSize = 100, false, function ($batch) use ($availableFields, $callback) {
+            $data = collect($batch)->map(function ($r) use ($availableFields) {
+                $record = array_only($r, $availableFields);
+                if (!is_null($record['email'])) {
+                    // replace the non-break space (not a normal space) as well as all other spaces
+                    $record['email'] = strtolower(preg_replace('/[ \s*]*/', '', trim($record['email'])));
+                }
+
+                if (array_key_exists('tags', $record) && !empty($record['tags'])) {
+                    $record['tags'] = json_encode(array_filter(preg_split('/\s*,\s*/', $record['tags'])));
+                }
+
+                return $record;
+            })->toArray();
+
+            // make the import data table unique by email
+            $data = array_unique_by($data, function ($r) {
+                return $r['email'];
+            });
+
+            foreach($data as $record) {
+                $callback($record);
+            }
+        });
+    }
+
+    public function addSubscriberFromArray($attributes)
+    {
+        list($valid, $errors) = $this->validateCsvRecord($attributes);
+        if (!$valid) {
+            throw new Exception("Invalid record: ".implode(";", $errors));
+        }
+
+        // Create or update the subscriber record
+        $subscriber = $this->subscribers()->where('email', $attributes['email'])->firstOrNew();
+        $subscriber->fill($attributes);
+        $subscriber->status = Subscriber::STATUS_SUBSCRIBED;
+        $subscriber->save();
+
+        // Create or update subscriber fields
+        $subscriber->updateFields2($attributes);
+
+        return $subscriber;
     }
 
     /**
@@ -1640,7 +1654,7 @@ class MailList extends Model
         $blacklisted = [];
 
         while (true) {
-            $id = RouletteWheel::generate($selection);
+            $id = RouletteWheel::take($selection);
             if (empty(self::$serverPools[$id])) {
                 $server = SendingServer::find($id);
                 $server->cleanupQuotaTracker();
@@ -1831,12 +1845,7 @@ class MailList extends Model
      */
     public function getRunningVerificationJob()
     {
-        $job = SystemJob::where('name', 'Acelle\Jobs\VerifyMailListJob')
-                        ->whereIn('status', [SystemJob::STATUS_NEW, SystemJob::STATUS_RUNNING, SystemJob::STATUS_FAILED])
-                        ->where('data', $this->id)
-                        ->first();
-
-        return $job;
+        ///
     }
 
     /**
@@ -2109,5 +2118,42 @@ class MailList extends Model
             WHERE value <> tmp.pretty_date";
         DB::statement($sql);
         **********/
+    }
+
+    // Currently, only one monitor per campaign (soft business)
+    public function jobMonitors()
+    {
+        return $this->hasMany(JobMonitor::class, 'subject_id')->where('subject_name', self::class);
+    }
+
+    public function importJobs()
+    {
+        return $this->jobMonitors()->orderBy('job_monitors.id', 'DESC')
+                                   ->whereIn('job_type', [ ImportSubscribersJob::class, ImportSubscribers2::class ]);
+    }
+
+    public function exportJobs()
+    {
+        return $this->jobMonitors()->orderBy('job_monitors.id', 'DESC')->where('job_type', ExportSubscribersJob::class);   
+    }
+
+    // Strategy pattern here
+    public function getProgress($job)
+    {
+        if ($job->hasBatch()) {
+            $progress = $job->getJsonData();
+            $progress['status'] = $job->status;
+            $progress['error'] = $job->error;
+            $progress['percentage'] = $job->getBatch()->progress();
+            $progress['total'] = $job->getBatch()->totalJobs;
+            $progress['processed'] = $job->getBatch()->processedJobs();
+            $progress['failed'] = $job->getBatch()->failedJobs;
+        } else {
+            $progress = $job->getJsonData();
+            $progress['status'] = $job->status;
+            $progress['error'] = $job->error;
+        }
+
+        return $progress;
     }
 }

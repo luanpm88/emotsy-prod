@@ -46,7 +46,7 @@ class CampaignPolicy
     public function pause(User $user, Campaign $item)
     {
         $customer = $user->customer;
-        return $item->customer_id == $customer->id && in_array($item->status, ['sending', 'ready']);
+        return $item->customer_id == $customer->id && in_array($item->status, ['queuing', 'queued', 'sending', 'ready']);
     }
 
     public function restart(User $user, Campaign $item)
@@ -88,14 +88,15 @@ class CampaignPolicy
     public function resend(User $user, Campaign $item)
     {
         $customer = $user->customer;
-        return $item->customer_id == $customer->id && $item->isDone();
+        return $item->customer_id == $customer->id && ($item->isDone() || $item->isPaused());
     }
 
     public function send_test_email(User $user, Campaign $item)
     {
         $customer = $user->customer;
         return $item->customer_id == $customer->id && in_array($item->status, [
-            Campaign::STATUS_READY,
+            Campaign::STATUS_QUEUING,
+            Campaign::STATUS_QUEUED,
             Campaign::STATUS_SENDING,
             Campaign::STATUS_ERROR,
             Campaign::STATUS_PAUSED,

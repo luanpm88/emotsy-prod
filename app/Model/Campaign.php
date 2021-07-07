@@ -26,8 +26,6 @@ namespace Acelle\Model;
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Log as MailLog;
 use DB;
-use Acelle\Exceptions\CampaignPausedException;
-use Acelle\Exceptions\CampaignErrorException;
 use Acelle\Model\SendingServer;
 use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
@@ -47,16 +45,24 @@ use ZipArchive;
 use KubAT\PhpSimple\HtmlDomParser;
 use Exception;
 use Acelle\Library\Traits\HasTemplate;
+use Acelle\Jobs\LoadCampaign;
+use Acelle\Jobs\ScheduleCampaign;
+use Illuminate\Bus\Batch;
+use Illuminate\Support\Facades\Bus;
+use Acelle\Library\RouletteWheel;
+use Acelle\Library\Traits\TrackJobs;
+
 
 class Campaign extends Model
 {
-    use HasTemplate;
+    use HasTemplate, TrackJobs;
 
     protected $logger;
 
     // Campaign status
     const STATUS_NEW = 'new';
-    const STATUS_READY = 'ready'; // equiv. to 'queue'
+    const STATUS_QUEUING = 'queuing'; // equiv. to 'queue'
+    const STATUS_QUEUED = 'queued'; // equiv. to 'queue'
     const STATUS_SENDING = 'sending';
     const STATUS_ERROR = 'error';
     const STATUS_DONE = 'done';
@@ -65,9 +71,6 @@ class Campaign extends Model
     // Campaign types
     const TYPE_REGULAR = 'regular';
     const TYPE_PLAIN_TEXT = 'plain-text';
-
-    // Campaign settings
-    const WORKER_DELAY = 1;
 
     // 4 types of delivery status for a given contact
     const DELIVERY_STATUS_FAILED = 'failed';
@@ -391,16 +394,17 @@ class Campaign extends Model
     /**
      * Mark the campaign as 'done' or 'sent'.
      */
-    public function done()
+    public function setDone()
     {
         $this->status = self::STATUS_DONE;
+        $this->last_error = null;
         $this->save();
     }
 
     /**
      * Mark the campaign as 'sending'.
      */
-    public function sending()
+    public function setSending()
     {
         $this->status = self::STATUS_SENDING;
         $this->running_pid = getmypid();
@@ -427,39 +431,39 @@ class Campaign extends Model
     /**
      * Check if the campaign is ready to start.
      */
-    public function isReady()
+    public function isQueued()
     {
-        return $this->status == self::STATUS_READY;
+        return $this->status == self::STATUS_QUEUED;
     }
 
     /**
      * Mark the campaign as 'ready' (which is equiv. to 'queued').
      */
-    public function ready()
+    public function setQueued()
     {
-        $this->status = self::STATUS_READY;
+        $this->status = self::STATUS_QUEUED;
         $this->save();
+        return $this;
+    }
+
+    /**
+     * Mark the campaign as 'ready' (which is equiv. to 'queued').
+     */
+    public function setQueuing()
+    {
+        $this->status = self::STATUS_QUEUING;
+        $this->save();
+        return $this;
     }
 
     /**
      * Mark the campaign as 'done' or 'sent'.
      */
-    public function error($error = null)
+    public function setError($error = null)
     {
         $this->status = self::STATUS_ERROR;
         $this->last_error = $error;
         $this->save();
-    }
-
-    /**
-     * Mark the campaign as 'done' or 'sent'.
-     */
-    public function refreshStatus()
-    {
-        $me = self::find($this->id);
-        $this->status = $me->status;
-        $this->save();
-
         return $this;
     }
 
@@ -604,9 +608,6 @@ class Campaign extends Model
             // Transform tags
             $body = $this->tagMessage($body, $subscriber, $msgId, $server);
         }
-
-        
-        
 
         // STEP 09. Make CSS inline
         //
@@ -1851,18 +1852,6 @@ class Campaign extends Model
     }
 
     /**
-     * Re-queue the campaign for sending.
-     */
-    public function requeue()
-    {
-        // clear all campaign's sending jobs which are being queued
-        $this->clearAllJobs();
-
-        // and queue again
-        $this->queue();
-    }
-
-    /**
      * Re-send the campaign for sending.
      */
     public function resend($filter = 'not_receive') // not_receive | not_open | not_click
@@ -1886,7 +1875,7 @@ class Campaign extends Model
         }
 
         // and queue again
-        $this->requeue();
+        $this->schedule();
     }
 
     /**
@@ -1925,7 +1914,7 @@ class Campaign extends Model
      */
     public function delete()
     {
-        $this->clearAllJobs();
+        $this->cancelAndDeleteJobs();
         parent::delete();
     }
 
@@ -2153,8 +2142,16 @@ class Campaign extends Model
      */
     public function pause()
     {
+        $this->cancelAndDeleteJobs();
+        $this->setPaused();
+    }
+
+    private function setPaused()
+    {
+        // set campaign status
         $this->status = self::STATUS_PAUSED;
         $this->save();
+        return $this;
     }
 
     /**
@@ -2412,6 +2409,9 @@ class Campaign extends Model
      */
     private function execSpamc()
     {
+        // @todo: temporarily disable SPAMC
+        return;
+
         $message = $this->getSampleMessage()->toString();
 
         // Execute SPAMC
@@ -2485,7 +2485,7 @@ class Campaign extends Model
     public function generateTrackingLogCsv($logtype, $progressCallback = null)
     {
         $tmpTableName = 'log_'.$this->uid.'_'.md5(rand());
-        $filePath = $this->customer->user->getStoragePath($tmpTableName.'.csv');
+        $filePath = storage_path(join_paths('app', $tmpTableName.'.csv'));
 
         DB::statement('DROP TABLE IF EXISTS '.table($tmpTableName));
         
@@ -2711,13 +2711,13 @@ class Campaign extends Model
             // callback progress
             if (!is_null($progressCallback)) {
                 $percentage = ($i + 1) / $pages;
-                $progressCallback(['progress' => $percentage, 'path' => $filePath]);
+                $progressCallback($percentage, $filePath);
             }
         }
 
         // callback progress
         if (!is_null($progressCallback)) {
-            $progressCallback(['progress' => 1, 'path' => $filePath]);
+            $progressCallback($percentage = 100, $filePath);
         }
 
         return $filePath;
@@ -3189,213 +3189,27 @@ class Campaign extends Model
     }
 
     /**
-     * Start the campaign.
+     * Start the campaign. called by daemon job
      */
-    public function start($trigger = null)
+    public function prepare($callback)
     {
-        try {
-            // make sure the same campaign is not started twice
-            if (!$this->refreshStatus()->isReady()) {
-                MailLog::info("Campaign ID: {$this->id} is not ready or already started");
-                return;
+        // Available sending servers
+        $sendingServersPool = $this->defaultMailList->getSendingServers();
+
+        // clean up the tracker to prevent the log file from growing very big
+        $this->customer->cleanupQuotaTracker();
+
+        // Reset max_execution_time so that command can run for a long time without being terminated
+        self::resetMaxExecutionTime();
+
+        $this->iterateThroughSubscribers(function ($subscribers) use (&$i, &$sendingServersPool, $callback) {
+            foreach ($subscribers as $subscriber) {
+                $serverId = RouletteWheel::take($sendingServersPool);
+                $server = SendingServer::find($serverId)->mapType();
+
+                $callback($this, $subscriber, $server);
             }
-
-            if ($this->refreshStatus()->occupiedByOtherAnotherProcess()) {
-                // In case user PAUSE a campaign
-                // then immediately makes it READY again
-                //
-                // However the running process does not even know about it (PAUSE signal) to end itself
-                // It could be waiting for 60 second intervals in case of quota exceeded for example...
-                //
-                // So this check prevents a new process from taking the campaign
-                // giving the running process the chance to resume
-                MailLog::info("Campaign ID: {$this->id} is occupied by another process PID: {$this->running_pid}");
-                return;
-            }
-
-            // clean up the tracker to prevent the log file from growing very big
-            $this->customer->cleanupQuotaTracker();
-
-            // lock the campaign, marked as sending
-            $this->sending();
-            MailLog::info('Starting campaign `'.$this->name.'`');
-
-            // Reset max_execution_time so that command can run for a long time without being terminated
-            self::resetMaxExecutionTime();
-
-            // Only run multi-process if pcntl is enabled
-            $processes = (int) $this->customer->getOption('max_process');
-            if (extension_loaded('pcntl') && function_exists('pcntl_fork') && $processes > 1) {
-                MailLog::info('Run in multi-process mode');
-                $this->runMultiProcesses();
-            } else {
-                MailLog::info('Run in single-process mode');
-                $this->run();
-            }
-            MailLog::info('Finish campaign `'.$this->name.'`');
-
-            // runMultiProcesses() and run() are responsible for setting DONE status
-        } catch (\Exception $ex) {
-            // Set ERROR status
-            $this->error($ex->getMessage());
-            MailLog::error('Starting campaign failed. '.$ex->getMessage());
-        }
-    }
-
-    /**
-     * Start the campaign, using PHP fork() to launch multiple processes.
-     *
-     * @return mixed
-     */
-    public function runMultiProcesses()
-    {
-        // processes to fork
-        $count = (int) $this->customer->getOption('max_process');
-        $count = ($count > 3) ? 3 : $count; // @todo do not use more than 2 processes
-
-        MailLog::info("Forking {$count} process(es)");
-        $parentPid = $this->running_pid; // set in sending() function
-        $children = [];
-        for ($i = 0; $i < $count; $i += 1) {
-            $pid = pcntl_fork();
-
-            // for child process only
-            if (!$pid) {
-                // Reconnect to the DB to prevent connection closed issue when using fork
-                DB::reconnect('mysql');
-
-                // Re-initialize logging to capture the child process' PID
-                MailLog::fork();
-
-                MailLog::info(sprintf('Start child process %s of %s (forked from %s)', $i + 1, $count, $parentPid));
-                sleep(self::WORKER_DELAY);
-                $partition = [$i, $count];
-                $this->run($partition);
-
-                exit($i + 1);
-            // end child process
-            } else {
-                $children[] = $pid;
-            }
-        }
-
-        // wait for child processes to finish
-        foreach ($children as $child) {
-            $pid = pcntl_wait($status);
-            if (pcntl_wifexited($status)) {
-                $code = pcntl_wexitstatus($status);
-                MailLog::info("Child process $pid finished, status code: $code");
-            } else {
-                MailLog::warning("Child process $pid did not normally exit");
-                $this->error("Child process $pid did not normally exit");
-            }
-        }
-
-        // after all child processes are done
-        $this->refreshStatus();
-
-        // If all child processes finish sucessfully, just mark campaign as done
-        // Otherwise, mark campaign with error status (by child process)
-        //
-        // There are conventions here:
-        //   + Child process does not update status from SENDING to DONE, it is left for the parent process
-        //   + Child process only updates status from SENDING to ERROR
-        //   + Parent process only updates status to DONE when current status is SENDING
-        //     indicating that all child processes finish sucessfully
-        //   + In case one child process update the status from SENDING to ERROR, it is left as the final status
-        //     the latest error is kept
-        if ($this->status == self::STATUS_SENDING) {
-            $this->done();
-        } else {
-            // leave the latest error reported by child process
-        }
-    }
-
-    /**
-     * Send Campaign
-     * Iterate through all subscribers and send email.
-     */
-    public function run($partition = null)
-    {
-        // check if the method is trigger by a child process (triggered by runMultiProcess method)
-        $asChildProcess = !($partition == null);
-
-        // try/catch to make sure child process does not stop without reporting any error
-        try {
-            $i = 0;
-            $this->getPendingSubscribers($partition, function ($subscribers, $page, $total) use (&$i) {
-                MailLog::info("Fetching page $page (count: {$subscribers->count()})");
-
-                foreach ($subscribers as $subscriber) {
-                    // @todo: customerneedcheck
-                    while ($this->customer->overQuota()) {
-                        // throw new \Exception('Customer has reached sending limit');
-                        MailLog::warning(sprintf('Campaign `%s` (%s) halted, user exceeds sending limit', $this->name, $this->uid));
-                        sleep(60);
-                    }
-
-                    $i += 1;
-                    MailLog::info("Sending to subscriber `{$subscriber->email}` ({$i}/{$total})");
-
-                    // Pick up an available sending server
-                    // Throw exception in case no server available
-                    $server = $this->pickSendingServer($this);
-
-                    list($message, $msgId) = $this->prepareEmail($subscriber, $server);
-
-                    // randomly check for campaign PAUSED status after 10 emails
-                    // @todo performance concern here
-                    // @todo need an exclusive lock, what if the campaign is PAUSED, then RESTARTED
-                    //       after the status check and before actually sending?
-                    if ($this->refreshStatus()->isPaused()) {
-                        $this->updateCache();
-                        throw new CampaignPausedException();
-                    }
-
-                    if (config('app.demo') == true) {
-                        $sent = array(
-                            'runtime_message_id' => $msgId,
-                            'status' => SendingServer::DELIVERY_STATUS_SENT
-                        );
-                        // additional log
-                        MailLog::info("[DEMO] Sent to subscriber `{$subscriber->email}`");
-                    } else {
-                        $sent = $server->send($message);
-                        // additional log
-                        MailLog::info("Sent to subscriber `{$subscriber->email}`");
-                    }
-
-                    $this->trackMessage($sent, $subscriber, $server, $msgId);
-                }
-            });
-
-            MailLog::info("{$i} emails sent for the process");
-
-            // only mark campaign as done when running as its own process
-            // as a child process, just finish and leave the parent process to update campaign status
-            if (!$asChildProcess) {
-                $this->done();
-            }
-        } catch (CampaignPausedException $e) {
-            // just finish
-            MailLog::warning('Campaign paused');
-        } catch (CampaignErrorException $e) {
-            // just finish
-            MailLog::warning('Campaign terminated: '.$e->getMessage());
-        } catch (\Exception $e) {
-            MailLog::error($e->getMessage());
-            $this->error($e->getMessage());
-        } finally {
-            // reset server pools: just in case DeliveryServerAmazonSesWebApi
-            // --> setup SNS requires using from_email of the corresponding campaign
-            // but SNS is only made once when the server is initiated
-            // UPDATE: this is no longer the case as one process now only deals with one campaign
-            //         however, the method is still needed to save sending servers''
-            MailList::resetServerPools();
-
-            // update the campaign cache information
-            $this->updateCache();
-        }
+        }, $perPage = 100);
     }
 
     /**
@@ -3473,6 +3287,7 @@ class Campaign extends Model
             // this is a trick for returning an empty builder
             return Subscriber::limit(0);
         }
+
         $query = Subscriber::select('subscribers.*');
         // Tell MySQL to use the right index
         // $query->from(\DB::raw(\DB::getTablePrefix() . 'subscribers FORCE INDEX (subscribers_mail_list_id_email_index)'));
@@ -3556,81 +3371,19 @@ class Campaign extends Model
      * Get Pending Subscribers
      * Select only subscribers that are ready for sending. Those whose status is `blacklisted`, `pending` or `unconfirmed` are not included.
      */
-    public function getPendingSubscribers($partition, $callback)
+    public function iterateThroughSubscribers($callback, $perPage = 100)
     {
-        /* *
-         *
-         * Using LEFT JOIN is much slower than NOT IN
-         *
-        $subscribers = $this->subscribers()
-                ->leftJoin(DB::raw('(SELECT * FROM '.DB::getTablePrefix().'tracking_logs WHERE campaign_id = '.$this->id.') log'), 'subscribers.id', '=', 'subscriber_id')
-                ->whereRaw('log.id IS NULL')
-                ->whereRaw(DB::getTablePrefix()."subscribers.status = '".Subscriber::STATUS_SUBSCRIBED."'")
-                ->select('subscribers.*')
-                ->get();
-        */
-
-        $builder = $this->subscribers([], ['email_verifications'])
+        $query = $this->subscribers([], ['email_verifications'])
                 ->whereRaw(sprintf(table('subscribers').'.email NOT IN (SELECT email FROM %s t JOIN %s s ON t.subscriber_id = s.id WHERE t.campaign_id = %s)', table('tracking_logs'), table('subscribers'), $this->id))
-                ->whereRaw(DB::getTablePrefix()."subscribers.status = '".Subscriber::STATUS_SUBSCRIBED."'");
+                ->subscribed();
 
-        if (!is_null($partition)) {
-            // retrieve the subscribers list for this partition only
-            // partitioning is based on email to prevent one email from being taken by more than one process
-            // The idea is to generate a unique integer for an email address, then partition base on the number
-            list($partitionId, $count) = $partition;
-            $builder = $builder->whereRaw(sprintf('CONV(SUBSTR(MD5(%s),1, 4), 16, 10) MOD %s = %s', table('subscribers.email'), $count, $partitionId));
-        }
-
-        $total = $builder->count(); // IMPORTNT: Count before group, otherwise it will always return 0 or 1
-
-        // the array_unique_by functions out-perform the Collection::unique of Laravel!!!
-        // The following code snipet is no longer needed as the list is already unique by email
-        //     $unique = array_unique_by($subscribers, function ($r) {
-        //         return $r['email'];
-        //     });
-
-        $page = 1;
-        $limit = 2000;
-        while ($builder->count()) { // IMPORTANT: count() for a grouped query will always return 0 or 1
-            // @note eager loading will result in a very long query
-            // which could exceed the [max_allowed_packet] setting of MySQL
-            // so the value of $limit must be considered carefully
-            $subscribers = $builder->limit($limit)->with(['mailList', 'subscriberFields'])->get();
-            $callback($subscribers, $page, $total);
-            $page += 1;
-        }
-
-        /*
-         * @todo the paginate helper does not work here since data table will be changed during the retrieving process
-        paginate($subscribers, function ($subset, $page) use ($callback, $total) {
-            $callback($subset, $page, $total);
-        }, ['count' => $total]);
-        */
-    }
-
-    /**
-     * Queue campaign for sending.
-     */
-    public function queue($trigger = null, $subscribers = null, $delay = 0)
-    {
-        $this->ready();
-        $job = (new \Acelle\Jobs\RunCampaignJob($this))->delay($this->getDelayInSeconds());
-        dispatch($job);
-    }
-
-    /**
-     * Queue campaign for sending.
-     */
-    public function clearAllJobs()
-    {
-        // cleanup jobs and system_jobs
-        // @todo data should be a JSON field instead
-        $systemJobs = SystemJob::where('name', 'Acelle\Jobs\RunCampaignJob')->where('data', $this->id)->get();
-        foreach ($systemJobs as $systemJob) {
-            // @todo what if jobs were already started? check `reserved` field?
-            $systemJob->clear();
-        }
+        $cursor = null;
+        do {
+            // The 4th parameter contains the offset cursor
+            $list = $query->orderBy('subscribers.id')->cursorPaginate($perPage, ['*'], 'cursor', $cursor);
+            $callback($list->items());
+            $cursor = $list->nextCursor();
+        } while ($list->hasMorePages());
     }
 
     /**
@@ -3651,7 +3404,7 @@ class Campaign extends Model
 
         $formatter = new LineFormatter("[%datetime%] %channel%.%level_name%: %message%\n");
 
-        $logfile = storage_path('logs/' . php_sapi_name() . '/campaign-'.$this->uid.'.log');
+        $logfile = storage_path(join_paths('logs', php_sapi_name(), '/campaign-'.$this->uid.'.log'));
         $stream = new RotatingFileHandler($logfile, 0, Logger::DEBUG);
         $stream->setFormatter($formatter);
 
@@ -3669,6 +3422,124 @@ class Campaign extends Model
             $this->template->deleteAndCleanup();
         }
 
+        $this->cancelAndDeleteJobs();
+
         $this->delete();
+    }
+
+    public function isError()
+    {
+        return $this->status == self::STATUS_ERROR;
+    }
+
+    public function cancelAndDeleteJobs($jobType = null)
+    {   
+        $query = $this->jobMonitors();
+
+        if (!is_null($jobType)) {
+            $query = $query->byJobType($jobType);
+        }
+
+        foreach($query->get() as $job) {
+            $job->cancel();
+        }
+    }
+
+    public function schedule()
+    {
+        // Delete previous ScheduleCampaign jobs
+        $this->cancelAndDeleteJobs(ScheduleCampaign::class);
+
+        // Schedule Job initialize
+        $scheduler = (new ScheduleCampaign($this))->delay($this->run_at);
+
+        // Dispatch using the method provided by TrackJobs
+        // to also generate job-monitor record
+        $this->dispatchWithMonitor($scheduler);
+
+        // After this job is dispatched successfully, set status to "queuing"
+        // Notice the different between the two statuses
+        // + Queuing: waiting until campaign is ready to run
+        // + Queued: ready to run
+        $this->setQueuing();
+    }
+
+    public function resume()
+    {
+        $this->schedule();
+    }
+
+    // Should be called by ScheduleCampaign
+    public function launch()
+    {
+        // Pause any previous batch no matter what status it is
+        // Notice that batches without a job_monitor will not be retrieved
+        $jobs = $this->jobMonitors()->byJobType(LoadCampaign::class)->get();
+        foreach($jobs as $job) {
+            $job->cancelWithoutDeleteBatch();
+        }
+
+        // Create the booting job
+        $campaignLoader = new LoadCampaign($this);
+        $batch = Bus::batch($campaignLoader)->then(function (Batch $batch) {
+            // Important:
+            // Notice that if user manually cancels a batch, it still reaches trigger "then" callback 
+            // Only when an exception is thrown, no "then" trigger
+            // So, if the campaign is paused by user, do not update its status to done once its batch finishes, keep it as paused
+            // IMPORTANT: refresh() is required!
+            if (!$this->refresh()->isPaused()) {
+                $this->setDone();
+            } else {
+                // previously paused, no need to update its status
+            }
+
+        })->catch(function (Batch $batch, \Throwable $e) {
+            $errorMsg = "Error sending messages. ".$e->getMessage()."\n".$e->getTraceAsString();
+            $this->setError( $errorMsg );
+        })->finally(function (Batch $batch) {
+            //
+            // Important: in case one of the batch's jobs hits an error
+            // the batch is automatically set to cancelled and, therefore, all remaining jobs will just finish (return)
+            // resulting in the "finally" event to be triggered
+            // So, do not update satus here, otherwise it will overwrite any status logged by "catch" event
+            // Notice that: if a batch fails (automatically canceled due to one failed job)
+            // then, after all jobs finishes (return), [failed job] = [pending job] = 1
+            // +------------+--------------+-------------+---------------------------------------------------------------------------------+-------------+
+            // | total_jobs | pending_jobs | failed_jobs | failed_job_ids                                                                  | finished_at |
+            // +------------+--------------+-------------+---------------------------------------------------------------------------------+-------------+
+            // |          7 |            0 |           0 | []                                                                              |  1624848887 | success
+            // |          7 |            1 |           1 | ["302130fd-ba78-4a37-8a3b-2304cc3f3455"]                                        |  1624849156 | failed
+            // |          7 |            2 |           2 | ["6a17f9bf-96d4-48e5-86a0-73e7bac07e74","7e1b3b3d-a5f4-45b4-be1e-ba5f1cc2e3f3"] |  1624849222 | (*)
+            // |          7 |            3 |           2 | ["6a17f9bf-96d4-48e5-86a0-73e7bac07e74","7e1b3b3d-a5f4-45b4-be1e-ba5f1cc2e3f3"] |  1624849222 | (**)
+            // |          7 |            2 |           0 | []                                                                              |        NULL | (***)
+            // +------------+--------------+-------------+---------------------------------------------------------------------------------+-------------+
+            // 
+            // (*) There is no batch cancelation check in every job
+            // as a result, remaining jobs still execute even after the batch is automatically cancelled (due to one failed job)
+            // resulting in 2 (or more) failed / pending jobs
+            //
+            // (**) 2 jobs already failed, there is 1 remaining job to finish (so 3 pending jobs)
+            // That is, pending_jobs = failed jobs + remaining jobs
+            //
+            // (***) If certain jobs are deleted from queue or terminated during action (without failing or finishing)
+            // Then the campaign batch does not reach "then" status
+            // Then proceed with pause and send again
+
+            $this->updateCache();
+        })->dispatch();
+
+        $this->dispatchBatch($batch, $jobType = LoadCampaign::class);
+        $this->setQueued();
+    }
+
+    // Currently, only one monitor per campaign (soft business)
+    public function jobMonitors()
+    {
+        return $this->hasMany(JobMonitor::class, 'subject_id')->where('subject_name', self::class);
+    }
+
+    public function extractErrorMessage()
+    {
+        return explode("\n", $this->last_error)[0];
     }
 }

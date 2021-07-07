@@ -19,25 +19,9 @@ class UpdateAutomation extends Base
      *
      * @return void
      */
-    public function __construct(Automation2 $automation)
-    {
+    public function __construct($automation)
+    {        
         $this->automation = $automation;
-        parent::__construct();
-
-        // This line must go after the constructor
-        $this->linkJobToAutomation();
-    }
-
-    /**
-     * Execute the job.
-     *
-     * @return void
-     */
-    public function linkJobToAutomation()
-    {
-        $systemJob = $this->getSystemJob();
-        $systemJob->data = $this->automation->id;
-        $systemJob->save();
     }
 
     /**

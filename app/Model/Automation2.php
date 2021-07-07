@@ -36,7 +36,6 @@ use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Formatter\LineFormatter;
 use Acelle\Library\Lockable;
-use Acelle\Model\SystemJob as SystemJobModel;
 use Acelle\Model\Setting;
 use Acelle\Model\MailList;
 use Acelle\Model\Email;
@@ -1246,14 +1245,7 @@ class Automation2 extends Model
 
     public function updateCacheInBackground()
     {
-        $existed = SystemJobModel::getNewJobs()
-                       ->where('name', \Acelle\Jobs\UpdateAutomation::class)
-                       ->where('data', $this->id)
-                       ->exists();
-
-        if (!$existed) {
-            dispatch(new \Acelle\Jobs\UpdateAutomation($this));
-        }
+        dispatch(new \Acelle\Jobs\UpdateAutomation($this));
     }
 
     public function setLastError($message)

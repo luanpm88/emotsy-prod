@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Acelle\Model\AutoTrigger as AutoTriggerModel;
 use Acelle\Model\DeliveryAttempt;
 use Acelle\Model\Email;
-use Acelle\Model\SystemJob;
 use Exception;
 
 class AutoTrigger extends Controller
@@ -39,21 +38,6 @@ class AutoTrigger extends Controller
 
                 $id = $attempt->id;
                 $description .= " (Attempt: ".$id.", ";
-
-                // System Job
-                $sysJob = SystemJob::where('object_name', get_class($attempt))->where('object_id', $attempt->id)->first();
-
-                if (is_null($sysJob)) {
-                    $description .= 'Something went wrong: DeliveryAttempt without SystemJob?';
-                }
-
-                if (is_null($sysJob->job_id) && empty($sysJob->last_error)) {
-                    $description .= "SystemJob ID: ".$sysJob->id." (waiting...)";
-                } elseif (!empty($sysJob->last_error)) {
-                    $description .= "SystemJob ID: ".$sysJob->id.", ERROR: ".$sysJob->last_error;
-                } else {
-                    $description .= "SystemJob ID: ".$sysJob->id.", SENT OK";
-                }
             }
 
             $actions[] = $description;

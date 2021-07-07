@@ -23,6 +23,7 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use File;
 
 class Blacklist extends Model
 {
@@ -148,53 +149,6 @@ class Blacklist extends Model
      */
     public static function import($file, $system_job, $customer = null, $admin = null)
     {
-        try {
-            $content = \File::get($file);
-            $lines = preg_split('/\r\n|\r|\n/', $content);
-
-            $total = count($lines);
-
-            // init the status
-            $system_job->updateStatus([
-                'status' => self::IMPORT_STATUS_RUNNING,
-            ]);
-
-            // update status, line count
-            $system_job->updateStatus(['total' => $total]);
-
-            // demo process
-            $success = 0;
-            foreach ($lines as $number => $line) {
-                $email = trim(strtolower($line));
-
-                // update status, finish one batch
-                $system_job->updateStatus(['processed' => $number + 1]);
-
-                // Add to blacklist
-                if (\Acelle\Library\Tool::isValidEmail($email)) {
-                    ++$success;
-                    $system_job->updateStatus(['success' => $success]);
-
-                    // Add to blacklist
-                    if (isset($customer)) {
-                        $customer->addEmaillToBlacklist($email);
-                    }
-                    if (isset($admin)) {
-                        $admin->addEmaillToBlacklist($email);
-                    }
-                }
-            }
-
-            self::doBlacklist($customer);
-
-            // Update status, finish all batches
-            $system_job->updateStatus(['status' => self::IMPORT_STATUS_DONE]);
-        } catch (\Exception $e) {
-            // update job status
-            $system_job->updateStatus([
-                'status' => self::IMPORT_STATUS_FAILED,
-                'error_message' => $e->getMessage(),
-            ]);
-        }
+        ////
     }
 }

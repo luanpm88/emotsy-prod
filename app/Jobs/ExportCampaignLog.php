@@ -2,8 +2,12 @@
 
 namespace Acelle\Jobs;
 
+use Acelle\Library\Traits\Trackable;
+
 class ExportCampaignLog extends Base
 {
+    use Trackable;
+
     protected $campaign;
     protected $logtype;
 
@@ -19,10 +23,12 @@ class ExportCampaignLog extends Base
         $this->campaign = $campaign;
         $this->logtype = $logtype;
 
-        parent::__construct();
-
-        // This line must go after the constructor
-        $this->updateStatus([ 'campaign_id' => $campaign->id, 'progress' => 0 ]);
+        // Set the initial value for progress check
+        $this->afterDispatched(function($thisJob, $monitor) {
+            $monitor->setJsonData([
+                'percentage' => 0
+            ]);
+        });
     }
 
     /**
@@ -32,21 +38,11 @@ class ExportCampaignLog extends Base
      */
     public function handle()
     {
-        $this->campaign->generateTrackingLogCsv($this->logtype, function ($progress) {
-            $this->updateStatus($progress);
+        $this->campaign->generateTrackingLogCsv($this->logtype, function ($percentage, $path) {
+            $this->monitor->updateJsonData([
+                'percentage' => $percentage,
+                'path' => $path,
+            ]);
         });
-    }
-
-    /**
-     * Get import file name.
-     *
-     * @return void
-     */
-    public function updateStatus($data)
-    {
-        $systemJobModel = $this->getSystemJob();
-        $json = ($systemJobModel->data) ? json_decode($systemJobModel->data, true) : [];
-        $systemJobModel->data = json_encode(array_merge($json, $data));
-        $systemJobModel->save();
     }
 }

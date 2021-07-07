@@ -601,33 +601,7 @@ class Admin extends Model
      */
     public function getImportBlacklistJobs()
     {
-        return \Acelle\Model\SystemJob::where('name', '=', "Acelle\Jobs\ImportBlacklistJob")
-            ->where('data', 'like', '%"admin_id":'.$this->id.'%');
-    }
-
-    /**
-     * Get running import jobs.
-     *
-     * @return number
-     */
-    public function getActiveImportBlacklistJobs()
-    {
-        return $this->getImportBlacklistJobs()
-            ->where('status', '!=', \Acelle\Model\SystemJob::STATUS_DONE)
-            ->where('status', '!=', \Acelle\Model\SystemJob::STATUS_FAILED)
-            ->where('status', '!=', \Acelle\Model\SystemJob::STATUS_CANCELLED);
-    }
-
-    /**
-     * Get last import black list job.
-     *
-     * @return number
-     */
-    public function getLastActiveImportBlacklistJob()
-    {
-        return $this->getActiveImportBlacklistJobs()
-            ->orderBy('created_at', 'DESC')
-            ->first();
+        ///
     }
 
     /**

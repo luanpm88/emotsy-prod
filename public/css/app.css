@@ -755,7 +755,7 @@ input.error {
     border-color: #ddd;
     color: #000;
 }
-.bg-future {
+.bg-future, .bg-queuing, .bg-queued {
     background-color: #ffe1d5;
     border-color: #ffe1d5;
     color: #231c15;

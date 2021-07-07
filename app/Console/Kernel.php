@@ -57,7 +57,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('handler:run')->everyThirtyMinutes();
 
         // Queued import/export/campaign
-        $schedule->command('queue:work --once --tries=1')->everyMinute();
+        // Allow overlapping: max 10 proccess as a given time (if cronjob interval is every minute)
+        $schedule->command('queue:work --tries=1 --max-time=600 --stop-when-empty')->everyMinute();
 
         // Sender verifying
         $schedule->command('sender:verify')->everyFiveMinutes();

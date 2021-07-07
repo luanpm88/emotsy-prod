@@ -31,6 +31,7 @@ use Acelle\Events\MailListUnsubscription;
 use Acelle\Library\StringHelper;
 use DB;
 use Exception;
+use File;
 
 class Subscriber extends Model
 {
@@ -224,6 +225,31 @@ class Subscriber extends Model
                     $this->email = $fv->value;
                     $this->save();
                 }
+            }
+        }
+    }
+
+    public function updateFields2($attributes)
+    {
+        foreach ($attributes as $tag => $value) {
+            $field = $this->mailList->getFieldByTag($tag);
+            if (!is_null($field)) {
+                $fv = $this->subscriberFields()->where('field_id', '=', $field->id)->first();
+
+                if (is_null($fv)) {
+                    $fv = $this->subscriberFields()->make();
+                    $fv->field()->associate($field);
+                }
+
+                $fv->value = $value;
+                $fv->save();
+
+                // @IMPORTANT: avoid updating 'subscribers' table, especially for jobs!
+                // update email attribute of subscriber
+                // if (strcasecmp($field->tag, 'EMAIL') == 0) {
+                //     $this->email = $fv->value;
+                //     $this->save();
+                // }
             }
         }
     }
@@ -1023,7 +1049,14 @@ class Subscriber extends Model
             return !empty($val);
         });
 
-        $this->tags = json_encode($arr);
+        // Without JSON_UNESCAPED_UNICODE specified
+        // Results of json_encode(['русский']) may look like this
+        // 
+        //     ["\u0440\u0443\u0441\u0441\u043a\u0438\u0439"]
+        //
+        // which cannot be searched for
+        //
+        $this->tags = json_encode($arr, JSON_UNESCAPED_UNICODE);
         $this->save();
     }
 
@@ -1162,6 +1195,11 @@ class Subscriber extends Model
         }
 
         return $query;
+    }
+
+    public function scopeSubscribed($query)
+    {
+        return $query->where('subscribers.status', self::STATUS_SUBSCRIBED);
     }
 
     public function isSubscribed()

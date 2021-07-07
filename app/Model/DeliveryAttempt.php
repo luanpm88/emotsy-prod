@@ -26,10 +26,4 @@ class DeliveryAttempt extends Model
     protected $fillable = [
         'subscriber_id', 'email_id', 'auto_trigger_id',
     ];
-
-    public function getSystemJob()
-    {
-        $systemJob = SystemJob::where('object_name', get_called_class())->where('object_id', $this->id)->first();
-        return $systemJob;
-    }
 }

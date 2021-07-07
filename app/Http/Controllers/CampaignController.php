@@ -13,7 +13,6 @@ use Acelle\Library\StringHelper;
 use Acelle\Jobs\ExportCampaignLog;
 use Acelle\Model\Template;
 use Acelle\Model\TrackingLog;
-use Acelle\Model\SystemJob;
 use Acelle\Model\Setting;
 use Acelle\Model\Subscriber;
 use Acelle\Model\Campaign;
@@ -22,6 +21,7 @@ use Acelle\Model\ClickLog;
 use Acelle\Model\OpenLog;
 use Acelle\Model\TemplateCategory;
 use Acelle\Library\Rss;
+use Acelle\Model\JobMonitor;
 use DB;
 
 class CampaignController extends Controller
@@ -675,7 +675,7 @@ class CampaignController extends Controller
         if ($request->isMethod('post') && $campaign->step() >= 5) {
             // Save campaign
             // @todo: check campaign status before requeuing. Otherwise, several jobs shall be created and campaign will get sent several times
-            $campaign->requeue();
+            $campaign->schedule();
 
             // Log
             $campaign->log('started', $customer);
@@ -1246,11 +1246,11 @@ class CampaignController extends Controller
         $logtype = $request->input('logtype');
 
         $job = new ExportCampaignLog($campaign, $logtype);
-        dispatch($job);
+        $monitor = $campaign->dispatchWithMonitor($job);
 
         return view('campaigns.download_tracking_log', [
             'campaign' => $campaign,
-            'job' => $job->getSystemJob()
+            'job' => $monitor,
         ]);
     }
 
@@ -1259,18 +1259,14 @@ class CampaignController extends Controller
      */
     public function trackingLogExportProgress(Request $request)
     {
-        $job = SystemJob::find($request->uid);
-        $json = json_decode($job->data, true);
+        $job = JobMonitor::findByUid($request->uid);
 
-        $output = [
-            'progress' => $json['progress']
-        ];
+        $progress = $job->getJsonData();
+        $progress['status'] = $job->status;
+        $progress['error'] = $job->error;
+        $progress['download'] = action('CampaignController@download', ['uid' => $job->uid]);
 
-        if ($json['progress'] == 1) {
-            $output['download_url'] = action('CampaignController@download', ['uid' => $job->id]);
-        }
-
-        return response()->json($output);
+        return response()->json($progress);
     }
 
     /**
@@ -1278,9 +1274,8 @@ class CampaignController extends Controller
      */
     public function download(Request $request)
     {
-        $job = SystemJob::find($request->uid);
-        $json = json_decode($job->data, true);
-        $path = $json['path'];
+        $job = JobMonitor::findByUid($request->uid);
+        $path = $job->getJsonData()['path'];
         return response()->download($path)->deleteFileAfterSend(true);
     }
 
@@ -1556,7 +1551,7 @@ class CampaignController extends Controller
 
         foreach ($items->get() as $item) {
             if (\Gate::allows('restart', $item)) {
-                $item->requeue();
+                $item->resume();
 
                 // Log
                 $item->log('restarted', $customer);
@@ -1944,7 +1939,6 @@ class CampaignController extends Controller
         if ($request->isMethod('post')) {
             // authorize
             if (\Gate::allows('resend', $campaign)) {
-                $campaign->ready();
                 $campaign->resend($request->option);
                 // Redirect to my lists page
                 return response()->json([
@@ -2159,7 +2153,7 @@ class CampaignController extends Controller
     public function run(Request $request, $uid)
     {
         $campaign = Campaign::findByUid($uid);
-        $campaign->start();
+        $campaign->dispatch();
         echo $campaign->status;
     }
 

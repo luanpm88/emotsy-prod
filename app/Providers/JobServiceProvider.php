@@ -7,6 +7,7 @@ use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobFailed;
 use Illuminate\Queue\Events\JobProcessing;
 use Acelle\Library\Log as MailLog;
+use Queue;
 
 class JobServiceProvider extends ServiceProvider
 {
@@ -15,34 +16,39 @@ class JobServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // IMPORTANT: 
+        // ONLY TRIGGER QUEUE EVENTS FOR JOB_MONITORS THAT DO NOT HAVE BATCH
+        // IT IS BECAUSE ONES WIH A BATCH WILL BE UPDATED BY BATCH EVENTS, EXCEPT FOR "BEFORE"
         // Initialize the MailLog which writes logs to mail.log
         $this->initMailLog();
 
-        // mark the SystemJob record as RUNNING
-        \Queue::before(function (JobProcessing $event) {
+        Queue::before(function (JobProcessing $event) {
             $job = $this->getJobObject($event);
-
-            // associate the queue job with system_job
-            // @todo IMPORTANT job_id is only available when the job has actually started
-            $systemJob = $job->getSystemJob();
-            $systemJob->job_id = $event->job->getJobId();
-            $systemJob->setStarted(); // also save
+            if (property_exists($job, 'monitor')) {
+                // 'before' events should be applied to both JOB and BATCH monitor
+                $monitor = $job->monitor;
+                $monitor->setRunning();
+            }
         });
 
-        // mark the SystemJob record as DONE
-        \Queue::after(function (JobProcessed $event) {
+        Queue::after(function (JobProcessed $event) {
             $job = $this->getJobObject($event);
-            $systemJob = $job->getSystemJob();
-            $systemJob->setDone();
+            if (property_exists($job, 'monitor')) {
+                $monitor = $job->monitor;
+                if (is_null($monitor->batch_id)) {
+                    $monitor->setDone();
+                }
+            }
         });
 
-        // mark the SystemJob record as FAILED
-        \Queue::failing(function (JobFailed $event) {
-            $error = $event->exception->getMessage();
-            $error .= "\r\n".$event->exception->getTraceAsString();
-            $job = $this->getJobObject($event); // Job object, not SystemJob model
-            $systemJob = $job->getSystemJob();
-            $systemJob->setFailed($error);
+        Queue::failing(function (JobFailed $event) {
+            $job = $this->getJobObject($event);
+            if (property_exists($job, 'monitor')) {
+                $monitor = $job->monitor;
+                if (is_null($monitor->batch_id)) {
+                    $monitor->setFailed($event->exception);
+                }
+            }
         });
     }
 

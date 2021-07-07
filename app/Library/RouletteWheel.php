@@ -29,7 +29,7 @@ class RouletteWheel
      *
      * @return mixed
      */
-    public static function generate($a)
+    public static function take($a)
     {
         $sum = 0.0;
         $total = array_sum(array_values($a));

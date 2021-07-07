@@ -2,7 +2,6 @@
 
 namespace Acelle\Jobs;
 
-use Acelle\Library\Log as MailLog;
 use Acelle\Model\MailList;
 
 class VerifyMailListJob extends Base
@@ -21,23 +20,6 @@ class VerifyMailListJob extends Base
     {
         $this->mailListId = $mailListId;
         $this->serverId = $serverId;
-
-        parent::__construct();
-
-        // This line must go after the constructor
-        $this->linkJobToMailList();
-    }
-
-    /**
-     * Execute the job.
-     *
-     * @return void
-     */
-    public function linkJobToMailList()
-    {
-        $systemJob = $this->getSystemJob();
-        $systemJob->data = $this->mailListId;
-        $systemJob->save();
     }
 
     /**
@@ -47,17 +29,7 @@ class VerifyMailListJob extends Base
      */
     public function handle()
     {
-        try {
-            // start verification process
-            $list = MailList::find($this->mailListId);
-            $list->runVerification($this->serverId);
-        } catch (\Exception $e) {
-            $systemJob = $this->getSystemJob();
-            $systemJob->last_error = $e->getMessage();
-            $systemJob->save();
-
-            MailLog::warning(sprintf('Verification process for list `%s` failed. %s', $list->id, $e->getMessage()));
-            throw $e;
-        }
+        $list = MailList::find($this->mailListId);
+        $list->runVerification($this->serverId);
     }
 }

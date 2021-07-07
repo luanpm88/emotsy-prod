@@ -35,7 +35,6 @@ use File;
 use Acelle\Library\Tool;
 
 class User extends Authenticatable
-           // 5.7 implements MustVerifyEmail
 {
     use Notifiable;
 
@@ -89,11 +88,6 @@ class User extends Authenticatable
     public function admin()
     {
         return $this->hasOne('Acelle\Model\Admin');
-    }
-
-    public function systemJobs()
-    {
-        return $this->hasMany('Acelle\Model\SystemJob')->orderBy('created_at', 'desc');
     }
 
     /**

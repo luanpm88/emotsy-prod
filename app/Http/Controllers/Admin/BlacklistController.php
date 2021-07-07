@@ -35,11 +35,10 @@ class BlacklistController extends Controller
         $blacklists = $this->search($request);
 
         # Get current job
-        $system_job = $admin->getLastActiveImportBlacklistJob();
 
         return view('admin.blacklists.index', [
             'blacklists' => $blacklists,
-            'system_job' => $system_job,
+
         ]);
     }
 
@@ -116,11 +115,7 @@ class BlacklistController extends Controller
             }
         }
 
-        // Get current job
-        $system_job = $admin->getLastActiveImportBlacklistJob();
-
         return view('admin.blacklists.import', [
-            'system_job' => $system_job
         ]);
     }
 
@@ -135,15 +130,12 @@ class BlacklistController extends Controller
     {
         $admin = $request->user()->admin;
 
-        $system_job = \Acelle\Model\SystemJob::find($request->system_job_id);
-
         // authorize
         if (!$admin->can('read', new \Acelle\Model\Blacklist())) {
             return $this->notAuthorized();
         }
 
         return view('admin.blacklists.import_process', [
-            'system_job' => $system_job
         ]);
     }
 
@@ -157,14 +149,11 @@ class BlacklistController extends Controller
     public function cancel(Request $request)
     {
         $admin = $request->user()->admin;
-        $system_job = $admin->getLastActiveImportBlacklistJob();
 
         // authorize
         if (!$admin->can('importCancel', new \Acelle\Model\Blacklist())) {
             return $this->notAuthorized();
         }
-
-        $system_job->setCancelled();
 
         $request->session()->flash('alert-success', trans('messages.blacklist.import.cancelled'));
         return redirect()->action('Admin\BlacklistController@index');

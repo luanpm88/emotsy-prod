@@ -257,16 +257,18 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('lists/{list_uid}/subscribers/delete', 'SubscriberController@delete');
     Route::get('lists/{list_uid}/subscribers/subscribe', 'SubscriberController@subscribe');
     Route::get('lists/{list_uid}/subscribers/unsubscribe', 'SubscriberController@unsubscribe');
+    
     Route::get('lists/{list_uid}/subscribers/import', 'SubscriberController@import');
-    Route::post('lists/{list_uid}/subscribers/import', 'SubscriberController@import');
-    Route::get('lists/{list_uid}/subscribers/import/list', 'SubscriberController@importList');
-    Route::get('lists/{list_uid}/subscribers/import/log', 'SubscriberController@downloadImportLog');
-    Route::get('lists/{list_uid}/subscribers/import/proccess', 'SubscriberController@importProccess');
+    Route::post('lists/{list_uid}/subscribers/import/dispatch', 'SubscriberController@dispatchImportJob');
+    Route::get('lists/{list_uid}/import/{job_uid}/progress', 'SubscriberController@importProgress');
+    Route::get('lists/import/{job_uid}/log/download', 'SubscriberController@downloadImportLog');
+    Route::post('lists/import/{job_uid}/cancel', 'SubscriberController@cancelImport');
+    
     Route::get('lists/{list_uid}/subscribers/export', 'SubscriberController@export');
-    Route::post('lists/{list_uid}/subscribers/export', 'SubscriberController@export');
-    Route::get('lists/{list_uid}/subscribers/export/proccess', 'SubscriberController@exportProccess');
-    Route::get('lists/{list_uid}/subscribers/export/download', 'SubscriberController@downloadExportedCsv');
-    Route::get('lists/{list_uid}/subscribers/export/list', 'SubscriberController@exportList');
+    Route::post('lists/{list_uid}/subscribers/export/dispatch', 'SubscriberController@dispatchExportJob');
+    Route::get('lists/export/{job_uid}/progress', 'SubscriberController@exportProgress');
+    Route::get('lists/export/{job_uid}/log/download', 'SubscriberController@downloadExportedFile');
+    Route::post('lists/export/{job_uid}/cancel', 'SubscriberController@cancelExport');
 
     // Segment
     Route::get('segments/condition-value-control', 'SegmentController@conditionValueControl');
@@ -280,9 +282,6 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('lists/{list_uid}/segments/{uid}/edit', 'SegmentController@edit');
     Route::patch('lists/{list_uid}/segments/{uid}/update', 'SegmentController@update');
     Route::get('lists/{list_uid}/segments/delete', 'SegmentController@delete');
-    Route::post('lists/{list_uid}/segments/{uid}/export', 'SegmentController@export');
-    Route::get('lists/{list_uid}/segments/{uid}/export', 'SegmentController@viewExport');
-    Route::get('lists/{list_uid}/segments/{uid}/export/list', 'SegmentController@exportList');
     Route::get('lists/{list_uid}/segments/sample_condition', 'SegmentController@sample_condition');
 
     // Page
@@ -409,13 +408,6 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('campaigns/{uid}/update-stats', 'CampaignController@updateStats');
 
     Route::get('users/login-back', 'UserController@loginBack');
-
-    // System job
-    Route::post('systems/jobs/cancel', 'SystemJobController@cancel');
-    Route::get('systems/jobs/{type}/listing', 'SystemJobController@listing');
-    Route::get('systems/jobs/delete', 'SystemJobController@delete');
-    Route::get('systems/jobs/{id}/download/log', 'SystemJobController@downloadLog');
-    Route::get('systems/jobs/{id}/download/csv', 'SystemJobController@downloadCsv');
 
     // Sending servers
     Route::post('sending_servers/{uid}/test-connection', 'SendingServerController@testConnection');

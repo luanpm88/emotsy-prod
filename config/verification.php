@@ -112,17 +112,14 @@ return [
             'fields' => [ 'api_key' ],
             'result_xpath' => '$.ValidAddress',
             'result_map' => [ 'true' => 'deliverable', 'false' => 'undeliverable' ]
-        ],
-        /*[
-            'id' => 'mailcheck.co',
-            'name' => 'mailcheck.co',
-            'uri' => 'https://api.mailcheck.co/v1/singleEmail:check',
-            'request_type' => 'POST',
-            'post_data' => '{ "email": "{EMAIL}" }',
-            'post_headers' => [ 'Authorization' => 'Bearer {API_KEY}' ],
+        ],[
+            'id' => 'emaillistvalidation.com',
+            'name' => 'Emaillist Validation',
+            'uri' => 'https://app.emaillistvalidation.com/api/verifEmail?secret={API_KEY}&email={EMAIL}',
+            'request_type' => 'GET',
+            'response_type' => 'plain',
             'fields' => [ 'api_key' ],
-            'result_xpath' => '$.deliverable',
-            'result_map' => [ 'true' => 'deliverable', 'false' => 'undeliverable' ],
-        ],*/
+            'result_map' => [ 'ok' => 'deliverable', 'email_disabled' => 'undeliverable', 'risky' => 'risky', 'unknown' => 'unknown' ]
+        ],
     ]
 ];

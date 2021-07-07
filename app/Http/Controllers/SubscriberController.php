@@ -7,10 +7,11 @@ use Acelle\Library\Log as MailLog;
 use Acelle\Model\EmailVerificationServer;
 use Acelle\Model\MailList;
 use Acelle\Model\Subscriber;
+use Acelle\Model\JobMonitor;
+use Acelle\Library\Facades\Hook;
 
 class SubscriberController extends Controller
 {
-
     /**
      * Search items.
      */
@@ -369,32 +370,105 @@ class SubscriberController extends Controller
     {
         $customer = $request->user()->customer;
         $list = MailList::findByUid($request->list_uid);
-
-        $system_jobs = $list->importJobs();
+        $currentJob = $list->importJobs()->first();
 
         // authorize
         if (\Gate::denies('import', $list)) {
             return $this->notAuthorized();
         }
 
-        if ($request->isMethod('post')) {
-            if ($request->hasFile('file')) {
-                // Start system job
-                $job = new \Acelle\Jobs\ImportSubscribersJob($list, $request->user()->customer, $request->file('file')->path());
-                $this->dispatch($job);
-
-                // Action Log
-                $list->log('import_started', $request->user()->customer);
-            } else {
-                // @note: use try/catch instead
-                echo "max_file_upload";
-            }
+        // GET, has a current job
+        if ($currentJob) {
+            return view('subscribers.import', [
+                'list' => $list,
+                'currentJobUid' => $currentJob->uid,
+                'progressCheckUrl' => action('SubscriberController@importProgress', ['job_uid' => $currentJob->uid, 'list_uid' => $list->uid]),
+                'cancelUrl' => action('SubscriberController@cancelImport', ['job_uid' => $currentJob->uid]),
+                'logDownloadUrl' => action('SubscriberController@downloadImportLog', ['job_uid' => $currentJob->uid]),
+            ]);
+        // GET, do not have any job
         } else {
             return view('subscribers.import', [
                 'list' => $list,
-                'system_jobs' => $system_jobs
             ]);
         }
+    }
+
+    public function dispatchImportJob(Request $request)
+    {
+        // Get the list
+        $list = MailList::findByUid($request->list_uid);
+
+        // Upload to server
+        // Example of outcome: /home/acelle/storage/app/tmp/import-000000.csv
+        $filepath = $list->uploadCsv($request->file('file'));
+        
+        // Dispatch the import job
+        $currentJob = $list->dispatchImportJob($filepath);
+
+        // Return the job information
+        return response()->json([
+            'currentJobUid' => $currentJob->uid,
+            'progressCheckUrl' => action('SubscriberController@importProgress', ['job_uid' => $currentJob->uid, 'list_uid' => $list->uid]),
+            'cancelUrl' => action('SubscriberController@cancelImport', ['job_uid' => $currentJob->uid]),
+            'logDownloadUrl' => action('SubscriberController@downloadImportLog', ['job_uid' => $currentJob->uid]),
+        ]);
+    }
+
+    /**
+     * Import from file.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function cancelImport(Request $request)
+    {
+        $job = JobMonitor::findByUid($request->job_uid);
+
+        try {
+            $job->cancel();            
+            return response()->json(['status' => 'done']);
+        } catch (\Exception $ex) {
+            $job->delete(); // delete anyway if already done or failed, to make it simple to user
+            return response()->json(['status' => '']);
+        }
+    }
+
+    /**
+     * Import from file.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function cancelExport(Request $request)
+    {
+        $job = JobMonitor::findByUid($request->job_uid);
+
+        try {
+            $job->cancel();            
+            return response()->json(['status' => 'done']);
+        } catch (\Exception $ex) {
+            $job->delete(); // delete anyway if already done or failed, to make it simple to user
+            return response()->json(['status' => '']);
+        }
+    }
+
+    public function downloadImportLog(Request $request)
+    {
+        $job = JobMonitor::findByUid($request->job_uid);
+
+        // Only available if job has moved out of queued status
+        return response()->download($job->getJsonData()['logfile']);
+    }
+
+    public function downloadExportedFile(Request $request)
+    {
+        $job = JobMonitor::findByUid($request->job_uid);
+
+        // Only available if job has moved out of queued status
+        return response()->download($job->getJsonData()['filepath']);
     }
 
     /**
@@ -404,81 +478,15 @@ class SubscriberController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function importProccess(Request $request)
-    {
-        $list = MailList::findByUid($request->current_list_uid);
-        $job = $list->getLastImportJob();
-
-        // authorize
-        if (\Gate::denies('import', $list)) {
-            return $this->notAuthorized();
-        }
-
-        if (!is_object($job)) {
-            return "none";
-        }
-
-        // authorize
-        if (\Gate::denies('import', $list)) {
-            return $this->notAuthorized();
-        }
-
-        // Messages
-        $message = $job->getMessage();
-
-        return response()->json([
-            "job" => $job,
-            "data" => json_decode($job->data),
-            "timer" => $job->runTime(),
-            "message" => $message,
-        ]);
-    }
-
-    /**
-     * Download import log.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     * @todo move this to the MailList controller
-     */
-    public function downloadImportLog(Request $request)
+    public function importProgress(Request $request)
     {
         $list = MailList::findByUid($request->list_uid);
+        $job = $list->importJobs()->first();
 
-        // authorize
-        if (\Gate::denies('import', $list)) {
-            return $this->notAuthorized();
-        }
+        $progress = $list->getProgress($job);
 
-        // @todo: should be the exact MailList here
-        $log = $list->getLastImportLog();
-        // @todo what if log does not exist (removed)?
-        return response()->download($log);
-    }
-
-    /**
-     * Display a listing of subscriber import job.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function importList(Request $request)
-    {
-        $list = MailList::findByUid($request->list_uid);
-
-        // authorize
-        if (\Gate::denies('import', $list)) {
-            return $this->notAuthorized();
-        }
-
-        $system_jobs = $list->importJobs();
-        $system_jobs = $system_jobs->orderBy($request->sort_order, $request->sort_direction);
-        $system_jobs = $system_jobs->paginate($request->per_page);
-
-        return view('subscribers._import_list', [
-            'system_jobs' => $system_jobs,
-            'list' => $list
-        ]);
+        // Get progress updated by the import process and status of the final job monitor
+        return response()->json($progress);
     }
 
     /**
@@ -497,29 +505,40 @@ class SubscriberController extends Controller
             return $this->notAuthorized();
         }
 
-        $system_jobs = $list->exportJobs();
+        $currentJob = $list->exportJobs()->first();
 
-        $customer = $request->user()->customer;
-
-        // authorize
-        if (\Gate::denies('export', $list)) {
-            return $this->notAuthorized();
-        }
-
-        if ($request->isMethod('post')) {
-
-            // Start system job
-            $job = new \Acelle\Jobs\ExportSubscribersJob($list, $request->user()->customer);
-            $this->dispatch($job);
-
-            // Action Log
-            $list->log('export_started', $request->user()->customer);
-        } else {
+        // GET, has a current job
+        if ($currentJob) {
             return view('subscribers.export', [
                 'list' => $list,
-                'system_jobs' => $system_jobs
+                'currentJobUid' => $currentJob->uid,
+                'progressCheckUrl' => action('SubscriberController@exportProgress', ['job_uid' => $currentJob->uid]),
+                'cancelUrl' => action('SubscriberController@cancelExport', ['job_uid' => $currentJob->uid]),
+                'downloadUrl' => action('SubscriberController@downloadExportedFile', ['job_uid' => $currentJob->uid]),
+            ]);
+        // GET, do not have any job
+        } else {
+            return view('subscribers.export', [
+                'list' => $list
             ]);
         }
+    }
+
+    public function dispatchExportJob(Request $request)
+    {
+        // Get the list
+        $list = MailList::findByUid($request->list_uid);
+
+        // Dispatch import job
+        $currentJob = $list->dispatchExportJob();
+
+        // Return the job information
+        return response()->json([
+            'currentJobUid' => $currentJob->uid,
+            'progressCheckUrl' => action('SubscriberController@exportProgress', ['job_uid' => $currentJob->uid]),
+            'cancelUrl' => action('SubscriberController@cancelExport', ['job_uid' => $currentJob->uid]),
+            'downloadUrl' => action('SubscriberController@downloadExportedFile', ['job_uid' => $currentJob->uid]),
+        ]);
     }
 
     /**
@@ -529,75 +548,16 @@ class SubscriberController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function exportProccess(Request $request)
+    public function exportProgress(Request $request)
     {
-        $list = MailList::findByUid($request->current_list_uid);
-        $system_job = $list->getLastExportJob();
+        $job = JobMonitor::findByUid($request->job_uid);
 
-        // authorize
-        if (\Gate::denies('export', $list)) {
-            return $this->notAuthorized();
-        }
+        // Get progress updated by the import process and status of the final job monitor
+        $progress = $job->getJsonData();
+        $progress['status'] = $job->status;
+        $progress['error'] = $job->error;
 
-        if (!is_object($system_job)) {
-            return "none";
-        }
-
-        // authorize
-        if (\Gate::denies('export', $list)) {
-            return $this->notAuthorized();
-        }
-
-        return response()->json([
-            "job" => $system_job,
-            "data" => json_decode($system_job->data),
-            "timer" => $system_job->runTime(),
-        ]);
-    }
-
-    /**
-     * Download exported csv file after exporting.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function downloadExportedCsv(Request $request)
-    {
-        $list = MailList::findByUid($request->list_uid);
-
-        // authorize
-        if (\Gate::denies('export', $list)) {
-            return $this->notAuthorized();
-        }
-
-        $system_job = $list->getLastExportJob();
-
-        return response()->download(storage_path('job/'.$system_job->id.'/data.csv'));
-    }
-
-    /**
-     * Display a listing of subscriber import job.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function exportList(Request $request)
-    {
-        $list = MailList::findByUid($request->list_uid);
-
-        // authorize
-        if (\Gate::denies('export', $list)) {
-            return $this->notAuthorized();
-        }
-
-        $system_jobs = $list->exportJobs();
-        $system_jobs = $system_jobs->orderBy($request->sort_order, $request->sort_direction);
-        $system_jobs = $system_jobs->paginate($request->per_page);
-
-        return view('subscribers._export_list', [
-            'system_jobs' => $system_jobs,
-            'list' => $list
-        ]);
+        return response()->json($progress);
     }
 
     /**

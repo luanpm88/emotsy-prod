@@ -31,18 +31,6 @@ class SendConfirmationEmailJob extends Base
      *
      * @return void
      */
-    public function linkJobToMailList()
-    {
-        $systemJob = $this->getSystemJob();
-        $systemJob->data = $this->mailList->id;
-        $systemJob->save();
-    }
-
-    /**
-     * Execute the job.
-     *
-     * @return void
-     */
     public function handle()
     {
         MailLog::info(sprintf('Start re-sending confirmation email to %s contacts', sizeof($this->subscribers)));
