@@ -209,7 +209,7 @@
                                 </div>
                                 <div class="col-sm-2 col-md-2 text-left">
                                     <h5 class="no-margin text-bold">
-                                        {{ (null !== $item->lastClick()) ? Acelle\Library\Tool::formatDateTime($item->lastClick()->created_at) : "" }}
+                                        #
                                     </h5>
                                     <span class="text-muted">{{ trans('messages.last_clicked') }}</span>
                                         <br /><br />
@@ -236,7 +236,7 @@
                                         </a>
                                     </h6>
                                     <p>
-                                        {{ $item->campaigns()->count() }} {{ trans('messages.campaigns') }}
+                                        {{ $item->aggregate }} {{ trans('messages.campaigns') }}
                                     </p>
                                 </div>
                                 <div class="col-sm-2 col-md-2 text-left">
@@ -248,7 +248,7 @@
                                 </div>
                                 <div class="col-sm-2 col-md-2 text-left">
                                     <h5 class="no-margin text-bold">
-                                        {{ (null !== $item->lastClick(Auth::user()->customer)) ? Acelle\Library\Tool::formatDateTime($item->lastClick(Auth::user()->customer)->created_at) : "" }}
+                                        #
                                     </h5>
                                     <span class="text-muted">{{ trans('messages.last_clicked') }}</span>
                                     <br /><br />
