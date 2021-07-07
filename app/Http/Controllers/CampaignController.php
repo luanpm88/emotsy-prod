@@ -764,6 +764,12 @@ class CampaignController extends Controller
     public function links(Request $request)
     {
         $campaign = Campaign::findByUid($request->uid);
+        $links = $campaign->clickLogs()
+                          ->select(
+                              'click_logs.url',
+                              DB::raw('count(*) AS clickCount'),
+                              DB::raw('max(click_logs.created_at) AS lastClick')
+                          )->groupBy('click_logs.url')->get();
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -772,6 +778,7 @@ class CampaignController extends Controller
 
         return view('campaigns.links', [
             'campaign' => $campaign,
+            'links' => $links,
         ]);
     }
 

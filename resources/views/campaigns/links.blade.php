@@ -8,7 +8,7 @@
 
 @section('page_header')
     
-            @include("campaigns._header")
+    @include("campaigns._header")
 
 @endsection
 
@@ -24,7 +24,7 @@
             <th class="text-right">{{ trans('messages.total_clicks') }}</th>
             <th class="text-right">{{ trans('messages.last_clicked') }}</th>
         </tr>
-        @foreach ($campaign->getLinks() as $link)
+        @foreach ($links as $link)
             <tr>
                 <td>
                     <a class="url-truncate" title="{{ $link->url }}" href="{{ $link->url }}" target="_blank">
@@ -32,10 +32,10 @@
                     </a>
                 </td>
                 <td class="text-right">
-                    {{ $link->clicks(null, $campaign)->count() }}
+                    {{ $link->clickCount }}
                 </td>
                 <td class="text-right">
-                    {{ isset($link->lastClick(null, $campaign)->created_at) ? Acelle\Library\Tool::formatDateTime($link->lastClick(null, $campaign)->created_at) : "" }}
+                    {{ $link->lastClick }}
                 </td>
             </tr>
         @endforeach
