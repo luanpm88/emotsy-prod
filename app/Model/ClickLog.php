@@ -40,7 +40,7 @@ class ClickLog extends Model
             // just ignore and let users go
             // the 'url' validation of Laravel does not work with UTF8
             // For example: https://algeriestore.com/content/Algérie-Store-Catalogue-FR.pdf
-            return; 
+            return $url;
         }
 
         $messageId = StringHelper::base64UrlDecode($request->message_id);
