@@ -411,8 +411,12 @@ class Automation2 extends Model
     /**
      * Initiate a trigger with a given subscriber.
      */
-    public function initTrigger($subscriber)
+    public function initTrigger($subscriber, $force = false)
     {
+        if (!$subscriber->isSubscribed() && $force == false) {
+            $trigger->logger()->warning(sprintf('Cannot trigger contact %s, current status is: %s', $subscriber->email, $subscriber->status));
+        }
+
         $trigger = null;
         DB::transaction(function () use (&$trigger, $subscriber) {
             $trigger = $this->autoTriggers()->create();
