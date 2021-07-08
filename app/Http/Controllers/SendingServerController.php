@@ -330,6 +330,7 @@ class SendingServerController extends Controller
         if ($request->isMethod('post')) {
             // @todo testing method and return result here. Ex: echo json_encode($server->test())
             try {
+                $server = $server->mapType();
                 $server->sendTestEmail([
                     'from_email' => $request->from_email,
                     'to_email' => $request->to_email,
