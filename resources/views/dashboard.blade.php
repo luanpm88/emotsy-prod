@@ -8,67 +8,76 @@
 @endsection
 
 @section('content')
-    <h1 class="mb-10">{!! trans('messages.frontend_dashboard_hello', ['name' => Auth::user()->displayName()]) !!}</h1>
+    <h2 class="mt-4 pt-2">{!! trans('messages.frontend_dashboard_hello', ['name' => Auth::user()->displayName()]) !!}</h2>
     <p>{!! trans('messages.frontend_dashboard_welcome') !!}</p>
 
-    <h3 class=" mb-10 mt-40"><i class="icon-stats-bars4"></i> {{ trans("messages.used_quota") }}</h3>
+    <h4 class="mt-5">{{ trans("messages.used_quota") }}</h4>
     <p>{{ trans('messages.dashboard.credit.wording') }}</p>
     <div class="row quota_box">
-        <div class="col-sm-6 col-md-6">
-            <div class="content-group-sm">
-                <div class="pull-right  text-semibold">
-                    <span class="text-muted">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->getSendingQuotaUsage()) }}/{{ (Auth::user()->customer->getSendingQuota() == -1) ? '∞' : \Acelle\Library\Tool::format_number(Auth::user()->customer->getSendingQuota()) }}</span>
-                    &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displaySendingQuotaUsage() }}
+        <div class="col-12 col-md-6">
+            <div class="content-group-sm mb-3">
+                <div class="d-flex mb-2">
+                    <label class="fw-600 me-auto">{{ trans('messages.sending_quota') }}</label>
+                    <div class="pull-right  text-semibold">
+                        <span class="text-muted">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->getSendingQuotaUsage()) }}/{{ (Auth::user()->customer->getSendingQuota() == -1) ? '∞' : \Acelle\Library\Tool::format_number(Auth::user()->customer->getSendingQuota()) }}</span>
+                        &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displaySendingQuotaUsage() }}
+                    </div>
                 </div>
-                <h5 class="text-semibold mb-5">{{ trans('messages.sending_quota') }}</h5>
-                <div class="progress progress-sm">
-                    <div class="progress-bar bg-{{ Auth::user()->customer->getSendingQuotaUsagePercentage() >= 80 ? 'danger' : 'primary' }}" style="width: {{ Auth::user()->customer->getSendingQuotaUsagePercentage() }}%">
+                
+                <div class="progress progress-sm" style="height: 12px;">
+                    <div class="progress-bar progress-bar-striped bg-{{ Auth::user()->customer->getSendingQuotaUsagePercentage() >= 80 ? 'danger' : 'primary' }}" style="width: {{ Auth::user()->customer->getSendingQuotaUsagePercentage() }}%">
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-sm-6 col-md-6">
-            <div class="content-group-sm">
-                <div class="pull-right  text-semibold">
-                    <span class="text-muted">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->listsCount()) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxLists()) }}</span>
-                    &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displayListsUsage() }}
+        <div class="col-12 col-md-6">
+            <div class="content-group-sm mb-3">
+                <div class="d-flex mb-2">
+                    <label class="fw-600 me-auto">{{ trans('messages.list') }}</label>
+                    <div class="pull-right  text-semibold">
+                        <span class="text-muted">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->listsCount()) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxLists()) }}</span>
+                        &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displayListsUsage() }}
+                    </div>
                 </div>
-                <h5 class="text-semibold mb-5">{{ trans('messages.list') }}</h5>
-                <div class="progress progress-sm">
-                    <div class="progress-bar bg-{{ Auth::user()->customer->listsUsage() >= 80 ? 'danger' : 'primary' }}" style="width: {{ Auth::user()->customer->listsUsage() }}%">
+                <div class="progress progress-sm" style="height: 12px;">
+                    <div class="progress-bar progress-bar-striped bg-{{ Auth::user()->customer->listsUsage() >= 80 ? 'danger' : 'primary' }}" style="width: {{ Auth::user()->customer->listsUsage() }}%">
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-sm-6 col-md-6">
-            <div class="content-group-sm">
-                <div class="pull-right  text-semibold">
-                    <span class="text-muted">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->campaignsCount()) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxCampaigns()) }}</span>
-                    &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displayCampaignsUsage() }}
+        <div class="col-12 col-md-6">
+            <div class="content-group-sm mb-3">
+                <div class="d-flex mb-2">
+                    <label class="fw-600 me-auto">{{ trans('messages.campaign') }}</label>
+                    <div class="pull-right  text-semibold">
+                        <span class="text-muted">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->campaignsCount()) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxCampaigns()) }}</span>
+                        &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displayCampaignsUsage() }}
+                    </div>
                 </div>
-                <h5 class="text-semibold mb-5 mt-20">{{ trans('messages.campaign') }}</h5>
-                <div class="progress progress-sm">
-                    <div class="progress-bar bg-{{ Auth::user()->customer->campaignsUsage() >= 80 ? 'danger' : 'primary' }}" style="width: {{ Auth::user()->customer->campaignsUsage() }}%">
+                <div class="progress progress-sm" style="height: 12px;">
+                    <div class="progress-bar progress-bar-striped bg-{{ Auth::user()->customer->campaignsUsage() >= 80 ? 'danger' : 'primary' }}" style="width: {{ Auth::user()->customer->campaignsUsage() }}%">
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-sm-6 col-md-6">
+        <div class="col-12 col-md-6">
             <div class="content-group-sm">
-                <div class="pull-right  text-semibold">
-                    <span class="text-muted">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->readCache('SubscriberCount', 0)) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxSubscribers()) }}</span>
-                    &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displaySubscribersUsage() }}
+                <div class="d-flex mb-2">
+                    <label class="fw-600 me-auto">{{ trans('messages.subscriber') }}</label>
+                    <div class="pull-right  text-semibold">
+                        <span class="text-muted">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->readCache('SubscriberCount', 0)) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxSubscribers()) }}</span>
+                        &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displaySubscribersUsage() }}
+                    </div>
                 </div>
-                <h5 class="text-semibold mb-5 mt-20">{{ trans('messages.subscriber') }}</h5>
-                <div class="progress progress-sm">
-                    <div class="progress-bar bg-{{ Auth::user()->customer->subscribersUsage() >= 80 ? 'danger' : 'primary' }}" style="width: {{ Auth::user()->customer->readCache('SubscriberUsage', 0) }}%">
+                <div class="progress progress-sm" style="height: 12px;">
+                    <div class="progress-bar progress-bar-striped bg-{{ Auth::user()->customer->subscribersUsage() >= 80 ? 'danger' : 'primary' }}" style="width: {{ Auth::user()->customer->readCache('SubscriberUsage', 0) }}%">
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <h3 class=" mt-40"><i class="icon-paperplane"></i> {{ trans('messages.recently_sent_campaigns') }}</h3>
+    <h4 class="mt-5"><i class="icon-paperplane"></i> {{ trans('messages.recently_sent_campaigns') }}</h4>
 
     @if (Auth::user()->customer->sentCampaigns()->count() == 0)
         <div class="empty-list">
@@ -93,7 +102,7 @@
         <div class="campaign-quickview-container" data-url="{{ action("CampaignController@quickView") }}"></div>
     @endif
 
-    <h3 class=" mt-40"><i class="icon-address-book2"></i> {{ trans('messages.list_growth') }}</h3>
+    <h4 class="mt-5"><i class="icon-address-book2"></i> {{ trans('messages.list_growth') }}</h4>
 
     @if (Auth::user()->customer->lists()->count() == 0)
         <div class="empty-list">

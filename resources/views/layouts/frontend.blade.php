@@ -1,6 +1,151 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="{{ \Acelle\Model\Setting::get("site_description") }}">
+	<meta name="keywords" content="{{ \Acelle\Model\Setting::get("site_keyword") }}" />
+	<meta name="php-version" content="{{ phpversion() }}" />
+
+	<title>@yield('title') - {{ \Acelle\Model\Setting::get("site_name") }}</title>
+
+	@include('layouts._favicon')
+
+	<!-- Font -->
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i&amp;subset=cyrillic,cyrillic-ext,greek,greek-ext,latin-ext,vietnamese" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Comfortaa:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i&amp;subset=cyrillic,cyrillic-ext,greek,greek-ext,latin-ext,vietnamese" rel="stylesheet">
+
+	<!-- jQuery -->
+	<script type="text/javascript" src="{{ URL::asset('core/js/jquery-3.6.0.min.js') }}"></script>
+
+	<!-- Bootstrap -->
+	<link rel="stylesheet" type="text/css" href="{{ URL::asset('core/bootstrap/css/bootstrap.min.css') }}">
+	<script type="text/javascript" src="{{ URL::asset('core/bootstrap/js/bootstrap.min.js') }}"></script>
+
+	<!-- AcelleMail -->
+	<link rel="stylesheet" type="text/css" href="{{ URL::asset('core/css/app.css') }}">
+</head>
+<body>
+	<nav class="navbar navbar-expand-xl navbar-dark bg-dark fixed-top navbar-main py-0">
+		<div class="container-fluid">
+			<a class="navbar-brand d-flex align-items-center" href="{{ action('HomeController@index') }}">
+				@if (\Acelle\Model\Setting::get('site_logo_small'))
+                    <img class="logo" src="{{ action('SettingController@file', \Acelle\Model\Setting::get('site_logo_small')) }}" alt="">
+                @else
+                    <img class="logo" src="{{ URL::asset('images/logo-' . (Auth::user()->customer->getColorScheme() == "white" ? "dark" : "light") . '.svg') }}" alt="">
+                @endif
+			</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+
+			@php			
+				$iconDir = "";
+				if (Auth::user()->customer->getColorScheme() == 'white') {
+					$iconDir = "dark/";
+				}
+			@endphp
+	
+			<div class="collapse navbar-collapse" id="navbarsExample04">
+				<ul class="navbar-nav me-auto mb-2 mb-md-0">
+					<li class="nav-item">
+						<a href="{{ action('HomeController@index') }}" class="nav-link d-flex align-items-center py-3 lvl-1">
+							<i class="navbar-icon">
+								<img src="{{ url('images/icons/'.$iconDir.'SVG/home.svg') }}" />
+							</i>
+							<span>{{ trans('messages.dashboard') }}</span>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a href="{{ action('CampaignController@index') }}" class="nav-link d-flex align-items-center py-3 lvl-1">
+							<i class="navbar-icon">
+								<img src="{{ url('images/icons/'.$iconDir.'SVG/campaign.svg') }}" />
+							</i>
+							<span>{{ trans('messages.campaigns') }}</span>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a href="{{ action('Automation2Controller@index') }}" class="nav-link d-flex align-items-center py-3 lvl-1">
+							<i class="navbar-icon">
+								<img style="width: 18px" src="{{ url('images/icons/'.$iconDir.'SVG/automation.svg') }}" />
+							</i>
+							<span>{{ trans('messages.automations') }}</span>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a href="{{ action('MailListController@index') }}" class="nav-link d-flex align-items-center py-3 lvl-1">
+							<i class="navbar-icon">
+								<img style="width: 21px" src="{{ url('images/icons/'.$iconDir.'SVG/list.svg') }}" />
+							</i>
+							<span>{{ trans('messages.lists') }}</span>
+						</a>
+					</li>
+					<li class="nav-item">
+						<a href="{{ action('TemplateController@index') }}" class="nav-link d-flex align-items-center py-3 lvl-1">
+							<i class="navbar-icon">
+								<img style="width: 18px" src="{{ url('images/icons/'.$iconDir.'SVG/template.svg') }}" />
+							</i>
+							<span>{{ trans('messages.templates') }}</span>
+						</a>
+					</li>
+					<li class="nav-item dropdown">
+						<a href="{{ action('TemplateController@index') }}" class="nav-link d-flex align-items-center py-3 lvl-1 dropdown-toggle" id="content-menu" data-bs-toggle="dropdown" aria-expanded="false">
+							<i class="navbar-icon">
+								<img style="width: 17px" src="{{ url('images/icons/'.$iconDir.'SVG/content.svg') }}" />
+							</i>
+							<span>{{ trans('messages.content') }}</span>
+						</a>
+						<ul class="dropdown-menu shadow" aria-labelledby="content-menu">
+							<li>
+								<a class="dropdown-item d-flex align-items-center" href="{{ action('ProductController@index') }}">
+									<i class="navbar-icon mr-3" style="">
+										<img src="{{ url('images/icons/'.$iconDir.'SVG/product-icon.svg') }}" />
+									</i>
+									<span>{{ trans('messages.products') }}</span>
+								</a>
+							</li>
+							<li>
+								<a class="dropdown-item d-flex align-items-center" href="{{ action('SourceController@index') }}">
+									<i class="navbar-icon mr-3" style="">
+										<img style="width: 18px" src="{{ url('images/icons/'.$iconDir.'SVG/store.svg') }}" />
+									</i>
+									<span>{{ trans('messages.stores_connections') }}</span>
+								</a>
+							</li>
+						</ul>
+					</li>
+
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-bs-toggle="dropdown" aria-expanded="false">Dropdown</a>
+						<ul class="dropdown-menu" aria-labelledby="content-menu">
+							<li><a class="dropdown-item" href="#">Action</a></li>
+							<li><a class="dropdown-item" href="#">Another action</a></li>
+							<li><a class="dropdown-item" href="#">Something else here</a></li>
+						</ul>
+					</li>
+				</ul>
+				<div class="navbar-right">
+					
+				</div>
+			</div>
+		</div>
+	</nav>
+	<main class="container">
+		@yield('page_header')
+
+		<!-- main inner content -->
+		@yield('content')
+	</main>
+</body>
+</html>
+
+
+
+{{-- <!DOCTYPE html>
+<html lang="en">
+<head>
 	<title>@yield('title') - {{ \Acelle\Model\Setting::get("site_name") }}</title>
 
 	@include('layouts._favicon')
@@ -328,4 +473,4 @@
         {!! \Acelle\Model\Setting::get('custom_script') !!}
 
 </body>
-</html>
+</html> --}}
