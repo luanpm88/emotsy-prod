@@ -339,6 +339,11 @@ class Campaign extends Model
             $message->setBcc(Setting::get('campaign.bcc'));
         }
 
+        if (!empty(Setting::get('campaign.cc'))) {
+            $addresses = array_filter(preg_split( Setting::get('campaign.cc') ));
+            $message->setCc( $addresses );
+        }
+
         $message->setReplyTo($this->reply_to);
         $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
         $message->addPart($this->getPlainContent($subscriber, $msgId, $server), 'text/plain');
