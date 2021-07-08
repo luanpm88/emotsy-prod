@@ -2031,9 +2031,12 @@ class Automation2Controller extends Controller
             return;
         }
 
-        // Manually trigger
+        // Manually trigger, force!
         $automation->logger()->info(sprintf('Manually trigger contact %s', $subscriber->email));
-        $trigger = $automation->initTrigger($subscriber);
+        
+        // Force trigger a contact
+        // Even inactive contacts - in case of Say-Goodbye-Trigger for example
+        $trigger = $automation->initTrigger($subscriber, $force = true);
 
         return redirect()->action('AutoTrigger@show', [ 'id' => $trigger->id ]);
     }
