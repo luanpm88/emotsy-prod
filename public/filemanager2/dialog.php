@@ -1235,7 +1235,7 @@ $files = $sorted;
                         </label>
                     </div>
                     <?php } ?>
-                <a href="javascript:void('')" class="link" data-url="<?php echo $cur_dir . $file; ?>" data-file="<?php echo $file; ?>" data-function="<?php echo $apply; ?>">
+                <a href="javascript:void('')" class="link" data-url="<?php echo $cur_dir . $file; ?>" data-file="<?php echo $cur_dir . $file; ?>" data-function="<?php echo $apply; ?>">
                 <div class="img-precontainer">
                     <?php if ($is_icon_thumb) { ?><div class="filetype"><?php echo $file_array['extension'] ?></div><?php } ?>
                     

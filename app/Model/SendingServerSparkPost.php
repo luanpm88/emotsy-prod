@@ -32,7 +32,7 @@ use Acelle\Library\Log as MailLog;
 use Acelle\Library\StringHelper;
 use SparkPost\SparkPost;
 use GuzzleHttp\Client;
-use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
+use Http\Adapter\Guzzle7\Client as GuzzleAdapter;
 
 class SendingServerSparkPost extends SendingServer
 {

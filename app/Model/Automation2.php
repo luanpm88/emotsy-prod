@@ -695,7 +695,7 @@ class Automation2 extends Model
     public function triggerImportedContacts()
     {
         $this->logger()->info(sprintf('Start triggering imported contacts'));
-        $subscribers = $this->getNotTriggeredSubscribers()->where('subscribers.subscription_type', '=', Subscriber::SUBSCRIPTION_TYPE_IMPORTED)->get();
+        $subscribers = $this->notTriggeredSubscribers()->where('subscribers.subscription_type', '=', Subscriber::SUBSCRIPTION_TYPE_IMPORTED)->get();
         $total = count($subscribers);
         $this->logger()->info(sprintf('Triggering %s imported contacts', $total));
 
@@ -736,7 +736,7 @@ class Automation2 extends Model
 
         $this->logger()->info(sprintf('NEW > It is %s hours due! triggering!', $now->diffInHours($eventDate)));
 
-        $notTriggered = $this->getNotTriggeredSubscribers()->get();
+        $notTriggered = $this->notTriggeredSubscribers()->get();
         $total = $notTriggered->count();
         $i = 0;
 
@@ -1162,13 +1162,13 @@ class Automation2 extends Model
      */
     public function execute()
     {
-        $subscribers = $this->getNotTriggeredSubscribers()->get();
+        $subscribers = $this->notTriggeredSubscribers()->get();
         foreach ($subscribers as $subscriber) {
             $this->initTrigger($subscriber);
         }
     }
 
-    public function getNotTriggeredSubscribers()
+    public function notTriggeredSubscribers()
     {
         return $this->mailList->activeSubscribers()
                                       ->leftJoin('auto_triggers', function ($join) {
