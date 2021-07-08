@@ -1750,28 +1750,65 @@ class Campaign extends Model
      */
     public function copy($name)
     {
-        $copy = $this->replicate(['cache', 'last_error', 'run_at']);
+        $copy = new self();
+
+        // Foreign key
+        $copy->customer_id = $this->customer_id;
+        $copy->default_mail_list_id = $this->default_mail_list_id;
+        $copy->tracking_domain_id = $this->tracking_domain_id;
+
+        // Overwrite attributes
         $copy->name = $name;
-        $copy->created_at = \Carbon\Carbon::now();
-        $copy->updated_at = \Carbon\Carbon::now();
         $copy->status = self::STATUS_NEW;
+
+        // Overwrit date/time
+        $now = Carbon::now();
+        $copy->created_at = $now;
+        $copy->updated_at = $now;
+
+        // Other attributes to clone
+        $attributes = [
+            'type',
+            'subject',
+            'preheader',
+            'from_email',
+            'from_name',
+            'reply_to',
+            'sign_dkim',
+            'track_open',
+            'track_click',
+            'use_default_sending_server_from_email',
+        ];
+        
+        foreach($attributes as $attribute) {
+            $copy[$attribute] = $this[$attribute];
+        }
+        
+        // Save to DB
         $copy->save();
 
         // Lists segments
-        foreach ($this->listsSegments as $lists_segment) {
-            $new_lists_segment = $lists_segment->replicate();
-            $new_lists_segment->campaign_id = $copy->id;
-            $new_lists_segment->save();
+        foreach ($this->listsSegments as $listSegment) {
+            echo 123;
+            echo "\n";
+            $newListSegment = $copy->listsSegments()->make();
+
+            $newListSegment->mail_list_id = $listSegment->mail_list_id;
+            $newListSegment->segment_id = $listSegment->segment_id;
+            $newListSegment->created_at = $now;
+            $newListSegment->updated_at = $now;
+
+            $newListSegment->save();
         }
 
-        // refresh to update cache (otherwise, list-segment information will not be available yet)
-        $newCampaign = Campaign::find($copy->id);
-        $newCampaign->updateCache();
-
         // copy template
-        $newCampaign->setTemplate($this->template);
+        $copy->setTemplate($this->template);
 
-        return $newCampaign;
+        // refresh to update cache (otherwise, list-segment information will not be available yet)
+        $copy->refresh();
+        $copy->updateCache();
+
+        return $copy;
     }
 
     /**
