@@ -1789,8 +1789,6 @@ class Campaign extends Model
 
         // Lists segments
         foreach ($this->listsSegments as $listSegment) {
-            echo 123;
-            echo "\n";
             $newListSegment = $copy->listsSegments()->make();
 
             $newListSegment->mail_list_id = $listSegment->mail_list_id;
@@ -1802,7 +1800,9 @@ class Campaign extends Model
         }
 
         // copy template
-        $copy->setTemplate($this->template);
+        if (!is_null($this->template)) {
+            $copy->setTemplate($this->template);
+        }
 
         // refresh to update cache (otherwise, list-segment information will not be available yet)
         $copy->refresh();
