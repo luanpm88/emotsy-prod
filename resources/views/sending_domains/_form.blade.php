@@ -34,5 +34,5 @@
 </div>
 <hr >
 <div class="text-left">
-	<button class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
+	<button class="btn btn-secondary me-2"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
 </div>

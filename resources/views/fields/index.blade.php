@@ -145,7 +145,7 @@
 
 		<hr /><br />
 		<div class="">
-			<button class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.save_change') }}</button>
+			<button class="btn btn-secondary me-2"><i class="icon-check"></i> {{ trans('messages.save_change') }}</button>
 		</div>
 	</form>
 @endsection

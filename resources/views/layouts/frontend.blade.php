@@ -24,8 +24,18 @@
 	<link rel="stylesheet" type="text/css" href="{{ URL::asset('core/bootstrap/css/bootstrap.min.css') }}">
 	<script type="text/javascript" src="{{ URL::asset('core/bootstrap/js/bootstrap.min.js') }}"></script>
 
+	<!-- Select2 -->
+	<link rel="stylesheet" type="text/css" href="{{ URL::asset('core/select2/css/select2.min.css') }}">
+	<script type="text/javascript" src="{{ URL::asset('core/select2/js/select2.min.js') }}"></script>
+
+	<!-- Google icon -->
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined"rel="stylesheet">
+
 	<!-- AcelleMail -->
+	<link href="{{ URL::asset('css/app.css') }}?v={{ app_version() }}" rel="stylesheet" type="text/css">
 	<link rel="stylesheet" type="text/css" href="{{ URL::asset('core/css/app.css') }}">
+	<script type="text/javascript" src="{{ URL::asset('core/js/functions.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('core/js/app.js') }}"></script>
 </head>
 <body>
 	<nav class="navbar navbar-expand-xl navbar-dark bg-dark fixed-top navbar-main py-0">
@@ -49,7 +59,7 @@
 			@endphp
 	
 			<div class="collapse navbar-collapse" id="navbarsExample04">
-				<ul class="navbar-nav me-auto mb-2 mb-md-0">
+				<ul class="navbar-nav me-auto mb-md-0">
 					<li class="nav-item">
 						<a href="{{ action('HomeController@index') }}" class="nav-link d-flex align-items-center py-3 lvl-1">
 							<i class="navbar-icon">

@@ -11,7 +11,12 @@
     <h2 class="mt-4 pt-2">{!! trans('messages.frontend_dashboard_hello', ['name' => Auth::user()->displayName()]) !!}</h2>
     <p>{!! trans('messages.frontend_dashboard_welcome') !!}</p>
 
-    <h4 class="mt-5">{{ trans("messages.used_quota") }}</h4>
+    <h4 class="mt-5">
+        <span class="material-icons-outlined">
+            donut_large
+        </span>
+        {{ trans("messages.used_quota") }}
+    </h4>
     <p>{{ trans('messages.dashboard.credit.wording') }}</p>
     <div class="row quota_box">
         <div class="col-12 col-md-6">
@@ -77,11 +82,18 @@
         </div>
     </div>
 
-    <h4 class="mt-5"><i class="icon-paperplane"></i> {{ trans('messages.recently_sent_campaigns') }}</h4>
+    <h4 class="mt-5">
+        <span class="material-icons-outlined">
+            history_toggle_off
+            </span>
+        {{ trans('messages.recently_sent_campaigns') }}
+    </h4>
 
     @if (Auth::user()->customer->sentCampaigns()->count() == 0)
         <div class="empty-list">
-            <i class="icon-paperplane"></i>
+            <span class="material-icons-outlined">
+                dynamic_form
+            </span>
             <span class="line-1">
                 {{ trans('messages.no_sent_campaigns') }}
             </span>
@@ -102,11 +114,18 @@
         <div class="campaign-quickview-container" data-url="{{ action("CampaignController@quickView") }}"></div>
     @endif
 
-    <h4 class="mt-5"><i class="icon-address-book2"></i> {{ trans('messages.list_growth') }}</h4>
+    <h4 class="mt-5">
+        <span class="material-icons-outlined">
+            auto_graph
+        </span>
+        {{ trans('messages.list_growth') }}
+    </h4>
 
     @if (Auth::user()->customer->lists()->count() == 0)
         <div class="empty-list">
-            <i class="icon-address-book2"></i>
+            <span class="material-icons-outlined">
+                dynamic_form
+            </span>
             <span class="line-1">
                 {{ trans('messages.no_saved_lists') }}
             </span>
@@ -128,7 +147,9 @@
         <div class="list-quickview-container" data-url="{{ action("MailListController@quickView") }}"></div>
     @endif
 
-    <h3 class=" mt-40"><i class="icon-podium"></i> {{ trans('messages.top_5') }}</h3>
+    <h4 class="mt-5"><span class="material-icons-outlined">
+        star_half
+        </span> {{ trans('messages.top_5') }}</h3>
     <div class="tabbable">
         <ul class="nav nav-tabs nav-tabs-top">
             <li class="active text-semibold"><a href="#top-tab1" data-toggle="tab">
@@ -274,11 +295,15 @@
         </div>
     </div>
 
-    <h3 class=" mt-40"><i class="icon-history"></i> {{ trans('messages.activity_log') }}</h3>
+    <h4 class="mt-5"><span class="material-icons-outlined">
+        group_work
+    </span> {{ trans('messages.activity_log') }}</h3>
 
     @if (Auth::user()->customer->logs()->count() == 0)
         <div class="empty-list">
-            <i class="icon-history"></i>
+            <span class="material-icons-outlined">
+                dynamic_form
+            </span>
             <span class="line-1">
                 {{ trans('messages.no_activity_logs') }}
             </span>

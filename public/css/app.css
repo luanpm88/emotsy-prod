@@ -320,6 +320,8 @@ h3 {
 }
 .filter-box {
     margin-bottom: 0;
+    display: flex;
+    align-items: center;
 }
 .filter-box input.search {
     width: 250px;
@@ -330,7 +332,6 @@ h3 {
 }
 .filter-box .btn {
     font-size: 13px;
-    margin-top: -3px;
 }
 .filter-group {
     display: inline-block;
@@ -388,21 +389,6 @@ h2 [class^="icon-"] {
     color: #666;
     font-weight: normal;
     margin-top: 2px;
-}
-.radio label, .checkbox label {
-    padding-left: 35px;
-}
-.navbar-default {
-    background: rgba(240, 240, 240, 0.6);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
-}
-@media (max-width: 600px) {
-    .filter-box input.search {
-        width: 100%;
-        margin: 10px 0;
-        float: none;
-    }
 }
 .login-header {
     margin: 60px 0;
@@ -555,16 +541,15 @@ h2 [class^="icon-"] {
     height: 33px;
 }
 .filter-box .select2-selection--single:not([class*=bg-]) {
-    padding: 3px 0;
-    background: #ddd;
-    border-color: #ddd;
+    background: #fff;
+    border-color: #ccc;
 }
-.select2-selection--single .select2-selection__rendered {
-    padding-right: 32px;
-    line-height: 23px; /* equal to the inner height of the parent element - to make it vertically middle  */
+.select2-container .select2-selection--single .select2-selection__rendered {
+    padding-right: 20px;
+    color: #333;
+    line-height: inherit; /* equal to the inner height of the parent element - to make it vertically middle  */
 }
 .filter-box .checkbox.inline {
-    margin-top: 6px;
     display: block;
     float: left;
 }
@@ -1218,9 +1203,6 @@ ul.install-steps li.enabled a:hover {
 .tags_list .btn {
     margin-bottom: 10px;
     width: 200px;
-}
-.select2 {
-    height: 36px;
 }
 .notoping .switchery {
     margin-top: 0;
@@ -2152,9 +2134,6 @@ ul.modern-listing li .admin-line i {
 input.mini-input {
     width: 200px !important;
 }
-.filter-group {
-    margin-bottom: 10px;
-}
 .alert-noborder {
     border: none !important;
 }
@@ -2392,9 +2371,6 @@ a.loading, button.loading {
 }
 .list_actions {
     margin-right: 15px;
-}
-.filter-box input.search {
-    margin-top: -2px;
 }
 .navbar-nav > li > .dropdown-menu {
     margin-top: 0;
@@ -3851,6 +3827,9 @@ textarea.bulk-delete {
 .automation-header .select2-selection--single:not([class*=bg-]):not([class*=border-]) {
     height: 38px;
 }
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 30px;
+}
 .automation-header .switch-automation .select2-container--default .select2-selection--single .select2-selection__arrow {
     display: none;
 }
@@ -4060,7 +4039,6 @@ form.loading input {
 
 }
 .top-sticky-content {
-    padding-top: 10px;
     position: sticky;
     top: 53px;
     z-index: 2;
@@ -4169,7 +4147,7 @@ a.btn-link {
 }
 .empty-list .material-icons, .empty-list .material-icons-outlined {
     font-size: 80px;
-    color: #bbb;
+    color: #00314a;
 }
 .checkmark-radio {
     width: 0;

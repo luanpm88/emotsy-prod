@@ -1,0 +1,3 @@
+$(function(){
+    initJs($('body'));
+});

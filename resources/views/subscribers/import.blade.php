@@ -59,7 +59,7 @@
                     @endif
 
                     <div class="text-left">
-                        <button class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.import') }}</button>
+                        <button class="btn btn-secondary me-2"><i class="icon-check"></i> {{ trans('messages.import') }}</button>
                     </div>
                     <br />
                 </div>

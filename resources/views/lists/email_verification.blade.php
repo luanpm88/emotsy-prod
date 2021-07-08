@@ -65,7 +65,7 @@
                             ])
 
                             <div class="text-left">
-                                <button class="btn bg-teal mr-10"> {{ trans('messages.verification.button.start') }}</button>
+                                <button class="btn btn-secondary me-2"> {{ trans('messages.verification.button.start') }}</button>
                             </div>
                         </div>
                     </div>

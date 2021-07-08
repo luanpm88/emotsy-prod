@@ -39,7 +39,7 @@
                 @include('helpers.form_control', ['required' => true, 'type' => 'file', 'label' => trans('messages.upload_file'), 'name' => 'file'])
                     
                 <div class="text-right">
-                    <button class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.upload') }}</button>
+                    <button class="btn btn-secondary me-2"><i class="icon-check"></i> {{ trans('messages.upload') }}</button>
                     <a href="{{ action('Admin\TemplateController@index') }}" class="btn bg-grey-800"><i class="icon-cross2"></i> {{ trans('messages.cancel') }}</a>
                 </div>
                 

@@ -72,7 +72,7 @@
                     <h3 class="clear-both">{{trans("messages.basic_information")}}</h3>
                     @include("subscribers._form")
 
-                    <button class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
+                    <button class="btn btn-secondary me-2"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
                     <a href="{{ action('SubscriberController@index', $list->uid) }}" class="btn bg-grey-800"><i class="icon-cross2"></i> {{ trans('messages.cancel') }}</a>
 
                 </form>
@@ -98,7 +98,7 @@
                             'include_blank' => trans('messages.select_email_verification_server')
                         ])
                         <div class="text-left">
-                            <button class="btn bg-teal mr-10"> {{ trans('messages.verification.button.verify') }}</button>
+                            <button class="btn btn-secondary me-2"> {{ trans('messages.verification.button.verify') }}</button>
                         </div>
                     </form>
                 @elseif ($subscriber->emailVerification->isDeliverable())
@@ -108,7 +108,7 @@
                         <input type="hidden" name="list_uid" value="{{ $list->uid }}" />
 
                         <div class="text-left">
-                            <button class="btn bg-teal mr-10">{{ trans('messages.verification.button.reset') }}</button>
+                            <button class="btn btn-secondary me-2">{{ trans('messages.verification.button.reset') }}</button>
                         </div>
                     </form>
                 @elseif ($subscriber->emailVerification->isUndeliverable())
@@ -118,7 +118,7 @@
                         <input type="hidden" name="list_uid" value="{{ $list->uid }}" />
 
                         <div class="text-left">
-                            <button class="btn bg-teal mr-10">{{ trans('messages.verification.button.reset') }}</button>
+                            <button class="btn btn-secondary me-2">{{ trans('messages.verification.button.reset') }}</button>
                         </div>
                     </form>
                 @else
@@ -128,7 +128,7 @@
                         <input type="hidden" name="list_uid" value="{{ $list->uid }}" />
 
                         <div class="text-left">
-                            <button class="btn bg-teal mr-10">{{ trans('messages.verification.button.reset') }}</button>
+                            <button class="btn btn-secondary me-2">{{ trans('messages.verification.button.reset') }}</button>
                         </div>
                     </form>
                 @endif
