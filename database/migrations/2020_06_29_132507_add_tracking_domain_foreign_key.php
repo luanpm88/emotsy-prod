@@ -27,7 +27,7 @@ class AddTrackingDomainForeignKey extends Migration
     public function down()
     {
         Schema::table('campaigns', function (Blueprint $table) {
-            $table->dropForeign('campaigns_tracking_domain_id_foreign');
+            $table->dropForeign(['tracking_domain_id']);
         });
     }
 }

@@ -21,7 +21,7 @@ class AddSegmentForeignKeyToCampaignsTable extends Migration
     public function down()
     {
         Schema::table('campaigns', function (Blueprint $table) {
-            $table->dropForeign('campaigns_segment_id_foreign');
+            $table->dropForeign(['segment_id']);
         });
     }
 }

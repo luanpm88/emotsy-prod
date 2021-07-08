@@ -14,7 +14,7 @@ class AddEmailIdToTrackingLogsTable extends Migration
     public function up()
     {
         Schema::table('tracking_logs', function (Blueprint $table) {
-            $table->dropForeign('tracking_logs_campaign_id_foreign');
+            $table->dropForeign(['campaign_id']);
 
             $table->integer('email_id')->unsigned()->nullable();
             $table->foreign('email_id')->references('id')->on('emails')->onDelete('cascade');
