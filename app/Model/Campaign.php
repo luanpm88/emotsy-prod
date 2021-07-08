@@ -336,11 +336,12 @@ class Campaign extends Model
         $message->setTo($subscriber->email);
 
         if (!empty(Setting::get('campaign.bcc'))) {
-            $message->setBcc(Setting::get('campaign.bcc'));
+            $addresses = array_filter(preg_split( '/\s*,\s*/', Setting::get('campaign.bcc') ));
+            $message->setBcc( $addresses );
         }
 
         if (!empty(Setting::get('campaign.cc'))) {
-            $addresses = array_filter(preg_split( Setting::get('campaign.cc') ));
+            $addresses = array_filter(preg_split( '/\s*,\s*/', Setting::get('campaign.cc') ));
             $message->setCc( $addresses );
         }
 
