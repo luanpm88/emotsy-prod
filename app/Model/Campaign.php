@@ -144,7 +144,7 @@ class Campaign extends Model
         );
 
         if ($this->use_default_sending_server_from_email) {
-            $rules['from_email'] = 'email';
+            $rules['from_email'] = 'nullable|email';
         } else {
             $rules['from_email'] = 'required|email';
         }

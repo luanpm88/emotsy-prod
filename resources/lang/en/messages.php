@@ -3690,4 +3690,5 @@
   'plan.save_error' => 'Can not save plan. Error: :error',
   'plan.vat' => 'VAT',
   'mail_mailer' => 'Mailer',
+  'plan.cant_show' => 'This plan can not be showed. Check the error message.',
 ) ?>

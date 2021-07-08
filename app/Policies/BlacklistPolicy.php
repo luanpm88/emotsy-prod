@@ -60,10 +60,10 @@ class BlacklistPolicy
         switch ($role) {
             case 'admin':
                 $ability = $user->admin->getPermission('report_blacklist');
-                $can = $ability == 'yes' && !$user->admin->getActiveImportBlacklistJobs()->count();
+                $can = $ability == 'yes';
                 break;
             case 'customer':
-                $can = $user->customer->getActiveImportBlacklistJobs()->count() == 0;
+                $can = true;
                 break;
         }
 
@@ -78,7 +78,7 @@ class BlacklistPolicy
                 $can = $ability == 'yes';
                 break;
             case 'customer':
-                $can = $user->customer->getActiveImportBlacklistJobs()->count();
+                $can = true;
                 break;
         }
 

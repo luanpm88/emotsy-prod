@@ -63,7 +63,8 @@ class TriggerAutomation
 
         foreach ($automations as $auto) {
             if (is_null($auto->getAutoTriggerFor($event->subscriber))) {
-                $auto->initTrigger($event->subscriber);
+                $forceTriggerUnsubscribedContact = true;
+                $auto->initTrigger($event->subscriber, $forceTriggerUnsubscribedContact);
             }
         }
     }
