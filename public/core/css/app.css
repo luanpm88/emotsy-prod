@@ -1,0 +1,72 @@
+*:focus {
+    outline: none;
+}
+body {
+    padding-top: 4rem;
+    font-family: "Open Sans","Helvetica Neue",Arial,Helvetica,Verdana,sans-serif;
+    font-size: 0.95rem;
+}
+h1, h1 {
+    font-size: 2rem;
+}
+h2, h2 {
+    font-size: 1.9rem;
+}
+h3, h3 {
+    font-size: 1.7rem;
+}
+h4, h4 {
+    font-size: 1.45rem;
+}
+.logo {
+    height: 18px;
+}
+.navbar-main .navbar-brand {
+    min-height: 50px;
+}
+.navbar-main {
+    background-color: rgba(0, 25, 39, 0.75)!important;
+    border-color: rgba(55,71,79,0.7);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+}
+.navbar-main .navbar-nav .nav-link, .navbar-main .navbar-nav .nav-link:hover {
+    color: #fff;
+}
+.navbar-icon {
+    display: flex;
+    align-items: center;
+    margin-right: 0.8em;
+}
+.navbar-icon {
+    width: 1.3rem;
+    display: flex;
+    justify-content: center;
+}
+.navbar-icon img {
+    width: 1.2rem;
+    height: 1.2rem;
+}
+
+.navbar-main .nav-item, .navbar-main .nav-item .dropdown-menu {
+    font-size: 0.80rem;
+}
+.navbar-main .nav-item .dropdown-item {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+.navbar-main .nav-item .dropdown-item:active {
+    background-color: rgba(0, 26, 44, 0.14);
+    color: inherit;
+}
+.navbar-main .navbar-nav .lvl-1 {
+    padding-left: 1.2em;
+    padding-right: 1.2em;
+}
+.navbar-main .navbar-nav .nav-item:hover .lvl-1 {
+    background-color: rgba(0,0,0,.1);
+    color: #fff;
+}
+.fw-600 {
+    font-weight: 600;
+}
