@@ -15,7 +15,7 @@ class UpdateAutoTriggersTable extends Migration
     {
         try {
             Schema::table('auto_triggers', function (Blueprint $table) {
-                $table->dropForeign('auto_triggers_auto_event_id_foreign');
+                $table->dropForeign(['auto_event_id']);
                 $table->dropColumn('auto_event_id');
             });
         } catch (\Exception $ex) {

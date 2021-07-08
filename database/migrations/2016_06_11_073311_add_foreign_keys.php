@@ -26,12 +26,12 @@ class AddForeignKeys extends Migration
     public function down()
     {
         Schema::table('mail_lists', function (Blueprint $table) {
-            $table->dropForeign('mail_lists_contact_id_foreign');
-            $table->dropForeign('mail_lists_customer_id_foreign');
+            $table->dropForeign(['contact_id']);
+            $table->dropForeign(['customer_id']);
         });
 
         Schema::table('contacts', function (Blueprint $table) {
-            $table->dropForeign('contacts_country_id_foreign');
+            $table->dropForeign(['country_id']);
         });
     }
 }

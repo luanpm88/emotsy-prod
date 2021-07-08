@@ -27,7 +27,7 @@ class AddTrackingDomainIdToEmails extends Migration
     public function down()
     {
         Schema::table('emails', function (Blueprint $table) {
-            $table->dropForeign('emails_tracking_domain_id_foreign');
+            $table->dropForeign(['tracking_domain_id']);
             $table->dropColumn('tracking_domain_id');
         });
     }

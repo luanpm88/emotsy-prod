@@ -13,10 +13,10 @@ class DeleteListSegmnetColsFormCampaigns extends Migration
     public function up()
     {
         Schema::table('campaigns', function (Blueprint $table) {
-            $table->dropForeign('campaigns_mail_list_id_foreign');
+            $table->dropForeign(['mail_list_id']);
             $table->dropColumn('mail_list_id');
             
-            $table->dropForeign('campaigns_segment_id_foreign');
+            $table->dropForeign(['segment_id']);
             $table->dropColumn('segment_id');
         });
     }
