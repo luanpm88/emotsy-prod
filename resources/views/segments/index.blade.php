@@ -68,7 +68,9 @@ sort
 						</div>
 						<div class="col-md-2 text-end">
 							<a href="{{ action("SegmentController@create", $list->uid) }}" role="button" class="btn btn-secondary">
-								<i class="icon icon-plus2"></i> {{ trans('messages.create_segment') }}
+								<span class="material-icons-round">
+add
+</span> {{ trans('messages.create_segment') }}
 							</a>
 						</div>
 					</div>

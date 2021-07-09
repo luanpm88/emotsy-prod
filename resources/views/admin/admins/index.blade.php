@@ -65,7 +65,9 @@ sort
 						@can('create', new Acelle\Model\Admin())
 							<div class="col-md-2 text-end">
 								<a href="{{ action("Admin\AdminController@create") }}" role="button" class="btn btn-secondary">
-									<i class="icon icon-plus2"></i> {{ trans('messages.create_admin') }}
+									<span class="material-icons-round">
+add
+</span> {{ trans('messages.create_admin') }}
 								</a>
 							</div>
 						@endcan

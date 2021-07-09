@@ -70,7 +70,9 @@ sort
                     <a href="{{ action("Admin\SubscriptionController@create") }}" role="button"
                         class="btn btn-secondary modal-action new-subscription"
                     >
-                        <i class="icon icon-plus2"></i> {{ trans('messages.subscription.new') }}
+                        <span class="material-icons-round">
+add
+</span> {{ trans('messages.subscription.new') }}
                     </a>
                 </div>
             @endif

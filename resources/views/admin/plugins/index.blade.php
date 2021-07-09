@@ -53,7 +53,9 @@
 			</div>
 			<div class="col-md-2 text-end">
 				<a href="{{ action("Admin\PluginController@install") }}" role="button" class="btn btn-secondary">
-					<i class="icon icon-plus2"></i> {{ trans('messages.install_plugin') }}
+					<span class="material-icons-round">
+add
+</span> {{ trans('messages.install_plugin') }}
 				</a>
 			</div>
 		</div>

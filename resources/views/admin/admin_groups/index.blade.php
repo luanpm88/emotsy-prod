@@ -55,7 +55,9 @@ sort
             @can('create', new Acelle\Model\AdminGroup())
                 <div class="col-md-2 text-end">
                     <a href="{{ action("Admin\AdminGroupController@create") }}" role="button" class="btn btn-secondary">
-                        <i class="icon icon-plus2"></i> {{ trans('messages.create_admin_group') }}
+                        <span class="material-icons-round">
+add
+</span> {{ trans('messages.create_admin_group') }}
                     </a>
                 </div>
             @endcan

@@ -75,7 +75,9 @@ sort
 						@can('create', new Acelle\Model\Currency())
 							<div class="col-md-2 text-end">
 								<a href="{{ action("Admin\CurrencyController@create") }}" role="button" class="btn btn-secondary">
-									<i class="icon icon-plus2"></i> {{ trans('messages.create_currency') }}
+									<span class="material-icons-round">
+add
+</span> {{ trans('messages.create_currency') }}
 								</a>
 							</div>
 						@endcan

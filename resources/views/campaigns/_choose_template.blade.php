@@ -84,7 +84,9 @@ sort
                 </div>
                 <div class="col-md-3 text-end">
                     <a target="_blank" href="{{ action('TemplateController@uploadTemplate') }}" role="button" class="btn btn-secondary">
-                        <i class="icon icon-upload"></i> {{ trans('messages.upload_template') }}
+                        <span class="material-icons-outlined">
+file_upload
+</span> {{ trans('messages.upload_template') }}
                     </a>
                 </div>
             </div>
@@ -142,7 +144,9 @@ sort
                 </div>
                 <div class="col-md-3 text-end">
                     <a target="_blank" href="{{ action('TemplateController@uploadTemplate') }}" role="button" class="btn btn-secondary">
-                        <i class="icon icon-upload"></i> {{ trans('messages.upload_template') }}
+                        <span class="material-icons-outlined">
+file_upload
+</span> {{ trans('messages.upload_template') }}
                     </a>
                 </div>
             </div>

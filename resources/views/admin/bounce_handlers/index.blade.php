@@ -71,7 +71,9 @@ sort
             @can('create', new Acelle\Model\BounceHandler())
                 <div class="col-md-3 text-end">
                     <a href="{{ action('Admin\BounceHandlerController@create') }}" role="button" class="btn btn-secondary">
-                        <i class="icon icon-plus2"></i> {{ trans('messages.create_bounce_handler') }}
+                        <span class="material-icons-round">
+add
+</span> {{ trans('messages.create_bounce_handler') }}
                     </a>
                 </div>
             @endcan

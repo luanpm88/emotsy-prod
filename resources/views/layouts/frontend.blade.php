@@ -128,13 +128,50 @@
 						</ul>
 					</li>
 				</ul>
+				{{-- <a class="dropdown-toggle" data-toggle="dropdown">
+					<img src="{{ Auth::user()->getProfileImageUrl() }}" alt="">
+					<span>{{ Auth::user()->displayName() }}</span>
+					<i class="caret"></i>
+
+					@if (Auth::user()->customer->hasSubscriptionNotice())
+						<i class="material-icons customer-warning-icon text-danger">info</i>
+					@endif
+				</a> --}}
 				<div class="navbar-right">
-					
+					<ul class="navbar-nav me-auto mb-md-0">
+						@include('layouts._top_activity_log')
+						<li class="nav-item dropdown">
+							<a href="{{ action('TemplateController@index') }}" class="nav-link d-flex align-items-center py-3 lvl-1 dropdown-toggle" id="content-menu" data-bs-toggle="dropdown" aria-expanded="false">
+								<i class="navbar-icon">
+									<img src="{{ Auth::user()->getProfileImageUrl() }}" style="border-radius:100%;transform:scale(1.5)" alt="">
+								</i>
+								<span>{{ Auth::user()->displayName() }}</span>
+							</a>
+							<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="content-menu">
+								<li>
+									<a class="dropdown-item d-flex align-items-center" href="{{ action('ProductController@index') }}">
+										<i class="navbar-icon" style="">
+											<img src="{{ url('images/icons/'.$iconDir.'SVG/product-icon.svg') }}" />
+										</i>
+										<span>{{ trans('messages.products') }}</span>
+									</a>
+								</li>
+								<li>
+									<a class="dropdown-item d-flex align-items-center" href="{{ action('SourceController@index') }}">
+										<i class="navbar-icon" style="">
+											<img style="width: 18px" src="{{ url('images/icons/'.$iconDir.'SVG/store.svg') }}" />
+										</i>
+										<span>{{ trans('messages.stores_connections') }}</span>
+									</a>
+								</li>
+							</ul>
+						</li>
+					</ul>
 				</div>
 			</div>
 		</div>
 	</nav>
-	<main class="container">
+	<main class="container page-container px-3">
 		@yield('page_header')
 
 		<!-- display flash message -->

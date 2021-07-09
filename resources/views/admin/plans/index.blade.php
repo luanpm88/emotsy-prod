@@ -118,7 +118,9 @@
             @can('create', new Acelle\Model\Plan())
                 <div class="col-md-2 text-end">
                     <a href="{{ action("Admin\PlanController@wizard") }}" role="button" class="btn btn-secondary modal-action">
-                        <i class="icon icon-plus2"></i> {{ trans('messages.create_plan') }}
+                        <span class="material-icons-round">
+add
+</span> {{ trans('messages.create_plan') }}
                     </a>
                 </div>
             @endcan

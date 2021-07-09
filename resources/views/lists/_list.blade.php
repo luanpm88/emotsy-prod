@@ -1,5 +1,5 @@
 @if ($lists->count() > 0)
-	<table class="table table-box pml-table"
+	<table class="table table-box pml-table border-top"
 		current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
 	>
 		@foreach ($lists as $key => $item)
@@ -17,7 +17,7 @@
 					</div>
 				</td>
 				<td>
-					<h5 class="m-0 text-bold">
+					<h5 class="mt-0 mb-1 fw-600">
 						<a class="kq_search" href="{{ action('MailListController@overview', ['uid' => $item->uid]) }}">{{ $item->name }}</a>
 					</h5>
 					<span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
@@ -30,10 +30,9 @@ error_outline
 				<td class="stat-fix-size-sm">
 					<div class="d-flex">
 						<div class="single-stat-box pull-left">
-							<a href="{{ action('SubscriberController@index', $item->uid) }}">
-								<span class="no-margin stat-num">{{ number_with_delimiter($item->readCache('SubscriberCount', 0)) }}</span>
+							<a href="{{ action('SubscriberController@index', $item->uid) }}" class="d-block">
+								<span class="stat-num mt-0 mb-1">{{ number_with_delimiter($item->readCache('SubscriberCount', 0)) }}</span>
 							</a>
-							<br />
 							<span class="text-muted">{{ trans("messages." . Acelle\Library\Tool::getPluralPrase('subscriber', $item->readCache('SubscriberCount', 0))) }}</span>
 						</div>
 						<div class="single-stat-box pull-left ml-20">
@@ -42,7 +41,7 @@ error_outline
 								<div class="progress-bar progress-bar-info" style="width: {{ $item->readCache('UniqOpenRate', 0) }}%">
 								</div>
 							</div>
-							<span class="text-muted">{{ trans('messages.open_rate') }}</span>
+							<span class="text-muted small">{{ trans('messages.open_rate') }}</span>
 						</div>
 						<div class="single-stat-box pull-left ml-20">
 							<span class="no-margin text-teal-800 stat-num">{{ $item->readCache('ClickedRate', 0) }}%</span>
@@ -50,86 +49,86 @@ error_outline
 								<div class="progress-bar progress-bar-info" style="width: {{ $item->readCache('ClickedRate', 0) }}%">
 								</div>
 							</div>
-							<span class="text-muted">{{ trans('messages.click_rate') }}</span>
+							<span class="text-muted small">{{ trans('messages.click_rate') }}</span>
 						</div>
 					</div>
 				</td>
-				<td class="text-end">
-					<div class="btn-groupx" role="group">
+				<td class="text-end pe-0">
+					<div class="d-flex align-items-center text-nowrap justify-content-end" role="group">
 						<a href="{{ action('SubscriberController@create', $item->uid) }}" data-popup="tooltip"
-							title="{{ trans('messages.create_subscriber') }}" role="button" class="btn btn-primary btn-icon">
+							title="{{ trans('messages.create_subscriber') }}" role="button" class="btn btn-secondary btn-icon me-1">
 							<span class="material-icons-outlined">
 								person_add
 							</span>
 						</a>
-						<a href="{{ action('MailListController@overview', $item->uid) }}" role="button" class="btn btn-outline-secondary">
+						<a href="{{ action('MailListController@overview', $item->uid) }}" role="button" class="btn btn-primary me-1">
 							<span class="material-icons-outlined">
 								multiline_chart
 							</span> {{ trans('messages.list.overview_statistics') }}
 						</a>
 						<div class="btn-group" role="group">
-							<button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary btn-icon dropdown-toggle ps-2"  data-bs-toggle="dropdown" aria-expanded="false">
+							<button id="btnGroupDrop1" type="button" class="btn btn-light btn-icon dropdown-toggle ps-2"  data-bs-toggle="dropdown" aria-expanded="false">
 									
 							</button>
 							<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="btnGroupDrop1">
 								<li>
 									<a class="dropdown-item" href="{{ action('SubscriberController@index', $item->uid) }}">
-										<span class="material-icons-outlined me-1">
+										<span class="material-icons-outlined me-2">
 											people
 										</span> {{ trans("messages.subscribers") }}
 									</a>
 								</li>
 								<li>
 									<a class="dropdown-item" href="{{ action('SegmentController@index', $item->uid) }}">
-										<span class="material-icons-outlined me-1">
+										<span class="material-icons-outlined me-2">
 											library_add_check
 										</span> {{ trans('messages.segments') }}
 									</a>
 								</li>
 								<li>
 									<a class="dropdown-item" href="{{ action('MailListController@embeddedForm', $item->uid) }}">
-										<span class="material-icons-outlined me-1">
+										<span class="material-icons-outlined me-2">
 											dns
 										</span> {{ trans('messages.Embedded_form') }}
 									</a>
 								</li>
 								<li>
 									<a class="dropdown-item" href="{{ action('PageController@update', ['list_uid' => $item->uid, 'alias' => 'sign_up_form']) }}">
-										<span class="material-icons-outlined mr-1">
+										<span class="material-icons-outlined me-2">
 											web
 										</span> {{ trans('messages.custom_forms_and_emails') }}
 									</a>
 								</li>
 								<li>
 									<a class="dropdown-item" href="{{ action('FieldController@index', $item->uid) }}">
-										<span class="material-icons-outlined mr-1">
+										<span class="material-icons-outlined me-2">
 											view_day
 										</span> {{ trans('messages.manage_list_fields') }}
 									</a>
 								</li>
 								<li><a class="dropdown-item" href="{{ action('MailListController@verification', $item->uid) }}">
-									<span class="material-icons-outlined mr-1">
+									<span class="material-icons-outlined me-2">
 										gpp_good
 									</span> {{ trans("messages.email_verification") }}</a></li>
 								<li><a class="dropdown-item" href="{{ action('MailListController@edit', $item->uid) }}">
-									<span class="material-icons-outlined mr-1">
+									<span class="material-icons-outlined me-2">
 										edit
 									</span> {{ trans("messages.edit_list") }}</a></li>
 								@if (\Auth::user()->can('import', $item))
 									<li><a class="dropdown-item" href="{{ action('SubscriberController@import', $item->uid) }}">
-										<span class="material-icons-outlined mr-1">
+										<span class="material-icons-outlined me-2">
 											drive_folder_upload
 										</span> {{ trans('messages.import') }}</a></li>
 								@endif
 								@if (\Auth::user()->can('export', $item))
 									<li><a class="dropdown-item" href="{{ action('SubscriberController@export', $item->uid) }}">
-										<span class="material-icons-outlined mr-1">
+										<span class="material-icons-outlined me-2">
 											downloading
 										</span> {{ trans('messages.export') }}</a></li>
 								@endif
 								<li>
 									<a class="dropdown-item" data-uid="{{ $item->uid }}" data-name="{{ trans("messages.copy_of_list", ['name' => $item->name]) }}" class="copy-list-link">
-										<span class="material-icons-outlined mr-1">
+										<span class="material-icons-outlined me-2">
 											copy_all
 										</span> {{ trans('messages.copy') }}
 									</a>
@@ -140,7 +139,7 @@ error_outline
 											href="{{ action('MailListController@cloneForCustomersChoose', $item->uid) }}"
 											class="clone-for-users"
 										>
-										<span class="material-icons-outlined mr-1">
+										<span class="material-icons-outlined me-2">
 											control_point_duplicate
 										</span> {{ trans('messages.list.clone_for_other_users') }}
 										</a>
@@ -148,7 +147,7 @@ error_outline
 								@endif
 								<li>
 									<a class="dropdown-item" list-delete-confirm="{{ action('MailListController@deleteConfirm', ['uids' => $item->uid]) }}" href="{{ action('MailListController@delete', ['uids' => $item->uid]) }}">
-										<span class="material-icons-outlined mr-1">
+										<span class="material-icons-outlined me-2">
 											delete
 										</span> {{ trans('messages.delete') }}
 									</a>

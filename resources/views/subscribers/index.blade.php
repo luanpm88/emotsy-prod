@@ -168,7 +168,9 @@
 			</div>
 			<div class="col-md-2 text-end">
 				<a href="{{ action("SubscriberController@create", $list->uid) }}" role="button" class="btn btn-secondary">
-					<i class="icon icon-plus2"></i> {{ trans('messages.create_subscriber') }}
+					<span class="material-icons-round">
+add
+</span> {{ trans('messages.create_subscriber') }}
 				</a>
 			</div>
 		</div>

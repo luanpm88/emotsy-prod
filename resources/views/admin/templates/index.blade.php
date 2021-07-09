@@ -76,10 +76,14 @@ sort
 						</div>
 						<div class="col-md-3 text-end d-flex align-items-center">
 							<a href="{{ action('Admin\TemplateController@uploadTemplate') }}" class="btn btn-secondary mr-2 ml-auto">
-								<i class="icon icon-upload"></i> {{ trans('messages.upload') }}
+								<span class="material-icons-outlined">
+file_upload
+</span> {{ trans('messages.upload') }}
 							</a>
 							<a href="{{ action('Admin\TemplateController@builderCreate') }}" class="btn btn-secondary">
-								<i class="icon icon-plus2"></i> {{ trans('messages.create') }}
+								<span class="material-icons-round">
+add
+</span> {{ trans('messages.create') }}
 							</a>
 						</div>
 					</div>

@@ -80,7 +80,9 @@ sort
             </div>
             <div class="col-md-2 text-end">
                 <a href="{{ action("Automation2Controller@create") }}" role="button" class="btn btn-secondary create-automation2">
-                    <i class="icon icon-plus2"></i> {{ trans('messages.automation.create') }}
+                    <span class="material-icons-round">
+add
+</span> {{ trans('messages.automation.create') }}
                 </a>
             </div>
         </div>

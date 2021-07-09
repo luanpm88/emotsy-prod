@@ -83,7 +83,9 @@ sort
             @if (Auth::user()->customer->can('create', new Acelle\Model\SendingDomain()))
                 <div class="col-md-3 text-end">
                     <a href="{{ action('SendingDomainController@create') }}" role="button" class="btn btn-secondary">
-                        <i class="icon icon-plus2"></i> {{ trans('messages.create_sending_domain') }}
+                        <span class="material-icons-round">
+add
+</span> {{ trans('messages.create_sending_domain') }}
                     </a>
                 </div>
             @endif

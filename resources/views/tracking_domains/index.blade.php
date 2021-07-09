@@ -73,7 +73,9 @@
             @if (Auth::user()->customer->can('create', new Acelle\Model\TrackingDomain()))
                 <div class="col-md-3 text-end">
                     <a href="{{ action('TrackingDomainController@create') }}" role="button" class="btn btn-secondary">
-                        <i class="icon icon-plus2"></i> {{ trans('messages.tracking_domain.create') }}
+                        <span class="material-icons-round">
+add
+</span> {{ trans('messages.tracking_domain.create') }}
                     </a>
                 </div>
             @endif
