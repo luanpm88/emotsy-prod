@@ -123,7 +123,7 @@
             </div>
         </div>
         
-        <div class="text-right mt-5 {{ Auth::user()->customer->allowUnverifiedFromEmailAddress() ? '' : 'unverified_next_but' }}">
+        <div class="text-end mt-5 {{ Auth::user()->customer->allowUnverifiedFromEmailAddress() ? '' : 'unverified_next_but' }}">
             <button class="btn btn-secondary">
                 <span class="d-flex align-items-center">
                     <span>{{ trans('messages.email.setup.save_next') }}</span> <i class="material-icons">keyboard_arrow_right</i>

@@ -19,7 +19,7 @@
                     {{ $identity['name'] }}
                 </td>
                 <td>{{ $identity['value'] }}</td>
-                <td class="text-right" width="1%">
+                <td class="text-end" width="1%">
                     @if ($domain->domainVerified())
                         <span class="text-muted2 list-status pull-left">
                             <span class="label label-flat bg-active">{{ trans('messages.sending_domain.verified') }}</span>
@@ -44,7 +44,7 @@
                 {{ $dkim['name'] }}
             </td>
             <td width="60%" style="word-wrap:break-word;word-break:break-all;">{{ $dkim['value'] }}</td>
-            <td class="text-right">
+            <td class="text-end">
                 @if ($domain->dkimVerified())
                     <span class="text-muted2 list-status pull-left">
                         <span class="label label-flat bg-active">{{ trans('messages.sending_domain.verified') }}</span>
@@ -70,7 +70,7 @@
                     {{ $r['name'] }}
                 </td>
                 <td>{{ $r['value'] }}</td>
-                <td class="text-right">
+                <td class="text-end">
                     @if ($domain->spfVerified())
                         <span class="text-muted2 list-status pull-left">
                             <span class="label label-flat bg-active">{{ trans('messages.sending_domain.verified') }}</span>

@@ -1,7 +1,7 @@
 @if (count($errors) > 0)
     <!-- Form Error List -->
     <div class="alert alert-danger alert-noborder">
-        <button data-dismiss="alert" class="close" type="button"><span>×</span><span class="sr-only">Close</span></button>
+        <button data-dismiss="alert" class="close" role="button"><span>×</span><span class="sr-only">Close</span></button>
         <strong>{{ trans('messages.check_entry_try_again') }}</strong>
 
         <br><br>
@@ -24,7 +24,7 @@
     @if(Session::has('alert-' . $msg))
         <!-- Form Error List -->
         <div class="alert alert-{{ $class }} alert-noborder">
-            <button data-dismiss="alert" class="close" type="button"><span>×</span><span class="sr-only">Close</span></button>
+            <button data-dismiss="alert" class="close" role="button"><span>×</span><span class="sr-only">Close</span></button>
             <strong>{{ trans('messages.' . $msg) }}</strong>
 
             <br>

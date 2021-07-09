@@ -4,7 +4,7 @@
 			<div class="modal-content">
 				<form class="confirm-link-form" onkeypress="return event.keyCode != 13;">
 					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<button role="button" class="close" data-dismiss="modal">&times;</button>
 						<h4 class="modal-title">{{ trans('messages.are_you_sure') }}</h4>
 					</div>
 
@@ -15,7 +15,7 @@
 					</div>
 
 					<div class="modal-footer">
-						<button type="button" class="btn btn-mc_inline" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
+						<button role="button" class="btn btn-mc_inline" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
 						<a class="btn btn-mc_primary link-confirm-button">{{ trans('messages.ok') }}</a>
 					</div>
 				</form>
@@ -24,14 +24,14 @@
 	</div>
 	<!-- /basic modal -->
 
-    <a style="display: none" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#delete_confirm_model">aa</a>
+    <a style="display: none" role="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#delete_confirm_model">aa</a>
 	<!-- Basic modal -->
 	<div id="delete_confirm_model" class="modal fade new-modal">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<form class="confirm-delete-form form-validate-jquery" onkeypress="return event.keyCode != 13;">
 					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<button role="button" class="close" data-dismiss="modal">&times;</button>
 						<h4 class="modal-title">{{ trans('messages.are_you_sure') }}</h4>
 					</div>
 
@@ -47,7 +47,7 @@
 					</div>
 
 					<div class="modal-footer">
-						<button type="button" class="btn btn-link" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
+						<button role="button" class="btn btn-link" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
 						<a class="btn btn-danger bg-grey delete-confirm-button ajax_link">{{ trans('messages.delete') }}</a>
 					</div>
 				</form>
@@ -56,14 +56,14 @@
 	</div>
 	<!-- /basic modal -->
 
-	<a style="display: none" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#link_confirm_model">Open modal</a>
+	<a style="display: none" role="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#link_confirm_model">Open modal</a>
 	<!-- Basic modal -->
 	<div id="link_confirm_model" class="modal mc-modal fade">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<form class="confirm-link-form" onkeypress="return event.keyCode != 13;">
 					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<button role="button" class="close" data-dismiss="modal">&times;</button>
 						<h4 class="modal-title">{{ trans('messages.are_you_sure') }}</h4>
 					</div>
 
@@ -74,7 +74,7 @@
 					</div>
 
 					<div class="modal-footer">
-						<button type="button" class="btn btn-mc_inline" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
+						<button role="button" class="btn btn-mc_inline" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
 						<a class="btn btn-mc_primary link-confirm-button ajax_link">{{ trans('messages.confirm') }}</a>
 					</div>
 				</form>
@@ -83,14 +83,14 @@
 	</div>
 	<!-- /basic modal -->
 
-	<a style="display: none" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#list_delete_confirm_model">aa</a>
+	<a style="display: none" role="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#list_delete_confirm_model">aa</a>
 	<!-- Basic modal -->
 	<div id="list_delete_confirm_model" class="modal fade new-modal">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<form class="list-confirm-delete-form form-validate-jquery" onkeypress="return event.keyCode != 13;">
 					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<button role="button" class="close" data-dismiss="modal">&times;</button>
 						<h4 class="modal-title">{{ trans('messages.are_you_sure') }}</h4>
 					</div>
 
@@ -108,7 +108,7 @@
 					</div>
 
 					<div class="modal-footer">
-						<button type="button" class="btn btn-link" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
+						<button role="button" class="btn btn-link" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
 						<a class="btn btn-danger bg-grey list-delete-confirm-button ajax_link">{{ trans('messages.delete') }}</a>
 					</div>
 				</form>
@@ -117,7 +117,7 @@
 	</div>
 	<!-- /basic modal -->
 
-	<a style="display: none" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#quota_modal"></a>
+	<a style="display: none" role="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#quota_modal"></a>
 	<!-- Basic modal -->
 	<div id="quota_modal" class="modal fade">
 		<div class="modal-dialog">
@@ -128,20 +128,20 @@
 
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">{{ trans('messages.close') }}</button>
+					<button role="button" class="btn btn-default" data-dismiss="modal">{{ trans('messages.close') }}</button>
 				</div>
 			</div>
 		</div>
 	</div>
 	<!-- /basic modal -->
 
-	<a style="display: none" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#copy_list"></a>
+	<a style="display: none" role="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#copy_list"></a>
 	<!-- Basic modal -->
 	<div id="copy_list" class="modal fade new-modal">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<button role="button" class="close" data-dismiss="modal">&times;</button>
 					<h4 class="modal-title">{{ trans('messages.name_new_list') }}</h4>
 				</div>
 				<form action="{{ action('MailListController@copy') }}" method="POST" class="ajax_copy_list_form form-validate-jqueryz">
@@ -162,9 +162,9 @@
 						])
 
 
-						<div class="text-right">
+						<div class="text-end">
 							<button type="submit" class="btn btn-info bg-teal-600 mr-5">{{ trans('messages.copy') }}</button>
-							<button type="button" class="btn btn-default ml-0 copy-list-close" data-dismiss="modal">{{ trans('messages.close') }}</button>
+							<button role="button" class="btn btn-default ml-0 copy-list-close" data-dismiss="modal">{{ trans('messages.close') }}</button>
 						</div>
 
 					</div>
@@ -247,13 +247,13 @@
         @include('layouts._license_notify')
 	</div>
 
-	<a style="display: none" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#copy_campaign"></a>
+	<a style="display: none" role="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#copy_campaign"></a>
 	<!-- Basic modal -->
 	<div id="copy_campaign" class="modal fade new-modal">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<button role="button" class="close" data-dismiss="modal">&times;</button>
 					<h4 class="modal-title">{{ trans('messages.name_new_campaign') }}</h4>
 				</div>
 				<form action="{{ action('CampaignController@copy') }}" method="POST" class="ajax_copy_campaign_form form-validate-jquery">
@@ -274,9 +274,9 @@
 						])
 
 
-						<div class="text-right">
+						<div class="text-end">
 							<button type="submit" class="btn btn-info bg-teal-600 mr-5">{{ trans('messages.copy') }}</button>
-							<button type="button" class="btn btn-default ml-0 copy-campaign-close" data-dismiss="modal">{{ trans('messages.close') }}</button>
+							<button role="button" class="btn btn-default ml-0 copy-campaign-close" data-dismiss="modal">{{ trans('messages.close') }}</button>
 						</div>
 
 					</div>
@@ -287,12 +287,12 @@
 	</div>
 	<!-- /basic modal -->
 
-	<a style="display: none" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#send_a_test_email"></a>
+	<a style="display: none" role="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#send_a_test_email"></a>
 	<!-- Basic modal send a test email -->
 	<div id="send_a_test_email" class="modal fade new-modal">
 		<div class="modal-dialog">
 			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<button role="button" class="close" data-dismiss="modal">&times;</button>
 				<h4 class="modal-title">{{ trans('messages.send_a_test_email') }}</h4>
 			</div>
 			<div class="modal-content">
@@ -315,9 +315,9 @@
 						])
 
 
-						<div class="text-right">
+						<div class="text-end">
 							<button type="submit" class="btn btn-info bg-teal-600 mr-5"><i class="icon-paperplane ml-5"></i> {{ trans('messages.send') }}</button>
-							<button type="button" class="btn btn-default ml-0 copy-campaign-close" data-dismiss="modal">{{ trans('messages.close') }}</button>
+							<button role="button" class="btn btn-default ml-0 copy-campaign-close" data-dismiss="modal">{{ trans('messages.close') }}</button>
 						</div>
 
 					</div>
@@ -334,7 +334,7 @@
 			<div class="modal-content">
 				<form class="confirm-link-form" onkeypress="return event.keyCode != 13;">
 					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<button role="button" class="close" data-dismiss="modal">&times;</button>
 						<h4 class="modal-title">{{ trans('messages.are_you_sure') }}</h4>
 					</div>
 
@@ -345,7 +345,7 @@
 					</div>
 
 					<div class="modal-footer">
-						<button type="button" class="btn btn-link" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
+						<button role="button" class="btn btn-link" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
 						<a class="btn btn-danger bg-grey auto-campaign-delete-confirmed">{{ trans('messages.confirm') }}</a>
 					</div>
 				</form>
@@ -360,7 +360,7 @@
 			<div class="modal-content">
 				<form class="confirm-link-form" onkeypress="return event.keyCode != 13;">
 					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<button role="button" class="close" data-dismiss="modal">&times;</button>
 						<h4 class="modal-title">{{ trans('messages.are_you_sure') }}</h4>
 					</div>
 
@@ -371,7 +371,7 @@
 					</div>
 
 					<div class="modal-footer">
-						<button type="button" class="btn btn-link" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
+						<button role="button" class="btn btn-link" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
 						<a class="btn btn-danger bg-grey auto-event-delete-confirmed">{{ trans('messages.confirm') }}</a>
 					</div>
 				</form>
@@ -380,7 +380,7 @@
 	</div>
 	<!-- /basic modal -->
 
-	<a style="display: none" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#full_modal"></a>
+	<a style="display: none" role="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#full_modal"></a>
 	<!-- Basic modal -->
 	<div id="full_modal" class="modal fade">
 		<div class="modal-dialog modal-full width100">
@@ -391,7 +391,7 @@
 
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">{{ trans('messages.close') }}</button>
+					<button role="button" class="btn btn-default" data-dismiss="modal">{{ trans('messages.close') }}</button>
 				</div>
 			</div>
 		</div>
@@ -402,7 +402,7 @@
 	<div id="list-form-modal" class="modal fade list-form-modal">
 		<div class="modal-dialog modal-md">
 			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<button role="button" class="close" data-dismiss="modal">&times;</button>
 				<h4 class="modal-title">{{ trans('messages.are_you_sure') }}</h4>
 			</div>
 			<div class="modal-content">
@@ -424,7 +424,7 @@
 						])
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">{{ trans('messages.close') }}</button>
+						<button role="button" class="btn btn-default" data-dismiss="modal">{{ trans('messages.close') }}</button>
 						<button type="submit" class="btn btn-primary bg-teal">{{ trans('messages.submit') }}</button>
 					</div>
 				</form>
@@ -437,7 +437,7 @@
 	<div id="paid-form-modal" class="modal fade list-form-modal new-modal">
 		<div class="modal-dialog modal-md">
 			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<button role="button" class="close" data-dismiss="modal">&times;</button>
 				<h4 class="modal-title">{{ trans('messages.are_you_sure') }}</h4>
 			</div>
 			<div class="modal-content">
@@ -477,7 +477,7 @@
 						])
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">{{ trans('messages.close') }}</button>
+						<button role="button" class="btn btn-default" data-dismiss="modal">{{ trans('messages.close') }}</button>
 						<button type="submit" class="btn btn-primary bg-teal">{{ trans('messages.submit') }}</button>
 					</div>
 				</form>
@@ -487,13 +487,13 @@
 	<!-- /basic modal -->
 
 
-  <a style="display: none" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#copy_plan"></a>
+  <a style="display: none" role="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#copy_plan"></a>
   <!-- Basic modal -->
   <div id="copy_plan" class="modal fade new-modal">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <button role="button" class="close" data-dismiss="modal">&times;</button>
           <h4 class="modal-title">{{ trans('messages.name_new_plan') }}</h4>
         </div>
         <form action="{{ action('Admin\PlanController@copy') }}" method="POST" class="ajax_copy_plan_form form-validate-jquery">
@@ -514,9 +514,9 @@
             ])
 
 
-            <div class="text-right">
+            <div class="text-end">
               <button type="submit" class="btn btn-info bg-teal-600 mr-5">{{ trans('messages.copy') }}</button>
-              <button type="button" class="btn btn-default ml-0 copy-plan-close" data-dismiss="modal">{{ trans('messages.close') }}</button>
+              <button role="button" class="btn btn-default ml-0 copy-plan-close" data-dismiss="modal">{{ trans('messages.close') }}</button>
             </div>
 
           </div>

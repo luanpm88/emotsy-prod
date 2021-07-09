@@ -92,17 +92,17 @@
                         </div>
                     </div>
                     <label style="margin-bottom:20px;font-style:italic;" id="bottomNotice"></label>
-                    <a id="cancelBtn" class="btn bg-grey btn-icon cancel processing">
+                    <a id="cancelBtn" class="btn btn-outline-secondary btn-icon cancel processing">
                         {{ trans('messages.cancel') }}
                     </a>
                 </div>
 
                 <div class="form-group finish hide">
                     <div class="text-left">
-                    	<a id="downloadLog" target="_blank" href="#" type="button" class="btn bg-teal $
+                    	<a id="downloadLog" target="_blank" href="#" role="button" class="btn bg-teal $
                                 <i class="icon-download"></i> {{ trans('messages.download_import_log') }}
                         </a>
-                        <a href="#retry" class="btn bg-grey-800 mr-10 retry"><i class="icon-reload-alt"></i> {{ trans('messages.import_another') }}</a>
+                        <a href="#retry" class="btn btn-outline-secondary-800 mr-10 retry"><i class="icon-reload-alt"></i> {{ trans('messages.import_another') }}</a>
                     </div>
                 </div>
             </form>

@@ -37,15 +37,15 @@
                     <br style="clear:both"/>
                 </td>
 
-                <td class="text-right text-nowrap">
+                <td class="text-end text-nowrap">
                     @if (\Gate::allows('update', $item))
                         <a href="{{ action('SegmentController@edit', ['list_uid' => $list->uid, "uid" => $item->uid]) }}"
-                           type="button" class="btn bg-grey btn-icon">
+                           role="button" class="btn btn-outline-secondary btn-icon">
                             <i class="icon-pencil"></i> {{ trans('messages.edit') }}
                         </a>
                     @endif
                     <div class="btn-group">
-                        <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span
+                        <button role="button" class="btn dropdown-toggle" data-toggle="dropdown"><span
                                     class="caret ml-0"></span></button>
                         <ul class="dropdown-menu dropdown-menu-right">
                             @if (\Gate::allows('delete', $item))

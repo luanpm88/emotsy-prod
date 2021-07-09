@@ -12,7 +12,7 @@
 @section('page_header')	
 	<div class="page-title">
 		<ul class="breadcrumb breadcrumb-caret position-right">
-			<li><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+			<li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
 			<li class="active">{{ trans('messages.notifications') }}</li>
 		</ul>
 		<h1>
@@ -33,7 +33,7 @@
 			<div class="col-md-10">			
 				<div class="filter-box">
 					<div class="btn-group list_actions hide">
-						<button type="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
+						<button role="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
 							{{ trans('messages.actions') }} <span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu">
@@ -52,8 +52,10 @@
 						<select class="select" name="sort-order">
 							<option value="created_at">{{ trans('messages.created_at') }}</option>
 						</select>										
-						<button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
-							<i class="icon-sort-amount-desc"></i>
+						<button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
+							<span class="material-icons-outlined desc">
+sort
+</span>
 						</button>
 					</span>
 					<span class="filter-group ml-10">

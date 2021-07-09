@@ -12,7 +12,7 @@
 
     <div class="page-title">
         <ul class="breadcrumb breadcrumb-caret position-right">
-            <li><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
         </ul>
         <h1>
             <span class="text-semibold"><i class="icon-list2"></i> {{ trans('messages.languages') }}</span>
@@ -39,7 +39,7 @@
                             <option value="bounce_handlers.created_at">{{ trans('messages.created_at') }}</option>
                             <option value="bounce_handlers.updated_at">{{ trans('messages.updated_at') }}</option>
                         </select>
-                        <button class="btn btn-xs sort-direction" rel="asc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
+                        <button class="btn btn-xs sort-direction" rel="asc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
                             <i class="icon-sort-amount-asc"></i>
                         </button>
                     </span>
@@ -50,8 +50,8 @@
                 </div>
             </div>
             @can("create", new Acelle\Model\Language())
-                <div class="col-md-3 text-right">
-                    <a href="{{ action('Admin\LanguageController@create') }}" type="button" class="btn bg-info-800">
+                <div class="col-md-3 text-end">
+                    <a href="{{ action('Admin\LanguageController@create') }}" role="button" class="btn btn-secondary">
                         <i class="icon icon-plus2"></i> {{ trans('messages.create_language') }}
                     </a>
                 </div>

@@ -34,8 +34,10 @@
                             <select class="select" name="sort-order">
                                 <option value="created_at">{{ trans('messages.created_at') }}</option>
                             </select>
-                            <button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
-                                <i class="icon-sort-amount-desc"></i>
+                            <button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
+                                <span class="material-icons-outlined desc">
+sort
+</span>
                             </button>
                         </span>
                         <span class="text-nowrap">
@@ -45,8 +47,8 @@
                     </div>
                 @endif
             </div>
-            <div class="col-md-2 text-right">
-                <a href="javascript:goToDownLoad('unsubscribe_logs')" type="button" class="btn bg-info-800">
+            <div class="col-md-2 text-end">
+                <a href="javascript:goToDownLoad('unsubscribe_logs')" role="button" class="btn btn-secondary">
                     <i class="icon icon-download mr-5"></i> {{ trans('messages.unsubscribe_log.download') }}
                 </a>
             </div>

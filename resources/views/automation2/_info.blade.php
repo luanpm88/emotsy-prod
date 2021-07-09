@@ -9,7 +9,7 @@
             <p>{{ $automation->last_error }}</p>
         </div>
     </div>
-    <!-- <button class="btn bg-grey-600">Close</button> -->
+    <!-- <button class="btn btn-outline-secondary-600">Close</button> -->
 </div>
 @endif
 

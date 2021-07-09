@@ -50,20 +50,20 @@
                         <span class="text-muted text-nowrap">{{ trans('messages.template.category') }}</span>
 					</div>
 				</td>
-				<td class="text-right">
+				<td class="text-end">
 					@if (Auth::user()->admin->can('preview', $template))
 						<a href="#preview" class="btn bg-teal-600 btn-icon" onclick="popupwindow('{{ action('Admin\TemplateController@preview', $template->uid) }}', '{{ $template->name }}', 800, 800)"><i class="icon-zoomin3"></i></a>
 					@endif
 					@if (Auth::user()->admin->can('update', $template))
 						@if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']))
 							<a href="{{ action('Admin\TemplateController@builderEdit', $template->uid) }}"
-								type="button" class="btn btn-default btn-icon template-compose">
+								role="button" class="btn btn-default btn-icon template-compose">
 								{{ trans('messages.template.pro_builder') }}
 							</a>
                         @endif
                         @if (in_array(Acelle\Model\Setting::get('builder'), ['both','classic']))
                             <a href="{{ action('Admin\TemplateController@edit', $template->uid) }}"
-								type="button" class="btn bg-grey btn-icon template-compose-classic">
+								role="button" class="btn btn-outline-secondary btn-icon template-compose-classic">
 								{{ trans('messages.template.classic_builder') }}
 							</a>
                         @endif							
@@ -72,7 +72,7 @@
 						Auth::user()->admin->can('copy', $template) ||
 						Auth::user()->admin->can('delete', $template))
 						<div class="btn-group">
-							<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
+							<button role="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 							<ul class="dropdown-menu dropdown-menu-right">
 								@if (Auth::user()->admin->can('update', $template))
                                     <li>
@@ -94,7 +94,7 @@
 									<li>
 										<a
 											href="{{ action('Admin\TemplateController@copy', $template->uid) }}"
-											type="button"
+											role="button"
 											class="modal_link"
 											data-method="GET"
 										>

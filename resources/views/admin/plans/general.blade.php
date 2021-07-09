@@ -12,8 +12,8 @@
 
     <div class="page-title">
         <ul class="breadcrumb breadcrumb-caret position-right">
-            <li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-            <li><a href="{{ action("Admin\PlanController@index") }}">{{ trans('messages.plans') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("Admin\PlanController@index") }}">{{ trans('messages.plans') }}</a></li>
         </ul>
         <h1 class="mc-h1">
             <span class="text-semibold">{{ $plan->name }}</span>
@@ -176,7 +176,7 @@
             </div>
         </div>
         <button class="btn btn-mc_primary mr-10">{{ trans('messages.save') }}</button>
-        <a href="{{ action('Admin\PlanController@index') }}" type="button" class="btn btn-mc_inline">
+        <a href="{{ action('Admin\PlanController@index') }}" role="button" class="btn btn-mc_inline">
             {{ trans('messages.cancel') }}
         </a>
     </form>

@@ -51,15 +51,15 @@
                     </div>
                 </td>
 
-                <td class="text-right">
+                <td class="text-end">
                     @if (Auth::user()->customer->can('update', $template))
                         @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']) && $template->builder)
-                            <a href="{{ action('TemplateController@builderEdit', $template->uid) }}" type="button" class="btn btn-default btn-icon template-compose">
+                            <a href="{{ action('TemplateController@builderEdit', $template->uid) }}" role="button" class="btn btn-default btn-icon template-compose">
                                 {{ trans('messages.template.pro_builder') }}
                             </a>
                         @endif
                         @if (in_array(Acelle\Model\Setting::get('builder'), ['both','classic']))
-                            <a href="{{ action('TemplateController@edit', $template->uid) }}" type="button" class="btn bg-grey btn-icon template-compose-classic">
+                            <a href="{{ action('TemplateController@edit', $template->uid) }}" role="button" class="btn btn-outline-secondary btn-icon template-compose-classic">
                                 {{ trans('messages.template.classic_builder') }}
                             </a>
                         @endif
@@ -69,7 +69,7 @@
                         Auth::user()->customer->can('delete', $template) ||
                         Auth::user()->customer->can('update', $template))
                         <div class="btn-group">
-                            <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
+                            <button role="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
                             <ul class="dropdown-menu dropdown-menu-right">
                                 @if (Auth::user()->customer->can('preview', $template))
                                     <li><a href="#preview" onclick="popupwindow('{{ action('TemplateController@preview', $template->uid) }}', '{{ $template->name }}', 800, 800)"><i class="icon-zoomin3"></i> {{ trans("messages.preview") }}</a></li>
@@ -94,7 +94,7 @@
                                     <li>
                                         <a
                                             href="{{ action('TemplateController@copy', $template->uid) }}"
-                                            type="button"
+                                            role="button"
                                             class="modal_link"
                                             data-method="GET"
                                         >

@@ -18,7 +18,7 @@
                 {{ $server->getFullVerificationHostName() }}
             </td>
             <td>{{ doublequote($server->verification_token) }}</td>
-            <td class="text-right" width="1%">
+            <td class="text-end" width="1%">
                 @if ($server->domainVerified())
                     <span class="text-muted2 list-status pull-left">
                         <span class="label label-flat bg-active">{{ trans('messages.sending_domain.verified') }}</span>
@@ -40,7 +40,7 @@
                 {{ $server->getFullDkimHostName() }}
             </td>
             <td><textarea style="width:100%;border:0;height:100px;resize:none;">{{ \Acelle\Model\Setting::isYes('escape_dkim_dns_value') ? $server->getEscapedDnsDkimConfig() : $server->getDnsDkimConfig() }}</textarea></td>
-            <td class="text-right">
+            <td class="text-end">
                 @if ($server->dkimVerified())
                     <span class="text-muted2 list-status pull-left">
                         <span class="label label-flat bg-active">{{ trans('messages.sending_domain.verified') }}</span>
@@ -60,7 +60,7 @@
             </td>
             <td>{{ $server->getDnsHostName() }}</td>
             <td>{{ $server->getQuotedSpf() }}</td>
-            <td class="text-right">
+            <td class="text-end">
                 @if ($server->spfVerified())
                     <span class="text-muted2 list-status pull-left">
                         <span class="label label-flat bg-active">{{ trans('messages.sending_domain.verified') }}</span>

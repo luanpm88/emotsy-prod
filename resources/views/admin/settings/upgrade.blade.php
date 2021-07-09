@@ -13,7 +13,7 @@
 
     <div class="page-title">
         <ul class="breadcrumb breadcrumb-caret position-right">
-            <li><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
         </ul>
         <h1>
             <span class="text-gear"><i class="icon-key"></i> {{ trans('messages.upgrade.title.upgrade') }}</span>
@@ -49,10 +49,10 @@
                             <pre>{!! implode("\n", $failed) !!}</pre>
                         </p>
                         <p>
-                            <a link-confirm="{{ trans('messages.upgrade.upgrade_confirm') }}" href="{{ action('Admin\SettingController@doUpgrade') }}" type="button" class="btn bg-primary btn-icon" link-method="POST">
+                            <a link-confirm="{{ trans('messages.upgrade.upgrade_confirm') }}" href="{{ action('Admin\SettingController@doUpgrade') }}" role="button" class="btn bg-primary btn-icon" link-method="POST">
                                 {{ trans('messages.upgrade.button.retry') }}
                             </a>
-                            <a link-confirm="{{ trans('messages.upgrade.upgrade_cancel') }}" href="{{ action('Admin\SettingController@cancelUpgrade') }}" type="button" class="btn bg-grey btn-icon" link-method="POST">
+                            <a link-confirm="{{ trans('messages.upgrade.upgrade_cancel') }}" href="{{ action('Admin\SettingController@cancelUpgrade') }}" role="button" class="btn btn-outline-secondary btn-icon" link-method="POST">
                                 {{ trans('messages.upgrade.button.cancel') }}
                             </a>
                         </p>
@@ -60,10 +60,10 @@
                         <h3>{{ trans('messages.upgrade.title.upgrade_confirm') }}</h3>
                         <p>{!! trans('messages.upgrade.wording.upgrade', [ 'current' => "<code>{$manager->getCurrentVersion()}</code>", 'new' => "<code>{$manager->getNewVersion()}</code>" ]) !!}</p>
                         <p>
-                            <a link-confirm="{{ trans('messages.upgrade.upgrade_confirm') }}" href="{{ action('Admin\SettingController@doUpgrade') }}" type="button" class="btn bg-primary btn-icon" link-method="POST">
+                            <a link-confirm="{{ trans('messages.upgrade.upgrade_confirm') }}" href="{{ action('Admin\SettingController@doUpgrade') }}" role="button" class="btn bg-primary btn-icon" link-method="POST">
                                 {{ trans('messages.upgrade.button.upgrade_now') }}
                             </a>
-                            <a link-confirm="{{ trans('messages.upgrade.upgrade_cancel') }}" href="{{ action('Admin\SettingController@cancelUpgrade') }}" type="button" class="btn bg-grey btn-icon" link-method="POST">
+                            <a link-confirm="{{ trans('messages.upgrade.upgrade_cancel') }}" href="{{ action('Admin\SettingController@cancelUpgrade') }}" role="button" class="btn btn-outline-secondary btn-icon" link-method="POST">
                                 {{ trans('messages.upgrade.button.cancel') }}
                             </a>
                         </p>

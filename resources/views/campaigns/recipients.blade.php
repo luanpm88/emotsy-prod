@@ -11,8 +11,8 @@
 
     <div class="page-title">
         <ul class="breadcrumb breadcrumb-caret position-right">
-            <li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-            <li><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
         </ul>
         <h1>
             <span class="text-semibold"><i class="icon-paperplane"></i> {{ $campaign->name }}</span>
@@ -45,14 +45,14 @@
             <br />
             <a
                 sample-url="{{ action('CampaignController@listSegmentForm', $campaign->uid) }}"
-                href="#add_condition" class="btn btn-info bg-info-800 add-form">
+                href="#add_condition" class="btn btn-secondary add-form">
                 <i class="icon-plus2"></i> {{ trans('messages.add_list_segment') }}
             </a>
         </div>
 
         <hr>
 
-        <div class="text-right">
+        <div class="text-end">
             <button class="btn bg-teal-800">{{ trans('messages.save_and_next') }} <i class="icon-arrow-right7"></i> </button>
         </div>
     <form>

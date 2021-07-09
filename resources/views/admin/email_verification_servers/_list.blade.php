@@ -41,13 +41,13 @@
                         <span class="label label-flat bg-{{ $server->status }}">{{ trans('messages.email_verification_server_status_' . $server->status) }}</span>
                     </span>
                 </td>
-                <td class="text-right text-nowrap">
+                <td class="text-end text-nowrap">
                     @if (Auth::user()->admin->can('update', $server))
-                        <a href="{{ action('Admin\EmailVerificationServerController@edit', ["email_verification_server" => $server->uid]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey btn-icon"><i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
+                        <a href="{{ action('Admin\EmailVerificationServerController@edit', ["email_verification_server" => $server->uid]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-outline-secondary btn-icon"><i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
                     @endif
                     @if (Auth::user()->admin->can('delete', $server) || Auth::user()->admin->can('disable', $server) || Auth::user()->admin->can('enable', $server))
                         <div class="btn-group">
-                            <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
+                            <button role="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
                             <ul class="dropdown-menu dropdown-menu-right">
                                 @if (Auth::user()->admin->can('enable', $server))
                                     <li>

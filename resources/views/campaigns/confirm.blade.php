@@ -12,8 +12,8 @@
 
     <div class="page-title">
         <ul class="breadcrumb breadcrumb-caret position-right">
-            <li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-            <li><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
         </ul>
         <h1>
             <span class="text-semibold"><i class="icon-paperplane"></i> {{ $campaign->name }}</span>
@@ -118,7 +118,7 @@
                         2.	Khi user click Send thì show 1 cái confirm box: “Your message does not pass SpamScore test, are you sure you want to proceed anyway?”-->
 
                         <br />
-                        <div class="text-right">
+                        <div class="text-end">
                             <span
                                 onclick="popupwindow('{{ action('CampaignController@preview', $campaign->uid) }}', '{{ $campaign->name }}', 800, 800)"
                                 href="#preview" class="btn btn-lg bg-grey mr-5" data-uid="{{ $campaign->uid }}">
@@ -139,7 +139,7 @@
                                 <div class="modal-content">
                                     <form class="confirm-link-form" onkeypress="return event.keyCode != 13;">
                                         <div class="modal-header">
-                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            <button role="button" class="close" data-dismiss="modal">&times;</button>
                                             <h3 class="modal-title"><strong>{{ trans('messages.are_you_sure') }}</strong></h3>
                                         </div>
 
@@ -148,8 +148,8 @@
                                         </div>
 
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-link" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
-                                            <a class="btn bg-grey link-confirm-button" onclick="$('.send-campaign-button').click()">{{ trans('messages.confirm') }}</a>
+                                            <button role="button" class="btn btn-link" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
+                                            <a class="btn btn-outline-secondary link-confirm-button" onclick="$('.send-campaign-button').click()">{{ trans('messages.confirm') }}</a>
                                         </div>
                                     </form>
                                 </div>
@@ -159,7 +159,7 @@
                     @endif
                 @else
                     <br />
-                    <div class="text-right">
+                    <div class="text-end">
                         <span
                             onclick="popupwindow('{{ action('CampaignController@preview', $campaign->uid) }}', '{{ $campaign->name }}', 800, 800)"
                             href="#preview" class="btn btn-lg bg-grey mr-5" data-uid="{{ $campaign->uid }}">

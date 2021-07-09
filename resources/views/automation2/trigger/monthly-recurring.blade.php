@@ -9,7 +9,7 @@
                     $days = $trigger->getOption('days_of_month') ? $trigger->getOption('days_of_month') : []
                 @endphp
                 @for($i = 1; $i < 32; $i++)
-                    <button type="button" class="btn btn-{{ in_array($i, $days) ? 'primary' : 'light' }} mb-1">
+                    <button role="button" class="btn btn-{{ in_array($i, $days) ? 'primary' : 'light' }} mb-1">
                         {{ $i }}
                         <input
                             {{ in_array($i, $days) ? 'checked' : '' }}

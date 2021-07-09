@@ -2,7 +2,7 @@
     {{ csrf_field() }}
     <div class="modal-header">
       <h5 class="modal-title">{{ trans('messages.plan.sending_servers.add') }}</h5>
-      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <button role="button" class="close" data-dismiss="modal" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
@@ -25,7 +25,7 @@
         </div>
         <div class="modal-footer">
           <button type="submit" class="btn btn-mc_primary">{{ trans('messages.plan.sending_servers.add.ok') }}</button>
-          <button type="button" class="btn btn-mc_inline" data-dismiss="modal">{{ trans('messages.close') }}</button>
+          <button role="button" class="btn btn-mc_inline" data-dismiss="modal">{{ trans('messages.close') }}</button>
         </div>
     @else
         <div class="modal-body">

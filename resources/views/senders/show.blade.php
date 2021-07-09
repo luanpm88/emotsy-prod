@@ -11,8 +11,8 @@
 @section('page_header')
     <div class="page-title">
         <ul class="breadcrumb breadcrumb-caret position-right">
-            <li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-            <li><a href="{{ action("SenderController@index") }}">{{ trans('messages.verified_senders') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("SenderController@index") }}">{{ trans('messages.verified_senders') }}</a></li>
             <li><a href="{{ action("SendingDomainController@index") }}">{{ trans('messages.email_addresses') }}</a></li>
         </ul>
         <h1>
@@ -39,7 +39,7 @@
                             <p>{{ trans('messages.sender.status_info.pending.note') }}</p>
                         </div>
                     </div>
-                    <button type="submit" class="btn bg-grey-600">Refresh now!</button>
+                    <button type="submit" class="btn btn-outline-secondary-600">Refresh now!</button>
                 </div>
                 </form>
             @elseif ($sender->isVerified())

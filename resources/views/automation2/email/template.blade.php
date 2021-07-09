@@ -69,7 +69,7 @@
                 @include('automation2.email._attachment')
             </div>
                 
-            <div class="text-right mt-5">
+            <div class="text-end mt-5">
                 <a href="javascript:;" onclick="sidebar.load(); popup.hide()" class="btn btn-inline-secondary mr-1">
                     {{ trans('messages.close') }}
                 </a>

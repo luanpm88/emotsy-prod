@@ -40,7 +40,7 @@
                 <p class="text-muted">{{ trans('messages.last_opened') }}</p>
             </div>
         </div>
-        <div class="text-right">
+        <div class="text-end">
             <a href="{{ action('CampaignController@openLog', $campaign->uid) }}" class="btn btn-info bg-teal-600">{{ trans('messages.open_log') }} <i class="icon-arrow-right8"></i></a>
         </div>
         <br />
@@ -80,7 +80,7 @@
                 <p class="text-muted">{{ trans('messages.last_clicked') }}</p>
             </div>
         </div>
-        <div class="text-right">
+        <div class="text-end">
             <a href="{{ action('CampaignController@clickLog', $campaign->uid) }}" class="btn btn-info bg-teal-600">{{ trans('messages.click_log') }} <i class="icon-arrow-right8"></i></a>
         </div>
         <br />

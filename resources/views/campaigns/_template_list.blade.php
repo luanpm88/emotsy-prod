@@ -43,8 +43,8 @@
                         <span class="text-muted text-nowrap">{{ trans('messages.type') }}</span>
                     </div>
                 </td>
-                <td class="text-right">
-                    <a link-method="PATCH" href="{{ action('CampaignController@campaignTemplateChoose', ['uid' => $uid, 'from_uid' => $campaign->uid]) }}" type="button" class="btn bg-teal btn-icon">
+                <td class="text-end">
+                    <a link-method="PATCH" href="{{ action('CampaignController@campaignTemplateChoose', ['uid' => $uid, 'from_uid' => $campaign->uid]) }}" role="button" class="btn bg-teal btn-icon">
                         <i class="icon-checkmark4"></i> {{ trans('messages.choose') }}
                     </a>
                 </td>

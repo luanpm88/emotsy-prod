@@ -15,8 +15,8 @@
 
     <div class="page-title">
         <ul class="breadcrumb breadcrumb-caret position-right">
-            <li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-            <li><a href="{{ action("SenderController@index") }}">{{ trans('messages.verified_senders') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("SenderController@index") }}">{{ trans('messages.verified_senders') }}</a></li>
             <li><a href="{{ action("SendingDomainController@index") }}">{{ trans('messages.domains') }}</a></li>
         </ul>
         <h1>

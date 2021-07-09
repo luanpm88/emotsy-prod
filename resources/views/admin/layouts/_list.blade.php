@@ -29,9 +29,9 @@
                         <span class="text-muted2">{{ trans("messages.custom_pages") }}</span>
                     </div>
                 </td>
-                <td class="text-right">
+                <td class="text-end">
                     @can('update', $item)
-                        <a href="{{ action('Admin\LayoutController@edit', $item->uid) }}" type="button" class="btn bg-info-800 btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
+                        <a href="{{ action('Admin\LayoutController@edit', $item->uid) }}" role="button" class="btn btn-secondary btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
                     @endcan
                 </td>
             </tr>

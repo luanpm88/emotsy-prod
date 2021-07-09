@@ -98,7 +98,7 @@
 					<div class="modal-dialog modal-full">
 						<div class="modal-content">
 							<div class="modal-header">
-								<button type="button" class="close" data-dismiss="modal">&times;</button>
+								<button role="button" class="close" data-dismiss="modal">&times;</button>
 								<h5 class="modal-title"></h5>
 							</div>
 
@@ -107,7 +107,7 @@
 							</div>
 
 							<div class="modal-footer">
-								<button type="button" class="btn btn-info bg-grey-800" data-dismiss="modal">{{ trans('messages.close') }}</button>
+								<button role="button" class="btn btn-info bg-grey-800" data-dismiss="modal">{{ trans('messages.close') }}</button>
 							</div>
 						</div>
 					</div>

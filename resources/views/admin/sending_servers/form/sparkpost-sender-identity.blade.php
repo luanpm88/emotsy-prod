@@ -67,11 +67,11 @@
         </div>
         <div class="col-md-6">
             <br>
-            <a href="https://app.sparkpost.com/auth" type="button" target="_blank"
+            <a href="https://app.sparkpost.com/auth" role="button" target="_blank"
               class="btn btn-mc_default mr-10">
                 {{ trans('messages.sending_serbers.add_domain') }}
             </a>
-            <a href="https://app.sparkpost.com/auth" type="button" target="_blank"
+            <a href="https://app.sparkpost.com/auth" role="button" target="_blank"
               class="btn btn-mc_default">
                 {{ trans('messages.sending_serbers.go_to_sparkpost_dashboard') }}
             </a>
@@ -79,7 +79,7 @@
             <hr>
             <div class="mt-20">
                 <button class="btn btn-mc_primary mr-10">{{ trans('messages.save') }}</button>
-                <a href="{{ action('Admin\SendingServerController@index') }}" type="button" class="btn btn-mc_inline">
+                <a href="{{ action('Admin\SendingServerController@index') }}" role="button" class="btn btn-mc_inline">
                     {{ trans('messages.cancel') }}
                 </a>
             </div>

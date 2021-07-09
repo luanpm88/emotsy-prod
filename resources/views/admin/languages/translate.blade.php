@@ -16,7 +16,7 @@
     
     <div class="page-title">
         <ul class="breadcrumb breadcrumb-caret position-right">
-            <li><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
         </ul>
         <h1>
             <span class="text-semibold"><i class="icon-share2"></i> {{ $language->name }}</span>
@@ -68,9 +68,9 @@
         </div>
         
         <hr>
-        <div class="text-right">
+        <div class="text-end">
             <button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
-            <a href="{{ action('Admin\LanguageController@index') }}" type="button" class="btn bg-grey">
+            <a href="{{ action('Admin\LanguageController@index') }}" role="button" class="btn btn-outline-secondary">
                 <i class="icon-cross2"></i> {{ trans('messages.cancel') }}
             </a>
         </div>

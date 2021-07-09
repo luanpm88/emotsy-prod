@@ -32,15 +32,15 @@
 					</h5>
 					<span class="text-muted d-block mt-2">{{ trans('messages.source.last_sync_at') }}</span>
 				</td>
-				<td class="text-right">
+				<td class="text-end">
 					<a href="{{ action('SourceController@sync', $source->uid) }}"
 						link-method="POST"
-						type="button" class="btn bg-teal-600 m-icon">
+						role="button" class="btn bg-teal-600 m-icon">
 						<span class="material-icons">
 							sync
 							</span>{{ trans('messages.source.sync') }}</a>
 					<div class="btn-group">
-						<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
+						<button role="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 						<ul class="dropdown-menu dropdown-menu-right">
 							<li>
 								<a delete-confirm="{{ trans('messages.source.delete.confirm') }}"

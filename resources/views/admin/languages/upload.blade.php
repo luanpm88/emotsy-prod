@@ -13,7 +13,7 @@
 
 			<div class="page-title">				
 				<ul class="breadcrumb breadcrumb-caret position-right">
-					<li><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+					<li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
 					<li><a href="{{ action("Admin\TemplateController@index") }}">{{ trans('messages.language') }}</a></li>
 				</ul>
 				<h1>
@@ -36,9 +36,9 @@
                 
                 @include('helpers.form_control', ['required' => true, 'type' => 'file', 'label' => trans('messages.upload_file'), 'name' => 'file'])
                     
-                <div class="text-right">
+                <div class="text-end">
                     <button class="btn btn-secondary me-2"><i class="icon-check"></i> {{ trans('messages.upload') }}</button>
-                    <a href="{{ action('Admin\LanguageController@index') }}" class="btn bg-grey-800"><i class="icon-cross2"></i> {{ trans('messages.cancel') }}</a>
+                    <a href="{{ action('Admin\LanguageController@index') }}" class="btn btn-outline-secondary-800"><i class="icon-cross2"></i> {{ trans('messages.cancel') }}</a>
                 </div>
                 
             </form>  

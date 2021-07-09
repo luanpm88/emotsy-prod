@@ -11,7 +11,7 @@
 
             <div class="page-title">
                 <ul class="breadcrumb breadcrumb-caret position-right">
-                    <li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+                    <li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
                     <li class="active">{{ trans('messages.contact_information') }}</li>
                 </ul>
                 <h1>
@@ -100,7 +100,7 @@
                         </div>
                     </div>
 
-                    <div class="text-right">
+                    <div class="text-end">
                         <button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
                     </div>
 

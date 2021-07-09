@@ -11,8 +11,8 @@
 
     <div class="page-title">
         <ul class="breadcrumb breadcrumb-caret position-right">
-            <li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-            <li class="active">{{ trans('messages.subscription') }}</li>
+            <li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li class="breadcrumb-item active">{{ trans('messages.subscription') }}</li>
         </ul>
     </div>
     
@@ -71,7 +71,7 @@
                 <div class="sub-section mb-30 choose-payment-methods">      
                     @foreach(Acelle\Library\Facades\Billing::getEnabledPaymentGateways() as $gateway)
                         <div class="d-flex align-items-center choose-payment choose-payment-{{ $gateway->getType() }}">
-                            <div class="text-right pl-2 pr-2">
+                            <div class="text-end pl-2 pr-2">
                                 <div class="d-flex align-items-center form-group-mb-0">
                                     @include('helpers.form_control', [
                                         'type' => 'radio2',

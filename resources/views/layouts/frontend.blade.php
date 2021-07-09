@@ -32,9 +32,9 @@
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined"rel="stylesheet">
 
 	<!-- AcelleMail -->
-	<link href="{{ URL::asset('css/app.css') }}?v={{ app_version() }}" rel="stylesheet" type="text/css">
 	<link rel="stylesheet" type="text/css" href="{{ URL::asset('core/css/app.css') }}">
 	<script type="text/javascript" src="{{ URL::asset('core/js/functions.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('core/js/popup.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('core/js/app.js') }}"></script>
 </head>
 <body>
@@ -47,7 +47,7 @@
                     <img class="logo" src="{{ URL::asset('images/logo-' . (Auth::user()->customer->getColorScheme() == "white" ? "dark" : "light") . '.svg') }}" alt="">
                 @endif
 			</a>
-			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
+			<button class="navbar-toggler" role="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
 

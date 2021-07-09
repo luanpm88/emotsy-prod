@@ -13,7 +13,7 @@
 
     <div class="page-title">
         <ul class="breadcrumb breadcrumb-caret position-right">
-            <li><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
         </ul>
         <h1>
             <span class="text-semibold"><i class="icon-list2"></i> {{ trans('messages.sending_servers') }}</span>
@@ -41,7 +41,7 @@
                 @if ($items->count() >= 0)
                     <div class="filter-box">
                         <div class="btn-group list_actions hide">
-                            <button type="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
+                            <button role="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
                                 {{ trans('messages.actions') }} <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu">
@@ -62,8 +62,10 @@
                                 <option value="sending_servers.name">{{ trans('messages.name') }}</option>
                                 <option value="sending_servers.updated_at">{{ trans('messages.updated_at') }}</option>
                             </select>
-                            <button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
-                                <i class="icon-sort-amount-desc"></i>
+                            <button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
+                                <span class="material-icons-outlined desc">
+sort
+</span>
                             </button>
                         </span>
                         <span class="filter-group">
@@ -83,8 +85,8 @@
                 @endif
             </div>
             @if (Auth::user()->admin->can('create', Acelle\Model\SendingServer::class))
-                <div class="col-md-2 text-right">
-                    <a href="{{ action('Admin\SendingServerController@select') }}" type="button" class="btn bg-info-800">
+                <div class="col-md-2 text-end">
+                    <a href="{{ action('Admin\SendingServerController@select') }}" role="button" class="btn btn-secondary">
                         <i class="icon icon-plus2"></i> {{ trans('messages.create_sending_server') }}
                     </a>
                 </div>
@@ -101,7 +103,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                     <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <button role="button" class="close" data-dismiss="modal">&times;</button>
                         <h2 class="modal-title">{{ trans('messages.select_server_type') }}</h2>
                     </div>
 
@@ -112,7 +114,7 @@
                             @foreach (Acelle\Model\SendingServer::types() as $key => $type)
 
                                 <li>
-                                    <a href="{{ action('Admin\SendingServerController@create', ["type" => $key]) }}" class="btn btn-info bg-info-800">{{ trans('messages.choose') }}</a>
+                                    <a href="{{ action('Admin\SendingServerController@create', ["type" => $key]) }}" class="btn btn-secondary">{{ trans('messages.choose') }}</a>
                                     <span class="server-avatar server-avatar-{{ $key }}">
                                         <i class="icon-server"></i>
                                     </span>
@@ -129,7 +131,7 @@
                     </div>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-white" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
+                        <button role="button" class="btn btn-white" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
                     </div>
             </div>
         </div>

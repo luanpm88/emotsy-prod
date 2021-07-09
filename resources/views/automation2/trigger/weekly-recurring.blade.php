@@ -9,7 +9,7 @@
                     $days = $trigger->getOption('days_of_week') ? $trigger->getOption('days_of_week') : []
                 @endphp
                 @for($i = 0; $i < 7; $i++)
-                    <button type="button" class="btn btn-{{ in_array($i, $days) ? 'primary' : 'light' }}">
+                    <button role="button" class="btn btn-{{ in_array($i, $days) ? 'primary' : 'light' }}">
                         {{ trans('messages.day_of_week.' . $i) }}
                         <input
                             {{ in_array($i, $days) ? 'checked' : '' }}

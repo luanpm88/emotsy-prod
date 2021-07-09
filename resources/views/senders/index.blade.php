@@ -12,8 +12,8 @@
 @section('page_header')
     <div class="page-title">
         <ul class="breadcrumb breadcrumb-caret position-right">
-            <li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-            <li><a href="{{ action("SenderController@index") }}">{{ trans('messages.verified_senders') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("SenderController@index") }}">{{ trans('messages.verified_senders') }}</a></li>
             <li><a href="{{ action("SenderController@index") }}">{{ trans('messages.email_addresses') }}</a></li>
         </ul>
         <h1>
@@ -41,7 +41,7 @@
                     <div class="filter-box">
                         @include('helpers.select_tool')
                         <div class="btn-group list_actions hide">
-                            <button type="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
+                            <button role="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
                                 {{ trans('messages.actions') }} <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu">
@@ -55,8 +55,10 @@
                                 <option value="senders.email">{{ trans('messages.email') }}</option>
                                 <option value="senders.email">{{ trans('messages.name') }}</option>
                             </select>
-                            <button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
-                                <i class="icon-sort-amount-desc"></i>
+                            <button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
+                                <span class="material-icons-outlined desc">
+sort
+</span>
                             </button>
                         </span>
                         <span class="text-nowrap">
@@ -68,8 +70,8 @@
             </div>
             <div class="col-md-3">
                 @if (Auth::user()->can('create', new Acelle\Model\Sender()))
-                    <div class="text-right">
-                        <a href="{{ action('SenderController@create') }}" type="button" class="btn bg-info-800">
+                    <div class="text-end">
+                        <a href="{{ action('SenderController@create') }}" role="button" class="btn btn-secondary">
                             <i class="icon-download4"></i> {{ trans('messages.sender.create') }}
                         </a>
                     </div>

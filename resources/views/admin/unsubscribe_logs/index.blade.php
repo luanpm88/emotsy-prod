@@ -13,7 +13,7 @@
 
 			<div class="page-title">				
 				<ul class="breadcrumb breadcrumb-caret position-right">
-					<li><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+					<li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
 				</ul>
 				<h1>
 					<span class="text-semibold"><i class="icon-list2"></i> {{ trans('messages.unsubscribe_log') }}</span>
@@ -37,8 +37,10 @@
 										<select class="select" name="sort-order">
                                             <option value="unsubscribe_logs.created_at">{{ trans('messages.created_at') }}</option>
 										</select>										
-										<button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
-											<i class="icon-sort-amount-desc"></i>
+										<button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
+											<span class="material-icons-outlined desc">
+sort
+</span>
 										</button>
 									</span>
 									<span class="ml-10">

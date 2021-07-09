@@ -15,8 +15,8 @@
 
     <div class="page-title">
         <ul class="breadcrumb breadcrumb-caret position-right">
-            <li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-            <li><a href="{{ action("TrackingDomainController@index") }}">{{ trans('messages.tracking_domains') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("TrackingDomainController@index") }}">{{ trans('messages.tracking_domains') }}</a></li>
         </ul>
         <h2>
             <span class="text-semibold"><i class="icon-earth"></i> {{ $domain->getUrl() }} </span>
@@ -44,7 +44,7 @@
                             <p>{{ trans('messages.tracking_domain.show.pending_note') }}</p>
                             </div>
                         </div>
-                        <button type="submit" class="btn bg-grey-600">{{ trans('messages.tracking_domain.refresh') }}</button>
+                        <button type="submit" class="btn btn-outline-secondary-600">{{ trans('messages.tracking_domain.refresh') }}</button>
                     </div>
                 </form>
                 <h2>{{ trans('messages.tracking_domain.show.dns_setup.title') }}</h2>
@@ -112,7 +112,7 @@
                     </li>
                 </ul>
                 <p style="margin-top: 20px"><i>{{ trans('messages.tracking_domain.show.dns_setup.note3') }}</i></p>
-                <a type="button" style="padding-left:0" class="btn btn-mc_inline" href="{{ action('TrackingDomainController@index') }} ">{{ trans('messages.go_back') }}</a>
+                <a role="button" style="padding-left:0" class="btn btn-mc_inline" href="{{ action('TrackingDomainController@index') }} ">{{ trans('messages.go_back') }}</a>
             @else
                 <div data-type="admin-notification" class="alert alert-success" style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
                     <div style="display: flex; flex-direction: row; align-items: center;">
@@ -126,7 +126,7 @@
                     </div>
                 </div>
 
-                <a type="button" style="padding-left:0" class="btn btn-mc_inline" href="{{ action('TrackingDomainController@index') }} ">{{ trans('messages.go_back') }}</a>
+                <a role="button" style="padding-left:0" class="btn btn-mc_inline" href="{{ action('TrackingDomainController@index') }} ">{{ trans('messages.go_back') }}</a>
             @endif
         </div>
     </div>

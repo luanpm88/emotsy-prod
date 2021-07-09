@@ -1,6 +1,6 @@
 @if ($list->getRunningVerificationJob()->isFailed())
     <div class="alert alert-danger alert-noborder">
-        <button data-dismiss="alert" class="close" type="button"><span>×</span><span class="sr-only">Close</span></button>
+        <button data-dismiss="alert" class="close" role="button"><span>×</span><span class="sr-only">Close</span></button>
         <strong>{{ trans('messages.verification.error.job_failed') }}: {{ $list->getRunningVerificationJob()->last_error }}</strong>
     </div>
 @endif
@@ -15,7 +15,7 @@
 ]) !!}</p>
 
 <p>
-    <a class="btn bg-grey-300"
+    <a class="btn btn-outline-secondary-300"
         link-confirm="{{ trans('messages.stop_list_verification_confirm') }}" link-method="POST"
         href="{{ action("MailListController@stopVerification", $list->uid) }}">
         {{ trans('messages.verification.button.stop') }}

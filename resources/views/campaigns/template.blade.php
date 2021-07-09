@@ -17,8 +17,8 @@
     
     <div class="page-title">
         <ul class="breadcrumb breadcrumb-caret position-right">
-            <li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-            <li><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
         </ul>
         <h1>
             <span class="text-semibold"><i class="icon-paperplane"></i> {{ $campaign->name }}</span>
@@ -79,7 +79,7 @@
         @include('elements._tags', ['tags' => Acelle\Model\Template::tags($campaign->defaultMailList)])
 
         <hr>
-        <div class="text-right">
+        <div class="text-end">
             <button class="btn bg-teal-800">{{ trans('messages.save_and_next') }} <i class="icon-arrow-right7"></i> </button>
         </div>
     <form>

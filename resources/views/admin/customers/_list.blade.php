@@ -55,12 +55,12 @@
                         <span class="label label-flat bg-{{ $item->status }}">{{ trans('messages.user_status_' . $item->status) }}</span>
                     </span>
                 </td>
-                <td class="text-right">
+                <td class="text-end">
                     @can('loginAs', $item)
-                        <a href="{{ action('Admin\CustomerController@loginAs', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.login_as_this_customer') }}" type="button" class="btn bg-teal-600 btn-icon"><i class="icon icon-enter"></i></a>
+                        <a href="{{ action('Admin\CustomerController@loginAs', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.login_as_this_customer') }}" role="button" class="btn bg-teal-600 btn-icon"><i class="icon icon-enter"></i></a>
                     @endcan
                     @can('update', $item)
-                        <a href="{{ action('Admin\CustomerController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey-600 btn-icon"><i class="icon icon-pencil pr-0 mr-0"></i></a>
+                        <a href="{{ action('Admin\CustomerController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-outline-secondary-600 btn-icon"><i class="icon icon-pencil pr-0 mr-0"></i></a>
                     @endcan
                     @if (Auth::user()->can('delete', $item) ||
                         Auth::user()->can('enable', $item) ||
@@ -68,7 +68,7 @@
                         Auth::user()->can('assignPlan', $item)
                     )
                         <div class="btn-group">
-                            <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
+                            <button role="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
                             <ul class="dropdown-menu dropdown-menu-right">
                                 @can('assignPlan', $item)
                                     <li>

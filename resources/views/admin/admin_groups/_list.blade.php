@@ -22,16 +22,16 @@
                         <span class="text-muted">{{ trans("messages.admins") }}</span>
                     </div>
                 </td>
-                <td class="text-right">
+                <td class="text-end">
                     <span class="text-muted2 list-status pull-left">
                         <span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
                     </span>
                     @can('update', $item)
-                        <a href="{{ action('Admin\AdminGroupController@edit', $item->id) }}" type="button" class="btn bg-grey-600 btn-icon"><i class="icon icon-pencil"></i> {{ trans('messages.edit') }}</a>
+                        <a href="{{ action('Admin\AdminGroupController@edit', $item->id) }}" role="button" class="btn btn-outline-secondary-600 btn-icon"><i class="icon icon-pencil"></i> {{ trans('messages.edit') }}</a>
                     @endcan
                     @can('delete', $item)
                         <div class="btn-group">
-                            <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
+                            <button role="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
                             <ul class="dropdown-menu dropdown-menu-right">
                                 <li>
                                     <a delete-confirm="{{ trans('messages.delete_admin_groups_confirm') }}" href="{{ action('Admin\AdminGroupController@delete', ['ids' => $item->id]) }}">

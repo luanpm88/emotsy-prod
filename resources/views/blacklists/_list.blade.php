@@ -12,7 +12,7 @@
 			</th>
 			<th>{{ trans('messages.email') }}</th>
 			<th>{{ trans('messages.created_at') }}</th>
-			<th class="text-right">{{ trans('messages.action') }}</th>
+			<th class="text-end">{{ trans('messages.action') }}</th>
 		</tr>
 		@foreach ($blacklists as $key => $blacklist)
 			<tr>
@@ -34,7 +34,7 @@
 					<span class="no-margin kq_search">{{ Tool::formatDateTime($blacklist->created_at) }}</span>
 					<span class="text-muted second-line-mobile">{{ trans('messages.created_at') }}</span>
 				</td>
-				<td class="text-right">
+				<td class="text-end">
 					@if (Auth::user()->customer->can('delete', $blacklist))
 						<a
 							delete-confirm="{{ trans('messages.remove_blacklist_confirm') }}"

@@ -12,7 +12,7 @@
 
     <div class="page-title">
         <ul class="breadcrumb breadcrumb-caret position-right">
-            <li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
         </ul>
 
         <h1>
@@ -30,7 +30,7 @@
 
                 @foreach (Auth::user()->customer->getSendingServertypes() as $key => $type)
                     <li>
-                        <a href="{{ action('SendingServerController@create', ["type" => $key]) }}" class="btn btn-info bg-info-800">{{ trans('messages.choose') }}</a>
+                        <a href="{{ action('SendingServerController@create', ["type" => $key]) }}" class="btn btn-secondary">{{ trans('messages.choose') }}</a>
                         <a href="{{ action('SendingServerController@create', ["type" => $key]) }}">
                             <span class="server-avatar server-avatar-{{ $key }}">
                                 <i class="icon-server"></i>
@@ -46,7 +46,7 @@
 
             </ul>
             <div class="pull-right">
-                <a href="{{ action('SendingServerController@index') }}" type="button" class="btn bg-grey">
+                <a href="{{ action('SendingServerController@index') }}" role="button" class="btn btn-outline-secondary">
                     <i class="icon-cross2"></i> {{ trans('messages.cancel') }}
                 </a>
             </div>

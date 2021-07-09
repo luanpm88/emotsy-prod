@@ -5,7 +5,7 @@
     <div class="insight-action">
         <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
             <div class="btn-group btn-group-sm" role="group">
-                <button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle timeline-sort-title" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button id="btnGroupDrop1" role="button" class="btn btn-outline-secondary dropdown-toggle timeline-sort-title" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     @if (request()->sortBy) 
                         {{ trans('messages.timeline.sort.' . request()->sortBy) }}
                     @else

@@ -30,7 +30,7 @@
                         </span>
                     @endif
                 </td>
-                <td class="text-right text-nowrap">
+                <td class="text-end text-nowrap">
                     @if (isset($settingUrls[$plugin->name]))
                         <a
                             href="{{ $settingUrls[$plugin->name] }}"
@@ -59,7 +59,7 @@
                     @endif
 
                     <div class="btn-group">
-						<button type="button" class="btn btn-mc_default icon-only dropdown-toggle" data-toggle="dropdown">
+						<button role="button" class="btn btn-mc_default icon-only dropdown-toggle" data-toggle="dropdown">
                             <span class="caret ml-0"></span>
                         </button>
 						<ul class="dropdown-menu dropdown-menu-right">
@@ -67,7 +67,7 @@
 								<a
                                     delete-confirm="{{ trans('messages.delete_plugins_confirm') }}"
                                     href="{{ action('Admin\PluginController@delete', ["uids" => $plugin->uid]) }}"
-                                    type="button" class="">
+                                    role="button" class="">
                                     <i class="material-icons-outlined">delete</i> {{ trans('messages.uninstall') }}
                                 </a>
 							</li>

@@ -32,17 +32,17 @@
                     <br />
                     <span class="text-muted">{{ trans('messages.username') }}</span>
                 </td>
-                <td class="text-right">
+                <td class="text-end">
                     @can('update', $item)
-                        <a href="{{ action('Admin\FeedbackLoopHandlerController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey btn-icon"><i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
+                        <a href="{{ action('Admin\FeedbackLoopHandlerController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-outline-secondary btn-icon"><i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
                     @endcan
                     @if(Auth::user()->admin->can('delete', $item) || Auth::user()->admin->can('test', $item))
                         <div class="btn-group">
-                            <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
+                            <button role="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
                             <ul class="dropdown-menu dropdown-menu-right">
                                 @can('test', $item)
                                     <li>
-                                        <a href="{{ action('Admin\FeedbackLoopHandlerController@test', $item->uid) }}" data-method="POST" type="button" class="ajax_link">
+                                        <a href="{{ action('Admin\FeedbackLoopHandlerController@test', $item->uid) }}" data-method="POST" role="button" class="ajax_link">
                                             <i class="icon-rotate-cw3"></i> {{ trans('messages.feedback_loop_handler.test') }}
                                         </a>
                                     </li>

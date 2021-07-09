@@ -36,7 +36,7 @@
                     <hr >
                     <div class="text-left">
                         <button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
-                        <a href="{{ action('Admin\LanguageController@index') }}" type="button" class="btn bg-grey">
+                        <a href="{{ action('Admin\LanguageController@index') }}" role="button" class="btn btn-outline-secondary">
                             <i class="icon-cross2"></i> {{ trans('messages.cancel') }}
                         </a>
                     </div>

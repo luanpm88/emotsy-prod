@@ -13,7 +13,7 @@
 @section('page_header')
 	<div class="page-title">
 		<ul class="breadcrumb breadcrumb-caret position-right">
-			<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+			<li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
 		</ul>
 		<h1>
 			<span class="text-semibold"><i class="icon-list2"></i> {{ trans('messages.products') }}</span>
@@ -30,7 +30,7 @@
             <div class="col-md-8">
                 <div class="filter-box">
                     <div class="btn-group list_actions hide">
-                        <button type="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
+                        <button role="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
                             {{ trans('messages.actions') }} <span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu">
@@ -50,8 +50,10 @@
                             <option value="created_at">{{ trans('messages.created_at') }}</option>
                             <option value="name">{{ trans('messages.name') }}</option>
                         </select>
-                        <button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
-                            <i class="icon-sort-amount-desc"></i>
+                        <button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
+                            <span class="material-icons-outlined desc">
+sort
+</span>
                         </button>
                     </span>
                     <span class="filter-group">
@@ -69,11 +71,11 @@
                     </span>
                 </div>
             </div>
-            <div class="col-md-4 text-right d-flex align-items-center">
+            <div class="col-md-4 text-end d-flex align-items-center">
                 <div class="view-toggle d-flex ml-auto">
                     <div class="btn-group" role="group" aria-label="Basic example">
-                        <a href="{{ action('ProductController@index') }}" class="btn btn-default view-toogle grid m-icon mr-1">
-                            <span class="material-icons">
+                        <a href="{{ action('ProductController@index') }}" class="btn btn-default view-toogle grid m-icon">
+                            <span class="material-icons-outlined">
                                 grid_view
                             </span>
                         </a>
@@ -84,7 +86,7 @@
                         </a>
                     </div>
                 </div>
-                <a href="{{ action("SourceController@index") }}" type="button" class="btn bg-info-800 m-icon">
+                <a href="{{ action("SourceController@index") }}" role="button" class="btn btn-secondary m-icon">
                     <span class="material-icons-outlined">store</span> {{ trans('messages.stores_connections') }}
                 </a>
             </div>

@@ -32,16 +32,16 @@
                     <br />
                     <span class="text-muted">{{ trans('messages.username') }}</span>
                 </td>
-                <td class="text-right">
+                <td class="text-end">
                     <span class="text-muted2 list-status pull-left">
                         <span class="label label-flat bg-{{ $item->status }}">{{ trans('messages.bounce_handler_status_' . $item->status) }}</span>
                     </span>
                     @can('update', $item)
-                        <a href="{{ action('Admin\BounceHandlerController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey btn-icon"><i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
+                        <a href="{{ action('Admin\BounceHandlerController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-outline-secondary btn-icon"><i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
                     @endcan
                     @can('delete', $item)
                         <div class="btn-group">                                        
-                            <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
+                            <button role="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
                             <ul class="dropdown-menu dropdown-menu-right">                                                    
                                 <li>                                                        
                                     <a delete-confirm="{{ trans('messages.delete_bounce_handlers_confirm') }}" href="{{ action('Admin\BounceHandlerController@delete', ["uids" => $item->uid]) }}">

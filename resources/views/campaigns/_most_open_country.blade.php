@@ -24,7 +24,7 @@
                     </div>
                 @endforeach 
             </div>
-            <div class="text-right">
+            <div class="text-end">
                 <a href="{{ action('CampaignController@openMap', $campaign->uid) }}" class="btn btn-info bg-teal-600">{{ trans('messages.open_map') }} <i class="icon-arrow-right8"></i></a>
             </div>
         @endif

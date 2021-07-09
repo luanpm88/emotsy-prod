@@ -4,7 +4,7 @@
 		<li><a href="{{ action("MailListController@index") }}">{{ trans('messages.lists') }}</a></li>
 		<li>
 			<div class="btn-group other-lists">
-				<button type="button" class="btn btn-link dropdown-toggle text-teal-600" data-toggle="dropdown">{{ trans('messages.change_list') }} <span class="caret"></span></button>
+				<button role="button" class="btn btn-link dropdown-toggle text-teal-600" data-toggle="dropdown">{{ trans('messages.change_list') }} <span class="caret"></span></button>
 				<ul class="dropdown-menu dropdown-menu-left">
 					@forelse ($list->otherLists() as $l)
 						<li>

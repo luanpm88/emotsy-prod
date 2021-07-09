@@ -16,7 +16,7 @@
                 @endforeach
 
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <button role="button" class="close" data-dismiss="modal">&times;</button>
                     <h2 class="modal-title">
                         {{ trans('messages.' . request()->action . '_subscriber') }}
                     </h2>
@@ -59,7 +59,7 @@
 
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary bg-teal">{{ trans('messages.submit') }}</button>
-                    <button type="button" class="btn btn-white" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
+                    <button role="button" class="btn btn-white" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
                 </div>
         </div>
     </div>

@@ -62,7 +62,7 @@
         </div>
     </div>
 	
-	<div class="text-right">                                    
+	<div class="text-end">                                    
 		@if ($result)
 			<a href="{{ action('InstallController@siteInfo') }}" class="btn btn-primary bg-teal">{!! trans('messages.next') !!} <i class="icon-arrow-right14 position-right"></i></a>
 		@else

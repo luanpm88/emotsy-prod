@@ -14,7 +14,7 @@
         {{ csrf_field() }}
         <div class="row mt-40 mc-form">
             <div class="col-md-2"></div>
-            <div class="col-md-2 text-right mt-60">
+            <div class="col-md-2 text-end mt-60">
                 <a class="main-logo-big" href="{{ action('HomeController@index') }}">
                     @if (\Acelle\Model\Setting::get('site_logo_big'))
                         <img src="{{ action('SettingController@file', \Acelle\Model\Setting::get('site_logo_big')) }}" alt="">

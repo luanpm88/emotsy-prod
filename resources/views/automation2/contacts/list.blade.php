@@ -49,9 +49,9 @@
                         @endforeach
                     @endif
                 </div>
-                <div class="flex-fill text-right">
+                <div class="flex-fill text-end">
                     @if (is_null($trigger))
-                        <label title="" class="text-right">
+                        <label title="" class="text-end">
                             <span class="">
                                 <span class="text-warning">Waiting...</span>
                             </span>
@@ -64,7 +64,7 @@
                             </a>
                         </desc>
                     @else
-                        <label title="" class="text-right">
+                        <label title="" class="text-end">
                             <span class="text-truncate" style="max-width: 100px;margin-right:0px">
                                 @php
                                     $latestAction = $trigger->getLatestAction() ?: $trigger->getTrigger();

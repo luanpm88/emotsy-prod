@@ -13,7 +13,7 @@
 
 			<div class="page-title">				
 				<ul class="breadcrumb breadcrumb-caret position-right">
-					<li><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+					<li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
 				</ul>
                 
 				<h1>
@@ -32,7 +32,7 @@
 										@foreach (Acelle\Model\SendingServer::types() as $key => $type)
 											
 											<li>
-												<a href="{{ action('Admin\SendingServerController@create', ["type" => $key]) }}" class="btn btn-info bg-info-800">{{ trans('messages.choose') }}</a>
+												<a href="{{ action('Admin\SendingServerController@create', ["type" => $key]) }}" class="btn btn-secondary">{{ trans('messages.choose') }}</a>
                                                 <a href="{{ action('Admin\SendingServerController@create', ["type" => $key]) }}">
                                                     <span class="server-avatar server-avatar-{{ $key }}">
                                                         <i class="icon-server"></i>
@@ -48,7 +48,7 @@
 										
 									</ul>
 									<div class="pull-right">
-										<a href="{{ action('Admin\SendingServerController@index') }}" type="button" class="btn bg-grey">
+										<a href="{{ action('Admin\SendingServerController@index') }}" role="button" class="btn btn-outline-secondary">
 											<i class="icon-cross2"></i> {{ trans('messages.cancel') }}
 										</a>
 									</div>

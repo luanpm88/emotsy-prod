@@ -12,8 +12,8 @@
 
 	<div class="page-title">
 		<ul class="breadcrumb breadcrumb-caret position-right">
-			<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-			<li class="active">{{ trans('messages.api_token') }}</li>
+			<li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+			<li class="breadcrumb-item active">{{ trans('messages.api_token') }}</li>
 		</ul>
 		<h1>
 			<span class="text-semibold"><i class="icon-profile"></i> {{ Auth::user()->displayName() }}</span>

@@ -58,7 +58,7 @@
             >
                 {{ trans('messages.send') }}
             </button>
-            <button type="button" class="btn btn-mc_default" onclick="testPopup.hide()">{{ trans('messages.close') }}</button>
+            <button role="button" class="btn btn-mc_default" onclick="testPopup.hide()">{{ trans('messages.close') }}</button>
         </div>
     </form>
 

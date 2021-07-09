@@ -1,5 +1,5 @@
 <div class="modal-header new-modal">
-    <button type="button" class="close" data-dismiss="modal">&times;</button>
+    <button role="button" class="close" data-dismiss="modal">&times;</button>
     <h4 class="modal-title">{{ trans('messages.test_sending_server') }}</h4>
 </div>
 <div class="modal-content">
@@ -61,7 +61,7 @@
         <div class="modal-footer text-left">
             <a
                 href="{{ action('Admin\SendingServerController@test', $server->uid) }}"
-                type="button"
+                role="button"
                 class="btn bg-teal mr-5 ajax_link"
                 data-in-form="true"
                 data-method="POST"
@@ -69,7 +69,7 @@
             >
                 {{ trans('messages.send') }}
             </a>
-            <button type="button" class="btn btn-default" data-dismiss="modal">{{ trans('messages.close') }}</button>
+            <button role="button" class="btn btn-default" data-dismiss="modal">{{ trans('messages.close') }}</button>
         </div>
     </form>
 </div>

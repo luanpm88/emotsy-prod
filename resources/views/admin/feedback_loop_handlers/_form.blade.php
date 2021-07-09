@@ -91,8 +91,8 @@
     @can('test', $server)
         <a
             href="{{ action('Admin\FeedbackLoopHandlerController@test', $server->uid) }}"
-            type="button"
-            class="btn bg-grey-800 mr-5 btn-icon ajax_link"
+            role="button"
+            class="btn btn-outline-secondary-800 mr-5 btn-icon ajax_link"
             data-in-form="true"
             data-method="POST"
             mask-title="{{ trans('messages.feedback_loop_handler.testing_connection') }}"

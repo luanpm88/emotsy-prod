@@ -13,8 +13,8 @@
 
     <div class="page-title">
         <ul class="breadcrumb breadcrumb-caret position-right">
-            <li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-            <li><a href="{{ action("TrackingDomainController@index") }}">{{ trans('messages.tracking_domains') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("TrackingDomainController@index") }}">{{ trans('messages.tracking_domains') }}</a></li>
         </ul>
         <h1>
             <span class="text-semibold">{{ trans('messages.tracking_domains') }}</span>
@@ -40,7 +40,7 @@
                 @if ($trackingDomains->count() >= 0)
                     <div class="filter-box">
                         <div class="btn-group list_actions hide">
-                            <button type="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
+                            <button role="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
                                 {{ trans('messages.actions') }} <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu">
@@ -59,7 +59,7 @@
                                 <option value="tracking_domains.created_at">{{ trans('messages.created_at') }}</option>
                                 <option value="tracking_domains.updated_at">{{ trans('messages.updated_at') }}</option>
                             </select>
-                            <button class="btn btn-xs sort-direction" rel="asc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
+                            <button class="btn btn-xs sort-direction" rel="asc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
                                 <i class="icon-sort-amount-asc"></i>
                             </button>
                         </span>
@@ -71,8 +71,8 @@
                 @endif
             </div>
             @if (Auth::user()->customer->can('create', new Acelle\Model\TrackingDomain()))
-                <div class="col-md-3 text-right">
-                    <a href="{{ action('TrackingDomainController@create') }}" type="button" class="btn bg-info-800">
+                <div class="col-md-3 text-end">
+                    <a href="{{ action('TrackingDomainController@create') }}" role="button" class="btn btn-secondary">
                         <i class="icon icon-plus2"></i> {{ trans('messages.tracking_domain.create') }}
                     </a>
                 </div>

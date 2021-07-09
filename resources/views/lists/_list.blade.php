@@ -51,12 +51,12 @@
 					</div>
 					<br style="clear:both" />
 				</td>
-				<td class="text-right">
-					<a href="{{ action('SubscriberController@create', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.create_subscriber') }}" type="button" class="btn bg-grey-600 btn-icon"><i class="icon icon-plus2"></i><i class="icon icon-user"></i></a>
-					<a href="{{ action('MailListController@overview', $item->uid) }}" type="button" class="btn bg-teal-600 btn-icon">
+				<td class="text-end">
+					<a href="{{ action('SubscriberController@create', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.create_subscriber') }}" role="button" class="btn btn-outline-secondary-600 btn-icon"><i class="icon icon-plus2"></i><i class="icon icon-user"></i></a>
+					<a href="{{ action('MailListController@overview', $item->uid) }}" role="button" class="btn bg-teal-600 btn-icon">
 						<i class="icon-stats-growth mr-0 pr-0"></i> {{ trans('messages.list.overview_statistics') }}</a>
 					<div class="btn-group">
-						<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
+						<button role="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 						<ul class="dropdown-menu dropdown-menu-right">
 							<li><a href="{{ action('SubscriberController@index', $item->uid) }}"><i class="icon-users4"></i> {{ trans("messages.subscribers") }}</a></li>
 							<li><a href="{{ action('SegmentController@index', $item->uid) }}"><i class="icon-make-group"></i> {{ trans('messages.segments') }}</a></li>

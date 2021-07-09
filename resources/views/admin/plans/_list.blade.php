@@ -64,15 +64,15 @@
                         <span class="label label-flat bg-{{ $plan->status }}">{{ trans('messages.plan_status_' . $plan->status) }}</span>
                     </span>
                 </td>
-                <td class="text-right text-nowrap" width="5%">
+                <td class="text-end text-nowrap" width="5%">
                     @can('update', $plan)
-                        <a href="{{ action('Admin\PlanController@general', $plan->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
+                        <a href="{{ action('Admin\PlanController@general', $plan->uid) }}" role="button" class="btn btn-outline-secondary btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
                     @endcan
                     @if (\Auth::user()->can('delete', $plan) ||
                          \Auth::user()->can('copy', $plan)
                     )
                         <div class="btn-group">
-                            <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
+                            <button role="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
                             <ul class="dropdown-menu dropdown-menu-right">
                                 @can('copy', $plan)
                                     <li>

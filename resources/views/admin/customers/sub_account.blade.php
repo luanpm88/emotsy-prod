@@ -12,7 +12,7 @@
 
 	<div class="page-title">
 		<ul class="breadcrumb breadcrumb-caret position-right">
-			<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+			<li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
 			<li class="active">{{ trans('messages.customer.sub_account') }}</li>
 		</ul>
 		<h1>
@@ -38,7 +38,7 @@
                             @if (Auth::user()->admin->can('delete', $account))
                                 <a href="{{ action('Admin\SubAccountController@delete', $account->uid) }}"
                                     data-popup="tooltip" title="{{ trans('messages.subaccount.delete.tooltip') }}"
-                                    type="button" class="btn btn-danger reload_page"
+                                    role="button" class="btn btn-danger reload_page"
                                     data-method="delete"
                                     list-delete-confirm="{{ action('Admin\SubAccountController@deleteConfirm', $account->uid) }}"
                                 >

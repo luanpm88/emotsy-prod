@@ -12,8 +12,8 @@
 
     <div class="page-title">
         <ul class="breadcrumb breadcrumb-caret position-right">
-            <li><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-            <li class="active">{{ trans('messages.profile') }}</li>
+            <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li class="breadcrumb-item active">{{ trans('messages.profile') }}</li>
         </ul>
         <h1>
             <span class="text-semibold"><i class="icon-profile"></i> {{ $user->displayName() }}</span>

@@ -11,7 +11,7 @@
 
     <div class="page-title">				
         <ul class="breadcrumb breadcrumb-caret position-right">
-            <li><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
             <li><a href="{{ action("Admin\PluginController@index") }}">{{ trans('messages.plugins') }}</a></li>
         </ul>
         <h1>
@@ -43,7 +43,7 @@
                     'name' => 'file',
                 ])
                     
-                <div class="text-right">
+                <div class="text-end">
                     <button class="btn btn-mc_primary mr-2">
                         {{ trans('messages.upload') }}
                     </button>

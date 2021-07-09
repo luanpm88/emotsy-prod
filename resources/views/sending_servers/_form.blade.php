@@ -274,7 +274,7 @@
 	@if(Auth::user()->customer->can('test', $server))
 		<a
 			href="{{ action('SendingServerController@test', $server->uid) }}"
-			type="button"
+			role="button"
 			class="btn bg-teal mr-5 btn-icon modal_link"
 			data-in-form="true"
 			data-method="GET"
@@ -283,7 +283,7 @@
 		</a>
 	@endif
 	<button class="btn bg-teal mr-5"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
-	<a href="{{ action('SendingServerController@index') }}" type="button" class="btn bg-grey">
+	<a href="{{ action('SendingServerController@index') }}" role="button" class="btn btn-outline-secondary">
 		<i class="icon-cross2"></i> {{ trans('messages.cancel') }}
 	</a>
 </div>

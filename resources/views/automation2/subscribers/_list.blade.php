@@ -59,17 +59,17 @@
 					</td>
 				@endif
 
-				<td class="text-right text-nowrap">
+				<td class="text-end text-nowrap">
 					@if (\Gate::allows('update', $subscriber))
 						<a href="{{ action('Automation2Controller@subscribersShow', [
 							'uid' => $automation->uid,
 							'subscriber_uid' => $subscriber->uid
-						]) }}" type="button" class="btn bg-grey btn-icon">
+						]) }}" role="button" class="btn btn-outline-secondary btn-icon">
 							{{ trans('messages.automation.subscriber.view') }}
 						</a>
 					@endif
 					<div class="btn-group">
-						<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
+						<button role="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 						<ul class="dropdown-menu dropdown-menu-right">
 							@if (\Gate::allows('update', $automation))
 								<li><a data-method="POST" class="ajax_link" href="{{ action('Automation2Controller@subscribersRemove', [

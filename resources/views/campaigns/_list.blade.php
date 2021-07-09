@@ -80,16 +80,16 @@
 					</span>
 					<pre style="display:none">{{ $item->last_error }}</pre>
 				</td>
-				<td class="text-right text-nowrap">
+				<td class="text-end text-nowrap">
 					@if (\Gate::allows('update', $item))
-						<a href="{{ action('CampaignController@edit', $item->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
+						<a href="{{ action('CampaignController@edit', $item->uid) }}" role="button" class="btn btn-outline-secondary btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
 					@endif
 					@if (\Gate::allows('overview', $item))
-						<a href="{{ action('CampaignController@overview', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.overview') }}" type="button" class="btn bg-teal-600 btn-icon"><i class="icon-stats-growth"></i> {{ trans('messages.campaign.overview_statistics') }}</a>
+						<a href="{{ action('CampaignController@overview', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.overview') }}" role="button" class="btn bg-teal-600 btn-icon"><i class="icon-stats-growth"></i> {{ trans('messages.campaign.overview_statistics') }}</a>
 					@endif
 					@if (\Gate::allows('delete', $item) || \Gate::allows('pause', $item) || \Gate::allows('restart', $item))
 						<div class="btn-group">
-							<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
+							<button role="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 							<ul class="dropdown-menu dropdown-menu-right">
 								@if (\Gate::allows('resend', $item))
 									<li><a class="resend-campaign" href="{{ action('CampaignController@resend', ["uid" => $item->uid]) }}">

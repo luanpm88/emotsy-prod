@@ -12,9 +12,9 @@
 
 	<div class="page-title">
 		<ul class="breadcrumb breadcrumb-caret position-right">
-			<li><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-			<li><a href="{{ action("Admin\AccountController@profile") }}">{{ trans('messages.profile') }}</a></li>
-			<li class="active">{{ trans('messages.settings') }}</li>
+			<li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+			<li class="breadcrumb-item "><a href="{{ action("Admin\AccountController@profile") }}">{{ trans('messages.profile') }}</a></li>
+			<li class="breadcrumb-item active">{{ trans('messages.settings') }}</li>
 		</ul>
 		<h1>
 			<span class="text-semibold"><i class="icon-address-book3"></i> {{ $contact->company }} ({{ $contact->name() }})</span>

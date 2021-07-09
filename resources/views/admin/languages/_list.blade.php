@@ -24,9 +24,9 @@
 						<span class="label label-flat bg-{{ $language->status }}">{{ trans('messages.language_status_' . $language->status) }}</span>
 					</span>	
 				</td>
-				<td class="text-right">																					
+				<td class="text-end">																					
 					@can("translate", $language)
-						<a href="{{ action('Admin\LanguageController@translate', ["id" => $language->uid, "file" => "messages", "file_id" => $language->getDefaultFile()['id']]) }}" data-popup="tooltip" title="{{ trans('messages.translate') }}" type="button" class="btn bg-teal btn-icon"><i class="icon-share2"></i> {{ trans('messages.translate') }}</a>
+						<a href="{{ action('Admin\LanguageController@translate', ["id" => $language->uid, "file" => "messages", "file_id" => $language->getDefaultFile()['id']]) }}" data-popup="tooltip" title="{{ trans('messages.translate') }}" role="button" class="btn bg-teal btn-icon"><i class="icon-share2"></i> {{ trans('messages.translate') }}</a>
 					@endcan
 					@if(Auth::user()->can("delete", $language) ||
 						Auth::user()->can("update", $language) ||
@@ -36,7 +36,7 @@
 						Auth::user()->can("download", $language)
 					)
 						<div class="btn-group">										
-							<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
+							<button role="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 							<ul class="dropdown-menu dropdown-menu-right">
 								@can('enable', $language)
 									<li>														

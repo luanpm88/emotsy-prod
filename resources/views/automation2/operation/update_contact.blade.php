@@ -18,7 +18,7 @@
 
 <div class="row my-2">
     <div class="col-md-10 font-weight-semibold">
-        <div class="text-right">
+        <div class="text-end">
             <a href="javascript:;" class="btn btn-primary btn-sm add-more-operation">
                 {{ trans('messages.operation.add_more') }}
             </a>

@@ -11,8 +11,8 @@
 
     <div class="page-title">
         <ul class="breadcrumb breadcrumb-caret position-right">
-            <li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-            <li class="active">{{ trans('messages.subscription') }}</li>
+            <li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li class="breadcrumb-item active">{{ trans('messages.subscription') }}</li>
         </ul>
         <h1>
             <span class="text-semibold">{{ Auth::user()->displayName() }}</span>
@@ -91,7 +91,7 @@
                     @if (\Auth::user()->customer->can('cancel', $subscription))
                         <a link-method="POST" link-confirm="{{ trans('messages.subscription.cancel.confirm') }}"
                             href="{{ action('AccountSubscriptionController@cancel') }}"
-                            class="btn bg-grey-600 mr-10"
+                            class="btn btn-outline-secondary-600 mr-10"
                         >
                             {{ trans('messages.subscription.cancel') }}
                         </a>

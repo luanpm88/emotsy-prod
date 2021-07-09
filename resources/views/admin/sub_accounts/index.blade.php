@@ -13,7 +13,7 @@
 
     <div class="page-title">
         <ul class="breadcrumb breadcrumb-caret position-right">
-            <li><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
         </ul>
         <h1>
             <span class="text-semibold"><i class="icon-list2"></i> {{ trans('messages.sub_accounts') }}</span>
@@ -41,8 +41,10 @@
                                 <option value="sending_servers.name">{{ trans('messages.name') }}</option>
                                 <option value="sending_servers.updated_at">{{ trans('messages.updated_at') }}</option>
                             </select>
-                            <button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
-                                <i class="icon-sort-amount-desc"></i>
+                            <button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
+                                <span class="material-icons-outlined desc">
+sort
+</span>
                             </button>
                         </span>
                         <span class="filter-group">

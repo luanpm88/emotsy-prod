@@ -14,7 +14,7 @@
 			<th>{{ trans('messages.email') }}</th>
 			<th>{{ trans('messages.created_at') }}</th>
 			<th>{{ trans('messages.status') }}</th>
-			<th class="text-right">{{ trans('messages.action') }}</th>
+			<th class="text-end">{{ trans('messages.action') }}</th>
 		</tr>
 		@foreach ($senders as $key => $sender)
 			<tr>
@@ -50,15 +50,15 @@
 					</span>
 					<span class="text-muted second-line-mobile">{{ trans('messages.sender.status.' . $sender->status) }}</span>
 				</td>
-				<td class="text-right">
+				<td class="text-end">
 					<div class="btn-group">
 						@if (Auth::user()->can('read', $sender))
 							<a href="{{ action('SenderController@show', $sender->uid) }}"
-								type="button" class="btn btn-default">
+								role="button" class="btn btn-default">
 									{{ trans('messages.sender.view') }}
 							</a>
 						@endif
-						<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
+						<button role="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 						<ul class="dropdown-menu dropdown-menu-right">
 							@if (Auth::user()->customer->can('delete', $sender))
 								<li>

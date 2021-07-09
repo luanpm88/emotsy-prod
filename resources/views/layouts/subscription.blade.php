@@ -19,7 +19,7 @@
 	<!-- Page container -->
 	<div class="page-container login-container">
 
-		<div class="text-right user-top-right">
+		<div class="text-end user-top-right">
 			@if (is_object(\Auth::user()))
 				<a class="dropdown-toggle" data-toggle="dropdown">
 					<img src="{{ Auth::user()->getProfileImageUrl() }}" alt="">

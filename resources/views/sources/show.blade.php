@@ -9,8 +9,8 @@
 @section('page_header')
 	<div class="page-title">
 		<ul class="breadcrumb breadcrumb-caret position-right">
-			<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-            <li><a href="{{ action("SourceController@index") }}">{{ trans('messages.stores_connections') }}</a></li>
+			<li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("SourceController@index") }}">{{ trans('messages.stores_connections') }}</a></li>
 		</ul>
 	</div>
 @endsection
@@ -40,7 +40,7 @@
                 <div class="source-action ml-auto">
                     @if (\Acelle\Model\Source::where('id', '!=', $source->id)->count())
                         <div class="dropdown">
-                            <button class="btn btn-mc_outline dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            <button class="btn btn-mc_outline dropdown-toggle" role="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                             {{ trans('messages.source.switch_store') }}
                             <span class="caret"></span>
                             </button>

@@ -56,15 +56,15 @@
                         <span class="label label-flat bg-{{ $automation->status }}">{{ trans('messages.automation.status.' . $automation->status) }}</span>
                     </span>
                 </td>
-                <td class="text-right text-nowrap">
+                <td class="text-end text-nowrap">
                     @if (\Gate::allows('update', $automation))
-                        <a data-popup="tooltip" href="{{ action('Automation2Controller@edit', $automation->uid) }}" type="button" class="btn bg-grey btn-icon">
+                        <a data-popup="tooltip" href="{{ action('Automation2Controller@edit', $automation->uid) }}" role="button" class="btn btn-outline-secondary btn-icon">
                             <i class="material-icons">multiline_chart</i> {{ trans('messages.automation.design') }}
                         </a>
                     @endif
                     @if (\Gate::allows('delete', $automation) || Auth::user()->can('disable', $automation) || Auth::user()->can('enable', $automation))
                         <div class="btn-group">
-                            <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
+                            <button role="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
                             <ul class="dropdown-menu dropdown-menu-right">
                                 @can('view', $automation)
                                     <li>

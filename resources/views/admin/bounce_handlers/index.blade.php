@@ -36,7 +36,7 @@
                 @if ($items->count() >= 0)                    
                     <div class="filter-box">
                         <div class="btn-group list_actions hide">
-                            <button type="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
+                            <button role="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
                                 {{ trans('messages.actions') }} <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu">
@@ -55,8 +55,10 @@
                                 <option value="bounce_handlers.name">{{ trans('messages.name') }}</option>
                                 <option value="bounce_handlers.created_at">{{ trans('messages.created_at') }}</option>
                             </select>                                        
-                            <button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
-                                <i class="icon-sort-amount-desc"></i>
+                            <button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
+                                <span class="material-icons-outlined desc">
+sort
+</span>
                             </button>
                         </span>
                         <span class="text-nowrap">
@@ -67,8 +69,8 @@
                 @endif
             </div>
             @can('create', new Acelle\Model\BounceHandler())
-                <div class="col-md-3 text-right">
-                    <a href="{{ action('Admin\BounceHandlerController@create') }}" type="button" class="btn bg-info-800">
+                <div class="col-md-3 text-end">
+                    <a href="{{ action('Admin\BounceHandlerController@create') }}" role="button" class="btn btn-secondary">
                         <i class="icon icon-plus2"></i> {{ trans('messages.create_bounce_handler') }}
                     </a>
                 </div>

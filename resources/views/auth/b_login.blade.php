@@ -48,7 +48,7 @@
 	    </label>
 	</div>
 
-	<div class="col-sm-6 text-right text-semibold">
+	<div class="col-sm-6 text-end text-semibold">
 	    <a href="{{ url('/password/reset') }}">{{ trans("messages.forgot_password") }}</a>
 	</div>
             </div>

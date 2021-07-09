@@ -10,8 +10,8 @@
 @section('page_header')
 <div class="page-title">
     <ul class="breadcrumb breadcrumb-caret position-right">
-        <li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-        <li><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
+        <li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+        <li class="breadcrumb-item"><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
     </ul>
     <h1>
         <span class="text-semibold"><i class="icon-alarm-check"></i> {{ trans('messages.select_campaign_type') }}</span>
@@ -26,7 +26,7 @@
             @foreach (Acelle\Model\Campaign::types() as $key => $type)
 
                 <li>
-                    <a href="{{ action("CampaignController@create", ["type" => $key]) }}" class="btn btn-info bg-info-800">{{ trans('messages.choose') }}</a>
+                    <a href="{{ action("CampaignController@create", ["type" => $key]) }}" class="btn btn-secondary">{{ trans('messages.choose') }}</a>
                     <a href="{{ action("CampaignController@create", ["type" => $key]) }}">
                         <span class="">
                             <i class="{{ $type['icon'] }} text-grey-800"></i>
@@ -42,7 +42,7 @@
 
         </ul>
         <div class="">
-            <a href="{{ action('CampaignController@index') }}" type="button" class="btn bg-grey">
+            <a href="{{ action('CampaignController@index') }}" role="button" class="btn btn-outline-secondary">
                 <i class="icon-cross2"></i> {{ trans('messages.cancel') }}
             </a>
         </div>

@@ -13,7 +13,7 @@
 						overflow: hidden;" class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
 						<div class="">
 							<div class="d-flex align-items-center">
-								<button type="button" class="btn btn-mc_primary">{{ trans('messages.view') }}</button>
+								<button role="button" class="btn btn-mc_primary">{{ trans('messages.view') }}</button>
 								<a delete-confirm="{{ trans('messages.source.delete.confirm') }}"
 									data-method="POST" href="{{ action('SourceController@delete', ['uids' => $product->uid]) }}"
 									class="btn btn-link">

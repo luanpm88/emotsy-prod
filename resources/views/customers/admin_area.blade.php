@@ -1,6 +1,6 @@
 <div class="modal-header">
     <h5 class="modal-title">{{ trans('messages.customer.admin_area') }}</h5>
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <button role="button" class="close" data-dismiss="modal" aria-label="Close">
       <span aria-hidden="true">&times;</span>
     </button>
 </div>
@@ -79,5 +79,5 @@
 </div>
 <div class="modal-footer text-left">
     <a href="{{ action("CustomerController@loginBack") }}" class="btn btn-mc_primary">{{ trans('messages.customer.back_to_admin') }}</a>
-    <button type="button" class="btn btn-mc_inline" data-dismiss="modal">{{ trans('messages.close') }}</button>
+    <button role="button" class="btn btn-mc_inline" data-dismiss="modal">{{ trans('messages.close') }}</button>
 </div>

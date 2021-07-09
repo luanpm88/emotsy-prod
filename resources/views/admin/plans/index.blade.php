@@ -76,7 +76,7 @@
 
 	<div class="page-title">
 		<ul class="breadcrumb breadcrumb-caret position-right">
-			<li><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+			<li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
 		</ul>
 		<h1>
 			<span class="text-semibold"><i class="icon-list2"></i> {{ trans('messages.plans') }}</span>
@@ -104,7 +104,7 @@
                                 <option value="plans.created_at">{{ trans('messages.created_at') }}</option>
                                 <option value="plans.name">{{ trans('messages.name') }}</option>
                             </select>
-                            <button class="btn btn-xs sort-direction" rel="asc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
+                            <button class="btn btn-xs sort-direction" rel="asc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
                                 <i class="icon-sort-amount-asc"></i>
                             </button>
                         </span>
@@ -116,8 +116,8 @@
                 @endif
             </div>
             @can('create', new Acelle\Model\Plan())
-                <div class="col-md-2 text-right">
-                    <a href="{{ action("Admin\PlanController@wizard") }}" type="button" class="btn bg-info-800 modal-action">
+                <div class="col-md-2 text-end">
+                    <a href="{{ action("Admin\PlanController@wizard") }}" role="button" class="btn btn-secondary modal-action">
                         <i class="icon icon-plus2"></i> {{ trans('messages.create_plan') }}
                     </a>
                 </div>

@@ -34,15 +34,15 @@
                                     'uid' => $subscriber->uid,
                                     'tag' => $tag,
                                 ]) }}" class="btn-group remove-contact-tag" role="group" aria-label="Basic example">
-                                    <button type="button" class="btn btn-light btn-tag font-weight-semibold">{{ $tag }}</button>
-                                    <button type="button" class="btn btn-light btn-tag font-weight-semibold ml-0">
+                                    <button role="button" class="btn btn-light btn-tag font-weight-semibold">{{ $tag }}</button>
+                                    <button role="button" class="btn btn-light btn-tag font-weight-semibold ml-0">
                                         <i class="lnr lnr-cross"></i>
                                     </button>
                                 </a>
                             @endforeach
                         @else
                             <a href="" class="btn-group profile-tag-contact" role="group" aria-label="Basic example">
-                                <button type="button" class="btn btn-light btn-tag d-flex align-items-center">
+                                <button role="button" class="btn btn-light btn-tag d-flex align-items-center">
                                     <i class="material-icons mr-2">add</i>
                                     <span class="font-italic">{{ trans('messages.automation.profile.click_to_add_tag') }}<span>
                                 </button>
@@ -57,7 +57,7 @@
                         </div>
                         <div class="mt-20">
                             <div class="dropdown">
-                            <button class="btn btn-default bg-grey dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            <button class="btn btn-default bg-grey dropdown-toggle" role="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                 {{ trans('messages.subscribers.profile.action') }}
                                 <span class="caret"></span>
                             </button>
@@ -73,7 +73,7 @@
                     @include("subscribers._form")
 
                     <button class="btn btn-secondary me-2"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
-                    <a href="{{ action('SubscriberController@index', $list->uid) }}" class="btn bg-grey-800"><i class="icon-cross2"></i> {{ trans('messages.cancel') }}</a>
+                    <a href="{{ action('SubscriberController@index', $list->uid) }}" class="btn btn-outline-secondary-800"><i class="icon-cross2"></i> {{ trans('messages.cancel') }}</a>
 
                 </form>
             </div>
@@ -142,7 +142,7 @@
                     <div class="">
                         <div class="mt-10">
                             <div class="dropdown">
-                            <button class="btn btn-default bg-grey dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            <button class="btn btn-default bg-grey dropdown-toggle" role="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                 {{ trans('messages.automation.contact.all_activities') }}
                                 <span class="caret"></span>
                             </button>

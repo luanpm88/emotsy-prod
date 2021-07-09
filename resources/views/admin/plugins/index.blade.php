@@ -13,7 +13,7 @@
 
 	<div class="page-title">
 		<ul class="breadcrumb breadcrumb-caret position-right">
-			<li><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+			<li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
 		</ul>
 		<h1>
 			<span class="text-semibold"><i class="icon-list2"></i> {{ trans('messages.plugins') }}</span>
@@ -35,7 +35,7 @@
 				@if ($plugins->count() >= 0)
 					<div class="filter-box">
 						<div class="btn-group list_actions hide">
-							<button type="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
+							<button role="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
 								{{ trans('messages.actions') }} <span class="caret"></span>
 							</button>
 							<ul class="dropdown-menu">
@@ -51,8 +51,8 @@
 					</div>
 				@endif
 			</div>
-			<div class="col-md-2 text-right">
-				<a href="{{ action("Admin\PluginController@install") }}" type="button" class="btn bg-info-800">
+			<div class="col-md-2 text-end">
+				<a href="{{ action("Admin\PluginController@install") }}" role="button" class="btn btn-secondary">
 					<i class="icon icon-plus2"></i> {{ trans('messages.install_plugin') }}
 				</a>
 			</div>

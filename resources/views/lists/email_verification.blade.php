@@ -37,7 +37,7 @@
             ]) !!}</p>
             @if (!$list->countVerifiedSubscribers() == 0)
             <p>
-                <a link-confirm="{{ trans('messages.reset_list_verification_confirm') }}" link-method="POST" class="btn bg-grey-600"
+                <a link-confirm="{{ trans('messages.reset_list_verification_confirm') }}" link-method="POST" class="btn btn-outline-secondary-600"
                     href="{{ action("MailListController@resetVerification", $list->uid) }}">
                         {{ trans('messages.verification.button.reset') }}
                 </a>

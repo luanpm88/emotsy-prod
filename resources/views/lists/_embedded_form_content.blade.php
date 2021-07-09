@@ -10,7 +10,7 @@
 	@if (!empty($form_title))
 		<h2>{{ $form_title }}</h2>
 	@endif
-	<p class="text-sm text-right"><span class="text-danger">*</span> {{ trans('messages.indicates_required') }}</p>
+	<p class="text-sm text-end"><span class="text-danger">*</span> {{ trans('messages.indicates_required') }}</p>
 		@if (!isset($preview))
 			<form action="{{ action('MailListController@embeddedFormSubscribe', $list->uid) }}" method="POST" class="form-validate-jqueryz">
 		@endif

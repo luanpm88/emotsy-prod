@@ -30,7 +30,7 @@
 							@if ($list->segmentsCount() >= 0)
 								<div class="filter-box">
 									<div class="btn-group list_actions hide mr-10">
-										<button type="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
+										<button role="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
 											{{ trans('messages.actions') }} <span class="caret"></span>
 										</button>
 										<ul class="dropdown-menu">
@@ -53,8 +53,10 @@
 											<option value="segments.name">{{ trans('messages.name') }}</option>
 											<option value="segments.updated_at">{{ trans('messages.updated_at') }}</option>
 										</select>
-										<button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
-											<i class="icon-sort-amount-desc"></i>
+										<button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
+											<span class="material-icons-outlined desc">
+sort
+</span>
 										</button>
 									</span>
 									<span class="text-nowrap">
@@ -64,8 +66,8 @@
 								</div>
 							@endif
 						</div>
-						<div class="col-md-2 text-right">
-							<a href="{{ action("SegmentController@create", $list->uid) }}" type="button" class="btn bg-info-800">
+						<div class="col-md-2 text-end">
+							<a href="{{ action("SegmentController@create", $list->uid) }}" role="button" class="btn btn-secondary">
 								<i class="icon icon-plus2"></i> {{ trans('messages.create_segment') }}
 							</a>
 						</div>

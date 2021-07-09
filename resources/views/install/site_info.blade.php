@@ -231,7 +231,7 @@
 	</div>
 	
 	<hr >
-	<div class="text-right">                                    
+	<div class="text-end">                                    
 		<button data-wait="{{ trans('messages.button_processing') }}" type="submit" class="btn btn-primary bg-teal">{!! trans('messages.next') !!} <i class="icon-arrow-right14 position-right"></i></button>
 	</div>
 	

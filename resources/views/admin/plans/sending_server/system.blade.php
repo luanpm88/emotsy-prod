@@ -12,8 +12,8 @@
 
     <div class="page-title">
         <ul class="breadcrumb breadcrumb-caret position-right">
-            <li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-            <li><a href="{{ action("Admin\PlanController@index") }}">{{ trans('messages.plans') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("Admin\PlanController@index") }}">{{ trans('messages.plans') }}</a></li>
             <li><a href="{{ action('Admin\PlanController@sendingServer', [ 'uid' => $plan->uid ]) }}">
                     {{ $plan->name }}
                 </a>
@@ -39,7 +39,7 @@
                     <h4>{{ trans('messages.plan_option.system_s_sending_server') }}</h4>
                     <p>{{ trans('messages.plan_option.system_s_sending_server.intro') }}</p>
                 </div>
-                <div class="col-md-4 text-right">
+                <div class="col-md-4 text-end">
                     <a class="btn btn-mc_primary mr-20 mc-modal-control" modal-size="lg" href="{{ action('Admin\PlanController@sendingServerOption', [
                         'uid' => $plan->uid]) }}">
                             {{ trans('messages.plan_option.change') }}</a>
@@ -54,7 +54,7 @@
                 </h2>
                 <p>{{ trans('messages.plan.sending_servers.list_intro') }}</p>
             </div>
-            <div class="col-md-4 text-right">
+            <div class="col-md-4 text-end">
                 <a href="{{ action('Admin\PlanController@addSendingServer', [ 'id' => $plan->uid ]) }}" class="btn btn-primary mr-5 bg-grey mc-modal-control">
                     {{ trans('messages.plan.sending_servers.add') }}
                 </a>
@@ -112,9 +112,9 @@
                                 @if (Auth::user()->admin->can('update', $planSendingServer->sendingServer))
                                     
                                     @if ($server->isExtended())
-                                        <a href="{{ $server->getEditUrl() }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn btn-mc_default">{{ trans('messages.edit') }}</a>
+                                        <a href="{{ $server->getEditUrl() }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-mc_default">{{ trans('messages.edit') }}</a>
                                     @else
-                                        <a href="{{ action('Admin\SendingServerController@edit', ["id" => $planSendingServer->sendingServer->uid, "type" => $planSendingServer->sendingServer->type]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn btn-mc_default">{{ trans('messages.edit') }}</a>
+                                        <a href="{{ action('Admin\SendingServerController@edit', ["id" => $planSendingServer->sendingServer->uid, "type" => $planSendingServer->sendingServer->type]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-mc_default">{{ trans('messages.edit') }}</a>
                                     @endif
                                 @endif
                                 <a link-method="POST" href="{{ action('Admin\PlanController@removeSendingServer', ['id' => $plan->uid, 'sending_server_uid' => $planSendingServer->sendingServer->uid]) }}" class="btn btn-mc_default">{{ trans('messages.remove') }}</a>

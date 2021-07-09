@@ -15,7 +15,7 @@
 		@include('elements._cron_jobs')
     
 		<hr>
-		<div class="text-right">
+		<div class="text-end">
 			@if($valid)
 				<a href="{{ action('InstallController@cronJobs') }}" class="btn btn-primary bg-grey">
 					<i class="icon-gear"></i> {!! trans('messages.change_cronjob_setting') !!}

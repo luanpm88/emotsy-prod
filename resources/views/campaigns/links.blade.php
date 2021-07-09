@@ -21,8 +21,8 @@
     <table class="table table-box pml-table table-head">
         <tr>
             <th>{{ trans('messages.url') }}</th>
-            <th class="text-right">{{ trans('messages.total_clicks') }}</th>
-            <th class="text-right">{{ trans('messages.last_clicked') }}</th>
+            <th class="text-end">{{ trans('messages.total_clicks') }}</th>
+            <th class="text-end">{{ trans('messages.last_clicked') }}</th>
         </tr>
         @foreach ($links as $link)
             <tr>
@@ -31,17 +31,17 @@
                         {{ $link->url }}
                     </a>
                 </td>
-                <td class="text-right">
+                <td class="text-end">
                     {{ $link->clickCount }}
                 </td>
-                <td class="text-right">
+                <td class="text-end">
                     {{ $link->lastClick }}
                 </td>
             </tr>
         @endforeach
     </table>
     <br />
-    <div class="text-right">
+    <div class="text-end">
         <a href="{{ action('CampaignController@clickLog', $campaign->uid) }}" class="btn btn-info bg-teal-600">{{ trans('messages.click_log') }} <i class="icon-arrow-right8"></i></a>
     </div>
 @endsection

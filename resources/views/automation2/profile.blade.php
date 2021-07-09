@@ -8,7 +8,7 @@
                 <div class="">
                     <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
                         <div class="btn-group btn-group-sm" role="group">
-                            <button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <button id="btnGroupDrop1" role="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 {{ trans('messages.automation.profile.action') }}
                             </button>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnGroupDrop1">
@@ -59,8 +59,8 @@
                                     'contact_uid' => $contact->uid,
                                     'tag' => $tag,
                                 ]) }}" class="btn-group remove-contact-tag" role="group" aria-label="Basic example">
-                                    <button type="button" class="btn btn-light btn-tag">{{ $tag }}</button>
-                                    <button type="button" class="btn btn-light btn-tag">
+                                    <button role="button" class="btn btn-light btn-tag">{{ $tag }}</button>
+                                    <button role="button" class="btn btn-light btn-tag">
                                         <i class="lnr lnr-cross"></i>
                                     </button>
                                 </a>
@@ -70,7 +70,7 @@
                                         'uid' => $automation->uid,
                                         'contact_uid' => $contact->uid,
                                     ]) }}" class="btn-group profile-tag-contact" role="group" aria-label="Basic example">
-                                <button type="button" class="btn btn-light btn-tag d-flex align-items-center">
+                                <button role="button" class="btn btn-light btn-tag d-flex align-items-center">
                                     <i class="material-icons">add</i>
                                     <span class="font-italic">{{ trans('messages.automation.profile.click_to_add_tag') }}<span>
                                 </button>
@@ -86,7 +86,7 @@
                 <div class="">
                     <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
                         <div class="btn-group btn-group-sm" role="group">
-                            <button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <button id="btnGroupDrop1" role="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 {{ trans('messages.automation.contact.all_activities') }}
                             </button>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnGroupDrop1">

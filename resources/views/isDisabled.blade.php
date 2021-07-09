@@ -8,5 +8,5 @@
             {{ trans('messages.your_account_is_disabled') }}
         </span>
     </div>
-    <a href='#back' onclick='history.back()' class='btn bg-grey-400'>{{ trans('messages.go_back') }}</a>
+    <a href='#back' onclick='history.back()' class='btn btn-outline-secondary-400'>{{ trans('messages.go_back') }}</a>
 @endsection

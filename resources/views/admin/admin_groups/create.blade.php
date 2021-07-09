@@ -12,8 +12,8 @@
 
 	<div class="page-title">
 		<ul class="breadcrumb breadcrumb-caret position-right">
-			<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-			<li><a href="{{ action("Admin\AdminGroupController@index") }}">{{ trans('messages.admin_groups') }}</a></li>
+			<li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+			<li class="breadcrumb-item"><a href="{{ action("Admin\AdminGroupController@index") }}">{{ trans('messages.admin_groups') }}</a></li>
 		</ul>
 		<h1>
 			<span class="text-semibold"><i class="icon-plus-circle2"></i> {{ trans('messages.create_admin_group') }}</span>
@@ -31,7 +31,7 @@
 		<hr />
 		<div class="text-left">
 			<button class="btn btn-secondary me-2"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
-			<a href="{{ action('Admin\AdminGroupController@index') }}" class="btn bg-grey-800"><i class="icon-cross2"></i> {{ trans('messages.cancel') }}</a>
+			<a href="{{ action('Admin\AdminGroupController@index') }}" class="btn btn-outline-secondary-800"><i class="icon-cross2"></i> {{ trans('messages.cancel') }}</a>
 		</div>
 	<form>
 

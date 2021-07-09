@@ -105,7 +105,7 @@
 							</span>
 					@endswitch
                 </td>
-				<td class="text-right">
+				<td class="text-end">
 					@if (\Auth::user()->admin->can('approve', $subscription))
 						<a data-method="POST" link-confirm="{{ trans('messages.subscription.approve.confirm') }}"
 							href="{{ action('Admin\SubscriptionController@approve', $subscription->uid) }}"
@@ -118,13 +118,13 @@
 					
 					@if (\Auth::user()->admin->can('cancel', $subscription))
 						<a data-method="POST" link-confirm="{{ trans('messages.subscription.cancel.confirm') }}"
-						  href="{{ action('Admin\SubscriptionController@cancel', $subscription->uid) }}" class="btn bg-grey-600">
+						  href="{{ action('Admin\SubscriptionController@cancel', $subscription->uid) }}" class="btn btn-outline-secondary-600">
 							{{ trans('messages.subscription.cancel') }}
 						</a>
 					@endif
 					@if (\Auth::user()->admin->can('resume', $subscription))
 						<a data-method="POST" link-confirm="{{ trans('messages.subscription.resume.confirm') }}"
-						  href="{{ action('Admin\SubscriptionController@resume', $subscription->uid) }}" class="btn bg-grey-600">
+						  href="{{ action('Admin\SubscriptionController@resume', $subscription->uid) }}" class="btn btn-outline-secondary-600">
 							{{ trans('messages.subscription.resume') }}
 						</a>
 					@endif
@@ -137,7 +137,7 @@
 					)
 						<div class="btn-group">
 							
-							<button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret ml-0"></span></button>
+							<button role="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret ml-0"></span></button>
 							<ul class="dropdown-menu dropdown-menu-right">
 								@if (\Auth::user()->admin->can('approvePending', $subscription))
 									<li>

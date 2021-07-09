@@ -12,8 +12,8 @@
 
     <div class="page-title">
         <ul class="breadcrumb breadcrumb-caret position-right">
-            <li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-            <li><a href="{{ action("Admin\PlanController@index") }}">{{ trans('messages.plans') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("Admin\PlanController@index") }}">{{ trans('messages.plans') }}</a></li>
             <li><a href="{{ action('Admin\PlanController@sendingServer', $plan->uid) }}">
                     {{ $plan->name }}
                 </a>
@@ -42,7 +42,7 @@
                         <h4>{{ trans('messages.plan_option.sub_account') }}</h4>
                         <p>{{ trans('messages.plan_option.sub_account.intro') }}</p>
                     </div>
-                    <div class="col-md-4 text-right">
+                    <div class="col-md-4 text-end">
                         <a class="btn btn-mc_primary mr-20 mc-modal-control" modal-size="lg" href="{{ action('Admin\PlanController@sendingServerOption', [
                             'uid' => $plan->uid]) }}">
                                 {{ trans('messages.plan_option.change') }}</a>

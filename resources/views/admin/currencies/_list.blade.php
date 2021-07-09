@@ -44,13 +44,13 @@
 						<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
 					</span>
 				</td>
-				<td class="text-right text-nowrap" width="5%">
+				<td class="text-end text-nowrap" width="5%">
 					@can('update', $item)
-						<a href="{{ action('Admin\CurrencyController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey-600 btn-icon"><i class="icon icon-pencil pr-0 mr-0"></i></a>
+						<a href="{{ action('Admin\CurrencyController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-outline-secondary-600 btn-icon"><i class="icon icon-pencil pr-0 mr-0"></i></a>
 					@endcan
 					@if (Auth::user()->can('delete', $item) || Auth::user()->can('enable', $item) || Auth::user()->can('disable', $item) || Auth::user()->can('delete', $item))
 						<div class="btn-group">
-							<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
+							<button role="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 							<ul class="dropdown-menu dropdown-menu-right">
 								@can('enable', $item)
 									<li>

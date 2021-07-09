@@ -16,7 +16,7 @@
         <div class="sub-section mb-30 choose-payment-methods">      
             @foreach(Acelle\Library\Facades\Billing::getEnabledPaymentGateways() as $gateway)
                 <div class="d-flex align-items-center choose-payment choose-payment-{{ $gateway->getType() }}">
-                    <div class="text-right pl-2 pr-2">
+                    <div class="text-end pl-2 pr-2">
                         <div class="d-flex align-items-center form-group-mb-0">
                             @include('helpers.form_control', [
                                 'type' => 'radio2',

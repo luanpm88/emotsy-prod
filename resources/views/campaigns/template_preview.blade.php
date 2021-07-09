@@ -17,8 +17,8 @@
 
     <div class="page-title">
         <ul class="breadcrumb breadcrumb-caret position-right">
-            <li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-            <li><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
         </ul>
         <h1>
             <span class="text-semibold"><i class="icon-paperplane"></i> {{ $campaign->name }}</span>
@@ -32,11 +32,11 @@
 @section('content')
 
 	<div class="pull-right">
-	    <a href="{{ action('CampaignController@spamScore', $campaign->uid) }}" type="button" class="btn btn-primary bg-grey mr-10 modal-control">
+	    <a href="{{ action('CampaignController@spamScore', $campaign->uid) }}" role="button" class="btn btn-primary bg-grey mr-10 modal-control">
 	            <i class="icon icon-check mr-5"></i> {{ trans('messages.campaign.check_spam_score') }}
 	    </a>
 	    @if ($campaign->template_source == 'builder')
-	        <a href="{{ action('CampaignController@templateRebuild', $campaign->uid) }}" type="button" class="btn btn-info bg-teal-800 mr-10">
+	        <a href="{{ action('CampaignController@templateRebuild', $campaign->uid) }}" role="button" class="btn btn-info bg-teal-800 mr-10">
 	            <i class="icon icon-pencil mr-5"></i> {{ trans('messages.edit') }}
 	        </a>
 	    @endif
@@ -111,7 +111,7 @@
 	                'help_class' => 'campaign'
 	            ])
 	        </div>
-	    <div class="text-right" id="previw_next_btn">
+	    <div class="text-end" id="previw_next_btn">
 	        <hr>
 	        <button class="btn bg-teal-800">{{ trans('messages.next') }} <i class="icon-arrow-right7"></i> </button>
 	    </div>

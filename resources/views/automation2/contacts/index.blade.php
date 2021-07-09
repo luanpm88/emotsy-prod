@@ -48,13 +48,13 @@ full-height
         </div>
         <div class="insight-action d-flex align-items-center">
             <div class="btn-group btn-group-sm" role="group">
-                <button type="button" class="btn btn-secondary btn-sm mr-1 contacts-refresh-button">
+                <button role="button" class="btn btn-secondary btn-sm mr-1 contacts-refresh-button">
                     {{ trans('messages.automation.update_stats') }}
                 </button>
             </div>
             <div class="mr-1" role="group" aria-label="Button group with nested dropdown">
                 <div class="btn-group btn-group-sm" role="group">
-                    <button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle contacts-sort-title" data-value="{{ request()->sortBy ? request()->sortBy : 'auto_triggers.updated_at' }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button id="btnGroupDrop1" role="button" class="btn btn-outline-secondary dropdown-toggle contacts-sort-title" data-value="{{ request()->sortBy ? request()->sortBy : 'auto_triggers.updated_at' }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {{ trans('messages.timeline.sort.' . (request()->sortBy ? request()->sortBy : 'auto_triggers.updated_at')) }}
                     </button>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnGroupDrop1">
@@ -67,7 +67,7 @@ full-height
             @if ($subscribers->count())
                 <div class="" role="group" aria-label="Button group with nested dropdown">
                     <div class="btn-group btn-group-sm" role="group">
-                    <button id="btnGroupDrop1" type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button id="btnGroupDrop1" role="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {{ trans('messages.automation.action') }}
                     </button>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnGroupDrop1">

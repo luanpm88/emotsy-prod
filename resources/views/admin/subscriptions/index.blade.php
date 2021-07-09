@@ -12,7 +12,7 @@
 
 	<div class="page-title">
 		<ul class="breadcrumb breadcrumb-caret position-right">
-			<li><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+			<li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
 		</ul>
 		<h1>
 			<span class="text-semibold"><i class="icon-list2"></i> {{ trans('messages.subscriptions') }}</span>
@@ -39,8 +39,10 @@
                                 <option value="subscriptions.created_at">{{ trans('messages.created_at') }}</option>
                                 <option value="subscriptions.ends_at">{{ trans('messages.ends_at') }}</option>
                             </select>
-                            <button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
-                                <i class="icon-sort-amount-desc"></i>
+                            <button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
+                                <span class="material-icons-outlined desc">
+sort
+</span>
                             </button>
                         </span>
                         <span class="mr-10 input-medium">
@@ -64,9 +66,9 @@
                 @endif
             </div>
             @if (\Auth::user()->admin->can('create', new Acelle\Model\Subscription()))
-                <div class="col-md-2 text-right">
-                    <a href="{{ action("Admin\SubscriptionController@create") }}" type="button"
-                        class="btn bg-info-800 modal-action new-subscription"
+                <div class="col-md-2 text-end">
+                    <a href="{{ action("Admin\SubscriptionController@create") }}" role="button"
+                        class="btn btn-secondary modal-action new-subscription"
                     >
                         <i class="icon icon-plus2"></i> {{ trans('messages.subscription.new') }}
                     </a>

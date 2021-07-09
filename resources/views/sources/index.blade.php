@@ -13,7 +13,7 @@
 @section('page_header')
 	<div class="page-title">
 		<ul class="breadcrumb breadcrumb-caret position-right">
-			<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+			<li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
 		</ul>
 		<h1>
 			<span class="text-semibold"><i class="icon-list2"></i> {{ trans('messages.stores_connections') }}</span>
@@ -35,8 +35,10 @@
                             <option value="created_at">{{ trans('messages.created_at') }}</option>
                             <option value="name">{{ trans('messages.name') }}</option>                            
                         </select>
-                        <button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
-                            <i class="icon-sort-amount-desc"></i>
+                        <button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
+                            <span class="material-icons-outlined desc">
+sort
+</span>
                         </button>
                     </span>
                     <span class="text-nowrap">
@@ -45,8 +47,8 @@
                     </span>
                 </div>
             </div>
-            <div class="col-md-3 text-right">
-                <a href="{{ action("SourceController@create") }}" type="button" class="btn bg-info-800 m-icon">
+            <div class="col-md-3 text-end">
+                <a href="{{ action("SourceController@create") }}" role="button" class="btn btn-secondary m-icon">
                     <span class="material-icons-outlined">add</span> {{ trans('messages.source.add_new') }}
                 </a>
             </div>

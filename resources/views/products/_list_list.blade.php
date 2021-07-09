@@ -26,15 +26,15 @@
 					</h5>
 					<span class="text-muted d-block mt-2">{{ trans('messages.source') }}</span>
 				</td>
-				<td class="text-right">
+				<td class="text-end">
 					<a href="{{ action('SourceController@sync', $product->uid) }}"
 						link-method="POST"
-						type="button" class="btn btn-mc_primary m-icon pl-3">
+						role="button" class="btn btn-mc_primary m-icon pl-3">
 						<span class="material-icons-outlined mr-2">
 							link
 							</span>{{ trans('messages.view') }}</a>
 					<div class="btn-group">
-						<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
+						<button role="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 						<ul class="dropdown-menu dropdown-menu-right">
 							<li>
 								<a delete-confirm="{{ trans('messages.source.delete.confirm') }}"
