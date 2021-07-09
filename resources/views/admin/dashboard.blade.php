@@ -211,7 +211,9 @@
                     </li>
                     <li>
                         <div class="unit size1of2">
-                            <strong><i class="icon-address-book2"></i> {{ trans('messages.lists') }}</strong>
+                            <strong><span class="material-icons-outlined">
+contact_mail
+</span> {{ trans('messages.lists') }}</strong>
                         </div>
                         <div class="lastUnit size1of2">
                             <mc:flag>{{ Auth::user()->admin->getAllLists()->count() }}</mc:flag>

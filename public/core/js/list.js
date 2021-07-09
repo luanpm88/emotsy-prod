@@ -17,11 +17,11 @@ class List {
             return;
         }
 
-        // container
-        if (typeof(options.container) !== 'undefined') {
-            _this.container = options.container;
+        // content
+        if (typeof(options.content) !== 'undefined') {
+            _this.content = options.content;
         } else {
-            alert('List container is required!');
+            alert('List content is required!');
             return;
         }
         
@@ -40,18 +40,44 @@ class List {
         }
     }
 
+    masking() {
+        var _this = this;
+
+        _this.content.css('opacity', '0.7');
+    }
+
+    unmasking() {
+        var _this = this;
+        
+        _this.content.css('opacity', '1');
+    }
+
     load() {
         var _this = this;
 
-        $.ajax({
+        if(_this.xhr && _this.xhr.readyState != 4){
+            _this.xhr.abort();
+        }
+
+        _this.masking();
+
+        _this.xhr = $.ajax({
             url: _this.url,
             method: _this.method,
             data: _this.data()
         }).done(function(response) {
-            _this.container.html(response); 
-            initJs(_this.container);
+            _this.content.html(response); 
+            initJs(_this.content);
+
+            // method
+            if (typeof(_this.options.loaded) !== 'undefined') {
+                _this.options.loaded();
+            }
+
+            _this.unmasking();
         }).fail(function(response) {
-            console.log(response);
+
+            _this.unmasking();
         });
     }
 }

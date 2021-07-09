@@ -4226,12 +4226,6 @@ body {
 h1, h1 {
     font-size: 2rem;
 }
-h2, h2 {
-    font-size: 1.9rem;
-}
-h3, h3 {
-    font-size: 1.7rem;
-}
 h4, h4 {
     font-size: 1.45rem;
 }
@@ -4455,4 +4449,7 @@ h4, h4 {
 }
 .log-menu-dropdown li a {
     width: 100%;
+}
+[value=asc] + .sort-direction span {
+    transform: scaleY(-1)!important;
 }

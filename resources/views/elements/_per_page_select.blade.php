@@ -1,5 +1,5 @@
 <div class="num_per_page">
-    <select class="select">
+    <select class="select" name="per_page">
         <option{{ request()->per_page == "2" ? " selected" : "" }} value="2">2</option>
         <option{{ request()->per_page == "10" ? " selected" : "" }} value="10">10</option>
         <option{{ request()->per_page == "25" ? " selected" : "" }} value="25">25</option>
