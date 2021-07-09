@@ -65,6 +65,9 @@
             </div>
             <div class="col-md-2 text-end">
                 <a href="{{ action("MailListController@create") }}" role="button" class="btn btn-secondary">
+                    <span class="material-icons-round">
+                        add
+                    </span>
                     <i class="icon icon-plus2"></i> {{ trans('messages.create_list') }}
                 </a>
             </div>

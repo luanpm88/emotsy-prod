@@ -157,6 +157,8 @@ h3 {
     border-color: #ccc;
     background-color: #fff;
     height: 33px;
+    display: flex;
+    align-items: center;
 }
 .select2-selection--single:not([class*=bg-]):not([class*=border-]):hover {
     border-color: #aaa;
@@ -4319,7 +4321,8 @@ h4, h4 {
 .btn [class^="material-icons"] {
     font-size: inherit;
     line-height: inherit;
-    transform: translateY(10%) scale(1.3);
+    transform: translateY(10%) scale(1.2);
+    line-height: 18px;
 }
 .empty-list {
     width: 100%;
@@ -4348,19 +4351,20 @@ h4, h4 {
 .form-group {
     margin-bottom: 20px;
 }
-.styled[type="checkbox"], .styled[type="radio"] {
-    width: 20px;
-    height: 20px;
-    display: flex;
+.switchery[type="checkbox"], .styled[type="checkbox"], .styled[type="radio"] {
+    width: 19px;
+    height: 19px;
+    display: inline-block;
     align-items: center;
     cursor: pointer;
     margin-right: 5px;
+    transform: translateY(1px);
 }
-.styled[type="checkbox"]:before, .styled[type="radio"]:before {
+.switchery[type="checkbox"]:before, .styled[type="checkbox"]:before, .styled[type="radio"]:before {
     position: relative;
     display: inline-block;
-    width: 20px;
-    height: 20px;
+    width: 19px;
+    height: 19px;
     background-color: #eee;
     border: 1px solid #aaa;
     content: "done";
@@ -4373,10 +4377,10 @@ h4, h4 {
     cursor: pointer;
     text-indent: -90000px;
 }
-.styled[type="checkbox"]:hover:before, .styled[type="radio"]:hover:before {
+.switchery[type="checkbox"]:hover:before, .styled[type="checkbox"]:hover:before, .styled[type="radio"]:hover:before {
     background-color: #eff3f5;
 }
-.styled[type="checkbox"]:checked:before, .styled[type="radio"]:checked:before {
+.switchery[type="checkbox"]:checked:before, .styled[type="checkbox"]:checked:before, .styled[type="radio"]:checked:before {
     content: "done";
     background: #009688;
     border-color: #009688;
@@ -4402,7 +4406,7 @@ h4, h4 {
     margin-left: 3px;
 }
 .styled.check_all {
-    margin-right: 7px;
+    margin-right: 14px;
 }
 .nav-underline .nav-item .nav-link {
     padding: 9px 0;
@@ -4425,16 +4429,21 @@ h4, h4 {
 .progress-xxs {
     height: 5px;
 }
-.btn-icon [class^="material-icons"] {
-    transform: scale(1.3);
-}
 .dropdown-toggle::after {
     content: 'keyboard_arrow_down';
     font-family: 'Material Icons Outlined';
     border: none;
-    line-height: 20px;
+    line-height: 21px;
 }
 .btn.dropdown-toggle {
     display: flex;
     align-items: center;
+}
+.btn-primary {
+    background-color: #288598;
+    border-color: #288598;
+}
+.btn-primary:hover {
+    background-color: #006b77;
+    border-color: #006b77;
 }

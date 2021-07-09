@@ -55,8 +55,9 @@ error_outline
 					</div>
 				</td>
 				<td class="text-end">
-					<div class="btn-group" role="group">
-						<a href="{{ action('SubscriberController@create', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.create_subscriber') }}" role="button" class="btn btn-outline-secondary btn-icon">
+					<div class="btn-groupx" role="group">
+						<a href="{{ action('SubscriberController@create', $item->uid) }}" data-popup="tooltip"
+							title="{{ trans('messages.create_subscriber') }}" role="button" class="btn btn-primary btn-icon">
 							<span class="material-icons-outlined">
 								person_add
 							</span>

@@ -211,8 +211,15 @@
 
                     </li>
                 @empty
-                    <li class="empty-li">
-                        {{ trans('messages.empty_record_message') }}
+                    <li class="empty-li pt-0">
+                        <div class="empty-list mt-0">
+                            <span class="material-icons-outlined">
+                                dynamic_form
+                            </span>
+                            <span class="line-1">
+                                {{ trans('messages.empty_record_message') }}
+                            </span>
+                        </div>
                     </li>
                 @endforelse
             </ul>
@@ -257,8 +264,15 @@
                         </div>
                     </li>
                 @empty
-                    <li class="empty-li">
-                        {{ trans('messages.empty_record_message') }}
+                    <li class="empty-li pt-0">
+                        <div class="empty-list mt-0">
+                            <span class="material-icons-outlined">
+                                dynamic_form
+                            </span>
+                            <span class="line-1">
+                                {{ trans('messages.empty_record_message') }}
+                            </span>
+                        </div>
                     </li>
                 @endforelse
             </ul>
@@ -296,8 +310,15 @@
                         </div>
                     </li>
                 @empty
-                    <li class="empty-li">
-                        {{ trans('messages.empty_record_message') }}
+                    <li class="empty-li pt-0">
+                        <div class="empty-list mt-0">
+                            <span class="material-icons-outlined">
+                                dynamic_form
+                            </span>
+                            <span class="line-1">
+                                {{ trans('messages.empty_record_message') }}
+                            </span>
+                        </div>
                     </li>
                 @endforelse
             </ul>
