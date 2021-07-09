@@ -29,7 +29,7 @@
         <div class="col-sm-12 col-md-8 col-lg-8">
 
             @if ($subscription->getItsOnlyUnpaidRenewInvoice())
-                @if (!\Auth::user()->customer->canAutoCharge())
+                @if (!\Auth::user()->customer->preferredPaymentGatewayCanAutoCharge())
                     @include('elements._notification', [
                         'level' => 'warning',
                         'message' => trans('messages.have_new_renew_invoice')

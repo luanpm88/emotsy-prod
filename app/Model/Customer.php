@@ -2145,7 +2145,7 @@ class Customer extends Model
         return $result;
     }
 
-    public function canAutoCharge()
+    public function preferredPaymentGatewayCanAutoCharge()
     {
         // check auto billing data
         if ($this->getPreferredPaymentGateway() == null) {

@@ -427,18 +427,8 @@ class Subscription extends Model
             return;
         }
 
-        // check auto billing data
-        if ($this->customer->getPreferredPaymentGateway() == null) {
-            return;
-        }
-
-        // support auto billing
-        if (!$this->customer->getPreferredPaymentGateway()->supportsAutoBilling()) {
-            return;
-        }
-
-        // check payment
-        if ($this->customer->getPreferredPaymentGateway()->getType() != $this->customer->getAutoBillingData()->getGateway()->getType()) {
+        // check if customer can auto charge
+        if ($this->customer->preferredPaymentGatewayCanAutoCharge()) {
             return;
         }
 
