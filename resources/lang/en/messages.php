@@ -3544,10 +3544,8 @@
   'subscription.status.pending_for_approval' => 'Pending for approval',
   'change_plan.pending_for_approval' => 'Change plan wait for approval',
   'renew_subscription.pending_for_approval' => 'Renew wait for approval',
-  'have_new_renew_invoice' => 'You have a pending renew invoice. <a href=":link">Click here</a>
-      to check details',
-  'have_new_change_plan_invoice' => 'You have a pending change plan invoice. <a href=":link">Click here</a>
-      to check details',
+  'have_new_renew_invoice' => 'You have a pending renew invoice. Check the invoice information.',
+  'have_new_change_plan_invoice' => 'You have a pending change plan invoice. Check the invoice information',
   'transaction.method.braintree' => 'Braintree',
   'transaction.method.coinpayments' => 'Coinpayments',
   'transaction.method.paystack' => 'Paystack',
@@ -3691,4 +3689,8 @@
   'plan.vat' => 'VAT',
   'mail_mailer' => 'Mailer',
   'plan.cant_show' => 'This plan can not be showed. Check the error message.',
+  'invoice.pay_now' => 'Pay Now',
+  'have_new_renew_invoice.auto' => 'Your subscription will be automatically renewed on :date',
+  'can_not_change_to_diff_currency_period_plan' => 'Can not change to plan that is not
+    the same billing cycle|currency as current plan',
 ) ?>

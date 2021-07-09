@@ -215,6 +215,7 @@ class Subscription extends Model
             'item_id' => $this->id,
             'item_type' => get_class($this),
             'amount' => $this->plan->price,
+            'vat' => $this->plan->vat,
             'title' => $this->plan->name,
             'description' => view('plans._bill_desc', ['plan' => $this->plan]),
         ]);
@@ -257,6 +258,7 @@ class Subscription extends Model
             'item_id' => $this->id,
             'item_type' => get_class($this),
             'amount' => $this->plan->price,
+            'vat' => $this->plan->vat,
             'title' => $this->plan->name,
             'description' => view('plans._bill_desc', ['plan' => $this->plan]),
         ]);
@@ -305,6 +307,7 @@ class Subscription extends Model
             'item_type' => get_class($this),
             'amount' => $metadata['amount'],
             'title' => $this->plan->name,
+            'vat' => $this->plan->vat,
             'description' => view('plans._bill_desc', ['plan' => $this->plan]),
         ]);
 
@@ -424,23 +427,18 @@ class Subscription extends Model
             return;
         }
 
-        // check auto billing data
-        if ($this->customer->getPreferredPaymentGateway() == null) {
-            return;
-        }
-
-        // support auto billing
-        if (!$this->customer->getPreferredPaymentGateway()->supportsAutoBilling()) {
-            return;
-        }
-
-        // check payment
-        if ($this->customer->getPreferredPaymentGateway()->getType() != $this->customer->getAutoBillingData()->getGateway()->getType()) {
+        // check if customer can auto charge
+        if ($this->customer->preferredPaymentGatewayCanAutoCharge()) {
             return;
         }
 
         // auto charge
         $this->customer->getPreferredPaymentGateway()->autoCharge($invoice);
+    }
+
+    public function getDueDate()
+    {
+        return $this->current_period_ends_at->subDays(\Acelle\Model\Setting::get('recurring_charge_before_days'));
     }
 
     /**
@@ -449,7 +447,7 @@ class Subscription extends Model
     public function reachDueDate()
     {
         return \Carbon\Carbon::now()->greaterThanOrEqualTo(
-            $this->current_period_ends_at->subDays(\Acelle\Model\Setting::get('recurring_charge_before_days'))
+            $this->getDueDate()
         );
     }
     

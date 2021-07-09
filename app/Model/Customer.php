@@ -2144,4 +2144,24 @@ class Customer extends Model
 
         return $result;
     }
+
+    public function preferredPaymentGatewayCanAutoCharge()
+    {
+        // check auto billing data
+        if ($this->getPreferredPaymentGateway() == null) {
+            return false;
+        }
+
+        // support auto billing
+        if (!$this->getPreferredPaymentGateway()->supportsAutoBilling()) {
+            return false;
+        }
+
+        // check payment
+        if ($this->getPreferredPaymentGateway()->getType() != $this->getAutoBillingData()->getGateway()->getType()) {
+            return false;
+        }
+
+        return true;
+    }
 }

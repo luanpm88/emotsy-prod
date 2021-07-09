@@ -160,11 +160,17 @@ class Invoice extends Model
         $this->save();
     }
 
-    /**
-     * Total items.
-     *
-     * @return void
-     */
+    public function getTax()
+    {
+        $total = 0;
+
+        foreach ($this->invoiceItems as $item) {
+            $total += $item->getTax();
+        }
+
+        return $total;
+    }
+
     public function total()
     {
         $total = 0;
@@ -406,7 +412,7 @@ class Invoice extends Model
                     'title' => $item->title,
                     'description' => $item->description,
                     'price' => format_price($item->amount, $item->invoice->currency->format),
-                    'tax' => format_price($item->tax, $item->invoice->currency->format),
+                    'tax' => format_price($item->getTax(), $item->invoice->currency->format),
                     'discount' => format_price($item->discount, $item->invoice->currency->format),
                 ];
             }),

@@ -82,7 +82,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td class="text-center" colspan="3">
+                                <td class="text-center" colspan="5">
                                     {{ trans('messages.subscription.logs.empty') }}
                                 </td>
                             </tr>

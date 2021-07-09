@@ -768,7 +768,7 @@ class CampaignController extends Controller
                           ->select(
                               'click_logs.url',
                               DB::raw('count(*) AS clickCount'),
-                              DB::raw('max(click_logs.created_at) AS lastClick')
+                              DB::raw(sprintf('max(%s) AS lastClick', table('click_logs.created_at')))
                           )->groupBy('click_logs.url')->get();
 
         // authorize

@@ -12,7 +12,7 @@ class InvoiceItem extends Model
      * @var array
      */
     protected $fillable = [
-        'item_id', 'item_type', 'amount', 'title', 'description'
+        'item_id', 'item_type', 'amount', 'title', 'description', 'vat'
     ];
 
     /**
@@ -48,12 +48,27 @@ class InvoiceItem extends Model
     }
 
     /**
+     * Tax amount.
+     *
+     * @return void
+     */
+    public function getTax()
+    {
+        return ($this->subTotal() * ($this->vat/100));
+    }
+
+    public function subTotal()
+    {
+        return $this->amount - $this->discount;
+    }
+
+    /**
      * Total amount.
      *
      * @return void
      */
     public function total()
     {
-        return $this->amount + $this->tax - $this->discount;
+        return $this->subTotal() + $this->getTax();
     }
 }
