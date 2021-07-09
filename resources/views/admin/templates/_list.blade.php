@@ -22,7 +22,7 @@
 					</a>
 				</td>
 				<td>
-					<h5 class="no-margin text-bold">
+					<h5 class="m-0 text-bold">
 						<a class="kq_search" href="#" onclick="popupwindow('{{ action('Admin\TemplateController@preview', $template->uid) }}', '{{ $template->name }}', 800, 800)">
 							{{ $template->name }}
 						</a>
@@ -52,7 +52,7 @@
 				</td>
 				<td class="text-end">
 					@if (Auth::user()->admin->can('preview', $template))
-						<a href="#preview" class="btn bg-teal-600 btn-icon" onclick="popupwindow('{{ action('Admin\TemplateController@preview', $template->uid) }}', '{{ $template->name }}', 800, 800)"><i class="icon-zoomin3"></i></a>
+						<a href="#preview" class="btn btn-secondary btn-icon" onclick="popupwindow('{{ action('Admin\TemplateController@preview', $template->uid) }}', '{{ $template->name }}', 800, 800)"><i class="icon-zoomin3"></i></a>
 					@endif
 					@if (Auth::user()->admin->can('update', $template))
 						@if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']))

@@ -22,7 +22,7 @@
                     </a>
                 </td>
                 <td>
-                    <h5 class="no-margin text-bold">
+                    <h5 class="m-0 text-bold">
                         <a class="kq_search" href="{{ action('CampaignController@show', $campaign->uid) }}">
                             {{ $campaign->name }}
                         </a>

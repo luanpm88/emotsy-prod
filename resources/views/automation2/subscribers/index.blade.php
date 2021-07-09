@@ -93,7 +93,7 @@
 					</span>
 					<span class="filter-group">
 						<span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
-						<select class="select" name="sort-order">
+						<select class="select" name="sort_order">
 							<option value="subscribers.email">{{ trans('messages.email') }}</option>
 							<option value="subscribers.created_at">{{ trans('messages.created_at') }}</option>
 							<option value="subscribers.updated_at">{{ trans('messages.updated_at') }}</option>

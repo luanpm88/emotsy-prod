@@ -5,7 +5,7 @@
 		@foreach ($languages as $key => $language)
 			<tr>
 				<td>
-					<h5 class="no-margin text-bold">
+					<h5 class="m-0 text-bold">
 						@can("delete", $language)
 							<a class="kq_search" href="{{ action('Admin\LanguageController@edit', $language->uid) }}">{{ $language->name }}</a>
 						@else

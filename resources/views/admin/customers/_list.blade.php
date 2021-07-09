@@ -8,7 +8,7 @@
                     <img width="80" class="img-circle mr-10" src="{{ $item->user->getProfileImageUrl() }}" alt="">
                 </td>
                 <td>
-                    <h5 class="no-margin text-bold">
+                    <h5 class="m-0 text-bold">
                         <a class="kq_search" href="{{ action('Admin\CustomerController@edit', $item->uid) }}">{{ $item->user->displayName() }}</a>
                     </h5>
                     <span class="text-muted kq_search">{{ $item->user->email }}</span><br>
@@ -57,7 +57,7 @@
                 </td>
                 <td class="text-end">
                     @can('loginAs', $item)
-                        <a href="{{ action('Admin\CustomerController@loginAs', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.login_as_this_customer') }}" role="button" class="btn bg-teal-600 btn-icon"><i class="icon icon-enter"></i></a>
+                        <a href="{{ action('Admin\CustomerController@loginAs', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.login_as_this_customer') }}" role="button" class="btn btn-secondary btn-icon"><i class="icon icon-enter"></i></a>
                     @endcan
                     @can('update', $item)
                         <a href="{{ action('Admin\CustomerController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-outline-secondary-600 btn-icon"><i class="icon icon-pencil pr-0 mr-0"></i></a>

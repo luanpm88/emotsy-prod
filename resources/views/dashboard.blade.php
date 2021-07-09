@@ -187,21 +187,21 @@
                                 </p>
                             </div>
                             <div class="col-sm-2 col-md-2 text-left">
-                                <h5 class="no-margin text-bold">
+                                <h5 class="m-0 text-bold">
                                     {{ number_with_delimiter($item->aggregate) }}
                                 </h5>
                                 <span class="text-muted">{{ trans('messages.opens') }}</span>
                                     <br /><br />
                             </div>
                             <div class="col-sm-2 col-md-2 text-left">
-                                <h5 class="no-margin text-bold">
+                                <h5 class="m-0 text-bold">
                                     {{ number_with_delimiter($item->readCache('UniqOpenCount')) }}
                                 </h5>
                                 <span class="text-muted">{{ trans('messages.uniq_opens') }}</span>
                                     <br /><br />
                             </div>
                             <div class="col-sm-2 col-md-2 text-left">
-                                <h5 class="no-margin text-bold">
+                                <h5 class="m-0 text-bold">
                                     {{ (null !== $item->lastOpen()) ? Acelle\Library\Tool::formatDateTime($item->lastOpen()->created_at) : "" }}
                                 </h5>
                                 <span class="text-muted">{{ trans('messages.last_open') }}</span>
@@ -234,21 +234,21 @@
                                 </p>
                             </div>
                             <div class="col-sm-2 col-md-2 text-left">
-                                <h5 class="no-margin text-bold">
+                                <h5 class="m-0 text-bold">
                                     {{ $item->aggregate }}
                                 </h5>
                                 <span class="text-muted">{{ trans('messages.clicks') }}</span>
                                     <br /><br />
                             </div>
                             <div class="col-sm-2 col-md-2 text-left">
-                                <h5 class="no-margin text-bold">
+                                <h5 class="m-0 text-bold">
                                     {{ $item->urlCount() }}
                                 </h5>
                                 <span class="text-muted">{{ trans('messages.urls') }}</span>
                                     <br /><br />
                             </div>
                             <div class="col-sm-2 col-md-2 text-left">
-                                <h5 class="no-margin text-bold">
+                                <h5 class="m-0 text-bold">
                                     #
                                 </h5>
                                 <span class="text-muted">{{ trans('messages.last_clicked') }}</span>
@@ -280,14 +280,14 @@
                                 </p>
                             </div>
                             <div class="col-sm-2 col-md-2 text-left">
-                                <h5 class="no-margin text-bold">
+                                <h5 class="m-0 text-bold">
                                     {{ $item->aggregate }}
                                 </h5>
                                 <span class="text-muted">{{ trans('messages.clicks') }}</span>
                                     <br /><br />
                             </div>
                             <div class="col-sm-2 col-md-2 text-left">
-                                <h5 class="no-margin text-bold">
+                                <h5 class="m-0 text-bold">
                                     #
                                 </h5>
                                 <span class="text-muted">{{ trans('messages.last_clicked') }}</span>

@@ -34,7 +34,7 @@
 								<div class="filter-box">
 									<span class="filter-group">
 										<span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
-										<select class="select" name="sort-order">
+										<select class="select" name="sort_order">
                                             <option value="unsubscribe_logs.created_at">{{ trans('messages.created_at') }}</option>
 										</select>										
 										<button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">

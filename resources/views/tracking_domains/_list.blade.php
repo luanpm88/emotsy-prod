@@ -17,7 +17,7 @@
                     </div>
                 </td>
                 <td>
-                    <h5 class="no-margin text-bold">
+                    <h5 class="m-0 text-bold">
                         <a class="kq_search" href="{{ action('TrackingDomainController@show', $trackingDomain->uid) }}">{{ $trackingDomain->name }}</a>
                     </h5>
                     <span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($trackingDomain->created_at) }}</span>

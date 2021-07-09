@@ -41,7 +41,7 @@
                 <div class="filter-box">
                     <span class="filter-group">
                             <!--<span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>-->
-                            <select class="select" name="sort-order">
+                            <select class="select" name="sort_order">
                                 <option value="subscriptions.updated_at">{{ trans('messages.updated_at') }}</option>
                                 <option value="subscriptions.created_at">{{ trans('messages.created_at') }}</option>
                                 <option value="subscriptions.ends_at">{{ trans('messages.ends_at') }}</option>

@@ -46,7 +46,7 @@
                     </div>
                     <span class="filter-group">
                         <span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
-                        <select class="select" name="sort-order">
+                        <select class="select" name="sort_order">
                             <option value="created_at">{{ trans('messages.created_at') }}</option>
                             <option value="name">{{ trans('messages.name') }}</option>
                         </select>

@@ -17,7 +17,7 @@
                     </div>
                 </td>
                 <td>
-                    <h5 class="no-margin text-bold">
+                    <h5 class="m-0 text-bold">
                         <a class="kq_search" href="{{ action('Admin\BounceHandlerController@edit', $item->uid) }}">{{ $item->name }}</a>
                     </h5>
                     <span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>

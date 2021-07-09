@@ -8,7 +8,7 @@
                     <i class="icon-{{ $item->type == 'page' ? "file-openoffice" : "mail-read" }} table-icon-big"></i>
                 </td>
                 <td>
-                    <h5 class="no-margin text-bold">
+                    <h5 class="m-0 text-bold">
                         <a href="{{ action('Admin\LayoutController@edit', $item->uid) }}">
                             {{ trans('messages.' . $item->alias) }}
                         </a>

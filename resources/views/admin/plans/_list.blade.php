@@ -29,7 +29,7 @@
                     </div>
                 </td>
                 <td>
-                    <h5 class="no-margin text-bold">
+                    <h5 class="m-0 text-bold">
                         <span class="kq_search" href="{{ action('Admin\PlanController@general', $plan->uid) }}">
                             {{ $plan->name }}
                         </span>

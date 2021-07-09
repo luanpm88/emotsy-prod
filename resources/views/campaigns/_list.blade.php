@@ -17,7 +17,7 @@
 					</div>
 				</td>
 				<td>
-					<h5 class="no-margin text-bold">
+					<h5 class="m-0 text-bold">
 						<a class="kq_search" href="{{ action('CampaignController@show', $item->uid) }}">
 							{{ $item->name }}
 						</a>
@@ -85,7 +85,7 @@
 						<a href="{{ action('CampaignController@edit', $item->uid) }}" role="button" class="btn btn-outline-secondary btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
 					@endif
 					@if (\Gate::allows('overview', $item))
-						<a href="{{ action('CampaignController@overview', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.overview') }}" role="button" class="btn bg-teal-600 btn-icon"><i class="icon-stats-growth"></i> {{ trans('messages.campaign.overview_statistics') }}</a>
+						<a href="{{ action('CampaignController@overview', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.overview') }}" role="button" class="btn btn-secondary btn-icon"><i class="icon-stats-growth"></i> {{ trans('messages.campaign.overview_statistics') }}</a>
 					@endif
 					@if (\Gate::allows('delete', $item) || \Gate::allows('pause', $item) || \Gate::allows('restart', $item))
 						<div class="btn-group">

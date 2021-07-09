@@ -22,7 +22,7 @@
 
 	<!-- Bootstrap -->
 	<link rel="stylesheet" type="text/css" href="{{ URL::asset('core/bootstrap/css/bootstrap.min.css') }}">
-	<script type="text/javascript" src="{{ URL::asset('core/bootstrap/js/bootstrap.min.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('core/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
 	<!-- Select2 -->
 	<link rel="stylesheet" type="text/css" href="{{ URL::asset('core/select2/css/select2.min.css') }}">
@@ -35,6 +35,7 @@
 	<link rel="stylesheet" type="text/css" href="{{ URL::asset('core/css/app.css') }}">
 	<script type="text/javascript" src="{{ URL::asset('core/js/functions.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('core/js/popup.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('core/js/list.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('core/js/app.js') }}"></script>
 </head>
 <body>
@@ -124,15 +125,6 @@
 									<span>{{ trans('messages.stores_connections') }}</span>
 								</a>
 							</li>
-						</ul>
-					</li>
-
-					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" href="#" id="dropdown04" data-bs-toggle="dropdown" aria-expanded="false">Dropdown</a>
-						<ul class="dropdown-menu" aria-labelledby="content-menu">
-							<li><a class="dropdown-item" href="#">Action</a></li>
-							<li><a class="dropdown-item" href="#">Another action</a></li>
-							<li><a class="dropdown-item" href="#">Something else here</a></li>
 						</ul>
 					</li>
 				</ul>

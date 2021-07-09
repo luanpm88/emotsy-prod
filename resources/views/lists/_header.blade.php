@@ -1,8 +1,8 @@
 <div class="page-title">
 	<ul class="breadcrumb breadcrumb-caret position-right">
-		<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-		<li><a href="{{ action("MailListController@index") }}">{{ trans('messages.lists') }}</a></li>
-		<li>
+		<li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+		<li class="breadcrumb-item"><a href="{{ action("MailListController@index") }}">{{ trans('messages.lists') }}</a></li>
+		<li class="breadcrumb-item">
 			<div class="btn-group other-lists">
 				<button role="button" class="btn btn-link dropdown-toggle text-teal-600" data-toggle="dropdown">{{ trans('messages.change_list') }} <span class="caret"></span></button>
 				<ul class="dropdown-menu dropdown-menu-left">

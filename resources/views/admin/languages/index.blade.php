@@ -32,7 +32,7 @@
                 <div class="filter-box">
                     <span class="filter-group">
                         <span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
-                        <select class="select" name="sort-order">
+                        <select class="select" name="sort_order">
                             <option value="languages.name">{{ trans('messages.name') }}</option>
                             <option value="bounce_handlers.code">{{ trans('messages.code') }}</option>
                             <option value="bounce_handlers.region_code">{{ trans('messages.region') }}</option>

@@ -33,11 +33,11 @@
                 </td>
                 <td>
                     @if ($server->isExtended())
-                        <h5 class="no-margin text-bold">
+                        <h5 class="m-0 text-bold">
                             <a class="kq_search" href="{{ $server->getEditUrl() }}">{{ $item->name }}</a>
                         </h5>
                     @else
-                        <h5 class="no-margin text-bold">
+                        <h5 class="m-0 text-bold">
                             <a class="kq_search" href="{{ action('Admin\SendingServerController@edit', ["id" => $item->uid, "type" => $item->type]) }}">{{ $item->name }}</a>
                         </h5>
                     @endif

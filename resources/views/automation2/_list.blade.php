@@ -17,7 +17,7 @@
                     </div>
                 </td>
                 <td>
-                    <h5 class="no-margin text-bold">
+                    <h5 class="m-0 text-bold">
                         <a class="kq_search" href="{{ action('Automation2Controller@edit', $automation->uid) }}">
                             {{ $automation->name }}
                         </a>
