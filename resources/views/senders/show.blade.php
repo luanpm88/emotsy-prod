@@ -32,7 +32,9 @@
                 <div data-type="admin-notification" class="alert alert-warning" style="display: flex; flex-direction: row; align-items: center; cursor: pointer; justify-content: space-between;">
                     <div style="display: flex; flex-direction: row; align-items: center;">
                         <div style="margin-right:15px">
-                            <i class="lnr lnr-warning"></i>
+                            <span class="material-icons-outlined">
+error_outline
+</span>
                         </div>
                         <div style="padding-right: 40px">
                             <h4>{{ trans('messages.sender.status_info.pending') }}</h4>

@@ -3981,7 +3981,7 @@ a.btn-link {
         height: 660px;
     }
 }
-.empty-list .material-icons, .empty-list .material-icons-outlined {
+.empty-list [class^="material-icons"] {
     font-size: 80px;
     color: #00314a;
 }
@@ -4296,7 +4296,7 @@ h4, h4 {
     display: block;
     border: solid 0px #ddd;
     border-radius: 10px;
-    padding: 80px 20px;
+    padding: 60px 20px 80px 20px;
     margin: 15px 0;
     background: #eff3f5;
     text-align: center;
@@ -4308,7 +4308,7 @@ h4, h4 {
 }
 .empty-list span.line-1 {
     display: block;
-    margin: 10px 0 0 0;
+    margin: 15px 0 0 0;
     opacity: 0.9;
 }
 .empty-list span.line-2 {

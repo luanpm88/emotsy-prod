@@ -12,7 +12,7 @@
     <p>{!! trans('messages.frontend_dashboard_welcome') !!}</p>
 
     <h4 class="mt-5">
-        <span class="material-icons-outlined">
+        <span class="material-icons-outlined me-2">
             donut_large
         </span>
         {{ trans("messages.used_quota") }}
@@ -83,7 +83,7 @@
     </div>
 
     <h4 class="mt-5">
-        <span class="material-icons-outlined">
+        <span class="material-icons-outlined me-2">
             history_toggle_off
             </span>
         {{ trans('messages.recently_sent_campaigns') }}
@@ -92,7 +92,7 @@
     @if (Auth::user()->customer->sentCampaigns()->count() == 0)
         <div class="empty-list">
             <span class="material-icons-outlined">
-                dynamic_form
+                auto_awesome
             </span>
             <span class="line-1">
                 {{ trans('messages.no_sent_campaigns') }}
@@ -115,7 +115,7 @@
     @endif
 
     <h4 class="mt-5">
-        <span class="material-icons-outlined">
+        <span class="material-icons-outlined me-2">
             auto_graph
         </span>
         {{ trans('messages.list_growth') }}
@@ -124,7 +124,7 @@
     @if (Auth::user()->customer->lists()->count() == 0)
         <div class="empty-list">
             <span class="material-icons-outlined">
-                dynamic_form
+                auto_awesome
             </span>
             <span class="line-1">
                 {{ trans('messages.no_saved_lists') }}
@@ -147,7 +147,7 @@
         <div class="list-quickview-container" data-url="{{ action("MailListController@quickView") }}"></div>
     @endif
 
-    <h4 class="mt-5"><span class="material-icons-outlined">
+    <h4 class="mt-5"><span class="material-icons-outlined me-2">
         star_half
         </span> {{ trans('messages.top_5') }}
     </h4>
@@ -214,7 +214,7 @@
                     <li class="empty-li pt-0">
                         <div class="empty-list mt-0">
                             <span class="material-icons-outlined">
-                                dynamic_form
+                                auto_awesome
                             </span>
                             <span class="line-1">
                                 {{ trans('messages.empty_record_message') }}
@@ -267,7 +267,7 @@
                     <li class="empty-li pt-0">
                         <div class="empty-list mt-0">
                             <span class="material-icons-outlined">
-                                dynamic_form
+                                auto_awesome
                             </span>
                             <span class="line-1">
                                 {{ trans('messages.empty_record_message') }}
@@ -313,7 +313,7 @@
                     <li class="empty-li pt-0">
                         <div class="empty-list mt-0">
                             <span class="material-icons-outlined">
-                                dynamic_form
+                                auto_awesome
                             </span>
                             <span class="line-1">
                                 {{ trans('messages.empty_record_message') }}
@@ -325,14 +325,14 @@
         </div>
     </div>
 
-    <h4 class="mt-5"><span class="material-icons-outlined">
+    <h4 class="mt-5"><span class="material-icons-outlined me-2">
         group_work
     </span> {{ trans('messages.activity_log') }}</h3>
 
     @if (Auth::user()->customer->logs()->count() == 0)
         <div class="empty-list">
             <span class="material-icons-outlined">
-                dynamic_form
+                auto_awesome
             </span>
             <span class="line-1">
                 {{ trans('messages.no_activity_logs') }}
