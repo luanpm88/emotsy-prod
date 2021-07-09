@@ -6,6 +6,11 @@ class UpdateSegmentJob extends Base
 {
     protected $segment;
 
+    public function __construct($segment)
+    {
+        $this->segment = $segment;
+    }
+
     /**
      * Execute the job.
      *

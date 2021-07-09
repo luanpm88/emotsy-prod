@@ -1602,12 +1602,49 @@ class CampaignController extends Controller
             return;
         }
 
+        // Subscribers
         $subscribers = $campaign->getDeliveryReport()
                                 ->addSelect('subscribers.*')
                                 ->addSelect('bounce_logs.raw AS bounced_message')
                                 ->addSelect('feedback_logs.feedback_type AS feedback_message')
-                                ->addSelect('tracking_logs.error AS failed_message')
-                                ->paginate($request->per_page);
+                                ->addSelect('tracking_logs.error AS failed_message');
+
+        // Check open conditions
+        if ($request->open) {
+            // Query of email addresses that DID open
+            $openByEmails = $campaign->openLogs()->join('subscribers', 'tracking_logs.subscriber_id', '=', 'subscribers.id')->groupBy('subscribers.email')->select('subscribers.email');
+
+            if ($request->open == 'opened') {
+                $subscribers = $subscribers->joinSub($openByEmails, 'OpenedByEmails', function($join){
+                    $join->on('subscribers.email', '=', 'OpenedByEmails.email');
+                });
+            } elseif ($request->open = 'not_opened') {
+                $subscribers = $subscribers->leftJoinSub($openByEmails, 'OpenedByEmails', function($join){
+                    $join->on('subscribers.email', '=', 'OpenedByEmails.email');
+                })->whereNull('OpenedByEmails.email');
+            }
+        }
+
+        // Check click conditions
+        if ($request->click) {
+            // Query of email addresses that DID click
+            $clickByEmails = $campaign->clickLogs()->join('subscribers', 'tracking_logs.subscriber_id', '=', 'subscribers.id')->groupBy('subscribers.email')->select('subscribers.email');
+
+            if ($request->click == 'clicked') {
+                $subscribers = $subscribers->joinSub($clickByEmails, 'ClickedByEmails', function($join){
+                    $join->on('subscribers.email', '=', 'ClickedByEmails.email');
+                });
+            } elseif ($request->click = 'not_clicked') {
+                $subscribers = $subscribers->leftJoinSub($clickByEmails, 'ClickedByEmails', function($join){
+                    $join->on('subscribers.email', '=', 'ClickedByEmails.email');
+                })->whereNull('ClickedByEmails.email');
+            }
+        }
+
+        // Paging
+        $subscribers = $subscribers->paginate($request->per_page);
+
+        // Field information
         $fields = $campaign->defaultMailList->getFields->whereIn('uid', explode(',', $request->columns));
 
         return view('campaigns._subscribers_list', [
