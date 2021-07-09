@@ -34,6 +34,12 @@
                     <div class="bill-total">{{ $bill['total'] }}</div>
                 </div>
             </div>
+            @if (!\Auth::user()->customer->canAutoCharge())
+                <hr>
+                <div class="text-right">
+                    <a href="{{ action('AccountSubscriptionController@payment') }}" class="btn btn-mc_primary">{{ trans('messages.invoice.pay_now') }}</a>
+                </div>
+            @endif
         </div>
     </div>
 @endif

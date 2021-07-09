@@ -446,13 +446,18 @@ class Subscription extends Model
         $this->customer->getPreferredPaymentGateway()->autoCharge($invoice);
     }
 
+    public function getDueDate()
+    {
+        return $this->current_period_ends_at->subDays(\Acelle\Model\Setting::get('recurring_charge_before_days'));
+    }
+
     /**
      * reach due date.
      */
     public function reachDueDate()
     {
         return \Carbon\Carbon::now()->greaterThanOrEqualTo(
-            $this->current_period_ends_at->subDays(\Acelle\Model\Setting::get('recurring_charge_before_days'))
+            $this->getDueDate()
         );
     }
     

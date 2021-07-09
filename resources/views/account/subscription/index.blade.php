@@ -29,12 +29,19 @@
         <div class="col-sm-12 col-md-8 col-lg-8">
 
             @if ($subscription->getItsOnlyUnpaidRenewInvoice())
-                @include('elements._notification', [
-                    'level' => 'warning',
-                    'message' => trans('messages.have_new_renew_invoice', [
-                        'link' => action('AccountSubscriptionController@payment'),
+                @if (!\Auth::user()->customer->canAutoCharge())
+                    @include('elements._notification', [
+                        'level' => 'warning',
+                        'message' => trans('messages.have_new_renew_invoice')
                     ])
-                ])
+                @else
+                    @include('elements._notification', [
+                        'level' => 'warning',
+                        'message' => trans('messages.have_new_renew_invoice.auto', [
+                            'date' => \Acelle\Library\Tool::formatDateTime($subscription->getDueDate()),
+                        ])
+                    ])
+                @endif
             @endif
 
             @if ($subscription->getItsOnlyUnpaidChangePlanInvoice())
