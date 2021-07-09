@@ -72,30 +72,66 @@ error_outline
 									
 							</button>
 							<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="btnGroupDrop1">
-								<li><a class="dropdown-item" href="{{ action('SubscriberController@index', $item->uid) }}"><i class="icon-users4"></i> {{ trans("messages.subscribers") }}</a></li>
-								<li><a class="dropdown-item" href="{{ action('SegmentController@index', $item->uid) }}"><i class="icon-make-group"></i> {{ trans('messages.segments') }}</a></li>
+								<li>
+									<a class="dropdown-item" href="{{ action('SubscriberController@index', $item->uid) }}">
+										<span class="material-icons-outlined me-1">
+											people
+										</span> {{ trans("messages.subscribers") }}
+									</a>
+								</li>
+								<li>
+									<a class="dropdown-item" href="{{ action('SegmentController@index', $item->uid) }}">
+										<span class="material-icons-outlined me-1">
+											library_add_check
+										</span> {{ trans('messages.segments') }}
+									</a>
+								</li>
 								<li>
 									<a class="dropdown-item" href="{{ action('MailListController@embeddedForm', $item->uid) }}">
-										<i class="icon-embed2"></i> {{ trans('messages.Embedded_form') }}
+										<span class="material-icons-outlined me-1">
+											dns
+										</span> {{ trans('messages.Embedded_form') }}
 									</a>
 								</li>
-								<li><a class="dropdown-item" href="{{ action('PageController@update', ['list_uid' => $item->uid, 'alias' => 'sign_up_form']) }}"><i class="icon-certificate"></i> {{ trans('messages.custom_forms_and_emails') }}</a></li>
+								<li>
+									<a class="dropdown-item" href="{{ action('PageController@update', ['list_uid' => $item->uid, 'alias' => 'sign_up_form']) }}">
+										<span class="material-icons-outlined mr-1">
+											web
+										</span> {{ trans('messages.custom_forms_and_emails') }}
+									</a>
+								</li>
 								<li>
 									<a class="dropdown-item" href="{{ action('FieldController@index', $item->uid) }}">
-										<i class="icon-list3"></i> {{ trans('messages.manage_list_fields') }}
+										<span class="material-icons-outlined mr-1">
+											view_day
+										</span> {{ trans('messages.manage_list_fields') }}
 									</a>
 								</li>
-								<li><a class="dropdown-item" href="{{ action('MailListController@verification', $item->uid) }}"><i class="icon-envelop5"></i> {{ trans("messages.email_verification") }}</a></li>
-								<li><a class="dropdown-item" href="{{ action('MailListController@edit', $item->uid) }}"><i class="icon-pencil7"></i> {{ trans("messages.edit_list") }}</a></li>
+								<li><a class="dropdown-item" href="{{ action('MailListController@verification', $item->uid) }}">
+									<span class="material-icons-outlined mr-1">
+										gpp_good
+									</span> {{ trans("messages.email_verification") }}</a></li>
+								<li><a class="dropdown-item" href="{{ action('MailListController@edit', $item->uid) }}">
+									<span class="material-icons-outlined mr-1">
+										edit
+									</span> {{ trans("messages.edit_list") }}</a></li>
 								@if (\Auth::user()->can('import', $item))
-									<li><a class="dropdown-item" href="{{ action('SubscriberController@import', $item->uid) }}"><i class="icon-download4"></i> {{ trans('messages.import') }}</a></li>
+									<li><a class="dropdown-item" href="{{ action('SubscriberController@import', $item->uid) }}">
+										<span class="material-icons-outlined mr-1">
+											drive_folder_upload
+										</span> {{ trans('messages.import') }}</a></li>
 								@endif
 								@if (\Auth::user()->can('export', $item))
-									<li><a class="dropdown-item" href="{{ action('SubscriberController@export', $item->uid) }}"><i class="icon-upload4"></i> {{ trans('messages.export') }}</a></li>
+									<li><a class="dropdown-item" href="{{ action('SubscriberController@export', $item->uid) }}">
+										<span class="material-icons-outlined mr-1">
+											downloading
+										</span> {{ trans('messages.export') }}</a></li>
 								@endif
 								<li>
 									<a class="dropdown-item" data-uid="{{ $item->uid }}" data-name="{{ trans("messages.copy_of_list", ['name' => $item->name]) }}" class="copy-list-link">
-										<i class="icon-copy4"></i> {{ trans('messages.copy') }}
+										<span class="material-icons-outlined mr-1">
+											copy_all
+										</span> {{ trans('messages.copy') }}
 									</a>
 								</li>
 								@if ($settings['list.clone_for_others'])
@@ -104,13 +140,17 @@ error_outline
 											href="{{ action('MailListController@cloneForCustomersChoose', $item->uid) }}"
 											class="clone-for-users"
 										>
-											<i class="icon-users"></i> {{ trans('messages.list.clone_for_other_users') }}
+										<span class="material-icons-outlined mr-1">
+											control_point_duplicate
+										</span> {{ trans('messages.list.clone_for_other_users') }}
 										</a>
 									</li>
 								@endif
 								<li>
 									<a class="dropdown-item" list-delete-confirm="{{ action('MailListController@deleteConfirm', ['uids' => $item->uid]) }}" href="{{ action('MailListController@delete', ['uids' => $item->uid]) }}">
-										<i class="icon-trash"></i> {{ trans('messages.delete') }}
+										<span class="material-icons-outlined mr-1">
+											delete
+										</span> {{ trans('messages.delete') }}
 									</a>
 								</li>
 							</ul>

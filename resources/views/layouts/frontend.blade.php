@@ -80,7 +80,7 @@
 					<li class="nav-item">
 						<a href="{{ action('Automation2Controller@index') }}" class="nav-link d-flex align-items-center py-3 lvl-1">
 							<i class="navbar-icon">
-								<img style="width: 18px" src="{{ url('images/icons/'.$iconDir.'SVG/automation.svg') }}" />
+								<img style="width: 17px" src="{{ url('images/icons/'.$iconDir.'SVG/automation.svg') }}" />
 							</i>
 							<span>{{ trans('messages.automations') }}</span>
 						</a>
@@ -111,7 +111,7 @@
 						<ul class="dropdown-menu shadow" aria-labelledby="content-menu">
 							<li>
 								<a class="dropdown-item d-flex align-items-center" href="{{ action('ProductController@index') }}">
-									<i class="navbar-icon mr-3" style="">
+									<i class="navbar-icon" style="">
 										<img src="{{ url('images/icons/'.$iconDir.'SVG/product-icon.svg') }}" />
 									</i>
 									<span>{{ trans('messages.products') }}</span>
@@ -119,7 +119,7 @@
 							</li>
 							<li>
 								<a class="dropdown-item d-flex align-items-center" href="{{ action('SourceController@index') }}">
-									<i class="navbar-icon mr-3" style="">
+									<i class="navbar-icon" style="">
 										<img style="width: 18px" src="{{ url('images/icons/'.$iconDir.'SVG/store.svg') }}" />
 									</i>
 									<span>{{ trans('messages.stores_connections') }}</span>
@@ -137,9 +137,20 @@
 	<main class="container">
 		@yield('page_header')
 
+		<!-- display flash message -->
+		@include('common.errors')
+
 		<!-- main inner content -->
 		@yield('content')
+
+		<!-- Footer -->
+		<div class="footer text-muted mt-5 py-3">
+			{!! trans('messages.copy_right') !!}
+		</div>
+		<!-- /footer -->
 	</main>
+
+	{!! \Acelle\Model\Setting::get('custom_script') !!}
 </body>
 </html>
 

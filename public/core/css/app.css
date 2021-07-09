@@ -190,6 +190,7 @@ h3 {
 }
 .dropdown-menu {
     box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+    font-size: 92%;
 }
 .select2-selection--multiple:not([class*=bg-]):not([class*=border-]) {
     padding: 0;
@@ -245,8 +246,7 @@ h3 {
     padding: 14px 10px;
 }
 .dropdown-menu > li > a {
-    padding: 15px 20px;
-    font-size: 13px;
+    padding: 8px 17px;
     font-weight: 500;
 }
 .navbar-nav > li > a {
@@ -255,7 +255,6 @@ h3 {
     padding-left: 15px;
     padding-right: 15px;
     font-weight: 500;
-    font-size: 13px;
 }
 .page-header-content {
     margin: auto;
@@ -3930,12 +3929,6 @@ form.loading input {
     padding-left: 10px;
     padding-right: 10px;
 }
-.btn.m-icon .material-icons-outlined, .btn.m-icon .material-icons {
-    margin-right: 0;
-    font-size: 18px;
-    float: left;
-    line-height: 21px;
-}
 .empty-list .material-icons-outlined {
     font-size: 100px;
     opacity: 0.2;
@@ -4290,13 +4283,9 @@ h4, h4 {
     width: 1.2rem;
     height: 1.2rem;
 }
-
-.navbar-main .nav-item, .navbar-main .nav-item .dropdown-menu {
-    font-size: 0.80rem;
-}
 .navbar-main .nav-item .dropdown-item {
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
+    padding-top: 0.7rem;
+    padding-bottom: 0.7rem;
 }
 .navbar-main .nav-item .dropdown-item:active {
     background-color: rgba(0, 26, 44, 0.14);
@@ -4316,12 +4305,9 @@ h4, h4 {
 [class^="material-icons"] {
     font-size: inherit;
     line-height: inherit;
-    transform: translateY(13%);
+    transform: translateY(10%) scale(1.2);
 }
 .btn [class^="material-icons"] {
-    font-size: inherit;
-    line-height: inherit;
-    transform: translateY(10%) scale(1.2);
     line-height: 18px;
 }
 .empty-list {
