@@ -111,6 +111,13 @@ class Subscriber extends Model
         return $this->hasMany('Acelle\Model\UnsubscribeLog');
     }
 
+    function scopeUnverified($query)
+    {
+        return $query->whereNotIn('id', function ($q) {
+            $q->select('subscriber_id')->from('email_verifications');
+        });
+    }
+
     /**
      * Bootstrap any application services.
      */
@@ -843,14 +850,12 @@ class Subscriber extends Model
      */
     public function verify($verifier)
     {
-        MailLog::info(sprintf('Start verifying %s (%s)', $this->email, $this->id));
-        $log = new EmailVerification();
         list($result, $details) = $verifier->verify($this->email);
+        $log = $this->emailVerifications()->firstOrNew();
         $log->result = $result;
         $log->details = $details;
         $log->email_verification_server_id = $verifier->id;
-        $this->emailVerifications()->save($log);
-        MailLog::info(sprintf('Finish verifying %s (%s)', $this->email, $this->id));
+        $log->save();
 
         return $log->isDeliverable();
     }

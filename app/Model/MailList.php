@@ -34,23 +34,21 @@ use Acelle\Events\MailListUpdated;
 use Acelle\Model\Setting;
 use Acelle\Model\SubscriberFields;
 use Acelle\Model\Fields;
-use Acelle\Exceptions\VerificationProcessCancelledException;
-use DB;
-use App;
 use Acelle\Library\Traits\QueryHelper;
 use Acelle\Events\MailListImported;
 use Acelle\Library\Traits\TrackJobs;
+use DB;
+use App;
 use File;
+use Exception;
 use Acelle\Jobs\ImportSubscribersJob;
 use Acelle\Jobs\ImportSubscribers2;
 use Acelle\Jobs\ExportSubscribersJob;
+use Acelle\Jobs\VerifyMailListJob;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Monolog\Formatter\LineFormatter;
-use Exception;
 use League\Csv\Writer;
-use Illuminate\Bus\Batch;
-use Illuminate\Support\Facades\Bus;
 
 class MailList extends Model
 {
@@ -216,11 +214,24 @@ class MailList extends Model
         return $filepath;
     }
 
-    /**
-     * Get all items.
-     *
-     * @return collect
-     */
+    public function dispatchVerificationJob($server)
+    {
+        if (is_null($server)) {
+            throw new Exception('Cannot start job: empty verification server');
+        }
+
+        $job = new VerifyMailListJob($this, $server);
+        $monitor = $this->dispatchWithBatchMonitor(
+            $job,
+            $jobType = VerifyMailListJob::class,
+            $then = null,
+            $catch = null,
+            $finally = null
+        );
+
+        return $monitor;
+    }
+
     public function dispatchImportJob($filepath)
     {
         // Example: /home/acelle/storage/app/tmp/import-000000.csv
@@ -1758,68 +1769,6 @@ class MailList extends Model
     }
 
     /**
-     * Queue for list verification.
-     */
-    public function queueForVerification($serverId)
-    {
-        $job = $this->getRunningVerificationJob();
-
-        if (is_null($job)) {
-            $job = (new \Acelle\Jobs\VerifyMailListJob($this->id, $serverId));
-            dispatch($job);
-        } else {
-            MailLog::info(sprintf('Verification process for list `%` already running', $this->id));
-        }
-    }
-
-    /**
-     * Run list verification process, triggered by a daemon.
-     */
-    public function runVerification($serverId)
-    {
-        try {
-            $verifier = EmailVerificationServer::find($serverId);
-
-            if (is_null($verifier)) {
-                throw new \Exception(sprintf('Cannot find verification server with such ID: %s', $serverId));
-            }
-            $index = 1;
-            $this->getUnverifiedSubscribers(function ($result, $page, $total) use (&$index, $verifier) {
-                MailLog::info("Verifying page {$page}");
-                foreach ($result->get() as $subscriber) {
-                    $job = $this->getRunningVerificationJob();
-                    if (is_null($job)) {
-                        throw new VerificationProcessCancelledException(sprintf('Mail list `%s`: verification process terminated', $this->id));
-                    } elseif ($job->isCancelled()) {
-                        // @todo it seems this is never the case, or in case of exception?
-                        throw new VerificationProcessCancelledException(sprintf('Mail list `%s`: verification process cancelled', $this->id));
-                    }
-                    MailLog::info(sprintf('Start verifying %s/%s', $index, $total));
-                    $subscriber->verify($verifier);
-                    $index += 1;
-                }
-            });
-        } catch (VerificationProcessCancelledException $e) {
-            MailLog::warning($e->getMessage());
-            // just finish
-        }
-    }
-
-    /**
-     * Stop list verification process (if any).
-     */
-    public function stopVerification()
-    {
-        $job = $this->getRunningVerificationJob();
-        if (is_null($job)) {
-            MailLog::warning(sprintf('Mail list `%s`: verification process already terminated', $this->id));
-        } else {
-            $job->setCancelled();
-            $job->clearJobs();
-        }
-    }
-
-    /**
      * Reset verification data for list.
      */
     public function resetVerification()
@@ -1827,40 +1776,6 @@ class MailList extends Model
         EmailVerification::join('subscribers', 'subscribers.id', '=', 'email_verifications.subscriber_id')
                          ->where('mail_list_id', $this->id)
                          ->delete();
-    }
-
-    /**
-     * Check if the verification process is running.
-     */
-    public function isVerificationRunning()
-    {
-        $job = $this->getRunningVerificationJob();
-
-        return !is_null($job);
-    }
-
-    /**
-     * Get current verification process
-     * Note that FAILED is also considered "current".
-     */
-    public function getRunningVerificationJob()
-    {
-        ///
-    }
-
-    /**
-     * Get unverified subscribers.
-     */
-    public function getUnverifiedSubscribers($callback)
-    {
-        $builder = $this->subscribers()->whereNotIn('id', function ($q) {
-            $q->select('subscriber_id')->from('email_verifications');
-        });
-
-        $total = $builder->count();
-        paginate($builder, function ($result, $page) use ($callback, $total) {
-            $callback($result, $page, $total);
-        }, ['count' => $total]);
     }
 
     /**
@@ -1965,14 +1880,6 @@ class MailList extends Model
         foreach ($customers as $customer) {
             $this->copyAll($this->name, $customer);
         }
-    }
-
-    /**
-     * Get one field for list.
-     */
-    public function getOneField()
-    {
-        return $this->getFields()->where('tag', '<>', 'EMAIL')->first();
     }
 
     public function subscribe($request, $source)
@@ -2126,6 +2033,11 @@ class MailList extends Model
         return $this->hasMany(JobMonitor::class, 'subject_id')->where('subject_name', self::class);
     }
 
+    public function verificationJobs()
+    {
+        return $this->jobMonitors()->orderBy('job_monitors.id', 'DESC')->where('job_type', VerifyMailListJob::class);
+    }
+
     public function importJobs()
     {
         return $this->jobMonitors()->orderBy('job_monitors.id', 'DESC')
@@ -2134,7 +2046,7 @@ class MailList extends Model
 
     public function exportJobs()
     {
-        return $this->jobMonitors()->orderBy('job_monitors.id', 'DESC')->where('job_type', ExportSubscribersJob::class);   
+        return $this->jobMonitors()->orderBy('job_monitors.id', 'DESC')->where('job_type', ExportSubscribersJob::class);
     }
 
     // Strategy pattern here

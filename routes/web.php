@@ -207,10 +207,10 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('lists/{uid}/clone-to-customers/choose', 'MailListController@cloneForCustomersChoose');
     Route::post('lists/{uid}/clone-to-customers', 'MailListController@cloneForCustomers');
 
-    Route::get('lists/{uid}/verification/progress', 'MailListController@verificationProgress');
+    Route::get('lists/{uid}/verification/{job_uid}/progress', 'MailListController@verificationProgress');
     Route::get('lists/{uid}/verification', 'MailListController@verification');
     Route::post('lists/{uid}/verification/start', 'MailListController@startVerification');
-    Route::post('lists/{uid}/verification/stop', 'MailListController@stopVerification');
+    Route::post('lists/{uid}/verification/{job_uid}/stop', 'MailListController@stopVerification');
     Route::post('lists/{uid}/verification/reset', 'MailListController@resetVerification');
     Route::post('lists/copy', 'MailListController@copy');
     Route::get('lists/quick-view', 'MailListController@quickView');

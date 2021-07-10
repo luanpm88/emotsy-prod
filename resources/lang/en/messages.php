@@ -1792,7 +1792,7 @@
   'verification_status' => 'Verification status',
   'verification_process_running' => 'Verification process is running. <strong>:verified</strong>/<strong>:total</strong> emails verified',
   'verification_process_not_running' => 'No verification process is running. <strong>:verified</strong>/<strong>:total</strong> emails verified',
-  'verify_your_list' => 'To verify your list, choose a verification service below and click Verify button',
+  'list.verify.intro' => 'Typically, email lists degrade at a rate of 22.5% each year. This means that a huge amount of your mailing list subscribers’ emails won’t be valid after a year, resulting in increased bounce rate, ruined domain reputation... Perform email validation before running a campaign helps protect your business reputation',
   'list_verification' => 'List verification',
   'select_email_verification_server' => 'Select email verification server',
   'reset_list_verification_confirm' => 'You\'re about to reset email verification state of all list\'s subscribers.',
@@ -3692,4 +3692,5 @@
   'have_new_renew_invoice.auto' => 'Your subscription will be automatically renewed on :date',
   'can_not_change_to_diff_currency_period_plan' => 'Can not change to plan that is not
     the same billing cycle|currency as current plan',
+  'label.done' => 'Done',
 ) ?>
