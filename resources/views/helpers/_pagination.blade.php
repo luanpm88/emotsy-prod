@@ -1,4 +1,4 @@
-<pagination class="d-flex d-block align-items-center mt-3">
+<pagination class="d-flex d-block align-items-center">
     <label class="small mb-0 mr-3">
         {!! trans('messages.pagination.page_of', [
             'pages' => $paginator->lastPage(),

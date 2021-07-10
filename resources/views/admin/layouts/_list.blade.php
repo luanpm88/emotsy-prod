@@ -38,7 +38,7 @@
         @endforeach
     </table>
     @include('elements/_per_page_select')
-    @include('helpers._pagination', ['paginator' => $items])
+    
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
         <i class="icon icon-file"></i>

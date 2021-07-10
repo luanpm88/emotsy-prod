@@ -160,7 +160,7 @@ error_outline
 		@endforeach
 	</table>
 	@include('elements/_per_page_select', ["items" => $lists])
-	@include('helpers._pagination', ['paginator' => $lists])
+	
 	
 	<script>
 		var clonePopup = new Popup(); 

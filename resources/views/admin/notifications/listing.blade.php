@@ -41,7 +41,7 @@
 		@endforeach
 	</table>
     @include('elements/_per_page_select', ["notifications" => $notifications])
-	@include('helpers._pagination', ['paginator' => $notifications])                            
+	                            
 @elseif (!empty(request()->keyword) || !empty(request()->filters["type"]))
 	<div class="empty-list">
 		<i class="material-icons">message</i> 

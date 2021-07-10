@@ -23,7 +23,7 @@
         @endforeach
     </table>
     @include('elements/_per_page_select', ["items" => $logs])
-    @include('helpers._pagination', ['paginator' => $logs])                            
+                                
 @elseif (!empty(request()->keyword) || !empty(request()->filters["type"]))
     <div class="empty-list">
         <i class="icon-history"></i>

@@ -42,7 +42,7 @@
         @endforeach
     </table>
     @include('elements/_per_page_select', ["items" => $items])
-    @include('helpers._pagination', ['paginator' => $items])
+    
 @elseif (!empty(request()->keyword) || !empty(request()->filters["campaign_uid"]))
     <div class="empty-list">
         <i class="icon-file-text2"></i>
