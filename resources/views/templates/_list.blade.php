@@ -113,7 +113,7 @@
         @endforeach
     </table>
     @include('elements/_per_page_select', ["items" => $templates])
-    @include('helpers._pagination', ['paginator' => $templates])
+    
     
     <script>
 		var thumbPopup = new Popup();    

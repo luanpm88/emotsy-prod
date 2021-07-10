@@ -60,7 +60,7 @@
         @endforeach
     </div>
         
-    @include('helpers._pagination', ['paginator' => $timelines])
+    
 @else
     <div class="empty-list">
         <i class="material-icons">timeline</i>

@@ -2,7 +2,7 @@
 
 @section('content')@section('content')
     @include('admin.notifications._top', ['notifications' => $notifications])
-    @include('helpers._pagination', ['paginator' => $notifications])
+    
 
 <script>
     $('div[data-type="admin-notification"]').unbind('click');

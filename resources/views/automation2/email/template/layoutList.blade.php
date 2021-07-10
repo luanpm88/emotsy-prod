@@ -8,7 +8,7 @@
         @endforeach
     </div>
         
-    @include('helpers._pagination', ['paginator' => $templates])
+    
 @else
     <div class="empty-list">
         <i class="material-icons-outlined">featured_play_list</i>

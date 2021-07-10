@@ -57,7 +57,7 @@
         @endforeach
     </table>
     @include('elements/_per_page_select')
-    @include('helpers._pagination', ['paginator' => $trackingDomains])
+    
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
         <i class="icon-earth"></i>

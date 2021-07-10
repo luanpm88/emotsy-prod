@@ -58,7 +58,7 @@
         @endforeach
     </table>
     @include('elements/_per_page_select', ['items' => $accounts])
-    @include('helpers._pagination', ['paginator' => $accounts])
+    
 @elseif (!empty(request()->keyword) || !empty(request()->filters["type"]))
     <div class="empty-list">
         <i class="icon-drive"></i>
