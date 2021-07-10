@@ -9,6 +9,7 @@ use Acelle\Model\EmailVerificationServer;
 use Acelle\Events\MailListSubscription;
 use Acelle\Model\Setting;
 use Acelle\Model\Customer;
+use Exception;
 
 class MailListController extends Controller
 {
@@ -750,10 +751,20 @@ class MailListController extends Controller
     public function verification(Request $request)
     {
         $list = \Acelle\Model\MailList::findByUid($request->uid);
+        $currentJob = $list->verificationJobs()->first();
 
-        return view('lists.email_verification', [
-            'list' => $list,
-        ]);
+        if ($currentJob) {
+            return view('lists.email_verification', [
+                'list' => $list,
+                'currentJobUid' => $currentJob->uid,
+                'cancelUrl' => action('MailListController@stopVerification', [ 'uid' => $list->uid, 'job_uid' => $currentJob->uid ]),
+                'progressCheckUrl' => action('MailListController@verificationProgress', [ 'uid' => $list->uid, 'job_uid' => $currentJob->uid ]),
+            ]);
+        } else {
+            return view('lists.email_verification', [
+                'list' => $list,
+            ]);
+        }
     }
 
     /**
@@ -762,11 +773,19 @@ class MailListController extends Controller
      */
     public function startVerification(Request $request)
     {
+        // Get list & server
         $list = MailList::findByUid($request->uid);
         $server = EmailVerificationServer::findByUid($request->email_verification_server_id);
-        Log::info("Trying to start verification process for list " . $list->id);
-        $list->queueForVerification($server->id);
-        return redirect()->action('MailListController@verification', $list->uid);
+
+        // Dispatch
+        $job = $list->dispatchVerificationJob($server);
+
+        // Return
+        return response()->json([
+            'currentJobUid' => $job->uid,
+            'cancelUrl' => action('MailListController@stopVerification', [ 'uid' => $list->uid, 'job_uid' => $job->uid ]),
+            'progressCheckUrl' => action('MailListController@verificationProgress', [ 'uid' => $list->uid, 'job_uid' => $job->uid ]),
+        ]);
     }
 
     /**
@@ -776,8 +795,14 @@ class MailListController extends Controller
     public function stopVerification(Request $request)
     {
         $list = MailList::findByUid($request->uid);
-        $list->stopVerification();
-        return redirect()->action('MailListController@verification', $list->uid);
+        $job = $list->verificationJobs()->where('uid', $request->job_uid)->first();
+
+        if (is_null($job)) {
+            throw new Exception(sprintf('Verification job #%s does not exist', $request->job_uid));
+        }
+
+        $job->cancel();
+        return response()->json();
     }
 
     /**
@@ -797,18 +822,17 @@ class MailListController extends Controller
      */
     public function verificationProgress(Request $request)
     {
-        $list = \Acelle\Model\MailList::findByUid($request->uid);
-        $percent = $list->getVerifiedSubscribersPercentage();
+        $list = MailList::findByUid($request->uid);
+        $job = $list->verificationJobs()->where('uid', $request->job_uid)->first();
 
-        if (!$list->isVerificationRunning()) {
-            echo 'done';
-            $request->session()->flash('alert-success', trans('messages.verification.done'));
-            return;
+        if (is_null($job)) {
+            throw new Exception(sprintf('Verification job #%s does not exist', $request->job_uid));
         }
+        
+        $progress = $list->getProgress($job);
 
-        return view('lists.email_verification_progress', [
-            'list' => $list,
-        ]);
+        // Get progress updated by the import process and status of the final job monitor
+        return response()->json($progress);
     }
 
     /**

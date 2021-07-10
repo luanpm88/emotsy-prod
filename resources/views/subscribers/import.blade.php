@@ -73,7 +73,7 @@
 		                    </div>
 		                    <div style="padding-right: 40px">
 		                        <h4>ERROR</h4>
-		                        <p id="errorMsg">We have sent an email to this sender's email address. Please click on the link included in the email to activate</p>
+		                        <p id="errorMsg"></p>
 		                    </div>
 		                </div>
 		            </div>
