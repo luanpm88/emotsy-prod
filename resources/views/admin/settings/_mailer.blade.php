@@ -113,7 +113,7 @@
         <div class="text-left">
             <button class="btn btn-mc_primary mr-2"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
             <a href="{{ action('Admin\SettingController@mailerTest') }}"
-                class="btn btn-mc_default send-test-email"
+                class="btn btn-secondary send-test-email"
             >
                 <i class="icon-envelope mr-2"></i> {{ trans('messages.setting.mailer.send_a_test_email') }}
             </a>

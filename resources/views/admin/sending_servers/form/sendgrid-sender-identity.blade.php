@@ -67,7 +67,7 @@
         </div>
         <div class="col-md-6">
             <a href="https://app.sendgrid.com" role="button" target="_blank"
-              class="btn btn-mc_default mr-10">
+              class="btn btn-secondary mr-10">
                 {{ trans('messages.sending_serbers.go_to_sendgrid_dashboard') }}
             </a>
 

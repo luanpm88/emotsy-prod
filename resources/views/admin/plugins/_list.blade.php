@@ -59,7 +59,7 @@
                     @endif
 
                     <div class="btn-group">
-						<button role="button" class="btn btn-mc_default icon-only dropdown-toggle" data-toggle="dropdown">
+						<button role="button" class="btn btn-secondary icon-only dropdown-toggle" data-toggle="dropdown">
                             <span class="caret ml-0"></span>
                         </button>
 						<ul class="dropdown-menu dropdown-menu-right">

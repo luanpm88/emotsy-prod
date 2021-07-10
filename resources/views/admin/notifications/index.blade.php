@@ -68,8 +68,10 @@ sort
 						</select>										
 					</span>
 					<span class="text-nowrap">
-						<input name="search_keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
-						<i class="icon-search4 keyword_search_button"></i>
+						<input name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
+						<span class="material-icons-round">
+search
+</span>
 					</span>
 				</div>
 			</div>

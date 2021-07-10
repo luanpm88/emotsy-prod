@@ -60,7 +60,9 @@
                         </span>
                         <span class="text-nowrap">
                             <input type="text" name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
-                            <i class="icon-search4 keyword_search_button"></i>
+                            <span class="material-icons-round">
+search
+</span>
                         </span>
                     </div>
                 @endif
@@ -84,15 +86,16 @@
                 url: '{{ action('MailListController@listing') }}',
                 content: $('#ListsIndexContent'),
                 data: function() {
-                    return ListsIndex.container.find('.filter-box :input, .num_per_page :input').serialize();
+                    return ListsIndex.container.find('.filter-box :input, [name=per_page]').serialize();
                 },
                 loaded: function() {
-                    ListsIndex.container.find('[name=per_page]').on('change', function() {
+                    this.content.find('[name=per_page]').on('change', function() {
                         ListsIndex.list.load();
                     });
 
-                    ListsIndex.container.find('pagination a').on('click', function(e) {
+                    this.content.find('pagination a').on('click', function(e) {
                         e.preventDefault();
+
                         ListsIndex.list.url = $(this).attr('href');
                         ListsIndex.list.load();
                     });
@@ -110,8 +113,9 @@
             ListsIndex.list.load();
         });
 
-        ListsIndex.container.find('.sort-direction').on('click', function() {
+        ListsIndex.container.find('.filter-box .sort-direction').on('click', function() {
             var direction = $('[name=sort_direction]').val();
+
             if (direction == 'desc') {
                 $('[name=sort_direction]').val('asc');
             } else {

@@ -42,7 +42,9 @@ sort
                         </span>
                         <span class="text-nowrap">
                             <input name="search_keyword" value="{{ request()->search_keyword }}" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
-                            <i class="icon-search4 keyword_search_button"></i>
+                            <span class="material-icons-round">
+search
+</span>
                         </span>
                     </div>
                 @endif

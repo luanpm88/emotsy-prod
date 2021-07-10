@@ -42,7 +42,7 @@
                                         @if (is_object($customer->subscription) && !$customer->subscription->isEnded() && $customer->subscription->plan->uid == $plan->uid)
                                             <a
                                                 href="javascript:;"
-                                                class="btn btn-mc_default mt-30" disabled>
+                                                class="btn btn-secondary mt-30" disabled>
                                                     {{ trans('messages.plan.current_subscribed') }}
                                             </a>
                                         @else

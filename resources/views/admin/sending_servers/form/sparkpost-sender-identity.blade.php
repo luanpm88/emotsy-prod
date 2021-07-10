@@ -68,7 +68,7 @@
         <div class="col-md-6">
             <br>
             <a href="https://app.sparkpost.com/auth" role="button" target="_blank"
-              class="btn btn-mc_default mr-10">
+              class="btn btn-secondary mr-10">
                 {{ trans('messages.sending_serbers.add_domain') }}
             </a>
             <a href="https://app.sparkpost.com/auth" role="button" target="_blank"

@@ -129,7 +129,7 @@
                                     </span>
                                 </td>
                                 <td>
-                                    <button class="btn btn-mc_default btn-disabled" disabled>
+                                    <button class="btn btn-secondary btn-disabled" disabled>
                                         {{ trans('messages.edit') }}
                                     </button>
                                 </td>

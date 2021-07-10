@@ -64,7 +64,7 @@
                                             {{ trans('messages.payment.enable') }}
                                         </a>
                                     @endif
-                                    <a class="btn btn-mc_default ml-5" href="{{ $gateway->getSettingsUrl() }}">
+                                    <a class="btn btn-secondary ml-5" href="{{ $gateway->getSettingsUrl() }}">
                                         {{ trans('messages.payment.setting') }}
                                     </a>
                                 @else

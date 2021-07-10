@@ -4,8 +4,8 @@
 			<img src="{{ url('images/icons/'.$iconDir.'SVG/history.svg') }}" />
 		</i>
 	</a>
-	<ul class="dropdown-menu fix-drop-down dropdown-menu-end log-menu-dropdown" aria-labelledby="content-menu">
-		<li>
+	<ul class="dropdown-menu fix-drop-down dropdown-menu-end log-menu-dropdown activity_logs" aria-labelledby="content-menu">
+		<li class="activity_log_header">
 			<a class="dropdown-item fw-bold" href="{{ action("AccountController@logs") }}">
 				<div class="text-muted">
 					{{ trans('messages.activity_log') }}
@@ -26,18 +26,20 @@
 		@endif
 		@foreach (Auth::user()->customer->logs()->take(10)->get() as $log)
 			<li>
-				<a class="dropdown-item d-flex border-top" hrxef="javascript:;">
+				<div class="dropdown-item d-flex border-top" hrxef="javascript:;">
 					<i class="navbar-img me-3" style="">
 						<img src="{{ $log->customer->user->getProfileImageUrl() }}" alt="" />
 					</i>
 					<span class="d-block" style="width: 100%">
-						<span class="d-flex">
-							<span class="text-semibold me-auto text-mute fw-600">{{ $log->customer->user->displayName() }}</span>
-							<span class="small text-muted">{{ $log->created_at->diffForHumans() }}</span>
+						<span class="d-flex small text-muted2 mb-0">
+							<span class="text-semibold me-auto fw-600">{{ $log->customer->user->displayName() }}</span>
+							<span class=""><span class="material-icons-outlined">
+								restore
+								</span> {{ $log->created_at->diffForHumans() }}</span>
 						</span>
-						<span class="desc-menu-log">{{ strip_tags($log->message()) }}</span>
+						<span class="desc-menu-log">{!! $log->message() !!}</span>
 					</span>
-				</a>
+				</div>
 			</li>
 		@endforeach
 		<li>

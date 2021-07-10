@@ -29,7 +29,7 @@
                         <a
                         href="{{ action('Admin\SendingServerController@test', $server->uid) }}"
                         role="button"
-                        class="btn btn-mc_default mr-10 modal_link"
+                        class="btn btn-secondary mr-10 modal_link"
                         data-in-form="true"
                         data-method="GET"
                     >
@@ -153,7 +153,7 @@
                 @endif
                 <br>
                 <a href="{{ action('Admin\SendingServerController@addDomain', $server->uid) }}"
-                  class="btn btn-mc_default mr-10 modal_link" data-size="md">
+                  class="btn btn-secondary mr-10 modal_link" data-size="md">
                     {{ trans('messages.sending_serbers.add_email_domain') }}
                 </a>
                     

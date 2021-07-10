@@ -98,7 +98,7 @@
                     @if (\Auth::user()->customer->can('cancel', $subscription))
                         <a link-method="POST" link-confirm="{{ trans('messages.subscription.cancel.confirm') }}"
                             href="{{ action('AccountSubscriptionController@cancel') }}"
-                            class="btn btn-outline-secondary-600 mr-10"
+                            class="btn btn-outline-secondary me-1"
                         >
                             {{ trans('messages.subscription.cancel') }}
                         </a>
@@ -107,7 +107,7 @@
                     @if (\Auth::user()->customer->can('resume', $subscription))
                         <a link-method="POST" link-confirm="{{ trans('messages.subscription.resume.confirm') }}"
                             href="{{ action('AccountSubscriptionController@resume') }}"
-                            class="btn btn-mc_default mr-10"
+                            class="btn btn-secondary mr-10"
                         >
                             {{ trans('messages.subscription.resume') }}
                         </a>
@@ -116,7 +116,7 @@
                     @if (\Auth::user()->customer->can('changePlan', $subscription))
                         <a
                             href="{{ action('AccountSubscriptionController@changePlan', ["id" => $subscription->uid]) }}"
-                            class="btn btn-mc_default change_plan_button mr-10"
+                            class="btn btn-secondary change_plan_button me-1"
                             data-size="sm"
                         >
                             {{ trans('messages.subscription.change_plan') }}
