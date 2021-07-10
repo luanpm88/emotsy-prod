@@ -190,7 +190,7 @@
 		@endforeach
 	</table>
 	@include('elements/_per_page_select', ["items" => $subscriptions])
-	{{ $subscriptions->links() }}
+	@include('helpers._pagination', ['paginator' => $subscriptions])
 
 	<script>        
         $(function() {

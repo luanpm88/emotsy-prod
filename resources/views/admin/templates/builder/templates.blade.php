@@ -22,7 +22,7 @@
     <hr style="clear: both">
         
     @include('elements/_per_page_select', ["items" => $templates])
-    {{ $templates->links() }}
+    @include('helpers._pagination', ['paginator' => $templates])
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
         <i class="icon-magazine"></i>

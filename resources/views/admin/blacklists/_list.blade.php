@@ -53,7 +53,7 @@
 		@endforeach
 	</table>
 	@include('elements/_per_page_select', ["items" => $blacklists])
-	{{ $blacklists->links() }}
+	@include('helpers._pagination', ['paginator' => $blacklists])
 
 	<script>
 		$('.reason-link').click(function(e) {

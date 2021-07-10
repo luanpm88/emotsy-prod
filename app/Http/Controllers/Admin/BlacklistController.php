@@ -52,7 +52,7 @@ class BlacklistController extends Controller
         if (!$request->user()->admin->can('read', new \Acelle\Model\Blacklist())) {
             return $this->notAuthorized();
         }
-
+        
         $blacklists = $this->search($request)->paginate($request->per_page);
 
         return view('admin.blacklists._list', [

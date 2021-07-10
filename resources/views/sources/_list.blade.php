@@ -56,7 +56,7 @@
 		@endforeach
 	</table>
 	@include('elements/_per_page_select', ["items" => $sources])
-	{{ $sources->links() }}	
+	@include('helpers._pagination', ['paginator' => $sources])	
 @elseif (!empty(request()->keyword))
 	<div class="empty-list">
 		<span class="material-icons-outlined">

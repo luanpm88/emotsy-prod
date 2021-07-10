@@ -27,7 +27,7 @@
     <hr style="clear: both">
         
     @include('elements/_per_page_select', ["items" => $templates])
-    {{ $templates->links() }}
+    @include('helpers._pagination', ['paginator' => $templates])
 
     <script>
         var builderSelectPopup = new Popup(null, undefined, {onclose: function() {

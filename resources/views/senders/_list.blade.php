@@ -76,7 +76,7 @@
 		@endforeach
 	</table>
 	@include('elements/_per_page_select', ["items" => $senders])
-	{{ $senders->links() }}
+	@include('helpers._pagination', ['paginator' => $senders])
 @elseif (!empty(request()->keyword) || !empty(request()->filters["campaign_uid"]))
 	<div class="empty-list">
 		<i class="icon icon-user-check"></i>

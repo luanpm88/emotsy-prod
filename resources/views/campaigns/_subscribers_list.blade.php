@@ -126,7 +126,7 @@
         @endforeach
     </table>
     @include('elements/_per_page_select', ["items" => $subscribers])
-    {{ $subscribers->links() }}
+    @include('helpers._pagination', ['paginator' => $subscribers])
 @elseif (!empty(request()->keyword) || !empty(request()->filters))
     <div class="empty-list">
         <i class="icon-users4"></i>

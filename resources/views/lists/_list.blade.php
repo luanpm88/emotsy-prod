@@ -106,7 +106,7 @@
 		@endforeach
 	</table>
 	@include('elements/_per_page_select', ["items" => $lists])
-	{{ $lists->links() }}
+	@include('helpers._pagination', ['paginator' => $lists])
 	
 	<script>
 		var clonePopup = new Popup(); 

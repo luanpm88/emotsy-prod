@@ -117,7 +117,7 @@
         @endforeach
     </table>
     @include('elements/_per_page_select', ["items" => $customers])
-    {{ $customers->links() }}
+    @include('helpers._pagination', ['paginator' => $customers])
 
     <script>        
         $(function() {

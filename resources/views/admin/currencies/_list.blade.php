@@ -79,7 +79,7 @@
 		@endforeach
 	</table>
 	@include('elements/_per_page_select', ["items" => $currencies])
-	{{ $currencies->links() }}
+	@include('helpers._pagination', ['paginator' => $currencies])
 @elseif (!empty(request()->filters))
 	<div class="empty-list">
 		<i class="icon-clipboard2"></i>
