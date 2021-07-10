@@ -34,7 +34,7 @@
                             </div>
                         </div>
                     </div>
-                <h4 style="margin-bottom: 20px" id="notice">{!! trans('messages.please_wait_export') !!}</h4>
+                <h4 style="margin-bottom: 20px" id="notice">{!! trans('messages.list.verify.progress') !!}</h4>
                 <div class="progress progress-lg">
 
                     <div class="progress-bar progress-error progress-bar-danger" style="width: 0%">
@@ -116,21 +116,31 @@
             },
 
             resetCurrentJob: function() {
-                AcelleList.currentExportJobUid = null;
+                AcelleList.currentJobUid = null;
                 AcelleList.progressCheckUrl = null;
                 AcelleList.cancelUrl = null;
             },
 
             start: function() {
+                var serverUID = $('select[name="email_verification_server_id"]').find(':selected').val();
                 var token = $('#verifyForm').find('input[name="_token"]').val();
+
+                if (!serverUID) {
+                    alert('Please choose a verification server from the list');
+                    return;
+                }
 
                 $.ajax({
                     url: '{{ action('MailListController@startVerification', [ 'uid' => $list->uid ] ) }}',
                     type: 'POST',
                     data: {
-                        '_token': token
+                        '_token': token,
+                        'email_verification_server_id': serverUID
                     },
                     success: function (data) {
+                        $("#notice").show();
+                        $("#bottomNotice").hide();
+                        $('#errorBox').hide();
                         AcelleList.hideFinishButtonBar();
                         AcelleList.setCurrentJob(data);
                         AcelleList.checkProgress();
@@ -176,14 +186,14 @@
                             AcelleList.showFinishButtonBar();
                             AcelleList.hideCancelButton();
                             $("#notice").show();
-                            $("#notice").html('{!! trans('messages.export_completed') !!}');
+                            $("#notice").html('{!! trans('messages.list.verify.complete') !!}');
                             $('#bottomNotice').show();
                             $("#bottomNotice").html(result.message);
 
                             if (completeAlert) {
                                 // Success alert
                                 swal({
-                                    title: '{{ trans('messages.export_completed') }}',
+                                    title: '{{ trans('messages.list.verify.complete') }}',
                                     text: "",
                                     confirmButtonColor: "#00695C",
                                     type: "success",
@@ -219,8 +229,11 @@
                         '_token': token
                     },
                     success: function(result, textStatus, jqXHR) {
-                        AcelleList.hideProgressBar();
-                        AcelleList.resetCurrentJob();
+                        // AcelleList.hideProgressBar();
+                        // AcelleList.resetCurrentJob();
+
+                        // Reload the page to refresh the verification stats
+                        window.location.href = '{{ action("MailListController@verification", [ "uid" => $list->uid ]) }}';
                     }
                 }).fail(function(jqXHR, textStatus, errorThrown) {
                     alert(errorThrown);
@@ -269,7 +282,7 @@
         $(document).on("click", "#cancelBtn", function(e) {
             e.preventDefault();
 
-            var cancelConfirm = confirm("{{ trans('messages.list.export.cancel') }}");
+            var cancelConfirm = confirm("{{ trans('messages.label.cancel') }}");
 
             if (cancelConfirm) {
                 AcelleList.cancel();
@@ -298,7 +311,7 @@
 
                 // Set up current job information
                 AcelleList.setCurrentJob({
-                    currentExportJobUid: '{{ $currentJobUid }}',
+                    currentJobUid: '{{ $currentJobUid }}',
                     progressCheckUrl: '{{ $progressCheckUrl }}',
                     cancelUrl: '{{ $cancelUrl }}',
                 });
