@@ -1,12 +1,12 @@
-<pagination class="d-flex d-block align-items-center">
-    <label class="small mb-0 mr-3">
+<pagination class="d-flex align-items-center">
+    <label class="small">
         {!! trans('messages.pagination.page_of', [
             'pages' => $paginator->lastPage(),
             'page' => $paginator->currentPage(),
         ]) !!}        
     </label>
     @if ($paginator->lastPage() > 1)
-        <ul class="pagination justify-content-end small align-items-center mb-0">
+        <ul class="pagination justify-content-end small align-items-center mb-0 ms-4 border-start">
             <li class="page-item {{ $paginator->currentPage() == 1 ? 'disabled' : '' }}">
                 <a class="page-link" href="{{ $paginator->url($paginator->currentPage()-1) }}" tabindex="-1" aria-disabled="true" data-page="{{ $paginator->currentPage()-1 }}">{{ trans('messages.pagination.previous') }}</a>
             </li>

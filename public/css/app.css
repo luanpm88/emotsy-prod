@@ -4225,3 +4225,18 @@ label:hover .checkmark, .checkmark-container:hover .checkmark {
 pagination {
     justify-content: flex-end;
 }
+.page-item.active .page-link {
+    color: #333;
+    background-color: #dcf5f7;
+    border: solid 1px #75b3bd;
+}
+.page-link, .page-link:hover {
+    color: #333;
+}
+.page-item {
+    margin-left: 5px;
+}
+.page-item .page-link {
+    border: none;
+    border-radius: 2px!important;
+}
