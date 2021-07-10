@@ -85,6 +85,7 @@ class MailList extends Model
         'name' => 'required',
         'from_email' => 'required|email',
         'from_name' => 'required',
+        'default_subject' => 'required',
         'contact.company' => 'required',
         'contact.address_1' => 'required',
         'contact.country_id' => 'required',
