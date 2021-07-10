@@ -4357,6 +4357,7 @@ label:hover .checkmark, .checkmark-container:hover .checkmark {
 }
 .tox:not(.tox-tinymce-inline) .tox-editor-header {
     box-shadow: 0 0 15px rgb(0 0 0 / 10%);
+}
 .popup .panel {
     border: solid 1px transparent;
 }
@@ -4366,4 +4367,14 @@ label:hover .checkmark, .checkmark-container:hover .checkmark {
 .choose-theme:hover label {
     cursor: pointer;
     color: #000;
+}
+.listing-form [role=navigation] {
+    float: right!important;
+}
+.listing-form [role=navigation] span {
+    opacity: 0.7;
+    pointer-events: none;
+}
+pagination {
+    justify-content: flex-end;
 }

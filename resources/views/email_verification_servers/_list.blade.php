@@ -78,7 +78,7 @@
         @endforeach
     </table>
     @include('elements/_per_page_select')
-    {{ $servers->links() }}
+    @include('helpers._pagination', ['paginator' => $servers])
 @elseif (!empty(request()->keyword) || !empty(request()->filters["type"]))
     <div class="empty-list">
         <i class="icon-server"></i>

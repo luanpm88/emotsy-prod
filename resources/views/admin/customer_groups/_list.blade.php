@@ -63,7 +63,7 @@
         @endforeach
     </table>
 @include('elements/_per_page_select')
-    {{ $groups->links() }}
+    @include('helpers._pagination', ['paginator' => $groups])
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
         <i class="icon-users4"></i>

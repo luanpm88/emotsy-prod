@@ -52,7 +52,7 @@
         @endforeach
     </table>
     @include('elements/_per_page_select', ["items" => $campaigns])
-    {{ $campaigns->links() }}
+    @include('helpers._pagination', ['paginator' => $campaigns])
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
         <i class="icon-paperplane"></i>

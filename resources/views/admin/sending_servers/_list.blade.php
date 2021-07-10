@@ -129,7 +129,7 @@
         @endforeach
     </table>
     @include('elements/_per_page_select')
-    {{ $items->links() }}
+    @include('helpers._pagination', ['paginator' => $items])
 @elseif (!empty(request()->keyword) || !empty(request()->filters["type"]))
     <div class="empty-list">
         <i class="icon-server"></i>

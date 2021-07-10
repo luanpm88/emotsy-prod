@@ -70,7 +70,7 @@
         @endforeach
     </table>
     @include('elements/_per_page_select', ["items" => $segments])
-    {{ $segments->links() }}
+    @include('helpers._pagination', ['paginator' => $segments])
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
         <i class="icon-make-group"></i>

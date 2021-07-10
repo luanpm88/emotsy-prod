@@ -85,7 +85,7 @@
         @endforeach
     </table>
     @include('elements/_per_page_select', ["items" => $admins])
-    {{ $admins->links() }}
+    @include('helpers._pagination', ['paginator' => $admins])
 @elseif (!empty(request()->filters))
     <div class="empty-list">
         <i class="icon-users"></i>

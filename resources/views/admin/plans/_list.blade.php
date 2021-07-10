@@ -96,7 +96,7 @@
         @endforeach
     </table>
     @include('elements/_per_page_select', ["items" => $plans])
-    {{ $plans->links() }}
+    @include('helpers._pagination', ['paginator' => $plans])
 
     <script>
         $('.cant_show').click(function(e) {

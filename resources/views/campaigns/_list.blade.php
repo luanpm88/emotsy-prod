@@ -123,7 +123,7 @@
 		@endforeach
 	</table>
 	@include('elements/_per_page_select', ["items" => $campaigns])
-	{{ $campaigns->links() }}
+	@include('helpers._pagination', ['paginator' => $campaigns])
 
 	<script>
 		var resendPopup = new Popup();

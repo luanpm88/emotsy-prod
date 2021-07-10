@@ -83,7 +83,7 @@
 		@endforeach
 	</table>
 	@include('elements/_per_page_select')
-	{{ $languages->links() }}
+	@include('helpers._pagination', ['paginator' => $languages])
 @elseif (!empty(request()->keyword))
 	<div class="empty-list">
 		<span class="material-icons-outlined">flag</span>

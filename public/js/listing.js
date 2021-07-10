@@ -357,7 +357,7 @@ $(document).ready(function() {
     });
 
     // Change page
-    $(document).on("click", ".listing-form .pagination a", function(e) {
+    $(document).on("click", ".listing-form [role=navigation] a, pagination a", function(e) {
         e.preventDefault();
 
         tableFilter($(this).parents(".listing-form"), $(this).attr("href"));
