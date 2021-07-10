@@ -12,9 +12,6 @@ body {
 h1, h1 {
     font-size: 2rem;
 }
-h4, h4 {
-    font-size: 1.45rem;
-}
 .logo {
     height: 18px;
 }
@@ -53,8 +50,8 @@ h4, h4 {
     color: inherit;
 }
 .navbar-main .navbar-nav .lvl-1 {
-    padding-left: 1.2em;
-    padding-right: 1.2em;
+    padding-left: 1em;
+    padding-right: 1em;
 }
 .navbar-main .navbar-nav .nav-item:hover .lvl-1 {
     background-color: rgba(0,0,0,.1);
@@ -219,8 +216,8 @@ h4, h4 {
     min-height: calc(100vh - 77px);
 }
 .navbar-img img {
-    width: 30px;
-    height: 30px;
+    width: 35px;
+    height: 35px;
     border-radius: 100%;
 }
 .desc-menu-log {
@@ -241,4 +238,56 @@ h4, h4 {
 }
 .sr-only {
     display: none;
+}
+[name=keyword] + [class^="material-icons"] {
+    color: #aaa;
+    font-size: 19px;
+    display: inline-block;
+    position: absolute;
+    margin-left: -27px;
+}
+[name=keyword]:focus + [class^="material-icons"] {
+    color: #888;
+}
+#anotify {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+}
+#anotify .alert {
+    width: 350px;
+    padding: 10px 10px 10px 38px;
+}
+
+#anotify .alert::before {
+    font-family: 'Material Icons Outlined';
+    position: absolute;
+    font-size: 17px;
+    left: 11px;
+    top: 9px;   
+}
+#anotify .alert-dismissible .btn-close {
+    padding: 10px;
+    background-size: 0.6em;
+    border-radius: 100%;
+    top: -9px;
+    right: -9px;
+    background-color: #fff;
+    opacity: 0.9;
+    padding: 4px;
+    border: saddlebrown;
+    border: solid 1px #ddd;
+    display: none;
+}
+#anotify .alert-dismissible:hover .btn-close {
+    display: block;
+}
+#anotify .alert-warning::before {
+    content: 'error_outline';
+}
+#anotify .alert-success::before {
+    content: 'check_circle';
+}
+#anotify .alert-danger::before {
+    content: 'new_releases';
 }

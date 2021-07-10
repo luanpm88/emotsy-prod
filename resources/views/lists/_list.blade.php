@@ -16,7 +16,7 @@
 						</div>
 					</div>
 				</td>
-				<td>
+				<td width="35%">
 					<h5 class="mt-0 mb-1 fw-600">
 						<a class="kq_search" href="{{ action('MailListController@overview', ['uid' => $item->uid]) }}">{{ $item->name }}</a>
 					</h5>

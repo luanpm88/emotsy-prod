@@ -1,6 +1,6 @@
 $(function(){
     initJs($('body'));
-
+    
     $( document ).ajaxError(function( event, request, settings ) {
         if(typeof(settings.globalError) != 'undefined' || settings.globalError == false) {
             return;

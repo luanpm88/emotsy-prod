@@ -2774,7 +2774,7 @@
   'automation.at' => 'At',
   'automation.date' => 'Date',
   'automation.email.empty_template_list' => 'There are no templates',
-  'pagination.page_of' => 'Page :page of <span class="font-weight-semibold">:pages</span>',
+  'pagination.page_of' => 'Page :page of :pages',
   'pagination.previous' => 'Previous',
   'pagination.next' => 'Next',
   'automation.email.upload_template' => 'Upload template',

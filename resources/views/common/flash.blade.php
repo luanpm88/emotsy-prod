@@ -2,7 +2,12 @@
     @foreach (['success'] as $msg)
         @if(Session::has('alert-' . $msg))
             $(document).ready(function() {
-                notify("{{ $msg }}", '{{ trans('messages.notify.' . $msg)}}', '{!! preg_replace('/[\r\n]+/', ' ', Session::get('alert-' . $msg)) !!}');
+                notify({
+                    type: "{{ $msg }}",
+                    title: '{{ trans('messages.notify.' . $msg)}}',
+                    message: '{!! preg_replace('/[\r\n]+/', ' ', Session::get('alert-' . $msg)) !!}',
+                    dismissible: true,
+                });
             });
 
         @endif
@@ -10,18 +15,11 @@
 
     @if (request()->session()->get('user-activated'))
         $(document).ready(function() {
-            // Success alert
-            swal({
-                title: "{!! request()->session()->get('user-activated') !!}",
-                text: "",
-                confirmButtonColor: "#00695C",
+            notify({
                 type: "success",
-                allowOutsideClick: true,
-                confirmButtonText: "{{ trans('messages.ok') }}",
-                customClass: "swl-success",
-                html:true
+                message: `xxxx{!! request()->session()->get('user-activated') !!}`,
+                dismissible: true,
             });
-
         });
         <?php request()->session()->forget('user-activated'); ?>
     @endif

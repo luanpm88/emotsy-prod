@@ -5,3 +5,7 @@ function initJs(container)
         minimumResultsForSearch: 30
     });
 }
+
+function notify(options) {
+    new ANotify().add(options);
+}

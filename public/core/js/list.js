@@ -1,12 +1,12 @@
 class List {
     constructor(options) {
         var _this = this;
-        this.id = '_' + Math.random().toString(36).substr(2, 9);
-        this.options = {};
+        _this.id = '_' + Math.random().toString(36).substr(2, 9);
+        _this.options = {};
 
         // options
         if (typeof(options) !== 'undefined') {
-            this.options = options;
+            _this.options = options;
         }
         
         // url

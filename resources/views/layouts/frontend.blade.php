@@ -34,9 +34,12 @@
 	<!-- AcelleMail -->
 	<link rel="stylesheet" type="text/css" href="{{ URL::asset('css/app.css') }}">
 	<link rel="stylesheet" type="text/css" href="{{ URL::asset('core/css/app.css') }}">
-	<script type="text/javascript" src="{{ URL::asset('core/js/functions.js') }}"></script>
+
 	<script type="text/javascript" src="{{ URL::asset('core/js/popup.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('core/js/list.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('core/js/anotify.js') }}"></script>
+
+	<script type="text/javascript" src="{{ URL::asset('core/js/functions.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('core/js/app.js') }}"></script>
 </head>
 <body>
@@ -294,7 +297,21 @@
 		<!-- /footer -->
 	</main>
 
+	<!-- Admin area -->
+	@if (null !== Session::get('orig_customer_id') && Auth::user()->customer)
+		<a href="{{ action('CustomerController@adminArea') }}" class="user-switch-area mc-modal-control">
+			{{ trans('messages.customer.admin_area') }}
+		</a>
+	@endif
+
 	{!! \Acelle\Model\Setting::get('custom_script') !!}
+
+	<!-- Notification -->
+	@include('layouts._notify')
+	@include('layouts._notify_frontend')
+
+	<!-- display flash message -->
+	@include('common.flash')
 </body>
 </html>
 
