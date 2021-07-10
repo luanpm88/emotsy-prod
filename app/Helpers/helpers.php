@@ -87,22 +87,6 @@ function each_batch($array, $batchSize, $skipHeader, $callback)
 }
 
 /**
- * Count the total number of line of a given file without loading the entire file.
- * This is effective for large file.
- *
- * @param string file path
- *
- * @return int line count
- */
-function line_count($path)
-{
-    $file = new \SplFileObject($path, 'r');
-    $file->seek(PHP_INT_MAX);
-
-    return $file->key() + 1;
-}
-
-/**
  * Join filesystem path strings.
  *
  * @param * parts of the path
@@ -639,15 +623,6 @@ function tinyDocTypeTransform($content)
     return $doctype . $content;
 }
 
-function tinyDocTypeUntransform($content)
-{
-    return str_replace(
-        '<!DoCtYPe html>',
-        '',
-        $content
-    );
-}
-
 function demo_auth()
 {
     $auth = \Acelle\Model\User::getAuthenticateFromFile();
@@ -656,12 +631,6 @@ function demo_auth()
         'email' => isset($auth['email']) ? $auth['email'] : '',
         'password' => $auth['password'] ? $auth['password'] : '',
     ];
-}
-
-// Make string pretty, used for printing debugging SQL
-function prettifystr($str)
-{
-    return preg_replace('/\s+/', ' ', trim($str));
 }
 
 function get_app_identity()
