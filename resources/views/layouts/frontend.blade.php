@@ -32,6 +32,7 @@
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round"rel="stylesheet">
 
 	<!-- AcelleMail -->
+	<link rel="stylesheet" type="text/css" href="{{ URL::asset('css/app.css') }}">
 	<link rel="stylesheet" type="text/css" href="{{ URL::asset('core/css/app.css') }}">
 	<script type="text/javascript" src="{{ URL::asset('core/js/functions.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('core/js/popup.js') }}"></script>

@@ -90,6 +90,12 @@
                     ListsIndex.container.find('[name=per_page]').on('change', function() {
                         ListsIndex.list.load();
                     });
+
+                    ListsIndex.container.find('pagination a').on('click', function(e) {
+                        e.preventDefault();
+                        ListsIndex.list.url = $(this).attr('href');
+                        ListsIndex.list.load();
+                    });
                 }
             }),
         };
