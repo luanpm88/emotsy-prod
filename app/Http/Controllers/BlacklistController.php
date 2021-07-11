@@ -228,7 +228,7 @@ class BlacklistController extends Controller
         } else {
             return view('blacklists.import', [
                 //
-            ]);    
+            ]);
         }
     }
 
@@ -243,7 +243,6 @@ class BlacklistController extends Controller
             $job = $customer->dispatchWithMonitor(new ImportBlacklistJob($filepath, $customer));
 
             return redirect()->action('BlacklistController@import');
-
         } else {
             throw new Exception('no upload file');
         }

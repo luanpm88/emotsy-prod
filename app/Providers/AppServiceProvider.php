@@ -53,7 +53,7 @@ class AppServiceProvider extends ServiceProvider
             return new BillingManager();
         });
 
-        Hook::register('add_translation_file', function() {
+        Hook::register('add_translation_file', function () {
             return [
                 "id" => "acelle_messages",
                 "plugin_name" => "Acelle/Core",
@@ -65,7 +65,7 @@ class AppServiceProvider extends ServiceProvider
             ];
         });
 
-        Hook::register('add_translation_file', function() {
+        Hook::register('add_translation_file', function () {
             return [
                 "id" => "acelle_auth",
                 "plugin_name" => "Acelle/Core",
@@ -77,7 +77,7 @@ class AppServiceProvider extends ServiceProvider
             ];
         });
 
-        Hook::register('add_translation_file', function() {
+        Hook::register('add_translation_file', function () {
             return [
                 "id" => "acelle_pagination",
                 "plugin_name" => "Acelle/Core",
@@ -89,7 +89,7 @@ class AppServiceProvider extends ServiceProvider
             ];
         });
 
-        Hook::register('add_translation_file', function() {
+        Hook::register('add_translation_file', function () {
             return [
                 "id" => "acelle_passwords",
                 "plugin_name" => "Acelle/Core",
@@ -101,7 +101,7 @@ class AppServiceProvider extends ServiceProvider
             ];
         });
 
-        Hook::register('add_translation_file', function() {
+        Hook::register('add_translation_file', function () {
             return [
                 "id" => "acelle_builder",
                 "plugin_name" => "Acelle/Core",
@@ -113,7 +113,7 @@ class AppServiceProvider extends ServiceProvider
             ];
         });
 
-        Hook::register('add_translation_file', function() {
+        Hook::register('add_translation_file', function () {
             return [
                 "id" => "acelle_validation",
                 "plugin_name" => "Acelle/Core",

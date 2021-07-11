@@ -294,7 +294,8 @@ class Language extends Model
         return self::arrayToYaml(self::fileToArray($path));
     }
 
-    public static function yamlToFile($pathToFile, $yaml) {
+    public static function yamlToFile($pathToFile, $yaml)
+    {
         $content = '<?php return '.var_export(\Yaml::parse($yaml), true).' ?>';
         $bytes_written = \File::put($pathToFile, $content);
     }
@@ -307,8 +308,7 @@ class Language extends Model
         foreach ($files as $file) {
             $path = join_paths($file['translation_folder'], $this->code, $file['file_name']);
 
-            if (in_array($file['id'], array_keys($paths)) )
-            {
+            if (in_array($file['id'], array_keys($paths))) {
                 throw new \Exception('Translation file id already exists: ' . $file['id']);
             }
 
@@ -462,8 +462,7 @@ class Language extends Model
 
     public function findFileById($id)
     {
-        if (!isset($this->getAllLanguageFiles()[$id]))
-        {
+        if (!isset($this->getAllLanguageFiles()[$id])) {
             throw new \Exception('Can not find translation file with id: ' . $id);
         }
 

@@ -17,9 +17,9 @@ class JobMonitor extends Model
     const STATUS_DONE = 'done';
     const STATUS_FAILED = 'failed';
 
-     /**
-     * Bootstrap any application services.
-     */
+    /**
+    * Bootstrap any application services.
+    */
     public static function boot()
     {
         parent::boot();
@@ -85,24 +85,28 @@ class JobMonitor extends Model
         return ! is_null($this->batch_id);
     }
 
-    public function setFailed($exception) {
+    public function setFailed($exception)
+    {
         $this->status = self::STATUS_FAILED;
         $errorMsg = "Error executing job. ".$exception->getMessage();
         $this->error = $errorMsg;
         $this->save();
     }
 
-    public function setRunning() {
+    public function setRunning()
+    {
         $this->status = self::STATUS_RUNNING;
         $this->save();
     }
 
-    public function setDone() {
+    public function setDone()
+    {
         $this->status = self::STATUS_DONE;
         $this->save();
     }
 
-    public function setQueued() {
+    public function setQueued()
+    {
         $this->status = self::STATUS_QUEUED;
         $this->save();
     }
@@ -153,7 +157,7 @@ class JobMonitor extends Model
 
         // Remove it from queue, if any
         if (!is_null($job)) {
-            $job->delete(); 
+            $job->delete();
         }
     }
 
@@ -165,7 +169,7 @@ class JobMonitor extends Model
         // It will be pruned with queue:prune-batches command
         $batch = $this->getBatch();
         if (!is_null($batch)) {
-            $batch->cancel();    
+            $batch->cancel();
         }
     }
 }

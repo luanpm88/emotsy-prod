@@ -26,7 +26,7 @@ class VerifyMailListJob extends Base
         $this->mailList = $mailList;
         $this->server = $server;
 
-        $this->afterDispatched(function($thisJob, $monitor) {
+        $this->afterDispatched(function ($thisJob, $monitor) {
             $monitor->setJsonData([
                 'percentage' => 0,
                 'total' => 0,
@@ -57,8 +57,8 @@ class VerifyMailListJob extends Base
 
         // Query batches of 1000 records each, dispatch the verification job
         // Add job to batch
-        cursorIterate($query, 'subscribers.id', $size = 1000, function($subscribers, $page) {
-            foreach($subscribers as $subscriber) {
+        cursorIterate($query, 'subscribers.id', $size = 1000, function ($subscribers, $page) {
+            foreach ($subscribers as $subscriber) {
                 $this->batch()->add(new VerifySubscriber($subscriber, $this->server));
             }
         });

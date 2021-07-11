@@ -247,7 +247,7 @@ class MailList extends Model
             $importJob,
             $then = null,
             $catch = null,
-            $finally = function($batch) {
+            $finally = function ($batch) {
                 // Finally
                 // Trigger updating related campaigns cache
                 $this->updateCachedInfo();
@@ -832,15 +832,15 @@ class MailList extends Model
         $writer->insertOne($headers);
 
         // Iterate through the list and write to file, 1000 records each time
-        cursorIterate($query, $orderBy = 'subscribers.id', $pageSize,  function($subscribers, $page) use ($writer, $listFields, &$processed, &$total, &$failed, &$message, $pageSize, $progressCallback) {
-            $records = collect($subscribers)->map(function($subscriber) use ($listFields) {
+        cursorIterate($query, $orderBy = 'subscribers.id', $pageSize, function ($subscribers, $page) use ($writer, $listFields, &$processed, &$total, &$failed, &$message, $pageSize, $progressCallback) {
+            $records = collect($subscribers)->map(function ($subscriber) use ($listFields) {
                 $attributes = $subscriber->subscriberFields()
                                          ->orderBy('fields.id', 'ASC')
                                          ->join('fields', 'fields.id', 'subscriber_fields.field_id')
                                          ->pluck('subscriber_fields.value', 'fields.tag')->toArray();
 
                 // Only take pairs that match the listFields' keys
-                $attributes = array_intersect_key($attributes, $listFields); 
+                $attributes = array_intersect_key($attributes, $listFields);
                 
                 // merge the valid attributes to the base list of all keys
                 // results in something like [ 'EMAIL' => 'example@example.io', 'OTHER' => null ]
@@ -1396,7 +1396,7 @@ class MailList extends Model
                 return $r['email'];
             });
 
-            foreach($data as $record) {
+            foreach ($data as $record) {
                 $callback($record);
             }
         });

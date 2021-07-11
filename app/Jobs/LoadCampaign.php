@@ -18,7 +18,7 @@ class LoadCampaign implements ShouldQueue
 {
     use Trackable, Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $campaign; 
+    protected $campaign;
 
     /**
      * Create a new job instance.
@@ -43,7 +43,7 @@ class LoadCampaign implements ShouldQueue
 
         $this->campaign->setSending();
 
-        $this->campaign->prepare(function($campaign, $subscriber, $server) {
+        $this->campaign->prepare(function ($campaign, $subscriber, $server) {
             $this->batch()->add(new SendMessage($campaign, $subscriber, $server));
         });
     }

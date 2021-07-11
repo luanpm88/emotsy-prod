@@ -47,7 +47,7 @@ class Send extends Action
         }
 
         // queue, do not send immediately
-        $email->queueDeliverTo($this->autoTrigger->subscriber, $this->autoTrigger->id); 
+        $email->queueDeliverTo($this->autoTrigger->subscriber, $this->autoTrigger->id);
 
         $this->logger->info(sprintf('Send email entitled "%s" to "%s", queued', $email->subject, $this->autoTrigger->subscriber->email));
 

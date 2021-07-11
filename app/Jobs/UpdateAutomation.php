@@ -20,7 +20,7 @@ class UpdateAutomation extends Base
      * @return void
      */
     public function __construct($automation)
-    {        
+    {
         $this->automation = $automation;
     }
 

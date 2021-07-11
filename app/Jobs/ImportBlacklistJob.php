@@ -24,7 +24,7 @@ class ImportBlacklistJob extends Base
         $this->filepath = $filepath;
         $this->customer = $customer;
 
-        $this->afterDispatched(function($thisJob, $monitor) {
+        $this->afterDispatched(function ($thisJob, $monitor) {
             $monitor->setJsonData([
                 'percentage' => 0,
                 'total' => 0,
@@ -46,7 +46,7 @@ class ImportBlacklistJob extends Base
             'message' => 'Import is in progress...',
         ]);
 
-        Blacklist::import($this->filepath, $this->customer, function($processed, $total, $failed, $message) {
+        Blacklist::import($this->filepath, $this->customer, function ($processed, $total, $failed, $message) {
             $percentage = ($total && $processed) ? (int)($processed*100/$total) : 0;
 
             $this->monitor->updateJsonData([

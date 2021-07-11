@@ -31,7 +31,7 @@ trait TrackJobs
 
         // Store the closures (for executing after dispatched) to a temporary place
         // It is because Jobs are not allowed to store closures (not serializable)
-        $events = [ 
+        $events = [
             $job->eventAfterDispatched
         ];
 
@@ -46,7 +46,7 @@ trait TrackJobs
         $monitor->save();
 
         // Execute job's callback
-        foreach($events as $closure) {
+        foreach ($events as $closure) {
             if (!is_null($closure)) {
                 $closure($job, $monitor);
             }
@@ -74,7 +74,7 @@ trait TrackJobs
 
         // Store the closures (for executing after dispatched) to a temporary place
         // It is because Jobs are not allowed to store closures (not serializable)
-        $events = [ 
+        $events = [
             'afterDispatched' => $job->eventAfterDispatched,
             'afterFinished' => $job->eventAfterFinished,
         ];
@@ -90,7 +90,6 @@ trait TrackJobs
             if (!is_null($thenCallback)) {
                 $thenCallback($batch);
             }
-
         })->catch(function (Batch $batch, \Throwable $e) use ($monitor, $catchCallback) {
             // Failed and finish
             $monitor->setFailed($e);
@@ -98,7 +97,6 @@ trait TrackJobs
             if (!is_null($catchCallback)) {
                 $catchCallback($batch);
             }
-
         })->finally(function (Batch $batch) use ($monitor, $finallyCallback, $events, $job) {
             if (!is_null($finallyCallback)) {
                 $finallyCallback($batch);
@@ -111,7 +109,6 @@ trait TrackJobs
                     $closure($job, $monitor);
                 }
             }
-
         })->dispatch();
 
         $monitor->batch_id = $batch->id;

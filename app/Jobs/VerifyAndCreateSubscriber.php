@@ -42,9 +42,8 @@ class VerifyAndCreateSubscriber extends Base
             $subscriber = $this->list->addSubscriberFromArray($this->attributes);
             $this->logger->info($this->attributes['email']. ' added!');
         } catch (\Exception $e) {
-            // email is always present 
+            // email is always present
             $this->logger->error($this->attributes['email']. ' failed. '.$e->getMessage());
         }
-        
     }
 }

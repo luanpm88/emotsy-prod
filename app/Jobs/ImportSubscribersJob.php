@@ -27,7 +27,7 @@ class ImportSubscribersJob extends Base
         $this->file = $file;
 
         // Set the initial value for progress check
-        $this->afterDispatched(function($thisJob, $monitor) {
+        $this->afterDispatched(function ($thisJob, $monitor) {
             $monitor->setJsonData([
                 'percentage' => 0,
                 'total' => 0,
@@ -47,7 +47,7 @@ class ImportSubscribersJob extends Base
     public function handle()
     {
 
-        // Use a logger to log failed 
+        // Use a logger to log failed
         $formatter = new LineFormatter("[%datetime%] %channel%.%level_name%: %message%\n");
         $logfile = $this->file.".log";
         $stream = new StreamHandler($logfile, Logger::DEBUG);
@@ -64,10 +64,9 @@ class ImportSubscribersJob extends Base
         // Write log, to make sure the file is created
         $logger->info('Initiated');
 
-        // File path: 
+        // File path:
         $this->list->import(
             $this->file,
-
             function ($processed, $total, $failed, $message) use ($logger) {
                 $percentage = ($total && $processed) ? (int)($processed*100/$total) : 0;
 
@@ -83,7 +82,6 @@ class ImportSubscribersJob extends Base
                 $logger->info($message);
                 $logger->info(sprintf('Processed: %s/%s, Skipped: %s', $processed, $total, $failed));
             },
-
             function ($invalidRecord, $error) use ($logger) {
                 $logger->warning('Invalid record: [' . implode(",", array_values($invalidRecord)) . "] | Validation error: " . implode(";", $error));
             }

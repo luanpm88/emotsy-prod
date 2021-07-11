@@ -52,7 +52,6 @@ use Illuminate\Support\Facades\Bus;
 use Acelle\Library\RouletteWheel;
 use Acelle\Library\Traits\TrackJobs;
 
-
 class Campaign extends Model
 {
     use HasTemplate, TrackJobs;
@@ -336,13 +335,13 @@ class Campaign extends Model
         $message->setTo($subscriber->email);
 
         if (!empty(Setting::get('campaign.bcc'))) {
-            $addresses = array_filter(preg_split( '/\s*,\s*/', Setting::get('campaign.bcc') ));
-            $message->setBcc( $addresses );
+            $addresses = array_filter(preg_split('/\s*,\s*/', Setting::get('campaign.bcc')));
+            $message->setBcc($addresses);
         }
 
         if (!empty(Setting::get('campaign.cc'))) {
-            $addresses = array_filter(preg_split( '/\s*,\s*/', Setting::get('campaign.cc') ));
-            $message->setCc( $addresses );
+            $addresses = array_filter(preg_split('/\s*,\s*/', Setting::get('campaign.cc')));
+            $message->setCc($addresses);
         }
 
         $message->setReplyTo($this->reply_to);
@@ -1550,7 +1549,7 @@ class Campaign extends Model
      */
     public function getTopOpenSubscribers($number = 5)
     {
-        $query = $this->openLogs()->select('subscribers.email','subscribers.id')
+        $query = $this->openLogs()->select('subscribers.email', 'subscribers.id')
                         ->addSelect(DB::raw('count(*) as count'))
                         ->join('subscribers', 'subscribers.id', '=', 'tracking_logs.subscriber_id')
                         ->groupBy('subscribers.email', 'subscribers.id')
@@ -1786,7 +1785,7 @@ class Campaign extends Model
             'use_default_sending_server_from_email',
         ];
         
-        foreach($attributes as $attribute) {
+        foreach ($attributes as $attribute) {
             $copy[$attribute] = $this[$attribute];
         }
         
@@ -3476,14 +3475,14 @@ class Campaign extends Model
     }
 
     public function cancelAndDeleteJobs($jobType = null)
-    {   
+    {
         $query = $this->jobMonitors();
 
         if (!is_null($jobType)) {
             $query = $query->byJobType($jobType);
         }
 
-        foreach($query->get() as $job) {
+        foreach ($query->get() as $job) {
             $job->cancel();
         }
     }
@@ -3518,7 +3517,7 @@ class Campaign extends Model
         // Pause any previous batch no matter what status it is
         // Notice that batches without a job_monitor will not be retrieved
         $jobs = $this->jobMonitors()->byJobType(LoadCampaign::class)->get();
-        foreach($jobs as $job) {
+        foreach ($jobs as $job) {
             $job->cancelWithoutDeleteBatch();
         }
 
@@ -3528,11 +3527,11 @@ class Campaign extends Model
         // Dispatch it with a batch monitor
         $this->dispatchWithBatchMonitor(
             $campaignLoader,
-            function($batch) {
+            function ($batch) {
                 // THEN callbak
                 //
                 // Important:
-                // Notice that if user manually cancels a batch, it still reaches trigger "then" callback 
+                // Notice that if user manually cancels a batch, it still reaches trigger "then" callback
                 // Only when an exception is thrown, no "then" trigger
                 // So, if the campaign is paused by user, do not update its status to done once its batch finishes, keep it as paused
                 // IMPORTANT: refresh() is required!
@@ -3541,11 +3540,13 @@ class Campaign extends Model
                 } else {
                     // previously paused, no need to update its status
                 }
-            }, function($batch) {
+            },
+            function ($batch) {
                 // CATCH callback
                 $errorMsg = "Error sending messages. ".$e->getMessage()."\n".$e->getTraceAsString();
-                $this->setError( $errorMsg );
-            }, function() {
+                $this->setError($errorMsg);
+            },
+            function () {
                 // FINALLY callback
                 $this->updateCache();
             }
@@ -3571,7 +3572,7 @@ class Campaign extends Model
         // |          7 |            3 |           2 | ["6a17f9bf-96d4-48e5-86a0-73e7bac07e74","7e1b3b3d-a5f4-45b4-be1e-ba5f1cc2e3f3"] |  1624849222 | (**)
         // |          7 |            2 |           0 | []                                                                              |        NULL | (***)
         // +------------+--------------+-------------+---------------------------------------------------------------------------------+-------------+
-        // 
+        //
         // (*) There is no batch cancelation check in every job
         // as a result, remaining jobs still execute even after the batch is automatically cancelled (due to one failed job)
         // resulting in 2 (or more) failed / pending jobs
