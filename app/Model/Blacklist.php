@@ -28,12 +28,6 @@ use File;
 
 class Blacklist extends Model
 {
-    // Subscribers to import every time
-    const IMPORT_STATUS_NEW = 'new';
-    const IMPORT_STATUS_RUNNING = 'running';
-    const IMPORT_STATUS_FAILED = 'failed';
-    const IMPORT_STATUS_DONE = 'done';
-
     const IMPORT_TEMP_DIR = 'app/tmp';
 
     /**
