@@ -1576,16 +1576,6 @@ class Customer extends Model
     }
 
     /**
-     * Get import jobs.
-     *
-     * @return number
-     */
-    public function getImportBlacklistJobs()
-    {
-       ///
-    }
-
-    /**
      * Add email to customer's blacklist.
      */
     public function addEmaillToBlacklist($email)
