@@ -736,8 +736,9 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     // Blacklist
     Route::get('admin/blacklists/{id}/reason', 'BlacklistController@reason');
     Route::post('admin/blacklists/job/{system_job_id}/cancel', 'BlacklistController@cancel');
-    Route::get('admin/blacklists/import/process', 'BlacklistController@importProcess');
-    Route::post('admin/blacklists/import', 'BlacklistController@import');
+    Route::get('admin/blacklists/import/{job_uid}/progress', 'BlacklistController@importProgress');
+    Route::post('admin/blacklists/import/{job_uid}/cancel', 'BlacklistController@cancelImport');
+    Route::post('admin/blacklists/import/start', 'BlacklistController@startImport');
     Route::get('admin/blacklists/import', 'BlacklistController@import');
     Route::get('admin/blacklist', 'BlacklistController@index');
     Route::get('admin/blacklist/listing', 'BlacklistController@listing');

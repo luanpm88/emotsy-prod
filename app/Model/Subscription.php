@@ -428,7 +428,7 @@ class Subscription extends Model
         }
 
         // check if customer can auto charge
-        if ($this->customer->preferredPaymentGatewayCanAutoCharge()) {
+        if (!$this->customer->preferredPaymentGatewayCanAutoCharge()) {
             return;
         }
 

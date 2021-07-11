@@ -28,7 +28,7 @@ class VerifyMailListJob extends Base
 
         $this->afterDispatched(function($thisJob, $monitor) {
             $monitor->setJsonData([
-                'percentage' => 20,
+                'percentage' => 0,
                 'total' => 0,
                 'processed' => 0,
                 'failed' => 0,

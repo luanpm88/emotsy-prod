@@ -582,17 +582,6 @@ class MailList extends Model
     }
 
     /**
-     * url count.
-     */
-    public function urlCount()
-    {
-        $query = CampaignLink::join('campaigns', 'campaigns.id', '=', 'campaign_links.campaign_id')
-            ->where('campaigns.default_mail_list_id', '=', $this->id);
-
-        return $query->count();
-    }
-
-    /**
      * Open count.
      */
     public function openCount()

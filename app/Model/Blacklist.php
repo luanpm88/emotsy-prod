@@ -23,15 +23,12 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Acelle\Library\Tool;
 use File;
 
 class Blacklist extends Model
 {
-    // Subscribers to import every time
-    const IMPORT_STATUS_NEW = 'new';
-    const IMPORT_STATUS_RUNNING = 'running';
-    const IMPORT_STATUS_FAILED = 'failed';
-    const IMPORT_STATUS_DONE = 'done';
+    const IMPORT_TEMP_DIR = 'app/tmp';
 
     /**
      * The attributes that are mass assignable.
@@ -50,6 +47,11 @@ class Blacklist extends Model
     public static function getAll()
     {
         return self::select('blacklists.*');
+    }
+
+    public function scopeGlobal($query)
+    {
+        return $query->whereNull('customer_id');
     }
 
     /**
@@ -75,15 +77,12 @@ class Blacklist extends Model
      */
     public static function doBlacklist($customer = null)
     {
-        // application wide blacklist
-        // slow: $sql = sprintf('UPDATE %s s SET status = %s WHERE s.status = %s AND s.email IN (SELECT email FROM %s WHERE admin_id IS NOT NULL)', table('subscribers'), db_quote(Subscriber::STATUS_BLACKLISTED), db_quote(Subscriber::STATUS_SUBSCRIBED), table('blacklists'));
-        $sql = sprintf('UPDATE %s s INNER JOIN %s b ON b.email = s.email SET status = %s WHERE s.status = %s AND b.admin_id IS NOT NULL', table('subscribers'), table('blacklists'), db_quote(Subscriber::STATUS_BLACKLISTED), db_quote(Subscriber::STATUS_SUBSCRIBED));
+        $sql = sprintf('UPDATE %s s INNER JOIN %s b ON b.email = s.email SET status = %s WHERE s.status = %s AND b.customer_id IS NULL', table('subscribers'), table('blacklists'), db_quote(Subscriber::STATUS_BLACKLISTED), db_quote(Subscriber::STATUS_SUBSCRIBED));
         \DB::statement($sql);
 
         // user wide blacklist
         if (!is_null($customer)) {
-            // slow: $sql = sprintf('UPDATE %s s SET status = %s WHERE s.status = %s AND s.email IN (SELECT email FROM %s WHERE admin_id IS NULL) AND mail_list_id IN (SELECT id FROM %s WHERE customer_id = %s)', table('subscribers'), db_quote(Subscriber::STATUS_BLACKLISTED), db_quote(Subscriber::STATUS_SUBSCRIBED), table('blacklists'), table('mail_lists'), $customer->id);
-            $sql = sprintf('UPDATE %s s INNER JOIN %s b ON b.email = s.email INNER JOIN %s m ON m.id = s.mail_list_id SET s.status = %s WHERE s.status = %s AND b.admin_id IS NULL AND m.customer_id = %s', table('subscribers'), table('blacklists'), table('mail_lists'), db_quote(Subscriber::STATUS_BLACKLISTED), db_quote(Subscriber::STATUS_SUBSCRIBED), $customer->id);
+            $sql = sprintf('UPDATE %s s INNER JOIN %s b ON b.email = s.email INNER JOIN %s m ON m.id = s.mail_list_id SET s.status = %s WHERE s.status = %s AND m.customer_id = %s', table('subscribers'), table('blacklists'), table('mail_lists'), db_quote(Subscriber::STATUS_BLACKLISTED), db_quote(Subscriber::STATUS_SUBSCRIBED), $customer->id);
             \DB::statement($sql);
         }
     }
@@ -147,8 +146,80 @@ class Blacklist extends Model
      *
      * @return collect
      */
-    public static function import($file, $system_job, $customer = null, $admin = null)
+    public static function import($file, $customer = null, $progressCallback)
     {
-        ////
+        if (!is_null($progressCallback)) {
+            $progressCallback($processed = 0, $total = 0, $failed = 0, $message = trans('messages.blacklist.import_process_new'));
+        }
+
+        $content = \File::get($file);
+        $lines = preg_split('/\r\n|\r|\n/', $content);
+        $total = count($lines);
+        $failed = 0;
+        $processed = 0;
+
+        if (!is_null($progressCallback)) {
+            $progressCallback($processed, $total, $failed, $message = 'Loading file content...');
+        }
+
+        foreach ($lines as $number => $line) {
+            $email = trim(strtolower($line));
+
+            // Add to blacklist
+            if (Tool::isValidEmail($email)) {
+                // Add to blacklist
+                if (!is_null($customer)) {
+                    $customer->addEmaillToBlacklist($email);
+                } else {
+                    self::addEmaill($email);
+                }
+            } else {
+                $failed += 1;
+            }
+
+            $processed += 1;
+
+            if (!is_null($progressCallback)) {
+                $progressCallback($processed, $total, $failed, trans('messages.blacklist.import_process_running', ['processed' => $processed]));
+            }
+        }
+
+        self::doBlacklist($customer);
+
+        if (!is_null($progressCallback)) {
+            $progressCallback($processed = $total, $total, $failed, trans('messages.blacklist.import_process_complete', ['processed' => $total]));
+        }
+    }
+
+    public static function upload(\Illuminate\Http\UploadedFile $httpFile)
+    {
+        $filename = "blacklst-import-".uniqid().".txt";
+        $path = storage_path(self::IMPORT_TEMP_DIR);
+
+        // store it to storage/
+        $httpFile->move($path, $filename);
+
+        // Example of outcome: /home/acelle/storage/app/tmp/import-000000.csv
+        $filepath = join_paths($path, $filename);
+
+        return $filepath;
+    }
+
+    /**
+     * Add email to admin blacklist.
+     */
+    public static function addEmaill($email)
+    {
+        $email = trim(strtolower($email));
+
+        if (Tool::isValidEmail($email)) {
+            $exist = self::global()->where('email', '=', $email)->count();
+
+            if (!$exist) {
+                $blacklist = new self();
+                $blacklist->email = $email;
+                $blacklist->save();
+            }
+        }
     }
 }

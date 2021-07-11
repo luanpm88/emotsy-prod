@@ -4,6 +4,10 @@ namespace Acelle\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
+use Acelle\Model\Blacklist;
+use Acelle\Model\JobMonitor;
+use Acelle\Jobs\ImportBlacklistJob;
+use Exception;
 
 class BlacklistController extends Controller
 {
@@ -98,25 +102,43 @@ class BlacklistController extends Controller
     public function import(Request $request)
     {
         $admin = $request->user()->admin;
+        $job = $admin->importBlacklistJobs()->first();
 
-        if ($request->isMethod('post')) {
-            // authorize
-            if (!$admin->can('import', new \Acelle\Model\Blacklist())) {
-                return $this->notAuthorized();
-            }
-
-            if ($request->hasFile('file')) {
-                // Start system job
-                $job = new \Acelle\Jobs\ImportBlacklistJob($request->file('file')->path(), null, $admin);
-                $this->dispatch($job);
-            } else {
-                // @note: use try/catch instead
-                echo "max_file_upload";
-            }
+        if ($job) {
+            return view('admin.blacklists.import', [
+                'currentJobUid' => $job->uid,
+                'cancelUrl' => action('Admin\BlacklistController@cancelImport', [ 'job_uid' => $job->uid ]),
+                'progressCheckUrl' => action('Admin\BlacklistController@importProgress', [ 'job_uid' => $job->uid ]),
+            ]);
+        } else {
+            return view('admin.blacklists.import', [
+                //
+            ]);    
         }
 
-        return view('admin.blacklists.import', [
-        ]);
+        
+    }
+
+    public function startImport(Request $request)
+    {
+        $admin = $request->user()->admin;
+
+        // authorize
+        if (!$admin->can('import', new \Acelle\Model\Blacklist())) {
+            return $this->notAuthorized();
+        }
+
+        if ($request->hasFile('file')) {
+            $filepath = Blacklist::upload($request->file('file'));
+
+            // Start system job
+            $job = $admin->dispatchWithMonitor(new ImportBlacklistJob($filepath, $customer = null));
+
+            return redirect()->action('Admin\BlacklistController@import');
+
+        } else {
+            throw new Exception('no upload file');
+        }
     }
 
     /**
@@ -126,7 +148,7 @@ class BlacklistController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function importProcess(Request $request)
+    public function importProgress(Request $request)
     {
         $admin = $request->user()->admin;
 
@@ -135,8 +157,18 @@ class BlacklistController extends Controller
             return $this->notAuthorized();
         }
 
-        return view('admin.blacklists.import_process', [
-        ]);
+        $job = JobMonitor::findByUid($request->job_uid);
+
+        if (is_null($job)) {
+            throw new Exception(sprintf('Blacklist import job #%s does not exist', $request->job_uid));
+        }
+        
+        $progress = $job->getJsonData();
+        $progress['status'] = $job->status;
+        $progress['error'] = $job->error;
+
+        // Get progress updated by the import process and status of the final job monitor
+        return response()->json($progress);
     }
 
     /**
@@ -146,17 +178,15 @@ class BlacklistController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function cancel(Request $request)
+    public function cancelImport(Request $request)
     {
-        $admin = $request->user()->admin;
-
-        // authorize
-        if (!$admin->can('importCancel', new \Acelle\Model\Blacklist())) {
-            return $this->notAuthorized();
+        $job = JobMonitor::findByUid($request->job_uid);
+        if (is_null($job)) {
+            throw new Exception(sprintf('Verification job #%s does not exist', $request->job_uid));
         }
 
-        $request->session()->flash('alert-success', trans('messages.blacklist.import.cancelled'));
-        return redirect()->action('Admin\BlacklistController@index');
+        $job->cancel();
+        return response()->json();
     }
 
     /**
