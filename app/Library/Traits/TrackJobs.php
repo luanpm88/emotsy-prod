@@ -56,43 +56,17 @@ trait TrackJobs
         return $monitor;
     }
 
-    public function dispatchBatch($batch, $jobType)
-    {
-        // Actually dispatch
-        // It is weird that $batch->distpatch() cannot be called here
-        // resulting in PendingBatch with null batch->id
-        //
-        // $batch->dispatch();
-
-        $monitor = JobMonitor::makeInstance($this, $jobType);
-        // Job monitor for batches does not have status updated, set it to null to avoid confusing
-        $monitor->status = null;
-
-        // actually save
-        // Risk: job_monitor without batch id
-        // Associate job ID with monitor
-        // Notice that $batch->id is only available after dispatch()
-        // Also, do not place this in a DB transaction
-        $monitor->batch_id = $batch->id;
-        $monitor->save();
-
-        // Return
-        return $monitor;
-    }
-
     // IMPORTANT: this is normally for jobs that create other jobs
-    public function dispatchWithBatchMonitor($job, $jobType, $thenCallback, $catchCallback, $finallyCallback)
+    public function dispatchWithBatchMonitor($job, $thenCallback, $catchCallback, $finallyCallback)
     {
-        // IMPORTANT: although $monitor is not used, BUT do not setMointior for $job
-        // Otherwise, it will be unexpected set as FAILED / DONE / RUNNING... by Queue events
-        // while it should not (it will actually launch other jobs, the status reflected by all jobs, not this only one)
+        // IMPORTANT:
+        // UPdate QUEUE events in order NOT to set AFTER / FAILING... for job used in a batch (only BEFORE event is OK);
         if (!property_exists($job, 'monitor')) {
-            // $eventAfterDispatched is required
-            throw new Exception('Job class should use `Trackable` trait');
+            throw new Exception(sprintf('Job class `%s` should use `Trackable` trait in order to use $eventAfterDispatched callback', get_class($job)));
         }
 
         // Create job monitor record
-        $monitor = JobMonitor::makeInstance($this, $jobType);
+        $monitor = JobMonitor::makeInstance($this, get_class($job));
         $monitor->save();
 
         // Set job monitor

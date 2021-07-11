@@ -223,7 +223,6 @@ class MailList extends Model
         $job = new VerifyMailListJob($this, $server);
         $monitor = $this->dispatchWithBatchMonitor(
             $job,
-            $jobType = VerifyMailListJob::class,
             $then = null,
             $catch = null,
             $finally = null
@@ -246,7 +245,6 @@ class MailList extends Model
 
         $monitor = $this->dispatchWithBatchMonitor(
             $importJob,
-            $jobType = ImportSubscribers2::class,
             $then = null,
             $catch = null,
             $finally = function($batch) {
