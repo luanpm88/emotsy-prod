@@ -39,9 +39,13 @@ use DB;
 use Acelle\Library\Facades\Billing;
 use Acelle\Library\AutoBillingData;
 use File;
+use Acelle\Library\Traits\TrackJobs;
+use Acelle\Jobs\ImportBlacklistJob;
 
 class Customer extends Model
 {
+    use TrackJobs;
+
     protected $quotaTracker;
 
     // Plan status
@@ -2163,5 +2167,16 @@ class Customer extends Model
         }
 
         return true;
+    }
+
+    // Currently, only one monitor per campaign (soft business)
+    public function jobMonitors()
+    {
+        return $this->hasMany(JobMonitor::class, 'subject_id')->where('subject_name', self::class);
+    }
+
+    public function importBlacklistJobs()
+    {
+        return $this->jobMonitors()->orderBy('job_monitors.id', 'DESC')->where('job_type', ImportBlacklistJob::class);
     }
 }

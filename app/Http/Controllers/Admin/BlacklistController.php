@@ -115,8 +115,6 @@ class BlacklistController extends Controller
                 //
             ]);    
         }
-
-        
     }
 
     public function startImport(Request $request)

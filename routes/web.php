@@ -451,10 +451,11 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::resource('email_verification_servers', 'EmailVerificationServerController');
 
     // Blacklists
-    Route::post('blacklists/job/{system_job_id}/cancel', 'BlacklistController@cancel');
-    Route::get('blacklists/import/process', 'BlacklistController@importProcess');
-    Route::post('blacklists/import', 'BlacklistController@import');
     Route::get('blacklists/import', 'BlacklistController@import');
+    Route::post('blacklists/import/start', 'BlacklistController@startImport');
+    Route::get('blacklists/import/{job_uid}/progress', 'BlacklistController@importProgress');
+    Route::post('blacklists/import/{job_uid}/cancel', 'BlacklistController@cancelImport');
+
     Route::get('blacklists/listing/{page?}', 'BlacklistController@listing');
     Route::get('blacklists/delete', 'BlacklistController@delete');
     Route::resource('blacklists', 'BlacklistController');
@@ -734,15 +735,15 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/unsubscribe_log/listing', 'UnsubscribeLogController@listing');
 
     // Blacklist
-    Route::get('admin/blacklists/{id}/reason', 'BlacklistController@reason');
-    Route::post('admin/blacklists/job/{system_job_id}/cancel', 'BlacklistController@cancel');
+    Route::get('admin/blacklists/import', 'BlacklistController@import');
     Route::get('admin/blacklists/import/{job_uid}/progress', 'BlacklistController@importProgress');
     Route::post('admin/blacklists/import/{job_uid}/cancel', 'BlacklistController@cancelImport');
     Route::post('admin/blacklists/import/start', 'BlacklistController@startImport');
-    Route::get('admin/blacklists/import', 'BlacklistController@import');
+    
     Route::get('admin/blacklist', 'BlacklistController@index');
     Route::get('admin/blacklist/listing', 'BlacklistController@listing');
     Route::get('admin/blacklist/delete', 'BlacklistController@delete');
+    Route::get('admin/blacklists/{id}/reason', 'BlacklistController@reason');
 
     // Customer Group
     Route::get('admin/customer_groups/listing/{page?}', 'CustomerGroupController@listing');

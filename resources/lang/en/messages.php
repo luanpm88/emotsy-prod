@@ -1927,6 +1927,7 @@
   'blacklist.import' => 'Import',
   'blacklist.upload_list_from_file' => 'Upload your email blacklist',
   'blacklist.import.intro' => 'Upload known invalid email addresses to the application\'s master blacklist. Any email address in your customer\' lists which matches a blacklisted one shall automatically be marked as `blacklisted`',
+  'blacklist.import.user_intro' => 'Upload known invalid email addresses to your account\' blacklist. Any email address in your mail lists which matches a blacklisted one shall automatically be marked as `blacklisted` and the application will not send campaign emails to those email addresses.',
   'blacklist.import_file_help' => 'Choose an iput file from your device to upload. Acceptable file type is TXT, one email address per line. Server max file upload size is <strong class="text-bold">:max</strong>.',
   'blacklist.import_process' => 'Import processing',
   'blacklist.import_process_running' => 'Import is in progress. <strong>:processed</strong> record(s) processed...',
