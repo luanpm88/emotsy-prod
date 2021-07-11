@@ -56,7 +56,9 @@
             </tr>
         @endforeach
     </table>
-    @include('elements/_per_page_select')
+    @include('elements/_per_page_select', [
+        'items' => $trackingDomains,
+    ])
     
 @elseif (!empty(request()->keyword))
     <div class="empty-list">

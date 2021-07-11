@@ -77,7 +77,9 @@
             </tr>
         @endforeach
     </table>
-    @include('elements/_per_page_select')
+    @include('elements/_per_page_select', [
+        'items' => $plugins
+    ])
     
 @elseif (!empty(request()->keyword) || !empty(request()->filters["type"]))
     <div class="empty-list">
