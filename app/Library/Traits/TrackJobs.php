@@ -12,6 +12,12 @@ use DB;
 
 trait TrackJobs
 {
+    // Currently, only one monitor per campaign (soft business)
+    public function jobMonitors()
+    {
+        return $this->hasMany(JobMonitor::class, 'subject_id')->where('subject_name', self::class);
+    }
+
     // DO NOT USE DB TRANSACTION
     // OTHERWISE BATCH_ID OR JOB_ID MAY NOT BE AVAILABLE
     public function dispatchWithMonitor($job)

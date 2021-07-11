@@ -3575,12 +3575,6 @@ class Campaign extends Model
         $this->setQueued();
     }
 
-    // Currently, only one monitor per campaign (soft business)
-    public function jobMonitors()
-    {
-        return $this->hasMany(JobMonitor::class, 'subject_id')->where('subject_name', self::class);
-    }
-
     public function extractErrorMessage()
     {
         return explode("\n", $this->last_error)[0];
