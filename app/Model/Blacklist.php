@@ -77,15 +77,12 @@ class Blacklist extends Model
      */
     public static function doBlacklist($customer = null)
     {
-        // application wide blacklist
-        // slow: $sql = sprintf('UPDATE %s s SET status = %s WHERE s.status = %s AND s.email IN (SELECT email FROM %s WHERE admin_id IS NOT NULL)', table('subscribers'), db_quote(Subscriber::STATUS_BLACKLISTED), db_quote(Subscriber::STATUS_SUBSCRIBED), table('blacklists'));
-        $sql = sprintf('UPDATE %s s INNER JOIN %s b ON b.email = s.email SET status = %s WHERE s.status = %s AND b.admin_id IS NOT NULL', table('subscribers'), table('blacklists'), db_quote(Subscriber::STATUS_BLACKLISTED), db_quote(Subscriber::STATUS_SUBSCRIBED));
+        $sql = sprintf('UPDATE %s s INNER JOIN %s b ON b.email = s.email SET status = %s WHERE s.status = %s AND b.customer_id IS NULL', table('subscribers'), table('blacklists'), db_quote(Subscriber::STATUS_BLACKLISTED), db_quote(Subscriber::STATUS_SUBSCRIBED));
         \DB::statement($sql);
 
         // user wide blacklist
         if (!is_null($customer)) {
-            // slow: $sql = sprintf('UPDATE %s s SET status = %s WHERE s.status = %s AND s.email IN (SELECT email FROM %s WHERE admin_id IS NULL) AND mail_list_id IN (SELECT id FROM %s WHERE customer_id = %s)', table('subscribers'), db_quote(Subscriber::STATUS_BLACKLISTED), db_quote(Subscriber::STATUS_SUBSCRIBED), table('blacklists'), table('mail_lists'), $customer->id);
-            $sql = sprintf('UPDATE %s s INNER JOIN %s b ON b.email = s.email INNER JOIN %s m ON m.id = s.mail_list_id SET s.status = %s WHERE s.status = %s AND b.admin_id IS NULL AND m.customer_id = %s', table('subscribers'), table('blacklists'), table('mail_lists'), db_quote(Subscriber::STATUS_BLACKLISTED), db_quote(Subscriber::STATUS_SUBSCRIBED), $customer->id);
+            $sql = sprintf('UPDATE %s s INNER JOIN %s b ON b.email = s.email INNER JOIN %s m ON m.id = s.mail_list_id SET s.status = %s WHERE s.status = %s AND m.customer_id = %s', table('subscribers'), table('blacklists'), table('mail_lists'), db_quote(Subscriber::STATUS_BLACKLISTED), db_quote(Subscriber::STATUS_SUBSCRIBED), $customer->id);
             \DB::statement($sql);
         }
     }
