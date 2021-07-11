@@ -42,10 +42,10 @@
                         </span>
                     </td>
                     <td class="text-right text-nowrap">
-                        <a href="http://localhost/postal" class="btn btn-mc_default">
+                        <a href="#" class="btn btn-mc_default">
                         Setting
                         </a>
-                        <a link-confirm="You're about to disable :number plugin(s) from the list." href="http://localhost/admin/plugins/disable?uids=60ba564ec8740" class="btn btn-mc_primary">
+                        <a href="#" class="btn btn-mc_primary">
                         Reset
                         </a>
                     </td>
