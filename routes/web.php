@@ -888,4 +888,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/plugins/disable', 'PluginController@disable');
     Route::get('admin/plugins/enable', 'PluginController@enable');
     Route::resource('admin/plugins', 'PluginController');
+
+    // GeoIP Management
+    Route::get('admin/geoip', 'GeoIpController@index');
 });

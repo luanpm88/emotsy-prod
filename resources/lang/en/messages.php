@@ -3683,4 +3683,6 @@
     the same billing cycle|currency as current plan',
   'label.done' => 'Done',
   'label.cancel' => 'Cancel',
+  'geoip.title' => 'GeoIP Management',
+  'geoip.description' => 'Acelle uses a GeoIP dataset in order to resolve users\' location.',
 ) ?>
