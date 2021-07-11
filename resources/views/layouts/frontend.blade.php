@@ -27,6 +27,9 @@
 	<link rel="stylesheet" type="text/css" href="{{ URL::asset('core/select2/css/select2.min.css') }}">
 	<script type="text/javascript" src="{{ URL::asset('core/select2/js/select2.min.js') }}"></script>
 
+	<script type="text/javascript" src="{{ URL::asset('core/validate/jquery.validate.min.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('core/js/validate.js') }}"></script>
+
 	<!-- Google icon -->
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined"rel="stylesheet">
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round"rel="stylesheet">
@@ -38,9 +41,13 @@
 	<script type="text/javascript" src="{{ URL::asset('core/js/popup.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('core/js/list.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('core/js/anotify.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('core/js/dialog.js') }}"></script>
 
 	<script type="text/javascript" src="{{ URL::asset('core/js/functions.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('core/js/app.js') }}"></script>
+
+	<!-- JS vars -->
+	@include('layouts._script_vars')
 </head>
 <body>
 	<nav class="navbar navbar-expand-xl navbar-dark bg-dark fixed-top navbar-main py-0">

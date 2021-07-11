@@ -21,7 +21,9 @@
 							@if ($item["check"])
 								<i class="icon-checkmark4 text-success"></i>
 							@else
-								<i class="icon-cancel-circle2 text-danger"></i>
+								<span class="material-icons-outlined">
+error_outline
+</span>
 							@endif
 							<h5 class="mt-0 mb-0 text-semibold">
 								{{ $item["name"] }}
@@ -47,7 +49,9 @@
 							@if ($item["check"])
 								<i class="icon-checkmark4 text-success"></i>
 							@else
-								<i class="icon-cancel-circle2 text-danger"></i>
+								<span class="material-icons-outlined">
+error_outline
+</span>
 							@endif
 							<h5 class="mt-0 mb-0 text-semibold">
 								{{ $item["name"] }}

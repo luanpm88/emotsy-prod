@@ -188,8 +188,8 @@ h1, h1 {
     border-color: #00838F;
 }
 .btn-primary:hover {
-    background-color: #00838F;
-    border-color: #00838F;
+    background-color: #006d77;
+    border-color: #006d77;
 }
 .btn-secondary {
     background-color: #716b67;
@@ -251,7 +251,7 @@ h1, h1 {
 }
 #anotify {
     position: fixed;
-    bottom: 20px;
+    bottom: 0px;
     right: 20px;
 }
 #anotify .alert {
@@ -260,6 +260,7 @@ h1, h1 {
 }
 
 #anotify .alert::before {
+    content: 'notifications';
     font-family: 'Material Icons Outlined';
     position: absolute;
     font-size: 17px;

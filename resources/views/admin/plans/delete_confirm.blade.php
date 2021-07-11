@@ -2,7 +2,9 @@
 <ul class="modern-listing">
     @foreach ($plans->get() as $plan)
         <li>
-            <i class="icon-cancel-circle2 text-danger"></i>
+            <span class="material-icons-outlined">
+error_outline
+</span>
             <h4 class="text-danger">{{ $plan->name }}</h4>
             <p>
                 @if ($plan->subscriptionsCount())

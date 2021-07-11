@@ -575,9 +575,27 @@ class MailListController extends Controller
             return $this->notAuthorized();
         }
 
-        $list->copy($request->copy_list_name);
+        if ($request->isMethod('post')) {
+            // make validator
+            $validator = \Validator::make($request->all(), [
+                'name' => 'required',
+            ]);
+            
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('lists.copy', [
+                    'list' => $list,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
 
-        echo trans('messages.list.copied');
+            $list->copy($request->name);
+            return trans('messages.list.copied');
+        }
+
+        return view('lists.copy', [
+            'list' => $list,
+        ]);
     }
 
     /**

@@ -3,56 +3,65 @@ class Popup {
         var _this = this;
         this.id = '_' + Math.random().toString(36).substr(2, 9);
         this.options = {};
-
-
-
-
-        
         this.popup = $('.popup[id='+this.id+']');
-        this.loadingHtml = '<div class="popup-loading"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div>';
         this.data = {};
         this.backs = [];
-        
+
         // options
         if (typeof(options) !== 'undefined') {
             this.options = options;
-
-            // data            
-            if (typeof(options.data) !== 'undefined') {
-                this.data = options.data;
-            }
         }
         
         if (!this.popup.length) {
-            var popup = $('<div class="popup" id="'+this.id+'">').html('');
+            var popup = $(`
+                <div class="modal" id="`+this.id+`" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Modal title</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Modal body text goes here.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Save changes</button>
+                        </div>
+                        </div>
+                    </div>
+                </div>`
+            );
             $('body').append(popup);
             
             this.popup = popup;
-            this.loading();
         }
-        this.popup.css('display', 'none');
         
-        //// click outside to close
-        //$(".popup").click(function(e){
-        //    if(e.target != this) return; // only continue if the target itself has been clicked
-        //    // this section only processes if the .nav > li itself is clicked.
-        //    Popup.hide();
-        //});
+        this.modal = new bootstrap.Modal(document.getElementById(this.id), {
+            backdrop: 'static'
+        });
+
+        this.popup[0].addEventListener('hidden.bs.modal', function (event) {
+            _this.remove();
+        })
 
         // onclose popup
         if(this.options.onclose != null) {
             this.onclose = this.options.onclose;
         }
     }
+
+    remove() {
+        this.modal.dispose();
+        this.popup.remove();
+    }
     
     show() {
-        this.popup.fadeIn();
-        $('html').css('overflow', 'hidden');
+        this.modal.show();
     }
     
     hide() {
-        this.popup.fadeOut();
-        $('html').css('overflow', 'auto');
+        this.modal.hide();
 
         // onclose
         if (this.onclose != null) {
@@ -65,11 +74,6 @@ class Popup {
         if (typeof(this.onHide) !== 'undefined') {
             this.onHide();
         }
-    }
-    
-    loading() {
-        this.popup.prepend(this.loadingHtml);
-        this.popup.addClass('popup-is-loading');
     }
 
     loaded() {
@@ -92,12 +96,13 @@ class Popup {
         // init js
         initJs(_this.popup);
         
-        // set back button
         // back button
         if (_this.backs.length > 1) {
             _this.popup.find('.back').on('click', function() {
                 var backing = _this.backs.pop();
-                _this.load(backing.url, backing.callback, $.extend({}, backing.data, {back: true}));
+                backing = $.extend({}, backing, {noHistory: true});
+
+                _this.load(backing);
             });
         } else {
             _this.popup.find('.back').on('click', function() {                    
@@ -111,67 +116,57 @@ class Popup {
         });
     }
     
-    load(url, callback, data) {
+    load(options) {
         var _this = this;
-        
-        if (typeof(url) !== 'undefined') {
-            if (typeof(data) == 'undefined' || !data.back) {
-                this.backs.push({
-                    url: this.url,
-                    callback: this.callback,
-                    data: this.data,
-                });
-            }
+        var newOptions = {};
 
-            this.url = url;
+        // update options            
+        if (typeof(options) !== 'undefined') {
+            newOptions = options;
         }
         
-        if (typeof(callback) !== 'undefined' && callback !== null) {
-            this.callback = callback;
+        // save current options
+        if (typeof(newOptions.noHistory) == 'undefined' && typeof(newOptions.url) !== 'undefined' && newOptions.url != _this.options.url) {
+            this.backs.push(_this.options);
         }
 
-        var formData = _this.data;
-        if (typeof(data) !== 'undefined') {
-            formData = $.extend({}, data, formData);
-        }
+        // update options            
+        _this.options = $.extend({}, _this.options, newOptions);
         
-        this.loading();
+        // show popup
+        _this.show();
         
-        this.show();
-        
+        // load from url
         $.ajax({
-            url: _this.url,
+            url: _this.options.url,
             type: 'GET',
             dataType: 'html',
-            data: formData,
+            data: _this.options.data,
         }).done(function(response) {
             _this.popup.html(response);
             
-            if (typeof(_this.callback) !== 'undefined') {
-                _this.callback();
+            if (typeof(_this.options.callback) !== 'undefined') {
+                _this.options.callback();
             }
             
             // after load
             _this.loaded();
 
-            // // apply js
-            // _this.applyJs();
         }).fail(function(jqXHR, textStatus, errorThrown){
             // for debugging
             alert(errorThrown);
-            document.write(jqXHR.responseText);
         });
     }
     
     loadHtml(html) {
         var _this = this;
+
+        // show popup
+        _this.show();
         
         _this.popup.html(html);
         
         // after load
         _this.loaded();
-
-        // // apply js
-        // _this.applyJs();
     }
 }

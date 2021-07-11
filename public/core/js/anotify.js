@@ -46,12 +46,14 @@ class ANotify {
             `;
         }
         _this.container.prepend(`
-            <div id="`+id+`" class="alert alert-`+type+` alert-dismissible fade show shadow-sm" role="alert">
+            <div id="`+id+`" class="alert alert-`+type+` alert-dismissible fade show shadow-sm" style="display:none" role="alert">
                 `+titleHtml+`
                 <div>`+options.message+`</div>
                 `+closeButton+`
             </div>
         `);
+
+        $('#' + id).slideDown();
 
         if (timeout !== false) {
             setTimeout(function() {

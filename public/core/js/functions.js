@@ -4,6 +4,8 @@ function initJs(container)
         dropdownAutoWidth: true,
         minimumResultsForSearch: 30
     });
+
+    customValidate(container.find(".form-validate-jquery"));
 }
 
 function notify(options) {

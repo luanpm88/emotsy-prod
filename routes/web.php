@@ -212,13 +212,13 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('lists/{uid}/verification/start', 'MailListController@startVerification');
     Route::post('lists/{uid}/verification/{job_uid}/stop', 'MailListController@stopVerification');
     Route::post('lists/{uid}/verification/reset', 'MailListController@resetVerification');
-    Route::post('lists/copy', 'MailListController@copy');
+    Route::match(['get', 'post'], 'lists/copy', 'MailListController@copy');
     Route::get('lists/quick-view', 'MailListController@quickView');
     Route::get('lists/{uid}/list-growth', 'MailListController@listGrowthChart');
     Route::get('lists/{uid}/list-statistics-chart', 'MailListController@statisticsChart');
     Route::get('lists/sort', 'MailListController@sort');
     Route::get('lists/listing/{page?}', 'MailListController@listing');
-    Route::get('lists/delete', 'MailListController@delete');
+    Route::post('lists/delete', 'MailListController@delete');
     Route::get('lists/delete/confirm', 'MailListController@deleteConfirm');
     Route::get('lists/{uid}/overview', 'MailListController@overview')->name('mail_list');
     Route::resource('lists', 'MailListController');

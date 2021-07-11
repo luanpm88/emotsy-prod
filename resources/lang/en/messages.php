@@ -724,6 +724,7 @@
   'name_new_list' => 'Name your new list',
   'what_would_you_like_to_name_your_list' => 'What would you like to name your list?',
   'copy_of_list' => 'Copy of :name',
+  'copy_list' => 'Copy <span class="fw-600">:name</span> list',
   'copy' => 'Copy',
   'list.copied' => 'List was successfully copied',
   'api_token' => 'API token',

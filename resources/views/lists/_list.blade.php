@@ -2,7 +2,7 @@
 	<table class="table table-box pml-table border-top"
 		current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
 	>
-		@foreach ($lists as $key => $item)
+		@foreach ($lists as $key => $list)
 			<tr>
 				<td width="1%">
 					<div class="text-nowrap">
@@ -10,7 +10,7 @@
 							<label>
 								<input type="checkbox" class="node styled"
 									name="ids[]"
-									value="{{ $item->uid }}"
+									value="{{ $list->uid }}"
 								/>
 							</label>
 						</div>
@@ -18,10 +18,10 @@
 				</td>
 				<td width="35%">
 					<h5 class="mt-0 mb-1 fw-600">
-						<a class="kq_search" href="{{ action('MailListController@overview', ['uid' => $item->uid]) }}">{{ $item->name }}</a>
+						<a class="kq_search" href="{{ action('MailListController@overview', ['uid' => $list->uid]) }}">{{ $list->name }}</a>
 					</h5>
-					<span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
-					@if (empty($item->getSendingServers()))
+					<span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($list->created_at) }}</span>
+					@if (empty($list->getSendingServers()))
 						<div class="text-danger"><span class="material-icons-outlined">
 error_outline
 </span> {{ trans('messages.list_has_no_sending_server') }}</div>
@@ -30,23 +30,23 @@ error_outline
 				<td class="stat-fix-size-sm">
 					<div class="d-flex">
 						<div class="single-stat-box pull-left">
-							<a href="{{ action('SubscriberController@index', $item->uid) }}" class="d-block">
-								<span class="stat-num mt-0 mb-1">{{ number_with_delimiter($item->readCache('SubscriberCount', 0)) }}</span>
+							<a href="{{ action('SubscriberController@index', $list->uid) }}" class="d-block">
+								<span class="stat-num mt-0 mb-1">{{ number_with_delimiter($list->readCache('SubscriberCount', 0)) }}</span>
 							</a>
-							<span class="text-muted">{{ trans("messages." . Acelle\Library\Tool::getPluralPrase('subscriber', $item->readCache('SubscriberCount', 0))) }}</span>
+							<span class="text-muted">{{ trans("messages." . Acelle\Library\Tool::getPluralPrase('subscriber', $list->readCache('SubscriberCount', 0))) }}</span>
 						</div>
 						<div class="single-stat-box pull-left ml-20">
-							<span class="no-margin text-teal-800 stat-num">{{ $item->openUniqRate() }}%</span>
+							<span class="no-margin text-teal-800 stat-num">{{ $list->openUniqRate() }}%</span>
 							<div class="progress progress-xxs">
-								<div class="progress-bar progress-bar-info" style="width: {{ $item->readCache('UniqOpenRate', 0) }}%">
+								<div class="progress-bar progress-bar-info" style="width: {{ $list->readCache('UniqOpenRate', 0) }}%">
 								</div>
 							</div>
 							<span class="text-muted small">{{ trans('messages.open_rate') }}</span>
 						</div>
 						<div class="single-stat-box pull-left ml-20">
-							<span class="no-margin text-teal-800 stat-num">{{ $item->readCache('ClickedRate', 0) }}%</span>
+							<span class="no-margin text-teal-800 stat-num">{{ $list->readCache('ClickedRate', 0) }}%</span>
 							<div class="progress progress-xxs">
-								<div class="progress-bar progress-bar-info" style="width: {{ $item->readCache('ClickedRate', 0) }}%">
+								<div class="progress-bar progress-bar-info" style="width: {{ $list->readCache('ClickedRate', 0) }}%">
 								</div>
 							</div>
 							<span class="text-muted small">{{ trans('messages.click_rate') }}</span>
@@ -55,13 +55,13 @@ error_outline
 				</td>
 				<td class="text-end pe-0">
 					<div class="d-flex align-items-center text-nowrap justify-content-end" role="group">
-						<a href="{{ action('SubscriberController@create', $item->uid) }}" data-popup="tooltip"
+						<a href="{{ action('SubscriberController@create', $list->uid) }}" data-popup="tooltip"
 							title="{{ trans('messages.create_subscriber') }}" role="button" class="btn btn-secondary btn-icon me-1">
 							<span class="material-icons-outlined">
 								person_add
 							</span>
 						</a>
-						<a href="{{ action('MailListController@overview', $item->uid) }}" role="button" class="btn btn-primary me-1">
+						<a href="{{ action('MailListController@overview', $list->uid) }}" role="button" class="btn btn-primary me-1">
 							<span class="material-icons-outlined">
 								multiline_chart
 							</span> {{ trans('messages.list.overview_statistics') }}
@@ -72,62 +72,64 @@ error_outline
 							</button>
 							<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="btnGroupDrop1">
 								<li>
-									<a class="dropdown-item" href="{{ action('SubscriberController@index', $item->uid) }}">
+									<a class="dropdown-item" href="{{ action('SubscriberController@index', $list->uid) }}">
 										<span class="material-icons-outlined me-2">
 											people
 										</span> {{ trans("messages.subscribers") }}
 									</a>
 								</li>
 								<li>
-									<a class="dropdown-item" href="{{ action('SegmentController@index', $item->uid) }}">
+									<a class="dropdown-item" href="{{ action('SegmentController@index', $list->uid) }}">
 										<span class="material-icons-outlined me-2">
 											library_add_check
 										</span> {{ trans('messages.segments') }}
 									</a>
 								</li>
 								<li>
-									<a class="dropdown-item" href="{{ action('MailListController@embeddedForm', $item->uid) }}">
+									<a class="dropdown-item" href="{{ action('MailListController@embeddedForm', $list->uid) }}">
 										<span class="material-icons-outlined me-2">
 											dns
 										</span> {{ trans('messages.Embedded_form') }}
 									</a>
 								</li>
 								<li>
-									<a class="dropdown-item" href="{{ action('PageController@update', ['list_uid' => $item->uid, 'alias' => 'sign_up_form']) }}">
+									<a class="dropdown-item" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'sign_up_form']) }}">
 										<span class="material-icons-outlined me-2">
 											web
 										</span> {{ trans('messages.custom_forms_and_emails') }}
 									</a>
 								</li>
 								<li>
-									<a class="dropdown-item" href="{{ action('FieldController@index', $item->uid) }}">
+									<a class="dropdown-item" href="{{ action('FieldController@index', $list->uid) }}">
 										<span class="material-icons-outlined me-2">
 											view_day
 										</span> {{ trans('messages.manage_list_fields') }}
 									</a>
 								</li>
-								<li><a class="dropdown-item" href="{{ action('MailListController@verification', $item->uid) }}">
+								<li><a class="dropdown-item" href="{{ action('MailListController@verification', $list->uid) }}">
 									<span class="material-icons-outlined me-2">
 										gpp_good
 									</span> {{ trans("messages.email_verification") }}</a></li>
-								<li><a class="dropdown-item" href="{{ action('MailListController@edit', $item->uid) }}">
+								<li><a class="dropdown-item" href="{{ action('MailListController@edit', $list->uid) }}">
 									<span class="material-icons-outlined me-2">
 										edit
 									</span> {{ trans("messages.edit_list") }}</a></li>
-								@if (\Auth::user()->can('import', $item))
-									<li><a class="dropdown-item" href="{{ action('SubscriberController@import', $item->uid) }}">
+								@if (\Auth::user()->can('import', $list))
+									<li><a class="dropdown-item" href="{{ action('SubscriberController@import', $list->uid) }}">
 										<span class="material-icons-outlined me-2">
 											drive_folder_upload
 										</span> {{ trans('messages.import') }}</a></li>
 								@endif
-								@if (\Auth::user()->can('export', $item))
-									<li><a class="dropdown-item" href="{{ action('SubscriberController@export', $item->uid) }}">
+								@if (\Auth::user()->can('export', $list))
+									<li><a class="dropdown-item" href="{{ action('SubscriberController@export', $list->uid) }}">
 										<span class="material-icons-outlined me-2">
 											downloading
 										</span> {{ trans('messages.export') }}</a></li>
 								@endif
 								<li>
-									<a class="dropdown-item" data-uid="{{ $item->uid }}" data-name="{{ trans("messages.copy_of_list", ['name' => $item->name]) }}" class="copy-list-link">
+									<a class="copy-list-button dropdown-item"
+										href="{{ action('MailListController@copy', ['copy_list_uid' => $list->uid]) }}"
+										data-name="{{ trans("messages.copy_of_list", ['name' => $list->name]) }}">
 										<span class="material-icons-outlined me-2">
 											copy_all
 										</span> {{ trans('messages.copy') }}
@@ -136,7 +138,7 @@ error_outline
 								@if ($settings['list.clone_for_others'])
 									<li>
 										<a class="dropdown-item"
-											href="{{ action('MailListController@cloneForCustomersChoose', $item->uid) }}"
+											href="{{ action('MailListController@cloneForCustomersChoose', $list->uid) }}"
 											class="clone-for-users"
 										>
 										<span class="material-icons-outlined me-2">
@@ -146,7 +148,9 @@ error_outline
 									</li>
 								@endif
 								<li>
-									<a class="dropdown-item" list-delete-confirm="{{ action('MailListController@deleteConfirm', ['uids' => $item->uid]) }}" href="{{ action('MailListController@delete', ['uids' => $item->uid]) }}">
+									<a class="dropdown-item detele-list-button"
+										list-delete-confirm="{{ action('MailListController@deleteConfirm', ['uids' => $list->uid]) }}"
+										href="{{ action('MailListController@delete', ['uids' => $list->uid]) }}">
 										<span class="material-icons-outlined me-2">
 											delete
 										</span> {{ trans('messages.delete') }}
@@ -163,25 +167,75 @@ error_outline
 	
 	
 	<script>
-		var clonePopup = new Popup(); 
-		$('.clone-for-users').click(function(e) {
+		var ListsList = {
+			clonePopup: new Popup(),
+
+			copyPopup: new Popup(),
+
+			delete: function(confirmUrl, url) {
+				// load confirm message
+				$.ajax({
+					url: confirmUrl,
+					type: 'GET'
+				}).done(function(response) {
+					var dialog = new Dialog('confirm', {
+						message: response,
+						ok: function() {
+
+							// do delete
+							$.ajax({
+								url: url,
+								type: 'POST',
+								data: {
+									_token: CSRF_TOKEN
+								}
+							}).done(function(response) {
+								notify({
+									type: 'success',
+									message: response,
+								});
+
+								ListsIndex.list.load();
+
+							}).fail(function(jqXHR, textStatus, errorThrown){
+								// for debugging
+								alert(errorThrown);
+							});
+						}
+					})
+
+				}).fail(function(jqXHR, textStatus, errorThrown){
+					// for debugging
+					alert(errorThrown);
+				});
+			}
+		}
+		
+		$('.clone-for-users').on('click', function(e) {
 			e.preventDefault();
 			var url = $(this).attr('href');
 			
-			clonePopup.load(url);
-			
-			//addMaskLoading();
-			//
-			//$.ajax({
-			//	method: "POST",
-			//	url: url,
-			//	data: {
-			//		_token: CSRF_TOKEN
-			//	},
-			//})
-			//.done(function( msg ) {
-			//	removeMaskLoading();
-			//});
+			// load popup
+			ListsList.clonePopup.load({
+				url: url
+			});
+		});
+
+		$('.detele-list-button').on('click', function(e) {
+			e.preventDefault();			
+			var url = $(this).attr('href');
+			var confirmUrl = $(this).attr('list-delete-confirm');
+
+			ListsList.delete(confirmUrl, url);
+		});
+
+		$('.copy-list-button').on('click', function(e) {
+			e.preventDefault();			
+			var url = $(this).attr('href');
+
+			ListsList.copyPopup.load({
+				url: url
+			});
 		});
 	</script>
 	

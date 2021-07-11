@@ -20,10 +20,4 @@
 		'error': '{{ trans('messages.notify.error') }}',
 		'notice': '{{ trans('messages.notify.notice') }}'
 	};
-	
-	$(document).ready(function() {
-		$('.xtooltip').tooltipster({
-			theme: 'tooltipster-light'
-		});
-	});
 </script>
