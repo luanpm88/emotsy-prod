@@ -74,9 +74,7 @@
 		</div>
 		
 		<div class="pml-table-container">
-			
-			
-			
+
 		</div>
 	</form>	
 @endsection

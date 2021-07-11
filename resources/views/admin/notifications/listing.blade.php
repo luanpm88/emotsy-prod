@@ -40,7 +40,7 @@
 			</tr>
 		@endforeach
 	</table>
-    @include('elements/_per_page_select', ["notifications" => $notifications])
+    @include('elements/_per_page_select', ["items" => $notifications])
 	                            
 @elseif (!empty(request()->keyword) || !empty(request()->filters["type"]))
 	<div class="empty-list">
