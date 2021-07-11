@@ -261,6 +261,10 @@ class AccountController extends Controller
     {
         // Save posted data
         if ($request->isMethod('post')) {
+            if (!Billing::isGatewayRegistered($request->payment_method)) {
+                throw new \Exception('Gateway for ' . $request->payment_method . ' is not registered!');
+            }
+
             $gateway = Billing::getGateway($request->payment_method);
 
             $request->user()->customer->updatePaymentMethod([

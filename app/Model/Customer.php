@@ -2151,6 +2151,11 @@ class Customer extends Model
             return false;
         }
 
+        // no autobilling data
+        if ($this->getAutoBillingData() == null) {
+            return false;
+        }
+
         // check payment
         if ($this->getPreferredPaymentGateway()->getType() != $this->getAutoBillingData()->getGateway()->getType()) {
             return false;
