@@ -24,9 +24,13 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Model\Subscription;
+use Acelle\Library\Traits\TrackJobs;
+use Acelle\Jobs\ImportBlacklistJob;
 
 class Admin extends Model
 {
+    use TrackJobs;
+
     const STATUS_ACTIVE = 'active';
 
     /**
@@ -595,34 +599,6 @@ class Admin extends Model
     }
 
     /**
-     * Get import jobs.
-     *
-     * @return number
-     */
-    public function getImportBlacklistJobs()
-    {
-        ///
-    }
-
-    /**
-     * Add email to admin blacklist.
-     */
-    public function addEmaillToBlacklist($email)
-    {
-        $email = trim(strtolower($email));
-
-        if (\Acelle\Library\Tool::isValidEmail($email)) {
-            $exist = \Acelle\Model\Blacklist::whereNull('customer_id')->where('email', '=', $email)->count();
-            if (!$exist) {
-                $blacklist = new \Acelle\Model\Blacklist();
-                $blacklist->admin_id = $this->id;
-                $blacklist->email = $email;
-                $blacklist->save();
-            }
-        }
-    }
-
-    /**
      * Get sub-account sending servers.
      *
      * @return int
@@ -660,5 +636,16 @@ class Admin extends Model
     public function notifications()
     {
         return Notification::orderBy('created_at', 'desc');
+    }
+
+    // Currently, only one monitor per campaign (soft business)
+    public function jobMonitors()
+    {
+        return $this->hasMany(JobMonitor::class, 'subject_id')->where('subject_name', self::class);
+    }
+
+    public function importBlacklistJobs()
+    {
+        return $this->jobMonitors()->orderBy('job_monitors.id', 'DESC')->where('job_type', ImportBlacklistJob::class);
     }
 }

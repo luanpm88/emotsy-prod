@@ -282,7 +282,7 @@
         $(document).on("click", "#cancelBtn", function(e) {
             e.preventDefault();
 
-            var cancelConfirm = confirm("{{ trans('messages.label.cancel') }}");
+            var cancelConfirm = confirm("{{ trans('messages.list.verify.cancel_confirm') }}");
 
             if (cancelConfirm) {
                 AcelleList.cancel();

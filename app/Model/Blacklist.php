@@ -23,6 +23,7 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Acelle\Library\Tool;
 use File;
 
 class Blacklist extends Model
@@ -32,6 +33,8 @@ class Blacklist extends Model
     const IMPORT_STATUS_RUNNING = 'running';
     const IMPORT_STATUS_FAILED = 'failed';
     const IMPORT_STATUS_DONE = 'done';
+
+    const IMPORT_TEMP_DIR = 'app/tmp';
 
     /**
      * The attributes that are mass assignable.
@@ -50,6 +53,11 @@ class Blacklist extends Model
     public static function getAll()
     {
         return self::select('blacklists.*');
+    }
+
+    public function scopeGlobal($query)
+    {
+        return $query->whereNull('customer_id');
     }
 
     /**
@@ -147,8 +155,80 @@ class Blacklist extends Model
      *
      * @return collect
      */
-    public static function import($file, $system_job, $customer = null, $admin = null)
+    public static function import($file, $customer = null, $progressCallback)
     {
-        ////
+        if (!is_null($progressCallback)) {
+            $progressCallback($processed = 0, $total = 0, $failed = 0, $message = trans('messages.blacklist.import_process_new'));
+        }
+
+        $content = \File::get($file);
+        $lines = preg_split('/\r\n|\r|\n/', $content);
+        $total = count($lines);
+        $failed = 0;
+        $processed = 0;
+
+        if (!is_null($progressCallback)) {
+            $progressCallback($processed, $total, $failed, $message = 'Loading file content...');
+        }
+
+        foreach ($lines as $number => $line) {
+            $email = trim(strtolower($line));
+
+            // Add to blacklist
+            if (Tool::isValidEmail($email)) {
+                // Add to blacklist
+                if (!is_null($customer)) {
+                    $customer->addEmaillToBlacklist($email);
+                } else {
+                    self::addEmaill($email);
+                }
+            } else {
+                $failed += 1;
+            }
+
+            $processed += 1;
+
+            if (!is_null($progressCallback)) {
+                $progressCallback($processed, $total, $failed, trans('messages.blacklist.import_process_running', ['processed' => $processed]));
+            }
+        }
+
+        self::doBlacklist($customer);
+
+        if (!is_null($progressCallback)) {
+            $progressCallback($processed = $total, $total, $failed, trans('messages.blacklist.import_process_complete', ['processed' => $total]));
+        }
+    }
+
+    public static function upload(\Illuminate\Http\UploadedFile $httpFile)
+    {
+        $filename = "blacklst-import-".uniqid().".txt";
+        $path = storage_path(self::IMPORT_TEMP_DIR);
+
+        // store it to storage/
+        $httpFile->move($path, $filename);
+
+        // Example of outcome: /home/acelle/storage/app/tmp/import-000000.csv
+        $filepath = join_paths($path, $filename);
+
+        return $filepath;
+    }
+
+    /**
+     * Add email to admin blacklist.
+     */
+    public static function addEmaill($email)
+    {
+        $email = trim(strtolower($email));
+
+        if (Tool::isValidEmail($email)) {
+            $exist = self::global()->where('email', '=', $email)->count();
+
+            if (!$exist) {
+                $blacklist = new self();
+                $blacklist->email = $email;
+                $blacklist->save();
+            }
+        }
     }
 }
