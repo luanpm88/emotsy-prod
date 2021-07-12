@@ -24,7 +24,7 @@
                 ])
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary">{{ trans('messages.copy') }}</button>
+                <button id="copyListButton" type="submit" class="btn btn-primary">{{ trans('messages.copy') }}</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ trans('messages.close') }}</button>
             </div>
         </form>
@@ -34,6 +34,9 @@
 <script>
     var ListsCopy = {
         copy: function(url, data) {
+            ListsList.copyPopup.mask();
+            addButtonMask(ListsList.copyPopup.popup.find('#copyListButton'));
+
             // copy
             $.ajax({
                 url: url,
@@ -52,6 +55,9 @@
             }).fail(function(jqXHR, textStatus, errorThrown){
                 // for debugging
                 ListsList.copyPopup.loadHtml(jqXHR.responseText);
+            }).always(function() {
+                ListsList.copyPopup.unmask();
+                removeButtonMask(ListsList.copyPopup.popup.find('#copyListButton'));
             });
         }
     }

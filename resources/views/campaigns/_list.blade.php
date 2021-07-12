@@ -74,14 +74,14 @@
 					<td></td>
 					<td></td>
 				@endif
-				<td>
+				<td width="15%" class="text-center">
 					<span class="text-muted2 list-status pull-left" title='{{ $campaign->isError() ? $campaign->extractErrorMessage() : '' }}' data-popup='tooltip'>
 						<span class="label label-flat bg-{{ $campaign->status }}">{{ trans('messages.campaign_status_' . $campaign->status) }}</span>
 					</span>
 					<pre style="display:none">{{ $campaign->last_error }}</pre>
 				</td>
 				<td class="text-end text-nowrap">
-					<div class="d-flex">
+					<div class="d-flex align-items-center text-nowrap justify-content-end">
 						@if (\Gate::allows('update', $campaign))
 							<a href="{{ action('CampaignController@edit', $campaign->uid) }}" role="button" class="btn btn-secondary btn-icon"> <span class="material-icons-outlined">
 	edit
