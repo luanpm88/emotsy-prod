@@ -400,7 +400,7 @@ class PlanController extends Controller
         ];
 
         $datas = [];
-        foreach (Plan::getAllActiveWithDefault()->get() as $plan) {
+        foreach (Plan::active()->get() as $plan) {
             $count = $admin->getAllSubscriptionsByPlan($plan)->count();
             // create data
             if ($count) {

@@ -26,8 +26,7 @@ class PlanController extends Controller
             return \Response::json(array('message' => 'Unauthorized'), 401);
         }
 
-        $rows = \Acelle\Model\Plan::getAll()->limit(100)
-            ->get();
+        $rows = \Acelle\Model\Plan::limit(100)->get();
 
         $plans = $rows->map(function ($plan) {
             return [

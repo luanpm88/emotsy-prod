@@ -262,16 +262,6 @@ class Plan extends Model
     }
 
     /**
-     * Get all items.
-     *
-     * @return collect
-     */
-    public static function getAll()
-    {
-        return self::select('*');
-    }
-
-    /**
      * Items per page.
      *
      * @var array
@@ -801,39 +791,6 @@ class Plan extends Model
         }
 
         return json_encode($data);
-    }
-
-    /**
-     * Get all items.
-     *
-     * @return collect
-     */
-    public static function getAllActiveWithDefault($admin = null)
-    {
-        $query = self::getAll()
-            ->where('plans.status', '=', self::STATUS_ACTIVE);
-
-        if (isset($admin) && !$admin->can('readAll', new \Acelle\Model\Plan())) {
-            $query = $query->where('plans.admin_id', '=', $admin->id);
-        }
-
-        $query = $query;
-
-        return $query;
-    }
-
-    /**
-     * Get all items.
-     *
-     * @return collect
-     */
-    public static function getActive($admin = null)
-    {
-        $query = self::getAll()
-            ->where('plans.status', '=', self::STATUS_ACTIVE);
-        $query = $query;
-
-        return $query;
     }
     
     public function displayFrequencyTime()
