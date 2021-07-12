@@ -3631,11 +3631,8 @@
   'automation.audience' => 'Audience',
   'invoice.claimed' => 'Your payment is under verification...',
   'invoice.claimed.wording' => 'Thank you for the payment! Your subscription is now under review and will be activated as soon as the payment is verified.',
-  'invoice.pending' => 'Payment is pending',
-  'invoice.pending.wording' => '
-      <p>You are paying for a pending subscription invoice.
-        Please wait for confirmation.</p>
-  ',
+  'invoice.pending' => 'Payment verification is in progress',
+  'invoice.pending.wording' => 'Thank you for the confirmation. We are going to check your payment shortly. Once the payment is verified, your account will be immediately activated and you can get started with the application features',
   'invoice.pending.no_payment' => '<p>You have a pending subscription invoice.
     Click the button below to update the payment.</p>',
   'payment.check_payment' => 'Check the payment',
