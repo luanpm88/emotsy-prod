@@ -70,27 +70,29 @@
 
                 <div class="sub-section mb-30 choose-payment-methods">      
                     @foreach(Acelle\Library\Facades\Billing::getEnabledPaymentGateways() as $gateway)
-                        <div class="d-flex align-items-center choose-payment choose-payment-{{ $gateway->getType() }}">
-                            <div class="text-end pl-2 pr-2">
-                                <div class="d-flex align-items-center form-group-mb-0">
-                                    @include('helpers.form_control', [
-                                        'type' => 'radio2',
-                                        'name' => 'payment_method',
-                                        'value' => request()->user()->customer->getPreferredPaymentGateway() ? request()->user()->customer->getPreferredPaymentGateway()->getType() : '',
-                                        'label' => '',
-                                        'help_class' => 'setting',
-                                        'rules' => ['payment_method' => 'required'],
-                                        'options' => [
-                                            ['value' => $gateway->getType(), 'text' => ''],
-                                        ],
-                                    ])
-                                    <div class="check"></div>
+                        <div class="d-flex p-2 align-items-center choose-payment choose-payment-{{ $gateway->getType() }}">
+                            <div class="d-flex p-3 choose-payment choose-payment-{{ $gateway->getType() }}">
+                                <div class="text-end pl-2 pr-2">
+                                    <div class="d-flex align-items-center form-group-mb-0 pt-1" style="width: 30px">
+                                        @include('helpers.form_control', [
+                                            'type' => 'radio2',
+                                            'name' => 'payment_method',
+                                            'value' => request()->user()->customer->getPreferredPaymentGateway() ? request()->user()->customer->getPreferredPaymentGateway()->getType() : '',
+                                            'label' => '',
+                                            'help_class' => 'setting',
+                                            'rules' => ['payment_method' => 'required'],
+                                            'options' => [
+                                                ['value' => $gateway->getType(), 'text' => ''],
+                                            ],
+                                        ])
+                                        <div class="check"></div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="mr-auto pr-4">
-                                <h4 class="font-weight-semibold mb-2">{{ $gateway->getName() }}</h4>
-                                <p class="mb-3">{{ $gateway->getDescription() }}</p>
-                            </div>                        
+                                <div class="mr-auto pr-4">
+                                    <h4 class="font-weight-semibold mb-1">{{ $gateway->getName() }}</h4>
+                                    <p class="mb-0">{{ $gateway->getDescription() }}</p>
+                                </div>                        
+                            </div>                
                         </div>
                     @endforeach
                 </div>

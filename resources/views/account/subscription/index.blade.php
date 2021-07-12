@@ -27,38 +27,39 @@
 
     <div class="row">
         <div class="col-sm-12 col-md-8 col-lg-8">
+            <div class="notification_group">
+                @if ($subscription->getItsOnlyUnpaidRenewInvoice())
+                    @if (!\Auth::user()->customer->preferredPaymentGatewayCanAutoCharge())
+                        @include('elements._notification', [
+                            'level' => 'warning',
+                            'message' => trans('messages.have_new_renew_invoice')
+                        ])
+                    @else
+                        @include('elements._notification', [
+                            'level' => 'warning',
+                            'message' => trans('messages.have_new_renew_invoice.auto', [
+                                'date' => \Acelle\Library\Tool::formatDateTime($subscription->getDueDate()),
+                            ])
+                        ])
+                    @endif
+                @endif
 
-            @if ($subscription->getItsOnlyUnpaidRenewInvoice())
-                @if (!\Auth::user()->customer->preferredPaymentGatewayCanAutoCharge())
+                @if ($subscription->getItsOnlyUnpaidChangePlanInvoice())
                     @include('elements._notification', [
                         'level' => 'warning',
-                        'message' => trans('messages.have_new_renew_invoice')
-                    ])
-                @else
-                    @include('elements._notification', [
-                        'level' => 'warning',
-                        'message' => trans('messages.have_new_renew_invoice.auto', [
-                            'date' => \Acelle\Library\Tool::formatDateTime($subscription->getDueDate()),
+                        'message' => trans('messages.have_new_change_plan_invoice', [
+                            'link' => action('AccountSubscriptionController@payment'),
                         ])
                     ])
                 @endif
-            @endif
 
-            @if ($subscription->getItsOnlyUnpaidChangePlanInvoice())
-                @include('elements._notification', [
-                    'level' => 'warning',
-                    'message' => trans('messages.have_new_change_plan_invoice', [
-                        'link' => action('AccountSubscriptionController@payment'),
+                @if ($subscription->getUnpaidInvoice() && $subscription->getUnpaidInvoice()->lastTransactionIsFailed())
+                    @include('elements._notification', [
+                        'level' => 'error',
+                        'message' => $subscription->getUnpaidInvoice()->lastTransaction()->error,
                     ])
-                ])
-            @endif
-
-            @if ($subscription->getUnpaidInvoice() && $subscription->getUnpaidInvoice()->lastTransactionIsFailed())
-                @include('elements._notification', [
-                    'level' => 'error',
-                    'message' => $subscription->getUnpaidInvoice()->lastTransaction()->error,
-                ])
-            @endif
+                @endif
+            </div>
 
             <h2 class="text-semibold">{{ trans('messages.subscription') }}</h2>
 

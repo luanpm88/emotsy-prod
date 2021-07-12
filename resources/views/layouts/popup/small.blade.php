@@ -1,11 +1,13 @@
-<div class="popup-container" style="width: 700px">
-    <div class="popup-header">
-        <i class="lnr lnr-arrow-left back"></i>
-        <h2 class="title">@yield('title')</h2>
-        <i class="lnr lnr-cross close"></i>
-    </div>
-    <div class="popup-body scrollbar-inner @yield('class')">
-        <div class="popup-content">
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">
+                <i class="material-icons-outlined alert-icon mr-2">contact_support</i>
+                @yield('title')
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body @yield('class')">
             <!-- display flash message -->
             @include('common.errors')
 

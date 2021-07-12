@@ -141,7 +141,9 @@ class Dialog {
                     <div class="dialog-container">
                         <div class="dialog-header">
                             <h2 class="title">`+this.title+`</h2>
-                            <i class="lnr lnr-cross close"></i>
+                            <i class="material-icons-round close">
+close
+</i>
                         </div>
                         <div class="dialog-body">
                             `+this.message+`

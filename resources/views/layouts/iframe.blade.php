@@ -27,7 +27,9 @@
     
     <div class="iframe-modal-header">
         <div class="title">@yield('title')</div>
-        <div class="close" onclick="parent.GlobalIframeModal.hide()"><i class="lnr lnr-cross"></i></div>
+        <div class="close" onclick="parent.GlobalIframeModal.hide()"><i class="material-icons-round">
+close
+</i></div>
     </div>
     
     <div class="iframe-modal-body">

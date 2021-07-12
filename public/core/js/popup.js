@@ -142,9 +142,13 @@ class Popup {
         var _this = this;
         var newOptions = {};
 
-        // update options            
-        if (typeof(options) !== 'undefined') {
-            newOptions = options;
+        if (typeof(options) == 'string') {
+            newOptions.url = options;
+        } else {
+            // update options            
+            if (typeof(options) !== 'undefined') {
+                newOptions = options;
+            }
         }
         
         // save current options

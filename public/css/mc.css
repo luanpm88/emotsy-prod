@@ -814,6 +814,11 @@ table.table-log tr th {
 .iframe-modal-header .close {
   font-weight: bold;
   font-size: 24px;
+  cursor: pointer;
+  color: #888;
+}
+.iframe-modal-header .close:hover {
+  color: #333;
 }
 .price-selectable .price-line {
   border-left: 1px solid #ddd;

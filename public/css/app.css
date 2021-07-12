@@ -114,6 +114,13 @@ a {
     margin: 2px 0;
     border-radius: 20px;
     min-width: 60px;
+    color: #fff;
+    border-width: 2px;
+    border-style: solid;
+    border-color: #ddd;
+}
+.label-success {
+    border-color: #198754;
 }
 .page-title {
     padding: 20px 0 20px 0;
@@ -632,7 +639,7 @@ input.error {
 }
 .bg-settled, .bg-sent, .bg-recurring, .bg-deliverable, .bg-current_active, .bg-current, .bg-cron-running, .bg-running, .bg-starting, .bg-pending-sending, .bg-active, .bg-confirmed, .bg-paid, .bg-sending, .bg-subscribed {
     background-color: #c4efab;
-    border-color: #c4efab;
+    border-color: #afd997;
     color: #231c15;
 }
 .bg-verified {
@@ -673,9 +680,9 @@ input.error {
     color: #231c15;
 }
 .bg-undeliverable, .bg-outdated, .bg-error, .bg-failed {
-    background-color: #D84315;
-    border-color: #D84315;
-    color: #fff;
+    background-color: #f6c9bb;
+    border-color: #e49881;
+    color: #000;
 }
 .modal-body h6 {
     font-size: 16px;

@@ -4,10 +4,18 @@
             <h2 class="text-semibold">{{ trans('messages.invoices_logs') }}</h2>
             <p>{{ trans('messages.subscription.logs.intro') }}</p>
 
-            <ul class="nav nav-tabs">
-                <li class="active"><a data-toggle="tab" href="#invoices">{{ trans('messages.invoices') }}</a></li>
-                <li><a data-toggle="tab" href="#transactions">{{ trans('messages.transactions') }}</a></li>
-                <li><a data-toggle="tab" href="#logs">{{ trans('messages.subscription.logs') }}</a></li>
+            <ul class="nav nav-tabs nav-underline mb-1" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" href="javascript:;" data-bs-toggle="tab" data-bs-target="#nav-invoices">
+                        {{ trans('messages.invoices') }}
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="tab" href="#nav-transactions" data-bs-toggle="tab">
+                        {{ trans('messages.transactions') }}
+                    </a>
+                </li>
+                <li class="nav-item"><a class="nav-link" href="#logs" data-bs-toggle="tab">{{ trans('messages.subscription.logs') }}</a></li>
             </ul>
 
             <div class="tab-content">
@@ -39,7 +47,7 @@
                         @endforelse
                     </table>
                 </div>
-                <div id="transactions" class="tab-pane fade">
+                <div id="nav-transactions" class="tab-pane fade">
                     <table class="table table-box pml-table table-log mt-10">
                         <tr>
                             <th width="200px">{{ trans('messages.created_at') }}</th>
@@ -89,7 +97,7 @@
                         @endforelse
                     </table>
                 </div>
-                <div id="invoices" class="tab-pane fade in active">
+                <div id="nav-invoices" class="tab-pane fade in show active">
                     <table class="table table-box pml-table table-log mt-10">
                         <tr>
                             <th width="130px">{{ trans('messages.invoice.created_at') }}</th>
