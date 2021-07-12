@@ -2133,4 +2133,41 @@ class MailList extends Model
 
         return $validator;
     }
+
+    public function getFieldsFromParams($params)
+    {
+        $fields = collect();
+        // Get old post values
+        if (isset($params['fields'])) {
+            foreach ($params['fields'] as $key => $item) {
+                $field = \Acelle\Model\Field::findByUid($item['uid']);
+                if (!is_object($field)) {
+                    $field = new \Acelle\Model\Field();
+                    $field->uid = $key;
+                }
+                $field->fill($item);
+
+                // If email field
+                if ($this->getEmailField()->uid == $field->uid) {
+                    $field = $this->getEmailField();
+                    $field->label = $item['label'];
+                    $field->default_value = $item['default_value'];
+                }
+
+                // Field options
+                if (isset($item['options'])) {
+                    $field->fieldOptions = collect();
+                    foreach ($item['options'] as $key2 => $item2) {
+                        $option = new \Acelle\Model\FieldOption($item2);
+                        $option->uid = $key2;
+                        $field->fieldOptions->push($option);
+                    }
+                }
+
+                $fields[] = $field;
+            }
+        }
+
+        return $fields;
+    }
 }

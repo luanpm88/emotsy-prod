@@ -24,34 +24,7 @@ class FieldController extends Controller
 
         // Get old post values
         if (isset($request->old()['fields'])) {
-            $fields = collect();
-            foreach ($request->old()['fields'] as $key => $item) {
-                $field = \Acelle\Model\Field::findByUid($item['uid']);
-                if (!is_object($field)) {
-                    $field = new \Acelle\Model\Field();
-                    $field->uid = $key;
-                }
-                $field->fill($item);
-
-                // If email field
-                if ($list->getEmailField()->uid == $field->uid) {
-                    $field = $list->getEmailField();
-                    $field->label = $item['label'];
-                    $field->default_value = $item['default_value'];
-                }
-
-                // Field options
-                if (isset($item['options'])) {
-                    $field->fieldOptions = collect();
-                    foreach ($item['options'] as $key2 => $item2) {
-                        $option = new \Acelle\Model\FieldOption($item2);
-                        $option->uid = $key2;
-                        $field->fieldOptions->push($option);
-                    }
-                }
-
-                $fields[] = $field;
-            }
+            $fields = $list->getFieldsFromParams($request->old());
         }
 
         return view('fields.index', [
