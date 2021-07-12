@@ -241,7 +241,9 @@ contact_mail
                     </li>
                     <li class="selfclear">
                         <div class="unit size1of2">
-                            <strong><i class="icon-users4"></i> {{ trans('messages.admin_groups') }}</strong>
+                            <strong><span class="material-icons-outlined">
+people
+</span> {{ trans('messages.admin_groups') }}</strong>
                         </div>
                         <div class="lastUnit size1of2">
                             <mc:flag>{{ Auth::user()->admin->getAllAdminGroups()->count() }}</mc:flag>
@@ -273,7 +275,9 @@ contact_mail
                     </li>
                     <li>
                         <div class="unit size1of2">
-                            <strong><i class="icon-alarm-check"></i> {{ trans('messages.automations') }}</strong>
+                            <strong><span class="material-icons-outlined">
+schedule
+</span> {{ trans('messages.automations') }}</strong>
                         </div>
                         <div class="lastUnit size1of2">
                             <mc:flag>{{ Auth::user()->admin->getAllAutomations()->count() }}</mc:flag>

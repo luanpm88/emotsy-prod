@@ -19,7 +19,9 @@
 
     @include("lists._menu")
 
-    <h2 class="text-bold text-teal-800"><i class="icon-users4"></i> {{ trans('messages.import_subscribers') }}</h2>
+    <h2 class="text-bold text-teal-800"><span class="material-icons-outlined">
+people
+</span> {{ trans('messages.import_subscribers') }}</h2>
 
     <div class="row">
         <div class="col-md-8">

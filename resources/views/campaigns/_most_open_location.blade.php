@@ -2,7 +2,9 @@
 <div class="row">
     <div class="col-md-6">
         <div class="content-group-sm">
-            <h4 class="text-semibold"><i class="icon-users4"></i> {{ trans('messages.subscribers_most_open') }}</h4>                        
+            <h4 class="text-semibold"><span class="material-icons-outlined">
+people
+</span> {{ trans('messages.subscribers_most_open') }}</h4>                        
         </div>
         @if ($campaign->openCount())
             <div class="stat-table">

@@ -124,7 +124,9 @@ delete_outline
     </div>
 @else
     <div class="empty-list">
-        <i class="icon-alarm-check"></i>
+        <span class="material-icons-outlined">
+schedule
+</span>
         <span class="line-1">
             {{ trans('messages.automation_empty_line_1') }}
         </span>

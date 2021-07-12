@@ -1,4 +1,6 @@
-<h2><i class="icon-gear"></i> {{ trans('messages.options') }}</h2>
+<h2><span class="material-icons-outlined">
+settings
+</span> {{ trans('messages.options') }}</h2>
 <div class="tabbable">
     <ul class="nav nav-tabs nav-tabs-top">
         <li class="active text-semibold"><a href="#top-tab1" data-toggle="tab">
@@ -17,7 +19,9 @@
             <i class="icon-database-check"></i> {{ trans('messages.email_verification_servers') }}</a>
         </li>
         <li class="text-semibold"><a href="#top-tab7" data-toggle="tab">
-            <i class="icon-gear"></i> {{ trans('messages.plan.setting') }}</a>
+            <span class="material-icons-outlined">
+settings
+</span> {{ trans('messages.plan.setting') }}</a>
         </li>
     </ul>
     <div class="tab-content">

@@ -345,3 +345,6 @@ h1, h1 {
 .notification_group .alert:last-child {
     margin-bottom: 30px;
 }
+.campaign-steps .nav-link {
+    margin-right: 35px!important;
+}

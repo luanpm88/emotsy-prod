@@ -20,7 +20,9 @@
 				@include("lists._menu")
 
 				<h2 class="text-bold text-teal-800 mb-10"><i class="icon-make-group"></i> {{ $segment->name }}</h2>
-                <h3><i class="icon-users4"></i> {{ trans('messages.subscribers') }}</h3>
+                <h3><span class="material-icons-outlined">
+people
+</span> {{ trans('messages.subscribers') }}</h3>
 
 				<form class="listing-form"
 					data-url="{{ action('SegmentController@listing_subscribers', ['list_uid' => $list->uid, 'uid' => $segment->uid]) }}"

@@ -14,7 +14,9 @@
         <li class="breadcrumb-item"><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
     </ul>
     <h1>
-        <span class="text-semibold"><i class="icon-alarm-check"></i> {{ trans('messages.select_campaign_type') }}</span>
+        <span class="text-semibold"><span class="material-icons-outlined">
+schedule
+</span> {{ trans('messages.select_campaign_type') }}</span>
     </h1>
 </div>
 @endsection

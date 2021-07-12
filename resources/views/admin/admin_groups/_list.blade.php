@@ -51,14 +51,18 @@ delete_outline
     
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
-        <i class="icon-users4"></i>
+        <span class="material-icons-outlined">
+people
+</span>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
         </span>
     </div>
 @else
     <div class="empty-list">
-        <i class="icon-users4"></i>
+        <span class="material-icons-outlined">
+people
+</span>
         <span class="line-1">
             {{ trans('messages.admin_group_empty_line_1') }}
         </span>

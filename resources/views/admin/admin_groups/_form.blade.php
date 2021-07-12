@@ -7,7 +7,9 @@
 </div>
 
 <div class="">
-    <h2><i class="icon-gear"></i> {{ trans('messages.admin_group_options') }}</h2>
+    <h2><span class="material-icons-outlined">
+settings
+</span> {{ trans('messages.admin_group_options') }}</h2>
 
     <div class="tabbable">
         <ul class="nav nav-tabs nav-tabs-top">

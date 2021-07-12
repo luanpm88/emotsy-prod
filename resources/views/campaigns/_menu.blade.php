@@ -68,7 +68,9 @@
 			</li>
 			<li rel0="CampaignController/templateReview" class="dropdown">
 				<a href="{{ action('CampaignController@templateReview', $campaign->uid) }}" class="level-1">
-					<i class="icon-magazine"></i> {{ trans('messages.email_review') }}
+					<span class="material-icons-outlined">
+auto_awesome_mosaic
+</span> {{ trans('messages.email_review') }}
 				</a>
 			</li>
 		</ul>

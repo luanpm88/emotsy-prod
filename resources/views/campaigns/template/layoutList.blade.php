@@ -36,14 +36,18 @@
     </script>
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
-        <i class="icon-magazine"></i>
+        <span class="material-icons-outlined">
+auto_awesome_mosaic
+</span>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
         </span>
     </div>
 @else
     <div class="empty-list">
-        <i class="icon-magazine"></i>
+        <span class="material-icons-outlined">
+auto_awesome_mosaic
+</span>
         <span class="line-1">
             {{ trans('messages.no_template_available') }}
         </span>

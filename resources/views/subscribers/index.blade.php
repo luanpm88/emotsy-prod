@@ -20,7 +20,9 @@
 
 	@include("lists._menu")
 
-	<h2 class="text-bold text-teal-800 mb-10"><i class="icon-users4"></i> {{ trans('messages.subscribers') }}</h2>
+	<h2 class="text-bold text-teal-800 mb-10"><span class="material-icons-outlined">
+people
+</span> {{ trans('messages.subscribers') }}</h2>
 
 	<form class="listing-form subscribers-list"
 		data-url="{{ action('SubscriberController@listing', $list->uid) }}"

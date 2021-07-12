@@ -8,7 +8,9 @@
             </li>
             <li rel0="MailListController/edit">
                 <a class="level-1" href="{{ action('MailListController@edit', $list->uid) }}">
-                <i class="icon-gear"></i> {{ trans('messages.list.title.setting') }}
+                <span class="material-icons-outlined">
+settings
+</span> {{ trans('messages.list.title.setting') }}
                 </a>
             </li>
             <li rel0="SubscriberController" class="dropdown">

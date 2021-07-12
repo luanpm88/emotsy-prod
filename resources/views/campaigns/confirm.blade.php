@@ -41,7 +41,9 @@
                         <a href="{{ action('CampaignController@templatePreview', $campaign->uid) }}" class="btn btn-info bg-grey">{{ trans('messages.edit') }}</a>
                         <!-- {{ $count = $campaign->subscribersCount() }} -->
                         @if ($score['result'] == true)
-                            <i class="icon-checkmark4"></i>
+                            <span class="material-icons-outlined">
+task_alt
+</span>
                         @else
                             @if (!Acelle\Model\Setting::isYes('spamassassin.required'))
                                 <i class="icon-exclamation text-warning"></i>
@@ -63,7 +65,9 @@
                     <a href="{{ action('CampaignController@recipients', $campaign->uid) }}" class="btn btn-info bg-grey">{{ trans('messages.edit') }}</a>
                     <!-- {{ $count = $campaign->subscribersCount() }} -->
                     @if ($count)
-                        <i class="icon-checkmark4"></i>
+                        <span class="material-icons-outlined">
+task_alt
+</span>
                     @else
                         <i class="icon-cross2 text-danger"></i>
                     @endif
@@ -74,7 +78,9 @@
                 </li>
                 <li>
                     <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-info bg-grey">{{ trans('messages.edit') }}</a>
-                    <i class="icon-checkmark4"></i>
+                    <span class="material-icons-outlined">
+task_alt
+</span>
                     <h4>{{ trans('messages.email_subject') }}</h4>
                     <p>
                         {{ $campaign->subject }}
@@ -82,7 +88,9 @@
                 </li>
                 <li>
                     <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-info bg-grey">{{ trans('messages.edit') }}</a>
-                    <i class="icon-checkmark4"></i>
+                    <span class="material-icons-outlined">
+task_alt
+</span>
                     <h4>{{ trans('messages.reply_to') }}</h4>
                     <p>
                         {{ $campaign->reply_to }}
@@ -90,7 +98,9 @@
                 </li>
                 <li>
                     <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-info bg-grey">{{ trans('messages.edit') }}</a>
-                    <i class="icon-checkmark4"></i>
+                    <span class="material-icons-outlined">
+task_alt
+</span>
                     <h4>{{ trans('messages.tracking') }}</h4>
                     <p>
                         @if ($campaign->track_open)
@@ -103,7 +113,9 @@
                 </li>
                 <li>
                     <a href="{{ action('CampaignController@schedule', $campaign->uid) }}" class="btn btn-info bg-grey">{{ trans('messages.edit') }}</a>
-                    <i class="icon-checkmark4"></i>
+                    <span class="material-icons-outlined">
+task_alt
+</span>
                     <h4>{{ trans('messages.run_at') }}</h4>
                     <p>
                         {{ isset($campaign->run_at) ? Acelle\Library\Tool::formatDateTime($campaign->run_at) : "" }}

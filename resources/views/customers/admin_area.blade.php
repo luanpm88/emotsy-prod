@@ -7,7 +7,9 @@
 <div class="modal-body">
     <p class="alert alert-info">{!! trans('messages.current_login_as', ["name" => Auth::user()->displayName()]) !!}</p>
 
-    <h5 class="mt-0 mb-10"><i class="icon-magazine"></i> {{ trans('messages.subscription_of', ['name' => Auth::user()->displayName()]) }}</h5>
+    <h5 class="mt-0 mb-10"><span class="material-icons-outlined">
+auto_awesome_mosaic
+</span> {{ trans('messages.subscription_of', ['name' => Auth::user()->displayName()]) }}</h5>
     
     @if (isset($subscription))
         <ul class="dotted-list topborder section">
