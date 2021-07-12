@@ -739,53 +739,6 @@ hl {
 .page-title h1, .page-title h2, .page-title h3, .page-title h4, .page-title h5, .page-title h6 {
     margin-bottom: 20px;
 }
-.campaign-steps a {
-    font-size: 16px;
-}
-ul.campaign-steps > li.active > a:hover, ul.campaign-steps > li.active > a:focus, ul.campaign-steps > li > a:hover {
-    background-color: #fff;
-    color: #00695B;
-}
-ul.campaign-steps > li.active > a, ul.campaign-steps > li.active > a:hover {
-    background-color: #fff;
-    border-bottom: solid 2px #00695B;
-    border-radius: 5px 5px 0 0;
-    background: #00695C;
-    padding: 10px 15px;
-    margin-bottom: -2px;
-    color: #fff;
-}
-ul.campaign-steps > li.disabled > a:hover {
-    border-bottom: none;
-}
-ul.campaign-steps {
-    text-align: left;
-    border-bottom: dashed 2px #aaa;
-    margin-top: 30px;
-}
-ul.campaign-steps li:after {
-    display: block;
-    content: "\ee31";
-    font-family: 'icomoon';
-    position: absolute;
-    top: 15px;
-    left: -35px;
-    font-size: 10px;
-    color: #333;
-}
-ul.campaign-steps li.disabled:after {
-    color: #aaa;
-}
-.campaign-steps > li {
-    margin-right: 50px;
-}
-.campaign-steps > li > a {
-    padding-right: 0;
-    padding-left: 0;
-}
-ul.campaign-steps li:first-child:after {
-    display: none;
-}
 textarea.plain_text_content {
     height: 350px;
 }
@@ -4269,4 +4222,8 @@ pagination {
 }
 .has-error input[type=text] {
     border-color: #b00020;
+}
+.nav-item.disabled {
+    pointer-events: none;
+    opacity: 0.8;
 }

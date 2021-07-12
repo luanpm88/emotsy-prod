@@ -34,6 +34,10 @@
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined"rel="stylesheet">
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round"rel="stylesheet">
 
+	<!-- Autofill -->
+	<link rel="stylesheet" type="text/css" href="{{ URL::asset('core/css/autofill.css') }}">
+	<script type="text/javascript" src="{{ URL::asset('core/js/autofill.js') }}"></script>
+
 	<!-- AcelleMail -->
 	<link rel="stylesheet" type="text/css" href="{{ URL::asset('css/app.css') }}">
 	<link rel="stylesheet" type="text/css" href="{{ URL::asset('core/css/app.css') }}">

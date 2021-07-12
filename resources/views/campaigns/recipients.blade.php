@@ -58,6 +58,44 @@
     <form>
 
     <script>
+        // addable multiple form
+        $(document).on("click", ".addable-multiple-form .add-form", function(e) {
+            var form = $(this).parents('.addable-multiple-form');
+            var container = form.find('.addable-multiple-container');
+            var status = $(this).attr('automation-status');
+
+            if(status == 'active') {
+                //show disable automation confirm
+                $('#disable_automation_confirm').modal('show');
+                return;
+            }
+
+            // ajax update custom sort
+            $.ajax({
+                method: "GET",
+                url: $(this).attr('sample-url'),
+            })
+            .done(function( msg ) {
+                var num = "0";
+
+                if(container.find('.condition-line').length) {
+                    num = parseInt(container.find('.condition-line').last().attr("rel"))+1;
+                }
+
+                msg = msg.replace(/__index__/g, num);
+
+                container.append(msg);
+
+                var new_line = container.find('.condition-line').last();
+
+                if(new_line.find('.event-campaigns-container').length) {
+                    loadAutomationEmail(new_line.find('.event-campaigns-container'));
+                }
+
+                initJs(new_line);
+            });
+        });
+
         $('.recipients-form').submit(function(e) {
             if (!$('[radio-group=campaign_list_info_defaulf]:checked').length) {
                 new Dialog('alert', {
