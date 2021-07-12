@@ -18,7 +18,7 @@
                     'type' => 'text',
                     'label' => '',
                     'name' => 'name',
-                    'value' => trans("messages.copy_of_campaign", ['name' => $campaign->name]),
+                    'value' => request()->has('name') ? request()->name : trans("messages.copy_of_campaign", ['name' => $campaign->name]),
                     'help_class' => 'campaign',
                     'rules' => ['name' => 'required']
                 ])
