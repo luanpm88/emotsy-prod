@@ -418,6 +418,7 @@ class Invoice extends Model
             }),
             'charge_info' => $chargeInfo,
             'total' => format_price($this->total(), $this->currency->format),
+            'pending' => $this->getPendingTransaction(),
         ];
     }
 

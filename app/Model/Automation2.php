@@ -414,7 +414,8 @@ class Automation2 extends Model
     public function initTrigger($subscriber, $force = false)
     {
         if (!$subscriber->isSubscribed() && $force == false) {
-            $trigger->logger()->warning(sprintf('Cannot trigger contact %s, current status is: %s', $subscriber->email, $subscriber->status));
+            $this->logger()->warning(sprintf('Cannot trigger contact %s, current status is: %s', $subscriber->email, $subscriber->status));
+            return;
         }
 
         $trigger = null;
@@ -478,7 +479,14 @@ class Automation2 extends Model
     {
         $this->logger()->info(sprintf('NEW > Start checking for new trigger'));
 
-        switch ($this->getTriggerAction()->getOption('key')) {
+        $triggerName = $this->getTriggerAction()->getOption('key');
+
+        // @TODO workaround for automations that are enabled (!) but without a trigger
+        if (empty($triggerName)) {
+            return;
+        }
+
+        switch ($triggerName) {
             case self::TRIGGER_TYPE_WELCOME_NEW_SUBSCRIBER:
                 /* triggered immediately by MailListSubscription event */
                 break;
@@ -504,7 +512,7 @@ class Automation2 extends Model
                 // others
                 break;
             default:
-                throw new \Exception('Unknown Automation trigger type '.$this->getTriggerAction()->getOption('key'));
+                throw new \Exception(sprintf('[Automation: `%s`, Customer account: `%s`] Unknown Automation trigger type: %s', $this->name, $this->customer->uid, $triggerName));
         }
         $this->updateCache();
         $this->logger()->info(sprintf('NEW > Finish checking for new trigger'));

@@ -24,34 +24,7 @@ class FieldController extends Controller
 
         // Get old post values
         if (isset($request->old()['fields'])) {
-            $fields = collect();
-            foreach ($request->old()['fields'] as $key => $item) {
-                $field = \Acelle\Model\Field::findByUid($item['uid']);
-                if (!is_object($field)) {
-                    $field = new \Acelle\Model\Field();
-                    $field->uid = $key;
-                }
-                $field->fill($item);
-
-                // If email field
-                if ($list->getEmailField()->uid == $field->uid) {
-                    $field = $list->getEmailField();
-                    $field->label = $item['label'];
-                    $field->default_value = $item['default_value'];
-                }
-
-                // Field options
-                if (isset($item['options'])) {
-                    $field->fieldOptions = collect();
-                    foreach ($item['options'] as $key2 => $item2) {
-                        $option = new \Acelle\Model\FieldOption($item2);
-                        $option->uid = $key2;
-                        $field->fieldOptions->push($option);
-                    }
-                }
-
-                $fields[] = $field;
-            }
+            $fields = $list->getFieldsFromParams($request->old());
         }
 
         return view('fields.index', [
@@ -87,131 +60,18 @@ class FieldController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
-            $rules = [];
+            $validator = $list->updateOrCreateFieldsFromRequest($request);
 
-            // Check if filed does not have EMAIL tag
-            $conflict_tag = false;
-            $tags = [];
-            foreach ($request->fields as $key => $item) {
-                // If email field
-                if ($list->getEmailField()->uid != $item['uid']) {
-                    // check required input
-                    $rules['fields.'.$key.'.label'] = 'required';
-                    $rules['fields.'.$key.'.tag'] = 'required|alpha_dash';
-
-                    // check field options
-                    if (isset($item['options'])) {
-                        foreach ($item['options'] as $key2 => $item2) {
-                            $rules['fields.'.$key.'.options.'.$key2.'.label'] = 'required';
-                            $rules['fields.'.$key.'.options.'.$key2.'.value'] = 'required';
-                        }
-                    }
-
-                    // Check tag exsit
-                    $tag = \Acelle\Model\Field::formatTag($item['tag']);
-                    if (in_array($tag, $tags)) {
-                        $conflict_tag = true;
-                    }
-                    $tags[] = $tag;
-                }
-            }
-            if ($conflict_tag) {
-                $rules['conflict_field_tags'] = 'required';
-            }
-            $this->validate($request, $rules);
-
-            // Save fields
-            $saved_ids = [];
-            foreach ($request->fields as $uid => $item) {
-                $field = \Acelle\Model\Field::findByUid($item['uid']);
-                if (!is_object($field)) {
-                    $field = new \Acelle\Model\Field();
-                    $field->mail_list_id = $list->id;
-                }
-
-                // If email field
-                if ($list->getEmailField()->uid != $field->uid) {
-                    // save exsit field
-                    $item['tag'] = \Acelle\Model\Field::formatTag($item['tag']);
-                    $field->fill($item);
-                    $field->save();
-
-                    // save field options
-                    $field->fieldOptions()->delete();
-                    if (isset($item['options'])) {
-                        foreach ($item['options'] as $key2 => $item2) {
-                            $option = new \Acelle\Model\FieldOption($item2);
-                            $option->field_id = $field->id;
-                            $option->save();
-                        }
-                    }
-                } else {
-                    $field->label = $item['label'];
-                    $field->default_value = $item['default_value'];
-                    $field->save();
-                }
-
-                // store save ids
-                $saved_ids[] = $field->uid;
-            }
-            // Delete fields
-            foreach ($list->getFields as $field) {
-                if (!in_array($field->uid, $saved_ids) && $field->uid != $list->getEmailField()->uid) {
-                    $field->delete();
-                }
+            if ($validator->fails()) {
+                return redirect()->action('FieldController@index', $list->uid)
+                ->withErrors($validator)
+                ->withInput();
             }
 
             // Redirect to my lists page
-            $request->session()->flash('alert-success', trans('messages.fields.updated'));
-
-            return redirect()->action('FieldController@index', $list->uid);
+            return redirect()->action('FieldController@index', $list->uid)
+                ->with('alert-success', trans('messages.fields.updated'));
         }
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int                      $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-    }
-
-    /**
-     * Custom sort items.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function sort(Request $request)
-    {
-        echo trans('messages.fields._deleted_');
     }
 
     /**
