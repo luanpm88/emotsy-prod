@@ -42,6 +42,7 @@ class AutoBillingData
             throw new Exception('Missing type from auto billing data json');
         }
 
+        // service is not registered -> no valid AutoBillingData -> return null
         if (!Billing::isGatewayRegistered($data['type'])) {
             return null;
         }
