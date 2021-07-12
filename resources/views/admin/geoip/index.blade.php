@@ -42,10 +42,13 @@
                         </span>
                     </td>
                     <td class="text-right text-nowrap">
-                        <a href="#" class="btn btn-mc_default">
-                        Setting
+                        <a id="EditGeoIpSetting"
+                            href="{{ action('Admin\GeoIpController@setting') }}"
+                            class="btn btn-mc_default"
+                        >
+                            Setting
                         </a>
-                        <a href="#" class="btn btn-mc_primary">
+                        <a id="EditGeoIpReset" href="{{ action('Admin\GeoIpController@reset') }}" class="btn btn-mc_primary">
                         Reset
                         </a>
                     </td>
@@ -58,4 +61,54 @@
             </div>
         </div>
     </div>
+
+    <script>
+        var GoeIpIndex = {
+            settingPopup: new Popup(),
+
+            reset: function(url) {
+                var dialog = new Dialog('confirm', {
+                    message: 'Are you sure you want to reset GeoIP database?',
+                    ok: function() {
+                        addMaskLoading('Reseting GeoIp...');
+                        
+                        $.ajax({
+                            url: url,
+                            method: 'POST',
+                            data: {
+                                _token: CSRF_TOKEN
+                            },
+                            globalError: false
+                        }).success(function(response) {
+                            notify('success', '{{ trans('messages.notify.success') }}', response.message);
+                        }).error(function(response) {
+                            var error = JSON.parse(response.responseText).error;
+                            notify('error', '{{ trans('messages.notify.error') }}', error);
+                        }).always(function(response) {
+                            removeMaskLoading();
+                        });
+                    }
+                });
+            },
+
+            init: function() {
+                $('#EditGeoIpSetting').on('click', function(e) {
+                    e.preventDefault();
+                    var url = $(this).attr('href');
+
+                    GoeIpIndex.settingPopup.load(url);
+                });
+
+                $('#EditGeoIpReset').on('click', function(e) {
+                    e.preventDefault();
+                    var url = $(this).attr('href');
+
+                    GoeIpIndex.reset(url);
+                });
+            }
+        };
+
+        GoeIpIndex.init();
+
+    </script>
 @endsection

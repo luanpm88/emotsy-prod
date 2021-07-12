@@ -1,4 +1,4 @@
-<div class="popup-container">
+<div class="popup-container" style="width: 700px">
     <div class="popup-header">
         <i class="lnr lnr-arrow-left back"></i>
         <h2 class="title">@yield('title')</h2>
