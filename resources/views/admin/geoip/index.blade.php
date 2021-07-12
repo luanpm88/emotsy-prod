@@ -4,14 +4,14 @@
 
 @section('page_header')
 
-	<div class="page-title">
-		<ul class="breadcrumb breadcrumb-caret position-right">
-			<li><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-		</ul>
-		<h1>
-			<span class="text-semibold"><i class="icon-list2"></i> {{ trans('messages.geoip.title') }}</span>
-		</h1>
-	</div>
+    <div class="page-title">
+        <ul class="breadcrumb breadcrumb-caret position-right">
+            <li><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+        </ul>
+        <h1>
+            <span class="text-semibold"><i class="icon-list2"></i> {{ trans('messages.geoip.title') }}</span>
+        </h1>
+    </div>
 
 @endsection
 
@@ -29,7 +29,7 @@
                             GeoLite2 Free Geolocation Data
                         </h5>
                         <span class="">
-                        	By Maxmind
+                            By Maxmind
                         </span>
                         <br>
                         <span class="text-muted">Version: 2020</span>
@@ -57,13 +57,13 @@
         </table>
         <div class="d-flex align-items-center">
             <div class="num_per_page mr-auto">
-            	<p><i>Powered by Acelle</i></p>
+                <p><i>Powered by Acelle</i></p>
             </div>
         </div>
     </div>
 
     <script>
-        var GoeIpIndex = {
+        var GeoIpIndex = {
             settingPopup: new Popup(),
 
             reset: function(url) {
@@ -96,19 +96,19 @@
                     e.preventDefault();
                     var url = $(this).attr('href');
 
-                    GoeIpIndex.settingPopup.load(url);
+                    GeoIpIndex.settingPopup.load(url);
                 });
 
                 $('#EditGeoIpReset').on('click', function(e) {
                     e.preventDefault();
                     var url = $(this).attr('href');
 
-                    GoeIpIndex.reset(url);
+                    GeoIpIndex.reset(url);
                 });
             }
         };
 
-        GoeIpIndex.init();
+        GeoIpIndex.init();
 
     </script>
 @endsection
