@@ -946,9 +946,9 @@ class SendingServer extends Model
      *
      * @return collect
      */
-    public static function getAllActive()
+    public static function scopeActive($query)
     {
-        return self::where('status', '=', self::STATUS_ACTIVE);
+        return $query->where('status', '=', self::STATUS_ACTIVE);
     }
 
     /**
@@ -956,9 +956,9 @@ class SendingServer extends Model
      *
      * @return collect
      */
-    public static function getAllAdminActive()
+    public static function scopeSystem($query)
     {
-        return self::getAllActive()->whereNotNull('admin_id');
+        return $query->active()->whereNull('customer_id');
     }
 
     /**
