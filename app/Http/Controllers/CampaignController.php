@@ -526,31 +526,6 @@ class CampaignController extends Controller
     }
 
     /**
-     * Template preview.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function templatePreview(Request $request)
-    {
-        $user = $request->user();
-        $campaign = Campaign::findByUid($request->uid);
-
-        $rules = [];
-
-        // authorize
-        if (\Gate::denies('update', $campaign)) {
-            return $this->notAuthorized();
-        }
-
-        return view('campaigns.template_preview', [
-            'campaign' => $campaign,
-            'rules' => $rules,
-        ]);
-    }
-
-    /**
      * Template preview iframe.
      *
      * @param \Illuminate\Http\Request $request
