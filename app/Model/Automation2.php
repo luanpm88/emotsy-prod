@@ -414,7 +414,8 @@ class Automation2 extends Model
     public function initTrigger($subscriber, $force = false)
     {
         if (!$subscriber->isSubscribed() && $force == false) {
-            $trigger->logger()->warning(sprintf('Cannot trigger contact %s, current status is: %s', $subscriber->email, $subscriber->status));
+            $this->logger()->warning(sprintf('Cannot trigger contact %s, current status is: %s', $subscriber->email, $subscriber->status));
+            return;
         }
 
         $trigger = null;
