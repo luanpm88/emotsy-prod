@@ -306,28 +306,6 @@ class CampaignController extends Controller
     }
 
     /**
-     * Select template type.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function templateSelect(Request $request)
-    {
-        $user = $request->user();
-        $campaign = Campaign::findByUid($request->uid);
-
-        // authorize
-        if (\Gate::denies('update', $campaign)) {
-            return $this->notAuthorized();
-        }
-
-        return view('campaigns.template_select', [
-            'campaign' => $campaign,
-        ]);
-    }
-
-    /**
      * Create template from layout.
      *
      * @param \Illuminate\Http\Request $request
@@ -1748,27 +1726,6 @@ class CampaignController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function templateList(Request $request)
-    {
-        $campaign = Campaign::findByUid($request->uid);
-        $request->request->add(['source' => 'template']);
-
-        $campaigns = Campaign::search($request, 'all')
-            ->where('id', '!=', $campaign->id)
-            ->where('html', '!=', '')
-            ->paginate($request->per_page);
-
-        return view('campaigns._template_list', [
-            'campaigns' => $campaigns,
-            'uid' => $campaign->uid,
-        ]);
-    }
-
-    /**
      * Preview template.
      *
      * @param int $id
@@ -1807,45 +1764,6 @@ class CampaignController extends Controller
         }
 
         echo $campaign->getHtmlContent($subscriber);
-    }
-
-    /**
-     * Save campaign screenshot.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int                      $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function saveImage(Request $request, $id)
-    {
-        $campaign = Campaign::findByUid($id);
-
-        // authorize
-        if (\Gate::denies('saveImage', $campaign)) {
-            return $this->notAuthorized();
-        }
-
-        $upload_loca = 'app/campaign_templates/';
-        $upload_path = storage_path($upload_loca);
-        if (!file_exists($upload_path)) {
-            mkdir($upload_path, 0777, true);
-        }
-        $filename = 'screenshot-'.$id.'.png';
-
-        // remove "data:image/png;base64,"
-        $uri = substr($request->data, strpos($request->data, ',') + 1);
-
-        // save to file
-        file_put_contents($upload_path.$filename, base64_decode($uri));
-
-        // create thumbnails
-        $img = \Image::make($upload_path.$filename);
-        $img->fit(178, 200)->save($upload_path.$filename.'.thumb.jpg');
-
-        // save
-        $campaign->image = $upload_loca.$filename;
-        $campaign->save();
     }
 
     /**

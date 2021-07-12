@@ -118,22 +118,6 @@ class TemplatePolicy
         return $can;
     }
 
-    public function saveImage(User $user, Template $item, $role)
-    {
-        switch ($role) {
-            case 'admin':
-                $ability = $user->admin->getPermission('template_update');
-                $can = $ability == 'all'
-                    || ($ability == 'own' && $user->admin->id == $item->admin_id);
-                break;
-            case 'customer':
-                $can = $user->customer->id == $item->customer_id || !isset($item->customer_id);
-                break;
-        }
-
-        return $can;
-    }
-
     public function copy(User $user, Template $item, $role)
     {
         switch ($role) {
