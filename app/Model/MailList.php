@@ -33,7 +33,6 @@ use Acelle\Events\MailListSubscription;
 use Acelle\Events\MailListUpdated;
 use Acelle\Model\Setting;
 use Acelle\Model\SubscriberFields;
-use Acelle\Model\Fields;
 use Acelle\Library\Traits\QueryHelper;
 use Acelle\Events\MailListImported;
 use Acelle\Library\Traits\TrackJobs;
@@ -45,9 +44,6 @@ use Acelle\Jobs\ImportSubscribersJob;
 use Acelle\Jobs\ImportSubscribers2;
 use Acelle\Jobs\ExportSubscribersJob;
 use Acelle\Jobs\VerifyMailListJob;
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
-use Monolog\Formatter\LineFormatter;
 use League\Csv\Writer;
 
 class MailList extends Model
