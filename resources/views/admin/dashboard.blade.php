@@ -274,7 +274,7 @@
                             <strong><i class="icon-alarm-check"></i> {{ trans('messages.automations') }}</strong>
                         </div>
                         <div class="lastUnit size1of2">
-                            <mc:flag>{{ Auth::user()->admin->getAllAutomations()->count() }}</mc:flag>
+                            <mc:flag>{{ number_with_delimiter($automationsCount) }}</mc:flag>
                         </div>
                     </li>
                 </ul>

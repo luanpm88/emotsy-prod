@@ -5,6 +5,7 @@ namespace Acelle\Http\Controllers\Admin;
 use Acelle\Http\Controllers\Controller;
 use Acelle\Model\Notification;
 use Acelle\Model\Subscriber;
+use Acelle\Model\Automation2;
 
 class HomeController extends Controller
 {
@@ -30,6 +31,7 @@ class HomeController extends Controller
         return view('admin.dashboard', [
             'notifications' => $notifications,
             'subscribersCount' => Subscriber::count(),
+            'automationsCount' => Automation2::count(),
         ]);
     }
 }

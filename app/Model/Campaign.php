@@ -1817,16 +1817,6 @@ class Campaign extends Model
     }
 
     /**
-     * Check if template is layout.
-     *
-     * @return string.
-     */
-    public function isLayout($html = null)
-    {
-        return $html;
-    }
-
-    /**
      * Convert html to inline.
      *
      * @todo not very OOP here, consider moving this to a Helper instead
@@ -1952,15 +1942,6 @@ class Campaign extends Model
     }
 
     /**
-     * Overwrite the delete() method to also clear the pending jobs.
-     */
-    public function delete()
-    {
-        $this->cancelAndDeleteJobs();
-        parent::delete();
-    }
-
-    /**
      * Create a stdClass subscriber (for sending a campaign test email)
      * The campaign sending functions take a subscriber object as input
      * However, a test email address is not yet a subscriber object, so we have to build a fake stdClass object
@@ -2002,21 +1983,6 @@ class Campaign extends Model
         $this->from_name = !empty($this->from_name) ? $this->from_name : $list->from_name;
         $this->from_email = !empty($this->from_email) ? $this->from_email : $list->from_email;
         $this->subject = !empty($this->subject) ? $this->subject : $list->default_subject;
-    }
-
-    /**
-     * Check if auto campaign designed.
-     *
-     * @return object
-     */
-    public function autoCampaignDesigned()
-    {
-        $cond = (!empty($this->name) && !empty($this->subject) && !empty($this->from_name)
-            && !empty($this->from_email) && !empty($this->reply_to));
-
-        $cond = $cond && (($this->template || $this->type == 'plain-text') && !empty($this->plain) && $this->unsubscribe_url_valid());
-
-        return $cond;
     }
 
     /**
@@ -2511,14 +2477,6 @@ class Campaign extends Model
         list($message, $msgId) = $this->prepareEmail($subscriber, $server);
 
         return $message;
-    }
-
-    /**
-     * Get public campaign upload dir.
-     */
-    public function getStoragePath($path = '')
-    {
-        return $this->customer->user->getStoragePath(join_paths('campaigns', $this->uid, $path));
     }
 
     /**
@@ -3045,15 +3003,6 @@ class Campaign extends Model
         $this->defaultMailList->subscribers()->update(['status' => 'subscribed']);
         Blacklist::query()->delete();
         $this->trackingLogs()->delete();
-    }
-
-    public function occupiedByOtherAnotherProcess()
-    {
-        if (!function_exists('posix_getpid')) {
-            MailLog::warning('posix_getpid() function not available, skip process checking');
-            return false;
-        }
-        return (!is_null($this->running_pid) && posix_getpgid($this->running_pid));
     }
 
     public function appendToBody($html, $content)
