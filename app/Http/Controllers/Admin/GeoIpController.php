@@ -26,7 +26,8 @@ class GeoIpController extends Controller
                 $validator->after(function ($validator) {
                     try {
                         // testing something in service side
-                        dddd;
+                        sleep(2);
+                        10/0; // error for sure
                     } catch(\Exception $e) {
                         $validator->errors()->add('source', 'Service connection was failed. Error: ' . $e->getMessage());
                     }
