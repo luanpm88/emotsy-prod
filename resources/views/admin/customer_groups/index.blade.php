@@ -29,7 +29,7 @@
         data-url="{{ action('Admin\CustomerGroupController@listing') }}"
         per-page="{{ Acelle\Model\CustomerGroup::$itemsPerPage }}"                    
     >                
-        <div class="row top-list-controls">
+        <div class="row top-list-controls py-2">
             <div class="col-md-10">
                 @if ($groups->count() >= 0)                    
                     <div class="filter-box">                                            
@@ -39,14 +39,15 @@
                                 <option value="customer_groups.created_at">{{ trans('messages.created_at') }}</option>
                                 <option value="customer_groups.name">{{ trans('messages.name') }}</option>
                             </select>                                        
-                            <button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
+                            <input type="hidden" name="sort_direction" value="desc" />
+<button class="btn btn-light sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
                                 <span class="material-icons-outlined desc">
 sort
 </span>
                             </button>
                         </span>                                                                
                         <span class="text-nowrap">
-                            <input name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
+                            <input type="text" name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
                             <span class="material-icons-round">
 search
 </span>

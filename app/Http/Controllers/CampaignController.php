@@ -1715,15 +1715,34 @@ class CampaignController extends Controller
     public function copy(Request $request)
     {
         $campaign = Campaign::findByUid($request->copy_campaign_uid);
+        sleep(2);
 
         // authorize
         if (\Gate::denies('copy', $campaign)) {
             return $this->notAuthorized();
         }
 
-        $campaign->copy($request->copy_campaign_name);
+        if ($request->isMethod('post')) {
+            // make validator
+            $validator = \Validator::make($request->all(), [
+                'name' => 'required',
+            ]);
+            
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('campaigns.copy', [
+                    'campaign' => $campaign,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
 
-        echo trans('messages.campaign.copied');
+            $campaign->copy($request->name);
+            return trans('messages.campaign.copied');
+        }
+
+        return view('campaigns.copy', [
+            'campaign' => $campaign,
+        ]);
     }
 
     /**

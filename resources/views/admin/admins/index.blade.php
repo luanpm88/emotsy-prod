@@ -29,7 +29,7 @@
 					data-url="{{ action('Admin\AdminController@listing') }}"
 					per-page="{{ Acelle\Model\Admin::$itemsPerPage }}"
 				>
-					<div class="row top-list-controls">
+					<div class="row top-list-controls py-2">
 						<div class="col-md-10">
 							@if ($admins->count() >= 0)
 								<div class="filter-box">
@@ -56,7 +56,7 @@ sort
 										</select>
 									</span>
 									<span class="text-nowrap">
-										<input name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
+										<input type="text" name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
 										<span class="material-icons-round">
 search
 </span>

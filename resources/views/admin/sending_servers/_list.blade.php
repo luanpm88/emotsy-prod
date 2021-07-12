@@ -1,5 +1,5 @@
 @if ($items->count() > 0)
-    <table class="table table-box pml-table"
+    <table class="table table-box pml-table border-top mt-2"
         current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
     >
         @foreach ($items as $key => $item)
@@ -91,9 +91,13 @@
                 <td class="text-end text-nowrap">
                     @if (Auth::user()->admin->can('update', $item))
                         @if ($server->isExtended())
-                            <a href="{{ $server->getEditUrl() }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-outline-secondary btn-icon"><i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
+                            <a href="{{ $server->getEditUrl() }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-outline-secondary btn-icon"><span class="material-icons-outlined">
+edit
+</span> {{ trans('messages.edit') }}</a>
                         @else
-                            <a href="{{ action('Admin\SendingServerController@edit', ["id" => $item->uid, "type" => $item->type]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-outline-secondary btn-icon"><i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
+                            <a href="{{ action('Admin\SendingServerController@edit', ["id" => $item->uid, "type" => $item->type]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-outline-secondary btn-icon"><span class="material-icons-outlined">
+edit
+</span> {{ trans('messages.edit') }}</a>
                         @endif
                     @endif
                     @if (Auth::user()->admin->can('delete', $item) || Auth::user()->admin->can('disable', $item) || Auth::user()->admin->can('enable', $item))
@@ -117,7 +121,9 @@
                                 @if (Auth::user()->admin->can('delete', $item))
                                     <li>
                                         <a delete-confirm="{{ trans('messages.delete_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@delete', ["uids" => $item->uid]) }}">
-                                            <i class="icon-trash"></i> {{ trans('messages.delete') }}
+                                            <span class="material-icons-outlined">
+delete_outline
+</span> {{ trans('messages.delete') }}
                                         </a>
                                     </li>
                                 @endif

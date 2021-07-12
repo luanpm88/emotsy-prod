@@ -33,7 +33,7 @@
         data-url="{{ action('Automation2Controller@listing') }}"
         per-page="{{ \Acelle\Model\Automation2::ITEMS_PER_PAGE }}"					
     >				
-        <div class="row top-list-controls">
+        <div class="row top-list-controls py-2">
             <div class="col-md-10">
                 <div class="filter-box">
                     <div class="btn-group list_actions hide">
@@ -51,7 +51,9 @@
                             <li><a data-method="PATCH" link-confirm="{{ trans('messages.disable_automations_confirm') }}" href="{{ action('Automation2Controller@disable') }}"><i class="icon-checkbox-unchecked2"></i> {{ trans('messages.disable') }}</a></li>
                             <li>
                                 <a data-method='delete' delete-confirm="{{ trans('messages.delete_automations_confirm') }}" href="{{ action('Automation2Controller@delete') }}">
-                                <i class="icon-trash"></i> {{ trans('messages.delete') }}</a>
+                                <span class="material-icons-outlined">
+delete_outline
+</span> {{ trans('messages.delete') }}</a>
                             </li>
                         </ul>
                     </div>
@@ -73,7 +75,7 @@ sort
                         </button>
                     </span>
                     <span class="text-nowrap">
-                        <input name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
+                        <input type="text" name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
                         <span class="material-icons-round">
 search
 </span>

@@ -36,7 +36,7 @@
         data-url="{{ action('Admin\SendingServerController@listing') }}"
         per-page="{{ Acelle\Model\SendingServer::$itemsPerPage }}"
     >
-        <div class="row top-list-controls">
+        <div class="row top-list-controls py-2">
             <div class="col-md-10">
                 @if ($items->count() >= 0)
                     <div class="filter-box">
@@ -47,7 +47,9 @@
                             <ul class="dropdown-menu">
                                 <li><a link-confirm="{{ trans('messages.enable_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@enable') }}"><i class="icon-checkbox-checked2"></i> {{ trans('messages.enable') }}</a></li>
                                 <li><a link-confirm="{{ trans('messages.disable_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@disable') }}"><i class="icon-checkbox-unchecked2"></i> {{ trans('messages.disable') }}</a></li>
-                                <li><a delete-confirm="{{ trans('messages.delete_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@delete') }}"><i class="icon-trash"></i> {{ trans('messages.delete') }}</a></li>
+                                <li><a delete-confirm="{{ trans('messages.delete_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@delete') }}"><span class="material-icons-outlined">
+delete_outline
+</span> {{ trans('messages.delete') }}</a></li>
                             </ul>
                         </div>
                         <div class="checkbox inline check_all_list">
@@ -62,7 +64,8 @@
                                 <option value="sending_servers.name">{{ trans('messages.name') }}</option>
                                 <option value="sending_servers.updated_at">{{ trans('messages.updated_at') }}</option>
                             </select>
-                            <button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
+                            <input type="hidden" name="sort_direction" value="desc" />
+<button class="btn btn-light sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
                                 <span class="material-icons-outlined desc">
 sort
 </span>
@@ -78,7 +81,7 @@ sort
                             </select>
                         </span>
                         <span class="text-nowrap">
-                            <input name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
+                            <input type="text" name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
                             <span class="material-icons-round">
 search
 </span>

@@ -25,7 +25,7 @@
 
 @section('content')
     <div class="listing-form" id="ListsIndexContainer">
-        <div class="row top-list-controls">
+        <div class="row top-list-controls py-2">
             <div class="col-md-10">
                 @if (Auth::user()->customer->listsCount() >= 0)
                     <div class="filter-box">
@@ -40,7 +40,9 @@
                             </button>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a list-delete-confirm="{{ action('MailListController@deleteConfirm') }}" href="{{ action('MailListController@delete') }}"><i class="icon-trash"></i> {{ trans('messages.delete') }}</a>
+                                    <a list-delete-confirm="{{ action('MailListController@deleteConfirm') }}" href="{{ action('MailListController@delete') }}"><span class="material-icons-outlined">
+delete_outline
+</span> {{ trans('messages.delete') }}</a>
                                 </li>
                             </ul>
                         </div>
@@ -81,48 +83,11 @@ search
 
     <script>
         var ListsIndex = {
-            container: $('#ListsIndexContainer'),
-            list: new List({
+            list: makeList({
                 url: '{{ action('MailListController@listing') }}',
-                content: $('#ListsIndexContent'),
-                data: function() {
-                    return ListsIndex.container.find('.filter-box :input, [name=per_page]').serialize();
-                },
-                loaded: function() {
-                    this.content.find('[name=per_page]').on('change', function() {
-                        ListsIndex.list.load();
-                    });
-
-                    this.content.find('pagination a').on('click', function(e) {
-                        e.preventDefault();
-
-                        ListsIndex.list.url = $(this).attr('href');
-                        ListsIndex.list.load();
-                    });
-                }
+                container: $('#ListsIndexContainer'),
+                content: $('#ListsIndexContent')
             }),
         };
-
-        ListsIndex.list.load();
-
-        ListsIndex.container.find('.filter-box select').on('change', function() {
-            ListsIndex.list.load();
-        });
-
-        ListsIndex.container.find('.filter-box input[type=text]').on('keyup', function() {
-            ListsIndex.list.load();
-        });
-
-        ListsIndex.container.find('.filter-box .sort-direction').on('click', function() {
-            var direction = $('[name=sort_direction]').val();
-
-            if (direction == 'desc') {
-                $('[name=sort_direction]').val('asc');
-            } else {
-                $('[name=sort_direction]').val('desc');
-            }
-
-            ListsIndex.list.load();
-        });
     </script>
 @endsection

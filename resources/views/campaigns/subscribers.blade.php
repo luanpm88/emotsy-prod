@@ -60,7 +60,7 @@
         data-url="{{ action('CampaignController@subscribersListing', $campaign->uid) }}"
         per-page="{{ Acelle\Model\Subscriber::$itemsPerPage }}"
     >
-    <div class="row top-list-controls">
+    <div class="row top-list-controls py-2">
         <div class="col-md-12">
             @if ($subscribers->count() >= 0)
                 <div class="filter-box">
@@ -86,7 +86,9 @@
                                         'from_uid' => $list->uid,
                                         'action' => 'copy',
                                     ]) }}">
-                                        <i class="icon-copy4"></i> {{ trans('messages.copy_to') }}
+                                        <span class="material-icons-outlined">
+copy_all
+</span> {{ trans('messages.copy_to') }}
                                 </a>
                             </li>
                             <!--<li>
@@ -100,7 +102,9 @@
                             </li>-->
                             <li>
                                 <a delete-confirm="{{ trans('messages.delete_subscribers_confirm') }}" href="{{ action('SubscriberController@delete', $list->uid) }}">
-                                    <i class="icon-trash"></i> {{ trans('messages.delete') }}
+                                    <span class="material-icons-outlined">
+delete_outline
+</span> {{ trans('messages.delete') }}
                                 </a>
                             </li>
                         </ul>
@@ -169,7 +173,7 @@
                         </select>
                     </span>
                     <span class="text-nowrap">
-                        <input name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
+                        <input type="text" name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
                         <span class="material-icons-round">
 search
 </span>

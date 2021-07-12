@@ -19,7 +19,7 @@
 								]) }}"
 								per-page="25"					
 							>				
-								<div class="row top-list-controls">
+								<div class="row top-list-controls py-2">
 									<div class="col-md-9">
 										<div class="filter-box">
 											<span class="d-flex align-items-center mr-4">

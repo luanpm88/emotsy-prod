@@ -3693,4 +3693,7 @@
     the same billing cycle|currency as current plan',
   'label.done' => 'Done',
   'label.cancel' => 'Cancel',
+  'copy_campaign' => 'Copy <span class="fw-600">:name</span> campaign',
+  'delete_campaign_confirm' => 'You\'re about to delete <span class="fw-600">:name</span> campaign.
+    This can not be undone.',
 ) ?>

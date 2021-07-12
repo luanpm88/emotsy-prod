@@ -1,5 +1,5 @@
 @if ($servers->count() > 0)
-    <table class="table table-box pml-table"
+    <table class="table table-box pml-table border-top mt-2"
         current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
     >
         @foreach ($servers as $key => $server)
@@ -43,7 +43,9 @@
                 </td>
                 <td class="text-end text-nowrap">
                     @if (Auth::user()->admin->can('update', $server))
-                        <a href="{{ action('Admin\EmailVerificationServerController@edit', ["email_verification_server" => $server->uid]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-outline-secondary btn-icon"><i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
+                        <a href="{{ action('Admin\EmailVerificationServerController@edit', ["email_verification_server" => $server->uid]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-outline-secondary btn-icon"><span class="material-icons-outlined">
+edit
+</span> {{ trans('messages.edit') }}</a>
                     @endif
                     @if (Auth::user()->admin->can('delete', $server) || Auth::user()->admin->can('disable', $server) || Auth::user()->admin->can('enable', $server))
                         <div class="btn-group">
@@ -66,7 +68,9 @@
                                 @if (Auth::user()->admin->can('delete', $server))
                                     <li>
                                         <a delete-confirm="{{ trans('messages.delete_email_verification_servers_confirm') }}" href="{{ action('Admin\EmailVerificationServerController@delete', ["uids" => $server->uid]) }}">
-                                            <i class="icon-trash"></i> {{ trans('messages.delete') }}
+                                            <span class="material-icons-outlined">
+delete_outline
+</span> {{ trans('messages.delete') }}
                                         </a>
                                     </li>
                                 @endif

@@ -52,7 +52,7 @@
         
         <hr>
         <div class="text-end">
-            <button class="btn bg-teal-800">{{ trans('messages.save_and_next') }} <i class="icon-arrow-right7"></i> </button>
+            <button class="btn btn-secondary">{{ trans('messages.save_and_next') }} <i class="icon-arrow-right7"></i> </button>
         </div>
         
     <form>

@@ -92,7 +92,9 @@
                         <a id="downloadBtn" target="_blank" href="#" role="button" class="btn bg-teal success">
                             <i class="icon-download"></i> {{ trans('messages.download_export') }}
                         </a>
-                        <a href="#retry" class="btn btn-outline-secondary me-1 retry"><i class="icon-reload-alt"></i> {{ trans('messages.retry') }}</a>
+                        <a href="#retry" class="btn btn-outline-secondary me-1 retry"><span class="material-icons-outlined">
+restart_alt
+</span> {{ trans('messages.retry') }}</a>
                     </div>
                 </div>
             </form>

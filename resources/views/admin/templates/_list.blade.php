@@ -1,5 +1,5 @@
 @if ($templates->count() > 0)
-	<table class="table table-box pml-table"
+	<table class="table table-box pml-table border-top mt-2"
 		current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
 	>
 		@foreach ($templates as $key => $template)
@@ -98,12 +98,16 @@
 											class="modal_link"
 											data-method="GET"
 										>
-											<i class="icon-copy4"></i> {{ trans("messages.template.copy") }}
+											<span class="material-icons-outlined">
+copy_all
+</span> {{ trans("messages.template.copy") }}
 										</a>
 									</li>
 								@endif
 								@if (Auth::user()->admin->can('delete', $template))
-									<li><a delete-confirm="{{ trans('messages.delete_templates_confirm') }}" href="{{ action('Admin\TemplateController@delete', ["uids" => $template->uid]) }}"><i class="icon-trash"></i> {{ trans("messages.delete") }}</a></li>
+									<li><a delete-confirm="{{ trans('messages.delete_templates_confirm') }}" href="{{ action('Admin\TemplateController@delete', ["uids" => $template->uid]) }}"><span class="material-icons-outlined">
+delete_outline
+</span> {{ trans("messages.delete") }}</a></li>
 								@endif
 							</ul>
 						</div>

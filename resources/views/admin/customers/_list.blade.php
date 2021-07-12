@@ -1,5 +1,5 @@
 @if ($customers->count() > 0)
-    <table class="table table-box pml-table"
+    <table class="table table-box pml-table border-top mt-2"
         current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
     >
         @foreach ($customers as $key => $item)
@@ -106,7 +106,9 @@
                                 @endcan
                                 <li>
                                     <a delete-confirm="{{ trans('messages.delete_users_confirm') }}" href="{{ action('Admin\CustomerController@delete', ['uids' => $item->uid]) }}">
-                                        <i class="icon-trash"></i> {{ trans('messages.delete') }}
+                                        <span class="material-icons-outlined">
+delete_outline
+</span> {{ trans('messages.delete') }}
                                     </a>
                                 </li>
                             </ul>

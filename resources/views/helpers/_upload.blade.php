@@ -7,7 +7,9 @@
                     <img preview-for="image" empty-src="{{ URL::asset('assets/images/placeholder.jpg') }}" src="{{ $src }}" class="img-circle" alt="">
 
                 </a>
-                <span onclick="$('input[name=image]').trigger('click')"  class="edit-photo text-center"><i class="icon-pencil"></i></span>
+                <span onclick="$('input[name=image]').trigger('click')"  class="edit-photo text-center"><span class="material-icons-outlined">
+edit
+</span></span>
                 <input type="file" name="image" id="{{$preview}}" accept="image/*" class="file-styled previewable hide">
                 <input type="hidden" name="_remove_image" value='' />
             </div>

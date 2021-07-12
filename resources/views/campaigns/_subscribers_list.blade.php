@@ -81,7 +81,9 @@
                 <td class="text-end text-nowrap">
                     @if (\Gate::allows('update', $item))
                         <a href="{{ action('SubscriberController@edit', ['list_uid' => $list->uid, "uid" => $item->uid]) }}" role="button" class="btn btn-outline-secondary btn-icon">
-                            <i class="icon-pencil"></i>
+                            <span class="material-icons-outlined">
+edit
+</span>
                         </a>
                     @endif
                     <div class="btn-group">
@@ -101,7 +103,9 @@
                                         'from_uid' => $item->mailList->uid,
                                         'action' => 'copy',
                                     ]) }}">
-                                        <i class="icon-copy4"></i> {{ trans('messages.copy_to') }}
+                                        <span class="material-icons-outlined">
+copy_all
+</span> {{ trans('messages.copy_to') }}
                                 </a>
                             </li>
                             <li>
@@ -116,7 +120,9 @@
                             </li>
 
                             @if (\Gate::allows('delete', $item))
-                                <li><a delete-confirm="{{ trans('messages.delete_subscribers_confirm') }}" href="{{ action('SubscriberController@delete', ['list_uid' => $list->uid, "uids" => $item->uid]) }}"><i class="icon-trash"></i> {{ trans("messages.delete") }}</a></li>
+                                <li><a delete-confirm="{{ trans('messages.delete_subscribers_confirm') }}" href="{{ action('SubscriberController@delete', ['list_uid' => $list->uid, "uids" => $item->uid]) }}"><span class="material-icons-outlined">
+delete_outline
+</span> {{ trans("messages.delete") }}</a></li>
                             @endif
                         </ul>
                     </div>

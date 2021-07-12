@@ -41,7 +41,9 @@
     </div>
     <br>
     <a href="{{ action('BlacklistController@import') }}" class="btn btn-primary bg-teal mr-5">
-        <i class="icon-reload-alt"></i> {{ trans('messages.blacklist.import_another') }}
+        <span class="material-icons-outlined">
+restart_alt
+</span> {{ trans('messages.blacklist.import_another') }}
     </a>
     <a href="{{ action('BlacklistController@index') }}" class="btn btn-default">
         <i class="icon-arrow-left7"></i> {{ trans('messages.return_to_blacklist') }}

@@ -26,7 +26,7 @@
 					data-url="{{ action('SegmentController@listing_subscribers', ['list_uid' => $list->uid, 'uid' => $segment->uid]) }}"
 					per-page="{{ Acelle\Model\Subscriber::$itemsPerPage }}"
 				>
-					<div class="row top-list-controls">
+					<div class="row top-list-controls py-2">
 						<div class="col-md-10">
 							@if ($subscribers->count() >= 0)
 								<div class="filter-box">
@@ -47,7 +47,9 @@
 											</li>
 											<li>
 												<a delete-confirm="{{ trans('messages.delete_subscribers_confirm') }}" href="{{ action('SubscriberController@delete', $list->uid) }}">
-													<i class="icon-trash"></i> {{ trans('messages.delete') }}
+													<span class="material-icons-outlined">
+delete_outline
+</span> {{ trans('messages.delete') }}
 												</a>
 											</li>
 										</ul>
@@ -123,7 +125,7 @@ sort
 										</ul>
 									</div>
 									<span class="text-nowrap">
-										<input name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
+										<input type="text" name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
 										<span class="material-icons-round">
 search
 </span>

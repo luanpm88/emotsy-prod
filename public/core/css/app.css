@@ -142,12 +142,13 @@ h1, h1 {
 .styled[type="radio"]:checked:after {
     content: "";
     display: block;
-    width: 14px;
-    height: 14px;
+    width: 13px;
+    height: 13px;
     background-color: #009688;
     position: absolute;
     border-radius: 100%;
-    margin-left: 3px;
+    left: 3px;
+    top: 3px;
 }
 .styled.check_all {
     margin-right: 14px;
@@ -292,3 +293,49 @@ h1, h1 {
 #anotify .alert-danger::before {
     content: 'new_releases';
 }
+.modal.popup-loading .modal-content, .modal.popup-loading .modal-content {
+    pointer-events: none!important;
+}
+.popup-progress {
+    width: 100%;
+    position: absolute;
+    top: 0;
+    height: 6px;
+    border-radius: .3rem .3rem 0 0;
+    z-index: 2;
+}
+.modal.popup-loading .modal-dialog::before {
+    content: "aa";
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    border-radius: 0.3rem;
+    width: 100%;
+    height: 100%;
+    background: rgba(255,255,255,0.5);
+    text-indent: -900000px;
+}
+.btn-loading {
+    opacity: 0.8;
+    pointer-events: none;
+    position: relative;
+    padding-left: 38px;
+}
+.btn-loading::before {
+    content: "category";
+    margin-right: 5px;
+    font-family: 'Material Icons Outlined';
+    display: block;
+    -webkit-animation: spin 1s linear infinite;
+    -moz-animation: spin 1s linear infinite;
+    animation: spin 1s linear infinite;
+    top: 10px;
+    font-size: 140%;
+    position: absolute;
+    line-height: 13px;
+    left: 10px;
+}
+@-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
+@-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }
+@keyframes spin { 100% { -webkit-transform: rotate(360deg); transform:rotate(360deg); } }

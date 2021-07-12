@@ -25,7 +25,7 @@
 					data-url="{{ action('SegmentController@listing', $list->uid) }}"
 					per-page="{{ Acelle\Model\Segment::$itemsPerPage }}"
 				>
-					<div class="row top-list-controls">
+					<div class="row top-list-controls py-2">
 						<div class="col-md-10">
 							@if ($list->segmentsCount() >= 0)
 								<div class="filter-box">
@@ -36,7 +36,9 @@
 										<ul class="dropdown-menu">
 											<li>
 												<a delete-confirm="{{ trans('messages.delete_segments_confirm') }}" href="{{ action('SegmentController@delete', $list->uid) }}">
-													<i class="icon-trash"></i> {{ trans('messages.delete') }}
+													<span class="material-icons-outlined">
+delete_outline
+</span> {{ trans('messages.delete') }}
 												</a>
 											</li>
 										</ul>
@@ -60,7 +62,7 @@ sort
 										</button>
 									</span>
 									<span class="text-nowrap">
-										<input name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
+										<input type="text" name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
 										<span class="material-icons-round">
 search
 </span>

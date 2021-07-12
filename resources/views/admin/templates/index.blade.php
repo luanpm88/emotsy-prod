@@ -28,7 +28,7 @@
 					data-url="{{ action('Admin\TemplateController@listing') }}"
 					per-page="{{ Acelle\Model\Template::$itemsPerPage }}"
 				>
-					<div class="row top-list-controls">
+					<div class="row top-list-controls py-2">
 						<div class="col-md-9">
 							<div class="filter-box">
 								<div class="btn-group list_actions hide">
@@ -38,7 +38,9 @@
 									<ul class="dropdown-menu">
 										<li>
 											<a delete-confirm="{{ trans('messages.delete_templates_confirm') }}" href="{{ action('Admin\TemplateController@delete') }}">
-												<i class="icon-trash"></i> {{ trans('messages.delete') }}
+												<span class="material-icons-outlined">
+delete_outline
+</span> {{ trans('messages.delete') }}
 											</a>
 										</li>
 									</ul>
@@ -69,7 +71,7 @@ sort
 									</select>
 								</span>
 								<span class="text-nowrap">
-									<input name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
+									<input type="text" name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
 									<span class="material-icons-round">
 search
 </span>

@@ -29,7 +29,7 @@
 					data-url="{{ action('Admin\CurrencyController@listing') }}"
 					per-page="{{ Acelle\Model\Admin::$itemsPerPage }}"
 				>
-					<div class="row top-list-controls">
+					<div class="row top-list-controls py-2">
 						<div class="col-md-10">
 							@if ($currencies->count() >= 0)
 								<div class="filter-box">
@@ -42,7 +42,9 @@
 											<li><a link-confirm="{{ trans('messages.disable_currencies_confirm') }}" href="{{ action('Admin\CurrencyController@disable') }}"><i class="icon-checkbox-unchecked2"></i> {{ trans('messages.disable') }}</a></li>
 											<li>
 												<a delete-confirm="{{ trans('messages.delete_currencies_confirm') }}" href="{{ action('Admin\CurrencyController@delete') }}">
-													<i class="icon-trash"></i> {{ trans('messages.delete') }}
+													<span class="material-icons-outlined">
+delete_outline
+</span> {{ trans('messages.delete') }}
 												</a>
 											</li>
 										</ul>
@@ -66,7 +68,7 @@ sort
 										</button>
 									</span>
 									<span class="text-nowrap">
-										<input name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
+										<input type="text" name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
 										<span class="material-icons-round">
 search
 </span>

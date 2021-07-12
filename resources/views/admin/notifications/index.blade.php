@@ -29,7 +29,7 @@
 		data-url="{{ action('Admin\NotificationController@listing') }}"
 		per-page="20"				
 	>				
-		<div class="row top-list-controls">
+		<div class="row top-list-controls py-2">
 			<div class="col-md-10">			
 				<div class="filter-box">
 					<div class="btn-group list_actions hide">
@@ -38,7 +38,9 @@
 						</button>
 						<ul class="dropdown-menu">
 							<li>
-								<a data-method="GET" href="{{ action('Admin\NotificationController@delete') }}" class="ajax_link"><i class="icon-trash"></i> {{ trans('messages.delete') }}</a>
+								<a data-method="GET" href="{{ action('Admin\NotificationController@delete') }}" class="ajax_link"><span class="material-icons-outlined">
+delete_outline
+</span> {{ trans('messages.delete') }}</a>
 							</li>
 						</ul>
 					</div>
@@ -68,7 +70,7 @@ sort
 						</select>										
 					</span>
 					<span class="text-nowrap">
-						<input name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
+						<input type="text" name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
 						<span class="material-icons-round">
 search
 </span>

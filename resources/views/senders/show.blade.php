@@ -96,7 +96,9 @@ error_outline
                 @if ($sender->status == Acelle\Model\Sender::STATUS_NEW)
                     <button class="btn btn-primary">{{ trans('messages.sending_domain.verify') }}</button>
                 @endif
-                <a href="{{ action('SenderController@edit', $sender->uid) }}" class="btn btn-primary bg-grey" style="min-width: 100px"><i class="icon-pencil"></i> {{ trans('messages.sender.edit') }}</a>
+                <a href="{{ action('SenderController@edit', $sender->uid) }}" class="btn btn-primary bg-grey" style="min-width: 100px"><span class="material-icons-outlined">
+edit
+</span> {{ trans('messages.sender.edit') }}</a>
             </form>
         </div>
     </div>

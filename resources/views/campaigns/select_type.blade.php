@@ -29,7 +29,7 @@
                     <a href="{{ action("CampaignController@create", ["type" => $key]) }}" class="btn btn-secondary">{{ trans('messages.choose') }}</a>
                     <a href="{{ action("CampaignController@create", ["type" => $key]) }}">
                         <span class="">
-                            <i class="{{ $type['icon'] }} text-grey-800"></i>
+                            <i class="material-icons-outlined">{{ $type['icon'] }}</i>
                         </span>
                     </a>
                     <h4><a href="{{ action("CampaignController@create", ["type" => $key]) }}">{{ trans('messages.' . $key) }}</a></h4>

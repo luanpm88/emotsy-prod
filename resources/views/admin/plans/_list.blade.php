@@ -1,5 +1,5 @@
 @if ($plans->count() > 0)
-    <table class="table table-box pml-table"
+    <table class="table table-box pml-table border-top mt-2"
         current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
     >
         @foreach ($plans as $key => $plan)
@@ -66,7 +66,9 @@
                 </td>
                 <td class="text-end text-nowrap" width="5%">
                     @can('update', $plan)
-                        <a href="{{ action('Admin\PlanController@general', $plan->uid) }}" role="button" class="btn btn-outline-secondary btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
+                        <a href="{{ action('Admin\PlanController@general', $plan->uid) }}" role="button" class="btn btn-outline-secondary btn-icon"> <span class="material-icons-outlined">
+edit
+</span> {{ trans('messages.edit') }}</a>
                     @endcan
                     @if (\Auth::user()->can('delete', $plan) ||
                          \Auth::user()->can('copy', $plan)

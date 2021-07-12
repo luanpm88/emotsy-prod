@@ -650,6 +650,8 @@ input.error {
     background-color: #95beec;
     border-color: #84a9d4;
     color: #000;
+    border-width: 2px;
+    border-style: solid;
 }
 
 .bg-risky, .bg-paused, .bg-feedback {

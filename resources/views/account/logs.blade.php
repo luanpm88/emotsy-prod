@@ -31,7 +31,7 @@
                     data-url="{{ action('AccountController@logsListing') }}"
                     per-page="{{ Acelle\Model\Log::$itemsPerPage }}"                
                 >                
-                    <div class="row top-list-controls">
+                    <div class="row top-list-controls py-2">
                         <div class="col-md-10">
                             @if ($logs->count() >= 0)                    
                                 <div class="filter-box">
@@ -58,7 +58,7 @@ sort
                                         </select>                                        
                                     </span>
                                     <!--<span class="text-nowrap">
-                                        <input name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
+                                        <input type="text" name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
                                         <span class="material-icons-round">
 search
 </span>

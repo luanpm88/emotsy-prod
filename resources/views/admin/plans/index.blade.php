@@ -94,7 +94,7 @@
         data-url="{{ action('Admin\PlanController@listing') }}"
         per-page="{{ Acelle\Model\Plan::$itemsPerPage }}"
     >
-        <div class="row top-list-controls">
+        <div class="row top-list-controls py-2">
             <div class="col-md-10">
                 @if ($plans->count() >= 0)
                     <div class="filter-box">
@@ -109,7 +109,7 @@
                             </button>
                         </span>
                         <span class="text-nowrap">
-                            <input name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
+                            <input type="text" name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
                             <span class="material-icons-round">
 search
 </span>

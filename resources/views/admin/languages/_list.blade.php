@@ -1,5 +1,5 @@
 @if ($languages->count() > 0)
-	<table class="table table-box pml-table"
+	<table class="table table-box pml-table border-top mt-2"
 		current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
 	>
 		@foreach ($languages as $key => $language)
@@ -64,13 +64,17 @@
 								@endcan
 								@can("update", $language)
 									<li>
-										<a href="{{ action('Admin\LanguageController@edit', $language->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}"><i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
+										<a href="{{ action('Admin\LanguageController@edit', $language->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}"><span class="material-icons-outlined">
+edit
+</span> {{ trans('messages.edit') }}</a>
 									</li>
 								@endcan
 								@can("delete", $language)
 									<li>
 										<a list-delete-confirm="{{ action('Admin\LanguageController@deleteConfirm', ['uids' => $language->uid]) }}" href="{{ action('Admin\LanguageController@delete', ["uids" => $language->uid]) }}">
-											<i class="icon-trash"></i> {{ trans('messages.delete') }}
+											<span class="material-icons-outlined">
+delete_outline
+</span> {{ trans('messages.delete') }}
 										</a>
 									</li>
 								@endcan

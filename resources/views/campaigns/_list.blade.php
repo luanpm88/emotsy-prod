@@ -1,8 +1,8 @@
 @if ($campaigns->count() > 0)
-	<table class="table table-box pml-table"
+	<table class="table table-box pml-table border-top mt-2"
 		current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
 	>
-		@foreach ($campaigns as $key => $item)
+		@foreach ($campaigns as $key => $campaign)
 			<tr>
 				<td width="1%">
 					<div class="text-nowrap">
@@ -10,50 +10,50 @@
 							<label>
 								<input type="checkbox" class="node styled"
 									name="ids[]"
-									value="{{ $item->uid }}"
+									value="{{ $campaign->uid }}"
 								/>
 							</label>
 						</div>
 					</div>
 				</td>
 				<td>
-					<h5 class="m-0 text-bold">
-						<a class="kq_search" href="{{ action('CampaignController@show', $item->uid) }}">
-							{{ $item->name }}
+					<h5 class="text-bold mb-1">
+						<a class="kq_search" href="{{ action('CampaignController@show', $campaign->uid) }}">
+							{{ $campaign->name }}
 						</a>
 					</h5>
-					<span class="text-muted">{{ trans('messages.' . $item->type) }}</span>
+					<span class="text-muted">{{ trans('messages.' . $campaign->type) }}</span>
 
-					@if ($item->readCache('SubscriberCount'))
-						<div class="text-semibold" data-popup="tooltip" title="{{ $item->displayRecipients() }}">
-							{{ number_with_delimiter($item->readCache('SubscriberCount')) }} {{ trans('messages.recipients') }}
+					@if ($campaign->readCache('SubscriberCount'))
+						<div class="text-semibold" data-popup="tooltip" title="{{ $campaign->displayRecipients() }}">
+							{{ number_with_delimiter($campaign->readCache('SubscriberCount')) }} {{ trans('messages.recipients') }}
 						</div>
 					@endif
 
-					@if ($item->status != 'new')
-						<span class="text-muted2">{{ trans('messages.run_at') }}: &nbsp;&nbsp;<i class="icon-alarm mr-0"></i> {{ isset($item->run_at) ? Tool::formatDateTime($item->run_at) : "" }}</span>
+					@if ($campaign->status != 'new')
+						<span class="text-muted2">{{ trans('messages.run_at') }}: &nbsp;&nbsp;<i class="icon-alarm mr-0"></i> {{ isset($campaign->run_at) ? Tool::formatDateTime($campaign->run_at) : "" }}</span>
 					@else
-						<span class="text-muted2">{{ trans('messages.updated_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
+						<span class="text-muted2">{{ trans('messages.updated_at') }}: {{ Tool::formatDateTime($campaign->created_at) }}</span>
 					@endif
 				</td>
-				@if ($item->status != 'new')
+				@if ($campaign->status != 'new')
 					<td class="stat-fix-size-sm">
 						<div class="single-stat-box pull-left ml-20">
-							<span class="no-margin text-teal-800 stat-num">{{ $item->isSending() ? number_to_percentage($item->deliveredRate(true)) : number_to_percentage($item->readCache('DeliveredRate')) }}</span>
+							<span class="no-margin text-teal-800 stat-num">{{ $campaign->isSending() ? number_to_percentage($campaign->deliveredRate(true)) : number_to_percentage($campaign->readCache('DeliveredRate')) }}</span>
 							<div class="progress progress-xxs">
-								<div class="progress-bar progress-bar-info" style="width: {{ $item->isSending() ? number_to_percentage($item->deliveredRate(true)) : number_to_percentage($item->readCache('DeliveredRate')) }}">
+								<div class="progress-bar progress-bar-info" style="width: {{ $campaign->isSending() ? number_to_percentage($campaign->deliveredRate(true)) : number_to_percentage($campaign->readCache('DeliveredRate')) }}">
 								</div>
 							</div>
-							<span class="text-semibold text-nowrap">{{ $item->isSending() ? number_with_delimiter($item->deliveredCount()) : number_with_delimiter($item->readCache('DeliveredCount', 0)) }} / {{ number_with_delimiter($item->readCache('SubscriberCount', 0))  }}</span>
+							<span class="text-semibold text-nowrap">{{ $campaign->isSending() ? number_with_delimiter($campaign->deliveredCount()) : number_with_delimiter($campaign->readCache('DeliveredCount', 0)) }} / {{ number_with_delimiter($campaign->readCache('SubscriberCount', 0))  }}</span>
 							<br />
 							<span class="text-muted">{{ trans('messages.sent') }}</span>
 						</div>
 					</td>
 					<td class="stat-fix-size-sm">
 						<div class="single-stat-box pull-left ml-20">
-							<span class="no-margin text-teal-800 stat-num">{{ number_to_percentage($item->readCache('UniqOpenRate')) }}</span>
+							<span class="no-margin text-teal-800 stat-num">{{ number_to_percentage($campaign->readCache('UniqOpenRate')) }}</span>
 							<div class="progress progress-xxs">
-								<div class="progress-bar progress-bar-info" style="width: {{ number_to_percentage($item->readCache('UniqOpenRate')) }}">
+								<div class="progress-bar progress-bar-info" style="width: {{ number_to_percentage($campaign->readCache('UniqOpenRate')) }}">
 								</div>
 							</div>
 							<span class="text-muted">{{ trans('messages.open_rate') }}</span>
@@ -61,9 +61,9 @@
 					</td>
 					<td class="stat-fix-size-sm">
 						<div class="single-stat-box pull-left ml-20">
-							<span class="no-margin text-teal-800 stat-num">{{ number_to_percentage($item->readCache('ClickedRate')) }}</span>
+							<span class="no-margin text-teal-800 stat-num">{{ number_to_percentage($campaign->readCache('ClickedRate')) }}</span>
 							<div class="progress progress-xxs">
-								<div class="progress-bar progress-bar-info" style="width: {{ number_to_percentage($item->readCache('ClickedRate')) }}">
+								<div class="progress-bar progress-bar-info" style="width: {{ number_to_percentage($campaign->readCache('ClickedRate')) }}">
 								</div>
 							</div>
 							<span class="text-muted">{{ trans('messages.click_rate') }}</span>
@@ -75,49 +75,73 @@
 					<td></td>
 				@endif
 				<td>
-					<span class="text-muted2 list-status pull-left" title='{{ $item->isError() ? $item->extractErrorMessage() : '' }}' data-popup='tooltip'>
-						<span class="label label-flat bg-{{ $item->status }}">{{ trans('messages.campaign_status_' . $item->status) }}</span>
+					<span class="text-muted2 list-status pull-left" title='{{ $campaign->isError() ? $campaign->extractErrorMessage() : '' }}' data-popup='tooltip'>
+						<span class="label label-flat bg-{{ $campaign->status }}">{{ trans('messages.campaign_status_' . $campaign->status) }}</span>
 					</span>
-					<pre style="display:none">{{ $item->last_error }}</pre>
+					<pre style="display:none">{{ $campaign->last_error }}</pre>
 				</td>
 				<td class="text-end text-nowrap">
-					@if (\Gate::allows('update', $item))
-						<a href="{{ action('CampaignController@edit', $item->uid) }}" role="button" class="btn btn-outline-secondary btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
-					@endif
-					@if (\Gate::allows('overview', $item))
-						<a href="{{ action('CampaignController@overview', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.overview') }}" role="button" class="btn btn-secondary btn-icon"><i class="icon-stats-growth"></i> {{ trans('messages.campaign.overview_statistics') }}</a>
-					@endif
-					@if (\Gate::allows('delete', $item) || \Gate::allows('pause', $item) || \Gate::allows('restart', $item))
-						<div class="btn-group">
-							<button role="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
-							<ul class="dropdown-menu dropdown-menu-right">
-								@if (\Gate::allows('resend', $item))
-									<li><a class="resend-campaign" href="{{ action('CampaignController@resend', ["uid" => $item->uid]) }}">
-										<i class="icon-reload-alt"></i> {{ trans("messages.campaign.resend") }}</a></li>
-								@endif
-								@if (\Gate::allows('send_test_email', $item))
-									<li><a class="send-a-test-email-link" data-uid="{{ $item->uid }}" href="javascript:;">
-										<i class="icon-envelop3"></i> {{ trans("messages.send_a_test_email") }}</a></li>
-								@endif
-								@if (\Gate::allows('pause', $item))
-									<li><a link-confirm="{{ trans('messages.pause_campaigns_confirm') }}" href="{{ action('CampaignController@pause', ["uids" => $item->uid]) }}"><i class="icon-pause"></i> {{ trans("messages.pause") }}</a></li>
-								@endif
-								@if (\Gate::allows('restart', $item))
-									<li><a link-confirm="{{ trans('messages.restart_campaigns_confirm') }}" href="{{ action('CampaignController@restart', ["uids" => $item->uid]) }}"><i class="icon-history"></i> {{ trans("messages.restart") }}</a></li>
-								@endif
-								@if (\Gate::allows('copy', $item))
-									<li>
-										<a data-uid="{{ $item->uid }}" data-name="{{ trans("messages.copy_of_campaign", ['name' => $item->name]) }}" class="copy-campaign-link">
-											<i class="icon-copy4"></i> {{ trans('messages.copy') }}
-										</a>
-									</li>
-								@endif
-								@if (\Gate::allows('delete', $item))
-									<li><a delete-confirm="{{ trans('messages.delete_campaigns_confirm') }}" href="{{ action('CampaignController@delete', ["uids" => $item->uid]) }}"><i class="icon-trash"></i> {{ trans("messages.delete") }}</a></li>
-								@endif
-							</ul>
-						</div>
-					@endif
+					<div class="d-flex">
+						@if (\Gate::allows('update', $campaign))
+							<a href="{{ action('CampaignController@edit', $campaign->uid) }}" role="button" class="btn btn-secondary btn-icon"> <span class="material-icons-outlined">
+	edit
+	</span> {{ trans('messages.edit') }}</a>
+						@endif
+						@if (\Gate::allows('overview', $campaign))
+							<a href="{{ action('CampaignController@overview', $campaign->uid) }}" data-popup="tooltip" title="{{ trans('messages.overview') }}" role="button" class="btn btn-secondary btn-icon"><i class="icon-stats-growth"></i> {{ trans('messages.campaign.overview_statistics') }}</a>
+						@endif
+						@if (\Gate::allows('delete', $campaign) || \Gate::allows('pause', $campaign) || \Gate::allows('restart', $campaign))
+							<div class="btn-group ms-1" role="group">
+								<button id="btnGroupDrop1" role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
+								<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="btnGroupDrop1">
+									@if (\Gate::allows('resend', $campaign))
+										<li><a class="dropdown-item resend-campaign" href="{{ action('CampaignController@resend', ["uid" => $campaign->uid]) }}">
+											<span class="material-icons-outlined me-2">
+	restart_alt
+	</span> {{ trans("messages.campaign.resend") }}</a></li>
+									@endif
+									@if (\Gate::allows('send_test_email', $campaign))
+										<li><a class="dropdown-item send-a-test-email-link" data-uid="{{ $campaign->uid }}" href="javascript:;">
+											<i class="icon-envelop3"></i> {{ trans("messages.send_a_test_email") }}</a></li>
+									@endif
+									@if (\Gate::allows('pause', $campaign))
+										<li><a class="dropdown-item" link-confirm="{{ trans('messages.pause_campaigns_confirm') }}" href="{{ action('CampaignController@pause', ["uids" => $campaign->uid]) }}">
+											<span class="material-icons-outlined me-2">
+	motion_photos_pause
+	</span>{{ trans("messages.pause") }}</a></li>
+									@endif
+									@if (\Gate::allows('restart', $campaign))
+										<li><a class="dropdown-item" link-confirm="{{ trans('messages.restart_campaigns_confirm') }}" href="{{ action('CampaignController@restart', ["uids" => $campaign->uid]) }}">
+											<span class="material-icons-outlined me-2">
+	restore
+	</span> {{ trans("messages.restart") }}</a></li>
+									@endif
+									@if (\Gate::allows('copy', $campaign))
+										<li>
+											<a class="copy-campaign-button dropdown-item"
+												href="{{ action('CampaignController@copy', [
+													'uid' => $campaign->uid,
+													'copy_campaign_uid' => $campaign->uid,
+												]) }}"
+											>
+												<span class="material-icons-outlined me-2">
+													copy_all
+												</span> {{ trans('messages.copy') }}
+											</a>
+										</li>
+									@endif
+									@if (\Gate::allows('delete', $campaign))
+										<li><a class="dropdown-item detele-campaign-button"
+											delete-confirm="{{ trans('messages.delete_campaign_confirm', ['name' => $campaign->name]) }}"
+											href="{{ action('CampaignController@delete', ["uids" => $campaign->uid]) }}">
+											<span class="material-icons-outlined me-2">
+	delete_outline
+	</span> {{ trans("messages.delete") }}</a></li>
+									@endif
+								</ul>
+							</div>
+						@endif
+					</div>
 				</td>
 			</tr>
 		@endforeach
@@ -126,28 +150,81 @@
 	
 
 	<script>
-		var resendPopup = new Popup();
+		var CampaignsList = {
+			resendPopup: new Popup(),
+			copyPopup: new Popup(),
+
+			delete: function(confirm, url) {
+				// load confirm message
+				var dialog = new Dialog('confirm', {
+					message: confirm,
+					ok: function() {
+
+						// do delete
+						$.ajax({
+							url: url,
+							type: 'POST',
+							data: {
+								_token: CSRF_TOKEN
+							}
+						}).done(function(response) {
+							notify({
+								type: 'success',
+								message: response,
+							});
+
+							ListsIndex.list.load();
+
+						}).fail(function(jqXHR, textStatus, errorThrown){
+							// for debugging
+							alert(errorThrown);
+						});
+					}
+				})
+			}
+		}
 
 		$('.resend-campaign').click(function(e) {
 			e.preventDefault();
 
 			var url = $(this).attr('href');
 
-			resendPopup.load(url);
+			CampaignsList.resendPopup.load({
+				url: url
+			});
+		});
 
-			console.log(url);
+		$('.copy-campaign-button').on('click', function(e) {
+			e.preventDefault();			
+			var url = $(this).attr('href');
+
+			CampaignsList.copyPopup.load({
+				url: url
+			});
+		});
+
+		$('.detele-campaign-button').on('click', function(e) {
+			e.preventDefault();			
+			var url = $(this).attr('href');
+			var confirm = $(this).attr('delete-confirm');
+
+			CampaignsList.delete(confirm, url);
 		});
 	</script>
 @elseif (!empty(request()->keyword))
 	<div class="empty-list">
-		<i class="icon-paperplane"></i>
+		<span class="material-icons-outlined">
+			auto_awesome
+			</span>
 		<span class="line-1">
 			{{ trans('messages.no_search_result') }}
 		</span>
 	</div>
 @else
 	<div class="empty-list">
-		<i class="icon-paperplane"></i>
+		<span class="material-icons-outlined">
+			auto_awesome
+			</span>
 		<span class="line-1">
 			{{ trans('messages.campaign_empty_line_1') }}
 		</span>

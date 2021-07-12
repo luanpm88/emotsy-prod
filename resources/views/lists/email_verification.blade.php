@@ -56,7 +56,9 @@
                         <a id="doneBtn" target="_blank" href="#" type="button" class="btn bg-teal success">
                             {{ trans('messages.label.done') }}
                         </a>
-                        <a id="retryBtn" href="retryBtn" class="btn bg-grey-600 mr-10 retry"><i class="icon-reload-alt"></i> {{ trans('messages.retry') }}</a>
+                        <a id="retryBtn" href="retryBtn" class="btn bg-grey-600 mr-10 retry"><span class="material-icons-outlined">
+restart_alt
+</span> {{ trans('messages.retry') }}</a>
                     </div>
                 </div>
             </div>

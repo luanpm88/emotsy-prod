@@ -23,7 +23,9 @@
             <li>{{ trans('messages.edit') }}</li>
         </ul>
         <h1>
-            <span class="text-semibold"><i class="icon-pencil"></i>
+            <span class="text-semibold"><span class="material-icons-outlined">
+edit
+</span>
                 {{ $server->name }}
             </span>
                 

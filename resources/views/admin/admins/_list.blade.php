@@ -1,5 +1,5 @@
 @if ($admins->count() > 0)
-    <table class="table table-box pml-table"
+    <table class="table table-box pml-table border-top mt-2"
         current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
     >
         @foreach ($admins as $key => $item)
@@ -73,7 +73,9 @@
                                 @can('delete', $item)
                                     <li>
                                         <a delete-confirm="{{ trans('messages.delete_admins_confirm') }}" href="{{ action('Admin\AdminController@delete', ['uids' => $item->uid]) }}">
-                                            <i class="icon-trash"></i> {{ trans('messages.delete') }}
+                                            <span class="material-icons-outlined">
+delete_outline
+</span> {{ trans('messages.delete') }}
                                         </a>
                                     </li>
                                 @endcan

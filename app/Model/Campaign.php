@@ -1743,10 +1743,10 @@ class Campaign extends Model
     {
         return [
             'regular' => [
-                'icon' => 'icon-magazine',
+                'icon' => 'attach_email',
             ],
             'plain-text' => [
-                'icon' => 'icon-file-text2',
+                'icon' => 'wysiwyg',
             ],
         ];
     }

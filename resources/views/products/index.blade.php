@@ -26,7 +26,7 @@
         data-url="{{ action('ProductController@listing', ['view' => request()->view]) }}"
         per-page="{{ Acelle\Model\Product::$itemsPerPage }}"
     >
-        <div class="row top-list-controls">
+        <div class="row top-list-controls py-2">
             <div class="col-md-8">
                 <div class="filter-box">
                     <div class="btn-group list_actions hide">
@@ -35,7 +35,9 @@
                         </button>
                         <ul class="dropdown-menu">
                             <li>
-                                <a list-delete-confirm="{{ action('MailListController@deleteConfirm') }}" href="{{ action('MailListController@delete') }}"><i class="icon-trash"></i> {{ trans('messages.delete') }}</a>
+                                <a list-delete-confirm="{{ action('MailListController@deleteConfirm') }}" href="{{ action('MailListController@delete') }}"><span class="material-icons-outlined">
+delete_outline
+</span> {{ trans('messages.delete') }}</a>
                             </li>
                         </ul>
                     </div>
@@ -66,7 +68,7 @@ sort
                         </select>
                     </span>
                     <span class="text-nowrap">
-                        <input name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
+                        <input type="text" name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
                         <span class="material-icons-round">
 search
 </span>

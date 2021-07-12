@@ -65,7 +65,9 @@
 									<a delete-confirm="{{ trans('messages.sender.delete.confirm') }}"
 										href="{{ action('SenderController@delete', ["uids" => $sender->uid]) }}"
 									>
-										<i class="icon-trash"></i> {{ trans('messages.delete') }}
+										<span class="material-icons-outlined">
+delete_outline
+</span> {{ trans('messages.delete') }}
 									</a>
 								</li>
 							@endif

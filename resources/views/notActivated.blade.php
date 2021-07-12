@@ -9,5 +9,5 @@
         </span>
     </div>
     <a href='#back' onclick='history.back()' class='btn btn-outline-secondary-400'>{{ trans('messages.go_back') }}</a>
-    <a href='{{ action('UserController@resendActivationEmail', ['uid' => $uid]) }}' class='btn bg-teal-800'>{{ trans('messages.resend_activation_email') }}</a>
+    <a href='{{ action('UserController@resendActivationEmail', ['uid' => $uid]) }}' class='btn btn-secondary'>{{ trans('messages.resend_activation_email') }}</a>
 @endsection

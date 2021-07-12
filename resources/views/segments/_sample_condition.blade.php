@@ -24,6 +24,8 @@
 
 	</div>
 	<div class="col-md-1">
-		<a onclick="$(this).parents('.condition-line').remove()" href="#delete" class="btn bg-danger-400"><i class="icon-trash"></i></a>
+		<a onclick="$(this).parents('.condition-line').remove()" href="#delete" class="btn bg-danger-400"><span class="material-icons-outlined">
+delete_outline
+</span></a>
 	</div>
 </div>

@@ -1,5 +1,5 @@
 @if ($items->count() > 0)
-    <table class="table table-box pml-table"
+    <table class="table table-box pml-table border-top mt-2"
         current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
     >
         @foreach ($items as $key => $item)
@@ -37,7 +37,9 @@
                         <span class="label label-flat bg-{{ $item->status }}">{{ trans('messages.bounce_handler_status_' . $item->status) }}</span>
                     </span>
                     @can('update', $item)
-                        <a href="{{ action('Admin\BounceHandlerController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-outline-secondary btn-icon"><i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
+                        <a href="{{ action('Admin\BounceHandlerController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-outline-secondary btn-icon"><span class="material-icons-outlined">
+edit
+</span> {{ trans('messages.edit') }}</a>
                     @endcan
                     @can('delete', $item)
                         <div class="btn-group">                                        
@@ -45,7 +47,9 @@
                             <ul class="dropdown-menu dropdown-menu-right">                                                    
                                 <li>                                                        
                                     <a delete-confirm="{{ trans('messages.delete_bounce_handlers_confirm') }}" href="{{ action('Admin\BounceHandlerController@delete', ["uids" => $item->uid]) }}">
-                                        <i class="icon-trash"></i> {{ trans('messages.delete') }}
+                                        <span class="material-icons-outlined">
+delete_outline
+</span> {{ trans('messages.delete') }}
                                     </a>
                                 </li>
                             </ul>

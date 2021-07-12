@@ -16,7 +16,9 @@
 					<li><a href="{{ action("Admin\FeedbackLoopHandlerController@index") }}">{{ trans('messages.feedback_loop_handlers') }}</a></li>
 				</ul>
 				<h1>
-					<span class="text-semibold"><i class="icon-pencil"></i> {{ $server->name }}</span>
+					<span class="text-semibold"><span class="material-icons-outlined">
+edit
+</span> {{ $server->name }}</span>
 				</h1>
 			</div>
 

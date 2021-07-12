@@ -113,7 +113,7 @@
 	        </div>
 	    <div class="text-end" id="previw_next_btn">
 	        <hr>
-	        <button class="btn bg-teal-800">{{ trans('messages.next') }} <i class="icon-arrow-right7"></i> </button>
+	        <button class="btn btn-secondary">{{ trans('messages.next') }} <i class="icon-arrow-right7"></i> </button>
 	    </div>
 	    </div>
 	</form>

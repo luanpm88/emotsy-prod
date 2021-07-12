@@ -66,7 +66,9 @@
                 <pre class="remote-job-url" style="font-size: 16px;background:#f5f5f5">{{ action('Controller@remoteJob', ['remote_job_token' => \Acelle\Model\Setting::get('remote_job_token')]) }}</pre>
             </div>
             <a class="btn btn-default re_generate_remote_job_url">
-                <i class="icon-reload-alt"></i> {!! trans('messages.re_generate_remote_job_url') !!}</a>-->
+                <span class="material-icons-outlined">
+restart_alt
+</span> {!! trans('messages.re_generate_remote_job_url') !!}</a>-->
         </div>
     @endif
 </div>

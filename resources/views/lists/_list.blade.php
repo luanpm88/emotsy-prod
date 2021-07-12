@@ -1,5 +1,5 @@
 @if ($lists->count() > 0)
-	<table class="table table-box pml-table border-top"
+	<table class="table table-box pml-table border-top mt-2"
 		current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
 	>
 		@foreach ($lists as $key => $list)
@@ -129,7 +129,7 @@ error_outline
 								<li>
 									<a class="copy-list-button dropdown-item"
 										href="{{ action('MailListController@copy', ['copy_list_uid' => $list->uid]) }}"
-										data-name="{{ trans("messages.copy_of_list", ['name' => $list->name]) }}">
+									>
 										<span class="material-icons-outlined me-2">
 											copy_all
 										</span> {{ trans('messages.copy') }}

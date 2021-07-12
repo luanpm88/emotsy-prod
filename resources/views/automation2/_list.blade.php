@@ -1,5 +1,5 @@
 @if ($automations->count() > 0)
-    <table class="table table-box pml-table"
+    <table class="table table-box pml-table border-top mt-2"
         current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
     >
         @foreach ($automations as $key => $automation)
@@ -100,7 +100,9 @@
                                         <a data-method='delete' delete-confirm="{{ trans('messages.delete_automations_confirm') }}"
                                             href="{{ action('Automation2Controller@delete', ["uids" => $automation->uid]) }}"
                                         >
-                                            <i class="icon-trash"></i> {{ trans("messages.delete") }}
+                                            <span class="material-icons-outlined">
+delete_outline
+</span> {{ trans("messages.delete") }}
                                         </a>
                                     </li>
                                 @endif

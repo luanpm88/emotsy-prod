@@ -30,7 +30,7 @@
 		data-url="{{ action('Admin\PluginController@listing') }}"
 		per-page="{{ Acelle\Model\Plugin::$itemsPerPage }}"
 	>
-		<div class="row top-list-controls">
+		<div class="row top-list-controls py-2">
 			<div class="col-md-10">
 				@if ($plugins->count() >= 0)
 					<div class="filter-box">
@@ -41,11 +41,13 @@
 							<ul class="dropdown-menu">
 								<li><a link-confirm="{{ trans('messages.enable_plugins_confirm') }}" href="{{ action('Admin\PluginController@enable') }}"><i class="icon-checkbox-checked2"></i> {{ trans('messages.enable') }}</a></li>
 								<li><a link-confirm="{{ trans('messages.disable_plugins_confirm') }}" href="{{ action('Admin\PluginController@disable') }}"><i class="icon-checkbox-unchecked2"></i> {{ trans('messages.disable') }}</a></li>
-								<li><a delete-confirm="{{ trans('messages.delete_plugins_confirm') }}" href="{{ action('Admin\PluginController@delete') }}"><i class="icon-trash"></i> {{ trans('messages.delete') }}</a></li>
+								<li><a delete-confirm="{{ trans('messages.delete_plugins_confirm') }}" href="{{ action('Admin\PluginController@delete') }}"><span class="material-icons-outlined">
+delete_outline
+</span> {{ trans('messages.delete') }}</a></li>
 							</ul>
 						</div>
 						<span class="text-nowrap">
-							<input name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
+							<input type="text" name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
 							<span class="material-icons-round">
 search
 </span>

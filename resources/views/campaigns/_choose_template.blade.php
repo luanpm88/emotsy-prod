@@ -51,7 +51,7 @@
             data-url="{{ action('TemplateController@choosing', ['campaign_uid' => $campaign->uid]) }}"
             per-page="{{ Acelle\Model\Template::$itemsPerPage }}"
         >
-            <div class="row top-list-controls">
+            <div class="row top-list-controls py-2">
                 <div class="col-md-9">
                     @if (true)
                         <div class="filter-box">
@@ -76,7 +76,7 @@ sort
                                 </select>
                             </span>
                             <span class="text-nowrap">
-                                <input name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
+                                <input type="text" name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
                                 <span class="material-icons-round">
 search
 </span>
@@ -106,7 +106,7 @@ file_upload
             data-url="{{ action('CampaignController@templateList', ['uid' => $campaign->uid]) }}"
             per-page="{{ Acelle\Model\Campaign::$itemsPerPage }}"
         >
-            <div class="row top-list-controls">
+            <div class="row top-list-controls py-2">
                 <div class="col-md-9">
                     @if (Auth::user()->customer->campaigns()->count() >= 0)
                         <div class="filter-box">
@@ -115,9 +115,15 @@ file_upload
                                     {{ trans('messages.actions') }} <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu">
-                                    <li><a link-confirm="{{ trans('messages.restart_campaigns_confirm') }}" href="{{ action('CampaignController@restart') }}"><i class="icon-history"></i> {{ trans("messages.restart") }}</a></li>
-                                    <li><a link-confirm="{{ trans('messages.pause_campaigns_confirm') }}" href="{{ action('CampaignController@pause') }}"><i class="icon-pause"></i> {{ trans("messages.pause") }}</a></li>
-                                    <li><a delete-confirm="{{ trans('messages.delete_campaigns_confirm') }}" href="{{ action('CampaignController@delete') }}"><i class="icon-trash"></i> {{ trans('messages.delete') }}</a></li>
+                                    <li><a link-confirm="{{ trans('messages.restart_campaigns_confirm') }}" href="{{ action('CampaignController@restart') }}"><span class="material-icons-outlined">
+restore
+</span> {{ trans("messages.restart") }}</a></li>
+                                    <li><a link-confirm="{{ trans('messages.pause_campaigns_confirm') }}" href="{{ action('CampaignController@pause') }}"><span class="material-icons-outlined">
+motion_photos_pause
+</span>{{ trans("messages.pause") }}</a></li>
+                                    <li><a delete-confirm="{{ trans('messages.delete_campaigns_confirm') }}" href="{{ action('CampaignController@delete') }}"><span class="material-icons-outlined">
+delete_outline
+</span> {{ trans('messages.delete') }}</a></li>
                                 </ul>
                             </div>
                             <div class="checkbox inline check_all_list">
@@ -138,7 +144,7 @@ sort
                                 </button>
                             </span>
                             <span class="text-nowrap">
-                                <input name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
+                                <input type="text" name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
                                 <span class="material-icons-round">
 search
 </span>

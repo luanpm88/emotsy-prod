@@ -31,7 +31,9 @@
     @include('senders._menu')
     
     <h2>
-        <span class="text-semibold"><i class="icon-pencil"></i> {{ $server->name }}</span>
+        <span class="text-semibold"><span class="material-icons-outlined">
+edit
+</span> {{ $server->name }}</span>
     </h2>
 
     <div class="row">

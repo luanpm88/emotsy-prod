@@ -1,5 +1,5 @@
 @if ($items->count() > 0)
-    <table class="table table-box pml-table"
+    <table class="table table-box pml-table border-top mt-2"
         current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
     >
         @foreach ($items as $key => $item)
@@ -31,7 +31,9 @@
                 </td>
                 <td class="text-end">
                     @can('update', $item)
-                        <a href="{{ action('Admin\LayoutController@edit', $item->uid) }}" role="button" class="btn btn-secondary btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
+                        <a href="{{ action('Admin\LayoutController@edit', $item->uid) }}" role="button" class="btn btn-secondary btn-icon"> <span class="material-icons-outlined">
+edit
+</span> {{ trans('messages.edit') }}</a>
                     @endcan
                 </td>
             </tr>

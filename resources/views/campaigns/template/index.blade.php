@@ -98,7 +98,7 @@
     </div>
         
     <hr>
-    <a href="{{ action('CampaignController@schedule', ['uid' => $campaign->uid]) }}" class="btn bg-teal-800">
+    <a href="{{ action('CampaignController@schedule', ['uid' => $campaign->uid]) }}" class="btn btn-secondary">
         {{ trans('messages.next') }} <i class="icon-arrow-right7"></i>
     </a>
         

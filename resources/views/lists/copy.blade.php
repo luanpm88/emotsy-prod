@@ -38,7 +38,8 @@
             $.ajax({
                 url: url,
                 type: 'POST',
-                data: data
+                data: data,
+                globalError: false
             }).done(function(response) {
                 notify({
                     type: 'success',

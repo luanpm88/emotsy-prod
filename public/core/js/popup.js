@@ -1,11 +1,37 @@
 class Popup {
     constructor(options) {
+        this.init(options);
+    }
+
+    init() {
         var _this = this;
         this.id = '_' + Math.random().toString(36).substr(2, 9);
         this.options = {};
         this.popup = $('.popup[id='+this.id+']');
         this.data = {};
         this.backs = [];
+        this.initHtml = `
+            <div class="modal" id="`+this.id+`" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <div class="spinner-border text-secondary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                        
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
 
         // options
         if (typeof(options) !== 'undefined') {
@@ -13,25 +39,7 @@ class Popup {
         }
         
         if (!this.popup.length) {
-            var popup = $(`
-                <div class="modal" id="`+this.id+`" tabindex="-1">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Modal title</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <p>Modal body text goes here.</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary">Save changes</button>
-                        </div>
-                        </div>
-                    </div>
-                </div>`
-            );
+            var popup = $(this.initHtml);
             $('body').append(popup);
             
             this.popup = popup;
@@ -42,7 +50,7 @@ class Popup {
         });
 
         this.popup[0].addEventListener('hidden.bs.modal', function (event) {
-            _this.remove();
+            _this.reset();
         })
 
         // onclose popup
@@ -51,9 +59,9 @@ class Popup {
         }
     }
 
-    remove() {
-        this.modal.dispose();
+    reset() {
         this.popup.remove();
+        this.init(this.options);
     }
     
     show() {
@@ -115,6 +123,20 @@ class Popup {
             _this.hide();
         });
     }
+
+    mask() {
+        this.popup.addClass('popup-loading');
+        this.popup.find('.modal-dialog').append(`
+            <div class="progress popup-progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+            </div>
+        `);
+    }
+
+    unmask() {
+        this.popup.removeClass('popup-loading');
+        this.popup.find('.popup-progress').remove
+    }
     
     load(options) {
         var _this = this;
@@ -135,7 +157,12 @@ class Popup {
         
         // show popup
         _this.show();
-        
+
+        // effect
+        _this.mask();
+
+        // return;
+
         // load from url
         $.ajax({
             url: _this.options.url,
@@ -155,6 +182,9 @@ class Popup {
         }).fail(function(jqXHR, textStatus, errorThrown){
             // for debugging
             alert(errorThrown);
+        }).always(function() {
+            // effect
+            _this.unmask();
         });
     }
     

@@ -1,5 +1,5 @@
 @if ($segments->count() > 0)
-    <table class="table table-box pml-table"
+    <table class="table table-box pml-table border-top mt-2"
            current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
     >
         @foreach ($segments as $key => $item)
@@ -41,7 +41,9 @@
                     @if (\Gate::allows('update', $item))
                         <a href="{{ action('SegmentController@edit', ['list_uid' => $list->uid, "uid" => $item->uid]) }}"
                            role="button" class="btn btn-outline-secondary btn-icon">
-                            <i class="icon-pencil"></i> {{ trans('messages.edit') }}
+                            <span class="material-icons-outlined">
+edit
+</span> {{ trans('messages.edit') }}
                         </a>
                     @endif
                     <div class="btn-group">

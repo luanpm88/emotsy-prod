@@ -18,7 +18,9 @@
 	
 				@include("lists._menu")
 				
-				<h2 class="text-semibold text-teal-800"><i class="icon-pencil"></i> {{ trans('messages.edit_segment') }}</h2>
+				<h2 class="text-semibold text-teal-800"><span class="material-icons-outlined">
+edit
+</span> {{ trans('messages.edit_segment') }}</h2>
 				
                 <form action="{{ action('SegmentController@update', ['list_uid' => $list->uid, 'uid' => $segment->uid]) }}" method="POST" class="form-validate-jqueryz">
 					{{ csrf_field() }}

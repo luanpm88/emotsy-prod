@@ -1,5 +1,5 @@
 @if ($plugins->count() > 0)
-    <table class="table table-box pml-table"
+    <table class="table table-box pml-table border-top mt-2"
         current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
     >
         @foreach ($plugins as $key => $plugin)
@@ -77,7 +77,9 @@
             </tr>
         @endforeach
     </table>
-    @include('elements/_per_page_select')
+    @include('elements/_per_page_select', [
+        'items' => $plugins
+    ])
     
 @elseif (!empty(request()->keyword) || !empty(request()->filters["type"]))
     <div class="empty-list">

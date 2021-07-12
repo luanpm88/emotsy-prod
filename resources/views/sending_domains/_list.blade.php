@@ -1,5 +1,5 @@
 @if ($items->count() > 0)
-    <table class="table table-box pml-table"
+    <table class="table table-box pml-table border-top mt-2"
         current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
     >
         @foreach ($items as $key => $item)
@@ -64,7 +64,9 @@
                             <ul class="dropdown-menu dropdown-menu-right">
                                 <li>
                                     <a delete-confirm="{{ trans('messages.delete_sending_domains_confirm') }}" href="{{ action('SendingDomainController@delete', ["uids" => $item->uid]) }}">
-                                        <i class="icon-trash"></i> {{ trans('messages.delete') }}
+                                        <span class="material-icons-outlined">
+delete_outline
+</span> {{ trans('messages.delete') }}
                                     </a>
                                 </li>
                             </ul>

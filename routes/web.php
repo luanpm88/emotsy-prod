@@ -355,7 +355,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::patch('campaigns/{uid}/templates/choose/from/{from_uid}', 'CampaignController@campaignTemplateChoose');
     Route::post('campaigns/send-test-email', 'CampaignController@sendTestEmail');
     Route::get('campaigns/delete/confirm', 'CampaignController@deleteConfirm');
-    Route::post('campaigns/copy', 'CampaignController@copy');
+    Route::match(['get', 'post'], 'campaigns/copy', 'CampaignController@copy');
     Route::get('campaigns/{uid}/subscribers', 'CampaignController@subscribers');
     Route::get('campaigns/{uid}/subscribers/listing', 'CampaignController@subscribersListing');
     Route::get('campaigns/{uid}/open-map', 'CampaignController@openMap');

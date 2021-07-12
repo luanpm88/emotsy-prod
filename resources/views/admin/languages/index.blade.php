@@ -27,7 +27,7 @@
         data-url="{{ action('Admin\LanguageController@listing') }}"
         per-page="{{ Acelle\Model\SendingDomain::$itemsPerPage }}"
     >
-        <div class="row top-list-controls">
+        <div class="row top-list-controls py-2">
             <div class="col-md-9">
                 <div class="filter-box">
                     <span class="filter-group">
@@ -44,7 +44,7 @@
                         </button>
                     </span>
                     <span class="text-nowrap">
-                        <input name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
+                        <input type="text" name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
                         <span class="material-icons-round">
 search
 </span>

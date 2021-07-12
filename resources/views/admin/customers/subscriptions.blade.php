@@ -36,7 +36,7 @@
         per-page="15"
     >
         <input type="hidden" name="customer_uid" value="{{ $customer->uid }}" />
-        <div class="row top-list-controls">
+        <div class="row top-list-controls py-2">
             <div class="col-md-11">
                 <div class="filter-box">
                     <span class="filter-group">
@@ -46,7 +46,8 @@
                                 <option value="subscriptions.created_at">{{ trans('messages.created_at') }}</option>
                                 <option value="subscriptions.ends_at">{{ trans('messages.ends_at') }}</option>
                             </select>
-                            <button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
+                            <input type="hidden" name="sort_direction" value="desc" />
+<button class="btn btn-light sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
                                 <span class="material-icons-outlined desc">
 sort
 </span>

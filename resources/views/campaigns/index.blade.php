@@ -22,12 +22,12 @@
 @endsection
 
 @section('content')
-    <form class="listing-form top-sticky"
+    <div id="CampaignsIndexContainer" class="listing-form top-sticky"
         sort-url="{{ action('CampaignController@sort') }}"
         data-url="{{ action('CampaignController@listing') }}"
         per-page="{{ Acelle\Model\MailList::$itemsPerPage }}"
     >
-        <div class="row top-list-controls top-sticky-content">
+        <div class="row top-list-controls top-sticky-content py-2">
             <div class="col-md-10">
                 @if ($campaigns->count() >= 0)
                     <div class="filter-box">
@@ -36,9 +36,15 @@
                                 {{ trans('messages.actions') }} <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu">
-                                <li><a link-confirm="{{ trans('messages.restart_campaigns_confirm') }}" href="{{ action('CampaignController@restart') }}"><i class="icon-history"></i> {{ trans("messages.restart") }}</a></li>
-                                <li><a link-confirm="{{ trans('messages.pause_campaigns_confirm') }}" href="{{ action('CampaignController@pause') }}"><i class="icon-pause"></i> {{ trans("messages.pause") }}</a></li>
-                                <li><a delete-confirm="{{ trans('messages.delete_campaigns_confirm') }}" href="{{ action('CampaignController@delete') }}"><i class="icon-trash"></i> {{ trans('messages.delete') }}</a></li>
+                                <li><a link-confirm="{{ trans('messages.restart_campaigns_confirm') }}" href="{{ action('CampaignController@restart') }}"><span class="material-icons-outlined">
+restore
+</span> {{ trans("messages.restart") }}</a></li>
+                                <li><a link-confirm="{{ trans('messages.pause_campaigns_confirm') }}" href="{{ action('CampaignController@pause') }}"><span class="material-icons-outlined">
+motion_photos_pause
+</span>{{ trans("messages.pause") }}</a></li>
+                                <li><a delete-confirm="{{ trans('messages.delete_campaigns_confirm') }}" href="{{ action('CampaignController@delete') }}"><span class="material-icons-outlined">
+delete_outline
+</span> {{ trans('messages.delete') }}</a></li>
                             </ul>
                         </div>
                         <div class="checkbox inline check_all_list">
@@ -52,14 +58,15 @@
                                 <option value="created_at">{{ trans('messages.created_at') }}</option>
                                 <option value="name">{{ trans('messages.name') }}</option>
                             </select>
-                            <button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
+                            <input type="hidden" name="sort_direction" value="desc" />
+<button class="btn btn-light sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
                                 <span class="material-icons-outlined desc">
 sort
 </span>
                             </button>
                         </span>
                         <span class="text-nowrap">
-                            <input name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
+                            <input type="text" name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
                             <span class="material-icons-round">
 search
 </span>
@@ -76,10 +83,20 @@ add
             </div>
         </div>
 
-        <div class="pml-table-container">
+        <div id="CampaignsIndexContent" class="pml-table-container">
 
 
 
         </div>
-    </form>
+    </div>
+
+    <script>
+        var CampaignsIndex = {
+            list: makeList({
+                url: '{{ action('CampaignController@listing') }}',
+                container: $('#CampaignsIndexContainer'),
+                content: $('#CampaignsIndexContent')
+            }),
+        };
+    </script>
 @endsection

@@ -15,7 +15,9 @@
 					<li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
 				</ul>
 				<h1>
-					<span class="text-semibold"><i class="icon-pencil"></i> {{ $language->name }}</span>
+					<span class="text-semibold"><span class="material-icons-outlined">
+edit
+</span> {{ $language->name }}</span>
 				</h1>
 			</div>
 				

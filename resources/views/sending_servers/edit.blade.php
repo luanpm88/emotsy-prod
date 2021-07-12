@@ -15,7 +15,9 @@
             <li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
         </ul>
         <h1>
-            <span class="text-semibold"><i class="icon-pencil"></i> {{ trans('messages.' . $server->type) }}</span>
+            <span class="text-semibold"><span class="material-icons-outlined">
+edit
+</span> {{ trans('messages.' . $server->type) }}</span>
         </h1>
     </div>
 
