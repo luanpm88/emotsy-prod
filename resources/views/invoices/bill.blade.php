@@ -34,7 +34,16 @@
                     <div class="bill-total">{{ $bill['total'] }}</div>
                 </div>
             </div>
-            @if (!\Auth::user()->customer->preferredPaymentGatewayCanAutoCharge())
+            
+            @if ($bill['pending'])
+                <hr>
+                <div class="text-right">
+                    <a href="{{ action('AccountSubscriptionController@payment') }}" class="btn btn-warning button-loading full-width pr-20" style="pointer-events: auto;opacity:0.9">
+                        {{ trans('messages.invoice.payment_is_being_verified') }}
+                        <div class="loader"></div>
+                    </a>
+                </div>
+            @elseif (isset($payButton) && !\Auth::user()->customer->preferredPaymentGatewayCanAutoCharge())
                 <hr>
                 <div class="text-right">
                     <a href="{{ action('AccountSubscriptionController@payment') }}" class="btn btn-mc_primary">
