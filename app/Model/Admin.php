@@ -581,24 +581,6 @@ class Admin extends Model
     }
 
     /**
-     * Get all automations.
-     *
-     * @return collect
-     */
-    public function getAllSubscribers()
-    {
-        $query = \Acelle\Model\Subscriber::getAll();
-
-        if (!$this->can('readAll', new \Acelle\Model\Customer())) {
-            $query = $query->leftJoin('mail_lists', 'mail_lists.id', '=', 'subscribers.mail_list_id')
-                ->leftJoin('customers', 'customers.id', '=', 'mail_lists.customer_id')
-                ->where('customers.admin_id', '=', $this->id);
-        }
-
-        return $query;
-    }
-
-    /**
      * Get sub-account sending servers.
      *
      * @return int

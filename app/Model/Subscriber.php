@@ -836,16 +836,6 @@ class Subscriber extends Model
     }
 
     /**
-     * Get all items.
-     *
-     * @return collect
-     */
-    public static function getAll()
-    {
-        return self::select('*');
-    }
-
-    /**
      * Verify subscriber email address using a given service.
      */
     public function verify($verifier)
