@@ -51,7 +51,6 @@ class SendingServer extends Model
     const TYPE_ELASTICEMAIL_SMTP = 'elasticemail-smtp';
     const TYPE_SPARKPOST_API = 'sparkpost-api';
     const TYPE_SPARKPOST_SMTP = 'sparkpost-smtp';
-    const TYPE_PHP_MAIL = 'php-mail';
     const TYPE_SENDMAIL = 'sendmail';
     const TYPE_SMTP = 'smtp';
 
@@ -76,7 +75,6 @@ class SendingServer extends Model
         self::TYPE_AMAZON_SMTP => 'SendingServerAmazonSmtp',
         self::TYPE_SMTP => 'SendingServerSmtp',
         self::TYPE_SENDMAIL => 'SendingServerSendmail',
-        self::TYPE_PHP_MAIL => 'SendingServerPhpMail',
         self::TYPE_MAILGUN_API => 'SendingServerMailgunApi',
         self::TYPE_MAILGUN_SMTP => 'SendingServerMailgunSmtp',
         self::TYPE_SENDGRID_API => 'SendingServerSendGridApi',
