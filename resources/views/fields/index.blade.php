@@ -56,6 +56,7 @@
 				@foreach ($fields as $key => $item)
 					<tr class="draggable" rel="{{ $item->uid }}">
 						<td>
+							<input type="hidden" name="fields[{{ $item->uid }}][uid]" value="{{ $item->uid }}" />
 							<i data-action="move" class="icon icon-more2 list-drag-button"></i>
 						</td>
 						<td class="text-nowrap">

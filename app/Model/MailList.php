@@ -2049,4 +2049,88 @@ class MailList extends Model
 
         return $progress;
     }
+
+    public function updateOrCreateFieldsFromRequest($request) {
+        $rules = [];
+
+        // Check if filed does not have EMAIL tag
+        $conflict_tag = false;
+        $tags = [];
+        foreach ($request->fields as $key => $item) {
+            // If email field
+            if ($this->getEmailField()->uid != $item['uid']) {
+                // check required input
+                $rules['fields.'.$key.'.label'] = 'required';
+                $rules['fields.'.$key.'.tag'] = 'required|alpha_dash';
+
+                // check field options
+                if (isset($item['options'])) {
+                    foreach ($item['options'] as $key2 => $item2) {
+                        $rules['fields.'.$key.'.options.'.$key2.'.label'] = 'required';
+                        $rules['fields.'.$key.'.options.'.$key2.'.value'] = 'required';
+                    }
+                }
+
+                // Check tag exsit
+                $tag = \Acelle\Model\Field::formatTag($item['tag']);
+                if (in_array($tag, $tags)) {
+                    $conflict_tag = true;
+                }
+                $tags[] = $tag;
+            }
+        }
+        if ($conflict_tag) {
+            $rules['conflict_field_tags'] = 'required';
+        }
+
+        $validator = \Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return $validator;
+        }
+
+        // Save fields
+        $saved_ids = [];
+        foreach ($request->fields as $uid => $item) {
+            $field = \Acelle\Model\Field::findByUid($item['uid']);
+            if (!is_object($field)) {
+                $field = new \Acelle\Model\Field();
+                $field->mail_list_id = $this->id;
+            }
+
+            // If email field
+            if ($this->getEmailField()->uid != $field->uid) {
+                // save exsit field
+                $item['tag'] = \Acelle\Model\Field::formatTag($item['tag']);
+                $field->fill($item);
+                $field->save();
+
+                // save field options
+                $field->fieldOptions()->delete();
+                if (isset($item['options'])) {
+                    foreach ($item['options'] as $key2 => $item2) {
+                        $option = new \Acelle\Model\FieldOption($item2);
+                        $option->field_id = $field->id;
+                        $option->save();
+                    }
+                }
+            } else {
+                $field->label = $item['label'];
+                $field->default_value = $item['default_value'];
+                $field->save();
+            }
+
+            // store save ids
+            $saved_ids[] = $field->uid;
+        }
+
+        // Delete fields
+        foreach ($this->getFields as $field) {
+            if (!in_array($field->uid, $saved_ids) && $field->uid != $this->getEmailField()->uid) {
+                $field->delete();
+            }
+        }
+
+        return $validator;
+    }
 }
