@@ -1615,11 +1615,11 @@ class CampaignController extends Controller
             $openByEmails = $campaign->openLogs()->join('subscribers', 'tracking_logs.subscriber_id', '=', 'subscribers.id')->groupBy('subscribers.email')->select('subscribers.email');
 
             if ($request->open == 'opened') {
-                $subscribers = $subscribers->joinSub($openByEmails, 'OpenedByEmails', function($join){
+                $subscribers = $subscribers->joinSub($openByEmails, 'OpenedByEmails', function ($join) {
                     $join->on('subscribers.email', '=', 'OpenedByEmails.email');
                 });
             } elseif ($request->open = 'not_opened') {
-                $subscribers = $subscribers->leftJoinSub($openByEmails, 'OpenedByEmails', function($join){
+                $subscribers = $subscribers->leftJoinSub($openByEmails, 'OpenedByEmails', function ($join) {
                     $join->on('subscribers.email', '=', 'OpenedByEmails.email');
                 })->whereNull('OpenedByEmails.email');
             }
@@ -1631,11 +1631,11 @@ class CampaignController extends Controller
             $clickByEmails = $campaign->clickLogs()->join('subscribers', 'tracking_logs.subscriber_id', '=', 'subscribers.id')->groupBy('subscribers.email')->select('subscribers.email');
 
             if ($request->click == 'clicked') {
-                $subscribers = $subscribers->joinSub($clickByEmails, 'ClickedByEmails', function($join){
+                $subscribers = $subscribers->joinSub($clickByEmails, 'ClickedByEmails', function ($join) {
                     $join->on('subscribers.email', '=', 'ClickedByEmails.email');
                 });
             } elseif ($request->click = 'not_clicked') {
-                $subscribers = $subscribers->leftJoinSub($clickByEmails, 'ClickedByEmails', function($join){
+                $subscribers = $subscribers->leftJoinSub($clickByEmails, 'ClickedByEmails', function ($join) {
                     $join->on('subscribers.email', '=', 'ClickedByEmails.email');
                 })->whereNull('ClickedByEmails.email');
             }

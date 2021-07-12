@@ -113,10 +113,8 @@ class BlacklistController extends Controller
         } else {
             return view('admin.blacklists.import', [
                 //
-            ]);    
+            ]);
         }
-
-        
     }
 
     public function startImport(Request $request)
@@ -135,7 +133,6 @@ class BlacklistController extends Controller
             $job = $admin->dispatchWithMonitor(new ImportBlacklistJob($filepath, $customer = null));
 
             return redirect()->action('Admin\BlacklistController@import');
-
         } else {
             throw new Exception('no upload file');
         }

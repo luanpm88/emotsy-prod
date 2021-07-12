@@ -163,7 +163,7 @@ class Subscription extends Model
     {
         return $this->invoices()
             ->changePlan()
-            ->unpaid()      
+            ->unpaid()
             ->first();
     }
 

@@ -50,7 +50,7 @@ class SendMessage implements ShouldQueue
 
         // Check sending server quota
         while ($this->server->overQuota()) {
-            sleep(60);    
+            sleep(60);
         }
 
         $logger = $this->campaign->logger();

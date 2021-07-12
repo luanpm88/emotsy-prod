@@ -39,9 +39,13 @@ use DB;
 use Acelle\Library\Facades\Billing;
 use Acelle\Library\AutoBillingData;
 use File;
+use Acelle\Library\Traits\TrackJobs;
+use Acelle\Jobs\ImportBlacklistJob;
 
 class Customer extends Model
 {
+    use TrackJobs;
+
     protected $quotaTracker;
 
     // Plan status
@@ -1572,16 +1576,6 @@ class Customer extends Model
     }
 
     /**
-     * Get import jobs.
-     *
-     * @return number
-     */
-    public function getImportBlacklistJobs()
-    {
-       ///
-    }
-
-    /**
      * Add email to customer's blacklist.
      */
     public function addEmaillToBlacklist($email)
@@ -2157,11 +2151,21 @@ class Customer extends Model
             return false;
         }
 
+        // no autobilling data
+        if ($this->getAutoBillingData() == null) {
+            return false;
+        }
+
         // check payment
         if ($this->getPreferredPaymentGateway()->getType() != $this->getAutoBillingData()->getGateway()->getType()) {
             return false;
         }
 
         return true;
+    }
+
+    public function importBlacklistJobs()
+    {
+        return $this->jobMonitors()->orderBy('job_monitors.id', 'DESC')->where('job_type', ImportBlacklistJob::class);
     }
 }

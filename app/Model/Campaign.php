@@ -52,7 +52,6 @@ use Illuminate\Support\Facades\Bus;
 use Acelle\Library\RouletteWheel;
 use Acelle\Library\Traits\TrackJobs;
 
-
 class Campaign extends Model
 {
     use HasTemplate, TrackJobs;
@@ -336,13 +335,13 @@ class Campaign extends Model
         $message->setTo($subscriber->email);
 
         if (!empty(Setting::get('campaign.bcc'))) {
-            $addresses = array_filter(preg_split( '/\s*,\s*/', Setting::get('campaign.bcc') ));
-            $message->setBcc( $addresses );
+            $addresses = array_filter(preg_split('/\s*,\s*/', Setting::get('campaign.bcc')));
+            $message->setBcc($addresses);
         }
 
         if (!empty(Setting::get('campaign.cc'))) {
-            $addresses = array_filter(preg_split( '/\s*,\s*/', Setting::get('campaign.cc') ));
-            $message->setCc( $addresses );
+            $addresses = array_filter(preg_split('/\s*,\s*/', Setting::get('campaign.cc')));
+            $message->setCc($addresses);
         }
 
         $message->setReplyTo($this->reply_to);
@@ -1550,7 +1549,7 @@ class Campaign extends Model
      */
     public function getTopOpenSubscribers($number = 5)
     {
-        $query = $this->openLogs()->select('subscribers.email','subscribers.id')
+        $query = $this->openLogs()->select('subscribers.email', 'subscribers.id')
                         ->addSelect(DB::raw('count(*) as count'))
                         ->join('subscribers', 'subscribers.id', '=', 'tracking_logs.subscriber_id')
                         ->groupBy('subscribers.email', 'subscribers.id')
@@ -1786,7 +1785,7 @@ class Campaign extends Model
             'use_default_sending_server_from_email',
         ];
         
-        foreach($attributes as $attribute) {
+        foreach ($attributes as $attribute) {
             $copy[$attribute] = $this[$attribute];
         }
         
@@ -3476,14 +3475,14 @@ class Campaign extends Model
     }
 
     public function cancelAndDeleteJobs($jobType = null)
-    {   
+    {
         $query = $this->jobMonitors();
 
         if (!is_null($jobType)) {
             $query = $query->byJobType($jobType);
         }
 
-        foreach($query->get() as $job) {
+        foreach ($query->get() as $job) {
             $job->cancel();
         }
     }
@@ -3518,67 +3517,72 @@ class Campaign extends Model
         // Pause any previous batch no matter what status it is
         // Notice that batches without a job_monitor will not be retrieved
         $jobs = $this->jobMonitors()->byJobType(LoadCampaign::class)->get();
-        foreach($jobs as $job) {
+        foreach ($jobs as $job) {
             $job->cancelWithoutDeleteBatch();
         }
 
-        // Create the booting job
+        // Campaign loader job
         $campaignLoader = new LoadCampaign($this);
-        $batch = Bus::batch($campaignLoader)->then(function (Batch $batch) {
-            // Important:
-            // Notice that if user manually cancels a batch, it still reaches trigger "then" callback 
-            // Only when an exception is thrown, no "then" trigger
-            // So, if the campaign is paused by user, do not update its status to done once its batch finishes, keep it as paused
-            // IMPORTANT: refresh() is required!
-            if (!$this->refresh()->isPaused()) {
-                $this->setDone();
-            } else {
-                // previously paused, no need to update its status
+
+        // Dispatch it with a batch monitor
+        $this->dispatchWithBatchMonitor(
+            $campaignLoader,
+            function ($batch) {
+                // THEN callbak
+                //
+                // Important:
+                // Notice that if user manually cancels a batch, it still reaches trigger "then" callback
+                // Only when an exception is thrown, no "then" trigger
+                // So, if the campaign is paused by user, do not update its status to done once its batch finishes, keep it as paused
+                // IMPORTANT: refresh() is required!
+                if (!$this->refresh()->isPaused()) {
+                    $this->setDone();
+                } else {
+                    // previously paused, no need to update its status
+                }
+            },
+            function ($batch) {
+                // CATCH callback
+                $errorMsg = "Error sending messages. ".$e->getMessage()."\n".$e->getTraceAsString();
+                $this->setError($errorMsg);
+            },
+            function () {
+                // FINALLY callback
+                $this->updateCache();
             }
+        );
 
-        })->catch(function (Batch $batch, \Throwable $e) {
-            $errorMsg = "Error sending messages. ".$e->getMessage()."\n".$e->getTraceAsString();
-            $this->setError( $errorMsg );
-        })->finally(function (Batch $batch) {
-            //
-            // Important: in case one of the batch's jobs hits an error
-            // the batch is automatically set to cancelled and, therefore, all remaining jobs will just finish (return)
-            // resulting in the "finally" event to be triggered
-            // So, do not update satus here, otherwise it will overwrite any status logged by "catch" event
-            // Notice that: if a batch fails (automatically canceled due to one failed job)
-            // then, after all jobs finishes (return), [failed job] = [pending job] = 1
-            // +------------+--------------+-------------+---------------------------------------------------------------------------------+-------------+
-            // | total_jobs | pending_jobs | failed_jobs | failed_job_ids                                                                  | finished_at |
-            // +------------+--------------+-------------+---------------------------------------------------------------------------------+-------------+
-            // |          7 |            0 |           0 | []                                                                              |  1624848887 | success
-            // |          7 |            1 |           1 | ["302130fd-ba78-4a37-8a3b-2304cc3f3455"]                                        |  1624849156 | failed
-            // |          7 |            2 |           2 | ["6a17f9bf-96d4-48e5-86a0-73e7bac07e74","7e1b3b3d-a5f4-45b4-be1e-ba5f1cc2e3f3"] |  1624849222 | (*)
-            // |          7 |            3 |           2 | ["6a17f9bf-96d4-48e5-86a0-73e7bac07e74","7e1b3b3d-a5f4-45b4-be1e-ba5f1cc2e3f3"] |  1624849222 | (**)
-            // |          7 |            2 |           0 | []                                                                              |        NULL | (***)
-            // +------------+--------------+-------------+---------------------------------------------------------------------------------+-------------+
-            // 
-            // (*) There is no batch cancelation check in every job
-            // as a result, remaining jobs still execute even after the batch is automatically cancelled (due to one failed job)
-            // resulting in 2 (or more) failed / pending jobs
-            //
-            // (**) 2 jobs already failed, there is 1 remaining job to finish (so 3 pending jobs)
-            // That is, pending_jobs = failed jobs + remaining jobs
-            //
-            // (***) If certain jobs are deleted from queue or terminated during action (without failing or finishing)
-            // Then the campaign batch does not reach "then" status
-            // Then proceed with pause and send again
-
-            $this->updateCache();
-        })->dispatch();
-
-        $this->dispatchBatch($batch, $jobType = LoadCampaign::class);
+        // SET QUEUED
         $this->setQueued();
-    }
 
-    // Currently, only one monitor per campaign (soft business)
-    public function jobMonitors()
-    {
-        return $this->hasMany(JobMonitor::class, 'subject_id')->where('subject_name', self::class);
+        /**** MORE NOTES ****/
+        //
+        // Important: in case one of the batch's jobs hits an error
+        // the batch is automatically set to cancelled and, therefore, all remaining jobs will just finish (return)
+        // resulting in the "finally" event to be triggered
+        // So, do not update satus here, otherwise it will overwrite any status logged by "catch" event
+        // Notice that: if a batch fails (automatically canceled due to one failed job)
+        // then, after all jobs finishes (return), [failed job] = [pending job] = 1
+        // +------------+--------------+-------------+---------------------------------------------------------------------------------+-------------+
+        // | total_jobs | pending_jobs | failed_jobs | failed_job_ids                                                                  | finished_at |
+        // +------------+--------------+-------------+---------------------------------------------------------------------------------+-------------+
+        // |          7 |            0 |           0 | []                                                                              |  1624848887 | success
+        // |          7 |            1 |           1 | ["302130fd-ba78-4a37-8a3b-2304cc3f3455"]                                        |  1624849156 | failed
+        // |          7 |            2 |           2 | ["6a17f9bf-96d4-48e5-86a0-73e7bac07e74","7e1b3b3d-a5f4-45b4-be1e-ba5f1cc2e3f3"] |  1624849222 | (*)
+        // |          7 |            3 |           2 | ["6a17f9bf-96d4-48e5-86a0-73e7bac07e74","7e1b3b3d-a5f4-45b4-be1e-ba5f1cc2e3f3"] |  1624849222 | (**)
+        // |          7 |            2 |           0 | []                                                                              |        NULL | (***)
+        // +------------+--------------+-------------+---------------------------------------------------------------------------------+-------------+
+        //
+        // (*) There is no batch cancelation check in every job
+        // as a result, remaining jobs still execute even after the batch is automatically cancelled (due to one failed job)
+        // resulting in 2 (or more) failed / pending jobs
+        //
+        // (**) 2 jobs already failed, there is 1 remaining job to finish (so 3 pending jobs)
+        // That is, pending_jobs = failed jobs + remaining jobs
+        //
+        // (***) If certain jobs are deleted from queue or terminated during action (without failing or finishing)
+        // Then the campaign batch does not reach "then" status
+        // Then proceed with pause and send again
     }
 
     public function extractErrorMessage()

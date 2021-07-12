@@ -111,7 +111,7 @@ class Subscriber extends Model
         return $this->hasMany('Acelle\Model\UnsubscribeLog');
     }
 
-    function scopeUnverified($query)
+    public function scopeUnverified($query)
     {
         return $query->whereNotIn('id', function ($q) {
             $q->select('subscriber_id')->from('email_verifications');
@@ -1056,7 +1056,7 @@ class Subscriber extends Model
 
         // Without JSON_UNESCAPED_UNICODE specified
         // Results of json_encode(['русский']) may look like this
-        // 
+        //
         //     ["\u0440\u0443\u0441\u0441\u043a\u0438\u0439"]
         //
         // which cannot be searched for

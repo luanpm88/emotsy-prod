@@ -476,22 +476,20 @@ class User extends Authenticatable
     {
         $path = $this->getProfileImagePath();
         if (file_exists($path)) {
-            return \Acelle\Helpers\generatePublicPath($path);    
+            return \Acelle\Helpers\generatePublicPath($path);
         } else {
             return URL::asset('assets/images/placeholder.jpg');
         }
-        
     }
 
     public function getProfileThumbUrl()
     {
         $path = $this->getProfileThumbPath();
         if (file_exists($path)) {
-            return \Acelle\Helpers\generatePublicPath($path);    
+            return \Acelle\Helpers\generatePublicPath($path);
         } else {
             return URL::asset('assets/images/placeholder.jpg');
         }
-        
     }
 
     public function getProfileImagePath()
@@ -540,7 +538,7 @@ class User extends Authenticatable
         $thumb = $this->getProfileThumbPath();
         if (file_exists($thumb)) {
             File::delete($thumb);
-        }        
+        }
     }
 
     public function deleteAndCleanup()

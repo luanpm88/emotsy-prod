@@ -638,12 +638,6 @@ class Admin extends Model
         return Notification::orderBy('created_at', 'desc');
     }
 
-    // Currently, only one monitor per campaign (soft business)
-    public function jobMonitors()
-    {
-        return $this->hasMany(JobMonitor::class, 'subject_id')->where('subject_name', self::class);
-    }
-
     public function importBlacklistJobs()
     {
         return $this->jobMonitors()->orderBy('job_monitors.id', 'DESC')->where('job_type', ImportBlacklistJob::class);

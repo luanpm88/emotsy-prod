@@ -11,5 +11,4 @@ use Illuminate\Queue\InteractsWithQueue;
 class Base implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
 }

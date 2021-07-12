@@ -24,7 +24,7 @@ class ExportCampaignLog extends Base
         $this->logtype = $logtype;
 
         // Set the initial value for progress check
-        $this->afterDispatched(function($thisJob, $monitor) {
+        $this->afterDispatched(function ($thisJob, $monitor) {
             $monitor->setJsonData([
                 'percentage' => 0
             ]);

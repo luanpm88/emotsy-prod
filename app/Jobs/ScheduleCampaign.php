@@ -43,7 +43,7 @@ class ScheduleCampaign implements ShouldQueue
             $this->campaign->launch();
         } catch (\Throwable $e) {
             $errorMsg = "Error scheduling campaign: ".$e->getMessage()."\n".$e->getTraceAsString();
-            $this->campaign->setError( $errorMsg );
+            $this->campaign->setError($errorMsg);
 
             // To set the job to failed
             throw $e;

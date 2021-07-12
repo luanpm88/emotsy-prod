@@ -99,11 +99,6 @@ class AccountController extends Controller
 
         // save posted data
         if ($request->isMethod('post')) {
-            // Prenvent save contact
-            if (isset($contact->id)) {
-                return $this->notAuthorized();
-            }
-            
             // Prenvent save from demo mod
             if ($this->isDemoMode()) {
                 return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
@@ -261,6 +256,10 @@ class AccountController extends Controller
     {
         // Save posted data
         if ($request->isMethod('post')) {
+            if (!Billing::isGatewayRegistered($request->payment_method)) {
+                throw new \Exception('Gateway for ' . $request->payment_method . ' is not registered!');
+            }
+
             $gateway = Billing::getGateway($request->payment_method);
 
             $request->user()->customer->updatePaymentMethod([

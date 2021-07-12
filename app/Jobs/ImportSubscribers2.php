@@ -29,7 +29,7 @@ class ImportSubscribers2 extends Base
         // Set the initial value which must be available for periodical progress checks
         // Important: only the first log should use setJsonData
         //            other calls should use update....
-        $this->afterDispatched(function($thisJob, $monitor) {
+        $this->afterDispatched(function ($thisJob, $monitor) {
             $monitor->setJsonData([
                 'message' => 'Import is being queued for processing (job dispatched)...',
             ]);
@@ -37,7 +37,7 @@ class ImportSubscribers2 extends Base
 
         // After the batch has finished
         // This is the place for the job itself to log
-        $this->afterFinished(function($thisJob, $monitor) {
+        $this->afterFinished(function ($thisJob, $monitor) {
             $monitor->updateJsonData([
                 'message' => 'Import complete!',
             ]);
@@ -51,7 +51,7 @@ class ImportSubscribers2 extends Base
      */
     public function handle()
     {
-        // Use a logger to log failed 
+        // Use a logger to log failed
         $formatter = new LineFormatter("[%datetime%] %channel%.%level_name%: %message%\n");
         $logfile = $this->file.".log";
         $stream = new StreamHandler($logfile, Logger::DEBUG);
@@ -69,8 +69,8 @@ class ImportSubscribers2 extends Base
         // Write log, to make sure the file is created
         $logger->info('Initiated');
 
-        $this->list->parseCsvFile($this->file, function($record) use ($logger) {
-            $this->batch()->add( new VerifyAndCreateSubscriber($this->list, $record, $logger) );
+        $this->list->parseCsvFile($this->file, function ($record) use ($logger) {
+            $this->batch()->add(new VerifyAndCreateSubscriber($this->list, $record, $logger));
         });
     }
 }

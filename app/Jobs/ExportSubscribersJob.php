@@ -20,7 +20,7 @@ class ExportSubscribersJob extends Base
         $this->mailList = $mailList;
 
         // Set the initial value for progress check
-        $this->afterDispatched(function($thisJob, $monitor) {
+        $this->afterDispatched(function ($thisJob, $monitor) {
             $monitor->setJsonData([
                 'percentage' => 0,
                 'total' => 0,
@@ -39,7 +39,7 @@ class ExportSubscribersJob extends Base
      */
     public function handle()
     {
-        $this->mailList->export(function($processed, $total, $failed, $message) {
+        $this->mailList->export(function ($processed, $total, $failed, $message) {
             $percentage = ($total && $processed) ? (int)($processed*100/$total) : 0;
 
             $this->monitor->updateJsonData([

@@ -35,7 +35,7 @@ class BillingManager
         return $this->gateways;
     }
 
-    public function getGateway(string $type) : PaymentGatewayInterface
+    public function getGateway(string $type)
     {
         foreach ($this->gateways as $gw) {
             if ($gw->getType() == $type) {
@@ -43,7 +43,7 @@ class BillingManager
             }
         }
 
-        throw new Exception(sprintf('Billing manager: payment gateway type "%s" is not registered', $type));
+        return null;
     }
 
     public function isGatewayRegistered($type)
