@@ -2046,7 +2046,8 @@ class MailList extends Model
         return $progress;
     }
 
-    public function updateOrCreateFieldsFromRequest($request) {
+    public function updateOrCreateFieldsFromRequest($request)
+    {
         $rules = [];
 
         // Check if filed does not have EMAIL tag

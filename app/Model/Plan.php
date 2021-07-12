@@ -1399,11 +1399,13 @@ class Plan extends Model
         return $plan;
     }
 
-    public static function scopeActive($query) {
+    public static function scopeActive($query)
+    {
         $query = $query->where('plans.status', '=', self::STATUS_ACTIVE);
     }
 
-    public static function scopeAvailable($query) {
+    public static function scopeAvailable($query)
+    {
         $query = $query->where('plans.visible', '=', true);
     }
 }
