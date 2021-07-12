@@ -313,22 +313,6 @@ class Plan extends Model
     }
 
     /**
-     * Color array.
-     *
-     * @return array
-     */
-    public static function colors($default)
-    {
-        return [
-            ['value' => '#1482a0', 'text' => trans('messages.blue')],
-            ['value' => '#008c6e', 'text' => trans('messages.green')],
-            ['value' => '#917319', 'text' => trans('messages.brown')],
-            ['value' => '#aa5064', 'text' => trans('messages.pink')],
-            ['value' => '#555', 'text' => trans('messages.grey')],
-        ];
-    }
-
-    /**
      * Frequency time unit options.
      *
      * @return array
@@ -1129,16 +1113,6 @@ class Plan extends Model
         $pss = $this->plansSendingServers()->where('is_primary', '=', true)->first();
         // @todo: raise 1 cái exception nếu $pss null, ko return null sẽ gây lỗi tiềm ẩn
         return is_object($pss) ? $pss->sendingServer->mapType() : null;
-    }
-
-    /**
-     ** Get Primary sending server.
-     **/
-    public function primarySendingServerAdded()
-    {
-        $pss = $this->plansSendingServers()->where('is_primary', '=', true)->first();
-        // @todo: quăng 1 cái exception nếu $pss null, ko return null sẽ gây lỗi tiềm ẩn
-        return is_object($pss) ? $pss->updated_at : null;
     }
 
     /**
