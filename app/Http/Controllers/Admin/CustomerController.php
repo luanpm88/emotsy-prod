@@ -537,7 +537,7 @@ class CustomerController extends Controller
     public function assignPlan(Request $request, $uid)
     {
         $customer = \Acelle\Model\Customer::findByUid($uid);
-        $plans = Plan::getAvailablePlans();
+        $plans = Plan::active()->get();
 
         // authorize
         if (\Gate::denies('assignPlan', $customer)) {

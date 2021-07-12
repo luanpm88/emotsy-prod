@@ -774,7 +774,7 @@ class Plan extends Model
     {
         $data = ['items' => [], 'more' => true];
 
-        $query = \Acelle\Model\Plan::getAllActive();
+        $query = self::active();
         if (isset($request->q)) {
             $keyword = $request->q;
             $query = $query->where(function ($q) use ($keyword) {
@@ -835,44 +835,7 @@ class Plan extends Model
 
         return $query;
     }
-
-    /**
-     * Get all items.
-     *
-     * @return collect
-     */
-    public static function getAllActiveVisible($admin = null)
-    {
-        $query = self::getAll()
-            ->where('plans.status', '=', self::STATUS_ACTIVE)
-            ->where('plans.visible', '=', true);
-
-        if (isset($admin) && !$admin->can('readAll', new \Acelle\Model\Plan())) {
-            $query = $query->where('plans.admin_id', '=', $admin->id);
-        }
-
-        $query = $query;
-
-        return $query;
-    }
-
-    /**
-     * Get all items.
-     *
-     * @return collect
-     */
-    public static function getAllActive($admin = null)
-    {
-        $query = self::getAllActiveVisible();
-
-        return $query;
-    }
-
-    /**
-     * Display plan time.
-     *
-     * @return collect
-     */
+    
     public function displayFrequencyTime()
     {
         // unlimited
@@ -1318,17 +1281,7 @@ class Plan extends Model
      */
     public function isActive()
     {
-        return $this->status == PlansEmailVerificationServer::STATUS_ACTIVE;
-    }
-
-    /**
-     * Check if plan is available.
-     *
-     * @var bool
-     */
-    public function isAvailable()
-    {
-        return $this->isActive();
+        return $this->status == self::STATUS_ACTIVE;
     }
 
     /**
@@ -1338,16 +1291,7 @@ class Plan extends Model
      */
     public static function getAvailablePlans()
     {
-        $plans = self::getAllActiveVisible()->get();
-
-        $aPlans = [];
-        foreach ($plans as $plan) {
-            if ($plan->isAvailable()) {
-                $aPlans[] = $plan;
-            }
-        }
-
-        return $aPlans;
+        return self::active()->available()->get();
     }
 
     /**
@@ -1453,5 +1397,13 @@ class Plan extends Model
         $plan->vat = 0;
 
         return $plan;
+    }
+
+    public static function scopeActive($query) {
+        $query = $query->where('plans.status', '=', self::STATUS_ACTIVE);
+    }
+
+    public static function scopeAvailable($query) {
+        $query = $query->where('plans.visible', '=', true);
     }
 }
