@@ -52,6 +52,7 @@ h1, h1 {
 .navbar-main .navbar-nav .lvl-1 {
     padding-left: 1em;
     padding-right: 1em;
+    font-size: 0.82rem
 }
 .navbar-main .navbar-nav .nav-item:hover .lvl-1 {
     background-color: rgba(0,0,0,.1);

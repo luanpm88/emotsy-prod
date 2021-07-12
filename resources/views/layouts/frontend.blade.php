@@ -277,14 +277,14 @@
 									<li rel0="AccountController/api">
 										<a href="{{ action("AccountController@api") }}" class="dropdown-item d-flex align-items-center">
 										<i class="navbar-icon mr-3">
-										<img src="{{ url('images/icons/'.$iconDir.'SVG/api.svg') }}" />
+										<img style="transform:scale(1.15)" src="{{ url('images/icons/'.$iconDir.'SVG/api.svg') }}" />
 									</i>{{ trans('messages.campaign_api') }}
 										</a>
 									</li>
 								@endif
 								<li><a href="{{ url("/logout") }}" class="dropdown-item d-flex align-items-center">
 									<i class="navbar-icon mr-3">
-										<img src="{{ url('images/icons/'.$iconDir.'SVG/logout.svg') }}" />
+										<img style="transform:scale(.95)" src="{{ url('images/icons/'.$iconDir.'SVG/logout.svg') }}" />
 									</i>{{ trans('messages.logout') }}
 								</a></li>
 							</ul>

@@ -82,7 +82,7 @@
                                 </td> 
                                 <td>
                                     <span class="no-margin kq_search">
-                                        <span {!! $transaction->error ? 'title="'.$transaction->error.'"' : '' !!} class="xtooltip label label-success bg-{{ $transaction->status }}" style="white-space: nowrap;">
+                                        <span {!! $transaction->error ? 'title="'.$transaction->error.'"' : '' !!} class="xtooltip label label-{{ $transaction->status }}" style="white-space: nowrap;">
                                             {{ trans('messages.transaction.' . $transaction->status) }}
                                         </span>
                                     </span>
@@ -131,7 +131,7 @@
                                 </td>
                                 <td>
                                     <span class="no-margin kq_search">
-                                        <span class="label label-success bg-{{ $invoice->status }}" style="white-space: nowrap;">
+                                        <span class="label bg-{{ $invoice->status }}" style="white-space: nowrap;">
                                             {{ trans('messages.invoice.status.' . $invoice->status) }}
                                         </span>
                                     </span>
@@ -147,7 +147,7 @@
                                 <td class="text-center" colspan="5">
                                     {{ trans('messages.subscription.logs.empty') }}
                                 </td>
-                            </te>
+                            </tr>
                         @endforelse
                     </table>
                 </div>
