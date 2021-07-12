@@ -447,19 +447,6 @@ class SendingServerController extends Controller
     }
     
     /**
-     * Test PHP mail work.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int                      $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function testPhpMail(Request $request)
-    {
-        return trans('messages.sending_server.test_success');
-    }
-    
-    /**
      * Select2 customer.
      *
      * @param \Illuminate\Http\Request $request

@@ -633,7 +633,6 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/sending_servers/{uid}/add-domain', 'SendingServerController@addDomain');
     Route::get('admin/sending_servers/aws-region-host', 'SendingServerController@awsRegionHost');
 
-    Route::post('admin/sending_servers/{uid}/test-php-mail', 'SendingServerController@testPhpMail');
     Route::post('admin/sending_servers/{uid}/test-connection', 'SendingServerController@testConnection');
 
     Route::post('admin/sending_servers/{uid}/config', 'SendingServerController@config');
