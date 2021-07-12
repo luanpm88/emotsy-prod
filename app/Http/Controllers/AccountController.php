@@ -99,11 +99,6 @@ class AccountController extends Controller
 
         // save posted data
         if ($request->isMethod('post')) {
-            // Prenvent save contact
-            if (isset($contact->id)) {
-                return $this->notAuthorized();
-            }
-            
             // Prenvent save from demo mod
             if ($this->isDemoMode()) {
                 return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
