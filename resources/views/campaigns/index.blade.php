@@ -23,7 +23,6 @@
 
 @section('content')
     <div id="CampaignsIndexContainer" class="listing-form top-sticky"
-        sort-url="{{ action('CampaignController@sort') }}"
         data-url="{{ action('CampaignController@listing') }}"
         per-page="{{ Acelle\Model\MailList::$itemsPerPage }}"
     >
