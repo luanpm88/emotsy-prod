@@ -151,6 +151,9 @@ Route::group(['middleware' => ['not_installed']], function () {
 
     // Get Application Key
     Route::get('appkey', 'Controller@appkey')->name('appkey');
+
+    // Campaign test links
+    Route::get('campaigns/test/{message}', 'CampaignController@notification')->name('campaign_message');
 });
 
 Route::group(['middleware' => ['not_installed', 'auth']], function () {
@@ -326,6 +329,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::match(['get', 'post'], 'campaigns/{uid}/template/builder-plain', 'CampaignController@builderPlainEdit');
     Route::match(['get', 'post'], 'campaigns/{uid}/template/builder-classic', 'CampaignController@builderClassic');
     Route::match(['get', 'post'], 'campaigns/{uid}/plain', 'CampaignController@plain');
+    Route::get('campaigns/{uid}/template/change/{template_uid}', 'CampaignController@templateChangeTemplate');
 
     Route::get('campaigns/{uid}/template/content', 'CampaignController@templateContent');
     Route::match(['get', 'post'], 'campaigns/{uid}/template/edit', 'CampaignController@templateEdit');

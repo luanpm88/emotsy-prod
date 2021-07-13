@@ -1756,6 +1756,24 @@ class CampaignController extends Controller
     }
 
     /**
+     * Change template from exist template.
+     *
+     */
+    public function templateChangeTemplate(Request $request, $uid, $template_uid)
+    {
+        // Generate info
+        $campaign = Campaign::findByUid($uid);
+        $changeTemplate = Template::findByUid($template_uid);
+
+        // authorize
+        if (!$request->user()->customer->can('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        $campaign->changeTemplate($changeTemplate);
+    }
+
+    /**
      * Email web view.
      */
     public function webView(Request $request)
@@ -2073,5 +2091,11 @@ class CampaignController extends Controller
         return view('campaigns.chart2', [
             'campaign' => $campaign,
         ]);
+    }
+
+    public function notification(Request $request)
+    {
+        $message = StringHelper::base64UrlDecode($request->message);
+        return response($message, 200)->header('Content-Type', 'text/plain');
     }
 }

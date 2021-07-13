@@ -3256,6 +3256,23 @@ class Campaign extends Model
             $tags['NAME'] = $subscriber->getFullName();
             $tags['FULL_NAME'] = $subscriber->getFullName();
         } else {
+            $sampleLink = route('campaign_message', [ 'message' => StringHelper::base64UrlEncode('This is a test link of a test campaign') ]);
+            $tags['UNSUBSCRIBE_URL'] = $sampleLink;
+            $tags['UPDATE_PROFILE_URL'] = $sampleLink;
+            $tags['WEB_VIEW_URL'] = $sampleLink;
+
+            # Subscriber custom fields, including email
+            $sample = '%PERSONALIZED-DATA%';
+            foreach ($this->defaultMailList->fields as $field) {
+                $tags['SUBSCRIBER_'.$field->tag] = $sample;
+                $tags[$field->tag] = $sample;
+            }
+
+            // Special / shortcut fields
+            $tags['NAME'] = $sample;
+            $tags['FULL_NAME'] = $sample;
+
+            // Only email is "reserved", overwrite previous $sample
             $tags['SUBSCRIBER_EMAIL'] = $subscriber->email;
         }
 
