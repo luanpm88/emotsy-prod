@@ -146,18 +146,6 @@ class CampaignController extends Controller
     }
 
     /**
-     * Custom sort items.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function sort(Request $request)
-    {
-        echo trans('messages._deleted_');
-    }
-
-    /**
      * Recipients.
      *
      * @param \Illuminate\Http\Request $request
@@ -1919,24 +1907,6 @@ class CampaignController extends Controller
     }
 
     /**
-     * Change template from exist template.
-     *
-     */
-    public function templateChangeTemplate(Request $request, $uid, $template_uid)
-    {
-        // Generate info
-        $campaign = Campaign::findByUid($uid);
-        $changeTemplate = Template::findByUid($template_uid);
-
-        // authorize
-        if (!$request->user()->customer->can('update', $campaign)) {
-            return $this->notAuthorized();
-        }
-
-        $campaign->changeTemplate($changeTemplate);
-    }
-
-    /**
      * Edit email content.
      *
      */
@@ -2081,17 +2051,6 @@ class CampaignController extends Controller
         }
 
         unlink($campaign->getAttachmentPath($request->name));
-    }
-
-    /**
-     * Remove attachment.
-     *
-     */
-    public function run(Request $request, $uid)
-    {
-        $campaign = Campaign::findByUid($uid);
-        $campaign->dispatch();
-        echo $campaign->status;
     }
 
     public function updateStats(Request $request, $uid)
