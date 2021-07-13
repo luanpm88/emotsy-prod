@@ -16,8 +16,20 @@
 
 @section('content')
 
-            @include("campaigns._menu")
+    @include("campaigns._menu")
 
-            <iframe class="preview_page_frame" src="{{ action('CampaignController@templateReviewIframe', $campaign->uid) }}" />
+    @if (!$campaign->template_id)
+        <div class="row">
+            <div class="col-md-6">
+                @include('elements._notification', [
+                    'level' => 'warning',
+                    'message' => trans('messages.campaign.template.old_ver_error')
+                ])
+            </div>
+        </div>
+            
+    @else
+        <iframe class="preview_page_frame" src="{{ action('CampaignController@templateReviewIframe', $campaign->uid) }}" />
+    @endif
 
 @endsection
