@@ -4,14 +4,14 @@
 
 @section('page_header')
 
-	<div class="page-title">
-		<ul class="breadcrumb breadcrumb-caret position-right">
-			<li><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-		</ul>
-		<h1>
-			<span class="text-semibold"><i class="icon-list2"></i> {{ trans('messages.geoip.title') }}</span>
-		</h1>
-	</div>
+    <div class="page-title">
+        <ul class="breadcrumb breadcrumb-caret position-right">
+            <li><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+        </ul>
+        <h1>
+            <span class="text-semibold"><i class="icon-list2"></i> {{ trans('messages.geoip.title') }}</span>
+        </h1>
+    </div>
 
 @endsection
 
@@ -29,7 +29,7 @@
                             GeoLite2 Free Geolocation Data
                         </h5>
                         <span class="">
-                        	By Maxmind
+                            By Maxmind
                         </span>
                         <br>
                         <span class="text-muted">Version: 2020</span>
@@ -48,7 +48,7 @@
                         >
                             Setting
                         </a>
-                        <a id="EditGeoIpReset" href="{{ action('Admin\GeoIpController@reset') }}" class="btn btn-mc_primary">
+                        <a id="EditGeoIpReset" href="#" class="btn btn-mc_primary">
                         Reset
                         </a>
                     </td>
@@ -57,23 +57,30 @@
         </table>
         <div class="d-flex align-items-center">
             <div class="num_per_page mr-auto">
-            	<p><i>Powered by Acelle</i></p>
+                <p><i>Powered by Acelle</i></p>
             </div>
         </div>
     </div>
 
     <script>
         var GoeIpIndex = {
-            settingPopup: new Popup(),
+            settingPopup: null,
+            resetUrl: '{{ action('Admin\GeoIpController@reset') }}',
 
-            reset: function(url) {
+            loadSettingPopup: function() {
+                this.settingPopup = new Popup();
+                this.settingPopup.load('{{ action('Admin\GeoIpController@setting') }}');
+            },
+
+            reset: function() {
+                var _this = this;
                 var dialog = new Dialog('confirm', {
                     message: 'Are you sure you want to reset GeoIP database?',
                     ok: function() {
                         addMaskLoading('Reseting GeoIp...');
                         
                         $.ajax({
-                            url: url,
+                            url: _this.resetUrl,
                             method: 'POST',
                             data: {
                                 _token: CSRF_TOKEN
@@ -94,25 +101,21 @@
                     }
                 });
             },
-
-            init: function() {
-                $('#EditGeoIpSetting').on('click', function(e) {
-                    e.preventDefault();
-                    var url = $(this).attr('href');
-
-                    GoeIpIndex.settingPopup.load(url);
-                });
-
-                $('#EditGeoIpReset').on('click', function(e) {
-                    e.preventDefault();
-                    var url = $(this).attr('href');
-
-                    GoeIpIndex.reset(url);
-                });
-            }
         };
 
-        GoeIpIndex.init();
+        $(document).ready(function() {
+            $('#EditGeoIpSetting').on('click', function(e) {
+                e.preventDefault();
+                
+                GoeIpIndex.loadSettingPopup();
+            });
+
+            $('#EditGeoIpReset').on('click', function(e) {
+                e.preventDefault();
+
+                GoeIpIndex.reset();
+            });
+        });
 
     </script>
 @endsection

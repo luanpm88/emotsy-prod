@@ -262,16 +262,6 @@ class Plan extends Model
     }
 
     /**
-     * Get all items.
-     *
-     * @return collect
-     */
-    public static function getAll()
-    {
-        return self::select('*');
-    }
-
-    /**
      * Items per page.
      *
      * @var array
@@ -320,22 +310,6 @@ class Plan extends Model
         }
 
         return $query;
-    }
-
-    /**
-     * Color array.
-     *
-     * @return array
-     */
-    public static function colors($default)
-    {
-        return [
-            ['value' => '#1482a0', 'text' => trans('messages.blue')],
-            ['value' => '#008c6e', 'text' => trans('messages.green')],
-            ['value' => '#917319', 'text' => trans('messages.brown')],
-            ['value' => '#aa5064', 'text' => trans('messages.pink')],
-            ['value' => '#555', 'text' => trans('messages.grey')],
-        ];
     }
 
     /**
@@ -802,39 +776,6 @@ class Plan extends Model
 
         return json_encode($data);
     }
-
-    /**
-     * Get all items.
-     *
-     * @return collect
-     */
-    public static function getAllActiveWithDefault($admin = null)
-    {
-        $query = self::getAll()
-            ->where('plans.status', '=', self::STATUS_ACTIVE);
-
-        if (isset($admin) && !$admin->can('readAll', new \Acelle\Model\Plan())) {
-            $query = $query->where('plans.admin_id', '=', $admin->id);
-        }
-
-        $query = $query;
-
-        return $query;
-    }
-
-    /**
-     * Get all items.
-     *
-     * @return collect
-     */
-    public static function getActive($admin = null)
-    {
-        $query = self::getAll()
-            ->where('plans.status', '=', self::STATUS_ACTIVE);
-        $query = $query;
-
-        return $query;
-    }
     
     public function displayFrequencyTime()
     {
@@ -1175,16 +1116,6 @@ class Plan extends Model
     }
 
     /**
-     ** Get Primary sending server.
-     **/
-    public function primarySendingServerAdded()
-    {
-        $pss = $this->plansSendingServers()->where('is_primary', '=', true)->first();
-        // @todo: quăng 1 cái exception nếu $pss null, ko return null sẽ gây lỗi tiềm ẩn
-        return is_object($pss) ? $pss->updated_at : null;
-    }
-
-    /**
      * Get all verified identities.
      *
      * @return array
@@ -1399,11 +1330,13 @@ class Plan extends Model
         return $plan;
     }
 
-    public static function scopeActive($query) {
+    public static function scopeActive($query)
+    {
         $query = $query->where('plans.status', '=', self::STATUS_ACTIVE);
     }
 
-    public static function scopeAvailable($query) {
+    public static function scopeAvailable($query)
+    {
         $query = $query->where('plans.visible', '=', true);
     }
 }

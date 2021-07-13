@@ -1720,8 +1720,8 @@ class MailList extends Model
             if (is_object($subscription)) {
                 /*
                 if ($subscription->plan->getOption('all_sending_servers') == 'yes') {
-                    if (\Acelle\Model\SendingServer::getAllAdminActive()->count()) {
-                        $result = \Acelle\Model\SendingServer::getAllAdminActive()->get()->map(function ($server) {
+                    if (\Acelle\Model\SendingServer::system()->count()) {
+                        $result = \Acelle\Model\SendingServer::system()->get()->map(function ($server) {
                             return [$server->id, '100'];
                         });
                     }
@@ -2046,7 +2046,8 @@ class MailList extends Model
         return $progress;
     }
 
-    public function updateOrCreateFieldsFromRequest($request) {
+    public function updateOrCreateFieldsFromRequest($request)
+    {
         $rules = [];
 
         // Check if filed does not have EMAIL tag

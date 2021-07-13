@@ -73,12 +73,6 @@ class CampaignPolicy
         return $item->customer_id == $customer->id;
     }
 
-    public function saveImage(User $user, Campaign $item)
-    {
-        $customer = $user->customer;
-        return $item->customer_id == $customer->id;
-    }
-
     public function image(User $user, Campaign $item)
     {
         $customer = $user->customer;

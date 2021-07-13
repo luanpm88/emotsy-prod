@@ -30,24 +30,22 @@
 
     <script>
         var GeoIpSetting = {
-            init: function() {
-                GeoIpSetting.form.on('submit', function(e) {
-                    e.preventDefault();
-                    var url = $(this).attr('action');
-
-                    GeoIpSetting.submit(url, GeoIpSetting.form.serialize());
-                })
+            getUrl: function() {
+                return $('#GeoIpSetting').attr('action');
+            },
+            
+            getData: function() {
+                return $('#GeoIpSetting').serialize();
             },
 
-            form: $('#GeoIpSetting'),
-
             submit: function(url, data) {
+                var _this = this;
                 addMaskLoading('Updating GeoIp setting...');
 
                 $.ajax({
-                    url: url,
+                    url: _this.getUrl(),
                     method: 'POST',
-                    data: data,
+                    data: _this.getData(),
                     globalError: false,
                     statusCode: {
                         400: function (response) {
@@ -67,6 +65,12 @@
             }
         }
 
-        GeoIpSetting.init();
+        $(document).ready(function() {
+            $('#GeoIpSetting').on('submit', function(e) {
+                e.preventDefault();
+
+                GeoIpSetting.submit();
+            })
+        });
     </script>
 @endsection

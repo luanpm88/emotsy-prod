@@ -327,9 +327,6 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::match(['get', 'post'], 'campaigns/{uid}/template/builder-classic', 'CampaignController@builderClassic');
     Route::match(['get', 'post'], 'campaigns/{uid}/plain', 'CampaignController@plain');
 
-    Route::get('campaigns/{uid}/template/change/{template_uid}', 'CampaignController@templateChangeTemplate');
-    Route::post('campaigns/{uid}/template/asset', 'CampaignController@templateAsset');
-    Route::post('campaigns/{uid}/template/asset', 'CampaignController@templateAsset');
     Route::get('campaigns/{uid}/template/content', 'CampaignController@templateContent');
     Route::match(['get', 'post'], 'campaigns/{uid}/template/edit', 'CampaignController@templateEdit');
     Route::match(['get', 'post'], 'campaigns/{uid}/template/upload', 'CampaignController@templateUpload');
@@ -348,11 +345,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('campaigns/{uid}/template/review', 'CampaignController@templateReview');
     Route::get('campaigns/select-type', 'CampaignController@selectType');
     Route::get('campaigns/{uid}/list-segment-form', 'CampaignController@listSegmentForm');
-    Route::post('campaigns/{uid}/image/save', 'CampaignController@saveImage');
     Route::get('campaigns/{uid}/preview/content/{subscriber_uid?}', 'CampaignController@previewContent');
     Route::get('campaigns/{uid}/preview', 'CampaignController@preview');
-    Route::get('campaigns/templates/list', 'CampaignController@templateList');
-    Route::patch('campaigns/{uid}/templates/choose/from/{from_uid}', 'CampaignController@campaignTemplateChoose');
     Route::post('campaigns/send-test-email', 'CampaignController@sendTestEmail');
     Route::get('campaigns/delete/confirm', 'CampaignController@deleteConfirm');
     Route::match(['get', 'post'], 'campaigns/copy', 'CampaignController@copy');
@@ -379,7 +373,6 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('campaigns/{uid}/chart/countries/click', 'CampaignController@chartClickCountry');
     Route::get('campaigns/{uid}/overview', 'CampaignController@overview');
     Route::get('campaigns/{uid}/links', 'CampaignController@links');
-    Route::get('campaigns/sort', 'CampaignController@sort');
     Route::get('campaigns/listing/{page?}', 'CampaignController@listing');
     Route::get('campaigns/{uid}/recipients', 'CampaignController@recipients');
     Route::post('campaigns/{uid}/recipients', 'CampaignController@recipients');
@@ -633,7 +626,6 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/sending_servers/{uid}/add-domain', 'SendingServerController@addDomain');
     Route::get('admin/sending_servers/aws-region-host', 'SendingServerController@awsRegionHost');
 
-    Route::post('admin/sending_servers/{uid}/test-php-mail', 'SendingServerController@testPhpMail');
     Route::post('admin/sending_servers/{uid}/test-connection', 'SendingServerController@testConnection');
 
     Route::post('admin/sending_servers/{uid}/config', 'SendingServerController@config');

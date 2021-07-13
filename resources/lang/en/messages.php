@@ -3688,5 +3688,6 @@
   'geoip.title' => 'GeoIP Management',
   'geoip.description' => 'Acelle uses a GeoIP dataset in order to resolve users\' location.',
   'invoice.payment_is_being_verified' => 'Payment is being verified',
-  'campaign_status_ready' => 'ready',
+  'campaign.template.old_ver_error' => 'Campaigns created by previous (older) versions cannot be loaded in the current version
+    of the application. Don\'t worry, it will work correctly for new campaigns you create',
 ) ?>

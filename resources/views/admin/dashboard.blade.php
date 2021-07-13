@@ -224,7 +224,7 @@ contact_mail
                             <strong><i class="icon-users"></i> {{ trans('messages.subscribers') }}</strong>
                         </div>
                         <div class="lastUnit size1of2">
-                            <mc:flag>{{ Auth::user()->admin->getAllSubscribers()->count() }}</mc:flag>
+                            <mc:flag>{{ number_with_delimiter($subscribersCount) }}</mc:flag>
                         </div>
                     </li>
                 </ul>
@@ -280,7 +280,7 @@ schedule
 </span> {{ trans('messages.automations') }}</strong>
                         </div>
                         <div class="lastUnit size1of2">
-                            <mc:flag>{{ Auth::user()->admin->getAllAutomations()->count() }}</mc:flag>
+                            <mc:flag>{{ number_with_delimiter($automationsCount) }}</mc:flag>
                         </div>
                     </li>
                 </ul>

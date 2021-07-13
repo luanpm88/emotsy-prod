@@ -28,13 +28,13 @@ class GeoIpController extends Controller
                         // testing something in service side
                         sleep(2);
                         10/0; // error for sure
-                    } catch(\Exception $e) {
+                    } catch (\Exception $e) {
                         $validator->errors()->add('source', 'Service connection was failed. Error: ' . $e->getMessage());
                     }
                 });
             }
 
-            // 
+            //
             if ($validator->fails()) {
                 return response()->view('admin.geoip.setting', [
                     'errors' => $validator->errors(),
