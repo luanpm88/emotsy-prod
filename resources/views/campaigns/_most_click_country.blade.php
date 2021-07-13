@@ -4,7 +4,9 @@
         @if (!$campaign->clickCount())                        
             <div class="empty-chart-pie">
                 <div class="empty-list">
-                    <i class="icon-file-text2"></i>
+                    <span class="material-icons-outlined">
+description
+</span>
                     <span class="line-1">
                         {{ trans('messages.log_empty_line_1') }}
                     </span>
@@ -14,10 +16,10 @@
             <div class="stat-table">
                 @foreach ($campaign->topClickCountries(7)->get() as $location)
                     <div class="stat-row">
+                        <p class="text-muted">{{ $location->country_name }}</p>
                         <div class="pull-right num">
                             {{ $location->aggregate }}
                         </div>
-                        <p class="text-muted">{{ $location->country_name }}</p>
                     </div>
                 @endforeach 
             </div>
@@ -39,7 +41,9 @@
         @else
             <div class="empty-chart-pie">
                 <div class="empty-list">
-                    <i class="icon-file-text2"></i>
+                    <span class="material-icons-outlined">
+description
+</span>
                     <span class="line-1">
                         {{ trans('messages.log_empty_line_1') }}
                     </span>

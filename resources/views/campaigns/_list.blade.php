@@ -107,7 +107,9 @@
 									@endif
 									@if (\Gate::allows('send_test_email', $campaign))
 										<li><a class="dropdown-item send-a-test-email-link" data-uid="{{ $campaign->uid }}" href="javascript:;">
-											<i class="icon-envelop3"></i> {{ trans("messages.send_a_test_email") }}</a></li>
+											<span class="material-icons-outlined me-2">
+forward_to_inbox
+</span> {{ trans("messages.send_a_test_email") }}</a></li>
 									@endif
 									@if (\Gate::allows('pause', $campaign))
 										<li><a class="dropdown-item" link-confirm="{{ trans('messages.pause_campaigns_confirm') }}" href="{{ action('CampaignController@pause', ["uids" => $campaign->uid]) }}">
@@ -156,8 +158,24 @@
 
 	<script>
 		var CampaignsList = {
-			resendPopup: new Popup(),
-			copyPopup: new Popup(),
+			copyPopup: null,
+			resentPopup: null,
+
+			getResendPopup: function() {
+				if (this.resentPopup === null) {
+					this.resentPopup = new Popup();
+				}
+
+				return this.resentPopup;
+			},
+
+			getCopyPopup: function() {
+				if (this.copyPopup === null) {
+					this.copyPopup = new Popup();
+				}
+
+				return this.copyPopup;
+			},
 
 			delete: function(confirm, url) {
 				// load confirm message
@@ -178,7 +196,7 @@
 								message: response,
 							});
 
-							ListsIndex.list.load();
+							CampaignsIndex.getList().load();
 
 						}).fail(function(jqXHR, textStatus, errorThrown){
 							// for debugging
@@ -203,7 +221,7 @@
 			e.preventDefault();			
 			var url = $(this).attr('href');
 
-			CampaignsList.copyPopup.load({
+			CampaignsList.getCopyPopup().load({
 				url: url
 			});
 		});

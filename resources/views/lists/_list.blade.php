@@ -169,8 +169,23 @@ error_outline
 	<script>
 		var ListsList = {
 			clonePopup: new Popup(),
+			copyPopup: null,
 
-			copyPopup: new Popup(),
+			getCopyPopup: function() {
+				if (this.copyPopup === null) {
+					this.copyPopup = new Popup();
+				}
+
+				return this.copyPopup;
+			},
+
+			getClonePopup: function() {
+				if (this.clonePopup === null) {
+					this.clonePopup = new Popup();
+				}
+
+				return this.clonePopup;
+			},
 
 			delete: function(confirmUrl, url) {
 				// load confirm message
@@ -216,7 +231,7 @@ error_outline
 			var url = $(this).attr('href');
 			
 			// load popup
-			ListsList.clonePopup.load({
+			ListsList.getClonePopup().load({
 				url: url
 			});
 		});
@@ -233,7 +248,7 @@ error_outline
 			e.preventDefault();			
 			var url = $(this).attr('href');
 
-			ListsList.copyPopup.load({
+			ListsList.getCopyPopup().load({
 				url: url
 			});
 		});

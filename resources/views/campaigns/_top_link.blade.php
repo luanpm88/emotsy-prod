@@ -4,12 +4,12 @@
     <div class="stat-table">
         @foreach ($campaign->getTopLinks()->get() as $link)
             <div class="stat-row">
-                <div class="pull-right num">
-                    {{ $link->aggregate }}
-                </div>
                 <p class="text-muted">
                     <a target="_blank" href="{{ $link->url }}">{{ $link->url }}</a>
                 </p>
+                <div class="pull-right num">
+                    {{ $link->aggregate }}
+                </div>
             </div>
         @endforeach
     </div>

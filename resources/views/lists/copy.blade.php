@@ -34,8 +34,8 @@
 <script>
     var ListsCopy = {
         copy: function(url, data) {
-            ListsList.copyPopup.mask();
-            addButtonMask(ListsList.copyPopup.popup.find('#copyListButton'));
+            ListsList.getCopyPopup().mask();
+            addButtonMask($('#copyListButton'));
 
             // copy
             $.ajax({
@@ -49,24 +49,26 @@
                     message: response,
                 });
 
-                ListsList.copyPopup.hide();
+                ListsList.getCopyPopup().hide();
                 ListsIndex.list.load();
 
             }).fail(function(jqXHR, textStatus, errorThrown){
                 // for debugging
-                ListsList.copyPopup.loadHtml(jqXHR.responseText);
+                ListsList.getCopyPopup().loadHtml(jqXHR.responseText);
             }).always(function() {
-                ListsList.copyPopup.unmask();
-                removeButtonMask(ListsList.copyPopup.popup.find('#copyListButton'));
+                ListsList.getCopyPopup().unmask();
+                removeButtonMask($('#copyListButton'));
             });
         }
     }
 
-    $('#copyListForm').on('submit', function(e) {
-        e.preventDefault();
-        var url = $(this).attr('action');
-        var data = $(this).serialize();
+    $(document).ready(function() {
+        $('#copyListForm').on('submit', function(e) {
+            e.preventDefault();
+            var url = $(this).attr('action');
+            var data = $(this).serialize();
 
-        ListsCopy.copy(url, data);
+            ListsCopy.copy(url, data);
+        });
     });
 </script>

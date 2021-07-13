@@ -271,7 +271,7 @@ h1, h1 {
     position: absolute;
     font-size: 17px;
     left: 11px;
-    top: 9px;   
+    top: 11px;   
 }
 #anotify .alert-dismissible .btn-close {
     padding: 10px;
@@ -356,12 +356,12 @@ h1, h1 {
 .alert:before {
     position: relative;
     display: inline-block;
-    width: 19px;
+    width: 23px;
     height: 19px;
     font-family: 'Material Icons Outlined';
     font-size: 15px;
     line-height: 17px;
-    transform: translateY(3px);
+    transform: translateY(2px);
 }
 
 .alert-info:before {

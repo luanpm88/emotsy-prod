@@ -36,32 +36,44 @@
 				<ul class="dropdown-menu dropdown-menu-right">
 					<li rel0="CampaignController/trackingLog" class="dropdown">
 						<a href="{{ action('CampaignController@trackingLog', $campaign->uid) }}">
-							<i class="icon-file-text2"></i> {{ trans('messages.tracking_log') }}
+							<span class="material-icons-outlined">
+description
+</span> {{ trans('messages.tracking_log') }}
 						</a>
 					</li>
 					<li rel0="CampaignController/bounceLog" class="dropdown">
 						<a href="{{ action('CampaignController@bounceLog', $campaign->uid) }}">
-							<i class="icon-file-text2"></i> {{ trans('messages.bounce_log') }}
+							<span class="material-icons-outlined">
+description
+</span> {{ trans('messages.bounce_log') }}
 						</a>
 					</li>
 					<li rel0="CampaignController/feedbackLog" class="dropdown">
 						<a href="{{ action('CampaignController@feedbackLog', $campaign->uid) }}">
-							<i class="icon-file-text2"></i> {{ trans('messages.feedback_log') }}
+							<span class="material-icons-outlined">
+description
+</span> {{ trans('messages.feedback_log') }}
 						</a>
 					</li>
 					<li rel0="CampaignController/openLog" class="dropdown">
 						<a href="{{ action('CampaignController@openLog', $campaign->uid) }}">
-							<i class="icon-file-text2"></i> {{ trans('messages.open_log') }}
+							<span class="material-icons-outlined">
+description
+</span> {{ trans('messages.open_log') }}
 						</a>
 					</li>
 					<li rel0="CampaignController/clickLog" class="dropdown">
 						<a href="{{ action('CampaignController@clickLog', $campaign->uid) }}">
-							<i class="icon-file-text2"></i> {{ trans('messages.click_log') }}
+							<span class="material-icons-outlined">
+description
+</span> {{ trans('messages.click_log') }}
 						</a>
 					</li>
 					<li rel0="CampaignController/unsubscribeLog" class="dropdown">
 						<a href="{{ action('CampaignController@unsubscribeLog', $campaign->uid) }}">
-							<i class="icon-file-text2"></i> {{ trans('messages.unsubscribe_log') }}
+							<span class="material-icons-outlined">
+description
+</span> {{ trans('messages.unsubscribe_log') }}
 						</a>
 					</li>
 				</ul>

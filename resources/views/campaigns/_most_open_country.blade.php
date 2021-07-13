@@ -4,7 +4,9 @@
         @if (!$campaign->openCount())                        
             <div class="empty-chart-pie">
                 <div class="empty-list">
-                    <i class="icon-file-text2"></i>
+                    <span class="material-icons-outlined">
+description
+</span>
                     <span class="line-1">
                         {{ trans('messages.log_empty_line_1') }}
                     </span>
@@ -14,13 +16,13 @@
             <div class="stat-table">
                 @foreach ($campaign->topCountries(7)->get() as $location)
                     <div class="stat-row">
-                        <div class="pull-right num">
-                            {{ $location->aggregate }}
-                        </div>
                         <p class="">
                             <img class="flag-icon" src="{{ url("/images/flags/" . (empty($location->country_code) ? "unknown" : $location->country_code) . ".png") }}" />
                             {{ (empty($location->country_name) ? trans("messages.unknown") : $location->country_name) }}
                         </p>
+                        <div class="pull-right num">
+                            {{ $location->aggregate }}
+                        </div>
                     </div>
                 @endforeach 
             </div>
@@ -41,7 +43,9 @@
         @else
             <div class="empty-chart-pie">
                 <div class="empty-list">
-                    <i class="icon-file-text2"></i>
+                    <span class="material-icons-outlined">
+description
+</span>
                     <span class="line-1">
                         {{ trans('messages.log_empty_line_1') }}
                     </span>

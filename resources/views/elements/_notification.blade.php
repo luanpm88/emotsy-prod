@@ -22,9 +22,6 @@
     }
 ?>
 <div {!! $paramsString ?? '' !!} title="Debug: {{ isset($debugg) ? $debug : '[ empty ]' }}" class="alert alert-{{ $level }} shadow-sm" style="display: flex; flex-direction: row; align-items: center; cursor: pointer">
-    <div class="me-2 pe-1">
-        <i class="material-icons-outlined">{{ $icons[$level] }}</i>
-    </div>
     <div>
         @isset($title)
             <h4 class="mb-2">{{ $title }}</h4>

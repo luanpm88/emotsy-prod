@@ -57,22 +57,22 @@
                     <div class="mt-4 pt-3 other-payment-click">
                         <a href="javascript:;">{{ trans('messages.or_click_choose_another_method') }}</a>
                     </div>
+
+                    <p>{{ trans('messages.payment.choose_new_payment_method_to_proceed') }}</p>
                 @endif
             </div>
             
-            <form class="edit-payment mt-4 pt-4" {!! (request()->user()->customer->getPreferredPaymentGateway() == null) ? '' : 'style="display:none"' !!} action="{{ request()->user()->customer->getPreferredPaymentGateway() ? action('AccountSubscriptionController@checkout') : action('AccountController@editPaymentMethod') }}"
+            <form class="edit-payment" {!! (request()->user()->customer->getPreferredPaymentGateway() == null) ? '' : 'style="display:none"' !!} action="{{ request()->user()->customer->getPreferredPaymentGateway() ? action('AccountSubscriptionController@checkout') : action('AccountController@editPaymentMethod') }}"
                 method="POST">
                 {{ csrf_field() }}
-
-                <p>{{ trans('messages.payment.choose_new_payment_method_to_proceed') }}</p>
 
                 <input type="hidden" name="return_url" value="{{ action('AccountSubscriptionController@payment') }}" />
 
                 <div class="sub-section mb-30 choose-payment-methods">      
                     @foreach(Acelle\Library\Facades\Billing::getEnabledPaymentGateways() as $gateway)
-                        <div class="d-flex p-2 align-items-center choose-payment choose-payment-{{ $gateway->getType() }}">
-                            <div class="d-flex p-3 choose-payment choose-payment-{{ $gateway->getType() }}">
-                                <div class="text-end pl-2 pr-2">
+                        <div class="">
+                            <div class="d-flex pt-3 pb-3 pl-2 choose-payment choose-payment-{{ $gateway->getType() }}">
+                                <div class="text-end pe-2">
                                     <div class="d-flex align-items-center form-group-mb-0 pt-1" style="width: 30px">
                                         @include('helpers.form_control', [
                                             'type' => 'radio2',

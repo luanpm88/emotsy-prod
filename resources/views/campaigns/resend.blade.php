@@ -60,7 +60,7 @@
     message: response.message
 });
 
-                    CampaignsIndex.list.load();
+                    CampaignsIndex.getList().load();
                 },
                 globalError: false,
                 error: function (res) {

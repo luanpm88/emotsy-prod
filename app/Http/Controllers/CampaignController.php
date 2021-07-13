@@ -866,123 +866,143 @@ class CampaignController extends Controller
         }
 
         $result = [
-            'columns' => [],
-            'data' => [],
-            'bar_names' => [
-                trans('messages.recipients'),
-                trans('messages.delivered'),
-                trans('messages.failed'),
-                trans('messages.Open'),
-                trans('messages.Click'),
-                trans('messages.Bounce'),
-                trans('messages.report'),
-                trans('messages.unsubscribe'),
+            [
+                'name' => trans('messages.recipients'),
+                'value' => $campaign->readCache('SubscriberCount', 0),
+            ],
+            [
+                'name' => trans('messages.delivered'),
+                'value' => $campaign->deliveredCount(),
+            ],
+            [
+                'name' => trans('messages.failed'),
+                'value' => $campaign->failedCount(),
+            ],
+            [
+                'name' => trans('messages.Open'),
+                'value' => $campaign->openUniqCount(),
+            ],
+            [
+                'name' => trans('messages.Click'),
+                'value' => $campaign->clickedEmailsCount(),
+            ],
+            [
+                'name' => trans('messages.Bounce'),
+                'value' => $campaign->bounceCount(),
+            ],
+            [
+                'name' => trans('messages.report'),
+                'value' => $campaign->feedbackCount(),
+            ],
+            [
+                'name' => trans('messages.unsubscribe'),
+                'value' => $campaign->unsubscribeCount(),
             ],
         ];
 
-        // columns
-        $result['columns'][] = trans('messages.count');
+        // // columns
+        // $result['columns'][] = trans('messages.count');
 
-        // datas
-        $result['data'][] = [
-            'name' => trans('messages.unsubscribe'),
-            'type' => 'bar',
-            'smooth' => true,
-            'data' => [$campaign->unsubscribeCount()],
-            'itemStyle' => [
-                'normal' => [
-                    'color' => '#D81B60',
-                ],
-            ],
-        ];
+        // // datas
+        // $result['data'][] = [
+        //     'name' => trans('messages.unsubscribe'),
+        //     'type' => 'bar',
+        //     'smooth' => true,
+        //     'data' => [$campaign->unsubscribeCount()],
+        //     'itemStyle' => [
+        //         'normal' => [
+        //             'color' => '#D81B60',
+        //         ],
+        //     ],
+        // ];
 
-        $result['data'][] = [
-            'name' => trans('messages.report'),
-            'type' => 'bar',
-            'smooth' => true,
-            'data' => [$campaign->feedbackCount()],
-            'itemStyle' => [
-                'normal' => [
-                    'color' => '#00897B',
-                ],
-            ],
-        ];
+        // $result['data'][] = [
+        //     'name' => trans('messages.report'),
+        //     'type' => 'bar',
+        //     'smooth' => true,
+        //     'data' => [$campaign->feedbackCount()],
+        //     'itemStyle' => [
+        //         'normal' => [
+        //             'color' => '#00897B',
+        //         ],
+        //     ],
+        // ];
 
-        $result['data'][] = [
-            'name' => trans('messages.Bounce'),
-            'type' => 'bar',
-            'smooth' => true,
-            'data' => [$campaign->bounceCount()],
-            'itemStyle' => [
-                'normal' => [
-                    'color' => '#6D4C41',
-                ],
-            ],
-        ];
+        // $result['data'][] = [
+        //     'name' => trans('messages.Bounce'),
+        //     'type' => 'bar',
+        //     'smooth' => true,
+        //     'data' => [$campaign->bounceCount()],
+        //     'itemStyle' => [
+        //         'normal' => [
+        //             'color' => '#6D4C41',
+        //         ],
+        //     ],
+        // ];
 
-        $result['data'][] = [
-            'name' => trans('messages.Click'),
-            'type' => 'bar',
-            'smooth' => true,
-            'data' => [$campaign->clickedEmailsCount()],
-            'itemStyle' => [
-                'normal' => [
-                    'color' => '#039BE5',
-                ],
-            ],
-        ];
+        // $result['data'][] = [
+        //     'name' => trans('messages.Click'),
+        //     'type' => 'bar',
+        //     'smooth' => true,
+        //     'data' => [$campaign->clickedEmailsCount()],
+        //     'itemStyle' => [
+        //         'normal' => [
+        //             'color' => '#039BE5',
+        //         ],
+        //     ],
+        // ];
 
-        $result['data'][] = [
-            'name' => trans('messages.Open'),
-            'type' => 'bar',
-            'smooth' => true,
-            'data' => [$campaign->openUniqCount()],
-            'itemStyle' => [
-                'normal' => [
-                    'color' => '#546E7A',
-                ],
-            ],
-        ];
+        // $result['data'][] = [
+        //     'name' => trans('messages.Open'),
+        //     'type' => 'bar',
+        //     'smooth' => true,
+        //     'data' => [$campaign->openUniqCount()],
+        //     'itemStyle' => [
+        //         'normal' => [
+        //             'color' => '#546E7A',
+        //         ],
+        //     ],
+        // ];
 
-        $result['data'][] = [
-            'name' => trans('messages.failed'),
-            'type' => 'bar',
-            'smooth' => true,
-            'data' => [$campaign->failedCount()],
-            'itemStyle' => [
-                'normal' => [
-                    'color' => '#E53935',
-                ],
-            ],
-        ];
+        // $result['data'][] = [
+        //     'name' => trans('messages.failed'),
+        //     'type' => 'bar',
+        //     'smooth' => true,
+        //     'data' => [$campaign->failedCount()],
+        //     'itemStyle' => [
+        //         'normal' => [
+        //             'color' => '#E53935',
+        //         ],
+        //     ],
+        // ];
 
-        $result['data'][] = [
-            'name' => trans('messages.delivered'),
-            'type' => 'bar',
-            'smooth' => true,
-            'data' => [$campaign->deliveredCount()],
-            'itemStyle' => [
-                'normal' => [
-                    'color' => '#7CB342',
-                ],
-            ],
-        ];
+        // $result['data'][] = [
+        //     'name' => trans('messages.delivered'),
+        //     'type' => 'bar',
+        //     'smooth' => true,
+        //     'data' => [$campaign->deliveredCount()],
+        //     'itemStyle' => [
+        //         'normal' => [
+        //             'color' => '#7CB342',
+        //         ],
+        //     ],
+        // ];
 
-        $result['data'][] = [
-            'name' => trans('messages.recipients'),
-            'type' => 'bar',
-            'smooth' => true,
-            'data' => [$campaign->readCache('SubscriberCount', 0)],
-            'itemStyle' => [
-                'normal' => [
-                    'color' => '#555',
-                ],
-            ],
-        ];
+        // $result['data'][] = [
+        //     'name' => trans('messages.recipients'),
+        //     'type' => 'bar',
+        //     'smooth' => true,
+        //     'data' => [$campaign->readCache('SubscriberCount', 0)],
+        //     'itemStyle' => [
+        //         'normal' => [
+        //             'color' => '#555',
+        //         ],
+        //     ],
+        // ];
 
-        $result['horizontal'] = 1;
+        // $result['horizontal'] = 1;
 
-        return json_encode($result);
+        return response()->json($result);
     }
 
     /**

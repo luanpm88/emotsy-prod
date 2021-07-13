@@ -34,8 +34,8 @@
 <script>
     var CampaignsCopy = {
         copy: function(url, data) {
-            // CampaignsList.copyPopup.mask();
-            addButtonMask(CampaignsList.copyPopup.popup.find('#doCopyButton'));
+            CampaignsList.getCopyPopup().mask();
+            addButtonMask($('#doCopyButton'));
 
             // copy
             $.ajax({
@@ -49,24 +49,26 @@
                     message: response,
                 });
 
-                CampaignsList.copyPopup.hide();
-                CampaignsIndex.list.load();
+                CampaignsList.getCopyPopup().hide();
+                CampaignsIndex.getList().load();
 
             }).fail(function(jqXHR, textStatus, errorThrown){
                 // for debugging
-                CampaignsList.copyPopup.loadHtml(jqXHR.responseText);
+                CampaignsList.getCopyPopup().loadHtml(jqXHR.responseText);
             }).always(function() {
-                // CampaignsList.copyPopup.unmask();
-                removeButtonMask(CampaignsList.copyPopup.popup.find('#doCopyButton'));
+                CampaignsList.getCopyPopup().unmask();
+                removeButtonMask($('#doCopyButton'));
             });
         }
     }
 
-    $('#copyCampaginForm').on('submit', function(e) {
-        e.preventDefault();
-        var url = $(this).attr('action');
-        var data = $(this).serialize();
+    $(document).ready(function() {
+        $('#copyCampaginForm').on('submit', function(e) {
+            e.preventDefault();
+            var url = $(this).attr('action');
+            var data = $(this).serialize();
 
-        CampaignsCopy.copy(url, data);
+            CampaignsCopy.copy(url, data);
+        });
     });
 </script>

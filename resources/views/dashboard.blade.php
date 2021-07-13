@@ -8,6 +8,8 @@
 @endsection
 
 @section('content')
+    <script type="text/javascript" src="{{ URL::asset('core/echarts/echarts.min.js') }}"></script>
+
     <h2 class="mt-4 pt-2">{!! trans('messages.frontend_dashboard_hello', ['name' => Auth::user()->displayName()]) !!}</h2>
     <p>{!! trans('messages.frontend_dashboard_welcome') !!}</p>
 
@@ -82,70 +84,7 @@
         </div>
     </div>
 
-    <h4 class="mt-5">
-        <span class="material-icons-outlined me-2">
-            history_toggle_off
-            </span>
-        {{ trans('messages.recently_sent_campaigns') }}
-    </h4>
-
-    @if (Auth::user()->customer->sentCampaigns()->count() == 0)
-        <div class="empty-list">
-            <span class="material-icons-outlined">
-                auto_awesome
-            </span>
-            <span class="line-1">
-                {{ trans('messages.no_sent_campaigns') }}
-            </span>
-        </div>
-    @else
-        <div class="row">
-            <div class="col-md-6">
-                @include('helpers.form_control', [
-                    'type' => 'select',
-                    'class' => 'dashboard-campaign-select',
-                    'name' => 'campaign_id',
-                    'label' => '',
-                    'value' => '',
-                    'options' => Acelle\Model\Campaign::getSelectOptions(Auth::user()->customer, "done"),
-                ])
-            </div>
-        </div>
-        <div class="campaign-quickview-container" data-url="{{ action("CampaignController@quickView") }}"></div>
-    @endif
-
-    <h4 class="mt-5">
-        <span class="material-icons-outlined me-2">
-            auto_graph
-        </span>
-        {{ trans('messages.list_growth') }}
-    </h4>
-
-    @if (Auth::user()->customer->lists()->count() == 0)
-        <div class="empty-list">
-            <span class="material-icons-outlined">
-                auto_awesome
-            </span>
-            <span class="line-1">
-                {{ trans('messages.no_saved_lists') }}
-            </span>
-        </div>
-    @else
-        <div class="row">
-            <div class="col-md-6">
-                @include('helpers.form_control', [
-                    'type' => 'select',
-                    'class' => 'dashboard-list-select',
-                    'name' => 'list_id',
-                    'label' => '',
-                    'value' => '',
-                    'include_blank' => trans('messages.all'),
-                    'options' => Auth::user()->customer->readCache('MailListSelectOptions', []),
-                ])
-            </div>
-        </div>
-        <div class="list-quickview-container" data-url="{{ action("MailListController@quickView") }}"></div>
-    @endif
+    @include('_dashboard_campaigns')
 
     <h4 class="mt-5"><span class="material-icons-outlined me-2">
         star_half
@@ -182,7 +121,7 @@
                                         {{ $item->name }}
                                     </a>
                                 </h6>
-                                <p>
+                                <p class="mb-0">
                                     {!! $item->displayRecipients() !!}
                                 </p>
                             </div>
@@ -191,21 +130,18 @@
                                     {{ number_with_delimiter($item->aggregate) }}
                                 </h5>
                                 <span class="text-muted">{{ trans('messages.opens') }}</span>
-                                    <br /><br />
                             </div>
                             <div class="col-sm-2 col-md-2 text-left">
                                 <h5 class="m-0 text-bold">
                                     {{ number_with_delimiter($item->readCache('UniqOpenCount')) }}
                                 </h5>
                                 <span class="text-muted">{{ trans('messages.uniq_opens') }}</span>
-                                    <br /><br />
                             </div>
                             <div class="col-sm-2 col-md-2 text-left">
                                 <h5 class="m-0 text-bold">
                                     {{ (null !== $item->lastOpen()) ? Acelle\Library\Tool::formatDateTime($item->lastOpen()->created_at) : "" }}
                                 </h5>
                                 <span class="text-muted">{{ trans('messages.last_open') }}</span>
-                                    <br /><br />
                             </div>
                         </div>
 
@@ -245,21 +181,18 @@
                                     {{ $item->aggregate }}
                                 </h5>
                                 <span class="text-muted">{{ trans('messages.clicks') }}</span>
-                                    <br /><br />
                             </div>
                             <div class="col-sm-2 col-md-2 text-left">
                                 <h5 class="m-0 text-bold">
                                     {{ $item->urlCount() }}
                                 </h5>
                                 <span class="text-muted">{{ trans('messages.urls') }}</span>
-                                    <br /><br />
                             </div>
                             <div class="col-sm-2 col-md-2 text-left">
                                 <h5 class="m-0 text-bold">
                                     #
                                 </h5>
                                 <span class="text-muted">{{ trans('messages.last_clicked') }}</span>
-                                    <br /><br />
                             </div>
                         </div>
                     </li>
@@ -298,14 +231,12 @@
                                     {{ $item->aggregate }}
                                 </h5>
                                 <span class="text-muted">{{ trans('messages.clicks') }}</span>
-                                    <br /><br />
                             </div>
                             <div class="col-sm-2 col-md-2 text-left">
                                 <h5 class="m-0 text-bold">
                                     #
                                 </h5>
                                 <span class="text-muted">{{ trans('messages.last_clicked') }}</span>
-                                <br /><br />
                             </div>
                         </div>
                     </li>

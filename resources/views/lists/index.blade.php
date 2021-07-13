@@ -83,11 +83,13 @@ search
 
     <script>
         var ListsIndex = {
-            list: makeList({
-                url: '{{ action('MailListController@listing') }}',
-                container: $('#ListsIndexContainer'),
-                content: $('#ListsIndexContent')
-            }),
+            getList: function() {
+                return makeList({
+                    url: '{{ action('MailListController@listing') }}',
+                    container: $('#ListsIndexContainer'),
+                    content: $('#ListsIndexContent')
+                });
+            }
         };
     </script>
 @endsection

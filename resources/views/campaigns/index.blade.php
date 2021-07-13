@@ -92,11 +92,17 @@ add
 
     <script>
         var CampaignsIndex = {
-            list: makeList({
-                url: '{{ action('CampaignController@listing') }}',
-                container: $('#CampaignsIndexContainer'),
-                content: $('#CampaignsIndexContent')
-            }),
+            getList: function() {
+                return makeList({
+                    url: '{{ action('CampaignController@listing') }}',
+                    container: $('#CampaignsIndexContainer'),
+                    content: $('#CampaignsIndexContent')
+                });
+            }
         };
+
+        $(document).ready(function() {
+            CampaignsIndex.getList().load();
+        });
     </script>
 @endsection

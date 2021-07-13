@@ -58,7 +58,9 @@
         @endif
         <li class="plain_text_li {{ ($campaign->type == 'plain-text') ? " active" : "" }}">
             <a href="#top-justified-divided-tab2" data-toggle="tab" data-target="#top-justified-divided-tab2">
-                <i class="icon-file-text2"></i> {{ trans('messages.plain_text_version') }}
+                <span class="material-icons-outlined">
+description
+</span> {{ trans('messages.plain_text_version') }}
             </a>
         </li>
         <li class="plain_text_li {{ ($campaign->type == 'attachment') ? " active" : "" }}">
