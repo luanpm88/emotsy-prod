@@ -6,7 +6,7 @@
 		
 	<div class="row">
         <div class="col-md-12">
-            <h5 class="mb-3 mt-2">{{ trans('messages.automation.choose_your_template_layout') }}</h5>
+            <h5 class="mb-3">{{ trans('messages.automation.choose_your_template_layout') }}</h5>
 			<p class="mb-4">{{ trans('messages.automation.choose_your_template_layout.intro') }}</p>
                 
             @include('automation2.email.template._tabs')
@@ -85,7 +85,11 @@
 				]) }}');
 
 				// notify
-				notify('success', '{{ trans('messages.notify.success') }}', response.message);
+				notify({
+    type: 'success',
+    titke: '{!! trans('messages.notify.success') !!}',
+    message: response.message
+});
 			});
         });
     </script>

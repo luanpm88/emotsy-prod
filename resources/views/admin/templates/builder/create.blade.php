@@ -85,7 +85,9 @@
 													<option value="name">{{ trans('messages.name') }}</option>
 												</select>										
 												<button class="btn btn-xs sort-direction" rel="asc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
-													<i class="icon-sort-amount-asc"></i>
+													<span class="material-icons-outlined desc">
+sort
+</span>
 												</button>
 											</span>
 											<span class="text-nowrap">

@@ -25,7 +25,7 @@
                 <hr>
                 <div class="text-center">
                     <button class="btn btn-mc_primary bg-grey mt-3 mr-2">{{ trans('messages.campaign.resend') }}</button>
-                    <a href="javascript:;" onclick="resendPopup.hide()" class="btn btn-link font-weight-semibold mt-3">{{ trans('messages.campaign.resend.cancel') }}</a>
+                    <a href="javascript:;" onclick="CampaignsList.resendPopup.hide()" class="btn btn-link font-weight-semibold mt-3">{{ trans('messages.campaign.resend.cancel') }}</a>
                 </div>
             </form>
         </div>
@@ -42,21 +42,25 @@
                 url: url,
                 method: 'POST',
                 data: data,
+                dataType: "json",
                 statusCode: {
                     // validate error
                     400: function (res) {
-                        // newSubscription.loadHtml(res.responseText);
                         // notify
                         notify('error', '{{ trans('messages.notify.error') }}', res.responseText);
                     }
                 },
                 success: function (response) {
-                    resendPopup.hide();
+                    CampaignsList.resendPopup.hide();
 
                     // notify
-                    notify('success', '{{ trans('messages.notify.success') }}', response.message);
+                    notify({
+    type: 'success',
+    titke: '{!! trans('messages.notify.success') !!}',
+    message: response.message
+});
 
-                    tableFilterAll();
+                    CampaignsIndex.list.load();
                 },
                 globalError: false,
                 error: function (res) {

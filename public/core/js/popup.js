@@ -3,7 +3,7 @@ class Popup {
         this.init(options);
     }
 
-    init() {
+    init(options) {
         var _this = this;
         this.id = '_' + Math.random().toString(36).substr(2, 9);
         this.options = {};
@@ -52,11 +52,6 @@ class Popup {
         this.popup[0].addEventListener('hidden.bs.modal', function (event) {
             _this.reset();
         })
-
-        // onclose popup
-        if(this.options.onclose != null) {
-            this.onclose = this.options.onclose;
-        }
     }
 
     reset() {
@@ -72,8 +67,8 @@ class Popup {
         this.modal.hide();
 
         // onclose
-        if (this.onclose != null) {
-            this.onclose();
+        if (this.options.onclose != null) {
+            this.options.onclose();
         }
 
         // clear backs

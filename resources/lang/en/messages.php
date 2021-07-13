@@ -3688,4 +3688,5 @@
   'geoip.title' => 'GeoIP Management',
   'geoip.description' => 'Acelle uses a GeoIP dataset in order to resolve users\' location.',
   'invoice.payment_is_being_verified' => 'Payment is being verified',
+  'campaign_status_ready' => 'ready',
 ) ?>

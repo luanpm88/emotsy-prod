@@ -159,7 +159,11 @@ close
                         },
                         success: function (response) {
                             // notify
-                            notify('success', '{{ trans('messages.notify.success') }}', response.message);
+                            notify({
+    type: 'success',
+    titke: '{!! trans('messages.notify.success') !!}',
+    message: response.message
+});
 
                             popup.hide();
                         }
@@ -204,7 +208,11 @@ close
                 },
                 success: function (response) {
                     // notify
-                    notify('success', '{{ trans('messages.notify.success') }}', response.message);
+                    notify({
+    type: 'success',
+    titke: '{!! trans('messages.notify.success') !!}',
+    message: response.message
+});
 
                     // reload popup
                     popup.load();

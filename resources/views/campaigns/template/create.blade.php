@@ -33,12 +33,14 @@
     <div class="row">
         <div class="col-md-6">
             <h2 class="mt-0">{{ trans('messages.campaign.content_management') }}</h2>
-            <h3>{{ trans('messages.campaign.email_content') }}</h3>                
+            <h3 class="mt-4">{{ trans('messages.campaign.email_content') }}</h3>                
             <p>{{ trans('messages.campaign.email_content.intro') }}</p>
                 
             <ul class="hover-list">
                 <li class="template-start" data-url="{{ action('CampaignController@templateLayout', $campaign->uid) }}">
-                    <i class="lnr lnr-file-add"></i>
+                    <i class="material-icons-outlined">
+                        queue
+                    </i>
                     <div class="list-body">
                         <h4>{{ trans('messages.campaign.template.from_layout') }}</h4>
                         <p>{{ trans('messages.campaign.template.from_layout.intro') }}</p>
@@ -52,7 +54,9 @@
                     </div>
                 </li>
                 <li class="template-start" data-url="{{ action('CampaignController@templateUpload', $campaign->uid) }}">
-                    <i class="lnr lnr-upload"></i>
+                    <i class="material-icons-outlined mt-0">
+                        upload
+                    </i>
                     <div class="list-body">
                         <h4>{{ trans('messages.campaign.template.upload') }}</h4>
                         <p>{{ trans('messages.campaign.template.upload.intro') }}</p>
@@ -105,7 +109,11 @@
                     removeMaskLoading();
 
                     // notify
-                    notify('success', '{{ trans('messages.notify.success') }}', response.message);
+                    notify({
+    type: 'success',
+    titke: '{!! trans('messages.notify.success') !!}',
+    message: response.message
+});
 
                     builderSelectPopup.load(response.url);
                     templatePopup.hide();

@@ -243,11 +243,15 @@ h1, h1 {
 }
 [name=keyword] + [class^="material-icons"] {
     color: #aaa;
-    font-size: 19px;
+    font-size: 21px;
     display: inline-block;
-    position: absolute;
+    line-height: 10px;
     margin-left: -27px;
+    transform: translateY(6px);
 }
+#gallery [name=keyword] + [class^="material-icons"] {
+    transform: translateY(0);
+}   
 [name=keyword]:focus + [class^="material-icons"] {
     color: #888;
 }
@@ -348,4 +352,36 @@ h1, h1 {
 }
 .campaign-steps .nav-link {
     margin-right: 35px!important;
+}
+.alert:before {
+    position: relative;
+    display: inline-block;
+    width: 19px;
+    height: 19px;
+    font-family: 'Material Icons Outlined';
+    font-size: 15px;
+    line-height: 17px;
+    transform: translateY(3px);
+}
+
+.alert-info:before {
+    content: "sticky_note_2";
+}
+.alert-success:before {
+    content: "check_circle";
+}
+.alert-danger:before {
+    content: "new_releases";
+}
+.alert-warning:before {
+    content: "error_outline";
+}
+.alert-error:before {
+    content: "new_releases";
+}
+.select2-container {
+    z-index: 10000;
+}
+.progress-bar-info {
+    background-color: #00BCD4;
 }

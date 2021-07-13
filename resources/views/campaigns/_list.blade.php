@@ -83,12 +83,17 @@
 				<td class="text-end text-nowrap">
 					<div class="d-flex align-items-center text-nowrap justify-content-end">
 						@if (\Gate::allows('update', $campaign))
-							<a href="{{ action('CampaignController@edit', $campaign->uid) }}" role="button" class="btn btn-secondary btn-icon"> <span class="material-icons-outlined">
+							<a href="{{ action('CampaignController@edit', $campaign->uid) }}" role="button"
+								class="btn btn-secondary btn-icon ms-1"> <span class="material-icons-outlined">
 	edit
 	</span> {{ trans('messages.edit') }}</a>
 						@endif
 						@if (\Gate::allows('overview', $campaign))
-							<a href="{{ action('CampaignController@overview', $campaign->uid) }}" data-popup="tooltip" title="{{ trans('messages.overview') }}" role="button" class="btn btn-secondary btn-icon"><i class="icon-stats-growth"></i> {{ trans('messages.campaign.overview_statistics') }}</a>
+							<a href="{{ action('CampaignController@overview', $campaign->uid) }}" data-popup="tooltip"
+								title="{{ trans('messages.overview') }}" role="button"
+								class="btn btn-primary btn-icon ms-1"
+							>
+								<i class="icon-stats-growth"></i> {{ trans('messages.campaign.overview_statistics') }}</a>
 						@endif
 						@if (\Gate::allows('delete', $campaign) || \Gate::allows('pause', $campaign) || \Gate::allows('restart', $campaign))
 							<div class="btn-group ms-1" role="group">

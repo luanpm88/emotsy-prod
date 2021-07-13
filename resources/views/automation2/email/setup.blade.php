@@ -208,7 +208,11 @@
                     // save tree
 					saveData();
                     
-                    notify('success', '{{ trans('messages.notify.success') }}', response.message);
+                    notify({
+    type: 'success',
+    titke: '{!! trans('messages.notify.success') !!}',
+    message: response.message
+});
                  }
             });
         });

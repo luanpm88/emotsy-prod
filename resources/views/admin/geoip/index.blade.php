@@ -80,7 +80,11 @@
                             },
                             globalError: false
                         }).success(function(response) {
-                            notify('success', '{{ trans('messages.notify.success') }}', response.message);
+                            notify({
+    type: 'success',
+    titke: '{!! trans('messages.notify.success') !!}',
+    message: response.message
+});
                         }).error(function(response) {
                             var error = JSON.parse(response.responseText).error;
                             notify('error', '{{ trans('messages.notify.error') }}', error);

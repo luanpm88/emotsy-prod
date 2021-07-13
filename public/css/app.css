@@ -867,7 +867,7 @@ ul.modern-listing li .btn {
 }
 .nav-tabs {
     border-bottom: 1px solid #ccc;
-    margin-bottom: 30px;
+    margin-bottom: 1rem;
 }
 .table-icon-big {
     font-size: 40px;
@@ -2709,9 +2709,6 @@ p.link-inline a {
 .hover-list li:hover .list-action {
   visibility: visible;
 }
-.mc-nav > li > a {
-    padding: 0 0 5px 0;
-}
 .media-left {
   display: flex;
 }
@@ -4234,4 +4231,10 @@ pagination {
 .nav-item.disabled {
     pointer-events: none;
     opacity: 0.5;
+}
+.dropdown-menu {
+    font-size: 0.9rem;
+}
+.navbar-main .nav-item.active > .nav-link {
+    background: rgba(0,0,0,0.3);
 }

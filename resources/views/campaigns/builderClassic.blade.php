@@ -110,7 +110,11 @@
                             }
 
                             // notify
-                            parent.notify('success', '{{ trans('messages.notify.success') }}', response.message);
+                            parent.notify({
+    type: 'success',
+    titke: '{!! trans('messages.notify.success') !!}',
+    message: response.message
+});
                         }
                     });
                 });         

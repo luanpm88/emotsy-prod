@@ -1,9 +1,14 @@
-@extends('layouts.popup.small')
+@extends('layouts.popup.medium')
+
+@section('title')
+    <i class="material-icons-outlined alert-icon mr-2">backup_table</i>
+    {{ trans("messages.template") }}
+@endsection
 
 @section('content')
 	<div class="row">
         <div class="col-md-12">
-            <h2>{{ trans('messages.campaign.upload_custom_template') }}</h2>
+            <h4 class="">{{ trans('messages.campaign.upload_custom_template') }}</h4>
                 
             @include('campaigns.template._tabs')
             
@@ -69,7 +74,11 @@
                     removeMaskLoading();
 
                     // notify
-                    notify('success', '{{ trans('messages.notify.success') }}', response.message);
+                    notify({
+    type: 'success',
+    titke: '{!! trans('messages.notify.success') !!}',
+    message: response.message
+});
 
                     builderSelectPopup.load(response.url);
                     templatePopup.hide();

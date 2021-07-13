@@ -1,9 +1,14 @@
 @extends('layouts.popup.large')
 
+@section('title')
+    <i class="material-icons-outlined alert-icon mr-2">backup_table</i>
+    {{ trans("messages.template") }}
+@endsection
+
 @section('content')
 	<div class="row">
         <div class="col-md-12">
-            <h2>{{ trans('messages.campaign.choose_your_template_layout') }}</h2>
+            <h4 class="">{{ trans('messages.campaign.choose_your_template_layout') }}</h4>
 			@include('campaigns.template._tabs')
 			<div class="tab-content" id="pills-tabContent">
 				<div class="">
@@ -12,7 +17,7 @@
 						<hr>
 
 						<div id="gallery" class="pb-4">
-							<form class="listing-form"
+							<div class="listing-form"
 								data-url="{{ action('CampaignController@templateLayoutList', [
 									'uid' => $campaign->uid,
 									'category_uid' => $category->uid,
@@ -30,7 +35,9 @@
 													<option value="name">{{ trans('messages.name') }}</option>
 												</select>										
 												<button class="btn btn-xs sort-direction mr-3 ml-2" rel="asc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
-													<i class="icon-sort-amount-asc"></i>
+													<span class="material-icons-outlined desc">
+sort
+</span>
 												</button>
 												<span class="title text-semibold text-muted mr-2">{{ trans('messages.from') }}</span>
 												<select class="select" name="from">
@@ -38,7 +45,7 @@
 													<option value="mine">{{ trans('messages.my_templates') }}</option>
 													<option value="gallery">{{ trans('messages.gallery') }}</option>
 												</select>
-												<input name="search_keyword ml-3" style="margin-left: 15px" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
+												<input name="keyword" style="margin-left: 15px" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
 												<span class="material-icons-round">
 search
 </span>
@@ -49,7 +56,7 @@ search
 								
 								<div class="pml-table-container">
 								</div>
-							</form>
+							</div>
 						</div>
 						<br style="clear:both" /><br style="clear:both" />
 					</div>

@@ -60,7 +60,11 @@
                                 doSelect(newE);
                             }, 200);
                             
-                            notify('success', '{{ trans('messages.notify.success') }}', response.message);
+                            notify({
+    type: 'success',
+    titke: '{!! trans('messages.notify.success') !!}',
+    message: response.message
+});
                         });
                     @else
                         tree.getSelected().setOptions(response.options);
@@ -73,7 +77,11 @@
                             // reload sidebar
                             sidebar.load();
                             
-                            notify('success', '{{ trans('messages.notify.success') }}', response.message);
+                            notify({
+    type: 'success',
+    titke: '{!! trans('messages.notify.success') !!}',
+    message: response.message
+});
                         });
                     @endif
                 },

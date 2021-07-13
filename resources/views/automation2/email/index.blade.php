@@ -91,7 +91,11 @@
                         // save tree
                         saveData(function() {                            
                             // notify
-                            notify('success', '{{ trans('messages.notify.success') }}', response.message);
+                            notify({
+    type: 'success',
+    titke: '{!! trans('messages.notify.success') !!}',
+    message: response.message
+});
                             
                             // load default sidebar
                             sidebar.load('{{ action('Automation2Controller@settings', $automation->uid) }}');

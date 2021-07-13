@@ -78,7 +78,7 @@
 	
 			<div class="collapse navbar-collapse" id="navbarsExample04">
 				<ul class="navbar-nav me-auto mb-md-0">
-					<li class="nav-item">
+					<li class="nav-item" rel0="HomeController">
 						<a href="{{ action('HomeController@index') }}" class="nav-link d-flex align-items-center py-3 lvl-1">
 							<i class="navbar-icon">
 								<img src="{{ url('images/icons/'.$iconDir.'SVG/home.svg') }}" />
@@ -86,7 +86,7 @@
 							<span>{{ trans('messages.dashboard') }}</span>
 						</a>
 					</li>
-					<li class="nav-item">
+					<li class="nav-item" rel0="CampaignController">
 						<a href="{{ action('CampaignController@index') }}" class="nav-link d-flex align-items-center py-3 lvl-1">
 							<i class="navbar-icon">
 								<img src="{{ url('images/icons/'.$iconDir.'SVG/campaign.svg') }}" />
@@ -94,7 +94,7 @@
 							<span>{{ trans('messages.campaigns') }}</span>
 						</a>
 					</li>
-					<li class="nav-item">
+					<li class="nav-item" rel0="Automation2Controller">
 						<a href="{{ action('Automation2Controller@index') }}" class="nav-link d-flex align-items-center py-3 lvl-1">
 							<i class="navbar-icon">
 								<img style="width: 17px" src="{{ url('images/icons/'.$iconDir.'SVG/automation.svg') }}" />
@@ -102,7 +102,7 @@
 							<span>{{ trans('messages.automations') }}</span>
 						</a>
 					</li>
-					<li class="nav-item">
+					<li class="nav-item" rel0="MailListController">
 						<a href="{{ action('MailListController@index') }}" class="nav-link d-flex align-items-center py-3 lvl-1">
 							<i class="navbar-icon">
 								<img style="width: 21px" src="{{ url('images/icons/'.$iconDir.'SVG/list.svg') }}" />
@@ -110,7 +110,7 @@
 							<span>{{ trans('messages.lists') }}</span>
 						</a>
 					</li>
-					<li class="nav-item">
+					<li class="nav-item" rel0="TemplateController">
 						<a href="{{ action('TemplateController@index') }}" class="nav-link d-flex align-items-center py-3 lvl-1">
 							<i class="navbar-icon">
 								<img style="width: 18px" src="{{ url('images/icons/'.$iconDir.'SVG/template.svg') }}" />
@@ -126,7 +126,7 @@
 							<span>{{ trans('messages.content') }}</span>
 						</a>
 						<ul class="dropdown-menu shadow" aria-labelledby="content-menu">
-							<li>
+							<li rel0="ProductController">
 								<a class="dropdown-item d-flex align-items-center" href="{{ action('ProductController@index') }}">
 									<i class="navbar-icon" style="">
 										<img src="{{ url('images/icons/'.$iconDir.'SVG/product-icon.svg') }}" />
@@ -134,7 +134,7 @@
 									<span>{{ trans('messages.products') }}</span>
 								</a>
 							</li>
-							<li>
+							<li rel0="SourceController">
 								<a class="dropdown-item d-flex align-items-center" href="{{ action('SourceController@index') }}">
 									<i class="navbar-icon" style="">
 										<img style="width: 18px" src="{{ url('images/icons/'.$iconDir.'SVG/store.svg') }}" />
@@ -150,14 +150,7 @@
 						Auth::user()->customer->can("read", new Acelle\Model\Blacklist()) ||
 						true
 					)
-						<li class="nav-item dropdown"
-							rel0="SendingServerController"
-							rel1="SendingDomainController"
-							rel2="SenderController"
-							rel3="EmailVerificationServerController"
-							rel4="BlacklistController"
-							rel5="TrackingDomainController"
-						>
+						<li class="nav-item dropdown">
 							<a href="{{ action('TemplateController@index') }}" class="nav-link d-flex align-items-center py-3 lvl-1 dropdown-toggle" id="sending-menu" data-bs-toggle="dropdown" aria-expanded="false">
 								<i class="navbar-icon">
 									<img style="width: 17px" src="{{ url('images/icons/'.$iconDir.'SVG/sending.svg') }}" />
@@ -232,7 +225,7 @@
 							</a>
 							<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="content-menu">
 								@can("admin_access", Auth::user())
-									<li><a href="{{ action("Admin\HomeController@index") }}" class="dropdown-item d-flex align-items-center">
+									<li rel0="TemplateController"><a href="{{ action("Admin\HomeController@index") }}" class="dropdown-item d-flex align-items-center">
 									<i class="navbar-icon mr-3">
 										<img src="{{ url('images/icons/'.$iconDir.'SVG/changeview.svg') }}" />
 									</i>{{ trans('messages.admin_view') }}</a></li>
@@ -248,7 +241,7 @@
 										</a>
 									</li>
 								@endif
-								<li rel0="AccountSubscriptionController\index">
+								<li rel0="AccountSubscriptionController/index">
 									<a href="{{ action('AccountSubscriptionController@index') }}" class="dropdown-item position-relative d-flex align-items-center">
 									<i class="navbar-icon mr-3">
 										<img src="{{ url('images/icons/'.$iconDir.'SVG/subscription.svg') }}" />
@@ -261,13 +254,13 @@
 										@endif
 									</a>
 								</li>
-								<li><a href="{{ action("AccountController@billing") }}" class="dropdown-item d-flex align-items-center">
+								<li rel0="AccountController/billing"><a href="{{ action("AccountController@billing") }}" class="dropdown-item d-flex align-items-center">
 									<i class="navbar-icon mr-3">
 										<img src="{{ url('images/icons/'.$iconDir.'SVG/billing.svg') }}" />
 									</i>{{ trans('messages.billing') }}
 								
 								</a></li>
-								<li><a href="{{ action("AccountController@profile") }}" class="dropdown-item d-flex align-items-center">
+								<li rel0="AccountController/profile"><a href="{{ action("AccountController@profile") }}" class="dropdown-item d-flex align-items-center">
 									<i class="navbar-icon mr-3">
 										<img src="{{ url('images/icons/'.$iconDir.'SVG/account.svg') }}" />
 									</i>{{ trans('messages.account') }}
@@ -325,6 +318,37 @@
 
 	<!-- display flash message -->
 	@include('common.flash')
+
+	<!-- Set active menu -->
+	<script>
+		$(document).ready(function() {
+			// menu active
+			for (i=0; i < 10; i++) {
+				$("li[rel"+i+"='{{ $controller }}']").addClass("active");
+				$("li[rel"+i+"='{{ $controller }}']").closest('.nav-item').addClass("active");
+			}
+			for (i=0; i < 10; i++) {
+				$("li[rel"+i+"='{{ $controller }}/{{ $action }}']").addClass("active");
+				$("li[rel"+i+"='{{ $controller }}/{{ $action }}']").closest('.nav-item').addClass("active");
+			}
+			
+			// quota log
+			// Top quota button
+			$(document).on('click', '.top-quota-button', function(e) {
+				e.preventDefault();
+				var url = $(this).attr("data-url");
+				console.log(url);
+
+
+				var quotaPopup = new Popup({
+					url: url
+				});
+				
+				quotaPopup.load();
+			});
+		});                  
+	</script>
+	<!-- /set active menu -->
 </body>
 </html>
 

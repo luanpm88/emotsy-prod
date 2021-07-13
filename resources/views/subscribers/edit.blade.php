@@ -272,7 +272,11 @@ close
                 },
                 success: function (response) {
                     // notify
-                    notify('success', '{{ trans('messages.notify.success') }}', response.message);
+                    notify({
+    type: 'success',
+    titke: '{!! trans('messages.notify.success') !!}',
+    message: response.message
+});
 
                     location.reload();
                 }
@@ -305,7 +309,11 @@ close
                         },
                         success: function (response) {
                             // notify
-                            // notify('success', '{{ trans('messages.notify.success') }}', response.message);
+                            // notify({
+    type: 'success',
+    titke: '{!! trans('messages.notify.success') !!}',
+    message: response.message
+});
 
                             // redirect
                             addMaskLoading('{{ trans('messages.subscriber.deleted.redirect') }}', function() {
