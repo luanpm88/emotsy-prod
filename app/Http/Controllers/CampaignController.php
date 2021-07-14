@@ -741,53 +741,33 @@ class CampaignController extends Controller
 
         $result = [
             'columns' => [],
-            'data' => [],
-            'bar_names' => [trans('messages.opened'), trans('messages.clicked')],
+            'opened' => [],
+            'clicked' => [],
         ];
 
         $hours = [];
 
         // columns
         for ($i = 23; $i >= 0; --$i) {
-            $result['columns'][] = \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->subHours($i)->format('h:A');
-            $hours[] = \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->subHours($i)->format('H');
+            $time = \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->subHours($i);
+            $result['columns'][] = $time->format('h') . ':00 ' . $time->format('A');
+            $hours[] = $time->format('H');
         }
 
         // 24h collection
         $openData24h = $campaign->openUniqHours(\Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->subHours(24), \Carbon\Carbon::now());
         $clickData24h = $campaign->clickHours(\Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->subHours(24), \Carbon\Carbon::now());
 
-        // datas
-        foreach ($result['bar_names'] as $key => $bar) {
-            $data = [];
-            if ($key == 0) {
-                foreach ($hours as $ohour) {
-                    $num = isset($openData24h[$ohour]) ? count($openData24h[$ohour]) : 0;
-                    $data[] = $num;
-                }
-            } else {
-                foreach ($hours as $chour) {
-                    $num = isset($clickData24h[$chour]) ? count($clickData24h[$chour]) : 0;
-                    $data[] = $num;
-                }
-            }
+        // data
+        foreach ($hours as $hour) {
+            $num = isset($openData24h[$hour]) ? count($openData24h[$hour]) : 0;
+            $result['opened'][] = $num;
 
-            $result['data'][] = [
-                'name' => $bar,
-                'type' => 'line',
-                'smooth' => true,
-                'data' => $data,
-                'itemStyle' => [
-                    'normal' => [
-                        'areaStyle' => [
-                            'type' => 'default',
-                        ],
-                    ],
-                ],
-            ];
+            $num = isset($clickData24h[$hour]) ? count($clickData24h[$hour]) : 0;
+            $result['clicked'][] = $num;
         }
 
-        return json_encode($result);
+        return response()->json($result);
     }
 
     /**
@@ -840,108 +820,6 @@ class CampaignController extends Controller
                 'value' => $campaign->unsubscribeCount(),
             ],
         ];
-
-        // // columns
-        // $result['columns'][] = trans('messages.count');
-
-        // // datas
-        // $result['data'][] = [
-        //     'name' => trans('messages.unsubscribe'),
-        //     'type' => 'bar',
-        //     'smooth' => true,
-        //     'data' => [$campaign->unsubscribeCount()],
-        //     'itemStyle' => [
-        //         'normal' => [
-        //             'color' => '#D81B60',
-        //         ],
-        //     ],
-        // ];
-
-        // $result['data'][] = [
-        //     'name' => trans('messages.report'),
-        //     'type' => 'bar',
-        //     'smooth' => true,
-        //     'data' => [$campaign->feedbackCount()],
-        //     'itemStyle' => [
-        //         'normal' => [
-        //             'color' => '#00897B',
-        //         ],
-        //     ],
-        // ];
-
-        // $result['data'][] = [
-        //     'name' => trans('messages.Bounce'),
-        //     'type' => 'bar',
-        //     'smooth' => true,
-        //     'data' => [$campaign->bounceCount()],
-        //     'itemStyle' => [
-        //         'normal' => [
-        //             'color' => '#6D4C41',
-        //         ],
-        //     ],
-        // ];
-
-        // $result['data'][] = [
-        //     'name' => trans('messages.Click'),
-        //     'type' => 'bar',
-        //     'smooth' => true,
-        //     'data' => [$campaign->clickedEmailsCount()],
-        //     'itemStyle' => [
-        //         'normal' => [
-        //             'color' => '#039BE5',
-        //         ],
-        //     ],
-        // ];
-
-        // $result['data'][] = [
-        //     'name' => trans('messages.Open'),
-        //     'type' => 'bar',
-        //     'smooth' => true,
-        //     'data' => [$campaign->openUniqCount()],
-        //     'itemStyle' => [
-        //         'normal' => [
-        //             'color' => '#546E7A',
-        //         ],
-        //     ],
-        // ];
-
-        // $result['data'][] = [
-        //     'name' => trans('messages.failed'),
-        //     'type' => 'bar',
-        //     'smooth' => true,
-        //     'data' => [$campaign->failedCount()],
-        //     'itemStyle' => [
-        //         'normal' => [
-        //             'color' => '#E53935',
-        //         ],
-        //     ],
-        // ];
-
-        // $result['data'][] = [
-        //     'name' => trans('messages.delivered'),
-        //     'type' => 'bar',
-        //     'smooth' => true,
-        //     'data' => [$campaign->deliveredCount()],
-        //     'itemStyle' => [
-        //         'normal' => [
-        //             'color' => '#7CB342',
-        //         ],
-        //     ],
-        // ];
-
-        // $result['data'][] = [
-        //     'name' => trans('messages.recipients'),
-        //     'type' => 'bar',
-        //     'smooth' => true,
-        //     'data' => [$campaign->readCache('SubscriberCount', 0)],
-        //     'itemStyle' => [
-        //         'normal' => [
-        //             'color' => '#555',
-        //         ],
-        //     ],
-        // ];
-
-        // $result['horizontal'] = 1;
 
         return response()->json($result);
     }
@@ -2127,21 +2005,6 @@ class CampaignController extends Controller
         $campaign = Campaign::findByUid($uid);
         $campaign->updateCache();
         echo $campaign->status;
-    }
-
-    /**
-     * Chart 2.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function chart2(Request $request)
-    {
-        $campaign = Campaign::findByUid($request->uid);
-        return view('campaigns.chart2', [
-            'campaign' => $campaign,
-        ]);
     }
 
     public function notification(Request $request)

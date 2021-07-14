@@ -1,4 +1,6 @@
-<h3 class="mt-10"><i class="icon-stats-dots"></i> {{ trans('messages.top_country_by_clicks') }}</h3>
+<h3 class="mt-5 mb-3"><span class="material-icons-round me-2">
+    ads_click
+    </span> {{ trans('messages.top_country_by_clicks') }}</h3>
 <div class="row">
     <div class="col-md-6">
         @if (!$campaign->clickCount())                        
@@ -24,7 +26,9 @@ auto_awesome
                 @endforeach 
             </div>
             <div class="text-end">
-                <a href="{{ action('CampaignController@clickLog', $campaign->uid) }}" class="btn btn-info bg-teal-600">{{ trans('messages.click_log') }} <i class="icon-arrow-right8"></i></a>
+                <a href="{{ action('CampaignController@clickLog', $campaign->uid) }}" class="btn btn-info bg-teal-600">{{ trans('messages.click_log') }} <span class="material-icons-round">
+arrow_forward
+</span></a>
             </div>
         @endif
     </div>

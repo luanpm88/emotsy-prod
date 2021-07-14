@@ -1,6 +1,6 @@
-<div class="row">
+<div class="row mt-5">
     <div class="col-md-8">
-        <div class="sub-h3">{{ trans('messages.campaign_open_click_rate_intro') }}</div>
+        <div class="mb-4">{{ trans('messages.campaign_open_click_rate_intro') }}</div>
     </div>
 </div>
 <div class="row">
@@ -43,7 +43,9 @@
             </div>
         </div>
         <div class="text-end">
-            <a href="{{ action('CampaignController@openLog', $campaign->uid) }}" class="btn btn-info bg-teal-600">{{ trans('messages.open_log') }} <i class="icon-arrow-right8"></i></a>
+            <a href="{{ action('CampaignController@openLog', $campaign->uid) }}" class="btn btn-info bg-teal-600">{{ trans('messages.open_log') }} <span class="material-icons-round">
+arrow_forward
+</span></a>
         </div>
         <br />
     </div>
@@ -85,7 +87,9 @@
             </div>
         </div>
         <div class="text-end">
-            <a href="{{ action('CampaignController@clickLog', $campaign->uid) }}" class="btn btn-info bg-teal-600">{{ trans('messages.click_log') }} <i class="icon-arrow-right8"></i></a>
+            <a href="{{ action('CampaignController@clickLog', $campaign->uid) }}" class="btn btn-info bg-teal-600">{{ trans('messages.click_log') }} <span class="material-icons-round">
+arrow_forward
+</span></a>
         </div>
         <br />
     </div>

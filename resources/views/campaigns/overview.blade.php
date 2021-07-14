@@ -2,9 +2,8 @@
 
 @section('title', $campaign->name)
 
-@section('page_script')
-    <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/visualization/echarts/echarts.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('js/chart.js') }}"></script>
+@section('head')
+    <script type="text/javascript" src="{{ URL::asset('core/echarts/echarts.min.js') }}"></script>
 @endsection
 
 @section('page_header')
@@ -28,7 +27,6 @@
         @include("campaigns._chart2")
 
     @endif
-    <hr />
 
     @include("campaigns._open_click_rate")
 

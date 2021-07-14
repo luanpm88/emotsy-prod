@@ -18,7 +18,9 @@ people
                 @endforeach                        
             </div>
             <div class="text-end">
-                <a href="{{ action('CampaignController@openLog', $campaign->uid) }}" class="btn btn-info bg-teal-600">{{ trans('messages.open_log') }} <i class="icon-arrow-right8"></i></a>
+                <a href="{{ action('CampaignController@openLog', $campaign->uid) }}" class="btn btn-info bg-teal-600">{{ trans('messages.open_log') }} <span class="material-icons-round">
+arrow_forward
+</span></a>
             </div>
         @else
             <div class="empty-chart-pie">
@@ -51,7 +53,9 @@ auto_awesome
                 @endforeach 
             </div>
             <div class="text-end">
-                <a href="{{ action('CampaignController@openMap', $campaign->uid) }}" class="btn btn-info bg-teal-600">{{ trans('messages.open_map') }} <i class="icon-arrow-right8"></i></a>
+                <a href="{{ action('CampaignController@openMap', $campaign->uid) }}" class="btn btn-info bg-teal-600">{{ trans('messages.open_map') }} <span class="material-icons-round">
+arrow_forward
+</span></a>
             </div>
         @else
             <div class="empty-chart-pie">

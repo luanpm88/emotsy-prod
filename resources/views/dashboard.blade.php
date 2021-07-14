@@ -2,23 +2,20 @@
 
 @section('title', trans('messages.dashboard'))
 
-@section('page_script')
-    <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/visualization/echarts/echarts.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('js/chart.js') }}"></script>
+@section('head')
+    <script type="text/javascript" src="{{ URL::asset('core/echarts/echarts.min.js') }}"></script>
 @endsection
 
 @section('content')
-    <script type="text/javascript" src="{{ URL::asset('core/echarts/echarts.min.js') }}"></script>
-
     <h2 class="mt-4 pt-2">{!! trans('messages.frontend_dashboard_hello', ['name' => Auth::user()->displayName()]) !!}</h2>
     <p>{!! trans('messages.frontend_dashboard_welcome') !!}</p>
 
-    <h4 class="mt-5">
+    <h3 class="mt-5 mb-3">
         <span class="material-icons-outlined me-2">
             donut_large
         </span>
         {{ trans("messages.used_quota") }}
-    </h4>
+    </h3>
     <p>{{ trans('messages.dashboard.credit.wording') }}</p>
     <div class="row quota_box">
         <div class="col-12 col-md-6">
@@ -86,10 +83,12 @@
 
     @include('_dashboard_campaigns')
 
-    <h4 class="mt-5"><span class="material-icons-outlined me-2">
+    @include('_dashboard_list_growth')    
+
+    <h3 class="mt-5 mb-3"><span class="material-icons-outlined me-2">
         star_half
         </span> {{ trans('messages.top_5') }}
-    </h4>
+    </h3>
 
     <ul class="nav nav-tabs nav-underline" id="myTab" role="tablist">
         <li class="nav-item" role="presentation">
@@ -256,7 +255,7 @@
         </div>
     </div>
 
-    <h4 class="mt-5"><span class="material-icons-outlined me-2">
+    <h3 class="mt-5 mb-3"><span class="material-icons-outlined me-2">
         group_work
     </span> {{ trans('messages.activity_log') }}</h3>
 

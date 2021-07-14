@@ -1,5 +1,5 @@
-<h3 class="mt-40 mb-20"><i class="icon-stats-dots"></i> {{ trans('messages.statistics') }}</h3>
-<div class="sub-h3">{!! trans('messages.campaign_table_chart_intro') !!}</div>
+<h4 class="mt-4 mb-3"><i class="icon-stats-dots"></i> {{ trans('messages.statistics') }}</h4>
+<div class="mb-3">{!! trans('messages.campaign_table_chart_intro') !!}</div>
 
 <div class="row">
     <div class="col-md-6">

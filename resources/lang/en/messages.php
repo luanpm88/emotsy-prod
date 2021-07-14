@@ -3690,4 +3690,7 @@
   'invoice.payment_is_being_verified' => 'Payment is being verified',
   'campaign.template.old_ver_error' => 'Campaigns created by previous (older) versions cannot be loaded in the current version
     of the application. Don\'t worry, it will work correctly for new campaigns you create',
+  'campaign.open_click_rate' => 'Open/Click rate',
+  'growth_chart' => 'Growth chart',
+  'statistics_chart' => 'Statistics chart',
 ) ?>

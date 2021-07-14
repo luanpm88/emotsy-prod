@@ -54,6 +54,8 @@
 
 	<!-- JS vars -->
 	@include('layouts._script_vars')
+
+	@yield('head')
 </head>
 <body>
 	<nav class="navbar navbar-expand-xl navbar-dark bg-dark fixed-top navbar-main py-0">

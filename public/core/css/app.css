@@ -386,9 +386,6 @@ h1, h1 {
 .alert-error:before {
     content: "new_releases";
 }
-.select2-container {
-    z-index: 10000;
-}
 .progress-bar-info {
     background-color: #00BCD4;
 }
