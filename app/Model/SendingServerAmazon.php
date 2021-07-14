@@ -248,6 +248,7 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
             }
         }
 
+        // New identities fetched from the server, UserId and UserName keys are not available yet, just set it to Null
         foreach ($identities as $key => $attributes) {
             if (!array_key_exists('UserId', $attributes)) {
                 $identities[$key]['UserId'] = null;
