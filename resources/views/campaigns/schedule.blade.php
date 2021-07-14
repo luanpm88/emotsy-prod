@@ -10,7 +10,9 @@
             <li class="breadcrumb-item"><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
         </ul>
         <h1>
-            <span class="text-semibold"><i class="icon-paperplane"></i> {{ $campaign->name }}</span>
+            <span class="text-semibold"><span class="material-icons-outlined me-2">
+forward_to_inbox
+</span> {{ $campaign->name }}</span>
         </h1>
 
         @include('campaigns._steps', ['current' => 4])
@@ -51,7 +53,9 @@
         
         <hr>
         <div class="text-end">
-            <button class="btn btn-secondary">{{ trans('messages.save_and_next') }} <i class="icon-arrow-right7"></i> </button>
+            <button class="btn btn-secondary">{{ trans('messages.save_and_next') }} <span class="material-icons-outlined">
+arrow_forward
+</span> </button>
         </div>
         
     <form>

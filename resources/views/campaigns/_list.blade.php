@@ -201,7 +201,7 @@ forward_to_inbox
 			},
 		}
 
-		var resendPopup = {
+		var CampaignsResendPopup = {
             popup: null,
 
             url: '{{ action('CampaignController@resend', ["uid" => $campaign->uid]) }}',
@@ -216,7 +216,7 @@ forward_to_inbox
             }
         }
 
-		var sendTestEmailPopup = {
+		var CampaignsSendTestEmailPopup = {
             popup: null,
 
             url: '{{ action('CampaignController@sendTestEmail', [
@@ -238,7 +238,7 @@ forward_to_inbox
 
 			var url = $(this).attr('href');
 
-			resendPopup.load();
+			CampaignsResendPopup.load();
 		});
 
 		$('.copy-campaign-button').on('click', function(e) {
@@ -261,7 +261,7 @@ forward_to_inbox
 		$('.send-a-test-email-link').on('click', function(e) {
 			e.preventDefault();
 
-			sendTestEmailPopup.load();
+			CampaignsSendTestEmailPopup.load();
 		});
 	</script>
 @elseif (!empty(request()->keyword))

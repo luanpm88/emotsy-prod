@@ -12,7 +12,9 @@
 	@if (Auth::user()->admin->getPermission("setting_sending") == 'yes' && false)
 		<li class="{{ $action == "sending" ? "active" : "" }} text-semibold">
 			<a href="{{ action('Admin\SettingController@sending') }}">
-			<i class="icon-paperplane"></i> {{ trans('messages.sending') }}</a></li>
+			<span class="material-icons-outlined">
+forward_to_inbox
+</span> {{ trans('messages.sending') }}</a></li>
 	@endif
 	@if (Auth::user()->admin->getPermission("setting_system_urls") == 'yes')
 		<li class="{{ $action == "urls" ? "active" : "" }} text-semibold">

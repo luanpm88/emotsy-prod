@@ -267,7 +267,9 @@ people
                     </li>
                     <li>
                         <div class="unit size1of2">
-                            <strong><i class="icon-paperplane"></i> {{ trans('messages.campaigns') }}</strong>
+                            <strong><span class="material-icons-outlined">
+forward_to_inbox
+</span> {{ trans('messages.campaigns') }}</strong>
                         </div>
                         <div class="lastUnit size1of2">
                             <mc:flag>{{ Auth::user()->admin->getAllCampaigns()->count() }}</mc:flag>

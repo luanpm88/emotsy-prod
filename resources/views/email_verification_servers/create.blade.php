@@ -13,7 +13,7 @@
 	<div class="page-title">
 		<ul class="breadcrumb breadcrumb-caret position-right">
 			<li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-			<li><a href="{{ action("EmailVerificationServerController@index") }}">{{ trans('messages.email_verification_servers') }}</a></li>
+			<li class="breadcrumb-item"><a href="{{ action("EmailVerificationServerController@index") }}">{{ trans('messages.email_verification_servers') }}</a></li>
 		</ul>
 		<h1>
 			<span class="text-semibold"><i class="icon-plus-circle2"></i> {{ trans('messages.create_email_verification_server') }}</span>

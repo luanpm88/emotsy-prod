@@ -111,7 +111,7 @@
 
 			var url = $(this).attr('href');
 
-			parent.resendPopup.load(url);
+			parent.CampaignsResendPopup.load(url);
 		});
 	</script>
 </body>

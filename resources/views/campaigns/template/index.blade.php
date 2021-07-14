@@ -21,7 +21,9 @@
             <li class="breadcrumb-item"><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
         </ul>
         <h1>
-            <span class="text-semibold"><i class="icon-paperplane"></i> {{ $campaign->name }}</span>
+            <span class="text-semibold"><span class="material-icons-outlined me-2">
+forward_to_inbox
+</span> {{ $campaign->name }}</span>
         </h1>
 
         @include('campaigns._steps', ['current' => 3])
@@ -32,7 +34,7 @@
 @section('content')
     <div class="row">
         <div class="col-md-8 mb-40">
-            <h2 class="mt-0">{{ trans('messages.campaign.content_management') }}</h2>
+            <h2 class="mt-0 mb-3">{{ trans('messages.campaign.content_management') }}</h2>
             <div class="sub-section d-flex">
                 <div class=" mr-auto pr-2">                    
                     <p>{{ trans('messages.campaign.email_content.intro') }}</p>
@@ -78,7 +80,7 @@
 
             @if ($spamscore)
                 <div class="sub-section">
-                    <h2 class="mt-0">{{ trans('messages.campaign.spam_score') }}</h2>
+                    <h2 class="mt-0 mb-3">{{ trans('messages.campaign.spam_score') }}</h2>
                     <p>{!! trans('messages.campaign.score.intro') !!}</p>
                     <a href="#" id="calculate-score" class="btn btn-primary bg-grey-600 mr-5">
                         {{ trans('messages.campaign.check_spam_score') }}
@@ -87,7 +89,7 @@
             @endif
 
             <div class="sub-section">   
-                <h2 class="mt-0">{{ trans('messages.campaign.attachment') }}</h2>
+                <h2 class="mt-0 mb-3">{{ trans('messages.campaign.attachment') }}</h2>
                 <p>{{ trans('messages.campaign.attachment.intro') }}</p>
                     
                 @include('campaigns._attachment')
@@ -99,7 +101,9 @@
         
     <hr>
     <a href="{{ action('CampaignController@schedule', ['uid' => $campaign->uid]) }}" class="btn btn-secondary">
-        {{ trans('messages.next') }} <i class="icon-arrow-right7"></i>
+        {{ trans('messages.next') }} <span class="material-icons-outlined">
+arrow_forward
+</span>
     </a>
         
     <script>

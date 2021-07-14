@@ -18,10 +18,12 @@
 	<div class="page-title">
 		<ul class="breadcrumb breadcrumb-caret position-right">
 			<li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-			<li><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
+			<li class="breadcrumb-item"><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
 		</ul>
 		<h1>
-			<span class="text-semibold"><i class="icon-paperplane"></i> {{ $campaign->name }}</span>
+			<span class="text-semibold"><span class="material-icons-outlined me-2">
+forward_to_inbox
+</span> {{ $campaign->name }}</span>
 		</h1>
 
 		@include('campaigns._steps', ['current' => 3])

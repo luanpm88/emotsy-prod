@@ -24,7 +24,7 @@
                 <hr>
                 <div class="text-center">
                     <button class="btn btn-mc_primary bg-grey mt-3 mr-2">{{ trans('messages.campaign.resend') }}</button>
-                    <a href="javascript:;" onclick="CampaignsList.resendPopup.hide()" class="btn btn-link font-weight-semibold mt-3">{{ trans('messages.campaign.resend.cancel') }}</a>
+                    <a href="javascript:;" onclick="CampaignsList.CampaignsResendPopup.hide()" class="btn btn-link font-weight-semibold mt-3">{{ trans('messages.campaign.resend.cancel') }}</a>
                 </div>
             </form>
         </div>
@@ -50,7 +50,7 @@
                     }
                 },
                 success: function (response) {
-                    resendPopup.popup.hide();
+                    CampaignsResendPopup.popup.hide();
 
                     // notify
                     notify({

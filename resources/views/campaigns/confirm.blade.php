@@ -16,7 +16,9 @@
             <li class="breadcrumb-item"><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
         </ul>
         <h1>
-            <span class="text-semibold"><i class="icon-paperplane"></i> {{ $campaign->name }}</span>
+            <span class="text-semibold"><span class="material-icons-outlined me-2">
+forward_to_inbox
+</span> {{ $campaign->name }}</span>
         </h1>
 
         @include('campaigns._steps', ['current' => 5])
@@ -196,11 +198,11 @@ task_alt
 
                 var uid = $(this).attr("data-uid");
 
-                sendTestEmailPopup.load();
+                CampaignsSendTestEmailPopup.load();
             });
         });
 
-        var sendTestEmailPopup = {
+        var CampaignsSendTestEmailPopup = {
             popup: null,
 
             url: '{{ action('CampaignController@sendTestEmail', [

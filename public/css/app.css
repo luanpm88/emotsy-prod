@@ -4365,7 +4365,7 @@ pagination {
     border-color: #ddd;
     color: #000;
 }
-.pickatime + .time-input-icon {
+.pickatime + .time-input-icon, .date-input-icon {
     position: absolute;
     top: 2px;
     right: 7px;
@@ -4475,7 +4475,7 @@ pagination {
   }
   .picker__nav--prev:before,
   .picker__nav--next:before {
-    font-family: 'icomoon';
+    font-family: 'Material Icons Outlined';
     display: block;
     font-size: 16px;
     width: 16px;
@@ -4492,13 +4492,13 @@ pagination {
     left: 0;
   }
   .picker__nav--prev:before {
-    content: '\e9c8';
+    content: 'arrow_back';
   }
   .picker__nav--next {
     right: 0;
   }
   .picker__nav--next:before {
-    content: '\e9cb';
+    content: 'arrow_forward';
   }
   .picker__nav--disabled,
   .picker__nav--disabled:hover,

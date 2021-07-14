@@ -30,7 +30,7 @@
 
             <div class="text-end">
                 <button id="testSend" type="submit" class="btn btn-primary me-1"><i class="icon-paperplane ml-5"></i> {{ trans('messages.send') }}</button>
-                <a href="javascript:;" onclick="sendTestEmailPopup.popup.hide()" role="button" class="btn btn-outline-secondary">{{ trans('messages.close') }}</a>
+                <a href="javascript:;" onclick="CampaignsSendTestEmailPopup.popup.hide()" role="button" class="btn btn-outline-secondary">{{ trans('messages.close') }}</a>
             </div>
 
         </div>
@@ -50,7 +50,7 @@
             ]) }}',
 
             submit: function(data) {
-                sendTestEmailPopup.popup.mask();
+                CampaignsSendTestEmailPopup.popup.mask();
                 addButtonMask($('#testSend'));
 
                 // copy
@@ -66,9 +66,9 @@
                     });
                 }).fail(function(jqXHR, textStatus, errorThrown){
                     // for validation
-                    sendTestEmailPopup.popup.loadHtml(jqXHR.responseText);
+                    CampaignsSendTestEmailPopup.popup.loadHtml(jqXHR.responseText);
                 }).always(function() {
-                    sendTestEmailPopup.popup.unmask();
+                    CampaignsSendTestEmailPopup.popup.unmask();
                     removeButtonMask($('#testSend'));
                 });
             }
