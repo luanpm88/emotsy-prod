@@ -17,7 +17,9 @@
         @endphp
         <li class="d-flex align-items-canter">
           <div class="d-flex mr-auto">
-            <i class="lnr lnr-file-empty icon-file"></i>
+            <i class="material-icons-outlined fs-4 text-muted me-3">
+attach_file
+            </i>
             <span><name>{{ $filename }}</name><size>{{ trans('messages.campaign.attachment.file_size_is', ['size' => $fileszie]) }}</size></span> 
           </div>
           <div class="text-nowrap">

@@ -50,7 +50,7 @@
                 });
 
                 ListsList.getCopyPopup().hide();
-                ListsIndex.list.load();
+                ListsIndex.getList().load();
 
             }).fail(function(jqXHR, textStatus, errorThrown){
                 // for debugging

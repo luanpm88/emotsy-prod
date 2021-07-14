@@ -2,8 +2,7 @@
 
 @section('content')
 	<div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
+        <div class="col-md-12">
             <h2 class="mt-0">{{ trans('messages.campaign.resend.title') }}</h2>
             <p>{{ trans('messages.campaign.resend.intro') }}</p>   
 
@@ -51,7 +50,7 @@
                     }
                 },
                 success: function (response) {
-                    CampaignsList.resendPopup.hide();
+                    resendPopup.popup.hide();
 
                     // notify
                     notify({

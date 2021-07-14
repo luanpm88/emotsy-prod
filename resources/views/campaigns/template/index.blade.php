@@ -111,6 +111,22 @@
                 
                 templatePopup.load(url);
             });
+
+            $('.template-compose').click(function(e) {
+                e.preventDefault();
+                
+                var url = $(this).attr('href');
+
+                openBuilder(url);
+            });
+            
+            $('.template-compose-classic').click(function(e) {
+                e.preventDefault();
+                
+                var url = $(this).attr('href');
+
+                openBuilderClassic(url);
+            });
         });
 
         $('#calculate-score').click(function() {

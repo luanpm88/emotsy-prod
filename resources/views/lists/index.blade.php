@@ -31,7 +31,7 @@
                     <div class="filter-box">
                         <div class="checkbox inline check_all_list">
                             <label>
-                                <input type="checkbox" class="styled check_all">
+                                <input type="checkbox" name="page_checked" class="styled check_all">
                             </label>
                         </div>
                         <div class="btn-group list_actions hide">
@@ -91,5 +91,9 @@ search
                 });
             }
         };
+
+        $(document).ready(function() {
+            ListsIndex.getList().load();
+        });
     </script>
 @endsection

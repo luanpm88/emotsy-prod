@@ -210,7 +210,7 @@ error_outline
 									message: response,
 								});
 
-								ListsIndex.list.load();
+								ListsIndex.getList().load();
 
 							}).fail(function(jqXHR, textStatus, errorThrown){
 								// for debugging

@@ -1,10 +1,10 @@
 @if ($templates->count() > 0)
-    <div id="layout" class="tab-pane fade in active template-boxes layout mt-20" style="
+    <div id="layout" class="row tab-pane fade in show active template-boxes layout mt-4" style="
         margin-left: -20px;
         margin-right: -20px;
     ">
         @foreach ($templates as $key => $template)
-            <div class="col-xxs-12 col-xs-6 col-sm-3 col-md-2">
+            <div class="col-md-2 mb-4">
                 <a 
                     href="{{ action('CampaignController@templateLayout', ['uid' => $campaign->uid, 'template' => $template->uid]) }}"
                     class="choose-theme"
@@ -27,13 +27,6 @@
     <hr style="clear: both">
         
     @include('elements/_per_page_select', ["items" => $templates])
-    
-
-    <script>
-        var builderSelectPopup = new Popup(null, undefined, {onclose: function() {
-            window.location = '{{ action('CampaignController@template', $campaign->uid) }}';
-        }});
-    </script>
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
         <span class="material-icons-outlined">

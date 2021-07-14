@@ -1490,19 +1490,22 @@ class CampaignController extends Controller
     public function pause(Request $request)
     {
         $customer = $request->user()->customer;
-        $items = Campaign::whereIn('uid', explode(',', $request->uids));
+        $campaigns = Campaign::whereIn('uid', explode(',', $request->uids));
 
-        foreach ($items->get() as $item) {
-            if (\Gate::allows('pause', $item)) {
-                $item->pause();
+        foreach ($campaigns->get() as $campaign) {
+            if (\Gate::allows('pause', $campaign)) {
+                $campaign->pause();
 
                 // Log
-                $item->log('paused', $customer);
+                $campaign->log('paused', $customer);
             }
         }
 
-        // Redirect to my lists page
-        echo trans('messages.campaigns.paused');
+        // 
+        return response()->json([
+            'status' => 'success',
+            'message' => trans('messages.campaigns.paused'),
+        ]);
     }
 
     /**
@@ -1676,7 +1679,6 @@ class CampaignController extends Controller
     public function copy(Request $request)
     {
         $campaign = Campaign::findByUid($request->copy_campaign_uid);
-        sleep(2);
 
         // authorize
         if (\Gate::denies('copy', $campaign)) {
@@ -1715,16 +1717,26 @@ class CampaignController extends Controller
      */
     public function sendTestEmail(Request $request)
     {
-        $campaign = Campaign::findByUid($request->send_test_email_campaign_uid);
+        $campaign = Campaign::findByUid($request->uid);
 
-        // authorize
-        if (\Gate::denies('update', $campaign)) {
-            return $this->notAuthorized();
+        if ($request->isMethod('post')) {
+            // make validator
+            $validator = $campaign->doSendTestEmail($request->email);
+
+            // 
+            if ($validator->fails()) {
+                return response()->view('campaigns.sendTestEmail', [
+                    'campaign' => $campaign,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            return response()->json($sending);
         }
 
-        $sending = $campaign->sendTestEmail($request->send_test_email);
-
-        return json_encode($sending);
+        return view('campaigns.sendTestEmail', [
+            'campaign' => $campaign,
+        ]);
     }
 
     /**

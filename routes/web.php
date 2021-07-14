@@ -347,7 +347,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('campaigns/{uid}/list-segment-form', 'CampaignController@listSegmentForm');
     Route::get('campaigns/{uid}/preview/content/{subscriber_uid?}', 'CampaignController@previewContent');
     Route::get('campaigns/{uid}/preview', 'CampaignController@preview');
-    Route::post('campaigns/send-test-email', 'CampaignController@sendTestEmail');
+    Route::match(['get', 'post'], 'campaigns/send-test-email', 'CampaignController@sendTestEmail');
     Route::get('campaigns/delete/confirm', 'CampaignController@deleteConfirm');
     Route::match(['get', 'post'], 'campaigns/copy', 'CampaignController@copy');
     Route::get('campaigns/{uid}/subscribers', 'CampaignController@subscribers');
@@ -392,7 +392,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('campaigns/{uid}/confirm', 'CampaignController@confirm');
     Route::post('campaigns/delete', 'CampaignController@delete');
     Route::get('campaigns/select2', 'CampaignController@select2');
-    Route::get('campaigns/pause', 'CampaignController@pause');
+    Route::post('campaigns/pause', 'CampaignController@pause');
     Route::get('campaigns/restart', 'CampaignController@restart');
     Route::resource('campaigns', 'CampaignController');
     Route::get('campaigns/{uid}/edit', 'CampaignController@edit');

@@ -106,19 +106,22 @@
 	</span> {{ trans("messages.campaign.resend") }}</a></li>
 									@endif
 									@if (\Gate::allows('send_test_email', $campaign))
-										<li><a class="dropdown-item send-a-test-email-link" data-uid="{{ $campaign->uid }}" href="javascript:;">
+										<li><a class="dropdown-item send-a-test-email-link" href="javascript:;">
 											<span class="material-icons-outlined me-2">
 forward_to_inbox
 </span> {{ trans("messages.send_a_test_email") }}</a></li>
 									@endif
 									@if (\Gate::allows('pause', $campaign))
-										<li><a class="dropdown-item" link-confirm="{{ trans('messages.pause_campaigns_confirm') }}" href="{{ action('CampaignController@pause', ["uids" => $campaign->uid]) }}">
+										<li><a class="dropdown-item list_action"
+											link-method="POST"
+											link-confirm="{{ trans('messages.pause_campaigns_confirm', ['number' => '1']) }}"
+											href="{{ action('CampaignController@pause', ["uids" => $campaign->uid]) }}">
 											<span class="material-icons-outlined me-2">
 	motion_photos_pause
 	</span>{{ trans("messages.pause") }}</a></li>
 									@endif
 									@if (\Gate::allows('restart', $campaign))
-										<li><a class="dropdown-item" link-confirm="{{ trans('messages.restart_campaigns_confirm') }}" href="{{ action('CampaignController@restart', ["uids" => $campaign->uid]) }}">
+										<li><a class="dropdown-item list_action" link-confirm="{{ trans('messages.restart_campaigns_confirm', ['number' => '1']) }}" href="{{ action('CampaignController@restart', ["uids" => $campaign->uid]) }}">
 											<span class="material-icons-outlined me-2">
 	restore
 	</span> {{ trans("messages.restart") }}</a></li>
@@ -159,15 +162,6 @@ forward_to_inbox
 	<script>
 		var CampaignsList = {
 			copyPopup: null,
-			resentPopup: null,
-
-			getResendPopup: function() {
-				if (this.resentPopup === null) {
-					this.resentPopup = new Popup();
-				}
-
-				return this.resentPopup;
-			},
 
 			getCopyPopup: function() {
 				if (this.copyPopup === null) {
@@ -204,17 +198,47 @@ forward_to_inbox
 						});
 					}
 				})
-			}
+			},
 		}
+
+		var resendPopup = {
+            popup: null,
+
+            url: '{{ action('CampaignController@resend', ["uid" => $campaign->uid]) }}',
+
+            load: function() {
+                if (this.popup == null) {
+                    this.popup = new Popup({
+                        url: this.url
+                    });
+                }
+                this.popup.load();
+            }
+        }
+
+		var sendTestEmailPopup = {
+            popup: null,
+
+            url: '{{ action('CampaignController@sendTestEmail', [
+                'uid' => $campaign->uid,
+            ]) }}',
+
+            load: function() {
+                if (this.popup == null) {
+                    this.popup = new Popup({
+                        url: this.url
+                    });
+                }
+                this.popup.load();
+            }
+        }
 
 		$('.resend-campaign').click(function(e) {
 			e.preventDefault();
 
 			var url = $(this).attr('href');
 
-			CampaignsList.resendPopup.load({
-				url: url
-			});
+			resendPopup.load();
 		});
 
 		$('.copy-campaign-button').on('click', function(e) {
@@ -232,6 +256,12 @@ forward_to_inbox
 			var confirm = $(this).attr('delete-confirm');
 
 			CampaignsList.delete(confirm, url);
+		});
+
+		$('.send-a-test-email-link').on('click', function(e) {
+			e.preventDefault();
+
+			sendTestEmailPopup.load();
 		});
 	</script>
 @elseif (!empty(request()->keyword))

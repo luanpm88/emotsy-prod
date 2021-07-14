@@ -46,7 +46,7 @@ delete_outline
                     </div>
                     <div class="checkbox inline check_all_list">
                         <label>
-                            <input type="checkbox" class="styled check_all">
+                            <input type="checkbox" name="page_checked" class="styled check_all">
                         </label>
                     </div>
                     <span class="filter-group">

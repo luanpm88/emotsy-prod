@@ -569,7 +569,7 @@ class MailListController extends Controller
     public function copy(Request $request)
     {
         $list = \Acelle\Model\MailList::findByUid($request->copy_list_uid);
-        sleep(1);
+        
         // authorize
         if (\Gate::denies('update', $list)) {
             return $this->notAuthorized();

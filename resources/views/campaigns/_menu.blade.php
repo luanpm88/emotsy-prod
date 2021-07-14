@@ -37,42 +37,42 @@
 					<li rel0="CampaignController/trackingLog" class="dropdown">
 						<a href="{{ action('CampaignController@trackingLog', $campaign->uid) }}">
 							<span class="material-icons-outlined">
-description
+auto_awesome
 </span> {{ trans('messages.tracking_log') }}
 						</a>
 					</li>
 					<li rel0="CampaignController/bounceLog" class="dropdown">
 						<a href="{{ action('CampaignController@bounceLog', $campaign->uid) }}">
 							<span class="material-icons-outlined">
-description
+auto_awesome
 </span> {{ trans('messages.bounce_log') }}
 						</a>
 					</li>
 					<li rel0="CampaignController/feedbackLog" class="dropdown">
 						<a href="{{ action('CampaignController@feedbackLog', $campaign->uid) }}">
 							<span class="material-icons-outlined">
-description
+auto_awesome
 </span> {{ trans('messages.feedback_log') }}
 						</a>
 					</li>
 					<li rel0="CampaignController/openLog" class="dropdown">
 						<a href="{{ action('CampaignController@openLog', $campaign->uid) }}">
 							<span class="material-icons-outlined">
-description
+auto_awesome
 </span> {{ trans('messages.open_log') }}
 						</a>
 					</li>
 					<li rel0="CampaignController/clickLog" class="dropdown">
 						<a href="{{ action('CampaignController@clickLog', $campaign->uid) }}">
 							<span class="material-icons-outlined">
-description
+auto_awesome
 </span> {{ trans('messages.click_log') }}
 						</a>
 					</li>
 					<li rel0="CampaignController/unsubscribeLog" class="dropdown">
 						<a href="{{ action('CampaignController@unsubscribeLog', $campaign->uid) }}">
 							<span class="material-icons-outlined">
-description
+auto_awesome
 </span> {{ trans('messages.unsubscribe_log') }}
 						</a>
 					</li>

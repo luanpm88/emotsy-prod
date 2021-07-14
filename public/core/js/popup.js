@@ -55,6 +55,7 @@ class Popup {
     }
 
     reset() {
+        this.hide();
         this.modal.dispose();
         this.popup.remove();
         this.init(this.options);
@@ -148,7 +149,11 @@ class Popup {
         }
         
         // save current options
-        if (typeof(newOptions.noHistory) == 'undefined' && typeof(newOptions.url) !== 'undefined' && newOptions.url != _this.options.url) {
+        if (typeof(newOptions.noHistory) == 'undefined' &&
+            typeof(newOptions.url) !== 'undefined' &&
+            typeof(_this.options.url) !== 'undefined' &&
+            newOptions.url != _this.options.url
+        ) {
             this.backs.push(_this.options);
         }
 

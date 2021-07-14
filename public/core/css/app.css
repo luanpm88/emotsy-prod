@@ -132,6 +132,13 @@ h1, h1 {
     color: #fff;
     text-indent: 0;
 }
+.switchery[type="checkbox"].half_checked:before, .styled[type="checkbox"].half_checked:before {
+    content: "remove";
+    background: #009688;
+    border-color: #009688;
+    color: #fff;
+    text-indent: 0;
+}
 .styled[type="radio"]:before {
     border-radius: 100%;
 }

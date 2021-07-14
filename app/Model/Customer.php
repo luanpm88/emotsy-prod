@@ -2131,7 +2131,7 @@ class Customer extends Model
         foreach ($templates as $template) {
             $result[] = [
                 'name' => $template->name,
-                'url' => action('CampaignController@templateChangeTemplate', ['uid' => $this->uid, 'template_uid' => $template->uid]),
+                'url' => '', // action('CampaignController@templateChangeTemplate', ['uid' => $this->uid, 'template_uid' => $template->uid]),
                 'thumbnail' => $template->getThumbUrl(),
             ];
         }

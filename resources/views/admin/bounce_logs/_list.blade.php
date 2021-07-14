@@ -46,7 +46,7 @@
 @elseif (!empty(request()->keyword) || !empty(request()->filters["campaign_uid"]))
     <div class="empty-list">
         <span class="material-icons-outlined">
-description
+auto_awesome
 </span>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
@@ -55,7 +55,7 @@ description
 @else
     <div class="empty-list">
         <span class="material-icons-outlined">
-description
+auto_awesome
 </span>
         <span class="line-1">
             {{ trans('messages.log_empty_line_1') }}

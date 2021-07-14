@@ -17,23 +17,18 @@
 						<hr>
 
 						<div id="gallery" class="pb-4">
-							<div class="listing-form"
-								data-url="{{ action('CampaignController@templateLayoutList', [
-									'uid' => $campaign->uid,
-									'category_uid' => $category->uid,
-								]) }}"
-								per-page="25"					
-							>				
+							<div class="listing-form">				
 								<div class="row top-list-controls py-2">
 									<div class="col-md-9">
 										<div class="filter-box">
 											<span class="d-flex align-items-center mr-4">
 												<span class="title text-semibold text-muted mr-2">{{ trans('messages.sort_by') }}</span>
-												<select class="select mr-3" name="sort-order">
+												<select class="select mr-3" name="sort_order">
 													<option value="id">{{ trans('messages.default') }}</option>
 													<option value="created_at">{{ trans('messages.created_at') }}</option>
 													<option value="name">{{ trans('messages.name') }}</option>
-												</select>										
+												</select>					
+												<input type="hidden" name="sort_direction" value="desc" />					
 												<button class="btn btn-xs sort-direction mr-3 ml-2" rel="asc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
 													<span class="material-icons-outlined desc">
 sort
@@ -54,7 +49,7 @@ search
 									</div>
 								</div>
 								
-								<div class="pml-table-container">
+								<div id="galleryContent" class="pml-table-container">
 								</div>
 							</div>
 						</div>
@@ -66,16 +61,39 @@ search
     </div>
         
     <script>
-        $('a.choose-template-tab').click(function(e) {
-            e.preventDefault();
-        
-            var url = $(this).attr('href');
-        
-            templatePopup.load(url);
+		var CampaignsTemplateLayout = {
+			listUrl: '{{ action('CampaignController@templateLayoutList', [
+				'uid' => $campaign->uid,
+				'category_uid' => $category->uid,
+			]) }}',
+
+			getList: function() {
+				return makeList({
+					url: this.listUrl,
+					container: $('#gallery'),
+					content: $('#galleryContent')
+				});
+			}
+		}
+
+		$(document).ready(function() {
+			//load list
+			CampaignsTemplateLayout.getList().load();
+
+            $('a.choose-template-tab').click(function(e) {
+				e.preventDefault();
+			
+				var url = $(this).attr('href');
+			
+				templatePopup.load(url);
+			});
         });
-        
-        var builderSelectPopup = new Popup(null, undefined, {onclose: function() {
-            window.location = '{{ action('CampaignController@template', $campaign->uid) }}';
-        }});
+		
+		// legacy
+        var builderSelectPopup = new Popup({
+			onclose: function() {
+				window.location = '{{ action('CampaignController@template', $campaign->uid) }}';
+			}
+		});
     </script>
 @endsection

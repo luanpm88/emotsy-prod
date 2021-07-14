@@ -46,7 +46,7 @@
             <li class="plain_text_li {{ ($campaign->type == 'plain-text') ? " active" : "" }}">
                 <a href="#top-justified-divided-tab2" data-toggle="tab">
                     <span class="material-icons-outlined">
-description
+auto_awesome
 </span> {{ trans('messages.plain_text_version') }}
                 </a>
             </li>

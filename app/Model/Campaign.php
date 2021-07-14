@@ -3538,4 +3538,34 @@ class Campaign extends Model
     {
         return explode("\n", $this->last_error)[0];
     }
+
+    public function doSendTestEmail($email)
+    {
+        $validator = \Validator::make(['email' => $email], [
+            'email' => 'required|email',
+        ]);
+        
+        // redirect if fails
+        if ($validator->fails()) {
+            return $validator;
+        }
+
+        // validate service
+        $campaign = $this;
+        $validator->after(function ($validator) use ($campaign, $email) {
+            try {
+                $result = $campaign->sendTestEmail($email);
+
+                if ($result['status'] == 'error') {
+                    $validator->errors()->add('email', 'Can not send test email. Error: ' . $result['message']);
+                }
+            } catch (\Exception $e) {
+                $validator->errors()->add('email', 'Can not send test email. Error: ' . $e->getMessage());
+            }
+        });
+
+        return $validator;
+    }
 }
+
+

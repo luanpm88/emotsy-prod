@@ -31,19 +31,19 @@
             {{ csrf_field() }}
 
             <div class="head">
-                <h2 class="text-semibold mb-5">{{ trans('messages.you_are_all_send') }}</h2>
+                <h2 class="text-semibold mb-2">{{ trans('messages.you_are_all_send') }}</h2>
                 <p>{{ trans('messages.review_campaign_feeback') }}</p>
             </div>
 
             <ul class="modern-listing">
                 @if (!is_null($score))
                     <li>
-                        <a href="{{ action('CampaignController@templatePreview', $campaign->uid) }}" class="btn btn-info bg-grey">{{ trans('messages.edit') }}</a>
+                        <a href="{{ action('CampaignController@templatePreview', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
                         <!-- {{ $count = $campaign->subscribersCount() }} -->
                         @if ($score['result'] == true)
-                            <span class="material-icons-outlined">
+                            <i class="material-icons-outlined">
 task_alt
-</span>
+                            </i>
                         @else
                             @if (!Acelle\Model\Setting::isYes('spamassassin.required'))
                                 <i class="icon-exclamation text-warning"></i>
@@ -54,20 +54,20 @@ task_alt
                         <h4>{{ trans('messages.campaign.spam_score') }}</h4>
                         <p>
                             @if ($score['result'] == true)
-                                <span class="badge badge-success">{{ trans('messages.campaign.score.passed') }} {{ $score['score'] }}</span>
+                                <i class="badge badge-success">{{ trans('messages.campaign.score.passed') }} {{ $score['score'] }}</i>
                             @else
-                                <span class="badge badge-warning">{{ trans('messages.campaign.score.failed') }} {{ $score['score'] }}</span>
+                                <i class="badge badge-warning">{{ trans('messages.campaign.score.failed') }} {{ $score['score'] }}</i>
                             @endif
                         </p>
                     </li>
                 @endif
                 <li>
-                    <a href="{{ action('CampaignController@recipients', $campaign->uid) }}" class="btn btn-info bg-grey">{{ trans('messages.edit') }}</a>
+                    <a href="{{ action('CampaignController@recipients', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
                     <!-- {{ $count = $campaign->subscribersCount() }} -->
                     @if ($count)
-                        <span class="material-icons-outlined">
+                        <i class="material-icons-outlined">
 task_alt
-</span>
+                        </i>
                     @else
                         <i class="icon-cross2 text-danger"></i>
                     @endif
@@ -77,30 +77,30 @@ task_alt
                     </p>
                 </li>
                 <li>
-                    <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-info bg-grey">{{ trans('messages.edit') }}</a>
-                    <span class="material-icons-outlined">
+                    <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
+                    <i class="material-icons-outlined">
 task_alt
-</span>
+                    </i>
                     <h4>{{ trans('messages.email_subject') }}</h4>
                     <p>
                         {{ $campaign->subject }}
                     </p>
                 </li>
                 <li>
-                    <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-info bg-grey">{{ trans('messages.edit') }}</a>
-                    <span class="material-icons-outlined">
+                    <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
+                    <i class="material-icons-outlined">
 task_alt
-</span>
+                    </i>
                     <h4>{{ trans('messages.reply_to') }}</h4>
                     <p>
                         {{ $campaign->reply_to }}
                     </p>
                 </li>
                 <li>
-                    <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-info bg-grey">{{ trans('messages.edit') }}</a>
-                    <span class="material-icons-outlined">
+                    <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
+                    <i class="material-icons-outlined">
 task_alt
-</span>
+                    </i>
                     <h4>{{ trans('messages.tracking') }}</h4>
                     <p>
                         @if ($campaign->track_open)
@@ -112,10 +112,10 @@ task_alt
                     </p>
                 </li>
                 <li>
-                    <a href="{{ action('CampaignController@schedule', $campaign->uid) }}" class="btn btn-info bg-grey">{{ trans('messages.edit') }}</a>
-                    <span class="material-icons-outlined">
+                    <a href="{{ action('CampaignController@schedule', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
+                    <i class="material-icons-outlined">
 task_alt
-</span>
+                    </i>
                     <h4>{{ trans('messages.run_at') }}</h4>
                     <p>
                         {{ isset($campaign->run_at) ? Acelle\Library\Tool::formatDateTime($campaign->run_at) : "" }}
@@ -133,15 +133,15 @@ task_alt
                         <div class="text-end">
                             <span
                                 onclick="popupwindow('{{ action('CampaignController@preview', $campaign->uid) }}', '{{ $campaign->name }}', 800, 800)"
-                                href="#preview" class="btn btn-lg bg-grey mr-5" data-uid="{{ $campaign->uid }}">
+                                href="#preview" class="btn btn-secondary mr-5" data-uid="{{ $campaign->uid }}">
                                 {{ trans('messages.preview') }} <i class="icon-eye"></i>
                             </span>
-                            <button class="btn btn-lg bg-grey mr-5 send-a-test-email-link" data-uid="{{ $campaign->uid }}">{{ trans('messages.send_a_test_email') }} <i class="icon-envelop3 ml-5"></i> </button>
+                            <button class="btn btn-secondary mr-5 send-a-test-email-link" data-uid="{{ $campaign->uid }}">{{ trans('messages.send_a_test_email') }} <i class="icon-envelop3 ml-5"></i> </button>
                             @if (!is_null($score))
-                                <span onclick="$('#spam_score_confirm_model').modal('show')" class="btn btn-lg bg-teal-800">{{ trans('messages.send') }} <i class="icon-paperplane ml-5"></i> </span>
-                                <button style="display: none" class="btn btn-lg bg-teal-800 send-campaign-button">{{ trans('messages.send') }} <i class="icon-paperplane ml-5"></i> </button>
+                                <span onclick="$('#spam_score_confirm_model').modal('show')" class="btn btn-primary">{{ trans('messages.send') }} <i class="icon-paperplane ml-5"></i> </span>
+                                <button style="display: none" class="btn btn-primary send-campaign-button">{{ trans('messages.send') }} <i class="icon-paperplane ml-5"></i> </button>
                             @else
-                                <button class="btn btn-lg bg-teal-800 send-campaign-button">{{ trans('messages.send') }} <i class="icon-paperplane ml-5"></i> </button>
+                                <button class="btn btn-primary send-campaign-button">{{ trans('messages.send') }} <i class="icon-paperplane ml-5"></i> </button>
                             @endif
                         </div>
 
@@ -174,11 +174,11 @@ task_alt
                     <div class="text-end">
                         <span
                             onclick="popupwindow('{{ action('CampaignController@preview', $campaign->uid) }}', '{{ $campaign->name }}', 800, 800)"
-                            href="#preview" class="btn btn-lg bg-grey mr-5" data-uid="{{ $campaign->uid }}">
+                            href="#preview" class="btn btn-secondary me-1" data-uid="{{ $campaign->uid }}">
                             {{ trans('messages.preview') }} <i class="icon-eye"></i>
                         </span>
-                        <button class="btn btn-lg bg-grey mr-5 send-a-test-email-link" data-uid="{{ $campaign->uid }}">{{ trans('messages.send_a_test_email') }} <i class="icon-envelop3 ml-5"></i> </button>
-                        <button class="btn btn-lg bg-teal-800">{{ trans('messages.send') }} <i class="icon-paperplane ml-5"></i> </button>
+                        <button class="btn btn-secondary me-1 send-a-test-email-link" data-uid="{{ $campaign->uid }}">{{ trans('messages.send_a_test_email') }} <i class="icon-envelop3 ml-5"></i> </button>
+                        <button class="btn btn-primary">{{ trans('messages.send') }} <i class="icon-paperplane ml-5"></i> </button>
                     </div>
                 @endif
 
@@ -187,4 +187,34 @@ task_alt
         </form>
         <br><br><br>
     </div>
+
+    <script>
+        $(document).ready(function() {
+            // send a test email
+            $('.send-a-test-email-link').on('click', function(e) {
+                e.preventDefault();
+
+                var uid = $(this).attr("data-uid");
+
+                sendTestEmailPopup.load();
+            });
+        });
+
+        var sendTestEmailPopup = {
+            popup: null,
+
+            url: '{{ action('CampaignController@sendTestEmail', [
+                'uid' => $campaign->uid,
+            ]) }}',
+
+            load: function() {
+                if (this.popup == null) {
+                    this.popup = new Popup({
+                        url: this.url
+                    });
+                }
+                this.popup.load();
+            }
+        }
+    </script>
 @endsection
