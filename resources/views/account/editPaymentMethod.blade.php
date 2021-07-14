@@ -5,8 +5,8 @@
 @endsection
 
 @section('content')
-    <h2 class="mb-3 mt-0">{{ trans('messages.payment.choose_payment') }}</h2>
-    <div class="mb-4 pb-4">{!! trans('messages.payment.choose_payment.desc') !!}</div>
+    <h4 class="mb-2 mt-0">{{ trans('messages.payment.choose_payment') }}</h4>
+    <div class="mb-4">{!! trans('messages.payment.choose_payment.desc') !!}</div>
     <form class="edit-payment" action="{{ action('AccountController@editPaymentMethod') }}"
         method="POST">
         {{ csrf_field() }}
@@ -42,13 +42,13 @@
         
         <div class="sub-section">
             <div class="row">
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <button link-method="POST"
-                        class="btn btn-mc_primary py-3 px-4">
+                        class="btn btn-mc_primary px-4">
                             {{ trans('messages.save_payment_method') }}
                     </button>
                 </div>
-                <div class="col-md-8">
+                <div class="col-md-6">
                     
                 </div>
             </div>
