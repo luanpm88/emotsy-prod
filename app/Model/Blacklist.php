@@ -146,7 +146,7 @@ class Blacklist extends Model
      *
      * @return collect
      */
-    public static function import($file, $customer = null, $progressCallback)
+    public static function import($file, $customer = null, $progressCallback = null)
     {
         if (!is_null($progressCallback)) {
             $progressCallback($processed = 0, $total = 0, $failed = 0, $message = trans('messages.blacklist.import_process_new'));
