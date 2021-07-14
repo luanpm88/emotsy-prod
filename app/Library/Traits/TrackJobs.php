@@ -95,7 +95,7 @@ trait TrackJobs
             $monitor->setFailed($e);
 
             if (!is_null($catchCallback)) {
-                $catchCallback($batch);
+                $catchCallback($batch, $e);
             }
         })->finally(function (Batch $batch) use ($monitor, $finallyCallback, $events, $job) {
             if (!is_null($finallyCallback)) {
