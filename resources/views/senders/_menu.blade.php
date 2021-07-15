@@ -7,7 +7,8 @@
                     <i class="icon-envelop2 mr-10"></i> {{ trans('messages.email_addresses') }}
                     </a>
                 </li>
-            @elseif ( Auth::user()->customer->subscription->plan->primarySendingServer()->allowVerifyingOwnEmails() || Auth::user()->customer->subscription->plan->primarySendingServer()->allowVerifyingOwnEmailsRemotely() ) {
+            @elseif ( Auth::user()->customer->subscription->plan->primarySendingServer()->allowVerifyingOwnEmails() ||
+                Auth::user()->customer->subscription->plan->primarySendingServer()->allowVerifyingOwnEmailsRemotely() )
                 <li rel0="SenderController">
                     <a href="{{ action('SenderController@index') }}" class="level-1">
                     <i class="icon-envelop2 mr-10"></i> {{ trans('messages.email_addresses') }}
@@ -18,10 +19,12 @@
             @if (Auth::user()->customer->subscription->plan->useOwnSendingServer())
                 <li rel0="SendingDomainController">
                     <a href="{{ action('SendingDomainController@index') }}" class="level-1">
-                    <i class="icon-earth mr-10"></i> {{ trans('messages.domains') }}
+                    <i class="icon-earth mr-10"></i>
                     </a>
                 </li>
-            @elseif ( Auth::user()->customer->subscription->plan->useOwnSendingServer() || Auth::user()->customer->subscription->plan->primarySendingServer()->allowVerifyingOwnDomains() || Auth::user()->customer->subscription->plan->primarySendingServer()->allowVerifyingOwnDomainsRemotely() ) {
+            @elseif ( Auth::user()->customer->subscription->plan->useOwnSendingServer() ||
+                Auth::user()->customer->subscription->plan->primarySendingServer()->allowVerifyingOwnDomains() ||
+                Auth::user()->customer->subscription->plan->primarySendingServer()->allowVerifyingOwnDomainsRemotely() )
                 <li rel0="SendingDomainController">
                     <a href="{{ action('SendingDomainController@index') }}" class="level-1">
                     <i class="icon-earth mr-10"></i> {{ trans('messages.domains') }}
