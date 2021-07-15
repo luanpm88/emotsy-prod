@@ -32,7 +32,7 @@ class VerifyMailListJob extends Base
                 'total' => 0,
                 'processed' => 0,
                 'failed' => 0,
-                'message' => 'Import is being queued for processing...',
+                'message' => 'Verification process is being queued...',
             ]);
         });
     }
