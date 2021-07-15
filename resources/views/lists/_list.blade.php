@@ -9,7 +9,7 @@
 						<div class="checkbox inline">
 							<label>
 								<input type="checkbox" class="node styled"
-									name="ids[]"
+									name="uids[]"
 									value="{{ $list->uid }}"
 								/>
 							</label>
@@ -148,8 +148,9 @@ error_outline
 									</li>
 								@endif
 								<li>
-									<a class="dropdown-item detele-list-button"
-										list-delete-confirm="{{ action('MailListController@deleteConfirm', ['uids' => $list->uid]) }}"
+									<a class="dropdown-item list-action-single"
+										link-method="POST"
+										link-confirm-url="{{ action('MailListController@deleteConfirm', ['uids' => $list->uid]) }}"
 										href="{{ action('MailListController@delete', ['uids' => $list->uid]) }}">
 										<span class="material-icons-outlined me-2">
 											delete
@@ -186,44 +187,6 @@ error_outline
 
 				return this.clonePopup;
 			},
-
-			delete: function(confirmUrl, url) {
-				// load confirm message
-				$.ajax({
-					url: confirmUrl,
-					type: 'GET'
-				}).done(function(response) {
-					var dialog = new Dialog('confirm', {
-						message: response,
-						ok: function() {
-
-							// do delete
-							$.ajax({
-								url: url,
-								type: 'POST',
-								data: {
-									_token: CSRF_TOKEN
-								}
-							}).done(function(response) {
-								notify({
-									type: 'success',
-									message: response,
-								});
-
-								ListsIndex.getList().load();
-
-							}).fail(function(jqXHR, textStatus, errorThrown){
-								// for debugging
-								alert(errorThrown);
-							});
-						}
-					})
-
-				}).fail(function(jqXHR, textStatus, errorThrown){
-					// for debugging
-					alert(errorThrown);
-				});
-			}
 		}
 		
 		$('.clone-for-users').on('click', function(e) {
@@ -236,13 +199,30 @@ error_outline
 			});
 		});
 
-		$('.detele-list-button').on('click', function(e) {
-			e.preventDefault();			
-			var url = $(this).attr('href');
-			var confirmUrl = $(this).attr('list-delete-confirm');
+		// $('.detele-list-button').on('click', function(e) {
+		// 	e.preventDefault();
+		// 	var url = $(this).attr('href');
+		// 	var confirmUrl = $(this).attr('list-delete-confirm');
 
-			ListsList.delete(confirmUrl, url);
-		});
+		// 	new Link({
+		// 		url: url,
+		// 		confirmUrl: confirmUrl,
+		// 		method: 'POST',
+		// 		data: {
+		// 			_token: CSRF_TOKEN,
+		// 		},
+		// 		done: function(response) {
+		// 			notify({
+		// 				type: 'success',
+		// 				message: response,
+		// 			});
+
+		// 			ListsIndex.getList().load();
+		// 		}
+		// 	});
+		// });
+
+		
 
 		$('.copy-list-button').on('click', function(e) {
 			e.preventDefault();			

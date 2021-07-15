@@ -32,7 +32,7 @@
 		<div class="row top-list-controls py-2">
 			<div class="col-md-10">			
 				<div class="filter-box">
-					<div class="btn-group list_actions hide">
+					<div class="dropdown list_actions" style="display: none">
 						<button role="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">
 							{{ trans('messages.actions') }} <span class="caret"></span>
 						</button>

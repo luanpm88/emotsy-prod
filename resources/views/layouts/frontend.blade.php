@@ -43,13 +43,15 @@
 	<link rel="stylesheet" type="text/css" href="{{ URL::asset('css/mc.css') }}">
 	<link rel="stylesheet" type="text/css" href="{{ URL::asset('core/css/app.css') }}">
 
+	<script type="text/javascript" src="{{ URL::asset('core/js/functions.js') }}"></script>
+
+	<script type="text/javascript" src="{{ URL::asset('core/js/link.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('core/js/popup.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('core/js/list.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('core/js/anotify.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('core/js/dialog.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('core/js/iframe_modal.js') }}"></script>
-
-	<script type="text/javascript" src="{{ URL::asset('core/js/functions.js') }}"></script>
+	
 	<script type="text/javascript" src="{{ URL::asset('core/js/app.js') }}"></script>
 
 	<!-- JS vars -->

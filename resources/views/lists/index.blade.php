@@ -34,13 +34,22 @@
                                 <input type="checkbox" name="page_checked" class="styled check_all">
                             </label>
                         </div>
-                        <div class="btn-group list_actions hide">
-                            <button role="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">
-                                {{ trans('messages.actions') }} <span class="caret"></span>
+                        <div class="dropdown list_actions" style="display: none">
+                            <button type="button"
+                                class="btn btn-secondary dropdown-toggle"
+                                data-bs-toggle="dropdown"
+                            >
+                                {{ trans('messages.actions') }} <span class="number"></span><span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a list-delete-confirm="{{ action('MailListController@deleteConfirm') }}" href="{{ action('MailListController@delete') }}"><span class="material-icons-outlined">
+                                    <a
+                                        class="dropdown-item"
+                                        link-confirm-url="{{ action('MailListController@deleteConfirm') }}"
+                                        link-method="POST"
+                                        href="{{ action('MailListController@delete') }}"
+                                    >
+                                        <span class="material-icons-outlined">
 delete_outline
 </span> {{ trans('messages.delete') }}</a>
                                 </li>

@@ -100,7 +100,9 @@
 								<button id="btnGroupDrop1" role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
 								<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="btnGroupDrop1">
 									@if (\Gate::allows('resend', $campaign))
-										<li><a class="dropdown-item resend-campaign" href="{{ action('CampaignController@resend', ["uid" => $campaign->uid]) }}">
+										<li>
+											<a class="dropdown-item resend-campaign"
+											href="{{ action('CampaignController@resend', ["uid" => $campaign->uid]) }}">
 											<span class="material-icons-outlined me-2">
 	restart_alt
 	</span> {{ trans("messages.campaign.resend") }}</a></li>
@@ -112,7 +114,7 @@ forward_to_inbox
 </span> {{ trans("messages.send_a_test_email") }}</a></li>
 									@endif
 									@if (\Gate::allows('pause', $campaign))
-										<li><a class="dropdown-item list_action"
+										<li><a class="dropdown-item list-action-single"
 											link-method="POST"
 											link-confirm="{{ trans('messages.pause_campaigns_confirm', ['number' => '1']) }}"
 											href="{{ action('CampaignController@pause', ["uids" => $campaign->uid]) }}">
@@ -121,7 +123,7 @@ forward_to_inbox
 	</span>{{ trans("messages.pause") }}</a></li>
 									@endif
 									@if (\Gate::allows('restart', $campaign))
-										<li><a class="dropdown-item list_action"
+										<li><a class="dropdown-item list-action-single"
 											link-method="POST"
 											link-confirm="{{ trans('messages.restart_campaigns_confirm', ['number' => '1']) }}" href="{{ action('CampaignController@restart', ["uids" => $campaign->uid]) }}">
 											<span class="material-icons-outlined me-2">
@@ -143,8 +145,10 @@ forward_to_inbox
 										</li>
 									@endif
 									@if (\Gate::allows('delete', $campaign))
-										<li><a class="dropdown-item detele-campaign-button"
-											delete-confirm="{{ trans('messages.delete_campaign_confirm', ['name' => $campaign->name]) }}"
+										<li><a
+											class="dropdown-item list-action-single"
+											link-method="POST"
+											link-confirm="{{ trans('messages.delete_campaign_confirm', ['name' => $campaign->name]) }}"
 											href="{{ action('CampaignController@delete', ["uids" => $campaign->uid]) }}">
 											<span class="material-icons-outlined me-2">
 	delete_outline
@@ -171,36 +175,7 @@ forward_to_inbox
 				}
 
 				return this.copyPopup;
-			},
-
-			delete: function(confirm, url) {
-				// load confirm message
-				var dialog = new Dialog('confirm', {
-					message: confirm,
-					ok: function() {
-
-						// do delete
-						$.ajax({
-							url: url,
-							type: 'POST',
-							data: {
-								_token: CSRF_TOKEN
-							}
-						}).done(function(response) {
-							notify({
-								type: 'success',
-								message: response,
-							});
-
-							CampaignsIndex.getList().load();
-
-						}).fail(function(jqXHR, textStatus, errorThrown){
-							// for debugging
-							alert(errorThrown);
-						});
-					}
-				})
-			},
+			}
 		}
 
 		var CampaignsResendPopup = {
@@ -250,14 +225,6 @@ forward_to_inbox
 			CampaignsList.getCopyPopup().load({
 				url: url
 			});
-		});
-
-		$('.detele-campaign-button').on('click', function(e) {
-			e.preventDefault();			
-			var url = $(this).attr('href');
-			var confirm = $(this).attr('delete-confirm');
-
-			CampaignsList.delete(confirm, url);
 		});
 
 		$('.send-a-test-email-link').on('click', function(e) {

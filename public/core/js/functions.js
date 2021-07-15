@@ -19,52 +19,23 @@ function initJs(container)
     customValidate(container.find(".form-validate-jquery"));
 
     // link method
-    applyLinkListener(container.find('a:not(.list_action, .list_actions .action)'));
+    applyLinkListener(container.find('a[link-method], a[link-confirm]'));
 }
 
 function applyLinkListener(links, options) {
     links.on('click', function(e) {
+        e.preventDefault();
+        
         var url = $(this).attr('href');
         var confirm = $(this).attr('link-confirm');
         var method = $(this).attr('link-method');
 
-        var goLink = function() {
-            if (typeof(method) == 'undefined' || method.trim().toLowerCase() == 'get') {
-                window.location = url;
-            } else {
-                var newForm = jQuery('<form>', {
-                    'action': url,
-                    'method': 'POST'
-                });
-                newForm.append(jQuery('<input>', {
-                    'name': '_token',
-                    'value': CSRF_TOKEN,
-                    'type': 'hidden'
-                }));
-                newForm.append(jQuery('<input>', {
-                    'name': '_method',
-                    'value': method,
-                    'type': 'hidden'
-                }));
-                $(document.body).append(newForm);
-                newForm.submit();
-            }
-        };
-
-        if (typeof(confirm) !== 'undefined') {
-            e.preventDefault();
-
-            var dialog = new Dialog('confirm', {
-                message: confirm,
-                ok: function() {
-                    goLink();
-                }
-            })
-        } else if (typeof(method) !== 'undefined' && method.trim().toLowerCase() !== 'get') {
-            e.preventDefault();
-
-            goLink();
-        }
+        new Link({
+            type: 'link',
+            url: url,
+            confirm: confirm,
+            method: method
+        });
     });
 }
 
@@ -167,6 +138,9 @@ function makeList(options) {
         data: function() {
             return options.container.find('.filter-box :input, [name=per_page]').serialize();
         },
+        doAction: function() {
+
+        },
         loaded: function() {
             checkPageChange();;
 
@@ -188,57 +162,38 @@ function makeList(options) {
             });
 
             // actions
-            this.content.find('a.list_action').on('click', function(e) {
+            this.content.find('a.list-action-single').off('click').on('click', function(e) {
                 e.preventDefault();
 
                 var url = $(this).attr('href');
                 var confirm = $(this).attr('link-confirm');
+                var confirmUrl = $(this).attr('link-confirm-url');
                 var method = $(this).attr('link-method');
 
-                if (typeof(method) == 'undefined') {
-                    method = 'GET';
-                }
-
-                var goLink = function() {
-                    // copy
-                    $.ajax({
-                        url: url,
-                        method: method,
-                        data: {
-                            _token: CSRF_TOKEN
-                        },
-                        globalError: false
-                    }).done(function(response) {
+                new Link({
+                    url: url,
+                    confirm: confirm,
+                    confirmUrl: confirmUrl,
+                    method: method,
+                    data: {
+                        _token: CSRF_TOKEN,
+                    },
+                    done: function(response) {
                         if (typeof(response) == 'string') {
                             response = {
                                 status: 'success',
                                 message: response
                             };
                         }
+
                         notify({
                             type: response.status,
                             message: response.message,
                         });
-
+    
                         _list.load();
-                    }).fail(function(res){
-                        notify({
-                            type: 'danger',
-                            message: res.responseText,
-                        });
-                    });
-                };
-
-                if (typeof(confirm) !== 'undefined') {
-                    var dialog = new Dialog('confirm', {
-                        message: confirm,
-                        ok: function() {
-                            goLink();
-                        }
-                    })
-                } else {
-                    goLink();
-                }
+                    }
+                });
             });
         }
     });
@@ -314,62 +269,43 @@ function makeList(options) {
     });
     
     // list actions
-    options.container.find('.list_actions .action').on('click', function(e) {
+    options.container.find('.a.list-action-multi, .list_actions a.dropdown-item').off('click').on('click', function(e) {
         e.preventDefault();
+        
         var url = $(this).attr('href');
         var confirm = $(this).attr('link-confirm');
+        var confirmUrl = $(this).attr('link-confirm-url');
         var method = $(this).attr('link-method');
+        var data = _list.content.find('[name="uids[]"]:input').serializeArray();
 
-        if (typeof(method) == 'undefined') {
-            method = 'GET';
+        if (typeof(confirm) !== 'undefined') {
+            confirm = confirm.replace(':number', getCheckCount());
         }
 
-        var goLink = function() {
-            addMaskLoading();
+        data.push({name: '_token', value: CSRF_TOKEN});
 
-            var data = _list.content.find('[name="uids[]"]:input').serializeArray();
-            console.log(data);
-            data.push({name: '_token', value: CSRF_TOKEN});
-
-            // copy
-            $.ajax({
-                url: url,
-                method: method,
-                data: data,
-                globalError: false
-            }).done(function(response) {
+        new Link({
+            url: url,
+            confirm: confirm,
+            confirmUrl: confirmUrl,
+            method: method,
+            data: data,
+            done: function(response) {
                 if (typeof(response) == 'string') {
                     response = {
                         status: 'success',
                         message: response
                     };
                 }
+
                 notify({
                     type: response.status,
                     message: response.message,
                 });
 
                 _list.load();
-            }).fail(function(res){
-                new Dialog('alert', {
-                    title: LANG_ERROR,
-                    message: res.responseText
-                });
-            }).always(function() {
-                removeMaskLoading();
-            });
-        };
-
-        if (typeof(confirm) !== 'undefined') {
-            var dialog = new Dialog('confirm', {
-                message: confirm.replace(':number', getCheckCount()),
-                ok: function() {
-                    goLink();
-                }
-            })
-        } else {
-            goLink();
-        }
+            }
+        });
     });
 
     return _list;

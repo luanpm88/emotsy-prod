@@ -26,18 +26,18 @@
 		@endif
 		@foreach (Auth::user()->customer->logs()->take(10)->get() as $log)
 			<li>
-				<div class="dropdown-item d-flex border-top" hrxef="javascript:;">
+				<div class="dropdown-item d-flex align-items-center border-top" hrxef="javascript:;">
 					<i class="navbar-img me-3" style="">
 						<img src="{{ $log->customer->user->getProfileImageUrl() }}" alt="" />
 					</i>
 					<span class="d-block" style="width: 100%">
-						<span class="d-flex small text-muted2 mb-0">
+						<span class="d-flex mb-0">
 							<span class="text-semibold me-auto fw-600">{{ $log->customer->user->displayName() }}</span>
-							<span class=""><span class="material-icons-outlined">
+							<span class="text-muted small"><span class="material-icons-outlined">
 								restore
 								</span> {{ $log->created_at->diffForHumans() }}</span>
 						</span>
-						<span class="desc-menu-log">{!! $log->message() !!}</span>
+						<span class="desc-menu-log text-muted2 small">{!! $log->message() !!}</span>
 					</span>
 				</div>
 			</li>

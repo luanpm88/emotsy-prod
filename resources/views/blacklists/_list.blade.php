@@ -20,7 +20,7 @@
 					<div class="checkbox inline">
 						<label>
 							<input type="checkbox" class="node styled"
-								name="ids[]"
+								name="uids[]"
 								value="{{ $blacklist->id }}"
 							/>
 						</label>

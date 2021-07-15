@@ -39,7 +39,7 @@
             <div class="col-md-9">
                 @if ($trackingDomains->count() >= 0)
                     <div class="filter-box">
-                        <div class="btn-group list_actions hide">
+                        <div class="dropdown list_actions" style="display: none">
                             <button role="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">
                                 {{ trans('messages.actions') }} <span class="caret"></span>
                             </button>
