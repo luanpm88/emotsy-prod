@@ -325,7 +325,9 @@
                 AcelleExport.cancel();
             });
 
-            $(document).on("click", "#downloadBtn", function() {
+            $(document).on("click", "#downloadBtn", function(e) {
+                e.preventDefault();
+
                 window.location.href = AcelleExport.downloadUrl;
                 return false;
             });
