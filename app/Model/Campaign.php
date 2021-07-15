@@ -51,6 +51,7 @@ use Illuminate\Bus\Batch;
 use Illuminate\Support\Facades\Bus;
 use Acelle\Library\RouletteWheel;
 use Acelle\Library\Traits\TrackJobs;
+use Throwable;
 
 class Campaign extends Model
 {
@@ -3507,7 +3508,7 @@ class Campaign extends Model
                     // previously paused, no need to update its status
                 }
             },
-            function ($batch) {
+            function (Batch $batch, Throwable $e) {
                 // CATCH callback
                 $errorMsg = "Error sending messages. ".$e->getMessage()."\n".$e->getTraceAsString();
                 $this->setError($errorMsg);

@@ -232,15 +232,23 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
 
         // Domains added by users
         $domainsByUsers = $this->sendingDomains()->whereIn('name', $emailOrDomains)->get();
-        $sendersByUsers = $this->senders()->whereIn('name', $emailOrDomains)->get();
+        $sendersByUsers = $this->senders()->whereIn('email', $emailOrDomains)->get();
 
-        foreach ($domainsByUsers->merge($sendersByUsers) as $domain) {
+        foreach ($domainsByUsers as $domain) {
             if (array_key_exists($domain->name, $identities)) {
                 $identities[$domain->name]['UserId'] = $domain->customer->id;
                 $identities[$domain->name]['UserName'] = $domain->customer->user->displayName();
             }
         }
 
+        foreach ($sendersByUsers as $sender) {
+            if (array_key_exists($sender->email, $identities)) {
+                $identities[$sender->email]['UserId'] = $sender->customer->id;
+                $identities[$sender->email]['UserName'] = $sender->customer->user->displayName();
+            }
+        }
+
+        // New identities fetched from the server, UserId and UserName keys are not available yet, just set it to Null
         foreach ($identities as $key => $attributes) {
             if (!array_key_exists('UserId', $attributes)) {
                 $identities[$key]['UserId'] = null;
