@@ -154,14 +154,8 @@ class Transaction extends Model
         }
     }
 
-    public function allowManualReviewingOfTransaction()
+    public function allowManualReview()
     {
-        if (!Billing::isGatewayRegistered($this->method)) {
-            throw new \Exception('Gateway for ' . $this->method . ' is not registered!');
-        }
-
-        $gateway = Billing::getGateway($this->method);
-
-        return $gateway->allowManualReviewingOfTransaction();
+        return $this->allow_manual_review;
     }
 }

@@ -467,7 +467,7 @@ class Invoice extends Model
      *
      * @return array
      */
-    public function addPendingTransaction($gateway)
+    public function createPendingTransaction($gateway)
     {
         if ($this->getPendingTransaction()) {
             throw new \Exception('Invoice already has a pending transaction!');
@@ -477,6 +477,7 @@ class Invoice extends Model
         $transaction = new Transaction();
         $transaction->invoice_id = $this->id;
         $transaction->status = Transaction::STATUS_PENDING;
+        $transaction->allow_manual_review = $gateway->allowManualReviewingOfTransaction();
 
         // This information is needed for verifying a transaction status later on
         $transaction->method = $gateway->getType();
@@ -502,7 +503,7 @@ class Invoice extends Model
     {
         $invoice = $this;
         // \DB::transaction(function() use ($gateway, $invoice) {
-        $invoice->addPendingTransaction($gateway);
+        $invoice->createPendingTransaction($gateway);
 
         try {
             $result = $payCallback($invoice);
