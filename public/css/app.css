@@ -3976,8 +3976,12 @@ form.loading input {
     overflow: hidden;
     text-overflow: ellipsis;
 }
-a.btn-link {
+.btn-link {
     color: #333!important;
+}
+.btn-link:hover {
+    color: #000!important;
+    text-decoration: none;
 }
 .product-image-box {
     display: flex;

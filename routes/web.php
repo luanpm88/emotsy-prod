@@ -396,7 +396,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('campaigns/delete', 'CampaignController@delete');
     Route::get('campaigns/select2', 'CampaignController@select2');
     Route::post('campaigns/pause', 'CampaignController@pause');
-    Route::get('campaigns/restart', 'CampaignController@restart');
+    Route::post('campaigns/restart', 'CampaignController@restart');
     Route::resource('campaigns', 'CampaignController');
     Route::get('campaigns/{uid}/edit', 'CampaignController@edit');
     Route::patch('campaigns/{uid}/update', 'CampaignController@update');

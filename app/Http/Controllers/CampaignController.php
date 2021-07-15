@@ -653,7 +653,11 @@ class CampaignController extends Controller
             return;
         }
 
-        $campaigns = Campaign::whereIn('uid', explode(',', $request->uids));
+        if (!is_array($request->uids)) {
+            $request->uids = explode(',', $request->uids);
+        }
+
+        $campaigns = Campaign::whereIn('uid', $request->uids);
 
         foreach ($campaigns->get() as $campaign) {
             // authorize
@@ -1368,7 +1372,9 @@ class CampaignController extends Controller
     public function pause(Request $request)
     {
         $customer = $request->user()->customer;
-        $campaigns = Campaign::whereIn('uid', explode(',', $request->uids));
+        $campaigns = Campaign::whereIn('uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
 
         foreach ($campaigns->get() as $campaign) {
             if (\Gate::allows('pause', $campaign)) {
@@ -1396,7 +1402,11 @@ class CampaignController extends Controller
     public function restart(Request $request)
     {
         $customer = $request->user()->customer;
-        $items = Campaign::whereIn('uid', explode(',', $request->uids));
+        if (!is_array($request->uids)) {
+            $request->uids = explode(',', $request->uids);
+        }
+
+        $items = Campaign::whereIn('uid', $request->uids);
 
         foreach ($items->get() as $item) {
             if (\Gate::allows('restart', $item)) {

@@ -41,7 +41,7 @@
                     <div class="filter-box">
                         @include('helpers.select_tool')
                         <div class="btn-group list_actions hide">
-                            <button role="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
+                            <button role="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">
                                 {{ trans('messages.actions') }} <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu">

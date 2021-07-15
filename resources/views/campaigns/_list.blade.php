@@ -9,7 +9,7 @@
 						<div class="checkbox inline">
 							<label>
 								<input type="checkbox" class="node styled"
-									name="ids[]"
+									name="uids[]"
 									value="{{ $campaign->uid }}"
 								/>
 							</label>
@@ -121,7 +121,9 @@ forward_to_inbox
 	</span>{{ trans("messages.pause") }}</a></li>
 									@endif
 									@if (\Gate::allows('restart', $campaign))
-										<li><a class="dropdown-item list_action" link-confirm="{{ trans('messages.restart_campaigns_confirm', ['number' => '1']) }}" href="{{ action('CampaignController@restart', ["uids" => $campaign->uid]) }}">
+										<li><a class="dropdown-item list_action"
+											link-method="POST"
+											link-confirm="{{ trans('messages.restart_campaigns_confirm', ['number' => '1']) }}" href="{{ action('CampaignController@restart', ["uids" => $campaign->uid]) }}">
 											<span class="material-icons-outlined me-2">
 	restore
 	</span> {{ trans("messages.restart") }}</a></li>

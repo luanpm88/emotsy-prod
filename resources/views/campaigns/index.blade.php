@@ -30,26 +30,40 @@
             <div class="col-md-10">
                 @if ($campaigns->count() >= 0)
                     <div class="filter-box">
-                        <div class="btn-group list_actions hide">
-                            <button role="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
-                                {{ trans('messages.actions') }} <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a link-confirm="{{ trans('messages.restart_campaigns_confirm') }}" href="{{ action('CampaignController@restart') }}"><span class="material-icons-outlined">
-restore
-</span> {{ trans("messages.restart") }}</a></li>
-                                <li><a link-confirm="{{ trans('messages.pause_campaigns_confirm') }}" href="{{ action('CampaignController@pause') }}"><span class="material-icons-outlined">
-motion_photos_pause
-</span>{{ trans("messages.pause") }}</a></li>
-                                <li><a delete-confirm="{{ trans('messages.delete_campaigns_confirm') }}" href="{{ action('CampaignController@delete') }}"><span class="material-icons-outlined">
-delete_outline
-</span> {{ trans('messages.delete') }}</a></li>
-                            </ul>
-                        </div>
                         <div class="checkbox inline check_all_list">
                             <label>
                                 <input type="checkbox" name="page_checked" class="styled check_all">
                             </label>
+                        </div>
+                        <div class="dropdown list_actions" style="display: none">
+                            <button type="button"
+                                id="dropdownListActions"
+                                class="btn btn-secondary dropdown-toggle"
+                                data-bs-toggle="dropdown"
+                            >
+                                {{ trans('messages.actions') }} <span class="number"></span><span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownListActions">
+                                <li>
+                                    <a class="action dropdown-item"
+                                        link-method="POST"
+                                        link-confirm="{{ trans('messages.restart_campaigns_confirm') }}" href="{{ action('CampaignController@restart') }}">
+                                        <span class="material-icons-outlined me-2">
+restore
+</span> {{ trans("messages.restart") }}</a></li>
+                                <li><a class="action dropdown-item"
+                                    link-method="POST"
+                                    link-confirm="{{ trans('messages.pause_campaigns_confirm') }}" href="{{ action('CampaignController@pause') }}">
+                                    <span class="material-icons-outlined me-2">
+motion_photos_pause
+</span> {{ trans("messages.pause") }}</a></li>
+                                <li><a class="action dropdown-item"
+                                    link-method="POST"
+                                    link-confirm="{{ trans('messages.delete_campaigns_confirm') }}" href="{{ action('CampaignController@delete') }}">
+                                    <span class="material-icons-outlined me-2">
+delete_outline
+</span> {{ trans('messages.delete') }}</a></li>
+                            </ul>
                         </div>
                         <span class="filter-group">
                             <span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>

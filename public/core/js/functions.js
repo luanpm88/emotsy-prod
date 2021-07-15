@@ -19,7 +19,7 @@ function initJs(container)
     customValidate(container.find(".form-validate-jquery"));
 
     // link method
-    applyLinkListener(container.find('a:not(.list_action)'));
+    applyLinkListener(container.find('a:not(.list_action, .list_actions .action)'));
 }
 
 function applyLinkListener(links, options) {
@@ -168,8 +168,11 @@ function makeList(options) {
             return options.container.find('.filter-box :input, [name=per_page]').serialize();
         },
         loaded: function() {
+            checkPageChange();;
+
             this.content.find('[name=per_page]').on('change', function() {
                 _list.load();
+                checkPageChange();
             });
 
             this.content.find('pagination a').on('click', function(e) {
@@ -180,8 +183,7 @@ function makeList(options) {
             });
 
             // each row input clicked
-            this.content.find('[name="ids[]"]').on('change', function() {
-                console.log('ddd');
+            this.content.find('[name="uids[]"]').on('change', function() {
                 checkPageChange();
             });
 
@@ -241,10 +243,14 @@ function makeList(options) {
         }
     });
 
+    var getCheckCount = function() {
+        return options.container.find('[name="uids[]"]:checked').length;
+    }
+
     // check if page checked half or all
     var checkPageChange = function() {
-        var checkCount = options.container.find('[name="ids[]"]:checked').length;
-        var notCheckCount = options.container.find('[name="ids[]"]').length;
+        var checkCount = getCheckCount();
+        var notCheckCount = options.container.find('[name="uids[]"]').length;
 
         if (checkCount == notCheckCount && checkCount > 0) {
             options.container.find('input[name=page_checked]').prop('checked', true);
@@ -256,15 +262,25 @@ function makeList(options) {
             options.container.find('input[name=page_checked]').prop('checked', false);
             options.container.find('input[name=page_checked]').addClass('half_checked');
         }
+
+        // show list actions
+        if (checkCount > 0) {
+            options.container.find('.list_actions').fadeIn();
+        } else {
+            options.container.find('.list_actions').hide();
+        }
+
+        // update count number
+        options.container.find('.list_actions .number').html(checkCount);
     };
 
     // check all|none items in page
     var checkPage = function() {
         var checked = options.container.find('input[name=page_checked]').is(':checked');
         if (checked) {
-            options.container.find('[name="ids[]"]').prop('checked', true);
+            options.container.find('[name="uids[]"]').prop('checked', true);
         } else {
-            options.container.find('[name="ids[]"]').prop('checked', false);
+            options.container.find('[name="uids[]"]').prop('checked', false);
         }
     };
 
@@ -295,6 +311,65 @@ function makeList(options) {
     options.container.find('input[name=page_checked]').on('change', function() {
         checkPage();
         checkPageChange();
+    });
+    
+    // list actions
+    options.container.find('.list_actions .action').on('click', function(e) {
+        e.preventDefault();
+        var url = $(this).attr('href');
+        var confirm = $(this).attr('link-confirm');
+        var method = $(this).attr('link-method');
+
+        if (typeof(method) == 'undefined') {
+            method = 'GET';
+        }
+
+        var goLink = function() {
+            addMaskLoading();
+
+            var data = _list.content.find('[name="uids[]"]:input').serializeArray();
+            console.log(data);
+            data.push({name: '_token', value: CSRF_TOKEN});
+
+            // copy
+            $.ajax({
+                url: url,
+                method: method,
+                data: data,
+                globalError: false
+            }).done(function(response) {
+                if (typeof(response) == 'string') {
+                    response = {
+                        status: 'success',
+                        message: response
+                    };
+                }
+                notify({
+                    type: response.status,
+                    message: response.message,
+                });
+
+                _list.load();
+            }).fail(function(res){
+                new Dialog('alert', {
+                    title: LANG_ERROR,
+                    message: res.responseText
+                });
+            }).always(function() {
+                removeMaskLoading();
+            });
+        };
+
+        if (typeof(confirm) !== 'undefined') {
+            var dialog = new Dialog('confirm', {
+                message: confirm.replace(':number', getCheckCount()),
+                ok: function() {
+                    goLink();
+                }
+            })
+        } else {
+            goLink();
+        }
     });
 
     return _list;

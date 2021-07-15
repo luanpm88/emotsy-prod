@@ -35,7 +35,10 @@
         loadChart: function() {
             $.ajax({
                 method: "GET",
-                url: DashboardListGrowth.url
+                url: DashboardListGrowth.url,
+                data: {
+                    uid: $('.dashboard-list-select').val(),
+                }
             })
             .done(function( response ) {
                 DashboardListGrowth.getContainer().html(response);

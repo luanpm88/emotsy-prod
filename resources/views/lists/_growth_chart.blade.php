@@ -132,7 +132,7 @@
                             var option = {
                                 title: {
                                     text: '{{ trans('messages.subscribers') }}',
-                                    subtext: '{{ trans('messages.statistics_chart') }}',
+                                    // subtext: '{{ trans('messages.statistics_chart') }}',
                                     left: 'center'
                                 },
                                 tooltip: {
@@ -141,7 +141,7 @@
                                 },
                                 legend: {
                                     orient: 'vertical',
-                                    left: 'left',
+                                    left: 'right',
                                 },
                                 series: [
                                     {
@@ -157,9 +157,9 @@
                                             }
                                         },
                                         label: {
-                                            position: 'inner',
+                                            // position: 'inner',
                                             fontSize: 12,
-                                            formatter: '{d}% ({c})',
+                                            formatter: '{b}\n{d}% ({c})',
                                         },
                                     }
                                 ]

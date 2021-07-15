@@ -74,18 +74,18 @@ class Dialog {
                         <div class="modal-dialog">
                             <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title">
+                                <h5 class="modal-title text-center" style="width:100%">
                                     <i class="material-icons-outlined alert-icon mr-2">contact_support</i>
                                     `+this.title+`
                                 </h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <div class="modal-body">
+                            <div class="modal-body px-4 pt-4 pb-0">
                                 `+this.message+`
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-primary dialog-ok">`+LANG_OK+`</button>
-                                <button class="btn btn-secondary dialog-cancel">`+LANG_CANCEL+`</button>
+                            <div class="modal-footer border-top-0 p-4">
+                                <button class="btn btn-link dialog-cancel">`+LANG_CANCEL+`</button>
+                                <button type="button" class="btn btn-secondary dialog-ok px-3">`+LANG_CONFIRM+`</button>
                             </div>
                             </div>
                         </div>
@@ -110,7 +110,7 @@ class Dialog {
                                     `+this.message+`
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary dialog-ok">`+LANG_OK+`</button>
+                                    <button type="button" class="btn btn-secondary dialog-ok">`+LANG_OK+`</button>
                                 </div>
                                 </div>
                             </div>
