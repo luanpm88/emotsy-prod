@@ -301,38 +301,37 @@
             },
         }
 
-        function check_process(first) {
-            
-        }
-
-        $(document).on("submit", "form.ajax_upload_form", function(e) {
-            e.preventDefault();
-
-            AcelleExport.export();
-        });
-
-        $(document).on("click", "#cancelBtn", function(e) {
-            e.preventDefault();
-
-            var cancelConfirm = confirm("{{ trans('messages.list.export.cancel') }}");
-
-            if (cancelConfirm) {
-                AcelleExport.cancel();
-            }
-        });
-
-        $(document).on("click", ".retry", function(e) {
-            e.preventDefault();
-
-            AcelleExport.cancel();
-        });
-
-        $(document).on("click", "#downloadBtn", function() {
-            window.location.href = AcelleExport.downloadUrl;
-            return false;
-        });
-
         $(document).ready(function() {
+
+            $(document).on("submit", "form.ajax_upload_form", function(e) {
+                e.preventDefault();
+
+                AcelleExport.export();
+            });
+
+            $(document).on("click", "#cancelBtn", function(e) {
+                e.preventDefault();
+
+                var cancelConfirm = confirm("{{ trans('messages.list.export.cancel') }}");
+
+                if (cancelConfirm) {
+                    AcelleExport.cancel();
+                }
+            });
+
+            $(document).on("click", ".retry", function(e) {
+                e.preventDefault();
+
+                AcelleExport.cancel();
+            });
+
+            $(document).on("click", "#downloadBtn", function() {
+                window.location.href = AcelleExport.downloadUrl;
+                return false;
+            });
+
+
+            // SET CURRENT JOB IF ANY
             @if (isset($currentJobUid))
                 // Temporary show the progress bar of 0 percentage, waiting for the checkProgress() call to update it
                 AcelleExport.showProgressBar();
