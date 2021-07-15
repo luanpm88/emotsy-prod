@@ -162,13 +162,15 @@
     
 
     <script>
-        var changePlanModal = new IframeModal();
+        var changePlanModal;
 
         $(function() {
             $('.change_plan_button').click(function(e) {
                 e.preventDefault();
 
                 var src = $(this).attr('href');
+
+                changePlanModal = new IframeModal();
                 changePlanModal.load(src);
             });
         });
