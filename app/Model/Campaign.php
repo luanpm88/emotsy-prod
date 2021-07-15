@@ -3194,14 +3194,33 @@ class Campaign extends Model
         // Reset max_execution_time so that command can run for a long time without being terminated
         self::resetMaxExecutionTime();
 
-        $this->iterateThroughSubscribers(function ($subscribers) use (&$i, &$sendingServersPool, $callback) {
-            foreach ($subscribers as $subscriber) {
-                $serverId = RouletteWheel::take($sendingServersPool);
-                $server = SendingServer::find($serverId)->mapType();
+        // Query subscribers
+        $query = $this->subscribersToSend();
 
-                $callback($this, $subscriber, $server);
+        // Iterate through batches of subscribers, 100 each
+        cursorIterate(
+            $query,
+            $orderBy = 'subscribers.id',
+            $perPage = 100,
+            function ($subscribers) use (&$i, &$sendingServersPool, $callback) {
+                foreach ($subscribers as $subscriber) {
+                    $serverId = RouletteWheel::take($sendingServersPool);
+                    $server = SendingServer::find($serverId)->mapType();
+
+                    $callback($this, $subscriber, $server);
+                }
             }
-        }, $perPage = 100);
+        );
+    }
+
+    public function subscribersToSend()
+    {
+        // Retrieve subscribers to send!
+        $query = $this->subscribers([], ['email_verifications'])
+                ->whereRaw(sprintf(table('subscribers').'.email NOT IN (SELECT email FROM %s t JOIN %s s ON t.subscriber_id = s.id WHERE t.campaign_id = %s)', table('tracking_logs'), table('subscribers'), $this->id))
+                ->subscribed();
+
+        return $query;
     }
 
     /**
@@ -3374,25 +3393,6 @@ class Campaign extends Model
         }
 
         return $query;
-    }
-
-    /**
-     * Get Pending Subscribers
-     * Select only subscribers that are ready for sending. Those whose status is `blacklisted`, `pending` or `unconfirmed` are not included.
-     */
-    public function iterateThroughSubscribers($callback, $perPage = 100)
-    {
-        $query = $this->subscribers([], ['email_verifications'])
-                ->whereRaw(sprintf(table('subscribers').'.email NOT IN (SELECT email FROM %s t JOIN %s s ON t.subscriber_id = s.id WHERE t.campaign_id = %s)', table('tracking_logs'), table('subscribers'), $this->id))
-                ->subscribed();
-
-        $cursor = null;
-        do {
-            // The 4th parameter contains the offset cursor
-            $list = $query->orderBy('subscribers.id')->cursorPaginate($perPage, ['*'], 'cursor', $cursor);
-            $callback($list->items());
-            $cursor = $list->nextCursor();
-        } while ($list->hasMorePages());
     }
 
     /**
