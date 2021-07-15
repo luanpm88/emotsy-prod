@@ -360,7 +360,7 @@ class TemplateController extends Controller
             return $this->notAuthorized();
         }
         
-        $assetUrl = $template->uploadAsset($request->file('file'));
+        $assetUrl = $template->uploadAsset($request);
 
         return response()->json([
             'url' => $assetUrl

@@ -654,13 +654,50 @@ class Template extends Model
      */
     public function uploadAsset($file)
     {
-        // Store to template storage storage/app/customers/000000/templates/111111/ASSET.JPG
-        $name = escapeshellarg($file->getClientOriginalName());
-        $name = StringHelper::generateUniqueName($this->getStoragePath(), $name);
+        
+        if ($_POST['assetType'] == 'upload') {
+            $file = $request->file('file');
+            // Store to template storage storage/app/customers/000000/templates/111111/ASSET.JPG
+            $name = escapeshellarg($file->getClientOriginalName());
+            $name = StringHelper::generateUniqueName($this->getStoragePath(), $name);
 
-        // Move uploaded file
-        $file->move($this->getStoragePath(), $name);
-        $assetUrl = \Acelle\Helpers\generatePublicPath($this->getStoragePath($name));
+            // Move uploaded file
+            $file->move($this->getStoragePath(), $name);
+            $assetUrl = \Acelle\Helpers\generatePublicPath($this->getStoragePath($name));
+        } elseif ($_POST['assetType'] == 'url') {
+            // upload file by upload image
+            $filename = uniqid();
+
+            // Storage path of the uploaded asset:
+            // For example: /storage/templates/{type}/{ID}/604ce5e36d0fa
+            $filepath = $this->getStoragePath($filename);
+
+            // Download the file's content
+            $content = file_get_contents($_POST['url']);
+
+            // Store it:
+            $arrContextOptions=array(
+                "ssl"=>array(
+                    "verify_peer"=>false,
+                    "verify_peer_name"=>false,
+                ),
+            ); 
+            file_put_contents($filepath, $content, false, stream_context_create($arrContextOptions));
+            $assetUrl = \Acelle\Helpers\generatePublicPath($filepath);
+        } elseif ($_POST['assetType'] == 'base64') {
+            // upload file by upload image
+            $filename = uniqid();
+
+            // Storage path of the uploaded asset:
+            // For example: /storage/templates/{type}/{ID}/604ce5e36d0fa
+            $filepath = $this->getStoragePath($filename);
+
+            // Store it
+            file_put_contents($filepath, file_get_contents($_POST['url_base64']));
+            $assetUrl = \Acelle\Helpers\generatePublicPath($filepath);
+        }
+
+        
         return $assetUrl;
     }
 
