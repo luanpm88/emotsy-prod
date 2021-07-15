@@ -17,12 +17,12 @@ class IframeModal {
     }
     
     hide() {
-        this.modal.fadeOut();
+        this.modal.remove();
         $('html').css('overflow', 'auto');
     }
     
     static hide() {
-        $('.iframe-modal').parent().fadeOut();
+        $('.iframe-modal').parent().remove();
         $('html').css('overflow', 'auto');
     }
     

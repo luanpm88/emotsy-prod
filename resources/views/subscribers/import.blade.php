@@ -357,32 +357,35 @@ restart_alt
             }
         }
 
-        $(document).on("submit", "form.ajax_upload_form", function() {
-            AcelleImport.upload();
-            return false; // avoid triggering the click action of <A>
-        });
-
-        $(document).on("click", ".retry", function() {
-            AcelleImport.importAnotherFile();
-            return false;
-        });
-
-        $(document).on("click", "#cancelBtn", function() {
-            var cancelConfirm = confirm("{{ trans('messages.list.import.cancel') }}");
-
-            if (cancelConfirm) {
-                AcelleImport.cancel();
-            }
-
-            return false;
-        });
-
-        $(document).on("click", "#downloadLog", function() {
-            window.location.href = AcelleImport.logDownloadUrl;
-            return false;
-        });
-
         $(document).ready(function() {
+            
+            // Event bindings
+            $(document).on("submit", "form.ajax_upload_form", function() {
+                AcelleImport.upload();
+                return false; // avoid triggering the click action of <A>
+            });
+
+            $(document).on("click", ".retry", function() {
+                AcelleImport.importAnotherFile();
+                return false;
+            });
+
+            $(document).on("click", "#cancelBtn", function() {
+                var cancelConfirm = confirm("{{ trans('messages.list.import.cancel') }}");
+
+                if (cancelConfirm) {
+                    AcelleImport.cancel();
+                }
+
+                return false;
+            });
+
+            $(document).on("click", "#downloadLog", function() {
+                window.location.href = AcelleImport.logDownloadUrl;
+                return false;
+            });
+
+            // In case of existing job, start checking it
             @if (isset($currentJobUid))
             	// Temporary show the progress bar of 0 percentage, waiting for the checkProgress() call to update it
                 AcelleImport.showProgressBar();

@@ -275,37 +275,39 @@ restart_alt
             },
         };
 
-        $(document).on("click", "#startBtn", function(e) {
-            e.preventDefault();
-
-            AcelleList.start();
-        });
-
-        $(document).on("click", "#cancelBtn", function(e) {
-            e.preventDefault();
-
-            var cancelConfirm = confirm("{{ trans('messages.list.verify.cancel_confirm') }}");
-
-            if (cancelConfirm) {
-                AcelleList.cancel();
-            }
-        });
-
-        $(document).on("click", "#doneBtn", function(e) {
-            e.preventDefault();
-
-            // Done = Cancel
-            AcelleList.cancel();
-        });
-
-        $(document).on("click", "#retryBtn", function(e) {
-            e.preventDefault();
-
-            // Done = Cancel
-            AcelleList.cancel();
-        });
-
         $(document).ready(function() {
+            // EVENT BINDING
+            $(document).on("click", "#startBtn", function(e) {
+                e.preventDefault();
+
+                AcelleList.start();
+            });
+
+            $(document).on("click", "#cancelBtn", function(e) {
+                e.preventDefault();
+
+                var cancelConfirm = confirm("{{ trans('messages.list.verify.cancel_confirm') }}");
+
+                if (cancelConfirm) {
+                    AcelleList.cancel();
+                }
+            });
+
+            $(document).on("click", "#doneBtn", function(e) {
+                e.preventDefault();
+
+                // Done = Cancel
+                AcelleList.cancel();
+            });
+
+            $(document).on("click", "#retryBtn", function(e) {
+                e.preventDefault();
+
+                // Done = Cancel
+                AcelleList.cancel();
+            });
+
+            // SET UP CURRENT RUNNING JOB
             @if (isset($currentJobUid))
                 // Temporary show the progress bar of 0 percentage, waiting for the checkProgress() call to update it
                 AcelleList.showProgressBar();

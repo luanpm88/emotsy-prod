@@ -70,7 +70,7 @@
 								{{ trans('messages.subscription.status.active') }}
 							</span>
 
-							@if ($subscription->getUnpaidInvoice() && $subscription->getUnpaidInvoice()->getPendingTransaction() && $subscription->getUnpaidInvoice()->getPendingTransaction()->allowManualReviewingOfTransaction())
+							@if ($subscription->getUnpaidInvoice() && $subscription->getUnpaidInvoice()->getPendingTransaction() && $subscription->getUnpaidInvoice()->getPendingTransaction()->allowManualReview())
 								<div style="cursor:pointer"
 									class="text-warning mini"
 								>
@@ -81,7 +81,7 @@
 							@break
 						@case(Acelle\Model\Subscription::STATUS_NEW)
 							@if ($subscription->getUnpaidInvoice())
-								@if ($subscription->getUnpaidInvoice()->getPendingTransaction() && $subscription->getUnpaidInvoice()->getPendingTransaction()->allowManualReviewingOfTransaction())
+								@if ($subscription->getUnpaidInvoice()->getPendingTransaction() && $subscription->getUnpaidInvoice()->getPendingTransaction()->allowManualReview())
 									<span style="cursor:pointer" href="{{ action('Admin\SubscriptionController@invoices', ['id' => $subscription->uid]) }}"
 										class="view_invoices label bg-m-warning"
 									>

@@ -351,7 +351,13 @@ class TemplateController extends Controller
             return $this->notAuthorized();
         }
         
-        $assetUrl = $template->uploadAsset($request->file('file'));
+        if ($request->assetType == 'upload') {
+            $assetUrl = $template->uploadAsset($request->file('file'));
+        } elseif ($request->assetType == 'url') {
+            $assetUrl = $template->uploadAssetFromUrl($request->url);
+        } elseif ($request->assetType == 'base64') {
+            $assetUrl = $template->uploadAssetFromBase64($request->url_base64);
+        }
 
         return response()->json([
             'url' => $assetUrl

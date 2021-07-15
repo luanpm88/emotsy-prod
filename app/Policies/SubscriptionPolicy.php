@@ -18,7 +18,7 @@ class SubscriptionPolicy
             case 'admin':
                 $can = $subscription->getUnpaidInvoice() &&
                     $subscription->getUnpaidInvoice()->getPendingTransaction() &&
-                    $subscription->getUnpaidInvoice()->getPendingTransaction()->allowManualReviewingOfTransaction();
+                    $subscription->getUnpaidInvoice()->getPendingTransaction()->allowManualReview();
                 break;
             case 'customer':
                 $can = false;
@@ -130,7 +130,7 @@ class SubscriptionPolicy
             case 'admin':
                 $can = $subscription->getUnpaidInvoice() &&
                     $subscription->getUnpaidInvoice()->getPendingTransaction() &&
-                    $subscription->getUnpaidInvoice()->getPendingTransaction()->allowManualReviewingOfTransaction();
+                    $subscription->getUnpaidInvoice()->getPendingTransaction()->allowManualReview();
                 break;
             case 'customer':
                 $can = false;
