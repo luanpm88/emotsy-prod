@@ -84,9 +84,9 @@
 									<br />
 									<div class="text-left">
 										@if ($current_license)
-											<button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.change_license') }}</button>
+											<button class="btn btn-secondary"><i class="icon-check"></i> {{ trans('messages.change_license') }}</button>
 										@else
-											<button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.verify_license') }}</button>
+											<button class="btn btn-secondary"><i class="icon-check"></i> {{ trans('messages.verify_license') }}</button>
 										@endif
 									</div>
 								</div>

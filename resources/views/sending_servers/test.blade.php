@@ -55,7 +55,7 @@
             <a
                 href="{{ action('SendingServerController@test', $server->uid) }}"
                 role="button"
-                class="btn bg-teal mr-5 ajax_link"
+                class="btn btn-secondary mr-5 ajax_link"
                 data-in-form="true"
                 link-method="POST"
                 mask-title="{{ trans('messages.sending_server.testing_connection') }}"

@@ -39,7 +39,7 @@
             <div class="col-md-12"><p align="right"><a href="{{ action('Admin\SettingController@advanced') }}">View hidden configuration settings</a></p></div>
         </div>
         <div class="text-left">
-            <button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
+            <button class="btn btn-secondary"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
         </div>
         
     </div>

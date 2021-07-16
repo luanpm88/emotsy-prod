@@ -35,7 +35,7 @@
 				<td class="text-end">
 					<a href="{{ action('SourceController@sync', $source->uid) }}"
 						link-method="POST"
-						role="button" class="btn bg-teal-600 m-icon">
+						role="button" class="btn btn-secondary-600 m-icon">
 						<span class="material-icons-outlined">
 							sync
 							</span>{{ trans('messages.source.sync') }}</a>

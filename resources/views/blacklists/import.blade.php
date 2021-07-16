@@ -44,7 +44,7 @@
                 ])
 
                 <div class="text-left">
-                    <button class="btn bg-teal mr-10 click-effect"><i class="icon-check"></i> {{ trans('messages.import') }}</button>
+                    <button class="btn btn-secondary mr-10 click-effect"><i class="icon-check"></i> {{ trans('messages.import') }}</button>
                 </div>
 
             </form>
@@ -86,7 +86,7 @@
 
                 <div class="form-group finish hide">
                     <div class="text-left">
-                        <a id="doneBtn" target="_blank" href="#" type="button" class="btn bg-teal success">
+                        <a id="doneBtn" target="_blank" href="#" type="button" class="btn btn-secondary success">
                             {{ trans('messages.label.done') }}
                         </a>
                     </div>

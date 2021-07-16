@@ -27,7 +27,7 @@
                 <a
                     href="{{ action('TemplateController@copy', $template->uid) }}"
                     role="button"
-                    class="btn bg-teal mr-5 ajax_link"
+                    class="btn btn-secondary mr-5 ajax_link"
                     data-in-form="true"
                     link-method="POST"
                     mask-title="{{ trans('messages.template.copying...') }}"

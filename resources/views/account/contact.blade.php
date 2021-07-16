@@ -101,7 +101,7 @@
         </div>
 
         <div class="text-end">
-            <button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
+            <button class="btn btn-secondary"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
         </div>
 
     <form>

@@ -91,7 +91,7 @@ people
 
                 <div class="form-group finish hide">
                     <div class="text-left">
-                        <a id="downloadBtn" target="_blank" href="#" role="button" class="btn bg-teal success">
+                        <a id="downloadBtn" target="_blank" href="#" role="button" class="btn btn-secondary success">
                             <i class="icon-download"></i> {{ trans('messages.download_export') }}
                         </a>
                         <a href="#retry" class="btn btn-outline-secondary me-1 retry"><span class="material-icons-outlined">

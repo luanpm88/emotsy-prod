@@ -26,7 +26,7 @@
 				</td>
 				<td class="text-end">																					
 					@can("translate", $language)
-						<a href="{{ action('Admin\LanguageController@translate', ["id" => $language->uid, "file" => "messages", "file_id" => $language->getDefaultFile()['id']]) }}" data-popup="tooltip" title="{{ trans('messages.translate') }}" role="button" class="btn bg-teal btn-icon"><i class="icon-share2"></i> {{ trans('messages.translate') }}</a>
+						<a href="{{ action('Admin\LanguageController@translate', ["id" => $language->uid, "file" => "messages", "file_id" => $language->getDefaultFile()['id']]) }}" data-popup="tooltip" title="{{ trans('messages.translate') }}" role="button" class="btn btn-secondary btn-icon"><i class="icon-share2"></i> {{ trans('messages.translate') }}</a>
 					@endcan
 					@if(Auth::user()->can("delete", $language) ||
 						Auth::user()->can("update", $language) ||

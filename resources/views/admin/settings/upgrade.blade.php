@@ -88,7 +88,7 @@
                             {{ csrf_field() }}
 
                             @include('helpers.form_control', ['required' => true, 'type' => 'file', 'label' => '', 'name' => 'file', 'value' => 'Upload'])
-                            <button class="btn bg-teal">{{ trans('messages.upload') }}</button>
+                            <button class="btn btn-secondary">{{ trans('messages.upload') }}</button>
                         </form>
                     @endif
                 </div>

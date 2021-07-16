@@ -56,7 +56,7 @@ delete_outline
 					</div>
 				</td>
 				<td>
-					<a href="#add_more" class="btn bg-teal add_label_value_group">{{ trans('messages.add_more') }}</a>
+					<a href="#add_more" class="btn btn-secondary add_label_value_group">{{ trans('messages.add_more') }}</a>
 				</td>
 			</tr>
 		@endif
