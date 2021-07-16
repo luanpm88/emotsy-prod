@@ -57,7 +57,7 @@
                 role="button"
                 class="btn bg-teal mr-5 ajax_link"
                 data-in-form="true"
-                data-method="POST"
+                link-method="POST"
                 mask-title="{{ trans('messages.sending_server.testing_connection') }}"
             >
                 {{ trans('messages.send') }}

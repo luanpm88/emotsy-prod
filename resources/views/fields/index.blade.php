@@ -88,7 +88,7 @@
 						<td>
 							@if ($item->tag != 'EMAIL')
 								@if (is_object(Acelle\Model\Field::findByUid($item->uid)))
-									<a no-ajax="true" href="{{ action('FieldController@delete', ['list_uid' => $list->uid, 'uid' => $item->uid]) }}" delete-confirm="{!! trans('messages.delete_field_alert') !!}" class="btn bg-danger-400 remove-field-button">
+									<a no-ajax="true" href="{{ action('FieldController@delete', ['list_uid' => $list->uid, 'uid' => $item->uid]) }}" link-confirm="{!! trans('messages.delete_field_alert') !!}" class="btn bg-danger-400 remove-field-button">
 										<span class="material-icons-outlined">
 delete_outline
 </span>

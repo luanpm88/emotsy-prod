@@ -126,37 +126,37 @@ delete_outline
                 var text = $(this).html();
                 if (text == '{{ trans('messages.default') }}') {
                     if($(this).find("i").length == 0) {
-                        $(this).prepend("<i class='icon-square text-teal-600'></i>");
+                        $(this).prepend("<i class='material-icons-round text-teal-600 theme-option me-2'>padding</i>");
                     }
                 }
                 if (text == '{{ trans('messages.blue') }}') {
                     if($(this).find("i").length == 0) {
-                        $(this).prepend("<i class='icon-square text-blue'></i>");
+                        $(this).prepend("<i class='material-icons-round text-blue theme-option me-2'>padding</i>");
                     }
                 }
                 if (text == '{{ trans('messages.green') }}') {
                     if($(this).find("i").length == 0) {
-                        $(this).prepend("<i class='icon-square text-green'></i>");
+                        $(this).prepend("<i class='material-icons-round text-green theme-option me-2'>padding</i>");
                     }
                 }
                 if (text == '{{ trans('messages.brown') }}') {
                     if($(this).find("i").length == 0) {
-                        $(this).prepend("<i class='icon-square text-brown'></i>");
+                        $(this).prepend("<i class='material-icons-round text-brown theme-option me-2'>padding</i>");
                     }
                 }
                 if (text == '{{ trans('messages.pink') }}') {
                     if($(this).find("i").length == 0) {
-                        $(this).prepend("<i class='icon-square text-pink'></i>");
+                        $(this).prepend("<i class='material-icons-round text-pink theme-option me-2'>padding</i>");
                     }
                 }
                 if (text == '{{ trans('messages.grey') }}') {
                     if($(this).find("i").length == 0) {
-                        $(this).prepend("<i class='icon-square text-grey'></i>");
+                        $(this).prepend("<i class='material-icons-round text-grey theme-option me-2'>padding</i>");
                     }
                 }
                 if (text == '{{ trans('messages.white') }}') {
                     if($(this).find("i").length == 0) {
-                        $(this).prepend("<i class='icon-square text-white'></i>");
+                        $(this).prepend("<i class='material-icons-round text-white theme-option me-2'>padding</i>");
                     }
                 }
             });

@@ -47,12 +47,12 @@ edit
                         </a>
                     @endif
                     <div class="btn-group">
-                        <button role="button" class="btn dropdown-toggle" data-toggle="dropdown"><span
+                        <button role="button" class="btn dropdown-toggle" data-bs-toggle="dropdown"><span
                                     class="caret ml-0"></span></button>
-                        <ul class="dropdown-menu dropdown-menu-right">
+                        <ul class="dropdown-menu dropdown-menu-end">
                             @if (\Gate::allows('delete', $item))
                                 <li><a class="ajax_link"
-                                       delete-confirm="{{ trans('messages.delete_segments_confirm') }}"
+                                       link-confirm="{{ trans('messages.delete_segments_confirm') }}"
                                        href="{{ action('SegmentController@delete', ['list_uid' => $list->uid, "uids" => $item->uid]) }}"><i
                                                 class="icon-trash"></i> {{ trans("messages.delete") }}</a></li>
                             @endif

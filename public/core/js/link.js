@@ -44,8 +44,14 @@ class Link {
                     _this.options.done(response);
                 }
             }).fail(function(response){
-                if (typeof(_this.options.done) !== 'undefined') {
+                if (typeof(_this.options.fail) !== 'undefined') {
                     _this.options.fail(response);
+                } else {
+                    new Dialog('alert', {
+                        type: 'error',
+                        title: LANG_ERROR,
+                        message: JSON.parse(response.responseText).message
+                    });
                 }
             });
         } else if (_this.options.type == 'link') {
@@ -94,6 +100,8 @@ class Link {
                             _this.goLink();
                         }
                     })
+                }).fail(function(response) {
+                    console.log(response);
                 });
         } else if (typeof(method) !== 'undefined' && method.trim().toLowerCase() !== 'get') {
             goLink();

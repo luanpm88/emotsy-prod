@@ -19,7 +19,7 @@ h1, h1 {
     min-height: 50px;
 }
 .navbar-main {
-    background-color: rgba(0, 25, 39, 0.75)!important;
+    background-color: rgba(0, 25, 39, 0.75);
     border-color: rgba(55,71,79,0.7);
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);

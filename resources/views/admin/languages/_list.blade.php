@@ -36,19 +36,23 @@
 						Auth::user()->can("download", $language)
 					)
 						<div class="btn-group">										
-							<button role="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
-							<ul class="dropdown-menu dropdown-menu-right">
+							<button role="button" class="btn dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
+							<ul class="dropdown-menu dropdown-menu-end">
 								@can('enable', $language)
 									<li>														
 										<a link-confirm="{{ trans('messages.enable_languages_confirm') }}" href="{{ action('Admin\LanguageController@enable', ["uids" => $language->uid]) }}">
-											<i class="icon-checkbox-checked2"></i> {{ trans('messages.enable') }}
+											<span class="material-icons-outlined">
+play_arrow
+</span> {{ trans('messages.enable') }}
 										</a>
 									</li>
 								@endcan
 								@can('disable', $language)
 									<li>														
 										<a link-confirm="{{ trans('messages.disable_languages_confirm') }}" href="{{ action('Admin\LanguageController@disable', ["uids" => $language->uid]) }}">
-											<i class="icon-checkbox-unchecked2"></i> {{ trans('messages.disable') }}
+											<span class="material-icons-outlined">
+hide_source
+</span> {{ trans('messages.disable') }}
 										</a>
 									</li>
 								@endcan

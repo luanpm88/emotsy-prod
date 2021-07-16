@@ -14,11 +14,11 @@ settings
                 </a>
             </li>
             <li rel0="SubscriberController" class="dropdown">
-                <a href="{{ action("AccountController@contact") }}" class="level-1" data-toggle="dropdown">
+                <a href="{{ action("AccountController@contact") }}" class="level-1" data-bs-toggle="dropdown">
                 <i class="icon-users4 position-left"></i> {{ trans('messages.subscribers') }}
                 <span class="caret"></span>
                 </a>
-                <ul class="dropdown-menu dropdown-menu-right">
+                <ul class="dropdown-menu dropdown-menu-end">
                     <li rel0="SubscriberController/index">
                     <a href="{{ action('SubscriberController@index', $list->uid) }}">
                     <i class="icon-list2"></i> {{ trans('messages.view_all') }}
@@ -47,11 +47,11 @@ settings
                 </ul>
             </li>
             <li rel0="SegmentController" class="dropdown">
-                <a href="{{ action("AccountController@contact") }}" class="level-1" data-toggle="dropdown">
+                <a href="{{ action("AccountController@contact") }}" class="level-1" data-bs-toggle="dropdown">
                 <i class="icon-make-group position-left"></i> {{ trans('messages.segments') }}
                 <span class="caret"></span>
                 </a>
-                <ul class="dropdown-menu dropdown-menu-right">
+                <ul class="dropdown-menu dropdown-menu-end">
                     <li rel0="SegmentController/index">
                     <a href="{{ action('SegmentController@index', $list->uid) }}">
                     <i class="icon-list2"></i> {{ trans('messages.view_all') }}
@@ -65,11 +65,11 @@ settings
                 </ul>
             </li>
             <li rel0="PageController" rel1="MailListController/embeddedForm" class="dropdown">
-                <a href="#menu" class="level-1" data-toggle="dropdown">
+                <a href="#menu" class="level-1" data-bs-toggle="dropdown">
                 <i class="icon-certificate position-left"></i> {{ trans('messages.custom_forms_and_emails') }}
                 <span class="caret"></span>
                 </a>
-                <ul class="dropdown-menu dropdown-menu-right has-head">
+                <ul class="dropdown-menu dropdown-menu-end has-head">
                 <li>
                     <a href="{{ action('MailListController@embeddedForm', $list->uid) }}">
                     <i class="icon-embed2"></i> {{ trans('messages.Embedded_form') }}

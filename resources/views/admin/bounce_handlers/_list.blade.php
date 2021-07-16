@@ -43,10 +43,10 @@ edit
                     @endcan
                     @can('delete', $item)
                         <div class="btn-group">                                        
-                            <button role="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
-                            <ul class="dropdown-menu dropdown-menu-right">                                                    
+                            <button role="button" class="btn dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
+                            <ul class="dropdown-menu dropdown-menu-end">                                                    
                                 <li>                                                        
-                                    <a delete-confirm="{{ trans('messages.delete_bounce_handlers_confirm') }}" href="{{ action('Admin\BounceHandlerController@delete', ["uids" => $item->uid]) }}">
+                                    <a link-confirm="{{ trans('messages.delete_bounce_handlers_confirm') }}" href="{{ action('Admin\BounceHandlerController@delete', ["uids" => $item->uid]) }}">
                                         <span class="material-icons-outlined">
 delete_outline
 </span> {{ trans('messages.delete') }}

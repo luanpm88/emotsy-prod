@@ -59,11 +59,11 @@ close
                         </div>
                         <div class="mt-20">
                             <div class="dropdown">
-                            <button class="btn btn-default bg-grey dropdown-toggle" role="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            <button class="btn btn-default bg-grey dropdown-toggle" role="button" id="dropdownMenu1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                 {{ trans('messages.subscribers.profile.action') }}
                                 <span class="caret"></span>
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenu1">
                                 <li><a class="profile-remove-contact" href="#">{{ trans('messages.subscribers.profile.remove_subscriber') }}</a></li>
                                 <li><a class="profile-tag-contact" href="#">{{ trans('messages.subscribers.profile.manage_tags') }}</a></li>
                             </ul>
@@ -144,11 +144,11 @@ close
                     <div class="">
                         <div class="mt-10">
                             <div class="dropdown">
-                            <button class="btn btn-default bg-grey dropdown-toggle" role="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            <button class="btn btn-default bg-grey dropdown-toggle" role="button" id="dropdownMenu1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                 {{ trans('messages.automation.contact.all_activities') }}
                                 <span class="caret"></span>
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenu1">
                                 <li><a href="#">Open</a></li>
                                 <li><a href="#">Click</a></li>
                                 <li><a href="#">Subscribe</a></li>
@@ -274,7 +274,7 @@ close
                     // notify
                     notify({
     type: 'success',
-    titke: '{!! trans('messages.notify.success') !!}',
+    title: '{!! trans('messages.notify.success') !!}',
     message: response.message
 });
 
@@ -311,7 +311,7 @@ close
                             // notify
                             // notify({
     type: 'success',
-    titke: '{!! trans('messages.notify.success') !!}',
+    title: '{!! trans('messages.notify.success') !!}',
     message: response.message
 });
 

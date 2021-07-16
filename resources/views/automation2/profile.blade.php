@@ -8,10 +8,10 @@
                 <div class="">
                     <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
                         <div class="btn-group btn-group-sm" role="group">
-                            <button id="btnGroupDrop1" role="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <button id="btnGroupDrop1" role="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 {{ trans('messages.automation.profile.action') }}
                             </button>
-                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnGroupDrop1">
+                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="btnGroupDrop1">
                                 <a class="dropdown-item profile-remove-contact"
                                     href="{{ action('Automation2Controller@removeContact', [
                                         'uid' => $automation->uid,
@@ -88,10 +88,10 @@ close
                 <div class="">
                     <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
                         <div class="btn-group btn-group-sm" role="group">
-                            <button id="btnGroupDrop1" role="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <button id="btnGroupDrop1" role="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 {{ trans('messages.automation.contact.all_activities') }}
                             </button>
-                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnGroupDrop1">
+                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="btnGroupDrop1">
                                 <a class="dropdown-item" href="#">Open</a>
                                 <a class="dropdown-item" href="#">Click</a>
                                 <a class="dropdown-item" href="#">Subscribe</a>
@@ -161,7 +161,7 @@ close
                             // notify
                             notify({
     type: 'success',
-    titke: '{!! trans('messages.notify.success') !!}',
+    title: '{!! trans('messages.notify.success') !!}',
     message: response.message
 });
 
@@ -210,7 +210,7 @@ close
                     // notify
                     notify({
     type: 'success',
-    titke: '{!! trans('messages.notify.success') !!}',
+    title: '{!! trans('messages.notify.success') !!}',
     message: response.message
 });
 

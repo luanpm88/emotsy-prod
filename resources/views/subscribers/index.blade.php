@@ -36,8 +36,8 @@ people
 							'disable_all_items' => false
 						])
 						<div class="btn-group list_actions hide mr-0">
-							<button role="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">
-								{{ trans('messages.actions') }} <span class="caret"></span>
+							<button role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
+								{{ trans('messages.actions') }} <span class="number"></span><span class="caret"></span>
 							</button>
 							<ul class="dropdown-menu">
 								<li>
@@ -56,7 +56,7 @@ people
 									</a>
 								</li>
 								<li>
-									<a data-method="POST" link-confirm="{{ trans('messages.subscribers.resend_confirmation_email.confirm') }}" href="{{ action('SubscriberController@resendConfirmationEmail', $list->uid) }}">
+									<a link-method="POST" link-confirm="{{ trans('messages.subscribers.resend_confirmation_email.confirm') }}" href="{{ action('SubscriberController@resendConfirmationEmail', $list->uid) }}">
 										<i class="icon-envelop5"></i> {{ trans('messages.subscribers.resend_confirmation_email') }}
 									</a>
 								</li>
@@ -81,7 +81,7 @@ copy_all
 									</a>
 								</li>
 								<li>
-									<a delete-confirm="{{ trans('messages.delete_subscribers_confirm') }}" href="{{ action('SubscriberController@delete', $list->uid) }}">
+									<a link-confirm="{{ trans('messages.delete_subscribers_confirm') }}" href="{{ action('SubscriberController@delete', $list->uid) }}">
 										<span class="material-icons-outlined">
 delete_outline
 </span> {{ trans('messages.delete') }}
@@ -136,10 +136,10 @@ sort
 						</select>
 					</span>
 					<div class="btn-group list_columns mr-10">
-						<button role="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">
+						<button role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
 							{{ trans('messages.columns') }} <span class="caret"></span>
 						</button>
-						<ul class="dropdown-menu dropdown-menu-right">
+						<ul class="dropdown-menu dropdown-menu-end">
 							@foreach ($list->getFields as $field)
 								@if ($field->tag != "EMAIL")
 									<li>

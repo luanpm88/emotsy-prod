@@ -300,7 +300,9 @@ class MailListController extends Controller
      */
     public function deleteConfirm(Request $request)
     {
-        $lists = \Acelle\Model\MailList::whereIn('uid', explode(',', $request->uids));
+        $lists = \Acelle\Model\MailList::whereIn('uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
 
         return view('lists.delete_confirm', [
             'lists' => $lists,
@@ -321,7 +323,9 @@ class MailListController extends Controller
             return;
         }
 
-        $lists = \Acelle\Model\MailList::whereIn('uid', explode(',', $request->uids));
+        $lists = \Acelle\Model\MailList::whereIn('uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
 
         foreach ($lists->get() as $item) {
             // authorize

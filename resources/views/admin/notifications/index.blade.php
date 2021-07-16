@@ -33,12 +33,12 @@
 			<div class="col-md-10">			
 				<div class="filter-box">
 					<div class="dropdown list_actions" style="display: none">
-						<button role="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">
-							{{ trans('messages.actions') }} <span class="caret"></span>
+						<button role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
+							{{ trans('messages.actions') }} <span class="number"></span><span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu">
 							<li>
-								<a data-method="GET" href="{{ action('Admin\NotificationController@delete') }}" class="ajax_link"><span class="material-icons-outlined">
+								<a link-method="GET" href="{{ action('Admin\NotificationController@delete') }}" class="ajax_link"><span class="material-icons-outlined">
 delete_outline
 </span> {{ trans('messages.delete') }}</a>
 							</li>
@@ -54,7 +54,8 @@ delete_outline
 						<select class="select" name="sort_order">
 							<option value="created_at">{{ trans('messages.created_at') }}</option>
 						</select>										
-						<button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
+						<input type="hidden" name="sort_direction" value="desc" />
+<button class="btn btn-xs sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
 							<span class="material-icons-outlined desc">
 sort
 </span>

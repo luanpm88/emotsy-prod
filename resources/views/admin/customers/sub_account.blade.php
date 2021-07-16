@@ -39,7 +39,7 @@
                                 <a href="{{ action('Admin\SubAccountController@delete', $account->uid) }}"
                                     data-popup="tooltip" title="{{ trans('messages.subaccount.delete.tooltip') }}"
                                     role="button" class="btn btn-danger reload_page"
-                                    data-method="delete"
+                                    link-method="delete"
                                     list-delete-confirm="{{ action('Admin\SubAccountController@deleteConfirm', $account->uid) }}"
                                 >
                                         <i class="icon-cross2"></i> {{ trans('messages.subaccount.delete') }}

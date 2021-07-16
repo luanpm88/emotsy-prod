@@ -67,7 +67,7 @@
 						rel0="CustomerGroupController"
 						rel1="CustomerController"
 					>
-						<a class="dropdown-toggle d-flex align-items-center" data-toggle="dropdown">
+						<a class="dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
 							<i class="acelle-icon mr-3" style="width: 19px;">
 								<img src="{{ url('images/icons/'.$iconDir.'SVG/customer.svg') }}" />
 							</i>
@@ -105,7 +105,7 @@
 						rel0="PlanController"
 						rel1="CurrencyGroupController"
 					>
-						<a class="dropdown-toggle d-flex align-items-center" data-toggle="dropdown">
+						<a class="dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
 							<i class="acelle-icon mr-3" style="width: 23px;">
 								<img src="{{ url('images/icons/'.$iconDir.'SVG/plan.svg') }}" />
 							</i>{{ trans('messages.plan') }}
@@ -142,7 +142,7 @@
 						rel0="AdminGroupController"
 						rel1="AdminController"
 					>
-						<a class="dropdown-toggle d-flex align-items-center" data-toggle="dropdown">
+						<a class="dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
 						<i class="acelle-icon mr-3">
 								<img src="{{ url('images/icons/'.$iconDir.'SVG/admin.svg') }}" />
 							</i>{{ trans('messages.admin') }}
@@ -187,7 +187,7 @@
 						rel4="SubAccountController"
 						rel5="EmailVerificationServerController"
 					>
-						<a class="dropdown-toggle d-flex align-items-center" data-toggle="dropdown">
+						<a class="dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
 						<i class="acelle-icon mr-3">
 								<img src="{{ url('images/icons/'.$iconDir.'SVG/sending.svg') }}" />
 							</i> {{ trans('messages.sending') }}
@@ -250,7 +250,7 @@
 					rel4="PaymentController"
 					rel5="PluginController"
 				>
-					<a class="dropdown-toggle d-flex align-items-center" data-toggle="dropdown">
+					<a class="dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
 					<i class="acelle-icon mr-3">
 								<img src="{{ url('images/icons/'.$iconDir.'SVG/setting.svg') }}" />
 							</i>{{ trans('messages.setting') }}
@@ -335,7 +335,7 @@
 						rel5="UnsubscribeLogController"
 						rel6="BounceLogController"
 					>
-						<a class="dropdown-toggle d-flex align-items-center" data-toggle="dropdown">
+						<a class="dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
 							<i class="acelle-icon mr-3">
 								<img src="{{ url('images/icons/'.$iconDir.'SVG/report.svg') }}" />
 							</i>{{ trans('messages.report') }}
@@ -415,13 +415,13 @@
 				@include('layouts._top_notifications')
 
 				<li class="dropdown dropdown-user">
-					<a class="dropdown-toggle" data-toggle="dropdown">
+					<a class="dropdown-toggle" data-bs-toggle="dropdown">
 						<img src="{{ Auth::user()->getProfileImageUrl() }}" alt="">
 						<span>{{ Auth::user()->displayName() }}</span>
 						<i class="caret"></i>
 					</a>
 
-					<ul class="dropdown-menu dropdown-menu-right">
+					<ul class="dropdown-menu dropdown-menu-end">
 						@can("customer_access", Auth::user())
 							<li><a href="{{ action("HomeController@index") }}" class="d-flex align-items-center">
 							<i class="acelle-icon mr-3">

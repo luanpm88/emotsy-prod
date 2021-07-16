@@ -93,7 +93,7 @@
                         href="{{ action('Admin\SendingServerController@testConnection', $server->uid) }}"
                         role="button"
                         class="btn btn-mc_primary mr-10 ajax_link"
-                        data-method="POST"
+                        link-method="POST"
                         mask-title="{{ trans('messages.sending_server.testing') }}"
                     >
                         {{ trans('messages.sending_server.test_connection') }}
@@ -103,7 +103,7 @@
                         role="button"
                         class="btn btn-secondary mr-10 modal_link"
                         data-in-form="true"
-                        data-method="GET"
+                        link-method="GET"
                     >
                         {{ trans('messages.sending_server.send_a_test_email') }}
                     </a>

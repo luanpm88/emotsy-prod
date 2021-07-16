@@ -69,10 +69,10 @@
 						</a>
 					@endif
 					<div class="btn-group">
-						<button role="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
-						<ul class="dropdown-menu dropdown-menu-right">
+						<button role="button" class="btn dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
+						<ul class="dropdown-menu dropdown-menu-end">
 							@if (\Gate::allows('update', $automation))
-								<li><a data-method="POST" class="ajax_link" href="{{ action('Automation2Controller@subscribersRemove', [
+								<li><a link-method="POST" class="ajax_link" href="{{ action('Automation2Controller@subscribersRemove', [
 									'uid' => $automation->uid,
 									'subscriber_uid' => $subscriber->uid
 								]) }}">
@@ -80,7 +80,7 @@
 								</a></li>
 							@endif
 							@if (\Gate::allows('update', $subscriber))
-								<li><a data-method="POST" class="ajax_link" href="{{ action('Automation2Controller@subscribersRestart', [
+								<li><a link-method="POST" class="ajax_link" href="{{ action('Automation2Controller@subscribersRestart', [
 									'uid' => $automation->uid,
 									'subscriber_uid' => $subscriber->uid
 								]) }}">

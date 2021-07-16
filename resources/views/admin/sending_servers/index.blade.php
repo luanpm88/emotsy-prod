@@ -41,13 +41,17 @@
                 @if ($items->count() >= 0)
                     <div class="filter-box">
                         <div class="dropdown list_actions" style="display: none">
-                            <button role="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">
-                                {{ trans('messages.actions') }} <span class="caret"></span>
+                            <button role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                                {{ trans('messages.actions') }} <span class="number"></span><span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu">
-                                <li><a link-confirm="{{ trans('messages.enable_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@enable') }}"><i class="icon-checkbox-checked2"></i> {{ trans('messages.enable') }}</a></li>
-                                <li><a link-confirm="{{ trans('messages.disable_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@disable') }}"><i class="icon-checkbox-unchecked2"></i> {{ trans('messages.disable') }}</a></li>
-                                <li><a delete-confirm="{{ trans('messages.delete_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@delete') }}"><span class="material-icons-outlined">
+                                <li><a link-confirm="{{ trans('messages.enable_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@enable') }}"><span class="material-icons-outlined">
+play_arrow
+</span> {{ trans('messages.enable') }}</a></li>
+                                <li><a link-confirm="{{ trans('messages.disable_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@disable') }}"><span class="material-icons-outlined">
+hide_source
+</span> {{ trans('messages.disable') }}</a></li>
+                                <li><a link-confirm="{{ trans('messages.delete_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@delete') }}"><span class="material-icons-outlined">
 delete_outline
 </span> {{ trans('messages.delete') }}</a></li>
                             </ul>

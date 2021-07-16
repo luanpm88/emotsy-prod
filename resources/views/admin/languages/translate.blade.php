@@ -43,11 +43,11 @@
                 @endforeach
                 @if (count($language->getLanguageFilesByType('plugin')))
                     <li rel0="SubscriberController" class="dropdown">
-                        <a href="https://acelle.com/account/contact" class="level-1" data-toggle="dropdown">
+                        <a href="https://acelle.com/account/contact" class="level-1" data-bs-toggle="dropdown">
                             {{ trans('messages.language.plugins') }}
                             <span class="caret"></span>
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-right">
+                        <ul class="dropdown-menu dropdown-menu-end">
                             @foreach ($language->getLanguageFilesByType('plugin') as $langFile)
                                 <li class="sub-menu {{ $langFile['id'] == $currentFile['id'] ? "active" : "" }} text-semibold">
                                     <a class="" href="{{ action('Admin\LanguageController@translate', ["id" => $language->uid, "file_id" => $langFile['id']]) }}">

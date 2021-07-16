@@ -102,25 +102,29 @@ edit
                     @endif
                     @if (Auth::user()->admin->can('delete', $item) || Auth::user()->admin->can('disable', $item) || Auth::user()->admin->can('enable', $item))
                         <div class="btn-group">
-                            <button role="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
-                            <ul class="dropdown-menu dropdown-menu-right">
+                            <button role="button" class="btn dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
+                            <ul class="dropdown-menu dropdown-menu-end">
                                 @if (Auth::user()->admin->can('enable', $item))
                                     <li>
                                         <a link-confirm="{{ trans('messages.enable_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@enable', ["uids" => $item->uid]) }}">
-                                            <i class="icon-checkbox-checked2"></i> {{ trans('messages.enable') }}
+                                            <span class="material-icons-outlined">
+play_arrow
+</span> {{ trans('messages.enable') }}
                                         </a>
                                     </li>
                                 @endif
                                 @if (Auth::user()->admin->can('disable', $item))
                                     <li>
                                         <a link-confirm="{{ trans('messages.disable_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@disable', ["uids" => $item->uid]) }}">
-                                            <i class="icon-checkbox-unchecked2"></i> {{ trans('messages.disable') }}
+                                            <span class="material-icons-outlined">
+hide_source
+</span> {{ trans('messages.disable') }}
                                         </a>
                                     </li>
                                 @endif
                                 @if (Auth::user()->admin->can('delete', $item))
                                     <li>
-                                        <a delete-confirm="{{ trans('messages.delete_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@delete', ["uids" => $item->uid]) }}">
+                                        <a link-confirm="{{ trans('messages.delete_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@delete', ["uids" => $item->uid]) }}">
                                             <span class="material-icons-outlined">
 delete_outline
 </span> {{ trans('messages.delete') }}

@@ -27,7 +27,7 @@
                     </div>
                 </td>
                 <td>
-                    <h5 class="no-margin">
+                    <h5 class="no-margin stat-num">
                         {{ $automation->mailList->readCache('SubscriberCount') }}
                     </h5>
                     <span class="text-muted2">{{ trans('messages.automation.overview.contacts') }}</span>
@@ -58,49 +58,64 @@
                 </td>
                 <td class="text-end text-nowrap">
                     @if (\Gate::allows('update', $automation))
-                        <a data-popup="tooltip" href="{{ action('Automation2Controller@edit', $automation->uid) }}" role="button" class="btn btn-outline-secondary btn-icon">
+                        <a data-popup="tooltip" href="{{ action('Automation2Controller@edit', $automation->uid) }}" role="button" class="btn btn-secondary btn-icon">
                             <i class="material-icons-outlined">multiline_chart</i> {{ trans('messages.automation.design') }}
                         </a>
                     @endif
                     @if (\Gate::allows('delete', $automation) || Auth::user()->can('disable', $automation) || Auth::user()->can('enable', $automation))
                         <div class="btn-group">
-                            <button role="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
-                            <ul class="dropdown-menu dropdown-menu-right">
+                            <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
+                            <ul class="dropdown-menu dropdown-menu-end">
                                 @can('view', $automation)
                                     <li>
-                                        <a                                            
+                                        <a  
+                                            class="dropdown-item"                                          
                                             href="{{ action('Automation2Controller@subscribers', [
                                                 "uid" => $automation->uid
                                             ]) }}"
                                         >
-                                            <i class="icon-users"></i> {{ trans('messages.subscribers') }}
+                                            <span class="material-icons-round me-1">
+people_outline
+</span> {{ trans('messages.subscribers') }}
                                         </a>
                                     </li>
                                 @endcan
                                 @can('enable', $automation)
                                     <li>
-                                        <a data-method="PATCH" link-confirm="{{ trans('messages.enable_automations_confirm') }}"
+                                        <a
+                                            class="dropdown-item list-action-single"
+                                            link-method="PATCH"
+                                            link-confirm="{{ trans('messages.enable_automations_confirm') }}"
                                             href="{{ action('Automation2Controller@enable', ["uids" => $automation->uid]) }}"
                                         >
-                                            <i class="icon-checkbox-checked2"></i> {{ trans('messages.enable') }}
+                                            <span class="material-icons-outlined me-1">
+play_arrow
+</span> {{ trans('messages.enable') }}
                                         </a>
                                     </li>
                                 @endcan
                                 @can('disable', $automation)
                                     <li>
-                                        <a data-method="PATCH" link-confirm="{{ trans('messages.disable_automations_confirm') }}"
+                                        <a
+                                            class="dropdown-item list-action-single"
+                                            link-method="PATCH" link-confirm="{{ trans('messages.disable_automations_confirm') }}"
                                             href="{{ action('Automation2Controller@disable', ["uids" => $automation->uid]) }}"
                                         >
-                                            <i class="icon-checkbox-unchecked2"></i> {{ trans('messages.disable') }}
+                                            <span class="material-icons-outlined me-1">
+hide_source
+</span> {{ trans('messages.disable') }}
                                         </a>
                                     </li>
                                 @endcan
                                 @if (\Gate::allows('delete', $automation))
                                     <li>
-                                        <a data-method='delete' delete-confirm="{{ trans('messages.delete_automations_confirm') }}"
+                                        <a  
+                                            class="dropdown-item list-action-single"
+                                            link-method='delete'
+                                            link-confirm="{{ trans('messages.delete_automations_confirm') }}"
                                             href="{{ action('Automation2Controller@delete', ["uids" => $automation->uid]) }}"
                                         >
-                                            <span class="material-icons-outlined">
+                                            <span class="material-icons-outlined me-1">
 delete_outline
 </span> {{ trans("messages.delete") }}
                                         </a>

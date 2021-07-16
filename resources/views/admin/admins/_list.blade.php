@@ -54,25 +54,29 @@
                     @endcan
                     @if (Auth::user()->can('delete', $item) || Auth::user()->can('enable', $item) || Auth::user()->can('disable', $item) || Auth::user()->can('delete', $item))
                         <div class="btn-group">
-                            <button role="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
-                            <ul class="dropdown-menu dropdown-menu-right">
+                            <button role="button" class="btn dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
+                            <ul class="dropdown-menu dropdown-menu-end">
                                 @can('enable', $item)
                                     <li>
                                         <a link-confirm="{{ trans('messages.enable_admins_confirm') }}" href="{{ action('Admin\AdminController@enable', ["uids" => $item->uid]) }}">
-                                            <i class="icon-checkbox-checked2"></i> {{ trans('messages.enable') }}
+                                            <span class="material-icons-outlined">
+play_arrow
+</span> {{ trans('messages.enable') }}
                                         </a>
                                     </li>
                                 @endcan
                                 @can('disable', $item)
                                     <li>
                                         <a link-confirm="{{ trans('messages.disable_admins_confirm') }}" href="{{ action('Admin\AdminController@disable', ["uids" => $item->uid]) }}">
-                                            <i class="icon-checkbox-unchecked2"></i> {{ trans('messages.disable') }}
+                                            <span class="material-icons-outlined">
+hide_source
+</span> {{ trans('messages.disable') }}
                                         </a>
                                     </li>
                                 @endcan
                                 @can('delete', $item)
                                     <li>
-                                        <a delete-confirm="{{ trans('messages.delete_admins_confirm') }}" href="{{ action('Admin\AdminController@delete', ['uids' => $item->uid]) }}">
+                                        <a link-confirm="{{ trans('messages.delete_admins_confirm') }}" href="{{ action('Admin\AdminController@delete', ['uids' => $item->uid]) }}">
                                             <span class="material-icons-outlined">
 delete_outline
 </span> {{ trans('messages.delete') }}
@@ -90,14 +94,18 @@ delete_outline
     
 @elseif (!empty(request()->filters))
     <div class="empty-list">
-        <i class="icon-users"></i>
+        <span class="material-icons-round">
+people_outline
+</span>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
         </span>
     </div>
 @else
     <div class="empty-list">
-        <i class="icon-users"></i>
+        <span class="material-icons-round">
+people_outline
+</span>
         <span class="line-1">
             {{ trans('messages.admin_empty_line_1') }}
         </span>

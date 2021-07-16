@@ -54,10 +54,10 @@ full-height
             </div>
             <div class="mr-1" role="group" aria-label="Button group with nested dropdown">
                 <div class="btn-group btn-group-sm" role="group">
-                    <button id="btnGroupDrop1" role="button" class="btn btn-outline-secondary dropdown-toggle contacts-sort-title" data-value="{{ request()->sortBy ? request()->sortBy : 'auto_triggers.updated_at' }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button id="btnGroupDrop1" role="button" class="btn btn-outline-secondary dropdown-toggle contacts-sort-title" data-value="{{ request()->sortBy ? request()->sortBy : 'auto_triggers.updated_at' }}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {{ trans('messages.timeline.sort.' . (request()->sortBy ? request()->sortBy : 'auto_triggers.updated_at')) }}
                     </button>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnGroupDrop1">
+                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="btnGroupDrop1">
                         <a class="dropdown-item contacts-sort" href="#" data-sort="auto_triggers.updated_at">{{ trans('messages.timeline.sort.auto_triggers.updated_at') }}</a>
                         <a class="dropdown-item contacts-sort" href="#" data-sort="auto_triggers.created_at">{{ trans('messages.timeline.sort.auto_triggers.created_at') }}</a>
                         <a class="dropdown-item contacts-sort" href="#" data-sort="subscribers.created_at">{{ trans('messages.timeline.sort.subscribers.created_at') }}</a>
@@ -67,10 +67,10 @@ full-height
             @if ($subscribers->count())
                 <div class="" role="group" aria-label="Button group with nested dropdown">
                     <div class="btn-group btn-group-sm" role="group">
-                    <button id="btnGroupDrop1" role="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button id="btnGroupDrop1" role="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {{ trans('messages.automation.action') }}
                     </button>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnGroupDrop1">
+                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="btnGroupDrop1">
                         <a class="dropdown-item list-export-contacts"
                             href="{{ action('Automation2Controller@exportContacts', [
                                 'uid' => $automation->uid,
@@ -169,7 +169,7 @@ full-height
                     // notify
                     notify({
     type: 'success',
-    titke: '{!! trans('messages.notify.success') !!}',
+    title: '{!! trans('messages.notify.success') !!}',
     message: response.message
 });
 

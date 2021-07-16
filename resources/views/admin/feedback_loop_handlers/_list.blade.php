@@ -40,18 +40,18 @@ edit
                     @endcan
                     @if(Auth::user()->admin->can('delete', $item) || Auth::user()->admin->can('test', $item))
                         <div class="btn-group">
-                            <button role="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
-                            <ul class="dropdown-menu dropdown-menu-right">
+                            <button role="button" class="btn dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
+                            <ul class="dropdown-menu dropdown-menu-end">
                                 @can('test', $item)
                                     <li>
-                                        <a href="{{ action('Admin\FeedbackLoopHandlerController@test', $item->uid) }}" data-method="POST" role="button" class="ajax_link">
+                                        <a href="{{ action('Admin\FeedbackLoopHandlerController@test', $item->uid) }}" link-method="POST" role="button" class="ajax_link">
                                             <i class="icon-rotate-cw3"></i> {{ trans('messages.feedback_loop_handler.test') }}
                                         </a>
                                     </li>
                                 @endcan
                                 @can('delete', $item)
                                     <li>
-                                        <a delete-confirm="{{ trans('messages.delete_feedback_loop_handlers_confirm') }}" href="{{ action('Admin\FeedbackLoopHandlerController@delete', ["uids" => $item->uid]) }}">
+                                        <a link-confirm="{{ trans('messages.delete_feedback_loop_handlers_confirm') }}" href="{{ action('Admin\FeedbackLoopHandlerController@delete', ["uids" => $item->uid]) }}">
                                             <span class="material-icons-outlined">
 delete_outline
 </span> {{ trans('messages.delete') }}

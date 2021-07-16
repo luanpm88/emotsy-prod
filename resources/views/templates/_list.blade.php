@@ -69,8 +69,8 @@
                         Auth::user()->customer->can('delete', $template) ||
                         Auth::user()->customer->can('update', $template))
                         <div class="btn-group">
-                            <button role="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
-                            <ul class="dropdown-menu dropdown-menu-right">
+                            <button role="button" class="btn dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
+                            <ul class="dropdown-menu dropdown-menu-end">
                                 @if (Auth::user()->customer->can('preview', $template))
                                     <li><a href="#preview" onclick="popupwindow('{{ action('TemplateController@preview', $template->uid) }}', '{{ $template->name }}', 800, 800)"><i class="icon-zoomin3"></i> {{ trans("messages.preview") }}</a></li>
                                 @endif
@@ -96,7 +96,7 @@
                                             href="{{ action('TemplateController@copy', $template->uid) }}"
                                             role="button"
                                             class="modal_link"
-                                            data-method="GET"
+                                            link-method="GET"
                                         >
                                             <span class="material-icons-outlined">
 copy_all
@@ -105,7 +105,7 @@ copy_all
                                     </li>
                                 @endif
                                 @if (Auth::user()->customer->can('delete', $template))
-                                    <li><a delete-confirm="{{ trans('messages.delete_templates_confirm') }}" href="{{ action('TemplateController@delete', ["uids" => $template->uid]) }}"><span class="material-icons-outlined">
+                                    <li><a link-confirm="{{ trans('messages.delete_templates_confirm') }}" href="{{ action('TemplateController@delete', ["uids" => $template->uid]) }}"><span class="material-icons-outlined">
 delete_outline
 </span> {{ trans("messages.delete") }}</a></li>
                                 @endif

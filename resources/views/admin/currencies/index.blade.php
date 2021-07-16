@@ -34,14 +34,18 @@
 							@if ($currencies->count() >= 0)
 								<div class="filter-box">
 									<div class="btn-group list_actions hide mr-10">
-										<button role="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">
-											{{ trans('messages.actions') }} <span class="caret"></span>
+										<button role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
+											{{ trans('messages.actions') }} <span class="number"></span><span class="caret"></span>
 										</button>
 										<ul class="dropdown-menu">
-											<li><a link-confirm="{{ trans('messages.enable_currencies_confirm') }}" href="{{ action('Admin\CurrencyController@enable') }}"><i class="icon-checkbox-checked2"></i> {{ trans('messages.enable') }}</a></li>
-											<li><a link-confirm="{{ trans('messages.disable_currencies_confirm') }}" href="{{ action('Admin\CurrencyController@disable') }}"><i class="icon-checkbox-unchecked2"></i> {{ trans('messages.disable') }}</a></li>
+											<li><a link-confirm="{{ trans('messages.enable_currencies_confirm') }}" href="{{ action('Admin\CurrencyController@enable') }}"><span class="material-icons-outlined">
+play_arrow
+</span> {{ trans('messages.enable') }}</a></li>
+											<li><a link-confirm="{{ trans('messages.disable_currencies_confirm') }}" href="{{ action('Admin\CurrencyController@disable') }}"><span class="material-icons-outlined">
+hide_source
+</span> {{ trans('messages.disable') }}</a></li>
 											<li>
-												<a delete-confirm="{{ trans('messages.delete_currencies_confirm') }}" href="{{ action('Admin\CurrencyController@delete') }}">
+												<a link-confirm="{{ trans('messages.delete_currencies_confirm') }}" href="{{ action('Admin\CurrencyController@delete') }}">
 													<span class="material-icons-outlined">
 delete_outline
 </span> {{ trans('messages.delete') }}
@@ -61,7 +65,8 @@ delete_outline
 											<option value="currencies.name">{{ trans('messages.name') }}</option>
 											<option value="currencies.code">{{ trans('messages.code') }}</option>
 										</select>
-										<button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
+										<input type="hidden" name="sort_direction" value="desc" />
+<button class="btn btn-xs sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
 											<span class="material-icons-outlined desc">
 sort
 </span>

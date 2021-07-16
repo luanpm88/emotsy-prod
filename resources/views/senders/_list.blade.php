@@ -58,11 +58,11 @@
 									{{ trans('messages.sender.view') }}
 							</a>
 						@endif
-						<button role="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
-						<ul class="dropdown-menu dropdown-menu-right">
+						<button role="button" class="btn dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
+						<ul class="dropdown-menu dropdown-menu-end">
 							@if (Auth::user()->customer->can('delete', $sender))
 								<li>
-									<a delete-confirm="{{ trans('messages.sender.delete.confirm') }}"
+									<a link-confirm="{{ trans('messages.sender.delete.confirm') }}"
 										href="{{ action('SenderController@delete', ["uids" => $sender->uid]) }}"
 									>
 										<span class="material-icons-outlined">

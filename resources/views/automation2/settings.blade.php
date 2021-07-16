@@ -175,7 +175,7 @@ delete
                         // notify
                         notify({
     type: 'success',
-    titke: '{!! trans('messages.notify.success') !!}',
+    title: '{!! trans('messages.notify.success') !!}',
     message: response.message
 });
                     }

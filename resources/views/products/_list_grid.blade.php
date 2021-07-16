@@ -14,7 +14,7 @@
 						<div class="">
 							<div class="d-flex align-items-center">
 								<button role="button" class="btn btn-mc_primary">{{ trans('messages.view') }}</button>
-								<a delete-confirm="{{ trans('messages.source.delete.confirm') }}"
+								<a link-confirm="{{ trans('messages.source.delete.confirm') }}"
 									data-method="POST" href="{{ action('SourceController@delete', ['uids' => $product->uid]) }}"
 									class="btn btn-link">
 									{{ trans('messages.delete') }}

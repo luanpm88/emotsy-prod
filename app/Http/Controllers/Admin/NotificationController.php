@@ -48,7 +48,9 @@ class NotificationController extends Controller
             return;
         }
 
-        $notifications = Notification::whereIn('uid', explode(',', $request->uids));
+        $notifications = Notification::whereIn('uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
         $count = $notifications->count();
 
         foreach ($notifications->get() as $notification) {

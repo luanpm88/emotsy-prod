@@ -29,7 +29,7 @@
                     role="button"
                     class="btn bg-teal mr-5 ajax_link"
                     data-in-form="true"
-                    data-method="POST"
+                    link-method="POST"
                     mask-title="{{ trans('messages.template.copying...') }}"
                 >{{ trans('messages.copy') }}</a>
                 <button role="button" class="btn btn-default ml-0 copy-campaign-close" data-dismiss="modal">{{ trans('messages.close') }}</button>

@@ -68,11 +68,11 @@
 				<div class="account-info">
 					<ul class="navbar-nav mr-auto navbar-dark bg-dark"">						
 						<li class="nav-item dropdown">
-							<a class="account-item nav-link dropdown-toggle px-2" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							<a class="account-item nav-link dropdown-toggle px-2" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								<img class="avatar" src="{{ Auth::user()->getProfileImageUrl() }}" alt="">
 								{{ Auth::user()->displayName() }}
 							</a>
-							<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+							<div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
 								@can("admin_access", Auth::user())
 									<a class="dropdown-item d-flex align-items-center" href="{{ action("Admin\HomeController@index") }}">
 										<i class="material-icons-outlined me-1">double_arrow</i>

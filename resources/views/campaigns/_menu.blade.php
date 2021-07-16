@@ -18,7 +18,9 @@
 			</li>
 			<li rel0="CampaignController/subscribers" class="dropdown">
 				<a href="{{ action('CampaignController@subscribers', $campaign->uid) }}" class="level-1">
-					<i class="icon-users"></i> {{ trans('messages.subscribers') }}
+					<span class="material-icons-round">
+people_outline
+</span> {{ trans('messages.subscribers') }}
 				</a>
 			</li>
 			<li class="dropdown"
@@ -29,11 +31,11 @@
 				rel4="CampaignController/clickLog"
 				rel5="CampaignController/unsubscribeLog"
 			>
-				<a href="{{ action("AccountController@contact") }}" class="level-1" data-toggle="dropdown">
+				<a href="{{ action("AccountController@contact") }}" class="level-1" data-bs-toggle="dropdown">
 					<i class="icon-file-text2 position-left"></i> {{ trans('messages.sending_logs') }}
 					<span class="caret"></span>
 				</a>
-				<ul class="dropdown-menu dropdown-menu-right">
+				<ul class="dropdown-menu dropdown-menu-end">
 					<li rel0="CampaignController/trackingLog" class="dropdown">
 						<a href="{{ action('CampaignController@trackingLog', $campaign->uid) }}">
 							<span class="material-icons-outlined">

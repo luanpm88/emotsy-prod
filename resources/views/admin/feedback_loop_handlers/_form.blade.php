@@ -94,7 +94,7 @@
             role="button"
             class="btn btn-outline-secondary-800 mr-5 btn-icon ajax_link"
             data-in-form="true"
-            data-method="POST"
+            link-method="POST"
             mask-title="{{ trans('messages.feedback_loop_handler.testing_connection') }}"
         >
             <i class="icon-rotate-cw3"></i> {{ trans('messages.feedback_loop_handler.test') }}

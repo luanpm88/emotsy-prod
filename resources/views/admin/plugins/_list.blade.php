@@ -59,13 +59,13 @@
                     @endif
 
                     <div class="btn-group">
-						<button role="button" class="btn btn-secondary icon-only dropdown-toggle" data-toggle="dropdown">
+						<button role="button" class="btn btn-secondary icon-only dropdown-toggle" data-bs-toggle="dropdown">
                             <span class="caret ml-0"></span>
                         </button>
-						<ul class="dropdown-menu dropdown-menu-right">
+						<ul class="dropdown-menu dropdown-menu-end">
 							<li>
 								<a
-                                    delete-confirm="{{ trans('messages.delete_plugins_confirm') }}"
+                                    link-confirm="{{ trans('messages.delete_plugins_confirm') }}"
                                     href="{{ action('Admin\PluginController@delete', ["uids" => $plugin->uid]) }}"
                                     role="button" class="">
                                     <i class="material-icons-outlined">delete</i> {{ trans('messages.uninstall') }}

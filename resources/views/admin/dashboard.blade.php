@@ -16,7 +16,9 @@
 
     <div class="row">
         <div class="col-md-6">
-            <h3 class="text-semibold"><i class="icon-users"></i> {{ trans('messages.customers_growth') }}</h3>
+            <h3 class="text-semibold"><span class="material-icons-round">
+people_outline
+</span> {{ trans('messages.customers_growth') }}</h3>
             @include('admin.customers._growth_chart')
         </div>
         <div class="col-md-6">
@@ -54,17 +56,17 @@
                             </div>
                             <div class="col-sm-4 col-md-4 text-left">
                                 @if ($subscription->isEnded())
-                                    <h5 class="no-margin">
+                                    <h5 class="no-margin stat-num">
                                         <span class="kq_search">{{ Acelle\Library\Tool::formatDate($subscription->ends_at) }}</span>
                                     </h5>
                                     <span class="text-muted2">{{ trans('messages.subscription.ended_on') }}</span>
                                 @elseif ($subscription->isActive())
-                                    <h5 class="no-margin">
+                                    <h5 class="no-margin stat-num">
                                         <span class="kq_search">{{ Acelle\Library\Tool::formatDate($subscription->ends_at) }}</span>
                                     </h5>
                                     <span class="text-muted2">{{ trans('messages.subscription.ends_on') }}</span>
                                 @else
-                                    <h5 class="no-margin">
+                                    <h5 class="no-margin stat-num">
                                         <span class="kq_search">{{ Acelle\Library\Tool::formatDate($subscription->updated_at) }}</span>
                                     </h5>
                                     <span class="text-muted2">{{ trans('messages.subscription.updated_at') }}</span>
@@ -86,7 +88,9 @@
         </div>
         <div class="col-md-6">
             <h3 class="text-semibold">
-                <i class="icon-users"></i>
+                <span class="material-icons-round">
+people_outline
+</span>
                 {{ trans('messages.recent_customers') }}
             </h3>
             <p style="margin-bottom: 30px" class="link-inline">{!! trans('messages.admin.dashboard.recent_customers.wording', [ 'here' => action('Admin\CustomerController@index') ]) !!}</p>
@@ -187,7 +191,9 @@
                 <ul class="dotted-list topborder section">
                     <li>
                         <div class="unit size1of2">
-                            <strong><i class="icon-users"></i> {{ trans('messages.customers') }}</strong>
+                            <strong><span class="material-icons-round">
+people_outline
+</span> {{ trans('messages.customers') }}</strong>
                         </div>
                         <div class="lastUnit size1of2">
                             <mc:flag>{{ Auth::user()->admin->getAllCustomers()->count() }}</mc:flag>
@@ -221,7 +227,9 @@ contact_mail
                     </li>
                     <li>
                         <div class="unit size1of2">
-                            <strong><i class="icon-users"></i> {{ trans('messages.subscribers') }}</strong>
+                            <strong><span class="material-icons-round">
+people_outline
+</span> {{ trans('messages.subscribers') }}</strong>
                         </div>
                         <div class="lastUnit size1of2">
                             <mc:flag>{{ number_with_delimiter($subscribersCount) }}</mc:flag>

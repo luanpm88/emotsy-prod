@@ -40,11 +40,11 @@
                 <div class="source-action ml-auto">
                     @if (\Acelle\Model\Source::where('id', '!=', $source->id)->count())
                         <div class="dropdown">
-                            <button class="btn btn-mc_outline dropdown-toggle" role="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                            <button class="btn btn-mc_outline dropdown-toggle" role="button" id="dropdownMenu1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                             {{ trans('messages.source.switch_store') }}
                             <span class="caret"></span>
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu1">
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenu1">
                                 @foreach (\Acelle\Model\Source::where('id', '!=', $source->id)->get() as $source)
                                     <li><a href="{{ action('SourceController@show', $source->uid) }}">{{ $source->getName() }}</a></li>
                                 @endforeach

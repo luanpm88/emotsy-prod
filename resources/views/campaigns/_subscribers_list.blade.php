@@ -87,8 +87,8 @@ edit
                         </a>
                     @endif
                     <div class="btn-group">
-                        <button role="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
-                        <ul class="dropdown-menu dropdown-menu-right">
+                        <button role="button" class="btn dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
+                        <ul class="dropdown-menu dropdown-menu-end">
                             @if (\Gate::allows('subscribe', $item))
                                 <li><a class="ajax_link" href="{{ action('SubscriberController@subscribe', ['list_uid' => $list->uid, "uids" => $item->uid]) }}"><i class="icon-enter"></i> {{ trans('messages.subscribe') }}</a></li>
                             @endif
@@ -120,7 +120,7 @@ copy_all
                             </li>
 
                             @if (\Gate::allows('delete', $item))
-                                <li><a delete-confirm="{{ trans('messages.delete_subscribers_confirm') }}" href="{{ action('SubscriberController@delete', ['list_uid' => $list->uid, "uids" => $item->uid]) }}"><span class="material-icons-outlined">
+                                <li><a link-confirm="{{ trans('messages.delete_subscribers_confirm') }}" href="{{ action('SubscriberController@delete', ['list_uid' => $list->uid, "uids" => $item->uid]) }}"><span class="material-icons-outlined">
 delete_outline
 </span> {{ trans("messages.delete") }}</a></li>
                             @endif

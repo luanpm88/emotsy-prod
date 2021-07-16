@@ -56,7 +56,7 @@
         
     <hr >
     <div class="text-left">
-        <a callback="" data-method="POST" href="{{ action('SendingDomainController@verify', $server->uid) }}" class="btn btn-primary bg-teal ajax_link">{{ trans('messages.sending_domain.verify') }}</a>
+        <a callback="" link-method="POST" href="{{ action('SendingDomainController@verify', $server->uid) }}" class="btn btn-primary bg-teal ajax_link">{{ trans('messages.sending_domain.verify') }}</a>
     </div>
 
 @endsection

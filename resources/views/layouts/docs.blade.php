@@ -50,13 +50,13 @@
 				@include('layouts._top_activity_log')
 
 				<li class="dropdown dropdown-user">
-					<a class="dropdown-toggle" data-toggle="dropdown">
+					<a class="dropdown-toggle" data-bs-toggle="dropdown">
 						<img src="{{ Auth::user()->getProfileImageUrl() }}" alt="">
 						<span>{{ Auth::user()->displayName() }}</span>
 						<i class="caret"></i>
 					</a>
 
-					<ul class="dropdown-menu dropdown-menu-right">
+					<ul class="dropdown-menu dropdown-menu-end">
 						@if (Auth::user()->userGroup->frontend_access)
 							<li><a href="{{ action("HomeController@index") }}"><i class="icon-exit2"></i> {{ trans('messages.frontend') }}</a></li>
 							<li class="divider"></li>

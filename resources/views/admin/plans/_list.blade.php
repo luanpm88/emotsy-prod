@@ -9,7 +9,7 @@
                         @if (!$plan->visible)
                             <a
                                 title="{{ trans('messages.plan.show') }}"
-                                data-method="POST"
+                                link-method="POST"
                                 href="{{ action('Admin\PlanController@visibleOn', $plan->uid) }}"
                                 class="ajax_link plan-off {{ (\Auth::user()->can('visibleOn', $plan) ? 'xtooltip' : 'cant_show') }}"
                             >
@@ -19,7 +19,7 @@
                             <a
                                 title="{{ trans('messages.plan.hide') }}"
                                 link-confirm="{{ trans('messages.plans.hide.confirm') }}"
-                                data-method="POST"
+                                link-method="POST"
                                 href="{{ action('Admin\PlanController@visibleOff', $plan->uid) }}"
                                 class="ajax_link plan-on {{ (\Auth::user()->can('visibleOff', $plan) ? 'xtooltip' : 'disabled') }}"
                             >
@@ -74,8 +74,8 @@ edit
                          \Auth::user()->can('copy', $plan)
                     )
                         <div class="btn-group">
-                            <button role="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
-                            <ul class="dropdown-menu dropdown-menu-right">
+                            <button role="button" class="btn dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
+                            <ul class="dropdown-menu dropdown-menu-end">
                                 @can('copy', $plan)
                                     <li>
                                         <a data-name="{{'Copy of '}}{{$plan->name}}" data-uid="{{$plan->uid}}" title="{{ trans('messages.copy') }}" class="copy-plan-link">
@@ -136,7 +136,7 @@ edit
                             // notify
                             notify({
     type: 'success',
-    titke: '{!! trans('messages.notify.success') !!}',
+    title: '{!! trans('messages.notify.success') !!}',
     message: response.message
 });
 
@@ -162,7 +162,7 @@ edit
                             // notify
                             notify({
     type: 'success',
-    titke: '{!! trans('messages.notify.success') !!}',
+    title: '{!! trans('messages.notify.success') !!}',
     message: response.message
 });
 

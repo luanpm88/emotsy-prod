@@ -63,7 +63,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'email', 'first_name', 'last_name', 'password',
+        'email', 'first_name', 'last_name'
     ];
 
     /**
@@ -166,7 +166,7 @@ class User extends Authenticatable
         );
 
         if (isset($this->id)) {
-            $rules['password'] = 'confirmed|min:5';
+            $rules['password'] = 'nullable|confirmed|min:5';
         } else {
             $rules['password'] = 'required|confirmed|min:5';
         }

@@ -28,19 +28,19 @@
 					]) !!}</div>
 				</td>
 				<td width="15%">
-                    <h5 class="no-margin">
+                    <h5 class="no-margin stat-num">
                         <span class="kq_search">{{ Acelle\Library\Tool::dateTime($subscription->created_at)->format('M d, Y') }}</span>
                     </h5>
                     <span class="text-muted2">{{ trans('messages.subscribed_on') }}</span>
                 </td>				
 				<td width="15%">
 					@if ($subscription->isEnded())
-						<h5 class="no-margin">
+						<h5 class="no-margin stat-num">
 								<span class="kq_search">{{ Acelle\Library\Tool::formatDate($subscription->ends_at) }}</span>
 							</h5>
 						<span class="text-muted2">{{ trans('messages.subscription.subscription_ended_at') }}</span>
 					@elseif ($subscription->cancelled())
-						<h5 class="no-margin">
+						<h5 class="no-margin stat-num">
 							@if ($subscription->current_period_ends_at)
 								<span class="kq_search">{{ Acelle\Library\Tool::dateTime($subscription->current_period_ends_at)->diffForHumans() }}</span>
 							@else
@@ -49,7 +49,7 @@
 						</h5>
 						<span class="text-muted2">{{ trans('messages.subscription.subscription_end') }}</span>
 					@elseif ($subscription->isRecurring())
-						<h5 class="no-margin">
+						<h5 class="no-margin stat-num">
 							<span class="kq_search">
 								@if ($subscription->current_period_ends_at)
 									{{ Acelle\Library\Tool::dateTime($subscription->current_period_ends_at)->diffForHumans() }}
@@ -107,7 +107,7 @@
                 </td>
 				<td class="text-end">
 					@if (\Auth::user()->admin->can('approve', $subscription))
-						<a data-method="POST" link-confirm="{{ trans('messages.subscription.approve.confirm') }}"
+						<a link-method="POST" link-confirm="{{ trans('messages.subscription.approve.confirm') }}"
 							href="{{ action('Admin\SubscriptionController@approve', $subscription->uid) }}"
 							class="btn btn-primary bg-teal-800"
 						>
@@ -117,13 +117,13 @@
 					@endif
 					
 					@if (\Auth::user()->admin->can('cancel', $subscription))
-						<a data-method="POST" link-confirm="{{ trans('messages.subscription.cancel.confirm') }}"
+						<a link-method="POST" link-confirm="{{ trans('messages.subscription.cancel.confirm') }}"
 						  href="{{ action('Admin\SubscriptionController@cancel', $subscription->uid) }}" class="btn btn-outline-secondary-600">
 							{{ trans('messages.subscription.cancel') }}
 						</a>
 					@endif
 					@if (\Auth::user()->admin->can('resume', $subscription))
-						<a data-method="POST" link-confirm="{{ trans('messages.subscription.resume.confirm') }}"
+						<a link-method="POST" link-confirm="{{ trans('messages.subscription.resume.confirm') }}"
 						  href="{{ action('Admin\SubscriptionController@resume', $subscription->uid) }}" class="btn btn-outline-secondary-600">
 							{{ trans('messages.subscription.resume') }}
 						</a>
@@ -137,11 +137,11 @@
 					)
 						<div class="btn-group">
 							
-							<button role="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret ml-0"></span></button>
-							<ul class="dropdown-menu dropdown-menu-right">
+							<button role="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><span class="caret ml-0"></span></button>
+							<ul class="dropdown-menu dropdown-menu-end">
 								@if (\Auth::user()->admin->can('approvePending', $subscription))
 									<li>
-										<a data-method="POST" link-confirm="{{ trans('messages.subscription.set_active.confirm') }}"
+										<a link-method="POST" link-confirm="{{ trans('messages.subscription.set_active.confirm') }}"
 										  href="{{ action('Admin\SubscriptionController@approvePending', $subscription->uid) }}">
 											{{ trans('messages.subscription.approve_pending') }}
 										</a>
@@ -149,7 +149,7 @@
 								@endif
 								@if (\Auth::user()->admin->can('rejectPending', $subscription))
 									<li>
-										<a data-method="POST"
+										<a link-method="POST"
 											class="rejectPending"
 											{{-- link-confirm="{{ trans('messages.subscription.reject_pending.confirm') }}" --}}
 										  	href="{{ action('Admin\SubscriptionController@rejectPending', $subscription->uid) }}"
@@ -168,7 +168,7 @@
 								@endif
 								@if (\Auth::user()->admin->can('cancelNow', $subscription))
 									<li>
-										<a data-method="POST" link-confirm="{{ trans('messages.subscription.cancel_now.confirm') }}"
+										<a link-method="POST" link-confirm="{{ trans('messages.subscription.cancel_now.confirm') }}"
 										  href="{{ action('Admin\SubscriptionController@cancelNow', $subscription->uid) }}">
 											{{ trans('messages.subscription.cancel_now') }}
 										</a>
@@ -176,7 +176,7 @@
 								@endif
 								@if (\Auth::user()->admin->can('delete', $subscription))
 									<li>
-										<a data-method="DELETE" link-confirm="{{ trans('messages.subscription.delete.confirm') }}"
+										<a link-method="DELETE" link-confirm="{{ trans('messages.subscription.delete.confirm') }}"
 										  href="{{ action('Admin\SubscriptionController@delete', ['id' => $subscription->uid]) }}">
 											{{ trans('messages.subscription.delete') }}
 										</a>

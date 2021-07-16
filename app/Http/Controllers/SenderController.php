@@ -271,7 +271,9 @@ class SenderController extends Controller
         if ($request->select_tool == 'all_items') {
             $senders = $this->search($request);
         } else {
-            $senders = Sender::whereIn('uid', explode(',', $request->uids));
+            $senders = Sender::whereIn('uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
         }
 
         foreach ($senders->get() as $sender) {

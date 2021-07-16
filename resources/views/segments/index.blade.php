@@ -30,12 +30,12 @@
 							@if ($list->segmentsCount() >= 0)
 								<div class="filter-box">
 									<div class="btn-group list_actions hide mr-10">
-										<button role="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">
-											{{ trans('messages.actions') }} <span class="caret"></span>
+										<button role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
+											{{ trans('messages.actions') }} <span class="number"></span><span class="caret"></span>
 										</button>
 										<ul class="dropdown-menu">
 											<li>
-												<a delete-confirm="{{ trans('messages.delete_segments_confirm') }}" href="{{ action('SegmentController@delete', $list->uid) }}">
+												<a link-confirm="{{ trans('messages.delete_segments_confirm') }}" href="{{ action('SegmentController@delete', $list->uid) }}">
 													<span class="material-icons-outlined">
 delete_outline
 </span> {{ trans('messages.delete') }}
@@ -55,7 +55,8 @@ delete_outline
 											<option value="segments.name">{{ trans('messages.name') }}</option>
 											<option value="segments.updated_at">{{ trans('messages.updated_at') }}</option>
 										</select>
-										<button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
+										<input type="hidden" name="sort_direction" value="desc" />
+<button class="btn btn-xs sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
 											<span class="material-icons-outlined desc">
 sort
 </span>

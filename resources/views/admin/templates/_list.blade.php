@@ -72,8 +72,8 @@
 						Auth::user()->admin->can('copy', $template) ||
 						Auth::user()->admin->can('delete', $template))
 						<div class="btn-group">
-							<button role="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
-							<ul class="dropdown-menu dropdown-menu-right">
+							<button role="button" class="btn dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
+							<ul class="dropdown-menu dropdown-menu-end">
 								@if (Auth::user()->admin->can('update', $template))
                                     <li>
                                         <a class="template-categories" href="{{ action('Admin\TemplateController@categories', [
@@ -105,7 +105,7 @@ copy_all
 									</li>
 								@endif
 								@if (Auth::user()->admin->can('delete', $template))
-									<li><a delete-confirm="{{ trans('messages.delete_templates_confirm') }}" href="{{ action('Admin\TemplateController@delete', ["uids" => $template->uid]) }}"><span class="material-icons-outlined">
+									<li><a link-confirm="{{ trans('messages.delete_templates_confirm') }}" href="{{ action('Admin\TemplateController@delete', ["uids" => $template->uid]) }}"><span class="material-icons-outlined">
 delete_outline
 </span> {{ trans("messages.delete") }}</a></li>
 								@endif

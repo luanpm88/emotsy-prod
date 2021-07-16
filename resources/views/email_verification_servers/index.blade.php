@@ -35,13 +35,17 @@
 				@if ($servers->count() >= 0)
 					<div class="filter-box">
 						<div class="dropdown list_actions" style="display: none">
-							<button role="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">
-								{{ trans('messages.actions') }} <span class="caret"></span>
+							<button role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
+								{{ trans('messages.actions') }} <span class="number"></span><span class="caret"></span>
 							</button>
 							<ul class="dropdown-menu">
-								<li><a link-confirm="{{ trans('messages.enable_email_verification_servers_confirm') }}" href="{{ action('EmailVerificationServerController@enable') }}"><i class="icon-checkbox-checked2"></i> {{ trans('messages.enable') }}</a></li>
-								<li><a link-confirm="{{ trans('messages.disable_email_verification_servers_confirm') }}" href="{{ action('EmailVerificationServerController@disable') }}"><i class="icon-checkbox-unchecked2"></i> {{ trans('messages.disable') }}</a></li>
-								<li><a delete-confirm="{{ trans('messages.delete_email_verification_servers_confirm') }}" href="{{ action('EmailVerificationServerController@delete') }}"><span class="material-icons-outlined">
+								<li><a link-confirm="{{ trans('messages.enable_email_verification_servers_confirm') }}" href="{{ action('EmailVerificationServerController@enable') }}"><span class="material-icons-outlined">
+play_arrow
+</span> {{ trans('messages.enable') }}</a></li>
+								<li><a link-confirm="{{ trans('messages.disable_email_verification_servers_confirm') }}" href="{{ action('EmailVerificationServerController@disable') }}"><span class="material-icons-outlined">
+hide_source
+</span> {{ trans('messages.disable') }}</a></li>
+								<li><a link-confirm="{{ trans('messages.delete_email_verification_servers_confirm') }}" href="{{ action('EmailVerificationServerController@delete') }}"><span class="material-icons-outlined">
 delete_outline
 </span> {{ trans('messages.delete') }}</a></li>
 							</ul>
@@ -58,7 +62,8 @@ delete_outline
 								<option value="email_verification_servers.name">{{ trans('messages.name') }}</option>
 								<option value="email_verification_servers.updated_at">{{ trans('messages.updated_at') }}</option>
 							</select>
-							<button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
+							<input type="hidden" name="sort_direction" value="desc" />
+<button class="btn btn-xs sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
 								<span class="material-icons-outlined desc">
 sort
 </span>

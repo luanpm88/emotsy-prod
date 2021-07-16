@@ -21,13 +21,13 @@
 					</span>
 				</td>				
 				<td>
-					<h5 class="no-margin">
+					<h5 class="no-margin stat-num">
 						{{ format_number($source->productsCount()) }}
 					</h5>
 					<span class="text-muted d-block mt-2">{{ trans('messages.products') }}</span>
 				</td>
 				<td>
-					<h5 class="no-margin">
+					<h5 class="no-margin stat-num">
 						{{ Tool::formatDateTime($source->updated_at) }}
 					</h5>
 					<span class="text-muted d-block mt-2">{{ trans('messages.source.last_sync_at') }}</span>
@@ -40,10 +40,10 @@
 							sync
 							</span>{{ trans('messages.source.sync') }}</a>
 					<div class="btn-group">
-						<button role="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
-						<ul class="dropdown-menu dropdown-menu-right">
+						<button role="button" class="btn dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
+						<ul class="dropdown-menu dropdown-menu-end">
 							<li>
-								<a delete-confirm="{{ trans('messages.source.delete.confirm') }}"
+								<a link-confirm="{{ trans('messages.source.delete.confirm') }}"
 									data-method="POST"
 									href="{{ action('SourceController@delete', ['uids' => $source->uid]) }}">
 									<span class="material-icons-outlined">

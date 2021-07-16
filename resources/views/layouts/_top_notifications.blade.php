@@ -1,5 +1,5 @@
 <li class="dropdown">
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" style="display: flex;
+	<a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" style="display: flex;
     align-items: center;
     height: 52px;">
 		<i class="lnr lnr-alarm top-notification-icon"></i> 

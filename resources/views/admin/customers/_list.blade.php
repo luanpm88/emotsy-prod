@@ -18,7 +18,7 @@
                 </td>
                 <td>
                     @if ($item->currentPlanName())
-                        <h5 class="no-margin">
+                        <h5 class="no-margin stat-num">
                             <span><i class="icon-clipboard2"></i> {{ $item->currentPlanName() }}</span>
                         </h5>
                         <span class="text-muted2">{{ trans('messages.current_plan') }}</span>
@@ -68,8 +68,8 @@
                         Auth::user()->can('assignPlan', $item)
                     )
                         <div class="btn-group">
-                            <button role="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
-                            <ul class="dropdown-menu dropdown-menu-right">
+                            <button role="button" class="btn dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
+                            <ul class="dropdown-menu dropdown-menu-end">
                                 @can('assignPlan', $item)
                                     <li>
                                         <a
@@ -86,14 +86,18 @@
                                 @can('enable', $item)
                                     <li>
                                         <a link-confirm="{{ trans('messages.enable_customers_confirm') }}" href="{{ action('Admin\CustomerController@enable', ["uids" => $item->uid]) }}">
-                                            <i class="icon-checkbox-checked2"></i> {{ trans('messages.enable') }}
+                                            <span class="material-icons-outlined">
+play_arrow
+</span> {{ trans('messages.enable') }}
                                         </a>
                                     </li>
                                 @endcan
                                 @can('disable', $item)
                                     <li>
                                         <a link-confirm="{{ trans('messages.disable_customers_confirm') }}" href="{{ action('Admin\CustomerController@disable', ["uids" => $item->uid]) }}">
-                                            <i class="icon-checkbox-unchecked2"></i> {{ trans('messages.disable') }}
+                                            <span class="material-icons-outlined">
+hide_source
+</span> {{ trans('messages.disable') }}
                                         </a>
                                     </li>
                                 @endcan
@@ -105,7 +109,7 @@
                                     </li>
                                 @endcan
                                 <li>
-                                    <a delete-confirm="{{ trans('messages.delete_users_confirm') }}" href="{{ action('Admin\CustomerController@delete', ['uids' => $item->uid]) }}">
+                                    <a link-confirm="{{ trans('messages.delete_users_confirm') }}" href="{{ action('Admin\CustomerController@delete', ['uids' => $item->uid]) }}">
                                         <span class="material-icons-outlined">
 delete_outline
 </span> {{ trans('messages.delete') }}
@@ -134,14 +138,18 @@ delete_outline
 
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
-        <i class="icon-users"></i>
+        <span class="material-icons-round">
+people_outline
+</span>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
         </span>
     </div>
 @else
     <div class="empty-list">
-        <i class="icon-users"></i>
+        <span class="material-icons-round">
+people_outline
+</span>
         <span class="line-1">
             {{ trans('messages.customer_empty_line_1') }}
         </span>

@@ -193,7 +193,9 @@ class TemplateController extends Controller
             ], 403);
         }
 
-        $templates = Template::whereIn('uid', explode(',', $request->uids));
+        $templates = Template::whereIn('uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
         $total = $templates->count();
         $deleted = 0;
         foreach ($templates->get() as $template) {

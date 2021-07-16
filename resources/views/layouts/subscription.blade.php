@@ -21,7 +21,7 @@
 
 		<div class="text-end user-top-right">
 			@if (is_object(\Auth::user()))
-				<a class="dropdown-toggle" data-toggle="dropdown">
+				<a class="dropdown-toggle" data-bs-toggle="dropdown">
 					<img src="{{ Auth::user()->getProfileImageUrl() }}" alt="">
 					<span>{{ Auth::user()->displayName() }}</span>
 				</a>

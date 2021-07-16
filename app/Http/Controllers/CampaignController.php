@@ -1355,7 +1355,9 @@ class CampaignController extends Controller
      */
     public function deleteConfirm(Request $request)
     {
-        $lists = Campaign::whereIn('uid', explode(',', $request->uids));
+        $lists = Campaign::whereIn('uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
 
         return view('campaigns.delete_confirm', [
             'lists' => $lists,

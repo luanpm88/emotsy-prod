@@ -238,7 +238,9 @@ class SendingServerController extends Controller
      */
     public function delete(Request $request)
     {
-        $items = \Acelle\Model\SendingServer::whereIn('uid', explode(',', $request->uids));
+        $items = \Acelle\Model\SendingServer::whereIn('uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
 
         foreach ($items->get() as $item) {
             // authorize
@@ -263,7 +265,9 @@ class SendingServerController extends Controller
      */
     public function disable(Request $request)
     {
-        $items = \Acelle\Model\SendingServer::whereIn('uid', explode(',', $request->uids));
+        $items = \Acelle\Model\SendingServer::whereIn('uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
 
         foreach ($items->get() as $item) {
             // authorize
@@ -285,7 +289,9 @@ class SendingServerController extends Controller
      */
     public function enable(Request $request)
     {
-        $items = \Acelle\Model\SendingServer::whereIn('uid', explode(',', $request->uids));
+        $items = \Acelle\Model\SendingServer::whereIn('uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
 
         foreach ($items->get() as $item) {
             // authorize

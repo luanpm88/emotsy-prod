@@ -20,6 +20,81 @@ function initJs(container)
 
     // link method
     applyLinkListener(container.find('a[link-method], a[link-confirm]'));
+
+    // Select2 tags
+    container.find('.select-tag').select2({
+        minimumResultsForSearch: 20,
+        templateResult: formatSelect2TextOption,
+        templateSelection: formatSelect2TextSelected,
+        placeholder: function(){
+            $(this).attr('data-placeholder');
+        },
+        dropdownAutoWidth : true,
+        width: 'auto',
+        tags: true,
+    });
+
+    // Select2 ajax
+    container.find(".select2-ajax").each(function() {
+        var url = $(this).attr("data-url");
+        var placeholder = $(this).attr("placeholder");
+        if(typeof(placeholder) == 'undefined') {
+            placeholder = "";
+        }
+        $(this).select2({
+            placeholder: placeholder,
+            allowClear: true,
+            ajax: {
+                url: url,
+                dataType: 'json',
+                delay: 250,
+
+                data: function (params) {
+                  return {
+                    q: params.term, // search term
+                    page: params.page
+                  };
+                },
+                processResults: function (data, params) {
+                    // parse the results into the format expected by Select2
+                    // since we are using custom formatting functions we do not need to
+                    // alter the remote JSON data, except to indicate that infinite
+                    // scrolling can be used
+                    params.page = params.page || 1;
+
+                    return {
+                        results: data.items,
+                        pagination: {
+                            more: (params.page * 30) < data.total_count
+                        }
+                    };
+                },
+                cache: true
+            },
+            escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+            minimumInputLength: 0,
+            templateResult: formatSelect2TextOption,
+            templateSelection: formatSelect2TextSelected,
+        });
+    });
+}
+
+function formatSelect2TextSelected(d) {
+    var text = d.text;
+    var parts = text.split('|||');
+
+    return parts[0];
+}
+
+function formatSelect2TextOption(d) {
+    var text = d.text;
+    var parts = text.split('|||');
+
+    if (parts.length == 1) {
+        return parts[0];
+    } else {
+        return '<div class="select2_title">' + parts[0] + '</div>' + '<div class="select2_sub_line">' + parts[1] + '</div>';
+    }
 }
 
 function menuActiveCheck() {
@@ -192,6 +267,10 @@ function makeList(options) {
                 var confirm = $(this).attr('link-confirm');
                 var confirmUrl = $(this).attr('link-confirm-url');
                 var method = $(this).attr('link-method');
+
+                if (typeof(confirm) !== 'undefined') {
+                    confirm = confirm.replace(':number', 1);
+                }
 
                 new Link({
                     url: url,

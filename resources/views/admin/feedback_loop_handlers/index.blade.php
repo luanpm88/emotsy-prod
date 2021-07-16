@@ -38,11 +38,11 @@
                 @if ($items->count() >= 0)
                     <div class="filter-box">
                         <div class="dropdown list_actions" style="display: none">
-                            <button role="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">
-                                {{ trans('messages.actions') }} <span class="caret"></span>
+                            <button role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                                {{ trans('messages.actions') }} <span class="number"></span><span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu">
-                                <li><a delete-confirm="{{ trans('messages.delete_feedback_loop_handlers_confirm') }}" href="{{ action('Admin\FeedbackLoopHandlerController@delete') }}"><span class="material-icons-outlined">
+                                <li><a link-confirm="{{ trans('messages.delete_feedback_loop_handlers_confirm') }}" href="{{ action('Admin\FeedbackLoopHandlerController@delete') }}"><span class="material-icons-outlined">
 delete_outline
 </span> {{ trans('messages.delete') }}</a></li>
                             </ul>

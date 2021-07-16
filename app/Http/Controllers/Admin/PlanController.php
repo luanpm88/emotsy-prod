@@ -267,7 +267,9 @@ class PlanController extends Controller
     //  */
     // public function enable(Request $request)
     // {
-    //     $items = Plan::whereIn('uid', explode(',', $request->uids));
+    //     $items = Plan::whereIn('uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
 
     //     foreach ($items->get() as $item) {
     //         // authorize
@@ -297,7 +299,9 @@ class PlanController extends Controller
     //  */
     // public function disable(Request $request)
     // {
-    //     $items = Plan::whereIn('uid', explode(',', $request->uids));
+    //     $items = Plan::whereIn('uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
 
     //     foreach ($items->get() as $item) {
     //         // authorize
@@ -319,7 +323,9 @@ class PlanController extends Controller
      */
     public function delete(Request $request)
     {
-        $items = Plan::whereIn('uid', explode(',', $request->uids));
+        $items = Plan::whereIn('uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
 
         foreach ($items->get() as $item) {
             // authorize
@@ -369,7 +375,9 @@ class PlanController extends Controller
      */
     public function deleteConfirm(Request $request)
     {
-        $plans = Plan::whereIn('uid', explode(',', $request->uids));
+        $plans = Plan::whereIn('uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
 
         return view('admin.plans.delete_confirm', [
             'plans' => $plans,

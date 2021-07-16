@@ -458,39 +458,6 @@ label.switchery-double.checkbox-switchery {
   margin-top: -5px;
   margin-bottom: -3px;
 }
-.select2-container--default .select2-selection--single .select2-selection__rendered {
-    height: 38px;
-    padding-left: 12px;
-    padding-right: 24px;
-    line-height: 35px;
-}
-.select2-container .select2-selection--single {
-  height: 38px;
-}
-.select2-selection--single:not([class*=bg-]):not([class*=border-]) {
-    height: 38px;
-}
-.select2-container--default .select2-selection--single .select2-selection__arrow {
-    height: 38px;
-    top: 0px;
-}
-.select2-results__option {
-    padding: 6px 12px;
-}
-.select2-container--default .select2-selection--multiple {
-  background-color: white;
-  border: 1px solid #ced4da;
-  border-radius: 4px;
-  cursor: text;
-}
-.select2-container--default.select2-container--focus .select2-selection--multiple {
-  border: 1px solid #ced4da;
-  color: #495057;
-  background-color: #fff;
-  border-color: #80bdff;
-  outline: 0;
-  box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
-}
 .mask-control {
     height: 26px;
     display: block;
@@ -1652,4 +1619,7 @@ a.trigger-woo-abandoned-cart:hover {
 .automation_status {
   margin: 0!important;
   display: block!important;
+}
+.switch-automation .select2-container .select2-selection--single .select2-selection__rendered {
+  color: transparent;
 }

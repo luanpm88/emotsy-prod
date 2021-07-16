@@ -11,11 +11,11 @@
                 rel1="PlanController/security"
                 rel2="PlanController/emailFooter"
             >
-                <a href="" class="level-1" data-toggle="dropdown">
+                <a href="" class="level-1" data-bs-toggle="dropdown">
                     {{ trans('messages.plan.settings') }}
                     <span class="caret"></span>
                 </a>
-                <ul class="dropdown-menu dropdown-menu-right">
+                <ul class="dropdown-menu dropdown-menu-end">
                     <li rel0="PlanController/quota">
                         <a href="{{ action('Admin\PlanController@quota', $plan->uid) }}">
                             {{ trans('messages.plan.quota') }}
@@ -37,11 +37,11 @@
                 rel0="PlanController/payment"
                 rel1="PlanController/billingHistory"
             >
-                <a href="" class="level-1" data-toggle="dropdown">
+                <a href="" class="level-1" data-bs-toggle="dropdown">
                     {{ trans('messages.plan.billing') }}
                     <span class="caret"></span>
                 </a>
-                <ul class="dropdown-menu dropdown-menu-right">
+                <ul class="dropdown-menu dropdown-menu-end">
                     <li rel0="PlanController/payment">
                         <a href="{{ action('Admin\PlanController@payment', $plan->uid) }}">
                             {{ trans('messages.plan.payment') }}

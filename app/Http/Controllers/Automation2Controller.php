@@ -1235,7 +1235,9 @@ class Automation2Controller extends Controller
      */
     public function enable(Request $request)
     {
-        $automations = Automation2::whereIn('uid', explode(',', $request->uids));
+        $automations = Automation2::whereIn('uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
 
         foreach ($automations->get() as $automation) {
             // authorize
@@ -1260,7 +1262,9 @@ class Automation2Controller extends Controller
      */
     public function disable(Request $request)
     {
-        $automations = Automation2::whereIn('uid', explode(',', $request->uids));
+        $automations = Automation2::whereIn('uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
 
         foreach ($automations->get() as $automation) {
             // authorize
@@ -1291,7 +1295,9 @@ class Automation2Controller extends Controller
             ], 403);
         }
         
-        $automations = Automation2::whereIn('uid', explode(',', $request->uids));
+        $automations = Automation2::whereIn('uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
 
         foreach ($automations->get() as $automation) {
             // authorize

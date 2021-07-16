@@ -5,14 +5,14 @@
     <div class="insight-action">
         <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
             <div class="btn-group btn-group-sm" role="group">
-                <button id="btnGroupDrop1" role="button" class="btn btn-outline-secondary dropdown-toggle timeline-sort-title" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button id="btnGroupDrop1" role="button" class="btn btn-outline-secondary dropdown-toggle timeline-sort-title" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     @if (request()->sortBy) 
                         {{ trans('messages.timeline.sort.' . request()->sortBy) }}
                     @else
                         {{ trans('messages.timeline.sort') }}
                     @endif
                 </button>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnGroupDrop1">
+                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="btnGroupDrop1">
                     <a class="dropdown-item timeline-sort" href="#" data-sort="auto_triggers.updated_at">{{ trans('messages.timeline.sort.auto_triggers.updated_at') }}</a>
                     <a class="dropdown-item timeline-sort" href="#" data-sort="auto_triggers.created_at">{{ trans('messages.timeline.sort.auto_triggers.created_at') }}</a>
                     <a class="dropdown-item timeline-sort" href="#" data-sort="subscribers.created_at">{{ trans('messages.timeline.sort.subscribers.created_at') }}</a>

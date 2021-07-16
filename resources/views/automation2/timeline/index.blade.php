@@ -12,11 +12,9 @@ full-height
             
         <script>
             var listTimeline = makeList({
-                url: '{{ action('Automation2Controller@templateLayoutList', [
-                    'uid' => $automation->uid,
-                    'email_uid' => $email->uid,
-                    'category_uid' => $category->uid,
-                ]) }}',
+                url: '{{ action('Automation2Controller@timelineList', [
+                        'uid' => $automation->uid,
+                    ]) }}',
                 content: $('.timlines_list'),
                 data: function() {
                     return {

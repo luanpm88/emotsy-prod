@@ -1,0 +1,247 @@
+.theme-blue .navbar-main {
+    background-color: rgba(0, 48, 71, 0.8);
+}
+.theme-blue .btn-info {
+    background-color: #97b5c9;
+    border-color: #97b5c9;
+}
+.theme-blue .btn-info:hover {
+    background-color: #79a1b1;
+    border-color: #79a1b1;
+}
+.theme-blue .btn-primary {
+    background-color: #00698f;
+    border-color: #00698f;
+}
+.theme-blue .btn-primary:hover {
+    background-color: #0a5e7c;
+    border-color: #0a5e7c;
+}
+.theme-blue a:not(.btn, .dropdown-item) {
+    color: #0a5e7c;
+}
+.theme-blue a:not(.btn, .dropdown-item):hover {
+    color: #0076a1;
+}
+.theme-blue .progress-bar-info {
+    background-color: #0a5e7c;
+}
+.theme-blue .page-item.active .page-link {
+    background-color: #d4edf7;
+    border-color:#0a5e7c;
+}
+.theme-blue .dropdown-menu li:hover > a {
+    background-color: #d7ecf3;
+}
+.theme-blue .dropdown-menu > .active > a,
+.theme-blue .dropdown-menu > .active > a:hover,
+.theme-blue .dropdown-menu > .active > a:focus {
+    background-color: #c2e0eb;
+}
+
+.theme-green .navbar-main {
+    background-color: rgba(0, 71, 38, 0.8);
+}
+.theme-green .btn-info {
+    background-color: #97c9ac;
+    border-color: #97c9ac;
+}
+.theme-green .btn-info:hover {
+    background-color: #79b195;
+    border-color: #79b195;
+}
+.theme-green .btn-primary {
+    background-color: #098547;
+    border-color: #098547;
+}
+.theme-green .btn-primary:hover {
+    background-color: #14753c;
+    border-color: #14753c;
+}
+.theme-brown a:not(.btn, .dropdown-item) {
+    color: #64350f;
+}
+.theme-brown a:not(.btn, .dropdown-item):hover {
+    color: #794317;
+}
+.theme-brown .progress-bar-info {
+    background-color: #64350f;
+}
+.theme-brown .page-item.active .page-link {
+    background-color: #dbcbc0;
+    border-color:#64350f;
+}
+.theme-brown .dropdown-menu li:hover > a {
+    background-color: #ecdfd7;
+}
+.theme-brown .dropdown-menu > .active > a,
+.theme-brown .dropdown-menu > .active > a:hover,
+.theme-brown .dropdown-menu > .active > a:focus {
+    background-color: #e6d3c6;
+}
+
+.theme-brown .navbar-main {
+    background-color: rgba(71, 38, 0, 0.8);
+}
+.theme-brown .btn-info {
+    background-color: #c9ab97;
+    border-color: #c9ab97;
+}
+.theme-brown .btn-info:hover {
+    background-color: #b19779;
+    border-color: #b19779;
+}
+.theme-brown .btn-primary {
+    background-color: #81430f;
+    border-color: #81430f;
+}
+.theme-brown .btn-primary:hover {
+    background-color: #6b3a11;
+    border-color: #6b3a11;
+}
+.theme-brown a:not(.btn, .dropdown-item) {
+    color: #64350f;
+}
+.theme-brown a:not(.btn, .dropdown-item):hover {
+    color: #a55717;
+}
+.theme-brown .progress-bar-info {
+    background-color: #64350f;
+}
+.theme-brown .page-item.active .page-link {
+    background-color: #dbcbc0;
+    border-color:#64350f;
+}
+.theme-brown .dropdown-menu li:hover > a {
+    background-color: #ecdfd7;
+}
+.theme-brown .dropdown-menu > .active > a,
+.theme-brown .dropdown-menu > .active > a:hover,
+.theme-brown .dropdown-menu > .active > a:focus {
+    background-color: #e6d3c6;
+}
+
+.theme-pink .navbar-main {
+    background-color: #5f0937e7;
+}
+.theme-pink .btn-info {
+    background-color: #f1a0bb;
+    border-color: #f1a0bb;
+}
+.theme-pink .btn-info:hover {
+    background-color: #ff80ab;
+    border-color: #ff80ab;
+}
+.theme-pink .btn-primary {
+    background-color: #880e4f;
+    border-color: #880e4f;
+}
+.theme-pink .btn-primary:hover {
+    background-color: #4d1846;
+    border-color: #4d1846;
+}
+.theme-pink a:not(.btn, .dropdown-item) {
+    color: #880e4f;
+}
+.theme-pink a:not(.btn, .dropdown-item):hover {
+    color: #d81b60;
+}
+.theme-pink .progress-bar-info {
+    background-color: #880e4f;
+}
+.theme-pink .page-item.active .page-link {
+    background-color: #f1d3dd;
+    border-color:#880e4f;
+}
+.theme-pink .dropdown-menu li:hover > a {
+    background-color: #f1d3dd;
+}
+.theme-pink .dropdown-menu > .active > a,
+.theme-pink .dropdown-menu > .active > a:hover,
+.theme-pink .dropdown-menu > .active > a:focus {
+    background-color: #f3c1d2;
+}
+
+.theme-grey .navbar-main {
+    background-color: rgba(40,40,40,0.8)
+}
+.theme-grey .btn-info {
+    background-color: #c4c4c4;
+    border-color: #c4c4c4;
+}
+.theme-grey .btn-info:hover {
+    background-color: #a7a7a7;
+    border-color: #a7a7a7;
+}
+.theme-grey .btn-primary {
+    background-color: #56524f;
+    border-color: #56524f;
+}
+.theme-grey .btn-primary:hover {
+    background-color: #333333;
+    border-color: #333333;
+}
+.theme-grey a:not(.btn, .dropdown-item) {
+    color: #333;
+}
+.theme-grey a:not(.btn, .dropdown-item):hover {
+    color: #000;
+}
+.theme-grey .progress-bar-info {
+    background-color: #888;
+}
+.theme-grey .page-item.active .page-link {
+    background-color: #f1f1f1;
+    border-color:#666;
+}
+.theme-grey .dropdown-menu li:hover > a {
+    background-color: #f2f2f2;
+}
+.theme-grey .dropdown-menu > .active > a,
+.theme-grey .dropdown-menu > .active > a:hover,
+.theme-grey .dropdown-menu > .active > a:focus {
+    background-color: #f0f0f0;
+}
+
+.theme-white .navbar-main {
+    background-color: rgba(240, 240, 240, 0.6);
+}
+.theme-white .navbar-main .navbar-nav .lvl-1 {
+    color: #333;
+}
+.theme-white .navbar-main .navbar-nav li:hover .lvl-1 {
+    color: #222!important;
+}
+.theme-white .navbar-main .nav-item.active > .nav-link {
+    background: rgba(0,0,0,0.05);
+}
+.theme-white .dropdown-menu li:hover > a {
+    background-color: #f2f2f2;
+}
+.theme-white .dropdown-menu > .active > a,
+.theme-white .dropdown-menu > .active > a:hover,
+.theme-white .dropdown-menu > .active > a:focus {
+    background-color: #f0f0f0;
+}
+
+.text-default.theme-option {
+    color: rgba(0, 25, 39, 0.75);
+}
+.text-blue.theme-option {
+    color: rgba(15, 36, 95, 0.8);
+}
+.text-green.theme-option {
+    color: rgba(0, 71, 30, 0.8);
+}
+.text-brown.theme-option {
+    color: rgba(73, 39, 11, 0.8);
+}
+.text-pink.theme-option {
+    color: rgba(122, 41, 98, 0.8);
+}
+.text-grey.theme-option {
+    color: rgba(126, 126, 126, 0.8);
+}
+.text-white.theme-option {
+    color: rgba(230, 230, 230, 0.8)!important;
+}

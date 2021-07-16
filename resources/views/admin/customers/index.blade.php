@@ -38,7 +38,8 @@
 								<option value="customers.created_at">{{ trans('messages.created_at') }}</option>
 								<option value="customers.updated_at">{{ trans('messages.updated_at') }}</option>
 							</select>										
-							<button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
+							<input type="hidden" name="sort_direction" value="desc" />
+<button class="btn btn-xs sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
 								<span class="material-icons-outlined desc">
 sort
 </span>

@@ -2,6 +2,12 @@
 
 @section('title', trans('messages.automation.create'))
 
+@section('head')
+    <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/css/automation.css') }}">
+    <script type="text/javascript" src="{{ URL::asset('core/js/automation.js') }}"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"></link>
+@endsection
+
 @section('menu_title')
     <li class="d-flex align-items-center">
         <div class="d-inline-block d-flex mr-auto align-items-center ml-3">
@@ -42,10 +48,6 @@
 @endsection
 
 @section('content')
-    <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/css/automation.css') }}">
-    <script type="text/javascript" src="{{ URL::asset('core/js/automation.js') }}"></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"></link>
-
     <style>
         rect.selected {
             stroke-width: 1 !important;;
@@ -287,7 +289,7 @@
                             
                             notify({
     type: 'success',
-    titke: '{!! trans('messages.notify.success') !!}',
+    title: '{!! trans('messages.notify.success') !!}',
     message: response.message
 });
                         });

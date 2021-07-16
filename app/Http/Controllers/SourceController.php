@@ -110,7 +110,9 @@ class SourceController extends Controller
             return;
         }
 
-        $sources = \Acelle\Model\Source::whereIn('uid', explode(',', $request->uids));
+        $sources = \Acelle\Model\Source::whereIn('uid',
+            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+        );
 
         foreach ($sources->get() as $source) {
             // authorize

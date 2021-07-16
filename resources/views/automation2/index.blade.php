@@ -29,38 +29,46 @@
 @endsection
 
 @section('content')
-    <form class="listing-form"
+    <div id="Automation2IndexContainer" class="listing-form"
         data-url="{{ action('Automation2Controller@listing') }}"
         per-page="{{ \Acelle\Model\Automation2::ITEMS_PER_PAGE }}"					
     >				
         <div class="row top-list-controls py-2">
             <div class="col-md-10">
                 <div class="filter-box">
-                    <div class="dropdown list_actions" style="display: none">
-                        <button role="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">
-                            {{ trans('messages.actions') }} <span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a data-method="PATCH" link-confirm="{{ trans('messages.enable_automations_confirm') }}"
-                                    href="{{ action('Automation2Controller@enable') }}"
-                                >
-                                    <i class="icon-checkbox-checked2"></i> {{ trans('messages.enable') }}
-                                </a>
-                            </li>
-                            <li><a data-method="PATCH" link-confirm="{{ trans('messages.disable_automations_confirm') }}" href="{{ action('Automation2Controller@disable') }}"><i class="icon-checkbox-unchecked2"></i> {{ trans('messages.disable') }}</a></li>
-                            <li>
-                                <a data-method='delete' delete-confirm="{{ trans('messages.delete_automations_confirm') }}" href="{{ action('Automation2Controller@delete') }}">
-                                <span class="material-icons-outlined">
-delete_outline
-</span> {{ trans('messages.delete') }}</a>
-                            </li>
-                        </ul>
-                    </div>
                     <div class="checkbox inline check_all_list">
                         <label>
                             <input type="checkbox" name="page_checked" class="styled check_all">
                         </label>
+                    </div>
+                    <div class="dropdown list_actions" style="display: none">
+                        <button role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                            {{ trans('messages.actions') }} <span class="number"></span><span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item"
+                                    link-method="PATCH"
+                                    link-confirm="{{ trans('messages.enable_automations_confirm') }}"
+                                    href="{{ action('Automation2Controller@enable') }}"
+                                >
+                                    <span class="material-icons-outlined me-1">
+play_arrow
+</span> {{ trans('messages.enable') }}
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" link-method="PATCH" link-confirm="{{ trans('messages.disable_automations_confirm') }}" href="{{ action('Automation2Controller@disable') }}">
+                                    <span class="material-icons-outlined me-1">
+hide_source
+</span> {{ trans('messages.disable') }}</a></li>
+                            <li>
+                                <a class="dropdown-item" link-method='delete' link-confirm="{{ trans('messages.delete_automations_confirm') }}" href="{{ action('Automation2Controller@delete') }}">
+                                <span class="material-icons-outlined me-1">
+delete_outline
+</span> {{ trans('messages.delete') }}</a>
+                            </li>
+                        </ul>
                     </div>
                     <span class="filter-group">
                         <span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
@@ -68,7 +76,8 @@ delete_outline
                             <option value="created_at">{{ trans('messages.created_at') }}</option>
                             <option value="name">{{ trans('messages.name') }}</option>                                
                         </select>										
-                        <button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
+                        <input type="hidden" name="sort_direction" value="desc" />
+<button class="btn btn-xs sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
                             <span class="material-icons-outlined desc">
 sort
 </span>
@@ -91,19 +100,36 @@ add
             </div>
         </div>
         
-        <div class="pml-table-container">
+        <div id="Automation2IndexContent">
             
             
             
         </div>
-    </form>
+    </div>
+
+    <script>
+        var Automation2Index = {
+            getList: function() {
+                return makeList({
+                    url: '{{ action('Automation2Controller@listing') }}',
+                    container: $('#Automation2IndexContainer'),
+                    content: $('#Automation2IndexContent')
+                });
+            }
+        };
+
+        $(document).ready(function() {
+            Automation2Index.getList().load();
+        });
+    </script>
         
     <script>
-        var createAutomationPopup = new Popup();
+        var createAutomationPopup;
     
         function showCreateCampaignPopup() {
             var url = '{{ action("Automation2Controller@create") }}';
-                  
+            
+            createAutomationPopup = new Popup();
             createAutomationPopup.load(url);            
         }
         

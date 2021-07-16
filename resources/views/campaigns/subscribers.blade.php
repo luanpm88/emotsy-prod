@@ -66,8 +66,8 @@
                 <div class="filter-box">
                     @include('helpers.select_tool')
                     <div class="btn-group list_actions hide mr-10">
-                        <button role="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">
-                            {{ trans('messages.actions') }} <span class="caret"></span>
+                        <button role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                            {{ trans('messages.actions') }} <span class="number"></span><span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu">
                             <li>
@@ -101,7 +101,7 @@ copy_all
                                 </a>
                             </li>-->
                             <li>
-                                <a delete-confirm="{{ trans('messages.delete_subscribers_confirm') }}" href="{{ action('SubscriberController@delete', $list->uid) }}">
+                                <a link-confirm="{{ trans('messages.delete_subscribers_confirm') }}" href="{{ action('SubscriberController@delete', $list->uid) }}">
                                     <span class="material-icons-outlined">
 delete_outline
 </span> {{ trans('messages.delete') }}
@@ -110,10 +110,10 @@ delete_outline
                         </ul>
                     </div>
                     <div class="btn-group list_columns ml-10">
-                        <button role="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">
+                        <button role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
                             {{ trans('messages.columns') }} <span class="caret"></span>
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-right">
+                        <ul class="dropdown-menu dropdown-menu-end">
                             @foreach ($list->getFields as $field)
                                 @if ($field->tag != "EMAIL")
                                     <li>
