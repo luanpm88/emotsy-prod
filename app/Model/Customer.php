@@ -1442,7 +1442,7 @@ class Customer extends Model
      *
      * @var bool
      */
-    public function getEmailVerificaionServers()
+    public function getEmailVerificationServers()
     {
         // Check the customer has permissions using email verification servers and has his own email verification servers
         if ($this->getOption('create_email_verification_servers') == 'yes') {
@@ -1452,7 +1452,7 @@ class Customer extends Model
         // If customer dont have permission creating sending servers
         } else {
             // Get server from the plan
-            return  $this->activeSubscription()->plan->getEmailVerificaionServers();
+            return  $this->activeSubscription()->plan->getEmailVerificationServers();
         }
     }
 
@@ -1522,7 +1522,7 @@ class Customer extends Model
      */
     public function emailVerificationServerSelectOptions()
     {
-        $servers = $this->getEmailVerificaionServers();
+        $servers = $this->getEmailVerificationServers();
         $options = [];
         foreach ($servers as $server) {
             $options[] = ['text' => $server->name, 'value' => $server->uid];

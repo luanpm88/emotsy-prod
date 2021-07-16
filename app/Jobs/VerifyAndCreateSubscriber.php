@@ -39,9 +39,22 @@ class VerifyAndCreateSubscriber extends Base
         }
 
         try {
+            // Create subscriber RECORD
+            // Perform simple email address validation
             $subscriber = $this->list->addSubscriberFromArray($this->attributes);
+
+            // Verify email address against remote service
+            $verifier = $this->list->customer->getEmailVerificationServers()->first();
+            $isDeliverable = $subscriber->verify($verifier);
+            if (!$isDeliverable) {
+                // In case of failure, delete the newly created contact
+                // Throw exception to log
+                $subscriber->delete();
+                throw new Exception(sprintf('[Checked by %s] invalid email address %s', $verifier->name, $subscriber->email));
+            }
+
             $this->logger->info($this->attributes['email']. ' added!');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // email is always present
             $this->logger->error($this->attributes['email']. ' failed. '.$e->getMessage());
         }

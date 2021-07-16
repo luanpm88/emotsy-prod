@@ -235,31 +235,6 @@ class MailList extends Model
         return $monitor;
     }
 
-    public function dispatchImportJob2($filepath)
-    {
-        $importJob = new ImportSubscribers2($this, $filepath);
-
-        $monitor = $this->dispatchWithBatchMonitor(
-            $importJob,
-            $then = null,
-            $catch = null,
-            $finally = function ($batch) {
-                // Finally
-                // Trigger updating related campaigns cache
-                $this->updateCachedInfo();
-
-                // blacklist new emails (if any)
-                Blacklist::doBlacklist($this->customer);
-
-                // Trigger
-                MailListImported::dispatch($this);
-                $this->reformatDateFields();
-            }
-        );
-
-        return $monitor;
-    }
-
     public function getImportTempDir($file = null)
     {
         $base = storage_path(self::IMPORT_TEMP_DIR);
@@ -889,7 +864,7 @@ class MailList extends Model
         if (Setting::isYes('verify_subscriber_email')) {
             MailLog::info('Verifying subscriber email: '.$subscriber->email);
             // @important: the user must have its own verification server, this will not work for system verification server (even if the user has access to)
-            $verifier = $this->customer->getEmailVerificaionServers()->first();
+            $verifier = $this->customer->getEmailVerificationServers()->first();
 
             if (is_null($verifier)) {
                 MailLog::info(sprintf('Contact %s (%s) tries to subscribe to list %s (%s) but there is no verification service available', $subscriber->email, $subscriber->uid, $this->name, $this->uid));

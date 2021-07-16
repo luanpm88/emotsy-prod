@@ -67,7 +67,7 @@ class ImportSubscribers2 extends Base
         ]);
 
         // Write log, to make sure the file is created
-        $logger->info('Initiated');
+        $logger->info('Import processes started');
 
         $this->list->parseCsvFile($this->file, function ($record) use ($logger) {
             $this->batch()->add(new VerifyAndCreateSubscriber($this->list, $record, $logger));

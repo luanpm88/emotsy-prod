@@ -1165,7 +1165,7 @@ class Plan extends Model
      *
      * @var bool
      */
-    public function getEmailVerificaionServers()
+    public function getEmailVerificationServers()
     {
         if ($this->getOption('all_email_verification_servers') == 'yes') {
             $result = \Acelle\Model\EmailVerificationServer::getAllAdminActive()->get()->map(function ($server) {
