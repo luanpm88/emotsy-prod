@@ -2,8 +2,7 @@
 
 @section('content')
 	<div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
+        <div class="col-md-12">
             <form class="tag-contacts" action="{{ action("Automation2Controller@tagContacts", $automation->uid) }}"
                 method="POST" class="form-validate-jqueryz"
             >

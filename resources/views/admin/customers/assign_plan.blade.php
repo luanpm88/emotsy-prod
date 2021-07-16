@@ -7,8 +7,7 @@ close
 
 <div class="iframe-modal-body">
     <div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
+        <div class="col-md-12">
             <div class="sub-section">
             
                 <h2>{{ trans('messages.subscription.select_a_plan') }}</h2>

@@ -1,4 +1,4 @@
-@extends('layouts.frontend')
+@extends('layouts.core.frontend')
 
 @section('title', $list->name . ": " . trans('messages.manage_list_fields') )
 

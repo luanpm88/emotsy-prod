@@ -1,4 +1,4 @@
-@extends('layouts.frontend')
+@extends('layouts.core.frontend')
 
 @section('title', $domain->name)
 

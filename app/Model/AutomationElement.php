@@ -142,7 +142,7 @@ class AutomationElement
                 return '<i class="lnr lnr-clock bg-secondary"></i>';
                 break;
             case 'ElementCondition':
-                return '<i class="material-icons bg-warning">call_split</i>';
+                return '<i class="material-icons-outlined bg-warning">call_split</i>';
                 break;
             case 'ElementOperation':
                 return '<i class="material-icons bg-info">checklist_rtl</i>';

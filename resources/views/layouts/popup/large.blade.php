@@ -1,4 +1,4 @@
-<div class="modal-dialog modal-xl">
+<div class="modal-dialog shadow modal-xl">
     <div class="modal-content">
         <div class="modal-header">
             <h5 class="modal-title">

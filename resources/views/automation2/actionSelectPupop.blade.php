@@ -2,8 +2,7 @@
 
 @section('content')
 	<div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
+        <div class="col-md-12">
             <h3 class="mb-3">{{ trans('messages.automation.add_an_action') }}</h3>
             <p>{{ trans('messages.automation.action.intro') }}</p>
                 

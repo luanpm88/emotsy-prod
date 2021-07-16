@@ -97,29 +97,31 @@ full-height
     </div>
 
     <div class="input-with-icon mb-4">
-        <i class="material-icons">search</i>
+        <i class="material-icons-outlined">search</i>
         <input class="form-control mt-3" name="contact_keyword" placeholder='Enter to search contacts...' />
     </div>
         
     <div class="contacts_list ajax-list"></div>
         
     <script>
-        var listContact = new List( $('.contacts_list'), {
+        var listContact = makeList({
             url: '{{ action('Automation2Controller@contactsList', [
-                    'uid' => $automation->uid,
-                    'action_id' => request()->action_id,
-                    'type' => request()->type,
-                ]) }}',
+                'uid' => $automation->uid,
+                'action_id' => request()->action_id,
+                'type' => request()->type,
+            ]) }}',
+            container: $('.contacts_list'),
+            content: $('.contacts_list'),
             data: function() {
-                    return {
-                        keyword: $('[name=contact_keyword]').val(),
-                        sortBy: $('.contacts-sort-title').attr('data-value'),
-                        sortOrder: 'desc',
-                    };
-                },
-            per_page: 10,
-            method: 'GET',
-        });		
+                return {
+                    keyword: $('[name=contact_keyword]').val(),
+                    sortBy: $('.contacts-sort-title').attr('data-value'),
+                    sortOrder: 'desc',
+                    per_page: 10
+                };
+            },
+            method: 'GET'
+        });
         listContact.load();
         
         // filters

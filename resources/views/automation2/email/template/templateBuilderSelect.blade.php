@@ -2,8 +2,7 @@
 
 @section('content')
 	<div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
+        <div class="col-md-12">
             <h2>{{ trans('messages.automation.template.builder.select') }}</h2>
             <p>{{ trans('messages.automation.template.builder.select.intro') }}</p>
             

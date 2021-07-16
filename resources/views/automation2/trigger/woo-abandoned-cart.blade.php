@@ -145,7 +145,7 @@
                     </div>
                     <div class="d-flex align-items-center store-states">
                         <span class="store-icon">
-                            {{-- <span class="material-icons">
+                            {{-- <span class="material-icons-outlined">
                                 insights
                             </span> --}}
                         </span>

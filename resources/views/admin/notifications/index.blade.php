@@ -16,7 +16,7 @@
 			<li class="active">{{ trans('messages.notifications') }}</li>
 		</ul>
 		<h1>
-			<span class="text-semibold"><i class="material-icons">message</i>  {{ trans('messages.all_notifications') }}</span>
+			<span class="text-semibold"><i class="material-icons-outlined">message</i>  {{ trans('messages.all_notifications') }}</span>
 		</h1>
 	</div>				
 @endsection

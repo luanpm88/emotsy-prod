@@ -1,5 +1,8 @@
 class Popup {
-    constructor(options) {
+    constructor(options, callback) {
+        if (typeof(callback) != 'undefined') {
+            options.callback = callback;
+        }
         this.init(options);
     }
 
@@ -12,7 +15,7 @@ class Popup {
         this.backs = [];
         this.initHtml = `
             <div class="modal" id="`+this.id+`" tabindex="-1">
-                <div class="modal-dialog">
+                <div class="modal-dialog shadow">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title">
@@ -88,6 +91,10 @@ class Popup {
         // remove loading effects
         this.popup.find('.popup-loading').remove();        
         this.popup.removeClass('popup-is-loading');
+
+        if (typeof(this.options.callback) != 'undefined') {
+            this.options.callback();
+        }
     }
     
     static hide() {
@@ -130,12 +137,16 @@ class Popup {
         `);
     }
 
+    loading() {
+        this.mask();
+    }
+
     unmask() {
         this.popup.removeClass('popup-loading');
         this.popup.find('.popup-progress').remove
     }
     
-    load(options) {
+    load(options, callback) {
         var _this = this;
         var newOptions = {};
 
@@ -146,6 +157,11 @@ class Popup {
             if (typeof(options) !== 'undefined') {
                 newOptions = options;
             }
+        }
+
+        //
+        if (typeof(callback) != 'undefined') {
+            newOptions.callback = callback;
         }
         
         // save current options
@@ -166,8 +182,6 @@ class Popup {
         // effect
         _this.mask();
 
-        // return;
-
         // load from url
         $.ajax({
             url: _this.options.url,
@@ -184,9 +198,12 @@ class Popup {
             // after load
             _this.loaded();
 
+            // 
+            _this.unmask();
         }).fail(function(jqXHR, textStatus, errorThrown){
             // for debugging
             alert(errorThrown);
+            _this.unmask();
         }).always(function() {
             // effect
             _this.unmask();

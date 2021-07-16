@@ -1,4 +1,4 @@
-<ul class="nav nav-tabs mb-4 timeline-tab">
+<ul class="nav nav-tabs nav-underline mb-4 timeline-tab">
     <li class="nav-item dropdown">
         <a href="javascript:;" class="nav-link {{ controllerAction() == 'Automation2Controller@contacts' ? 'active' : '' }}" onclick="timelinePopup.load('{{ action('Automation2Controller@contacts', [
             'uid' => $automation->uid,

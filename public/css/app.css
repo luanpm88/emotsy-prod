@@ -2075,9 +2075,6 @@ input.mini-input {
     margin-top: -12px;
     margin-right: -10px;
 }
-.modal-content {
-    border: 0;
-}
 .select2_sub_line {
     font-weight: normal;
 }
@@ -4856,4 +4853,7 @@ pagination {
       margin-top: 25px;
       float: none;
     }
+  }
+  .select2-container--open {
+      z-index: 10000;
   }

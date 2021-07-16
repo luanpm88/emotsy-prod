@@ -37,7 +37,7 @@ error_outline
     </p>
     <div>
         <a href="javascript:;" class="btn btn-info text-nowrap d-flex align-items-center" onclick="sidebar.load('{{ action('Automation2Controller@settings', $automation->uid) }}')">
-            <i class="material-icons mr-2">show_chart</i>{{ trans('messages.automation.settings') }}
+            <i class="material-icons-outlined mr-2">show_chart</i>{{ trans('messages.automation.settings') }}
         </a>
     </div>         
 </div>

@@ -2,8 +2,7 @@
 
 @section('content')
 	<div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
+        <div class="col-md-12">
             <h2 class="mt-0">{{ trans('messages.subscription.create_new_subsctiption') }}</h2>
             <p>{{ trans('messages.subscription.create_new_subsctiption.intro') }}</p>   
 

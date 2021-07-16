@@ -2,8 +2,7 @@
 
 @section('content')
 	<div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
+        <div class="col-md-12">
             <form id="automationCreate" action="{{ action("Automation2Controller@create") }}" method="POST" class="form-validate-jqueryz">
                 {{ csrf_field() }}            
         
@@ -89,8 +88,8 @@
                     400: function (res) {
                        createAutomationPopup.loadHtml(res.responseText);
                     }
-                 },
-                 success: function (res) {
+                },
+                success: function (res) {
                     createAutomationPopup.hide();
                     
                     addMaskLoading(res.message, function() {
@@ -98,7 +97,9 @@
                             window.location = res.url;
                         }, 1000);
                     });
-                 }
+                }
+            }).always(function() {
+                createAutomationPopup.unmask();
             });
         });
     </script>

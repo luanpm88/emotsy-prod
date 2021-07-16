@@ -22,6 +22,18 @@ function initJs(container)
     applyLinkListener(container.find('a[link-method], a[link-confirm]'));
 }
 
+function menuActiveCheck() {
+    // menu active
+    for (i=0; i < 10; i++) {
+        $("li[rel"+i+"='"+CONTROLLER+"']").addClass("active");
+        $("li[rel"+i+"='"+CONTROLLER+"']").closest('.nav-item').addClass("active");
+    }
+    for (i=0; i < 10; i++) {
+        $("li[rel"+i+"='"+CONTROLLER+"/"+ACTION+"']").addClass("active");
+        $("li[rel"+i+"='"+CONTROLLER+"/"+ACTION+"']").closest('.nav-item').addClass("active");
+    }
+}
+
 function applyLinkListener(links, options) {
     links.on('click', function(e) {
         e.preventDefault();
@@ -132,12 +144,23 @@ function notify(options) {
 }
 
 function makeList(options) {
+
+    if (typeof(options.container) == 'undefined') {
+        options.container = options.content;
+    }
+
+    if (typeof(options.data) == 'undefined') {
+        options.data = function() {
+            return options.container.find('.filter-box :input, [name=per_page]').serialize();
+        };
+    }
+
     var _list = new List({
         url: options.url,
         content: options.content,
-        data: function() {
-            return options.container.find('.filter-box :input, [name=per_page]').serialize();
-        },
+        data: options.data,
+        per_page: options.per_page,
+        method: options.method,
         doAction: function() {
 
         },

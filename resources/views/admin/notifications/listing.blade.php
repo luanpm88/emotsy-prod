@@ -44,14 +44,14 @@
                                 
 @elseif (!empty(request()->keyword) || !empty(request()->filters["type"]))
     <div class="empty-list">
-        <i class="material-icons">message</i> 
+        <i class="material-icons-outlined">message</i> 
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
         </span>
     </div>
 @else                    
     <div class="empty-list">
-        <i class="material-icons">message</i> 
+        <i class="material-icons-outlined">message</i> 
         <span class="line-1">
             {{ trans('messages.no_action_notifications') }}
         </span>

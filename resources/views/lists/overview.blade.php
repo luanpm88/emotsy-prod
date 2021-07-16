@@ -1,4 +1,4 @@
-@extends('layouts.frontend')
+@extends('layouts.core.frontend')
 
 @section('title', $list->name . " - " . number_with_delimiter($list->readCache('SubscriberCount')) . " " . trans('messages.subscribers'))
 

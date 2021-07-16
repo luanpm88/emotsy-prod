@@ -1,8 +1,43 @@
-@extends('layouts.automation.main')
+@extends('layouts.core.dark')
 
 @section('title', trans('messages.automation.create'))
 
+@section('menu_title')
+    <div class="d-inline-block d-flex mr-auto align-items-center ml-3">
+        <h4 class="my-0 me-2 automation-title">{{ $automation->name }}</h4>
+        <i class="material-icons-outlined">alarm</i>
+    </div>
+@endsection
+
+@section('menu_right')
+    <div class="d-flex align-items-center me-4 automation-top-actions">
+        <span class="me-4"><i class="last_save_time" data-url="{{ action('Automation2Controller@lastSaved', $automation->uid) }}">{{ trans('messages.automation.designer.last_saved', ['time' => $automation->updated_at->diffForHumans()]) }}</i></span>
+        <a href="{{ action('Automation2Controller@index') }}" class="action me-4">
+            <i class="material-icons-outlined mr-2">arrow_back</i>
+            {{ trans('messages.automation.go_back') }}
+        </a>
+
+        <div class="switch-automation d-flex">
+            <select class="select select2 top-menu-select" name="switch_automation">
+                <option value="--hidden--"></option>
+                @foreach($automation->getSwitchAutomations(Auth::user()->customer)->get() as $auto)
+                    <option value='{{ action('Automation2Controller@edit', $auto->uid) }}'>{{ $auto->name }}</option>
+                @endforeach
+            </select>
+
+            <a href="javascript:'" class="action">
+                <i class="material-icons-outlined me-2">
+        horizontal_split
+        </i>
+                {{ trans('messages.automation.switch_automation') }}
+            </a>
+        </div>
+    </div>
+@endsection
+
 @section('content')
+    <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/css/automation.css') }}">
+    <script type="text/javascript" src="{{ URL::asset('core/js/automation.js') }}"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"></link>
 
     <style>
@@ -46,89 +81,6 @@
             fill: pink !important;
         }
     </style>
-    
-    <header>
-        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-            <a class="navbar-brand left-logo" href="#">
-                @if (\Acelle\Model\Setting::get('site_logo_small'))
-                    <img src="{{ action('SettingController@file', \Acelle\Model\Setting::get('site_logo_small')) }}" alt="">
-                @else
-                    <img height="22" src="{{ URL::asset('images/logo_light_blue.svg') }}" alt="">
-                @endif
-            </a>
-            <div class="d-inline-block d-flex mr-auto align-items-center">
-                <h1 class="">{{ $automation->name }}</h1>
-                <i class="material-icons-outlined automation-head-icon ml-2">alarm</i>
-            </div>
-            <div class="automation-top-menu">
-            <span class="mr-3"><i class="last_save_time" data-url="{{ action('Automation2Controller@lastSaved', $automation->uid) }}">{{ trans('messages.automation.designer.last_saved', ['time' => $automation->updated_at->diffForHumans()]) }}</i></span>
-                <a href="{{ action('Automation2Controller@index') }}" class="action">
-                    <i class="material-icons-outlined mr-2">arrow_back</i>
-                    {{ trans('messages.automation.go_back') }}
-                </a>
-
-                <div class="switch-automation d-flex">
-                    <select class="select select2 top-menu-select" name="switch_automation">
-                        <option value="--hidden--"></option>
-                        @foreach($automation->getSwitchAutomations(Auth::user()->customer)->get() as $auto)
-                            <option value='{{ action('Automation2Controller@edit', $auto->uid) }}'>{{ $auto->name }}</option>
-                        @endforeach
-                    </select>
-
-                    <a href="javascript:'" class="action">
-                        <i class="material-icons-outlined mr-2">
-    horizontal_split
-    </i>
-                        {{ trans('messages.automation.switch_automation') }}
-                    </a>
-                </div>
-
-                <div class="account-info">
-                    <ul class="navbar-nav mr-auto navbar-dark bg-dark"">                        
-                        <li class="nav-item dropdown">
-                            <a class="account-item nav-link dropdown-toggle px-2" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img class="avatar" src="{{ Auth::user()->getProfileImageUrl() }}" alt="">
-                                {{ Auth::user()->displayName() }}
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                @can("admin_access", Auth::user())
-                                    <a class="dropdown-item d-flex align-items-center" href="{{ action("Admin\HomeController@index") }}">
-                                        <i class="material-icons-outlined mr-2">double_arrow</i>
-                                        {{ trans('messages.admin_view') }}
-                                    </a>
-                                    <div class="dropdown-divider"></div>
-                                @endif
-                                <a class="dropdown-item d-flex align-items-center quota-view" href="{{ action("AccountController@quotaLog2") }}">
-                                    <i class="material-icons-outlined mr-2">multiline_chart</i>
-                                    <span class="">{{ trans('messages.used_quota') }}</span>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="{{ action('AccountSubscriptionController@index') }}">
-                                    <i class="material-icons-outlined mr-2">redeem</i>
-                                    <span>{{ trans('messages.subscriptions') }}</span>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="{{ action("AccountController@profile") }}">
-                                    <i class="material-icons-outlined mr-2">account_circle</i>
-                                    <span>{{ trans('messages.account') }}</span>
-                                </a>
-                                @if (Auth::user()->customer->canUseApi())
-                                    <a href="{{ action("AccountController@api") }}" class="dropdown-item d-flex align-items-center">
-                                        <i class="material-icons-outlined mr-2">code</i>
-                                        <span>{{ trans('messages.api') }}</span>
-                                    </a>
-                                @endif
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item d-flex align-items-center" href="{{ url("/logout") }}">
-                                    <i class="material-icons-outlined mr-2">power_settings_new</i>
-                                    <span>{{ trans('messages.logout') }}</span>
-                                </a>
-                            </div>
-                        </li>
-                    </ul>
-                    
-                </div>
-            </div>
-        </nav>
-    </header>
     
     <main role="main">
         <div class="automation2">
@@ -422,11 +374,6 @@
 
             popup.load('{{ action('Automation2Controller@actionSelectPupop', $automation->uid) }}?hasChildren=' + hasChildren, function() {
                 console.log('Select action popup loaded!');
-                
-                // // set back event
-                // popup.back = function() {
-                //     Popup.hide();
-                // };
                 
                 // when click on action type
                 popup.popup.find('.action-select-but').click(function() {

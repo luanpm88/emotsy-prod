@@ -73,7 +73,7 @@ close
                                         'contact_uid' => $contact->uid,
                                     ]) }}" class="btn-group profile-tag-contact" role="group" aria-label="Basic example">
                                 <button role="button" class="btn btn-light btn-tag d-flex align-items-center">
-                                    <i class="material-icons">add</i>
+                                    <i class="material-icons-outlined">add</i>
                                     <span class="font-italic">{{ trans('messages.automation.profile.click_to_add_tag') }}<span>
                                 </button>
                             </a>
@@ -125,7 +125,7 @@ close
                     @endforeach
                 @else
                     <div class="empty-list">
-                        <i class="material-icons">timeline</i>
+                        <i class="material-icons-outlined">timeline</i>
                         <span class="line-1">
                             {{ trans('messages.automation.timeline.no_activities') }}
                         </span>

@@ -2,8 +2,7 @@
 
 @section('content')
 	<div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
+        <div class="col-md-12">
             <div class="mc_section">
                 <form class="cart-wait" action="{{ action('Automation2Controller@cartWait', $automation->uid) }}" method="POST">
                     {{ csrf_field() }}

@@ -30,21 +30,23 @@
     </div>
         
     <script>
-		var listTheme = new List( $('.template-list'), {
-			url: '{{ action('Automation2Controller@templateLayoutList', [
-					'uid' => $automation->uid,
-					'email_uid' => $email->uid,
-					'category_uid' => $category->uid,
-				]) }}',
-			per_page: 12,
-			data: function() {
-					return {
-						from: $('[name=from]').val(),
-						sort_direction: 'asc',
-						sort_order: 'id',
-					};
-				},
-		});
+		var listTheme = makeList({
+            url: '{{ action('Automation2Controller@templateLayoutList', [
+				'uid' => $automation->uid,
+				'email_uid' => $email->uid,
+				'category_uid' => $category->uid,
+			]) }}',
+            container: $('.template-list'),
+            content: $('.template-list'),
+            data: function() {
+                return {
+                    from: $('[name=from]').val(),
+					sort_direction: 'asc',
+					sort_order: 'id',
+                    per_page: 12
+                };
+            }
+        });
 		
 		listTheme.load();
 		

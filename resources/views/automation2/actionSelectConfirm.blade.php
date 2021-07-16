@@ -2,8 +2,7 @@
 
 @section('content')
 	<div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
+        <div class="col-md-12">
 			<form id="action-select" action="{{ action('Automation2Controller@actionSelect', ['uid' => $automation->uid, 'key' => $key]) }}" method="POST" class="form-validate-jqueryz">
 				{{ csrf_field() }}
 				

@@ -1,4 +1,4 @@
-@extends('layouts.frontend')
+@extends('layouts.core.frontend')
 
 @section('title', trans('messages.campaigns') . " - " . trans('messages.confirm'))
 

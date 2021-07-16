@@ -29,7 +29,7 @@ class List {
         if (typeof(options.data) !== 'undefined') {
             _this.data = options.data;
         } else {
-            _this.data = {};
+            _this.data = function() { return {}; };
         }
 
         // method

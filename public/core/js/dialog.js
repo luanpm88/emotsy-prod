@@ -71,7 +71,7 @@ class Dialog {
                 }
                 return `
                     <div id="`+this.id+`" class="modal" tabindex="-1">
-                        <div class="modal-dialog">
+                        <div class="modal-dialog shadow">
                             <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title text-center" style="width:100%">
@@ -97,7 +97,7 @@ class Dialog {
                     }
                     return `
                         <div id="`+this.id+`" class="modal" tabindex="-1">
-                            <div class="modal-dialog">
+                            <div class="modal-dialog shadow">
                                 <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title">
@@ -122,7 +122,7 @@ class Dialog {
                     }
                     return `
                         <div class="dialog-container dialog-large">
-                            <div class="dialog-body p-5">
+                            <div class="dialog-body rounded-bottom p-5">
                                 <h2 class="title d-flex align-items-center mb-3">
                                     <span>`+this.title+`</span>
                                 </h2>

@@ -2,8 +2,7 @@
 
 @section('content')
 	<div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
+        <div class="col-md-12">
             <div class="text-center">
                 <ul class="nav nav-tabs mc-nav campaign-template-tabs inline-tabs">
                     <li><a class="thumb-url-tab" href="{{ action('Admin\TemplateController@updateThumb', $template->uid) }}">

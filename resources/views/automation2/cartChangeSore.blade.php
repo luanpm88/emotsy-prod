@@ -2,8 +2,7 @@
 
 @section('content')
 	<div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
+        <div class="col-md-12">
             <div class="mc_section">
                 <form class="cart-change-store"
                     action="{{ action('Automation2Controller@cartChangeStore', $automation->uid) }}"

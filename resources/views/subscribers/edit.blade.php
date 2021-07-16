@@ -1,4 +1,4 @@
-@extends('layouts.frontend')
+@extends('layouts.core.frontend')
 
 @section('title', $list->name . ": " . trans('messages.create_subscriber'))
 
@@ -45,7 +45,7 @@ close
                         @else
                             <a href="" class="btn-group profile-tag-contact" role="group" aria-label="Basic example">
                                 <button role="button" class="btn btn-light btn-tag d-flex align-items-center">
-                                    <i class="material-icons mr-2">add</i>
+                                    <i class="material-icons-outlined mr-2">add</i>
                                     <span class="font-italic">{{ trans('messages.automation.profile.click_to_add_tag') }}<span>
                                 </button>
                             </a>
@@ -208,7 +208,7 @@ close
                                         <div class="activity d-flex py-3 px-4">
                         <div class="activity-media pr-4 text-center">
                             <time class="d-block text-center mini mb-2">3 days ago</time>
-                            <i class="material-icons bg-warning">call_split</i>
+                            <i class="material-icons-outlined bg-warning">call_split</i>
                         </div>
                         <div class="small">
                             <action class="d-block font-weight-semibold mb-1">

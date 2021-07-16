@@ -11,13 +11,23 @@ full-height
         <div class="timlines_list ajax-list"></div>
             
         <script>
-            var listTimeline = new List( $('.timlines_list'), {
-                url: '{{ action('Automation2Controller@timelineList', [
-                        'uid' => $automation->uid,
-                    ]) }}',
-                per_page: 10,
-                method: 'GET',
-            });		
+            var listTimeline = makeList({
+                url: '{{ action('Automation2Controller@templateLayoutList', [
+                    'uid' => $automation->uid,
+                    'email_uid' => $email->uid,
+                    'category_uid' => $category->uid,
+                ]) }}',
+                content: $('.timlines_list'),
+                data: function() {
+                    return {
+                        from: $('[name=from]').val(),
+                        sort_direction: 'asc',
+                        sort_order: 'id',
+                        per_page: 10
+                    };
+                }
+            });
+
             listTimeline.load();
         </script>
     </div>

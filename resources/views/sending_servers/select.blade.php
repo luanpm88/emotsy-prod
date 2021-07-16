@@ -1,4 +1,4 @@
-@extends('layouts.frontend')
+@extends('layouts.core.frontend')
 
 @section('title', trans('messages.sending_servers'))
 
@@ -24,8 +24,7 @@
 
 @section('content')
     <div class="row">
-        <div class="col-md-1"></div>
-        <div class="col-md-10">
+        <div class="col-md-12">
             <ul class="modern-listing big-icon no-top-border-list mt-0">
 
                 @foreach (Auth::user()->customer->getSendingServertypes() as $key => $type)

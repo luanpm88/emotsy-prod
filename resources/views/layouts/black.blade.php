@@ -110,7 +110,6 @@
 
 	<!-- display flash message -->
 	@include('common.flash')
-
 	
 	<!-- Custom langue -->
 	<script>
