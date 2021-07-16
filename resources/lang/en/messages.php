@@ -2590,7 +2590,7 @@
   'automation.action.send-an-email.desc' => 'Design or send automated or regular emails to your contacts.',
   'automation.action.wait.desc' => 'Design or send automated or regular emails to your contacts.',
   'automation.action.condition.desc' => 'Design or send automated or regular emails to your contacts.',
-  'automation.action.send-an-email.icon' => 'envelope',
+  'automation.action.send-an-email.icon' => 'forward_to_inbox',
   'automation.action.wait.icon' => 'alarm',
   'automation.action.condition.icon' => 'code',
   'automation.action.wait.intro' => 'Set up your automation workflow to wait for a while when contacts reach this point of the automationw workflow. You can set up how long to have it wait before proceeding with next actions',
@@ -3553,7 +3553,7 @@
   'or_click_choose_another_method' => 'Or click here to choose another payment method',
   'automation.action.operation' => 'Operation',
   'automation.action.operation.desc' => 'Perform an operation like: update/copy/move/tag contacts',
-  'automation.action.operation.icon' => 'lnr lnr-sync',
+  'automation.action.operation.icon' => 'alt_route',
   'automation.choose_an_operation' => 'Choose an operation',
   'automation.choose_an_operation.desc' => 'Perform an operation ont the contact
       who reachs this point of the automation',

@@ -105,7 +105,7 @@
             }     
         });
 
-        $('.sidebar').css('height', parent.$('.full-iframe-popup').height()-56);
-        $('[name=plain]').css('height', parent.$('.full-iframe-popup').height()-56);
+        $('.sidebar').css('height', parent.$('.full-iframe-popup').height()-53);
+        $('[name=plain]').css('height', parent.$('.full-iframe-popup').height()-53);
     </script>
 @endsection

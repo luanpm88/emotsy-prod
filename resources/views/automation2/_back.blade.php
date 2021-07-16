@@ -1,7 +1,7 @@
 <a class="mb-4 d-flex align-items-center back-to-automation" href="javascript:;"
     onclick="sidebar.load('{{ action('Automation2Controller@settings', $automation->uid) }}')"
 >
-    <span class="material-icons-outlined mr-2">
+    <span class="material-icons-outlined me-1">
         arrow_back
         </span>
     <span>{{ trans('messages.automation.back_to_automation') }}</span>

@@ -114,7 +114,7 @@
             }     
         });
 
-        $('.sidebar').css('height', parent.$('.full-iframe-popup').height()-56);
+        $('.sidebar').css('height', parent.$('.full-iframe-popup').height()-53);
 
         var editor;
         $(document).ready(function() {
@@ -122,7 +122,7 @@
                 language: '{{ Auth::user()->customer->getLanguageCode() }}',
                 selector: '.template-editor',
                 directionality: "{{ Auth::user()->customer->text_direction }}",
-                height: parent.$('.full-iframe-popup').height()-56,
+                height: parent.$('.full-iframe-popup').height()-53,
                 convert_urls: false,
                 remove_script_host: false,
                 forced_root_block: "",

@@ -24,7 +24,7 @@
                 @include('helpers.form_control', ['required' => true, 'type' => 'file', 'label' => trans('messages.upload_file'), 'name' => 'file'])
 				
                 <div class="mt-20">
-                    <button class="btn btn-primary bg-grey-600 mr-5">{{ trans('messages.upload') }}</button>
+                    <button class="btn btn-primary bg-grey-600 me-1">{{ trans('messages.upload') }}</button>
                 </div>
 
             </form>

@@ -18,7 +18,7 @@
                             ]) }}"					
                         >							
                             <h6 class="d-flex align-items-center text-center justify-content-center">
-                                <i class="material-icons-outlined mr-2">{{ trans('messages.automation.operation.icon.' . $type) }}</i>
+                                <i class="material-icons-outlined me-1">{{ trans('messages.automation.operation.icon.' . $type) }}</i>
                                 {{ trans('messages.automation.operation.' . $type) }}</h6>
                             <p>{{ trans('messages.automation.operation.' . $type . '.desc') }}</p>
                         </a>

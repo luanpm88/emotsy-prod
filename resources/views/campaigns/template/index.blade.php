@@ -47,11 +47,11 @@ forward_to_inbox
                             ]) }}</p>
 
                             <p class="mt-20">
-                                <a href="{{ action('CampaignController@templateCreate', $campaign->uid) }}" class="btn btn-primary bg-grey-600 mr-5">
+                                <a href="{{ action('CampaignController@templateCreate', $campaign->uid) }}" class="btn btn-primary bg-grey-600 me-1">
                                     {{ trans('messages.campaign.change_template') }}
                                 </a>
                                 @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']) && $campaign->template->builder)
-                                    <a href="{{ action('CampaignController@templateEdit', $campaign->uid) }}" class="btn btn-primary mr-5 template-compose">
+                                    <a href="{{ action('CampaignController@templateEdit', $campaign->uid) }}" class="btn btn-primary me-1 template-compose">
                                         {{ trans('messages.campaign.email_builder_pro') }}
                                     </a>
                                 @endif
@@ -82,7 +82,7 @@ forward_to_inbox
                 <div class="sub-section">
                     <h2 class="mt-0 mb-3">{{ trans('messages.campaign.spam_score') }}</h2>
                     <p>{!! trans('messages.campaign.score.intro') !!}</p>
-                    <a href="#" id="calculate-score" class="btn btn-primary bg-grey-600 mr-5">
+                    <a href="#" id="calculate-score" class="btn btn-primary bg-grey-600 me-1">
                         {{ trans('messages.campaign.check_spam_score') }}
                     </a>
                 </div>

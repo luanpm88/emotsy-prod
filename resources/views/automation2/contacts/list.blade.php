@@ -19,7 +19,7 @@
                         @elseif(isSiteDemo())
                             <img src="https://i.pravatar.cc/30{{ $key }}" />
                         @else
-                            <i style="opacity: 0.7" class="lnr lnr-user bg-{{ rand_item(['info', 'success', 'secondary', 'primary', 'danger', 'warning']) }}"></i>
+                            <i style="opacity: 0.7" class="material-icons-round bg-{{ rand_item(['info', 'success', 'secondary', 'primary', 'danger', 'warning']) }}">person_outline</i>
                         @endif
                     </a>
                 </div>

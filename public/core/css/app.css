@@ -161,6 +161,25 @@ h1, h1 {
 .styled.check_all {
     margin-right: 14px;
 }
+.styled3[type="checkbox"] {
+    width: 34px;
+}
+.styled3[type="checkbox"]:before {
+    content: "toggle_off";
+    background: #fff;
+    border-color: #fff;
+    color: #aaa;
+    text-indent: 0;
+    font-size: 34px;
+}
+.styled3[type="checkbox"]:checked:before {
+    content: "toggle_on";
+    background: #fff;
+    border-color: #fff;
+    color: #009688;
+    text-indent: 0;
+    font-size: 34px;
+}
 .nav-underline .nav-item .nav-link {
     padding: 9px 0;
     display: inline-block;
@@ -405,4 +424,34 @@ h1, h1 {
 }
 .list_actions .number:empty {
     display: none;
+}
+
+.layout-dark  {
+    padding-top: 53px;
+}
+.layout-dark .navbar-main {
+    background-color: rgb(0 0 0 / 82%)!important;
+    border-color: rgb(0 0 0 / 82%)!important;
+}
+.nav-menu-dark .lvl-1 {
+    color: #ccc;
+}
+.nav-menu-dark a:hover {
+    color: #fff;
+}
+.navbar-dark a.nav-link [class^="material-icons"] {
+    font-size: inherit;
+    line-height: inherit;
+    transform: translateY(0%) scale(1.4);
+}
+h5 {
+    font-weight: 600;
+}
+@media (min-width: 576px) {
+    .modal-dialog:not(.modal-lg, .modal-xl) {
+        max-width: 620px;
+    }
+}
+.modal-body {
+    padding: 1.5rem 2rem;
 }

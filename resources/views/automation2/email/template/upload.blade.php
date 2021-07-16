@@ -33,7 +33,7 @@
                 </div>
                 
                 <div class="mt-4">
-                    <button class="btn btn-primary bg-grey-600 mr-5">{{ trans('messages.automation.email.template.upload') }}</button>
+                    <button class="btn btn-primary bg-grey-600 me-1">{{ trans('messages.automation.email.template.upload') }}</button>
                 </div>
 
             </form>

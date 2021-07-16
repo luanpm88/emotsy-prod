@@ -80,7 +80,7 @@ class Dialog {
                                 </h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
-                            <div class="modal-body px-4 pt-4 pb-0">
+                            <div class="modal-body">
                                 `+this.message+`
                             </div>
                             <div class="modal-footer border-top-0 p-4">

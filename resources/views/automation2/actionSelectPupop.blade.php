@@ -11,9 +11,9 @@
                     @php
                         $disabled = ($type == 'condition' && $hasChildren == "true") ? 'd-disabled' : '';
                     @endphp
-                    <div class="line-item action-select-but action-select-{{ $type }} {{ $disabled }}" data-key="{{ $type }}">
+                    <div class="d-flex align-items-center line-item action-select-but action-select-{{ $type }} {{ $disabled }}" data-key="{{ $type }}">
                         <div class="line-icon">
-                            <i class="lnr lnr-{{ trans('messages.automation.action.' . $type . '.icon') }}"></i>
+                            <i class="material-icons-outlined">{{ trans('messages.automation.action.' . $type . '.icon') }}</i>
                         </div>
                         <div class="line-body">
                             <h5>{{ trans('messages.automation.action.' . $type) }}</h5>

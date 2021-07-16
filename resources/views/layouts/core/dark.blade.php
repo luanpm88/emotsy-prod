@@ -7,7 +7,7 @@
 
 	@yield('head')
 </head>
-<body>
+<body class="layout-dark">
 	@include('layouts.core._menu_dark')
 
     @yield('page_header')
@@ -17,9 +17,6 @@
 
     <!-- main inner content -->
     @yield('content')
-
-    <!-- Footer -->
-    @include('layouts.core._footer')
 
 	<!-- Notification -->
 	@include('layouts.core._notify')

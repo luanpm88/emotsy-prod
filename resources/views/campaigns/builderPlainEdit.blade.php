@@ -1,47 +1,50 @@
-@extends('layouts.black')
+@extends('layouts.core.dark')
 
 @section('title', trans('messages.edit_template'))
 
-@section('page_script')
+@section('head')
 	<script type="text/javascript" src="{{ URL::asset('js/tinymce/tinymce.min.js') }}"></script>        
     <script type="text/javascript" src="{{ URL::asset('js/editor.js') }}"></script>
+
+    <script src="{{ URL::asset('assets2/js/UrlAutoFill.js') }}"></script>
+@endsection
+
+@section('menu_title')
+    <li class="d-flex align-items-center">
+        <div class="d-inline-block d-flex mr-auto align-items-center ml-3 lvl-1">
+            <h4 class="my-0 me-2 menu-title">{{ $campaign->name }}</h4>
+            <i class="material-icons-outlined">alarm</i>
+        </div>
+    </li>
+@endsection
+
+@section('menu_right')
+    <li class="nav-item" rel0="TemplateController">
+        <a  href="javascript:;"
+            onclick="parent.$('body').removeClass('overflow-hidden');parent.$('.full-iframe-popup').fadeOut()"
+            class="nav-link d-flex align-items-center py-3 lvl-1">
+            <i class="material-icons-outlined me-2">arrow_back</i>
+            <span>{{ trans('messages.go_back') }}</span>
+        </a>
+    </li>
+    <li class="nav-item" rel0="TemplateController">
+        <a href="{{ action('CampaignController@builderClassic', [
+            'uid' => $campaign->uid
+        ]) }}"
+            class="nav-link d-flex align-items-center py-3 lvl-1">
+            <span>{{ trans('messages.campaign.html_editor') }}</span>
+        </a>
+    </li>
+    <li class="d-flex align-items-center px-3">
+        <button class="btn btn-primary" onclick="$('#classic-builder-form').submit()">{{ trans('messages.save') }}</button>
+    </li>
 @endsection
 
 @section('content')
-    <header>
-		<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" style="height: 56px;">
-			<a class="navbar-brand left-logo mr-0" href="#">
-				@if (\Acelle\Model\Setting::get('site_logo_small'))
-					<img src="{{ action('SettingController@file', \Acelle\Model\Setting::get('site_logo_small')) }}" alt="">
-				@else
-					<img height="22" src="{{ URL::asset('images/logo_light_blue.svg') }}" alt="">
-				@endif
-			</a>
-			<div class="d-inline-block d-flex mr-auto align-items-center">
-                <a style="" href="javascript:;" onclick="parent.$('body').removeClass('overflow-hidden');parent.$('.full-iframe-popup').fadeOut()" class="action black-back-button mr-3">
-					<i class="material-icons-outlined">arrow_back</i>
-				</a>
-                <h1 class="">{{ $campaign->name }}</h1>
-				<i class="material-icons-outlined automation-head-icon ml-2">web</i>
-			</div>
-			<div class="automation-top-menu">
-                <a class="action mr-4" href="{{ action('CampaignController@builderClassic', [
-                    'uid' => $campaign->uid
-                ]) }}">
-                    {{ trans('messages.campaign.html_editor') }}
-                </a>
-				<button class="btn btn-primary" onclick="$('#classic-builder-form').submit()">{{ trans('messages.save') }}</button>
-			</div>
-            <a href="javascript:;" onclick="parent.$('body').removeClass('overflow-hidden');parent.$('.full-iframe-popup').fadeOut()"
-                class="action black-close-button ml-2" style="margin-right: -15px">
-                <i class="material-icons-outlined">close</i>
-            </a>
-		</nav>
-	</header>
-    <form style="margin-top: 56px !important" id="classic-builder-form" action="{{ action('CampaignController@builderPlainEdit', $campaign->uid) }}" method="POST" class="form-validate-jqueryz">
+    <form style="" id="classic-builder-form" action="{{ action('CampaignController@builderPlainEdit', $campaign->uid) }}" method="POST" class="form-validate-jqueryz">
         {{ csrf_field() }}
 
-        <div class="row mr-0 ml-0">
+        <div class="row mr-0 ml-0 form-groups-bottom-0">
             <div class="col-md-9 pl-0 pb-0 pr-0">
                 @include('helpers.form_control', ['type' => 'textarea',
                     'class' => 'campaign-plain-text',
@@ -102,7 +105,7 @@
             }     
         });
 
-        $('.sidebar').css('height', parent.$('.full-iframe-popup').height()-56);
-        $('[name=plain]').css('height', parent.$('.full-iframe-popup').height()-56);
+        $('.sidebar').css('height', parent.$('.full-iframe-popup').height()-53);
+        $('[name=plain]').css('height', parent.$('.full-iframe-popup').height()-53);
     </script>
 @endsection

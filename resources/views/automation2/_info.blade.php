@@ -15,20 +15,22 @@ error_outline
 </div>
 @endif
 
-<div class="sidebar-header flex-center mb-2">
+<div class="sidebar-header d-flex flex-center mb-2">
     <h5 class="m-0 mr-auto">{{ $automation->name }}</h5>
-    <span class="mr-2 small">{{ trans('messages.automation.status.' . $automation->status) }}</span>
-    <div>
-        @include('helpers.form_control', [
-            'type' => 'checkbox',
-            'name' => 'automation_status',
-            'label' => '',
-            'class' => 'automation_status',
-            'value' => ($automation->status == \Acelle\Model\Automation2::STATUS_ACTIVE ? true : false),
-            'options' => [false,true],
-            'help_class' => '',
-            'rules' => []
-        ])
+    <div class="d-flex align-items-center campaign-status-section">
+        <span class="mr-auto small pe-2">{{ trans('messages.automation.status.' . $automation->status) }}</span>
+        <div>
+            @include('helpers.form_control', [
+                'type' => 'checkbox',
+                'name' => 'automation_status',
+                'label' => '',
+                'class' => 'automation_status styled3',
+                'value' => ($automation->status == \Acelle\Model\Automation2::STATUS_ACTIVE ? true : false),
+                'options' => [false,true],
+                'help_class' => '',
+                'rules' => []
+            ])
+        </div>
     </div>
 </div>
 <div class="d-flex align-items-center mb-4">
@@ -37,7 +39,7 @@ error_outline
     </p>
     <div>
         <a href="javascript:;" class="btn btn-info text-nowrap d-flex align-items-center" onclick="sidebar.load('{{ action('Automation2Controller@settings', $automation->uid) }}')">
-            <i class="material-icons-outlined mr-2">show_chart</i>{{ trans('messages.automation.settings') }}
+            <i class="material-icons-outlined me-1">auto_graph</i> {{ trans('messages.automation.settings') }}
         </a>
     </div>         
 </div>
@@ -86,9 +88,13 @@ error_outline
                     }
                 
                     sidebar.load();
-                }).error(function(e) {
+                }).fail(function(e) {
                     var error = JSON.parse(e.responseText);
-                    notify('error', '{{ trans('messages.notify.error') }}', error.message);
+                    notify({
+                        type: 'danger',
+                        title: '{{ trans('messages.notify.error') }}',
+                        message: error.message
+                    });
                     sidebar.load();
                 });      
             },

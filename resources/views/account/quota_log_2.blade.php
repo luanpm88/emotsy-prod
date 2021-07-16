@@ -2,7 +2,7 @@
 
 @section('content')
     <h4 class="mt-0 mb-4 d-flex align-items-center">
-        <i class="material-icons-outlined mr-2">multiline_chart</i>
+        <i class="material-icons-outlined me-1">multiline_chart</i>
         <span>{{ trans("messages.used_quota") }}</span>
     </h4>
 

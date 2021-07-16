@@ -1,16 +1,47 @@
-@extends('layouts.black')
+@extends('layouts.core.dark')
 
 @section('title', trans('messages.edit_template'))
 
-@section('page_script')
+@section('head')
 	<script type="text/javascript" src="{{ URL::asset('js/tinymce/tinymce.min.js') }}"></script>        
     <script type="text/javascript" src="{{ URL::asset('js/editor.js') }}"></script>
 
     <script src="{{ URL::asset('assets2/js/UrlAutoFill.js') }}"></script>
 @endsection
 
+@section('menu_title')
+    <li class="d-flex align-items-center">
+        <div class="d-inline-block d-flex mr-auto align-items-center ml-3">
+            <h4 class="my-0 me-2 menu-title">{{ $campaign->name }}</h4>
+            <i class="material-icons-outlined">alarm</i>
+        </div>
+    </li>
+@endsection
+
+@section('menu_right')
+    <li class="nav-item" rel0="TemplateController">
+        <a  href="javascript:;"
+            onclick="parent.$('body').removeClass('overflow-hidden');parent.$('.full-iframe-popup').fadeOut()"
+            class="nav-link d-flex align-items-center py-3 lvl-1">
+            <i class="material-icons-outlined me-2">arrow_back</i>
+            <span>{{ trans('messages.go_back') }}</span>
+        </a>
+    </li>
+    <li class="nav-item" rel0="TemplateController">
+        <a href="{{ action('CampaignController@builderPlainEdit', [
+            'uid' => $campaign->uid
+        ]) }}"
+            class="nav-link d-flex align-items-center py-3 lvl-1">
+            <span>{{ trans('messages.campaign.plain_text_editor') }}</span>
+        </a>
+    </li>
+    <li class="d-flex align-items-center px-3">
+        <button class="btn btn-primary" onclick="$('#classic-builder-form').submit()">{{ trans('messages.save') }}</button>
+    </li>
+@endsection
+
 @section('content')
-    <header>
+    {{-- <header>
 		<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" style="height: 56px;">
 			<a class="navbar-brand left-logo mr-0" href="#">
 				@if (\Acelle\Model\Setting::get('site_logo_small'))
@@ -39,11 +70,11 @@
                 <i class="material-icons-outlined">close</i>
             </a>
 		</nav>
-	</header>
-    <form style="margin-top: 56px;" id="classic-builder-form" action="{{ action('CampaignController@builderClassic', $campaign->uid) }}" method="POST" class="form-validate-jqueryz">
+	</header> --}}
+    <form id="classic-builder-form" action="{{ action('CampaignController@builderClassic', $campaign->uid) }}" method="POST" class="form-validate-jqueryz">
         {{ csrf_field() }}
 
-        <div class="row mr-0 ml-0">
+        <div class="row mr-0 ml-0 form-groups-bottom-0">
             <div class="col-md-9 pl-0 pb-0 pr-0">
                 <div class="loading classic-loader"><div class="text-center inner"><div class="box-loading"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div></div></div>
                 @include('helpers.form_control', ['type' => 'textarea',
@@ -121,7 +152,7 @@
             }     
         });
 
-        $('.sidebar').css('height', parent.$('.full-iframe-popup').height()-56);
+        $('.sidebar').css('height', parent.$('.full-iframe-popup').height()-53);
 
         var editor;
         $(document).ready(function() {
@@ -129,7 +160,7 @@
                 language: '{{ Auth::user()->customer->getLanguageCode() }}',
                 selector: '.template-editor',
                 directionality: "{{ Auth::user()->customer->text_direction }}",
-                height: parent.$('.full-iframe-popup').height()-56,
+                height: parent.$('.full-iframe-popup').height()-53,
                 convert_urls: false,
                 remove_script_host: false,
                 forced_root_block: "",

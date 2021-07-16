@@ -80,7 +80,7 @@
     </form> 
 
     <script>
-        $('.sidebar').css('height', $(window).height()-56);
+        $('.sidebar').css('height', $(window).height()-53);
 
         var editor;
         $(document).ready(function() {
@@ -88,7 +88,7 @@
                 language: '{{ Auth::user()->admin->getLanguageCode() }}',
                 selector: '.template-editor',
                 directionality: "{{ Auth::user()->admin->text_direction }}",
-                height: $(window).height()-56,
+                height: $(window).height()-53,
                 convert_urls: false,
                 remove_script_host: false,
                 skin: "oxide-dark",

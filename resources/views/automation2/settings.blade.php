@@ -63,7 +63,9 @@
                 data-confirm="{{ trans('messages.automation.delete.confirm') }}"
                 class="btn btn-secondary automation-delete"
             >
-                <i class='lnr lnr-trash mr-1'></i> {{ trans('messages.automation.delete_automation') }}
+                <span class="material-icons-outlined">
+delete
+</span> {{ trans('messages.automation.delete_automation') }}
             </a>
         </div>
     </div>

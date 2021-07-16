@@ -217,7 +217,6 @@ textarea.form-control {
     border-width: 1.5px;
 }
 .form-control, .select2 {
-    font-size: 13px;
     border-color: #bbb;
     border-radius: 5px;
     border: solid 2px #ccc;
@@ -258,7 +257,6 @@ h3 {
     margin-bottom: 10px;
 }
 .select2-selection--single:not([class*=bg-]), .select2-selection--multiple:not([class*=bg-]):not([class*=border-]) {
-    font-size: 13px;
     border-color: #bbb;
     border-radius: 5px;
     border: solid 2px #ccc;
