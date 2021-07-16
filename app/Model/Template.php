@@ -696,7 +696,7 @@ class Template extends Model
     public function uploadAsset($file)
     {
         // Store to template storage storage/app/customers/000000/templates/111111/ASSET.JPG
-        $name = escapeshellarg($file->getClientOriginalName());
+        $name = StringHelper::sanitizeFilename($file->getClientOriginalName());
         $name = StringHelper::generateUniqueName($this->getStoragePath(), $name);
 
         // Move uploaded file

@@ -364,6 +364,11 @@ class StringHelper
         return $dom->saveHTML();
     }
 
+    public static function sanitizeFilename($filename)
+    {
+        return preg_replace('/[^a-zA-Z0-9\.\-]+/', '_', trim($filename));
+    }
+
     public static function generateUniqueName($directory, $name)
     {
         $count = 1;
