@@ -4400,3 +4400,6 @@ label:hover .checkmark, .checkmark-container:hover .checkmark {
 pagination {
     justify-content: flex-end;
 }
+.form-group .select2 {
+    width: 100%!important;
+}
