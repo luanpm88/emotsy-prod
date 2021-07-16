@@ -314,24 +314,26 @@
             }
         }
 
-        $(document).on("click", "#doneBtn", function(e) {
-            e.preventDefault();
-
-            // DONE = Cancel = simply delete job
-            AcelleImport.cancel();
-        });
-
-        $(document).on("click", "#cancelBtn", function(e) {
-            e.preventDefault();
-
-            var cancelConfirm = confirm("{{ trans('messages.blacklist.cancel.confirm') }}");
-
-            if (cancelConfirm) {
-                AcelleImport.cancel();
-            }
-        });
-
         $(document).ready(function() {
+            // Events binding
+            $(document).on("click", "#doneBtn", function(e) {
+                e.preventDefault();
+
+                // DONE = Cancel = simply delete job
+                AcelleImport.cancel();
+            });
+
+            $(document).on("click", "#cancelBtn", function(e) {
+                e.preventDefault();
+
+                var cancelConfirm = confirm("{{ trans('messages.blacklist.cancel.confirm') }}");
+
+                if (cancelConfirm) {
+                    AcelleImport.cancel();
+                }
+            });
+
+            // Set up current JOB
             @if (isset($currentJobUid))
                 // Temporary show the progress bar of 0 percentage, waiting for the checkProgress() call to update it
                 AcelleImport.showProgressBar();
