@@ -61,7 +61,7 @@
                 <i class="material-icons-outlined automation-head-icon ml-2">alarm</i>
             </div>
             <div class="automation-top-menu">
-            <span class="mr-3"><i class="last_save_time" data-url="{{ action('Automation2Controller@lastSaved', $automation->uid) }}">{{ trans('messages.automation.designer.last_saved', ['time' => $automation->updated_at->diffForHumans()]) }}</i></span>
+                <span class="mr-3"><i class="last_save_time" data-url="{{ action('Automation2Controller@lastSaved', $automation->uid) }}">{{ trans('messages.automation.designer.last_saved', ['time' => $automation->updated_at->diffForHumans()]) }}</i></span>
                 <a href="{{ action('Automation2Controller@index') }}" class="action">
                     <i class="material-icons-outlined mr-2">arrow_back</i>
                     {{ trans('messages.automation.go_back') }}
@@ -344,67 +344,6 @@
                 // };
             });
         }
-    
-        $(document).ready(function() {
-            // load sidebar
-            sidebar.load('{{ action('Automation2Controller@settings', $automation->uid) }}');
-
-            // history toggle
-            $('.diagram .history .history-list').click(function() {
-                toggleHistory();
-            });
-            $(document).mouseup(function(e) 
-            {
-                var container = $(".history .history-list-items");
-
-                // if the target of the click isn't the container nor a descendant of the container
-                if (!container.is(e.target) && container.has(e.target).length === 0) 
-                {
-                    container.fadeOut();
-                }
-            });
-
-            // switch automation
-            $('[name=switch_automation]').change(function() {
-                var val = $(this).val();
-                var text = $('[name=switch_automation] option:selected').text();
-                var confirm = "{{ trans('messages.automation.switch_automation.confirm') }} <span class='font-weight-semibold'>" + text + "</span>"; 
-
-                var dialog = new Dialog('confirm', {
-                    message: confirm,
-                    ok: function(dialog) {
-                        window.location = val; 
-                    },
-                    cancel: function() {
-                        $('[name=switch_automation]').val('');
-                    },
-                    close: function() {
-                        $('[name=switch_automation]').val('');
-                    },
-                });
-            });
-            $('.select2-results__option').each
-
-            // fake history
-            $('.diagram .history .history-list-items a, .history .history-undo').click(function(e) {
-                e.preventDefault();
-
-                var dialog = new Dialog('alert', {
-                    message: 'Automation is already finallized. Cannot rollback to previous state.',
-                });
-            });
-            
-            // quota view
-            $('.quota-view').click(function(e) {
-                e.preventDefault();
-
-                var url = $(this).attr('href');
-
-                popup.load(url, function() {
-                    console.log('quota popup loaded!');
-                });
-            });
-        });
 
         function OpenActionSelectPopup(insertToTree, conditionBranch = null) {
             var hasChildren = false;
