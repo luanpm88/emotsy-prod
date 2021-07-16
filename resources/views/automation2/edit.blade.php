@@ -90,6 +90,89 @@
         }
     </style>
     
+    <header>
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+            <a class="navbar-brand left-logo" href="#">
+                @if (\Acelle\Model\Setting::get('site_logo_small'))
+                    <img src="{{ action('SettingController@file', \Acelle\Model\Setting::get('site_logo_small')) }}" alt="">
+                @else
+                    <img height="22" src="{{ URL::asset('images/logo_light_blue.svg') }}" alt="">
+                @endif
+            </a>
+            <div class="d-inline-block d-flex mr-auto align-items-center">
+                <h1 class="">{{ $automation->name }}</h1>
+                <i class="material-icons-outlined automation-head-icon ml-2">alarm</i>
+            </div>
+            <div class="automation-top-menu">
+                <span class="mr-3"><i class="last_save_time" data-url="{{ action('Automation2Controller@lastSaved', $automation->uid) }}">{{ trans('messages.automation.designer.last_saved', ['time' => $automation->updated_at->diffForHumans()]) }}</i></span>
+                <a href="{{ action('Automation2Controller@index') }}" class="action">
+                    <i class="material-icons-outlined mr-2">arrow_back</i>
+                    {{ trans('messages.automation.go_back') }}
+                </a>
+
+                <div class="switch-automation d-flex">
+                    <select class="select select2 top-menu-select" name="switch_automation">
+                        <option value="--hidden--"></option>
+                        @foreach($automation->getSwitchAutomations(Auth::user()->customer)->get() as $auto)
+                            <option value='{{ action('Automation2Controller@edit', $auto->uid) }}'>{{ $auto->name }}</option>
+                        @endforeach
+                    </select>
+
+                    <a href="javascript:'" class="action">
+                        <i class="material-icons-outlined mr-2">
+    horizontal_split
+    </i>
+                        {{ trans('messages.automation.switch_automation') }}
+                    </a>
+                </div>
+
+                <div class="account-info">
+                    <ul class="navbar-nav mr-auto navbar-dark bg-dark"">                        
+                        <li class="nav-item dropdown">
+                            <a class="account-item nav-link dropdown-toggle px-2" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <img class="avatar" src="{{ Auth::user()->getProfileImageUrl() }}" alt="">
+                                {{ Auth::user()->displayName() }}
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                @can("admin_access", Auth::user())
+                                    <a class="dropdown-item d-flex align-items-center" href="{{ action("Admin\HomeController@index") }}">
+                                        <i class="material-icons-outlined mr-2">double_arrow</i>
+                                        {{ trans('messages.admin_view') }}
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                @endif
+                                <a class="dropdown-item d-flex align-items-center quota-view" href="{{ action("AccountController@quotaLog2") }}">
+                                    <i class="material-icons-outlined mr-2">multiline_chart</i>
+                                    <span class="">{{ trans('messages.used_quota') }}</span>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="{{ action('AccountSubscriptionController@index') }}">
+                                    <i class="material-icons-outlined mr-2">redeem</i>
+                                    <span>{{ trans('messages.subscriptions') }}</span>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="{{ action("AccountController@profile") }}">
+                                    <i class="material-icons-outlined mr-2">account_circle</i>
+                                    <span>{{ trans('messages.account') }}</span>
+                                </a>
+                                @if (Auth::user()->customer->canUseApi())
+                                    <a href="{{ action("AccountController@api") }}" class="dropdown-item d-flex align-items-center">
+                                        <i class="material-icons-outlined mr-2">code</i>
+                                        <span>{{ trans('messages.api') }}</span>
+                                    </a>
+                                @endif
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item d-flex align-items-center" href="{{ url("/logout") }}">
+                                    <i class="material-icons-outlined mr-2">power_settings_new</i>
+                                    <span>{{ trans('messages.logout') }}</span>
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                    
+                </div>
+            </div>
+        </nav>
+    </header>
+    
     <main role="main">
         <div class="automation2">
             <div class="diagram text-center scrollbar-inner">                
@@ -308,67 +391,6 @@
                 // };
             });
         }
-    
-        $(document).ready(function() {
-            // load sidebar
-            sidebar.load('{{ action('Automation2Controller@settings', $automation->uid) }}');
-
-            // history toggle
-            $('.diagram .history .history-list').click(function() {
-                toggleHistory();
-            });
-            $(document).mouseup(function(e) 
-            {
-                var container = $(".history .history-list-items");
-
-                // if the target of the click isn't the container nor a descendant of the container
-                if (!container.is(e.target) && container.has(e.target).length === 0) 
-                {
-                    container.fadeOut();
-                }
-            });
-
-            // switch automation
-            $('[name=switch_automation]').change(function() {
-                var val = $(this).val();
-                var text = $('[name=switch_automation] option:selected').text();
-                var confirm = "{{ trans('messages.automation.switch_automation.confirm') }} <span class='font-weight-semibold'>" + text + "</span>"; 
-
-                var dialog = new Dialog('confirm', {
-                    message: confirm,
-                    ok: function(dialog) {
-                        window.location = val; 
-                    },
-                    cancel: function() {
-                        $('[name=switch_automation]').val('');
-                    },
-                    close: function() {
-                        $('[name=switch_automation]').val('');
-                    },
-                });
-            });
-            $('.select2-results__option').each
-
-            // fake history
-            $('.diagram .history .history-list-items a, .history .history-undo').click(function(e) {
-                e.preventDefault();
-
-                var dialog = new Dialog('alert', {
-                    message: 'Automation is already finallized. Cannot rollback to previous state.',
-                });
-            });
-            
-            // quota view
-            $('.quota-view').click(function(e) {
-                e.preventDefault();
-
-                var url = $(this).attr('href');
-
-                popup.load(url, function() {
-                    console.log('quota popup loaded!');
-                });
-            });
-        });
 
         function OpenActionSelectPopup(insertToTree, conditionBranch = null) {
             var hasChildren = false;

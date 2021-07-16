@@ -4846,6 +4846,6 @@ pagination {
   .select2-container--open {
       z-index: 10000;
   }
-  .form-group .select2 {
-      width: 100%!important;
-  }
+.form-group .select2 {
+    width: 100%!important;
+}

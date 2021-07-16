@@ -46,6 +46,16 @@ class UnsubscribeLog extends Model
     }
 
     /**
+     * Associations.
+     *
+     * @var object | collect
+     */
+    public function subscriber()
+    {
+        return $this->belongsTo('Acelle\Model\Subscriber');
+    }
+
+    /**
      * Get all items.
      *
      * @return collect
