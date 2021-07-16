@@ -2343,4 +2343,32 @@ class Automation2Controller extends Controller
         $automation->check();
         echo "Done";
     }
+
+    public function sendTestEmail(Request $request)
+    {
+        $email = Email::findByUid($request->email_uid);
+
+        if ($request->isMethod('post')) {
+            $validator = \Validator::make($request->all(), [
+                'email' => 'required|email',
+            ]);
+
+            // 
+            if ($validator->fails()) {
+                return response()->view('automation2.sendTestEmail', [
+                    'email' => $email,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'OK',
+            ]);
+        }
+
+        return view('automation2.sendTestEmail', [
+            'email' => $email,
+        ]);
+    }
 }
