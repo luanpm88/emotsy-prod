@@ -451,7 +451,7 @@ class SendingServerElasticEmail extends SendingServer
         return false;
     }
 
-    public function setupBeforeSend()
+    public function setupBeforeSend($fromEmailAddress)
     {
         try {
             $this->setupWebhooks();

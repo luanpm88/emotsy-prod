@@ -124,7 +124,7 @@ class SendingServerSendmail extends SendingServer
         return $server;
     }
 
-    public function setupBeforeSend()
+    public function setupBeforeSend($fromEmailAddress)
     {
         //
     }

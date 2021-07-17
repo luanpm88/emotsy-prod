@@ -348,7 +348,7 @@ class SendingServerSparkPost extends SendingServer
         return false;
     }
 
-    public function setupBeforeSend()
+    public function setupBeforeSend($fromEmailAddress)
     {
         $this->setupWebhook();
     }
