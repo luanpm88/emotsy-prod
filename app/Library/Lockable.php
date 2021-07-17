@@ -90,10 +90,10 @@ class Lockable
     {
         if (time() - $startTime > $timeoutDuration) {
             if (!is_null($callback)) {
-                $callback();
+                return $callback();
+            } else {
+                throw new \Exception('Timeout getting lock #Lockable for: '.$this->file);
             }
-
-            throw new \Exception('Timeout getting lock #Lockable for: '.$this->file);
         }
     }
 }

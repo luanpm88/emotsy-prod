@@ -444,6 +444,12 @@ class Automation2 extends Model
                 $automationLockFile = $customer->getLockPath('automation-lock-'.$automation->uid);
                 $lock = new Lockable($automationLockFile);
                 $timeout = 5; // seconds
+                $timeoutCallback = function() use ($automation) {
+                    // pass this ot the getExclusiveLock method 
+                    // to have it silently quit, without throwing an exception
+                    $automation->logger()->info(sprintf('LOCK timeout, another process is handling automation "%s"', $automation->name));
+                    return;
+                };
 
                 $lock->getExclusiveLock(function ($f) use ($customer, $automation) {
                     if ($customer->isSubscriptionActive()) {
@@ -452,7 +458,7 @@ class Automation2 extends Model
                     } else {
                         $automation->logger()->warning(sprintf('Automation "%s" skipped, user "%s" not on active subscription', $automation->name, $customer->user->displayName()));
                     }
-                }, $timeout);
+                }, $timeout, $timeoutCallback);
             }
         }
     }
