@@ -450,4 +450,13 @@ class SendingServerElasticEmail extends SendingServer
     {
         return false;
     }
+
+    public function setupBeforeSend()
+    {
+        try {
+            $this->setupWebhooks();
+        } catch (\Exception $ex) {
+            MailLog::warning('Cannot set up Elastic webhook: ' . $ex->getMessage());
+        }
+    }
 }
