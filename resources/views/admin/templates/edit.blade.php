@@ -19,7 +19,7 @@
 @endsection
 
 @section('menu_right')
-    <li class="nav-item" rel0="TemplateController">
+    <li class="nav-item">
         <a  href="javascript:;"
             onclick="parent.$('body').removeClass('overflow-hidden');parent.$('.full-iframe-popup').fadeOut()"
             class="nav-link d-flex align-items-center py-3 lvl-1">
@@ -30,10 +30,17 @@
     <li class="d-flex align-items-center px-3">
         <button class="btn btn-primary" onclick="$('#classic-builder-form').submit()">{{ trans('messages.save') }}</button>
     </li>
+    <li>
+        <a href="javascript:;"
+            onclick="parent.$('body').removeClass('overflow-hidden');parent.$('.full-iframe-popup').fadeOut()"
+            class="nav-link close-button action black-close-button">
+            <i class="material-icons-outlined">close</i>
+        </a>
+    </li>
 @endsection
 
 @section('content')
-    <form id="classic-builder-form" style="margin-top: 56px;" action="{{ action('Admin\TemplateController@update', $template->uid) }}" method="POST" class="ajax_upload_form form-validate-jqueryz builder-classic-form">
+    <form id="classic-builder-form" action="{{ action('Admin\TemplateController@update', $template->uid) }}" method="POST" class="ajax_upload_form form-validate-jqueryz builder-classic-form">
         {{ csrf_field() }}
         <input type="hidden" name="_method" value="PATCH">
 

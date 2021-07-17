@@ -426,7 +426,7 @@ function makeList(options) {
 function openBuilder(url) {
     var div = $('<div class="full-iframe-popup">').html(`
         <div class="loading classic-loader frame-classic-loader"><div class="text-center inner"><div class="box-loading"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div></div></div>
-        <iframe scrolling="yes" class="builder d-none" src="`+url+`"></iframe>
+        <iframe scrolling="no" class="builder d-none" src="`+url+`"></iframe>
     `);
     
     $(".full-iframe-popup").remove();
@@ -447,7 +447,7 @@ function openBuilder(url) {
 function openBuilderClassic(url) {
     var div = $('<div class="full-iframe-popup">').html(`
         <div class="loading classic-loader frame-classic-loader"><div class="text-center inner"><div class="box-loading"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div></div></div>
-        <iframe scrolling="yes" class="builder d-none" src="`+url+`"></iframe>
+        <iframe scrolling="no" class="builder d-none" src="`+url+`"></iframe>
     `);
     
     $(".full-iframe-popup").remove();

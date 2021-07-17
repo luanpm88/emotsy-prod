@@ -1,10 +1,10 @@
-@extends('layouts.login')
+@extends('layouts.core.login_slider')
 
 @section('title', trans('messages.login'))
 
 @section('content')
 
-    <link type="text/css" rel="stylesheet" href="{{ URL::asset('assets/lib/lightslider/css/lightslider.css') }}" />
+    <link type="text/css" rel="stylesheet" href="{{ URL::asset('core/lightslider/css/lightslider.css') }}" />
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="{{ URL::asset('assets/lib/lightslider/js/lightslider.js') }}"></script>
 
@@ -113,9 +113,15 @@
                                 <h2>Complete Delivery Tracking</h2>
                                 <h4>Track every single message sent out for your campaign</h4>
                                 <ul>
-                                    <li><i class="ion-checkmark-round"></i> Track your messages opens & clicks</li>
-                                    <li><i class="ion-checkmark-round"></i> Automatically handle bounce & feedback</li>
-                                    <li><i class="ion-checkmark-round"></i> Measure your campaign performance with insight reports</li>
+                                    <li class="d-flex align-items-center"><span class="material-icons-round mr-2 text-info">
+done
+</span> <span>Track your messages opens & clicks</span></li>
+                                    <li class="d-flex align-items-center"><span class="material-icons-round mr-2 text-info">
+done
+</span> <span>Automatically handle bounce & feedback</span></li>
+                                    <li class="d-flex align-items-center"><span class="material-icons-round mr-2 text-info">
+done
+</span> <span>Measure your campaign performance with insight reports</span></li>
                                 </ul>
                             </div>
                         </li>
@@ -128,8 +134,12 @@
                                 <h4>Open to full customization and rebranding</h4>
                                 <p>Laravel is an free and open-source PHP framework, designed for the development of robust web applications succeeding the MVC pattern. With PHP/Laravel, code maintenance is easier than ever as your business is growing</p>
                                 <ul>
-                                    <li><i class="ion-checkmark-round"></i> Coded in PHP 5.6, 7.0 on top of Laravel 5</li>
-                                    <li><i class="ion-checkmark-round"></i> Backed by MySQL 5.x</li>
+                                    <li class="d-flex align-items-center"><span class="material-icons-round mr-2 text-info">
+done
+</span> <span>Coded in PHP 5.6, 7.0 on top of Laravel 5</span></li>
+                                    <li class="d-flex align-items-center"><span class="material-icons-round mr-2 text-info">
+done
+</span> <span>Backed by MySQL 5.x</li>
                                 </ul>
                             </div>
                         </li>
@@ -141,9 +151,15 @@
                                 <h2>Full-featured Automation / Auto-responder</h2>
                                 <h4>Automate your campaign with email workflow editor</h4>
                                 <ul>
-                                    <li><i class="ion-checkmark-round"></i> Start your email campaigns in response to event triggers</li>
-                                    <li><i class="ion-checkmark-round"></i> Automatically respond to your recipient activities (open/click)</li>
-                                    <li><i class="ion-checkmark-round"></i> Design your marketing with email automation workflow</li>
+                                    <li class="d-flex align-items-center"><span class="material-icons-round mr-2 text-info">
+done
+</span> <span>Start your email campaigns in response to event triggers</span></li>
+                                    <li class="d-flex align-items-center"><span class="material-icons-round mr-2 text-info">
+done
+</span> <span>Automatically respond to your recipient activities (open/click)</span></li>
+                                    <li class="d-flex align-items-center"><span class="material-icons-round mr-2 text-info">
+done
+</span> <span>Design your marketing with email automation workflow</span></li>
                                 </ul>
                             </div>
                         </li>

@@ -822,6 +822,10 @@ textarea.plain_text_content {
 .help-block {
     font-size: 14px;
 }
+.bg-slate-800 {
+    background-color: #37474F;
+    border-color: #37474F;
+}
 ul.modern-listing {
     padding-left: 0;
 }

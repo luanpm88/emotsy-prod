@@ -1,4 +1,4 @@
-@extends('layouts.clean')
+@extends('layouts.core.login')
 
 @section('title', trans('messages.offline'))
 

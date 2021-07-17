@@ -4,6 +4,9 @@
 a {
     text-decoration: none;
 }
+.small, small {
+    font-size: 0.84rem;
+}
 body {
     padding-top: 53px;
     font-family: "Open Sans","Helvetica Neue",Arial,Helvetica,Verdana,sans-serif;
@@ -101,7 +104,7 @@ h1, h1 {
 }
 .switchery[type="checkbox"], .styled[type="checkbox"], .styled[type="radio"] {
     width: 19px;
-    height: 19px;
+    height: 20px;
     display: inline-block;
     align-items: center;
     cursor: pointer;
@@ -499,4 +502,45 @@ h5 {
 }
 .no-margin {
     margin: 0;
+}
+.login-email-input input {
+    padding-left: 37px;
+    font-size: 0.86rem;
+    height: 38px;
+}
+
+.login-email-input:before {
+    content: 'mail';
+    position: absolute;
+    display: inline-block;
+    width: 25px;
+    height: 19px;
+    font-family: 'Material Icons Round';
+    font-size: 19px;
+    line-height: 17px;
+    top: 11px;
+    left: 9px;
+    color: #555;
+}
+.login-password-input input {
+    padding-left: 37px;
+    font-size: 0.86rem;
+    height: 38px;
+}
+
+.login-password-input:before {
+    content: 'lock';
+    position: absolute;
+    display: inline-block;
+    width: 25px;
+    height: 19px;
+    font-family: 'Material Icons Round';
+    font-size: 19px;
+    line-height: 17px;
+    top: 11px;
+    left: 10px;
+    color: #555;
+}
+.has-error input {
+    border-color: #b00020;
 }
