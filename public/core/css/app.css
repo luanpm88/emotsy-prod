@@ -412,7 +412,7 @@ h1, h1 {
 .alert:before {
     position: relative;
     display: inline-block;
-    width: 25px;
+    width: 28px;
     height: 19px;
     font-family: 'Material Icons Outlined';
     font-size: 15px;
@@ -547,4 +547,7 @@ h5 {
 }
 .form-group .radio .desc {
     padding-left: 30px;
+}
+.dropdown-item [class^="material-icons"] {
+    margin-right: .5rem;
 }

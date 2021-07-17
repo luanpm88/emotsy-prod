@@ -73,7 +73,7 @@
               class="btn btn-mc_default">
                 {{ trans('messages.sending_serbers.go_to_amazon_dashboard') }}
             </a>
-            <p class="mt-40">
+            <p class="mt-5">
                 {{ trans('messages.sending_serbers.aws.allow_verify.intro') }}
             </p>
 

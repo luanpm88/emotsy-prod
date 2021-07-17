@@ -10,7 +10,7 @@
 
 @section('content')
     
-    <div class="row mt-40 mc-form">
+    <div class="row mt-5 mc-form">
         <div class="col-md-3"></div>
         <div class="col-md-6">
             

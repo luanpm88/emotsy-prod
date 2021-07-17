@@ -18,26 +18,26 @@
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="content-menu">
         @can("customer_access", Auth::user())
             <li class="border-bottom"><a href="{{ action("HomeController@index") }}" class="dropdown-item d-flex align-items-center">
-            <i class="acelle-icon mr-3">
+            <i class="acelle-icon mr-2">
                 <img src="{{ url('images/icons/'.$iconDir.'SVG/changeview.svg') }}" />
             </i>{{ trans('messages.customer_view') }}
             </a></li>
             <li class="divider"></li>
         @endif
         <li><a href="{{ action("Admin\AccountController@profile") }}" class="dropdown-item d-flex align-items-center">
-        <i class="acelle-icon mr-3">
+        <i class="acelle-icon mr-2">
                 <img src="{{ url('images/icons/'.$iconDir.'SVG/account.svg') }}" />
             </i>{{ trans('messages.account') }}
         </a></li>
         <li rel0="AccountController/api">
             <a href="{{ action("Admin\AccountController@api") }}" class="dropdown-item d-flex align-items-center">
-            <i class="acelle-icon mr-3">
+            <i class="acelle-icon mr-2">
                 <img src="{{ url('images/icons/'.$iconDir.'SVG/api.svg') }}" />
             </i>{{ trans('messages.admin_api') }}
             </a>
         </li>
         <li><a href="{{ url("/logout") }}" class="dropdown-item d-flex align-items-center">
-            <i class="acelle-icon mr-3">
+            <i class="acelle-icon mr-2">
                 <img src="{{ url('images/icons/'.$iconDir.'SVG/logout.svg') }}" />
             </i>{{ trans('messages.logout') }}</a></li>
     </ul>

@@ -2,9 +2,8 @@
 
 @section('title', $list->name . " - " . number_with_delimiter($list->readCache('SubscriberCount')) . " " . trans('messages.subscribers'))
 
-@section('page_script')
-    <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/visualization/echarts/echarts.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('js/chart.js') }}"></script>
+@section('head')
+    <script type="text/javascript" src="{{ URL::asset('core/echarts/echarts.min.js') }}"></script>
 @endsection
 
 @section('page_header')

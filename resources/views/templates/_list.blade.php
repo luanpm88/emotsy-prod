@@ -72,12 +72,16 @@
                             <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 @if (Auth::user()->customer->can('preview', $template))
-                                    <li><a href="#preview" onclick="popupwindow('{{ action('TemplateController@preview', $template->uid) }}', '{{ $template->name }}', 800, 800)"><i class="icon-zoomin3"></i> {{ trans("messages.preview") }}</a></li>
+                                    <li><a href="#preview" onclick="popupwindow('{{ action('TemplateController@preview', $template->uid) }}', '{{ $template->name }}', 800, 800)"><span class="material-icons-outlined">
+zoom_in
+</span> {{ trans("messages.preview") }}</a></li>
                                 @endif
                                 @if (Auth::user()->customer->can('update', $template))
                                     <li>
                                         <a class="upload-thumb-button" href="{{ action('TemplateController@updateThumb', $template->uid) }}">
-                                            <i class="icon-file-picture"></i> {{ trans("messages.template.upload_thumbnail") }}
+                                            <span class="material-icons-outlined">
+insert_photo
+</span> {{ trans("messages.template.upload_thumbnail") }}
                                         </a>
                                     </li>
                                 @endif
@@ -86,7 +90,9 @@
                                         <a class="template-categories" href="{{ action('TemplateController@categories', [
 											'uid' => $template->uid,
 										]) }}">
-                                            <i class="icon-files-empty"></i> {{ trans("messages.template.categories") }}
+                                            <span class="material-icons-outlined">
+category
+</span> {{ trans("messages.template.categories") }}
                                         </a>
                                     </li>
                                 @endif
@@ -98,7 +104,7 @@
                                             class="dropdown-item copy-template-button"
                                             link-method="GET"
                                         >
-                                            <span class="material-icons-outlined me-1">
+                                            <span class="material-icons-outlined me-2">
 copy_all
 </span> {{ trans("messages.template.copy") }}
                                         </a>
@@ -109,7 +115,7 @@ copy_all
                                         class="dropdown-item list-action-single"
                                         link-confirm="{{ trans('messages.delete_templates_confirm') }}"
                                         href="{{ action('TemplateController@delete', ["uids" => $template->uid]) }}">
-                                        <span class="material-icons-outlined me-1">
+                                        <span class="material-icons-outlined me-2">
 delete_outline
 </span> {{ trans("messages.delete") }}</a></li>
                                 @endif

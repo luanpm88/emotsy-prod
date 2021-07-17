@@ -11,7 +11,7 @@
         <h2>What is fitness</h2>
         <p>This feature allows you to add a sending server which will actually send out your campaign emails. You can configure a standard SMTP connection or connect to a 3rd services like Amazon SES, SendGrid, Mailgun, ElasticEmail, SparkPost... You can also take advantage of the the hosting server's email capability by creating a "PHP Mail" or "Sendmail" sending server</p>
       
-        <ul class="mc-progress-list mt-40">
+        <ul class="mc-progress-list mt-5">
             @foreach ($plan->plansSendingServers as $planSendingServer)
                 <li>
                     <div class="row">

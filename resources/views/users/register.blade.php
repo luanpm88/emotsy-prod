@@ -12,7 +12,7 @@
     
     <form enctype="multipart/form-data" action="{{ action('UserController@register') }}" method="POST" class="form-validate-jqueryz subscription-form">
         {{ csrf_field() }}
-        <div class="row mt-40 mc-form">
+        <div class="row mt-5 mc-form">
             <div class="col-md-2"></div>
             <div class="col-md-2 text-end mt-60">
                 <a class="main-logo-big" href="{{ action('HomeController@index') }}">

@@ -71,7 +71,7 @@
                 {{ trans('messages.sending_serbers.go_to_sendgrid_dashboard') }}
             </a>
 
-            <p class="mt-40">
+            <p class="mt-5">
                 {{ trans('messages.sending_serbers.sendgrid.allow_verify.intro') }}
             </p>
 

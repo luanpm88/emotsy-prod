@@ -1,4 +1,4 @@
-<h3 class=" mt-40"><i class="icon-address-book2"></i> {{ trans('messages.list_growth') }}</h3>
+<h3 class=" mt-5"><i class="icon-address-book2"></i> {{ trans('messages.list_growth') }}</h3>
 
 @if (Auth::user()->customer->lists()->count() == 0)
     <div class="empty-list">

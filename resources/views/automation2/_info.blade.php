@@ -39,7 +39,7 @@ error_outline
     </p>
     <div>
         <a href="javascript:;" class="btn btn-info text-nowrap d-flex align-items-center" onclick="sidebar.load('{{ action('Automation2Controller@settings', $automation->uid) }}')">
-            <i class="material-icons-outlined me-1">auto_graph</i> {{ trans('messages.automation.settings') }}
+            <i class="material-icons-outlined me-2">auto_graph</i> {{ trans('messages.automation.settings') }}
         </a>
     </div>         
 </div>

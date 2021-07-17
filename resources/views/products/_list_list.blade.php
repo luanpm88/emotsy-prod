@@ -30,7 +30,7 @@
 					<a href="{{ action('SourceController@sync', $product->uid) }}"
 						link-method="POST"
 						role="button" class="btn btn-mc_primary m-icon pl-3">
-						<span class="material-icons-outlined me-1">
+						<span class="material-icons-outlined me-2">
 							link
 							</span>{{ trans('messages.view') }}</a>
 					<div class="btn-group">

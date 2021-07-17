@@ -345,10 +345,8 @@ class PlanController extends Controller
         }
 
         $result = [
-            'title' => '',
             'columns' => [],
             'data' => [],
-            'bar_names' => [],
         ];
 
         $datas = [];
@@ -357,22 +355,14 @@ class PlanController extends Controller
             // create data
             if ($count) {
                 $result['bar_names'][] = $plan->name;
-                $datas[] = ['value' => $count, 'name' => $plan->name];
+                $result['data'][] = ['value' => $count, 'name' => $plan->name];
             }
         }
 
-        // datas
-        $result['data'][] = [
-            'name' => trans('messages.plan_pie_chart'),
-            'type' => 'pie',
-            'radius' => '70%',
-            'center' => ['50%', '57.5%'],
-            'data' => $datas
-        ];
+        usort($result['data'], function($a, $b) {return strcmp($a['value'], $b['value']);});
+        $result['data'] = array_reverse($result['data']);
 
-        $result['pie'] = 1;
-
-        return json_encode($result);
+        return response()->json($result);
     }
 
     /**

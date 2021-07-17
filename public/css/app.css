@@ -50,6 +50,14 @@ p {
 b, strong {
     font-weight: 600;
 }
+.alert-danger {
+    background-color: #FBE9E7;
+    color: #231d14;
+}
+.alert-warning {
+    background-color: #FFF3E0;
+    color: #231d14;
+}
 .badge {
     padding: 1px 5px 0px 5px;
     font-size: 10px;

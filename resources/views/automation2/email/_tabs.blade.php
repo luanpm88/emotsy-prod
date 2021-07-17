@@ -5,7 +5,7 @@
     </div>    
     <div class="header-action">
         <button class="btn btn-secondary d-flex align-items-center back_to_workflow" onclick="sidebar.load(); popup.hide()">
-            <i class="material-icons-outlined me-1">
+            <i class="material-icons-outlined me-2">
                 multiline_chart
             </i>
             {{ trans('messages.automation.back_to_workflow') }}

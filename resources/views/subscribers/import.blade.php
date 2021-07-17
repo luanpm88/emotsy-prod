@@ -45,7 +45,7 @@ people
                     @include('helpers.form_control', ['required' => true, 'type' => 'file', 'label' => trans('messages.upload_file'), 'name' => 'file', 'value' => $list->name])
 
                     @if (\Acelle\Model\Setting::get('import_subscribers_commitment'))
-                        <div class="mt-40">
+                        <div class="mt-5">
                             @include('helpers.form_control', [
                                 'type' => 'checkbox2',
                                 'class' => 'policy_commitment mb-10 required',

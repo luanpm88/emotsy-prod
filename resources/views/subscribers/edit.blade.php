@@ -45,7 +45,7 @@ close
                         @else
                             <a href="" class="btn-group profile-tag-contact" role="group" aria-label="Basic example">
                                 <button role="button" class="btn btn-light btn-tag d-flex align-items-center">
-                                    <i class="material-icons-outlined me-1">add</i>
+                                    <i class="material-icons-outlined me-2">add</i>
                                     <span class="font-italic">{{ trans('messages.automation.profile.click_to_add_tag') }}<span>
                                 </button>
                             </a>

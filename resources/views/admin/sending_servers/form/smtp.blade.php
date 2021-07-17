@@ -257,7 +257,7 @@
                     {{ trans('messages.sending_serbers.add_email_domain') }}
                 </a>
                     
-                <p class="mt-40">
+                <p class="mt-5">
                     {{ trans('messages.sending_serbers.php-mail.allow_verify.intro') }}                    
                 </p>
                     

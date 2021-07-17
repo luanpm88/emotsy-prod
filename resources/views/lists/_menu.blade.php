@@ -3,7 +3,9 @@
         <ul class="nav nav-tabs nav-tabs-top page-second-nav">
             <li rel0="MailListController/overview" class="dropdown">
                 <a href="{{ action('MailListController@overview', $list->uid) }}" class="level-1">
-                <i class="icon-stats-bars3"></i> {{ trans('messages.overview') }}
+                <span class="material-icons-outlined">
+auto_graph
+</span> {{ trans('messages.overview') }}
                 </a>
             </li>
             <li rel0="MailListController/edit">
@@ -15,7 +17,9 @@ settings
             </li>
             <li rel0="SubscriberController" class="dropdown">
                 <a href="{{ action("AccountController@contact") }}" class="level-1" data-bs-toggle="dropdown">
-                <i class="icon-users4 position-left"></i> {{ trans('messages.subscribers') }}
+                <span class="material-icons-outlined">
+people
+</span> {{ trans('messages.subscribers') }}
                 <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
@@ -48,7 +52,9 @@ settings
             </li>
             <li rel0="SegmentController" class="dropdown">
                 <a href="{{ action("AccountController@contact") }}" class="level-1" data-bs-toggle="dropdown">
-                <i class="icon-make-group position-left"></i> {{ trans('messages.segments') }}
+                <span class="material-icons-outlined">
+splitscreen
+</span> {{ trans('messages.segments') }}
                 <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
@@ -66,7 +72,9 @@ settings
             </li>
             <li rel0="PageController" rel1="MailListController/embeddedForm" class="dropdown">
                 <a href="#menu" class="level-1" data-bs-toggle="dropdown">
-                <i class="icon-certificate position-left"></i> {{ trans('messages.custom_forms_and_emails') }}
+                <span class="material-icons-outlined">
+web
+</span> {{ trans('messages.custom_forms_and_emails') }}
                 <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end has-head">
@@ -148,12 +156,16 @@ settings
             </li>
             <li rel0="FieldController/index">
                 <a class="level-1" href="{{ action('FieldController@index', $list->uid) }}">
-                <i class="icon-list3"></i> {{ trans('messages.manage_list_fields') }}
+                <span class="material-icons-outlined">
+fact_check
+</span> {{ trans('messages.manage_list_fields') }}
                 </a>
             </li>
             <li rel0="MailListController/verification">
                 <a class="level-1" href="{{ action('MailListController@verification', $list->uid) }}">
-                <i class="icon-envelop5"></i> {{ trans('messages.email_verification') }}
+                <span class="material-icons-outlined">
+mark_email_read
+</span> {{ trans('messages.email_verification') }}
                 </a>
             </li>
         </ul>

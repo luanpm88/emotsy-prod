@@ -88,7 +88,7 @@ people_outline
                                             link-confirm="{{ trans('messages.enable_automations_confirm') }}"
                                             href="{{ action('Automation2Controller@enable', ["uids" => $automation->uid]) }}"
                                         >
-                                            <span class="material-icons-outlined me-1">
+                                            <span class="material-icons-outlined me-2">
 play_arrow
 </span> {{ trans('messages.enable') }}
                                         </a>
@@ -101,7 +101,7 @@ play_arrow
                                             link-method="PATCH" link-confirm="{{ trans('messages.disable_automations_confirm') }}"
                                             href="{{ action('Automation2Controller@disable', ["uids" => $automation->uid]) }}"
                                         >
-                                            <span class="material-icons-outlined me-1">
+                                            <span class="material-icons-outlined me-2">
 hide_source
 </span> {{ trans('messages.disable') }}
                                         </a>
@@ -115,7 +115,7 @@ hide_source
                                             link-confirm="{{ trans('messages.delete_automations_confirm') }}"
                                             href="{{ action('Automation2Controller@delete', ["uids" => $automation->uid]) }}"
                                         >
-                                            <span class="material-icons-outlined me-1">
+                                            <span class="material-icons-outlined me-2">
 delete_outline
 </span> {{ trans("messages.delete") }}
                                         </a>

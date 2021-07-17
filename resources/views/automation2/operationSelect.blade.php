@@ -7,7 +7,7 @@
             <p>{{ trans('messages.automation.choose_an_operation.desc') }}</p>
                 
             <div class="box-list mt-3">
-                <div class="box-list mt-40">
+                <div class="box-list mt-5">
                     @foreach ($types as $type)
                         <a class="box-item operation-select-but"
                             data-key="{{ $type }}"	
@@ -18,7 +18,7 @@
                             ]) }}"					
                         >							
                             <h6 class="d-flex align-items-center text-center justify-content-center">
-                                <i class="material-icons-outlined me-1">{{ trans('messages.automation.operation.icon.' . $type) }}</i>
+                                <i class="material-icons-outlined me-2">{{ trans('messages.automation.operation.icon.' . $type) }}</i>
                                 {{ trans('messages.automation.operation.' . $type) }}</h6>
                             <p>{{ trans('messages.automation.operation.' . $type . '.desc') }}</p>
                         </a>

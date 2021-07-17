@@ -46,7 +46,7 @@
 			<div class="automation-top-menu">
 				{{-- <span class="mr-3 last_save_time"><i>{{ trans('messages.automation.designer.last_saved', ['time' => $automation->updated_at->diffForHumans()]) }}</i></span> --}}
 				<a href="{{ action('Automation2Controller@index') }}" class="action">
-					<i class="material-icons-outlined me-1">arrow_back</i>
+					<i class="material-icons-outlined me-2">arrow_back</i>
 					{{ trans('messages.automation.go_back') }}
 				</a>
 
@@ -58,7 +58,7 @@
 					</select>
 
 					<a href="javascript:'" class="action">
-						<i class="material-icons-outlined me-1">
+						<i class="material-icons-outlined me-2">
 	horizontal_split
 	</i>
 						{{ trans('messages.automation.switch_automation') }}
@@ -75,32 +75,32 @@
 							<div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
 								@can("admin_access", Auth::user())
 									<a class="dropdown-item d-flex align-items-center" href="{{ action("Admin\HomeController@index") }}">
-										<i class="material-icons-outlined me-1">double_arrow</i>
+										<i class="material-icons-outlined me-2">double_arrow</i>
 										{{ trans('messages.admin_view') }}
 									</a>
 									<div class="dropdown-divider"></div>
 								@endif
 								<a class="dropdown-item d-flex align-items-center quota-view" href="{{ action("AccountController@quotaLog2") }}">
-									<i class="material-icons-outlined me-1">multiline_chart</i>
+									<i class="material-icons-outlined me-2">multiline_chart</i>
 									<span class="">{{ trans('messages.used_quota') }}</span>
 								</a>
 								<a class="dropdown-item d-flex align-items-center" href="{{ action('AccountSubscriptionController@index') }}">
-									<i class="material-icons-outlined me-1">redeem</i>
+									<i class="material-icons-outlined me-2">redeem</i>
 									<span>{{ trans('messages.subscriptions') }}</span>
 								</a>
 								<a class="dropdown-item d-flex align-items-center" href="{{ action("AccountController@profile") }}">
-									<i class="material-icons-outlined me-1">account_circle</i>
+									<i class="material-icons-outlined me-2">account_circle</i>
 									<span>{{ trans('messages.account') }}</span>
 								</a>
 								@if (Auth::user()->customer->canUseApi())
 									<a href="{{ action("AccountController@api") }}" class="dropdown-item d-flex align-items-center">
-										<i class="material-icons-outlined me-1">code</i>
+										<i class="material-icons-outlined me-2">code</i>
 										<span>{{ trans('messages.campaign_api') }}</span>
 									</a>
 								@endif
 								<div class="dropdown-divider"></div>
 								<a class="dropdown-item d-flex align-items-center" href="{{ url("/logout") }}">
-									<i class="material-icons-outlined me-1">power_settings_new</i>
+									<i class="material-icons-outlined me-2">power_settings_new</i>
 									<span>{{ trans('messages.logout') }}</span>
 								</a>
 							</div>

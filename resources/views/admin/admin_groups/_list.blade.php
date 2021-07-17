@@ -34,7 +34,10 @@
                             <button role="button" class="btn dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li>
-                                    <a link-confirm="{{ trans('messages.delete_admin_groups_confirm') }}" href="{{ action('Admin\AdminGroupController@delete', ['ids' => $item->id]) }}">
+                                    <a
+                                        class="dropdown-item list-action-single"
+                                        link-confirm="{{ trans('messages.delete_admin_groups_confirm') }}"
+                                        href="{{ action('Admin\AdminGroupController@delete', ['ids' => $item->id]) }}">
                                         <span class="material-icons-outlined">
 delete_outline
 </span> {{ trans('messages.delete') }}

@@ -102,7 +102,9 @@ copy_all
 							@if (\Gate::allows('update', $item))
 								<li>
 									<a link-method="POST" link-confirm="{{ trans('messages.subscribers.resend_confirmation_email.confirm') }}" href="{{ action('SubscriberController@resendConfirmationEmail', ['list_uid' => $list->uid, "uids" => $item->uid]) }}">
-										<i class="icon-envelop5"></i> {{ trans('messages.subscribers.resend_confirmation_email') }}
+										<span class="material-icons-outlined">
+mark_email_read
+</span> {{ trans('messages.subscribers.resend_confirmation_email') }}
 									</a>
 								</li>
 							@endif

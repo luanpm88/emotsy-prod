@@ -3,12 +3,12 @@
 		<li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
 		<li class="breadcrumb-item"><a href="{{ action("MailListController@index") }}">{{ trans('messages.lists') }}</a></li>
 		<li class="breadcrumb-item">
-			<div class="btn-group other-lists">
-				<button role="button" class="btn btn-link dropdown-toggle text-teal-600" data-bs-toggle="dropdown">{{ trans('messages.change_list') }} <span class="caret"></span></button>
+			<div class="btn-group other-lists" style="margin-top: -4px;">
+				<button role="button" class="btn dropdown-toggle text-teal-600" data-bs-toggle="dropdown">{{ trans('messages.change_list') }} <span class="caret"></span></button>
 				<ul class="dropdown-menu dropdown-menu-left">
 					@forelse ($list->otherLists() as $l)
 						<li>
-							<a href="{{ action('MailListController@overview', ['uid' => $l->uid]) }}">
+							<a class="dropdown-item" href="{{ action('MailListController@overview', ['uid' => $l->uid]) }}">
 								{{ $l->readCache('LongName', $l->name) }}
 							</a>
 						</li>

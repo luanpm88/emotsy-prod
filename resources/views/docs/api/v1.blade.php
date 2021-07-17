@@ -10,7 +10,7 @@
 
         @foreach (\Acelle\Library\ApiHelper::docs() as $box)
             @if ($box['view'] == $view)
-                <h2 class="mt-40 mb-20" style='text-transform: uppercase;'>{{ $box['title'] }}</h2>
+                <h2 class="mt-5 mb-20" style='text-transform: uppercase;'>{{ $box['title'] }}</h2>
                 <table class="table table-box pml-table table-log api-doc-table">
                     <tr>
                         <th width="1%" class="text-nowrap">{{ trans('messages.HTTP_method') }}</th>

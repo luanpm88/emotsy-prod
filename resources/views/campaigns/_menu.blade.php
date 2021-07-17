@@ -3,7 +3,9 @@
 		<ul class="nav nav-tabs nav-tabs-top page-second-nav">
 			<li rel0="CampaignController/overview" class="dropdown">
 				<a href="{{ action('CampaignController@overview', $campaign->uid) }}" class="level-1">
-					<i class="icon-stats-bars3"></i> {{ trans('messages.overview') }}
+					<span class="material-icons-outlined">
+auto_graph
+</span> {{ trans('messages.overview') }}
 				</a>
 			</li>
 			<li rel0="CampaignController/links" class="dropdown">

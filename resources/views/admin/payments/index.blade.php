@@ -28,7 +28,7 @@
             <div class="sub-section">
                 <h2 style="margin-bottom: 10px;margin-top: 0">{{ trans('messages.payment.all_available_gateways') }}</h2>
                 <p>{!! trans('messages.payment.all_available_gateways.wording') !!}</p>
-                <div class="mc-list-setting mt-40">
+                <div class="mc-list-setting mt-5">
                     @foreach ($gateways as $gateway)
                         <div class="list-setting bg-{{ $gateway->getType() }}
                             {{ $gateway->isActive() && in_array($gateway, $enabledGateways) ? 'current' : '' }}">
@@ -80,7 +80,7 @@
         </div>
     </div>
 
-    <div class="sub-section mt-40">
+    <div class="sub-section mt-5">
         <h2>{{ trans('messages.payment.settings') }}</h2>
         <form action="{{ action('Admin\SettingController@payment') }}" method="POST" class="form-validate-jqueryz">
             {{ csrf_field() }}

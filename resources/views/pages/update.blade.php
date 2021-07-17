@@ -18,7 +18,9 @@
 
 				@include("lists._menu")
 
-				<!--<h2 class="text-bold text-teal-800 mb-10"><i class="icon-certificate position-left"></i> {{ trans('messages.update_page') }}</h2>-->
+				<!--<h2 class="text-bold text-teal-800 mb-10"><span class="material-icons-outlined">
+web
+</span> {{ trans('messages.update_page') }}</h2>-->
 
                 <h2>{{ trans('messages.' . $layout->alias) }}</h2>
 

@@ -10,7 +10,7 @@
 
 @section('content')
 
-    <div class="row mt-40">
+    <div class="row mt-5">
         <div class="col-md-2"></div>
         <div class="col-md-2 text-end mt-60">
             <a class="main-logo-big" href="{{ action('HomeController@index') }}">

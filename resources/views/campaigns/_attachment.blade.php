@@ -7,7 +7,7 @@
   </form>
 </div>
 <div class="attachments_pnl">
-  <h3 class='mt-40'>{{ trans('messages.campaign.attached_files') }}<br/></h3>
+  <h3 class='mt-5'>{{ trans('messages.campaign.attached_files') }}<br/></h3>
 
   @if (!empty($campaign->getAttachments()))
     <ul>

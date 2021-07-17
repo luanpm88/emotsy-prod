@@ -52,19 +52,19 @@
                                     link-confirm="{{ trans('messages.enable_automations_confirm') }}"
                                     href="{{ action('Automation2Controller@enable') }}"
                                 >
-                                    <span class="material-icons-outlined me-1">
+                                    <span class="material-icons-outlined me-2">
 play_arrow
 </span> {{ trans('messages.enable') }}
                                 </a>
                             </li>
                             <li>
                                 <a class="dropdown-item" link-method="PATCH" link-confirm="{{ trans('messages.disable_automations_confirm') }}" href="{{ action('Automation2Controller@disable') }}">
-                                    <span class="material-icons-outlined me-1">
+                                    <span class="material-icons-outlined me-2">
 hide_source
 </span> {{ trans('messages.disable') }}</a></li>
                             <li>
                                 <a class="dropdown-item" link-method='delete' link-confirm="{{ trans('messages.delete_automations_confirm') }}" href="{{ action('Automation2Controller@delete') }}">
-                                <span class="material-icons-outlined me-1">
+                                <span class="material-icons-outlined me-2">
 delete_outline
 </span> {{ trans('messages.delete') }}</a>
                             </li>

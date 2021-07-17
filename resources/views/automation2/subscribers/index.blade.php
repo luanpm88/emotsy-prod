@@ -36,7 +36,7 @@
         <div class="d-flex align-items-center me-4 automation-top-actions">
             <span class="me-4"><i class="last_save_time" data-url="{{ action('Automation2Controller@lastSaved', $automation->uid) }}">{{ trans('messages.automation.designer.last_saved', ['time' => $automation->updated_at->diffForHumans()]) }}</i></span>
             <a href="{{ action('Automation2Controller@index') }}" class="action me-4">
-                <i class="material-icons-outlined me-1">arrow_back</i>
+                <i class="material-icons-outlined me-2">arrow_back</i>
                 {{ trans('messages.automation.go_back') }}
             </a>
 
@@ -91,7 +91,9 @@
 									</li>
 									<li>
 										<a link-method="POST" link-confirm="{{ trans('messages.subscribers.resend_confirmation_email.confirm') }}" href="{{ action('SubscriberController@resendConfirmationEmail', $list->uid) }}">
-											<i class="icon-envelop5"></i> {{ trans('messages.subscribers.resend_confirmation_email') }}
+											<span class="material-icons-outlined">
+mark_email_read
+</span> {{ trans('messages.subscribers.resend_confirmation_email') }}
 										</a>
 									</li>
 									<li>

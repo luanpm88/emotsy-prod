@@ -121,7 +121,9 @@
     </div>
 	
 	<hr />
-	<h3 class="text-teal-800"><i class="icon-envelop5"></i> {{ trans('messages.system_email_configuration') }}</h3>
+	<h3 class="text-teal-800"><span class="material-icons-outlined">
+mark_email_read
+</span> {{ trans('messages.system_email_configuration') }}</h3>
 	<div class="row">
         <div class="col-md-6">
             @include('helpers.form_control', [
