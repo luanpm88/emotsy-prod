@@ -835,7 +835,7 @@ ul.modern-listing li {
 ul.modern-listing li:last-child {
     border-bottom: none;
 }
-ul.modern-listing li i, .table-row-icon {
+ul.modern-listing li a > i, .table-row-icon {
     float: left;
     font-size: 30px;
     height: 70px;
@@ -2008,7 +2008,7 @@ ul.dotted-list {
 ul.type2 li {
     padding-bottom: 20px;
 }
-ul.type2 li i {
+ul.type2 li a > i {
     height: 30px;
 }
 .text-small {
@@ -3395,8 +3395,9 @@ p.link-inline a {
     font-weight: normal;
 }
 .top-notification-alert {
-    right: 7px;
+    right: 27px;
     top: 9px;
+    color: rgb(236, 124, 124)!important;
 }
 .top-notification-icon {
     font-size: 20px !important;

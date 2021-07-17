@@ -1,4 +1,4 @@
-@extends('layouts.backend')
+@extends('layouts.core.backend')
 
 @section('title', trans('messages.customer_groups'))
 

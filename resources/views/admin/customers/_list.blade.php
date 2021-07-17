@@ -5,7 +5,7 @@
         @foreach ($customers as $key => $item)
             <tr>
                 <td width="1%">
-                    <img width="80" class="img-circle mr-10" src="{{ $item->user->getProfileImageUrl() }}" alt="">
+                    <img width="80" class="rounded-circle mr-10" src="{{ $item->user->getProfileImageUrl() }}" alt="">
                 </td>
                 <td>
                     <h5 class="m-0 text-bold">
@@ -19,7 +19,9 @@
                 <td>
                     @if ($item->currentPlanName())
                         <h5 class="no-margin stat-num">
-                            <span><i class="icon-clipboard2"></i> {{ $item->currentPlanName() }}</span>
+                            <span><i class="material-icons-outlined">
+assignment_turned_in
+</i> {{ $item->currentPlanName() }}</span>
                         </h5>
                         <span class="text-muted2">{{ trans('messages.current_plan') }}</span>
                     @else
@@ -78,7 +80,9 @@
                                             ]) }}"
                                             class="assign_plan_button"
                                         >
-                                            <i class="icon-clipboard2"></i>
+                                            <i class="material-icons-outlined">
+assignment_turned_in
+</i>
                                              {{ trans('messages.customer.assign_plan') }}
                                         </a>
                                     </li>

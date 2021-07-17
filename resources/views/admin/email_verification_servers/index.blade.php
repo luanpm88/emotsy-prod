@@ -1,4 +1,4 @@
-@extends('layouts.backend')
+@extends('layouts.core.backend')
 
 @section('title', trans('messages.email_verification_servers'))
 

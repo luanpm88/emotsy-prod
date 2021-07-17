@@ -24,7 +24,7 @@
 <div {!! $paramsString ?? '' !!} title="Debug: {{ isset($debugg) ? $debug : '[ empty ]' }}" class="alert alert-{{ $level }} shadow-sm" style="display: flex; flex-direction: row; align-items: center; cursor: pointer">
     <div>
         @isset($title)
-            <h4 class="mb-2">{{ $title }}</h4>
+            <h4 class="mb-0">{{ $title }}</h4>
         @endisset
         <p>{!! $message !!}</p>
     </div>

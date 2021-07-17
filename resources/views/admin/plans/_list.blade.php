@@ -176,14 +176,18 @@ edit
     </script>
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
-        <i class="icon-clipboard2"></i>
+        <i class="material-icons-outlined">
+assignment_turned_in
+</i>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
         </span>
     </div>
 @else
     <div class="empty-list">
-        <i class="icon-clipboard2"></i>
+        <i class="material-icons-outlined">
+assignment_turned_in
+</i>
         <span class="line-1">
             {{ trans('messages.plan_empty_line_1') }}
         </span>

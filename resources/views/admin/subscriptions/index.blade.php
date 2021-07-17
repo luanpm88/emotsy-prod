@@ -1,4 +1,4 @@
-@extends('layouts.backend')
+@extends('layouts.core.backend')
 
 @section('title', trans('messages.subscriptions'))
 
@@ -46,14 +46,14 @@ sort
 </span>
                             </button>
                         </span>
-                        <span class="mr-10 input-medium">
+                        <span class="me-2 input-medium">
                             <select placeholder="{{ trans('messages.customer') }}"
                                 class="select2-ajax"
                                 name="customer_uid"
                                 data-url="{{ action('Admin\CustomerController@select2') }}">
                             </select>
                         </span>
-                        <span class="mr-10 input-medium">
+                        <span class="me-2 input-medium">
                             <select placeholder="{{ trans('messages.plan') }}"
                                 class="select2-ajax"
                                 name="plan_uid"

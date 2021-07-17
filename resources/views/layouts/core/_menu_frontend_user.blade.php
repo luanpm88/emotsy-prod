@@ -6,7 +6,7 @@
 @endphp
 
 <li class="nav-item dropdown">
-    <a href="{{ action('TemplateController@index') }}" class="nav-link d-flex align-items-center py-3 lvl-1 dropdown-toggle" id="content-menu" data-bs-toggle="dropdown" aria-expanded="false">
+    <a href="{{ action('TemplateController@index') }}" class="nav-link d-flex align-items-center px-3 py-3 lvl-1 dropdown-toggle" id="content-menu" data-bs-toggle="dropdown" aria-expanded="false">
         <i class="navbar-icon">
             <img src="{{ Auth::user()->getProfileImageUrl() }}" style="border-radius:100%;transform:scale(1.5)" alt="">
         </i>
@@ -17,7 +17,7 @@
     </a>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="content-menu">
         @can("admin_access", Auth::user())
-            <li rel0="TemplateController"><a href="{{ action("Admin\HomeController@index") }}" class="dropdown-item d-flex align-items-center">
+            <li class="border-bottom"><a href="{{ action("Admin\HomeController@index") }}" class="dropdown-item d-flex align-items-center">
             <i class="navbar-icon mr-3">
                 <img src="{{ url('images/icons/'.$iconDir.'SVG/changeview.svg') }}" />
             </i>{{ trans('messages.admin_view') }}</a></li>

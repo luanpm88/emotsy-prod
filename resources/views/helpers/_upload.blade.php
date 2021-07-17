@@ -4,7 +4,7 @@
         <div class="media profile-image">
             <div class="preview col-md-2" id="{{$dragId}}">
                 <a href="#" class="upload-media-container radius-0 pre-upload-photo">
-                    <img preview-for="image" empty-src="{{ URL::asset('assets/images/placeholder.jpg') }}" src="{{ $src }}" class="img-circle" alt="">
+                    <img preview-for="image" empty-src="{{ URL::asset('assets/images/placeholder.jpg') }}" src="{{ $src }}" class="rounded-circle" alt="">
 
                 </a>
                 <span onclick="$('input[name=image]').trigger('click')"  class="edit-photo text-center"><span class="material-icons-outlined">

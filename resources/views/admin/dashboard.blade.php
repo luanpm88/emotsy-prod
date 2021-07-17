@@ -1,14 +1,13 @@
-@extends('layouts.backend')
+@extends('layouts.core.backend')
 
 @section('title', trans('messages.dashboard'))
 
-@section('page_script')
-    <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/visualization/echarts/echarts.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('js/chart.js') }}"></script>
+@section('head')
+    <script type="text/javascript" src="{{ URL::asset('core/echarts/echarts.min.js') }}"></script>
 @endsection
 
 @section('content')
-
+    
     @include('admin.notifications._top', ['notifications' => $notifications])
 
     <h1 class="mb-10">{{ trans('messages.backend_dashboard_hello', ['name' => Auth::user()->displayName()]) }}</h1>
@@ -22,7 +21,9 @@ people_outline
             @include('admin.customers._growth_chart')
         </div>
         <div class="col-md-6">
-            <h3 class="text-semibold"><i class="icon-clipboard2"></i> {{ trans('messages.plans_chart') }}</h3>
+            <h3 class="text-semibold"><i class="material-icons-outlined">
+assignment_turned_in
+</i> {{ trans('messages.plans_chart') }}</h3>
             @include('admin.plans._pie_chart')
         </div>
     </div>
@@ -41,16 +42,16 @@ people_outline
                             <div class="col-sm-5 col-md-5">
                                 <h6 class="mt-0 mb-0 text-semibold">
                                     <a href="{{ action('Admin\CustomerController@subscriptions', $subscription->customer->uid) }}">
-                                        <i class="icon-clipboard2"></i>
+                                        <i class="material-icons-outlined">
+assignment_turned_in
+</i>
                                         {{ $subscription->plan->name }}
                                     </a>
                                 </h6>
                                 <p class="mb-0">
-                                    <i class="icon-user" style="
-                                        font-size: 14px;
-                                        padding: 0;
-                                        margin: 5px 0 0 -8px;
-                                        height: auto;"></i>
+                                    <i class="material-icons-outlined">
+person_outline
+</i>
                                     {{ $subscription->customer->user->displayName() }}
                                 </p>
                             </div>
@@ -99,15 +100,22 @@ people_outline
                     <li class="">
                         <div class="row">
                             <div class="col-sm-5 col-md-5">
-                                <img width="40" class="img-circle mr-10 pull-left" src="{{ $customer->user->getProfileImageUrl() }}" alt="">
-                                <h6 class="mt-0 mb-0 text-semibold">
-                                    <a href="{{ action('Admin\CustomerController@edit', $customer->uid) }}">
-                                        {{ $customer->user->displayName() }}
-                                    </a>
-                                </h6>
-                                <p class="mb-0 admin-line admin-recent-sencond-line" title="{{ $customer->user->email }}">
-                                    {{ $customer->user->email }}
-                                </p>
+                                <div class="d-flex">
+                                    <div class="me-3">
+                                        <img width="40" class="rounded-circle mr-10 pull-left" src="{{ $customer->user->getProfileImageUrl() }}" alt="">
+                                    </div>
+                                    <div>
+                                        <h6 class="mt-0 mb-0 text-semibold">
+                                            <a href="{{ action('Admin\CustomerController@edit', $customer->uid) }}">
+                                                {{ $customer->user->displayName() }}
+                                            </a>
+                                        </h6>
+                                        <p class="mb-0 admin-line admin-recent-sencond-line" title="{{ $customer->user->email }}">
+                                            {{ $customer->user->email }}
+                                        </p>
+                                    </div>
+                                </div>
+                                
                             </div>
                             <div class="col-sm-4 col-md-4 text-left">
                                 <h6 class="no-margin text-semibold">
@@ -144,40 +152,36 @@ people_outline
             </span>
         </div>
     @else
-        <div class="scrollbar-box action-log-box">
+        <div class="action-log-box">
             <!-- Timeline -->
-            <div class="timeline timeline-left content-group">
-                <div class="timeline-container">
-                        @foreach (\Auth::user()->admin->getLogs()->take(20)->get() as $log)
-                            <!-- Sales stats -->
-                            <div class="timeline-row">
-                                <div class="timeline-icon">
-                                    <a href="#"><img src="{{ $log->customer->user->getProfileImageUrl() }}" alt=""></a>
-                                </div>
+            <div class="">
+                <div class="mt-4">
+                    @foreach (\Auth::user()->admin->getLogs()->take(20)->get() as $log)
+                        <!-- Sales stats -->
+                        <div class="d-flex mb-3">
+                            <div class="me-3">
+                                <a href="#"><img width="50px" class="rounded-circle shadow-sm" src="{{ $log->customer->user->getProfileImageUrl() }}" alt=""></a>
+                            </div>
 
-                                <div class="panel panel-flat timeline-content">
-                                    <div class="panel-heading">
-                                        <h6 class="panel-title text-semibold">{{ $log->customer->user->displayName() }}</h6>
-                                        <div class="heading-elements">
-                                            <span class="heading-text"><i class="position-left text-bold lnr lnr-clock"></i>
-                                                @if ($log->created_at)
-                                                    @if ($log->created_at->lessThan(\Carbon\Carbon::now()->subMonth(1)))
-                                                        {{ \Acelle\Library\Tool::formatDateTime($log->created_at) }}
-                                                    @else
-                                                        {{ $log->created_at->diffForHumans() }}
-                                                    @endif
-                                                @endif
+                            <div class="card px-0 shadow-sm container-fluid">
+                                <div class="card-body pt-2">
+                                    <div class="d-flex align-items-center pt-1">
+                                        <label class="panel-title text-semibold my-0 fw-600">{{ $log->customer->user->displayName() }}</label>
+                                        <div class="d-flex align-items-center ms-auto text-muted">
+                                            <span style="font-size: 18px" class="material-icons-outlined ms-auto me-2">
+                                                history
                                             </span>
+                                            <div class="">
+                                                <span class="heading-text"><i class="icon-history position-left text-success"></i> {{ Tool::dateTime($log->created_at)->diffForHumans() }}</span>
+                                            </div>
                                         </div>
                                     </div>
-
-                                    <div class="panel-body">
-                                        {!! $log->message() !!}
-                                    </div>
+                                    <p class="mb-0">{!! $log->message() !!}</p>
                                 </div>
                             </div>
-                            <!-- /sales stats -->
-                        @endforeach
+                        </div>
+                        <!-- /sales stats -->
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -209,7 +213,9 @@ people_outline
                     </li>
                     <li class="selfclear">
                         <div class="unit size1of2">
-                            <strong><i class="icon-clipboard2"></i> {{ trans('messages.plans') }}</strong>
+                            <strong><i class="material-icons-outlined">
+assignment_turned_in
+</i> {{ trans('messages.plans') }}</strong>
                         </div>
                         <div class="lastUnit size1of2">
                             <mc:flag>{{ Auth::user()->admin->getAllPlans()->count() }}</mc:flag>

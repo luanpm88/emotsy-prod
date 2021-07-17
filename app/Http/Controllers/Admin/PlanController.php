@@ -258,62 +258,6 @@ class PlanController extends Controller
         return redirect()->back()->with('alert-success', trans('messages.plan.updated'));
     }
 
-    // /**
-    //  * Enable item.
-    //  *
-    //  * @param \Illuminate\Http\Request $request
-    //  *
-    //  * @return \Illuminate\Http\Response
-    //  */
-    // public function enable(Request $request)
-    // {
-    //     $items = Plan::whereIn('uid',
-            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
-        );
-
-    //     foreach ($items->get() as $item) {
-    //         // authorize
-    //         if (\Gate::allows('update', $item)) {
-    //             $item->enable();
-
-    //             if ($request->visible) {
-    //                 $item->visibleOn();
-    //             }
-    //         }
-    //     }
-
-    //     // Redirect to my lists page
-    //     return response()->json([
-    //         'status' => 'success',
-    //         'message' => trans('messages.plans.enabled'),
-    //         'visible_url' => action('Admin\PlanController@visibleOn', $request->uids),
-    //     ], 201);
-    // }
-
-    // /**
-    //  * Disable item.
-    //  *
-    //  * @param \Illuminate\Http\Request $request
-    //  *
-    //  * @return \Illuminate\Http\Response
-    //  */
-    // public function disable(Request $request)
-    // {
-    //     $items = Plan::whereIn('uid',
-            is_array($request->uids) ? $request->uids : explode(',', $request->uids)
-        );
-
-    //     foreach ($items->get() as $item) {
-    //         // authorize
-    //         if (\Gate::allows('update', $item)) {
-    //             $item->disable();
-    //         }
-    //     }
-
-    //     // Redirect to my lists page
-    //     echo trans('messages.plans.disabled');
-    // }
-
     /**
      * Remove the specified resource from storage.
      *

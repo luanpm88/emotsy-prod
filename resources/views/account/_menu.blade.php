@@ -26,7 +26,7 @@
                     <a href="{{ action("AccountSubscriptionController@index") }}" class="level-1">
                         <i class="icon-quill4 position-left"></i> {{ trans('messages.subscription') }}
                         @if (Auth::user()->customer->hasSubscriptionNotice())
-                            <i class="material-icons-outlined tabs-warning-icon text-danger">info</i>
+                            <i class="material-icons-round tabs-warning-icon text-danger">info</i>
                         @endif
                     </a>
                 </li>

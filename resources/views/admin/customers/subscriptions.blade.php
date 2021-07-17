@@ -1,4 +1,4 @@
-@extends('layouts.backend')
+@extends('layouts.core.backend')
 
 @section('title', $customer->user->displayName())
 
@@ -53,7 +53,7 @@ sort
 </span>
                             </button>
                         </span>
-                        <span class="mr-10 input-medium">
+                        <span class="me-2 input-medium">
                             <select placeholder="{{ trans('messages.plan') }}"
                                 class="select2-ajax"
                                 name="plan_uid"
