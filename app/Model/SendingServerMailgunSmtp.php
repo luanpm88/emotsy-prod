@@ -38,8 +38,6 @@ class SendingServerMailgunSmtp extends SendingServerMailgun
     public function send($message, $params = array())
     {
         try {
-            $this->setupWebhooks();
-
             $transport = new \Swift_SmtpTransport($this->host, (int) $this->smtp_port, $this->smtp_protocol);
             $transport->setUsername($this->smtp_username);
             $transport->setPassword($this->smtp_password);

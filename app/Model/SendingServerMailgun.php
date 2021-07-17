@@ -209,4 +209,9 @@ class SendingServerMailgun extends SendingServer
         }
         header('X-PHP-Response-Code: 200', true, 200);
     }
+
+    public function setupBeforeSend()
+    {
+        $this->setupWebhooks();
+    }
 }
