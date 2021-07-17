@@ -61,8 +61,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('queue:work --tries=1 --max-time=600 --stop-when-empty')->everyMinute();
 
         // Make it more likely to have a running queue at any given time
-        // Make sure it is stopped before another queue is created
-        $schedule->command('queue:work --tries=1 --max-time=50')->everyMinute();
+        // Make sure it is stopped before another queue listener is created
+        $schedule->command('queue:work --tries=1 --max-time=290')->everyFiveMinutes();
 
         // Sender verifying
         $schedule->command('sender:verify')->everyFiveMinutes();
