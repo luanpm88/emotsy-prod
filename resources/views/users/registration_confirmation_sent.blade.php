@@ -2,12 +2,6 @@
 
 @section('title', trans('messages.select_a_plan'))
 
-@section('page_script')    
-    <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/visualization/echarts/echarts.js') }}"></script>
-    
-    <script type="text/javascript" src="{{ URL::asset('js/chart.js') }}"></script>
-@endsection
-
 @section('content')
     <div class="row">
         <div class="col-sm-2 col-md-3">

@@ -37,8 +37,6 @@
 
 <!-- AcelleMail -->
 <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/css/theme.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ URL::asset('css/app.css') }}">
-<link rel="stylesheet" type="text/css" href="{{ URL::asset('css/mc.css') }}">
 <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/css/app.css') }}">
 
 <script type="text/javascript" src="{{ URL::asset('core/js/functions.js') }}"></script>

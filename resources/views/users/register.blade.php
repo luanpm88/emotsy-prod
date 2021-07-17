@@ -2,12 +2,6 @@
 
 @section('title', trans('messages.create_your_account'))
 
-@section('page_script')    
-    <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/visualization/echarts/echarts.js') }}"></script>
-    
-    <script type="text/javascript" src="{{ URL::asset('js/chart.js') }}"></script>
-@endsection
-
 @section('content')
     
     <form enctype="multipart/form-data" action="{{ action('UserController@register') }}" method="POST" class="form-validate-jqueryz subscription-form">

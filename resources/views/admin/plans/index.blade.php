@@ -2,76 +2,6 @@
 
 @section('title', trans('messages.plans'))
 
-@section('page_script')
-    <script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/interactions.min.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/touch.min.js') }}"></script>
-
-    <script type="text/javascript" src="{{ URL::asset('js/listing.js') }}"></script>
-
-    <script>
-        $(document).on('click', '.mc-modal-back', function(e) {
-            e.preventDefault();
-
-            mcModal.goToUrl($(this).attr('href'));
-        });
-
-        var initMcModal = function() {
-            var mcModal = {};
-            mcModal.modal = $('#mcModal');
-            mcModal.show = function() {
-                var load = htmlLoader();
-                var html = '<div class="mc-modal modal fade" role="dialog" id="mcModal">'+
-                    '<div class="modal-dialog modal-lg modal-select">'+
-                        '<div class="modal-content">'+
-                            '<div class="p-10">'+load+'</div>'+
-                        '</div>'+
-                    '</div>'+
-                '</div>';
-
-                mcModal.modal.remove();
-                $('body').append(html);
-                mcModal.modal = $('#mcModal');
-
-                mcModal.modal.modal('show');
-            };
-
-            mcModal.goToUrl = function(url, method) {
-                if (typeof(method) === 'undefined') {
-                    method = 'GET';
-                }
-
-                // show modal
-                mcModal.show();
-
-                // ajax load url
-                $.ajax({
-                    url: url,
-                    method: method,
-                }).always(function(response) {
-                    mcModal.fill(response);
-                });
-            }
-
-            mcModal.fill = function(html) {
-                mcModal.modal.find('.modal-content').html(html);
-                applyJs(mcModal.modal);
-            }
-
-            return mcModal;
-        };
-
-        var mcModal = initMcModal();
-
-        $(document).ready(function() {
-            $('.modal-action').click(function(e) {
-                e.preventDefault();
-
-                mcModal.goToUrl($(this).attr('href'));
-            });
-        });
-    </script>
-@endsection
-
 @section('page_header')
 
 	<div class="page-title">
@@ -133,4 +63,28 @@ add
         <div class="pml-table-container">
         </div>
     </form>
+
+
+    <script>
+        $(document).ready(function() {
+            $('.modal-action').click(function(e) {
+                e.preventDefault();
+
+                PlansIndex.getWizardPopup().load();
+            });
+        });
+
+        var PlansIndex = {
+            wizardPopup: null,
+
+            getWizardPopup: function() {
+                if (this.wizardPopup == null) {
+                    this.wizardPopup = new Popup({
+                        url: '{{ action("Admin\PlanController@wizard") }}',
+                    });
+                }
+                return this.wizardPopup;
+            }
+        }
+    </script>
 @endsection

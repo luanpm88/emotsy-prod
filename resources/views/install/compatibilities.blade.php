@@ -2,12 +2,6 @@
 
 @section('title', trans('messages.requirement'))
 
-@section('page_script')
-    <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
-		
-    <script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
-@endsection
-
 @section('content')
 
 	<h3 class="text-teal-800 mb-4"><i class="icon-puzzle2"></i> {{ trans('messages.requirements') }}</h3>

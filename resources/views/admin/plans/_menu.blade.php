@@ -33,30 +33,9 @@
                     </li>
                 </ul>
             </li>
-            <!--<li  class="dropdown"
-                rel0="PlanController/payment"
-                rel1="PlanController/billingHistory"
-            >
-                <a href="" class="level-1" data-bs-toggle="dropdown">
-                    {{ trans('messages.plan.billing') }}
-                    <span class="caret"></span>
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li rel0="PlanController/payment">
-                        <a href="{{ action('Admin\PlanController@payment', $plan->uid) }}">
-                            {{ trans('messages.plan.payment') }}
-                        </a>
-                    </li>
-                    <li rel0="PlanController/billingHistory">
-                        <a href="{{ action('Admin\PlanController@billingHistory', $plan->uid) }}">
-                            {{ trans('messages.plan.billing_history') }}
-                        </a>
-                    </li>
-                </ul>
-            </li>-->
             <li rel0="PlanController/sendingServer" rel1="PlanController/sendingServers">                
                 @if ($plan->useSystemSendingServer() && !$plan->hasPrimarySendingServer())
-                    <a href="{{ action('Admin\PlanController@sendingServer', $plan->uid) }}" class="level-1 xtooltip"
+                    <a href="{{ action('Admin\PlanController@sendingServer', $plan->uid) }}" class="level-1 xtooltip position-relative"
                          title="{{ trans('messages.plans.send_via.empty') }}"
                     >
                         {{ trans('messages.plan.sending_server') }}

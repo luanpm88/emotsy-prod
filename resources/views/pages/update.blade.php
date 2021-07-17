@@ -2,10 +2,9 @@
 
 @section('title', $list->name . ": " . trans('messages.update_page', ['name' => trans('messages.' . $layout->alias)]))
 
-@section('page_script')
-	<script type="text/javascript" src="{{ URL::asset('js/tinymce/tinymce.min.js') }}"></script>
-
-    <script type="text/javascript" src="{{ URL::asset('js/editor.js') }}"></script>
+@section('head')      
+    <script type="text/javascript" src="{{ URL::asset('core/tinymce/tinymce.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/js/editor.js') }}"></script>
 @endsection
 
 @section('page_header')

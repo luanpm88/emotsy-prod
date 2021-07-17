@@ -1,10 +1,6 @@
 @extends('layouts.core.frontend')
 
 @section('title', $campaign->name)
-    
-@section('page_script')    
-
-@endsection
 
 @section('page_header')
     

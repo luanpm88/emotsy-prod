@@ -2,11 +2,6 @@
 
 @section('title', $list->name)
 
-@section('page_script')
-    <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/visualization/echarts/echarts.js') }}"></script>
-  <script type="text/javascript" src="{{ URL::asset('js/chart.js') }}"></script>
-@endsection
-
 @section('page_header')
 
             @include("lists._header")

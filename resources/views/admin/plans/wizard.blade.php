@@ -1,20 +1,16 @@
-<div class="modal-header">    
-    <h5 class="modal-title">{{ trans('messages.plan.new_plan') }}</h5>
-    <button role="button" class="close" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-</div>
-<div class="modal-body">
+@extends('layouts.popup.small')
+
+@section('title')
+{{ trans('messages.plan.new_plan') }}
+@endsection
+
+@section('content')
     <div class="mc_section mb-0">
-        <form id="wizard" action="{{ action('Admin\PlanController@wizard') }}" method="POST">
+        <form id="createPlanWizard" action="{{ action('Admin\PlanController@wizard') }}" method="POST">
             {{ csrf_field() }}
                 
             <div class="row">
-                <div class="col-md-2"></div>
-                <div class="col-md-8">
-                    <!-- display flash message -->
-                    @include('common.errors')
-    
+                <div class="col-md-12">    
                     <h2 class="mt-0">{{ trans('messages.plan.general.details') }}</h2>
             
                     <p>{{ trans('messages.plan.general.details.intro') }}</p>
@@ -48,7 +44,7 @@
                         'rules' => $plan->generalRules()
                     ])
                     
-                    <div class="select-custom-2" data-url="{{ action('Admin\PlanController@billingCycle', '00') }}">
+                    <div id="billingCycleSelectContainer">
                         @include ('admin.plans._billing_cycle', [
                             'plan' => $plan,
                         ])
@@ -69,30 +65,60 @@
                     ])
                  </div>
             </div>
+            <button type="submit" class="btn btn-mc_primary mr-10">{{ trans('messages.plan.wizard.next') }}</button>
+            <a href="javascript:;" class="btn btn-mc_inline mr-10" data-dismiss="modal">{{ trans('messages.plan.wizard.cancel') }}</a>
         </form>
     </div>
-</div>
-<div class="modal-footer text-center">
-    <button onClick="$('#wizard').submit();" class="btn btn-mc_primary mr-10">{{ trans('messages.plan.wizard.next') }}</button>
-    <a href="javascript:;" class="btn btn-mc_inline mr-10" data-dismiss="modal">{{ trans('messages.plan.wizard.cancel') }}</a>
-</div>
+
     
 <script>
-    $('#wizard').submit(function() {
-        var form = $(this);
-        
-        // ajax load url
-        $.ajax({
-            url: form.attr('action'),
-            method: form.attr('method'),
-            data: form.serialize(),
-            dataType: 'html',
-        }).success(function(response) {
-            mcModal.fill(response);
+    $(function() {
+        $('#createPlanWizard').submit(function() {
+            var form = $(this);
+            
+            // ajax load url
+            $.ajax({
+                url: form.attr('action'),
+                method: form.attr('method'),
+                data: form.serialize(),
+                dataType: 'html',
+            }).done(function(response) {
+                PlansIndex.getWizardPopup().loadHtml(response);
+            });
+            
+            return false;
         });
+
+        PlansCustomBillingCycle.getSelector().on('change', function() {
+            var value = $(this).val();
+
+            if (value == 'custom') {
+                PlansCustomBillingCycle.getPopup().load();
+            }
+        });
+    })
         
-        return false;
-    });
-    
-    $('.select-custom-2').select_custom();
+
+    var PlansCustomBillingCycle = {
+        popup: null,
+
+        getPopup: function() {
+            if (this.popup == null) {
+                this.popup = new Popup({
+                    url: '{{ action('Admin\PlanController@billingCycle', '00') }}',
+                });
+            }
+            return this.popup;
+        },
+
+        getSelectContainer: function() {
+            return $('#billingCycleSelectContainer');
+        },
+
+        getSelector: function() {
+            return $('#billingCycleSelectContainer select');
+        },
+    }
 </script>
+
+@endsection

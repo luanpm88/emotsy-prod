@@ -2,12 +2,6 @@
 
 @section('title', $plan->name)
 
-@section('page_script')
-    <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
-
-    <script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
-@endsection
-
 @section('page_header')
 
     <div class="page-title">
@@ -155,7 +149,7 @@
                         'placeholder' => trans('messages.select_currency')
                     ])
                     
-                    <div class="select-custom" data-url="{{ action('Admin\PlanController@billingCycle', $plan->uid) }}">
+                    <div id="billingCycleSelectContainer">
                         @include ('admin.plans._billing_cycle', [
                             'plan' => $plan,
                         ])
@@ -180,4 +174,38 @@
             {{ trans('messages.cancel') }}
         </a>
     </form>
+
+    <script>
+        $(function() {    
+            PlansCustomBillingCycle.getSelector().on('change', function() {
+                var value = $(this).val();
+    
+                if (value == 'custom') {
+                    PlansCustomBillingCycle.getPopup().load();
+                }
+            });
+        })
+            
+    
+        var PlansCustomBillingCycle = {
+            popup: null,
+    
+            getPopup: function() {
+                if (this.popup == null) {
+                    this.popup = new Popup({
+                        url: '{{ action('Admin\PlanController@billingCycle', $plan->uid) }}',
+                    });
+                }
+                return this.popup;
+            },
+    
+            getSelectContainer: function() {
+                return $('#billingCycleSelectContainer');
+            },
+    
+            getSelector: function() {
+                return $('#billingCycleSelectContainer select');
+            },
+        }
+    </script>
 @endsection

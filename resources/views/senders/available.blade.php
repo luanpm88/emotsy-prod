@@ -2,13 +2,6 @@
 
 @section('title', trans('messages.verified_senders'))
 
-@section('page_script')
-    <script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/interactions.min.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/touch.min.js') }}"></script>
-
-    <script type="text/javascript" src="{{ URL::asset('js/listing.js') }}"></script>
-@endsection
-
 @section('page_header')
 <div class="row mc_section boxing">
 	<div class="col-md-{{ (null !== Session::get('orig_customer_id') && Auth::user()->customer) ? '6' : '6' }}">

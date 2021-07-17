@@ -821,7 +821,21 @@ class PlanController extends Controller
 
         // save posted data
         if ($request->isMethod('post')) {
+            // make validator
+            $validator = \Validator::make($request->all(), [
+                'plan.general.frequency_amount' => 'required',
+            ]);
+            
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('admin.plans.billing_cycle', [
+                    'plan' => $plan,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
             $plan->fillAll($request);
+            
             return view('admin.plans._billing_cycle', [
                 'plan' => $plan,
             ]);

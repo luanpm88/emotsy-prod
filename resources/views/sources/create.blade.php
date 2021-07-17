@@ -2,10 +2,6 @@
 
 @section('title', trans('messages.stores_connections'))
 
-@section('page_script')
-    <script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
-@endsection
-
 @section('page_header')
 	<div class="page-title">
 		<ul class="breadcrumb breadcrumb-caret position-right">

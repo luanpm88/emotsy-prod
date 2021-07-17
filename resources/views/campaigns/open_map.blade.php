@@ -2,7 +2,7 @@
 
 @section('title', $campaign->name)
 	
-@section('page_script')    
+@section('head')    
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyB4l5_NUAQhrLtmMfNDVmpNGqThWv4fGWw"></script>
 @endsection
 

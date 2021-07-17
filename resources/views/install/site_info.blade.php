@@ -2,12 +2,6 @@
 
 @section('title', trans('messages.configuration'))
 
-@section('page_script')    
-    <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
-		
-    <script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
-@endsection
-
 @section('content')
 
 <form action="{{ action('InstallController@siteInfo') }}" method="POST" class="form-validate-jqueryz">
