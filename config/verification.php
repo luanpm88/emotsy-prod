@@ -119,7 +119,14 @@ return [
             'request_type' => 'GET',
             'response_type' => 'plain',
             'fields' => [ 'api_key' ],
-            'result_map' => [ 'ok' => 'deliverable', 'email_disabled' => 'undeliverable', 'risky' => 'risky', 'unknown' => 'unknown' ]
+            'result_map' => [
+                'ok' => 'deliverable',
+                'ok_for_all' => 'deliverable',
+                'ok_for_all | ok_for_all' => 'deliverable',
+                'email_disabled' => 'undeliverable',
+                'risky' => 'risky',
+                'unknown' => 'unknown'
+            ]
         ],
     ]
 ];
