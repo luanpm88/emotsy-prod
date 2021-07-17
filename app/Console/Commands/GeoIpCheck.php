@@ -43,10 +43,14 @@ class GeoIpCheck extends Command
      */
     public function handle()
     {
+        $timeoutCallback = function() {
+            // do nothing, tell Lockable not to throw an exception
+        };
+
         $lock = new Lockable(storage_path('locks/geoip-setup'));
         $lock->getExclusiveLock(function () {
             $this->check();
-        });
+        }, $timeout = 5, $timeoutCallback);
 
         return 0;
     }
