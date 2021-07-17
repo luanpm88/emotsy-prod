@@ -447,7 +447,7 @@ class Automation2 extends Model
                 $timeoutCallback = function() use ($automation) {
                     // pass this ot the getExclusiveLock method 
                     // to have it silently quit, without throwing an exception
-                    $automation->logger()->info(sprintf('LOCK timeout, another process is handling automation "%s"', $automation->name));
+                    $automation->logger()->info(sprintf('LOCK timeout, another process is currently handling automation "%s"', $automation->name));
                     return;
                 };
 
