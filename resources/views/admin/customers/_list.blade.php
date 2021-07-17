@@ -108,7 +108,9 @@ hide_source
                                 @can('read', $item)
                                     <li>
                                         <a href="{{ action('Admin\CustomerController@subscriptions', $item->uid) }}">
-                                            <i class="icon-quill4"></i> {{ trans('messages.subscriptions') }}
+                                            <span class="material-icons-outlined">
+assignment_turned_in
+</span> {{ trans('messages.subscriptions') }}
                                         </a>
                                     </li>
                                 @endcan

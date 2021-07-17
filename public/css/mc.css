@@ -857,6 +857,7 @@ table.table-log tr th {
 .mc-form .select2-selection--single:not([class*=bg-]):not([class*=border-]) {
     border-color: #fff;
     background-color: #fff;
+    height: 43px;
 }
 .mc-form .select2-selection--single:not([class*=bg-]), .mc-form .select2-selection--multiple:not([class*=bg-]):not([class*=border-]) {
   font-size: 100%;

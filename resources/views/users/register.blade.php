@@ -1,4 +1,4 @@
-@extends('layouts.register')
+@extends('layouts.core.register')
 
 @section('title', trans('messages.create_your_account'))
 

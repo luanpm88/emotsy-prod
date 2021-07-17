@@ -418,6 +418,7 @@ h1, h1 {
     font-size: 15px;
     line-height: 17px;
     transform: translateY(2px);
+    float: left;
 }
 
 .alert-info:before {
@@ -543,4 +544,7 @@ h5 {
 }
 .has-error input {
     border-color: #b00020;
+}
+.form-group .radio .desc {
+    padding-left: 30px;
 }

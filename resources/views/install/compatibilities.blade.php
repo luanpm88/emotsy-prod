@@ -10,27 +10,31 @@
 
 @section('content')
 
-	<h3 class="text-teal-800"><i class="icon-puzzle2"></i> {{ trans('messages.requirements') }}</h3>
+	<h3 class="text-teal-800 mb-4"><i class="icon-puzzle2"></i> {{ trans('messages.requirements') }}</h3>
 
     <div class="row">
         <div class="col-md-12">
             <ul class="modern-listing mt-0">
                 @foreach ($compatibilities as $key => $item)
 					@if ($item["type"] == "requirement")
-						<li>
+						<li class="d-flex align-items-center">
 							@if ($item["check"])
-								<i class="icon-checkmark4 text-success"></i>
+								<span class="material-icons-round fs-3 text-success me-3">
+task_alt
+</span>
 							@else
 								<span class="material-icons-outlined">
 error_outline
 </span>
 							@endif
-							<h5 class="mt-0 mb-0 text-semibold">
-								{{ $item["name"] }}
-							</h5>
-							<p>
-								{{ $item["note"] }}
-							</p>
+							<div class="ml-0">
+								<h5 class="mt-0 mb-0 text-semibold">
+									{{ $item["name"] }}
+								</h5>
+								<p>
+									{{ $item["note"] }}
+								</p>
+							</div>
 						</li>
 					@endif
                 @endforeach
@@ -38,27 +42,31 @@ error_outline
         </div>
     </div>
 		
-	<h3 class="text-teal-800"><i class="icon-file-check"></i> {{ trans('messages.permissions') }}</h3>
+	<h3 class="text-teal-800 mb-4 mt-4"><i class="icon-file-check"></i> {{ trans('messages.permissions') }}</h3>
 
     <div class="row">
         <div class="col-md-12">
             <ul class="modern-listing mt-0">
                 @foreach ($compatibilities as $key => $item)
 					@if ($item["type"] == "permission")
-						<li>
+						<li class="d-flex align-items-center">
 							@if ($item["check"])
-								<i class="icon-checkmark4 text-success"></i>
+								<span class="material-icons-round fs-3 text-success me-3">
+task_alt
+</span>
 							@else
 								<span class="material-icons-outlined">
 error_outline
 </span>
 							@endif
-							<h5 class="mt-0 mb-0 text-semibold">
-								{{ $item["name"] }}
-							</h5>
-							<p>
-								{{ $item["note"] }}
-							</p>
+							<div class="ml-0">
+								<h5 class="mt-0 mb-0 text-semibold">
+									{{ $item["name"] }}
+								</h5>
+								<p>
+									{{ $item["note"] }}
+								</p>
+							</div>
 						</li>
 					@endif
                 @endforeach

@@ -32,7 +32,9 @@
                 </li>
                 <li rel0="AccountController/logs">
                     <a href="{{ action("AccountController@logs") }}" class="level-1">
-                        <i class="icon-history position-left"></i> {{ trans('messages.logs') }}
+                        <span class="material-icons-outlined">
+restore
+</span> {{ trans('messages.logs') }}
                     </a>
                 </li>
                 @if (Auth::user()->customer->canUseApi())

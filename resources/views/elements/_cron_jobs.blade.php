@@ -57,7 +57,7 @@
         <div id="result_box">
             <hr>
 
-            <label class="text-bold">{!! trans('messages.cron_jobs_guide') !!} </label>
+            <label class="text-bold mb-3">{!! trans('messages.cron_jobs_guide') !!} </label>
             <pre style="font-size: 16px;background:#f5f5f5">* * * * * <span class="current_path_value">{!! $php_bin_path_value !!}</span> -q {{ base_path() }}/artisan schedule:run 2&gt;&amp;1</pre>
 
             <!--<hr>

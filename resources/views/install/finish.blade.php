@@ -11,9 +11,9 @@
 @section('content')
 
 
-        <h3 class="text-teal-800"><span class="material-icons-outlined">
+        <h4 class="text-teal-800 fw-600 mb-3"><span class="material-icons-outlined me-2">
 task_alt
-</span> Congratulations, you've successfully installed Acelle Email Marketing Application (AcelleMail)</h3>
+</span> Congratulations, you've successfully installed Acelle Email Marketing Application (AcelleMail)</h4>
             
         Remember that all your configurations were saved in <strong class="text-semibold">[APP_ROOT]/.env</strong> file. You can change it when needed.
         <br /><br />

@@ -15,25 +15,27 @@
 
     <div class="row">
         <div class="col-md-6">
-            <h3 class="text-semibold"><span class="material-icons-round">
+            <h4 class="text-semibold"><span class="material-icons-round">
 people_outline
-</span> {{ trans('messages.customers_growth') }}</h3>
+</span> {{ trans('messages.customers_growth') }}</h4>
             @include('admin.customers._growth_chart')
         </div>
         <div class="col-md-6">
-            <h3 class="text-semibold"><i class="material-icons-outlined">
+            <h4 class="text-semibold"><i class="material-icons-outlined">
 assignment_turned_in
-</i> {{ trans('messages.plans_chart') }}</h3>
+</i> {{ trans('messages.plans_chart') }}</h4>
             @include('admin.plans._pie_chart')
         </div>
     </div>
 
     <div class="row mt-30">
         <div class="col-md-6">
-            <h3 class="text-semibold">
-                <i class="icon-quill4"></i>
+            <h4 class="text-semibold">
+                <span class="material-icons-outlined">
+assignment_turned_in
+</span>
                 {{ trans('messages.recent_subscriptions') }}
-            </h3>
+            </h4>
             <p style="margin-bottom: 30px" class="link-inline">{!! trans('messages.admin.dashboard.recent_subscriptions.wording', [ 'here' => action('Admin\SubscriptionController@index') ]) !!}</p>
             <ul class="modern-listing mt-0 mb-0 top-border-none type2">
                 @forelse (Auth::user()->admin->recentSubscriptions() as $subscription)
@@ -88,12 +90,12 @@ person_outline
             </ul>
         </div>
         <div class="col-md-6">
-            <h3 class="text-semibold">
+            <h4 class="text-semibold">
                 <span class="material-icons-round">
 people_outline
 </span>
                 {{ trans('messages.recent_customers') }}
-            </h3>
+            </h4>
             <p style="margin-bottom: 30px" class="link-inline">{!! trans('messages.admin.dashboard.recent_customers.wording', [ 'here' => action('Admin\CustomerController@index') ]) !!}</p>
             <ul class="modern-listing mt-0 mb-0 top-border-none type2">
                 @forelse(Auth::user()->admin->recentCustomers() as $customer)
@@ -139,14 +141,18 @@ people_outline
         </div>
     </div>
 
-    <h3 class="text-semibold">
-        <i class="icon-history position-left"></i>
+    <h4 class="text-semibold">
+        <span class="material-icons-outlined">
+restore
+</span>
         {{ trans('messages.activities') }}
-    </h3>
+    </h4>
     <p style="margin-bottom: 30px" class="link-inline">{!! trans('messages.admin.dashboard.recent_activity.wording', [ 'here' => action('Admin\CustomerController@index') ]) !!}</p>
     @if (\Auth::user()->admin->getLogs()->count() == 0)
         <div class="empty-list">
-            <i class="icon-history"></i>
+            <span class="material-icons-outlined">
+history_toggle_off
+</span>
             <span class="line-1">
                 {{ trans('messages.no_activity_logs') }}
             </span>
@@ -188,7 +194,7 @@ people_outline
     @endif
 
     <div class="sub-section mb-20 mt-30" style="margin-top: 60px">
-        <h3 class="text-semibold mt-40">{{ trans('messages.resources_statistics') }}</h3>
+        <h4 class="text-semibold mt-40">{{ trans('messages.resources_statistics') }}</h4>
         <p>{{ trans('messages.resources_statistics_intro') }}</p>
         <div class="row">
             <div class="col-md-6">
@@ -205,7 +211,9 @@ people_outline
                     </li>
                     <li class="selfclear">
                         <div class="unit size1of2">
-                            <strong><i class="icon-quill4"></i> {{ trans('messages.subscriptions') }}</strong>
+                            <strong><span class="material-icons-outlined">
+assignment_turned_in
+</span> {{ trans('messages.subscriptions') }}</strong>
                         </div>
                         <div class="lastUnit size1of2">
                             <mc:flag>{{ Auth::user()->admin->getAllSubscriptions()->count() }}</mc:flag>

@@ -26,14 +26,18 @@
                                 
 @elseif (!empty(request()->keyword) || !empty(request()->filters["type"]))
     <div class="empty-list">
-        <i class="icon-history"></i>
+        <span class="material-icons-outlined">
+history_toggle_off
+</span>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
         </span>
     </div>
 @else                    
     <div class="empty-list">
-        <i class="icon-history"></i>
+        <span class="material-icons-outlined">
+history_toggle_off
+</span>
         <span class="line-1">
             {{ trans('messages.no_action_logs') }}
         </span>

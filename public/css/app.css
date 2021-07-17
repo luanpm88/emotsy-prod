@@ -5,6 +5,9 @@
         clear: both;
     }
 }
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+    margin-bottom: .7rem;
+}
 input::-ms-reveal,
 input::-ms-clear {
 display: none;
@@ -1065,13 +1068,15 @@ ul.install-steps li:after {
     left: auto;
 }
 ul.install-steps li {
-    margin-right: 20px;
+    margin-bottom: -1px;
 }
 ul.install-steps li a {
     color: #888;
     padding-left: 15px;
     padding-right: 0;
     cursor: default;
+    padding: 12px 20px;
+    display: inline-block;
 }
 ul.install-steps li.enabled:after {
     color: #fff;

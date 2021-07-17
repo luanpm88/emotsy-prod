@@ -19,7 +19,9 @@
                 </li>
                 <li rel0="NotificationController">
                     <a href="{{ action("Admin\NotificationController@index") }}" class="level-1">
-                        <i class="icon-history position-left"></i> {{ trans('messages.notifications') }}
+                        <span class="material-icons-outlined">
+restore
+</span> {{ trans('messages.notifications') }}
                     </a>
                 </li>
             </ul>

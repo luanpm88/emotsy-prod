@@ -13,7 +13,9 @@
         <li class="
         {{ request()->route()->getActionName() == 'Acelle\Http\Controllers\Admin\CustomerController@subscriptions' ? 'active' : '' }}
         text-semibold"><a href="{{ action('Admin\CustomerController@subscriptions', $customer->uid) }}">
-            <i class="icon-quill4"></i> {{ trans('messages.subscriptions') }}</a>
+            <span class="material-icons-outlined">
+assignment_turned_in
+</span> {{ trans('messages.subscriptions') }}</a>
         </li>
         @can('viewSubAccount', $customer))
             <li class="
