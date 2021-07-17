@@ -123,6 +123,7 @@ return [
                 'ok' => 'deliverable',
                 'ok_for_all' => 'deliverable',
                 'ok_for_all | ok_for_all' => 'deliverable',
+                'ok_for_all|ok_for_all' => 'deliverable',
                 'email_disabled' => 'undeliverable',
                 'risky' => 'risky',
                 'unknown' => 'unknown'
