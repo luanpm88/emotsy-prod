@@ -39,7 +39,7 @@ class TemplateController extends Controller
         }
 
         $templates = Template::shared()
-            ->filter($request)
+            ->categoryUid($request->category_uid)
             ->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);

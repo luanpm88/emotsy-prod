@@ -956,7 +956,7 @@ class Automation2Controller extends Controller
         }
 
         $templates = $templates->search($request->keyword)
-            ->filter($request)
+            ->categoryUid($request->category_uid)
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
 

@@ -101,12 +101,11 @@ class Template extends Model
      *
      * @return collect
      */
-    public static function scopeFilter($query, $request)
+    public static function scopeCategoryUid($query, $uid)
     {
+        $category = \Acelle\Model\TemplateCategory::findByUid($uid);
         // Category
-        if ($request->category_uid) {
-            $category = \Acelle\Model\TemplateCategory::findByUid($request->category_uid);
-
+        if ($category) {
             $query = $query->whereHas('categories', function ($q) use ($category) {
                 $q->whereIn('template_categories.id', [$category->id]);
             });
