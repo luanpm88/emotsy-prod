@@ -134,4 +134,9 @@ class SendingServerSmtp extends SendingServer
 
         return $server;
     }
+
+    public function setupBeforeSend()
+    {
+        //
+    }
 }

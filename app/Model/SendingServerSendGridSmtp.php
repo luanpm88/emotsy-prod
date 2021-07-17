@@ -40,8 +40,6 @@ class SendingServerSendGridSmtp extends SendingServerSendGrid
     public function send($message, $params = array())
     {
         try {
-            $this->setupWebhooks();
-
             $msgId = $message->getHeaders()->get('X-Acelle-Message-Id')->getFieldBody();
 
             $header = new \Smtpapi\Header();

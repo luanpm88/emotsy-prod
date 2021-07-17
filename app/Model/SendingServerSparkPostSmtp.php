@@ -38,8 +38,6 @@ class SendingServerSparkPostSmtp extends SendingServerSparkPost
     public function send($message, $params = [])
     {
         try {
-            $this->setupWebhook();
-
             $transport = new \Swift_SmtpTransport($this->host, (int) $this->smtp_port, $this->smtp_protocol);
             $transport->setUsername($this->smtp_username);
             $transport->setPassword($this->smtp_password);

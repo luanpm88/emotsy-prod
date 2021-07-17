@@ -396,4 +396,9 @@ class SendingServerSendGrid extends SendingServer implements DomainVerificationI
     {
         return false;
     }
+
+    public function setupBeforeSend()
+    {
+        $this->setupWebhooks();
+    }
 }
