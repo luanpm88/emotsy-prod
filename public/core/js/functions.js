@@ -214,7 +214,17 @@ function removeButtonMask(button) {
     button.removeClass('btn-loading');
 }
 
-function notify(options) {
+function notify(optionsOrType, title, message) {
+    var options = optionsOrType;
+
+    if (typeof(message) != 'undefined') {
+        options = {
+            type: optionsOrType,
+            title: title,
+            message: message
+        };
+    }
+
     new ANotify().add(options);
 }
 

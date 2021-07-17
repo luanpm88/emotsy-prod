@@ -23,7 +23,7 @@
 @endsection
 
 @section('content')
-    <form class="listing-form"
+    <div id="TemplatesIndexContainer" class="listing-form"
         data-url="{{ action('TemplateController@listing') }}"
         per-page="{{ Acelle\Model\Template::$itemsPerPage }}"                    
     >                
@@ -99,11 +99,26 @@ add
             </div>
         </div>
         
-        <div class="pml-table-container">
+        <div id="TemplatesIndexContent" class="pml-table-container">
             
             
             
         </div>
-    </form>
-                    
+    </div>
+    
+    <script>
+        var TemplatesIndex = {
+            getList: function() {
+                return makeList({
+                    url: '{{ action('TemplateController@listing') }}',
+                    container: $('#TemplatesIndexContainer'),
+                    content: $('#TemplatesIndexContent')
+                });
+            }
+        };
+
+        $(document).ready(function() {
+            TemplatesIndex.getList().load();
+        });
+    </script>
 @endsection

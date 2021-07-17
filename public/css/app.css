@@ -19,7 +19,6 @@ display: none;
     cursor: pointer;
 }
 body {
-    font-size: 14px;
     background-color: #fff;
     font-family: "Open Sans","Helvetica Neue",Arial,Helvetica,Verdana,sans-serif;
 }
@@ -4848,4 +4847,12 @@ pagination {
   }
 .form-group .select2 {
     width: 100%!important;
+}
+.select2-results__option[aria-selected=false]:hover {
+    background: #def1f0 !important;
+    color: #333;
+}
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background: #aed4d1 !important;
+    color: #333;
 }

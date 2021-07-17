@@ -171,6 +171,7 @@ a {
     height: calc(100vh - 53px);
     overflow: auto;
     margin-top: 0;
+    overflow-x: hidden;
 }
 .automation2 .sidebar-content {
     padding: 30px;

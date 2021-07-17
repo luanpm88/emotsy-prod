@@ -36,13 +36,19 @@
 .theme-blue .dropdown-menu > .active > a,
 .theme-blue .dropdown-menu > .active > a:hover,
 .theme-blue .dropdown-menu > .active > a:focus {
-    background-color: #c2e0eb;
+    background-color: #c3dde7;
 }
 .theme-blue .nav-tabs > li.active > a,
 .theme-blue .nav-tabs > li.active > a:hover,
 .theme-blue .nav-tabs > li.active > a:focus {
     color: #1b5f9e;
     border-bottom-color: #1b5f9e;
+}
+.theme-blue .select2-results__option[aria-selected=false]:hover {
+    background-color: #dbebf1!important;
+}
+.theme-blue .select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background: #c5dae2 !important;
 }
 
 .theme-green .navbar-main {
@@ -91,6 +97,12 @@
     border-bottom-color: #116837;
     color: #116837;
 }
+.theme-green .select2-results__option[aria-selected=false]:hover {
+    background-color: #d7ecdd!important;
+}
+.theme-green .select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background: #b9d4c1 !important;
+}
 
 .theme-brown .navbar-main {
     background-color: rgba(71, 38, 0, 0.8);
@@ -137,6 +149,12 @@
 .theme-brown .nav-tabs > li.active > a:focus {
     border-bottom-color: #a55717;
     color: #a55717;
+}
+.theme-brown .select2-results__option[aria-selected=false]:hover {
+    background-color: #ecdfd7!important;
+}
+.theme-brown .select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background: #dbcbc0 !important;
 }
 
 .theme-pink .navbar-main {
@@ -185,6 +203,12 @@
     border-bottom-color: #d81b60;
     color: #d81b60;
 }
+.theme-pink .select2-results__option[aria-selected=false]:hover {
+    background-color: #f1d3dd!important;
+}
+.theme-pink .select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background: #dfbcc8 !important;
+}
 
 .theme-grey .navbar-main {
     background-color: rgba(40,40,40,0.8)
@@ -231,6 +255,12 @@
 .theme-grey .nav-tabs > li.active > a:focus {
     border-bottom-color: #555;
     color: #555;
+}
+.theme-pink .select2-results__option[aria-selected=false]:hover {
+    background-color: #f2f2f2!important;
+}
+.theme-pink .select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background: #f0f0f0 !important;
 }
 
 .theme-white .navbar-main {

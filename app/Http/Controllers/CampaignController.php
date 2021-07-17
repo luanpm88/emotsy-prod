@@ -1610,8 +1610,9 @@ class CampaignController extends Controller
         $campaign = Campaign::findByUid($request->uid);
 
         if ($request->isMethod('post')) {
-            // make validator
-            $validator = $campaign->doSendTestEmail($request->email);
+            $validator = \Validator::make($request->all(), [
+                'email' => 'required|email',
+            ]);
 
             // 
             if ($validator->fails()) {

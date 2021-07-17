@@ -2911,7 +2911,7 @@
   'automation.email.from_name.placeholder' => 'E.g. David Encoteg',
   'automation.email.from.placeholder' => 'E.g. noreply@domain.com',
   'automation.started.title' => 'Automation Started',
-  'automation.started.desc' => 'Congratulations! Your automated campaign is now up and running.
+  'automation.started.desc' => '<div class="fw-600 fs-4 mb-2"><span class="material-icons-outlined me-2">auto_awesome</span> Congratulations!</div> Your automated campaign is now up and running.
     We keep track of your individual contacts activities as well as overall campaign performance.
     Check out your Insight and Statistics reports for more details.',
   'automation.email.change_template.confirm' => 'Changing template will remove current email content with customizations.

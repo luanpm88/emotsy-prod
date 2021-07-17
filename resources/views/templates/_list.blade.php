@@ -54,12 +54,12 @@
                 <td class="text-end">
                     @if (Auth::user()->customer->can('update', $template))
                         @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']) && $template->builder)
-                            <a href="{{ action('TemplateController@builderEdit', $template->uid) }}" role="button" class="btn btn-default btn-icon template-compose">
+                            <a href="{{ action('TemplateController@builderEdit', $template->uid) }}" role="button" class="btn btn-primary btn-icon template-compose">
                                 {{ trans('messages.template.pro_builder') }}
                             </a>
                         @endif
                         @if (in_array(Acelle\Model\Setting::get('builder'), ['both','classic']))
-                            <a href="{{ action('TemplateController@edit', $template->uid) }}" role="button" class="btn btn-outline-secondary btn-icon template-compose-classic">
+                            <a href="{{ action('TemplateController@edit', $template->uid) }}" role="button" class="btn btn-secondary btn-icon template-compose-classic">
                                 {{ trans('messages.template.classic_builder') }}
                             </a>
                         @endif
@@ -69,7 +69,7 @@
                         Auth::user()->customer->can('delete', $template) ||
                         Auth::user()->customer->can('update', $template))
                         <div class="btn-group">
-                            <button role="button" class="btn dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
+                            <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 @if (Auth::user()->customer->can('preview', $template))
                                     <li><a href="#preview" onclick="popupwindow('{{ action('TemplateController@preview', $template->uid) }}', '{{ $template->name }}', 800, 800)"><i class="icon-zoomin3"></i> {{ trans("messages.preview") }}</a></li>
@@ -95,17 +95,21 @@
                                         <a
                                             href="{{ action('TemplateController@copy', $template->uid) }}"
                                             role="button"
-                                            class="modal_link"
+                                            class="dropdown-item copy-template-button"
                                             link-method="GET"
                                         >
-                                            <span class="material-icons-outlined">
+                                            <span class="material-icons-outlined me-1">
 copy_all
 </span> {{ trans("messages.template.copy") }}
                                         </a>
                                     </li>
                                 @endif
                                 @if (Auth::user()->customer->can('delete', $template))
-                                    <li><a link-confirm="{{ trans('messages.delete_templates_confirm') }}" href="{{ action('TemplateController@delete', ["uids" => $template->uid]) }}"><span class="material-icons-outlined">
+                                    <li><a
+                                        class="dropdown-item list-action-single"
+                                        link-confirm="{{ trans('messages.delete_templates_confirm') }}"
+                                        href="{{ action('TemplateController@delete', ["uids" => $template->uid]) }}">
+                                        <span class="material-icons-outlined me-1">
 delete_outline
 </span> {{ trans("messages.delete") }}</a></li>
                                 @endif
@@ -118,7 +122,48 @@ delete_outline
     </table>
     @include('elements/_per_page_select', ["items" => $templates])
     
-    
+    <script>
+        $(function() {
+            $('.copy-template-button').on('click', function(e) {
+                e.preventDefault();			
+                var url = $(this).attr('href');
+
+                TemplatesList.getCopyPopup().load({
+                    url: url
+                });
+            });
+
+            $('.template-compose').click(function(e) {
+                e.preventDefault();
+                
+                var url = $(this).attr('href');
+
+                openBuilder(url);
+            });
+            
+            $('.template-compose-classic').click(function(e) {
+                e.preventDefault();
+                
+                var url = $(this).attr('href');
+
+                openBuilderClassic(url);
+            });
+        });
+            
+
+        var TemplatesList = {
+			copyPopup: null,
+
+			getCopyPopup: function() {
+				if (this.copyPopup === null) {
+					this.copyPopup = new Popup();
+				}
+
+				return this.copyPopup;
+			}
+		}
+    </script>
+
     <script>
 		var thumbPopup = new Popup();    
         var categoriesPopup = new Popup();           

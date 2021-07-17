@@ -9,6 +9,9 @@ body {
     font-family: "Open Sans","Helvetica Neue",Arial,Helvetica,Verdana,sans-serif;
     font-size: 0.92rem;
 }
+.form-control {
+    font-size: 0.92rem;
+}
 h1, h1 {
     font-size: 2rem;
 }
@@ -162,23 +165,47 @@ h1, h1 {
     margin-right: 14px;
 }
 .styled3[type="checkbox"] {
-    width: 34px;
+    width: 43px;
 }
 .styled3[type="checkbox"]:before {
     content: "toggle_off";
     background: #fff;
     border-color: #fff;
-    color: #aaa;
+    color: transparent;
     text-indent: 0;
     font-size: 34px;
+    width: 43px;
+    height: 22px;
+    border: solid 1px #ddd;
+    border-radius: 20px;
+    transform: translateY(-3px);
+    transition: all .2s ease-in-out;
 }
-.styled3[type="checkbox"]:checked:before {
-    content: "toggle_on";
+.styled3[type="checkbox"]:after {
+    content: "toggle_off";
     background: #fff;
     border-color: #fff;
-    color: #009688;
+    color: #aaa;
     text-indent: 0;
-    font-size: 34px;
+    width: 22px;
+    height: 22px;
+    border: solid 1px #ccc;
+    border-radius: 20px;
+    transform: translateY(-3px);
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    box-shadow: 0 0 4px rgba(0,0,0,0.1);
+    color: transparent;
+    transition: all .2s ease-in-out;
+}
+.styled3[type="checkbox"]:checked:before {
+    background-color: #3fba96;
+    color: transparent;
+    border-color: #3fba96;
+}
+.styled3[type="checkbox"]:checked:after {
+    left: 22px;
 }
 .nav-underline .nav-item .nav-link {
     padding: 9px 0;

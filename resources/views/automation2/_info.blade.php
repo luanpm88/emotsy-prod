@@ -72,9 +72,9 @@ error_outline
                     if (!value) {
                         notify(response.status, '{{ trans('messages.notify.success') }}', response.message);
                     } else {
-                        var dialog = new Dialog('notification', {
-                            title: '{{ trans('messages.automation.started.title') }} <i class="lnr lnr-rocket ml-3"></i> ',
-                            message: `{{ trans('messages.automation.started.desc') }}`,
+                        var dialog = new Dialog('alert', {
+                            title: '{{ trans('messages.automation.started.title') }}  ',
+                            message: `{!! trans('messages.automation.started.desc') !!}`,
                             ok: function(dialog) {        
                                 sidebar.load();                    
                             },
