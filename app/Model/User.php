@@ -90,6 +90,21 @@ class User extends Authenticatable
         return $this->hasOne('Acelle\Model\Admin');
     }
 
+    public function createUserDirectories()
+    {
+        $paths = [
+            $this->getBasePath(),
+            $this->getAssetsPath(),
+            $this->getThumbsPath(),
+        ];
+
+        foreach($paths as $path) {
+            if (!File::exists($path)) {
+                File::makeDirectory($path, 0777, true, true);
+            }
+        }
+    }
+
     /**
      * Get authenticate from file.
      *
@@ -382,6 +397,17 @@ class User extends Authenticatable
         return join_paths($base, $path);
     }
 
+    public function getThumbsPath($path = null)
+    {
+        $base = $this->getBasePath(self::ASSETS_THUMB_DIR);
+
+        if (!\File::exists($base)) {
+            \File::makeDirectory($base, 0777, true, true);
+        }
+
+        return join_paths($base, $path);
+    }
+
     public function getBasePath($path = null)
     {
         $base = storage_path(join_paths(self::BASE_DIR, $this->uid));
@@ -433,6 +459,9 @@ class User extends Authenticatable
 
     public function getFilemanagerConfig()
     {
+        // Create user directories if not exists
+        $this->createUserDirectories();
+
         // Base URL with port, but without subpath
         $baseUrl = parse_url(url('/'));
 
