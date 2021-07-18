@@ -453,7 +453,7 @@ class Setting extends Model
             ],
             'end_period_last_days' => [
                 'cat' => 'payment',
-                'value' => '10',
+                'value' => '7',
                 'type' => 'text',
             ],
             'renew_free_plan' => [

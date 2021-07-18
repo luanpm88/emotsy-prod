@@ -385,7 +385,7 @@ h2 [class^="icon-"] {
 }
 .checkbox-description {
     display: block;
-    color: #666;
+    color: rgba(0,0,0,0.7);
     font-weight: normal;
     margin-top: 2px;
 }

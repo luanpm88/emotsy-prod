@@ -3686,4 +3686,11 @@
   'campaign.template.old_ver_error' => 'Campaigns created by previous (older) versions cannot be loaded in the current version
     of the application. Don\'t worry, it will work correctly for new campaigns you create',
   'automation.send_test_email' => 'Send a test email',
+  'setting.recurring_charge_before_days.title' => 'Renewal invoices billing date',
+  'setting.recurring_charge_before_days.desc' => 'If your customers\' selected payment gateway supports
+    auto billing and if the customers have previously
+    stored a payment method, a credit or debit card for example, then you can specify a timeframe
+    for the application to automatically charge your customers\' card.',
+  'setting.recurring_charge_before_days.before_text' => 'Automatically charge a renewal invoice',
+  'setting.recurring_charge_before_days.after_text' => 'days before expiry date',
 ) ?>
