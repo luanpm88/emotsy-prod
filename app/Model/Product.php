@@ -67,8 +67,6 @@ class Product extends Model
                 });
             }
         }
-
-        return $query;
     }
 
     // upload image
