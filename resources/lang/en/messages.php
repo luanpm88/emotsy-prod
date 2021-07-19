@@ -3693,4 +3693,16 @@
     for the application to automatically charge your customers\' card.',
   'setting.recurring_charge_before_days.before_text' => 'Automatically charge a renewal invoice',
   'setting.recurring_charge_before_days.after_text' => 'days before expiry date',
+  'offline.user.description' => 'Pay for your subscription & services outside of
+        the application, following the instructions provided during checkout',
+  'stripe.user.description' => 'Pay for your subscription & services using your debit
+    or credit cards. Auto billing is supported',
+  'braintree.user.description' => 'Pay for your subscription & services using your debit
+    or credit cards. Auto billing is supported',
+  'coinpayments.user.description' => 'Pay for your subscription & services with a cryptocurrency, via coinpayment.com',
+  'paystack.user.description' => 'Pay for your subscription & services using your debit
+        or credit cards. Auto billing is supported',
+  'paypal.user.description' => 'Pay for your subscription & services using your PayPal account.',
+  'razorpay.user.description' => 'Pay for your subscription & services using your debit
+        or credit cards. Auto billing is not supported',
 ) ?>

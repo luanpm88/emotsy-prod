@@ -14,7 +14,7 @@
         <div class="body">
             <div class="bill_info">
                 <div class="line d-flex my-2">
-                    {{ request()->user()->customer->getPreferredPaymentGateway()->getDescription() }}
+                    {{ trans('messages.'.request()->user()->customer->getPreferredPaymentGateway()->getType().'.user.description') }}
                 </div>
             </div>
         </div>
