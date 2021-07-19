@@ -55,6 +55,7 @@ class Customer extends Model
     const BASE_DIR = 'app/customers'; // storage/customers/000000
     const ATTACHMENTS_DIR = 'home/attachments';  // storage/customers/000000/home/files
     const TEMPLATES_DIR = 'home/templates';  // storage/customers/000000/home/files
+    const PRODUCT_DIR = 'home/products';
 
     /**
      * The attributes that are mass assignable.
@@ -246,6 +247,17 @@ class Customer extends Model
     public function getTemplatesPath($path = null)
     {
         $base = $this->getBasePath(self::TEMPLATES_DIR);
+
+        if (!\File::exists($base)) {
+            \File::makeDirectory($base, 0777, true, true);
+        }
+
+        return join_paths($base, $path);
+    }
+
+    public function getProductsPath($path = null)
+    {
+        $base = $this->getBasePath(self::PRODUCT_DIR);
 
         if (!\File::exists($base)) {
             \File::makeDirectory($base, 0777, true, true);
