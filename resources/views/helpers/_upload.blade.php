@@ -52,3 +52,18 @@ edit
         });
     })
 </script>
+<script>
+	$(function() {
+		// Preview upload image
+		$("input.previewable").on('change', function() {
+			var img = $("img[preview-for='" + $(this).attr("name") + "']");
+			previewImageBrowse(this, img);
+		});
+		$(".remove-profile-image").click(function() {
+			var img = $(this).parents(".profile-image").find("img");
+			var imput = $(this).parents(".profile-image").find("input[name='_remove_image']");
+			img.attr("src", img.attr("empty-src"));
+			imput.val("true");
+		});
+	});
+</script>

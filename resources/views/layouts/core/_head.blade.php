@@ -31,6 +31,11 @@
 <!-- Numeric -->
 <script type="text/javascript" src="{{ URL::asset('core/numeric/jquery.numeric.min.js') }}"></script>
 
+<!-- Tooltip -->
+<link rel="stylesheet" href="{{ URL::asset('core/tooltipster/css/tooltipster.bundle.min.css') }}">
+<link rel="stylesheet" href="{{ URL::asset('core/tooltipster/css/plugins/tooltipster/sideTip/themes/tooltipster-sideTip-light.min.css') }}">
+<script type="text/javascript" src="{{ URL::asset('core/tooltipster/js/tooltipster.bundle.min.js') }}"></script>
+
 <!-- Google icon -->
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined"rel="stylesheet">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round"rel="stylesheet">

@@ -14,10 +14,10 @@
 					<h5 class="media-heading text-semibold">{{ trans('messages.upload_photo') }}</h5>
 					{{ trans('messages.photo_at_least', ["size" => "300px x 300px"]) }}
 					<br /><br />
-					<a href="#upload" onclick="$('input[name=image]').trigger('click')" class="btn btn-xs bg-teal mr-10"><span class="material-icons-outlined">
+					<a href="#upload" onclick="$('input[name=image]').trigger('click')" class="btn btn-primary me-1"><span class="material-icons-outlined">
 file_download
 </span> {{ trans('messages.upload') }}</a>
-					<a href="#remove" class="btn btn-xs bg-grey-800 remove-profile-image"><span class="material-icons-outlined">
+					<a href="#remove" class="btn btn-secondary remove-profile-image"><span class="material-icons-outlined">
 delete_outline
 </span> {{ trans('messages.remove') }}</a>
 				</div>
@@ -83,3 +83,19 @@ delete_outline
 <div class="text-end">
 	<button class="btn btn-secondary"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
 </div>
+
+<script>
+	$(function() {
+		// Preview upload image
+		$("input.previewable").on('change', function() {
+			var img = $("img[preview-for='" + $(this).attr("name") + "']");
+			previewImageBrowse(this, img);
+		});
+		$(".remove-profile-image").click(function() {
+			var img = $(this).parents(".profile-image").find("img");
+			var imput = $(this).parents(".profile-image").find("input[name='_remove_image']");
+			img.attr("src", img.attr("empty-src"));
+			imput.val("true");
+		});
+	});
+</script>

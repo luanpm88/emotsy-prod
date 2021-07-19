@@ -4015,6 +4015,9 @@ form.loading input {
     font-size: 80px;
     color: #00314a;
 }
+.d-flex.align-items-center [class^="material-icons"] {
+    transform: translateY(4%) scale(1.2);
+}
 .checkmark-radio {
     width: 0;
     height: 0;

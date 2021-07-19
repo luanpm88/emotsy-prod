@@ -102,15 +102,29 @@ arrow_forward
             });
         });
 
-        $('.recipients-form').submit(function(e) {
-            if (!$('[radio-group=campaign_list_info_defaulf]:checked').length) {
-                new Dialog('alert', {
-                    message: '{{ trans('messages.recipients.select_default_list.warning') }}',
-                });
+        $(function() {
+            $('.recipients-form').submit(function(e) {
+                if (!$('[radio-group=campaign_list_info_defaulf]:checked').length) {
+                    new Dialog('alert', {
+                        message: '{{ trans('messages.recipients.select_default_list.warning') }}',
+                    });
 
-                e.preventDefault();
-                return false;
-            }
+                    e.preventDefault();
+                    return false;
+                }
+            });
         });
+
+        function loadAutomationEmail(container) {
+            var url = container.attr('data-url');
+
+            $.ajax({
+                method: "GET",
+                url: url
+            })
+            .done(function( data ) {
+                container.html(data);
+            });
+        }
     </script>
 @endsection

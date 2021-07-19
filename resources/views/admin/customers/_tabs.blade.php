@@ -8,7 +8,9 @@
         <li class="
         {{ request()->route()->getActionName() == 'Acelle\Http\Controllers\Admin\CustomerController@contact' ? 'active' : '' }}
         text-semibold"><a href="{{ action('Admin\CustomerController@contact', $customer->uid) }}">
-            <i class="icon-office position-left"></i> {{ trans('messages.contact_information') }}</a>
+            <span class="material-icons-outlined">
+maps_home_work
+</span> {{ trans('messages.contact_information') }}</a>
         </li>
         <li class="
         {{ request()->route()->getActionName() == 'Acelle\Http\Controllers\Admin\CustomerController@subscriptions' ? 'active' : '' }}

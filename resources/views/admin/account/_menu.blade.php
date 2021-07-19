@@ -4,17 +4,23 @@
             <ul class="nav nav-tabs nav-tabs-top nav-underline">
                 <li rel0="AccountController/profile">
                     <a href="{{ action("Admin\AccountController@profile") }}" class="level-1">
-                        <i class="icon-user position-left"></i> {{ trans('messages.my_profile') }}
+                        <span class="material-icons-outlined">
+face
+</span> {{ trans('messages.my_profile') }}
                     </a>
                 </li>
                 <li rel0="AccountController/contact">
                     <a href="{{ action("Admin\AccountController@contact") }}" class="level-1">
-                        <i class="icon-office position-left"></i> {{ trans('messages.contact_information') }}
+                        <span class="material-icons-outlined">
+maps_home_work
+</span> {{ trans('messages.contact_information') }}
                     </a>
                 </li>
                 <li rel0="AccountController/api">
                     <a href="{{ action("Admin\AccountController@api") }}" class="level-1">
-                        <i class="icon-key position-left"></i> {{ trans('messages.api_token') }}
+                        <span class="material-icons-outlined">
+vpn_key
+</span> {{ trans('messages.api_token') }}
                     </a>
                 </li>
                 <li rel0="NotificationController">

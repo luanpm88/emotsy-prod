@@ -11,6 +11,7 @@
 	@include('layouts.core._menu_frontend')
 
 	<main class="container page-container px-3">
+		
 		@yield('page_header')
 
 		<!-- display flash message -->
