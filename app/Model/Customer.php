@@ -200,6 +200,11 @@ class Customer extends Model
         return $this->hasMany('Acelle\Model\TrackingDomain');
     }
 
+    public function products()
+    {
+        return $this->hasMany('Acelle\Model\Product');
+    }
+
     /**
      * Get user sources.
      */

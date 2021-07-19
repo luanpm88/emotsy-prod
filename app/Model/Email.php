@@ -567,7 +567,7 @@ class Email extends Model
                             'id' => $product->uid,
                             'name' => $product->title,
                             'price' => $product->price,
-                            'image' => action('ProductController@image', $product->uid),
+                            'image' => $product->getImageUrl(),
                             'description' => substr(strip_tags($product->description), 0, 100),
                             'link' => action('ProductController@index'),
                         ];
@@ -613,7 +613,7 @@ class Email extends Model
                         'id' => $product->uid,
                         'name' => $product->title,
                         'price' => $product->price,
-                        'image' => action('ProductController@image', $product->uid),
+                        'image' => $product->getImageUrl(),
                         'description' => substr(strip_tags($product->description), 0, 100),
                         'link' => action('ProductController@index'),
                     ];
