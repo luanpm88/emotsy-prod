@@ -24,8 +24,12 @@
 <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/select2/css/select2.min.css') }}">
 <script type="text/javascript" src="{{ URL::asset('core/select2/js/select2.min.js') }}"></script>
 
+<!-- Validate -->
 <script type="text/javascript" src="{{ URL::asset('core/validate/jquery.validate.min.js') }}"></script>
 <script type="text/javascript" src="{{ URL::asset('core/js/validate.js') }}"></script>
+
+<!-- Numeric -->
+<script type="text/javascript" src="{{ URL::asset('core/numeric/jquery.numeric.min.js') }}"></script>
 
 <!-- Google icon -->
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined"rel="stylesheet">

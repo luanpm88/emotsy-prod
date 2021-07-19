@@ -11,7 +11,9 @@
             <li class="active">{{ trans('messages.update') }}</li>
         </ul>
         <h1>
-            <span class="text-semibold"><i class="icon-profile"></i> {{ $plan->name }}</span>
+            <span class="text-semibold"><span class="material-icons-round">
+                            person_outline
+                            </span> {{ $plan->name }}</span>
         </h1>
     </div>
 

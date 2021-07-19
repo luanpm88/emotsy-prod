@@ -471,7 +471,7 @@ h2 [class^="icon-"] {
 }
 .checkbox-description {
     display: block;
-    color: #666;
+    color: rgba(0,0,0,0.7);
     font-weight: normal;
     margin-top: 2px;
 }
@@ -658,7 +658,7 @@ h2 [class^="icon-"] {
     padding: 0 8px;
 }
 .hide {
-    position: absolute;
+    position: absolute!important;
     top: -9000px;
 }
 .field-list input {
@@ -771,6 +771,9 @@ input.error {
 }
 .input-icon-right {
     position: relative;
+}
+.input-icon-right input {
+    width: 100%;
 }
 .input-icon-right i {
     position: absolute;
@@ -1688,7 +1691,7 @@ ul.automation-confirm li.child-row h5 {
 .mask-control {
     height: 26px;
     display: block;
-    margin-top: -29px;
+    margin-top: -30px;
     padding-left: 11px;
     background: rgba(0,0,0,0);
     margin-left: 2px;
@@ -4315,7 +4318,7 @@ pagination {
 .dropdown-menu {
     font-size: 0.9rem;
 }
-.navbar-main .nav-item.active > .nav-link {
+.navbar-main .nav-item > .nav-link.active {
     background: rgba(0,0,0,0.3);
 }
 .bg-color0 {
@@ -4370,8 +4373,8 @@ pagination {
 }
 .pickatime + .time-input-icon, .date-input-icon {
     position: absolute;
-    top: 2px;
-    right: 7px;
+    top: 3px;
+    right: 13px;
     font-size: 18px;
     opacity: 0.4;
 }
@@ -6492,7 +6495,7 @@ h5 {
     font-weight: 600;
 }
 @media (min-width: 576px) {
-    .modal-dialog:not(.modal-lg, .modal-xl) {
+    .modal-dialog.modal-default {
         max-width: 620px;
     }
 }
@@ -6563,4 +6566,50 @@ h5 {
 }
 .dropdown-item [class^="material-icons"] {
     margin-right: .5rem;
+}
+.nav-underline .nav-item .nav-link.dropdown-toggle {
+    padding-right: 16px;
+}
+.nav-underline .nav-item .nav-link [class^="material-icons"] {
+    margin-right: .25rem;
+}
+.nav-underline .dropdown-toggle::after {
+    content: 'keyboard_arrow_down';
+    font-family: 'Material Icons Outlined';
+    border: none;
+    line-height: 21px;
+    position: absolute;
+    margin-left: 0;
+}
+.navbar-main .dropdown-toggle::after {
+    font-size: 16px;
+}
+.dropdown-menu .head{
+    padding: 5px 17px;
+    background: #eee;
+    font-size: 90%;
+    font-weight: 600;
+    border-top: 1px solid #dee2e6!important;
+    border-bottom: 1px solid #dee2e6!important;
+}
+.panel-body {
+    padding: 2rem;
+    background-color: white;
+    border-radius: 5px;
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+}
+.page-container {
+    position: relative;
+}
+.list-page .footer {
+    position: absolute;
+    bottom: 5px;
+    margin: auto;
+    width: 100%;
+    text-align: center;
+    font-size: 90%;
+    opacity: 0.8;
+}
+.list-page .page-container {
+    max-width: 95%;
 }

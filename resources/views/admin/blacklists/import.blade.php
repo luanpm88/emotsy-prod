@@ -10,7 +10,9 @@
             <li><a href="{{ action("Admin\BlacklistController@index") }}">{{ trans('messages.blacklist') }}</a></li>
         </ul>
         <h1>
-            <span class="text-semibold"><i class="icon-download4"></i> {{ trans('messages.blacklist.import') }}</span>
+            <span class="text-semibold"><span class="material-icons-outlined">
+file_upload
+</span> {{ trans('messages.blacklist.import') }}</span>
         </h1>
     </div>
 
@@ -74,7 +76,7 @@
 
                 </div>
                 <label style="margin-bottom:20px;font-style:italic;" id="bottomNotice"></label>
-                <a id="cancelBtn" class="btn bg-grey btn-icon cancel processing">
+                <a id="cancelBtn" class="btn btn-secondary btn-icon cancel processing">
                     {{ trans('messages.cancel') }}
                 </a>
 

@@ -1,6 +1,6 @@
 <div class="row">
 	<div class="col-md-12">
-		<ul class="nav nav-tabs nav-tabs-top page-second-nav">
+		<ul class="nav nav-tabs nav-tabs-top nav-underline">
 			<li rel0="CampaignController/overview" class="dropdown">
 				<a href="{{ action('CampaignController@overview', $campaign->uid) }}" class="level-1">
 					<span class="material-icons-outlined">

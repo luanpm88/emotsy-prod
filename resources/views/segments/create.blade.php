@@ -12,7 +12,9 @@
 	
 				@include("lists._menu")
 				
-				<h2 class="text-semibold text-teal-800"><i class="icon-plus2"></i> {{ trans('messages.create_segment') }}</h2>
+				<h2 class="text-semibold text-teal-800"><span class="material-icons-outlined">
+add
+</span> {{ trans('messages.create_segment') }}</h2>
 				
                 <form action="{{ action('SegmentController@store', $list->uid) }}" method="POST" class="form-validate-jqueryz">
 					{{ csrf_field() }}

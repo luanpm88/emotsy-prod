@@ -13,7 +13,9 @@
         <div class="row">
 			<div class="col-sm-12 col-md-6 col-lg-6">
 				<div class="sub-section">
-					<h2 class="text-semibold text-teal-800"><i class="icon-plus2"></i> {{ trans('messages.create_subscriber') }}</h2>
+					<h2 class="text-semibold text-teal-800"><span class="material-icons-outlined">
+add
+</span> {{ trans('messages.create_subscriber') }}</h2>
 
 					<form action="{{ action('SubscriberController@store', $list->uid) }}" method="POST" class="form-validate-jquery">
 						{{ csrf_field() }}

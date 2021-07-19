@@ -272,7 +272,7 @@
 .theme-white .navbar-main .navbar-nav li:hover .lvl-1 {
     color: #222!important;
 }
-.theme-white .navbar-main .nav-item.active > .nav-link {
+.theme-white .navbar-main .nav-item > .nav-link.active {
     background: rgba(0,0,0,0.05);
 }
 .theme-white .dropdown-menu li:hover > a {

@@ -9,7 +9,9 @@
             <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
         </ul>
         <h1>
-            <span class="text-gear"><i class="icon-list2"></i> {{ trans('messages.settings') }}</span>
+            <span class="text-gear"><span class="material-icons-outlined">
+reorder
+</span> {{ trans('messages.settings') }}</span>
         </h1>				
     </div>
 

@@ -1,4 +1,4 @@
-@extends('layouts.page')
+@extends('layouts.core.page')
 
 @section('title', trans('messages.login'))
 

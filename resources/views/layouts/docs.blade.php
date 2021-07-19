@@ -71,7 +71,9 @@
 								<span class="">{{ trans('messages.used_quota') }}</span>
 							</a>
 						</li>
-						<li><a href="{{ action("AccountController@profile") }}"><i class="icon-profile"></i> {{ trans('messages.account') }}</a></li>
+						<li><a href="{{ action("AccountController@profile") }}"><span class="material-icons-round">
+                            person_outline
+                            </span> {{ trans('messages.account') }}</a></li>
 						<li><a href="{{ url("/logout") }}"><i class="icon-switch2"></i> {{ trans('messages.logout') }}</a></li>
 					</ul>
 				</li>

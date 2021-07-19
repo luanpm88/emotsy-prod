@@ -76,7 +76,9 @@
 									'uid' => $automation->uid,
 									'subscriber_uid' => $subscriber->uid
 								]) }}">
-									<i class="icon-exit"></i> {{ trans('messages.automation.subscriber.remove') }}
+									<span class="material-icons-round">
+logout
+</span> {{ trans('messages.automation.subscriber.remove') }}
 								</a></li>
 							@endif
 							@if (\Gate::allows('update', $subscriber))

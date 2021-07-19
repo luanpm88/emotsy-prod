@@ -2,9 +2,14 @@
 
 @section('title', $list->name)
 
+@section('head')
+    <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/prismjs/prism.css') }}">
+    <script type="text/javascript" src="{{ URL::asset('core/prismjs/prism.js') }}"></script>
+@endsection
+
 @section('page_header')
 
-            @include("lists._header")
+    @include("lists._header")
 
 @endsection
 
@@ -17,8 +22,8 @@
         <div class="col-md-12">
             <h4 class="text-semibold">{{ trans('messages.Form_options') }}</h4>
             <form action="{{ action("MailListController@embeddedForm", $list->uid) }}" class="embedded-options-form">
-                <div class="row">
-                    <div class="col-md-3">
+                <div class="d-flex justify-content-space-between" style="width:100%;justify-content: space-between">
+                    <div class="me-4">
                         @include('helpers.form_control', ['type' => 'text',
                                 'name' => 'form_title',
                                 'label' => trans('messages.form_title'),
@@ -34,7 +39,7 @@
                                 'placeholder' => trans('messages.list.redirect_url.placeholder'),
                         ])
                     </div>
-                    <div class="col-md-2">
+                    <div class="me-4">
                         <div class="form-group">
                             <label>{!! trans('messages.show_only_required_fields', ["link" => action('FieldController@index', $list->uid)]) !!}</label>
                             <div class="notoping">
@@ -61,7 +66,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-2">
+                    <div class="me-4">
                         <div class="form-group">
                             <label>{{ trans('messages.include_javascript') }}</label>
                             <div class="notoping">
@@ -87,7 +92,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-5">
+                    <div class="" style="width: 440px">
 
                                 @include('helpers.form_control', ['type' => 'textarea',
                                     'name' => 'custom_css',
@@ -107,7 +112,11 @@
         @if (array_key_exists('stylesheet', request()->all()))
             <div class="row">
                 <div class="col-md-6">
-                    <h4 class="text-semibold">{{ trans('messages.Copy_paste_onto_your_site') }}</h4>
+                    <div class="d-fle">
+                        <h4 class="text-semibold me-auto">{{ trans('messages.Copy_paste_onto_your_site') }}</h4>
+                        <a href="javascript:;" onclick="copyToClipboard(htmlDecode($('.main-code').html()));">{{ trans('messages.copy') }}</a>
+                    </div>
+                        
                         <pre class="language-markup content-group embedded-code"><code></code></pre>
                         <code style="height: 400px" class="form-control main-code hide">@include("lists._embedded_form_content", request()->all())</code>
                 </div>
@@ -123,5 +132,59 @@
         @endif
     </div>
 
-    <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/ui/prism.min.js') }}"></script>
+    
+
+    <script>
+        function updateEmbeddedForm(form, url) {
+            var data = {};
+            form.serializeArray().forEach(function(entry) {
+                if(entry.value!=="") {
+                    data[entry.name] = entry.value;
+                }
+            });
+
+            $.ajax({
+                method: "GET",
+                url: url,
+                data: data
+            })
+            .done(function( msg ) {
+                // $(".embedded-form-result").html($("<div>").html(msg).find(".embedded-form-result"));
+                var html = $("<div>").html(msg).find(".embedded-form-result").html();
+                $(".embedded-form-result").html(html);
+                
+                var bio_text = $(".main-code").html();
+                bio_text = bio_text.replace(/\</g, '&lt;');
+                bio_text = bio_text.replace(/script_tmp/g, 'script');
+                bio_text = bio_text.replace(/\t/g, '');
+                bio_text = bio_text.replace(/\n/g, '');
+                bio_text = bio_text.replace(/\s+/g, ' ');
+                bio_text = bio_text.replace(/\>\s*&lt;/g, "&gt;\n&lt;");
+                bio_text = bio_text.replace(/\s+\{\s+/g, "{");
+                $("code").html(bio_text);
+                
+                // Hightlight code
+                Prism.highlightAll();
+            });
+        }
+
+        $(function() {
+            //embedded-options-form
+            $(document).on("change", ".embedded-options-form input[type=text], .embedded-options-form textarea, .embedded-options-form input[name='required_fields'], .embedded-options-form input[name='show_invisible'], .embedded-options-form input[name='javascript'], .embedded-options-form input[name='stylesheet']", function() {
+                var url = $(this).parents("form").attr("action");
+
+                updateEmbeddedForm($(this).parents("form"), url);
+            });
+
+            //embedded-options-form
+            $(document).on("keyup", ".embedded-options-form input[type=text]", function() {
+                var url = $(this).parents("form").attr("action");
+
+                updateEmbeddedForm($(this).parents("form"), url);
+            });
+
+            $(".embedded-options-form input").trigger("change");
+
+        });
+    </script>
 @endsection

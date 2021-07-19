@@ -2,6 +2,13 @@
 
 @section('title', $list->name . ": " . trans('messages.manage_list_fields') )
 
+@section('head')
+    <script type="text/javascript" src="{{ URL::asset('core/datetime/anytime.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/datetime/moment.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/datetime/pickadate/picker.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/datetime/pickadate/picker.date.js') }}"></script>
+@endsection
+
 @section('page_header')
 
 			@include("lists._header")
@@ -147,4 +154,60 @@ delete_outline
 			<button class="btn btn-secondary me-2"><i class="icon-check"></i> {{ trans('messages.save_change') }}</button>
 		</div>
 	</form>
+
+	<script>
+		$(function() {
+			// List fields
+			// ------------------------------
+			// Change item per page
+			$(document).on("click", ".add-custom-field-button", function(e) {
+				var type_name = $(this).attr("type_name");
+				var sample = $("."+type_name+"_sample ");
+				var sample_url = $(this).attr("sample-url");
+
+				// ajax update custom sort
+				$.ajax({
+					method: "GET",
+					url: sample_url,
+					data: {
+						type: type_name,
+					}
+				})
+				.done(function( msg ) {
+					var index = $('.field-list tr').length;
+
+					msg = msg.replace(/__index__/g, index);
+					msg = msg.replace(/__type__/g, type_name);
+
+					$('.field-list').append($('<div>').html(msg).find("table tbody").html());
+
+					initJs($('.field-list tr').last());
+				});
+			});
+			$(document).on("click", ".remove-not-saved-field", function(e) {
+				$('tr[parent="'+$(this).parents('tr').attr('rel')+'"]').remove();
+				$(this).parents('tr').remove();
+			});
+			$(document).on("click", ".add_label_value_group", function(e) {
+				var last_item = $(this).parents("tr").find(".label-value-groups .label-value-group").last();
+				var pre = last_item.attr("rel");
+				var num = parseInt(pre)+1;
+				var clone = $('<div>').append(last_item.clone()).html();
+
+				clone = clone.replace('rel="'+pre+'"', 'rel="'+num+'"');
+				clone = clone.replace('[options]['+pre+'][', '[options]['+num+'][');
+				clone = clone.replace('[options]['+pre+'][', '[options]['+num+'][');
+				clone = clone.replace('[options]['+pre+'][', '[options]['+num+'][');
+				clone = clone.replace('[options]['+pre+'][', '[options]['+num+'][');
+				clone = clone.replace('[options]['+pre+'][', '[options]['+num+'][');
+				clone = clone.replace('[options]['+pre+'][', '[options]['+num+'][');
+				clone = clone.replace('[options]['+pre+'][', '[options]['+num+'][');
+
+				$(this).parents("tr").find(".label-value-groups").append(clone);
+				$(this).parents("tr").find(".label-value-groups .label-value-group").last().find("input").val("");
+				$(this).parents("tr").find(".label-value-groups .label-value-group").last().find(".help-block").remove();
+				$(this).parents("tr").find(".label-value-groups .label-value-group").last().find(".form-group").removeClass("has-error");
+			});
+		})
+	</script>
 @endsection

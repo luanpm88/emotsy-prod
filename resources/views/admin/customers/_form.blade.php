@@ -14,7 +14,9 @@
                     <h5 class="media-heading text-semibold">{{ trans('messages.upload_photo') }}</h5>
                     {{ trans('messages.photo_at_least', ["size" => "300px x 300px"]) }}
                     <br /><br />
-                    <a href="#upload" onclick="$('input[name=image]').trigger('click')" class="btn btn-xs bg-teal mr-10"><i class="icon-upload4"></i> {{ trans('messages.upload') }}</a>
+                    <a href="#upload" onclick="$('input[name=image]').trigger('click')" class="btn btn-xs bg-teal mr-10"><span class="material-icons-outlined">
+file_download
+</span> {{ trans('messages.upload') }}</a>
                     <a href="#remove" class="btn btn-xs bg-grey-800 remove-profile-image"><span class="material-icons-outlined">
 delete_outline
 </span> {{ trans('messages.remove') }}</a>

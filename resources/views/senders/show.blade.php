@@ -52,7 +52,9 @@ error_outline
                 </div>
             @endif
             <h2>
-                <span class="text-semibold"><i class="icon-profile"></i> {{ $sender->name }} </span>
+                <span class="text-semibold"><span class="material-icons-round">
+                            person_outline
+                            </span> {{ $sender->name }} </span>
                 <span class="label label-primary bg-{{ $sender->status }}">
                     {{ trans('messages.sender.status.' . $sender->status) }}
                 </span>

@@ -28,7 +28,7 @@
                             </div>
                         </div>
                     </div>
-                <h4 style="margin-bottom: 20px" id="notice">{!! trans('messages.list.verify.progress') !!}</h4>
+                <p style="margin-bottom: 20px" id="notice">{!! trans('messages.list.verify.progress') !!}</p>
                 <div class="progress progress-lg">
 
                     <div class="progress-bar progress-error progress-bar-danger" style="width: 0%">
@@ -41,7 +41,7 @@
 
                 </div>
                 <label style="margin-bottom:20px;font-style:italic;" id="bottomNotice"></label>
-                <a id="cancelBtn" class="btn bg-grey btn-icon cancel processing">
+                <a role="button" id="cancelBtn" class="btn btn-secondary btn-icon cancel processing">
                     {{ trans('messages.cancel') }}
                 </a>
 

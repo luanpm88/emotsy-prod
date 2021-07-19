@@ -1,22 +1,22 @@
 <div class="row">
     <div class="col-md-12">
-        <ul class="nav nav-tabs nav-tabs-top page-second-nav">
-            <li rel0="MailListController/overview" class="dropdown">
-                <a href="{{ action('MailListController@overview', $list->uid) }}" class="level-1">
+        <ul class="nav nav-tabs nav-tabs-top nav-underline">
+            <li rel0="MailListController/overview" class="nav-item">
+                <a href="{{ action('MailListController@overview', $list->uid) }}" class="nav-link">
                 <span class="material-icons-outlined">
 auto_graph
 </span> {{ trans('messages.overview') }}
                 </a>
             </li>
-            <li rel0="MailListController/edit">
-                <a class="level-1" href="{{ action('MailListController@edit', $list->uid) }}">
+            <li rel0="MailListController/edit" class="nav-item">
+                <a class="nav-link level-1" href="{{ action('MailListController@edit', $list->uid) }}">
                 <span class="material-icons-outlined">
 settings
 </span> {{ trans('messages.list.title.setting') }}
                 </a>
             </li>
-            <li rel0="SubscriberController" class="dropdown">
-                <a href="{{ action("AccountController@contact") }}" class="level-1" data-bs-toggle="dropdown">
+            <li rel0="SubscriberController" class="nav-item">
+                <a href="{{ action("AccountController@contact") }}" class="nav-link dropdown-toggle level-1" data-bs-toggle="dropdown">
                 <span class="material-icons-outlined">
 people
 </span> {{ trans('messages.subscribers') }}
@@ -24,34 +24,42 @@ people
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li rel0="SubscriberController/index">
-                    <a href="{{ action('SubscriberController@index', $list->uid) }}">
-                    <i class="icon-list2"></i> {{ trans('messages.view_all') }}
-                    </a>
+                        <a class="dropdown-item" href="{{ action('SubscriberController@index', $list->uid) }}">
+                        <span class="material-icons-outlined">
+reorder
+</span> {{ trans('messages.view_all') }}
+                        </a>
                     </li>
                     <li rel0="SubscriberController/create">
-                    <a href="{{ action('SubscriberController@create', $list->uid) }}">
-                    <i class="icon-plus2"></i> {{ trans('messages.add') }}
-                    </a>
+                        <a class="dropdown-item" href="{{ action('SubscriberController@create', $list->uid) }}">
+                        <span class="material-icons-outlined">
+add
+</span> {{ trans('messages.add') }}
+                        </a>
                     </li>
                     <li class="divider"></li>
                     @if (\Auth::user()->can('import', $list))
                     <li rel0="SubscriberController/import">
-                    <a href="{{ action('SubscriberController@import', $list->uid) }}">
-                    <i class="icon-download4"></i> {{ trans('messages.import') }}
-                    </a>
+                        <a class="dropdown-item" class="dropdown-item" href="{{ action('SubscriberController@import', $list->uid) }}">
+                        <span class="material-icons-outlined">
+file_upload
+</span> {{ trans('messages.import') }}
+                        </a>
                     </li>
                     @endif
                     @if (\Auth::user()->can('export', $list))
                     <li rel0="SubscriberController/export">
-                    <a href="{{ action('SubscriberController@export', $list->uid) }}">
-                    <i class="icon-upload4"></i> {{ trans('messages.export') }}
-                    </a>
+                        <a class="dropdown-item" href="{{ action('SubscriberController@export', $list->uid) }}">
+                        <span class="material-icons-outlined">
+file_download
+</span> {{ trans('messages.export') }}
+                        </a>
                     </li>
                     @endif
                 </ul>
             </li>
-            <li rel0="SegmentController" class="dropdown">
-                <a href="{{ action("AccountController@contact") }}" class="level-1" data-bs-toggle="dropdown">
+            <li rel0="SegmentController" class="nav-item">
+                <a href="{{ action("AccountController@contact") }}" class="nav-link level-1 dropdown-toggle" data-bs-toggle="dropdown">
                 <span class="material-icons-outlined">
 splitscreen
 </span> {{ trans('messages.segments') }}
@@ -59,19 +67,23 @@ splitscreen
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li rel0="SegmentController/index">
-                    <a href="{{ action('SegmentController@index', $list->uid) }}">
-                    <i class="icon-list2"></i> {{ trans('messages.view_all') }}
+                    <a class="dropdown-item" href="{{ action('SegmentController@index', $list->uid) }}">
+                    <span class="material-icons-outlined">
+reorder
+</span> {{ trans('messages.view_all') }}
                     </a>
                     </li>
                     <li rel0="SegmentController/create">
-                    <a href="{{ action('SegmentController@create', $list->uid) }}">
-                    <i class="icon-plus2"></i> {{ trans('messages.add') }}
+                    <a class="dropdown-item" href="{{ action('SegmentController@create', $list->uid) }}">
+                    <span class="material-icons-outlined">
+add
+</span> {{ trans('messages.add') }}
                     </a>
                     </li>
                 </ul>
             </li>
-            <li rel0="PageController" rel1="MailListController/embeddedForm" class="dropdown">
-                <a href="#menu" class="level-1" data-bs-toggle="dropdown">
+            <li rel0="PageController" rel1="MailListController/embeddedForm" class="nav-item">
+                <a href="#menu" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                 <span class="material-icons-outlined">
 web
 </span> {{ trans('messages.custom_forms_and_emails') }}
@@ -79,90 +91,98 @@ web
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end has-head">
                 <li>
-                    <a href="{{ action('MailListController@embeddedForm', $list->uid) }}">
-                    <i class="icon-embed2"></i> {{ trans('messages.Embedded_form') }}
+                    <a class="dropdown-item" href="{{ action('MailListController@embeddedForm', $list->uid) }}">
+                    <span class="material-icons-outlined">
+dashboard
+</span> {{ trans('messages.Embedded_form') }}
                     </a>
                 </li>
                 <li class="head">
-                    <i class="icon-enter"></i> {{ trans('messages.subscribe') }}
+                    <span class="material-icons-round me-1">
+                        add_task
+                        </span> {{ trans('messages.subscribe') }}
                 </li>
                 <li>
-                    <a href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'sign_up_form']) }}">
+                    <a class="dropdown-item" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'sign_up_form']) }}">
                     {{ trans('messages.sign_up_form') }}
                     </a>
                 </li>
                 <li>
-                    <a  href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'sign_up_thankyou_page']) }}">
+                    <a class="dropdown-item" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'sign_up_thankyou_page']) }}">
                     {{ trans('messages.sign_up_thankyou_page') }}
                     </a>
                 </li>
                 <li>
-                    <a  href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'sign_up_confirmation_email']) }}">
+                    <a class="dropdown-item" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'sign_up_confirmation_email']) }}">
                     {{ trans('messages.sign_up_confirmation_email') }}
                     </a>
                 </li>
                 <li>
-                    <a href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'sign_up_confirmation_thankyou']) }}">
+                    <a class="dropdown-item" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'sign_up_confirmation_thankyou']) }}">
                     {{ trans('messages.sign_up_confirmation_thankyou') }}
                     </a>
                 </li>
                 <li>
-                    <a href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'sign_up_welcome_email']) }}">
+                    <a class="dropdown-item" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'sign_up_welcome_email']) }}">
                     {{ trans('messages.sign_up_welcome_email') }}
                     </a>
                 </li>
                 <li class="head">
-                    <i class="icon-exit"></i> {{ trans('messages.unsubscribe') }}
+                    <span class="material-icons-round me-1">
+                        logout
+                        </span> {{ trans('messages.unsubscribe') }}
                     </li>
                 <li>
-                    <a href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'unsubscribe_form']) }}">
+                    <a class="dropdown-item" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'unsubscribe_form']) }}">
                     {{ trans('messages.unsubscribe_form') }}
                     </a>
                 </li>
                 <li>
-                    <a href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'unsubscribe_success_page']) }}">
+                    <a class="dropdown-item" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'unsubscribe_success_page']) }}">
                     {{ trans('messages.unsubscribe_success_page') }}
                     </a>
                 </li>
                 <li>
-                    <a href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'unsubscribe_goodbye_email']) }}">
+                    <a class="dropdown-item" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'unsubscribe_goodbye_email']) }}">
                     {{ trans('messages.unsubscribe_goodbye_email') }}
                     </a>
                 </li>
                     <li class="head">
-                    <i class="icon-profile"></i> {{ trans('messages.update_profile') }}
+                        <span class="material-icons-round me-1">
+                            person_outline
+                            </span> {{ trans('messages.update_profile') }}
                 </li>
                 <li>
-                    <a href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'profile_update_email_sent']) }}">
+                    <a class="dropdown-item" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'profile_update_email_sent']) }}">
                     {{ trans('messages.profile_update_email_sent') }}
                     </a>
                 </li>
                 <li>
-                    <a href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'profile_update_email']) }}">
+                    <a class="dropdown-item" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'profile_update_email']) }}">
                     {{ trans('messages.profile_update_email') }}
                     </a>
                 </li>
                 <li>
-                    <a href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'profile_update_form']) }}">
+                    <a class="dropdown-item" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'profile_update_form']) }}">
                     {{ trans('messages.profile_update_form') }}
                     </a>
                 </li>
                 <li>
-                    <a href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'profile_update_success_page']) }}">
+                    <a class="dropdown-item" href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'profile_update_success_page']) }}">
                     {{ trans('messages.profile_update_success_page') }}
                     </a>
                 </li>
                 </ul>
             </li>
-            <li rel0="FieldController/index">
-                <a class="level-1" href="{{ action('FieldController@index', $list->uid) }}">
+            <li rel0="FieldController/index" class="nav-item">
+                <a class="nav-link" href="{{ action('FieldController@index', $list->uid) }}">
                 <span class="material-icons-outlined">
 fact_check
 </span> {{ trans('messages.manage_list_fields') }}
                 </a>
             </li>
-            <li rel0="MailListController/verification">
-                <a class="level-1" href="{{ action('MailListController@verification', $list->uid) }}">
+            <li rel0="MailListController/verification" class="nav-item">
+                <a class="nav-link" href="{{ action('MailListController@verification', $list->uid) }}">
                 <span class="material-icons-outlined">
 mark_email_read
 </span> {{ trans('messages.email_verification') }}

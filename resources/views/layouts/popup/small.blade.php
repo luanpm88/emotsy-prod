@@ -1,4 +1,4 @@
-<div class="modal-dialog shadow">
+<div class="modal-dialog shadow modal-default">
     <div class="modal-content">
         <div class="modal-header">
             <h5 class="modal-title">

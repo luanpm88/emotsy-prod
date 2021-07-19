@@ -114,15 +114,19 @@
                     <li>
                         <div class="row">
                             <div class="col-sm-5 col-md-5">
-                                <i class="number">{{ $num+1 }}</i>
-                                <h6 class="mt-0 mb-0 text-semibold">
-                                    <a href="{{ action('CampaignController@overview', $item->uid) }}">
-                                        {{ $item->name }}
-                                    </a>
-                                </h6>
-                                <p class="mb-0">
-                                    {!! $item->displayRecipients() !!}
-                                </p>
+                                <div class="d-flex align-items-center">
+                                    <i class="number d-inline-block me-3">{{ $num+1 }}</i>
+                                    <div>
+                                        <h6 class="mt-0 mb-0 text-semibold">
+                                            <a href="{{ action('CampaignController@overview', $item->uid) }}">
+                                                {{ $item->name }}
+                                            </a>
+                                        </h6>
+                                        <p class="mb-0">
+                                            {!! $item->displayRecipients() !!}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-sm-2 col-md-2 text-left">
                                 <h5 class="m-0 text-bold">
@@ -165,15 +169,19 @@
                     <li>
                         <div class="row">
                             <div class="col-sm-5 col-md-5">
-                                <i class="number">{{ $num+1 }}</i>
-                                <h6 class="mt-0 mb-0 text-semibold">
-                                    <a href="{{ action('CampaignController@overview', $item->uid) }}">
-                                        {{ $item->name }}
-                                    </a>
-                                </h6>
-                                <p>
-                                    {!! $item->displayRecipients() !!}
-                                </p>
+                                <div class="d-flex align-items-center">
+                                    <i class="number d-inline-block me-3">{{ $num+1 }}</i>
+                                    <div>
+                                        <h6 class="mt-0 mb-0 text-semibold">
+                                            <a href="{{ action('CampaignController@overview', $item->uid) }}">
+                                                {{ $item->name }}
+                                            </a>
+                                        </h6>
+                                        <p>
+                                            {!! $item->displayRecipients() !!}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-sm-2 col-md-2 text-left">
                                 <h5 class="m-0 text-bold">
@@ -215,15 +223,19 @@
                     <li>
                         <div class="row">
                             <div class="col-sm-6 col-md-6">
-                                <i class="number">{{ $num+1 }}</i>
-                                <h6 class="mt-0 mb-0 text-semibold url-truncate">
-                                    <a title="{{ $item->url }}" href="{{ $item->url }}" target="_blank">
-                                        {{ $item->url }}
-                                    </a>
-                                </h6>
-                                <p>
-                                    {{ $item->aggregate }} {{ trans('messages.campaigns') }}
-                                </p>
+                                <div class="d-flex align-items-center">
+                                    <i class="number d-inline-block me-3">{{ $num+1 }}</i>
+                                    <div>
+                                        <h6 class="mt-0 mb-0 text-semibold url-truncate">
+                                            <a title="{{ $item->url }}" href="{{ $item->url }}" target="_blank">
+                                                {{ $item->url }}
+                                            </a>
+                                        </h6>
+                                        <p>
+                                            {{ $item->aggregate }} {{ trans('messages.campaigns') }}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-sm-2 col-md-2 text-left">
                                 <h5 class="m-0 text-bold">

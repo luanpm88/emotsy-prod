@@ -10,6 +10,8 @@
 	@if (!empty($form_title))
 		<h2>{{ $form_title }}</h2>
 	@endif
+
+	ssss
 	<p class="text-sm text-end"><span class="text-danger">*</span> {{ trans('messages.indicates_required') }}</p>
 		@if (!isset($preview))
 			<form action="{{ action('MailListController@embeddedFormSubscribe', $list->uid) }}" method="POST" class="form-validate-jqueryz">
@@ -21,6 +23,7 @@
 						@if ($field->type == "text")
 							@include('helpers.form_control', ['type' => $field->type, 'name' => $field->tag, 'label' => $field->label, 'value' => (isset($values[$field->tag]) ? $values[$field->tag] : $field->default_value), 'rules' => $list->getFieldRules()])
 						@elseif ($field->type == "number")
+						sssss
 							@include('helpers.form_control', ['type' => 'number', 'name' => $field->tag, 'label' => $field->label, 'value' => (isset($values[$field->tag]) ? $values[$field->tag] : $field->default_value), 'rules' => $list->getFieldRules()])
 						@elseif ($field->type == "textarea")
 							@include('helpers.form_control', ['type' => 'textarea', 'name' => $field->tag, 'label' => $field->label, 'value' => (isset($values[$field->tag]) ? $values[$field->tag] : $field->default_value), 'rules' => $list->getFieldRules()])
@@ -62,14 +65,13 @@
 		@endif
 		
 		@if ($javascript == 'yes')
-			<script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery.min.js') }}"></script>
-			<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/validation/validate.min.js') }}"></script>
+			<script type="text/javascript" src="{{ URL::asset('core/js/jquery-3.6.0.min.js') }}"></script>
+			<script type="text/javascript" src="{{ URL::asset('core/validate/jquery.validate.min.js') }}"></script>
 				
-			<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/pickers/pickadate/picker.js') }}"></script>
-			<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/pickers/pickadate/picker.date.js') }}"></script>
-				
-			<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
-			<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/pickers/anytime.min.js') }}"></script>
+			<script type="text/javascript" src="{{ URL::asset('core/datetime/anytime.min.js') }}"></script>
+			<script type="text/javascript" src="{{ URL::asset('core/datetime/moment.min.js') }}"></script>
+			<script type="text/javascript" src="{{ URL::asset('core/datetime/pickadate/picker.js') }}"></script>
+			<script type="text/javascript" src="{{ URL::asset('core/datetime/pickadate/picker.date.js') }}"></script>
 		@endif
 		
 		

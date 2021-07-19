@@ -191,10 +191,6 @@ class Popup {
         }).done(function(response) {
             _this.popup.html(response);
             
-            if (typeof(_this.options.callback) !== 'undefined') {
-                _this.options.callback();
-            }
-            
             // after load
             _this.loaded();
 
@@ -210,8 +206,13 @@ class Popup {
         });
     }
     
-    loadHtml(html) {
+    loadHtml(html, callback) {
         var _this = this;
+
+        //
+        if (typeof(callback) != 'undefined') {
+            _this.options.callback = callback;
+        }
 
         // show popup
         _this.show();
@@ -220,5 +221,9 @@ class Popup {
         
         // after load
         _this.loaded();
+
+        if (typeof(callback) !== 'undefined') {
+            _this.options.callback();
+        }
     }
 }

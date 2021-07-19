@@ -10,7 +10,9 @@
             <li class="breadcrumb-item active">{{ trans('messages.activities') }}</li>
         </ul>
         <h1>
-            <span class="text-semibold"><i class="icon-profile"></i> {{ Auth::user()->displayName() }}</span>
+            <span class="text-semibold"><span class="material-icons-round">
+                            person_outline
+                            </span> {{ Auth::user()->displayName() }}</span>
         </h1>
     </div>
                 

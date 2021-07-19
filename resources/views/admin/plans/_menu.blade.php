@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-md-12">
-        <ul class="nav nav-tabs nav-tabs-top page-second-nav mc-nav-tabs">
+        <ul class="nav nav-tabs nav-tabs-top nav-underline mc-nav-tabs">
             <li rel0="PlanController/general">
                 <a href="{{ action('Admin\PlanController@general', $plan->uid) }}" class="level-1">
                     {{ trans('messages.plan.general') }}

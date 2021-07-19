@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-md-12">
         <div class="tabbable">
-            <ul class="nav nav-tabs nav-tabs-top page-second-nav">
+            <ul class="nav nav-tabs nav-tabs-top nav-underline">
                 <li rel0="AccountController/profile">
                     <a href="{{ action("Admin\AccountController@profile") }}" class="level-1">
                         <i class="icon-user position-left"></i> {{ trans('messages.my_profile') }}

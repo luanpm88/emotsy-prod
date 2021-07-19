@@ -2,6 +2,13 @@
 
 @section('title', trans('messages.campaigns') . " - " . trans('messages.schedule'))
 
+@section('head')
+    <script type="text/javascript" src="{{ URL::asset('core/datetime/anytime.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/datetime/moment.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/datetime/pickadate/picker.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/datetime/pickadate/picker.date.js') }}"></script>
+@endsection
+
 @section('page_header')
 
     <div class="page-title">
@@ -21,11 +28,6 @@ forward_to_inbox
 @endsection
 
 @section('content')
-    <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/pickers/anytime.min.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('core/datetime/moment.min.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('core/datetime/pickadate/picker.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('core/datetime/pickadate/picker.date.js') }}"></script>
-
     <form action="{{ action('CampaignController@schedule', $campaign->uid) }}" method="POST" class="form-validate-jqueryz">
         {{ csrf_field() }}
         

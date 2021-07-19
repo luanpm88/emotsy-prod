@@ -7,6 +7,19 @@ function initJs(container)
 
     // pick a date
     pickadateMask2(container.find('.pickadate-control'));
+    container.find('.pickadate-control').pickadate({
+        format: 'yyyy-mm-dd'
+    });
+
+    // datetime picker
+    if (container.find(".pickadatetime").length) {
+        container.find(".pickadatetime").AnyTime_picker({
+            format: LANG_ANY_DATETIME_FORMAT
+        });
+    }
+
+    // numeric
+    container.find(".numeric").numeric();
 
     // pick a time
     if (container.find(".pickatime").length) {
@@ -77,6 +90,37 @@ function initJs(container)
             templateSelection: formatSelect2TextSelected,
         });
     });
+
+    // @legacy: radio box
+    // Group radio box
+    container.find(".control-radio .radio_box .main-control").on('click', function() {
+        var radio_control = $(this).parents('.control-radio');
+        var radio_box = $(this).parents('.radio_box');
+        var radio = $(this).find('input');
+
+        radio_control.find('.radio_more_box').hide();
+        if (radio.is(":checked")) {
+            radio_box.find('.radio_more_box').show();
+        } else {
+            radio_box.find('.radio_more_box').hide();
+        }
+    });
+    container.find(".control-radio .radio_box .main-control input:checked").parents('.main-control').trigger('click');
+}
+
+function htmlDecode(input){
+    var e = document.createElement('textarea');
+    e.innerHTML = input;
+    // handle case of empty input
+    return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+}
+
+function copyToClipboard(text) {
+    var $temp = $("<input>");
+    $("body").append($temp);
+    $temp.val(text).select();
+    document.execCommand("copy");
+    $temp.remove();
 }
 
 function formatSelect2TextSelected(d) {
@@ -100,12 +144,12 @@ function formatSelect2TextOption(d) {
 function menuActiveCheck() {
     // menu active
     for (i=0; i < 10; i++) {
-        $("li[rel"+i+"='"+CONTROLLER+"']").addClass("active");
-        $("li[rel"+i+"='"+CONTROLLER+"']").closest('.nav-item').addClass("active");
+        $("li[rel"+i+"='"+CONTROLLER+"']").find('.nav-link').eq(0).addClass("active");
+        $("li[rel"+i+"='"+CONTROLLER+"']").closest('.nav-link').addClass("active");
     }
     for (i=0; i < 10; i++) {
-        $("li[rel"+i+"='"+CONTROLLER+"/"+ACTION+"']").addClass("active");
-        $("li[rel"+i+"='"+CONTROLLER+"/"+ACTION+"']").closest('.nav-item').addClass("active");
+        $("li[rel"+i+"='"+CONTROLLER+"/"+ACTION+"']").find('.nav-link').eq(0).addClass("active");
+        $("li[rel"+i+"='"+CONTROLLER+"/"+ACTION+"']").closest('.nav-link').addClass("active");
     }
 }
 
@@ -464,103 +508,3 @@ function openBuilderClassic(url) {
     });
     $('body').addClass('overflow-hidden');
 }
-
-$.fn.select_custom = function() {
-    $(this).each(function() {
-        var box = $(this);
-        var url = box.attr('data-url');
-        var trigger = box.find('.modal-trigger');
-        var content = function() {
-            return box.html();
-        };
-        var selectbox = box.find('select');
-
-        var showModal = function() {
-            var modal = $('#modalEdit');
-            modal.remove();
-            
-            var html = '<div class="mc-modal modal fade" role="dialog" id="modalEdit">'+
-                        '<div class="modal-dialog modal-lg modal-select">'+
-                            '<div class="modal-content">'+
-                                '<p>loading</p>'+    
-                            '</div>'+
-                        '</div>'+
-                    '</div>';
-        
-            $('body').append(html);
-            modal = $('#modalEdit');                
-            modal.modal('show');
-            
-            // Get all inputs values
-            var data = {};
-            box.find(':input').each(function() {
-                var type = $(this).prop("type");
-        
-                // checked radios/checkboxes
-                if ((type == "checkbox" || type == "radio") && this.checked) { 
-                   data[$(this).prop("name")] = $(this).val();
-                }
-                // all other fields, except buttons
-                else if (type != "button" || type != "submit") {
-                    data[$(this).prop("name")] = $(this).val();
-                }
-            })
-            
-            $.ajax({
-                url: url,
-                type: 'GET',
-                dataType: 'html',
-                data: data,
-            }).always(function(response) {
-                modal.find('.modal-content').html(response);
-                
-                initJs(modal);
-                
-                // trigger modal form submit
-                modal.find("form").on('submit', function( event ) {
-                    $.ajax({
-                        url: modal.find("form").prop('action'),
-                        type: modal.find("form").prop('method'),
-                        dataType: 'html',
-                        data: modal.find("form").serialize(),
-                    }).always(function(response) {
-                        box.html(response);
-                        
-                        box.find('.modal-trigger').on('click', function() {
-                            showModal();
-                        });
-                        
-                        // Select2
-                        box.find('select').select2({
-                            minimumResultsForSearch: 101,
-                            templateResult: formatSelect2TextOption,
-                            templateSelection: formatSelect2TextSelected
-                        });
-                        
-                        box.find('select').on('change', function() {
-                            var value = $(this).val();
-                            if (value == 'custom') {
-                                showModal();
-                            }
-                        });
-                    });
-                    
-                    modal.modal('hide');
-                    
-                    event.preventDefault();
-                });
-            });
-        };
-        
-        trigger.on('click', function() {
-            showModal();
-        });
-        
-        selectbox.on('change', function() {
-            var value = $(this).val();
-            if (value == 'custom') {
-                showModal();
-            }
-        });
-    });
-};

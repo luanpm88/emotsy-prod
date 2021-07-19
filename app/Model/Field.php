@@ -117,6 +117,8 @@ class Field extends Model
     {
         if ($type == 'date') {
             return 'date';
+        } elseif ($type == 'number') {
+            return 'number';
         } elseif ($type == 'datetime') {
             return 'datetime';
         }

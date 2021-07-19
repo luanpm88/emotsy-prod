@@ -2,6 +2,11 @@
 
 @section('title', trans('messages.campaigns') . " - " . trans('messages.recipients'))
 
+@section('page_script')
+    <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
+@endsection
+
 @section('page_header')
 
     <div class="page-title">
@@ -43,7 +48,9 @@ forward_to_inbox
             <a
                 sample-url="{{ action('CampaignController@listSegmentForm', $campaign->uid) }}"
                 href="#add_condition" class="btn btn-secondary add-form">
-                <i class="icon-plus2"></i> {{ trans('messages.add_list_segment') }}
+                <span class="material-icons-outlined">
+add
+</span> {{ trans('messages.add_list_segment') }}
             </a>
         </div>
 

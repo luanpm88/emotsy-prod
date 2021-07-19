@@ -11,7 +11,9 @@
                     <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
                 </ul>
                 <h1>
-                    <span class="text-semibold"><i class="icon-list2"></i> {{ trans('messages.feedback_loop_handlers') }}</span>
+                    <span class="text-semibold"><span class="material-icons-outlined">
+reorder
+</span> {{ trans('messages.feedback_loop_handlers') }}</span>
                 </h1>
                 <p>{{ trans('messages.bounce_handler.intro') }}</p>
             </div>

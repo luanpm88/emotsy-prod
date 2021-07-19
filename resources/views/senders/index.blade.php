@@ -70,7 +70,9 @@ search
                 @if (Auth::user()->can('create', new Acelle\Model\Sender()))
                     <div class="text-end">
                         <a href="{{ action('SenderController@create') }}" role="button" class="btn btn-secondary">
-                            <i class="icon-download4"></i> {{ trans('messages.sender.create') }}
+                            <span class="material-icons-outlined">
+file_upload
+</span> {{ trans('messages.sender.create') }}
                         </a>
                     </div>
                 @endif

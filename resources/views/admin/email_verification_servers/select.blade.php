@@ -10,7 +10,9 @@
 				</ul>
                 
 				<h1>
-					<span class="text-semibold"><i class="icon-plus2"></i> {{ trans('messages.select_sending_servers_type') }}</span>
+					<span class="text-semibold"><span class="material-icons-outlined">
+add
+</span> {{ trans('messages.select_sending_servers_type') }}</span>
 				</h1>				
 			</div>
 

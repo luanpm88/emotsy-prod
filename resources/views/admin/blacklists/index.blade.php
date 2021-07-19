@@ -8,7 +8,9 @@
             <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
         </ul>
         <h1>
-            <span class="text-semibold"><i class="icon-list2"></i> {{ trans('messages.blacklist') }}</span>
+            <span class="text-semibold"><span class="material-icons-outlined">
+reorder
+</span> {{ trans('messages.blacklist') }}</span>
         </h1>
     </div>
 @endsection
@@ -61,7 +63,9 @@ search
                 @if (Auth::user()->admin->can('import', new Acelle\Model\Blacklist()))
                     <div class="text-end">
                         <a href="{{ action('Admin\BlacklistController@import') }}" role="button" class="btn btn-secondary">
-                            <i class="icon-download4"></i> {{ trans('messages.blacklist.import') }}
+                            <span class="material-icons-outlined">
+file_upload
+</span> {{ trans('messages.blacklist.import') }}
                         </a>
                     </div>
                 @endif

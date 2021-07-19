@@ -38,7 +38,7 @@ web
 										{{ ($page->use_outside_url ? 'checked' : '') }}
 										checked type="radio"
 										name="use_outside_url"
-										value="1" class="styled" /><rtitle>{{ trans('messages.form_page.use_outside_url') }}</rtitle>
+										value="1" class="styled" /><rtitle> {{ trans('messages.form_page.use_outside_url') }}</rtitle>
 									<div class="desc text-normal mb-10">
 										{{ trans('messages.form_page.use_outside_url.intro') }}
 									</div>
@@ -64,7 +64,7 @@ web
 									<input type="radio"
 										{{ (!$page->use_outside_url ? 'checked' : '') }}
 										name="use_outside_url"
-										value="0" class="styled" /><rtitle>{{ trans('messages.form_page.use_built_in_page') }}</rtitle>
+										value="0" class="styled" /><rtitle> {{ trans('messages.form_page.use_built_in_page') }}</rtitle>
 									<div class="desc text-normal mb-10">
 										{{ trans('messages.form_page.use_built_in_page.intro') }}
 									</div>
@@ -74,7 +74,9 @@ web
 									
 									<hr />
 									<div class="">
-										<a page-url="{{ action('PageController@preview', ['list_uid' => $list->uid, 'alias' => $layout->alias]) }}" class="btn btn-info bg-grey-800 mr-10 preview-page-button" data-toggle="modal" data-target="#preview_page"><i class="icon-eye"></i> {{ trans('messages.preview') }}</a>
+										<a page-url="{{ action('PageController@preview', ['list_uid' => $list->uid, 'alias' => $layout->alias]) }}" class="btn btn-info me-1 preview-page-button" data-toggle="modal" data-target="#preview_page"><span class="material-icons-outlined">
+visibility
+</span> {{ trans('messages.preview') }}</a>
 										<button type="submit" class="btn btn-secondary me-2"><i class="icon-check"></i> {{ trans('messages.save_change') }}</button>
 									</div>
 								</div>
@@ -85,7 +87,9 @@ web
 						
 						<hr />
 						<div class="">
-							<a page-url="{{ action('PageController@preview', ['list_uid' => $list->uid, 'alias' => $layout->alias]) }}" class="btn btn-info bg-grey-800 mr-10 preview-page-button" data-toggle="modal" data-target="#preview_page"><i class="icon-eye"></i> {{ trans('messages.preview') }}</a>
+							<a page-url="{{ action('PageController@preview', ['list_uid' => $list->uid, 'alias' => $layout->alias]) }}" class="btn btn-info me-1 preview-page-button" data-toggle="modal" data-target="#preview_page"><span class="material-icons-outlined">
+visibility
+</span> {{ trans('messages.preview') }}</a>
 							<button type="submit" class="btn btn-secondary me-2"><i class="icon-check"></i> {{ trans('messages.save_change') }}</button>
 						</div>
 					@endif
@@ -93,26 +97,58 @@ web
 					
                 </form>
 
+				<script>
+					var PagesUpdate = {
+						previewPopup: null,
 
-				<!-- Full width modal -->
-				<div id="preview_page" class="modal fade">
-					<div class="modal-dialog modal-full">
-						<div class="modal-content">
-							<div class="modal-header">
-								<button role="button" class="close" data-dismiss="modal">&times;</button>
-								<h5 class="modal-title"></h5>
-							</div>
+						getPreviewPopup: function() {
+							if (this.previewPopup == null) {
+								this.previewPopup = new Popup();
+							}
+							return this.previewPopup;
+						},
 
-							<div class="modal-body">
-								<iframe name="preview_page_frame" class="preview_page_frame" src="/"></iframe>
-							</div>
+						showPreviewPopup: function(callback) {
+							this.getPreviewPopup().loadHtml(`
+								<div class="modal-dialog shadow modal-fullscreen">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h5 class="modal-title">
+												<span class="material-icons-outlined me-1">
+visibility
+</span> {{ trans('messages.' . $layout->alias) }}
+											</h5>
+											<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+										</div>
+										<div class="modal-body text-center p-0">
+											<iframe style="height: calc(100vh - 59px);
+margin-bottom: -10px;" scrolling="yes" name="preview_page_frame" class="preview_page_frame" src="/"></iframe>
+										</div>
+									</div>
+								</div>
+							`, callback);
+						}
+					}
+					$(function() {
+						// page preview action
+						$(".preview-page-button").on('click', function(e) {
+							var url = $(this).attr('page-url');
+							tinyMCE.triggerSave();
+							var formData = new FormData($("#update-page")[0]);
+							var frame = $('.preview_page_frame');
+							var current_action = $("#update-page").attr("action");
 
-							<div class="modal-footer">
-								<button role="button" class="btn btn-info bg-grey-800" data-dismiss="modal">{{ trans('messages.close') }}</button>
-							</div>
-						</div>
-					</div>
-				</div>
-				<!-- /full width modal -->
+							PagesUpdate.showPreviewPopup(function() {
+								$("#update-page").attr('target', 'preview_page_frame');
+								$("#update-page").attr('action', url);
+								$("#update-page").submit();
+
+								// after submit
+								$("#update-page").removeAttr('target');
+								$("#update-page").attr('action', current_action);
+							});
+						});
+					});
+				</script>
 
 @endsection

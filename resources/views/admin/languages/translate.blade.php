@@ -31,7 +31,7 @@
         <input type="hidden" name="file_id" value="{{ $currentFile['id'] }}" />
         
         <div class="tabbable">
-            <ul class="nav nav-tabs nav-tabs-top page-second-nav">
+            <ul class="nav nav-tabs nav-tabs-top nav-underline">
                 @foreach ($language->getLanguageFilesByType('default') as $langFile)
                     <li class="{{ $langFile['id'] == $currentFile['id'] ? "active" : "" }} text-semibold">
                         <a class="level-1" href="{{ action('Admin\LanguageController@translate', ["id" => $language->uid, "file_id" => $langFile['id']]) }}">

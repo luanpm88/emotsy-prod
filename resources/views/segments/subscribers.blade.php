@@ -37,7 +37,9 @@ people
 											</li>
 											<li>
 												<a link-confirm="{{ trans('messages.unsubscribe_subscribers_confirm') }}" href="{{ action('SubscriberController@unsubscribe', $list->uid) }}">
-													<i class="icon-exit"></i> {{ trans('messages.unsubscribe') }}
+													<span class="material-icons-round">
+logout
+</span> {{ trans('messages.unsubscribe') }}
 												</a>
 											</li>
 											<li>
