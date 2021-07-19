@@ -55,52 +55,17 @@ function initJs(container)
         tags: true,
     });
 
+    // ulimited checkbox
+    container.find('.unlimited-check input[type=checkbox]').on('change', function() {
+        unlimitedCheck(input);
+    }).trigger("change");
+
     // Select2 ajax
     container.find(".select2-ajax").each(function() {
-        var url = $(this).attr("data-url");
-        var placeholder = $(this).attr("placeholder");
-        if(typeof(placeholder) == 'undefined') {
-            placeholder = "";
-        }
-        $(this).select2({
-            placeholder: placeholder,
-            allowClear: true,
-            ajax: {
-                url: url,
-                dataType: 'json',
-                delay: 250,
-
-                data: function (params) {
-                  return {
-                    q: params.term, // search term
-                    page: params.page
-                  };
-                },
-                processResults: function (data, params) {
-                    // parse the results into the format expected by Select2
-                    // since we are using custom formatting functions we do not need to
-                    // alter the remote JSON data, except to indicate that infinite
-                    // scrolling can be used
-                    params.page = params.page || 1;
-
-                    return {
-                        results: data.items,
-                        pagination: {
-                            more: (params.page * 30) < data.total_count
-                        }
-                    };
-                },
-                cache: true
-            },
-            escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
-            minimumInputLength: 0,
-            templateResult: formatSelect2TextOption,
-            templateSelection: formatSelect2TextSelected,
-        });
+        initSelect2Ajax($(this));
     });
 
     // @legacy: radio box
-    // Group radio box
     container.find(".control-radio .radio_box .main-control").on('click', function() {
         var radio_control = $(this).parents('.control-radio');
         var radio_box = $(this).parents('.radio_box');
@@ -114,6 +79,97 @@ function initJs(container)
         }
     });
     container.find(".control-radio .radio_box .main-control input:checked").parents('.main-control').trigger('click');
+
+    // @legacy: button password eye
+    container.find('.btn-view-password').on('click', function() {
+        var btn = $(this);
+        var input = btn.closest('div').find('input');
+        
+        console.log(input);
+        
+        if (btn.hasClass('open')) {
+            btn.removeClass('open');
+            input.attr('type', 'password');
+            btn.removeClass('icon-eye-blocked');
+            btn.addClass('icon-eye');
+        } else {
+            btn.addClass('open');
+            input.attr('type', 'text');
+            btn.removeClass('icon-eye');
+            btn.addClass('icon-eye-blocked');
+        }
+        
+        input.focus();
+    });
+}
+
+function initSelect2Ajax(select) {
+    var url = select.attr("data-url");
+    var placeholder = select.attr("placeholder");
+    if(typeof(placeholder) == 'undefined') {
+        placeholder = "";
+    }
+    select.select2({
+        placeholder: placeholder,
+        allowClear: true,
+        ajax: {
+            url: url,
+            dataType: 'json',
+            delay: 250,
+
+            data: function (params) {
+                return {
+                q: params.term, // search term
+                page: params.page
+                };
+            },
+            processResults: function (data, params) {
+                // parse the results into the format expected by Select2
+                // since we are using custom formatting functions we do not need to
+                // alter the remote JSON data, except to indicate that infinite
+                // scrolling can be used
+                params.page = params.page || 1;
+
+                return {
+                    results: data.items,
+                    pagination: {
+                        more: (params.page * 30) < data.total_count
+                    }
+                };
+            },
+            cache: true
+        },
+        escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+        minimumInputLength: 0,
+        templateResult: formatSelect2TextOption,
+        templateSelection: formatSelect2TextSelected,
+    });
+}
+
+function unlimitedCheck(input) {
+    var box = input.parents(".boxing");
+    var checked = input.is(":checked");
+    // unlimited check
+    box.find("input[type=text]").each(function() {
+        var input = $(this);
+        var d_val = $(this).attr('default-value');
+
+        if (typeof(d_val) === 'undefined') {
+            d_val = 0;
+        }
+
+        if(checked) {
+            input.val(-1);
+            input.addClass("text-trans");
+            input.attr("readonly", "readonly");
+        } else {
+            if(input.val() == "-1") {
+                input.val(d_val);
+            }
+            input.removeClass("text-trans");
+            input.removeAttr("readonly", "readonly");
+        }
+    });
 }
 
 // Preview upload image

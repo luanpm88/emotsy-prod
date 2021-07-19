@@ -46,4 +46,27 @@ add
 				</div>
 			</div>
 		</div>
+        <script>
+            $(function() {
+                // policy_commitment
+                $('.policy_commitment').each(function () {
+                    var input = $(this);
+                    var form = input.closest('form');
+
+
+                    form.submit(function(e) {
+                        console.log(input.is(':checked'));
+                        if (form.valid()) {
+                            if (input.is(':checked')) {
+                                return true;
+                            } else {
+                                e.preventDedault();
+                                return false;
+                            }
+                        }
+                    });
+
+                });
+            });
+        </script>
 @endsection

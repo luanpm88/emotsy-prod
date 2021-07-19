@@ -220,6 +220,31 @@ arrow_forward
 				}
 			});
 			$('[name=custom_tracking_domain]').change();
+
+			// legacy
+			$('.hiddable-box').each(function() {
+				var box = $(this);
+				var control = $(box.attr('data-control'));
+				var hide_value = box.attr('data-hide-value');
+				
+				control.change(function() {            
+					var val;
+					
+					control.each(function() {
+						if ($(this).is(':checked')) {
+							val = $(this).val();
+						}
+					});
+					
+					if(hide_value == val) {
+						box.addClass('hide');
+					} else {
+						box.removeClass('hide');
+					}
+				});
+				
+				control.change();
+			});
 		})
 	</script>
 				

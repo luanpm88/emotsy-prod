@@ -180,3 +180,25 @@
 
 </form>
 @endif
+<script>
+    $(function() {
+        // Ajax box
+        $('.ajax_box').each(function() {
+            var box = $(this);
+            var url = box.attr('data-url');
+            var control = $(box.attr('data-control'));
+            
+            control.change(function() {
+                $.ajax({
+                    method: 'GET',
+                    url: url,
+                    data: box.closest('form').serialize(),
+                })
+                .done(function(response) {
+                    box.html(response);
+                });
+            });
+            control.trigger('change');
+        });
+    });
+</script>

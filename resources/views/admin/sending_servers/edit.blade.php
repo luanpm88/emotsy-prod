@@ -34,4 +34,28 @@ edit
     
     @include('admin.sending_servers.form.' . $server->type, ['identities' => $identities, 'bigNotices' => $bigNotices])
 
+    <script>
+        $(function() {
+            $('.switch-form-toggle').on('click', function() {
+                var form = $(this).closest('form');
+                var disabled = $(this).prop('data-disabled');
+                var label_edit = $(this).attr('data-edit');
+                var label_cancel = $(this).attr('data-cancel');
+                
+                if (disabled == 'false') {
+                    form.find('input, select').prop('disabled', true);
+                    $(this).prop('data-disabled', 'true');
+                    $(this).html(label_edit);
+                    form.find('.edit-group').removeClass('hide');
+                    form.find('.cancel-group').addClass('hide');
+                } else {
+                    form.find('input, select').prop('disabled', false);
+                    $(this).prop('data-disabled', 'false');
+                    $(this).html(label_cancel);
+                    form.find('.edit-group').addClass('hide');
+                    form.find('.cancel-group').removeClass('hide');
+                }
+            });
+        });
+    </script>
 @endsection

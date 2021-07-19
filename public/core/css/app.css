@@ -6616,3 +6616,13 @@ h5 {
 .list-page .page-container {
     max-width: 95%;
 }
+.inline-form .form-group {
+    margin: 0;
+}
+.editable-click, a.editable-click, a.editable-click:hover {
+    text-decoration: none;
+    border-bottom: dashed 1px #aaa;
+}
+.inline-form .form-group input {
+    width: 100vh;
+}
