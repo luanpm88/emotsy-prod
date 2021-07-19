@@ -3037,7 +3037,7 @@ class Campaign extends Model
                         'id' => $product->uid,
                         'name' => $product->title,
                         'price' => $product->price,
-                        'image' => action('ProductController@image', $product->uid),
+                        'image' => $product->getImageUrl(),
                         'description' => substr(strip_tags($product->description), 0, 100),
                         'link' => action('ProductController@index'),
                     ];
@@ -3083,7 +3083,7 @@ class Campaign extends Model
                     'id' => $product->uid,
                     'name' => $product->title,
                     'price' => $product->price,
-                    'image' => action('ProductController@image', $product->uid),
+                    'image' => $product->getImageUrl(),
                     'description' => substr(strip_tags($product->description), 0, 100),
                     'link' => action('ProductController@index'),
                 ];
@@ -3187,6 +3187,19 @@ class Campaign extends Model
     {
         // Available sending servers
         $sendingServersPool = $this->defaultMailList->getSendingServers();
+
+        // Set up sending servers' webhooks before launching
+        foreach($sendingServersPool as $serverId => $fitness) {
+            $server = SendingServer::find($serverId)->mapType();
+
+            if ($this->useSendingServerFromEmailAddress()) {
+                $fromEmailAddress = $server->default_from_email;
+            } else {
+                $fromEmailAddress = $this->from_email;
+            }
+
+            $server->setupBeforeSend($fromEmailAddress);
+        }
 
         // clean up the tracker to prevent the log file from growing very big
         $this->customer->cleanupQuotaTracker();

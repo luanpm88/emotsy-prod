@@ -30,23 +30,25 @@ class ProductController extends Controller
      */
     public function listing(Request $request)
     {
-        $products = Product::search($request)->paginate($request->per_page);
+        // search
+        $products = $request->user()->customer->products()
+            ->search($request->keyword);
+
+        // filter
+        if ($request->source_id) {
+            $products = $products->filter('source_id', $request->source_id);
+        }
+        
+        // order + pagination
+        $products = $products->orderBy($request->sort_order, $request->sort_direction)
+            ->paginate($request->per_page);
+        
+        // view
         $view = $request->view ? $request->view : 'grid';
 
         return view('products._list_' . $view, [
             'products' => $products,
         ]);
-    }
-
-    public function image(Request $request, $uid)
-    {
-        $product = Product::findByUid($uid);
-
-        if ($product->getImagePath()) {
-            return response()->file($product->getImagePath());
-        } else {
-            return response()->file(public_path('image/no-product-image.png'));
-        }
     }
 
     /**
@@ -65,7 +67,7 @@ class ProductController extends Controller
                             'id' => $product->uid,
                             'name' => $product->title,
                             'price' => format_price($product->price),
-                            'image' => action('ProductController@image', $product->uid),
+                            'image' => $product->getImageUrl(),
                             'description' => substr(strip_tags($product->description), 0, 100),
                             'link' => action('ProductController@index'),
                         ];
@@ -81,7 +83,7 @@ class ProductController extends Controller
                 'id' => $product->uid,
                 'name' => $product->title,
                 'price' => format_price($product->price),
-                'image' => action('ProductController@image', $product->uid),
+                'image' => $product->getImageUrl(),
                 'description' => substr(strip_tags($product->description), 0, 100),
                 'link' => action('ProductController@index'),
             ]);

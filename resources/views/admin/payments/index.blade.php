@@ -79,18 +79,6 @@
             {{ csrf_field() }}
             <div class="row">
                 <div class="col-md-6">
-                    @include('helpers.form_control', [
-                        'type' => 'number',
-                        'name' => 'end_period_last_days',
-                        'value' => \Acelle\Model\Setting::get('end_period_last_days'),
-                        'label' => trans('messages.system.end_period_last_days'),
-                        'help_class' => 'setting',
-                        'rules' => ['end_period_last_days' => 'required'],
-                    ])
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-6">
                     <div class="form-group checkbox-right-switch">
                         @include('helpers.form_control', [
                             'type' => 'checkbox',
@@ -106,17 +94,18 @@
             </div>
             <div class="row">
                 <div class="col-md-6">
-                    <div class="form-group">  
-                        @include('helpers.form_control', [
-                            'type' => 'number',
-                            'name' => 'recurring_charge_before_days',
-                            'value' => \Acelle\Model\Setting::get('recurring_charge_before_days'),
-                            'label' => trans('messages.system.recurring_charge_before_days'),
-                            'help_class' => 'setting',
-                            'options' => ['no', 'yes'],
-                            'rules' => ['recurring_charge_before_days' => 'required'],
-                        ])
-                    </div>
+                    <h3 class="mt-4 mb-3">{{ trans('messages.setting.recurring_charge_before_days.title') }}:</h3>
+                    <p class="text-muted">{{ trans('messages.setting.recurring_charge_before_days.desc') }}
+                    </p>
+
+                    <p>                        
+                        <span class="text-muted">{{ trans('messages.setting.recurring_charge_before_days.before_text') }}</span>
+                        <input id="recurring_charge_before_days" placeholder="" required="" value="{{ \Acelle\Model\Setting::get('recurring_charge_before_days') }}" type="number"
+                            name="recurring_charge_before_days" class="form-control required number numeric"
+                            style="display:inline-block;width:60px;font-weight:bold"
+                        >
+                        <span class="text-muted">{{ trans('messages.setting.recurring_charge_before_days.after_text') }}</span>
+                        
                 </div>
             </div>
             <button class="btn btn-mc_primary">

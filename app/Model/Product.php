@@ -52,63 +52,21 @@ class Product extends Model
         return self::where('uid', '=', $uid)->first();
     }
 
-    public function scopeSearch($query, $request)
+    public static function scopeFilter($query, $attribute, $value)
     {
-        $query = $query->where('customer_id', '=', $request->user()->id);
+        $query->where($attribute, '=', $value);
+    }
 
-        if ($request->q) {
-            $query = $query->where('title', 'like', '%'.$request->q.'%');
-        }
-        
+    public function scopeSearch($query, $keyword)
+    {
         // Keyword
-        if (!empty(trim($request->keyword))) {
-            foreach (explode(' ', trim($request->keyword)) as $keyword) {
-                $query = $query->where(function ($q) use ($keyword) {
-                    $q->orwhere('products.title', 'like', '%'.strtolower($keyword).'%');
+        if (!empty(trim($keyword))) {
+            foreach (explode(' ', trim($keyword)) as $k) {
+                $query = $query->where(function ($q) use ($k) {
+                    $q->orwhere('products.title', 'like', '%'.strtolower($k).'%');
                 });
             }
         }
-
-        // sort by
-        if ($request->sort_by) {
-            $sorts = explode('-', $request->sort_by);
-            $query = $query->orderBy($sorts[0], $sorts[1]);
-        }
-        
-        $filters = $request->filters;
-        if (!empty($filters)) {
-            // source
-            if (isset($filters['source_uid'])) {
-                $source = Source::findByUid($filters['source_uid']);
-                $query = $query->where('source_id', '=', $source->id);
-            }
-        }
-
-        return $query;
-    }
-
-    // get image path
-    public function getImageDir()
-    {
-        $path = storage_path("app/users/" . $this->customer->user->uid);
-        // create product images folder if not exist
-        if (!\File::isDirectory($path)) {
-            \File::makeDirectory($path, 0777, true, true);
-        }
-
-        $path .= '/products';
-        // create product images folder if not exist
-        if (!\File::isDirectory($path)) {
-            \File::makeDirectory($path, 0777, true, true);
-        }
-
-        $path .= '/' . $this->uid;
-        // create product images folder if not exist
-        if (!\File::isDirectory($path)) {
-            \File::makeDirectory($path, 0777, true, true);
-        }
-
-        return $path . '/';
     }
 
     // upload image
@@ -120,6 +78,16 @@ class Product extends Model
     // get image path
     public function getImagePath()
     {
-        return $this->getImageDir() . 'default';
+        return $this->customer->getProductsPath('product-image-' . $this->uid);
+    }
+
+    public function getImageUrl()
+    {
+        if (file_exists($this->getImagePath())) {
+            $path = str_replace(storage_path(), '', $this->getImagePath());
+            return route('public_assets', ['path' => \Acelle\Library\StringHelper::base64UrlEncode($path)]);
+        } else {
+            return \URL::asset('images/no-product-image.png');
+        }
     }
 }

@@ -101,12 +101,11 @@ class Template extends Model
      *
      * @return collect
      */
-    public static function scopeFilter($query, $request)
+    public static function scopeCategoryUid($query, $uid)
     {
+        $category = \Acelle\Model\TemplateCategory::findByUid($uid);
         // Category
-        if ($request->category_uid) {
-            $category = \Acelle\Model\TemplateCategory::findByUid($request->category_uid);
-
+        if ($category) {
             $query = $query->whereHas('categories', function ($q) use ($category) {
                 $q->whereIn('template_categories.id', [$category->id]);
             });
@@ -579,7 +578,7 @@ class Template extends Model
                         'id' => $product->uid,
                         'name' => $product->title,
                         'price' => $product->price,
-                        'image' => action('ProductController@image', $product->uid),
+                        'image' => $product->getImageUrl(),
                         'description' => substr(strip_tags($product->description), 0, 100),
                         'link' => action('ProductController@index'),
                     ];
@@ -625,7 +624,7 @@ class Template extends Model
                     'id' => $product->uid,
                     'name' => $product->title,
                     'price' => $product->price,
-                    'image' => action('ProductController@image', $product->uid),
+                    'image' => $product->getImageUrl(),
                     'description' => substr(strip_tags($product->description), 0, 100),
                     'link' => action('ProductController@index'),
                 ];

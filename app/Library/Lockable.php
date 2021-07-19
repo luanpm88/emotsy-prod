@@ -43,13 +43,21 @@ class Lockable
     /**
      * Get exclusive lock.
      */
-    public function getExclusiveLock($callback, $timeout = 15, $exceptionCallback = null)
+    public function getExclusiveLock($callback, $timeout = 15, $timeoutCallback = null)
     {
         $start = time();
         $reader = fopen($this->file, 'w');
         while (true) {
             // raise an exception and quit if timed out
-            $this->checkTimeout($start, $timeout, $exceptionCallback);
+            if ($this->isTimeout($start, $timeout)) {
+                if (is_null($timeoutCallback)) {
+                    throw new \Exception('Timeout getting lock #Lockable for: '.$this->file);
+                } else {
+                    $timeoutCallback();
+                    break;
+                }
+            }
+
             if (flock($reader, LOCK_EX | LOCK_NB)) {  // acquire an exclusive lock
                 // execute the callback
                 $callback($reader);
@@ -65,13 +73,21 @@ class Lockable
     /**
      * Get shared lock.
      */
-    public function getSharedLock($callback, $timeout = 5, $exceptionCallback = null)
+    public function getSharedLock($callback, $timeout = 5, $timeoutCallback = null)
     {
         $start = time();
         $reader = fopen($this->file, 'r');
         while (true) {
             // raise an exception and quit if timed out
-            $this->checkTimeout($start, $timeout, $exceptionCallback);
+            if ($this->isTimeout($start, $timeout)) {
+                if (is_null($timeoutCallback)) {
+                    throw new \Exception('Timeout getting lock #Lockable for: '.$this->file);
+                } else {
+                    $timeoutCallback();
+                    break;
+                }
+            }
+
             if (flock($reader, LOCK_SH | LOCK_NB)) {  // acquire an exclusive lock
                 // execute the callback
                 $callback($this);
@@ -86,14 +102,8 @@ class Lockable
     /**
      * Check for timeout.
      */
-    public function checkTimeout($startTime, $timeoutDuration, $callback)
+    public function isTimeout($startTime, $timeoutDuration)
     {
-        if (time() - $startTime > $timeoutDuration) {
-            if (!is_null($callback)) {
-                $callback();
-            }
-
-            throw new \Exception('Timeout getting lock #Lockable for: '.$this->file);
-        }
+        return (time() - $startTime > $timeoutDuration);
     }
 }

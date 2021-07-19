@@ -15,10 +15,36 @@
                 @include('automation2.email._summary')
             </div>
         </div>                
-            
-        <a href="javascript:;" class="btn btn-secondary mt-4" onclick="sidebar.load(); popup.hide()">{{ trans('messages.close') }}</a>
+        
+        <a href="javascript:;" class="btn btn-secondary mt-4 me-2" onclick="sidebar.load(); popup.hide()">{{ trans('messages.close') }}</a>
+        <a id="sendTestEmail" href="javascript:;" class="btn btn-outline-secondary mt-4">
+            {{ trans('messages.automation.send_test_email') }}
+        </a>
     </form>
     
     <script>
+        $(function() {
+            // send a test email
+            $('#sendTestEmail').on('click', function(e) {
+                e.preventDefault();
+
+                Automation2SendTestEmailPopup.load();
+            });
+        });
+
+        var Automation2SendTestEmailPopup = {
+            popup: null,
+
+            url: '{{ action('Automation2Controller@sendTestEmail', [
+                'email_uid' => $email->uid,
+            ]) }}',
+
+            load: function() {
+                if (this.popup == null) {
+                    this.popup = new Popup(this.url);
+                }
+                this.popup.load();
+            }
+        }
     </script>
 @endsection

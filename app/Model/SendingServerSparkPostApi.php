@@ -38,8 +38,6 @@ class SendingServerSparkPostApi extends SendingServerSparkPost
     public function send($message, $params = array())
     {
         try {
-            $this->setupWebhook();
-
             $response = $this->client()->transmissions->post($this->prepareEmail($message));
 
             if ($response->getStatusCode() == 200) {

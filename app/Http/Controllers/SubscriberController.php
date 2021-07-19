@@ -381,6 +381,8 @@ class SubscriberController extends Controller
             return $this->notAuthorized();
         }
 
+        $importNotifications = Hook::execute('list_import_notifications');
+
         // GET, has a current job
         if ($currentJob) {
             return view('subscribers.import', [
@@ -389,11 +391,13 @@ class SubscriberController extends Controller
                 'progressCheckUrl' => action('SubscriberController@importProgress', ['job_uid' => $currentJob->uid, 'list_uid' => $list->uid]),
                 'cancelUrl' => action('SubscriberController@cancelImport', ['job_uid' => $currentJob->uid]),
                 'logDownloadUrl' => action('SubscriberController@downloadImportLog', ['job_uid' => $currentJob->uid]),
+                'importNotifications' => $importNotifications,
             ]);
         // GET, do not have any job
         } else {
             return view('subscribers.import', [
                 'list' => $list,
+                'importNotifications' => $importNotifications,
             ]);
         }
     }
@@ -406,9 +410,14 @@ class SubscriberController extends Controller
         // Upload to server
         // Example of outcome: /home/acelle/storage/app/tmp/import-000000.csv
         $filepath = $list->uploadCsv($request->file('file'));
-        
+
+        // Use the default way if there is no other plugin
+        Hook::registerIfEmpty('dispatch_list_import_job', function($list, $filepath) {
+            return $list->dispatchImportJob($filepath);
+        });
+
         // Dispatch the import job
-        $currentJob = $list->dispatchImportJob($filepath);
+        $currentJob = Hook::perform('dispatch_list_import_job', [$list, $filepath]);
 
         // Return the job information
         return response()->json([

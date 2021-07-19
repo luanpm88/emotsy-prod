@@ -30,7 +30,6 @@ class TemplateController extends Controller
      */
     public function listing(Request $request)
     {
-        // from
         if ($request->from == 'mine') {
             $templates = $request->user()->customer->templates();
         } elseif ($request->from == 'gallery') {
@@ -42,7 +41,7 @@ class TemplateController extends Controller
 
         // sort, pagination
         $templates = $templates->search($request->keyword)
-            ->filter($request)
+            ->categoryUid($request->category_uid)
             ->notAssociated()
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);

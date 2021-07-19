@@ -54,7 +54,9 @@
         <div class="col-md-4">
             <h2>{{ trans('messages.payment_method') }}</h2>
 
-            @include('account._payment_info')
+            @include('account._payment_info', [
+                'redirect' => action('AccountController@billing'),
+            ])
                 
         </div>
     </div>

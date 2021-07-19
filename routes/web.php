@@ -468,6 +468,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('notifications/{id}/hide', 'NotificationController@hide');
 
     // Automation2
+    Route::match(['get', 'post'], 'automation2/{email_uid}/send-test-email', 'Automation2Controller@sendTestEmail');
     Route::get('automation2/{uid}/cart/items', 'Automation2Controller@cartItems');
     Route::get('automation2/{uid}/cart/list', 'Automation2Controller@cartList');
     Route::get('automation2/{uid}/cart/stats', 'Automation2Controller@cartStats');
@@ -560,7 +561,6 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
 
     // Products
     Route::get('/products/json', 'ProductController@json');
-    Route::get('/products/image/{uid}', 'ProductController@image');
     Route::get('products/listing', 'ProductController@listing');
     Route::resource('products', 'ProductController');
 

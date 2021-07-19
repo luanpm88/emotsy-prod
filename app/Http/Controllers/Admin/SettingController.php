@@ -739,14 +739,12 @@ class SettingController extends Controller
         }
 
         $rules = [
-            'end_period_last_days' => 'required',
             'renew_free_plan' => 'required',
             'recurring_charge_before_days' => 'required',
         ];
         $this->validate($request, $rules);
 
         // Save settings
-        Setting::set('end_period_last_days', $request->end_period_last_days);
         Setting::set('renew_free_plan', $request->renew_free_plan);
         Setting::set('recurring_charge_before_days', $request->recurring_charge_before_days);
 

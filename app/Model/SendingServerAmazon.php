@@ -134,7 +134,7 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
      *
      * @return mixed
      */
-    public function setupSns($message)
+    public function setupSns($fromEmailAddress)
     {
         if (self::$isSnsSetup) {
             return true;
@@ -142,9 +142,7 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
 
         MailLog::info('Set up Amazon SNS for email delivery tracking');
 
-        $fromEmail = array_keys($message->getFrom())[0];
-
-        $awsIdentity = $fromEmail;
+        $awsIdentity = $fromEmailAddress;
         $verifyByDomain = false;
         try {
             $this->sesClient()->setIdentityFeedbackForwardingEnabled(array(
@@ -153,12 +151,12 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
             ));
         } catch (\Exception $e) {
             $verifyByDomain = true;
-            MailLog::warning("From Email address {$fromEmail} not verified by Amazon SES, using domain instead");
+            MailLog::warning("From Email address {$fromEmailAddress} not verified by Amazon SES, using domain instead");
         }
 
         if ($verifyByDomain) {
             // Use domain name as Aws Identity
-            $awsIdentity = substr(strrchr($fromEmail, '@'), 1); // extract domain from email
+            $awsIdentity = substr(strrchr($fromEmailAddress, '@'), 1); // extract domain from email
             $this->sesClient()->setIdentityFeedbackForwardingEnabled(array(
                 'Identity' => $awsIdentity, // extract domain from email
                 'ForwardingEnabled' => true,
@@ -194,15 +192,15 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
      *
      * @return mixed
      */
-    public function setupSnsThreadSafe($message)
+    public function setupSnsThreadSafe($fromEmailAddress)
     {
         if (self::$isSnsSetup) {
             return true;
         }
 
         $lock = new Lockable(storage_path('locks/sending-server-sns-'.$this->uid));
-        $lock->getExclusiveLock(function () use ($message) {
-            $this->setupSns($message);
+        $lock->getExclusiveLock(function () use ($fromEmailAddress) {
+            $this->setupSns($fromEmailAddress);
             sleep(1); // SNS request rate limit
         });
     }
@@ -478,5 +476,10 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
     public function getSpfHost()
     {
         return 'amazonses.com';
+    }
+
+    public function setupBeforeSend($fromEmailAddress)
+    {
+        $this->setupSnsThreadSafe($fromEmailAddress);
     }
 }

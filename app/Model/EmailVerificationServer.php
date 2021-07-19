@@ -102,16 +102,21 @@ class EmailVerificationServer extends Model
         // fetch the result
         $raw = (string)$response->getBody();
 
+        // workaround for https://emaillistvalidation.com/
         if ($raw == 'error_credit') {
-            throw new Exception('No verification credits available for service '.$this->type); // workaround for https://emaillistvalidation.com/
+            throw new Exception('No verification credits available for service '.$this->type);
         }
 
         if (array_key_exists('response_type', $config) && $config['response_type'] == 'plain') {
+            if (!array_key_exists($raw, $config['result_map'])) {
+                throw new Exception('Error verifying email address with service `'.$this->type."`. Response from service: ".$raw);
+            }
             $mapped = $config['result_map'][$raw];
             $this->countUsage();
 
             return [$mapped, $raw];
         }
+        // end workaround for https://emaillistvalidation.com/
 
         $jsonObject = new JsonObject($raw);
 

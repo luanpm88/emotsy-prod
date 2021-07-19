@@ -53,6 +53,11 @@ class Automation2 extends Model
     const TRIGGER_TYPE_WELCOME_NEW_SUBSCRIBER = 'welcome-new-subscriber';
     const TRIGGER_TYPE_SAY_GOODBYE_TO_SUBSCRIBER = 'say-goodbye-subscriber';
     const TRIGGER_TYPE_SAY_HAPPY_BIRTHDAY = 'say-happy-birthday';
+    const TRIGGER_SUBSCRIPTION_ANNIVERSARY_DATE = 'subscriber-added-date'; // in progress
+    const TRIGGER_PARTICULAR_DATE = 'specific-date'; // in progress
+    const TRIGGER_API = 'api-3-0';
+    const TRIGGER_WEEKLY_RECURRING = 'weekly-recurring';
+    const TRIGGER_MONTHLY_RECURRING = 'monthly-recurring';
 
     /**
      * Items per page.
@@ -444,6 +449,12 @@ class Automation2 extends Model
                 $automationLockFile = $customer->getLockPath('automation-lock-'.$automation->uid);
                 $lock = new Lockable($automationLockFile);
                 $timeout = 5; // seconds
+                $timeoutCallback = function() use ($automation) {
+                    // pass this ot the getExclusiveLock method 
+                    // to have it silently quit, without throwing an exception
+                    $automation->logger()->info(sprintf('LOCK timeout, another process is currently handling automation "%s"', $automation->name));
+                    return;
+                };
 
                 $lock->getExclusiveLock(function ($f) use ($customer, $automation) {
                     if ($customer->isSubscriptionActive()) {
@@ -452,7 +463,7 @@ class Automation2 extends Model
                     } else {
                         $automation->logger()->warning(sprintf('Automation "%s" skipped, user "%s" not on active subscription', $automation->name, $customer->user->displayName()));
                     }
-                }, $timeout);
+                }, $timeout, $timeoutCallback);
             }
         }
     }
@@ -490,23 +501,26 @@ class Automation2 extends Model
             case self::TRIGGER_TYPE_WELCOME_NEW_SUBSCRIBER:
                 /* triggered immediately by MailListSubscription event */
                 break;
-            case 'specific-date':
+            case self::TRIGGER_PARTICULAR_DATE:
                 $this->checkForSpecificDatetime();
                 break;
-            case 'say-goodbye-subscriber':
+            case self::TRIGGER_TYPE_SAY_GOODBYE_TO_SUBSCRIBER:
                 /* triggered immediately by MailListSubscription event */
                 break;
-            case 'say-happy-birthday':
+            case self::TRIGGER_TYPE_SAY_HAPPY_BIRTHDAY:
                 $this->checkForDateOfBirth();
                 break;
-            case 'api-3-0':
+            case self::TRIGGER_API:
                 // Just wait for API call
                 break;
-            case 'weekly-recurring':
+            case self::TRIGGER_WEEKLY_RECURRING:
                 $this->checkForWeeklyRecurring();
                 break;
-            case 'monthly-recurring':
+            case self::TRIGGER_MONTHLY_RECURRING:
                 $this->checkForMonthlyRecurring();
+                break;
+            case self::TRIGGER_SUBSCRIPTION_ANNIVERSARY_DATE:
+                // In progress
                 break;
             case 'others':
                 // others

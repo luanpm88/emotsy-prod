@@ -55,6 +55,7 @@ class Customer extends Model
     const BASE_DIR = 'app/customers'; // storage/customers/000000
     const ATTACHMENTS_DIR = 'home/attachments';  // storage/customers/000000/home/files
     const TEMPLATES_DIR = 'home/templates';  // storage/customers/000000/home/files
+    const PRODUCT_DIR = 'home/products';
 
     /**
      * The attributes that are mass assignable.
@@ -199,6 +200,11 @@ class Customer extends Model
         return $this->hasMany('Acelle\Model\TrackingDomain');
     }
 
+    public function products()
+    {
+        return $this->hasMany('Acelle\Model\Product');
+    }
+
     /**
      * Get user sources.
      */
@@ -246,6 +252,17 @@ class Customer extends Model
     public function getTemplatesPath($path = null)
     {
         $base = $this->getBasePath(self::TEMPLATES_DIR);
+
+        if (!\File::exists($base)) {
+            \File::makeDirectory($base, 0777, true, true);
+        }
+
+        return join_paths($base, $path);
+    }
+
+    public function getProductsPath($path = null)
+    {
+        $base = $this->getBasePath(self::PRODUCT_DIR);
 
         if (!\File::exists($base)) {
             \File::makeDirectory($base, 0777, true, true);
@@ -1442,7 +1459,7 @@ class Customer extends Model
      *
      * @var bool
      */
-    public function getEmailVerificaionServers()
+    public function getEmailVerificationServers()
     {
         // Check the customer has permissions using email verification servers and has his own email verification servers
         if ($this->getOption('create_email_verification_servers') == 'yes') {
@@ -1452,7 +1469,7 @@ class Customer extends Model
         // If customer dont have permission creating sending servers
         } else {
             // Get server from the plan
-            return  $this->activeSubscription()->plan->getEmailVerificaionServers();
+            return  $this->activeSubscription()->plan->getEmailVerificationServers();
         }
     }
 
@@ -1522,7 +1539,7 @@ class Customer extends Model
      */
     public function emailVerificationServerSelectOptions()
     {
-        $servers = $this->getEmailVerificaionServers();
+        $servers = $this->getEmailVerificationServers();
         $options = [];
         foreach ($servers as $server) {
             $options[] = ['text' => $server->name, 'value' => $server->uid];

@@ -39,8 +39,6 @@ class SendingServerMailgunApi extends SendingServerMailgun
     public function send($message, $params = array())
     {
         try {
-            $this->setupWebhooks();
-
             $toEmail = array_keys($message->getTo())[0];
 
             $result = $this->client()->messages()->sendMime($this->domain, [$toEmail], $message->toString(), []);

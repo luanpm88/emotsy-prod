@@ -14,7 +14,6 @@ class RunAutomation extends Base
         if (!$this->automation->allowApiCall()) {
             throw new Exception(sprintf('Automation "%s" is not set up to be triggered via API. Cannot start!', $this->automation->name));
         }
-        parent::__construct();
     }
 
     /**
