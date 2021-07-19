@@ -497,6 +497,7 @@ class Automation2 extends Model
             return;
         }
 
+        // @TODO: move to trigger object
         switch ($triggerName) {
             case self::TRIGGER_TYPE_WELCOME_NEW_SUBSCRIBER:
                 /* triggered immediately by MailListSubscription event */
@@ -522,6 +523,8 @@ class Automation2 extends Model
             case self::TRIGGER_SUBSCRIPTION_ANNIVERSARY_DATE:
                 // In progress
                 break;
+            case 'woo-abandoned-cart':
+                $this->checkForAbandonedCart();
             case 'others':
                 // others
                 break;
@@ -1315,6 +1318,11 @@ class Automation2 extends Model
             ['value' => 'month', 'text' => trans('messages.month')],
             ['value' => 'year', 'text' => trans('messages.year')],
         ]);
+    }
+
+    public function checkForAbandonedCart()
+    {
+        
     }
 
     /**
