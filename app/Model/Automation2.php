@@ -72,7 +72,7 @@ class Automation2 extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'mail_list_id', 'status'
+        'name', 'mail_list_id', 'status', 'data'
     ];
 
     /**
@@ -1332,6 +1332,7 @@ class Automation2 extends Model
      */
     public function getAbandonedCartEmail()
     {
+        // var_dump($this->getElements()[1]->options);die(); 
         return \Acelle\Model\Email::findByUid($this->getElements()[1]->options->email_uid);
     }
 
