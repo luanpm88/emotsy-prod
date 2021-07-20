@@ -31,6 +31,8 @@ class BounceHandler extends DeliveryHandler
 
     protected $table = 'bounce_handlers';
 
+    public static $itemsPerPage = 25;
+
     /**
      * Process bounce message, extract the bounce information.
      *
