@@ -121,65 +121,6 @@ class BlacklistController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Request $request, $id)
-    {
-        $blacklist = \Acelle\Model\Blacklist::findByUid($id);
-
-        // authorize
-        if (!$request->user()->customer->can('update', $blacklist)) {
-            return $this->notAuthorized();
-        }
-
-        $blacklist->fill($request->old());
-
-        return view('blacklists.edit', [
-            'blacklist' => $blacklist,
-        ]);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int                      $id
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        // Get current user
-        $current_user = $request->user();
-        $blacklist = \Acelle\Model\Blacklist::findByUid($id);
-
-        // authorize
-        if (!$request->user()->customer->can('update', $blacklist)) {
-            return $this->notAuthorized();
-        }
-
-        // save posted data
-        if ($request->isMethod('patch')) {
-            $this->validate($request, \Acelle\Model\Blacklist::rules());
-
-            // Save current user info
-            $blacklist->fill($request->all());
-
-            if ($blacklist->save()) {
-                // Log
-                $blacklist->log('updated', $request->user()->customer);
-
-                $request->session()->flash('alert-success', trans('messages.blacklist.updated'));
-                return redirect()->action('BlacklistController@index');
-            }
-        }
-    }
-
-    /**
      * Remove the specified resource from storage.
      *
      * @param int $id
