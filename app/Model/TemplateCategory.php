@@ -3,11 +3,12 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Acelle\Library\Traits\HasUid;
 
 class TemplateCategory extends Model
 {
     use HasUid;
-    
+
     /**
      * The attributes that are mass assignable.
      *
