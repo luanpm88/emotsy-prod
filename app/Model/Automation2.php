@@ -442,8 +442,8 @@ class Automation2 extends Model
                 $automationLockFile = $customer->getLockPath('automation-lock-'.$automation->uid);
                 $lock = new Lockable($automationLockFile);
                 $timeout = 5; // seconds
-                $timeoutCallback = function() use ($automation) {
-                    // pass this ot the getExclusiveLock method 
+                $timeoutCallback = function () use ($automation) {
+                    // pass this ot the getExclusiveLock method
                     // to have it silently quit, without throwing an exception
                     $automation->logger()->info(sprintf('LOCK timeout, another process is currently handling automation "%s"', $automation->name));
                     return;
@@ -518,6 +518,7 @@ class Automation2 extends Model
                 break;
             case 'woo-abandoned-cart':
                 $this->checkForAbandonedCart();
+                // no break
             case 'others':
                 // others
                 break;
@@ -1315,7 +1316,6 @@ class Automation2 extends Model
 
     public function checkForAbandonedCart()
     {
-        
     }
 
     /**
@@ -1325,7 +1325,7 @@ class Automation2 extends Model
      */
     public function getAbandonedCartEmail()
     {
-        // var_dump($this->getElements()[1]->options);die(); 
+        // var_dump($this->getElements()[1]->options);die();
         return \Acelle\Model\Email::findByUid($this->getElements()[1]->options->email_uid);
     }
 

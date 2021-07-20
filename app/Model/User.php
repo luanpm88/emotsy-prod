@@ -99,7 +99,7 @@ class User extends Authenticatable
             $this->getThumbsPath(),
         ];
 
-        foreach($paths as $path) {
+        foreach ($paths as $path) {
             if (!File::exists($path)) {
                 File::makeDirectory($path, 0777, true, true);
             }

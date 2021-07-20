@@ -43,7 +43,7 @@ class GeoIpCheck extends Command
      */
     public function handle()
     {
-        $timeoutCallback = function() {
+        $timeoutCallback = function () {
             // do nothing, tell Lockable not to throw an exception
         };
 

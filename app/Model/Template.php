@@ -658,7 +658,7 @@ class Template extends Model
                 "verify_peer"=>false,
                 "verify_peer_name"=>false,
             ),
-        ); 
+        );
         file_put_contents($filepath, $content, false, stream_context_create($arrContextOptions));
         $assetUrl = \Acelle\Helpers\generatePublicPath($filepath);
 

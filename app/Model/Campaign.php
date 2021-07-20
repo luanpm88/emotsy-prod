@@ -3166,7 +3166,7 @@ class Campaign extends Model
         $sendingServersPool = $this->defaultMailList->getSendingServers();
 
         // Set up sending servers' webhooks before launching
-        foreach($sendingServersPool as $serverId => $fitness) {
+        foreach ($sendingServersPool as $serverId => $fitness) {
             $server = SendingServer::find($serverId)->mapType();
 
             if ($this->useSendingServerFromEmailAddress()) {

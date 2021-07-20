@@ -1153,7 +1153,7 @@ class MailList extends Model
         // throw an exception in case of error
         try {
             $this->validateCsvHeader($availableFields);
-        } catch(Exception $ex) {
+        } catch (Exception $ex) {
             // Generate a prettier error message which is logged and shown up to admin
             throw new Exception(sprintf('Import job dispatched by user "%s" failed. Error: %s', $this->customer->user->email, $ex->getMessage()));
         }
