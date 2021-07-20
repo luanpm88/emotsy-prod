@@ -24,8 +24,8 @@
             ])
             
             <div class="mt-4">
-                <button type="submit" id="doCopyButton" class="btn btn-primary">{{ trans('messages.copy') }}</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ trans('messages.close') }}</button>
+                <button type="submit" id="doCopyButton" class="btn btn-secondary px-3 me-2">{{ trans('messages.copy') }}</button>
+                <button type="button" class="btn btn-link fw-600" data-bs-dismiss="modal">{{ trans('messages.cancel') }}</button>
             </div>
         </form>
     </div>

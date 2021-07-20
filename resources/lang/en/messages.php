@@ -3702,4 +3702,5 @@
     for the application to automatically charge your customers\' card.',
   'setting.recurring_charge_before_days.before_text' => 'Automatically charge a renewal invoice',
   'setting.recurring_charge_before_days.after_text' => 'days before expiry date',
+  'countries' => 'Countries',
 ) ?>

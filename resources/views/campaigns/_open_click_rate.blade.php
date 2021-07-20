@@ -11,7 +11,7 @@
                 <div class="pull-right progress-right-info text-teal-800">{{ number_to_percentage($campaign->readCache('UniqOpenRate')) }}</div>
             </div>
             <div class="progress progress-sm">
-                <div class="progress-bar bg-teal-400" style="width: {{ number_to_percentage($campaign->readCache('UniqOpenRate')) }}">
+                <div class="progress-bar bg-color3" style="width: {{ number_to_percentage($campaign->readCache('UniqOpenRate')) }}">
                 </div>
             </div>
         </div>
@@ -56,7 +56,7 @@ arrow_forward
                 <div class="progress-right-info text-teal-800">{{ number_to_percentage($campaign->readCache('ClickedRate')) }}</div>
             </div>
             <div class="progress progress-sm">
-                <div class="progress-bar bg-teal-400" style="width: {{ number_to_percentage($campaign->readCache('ClickedRate')) }}">
+                <div class="progress-bar bg-color7" style="width: {{ number_to_percentage($campaign->readCache('ClickedRate')) }}">
                 </div>
             </div>
         </div>

@@ -3,8 +3,8 @@
 
 <div class="row">
     <div class="col-md-6">
-        <div class="panel panel-flat">
-            <div class="panel-body">
+        <div class="">
+            <div class="">
                 <div class="chart-container">
                     <div id="campaignChart"
                         class="border shadow-sm rounded"

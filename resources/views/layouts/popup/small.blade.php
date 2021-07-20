@@ -1,7 +1,7 @@
 <div class="modal-dialog shadow modal-default">
     <div class="modal-content">
         <div class="modal-header">
-            <a href="javascript:;" type="button" class="material-icons-round back">keyboard_backspace</a>
+            <a href="javascript:;" class="material-icons-round back">keyboard_backspace</a>
             <h5 class="modal-title text-center" style="width:100%">
                 @yield('title')
             </h5>

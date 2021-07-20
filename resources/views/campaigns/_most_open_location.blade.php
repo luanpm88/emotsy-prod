@@ -10,7 +10,9 @@ people
             <div class="stat-table">
                 @foreach ($campaign->getTopOpenSubscribers()->get() as $subscriber)
                     <div class="stat-row">
-                        <p class="text-muted">{{ $subscriber->email }}</p>
+                        <p class="fw-600"><span class="material-icons-outlined me-1">
+                            alternate_email
+                            </span> {{ $subscriber->email }}</p>
                         <div class="pull-right num">
                             {{ $subscriber->count }}
                         </div>
@@ -45,7 +47,9 @@ auto_awesome
             <div class="stat-table">
                 @foreach ($campaign->topLocations()->get() as $location)
                     <div class="stat-row">
-                        <p class="text-muted">{{ $location->ip_address }} - {{ $location->name() }}</p>
+                        <p class="fw-600"><span class="material-icons-outlined me-1">
+                            place
+                            </span> <span class="fw-600">{{ $location->name() }}</span> - {{ $location->ip_address }}</p>
                         <div class="pull-right num">
                             {{ $location->aggregate }}
                         </div>

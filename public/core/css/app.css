@@ -907,9 +907,8 @@ ul.modern-listing li .btn {
     margin-left: auto;
 }
 .stat-table .stat-row {
-    margin: 20px 0;
+    margin: 17px 0;
     border-bottom: dotted 1px #ddd;
-    margin-bottom: 25px;
     display: flex;
     align-items: center;
 }
@@ -4323,56 +4322,6 @@ pagination {
 .navbar-main .nav-item > .nav-link.active {
     background: rgba(0,0,0,0.3);
 }
-.bg-color0 {
-    background-color: #555555;
-    border-color: #555555;
-    color: #fff;
-}
-.bg-color1 {
-    background-color: #b26059;
-    border-color: #b26059;
-    color: #fff;
-}
-.bg-color2 {
-    background-color: #626eb2;
-    border-color: #626eb2;
-    color: #fff;
-}
-.bg-color3 {
-    background-color: #81ac8d;
-    border-color: #81ac8d;
-    color: #fff;
-}
-.bg-color4 {
-    background-color: #7d5fb2;
-    border-color: #7d5fb2;
-    color: #fff;
-}
-.bg-color5 {
-    background-color: #b26e59;
-    border-color: #b26e59;
-    color: #fff;
-}
-.bg-color6 {
-    background-color: #5cb2b2;
-    border-color: #5cb2b2;
-    color: #fff;
-}
-.bg-color7 {
-    background-color: #b25977;
-    border-color: #b25977;
-    color: #fff;
-}
-.bg-color8 {
-    background-color: #aab25a;
-    border-color: #aab25a;
-    color: #fff;
-}
-.bg-grey-400 {
-    background-color: #ddd;
-    border-color: #ddd;
-    color: #000;
-}
 .pickatime + .time-input-icon, .date-input-icon {
     position: absolute;
     top: 3px;
@@ -6642,10 +6591,60 @@ h1 [class^="material-icons"] {
     width: 20px;
     font-size: 22px;
     color: #000;
-    line-height: 0px;
+    line-height: 14px;
     opacity: 0.5;
     transition: opacity .2s ease-in-out;
 }
 .modal-header .back:hover {
     opacity: 1;
+}
+.bg-color0 {
+    background-color: #555555;
+    border-color: #555555;
+    color: #fff;
+}
+.bg-color1 {
+    background-color: #b26059;
+    border-color: #b26059;
+    color: #fff;
+}
+.bg-color2 {
+    background-color: #626eb2;
+    border-color: #626eb2;
+    color: #fff;
+}
+.bg-color3 {
+    background-color: #81ac8d;
+    border-color: #81ac8d;
+    color: #fff;
+}
+.bg-color4 {
+    background-color: #7d5fb2;
+    border-color: #7d5fb2;
+    color: #fff;
+}
+.bg-color5 {
+    background-color: #b26e59;
+    border-color: #b26e59;
+    color: #fff;
+}
+.bg-color6 {
+    background-color: #5cb2b2;
+    border-color: #5cb2b2;
+    color: #fff;
+}
+.bg-color7 {
+    background-color: #b25977;
+    border-color: #b25977;
+    color: #fff;
+}
+.bg-color8 {
+    background-color: #aab25a;
+    border-color: #aab25a;
+    color: #fff;
+}
+.bg-grey-400 {
+    background-color: #ddd;
+    border-color: #ddd;
+    color: #000;
 }

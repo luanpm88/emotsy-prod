@@ -2,8 +2,8 @@
     schedule
     </span> {{ trans('messages.24h_performance') }}</h3>
 <div class="mb-4">{{ trans('messages.campaign_24h_intro') }}</div>
-<div class="panel panel-flat border shadow-sm rounded">
-    <div class="panel-body p-3">
+<div class="border shadow-sm rounded">
+    <div class="p-3">
         <div id="Campaigns24hChart"
             class=""
             style="width:100%; height:350px;"

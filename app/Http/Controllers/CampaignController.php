@@ -845,42 +845,27 @@ class CampaignController extends Controller
         }
 
         $result = [
-            'title' => '',
-            'columns' => [],
             'data' => [],
-            'bar_names' => [],
         ];
 
         // create data
-        $datas = [];
         $total = $campaign->openCount();
         $count = 0;
         foreach ($campaign->topCountries()->get() as $location) {
             $country_name = (!empty($location->country_name) ? $location->country_name : trans('messages.unknown'));
-            $result['bar_names'][] = $country_name;
-
-            $datas[] = ['value' => $location->aggregate, 'name' => $country_name];
+            $result['data'][] = ['value' => $location->aggregate, 'name' => $country_name];
             $count += $location->aggregate;
         }
 
         // Others
         if ($total > $count) {
-            $result['bar_names'][] = trans('messages.others');
-            $datas[] = ['value' => $total - $count, 'name' => trans('messages.others')];
+            $result['data'][] = ['value' => $total - $count, 'name' => trans('messages.others')];
         }
 
-        // datas
-        $result['data'][] = [
-            'name' => trans('messages.country'),
-            'type' => 'pie',
-            'radius' => '70%',
-            'center' => ['50%', '57.5%'],
-            'data' => $datas,
-        ];
+        usort($result['data'], function($a, $b) {return strcmp($a['value'], $b['value']);});
+        $result['data'] = array_reverse($result['data']);
 
-        $result['pie'] = 1;
-
-        return json_encode($result);
+        return response()->json($result);
     }
 
     /**
@@ -900,10 +885,7 @@ class CampaignController extends Controller
         }
 
         $result = [
-            'title' => '',
-            'columns' => [],
             'data' => [],
-            'bar_names' => [],
         ];
 
         // create data
@@ -911,30 +893,19 @@ class CampaignController extends Controller
         $total = $campaign->clickCount();
         $count = 0;
         foreach ($campaign->topClickCountries()->get() as $location) {
-            $result['bar_names'][] = $location->country_name;
-
-            $datas[] = ['value' => $location->aggregate, 'name' => $location->country_name];
+            $result['data'][] = ['value' => $location->aggregate, 'name' => $location->country_name];
             $count += $location->aggregate;
         }
 
         // others
         if ($total > $count) {
-            $result['bar_names'][] = trans('messages.others');
-            $datas[] = ['value' => $total - $count, 'name' => trans('messages.others')];
+            $result['data'][] = ['value' => $total - $count, 'name' => trans('messages.others')];
         }
 
-        // datas
-        $result['data'][] = [
-            'name' => trans('messages.country'),
-            'type' => 'pie',
-            'radius' => '70%',
-            'center' => ['50%', '57.5%'],
-            'data' => $datas,
-        ];
+        usort($result['data'], function($a, $b) {return strcmp($a['value'], $b['value']);});
+        $result['data'] = array_reverse($result['data']);
 
-        $result['pie'] = 1;
-
-        return json_encode($result);
+        return response()->json($result);
     }
 
     /**

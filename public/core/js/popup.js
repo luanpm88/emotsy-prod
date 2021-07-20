@@ -94,6 +94,8 @@ class Popup {
         if (typeof(this.options.callback) != 'undefined') {
             this.options.callback();
         }
+
+        this.toogleBackButton();
     }
     
     static hide() {
@@ -111,6 +113,14 @@ class Popup {
             _this.load(backing);
         } else {
             _this.hide();
+        }
+    }
+
+    toogleBackButton() {
+        if (this.backs.length) {
+            this.popup.find('.back').show();
+        } else {
+            this.popup.find('.back').hide();
         }
     }
     

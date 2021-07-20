@@ -2,8 +2,8 @@
     <div class="col-md-12">
         @if (\Auth::user()->admin->getAllSubscriptions()->count())
             <!-- Basic column chart -->
-            <div class="panel panel-flat border p-3 shadow-sm rounded-3">
-                <div class="panel-body">
+            <div class="border p-3 shadow-sm rounded-3">
+                <div class="">
                     <div class="chart-container">
                         <div class="chart has-fixed-height-250"
                             id="PlansPieChart"

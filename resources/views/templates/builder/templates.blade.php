@@ -6,8 +6,8 @@
         @foreach ($templates as $key => $template)
             <div class="col-xxs-12 col-xs-6 col-sm-3 col-md-2">
                 <a href="javascript:;" class="select-template-layout" data-template="{{ $template->uid }}">
-                    <div class="panel panel-flat panel-template-style">
-                        <div class="panel-body">
+                    <div class="panel-template-style">
+                        <div class="">
                             <div class="panel-template-placeholder">
                                 <img src="{{ $template->getThumbUrl() }}?v={{ rand(0,10) }}" />
                             </div>

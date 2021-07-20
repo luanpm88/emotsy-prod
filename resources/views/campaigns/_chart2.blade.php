@@ -57,7 +57,7 @@
                 </span>
                 <span class="text-semibold">
                     {{ trans('messages.campaign.started_ago', [
-                        'time' => $campaign->run_at->diffForHumans(),
+                        'time' => $campaign->run_at ? $campaign->run_at->diffForHumans() : '',
                     ]) }} <strong> · </strong> {{ \Acelle\Library\Tool::formatDate($campaign->run_at) }}
                 </span>
             </p>

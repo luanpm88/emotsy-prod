@@ -1,8 +1,8 @@
 <div class="row">
     <div class="col-md-6">
         <!-- Basic column chart -->
-        <div class="panel panel-flat border p-3 shadow-sm rounded">
-            <div class="panel-body">
+        <div class="border p-3 shadow-sm rounded">
+            <div class="">
                 <div class="chart-container">
                     <div id="ListsGrowthChart1"
                         class="chart has-fixed-height"
@@ -72,8 +72,8 @@
     <div class="col-md-6">
         @if ($list->readCache('SubscriberCount') || (!isset($list->id) && Auth::user()->customer->readCache('SubscriberCount')))
             <!-- Basic column chart -->
-            <div class="panel panel-flat border p-3 shadow-sm rounded">
-                <div class="panel-body">
+            <div class="border p-3 shadow-sm rounded">
+                <div class="">
                     <div class="chart-container">
                         <div id="ListsGrowthChart2"
                             class="chart has-fixed-height"
