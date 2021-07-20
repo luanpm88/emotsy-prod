@@ -54,7 +54,17 @@
                 </div>
             </div>
 
-            <div class="source-stats mt-40">
+            <div class="d-flex my-4 py-4 align-items-center">
+                <div class="mr-auto pr-4" style="width: 500px">
+                    <h4 class="font-weight-semibold mb-1">{{ trans('messages.store.connected_with_acelle') }}</h4>
+                    <p>{{ trans('messages.store.connected_with_acelle.desc') }}</p>
+                </div>
+                <div class="text-right">
+                    <a href="" class="btn btn-mc_primary">{{ trans('messages.source.refresh') }}</a>
+                </div>
+            </div>
+
+            <div class="source-stats">
                 <div class="source-desc-line py-4 my-4 d-flex">
                     <div class="desc-icon mr-4 pr-2 d-flex pt-3">
                         <span class="icon-users"></span>
@@ -71,17 +81,39 @@
                         ]) }}" class="btn btn-mc_default">{{ trans('messages.source.products.manage') }}</a>
                     </div>
                 </div>
-                <div class="source-desc-line py-4 my-4 d-flex">
-                    <div class="desc-icon mr-4 pr-2 d-flex pt-3">
-                        <span class="icon-profile"></span>
+                <div class="source-desc-line py-4 my-4 d-flex" style="justify-content: space-between">
+                    <div class="d-flex">
+                        <div class="desc-icon mr-4 pr-2 d-flex pt-3">
+                            <span class="icon-profile"></span>
+                        </div>
+                        <div class="desc">
+                            <h5 class="mt-0 mb-1 text-teal-800">
+                                {{ $source->getList()->name }}
+                            </h5>
+                            <div class="">{{ trans('messages.source.list.synchronized_to_this') }}</div>
+                        </div>
                     </div>
-                    <div class="desc">
-                        <h5 class="mt-0 mb-1 text-teal-800">
-                            {{ $source->getList()->name }}
-                        </h5>
-                        <div class="">{{ trans('messages.source.list.synchronized_to_this') }}</div>
+                    <div class="d-flex">
+                        <div class="mr-20">
+                            <h5 class="no-margin text-teal-800 stat-num mb-1">
+                                {{ number_with_delimiter($source->getList()->readCache('SubscriberCount', 0)) }}
+                            </h5>
+                            <span class="text-muted2">{{ trans("messages." . Acelle\Library\Tool::getPluralPrase('subscriber', $source->getList()->readCache('SubscriberCount', 0))) }}</span>
+                        </div>
+                        <div class="mr-20">
+                            <h5 class="no-margin text-teal-800 stat-num mb-1">
+                                {{ $source->getList()->readCache('UniqOpenRate', 0) }}%
+                            </h5>
+                            <span class="text-muted2">{{ trans('messages.open_rate') }}</span>
+                        </div>
+                        <div>
+                            <h5 class="no-margin text-teal-800 stat-num mb-1">
+                                {{ $source->getList()->readCache('ClickedRate', 0) }}%
+                            </h5>
+                            <span class="text-muted2">{{ trans('messages.click_rate') }}</span>
+                        </div>
                     </div>
-                    <div class="desc-action ml-auto">
+                    <div class="desc-action">
                         <a href="{{ action('MailListController@overview', $source->mailList->uid) }}" class="btn btn-mc_default">{{ trans('messages.source.products.manage') }}</a>
                     </div>
                 </div>

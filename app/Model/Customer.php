@@ -2036,11 +2036,17 @@ class Customer extends Model
     {
         $auto = $this->automation2s()->create([
             'name' => 'Abandoned Cart Notification - Auto',
-            'mail_list_id' => $store->mail_list_id,
+            'mail_list_id' => $store->getList()->id,
             'status' => 'inactive',
         ]);
 
-        $email = $auto->emails()->create();
+        $email = new \Acelle\Model\Email([
+            'action_id' => '1000000001',
+        ]);
+        $email->customer_id = $this->id;
+        $email->automation2_id = $auto->id;
+        $email->save();
+
         $auto->data = json_encode([
             [
                 "title" => "Abandoned Cart Reminder",
@@ -2065,8 +2071,7 @@ class Customer extends Model
                 ]
             ]
         ]);
-
-        $email->save();
+        
         $auto->save();
 
         return $email;
@@ -2076,7 +2081,7 @@ class Customer extends Model
     {
         $auto = $this->automation2s()->where('mail_list_id', '=', $store->mail_list_id)->first();
         if (!$auto) {
-            $auto = $this->createAbandonedEmailAutomation($store);
+            $this->createAbandonedEmailAutomation($store);
         }
         return $auto;
     }
