@@ -12,52 +12,74 @@
 
 	@include("lists._menu")
 
-	<h2 class="text-bold text-teal-800 mb-10"><span class="material-icons-outlined">
-people
-</span> {{ trans('messages.subscribers') }}</h2>
+	<div class="d-flex">
+		<h2 class="text-bold text-teal-800 mb-10 me-auto"><span class="material-icons-outlined">
+			people
+			</span> {{ trans('messages.subscribers') }}</h2>
+		<div class="text-end">
+			<a href="{{ action("SubscriberController@create", $list->uid) }}" role="button" class="btn btn-secondary">
+				<span class="material-icons-round">
+add
+</span> {{ trans('messages.create_subscriber') }}
+			</a>
+		</div>
+	</div>
+		
 
-	<form class="listing-form subscribers-list"
+	<div class="listing-form subscribers-list"
 		data-url="{{ action('SubscriberController@listing', $list->uid) }}"
 		per-page="{{ Acelle\Model\Subscriber::$itemsPerPage }}"
 	>
 		<div class="row top-list-controls py-2">
-			<div class="col-md-10">
+			<div class="col-md-12">
 				<div class="filter-box">
-					<span class="mr-10">
-						@include('helpers.select_tool', [
-							'disable_all_items' => false
-						])
-						<div class="btn-group list_actions hide mr-0">
+					<span class="mr-10 d-flex">
+						<div class="mr-2">
+							@include('helpers.select_tool', [
+								'disable_all_items' => false
+							])
+						</div>
+						<div class="btn-group list_actions me-2" style="display:none">
 							<button role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
 								{{ trans('messages.actions') }} <span class="number"></span><span class="caret"></span>
 							</button>
 							<ul class="dropdown-menu">
 								<li>
-									<a class="assign-values-button" href="{{ action('SubscriberController@assignValues', $list->uid) }}">
-										<i class="icon-add"></i> {{ trans('messages.subscriber.assign_values') }}
+									<a class="dropdown-item assign-values-button"
+									href="{{ action('SubscriberController@assignValues', $list->uid) }}">
+										<span class="material-icons-outlined">
+control_point_duplicate
+</span> {{ trans('messages.subscriber.assign_values') }}
 									</a>
 								</li>
 								<li>
-									<a link-confirm="{{ trans('messages.subscribe_subscribers_confirm') }}" href="{{ action('SubscriberController@subscribe', $list->uid) }}">
-										<i class="icon-enter"></i> {{ trans('messages.subscribe') }}
+									<a class="dropdown-item" link-confirm="{{ trans('messages.subscribe_subscribers_confirm') }}"
+										href="{{ action('SubscriberController@subscribe', $list->uid) }}">
+										<span class="material-icons-outlined">
+mark_email_read
+</span> {{ trans('messages.subscribe') }}
 									</a>
 								</li>
 								<li>
-									<a link-confirm="{{ trans('messages.unsubscribe_subscribers_confirm') }}" href="{{ action('SubscriberController@unsubscribe', $list->uid) }}">
+									<a class="dropdown-item"
+										link-confirm="{{ trans('messages.unsubscribe_subscribers_confirm') }}"
+										href="{{ action('SubscriberController@unsubscribe', $list->uid) }}">
 										<span class="material-icons-round">
 logout
 </span> {{ trans('messages.unsubscribe') }}
 									</a>
 								</li>
 								<li>
-									<a link-method="POST" link-confirm="{{ trans('messages.subscribers.resend_confirmation_email.confirm') }}" href="{{ action('SubscriberController@resendConfirmationEmail', $list->uid) }}">
+									<a class="dropdown-item"
+										link-method="POST"
+										link-confirm="{{ trans('messages.subscribers.resend_confirmation_email.confirm') }}" href="{{ action('SubscriberController@resendConfirmationEmail', $list->uid) }}">
 										<span class="material-icons-outlined">
 mark_email_read
 </span> {{ trans('messages.subscribers.resend_confirmation_email') }}
 									</a>
 								</li>
 								<li>
-									<a href="#" class="copy_move_subscriber"
+									<a href="#" class="dropdown-item copy_move_subscriber"
 										data-url="{{ action('SubscriberController@copyMoveForm', [
 											'from_uid' => $list->uid,
 											'action' => 'copy',
@@ -68,23 +90,29 @@ copy_all
 									</a>
 								</li>
 								<li>
-									<a href="#move" class="copy_move_subscriber"
+									<a href="#move" class="dropdown-item copy_move_subscriber"
 										data-url="{{ action('SubscriberController@copyMoveForm', [
 											'from_uid' => $list->uid,
 											'action' => 'move',
 										]) }}">
-										<i class="icon-move-right"></i> {{ trans('messages.move_to') }}
+										<span class="material-icons-outlined">
+exit_to_app
+</span> {{ trans('messages.move_to') }}
 									</a>
 								</li>
 								<li>
-									<a link-confirm="{{ trans('messages.delete_subscribers_confirm') }}" href="{{ action('SubscriberController@delete', $list->uid) }}">
+									<a class="dropdown-item"
+										link-confirm="{{ trans('messages.delete_subscribers_confirm') }}"
+										href="{{ action('SubscriberController@delete', $list->uid) }}">
 										<span class="material-icons-outlined">
 delete_outline
 </span> {{ trans('messages.delete') }}
 									</a>
 								</li>
 								<li>
-									<a href="{{ action('SubscriberController@bulkDelete', $list->uid) }}" class="bulk-delete">
+									<a
+										href="{{ action('SubscriberController@bulkDelete', $list->uid) }}"
+										class="dropdown-item bulk-delete">
 										<span class="material-icons-outlined">
 delete_outline
 </span> {{ trans('messages.subscriber.bulk_delete') }}
@@ -92,26 +120,22 @@ delete_outline
 								</li>
 							</ul>
 						</div>
-						<!--<div class="checkbox inline check_all_list">
-							<label>
-								<input type="checkbox" name="page_checked" class="styled check_all">
-							</label>
-						</div>-->
 					</span>
 					<span class="filter-group">
 						<span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
 						<select class="select" name="sort_order">
 							<option value="subscribers.email">{{ trans('messages.email') }}</option>
-							<option value="subscribers.created_at">{{ trans('messages.created_at') }}</option>
+							<option value="subscribers.created_at">{{ trans('messages.created_at') }}</option>							
 							<option value="subscribers.updated_at">{{ trans('messages.updated_at') }}</option>
 						</select>
+						<input type="hidden" name="sort_direction" value="desc" />
 						<button class="btn btn-xs sort-direction" rel="asc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
 							<span class="material-icons-outlined desc">
 sort
 </span>
 						</button>
 					</span>
-					<span class="">
+					<span class="me-2">
 						<select class="select" name="status">
 							<option value="">{{ trans('messages.all_subscribers') }}</option>
 							<option value="subscribed">{{ trans('messages.subscribed') }}</option>
@@ -131,7 +155,7 @@ sort
 							@endforeach
 						</select>
 					</span>
-					<div class="btn-group list_columns mr-10">
+					<div class="btn-group list_columns mr-2">
 						<button role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
 							{{ trans('messages.columns') }} <span class="caret"></span>
 						</button>
@@ -141,7 +165,7 @@ sort
 									<li>
 										<div class="checkbox">
 											<label>
-												<input {{ (true ? "checked='checked'" : "") }} type="checkbox" id="{{ $field->tag }}" name="columns_[]" value="{{ $field->uid }}" class="styled">
+												<input {{ (true ? "checked='checked'" : "") }} type="checkbox" id="{{ $field->tag }}" name="columns[]" value="{{ $field->uid }}" class="styled">
 												{{ $field->label }}
 											</label>
 										</div>
@@ -151,7 +175,7 @@ sort
 							<li>
 								<div class="checkbox">
 									<label>
-										<input checked="checked" type="checkbox" id="created_at" name="columns_[]" value="created_at" class="styled">
+										<input checked="checked" type="checkbox" id="created_at" name="columns[]" value="created_at" class="styled">
 										{{ trans('messages.created_at') }}
 									</label>
 								</div>
@@ -159,7 +183,7 @@ sort
 							<li>
 								<div class="checkbox">
 									<label>
-										<input checked="checked" type="checkbox" id="updated_at" name="columns_[]" value="updated_at" class="styled">
+										<input checked="checked" type="checkbox" id="updated_at" name="columns[]" value="updated_at" class="styled">
 										{{ trans('messages.updated_at') }}
 									</label>
 								</div>
@@ -174,26 +198,35 @@ search
 					</span>
 				</div>
 			</div>
-			<div class="col-md-2 text-end">
-				<a href="{{ action("SubscriberController@create", $list->uid) }}" role="button" class="btn btn-secondary">
-					<span class="material-icons-round">
-add
-</span> {{ trans('messages.create_subscriber') }}
-				</a>
-			</div>
 		</div>
 
-		<div class="pml-table-container">
+		<div id="SubscribersIndexContent" class="pml-table-container">
 
 
 
 		</div>
-	</form>
+	</div>
+
+	<script>
+        var SubscribersIndex = {
+            getList: function() {
+                return makeList({
+                    url: '{{ action('SubscriberController@listing', $list->uid) }}',
+                    container: $('.subscribers-list'),
+                    content: $('#SubscribersIndexContent')
+                });
+            }
+        };
+
+        $(function() {
+            SubscribersIndex.getList().load();
+        });
+    </script>
 
 	<script>
 		var bulkDeletePopup = new Popup();
 
-		$('.bulk-delete').click(function(e) {
+		$(document).on('click', '.bulk-delete', function(e) {
 			e.preventDefault();
 
 			var url = $(this).attr('href');
@@ -201,17 +234,111 @@ add
 			bulkDeletePopup.load(url);
 		});
 		
-		var assignValues = new Popup();
-		$('.assign-values-button').click(function(e) {
+		var assignValues;
+		$(document).on('click', '.assign-values-button', function(e) {
 			e.preventDefault();
 
-        	var vals = $(".subscribers-list input[name='ids[]']:checked").map(function () {
-				return this.value;
-			}).get();
+        	var data = SubscribersIndex.getList().data();
 
 			var url = $(this).attr('href');
 			
-			assignValues.load(url, null, {uids: vals});
+			assignValues = new Popup();
+			assignValues.load({
+				url: url,
+				data: data
+			});
+		});
+
+		// Copy Move subscribers
+		var copyMovePopup;
+		$(document).on('click', '.copy_move_subscriber', function() {
+			var url = $(this).attr('data-url');
+			var data = {};
+			// Data list action
+			if ($(this).parents('.list_actions').length) {
+				var form = $(this).parents(".listing-form");
+				var vals = form.find("input[name='uids[]']:checked").map(function () {
+					return this.value;
+				}).get();
+
+				data = {
+					uids: vals.join(",")
+				};
+
+				// select_tool
+				var select_tool = '';
+				if (form.find('.select_tool').length && form.find('.select_tool').val() == 'all_items') {
+					select_tool = form.find('.select_tool').val();
+					arr = form.serializeArray();
+					for (var i = 0; i < arr.length; i++){
+						data[arr[i]['name']] = arr[i]['value'];
+					}
+				}
+
+				if (form.find('.select_tool').length) {
+					console.log(data);
+					data.select_tool = form.find('.select_tool').val();
+				}
+
+			}
+
+			copyMovePopup = new Popup({
+				url: url,
+				data: data
+			});
+			copyMovePopup.load();
+
+			// $.ajax({
+			// 	method: 'GET',
+			// 	url: url,
+			// 	data: data
+			// })
+			// .done(function(data) {
+			// 	$('#copy-move-subscribers-form').remove();
+			// 	$('body').append(data);
+			// 	$('#copy-move-subscribers-form').modal('show');
+			// 	$('#copy-move-subscribers-form').find('select').select2({
+			// 		minimumResultsForSearch: 101,
+			// 		templateResult: formatSelect2TextOption,
+			// 		templateSelection: formatSelect2TextSelected,
+			// 		dropdownAutoWidth : true,
+			// 		width: 'auto',
+			// 	});
+			// 	$('#copy-move-subscribers-form').find('.styled').uniform({
+			// 		radioClass: 'choice'
+			// 	});
+			// 	customValidate($('#copy-move-subscribers-form').find('form'));
+			// });
+		});
+
+		// Ajax copy list
+		$(document).on('submit', '#copy-move-subscribers-form form', function(e) {
+			e.preventDefault(); // avoid to execute the actual submit of the form.
+
+			var form = $(this);
+			var url = form.attr("action");
+
+			addMaskLoading();
+
+			$.ajax({
+				type: "POST",
+				url: url,
+				data: form.serialize()
+			}).done(function(msg) {
+				if(msg != '') {
+					new Dialog('alert', {
+						message: msg
+					});
+				}
+				copyMovePopup.hide();
+
+				SubscribersIndex.getList().load();
+
+				removeMaskLoading();
+			});
+
+			copyMovePopup.hide();
+			
 		});
 	</script>
 @endsection

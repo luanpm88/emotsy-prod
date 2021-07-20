@@ -10,8 +10,8 @@
         </ul>
         <h1>
             <span class="text-gear"><span class="material-icons-outlined">
-reorder
-</span> {{ trans('messages.settings') }}</span>
+email
+</span> {{ trans('messages.system_email') }}</span>
         </h1>				
     </div>
 

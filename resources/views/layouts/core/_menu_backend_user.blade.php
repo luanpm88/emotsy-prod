@@ -29,7 +29,7 @@
                 <img src="{{ url('images/icons/'.$iconDir.'SVG/account.svg') }}" />
             </i>{{ trans('messages.account') }}
         </a></li>
-        <li rel0="AccountController/api">
+        <li class="nav-item" rel0="AccountController/api">
             <a href="{{ action("Admin\AccountController@api") }}" class="dropdown-item d-flex align-items-center">
             <i class="acelle-icon mr-2">
                 <img src="{{ url('images/icons/'.$iconDir.'SVG/api.svg') }}" />

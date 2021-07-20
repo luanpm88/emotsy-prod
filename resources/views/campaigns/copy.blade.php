@@ -1,29 +1,29 @@
-<div class="modal-dialog">
-    <div class="modal-content">
+@extends('layouts.popup.small')
+
+@section('title')
+    {!! trans('messages.copy_campaign', [
+        'name' => $campaign->name
+    ]) !!}
+@endsection
+
+@section('content')
         <form id="copyCampaginForm"
             action="{{ action('CampaignController@copy', ['copy_campaign_uid' => $campaign->uid]) }}"
             method="POST">
             {{ csrf_field() }}
+                
+            <p class="mb-2">{{ trans('messages.what_would_you_like_to_name_your_campaign') }}</p>
 
-            <div class="modal-header">
-                <h5 class="modal-title">{!! trans('messages.copy_campaign', [
-                    'name' => $campaign->name
-                ]) !!}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">                
-                <p class="mb-2">{{ trans('messages.what_would_you_like_to_name_your_campaign') }}</p>
-
-                @include('helpers.form_control', [
-                    'type' => 'text',
-                    'label' => '',
-                    'name' => 'name',
-                    'value' => request()->has('name') ? request()->name : trans("messages.copy_of_campaign", ['name' => $campaign->name]),
-                    'help_class' => 'campaign',
-                    'rules' => ['name' => 'required']
-                ])
-            </div>
-            <div class="modal-footer">
+            @include('helpers.form_control', [
+                'type' => 'text',
+                'label' => '',
+                'name' => 'name',
+                'value' => request()->has('name') ? request()->name : trans("messages.copy_of_campaign", ['name' => $campaign->name]),
+                'help_class' => 'campaign',
+                'rules' => ['name' => 'required']
+            ])
+            
+            <div class="mt-4">
                 <button type="submit" id="doCopyButton" class="btn btn-primary">{{ trans('messages.copy') }}</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ trans('messages.close') }}</button>
             </div>
@@ -72,3 +72,5 @@
         });
     });
 </script>
+
+@endsection

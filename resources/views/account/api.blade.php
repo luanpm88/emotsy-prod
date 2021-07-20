@@ -25,7 +25,9 @@
 	<h4 class="text-semibold">{{ trans('messages.api_docs') }}</h4>
 
 	<p style="margin-bottom: 30px"><code style="font-size: 18px">
-    <a target="_blank" href="{{ action("Controller@docsApiV1") }}">{{ action("Controller@docsApiV1") }} <i class="icon-link"></i></a></code></p>
+    <a target="_blank" href="{{ action("Controller@docsApiV1") }}">{{ action("Controller@docsApiV1") }} <span class="material-icons-outlined">
+link
+</span></a></code></p>
 
 	<h4 class="text-semibold">{{ trans('messages.api_endpoint') }}</h4>
 

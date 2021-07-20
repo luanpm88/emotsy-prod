@@ -33,7 +33,7 @@
                 </a>
             </li>
         @endif
-        <li rel0="AccountSubscriptionController/index">
+        <li class="nav-item" rel0="AccountSubscriptionController/index">
             <a href="{{ action('AccountSubscriptionController@index') }}" class="dropdown-item position-relative d-flex align-items-center">
             <i class="navbar-icon mr-3">
                 <img src="{{ url('images/icons/'.$iconDir.'SVG/subscription.svg') }}" />
@@ -46,20 +46,20 @@
                 @endif
             </a>
         </li>
-        <li rel0="AccountController/billing"><a href="{{ action("AccountController@billing") }}" class="dropdown-item d-flex align-items-center">
+        <li class="nav-item" rel0="AccountController/billing"><a href="{{ action("AccountController@billing") }}" class="dropdown-item d-flex align-items-center">
             <i class="navbar-icon mr-3">
                 <img src="{{ url('images/icons/'.$iconDir.'SVG/billing.svg') }}" />
             </i>{{ trans('messages.billing') }}
         
         </a></li>
-        <li rel0="AccountController/profile"><a href="{{ action("AccountController@profile") }}" class="dropdown-item d-flex align-items-center">
+        <li class="nav-item" rel0="AccountController/profile"><a href="{{ action("AccountController@profile") }}" class="dropdown-item d-flex align-items-center">
             <i class="navbar-icon mr-3">
                 <img src="{{ url('images/icons/'.$iconDir.'SVG/account.svg') }}" />
             </i>{{ trans('messages.account') }}
         
         </a></li>
         @if (Auth::user()->customer->canUseApi())
-            <li rel0="AccountController/api">
+            <li class="nav-item" rel0="AccountController/api">
                 <a href="{{ action("AccountController@api") }}" class="dropdown-item d-flex align-items-center">
                 <i class="navbar-icon mr-3">
                 <img style="transform:scale(1.15)" src="{{ url('images/icons/'.$iconDir.'SVG/api.svg') }}" />

@@ -1,7 +1,8 @@
 <div class="modal-dialog shadow modal-default">
     <div class="modal-content">
         <div class="modal-header">
-            <h5 class="modal-title">
+            <a href="javascript:;" type="button" class="material-icons-round back">keyboard_backspace</a>
+            <h5 class="modal-title text-center" style="width:100%">
                 @yield('title')
             </h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

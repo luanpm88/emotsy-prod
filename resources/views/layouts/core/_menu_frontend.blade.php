@@ -61,14 +61,16 @@
                     </a>
                 </li>
                 <li class="nav-item dropdown">
-                    <a href="{{ action('TemplateController@index') }}" class="nav-link d-flex align-items-center py-3 lvl-1 dropdown-toggle" id="content-menu" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a href=""
+                        class="nav-link d-flex align-items-center py-3 lvl-1 dropdown-toggle"
+                        id="content-menu" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="navbar-icon">
                             <img style="width: 17px" src="{{ url('images/icons/'.$iconDir.'SVG/content.svg') }}" />
                         </i>
                         <span>{{ trans('messages.content') }}</span>
                     </a>
                     <ul class="dropdown-menu shadow" aria-labelledby="content-menu">
-                        <li rel0="ProductController">
+                        <li class="nav-item" rel0="ProductController">
                             <a class="dropdown-item d-flex align-items-center" href="{{ action('ProductController@index') }}">
                                 <i class="navbar-icon" style="">
                                     <img src="{{ url('images/icons/'.$iconDir.'SVG/product-icon.svg') }}" />
@@ -76,7 +78,7 @@
                                 <span>{{ trans('messages.products') }}</span>
                             </a>
                         </li>
-                        <li rel0="SourceController">
+                        <li class="nav-item" rel0="SourceController">
                             <a class="dropdown-item d-flex align-items-center" href="{{ action('SourceController@index') }}">
                                 <i class="navbar-icon" style="">
                                     <img style="width: 18px" src="{{ url('images/icons/'.$iconDir.'SVG/store.svg') }}" />
@@ -101,8 +103,9 @@
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="sending-menu">
                             @if (Auth::user()->customer->can("read", new Acelle\Model\SendingServer()))
-                                <li rel0="SendingServerController">
-                                    <a href="{{ action('SendingServerController@index') }}" class="dropdown-item d-flex align-items-center">
+                                <li class="nav-item" rel0="SendingServerController">
+                                    <a href="{{ action('SendingServerController@index') }}"
+                                        class="dropdown-item d-flex align-items-center">
                                         <i class="navbar-icon mr-3" style="width:19px">
                                     <img src="{{ url('images/icons/'.$iconDir.'SVG/server.svg') }}" />
                                     </i> {{ trans('messages.sending_servers') }}
@@ -116,14 +119,14 @@
                                     </i> {{ trans('messages.sending_domains') }}
                                 </a>
                             </li>
-                            <li rel0="SenderController">
+                            <li class="nav-item" rel0="SenderController">
                                 <a href="{{ action('SenderController@index') }}" class="dropdown-item d-flex align-items-center">
                                 <i class="navbar-icon mr-3" style="width:20	px">
                                     <img src="{{ url('images/icons/'.$iconDir.'SVG/identify.svg') }}" />
                                     </i> {{ trans('messages.verified_senders') }}
                                 </a>
                             </li>
-                            <li rel0="TrackingDomainController">
+                            <li class="nav-item" rel0="TrackingDomainController">
                                 <a href="{{ action('TrackingDomainController@index') }}" class="dropdown-item d-flex align-items-center">
                                 <i class="navbar-icon mr-3" style="width:20px">
                                     <img src="{{ url('images/icons/'.$iconDir.'SVG/domain.svg') }}" />
@@ -131,7 +134,7 @@
                                 </a>
                             </li>
                             @if (Auth::user()->customer->can("read", new Acelle\Model\EmailVerificationServer()))
-                                <li rel0="EmailVerificationServerController">
+                                <li class="nav-item" rel0="EmailVerificationServerController">
                                     <a href="{{ action('EmailVerificationServerController@index') }}" class="dropdown-item d-flex align-items-center">
                                     <i class="navbar-icon mr-3" style="width:20px">
                                     <img src="{{ url('images/icons/'.$iconDir.'SVG/server.svg') }}" />
@@ -140,7 +143,7 @@
                                 </li>
                             @endif
                             @if (Auth::user()->customer->can("read", new Acelle\Model\Blacklist()))
-                                <li rel0="BlacklistController">
+                                <li class="nav-item" rel0="BlacklistController">
                                     <a href="{{ action('BlacklistController@index') }}" class="dropdown-item d-flex align-items-center">
                                     <i class="navbar-icon mr-3" style="width:20px">
                                     <img src="{{ url('images/icons/'.$iconDir.'SVG/blacklist.svg') }}" />

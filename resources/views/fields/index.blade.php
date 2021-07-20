@@ -145,7 +145,9 @@ delete_outline
 			<span sample-url="{{ action("FieldController@sample", ['list_uid' => $list->uid, "type" => "checkbox"]) }}" class="btn btn-default btn-xs add-custom-field-button mr-10" type_name="checkbox"><i class="icon-checkbox-partial2"></i> {{ trans('messages.checkbox_field') }}</span>
 			<span sample-url="{{ action("FieldController@sample", ['list_uid' => $list->uid, "type" => "radio"]) }}" class="btn btn-default btn-xs add-custom-field-button mr-10" type_name="radio"><i class="icon-circles"></i> {{ trans('messages.radio_field') }}</span>
 			<span sample-url="{{ action("FieldController@sample", ['list_uid' => $list->uid, "type" => "date"]) }}" class="btn btn-default btn-xs add-custom-field-button mr-10" type_name="date"><i class="icon-calendar52"></i> {{ trans('messages.date_field') }}</span>
-			<span sample-url="{{ action("FieldController@sample", ['list_uid' => $list->uid, "type" => "datetime"]) }}" class="btn btn-default btn-xs add-custom-field-button mr-10" type_name="datetime"><i class="icon-alarm"></i> {{ trans('messages.datetime_field') }}</span>
+			<span sample-url="{{ action("FieldController@sample", ['list_uid' => $list->uid, "type" => "datetime"]) }}" class="btn btn-default btn-xs add-custom-field-button mr-10" type_name="datetime"><span class="material-icons-outlined">
+alarm
+</span> {{ trans('messages.datetime_field') }}</span>
 			<span sample-url="{{ action("FieldController@sample", ['list_uid' => $list->uid, "type" => "textarea"]) }}" class="btn btn-default btn-xs add-custom-field-button" type_name="textarea"><i class="icon-menu6"></i> {{ trans('messages.textarea_field') }}</span>
 		</div>
 

@@ -3,6 +3,11 @@
 @section('title', trans('messages.automation.create'))
 
 @section('head')
+    <script type="text/javascript" src="{{ URL::asset('core/datetime/anytime.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/datetime/moment.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/datetime/pickadate/picker.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/datetime/pickadate/picker.date.js') }}"></script>
+
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/css/automation.css') }}">
     <script type="text/javascript" src="{{ URL::asset('core/js/automation.js') }}"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"></link>
@@ -459,10 +464,10 @@
             popup.load(url, function() {
                 console.log('Confirm trigger type popup loaded!');
                 
-                // set back event
-                popup.back = function() {
-                    OpenTriggerSelectPopup();
-                };
+                // // set back event
+                // popup.back = function() {
+                //     OpenTriggerSelectPopup();
+                // };
             });
         }
         

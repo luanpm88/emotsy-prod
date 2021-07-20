@@ -2,24 +2,26 @@
 	<div class="col-md-12">
 		<ul class="nav nav-tabs nav-tabs-top nav-underline">
 			<li rel0="CampaignController/overview" class="dropdown">
-				<a href="{{ action('CampaignController@overview', $campaign->uid) }}" class="level-1">
+				<a href="{{ action('CampaignController@overview', $campaign->uid) }}" class="nav-link">
 					<span class="material-icons-outlined">
 auto_graph
 </span> {{ trans('messages.overview') }}
 				</a>
 			</li>
 			<li rel0="CampaignController/links" class="dropdown">
-				<a href="{{ action('CampaignController@links', $campaign->uid) }}" class="level-1">
-					<i class="icon-link"></i> {{ trans('messages.links') }}
+				<a href="{{ action('CampaignController@links', $campaign->uid) }}" class="nav-link">
+					<span class="material-icons-outlined">
+link
+</span> {{ trans('messages.links') }}
 				</a>
 			</li>
 			<li rel0="CampaignController/openMap" class="dropdown">
-				<a href="{{ action('CampaignController@openMap', $campaign->uid) }}" class="level-1">
+				<a href="{{ action('CampaignController@openMap', $campaign->uid) }}" class="nav-link">
 					<i class="icon-map4"></i> {{ trans('messages.open_map') }}
 				</a>
 			</li>
 			<li rel0="CampaignController/subscribers" class="dropdown">
-				<a href="{{ action('CampaignController@subscribers', $campaign->uid) }}" class="level-1">
+				<a href="{{ action('CampaignController@subscribers', $campaign->uid) }}" class="nav-link">
 					<span class="material-icons-round">
 people_outline
 </span> {{ trans('messages.subscribers') }}
@@ -83,7 +85,7 @@ auto_awesome
 				</ul>
 			</li>
 			<li rel0="CampaignController/templateReview" class="dropdown">
-				<a href="{{ action('CampaignController@templateReview', $campaign->uid) }}" class="level-1">
+				<a href="{{ action('CampaignController@templateReview', $campaign->uid) }}" class="nav-link">
 					<span class="material-icons-outlined">
 auto_awesome_mosaic
 </span> {{ trans('messages.email_review') }}

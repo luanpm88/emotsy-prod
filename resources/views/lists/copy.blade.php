@@ -1,74 +1,73 @@
-<div class="modal-dialog">
-    <div class="modal-content">
-        <form id="copyListForm"
-            action="{{ action('MailListController@copy', ['copy_list_uid' => $list->uid]) }}"
-            method="POST">
-            {{ csrf_field() }}
+@extends('layouts.popup.small')
 
-            <div class="modal-header">
-                <h5 class="modal-title">{!! trans('messages.copy_list', [
-                    'name' => $list->name
-                ]) !!}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">                
-                <p class="mb-2">{{ trans('messages.what_would_you_like_to_name_your_list') }}</p>
+@section('title')
+    {!! trans('messages.copy_list', [
+        'name' => $list->name
+    ]) !!}
+@endsection
 
-                @include('helpers.form_control', [
-                    'type' => 'text',
-                    'label' => '',
-                    'name' => 'name',
-                    'value' => request()->has('name') ? request()->name : trans("messages.copy_of_list", ['name' => $list->name]),
-                    'help_class' => 'list',
-                    'rules' => ['name' => 'required']
-                ])
-            </div>
-            <div class="modal-footer">
-                <button id="copyListButton" type="submit" class="btn btn-primary">{{ trans('messages.copy') }}</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ trans('messages.close') }}</button>
-            </div>
-        </form>
-    </div>
-</div>
+@section('content')
+    <form id="copyListForm"
+        action="{{ action('MailListController@copy', ['copy_list_uid' => $list->uid]) }}"
+        method="POST">
+        {{ csrf_field() }}          
+            <p class="mb-2">{{ trans('messages.what_would_you_like_to_name_your_list') }}</p>
 
-<script>
-    var ListsCopy = {
-        copy: function(url, data) {
-            ListsList.getCopyPopup().mask();
-            addButtonMask($('#copyListButton'));
+        @include('helpers.form_control', [
+            'type' => 'text',
+            'label' => '',
+            'name' => 'name',
+            'value' => request()->has('name') ? request()->name : trans("messages.copy_of_list", ['name' => $list->name]),
+            'help_class' => 'list',
+            'rules' => ['name' => 'required']
+        ])
 
-            // copy
-            $.ajax({
-                url: url,
-                type: 'POST',
-                data: data,
-                globalError: false
-            }).done(function(response) {
-                notify({
-                    type: 'success',
-                    message: response,
+        <div class="mt-4">
+            <button id="copyListButton" type="submit" class="btn btn-primary">{{ trans('messages.copy') }}</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ trans('messages.close') }}</button>
+        </div>
+    </form>
+
+
+    <script>
+        var ListsCopy = {
+            copy: function(url, data) {
+                ListsList.getCopyPopup().mask();
+                addButtonMask($('#copyListButton'));
+
+                // copy
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: data,
+                    globalError: false
+                }).done(function(response) {
+                    notify({
+                        type: 'success',
+                        message: response,
+                    });
+
+                    ListsList.getCopyPopup().hide();
+                    ListsIndex.getList().load();
+
+                }).fail(function(jqXHR, textStatus, errorThrown){
+                    // for debugging
+                    ListsList.getCopyPopup().loadHtml(jqXHR.responseText);
+                }).always(function() {
+                    ListsList.getCopyPopup().unmask();
+                    removeButtonMask($('#copyListButton'));
                 });
-
-                ListsList.getCopyPopup().hide();
-                ListsIndex.getList().load();
-
-            }).fail(function(jqXHR, textStatus, errorThrown){
-                // for debugging
-                ListsList.getCopyPopup().loadHtml(jqXHR.responseText);
-            }).always(function() {
-                ListsList.getCopyPopup().unmask();
-                removeButtonMask($('#copyListButton'));
-            });
+            }
         }
-    }
 
-    $(document).ready(function() {
-        $('#copyListForm').on('submit', function(e) {
-            e.preventDefault();
-            var url = $(this).attr('action');
-            var data = $(this).serialize();
+        $(document).ready(function() {
+            $('#copyListForm').on('submit', function(e) {
+                e.preventDefault();
+                var url = $(this).attr('action');
+                var data = $(this).serialize();
 
-            ListsCopy.copy(url, data);
+                ListsCopy.copy(url, data);
+            });
         });
-    });
-</script>
+    </script>
+@endsection

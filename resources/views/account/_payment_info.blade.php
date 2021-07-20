@@ -2,9 +2,9 @@
     <div class="payment-box">
         <div class="header py-4 d-flex align-items-center">
             <div class="d-flex align-items-center">
-                <span class="material-icons-outlined me-2 bg-{{ request()->user()->customer->getPreferredPaymentGateway()->getType() }}">
-                    credit_card
-                </span>
+                <i class="material-icons-outlined me-2 bg-{{ request()->user()->customer->getPreferredPaymentGateway()->getType() }}">
+                    
+                </i>
                 <span class="font-weight-semibold">{{ request()->user()->customer->getPreferredPaymentGateway()->getName() }}</span>
             </div>
             <div class="ml-auto">

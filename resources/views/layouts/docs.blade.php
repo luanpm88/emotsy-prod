@@ -30,14 +30,14 @@
 		<div class="navbar-collapse collapse" id="navbar-mobile">
 			<ul class="nav navbar-nav">
                 @can("customer_access", Auth::user())
-                    <li rel0="HomeController">
+                    <li class="nav-item" rel0="HomeController">
                         <a href="{{ action('HomeController@index') }}">
                             <i class="icon-exit2"></i> {{ trans('messages.frontend') }}
                         </a>
                     </li>
                 @endif
                 @can("admin_access", Auth::user())
-                    <li rel0="HomeController">
+                    <li class="nav-item" rel0="HomeController">
                         <a href="{{ action('Admin\HomeController@index') }}">
                             <i class="icon-enter2"></i> {{ trans('messages.backend') }}
                         </a>

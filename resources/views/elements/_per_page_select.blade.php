@@ -1,4 +1,4 @@
-<div class="d-flex align-items-center">
+<div class="d-flex align-items-center" total-items-count="{{ number_with_delimiter($items->toArray()["total"]) }}">
     <div class="num_per_page mr-auto my-0">
         <select class="select" name="per_page">
             <option{{ $items->toArray()["per_page"] == "2" ? " selected" : "" }} value="2">2</option>

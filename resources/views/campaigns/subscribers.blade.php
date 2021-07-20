@@ -65,7 +65,9 @@
                         <ul class="dropdown-menu">
                             <li>
                                 <a link-confirm="{{ trans('messages.subscribe_subscribers_confirm') }}" href="{{ action('SubscriberController@subscribe', $list->uid) }}">
-                                    <i class="icon-enter"></i> {{ trans('messages.subscribe') }}
+                                    <span class="material-icons-outlined">
+mark_email_read
+</span> {{ trans('messages.subscribe') }}
                                 </a>
                             </li>
                             <li>
@@ -92,7 +94,9 @@ copy_all
                                         'from_uid' => $list->uid,
                                         'action' => 'move',
                                     ]) }}">
-                                    <i class="icon-move-right"></i> {{ trans('messages.move_to') }}
+                                    <span class="material-icons-outlined">
+exit_to_app
+</span> {{ trans('messages.move_to') }}
                                 </a>
                             </li>-->
                             <li>

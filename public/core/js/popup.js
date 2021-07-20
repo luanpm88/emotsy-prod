@@ -11,7 +11,6 @@ class Popup {
         this.id = '_' + Math.random().toString(36).substr(2, 9);
         this.options = {};
         this.popup = $('.popup[id='+this.id+']');
-        this.data = {};
         this.backs = [];
         this.initHtml = `
             <div class="modal" id="`+this.id+`" tabindex="-1">
@@ -101,6 +100,19 @@ class Popup {
         $('.popup').fadeOut();
         $('html').css('overflow', 'auto');
     }
+
+    back() {
+        var _this = this;
+
+        if (_this.backs.length > 0) {
+            var backing = _this.backs.pop();
+            backing = $.extend({}, backing, {noHistory: true});
+
+            _this.load(backing);
+        } else {
+            _this.hide();
+        }
+    }
     
     applyJs() {
         var _this = this;
@@ -109,18 +121,9 @@ class Popup {
         initJs(_this.popup);
         
         // back button
-        if (_this.backs.length > 1) {
-            _this.popup.find('.back').on('click', function() {
-                var backing = _this.backs.pop();
-                backing = $.extend({}, backing, {noHistory: true});
-
-                _this.load(backing);
-            });
-        } else {
-            _this.popup.find('.back').on('click', function() {                    
-                _this.hide();
-            });
-        }
+        _this.popup.find('.back').on('click', function() {
+            _this.back();
+        });
         
         // click close button
         _this.popup.find(".close").click(function(){
@@ -165,6 +168,7 @@ class Popup {
         }
         
         // save current options
+        
         if (typeof(newOptions.noHistory) == 'undefined' &&
             typeof(newOptions.url) !== 'undefined' &&
             typeof(_this.options.url) !== 'undefined' &&
@@ -221,6 +225,9 @@ class Popup {
         
         // after load
         _this.loaded();
+
+        //
+        _this.unmask();
 
         if (typeof(callback) !== 'undefined') {
             _this.options.callback();

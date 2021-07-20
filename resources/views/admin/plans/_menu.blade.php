@@ -1,8 +1,8 @@
 <div class="row">
     <div class="col-md-12">
         <ul class="nav nav-tabs nav-tabs-top nav-underline mc-nav-tabs">
-            <li rel0="PlanController/general">
-                <a href="{{ action('Admin\PlanController@general', $plan->uid) }}" class="level-1">
+            <li class="nav-item" rel0="PlanController/general">
+                <a href="{{ action('Admin\PlanController@general', $plan->uid) }}" class="nav-link">
                     {{ trans('messages.plan.general') }}
                 </a>
             </li>
@@ -16,17 +16,17 @@
                     <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
-                    <li rel0="PlanController/quota">
+                    <li class="nav-item" rel0="PlanController/quota">
                         <a href="{{ action('Admin\PlanController@quota', $plan->uid) }}">
                             {{ trans('messages.plan.quota') }}
                         </a>
                     </li>
-                    <li rel0="PlanController/security">
+                    <li class="nav-item" rel0="PlanController/security">
                         <a href="{{ action('Admin\PlanController@security', $plan->uid) }}">
                             {{ trans('messages.plan.security') }}
                         </a>
                     </li>
-                    <li rel0="PlanController/emailFooter">
+                    <li class="nav-item" rel0="PlanController/emailFooter">
                         <a href="{{ action('Admin\PlanController@emailFooter', $plan->uid) }}">
                             {{ trans('messages.plan.email_footer') }}
                         </a>
@@ -42,14 +42,14 @@
                         <i class="material-icons-outlined tabs-warning-icon text-danger">info</i>
                     </a>
                 @else
-                    <a href="{{ action('Admin\PlanController@sendingServer', $plan->uid) }}" class="level-1">
+                    <a href="{{ action('Admin\PlanController@sendingServer', $plan->uid) }}" class="nav-link">
                         {{ trans('messages.plan.sending_server') }}
                     </a>
                 @endif
                 
             </li>
-            <li rel0="PlanController/emailVerification">
-                <a href="{{ action('Admin\PlanController@emailVerification', $plan->uid) }}" class="level-1">
+            <li class="nav-item" rel0="PlanController/emailVerification">
+                <a href="{{ action('Admin\PlanController@emailVerification', $plan->uid) }}" class="nav-link">
                     {{ trans('messages.plan.email_verification') }}
                 </a>
             </li>

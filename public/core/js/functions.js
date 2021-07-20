@@ -21,8 +21,13 @@ function initJs(container)
 
     // datetime picker
     if (container.find(".pickadatetime").length) {
-        container.find(".pickadatetime").AnyTime_picker({
-            format: LANG_ANY_DATETIME_FORMAT
+        container.find(".pickatime, .time-selector").each(function() {
+            var id = '_' + Math.random().toString(36).substr(2, 9);
+            $(this).attr('id', id);
+
+            $('#' + id).AnyTime_picker({
+                format: LANG_ANY_DATETIME_FORMAT
+            });
         });
     }
 
@@ -30,9 +35,14 @@ function initJs(container)
     container.find(".numeric").numeric();
 
     // pick a time
-    if (container.find(".pickatime").length) {
-        container.find(".pickatime").AnyTime_picker({
-            format: "%H:%i"
+    if (container.find(".pickatime, .time-selector").length) {
+        container.find(".pickatime, .time-selector").each(function() {
+            var id = '_' + Math.random().toString(36).substr(2, 9);
+            $(this).attr('id', id);
+
+            $('#' + id).AnyTime_picker({
+                format: "%H:%i"
+            });
         });
     }
 
@@ -242,12 +252,18 @@ function formatSelect2TextOption(d) {
 function menuActiveCheck() {
     // menu active
     for (i=0; i < 10; i++) {
+        $("li[rel"+i+"='"+CONTROLLER+"']").addClass("active");
         $("li[rel"+i+"='"+CONTROLLER+"']").find('.nav-link').eq(0).addClass("active");
         $("li[rel"+i+"='"+CONTROLLER+"']").closest('.nav-link').addClass("active");
+        $("li[rel"+i+"='"+CONTROLLER+"']").parents('.nav-item').addClass("active");
+        $("li[rel"+i+"='"+CONTROLLER+"']").parents('.nav-item').find('.nav-link').eq(0).addClass("active");
     }
     for (i=0; i < 10; i++) {
+        $("li[rel"+i+"='"+CONTROLLER+"/"+ACTION+"']").addClass("active");
         $("li[rel"+i+"='"+CONTROLLER+"/"+ACTION+"']").find('.nav-link').eq(0).addClass("active");
         $("li[rel"+i+"='"+CONTROLLER+"/"+ACTION+"']").closest('.nav-link').addClass("active");
+        $("li[rel"+i+"='"+CONTROLLER+"/"+ACTION+"']").parents('.nav-item').addClass("active");
+        $("li[rel"+i+"='"+CONTROLLER+"/"+ACTION+"']").parents('.nav-item').find('.nav-link').eq(0).addClass("active");
     }
 }
 
@@ -378,7 +394,7 @@ function makeList(options) {
 
     if (typeof(options.data) == 'undefined') {
         options.data = function() {
-            return options.container.find('.filter-box :input, [name=per_page]').serialize();
+            return options.container.find('.filter-box :input, [name=per_page], [name="uids[]"]').serialize();
         };
     }
 
@@ -454,7 +470,19 @@ function makeList(options) {
 
     var getCheckCount = function() {
         return options.container.find('[name="uids[]"]:checked').length;
-    }
+    };
+
+    var totalItems = function() {
+        return options.container.find('[total-items-count]').attr('total-items-count');
+    };
+
+    var hasSelectTool = function() {
+        return options.container.find('.select_tool').length;
+    };
+
+    var allItemsChecked = function() {
+        return hasSelectTool() && options.container.find('.select_tool').val() == 'all_items';
+    };
 
     // check if page checked half or all
     var checkPageChange = function() {
@@ -464,12 +492,27 @@ function makeList(options) {
         if (checkCount == notCheckCount && checkCount > 0) {
             options.container.find('input[name=page_checked]').prop('checked', true);
             options.container.find('input[name=page_checked]').removeClass('half_checked');
+
+            // select tool
+            if (hasSelectTool() && !allItemsChecked()) {
+                options.container.find('.select_tool').val('whole_page').trigger('change.select2');
+            }
         } else if (checkCount == 0) {
             options.container.find('input[name=page_checked]').prop('checked', false);
             options.container.find('input[name=page_checked]').removeClass('half_checked');
+
+            // select tool
+            if (hasSelectTool()) {
+                options.container.find('.select_tool').val('').trigger('change.select2');
+            }
         } else {
             options.container.find('input[name=page_checked]').prop('checked', false);
             options.container.find('input[name=page_checked]').addClass('half_checked');
+
+            // select tool
+            if (hasSelectTool()) {
+                options.container.find('.select_tool').val('').trigger('change.select2');
+            }
         }
 
         // show list actions
@@ -481,11 +524,15 @@ function makeList(options) {
 
         // update count number
         options.container.find('.list_actions .number').html(checkCount);
+
+        // select all page
+        if (allItemsChecked()) {
+            options.container.find('.list_actions .number').html(totalItems());
+        }
     };
 
     // check all|none items in page
-    var checkPage = function() {
-        var checked = options.container.find('input[name=page_checked]').is(':checked');
+    var checkPage = function(checked) {
         if (checked) {
             options.container.find('[name="uids[]"]').prop('checked', true);
         } else {
@@ -494,7 +541,7 @@ function makeList(options) {
     };
 
     // all filter in box change
-    options.container.find('.filter-box select').on('change', function() {
+    options.container.find('.filter-box select:not(.select_tool)').on('change', function() {
         _list.load();
     });
 
@@ -518,7 +565,14 @@ function makeList(options) {
 
     // check page input clicked
     options.container.find('input[name=page_checked]').on('change', function() {
-        checkPage();
+        checkPage($(this).is(':checked'));
+        checkPageChange();
+    });
+
+    // check page input clicked
+    options.container.find('.select_tool').on('change', function() {
+        console.log($(this).val());
+        checkPage($(this).val() !== '');
         checkPageChange();
     });
     
@@ -533,7 +587,12 @@ function makeList(options) {
         var data = _list.content.find('[name="uids[]"]:input').serializeArray();
 
         if (typeof(confirm) !== 'undefined') {
-            confirm = confirm.replace(':number', getCheckCount());
+            // check all items
+            if (allItemsChecked()) {
+                confirm = confirm.replace(':number', totalItems());
+            } else {
+                confirm = confirm.replace(':number', getCheckCount());
+            }
         }
 
         data.push({name: '_token', value: CSRF_TOKEN});

@@ -9,7 +9,9 @@
             <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
         </ul>
         <h1>
-            <span class="text-gear"><i class="icon-key"></i> {{ trans('messages.license') }}</span>
+            <span class="text-gear"><span class="material-icons-outlined">
+vpn_key
+</span> {{ trans('messages.license') }}</span>
         </h1>
     </div>
 

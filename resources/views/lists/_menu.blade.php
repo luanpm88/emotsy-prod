@@ -23,14 +23,14 @@ people
                 <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
-                    <li rel0="SubscriberController/index">
+                    <li class="nav-item" rel0="SubscriberController/index">
                         <a class="dropdown-item" href="{{ action('SubscriberController@index', $list->uid) }}">
                         <span class="material-icons-outlined">
 reorder
 </span> {{ trans('messages.view_all') }}
                         </a>
                     </li>
-                    <li rel0="SubscriberController/create">
+                    <li class="nav-item" rel0="SubscriberController/create">
                         <a class="dropdown-item" href="{{ action('SubscriberController@create', $list->uid) }}">
                         <span class="material-icons-outlined">
 add
@@ -39,7 +39,7 @@ add
                     </li>
                     <li class="divider"></li>
                     @if (\Auth::user()->can('import', $list))
-                    <li rel0="SubscriberController/import">
+                    <li class="nav-item" rel0="SubscriberController/import">
                         <a class="dropdown-item" class="dropdown-item" href="{{ action('SubscriberController@import', $list->uid) }}">
                         <span class="material-icons-outlined">
 file_upload
@@ -48,7 +48,7 @@ file_upload
                     </li>
                     @endif
                     @if (\Auth::user()->can('export', $list))
-                    <li rel0="SubscriberController/export">
+                    <li class="nav-item" rel0="SubscriberController/export">
                         <a class="dropdown-item" href="{{ action('SubscriberController@export', $list->uid) }}">
                         <span class="material-icons-outlined">
 file_download
@@ -66,14 +66,14 @@ splitscreen
                 <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
-                    <li rel0="SegmentController/index">
+                    <li class="nav-item" rel0="SegmentController/index">
                     <a class="dropdown-item" href="{{ action('SegmentController@index', $list->uid) }}">
                     <span class="material-icons-outlined">
 reorder
 </span> {{ trans('messages.view_all') }}
                     </a>
                     </li>
-                    <li rel0="SegmentController/create">
+                    <li class="nav-item" rel0="SegmentController/create">
                     <a class="dropdown-item" href="{{ action('SegmentController@create', $list->uid) }}">
                     <span class="material-icons-outlined">
 add

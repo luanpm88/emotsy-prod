@@ -43,7 +43,7 @@
 					</td>
 				@endforeach
 
-				@if (in_array("created_at", explode(",", request()->columns)))
+				@if (in_array("created_at", request()->columns))
 					<td>
 						<span class="no-margin stat-num">{{ Tool::formatDateTime($item->created_at) }}</span>
 						<br>
@@ -51,7 +51,7 @@
 					</td>
 				@endif
 
-				@if (in_array("updated_at", explode(",", request()->columns)))
+				@if (in_array("updated_at", request()->columns))
 					<td>
 						<span class="no-margin stat-num">{{ Tool::formatDateTime($item->updated_at) }}</span>
 						<br>
@@ -71,7 +71,9 @@ edit
 						<button role="button" class="btn dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
 						<ul class="dropdown-menu dropdown-menu-end">
 							@if (\Gate::allows('subscribe', $item))
-								<li><a class="ajax_link" href="{{ action('SubscriberController@subscribe', ['list_uid' => $list->uid, "uids" => $item->uid]) }}"><i class="icon-enter"></i> {{ trans('messages.subscribe') }}</a></li>
+								<li><a class="ajax_link" href="{{ action('SubscriberController@subscribe', ['list_uid' => $list->uid, "uids" => $item->uid]) }}"><span class="material-icons-outlined">
+mark_email_read
+</span> {{ trans('messages.subscribe') }}</a></li>
 							@endif
 							@if (\Gate::allows('unsubscribe', $item))
 								<li><a class="ajax_link" href="{{ action('SubscriberController@unsubscribe', ['list_uid' => $list->uid, "uids" => $item->uid]) }}"><span class="material-icons-round">
@@ -98,7 +100,9 @@ copy_all
 										'from_uid' => $list->uid,
 										'action' => 'move',
 									]) }}">
-									<i class="icon-move-right"></i> {{ trans('messages.move_to') }}
+									<span class="material-icons-outlined">
+exit_to_app
+</span> {{ trans('messages.move_to') }}
 								</a>
 							</li>
 							@if (\Gate::allows('update', $item))

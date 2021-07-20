@@ -26,7 +26,9 @@ settings
 						<a href="{{ action("InstallController@cronJobs") }}"
 							class="rounded-top rounded-3-top"
 						>
-							<i class="icon-alarm"></i> {{ trans('messages.background_job') }}
+							<span class="material-icons-outlined">
+alarm
+</span> {{ trans('messages.background_job') }}
 						</a>
 					</li>
 					<li class="{{ $current == 6 ? "active" : "" }} {{ $step >= 5 ? "enabled" : "" }}"

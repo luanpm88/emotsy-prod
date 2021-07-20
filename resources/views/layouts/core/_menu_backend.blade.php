@@ -43,7 +43,7 @@
 						</a>
 						<ul class="dropdown-menu">
 							@if (Auth::user()->can("read", new Acelle\Model\Customer()))
-								<li rel0="CustomerController">
+								<li class="nav-item" rel0="CustomerController">
 									<a href="{{ action('Admin\CustomerController@index') }}" class="dropdown-item d-flex align-items-center">
 										<i class="acelle-icon mr-2">
 											<img src="{{ url('images/icons/SVG/customers.svg') }}" />
@@ -52,7 +52,7 @@
 									</a>
 								</li>
 							@endif
-							<li rel0="SubscriptionController">
+							<li class="nav-item" rel0="SubscriptionController">
 								<a href="{{ action('Admin\SubscriptionController@index') }}" class="dropdown-item d-flex align-items-center">
 									<i class="acelle-icon mr-2">
 										<img src="{{ url('images/icons/SVG/subscription.svg') }}" />
@@ -80,7 +80,7 @@
 						</a>
 						<ul class="dropdown-menu">
 							@if (Auth::user()->can("read", new Acelle\Model\Plan()))
-								<li rel0="PlanController">
+								<li class="nav-item" rel0="PlanController">
 									<a href="{{ action('Admin\PlanController@index') }}" class="dropdown-item d-flex align-items-center">
 									<i class="acelle-icon mr-2" style="width: 20px;">
 										<img src="{{ url('images/icons/SVG/plans.svg') }}" />
@@ -89,7 +89,7 @@
 								</li>
 							@endif
 							@if (Auth::user()->can("read", new Acelle\Model\Currency()))
-								<li rel0="CurrencyController">
+								<li class="nav-item" rel0="CurrencyController">
 									<a href="{{ action('Admin\CurrencyController@index') }}" class="dropdown-item d-flex align-items-center">
 										<i class="acelle-icon mr-2" style="width: 20px;">
 											<img src="{{ url('images/icons/SVG/currency.svg') }}" />
@@ -117,7 +117,7 @@
 						</a>
 						<ul class="dropdown-menu">
 							@if (Auth::user()->admin->getPermission("admin_read") != 'no')
-								<li rel0="AdminController">
+								<li class="nav-item" rel0="AdminController">
 									<a href="{{ action('Admin\AdminController@index') }}" class="dropdown-item d-flex align-items-center">
 									<i class="acelle-icon mr-2">
 								<img src="{{ url('images/icons/'.$iconDir.'SVG/admins.svg') }}" />
@@ -126,7 +126,7 @@
 								</li>
 							@endif
 							@if (Auth::user()->admin->getPermission("admin_group_read") != 'no')
-								<li rel0="AdminGroupController">
+								<li class="nav-item" rel0="AdminGroupController">
 									<a href="{{ action('Admin\AdminGroupController@index') }}" class="dropdown-item d-flex align-items-center">
 									<i class="acelle-icon mr-2">
 								<img src="{{ url('images/icons/'.$iconDir.'SVG/group.svg') }}" />
@@ -162,7 +162,7 @@
 						</a>
 						<ul class="dropdown-menu">
 							@if (Auth::user()->admin->getPermission("sending_server_read") != 'no')
-								<li rel0="SendingServerController">
+								<li class="nav-item" rel0="SendingServerController">
 									<a href="{{ action('Admin\SendingServerController@index') }}" class="dropdown-item d-flex align-items-center">
 									<i class="acelle-icon mr-2">
 								<img src="{{ url('images/icons/'.$iconDir.'SVG/server.svg') }}" />
@@ -171,7 +171,7 @@
 								</li>
 							@endif
 							@if (Auth::user()->admin->can('read', new \Acelle\Model\SubAccount()))
-								<li rel0="SubAccountController">
+								<li class="nav-item" rel0="SubAccountController">
 									<a href="{{ action('Admin\SubAccountController@index') }}" class="dropdown-item d-flex align-items-center">
 									<i class="acelle-icon mr-2">
 								<img src="{{ url('images/icons/'.$iconDir.'SVG/account.svg') }}" />
@@ -180,7 +180,7 @@
 								</li>
 							@endif
 							@if (Auth::user()->admin->getPermission("bounce_handler_read") != 'no')
-								<li rel0="BounceHandlerController">
+								<li class="nav-item" rel0="BounceHandlerController">
 									<a href="{{ action('Admin\BounceHandlerController@index') }}" class="dropdown-item d-flex align-items-center">
 									<i class="acelle-icon mr-2">
 								<img src="{{ url('images/icons/'.$iconDir.'SVG/bounce.svg') }}" />
@@ -189,7 +189,7 @@
 								</li>
 							@endif
 							@if (Auth::user()->admin->getPermission("fbl_handler_read") != 'no')
-								<li rel0="FeedbackLoopHandlerController">
+								<li class="nav-item" rel0="FeedbackLoopHandlerController">
 									<a href="{{ action('Admin\FeedbackLoopHandlerController@index') }}" class="dropdown-item d-flex align-items-center">
 									<i class="acelle-icon mr-2">
 								<img src="{{ url('images/icons/'.$iconDir.'SVG/feedback.svg') }}" />
@@ -198,7 +198,7 @@
 								</li>
 							@endif
 							@if (Auth::user()->admin->getPermission("email_verification_server_read") != 'no')
-								<li rel0="EmailVerificationServerController">
+								<li class="nav-item" rel0="EmailVerificationServerController">
 									<a href="{{ action('Admin\EmailVerificationServerController@index') }}" class="dropdown-item d-flex align-items-center">
 									<i class="acelle-icon mr-2">
 								<img src="{{ url('images/icons/'.$iconDir.'SVG/vserver.svg') }}" />
@@ -230,7 +230,7 @@
 							Auth::user()->admin->getPermission("setting_system_urls") != 'no' ||
 							Auth::user()->admin->getPermission("setting_background_job") != 'no'
 						)
-							<li rel0="SettingController">
+							<li class="nav-item" rel0="SettingController">
 								<a href="{{ action('Admin\SettingController@index') }}" class="dropdown-item d-flex align-items-center">
 								<i class="acelle-icon mr-2">
 								<img src="{{ url('images/icons/'.$iconDir.'SVG/setting2.svg') }}" />
@@ -239,7 +239,7 @@
 							</li>
 						@endif
 						@if (Auth::user()->admin->getPermission("template_read") != 'no')
-							<li rel0="TemplateController">
+							<li class="nav-item" rel0="TemplateController">
 								<a href="{{ action('Admin\TemplateController@index') }}" class="dropdown-item d-flex align-items-center">
 								<i class="acelle-icon mr-2">
 								<img src="{{ url('images/icons/'.$iconDir.'SVG/dtemplate.svg') }}" />
@@ -248,7 +248,7 @@
 							</li>
 						@endif
 						@if (Auth::user()->admin->getPermission("layout_read") != 'no')
-							<li rel0="LayoutController">
+							<li class="nav-item" rel0="LayoutController">
 								<a href="{{ action('Admin\LayoutController@index') }}" class="dropdown-item d-flex align-items-center">
 								<i class="acelle-icon mr-2">
 								<img src="{{ url('images/icons/'.$iconDir.'SVG/page.svg') }}" />
@@ -257,7 +257,7 @@
 							</li>
 						@endif
 						@if (Auth::user()->admin->getPermission("language_read") != 'no')
-							<li rel0="LanguageController">
+							<li class="nav-item" rel0="LanguageController">
 								<a href="{{ action('Admin\LanguageController@index') }}" class="dropdown-item d-flex align-items-center">
 								<i class="acelle-icon mr-2">
 								<img src="{{ url('images/icons/'.$iconDir.'SVG/lang.svg') }}" />
@@ -266,7 +266,7 @@
 							</li>
 						@endif
 						@if (Auth::user()->admin->getPermission("payment_method_read") != 'no')
-							<li rel0="PaymentController">
+							<li class="nav-item" rel0="PaymentController">
 								<a href="{{ action('Admin\PaymentController@index') }}" class="dropdown-item d-flex align-items-center">
 								<i class="acelle-icon mr-2">
 								<img src="{{ url('images/icons/'.$iconDir.'SVG/card.svg') }}" />
@@ -274,7 +274,7 @@
 								</a>
 							</li>
 						@endif
-						<li rel0="PluginController">
+						<li class="nav-item" rel0="PluginController">
 							<a href="{{ action('Admin\PluginController@index') }}" class="dropdown-item d-flex align-items-center">
 							<i class="acelle-icon mr-2">
 								<img src="{{ url('images/icons/'.$iconDir.'SVG/plugin.svg') }}" />
@@ -310,7 +310,7 @@
 						</a>
 						<ul class="dropdown-menu">
 							@if (Auth::user()->admin->getPermission("report_blacklist") != 'no')
-								<li rel0="BlacklistController">
+								<li class="nav-item" rel0="BlacklistController">
 									<a href="{{ action('Admin\BlacklistController@index') }}" class="dropdown-item d-flex align-items-center">
 									<i class="acelle-icon mr-2">
 								<img src="{{ url('images/icons/'.$iconDir.'SVG/blacklist.svg') }}" />
@@ -319,7 +319,7 @@
 								</li>
 							@endif
 							@if (Auth::user()->admin->getPermission("report_tracking_log") != 'no')
-								<li rel0="TrackingLogController">
+								<li class="nav-item" rel0="TrackingLogController">
 									<a href="{{ action('Admin\TrackingLogController@index') }}" class="dropdown-item d-flex align-items-center">
 									<i class="acelle-icon mr-2">
 								<img src="{{ url('images/icons/'.$iconDir.'SVG/sreport.svg') }}" />
@@ -328,7 +328,7 @@
 								</li>
 							@endif
 							@if (Auth::user()->admin->getPermission("report_bounce_log") != 'no')
-								<li rel0="BounceLogController">
+								<li class="nav-item" rel0="BounceLogController">
 									<a href="{{ action('Admin\BounceLogController@index') }}" class="dropdown-item d-flex align-items-center">
 									<i class="acelle-icon mr-2">
 								<img src="{{ url('images/icons/'.$iconDir.'SVG/bounce.svg') }}" />
@@ -337,7 +337,7 @@
 								</li>
 							@endif
 							@if (Auth::user()->admin->getPermission("report_feedback_log") != 'no')
-								<li rel0="FeedbackLogController">
+								<li class="nav-item" rel0="FeedbackLogController">
 									<a href="{{ action('Admin\FeedbackLogController@index') }}" class="dropdown-item d-flex align-items-center">
 									<i class="acelle-icon mr-2">
 								<img src="{{ url('images/icons/'.$iconDir.'SVG/feedback.svg') }}" />
@@ -346,7 +346,7 @@
 								</li>
 							@endif
 							@if (Auth::user()->admin->getPermission("report_open_log") != 'no')
-								<li rel0="OpenLogController">
+								<li class="nav-item" rel0="OpenLogController">
 									<a href="{{ action('Admin\OpenLogController@index') }}" class="dropdown-item d-flex align-items-center">
 									<i class="acelle-icon mr-2">
 								<img src="{{ url('images/icons/'.$iconDir.'SVG/open.svg') }}" />
@@ -355,7 +355,7 @@
 								</li>
 							@endif
 							@if (Auth::user()->admin->getPermission("report_click_log") != 'no')
-								<li rel0="ClickLogController">
+								<li class="nav-item" rel0="ClickLogController">
 									<a href="{{ action('Admin\ClickLogController@index') }}" class="dropdown-item d-flex align-items-center">
 									<i class="acelle-icon mr-2">
 								<img src="{{ url('images/icons/'.$iconDir.'SVG/click.svg') }}" />
@@ -364,7 +364,7 @@
 								</li>
 							@endif
 							@if (Auth::user()->admin->getPermission("report_unsubscribe_log") != 'no')
-								<li rel0="UnsubscribeLogController">
+								<li class="nav-item" rel0="UnsubscribeLogController">
 									<a href="{{ action('Admin\UnsubscribeLogController@index') }}" class="dropdown-item d-flex align-items-center">
 									<i class="acelle-icon mr-2">
 								<img src="{{ url('images/icons/'.$iconDir.'SVG/unsubscribe.svg') }}" />
