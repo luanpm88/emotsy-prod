@@ -26,10 +26,11 @@ use Illuminate\Database\Eloquent\Model;
 use Acelle\Model\Subscription;
 use Acelle\Library\Traits\TrackJobs;
 use Acelle\Jobs\ImportBlacklistJob;
+use Acelle\Library\Traits\HasUid;
 
 class Admin extends Model
 {
-    use TrackJobs;
+    use TrackJobs, HasUid;
 
     const STATUS_ACTIVE = 'active';
 
@@ -41,16 +42,6 @@ class Admin extends Model
     protected $fillable = [
         'timezone', 'language_id', 'color_scheme', 'text_direction'
     ];
-
-    /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
-    }
 
     /**
      * Associations.
@@ -90,19 +81,6 @@ class Admin extends Model
     public function creator()
     {
         return $this->belongsTo('Acelle\Model\User', 'creator_id');
-    }
-
-    /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating list.
-        static::creating(function ($item) {
-            $item->uid = uniqid();
-        });
     }
 
     /**

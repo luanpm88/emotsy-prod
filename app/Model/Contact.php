@@ -23,9 +23,12 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Acelle\Library\Traits\HasUid;
 
 class Contact extends Model
 {
+    use HasUid;
+    
     /**
      * The attributes that are mass assignable.
      *
@@ -53,19 +56,6 @@ class Contact extends Model
         'company' => 'required',
         'country_id' => 'required',
     );
-
-    /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating list.
-        static::creating(function ($item) {
-            $item->uid = uniqid();
-        });
-    }
 
     /**
      * Associations.

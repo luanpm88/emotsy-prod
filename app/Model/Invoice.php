@@ -6,9 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 use Acelle\Model\Subscription;
 use Acelle\Model\Transaction;
+use Acelle\Library\Traits\HasUid;
 
 class Invoice extends Model
 {
+    use HasUid;
+
     // statuses
     const STATUS_NEW = 'new';               // unpaid
     const STATUS_PAID = 'paid';
@@ -17,16 +20,6 @@ class Invoice extends Model
     const TYPE_RENEW_SUBSCRIPTION = 'renew_subscription';
     const TYPE_NEW_SUBSCRIPTION = 'new_subscription';
     const TYPE_CHANGE_PLAN = 'change_plan';
-
-    /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
-    }
 
     public function scopeNew($query)
     {
@@ -57,20 +50,6 @@ class Invoice extends Model
         $query->whereIn('type', [
             self::TYPE_NEW_SUBSCRIPTION,
         ]);
-    }
-
-    /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating list.
-        static::creating(function ($item) {
-            // Create new uid
-            $item->uid = uniqid();
-        });
     }
 
     /**

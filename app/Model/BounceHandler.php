@@ -23,9 +23,12 @@
 namespace Acelle\Model;
 
 use Acelle\Library\Log as MailLog;
+use Acelle\Library\Traits\HasUid;
 
 class BounceHandler extends DeliveryHandler
 {
+    use HasUid;
+
     protected $table = 'bounce_handlers';
 
     /**
@@ -157,36 +160,6 @@ class BounceHandler extends DeliveryHandler
         }
 
         return $query;
-    }
-
-    /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
-    }
-
-    /**
-     * Items per page.
-     *
-     * @var array
-     */
-    public static $itemsPerPage = 25;
-
-    /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating list.
-        static::creating(function ($item) {
-            $item->uid = uniqid();
-        });
     }
 
     /**

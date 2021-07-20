@@ -28,9 +28,12 @@ use Mika56\SPFCheck\SPFCheck;
 use Mika56\SPFCheck\DNSRecordGetterDirect;
 use Mika56\SPFCheck\DNSRecordGetter;
 use GuzzleHttp\Client;
+use Acelle\Library\Traits\HasUid;
 
 class TrackingDomain extends Model
 {
+    use HasUid;
+    
     const STATUS_VERIFIED = 'verified';
     const STATUS_UNVERIFIED = 'unverified';
 
@@ -42,16 +45,6 @@ class TrackingDomain extends Model
     public function customer()
     {
         return $this->belongsTo('Acelle\Model\Customer');
-    }
-
-    /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
     }
 
     /**

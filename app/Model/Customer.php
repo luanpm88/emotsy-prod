@@ -41,10 +41,11 @@ use Acelle\Library\AutoBillingData;
 use File;
 use Acelle\Library\Traits\TrackJobs;
 use Acelle\Jobs\ImportBlacklistJob;
+use Acelle\Library\Traits\HasUid;
 
 class Customer extends Model
 {
-    use TrackJobs;
+    use TrackJobs, HasUid;
 
     protected $quotaTracker;
 
@@ -65,16 +66,6 @@ class Customer extends Model
     protected $fillable = [
         'name', 'timezone', 'language_id', 'color_scheme', 'text_direction'
     ];
-
-    /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
-    }
 
     /**
      * Associations.
@@ -310,21 +301,6 @@ class Customer extends Model
     public function activeSubscription()
     {
         return (is_object($this->subscription) && $this->subscription->isActive()) ? $this->subscription : null;
-    }
-
-    /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating list.
-        static::creating(function ($item) {
-            // Create new uid
-            $uid = uniqid();
-            $item->uid = $uid;
-        });
     }
 
     /**

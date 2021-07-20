@@ -6,28 +6,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Bus\Batch;
 use Illuminate\Support\Facades\Bus;
+use Acelle\Library\Traits\HasUid;
 use Exception;
 
 class JobMonitor extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUid;
 
     const STATUS_QUEUED = 'queued';
     const STATUS_RUNNING = 'running';
     const STATUS_DONE = 'done';
     const STATUS_FAILED = 'failed';
-
-    /**
-    * Bootstrap any application services.
-    */
-    public static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($me) {
-            $me->uid = uniqid();
-        });
-    }
 
     public static function makeInstance($subject, $jobType)
     {
@@ -44,16 +33,6 @@ class JobMonitor extends Model
     public function scopeByJobType($query, $jobType)
     {
         return $query->where('job_type', $jobType);
-    }
-
-    /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
     }
 
     public function getBatch()

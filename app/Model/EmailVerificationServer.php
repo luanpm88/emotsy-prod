@@ -7,10 +7,13 @@ use GuzzleHttp\Client;
 use JsonPath\JsonObject;
 use Acelle\Library\QuotaTrackerFile;
 use Acelle\Library\Log as MailLog;
+use Acelle\Library\Traits\HasUid;
 use Exception;
 
 class EmailVerificationServer extends Model
 {
+    use HasUid;
+    
     // set the table name
     protected $table = 'email_verification_servers';
     protected $quotaTracker;
@@ -306,31 +309,6 @@ class EmailVerificationServer extends Model
     public static function getAll()
     {
         return self::where('status', '=', 'active');
-    }
-
-    /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating list.
-        static::creating(function ($item) {
-            // Create new uid
-            $uid = uniqid();
-            $item->uid = $uid;
-        });
-    }
-
-    /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
     }
 
     /**

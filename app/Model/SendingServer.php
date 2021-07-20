@@ -31,10 +31,13 @@ use Carbon\Carbon;
 use Acelle\Library\StringHelper;
 use Acelle\Library\Notification\BackendError as BackendErrorNotification;
 use Acelle\Library\Facades\Hook;
+use Acelle\Library\Traits\HasUid;
 use Exception;
 
 class SendingServer extends Model
 {
+    use HasUid;
+
     const DELIVERY_STATUS_SENT = 'sent';
     const DELIVERY_STATUS_FAILED = 'failed';
     const STATUS_ACTIVE = 'active';
@@ -288,36 +291,11 @@ class SendingServer extends Model
     }
 
     /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
-    }
-
-    /**
      * Items per page.
      *
      * @var array
      */
     public static $itemsPerPage = 25;
-
-    /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating list.
-        static::creating(function ($item) {
-            // Create new uid
-            $uid = uniqid();
-            $item->uid = $uid;
-        });
-    }
 
     /**
      * Type of server.

@@ -26,10 +26,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log as LaravelLog;
 use Acelle\Library\ExtendedSwiftMessage;
 use Acelle\Model\Setting;
+use Acelle\Library\Traits\HasUid;
 use App;
 
 class Sender extends Model
 {
+    use HasUid;
+    
     // Statuses
     const STATUS_NEW = 'new'; // deprecated
     const STATUS_PENDING = 'pending';
@@ -148,30 +151,6 @@ class Sender extends Model
     {
         $this->status = self::STATUS_PENDING;
         $this->save();
-    }
-
-    /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating list.
-        static::creating(function ($item) {
-            // Create new uid
-            $item->uid = uniqid();
-        });
-    }
-
-    /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
     }
 
     /**
