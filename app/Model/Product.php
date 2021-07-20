@@ -5,9 +5,12 @@ namespace Acelle\Model;
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Model\Source;
 use File;
+use Acelle\Library\Traits\HasUid;
 
 class Product extends Model
 {
+    use HasUid;
+    
     public static $itemsPerPage = 16;
 
     /**
@@ -27,29 +30,6 @@ class Product extends Model
     public function source()
     {
         return $this->belongsTo('Acelle\Model\Source');
-    }
-
-    /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating list.
-        static::creating(function ($item) {
-            $item->uid = uniqid();
-        });
-    }
-
-    /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
     }
 
     public static function scopeFilter($query, $attribute, $value)

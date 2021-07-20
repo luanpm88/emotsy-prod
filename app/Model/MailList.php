@@ -45,10 +45,11 @@ use Acelle\Jobs\ImportSubscribers2;
 use Acelle\Jobs\ExportSubscribersJob;
 use Acelle\Jobs\VerifyMailListJob;
 use League\Csv\Writer;
+use Acelle\Library\Traits\HasUid;
 
 class MailList extends Model
 {
-    use QueryHelper, TrackJobs;
+    use QueryHelper, TrackJobs, HasUid;
 
     const SOURCE_EMBEDDED_FORM = 'embedded-form';
     const SOURCE_WEB = 'web';
@@ -290,16 +291,6 @@ class MailList extends Model
         $query = $query->orderBy($request->sort_order, $request->sort_direction);
 
         return $query;
-    }
-
-    /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
     }
 
     /**

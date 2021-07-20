@@ -4,9 +4,12 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Acelle\Library\Traits\HasUid;
 
 class SubscriptionLog extends Model
 {
+    use HasUid;
+    
     const TYPE_SUBSCRIBE = 'subscribe';
     const TYPE_SUBSCRIBED = 'subscribed';
     const TYPE_PAID = 'paid';
@@ -52,20 +55,6 @@ class SubscriptionLog extends Model
     protected $fillable = [
         'type'
     ];
-
-    /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating list.
-        static::creating(function ($item) {
-            // Create new uid
-            $item->uid = uniqid();
-        });
-    }
 
     /**
      * Associations.

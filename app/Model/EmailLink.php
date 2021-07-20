@@ -3,9 +3,12 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Acelle\Library\Traits\HasUid;
 
 class EmailLink extends Model
 {
+    use HasUid;
+    
     /**
      * The attributes that are mass assignable.
      *
@@ -21,29 +24,5 @@ class EmailLink extends Model
     public function email()
     {
         return $this->belongsTo('Acelle\Model\Email');
-    }
-
-    /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating automation.
-        static::creating(function ($item) {
-            // Create new uid
-            $item->uid = uniqid();
-        });
-    }
-
-    /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
     }
 }

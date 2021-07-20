@@ -25,25 +25,6 @@ class Email extends Model
     use HasTemplate, HasUid;
 
     /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating automation.
-        static::creating(function ($item) {
-            // Create new uid
-            $uid = uniqid();
-            $item->uid = $uid;
-        });
-
-        static::deleted(function ($item) {
-            // Need reviewing...
-        });
-    }
-
-    /**
      * The attributes that are mass assignable.
      *
      * @var array

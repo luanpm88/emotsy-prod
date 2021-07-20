@@ -4,9 +4,12 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Model\Product;
+use Acelle\Library\Traits\HasUid;
 
 class Source extends Model
 {
+    use HasUid;
+    
     public static $itemsPerPage = 25;
     public $service;
 
@@ -16,30 +19,6 @@ class Source extends Model
      * @var string
      */
     protected $table = 'sources';
-
-    /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating list.
-        static::creating(function ($item) {
-            $uid = uniqid();
-            $item->uid = $uid;
-        });
-    }
-
-    /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
-    }
 
     /**
      * Customer.

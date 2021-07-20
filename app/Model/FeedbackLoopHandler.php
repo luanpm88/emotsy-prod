@@ -23,9 +23,12 @@
 namespace Acelle\Model;
 
 use Acelle\Library\Log;
+use Acelle\Library\Traits\HasUid;
 
 class FeedbackLoopHandler extends DeliveryHandler
 {
+    use HasUid;
+    
     /**
      * Process feedback message, extract the feedback information (comply to RFC).
      *
@@ -150,36 +153,11 @@ class FeedbackLoopHandler extends DeliveryHandler
     }
 
     /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
-    }
-
-    /**
      * Items per page.
      *
      * @var array
      */
     public static $itemsPerPage = 25;
-
-    /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating list.
-        static::creating(function ($item) {
-            // Create new uid
-            $uid = uniqid();
-            $item->uid = $uid;
-        });
-    }
 
     /**
      * The attributes that are mass assignable.

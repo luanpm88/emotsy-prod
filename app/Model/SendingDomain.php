@@ -27,9 +27,12 @@ use Acelle\Library\MtaSync;
 use Mika56\SPFCheck\SPFCheck;
 use Mika56\SPFCheck\DNSRecordGetterDirect;
 use Mika56\SPFCheck\DNSRecordGetter;
+use Acelle\Library\Traits\HasUid;
 
 class SendingDomain extends Model
 {
+    use HasUid;
+    
     const VERIFIED = 1;
     const UNVERIFIED = 0;
     const STATUS_ACTIVE = 'active';
@@ -144,16 +147,6 @@ class SendingDomain extends Model
         }
 
         return $query;
-    }
-
-    /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
     }
 
     /**

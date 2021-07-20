@@ -33,10 +33,11 @@ use App;
 use URL;
 use File;
 use Acelle\Library\Tool;
+use Acelle\Library\Traits\HasUid;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, HasUid;
 
     /*******
      * Important: Storage location: User vs Customer
@@ -330,11 +331,6 @@ class User extends Authenticatable
             // Add api token
             $item->api_token = str_random(60);
         });
-    }
-
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
     }
 
     /**

@@ -32,9 +32,12 @@ use Acelle\Library\StringHelper;
 use DB;
 use Exception;
 use File;
+use Acelle\Library\Traits\HasUid;
 
 class Subscriber extends Model
 {
+    use HasUid;
+
     const STATUS_SUBSCRIBED = 'subscribed';
     const STATUS_UNSUBSCRIBED = 'unsubscribed';
     const STATUS_BLACKLISTED = 'blacklisted';
@@ -444,17 +447,6 @@ class Subscriber extends Model
      * @var array
      */
     public static $itemsPerPage = 25;
-
-    /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
-    }
-
     /**
      * Import subscribers from file.
      *

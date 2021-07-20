@@ -23,9 +23,12 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Acelle\Library\Traits\HasUid;
 
 class Currency extends Model
 {
+    use HasUid;
+    
     /**
      * The attributes that are mass assignable.
      *
@@ -47,16 +50,6 @@ class Currency extends Model
             'code' => 'required|alpha|min:2',
             'format' => 'required|substring:{PRICE}',
         );
-    }
-
-    /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
     }
 
     /**

@@ -11,10 +11,7 @@ trait HasUid {
         // Create uid when creating item.
         static::creating(function ($item) {
             // Create new uid
-            $uid = uniqid();
-            if (is_null($item->uid)) {
-                $item->uid = $uid;
-            }
+            $item->uid = uniqid();
         });
     }
 

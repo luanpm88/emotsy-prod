@@ -43,9 +43,12 @@ use DateTime;
 use DateTimeZone;
 use Exception;
 use Throwable;
+use Acelle\Library\Traits\HasUid;
 
 class Automation2 extends Model
 {
+    use HasUid;
+    
     // Automation status
     const STATUS_ACTIVE = 'active';
     const STATUS_INACTIVE = 'inactive';
@@ -174,16 +177,6 @@ class Automation2 extends Model
         static::created(function ($item) {
             $item->updateCache();
         });
-    }
-
-    /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
     }
 
     /**
