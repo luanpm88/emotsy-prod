@@ -1,17 +1,17 @@
 <?php
  
 namespace Acelle\Library\Traits;
- 
-trait HasUid {
- 
+
+trait HasUid
+{
     public static function boot()
     {
         parent::boot();
 
-        // Create uid when creating item.
         static::creating(function ($item) {
-            // Create new uid
-            $item->uid = uniqid();
+            if (is_null($item->uid)) {
+                $item->uid = uniqid();
+            }
         });
     }
 
@@ -19,5 +19,4 @@ trait HasUid {
     {
         return self::where('uid', '=', $uid)->first();
     }
- 
 }
