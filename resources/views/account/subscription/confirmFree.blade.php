@@ -21,13 +21,6 @@
 @section('content')
     <div class="row">
         <div class="col-md-8">
-            @if ($subscription->getUnpaidInvoice() && $subscription->getUnpaidInvoice()->lastTransaction() && $subscription->getUnpaidInvoice()->lastTransaction()->isFailed())
-                @include('elements._notification', [
-                    'level' => 'error',
-                    'message' => $subscription->getUnpaidInvoice()->lastTransaction()->error,
-                ])
-            @endif
-                
             <h2 class="mb-3 mt-0">{{ $invoice->title }}</h2>
 
             <p>
@@ -44,7 +37,7 @@
                 >
 
                 <div class="row">
-                    <div class="mt-4 col-md-8">{!! trans('messages.payment.agree_service_intro', ['plan' => $subscription->plan->name]) !!}</div>
+                    <div class="mt-4 col-md-8">{!! trans('messages.payment.agree_service_intro') !!}</div>
                 </div>
             </form>
         </div>

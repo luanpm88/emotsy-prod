@@ -176,7 +176,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::post('subscription/init', 'AccountSubscriptionController@init');
     Route::get('subscription', 'AccountSubscriptionController@index');
     Route::post('subscription/checkout', 'AccountSubscriptionController@checkout');
-    Route::get('subscription/payment', 'AccountSubscriptionController@payment');
+    Route::get('subscription/payment/{invoice_uid}', 'AccountSubscriptionController@payment');
     Route::post('subscription/cancel-now', 'AccountSubscriptionController@cancelNow');
     Route::post('subscription/resume', 'AccountSubscriptionController@resume');
     Route::post('subscription/cancel', 'AccountSubscriptionController@cancel');

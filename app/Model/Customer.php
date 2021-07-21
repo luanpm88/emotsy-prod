@@ -196,6 +196,11 @@ class Customer extends Model
         return $this->hasMany('Acelle\Model\Product');
     }
 
+    public function invoices()
+    {
+        return $this->hasMany('Acelle\Model\Invoice');
+    }
+
     /**
      * Get user sources.
      */

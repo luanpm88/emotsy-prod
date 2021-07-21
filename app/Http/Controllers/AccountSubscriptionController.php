@@ -59,7 +59,9 @@ class AccountSubscriptionController extends Controller
                         'invoice' => $invoice,
                     ]);
                 } else {
-                    return redirect()->action('AccountSubscriptionController@payment');
+                    return redirect()->action('AccountSubscriptionController@payment', [
+                        'invoice_uid' => $invoice->uid,
+                    ]);
                 }
             } elseif ($invoice->isPaid()) {
                 throw new \Exception('There is no such case: new subscription must always have ONE unpaid invoice (which is either "new", and the getItsOnlyUnpaidInitInvoice() method above is supposed to throw an exception before reaching this point.');
@@ -119,8 +121,7 @@ class AccountSubscriptionController extends Controller
     public function confirmFree(Request $request)
     {
         $subscription = $request->user()->customer->subscription;
-        $invoice = $subscription->getUnpaidInvoice();
-
+        
         if (!$invoice->isFree()) {
             throw new \Exception('Invoice is not free!');
         }
@@ -141,8 +142,13 @@ class AccountSubscriptionController extends Controller
     {
         // Get current customer
         $customer = $request->user()->customer;
-        $subscription = $customer->subscription;
-        $invoice = $subscription->getUnpaidInvoice();
+
+        // get invoice
+        $invoice = $customer->invoices()->where('uid', '=', $request->invoice_uid)->first();
+
+        if (!$invoice || !$invoice->isNew()) {
+            return redirect()->action('AccountSubscriptionController@index');
+        }
 
         if ($invoice->isNew()) {
             if ($invoice->getPendingTransaction()) {
@@ -153,21 +159,14 @@ class AccountSubscriptionController extends Controller
             } else {
                 if ($invoice->isFree()) {
                     return view('account.subscription.confirmFree', [
-                        'subscription' => $subscription,
                         'invoice' => $invoice,
                     ]);
                 } else {
                     return view('account.subscription.payment', [
-                        'subscription' => $subscription,
                         'invoice' => $invoice,
                     ]);
                 }
             }
-        }
-
-        // invoice was paid
-        elseif ($invoice->isPaid()) {
-            throw new \Exception('Paid invoice do not need payment screen!');
         }
     }
     
@@ -203,7 +202,9 @@ class AccountSubscriptionController extends Controller
             }
 
             // return to subscription
-            return redirect()->action('AccountSubscriptionController@payment');
+            return redirect()->action('AccountSubscriptionController@payment', [
+                'invoice_uid' => $changePlanInvoice->uid,
+            ]);
         }
         
         return view('account.subscription.change_plan', [
