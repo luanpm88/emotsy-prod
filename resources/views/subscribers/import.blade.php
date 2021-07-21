@@ -99,7 +99,7 @@ people
 file_download
 </span> {{ trans('messages.download_import_log') }}
                         </a>
-                        <a href="#retry" class="btn btn-secondary-800 mr-10 retry"><span class="material-icons-outlined">
+                        <a href="#retry" class="btn btn-link mr-10 retry"><span class="material-icons-outlined">
 restart_alt
 </span> {{ trans('messages.import_another') }}</a>
                     </div>

@@ -21,7 +21,7 @@ class ANotify {
     add(options) {
         var _this = this;
         var id = '_' + Math.random().toString(36).substr(2, 9);
-        var timeout = 5000;
+        var timeout = 5000000;
         var type = 'info';
 
         if (typeof(options.timeout) !== 'undefined') {

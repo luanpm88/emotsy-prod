@@ -33,22 +33,22 @@
         <div class="tabbable">
             <ul class="nav nav-tabs nav-tabs-top nav-underline">
                 @foreach ($language->getLanguageFilesByType('default') as $langFile)
-                    <li class="{{ $langFile['id'] == $currentFile['id'] ? "active" : "" }} text-semibold">
-                        <a class="level-1" href="{{ action('Admin\LanguageController@translate', ["id" => $language->uid, "file_id" => $langFile['id']]) }}">
+                    <li class="nav-item {{ $langFile['id'] == $currentFile['id'] ? "active" : "" }} text-semibold">
+                        <a class="nav-link level-1" href="{{ action('Admin\LanguageController@translate', ["id" => $language->uid, "file_id" => $langFile['id']]) }}">
                             <i class="icon-menu6"></i> {{ $langFile['file_title'] }}
                         </a>
                     </li>
                 @endforeach
                 @if (count($language->getLanguageFilesByType('plugin')))
-                    <li rel0="SubscriberController" class="dropdown">
-                        <a href="https://acelle.com/account/contact" class="level-1" data-bs-toggle="dropdown">
+                    <li rel0="SubscriberController" class="nav-item">
+                        <a href="https://acelle.com/account/contact" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
                             {{ trans('messages.language.plugins') }}
                             <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             @foreach ($language->getLanguageFilesByType('plugin') as $langFile)
-                                <li class="sub-menu {{ $langFile['id'] == $currentFile['id'] ? "active" : "" }} text-semibold">
-                                    <a class="" href="{{ action('Admin\LanguageController@translate', ["id" => $language->uid, "file_id" => $langFile['id']]) }}">
+                                <li class="sub-menu text-semibold">
+                                    <a class="dropdown-item {{ $langFile['id'] == $currentFile['id'] ? "active" : "" }}" href="{{ action('Admin\LanguageController@translate', ["id" => $language->uid, "file_id" => $langFile['id']]) }}">
                                         <i class="icon-menu6"></i> {{ $langFile['file_title'] }}
                                     </a>
                                 </li>

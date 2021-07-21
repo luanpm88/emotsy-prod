@@ -6276,15 +6276,11 @@ h1, h1 {
 }
 #anotify .alert {
     width: 350px;
-    padding: 10px 10px 10px 38px;
+    padding: 10px 10px 10px 40px;
 }
-
 #anotify .alert::before {
     content: 'notifications';
-    font-family: 'Material Icons Outlined';
-    position: absolute;
-    font-size: 17px;
-    left: 11px;
+    margin-left: -27px;
     top: 11px;   
 }
 #anotify .alert-dismissible .btn-close {
@@ -6367,15 +6363,20 @@ h1, h1 {
 .campaign-steps .nav-link {
     margin-right: 35px!important;
 }
-.alert:before {
+.alert {
     position: relative;
+    padding-left: 50px;
+}
+.alert:before {
+    position: absolute;
     display: inline-block;
     height: 19px;
     font-family: 'Material Icons Outlined';
-    font-size: 17px;
+    font-size: 19px;
     line-height: 17px;
     transform: translateY(2px);
-    margin-right: 7px;
+    margin-left: -32px;
+    top: 17px;
 }
 
 .alert-info:before {
@@ -6661,4 +6662,10 @@ h1 [class^="material-icons"] {
     -moz-animation: spin 1s linear infinite;
     animation: spin 1s linear infinite;
     color: rgb(0, 53, 88);
+}
+.dropdown-item.active, .dropdown-item:active {
+    background-color: #007ca8;
+}
+.dropdown-menu li:hover > a {
+    color: #222;
 }

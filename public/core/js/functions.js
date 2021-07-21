@@ -265,6 +265,8 @@ function menuActiveCheck() {
         $("li[rel"+i+"='"+CONTROLLER+"/"+ACTION+"']").parents('.nav-item').addClass("active");
         $("li[rel"+i+"='"+CONTROLLER+"/"+ACTION+"']").parents('.nav-item').find('.nav-link').eq(0).addClass("active");
     }
+
+    $('.dropdown-item.active').closest('.nav-item').addClass("active");
 }
 
 function applyLinkListener(links, options) {

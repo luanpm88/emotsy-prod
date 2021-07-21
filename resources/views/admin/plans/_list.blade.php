@@ -11,7 +11,7 @@
                                 title="{{ trans('messages.plan.show') }}"
                                 link-method="POST"
                                 href="{{ action('Admin\PlanController@visibleOn', $plan->uid) }}"
-                                class="ajax_link plan-off {{ (\Auth::user()->can('visibleOn', $plan) ? 'xtooltip' : 'cant_show') }}"
+                                class="list-action-single plan-off {{ (\Auth::user()->can('visibleOn', $plan) ? 'xtooltip' : 'cant_show') }}"
                             >
                                 <i class="material-icons-round plan-off-icon fs-3 me-3">toggle_off</i>
                             </a>
@@ -21,7 +21,7 @@
                                 link-confirm="{{ trans('messages.plans.hide.confirm') }}"
                                 link-method="POST"
                                 href="{{ action('Admin\PlanController@visibleOff', $plan->uid) }}"
-                                class="ajax_link plan-on {{ (\Auth::user()->can('visibleOff', $plan) ? 'xtooltip' : 'disabled') }}"
+                                class="list-action-single plan-on {{ (\Auth::user()->can('visibleOff', $plan) ? 'xtooltip' : 'disabled') }}"
                             >
                                 <i class="material-icons-round plan-on-icon fs-3 me-3">toggle_on</i>
                             </a>
