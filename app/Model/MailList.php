@@ -711,6 +711,7 @@ class MailList extends Model
         // Contact
         if (is_object($this->contact)) {
             $new_contact = $this->contact->replicate();
+            $new_contact->uid = uniqid();
             $new_contact->save();
 
             // update contact

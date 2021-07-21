@@ -248,6 +248,7 @@ class Template extends Model
     public function copy($attributes = [])
     {
         $copy = $this->replicate();
+        $copy->uid = uniqid();
         
         if (isset($attributes['name'])) {
             $copy->name = $attributes['name'];

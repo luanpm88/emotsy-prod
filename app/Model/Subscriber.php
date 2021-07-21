@@ -689,6 +689,7 @@ class Subscriber extends Model
 
         if (!is_object($copy)) {
             $copy = $this->replicate();
+            $copy->uid = uniqid();
             $copy->mail_list_id = $list->id;
             unset($copy->verify_result);
             $copy->save();
