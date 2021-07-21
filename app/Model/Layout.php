@@ -23,9 +23,12 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Acelle\Library\Traits\HasUid;
 
 class Layout extends Model
 {
+    use HasUid;
+    
     /**
      * The attributes that are mass assignable.
      *
@@ -43,16 +46,6 @@ class Layout extends Model
     public static $itemsPerPage = 25;
 
     /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
-    }
-
-    /**
      * Associations.
      *
      * @var object | collect
@@ -60,21 +53,6 @@ class Layout extends Model
     public function pages()
     {
         return $this->hasMany('Acelle\Model\Page');
-    }
-
-    /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating list.
-        static::creating(function ($item) {
-            // Create new uid
-            $uid = uniqid();
-            $item->uid = $uid;
-        });
     }
 
     public function tags()

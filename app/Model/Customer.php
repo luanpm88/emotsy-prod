@@ -41,10 +41,11 @@ use Acelle\Library\AutoBillingData;
 use File;
 use Acelle\Library\Traits\TrackJobs;
 use Acelle\Jobs\ImportBlacklistJob;
+use Acelle\Library\Traits\HasUid;
 
 class Customer extends Model
 {
-    use TrackJobs;
+    use TrackJobs, HasUid;
 
     protected $quotaTracker;
 
@@ -65,16 +66,6 @@ class Customer extends Model
     protected $fillable = [
         'name', 'timezone', 'language_id', 'color_scheme', 'text_direction'
     ];
-
-    /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
-    }
 
     /**
      * Associations.
@@ -310,21 +301,6 @@ class Customer extends Model
     public function activeSubscription()
     {
         return (is_object($this->subscription) && $this->subscription->isActive()) ? $this->subscription : null;
-    }
-
-    /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating list.
-        static::creating(function ($item) {
-            // Create new uid
-            $uid = uniqid();
-            $item->uid = $uid;
-        });
     }
 
     /**
@@ -2036,11 +2012,17 @@ class Customer extends Model
     {
         $auto = $this->automation2s()->create([
             'name' => 'Abandoned Cart Notification - Auto',
-            'mail_list_id' => $store->mail_list_id,
+            'mail_list_id' => $store->getList()->id,
             'status' => 'inactive',
         ]);
 
-        $email = $auto->emails()->create();
+        $email = new \Acelle\Model\Email([
+            'action_id' => '1000000001',
+        ]);
+        $email->customer_id = $this->id;
+        $email->automation2_id = $auto->id;
+        $email->save();
+
         $auto->data = json_encode([
             [
                 "title" => "Abandoned Cart Reminder",
@@ -2050,7 +2032,7 @@ class Customer extends Model
                 "options" => [
                     "key" => "woo-abandoned-cart",
                     "type" => "woo-abandoned-cart",
-                    "source_uid" => "6076f03620408",
+                    "source_uid" => $store->uid,
                     "wait" => "24_hour",
                     "init"  => "true"
                 ]
@@ -2065,11 +2047,10 @@ class Customer extends Model
                 ]
             ]
         ]);
-
-        $email->save();
+        
         $auto->save();
 
-        return $email;
+        return $auto;
     }
 
     public function getAbandonedEmailAutomation($store)

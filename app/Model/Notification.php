@@ -23,9 +23,12 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Acelle\Library\Traits\HasUid;
 
 class Notification extends Model
 {
+    use HasUid;
+
     protected $table = 'notifications';
 
     const LEVEL_INFO = 'info';

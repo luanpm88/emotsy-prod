@@ -45,10 +45,11 @@ use Acelle\Jobs\ImportSubscribers2;
 use Acelle\Jobs\ExportSubscribersJob;
 use Acelle\Jobs\VerifyMailListJob;
 use League\Csv\Writer;
+use Acelle\Library\Traits\HasUid;
 
 class MailList extends Model
 {
-    use QueryHelper, TrackJobs;
+    use QueryHelper, TrackJobs, HasUid;
 
     const SOURCE_EMBEDDED_FORM = 'embedded-form';
     const SOURCE_WEB = 'web';
@@ -290,16 +291,6 @@ class MailList extends Model
         $query = $query->orderBy($request->sort_order, $request->sort_direction);
 
         return $query;
-    }
-
-    /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
     }
 
     /**
@@ -1145,28 +1136,33 @@ class MailList extends Model
         $total = 0;
         $message = null;
 
+        $overQuotaAttempt = false;
+
+        if (!is_null($progressCallback)) {
+            $progressCallback($processed, $total, $failed, $message = 'Import is starting...');
+        }
+
+        // Read CSV files
+        list($headers, $availableFields, $total, $results) = $this->readCsv($file);
+
+        if (!is_null($progressCallback)) {
+            $progressCallback($processed, $total, $failed, $message = 'Validating file headers...');
+        }
+
+        // validate headers, check for required fields
+        // throw an exception in case of error
         try {
-            $overQuotaAttempt = false;
-
-            if (!is_null($progressCallback)) {
-                $progressCallback($processed, $total, $failed, $message = 'Import is starting...');
-            }
-
-            // Read CSV files
-            list($headers, $availableFields, $total, $results) = $this->readCsv($file);
-            
-            if (!is_null($progressCallback)) {
-                $progressCallback($processed, $total, $failed, $message = 'Validating file headers...');
-            }
-
-            // validate headers, check for required fields
-            // throw an exception in case of error
             $this->validateCsvHeader($availableFields);
+        } catch (Exception $ex) {
+            // Generate a prettier error message which is logged and shown up to admin
+            throw new Exception(sprintf('Import job dispatched by user "%s" failed. Error: %s', $this->customer->user->email, $ex->getMessage()));
+        }
 
-            if (!is_null($progressCallback)) {
-                $progressCallback($processed, $total, $failed, $message = 'Loading records from file...');
-            }
+        if (!is_null($progressCallback)) {
+            $progressCallback($processed, $total, $failed, $message = 'Loading records from file...');
+        }
 
+        try {
             // update status, line count
 
             // process by batches
@@ -1178,8 +1174,6 @@ class MailList extends Model
                 } else {
                     $insertLimit = $this->getRemainingAddSubscribersQuota();
                 }
-
-
 
                 // if ($insertLimit == 0) { // only == 0 is enough
                 //     throw new \Exception(trans('messages.import.notice.over_quota'));

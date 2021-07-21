@@ -3,33 +3,11 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Acelle\Library\Traits\HasUid;
 
 class SubAccount extends Model
 {
-    /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating resource.
-        static::creating(function ($account) {
-            // Create new uid
-            $uid = uniqid();
-            $account->uid = $uid;
-        });
-    }
-
-    /**
-     * Find resource by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
-    }
+    use HasUid;
 
     /**
      * Items per page.

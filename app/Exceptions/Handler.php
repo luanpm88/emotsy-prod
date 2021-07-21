@@ -19,7 +19,7 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
-        // Currently, Acelle allows user to "cancel" a job by deleting its monitor model, resulting in 
+        // Currently, Acelle allows user to "cancel" a job by deleting its monitor model, resulting in
         // an "ModelNotFoundException" exception
         // Suppress it here to avoid a log recorded to admin notification area
         ModelNotFoundException::class,

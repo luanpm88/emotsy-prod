@@ -28,6 +28,7 @@ use Validator;
 use ZipArchive;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
+use Acelle\Library\Traits\HasUid;
 use Acelle\Library\Rss;
 use Illuminate\Validation\ValidationException;
 use KubAT\PhpSimple\HtmlDomParser;
@@ -37,6 +38,8 @@ use File;
 
 class Template extends Model
 {
+    use HasUid;
+    
     const BUILDER_ENABLED = true;
     const BUILDER_DISABLED = false;
 
@@ -55,23 +58,6 @@ class Template extends Model
      * @var array
      */
     public static $itemsPerPage = 25;
-
-    /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating item.
-        static::creating(function ($item) {
-            // Create new uid
-            $uid = uniqid();
-            if (is_null($item->uid)) {
-                $item->uid = $uid;
-            }
-        });
-    }
 
     /**
      * Associations.
@@ -159,16 +145,6 @@ class Template extends Model
     public static function scopeShared($query)
     {
         $query = $query->where('customer_id', '=', null);
-    }
-
-    /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
     }
 
     /**
@@ -682,7 +658,7 @@ class Template extends Model
                 "verify_peer"=>false,
                 "verify_peer_name"=>false,
             ),
-        ); 
+        );
         file_put_contents($filepath, $content, false, stream_context_create($arrContextOptions));
         $assetUrl = \Acelle\Helpers\generatePublicPath($filepath);
 

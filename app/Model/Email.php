@@ -18,10 +18,11 @@ use Illuminate\Validation\ValidationException;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use Acelle\Jobs\DeliverEmail;
 use Acelle\Library\Traits\HasTemplate;
+use Acelle\Library\Traits\HasUid;
 
 class Email extends Model
 {
-    use HasTemplate;
+    use HasTemplate, HasUid;
 
     /**
      * The attributes that are mass assignable.
@@ -86,35 +87,6 @@ class Email extends Model
     public function trackingDomain()
     {
         return $this->belongsTo('Acelle\Model\TrackingDomain', 'tracking_domain_id');
-    }
-
-    /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating automation.
-        static::creating(function ($item) {
-            // Create new uid
-            $uid = uniqid();
-            $item->uid = $uid;
-        });
-
-        static::deleted(function ($item) {
-            // Need reviewing...
-        });
-    }
-
-    /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
     }
 
     /**

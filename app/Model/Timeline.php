@@ -3,19 +3,13 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Acelle\Library\Traits\HasUid;
 
 class Timeline extends Model
 {
+    use HasUid;
+    
     protected $fillable = ['automation2_id', 'subscriber_id', 'auto_trigger_id', 'activity', 'activity_type'];
-
-    public static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($me) {
-            $me->uid = uniqid();
-        });
-    }
 
     /**
      * Associations.

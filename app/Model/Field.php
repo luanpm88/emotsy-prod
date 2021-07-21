@@ -23,9 +23,12 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Acelle\Library\Traits\HasUid;
 
 class Field extends Model
 {
+    use HasUid;
+    
     /**
      * The attributes that are mass assignable.
      *
@@ -60,21 +63,6 @@ class Field extends Model
     }
 
     /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating list.
-        static::creating(function ($item) {
-            // Create new uid
-            $uid = uniqid();
-            $item->uid = $uid;
-        });
-    }
-
-    /**
      * Format string to field tag.
      *
      * @var string
@@ -82,16 +70,6 @@ class Field extends Model
     public static function formatTag($string)
     {
         return strtoupper(preg_replace('/[^0-9a-zA-Z_]/m', '', $string));
-    }
-
-    /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
     }
 
     /**

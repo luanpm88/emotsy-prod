@@ -43,9 +43,12 @@ use DateTime;
 use DateTimeZone;
 use Exception;
 use Throwable;
+use Acelle\Library\Traits\HasUid;
 
 class Automation2 extends Model
 {
+    use HasUid;
+    
     // Automation status
     const STATUS_ACTIVE = 'active';
     const STATUS_INACTIVE = 'inactive';
@@ -72,7 +75,7 @@ class Automation2 extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'mail_list_id', 'status'
+        'name', 'mail_list_id', 'status', 'data'
     ];
 
     /**
@@ -174,16 +177,6 @@ class Automation2 extends Model
         static::created(function ($item) {
             $item->updateCache();
         });
-    }
-
-    /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
     }
 
     /**
@@ -449,8 +442,8 @@ class Automation2 extends Model
                 $automationLockFile = $customer->getLockPath('automation-lock-'.$automation->uid);
                 $lock = new Lockable($automationLockFile);
                 $timeout = 5; // seconds
-                $timeoutCallback = function() use ($automation) {
-                    // pass this ot the getExclusiveLock method 
+                $timeoutCallback = function () use ($automation) {
+                    // pass this ot the getExclusiveLock method
                     // to have it silently quit, without throwing an exception
                     $automation->logger()->info(sprintf('LOCK timeout, another process is currently handling automation "%s"', $automation->name));
                     return;
@@ -497,6 +490,7 @@ class Automation2 extends Model
             return;
         }
 
+        // @TODO: move to trigger object
         switch ($triggerName) {
             case self::TRIGGER_TYPE_WELCOME_NEW_SUBSCRIBER:
                 /* triggered immediately by MailListSubscription event */
@@ -522,6 +516,9 @@ class Automation2 extends Model
             case self::TRIGGER_SUBSCRIPTION_ANNIVERSARY_DATE:
                 // In progress
                 break;
+            case 'woo-abandoned-cart':
+                $this->checkForAbandonedCart();
+                // no break
             case 'others':
                 // others
                 break;
@@ -1317,6 +1314,10 @@ class Automation2 extends Model
         ]);
     }
 
+    public function checkForAbandonedCart()
+    {
+    }
+
     /**
      * Get first email.
      *
@@ -1324,6 +1325,7 @@ class Automation2 extends Model
      */
     public function getAbandonedCartEmail()
     {
+        // var_dump($this->getElements()[1]->options);die();
         return \Acelle\Model\Email::findByUid($this->getElements()[1]->options->email_uid);
     }
 

@@ -83,11 +83,11 @@
                                         <div class="check"></div>
                                     </div>
                                 </div>
-                                <div class="mr-auto pr-4">
-                                    <h4 class="font-weight-semibold mb-1">{{ $gateway->getName() }}</h4>
-                                    <p class="mb-0">{{ $gateway->getDescription() }}</p>
-                                </div>                        
-                            </div>                
+                            </div>
+                            <div class="mr-auto pr-4">
+                                <h4 class="font-weight-semibold mb-1">{{ $gateway->getName() }}</h4>
+                                <p class="mb-0">{{ trans('messages.'.$gateway->getType().'.user.description') }}</p>
+                            </div>                        
                         </div>
                     @endforeach
                 </div>

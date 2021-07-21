@@ -2359,7 +2359,7 @@ class Automation2Controller extends Controller
                 'email' => 'required|email',
             ]);
 
-            // 
+            //
             if ($validator->fails()) {
                 return response()->view('automation2.sendTestEmail', [
                     'email' => $email,

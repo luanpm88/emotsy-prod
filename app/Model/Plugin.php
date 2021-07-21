@@ -15,10 +15,13 @@ use Composer\Autoload\ClassLoader;
 use App;
 use Acelle\Library\Facades\Hook;
 use Illuminate\Support\Facades\File;
+use Acelle\Library\Traits\HasUid;
 use Exception;
 
 class Plugin extends Model
 {
+    use HasUid;
+    
     const STATUS_ACTIVE = 'active';
     const STATUS_INACTIVE = 'inactive';
 
@@ -104,29 +107,6 @@ class Plugin extends Model
     public static function scopeActive($query)
     {
         return $query->where('status', '=', self::STATUS_ACTIVE);
-    }
-
-    /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating list.
-        static::creating(function ($item) {
-            $item->uid = uniqid();
-        });
-    }
-
-    /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
     }
 
     /**

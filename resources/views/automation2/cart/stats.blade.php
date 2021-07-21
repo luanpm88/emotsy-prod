@@ -1,4 +1,4 @@
-@extends('layouts.popup.small')
+@extends('layouts.popup.medium')
 
 @section('content')  
     <div class="d-flex">
@@ -8,7 +8,7 @@
                 <br>Click on a number to see its details</p>
         </div>
         <div class="ml-auto pl-4">
-            <button class="btn btn-secondary">Refresh</button>
+            <button class="btn btn-secondary" onclick="timelinePopup.load()">Refresh</button>
         </div>
     </div>  
            

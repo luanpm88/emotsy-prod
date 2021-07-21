@@ -28,9 +28,12 @@ use Acelle\Library\Automation\Trigger;
 use Acelle\Library\Automation\Send;
 use Acelle\Library\Automation\Wait;
 use Exception;
+use Acelle\Library\Traits\HasUid;
 
 class AutoTrigger extends Model
 {
+    use HasUid;
+    
     protected $fillable = [
         //
     ];

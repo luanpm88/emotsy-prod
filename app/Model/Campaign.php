@@ -52,10 +52,11 @@ use Illuminate\Support\Facades\Bus;
 use Acelle\Library\RouletteWheel;
 use Acelle\Library\Traits\TrackJobs;
 use Throwable;
+use Acelle\Library\Traits\HasUid;
 
 class Campaign extends Model
 {
-    use HasTemplate, TrackJobs;
+    use HasTemplate, TrackJobs, HasUid;
 
     protected $logger;
 
@@ -784,20 +785,6 @@ class Campaign extends Model
     }
 
     /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating list.
-        static::creating(function ($item) {
-            $uid = uniqid();
-            $item->uid = $uid;
-        });
-    }
-
-    /**
      * Get current links of campaign.
      */
     public function getLinks()
@@ -840,16 +827,6 @@ class Campaign extends Model
                 $cl->save();
             }
         }
-    }
-
-    /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
     }
 
     /**
@@ -3189,7 +3166,7 @@ class Campaign extends Model
         $sendingServersPool = $this->defaultMailList->getSendingServers();
 
         // Set up sending servers' webhooks before launching
-        foreach($sendingServersPool as $serverId => $fitness) {
+        foreach ($sendingServersPool as $serverId => $fitness) {
             $server = SendingServer::find($serverId)->mapType();
 
             if ($this->useSendingServerFromEmailAddress()) {

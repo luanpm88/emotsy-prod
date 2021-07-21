@@ -412,7 +412,7 @@ class SubscriberController extends Controller
         $filepath = $list->uploadCsv($request->file('file'));
 
         // Use the default way if there is no other plugin
-        Hook::registerIfEmpty('dispatch_list_import_job', function($list, $filepath) {
+        Hook::registerIfEmpty('dispatch_list_import_job', function ($list, $filepath) {
             return $list->dispatchImportJob($filepath);
         });
 

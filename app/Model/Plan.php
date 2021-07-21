@@ -28,9 +28,12 @@ use Illuminate\Validation\ValidationException;
 use Acelle\Model\Subscription;
 use Acelle\Cashier\Cashier;
 use Acelle\Model\SendingServer;
+use Acelle\Library\Traits\HasUid;
 
 class Plan extends Model
 {
+    use HasUid;
+    
     // Plan status
     const STATUS_INACTIVE = 'inactive';
     const STATUS_ACTIVE = 'active';
@@ -206,16 +209,6 @@ class Plan extends Model
         return $rules;
     }
 
-    /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
-    }
-
     public function admin()
     {
         return $this->belongsTo('Acelle\Model\Admin');
@@ -244,21 +237,6 @@ class Plan extends Model
     public function plansEmailVerificationServers()
     {
         return $this->hasMany('Acelle\Model\PlansEmailVerificationServer');
-    }
-
-    /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating list.
-        static::creating(function ($item) {
-            // Create new uid
-            $uid = uniqid();
-            $item->uid = $uid;
-        });
     }
 
     /**

@@ -4,9 +4,12 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Facades\Billing;
+use Acelle\Library\Traits\HasUid;
 
 class Transaction extends Model
 {
+    use HasUid;
+    
     // wait status
     const STATUS_PENDING = 'pending';
     const STATUS_FAILED = 'failed';
@@ -20,30 +23,6 @@ class Transaction extends Model
     protected $fillable = [
         'error', 'status'
     ];
-
-    /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
-    }
-
-    /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating list.
-        static::creating(function ($item) {
-            // Create new uid
-            $item->uid = uniqid();
-        });
-    }
 
     /**
      * Invoice.
