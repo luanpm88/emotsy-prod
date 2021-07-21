@@ -4,6 +4,7 @@ namespace Acelle\Helpers;
 
 use Acelle\Library\StringHelper;
 use Exception;
+use File;
 
 function generatePublicPath($absPath, $absolute = false)
 {
@@ -51,4 +52,59 @@ function getAppSubdirectory()
     $appUrlInfo = parse_url(config('app.url'));
     $subdirectory = array_key_exists('path', $appUrlInfo) ? $appUrlInfo['path'] : null;
     return $subdirectory;
+}
+
+function updateTranslationFile($targetFile, $sourceFile, $overwriteTargetPhrases = false)
+{
+    $source = include $sourceFile;
+    $target = include $targetFile;
+
+    if ($overwriteTargetPhrases) {
+        // Overwrite $target
+        $merged = $source + $target;
+    } else {
+        // Respect $target
+        $merged = $target + $source;
+    }
+
+    // Find keys in $target that are that not available in $source
+    $diff = array_diff_key($target, $source);
+
+    // Delete those keys in the final result
+    $merged = array_diff_key($merged, $diff);
+
+    $out = '<?php return '.var_export(\Yaml::parse(\Yaml::dump($merged)), true).' ?>';
+    \File::put($targetFile, $out);
+}
+
+// Copy and:
+// + Remove the destination first
+// + Create parent folders if not exist
+function pcopy($src, $dst)
+{
+    if (!File::exists($src)) {
+        throw new Exception("File `{$src}` does not exist");
+    }
+
+    if (File::exists($dst)) {
+        // Delete the file or link or directory
+        if (is_link($dst) || is_file($dst)) {
+            File::delete($dst);
+        } else {
+            File::deleteDirectory($dst);
+        }
+    } else {
+        // Make sure the PARENT directory exists
+        $dirname = pathinfo($dst)['dirname'];
+        if (!File::exists($dirname)) {
+            File::makeDirectory($dirname, 0777, true, true);
+        }
+    }
+
+    // if source is a file, just copy it
+    if (File::isFile($src)) {
+        File::copy($src, $dst);
+    } else {
+        File::copyDirectory($src, $dst);
+    }
 }
