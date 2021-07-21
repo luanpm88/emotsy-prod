@@ -1,4 +1,4 @@
-@extends('layouts.install')
+@extends('layouts.core.install')
 
 @section('title', trans('messages.cron_jobs'))
 

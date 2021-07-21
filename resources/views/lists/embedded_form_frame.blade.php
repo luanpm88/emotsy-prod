@@ -1,4 +1,4 @@
-@extends('layouts.none')
+@extends('layouts.core.none')
 
 @section('content')
     <div style="padding:20px">

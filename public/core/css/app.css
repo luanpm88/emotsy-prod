@@ -2525,9 +2525,9 @@ canvas[data-zr-dom-id='_zrender_hover_'] {
   flex-shrink: 0;
 }
 .btn-default {
-  background: #e0e0e0 !important;
-  color: #484848 !important;
-  border-color: #e0e0e0 !important;
+  background: #efeeea !important;
+  color: #000 !important;
+  border-color: #efeeea !important;
 }
 .btn-default:hover {
   background: #d0d0d0 !important;

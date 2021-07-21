@@ -112,7 +112,7 @@
                     @if (\Auth::user()->customer->can('changePlan', $subscription))
                         <a
                             href="{{ action('AccountSubscriptionController@changePlan', ["id" => $subscription->uid]) }}"
-                            class="btn btn-secondary change_plan_button me-1"
+                            class="btn btn-default change_plan_button me-1"
                             data-size="sm"
                         >
                             {{ trans('messages.subscription.change_plan') }}
