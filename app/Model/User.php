@@ -503,7 +503,7 @@ class User extends Authenticatable
         if (file_exists($path)) {
             return \Acelle\Helpers\generatePublicPath($path);
         } else {
-            return URL::asset('assets/images/placeholder.jpg');
+            return URL::asset('images/placeholder.jpg');
         }
     }
 
@@ -513,7 +513,7 @@ class User extends Authenticatable
         if (file_exists($path)) {
             return \Acelle\Helpers\generatePublicPath($path);
         } else {
-            return URL::asset('assets/images/placeholder.jpg');
+            return URL::asset('images/placeholder.jpg');
         }
     }
 

@@ -19,7 +19,7 @@
             @if (Auth::user()->customer->subscription->plan->useOwnSendingServer())
                 <li class="nav-item" rel0="SendingDomainController">
                     <a href="{{ action('SendingDomainController@index') }}" class="nav-link">
-                    <i class="icon-earth mr-10"></i>
+                        <i class="icon-earth mr-10"></i> {{ trans('messages.domains') }}
                     </a>
                 </li>
             @elseif ( Auth::user()->customer->subscription->plan->useOwnSendingServer() ||

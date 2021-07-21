@@ -25,7 +25,15 @@
                 
                 <td class="text-center">
                     <div class="single-stat-box pull-left">
-                        <i class="table-checkmark-{{ $item->domain_verified }}"></i>
+                        @if ($item->domain_verified)
+                            <span class="material-icons-round fs-5 text-success">
+                                task_alt
+                                </span>
+                        @else
+                        <span class="material-icons-outlined fs-5 text-danger">
+                            not_interested
+                            </span>
+                        @endif
                         <br />
                         <span class="text-muted">{{ trans("messages.sending_domain.domain_verification") }}</span>
                     </div>
@@ -33,7 +41,15 @@
                     
                 <td class="text-center">
                     <div class="single-stat-box pull-left">
-                        <i class="table-checkmark-{{ $item->dkim_verified }}"></i>
+                        @if ($item->dkim_verified)
+                            <span class="material-icons-round fs-5 text-success">
+                                task_alt
+                                </span>
+                        @else
+                        <span class="material-icons-outlined fs-5 text-danger">
+                            not_interested
+                            </span>
+                        @endif
                         <br />
                         <span class="text-muted">{{ trans("messages.sending_domain.dkim_verification") }}</span>
                     </div>
@@ -41,16 +57,27 @@
                 
                 <td class="text-center">
                     <div class="single-stat-box pull-left">
-                        <i class="table-checkmark-{{ $item->spf_verified }}"></i>
+                        @if ($item->spf_verified)
+                            <span class="material-icons-round fs-5 text-success">
+                                task_alt
+                                </span>
+                        @else
+                        <span class="material-icons-outlined fs-5 text-danger">
+                            not_interested
+                            </span>
+                        @endif
                         <br />
                         <span class="text-muted">{{ trans("messages.sending_domain.spf_verification") }}</span>
                     </div>
                 </td>
-                <td class="text-end">
+                <td class="text-center">
                     <span class="text-muted2 list-status pull-left">
                         <span class="label label-flat bg-{{ $item->status }}">{{ trans('messages.sending_domain_status_' . $item->status) }}</span>
                     </span>
 
+                </td>
+                <td class="text-end">
+                    
                     @if (Auth::user()->customer->can('read', $item))
                         <a href="{{ action('SendingDomainController@show', $item->uid) }}" data-popup="tooltip"
                             title="{{ trans('messages.sending_domain.view') }}" role="button" class="btn btn-secondary btn-icon">
@@ -63,7 +90,7 @@
                             <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li>
-                                    <a link-confirm="{{ trans('messages.delete_sending_domains_confirm') }}" href="{{ action('SendingDomainController@delete', ["uids" => $item->uid]) }}">
+                                    <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.delete_sending_domains_confirm') }}" href="{{ action('SendingDomainController@delete', ["uids" => $item->uid]) }}">
                                         <span class="material-icons-outlined">
 delete_outline
 </span> {{ trans('messages.delete') }}

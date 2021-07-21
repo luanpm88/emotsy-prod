@@ -37,7 +37,7 @@
                     <div class="media profile-image">
                         <div class="media-left">
                             <a href="#" class="upload-media-container">
-                                <img preview-for="image" empty-src="{{ URL::asset('assets/images/placeholder.jpg') }}" src="{{ $user->getProfileImageUrl() }}" class="img-circle" alt="">
+                                <img preview-for="image" empty-src="{{ URL::asset('images/placeholder.jpg') }}" src="{{ $user->getProfileImageUrl() }}" class="img-circle" alt="">
                             </a>
                             <input type="file" name="image" class="file-styled previewable hide">
                             <input type="hidden" name="_remove_image" value='' />

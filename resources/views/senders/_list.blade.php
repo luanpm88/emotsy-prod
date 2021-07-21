@@ -54,7 +54,7 @@
 					<div class="btn-group">
 						@if (Auth::user()->can('read', $sender))
 							<a href="{{ action('SenderController@show', $sender->uid) }}"
-								role="button" class="btn btn-default">
+								role="button" class="btn btn-secondary">
 									{{ trans('messages.sender.view') }}
 							</a>
 						@endif
@@ -62,7 +62,7 @@
 						<ul class="dropdown-menu dropdown-menu-end">
 							@if (Auth::user()->customer->can('delete', $sender))
 								<li>
-									<a link-confirm="{{ trans('messages.sender.delete.confirm') }}"
+									<a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.sender.delete.confirm') }}"
 										href="{{ action('SenderController@delete', ["uids" => $sender->uid]) }}"
 									>
 										<span class="material-icons-outlined">
@@ -81,14 +81,18 @@ delete_outline
 	
 @elseif (!empty(request()->keyword) || !empty(request()->filters["campaign_uid"]))
 	<div class="empty-list">
-		<i class="icon icon-user-check"></i>
+		<span class="material-icons-outlined">
+people_alt
+</span>
 		<span class="line-1">
 			{{ trans('messages.no_search_result') }}
 		</span>
 	</div>
 @else
 	<div class="empty-list">
-		<i class="icon icon-user-check"></i>
+		<span class="material-icons-outlined">
+people_alt
+</span>
 		<span class="line-1">
 			{{ trans('messages.senders.empty.message') }}
 		</span>

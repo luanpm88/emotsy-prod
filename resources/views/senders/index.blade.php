@@ -23,7 +23,7 @@
     
     <p>{{ trans('messages.sender.wording') }}</p>
 
-    <form class="listing-form"
+    <div class="listing-form"
         data-url="{{ action('SenderController@listing') }}"
         per-page="{{ Acelle\Model\Sender::$itemsPerPage }}"
     >
@@ -38,7 +38,7 @@
                                 {{ trans('messages.actions') }} <span class="number"></span><span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu">
-                                <li><a link-confirm="{{ trans('messages.remove_blacklist_confirm') }}" href="{{ action('SenderController@delete') }}"><span class="material-icons-outlined">
+                                <li><a class="dropdown-item" link-confirm="{{ trans('messages.remove_blacklist_confirm') }}" href="{{ action('SenderController@delete') }}"><span class="material-icons-outlined">
 delete_outline
 </span> {{ trans('messages.delete') }}</a></li>
                             </ul>
@@ -81,5 +81,21 @@ file_upload
 
         <div class="pml-table-container">
         </div>
-    </form>
+    </div>
+
+    <script>
+        var SendersIndex = {
+            getList: function() {
+                return makeList({
+                    url: '{{ action('SenderController@listing') }}',
+                    container: $('.listing-form'),
+                    content: $('.pml-table-container')
+                });
+            }
+        };
+
+        $(function() {
+            SendersIndex.getList().load();
+        });
+    </script>
 @endsection

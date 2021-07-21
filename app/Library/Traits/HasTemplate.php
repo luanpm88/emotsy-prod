@@ -63,7 +63,7 @@ trait HasTemplate
         if ($this->template) {
             return $this->template->getThumbUrl();
         } else {
-            return url('assets/images/placeholder.jpg');
+            return url('images/placeholder.jpg');
         }
     }
 

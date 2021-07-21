@@ -32,21 +32,22 @@
             <div class="col-md-9">
                 @if ($trackingDomains->count() >= 0)
                     <div class="filter-box">
-                        <div class="dropdown list_actions" style="display: none">
-                            <button role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
-                                {{ trans('messages.actions') }} <span class="number"></span><span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a link-confirm="{{ trans('messages.delete_tracking_domains_confirm') }}" href="{{ action('TrackingDomainController@delete') }}"><span class="material-icons-outlined">
-delete_outline
-</span> {{ trans('messages.delete') }}</a></li>
-                            </ul>
-                        </div>
                         <div class="checkbox inline check_all_list">
                             <label>
                                 <input type="checkbox" name="page_checked" class="styled check_all">
                             </label>
                         </div>
+                        <div class="dropdown list_actions" style="display: none">
+                            <button role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
+                                {{ trans('messages.actions') }} <span class="number"></span><span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" link-confirm="{{ trans('messages.delete_tracking_domains_confirm') }}" href="{{ action('TrackingDomainController@delete') }}"><span class="material-icons-outlined">
+delete_outline
+</span> {{ trans('messages.delete') }}</a></li>
+                            </ul>
+                        </div>
+                        
                         <span class="filter-group">
                             <span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
                             <select class="select" name="sort_order">

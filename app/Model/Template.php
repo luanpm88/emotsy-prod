@@ -493,7 +493,7 @@ class Template extends Model
         if ($this->getThumbName()) {
             return \Acelle\Helpers\generatePublicPath($this->getStoragePath($this->getThumbName()));
         } else {
-            return url('assets/images/placeholder.jpg');
+            return url('images/placeholder.jpg');
         }
     }
 
