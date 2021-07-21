@@ -3,8 +3,8 @@
 @section('title', $plan->name)
 
 @section('head')
-    <link href="{{ URL::asset('rangeslider/css/bootstrap-slider.css') }}" rel="stylesheet" type="text/css">
-    <script type="text/javascript" src="{{ URL::asset('rangeslider/bootstrap-slider.js') }}"></script>
+    <link href="{{ URL::asset('core/rangeslider/css/bootstrap-slider.css') }}" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="{{ URL::asset('core/rangeslider/bootstrap-slider.js') }}"></script>
 @endsection
 
 @section('page_header')
