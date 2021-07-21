@@ -34,7 +34,10 @@ class SourceController extends Controller
      */
     public function listing(Request $request)
     {
-        $sources = Source::search($request)->paginate($request->per_page);
+        $sources = $request->user()->customer->sources()
+            ->search($request->keyword)
+            ->orderBy($request->sort_order, $request->sort_direction)
+            ->paginate($request->per_page);
 
         return view('sources._list', [
             'sources' => $sources,
@@ -50,6 +53,7 @@ class SourceController extends Controller
     {
         $source = Source::findByUid($uid);
         $automation = $request->user()->customer->getAbandonedEmailAutomation($source);
+        // var_dump($automation);die();
 
         return view('sources.show', [
             'source' => $source,

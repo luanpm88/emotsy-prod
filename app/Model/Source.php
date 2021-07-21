@@ -82,20 +82,16 @@ class Source extends Model
      *
      * @var object | collect
      */
-    public function scopeSearch($query, $request)
+    public function scopeSearch($query, $keyword)
     {
-        $query = $query->where('customer_id', '=', $request->user()->id);
-        
         // Keyword
-        if (!empty(trim($request->keyword))) {
-            foreach (explode(' ', trim($request->keyword)) as $keyword) {
-                $query = $query->where(function ($q) use ($keyword) {
-                    $q->orwhere('sources.type', 'like', '%'.strtolower($keyword).'%');
+        if (!empty(trim($keyword))) {
+            foreach (explode(' ', trim($keyword)) as $k) {
+                $query = $query->where(function ($q) use ($k) {
+                    $q->orwhere('sources.type', 'like', '%'.strtolower($k).'%');
                 });
             }
         }
-
-        return $query;
     }
 
     /**

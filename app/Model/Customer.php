@@ -2057,7 +2057,7 @@ class Customer extends Model
     {
         $auto = $this->automation2s()->where('mail_list_id', '=', $store->mail_list_id)->first();
         if (!$auto) {
-            $this->createAbandonedEmailAutomation($store);
+            $auto = $this->createAbandonedEmailAutomation($store);
         }
         return $auto;
     }
