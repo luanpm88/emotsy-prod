@@ -248,12 +248,12 @@ class FeedbackLoopHandlerController extends Controller
 
         try {
             $server->test();
-            echo json_encode([
+            return response()->json([
                 'status' => 'success', // or success
                 'message' => trans('messages.feedback_loop_handler.test_success')
             ]);
         } catch (\Exception $e) {
-            echo json_encode([
+            return response()->json([
                 'status' => 'error', // or success
                 'message' => $e->getMessage()
             ]);

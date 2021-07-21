@@ -21,7 +21,7 @@ reorder
     <p>{{ trans('messages.sub_accounts.wording') }}</p>
 
 
-    <form class="listing-form"
+    <div class="listing-form"
         data-url="{{ action('Admin\SubAccountController@listing') }}"
         per-page="{{ Acelle\Model\SubAccount::$itemsPerPage }}"
     >
@@ -37,7 +37,7 @@ reorder
                                 <option value="sending_servers.updated_at">{{ trans('messages.updated_at') }}</option>
                             </select>
                             <input type="hidden" name="sort_direction" value="desc" />
-<button class="btn btn-light sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
+<button type="button" class="btn btn-light sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
                                 <span class="material-icons-outlined desc">
 sort
 </span>
@@ -65,5 +65,21 @@ search
 
         <div class="pml-table-container">
         </div>
-    </form>
+    </div>
+
+    <script>
+        var AccountsIndex = {
+            getList: function() {
+                return makeList({
+                    url: '{{ action('Admin\SubAccountController@listing') }}',
+                    container: $('.listing-form'),
+                    content: $('.pml-table-container')
+                });
+            }
+        };
+
+        $(function() {
+            AccountsIndex.getList().load();
+        });
+    </script>
 @endsection

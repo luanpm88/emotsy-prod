@@ -1,7 +1,7 @@
 function initJs(container)
 {
     // tooltip
-    container.find('.xtooltip, [data-popup=tooltip]').tooltipster({
+    container.find('.xtooltip:not([title=""]), [data-popup=tooltip]:not([title=""])').tooltipster({
         theme: 'tooltipster-light'
     });
 
@@ -67,7 +67,7 @@ function initJs(container)
 
     // ulimited checkbox
     container.find('.unlimited-check input[type=checkbox]').on('change', function() {
-        unlimitedCheck(input);
+        unlimitedCheck($(this));
     }).trigger("change");
 
     // Select2 ajax
@@ -274,6 +274,11 @@ function applyLinkListener(links, options) {
         var url = $(this).attr('href');
         var confirm = $(this).attr('link-confirm');
         var method = $(this).attr('link-method');
+        var type = 'link';
+
+        if (typeof(options.type) !== 'undefined') {
+            type = options.type;
+        }
 
         new Link({
             type: 'link',
@@ -454,6 +459,9 @@ function makeList(options) {
                     data: {
                         _token: CSRF_TOKEN,
                     },
+                    before: function() {
+                        _list.masking();
+                    },
                     done: function(response) {
                         if (typeof(response) == 'string') {
                             response = {
@@ -609,6 +617,9 @@ function makeList(options) {
             confirmUrl: confirmUrl,
             method: method,
             data: data,
+            before: function() {
+                _list.masking();
+            },
             done: function(response) {
                 if (typeof(response) == 'string') {
                     response = {

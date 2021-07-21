@@ -5,7 +5,7 @@
         @foreach ($items as $key => $item)
             <tr>
                 <td width="1%">
-                    <i class="icon-{{ $item->type == 'page' ? "file-openoffice" : "mail-read" }} table-icon-big"></i>
+                    <i class="material-icons-outlined fs-3 me-2 text-muted">{{ $item->type == 'page' ? "web" : "email" }}</i>
                 </td>
                 <td>
                     <h5 class="m-0 text-bold">

@@ -10,7 +10,9 @@
             <li class="breadcrumb-item"><a href="{{ action("TemplateController@index") }}">{{ trans('messages.templates') }}</a></li>
         </ul>
         <h1>
-            <span class="text-semibold"><i class="icon-upload"></i> {{ trans('messages.upload_template') }}</span>
+            <span class="text-semibold"><span class="material-icons-outlined">
+file_upload
+</span> {{ trans('messages.upload_template') }}</span>
         </h1>
     </div>
 

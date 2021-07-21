@@ -52,7 +52,7 @@
         {{ csrf_field() }}
 
         <div class="row mr-0 ml-0 form-groups-bottom-0">
-            <div class="col-md-9 pl-0 pb-0 pr-0">
+            <div class="col-md-9 pl-0 pb-0 pr-0 form-group-mb-0">
                 @include('helpers.form_control', ['type' => 'textarea',
                     'class' => 'campaign-plain-text',
                     'name' => 'plain',

@@ -72,7 +72,7 @@
                 {{ trans('messages.sending_serbers.add_domain') }}
             </a>
             <a href="https://app.mailgun.com" role="button" target="_blank"
-              class="btn btn-mc_default">
+              class="btn btn-primary">
                 {{ trans('messages.sending_serbers.go_to_mailgun_dashboard') }}
             </a>
 

@@ -42,7 +42,7 @@
 						<a
 							link-confirm="{{ trans('messages.remove_blacklist_confirm') }}"
 							href="{{ action('Admin\BlacklistController@delete', ["uids" => $blacklist->id]) }}"
-							class="btn btn-primary btn-xs bg-grey"
+							class="btn btn-primary btn-xs bg-grey list-action-single"
 							data-popup="tooltip" title="{{ trans('messages.remove_from_blacklist') }}"
 						>
 							{{ trans('messages.blacklist.remove') }}

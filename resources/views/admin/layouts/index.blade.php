@@ -23,7 +23,7 @@ reorder
 @endsection
 
 @section('content')
-    <form class="listing-form"
+    <div class="listing-form"
         data-url="{{ action('Admin\LayoutController@listing') }}"
         per-page="{{ Acelle\Model\Layout::$itemsPerPage }}"                    
     >
@@ -38,7 +38,7 @@ reorder
                                 <option value="created_at">{{ trans('messages.created_at') }}</option>
                             </select>                                        
                             <input type="hidden" name="sort_direction" value="desc" />
-<button class="btn btn-light sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
+<button type="button" class="btn btn-light sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
                                 <span class="material-icons-outlined desc">
 sort
 </span>
@@ -54,5 +54,21 @@ sort
         
         <div class="pml-table-container">
         </div>
-    </form>       
+    </div>       
+
+    <script>
+        var LayoutsIndex = {
+            getList: function() {
+                return makeList({
+                    url: '{{ action('Admin\LayoutController@listing') }}',
+                    container: $('.listing-form'),
+                    content: $('.pml-table-container')
+                });
+            }
+        };
+
+        $(function() {
+            LayoutsIndex.getList().load();
+        });
+    </script>
 @endsection

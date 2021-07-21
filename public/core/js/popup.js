@@ -136,7 +136,7 @@ class Popup {
         });
         
         // click close button
-        _this.popup.find(".close").click(function(){
+        _this.popup.find(".close, [data-dismiss=modal]").click(function(){
             _this.hide();
         });
     }

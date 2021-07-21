@@ -43,13 +43,13 @@ class List {
     masking() {
         var _this = this;
 
-        _this.content.css('opacity', '0.7');
+        _this.content.addClass('list-loading');
     }
 
     unmasking() {
         var _this = this;
         
-        _this.content.css('opacity', '1');
+        _this.content.removeClass('list-loading');
     }
 
     load() {

@@ -32,6 +32,10 @@ class ANotify {
             type = options.type;
         }
 
+        if (type == 'error') {
+            type = 'danger';
+        }
+
         var titleHtml = '';
         if (typeof(options.title) !== 'undefined') {
             titleHtml = `

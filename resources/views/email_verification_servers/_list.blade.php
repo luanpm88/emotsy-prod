@@ -91,14 +91,18 @@ delete_outline
     
 @elseif (!empty(request()->keyword) || !empty(request()->filters["type"]))
     <div class="empty-list">
-        <i class="icon-server"></i>
+        <span class="material-icons-outlined">
+dns
+</span>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
         </span>
     </div>
 @else
     <div class="empty-list">
-        <i class="icon-server"></i>
+        <span class="material-icons-outlined">
+dns
+</span>
         <span class="line-1">
             {{ trans('messages.email_verification_server_empty_line_1') }}
         </span>

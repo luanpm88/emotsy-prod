@@ -17,7 +17,7 @@ reorder
 
 @section('content')
 
-    <form class="listing-form"
+    <div class="listing-form"
         data-url="{{ action('Admin\BlacklistController@listing') }}"
         per-page="{{ Acelle\Model\Blacklist::$itemsPerPage }}"
     >
@@ -32,7 +32,7 @@ reorder
                                 {{ trans('messages.actions') }} <span class="number"></span><span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu">
-                                <li><a link-confirm="{{ trans('messages.remove_blacklist_confirm') }}" href="{{ action('Admin\BlacklistController@delete') }}"><span class="material-icons-outlined">
+                                <li><a class="dropdown-item" link-confirm="{{ trans('messages.remove_blacklist_confirm') }}" href="{{ action('Admin\BlacklistController@delete') }}"><span class="material-icons-outlined">
 delete_outline
 </span> {{ trans('messages.delete') }}</a></li>
                             </ul>
@@ -44,7 +44,7 @@ delete_outline
                                 <option value="blacklists.email">{{ trans('messages.email') }}</option>
                             </select>
                             <input type="hidden" name="sort_direction" value="desc" />
-<button class="btn btn-light sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
+<button type="button" class="btn btn-light sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
                                 <span class="material-icons-outlined desc">
 sort
 </span>
@@ -74,5 +74,21 @@ file_upload
 
         <div class="pml-table-container">
         </div>
-    </form>
+    </div>
+
+    <script>
+        var BlackListsIndex = {
+            getList: function() {
+                return makeList({
+                    url: '{{ action('Admin\BlacklistController@listing') }}',
+                    container: $('.listing-form'),
+                    content: $('.pml-table-container')
+                });
+            }
+        };
+
+        $(function() {
+            BlackListsIndex.getList().load();
+        });
+    </script>
 @endsection

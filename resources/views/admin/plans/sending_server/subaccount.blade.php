@@ -31,13 +31,15 @@
             <div class="announce_box">
                 <div class="row flex-center">
                     <div class="col-md-8">
-                        <i class="announce_box-icon lnr lnr-users"></i>
+                        <span class="material-icons-outlined announce_box-icon">
+subtitles
+</span>
                         <label>{{ trans('messages.plan_option.delivery_setting') }}</label>
                         <h4>{{ trans('messages.plan_option.sub_account') }}</h4>
                         <p>{{ trans('messages.plan_option.sub_account.intro') }}</p>
                     </div>
                     <div class="col-md-4 text-end">
-                        <a class="btn btn-secondary mr-20 mc-modal-control" modal-size="lg" href="{{ action('Admin\PlanController@sendingServerOption', [
+                        <a class="btn btn-secondary mr-20 change-server-type-button" modal-size="lg" href="{{ action('Admin\PlanController@sendingServerOption', [
                             'uid' => $plan->uid]) }}">
                                 {{ trans('messages.plan_option.change') }}</a>
                     </div>
@@ -79,6 +81,22 @@
             
         </div>
     </form>
+
+    <script>
+        var ChangeTypePopup;
+
+        $(function() {
+            $('.change-server-type-button').on('click', function(e) {
+                e.preventDefault();
+                var url = $(this).attr('href');
+
+                ChangeTypePopup = new Popup({
+                    url: url
+                });
+                ChangeTypePopup.load();
+            });
+        });
+    </script>
     
     <script>
         var current_option = $("input[name='plan[options][sending_server_option]']:checked").val();

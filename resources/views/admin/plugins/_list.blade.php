@@ -34,7 +34,7 @@
                     @if (isset($settingUrls[$plugin->name]))
                         <a
                             href="{{ $settingUrls[$plugin->name] }}"
-                            class="btn btn-mc_default"
+                            class="btn btn-primary"
                         >
                             {{ trans('messages.setting') }}
                         </a>
@@ -43,7 +43,7 @@
                     @if (Auth::user()->admin->can('enable', $plugin))
                         <a link-confirm="{{ trans('messages.enable_plugins_confirm') }}"
                             href="{{ action('Admin\PluginController@enable', ["uids" => $plugin->uid]) }}"
-                            class="btn btn-secondary"
+                            class="btn btn-secondary list-action-single"
                         >
                             {{ trans('messages.enable') }}
                         </a>
@@ -52,22 +52,23 @@
                     @if (Auth::user()->admin->can('disable', $plugin))
                         <a link-confirm="{{ trans('messages.disable_plugins_confirm') }}"
                             href="{{ action('Admin\PluginController@disable', ["uids" => $plugin->uid]) }}"
-                            class="btn btn-secondary"
+                            class="btn btn-secondary list-action-single"
                         >
                             {{ trans('messages.disable') }}
                         </a>
                     @endif
 
                     <div class="btn-group">
-						<button role="button" class="btn btn-secondary icon-only dropdown-toggle" data-bs-toggle="dropdown">
+						<button role="button" class="btn btn-light icon-only dropdown-toggle" data-bs-toggle="dropdown">
                             <span class="caret ml-0"></span>
                         </button>
 						<ul class="dropdown-menu dropdown-menu-end">
 							<li>
 								<a
+                                    class="dropdown-item list-action-single"
                                     link-confirm="{{ trans('messages.delete_plugins_confirm') }}"
                                     href="{{ action('Admin\PluginController@delete', ["uids" => $plugin->uid]) }}"
-                                    role="button" class="">
+                                    role="button">
                                     <i class="material-icons-outlined">delete</i> {{ trans('messages.uninstall') }}
                                 </a>
 							</li>

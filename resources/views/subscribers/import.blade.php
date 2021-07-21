@@ -95,7 +95,9 @@ people
                 <div class="form-group finish hide">
                     <div class="text-left">
                     	<a id="downloadLog" target="_blank" href="#" role="button" class="btn btn-secondary $
-                                <i class="icon-download"></i> {{ trans('messages.download_import_log') }}
+                                <span class="material-icons-outlined">
+file_download
+</span> {{ trans('messages.download_import_log') }}
                         </a>
                         <a href="#retry" class="btn btn-secondary-800 mr-10 retry"><span class="material-icons-outlined">
 restart_alt

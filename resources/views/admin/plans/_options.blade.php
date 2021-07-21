@@ -10,7 +10,9 @@ settings
             <i class="icon-stats-bars4"></i> {{ trans('messages.sending_quota') }}</a>
         </li>
         <li class="text-semibold"><a href="#top-tab4" data-toggle="tab">
-            <i class="icon-server"></i> {{ trans('messages.sending_servers') }}</a>
+            <span class="material-icons-outlined">
+dns
+</span> {{ trans('messages.sending_servers') }}</a>
         </li>
         <li class="text-semibold"><a href="#top-tab5" data-toggle="tab">
             <span class="material-icons-outlined">

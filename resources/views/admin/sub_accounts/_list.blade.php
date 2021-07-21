@@ -46,7 +46,7 @@
                     @if (Auth::user()->admin->can('delete', $account))
                         <a href="{{ action('Admin\SubAccountController@delete', $account->uid) }}"
                             data-popup="tooltip" title="{{ trans('messages.subaccount.delete.tooltip') }}"
-                            role="button" class="btn btn-danger btn-icon"
+                            role="button" class="btn btn-danger btn-icon list-action-single"
                             link-method="delete"
                             link-confirm-url="{{ action('Admin\SubAccountController@deleteConfirm', $account->uid) }}"
                         >
@@ -61,14 +61,18 @@
     
 @elseif (!empty(request()->keyword) || !empty(request()->filters["type"]))
     <div class="empty-list">
-        <i class="icon-drive"></i>
+        <span class="material-icons-outlined">
+approval
+</span>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
         </span>
     </div>
 @else
     <div class="empty-list">
-        <i class="icon-drive"></i>
+        <span class="material-icons-outlined">
+approval
+</span>
         <span class="line-1">
             {{ trans('messages.sub_account_empty_line_1') }}
         </span>

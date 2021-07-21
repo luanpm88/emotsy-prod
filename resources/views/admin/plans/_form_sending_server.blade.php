@@ -61,8 +61,7 @@
                     <label class="text-semibold text-muted">{{ trans('messages.select_allowed_sending_server_types') }}</label>
                     <div class="row">
                         @foreach (Acelle\Model\SendingServer::types() as $key => $type)
-                            <div class="col-md-4 pt-10">
-                                &nbsp;&nbsp;<span class="text-semibold text-italic">{{ trans('messages.' . $key) }}</span>
+                            <div class="col-md-4 pt-2 d-flex align-items-center">
                                 <span class="notoping pull-left">
                                     @include('helpers.form_control', ['type' => 'checkbox',
                                         'class' => '',
@@ -74,6 +73,8 @@
                                         'rules' => $rules
                                     ])
                                 </span>
+                                &nbsp;&nbsp;<span class="text-semibold text-italic">{{ trans('messages.' . $key) }}</span>
+                                
                             </div>
                         @endforeach
                     </div>

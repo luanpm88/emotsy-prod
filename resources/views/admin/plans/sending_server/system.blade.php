@@ -2,6 +2,11 @@
 
 @section('title', $plan->name)
 
+@section('head')
+    <link href="{{ URL::asset('rangeslider/css/bootstrap-slider.css') }}" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="{{ URL::asset('rangeslider/bootstrap-slider.js') }}"></script>
+@endsection
+
 @section('page_header')
 
     <div class="page-title">
@@ -28,13 +33,15 @@
         <div class="announce_box">
             <div class="row flex-center">
                 <div class="col-md-8">
-                    <i class="announce_box-icon lnr lnr-apartment"></i>
+                    <span class="material-icons-round announce_box-icon">
+corporate_fare
+</span>
                     <label>{{ trans('messages.plan_option.delivery_setting') }}</label>
                     <h4>{{ trans('messages.plan_option.system_s_sending_server') }}</h4>
                     <p>{{ trans('messages.plan_option.system_s_sending_server.intro') }}</p>
                 </div>
                 <div class="col-md-4 text-end">
-                    <a class="btn btn-secondary mr-20 mc-modal-control" modal-size="lg" href="{{ action('Admin\PlanController@sendingServerOption', [
+                    <a class="btn btn-secondary mr-20 change-server-type-button" modal-size="lg" href="{{ action('Admin\PlanController@sendingServerOption', [
                         'uid' => $plan->uid]) }}">
                             {{ trans('messages.plan_option.change') }}</a>
                 </div>
@@ -49,7 +56,7 @@
                 <p>{{ trans('messages.plan.sending_servers.list_intro') }}</p>
             </div>
             <div class="col-md-4 text-end">
-                <a href="{{ action('Admin\PlanController@addSendingServer', [ 'id' => $plan->uid ]) }}" class="btn btn-primary mr-5 bg-grey mc-modal-control">
+                <a href="{{ action('Admin\PlanController@addSendingServer', [ 'id' => $plan->uid ]) }}" class="btn btn-primary mr-5 bg-grey add-server-button">
                     {{ trans('messages.plan.sending_servers.add') }}
                 </a>
             </div>
@@ -57,7 +64,9 @@
         
         @if(!$plan->plansSendingServers()->count())
             <div class="empty-list">
-                <i class="icon-server"></i>
+                <span class="material-icons-outlined">
+dns
+</span>
                 <span class="line-1">
                     {{ trans('messages.sending_server_empty_line_1') }}
                 </span>
@@ -73,11 +82,15 @@
                                 @endphp
                                 @if ($server->isExtended())
                                     <span class="mc_list_media mc-server-avatar server-avatar mr-0" style="background: url({{ $server->getIconUrl()  }}) top left/36px 36px no-repeat transparent;">
-                                        <i class="icon-server"></i>
+                                        <span class="material-icons-outlined">
+dns
+</span>
                                     </span>
                                 @else
                                     <span class="mc_list_media mc-server-avatar server-avatar server-avatar-{{ $planSendingServer->sendingServer->type }} mr-0">
-                                        <i class="icon-server"></i>
+                                        <span class="material-icons-outlined">
+dns
+</span>
                                     </span>
                                 @endif
                                 <h4>{{ $planSendingServer->sendingServer->name }}
@@ -95,23 +108,23 @@
                                     <br />
                                     <span class="text-muted xtooltip" title="{{ trans("messages.sending_servers.fitness.explain") }}">{{ trans("messages.sending_servers.fitness") }}
                                     @if ($plan->plansSendingServers()->count() > 1)
-                                        - <a modal-size="lg" class="mc-modal-control" href="{{ action('Admin\PlanController@fitness', ['id' => $plan->uid]) }}">{{ trans('messages.edit') }}</a></span>
+                                        - <a modal-size="lg" class="edit-fitness-button" href="{{ action('Admin\PlanController@fitness', ['id' => $plan->uid]) }}">{{ trans('messages.edit') }}</a></span>
                                     @endif
                                 </div>
                             </stat>
                             <actions style='width: 30%; text-align: right'>                                
                                 @if (!$planSendingServer->isPrimary())
-                                    <a link-method="POST" href="{{ action('Admin\PlanController@setPrimarySendingServer', ['id' => $plan->uid, 'sending_server_uid' => $planSendingServer->sendingServer->uid]) }}" class="btn btn-mc_default">{{ trans('messages.sending_servers.set_primary') }}</a>
+                                    <a link-method="POST" href="{{ action('Admin\PlanController@setPrimarySendingServer', ['id' => $plan->uid, 'sending_server_uid' => $planSendingServer->sendingServer->uid]) }}" class="btn btn-primary">{{ trans('messages.sending_servers.set_primary') }}</a>
                                 @endif
                                 @if (Auth::user()->admin->can('update', $planSendingServer->sendingServer))
                                     
                                     @if ($server->isExtended())
-                                        <a href="{{ $server->getEditUrl() }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-mc_default">{{ trans('messages.edit') }}</a>
+                                        <a href="{{ $server->getEditUrl() }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-primary">{{ trans('messages.edit') }}</a>
                                     @else
-                                        <a href="{{ action('Admin\SendingServerController@edit', ["id" => $planSendingServer->sendingServer->uid, "type" => $planSendingServer->sendingServer->type]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-mc_default">{{ trans('messages.edit') }}</a>
+                                        <a href="{{ action('Admin\SendingServerController@edit', ["id" => $planSendingServer->sendingServer->uid, "type" => $planSendingServer->sendingServer->type]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-primary">{{ trans('messages.edit') }}</a>
                                     @endif
                                 @endif
-                                <a link-method="POST" href="{{ action('Admin\PlanController@removeSendingServer', ['id' => $plan->uid, 'sending_server_uid' => $planSendingServer->sendingServer->uid]) }}" class="btn btn-mc_default">{{ trans('messages.remove') }}</a>
+                                <a link-method="POST" href="{{ action('Admin\PlanController@removeSendingServer', ['id' => $plan->uid, 'sending_server_uid' => $planSendingServer->sendingServer->uid]) }}" class="btn btn-primary">{{ trans('messages.remove') }}</a>
                             </actions>
                         </li>
                     @endforeach
@@ -119,6 +132,44 @@
             </div>
         @endif
     </div>
+
+    <script>
+        var ChangeTypePopup;
+        var AddServerPopup;
+        var EditFitnessPopup;
+
+        $(function() {
+            $('.change-server-type-button').on('click', function(e) {
+                e.preventDefault();
+                var url = $(this).attr('href');
+
+                ChangeTypePopup = new Popup({
+                    url: url
+                });
+                ChangeTypePopup.load();
+            });
+
+            $('.add-server-button').on('click', function(e) {
+                e.preventDefault();
+                var url = $(this).attr('href');
+
+                AddServerPopup = new Popup({
+                    url: url
+                });
+                AddServerPopup.load();
+            });
+            
+            $('.edit-fitness-button').on('click', function(e) {
+                e.preventDefault();
+                var url = $(this).attr('href');
+
+                EditFitnessPopup = new Popup({
+                    url: url
+                });
+                EditFitnessPopup.load();
+            });
+        });
+    </script>
     
     @if (is_object($plan->primarySendingServer()))
         @php

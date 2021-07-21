@@ -44,14 +44,16 @@ edit
                             <ul class="dropdown-menu dropdown-menu-end">
                                 @can('test', $item)
                                     <li>
-                                        <a href="{{ action('Admin\FeedbackLoopHandlerController@test', $item->uid) }}" link-method="POST" role="button" class="ajax_link">
-                                            <i class="icon-rotate-cw3"></i> {{ trans('messages.feedback_loop_handler.test') }}
+                                        <a class="dropdown-item list-action-single" href="{{ action('Admin\FeedbackLoopHandlerController@test', $item->uid) }}" link-method="POST" role="button">
+                                            <span class="material-icons-outlined">
+quiz
+</span> {{ trans('messages.feedback_loop_handler.test') }}
                                         </a>
                                     </li>
                                 @endcan
                                 @can('delete', $item)
                                     <li>
-                                        <a link-confirm="{{ trans('messages.delete_feedback_loop_handlers_confirm') }}" href="{{ action('Admin\FeedbackLoopHandlerController@delete', ["uids" => $item->uid]) }}">
+                                        <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.delete_feedback_loop_handlers_confirm') }}" href="{{ action('Admin\FeedbackLoopHandlerController@delete', ["uids" => $item->uid]) }}">
                                             <span class="material-icons-outlined">
 delete_outline
 </span> {{ trans('messages.delete') }}
@@ -69,14 +71,18 @@ delete_outline
     
 @elseif (!empty(request()->keyword) || !empty(request()->filters["type"]))
     <div class="empty-list">
-        <i class="icon icon-spinner9"></i>
+        <span class="material-icons-outlined">
+restart_alt
+</span>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
         </span>
     </div>
 @else
     <div class="empty-list">
-        <i class="icon icon-spinner9"></i>
+        <span class="material-icons-outlined">
+restart_alt
+</span>
         <span class="line-1">
             {{ trans('messages.feedback_loop_handler_empty_line_1') }}
         </span>

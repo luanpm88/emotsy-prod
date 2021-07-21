@@ -74,7 +74,7 @@
                     <div class="desc-action ml-auto">
                         <a href="{{ action('ProductController@index', [
                             'source_uid' => $source->uid,
-                        ]) }}" class="btn btn-mc_default">{{ trans('messages.source.products.manage') }}</a>
+                        ]) }}" class="btn btn-primary">{{ trans('messages.source.products.manage') }}</a>
                     </div>
                 </div>
                 <div class="source-desc-line py-4 my-4 d-flex" style="justify-content: space-between">
@@ -110,7 +110,7 @@
                         </div>
                     </div>
                     <div class="desc-action">
-                        <a href="{{ action('MailListController@overview', $source->mailList->uid) }}" class="btn btn-mc_default">{{ trans('messages.source.products.manage') }}</a>
+                        <a href="{{ action('MailListController@overview', $source->mailList->uid) }}" class="btn btn-primary">{{ trans('messages.source.products.manage') }}</a>
                     </div>
                 </div>
                 @if ($automation->getAbandonedCartEmail()->isSetup())

@@ -54,7 +54,7 @@
         {{ csrf_field() }}
 
         <div class="row mr-0 ml-0">
-            <div class="col-md-9 pl-0 pb-0 pr-0">
+            <div class="col-md-9 pl-0 pb-0 pr-0 form-group-mb-0">
                 @include('helpers.form_control', [
                     'class' => 'campaign-plain-text',
                     'required' => true,

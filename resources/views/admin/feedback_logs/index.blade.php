@@ -19,7 +19,7 @@ reorder
 
 @section('content')
 
-    <form class="listing-form"
+    <div class="listing-form"
         data-url="{{ action('Admin\FeedbackLogController@listing') }}"
         per-page="{{ Acelle\Model\FeedbackLog::$itemsPerPage }}"
     >
@@ -33,13 +33,13 @@ reorder
                                 <option value="feedback_logs.created_at">{{ trans('messages.created_at') }}</option>
                             </select>
                             <input type="hidden" name="sort_direction" value="desc" />
-<button class="btn btn-light sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
+<button type="button" class="btn btn-light sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
                                 <span class="material-icons-outlined desc">
 sort
 </span>
                             </button>
                         </span>
-                        <span class="ml-10">
+                        <span class="me-2">
                             <select data-placeholder="{{ trans('messages.all_campaigns') }}" class="select2-ajax" name="campaign_uid" data-url="{{ action('CampaignController@select2') }}">
                             </select>
                         </span>
@@ -56,5 +56,21 @@ search
 
         <div class="pml-table-container">
         </div>
-    </form>
+    </div>
+
+    <script>
+        var FeedbackLogsIndex = {
+            getList: function() {
+                return makeList({
+                    url: '{{ action('Admin\FeedbackLogController@listing') }}',
+                    container: $('.listing-form'),
+                    content: $('.pml-table-container')
+                });
+            }
+        };
+
+        $(function() {
+            FeedbackLogsIndex.getList().load();
+        });
+    </script>
 @endsection

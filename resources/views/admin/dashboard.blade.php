@@ -275,7 +275,9 @@ people
                     </li>
                     <li class="selfclear">
                         <div class="unit size1of2">
-                            <strong><i class="icon-server"></i> {{ trans('messages.sending_servers') }}</strong>
+                            <strong><span class="material-icons-outlined">
+dns
+</span> {{ trans('messages.sending_servers') }}</strong>
                         </div>
                         <div class="lastUnit size1of2">
                             <mc:flag>{{ Auth::user()->admin->getAllSendingServers()->count() }}</mc:flag>

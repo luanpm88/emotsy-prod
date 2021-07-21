@@ -70,7 +70,7 @@
                 {{ trans('messages.sending_serbers.add_domain') }}
             </a>
             <a target="_blank" href="https://console.aws.amazon.com/ses/home?region={{ $server->aws_region }}" role="button"
-              class="btn btn-mc_default">
+              class="btn btn-primary">
                 {{ trans('messages.sending_serbers.go_to_amazon_dashboard') }}
             </a>
             <p class="mt-5">

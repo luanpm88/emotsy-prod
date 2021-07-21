@@ -32,10 +32,13 @@
                     <br />
                     <span class="text-muted">{{ trans('messages.username') }}</span>
                 </td>
-                <td class="text-end">
+                <td class="text-center">
                     <span class="text-muted2 list-status pull-left">
                         <span class="label label-flat bg-{{ $item->status }}">{{ trans('messages.bounce_handler_status_' . $item->status) }}</span>
                     </span>
+                </td>
+                <td class="text-end">
+                    
                     @can('update', $item)
                         <a href="{{ action('Admin\BounceHandlerController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary btn-icon"><span class="material-icons-outlined">
 edit
@@ -46,7 +49,7 @@ edit
                             <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
                             <ul class="dropdown-menu dropdown-menu-end">                                                    
                                 <li>                                                        
-                                    <a link-confirm="{{ trans('messages.delete_bounce_handlers_confirm') }}" href="{{ action('Admin\BounceHandlerController@delete', ["uids" => $item->uid]) }}">
+                                    <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.delete_bounce_handlers_confirm') }}" href="{{ action('Admin\BounceHandlerController@delete', ["uids" => $item->uid]) }}">
                                         <span class="material-icons-outlined">
 delete_outline
 </span> {{ trans('messages.delete') }}
@@ -63,14 +66,18 @@ delete_outline
     
 @elseif (!empty(request()->keyword) || !empty(request()->filters["type"]))
     <div class="empty-list">
-        <i class="icon icon-spinner9"></i>
+        <span class="material-icons-outlined">
+restart_alt
+</span>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
         </span>
     </div>
 @else                    
     <div class="empty-list">
-        <i class="icon icon-spinner9"></i>
+        <span class="material-icons-outlined">
+restart_alt
+</span>
         <span class="line-1">
             {{ trans('messages.bounce_handler_empty_line_1') }}
         </span>

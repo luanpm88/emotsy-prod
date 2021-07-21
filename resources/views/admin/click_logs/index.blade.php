@@ -39,7 +39,7 @@ sort
 </span>
 										</button>
 									</span>
-									<span class="ml-10">
+									<span class="me-2">
 										<span class="title text-semibold text-muted">{{ trans('messages.campaign') }}</span>
 										<select placeholder="{{ trans('messages.all') }}" class="select2-ajax" name="campaign_uid" data-url="{{ action('CampaignController@select2') }}">
 											
@@ -61,5 +61,21 @@ search
 						
 						
 					</div>
-				</form>				
+				</form>	
+				
+				<script>
+					var ClickLogsIndex = {
+						getList: function() {
+							return makeList({
+								url: '{{ action('Admin\ClickLogController@listing') }}',
+								container: $('.listing-form'),
+								content: $('.pml-table-container')
+							});
+						}
+					};
+			
+					$(function() {
+						ClickLogsIndex.getList().load();
+					});
+				</script>
 @endsection

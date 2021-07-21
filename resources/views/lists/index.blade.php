@@ -57,7 +57,7 @@ delete_outline
                             </select>
 
                             <input type="hidden" name="sort_direction" value="desc" />
-                            <button class="btn btn-light sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
+                            <button type="button" class="btn btn-light sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
                                 <span class="material-icons-outlined">
                                     sort
                                 </span>

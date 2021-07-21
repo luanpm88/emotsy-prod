@@ -1,4 +1,4 @@
-@extends('layouts.' . $view)
+@extends('layouts.core.' . $view)
 
 @section('title', trans('messages.API_Documentation'))
 

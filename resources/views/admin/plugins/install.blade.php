@@ -10,7 +10,9 @@
             <li class="breadcrumb-item"><a href="{{ action("Admin\PluginController@index") }}">{{ trans('messages.plugins') }}</a></li>
         </ul>
         <h1>
-            <span class="text-semibold"><i class="icon-upload"></i> {{ trans('messages.install_plugin') }}</span>
+            <span class="text-semibold"><span class="material-icons-outlined">
+file_upload
+</span> {{ trans('messages.install_plugin') }}</span>
         </h1>				
     </div>
 
@@ -42,7 +44,7 @@
                     <button class="btn btn-secondary mr-2">
                         {{ trans('messages.upload') }}
                     </button>
-                    <a href="{{ action('Admin\PluginController@index') }}" class="btn btn-mc_default">
+                    <a href="{{ action('Admin\PluginController@index') }}" class="btn btn-primary">
                         {{ trans('messages.cancel') }}
                     </a>
                 </div>

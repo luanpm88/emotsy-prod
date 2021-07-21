@@ -40,7 +40,7 @@
 							<ul class="dropdown-menu dropdown-menu-end">
 								@can('enable', $language)
 									<li>														
-										<a link-confirm="{{ trans('messages.enable_languages_confirm') }}" href="{{ action('Admin\LanguageController@enable', ["uids" => $language->uid]) }}">
+										<a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.enable_languages_confirm') }}" href="{{ action('Admin\LanguageController@enable', ["uids" => $language->uid]) }}">
 											<span class="material-icons-outlined">
 play_arrow
 </span> {{ trans('messages.enable') }}
@@ -49,7 +49,7 @@ play_arrow
 								@endcan
 								@can('disable', $language)
 									<li>														
-										<a link-confirm="{{ trans('messages.disable_languages_confirm') }}" href="{{ action('Admin\LanguageController@disable', ["uids" => $language->uid]) }}">
+										<a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.disable_languages_confirm') }}" href="{{ action('Admin\LanguageController@disable', ["uids" => $language->uid]) }}">
 											<span class="material-icons-outlined">
 hide_source
 </span> {{ trans('messages.disable') }}
@@ -58,24 +58,28 @@ hide_source
 								@endcan
 								@can("download", $language)
 									<li>
-										<a href="{{ action('Admin\LanguageController@download', $language->uid) }}" data-popup="tooltip" title="{{ trans('messages.download') }}"><i class="icon-download"></i> {{ trans('messages.download') }}</a>
+										<a class="dropdown-item" href="{{ action('Admin\LanguageController@download', $language->uid) }}" data-popup="tooltip" title="{{ trans('messages.download') }}"><span class="material-icons-outlined">
+file_download
+</span> {{ trans('messages.download') }}</a>
 									</li>
 								@endcan
 								@can("upload", $language)
 									<li>
-										<a href="{{ action('Admin\LanguageController@upload', $language->uid) }}" data-popup="tooltip" title="{{ trans('messages.upload') }}"><i class="icon-upload"></i> {{ trans('messages.upload') }}</a>
+										<a class="dropdown-item" href="{{ action('Admin\LanguageController@upload', $language->uid) }}" data-popup="tooltip" title="{{ trans('messages.upload') }}"><span class="material-icons-outlined">
+file_upload
+</span> {{ trans('messages.upload') }}</a>
 									</li>
 								@endcan
 								@can("update", $language)
 									<li>
-										<a href="{{ action('Admin\LanguageController@edit', $language->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}"><span class="material-icons-outlined">
+										<a class="dropdown-item" href="{{ action('Admin\LanguageController@edit', $language->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}"><span class="material-icons-outlined">
 edit
 </span> {{ trans('messages.edit') }}</a>
 									</li>
 								@endcan
 								@can("delete", $language)
 									<li>
-										<a link-confirm-url="{{ action('Admin\LanguageController@deleteConfirm', ['uids' => $language->uid]) }}" href="{{ action('Admin\LanguageController@delete', ["uids" => $language->uid]) }}">
+										<a class="dropdown-item list-action-single" link-confirm-url="{{ action('Admin\LanguageController@deleteConfirm', ['uids' => $language->uid]) }}" href="{{ action('Admin\LanguageController@delete', ["uids" => $language->uid]) }}">
 											<span class="material-icons-outlined">
 delete_outline
 </span> {{ trans('messages.delete') }}

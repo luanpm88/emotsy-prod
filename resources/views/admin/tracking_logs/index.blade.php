@@ -19,7 +19,7 @@ reorder
 
 @section('content')
 				
-				<form class="listing-form"
+				<div class="listing-form"
 					data-url="{{ action('Admin\TrackingLogController@listing') }}"
 					per-page="{{ Acelle\Model\TrackingLog::$itemsPerPage }}"					
 				>				
@@ -39,7 +39,7 @@ sort
 </span>
 										</button>
 									</span>
-									<span class="ml-10">										
+									<span class="me-2">										
 										<select data-placeholder="{{ trans('messages.all_campaigns') }}" class="select2-ajax" name="campaign_uid" data-url="{{ action('CampaignController@select2') }}">
 											
 										</select>								
@@ -60,5 +60,21 @@ search
 						
 						
 					</div>
-				</form>				
+				</div>	
+				
+				<script>
+					var TrackingLogsIndex = {
+						getList: function() {
+							return makeList({
+								url: '{{ action('Admin\TrackingLogController@listing') }}',
+								container: $('.listing-form'),
+								content: $('.pml-table-container')
+							});
+						}
+					};
+			
+					$(function() {
+						TrackingLogsIndex.getList().load();
+					});
+				</script>
 @endsection

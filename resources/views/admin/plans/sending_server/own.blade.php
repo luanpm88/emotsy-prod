@@ -31,13 +31,15 @@
             <div class="announce_box">
                 <div class="row flex-center">
                     <div class="col-md-8">
-                        <i class="announce_box-icon lnr lnr-user"></i>
+                        <span class="material-icons-round announce_box-icon">
+person_outline
+</span>
                         <label>{{ trans('messages.plan_option.delivery_setting') }}</label>
                         <h4>{{ trans('messages.plan_option.own_sending_server') }}</h4>
                         <p>{{ trans('messages.plan_option.own_sending_server.intro') }}</p>
                     </div>
                     <div class="col-md-4 text-end">
-                        <a class="btn btn-secondary mr-20 mc-modal-control" modal-size="lg"
+                        <a class="btn btn-secondary mr-20 change-server-type-button" modal-size="lg"
                             href="{{ action('Admin\PlanController@sendingServerOption', [
                             'uid' => $plan->uid]) }}">
                                 {{ trans('messages.plan_option.change') }}</a>
@@ -84,8 +86,7 @@
                 <label class="text-semibold text-muted">{{ trans('messages.select_allowed_sending_server_types') }}</label>
                 <div class="row">
                     @foreach (Acelle\Model\SendingServer::types() as $key => $type)
-                        <div class="col-md-4 pt-10">
-                            &nbsp;&nbsp;<span class="text-semibold text-italic">{{ trans('messages.' . $key) }}</span>
+                        <div class="col-md-4 pt-2 d-flex align-items-center">
                             <span class="notoping pull-left">
                                 @include('helpers.form_control', ['type' => 'checkbox',
                                     'class' => '',
@@ -97,6 +98,8 @@
                                     'rules' => $plan->validationRules()['options'],
                                 ])
                             </span>
+                            &nbsp;&nbsp;<span class="text-semibold text-italic">{{ trans('messages.' . $key) }}</span>
+                            
                         </div>
                     @endforeach
                 </div>
@@ -105,6 +108,22 @@
         </div>
         <button class="btn btn-secondary mr-10">{{ trans('messages.save') }}</button>
     </form>
+
+    <script>
+        var ChangeTypePopup;
+
+        $(function() {
+            $('.change-server-type-button').on('click', function(e) {
+                e.preventDefault();
+                var url = $(this).attr('href');
+
+                ChangeTypePopup = new Popup({
+                    url: url
+                });
+                ChangeTypePopup.load();
+            });
+        });
+    </script>
     
     <script>
         var current_option = $("input[name='plan[options][sending_server_option]']:checked").val();

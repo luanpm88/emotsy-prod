@@ -279,7 +279,9 @@
 			data-in-form="true"
 			link-method="GET"
 		>
-			<i class="icon-rotate-cw3"></i> {{ trans('messages.sending_server.test') }}
+			<span class="material-icons-outlined">
+quiz
+</span> {{ trans('messages.sending_server.test') }}
 		</a>
 	@endif
 	<button class="btn btn-secondary mr-5"><i class="icon-check"></i> {{ trans('messages.save') }}</button>

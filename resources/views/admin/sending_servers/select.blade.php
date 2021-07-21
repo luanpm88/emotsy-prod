@@ -27,7 +27,9 @@ add
                         <a href="{{ $server['create_url'] }}" class="btn btn-secondary">{{ trans('messages.choose') }}</a>
                         <a href="{{ $server['create_url'] }}">
                             <span class="mc-server-avatar server-avatar" style="background: url({{ $server['icon_url']  }}) top left/36px 36px no-repeat transparent;">
-                                <i class="icon-server"></i>
+                                <span class="material-icons-outlined">
+dns
+</span>
                             </span>
                         </a>
                         <h4><a href="{{ $server['create_url'] }}">{{  $server['name']  }}</a> <span class="label label-flat bg-verified">
@@ -45,7 +47,9 @@ add
                         <a href="{{ action('Admin\SendingServerController@create', ["type" => $key]) }}" class="btn btn-secondary">{{ trans('messages.choose') }}</a>
                         <a href="{{ action('Admin\SendingServerController@create', ["type" => $key]) }}">
                             <span class="mc-server-avatar server-avatar server-avatar-{{ $key }}">
-                                <i class="icon-server"></i>
+                                <span class="material-icons-outlined">
+dns
+</span>
                             </span>
                         </a>
                         <h4><a href="{{ action('Admin\SendingServerController@create', ["type" => $key]) }}">{{ trans('messages.' . $key) }}</a></h4>

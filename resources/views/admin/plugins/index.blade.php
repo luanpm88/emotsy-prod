@@ -20,7 +20,7 @@ reorder
 @section('content')
 	<p>{{ trans('messages.plugin.wording') }}</p>
 
-	<form class="listing-form"
+	<div class="listing-form"
 		sort-url="{{ action('Admin\PluginController@sort') }}"
 		data-url="{{ action('Admin\PluginController@listing') }}"
 		per-page="{{ Acelle\Model\Plugin::$itemsPerPage }}"
@@ -34,13 +34,13 @@ reorder
 								{{ trans('messages.actions') }} <span class="number"></span><span class="caret"></span>
 							</button>
 							<ul class="dropdown-menu">
-								<li><a link-confirm="{{ trans('messages.enable_plugins_confirm') }}" href="{{ action('Admin\PluginController@enable') }}"><span class="material-icons-outlined">
+								<li><a class="dropdown-item" link-confirm="{{ trans('messages.enable_plugins_confirm') }}" href="{{ action('Admin\PluginController@enable') }}"><span class="material-icons-outlined">
 play_arrow
 </span> {{ trans('messages.enable') }}</a></li>
-								<li><a link-confirm="{{ trans('messages.disable_plugins_confirm') }}" href="{{ action('Admin\PluginController@disable') }}"><span class="material-icons-outlined">
+								<li><a class="dropdown-item" link-confirm="{{ trans('messages.disable_plugins_confirm') }}" href="{{ action('Admin\PluginController@disable') }}"><span class="material-icons-outlined">
 hide_source
 </span> {{ trans('messages.disable') }}</a></li>
-								<li><a link-confirm="{{ trans('messages.delete_plugins_confirm') }}" href="{{ action('Admin\PluginController@delete') }}"><span class="material-icons-outlined">
+								<li><a class="dropdown-item" link-confirm="{{ trans('messages.delete_plugins_confirm') }}" href="{{ action('Admin\PluginController@delete') }}"><span class="material-icons-outlined">
 delete_outline
 </span> {{ trans('messages.delete') }}</a></li>
 							</ul>
@@ -65,5 +65,21 @@ add
 
 		<div class="pml-table-container">
 		</div>
-	</form>
+	</div>
+
+	<script>
+        var PluginsIndex = {
+            getList: function() {
+                return makeList({
+                    url: '{{ action('Admin\PluginController@listing') }}',
+                    container: $('.listing-form'),
+                    content: $('.pml-table-container')
+                });
+            }
+        };
+
+        $(function() {
+            PluginsIndex.getList().load();
+        });
+    </script>
 @endsection

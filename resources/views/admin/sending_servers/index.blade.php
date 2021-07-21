@@ -19,14 +19,12 @@ reorder
 
 @section('content')
     <div class="alert alert-info">
-        <p>
-            <span class="text-semibold">{{ trans('messages.notification.note') }} </span> {{ trans('messages.notification.sending_servers') }}
-        </p>
+        <span class="text-semibold">{{ trans('messages.notification.note') }} </span> {{ trans('messages.notification.sending_servers') }}
     </div>
     <p>{{ trans('messages.sending_server.wording') }}</p>
 
 
-    <form class="listing-form"
+    <div class="listing-form"
         sort-url="{{ action('Admin\SendingServerController@sort') }}"
         data-url="{{ action('Admin\SendingServerController@listing') }}"
         per-page="{{ Acelle\Model\SendingServer::$itemsPerPage }}"
@@ -35,26 +33,26 @@ reorder
             <div class="col-md-10">
                 @if ($items->count() >= 0)
                     <div class="filter-box">
+                        <div class="checkbox inline check_all_list">
+                            <label>
+                                <input type="checkbox" name="page_checked" class="styled check_all">
+                            </label>
+                        </div>
                         <div class="dropdown list_actions" style="display: none">
                             <button role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
                                 {{ trans('messages.actions') }} <span class="number"></span><span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu">
-                                <li><a link-confirm="{{ trans('messages.enable_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@enable') }}"><span class="material-icons-outlined">
+                                <li><a class="dropdown-item" link-confirm="{{ trans('messages.enable_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@enable') }}"><span class="material-icons-outlined">
 play_arrow
 </span> {{ trans('messages.enable') }}</a></li>
-                                <li><a link-confirm="{{ trans('messages.disable_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@disable') }}"><span class="material-icons-outlined">
+                                <li><a class="dropdown-item" link-confirm="{{ trans('messages.disable_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@disable') }}"><span class="material-icons-outlined">
 hide_source
 </span> {{ trans('messages.disable') }}</a></li>
-                                <li><a link-confirm="{{ trans('messages.delete_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@delete') }}"><span class="material-icons-outlined">
+                                <li><a class="dropdown-item" link-confirm="{{ trans('messages.delete_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@delete') }}"><span class="material-icons-outlined">
 delete_outline
 </span> {{ trans('messages.delete') }}</a></li>
                             </ul>
-                        </div>
-                        <div class="checkbox inline check_all_list">
-                            <label>
-                                <input type="checkbox" name="page_checked" class="styled check_all">
-                            </label>
                         </div>
                         <span class="filter-group">
                             <span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
@@ -64,7 +62,7 @@ delete_outline
                                 <option value="sending_servers.updated_at">{{ trans('messages.updated_at') }}</option>
                             </select>
                             <input type="hidden" name="sort_direction" value="desc" />
-<button class="btn btn-light sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
+<button type="button" class="btn btn-light sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
                                 <span class="material-icons-outlined desc">
 sort
 </span>
@@ -101,46 +99,21 @@ add
 
         <div class="pml-table-container">
         </div>
-    </form>
-
-
-    <!-- Basic modal -->
-    <div id="server_types" class="modal fade new-modal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                    <div class="modal-header">
-                        <button role="button" class="close" data-dismiss="modal">&times;</button>
-                        <h2 class="modal-title">{{ trans('messages.select_server_type') }}</h2>
-                    </div>
-
-                    <div class="modal-body">
-
-                        <ul class="modern-listing big-icon no-top-border-list mt-0">
-
-                            @foreach (Acelle\Model\SendingServer::types() as $key => $type)
-
-                                <li>
-                                    <a href="{{ action('Admin\SendingServerController@create', ["type" => $key]) }}" class="btn btn-secondary">{{ trans('messages.choose') }}</a>
-                                    <span class="server-avatar server-avatar-{{ $key }}">
-                                        <i class="icon-server"></i>
-                                    </span>
-                                    <h4><a href="{{ action('Admin\SendingServerController@create', ["type" => $key]) }}">{{ trans('messages.' . $key) }}</a></h4>
-                                    <p>
-                                        {{ trans('messages.sending_server_intro_' . $key) }}
-                                    </p>
-                                </li>
-
-                            @endforeach
-
-                        </ul>
-
-                    </div>
-
-                    <div class="modal-footer">
-                        <button role="button" class="btn btn-white" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
-                    </div>
-            </div>
-        </div>
     </div>
-    <!-- /basic modal -->
+
+    <script>
+        var SendingServersIndex = {
+            getList: function() {
+                return makeList({
+                    url: '{{ action('Admin\SendingServerController@listing') }}',
+                    container: $('.listing-form'),
+                    content: $('.pml-table-container')
+                });
+            }
+        };
+
+        $(function() {
+            SendingServersIndex.getList().load();
+        });
+    </script>
 @endsection

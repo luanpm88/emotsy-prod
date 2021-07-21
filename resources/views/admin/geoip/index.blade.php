@@ -46,7 +46,7 @@ reorder
                     <td class="text-right text-nowrap">
                         <a id="EditGeoIpSetting"
                             href="{{ action('Admin\GeoIpController@setting') }}"
-                            class="btn btn-mc_default"
+                            class="btn btn-primary"
                         >
                             Setting
                         </a>

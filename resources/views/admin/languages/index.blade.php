@@ -19,7 +19,7 @@ reorder
 
 @section('content')
     <p>{{ trans('messages.languages.wording') }}</p>
-    <form class="listing-form"
+    <div class="listing-form"
         data-url="{{ action('Admin\LanguageController@listing') }}"
         per-page="{{ Acelle\Model\SendingDomain::$itemsPerPage }}"
     >
@@ -30,10 +30,10 @@ reorder
                         <span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
                         <select class="select" name="sort_order">
                             <option value="languages.name">{{ trans('messages.name') }}</option>
-                            <option value="bounce_handlers.code">{{ trans('messages.code') }}</option>
-                            <option value="bounce_handlers.region_code">{{ trans('messages.region') }}</option>
-                            <option value="bounce_handlers.created_at">{{ trans('messages.created_at') }}</option>
-                            <option value="bounce_handlers.updated_at">{{ trans('messages.updated_at') }}</option>
+                            <option value="languages.code">{{ trans('messages.code') }}</option>
+                            <option value="languages.region_code">{{ trans('messages.region') }}</option>
+                            <option value="languages.created_at">{{ trans('messages.created_at') }}</option>
+                            <option value="languages.updated_at">{{ trans('messages.updated_at') }}</option>
                         </select>
                         <input type="hidden" name="sort_direction" value="asc" />
                                                 <button class="btn btn-xs sort-direction" rel="asc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
@@ -62,5 +62,21 @@ add
         </div>
 
         <div class="pml-table-container"></div>
-    </form>
+    </div>
+
+    <script>
+        var LanguagesIndex = {
+            getList: function() {
+                return makeList({
+                    url: '{{ action('Admin\LanguageController@listing') }}',
+                    container: $('.listing-form'),
+                    content: $('.pml-table-container')
+                });
+            }
+        };
+
+        $(function() {
+            LanguagesIndex.getList().load();
+        });
+    </script>
 @endsection

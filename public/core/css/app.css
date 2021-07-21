@@ -59,7 +59,7 @@ b, strong {
     color: #231d14;
 }
 .badge {
-    padding: 1px 5px 0px 5px;
+    padding: 3px 5px 3px 5px
     font-size: 10px;
     letter-spacing: 0.1px;
     vertical-align: baseline;
@@ -5321,7 +5321,7 @@ stat .stat-head {
 }
 .bg-paystack::after, .bg-razorpay::after, .bg-coinpayments::after, .bg-stripe::after, .bg-braintree::after, .bg-offline::after, .bg-paypal::after, .bg-paypal_subscription::after {
   content: "";
-  background-image: url("../images/coinpayments-logo.png");
+  background-image: url("../../images/coinpayments-logo.png");
   background-size: 140px auto;
   background-repeat: no-repeat;
   background-position: left center;
@@ -5333,7 +5333,7 @@ stat .stat-head {
   z-index: -1;
 }
 .bg-coinpayments::after {
-  background-image: url("../images/coinpayments-logo.png");
+  background-image: url("../../images/coinpayments-logo.png");
   background-size: 80px;
 }
 .bg-stripe::after {
@@ -6374,7 +6374,7 @@ h1, h1 {
     font-size: 17px;
     line-height: 17px;
     transform: translateY(2px);
-    margin-right: 10px;
+    margin-right: 7px;
 }
 
 .alert-info:before {
@@ -6638,4 +6638,26 @@ h1 [class^="material-icons"] {
     background-color: #ddd;
     border-color: #ddd;
     color: #000;
+}
+.slider.slider-horizontal {
+    width: 100%!important;
+}
+.list-loading {
+    position: relative;
+    opacity: 0.5;
+    pointer-events: none;
+    min-height: 150px;
+}
+.list-loading::after {
+    content: 'brightness_4';
+    font-family: 'Material Icons Outlined';
+    position: absolute;
+    font-size: 40px;
+    opacity: 0.6;
+    left: calc(50% - 20px);
+    top: 30px;
+    -webkit-animation: spin 1s linear infinite;
+    -moz-animation: spin 1s linear infinite;
+    animation: spin 1s linear infinite;
+    color: rgb(0, 53, 88);
 }

@@ -3,7 +3,9 @@
 						<a href="{{ action("InstallController@systemCompatibility") }}"
 							class="rounded-top rounded-3-top"
 						>
-							<i class="icon-server"></i> {{ trans('messages.system_compatibility') }}
+							<span class="material-icons-outlined">
+dns
+</span> {{ trans('messages.system_compatibility') }}
 						</a>
 					</li>
                     <li class="{{ $current == 2 ? "active" : "" }} {{ $step >= 1 ? "enabled" : "" }}">

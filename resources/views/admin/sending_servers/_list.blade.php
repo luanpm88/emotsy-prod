@@ -23,11 +23,15 @@
 
                     @if ($server->isExtended())
                         <span class="mc-server-avatar server-avatar" style="background: url({{ $server->getIconUrl() }}) top left/36px 36px no-repeat transparent;">
-                            <i class="icon-server"></i>
+                            <span class="material-icons-outlined">
+dns
+</span>
                         </span>
                     @else
                         <span class="server-avatar server-avatar-{{ $item->type }} mr-0">
-                            <i class="icon-server"></i>
+                            <span class="material-icons-outlined">
+dns
+</span>
                         </span>
                     @endif
                 </td>
@@ -106,7 +110,7 @@ edit
                             <ul class="dropdown-menu dropdown-menu-end">
                                 @if (Auth::user()->admin->can('enable', $item))
                                     <li>
-                                        <a link-confirm="{{ trans('messages.enable_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@enable', ["uids" => $item->uid]) }}">
+                                        <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.enable_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@enable', ["uids" => $item->uid]) }}">
                                             <span class="material-icons-outlined">
 play_arrow
 </span> {{ trans('messages.enable') }}
@@ -115,7 +119,7 @@ play_arrow
                                 @endif
                                 @if (Auth::user()->admin->can('disable', $item))
                                     <li>
-                                        <a link-confirm="{{ trans('messages.disable_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@disable', ["uids" => $item->uid]) }}">
+                                        <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.disable_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@disable', ["uids" => $item->uid]) }}">
                                             <span class="material-icons-outlined">
 hide_source
 </span> {{ trans('messages.disable') }}
@@ -124,7 +128,7 @@ hide_source
                                 @endif
                                 @if (Auth::user()->admin->can('delete', $item))
                                     <li>
-                                        <a link-confirm="{{ trans('messages.delete_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@delete', ["uids" => $item->uid]) }}">
+                                        <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.delete_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@delete', ["uids" => $item->uid]) }}">
                                             <span class="material-icons-outlined">
 delete_outline
 </span> {{ trans('messages.delete') }}
@@ -142,14 +146,18 @@ delete_outline
     
 @elseif (!empty(request()->keyword) || !empty(request()->filters["type"]))
     <div class="empty-list">
-        <i class="icon-server"></i>
+        <span class="material-icons-outlined">
+dns
+</span>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
         </span>
     </div>
 @else
     <div class="empty-list">
-        <i class="icon-server"></i>
+        <span class="material-icons-outlined">
+dns
+</span>
         <span class="line-1">
             {{ trans('messages.sending_server_empty_line_1') }}
         </span>

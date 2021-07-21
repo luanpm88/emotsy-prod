@@ -189,8 +189,7 @@ class EmailVerificationServer extends Model
             foreach (explode(' ', trim($request->keyword)) as $keyword) {
                 $query = $query->where(function ($q) use ($keyword) {
                     $q->orwhere('email_verification_servers.name', 'like', '%'.$keyword.'%')
-                        ->orWhere('email_verification_servers.type', 'like', '%'.$keyword.'%')
-                        ->orWhere('email_verification_servers.host', 'like', '%'.$keyword.'%');
+                        ->orWhere('email_verification_servers.type', 'like', '%'.$keyword.'%');
                 });
             }
         }

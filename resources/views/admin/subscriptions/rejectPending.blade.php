@@ -17,7 +17,7 @@
                     'rules' => ['reason' => 'required']
                 ])
 
-                <button class="btn btn-mc_primary">{{ trans('messages.subscription.reject_pending') }}</button>
+                <button class="btn btn-secondary">{{ trans('messages.subscription.reject_pending') }}</button>
             </form>
         </div>
     </div>

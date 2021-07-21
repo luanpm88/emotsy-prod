@@ -25,7 +25,9 @@ assignment_turned_in
             <li class="nav-item 
             {{ request()->route()->getActionName() == 'Acelle\Http\Controllers\Admin\CustomerController@subAccount' ? 'active' : '' }}
             text-semibold"><a class="nav-link" href="{{ action('Admin\CustomerController@subAccount', $customer->uid) }}">
-                <i class="icon-drive"></i> {{ trans('messages.customer.sub_account') }}</a>
+                <span class="material-icons-outlined">
+approval
+</span> {{ trans('messages.customer.sub_account') }}</a>
             </li>
         @endcan
     </ul>

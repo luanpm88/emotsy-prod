@@ -38,12 +38,12 @@
 @endsection
 
 @section('content')
-    <form id="classic-builder-form" style="margin-top: 56px !important;" action="{{ action('Admin\LayoutController@update', $layout->uid) }}" method="POST" class="ajax_upload_form form-validate-jquery">
+    <form id="classic-builder-form" action="{{ action('Admin\LayoutController@update', $layout->uid) }}" method="POST" class="ajax_upload_form form-validate-jquery">
         {{ csrf_field() }}
         <input type="hidden" name="_method" value="PATCH">
 
         <div class="row mr-0 ml-0">
-            <div class="col-md-9 pl-0 pb-0 pr-0">
+            <div class="col-md-9 pl-0 pb-0 pr-0 form-group-mb-0">
                 <div class="loading classic-loader"><div class="text-center inner"><div class="box-loading"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></div></div></div>
 
                 @include('helpers.form_control', [
@@ -94,7 +94,7 @@
                 height: $(window).height()-53,
                 convert_urls: false,
                 remove_script_host: false,
-                skin: "oxide-dark",
+                skin: "oxide",
                 forced_root_block: "",
                 plugins: 'fullpage print preview paste importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern noneditable help charmap quickbars emoticons',
                 imagetools_cors_hosts: ['picsum.photos'],
