@@ -695,6 +695,7 @@ class MailList extends Model
     public function copy($name, $customer = null)
     {
         $copy = $this->replicate(['cache']);
+        $copy->uid = uniqid();
         $copy->name = $name;
         $copy->created_at = \Carbon\Carbon::now();
         $copy->updated_at = \Carbon\Carbon::now();
@@ -710,6 +711,7 @@ class MailList extends Model
         // Contact
         if (is_object($this->contact)) {
             $new_contact = $this->contact->replicate();
+            $new_contact->uid = uniqid();
             $new_contact->save();
 
             // update contact
@@ -862,7 +864,7 @@ class MailList extends Model
                 throw new \Exception(trans('messages.subscriber.email.fail_to_verify'));
             }
 
-            if (!$subscriber->verify($verifier)) {
+            if (!$subscriber->verify($verifier)->isDeliverable()) {
                 MailLog::info(sprintf('Contact %s (%s) tries to subscribe to list %s (%s) but email address is invalid', $subscriber->email, $subscriber->uid, $this->name, $this->uid));
                 throw new \Exception(trans('messages.subscriber.email.invalid'));
             }

@@ -38,9 +38,10 @@ class ImportSubscribers2 extends Base
         // After the batch has finished
         // This is the place for the job itself to log
         $this->afterFinished(function ($thisJob, $monitor) {
-            $monitor->updateJsonData([
-                'message' => 'Import complete!',
-            ]);
+            // For example
+            // $monitor->updateJsonData([
+            //     'message' => 'Import complete!',
+            // ]);
         });
     }
 
@@ -70,7 +71,7 @@ class ImportSubscribers2 extends Base
         $logger->info('Import processes started');
 
         $this->list->parseCsvFile($this->file, function ($record) use ($logger) {
-            $this->batch()->add(new VerifyAndCreateSubscriber($this->list, $record, $logger));
+            $this->batch()->add(new VerifyAndCreateSubscriber($this->list, $record, $logger, $this->monitor));
         });
     }
 }

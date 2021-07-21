@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Bus\Batch;
 use Illuminate\Support\Facades\Bus;
 use Acelle\Library\Traits\HasUid;
+use Acelle\Library\Lockable;
 use Exception;
 
 class JobMonitor extends Model
@@ -42,6 +43,15 @@ class JobMonitor extends Model
         }
 
         return Bus::findBatch($this->batch_id);
+    }
+
+    public function withExclusiveLock($closure)
+    {
+        $lockFile = storage_path('app/lock-job-monitor-'.$this->uid);
+        $lock = new Lockable($lockFile);
+        $lock->getExclusiveLock(function($lockReader) use ($closure) {
+            $closure($this->refresh());
+        }, $timeout = 60);
     }
 
     public function job()
