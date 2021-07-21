@@ -3708,4 +3708,7 @@
   'store.connected_with_acelle.desc' => 'While connected, Acelle can synchronize products
     and contacts from your store to a specified mail list',
   'source.refresh' => 'Refresh',
+  'subscription.thanks.click_to_start' => 'Thank you for subscribing to our SAAS. Click the button
+    below to get started',
+  'subscription.get_started' => 'Get Started',
 ) ?>

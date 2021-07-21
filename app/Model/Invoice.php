@@ -283,7 +283,9 @@ class Invoice extends Model
 
         // set transaction as success
         // Important: according to current design, the rule is: one invoice only has one pending transaction
-        $this->getPendingTransaction()->setSuccess();
+        if ($this->getPendingTransaction()) {
+            $this->getPendingTransaction()->setSuccess();
+        }
         
         // invoice after pay actions
         $this->process();

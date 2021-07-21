@@ -54,10 +54,17 @@ class AccountSubscriptionController extends Controller
 
             if ($invoice->isNew()) {
                 if (!$invoice->getPendingTransaction()) {
-                    return view('account.subscription.payment', [
-                        'subscription' => $subscription,
-                        'invoice' => $invoice,
-                    ]);
+                    if ($invoice->total() > 0) {
+                        return view('account.subscription.payment', [
+                            'subscription' => $subscription,
+                            'invoice' => $invoice,
+                        ]);
+                    } else {
+                        return view('account.subscription.confirmFree', [
+                            'subscription' => $subscription,
+                            'invoice' => $invoice,
+                        ]);
+                    }
                 } else {
                     return view('account.subscription.pending', [
                         'subscription' => $subscription,
@@ -116,6 +123,12 @@ class AccountSubscriptionController extends Controller
         $gateway = $customer->getPreferredPaymentGateway();
         $invoice = $subscription->getUnpaidInvoice();
 
+        if ($invoice->total() == 0) {
+            $invoice->fulFill();
+
+            return redirect()->action('AccountSubscriptionController@index');
+        }
+
         // redirect to service checkout
         return redirect()->away($gateway->getCheckoutUrl($invoice));
     }
@@ -141,10 +154,17 @@ class AccountSubscriptionController extends Controller
                     'invoice' => $invoice,
                 ]);
             } else {
-                return view('account.subscription.payment', [
-                    'subscription' => $subscription,
-                    'invoice' => $invoice,
-                ]);
+                if ($invoice->total() > 0) {
+                    return view('account.subscription.payment', [
+                        'subscription' => $subscription,
+                        'invoice' => $invoice,
+                    ]);
+                } else {
+                    return view('account.subscription.confirmFree', [
+                        'subscription' => $subscription,
+                        'invoice' => $invoice,
+                    ]);
+                }
             }
         }
 
