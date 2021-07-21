@@ -839,7 +839,7 @@ class Subscriber extends Model
         $log->email_verification_server_id = $verifier->id;
         $log->save();
 
-        return $log->isDeliverable();
+        return $log;
     }
 
     /**

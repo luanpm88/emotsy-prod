@@ -56,14 +56,14 @@ class VerifyAndCreateSubscriber extends Base
             throw new Exception('No email verification service found');
         }
 
-        $isDeliverable = $subscriber->verify($verifier);
-        if (!$isDeliverable) {
+        $verifa = $subscriber->verify($verifier);
+        if ($verifa->isDeliverable() || $verifa->isUnknown()) {
+            $this->logger->info(sprintf('[%s] successfully imported [checked by %s]', $subscriber->email, $verifier->name));
+        } else {
             // In case of failure, delete the newly created contact
             // Throw exception to log
             $subscriber->delete();
-            $this->logger->error(sprintf('[%s] failed to import. Undeliverable email [checked by %s]', $subscriber->email, $verifier->name));
-        } else {
-            $this->logger->error(sprintf('[%s] successfully imported [checked by %s]', $subscriber->email, $verifier->name));
+            $this->logger->error(sprintf('[%s] failed to import. Undeliverable email [Result: `%s`, checked by `%s`]', $subscriber->email, $verifa->result, $verifier->name));
         }
     }
 }

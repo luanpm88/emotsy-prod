@@ -862,7 +862,7 @@ class MailList extends Model
                 throw new \Exception(trans('messages.subscriber.email.fail_to_verify'));
             }
 
-            if (!$subscriber->verify($verifier)) {
+            if (!$subscriber->verify($verifier)->isDeliverable()) {
                 MailLog::info(sprintf('Contact %s (%s) tries to subscribe to list %s (%s) but email address is invalid', $subscriber->email, $subscriber->uid, $this->name, $this->uid));
                 throw new \Exception(trans('messages.subscriber.email.invalid'));
             }
