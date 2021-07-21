@@ -510,4 +510,8 @@ class Invoice extends Model
             $invoice->payFailed($e->getMessage());
         }
     }
+
+    public function isFree() {
+        return $this->total() == 0;
+    }
 }

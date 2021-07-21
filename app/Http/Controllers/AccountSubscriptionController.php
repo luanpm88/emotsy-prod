@@ -54,13 +54,13 @@ class AccountSubscriptionController extends Controller
 
             if ($invoice->isNew()) {
                 if (!$invoice->getPendingTransaction()) {
-                    if ($invoice->total() > 0) {
-                        return view('account.subscription.payment', [
+                    if ($invoice->isFree()) {
+                        return view('account.subscription.confirmFree', [
                             'subscription' => $subscription,
                             'invoice' => $invoice,
                         ]);
                     } else {
-                        return view('account.subscription.confirmFree', [
+                        return view('account.subscription.payment', [
                             'subscription' => $subscription,
                             'invoice' => $invoice,
                         ]);
@@ -123,8 +123,8 @@ class AccountSubscriptionController extends Controller
         $gateway = $customer->getPreferredPaymentGateway();
         $invoice = $subscription->getUnpaidInvoice();
 
-        if ($invoice->total() == 0) {
-            $invoice->fulFill();
+        if ($invoice->isFree()) {
+            $subscription->activateImmediatelyWithoutPayment();
 
             return redirect()->action('AccountSubscriptionController@index');
         }
@@ -154,13 +154,13 @@ class AccountSubscriptionController extends Controller
                     'invoice' => $invoice,
                 ]);
             } else {
-                if ($invoice->total() > 0) {
-                    return view('account.subscription.payment', [
+                if ($invoice->isFree()) {
+                    return view('account.subscription.confirmFree', [
                         'subscription' => $subscription,
                         'invoice' => $invoice,
                     ]);
                 } else {
-                    return view('account.subscription.confirmFree', [
+                    return view('account.subscription.payment', [
                         'subscription' => $subscription,
                         'invoice' => $invoice,
                     ]);
