@@ -107,20 +107,26 @@ class AccountSubscriptionController extends Controller
      **/
     public function checkout(Request $request)
     {
-        // Get current customer
-        $customer = $request->user()->customer;
-        $subscription = $customer->subscription;
+        $subscription = $request->user()->customer->subscription;
         $gateway = $customer->getPreferredPaymentGateway();
         $invoice = $subscription->getUnpaidInvoice();
 
-        if ($invoice->isFree()) {
-            $subscription->activateImmediatelyWithoutPayment();
-
-            return redirect()->action('AccountSubscriptionController@index');
-        }
-
         // redirect to service checkout
         return redirect()->away($gateway->getCheckoutUrl($invoice));
+    }
+
+    public function confirmFree(Request $request)
+    {
+        $subscription = $request->user()->customer->subscription;
+        $invoice = $subscription->getUnpaidInvoice();
+
+        if (!$invoice->isFree()) {
+            throw new \Exception('Invoice is not free!');
+        }
+        
+        $subscription->activateImmediatelyWithoutPayment();
+
+        return redirect()->action('AccountSubscriptionController@index');
     }
 
     /**

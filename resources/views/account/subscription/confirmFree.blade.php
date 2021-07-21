@@ -34,7 +34,7 @@
                 {{ trans('messages.subscription.thanks.click_to_start') }}
             </p>
 
-            <form class="" action="{{ action('AccountSubscriptionController@checkout') }}"
+            <form class="" action="{{ action('AccountSubscriptionController@confirmFree') }}"
                 method="POST">
                 {{ csrf_field() }}
 
