@@ -18,11 +18,17 @@
                 </td>
                 <td width="1%">
                     @if ($notification->level == \Acelle\Model\Notification::LEVEL_WARNING)
-                        <i class="lnr lnr-warning bg-warning admin-notification-media"></i>
+                        <span class="material-icons-outlined bg-warning admin-notification-media text-white">
+                            warning_amber
+                        </span>
                     @elseif ( false &&$notification->level == \Acelle\Model\Notification::LEVEL_ERROR)
-                        <i class="lnr lnr-cross bg-danger admin-notification-media"></i>
+                        <span class="material-icons-outlined bg-danger admin-notification-media text-white">
+                            new_releases
+                        </span>
                     @else
-                        <i class="lnr lnr-menu bg-info admin-notification-media"></i>
+                        <span class="material-icons-outlined bg-info admin-notification-media text-white">
+                            lightbulb
+                        </span>
                     @endif
                 </td>
                 <td>

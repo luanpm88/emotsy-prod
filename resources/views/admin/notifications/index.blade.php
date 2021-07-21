@@ -18,29 +18,29 @@
 	
 	@include("admin.account._menu")	
 
-	<form class="listing-form"
+	<div class="listing-form"
 		data-url="{{ action('Admin\NotificationController@listing') }}"
 		per-page="20"				
 	>				
 		<div class="row top-list-controls py-2">
 			<div class="col-md-10">			
 				<div class="filter-box">
+					<div class="checkbox inline check_all_list">
+						<label>
+							<input type="checkbox" name="page_checked" class="styled check_all">
+						</label>
+					</div>
 					<div class="dropdown list_actions" style="display: none">
 						<button role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
 							{{ trans('messages.actions') }} <span class="number"></span><span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu">
 							<li>
-								<a link-method="GET" href="{{ action('Admin\NotificationController@delete') }}" class="ajax_link"><span class="material-icons-outlined">
+								<a link-method="POST" href="{{ action('Admin\NotificationController@delete') }}" class="dropdown-item"><span class="material-icons-outlined">
 delete_outline
 </span> {{ trans('messages.delete') }}</a>
 							</li>
 						</ul>
-					</div>
-					<div class="checkbox inline check_all_list">
-						<label>
-							<input type="checkbox" name="page_checked" class="styled check_all">
-						</label>
 					</div>
 					<span class="filter-group">
 						<span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
@@ -48,7 +48,7 @@ delete_outline
 							<option value="created_at">{{ trans('messages.created_at') }}</option>
 						</select>										
 						<input type="hidden" name="sort_direction" value="desc" />
-<button class="btn btn-xs sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
+<button type="button" class="btn btn-xs sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
 							<span class="material-icons-outlined desc">
 sort
 </span>
@@ -76,5 +76,21 @@ search
 		<div class="pml-table-container">
 
 		</div>
-	</form>	
+	</div>	
+
+	<script>
+        var NotificationsIndex = {
+            getList: function() {
+                return makeList({
+                    url: '{{ action('Admin\NotificationController@listing') }}',
+                    container: $('.listing-form'),
+                    content: $('.pml-table-container')
+                });
+            }
+        };
+
+        $(function() {
+            NotificationsIndex.getList().load();
+        });
+    </script>
 @endsection

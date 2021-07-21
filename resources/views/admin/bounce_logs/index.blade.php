@@ -33,7 +33,7 @@ reorder
                                             <option value="bounce_logs.created_at">{{ trans('messages.created_at') }}</option>
 										</select>										
 										<input type="hidden" name="sort_direction" value="desc" />
-<button class="btn btn-xs sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
+<button type="button" class="btn btn-xs sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
 											<span class="material-icons-outlined desc">
 sort
 </span>
