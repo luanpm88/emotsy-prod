@@ -695,6 +695,7 @@ class MailList extends Model
     public function copy($name, $customer = null)
     {
         $copy = $this->replicate(['cache']);
+        $copy->uid = uniqid();
         $copy->name = $name;
         $copy->created_at = \Carbon\Carbon::now();
         $copy->updated_at = \Carbon\Carbon::now();

@@ -1008,6 +1008,7 @@ class Plan extends Model
     public function copy($name)
     {
         $copy = $this->replicate(['cache', 'last_error', 'run_at']);
+        $copy->uid = uniqid();
         $copy->name = $name;
         $copy->created_at = \Carbon\Carbon::now();
         $copy->updated_at = \Carbon\Carbon::now();
