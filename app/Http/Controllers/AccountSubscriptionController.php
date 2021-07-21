@@ -61,7 +61,7 @@ class AccountSubscriptionController extends Controller
                 } else {
                     return redirect()->action('AccountSubscriptionController@payment');
                 }
-            } else {
+            } elseif ($invoice->isPaid()) {
                 throw new \Exception('There is no such case: new subscription must always have ONE unpaid invoice (which is either "new", and the getItsOnlyUnpaidInitInvoice() method above is supposed to throw an exception before reaching this point.');
             }
         }
