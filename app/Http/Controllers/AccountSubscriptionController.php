@@ -107,7 +107,8 @@ class AccountSubscriptionController extends Controller
      **/
     public function checkout(Request $request)
     {
-        $subscription = $request->user()->customer->subscription;
+        $customer = $request->user()->customer;
+        $subscription = $customer->subscription;
         $gateway = $customer->getPreferredPaymentGateway();
         $invoice = $subscription->getUnpaidInvoice();
 
