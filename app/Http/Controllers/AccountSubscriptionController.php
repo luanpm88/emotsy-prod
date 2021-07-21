@@ -53,23 +53,13 @@ class AccountSubscriptionController extends Controller
             $invoice = $subscription->getItsOnlyUnpaidInitInvoice();
 
             if ($invoice->isNew()) {
-                if (!$invoice->getPendingTransaction()) {
-                    if ($invoice->isFree()) {
-                        return view('account.subscription.confirmFree', [
-                            'subscription' => $subscription,
-                            'invoice' => $invoice,
-                        ]);
-                    } else {
-                        return view('account.subscription.payment', [
-                            'subscription' => $subscription,
-                            'invoice' => $invoice,
-                        ]);
-                    }
-                } else {
+                if ($invoice->getPendingTransaction()) {
                     return view('account.subscription.pending', [
                         'subscription' => $subscription,
                         'invoice' => $invoice,
                     ]);
+                } else {
+                    return redirect()->action('AccountSubscriptionController@payment');
                 }
             } else {
                 throw new \Exception('There is no such case: new subscription must always have ONE unpaid invoice (which is either "new", and the getItsOnlyUnpaidInitInvoice() method above is supposed to throw an exception before reaching this point.');
