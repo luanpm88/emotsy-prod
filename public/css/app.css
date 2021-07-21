@@ -2291,7 +2291,6 @@ a.loading, button.loading {
     border-radius: 5px;
     height: 33px;
     font-size: 13px;
-    margin-top: -2px;
 }
 .list_actions {
     margin-right: 15px;
@@ -4873,4 +4872,7 @@ pagination {
 .select2-container--default .select2-results__option--highlighted[aria-selected] {
     background: #aed4d1 !important;
     color: #333;
+}
+.AnyTime-win {
+    z-index: 1060;
 }
