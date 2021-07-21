@@ -30,7 +30,7 @@
 
             <div class="text-end">
                 <button id="testSend" type="submit" class="btn btn-primary me-1"><i class="icon-paperplane ml-5"></i> {{ trans('messages.send') }}</button>
-                <a href="javascript:;" onclick="CampaignsSendTestEmailPopup.popup.hide()" role="button" class="btn btn-outline-secondary">{{ trans('messages.close') }}</a>
+                <a href="javascript:;" onclick="CampaignsSendTestEmailPopup.popup.hide()" role="button" class="btn btn-secondary">{{ trans('messages.close') }}</a>
             </div>
 
         </div>

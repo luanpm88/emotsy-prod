@@ -1,16 +1,18 @@
 <h4>{{ trans('messages.delete_plan_confirm_warning') }}</h4>
 <ul class="modern-listing">
     @foreach ($plans->get() as $plan)
-        <li>
-            <span class="material-icons-outlined">
+        <li class="d-flex align-items-center">
+            <i class="material-icons-outlined fs-4 me-3 text-danger">
 error_outline
-</span>
-            <h4 class="text-danger">{{ $plan->name }}</h4>
-            <p>
-                @if ($plan->subscriptionsCount())
-                    <span class="text-bold text-danger">{{ $plan->subscriptionsCount() }}</span> {{ trans('messages.subscription') }}<pp>,</pp>
-                @endif
-            </p>                        
+            </i>
+            <div>
+                <h4 class="text-danger mb-1">{{ $plan->name }}</h4>
+                <p>
+                    @if ($plan->subscriptionsCount())
+                        <span class="text-bold text-danger">{{ $plan->subscriptionsCount() }}</span> {{ trans('messages.subscription') }}<pp>,</pp>
+                    @endif
+                </p>  
+            </div>                      
         </li>
     @endforeach
 </ul>

@@ -7,7 +7,7 @@
         <div class="col-md-10">
         	<div class="page-title">
 	            <ul class="breadcrumb breadcrumb-caret position-right">
-	                <li><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+	                <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
 	            </ul>
 	            <h1>
 	                <span class="text-semibold"><span class="material-icons-outlined">

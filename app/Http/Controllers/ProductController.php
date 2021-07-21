@@ -10,6 +10,7 @@ use Acelle\Events\MailListSubscription;
 use Acelle\Model\Setting;
 use Acelle\Model\Customer;
 use Acelle\Model\Product;
+use Acelle\Model\Source;
 
 class ProductController extends Controller
 {
@@ -35,8 +36,8 @@ class ProductController extends Controller
             ->search($request->keyword);
 
         // filter
-        if ($request->source_id) {
-            $products = $products->filter('source_id', $request->source_id);
+        if ($request->source_uid) {
+            $products = $products->filter('source_id', Source::findByUid($request->source_uid)->id);
         }
         
         // order + pagination

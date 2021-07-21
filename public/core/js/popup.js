@@ -199,7 +199,7 @@ class Popup {
         // load from url
         $.ajax({
             url: _this.options.url,
-            type: 'GET',
+            method: 'GET',
             dataType: 'html',
             data: _this.options.data,
         }).done(function(response) {

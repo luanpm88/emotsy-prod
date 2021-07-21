@@ -51,7 +51,7 @@ close
                                                 <a
                                                     link-method="POST"
                                                     href="{{ action('AccountSubscriptionController@changePlan', ['plan_uid' => $plan->uid]) }}"
-                                                    class="btn btn-mc_primary btn-mc_mk mt-30">
+                                                    class="btn btn-secondary btn-mc_mk mt-30">
                                                         {{ trans('messages.plan.select') }}
                                                 </a>
                                             @endif

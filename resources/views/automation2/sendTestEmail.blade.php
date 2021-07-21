@@ -27,7 +27,7 @@
 
             <div class="text-end">
                 <button id="testSend" type="submit" class="btn btn-secondary me-1"><i class="icon-paperplane"></i> {{ trans('messages.send') }}</button>
-                <a href="javascript:;" onclick="Automation2SendTestEmailPopup.popup.hide()" role="button" class="btn btn-outline-secondary">{{ trans('messages.close') }}</a>
+                <a href="javascript:;" onclick="Automation2SendTestEmailPopup.popup.hide()" role="button" class="btn btn-secondary">{{ trans('messages.close') }}</a>
             </div>
 
         </div>

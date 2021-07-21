@@ -7,7 +7,7 @@
     <div class="page-title">				
         <ul class="breadcrumb breadcrumb-caret position-right">
             <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-            <li><a href="{{ action("Admin\PluginController@index") }}">{{ trans('messages.plugins') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("Admin\PluginController@index") }}">{{ trans('messages.plugins') }}</a></li>
         </ul>
         <h1>
             <span class="text-semibold"><i class="icon-upload"></i> {{ trans('messages.install_plugin') }}</span>
@@ -39,7 +39,7 @@
                 ])
                     
                 <div class="text-end">
-                    <button class="btn btn-mc_primary mr-2">
+                    <button class="btn btn-secondary mr-2">
                         {{ trans('messages.upload') }}
                     </button>
                     <a href="{{ action('Admin\PluginController@index') }}" class="btn btn-mc_default">

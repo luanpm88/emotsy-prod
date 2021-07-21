@@ -16,35 +16,19 @@ reorder
 @endsection
 
 @section('content')
-    <form class="listing-form view-{{ request()->view ? request()->view : 'grid' }}"
+    <div id="ProductsIndexContainer" class="listing-form view-{{ request()->view ? request()->view : 'grid' }}"
         data-url="{{ action('ProductController@listing', ['view' => request()->view]) }}"
         per-page="{{ Acelle\Model\Product::$itemsPerPage }}"
     >
         <div class="row top-list-controls py-2">
             <div class="col-md-8">
                 <div class="filter-box">
-                    <div class="dropdown list_actions" style="display: none">
-                        <button role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
-                            {{ trans('messages.actions') }} <span class="number"></span><span class="caret"></span>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li>
-                                <a list-delete-confirm="{{ action('MailListController@deleteConfirm') }}" href="{{ action('MailListController@delete') }}"><span class="material-icons-outlined">
-delete_outline
-</span> {{ trans('messages.delete') }}</a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="checkbox inline check_all_list">
-                        <label>
-                            <input type="checkbox" name="page_checked" class="styled check_all">
-                        </label>
-                    </div>
+                    <input type="hidden" name="view" value="{{ request()->view }}" />
                     <span class="filter-group">
                         <span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
                         <select class="select" name="sort_order">
                             <option value="created_at">{{ trans('messages.created_at') }}</option>
-                            <option value="name">{{ trans('messages.name') }}</option>
+                            <option value="title">{{ trans('messages.product.title') }}</option>
                         </select>
                         <input type="hidden" name="sort_direction" value="desc" />
 <button class="btn btn-xs sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
@@ -91,6 +75,22 @@ search
             </div>
         </div>
 
-        <div class="pml-table-container"></div>
-    </form>
+        <div id="ProductsIndexContent" class="pml-table-container"></div>
+    </div>
+
+    <script>
+        var ProductsIndex = {
+            getList: function() {
+                return makeList({
+                    url: '{{ action('ProductController@listing') }}',
+                    container: $('#ProductsIndexContainer'),
+                    content: $('#ProductsIndexContent')
+                });
+            }
+        };
+
+        $(document).ready(function() {
+            ProductsIndex.getList().load();
+        });
+    </script>
 @endsection

@@ -10,7 +10,9 @@
             <li class="breadcrumb-item"><a href="{{ action("TrackingDomainController@index") }}">{{ trans('messages.tracking_domains') }}</a></li>
         </ul>
         <h2>
-            <span class="text-semibold"><i class="icon-earth"></i> {{ $domain->getUrl() }} </span>
+            <span class="text-semibold"><span class="material-icons-outlined">
+public
+</span> {{ $domain->getUrl() }} </span>
             <span class="label label-primary bg-{{ $domain->status }}">
                 {{ trans('messages.tracking_domain.status.' . $domain->status) }}
             </span>
@@ -27,17 +29,12 @@
                 <form action="{{ action('TrackingDomainController@verify', [ 'uid' => $domain->uid ]) }}" method="GET">
                     <div data-type="admin-notification" class="alert alert-warning" style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
                         <div style="display: flex; flex-direction: row; align-items: center;">
-                            <div style="margin-right:15px">
-                                <span class="material-icons-outlined">
-error_outline
-</span>
-                            </div>
                             <div style="padding-right: 40px">
                                 <h4>{{ trans('messages.tracking_domain.show.pending_title') }}</h4>
                             <p>{{ trans('messages.tracking_domain.show.pending_note') }}</p>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-outline-secondary-600">{{ trans('messages.tracking_domain.refresh') }}</button>
+                        <button type="submit" class="btn btn-secondary text-nowrap">{{ trans('messages.tracking_domain.refresh') }}</button>
                     </div>
                 </form>
                 <h2>{{ trans('messages.tracking_domain.show.dns_setup.title') }}</h2>
@@ -59,24 +56,24 @@ error_outline
                                 </div>
 
                                 @if (!$domain->isVerified())
-                                    <a href="javascript:;" class="btn btn-mc_primary ml-auto tracking-domain-test">{{ trans('messages.tracking_domain.test') }}</a>
+                                    <a href="javascript:;" class="btn btn-secondary ml-auto tracking-domain-test">{{ trans('messages.tracking_domain.test') }}</a>
                                     <div class="tracking-domain-test-message" style="display:none">
-                                        <div class="popup-container" style="width: 600px">
-                                            <div class="popup-header">
-                                                <i class="lnr lnr-arrow-left back"></i>
-                                                <h2 class="title">{{ $domain->name }}</h2>
-                                                <i class="material-icons-round close">
-close
-</i>
-                                            </div>
-                                            <div class="popup-body scrollbar-inner">
-                                                <div class="popup-content">
+                                        <div class="modal-dialog shadow modal-default">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <a href="javascript:;" class="material-icons-round back">keyboard_backspace</a>
+                                                    <h5 class="modal-title text-center" style="width:100%">
+                                                        {{ $domain->name }}
+                                                    </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
                                                     {!! trans('messages.tracking_domain.test.wording', [
                                                         'domain' => $domain->name,
                                                     ]) !!}
 
                                                     <div class="mt-4 pt-3 text-center">
-                                                        <a href="http://{{ $domain->name }}" class="btn btn-mc_primary mr-2" target="_blank">{{ trans('messages.tracking_domain.test.proceed') }}</a>
+                                                        <a href="http://{{ $domain->name }}" class="btn btn-secondary mr-2" target="_blank">{{ trans('messages.tracking_domain.test.proceed') }}</a>
                                                         <button class="btn btn-link tracking-domain-test-close" target="_blank">{{ trans('messages.close') }}</button>
                                                     </div>
                                                 </div>
@@ -107,13 +104,10 @@ close
                     </li>
                 </ul>
                 <p style="margin-top: 20px"><i>{{ trans('messages.tracking_domain.show.dns_setup.note3') }}</i></p>
-                <a role="button" style="padding-left:0" class="btn btn-mc_inline" href="{{ action('TrackingDomainController@index') }} ">{{ trans('messages.go_back') }}</a>
+                <a role="button" style="padding-left:0" class="btn btn-link" href="{{ action('TrackingDomainController@index') }} ">{{ trans('messages.go_back') }}</a>
             @else
                 <div data-type="admin-notification" class="alert alert-success" style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
                     <div style="display: flex; flex-direction: row; align-items: center;">
-                        <div style="margin-right:15px">
-                            <i class="lnr lnr-checkmark-circle"></i>
-                        </div>
                         <div style="padding-right: 40px">
                             <h4>{{ trans('messages.tracking_domain.show.verified_title') }}</h4>
                             <p>{{ trans('messages.tracking_domain.show.verified_note') }}</p>
@@ -121,7 +115,7 @@ close
                     </div>
                 </div>
 
-                <a role="button" style="padding-left:0" class="btn btn-mc_inline" href="{{ action('TrackingDomainController@index') }} ">{{ trans('messages.go_back') }}</a>
+                <a role="button" style="padding-left:0" class="btn btn-link" href="{{ action('TrackingDomainController@index') }} ">{{ trans('messages.go_back') }}</a>
             @endif
         </div>
     </div>

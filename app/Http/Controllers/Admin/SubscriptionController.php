@@ -64,16 +64,14 @@ class SubscriptionController extends Controller
 
         $subscriptions = Subscription::select('subscriptions.*');
 
-        if ($request->filters) {
-            if (isset($request->filters["customer_uid"])) {
-                $customer = Customer::findByUid($request->filters["customer_uid"]);
-                $subscriptions = $subscriptions->where('customer_id', $customer->id);
-            }
+        if (isset($request->customer_uid)) {
+            $customer = Customer::findByUid($request->customer_uid);
+            $subscriptions = $subscriptions->where('customer_id', $customer->id);
+        }
 
-            if (isset($request->filters["plan_uid"])) {
-                $plan = Plan::findByUid($request->filters["plan_uid"]);
-                $subscriptions = $subscriptions->where('plan_id', $plan->id);
-            }
+        if (isset($request->plan_uid)) {
+            $plan = Plan::findByUid($request->plan_uid);
+            $subscriptions = $subscriptions->where('plan_id', $plan->id);
         }
 
         if (!empty($request->sort_order)) {

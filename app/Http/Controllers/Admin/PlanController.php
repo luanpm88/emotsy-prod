@@ -365,13 +365,6 @@ class PlanController extends Controller
         return response()->json($result);
     }
 
-    /**
-     * Copy plans.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function copy(Request $request)
     {
         $plan = Plan::findByUid($request->copy_plan_uid);
@@ -381,9 +374,27 @@ class PlanController extends Controller
             return $this->notAuthorized();
         }
 
-        $plan->copy($request->copy_plan_name);
+        if ($request->isMethod('post')) {
+            // make validator
+            $validator = \Validator::make($request->all(), [
+                'name' => 'required',
+            ]);
+            
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('admin.plans.copy', [
+                    'plan' => $plan,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
 
-        echo trans('messages.plan.copied');
+            $plan->copy($request->name);
+            return trans('messages.plan.copied');
+        }
+
+        return view('admin.plans.copy', [
+            'plan' => $plan,
+        ]);
     }
 
     /**

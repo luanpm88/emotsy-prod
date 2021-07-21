@@ -18,7 +18,7 @@
             <div class="row flex align-items">
                 <div class="col-md-4">
                     <form method="GET" action="{{ action('SenderController@index') }}">
-                        <button type='submit' class="btn btn-mc_primary res-button"><i class="icon-check"></i> {{ trans('messages.sender.status.done.gotit') }}</button>
+                        <button type='submit' class="btn btn-secondary res-button"><i class="icon-check"></i> {{ trans('messages.sender.status.done.gotit') }}</button>
                     </form>
                 </div>
                 <div class="col-md-8" style="font-size:13px;font-style: italic">

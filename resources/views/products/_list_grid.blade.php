@@ -7,16 +7,17 @@
 						<img class="card-img-top" src="{{ $product->getImageUrl() }}" style="height: 100%; width: auto; display: block;">
 					</span>
 					<div class="card-body p-3">
-						<h5 title="{{ $product->title }}" class="text-semibold mt-1 mb-2 text-ellipsis">{{ $product->title }}</h5>
+						<h5 title="{{ $product->title }}" class="fw-600 mt-1 mb-2 text-ellipsis">{{ $product->title }}</h5>
 						<p style="display: block;
-						height: 50px;
+						height: 49px;
 						overflow: hidden;" class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
 						<div class="">
 							<div class="d-flex align-items-center">
-								<button role="button" class="btn btn-mc_primary">{{ trans('messages.view') }}</button>
-								<a link-confirm="{{ trans('messages.source.delete.confirm') }}"
-									data-method="POST" href="{{ action('SourceController@delete', ['uids' => $product->uid]) }}"
-									class="btn btn-link">
+								<button role="button" class="btn btn-secondary">{{ trans('messages.view') }}</button>
+								<a
+									link-confirm="{{ trans('messages.source.delete.confirm') }}"
+									link-method="POST" href="{{ action('SourceController@delete', ['uids' => $product->uid]) }}"
+									class="btn btn-link list-action-single">
 									{{ trans('messages.delete') }}
 								</a>
 								<span class="text-muted ml-auto text-teal-800 m-icon d-flex align-items-center">

@@ -128,7 +128,7 @@
         </div>
 
         <div class="mt-4">
-            <button onClick="$('#wizard').submit();" class="btn btn-mc_primary mr-10">{{ trans('messages.plan.wizard.finish') }}</button>
+            <button onClick="$('#wizard').submit();" class="btn btn-secondary mr-10">{{ trans('messages.plan.wizard.finish') }}</button>
             <a href="javascript:;" onclick="PlansIndex.getWizardPopup().hide()" class="btn btn-link mr-10" data-dismiss="modal">{{ trans('messages.plan.wizard.cancel') }}</a>
         </div>
         

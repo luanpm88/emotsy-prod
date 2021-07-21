@@ -283,7 +283,9 @@ people
                     </li>
                     <li>
                         <div class="unit size1of2">
-                            <strong><i class="icon-earth"></i> {{ trans('messages.sending_domains') }}</strong>
+                            <strong><span class="material-icons-outlined">
+public
+</span> {{ trans('messages.sending_domains') }}</strong>
                         </div>
                         <div class="lastUnit size1of2">
                             <mc:flag>{{ Auth::user()->admin->getAllSendingDomains()->count() }}</mc:flag>

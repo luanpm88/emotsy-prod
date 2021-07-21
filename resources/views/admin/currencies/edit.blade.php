@@ -6,9 +6,9 @@
 	
 			<div class="page-title">
 				<ul class="breadcrumb breadcrumb-caret position-right">
-					<li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+					<li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
 					<li class="breadcrumb-item"><a href="{{ action("Admin\CurrencyController@index") }}">{{ trans('messages.currencies') }}</a></li>
-					<li class="active">{{ trans('messages.update') }}</li>
+					<li class="breadcrumb-item active">{{ trans('messages.update') }}</li>
 				</ul>
 				<h1>
 					<span class="text-semibold"><span class="material-icons-round">

@@ -92,7 +92,7 @@
         <a
             href="{{ action('Admin\FeedbackLoopHandlerController@test', $server->uid) }}"
             role="button"
-            class="btn btn-outline-secondary-800 mr-5 btn-icon ajax_link"
+            class="btn btn-secondary-800 mr-5 btn-icon ajax_link"
             data-in-form="true"
             link-method="POST"
             mask-title="{{ trans('messages.feedback_loop_handler.testing_connection') }}"

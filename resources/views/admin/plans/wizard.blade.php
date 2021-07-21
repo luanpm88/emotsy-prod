@@ -65,8 +65,8 @@
                     ])
                  </div>
             </div>
-            <button type="submit" class="btn btn-mc_primary mr-10">{{ trans('messages.plan.wizard.next') }}</button>
-            <a href="javascript:;" class="btn btn-mc_inline mr-10" data-dismiss="modal">{{ trans('messages.plan.wizard.cancel') }}</a>
+            <button type="submit" class="btn btn-secondary mr-10">{{ trans('messages.plan.wizard.next') }}</button>
+            <a href="javascript:;" class="btn btn-link mr-10" data-dismiss="modal">{{ trans('messages.plan.wizard.cancel') }}</a>
         </form>
     </div>
 

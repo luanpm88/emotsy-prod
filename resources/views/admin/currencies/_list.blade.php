@@ -46,15 +46,19 @@
 				</td>
 				<td class="text-end text-nowrap" width="5%">
 					@can('update', $item)
-						<a href="{{ action('Admin\CurrencyController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-outline-secondary-600 btn-icon"><i class="icon icon-pencil pr-0 mr-0"></i></a>
+						<a href="{{ action('Admin\CurrencyController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary btn-icon"><span class="material-icons-outlined">
+edit
+</span></a>
 					@endcan
 					@if (Auth::user()->can('delete', $item) || Auth::user()->can('enable', $item) || Auth::user()->can('disable', $item) || Auth::user()->can('delete', $item))
 						<div class="btn-group">
-							<button role="button" class="btn dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
+							<button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
 							<ul class="dropdown-menu dropdown-menu-end">
 								@can('enable', $item)
 									<li>
-										<a link-confirm="{{ trans('messages.enable_admins_confirm') }}" href="{{ action('Admin\CurrencyController@enable', ["uids" => $item->uid]) }}">
+										<a class="dropdown-item list-action-single"
+											link-confirm="{{ trans('messages.enable_admins_confirm') }}"
+											href="{{ action('Admin\CurrencyController@enable', ["uids" => $item->uid]) }}">
 											<span class="material-icons-outlined">
 play_arrow
 </span> {{ trans('messages.enable') }}
@@ -63,7 +67,8 @@ play_arrow
 								@endcan
 								@can('disable', $item)
 									<li>
-										<a link-confirm="{{ trans('messages.disable_admins_confirm') }}" href="{{ action('Admin\CurrencyController@disable', ["uids" => $item->uid]) }}">
+										<a class="dropdown-item list-action-single"
+										 link-confirm="{{ trans('messages.disable_admins_confirm') }}" href="{{ action('Admin\CurrencyController@disable', ["uids" => $item->uid]) }}">
 											<span class="material-icons-outlined">
 hide_source
 </span> {{ trans('messages.disable') }}
@@ -71,7 +76,7 @@ hide_source
 									</li>
 								@endcan
 								<li>
-									<a link-confirm="{{ trans('messages.delete_currencies_confirm') }}" href="{{ action('Admin\CurrencyController@delete', ['uids' => $item->uid]) }}">
+									<a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.delete_currencies_confirm') }}" href="{{ action('Admin\CurrencyController@delete', ['uids' => $item->uid]) }}">
 										<span class="material-icons-outlined">
 delete_outline
 </span> {{ trans('messages.delete') }}
@@ -97,7 +102,9 @@ assignment_turned_in
 	</div>
 @else
 	<div class="empty-list">
-		<i class="icon-currencies"></i>
+		<span class="material-icons-outlined">
+paid
+</span>
 		<span class="line-1">
 			{{ trans('messages.plan_empty_line_1') }}
 		</span>

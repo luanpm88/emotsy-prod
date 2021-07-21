@@ -25,7 +25,7 @@
                     </div>
                 </div>
                 <div class=" mt-4">
-                    <button class="btn btn-mc_primary mr-3 whitelabel-save">{{ trans('messages.ok_enable') }}</button>
+                    <button class="btn btn-secondary mr-3 whitelabel-save">{{ trans('messages.ok_enable') }}</button>
                     <button class="btn btn-link" onclick="whitelabelPopup.hide()">{{ trans('messages.cancel') }}</button>
                 </div>
             </form>

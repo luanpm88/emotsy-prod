@@ -134,7 +134,7 @@ class BounceHandler extends DeliveryHandler
         }
 
         // filters
-        $filters = $request->filters;
+        $filters = $request->all();
         if (!empty($filters)) {
             if (!empty($filters['type'])) {
                 $query = $query->where('bounce_handlers.type', '=', $filters['type']);

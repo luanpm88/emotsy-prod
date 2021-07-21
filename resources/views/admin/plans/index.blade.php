@@ -21,7 +21,7 @@ reorder
 
 	<p>{{ trans('messages.plan_create_message') }}</p>
 
-    <form class="listing-form"
+    <div class="listing-form"
         sort-url="{{ action('Admin\PlanController@sort') }}"
         data-url="{{ action('Admin\PlanController@listing') }}"
         per-page="{{ Acelle\Model\Plan::$itemsPerPage }}"
@@ -36,7 +36,8 @@ reorder
                                 <option value="plans.created_at">{{ trans('messages.created_at') }}</option>
                                 <option value="plans.name">{{ trans('messages.name') }}</option>
                             </select>
-                            <button class="btn btn-xs sort-direction" rel="asc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
+                            <input type="hidden" name="sort_direction" value="asc" />
+                                                <button class="btn btn-xs sort-direction" rel="asc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
                                 <span class="material-icons-outlined desc">
 sort
 </span>
@@ -64,7 +65,23 @@ add
 
         <div class="pml-table-container">
         </div>
-    </form>
+    </div>
+
+    <script>
+        var PlanIndex = {
+            getList: function() {
+                return makeList({
+                    url: '{{ action('Admin\PlanController@listing') }}',
+                    container: $('.listing-form'),
+                    content: $('.pml-table-container')
+                });
+            }
+        };
+
+        $(function() {
+            PlanIndex.getList().load();
+        });
+    </script>
 
 
     <script>

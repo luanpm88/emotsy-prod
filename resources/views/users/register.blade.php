@@ -87,7 +87,7 @@
                 <hr>
                 <div class="row flex align-items">
                     <div class="col-md-4">
-                        <button type='submit' class="btn btn-mc_primary res-button"><i class="icon-check"></i> {{ trans('messages.get_started') }}</button>
+                        <button type='submit' class="btn btn-secondary res-button"><i class="icon-check"></i> {{ trans('messages.get_started') }}</button>
                     </div>
                     <div class="col-md-8">
                         {!! trans('messages.register.agreement_intro') !!}

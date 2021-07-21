@@ -61,14 +61,14 @@
 
 				<td class="text-end text-nowrap">
 					@if (\Gate::allows('update', $item))
-						<a href="{{ action('SubscriberController@edit', ['list_uid' => $list->uid, "uid" => $item->uid]) }}" role="button" class="btn btn-outline-secondary btn-icon">
+						<a href="{{ action('SubscriberController@edit', ['list_uid' => $list->uid, "uid" => $item->uid]) }}" role="button" class="btn btn-secondary btn-icon">
 							<span class="material-icons-outlined">
 edit
 </span>
 						</a>
 					@endif
 					<div class="btn-group">
-						<button role="button" class="btn dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
+						<button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
 						<ul class="dropdown-menu dropdown-menu-end">
 							@if (\Gate::allows('subscribe', $item))
 								<li><a class="ajax_link" href="{{ action('SubscriberController@subscribe', ['list_uid' => $list->uid, "uids" => $item->uid]) }}"><span class="material-icons-outlined">

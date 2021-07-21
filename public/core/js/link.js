@@ -103,8 +103,8 @@ class Link {
                 }).fail(function(response) {
                     console.log(response);
                 });
-        } else if (typeof(method) !== 'undefined' && method.trim().toLowerCase() !== 'get') {
-            goLink();
+        } else if (typeof(_this.options.method) !== 'undefined' && _this.options.method.trim().toLowerCase() !== 'get') {
+            _this.goLink();
         }
     }
 }

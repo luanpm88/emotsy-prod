@@ -56,8 +56,8 @@
                 </div>
             </div>
             <hr>
-            <button class="btn btn-mc_primary mr-10">{{ trans('messages.sending_limit.save') }}</button>
-            <a href="javascript:;" class="btn btn-mc_inline mr-10" data-dismiss="modal">{{ trans('messages.sending_limit.close') }}</a>
+            <button class="btn btn-secondary mr-10">{{ trans('messages.sending_limit.save') }}</button>
+            <a href="javascript:;" class="btn btn-link mr-10" data-dismiss="modal">{{ trans('messages.sending_limit.close') }}</a>
         </form>
     </div>
 </div>

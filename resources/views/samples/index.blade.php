@@ -18,7 +18,7 @@
                         <p>We have sent an email to this sender's email address. Please click on the link included in the email to activate</p>
                     </div>
                 </div>
-                <button class="btn btn-outline-secondary-600">Send again!</button>
+                <button class="btn btn-secondary">Send again!</button>
             </div>
 
             <div class="alert alert-warning" style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
@@ -33,7 +33,7 @@ error_outline
                         <p>We have sent an email to this sender's email address. Please click on the link included in the email to activate</p>
                     </div>
                 </div>
-                <button class="btn btn-outline-secondary-600">{{ trans('messages.sending_domain.verify') }}</button>
+                <button class="btn btn-secondary">{{ trans('messages.sending_domain.verify') }}</button>
             </div>
 
             <div class="alert alert-danger" style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
@@ -46,7 +46,7 @@ error_outline
                         <p>We have sent an email to this sender's email address. Please click on the link included in the email to activate</p>
                     </div>
                 </div>
-                <button class="btn btn-outline-secondary-600">{{ trans('messages.sending_domain.verify') }}</button>
+                <button class="btn btn-secondary">{{ trans('messages.sending_domain.verify') }}</button>
             </div>
 
             <div class="alert alert-success" style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">

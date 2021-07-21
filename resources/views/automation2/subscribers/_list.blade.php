@@ -64,12 +64,12 @@
 						<a href="{{ action('Automation2Controller@subscribersShow', [
 							'uid' => $automation->uid,
 							'subscriber_uid' => $subscriber->uid
-						]) }}" role="button" class="btn btn-outline-secondary btn-icon">
+						]) }}" role="button" class="btn btn-secondary btn-icon">
 							{{ trans('messages.automation.subscriber.view') }}
 						</a>
 					@endif
 					<div class="btn-group">
-						<button role="button" class="btn dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
+						<button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
 						<ul class="dropdown-menu dropdown-menu-end">
 							@if (\Gate::allows('update', $automation))
 								<li><a link-method="POST" class="ajax_link" href="{{ action('Automation2Controller@subscribersRemove', [

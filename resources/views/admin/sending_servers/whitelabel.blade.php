@@ -48,7 +48,7 @@
                 ]) !!}
             </p>
             <a href="{{ action("\Acelle\Plugin\AwsWhitelabel\Controllers\AwsWhitelabelController@index") }}"
-                class="btn btn-mc_primary btn-outline">
+                class="btn btn-secondary btn-outline">
                 {{ trans('messages.whitelabel.settings') }}
             </a>
             <a href="{{ action("Admin\SendingServerController@whitelabelOff", $server->uid) }}"
@@ -65,7 +65,7 @@
                 {{ trans('messages.whitelabel.wording') }}
             </p>
             <a href="{{ action("Admin\SendingServerController@whitelabelSettings", $server->uid) }}"
-                class="btn btn-mc_primary btn-outline whitelabel-button">
+                class="btn btn-secondary btn-outline whitelabel-button">
                 {{ trans('messages.whitelabel.enable') }}
             </a>
         </div>

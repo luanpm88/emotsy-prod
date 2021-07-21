@@ -22,7 +22,7 @@
             </button>
         @endif
 
-        <a href="javascript:;" class="btn btn-outline-secondary change-trigger-but">
+        <a href="javascript:;" class="btn btn-secondary change-trigger-but">
             {{ trans('messages.automation.trigger.change') }}
         </a>
     </div>

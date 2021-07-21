@@ -30,25 +30,27 @@ assignment_turned_in
                 </td>
                 <td class="stat-fix-size">
                     @if (is_object($item->subscription) && !$item->subscription->isEnded())
-                        <div class="single-stat-box pull-left ml-20">
-                            <span class="no-margin text-teal-800 stat-num">{{ $item->displaySendingQuotaUsage() }}</span>
-                            <div class="progress progress-xxs">
-                                <div class="progress-bar progress-bar-info" style="width: {{ $item->getSendingQuotaUsagePercentage() }}%">
+                        <div class="d-flex">
+                            <div class="single-stat-box pull-left me-5">
+                                <span class="no-margin text-teal-800 stat-num">{{ $item->displaySendingQuotaUsage() }}</span>
+                                <div class="progress progress-xxs">
+                                    <div class="progress-bar progress-bar-info" style="width: {{ $item->getSendingQuotaUsagePercentage() }}%">
+                                    </div>
                                 </div>
+                                <span class="text-muted">
+                                    <strong>{{ \Acelle\Library\Tool::format_number($item->getSendingQuotaUsage()) }}/{{ ($item->getSendingQuota() == -1) ? '∞' : \Acelle\Library\Tool::format_number($item->getSendingQuota()) }}</strong>
+                                    <div class="text-nowrap">{{ trans('messages.sending_credits_used') }}</div>
+                                </span>
                             </div>
-                            <span class="text-muted">
-                                <strong>{{ \Acelle\Library\Tool::format_number($item->getSendingQuotaUsage()) }}/{{ ($item->getSendingQuota() == -1) ? '∞' : \Acelle\Library\Tool::format_number($item->getSendingQuota()) }}</strong>
-                                <div class="text-nowrap">{{ trans('messages.sending_credits_used') }}</div>
-                            </span>
-                        </div>
-                        <div class="single-stat-box pull-left ml-20">
-                            <span class="no-margin text-teal-800 stat-num">{{ $item->displaySubscribersUsage() }}</span>
-                            <div class="progress progress-xxs">
-                                <div class="progress-bar progress-bar-info" style="width: {{ $item->readCache('SubscriberUsage') }}%">
+                            <div class="single-stat-box pull-left">
+                                <span class="no-margin text-teal-800 stat-num">{{ $item->displaySubscribersUsage() }}</span>
+                                <div class="progress progress-xxs">
+                                    <div class="progress-bar progress-bar-info" style="width: {{ $item->readCache('SubscriberUsage') }}%">
+                                    </div>
                                 </div>
+                                <span class="text-muted"><strong>{{ number_with_delimiter($item->readCache('SubscriberCount')) }}/{{ number_with_delimiter($item->maxSubscribers()) }}</strong>
+                                <br /> {{ trans('messages.subscribers') }}</span>
                             </div>
-                            <span class="text-muted"><strong>{{ number_with_delimiter($item->readCache('SubscriberCount')) }}/{{ number_with_delimiter($item->maxSubscribers()) }}</strong>
-                            <br /> {{ trans('messages.subscribers') }}</span>
                         </div>
                     @endif
                 </td>
@@ -59,10 +61,18 @@ assignment_turned_in
                 </td>
                 <td class="text-end">
                     @can('loginAs', $item)
-                        <a href="{{ action('Admin\CustomerController@loginAs', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.login_as_this_customer') }}" role="button" class="btn btn-secondary btn-icon"><i class="icon icon-enter"></i></a>
+                        <a href="{{ action('Admin\CustomerController@loginAs', $item->uid) }}" data-popup="tooltip"
+                            title="{{ trans('messages.login_as_this_customer') }}" role="button"
+                            class="btn btn-primary btn-icon"><span class="material-icons-outlined">
+login
+</span></a>
                     @endcan
                     @can('update', $item)
-                        <a href="{{ action('Admin\CustomerController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-outline-secondary-600 btn-icon"><i class="icon icon-pencil pr-0 mr-0"></i></a>
+                        <a href="{{ action('Admin\CustomerController@edit', $item->uid) }}"
+                            data-popup="tooltip" title="{{ trans('messages.edit') }}"
+                            role="button" class="btn btn-secondary btn-icon"><span class="material-icons-outlined">
+edit
+</span></a>
                     @endcan
                     @if (Auth::user()->can('delete', $item) ||
                         Auth::user()->can('enable', $item) ||
@@ -70,7 +80,7 @@ assignment_turned_in
                         Auth::user()->can('assignPlan', $item)
                     )
                         <div class="btn-group">
-                            <button role="button" class="btn dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
+                            <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 @can('assignPlan', $item)
                                     <li>
@@ -78,7 +88,7 @@ assignment_turned_in
                                             href="{{ action('Admin\CustomerController@assignPlan', [
                                                 "uid" => $item->uid,
                                             ]) }}"
-                                            class="assign_plan_button"
+                                            class="dropdown-item assign_plan_button"
                                         >
                                             <i class="material-icons-outlined">
 assignment_turned_in
@@ -89,7 +99,7 @@ assignment_turned_in
                                 @endcan
                                 @can('enable', $item)
                                     <li>
-                                        <a link-confirm="{{ trans('messages.enable_customers_confirm') }}" href="{{ action('Admin\CustomerController@enable', ["uids" => $item->uid]) }}">
+                                        <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.enable_customers_confirm') }}" href="{{ action('Admin\CustomerController@enable', ["uids" => $item->uid]) }}">
                                             <span class="material-icons-outlined">
 play_arrow
 </span> {{ trans('messages.enable') }}
@@ -98,7 +108,7 @@ play_arrow
                                 @endcan
                                 @can('disable', $item)
                                     <li>
-                                        <a link-confirm="{{ trans('messages.disable_customers_confirm') }}" href="{{ action('Admin\CustomerController@disable', ["uids" => $item->uid]) }}">
+                                        <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.disable_customers_confirm') }}" href="{{ action('Admin\CustomerController@disable', ["uids" => $item->uid]) }}">
                                             <span class="material-icons-outlined">
 hide_source
 </span> {{ trans('messages.disable') }}
@@ -107,7 +117,7 @@ hide_source
                                 @endcan
                                 @can('read', $item)
                                     <li>
-                                        <a href="{{ action('Admin\CustomerController@subscriptions', $item->uid) }}">
+                                        <a class="dropdown-item" href="{{ action('Admin\CustomerController@subscriptions', $item->uid) }}">
                                             <span class="material-icons-outlined">
 assignment_turned_in
 </span> {{ trans('messages.subscriptions') }}
@@ -115,7 +125,7 @@ assignment_turned_in
                                     </li>
                                 @endcan
                                 <li>
-                                    <a link-confirm="{{ trans('messages.delete_users_confirm') }}" href="{{ action('Admin\CustomerController@delete', ['uids' => $item->uid]) }}">
+                                    <a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.delete_users_confirm') }}" href="{{ action('Admin\CustomerController@delete', ['uids' => $item->uid]) }}">
                                         <span class="material-icons-outlined">
 delete_outline
 </span> {{ trans('messages.delete') }}

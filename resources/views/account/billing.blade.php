@@ -26,7 +26,7 @@
             @if (!$customer->getDefaultBillingAddress())
                 <p>{{ trans('messages.has_no_billing_address') }}</p>
                 <div>
-                    <a href="{{ action('AccountController@editBillingAddress') }}" class="btn btn-mc_primary billing-address-edit">
+                    <a href="{{ action('AccountController@editBillingAddress') }}" class="btn btn-secondary billing-address-edit">
                         {{ trans('messages.add_billing_address') }}
                     </a>
                 </div>

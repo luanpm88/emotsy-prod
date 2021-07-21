@@ -43,7 +43,7 @@
                     @if (Auth::user()->admin->can('enable', $plugin))
                         <a link-confirm="{{ trans('messages.enable_plugins_confirm') }}"
                             href="{{ action('Admin\PluginController@enable', ["uids" => $plugin->uid]) }}"
-                            class="btn btn-mc_primary"
+                            class="btn btn-secondary"
                         >
                             {{ trans('messages.enable') }}
                         </a>
@@ -52,7 +52,7 @@
                     @if (Auth::user()->admin->can('disable', $plugin))
                         <a link-confirm="{{ trans('messages.disable_plugins_confirm') }}"
                             href="{{ action('Admin\PluginController@disable', ["uids" => $plugin->uid]) }}"
-                            class="btn btn-mc_primary"
+                            class="btn btn-secondary"
                         >
                             {{ trans('messages.disable') }}
                         </a>

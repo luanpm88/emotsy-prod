@@ -47,12 +47,12 @@
                             <div class="list-setting-actions text-nowrap pl-4">
                                 @if ($gateway->isActive())
                                     @if (in_array($gateway, $enabledGateways))
-                                        <a class="btn btn-mc_primary ml-5"
+                                        <a class="btn btn-secondary ml-5"
                                             link-method="post" href="{{ action('Admin\PaymentController@disable', $gateway->getType()) }}">
                                             {{ trans('messages.payment.disable') }}
                                         </a>
                                     @else
-                                        <a class="btn btn-mc_primary ml-5"
+                                        <a class="btn btn-secondary ml-5"
                                             link-method="post" href="{{ action('Admin\PaymentController@enable', $gateway->getType()) }}">
                                             {{ trans('messages.payment.enable') }}
                                         </a>
@@ -61,7 +61,7 @@
                                         {{ trans('messages.payment.setting') }}
                                     </a>
                                 @else
-                                    <a class="btn btn-mc_primary ml-5" href="{{ $gateway->getSettingsUrl() }}">
+                                    <a class="btn btn-secondary ml-5" href="{{ $gateway->getSettingsUrl() }}">
                                         {{ trans('messages.payment.connect') }}
                                     </a>
                                 @endif
@@ -108,7 +108,7 @@
                         
                 </div>
             </div>
-            <button class="btn btn-mc_primary">
+            <button class="btn btn-secondary">
                 {{ trans('messages.save') }}
             </a>
         </form>

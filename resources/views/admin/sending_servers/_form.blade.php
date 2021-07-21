@@ -277,13 +277,13 @@
 			role="button"
 			class="btn btn-secondary mr-5 btn-icon modal_link"
 			data-in-form="true"
-			data-method="GET"
+			link-method="GET"
 		>
 			<i class="icon-rotate-cw3"></i> {{ trans('messages.sending_server.test') }}
 		</a>
 	@endif
 	<button class="btn btn-secondary mr-5"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
-	<a href="{{ action('Admin\SendingServerController@index') }}" role="button" class="btn btn-outline-secondary">
+	<a href="{{ action('Admin\SendingServerController@index') }}" role="button" class="btn btn-secondary">
 		<i class="icon-cross2"></i> {{ trans('messages.cancel') }}
 	</a>
 </div>

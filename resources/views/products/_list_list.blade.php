@@ -29,16 +29,18 @@
 				<td class="text-end">
 					<a href="{{ action('SourceController@sync', $product->uid) }}"
 						link-method="POST"
-						role="button" class="btn btn-mc_primary m-icon pl-3">
+						role="button" class="btn btn-secondary m-icon pl-3">
 						<span class="material-icons-outlined me-2">
 							link
 							</span>{{ trans('messages.view') }}</a>
 					<div class="btn-group">
-						<button role="button" class="btn dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
+						<button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
 						<ul class="dropdown-menu dropdown-menu-end">
 							<li>
-								<a link-confirm="{{ trans('messages.source.delete.confirm') }}"
-									data-method="POST"
+								<a
+									class="dropdown-item list-action-single"
+									link-confirm="{{ trans('messages.source.delete.confirm') }}"
+									link-method="POST"
 									href="{{ action('SourceController@delete', ['uids' => $product->uid]) }}">
 									<span class="material-icons-outlined">
 delete_outline

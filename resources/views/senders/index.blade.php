@@ -7,7 +7,7 @@
         <ul class="breadcrumb breadcrumb-caret position-right">
             <li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
             <li class="breadcrumb-item"><a href="{{ action("SenderController@index") }}">{{ trans('messages.verified_senders') }}</a></li>
-            <li><a href="{{ action("SenderController@index") }}">{{ trans('messages.email_addresses') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("SenderController@index") }}">{{ trans('messages.email_addresses') }}</a></li>
         </ul>
         <h1>
             <span class="text-semibold">{{ trans('messages.verified_senders') }}</span>
@@ -32,8 +32,8 @@
             <div class="col-md-9">
                 @if ($senders->count() >= 0)
                     <div class="filter-box">
-                        @include('helpers.select_tool')
-                        <div class="dropdown list_actions" style="display: none">
+                        <span class="me-2">@include('helpers.select_tool')</span>
+                        <div class="dropdown list_actions me-3" style="display: none">
                             <button role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
                                 {{ trans('messages.actions') }} <span class="number"></span><span class="caret"></span>
                             </button>

@@ -7,7 +7,7 @@
         <ul class="breadcrumb breadcrumb-caret position-right">
             <li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
             <li class="breadcrumb-item"><a href="{{ action("SenderController@index") }}">{{ trans('messages.verified_senders') }}</a></li>
-            <li><a href="{{ action("SendingDomainController@index") }}">{{ trans('messages.email_addresses') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("SendingDomainController@index") }}">{{ trans('messages.email_addresses') }}</a></li>
         </ul>
         <h1>
             <span class="text-semibold">{{ trans('messages.verified_senders') }}</span>
@@ -35,7 +35,7 @@ error_outline
                             <p>{{ trans('messages.sender.status_info.pending.note') }}</p>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-outline-secondary-600">Refresh now!</button>
+                    <button type="submit" class="btn btn-secondary">Refresh now!</button>
                 </div>
                 </form>
             @elseif ($sender->isVerified())

@@ -57,7 +57,7 @@ close
                                                         "uid" => $customer->uid,
                                                         "plan_uid" => $plan->uid,
                                                     ]) }}"
-                                                    class="btn btn-mc_primary btn-mc_mk mt-2 change-plan-button">
+                                                    class="btn btn-secondary btn-mc_mk mt-2 change-plan-button">
                                                         {{ trans('messages.plan.select') }}
                                                 </a>
                                             </div>

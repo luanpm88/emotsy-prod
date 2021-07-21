@@ -77,7 +77,7 @@ people
 
                     </div>
                     <label style="margin-bottom:20px;font-style:italic;" id="bottomNotice"></label>
-                    <a id="cancelBtn" class="btn btn-outline-secondary btn-icon cancel processing">
+                    <a id="cancelBtn" class="btn btn-secondary btn-icon cancel processing">
                         {{ trans('messages.cancel') }}
                     </a>
                 </div>
@@ -87,7 +87,7 @@ people
                         <a id="downloadBtn" target="_blank" href="#" role="button" class="btn btn-secondary success">
                             <i class="icon-download"></i> {{ trans('messages.download_export') }}
                         </a>
-                        <a href="#retry" class="btn btn-outline-secondary me-1 retry"><span class="material-icons-outlined">
+                        <a href="#retry" class="btn btn-secondary me-1 retry"><span class="material-icons-outlined">
 restart_alt
 </span> {{ trans('messages.retry') }}</a>
                     </div>

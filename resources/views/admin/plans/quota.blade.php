@@ -6,7 +6,7 @@
 
     <div class="page-title">
         <ul class="breadcrumb breadcrumb-caret position-right">
-            <li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
             <li class="breadcrumb-item"><a href="{{ action("Admin\PlanController@index") }}">{{ trans('messages.plans') }}</a></li>
         </ul>
         <h1 class="mc-h1">
@@ -195,8 +195,8 @@
                         ])
                     </div>
                 </div>
-                <button class="btn btn-mc_primary mr-10">{{ trans('messages.save') }}</button>
-                <a href="{{ action('Admin\PlanController@index') }}" role="button" class="btn btn-mc_inline">
+                <button class="btn btn-secondary mr-10">{{ trans('messages.save') }}</button>
+                <a href="{{ action('Admin\PlanController@index') }}" role="button" class="btn btn-link">
                     {{ trans('messages.cancel') }}
                 </a>
             </div>

@@ -6,9 +6,9 @@
 
 	<div class="page-title">
 		<ul class="breadcrumb breadcrumb-caret position-right">
-			<li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+			<li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
 			<li class="breadcrumb-item"><a href="{{ action("Admin\CustomerController@index") }}">{{ trans('messages.customers') }}</a></li>
-			<li class="active">{{ trans('messages.update') }}</li>
+			<li class="breadcrumb-item active">{{ trans('messages.update') }}</li>
 		</ul>
 		<h1>
 			<span class="text-semibold"><span class="material-icons-round">
@@ -22,7 +22,7 @@
 @section('content')
 	@include('admin.customers._tabs')
 
-    <form class="listing-form"
+    <div class="listing-form"
         sort-url="{{ action('Admin\SubscriptionController@sort') }}"
         data-url="{{ action('Admin\SubscriptionController@listing') }}"
         per-page="15"
@@ -61,5 +61,21 @@ sort
 
 
         </div>
-    </form>
+    </div>
+
+    <script>
+        var SubscriptionsIndex = {
+            getList: function() {
+                return makeList({
+                    url: '{{ action('Admin\SubscriptionController@listing') }}',
+                    container: $('.listing-form'),
+                    content: $('.pml-table-container')
+                });
+            }
+        };
+
+        $(document).ready(function() {
+            SubscriptionsIndex.getList().load();
+        });
+    </script>
 @endsection

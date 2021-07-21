@@ -13,7 +13,7 @@
                                 href="{{ action('Admin\PlanController@visibleOn', $plan->uid) }}"
                                 class="ajax_link plan-off {{ (\Auth::user()->can('visibleOn', $plan) ? 'xtooltip' : 'cant_show') }}"
                             >
-                                <i class="material-icons plan-off-icon">toggle_off</i>
+                                <i class="material-icons-round plan-off-icon fs-3 me-3">toggle_off</i>
                             </a>
                         @else
                             <a
@@ -23,7 +23,7 @@
                                 href="{{ action('Admin\PlanController@visibleOff', $plan->uid) }}"
                                 class="ajax_link plan-on {{ (\Auth::user()->can('visibleOff', $plan) ? 'xtooltip' : 'disabled') }}"
                             >
-                                <i class="material-icons plan-on-icon">toggle_on</i>
+                                <i class="material-icons-round plan-on-icon fs-3 me-3">toggle_on</i>
                             </a>
                         @endif                        
                     </div>
@@ -66,7 +66,7 @@
                 </td>
                 <td class="text-end text-nowrap" width="5%">
                     @can('update', $plan)
-                        <a href="{{ action('Admin\PlanController@general', $plan->uid) }}" role="button" class="btn btn-outline-secondary btn-icon"> <span class="material-icons-outlined">
+                        <a href="{{ action('Admin\PlanController@general', $plan->uid) }}" role="button" class="btn btn-secondary btn-icon"> <span class="material-icons-outlined">
 edit
 </span> {{ trans('messages.edit') }}</a>
                     @endcan
@@ -74,19 +74,27 @@ edit
                          \Auth::user()->can('copy', $plan)
                     )
                         <div class="btn-group">
-                            <button role="button" class="btn dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
+                            <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 @can('copy', $plan)
                                     <li>
-                                        <a data-name="{{'Copy of '}}{{$plan->name}}" data-uid="{{$plan->uid}}" title="{{ trans('messages.copy') }}" class="copy-plan-link">
-                                            <i class="icon icon-copy4"></i> {{ trans('messages.copy') }}
+                                        <a
+                                            href="{{ action('Admin\PlanController@copy', ['copy_plan_uid' => $plan->uid]) }}"
+                                            class="dropdown-item copy-plan-link" title="{{ trans('messages.copy') }}"
+                                        >
+                                            <span class="material-icons-outlined">
+content_copy
+</span> {{ trans('messages.copy') }}
                                         </a>
                                     </li>
                                   @endcan
                                 @can('delete', $plan)
                                     <li>
-                                        <a list-delete-confirm="{{ action('Admin\PlanController@deleteConfirm', ['uids' => $plan->uid]) }}" href="{{ action('Admin\PlanController@delete', ['uids' => $plan->uid]) }}" title="{{ trans('messages.delete') }}" class="">
-                                            <i class="icon icon-trash"></i> {{ trans('messages.delete') }}
+                                        <a class="dropdown-item list-action-single"
+                                            link-confirm-url="{{ action('Admin\PlanController@deleteConfirm', ['uids' => $plan->uid]) }}" href="{{ action('Admin\PlanController@delete', ['uids' => $plan->uid]) }}" title="{{ trans('messages.delete') }}" class="">
+                                            <span class="material-icons-outlined">
+delete
+</span> {{ trans('messages.delete') }}
                                         </a>
                                     </li>
                                 @endcan
@@ -101,76 +109,99 @@ edit
     
 
     <script>
-        $('.cant_show').click(function(e) {
-            e.preventDefault();
+        var PlanList = {
+			copyPopup: null,
 
-            var confirm = `{{ trans('messages.plan.cant_show') }}`;
-            var dialog = new Dialog('alert', {
-                message: confirm
-            })
-        });
+			getCopyPopup: function() {
+				if (this.copyPopup === null) {
+					this.copyPopup = new Popup();
+				}
 
-        $('.enable-plan').click(function(e) {
-            e.preventDefault();
+				return this.copyPopup;
+			}
+		}
 
-            var confirm = `{{ trans('messages.plan.enable_and_visible.confirm') }}`;
-            var href_yes = $(this).attr('href_yes');
-            var href_no = $(this).attr('href_no');
+        $(function() {
+            $('.copy-plan-link').on('click', function(e) {
+                e.preventDefault();			
+                var url = $(this).attr('href');
 
-            var dialog = new Dialog('yesno', {
-                message: confirm,
-                no: function(dialog) {
-                    $.ajax({
-                        url: href_no,
-                        method: 'POST',
-                        data: {
-                            _token: CSRF_TOKEN,
-                        },
-                        statusCode: {
-                            // validate error
-                            400: function (res) {
-                                alert('Something went wrong!');
+                PlanList.getCopyPopup().load({
+                    url: url
+                });
+            });
+
+            $('.cant_show').click(function(e) {
+                e.preventDefault();
+
+                var confirm = `{{ trans('messages.plan.cant_show') }}`;
+                var dialog = new Dialog('alert', {
+                    message: confirm
+                })
+            });
+
+            $('.enable-plan').click(function(e) {
+                e.preventDefault();
+
+                var confirm = `{{ trans('messages.plan.enable_and_visible.confirm') }}`;
+                var href_yes = $(this).attr('href_yes');
+                var href_no = $(this).attr('href_no');
+
+                var dialog = new Dialog('yesno', {
+                    message: confirm,
+                    no: function(dialog) {
+                        $.ajax({
+                            url: href_no,
+                            method: 'POST',
+                            data: {
+                                _token: CSRF_TOKEN,
+                            },
+                            statusCode: {
+                                // validate error
+                                400: function (res) {
+                                    alert('Something went wrong!');
+                                }
+                            },
+                            success: function (response) {
+                                // notify
+                                notify({
+        type: 'success',
+        title: '{!! trans('messages.notify.success') !!}',
+        message: response.message
+    });
+
+                                // 
+                                tableFilterAll();
                             }
-                        },
-                        success: function (response) {
-                            // notify
-                            notify({
-    type: 'success',
-    title: '{!! trans('messages.notify.success') !!}',
-    message: response.message
-});
+                        });
+                    },
+                    yes: function(dialog) {                    
+                        $.ajax({
+                            url: href_yes,
+                            method: 'POST',
+                            data: {
+                                _token: CSRF_TOKEN,
+                            },
+                            statusCode: {
+                                // validate error
+                                400: function (res) {
+                                    alert('Something went wrong!');
+                                }
+                            },
+                            success: function (response) {
+                                // notify
+                                notify({
+        type: 'success',
+        title: '{!! trans('messages.notify.success') !!}',
+        message: response.message
+    });
 
-                            // 
-                            tableFilterAll();
-                        }
-                    });
-                },
-                yes: function(dialog) {                    
-                    $.ajax({
-                        url: href_yes,
-                        method: 'POST',
-                        data: {
-                            _token: CSRF_TOKEN,
-                        },
-                        statusCode: {
-                            // validate error
-                            400: function (res) {
-                                alert('Something went wrong!');
+                                // 
+                                tableFilterAll();
                             }
-                        },
-                        success: function (response) {
-                            // notify
-                            notify({
-    type: 'success',
-    title: '{!! trans('messages.notify.success') !!}',
-    message: response.message
-});
-
-                            // 
-                            tableFilterAll();
-                        }
-                    });
-                },
+                        });
+                    },
+                });
             });
         });
     </script>

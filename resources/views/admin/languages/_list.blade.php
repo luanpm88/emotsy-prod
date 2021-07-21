@@ -36,7 +36,7 @@
 						Auth::user()->can("download", $language)
 					)
 						<div class="btn-group">										
-							<button role="button" class="btn dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
+							<button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
 							<ul class="dropdown-menu dropdown-menu-end">
 								@can('enable', $language)
 									<li>														
@@ -75,7 +75,7 @@ edit
 								@endcan
 								@can("delete", $language)
 									<li>
-										<a list-delete-confirm="{{ action('Admin\LanguageController@deleteConfirm', ['uids' => $language->uid]) }}" href="{{ action('Admin\LanguageController@delete', ["uids" => $language->uid]) }}">
+										<a link-confirm-url="{{ action('Admin\LanguageController@deleteConfirm', ['uids' => $language->uid]) }}" href="{{ action('Admin\LanguageController@delete', ["uids" => $language->uid]) }}">
 											<span class="material-icons-outlined">
 delete_outline
 </span> {{ trans('messages.delete') }}

@@ -1053,10 +1053,6 @@ input.disabled:hover {
 .checkbox-box-group label {
     display: block;
 }
-.checkbox-box-group .switchery {
-    position: absolute;
-    top: 24px;
-}
 ul.install-steps li:first-child:after {
     display: block;
 }
@@ -2667,7 +2663,7 @@ canvas[data-zr-dom-id='_zrender_hover_'] {
     border-bottom: 3px solid #26A69A;
     border-bottom-color: #26A69A;
 }
-.nav-tabs > li > a.nav-link.active, .nav-tabs > li > a.nav-link:hover, .nav-tabs > li > a.nav-link:focus {
+.nav-tabs > li.active > a.nav-link, .nav-tabs > li > a.nav-link.active, .nav-tabs > li > a.nav-link:hover, .nav-tabs > li > a.nav-link:focus {
     border: none;
     border-bottom: 3px solid #26A69A;
     border-bottom-color: #26A69A;
@@ -3924,12 +3920,6 @@ form.loading input {
     padding-left: 10px;
     padding-right: 13px;
 }
-.dropdown-menu > li > a > i.material-icons-outlined {
-    float: left;
-    font-size: 19px;
-    margin-right: 5px;
-}
-
 .btn.m-icon {
     padding-left: 10px;
     padding-right: 10px;
@@ -6379,13 +6369,12 @@ h1, h1 {
 .alert:before {
     position: relative;
     display: inline-block;
-    width: 28px;
     height: 19px;
     font-family: 'Material Icons Outlined';
-    font-size: 15px;
+    font-size: 17px;
     line-height: 17px;
     transform: translateY(2px);
-    float: left;
+    margin-right: 10px;
 }
 
 .alert-info:before {
@@ -6423,7 +6412,9 @@ h1, h1 {
 .list_actions .number:empty {
     display: none;
 }
-
+.label:empty {
+    display: none;
+}
 .layout-dark  {
     padding-top: 53px;
 }

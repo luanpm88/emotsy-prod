@@ -1,10 +1,11 @@
-<div class="modal-header">
-    <h5 class="modal-title">{{ trans('messages.customer.admin_area') }}</h5>
-    <button role="button" class="close" data-dismiss="modal" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-    </button>
-</div>
-<div class="modal-body">
+@extends('layouts.popup.small')
+
+@section('title')
+    {{ trans('messages.customer.admin_area') }}
+@endsection
+
+@section('content')
+
     <p class="alert alert-info">{!! trans('messages.current_login_as', ["name" => Auth::user()->displayName()]) !!}</p>
 
     <h5 class="mt-0 mb-10"><span class="material-icons-outlined">
@@ -78,8 +79,8 @@ auto_awesome_mosaic
             {{ trans('messages.customer_has_no_plan') }}
         </div>
     @endif
-</div>
-<div class="modal-footer text-left">
-    <a href="{{ action("CustomerController@loginBack") }}" class="btn btn-mc_primary">{{ trans('messages.customer.back_to_admin') }}</a>
-    <button role="button" class="btn btn-mc_inline" data-dismiss="modal">{{ trans('messages.close') }}</button>
-</div>
+    <div class="text-left mt-5">
+        <a href="{{ action("CustomerController@loginBack") }}" class="btn btn-secondary">{{ trans('messages.customer.back_to_admin') }}</a>
+        <button role="button" class="btn btn-link" data-dismiss="modal">{{ trans('messages.close') }}</button>
+    </div>
+@endsection

@@ -133,7 +133,7 @@ class Admin extends Model
         }
 
         // filters
-        $filters = $request->filters;
+        $filters = $request->all();
         if (!empty($filters)) {
             if (!empty($filters['admin_group_id'])) {
                 $query = $query->where('admins.admin_group_id', '=', $filters['admin_group_id']);

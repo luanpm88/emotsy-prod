@@ -8,7 +8,7 @@
                 <div class="">
                     <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
                         <div class="btn-group btn-group-sm" role="group">
-                            <button id="btnGroupDrop1" role="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <button id="btnGroupDrop1" role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 {{ trans('messages.automation.profile.action') }}
                             </button>
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="btnGroupDrop1">
@@ -88,7 +88,7 @@ close
                 <div class="">
                     <div class="btn-group btn-group-sm" role="group" aria-label="Button group with nested dropdown">
                         <div class="btn-group btn-group-sm" role="group">
-                            <button id="btnGroupDrop1" role="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <button id="btnGroupDrop1" role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 {{ trans('messages.automation.contact.all_activities') }}
                             </button>
                             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="btnGroupDrop1">

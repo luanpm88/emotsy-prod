@@ -58,7 +58,7 @@
 									{{ trans('messages.sender.view') }}
 							</a>
 						@endif
-						<button role="button" class="btn dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
+						<button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
 						<ul class="dropdown-menu dropdown-menu-end">
 							@if (Auth::user()->customer->can('delete', $sender))
 								<li>

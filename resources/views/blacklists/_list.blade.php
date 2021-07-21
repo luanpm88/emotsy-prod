@@ -37,9 +37,9 @@
 				<td class="text-end">
 					@if (Auth::user()->customer->can('delete', $blacklist))
 						<a
-							delete-confirm="{{ trans('messages.remove_blacklist_confirm') }}"
+							link-confirm="{{ trans('messages.remove_blacklist_confirm') }}"
 							href="{{ action('BlacklistController@delete', ["uids" => $blacklist->id]) }}"
-							class="btn btn-primary btn-xs bg-grey"
+							class="btn btn-primary btn-xs bg-grey list-action-single"
 							data-popup="tooltip" title="{{ trans('messages.remove_from_blacklist') }}"
 						>
 							{{ trans('messages.blacklist.remove') }}
@@ -53,14 +53,18 @@
 	
 @elseif (!empty(request()->keyword) || !empty(request()->filters["campaign_uid"]))
 	<div class="empty-list">
-		<i class="icon icon-blocked"></i>
+		<span class="material-icons-outlined">
+block
+</span>
 		<span class="line-1">
 			{{ trans('messages.no_search_result') }}
 		</span>
 	</div>
 @else
 	<div class="empty-list">
-		<i class="icon icon-blocked"></i>
+		<span class="material-icons-outlined">
+block
+</span>
 		<span class="line-1">
 			{{ trans('messages.blacklist_empty_line_1') }}
 		</span>

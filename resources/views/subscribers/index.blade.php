@@ -128,7 +128,7 @@ delete_outline
 							<option value="subscribers.created_at">{{ trans('messages.created_at') }}</option>							
 							<option value="subscribers.updated_at">{{ trans('messages.updated_at') }}</option>
 						</select>
-						<input type="hidden" name="sort_direction" value="desc" />
+						<input type="hidden" name="sort_direction" value="asc" />
 						<button class="btn btn-xs sort-direction" rel="asc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
 							<span class="material-icons-outlined desc">
 sort

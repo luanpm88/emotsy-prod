@@ -15,7 +15,7 @@
 ]) !!}</p>
 
 <p>
-    <a class="btn btn-outline-secondary-300"
+    <a class="btn btn-secondary-300"
         link-confirm="{{ trans('messages.stop_list_verification_confirm') }}" link-method="POST"
         href="{{ action("MailListController@stopVerification", $list->uid) }}">
         {{ trans('messages.verification.button.stop') }}

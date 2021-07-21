@@ -113,7 +113,7 @@ class TrackingDomain extends Model
         }
 
         // filters
-        $filters = $request->filters;
+        $filters = $request->all();
 
         // filter by status
         if (!empty($request->status)) {

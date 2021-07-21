@@ -15,7 +15,7 @@
             <a href="javascript:;" onclick="popup.load('{{ action('Automation2Controller@emailSetup', [
                 'uid' => $automation->uid,
                 'email_uid' => $email->uid,
-            ]) }}')" class="btn btn-outline-secondary btn-sm">
+            ]) }}')" class="btn btn-secondary btn-sm">
                 {{ trans('messages.automation.email.setup') }}
             </a>
         </div>
@@ -36,7 +36,7 @@
             <a href="javascript:;" onclick="popup.load('{{ action('Automation2Controller@emailSetup', [
                 'uid' => $automation->uid,
                 'email_uid' => $email->uid,
-            ]) }}')" class="btn btn-outline-secondary btn-sm">
+            ]) }}')" class="btn btn-secondary btn-sm">
                 {{ trans('messages.automation.email.setup') }}
             </a>
         </div>
@@ -57,7 +57,7 @@
             <a href="javascript:;" onclick="popup.load('{{ action('Automation2Controller@emailSetup', [
                 'uid' => $automation->uid,
                 'email_uid' => $email->uid,
-            ]) }}')" class="btn btn-outline-secondary btn-sm">
+            ]) }}')" class="btn btn-secondary btn-sm">
                 {{ trans('messages.automation.email.setup') }}
             </a>
         </div>
@@ -85,7 +85,7 @@
             <a href="javascript:;" onclick="popup.load('{{ action('Automation2Controller@emailSetup', [
                 'uid' => $automation->uid,
                 'email_uid' => $email->uid,
-            ]) }}')" class="btn btn-outline-secondary btn-sm">
+            ]) }}')" class="btn btn-secondary btn-sm">
                 {{ trans('messages.automation.email.setup') }}
             </a>
         </div>
@@ -119,7 +119,7 @@
             <a href="javascript:;" onclick="popup.load('{{ action('Automation2Controller@emailTemplate', [
                 'uid' => $automation->uid,
                 'email_uid' => $email->uid,
-            ]) }}')" class="btn btn-outline-secondary btn-sm">
+            ]) }}')" class="btn btn-secondary btn-sm">
                 {{ trans('messages.automation.email.summary.content.update') }}
             </a>
         </div>
@@ -145,7 +145,7 @@
             <a href="javascript:;" onclick="popup.load('{{ action('Automation2Controller@emailSetup', [
                 'uid' => $automation->uid,
                 'email_uid' => $email->uid,
-            ]) }}')" class="btn btn-outline-secondary btn-sm">
+            ]) }}')" class="btn btn-secondary btn-sm">
                 {{ trans('messages.automation.email.setup') }}
             </a>
         </div>

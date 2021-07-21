@@ -112,7 +112,7 @@ class SendingDomain extends Model
         }
 
         // filters
-        $filters = $request->filters;
+        $filters = $request->all();
         if (!empty($filters)) {
         }
 

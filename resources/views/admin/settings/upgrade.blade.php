@@ -47,7 +47,7 @@
                             <a link-confirm="{{ trans('messages.upgrade.upgrade_confirm') }}" href="{{ action('Admin\SettingController@doUpgrade') }}" role="button" class="btn bg-primary btn-icon" link-method="POST">
                                 {{ trans('messages.upgrade.button.retry') }}
                             </a>
-                            <a link-confirm="{{ trans('messages.upgrade.upgrade_cancel') }}" href="{{ action('Admin\SettingController@cancelUpgrade') }}" role="button" class="btn btn-outline-secondary btn-icon" link-method="POST">
+                            <a link-confirm="{{ trans('messages.upgrade.upgrade_cancel') }}" href="{{ action('Admin\SettingController@cancelUpgrade') }}" role="button" class="btn btn-secondary btn-icon" link-method="POST">
                                 {{ trans('messages.upgrade.button.cancel') }}
                             </a>
                         </p>
@@ -58,7 +58,7 @@
                             <a link-confirm="{{ trans('messages.upgrade.upgrade_confirm') }}" href="{{ action('Admin\SettingController@doUpgrade') }}" role="button" class="btn bg-primary btn-icon" link-method="POST">
                                 {{ trans('messages.upgrade.button.upgrade_now') }}
                             </a>
-                            <a link-confirm="{{ trans('messages.upgrade.upgrade_cancel') }}" href="{{ action('Admin\SettingController@cancelUpgrade') }}" role="button" class="btn btn-outline-secondary btn-icon" link-method="POST">
+                            <a link-confirm="{{ trans('messages.upgrade.upgrade_cancel') }}" href="{{ action('Admin\SettingController@cancelUpgrade') }}" role="button" class="btn btn-secondary btn-icon" link-method="POST">
                                 {{ trans('messages.upgrade.button.cancel') }}
                             </a>
                         </p>

@@ -132,7 +132,9 @@ class BlacklistController extends Controller
         if ($request->select_tool == 'all_items') {
             $blacklists = $this->search($request);
         } else {
-            $blacklists = \Acelle\Model\Blacklist::whereIn('id', explode(',', $request->uids));
+            $blacklists = \Acelle\Model\Blacklist::whereIn('id',
+                is_array($request->uids) ? $request->uids : explode(',', $request->uids)
+            );
         }
 
         foreach ($blacklists->get() as $blacklist) {

@@ -159,7 +159,7 @@ visibility
 
                                         <div class="modal-footer">
                                             <button role="button" class="btn btn-link" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
-                                            <a class="btn btn-outline-secondary link-confirm-button" onclick="$('.send-campaign-button').click()">{{ trans('messages.confirm') }}</a>
+                                            <a class="btn btn-secondary link-confirm-button" onclick="$('.send-campaign-button').click()">{{ trans('messages.confirm') }}</a>
                                         </div>
                                     </form>
                                 </div>

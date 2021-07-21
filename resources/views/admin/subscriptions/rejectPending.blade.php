@@ -50,7 +50,7 @@
     message: response.message
 });
 
-                    tableFilterAll();
+                    SubscriptionsIndex.getList().load();
                 }
             });
         });

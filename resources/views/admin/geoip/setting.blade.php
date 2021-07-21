@@ -23,7 +23,7 @@
         </div>
 
         <div class="mt-4">
-            <button type="submit" class="btn btn-mc_primary">{{ trans('messages.save') }}</button>
+            <button type="submit" class="btn btn-secondary">{{ trans('messages.save') }}</button>
             <button type="button" class="btn btn-link" onclick="GoeIpIndex.settingPopup.hide();">{{ trans('messages.cancel') }}</button>
         </div>
     </form>

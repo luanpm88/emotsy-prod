@@ -97,8 +97,8 @@
 
             <hr>
             <div class="mt-20">
-                <button class="btn btn-mc_primary mr-10">{{ trans('messages.save') }}</button>
-                <a href="{{ action('Admin\SendingServerController@index') }}" role="button" class="btn btn-mc_inline">
+                <button class="btn btn-secondary mr-10">{{ trans('messages.save') }}</button>
+                <a href="{{ action('Admin\SendingServerController@index') }}" role="button" class="btn btn-link">
                     {{ trans('messages.cancel') }}
                 </a>
             </div>

@@ -53,14 +53,14 @@
 
                     @if (Auth::user()->customer->can('read', $item))
                         <a href="{{ action('SendingDomainController@show', $item->uid) }}" data-popup="tooltip"
-                            title="{{ trans('messages.sending_domain.view') }}" role="button" class="btn btn-outline-secondary btn-icon">
+                            title="{{ trans('messages.sending_domain.view') }}" role="button" class="btn btn-secondary btn-icon">
                                 {{ trans('messages.sending_domain.view') }}
                         </a>
                     @endif
 
                     @if (Auth::user()->customer->can('delete', $item))
                         <div class="btn-group">
-                            <button role="button" class="btn dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
+                            <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li>
                                     <a link-confirm="{{ trans('messages.delete_sending_domains_confirm') }}" href="{{ action('SendingDomainController@delete', ["uids" => $item->uid]) }}">
@@ -80,14 +80,18 @@ delete_outline
     
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
-        <i class="icon-earth"></i>
+        <span class="material-icons-outlined">
+public
+</span>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
         </span>
     </div>
 @else
     <div class="empty-list">
-        <i class="icon-earth"></i>
+        <span class="material-icons-outlined">
+public
+</span>
         <span class="line-1">
             {{ trans('messages.sending_domain_empty_line_1') }}
         </span>

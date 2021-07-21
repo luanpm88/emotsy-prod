@@ -3719,4 +3719,6 @@
   'store.connected_with_acelle.desc' => 'While connected, Acelle can synchronize products
     and contacts from your store to a specified mail list',
   'source.refresh' => 'Refresh',
+  'product.title' => 'Title',
+  'copy_plan' => 'Copy <span class="fw-600">:name</span> plan',
 ) ?>

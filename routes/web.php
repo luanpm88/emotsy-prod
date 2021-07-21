@@ -823,7 +823,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/plans/delete', 'PlanController@delete');
     Route::get('admin/plans/disable', 'PlanController@disable');
     Route::post('admin/plans/enable', 'PlanController@enable');
-    Route::post('admin/plans/copy', 'PlanController@copy');
+    Route::match(['get', 'post'], 'admin/plans/copy', 'PlanController@copy');
     Route::resource('admin/plans', 'PlanController');
 
     // Currency

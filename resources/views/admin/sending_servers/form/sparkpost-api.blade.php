@@ -42,7 +42,7 @@
                     <a
                         href="{{ action('Admin\SendingServerController@testConnection', $server->uid) }}"
                         role="button"
-                        class="btn btn-mc_primary mr-10 ajax_link"
+                        class="btn btn-secondary mr-10 ajax_link"
                         link-method="POST"
                         mask-title="{{ trans('messages.sending_server.testing') }}"
                     >
@@ -59,17 +59,17 @@
                     </a>
                 </span>
                 <span class="cancel-group hide">
-                    <button class="btn btn-mc_primary mr-10">{{ trans('messages.save') }}</button>
+                    <button class="btn btn-secondary mr-10">{{ trans('messages.save') }}</button>
                 </span>
-                <a href="javascript:;" role="button" class="btn btn-mc_inline switch-form-toggle"
+                <a href="javascript:;" role="button" class="btn btn-link switch-form-toggle"
                     data-disabled="true"
                     data-edit="{{ trans('messages.edit') }}"
                     data-cancel="{{ trans('messages.cancel') }}">
                         {{ trans('messages.edit') }}
                 </a>
             @else
-                <button class="btn btn-mc_primary mr-10">{{ trans('messages.save') }}</button>
-                <a href="{{ action('Admin\SendingServerController@index') }}" role="button" class="btn btn-mc_inline">
+                <button class="btn btn-secondary mr-10">{{ trans('messages.save') }}</button>
+                <a href="{{ action('Admin\SendingServerController@index') }}" role="button" class="btn btn-link">
                     {{ trans('messages.cancel') }}
                 </a>
             @endif

@@ -45,7 +45,7 @@ forward_to_inbox
                     'rules' => ['plain' => 'required'],
                 ])
 
-                <button class="btn btn-mc_primary">{{ trans('messages.campaign.plain.save') }}</button>
+                <button class="btn btn-secondary">{{ trans('messages.campaign.plain.save') }}</button>
             </form>
         </div>
     </div>

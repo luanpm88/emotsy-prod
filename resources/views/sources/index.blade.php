@@ -16,7 +16,7 @@ reorder
 @endsection
 
 @section('content')
-    <form class="listing-form"
+    <div id="SourcesIndexContainer" class="listing-form"
         data-url="{{ action('SourceController@listing') }}"
         per-page="{{ Acelle\Model\Source::$itemsPerPage }}"
     >
@@ -26,8 +26,7 @@ reorder
                     <span class="filter-group">
                         <span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
                         <select class="select" name="sort_order">
-                            <option value="created_at">{{ trans('messages.created_at') }}</option>
-                            <option value="name">{{ trans('messages.name') }}</option>                            
+                            <option value="created_at">{{ trans('messages.created_at') }}</option>                        
                         </select>
                         <input type="hidden" name="sort_direction" value="desc" />
 <button class="btn btn-xs sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
@@ -51,6 +50,22 @@ search
             </div>
         </div>
 
-        <div class="pml-table-container"></div>
-    </form>
+        <div id="SourcesIndexContent" class="pml-table-container"></div>
+    </div>
+
+    <script>
+        var SourcesIndex = {
+            getList: function() {
+                return makeList({
+                    url: '{{ action('SourceController@listing') }}',
+                    container: $('#SourcesIndexContainer'),
+                    content: $('#SourcesIndexContent')
+                });
+            }
+        };
+
+        $(document).ready(function() {
+            SourcesIndex.getList().load();
+        });
+    </script>
 @endsection

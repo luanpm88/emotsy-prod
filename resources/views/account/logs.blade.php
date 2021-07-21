@@ -22,7 +22,7 @@
     
                 @include("account._menu")    
     
-                <form class="listing-form"
+                <div class="listing-form"
                     data-url="{{ action('AccountController@logsListing') }}"
                     per-page="{{ Acelle\Model\Log::$itemsPerPage }}"                
                 >                
@@ -69,6 +69,22 @@ search
                         
                         
                     </div>
-                </form>
+                </div>
+
+                <script>
+                    var AccountLogsIndex = {
+                        getList: function() {
+                            return makeList({
+                                url: '{{ action('AccountController@logsListing') }}',
+                                container: $('.listing-form'),
+                                content: $('.pml-table-container')
+                            });
+                        }
+                    };
+            
+                    $(document).ready(function() {
+                        AccountLogsIndex.getList().load();
+                    });
+                </script>
     
 @endsection

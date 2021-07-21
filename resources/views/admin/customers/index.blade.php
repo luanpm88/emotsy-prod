@@ -18,7 +18,7 @@ reorder
 @endsection
 
 @section('content')				
-	<form class="listing-form"
+	<div class="listing-form"
 		sort-url="{{ action('Admin\CustomerController@sort') }}"
 		data-url="{{ action('Admin\CustomerController@listing') }}"
 		per-page="{{ Acelle\Model\Customer::$itemsPerPage }}"					
@@ -65,10 +65,26 @@ add
 			
 			
 		</div>
-	</form>
+	</div>
 
 	<script>
 		var assignPlanModal = new IframeModal();
+	</script>
+
+	<script>
+		var CustomersIndex = {
+			getList: function() {
+				return makeList({
+					url: '{{ action('Admin\CustomerController@listing') }}',
+					container: $('.listing-form'),
+					content: $('.pml-table-container')
+				});
+			}
+		};
+
+		$(document).ready(function() {
+			CustomersIndex.getList().load();
+		});
 	</script>
 
 @endsection

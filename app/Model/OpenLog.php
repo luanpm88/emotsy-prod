@@ -83,7 +83,7 @@ class OpenLog extends Model
         }
 
         // filters
-        $filters = $request->filters;
+        $filters = $request->all();
         if (!empty($filters)) {
             if (!empty($filters['campaign_uid'])) {
                 $query = $query->where('campaigns.uid', '=', $filters['campaign_uid']);

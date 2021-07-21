@@ -6,8 +6,8 @@
 
 	<div class="page-title">
 		<ul class="breadcrumb breadcrumb-caret position-right">
-			<li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-			<li class="active">{{ trans('messages.customer.sub_account') }}</li>
+			<li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+			<li class="breadcrumb-item active">{{ trans('messages.customer.sub_account') }}</li>
 		</ul>
 		<h1>
             <span class="text-semibold"><span class="material-icons-round">
@@ -36,7 +36,7 @@
                                     data-popup="tooltip" title="{{ trans('messages.subaccount.delete.tooltip') }}"
                                     role="button" class="btn btn-danger reload_page"
                                     link-method="delete"
-                                    list-delete-confirm="{{ action('Admin\SubAccountController@deleteConfirm', $account->uid) }}"
+                                    link-confirm-url="{{ action('Admin\SubAccountController@deleteConfirm', $account->uid) }}"
                                 >
                                         <i class="icon-cross2"></i> {{ trans('messages.subaccount.delete') }}
                                 </a>

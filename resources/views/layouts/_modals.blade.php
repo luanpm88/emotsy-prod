@@ -15,8 +15,8 @@
 					</div>
 
 					<div class="modal-footer">
-						<button role="button" class="btn btn-mc_inline" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
-						<a class="btn btn-mc_primary link-confirm-button">{{ trans('messages.ok') }}</a>
+						<button role="button" class="btn btn-link" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
+						<a class="btn btn-secondary link-confirm-button">{{ trans('messages.ok') }}</a>
 					</div>
 				</form>
 			</div>
@@ -74,8 +74,8 @@
 					</div>
 
 					<div class="modal-footer">
-						<button role="button" class="btn btn-mc_inline" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
-						<a class="btn btn-mc_primary link-confirm-button ajax_link">{{ trans('messages.confirm') }}</a>
+						<button role="button" class="btn btn-link" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
+						<a class="btn btn-secondary link-confirm-button ajax_link">{{ trans('messages.confirm') }}</a>
 					</div>
 				</form>
 			</div>

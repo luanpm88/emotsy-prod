@@ -86,7 +86,7 @@ restart_alt
                 'total' => \Acelle\Library\Tool::format_number($list->readCache('SubscriberCount')),
             ]) !!}</p>
             <p>
-                <a link-confirm="{{ trans('messages.reset_list_verification_confirm') }}" link-method="POST" class="btn btn-outline-secondary-600"
+                <a link-confirm="{{ trans('messages.reset_list_verification_confirm') }}" link-method="POST" class="btn btn-secondary"
                     href="{{ action("MailListController@resetVerification", $list->uid) }}">
                         {{ trans('messages.verification.button.reset') }}
                 </a>

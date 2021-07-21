@@ -196,7 +196,7 @@ class EmailVerificationServer extends Model
         }
 
         // filters
-        $filters = $request->filters;
+        $filters = $request->all();
         if (!empty($filters)) {
             if (!empty($filters['type'])) {
                 $query = $query->where('email_verification_servers.type', '=', $filters['type']);

@@ -80,7 +80,7 @@
                 </div>
 
                 <div class="mt-4 pt-3">
-                    <button class="btn btn-mc_primary">{{ trans('messages.automation.profile.tag') }}</button>
+                    <button class="btn btn-secondary">{{ trans('messages.automation.profile.tag') }}</button>
                 </div>
         </div>
     </div>

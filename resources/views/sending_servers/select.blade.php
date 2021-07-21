@@ -41,7 +41,7 @@ add
 
             </ul>
             <div class="pull-right">
-                <a href="{{ action('SendingServerController@index') }}" role="button" class="btn btn-outline-secondary">
+                <a href="{{ action('SendingServerController@index') }}" role="button" class="btn btn-secondary">
                     <i class="icon-cross2"></i> {{ trans('messages.cancel') }}
                 </a>
             </div>

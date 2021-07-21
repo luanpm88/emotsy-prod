@@ -13,7 +13,9 @@ settings
             <i class="icon-server"></i> {{ trans('messages.sending_servers') }}</a>
         </li>
         <li class="text-semibold"><a href="#top-tab5" data-toggle="tab">
-            <i class="icon-earth"></i> {{ trans('messages.sending_domains') }}</a>
+            <span class="material-icons-outlined">
+public
+</span> {{ trans('messages.sending_domains') }}</a>
         </li>
         <li class="text-semibold"><a href="#top-tab6" data-toggle="tab">
             <i class="icon-database-check"></i> {{ trans('messages.email_verification_servers') }}</a>

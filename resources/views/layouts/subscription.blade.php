@@ -28,7 +28,9 @@
 				/
 				<a href="{{ url("/logout") }}"><i class="icon-switch2"></i> {{ trans('messages.logout') }}</a>
 			@else
-				<a class="text-semibold" href="{{ url("/login") }}"><i class="icon-user"></i> {{ trans('messages.login') }}</a>
+				<a class="text-semibold" href="{{ url("/login") }}"><span class="material-icons-round">
+person_outline
+</span> {{ trans('messages.login') }}</a>
 			@endif
 		</div>
 

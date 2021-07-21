@@ -94,7 +94,7 @@
                     @if (\Auth::user()->customer->can('cancel', $subscription))
                         <a link-method="POST" link-confirm="{{ trans('messages.subscription.cancel.confirm') }}"
                             href="{{ action('AccountSubscriptionController@cancel') }}"
-                            class="btn btn-outline-secondary me-1"
+                            class="btn btn-secondary me-1"
                         >
                             {{ trans('messages.subscription.cancel') }}
                         </a>

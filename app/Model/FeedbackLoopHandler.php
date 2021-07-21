@@ -122,7 +122,7 @@ class FeedbackLoopHandler extends DeliveryHandler
         }
 
         // filters
-        $filters = $request->filters;
+        $filters = $request->all();
         if (!empty($filters)) {
             if (!empty($filters['type'])) {
                 $query = $query->where('feedback_loop_handlers.type', '=', $filters['type']);

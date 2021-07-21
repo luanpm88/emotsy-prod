@@ -64,7 +64,7 @@
             <h2 class="mt-4 mb-2">100% delivered to active contacts</h2>
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris in tortor tortor. Quisque pulvinar, turpis quis ultrices vestibulum, massa elit facilisis dui, a malesuada felis quam in dolor. Suspendisse nec tristique quam, ut hendrerit eros.</p>
 
-            <a href="{{ action('CampaignController@resend', ["uid" => $campaign->uid]) }}" class="btn btn-mc_primary resend-campaign">{{ trans("messages.campaign.resend") }}</a>
+            <a href="{{ action('CampaignController@resend', ["uid" => $campaign->uid]) }}" class="btn btn-secondary resend-campaign">{{ trans("messages.campaign.resend") }}</a>
         </div>
     </div>
 </div>

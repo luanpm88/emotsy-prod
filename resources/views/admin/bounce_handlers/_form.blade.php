@@ -92,7 +92,7 @@
                             <a
                                 href="{{ action('Admin\BounceHandlerController@test', $server->uid) }}"
                                 role="button"
-                                class="btn btn-outline-secondary-800 mr-5 btn-icon ajax_link"
+                                class="btn btn-secondary-800 mr-5 btn-icon ajax_link"
                                 data-in-form="true"
                                 link-method="POST"
 								mask-title="{{ trans('messages.bounce_handler.testing_connection') }}"

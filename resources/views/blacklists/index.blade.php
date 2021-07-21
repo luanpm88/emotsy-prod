@@ -17,7 +17,7 @@ reorder
 
 @section('content')
 
-    <form class="listing-form"
+    <div class="listing-form"
         data-url="{{ action('BlacklistController@listing') }}"
         per-page="{{ Acelle\Model\Blacklist::$itemsPerPage }}"
     >
@@ -26,13 +26,13 @@ reorder
             <div class="col-md-9">
                 @if ($blacklists->count() >= 0)
                     <div class="filter-box">
-                        @include('helpers.select_tool')
-                        <div class="dropdown list_actions" style="display: none">
+                        <span class="me-2">@include('helpers.select_tool')</span>
+                        <div class="dropdown list_actions me-3" style="display: none">
                             <button role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
                                 {{ trans('messages.actions') }} <span class="number"></span><span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu">
-                                <li><a link-confirm="{{ trans('messages.remove_blacklist_confirm') }}" href="{{ action('BlacklistController@delete') }}"><span class="material-icons-outlined">
+                                <li><a class="dropdown-item" link-confirm="{{ trans('messages.remove_blacklist_confirm') }}" href="{{ action('BlacklistController@delete') }}"><span class="material-icons-outlined">
 delete_outline
 </span> {{ trans('messages.delete') }}</a></li>
                             </ul>
@@ -74,5 +74,21 @@ file_upload
 
         <div class="pml-table-container">
         </div>
-    </form>
+    </div>
+
+    <script>
+        var BlacklistsIndex = {
+            getList: function() {
+                return makeList({
+                    url: '{{ action('BlacklistController@listing') }}',
+                    container: $('.listing-form'),
+                    content: $('.pml-table-container')
+                });
+            }
+        };
+
+        $(document).ready(function() {
+            BlacklistsIndex.getList().load();
+        });
+    </script>
 @endsection

@@ -44,11 +44,11 @@
                 </td>
                 <td class="text-end">
                     @can('update', $item)
-                        <a href="{{ action('Admin\CustomerGroupController@edit', $item->id) }}" role="button" class="btn btn-outline-secondary-600 btn-icon"><i class="icon icon-pencil"></i> {{ trans('messages.edit') }}</a>
+                        <a href="{{ action('Admin\CustomerGroupController@edit', $item->id) }}" role="button" class="btn btn-secondary btn-icon"><i class="icon icon-pencil"></i> {{ trans('messages.edit') }}</a>
                     @endcan
                     @can('delete', $item)
                         <div class="btn-group">
-                            <button role="button" class="btn dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
+                            <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li>
                                     <a link-confirm="{{ trans('messages.delete_customer_groups_confirm') }}" href="{{ action('Admin\CustomerGroupController@delete', ['ids' => $item->id]) }}">

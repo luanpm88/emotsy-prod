@@ -24,8 +24,8 @@
           ])
         </div>
         <div class="modal-footer">
-          <button type="submit" class="btn btn-mc_primary">{{ trans('messages.plan.sending_servers.add.ok') }}</button>
-          <button role="button" class="btn btn-mc_inline" data-dismiss="modal">{{ trans('messages.close') }}</button>
+          <button type="submit" class="btn btn-secondary">{{ trans('messages.plan.sending_servers.add.ok') }}</button>
+          <button role="button" class="btn btn-link" data-dismiss="modal">{{ trans('messages.close') }}</button>
         </div>
     @else
         <div class="modal-body">

@@ -54,7 +54,7 @@ full-height
             </div>
             <div class="mr-1" role="group" aria-label="Button group with nested dropdown">
                 <div class="btn-group btn-group-sm" role="group">
-                    <button id="btnGroupDrop1" role="button" class="btn btn-outline-secondary dropdown-toggle contacts-sort-title" data-value="{{ request()->sortBy ? request()->sortBy : 'auto_triggers.updated_at' }}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button id="btnGroupDrop1" role="button" class="btn btn-secondary dropdown-toggle contacts-sort-title" data-value="{{ request()->sortBy ? request()->sortBy : 'auto_triggers.updated_at' }}" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {{ trans('messages.timeline.sort.' . (request()->sortBy ? request()->sortBy : 'auto_triggers.updated_at')) }}
                     </button>
                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="btnGroupDrop1">
@@ -67,7 +67,7 @@ full-height
             @if ($subscribers->count())
                 <div class="" role="group" aria-label="Button group with nested dropdown">
                     <div class="btn-group btn-group-sm" role="group">
-                    <button id="btnGroupDrop1" role="button" class="btn btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button id="btnGroupDrop1" role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {{ trans('messages.automation.action') }}
                     </button>
                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="btnGroupDrop1">

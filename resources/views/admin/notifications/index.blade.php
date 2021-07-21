@@ -6,7 +6,7 @@
 	<div class="page-title">
 		<ul class="breadcrumb breadcrumb-caret position-right">
 			<li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-			<li class="active">{{ trans('messages.notifications') }}</li>
+			<li class="breadcrumb-item active">{{ trans('messages.notifications') }}</li>
 		</ul>
 		<h1>
 			<span class="text-semibold"><i class="material-icons-outlined">message</i>  {{ trans('messages.all_notifications') }}</span>

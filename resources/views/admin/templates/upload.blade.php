@@ -7,7 +7,7 @@
     <div class="page-title">				
         <ul class="breadcrumb breadcrumb-caret position-right">
             <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-            <li><a href="{{ action("Admin\TemplateController@index") }}">{{ trans('messages.templates') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("Admin\TemplateController@index") }}">{{ trans('messages.templates') }}</a></li>
         </ul>
         <h1>
             <span class="text-semibold"><i class="icon-upload"></i> {{ trans('messages.upload_template') }}</span>
@@ -34,7 +34,7 @@
                     
                 <div class="text-end">
                     <button class="btn btn-secondary me-2"><i class="icon-check"></i> {{ trans('messages.upload') }}</button>
-                    <a href="{{ action('Admin\TemplateController@index') }}" class="btn btn-outline-secondary-800"><i class="icon-cross2"></i> {{ trans('messages.cancel') }}</a>
+                    <a href="{{ action('Admin\TemplateController@index') }}" class="btn btn-secondary-800"><i class="icon-cross2"></i> {{ trans('messages.cancel') }}</a>
                 </div>
                 
             </form>  

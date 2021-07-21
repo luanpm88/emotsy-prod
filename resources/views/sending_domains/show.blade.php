@@ -8,7 +8,7 @@
         <ul class="breadcrumb breadcrumb-caret position-right">
             <li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
             <li class="breadcrumb-item"><a href="{{ action("SenderController@index") }}">{{ trans('messages.verified_senders') }}</a></li>
-            <li><a href="{{ action("SendingDomainController@index") }}">{{ trans('messages.domains') }}</a></li>
+            <li class="breadcrumb-item"><a href="{{ action("SendingDomainController@index") }}">{{ trans('messages.domains') }}</a></li>
         </ul>
         <h1>
             <span class="text-semibold">{{ trans('messages.verified_senders') }}</span>
@@ -24,7 +24,9 @@
     <div class="row">
         <div class="col-sm-12 col-md-10 col-lg-10">
             <h1>
-                <span class="text-semibold"><i class="icon-earth"></i> {{ $server->name }}</span>
+                <span class="text-semibold"><span class="material-icons-outlined">
+public
+</span> {{ $server->name }}</span>
             </h1>
             <p>{!! trans('messages.sending_domain.wording') !!}</p>
 

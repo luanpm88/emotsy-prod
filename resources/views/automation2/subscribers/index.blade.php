@@ -20,9 +20,9 @@
 @section('page_header')
 	<main class="container px-3 pt-4">
 		<ul class="breadcrumb breadcrumb-caret position-right">
-			<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-			<li><a href="{{ action("Automation2Controller@index") }}">{{ trans('messages.automations') }}</a></li>
-			<li>{{ $automation->name }}</li>
+			<li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+			<li class="breadcrumb-item"><a href="{{ action("Automation2Controller@index") }}">{{ trans('messages.automations') }}</a></li>
+			<li class="breadcrumb-item">{{ $automation->name }}</li>
 		</ul>
 
 		<h1>
@@ -151,7 +151,8 @@ exit_to_app
 								<option value="subscribers.created_at">{{ trans('messages.created_at') }}</option>
 								<option value="subscribers.updated_at">{{ trans('messages.updated_at') }}</option>
 							</select>
-							<button class="btn btn-xs sort-direction" rel="asc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
+							<input type="hidden" name="sort_direction" value="asc" />
+                                                <button class="btn btn-xs sort-direction" rel="asc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
 								<span class="material-icons-outlined desc">
 	sort
 	</span>

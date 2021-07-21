@@ -4,11 +4,6 @@
     >
         @foreach ($groups as $key => $item)
             <tr>
-                <td width="1%">
-                    <div class="text-nowrap">
-                        
-                    </div>
-                </td>
                 <td>
                     <h5 class="m-0 text-bold">
                         <a class="kq_search" href="{{ action('Admin\AdminGroupController@edit', $item->id) }}">{{ $item->name }}</a>
@@ -27,11 +22,11 @@
                         <span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
                     </span>
                     @can('update', $item)
-                        <a href="{{ action('Admin\AdminGroupController@edit', $item->id) }}" role="button" class="btn btn-outline-secondary-600 btn-icon"><i class="icon icon-pencil"></i> {{ trans('messages.edit') }}</a>
+                        <a href="{{ action('Admin\AdminGroupController@edit', $item->id) }}" role="button" class="btn btn-secondary btn-icon"><i class="icon icon-pencil"></i> {{ trans('messages.edit') }}</a>
                     @endcan
                     @can('delete', $item)
                         <div class="btn-group">
-                            <button role="button" class="btn dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
+                            <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li>
                                     <a

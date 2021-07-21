@@ -19,7 +19,7 @@ reorder
 
 @section('content')
 
-    <form class="listing-form"
+    <div class="listing-form"
         sort-url="{{ action('Admin\AdminGroupController@sort') }}"
         data-url="{{ action('Admin\AdminGroupController@listing') }}"
         per-page="{{ Acelle\Model\AdminGroup::$itemsPerPage }}"
@@ -62,6 +62,22 @@ add
         </div>
 
         <div class="pml-table-container"></div>
-    </form>
+    </div>
+
+    <script>
+        var AdminGroupsIndex = {
+            getList: function() {
+                return makeList({
+                    url: '{{ action('Admin\AdminGroupController@listing') }}',
+                    container: $('.listing-form'),
+                    content: $('.pml-table-container')
+                });
+            }
+        };
+
+        $(document).ready(function() {
+            AdminGroupsIndex.getList().load();
+        });
+    </script>
 
 @endsection

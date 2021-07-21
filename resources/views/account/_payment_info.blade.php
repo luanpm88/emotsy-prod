@@ -24,14 +24,14 @@
 
     <a href="{{ action('AccountController@editPaymentMethod', [
         'redirect' => isset($redirect) ? $redirect : action('AccountController@billing'),
-    ]) }}" class="btn btn-mc_primary payment-method-edit mt-4">
+    ]) }}" class="btn btn-secondary payment-method-edit mt-4">
         {{ trans('messages.change_payment_method') }}
     </a>
 @else
     <p>{{ trans('messages.have_no_payment_method') }}</p>
 
     <a href="{{ action('AccountController@editPaymentMethod') }}"
-        class="btn btn-mc_primary payment-method-edit">
+        class="btn btn-secondary payment-method-edit">
         {{ trans('messages.add_payment_method') }}
     </a>
 @endif

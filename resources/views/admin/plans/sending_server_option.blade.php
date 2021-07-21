@@ -46,6 +46,6 @@
             </div>
         </div>
         <hr>
-        <button class="btn btn-mc_primary mr-10">{{ trans('messages.save') }}</button>
+        <button class="btn btn-secondary mr-10">{{ trans('messages.save') }}</button>
     </div>
 <form>

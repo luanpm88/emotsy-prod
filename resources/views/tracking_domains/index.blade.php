@@ -24,7 +24,7 @@
         </div>
     </div>
 
-    <form class="listing-form"
+    <div class="listing-form"
         data-url="{{ action('TrackingDomainController@listing') }}"
         per-page="{{ Acelle\Model\TrackingDomain::$itemsPerPage }}"
     >
@@ -54,7 +54,8 @@ delete_outline
                                 <option value="tracking_domains.created_at">{{ trans('messages.created_at') }}</option>
                                 <option value="tracking_domains.updated_at">{{ trans('messages.updated_at') }}</option>
                             </select>
-                            <button class="btn btn-xs sort-direction" rel="asc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
+                            <input type="hidden" name="sort_direction" value="asc" />
+                                                <button class="btn btn-xs sort-direction" rel="asc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
                                 <span class="material-icons-outlined desc">
 sort
 </span>
@@ -81,5 +82,21 @@ add
         </div>
 
         <div class="pml-table-container"></div>
-    </form>
+    </div>
+
+    <script>
+        var TrackingDomainsIndex = {
+            getList: function() {
+                return makeList({
+                    url: '{{ action('TrackingDomainController@listing') }}',
+                    container: $('.listing-form'),
+                    content: $('.pml-table-container')
+                });
+            }
+        };
+
+        $(document).ready(function() {
+            TrackingDomainsIndex.getList().load();
+        });
+    </script>
 @endsection

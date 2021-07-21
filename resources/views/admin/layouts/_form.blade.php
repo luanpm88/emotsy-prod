@@ -37,5 +37,5 @@
 
 <div class="text-end">
     <button class="btn btn-secondary me-2"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
-    <a href="{{ action('Admin\LayoutController@index') }}" class="btn btn-outline-secondary-800"><i class="icon-cross2"></i> {{ trans('messages.cancel') }}</a>
+    <a href="{{ action('Admin\LayoutController@index') }}" class="btn btn-secondary-800"><i class="icon-cross2"></i> {{ trans('messages.cancel') }}</a>
 </div>

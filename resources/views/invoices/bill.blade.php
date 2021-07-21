@@ -46,7 +46,7 @@
             @elseif (isset($payButton) && !\Auth::user()->customer->preferredPaymentGatewayCanAutoCharge())
                 <hr>
                 <div class="text-right">
-                    <a href="{{ action('AccountSubscriptionController@payment') }}" class="btn btn-mc_primary">
+                    <a href="{{ action('AccountSubscriptionController@payment') }}" class="btn btn-secondary">
                         {{ trans('messages.invoice.pay_now') }}
                     </a>
                 </div>

@@ -7,7 +7,7 @@
     <div class="page-title">
         <ul class="breadcrumb breadcrumb-caret position-right">
             <li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-            <li class="active">{{ trans('messages.subscription') }}</li>
+            <li class="breadcrumb-item active">{{ trans('messages.subscription') }}</li>
         </ul>
         <h1>
             <span class="text-semibold">{{ Auth::user()->displayName() }}</span>

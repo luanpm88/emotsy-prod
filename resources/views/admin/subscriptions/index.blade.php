@@ -89,6 +89,22 @@ add
 		});
 
         // reject subscription modal
-		var rejectPendingSub = new Popup();
+		var rejectPendingSub;
+    </script>
+
+    <script>
+        var SubscriptionsIndex = {
+            getList: function() {
+                return makeList({
+                    url: '{{ action('Admin\SubscriptionController@listing') }}',
+                    container: $('.listing-form'),
+                    content: $('.pml-table-container')
+                });
+            }
+        };
+
+        $(document).ready(function() {
+            SubscriptionsIndex.getList().load();
+        });
     </script>
 @endsection

@@ -46,6 +46,6 @@ margin-left: 20px;">
         <p>
             {{ trans('messages.quicktip.identity.tip') }}
         </p>
-        <a href="{{ action("CustomerController@loginBack") }}" class="btn btn-mc_primary">{{ trans('messages.go_to_admin_view') }}</a>
+        <a href="{{ action("CustomerController@loginBack") }}" class="btn btn-secondary">{{ trans('messages.go_to_admin_view') }}</a>
     </div>
 </div>

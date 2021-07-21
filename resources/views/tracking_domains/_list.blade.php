@@ -29,23 +29,30 @@
                         <span class="text-muted text-nowrap">{{ trans('messages.tracking_domain.scheme') }}</span>
                     </div>
                 </td>
-                <td class="text-end">
+                <td class="text-center">
                     <span class="text-muted2 list-status pull-left">
                         <span class="label label-flat bg-{{ $trackingDomain->status }}">
                             {{ trans('messages.tracking_domain.status.' . $trackingDomain->status) }}</span>
                     </span>
+                </td>
+                <td class="text-end">
+                    
                     @if (Auth::user()->customer->can('read', $trackingDomain))
                         <a href="{{ action('TrackingDomainController@show', $trackingDomain->uid) }}" data-popup="tooltip"
-                            title="{{ trans('messages.tracking_domain.view') }}" role="button" class="btn btn-outline-secondary btn-icon">
-                                {{ trans('messages.tracking_domain.view') }}
+                            title="{{ trans('messages.tracking_domain.view') }}" role="button" class="btn btn-secondary">
+                            <span class="material-icons-outlined">
+                                zoom_in
+                                </span> {{ trans('messages.tracking_domain.view') }}
                         </a>
                     @endif
                     @if (Auth::user()->customer->can('delete', $trackingDomain))
                         <div class="btn-group">
-                            <button role="button" class="btn dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
+                            <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li>
-                                    <a link-confirm="{{ trans('messages.delete_tracking_domains_confirm') }}" href="{{ action('TrackingDomainController@delete', ["uids" => $trackingDomain->uid]) }}">
+                                    <a
+                                        class="dropdown-item list-action-single"
+                                        link-confirm="{{ trans('messages.delete_tracking_domains_confirm') }}" href="{{ action('TrackingDomainController@delete', ["uids" => $trackingDomain->uid]) }}">
                                         <span class="material-icons-outlined">
 delete_outline
 </span> {{ trans('messages.delete') }}
@@ -64,14 +71,18 @@ delete_outline
     
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
-        <i class="icon-earth"></i>
+        <span class="material-icons-outlined">
+public
+</span>
         <span class="line-1">
             {{ trans('messages.no_search_result') }}
         </span>
     </div>
 @else
     <div class="empty-list">
-        <i class="icon-earth"></i>
+        <span class="material-icons-outlined">
+public
+</span>
         <span class="line-1">
             {{ trans('messages.tracking_domain_empty_line_1') }}
         </span>

@@ -7,13 +7,19 @@
 				<td width="1%">
 					@switch($subscription->status)
 						@case(Acelle\Model\Subscription::STATUS_ACTIVE)
-							<i class="lnr lnr-sync subscription-status-icon"></i>
+							<i class="material-icons-outlined fs-4 me-2 text-success">
+settings_backup_restore
+							</i>
 							@break
 						@case(Acelle\Model\Subscription::STATUS_NEW)
-							<i class="lnr lnr-sync subscription-status-icon"></i>
+							<i class="material-icons-outlined fs-4 me-2 text-warning">
+								add_circle_outline
+							</i>
 							@break
 						@default
-							<i class="icon-dash subscription-status-icon"></i>
+							<i class="material-icons-outlined fs-4 me-2 text-muted">
+remove_circle_outline
+							</i>
 					@endswitch
 				</td>
 				<td>
@@ -61,7 +67,7 @@
 						<span class="text-muted2">{{ trans('messages.subscription.next_billing') }}</span>
 					@endif
 				</td>
-				<td>
+				<td class="text-center">
 					@switch($subscription->status)
 						@case(Acelle\Model\Subscription::STATUS_ACTIVE)
 							<span style="cursor:pointer" href="{{ action('Admin\SubscriptionController@invoices', ['id' => $subscription->uid]) }}"
@@ -109,7 +115,7 @@
 					@if (\Auth::user()->admin->can('approve', $subscription))
 						<a link-method="POST" link-confirm="{{ trans('messages.subscription.approve.confirm') }}"
 							href="{{ action('Admin\SubscriptionController@approve', $subscription->uid) }}"
-							class="btn btn-primary bg-teal-800"
+							class="btn btn-primary bg-teal-800 list-action-single"
 						>
 							{{ trans('messages.subscription.approve') }}
 						</a>
@@ -118,13 +124,13 @@
 					
 					@if (\Auth::user()->admin->can('cancel', $subscription))
 						<a link-method="POST" link-confirm="{{ trans('messages.subscription.cancel.confirm') }}"
-						  href="{{ action('Admin\SubscriptionController@cancel', $subscription->uid) }}" class="btn btn-outline-secondary-600">
+						  href="{{ action('Admin\SubscriptionController@cancel', $subscription->uid) }}" class="btn btn-secondary list-action-single">
 							{{ trans('messages.subscription.cancel') }}
 						</a>
 					@endif
 					@if (\Auth::user()->admin->can('resume', $subscription))
 						<a link-method="POST" link-confirm="{{ trans('messages.subscription.resume.confirm') }}"
-						  href="{{ action('Admin\SubscriptionController@resume', $subscription->uid) }}" class="btn btn-outline-secondary-600">
+						  href="{{ action('Admin\SubscriptionController@resume', $subscription->uid) }}" class="btn btn-secondary list-action-single">
 							{{ trans('messages.subscription.resume') }}
 						</a>
 					@endif
@@ -137,11 +143,11 @@
 					)
 						<div class="btn-group">
 							
-							<button role="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><span class="caret ml-0"></span></button>
+							<button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><span class="caret ml-0"></span></button>
 							<ul class="dropdown-menu dropdown-menu-end">
 								@if (\Auth::user()->admin->can('approvePending', $subscription))
 									<li>
-										<a link-method="POST" link-confirm="{{ trans('messages.subscription.set_active.confirm') }}"
+										<a class="dropdown-item list-action-single" link-method="POST" link-confirm="{{ trans('messages.subscription.set_active.confirm') }}"
 										  href="{{ action('Admin\SubscriptionController@approvePending', $subscription->uid) }}">
 											{{ trans('messages.subscription.approve_pending') }}
 										</a>
@@ -149,8 +155,8 @@
 								@endif
 								@if (\Auth::user()->admin->can('rejectPending', $subscription))
 									<li>
-										<a link-method="POST"
-											class="rejectPending"
+										<a
+											class="dropdown-item rejectPending"
 											{{-- link-confirm="{{ trans('messages.subscription.reject_pending.confirm') }}" --}}
 										  	href="{{ action('Admin\SubscriptionController@rejectPending', $subscription->uid) }}"
 										>
@@ -160,7 +166,7 @@
 								@endif
 								@if (\Auth::user()->admin->can('invoices', $subscription))
 									<li>
-										<a class="view_invoices"
+										<a class="dropdown-item view_invoices"
 										  href="{{ action('Admin\SubscriptionController@invoices', ['id' => $subscription->uid]) }}">
 											{{ trans('messages.subscription.logs') }}
 										</a>
@@ -168,7 +174,7 @@
 								@endif
 								@if (\Auth::user()->admin->can('cancelNow', $subscription))
 									<li>
-										<a link-method="POST" link-confirm="{{ trans('messages.subscription.cancel_now.confirm') }}"
+										<a class="dropdown-item list-action-single" link-method="POST" link-confirm="{{ trans('messages.subscription.cancel_now.confirm') }}"
 										  href="{{ action('Admin\SubscriptionController@cancelNow', $subscription->uid) }}">
 											{{ trans('messages.subscription.cancel_now') }}
 										</a>
@@ -176,7 +182,7 @@
 								@endif
 								@if (\Auth::user()->admin->can('delete', $subscription))
 									<li>
-										<a link-method="DELETE" link-confirm="{{ trans('messages.subscription.delete.confirm') }}"
+										<a class="dropdown-item list-action-single" link-method="DELETE" link-confirm="{{ trans('messages.subscription.delete.confirm') }}"
 										  href="{{ action('Admin\SubscriptionController@delete', ['id' => $subscription->uid]) }}">
 											{{ trans('messages.subscription.delete') }}
 										</a>
@@ -198,6 +204,8 @@
                 e.preventDefault();
 
                 var src = $(this).attr('href');
+				
+				rejectPendingSub = new Popup();
                 rejectPendingSub.load(src);
             });
         });

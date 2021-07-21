@@ -394,7 +394,7 @@ function makeList(options) {
 
     if (typeof(options.data) == 'undefined') {
         options.data = function() {
-            return options.container.find('.filter-box :input, [name=per_page], [name="uids[]"]').serialize();
+            return options.container.find('.filter-box :input, [name=per_page], [name="uids[]"]').serializeArray();
         };
     }
 
@@ -424,6 +424,12 @@ function makeList(options) {
 
             // each row input clicked
             this.content.find('[name="uids[]"]').on('change', function() {
+                checkPageChange();
+            });
+
+            // check page input clicked
+            this.content.find('input[name=page_checked]').on('change', function() {
+                checkPage($(this).is(':checked'));
                 checkPageChange();
             });
 
@@ -584,7 +590,7 @@ function makeList(options) {
         var confirm = $(this).attr('link-confirm');
         var confirmUrl = $(this).attr('link-confirm-url');
         var method = $(this).attr('link-method');
-        var data = _list.content.find('[name="uids[]"]:input').serializeArray();
+        var data = _list.data();
 
         if (typeof(confirm) !== 'undefined') {
             // check all items

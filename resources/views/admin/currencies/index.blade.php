@@ -19,7 +19,7 @@ reorder
 
 @section('content')
 
-				<form class="listing-form"
+				<div class="listing-form"
 					sort-url="{{ action('Admin\CurrencyController@sort') }}"
 					data-url="{{ action('Admin\CurrencyController@listing') }}"
 					per-page="{{ Acelle\Model\Admin::$itemsPerPage }}"
@@ -28,30 +28,30 @@ reorder
 						<div class="col-md-10">
 							@if ($currencies->count() >= 0)
 								<div class="filter-box">
-									<div class="btn-group list_actions hide mr-10">
+									<div class="checkbox inline check_all_list">
+										<label>
+											<input type="checkbox" name="page_checked" class="styled check_all">
+										</label>
+									</div>
+									<div class="btn-group list_actions mr-10" style="display:none">
 										<button role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
 											{{ trans('messages.actions') }} <span class="number"></span><span class="caret"></span>
 										</button>
 										<ul class="dropdown-menu">
-											<li><a link-confirm="{{ trans('messages.enable_currencies_confirm') }}" href="{{ action('Admin\CurrencyController@enable') }}"><span class="material-icons-outlined">
+											<li><a class="dropdown-item" link-confirm="{{ trans('messages.enable_currencies_confirm') }}" href="{{ action('Admin\CurrencyController@enable') }}"><span class="material-icons-outlined">
 play_arrow
 </span> {{ trans('messages.enable') }}</a></li>
-											<li><a link-confirm="{{ trans('messages.disable_currencies_confirm') }}" href="{{ action('Admin\CurrencyController@disable') }}"><span class="material-icons-outlined">
+											<li><a class="dropdown-item" link-confirm="{{ trans('messages.disable_currencies_confirm') }}" href="{{ action('Admin\CurrencyController@disable') }}"><span class="material-icons-outlined">
 hide_source
 </span> {{ trans('messages.disable') }}</a></li>
 											<li>
-												<a link-confirm="{{ trans('messages.delete_currencies_confirm') }}" href="{{ action('Admin\CurrencyController@delete') }}">
+												<a class="dropdown-item" link-confirm="{{ trans('messages.delete_currencies_confirm') }}" href="{{ action('Admin\CurrencyController@delete') }}">
 													<span class="material-icons-outlined">
 delete_outline
 </span> {{ trans('messages.delete') }}
 												</a>
 											</li>
 										</ul>
-									</div>
-									<div class="checkbox inline check_all_list">
-										<label>
-											<input type="checkbox" name="page_checked" class="styled check_all">
-										</label>
 									</div>
 									<span class="filter-group">
 										<span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
@@ -92,5 +92,21 @@ add
 
 
 					</div>
-				</form>
+				</div>
+
+				<script>
+					var CurrenciesIndex = {
+						getList: function() {
+							return makeList({
+								url: '{{ action('Admin\CurrencyController@listing') }}',
+								container: $('.listing-form'),
+								content: $('.pml-table-container')
+							});
+						}
+					};
+			
+					$(document).ready(function() {
+						CurrenciesIndex.getList().load();
+					});
+				</script>
 @endsection

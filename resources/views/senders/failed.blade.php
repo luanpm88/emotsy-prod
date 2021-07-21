@@ -24,7 +24,7 @@ error_outline
                 </div>
                 <div class="col-md-4">
                     <form method="GET" action="{{ action('SenderController@index') }}">
-                        <button type='submit' class="btn btn-mc_primary res-button">{{ trans('messages.go_back') }}</button>
+                        <button type='submit' class="btn btn-secondary res-button">{{ trans('messages.go_back') }}</button>
                     </form>
                 </div>
             </div>

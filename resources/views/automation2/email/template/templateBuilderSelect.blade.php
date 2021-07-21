@@ -19,7 +19,7 @@
                 <a href="{{ action('Automation2Controller@templateEditClassic', [
                         'uid' => $automation->uid,
                         'email_uid' => $email->uid,
-                    ]) }}" class="btn btn-outline-secondary mr-1 template-compose-classic"
+                    ]) }}" class="btn btn-secondary mr-1 template-compose-classic"
                 >
                     {{ trans('messages.campaign.email_builder_classic') }}
                 </a>

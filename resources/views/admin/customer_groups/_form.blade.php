@@ -15,9 +15,11 @@ settings
 </span> {{ trans('messages.customer_group_options') }}</h2>
 
                         <div class="tabbable">
-                            <ul class="nav nav-tabs nav-tabs-top">
-                                <li class="active text-semibold"><a href="#top-tab1" data-toggle="tab">
-                                    <i class="icon-user"></i> {{ trans('messages.frontend') }}</a></li>
+                            <ul class="nav nav-tabs nav-tabs-top nav-underline">
+                                <li class="nav-item active text-semibold"><a class="nav-link" href="#top-tab1" data-toggle="tab">
+                                    <span class="material-icons-round">
+person_outline
+</span> {{ trans('messages.frontend') }}</a></li>
                             </ul>
 
                             <div class="tab-content">

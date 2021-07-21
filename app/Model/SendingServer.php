@@ -250,7 +250,7 @@ class SendingServer extends Model
         }
 
         // filters
-        $filters = $request->filters;
+        $filters = $request->all();
         if (!empty($filters)) {
             if (!empty($filters['type'])) {
                 $query = $query->where('sending_servers.type', '=', $filters['type']);

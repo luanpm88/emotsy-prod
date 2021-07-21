@@ -174,7 +174,7 @@ class Notification extends Model
         }
 
         // filters
-        $filters = $request->filters;
+        $filters = $request->all();
         if (!empty($filters)) {
             if (!empty($filters['level'])) {
                 $query = $query->where('notifications.level', '=', $filters['level']);
