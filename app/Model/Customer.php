@@ -2032,7 +2032,7 @@ class Customer extends Model
                 "options" => [
                     "key" => "woo-abandoned-cart",
                     "type" => "woo-abandoned-cart",
-                    "source_uid" => "6076f03620408",
+                    "source_uid" => $store->uid,
                     "wait" => "24_hour",
                     "init"  => "true"
                 ]
@@ -2050,7 +2050,7 @@ class Customer extends Model
         
         $auto->save();
 
-        return $email;
+        return $auto;
     }
 
     public function getAbandonedEmailAutomation($store)
