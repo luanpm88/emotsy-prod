@@ -15,16 +15,19 @@ class VerifyAndCreateSubscriber extends Base
     protected $list;
     protected $attributes; // Example: /home/acelle/storage/app/tmp/import-000000.csv
     protected $logger;
+    protected $jobMonitor;
+
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($list, $attributes, $logger)
+    public function __construct($list, $attributes, $logger, $jobMonitor)
     {
         $this->list = $list;
         $this->attributes = $attributes;
         $this->logger = $logger;
+        $this->jobMonitor = $jobMonitor;
     }
 
     /**
@@ -45,7 +48,7 @@ class VerifyAndCreateSubscriber extends Base
         } catch (Exception $e) {
             // Email is always present
             // Do not throw exception here, in case of invalid email address
-            $this->logger->error('['.$this->attributes['email']. '] failed to import. '.$e->getMessage());
+            $this->fails('['.$this->attributes['email']. '] failed to import. '.$e->getMessage());
             return;
         }
 
@@ -58,12 +61,55 @@ class VerifyAndCreateSubscriber extends Base
 
         $verifa = $subscriber->verify($verifier);
         if ($verifa->isDeliverable() || $verifa->isUnknown()) {
-            $this->logger->info(sprintf('[%s] successfully imported [checked by %s]', $subscriber->email, $verifier->name));
+            $this->done(sprintf('[%s] successfully imported [checked by %s]', $subscriber->email, $verifier->name));
         } else {
             // In case of failure, delete the newly created contact
             // Throw exception to log
             $subscriber->delete();
-            $this->logger->error(sprintf('[%s] failed to import. Undeliverable email [Result: `%s`, checked by `%s`]', $subscriber->email, $verifa->result, $verifier->name));
+            $this->fails(sprintf('[%s] failed to import. Undeliverable email [Result: `%s`, checked by `%s`]', $subscriber->email, $verifa->result, $verifier->name));
         }
+    }
+
+    public function fails($message)
+    {
+        // Update log
+        $this->logger->error($message);
+
+        // Update stats
+        $this->updateProgress(false);
+    }
+
+    public function done($message)
+    {
+        // Update log
+        $this->logger->info($message);
+
+        // Update stats
+        $this->updateProgress(true);
+    }
+
+    public function updateProgress($success)
+    {
+        $this->jobMonitor->withExclusiveLock(function($jobMonitor) use ($success) {
+            // Update stats
+            $progress = $jobMonitor->getJsonData();
+
+            $failed = array_key_exists('failed', $progress) ? $progress['failed'] : 0;
+            $processed = array_key_exists('processed', $progress) ? $progress['processed'] : 0;
+
+            if ($success) {
+                $processed += 1;
+            } else {
+                $failed += 1;
+            }
+
+            $notice = sprintf('Imported %s, failed: %s', $processed, $failed);
+
+            $jobMonitor->updateJsonData([
+                'processed' => $processed,
+                'failed' => $processed,
+                'message' => $notice,
+            ]);
+        });
     }
 }
