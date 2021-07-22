@@ -10,7 +10,7 @@ trait HasUid
 
         static::creating(function ($item) {
             if (is_null($item->uid)) {
-                $item->uid = uniqid();
+                $item->generateUid();
             }
         });
     }
@@ -18,5 +18,10 @@ trait HasUid
     public static function findByUid($uid)
     {
         return self::where('uid', '=', $uid)->first();
+    }
+
+    public function generateUid()
+    {
+        $this->uid = uniqid();
     }
 }
