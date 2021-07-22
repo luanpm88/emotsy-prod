@@ -18,6 +18,9 @@ display: none;
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
 }
+.form-control {
+    padding: .29rem .75rem;
+}
 .modal_link {
     cursor: pointer;
 }
@@ -242,10 +245,9 @@ h3 {
 .select2-selection--single:not([class*=bg-]):not([class*=border-]) {
     border-color: #ddd;
     background-color: #ddd;
-    height: 38px;
+    height: 35px;
     display: flex;
     align-items: center;
-    /* margin-top: -2px; */
 }
 .filter-box .select2-selection--single:not([class*=bg-]):not([class*=border-]) {
     height: 33px;
@@ -3315,9 +3317,6 @@ p.link-inline a {
 }
 .top-history .desc {
     font-size: 90%;
-}
-.text-muted {
-    color: rgba(0,0,0,0.7);
 }
 .bg-m-warning, .bg-renew_pending, .bg-change_plan_pending, .bg-change_plan_claimed, .bg-renew_claimed {
     background-color: #FFF3E0!important;
@@ -6421,8 +6420,8 @@ h1, h1 {
     padding-top: 53px;
 }
 .layout-dark .navbar-main {
-    background-color: rgb(0 0 0 / 82%)!important;
-    border-color: rgb(0 0 0 / 82%)!important;
+    background-color: rgb(37 37 36)!important;
+    border-color: rgb(37 37 36)!important;
 }
 .nav-menu-dark .lvl-1 {
     color: #ccc;
@@ -6684,4 +6683,11 @@ h1 [class^="material-icons"] {
 }
 .select-template-layout:hover .panel-template-placeholder {
     box-shadow: 0 .125rem .35rem rgba(0,0,0,.1)!important;
+}
+.nav-menu-dark .select2-selection--single:not([class*=bg-]):not([class*=border-]) {
+    border-color: rgba(0,0,0,0.7);
+    background-color: rgba(0,0,0,0.7);
+}
+.nav-menu-dark .select2-container .select2-selection--single .select2-selection__rendered {
+    color: #aaa;
 }

@@ -320,6 +320,16 @@ class Language extends Model
         return $langFiles;
     }
 
+    public function getLanguageFileOptions()
+    {
+        $arr = [];
+        foreach ($this->getAllLanguageFiles() as $key => $langFile) {
+            $arr[] = ['value' => $langFile['id'], 'text' => $langFile['file_title']];;
+        }
+
+        return $arr;
+    }
+
     public static function newDefaultLanguage()
     {
         $language = new self();
@@ -430,10 +440,6 @@ class Language extends Model
         self::yamlToFile($file['path'], $content);
 
         \Artisan::call('cache:clear');
-
-        // @todo
-        // make sure language file updated.
-        sleep(5);
 
         return [$file, $validator];
     }

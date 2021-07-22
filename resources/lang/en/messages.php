@@ -3722,4 +3722,13 @@
     below to get started',
   'subscription.get_started' => 'Get Started',
   'cron_string.copied' => 'Cron string was copied to clipboard',
+  'language.translate.intro' => '<p>Acelle Mail lets you customize the user interface (UI) text in all areas of the web
+    application like titles, labels, tooltips, links, buttons... You can translate it from the original
+    English language to Spanish and/or change these phrases the way you want.</p><p>
+      Phrases are organized in different files which you can choose in the list below
+    </p>',
+  'language.load_translate' => 'Load & Translate',
+  'language.translation' => 'Translation',
+  'language.select_translation_file' => 'Select file',
+  'language.discard_change' => 'Your change in the current file will be discarded.',
 ) ?>

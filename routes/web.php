@@ -671,6 +671,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/languages/delete', 'LanguageController@delete');
     Route::get('admin/languages/{id}/translate', 'LanguageController@translate');
     Route::post('admin/languages/{id}/translate', 'LanguageController@translate');
+    Route::get('admin/languages/{id}/translate/intro', 'LanguageController@translateIntro');
     Route::get('admin/languages/disable', 'LanguageController@disable');
     Route::get('admin/languages/enable', 'LanguageController@enable');
     Route::get('admin/languages/{id}/download', 'LanguageController@download');

@@ -174,6 +174,15 @@ class LanguageController extends Controller
 
         echo trans('messages.languages.deleted');
     }
+
+    public function translateIntro(Request $request)
+    {
+        $language = Language::findByUid($request->id);
+
+        return view('admin.languages.translateIntro', [
+            'language' => $language,
+        ]);
+    }
     
     /**
      * Translate.
@@ -202,16 +211,16 @@ class LanguageController extends Controller
             list($currentFile, $validator) = $language->translateFile($request->file_id, $request->content);
 
             if ($validator->fails()) {
-                return response()->view('admin.languages.translate', [
-                    'language' => $language,
-                    'currentFile' => $currentFile,
-                    'content' => $request->content,
-                    'errors' => $validator->errors(),
+                return response()->json([
+                    'status' => 'error',
+                    'message' => $validator->errors()->first(),
                 ], 400);
             }
             
-            $request->session()->flash('alert-success', trans('messages.language.updated'));
-            return redirect()->action('Admin\LanguageController@translate', ["id" => $language->uid, "file_id" => $currentFile['id']]);
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.language.updated'),
+            ]);
         }
         
         return view('admin.languages.translate', [
