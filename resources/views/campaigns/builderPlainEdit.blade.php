@@ -11,7 +11,7 @@
 
 @section('menu_title')
     <li class="d-flex align-items-center">
-        <div class="d-inline-block d-flex mr-auto align-items-center ml-3 lvl-1">
+        <div class="d-inline-block d-flex mr-auto align-items-center ml-1 lvl-1">
             <h4 class="my-0 me-2 menu-title">{{ $campaign->name }}</h4>
             <i class="material-icons-outlined">alarm</i>
         </div>

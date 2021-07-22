@@ -12,7 +12,7 @@
 
 @section('menu_title')
     <li class="d-flex align-items-center text-white">
-        <div class="d-inline-block d-flex mr-auto align-items-center ml-3">
+        <div class="d-inline-block d-flex mr-auto align-items-center ml-1">
             <i class="material-icons-outlined me-2">translate</i>
             <span class="my-0 me-2">{{ trans('messages.language.translation') }}</span>
             <span class="material-icons-round me-2">

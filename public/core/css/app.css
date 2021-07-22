@@ -2122,7 +2122,6 @@ input.mini-input {
     line-height: 50px;
 }
 .navbar-brand > img {
-    margin: 0 auto;
     max-height: 53px;
     max-width: 140px;
     vertical-align: middle;
