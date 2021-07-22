@@ -81,15 +81,15 @@ dns
                                     $server = $planSendingServer->sendingServer->mapType();
                                 @endphp
                                 @if ($server->isExtended())
-                                    <span class="mc_list_media mc-server-avatar server-avatar mr-0" style="background: url({{ $server->getIconUrl()  }}) top left/36px 36px no-repeat transparent;">
+                                    <span class="mc_list_media mc-server-avatar shadow-sm rounded server-avatar mr-0" style="background: url({{ $server->getIconUrl()  }}) top left/36px 36px no-repeat transparent;">
                                         <span class="material-icons-outlined">
-dns
+
 </span>
                                     </span>
                                 @else
-                                    <span class="mc_list_media mc-server-avatar server-avatar server-avatar-{{ $planSendingServer->sendingServer->type }} mr-0">
+                                    <span class="mc_list_media mc-server-avatar shadow-sm rounded server-avatar server-avatar-{{ $planSendingServer->sendingServer->type }} mr-0">
                                         <span class="material-icons-outlined">
-dns
+
 </span>
                                     </span>
                                 @endif

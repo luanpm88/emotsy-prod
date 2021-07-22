@@ -5215,7 +5215,7 @@ stat .stat-head {
 }
 .mc_list .mc-server-avatar, .mc-server-avatar, .server-avatar {
     height: 36px;
-    margin: 8px 8px 8px 8px !important;
+    margin: 8px 18px 8px 8px !important;
     padding: 0;
     width: 36px;
 }

@@ -26,9 +26,9 @@ add
                     <li>
                         <a href="{{ $server['create_url'] }}" class="btn btn-secondary">{{ trans('messages.choose') }}</a>
                         <a href="{{ $server['create_url'] }}">
-                            <span class="mc-server-avatar server-avatar" style="background: url({{ $server['icon_url']  }}) top left/36px 36px no-repeat transparent;">
+                            <span class="mc-server-avatar shadow-sm rounded server-avatar" style="background: url({{ $server['icon_url']  }}) top left/36px 36px no-repeat transparent;">
                                 <span class="material-icons-outlined">
-dns
+
 </span>
                             </span>
                         </a>
@@ -46,9 +46,9 @@ dns
                     <li>
                         <a href="{{ action('Admin\SendingServerController@create', ["type" => $key]) }}" class="btn btn-secondary">{{ trans('messages.choose') }}</a>
                         <a href="{{ action('Admin\SendingServerController@create', ["type" => $key]) }}">
-                            <span class="mc-server-avatar server-avatar server-avatar-{{ $key }}">
+                            <span class="mc-server-avatar shadow-sm rounded server-avatar server-avatar-{{ $key }}">
                                 <span class="material-icons-outlined">
-dns
+
 </span>
                             </span>
                         </a>

@@ -27,13 +27,13 @@ add
                     <li>
                         <a href="{{ action('SendingServerController@create', ["type" => $key]) }}" class="btn btn-secondary">{{ trans('messages.choose') }}</a>
                         <a href="{{ action('SendingServerController@create', ["type" => $key]) }}">
-                            <span class="server-avatar server-avatar-{{ $key }}">
+                            <span class="server-avatar shadow-sm rounded server-avatar-{{ $key }}">
                                 <span class="material-icons-outlined">
-dns
+
 </span>
                             </span>
                         </a>
-                        <h4><a href="{{ action('SendingServerController@create', ["type" => $key]) }}">{{ trans('messages.' . $key) }}</a></h4>
+                        <h4 class=""><a href="{{ action('SendingServerController@create', ["type" => $key]) }}">{{ trans('messages.' . $key) }}</a></h4>
                         <p>
                             {{ trans('messages.sending_server_intro_' . $key) }}
                         </p>

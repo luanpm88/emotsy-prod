@@ -29,9 +29,9 @@ add
 											<li>
 												<a href="{{ action('Admin\SendingServerController@create', ["type" => $key]) }}" class="btn btn-secondary">{{ trans('messages.choose') }}</a>
                                                 <a href="{{ action('Admin\SendingServerController@create', ["type" => $key]) }}">
-                                                    <span class="server-avatar server-avatar-{{ $key }}">
+                                                    <span class="server-avatar me-2 server-avatar-{{ $key }}">
                                                         <span class="material-icons-outlined">
-dns
+
 </span>
                                                     </span>
                                                 </a>

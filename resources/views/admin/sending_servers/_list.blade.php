@@ -22,15 +22,15 @@
                     @endphp
 
                     @if ($server->isExtended())
-                        <span class="mc-server-avatar server-avatar" style="background: url({{ $server->getIconUrl() }}) top left/36px 36px no-repeat transparent;">
+                        <span class="mc-server-avatar shadow-sm rounded server-avatar" style="background: url({{ $server->getIconUrl() }}) top left/36px 36px no-repeat transparent;">
                             <span class="material-icons-outlined">
-dns
+
 </span>
                         </span>
                     @else
-                        <span class="server-avatar server-avatar-{{ $item->type }} mr-0">
+                        <span class="server-avatar shadow-sm rounded server-avatar-{{ $item->type }} mr-0">
                             <span class="material-icons-outlined">
-dns
+
 </span>
                         </span>
                     @endif
