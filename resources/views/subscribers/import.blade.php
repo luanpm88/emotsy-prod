@@ -94,7 +94,7 @@ people
 
                 <div class="form-group finish hide">
                     <div class="text-left">
-                    	<a id="downloadLog" target="_blank" href="#" role="button" class="btn btn-secondary $
+                    	<a id="downloadLog" target="_blank" href="#" role="button" class="btn btn-secondary">
                                 <span class="material-icons-outlined">
 file_download
 </span> {{ trans('messages.download_import_log') }}
