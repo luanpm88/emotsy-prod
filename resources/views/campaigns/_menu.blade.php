@@ -17,7 +17,9 @@ link
 			</li>
 			<li rel0="CampaignController/openMap" class="nav-item">
 				<a href="{{ action('CampaignController@openMap', $campaign->uid) }}" class="nav-link">
-					<i class="icon-map4"></i> {{ trans('messages.open_map') }}
+					<span class="material-icons-outlined">
+map
+</span> {{ trans('messages.open_map') }}
 				</a>
 			</li>
 			<li rel0="CampaignController/subscribers" class="nav-item">
