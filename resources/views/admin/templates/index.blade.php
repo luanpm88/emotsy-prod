@@ -25,13 +25,18 @@ reorder
         <div class="row top-list-controls py-2">
             <div class="col-md-9">                
                 <div class="filter-box">
+                    <div class="checkbox inline check_all_list">
+                        <label>
+                            <input type="checkbox" name="page_checked" class="styled check_all">
+                        </label>
+                    </div>
                     <div class="dropdown list_actions" style="display: none">
                         <button role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
                             {{ trans('messages.actions') }} <span class="number"></span><span class="caret"></span>
                         </button>
                         <ul class="dropdown-menu">
                             <li>
-                                <a link-confirm="{{ trans('messages.delete_templates_confirm') }}" href="{{ action('Admin\TemplateController@delete') }}">
+                                <a class="dropdown-item" link-confirm="{{ trans('messages.delete_templates_confirm') }}" href="{{ action('Admin\TemplateController@delete') }}">
                                     <span class="material-icons-outlined">
 delete_outline
 </span> {{ trans('messages.delete') }}
@@ -39,13 +44,8 @@ delete_outline
                             </li>
                         </ul>
                     </div>
-                    <div class="checkbox inline check_all_list">
-                        <label>
-                            <input type="checkbox" name="page_checked" class="styled check_all">
-                        </label>
-                    </div>
                     <span class="filter-group">
-                        <span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
+                        {{-- <span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span> --}}
                         <select class="select" name="sort_order">
                             <option value="created_at">{{ trans('messages.created_at') }}</option>
                             <option value="name">{{ trans('messages.name') }}</option>
