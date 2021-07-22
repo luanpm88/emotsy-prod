@@ -167,17 +167,7 @@
             LanguagesTranslate.editor.getSession().on('change', function() {
                 LanguagesTranslate.changed = true;
             });
-            LanguagesTranslate.editor.commands.addCommand({
-                name: "unfind",
-                bindKey: {
-                    win: "Ctrl-F",
-                    mac: "Command-F"
-                },
-                exec: function(editor, line) {
-                    return false;
-                },
-                readOnly: true
-            })
+            LanguagesTranslate.editor.commands.removeCommand('find');
         });
         
     </script>
