@@ -16,7 +16,7 @@
                 
             @include("campaigns._menu")
 			
-			<div class="map-container map-marker-simple"></div>
+			<div id="openMap" class="map-container map-marker-simple" style="height:600px"></div>
 
 <script>
 
@@ -45,7 +45,7 @@ $(function() {
 		};
 
 		// Apply options
-		map = new google.maps.Map($('.map-marker-simple')[0], mapOptions);
+		map = new google.maps.Map(document.getElementById("openMap"), mapOptions);
 		
 		
 		@foreach ($campaign->locations()->get() as $key => $location)
