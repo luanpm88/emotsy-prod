@@ -24,13 +24,14 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Facades\Hook;
-use File;
 use Acelle\Library\Traits\HasUid;
+use File;
+use Exception;
 
 class Language extends Model
 {
     use HasUid;
-    
+
     const STATUS_ACTIVE = 'active';
     const STATUS_INACTIVE = 'inactive';
 
@@ -326,6 +327,32 @@ class Language extends Model
         $language->status = self::STATUS_ACTIVE;
 
         return $language;
+    }
+
+    public function createOrUpdateTranslationFiles()
+    {
+        foreach(Hook::execute('add_translation_file') as $source) {
+            $originFile = join_paths($source['translation_folder'], $source['default'], $source['file_name']);
+            $langFile = join_paths($source['translation_folder'], $this->code, $source['file_name']);
+
+            if (!file_exists($originFile)) {
+                throw new Exception('Original translation file does not exist: '.$originFile);
+            }
+
+            // If the originFile is also the current language's file
+            // Notice that realpath() is used to remove ../../ in file path, before comparing
+            if (realpath($originFile) == realpath($langFile)) {
+                continue;
+            }
+
+            // Create language's file by copying from the original file
+            if (!file_exists($langFile)) {
+                \Acelle\Helpers\pcopy($originFile, $langFile);
+            } else {
+                // Update current language's file if it already exists, respect the current translation
+                \Acelle\Helpers\updateTranslationFile($langFile, $originFile, $overwrite = false);
+            }
+        }
     }
 
     public static function createFromRequest($request)
