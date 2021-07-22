@@ -40,7 +40,9 @@ attach_email
                                 class=""
                                 title="{{ trans('messages.automation.email.attachment.download') }}"
                             >
-                                <i class="lnr lnr-download"></i>
+                                <span class="material-icons-outlined">
+file_download
+</span>
                             </a>
                             <a                                
                                 href="{{ action('Automation2Controller@emailAttachmentRemove', [
@@ -51,7 +53,9 @@ attach_email
                                 class="attachment-remove"
                                 title="{{ trans('messages.automation.email.attachment.remove') }}"
                             >
-                                <i class="lnr lnr-trash"></i>
+                                <span class="material-icons-outlined">
+delete
+</span>
                             </a>
                         </div>
                     </li>
