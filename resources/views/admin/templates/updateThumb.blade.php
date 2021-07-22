@@ -4,11 +4,11 @@
 	<div class="row">
         <div class="col-md-12">
             <div class="text-center">
-                <ul class="nav nav-tabs mc-nav campaign-template-tabs inline-tabs">
-                    <li class="active"><a href="javascript:;">
+                <ul class="nav nav-tabs mc-nav campaign-template-tabs nav-underline">
+                    <li class="active nav-item"><a class="nav-link" href="javascript:;">
                         {{ trans('messages.template.thumb.upload') }}
                     </a></li>
-                    <li><a class="thumb-url-tab" href="{{ action('Admin\TemplateController@updateThumbUrl', $template->uid) }}">
+                    <li class="nav-item"><a class="nav-link thumb-url-tab" href="{{ action('Admin\TemplateController@updateThumbUrl', $template->uid) }}">
                         {{ trans('messages.template.thumb.url') }}
                     </a></li>
                 </ul>

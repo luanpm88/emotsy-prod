@@ -72,13 +72,13 @@
                             <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 @if (Auth::user()->customer->can('preview', $template))
-                                    <li><a href="#preview" onclick="popupwindow('{{ action('TemplateController@preview', $template->uid) }}', '{{ $template->name }}', 800, 800)"><span class="material-icons-outlined">
+                                    <li><a class="dropdown-item" href="#preview" onclick="popupwindow('{{ action('TemplateController@preview', $template->uid) }}', '{{ $template->name }}', 800, 800)"><span class="material-icons-outlined">
 zoom_in
 </span> {{ trans("messages.preview") }}</a></li>
                                 @endif
                                 @if (Auth::user()->customer->can('update', $template))
                                     <li>
-                                        <a class="upload-thumb-button" href="{{ action('TemplateController@updateThumb', $template->uid) }}">
+                                        <a class="dropdown-item upload-thumb-button" href="{{ action('TemplateController@updateThumb', $template->uid) }}">
                                             <span class="material-icons-outlined">
 insert_photo
 </span> {{ trans("messages.template.upload_thumbnail") }}
@@ -87,7 +87,7 @@ insert_photo
                                 @endif
                                 @if (Auth::user()->customer->can('update', $template))
                                     <li>
-                                        <a class="template-categories" href="{{ action('TemplateController@categories', [
+                                        <a class="dropdown-item template-categories" href="{{ action('TemplateController@categories', [
 											'uid' => $template->uid,
 										]) }}">
                                             <span class="material-icons-outlined">

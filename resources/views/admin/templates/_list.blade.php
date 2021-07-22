@@ -78,7 +78,7 @@ zoom_in
                                 @endif
                                 @if (Auth::user()->admin->can('update', $template))
                                     <li>
-                                        <a class="dropdown-item pload-thumb-button" href="{{ action('Admin\TemplateController@updateThumb', $template->uid) }}">
+                                        <a class="dropdown-item upload-thumb-button" href="{{ action('Admin\TemplateController@updateThumb', $template->uid) }}">
                                             <span class="material-icons-outlined">
 insert_photo
 </span> {{ trans("messages.template.upload_thumbnail") }}
