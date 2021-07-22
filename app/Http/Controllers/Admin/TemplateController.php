@@ -263,7 +263,9 @@ class TemplateController extends Controller
                 return $this->notAuthorized();
             }
 
-            $template->copy($request->name, null, $request->user()->admin);
+            $template->copy([
+                'name' => $request->name
+            ]);
 
             echo trans('messages.template.copied');
             return;
@@ -393,12 +395,8 @@ class TemplateController extends Controller
             // create from template
             $template = $currentTemplate->copy([
                 'name' => $request->name,
-                'admin_id' => $request->user()->admin->id,
             ]);
 
-            // save
-            $template->save();
-            
             return redirect()->action('Admin\TemplateController@builderEdit', $template->uid);
         }
 

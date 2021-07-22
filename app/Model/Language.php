@@ -24,13 +24,15 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Facades\Hook;
-use File;
 use Acelle\Library\Traits\HasUid;
+use File;
+use Exception;
+use DB;
 
 class Language extends Model
 {
     use HasUid;
-    
+
     const STATUS_ACTIVE = 'active';
     const STATUS_INACTIVE = 'inactive';
 
@@ -338,33 +340,66 @@ class Language extends Model
         return $language;
     }
 
-    public static function createFromRequest($request)
+    // @todo 'dump' is just an alias for many tasks that may be involved
+    // + create missing translation files
+    // + update existing translation files from its original source
+    // + more
+    public static function dump()
+    {
+        // Update or create translation files
+        foreach(self::get() as $language) {
+            $language->createOrUpdateTranslationFiles();
+        }
+    }
+
+    public function createOrUpdateTranslationFiles()
+    {
+        foreach(Hook::execute('add_translation_file') as $source) {
+            $originFile = join_paths($source['translation_folder'], $source['default'], $source['file_name']);
+            $langFile = join_paths($source['translation_folder'], $this->code, $source['file_name']);
+
+            if (!file_exists($originFile)) {
+                throw new Exception('Original translation file does not exist: '.$originFile);
+            }
+
+            // If the originFile is also the current language's file
+            // Notice that realpath() is used to remove ../../ in file path, before comparing
+            if (realpath($originFile) == realpath($langFile)) {
+                continue;
+            }
+
+            // Create language's file by copying from the original file
+            if (!file_exists($langFile)) {
+                \Acelle\Helpers\pcopy($originFile, $langFile);
+            } else {
+                // Update current language's file if it already exists, respect the current translation
+                \Acelle\Helpers\updateTranslationFile($langFile, $originFile, $overwrite = false);
+            }
+        }
+    }
+
+    public static function createFromArray($attributes)
     {
         $language = self::newDefaultLanguage();
 
-        $language->fill($request->all());
+        $language->fill($attributes);
         $language->status = self::STATUS_INACTIVE;
 
         // make validator
-        $validator = \Validator::make($request->all(), $language->rules());
+        $validator = \Validator::make($attributes, $language->rules());
 
         // redirect if fails
         if ($validator->fails()) {
             return [$language, $validator];
         }
 
-        // save
-        $language->save();
+        DB::transaction(function() use (&$language) {
+            // save
+            $language->save();
 
-        // copy from default language folder
-        $des = $language->languageDir();
-        if (!file_exists($des)) {
-            $oldmask = umask(0);
-            mkdir($des, 0775, true);
-            $sou = self::getDirWhichNewLanguageCopyFrom();
-            \Acelle\Library\Tool::xcopy($sou, $des);
-            umask($oldmask);
-        }
+            // Create translation files for this newly created language
+            $language->createOrUpdateTranslationFiles();
+        });
 
         return [$language, true];
     }

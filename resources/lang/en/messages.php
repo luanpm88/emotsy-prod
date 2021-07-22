@@ -2029,7 +2029,7 @@
   'list.exported_file.status.unconfirmed' => 'unconfirmed',
   'list.title.edit' => 'Edit your mail list',
   'list.title.setting' => 'Settings',
-  'list.import.progress.queued' => 'Import process is being processed...',
+  'list.import.progress.queued' => 'Import is being queued for processing (job dispatched)...',
   'list.import.progress.running' => 'Importing is in progress...',
   'list.import.progress.done' => 'Import is complete!',
   'list.import.progress.failed' => 'Import failed',
@@ -3282,7 +3282,6 @@
   'woo_items.sort_by.price_za' => 'By price high to low',
   'woo_items.sort_by.date_added_asc' => 'By date date added: newer first',
   'woo_items.sort_by.date_added_desc' => 'By date date added: older first',
-  'subscription.get_started' => 'Get Started',
   'api.notification' => 'Notification',
   'automation.contacts_in_action' => 'Contacts in action',
   'automation.contacts_done' => 'Contacts done',
@@ -3731,4 +3730,5 @@
   'language.translation' => 'Translation',
   'language.select_translation_file' => 'Select file',
   'language.discard_change' => 'Your change in the current file will be discarded.',
+  'invoice.confirmed' => 'Your subscription was successfully updated',
 ) ?>

@@ -8,6 +8,7 @@ use Acelle\Library\UpgradeManager;
 use Acelle\Library\ExtendedSwiftMessage;
 use Illuminate\Support\Facades\Log;
 use Acelle\Model\Setting;
+use Acelle\Model\Language;
 use Illuminate\Support\Facades\Session;
 use Acelle\Helpers\LicenseHelper;
 use App;
@@ -504,6 +505,11 @@ class SettingController extends Controller
      */
     public function upgrade(Request $request)
     {
+        // @todo: workaround only, update translation files after successfully upgraded
+        if (Session::has('alert-success')) {
+            Language::dump();
+        }
+
         Log::info('Going to @upgrade page');
 
         // secret key to send to the verification server
@@ -512,9 +518,6 @@ class SettingController extends Controller
         // Upgrade manager
         Log::info('Initiate upgrade manager');
         $manager = new UpgradeManager();
-
-        // Redirect URL
-        $pageUrl = action('Admin\SettingController@upgrade');
 
         return view('admin.settings.upgrade', [
             'any' => 'any',

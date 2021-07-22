@@ -39,7 +39,7 @@ use File;
 class Template extends Model
 {
     use HasUid;
-    
+
     const BUILDER_ENABLED = true;
     const BUILDER_DISABLED = false;
 
@@ -247,33 +247,27 @@ class Template extends Model
      */
     public function copy($attributes = [])
     {
-        $copy = $this->replicate();
-        $copy->uid = uniqid();
-        
-        if (isset($attributes['name'])) {
-            $copy->name = $attributes['name'];
-        }
-    
-        // Important: overwrite the UID attributes
-        $copy->uid = uniqid();
-        $copy->created_at = \Carbon\Carbon::now();
-        $copy->updated_at = \Carbon\Carbon::now();
-        
-        if (isset($attributes['customer_id'])) {
-            $copy->admin_id = null;
-            $copy->customer_id = $attributes['customer_id'];
-        }
+        $copy = new self();
 
-        if (isset($attributes['admin_id'])) {
-            $copy->admin_id = $attributes['admin_id'];
-            $copy->customer_id = null;
-        }
+        // Copy attributes
+        $copy->content = $this->content;
+        $copy->builder = $this->builder;
+
+        // Overwrite attributes :name
+        $copy->generateUid();  // UID must be present in order to create directory
+        $copy->name = isset($attributes['name']) ? $attributes['name'] : $this->name;
+
+        // IMPORTANT
+        // copy a shared template to customer --> then customer_id must be present
+        // copy a customer template to customer --> either present or null is ok
+        // copy a shared template to another shared template --> then customer_id must be empty (of course)
+        $copy->customer_id = isset($attributes['customer_id']) ? $attributes['customer_id'] : $this->customer_id;
+
+        // Then save, generate UID, created_at, updated_at
+        $copy->save();
 
         // Copy directory
-        Tool::xcopy($this->getStoragePath(), $copy->getStoragePath());
-
-        // Then finally save
-        $copy->save();
+        \Acelle\Helpers\pcopy($this->getStoragePath(), $copy->getStoragePath());
 
         // Important: save before adding categories
         foreach ($this->categories as $category) {

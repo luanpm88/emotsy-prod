@@ -170,7 +170,7 @@ Route::group(['middleware' => ['not_installed', 'auth']], function () {
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function () {
     // Account subscription
-    Route::post('subscription/confirm-free', 'AccountSubscriptionController@confirmFree');
+    Route::post('subscription/invoice/{invoice_uid}/confirm', 'AccountSubscriptionController@confirmFree');
     Route::post('subscription/invoice/{invoice_uid}/cancel', 'AccountSubscriptionController@cancelInvoice');
     Route::match(['get', 'post'], 'subscription/change-plan', 'AccountSubscriptionController@changePlan');
     Route::post('subscription/init', 'AccountSubscriptionController@init');
@@ -890,4 +890,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/geoip', 'GeoIpController@index');
     Route::match(['get', 'post'], 'admin/geoip/setting', 'GeoIpController@setting');
     Route::post('admin/geoip/reset', 'GeoIpController@reset');
+
+    // Update
+    Route::get('admin/upgrade/translation', 'Upgrade@updateTranslationFiles');
 });

@@ -546,29 +546,7 @@ class UpgradeManager
         if (!file_exists($targetPath)) {
             $this->copy($sourcePath, $targetPath);
         }
-        $source = include $sourcePath;
-        $target = include $targetPath;
-        $merged = array_diff_key($target + $source, array_diff_key($target, $source));
 
-        $out = '<?php return '.var_export(\Yaml::parse(\Yaml::dump($merged)), true).' ?>';
-        \File::put($targetPath, $out);
-    }
-
-    /**
-     * Merge the language file to retain user's change
-     * Example:
-     *    $manager = new \Acelle\Library\UpgradeManager()
-     *    $manager->updateLanguageFile('/home/user/mailixa/resources/lang/en/messages.php', '/tmp/messages.php').
-     * ==> update $target file with new values from $source
-     * notice that it does not delete any entry in $target.
-     */
-    public function updateLanguageFile($sourcePath, $targetPath)
-    {
-        $source = include $sourcePath;
-        $target = include $targetPath;
-        $target = array_merge($target, $source);
-
-        $out = '<?php return '.var_export(\Yaml::parse(\Yaml::dump($target)), true).' ?>';
-        \File::put($targetPath, $out);
+        \Acelle\Helpers\updateTranslationFile($targetPath, $sourcePath, $overwrite = false);
     }
 }

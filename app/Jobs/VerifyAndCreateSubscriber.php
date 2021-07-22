@@ -48,7 +48,12 @@ class VerifyAndCreateSubscriber extends Base
         } catch (Exception $e) {
             // Email is always present
             // Do not throw exception here, in case of invalid email address
-            $this->fails('['.$this->attributes['email']. '] failed to import. '.$e->getMessage());
+            $this->fails(trans('vimport::messages.import.faield.validation_error', [
+                'email' => $this->attributes['email'],
+                'error' => $e->getMessage(),
+            ]));
+
+            // Important: return
             return;
         }
 
@@ -56,17 +61,24 @@ class VerifyAndCreateSubscriber extends Base
         $verifier = $this->list->customer->getEmailVerificationServers()->first();
 
         if (is_null($verifier)) {
-            throw new Exception('No email verification service found');
+            throw new Exception(trans('vimport::messages.error.verification_server.missing', [
+                'email' => $subscriber->email,
+                'server' => $verifier->name
+            ]));
         }
 
         $verifa = $subscriber->verify($verifier);
         if ($verifa->isDeliverable() || $verifa->isUnknown()) {
-            $this->done(sprintf('[%s] successfully imported [checked by %s]', $subscriber->email, $verifier->name));
+            $this->done(trans('vimport::messages.import.success.message', [ 'email' => $subscriber->email, 'server' => $verifier->name ]));
         } else {
             // In case of failure, delete the newly created contact
             // Throw exception to log
             $subscriber->delete();
-            $this->fails(sprintf('[%s] failed to import. Undeliverable email [Result: `%s`, checked by `%s`]', $subscriber->email, $verifa->result, $verifier->name));
+            $this->fails(trans('vimport::messages.import.failed.verification_error', [
+                'email' => $subscriber->email,
+                'result' => $verifa->result,
+                'server' => $verifier->name,
+            ]));
         }
     }
 
@@ -103,7 +115,7 @@ class VerifyAndCreateSubscriber extends Base
                 $failed += 1;
             }
 
-            $notice = sprintf('Imported %s, failed: %s', $processed, $failed);
+            $notice = trans('vimport::messages.import.progress.message', [ 'imported' => $processed, 'failed' => $failed ] );
 
             $jobMonitor->updateJsonData([
                 'processed' => $processed,
