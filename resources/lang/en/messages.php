@@ -3281,7 +3281,6 @@
   'woo_items.sort_by.price_za' => 'By price high to low',
   'woo_items.sort_by.date_added_asc' => 'By date date added: newer first',
   'woo_items.sort_by.date_added_desc' => 'By date date added: older first',
-  'subscription.get_started' => 'Get Started',
   'api.notification' => 'Notification',
   'automation.contacts_in_action' => 'Contacts in action',
   'automation.contacts_done' => 'Contacts done',
