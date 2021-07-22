@@ -278,10 +278,6 @@ function applyLinkListener(links, options) {
         var method = $(this).attr('link-method');
         var type = 'link';
 
-        if (typeof(options.type) !== 'undefined') {
-            type = options.type;
-        }
-
         new Link({
             type: 'link',
             url: url,
