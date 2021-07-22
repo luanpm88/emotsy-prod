@@ -1,5 +1,5 @@
 @if ($stylesheet == 'yes')
-	<link href="{{ URL::asset('css/embedded.css') }}" rel="stylesheet" type="text/css">
+	<link href="{{ URL::asset('core/css/embedded.css') }}" rel="stylesheet" type="text/css">
 @endif
 
 @if (!empty($custom_css))
@@ -11,7 +11,6 @@
 		<h2>{{ $form_title }}</h2>
 	@endif
 
-	ssss
 	<p class="text-sm text-end"><span class="text-danger">*</span> {{ trans('messages.indicates_required') }}</p>
 		@if (!isset($preview))
 			<form action="{{ action('MailListController@embeddedFormSubscribe', $list->uid) }}" method="POST" class="form-validate-jqueryz">
@@ -23,7 +22,6 @@
 						@if ($field->type == "text")
 							@include('helpers.form_control', ['type' => $field->type, 'name' => $field->tag, 'label' => $field->label, 'value' => (isset($values[$field->tag]) ? $values[$field->tag] : $field->default_value), 'rules' => $list->getFieldRules()])
 						@elseif ($field->type == "number")
-						sssss
 							@include('helpers.form_control', ['type' => 'number', 'name' => $field->tag, 'label' => $field->label, 'value' => (isset($values[$field->tag]) ? $values[$field->tag] : $field->default_value), 'rules' => $list->getFieldRules()])
 						@elseif ($field->type == "textarea")
 							@include('helpers.form_control', ['type' => 'textarea', 'name' => $field->tag, 'label' => $field->label, 'value' => (isset($values[$field->tag]) ? $values[$field->tag] : $field->default_value), 'rules' => $list->getFieldRules()])
@@ -59,9 +57,7 @@
         </div>
 
 		@if ($stylesheet == 'yes')
-			<link href="{{ URL::asset('assets/css/icons/icomoon/styles.css') }}" rel="stylesheet" type="text/css">
-			<link href="{{ URL::asset('assets/css/components.css') }}" rel="stylesheet" type="text/css">
-			<link href="{{ URL::asset('css/app.css') }}?v={{ app_version() }}" rel="stylesheet" type="text/css">
+			<link href="{{ URL::asset('core/css/app.css') }}?v={{ app_version() }}" rel="stylesheet" type="text/css">
 		@endif
 		
 		@if ($javascript == 'yes')
@@ -76,7 +72,7 @@
 		
 		
 		@if ($javascript == 'yes')
-			@include('layouts._script_vars')
+			@include('layouts.core._script_vars')
 			<script>
 				$.noConflict();
 				jQuery( document ).ready(function( $ ) {				

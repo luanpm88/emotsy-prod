@@ -1397,7 +1397,7 @@
   'subscriptions' => 'Subscritores',
   'subscription' => 'Subscrever',
   'frequency_amount' => 'A faturação decorre  a cada',
-  'frequency_unit' => '&nbsp;',
+  'frequency_unit' => ' ',
   'allow_customer_create_sending_servers' => 'Permitir que o cliente adicione servidores de envio',
   'allow_adding_all_sending_server_types' => 'Permitir que o cliente adicione qualquer tipo de servidor de envio',
   'setting_up_sending_servers_for_plan' => 'Configurar servidores de envio para o plano',
@@ -3015,7 +3015,7 @@
   'senders.deleted' => 'Sender was successfully deleted',
   'subscription.status.change_plan_pending' => 'Changing Plan',
   'subscription.status.renew_pending' => 'Renewing',
-  'layout.description' => 'Below are default email templates &amp; pages used by the application. You can customize those the way you desire. For example, you may want to add a logo to an email to reflect your brand',
+  'layout.description' => 'Below are default email templates & pages used by the application. You can customize those the way you desire. For example, you may want to add a logo to an email to reflect your brand',
   'sender_verification_email_for_amazon_ses' => 'Sender Verification Email for Amazon SES',
   'other' => 'Other',
   'subscriber.bulk_delete' => 'Bulk Delete',
@@ -3727,4 +3727,24 @@
   'subscription.thanks.click_to_start' => 'Thank you for subscribing to our SAAS. Click the button
     below to get started',
   'invoice.confirmed' => 'Your subscription was successfully updated',
+  'copy_list' => 'Copy <span class="fw-600">:name</span> list',
+  'mail_mailer' => 'Mailer',
+  'copy_campaign' => 'Copy <span class="fw-600">:name</span> campaign',
+  'delete_campaign_confirm' => 'You\'re about to delete <span class="fw-600">:name</span> campaign.
+    This can not be undone.',
+  'campaign.open_click_rate' => 'Open/Click rate',
+  'growth_chart' => 'Growth chart',
+  'statistics_chart' => 'Statistics chart',
+  'ends_at' => 'Ends at',
+  'countries' => 'Countries',
+  'cron_string.copied' => 'Cron string was copied to clipboard',
+  'language.translate.intro' => '<p>Acelle Mail lets you customize the user interface (UI) text in all areas of the web
+    application like titles, labels, tooltips, links, buttons... You can translate it from the original
+    English language to Spanish and/or change these phrases the way you want.</p><p>
+      Phrases are organized in different files which you can choose in the list below
+    </p>',
+  'language.load_translate' => 'Load & Translate',
+  'language.translation' => 'Translation',
+  'language.select_translation_file' => 'Select file',
+  'language.discard_change' => 'Your change in the current file will be discarded.',
 ) ?>

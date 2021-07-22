@@ -108,7 +108,7 @@
 
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@3.1.0/dist/chart.min.js"></script>
 
-	@include('layouts._script_vars')
+	@include('layouts.core._script_vars')
 	@include('layouts._menu_script')
 
 	<!-- display flash message -->

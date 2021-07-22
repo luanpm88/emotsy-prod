@@ -16,5 +16,4 @@
 @endsection
 
 @section('content')
-	ssss
 @endsection

@@ -112,9 +112,14 @@
         @if (array_key_exists('stylesheet', request()->all()))
             <div class="row">
                 <div class="col-md-6">
-                    <div class="d-fle">
+                    <div class="d-flex">
                         <h4 class="text-semibold me-auto">{{ trans('messages.Copy_paste_onto_your_site') }}</h4>
-                        <a href="javascript:;" onclick="copyToClipboard(htmlDecode($('.main-code').html()));">{{ trans('messages.copy') }}</a>
+                        <div>
+                            <a href="javascript:;" onclick="copyToClipboard(htmlDecode($('.main-code').html()));" class="btn btn-sm btn-light">
+                                <span class="material-icons-outlined">
+                                    content_copy
+                                    </span> {{ trans('messages.copy') }}</a>
+                        </div>
                     </div>
                         
                         <pre class="language-markup content-group embedded-code"><code></code></pre>
