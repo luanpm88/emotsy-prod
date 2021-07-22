@@ -35,6 +35,30 @@ edit
     @include('admin.sending_servers.form.' . $server->type, ['identities' => $identities, 'bigNotices' => $bigNotices])
 
     <script>
+        var SendTestEmail = {
+            popup: null,
+            url: '{{ action('Admin\SendingServerController@test', $server->uid) }}',
+    
+            getPopup: function() {
+                if (this.popup == null) {
+                    this.popup = new Popup({
+                        url: this.url
+                    });
+                }
+    
+                return this.popup;
+            }
+        }
+        $(function() {
+            $('#SendTestEmailButton').on('click', function(e) {
+                e.preventDefault();
+    
+                SendTestEmail.getPopup().load();
+            });
+        });
+    </script>
+
+    <script>
         $(function() {
             $('.switch-form-toggle').on('click', function() {
                 var form = $(this).closest('form');

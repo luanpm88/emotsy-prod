@@ -404,14 +404,14 @@ class SendingServerController extends Controller
                     'plain' => $request->content
                 ]);
             } catch (\Exception $ex) {
-                echo json_encode([
+                return response()->json([
                     'status' => 'error', // or success
                     'message' => $ex->getMessage()
-                ]);
+                ], 401);
                 return;
             }
 
-            echo json_encode([
+            return response()->json([
                 'status' => 'success', // or success
                 'message' => trans('messages.sending_server.test_email_sent')
             ]);

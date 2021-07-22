@@ -156,7 +156,7 @@ class Popup {
 
     unmask() {
         this.popup.removeClass('popup-loading');
-        this.popup.find('.popup-progress').remove
+        this.popup.find('.popup-progress').remove();
     }
     
     load(options, callback) {

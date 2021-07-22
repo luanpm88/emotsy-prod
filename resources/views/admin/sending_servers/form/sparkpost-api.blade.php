@@ -48,7 +48,7 @@
                     >
                         {{ trans('messages.sending_server.test_connection') }}
                     </a>
-                        <a
+                        <a id="SendTestEmailButton"
                         href="{{ action('Admin\SendingServerController@test', $server->uid) }}"
                         role="button"
                         class="btn btn-secondary mr-10 modal_link"
