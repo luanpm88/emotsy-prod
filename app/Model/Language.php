@@ -27,6 +27,7 @@ use Acelle\Library\Facades\Hook;
 use Acelle\Library\Traits\HasUid;
 use File;
 use Exception;
+use DB;
 
 class Language extends Model
 {
@@ -355,33 +356,28 @@ class Language extends Model
         }
     }
 
-    public static function createFromRequest($request)
+    public static function createFromArray($attributes)
     {
         $language = self::newDefaultLanguage();
 
-        $language->fill($request->all());
+        $language->fill($attributes);
         $language->status = self::STATUS_INACTIVE;
 
         // make validator
-        $validator = \Validator::make($request->all(), $language->rules());
+        $validator = \Validator::make($attributes, $language->rules());
 
         // redirect if fails
         if ($validator->fails()) {
             return [$language, $validator];
         }
 
-        // save
-        $language->save();
+        DB::transaction(function() use (&$language) {
+            // save
+            $language->save();
 
-        // copy from default language folder
-        $des = $language->languageDir();
-        if (!file_exists($des)) {
-            $oldmask = umask(0);
-            mkdir($des, 0775, true);
-            $sou = self::getDirWhichNewLanguageCopyFrom();
-            \Acelle\Library\Tool::xcopy($sou, $des);
-            umask($oldmask);
-        }
+            // Create translation files for this newly created language
+            $language->createOrUpdateTranslationFiles();
+        });
 
         return [$language, true];
     }

@@ -77,7 +77,7 @@ class LanguageController extends Controller
             return $this->notAuthorized();
         }
 
-        list($language, $validator) = Language::createFromRequest($request);
+        list($language, $validator) = Language::createFromArray($request->all());
 
         if ($validator !== true) {
             return response()->view('admin.languages.create', [
