@@ -6378,7 +6378,7 @@ h1, h1 {
 }
 
 .alert-info:before {
-    content: "sticky_note_2";
+    content: "info";
 }
 .alert-success:before {
     content: "check_circle";
