@@ -23,7 +23,7 @@
                 <div class="content-group-sm">
                     <div class="d-flex align-items-center">
                         <h5 class="text-semibold mb-1 me-auto">{{ trans('messages.sending_quota') }}</h5>
-                        <div class="pull-right text-teal-800 text-semibold">
+                        <div class="pull-right text-primary text-semibold">
                             <span class="text-muted">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->getSendingQuotaUsage()) }}/{{ (Auth::user()->customer->getSendingQuota() == -1) ? '∞' : \Acelle\Library\Tool::format_number(Auth::user()->customer->getSendingQuota()) }}</span>
                             &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displaySendingQuotaUsage() }}
                         </div>
@@ -38,7 +38,7 @@
                 <div class="content-group-sm mt-4">
                     <div class="d-flex align-items-center">
                         <h5 class="text-semibold mb-1 me-auto">{{ trans('messages.list') }}</h5>
-                        <div class="pull-right text-teal-800 text-semibold">
+                        <div class="pull-right text-primary text-semibold">
                             <span class="text-muted">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->listsCount()) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxLists()) }}</span>
                             &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displayListsUsage() }}
                         </div>
@@ -53,7 +53,7 @@
                 <div class="content-group-sm mt-4">
                     <div class="d-flex align-items-center">
                         <h5 class="text-semibold mb-1 mt-0">{{ trans('messages.campaign') }}</h5>
-                        <div class="pull-right text-teal-800 text-semibold">
+                        <div class="pull-right text-primary text-semibold">
                             <span class="text-muted progress-xxs">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->campaignsCount()) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxCampaigns()) }}</span>
                             &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displayCampaignsUsage() }}
                         </div>
@@ -68,7 +68,7 @@
                 <div class="content-group-sm mt-4">
                     <div class="d-flex align-items-center">
                         <h5 class="text-semibold mb-1 me-auto">{{ trans('messages.subscriber') }}</h5>
-                        <div class="pull-right text-teal-800 text-semibold">
+                        <div class="pull-right text-primary text-semibold">
                             <span class="text-muted">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->readCache('SubscriberCount')) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxSubscribers()) }}</span>
                             &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displaySubscribersUsage() }}
                         </div>
@@ -84,7 +84,7 @@
                 <div class="content-group-sm mt-4">
                     <div class="d-flex align-items-center">
                         <h5 class="text-semibold mb-1 me-auto">{{ trans('messages.automation') }}</h5>
-                        <div class="pull-right text-teal-800 text-semibold">
+                        <div class="pull-right text-primary text-semibold">
                             <span class="text-muted progress-xxs">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->automationsCount()) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxAutomations()) }}</span>
                             &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displayAutomationsUsage() }}
                         </div>
@@ -100,7 +100,7 @@
                 <div class="content-group-sm mt-4">
                     <div class="d-flex align-items-center">
                         <h5 class="text-semibold mb-1 me-auto">{{ trans('messages.total_upload_size') }}</h5>
-                        <div class="pull-right text-teal-800 text-semibold">
+                        <div class="pull-right text-primary text-semibold">
                             <span class="text-muted progress-xxs">{{ \Acelle\Library\Tool::format_number(round(Auth::user()->customer->totalUploadSize(),2)) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxTotalUploadSize()) }} (MB)</span>
                             &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->totalUploadSizeUsage() }}%
                         </div>
@@ -117,7 +117,7 @@
                     <div class="content-group-sm mt-4">
                         <div class="d-flex align-items-center">
                             <h5 class="text-semibold mb-1 me-auto">{{ trans('messages.sending_server') }}</h5>
-                            <div class="pull-right text-teal-800 text-semibold">
+                            <div class="pull-right text-primary text-semibold">
                                 <span class="text-muted">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->sendingServersCount()) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxSendingServers()) }}</span>
                                 &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displaySendingServersUsage() }}
                             </div>
@@ -135,7 +135,7 @@
                     <div class="content-group-sm mt-4">
                         <div class="d-flex align-items-center">
                             <h5 class="text-semibold mb-1 me-auto">{{ trans('messages.sending_domain') }}</h5>
-                            <div class="pull-right text-teal-800 text-semibold">
+                            <div class="pull-right text-primary text-semibold">
                                 <span class="text-muted">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->sendingDomainsCount()) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxSendingDomains()) }}</span>
                                 &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displaySendingDomainsUsage() }}
                             </div>
@@ -153,7 +153,7 @@
                     <div class="content-group-sm mt-4">
                         <div class="d-flex align-items-center">
                             <h5 class="text-semibold mb-1 me-auto">{{ trans('messages.email_verification_server') }}</h5>
-                            <div class="pull-right text-teal-800 text-semibold">
+                            <div class="pull-right text-primary text-semibold">
                                 <span class="text-muted">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->emailVerificationServersCount()) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxEmailVerificationServers()) }}</span>
                                 &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displayEmailVerificationServersUsage() }}
                             </div>

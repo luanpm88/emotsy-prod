@@ -12,7 +12,7 @@
 
 @include("campaigns._menu")
 
-<h2 class="text-semibold text-teal-800">{{ trans('messages.subscribers') }}</h2>
+<h2 class="text-semibold text-primary">{{ trans('messages.subscribers') }}</h2>
 
 <div class="row">
     <div class="col-md-3">

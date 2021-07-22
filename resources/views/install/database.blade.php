@@ -4,7 +4,9 @@
 
 @section('content')
 
-<h3 class="text-teal-800"><i class="icon-database"></i> {{ trans('messages.database_configuration') }}</h3>
+<h3 class="text-primary"><span class="material-icons-outlined">
+dns
+</span> {{ trans('messages.database_configuration') }}</h3>
 
 @if (isset($connect_error))
 	<div class="alert alert-danger">
@@ -82,7 +84,9 @@
     </div>
     <hr >
     <div class="text-end">                                    
-        <button type="submit" class="btn btn-primary bg-teal">{!! trans('messages.save') !!} <i class="icon-arrow-right14 position-right"></i></button>
+        <button type="submit" class="btn btn-primary">{!! trans('messages.save') !!} <span class="material-icons-round">
+east
+</span></button>
     </div>
 </form>
 @endsection

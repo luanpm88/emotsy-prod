@@ -1298,7 +1298,7 @@
   'auto_event_api-call' => 'API call',
   'events' => 'Eventos',
   'triggers' => 'Desencadeadores',
-  'disable_automation_before_add_event_confirm' => 'Automação <span class="text-semibold text-teal-800">:name</span> já está a correr. Desative a automação antes de editar seu workflow. Poderá ativá-lo novamente assim que terminar.',
+  'disable_automation_before_add_event_confirm' => 'Automação <span class="text-semibold text-primary">:name</span> já está a correr. Desative a automação antes de editar seu workflow. Poderá ativá-lo novamente assim que terminar.',
   'automations.disabled' => 'Um ou mais automações foram desativadas com sucesso',
   'automation.disabled' => 'Automação foi desativada com sucesso',
   'automations.enabled' => 'Uma ou mais automações foram ativadas com sucesso',
@@ -1455,7 +1455,7 @@
   'enable_subscriptions_confirm' => 'Está prestes a ativar :number subscritor(es).',
   'you_are_logged_in_as' => 'Está logado como :name',
   'you_have_inactive_subscription' => 'Assinatura pendente existente',
-  'subscription_finish_messages' => '<h2 class="text-semibold mt-0 text-teal-800">Parabéns!</h2>
+  'subscription_finish_messages' => '<h2 class="text-semibold mt-0 text-primary">Parabéns!</h2>
         <p>Inscreveu-se com sucesso no plano <span class="text-bold">:plan</span>. Agora a sua conta está ativada.</p><p>Selecione uma ação abaixo para a próxima etapap.</p>',
   'go_to_dashboard' => 'Ir para dashboard',
   'check_your_subscriptions' => 'Verificar as subscrições',
@@ -1519,7 +1519,7 @@
   'card_number' => 'Número do cartão',
   'cvv' => 'CVV',
   'pay_by_credit_card' => '<i class="icon-credit-card"></i> Pagar com cartão de crédito',
-  'subscription_paid_finish_messages' => '<h2 class="text-semibold mt-0 text-teal-800">Congratulation!</h2>
+  'subscription_paid_finish_messages' => '<h2 class="text-semibold mt-0 text-primary">Congratulation!</h2>
         <p>Subscreveu a um plano com sucesso <span class="text-bold">:plan</span>. Agora a sua conta está ativada.<br />Selecione uma ação abaixo para a próxima etapa.</p>',
   'something_error_accur' => 'Ocorreu um erro inesperado. Verifique novamente',
   'customer_contact.updated' => 'Informação de contato foi atualizado com sucesso',

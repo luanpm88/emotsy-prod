@@ -32,8 +32,4 @@ $(function(){
         
         quotaPopup.load();
     });
-
-    // load locale js
-    $.getScript(JVALIDATE_TRANSLATE_URL, function(){
-    });
 });

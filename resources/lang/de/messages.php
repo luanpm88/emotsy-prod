@@ -1309,7 +1309,7 @@
   'auto_event_api-call' => 'API-Abruf',
   'events' => 'Ereignisse',
   'triggers' => 'Auslöser',
-  'disable_automation_before_add_event_confirm' => 'Automatisierung <span class="text-semibold text-teal-800">:name</span> ist bereits aktiv. Bitte deaktivieren Sie die Automatisierung, bevor Sie den Workflow bearbeiten. Sie können wieder aktivieren, sobald Sie fertig sind.',
+  'disable_automation_before_add_event_confirm' => 'Automatisierung <span class="text-semibold text-primary">:name</span> ist bereits aktiv. Bitte deaktivieren Sie die Automatisierung, bevor Sie den Workflow bearbeiten. Sie können wieder aktivieren, sobald Sie fertig sind.',
   'automations.disabled' => 'Eine oder mehrere Automatisierungen  wurden erfolgreich deaktiviert',
   'automation.disabled' => 'Automatisierung wurde erfolgreich deaktiviert',
   'automations.enabled' => 'Eine oder mehrere Automatisierungen  wurden erfolgreich aktiviert',
@@ -1466,7 +1466,7 @@
   'enable_subscriptions_confirm' => 'Sie sind dabei :number Abonnement(s) zu aktivieren.',
   'you_are_logged_in_as' => 'Sie sind eingeloggt als:name',
   'you_have_inactive_subscription' => 'Sie haben bereits ein ausstehendes Abonnement',
-  'subscription_finish_messages' => '<h2 class="text-semibold mt-0 text-teal-800">Herzlichen Glückwunsch!</h2>
+  'subscription_finish_messages' => '<h2 class="text-semibold mt-0 text-primary">Herzlichen Glückwunsch!</h2>
         <p>Sie haben erfolgreich das Paket <span class="text-bold">:plan</span> abonniert. Ihr Konto ist jetzt aktiviert.</p><p>Wählen Sie unten eine Aktion für den nächsten Schritt.</p>',
   'go_to_dashboard' => 'Gehe zum Dashboard',
   'check_your_subscriptions' => 'Überprüfen Sie Ihre Abonnements',
@@ -1530,7 +1530,7 @@
   'card_number' => 'Kartennummer',
   'cvv' => 'CVV',
   'pay_by_credit_card' => '<i class="icon-credit-card"></i> Mit Kreditkarte bezahlen',
-  'subscription_paid_finish_messages' => '<h2 class="text-semibold mt-0 text-teal-800">Herzlichen Glückwunsch!</h2>
+  'subscription_paid_finish_messages' => '<h2 class="text-semibold mt-0 text-primary">Herzlichen Glückwunsch!</h2>
         <p>Sie abonnierten das Paket <span class="text-bold">:plan</span>. Jetzt ist Ihr Konto aktiviert.<br />Wählen Sie unten eine Aktion für den nächsten Schritt.</p>',
   'something_error_accur' => 'Ein unerwarteter Fehler ist aufgetreten. Bitte überprüfen Sie alles noch einmal.',
   'customer_contact.updated' => 'Kontaktinformationen wurden erfolgreich aktualisiert!',
@@ -1613,8 +1613,8 @@
   'select_the_target_list' => 'Wählen Sie die Zielliste aus',
   'copy_subscriber' => 'Kopiere Abonnent(en)',
   'move_subscriber' => 'Verschiebe Abonnent(en)',
-  'subscribers_copy_message' => 'Sie sind im Begriff <span class="text-bold text-teal-800">:number</span> Abonnent(en) zu kopieren',
-  'subscribers_move_message' => 'Sie sind im Begriff <span class="text-bold text-teal-800">:number</span> Abonnent(en) zu verschieben',
+  'subscribers_copy_message' => 'Sie sind im Begriff <span class="text-bold text-primary">:number</span> Abonnent(en) zu kopieren',
+  'subscribers_move_message' => 'Sie sind im Begriff <span class="text-bold text-primary">:number</span> Abonnent(en) zu verschieben',
   'payment_methods.not_valid' => 'Die Einstellung der Zahlungsmethoden ist nicht gültig. Klicken Sie <a href=":link">hier</a> um diese zu aktualisieren.',
   'license_label_regular' => 'Regulär',
   'subscription_status_disabled' => 'Deaktiviert',

@@ -12,12 +12,14 @@
 		<div class="text-end">
 			@if($valid)
 				<a href="{{ action('InstallController@cronJobs') }}" class="btn btn-secondary">
-					<span class="material-icons-outlined me-2">
+					<span class="material-icons-outlined">
 settings
 </span> {!! trans('messages.change_cronjob_setting') !!}
 				</a>
 				<a href="{{ action('InstallController@finishing') }}" class="btn btn-primary">
-					{!! trans('messages.next') !!} <i class="icon-arrow-right14 position-right"></i>
+					{!! trans('messages.next') !!} <span class="material-icons-round">
+east
+</span>
 				</a>				
 			@else
 				<button type="submit" class="btn btn-primary bg-teal">

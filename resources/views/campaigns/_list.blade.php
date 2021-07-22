@@ -39,7 +39,7 @@
 				@if ($campaign->status != 'new')
 					<td class="stat-fix-size-sm">
 						<div class="single-stat-box pull-left ml-20">
-							<span class="no-margin text-teal-800 stat-num">{{ $campaign->isSending() ? number_to_percentage($campaign->deliveredRate(true)) : number_to_percentage($campaign->readCache('DeliveredRate')) }}</span>
+							<span class="no-margin text-primary stat-num">{{ $campaign->isSending() ? number_to_percentage($campaign->deliveredRate(true)) : number_to_percentage($campaign->readCache('DeliveredRate')) }}</span>
 							<div class="progress progress-xxs">
 								<div class="progress-bar progress-bar-info" style="width: {{ $campaign->isSending() ? number_to_percentage($campaign->deliveredRate(true)) : number_to_percentage($campaign->readCache('DeliveredRate')) }}">
 								</div>
@@ -51,7 +51,7 @@
 					</td>
 					<td class="stat-fix-size-sm">
 						<div class="single-stat-box pull-left ml-20">
-							<span class="no-margin text-teal-800 stat-num">{{ number_to_percentage($campaign->readCache('UniqOpenRate')) }}</span>
+							<span class="no-margin text-primary stat-num">{{ number_to_percentage($campaign->readCache('UniqOpenRate')) }}</span>
 							<div class="progress progress-xxs">
 								<div class="progress-bar progress-bar-info" style="width: {{ number_to_percentage($campaign->readCache('UniqOpenRate')) }}">
 								</div>
@@ -61,7 +61,7 @@
 					</td>
 					<td class="stat-fix-size-sm">
 						<div class="single-stat-box pull-left ml-20">
-							<span class="no-margin text-teal-800 stat-num">{{ number_to_percentage($campaign->readCache('ClickedRate')) }}</span>
+							<span class="no-margin text-primary stat-num">{{ number_to_percentage($campaign->readCache('ClickedRate')) }}</span>
 							<div class="progress progress-xxs">
 								<div class="progress-bar progress-bar-info" style="width: {{ number_to_percentage($campaign->readCache('ClickedRate')) }}">
 								</div>

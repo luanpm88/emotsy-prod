@@ -13,7 +13,7 @@
 	@include("lists._menu")
 
 	<div class="d-flex">
-		<h2 class="text-bold text-teal-800 mb-10 me-auto"><span class="material-icons-outlined">
+		<h2 class="text-bold text-primary mb-10 me-auto"><span class="material-icons-outlined">
 			people
 			</span> {{ trans('messages.subscribers') }}</h2>
 		<div class="text-end">

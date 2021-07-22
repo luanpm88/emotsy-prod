@@ -20,7 +20,7 @@
 									class="btn btn-link list-action-single">
 									{{ trans('messages.delete') }}
 								</a>
-								<span class="text-muted ml-auto text-teal-800 m-icon d-flex align-items-center">
+								<span class="text-muted ml-auto text-primary m-icon d-flex align-items-center">
 									<img width="20px" class="mr-2 list-source-img" src="{{ url('images/' . $product->source->type . '_list.png') }}" />
 									<span>{{ $product->source->getName() }}</span>
 								</span>

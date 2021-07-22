@@ -400,6 +400,7 @@ class Invoice extends Model
             'charge_info' => $chargeInfo,
             'total' => format_price($this->total(), $this->currency->format),
             'pending' => $this->getPendingTransaction(),
+            'invoice_uid' => $this->uid,
         ];
     }
 
@@ -509,5 +510,9 @@ class Invoice extends Model
             // pay failed
             $invoice->payFailed($e->getMessage());
         }
+    }
+
+    public function isFree() {
+        return $this->total() == 0;
     }
 }

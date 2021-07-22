@@ -4,11 +4,13 @@
 
 @section('content')
 
-<h3 class="text-teal-800"><i class="icon-database"></i> {{ trans('messages.database_configuration') }}</h3>
+<h3 class="text-primary"><span class="material-icons-outlined">
+dns
+</span> {{ trans('messages.database_configuration') }}</h3>
 
-    <h5 class="">
-        The settings was successfully configured! Click <span class="text-semibold">{!! trans('messages.setup_database') !!}</span> button to start importing data to database '{{ $database["database_name"] }}'.
-    </h5>
+    <p class="">
+        The settings was successfully configured! Click <span class="fw-600">{!! trans('messages.setup_database') !!}</span> button to start importing data to database '{{ $database["database_name"] }}'.
+    </p>
 
 	@if ($tables_exist)
 		<div class="alert alert-danger">
@@ -17,8 +19,13 @@
 	@endif
 
     <div class="text-end">
-        <a href="{{ action('InstallController@import') }}" class="btn btn-secondary">{!! trans('messages.setup_database') !!} <i class="icon-arrow-right14 position-right"></i></a>
-		<a href="{{ action('InstallController@database') }}" class="btn btn-info bg-grey-600"><i class="icon-undo2"></i> {!! trans('messages.back') !!}</a>
+        <a href="{{ action('InstallController@database') }}" class="btn btn-secondary me-1"><span class="material-icons-round">
+undo
+</span> {!! trans('messages.back') !!}</a>
+        <a href="{{ action('InstallController@import') }}" class="btn btn-primary">{!! trans('messages.setup_database') !!} <span class="material-icons-round">
+east
+</span></a>
+		
     </div>
 
 @endsection

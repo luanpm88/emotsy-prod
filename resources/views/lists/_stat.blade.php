@@ -3,7 +3,7 @@
                         <div class="content-group-sm">
                             <div class="d-flex">
                                 <h5 class="text-semibold me-auto">{{ trans('messages.average_open_rate') }}</h5>
-                                <div class="pull-right progress-right-info text-teal-800">{{ number_to_percentage($list->readCache('UniqOpenRate')) }}</div>
+                                <div class="pull-right progress-right-info text-primary">{{ number_to_percentage($list->readCache('UniqOpenRate')) }}</div>
                             </div>
                             <div class="progress progress-sm">
                                 <div class="progress-bar progress-bar-striped bg-info" style="width: {{ number_to_percentage($list->readCache('UniqOpenRate')) }}">
@@ -15,7 +15,7 @@
                         <div class="content-group-sm">
                             <div class="d-flex">
                                 <h5 class="text-semibold me-auto">{{ trans('messages.average_click_rate') }}</h5>
-                                <div class="pull-right progress-right-info text-teal-800">{{ number_to_percentage($list->readCache('ClickedRate')) }}</div>
+                                <div class="pull-right progress-right-info text-primary">{{ number_to_percentage($list->readCache('ClickedRate')) }}</div>
                             </div>
                             <div class="progress progress-sm">
                                 <div class="progress-bar progress-bar-striped bg-info" style="width: {{ number_to_percentage($list->readCache('ClickedRate')) }}">

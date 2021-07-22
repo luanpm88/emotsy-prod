@@ -22,7 +22,7 @@ person_outline
         <div class="tab-content">
             <div class="tab-pane active" id="top-tab1">
                 @foreach (Acelle\Model\AdminGroup::allPermissions() as $key => $items)
-                    <h3 class="text-teal-800">{{ trans('messages.' . $key) }}</h3>
+                    <h3 class="text-primary">{{ trans('messages.' . $key) }}</h3>
                     <div class="row">
                         @foreach ($items as $act => $ops)
                             <div class="col-md-3">

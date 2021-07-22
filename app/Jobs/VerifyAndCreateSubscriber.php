@@ -107,7 +107,7 @@ class VerifyAndCreateSubscriber extends Base
 
             $jobMonitor->updateJsonData([
                 'processed' => $processed,
-                'failed' => $processed,
+                'failed' => $failed,
                 'message' => $notice,
             ]);
         });

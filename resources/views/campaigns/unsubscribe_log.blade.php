@@ -12,7 +12,7 @@
 
 @include("campaigns._menu")
 
-<h2 class="text-semibold text-teal-800">{{ trans('messages.unsubscribe_log') }}</h2>
+<h2 class="text-semibold text-primary">{{ trans('messages.unsubscribe_log') }}</h2>
 
 <form class="listing-form"
         data-url="{{ action('CampaignController@unsubscribeLogListing', $campaign->uid) }}"

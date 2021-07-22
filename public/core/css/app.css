@@ -59,7 +59,7 @@ b, strong {
     color: #231d14;
 }
 .badge {
-    padding: 3px 5px 3px 5px
+    padding: 3px 5px 3px 5px;
     font-size: 10px;
     letter-spacing: 0.1px;
     vertical-align: baseline;
@@ -6668,4 +6668,17 @@ h1 [class^="material-icons"] {
 }
 .dropdown-menu li:hover > a {
     color: #222;
+}
+.text-primary {
+    color: #000!important;
+}
+.btn {
+    transition: transform 0.2s ease-in-out;
+}
+.btn:hover {
+    transform: scale(1.03);
+}
+.radio.disabled {
+    opacity: 0.5;
+    pointer-events: none;
 }

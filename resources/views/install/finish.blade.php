@@ -5,7 +5,7 @@
 @section('content')
 
 
-        <h4 class="text-teal-800 fw-600 mb-3"><span class="material-icons-outlined me-2">
+        <h4 class="text-primary fw-600 mb-3"><span class="material-icons-outlined me-2">
 task_alt
 </span> Congratulations, you've successfully installed Acelle Email Marketing Application (AcelleMail)</h4>
             

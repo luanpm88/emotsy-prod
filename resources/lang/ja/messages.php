@@ -1337,7 +1337,7 @@
   'auto_event_api-call' => 'API呼び出し',
   'events' => 'イベント',
   'triggers' => 'トリガー',
-  'disable_automation_before_add_event_confirm' => '自動化<spanclass="text-semibold text-teal-800">:name </ span>はすでに実行されています。 ワークフローを編集する前に、自動化を無効にしてください。 完了したら、再度有効にすることができます。',
+  'disable_automation_before_add_event_confirm' => '自動化<spanclass="text-semibold text-primary">:name </ span>はすでに実行されています。 ワークフローを編集する前に、自動化を無効にしてください。 完了したら、再度有効にすることができます。',
   'automation.designer.intro' => '以下のトリガー条件が満たされると自動化が開始されます',
   'automation.designer.last_saved' => '最後に保存された:: time',
   'automations.disabled' => '1つ以上の自動化が正常に無効化されました',
@@ -1497,7 +1497,7 @@
   'enable_subscriptions_confirm' => ' :number サブスクリプションを有効にしようとしています。',
   'you_are_logged_in_as' => ' :name としてログインしています',
   'you_have_inactive_subscription' => 'すでに保留中のサブスクリプションがあります',
-  'subscription_finish_messages' => '<h2 class="text-semibold mt-0 text-teal-800">Congratulation!</h2>
+  'subscription_finish_messages' => '<h2 class="text-semibold mt-0 text-primary">Congratulation!</h2>
       <p>You are successfully subscribed to the plan <span class="text-bold">:plan</span>. Now your account is activated.</p><p>Let choose an action below for next step.</p>',
   'go_to_dashboard' => 'ダッシュボードに移動します',
   'check_your_subscriptions' => 'サブスクリプションを確認してください',
@@ -1561,7 +1561,7 @@
   'card_number' => 'カード番号',
   'cvv' => 'CVV',
   'pay_by_credit_card' => 'クレジットカードで支払う',
-  'subscription_paid_finish_messages' => '<h2 class="text-semibold mt-0 text-teal-800">Congratulation!</h2>
+  'subscription_paid_finish_messages' => '<h2 class="text-semibold mt-0 text-primary">Congratulation!</h2>
       <p>You are successfully subscribed to the plan <span class="text-bold">:plan</span>. Now your account is activated.<br />Let choose an action below for next step.</p>',
   'something_error_accur' => '予期しないエラーが発生しました。 再度確認してください。',
   'customer_contact.updated' => '連絡先情報が正常に更新されました！',
@@ -1644,8 +1644,8 @@
   'select_the_target_list' => 'ターゲットリストを選択します',
   'copy_subscriber' => 'サブスクライバーをコピーします',
   'move_subscriber' => 'サブスクライバーを移動します',
-  'subscribers_copy_message' => 'You\'re about to copy <span class="text-bold text-teal-800">:number</span> subscriber(s)',
-  'subscribers_move_message' => 'You\'re about to move <span class="text-bold text-teal-800">:number</span> subscriber(s)',
+  'subscribers_copy_message' => 'You\'re about to copy <span class="text-bold text-primary">:number</span> subscriber(s)',
+  'subscribers_move_message' => 'You\'re about to move <span class="text-bold text-primary">:number</span> subscriber(s)',
   'payment_methods.not_valid' => 'Payment method\'s setting is not valid. Click <a href=":link">here</a> to update.',
   'license_label_regular' => 'レギュラー',
   'subscription_status_disabled' => '無効',

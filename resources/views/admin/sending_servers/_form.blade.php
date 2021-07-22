@@ -186,7 +186,7 @@
 	@endif
 </div>
 
-<h4 class="text-semibold text-teal-800">{{ trans('messages.sending_quota') }}</h4>
+<h4 class="text-semibold text-primary">{{ trans('messages.sending_quota') }}</h4>
 
 <div class="row boxing">
 	<div class="col-md-12">
@@ -235,7 +235,7 @@
 
 @if ( array_key_exists("bounce_handler_id", Acelle\Model\SendingServer::types()[request()->type]["cols"])
 	|| array_key_exists("feedback_loop_handler_id", Acelle\Model\SendingServer::types()[request()->type]["cols"]))
-	<h4 class="text-semibold text-teal-800">{{ trans('messages.handlers') }}</h4>
+	<h4 class="text-semibold text-primary">{{ trans('messages.handlers') }}</h4>
 	<div class="row">
 		@if (array_key_exists("bounce_handler_id", Acelle\Model\SendingServer::types()[request()->type]["cols"]))
 			<div class="col-md-4">

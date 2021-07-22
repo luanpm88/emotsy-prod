@@ -7,7 +7,7 @@
 <form action="{{ action('InstallController@siteInfo') }}" method="POST" class="form-validate-jqueryz">
 	{!! csrf_field() !!}
 	
-	<h3 class="text-teal-800"><i class="icon-office"></i> {{ trans('messages.general') }}</h3>
+	<h3 class="text-primary"><i class="icon-office"></i> {{ trans('messages.general') }}</h3>
     <div class="row">
         <div class="col-md-6">
             @include('helpers.form_control', [
@@ -51,7 +51,7 @@
         </div>
     </div>
 	<hr />
-	<h3 class="text-teal-800"><i class="icon-user-tie"></i> {{ trans('messages.admin_info') }}</h3>
+	<h3 class="text-primary"><i class="icon-user-tie"></i> {{ trans('messages.admin_info') }}</h3>
 	<div class="row">
         <div class="col-md-6">
             @include('helpers.form_control', [
@@ -115,7 +115,7 @@
     </div>
 	
 	<hr />
-	<h3 class="text-teal-800"><span class="material-icons-outlined">
+	<h3 class="text-primary"><span class="material-icons-outlined">
 mark_email_read
 </span> {{ trans('messages.system_email_configuration') }}</h3>
 	<div class="row">
@@ -228,7 +228,9 @@ mark_email_read
 	
 	<hr >
 	<div class="text-end">                                    
-		<button data-wait="{{ trans('messages.button_processing') }}" type="submit" class="btn btn-primary bg-teal">{!! trans('messages.next') !!} <i class="icon-arrow-right14 position-right"></i></button>
+		<button data-wait="{{ trans('messages.button_processing') }}" type="submit" class="btn btn-primary bg-teal">{!! trans('messages.next') !!} <span class="material-icons-round">
+east
+</span></button>
 	</div>
 	
 </form>

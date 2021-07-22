@@ -48,10 +48,13 @@
                     ])
                 @endif
 
-                @if ($subscription->getUnpaidInvoice() && $subscription->getUnpaidInvoice()->lastTransactionIsFailed())
+                @if ($subscription->getItsOnlyUnpaidChangePlanInvoice())
                     @include('elements._notification', [
-                        'level' => 'error',
-                        'message' => $subscription->getUnpaidInvoice()->lastTransaction()->error,
+                        'level' => 'warning',
+                        'message' => trans('messages.have_new_change_plan_invoice', [
+                        'link' => action('AccountSubscriptionController@payment', [
+                            'invoice_uid' => $subscription->getItsOnlyUnpaidChangePlanInvoice()->uid,
+                        ]),
                     ])
                 @endif
             </div>

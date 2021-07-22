@@ -38,7 +38,9 @@
             @if ($bill['pending'])
                 <hr>
                 <div class="text-right">
-                    <a href="{{ action('AccountSubscriptionController@payment') }}" class="btn btn-warning button-loading full-width pr-20" style="pointer-events: auto;opacity:0.9">
+                    <a href="{{ action('AccountSubscriptionController@payment', [
+                        'invoice_uid' => $bill['invoice_uid'],
+                    ]) }}" class="btn btn-warning button-loading full-width pr-20" style="pointer-events: auto;opacity:0.9">
                         {{ trans('messages.invoice.payment_is_being_verified') }}
                         <div class="loader"></div>
                     </a>
@@ -46,7 +48,9 @@
             @elseif (isset($payButton) && !\Auth::user()->customer->preferredPaymentGatewayCanAutoCharge())
                 <hr>
                 <div class="text-right">
-                    <a href="{{ action('AccountSubscriptionController@payment') }}" class="btn btn-secondary">
+                    <a href="{{ action('AccountSubscriptionController@payment', [
+                        'invoice_uid' => $bill['invoice_uid'],
+                    ]) }}" class="btn btn-secondary">
                         {{ trans('messages.invoice.pay_now') }}
                     </a>
                 </div>

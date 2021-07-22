@@ -46,7 +46,7 @@
                                     <i class="icon-drive text-grey-800"></i>
                                 </span>
                             </div>
-                            <h4><span class="text-teal-800">{{ $account->username }}</span></h4>
+                            <h4><span class="text-primary">{{ $account->username }}</span></h4>
                             <p>
                                 {{ $account->sendingServer->name }} ({{ trans('messages.' . $account->sendingServer->type) }})
                             </p>

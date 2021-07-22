@@ -12,7 +12,7 @@
 	
 				@include("lists._menu")
 				
-				<h2 class="text-semibold text-teal-800"><span class="material-icons-outlined">
+				<h2 class="text-semibold text-primary"><span class="material-icons-outlined">
 add
 </span> {{ trans('messages.create_segment') }}</h2>
 				

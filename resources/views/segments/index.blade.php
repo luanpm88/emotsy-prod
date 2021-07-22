@@ -12,7 +12,7 @@
 
 				@include("lists._menu")
 
-				<h2 class="text-bold text-teal-800 mb-10"><i class="icon-make-group"></i> {{ trans('messages.segments') }}</h2>
+				<h2 class="text-bold text-primary mb-10"><i class="icon-make-group"></i> {{ trans('messages.segments') }}</h2>
 				<br />
 				<form class="listing-form"
 					data-url="{{ action('SegmentController@listing', $list->uid) }}"

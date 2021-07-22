@@ -23,7 +23,7 @@
     <form enctype="multipart/form-data" action="{{ action('AccountController@contact') }}" method="POST" class="form-validate-jqueryz">
         {{ csrf_field() }}
 
-        <h2 class="text-semibold text-teal-800">{{ trans('messages.primary_account_contact') }}</h2>
+        <h2 class="text-semibold text-primary">{{ trans('messages.primary_account_contact') }}</h2>
 
         <div class="row">
             <div class="col-md-6">
@@ -68,7 +68,7 @@
             </div>
         </div>
 
-        <h2 class="text-semibold text-teal-800">{{ trans('messages.billing_information') }}</h2>
+        <h2 class="text-semibold text-primary">{{ trans('messages.billing_information') }}</h2>
 
         <div class="row">
             <div class="col-md-6">

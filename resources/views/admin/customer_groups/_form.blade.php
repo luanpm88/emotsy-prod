@@ -24,7 +24,7 @@ person_outline
 
                             <div class="tab-content">
                                 <div class="tab-pane active" id="top-tab1">
-                                    <h3 class="text-teal-800">{{ trans('messages.list_or_subscriber_or_segment_or_campaign') }}</h3>
+                                    <h3 class="text-primary">{{ trans('messages.list_or_subscriber_or_segment_or_campaign') }}</h3>
                                     <div class="row">
                                         <div class="boxing col-md-3">
                                             @include('helpers.form_control', [
@@ -147,7 +147,7 @@ person_outline
                                         </div>
                                     </div>
 
-                                    <h3 class="text-teal-800">{{ trans('messages.file_upload') }}</h3>
+                                    <h3 class="text-primary">{{ trans('messages.file_upload') }}</h3>
                                     <div class="row">
                                         <div class="boxing col-md-3">
                                             @include('helpers.form_control', [
@@ -174,7 +174,7 @@ person_outline
                                     </div>
 
 
-                                    <h3 class="text-teal-800">{{ trans('messages.sending_quota') }}</h3>
+                                    <h3 class="text-primary">{{ trans('messages.sending_quota') }}</h3>
                                     <div class="row">
                                         <div class="boxing col-md-3">
                                             @include('helpers.form_control', [
@@ -236,7 +236,7 @@ person_outline
                                         </div>
                                     </div>
 
-                                    <h3 class="text-teal-800">{{ trans('messages.sending_servers') }}</h3>
+                                    <h3 class="text-primary">{{ trans('messages.sending_servers') }}</h3>
                                     <div class="row">
                                         <div class="col-md-3">
                                             {{ trans('messages.all_sending_servers') }}&nbsp;&nbsp;&nbsp;

@@ -33,13 +33,13 @@
                     <span class="text-muted2">{{ trans('messages.automation.overview.contacts') }}</span>
                 </td>
                 <td>
-                    <h5 class="no-margin text-teal-800 stat-num">
+                    <h5 class="no-margin text-primary stat-num">
                         {{ $automation->countEmails() }}
                     </h5>
                     <span class="text-muted2">{{ trans('messages.emails') }}</span>
                 </td>
                 <td>
-                    <h5 class="no-margin text-teal-800 stat-num">
+                    <h5 class="no-margin text-primary stat-num">
                         {{ $automation->readCache('SummaryStats') ? number_to_percentage($automation->readCache('SummaryStats')['complete']) : '#' }}
                     </h5>
                     <span class="text-muted2">{{ trans('messages.complete') }}</span>

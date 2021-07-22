@@ -21,7 +21,9 @@ settings
 						<a href="{{ action("InstallController@database") }}"
 							class="rounded-top rounded-3-top"
 						>
-							<i class="icon-database"></i> {{ trans('messages.database') }}
+							<span class="material-icons-outlined">
+dns
+</span> {{ trans('messages.database') }}
 						</a>
 					</li>
 					<li class="{{ $current == 5 ? "active" : "" }} {{ $step >= 4 ? "enabled" : "" }}">

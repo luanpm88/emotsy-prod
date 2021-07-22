@@ -66,7 +66,7 @@
                         <span class="icon-users"></span>
                     </div>
                     <div class="desc">
-                        <h5 class="mt-0 mb-1 text-teal-800">{!! trans('messages.source.have_products', [
+                        <h5 class="mt-0 mb-1 text-primary">{!! trans('messages.source.have_products', [
                             'count' => format_number($source->productsCount()),
                         ]) !!}</h5>
                         <div class="">{{ trans('messages.source.your_store_synchronized') }}</div>
@@ -83,7 +83,7 @@
                             <span class="icon-profile"></span>
                         </div>
                         <div class="desc">
-                            <h5 class="mt-0 mb-1 text-teal-800">
+                            <h5 class="mt-0 mb-1 text-primary">
                                 {{ $source->getList()->name }}
                             </h5>
                             <div class="">{{ trans('messages.source.list.synchronized_to_this') }}</div>
@@ -91,19 +91,19 @@
                     </div>
                     <div class="d-flex">
                         <div class="mr-20">
-                            <h5 class="no-margin text-teal-800 stat-num mb-1">
+                            <h5 class="no-margin text-primary stat-num mb-1">
                                 {{ number_with_delimiter($source->getList()->readCache('SubscriberCount', 0)) }}
                             </h5>
                             <span class="text-muted2">{{ trans("messages." . Acelle\Library\Tool::getPluralPrase('subscriber', $source->getList()->readCache('SubscriberCount', 0))) }}</span>
                         </div>
                         <div class="mr-20">
-                            <h5 class="no-margin text-teal-800 stat-num mb-1">
+                            <h5 class="no-margin text-primary stat-num mb-1">
                                 {{ $source->getList()->readCache('UniqOpenRate', 0) }}%
                             </h5>
                             <span class="text-muted2">{{ trans('messages.open_rate') }}</span>
                         </div>
                         <div>
-                            <h5 class="no-margin text-teal-800 stat-num mb-1">
+                            <h5 class="no-margin text-primary stat-num mb-1">
                                 {{ $source->getList()->readCache('ClickedRate', 0) }}%
                             </h5>
                             <span class="text-muted2">{{ trans('messages.click_rate') }}</span>
@@ -119,7 +119,7 @@
                             <span class="icon-alarm"></span>
                         </div>
                         <div class="desc">
-                            <h5 class="mt-0 mb-1 text-teal-800">{{ trans('messages.source.abandoned_cart_email') }}
+                            <h5 class="mt-0 mb-1 text-primary">{{ trans('messages.source.abandoned_cart_email') }}
                                 <span class="badge badge-success ml-2">{{ trans('messages.active') }}</span></h5>
                             
                             <div class="">{{ trans('messages.source.abandoned_cart_email.all_setup') }}</div>
@@ -148,7 +148,7 @@
                             <span class="icon-alarm"></span>
                         </div>
                         <div class="desc">
-                            <h5 class="mt-0 mb-1 text-teal-800">{{ trans('messages.source.abandoned_cart_email') }}</h5>
+                            <h5 class="mt-0 mb-1 text-primary">{{ trans('messages.source.abandoned_cart_email') }}</h5>
                             <div class="">{{ trans('messages.source.abandoned_cart_email.desc') }}</div>
                         </div>
                         <div class="desc-action ml-auto">

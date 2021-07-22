@@ -17,7 +17,7 @@
 
 				@include("lists._menu")
 
-				<!--<h2 class="text-bold text-teal-800 mb-10"><span class="material-icons-outlined">
+				<!--<h2 class="text-bold text-primary mb-10"><span class="material-icons-outlined">
 web
 </span> {{ trans('messages.update_page') }}</h2>-->
 

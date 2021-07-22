@@ -28,7 +28,7 @@
         <div class="row">
             <div class="col-md-3">
                 <div class="sub_section">
-                    <h2 class="text-semibold text-teal-800">{{ trans('messages.profile_photo') }}</h2>
+                    <h2 class="text-semibold text-primary">{{ trans('messages.profile_photo') }}</h2>
                     <div class="media profile-image">
                         <div class="media-left">
                             <a href="#" class="upload-media-container">
@@ -53,7 +53,7 @@ delete_outline
             </div>
             <div class="col-md-5">
                 <div class="sub_section">
-                    <h2 class="text-semibold text-teal-800">{{ trans('messages.basic_information') }}</h2>
+                    <h2 class="text-semibold text-primary">{{ trans('messages.basic_information') }}</h2>
 
                     <div class="row">
                         <div class="col-md-6">
@@ -100,7 +100,7 @@ delete_outline
             </div>
             <div class="col-md-4">
                 <div class="sub_section">
-                    <h2 class="text-semibold text-teal-800">{{ trans('messages.account') }}</h2>
+                    <h2 class="text-semibold text-primary">{{ trans('messages.account') }}</h2>
 
                     @include('helpers.form_control', ['type' => 'text', 'name' => 'email', 'value' => $user->email, 'help_class' => 'profile', 'rules' => $user->rules()])
 

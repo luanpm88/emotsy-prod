@@ -30,7 +30,7 @@
 	</div>
 </div>
 
-<h4 class="text-semibold text-teal-800">{{ trans('messages.verification_server_credits') }}</h4>
+<h4 class="text-semibold text-primary">{{ trans('messages.verification_server_credits') }}</h4>
 
 <div class="row">
 	<div class="col-md-12">

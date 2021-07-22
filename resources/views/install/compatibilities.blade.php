@@ -4,7 +4,7 @@
 
 @section('content')
 
-	<h3 class="text-teal-800 mb-4"><i class="icon-puzzle2"></i> {{ trans('messages.requirements') }}</h3>
+	<h3 class="text-primary mb-4"><i class="icon-puzzle2"></i> {{ trans('messages.requirements') }}</h3>
 
     <div class="row">
         <div class="col-md-12">
@@ -22,7 +22,7 @@ error_outline
 </span>
 							@endif
 							<div class="ml-0">
-								<h5 class="mt-0 mb-0 text-semibold">
+								<h5 class="mt-0 mb-1 fw-600">
 									{{ $item["name"] }}
 								</h5>
 								<p>
@@ -36,7 +36,7 @@ error_outline
         </div>
     </div>
 		
-	<h3 class="text-teal-800 mb-4 mt-4"><i class="icon-file-check"></i> {{ trans('messages.permissions') }}</h3>
+	<h3 class="text-primary mb-4 mt-4"><i class="icon-file-check"></i> {{ trans('messages.permissions') }}</h3>
 
     <div class="row">
         <div class="col-md-12">
@@ -54,7 +54,7 @@ error_outline
 </span>
 							@endif
 							<div class="ml-0">
-								<h5 class="mt-0 mb-0 text-semibold">
+								<h5 class="mt-0 mb-1 fw-600">
 									{{ $item["name"] }}
 								</h5>
 								<p>
@@ -70,9 +70,13 @@ error_outline
 	
 	<div class="text-end">                                    
 		@if ($result)
-			<a href="{{ action('InstallController@siteInfo') }}" class="btn btn-primary bg-teal">{!! trans('messages.next') !!} <i class="icon-arrow-right14 position-right"></i></a>
+			<a href="{{ action('InstallController@siteInfo') }}" class="btn btn-primary bg-teal btn-effect">
+				{!! trans('messages.next') !!} <span class="material-icons-round">
+east
+</span></a>
 		@else
-			<a href="{{ action('InstallController@systemCompatibility') }}" class="btn btn-primary bg-grey-600"><i class="icon-reload-alt position-right"></i> {!! trans('messages.try_again') !!}</a>
+			<a href="{{ action('InstallController@systemCompatibility') }}" class="btn btn-primary bg-grey-600">
+				<i class="icon-reload-alt position-right"></i> {!! trans('messages.try_again') !!}</a>
 		@endif
 	</div>
 

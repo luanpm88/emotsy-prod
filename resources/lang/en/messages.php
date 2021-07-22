@@ -1346,7 +1346,7 @@
   'auto_event_api-call' => 'API call',
   'events' => 'Events',
   'triggers' => 'Triggers',
-  'disable_automation_before_add_event_confirm' => 'Automation <span class="text-semibold text-teal-800">:name</span> is already running. Please disable the automation before editing its workfflow. You can enable it again once you are done.',
+  'disable_automation_before_add_event_confirm' => 'Automation <span class="text-semibold text-primary">:name</span> is already running. Please disable the automation before editing its workfflow. You can enable it again once you are done.',
   'automation.designer.intro' => 'Automation starts when the following trigger condition is met',
   'automation.designer.last_saved' => 'Last saved: :time',
   'automations.disabled' => 'One or more automations were successfully disabled',
@@ -1511,7 +1511,7 @@
   'enable_subscriptions_confirm' => 'You\'re about to enable subscription(s).',
   'you_are_logged_in_as' => 'You are logged in as :name',
   'you_have_inactive_subscription' => 'You have already had an pending subscription',
-  'subscription_finish_messages' => '<h2 class="text-semibold mt-0 text-teal-800">Congratulation!</h2>
+  'subscription_finish_messages' => '<h2 class="text-semibold mt-0 text-primary">Congratulation!</h2>
       <p>You are successfully subscribed to the plan <span class="text-bold">:plan</span>. Now your account is activated.</p><p>Let choose an action below for next step.</p>',
   'go_to_dashboard' => 'Go to the dashboard',
   'check_your_subscriptions' => 'Check your subscriptions',
@@ -1575,7 +1575,7 @@
   'card_number' => 'Card number',
   'cvv' => 'CVV',
   'pay_by_credit_card' => 'Pay by credit card',
-  'subscription_paid_finish_messages' => '<h2 class="text-semibold mt-0 text-teal-800">Congratulation!</h2>
+  'subscription_paid_finish_messages' => '<h2 class="text-semibold mt-0 text-primary">Congratulation!</h2>
       <p>You are successfully subscribed to the plan <span class="text-bold">:plan</span>. Now your account is activated.<br />Let choose an action below for next step.</p>',
   'something_error_accur' => 'An unexpected error occurred. Please check again.',
   'customer_contact.updated' => 'Contact information was successfully updated!',
@@ -1658,8 +1658,8 @@
   'select_the_target_list' => 'Select the target list',
   'copy_subscriber' => 'Copy subscriber(s)',
   'move_subscriber' => 'Move subscriber(s)',
-  'subscribers_copy_message' => 'You\'re about to copy <span class="text-bold text-teal-800">:number</span> subscriber(s)',
-  'subscribers_move_message' => 'You\'re about to move <span class="text-bold text-teal-800">:number</span> subscriber(s)',
+  'subscribers_copy_message' => 'You\'re about to copy <span class="text-bold text-primary">:number</span> subscriber(s)',
+  'subscribers_move_message' => 'You\'re about to move <span class="text-bold text-primary">:number</span> subscriber(s)',
   'payment_methods.not_valid' => 'Payment method\'s setting is not valid. Click <a href=":link">here</a> to update.',
   'license_label_regular' => 'Regular',
   'subscription_status_disabled' => 'Disabled',
@@ -2472,9 +2472,9 @@
   'plan.review.wording' => 'Thank you for subscribing. Please review your selected plan below and proceed with the payment and get started.',
   'payment.proceed_with_payment' => 'Proceed with Payment',
   'payment.agree_service_intro' => 'By clicking the <strong><i>Proceed with payment</i></strong> button,
-      you are paying for :plan plan, and you agree to our <i>Term of Use</i> and <i>Privacy Policy</i>.',
+    you agree to our <i>Term of Use</i> and <i>Privacy Policy</i>.',
   'payment.agree_service_intro.no_plan' => 'By clicking the <strong><i>Proceed with payment</i></strong> button,
-       you agree to our <i>Term of Use</i> and <i>Privacy Policy</i>.',
+    you agree to our <i>Term of Use</i> and <i>Privacy Policy</i>.',
   'plan.review' => 'Plan review',
   'subscription.status.active_pending' => 'Update pending',
   'subscription.status.change_plan_pending' => 'Changing Plan',
@@ -3721,4 +3721,5 @@
   'subscription.thanks.click_to_start' => 'Thank you for subscribing to our SAAS. Click the button
     below to get started',
   'subscription.get_started' => 'Get Started',
+  'cron_string.copied' => 'Cron string was copied to clipboard',
 ) ?>

@@ -16,11 +16,11 @@
 
     @include("lists._menu")
 
-    <h3 class="text-semibold text-teal-800">{{ trans('messages.list_performance') }}</h3>
+    <h3 class="text-semibold text-primary">{{ trans('messages.list_performance') }}</h3>
 
     @include("lists._stat")
 
-    <h3 class="text-semibold text-teal-800">{{ trans('messages.list_growth') }}</h3>
+    <h3 class="text-semibold text-primary">{{ trans('messages.list_growth') }}</h3>
 
     @include("lists._growth_chart")
 @endsection

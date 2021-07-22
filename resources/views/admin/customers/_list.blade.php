@@ -32,7 +32,7 @@ assignment_turned_in
                     @if (is_object($item->subscription) && !$item->subscription->isEnded())
                         <div class="d-flex">
                             <div class="single-stat-box pull-left me-5">
-                                <span class="no-margin text-teal-800 stat-num">{{ $item->displaySendingQuotaUsage() }}</span>
+                                <span class="no-margin text-primary stat-num">{{ $item->displaySendingQuotaUsage() }}</span>
                                 <div class="progress progress-xxs">
                                     <div class="progress-bar progress-bar-info" style="width: {{ $item->getSendingQuotaUsagePercentage() }}%">
                                     </div>
@@ -43,7 +43,7 @@ assignment_turned_in
                                 </span>
                             </div>
                             <div class="single-stat-box pull-left">
-                                <span class="no-margin text-teal-800 stat-num">{{ $item->displaySubscribersUsage() }}</span>
+                                <span class="no-margin text-primary stat-num">{{ $item->displaySubscribersUsage() }}</span>
                                 <div class="progress progress-xxs">
                                     <div class="progress-bar progress-bar-info" style="width: {{ $item->readCache('SubscriberUsage') }}%">
                                     </div>

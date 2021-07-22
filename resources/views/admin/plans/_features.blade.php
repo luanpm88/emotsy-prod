@@ -1,4 +1,4 @@
-<h4 class="text-semibold text-teal-800 mb-0">{{ trans('messages.features') }}</h4>
+<h4 class="text-semibold text-primary mb-0">{{ trans('messages.features') }}</h4>
 <ul class="mt-0 mb-0 top-border-none plans-intro">
     <li>
         {!! trans('messages.sending_total_quota_intro', ["value" => $plan->displayTotalQuota()]) !!}

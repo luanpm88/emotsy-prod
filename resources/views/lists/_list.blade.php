@@ -36,7 +36,7 @@ error_outline
 							<span class="text-muted">{{ trans("messages." . Acelle\Library\Tool::getPluralPrase('subscriber', $list->readCache('SubscriberCount', 0))) }}</span>
 						</div>
 						<div class="single-stat-box pull-left ml-20">
-							<span class="no-margin text-teal-800 stat-num">{{ $list->openUniqRate() }}%</span>
+							<span class="no-margin text-primary stat-num">{{ $list->openUniqRate() }}%</span>
 							<div class="progress progress-xxs">
 								<div class="progress-bar progress-bar-info" style="width: {{ $list->readCache('UniqOpenRate', 0) }}%">
 								</div>
@@ -44,7 +44,7 @@ error_outline
 							<span class="text-muted small">{{ trans('messages.open_rate') }}</span>
 						</div>
 						<div class="single-stat-box pull-left ml-20">
-							<span class="no-margin text-teal-800 stat-num">{{ $list->readCache('ClickedRate', 0) }}%</span>
+							<span class="no-margin text-primary stat-num">{{ $list->readCache('ClickedRate', 0) }}%</span>
 							<div class="progress progress-xxs">
 								<div class="progress-bar progress-bar-info" style="width: {{ $list->readCache('ClickedRate', 0) }}%">
 								</div>

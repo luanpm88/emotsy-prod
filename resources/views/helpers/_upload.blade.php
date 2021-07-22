@@ -1,6 +1,6 @@
 <div class="form-group control-text">
     <div class="sub_section">
-        <h3 class="text-semibold text-teal-800">{{ trans('messages.profile_photo') }}</h3>
+        <h3 class="text-semibold text-primary">{{ trans('messages.profile_photo') }}</h3>
         <div class="media profile-image">
             <div class="preview col-md-2" id="{{$dragId}}">
                 <a href="#" class="upload-media-container radius-0 pre-upload-photo">

@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 	@include('layouts.core._head')
+
+	@include('layouts.core._script_vars')
 </head>
 
 <body class="bg-slate-800">
@@ -30,7 +32,7 @@
                         
                         @include('install._steps')
                         
-                        <div class="panel panel-flat p-4 shadow bg-white rounded-bottom-3" style="border-radius: 0 0 3px 3px">
+                        <div class="panel panel-flat shadow bg-white rounded-bottom-3" style="border-radius: 0 0 3px 3px">
                             <div class="panel-body">
 								@if (count($errors) > 0)
 									<div class="alert alert-danger alert-noborder">

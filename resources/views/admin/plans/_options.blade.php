@@ -4,7 +4,9 @@ settings
 <div class="tabbable">
     <ul class="nav nav-tabs nav-tabs-top">
         <li class="active text-semibold"><a href="#top-tab1" data-toggle="tab">
-            <i class="icon-database"></i> {{ trans('messages.resources_quota') }}</a>
+            <span class="material-icons-outlined">
+dns
+</span> {{ trans('messages.resources_quota') }}</a>
         </li>
         <li class="text-semibold"><a href="#top-tab3" data-toggle="tab">
             <i class="icon-stats-bars4"></i> {{ trans('messages.sending_quota') }}</a>
@@ -36,7 +38,7 @@ settings
             ])
         </div>
         <div class="tab-pane" id="top-tab3">
-            <!--<h3 class="text-teal-800">{{ trans('messages.sending_quota') }}</h3>-->
+            <!--<h3 class="text-primary">{{ trans('messages.sending_quota') }}</h3>-->
             <div class="row boxing">
                 <div class="col-md-12">
                     <p>{!! trans('messages.options.wording') !!}</p>
@@ -94,7 +96,7 @@ settings
             </div>
         </div>
         <div class="tab-pane" id="top-tab5">
-            <h4 class="text-teal-800 text-semibold">{{ trans('messages.sending_domains_settings') }}</h4>
+            <h4 class="text-primary text-semibold">{{ trans('messages.sending_domains_settings') }}</h4>
 
             <div class="row">
                 <div class="col-md-5">
@@ -139,7 +141,7 @@ settings
             </div>
         </div>
         <div class="tab-pane" id="top-tab6">
-            <h4 class="text-teal-800 text-semibold">{{ trans('messages.email_verification_servers_settings') }}</h4>
+            <h4 class="text-primary text-semibold">{{ trans('messages.email_verification_servers_settings') }}</h4>
 
             <div class="row">
                 <div class="col-md-5">

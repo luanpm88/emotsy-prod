@@ -16,13 +16,6 @@
 @section('content')
     <div class="row">
         <div class="col-md-8">
-            @if ($subscription->getUnpaidInvoice() && $subscription->getUnpaidInvoice()->lastTransaction() && $subscription->getUnpaidInvoice()->lastTransaction()->isFailed())
-                @include('elements._notification', [
-                    'level' => 'error',
-                    'message' => $subscription->getUnpaidInvoice()->lastTransaction()->error,
-                ])
-            @endif
-                
             <h2 class="mb-3 mt-0">{{ $invoice->title }}</h2>
 
             <div class="current_payment">
@@ -37,7 +30,9 @@
                         {{ csrf_field() }}
 
                         <input type="hidden" name="payment_method" value="{{ request()->user()->customer->getPreferredPaymentGateway()->getType() }}" />
-                        <input type="hidden" name="return_url" value="{{ action('AccountSubscriptionController@payment') }}" />
+                        <input type="hidden" name="return_url" value="{{ action('AccountSubscriptionController@payment', [
+                            'invoice_uid' => $invoice->uid,
+                        ]) }}" />
 
                         <input type="submit" name="new_payment"
                             class="btn btn-primary bg-teal-800 py-3 px-4"
@@ -45,7 +40,7 @@
                         >
 
                         <div class="row">
-                            <div class="mt-4 col-md-8">{!! trans('messages.payment.agree_service_intro', ['plan' => $subscription->plan->name]) !!}</div>
+                            <div class="mt-4 col-md-8">{!! trans('messages.payment.agree_service_intro') !!}</div>
                         </div>
                     </form>
 
@@ -61,7 +56,11 @@
                 method="POST">
                 {{ csrf_field() }}
 
-                <input type="hidden" name="return_url" value="{{ action('AccountSubscriptionController@payment') }}" />
+                <p>{{ trans('messages.payment.choose_new_payment_method_to_proceed') }}</p>
+
+                <input type="hidden" name="return_url" value="{{ action('AccountSubscriptionController@payment', [
+                    'invoice_uid' => $invoice->uid,
+                ]) }}" />
 
                 <div class="sub-section mb-30 choose-payment-methods">      
                     @foreach(Acelle\Library\Facades\Billing::getEnabledPaymentGateways() as $gateway)
@@ -102,18 +101,18 @@
                             >
                         </div>
                         <div class="col-md-8">
-                            {!! trans('messages.payment.agree_service_intro', ['plan' => $subscription->plan->name]) !!}
+                            {!! trans('messages.payment.agree_service_intro') !!}
                         </div>
                     </div>
                 </div>
             </form>
 
-            @if ($subscription->getUnpaidInvoice()->type !== \Acelle\Model\Invoice::TYPE_RENEW_SUBSCRIPTION)
+            @if ($invoice->type !== \Acelle\Model\Invoice::TYPE_RENEW_SUBSCRIPTION)
                 <div class="my-4 pt-3">
                     <hr>
                     <a class="" link-method="POST" link-confirm="{{ trans('messages.invoice.cancel.confirm') }}"
                         href="{{ action('AccountSubscriptionController@cancelInvoice', [
-                            'invoice_uid' => $subscription->getUnpaidInvoice()->uid,
+                            'invoice_uid' => $invoice->uid,
                         ]) }}">
                         {{ trans('messages.subscription.cancel_now_change_other_plan') }}
                     </a>

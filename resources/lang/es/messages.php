@@ -1300,7 +1300,7 @@
   'auto_event_api-call' => 'Llamada API',
   'events' => 'Eventos',
   'triggers' => 'Disparos',
-  'disable_automation_before_add_event_confirm' => 'Evento <span class="text-semibold text-teal-800">:name</span> esta ejecutandose, Deshabilite el evento antes de editar su flujo de trabajo. Puede habilitarlo nuevamente una vez que haya terminado.',
+  'disable_automation_before_add_event_confirm' => 'Evento <span class="text-semibold text-primary">:name</span> esta ejecutandose, Deshabilite el evento antes de editar su flujo de trabajo. Puede habilitarlo nuevamente una vez que haya terminado.',
   'automations.disabled' => 'Uno o mas eventos deshabilitado/s',
   'automation.disabled' => 'Evento deshabilitado',
   'automations.enabled' => 'Uno o mas evento/s habilitado/s',
@@ -1455,7 +1455,7 @@
   'enable_subscriptions_confirm' => 'A punto de activar :number suscripcion/es.',
   'you_are_logged_in_as' => 'Ha ingresado como :name',
   'you_have_inactive_subscription' => 'Ya tiene una suscripcion pendiente...',
-  'subscription_finish_messages' => '<h2 class="text-semibold mt-0 text-teal-800">Felicitaciones!</h2>
+  'subscription_finish_messages' => '<h2 class="text-semibold mt-0 text-primary">Felicitaciones!</h2>
       <p>Estás suscrito con éxito al plan <span class="text-bold">:plan</span>. Ahora tu cuenta ya se encuentra activa.</p><p>Debe elegir una acción a continuación para el siguiente paso.</p>',
   'go_to_dashboard' => 'Ir al escritorio',
   'check_your_subscriptions' => 'Verificar sus suscripciones',
@@ -1519,7 +1519,7 @@
   'card_number' => 'Numero de tarjeta',
   'cvv' => 'CVV',
   'pay_by_credit_card' => '<i class="icon-credit-card"></i> Pagar con tarjeta de credito',
-  'subscription_paid_finish_messages' => '<h2 class="text-semibold mt-0 text-teal-800">MUCHAS GRACIAS!</h2>
+  'subscription_paid_finish_messages' => '<h2 class="text-semibold mt-0 text-primary">MUCHAS GRACIAS!</h2>
       <p>Estás suscrito con éxito al plan <span class="text-bold">:plan</span>. Ahora tu cuenta esta activada.<br />Debe elegir una acción a continuación para el siguiente paso.</p>',
   'something_error_accur' => 'Se produjo un error inesperado por favor verifique.',
   'customer_contact.updated' => 'Informacion de contacto actualizada!',
