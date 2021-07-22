@@ -17,7 +17,7 @@
                     </div>
                 </td>
                 <td>
-                    <span class="server-avatar me-2 server-avatar-{{ $item->type }} mr-0">
+                    <span class="server-avatar shadow-sm rounded server-avatar-{{ $item->type }} mr-0">
                         <span class="material-icons-outlined">
 
 </span>
