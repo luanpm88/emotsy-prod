@@ -21,6 +21,9 @@ class LanguageController extends Controller
             return $this->notAuthorized();
         }
 
+        // @todo: workaround only
+        Language::dump();
+
         return view('admin.languages.index');
     }
 
@@ -184,6 +187,9 @@ class LanguageController extends Controller
     {
         $language = Language::findByUid($id);
         $currentFile = $language->findFileById($request->file_id);
+
+        // @todo: does it make sense to do this here? just a workaround
+        $language->createOrUpdateTranslationFiles();
 
         // Prenvent save from demo mod
         if ($this->isDemoMode()) {

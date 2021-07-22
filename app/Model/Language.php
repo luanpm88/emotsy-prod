@@ -330,6 +330,18 @@ class Language extends Model
         return $language;
     }
 
+    // @todo 'dump' is just an alias for many tasks that may be involved
+    // + create missing translation files
+    // + update existing translation files from its original source
+    // + more
+    public static function dump()
+    {
+        // Update or create translation files
+        foreach(self::get() as $language) {
+            $language->createOrUpdateTranslationFiles();
+        }
+    }
+
     public function createOrUpdateTranslationFiles()
     {
         foreach(Hook::execute('add_translation_file') as $source) {
