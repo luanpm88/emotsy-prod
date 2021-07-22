@@ -35,7 +35,7 @@ people_outline
 				rel4="CampaignController/clickLog"
 				rel5="CampaignController/unsubscribeLog"
 			>
-				<a href="{{ action("AccountController@contact") }}" class="nav-link" data-bs-toggle="dropdown">
+				<a href="{{ action("AccountController@contact") }}" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
 					<span class="material-icons-outlined">
 						article
 </span> {{ trans('messages.sending_logs') }}
