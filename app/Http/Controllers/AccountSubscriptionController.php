@@ -143,7 +143,6 @@ class AccountSubscriptionController extends Controller
         if ($invoice->isNew()) {
             if ($invoice->getPendingTransaction()) {
                 return view('account.subscription.pending', [
-                    'subscription' => $subscription,
                     'invoice' => $invoice,
                 ]);
             } else {
