@@ -6,7 +6,8 @@
 @endphp
 
 <li class="nav-item dropdown">
-    <a href="{{ action('TemplateController@index') }}" class="nav-link d-flex align-items-center px-3 py-3 lvl-1 dropdown-toggle" id="content-menu" data-bs-toggle="dropdown" aria-expanded="false">
+    <a href="{{ action('TemplateController@index') }}" class="nav-link d-flex align-items-center px-3 py-3 lvl-1 dropdown-toggle"
+        id="content-menu" data-bs-toggle="dropdown" aria-expanded="false">
         <i class="navbar-icon">
             <img src="{{ Auth::user()->getProfileImageUrl() }}" style="border-radius:100%;transform:scale(1.5)" alt="">
         </i>
