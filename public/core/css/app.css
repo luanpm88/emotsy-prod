@@ -6676,7 +6676,7 @@ h1 [class^="material-icons"] {
 .btn:hover {
     box-shadow: 0 .125rem .35rem rgba(0,0,0,.1)!important;
 }
-.radio.disabled {
+.radio.disabled, .radio_box.disabled {
     opacity: 0.5;
     pointer-events: none;
 }

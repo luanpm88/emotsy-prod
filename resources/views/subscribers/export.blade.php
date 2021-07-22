@@ -29,16 +29,16 @@ people
                                 <input type="radio"
                                     {{ request()->segment_uid ? '' : 'checked' }}
                                     name="which"
-                                    value="whole_list" class="styled" /><rtitle>{{ trans('messages.export.whole_list') }} ({{ $list->readCache('SubscriberCount', 0) }} {{ strtolower(trans('messages.subscribers')) }})</rtitle>
+                                    value="whole_list" class="styled" /> <rtitle>{{ trans('messages.export.whole_list') }} ({{ $list->readCache('SubscriberCount', 0) }} {{ strtolower(trans('messages.subscribers')) }})</rtitle>
                             </label>
                         </div>
-                        <div class="radio_box" data-popup='tooltip' title="">
+                        <div class="radio_box {{ $list->segments()->count() ? '' : 'disabled' }}" data-popup='tooltip' title="">
                             <label class="main-control d-flex align-items-center">
                                 <input type="radio"
                                     {{ request()->segment_uid ? 'checked' : '' }}
-                                    {{ $list->segments()->count() ? '' : 'disabled' }}
+                                    
                                     name="which"
-                                    value="segment" class="styled" /><rtitle>{{ trans('messages.export.choose_segment') }}</rtitle>
+                                    value="segment" class="styled" /> <rtitle>{{ trans('messages.export.choose_segment') }}</rtitle>
                             </label>
                             <div class="radio_more_box pt-3">
                                 @include('helpers.form_control', [
