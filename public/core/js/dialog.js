@@ -100,7 +100,7 @@ class Dialog {
                             <div class="modal-dialog shadow">
                                 <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title">
+                                    <h5 class="modal-title text-center" style="width:100%">
                                         <i class="material-icons-outlined alert-icon mr-2">notifications</i>
                                         `+this.title+`
                                     </h5>
@@ -109,8 +109,8 @@ class Dialog {
                                 <div class="modal-body">
                                     `+this.message+`
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary dialog-ok">`+LANG_OK+`</button>
+                                <div class="modal-footer border-top-0 ps-4 pt-0 pr-4 pb-4 justify-content-center">
+                                    <button type="button" class="btn btn-secondary dialog-ok px-4">`+LANG_OK+`</button>
                                 </div>
                                 </div>
                             </div>
