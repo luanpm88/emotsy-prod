@@ -110,6 +110,7 @@ class AccountSubscriptionController extends Controller
     public function confirmFree(Request $request)
     {
         $subscription = $request->user()->customer->subscription;
+        $invoice = $subscription->getUnpaidInvoice();
 
         if (!$invoice->isFree()) {
             throw new \Exception('Invoice is not free!');
