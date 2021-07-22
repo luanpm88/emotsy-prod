@@ -2028,7 +2028,7 @@
   'list.exported_file.status.unconfirmed' => 'unconfirmed',
   'list.title.edit' => 'Edit your mail list',
   'list.title.setting' => 'Settings',
-  'list.import.progress.queued' => 'Import process is being processed...',
+  'list.import.progress.queued' => 'Import is being queued for processing (job dispatched)...',
   'list.import.progress.running' => 'Importing is in progress...',
   'list.import.progress.done' => 'Import is complete!',
   'list.import.progress.failed' => 'Import failed',

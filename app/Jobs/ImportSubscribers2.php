@@ -31,7 +31,7 @@ class ImportSubscribers2 extends Base
         //            other calls should use update....
         $this->afterDispatched(function ($thisJob, $monitor) {
             $monitor->setJsonData([
-                'message' => 'Import is being queued for processing (job dispatched)...',
+                'message' => trans('messages.list.import.progress.queued'),
             ]);
         });
 
@@ -64,11 +64,11 @@ class ImportSubscribers2 extends Base
 
         $this->monitor->updateJsonData([
             'logfile' => $logfile,
-            'message' => 'Import is running...',
+            'message' => trans('messages.list.import.progress.running'),
         ]);
 
         // Write log, to make sure the file is created
-        $logger->info('Import processes started');
+        $logger->info(trans('messages.list.import.progress.running'));
 
         $this->list->parseCsvFile($this->file, function ($record) use ($logger) {
             $this->batch()->add(new VerifyAndCreateSubscriber($this->list, $record, $logger, $this->monitor));
