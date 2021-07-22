@@ -890,4 +890,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/geoip', 'GeoIpController@index');
     Route::match(['get', 'post'], 'admin/geoip/setting', 'GeoIpController@setting');
     Route::post('admin/geoip/reset', 'GeoIpController@reset');
+
+    // Update
+    Route::get('admin/upgrade/translation', 'Upgrade@updateTranslationFiles');
 });
