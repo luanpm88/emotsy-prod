@@ -60,8 +60,8 @@
 						<h2 class="font-weight-semibold mb-0">{{ $category->name }}</h2>
 						<hr>
 
-						<div id="gallery" class="pb-4">
-							<form class="listing-form"
+						<div id="gallery-{{ $category->id }}" class="pb-4">
+							<div class="listing-form"
 								data-url="{{ action('TemplateController@builderTemplates', [
 									'category_uid' => $category->uid,
 								]) }}"
@@ -94,12 +94,26 @@ search
 									</div>
 								</div>
 								
-								<div class="pml-table-container">
+								<div id="gallery-{{ $category->id }}-content" class="pml-table-container">
 								</div>
-							</form>
+							</div>
 						</div>
 						<br style="clear:both" /><br style="clear:both" />
 					</div>
+
+					<script>
+						$(function() {
+							var list = makeList({
+								url: '{{ action('TemplateController@builderTemplates', [
+									'category_uid' => $category->uid,
+								]) }}',
+								container: $('#gallery-{{ $category->id }}'),
+								content: $('#gallery-{{ $category->id }}-content')
+							});
+
+							list.load();
+						});
+					</script>
 				@endif
 			@endforeach
         </div>

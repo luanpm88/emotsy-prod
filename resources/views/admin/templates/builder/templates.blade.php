@@ -11,7 +11,7 @@
                             <div class="panel-template-placeholder">
                                 <img src="{{ $template->getThumbUrl() }}?v={{ rand(0,10) }}" />
                             </div>
-                            <h5 class="mb-20 text-center">{{ $template->name }}</h5>
+                            <h5 class="mt-1 text-center">{{ $template->name }}</h5>
                         </div>
                     </div>
                 </a>
@@ -19,7 +19,7 @@
         @endforeach
     </div>
         
-    <hr style="clear: both">
+    <hr>
         
     @include('elements/_per_page_select', ["items" => $templates])
     

@@ -3,8 +3,8 @@
 @section('title', trans('messages.edit_template'))
 
 @section('head')
-	<script type="text/javascript" src="{{ URL::asset('js/tinymce/tinymce.min.js') }}"></script>        
-    <script type="text/javascript" src="{{ URL::asset('js/editor.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('core/tinymce/tinymce.min.js') }}"></script>        
+    <script type="text/javascript" src="{{ URL::asset('core/js/editor.js') }}"></script>
 
     <script src="{{ URL::asset('assets2/js/UrlAutoFill.js') }}"></script>
 @endsection

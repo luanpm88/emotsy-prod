@@ -60,9 +60,9 @@
 						<h2 class="font-weight-semibold mb-0">{{ $category->name }}</h2>
 						<hr>
 
-						<div id="gallery" class="pb-4">
-							<form class="listing-form"
-								data-url="{{ action('Admin\TemplateController@builderTemplates', [
+						<div id="gallery-{{ $category->id }}" class="pb-4">
+							<div class="listing-form"
+								data-url="{{ action('TemplateController@builderTemplates', [
 									'category_uid' => $category->uid,
 								]) }}"
 								per-page="25"					
@@ -78,28 +78,42 @@
 													<option value="name">{{ trans('messages.name') }}</option>
 												</select>										
 												<input type="hidden" name="sort_direction" value="asc" />
-                                                <button class="btn btn-xs sort-direction" rel="asc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
+												<button class="btn btn-xs sort-direction" rel="asc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
 													<span class="material-icons-outlined desc">
-sort
-</span>
+	sort
+	</span>
 												</button>
 											</span>
 											<span class="text-nowrap">
 												<input type="text" name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
 												<span class="material-icons-round">
-search
-</span>
+	search
+	</span>
 											</span>
 										</div>
 									</div>
 								</div>
 								
-								<div class="pml-table-container">
+								<div id="gallery-{{ $category->id }}-content" class="pml-table-container">
 								</div>
-							</form>
+							</div>
 						</div>
 						<br style="clear:both" /><br style="clear:both" />
 					</div>
+
+					<script>
+						$(function() {
+							var list = makeList({
+								url: '{{ action('TemplateController@builderTemplates', [
+									'category_uid' => $category->uid,
+								]) }}',
+								container: $('#gallery-{{ $category->id }}'),
+								content: $('#gallery-{{ $category->id }}-content')
+							});
+
+							list.load();
+						});
+					</script>
 				@endif
 			@endforeach
         </div>

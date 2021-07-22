@@ -13,13 +13,15 @@
     </div>  
 </div>
 
-<ul class="nav nav-tabs mb-4 email_tabs">
+<ul class="nav nav-tabs mb-4 email_tabs nav-underline">
     <li class="nav-item">
         <a class="nav-link setup" href="javascript:;" onclick="popup.load('{{ action('Automation2Controller@emailSetup', [
             'uid' => $automation->uid,
             'email_uid' => $email->uid,
         ]) }}')">
-            <i class="lnr lnr-cog mr-2"></i>
+            <span class="material-icons-outlined">
+settings
+</span>
             {{ trans('messages.automation.email.setup') }}
         </a>
     </li>
@@ -32,7 +34,9 @@
                 ]) }}')"
             @endif
         >
-            <i class="lnr lnr-layers mr-2"></i>
+            <i class="material-icons-outlined">
+mark_email_unread
+</i>
             {{ trans('messages.automation.email.content') }}
         </a>
     </li>
@@ -45,7 +49,9 @@
                 ]) }}')"
             @endif
         >
-            <i class="lnr lnr-cog mr-2"></i>
+            <span class="material-icons-outlined">
+                done_all
+</span>
             {{ trans('messages.automation.email.confirm') }}
         </a>
     </li>

@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">    
 
-    @include('layouts._favicon')
+    @include('layouts.core._favicon')
 
     <link href="{{ URL::asset('builder/builder.css') }}" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="{{ URL::asset('builder/builder.js') }}"></script>
@@ -154,7 +154,7 @@
                     @endif
 
                     // add custom css
-                    this.addCustomCss('{{ url('/css/builder_product.css') }}');
+                    this.addCustomCss('{{ url('/core/css/builder_product.css') }}');
 
                     // click preview button
                     $("#builder_iframe").contents().find("body").on('click', '.product-preview-but', function(e) {

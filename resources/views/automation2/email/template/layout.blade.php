@@ -1,4 +1,4 @@
-@extends('layouts.popup.medium')
+@extends('layouts.popup.large')
 
 @section('content')
 	
@@ -10,8 +10,6 @@
 			<p class="mb-4">{{ trans('messages.automation.choose_your_template_layout.intro') }}</p>
                 
             @include('automation2.email.template._tabs')
-
-			<h5 class="font-weight-semibold mb-0 mt-4">{{ $category->name }}</h5>
 
 			<div class="template-filter pt-4">
 				<div class="d-flex align-items-center">

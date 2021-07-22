@@ -1,5 +1,5 @@
-<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/dropzone/js/dropzone.js') }}"></script>
-<link rel="stylesheet" type="text/css" href="{{ URL::asset('assets/js/plugins/dropzone/css/dropzone.css') }}" />
+<script type="text/javascript" src="{{ URL::asset('core/dropzone/js/dropzone.js') }}"></script>
+<link rel="stylesheet" type="text/css" href="{{ URL::asset('core/dropzone/css/dropzone.css') }}" />
 
 <div class="image_upload_div">
   <form action="{{ action('CampaignController@uploadAttachment', $campaign->uid) }}" class="dropzone">

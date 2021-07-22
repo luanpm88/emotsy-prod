@@ -3,8 +3,8 @@
 @section('title', trans('messages.edit_template'))
 
 @section('head')
-	<script type="text/javascript" src="{{ URL::asset('js/tinymce/tinymce.min.js') }}"></script>        
-    <script type="text/javascript" src="{{ URL::asset('js/editor.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('core/tinymce/tinymce.min.js') }}"></script>        
+    <script type="text/javascript" src="{{ URL::asset('core/js/editor.js') }}"></script>
 
     <script src="{{ URL::asset('core/js/UrlAutoFill.js') }}"></script>
 @endsection
@@ -12,7 +12,7 @@
 @section('menu_title')
     <li class="d-flex align-items-center">
         <div class="d-inline-block d-flex mr-auto align-items-center ml-3 lvl-1">
-            <h4 class="my-0 me-2 menu-title">{{ $template->name }}</h4>
+            <h4 class="my-0 me-2 menu-title">{{ $automation->name }}</h4>
             <i class="material-icons-outlined">alarm</i>
         </div>
     </li>

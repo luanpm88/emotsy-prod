@@ -17,7 +17,9 @@
                                 'email_uid' => $email->uid,
                             ]) }}"
                         >
-                            <i class="lnr lnr-file-add"></i>
+                            <i class="material-icons-outlined">
+add
+                            </i>
                             <div class="list-body">
                                 <label>{{ trans('messages.automation.template.from_layout') }}</label>
                                 <p>{{ trans('messages.automation.template.from_layout.intro') }}</p>
@@ -35,7 +37,9 @@
                                 'email_uid' => $email->uid,
                             ]) }}"
                         >
-                            <i class="lnr lnr-upload"></i>
+                            <i class="material-icons-outlined">
+file_upload
+                            </i>
                             <div class="list-body">
                                 <label>{{ trans('messages.automation.template.upload') }}</label>
                                 <p>{{ trans('messages.automation.template.upload.intro') }}</p>

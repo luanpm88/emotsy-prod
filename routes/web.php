@@ -526,7 +526,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::match(['get', 'post'], 'automation2/{uid}/template/{email_uid}/edit', 'Automation2Controller@templateEdit');
     Route::match(['get', 'post'], 'automation2/{uid}/template/{email_uid}/upload', 'Automation2Controller@templateUpload');
     Route::match(['get', 'post'], 'automation2/{uid}/template/{email_uid}/layout', 'Automation2Controller@templateLayout');
-    Route::post('automation2/{uid}/template/{email_uid}/layout/list', 'Automation2Controller@templateLayoutList');
+    Route::get('automation2/{uid}/template/{email_uid}/layout/list', 'Automation2Controller@templateLayoutList');
     Route::get('automation2/{uid}/template/{email_uid}/create', 'Automation2Controller@templateCreate');
     
     Route::post('automation2/{uid}/email/{email_uid}/delete', 'Automation2Controller@emailDelete');

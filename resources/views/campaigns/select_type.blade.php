@@ -24,15 +24,20 @@ schedule
 
                 <li>
                     <a href="{{ action("CampaignController@create", ["type" => $key]) }}" class="btn btn-secondary">{{ trans('messages.choose') }}</a>
-                    <a href="{{ action("CampaignController@create", ["type" => $key]) }}">
-                        <span class="">
-                            <i class="material-icons-outlined">{{ $type['icon'] }}</i>
-                        </span>
-                    </a>
-                    <h4><a href="{{ action("CampaignController@create", ["type" => $key]) }}">{{ trans('messages.' . $key) }}</a></h4>
-                    <p>
-                        {{ trans('messages.campaign_intro_' . $key) }}
-                    </p>
+                    <div class="d-flex">
+                        <a href="{{ action("CampaignController@create", ["type" => $key]) }}">
+                            <span class="">
+                                <i class="material-icons-outlined fs-3 me-4">{{ $type['icon'] }}</i>
+                            </span>
+                        </a>
+                        <div>
+                            <h4><a href="{{ action("CampaignController@create", ["type" => $key]) }}">{{ trans('messages.' . $key) }}</a></h4>
+                            <p>
+                                {{ trans('messages.campaign_intro_' . $key) }}
+                            </p>
+                        </div>
+                    </div>
+                        
                 </li>
 
             @endforeach

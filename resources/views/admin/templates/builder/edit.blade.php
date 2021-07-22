@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     
-    @include('layouts._favicon')
+    @include('layouts.core._favicon')
     
     <link href="{{ URL::asset('builder/builder.css') }}" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="{{ URL::asset('builder/builder.js') }}"></script>

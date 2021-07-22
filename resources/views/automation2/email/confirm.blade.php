@@ -1,4 +1,4 @@
-@extends('layouts.popup.medium')
+@extends('layouts.popup.large')
 
 @section('content')
         
@@ -41,7 +41,9 @@
 
             load: function() {
                 if (this.popup == null) {
-                    this.popup = new Popup(this.url);
+                    this.popup = new Popup({
+                        url: this.url
+                    });
                 }
                 this.popup.load();
             }

@@ -3,9 +3,9 @@
 <head>
 	<title>@yield('title') - {{ \Acelle\Model\Setting::get("site_name") }}</title>
 
-	@include('layouts._favicon')
+	@include('layouts.core._favicon')
 
-	@include('layouts._head')
+	@include('layouts.core._head')
 	
 	<!-- Bootstrap -->
 	<link href="{{ URL::asset('assets2/lib/bootstrap-4.4.0/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css">
@@ -81,8 +81,8 @@
 	<link href="{{ URL::asset('assets2/css/app.css') }}?v={{ app_version() }}" rel="stylesheet" type="text/css">
 	
 	<!-- Dropzone -->
-	<script type="text/javascript" src="{{ URL::asset('assets2/lib/dropzone/dropzone.js') }}"></script>
-	<link href="{{ URL::asset('assets2/lib/dropzone/dropzone.css') }}" rel="stylesheet" type="text/css">
+	<script type="text/javascript" src="{{ URL::asset('core/dropzone/dropzone.js') }}"></script>
+	<link href="{{ URL::asset('core/dropzone/dropzone.css') }}" rel="stylesheet" type="text/css">
 	
 	<!-- Ajax box -->
 	<script type="text/javascript" src="{{ URL::asset('assets2/js/box.js') }}"></script>

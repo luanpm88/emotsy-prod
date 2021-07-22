@@ -16,9 +16,11 @@
         <div class="col-md-12">
             <ul class="key-value-list list-small">
                 @foreach ($email->attachments as $attachment)
-                    <li class="flex">
+                    <li class="flex align-items-center">
                         <div class="icon">
-                            <i class="lnr lnr-file-empty"></i>
+                            <span class="material-icons-outlined me-2">
+attach_email
+</span>
                         </div>
                         <div class="content mr-auto">
                             <label>

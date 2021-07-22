@@ -1,11 +1,11 @@
-@extends('layouts.popup.medium')
+@extends('layouts.popup.large')
 
 @section('content')
     
     @include('automation2.email._tabs', ['tab' => 'template'])
         
     <div class="row">
-        <div class="col-md-8">
+        <div class="col-md-12">
             @include('automation2.email.template._tabs', ['tab' => 'upload'])
             
             <h5 class="mb-3 mt-3">{{ trans('messages.automation.email.upload_template') }}</h4>
@@ -23,12 +23,8 @@
                 <input type="hidden" name="name" value="{{ trans('messages.untitled') }}" />
 
                 <div class="input-group mb-4 mt-4">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text">{{ trans('messages.automation.email.template.upload') }}</span>
-                    </div>
                     <div class="custom-file">
-                      <input type="file" name="file" class="custom-file-input" id="templateFile" required>
-                      <label class="custom-file-label" for="templateFile">{{ trans('messages.automation.email.template.choose_file') }}</label>
+                      <input type="file" name="file" class="form-control custom-file-input" id="templateFile" required>
                     </div>
                 </div>
                 

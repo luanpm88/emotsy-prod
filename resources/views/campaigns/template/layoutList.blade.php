@@ -1,5 +1,5 @@
 @if ($templates->count() > 0)
-    <div id="layout" class="row tab-pane fade in show active template-boxes layout mt-4" style="
+    <div id="layout" class="row tab-pane active template-boxes layout mt-4" style="
         margin-left: -20px;
         margin-right: -20px;
     ">
@@ -9,13 +9,13 @@
                     href="{{ action('CampaignController@templateLayout', ['uid' => $campaign->uid, 'template' => $template->uid]) }}"
                     class="choose-theme"
                 >
-                    <div class="panel panel-flat">
-                        <div class="panel-body">
+                    <div class="">
+                        <div class="">
                             <div>
                                 <div class="panel-template-placeholder">
                                     <img src="{{ $template->getThumbUrl() }}?v={{ rand(0,10) }}" />
                                 </div>
-                                <label class="mb-20 text-center">{{ $template->name }}</label>
+                                <label class="mt-1 text-center">{{ $template->name }}</label>
                             </div>
                         </div>
                     </div>
@@ -24,7 +24,7 @@
         @endforeach
     </div>
         
-    <hr style="clear: both">
+    <hr>
         
     @include('elements/_per_page_select', ["items" => $templates])
 @elseif (!empty(request()->keyword))

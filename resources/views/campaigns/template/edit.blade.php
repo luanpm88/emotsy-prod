@@ -4,15 +4,11 @@
     <title>{{ trans('messages.campaign.edit_template') }} - {{ $campaign->name }}</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    
-    @include('layouts._favicon')
+    @include('layouts.core._head')
+    @include('layouts.core._favicon')
     
     <link href="{{ URL::asset('builder/builder.css') }}" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="{{ URL::asset('builder/builder.js') }}"></script>
-
-    <script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery.min.js') }}"></script>
-    <link href="{{ URL::asset('assets2/lib/select2-4.0.12/css/select2.min.css') }}" rel="stylesheet" />
-    <script src="{{ URL::asset('assets2/lib/select2-4.0.12/js/select2.min.js') }}"></script>
 
     <style>
         .logo-img {
@@ -77,7 +73,7 @@
                     this.addContentWidget(new ProductWidget(), 0, 'ProductCommerce');
 
                     // add custom css
-                    this.addCustomCss('{{ url('/css/builder_product.css') }}');
+                    this.addCustomCss('{{ url('/core/css/builder_product.css') }}');
 
                     // click preview button
                     $("#builder_iframe").contents().find("body").on('click', '.product-preview-but', function(e) {

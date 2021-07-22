@@ -1,17 +1,17 @@
 @if ($templates->count() > 0)
-    <div id="layout" class="tab-pane fade in active template-boxes mt-20" style="
+    <div id="layout" class="row template-boxes mt-4" style="
         margin-left: -20px;
         margin-right: -20px;
     ">
         @foreach ($templates as $key => $template)
             <div class="col-xxs-12 col-xs-6 col-sm-3 col-md-2">
-                <a href="javascript:;" class="select-template-layout" data-template="{{ $template->uid }}">
+                <a href="javascript:;" class="select-template-layout mb-4 d-block" data-template="{{ $template->uid }}">
                     <div class="panel-template-style">
                         <div class="">
                             <div class="panel-template-placeholder">
                                 <img src="{{ $template->getThumbUrl() }}?v={{ rand(0,10) }}" />
                             </div>
-                            <label class="mb-20 text-center">{{ $template->name }}</label>
+                            <label class="mt-1 text-center">{{ $template->name }}</label>
                         </div>
                     </div>
                 </a>
@@ -19,7 +19,7 @@
         @endforeach
     </div>
         
-    <div style="clear:both">
+    <div style="clear:both" class="mt-4">
         @include('elements/_per_page_select', ["items" => $templates])
     </div>
     
