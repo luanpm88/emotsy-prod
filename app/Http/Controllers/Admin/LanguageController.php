@@ -22,7 +22,7 @@ class LanguageController extends Controller
         }
 
         // @todo: workaround only
-        Language::dump();
+        // Language::dump();
 
         return view('admin.languages.index');
     }
@@ -200,7 +200,7 @@ class LanguageController extends Controller
         $currentFile = $language->findFileById($request->file_id);
 
         // @todo: does it make sense to do this here? just a workaround
-        $language->createOrUpdateTranslationFiles();
+        // $language->createOrUpdateTranslationFiles();
 
         // Prenvent save from demo mod
         if ($this->isDemoMode()) {
