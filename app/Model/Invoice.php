@@ -512,7 +512,13 @@ class Invoice extends Model
         }
     }
 
-    public function isFree() {
+    public function isFree()
+    {
         return $this->total() == 0;
+    }
+
+    public function confirmWithoutPayment()
+    {
+        $this->fulfill();
     }
 }

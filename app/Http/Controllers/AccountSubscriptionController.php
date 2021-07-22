@@ -109,15 +109,16 @@ class AccountSubscriptionController extends Controller
 
     public function confirmFree(Request $request)
     {
-        $subscription = $request->user()->customer->subscription;
-        $invoice = $subscription->getUnpaidInvoice();
+        // get invoice
+        $invoice = $request->user()->customer->invoices()->where('uid', '=', $request->invoice_uid)->first();
 
         if (!$invoice->isFree()) {
             throw new \Exception('Invoice is not free!');
         }
         
-        $subscription->activateImmediatelyWithoutPayment();
+        $invoice->confirmWithoutPayment();
 
+        $request->session()->flash('alert-success', trans('messages.invoice.confirmed'));
         return redirect()->action('AccountSubscriptionController@index');
     }
 

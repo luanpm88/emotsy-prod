@@ -27,7 +27,9 @@
                 {{ trans('messages.subscription.thanks.click_to_start') }}
             </p>
 
-            <form class="" action="{{ action('AccountSubscriptionController@confirmFree') }}"
+            <form class="" action="{{ action('AccountSubscriptionController@confirmFree', [
+                'invoice_uid' => $invoice->uid,
+            ]) }}"
                 method="POST">
                 {{ csrf_field() }}
 

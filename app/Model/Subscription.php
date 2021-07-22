@@ -812,10 +812,4 @@ class Subscription extends Model
         // Make sure a new subscription must have a pending invoice
         $this->cancelNow();
     }
-
-    public function activateImmediatelyWithoutPayment()
-    {
-        $invoice = $this->getUnpaidInvoice();
-        $invoice->fulfill();
-    }
 }
