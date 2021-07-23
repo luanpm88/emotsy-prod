@@ -14,6 +14,7 @@ use Acelle\Model\Template;
 use Acelle\Model\Subscriber;
 use Illuminate\Support\Facades\Storage;
 use Acelle\Model\TemplateCategory;
+use Exception;
 
 class Automation2Controller extends Controller
 {
@@ -2355,22 +2356,21 @@ class Automation2Controller extends Controller
         $email = Email::findByUid($request->email_uid);
 
         if ($request->isMethod('post')) {
-            $validator = \Validator::make($request->all(), [
-                'email' => 'required|email',
-            ]);
+            try {
+                // Send
+                $email->sendTestEmail($request->input('email'));
 
-            //
-            if ($validator->fails()) {
+                // OK
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'OK',
+                ]);
+            } catch (Exception $ex) {
                 return response()->view('automation2.sendTestEmail', [
                     'email' => $email,
-                    'errors' => $validator->errors(),
+                    'error' => $ex->getMessage(),
                 ], 400);
             }
-
-            return response()->json([
-                'status' => 'success',
-                'message' => 'OK',
-            ]);
         }
 
         return view('automation2.sendTestEmail', [

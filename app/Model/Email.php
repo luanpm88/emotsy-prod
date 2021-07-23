@@ -19,6 +19,7 @@ use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use Acelle\Jobs\DeliverEmail;
 use Acelle\Library\Traits\HasTemplate;
 use Acelle\Library\Traits\HasUid;
+use Exception;
 
 class Email extends Model
 {
@@ -183,6 +184,31 @@ class Email extends Model
         ));
     }
 
+    public function sendTestEmail($emailAddress)
+    {
+        $validator = Validator::make([ 'email' => $emailAddress ], [
+            'email' => 'required|email',
+        ]);
+
+        if ($validator->fails()) {
+            $firstErrorMsg = $validator->errors()->first();
+            throw new Exception($firstErrorMsg);
+        }
+
+        $server = $this->automation->mailList->pickSendingServer();
+
+        // Build a valid message with a fake contact
+        // build a temporary subscriber oject used to pass through the sending methods
+        $subscriber = $this->createStdClassSubscriber(['email' => 'admin@outlook.com']);
+        list($message, $msgId) = $this->prepare($subscriber);
+        $result = $server->send($message);
+
+        // examine the result from sending server
+        if (array_has($result, 'error')) {
+            throw new Exception($result['error']);
+        }
+    }
+
     // @note: complicated dependencies
     // It is just fine, we can think Email as an object depends on User/Customer
     public function deliverTo($subscriber, $triggerId = null)
@@ -217,6 +243,27 @@ class Email extends Model
     }
 
     /**
+     * Create a stdClass subscriber (for sending a campaign test email)
+     * The campaign sending functions take a subscriber object as input
+     * However, a test email address is not yet a subscriber object, so we have to build a fake stdClass object
+     * which can be used as a real subscriber.
+     *
+     * @param array $subscriber
+     */
+    public function createStdClassSubscriber($subscriber)
+    {
+        // default attributes that are required
+        $jsonObj = [
+            'uid' => uniqid(),
+        ];
+
+        // append the customer specified attributes and build a stdClass object
+        $stdObj = json_decode(json_encode(array_merge($jsonObj, $subscriber)));
+
+        return $stdObj;
+    }
+
+    /**
      * Prepare the email content using Swift Mailer.
      *
      * @input object subscriber
@@ -243,7 +290,7 @@ class Email extends Model
         }
 
         // @TODO for AWS, setting returnPath requires verified domain or email address
-        $server = $subscriber->mailList->pickSendingServer();
+        $server = $this->automation->mailList->pickSendingServer();
         if ($server->allowCustomReturnPath()) {
             $returnPath = $server->getVerp($subscriber->email);
             if ($returnPath) {
@@ -369,19 +416,19 @@ class Email extends Model
             'CURRENT_YEAR' => date('Y'),
             'CURRENT_MONTH' => date('m'),
             'CURRENT_DAY' => date('d'),
-            'CONTACT_NAME' => $subscriber->mailList->contact->company,
-            'CONTACT_COUNTRY' => $subscriber->mailList->contact->country->name,
-            'CONTACT_STATE' => $subscriber->mailList->contact->state,
-            'CONTACT_CITY' => $subscriber->mailList->contact->city,
-            'CONTACT_ADDRESS_1' => $subscriber->mailList->contact->address_1,
-            'CONTACT_ADDRESS_2' => $subscriber->mailList->contact->address_2,
-            'CONTACT_PHONE' => $subscriber->mailList->contact->phone,
-            'CONTACT_URL' => $subscriber->mailList->contact->url,
-            'CONTACT_EMAIL' => $subscriber->mailList->contact->email,
-            'LIST_NAME' => $subscriber->mailList->name,
-            'LIST_SUBJECT' => $subscriber->mailList->default_subject,
-            'LIST_FROM_NAME' => $subscriber->mailList->from_name,
-            'LIST_FROM_EMAIL' => $subscriber->mailList->from_email,
+            'CONTACT_NAME' => $this->automation->mailList->contact->company,
+            'CONTACT_COUNTRY' => $this->automation->mailList->contact->country->name,
+            'CONTACT_STATE' => $this->automation->mailList->contact->state,
+            'CONTACT_CITY' => $this->automation->mailList->contact->city,
+            'CONTACT_ADDRESS_1' => $this->automation->mailList->contact->address_1,
+            'CONTACT_ADDRESS_2' => $this->automation->mailList->contact->address_2,
+            'CONTACT_PHONE' => $this->automation->mailList->contact->phone,
+            'CONTACT_URL' => $this->automation->mailList->contact->url,
+            'CONTACT_EMAIL' => $this->automation->mailList->contact->email,
+            'LIST_NAME' => $this->automation->mailList->name,
+            'LIST_SUBJECT' => $this->automation->mailList->default_subject,
+            'LIST_FROM_NAME' => $this->automation->mailList->from_name,
+            'LIST_FROM_EMAIL' => $this->automation->mailList->from_email,
         );
 
         # Subscriber specific
@@ -391,7 +438,7 @@ class Email extends Model
             $tags['WEB_VIEW_URL'] = $this->generateWebViewerUrl($msgId);
 
             # Subscriber custom fields
-            foreach ($subscriber->mailList->fields as $field) {
+            foreach ($this->automation->mailList->fields as $field) {
                 $tags['SUBSCRIBER_'.$field->tag] = $subscriber->getValueByField($field);
                 $tags[$field->tag] = $subscriber->getValueByField($field);
             }
@@ -400,6 +447,23 @@ class Email extends Model
             $tags['NAME'] = $subscriber->getFullName();
             $tags['FULL_NAME'] = $subscriber->getFullName();
         } else {
+            $sampleLink = route('campaign_message', [ 'message' => StringHelper::base64UrlEncode('This is a test link of a test campaign') ]);
+            $tags['UNSUBSCRIBE_URL'] = $sampleLink;
+            $tags['UPDATE_PROFILE_URL'] = $sampleLink;
+            $tags['WEB_VIEW_URL'] = $sampleLink;
+
+            # Subscriber custom fields, including email
+            $sample = '%PERSONALIZED-DATA%';
+            foreach ($this->automation->mailList->fields as $field) {
+                $tags['SUBSCRIBER_'.$field->tag] = $sample;
+                $tags[$field->tag] = $sample;
+            }
+
+            // Special / shortcut fields
+            $tags['NAME'] = $sample;
+            $tags['FULL_NAME'] = $sample;
+
+            // Only email is "reserved", overwrite previous $sample
             $tags['SUBSCRIBER_EMAIL'] = $subscriber->email;
         }
 
