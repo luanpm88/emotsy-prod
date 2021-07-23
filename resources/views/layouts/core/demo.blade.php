@@ -19,7 +19,7 @@
 
 
 		<!-- Footer -->
-		<div class="footer text-white d-block text-center mb-3 small text-muted pt-4" style="width:100%">
+		<div class="footer text-white d-block text-center mb-3 small text-muted2 pt-4" style="width:100%">
 			{!! trans('messages.copy_right_light') !!}			
 		</div>
 		<!-- /footer -->
