@@ -3,13 +3,22 @@
     <div class="alert alert-danger alert-noborder alert-dismissible">
         <strong>{{ trans('messages.check_entry_try_again') }}</strong>
 
-        <br><br>
+        <br>
 
         <ul>
             @foreach ($errors->all() as $error)
                 <li>{{ $error }}</li>
             @endforeach
         </ul>
+
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
+@if (isset($error) > 0)
+    <!-- Form Error List -->
+    <div class="alert alert-danger alert-noborder alert-dismissible">
+        <p>{{ trans('messages.notify.error') }}: {{ $error }}</p>
 
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
