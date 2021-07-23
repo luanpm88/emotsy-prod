@@ -12,6 +12,8 @@ class ImportSubscribersJob extends Base
 {
     use Trackable;
 
+    public $timeout = 7200;
+
     // @todo this should better be a constant
     protected $list;
     protected $file; // Example: /home/acelle/storage/app/tmp/import-000000.csv

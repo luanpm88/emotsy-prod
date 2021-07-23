@@ -11,6 +11,8 @@ class VerifyMailListJob extends Base
 {
     use Batchable, Trackable;
 
+    public $timeout = 14400;
+
     protected $mailList;
     protected $server;
 

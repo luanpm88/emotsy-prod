@@ -10,6 +10,8 @@ class ImportBlacklistJob extends Base
 {
     use Trackable;
 
+    public $timeout = 7200;
+
     // @todo this should better be a constant
     protected $filepath;
     protected $customer;

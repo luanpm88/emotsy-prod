@@ -9,6 +9,8 @@ class ExportSubscribersJob extends Base
 {
     use Trackable;
 
+    public $timeout = 3600;
+
     protected $mailList;
     /**
      * Create a new job instance.

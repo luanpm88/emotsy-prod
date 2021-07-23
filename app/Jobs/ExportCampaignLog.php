@@ -8,6 +8,8 @@ class ExportCampaignLog extends Base
 {
     use Trackable;
 
+    public $timeout = 3600;
+
     protected $campaign;
     protected $logtype;
 
