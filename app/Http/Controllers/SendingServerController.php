@@ -326,7 +326,6 @@ class SendingServerController extends Controller
         }
 
         $server->fill($request->all());
-        $server->type = $request->type;
 
         // authorize
         if (!$current_user->customer->can('test', $server)) {
@@ -344,18 +343,16 @@ class SendingServerController extends Controller
                     'plain' => $request->content
                 ]);
             } catch (\Exception $ex) {
-                echo json_encode([
+                return response()->json([
                     'status' => 'error', // or success
                     'message' => $ex->getMessage()
-                ]);
-                return;
+                ], 400);
             }
 
-            echo json_encode([
+            return response()->json([
                 'status' => 'success', // or success
                 'message' => trans('messages.sending_server.test_success')
             ]);
-            return;
         }
 
         return view('sending_servers.test', [

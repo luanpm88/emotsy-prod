@@ -273,6 +273,7 @@
 <div class="text-left">
 	@if(Auth::user()->customer->can('test', $server))
 		<a
+			id="SendTestEmailButton"
 			href="{{ action('SendingServerController@test', $server->uid) }}"
 			role="button"
 			class="btn btn-secondary mr-5 btn-icon modal_link"
@@ -289,3 +290,28 @@ quiz
 		<i class="icon-cross2"></i> {{ trans('messages.cancel') }}
 	</a>
 </div>
+
+<script>
+	var SendTestEmail = {
+		popup: null,
+		url: '{{ action('SendingServerController@test', $server->uid) }}',
+
+		getPopup: function() {
+			if (this.popup == null) {
+				this.popup = new Popup({
+					url: this.url
+				});
+			}
+
+			return this.popup;
+		}
+	}
+
+	$(function() {
+		$('#SendTestEmailButton').on('click', function(e) {
+			e.preventDefault();
+
+			SendTestEmail.getPopup().load();
+		});
+	});
+</script>
