@@ -163,11 +163,11 @@
                 }
             });
 
-            LanguagesTranslate.editor = $('.my-code-messages').data('ace').editor.ace
-            LanguagesTranslate.editor.getSession().on('change', function() {
-                LanguagesTranslate.changed = true;
-            });
-            LanguagesTranslate.editor.commands.removeCommand('find');
+            // LanguagesTranslate.editor = $('.my-code-messages').data('ace').editor.ace
+            // LanguagesTranslate.editor.getSession().on('change', function() {
+            //     LanguagesTranslate.changed = true;
+            // });
+            // LanguagesTranslate.editor.commands.removeCommand('find');
         });
         
     </script>
