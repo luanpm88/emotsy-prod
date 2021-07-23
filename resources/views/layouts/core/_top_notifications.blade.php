@@ -47,7 +47,7 @@
 							</span>
 						@endif
 					</i>
-					<span class="d-block" style="width: 100%;">
+					<span class="d-block" style="width: 255px;">
 						<span class="d-flex mb-0">
 							<span class="text-semibold me-auto fw-600" style="white-space: initial;">{{ $notification->title }}</span>
 							<span class="text-muted small"><span class="material-icons-outlined">
