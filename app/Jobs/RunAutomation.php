@@ -8,6 +8,8 @@ class RunAutomation extends Base
 {
     protected $automation;
 
+    public $timeout = 7200;
+
     public function __construct($automation)
     {
         $this->automation = $automation;

@@ -13,6 +13,8 @@ class ImportSubscribers2 extends Base
 {
     use Batchable, Trackable;
 
+    public $timeout = 7200;
+
     protected $list;
     protected $file; // Example: /home/acelle/storage/app/tmp/import-000000.csv
 
