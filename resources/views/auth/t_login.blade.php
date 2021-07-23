@@ -6,7 +6,7 @@
 
     <link type="text/css" rel="stylesheet" href="{{ URL::asset('core/lightslider/css/lightslider.css') }}" />
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <script src="{{ URL::asset('assets/lib/lightslider/js/lightslider.js') }}"></script>
+    <script src="{{ URL::asset('core/lightslider/js/lightslider.js') }}"></script>
 
     <script>
         function addButtonLoadingEffect(button) {
