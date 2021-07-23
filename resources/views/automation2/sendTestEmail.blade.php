@@ -11,8 +11,6 @@
     >
         {{ csrf_field() }}
 
-        <div class="modal-body">
-
             @include('helpers.form_control', [
                 'type' => 'text',
                 'name' => 'email',
@@ -29,8 +27,6 @@
                 <button id="testSend" type="submit" class="btn btn-secondary me-1"><i class="icon-paperplane"></i> {{ trans('messages.send') }}</button>
                 <a href="javascript:;" onclick="Automation2SendTestEmailPopup.popup.hide()" role="button" class="btn btn-secondary">{{ trans('messages.close') }}</a>
             </div>
-
-        </div>
     </form>
 
     <script>
