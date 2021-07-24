@@ -16,7 +16,11 @@ $(function(){
             return;
         }
 
-        alert(request.responseText);
+        if (request.responseText) {
+            alert(request.responseText);
+        } else {
+            console.log(request);
+        }
     });
 
     // Top quota button

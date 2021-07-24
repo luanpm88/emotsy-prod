@@ -3728,4 +3728,5 @@
   'language.discard_change' => 'Your change in the current file will be discarded.',
   'invoice.confirmed' => 'Your subscription was successfully updated',
   'product.title' => 'Title',
+  'campaign_status_ready' => 'Ready',
 ) ?>
