@@ -11,7 +11,7 @@
         action="{{ action('MailListController@copy', ['copy_list_uid' => $list->uid]) }}"
         method="POST">
         {{ csrf_field() }}          
-            <p class="mb-2">{{ trans('messages.what_would_you_like_to_name_your_list') }}</p>
+            <p class="mb-4">{{ trans('messages.what_would_you_like_to_name_your_list') }}</p>
 
         @include('helpers.form_control', [
             'type' => 'text',

@@ -3977,11 +3977,10 @@ form.loading input {
     text-overflow: ellipsis;
 }
 .btn-link {
-    color: #333!important;
+    color: #00838F!important;
     font-weight: 600;
 }
 .btn-link:hover {
-    color: #000!important;
     text-decoration: none;
 }
 .product-image-box {
@@ -6515,6 +6514,9 @@ h5 {
 }
 h1 [class^="material-icons"] {
     margin-right: .5rem;
+}
+h3, h4 [class^="material-icons"] {
+    transform: translateY(4%) scale(1);
 }
 .nav-underline .dropdown-toggle::after {
     content: 'keyboard_arrow_down';
