@@ -24,10 +24,14 @@ schedule
 
                 <li>
                     <a href="{{ action("CampaignController@create", ["type" => $key]) }}" class="btn btn-secondary">{{ trans('messages.choose') }}</a>
-                    <div class="d-flex">
+                    <div class="d-flex align-items-center">
                         <a href="{{ action("CampaignController@create", ["type" => $key]) }}">
                             <span class="">
-                                <i class="material-icons-outlined fs-3 me-4">{{ $type['icon'] }}</i>
+                                @if ($key == 'regular')
+                                    <img width="40px" class="icon-img d-inline-block me-4" src="{{ url('images/icons/regular.svg') }}" />
+                                @elseif ($key == 'plain-text')
+                                    <img width="40px" class="icon-img d-inline-block me-4" src="{{ url('images/icons/plain.svg') }}" />
+                                @endif
                             </span>
                         </a>
                         <div>

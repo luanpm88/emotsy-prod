@@ -13,7 +13,17 @@
                     @endphp
                     <div class="d-flex align-items-center line-item action-select-but action-select-{{ $type }} {{ $disabled }}" data-key="{{ $type }}">
                         <div class="line-icon">
-                            <i class="material-icons-outlined">{{ trans('messages.automation.action.' . $type . '.icon') }}</i>
+                            @if ($type == 'send-an-email')
+                                <img width="30px" class="icon-img d-inline-block" src="{{ url('images/icons/email-right.svg') }}" />
+                            @elseif ($type == 'wait')
+                                <img width="30px" class="icon-img d-inline-block" src="{{ url('images/icons/wait.svg') }}" />
+                            @elseif ($type == 'condition')
+                                <img width="30px" class="icon-img d-inline-block" src="{{ url('images/icons/condition.svg') }}" />
+                            @elseif ($type == 'operation')
+                                <img width="30px" class="icon-img d-inline-block" src="{{ url('images/icons/operation.svg') }}" />
+                            @else
+                                <i class="material-icons-outlined">{{ trans('messages.automation.action.' . $type . '.icon') }}</i>
+                            @endif
                         </div>
                         <div class="line-body">
                             <h5>{{ trans('messages.automation.action.' . $type) }}</h5>

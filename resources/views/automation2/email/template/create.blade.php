@@ -17,9 +17,7 @@
                                 'email_uid' => $email->uid,
                             ]) }}"
                         >
-                            <i class="material-icons-outlined">
-add
-                            </i>
+                            <img width="35px" class="icon-img d-inline-block me-3" src="{{ url('images/icons/plus.svg') }}" />
                             <div class="list-body">
                                 <label>{{ trans('messages.automation.template.from_layout') }}</label>
                                 <p>{{ trans('messages.automation.template.from_layout.intro') }}</p>
@@ -37,9 +35,7 @@ add
                                 'email_uid' => $email->uid,
                             ]) }}"
                         >
-                            <i class="material-icons-outlined">
-file_upload
-                            </i>
+                            <img width="35px" class="icon-img d-inline-block me-3" src="{{ url('images/icons/upload.svg') }}" />
                             <div class="list-body">
                                 <label>{{ trans('messages.automation.template.upload') }}</label>
                                 <p>{{ trans('messages.automation.template.upload.intro') }}</p>

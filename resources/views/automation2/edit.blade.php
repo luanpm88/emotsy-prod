@@ -313,10 +313,6 @@
             var url = '{{ action('Automation2Controller@emailSetup', $automation->uid) }}' + '?action_id=' + id;
             
             popup.load(url, function() {
-                // // set back event
-                // popup.back = function() {
-                //     Popup.hide();
-                // };
             });
         }
 
@@ -366,11 +362,6 @@
             popup.load('{{ action('Automation2Controller@triggerSelectPupop', $automation->uid) }}', function() {
                 console.log('Select trigger popup loaded!');
                 
-                // // set back event
-                // popup.back = function() {
-                //     Popup.hide();
-                // };
-                
                 // when click on trigger type
                 popup.popup.find('.trigger-select-but').click(function() {
                     var key = $(this).attr('data-key');
@@ -386,11 +377,6 @@
             
             popup.load(url, function() {
                 console.log('Confirm trigger type popup loaded!');
-                
-                // // set back event
-                // popup.back = function() {
-                //     OpenTriggerSelectPopup();
-                // };
             });
         }
         

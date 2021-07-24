@@ -86,7 +86,7 @@ class Popup {
         $('html').css('overflow', 'auto');
     }
 
-    back() {
+    goBack() {
         var _this = this;
 
         if (_this.backs.length > 0) {
@@ -115,7 +115,7 @@ class Popup {
         
         // back button
         _this.popup.find('.back').on('click', function() {
-            _this.back();
+            _this.goBack();
         });
         
         // click close button
@@ -161,7 +161,6 @@ class Popup {
         }
         
         // save current options
-        
         if (typeof(newOptions.noHistory) == 'undefined' &&
             typeof(newOptions.url) !== 'undefined' &&
             typeof(_this.options.url) !== 'undefined' &&
