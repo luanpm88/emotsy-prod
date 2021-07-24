@@ -22,9 +22,9 @@ auto_awesome
                             <img class="flag-icon" src="{{ url("/images/flags/" . (empty($location->country_code) ? "unknown" : $location->country_code) . ".png") }}" />
                             {{ (empty($location->country_name) ? trans("messages.unknown") : $location->country_name) }}
                         </p>
-                        <div class="pull-right num">
+                        <span class="pull-right num">
                             {{ $location->aggregate }}
-                        </div>
+                        </span>
                     </div>
                 @endforeach 
             </div>

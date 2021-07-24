@@ -1,6 +1,6 @@
 <div class="row mt-5">
     <div class="col-md-8">
-        <div class="mb-4">{{ trans('messages.campaign_open_click_rate_intro') }}</div>
+        <p class="mb-4">{{ trans('messages.campaign_open_click_rate_intro') }}</p>
     </div>
 </div>
 <div class="row">
@@ -8,7 +8,9 @@
         <div class="content-group-sm">
             <div class="d-flex">
                 <h4 class="text-semibold mt-0 me-auto">{{ trans('messages.open_rate') }}</h4>
-                <div class="pull-right progress-right-info text-primary">{{ number_to_percentage($campaign->readCache('UniqOpenRate')) }}</div>
+                <span class="pull-right progress-right-info text-primary">
+                    {{ number_to_percentage($campaign->readCache('UniqOpenRate')) }}
+                </span>
             </div>
             <div class="progress progress-sm">
                 <div class="progress-bar bg-color3" style="width: {{ number_to_percentage($campaign->readCache('UniqOpenRate')) }}">
@@ -18,28 +20,28 @@
         <div class="stat-table">
             <div class="stat-row">
                 <p class="text-muted">{{ trans('messages.successful_deliveries') }}</p>
-                <div class="pull-right num">
+                <span class="pull-right num">
                     {{ number_with_delimiter($campaign->readCache('DeliveredCount')) }}
                     <span class="text-muted2">{{ number_to_percentage($campaign->readCache('DeliveredRate')) }}</span>
-                </div>
+                </span>
             </div>
             <div class="stat-row">
                 <p class="text-muted">{{ trans('messages.total_opens') }}</p>
-                <div class="pull-right num">
+                <span class="pull-right num">
                     {{ number_with_delimiter($campaign->openCount()) }}
-                </div>
+                </span>
             </div>
             <div class="stat-row">
                 <p class="text-muted">{{ trans('messages.uniq_opens') }}</p>
-                <div class="pull-right num">
+                <span class="pull-right num">
                     {{ number_with_delimiter($campaign->readCache('UniqOpenCount')) }}
-                </div>
+                </span>
             </div>
             <div class="stat-row">
                 <p class="text-muted">{{ trans('messages.last_opened') }}</p>
-                <div class="pull-right num">
+                <span class="pull-right num">
                     {{ is_object($campaign->lastOpen()) ? Acelle\Library\Tool::formatDateTime($campaign->lastOpen()->created_at) : "" }}
-                </div>
+                </span>
             </div>
         </div>
         <div class="text-end">
@@ -63,27 +65,27 @@ arrow_forward
         <div class="stat-table">
             <div class="stat-row">
                 <p class="text-muted">{{ trans('messages.total_clicks') }}</p>
-                <div class="pull-right num">
+                <span class="pull-right num">
                     {{ number_with_delimiter($campaign->clickCount()) }}
-                </div>
+                </span>
             </div>
             <div class="stat-row">
                 <p class="text-muted">{{ trans('messages.total_opens') }}</p>
-                <div class="pull-right num">
+                <span class="pull-right num">
                     {{ number_with_delimiter($campaign->openCount()) }}
-                </div>
+                </span>
             </div>
             <div class="stat-row">
                 <p class="text-muted">{{ trans('messages.abuse_reports') }}</p>
-                <div class="pull-right num">
+                <span class="pull-right num">
                     {{ number_with_delimiter($campaign->abuseFeedbackCount()) }}
-                </div>
+                </span>
             </div>
             <div class="stat-row">
                 <p class="text-muted">{{ trans('messages.last_clicked') }}</p>
-                <div class="pull-right num">
+                <span class="pull-right num">
                     {{ is_object($campaign->lastClick()) ? Acelle\Library\Tool::formatDateTime($campaign->lastClick()->created_at) : "" }}
-                </div>
+                </span>
             </div>
         </div>
         <div class="text-end">

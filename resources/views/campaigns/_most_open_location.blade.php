@@ -13,9 +13,9 @@ people
                         <p class="fw-600"><span class="material-icons-outlined me-1">
                             alternate_email
                             </span> {{ $subscriber->email }}</p>
-                        <div class="pull-right num">
+                        <span class="pull-right num">
                             {{ $subscriber->count }}
-                        </div>
+                        </span>
                     </div>
                 @endforeach                        
             </div>
@@ -50,9 +50,9 @@ auto_awesome
                         <p class="fw-600"><span class="material-icons-outlined me-1">
                             place
                             </span> <span class="fw-600">{{ $location->name() }}</span> - {{ $location->ip_address }}</p>
-                        <div class="pull-right num">
+                        <span class="pull-right num">
                             {{ $location->aggregate }}
-                        </div>
+                        </span>
                     </div>
                 @endforeach 
             </div>

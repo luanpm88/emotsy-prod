@@ -19,9 +19,9 @@ auto_awesome
                 @foreach ($campaign->topClickCountries(7)->get() as $location)
                     <div class="stat-row">
                         <p class="text-muted">{{ $location->country_name }}</p>
-                        <div class="pull-right num">
+                        <span class="pull-right num">
                             {{ $location->aggregate }}
-                        </div>
+                        </span>
                     </div>
                 @endforeach 
             </div>

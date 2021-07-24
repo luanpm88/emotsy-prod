@@ -9,9 +9,9 @@ link
                 <p class="text-muted">
                     <a target="_blank" href="{{ $link->url }}">{{ $link->url }}</a>
                 </p>
-                <div class="pull-right num">
+                <span class="pull-right num">
                     {{ $link->aggregate }}
-                </div>
+                </span>
             </div>
         @endforeach
     </div>
