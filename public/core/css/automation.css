@@ -102,6 +102,7 @@ a {
   padding: 15px;
   border: dashed 2px #fff;
   border-radius: 15px;
+  align-items: center;
 }
 .hover-list li:hover {
   border: dashed 2px #aaa;

@@ -3,7 +3,7 @@
 <h5 class="mb-3">{{ trans('messages.automation.operation.' . $element->getOption('operation_type')) }}</h5>
 <p>{!! trans('messages.automation.operation.' .$element->getOption('operation_type'). '.desc', [
     'list_name' => $element->getOption('target_list_uid') ? \Acelle\Model\MailList::findByUid($element->getOption('target_list_uid'))->name : '',
-    'tags' => $element->getOption('tags') ? '<span class="badge badge-info mr-1">' . implode('</span><span class="badge badge-info mr-1">', $element->getOption('tags')) . '</span>' : '',
+    'tags' => $element->getOption('tags') ? '<span class="label bg-running mr-1">' . implode('</span><span class="label bg-running mr-1">', $element->getOption('tags')) . '</span>' : '',
 ]) !!}</p>
 
 @if (request()->operation == 'update' && $element->getOption('update'))
