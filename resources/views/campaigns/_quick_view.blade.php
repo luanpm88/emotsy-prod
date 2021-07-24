@@ -3,21 +3,21 @@
 		<h5 class="mt-10 text-semibold">{!! trans('messages.send_to', [ 'count' => '<span class="text-bold badge badge-info bg-info-800 badge-big">' . $campaign->readCache("SubscriberCount", 0) . '</span>' ]) !!}</h5>
         <div class="mb-10">
             <span class="text-bold text-muted">{{ trans('messages.from') }}:</span>
-            {!! $campaign->displayRecipients() !!}
+            <span>{!! $campaign->displayRecipients() !!}</span>
         </div>
     </div>
     <div class="col-md-6">
 		<div class="mb-10">
             <span class="text-bold text-muted">{{ trans('messages.subject') }}:</span>
-            {{ $campaign->subject }}
+            <span>{{ $campaign->subject }}</span>
         </div>
         <div class="mb-10">
             <span class="text-bold text-muted">{{ trans('messages.run_at') }}:</span>
-            {{ isset($campaign->run_at) ? Tool::formatDateTime($campaign->run_at) : "" }}
+            <span>{{ isset($campaign->run_at) ? Tool::formatDateTime($campaign->run_at) : "" }}</span>
         </div>
 		<div class="mb-10">
             <span class="text-bold text-muted">{{ trans('messages.delivery_at') }}:</span>
-            {{ isset($campaign->delivery_at) ? Tool::formatDateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $campaign->delivery_at)) : "" }}
+            <span>{{ isset($campaign->delivery_at) ? Tool::formatDateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $campaign->delivery_at)) : "" }}</span>
         </div>
     </div>
 </div>
