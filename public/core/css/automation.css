@@ -92,21 +92,6 @@ a {
 .line-item .line-body p {
   margin-bottom: 0;
 }
-
-.hover-list {
-  padding: 0;
-}
-.hover-list li {
-  display: flex;
-  list-style: none;
-  padding: 15px;
-  border: dashed 2px #fff;
-  border-radius: 15px;
-  align-items: center;
-}
-.hover-list li:hover {
-  border: dashed 2px #aaa;
-}
 .hover-list li .list-body {
   padding-right: 100px;
   width: 100%;
@@ -538,6 +523,7 @@ label.switchery-double.checkbox-switchery {
   padding: 15px;
   border: dashed 2px #fff;
   border-radius: 15px;
+  align-items: center;
 }
 .hover-list li:hover {
   border: dashed 2px #aaa;
