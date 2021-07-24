@@ -15,7 +15,7 @@
     </div>
 @endif
 
-@if (isset($error) > 0)
+@if (!count($errors) && isset($error))
     <!-- Form Error List -->
     <div class="alert alert-danger alert-noborder alert-dismissible">
         <p>{{ trans('messages.notify.error') }}: {{ $error }}</p>

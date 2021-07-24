@@ -18,6 +18,9 @@ display: none;
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
 }
+.modal-footer {
+    justify-content: center;
+}
 .form-control {
     padding: .29rem .75rem;
 }
@@ -3975,6 +3978,7 @@ form.loading input {
 }
 .btn-link {
     color: #333!important;
+    font-weight: 600;
 }
 .btn-link:hover {
     color: #000!important;
@@ -5044,12 +5048,6 @@ h2.mc-h2 {
     text-align: center;
     padding: 18px;
     border-bottom: solid 1px #bdbbb9;
-}
-.mc-modal .modal-body {
-    padding: 30px 40px 30px 40px;
-}
-.mc-modal .modal-footer {
-    padding: 15px 40px 30px 40px;
 }
 .mc-modal .modal-title {
     font-weight: 600;
@@ -6442,7 +6440,7 @@ h5 {
     }
 }
 .modal-body {
-    padding: 1.5rem 2rem;
+    padding: 2rem 5rem;
 }
 .select2-container--default .select2-selection--single .select2-selection__clear {
     right: 23px;

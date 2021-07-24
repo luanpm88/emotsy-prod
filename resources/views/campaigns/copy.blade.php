@@ -1,7 +1,7 @@
 @extends('layouts.popup.small')
 
 @section('title')
-    {!! trans('messages.copy_campaign', [
+    <span class="material-icons-outlined me-1 text-muted2">copy</span> {!! trans('messages.copy_campaign', [
         'name' => $campaign->name
     ]) !!}
 @endsection
@@ -23,7 +23,7 @@
                 'rules' => ['name' => 'required']
             ])
             
-            <div class="mt-4">
+            <div class="mt-4 text-center">
                 <button type="submit" id="doCopyButton" class="btn btn-secondary px-3 me-2">{{ trans('messages.copy') }}</button>
                 <button type="button" class="btn btn-link fw-600" data-bs-dismiss="modal">{{ trans('messages.cancel') }}</button>
             </div>

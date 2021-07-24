@@ -52,12 +52,11 @@ class Popup {
         });
 
         this.popup[0].addEventListener('hidden.bs.modal', function (event) {
-            _this.reset();
+            _this.hide();
         })
     }
 
     reset() {
-        this.hide();
         this.modal.dispose();
         this.popup.remove();
         this.init(this.options);
@@ -75,27 +74,11 @@ class Popup {
             this.options.onclose();
         }
 
-        // clear backs
-        this.backs = [];
-
         if (typeof(this.onHide) !== 'undefined') {
             this.onHide();
         }
-    }
 
-    loaded() {
-        // apply js for new content
-        this.applyJs();
-        
-        // remove loading effects
-        this.popup.find('.popup-loading').remove();        
-        this.popup.removeClass('popup-is-loading');
-
-        if (typeof(this.options.callback) != 'undefined') {
-            this.options.callback();
-        }
-
-        this.toogleBackButton();
+        this.reset();
     }
     
     static hide() {
@@ -205,11 +188,19 @@ class Popup {
         }).done(function(response) {
             _this.popup.html(response);
             
-            // after load
-            _this.loaded();
+            // apply js for new content
+            _this.applyJs();
+
+            // hide/show backe button
+            _this.toogleBackButton();
 
             // 
             _this.unmask();
+
+            // loaded callback
+            if (typeof(_this.options.callback) != 'undefined') {
+                _this.options.callback();
+            }
         }).fail(function(jqXHR, textStatus, errorThrown){
             // for debugging
             alert(errorThrown);
@@ -233,13 +224,17 @@ class Popup {
         
         _this.popup.html(html);
         
-        // after load
-        _this.loaded();
+        // apply js for new content
+        _this.applyJs();
+
+        // hide/show backe button
+        _this.toogleBackButton();
 
         //
         _this.unmask();
 
-        if (typeof(callback) !== 'undefined') {
+        // loaded callback
+        if (typeof(_this.options.callback) != 'undefined') {
             _this.options.callback();
         }
     }

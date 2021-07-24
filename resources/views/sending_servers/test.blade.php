@@ -5,7 +5,6 @@
 @endsection
 
 @section('content')
-
         <form id="TestEmailForm" action="" method="POST" class="ajax_upload_form form-validate-jquery">
             {{ csrf_field() }}
             <input type="hidden" name="_method" value="">
@@ -15,7 +14,7 @@
                 <input type="hidden" name="{{ $key }}" value="{{ $value }}">
             @endforeach
 
-            <div class="modal-body">
+            <div class="">
                 <p>{{ trans('messages.test_sending_server.intro') }}</p>
                 @include('helpers.form_control', [
                     'type' => 'text',
@@ -54,18 +53,18 @@
                     'rules' => ['content' => 'required']
                 ])
             </div>
-            <div class="modal-footer text-left">
+            <div class="mt-4 text-center">
                 <button type="submit"
                     href="{{ action('SendingServerController@test', $server->uid) }}"
                     role="button"
-                    class="btn btn-secondary mr-5 ajax_link"
+                    class="btn btn-secondary me-1 ajax_link"
                     data-in-form="true"
                     link-method="POST"
                     mask-title="{{ trans('messages.sending_server.testing_connection') }}"
                 >
                     {{ trans('messages.send') }}
                 </button>
-                <button role="button" class="btn btn-default" data-dismiss="modal">{{ trans('messages.close') }}</button>
+                <button role="button" class="btn btn-link" data-dismiss="modal">{{ trans('messages.close') }}</button>
             </div>
         </form>
 
