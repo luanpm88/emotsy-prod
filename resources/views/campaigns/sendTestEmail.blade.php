@@ -14,7 +14,7 @@
     >
         {{ csrf_field() }}
 
-        <div class="modal-body">
+        <div class="">
 
             @include('helpers.form_control', [
                 'type' => 'text',
@@ -61,7 +61,7 @@
                     globalError: false
                 }).done(function(response) {
                     notify({
-                        type: response.type,
+                        type: response.status,
                         message: response.message,
                     });
                 }).fail(function(jqXHR, textStatus, errorThrown){

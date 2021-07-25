@@ -1593,6 +1593,8 @@ class CampaignController extends Controller
                 ], 400);
             }
 
+            $sending = $campaign->sendTestEmail($request->send_test_email);
+
             return response()->json($sending);
         }
 

@@ -57,65 +57,96 @@ task_alt
                         </p>
                     </li>
                 @endif
-                <li>
-                    <a href="{{ action('CampaignController@recipients', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
+                <li class="d-flex align-items-center">
+                    
                     <!-- {{ $count = $campaign->subscribersCount() }} -->
-                    @if ($count)
-                        <i class="material-icons-outlined">
-task_alt
+
+                    <span class="fs-4 me-4">
+                        @if ($count)
+                            <i class="material-icons-outlined text-success">
+    task_alt
+                            </i>
+                        @else
+                            <i class="icon-cross2 text-danger"></i>
+                        @endif
+                    </span>
+                    <div class="me-auto">
+                        <h4>{{ number_with_delimiter($count) }} {{ trans('messages.recipients') }}</h4>
+                        <p>
+                            {!! $campaign->displayRecipients() !!}
+                        </p>
+                    </div>
+
+                    <a href="{{ action('CampaignController@recipients', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
+                </li>
+
+                <li class="d-flex align-items-center">
+                    <span class="fs-4 me-4">
+                        <i class="material-icons-outlined text-success">
+                            task_alt
                         </i>
-                    @else
-                        <i class="icon-cross2 text-danger"></i>
-                    @endif
-                    <h4>{{ number_with_delimiter($count) }} {{ trans('messages.recipients') }}</h4>
-                    <p>
-                        {!! $campaign->displayRecipients() !!}
-                    </p>
+                    </span>
+                    <div class="me-auto">
+                        <h4>{{ trans('messages.email_subject') }}</h4>
+                        <p>
+                            {{ $campaign->subject }}
+                        </p>    
+                    </div>
+
+                    <a href="{{ action('CampaignController@recipients', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
                 </li>
-                <li>
+
+                <li class="d-flex align-items-center">
+                    <span class="fs-4 me-4">
+                        <i class="material-icons-outlined text-success">
+                            task_alt
+                        </i>
+                    </span>
+                    <div class="me-auto">
+                        <h4>{{ trans('messages.reply_to') }}</h4>
+                        <p>
+                            {{ $campaign->reply_to }}
+                        </p>   
+                    </div>
+
                     <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
-                    <i class="material-icons-outlined">
-task_alt
-                    </i>
-                    <h4>{{ trans('messages.email_subject') }}</h4>
-                    <p>
-                        {{ $campaign->subject }}
-                    </p>
                 </li>
-                <li>
+
+                <li class="d-flex align-items-center">
+                    <span class="fs-4 me-4">
+                        <i class="material-icons-outlined text-success">
+                            task_alt
+                        </i>
+                    </span>
+                    <div class="me-auto">
+                        <h4>{{ trans('messages.tracking') }}</h4>
+                        <p>
+                            @if ($campaign->track_open)
+                                {{ trans('messages.opens') }}<pp>,</pp>
+                            @endif
+                            @if ($campaign->track_click)
+                                {{ trans('messages.clicks') }}<pp>,</pp>
+                            @endif
+                        </p>
+                    </div>
+
                     <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
-                    <i class="material-icons-outlined">
-task_alt
-                    </i>
-                    <h4>{{ trans('messages.reply_to') }}</h4>
-                    <p>
-                        {{ $campaign->reply_to }}
-                    </p>
                 </li>
-                <li>
+
+                <li class="d-flex align-items-center">
+                    <span class="fs-4 me-4">
+                        <i class="material-icons-outlined text-success">
+                            task_alt
+                        </i>
+                    </span>
+                    <div class="me-auto">
+                        <h4>{{ trans('messages.run_at') }}</h4>
+                        <p>
+                            {{ isset($campaign->run_at) ? Acelle\Library\Tool::formatDateTime($campaign->run_at) : "" }}
+                        </p>
+                    </div>
+
                     <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
-                    <i class="material-icons-outlined">
-task_alt
-                    </i>
-                    <h4>{{ trans('messages.tracking') }}</h4>
-                    <p>
-                        @if ($campaign->track_open)
-                            {{ trans('messages.opens') }}<pp>,</pp>
-                        @endif
-                        @if ($campaign->track_click)
-                            {{ trans('messages.clicks') }}<pp>,</pp>
-                        @endif
-                    </p>
-                </li>
-                <li>
-                    <a href="{{ action('CampaignController@schedule', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
-                    <i class="material-icons-outlined">
-task_alt
-                    </i>
-                    <h4>{{ trans('messages.run_at') }}</h4>
-                    <p>
-                        {{ isset($campaign->run_at) ? Acelle\Library\Tool::formatDateTime($campaign->run_at) : "" }}
-                    </p>
                 </li>
             </ul>
 

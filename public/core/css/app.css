@@ -6268,6 +6268,7 @@ h1, h1 {
     position: fixed;
     bottom: 0px;
     right: 20px;
+    z-index: 100000000;
 }
 #anotify .alert {
     width: 350px;
