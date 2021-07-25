@@ -4,22 +4,22 @@
 
 @section('page_header')
 
-	<div class="page-title">
-		<ul class="breadcrumb breadcrumb-caret position-right">
-			<li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-		</ul>
-		<h1>
-			<span class="text-semibold"><span class="material-icons-outlined">
-reorder
-</span> {{ trans('messages.plans') }}</span>
-		</h1>
-	</div>
+    <div class="page-title" style="padding-bottom:0">
+        <ul class="breadcrumb breadcrumb-caret position-right">
+            <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+        </ul>
+        <h1>
+            <span class="text-semibold">{{ trans('messages.plans') }}</span>
+        </h1>
+    </div>
 
 @endsection
 
 @section('content')
 
-	<p>{{ trans('messages.plan_create_message') }}</p>
+    <div class="row">
+        <div class="col-md-8"><p>{{ trans('messages.plan_create_message') }}</p></div>
+    </div>
 
     <div class="listing-form"
         sort-url="{{ action('Admin\PlanController@sort') }}"
