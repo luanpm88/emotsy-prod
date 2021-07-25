@@ -6737,4 +6737,5 @@ h3, h4 [class^="material-icons"] {
     top: 50px;
     color: rgb(0, 0, 0)!important;
     background: transparent;
+    font-weight: 600;
 }
