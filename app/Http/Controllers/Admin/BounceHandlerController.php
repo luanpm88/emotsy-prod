@@ -200,7 +200,8 @@ class BounceHandlerController extends Controller
      */
     public function delete(Request $request)
     {
-        $items = \Acelle\Model\BounceHandler::whereIn('uid',
+        $items = \Acelle\Model\BounceHandler::whereIn(
+            'uid',
             is_array($request->uids) ? $request->uids : explode(',', $request->uids)
         );
 

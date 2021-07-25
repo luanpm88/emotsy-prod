@@ -267,7 +267,8 @@ class PlanController extends Controller
      */
     public function delete(Request $request)
     {
-        $items = Plan::whereIn('uid',
+        $items = Plan::whereIn(
+            'uid',
             is_array($request->uids) ? $request->uids : explode(',', $request->uids)
         );
 
@@ -319,7 +320,8 @@ class PlanController extends Controller
      */
     public function deleteConfirm(Request $request)
     {
-        $plans = Plan::whereIn('uid',
+        $plans = Plan::whereIn(
+            'uid',
             is_array($request->uids) ? $request->uids : explode(',', $request->uids)
         );
 
@@ -359,7 +361,9 @@ class PlanController extends Controller
             }
         }
 
-        usort($result['data'], function($a, $b) {return strcmp($a['value'], $b['value']);});
+        usort($result['data'], function ($a, $b) {
+            return strcmp($a['value'], $b['value']);
+        });
         $result['data'] = array_reverse($result['data']);
 
         return response()->json($result);

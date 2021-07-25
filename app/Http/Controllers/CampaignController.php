@@ -862,7 +862,9 @@ class CampaignController extends Controller
             $result['data'][] = ['value' => $total - $count, 'name' => trans('messages.others')];
         }
 
-        usort($result['data'], function($a, $b) {return strcmp($a['value'], $b['value']);});
+        usort($result['data'], function ($a, $b) {
+            return strcmp($a['value'], $b['value']);
+        });
         $result['data'] = array_reverse($result['data']);
 
         return response()->json($result);
@@ -902,7 +904,9 @@ class CampaignController extends Controller
             $result['data'][] = ['value' => $total - $count, 'name' => trans('messages.others')];
         }
 
-        usort($result['data'], function($a, $b) {return strcmp($a['value'], $b['value']);});
+        usort($result['data'], function ($a, $b) {
+            return strcmp($a['value'], $b['value']);
+        });
         $result['data'] = array_reverse($result['data']);
 
         return response()->json($result);
@@ -1326,7 +1330,8 @@ class CampaignController extends Controller
      */
     public function deleteConfirm(Request $request)
     {
-        $lists = Campaign::whereIn('uid',
+        $lists = Campaign::whereIn(
+            'uid',
             is_array($request->uids) ? $request->uids : explode(',', $request->uids)
         );
 
@@ -1345,7 +1350,8 @@ class CampaignController extends Controller
     public function pause(Request $request)
     {
         $customer = $request->user()->customer;
-        $campaigns = Campaign::whereIn('uid',
+        $campaigns = Campaign::whereIn(
+            'uid',
             is_array($request->uids) ? $request->uids : explode(',', $request->uids)
         );
 
@@ -1358,7 +1364,7 @@ class CampaignController extends Controller
             }
         }
 
-        // 
+        //
         return response()->json([
             'status' => 'success',
             'message' => trans('messages.campaigns.paused'),
@@ -1585,7 +1591,7 @@ class CampaignController extends Controller
                 'email' => 'required|email',
             ]);
 
-            // 
+            //
             if ($validator->fails()) {
                 return response()->view('campaigns.sendTestEmail', [
                     'campaign' => $campaign,

@@ -49,7 +49,7 @@ class JobMonitor extends Model
     {
         $lockFile = storage_path('app/lock-job-monitor-'.$this->uid);
         $lock = new Lockable($lockFile);
-        $lock->getExclusiveLock(function($lockReader) use ($closure) {
+        $lock->getExclusiveLock(function ($lockReader) use ($closure) {
             $closure($this->refresh());
         }, $timeout = 60);
     }

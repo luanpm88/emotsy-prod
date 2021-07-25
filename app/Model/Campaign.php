@@ -3575,5 +3575,3 @@ class Campaign extends Model
         return $validator;
     }
 }
-
-

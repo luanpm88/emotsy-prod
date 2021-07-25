@@ -114,7 +114,8 @@ class SourceController extends Controller
             return;
         }
 
-        $sources = \Acelle\Model\Source::whereIn('uid',
+        $sources = \Acelle\Model\Source::whereIn(
+            'uid',
             is_array($request->uids) ? $request->uids : explode(',', $request->uids)
         );
 

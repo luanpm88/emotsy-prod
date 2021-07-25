@@ -164,7 +164,8 @@ class LanguageController extends Controller
      */
     public function delete(Request $request)
     {
-        $languages = Language::whereIn('uid',
+        $languages = Language::whereIn(
+            'uid',
             is_array($request->uids) ? $request->uids : explode(',', $request->uids)
         );
 
@@ -245,7 +246,8 @@ class LanguageController extends Controller
      */
     public function disable(Request $request)
     {
-        $items = Language::whereIn('uid',
+        $items = Language::whereIn(
+            'uid',
             is_array($request->uids) ? $request->uids : explode(',', $request->uids)
         );
 
@@ -269,7 +271,8 @@ class LanguageController extends Controller
      */
     public function enable(Request $request)
     {
-        $items = Language::whereIn('uid',
+        $items = Language::whereIn(
+            'uid',
             is_array($request->uids) ? $request->uids : explode(',', $request->uids)
         );
 
@@ -341,7 +344,8 @@ class LanguageController extends Controller
      */
     public function deleteConfirm(Request $request)
     {
-        $languages = Language::whereIn('uid',
+        $languages = Language::whereIn(
+            'uid',
             is_array($request->uids) ? $request->uids : explode(',', $request->uids)
         );
 

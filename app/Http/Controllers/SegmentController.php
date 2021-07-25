@@ -326,7 +326,8 @@ class SegmentController extends Controller
      */
     public function delete(Request $request)
     {
-        $items = \Acelle\Model\Segment::whereIn('uid',
+        $items = \Acelle\Model\Segment::whereIn(
+            'uid',
             is_array($request->uids) ? $request->uids : explode(',', $request->uids)
         );
 

@@ -200,7 +200,8 @@ class FeedbackLoopHandlerController extends Controller
      */
     public function delete(Request $request)
     {
-        $items = \Acelle\Model\FeedbackLoopHandler::whereIn('uid',
+        $items = \Acelle\Model\FeedbackLoopHandler::whereIn(
+            'uid',
             is_array($request->uids) ? $request->uids : explode(',', $request->uids)
         );
 

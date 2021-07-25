@@ -236,7 +236,8 @@ class SendingDomainController extends Controller
      */
     public function delete(Request $request)
     {
-        $items = SendingDomain::whereIn('uid',
+        $items = SendingDomain::whereIn(
+            'uid',
             is_array($request->uids) ? $request->uids : explode(',', $request->uids)
         );
 

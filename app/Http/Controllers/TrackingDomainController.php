@@ -155,7 +155,8 @@ class TrackingDomainController extends Controller
      */
     public function delete(Request $request)
     {
-        $items = TrackingDomain::whereIn('uid',
+        $items = TrackingDomain::whereIn(
+            'uid',
             is_array($request->uids) ? $request->uids : explode(',', $request->uids)
         );
 

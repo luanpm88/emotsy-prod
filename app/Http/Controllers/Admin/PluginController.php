@@ -116,7 +116,8 @@ class PluginController extends Controller
      */
     public function delete(Request $request)
     {
-        $items = \Acelle\Model\Plugin::whereIn('uid',
+        $items = \Acelle\Model\Plugin::whereIn(
+            'uid',
             is_array($request->uids) ? $request->uids : explode(',', $request->uids)
         );
 
@@ -140,7 +141,8 @@ class PluginController extends Controller
      */
     public function disable(Request $request)
     {
-        $items = \Acelle\Model\Plugin::whereIn('uid',
+        $items = \Acelle\Model\Plugin::whereIn(
+            'uid',
             is_array($request->uids) ? $request->uids : explode(',', $request->uids)
         );
 
@@ -164,7 +166,8 @@ class PluginController extends Controller
      */
     public function enable(Request $request)
     {
-        $items = \Acelle\Model\Plugin::whereIn('uid',
+        $items = \Acelle\Model\Plugin::whereIn(
+            'uid',
             is_array($request->uids) ? $request->uids : explode(',', $request->uids)
         );
 

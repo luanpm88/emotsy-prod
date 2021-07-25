@@ -102,7 +102,7 @@ class VerifyAndCreateSubscriber extends Base
 
     public function updateProgress($success)
     {
-        $this->jobMonitor->withExclusiveLock(function($jobMonitor) use ($success) {
+        $this->jobMonitor->withExclusiveLock(function ($jobMonitor) use ($success) {
             // Update stats
             $progress = $jobMonitor->getJsonData();
 
@@ -115,7 +115,7 @@ class VerifyAndCreateSubscriber extends Base
                 $failed += 1;
             }
 
-            $notice = trans('vimport::messages.import.progress.message', [ 'imported' => $processed, 'failed' => $failed ] );
+            $notice = trans('vimport::messages.import.progress.message', [ 'imported' => $processed, 'failed' => $failed ]);
 
             $jobMonitor->updateJsonData([
                 'processed' => $processed,

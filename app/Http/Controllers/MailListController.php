@@ -300,7 +300,8 @@ class MailListController extends Controller
      */
     public function deleteConfirm(Request $request)
     {
-        $lists = \Acelle\Model\MailList::whereIn('uid',
+        $lists = \Acelle\Model\MailList::whereIn(
+            'uid',
             is_array($request->uids) ? $request->uids : explode(',', $request->uids)
         );
 
@@ -323,7 +324,8 @@ class MailListController extends Controller
             return;
         }
 
-        $lists = \Acelle\Model\MailList::whereIn('uid',
+        $lists = \Acelle\Model\MailList::whereIn(
+            'uid',
             is_array($request->uids) ? $request->uids : explode(',', $request->uids)
         );
 
@@ -454,25 +456,25 @@ class MailListController extends Controller
             $target = $customer;
         }
         // if (isset($list->id)) {
-            if ($target->readCache('SubscribeCount', 0)) {
-                $result['data'][] = ['value' => $target->readCache('SubscribeCount', 0), 'name' => trans('messages.subscribed')];
-            }
+        if ($target->readCache('SubscribeCount', 0)) {
+            $result['data'][] = ['value' => $target->readCache('SubscribeCount', 0), 'name' => trans('messages.subscribed')];
+        }
 
-            if ($target->readCache('UnsubscribeCount', 0)) {
-                $result['data'][] = ['value' => $target->readCache('UnsubscribeCount', 0), 'name' => trans('messages.unsubscribed')];
-            }
+        if ($target->readCache('UnsubscribeCount', 0)) {
+            $result['data'][] = ['value' => $target->readCache('UnsubscribeCount', 0), 'name' => trans('messages.unsubscribed')];
+        }
 
-            if ($target->readCache('UnconfirmedCount', 0)) {
-                $result['data'][] = ['value' => $target->readCache('UnconfirmedCount', 0), 'name' => trans('messages.unconfirmed')];
-            }
+        if ($target->readCache('UnconfirmedCount', 0)) {
+            $result['data'][] = ['value' => $target->readCache('UnconfirmedCount', 0), 'name' => trans('messages.unconfirmed')];
+        }
 
-            if ($target->readCache('BlacklistedCount', 0)) {
-                $result['data'][] = ['value' => $target->readCache('BlacklistedCount', 0), 'name' => trans('messages.blacklisted')];
-            }
+        if ($target->readCache('BlacklistedCount', 0)) {
+            $result['data'][] = ['value' => $target->readCache('BlacklistedCount', 0), 'name' => trans('messages.blacklisted')];
+        }
 
-            if ($target->readCache('SpamReportedCount', 0)) {
-                $result['data'][] = ['value' => $target->readCache('SpamReportedCount', 0), 'name' => trans('messages.spam_reported')];
-            }
+        if ($target->readCache('SpamReportedCount', 0)) {
+            $result['data'][] = ['value' => $target->readCache('SpamReportedCount', 0), 'name' => trans('messages.spam_reported')];
+        }
         // } else {
         //     // create data
         //     if ($customer->readCache('SubscribedCount', 0)) {

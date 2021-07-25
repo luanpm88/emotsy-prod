@@ -262,7 +262,8 @@ class CustomerController extends Controller
      */
     public function enable(Request $request)
     {
-        $items = \Acelle\Model\Customer::whereIn('uid',
+        $items = \Acelle\Model\Customer::whereIn(
+            'uid',
             is_array($request->uids) ? $request->uids : explode(',', $request->uids)
         );
 
@@ -286,7 +287,8 @@ class CustomerController extends Controller
      */
     public function disable(Request $request)
     {
-        $items = \Acelle\Model\Customer::whereIn('uid',
+        $items = \Acelle\Model\Customer::whereIn(
+            'uid',
             is_array($request->uids) ? $request->uids : explode(',', $request->uids)
         );
 
@@ -310,7 +312,8 @@ class CustomerController extends Controller
      */
     public function delete(Request $request)
     {
-        $customers = \Acelle\Model\Customer::whereIn('uid',
+        $customers = \Acelle\Model\Customer::whereIn(
+            'uid',
             is_array($request->uids) ? $request->uids : explode(',', $request->uids)
         );
 

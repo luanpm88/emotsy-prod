@@ -326,7 +326,8 @@ class Language extends Model
     {
         $arr = [];
         foreach ($this->getAllLanguageFiles() as $key => $langFile) {
-            $arr[] = ['value' => $langFile['id'], 'text' => $langFile['file_title']];;
+            $arr[] = ['value' => $langFile['id'], 'text' => $langFile['file_title']];
+            ;
         }
 
         return $arr;
@@ -347,14 +348,14 @@ class Language extends Model
     public static function dump()
     {
         // Update or create translation files
-        foreach(self::get() as $language) {
+        foreach (self::get() as $language) {
             $language->createOrUpdateTranslationFiles();
         }
     }
 
     public function createOrUpdateTranslationFiles()
     {
-        foreach(Hook::execute('add_translation_file') as $source) {
+        foreach (Hook::execute('add_translation_file') as $source) {
             $originFile = join_paths($source['translation_folder'], $source['default'], $source['file_name']);
             $langFile = join_paths($source['translation_folder'], $this->code, $source['file_name']);
 
@@ -393,7 +394,7 @@ class Language extends Model
             return [$language, $validator];
         }
 
-        DB::transaction(function() use (&$language) {
+        DB::transaction(function () use (&$language) {
             // save
             $language->save();
 
