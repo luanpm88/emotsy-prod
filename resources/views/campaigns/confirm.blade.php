@@ -33,28 +33,40 @@ forward_to_inbox
 
             <ul class="modern-listing">
                 @if (!is_null($score))
-                    <li>
-                        <a href="{{ action('CampaignController@templatePreview', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
+
+                    <li class="d-flex align-items-center">
                         <!-- {{ $count = $campaign->subscribersCount() }} -->
-                        @if ($score['result'] == true)
-                            <i class="material-icons-outlined">
-task_alt
-                            </i>
-                        @else
-                            @if (!Acelle\Model\Setting::isYes('spamassassin.required'))
-                                <i class="icon-exclamation text-warning"></i>
-                            @else
-                                <i class="icon-cross2 text-danger"></i>
-                            @endif
-                        @endif
-                        <h4>{{ trans('messages.campaign.spam_score') }}</h4>
-                        <p>
+
+                        <span class="fs-4 me-4">
                             @if ($score['result'] == true)
-                                <i class="badge badge-success">{{ trans('messages.campaign.score.passed') }} {{ $score['score'] }}</i>
+                                <i class="material-icons-outlined text-success">
+                                    task_alt
+                                </i>
                             @else
-                                <i class="badge badge-warning">{{ trans('messages.campaign.score.failed') }} {{ $score['score'] }}</i>
+                                @if (!Acelle\Model\Setting::isYes('spamassassin.required'))
+                                    <span class="material-icons-round text-warning">
+                                        error_outline
+                                    </span>
+                                @else
+                                    <span class="material-icons-round text-danger">
+                                        highlight_off
+                                    </span>
+                                @endif
                             @endif
-                        </p>
+                           
+                        </span>
+                        <div class="me-auto">
+                            <h4>{{ trans('messages.campaign.spam_score') }}</h4>
+                            <p>
+                                @if ($score['result'] == true)
+                                    <i class="badge badge-success">{{ trans('messages.campaign.score.passed') }} {{ $score['score'] }}</i>
+                                @else
+                                    <i class="badge badge-warning">{{ trans('messages.campaign.score.failed') }} {{ $score['score'] }}</i>
+                                @endif
+                            </p> 
+                        </div>
+
+                        <a href="{{ action('CampaignController@recipients', $campaign->uid) }}" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
                     </li>
                 @endif
                 <li class="d-flex align-items-center">
@@ -67,7 +79,9 @@ task_alt
     task_alt
                             </i>
                         @else
-                            <i class="icon-cross2 text-danger"></i>
+                            <span class="material-icons-round text-danger">
+                                highlight_off
+                            </span>
                         @endif
                     </span>
                     <div class="me-auto">
