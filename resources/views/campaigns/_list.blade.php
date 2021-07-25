@@ -25,8 +25,10 @@
 					<span class="text-muted">{{ trans('messages.' . $campaign->type) }}</span>
 
 					@if ($campaign->readCache('SubscriberCount'))
-						<div class="text-semibold" data-popup="tooltip" title="{{ $campaign->displayRecipients() }}">
-							{{ number_with_delimiter($campaign->readCache('SubscriberCount')) }} {{ trans('messages.recipients') }}
+						<div>
+							<span class="text-semibold" data-popup="tooltip" title="{{ $campaign->displayRecipients() }}">
+								{{ number_with_delimiter($campaign->readCache('SubscriberCount')) }} {{ trans('messages.recipients') }}
+							</span>
 						</div>
 					@endif
 

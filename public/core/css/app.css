@@ -6691,3 +6691,32 @@ h3, h4 [class^="material-icons"] {
 .nav-menu-dark .select2-container .select2-selection--single .select2-selection__rendered {
     color: #aaa;
 }
+@keyframes placeHolderShimmer {
+    0% {
+        background-position: -468px 0
+    }
+    100% {
+        background-position: 468px 0
+    }
+}
+
+.animated-background, .styled.animated-background:before {
+    animation-duration: 1.5s;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+    animation-name: placeHolderShimmer;
+    animation-timing-function: linear;
+    background: #f6f7f8!important;
+    background: linear-gradient(to right, #efefef 1%, #ddd 18%, #efefef 33%)!important;
+    background-size: 800px 104px!important;
+    position: relative;
+    border-radius: 3px;
+    color: transparent!important;
+    border-color: transparent!important;
+    display: inline-block;
+    transition: none;
+}
+.animated-background * {
+    visibility: hidden;
+    color: transparent!important;
+}

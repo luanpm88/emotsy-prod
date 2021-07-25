@@ -113,6 +113,15 @@ function initJs(container)
     });
 }
 
+function placeholderLoading(container) {
+    tags = 'h1,h2,h3,h4,h5,p,.btn,span,input,select,.alert,.progress-bar,label,a';
+    container.find(tags).each(function() {
+        if (!$(this).parent(tags).length) {
+            $(this).addClass('animated-background');
+        }
+    });
+}
+
 function initSelect2Ajax(select) {
     var url = select.attr("data-url");
     var placeholder = select.attr("placeholder");
