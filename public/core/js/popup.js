@@ -163,7 +163,7 @@ class Popup {
         _this.show();
 
         // effect
-        _this.mask();return;
+        _this.mask();
 
         // load from url
         $.ajax({
