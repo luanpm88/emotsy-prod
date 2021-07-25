@@ -6651,16 +6651,20 @@ h3, h4 [class^="material-icons"] {
 }
 .list-loading::after {
     content: 'brightness_4';
+    color: transparent!important;
     font-family: 'Material Icons Outlined';
     position: absolute;
     font-size: 40px;
-    opacity: 0.6;
-    left: calc(50% - 20px);
+    opacity: 1;
+    left: calc(50% - 70px);
     top: 30px;
     -webkit-animation: spin 1s linear infinite;
     -moz-animation: spin 1s linear infinite;
     animation: spin 1s linear infinite;
-    color: rgb(0, 53, 88);
+    color: rgb(8, 43, 66);
+    background-image: url(../../images/icons/spinner2.svg);
+    background-repeat: no-repeat;
+    background-position: center center;
 }
 .dropdown-item.active, .dropdown-item:active {
     background-color: #007ca8;
@@ -6725,4 +6729,12 @@ h3, h4 [class^="material-icons"] {
 .animated-background * {
     visibility: hidden;
     color: transparent!important;
+}
+.list-loading-msg.animated-background {
+    position: absolute!important;
+    opacity: 1;
+    left: calc(50% - 20px);
+    top: 50px;
+    color: rgb(0, 0, 0)!important;
+    background: transparent;
 }

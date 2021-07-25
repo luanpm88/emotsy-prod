@@ -52,6 +52,7 @@ class List {
         var _this = this;
 
         _this.content.addClass('list-loading');
+        _this.content.append('<span class="list-loading-msg">'+LOADING_WAIT+'</span>');
 
         placeholderLoading(_this.content);
     }
@@ -60,6 +61,7 @@ class List {
         var _this = this;
         
         _this.content.removeClass('list-loading');
+        _this.find('.list-loading-msg').remove();
 
         removePlaceholderLoading(_this.content);
     }
