@@ -6701,19 +6701,25 @@ h3, h4 [class^="material-icons"] {
 }
 
 .animated-background, .styled.animated-background:before {
+    -webkit-animation-duration: 1.5s;
+    -webkit-animation-fill-mode: forwards;
+    -webkit-animation-iteration-count: infinite;
+    -webkit-animation-name: placeHolderShimmer;
+    -webkit-animation-timing-function: linear;
+
     animation-duration: 1.5s;
     animation-fill-mode: forwards;
     animation-iteration-count: infinite;
     animation-name: placeHolderShimmer;
     animation-timing-function: linear;
-    background: #f6f7f8!important;
-    background: linear-gradient(to right, #efefef 1%, #ddd 18%, #efefef 33%)!important;
+    background: #f6f7f8;
+    background: linear-gradient(to right, #efefef 1%, #ddd 18%, #efefef 33%);
     background-size: 800px 104px!important;
     position: relative;
     border-radius: 3px;
     color: transparent!important;
     border-color: transparent!important;
-    display: inline-block;
+    display: inline-block!important;
     transition: none;
 }
 .animated-background * {

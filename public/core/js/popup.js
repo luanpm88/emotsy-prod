@@ -125,6 +125,8 @@ class Popup {
     unmask() {
         this.popup.removeClass('popup-loading');
         this.popup.find('.popup-progress').remove();
+
+        removePlaceholderLoading(this.popup);
     }
     
     load(options, callback) {
@@ -161,7 +163,7 @@ class Popup {
         _this.show();
 
         // effect
-        _this.mask();
+        _this.mask();return;
 
         // load from url
         $.ajax({

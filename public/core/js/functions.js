@@ -114,12 +114,16 @@ function initJs(container)
 }
 
 function placeholderLoading(container) {
-    tags = 'h1,h2,h3,h4,h5,p,.btn,span,input,select,.alert,.progress-bar,label,a';
+    tags = 'h1,h2,h3,h4,h5,p,.btn,span,input,select,.alert,.progress-bar,label,a,textarea,i';
     container.find(tags).each(function() {
         if (!$(this).parent(tags).length) {
             $(this).addClass('animated-background');
         }
     });
+}
+
+function removePlaceholderLoading(container) {
+    container.find('*').removeClass('animated-background');
 }
 
 function initSelect2Ajax(select) {

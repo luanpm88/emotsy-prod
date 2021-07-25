@@ -60,6 +60,8 @@ class List {
         var _this = this;
         
         _this.content.removeClass('list-loading');
+
+        removePlaceholderLoading(_this.content);
     }
 
     load() {
@@ -70,7 +72,7 @@ class List {
         }
 
         _this.masking();
-        
+
         _this.xhr = $.ajax({
             url: _this.url,
             method: _this.method,
