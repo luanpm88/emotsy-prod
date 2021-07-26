@@ -15,9 +15,9 @@
                 </span>
             </td>
             <td width="20%">
-                {{ $server->getFullVerificationHostName() }}
+                <span>{{ $server->getFullVerificationHostName() }}</span>
             </td>
-            <td>{{ doublequote($server->verification_token) }}</td>
+            <td><span>{{ doublequote($server->verification_token) }}</span></td>
             <td class="text-end" width="1%">
                 @if ($server->domainVerified())
                     <span class="text-muted2 list-status pull-left">
@@ -37,7 +37,7 @@
                 </span>
             </td>
             <td>
-                {{ $server->getFullDkimHostName() }}
+                <span>{{ $server->getFullDkimHostName() }}</span>
             </td>
             <td><textarea style="width:100%;border:0;height:100px;resize:none;">{{ \Acelle\Model\Setting::isYes('escape_dkim_dns_value') ? $server->getEscapedDnsDkimConfig() : $server->getDnsDkimConfig() }}</textarea></td>
             <td class="text-end">
@@ -58,8 +58,8 @@
                     <span class="label label-flat bg-pending square-tag">TXT</span>
                 </span>
             </td>
-            <td>{{ $server->getDnsHostName() }}</td>
-            <td>{{ $server->getQuotedSpf() }}</td>
+            <td><span>{{ $server->getDnsHostName() }}</span></td>
+            <td><span>{{ $server->getQuotedSpf() }}</span></td>
             <td class="text-end">
                 @if ($server->spfVerified())
                     <span class="text-muted2 list-status pull-left">

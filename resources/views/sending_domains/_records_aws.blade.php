@@ -16,9 +16,9 @@
                     </span>
                 </td>
                 <td width="20%">
-                    {{ $identity['name'] }}
+                    <span>{{ $identity['name'] }}</span>
                 </td>
-                <td>{{ $identity['value'] }}</td>
+                <td><span>{{ $identity['value'] }}</span></td>
                 <td class="text-end" width="1%">
                     @if ($domain->domainVerified())
                         <span class="text-muted2 list-status pull-left">
@@ -41,9 +41,9 @@
                 </span>
             </td>
             <td>
-                {{ $dkim['name'] }}
+                <span>{{ $dkim['name'] }}</span>
             </td>
-            <td width="60%" style="word-wrap:break-word;word-break:break-all;">{{ $dkim['value'] }}</td>
+            <td width="60%" style="word-wrap:break-word;word-break:break-all;"><span>{{ $dkim['value'] }}</span></td>
             <td class="text-end">
                 @if ($domain->dkimVerified())
                     <span class="text-muted2 list-status pull-left">
@@ -67,9 +67,9 @@
                     </span>
                 </td>
                 <td>
-                    {{ $r['name'] }}
+                    <span>{{ $r['name'] }}</span>
                 </td>
-                <td>{{ $r['value'] }}</td>
+                <td><span>{{ $r['value'] }}</span></td>
                 <td class="text-end">
                     @if ($domain->spfVerified())
                         <span class="text-muted2 list-status pull-left">

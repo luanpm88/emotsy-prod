@@ -283,6 +283,7 @@ function menuActiveCheck() {
 }
 
 function applyLinkListener(links, options) {
+    console.log(links);
     links.on('click', function(e) {
         e.preventDefault();
         

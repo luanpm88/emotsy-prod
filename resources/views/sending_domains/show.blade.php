@@ -49,7 +49,50 @@ public
         
     <hr >
     <div class="text-left">
-        <a callback="" link-method="POST" href="{{ action('SendingDomainController@verify', $server->uid) }}" class="btn btn-primary bg-teal ajax_link">{{ trans('messages.sending_domain.verify') }}</a>
+        <a href="javascript:;" class="btn btn-primary bg-teal verify-button">{{ trans('messages.sending_domain.verify') }}</a>
     </div>
+
+    <script>
+        var DomainDetails = {
+            domainsList: null,
+            getList: function() {
+                if (this.domainsList == null) {
+                    this.domainsList = makeList({
+                        url: '{{ action('SendingDomainController@records', $server->uid) }}',
+                        container: $('.listing-form'),
+                        content: $('.pml-table-container')
+                    });
+                }
+
+                return this.domainsList;
+            }
+        };
+
+        $(function() {
+            DomainDetails.getList().load();
+
+            $('.verify-button').on('click', function() {
+                var button = $(this);
+
+                addButtonMask(button);
+                DomainDetails.getList().masking();
+
+                new Link({
+                    type: 'ajax',
+                    url: '{{ action('SendingDomainController@verify', $server->uid) }}',
+                    method: 'POST',
+                    data: {
+                        _token: CSRF_TOKEN,
+                    },
+                    done: function() {
+                        DomainDetails.getList().load();
+
+                        removeButtonMask(button);
+                    }
+                });
+            });
+            
+        });
+    </script>
 
 @endsection
