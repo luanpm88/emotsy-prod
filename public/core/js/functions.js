@@ -95,8 +95,6 @@ function initJs(container)
         var btn = $(this);
         var input = btn.closest('div').find('input');
         
-        console.log(input);
-        
         if (btn.hasClass('open')) {
             btn.removeClass('open');
             input.attr('type', 'password');
@@ -283,7 +281,6 @@ function menuActiveCheck() {
 }
 
 function applyLinkListener(links, options) {
-    console.log(links);
     links.on('click', function(e) {
         e.preventDefault();
         

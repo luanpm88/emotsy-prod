@@ -2,6 +2,10 @@
 
 @section('title', $plan->name)
 
+@section('head')
+    <script type="text/javascript" src="{{ URL::asset('core/js/group-manager.js') }}"></script>
+@endsection
+
 @section('page_header')
 
     <div class="page-title">
@@ -380,7 +384,6 @@
                         group.textBox.attr("readonly", "readonly");
                     } else {
                         if(group.textBox.val() == "-1") {
-                            console.log(group.currentValue != "-1");
                             if (group.currentValue != "-1") {
                                 group.textBox.val(group.currentValue);
                             } else {

@@ -56,7 +56,6 @@
 <script type="text/javascript" src="{{ URL::asset('core/js/list.js') }}"></script>
 <script type="text/javascript" src="{{ URL::asset('core/js/anotify.js') }}"></script>
 <script type="text/javascript" src="{{ URL::asset('core/js/dialog.js') }}"></script>
-<script type="text/javascript" src="{{ URL::asset('core/js/group-manager.js') }}"></script>
 <script type="text/javascript" src="{{ URL::asset('core/js/iframe_modal.js') }}"></script>
 
 <script type="text/javascript" src="{{ URL::asset('core/js/app.js') }}"></script>
