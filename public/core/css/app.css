@@ -3977,7 +3977,7 @@ form.loading input {
     text-overflow: ellipsis;
 }
 .btn-link {
-    color: #00838F!important;
+    color: #333!important;
     font-weight: 600;
 }
 .btn-link:hover {
