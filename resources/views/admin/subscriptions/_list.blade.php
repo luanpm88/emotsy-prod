@@ -71,7 +71,7 @@ remove_circle_outline
 					@switch($subscription->status)
 						@case(Acelle\Model\Subscription::STATUS_ACTIVE)
 							<span style="cursor:pointer" href="{{ action('Admin\SubscriptionController@invoices', ['id' => $subscription->uid]) }}"
-								class="view_invoices label bg-success"
+								class="view_invoices label label-flat bg-{{ $subscription->status }}"
 							>
 								{{ trans('messages.subscription.status.active') }}
 							</span>
