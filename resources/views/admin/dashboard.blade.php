@@ -290,7 +290,7 @@ public
 </span> {{ trans('messages.sending_domains') }}</strong>
                         </div>
                         <div class="lastUnit size1of2">
-                            <mc:flag>{{ Auth::user()->admin->getAllSendingDomains()->count() }}</mc:flag>
+                            <mc:flag>{{ $sendingDomainsCount }}</mc:flag>
                         </div>
                     </li>
                     <li>

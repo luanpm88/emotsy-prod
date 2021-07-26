@@ -6,6 +6,7 @@ use Acelle\Http\Controllers\Controller;
 use Acelle\Model\Notification;
 use Acelle\Model\Subscriber;
 use Acelle\Model\Automation2;
+use Acelle\Model\SendingDomain;
 
 class HomeController extends Controller
 {
@@ -32,6 +33,7 @@ class HomeController extends Controller
             'notifications' => $notifications,
             'subscribersCount' => Subscriber::count(),
             'automationsCount' => Automation2::count(),
+            'sendingDomainsCount' => SendingDomain::count(),
         ]);
     }
 }
