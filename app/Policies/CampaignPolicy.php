@@ -94,6 +94,7 @@ class CampaignPolicy
             Campaign::STATUS_SENDING,
             Campaign::STATUS_ERROR,
             Campaign::STATUS_PAUSED,
+            Campaign::STATUS_DONE,
         ]);
     }
 }
