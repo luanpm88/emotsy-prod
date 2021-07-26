@@ -5141,6 +5141,9 @@ h2.mc-h2 {
     cursor: pointer;
     color: #555;
 }
+.btn-view-password:hover {
+    color: #000;
+}
 .btn-view-password.open {
 }
 input.has-eye {

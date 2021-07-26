@@ -98,13 +98,11 @@ function initJs(container)
         if (btn.hasClass('open')) {
             btn.removeClass('open');
             input.attr('type', 'password');
-            btn.removeClass('icon-eye-blocked');
-            btn.addClass('icon-eye');
+            btn.html('visibility');
         } else {
             btn.addClass('open');
             input.attr('type', 'text');
-            btn.removeClass('icon-eye');
-            btn.addClass('icon-eye-blocked');
+            btn.html('visibility_off');
         }
         
         input.focus();
