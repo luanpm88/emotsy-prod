@@ -1936,7 +1936,7 @@
   'select_tool.whole_page' => 'Current page',
   'select_tool.all_items' => 'All items',
   'plan_option.system_s_sending_server' => 'Use system\'s sending servers',
-  'plan_option.system_s_sending_server.intro' => 'This is the standard setting. Users subscribing to this plan do not have to care about how emails are actually sent. Email delivery is managed by the administrator and is transparent to users. Once you have created the plan, you will be able to configure sending servers for the plan',
+  'plan_option.system_s_sending_server.intro' => 'This is the standard setup. Users subscribing to this plan do not have to care about how emails are actually sent. Email delivery is managed by the administrator and is transparent to users. Once you have created the plan, you will be able to configure sending servers for the plan',
   'plan_option.own_sending_server' => 'Use own sending servers',
   'plan_option.own_sending_server.intro' => 'This is the extended setting for advanced users who want to manage their own sending services. Users subscribing to this plan need to add and manage their own sending servers',
   'plan_option.sub_account' => 'Use a sub-account of system\'s sending servers',
