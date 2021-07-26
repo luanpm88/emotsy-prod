@@ -358,31 +358,19 @@
     </form>
     
     <script>
-        var GroupManager = {
-            groups: [],
-
-            bind: function(action) {
-                this.groups.forEach(function(group) {
-                    action(group);
-                });
-            },
-
-            add: function(group) {
-                group.currentValue = group.textBox.val();
-                this.groups.push(group);
-            }
-        };
         $(function() {
+            var manager = new GroupManager();
+
             $('.unlimited_controls .unlimited_control').each(function() {
-                GroupManager.add({
+                manager.add({
                     textBox: $(this).find('input[type=text]'),
                     unlimitedCheck: $(this).find('input[type=checkbox]'),
-                    defaultValue: $(this).find('input[type=text]').attr('default-value')
+                    defaultValue: $(this).find('input[type=text]').attr('default-value'),
+                    currentValue: $(this).find('input[type=text]').val()
                 });
             });
-                
 
-            GroupManager.bind(function(group) {
+            manager.bind(function(group) {
                 var doCheck = function() {
                     var checked = group.unlimitedCheck.is(':checked');
                     
