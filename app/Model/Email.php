@@ -786,10 +786,7 @@ class Email extends Model
             return;
         }
 
-        $domain = $this->customer->activeDkimSendingDomains()->where('name', $domainName)->first();
-        if (is_null($domain)) {
-            $domain = SendingDomain::getAllAdminActive()->where('name', $domainName)->first();
-        }
+        $domain = $this->customer->sendingDomains()->where('name', $domainName)->first();
 
         return $domain;
     }

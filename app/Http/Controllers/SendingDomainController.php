@@ -8,6 +8,7 @@ use Acelle\Model\SendingDomain;
 use Acelle\Model\SendingServer;
 use Acelle\Model\Setting;
 use Acelle\Library\Facades\Hook;
+use Gate;
 
 class SendingDomainController extends Controller
 {
@@ -100,42 +101,38 @@ class SendingDomainController extends Controller
      */
     public function store(Request $request)
     {
-        // Get current user
-        $current_user = $request->user();
-        $domain = new SendingDomain();
-
         // authorize
-        if (!$request->user()->customer->can('create', $domain)) {
+        if (Gate::denies('create', SendingDomain::class)) {
             return $this->notAuthorized();
         }
 
-        $subscription = $request->user()->customer->subscription;
-        $plan = $subscription->plan;
+        // Get customer
+        $customer = $request->user()->customer;
 
-        // save posted data
-        $this->validate($request, SendingDomain::rules());
+        // Initiate the domain instance
+        $domain = $customer->sendingDomains()->make();
 
-        // Save current user info
-        $domain->fill($request->all());
-        $domain->customer_id = $request->user()->customer->id;
-        $domain->status = 'active';
-
-        if ($domain->save()) {
-            if ($plan->useSystemSendingServer()) {
-                $server = $plan->primarySendingServer();
-                if ($server->allowVerifyingOwnDomainsRemotely()) {
-                    $domain->verifyWith($server);
-                }
-            }
-
-            $domain->syncToMta();
-
-            // Log
-            $domain->log('created', $request->user()->customer);
-
-            $request->session()->flash('alert-success', trans('messages.sending_domain.created'));
-            return redirect()->action('SendingDomainController@show', $domain->uid);
+        // Determine if app-based domain or server-based domain
+        $plan = $customer->activeSubscription()->plan;
+        if ($plan->useSystemSendingServer()) {
+            $server = $plan->primarySendingServer();
         }
+
+        if ($server->allowVerifyingOwnDomainsRemotely()) {
+            list($validator, $domain) = $domain->createFromArray($request->all(), $server); // server based domain
+        } else {
+            list($validator, $domain) = $domain->createFromArray($request->all(), null);    // app based domain
+        }
+
+        if (is_null($domain)) { // fail to create
+            return redirect()->action('SendingDomainController@create')->withErrors($validator);
+        }
+
+        // Log
+        $domain->log('created', $customer);
+
+        $request->session()->flash('alert-success', trans('messages.sending_domain.created'));
+        return redirect()->action('SendingDomainController@show', $domain->uid);
     }
 
     /**
@@ -279,29 +276,23 @@ class SendingDomainController extends Controller
     {
         $domain = SendingDomain::findByUid($id);
 
-        if ($domain->isAssociatedWithSendingServer()) {
-            $options = $domain->getOptions()['verification'];
-            $identity = $options['identity'];
-            $dkims = $options['dkim'];
-            // Server spf will be replaced by Setting
-            $spf = Setting::get('spf') ?: (array_key_exists('spf', $options) ? $options['spf'] : []);
+        $tokens = json_decode($domain->verification_token, true);
+        $identity = $tokens['identity'];
+        $dkims = $tokens['dkim'];
+        $spf = $tokens['spf'];
+        $results = $tokens['results'];
 
-            Hook::execute(
-                'filter_aws_ses_dns_records',
-                [&$identity, &$dkims, &$spf]
-            );
-
-            return view('sending_domains._records_aws', [
-                'domain' => $domain,
-                'identity' => $identity,
-                'dkims' => $dkims,
-                'spf' => $spf,
-            ]);
-        } else {
-            return view('sending_domains._records', [
-                'server' => $domain,
-            ]);
-        }
+        Hook::execute(
+            'filter_aws_ses_dns_records',
+            [&$identity, &$dkims, &$spf]
+        );
+        return view('sending_domains._records_aws', [
+            'domain' => $domain,
+            'identity' => $identity,
+            'dkims' => $dkims,
+            'spf' => $spf,
+            'results' => $results,
+        ]);
     }
 
     /**

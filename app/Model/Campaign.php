@@ -692,10 +692,7 @@ class Campaign extends Model
             return;
         }
 
-        $domain = $this->customer->activeDkimSendingDomains()->where('name', $domainName)->first();
-        if (is_null($domain)) {
-            $domain = SendingDomain::getAllAdminActive()->where('name', $domainName)->first();
-        }
+        $domain = $this->customer->sendingDomains()->where('name', $domainName)->first();
 
         return $domain;
     }
@@ -709,7 +706,7 @@ class Campaign extends Model
     {
         $sendingDomain = $this->findSendingDomain($this->from_email);
 
-        if (empty($sendingDomain)) {
+        if (is_null($sendingDomain)) {
             return $message;
         }
 

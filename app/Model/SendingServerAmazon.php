@@ -91,8 +91,19 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
 
         return [
             'identity' => $identity,
-            'dkim' => $dkim,
-            'spf' => [[ 'type' => 'TXT', 'name' => $domain, 'value' => self::SPF_DNS_RECORD ]],
+            'dkim' =>  $dkim,
+            'spf' => [
+                [
+                    'type' => 'TXT',
+                    'name' => $domain,
+                    'value' => self::SPF_DNS_RECORD
+                ]
+            ],
+            'results' => [
+                'identity' => false,
+                'dkim' => false,
+                'spf' => false,
+            ],
         ];
     }
 
@@ -270,15 +281,15 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
     {
         // Identity
         $status = $identitiesWithAttributes = $this->sesClient()->getIdentityVerificationAttributes([
-            'Identities' => [$domain],
-        ])->toArray()['VerificationAttributes'][$domain]['VerificationStatus'];
+            'Identities' => [$domain->name],
+        ])->toArray()['VerificationAttributes'][$domain->name]['VerificationStatus'];
 
         $identity = 'Success' == $status;
 
         // DKIM
         $status = $identitiesWithAttributes = $this->sesClient()->getIdentityDkimAttributes([
-            'Identities' => [$domain],
-        ])->toArray()['DkimAttributes'][$domain]['DkimVerificationStatus'];
+            'Identities' => [$domain->name],
+        ])->toArray()['DkimAttributes'][$domain->name]['DkimVerificationStatus'];
 
         $dkim = 'Success' == $status;
 
@@ -287,13 +298,12 @@ class SendingServerAmazon extends SendingServer implements DomainVerificationInt
             $identity = $dkim;
         }
 
-        // SPF: hack
-        $domainObj = SendingDomain::where('name', $domain)->first();
-        $domainObj->verifySpf();
-        $spf = ($domainObj->spf_verified);
+        // SPF
+        $spf = $domain->verifySpf($this->getSpfHost());
+        $finalStatus = $identity && $dkim; // SPF is optional
 
         // Return all
-        return [$identity, $dkim, $spf];
+        return [$identity, $dkim, $spf, $finalStatus];
     }
 
     /**

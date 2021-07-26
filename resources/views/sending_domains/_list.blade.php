@@ -25,7 +25,7 @@
                 
                 <td class="text-center">
                     <div class="single-stat-box pull-left">
-                        @if ($item->domain_verified)
+                        @if ($item->isIdentityVerified())
                             <span class="material-icons-round fs-5 text-success">
                                 task_alt
                                 </span>
@@ -41,7 +41,7 @@
                     
                 <td class="text-center">
                     <div class="single-stat-box pull-left">
-                        @if ($item->dkim_verified)
+                        @if ($item->isDkimVerified())
                             <span class="material-icons-round fs-5 text-success">
                                 task_alt
                                 </span>
@@ -57,7 +57,7 @@
                 
                 <td class="text-center">
                     <div class="single-stat-box pull-left">
-                        @if ($item->spf_verified)
+                        @if ($item->isSpfVerified())
                             <span class="material-icons-round fs-5 text-success">
                                 task_alt
                                 </span>

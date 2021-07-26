@@ -489,25 +489,6 @@ class Admin extends Model
     }
 
     /**
-     * Get all sending servers.
-     *
-     * @return int
-     */
-    public function getAllSendingDomains()
-    {
-        $query = \Acelle\Model\SendingDomain::getAll();
-
-        if (!$this->can('readAll', new \Acelle\Model\SendingDomain())) {
-            $query = $query->where('sending_domains.admin_id', '=', $this->id);
-        }
-
-        // remove customer sending servers
-        $query = $query->whereNull('customer_id');
-
-        return $query;
-    }
-
-    /**
      * Get all campaigns.
      *
      * @return collect

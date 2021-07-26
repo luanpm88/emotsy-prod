@@ -154,16 +154,6 @@ class Customer extends Model
         return $this->hasMany('Acelle\Model\SendingDomain');
     }
 
-    public function activeSendingDomains()
-    {
-        return $this->sendingDomains()->where('status', '=', SendingDomain::STATUS_ACTIVE);
-    }
-
-    public function activeDkimSendingDomains()
-    {
-        return $this->activeSendingDomains()->where('dkim_verified', true);
-    }
-
     public function emailVerificationServers()
     {
         return $this->hasMany('Acelle\Model\EmailVerificationServer');
@@ -289,14 +279,10 @@ class Customer extends Model
                 throw new \Exception('No sending server available for plan #Customer::activeVerifiedSendingDomains');
             }
 
-            return $this->sendingDomains()
-                ->where('status', '=', SendingDomain::STATUS_ACTIVE)
-                ->where('domain_verified', '=', SendingDomain::VERIFIED)
+            return $this->sendingDomains()->active()
                 ->whereRaw(sprintf('(%s IS NULL or %s = %s)', table('sending_domains.sending_server_id'), table('sending_domains.sending_server_id'), $server->id));
         } else {
-            return $this->sendingDomains()
-                ->where('status', '=', SendingDomain::STATUS_ACTIVE)
-                ->where('domain_verified', '=', SendingDomain::VERIFIED);
+            return $this->sendingDomains()->active();
         }
     }
 
@@ -1455,43 +1441,6 @@ class Customer extends Model
     }
 
     /**
-     * Get list of available sending domains.
-     *
-     * @var bool
-     */
-    public function getSendingDomains()
-    {
-        $result = [];
-
-        // Check the customer has permissions using sending domains and has his own sending domains
-        if ($this->getOption('create_sending_domains') == 'yes') {
-            $result = $this->activeSendingDomains()->get()->map(function ($server) {
-                return $server;
-            });
-        // If customer dont have permission creating sending domain
-        } else {
-            // Check if has email verification servers for current subscription
-            $result = \Acelle\Model\SendingDomain::getAllAdminActive()->get()->map(function ($server) {
-                return $server;
-            });
-        }
-
-        return $result;
-    }
-
-    /**
-     * Get list of available sending domains options.
-     *
-     * @var bool
-     */
-    public function getSendingDomainOptions()
-    {
-        return $this->getSendingDomains()->map(function ($domain) {
-            return ['value' => $domain->uid, 'text' => $domain->name];
-        });
-    }
-
-    /**
      * Get the list of available mail lists, used for populating select box.
      *
      * @return array
@@ -1589,16 +1538,6 @@ class Customer extends Model
                 $blacklist->save();
             }
         }
-    }
-
-    /**
-     * Get all customer's and system domains.
-     *
-     * @return bool
-     */
-    public function getAllSystemAndOwnDomains()
-    {
-        return \Acelle\Model\SendingDomain::getAllActive();
     }
 
     /**

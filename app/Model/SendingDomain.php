@@ -28,15 +28,20 @@ use Mika56\SPFCheck\SPFCheck;
 use Mika56\SPFCheck\DNSRecordGetterDirect;
 use Mika56\SPFCheck\DNSRecordGetter;
 use Acelle\Library\Traits\HasUid;
+use Validator;
+use DB;
 
 class SendingDomain extends Model
 {
     use HasUid;
-    
-    const VERIFIED = 1;
-    const UNVERIFIED = 0;
+
     const STATUS_ACTIVE = 'active';
     const STATUS_INACTIVE = 'inactive';
+
+    // The following global app settings are used by domain
+    // + spf_host
+    // + spf_record
+    // + verification_hostname
 
     /**
      * Associations.
@@ -58,34 +63,9 @@ class SendingDomain extends Model
         return $this->belongsTo('Acelle\Model\SendingServer');
     }
 
-    /**
-     * Get all items.
-     *
-     * @return collect
-     */
-    public static function getAll()
+    public function scopeActive($query)
     {
-        return self::select('*');
-    }
-
-    /**
-     * Get all active items.
-     *
-     * @return collect
-     */
-    public static function getAllActive()
-    {
-        return self::where('status', '=', self::STATUS_ACTIVE);
-    }
-
-    /**
-     * Get all active system items.
-     *
-     * @return collect
-     */
-    public static function getAllAdminActive()
-    {
-        return self::getAllActive()->whereNotNull('admin_id');
+        return $query->where('status', self::STATUS_ACTIVE);
     }
 
     /**
@@ -157,47 +137,12 @@ class SendingDomain extends Model
     public static $itemsPerPage = 25;
 
     /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating list.
-        static::creating(function ($item) {
-            // Create new uid
-            $item->uid = uniqid();
-
-            // Generate dkim keys
-            $item->generateDkimKeys();
-
-            // Generate verification token
-            $item->generateVerificationToken();
-
-            // Default status = inactive (until domain verified)
-            $item->status = self::STATUS_INACTIVE;
-        });
-
-        // Create uid when creating list.
-        static::saving(function ($item) {
-            // Disable if not verified
-            if ($item->isAssociatedWithSendingServer()) {
-                // all verification must pass for a remote service
-                $item->status = ($item->domain_verified && $item->dkim_verified && $item->spf_verified) ? self::STATUS_ACTIVE : self::STATUS_INACTIVE;
-            } else {
-                // Identity is enough in certain cases (SMTP, Sendmail, etc.)
-                $item->status = $item->domain_verified ? self::STATUS_ACTIVE : self::STATUS_INACTIVE;
-            }
-        });
-    }
-
-    /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'dkim_private', 'dkim_public', 'signing_enabled',
+        'name', 'signing_enabled',
     ];
 
     /**
@@ -253,12 +198,18 @@ class SendingDomain extends Model
      */
     public function getSpf()
     {
-        $spf = Setting::get('spf');
-        if (is_null($spf) || empty($spf)) {
-            return sprintf('v=spf1 +a +mx +ip4:%s ~all', $this->getHostIpAddress());
-        } else {
-            return $spf;
+        $spfRecord = Setting::get('spf_record');
+        $spfHost = Setting::get('spf_host');
+
+        if ($spfRecord && is_null($spfHost)) {
+            throw new \Exception('spf_record is present but spf_host is empty');
         }
+
+        if (empty($spfRecord)) {
+            return null;
+        }
+
+        return $spfRecord;
     }
 
     /**
@@ -285,13 +236,9 @@ class SendingDomain extends Model
     /**
      * Retrieve the VERIFICATION_TXT_NAME value which is used as TXT name.
      */
-    public function getVerificationTxtName()
+    public function getVerificationHostName()
     {
-        if (!is_null($this->verification_hostname)) {
-            return $this->verification_hostname;
-        } else {
-            return Setting::get('verification_hostname');
-        }
+        return Setting::get('verification_hostname');
     }
 
     /**
@@ -299,7 +246,7 @@ class SendingDomain extends Model
      */
     public function getFullVerificationHostName()
     {
-        return "{$this->getVerificationTxtName()}.{$this->getDnsHostName()}";
+        return "{$this->getVerificationHostName()}.{$this->getDnsHostName()}";
     }
 
     /**
@@ -313,9 +260,17 @@ class SendingDomain extends Model
     /**
      * Generate the verification token.
      */
-    public function generateVerificationToken()
+    public function generateIdentityToken()
     {
-        $this->verification_token = base64_encode(md5(uniqid()));
+        return base64_encode(md5(uniqid()));
+    }
+
+    /**
+     * Generate the verification token.
+     */
+    public function getVerificationToken()
+    {
+        return $this->verification_token;
     }
 
     /**
@@ -343,8 +298,6 @@ class SendingDomain extends Model
 
         $this->dkim_private = $privKey;
         $this->dkim_public = $pubKey;
-
-        return true;
     }
 
     /**
@@ -367,49 +320,80 @@ class SendingDomain extends Model
         ]);
     }
 
+    public function startVerifying()
+    {
+        if ($this->sendingServer) {
+            // Verify against APP
+            $tokens = $this->sendingServer->mapType()->verifyDomain($this->name);
+        } else {
+            // Below is a 'STANDARD' schema
+            $tokens = [
+                'identity' => [
+                    'type' => 'TXT',
+                    'name' => $this->getFullVerificationHostName(),
+                    'value' => $this->generateIdentityToken(),
+                ],
+
+                'dkim' => [
+                    [
+                        'type' => 'TXT',
+                        'name' => $this->getFullDkimHostName(),
+                        'value' => $this->getDnsDkimConfig(),
+                    ]
+                ],
+
+                'results' => [
+                    'identity' => false,
+                    'dkim' => false,
+                ]
+            ];
+
+            $spfRecord = $this->getSpf();
+
+            if ($spfRecord) {
+                $tokens['spf'] = [
+                    [
+                        'type' => 'TXT',
+                        'name' => $this->getDnsHostName(),
+                        'value' => $this->getSpf(),
+                    ]
+                ];
+
+                $tokens['results']['spf'] = false;
+            }
+        }
+
+        $this->verification_token = json_encode($tokens);
+        $this->save();
+    }
+
     /**
      * Verify domain DNS.
      */
     public function verify()
     {
-        if ($this->isAssociatedWithSendingServer()) {
+        if ($this->sendingServer) {
             // Verify Host, DKIM and SPF
             $server = $this->sendingServer->mapType();
-            list($identity, $dkim, $spf) = $server->checkDomainVerificationStatus($this->name);
+            list($identity, $dkim, $spf, $finalStatus) = $server->checkDomainVerificationStatus($this);
             
             // update domain record in db
-            $this->domain_verified = $identity;
-            $this->dkim_verified = $dkim;
-            $this->spf_verified = $spf;
-            $this->save();
+            $tokens = json_decode($this->verification_token, true);
+            $tokens['results']['identity'] = $identity;
+            $tokens['results']['dkim'] = $dkim;
+            $tokens['results']['spf'] = $spf;
+            $this->status = $finalStatus ? self::STATUS_ACTIVE : self::STATUS_INACTIVE;
         } else {
             // Verify Host, DKIM and SPF
-            $this->verifyDomainDns();
-            $this->verifyDkim();
-            $this->verifySpf();
+            $tokens['results']['identity'] = $this->verifyIdentity();
+            $tokens['results']['dkim'] = $this->verifyDkim();
+            $tokens['results']['spf'] = $this->verifySpf();
+            $finalStatus = $tokens['results']['dkim'] && $tokens['results']['identity']; // SPF is optional
+            $this->status = $finalStatus ? self::STATUS_ACTIVE : self::STATUS_INACTIVE;
         }
-        
 
-        $this->syncToMta();
-    }
-
-    /**
-     * Sync to MTA.
-     */
-    public function syncToMta()
-    {
-        // Sync domain with MTA
-        $mtaEndpoint = Setting::get('mta.api_endpoint');
-
-        if (!empty($mtaEndpoint)) {
-            $mta = new MtaSync($mtaEndpoint, Setting::get('mta.api_key'));
-            $mta->addDomain($this->name, [
-                'host_verified' => $this->domain_verified,
-                'dkim_verified' => $this->dkim_verified,
-                'spf_verified' => $this->spf_verified,
-                'added_by' => 'Acelle',
-            ]);
-        }
+        $this->verification_token = json_encode($tokens);
+        $this->save();
     }
 
     /**
@@ -417,16 +401,14 @@ class SendingDomain extends Model
      *
      * @return mixed
      */
-    public function verifyDomainDns()
+    public function verifyIdentity()
     {
-        $fqdn = sprintf('%s.%s', $this->getVerificationTxtName(), $this->name);
+        $fqdn = sprintf('%s.%s', $this->getVerificationHostName(), $this->name);
         $results = collect(dns_get_record($fqdn, DNS_TXT));
         $results = $results->where('type', 'TXT')
                            ->whereIn('txt', [$this->verification_token, doublequote($this->verification_token)]);
 
-        $this->domain_verified = $results->isEmpty() ? self::UNVERIFIED : self::VERIFIED;
-
-        $this->save();
+        return $results->isEmpty() ? false : true;
     }
 
     /**
@@ -447,9 +429,7 @@ class SendingDomain extends Model
         });
         $results = $results->intersect($possibles);
 
-        $this->dkim_verified = $results->isEmpty() ? self::UNVERIFIED : self::VERIFIED;
-        
-        $this->save();
+        return $results->isEmpty() ? false : true;
     }
 
     /**
@@ -457,66 +437,19 @@ class SendingDomain extends Model
      *
      * @return mixed
      */
-    public function verifySpf()
+    public function verifySpf(string $ipOrHostname)
     {
-        // There are 3 possible SPF and they will be taken in the following precedence
-        // + Setting
-        // + Server related
-        // + Domain
-        $host = Setting::get('spf');
-
-        if (is_null($host) && !is_null($this->sendingServer)) {
-            $host = $this->sendingServer->mapType()->getSpfHost();
-        }
-
-        if (is_null($host)) {
-            $host = $this->getHostIpAddress();
-        }
-
         $checker = new SPFCheck(new DNSRecordGetterDirect('8.8.8.8'));
         // $checker = new SPFCheck(new DNSRecordGetter());
-        $check = $checker->isIPAllowed($host, $this->name);
+        $result = $checker->isIPAllowed($ipOrHostname, $this->name);
 
-        $this->spf_verified = ($check == SPFCheck::RESULT_PASS) ? self::VERIFIED : self::UNVERIFIED;
-
-        if ($this->spf_verified == false) {
+        if (SPFCheck::RESULT_PASS != $result) {
             // try again with another method
             $checker = new SPFCheck(new DNSRecordGetter());
-            $check = $checker->isIPAllowed($host, $this->name);
-            $this->spf_verified = ($check == SPFCheck::RESULT_PASS) ? self::VERIFIED : self::UNVERIFIED;
+            $result = $checker->isIPAllowed($ipOrHostname, $this->name);
         }
 
-        $this->save();
-    }
-
-    /**
-     * Check if domain is verified.
-     *
-     * @return bool
-     */
-    public function domainVerified()
-    {
-        return $this->domain_verified == self::VERIFIED;
-    }
-
-    /**
-     * Check if DKIM is verified.
-     *
-     * @return bool
-     */
-    public function dkimVerified()
-    {
-        return $this->dkim_verified == self::VERIFIED;
-    }
-
-    /**
-     * Check if SPF is verified.
-     *
-     * @return bool
-     */
-    public function spfVerified()
-    {
-        return $this->spf_verified == self::VERIFIED;
+        return $result == SPFCheck::RESULT_PASS;
     }
 
     /**
@@ -587,28 +520,73 @@ class SendingDomain extends Model
         return false;
     }
 
-    public function verifyWith($server)
+    // The second parameter is required
+    // There are two types of domain verification
+    // + Application verified
+    // + Sending server verified (second parameter)
+    public function createFromArray($attributes, $server)
     {
-        $this->sending_server_id = $server->id;
-        $verinfo = $server->verifyDomain($this->name);
-        $options = $this->getOptions();
-        $options['verification'] = $verinfo;
-        $this->setOptions($options);
-        $this->save();
+        // Default values for a NEW domain
+        $this->status = self::STATUS_INACTIVE;
+
+        // Get values from array
+        $this->fill($attributes);
+
+        // Validation
+        $validator = Validator::make($this->getAttributes(), self::rules());
+
+        // Additional unique validation
+        $validator->after(function ($validator) {
+            if (empty($this->name)) {
+                return; // already catched by validation rules (name must be present!)
+            }
+
+            // Okay, if name is valid, then check if it is unique
+            $notUniq = $this->customer->sendingDomains()->where('name', $this->name)->exists();
+            if ($notUniq) {
+                $validator->errors()->add('name', "A sending domain with name `{$this->name}` already exists");
+            }
+        });
+
+        // IMPORTANT: do not call fails() again in the controller, use is_null() with the second parameter
+        if ($validator->fails()) {
+            return [ $validator, null ];
+        }
+
+        DB::transaction(function() use ($server) {
+            // Generate dkim keys
+            // Used for signing emails
+            $this->generateDkimKeys();
+
+            // Save the domain record itself
+            $this->save();
+
+            if (!is_null($server)) {
+                $this->sendingServer()->associate($server);
+            }
+
+            // Verify against server if any
+            $this->startVerifying();
+        });
+
+        return [ $validator, $this ];
     }
 
-    public function getOptions()
+    public function isIdentityVerified()
     {
-        return json_decode($this->options, true);
+        $verificationResults = json_decode($this->verification_token, true);
+        return $verificationResults['results']['identity'];
     }
 
-    public function setOptions($array)
+    public function isDkimVerified()
     {
-        $this->options = json_encode($array);
+        $verificationResults = json_decode($this->verification_token, true);
+        return $verificationResults['results']['identity'];
     }
 
-    public function isAssociatedWithSendingServer()
+    public function isSpfVerified()
     {
-        return !is_null($this->sending_server_id);
+        $verificationResults = json_decode($this->verification_token, true);
+        return $verificationResults['results']['identity'];
     }
 }

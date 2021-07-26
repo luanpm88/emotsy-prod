@@ -307,22 +307,30 @@ class SendingServerSendGrid extends SendingServer implements DomainVerificationI
             'identity' => $identityRecord,
             'dkim' => [ $dkimRecord ], // there may be more than one DKIM, AWS for example
             'spf' => [ $spfRecord ],
+            'results' => [
+                'identity' => false,
+                'dkim' => false,
+                'spf' => false,
+            ],
         ];
     }
 
     public function checkDomainVerificationStatus($domain) : array
     {
-        $this->validateDomain($domain);
-        $info = $this->getDomainVerificationInfo($domain);
+        $this->validateDomain($domain->name);
+        $info = $this->getDomainVerificationInfo($domain->name);
 
         if (empty($info)) {
-            return false;
+            throw new \Exception('Cannot verify domain against SendGrid');
         }
 
         $identity = $info['dns']['mail_server']['valid'];
         $dkim = $info['dns']['dkim']['valid'];
         $spf = $info['dns']['subdomain_spf']['valid'];
-        return [ $identity, $dkim, $spf ];
+
+        $finalStatus = $identity && $dkim && $spf;
+
+        return [ $identity, $dkim, $spf, $finalStatus ];
     }
 
     private function getDefaultSubdomainName($domain)

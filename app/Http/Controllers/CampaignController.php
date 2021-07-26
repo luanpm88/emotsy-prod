@@ -236,7 +236,6 @@ class CampaignController extends Controller
         return view('campaigns.setup', [
             'campaign' => $campaign,
             'rules' => $campaign->rules(),
-            'sendingDomainOptions' => $customer->getSendingDomainOptions(),
         ]);
     }
 
