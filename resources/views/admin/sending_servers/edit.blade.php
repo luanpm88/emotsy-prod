@@ -18,13 +18,15 @@
             <li class="breadcrumb-item">{{ trans('messages.edit') }}</li>
         </ul>
         <h1>
-            <span class="text-semibold"><span class="material-icons-outlined">
-edit
-</span>
-                {{ $server->name }}
-            </span>
-                
-            <span class="label label-flat bg-{{$server->status}}">{{$server->status}}</span>
+            <div class="d-flex align-items-center">
+                <span class="text-semibold me-3"><span class="material-icons-outlined">
+    edit
+    </span>
+                    {{ $server->name }}
+                </span>
+                    
+                <span class="label label-flat bg-{{$server->status}}">{{$server->status}}</span>
+            </div>
         </h1>
     </div>
 
