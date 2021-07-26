@@ -127,8 +127,8 @@
             @include('account.subscription._invoices')
 
             <div class="sub-section">
-                <div class="row">
-                    <div class="col-sm-12 col-md-6 col-lg-6">
+                <div class="">
+                    <div class="">
                         <h2 class="text-semibold">{{ trans('messages.plan_details') }} </h2>
                         <p>{{ trans('messages.plan_details.intro') }}</p>
 
@@ -163,6 +163,14 @@
 
                 changePlanModal = new Popup();
                 changePlanModal.load(src);
+            });
+
+            // Dotted list more/less
+            $(document).on('click', '.dotted-list > li.more a', function() {
+                var box = $(this).parents('.dotted-list');
+
+                box.find('li').removeClass('hide');
+                $(this).parents('li').hide();
             });
         });
     </script>
