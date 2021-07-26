@@ -1,14 +1,11 @@
-    <div class="iframe-modal-header">
-        <div class="title">{{ trans('messages.subscription.change_plan') }}</div>
-        <div class="close" onclick="parent.GlobalIframeModal.hide()"><i class="material-icons-round">
-close
-</i></div>
-    </div>
+@extends('layouts.popup.full')
+
+@section('content')
+
     
-    <div class="iframe-modal-body">
+    <div class="">
         <div class="row">
-            <div class="col-md-1"></div>
-            <div class="col-md-10">
+            <div class="col-md-12">
                 <div class="sub-section">
                 
                     <h2>{{ trans('messages.subscription.select_a_plan') }}</h2>
@@ -68,3 +65,4 @@ close
             <div class="col-md-1"></div>
         </div>
     </div>
+@endsection

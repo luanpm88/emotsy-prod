@@ -40,6 +40,8 @@ class IframeModal {
             dataType: 'html',
         }).always(function(response) {
             _this.iframe.html(response);
+
+            initJs(_this.iframe);
         });
     }
 }

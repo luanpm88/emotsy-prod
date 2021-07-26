@@ -43,15 +43,6 @@
                     @include('elements._notification', [
                         'level' => 'warning',
                         'message' => trans('messages.have_new_change_plan_invoice', [
-                            'link' => action('AccountSubscriptionController@payment'),
-                        ])
-                    ])
-                @endif
-
-                @if ($subscription->getItsOnlyUnpaidChangePlanInvoice())
-                    @include('elements._notification', [
-                        'level' => 'warning',
-                        'message' => trans('messages.have_new_change_plan_invoice', [
                             'link' => action('AccountSubscriptionController@payment', [
                                 'invoice_uid' => $subscription->getItsOnlyUnpaidChangePlanInvoice()->uid,
                             ]),
@@ -170,7 +161,7 @@
 
                 var src = $(this).attr('href');
 
-                changePlanModal = new IframeModal();
+                changePlanModal = new Popup();
                 changePlanModal.load(src);
             });
         });
