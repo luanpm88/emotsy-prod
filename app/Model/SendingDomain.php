@@ -372,22 +372,23 @@ class SendingDomain extends Model
      */
     public function verify()
     {
+        $tokens = json_decode($this->verification_token, true);
+
         if ($this->sendingServer) {
             // Verify Host, DKIM and SPF
             $server = $this->sendingServer->mapType();
             list($identity, $dkim, $spf, $finalStatus) = $server->checkDomainVerificationStatus($this);
             
-            // update domain record in db
-            $tokens = json_decode($this->verification_token, true);
             $tokens['results']['identity'] = $identity;
             $tokens['results']['dkim'] = $dkim;
             $tokens['results']['spf'] = $spf;
             $this->status = $finalStatus ? self::STATUS_ACTIVE : self::STATUS_INACTIVE;
         } else {
-            // Verify Host, DKIM and SPF
             $tokens['results']['identity'] = $this->verifyIdentity();
             $tokens['results']['dkim'] = $this->verifyDkim();
-            $tokens['results']['spf'] = $this->verifySpf();
+
+            $host = Setting::get('spf_host');
+            $tokens['results']['spf'] = (is_null($host)) ? null : $this->verifySpf($host);
             $finalStatus = $tokens['results']['dkim'] && $tokens['results']['identity']; // SPF is optional
             $this->status = $finalStatus ? self::STATUS_ACTIVE : self::STATUS_INACTIVE;
         }
@@ -575,18 +576,18 @@ class SendingDomain extends Model
     public function isIdentityVerified()
     {
         $verificationResults = json_decode($this->verification_token, true);
-        return $verificationResults['results']['identity'];
+        return $verificationResults['results']['identity'] == true;
     }
 
     public function isDkimVerified()
     {
         $verificationResults = json_decode($this->verification_token, true);
-        return $verificationResults['results']['identity'];
+        return $verificationResults['results']['dkim'] == true;
     }
 
     public function isSpfVerified()
     {
         $verificationResults = json_decode($this->verification_token, true);
-        return $verificationResults['results']['identity'];
+        return $verificationResults['results']['spf'] == true;
     }
 }

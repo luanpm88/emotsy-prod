@@ -279,7 +279,7 @@ class SendingDomainController extends Controller
         $tokens = json_decode($domain->verification_token, true);
         $identity = $tokens['identity'];
         $dkims = $tokens['dkim'];
-        $spf = $tokens['spf'];
+        $spf = array_key_exists('spf', $tokens) ? $tokens['spf'] : null;
         $results = $tokens['results'];
 
         Hook::execute(

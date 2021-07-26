@@ -349,7 +349,13 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
-            'spf' => [
+            'spf_record' => [
+                'cat' => 'dns',
+                'value' => null,
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'spf_host' => [
                 'cat' => 'dns',
                 'value' => null,
                 'type' => 'text',
