@@ -3711,4 +3711,5 @@
     below to get started',
   'subscription.get_started' => 'Get Started',
   'invoice.confirmed' => 'Your subscription was successfully updated',
+  'invoice.price' => 'Price',
 ) ?>

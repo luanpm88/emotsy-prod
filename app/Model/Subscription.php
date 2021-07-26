@@ -285,9 +285,9 @@ class Subscription extends Model
             'item_id' => $this->id,
             'item_type' => get_class($this),
             'amount' => $metadata['amount'],
-            'title' => $this->plan->name,
-            'vat' => $this->plan->vat,
-            'description' => view('plans._bill_desc', ['plan' => $this->plan]),
+            'title' => $newPlan->name,
+            'vat' => $newPlan->vat,
+            'description' => view('plans._bill_desc', ['plan' => $newPlan]),
         ]);
 
         return $invoice;

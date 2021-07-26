@@ -11,8 +11,9 @@
                 @foreach ($bill['bill'] as $item)
                     <div class="bill_item d-flex">
                         <div class="mr-auto">
-                            <div class="font-weight-semibold">{{ $item['title'] }}</div>
-                            {!! $item['description'] !!}
+                            <div class="font-weight-semibold">{{ trans('messages.invoice.price') }}</div>
+                            <p class="mb-0">({{ $item['title'] }})</p>
+                            <div class="mb-0">{!! $item['description'] !!}</div>
                         </div>
                         <div class="font-weight-semibold">{{ $item['price'] }}</div>
                     </div>
