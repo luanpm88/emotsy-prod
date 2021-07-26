@@ -177,25 +177,25 @@ class Controller extends BaseController
      */
     public function jquery_validate_locale()
     {
-        echo 'jQuery.extend(jQuery.validator.messages, {
-                required: "'.trans('messages.jvalidate_required').'",
-                remote: "'.trans('messages.jvalidate_remote').'",
-                email: "'.trans('messages.jvalidate_email').'",
-                url: "'.trans('messages.jvalidate_url').'",
-                date: "'.trans('messages.jvalidate_date').'",
-                dateISO: "'.trans('messages.jvalidate_dateISO').'",
-                number: "'.trans('messages.jvalidate_number').'",
-                digits: "'.trans('messages.jvalidate_digits').'",
-                creditcard: "'.trans('messages.jvalidate_creditcard').'",
-                equalTo: "'.trans('messages.jvalidate_equalTo').'",
-                accept: "'.trans('messages.jvalidate_accept').'",
-                maxlength: jQuery.validator.format("'.trans('messages.jvalidate_maxlength').'"),
-                minlength: jQuery.validator.format("'.trans('messages.jvalidate_minlength').'"),
-                rangelength: jQuery.validator.format("'.trans('messages.jvalidate_rangelength').'"),
-                range: jQuery.validator.format("'.trans('messages.jvalidate_range').'"),
-                max: jQuery.validator.format("'.trans('messages.jvalidate_max').'"),
-                min: jQuery.validator.format("'.trans('messages.jvalidate_min').'")
-            });';
+        return response('jQuery.extend(jQuery.validator.messages, {
+            required: "'.trans('messages.jvalidate_required').'",
+            remote: "'.trans('messages.jvalidate_remote').'",
+            email: "'.trans('messages.jvalidate_email').'",
+            url: "'.trans('messages.jvalidate_url').'",
+            date: "'.trans('messages.jvalidate_date').'",
+            dateISO: "'.trans('messages.jvalidate_dateISO').'",
+            number: "'.trans('messages.jvalidate_number').'",
+            digits: "'.trans('messages.jvalidate_digits').'",
+            creditcard: "'.trans('messages.jvalidate_creditcard').'",
+            equalTo: "'.trans('messages.jvalidate_equalTo').'",
+            accept: "'.trans('messages.jvalidate_accept').'",
+            maxlength: jQuery.validator.format("'.trans('messages.jvalidate_maxlength').'"),
+            minlength: jQuery.validator.format("'.trans('messages.jvalidate_minlength').'"),
+            rangelength: jQuery.validator.format("'.trans('messages.jvalidate_rangelength').'"),
+            range: jQuery.validator.format("'.trans('messages.jvalidate_range').'"),
+            max: jQuery.validator.format("'.trans('messages.jvalidate_max').'"),
+            min: jQuery.validator.format("'.trans('messages.jvalidate_min').'")
+        });')->header('Content-Type', 'application/javascript');
     }
 
     /**

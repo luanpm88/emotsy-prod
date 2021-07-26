@@ -61,7 +61,7 @@ class List {
         var _this = this;
         
         _this.content.removeClass('list-loading');
-        _this.find('.list-loading-msg').remove();
+        _this.content.find('.list-loading-msg').remove();
 
         removePlaceholderLoading(_this.content);
     }
