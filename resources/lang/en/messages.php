@@ -3730,4 +3730,5 @@
   'product.title' => 'Title',
   'campaign_status_ready' => 'Ready',
   'loading_wait' => 'Loading, please wait...',
+  'invoice.price' => 'Price',
 ) ?>
