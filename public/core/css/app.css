@@ -6656,7 +6656,7 @@ h3, h4 [class^="material-icons"] {
     position: absolute;
     font-size: 40px;
     opacity: 1;
-    left: calc(50% - 70px);
+    left: calc(50% - 110px);
     top: 30px;
     -webkit-animation: spin 1s linear infinite;
     -moz-animation: spin 1s linear infinite;
@@ -6733,7 +6733,7 @@ h3, h4 [class^="material-icons"] {
 .list-loading-msg.animated-background {
     position: absolute!important;
     opacity: 1;
-    left: calc(50% - 20px);
+    left: calc(50% - 60px);
     top: 50px;
     color: rgb(0, 0, 0)!important;
     background: transparent;
