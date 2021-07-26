@@ -11,7 +11,7 @@
                 rel1="PlanController/security"
                 rel2="PlanController/emailFooter"
             >
-                <a class="nav-link" href="" class="level-1" data-bs-toggle="dropdown">
+                <a class="nav-link dropdown-toggle" href="" class="level-1" data-bs-toggle="dropdown">
                     {{ trans('messages.plan.settings') }}
                     <span class="caret"></span>
                 </a>

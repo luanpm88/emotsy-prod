@@ -991,7 +991,7 @@ class Plan extends Model
         $validator = $this->validate($request);
 
         if ($validator->fails()) {
-            throw new ValidationException($validator);
+            return $validator;
         }
 
         $this->save();
@@ -1000,6 +1000,8 @@ class Plan extends Model
         if (isset($request->plan['email_verification_servers'])) {
             $this->updateEmailVerificationServers($request->plan['email_verification_servers']);
         }
+
+        return $validator;
     }
 
     /**

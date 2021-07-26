@@ -54,7 +54,7 @@
 								restore
 								</span> {{ $notification->created_at->diffForHumans() }}</span>
 						</span>
-						<span class="desc-menu-log text-muted2 small">{!! $notification->message !!}</span>
+						<span class="desc-menu-log text-muted2 small">{{ $notification->message }}</span>
 					</span>
 				</div>
 			</li>

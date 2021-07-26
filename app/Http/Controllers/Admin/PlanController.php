@@ -241,14 +241,15 @@ class PlanController extends Controller
             return $this->notAuthorized();
         }
 
-        try {
-            $plan->saveAll($request);
+        $validator = $plan->saveAll($request);
 
-            // check plan status
-            $plan->checkStatus();
-        } catch (\Exception $e) {
-            return redirect()->back()->with('alert-error', trans('messages.plan.save_error', ['error' => $e->getMessage()]));
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator->errors());
         }
+
+        // check plan status
+        $plan->checkStatus();
 
         # redirect to sending servers page when needed
         if ($request->use_system_sending_server) {

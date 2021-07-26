@@ -28,116 +28,270 @@
                     <h2>{{ trans('messages.plan.resources') }}</h2>
                     
                     <p>{{ trans('messages.plan.resource.intro') }}</p>
+
+                    <div class="unlimited_controls">
+                        <div class="mb-3 unlimited_control">
+                            <div class="d-flex align-items-center">
+                                <div class="me-4" style="width:400px">
+                                    @include('helpers.form_control.control', [
+                                        'type' => 'text',
+                                        'name' => 'plan[options][email_max]',
+                                        'value' => $options['email_max'],
+                                        'label' => trans('messages.max_emails'),
+                                        'attributes' => [
+                                            'default-value' => '10000',
+                                        ],
+                                    ])
+                                </div>
+                                <div class="pt-3">
+                                    <div class="pt-2">
+                                        @include('helpers.form_control.control', [
+                                            'type' => 'checkbox',
+                                            'name' => 'unlimited',
+                                            'value' => '',
+                                            'label' => trans('messages.unlimited'),
+                                            'attributes' => [
+                                                'checked' => $options['email_max'] == -1,
+                                            ],
+                                        ])
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 unlimited_control">
+                            <div class="d-flex align-items-center">
+                                <div class="me-4" style="width:400px">
+                                    @include('helpers.form_control.control', [
+                                        'type' => 'text',
+                                        'name' => 'plan[options][list_max]',
+                                        'value' => $options['list_max'],
+                                        'label' => trans('messages.max_lists'),
+                                        'attributes' => [
+                                            'default-value' => '100',
+                                        ],
+                                    ])
+                                </div>
+                                <div class="pt-3">
+                                    <div class="pt-2">
+                                        @include('helpers.form_control.control', [
+                                            'type' => 'checkbox',
+                                            'name' => 'unlimited',
+                                            'value' => '',
+                                            'label' => trans('messages.unlimited'),
+                                            'attributes' => [
+                                                'checked' => $options['list_max'] == -1,
+                                            ],
+                                        ])
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 unlimited_control">
+                            <div class="d-flex align-items-center">
+                                <div class="me-4" style="width:400px">
+                                    @include('helpers.form_control.control', [
+                                        'type' => 'text',
+                                        'name' => 'plan[options][subscriber_max]',
+                                        'value' => $options['subscriber_max'],
+                                        'label' => trans('messages.max_subscribers'),
+                                        'attributes' => [
+                                            'default-value' => '5000',
+                                        ],
+                                    ])
+                                </div>
+                                <div class="pt-3">
+                                    <div class="pt-2">
+                                        @include('helpers.form_control.control', [
+                                            'type' => 'checkbox',
+                                            'name' => 'unlimited',
+                                            'value' => '',
+                                            'label' => trans('messages.unlimited'),
+                                            'attributes' => [
+                                                'checked' => $options['subscriber_max'] == -1,
+                                            ],
+                                        ])
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 unlimited_control">
+                            <div class="d-flex align-items-center">
+                                <div class="me-4" style="width:400px">
+                                    @include('helpers.form_control.control', [
+                                        'type' => 'text',
+                                        'name' => 'plan[options][subscriber_per_list_max]',
+                                        'value' => $options['subscriber_per_list_max'],
+                                        'label' => trans('messages.max_subscribers_per_list'),
+                                        'attributes' => [
+                                            'default-value' => '1000',
+                                        ],
+                                    ])
+                                </div>
+                                <div class="pt-3">
+                                    <div class="pt-2">
+                                        @include('helpers.form_control.control', [
+                                            'type' => 'checkbox',
+                                            'name' => 'unlimited',
+                                            'value' => '',
+                                            'label' => trans('messages.unlimited'),
+                                            'attributes' => [
+                                                'checked' => $options['subscriber_per_list_max'] == -1,
+                                            ],
+                                        ])
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         
-                    <div class="boxing">
-                        @include('helpers.form_control', [
-                            'type' => 'text',
-                            'class' => 'numeric',
-                            'name' => 'plan[options][email_max]',
-                            'value' => $options['email_max'],
-                            'label' => trans('messages.max_emails'),
-                            'help_class' => 'plan',
-                            'options' => ['true', 'false'],
-                            'rules' => $plan->resourcesRules(),
-                            'unlimited_check' => true,
-                        ])
+                        <div class="mb-3 unlimited_control">
+                            <div class="d-flex align-items-center">
+                                <div class="me-4" style="width:400px">
+                                    @include('helpers.form_control.control', [
+                                        'type' => 'text',
+                                        'name' => 'plan[options][segment_per_list_max]',
+                                        'value' => $options['segment_per_list_max'],
+                                        'label' => trans('messages.segment_per_list_max'),
+                                        'attributes' => [
+                                            'default-value' => '10',
+                                        ],
+                                    ])
+                                </div>
+                                <div class="pt-3">
+                                    <div class="pt-2">
+                                        @include('helpers.form_control.control', [
+                                            'type' => 'checkbox',
+                                            'name' => 'unlimited',
+                                            'value' => '',
+                                            'label' => trans('messages.unlimited'),
+                                            'attributes' => [
+                                                'checked' => $options['segment_per_list_max'] == -1,
+                                            ],
+                                        ])
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3 unlimited_control">
+                            <div class="d-flex align-items-center">
+                                <div class="me-4" style="width:400px">
+                                    @include('helpers.form_control.control', [
+                                        'type' => 'text',
+                                        'name' => 'plan[options][campaign_max]',
+                                        'value' => $options['campaign_max'],
+                                        'label' => trans('messages.max_campaigns'),
+                                        'attributes' => [
+                                            'default-value' => '500',
+                                        ],
+                                    ])
+                                </div>
+                                <div class="pt-3">
+                                    <div class="pt-2">
+                                        @include('helpers.form_control.control', [
+                                            'type' => 'checkbox',
+                                            'name' => 'unlimited',
+                                            'value' => '',
+                                            'label' => trans('messages.unlimited'),
+                                            'attributes' => [
+                                                'checked' => $options['campaign_max'] == -1,
+                                            ],
+                                        ])
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3 unlimited_control">
+                            <div class="d-flex align-items-center">
+                                <div class="me-4" style="width:400px">
+                                    @include('helpers.form_control.control', [
+                                        'type' => 'text',
+                                        'name' => 'plan[options][automation_max]',
+                                        'value' => $options['automation_max'],
+                                        'label' => trans('messages.max_automations'),
+                                        'attributes' => [
+                                            'default-value' => '200',
+                                        ],
+                                    ])
+                                </div>
+                                <div class="pt-3">
+                                    <div class="pt-2">
+                                        @include('helpers.form_control.control', [
+                                            'type' => 'checkbox',
+                                            'name' => 'unlimited',
+                                            'value' => '',
+                                            'label' => trans('messages.unlimited'),
+                                            'attributes' => [
+                                                'checked' => $options['automation_max'] == -1,
+                                            ],
+                                        ])
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3 unlimited_control">
+                            <div class="d-flex align-items-center">
+                                <div class="me-4" style="width:400px">
+                                    @include('helpers.form_control.control', [
+                                        'type' => 'text',
+                                        'name' => 'plan[options][max_size_upload_total]',
+                                        'value' => $options['max_size_upload_total'],
+                                        'label' => trans('messages.max_size_upload_total'),
+                                        'attributes' => [
+                                            'default-value' => '1000',
+                                        ],
+                                    ])
+                                </div>
+                                <div class="pt-3">
+                                    <div class="pt-2">
+                                        @include('helpers.form_control.control', [
+                                            'type' => 'checkbox',
+                                            'name' => 'unlimited',
+                                            'value' => '',
+                                            'label' => trans('messages.unlimited'),
+                                            'attributes' => [
+                                                'checked' => $options['max_size_upload_total'] == -1,
+                                            ],
+                                        ])
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3 unlimited_control">
+                            <div class="d-flex align-items-center">
+                                <div class="me-4" style="width:400px">
+                                    @include('helpers.form_control.control', [
+                                        'type' => 'text',
+                                        'name' => 'plan[options][max_file_size_upload]',
+                                        'value' => $options['max_file_size_upload'],
+                                        'label' => trans('messages.max_file_size_upload'),
+                                        'attributes' => [
+                                            'default-value' => '50',
+                                        ],
+                                    ])
+                                </div>
+                                <div class="pt-3">
+                                    <div class="pt-2">
+                                        @include('helpers.form_control.control', [
+                                            'type' => 'checkbox',
+                                            'name' => 'unlimited',
+                                            'value' => '',
+                                            'label' => trans('messages.unlimited'),
+                                            'attributes' => [
+                                                'checked' => $options['max_file_size_upload'] == -1,
+                                            ],
+                                        ])
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="boxing">
-                        @include('helpers.form_control', [
-                            'type' => 'text',
-                            'class' => 'numeric',
-                            'name' => 'plan[options][list_max]',
-                            'value' => $options['list_max'],
-                            'label' => trans('messages.max_lists'),
-                            'help_class' => 'plan',
-                            'options' => ['true', 'false'],
-                            'rules' => $plan->resourcesRules(),
-                            'unlimited_check' => true,
-                        ])
-                    </div>
-                    <div class="boxing">
-                        @include('helpers.form_control', [
-                            'type' => 'text',
-                            'class' => 'numeric',
-                            'name' => 'plan[options][subscriber_max]',
-                            'value' => $options['subscriber_max'],
-                            'label' => trans('messages.max_subscribers'),
-                            'help_class' => 'plan',
-                            'options' => ['true', 'false'],
-                            'rules' => $plan->resourcesRules(),
-                            'unlimited_check' => true,
-                        ])
-                    </div>
-                    <div class="boxing">
-                        @include('helpers.form_control', [
-                            'type' => 'text',
-                            'class' => 'numeric',
-                            'name' => 'plan[options][subscriber_per_list_max]',
-                            'value' => $options['subscriber_per_list_max'],
-                            'label' => trans('messages.max_subscribers_per_list'),
-                            'help_class' => 'plan',
-                            'rules' => $plan->resourcesRules(),
-                            'unlimited_check' => true,
-                        ])
-                    </div>
-                    <div class="boxing">
-                        @include('helpers.form_control', [
-                            'type' => 'text',
-                            'class' => 'numeric',
-                            'name' => 'plan[options][segment_per_list_max]',
-                            'value' => $options['segment_per_list_max'],
-                            'label' => trans('messages.segment_per_list_max'),
-                            'help_class' => 'plan',
-                            'rules' => $plan->resourcesRules(),
-                            'unlimited_check' => true,
-                        ])
-                    </div>
-                    <div class="boxing">
-                        @include('helpers.form_control', ['type' => 'text',
-                            'class' => 'numeric',
-                            'name' => 'plan[options][campaign_max]',
-                            'value' => $options['campaign_max'],
-                            'label' => trans('messages.max_campaigns'),
-                            'help_class' => 'plan',
-                            'rules' => $plan->resourcesRules(),
-                            'unlimited_check' => true,
-                        ])
-                    </div>
-                    <div class="boxing">
-                        @include('helpers.form_control', ['type' => 'text',
-                            'class' => 'numeric',
-                            'name' => 'plan[options][automation_max]',
-                            'value' => $options['automation_max'],
-                            'label' => trans('messages.max_automations'),
-                            'help_class' => 'plan',
-                            'rules' => $plan->resourcesRules(),
-                            'unlimited_check' => true,
-                        ])
-                    </div>
-                    <div class="boxing">
-                        @include('helpers.form_control', [
-                            'type' => 'text',
-                            'class' => 'numeric',
-                            'name' => 'plan[options][max_size_upload_total]',
-                            'value' => $options['max_size_upload_total'],
-                            'label' => trans('messages.max_size_upload_total'),
-                            'help_class' => 'plan',
-                            'rules' => $plan->resourcesRules(),
-                            'unlimited_check' => true,
-                        ])
-                    </div>
-                    <div class="boxing">
-                        @include('helpers.form_control', [
-                            'type' => 'text',
-                            'class' => 'numeric',
-                            'name' => 'plan[options][max_file_size_upload]',
-                            'value' => $options['max_file_size_upload'],
-                            'label' => trans('messages.max_file_size_upload'),
-                            'help_class' => 'plan',
-                            'rules' => $plan->resourcesRules(),
-                            'unlimited_check' => true,
-                        ])
-                    </div>
+
                     <div class="boxing">
                         @include('helpers.form_control', [
                             'type' => 'checkbox2',
@@ -202,5 +356,60 @@
             </div>
         </div>
     </form>
-        
+    
+    <script>
+        var GroupManager = {
+            groups: [],
+
+            bind: function(action) {
+                this.groups.forEach(function(group) {
+                    action(group);
+                });
+            },
+
+            add: function(group) {
+                group.currentValue = group.textBox.val();
+                this.groups.push(group);
+            }
+        };
+        $(function() {
+            $('.unlimited_controls .unlimited_control').each(function() {
+                GroupManager.add({
+                    textBox: $(this).find('input[type=text]'),
+                    unlimitedCheck: $(this).find('input[type=checkbox]'),
+                    defaultValue: $(this).find('input[type=text]').attr('default-value')
+                });
+            });
+                
+
+            GroupManager.bind(function(group) {
+                var doCheck = function() {
+                    var checked = group.unlimitedCheck.is(':checked');
+                    
+                    if (checked) {
+                        group.textBox.val(-1);
+                        group.textBox.addClass("text-trans");
+                        group.textBox.attr("readonly", "readonly");
+                    } else {
+                        if(group.textBox.val() == "-1") {
+                            console.log(group.currentValue != "-1");
+                            if (group.currentValue != "-1") {
+                                group.textBox.val(group.currentValue);
+                            } else {
+                                group.textBox.val(group.defaultValue);
+                            }
+                        }
+                        group.textBox.removeClass("text-trans");
+                        group.textBox.removeAttr("readonly", "readonly");
+                    }
+                };
+
+                group.unlimitedCheck.on('change', function() {
+                    doCheck();
+                });
+
+                doCheck();
+            });
+        });
+    </script>
 @endsection
