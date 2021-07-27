@@ -59,7 +59,7 @@
 
                     categoriesPopup.hide();
 
-                    tableFilterAll();
+                    TemplatesIndex.getList().load();
                 }
             });
         })

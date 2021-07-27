@@ -169,9 +169,6 @@ delete
         title: '{!! trans('messages.notify.success') !!}',
         message: response.message
     });
-
-                                // 
-                                tableFilterAll();
                             }
                         });
                     },
@@ -195,9 +192,6 @@ delete
         title: '{!! trans('messages.notify.success') !!}',
         message: response.message
     });
-
-                                // 
-                                tableFilterAll();
                             }
                         });
                     },

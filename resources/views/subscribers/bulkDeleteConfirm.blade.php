@@ -83,7 +83,7 @@
                     removeMaskLoading();
 
                     // load list
-                    tableFilterAll();
+                    SubscribersIndex.getList().load();
                 }
             });
         });

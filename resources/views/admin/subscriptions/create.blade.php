@@ -66,8 +66,6 @@
     title: '{!! trans('messages.notify.success') !!}',
     message: response.message
 });
-
-                    tableFilterAll();
                 }
             });
         });

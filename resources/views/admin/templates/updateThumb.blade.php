@@ -80,7 +80,7 @@
 
                     thumbPopup.hide();  
 
-                    tableFilterAll();      
+                    TemplatesIndex.getList().load();
                 }
             });
         });
