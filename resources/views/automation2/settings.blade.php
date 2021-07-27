@@ -52,9 +52,9 @@
 
 <div class="mt-4 d-flex py-3">
     <div>
-        <h5 class="mb-2">
+        <h4 class="mb-2">
             {{ trans('messages.automation.dangerous_zone') }}
-        </h5>
+        </h4>
         <p class="">
             {{ trans('messages.automation.delete.wording') }}        
         </p>

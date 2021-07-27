@@ -1,4 +1,4 @@
-<h3 class="mb-3">{{ trans('messages.operation.tag_contact') }}</h3>
+<h4 class="mb-3">{{ trans('messages.operation.tag_contact') }}</h4>
 <p>{{ trans('messages.operation.tag_contact.desc') }}</p>
 
 <input type="hidden" name="options[operation_type]" value="tag" />

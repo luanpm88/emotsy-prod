@@ -1,6 +1,6 @@
-<h5 class="mb-3">
+<h4 class="mb-3">
     {{ trans('messages.automation.action.wait') }}
-</h5>
+</h4>
 <p class="mb-3">
     {{ trans('messages.automation.action.wait.intro') }}
 </p>

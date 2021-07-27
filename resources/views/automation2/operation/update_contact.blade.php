@@ -1,4 +1,4 @@
-<h5 class="mb-3">{{ trans('messages.automation.operation.' . request()->operation) }}</h5>
+<h4 class="mb-3">{{ trans('messages.automation.operation.' . request()->operation) }}</h4>
 <p>{{ trans('messages.automation.operation.' .request()->operation. '.desc') }}</p>
 
 <input type="hidden" name="options[operation_type]" value="update" />

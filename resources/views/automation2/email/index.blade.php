@@ -1,8 +1,8 @@
 @include('automation2._back')
 
-<h5 class="mb-20 mt-3"h5>
+<h4 class="mb-20 mt-3"h5>
     {{ trans('messages.automation.action.send-an-email') }}
-</h5>
+</h4>
 <p class="mb-10">
     {{ trans('messages.automation.action.send-an-email.intro') }}
 </p>
@@ -17,8 +17,7 @@
         >
             {{ trans('messages.automation.email.settings') }}
         </span>
-        <a
-                        onclick="popupwindow('{{ action('Automation2Controller@templatePreview', [
+        <a onclick="popupwindow('{{ action('Automation2Controller@templatePreview', [
                             'uid' => $automation->uid,
                             'email_uid' => $email->uid,
                         ]) }}', '{{ $automation->name }}', 800, 800)"
@@ -33,9 +32,9 @@
 
 <div class="mt-4 d-flex py-3">
     <div>
-        <h5 class="mb-2">
+        <h4 class="mb-2">
             {{ trans('messages.automation.dangerous_zone') }}
-        </h5>
+        </h4>
         <p class="">
             {{ trans('messages.automation.action.delete.wording') }}         
         </p>

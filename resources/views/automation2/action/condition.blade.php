@@ -14,9 +14,9 @@
     }
 @endphp
 
-<h5 class="mb-3">
+<h4 class="mb-3">
     {{ trans('messages.automation.action.set_up_your_condition') }}
-</h5>
+</h4>
 <p class="mb-3">
     {{ trans('messages.automation.action.condition.intro') }}
 </p>

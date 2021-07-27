@@ -1,6 +1,6 @@
 @include('automation2._back')
 
-<h5 class="mb-3">{{ trans('messages.automation.operation.' . $element->getOption('operation_type')) }}</h5>
+<h4 class="mb-3">{{ trans('messages.automation.operation.' . $element->getOption('operation_type')) }}</h4>
 <p>{!! trans('messages.automation.operation.' .$element->getOption('operation_type'). '.desc', [
     'list_name' => $element->getOption('target_list_uid') ? \Acelle\Model\MailList::findByUid($element->getOption('target_list_uid'))->name : '',
     'tags' => $element->getOption('tags') ? '<span class="label bg-running mr-1">' . implode('</span><span class="label bg-running mr-1">', $element->getOption('tags')) . '</span>' : '',
@@ -45,9 +45,9 @@
 
 <div class="mt-4 d-flex py-3">
     <div>
-        <h5 class="mb-2">
+        <h4 class="mb-2">
             {{ trans('messages.automation.dangerous_zone') }}
-        </h5>
+        </h4>
         <p class="">
             {{ trans('messages.automation.action.delete.wording') }}                
         </p>
