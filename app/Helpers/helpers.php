@@ -754,13 +754,13 @@ function inlineHtml($html)
     $doc = new \DOMDocument();
     $doc->loadHTML($html);
     $domcss = $doc->getElementsByTagName('link');
-    foreach($domcss as $node) {
+    foreach ($domcss as $node) {
         $arrContextOptions=array(
             "ssl"=>array(
                 "verify_peer"=>false,
                 "verify_peer_name"=>false,
             ),
-        );  
+        );
         
         $response = file_get_contents($node->getAttribute('href'), false, stream_context_create($arrContextOptions));
 

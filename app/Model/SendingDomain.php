@@ -489,7 +489,7 @@ class SendingDomain extends Model
             return [ $validator, null ];
         }
 
-        DB::transaction(function() use ($server) {
+        DB::transaction(function () use ($server) {
             // Generate dkim keys
             // Used for signing emails
             $this->generateDkimKeys();

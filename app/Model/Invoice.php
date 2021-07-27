@@ -524,7 +524,7 @@ class Invoice extends Model
     }
 
     public function cancel()
-    {   
+    {
         $this->cancelProcess();
 
         // delete invoice
