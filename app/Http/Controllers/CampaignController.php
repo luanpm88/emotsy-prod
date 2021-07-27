@@ -1812,7 +1812,7 @@ class CampaignController extends Controller
                 return response()->json([
                     'status' => 'error',
                     'message' => trans('messages.not_authorized_message'),
-                ]);
+                ], 400);
             }
         }
 
