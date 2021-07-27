@@ -61,10 +61,6 @@ class List {
 
     unmasking() {
         var _this = this;
-
-        if (_this.find('.pre-list-content').length) {
-            return;
-        }
         
         _this.content.removeClass('list-loading');
         _this.content.find('.list-loading-msg').remove();
@@ -98,7 +94,7 @@ class List {
         }).fail(function(response) {
             alert(response.responseText);
 
-            _this.unmasking();
+            // _this.unmasking();
         });
     }
 }
