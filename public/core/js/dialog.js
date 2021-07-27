@@ -186,7 +186,7 @@ close
         initJs(_this.dialog);
 
         // click close button
-        _this.dialog.find(".close").click(function() {
+        _this.dialog.find(".close").on('click', function() {
             if (_this.close != null) {
                 _this.close(_this);
             }
@@ -195,7 +195,7 @@ close
         });
         
         // click close button
-        _this.dialog.find(".dialog-cancel").click(function() {
+        _this.dialog.find(".dialog-cancel").on('click', function() {
             if (_this.cancel != null) {
                 _this.cancel(_this);
             }
@@ -204,7 +204,7 @@ close
         });
         
         // click ok button
-        _this.dialog.find(".dialog-ok").click(function() {
+        _this.dialog.find(".dialog-ok").on('click', function() {
             if (_this.ok != null) {
                 _this.ok(_this);
             }
@@ -213,7 +213,7 @@ close
         });
 
         // click yes button
-        _this.dialog.find(".dialog-yes").click(function() {
+        _this.dialog.find(".dialog-yes").on('click', function() {
             if (_this.yes != null) {
                 _this.yes(_this);
             }
@@ -222,7 +222,7 @@ close
         });
 
         // click no button
-        _this.dialog.find(".dialog-no").click(function() {
+        _this.dialog.find(".dialog-no").on('click', function() {
             if (_this.no != null) {
                 _this.no(_this);
             }

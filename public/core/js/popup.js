@@ -14,7 +14,7 @@ class Popup {
         this.backs = [];
         this.initHtml = `
             <div class="modal" id="`+this.id+`" tabindex="-1">
-            <div class="modal-dialog shadow modal-default"> <div class="modal-content"> <div class="modal-header"> <a href="javascript:;" class="material-icons-round back" style="display: none;">keyboard_backspace</a> <span class="modal-title text-center"> asdas dasd asd asd asd asd as </span> </div> <div class="modal-body "> <h4 class="fw-600 mb-3 pb-1"> campaign asda </h4> <p class="mb-2">What would yoasd asd asd asd asd asd asd asd as</p> <p class="mb-2">What would you like to dasd asasd asd asda asd asd asd as</p> <div class="form-group control-text"> <div class="help alert alert-info"> Give your campaign a name </div> </div> <div class="mt-4 text-center"> <button type="submit" id="doCopyButton" class="btn btn-secondary px-3 me-2">Copy</button> <button type="button" class="btn btn-default fw-600" data-bs-dismiss="modal">Cancel</button> </div> </div> </div> </div>
+            <div class="modal-dialog shadow modal-default"> <div class="modal-content"> <div class="modal-header"> <a href="javascript:;" class="material-icons-round back" style="display: none;">keyboard_backspace</a> <span class="modal-title text-center"> asdas dasd asd asd asd asd as </span> </div> <div class="modal-body "> <h4 class="fw-600 mb-3 pb-1"> campaign asda </h4> <p class="mb-2">What would yoasd asd asd asd asd asd asd asd as</p> <p class="mb-2">What would you like to dasd asasd asd asda asd asd asd as</p> <div class="form-group control-text"> <div class="help alert alert-info"> Give your campaign a name </div> </div> <div class="mt-4 text-center"> <button type="submit" class="btn btn-secondary px-3 me-2">Copy</button> <button type="button" class="btn btn-default fw-600" data-bs-dismiss="modal">Cancel</button> </div> </div> </div> </div>
             </div>
         `;
 
@@ -37,6 +37,8 @@ class Popup {
         this.popup[0].addEventListener('hidden.bs.modal', function (event) {
             _this.hide();
         })
+
+        this.initMask();
     }
 
     reset() {
@@ -107,15 +109,17 @@ class Popup {
         });
     }
 
+    initMask() {
+        placeholderLoading(this.popup);
+    }
+
     mask() {
-        // this.popup.addClass('popup-loading');
+        this.popup.addClass('popup-loading');
         // this.popup.find('.modal-dialog').append(`
         //     <div class="progress popup-progress">
         //         <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
         //     </div>
         // `);
-
-        placeholderLoading(this.popup);
     }
 
     loading() {

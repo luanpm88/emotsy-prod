@@ -47,22 +47,30 @@ class List {
             </tbody></table>
         `);
 
-        this.masking();
+        this.initLoading();
+    }
+
+    initLoading() {
+        var _this = this;
+
+        _this.content.addClass('list-loading');
+        _this.content.addClass('list-loading-init');
+        _this.content.append('<span class="list-loading-msg">'+LOADING_WAIT+'</span>');
+
+        placeholderLoading(_this.content);
     }
 
     masking() {
         var _this = this;
 
         _this.content.addClass('list-loading');
-        _this.content.append('<span class="list-loading-msg">'+LOADING_WAIT+'</span>');
-
-        placeholderLoading(_this.content);
     }
 
     unmasking() {
         var _this = this;
         
         _this.content.removeClass('list-loading');
+        _this.content.removeClass('list-loading-init');
         _this.content.find('.list-loading-msg').remove();
 
         removePlaceholderLoading(_this.content);
@@ -80,7 +88,7 @@ class List {
         _this.xhr = $.ajax({
             url: _this.url,
             method: _this.method,
-            data: _this.data()
+            data: _this.data(),
         }).done(function(response) {
             _this.content.html(response); 
             initJs(_this.content);
@@ -92,7 +100,7 @@ class List {
 
             _this.unmasking();
         }).fail(function(response) {
-            alert(response.responseText);
+            // alert(response.responseText);
 
             // _this.unmasking();
         });
