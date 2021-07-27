@@ -38,37 +38,22 @@ class SendingServerSendmail extends SendingServer
      */
     public function send($message, $params = array())
     {
-        try {
-            $transport = new \Swift_SendmailTransport($this->sendmail_path.' -bs');
+        $transport = new \Swift_SendmailTransport($this->sendmail_path.' -bs');
 
-            // Create the Mailer using your created Transport
-            $mailer = new \Swift_Mailer($transport);
+        // Create the Mailer using your created Transport
+        $mailer = new \Swift_Mailer($transport);
 
-            // Actually send
-            $sent = $mailer->send($message);
+        // Actually send
+        $sent = $mailer->send($message);
 
-            if ($sent) {
-                MailLog::info('Sent!');
-
-                return array(
-                    'status' => self::DELIVERY_STATUS_SENT,
-                );
-            } else {
-                MailLog::warning('Sending failed');
-
-                return array(
-                    'status' => self::DELIVERY_STATUS_FAILED,
-                    'error' => 'Unknown SMTP error',
-                );
-            }
-        } catch (\Exception $e) {
-            MailLog::warning('Sending failed');
-            MailLog::warning($e->getMessage());
+        if ($sent) {
+            MailLog::info('Sent!');
 
             return array(
-                'status' => self::DELIVERY_STATUS_FAILED,
-                'error' => $e->getMessage(),
+                'status' => self::DELIVERY_STATUS_SENT,
             );
+        } else {
+            throw new \Exception('Unknown SMTP error');
         }
     }
 

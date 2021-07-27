@@ -23,6 +23,7 @@
 namespace Acelle\Model;
 
 use Acelle\Library\Log as MailLog;
+use Exception;
 
 class SendingServerMailgunSmtp extends SendingServerMailgun
 {
@@ -37,40 +38,25 @@ class SendingServerMailgunSmtp extends SendingServerMailgun
      */
     public function send($message, $params = array())
     {
-        try {
-            $transport = new \Swift_SmtpTransport($this->host, (int) $this->smtp_port, $this->smtp_protocol);
-            $transport->setUsername($this->smtp_username);
-            $transport->setPassword($this->smtp_password);
+        $transport = new \Swift_SmtpTransport($this->host, (int) $this->smtp_port, $this->smtp_protocol);
+        $transport->setUsername($this->smtp_username);
+        $transport->setPassword($this->smtp_password);
 
-            // Create the Mailer using your created Transport
-            $mailer = new \Swift_Mailer($transport);
+        // Create the Mailer using your created Transport
+        $mailer = new \Swift_Mailer($transport);
 
-            // Actually send
-            $sent = $mailer->send($message);
+        // Actually send
+        $sent = $mailer->send($message);
 
-            if ($sent) {
-                MailLog::info('Sent!');
-
-                return array(
-                    //'runtime_message_id' => $sent['MessageId'],
-                    'status' => self::DELIVERY_STATUS_SENT,
-                );
-            } else {
-                MailLog::warning('Sending failed');
-
-                return array(
-                    'status' => self::DELIVERY_STATUS_FAILED,
-                    'error' => 'Unknown SMTP error',
-                );
-            }
-        } catch (\Exception $e) {
-            MailLog::warning('Sending failed');
-            MailLog::warning($e->getMessage());
+        if ($sent) {
+            MailLog::info('Sent!');
 
             return array(
-                'status' => self::DELIVERY_STATUS_FAILED,
-                'error' => $e->getMessage(),
+                //'runtime_message_id' => $sent['MessageId'],
+                'status' => self::DELIVERY_STATUS_SENT,
             );
+        } else {
+            throw new Exception('Unknown SMTP error');
         }
     }
 }

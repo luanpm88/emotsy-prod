@@ -38,27 +38,15 @@ class SendingServerElasticEmailApi extends SendingServerElasticEmail
     // Inherit class to implementation of this method
     public function send($message, $params = array())
     {
-        try {
-            $this->enableCustomHeaders();
+        $this->enableCustomHeaders();
 
-            $result = $this->sendElasticEmailV2Fixed($message);
+        $result = $this->sendElasticEmailV2Fixed($message);
 
-            MailLog::info('Sent!');
+        MailLog::info('Sent!');
 
-            return array(
-                'runtime_message_id' => $result,
-                'status' => self::DELIVERY_STATUS_SENT,
-            );
-        } catch (\Exception $e) {
-            MailLog::warning('Sending failed');
-            MailLog::warning($e->getMessage());
-
-            throw $e;
-
-            return array(
-                'status' => self::DELIVERY_STATUS_FAILED,
-                'error' => $e->getMessage(),
-            );
-        }
+        return array(
+            'runtime_message_id' => $result,
+            'status' => self::DELIVERY_STATUS_SENT,
+        );
     }
 }

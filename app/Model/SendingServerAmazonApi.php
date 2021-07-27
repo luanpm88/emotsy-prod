@@ -37,30 +37,17 @@ class SendingServerAmazonApi extends SendingServerAmazon
      */
     public function send($message, $params = array())
     {
-        try {
-            $sent = $this->sesClient()->sendRawEmail(array(
-                'RawMessage' => array(
-                    'Data' => $message->toString(),
-                ),
-            ));
+        $sent = $this->sesClient()->sendRawEmail(array(
+            'RawMessage' => array(
+                'Data' => $message->toString(),
+            ),
+        ));
 
-            MailLog::info('Sent!');
+        MailLog::info('Sent!');
 
-            return array(
-                'runtime_message_id' => $sent['MessageId'],
-                'status' => self::DELIVERY_STATUS_SENT,
-            );
-        } catch (\Exception $e) {
-            $errorTitle = "Server `{$this->name}` ({$this->uid}) failed to send";
-            Notification::cleanupDuplicateNotifications($errorTitle);
-            Notification::warning([
-                'title' => $errorTitle,
-                'message' => date('Y-m-d').' '.$errorTitle.': '.$e->getMessage()."\n=>".json_encode($message->getTo())], false);
-
-            return array(
-                'status' => self::DELIVERY_STATUS_FAILED,
-                'error' => $e->getMessage(),
-            );
-        }
+        return array(
+            'runtime_message_id' => $sent['MessageId'],
+            'status' => self::DELIVERY_STATUS_SENT,
+        );
     }
 }
