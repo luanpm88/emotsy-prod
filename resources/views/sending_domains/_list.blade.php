@@ -17,7 +17,7 @@
                     </div>
                 </td>
                 <td>
-                    <h5 class="m-0 text-bold">
+                    <h5 class="mb-1 text-bold">
                         <a class="kq_search" href="{{ action('SendingDomainController@show', $item->uid) }}">{{ $item->name }}</a>
                     </h5>
                     <span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
@@ -26,15 +26,14 @@
                 <td class="text-center">
                     <div class="single-stat-box pull-left">
                         @if ($item->isIdentityVerified())
-                            <span class="material-icons-round fs-5 text-success">
+                            <span class="material-icons-round d-block text-success domain-check-icon">
                                 task_alt
-                                </span>
+                            </span>
                         @else
-                        <span class="material-icons-outlined fs-5 text-danger">
+                        <span class="material-icons-outlined d-block text-danger domain-check-icon">
                             not_interested
                             </span>
                         @endif
-                        <br />
                         <span class="text-muted">{{ trans("messages.sending_domain.domain_verification") }}</span>
                     </div>
                 </td>
@@ -42,15 +41,14 @@
                 <td class="text-center">
                     <div class="single-stat-box pull-left">
                         @if ($item->isDkimVerified())
-                            <span class="material-icons-round fs-5 text-success">
+                            <span class="material-icons-round d-block text-success domain-check-icon">
                                 task_alt
                                 </span>
                         @else
-                        <span class="material-icons-outlined fs-5 text-danger">
+                        <span class="material-icons-outlined d-block text-danger domain-check-icon">
                             not_interested
                             </span>
                         @endif
-                        <br />
                         <span class="text-muted">{{ trans("messages.sending_domain.dkim_verification") }}</span>
                     </div>
                 </td>
@@ -58,19 +56,18 @@
                 <td class="text-center">
                     <div class="single-stat-box pull-left">
                         @if ($item->isSpfVerified())
-                            <span class="material-icons-round fs-5 text-success">
+                            <span class="material-icons-round d-block text-success domain-check-icon">
                                 task_alt
                                 </span>
                         @else
-                        <span class="material-icons-outlined fs-5 text-danger">
+                        <span class="material-icons-outlined d-block text-danger domain-check-icon">
                             not_interested
                             </span>
                         @endif
-                        <br />
                         <span class="text-muted">{{ trans("messages.sending_domain.spf_verification") }}</span>
                     </div>
                 </td>
-                <td class="text-center">
+                <td class="text-center pt-4">
                     <span class="text-muted2 list-status pull-left">
                         <span class="label label-flat bg-{{ $item->status }}">{{ trans('messages.sending_domain_status_' . $item->status) }}</span>
                     </span>

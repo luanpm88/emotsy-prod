@@ -6744,3 +6744,7 @@ h3, h4 [class^="material-icons"] {
     background: transparent;
     font-weight: 600;
 }
+.domain-check-icon {
+    font-size: 15px;
+    line-height: 26px;
+}

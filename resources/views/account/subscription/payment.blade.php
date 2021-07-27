@@ -82,25 +82,26 @@
                                         <div class="check"></div>
                                     </div>
                                 </div>
+                                <div class="mr-auto pr-4">
+                                    <h4 class="font-weight-semibold mb-1">{{ $gateway->getName() }}</h4>
+                                    <p class="mb-0">{{ trans('messages.'.$gateway->getType().'.user.description') }}</p>
+                                </div>    
                             </div>
-                            <div class="mr-auto pr-4">
-                                <h4 class="font-weight-semibold mb-1">{{ $gateway->getName() }}</h4>
-                                <p class="mb-0">{{ trans('messages.'.$gateway->getType().'.user.description') }}</p>
-                            </div>                        
+                                                
                         </div>
                     @endforeach
                 </div>
                 
                 
                 <div class="sub-section">
-                    <div class="row">
-                        <div class="col-md-4">
+                    <div class="d-flex align-items-center">
+                        <div class="me-4">
                             <input type="submit" name="new_payment"
                                 class="btn btn-primary bg-teal-800 py-3 px-4"
                                 value="{{ trans('messages.save_payment_method_proceed') }}"
                             >
                         </div>
-                        <div class="col-md-8">
+                        <div class="">
                             {!! trans('messages.payment.agree_service_intro') !!}
                         </div>
                     </div>
