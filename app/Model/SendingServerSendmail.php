@@ -113,4 +113,9 @@ class SendingServerSendmail extends SendingServer
     {
         //
     }
+
+    public function allowOtherSendingDomains()
+    {
+        return true;
+    }
 }

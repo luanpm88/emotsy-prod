@@ -1684,4 +1684,9 @@ class SendingServer extends Model
     {
         return trans('messages.' . $this->type);
     }
+
+    public function allowOtherSendingDomains()
+    {
+        return false;
+    }
 }

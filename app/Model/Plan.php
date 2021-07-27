@@ -1105,8 +1105,7 @@ class Plan extends Model
     {
         $result = [];
         foreach ($this->sendingServers()->get() as $sendingServer) {
-            $sendingServer = SendingServer::mapServerType($sendingServer);
-            $result = array_merge($result, $sendingServer->getVerifiedIdentities());
+            $result = array_merge($result, $sendingServer->mapType()->getVerifiedIdentities());
         }
         return array_unique($result);
     }

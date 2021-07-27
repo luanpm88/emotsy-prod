@@ -30,6 +30,7 @@ use Mika56\SPFCheck\DNSRecordGetter;
 use Acelle\Library\Traits\HasUid;
 use Validator;
 use DB;
+use Exception;
 
 class SendingDomain extends Model
 {
@@ -68,62 +69,25 @@ class SendingDomain extends Model
         return $query->where('status', self::STATUS_ACTIVE);
     }
 
+    public function scopeInactive($query)
+    {
+        return $query->where('status', self::STATUS_INACTIVE);
+    }
+
+    public function scopeBySendingServer($query, $server)
+    {
+        return $query->where('sending_server_id', $server->id);
+    }
+
     /**
      * Filter items.
      *
      * @return collect
      */
-    public static function filter($request, $server = null)
+    public static function scopeSearch($query, $keyword)
     {
-        $user = $request->user();
-        if ($server) {
-            $query = self::select('sending_domains.*')->whereRaw(sprintf('(%s IS NULL or %s = %s)', table('sending_domains.sending_server_id'), table('sending_domains.sending_server_id'), $server->id));
-        } else {
-            $query = self::select('sending_domains.*');
-        }
-
-        // Keyword
-        if (!empty(trim($request->keyword))) {
-            foreach (explode(' ', trim($request->keyword)) as $keyword) {
-                $query = $query->where(function ($q) use ($keyword) {
-                    $q->orwhere('sending_domains.name', 'like', '%'.$keyword.'%');
-                });
-            }
-        }
-
-        // filters
-        $filters = $request->all();
-        if (!empty($filters)) {
-        }
-
-        // Other filter
-        if (!empty($request->customer_id)) {
-            $query = $query->where('sending_domains.customer_id', '=', $request->customer_id);
-        }
-
-        if (!empty($request->admin_id)) {
-            $query = $query->where('sending_domains.admin_id', '=', $request->admin_id);
-        }
-
-        // remove customer sending servers
-        if (!empty($request->no_customer)) {
-            $query = $query->whereNull('customer_id');
-        }
-
-        return $query;
-    }
-
-    /**
-     * Search items.
-     *
-     * @return collect
-     */
-    public static function search($request, $server = null)
-    {
-        $query = self::filter($request, $server);
-
-        if (!empty($request->sort_order)) {
-            $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        if (!empty($keyword)) {
+            $query->where('sending_domains.name', 'like', '%'.$keyword.'%');
         }
 
         return $query;
@@ -202,7 +166,7 @@ class SendingDomain extends Model
         $spfHost = Setting::get('spf_host');
 
         if ($spfRecord && is_null($spfHost)) {
-            throw new \Exception('spf_record is present but spf_host is empty');
+            throw new \Exception('`spf_record` is present but `spf_host` is empty');
         }
 
         if (empty($spfRecord)) {
@@ -219,18 +183,6 @@ class SendingDomain extends Model
     {
         // If a "spf" setting is available, it will take precedence
         return Setting::get('spf') ?: sprintf('%s', doublequote($this->getSpf()));
-    }
-
-    /**
-     * Generate the Domain DNS configuration for DKIM.
-     */
-    public function getHostIpAddress()
-    {
-        $root = config('app.url');
-        $hostname = parse_url($root, PHP_URL_HOST);
-        $ip = gethostbyname($hostname);
-
-        return $ip;
     }
 
     /**
@@ -262,15 +214,7 @@ class SendingDomain extends Model
      */
     public function generateIdentityToken()
     {
-        return base64_encode(md5(uniqid()));
-    }
-
-    /**
-     * Generate the verification token.
-     */
-    public function getVerificationToken()
-    {
-        return $this->verification_token;
+        return base64_encode(md5(trim('SALT!'.$this->name)));
     }
 
     /**
@@ -363,8 +307,7 @@ class SendingDomain extends Model
             }
         }
 
-        $this->verification_token = json_encode($tokens);
-        $this->save();
+        $this->updateVerificationTokens($tokens);
     }
 
     /**
@@ -372,7 +315,7 @@ class SendingDomain extends Model
      */
     public function verify()
     {
-        $tokens = json_decode($this->verification_token, true);
+        $tokens = $this->getVerificationTokens();
 
         if ($this->sendingServer) {
             // Verify Host, DKIM and SPF
@@ -387,14 +330,20 @@ class SendingDomain extends Model
             $tokens['results']['identity'] = $this->verifyIdentity();
             $tokens['results']['dkim'] = $this->verifyDkim();
 
-            $host = Setting::get('spf_host');
-            $tokens['results']['spf'] = (is_null($host)) ? null : $this->verifySpf($host);
+            if (array_key_exists('spf', $tokens)) {
+                $host = Setting::get('spf_host');
+
+                if (empty($host)) {
+                    throw new Exception('There is no value for `spf_host`');
+                }
+                $tokens['results']['spf'] = $this->verifySpf($host);
+            }
+
             $finalStatus = $tokens['results']['dkim'] && $tokens['results']['identity']; // SPF is optional
             $this->status = $finalStatus ? self::STATUS_ACTIVE : self::STATUS_INACTIVE;
         }
 
-        $this->verification_token = json_encode($tokens);
-        $this->save();
+        $this->updateVerificationTokens($tokens);
     }
 
     /**
@@ -404,10 +353,13 @@ class SendingDomain extends Model
      */
     public function verifyIdentity()
     {
-        $fqdn = sprintf('%s.%s', $this->getVerificationHostName(), $this->name);
-        $results = collect(dns_get_record($fqdn, DNS_TXT));
+        $tokens = $this->getVerificationTokens();
+        $identityToken = $tokens['identity']['value'];
+        $identityHostname = $tokens['identity']['name'];
+
+        $results = collect(dns_get_record($identityHostname, DNS_TXT));
         $results = $results->where('type', 'TXT')
-                           ->whereIn('txt', [$this->verification_token, doublequote($this->verification_token)]);
+                           ->whereIn('txt', [$identityToken, doublequote($identityToken)]);
 
         return $results->isEmpty() ? false : true;
     }
@@ -504,23 +456,6 @@ class SendingDomain extends Model
         return false;
     }
 
-    /**
-     * Set VerificationTxtName.
-     *
-     * @return string
-     */
-    public function setVerificationTxtName($verification_hostname)
-    {
-        if (preg_match('/^[a-z0-9]{1,24}$/', $verification_hostname)) {
-            $this->verification_hostname = $verification_hostname;
-            $this->save();
-
-            return true;
-        }
-
-        return false;
-    }
-
     // The second parameter is required
     // There are two types of domain verification
     // + Application verified
@@ -575,19 +510,37 @@ class SendingDomain extends Model
 
     public function isIdentityVerified()
     {
-        $verificationResults = json_decode($this->verification_token, true);
-        return $verificationResults['results']['identity'] == true;
+        return $this->getVerificationTokens()['results']['identity'] == true;
     }
 
     public function isDkimVerified()
     {
-        $verificationResults = json_decode($this->verification_token, true);
-        return $verificationResults['results']['dkim'] == true;
+        return $this->getVerificationTokens()['results']['dkim'] == true;
+    }
+
+    public function isSpfNeeded()
+    {
+        $tokens = $this->getVerificationTokens();
+        return array_key_exists('spf', $tokens['results']);
     }
 
     public function isSpfVerified()
     {
-        $verificationResults = json_decode($this->verification_token, true);
-        return $verificationResults['results']['spf'] == true;
+        $tokens = $this->getVerificationTokens();
+        if (!array_key_exists('spf', $tokens['results'])) {
+            throw new Exception('SPF record does not exist');
+        }
+        return $tokens['results']['spf'] == true;
+    }
+
+    public function getVerificationTokens()
+    {
+        return json_decode($this->verification_token, true);
+    }
+
+    public function updateVerificationTokens($tokens)
+    {
+        $this->verification_token = json_encode($tokens);
+        $this->save();
     }
 }

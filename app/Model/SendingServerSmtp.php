@@ -124,4 +124,9 @@ class SendingServerSmtp extends SendingServer
     {
         //
     }
+
+    public function allowOtherSendingDomains()
+    {
+        return true;
+    }
 }

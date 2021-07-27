@@ -205,25 +205,6 @@ class Customer extends Model
         return $this->hasMany('Acelle\Model\BillingAddress');
     }
 
-    // All senders, including ones that are not associated to a particular sending servers
-    public function allSenders()
-    {
-        $plan = $this->activeSubscription()->plan;
-        if ($plan->useSystemSendingServer()) {
-            $server = $plan->primarySendingServer();
-
-            if (is_null($server)) {
-                throw new \Exception('No sending server available for plan #Customer::allSenders');
-            }
-
-            $result = $this->senders()->whereRaw(sprintf("(%s IS NULL OR %s = %s)", table('senders.sending_server_id'), table('senders.sending_server_id'), $server->id));
-        } else {
-            $result = $this->senders();
-        }
-        
-        return $result;
-    }
-
     public function getBasePath($path = null)
     {
         $base = storage_path(join_paths(self::BASE_DIR, $this->uid)); // storage/app/customers/000000/
@@ -266,24 +247,6 @@ class Customer extends Model
         }
 
         return join_paths($base, $path);
-    }
-
-    public function activeVerifiedSendingDomains()
-    {
-        $plan = $this->activeSubscription()->plan;
-
-        if ($plan->useSystemSendingServer()) {
-            $server = $plan->primarySendingServer();
-
-            if (is_null($server)) {
-                throw new \Exception('No sending server available for plan #Customer::activeVerifiedSendingDomains');
-            }
-
-            return $this->sendingDomains()->active()
-                ->whereRaw(sprintf('(%s IS NULL or %s = %s)', table('sending_domains.sending_server_id'), table('sending_domains.sending_server_id'), $server->id));
-        } else {
-            return $this->sendingDomains()->active();
-        }
     }
 
     /**
@@ -1587,19 +1550,26 @@ class Customer extends Model
         $list = [];
 
         // own emails
-        $senders = $this->allSenders()->where('status', Sender::STATUS_VERIFIED)->get();
+        $senders = $this->senders()->verified()->get();
         foreach ($senders as $sender) {
             $list[] = $sender->name.' <'.$sender->email.'>';
         }
 
         // own domain
-        $domains = $this->activeVerifiedSendingDomains()->get();
-        foreach ($domains as $domain) {
+        $domains = $this->sendingDomains()->active();
+        $plan = $this->activeSubscription()->plan;
+        if ($plan->useSystemSendingServer()) {
+            $server = $plan->primarySendingServer();
+            if (!$server->allowOtherSendingDomains()) {
+                $domains->bySendingServer($server);
+            }
+        }
+
+        foreach ($domains->get() as $domain) {
             $list[] = $domain->name;
         }
 
         // plan sending server emails if system sending servers
-        $plan = $this->activeSubscription()->plan;
         if ($plan->useSystemSendingServer()) {
             $list = array_merge($plan->getVerifiedIdentities(), $list);
         }

@@ -47,20 +47,23 @@ class SendingDomainController extends Controller
      */
     public function listing(Request $request)
     {
-        if (!$request->user()->customer->can('read', new SendingDomain())) {
+        $customer = $request->user()->customer;
+
+        if (!$customer->can('read', new SendingDomain())) {
             return $this->notAuthorized();
         }
 
-        $request->merge(array("customer_id" => $request->user()->customer->id));
-        $plan = $request->user()->customer->activeSubscription()->plan;
+        $domains = $customer->sendingDomains();
 
+        $plan = $customer->activeSubscription()->plan;
         if ($plan->useSystemSendingServer()) {
             $server = $plan->primarySendingServer();
-        } else {
-            $server = null;
+            if (!$server->allowOtherSendingDomains()) {
+                $domains->bySendingServer($server);
+            }
         }
         
-        $items = SendingDomain::search($request, $server)->paginate($request->per_page);
+        $items = $domains->search($request->keyword)->orderBy($request->sort_order, $request->sort_direction)->paginate(25);
 
         return view('sending_domains._list', [
             'items' => $items,
@@ -293,29 +296,6 @@ class SendingDomainController extends Controller
             'spf' => $spf,
             'results' => $results,
         ]);
-    }
-
-    /**
-     * update VerificationTxtName.
-     *
-     * @param int $id
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function updateVerificationTxtName($id, Request $request)
-    {
-        $server = SendingDomain::findByUid($id);
-
-        // authorize
-        if (!$request->user()->customer->can('update', $server)) {
-            return $this->notAuthorized();
-        }
-
-        if (!$server->setVerificationTxtName($request->value)) {
-            return response(trans('messages.sending_domain.verification_hostname.not_valid'), 404)
-                ->header('Content-Type', 'text/plain');
-        }
     }
 
     /**

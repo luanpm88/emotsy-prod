@@ -423,7 +423,6 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::patch('sending_servers/{id}/update/{type}', 'SendingServerController@update');
 
     // Sending domain
-    Route::post('sending_domains/{id}/updateVerificationTxtName', 'SendingDomainController@updateVerificationTxtName');
     Route::post('sending_domains/{id}/updateDkimSelector', 'SendingDomainController@updateDkimSelector');
     Route::get('sending_domains/{id}/records', 'SendingDomainController@records');
     Route::post('sending_domains/{id}/verify', 'SendingDomainController@verify');

@@ -54,18 +54,20 @@
                 </td>
                 
                 <td class="text-center">
-                    <div class="single-stat-box pull-left">
-                        @if ($item->isSpfVerified())
-                            <span class="material-icons-round d-block text-success domain-check-icon">
-                                task_alt
+                    @if ($item->isSpfNeeded())
+                        <div class="single-stat-box pull-left">
+                            @if ($item->isSpfVerified())
+                                <span class="material-icons-round d-block text-success domain-check-icon">
+                                    task_alt
+                                    </span>
+                            @else
+                            <span class="material-icons-outlined d-block text-danger domain-check-icon">
+                                not_interested
                                 </span>
-                        @else
-                        <span class="material-icons-outlined d-block text-danger domain-check-icon">
-                            not_interested
-                            </span>
-                        @endif
-                        <span class="text-muted">{{ trans("messages.sending_domain.spf_verification") }}</span>
-                    </div>
+                            @endif
+                            <span class="text-muted">{{ trans("messages.sending_domain.spf_verification") }}</span>
+                        </div>
+                    @endif
                 </td>
                 <td class="text-center pt-4">
                     <span class="text-muted2 list-status pull-left">

@@ -53,7 +53,7 @@ class Sender extends Model
     public static function filter($request)
     {
         $user = $request->user();
-        $query = $user->customer->allSenders()->select('senders.*');
+        $query = $user->customer->senders();
 
         // Keyword
         if (!empty(trim($request->keyword))) {
@@ -86,6 +86,11 @@ class Sender extends Model
     public static function pending()
     {
         return self::where('status', self::STATUS_PENDING);
+    }
+
+    public function scopeVerified($query)
+    {
+        return $query->where('status', self::STATUS_VERIFIED);
     }
 
     /**
