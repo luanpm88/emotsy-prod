@@ -1,9 +1,9 @@
 @if (!$server->id)
-<form action="{{ action('Admin\SendingServerController@store', ["type" => request()->type]) }}" method="POST" class="form-validate-jqueryz">
+<form id="editServerForm" action="{{ action('Admin\SendingServerController@store', ["type" => request()->type]) }}" method="POST" class="form-validate-jqueryz">
     {{ csrf_field() }}
     <input type="hidden" name="type" value="{{ $server->type }}" />
 @else
-<form enctype="multipart/form-data" action="{{ action('Admin\SendingServerController@update', [$server->uid, $server->type]) }}" method="POST" class="form-validate-jqueryz">
+<form id="editServerForm" enctype="multipart/form-data" action="{{ action('Admin\SendingServerController@update', [$server->uid, $server->type]) }}" method="POST" class="form-validate-jqueryz">
     <input type="hidden" name="_method" value="PATCH">
     {{ csrf_field() }}
 @endif
@@ -106,16 +106,16 @@
                     >
                         {{ trans('messages.sending_server.send_a_test_email') }}
                     </a>
+                    <a href="javascript:;" role="button" class="btn btn-link switch-form-toggle">
+                        {{ trans('messages.edit') }}
+                    </a>
                 </span>
                 <span class="cancel-group hide">
                     <button class="btn btn-secondary mr-10">{{ trans('messages.save') }}</button>
+                    <a href="javascript:;" role="button" class="btn btn-link switch-form-toggle">
+                        {{ trans('messages.cancel') }}
+                    </a>
                 </span>
-                <a href="javascript:;" role="button" class="btn btn-link switch-form-toggle"
-                    data-disabled="true"
-                    data-edit="{{ trans('messages.edit') }}"
-                    data-cancel="{{ trans('messages.cancel') }}">
-                        {{ trans('messages.edit') }}
-                </a>
             @else
                 <button class="btn btn-secondary mr-10">{{ trans('messages.save') }}</button>
                 <a href="{{ action('Admin\SendingServerController@index') }}" role="button" class="btn btn-link">

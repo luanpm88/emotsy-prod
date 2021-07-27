@@ -2,6 +2,10 @@
 
 @section('title', $server->name)
 
+@section('head')
+    <script type="text/javascript" src="{{ URL::asset('core/js/group-manager.js') }}"></script>
+@endsection
+
 @section('page_header')
     @foreach ($notices as $n)
         @include('elements._notification', [
@@ -88,25 +92,27 @@
                 });
             });
 
-            $('.switch-form-toggle').on('click', function() {
-                var form = $(this).closest('form');
-                var disabled = $(this).prop('data-disabled');
-                var label_edit = $(this).attr('data-edit');
-                var label_cancel = $(this).attr('data-cancel');
-                
-                if (disabled == 'false') {
-                    form.find('input, select').prop('disabled', true);
-                    $(this).prop('data-disabled', 'true');
-                    $(this).html(label_edit);
-                    form.find('.edit-group').removeClass('hide');
-                    form.find('.cancel-group').addClass('hide');
-                } else {
-                    form.find('input, select').prop('disabled', false);
-                    $(this).prop('data-disabled', 'false');
-                    $(this).html(label_cancel);
-                    form.find('.edit-group').addClass('hide');
-                    form.find('.cancel-group').removeClass('hide');
-                }
+            var manager = new GroupManager();
+            manager.add({
+                editBox: $('#editServerForm .edit-group'),
+                editButton: $('#editServerForm .edit-group .switch-form-toggle'),
+                cancelBox: $('#editServerForm .cancel-group'),
+                cancelButton: $('#editServerForm .cancel-group .switch-form-toggle'),
+                form: $('#editServerForm'),
+            });
+            manager.bind(function(group) {
+                group.cancelButton.on('click', function() {
+                    group.form.find('input, select').prop('disabled', true);
+
+                    group.editBox.removeClass('hide');
+                    group.cancelBox.addClass('hide');
+                });
+                group.editButton.on('click', function() {
+                    group.form.find('input, select').prop('disabled', false);
+
+                    group.editBox.addClass('hide');
+                    group.cancelBox.removeClass('hide');
+                });
             });
         });
     </script>
