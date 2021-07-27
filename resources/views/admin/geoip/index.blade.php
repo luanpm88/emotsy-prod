@@ -9,9 +9,9 @@
             <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
         </ul>
         <h1>
-            <span class="text-semibold"><span class="material-icons-outlined">
-reorder
-</span> {{ trans('messages.geoip.title') }}</span>
+            <span class="text-semibold"><span class="material-icons-round">
+                format_list_bulleted
+                </span> {{ trans('messages.geoip.title') }}</span>
         </h1>
     </div>
 

@@ -25,9 +25,9 @@ people
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li class="nav-item" rel0="SubscriberController/index">
                         <a class="dropdown-item" href="{{ action('SubscriberController@index', $list->uid) }}">
-                        <span class="material-icons-outlined">
-reorder
-</span> {{ trans('messages.view_all') }}
+                        <span class="material-icons-round">
+                format_list_bulleted
+                </span> {{ trans('messages.view_all') }}
                         </a>
                     </li>
                     <li class="nav-item" rel0="SubscriberController/create">
@@ -68,9 +68,9 @@ splitscreen
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li class="nav-item" rel0="SegmentController/index">
                     <a class="dropdown-item" href="{{ action('SegmentController@index', $list->uid) }}">
-                    <span class="material-icons-outlined">
-reorder
-</span> {{ trans('messages.view_all') }}
+                    <span class="material-icons-round">
+                format_list_bulleted
+                </span> {{ trans('messages.view_all') }}
                     </a>
                     </li>
                     <li class="nav-item" rel0="SegmentController/create">
