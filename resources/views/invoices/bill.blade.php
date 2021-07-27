@@ -48,12 +48,21 @@
                 </div>
             @elseif (isset($payButton) && !\Auth::user()->customer->preferredPaymentGatewayCanAutoCharge())
                 <hr>
-                <div class="text-right">
+                <div class="text-left">
                     <a href="{{ action('AccountSubscriptionController@payment', [
                         'invoice_uid' => $bill['invoice_uid'],
                     ]) }}" class="btn btn-mc_primary">
                         {{ trans('messages.invoice.pay_now') }}
                     </a>
+
+                    @if ($bill['type'] == Acelle\Model\Invoice::TYPE_CHANGE_PLAN)
+                        <a class="btn btn-link" link-method="POST" link-confirm="{{ trans('messages.invoice.cancel.confirm') }}"
+                            href="{{ action('AccountSubscriptionController@cancelInvoice', [
+                                'invoice_uid' => $bill['invoice_uid'],
+                            ]) }}">
+                            {{ trans('messages.invoice.cancel') }}
+                        </a>
+                    @endif
                 </div>
             @endif
         </div>
