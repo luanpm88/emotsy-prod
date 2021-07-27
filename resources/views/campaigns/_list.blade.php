@@ -110,7 +110,9 @@
 	</span> {{ trans("messages.campaign.resend") }}</a></li>
 									@endif
 									@if (\Gate::allows('send_test_email', $campaign))
-										<li><a class="dropdown-item send-a-test-email-link" href="javascript:;">
+										<li><a class="dropdown-item send-a-test-email-link" href="{{ action('CampaignController@sendTestEmail', [
+											'uid' => $campaign->uid,
+										]) }}">
 											<span class="material-icons-outlined me-2">
 forward_to_inbox
 </span> {{ trans("messages.send_a_test_email") }}</a></li>
@@ -183,32 +185,30 @@ forward_to_inbox
 		var CampaignsResendPopup = {
             popup: null,
 
-            url: '{{ action('CampaignController@resend', ["uid" => $campaign->uid]) }}',
-
-            load: function() {
+            load: function(url) {
                 if (this.popup == null) {
                     this.popup = new Popup({
-                        url: this.url
+                        url: url
                     });
                 }
-                this.popup.load();
+                this.popup.load({
+					url: url
+				});
             }
         }
 
 		var CampaignsSendTestEmailPopup = {
             popup: null,
 
-            url: '{{ action('CampaignController@sendTestEmail', [
-                'uid' => $campaign->uid,
-            ]) }}',
-
-            load: function() {
+            load: function(url) {
                 if (this.popup == null) {
                     this.popup = new Popup({
-                        url: this.url
+                        url: url
                     });
                 }
-                this.popup.load();
+                this.popup.load({
+					url: url
+				});
             }
         }
 
@@ -217,7 +217,7 @@ forward_to_inbox
 
 			var url = $(this).attr('href');
 
-			CampaignsResendPopup.load();
+			CampaignsResendPopup.load(url);
 		});
 
 		$('.copy-campaign-button').on('click', function(e) {
@@ -231,8 +231,9 @@ forward_to_inbox
 
 		$('.send-a-test-email-link').on('click', function(e) {
 			e.preventDefault();
-
-			CampaignsSendTestEmailPopup.load();
+			var url = $(this).attr('href');
+			
+			CampaignsSendTestEmailPopup.load(url);
 		});
 	</script>
 @elseif (!empty(request()->keyword))
