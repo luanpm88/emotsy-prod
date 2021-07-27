@@ -235,19 +235,12 @@ class AccountSubscriptionController extends Controller
     public function cancelInvoice(Request $request, $uid)
     {
         $invoice = \Acelle\Model\Invoice::findByUid($uid);
-        $subscription = $request->user()->customer->subscription;
 
         if (!$request->user()->customer->can('delete', $invoice)) {
             return $this->notAuthorized();
         }
 
-        // if subscription is new -> cancel now subscription.
-        // Make sure a new subscription must have a pending invoice
-        if ($subscription->isNew()) {
-            $subscription->abortNew();
-        } else {
-            $invoice->delete();
-        }
+        $invoice->cancel();
 
         // Redirect to my subscription page
         $request->session()->flash('alert-success', trans('messages.invoice.cancelled'));

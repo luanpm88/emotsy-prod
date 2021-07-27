@@ -3731,4 +3731,5 @@
   'campaign_status_ready' => 'Ready',
   'loading_wait' => 'Loading, please wait...',
   'invoice.price' => 'Price',
+  'invoice.cancel' => 'Cancel',
 ) ?>
