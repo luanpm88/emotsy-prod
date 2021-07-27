@@ -5,7 +5,7 @@
     <h5 class="modal-title"><strong>{{ trans('messages.campaign.spam_score') }}</strong>
     
     @if ($score['result'] == true)
-        <span class="badge badge-success">{{ trans('messages.campaign.score.passed') }} {{ $score['score'] }}</span>
+        <span class="label label-flat bg-active">{{ trans('messages.campaign.score.passed') }} {{ $score['score'] }}</span>
     @else
         <span class="badge badge-warning">{{ trans('messages.campaign.score.failed') }} {{ $score['score'] }}</span>
     @endif

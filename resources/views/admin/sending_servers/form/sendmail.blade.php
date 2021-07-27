@@ -168,9 +168,9 @@
                                     </td>
                                     <td>
                                         @if ($attributes['VerificationStatus'] == 'Success')
-                                            <span class="badge badge-success badge-lg">{{ trans('messages.sending_domain_status_active') }}</span>
+                                            <span class="label label-flat bg-active">{{ trans('messages.sending_domain_status_active') }}</span>
                                         @else
-                                            <span class="badge badge-default badge-lg">{{ trans('messages.sending_domain_status_inactive') }}</span>
+                                            <span class="label label-flat bg-inactive">{{ trans('messages.sending_domain_status_inactive') }}</span>
                                         @endif
                                         
                                     </td>

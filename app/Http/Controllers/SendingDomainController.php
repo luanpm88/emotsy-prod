@@ -274,6 +274,7 @@ class SendingDomainController extends Controller
      */
     public function records($id)
     {
+        ssss;
         $domain = SendingDomain::findByUid($id);
 
         $tokens = json_decode($domain->verification_token, true);

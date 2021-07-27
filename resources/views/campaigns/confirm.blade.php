@@ -59,7 +59,7 @@ forward_to_inbox
                             <h4>{{ trans('messages.campaign.spam_score') }}</h4>
                             <p>
                                 @if ($score['result'] == true)
-                                    <i class="badge badge-success">{{ trans('messages.campaign.score.passed') }} {{ $score['score'] }}</i>
+                                    <i class="label label-flat bg-active">{{ trans('messages.campaign.score.passed') }} {{ $score['score'] }}</i>
                                 @else
                                     <i class="badge badge-warning">{{ trans('messages.campaign.score.failed') }} {{ $score['score'] }}</i>
                                 @endif

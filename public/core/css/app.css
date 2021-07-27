@@ -6060,12 +6060,11 @@ h1, h1 {
 }
 .switchery[type="checkbox"], .styled[type="checkbox"], .styled[type="radio"] {
     width: 19px;
-    height: 20px;
+    height: 19px;
     display: inline-block;
     align-items: center;
     cursor: pointer;
-    margin-right: 5px;
-    transform: translateY(1px);
+    transform: scale(0.5);
 }
 .switchery[type="checkbox"]:before, .styled[type="checkbox"]:before, .styled[type="radio"]:before {
     position: relative;
@@ -6083,6 +6082,8 @@ h1, h1 {
     text-align: center;
     cursor: pointer;
     text-indent: -90000px;
+    top: 4px;
+    transform: scale(1.9);
 }
 .switchery[type="checkbox"]:hover:before, .styled[type="checkbox"]:hover:before, .styled[type="radio"]:hover:before {
     background-color: #eff3f5;

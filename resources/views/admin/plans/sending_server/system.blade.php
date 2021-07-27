@@ -216,7 +216,7 @@ dns
                                         </span>
                                     </td>
                                     <td>
-                                        <span class="badge badge-success badge-lg">{{ trans('messages.sending_identity.status.active') }}</span>
+                                        <span class="label label-flat bg-active">{{ trans('messages.sending_identity.status.active') }}</span>
                                     </td>
                                     <td>
                                         <a class="direct-link"

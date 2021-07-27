@@ -120,7 +120,7 @@
                         </div>
                         <div class="desc">
                             <h5 class="mt-0 mb-1 text-primary">{{ trans('messages.source.abandoned_cart_email') }}
-                                <span class="badge badge-success ml-2">{{ trans('messages.active') }}</span></h5>
+                                <span class="label label-flat bg-active ml-2">{{ trans('messages.active') }}</span></h5>
                             
                             <div class="">{{ trans('messages.source.abandoned_cart_email.all_setup') }}</div>
                             <div class="email-rates my-4 d-flex">
