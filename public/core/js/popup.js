@@ -190,10 +190,10 @@ class Popup {
         }).fail(function(jqXHR, textStatus, errorThrown){
             // for debugging
             alert(errorThrown);
-            _this.unmask();
+            // _this.unmask();
         }).always(function() {
             // effect
-            _this.unmask();
+            // _this.unmask();
         });
     }
     

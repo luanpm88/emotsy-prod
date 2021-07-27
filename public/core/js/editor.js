@@ -44,7 +44,7 @@ $(document).ready(function() {
         ],
         toolbar: 'insertfile undo redo | fontselect | fontsizeselect | styleselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | ltr rtl',
         content_css: [
-          APP_URL.replace('/index.php','')+'/css/email.css',
+          APP_URL.replace('/index.php','')+'/core/css/email.css',
         ],
 
         external_filemanager_path:APP_URL.replace('/index.php','')+"/filemanager2/",

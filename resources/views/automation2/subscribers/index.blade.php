@@ -63,7 +63,7 @@
 
 @section('content')
 	<main class="container px-3">
-		<form class="listing-form"
+		<div class="listing-form"
 			data-url="{{ action('Automation2Controller@subscribersList', $automation->uid) }}"
 			per-page="{{ Acelle\Model\Subscriber::$itemsPerPage }}"
 		>
@@ -71,37 +71,39 @@
 				<div class="col-md-10">
 					<div class="filter-box">
 						<span class="mr-10">
-							@include('helpers.select_tool', [
-								'disable_all_items' => false
-							])
-							<div class="btn-group list_actions mr-0" style="display:none">
+							<div class="mr-2">
+								@include('helpers.select_tool', [
+									'disable_all_items' => false
+								])
+							</div>
+							<div class="btn-group list_actions me-2" style="display:none">
 								<button role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
 									{{ trans('messages.actions') }} <span class="number"></span><span class="caret"></span>
 								</button>
 								<ul class="dropdown-menu">
 									<li>
-										<a link-confirm="{{ trans('messages.subscribe_subscribers_confirm') }}" href="{{ action('SubscriberController@subscribe', $list->uid) }}">
+										<a class="dropdown-item"  link-method="POST" link-confirm="{{ trans('messages.subscribe_subscribers_confirm') }}" href="{{ action('SubscriberController@subscribe', $list->uid) }}">
 											<span class="material-icons-outlined">
 mark_email_read
 </span> {{ trans('messages.subscribe') }}
 										</a>
 									</li>
 									<li>
-										<a link-confirm="{{ trans('messages.unsubscribe_subscribers_confirm') }}" href="{{ action('SubscriberController@unsubscribe', $list->uid) }}">
+										<a class="dropdown-item" link-method="POST" link-confirm="{{ trans('messages.unsubscribe_subscribers_confirm') }}" href="{{ action('SubscriberController@unsubscribe', $list->uid) }}">
 											<span class="material-icons-round">
 logout
 </span> {{ trans('messages.unsubscribe') }}
 										</a>
 									</li>
 									<li>
-										<a link-method="POST" link-confirm="{{ trans('messages.subscribers.resend_confirmation_email.confirm') }}" href="{{ action('SubscriberController@resendConfirmationEmail', $list->uid) }}">
+										<a class="dropdown-item list-action-single" link-method="POST" link-confirm="{{ trans('messages.subscribers.resend_confirmation_email.confirm') }}" href="{{ action('SubscriberController@resendConfirmationEmail', $list->uid) }}">
 											<span class="material-icons-outlined">
 mark_email_read
 </span> {{ trans('messages.subscribers.resend_confirmation_email') }}
 										</a>
 									</li>
 									<li>
-										<a href="#" class="copy_move_subscriber"
+										<a href="#" class="dropdown-item copy_move_subscriber"
 											data-url="{{ action('SubscriberController@copyMoveForm', [
 												'from_uid' => $list->uid,
 												'action' => 'copy',
@@ -112,7 +114,7 @@ mark_email_read
 										</a>
 									</li>
 									<li>
-										<a href="#move" class="copy_move_subscriber"
+										<a href="#move" class="dropdown-item copy_move_subscriber"
 											data-url="{{ action('SubscriberController@copyMoveForm', [
 												'from_uid' => $list->uid,
 												'action' => 'move',
@@ -123,14 +125,15 @@ exit_to_app
 										</a>
 									</li>
 									<li>
-										<a link-confirm="{{ trans('messages.delete_subscribers_confirm') }}" href="{{ action('SubscriberController@delete', $list->uid) }}">
+										<a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.delete_subscribers_confirm') }}" href="{{ action('SubscriberController@delete', $list->uid) }}">
 											<span class="material-icons-outlined">
 	delete_outline
 	</span> {{ trans('messages.delete') }}
 										</a>
 									</li>
 									<li>
-										<a href="{{ action('SubscriberController@bulkDelete', $list->uid) }}" class="bulk-delete">
+										<a href="{{ action('SubscriberController@bulkDelete', $list->uid) }}"
+											class="dropdown-item bulk-delete">
 											<span class="material-icons-outlined">
 	delete_outline
 	</span> {{ trans('messages.subscriber.bulk_delete') }}
@@ -138,11 +141,6 @@ exit_to_app
 									</li>
 								</ul>
 							</div>
-							<!--<div class="checkbox inline check_all_list">
-								<label>
-									<input type="checkbox" name="page_checked" class="styled check_all">
-								</label>
-							</div>-->
 						</span>
 						<span class="filter-group">
 							<span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
@@ -158,7 +156,7 @@ exit_to_app
 	</span>
 							</button>
 						</span>
-						<span class="">
+						<span class="me-2">
 							<select class="select" name="status">
 								<option value="">{{ trans('messages.all_subscribers') }}</option>
 								<option value="subscribed">{{ trans('messages.subscribed') }}</option>
@@ -178,7 +176,7 @@ exit_to_app
 								@endforeach
 							</select>
 						</span>
-						<div class="btn-group list_columns mr-10">
+						<div class="btn-group list_columns me-2">
 							<button role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
 								{{ trans('messages.columns') }} <span class="caret"></span>
 							</button>
@@ -228,20 +226,121 @@ exit_to_app
 
 
 			</div>
-		</form>
+		</div>
 		<!-- Footer -->
 		@include('layouts.core._footer')
 	</main>
+
+	<script>
+        var SubscribersIndex = {
+            getList: function() {
+                return makeList({
+                    url: '{{ action('Automation2Controller@subscribersList', $automation->uid) }}',
+                    container: $('.listing-form'),
+                    content: $('.pml-table-container')
+                });
+            }
+        };
+
+        $(function() {
+            SubscribersIndex.getList().load();
+        });
+    </script>
 	
 	<script>
 		var bulkDeletePopup = new Popup();
 
-		$('.bulk-delete').click(function(e) {
+		$(document).on('click', '.bulk-delete', function(e) {
 			e.preventDefault();
 
 			var url = $(this).attr('href');
 			
 			bulkDeletePopup.load(url);
+		});
+		
+		var assignValues;
+		$(document).on('click', '.assign-values-button', function(e) {
+			e.preventDefault();
+
+        	var data = SubscribersIndex.getList().data();
+
+			var url = $(this).attr('href');
+			
+			assignValues = new Popup();
+			assignValues.load({
+				url: url,
+				data: data
+			});
+		});
+
+		// Copy Move subscribers
+		var copyMovePopup;
+		$(document).on('click', '.copy_move_subscriber', function() {
+			var url = $(this).attr('data-url');
+			var data = {};
+			// Data list action
+			if ($(this).parents('.list_actions').length) {
+				var form = $(this).parents(".listing-form");
+				var vals = form.find("input[name='uids[]']:checked").map(function () {
+					return this.value;
+				}).get();
+
+				data = {
+					uids: vals.join(",")
+				};
+
+				// select_tool
+				var select_tool = '';
+				if (form.find('.select_tool').length && form.find('.select_tool').val() == 'all_items') {
+					select_tool = form.find('.select_tool').val();
+					arr = form.serializeArray();
+					for (var i = 0; i < arr.length; i++){
+						data[arr[i]['name']] = arr[i]['value'];
+					}
+				}
+
+				if (form.find('.select_tool').length) {
+					console.log(data);
+					data.select_tool = form.find('.select_tool').val();
+				}
+
+			}
+
+			copyMovePopup = new Popup({
+				url: url,
+				data: data
+			});
+			copyMovePopup.load();
+		});
+
+		// Ajax copy list
+		$(document).on('submit', '#copy-move-subscribers-form form', function(e) {
+			e.preventDefault(); // avoid to execute the actual submit of the form.
+
+			var form = $(this);
+			var url = form.attr("action");
+
+			addMaskLoading();
+
+			$.ajax({
+				type: "POST",
+				url: url,
+				data: form.serialize()
+			}).done(function(msg) {
+				if(msg != '') {
+					new Dialog('alert', {
+						message: msg
+					});
+				}
+				copyMovePopup.hide();
+
+				SubscribersIndex.getList().load();
+
+				removeMaskLoading();
+			});
+
+			copyMovePopup.hide();
+			
 		});
 	</script>
 @endsection

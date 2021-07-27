@@ -31,7 +31,7 @@ people
 										</button>
 										<ul class="dropdown-menu dropdown-menu-end">
 											<li>
-												<a link-confirm="{{ trans('messages.subscribe_subscribers_confirm') }}" href="{{ action('SubscriberController@subscribe', $list->uid) }}">
+												<a  link-method="POST" link-confirm="{{ trans('messages.subscribe_subscribers_confirm') }}" href="{{ action('SubscriberController@subscribe', $list->uid) }}">
 													<span class="material-icons-outlined">
 mark_email_read
 </span> {{ trans('messages.subscribe') }}

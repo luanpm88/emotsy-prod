@@ -259,8 +259,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::patch('lists/{list_uid}/subscribers/{uid}/update', 'SubscriberController@update');
     Route::post('lists/{list_uid}/subscribers/delete', 'SubscriberController@delete');
     Route::get('lists/{list_uid}/subscribers/delete', 'SubscriberController@delete');
-    Route::get('lists/{list_uid}/subscribers/subscribe', 'SubscriberController@subscribe');
-    Route::get('lists/{list_uid}/subscribers/unsubscribe', 'SubscriberController@unsubscribe');
+    Route::post('lists/{list_uid}/subscribers/subscribe', 'SubscriberController@subscribe');
+    Route::post('lists/{list_uid}/subscribers/unsubscribe', 'SubscriberController@unsubscribe');
     
     Route::get('lists/{list_uid}/subscribers/import', 'SubscriberController@import');
     Route::post('lists/{list_uid}/subscribers/import/dispatch', 'SubscriberController@dispatchImportJob');

@@ -1857,7 +1857,7 @@ class Automation2Controller extends Controller
         // $total = distinctCount($subscribers);
         $total = $subscribers->count();
         $subscribers->with(['mailList', 'subscriberFields']);
-        $subscribers = \optimized_paginate($subscribers, $request->per_page, null, null, null, $total);
+        $subscribers = $subscribers->paginate($request->per_page);
 
         $fields = $list->getFields->whereIn('uid', explode(',', $request->columns));
 

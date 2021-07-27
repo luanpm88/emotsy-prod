@@ -71,18 +71,18 @@ edit
 						<button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
 						<ul class="dropdown-menu dropdown-menu-end">
 							@if (\Gate::allows('subscribe', $item))
-								<li><a class="ajax_link" href="{{ action('SubscriberController@subscribe', ['list_uid' => $list->uid, "uids" => $item->uid]) }}"><span class="material-icons-outlined">
+								<li><a class="dropdown-item list-action-single"  link-method="POST" href="{{ action('SubscriberController@subscribe', ['list_uid' => $list->uid, "uids" => $item->uid]) }}"><span class="material-icons-outlined">
 mark_email_read
 </span> {{ trans('messages.subscribe') }}</a></li>
 							@endif
 							@if (\Gate::allows('unsubscribe', $item))
-								<li><a class="ajax_link" href="{{ action('SubscriberController@unsubscribe', ['list_uid' => $list->uid, "uids" => $item->uid]) }}"><span class="material-icons-round">
+								<li><a class="dropdown-item list-action-single"  link-method="POST" href="{{ action('SubscriberController@unsubscribe', ['list_uid' => $list->uid, "uids" => $item->uid]) }}"><span class="material-icons-round">
 logout
 </span> {{ trans('messages.unsubscribe') }}</a></li>
 							@endif
 
 							<li>
-								<a href="#copy" class="copy_move_subscriber" link-method="POST"
+								<a href="#copy" class="dropdown-item copy_move_subscriber"
 									data-url="{{ action('SubscriberController@copyMoveForm', [
 										'uids' => $item->uid,
 										'from_uid' => $list->uid,
@@ -94,7 +94,7 @@ copy_all
 								</a>
 							</li>
 							<li>
-								<a href="#move" class="copy_move_subscriber" link-method="POST"
+								<a href="#move" class="dropdown-item copy_move_subscriber"
 									data-url="{{ action('SubscriberController@copyMoveForm', [
 										'uids' => $item->uid,
 										'from_uid' => $list->uid,
@@ -107,7 +107,7 @@ exit_to_app
 							</li>
 							@if (\Gate::allows('update', $item))
 								<li>
-									<a link-method="POST" link-confirm="{{ trans('messages.subscribers.resend_confirmation_email.confirm') }}" href="{{ action('SubscriberController@resendConfirmationEmail', ['list_uid' => $list->uid, "uids" => $item->uid]) }}">
+									<a class="dropdown-item list-action-single" link-method="POST" link-confirm="{{ trans('messages.subscribers.resend_confirmation_email.confirm') }}" href="{{ action('SubscriberController@resendConfirmationEmail', ['list_uid' => $list->uid, "uids" => $item->uid]) }}">
 										<span class="material-icons-outlined">
 mark_email_read
 </span> {{ trans('messages.subscribers.resend_confirmation_email') }}
@@ -115,7 +115,7 @@ mark_email_read
 								</li>
 							@endif
 							@if (\Gate::allows('delete', $item))
-								<li><a link-confirm="{{ trans('messages.delete_subscribers_confirm') }}" href="{{ action('SubscriberController@delete', ['list_uid' => $list->uid, "uids" => $item->uid]) }}"><span class="material-icons-outlined">
+								<li><a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.delete_subscribers_confirm') }}" href="{{ action('SubscriberController@delete', ['list_uid' => $list->uid, "uids" => $item->uid]) }}"><span class="material-icons-outlined">
 delete_outline
 </span> {{ trans("messages.delete") }}</a></li>
 							@endif

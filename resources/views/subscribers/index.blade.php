@@ -53,7 +53,7 @@ control_point_duplicate
 									</a>
 								</li>
 								<li>
-									<a class="dropdown-item" link-confirm="{{ trans('messages.subscribe_subscribers_confirm') }}"
+									<a class="dropdown-item"  link-method="POST" link-confirm="{{ trans('messages.subscribe_subscribers_confirm') }}"
 										href="{{ action('SubscriberController@subscribe', $list->uid) }}">
 										<span class="material-icons-outlined">
 mark_email_read
@@ -70,7 +70,7 @@ logout
 									</a>
 								</li>
 								<li>
-									<a class="dropdown-item"
+									<a class="dropdown-item list-action-single"
 										link-method="POST"
 										link-confirm="{{ trans('messages.subscribers.resend_confirmation_email.confirm') }}" href="{{ action('SubscriberController@resendConfirmationEmail', $list->uid) }}">
 										<span class="material-icons-outlined">
@@ -101,7 +101,7 @@ exit_to_app
 									</a>
 								</li>
 								<li>
-									<a class="dropdown-item"
+									<a class="dropdown-item list-action-single"
 										link-confirm="{{ trans('messages.delete_subscribers_confirm') }}"
 										href="{{ action('SubscriberController@delete', $list->uid) }}">
 										<span class="material-icons-outlined">
@@ -287,28 +287,6 @@ search
 				data: data
 			});
 			copyMovePopup.load();
-
-			// $.ajax({
-			// 	method: 'GET',
-			// 	url: url,
-			// 	data: data
-			// })
-			// .done(function(data) {
-			// 	$('#copy-move-subscribers-form').remove();
-			// 	$('body').append(data);
-			// 	$('#copy-move-subscribers-form').modal('show');
-			// 	$('#copy-move-subscribers-form').find('select').select2({
-			// 		minimumResultsForSearch: 101,
-			// 		templateResult: formatSelect2TextOption,
-			// 		templateSelection: formatSelect2TextSelected,
-			// 		dropdownAutoWidth : true,
-			// 		width: 'auto',
-			// 	});
-			// 	$('#copy-move-subscribers-form').find('.styled').uniform({
-			// 		radioClass: 'choice'
-			// 	});
-			// 	customValidate($('#copy-move-subscribers-form').find('form'));
-			// });
 		});
 
 		// Ajax copy list

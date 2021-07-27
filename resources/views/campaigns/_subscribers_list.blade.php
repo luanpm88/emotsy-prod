@@ -2,7 +2,7 @@
     <table class="table table-box pml-table table-sub"
         current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
     >
-        @foreach ($subscribers as $key => $item)
+        @foreach ($subscribers as $key => $subscriber)
             <tr>
                 <td width="1%">
                     <div class="text-nowrap">
@@ -10,7 +10,7 @@
                             <label>
                                 <input type="checkbox" class="node styled"
                                     name="uids[]"
-                                    value="{{ $item->uid }}"
+                                    value="{{ $subscriber->uid }}"
                                 />
                             </label>
                         </div>
@@ -18,24 +18,24 @@
                 </td>
                 <td>
                     <div class="no-margin text-bold">
-                        <a class="kq_search" href="{{ action('SubscriberController@edit', ['list_uid' => $list->uid ,'uid' => $item->uid]) }}">
-                            {{ $item->email }}
+                        <a class="kq_search" href="{{ action('SubscriberController@edit', ['list_uid' => $list->uid ,'uid' => $subscriber->uid]) }}">
+                            {{ $subscriber->email }}
                         </a>
                         <br />
                         <span data-popup="tooltip" title="{{ 
-                            $item->bounced_message ?:
-                            $item->feedback_message ?:
-                            $item->failed_message ?:
-                            $item->skipped_message ?:
-                            $item->new_message
-                        }}" class="label label-flat bg-{{ $item->delivery_status }} kq_search">{{ trans('messages.tracking_log_status_' . $item->delivery_status) }}
+                            $subscriber->bounced_message ?:
+                            $subscriber->feedback_message ?:
+                            $subscriber->failed_message ?:
+                            $subscriber->skipped_message ?:
+                            $subscriber->new_message
+                        }}" class="label label-flat bg-{{ $subscriber->delivery_status }} kq_search">{{ trans('messages.tracking_log_status_' . $subscriber->delivery_status) }}
                         </span>
                     </div>
                 </td>
 
                 @foreach ($fields as $field)
                     <td>
-                        <span class="no-margin stat-num kq_search">{{ empty($item->getValueByField($field)) ? "--" : $item->getValueByField($field) }}</span>
+                        <span class="no-margin stat-num kq_search">{{ empty($subscriber->getValueByField($field)) ? "--" : $subscriber->getValueByField($field) }}</span>
                         <br>
                         <span class="text-muted2">{{ $field->label }}</span>
                     </td>
@@ -43,7 +43,7 @@
 
                 @if (in_array("created_at", explode(",", request()->columns)))
                     <td>
-                        <span class="no-margin stat-num">{{ Tool::formatDateTime($item->created_at) }}</span>
+                        <span class="no-margin stat-num">{{ Tool::formatDateTime($subscriber->created_at) }}</span>
                         <br>
                         <span class="text-muted2">{{ trans('messages.created_at') }}</span>
                     </td>
@@ -51,87 +51,100 @@
 
                 @if (in_array("updated_at", explode(",", request()->columns)))
                     <td>
-                        <span class="no-margin stat-num">{{ Tool::formatDateTime($item->updated_at) }}</span>
+                        <span class="no-margin stat-num">{{ Tool::formatDateTime($subscriber->updated_at) }}</span>
                         <br>
                         <span class="text-muted2">{{ trans('messages.updated_at') }}</span>
                     </td>
                 @endif
 
                 <td>
-                    <span class="no-margin stat-num">{{ null !== $item->lastOpenLog($campaign) ? Tool::formatDateTime($item->lastOpenLog($campaign)->created_at) : "--" }}</span>
+                    <span class="no-margin stat-num">{{ null !== $subscriber->lastOpenLog($campaign) ? Tool::formatDateTime($subscriber->lastOpenLog($campaign)->created_at) : "--" }}</span>
                     <br>
                     <span class="text-muted2">{{ trans('messages.last_open') }}</span>
-                    @if (null !== $item->lastOpenLog($campaign))
-                        <a href="{{ action('CampaignController@openLog', ["uid" => $campaign->uid, "search_keyword" => $item->email]) }}">
-                            {{ $item->openLogs($campaign)->count() . " " . Tool::getPluralPrase(trans("messages.time"), $item->openLogs($campaign)->count()) }}</a>
+                    @if (null !== $subscriber->lastOpenLog($campaign))
+                        <a href="{{ action('CampaignController@openLog', ["uid" => $campaign->uid, "search_keyword" => $subscriber->email]) }}">
+                            {{ $subscriber->openLogs($campaign)->count() . " " . Tool::getPluralPrase(trans("messages.time"), $subscriber->openLogs($campaign)->count()) }}</a>
                     @endif
                 </td>
 
                 <td>
-                    <span class="no-margin stat-num">{{ null !== $item->lastClickLog($campaign) ? Tool::formatDateTime($item->lastClickLog($campaign)->created_at) : "--" }}</span>
+                    <span class="no-margin stat-num">{{ null !== $subscriber->lastClickLog($campaign) ? Tool::formatDateTime($subscriber->lastClickLog($campaign)->created_at) : "--" }}</span>
                     <br>
                     <span class="text-muted2">{{ trans('messages.last_click') }}</span>
-                    @if (null !== $item->lastClickLog($campaign))
-                        <a href="{{ action('CampaignController@clickLog', ["uid" => $campaign->uid, "search_keyword" => $item->email]) }}">
-                            {{ $item->clickLogs($campaign)->count() . " " . Tool::getPluralPrase("time", $item->clickLogs($campaign)->count()) }}
+                    @if (null !== $subscriber->lastClickLog($campaign))
+                        <a href="{{ action('CampaignController@clickLog', ["uid" => $campaign->uid, "search_keyword" => $subscriber->email]) }}">
+                            {{ $subscriber->clickLogs($campaign)->count() . " " . Tool::getPluralPrase("time", $subscriber->clickLogs($campaign)->count()) }}
                         </a>
                     @endif
                 </td>
 
                 <td class="text-end text-nowrap">
-                    @if (\Gate::allows('update', $item))
-                        <a href="{{ action('SubscriberController@edit', ['list_uid' => $list->uid, "uid" => $item->uid]) }}" role="button" class="btn btn-secondary btn-icon">
-                            <span class="material-icons-outlined">
+                    @if (\Gate::allows('update', $subscriber))
+                    <a href="{{ action('SubscriberController@edit', ['list_uid' => $list->uid, "uid" => $subscriber->uid]) }}" role="button" class="btn btn-secondary btn-icon">
+                        <span class="material-icons-outlined">
 edit
 </span>
-                        </a>
-                    @endif
-                    <div class="btn-group">
-                        <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            @if (\Gate::allows('subscribe', $item))
-                                <li><a class="ajax_link" href="{{ action('SubscriberController@subscribe', ['list_uid' => $list->uid, "uids" => $item->uid]) }}"><span class="material-icons-outlined">
+                    </a>
+					@endif
+					<div class="btn-group">
+						<button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
+						<ul class="dropdown-menu dropdown-menu-end">
+							@if (\Gate::allows('subscribe', $subscriber))
+								<li><a class="dropdown-item list-action-single"
+                                    link-method="POST"
+                                    href="{{ action('SubscriberController@subscribe', ['list_uid' => $list->uid, "uids" => $subscriber->uid]) }}"><span class="material-icons-outlined">
 mark_email_read
 </span> {{ trans('messages.subscribe') }}</a></li>
-                            @endif
-                            @if (\Gate::allows('unsubscribe', $item))
-                                <li><a class="ajax_link" href="{{ action('SubscriberController@unsubscribe', ['list_uid' => $list->uid, "uids" => $item->uid]) }}"><span class="material-icons-round">
+							@endif
+							@if (\Gate::allows('unsubscribe', $subscriber))
+								<li><a class="dropdown-item list-action-single"  link-method="POST" href="{{ action('SubscriberController@unsubscribe', ['list_uid' => $list->uid, "uids" => $subscriber->uid]) }}"><span class="material-icons-round">
 logout
 </span> {{ trans('messages.unsubscribe') }}</a></li>
-                            @endif
+							@endif
 
-                            <li>
-                                <a href="#copy" class="copy_move_subscriber"
-                                    data-url="{{ action('SubscriberController@copyMoveForm', [
-                                        'uids' => $item->uid,
-                                        'from_uid' => $item->mailList->uid,
-                                        'action' => 'copy',
-                                    ]) }}">
-                                        <span class="material-icons-outlined">
+							<li>
+								<a href="#copy" class="dropdown-item copy_move_subscriber"
+									data-url="{{ action('SubscriberController@copyMoveForm', [
+										'uids' => $subscriber->uid,
+										'from_uid' => $list->uid,
+										'action' => 'copy',
+									]) }}">
+										<span class="material-icons-outlined">
 copy_all
 </span> {{ trans('messages.copy_to') }}
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#move" class="copy_move_subscriber"
-                                    data-url="{{ action('SubscriberController@copyMoveForm', [
-                                        'uids' => $item->uid,
-                                        'from_uid' => $item->mailList->uid,
-                                        'action' => 'move',
-                                    ]) }}">
-                                    <span class="material-icons-outlined">
+								</a>
+							</li>
+							<li>
+								<a href="#move" class="dropdown-item copy_move_subscriber"
+									data-url="{{ action('SubscriberController@copyMoveForm', [
+										'uids' => $subscriber->uid,
+										'from_uid' => $list->uid,
+										'action' => 'move',
+									]) }}">
+									<span class="material-icons-outlined">
 exit_to_app
 </span> {{ trans('messages.move_to') }}
-                                </a>
-                            </li>
-
-                            @if (\Gate::allows('delete', $item))
-                                <li><a link-confirm="{{ trans('messages.delete_subscribers_confirm') }}" href="{{ action('SubscriberController@delete', ['list_uid' => $list->uid, "uids" => $item->uid]) }}"><span class="material-icons-outlined">
+								</a>
+							</li>
+							@if (\Gate::allows('update', $subscriber))
+								<li>
+									<a class="dropdown-item list-action-single"
+                                    link-method="POST"
+                                    link-confirm="{{ trans('messages.subscribers.resend_confirmation_email.confirm') }}"
+                                    href="{{ action('SubscriberController@resendConfirmationEmail', ['list_uid' => $list->uid, "uids" => $subscriber->uid]) }}">
+										<span class="material-icons-outlined">
+mark_email_read
+</span> {{ trans('messages.subscribers.resend_confirmation_email') }}
+									</a>
+								</li>
+							@endif
+							@if (\Gate::allows('delete', $subscriber))
+								<li><a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.delete_subscribers_confirm') }}" href="{{ action('SubscriberController@delete', ['list_uid' => $list->uid, "uids" => $subscriber->uid]) }}"><span class="material-icons-outlined">
 delete_outline
 </span> {{ trans("messages.delete") }}</a></li>
-                            @endif
-                        </ul>
-                    </div>
+							@endif	
+						</ul>
+					</div>
                 </td>
 
             </tr>
