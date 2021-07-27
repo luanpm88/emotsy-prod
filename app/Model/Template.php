@@ -134,7 +134,7 @@ class Template extends Model
      */
     public static function scopeCustom($query)
     {
-        $query = $query->where('customer_id', '!=', null);
+        $query = $query->whereNotNull('customer_id');
     }
 
     /**
