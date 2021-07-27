@@ -786,11 +786,6 @@ class Template extends Model
         file_put_contents($this->getStoragePath('thumbnail.png'), $contents);
     }
 
-    public function inlineHtml($html)
-    {
-        return $html;
-    }
-
     /**
      * Create template from dir.
      *

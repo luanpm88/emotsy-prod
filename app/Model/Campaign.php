@@ -53,7 +53,6 @@ use Acelle\Library\RouletteWheel;
 use Acelle\Library\Traits\TrackJobs;
 use Throwable;
 use Acelle\Library\Traits\HasUid;
-use \InlineStyle\InlineStyle;
 
 class Campaign extends Model
 {
@@ -624,7 +623,7 @@ class Campaign extends Model
         //       <a href="{BUNSUBSCRIBE_URL}"
         // become
         //       <a href="%7BUNSUBSCRIBE_URL%7D"
-        $body = $this->inlineHtml($body);
+        $body = inlineHtml($body);
 
 
         return $body;
@@ -1793,37 +1792,6 @@ class Campaign extends Model
         $copy->updateCache();
 
         return $copy;
-    }
-
-    /**
-     * Convert html to inline.
-     *
-     * @todo not very OOP here, consider moving this to a Helper instead
-     */
-    public function inlineHtml($html)
-    {
-        // disable warning when parsing html content
-        libxml_use_internal_errors(true);
-
-        $htmldoc = new InlineStyle($html);
-
-        $doc = new \DOMDocument();
-        $doc->loadHTML($html);
-        $domcss = $doc->getElementsByTagName('link');
-        foreach($domcss as $node) {
-            $arrContextOptions=array(
-                "ssl"=>array(
-                    "verify_peer"=>false,
-                    "verify_peer_name"=>false,
-                ),
-            );  
-          
-            $response = file_get_contents($node->getAttribute('href'), false, stream_context_create($arrContextOptions));
-
-            $htmldoc->applyStylesheet($response);
-        }
-
-        return $htmldoc->getHTML();
     }
 
     /**
