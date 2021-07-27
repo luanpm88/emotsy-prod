@@ -982,11 +982,7 @@ class SendingServer extends Model
         // $message->setEncoder(\Swift_Encoding::get8bitEncoding());
         $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
         $message->addPart($params['plain'], 'text/plain');
-        $result = $this->send($message);
-
-        if (array_key_exists('error', $result)) {
-            throw new \Exception($result['error']);
-        }
+        $this->send($message);
 
         return true;
     }

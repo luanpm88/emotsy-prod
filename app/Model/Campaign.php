@@ -1825,12 +1825,7 @@ class Campaign extends Model
             //die;
             // actually send
             // @todo consider using queue here
-            $result = $server->send($message);
-
-            // examine the result from sending server
-            if (array_has($result, 'error')) {
-                throw new \Exception($result['error']);
-            }
+            $server->send($message);
 
             return [
                 'status' => 'success',

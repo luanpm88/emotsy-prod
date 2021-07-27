@@ -1578,13 +1578,9 @@ class MailList extends Model
         $message->addPart($body, 'text/html');
 
         try {
-            $result = $this->send($message, [
+            $this->send($message, [
                 'subscriber' => $subscriber,
             ]);
-
-            if ($result['status'] == SendingServer::DELIVERY_STATUS_FAILED) {
-                throw new \Exception('Error returned from sending service: '.$result['error']);
-            }
         } catch (\Exception $ex) {
             $error = $ex->getMessage();
             MailLog::error($error);

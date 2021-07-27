@@ -201,12 +201,7 @@ class Email extends Model
         // build a temporary subscriber oject used to pass through the sending methods
         $subscriber = $this->createStdClassSubscriber(['email' => 'admin@outlook.com']);
         list($message, $msgId) = $this->prepare($subscriber);
-        $result = $server->send($message);
-
-        // examine the result from sending server
-        if (array_has($result, 'error')) {
-            throw new Exception($result['error']);
-        }
+        $server->send($message);
     }
 
     // @note: complicated dependencies
@@ -234,7 +229,7 @@ class Email extends Model
             // additional log
             MailLog::info("[DEMO] Sent to subscriber `{$subscriber->email}`");
         } else {
-            $sent = $server->send($message);
+            $server->send($message);
             // additional log
             MailLog::info("Sent to subscriber `{$subscriber->email}`");
         }

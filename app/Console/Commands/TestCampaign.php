@@ -75,9 +75,7 @@ class TestCampaign extends Command
         $message->setBody('Here is the message itself');
 
         // Send the message
-        $result = $mailer->send($message);
-
-        var_dump($result);
+        $mailer->send($message);
     }
 
     public function testImap()
