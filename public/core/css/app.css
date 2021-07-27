@@ -6119,7 +6119,8 @@ h1, h1 {
     position: absolute;
     border-radius: 100%;
     left: 3px;
-    top: 3px;
+    top: 7px;
+    transform: scale(2.2);
 }
 .styled.check_all {
     margin-right: 14px;
@@ -6138,7 +6139,7 @@ h1, h1 {
     height: 23px;
     border: solid 1px #ddd;
     border-radius: 20px;
-    transform: translateY(-3px);
+    transform: translateY(-5px) scale(1.9);
     transition: all .2s ease-in-out;
 }
 .styled3[type="checkbox"]:after {
@@ -6151,10 +6152,10 @@ h1, h1 {
     height: 23px;
     border: solid 1px #ccc;
     border-radius: 20px;
-    transform: translateY(-3px);
+    transform: translateY(-5px) scale(1.9);
     position: absolute;
-    top: 0px;
-    left: 0px;
+    top: 4px;
+    left: -9px;
     box-shadow: 0 0 4px rgba(0,0,0,0.1);
     color: transparent;
     transition: all .2s ease-in-out;
@@ -6165,7 +6166,7 @@ h1, h1 {
     border-color: #3fba96;
 }
 .styled3[type="checkbox"]:checked:after {
-    left: 22px;
+    left: 30px;
 }
 .nav-underline .nav-item .nav-link {
     padding: 9px 0;

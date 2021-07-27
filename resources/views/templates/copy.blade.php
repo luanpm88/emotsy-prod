@@ -28,7 +28,7 @@
             <button type="submit"
                 role="button"
                 id="doCopyButton"
-                class="btn btn-secondary mr-5 ajax_link"
+                class="btn btn-secondary mr-5"
             >{{ trans('messages.copy') }}</button>
             <a role="button" class="btn btn-default" onclick="TemplatesList.getCopyPopup().hide()">
                 {{ trans('messages.close') }}

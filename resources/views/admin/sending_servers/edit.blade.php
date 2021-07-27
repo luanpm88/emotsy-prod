@@ -62,6 +62,32 @@
 
     <script>
         $(function() {
+            $('.test-connection-button').on('click', function(e) {
+                e.preventDefault();
+                var button = $(this);
+                var url = $(this).attr('href');
+
+                new Link({
+                    type: 'ajax',
+                    url: url,
+                    method: 'POST',
+                    data: {
+                        _token: CSRF_TOKEN,
+                    },
+                    before: function() {
+                        addButtonMask(button);
+                    },
+                    done: function(response) {
+                        new Dialog('alert', {
+                            title: LANG_SUCCESS,
+                            message: response
+                        });
+
+                        removeButtonMask(button);
+                    }
+                });
+            });
+
             $('.switch-form-toggle').on('click', function() {
                 var form = $(this).closest('form');
                 var disabled = $(this).prop('data-disabled');
