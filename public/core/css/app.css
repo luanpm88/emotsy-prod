@@ -6336,7 +6336,7 @@ h1, h1 {
     opacity: 0.8;
     pointer-events: none;
     position: relative;
-    padding-left: 38px;
+    padding-left: 38px!important;
 }
 .btn-loading::before {
     content: "category";
@@ -6661,7 +6661,7 @@ h3, h4 [class^="material-icons"] {
     position: absolute;
     font-size: 40px;
     opacity: 1;
-    left: calc(50% - 110px);
+    left: calc(50% - 25px);
     top: 30px;
     -webkit-animation: spin 1s linear infinite;
     -moz-animation: spin 1s linear infinite;
@@ -6670,6 +6670,9 @@ h3, h4 [class^="material-icons"] {
     background-image: url(../../images/icons/spinner2.svg);
     background-repeat: no-repeat;
     background-position: center center;
+}
+.list-loading-init::after {
+    left: calc(50% - 110px);
 }
 .dropdown-item.active, .dropdown-item:active {
     background-color: #007ca8;
