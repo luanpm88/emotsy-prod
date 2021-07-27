@@ -1544,7 +1544,6 @@ class CampaignController extends Controller
      */
     public function copy(Request $request)
     {
-        sleep(2);
         $campaign = Campaign::findByUid($request->copy_campaign_uid);
 
         // authorize
