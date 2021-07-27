@@ -6320,25 +6320,13 @@ h1, h1 {
     border-radius: 0 0 .3rem .3rem;
     z-index: 2;
 }
-.modal.popup-loading .modal-dialog::before {
-    content: "aa";
-    position: absolute;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    border-radius: 0.3rem;
-    width: 100%;
-    height: 100%;
-    background: rgba(255,255,255,0.2);
-    text-indent: -900000px;
-}
-.btn-loading {
+/* .btn-loading {
     opacity: 0.8;
     pointer-events: none;
     position: relative;
     padding-left: 38px!important;
-}
-.btn-loading::before {
+} */
+/* .btn-loading::before {
     content: "category";
     margin-right: 5px;
     font-family: 'Material Icons Outlined';
@@ -6351,6 +6339,32 @@ h1, h1 {
     position: absolute;
     line-height: 13px;
     left: 10px;
+} */
+.btn-loading {
+    opacity: 0.9;
+    pointer-events: none;
+    position: relative;
+    color: transparent!important;
+}
+.btn-loading::before {
+    content: "category";
+    margin-right: 5px;
+    font-family: 'Material Icons Outlined';
+    display: block;
+    -webkit-animation: spin 1s linear infinite;
+    -moz-animation: spin 1s linear infinite;
+    animation: spin 1s linear infinite;
+    font-size: 140%;
+    position: absolute;
+    line-height: 13px;
+    left: calc(50% - 12px);
+    top: calc(50% - 12px);
+    background-image: url(../../images/icons/spinner3.svg);
+    background-repeat: no-repeat;
+    width: 25px;
+    height: 25px;
+    background-position: center center;
+    opacity: 0.9;
 }
 @-moz-keyframes spin { 100% { -moz-transform: rotate(360deg); } }
 @-webkit-keyframes spin { 100% { -webkit-transform: rotate(360deg); } }

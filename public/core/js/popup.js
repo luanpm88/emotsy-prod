@@ -115,11 +115,11 @@ class Popup {
 
     mask() {
         this.popup.addClass('popup-loading');
-        this.popup.find('.modal-dialog').append(`
-            <div class="progress popup-progress">
-                <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
-            </div>
-        `);
+        // this.popup.find('.modal-dialog').append(`
+        //     <div class="progress popup-progress">
+        //         <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
+        //     </div>
+        // `);
     }
 
     loading() {
