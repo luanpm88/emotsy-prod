@@ -623,7 +623,7 @@ class Campaign extends Model
         //       <a href="{BUNSUBSCRIBE_URL}"
         // become
         //       <a href="%7BUNSUBSCRIBE_URL%7D"
-        $body = $this->inlineHtml($body);
+        $body = inlineHtml($body);
 
 
         return $body;
@@ -1789,16 +1789,6 @@ class Campaign extends Model
         $copy->updateCache();
 
         return $copy;
-    }
-
-    /**
-     * Convert html to inline.
-     *
-     * @todo not very OOP here, consider moving this to a Helper instead
-     */
-    public function inlineHtml($html)
-    {
-        return $html;
     }
 
     /**
