@@ -3732,4 +3732,5 @@
   'loading_wait' => 'Loading, please wait...',
   'invoice.price' => 'Price',
   'invoice.cancel' => 'Cancel',
+  'copy_plan' => 'Copy plan',
 ) ?>
