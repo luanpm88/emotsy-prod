@@ -92,8 +92,8 @@ $(document).ready(function() {
         extended_valid_elements : "meta[*]",
         valid_children : "+body[style],+body[meta],+div[h2|span|meta|object],+object[param|embed]",
         content_css: [
-          APP_URL.replace('/index.php','')+'/css/res_email.css',
-          APP_URL.replace('/index.php','')+'/css/editor.css',
+          APP_URL.replace('/index.php','')+'/core/css/res_email.css',
+          APP_URL.replace('/index.php','')+'/core/css/editor.css',
         ],
         external_filemanager_path:APP_URL.replace('/index.php','')+"/filemanager2/",
         filemanager_title:"Responsive Filemanager" ,
@@ -121,8 +121,8 @@ $(document).ready(function() {
         extended_valid_elements : "meta[*]",
         valid_children : "+body[style],+body[meta],+div[h2|span|meta|object],+object[param|embed]",
         content_css: [
-          APP_URL.replace('/index.php','')+'/css/res_email.css',
-          APP_URL.replace('/index.php','')+'/css/editor.css',
+          APP_URL.replace('/index.php','')+'/core/css/res_email.css',
+          APP_URL.replace('/index.php','')+'/core/css/editor.css',
         ],
         external_filemanager_path:APP_URL.replace('/index.php','')+"/filemanager2/",
         filemanager_title:"Responsive Filemanager" ,

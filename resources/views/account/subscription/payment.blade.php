@@ -47,8 +47,6 @@
                     <div class="mt-4 pt-3 other-payment-click">
                         <a href="javascript:;">{{ trans('messages.or_click_choose_another_method') }}</a>
                     </div>
-
-                    <p>{{ trans('messages.payment.choose_new_payment_method_to_proceed') }}</p>
                 @endif
             </div>
             
