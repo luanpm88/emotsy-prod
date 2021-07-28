@@ -1,11 +1,10 @@
-@extends('layouts.popup.small')
+@extends('layouts.popup.medium')
 
 @section('title')
     {{ trans('messages.plan.sending_server.option') }}
 @endsection
 
 @section('content')
-
     <form enctype="multipart/form-data" action="{{ action('Admin\PlanController@sendingServerOption', ['uid' => $plan->uid]) }}" method="POST" class="form-validate-jquery">
         {{ csrf_field() }}
 

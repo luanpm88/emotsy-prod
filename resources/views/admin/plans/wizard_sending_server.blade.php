@@ -1,4 +1,4 @@
-@extends('layouts.popup.small')
+@extends('layouts.popup.medium')
 
 @section('title')
 {{ trans('messages.plan.new_plan') }}
@@ -33,8 +33,8 @@
                         <label class="main-control">
                             <input {{ ($plan->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN ? 'checked' : '') }} type="radio"
                                 name="plan[options][sending_server_option]"
-                                value="{{ \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN }}" class="styled" />
-                                    <rtitle>{{ trans('messages.plan_option.own_sending_server') }}</rtitle>
+                                value="{{ \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN }}" class="styled" /> 
+                                    <rtitle>{{ trans('messages.plan_option.own_sending_server') }} </rtitle>
                             <div class="desc text-normal mb-10">
                                 {{ trans('messages.plan_option.own_sending_server.intro') }}
                             </div>
@@ -95,7 +95,7 @@
                         <label class="main-control">
                             <input {{ ($plan->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SUBACCOUNT ? 'checked' : '') }} type="radio"
                                 name="plan[options][sending_server_option]"
-                                value="{{ \Acelle\Model\Plan::SENDING_SERVER_OPTION_SUBACCOUNT }}" class="styled" /> <rtitle>{{ trans('messages.plan_option.sub_account') }}</rtitle>
+                                value="{{ \Acelle\Model\Plan::SENDING_SERVER_OPTION_SUBACCOUNT }}" class="styled" />  <rtitle>{{ trans('messages.plan_option.sub_account') }}</rtitle>
                             <div class="desc text-normal mb-10">
                                 {{ trans('messages.plan_option.sub_account.intro') }}
                             </div>

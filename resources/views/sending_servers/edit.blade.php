@@ -2,6 +2,11 @@
 
 @section('title', trans('messages.' . $server->type))
 
+@section('head')
+    <script type="text/javascript" src="{{ URL::asset('core/js/group-manager.js') }}"></script>
+@endsection
+
+
 @section('page_header')
 
     <div class="page-title">

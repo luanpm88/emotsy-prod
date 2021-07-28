@@ -741,12 +741,6 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/blacklist/delete', 'BlacklistController@delete');
     Route::get('admin/blacklists/{id}/reason', 'BlacklistController@reason');
 
-    // Customer Group
-    Route::get('admin/customer_groups/listing/{page?}', 'CustomerGroupController@listing');
-    Route::get('admin/customer_groups/sort', 'CustomerGroupController@sort');
-    Route::get('admin/customer_groups/delete', 'CustomerGroupController@delete');
-    Route::resource('admin/customer_groups', 'CustomerGroupController');
-
     // Customer
     Route::match(['get', 'post'], 'admin/customers/{uid}/assign-plan', 'CustomerController@assignPlan');
     Route::get('admin/customers/{uid}/su-account', 'CustomerController@subAccount');

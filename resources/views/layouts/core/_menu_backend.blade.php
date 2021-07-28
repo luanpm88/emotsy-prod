@@ -31,7 +31,6 @@
 
 				@if (Auth::user()->can("read", new Acelle\Model\Customer()))
 					<li class="nav-item dropdown language-switch"
-						rel0="CustomerGroupController"
 						rel1="CustomerController"
 					>
 						<a role="button" class="nav-link lvl-1 dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">

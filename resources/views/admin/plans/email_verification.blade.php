@@ -2,6 +2,10 @@
 
 @section('title', $plan->name)
 
+@section('head')
+    <script type="text/javascript" src="{{ URL::asset('core/js/group-manager.js') }}"></script>
+@endsection
+
 @section('page_header')
 
     <div class="page-title">
@@ -35,7 +39,7 @@
                             <label class="main-control">
                                 <input {{ ($plan->getOption('create_email_verification_servers') == 'yes' ? 'checked' : '') }} type="radio"
                                     name="plan[options][create_email_verification_servers]"
-                                    value="yes" class="styled" /><rtitle>{{ trans('messages.plan.email_verification.use_own') }}</rtitle>
+                                    value="yes" class="styled" /> <rtitle>{{ trans('messages.plan.email_verification.use_own') }}</rtitle>
                                 <div class="desc text-normal mb-10">
                                     {{ trans('messages.plan.email_verification.use_own.intro') }}
                                 </div>
@@ -52,9 +56,9 @@
                                         'options' => ['true', 'false'],
                                         'rules' => $plan->validationRules()['options'],
                                     ])
-                                    <div class="checkbox inline unlimited-check text-semibold">
+                                    <div class="checkbox inline text-semibold">
                                         <label>
-                                            <input{{ $plan->getOption('email_verification_servers_max')  == -1 ? " checked=checked" : "" }} type="checkbox" class="styled">
+                                            <input{{ $plan->getOption('email_verification_servers_max')  == -1 ? " checked=checked" : "" }} type="checkbox" class="unlimit-check styled">
                                             {{ trans('messages.unlimited') }}
                                         </label>
                                     </div>
@@ -126,6 +130,49 @@
             </div>
         </div>
     </form>
+
+    <script>
+        $(function() {
+            var manager = new GroupManager();
+    
+            $('.boxing').each(function() {
+                manager.add({
+                    textBox: $(this).find('input[type=text]'),
+                    unlimitedCheck: $(this).find('.unlimit-check'),
+                    defaultValue: '5',
+                    currentValue: $(this).find('input[type=text]').val()
+                });
+            });
+    
+            manager.bind(function(group) {
+                var doCheck = function() {
+                    var checked = group.unlimitedCheck.is(':checked');
+                    
+                    if (checked) {
+                        group.textBox.val(-1);
+                        group.textBox.addClass("text-trans");
+                        group.textBox.attr("readonly", "readonly");
+                    } else {
+                        if(group.textBox.val() == "-1") {
+                            if (group.currentValue != "-1") {
+                                group.textBox.val(group.currentValue);
+                            } else {
+                                group.textBox.val(group.defaultValue);
+                            }
+                        }
+                        group.textBox.removeClass("text-trans");
+                        group.textBox.removeAttr("readonly", "readonly");
+                    }
+                };
+    
+                group.unlimitedCheck.on('change', function() {
+                    doCheck();
+                });
+    
+                doCheck();
+            });
+        });
+    </script>
         
     <script>
         $(document).ready(function() {

@@ -2,6 +2,10 @@
 
 @section('title', $plan->name)
 
+@section('head')
+    <script type="text/javascript" src="{{ URL::asset('core/js/group-manager.js') }}"></script>
+@endsection
+
 @section('page_header')
 
     <div class="page-title">
@@ -30,7 +34,7 @@
                         
                     <p>{{ trans('messages.plan.speed_limit.intro') }}</p>
                         
-                    <div class="select-custom" data-url="{{ action('Admin\PlanController@sendingLimit', $plan->uid) }}">
+                    <div class="sending-limit-box" data-url="{{ action('Admin\PlanController@sendingLimit', $plan->uid) }}">
                         @include ('admin.plans._sending_limit')
                     </div>
                     <p>{{ trans('messages.plan.process_limit.intro') }}</p>
@@ -69,5 +73,27 @@
             </div>
         </div>
     </form>
-        
+    
+    <script>
+        var PlansSecurity = {
+            sendingLimitPopup: null,
+
+            getBox: function() {
+                return $('.sending-limit-box');
+            },
+
+            getSendingLimitPopup: function() {
+                if (this.sendingLimitPopup == null) {
+                    this.sendingLimitPopup = new Popup({
+                        url: '{{ action('Admin\PlanController@sendingLimit', $plan->uid) }}'
+                    });
+                }
+
+                return this.sendingLimitPopup;
+            }
+        }
+
+        $(function() {
+        });
+    </script>
 @endsection

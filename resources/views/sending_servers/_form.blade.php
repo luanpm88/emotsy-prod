@@ -202,9 +202,9 @@
 			'rules' => Acelle\Model\SendingServer::rules(request()->type),
 			'default_value' => '1000',
 		])
-		<div class="checkbox inline unlimited-check text-semibold">
+		<div class="checkbox inline text-semibold">
 			<label>
-				<input{{ $server->quota_value  == -1 ? " checked=checked" : "" }} type="checkbox" class="styled">
+				<input{{ $server->quota_value  == -1 ? " checked=checked" : "" }} type="checkbox" class="styled unlimit-check">
 				{{ trans('messages.unlimited') }}
 			</label>
 		</div>
@@ -290,6 +290,56 @@ quiz
 		<i class="icon-cross2"></i> {{ trans('messages.cancel') }}
 	</a>
 </div>
+
+<script>
+	$(function() {
+		var manager = new GroupManager();
+
+		$('.boxing').each(function() {
+			manager.add({
+				textBox: $(this).find('input[name=quota_value]'),
+				unlimitedCheck: $(this).find('.unlimit-check'),
+				defaultValue: '1000',
+				currentValue: $(this).find('input[name=quota_value]').val()
+			});
+
+			manager.add({
+				textBox: $(this).find('input[name=quota_base]'),
+				unlimitedCheck: $(this).find('.unlimit-check'),
+				defaultValue: '1',
+				currentValue: $(this).find('input[name=quota_base]').val()
+			});
+		});
+
+		manager.bind(function(group) {
+			var doCheck = function() {
+				var checked = group.unlimitedCheck.is(':checked');
+				
+				if (checked) {
+					group.textBox.val(-1);
+					group.textBox.addClass("text-trans");
+					group.textBox.attr("readonly", "readonly");
+				} else {
+					if(group.textBox.val() == "-1") {
+						if (group.currentValue != "-1") {
+							group.textBox.val(group.currentValue);
+						} else {
+							group.textBox.val(group.defaultValue);
+						}
+					}
+					group.textBox.removeClass("text-trans");
+					group.textBox.removeAttr("readonly", "readonly");
+				}
+			};
+
+			group.unlimitedCheck.on('change', function() {
+				doCheck();
+			});
+
+			doCheck();
+		});
+	});
+</script>
 
 <script>
 	var SendTestEmail = {

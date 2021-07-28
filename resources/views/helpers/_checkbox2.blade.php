@@ -2,7 +2,7 @@
     <input type="hidden" name="{{ $name }}" value="{{ $options[0] }}" />
 @endif
 
-<div class="checkbox inline unlimited-check text-semibold {{ isset($class) ? $class : "" }} {{ isset($disabled) && $disabled == true ? ' disabled' : "" }}">
+<div class="checkbox inline text-semibold {{ isset($class) ? $class : "" }} {{ isset($disabled) && $disabled == true ? ' disabled' : "" }}">
     <label>
         <span class="d-flex align-items-center">
             <input {{ $value == $options[1] ? " checked" : "" }}
