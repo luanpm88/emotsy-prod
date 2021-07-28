@@ -45,7 +45,6 @@
                 url: url,
                 method: 'POST',
                 data: formData,
-                async: false,
                 cache: false,
                 contentType: false,
                 processData: false,
