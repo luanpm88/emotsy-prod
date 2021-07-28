@@ -2633,6 +2633,8 @@ canvas[data-zr-dom-id='_zrender_hover_'] {
   padding: 2px;
   transition: all 0.2s ease-in-out;
   color: #333;
+  border-radius: 4px;
+  padding-bottom: 5px;
 }
 .select-template-layout .panel-template-style:hover {
     color: #000;
@@ -2653,7 +2655,7 @@ canvas[data-zr-dom-id='_zrender_hover_'] {
     color: #fff;
     background: #166dba;
     border-radius: 0 0 0 100px;
-    padding: 2px 3px 6px 11px;
+    padding: 0px 0px 6px 11px;
     z-index: 1;
 }
 .nav-tabs > li:first-child {
@@ -6710,7 +6712,7 @@ h3, h4 [class^="material-icons"] {
     opacity: 0.5;
     pointer-events: none;
 }
-.select-template-layout:hover .panel-template-placeholder {
+.select-template-layout:hover .panel-template-placeholder, .select-template-layout.selected .panel-template-placeholder {
     box-shadow: 0 .125rem .35rem rgba(0,0,0,.1)!important;
 }
 .nav-menu-dark .select2-selection--single:not([class*=bg-]):not([class*=border-]) {
