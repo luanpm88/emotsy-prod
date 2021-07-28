@@ -2637,15 +2637,18 @@ canvas[data-zr-dom-id='_zrender_hover_'] {
 .select-template-layout .panel-template-style:hover {
     color: #000;
 }
+.select-template-layout {
+    position: relative;
+}
 .select-template-layout.selected .panel-template-style {
   border-color: #166dba;
   position: relative;
   background: #d2e3f2;
 }
 .select-template-layout.selected:before {
-    content: '\ed6c';
-    font-family: 'icomoon';
-    right: 20px;
+    content: 'check';
+    font-family: 'Material icons outlined';
+    right: 0;
     position: absolute;
     color: #fff;
     background: #166dba;
@@ -4191,7 +4194,7 @@ label:hover .checkmark, .checkmark-container:hover .checkmark {
 }
 .panel-template-placeholder {
     width: 100%;
-    height: 197px;
+    height: 202px;
     overflow: hidden;
     display: flex;
     align-items: center;
