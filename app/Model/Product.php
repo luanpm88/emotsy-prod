@@ -64,8 +64,7 @@ class Product extends Model
     public function getImageUrl()
     {
         if (file_exists($this->getImagePath())) {
-            $path = str_replace(storage_path(), '', $this->getImagePath());
-            return route('public_assets', ['path' => \Acelle\Library\StringHelper::base64UrlEncode($path)]);
+            return \Acelle\Helpers\generatePublicPath($this->getImagePath());
         } else {
             return \URL::asset('images/no-product-image.png');
         }
