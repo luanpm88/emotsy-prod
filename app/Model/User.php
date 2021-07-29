@@ -483,6 +483,9 @@ class User extends Authenticatable
 
         $config = [
             'base_url' => $baseUrl,
+
+            // The `upload_dir` is needed to make the final file URL which is compatible with `user_files` route
+            // For example: "/files/000000/example.jpg"
             'upload_dir' => join_paths('/', $this->getAssetsSubUrl(), '/'),
             'thumb_dir' => join_paths('/', $this->getThumbsSubUrl(), '/'),
             'thumbs_upload_dir' => join_paths('/', $this->getThumbsSubUrl(), '/'),

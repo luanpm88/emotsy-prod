@@ -37,6 +37,7 @@ Route::group(['middleware' => ['installed']], function () {
  *
  */
 Route::get('/files/{uid}/{name?}', [ function ($uid, $name) {
+    // Do not use $user->getAssetsPath($name), avoid one SQL query!
     $path = storage_path('app/users/' . $uid . '/home/files/' . $name);
     $mime_type = \Acelle\Library\File::getFileType($path);
     if (\File::exists($path)) {
@@ -48,6 +49,7 @@ Route::get('/files/{uid}/{name?}', [ function ($uid, $name) {
 
 // assets path for customer thumbs
 Route::get('/thumbs/{uid}/{name?}', [ function ($uid, $name) {
+    // Do not use $user->getThumbsPath($name), avoid one SQL query!
     $path = storage_path('app/users/' . $uid . '/home/thumbs/' . $name);
     if (\File::exists($path)) {
         $mime_type = \Acelle\Library\File::getFileType($path);
