@@ -6,17 +6,21 @@ use Acelle\Library\StringHelper;
 use Exception;
 use File;
 
-function generatePublicPath($absPath, $absolute = false)
+function generatePublicPath($absPath, $withHost = false)
 {
     // Notice: $relativePath must be relative to storage/ folder
     // For example, with a real path of /home/deploy/acellemail/storage/app/sub/example.png
     // then $relativePath should be "app/sub/example.png"
 
+    if (empty(trim($absPath))) {
+        throw new Exception('Empty path');
+    }
+
     $excludeBase = storage_path();
     $pos = strpos($absPath, $excludeBase); // Expect pos to be exactly 0
 
     if ($pos === false) {
-        throw new Exception(sprintf("File '%s' cannot be made public", $absPath));
+        throw new Exception(sprintf("File '%s' cannot be made public, only files under storage/ folder can", $absPath));
     }
 
     if ($pos != 0) {
@@ -25,8 +29,15 @@ function generatePublicPath($absPath, $absolute = false)
 
     // Do not use string replace, as path parts may occur more than once
     // For example: abc/xyz/abc/xyz...
-    $relativePath = substr($absPath, strlen($excludeBase));
-    $encodedUrl = StringHelper::base64UrlEncode($relativePath);
+    $relativePath = substr($absPath, strlen($excludeBase) + 1);
+
+    if ($relativePath === false) {
+        throw new Exception("Invalid path {$absPath}");
+    }
+
+    $dirname = dirname($relativePath);
+    $basename = basename($relativePath);
+    $encodedDirname = StringHelper::base64UrlEncode($dirname);
 
     // If Laravel is under a subdirectory
     $subdirectory = getAppSubdirectory();
@@ -35,14 +46,13 @@ function generatePublicPath($absPath, $absolute = false)
         // Return something like
         //     "http://localhost/{subdirectory if any}/p/assets/ef99238abc92f43e038efb"   # absolute = true, OR
         //     "/p/assets/ef99238abc92f43e038efb"                   # absolute = false
-        $url = route('public_assets', [ 'path' => $encodedUrl ], $absolute);
+        $url = route('public_assets', [ 'dirname' => $encodedDirname, 'basename' => $basename ], $withHost);
     } else {
-        $url = join_paths($subdirectory, route('public_assets', [ 'path' => $encodedUrl ], $absolute));
+        $url = join_paths($subdirectory, route('public_assets', [ 'dirname' => $encodedDirname, 'basename' => $basename ], $absolute));
     }
 
     return $url;
 }
-
 
 function getAppSubdirectory()
 {
