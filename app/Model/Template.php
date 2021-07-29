@@ -509,7 +509,6 @@ class Template extends Model
 
         // Replace #1
         $content = StringHelper::transformUrls($this->content, function ($url) use ($host) {
-            echo "Processing: $url\n";
             $host = parse_url($url, PHP_URL_HOST);
 
             if ($host === false) {
