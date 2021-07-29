@@ -508,14 +508,27 @@ class Template extends Model
         }
 
         // Replace #1
-        $content = Tool::replaceTemplateUrl($this->content, function ($assetPath, $isRoot) use ($host) {
-            if ($isRoot) {
-                // If it is a root path like "/files/....", then do nothing
-                return ($host) ? join_url($host, $assetPath) : $assetPath;
+        $content = StringHelper::transformUrls($this->content, function ($url) use ($host) {
+            echo "Processing: $url\n";
+            $host = parse_url($url, PHP_URL_HOST);
+
+            if ($host === false) {
+                // if url is invalid
+                return $url;
+            }
+
+            if (!is_null($host)) {
+                // url is with a host like "http://" or "//"
+                return $url;
+            }
+
+            if (strpos($url, '/') === 0) {
+                // absolute url with leading slash (/) like "/hello/world"
+                return ($host) ? join_url($host, $url) : $url;
             } else {
                 // Transform relative URLs to PUBLIC ABSOLUTE URLs, but without hostname
                 $url = \Acelle\Helpers\generatePublicPath(
-                    $this->getStoragePath($assetPath),
+                    $this->getStoragePath($url),
                     $absolute = false
                 );
 

@@ -751,63 +751,6 @@ class Tool
     }
 
     /**
-     * Replace HTML url.
-     *
-     * @return text
-     */
-    public static function replaceTemplateUrl($content, $callback)
-    {
-        // find all asset links in html content
-        preg_match_all('/(?<=src=|background=|href=|url\()(\'|")?(?<url>.*?)(?=\1|\))/i', $content, $matches);
-        $srcs = array_unique($matches['url']);
-
-        foreach ($srcs as $src) {
-            if (empty(trim($src))) {
-                continue;
-            }
-            
-            $new_src = str_replace('"', '', $src);
-            $new_src = str_replace('\'', '', $new_src);
-            $new_src = htmlspecialchars_decode($new_src); // Convert &amp; back to & (which was encoded by TinyMCE)
-
-            if (preg_match('/https?/i', $src) || preg_match('/^\{/i', $src) || preg_match('/^\%/i', $src) || preg_match('/^https?/i', $src) || preg_match('/^#/i', $src) || strpos($src, '//') === 0 || preg_match('/^mailto:/i', $src) || preg_match('/^tel:/i', $src)) {
-                // nothing
-            } elseif (preg_match('/^\//', $src)) {
-                // if it is an absolute path, like /files/208394398/some-thing.jpg
-                // then do nothing
-                // this is for the case when file is added via file manager
-                $new_src = $callback($new_src, $root = true);
-            } else {
-                // Build the full path
-                $new_src = $callback($new_src, $root = false);
-            }
-
-            // using a quote in replacement to avoid replacing twice
-            // for example
-            //
-            // dir/assets/2984023984320
-            //    ==> http://$path/dir/assets/2984023984320
-            // dir/assets
-            //    ==> http://$path/http://$path/2984023984320
-            // Example of quote: href="http://, href=http://, or url: (http://)
-
-            try {
-                // @important: the following line of code is very likely to get an "preg_replace(): Compilation failed: regular expression is too large at offset" error. That's the reason why we need try..catch here
-                $content = preg_replace('/(src=|background=|href=|url\s*\()([\'"]?\s*)'.preg_quote($src, '/').'(\s*[\s\'"\)])/', "$1$2$new_src$3", $content);
-            } catch (\ErrorException $ex) {
-                // preg_replace(): Compilation failed: regular expression is too large at offset
-
-                // use the old and non-safe way!!!!
-                $content = str_replace($src, $new_src, $content);
-            }
-        }
-
-        $content = str_replace('&quot;', '', $content);
-
-        return $content;
-    }
-
-    /**
      * Check current view if exist.
      *
      * @return bool

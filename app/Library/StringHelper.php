@@ -23,6 +23,7 @@
 namespace Acelle\Library;
 
 use DOMDocument;
+use Closure;
 
 class StringHelper
 {
@@ -362,6 +363,35 @@ class StringHelper
             }
         }
         return $dom->saveHTML();
+    }
+
+    public static function transformUrls(string $content, Closure $callback)
+    {
+        $document = new DOMDocument();
+        $document->encoding = 'utf-8';
+        $document->loadHTML(mb_convert_encoding($content,'HTML-ENTITIES','UTF-8'), LIBXML_NOWARNING | LIBXML_NOERROR | LIBXML_HTML_NODEFDTD);
+
+        $replace = [
+            'img' => 'src',
+            'link' => 'href',
+        ];
+
+        foreach($replace as $tag => $attribute) {
+            $elements = $document->getElementsByTagName($tag);
+            foreach ($elements as $element) {
+                $url = trim($element->getAttribute($attribute));
+
+                if (empty($url)) {
+                    // skip
+                    continue;
+                }
+
+                $element->setAttribute($attribute, $callback($url));
+            }
+        }
+
+        $output = htmlspecialchars_decode(urldecode($document->saveHTML($document->documentElement)));
+        return $output;
     }
 
     public static function sanitizeFilename($filename)
