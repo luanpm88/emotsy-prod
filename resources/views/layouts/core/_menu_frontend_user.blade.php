@@ -13,7 +13,7 @@
         </i>
         <span>{{ Auth::user()->displayName() }}</span>
         @if (Auth::user()->customer->hasSubscriptionNotice())
-            <i class="material-icons-round customer-warning-icon text-danger" style="right:2px;color:red!important;top:2px;position:absolute">info</i>
+            <i class="material-icons-outlined customer-warning-icon text-danger" style="right:2px;color:rgb(236, 124, 124)!important;top:2px;position:absolute">info</i>
         @endif
     </a>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="content-menu">
