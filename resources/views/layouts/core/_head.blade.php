@@ -11,7 +11,8 @@
 @include('layouts.core._favicon')
 
 <!-- Font -->
-<link href="{{ URL::asset('core/css/google-open-sans.css') }}" rel="stylesheet">
+{{-- <link href="{{ URL::asset('core/css/google-open-sans.css') }}" rel="stylesheet"> --}}
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,600i,700,700i,800,800i&amp;subset=cyrillic,cyrillic-ext,greek,greek-ext,latin-ext,vietnamese" rel="stylesheet">
 
 <!-- jQuery -->
 <script type="text/javascript" src="{{ URL::asset('core/js/jquery-3.6.0.min.js') }}"></script>
