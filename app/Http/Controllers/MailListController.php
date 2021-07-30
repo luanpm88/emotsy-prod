@@ -208,8 +208,11 @@ class MailListController extends Controller
             }
         }
 
+        $allowedSingleOptin = Setting::isYes('list.allow_single_optin');
+
         return view('lists.edit', [
             'list' => $list,
+            'allowedSingleOptin' => $allowedSingleOptin
         ]);
     }
 

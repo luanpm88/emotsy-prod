@@ -95,14 +95,18 @@
         </div>
         <div class="col-md-6">
             <div class="form-group checkbox-right-switch">
-                @include('helpers.form_control', [
-                    'type' => 'checkbox',
-                    'name' => 'subscribe_confirmation',
-                    'value' => $list->subscribe_confirmation,
-                    'options' => [false,true],
-                    'help_class' => 'list',
-                    'rules' => Acelle\Model\MailList::$rules
-                ])
+                @if ($allowedSingleOptin)
+                    @include('helpers.form_control', [
+                        'type' => 'checkbox',
+                        'name' => 'subscribe_confirmation',
+                        'value' => $list->subscribe_confirmation,
+                        'options' => [false,true],
+                        'help_class' => 'list',
+                        'rules' => Acelle\Model\MailList::$rules
+                    ])
+                @else
+                    <input type="hidden" name="subscribe_confirmation" value="1" />
+                @endif
                 @include('helpers.form_control', ['type' => 'checkbox', 'name' => 'unsubscribe_notification', 'value' => $list->unsubscribe_notification, 'options' => [false,true], 'help_class' => 'list', 'rules' => Acelle\Model\MailList::$rules])
             </div>
         </div>

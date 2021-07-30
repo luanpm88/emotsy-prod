@@ -545,6 +545,12 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
+            'list.allow_single_optin' => [
+                'cat' => 'others',
+                'value' => 'yes',
+                'type' => 'text',
+                'not_required' => true,
+            ],
         ];
     }
 
