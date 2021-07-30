@@ -137,6 +137,7 @@ class ResetTemplates extends Migration
 
             // Build $template attributes and create
             $meta['uid'] = $uid;
+            $meta['is_default'] = true;
             $template = Template::createFromDirectory($meta, $meta['dir']);
 
             // Set category
