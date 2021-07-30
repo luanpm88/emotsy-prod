@@ -860,8 +860,14 @@ class Template extends Model
             ]
         ];
 
-        // Delete category
+        // DELTEE categories
         TemplateCategory::query()->delete();
+
+        // CREATE Cateogries again
+        $categoryBasic = TemplateCategory::create(['name' => 'Basic']);
+        $categoryFeatured = TemplateCategory::create(['name' => 'Featured']);
+        $categoryTheme = TemplateCategory::create(['name' => 'Themes']);
+        $categoryWoo = TemplateCategory::create(['name' => 'WooCommerce']);
 
         // Delete existing template and create again with new updates
         foreach ($templates as $meta) {
