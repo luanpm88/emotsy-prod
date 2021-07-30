@@ -116,11 +116,6 @@ class ResetTemplates extends Migration
                 'category' => $categoryWoo,
                 'builder' => true,
             ], [
-                'name' => 'Certified Yoga Therapist',
-                'dir' => database_path('templates/themes/5d7b525bc015d'),
-                'category' => $categoryTheme,
-                'builder' => true,
-            ], [
                 'name' => 'Color Print - Your Print Companion',
                 'dir' => database_path('templates/themes/5d7b526bbfd4c'),
                 'category' => $categoryTheme,
