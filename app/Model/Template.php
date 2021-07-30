@@ -524,7 +524,7 @@ class Template extends Model
             if (strpos($url, '/') === 0) {
                 // absolute url with leading slash (/) like "/hello/world"
                 return ($host) ? join_url($host, $url) : $url;
-            if (strpos($url, 'data:') === 0) {
+            } else if (strpos($url, 'data:') === 0) {
                 // base64 image. Like: "data:image/png;base64,iVBOR"
                 return ($host) ? join_url($host, $url) : $url;
             } else {
