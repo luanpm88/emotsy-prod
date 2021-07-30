@@ -6472,6 +6472,12 @@ h5 {
 .select2-container--default .select2-selection--single .select2-selection__clear {
     right: 23px;
     position: absolute;
+    font-size: 23px;
+    line-height: 21px;
+    color: #777;
+}
+.select2-container--default .select2-selection--single .select2-selection__clear:hover {
+    color: #222;
 }
 .navbar-icon .notification-icon {
     width: 22px;
