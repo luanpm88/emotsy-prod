@@ -838,4 +838,45 @@ class Template extends Model
         $this->clearStorage();
         $this->delete();
     }
+
+    public static function resetDefaultTemplates()
+    {
+        // LIST of all default template
+        $templates = [
+            [
+                'name' => 'Blank',
+                'dir' => database_path('templates/basic/Give-It-A-Name/6037a0a8583a7'),
+                'category' => $categoryBasic,
+                'builder' => true,
+            ], [
+                'name' => 'Pricing Table',
+                'dir' => database_path('templates/Any-Directory-Structure/..../6037a2135b974'),
+                'category' => $categoryBasic,
+                'builder' => true,
+            ], [
+                // ...
+            ], [
+                // ...
+            ]
+        ];
+
+        // Delete category
+        TemplateCategory::query()->delete();
+
+        // Delete existing template and create again with new updates
+        foreach ($templates as $meta) {
+            // UID is the folder name, "5d7b527be2bd2" for example
+            $uid = basename($meta['dir']);
+
+            // DELETE existing template, in case this migration is executed many times
+            Template::where('uid', $uid)->delete();
+
+            // Build $template attributes and create
+            $meta['uid'] = $uid;
+            $template = Template::createFromDirectory($meta, $meta['dir']);
+
+            // Set category
+            $template->categories()->attach($meta['category']->id);
+        }
+    }
 }
