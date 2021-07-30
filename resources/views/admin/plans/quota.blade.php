@@ -399,6 +399,10 @@
                     doCheck();
                 });
 
+                group.textBox.on('change', function() {
+                    group.currentValue = $(this).val();
+                });
+
                 doCheck();
             });
         });
