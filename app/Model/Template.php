@@ -291,8 +291,6 @@ class Template extends Model
 
         // try to find the main file, index.html | index.html | file_name.html | ...
         $indexFile = null;
-        $thumb = null;
-        $sub_path = '';
 
         // find index
         $possible_indexFile_names = array('index.html', 'index.htm');
@@ -327,8 +325,13 @@ class Template extends Model
         // read main file content
         $html_content = trim(file_get_contents($indexFile));
         $this->content = $html_content;
+        $this->transformAssetsUrls();
+        $this->save(); // already save
+
+        // copy template folder
         Tool::xcopy($directory, $this->getStoragePath());
-        $this->transformAssetsUrls(); // already save
+
+        // return newly created template
         return $this;
     }
 
@@ -499,10 +502,80 @@ class Template extends Model
         }
     }
 
+    // Important: url must have a leading slash
+    // Like: '/assets/path/file.jpg'
+    // Or: '/subdirectory/assets/path/file.jpg'
+    public function getAssetRelativePath($url)
+    {
+        // To remove query string if any like ?search=abc
+        // For example
+        //     parse_url('/assets/path/file.jpg?id=320943&search=', PHP_URL_PATH)
+        // Returns
+        //     /assets/path/file.jpg
+        $url = parse_url($url, PHP_URL_PATH);
+
+        // Clean up subdirectory, leaving the url as '/assets/path/file.jpg' only
+        $subdirectory = \Acelle\Helpers\getAppSubdirectory();
+        if ($subdirectory) {
+            // Make sure $subdirectory looks like '/subdir' ==> with a leading slash but without trailing one
+            $subdirectory = rtrim(join_paths('/', $subdirectory), '/');
+
+            // Remove subdirectory of URL
+            $url = str_replace($subdirectory, '', $url);
+        }
+
+        // preg_match('/\/assets\/(?<dirname>[^\/]+)\/(?<basename>[^\/]+)/', '/assets/dir/file.jpg', $match);
+        if (strpos($url, '/assets/') === 0) {
+            list($prefix, $dirname, $basename) = array_values(array_filter(explode('/', $url)));
+            $dirname = StringHelper::base64UrlDecode($dirname);
+            $absPath = storage_path(join_paths($dirname, $basename));
+
+            if (strpos($absPath, $this->getStoragePath('/')) !== 0) {
+                return null;
+            }
+
+            $relativePath = str_replace($this->getStoragePath('/'), '', $absPath);
+            return empty($relativePath) ? null : $relativePath;
+        } else {
+            return null;
+        }
+
+    }
+
+    public function getContentWithUntransformedAssetsUrls()
+    {
+        // Replace #1
+        return StringHelper::transformUrls($this->content, function ($url) {
+            if (parse_url($url, PHP_URL_HOST) === false) {
+                // if url is invalid
+                return $url;
+            }
+
+            if (!is_null(parse_url($url, PHP_URL_HOST))) {
+                // url is with a host like "http://" or "//"
+                return $url;
+            }
+
+            if (strpos($url, '/') === 0) {
+                $relativePath = $this->getAssetRelativePath($url);
+                if ($relativePath) {
+                    return $relativePath;
+                } else {
+                    return $url;
+                }
+            } elseif (strpos($url, 'data:') === 0) {
+                // base64 image. Like: "data:image/png;base64,iVBOR"
+                return $url;
+            } else {
+                // URL is a relative path like "images/banner.jpg"
+                return $url;
+            }
+        });
+    }
+
     public function transformAssetsUrls()
     {
         $this->content = $this->getContentWithTransformedAssetsUrls();
-        return $this->save();
     }
 
     /**
