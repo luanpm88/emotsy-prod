@@ -2064,7 +2064,7 @@ class Customer extends Model
         }
 
         // no autobilling data
-        if ($this->getAutoBillingData() == null) {
+        if ($this->getAutoBillingData() == null || $this->getAutoBillingData()->getGateway() == null) {
             return false;
         }
 
