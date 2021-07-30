@@ -841,7 +841,16 @@ class Template extends Model
 
     public static function resetDefaultTemplates()
     {
-        // LIST of all default template
+        // DELTEE categories
+        TemplateCategory::query()->delete();
+
+        // CREATE Cateogries again
+        $categoryBasic = TemplateCategory::create(['name' => 'Basic']);
+        $categoryFeatured = TemplateCategory::create(['name' => 'Featured']);
+        $categoryTheme = TemplateCategory::create(['name' => 'Themes']);
+        $categoryWoo = TemplateCategory::create(['name' => 'WooCommerce']);
+
+        // LIST all default templates here
         $templates = [
             [
                 'name' => 'Blank',
@@ -859,15 +868,6 @@ class Template extends Model
                 // ...
             ]
         ];
-
-        // DELTEE categories
-        TemplateCategory::query()->delete();
-
-        // CREATE Cateogries again
-        $categoryBasic = TemplateCategory::create(['name' => 'Basic']);
-        $categoryFeatured = TemplateCategory::create(['name' => 'Featured']);
-        $categoryTheme = TemplateCategory::create(['name' => 'Themes']);
-        $categoryWoo = TemplateCategory::create(['name' => 'WooCommerce']);
 
         // Delete existing template and create again with new updates
         foreach ($templates as $meta) {
