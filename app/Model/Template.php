@@ -87,7 +87,7 @@ class Template extends Model
      *
      * @return collect
      */
-    public static function scopeCategoryUid($query, $uid)
+    public function scopeCategoryUid($query, $uid)
     {
         $category = \Acelle\Model\TemplateCategory::findByUid($uid);
         // Category
@@ -98,12 +98,8 @@ class Template extends Model
         }
     }
 
-    /**
-     * Search.
-     *
-     * @return collect
-     */
-    public static function scopeNotAssociated($query)
+    // Templates that are not associated to any email or campaign
+    public function scopeNotAssociated($query)
     {
         $query->whereNotIn('id', function ($q) {
             $q->select('template_id')->from('emails')->whereNotNull('template_id');
@@ -114,12 +110,18 @@ class Template extends Model
         });
     }
 
+    // Default templates
+    public function scopeDefault($query)
+    {
+        return $query->where('is_default', true);
+    }
+
     /**
      * Search.
      *
      * @return collect
      */
-    public static function scopeSearch($query, $keyword)
+    public function scopeSearch($query, $keyword)
     {
         // Keyword
         if (!empty($keyword)) {
@@ -132,7 +134,7 @@ class Template extends Model
      *
      * @return collect
      */
-    public static function scopeCustom($query)
+    public function scopeCustom($query)
     {
         $query = $query->whereNotNull('customer_id');
     }
@@ -142,7 +144,7 @@ class Template extends Model
      *
      * @return collect
      */
-    public static function scopeShared($query)
+    public function scopeShared($query)
     {
         $query = $query->whereNull('customer_id');
     }
