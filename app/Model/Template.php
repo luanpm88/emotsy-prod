@@ -49,7 +49,7 @@ class Template extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'content', 'builder'
+        'uid', 'name', 'content', 'builder'
     ];
 
     /**
@@ -283,6 +283,10 @@ class Template extends Model
      */
     public function loadContent($directory)
     {
+        if (is_null($this->uid)) {
+            throw new Exception("Cannot locate the storage directory, template does not have a UID");
+        }
+
         // try to find the main file, index.html | index.html | file_name.html | ...
         $indexFile = null;
         $thumb = null;
@@ -806,15 +810,18 @@ class Template extends Model
     public static function createFromDirectory($attributes, $directory)
     {
         $template = new self();
-        $template->name = $attributes['name'];
-        $template->builder = $attributes['builder']; // whether or not this template can be modified using a builder
+        $template->fill($attributes); // Including 'uid', 'name', 'content', 'builder'
 
         // System or Customer template
         if (array_key_exists('customer_id', $attributes)) {
             $template->customer_id = $attributes['customer_id'];
         }
-        
-        $template->uid = uniqid();
+
+        // UID is needed for loading the conent
+        if (is_null($template->uid)) {
+            $template->uid = uniqid();
+        }
+
         $template->loadContent($directory); // already saved!
         return $template;
     }
