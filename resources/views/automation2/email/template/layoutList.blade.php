@@ -1,9 +1,13 @@
 @if ($templates->count() >0)
     <div class="template-list-items mt-3 clearfix">
         @foreach ($templates as $key => $template)
-            <a href="javascript:;" class="d-block template-list-item template-choose" data-template="{{ $template->uid }}">
-                <img href="javascript:;" src="{{ $template->getThumbUrl() }}?v={{ rand(0,10) }}" />
-                <label class="mb-20 text-center d-block mt-3">{{ $template->name }}</label>
+            <a href="javascript:;" class="select-template-layout template-list-item template-choose" data-template="{{ $template->uid }}">
+                <div class="panel-template-style">
+                    <div class="panel-template-placeholder">
+                        <img href="javascript:;" src="{{ $template->getThumbUrl() }}?v={{ rand(0,10) }}" />
+                    </div>
+                    <label class="mb-20 text-center d-block mt-1">{{ $template->name }}</label>
+                </div>
             </a>
         @endforeach
     </div>
@@ -19,9 +23,7 @@
 @endif
 
 <script>
-    var builderSelectPopup = new Popup(null, undefined, {onclose: function() {
-            
-    }});
+    var builderSelectPopup;
 
     $('.template-choose').click(function() {
         var url = '{{ action('Automation2Controller@templateLayout', [
@@ -46,6 +48,9 @@
                 'email_uid' => $email->uid,
             ]) }}');
 
+            builderSelectPopup = new Popup(null, undefined, {onclose: function() {
+            
+            }});
             builderSelectPopup.load('{{ action('Automation2Controller@templateBuilderSelect', [
                 'uid' => $automation->uid,
                 'email_uid' => $email->uid,

@@ -922,17 +922,14 @@ class Automation2Controller extends Controller
             ], 201);
         }
 
-        // GET goes here
-        if ($request->category_uid) {
-            $category = TemplateCategory::findByUid($request->category_uid);
-        } else {
-            $category = TemplateCategory::first();
+        // default tab
+        if ($request->from != 'mine' && !$request->category_uid) {
+            $request->category_uid = TemplateCategory::first()->uid;
         }
 
         return view('automation2.email.template.layout', [
             'automation' => $automation,
             'email' => $email,
-            'category' => $category,
         ]);
     }
 
@@ -956,9 +953,14 @@ class Automation2Controller extends Controller
                 ->orWhere('customer_id', '=', $request->user()->customer->id);
         }
 
-        $templates = $templates->search($request->keyword)
-            ->categoryUid($request->category_uid)
-            ->orderBy($request->sort_order, $request->sort_direction)
+        $templates = $templates->search($request->keyword);
+
+        // category id
+        if ($request->category_uid) {
+            $templates = $templates->categoryUid($request->category_uid);
+        }
+            
+        $templates = $templates->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
 
         return view('automation2.email.template.layoutList', [
