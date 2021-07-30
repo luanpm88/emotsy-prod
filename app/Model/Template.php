@@ -513,14 +513,12 @@ class Template extends Model
 
         // Replace #1
         $content = StringHelper::transformUrls($this->content, function ($url) use ($host) {
-            $host = parse_url($url, PHP_URL_HOST);
-
-            if ($host === false) {
+            if (parse_url($url, PHP_URL_HOST) === false) {
                 // if url is invalid
                 return $url;
             }
 
-            if (!is_null($host)) {
+            if (!is_null(parse_url($url, PHP_URL_HOST))) {
                 // url is with a host like "http://" or "//"
                 return $url;
             }
@@ -532,6 +530,7 @@ class Template extends Model
                 // base64 image. Like: "data:image/png;base64,iVBOR"
                 return $url;
             } else {
+                // URL is a relative path like "images/banner.jpg"
                 // Transform relative URLs to PUBLIC ABSOLUTE URLs, but without hostname
                 $url = \Acelle\Helpers\generatePublicPath(
                     $this->getStoragePath($url),
