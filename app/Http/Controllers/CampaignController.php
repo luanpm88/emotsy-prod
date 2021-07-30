@@ -302,11 +302,6 @@ class CampaignController extends Controller
     public function templateLayout(Request $request)
     {
         $campaign = Campaign::findByUid($request->uid);
-        if ($request->category_uid) {
-            $category = TemplateCategory::findByUid($request->category_uid);
-        } else {
-            $category = TemplateCategory::first();
-        }
 
         // authorize
         if (\Gate::denies('update', $campaign)) {
@@ -325,9 +320,13 @@ class CampaignController extends Controller
             ]);
         }
 
+        // default tab
+        if ($request->from != 'mine' && !$request->category_uid) {
+            $request->category_uid = TemplateCategory::first()->uid;
+        }
+
         return view('campaigns.template.layout', [
-            'campaign' => $campaign,
-            'category' => $category,
+            'campaign' => $campaign
         ]);
     }
 
@@ -350,9 +349,14 @@ class CampaignController extends Controller
                 ->orWhere('customer_id', '=', $request->user()->customer->id);
         }
 
-        $templates = $templates->search($request->keyword)
-            ->categoryUid($request->category_uid)
-            ->orderBy($request->sort_order, $request->sort_direction)
+        $templates = $templates->search($request->keyword);
+
+        // category id
+        if ($request->category_uid) {
+            $templates = $templates->categoryUid($request->category_uid);
+        }
+            
+        $templates = $templates->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
 
         return view('campaigns.template.layoutList', [

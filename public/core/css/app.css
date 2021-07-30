@@ -6740,7 +6740,8 @@ h3, h4 [class^="material-icons"] {
     }
 }
 
-.animated-background, .styled.animated-background:before {
+.animated-background, .styled.animated-background:before,
+.popup-animated-background, .styled.popup-animated-background:before {
     -webkit-animation-duration: 1.5s;
     -webkit-animation-fill-mode: forwards;
     -webkit-animation-iteration-count: infinite;
@@ -6762,11 +6763,11 @@ h3, h4 [class^="material-icons"] {
     display: inline-block!important;
     transition: none;
 }
-.animated-background * {
+.animated-background *, .popup-animated-background * {
     visibility: hidden;
     color: transparent!important;
 }
-.list-loading-msg.animated-background {
+.list-loading-msg.animated-background, .list-loading-msg.popup-animated-background{
     position: absolute!important;
     opacity: 1;
     left: calc(50% - 60px);
@@ -6778,4 +6779,22 @@ h3, h4 [class^="material-icons"] {
 .domain-check-icon {
     font-size: 15px;
     line-height: 26px;
+}
+.select-template-layout {
+    width: 166px;
+    display: inline-block;
+    margin-right: 25px;
+    margin-bottom: 25px;
+    text-align: center;
+    border-radius: 5px;
+    padding: 4px 4px 7px 4px;
+}
+.select-template-layout label, .template-list-item label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+.select-template-layout:hover {
+    background-color: #f2f2f2;
 }

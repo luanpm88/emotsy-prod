@@ -110,16 +110,16 @@ class Popup {
     }
 
     initMask() {
-        placeholderLoading(this.popup);
+        var tags = 'h1,h2,h3,h4,h5,p,.btn,span,input,select,.alert,.progress-bar,label,a,textarea,i';
+        this.popup.find(tags).each(function() {
+            if (!$(this).parent(tags).length) {
+                $(this).addClass('popup-animated-background');
+            }
+        });
     }
 
     mask() {
         this.popup.addClass('popup-loading');
-        // this.popup.find('.modal-dialog').append(`
-        //     <div class="progress popup-progress">
-        //         <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
-        //     </div>
-        // `);
     }
 
     loading() {
@@ -130,7 +130,7 @@ class Popup {
         this.popup.removeClass('popup-loading');
         this.popup.find('.popup-progress').remove();
 
-        removePlaceholderLoading(this.popup);
+        this.popup.find('*').removeClass('popup-animated-background');
     }
     
     load(options, callback) {

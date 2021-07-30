@@ -11,12 +11,21 @@
                 
             @include('automation2.email.template._tabs')
 
-			<div class="template-filter pt-4">
+			<h2 class="font-weight-semibold mb-0">
+				@if (request()->category_uid)
+					{{ Acelle\Model\TemplateCategory::findByUid(request()->category_uid)->name }}
+				@elseif (request()->from == 'mine')
+					{{ trans('messages.my_templates') }}
+				@endif
+			</h2>
+
+			<div class="template-filter filter-box pt-4">
 				<div class="d-flex align-items-center">
+					<input type="hidden" name="category_uid" value="{{ request()->category_uid }}" />
 					<label class="font-weight-semibold mr-2">From</label>
 					<select class="select" name="from">
 						<option value="all" selected='selected'>{{ trans('messages.all') }}</option>
-						<option value="mine">{{ trans('messages.my_templates') }}</option>
+						<option {{ request()->from == 'mine' ? 'selected' : '' }} value="mine">{{ trans('messages.my_templates') }}</option>
 						<option value="gallery">{{ trans('messages.gallery') }}</option>
 					</select>	
 				</div>
@@ -32,7 +41,6 @@
             url: '{{ action('Automation2Controller@templateLayoutList', [
 				'uid' => $automation->uid,
 				'email_uid' => $email->uid,
-				'category_uid' => $category->uid,
 			]) }}',
             container: $('.template-list'),
             content: $('.template-list'),
@@ -52,45 +60,5 @@
 		$('[name=from]').change(function() {
 			listTheme.load();
 		});
-
-		var builderSelectPopup = new Popup(null, undefined, {onclose: function() {
-            
-        }});
-
-        $('a.select-layout').click(function(e) {
-            e.preventDefault();
-        
-            var url = $(this).attr('href');
-			
-			popup.loading();
-			
-			// loading popup
-			popup.loading();
-			
-			$.ajax({
-				url: url,
-				type: 'POST',
-				data: {
-					_token: CSRF_TOKEN,
-				}
-			}).always(function(response) {
-				popup.load('{{ action('Automation2Controller@emailTemplate', [
-					'uid' => $automation->uid,
-					'email_uid' => $email->uid,
-				]) }}');
-
-				builderSelectPopup.load('{{ action('Automation2Controller@templateBuilderSelect', [
-					'uid' => $automation->uid,
-					'email_uid' => $email->uid,
-				]) }}');
-
-				// notify
-				notify({
-    type: 'success',
-    title: '{!! trans('messages.notify.success') !!}',
-    message: response.message
-});
-			});
-        });
     </script>
 @endsection
