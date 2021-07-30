@@ -14,7 +14,7 @@ class AddIsDefaultColumnToTemplates extends Migration
     public function up()
     {
         Schema::table('templates', function (Blueprint $table) {
-            $table->boolean('is_default')->default(null)->nullable();
+            $table->boolean('is_default')->default(false)->nullable();
         });
 
         // DROP admin id by foreign key name (for DB initiated by older versions when key does not have prefix)
