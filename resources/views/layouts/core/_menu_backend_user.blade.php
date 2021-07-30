@@ -12,9 +12,6 @@
             <img src="{{ Auth::user()->getProfileImageUrl() }}" style="border-radius:100%;transform:scale(1.5)" alt="">
         </i>
         <span>{{ Auth::user()->displayName() }}</span>
-        @if (Auth::user()->customer->hasSubscriptionNotice())
-            <i class="material-icons-round customer-warning-icon text-danger" style="right:2px;color:red!important;top:2px;position:absolute">info</i>
-        @endif
     </a>
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="content-menu">
         @can("customer_access", Auth::user())
