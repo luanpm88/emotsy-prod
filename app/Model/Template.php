@@ -49,7 +49,7 @@ class Template extends Model
      * @var array
      */
     protected $fillable = [
-        'uid', 'name', 'content', 'builder'
+        'uid', 'name', 'content', 'builder', 'is_default'
     ];
 
     /**
@@ -858,12 +858,10 @@ class Template extends Model
                 'name' => 'Blank',
                 'dir' => database_path('templates/basic/Give-It-A-Name/6037a0a8583a7'),
                 'category' => $categoryBasic,
-                'builder' => true,
             ], [
                 'name' => 'Pricing Table',
                 'dir' => database_path('templates/Any-Directory-Structure/..../6037a2135b974'),
                 'category' => $categoryBasic,
-                'builder' => true,
             ], [
                 // ...
             ], [
@@ -881,6 +879,8 @@ class Template extends Model
 
             // Build $template attributes and create
             $meta['uid'] = $uid;
+            $meta['is_default'] = true; // default templates that are originally created
+            $meta['builder'] = true;
             $template = Template::createFromDirectory($meta, $meta['dir']);
 
             // Set category
