@@ -12,8 +12,8 @@ $(document).ready(function() {
         valid_children : "+body[meta],+div[h2|span|meta|object],+object[param|embed]",
         plugins: [
           'table advlist autolink lists link image charmap print preview anchor directionality',
-          'searchreplace visualblocks code fullscreen textcolor',
-          'insertdatetime media contextmenu paste code'
+          'searchreplace visualblocks code fullscreen',
+          'insertdatetime media paste code'
         ],
         toolbar: 'insertfile undo redo | fontselect | fontsizeselect | styleselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | ltr rtl',
         content_css: [
@@ -39,8 +39,8 @@ $(document).ready(function() {
         valid_children : "+body[meta],+div[h2|span|meta|object],+object[param|embed]",
         plugins: [
           'table advlist autolink lists link image charmap print preview anchor fullpage',
-          'searchreplace visualblocks code fullscreen textcolor',
-          'insertdatetime media contextmenu paste code'
+          'searchreplace visualblocks code fullscreen',
+          'insertdatetime media paste code'
         ],
         toolbar: 'insertfile undo redo | fontselect | fontsizeselect | styleselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | ltr rtl',
         content_css: [
@@ -62,7 +62,7 @@ $(document).ready(function() {
         plugins: [
           'fullpage table advlist autolink lists link image charmap print preview anchor directionality',
           'searchreplace visualblocks code fullscreen',
-          'insertdatetime media contextmenu paste code textcolor'
+          'insertdatetime media paste code'
         ],
         toolbar: 'insertfile undo redo | fontselect | fontsizeselect | styleselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | ltr rtl',
         valid_elements : '*[*],meta[*]',
@@ -84,7 +84,7 @@ $(document).ready(function() {
         plugins: [
           'table advlist autolink lists link image charmap print preview anchor directionality',
           'searchreplace visualblocks code fullscreen',
-          'insertdatetime media contextmenu paste code textcolor'
+          'insertdatetime media paste code'
         ],
         toolbar: 'insertfile undo redo | fontselect | fontsizeselect | styleselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | ltr rtl',
         valid_elements : '*[*],meta[*]',
