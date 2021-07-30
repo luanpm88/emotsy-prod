@@ -422,4 +422,18 @@ class StringHelper
 
         return $newName;
     }
+
+    public static function transformUrlsFromAnyText(string $content, Closure $callback) {
+        preg_match_all( '/(href|src)=["\']([^("|\')]*)/i', $content, $matches );
+        foreach($matches[2] as $url) {
+            if (strpos($url, 'data:') !== 0 && strpos($url, 'http') !== 0 && strpos($url, '/') !== 0) {
+                $content = str_replace(
+                    $url,
+                    $callback($url),
+                    $content
+                );
+            }
+        }
+        return $content;
+    }
 }
