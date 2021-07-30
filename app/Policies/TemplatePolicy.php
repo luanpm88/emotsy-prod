@@ -44,7 +44,7 @@ class TemplatePolicy
             case 'admin':
                 $ability = $user->admin->getPermission('template_read');
                 $can = $ability == 'all'
-                    || ($ability == 'own' && $user->admin->id == $item->admin_id);
+                    || ($ability == 'own');
                 break;
             case 'customer':
                 $can = $user->customer->id == $item->customer_id || !isset($item->customer_id);
@@ -60,7 +60,7 @@ class TemplatePolicy
             case 'admin':
                 $ability = $user->admin->getPermission('template_update');
                 $can = $ability == 'all'
-                    || ($ability == 'own' && $user->admin->id == $item->admin_id);
+                    || ($ability == 'own');
                 break;
             case 'customer':
                 $can = $user->customer->id == $item->customer_id;
@@ -76,7 +76,7 @@ class TemplatePolicy
             case 'admin':
                 $ability = $user->admin->getPermission('template_read');
                 $can = $ability == 'all'
-                    || ($ability == 'own' && $user->admin->id == $item->admin_id);
+                    || ($ability == 'own');
                 break;
             case 'customer':
                 $can = $user->customer->id == $item->customer_id || !isset($item->customer_id);
@@ -108,7 +108,7 @@ class TemplatePolicy
             case 'admin':
                 $ability = $user->admin->getPermission('template_read');
                 $can = $ability == 'all'
-                    || ($ability == 'own' && $user->admin->id == $item->admin_id);
+                    || ($ability == 'own');
                 break;
             case 'customer':
                 $can = $user->customer->id == $item->customer_id || !isset($item->customer_id);
@@ -124,7 +124,7 @@ class TemplatePolicy
             case 'admin':
                 $ability = $user->admin->getPermission('template_update');
                 $can = $ability == 'all'
-                    || ($ability == 'own' && $user->admin->id == $item->admin_id);
+                    || ($ability == 'own');
                 break;
             case 'customer':
                 $can = $user->customer->id == $item->customer_id || !isset($item->customer_id);

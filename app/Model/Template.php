@@ -383,7 +383,9 @@ class Template extends Model
         $attributes['builder'] = self::BUILDER_DISABLED;
 
         if ($asAdmin) {
-            $attributes['admin_id'] = $request->user()->admin->id;
+            // Leave customer_id column empty in case of admin
+            // The 'admin_id' field is no longer available
+            // ### [ deprecated ] $attributes['admin_id'] = $request->user()->admin->id;
         } else {
             $attributes['customer_id'] = $request->user()->customer->id;
         }
