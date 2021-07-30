@@ -19,4 +19,11 @@ footer {
         max-width: 760px;
     }
 }
+.container {
+    padding-left: 0;
+    padding-right: 0;
+}
+[builder-element=BlockElement], [builder-element=PricingTableElement] {
+    background-color: #fff;
+}
 

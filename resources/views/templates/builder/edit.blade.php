@@ -10,6 +10,17 @@
     <link href="{{ URL::asset('builder/builder.css') }}" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="{{ URL::asset('builder/builder.js') }}"></script>
 
+    @if (file_exists($template->getStoragePath('theme.js')))
+        <script type="text/javascript">
+            {!! Acelle\Library\StringHelper::transformUrlsFromAnyText(
+                file_get_contents($template->getStoragePath('theme.js')),
+                function($url) use ($template) {
+                    return \Acelle\Helpers\generatePublicPath($template->getStoragePath($url));
+                }
+            ) !!}
+        </script>
+    @endif
+
     <style>
         .logo-img {
             width: 120px!important;
@@ -144,6 +155,17 @@
                           span.click();
                       }
                   }
+                },
+                loaded: function() {
+                    var thisEditor = this;
+
+                    if (typeof(WidgetManager) !== 'undefined') {
+                        var widgets = WidgetManager.init();
+
+                        widgets.forEach(function(widget) {
+                            thisEditor.addContentWidget(widget, 0, 'Template Content');
+                        });
+                    }
                 }
             });
           
