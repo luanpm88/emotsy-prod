@@ -530,7 +530,7 @@ class Template extends Model
                 return ($host) ? join_url($host, $url) : $url;
             } else if (strpos($url, 'data:') === 0) {
                 // base64 image. Like: "data:image/png;base64,iVBOR"
-                return ($host) ? join_url($host, $url) : $url;
+                return $url;
             } else {
                 // Transform relative URLs to PUBLIC ABSOLUTE URLs, but without hostname
                 $url = \Acelle\Helpers\generatePublicPath(
