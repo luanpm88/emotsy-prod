@@ -858,17 +858,103 @@ class Template extends Model
         $templates = [
             [
                 'name' => 'Blank',
-                'dir' => database_path('templates/basic/Give-It-A-Name/6037a0a8583a7'),
+                'dir' => database_path('templates/basic/000-blank/6037a0a8583a7'),
                 'category' => $categoryBasic,
             ], [
                 'name' => 'Pricing Table',
-                'dir' => database_path('templates/Any-Directory-Structure/..../6037a2135b974'),
+                'dir' => database_path('templates/basic/001-pricing-table/6037a2135b974'),
                 'category' => $categoryBasic,
             ], [
-                // ...
+                'name' => 'Lists & Tables',
+                'dir' => database_path('templates/basic/002-lists-tables/6037a2250a3a3'),
+                'category' => $categoryBasic,
+                'builder' => true,
             ], [
-                // ...
-            ]
+                'name' => 'One column layout',
+                'dir' => database_path('templates/basic/003-1-column/6037a28418c95'),
+                'category' => $categoryBasic,
+                'builder' => true,
+            ], [
+                'name' => '1-2 column layout',
+                'dir' => database_path('templates/basic/004-1-2-columns/6037a24ebdbd6'),
+                'category' => $categoryBasic,
+                'builder' => true,
+            ], [
+                'name' => '1-2-1 column layout',
+                'dir' => database_path('templates/basic/005-1-2-1-columns/6037a2401b055'),
+                'category' => $categoryBasic,
+                'builder' => true,
+            ], [
+                'name' => '1-3 column layout',
+                'dir' => database_path('templates/basic/006-1-3-columns/6037a275bf375'),
+                'category' => $categoryBasic,
+                'builder' => true,
+            ], [
+                'name' => '1-3-1 column layout',
+                'dir' => database_path('templates/basic/007-1-3-1-columns/6037a25ddce80'),
+                'category' => $categoryBasic,
+                'builder' => true,
+            ], [
+                'name' => '1-3-2 column layout',
+                'dir' => database_path('templates/basic/008-1-3-2-columns/6037a26b0a286'),
+                'category' => $categoryBasic,
+                'builder' => true,
+            ], [
+                'name' => 'Two columns layout',
+                'dir' => database_path('templates/basic/009-2-columns/6037a2b67ed27'),
+                'category' => $categoryBasic,
+                'builder' => true,
+            ], [
+                'name' => '2-1 column layout',
+                'dir' => database_path('templates/basic/010-2-1-columns/6037a2aa315d4'),
+                'category' => $categoryBasic,
+                'builder' => true,
+            ], [
+                'name' => '2-1-2 column layout',
+                'dir' => database_path('templates/basic/011-2-1-2-columns/6037a29a35e05'),
+                'category' => $categoryBasic,
+                'builder' => true,
+            ], [
+                'name' => 'Three columns layout',
+                'dir' => database_path('templates/basic/012-3-columns/6037a2dcb6c56'),
+                'category' => $categoryBasic,
+                'builder' => true,
+            ], [
+                'name' => '3-1-3 column layout',
+                'dir' => database_path('templates/basic/013-3-1-3-columns/6037a2c3d7fa1'),
+                'category' => $categoryBasic,
+                'builder' => true,
+            ], [
+                'name' => 'Abandoned Cart Email #2',
+                'dir' => database_path('templates/woos/001-woo-2/6037a26b0a200'),
+                'category' => $categoryWoo,
+                'builder' => true,
+            ], [
+                'name' => 'Abandoned Cart Email #3',
+                'dir' => database_path('templates/woos/002-woo-3/6037a26b0a211'),
+                'category' => $categoryWoo,
+                'builder' => true,
+            ], [
+                'name' => 'Abandoned Cart Email #4',
+                'dir' => database_path('templates/woos/003-woo-4/6037a26b0a244'),
+                'category' => $categoryWoo,
+                'builder' => true,
+            ], [
+                'name' => 'Certified Yoga Therapist',
+                'dir' => database_path('templates/featured/001-yoga/52264e8382883'),
+                'category' => $categoryFeatured,
+                'builder' => true,
+            ], [
+                'name' => 'Color Print - Your Print Companion',
+                'dir' => database_path('templates/themes/002-blue/5d7b526bbfd4c'),
+                'category' => $categoryTheme,
+                'builder' => true,
+            ], [
+                'name' => 'Gift Card!',
+                'dir' => database_path('templates/themes/001-yellow/5d7b527be2bd2'),
+                'category' => $categoryTheme,
+                'builder' => true,
+            ],
         ];
 
         // Delete existing template and create again with new updates
