@@ -4,11 +4,32 @@
     <title>{{ trans('messages.campaign.edit_template') }} - {{ $campaign->name }}</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    @include('layouts.core._head')
+    
     @include('layouts.core._favicon')
     
     <link href="{{ URL::asset('builder/builder.css') }}" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="{{ URL::asset('builder/builder.js') }}"></script>
+
+    <!-- jQuery -->
+    <script type="text/javascript" src="{{ URL::asset('core/js/jquery-3.6.0.min.js') }}"></script>
+
+    <!-- Select2 -->
+    <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/select2/css/select2.min.css') }}">
+    <script type="text/javascript" src="{{ URL::asset('core/select2/js/select2.min.js') }}"></script>
+
+    @php
+        $template = $campaign->template;
+    @endphp
+    @if (file_exists($template->getStoragePath('theme.js')))
+        <script type="text/javascript">
+            {!! Acelle\Library\StringHelper::transformUrlsFromAnyText(
+                file_get_contents($template->getStoragePath('theme.js')),
+                function($url) use ($template) {
+                    return \Acelle\Helpers\generatePublicPath($template->getStoragePath($url));
+                }
+            ) !!}
+        </script>
+    @endif
 
     <style>
         .logo-img {
@@ -95,6 +116,15 @@
                         thisEditor.handleSelect();
                         return false;
                     })
+
+                    // load widgets from theme.js
+                    if (typeof(WidgetManager) !== 'undefined') {
+                        var widgets = WidgetManager.init();
+
+                        widgets.forEach(function(widget) {
+                            thisEditor.addContentWidget(widget, 0, 'Template Content');
+                        });
+                    }
                 },
                 customInlineEdit: function(container) {
                     thisEditor = this;
