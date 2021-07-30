@@ -1068,7 +1068,7 @@ class Subscriber extends Model
      *
      * @return collect
      */
-    public static function scopeFilter($query, $request)
+    public function scopeFilter($query, $request)
     {
         /* does not support searching on subscriber fields, for the sake of performance
         $query = $query->leftJoin('subscriber_fields', 'subscribers.id', '=', 'subscriber_fields.subscriber_id')
@@ -1164,7 +1164,7 @@ class Subscriber extends Model
      *
      * @return collect
      */
-    public static function scopeSearch($query, $request, $customer = null)
+    public function scopeSearch($query, $request, $customer = null)
     {
         $query = self::select('subscribers.*', 'email_verifications.result as verify_result');
 

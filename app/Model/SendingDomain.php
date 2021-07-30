@@ -84,7 +84,7 @@ class SendingDomain extends Model
      *
      * @return collect
      */
-    public static function scopeSearch($query, $keyword)
+    public function scopeSearch($query, $keyword)
     {
         if (!empty($keyword)) {
             $query->where('sending_domains.name', 'like', '%'.$keyword.'%');

@@ -149,7 +149,7 @@ class TrackingDomain extends Model
      *
      * @return collect
      */
-    public static function scopeVerified($query)
+    public function scopeVerified($query)
     {
         return $query->where('status', '=', self::STATUS_VERIFIED);
     }

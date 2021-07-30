@@ -32,7 +32,7 @@ class Product extends Model
         return $this->belongsTo('Acelle\Model\Source');
     }
 
-    public static function scopeFilter($query, $attribute, $value)
+    public function scopeFilter($query, $attribute, $value)
     {
         $query->where($attribute, '=', $value);
     }

@@ -44,7 +44,7 @@ class Plugin extends Model
      *
      * @return collect
      */
-    public static function scopeFilter($query, $request)
+    public function scopeFilter($query, $request)
     {
         $user = $request->user();
 
@@ -75,7 +75,7 @@ class Plugin extends Model
      *
      * @return collect
      */
-    public static function scopeSearch($query, $request)
+    public function scopeSearch($query, $request)
     {
         $query = self::filter($request);
 
@@ -104,7 +104,7 @@ class Plugin extends Model
      *
      * @return collect
      */
-    public static function scopeActive($query)
+    public function scopeActive($query)
     {
         return $query->where('status', '=', self::STATUS_ACTIVE);
     }

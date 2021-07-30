@@ -81,7 +81,7 @@ class Language extends Model
         return base_path('resources/lang/default');
     }
 
-    public static function scopeActive($query)
+    public function scopeActive($query)
     {
         $query->where('status', '=', self::STATUS_ACTIVE);
     }
@@ -105,7 +105,7 @@ class Language extends Model
      *
      * @return collect
      */
-    public static function scopeSearch($query, $keyword)
+    public function scopeSearch($query, $keyword)
     {
         // Keyword
         if (!empty(trim($keyword))) {
@@ -142,7 +142,7 @@ class Language extends Model
         ];
     }
 
-    public static function scopeDefault($query)
+    public function scopeDefault($query)
     {
         return $query->where('is_default', '=', true);
     }

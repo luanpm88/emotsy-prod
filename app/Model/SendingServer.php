@@ -922,7 +922,7 @@ class SendingServer extends Model
      *
      * @return collect
      */
-    public static function scopeActive($query)
+    public function scopeActive($query)
     {
         return $query->where('status', '=', self::STATUS_ACTIVE);
     }
@@ -932,7 +932,7 @@ class SendingServer extends Model
      *
      * @return collect
      */
-    public static function scopeSystem($query)
+    public function scopeSystem($query)
     {
         return $query->active()->whereNull('customer_id');
     }
