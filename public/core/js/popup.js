@@ -154,6 +154,7 @@ class Popup {
         // save current options
         if (typeof(newOptions.noHistory) == 'undefined' &&
             typeof(newOptions.url) !== 'undefined' &&
+            typeof(_this.options) !== 'undefined' &&
             typeof(_this.options.url) !== 'undefined' &&
             newOptions.url != _this.options.url
         ) {

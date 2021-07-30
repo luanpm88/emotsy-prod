@@ -10,6 +10,27 @@
     <link href="{{ URL::asset('builder/builder.css') }}" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="{{ URL::asset('builder/builder.js') }}"></script>
 
+    <!-- jQuery -->
+    <script type="text/javascript" src="{{ URL::asset('core/js/jquery-3.6.0.min.js') }}"></script>
+
+    <!-- Select2 -->
+    <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/select2/css/select2.min.css') }}">
+    <script type="text/javascript" src="{{ URL::asset('core/select2/js/select2.min.js') }}"></script>
+
+    @php
+        $template = $email->template;
+    @endphp
+    @if (file_exists($template->getStoragePath('theme.js')))
+        <script type="text/javascript">
+            {!! Acelle\Library\StringHelper::transformUrlsFromAnyText(
+                file_get_contents($template->getStoragePath('theme.js')),
+                function($url) use ($template) {
+                    return \Acelle\Helpers\generatePublicPath($template->getStoragePath($url));
+                }
+            ) !!}
+        </script>
+    @endif
+
     @include('helpers._builder_product_widgets')
 
     <style>
@@ -176,6 +197,15 @@
                         thisEditor.handleSelect();
                         return false;
                     })
+
+                    // load widgets from theme.js
+                    if (typeof(WidgetManager) !== 'undefined') {
+                        var widgets = WidgetManager.init();
+
+                        widgets.forEach(function(widget) {
+                            thisEditor.addContentWidget(widget, 0, 'Template Content');
+                        });
+                    }
                 },
                 customTinymceSetup: function(editor) {
                     editor.ui.registry.addMenuButton('custom1', {
@@ -215,10 +245,6 @@
             $(document).on('click', '.filemanager-cancel', function(e) {$('.PopUpCloseButton').click();})
         });
     </script>
-
-    <script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery.min.js') }}"></script>
-    <link href="{{ URL::asset('assets2/lib/select2-4.0.12/css/select2.min.css') }}" rel="stylesheet" />
-    <script src="{{ URL::asset('assets2/lib/select2-4.0.12/js/select2.min.js') }}"></script>
   </head>
   <body>
         <style>
