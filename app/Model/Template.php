@@ -520,7 +520,7 @@ class Template extends Model
         $files = [];
 
         $document = new DOMDocument();
-        $document->loadHTML($this->content, LIBXML_HTML_NODEFDTD | LIBXML_HTML_NOIMPLIED);
+        $document->loadHTML($this->content, LIBXML_NOWARNING | LIBXML_NOERROR);
         $links = $document->getElementsByTagName('link');
         foreach($links as $link) {
             $href = $link->getAttribute('href');
