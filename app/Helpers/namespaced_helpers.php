@@ -42,13 +42,13 @@ function generatePublicPath($absPath, $withHost = false)
     // If Laravel is under a subdirectory
     $subdirectory = getAppSubdirectory();
 
-    if (empty($subdirectory) || $absolute) {
+    if (empty($subdirectory) || $withHost) {
         // Return something like
-        //     "http://localhost/{subdirectory if any}/p/assets/ef99238abc92f43e038efb"   # absolute = true, OR
-        //     "/p/assets/ef99238abc92f43e038efb"                   # absolute = false
+        //     "http://localhost/{subdirectory if any}/p/assets/ef99238abc92f43e038efb"   # withHost = true, OR
+        //     "/p/assets/ef99238abc92f43e038efb"                   # withHost = false
         $url = route('public_assets', [ 'dirname' => $encodedDirname, 'basename' => $basename ], $withHost);
     } else {
-        $url = join_paths($subdirectory, route('public_assets', [ 'dirname' => $encodedDirname, 'basename' => $basename ], $absolute));
+        $url = join_paths($subdirectory, route('public_assets', [ 'dirname' => $encodedDirname, 'basename' => $basename ], $withHost));
     }
 
     return $url;
