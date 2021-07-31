@@ -66,6 +66,25 @@ function getAppSubdirectory()
     return empty($path) ? null : $path;
 }
 
+// Get application host with {scheme}://{host}:{port} (without subdirectory)
+function getAppHost()
+{
+    $fullUrl = config('app.url');
+    $meta = parse_url($fullUrl);
+
+    if (!array_key_exists('scheme', $meta) || !array_key_exists('host', $meta)) {
+        throw new Exception('Invalid app.url setting');
+    }
+
+    $appHost = "{$meta['scheme']}://{$meta['host']}";
+
+    if (array_key_exists('port', $meta)) {
+        $appHost = "{$appHost}:{$meta['port']}";
+    }
+
+    return $appHost;
+}
+
 function updateTranslationFile($targetFile, $sourceFile, $overwriteTargetPhrases = false)
 {
     $source = include $sourceFile;

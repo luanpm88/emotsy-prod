@@ -724,7 +724,8 @@ class Email extends Model
         if ($this->trackingDomain()->exists()) {
             return $this->trackingDomain->getUrl();
         } else {
-            return config('app.url');
+            // Host without subdirectory
+            return \Acelle\Helpers\getAppHost();
         }
     }
 
