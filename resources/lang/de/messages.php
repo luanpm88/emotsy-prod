@@ -1907,8 +1907,6 @@
   'list.there_no_subaccount_sending_server' => '<span class="text-semibold">FEHLER:</span> Es gibt keine aktiven Versandserver.',
   'embeded_form.show_invisible' => 'Zeige unsichtbare(s) Feld(er)',
   'paddle_card' => 'Paddle / Karte',
-  'payment_method.paddle_card.button' => '<i class="icon-credit-card"></i> Bezahlen mit Paddle',
-  'paddle_card.pay_by_card' => '<i class="icon-credit-card"></i> Bezahlen mit Paddle',
   'paddle_card.purchasing_intro' => 'Bitte klicken Sie auf die Schaltfläche unten, damit wir Ihr Konto für den Kauf des <a><strong>:plan Pakets</strong></a> einrichten und Sie mit der Kartenoption (Paddle) bezahlen können
                 . Ihr Paketpreis beträgt: <a><strong>:price</strong></a>',
   'paddle.vendor_id' => 'Verkäufer ID',
@@ -1929,8 +1927,6 @@
   'payu.salt' => 'Salt',
   'payu.payu_base_url' => 'PayU Basis URL',
   'payumoney.wording' => 'Füllen Sie die folgenden Einstellungen für die PayU Money-Methode aus. Sie finden diese Einstellungen in Ihrem PayU Money-Dashboard.',
-  'payment_method.payumoney.button' => '<i class="icon-credit-card"></i> Zahlen Sie mit PayU',
-  'payment_method_type_payumoney_button' => '<i class="fa fa-money"></i> Zahlen Sie mit PayU',
   'purchasing_intro_payumoney' => 'Bitte füllen Sie die folgenden Informationen aus, damit wir Ihr Konto für den Kauf des einrichten können <a><strong>:plan planen</strong></a> mit der Zahlung per Kreditkarte / Debitkarte Option
                 . Ihr Planpreis ist: <a><strong>:price</strong></a>',
   'pay_by_credit_debit_card' => 'Bezahlen Sie mit Kredit- / Debitkarte',
@@ -3718,4 +3714,10 @@
   'language.translation' => 'Translation',
   'language.select_translation_file' => 'Select file',
   'language.discard_change' => 'Your change in the current file will be discarded.',
+  'product.title' => 'Title',
+  'campaign_status_ready' => 'Ready',
+  'loading_wait' => 'Loading, please wait...',
+  'invoice.price' => 'Price',
+  'invoice.cancel' => 'Cancel',
+  'copy_plan' => 'Copy plan',
 ) ?>
