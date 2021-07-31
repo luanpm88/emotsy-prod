@@ -23,7 +23,6 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use Validator;
 use ZipArchive;
 use RecursiveIteratorIterator;
