@@ -25,7 +25,9 @@
 <script>
     var builderSelectPopup;
 
-    $('.template-choose').click(function() {
+    $('.template-choose').click(function(e) {
+        e.preventDefault();
+        
         var url = '{{ action('Automation2Controller@templateLayout', [
             'uid' => $automation->uid,
             'email_uid' => $email->uid,
