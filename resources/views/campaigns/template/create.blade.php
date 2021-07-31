@@ -34,9 +34,7 @@ forward_to_inbox
                 
             <ul class="hover-list">
                 <li class="template-start" data-url="{{ action('CampaignController@templateLayout', $campaign->uid) }}">
-                    <i class="material-icons-outlined">
-                        queue
-                    </i>
+                    <img width="35px" class="icon-img d-inline-block me-3" src="{{ url('images/icons/plus.svg') }}" />
                     <div class="list-body">
                         <h4>{{ trans('messages.campaign.template.from_layout') }}</h4>
                         <p>{{ trans('messages.campaign.template.from_layout.intro') }}</p>
@@ -50,9 +48,7 @@ forward_to_inbox
                     </div>
                 </li>
                 <li class="template-start" data-url="{{ action('CampaignController@templateUpload', $campaign->uid) }}">
-                    <i class="material-icons-outlined mt-0">
-                        upload
-                    </i>
+                    <img width="35px" class="icon-img d-inline-block me-3" src="{{ url('images/icons/upload.svg') }}" />
                     <div class="list-body">
                         <h4>{{ trans('messages.campaign.template.upload') }}</h4>
                         <p>{{ trans('messages.campaign.template.upload.intro') }}</p>

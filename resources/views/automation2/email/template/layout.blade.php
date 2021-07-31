@@ -5,13 +5,13 @@
 	@include('automation2.email._tabs', ['tab' => 'template'])
 		
 	<div class="row">
-        <div class="col-md-12">
+        <div class="col-md-12 template-list-container">
             <h5 class="mb-3">{{ trans('messages.automation.choose_your_template_layout') }}</h5>
 			<p class="mb-4">{{ trans('messages.automation.choose_your_template_layout.intro') }}</p>
                 
             @include('automation2.email.template._tabs')
 
-			<h2 class="font-weight-semibold mb-0">
+			<h2 class="font-weight-semibold mb-3">
 				@if (request()->category_uid)
 					{{ Acelle\Model\TemplateCategory::findByUid(request()->category_uid)->name }}
 				@elseif (request()->from == 'mine')
@@ -19,16 +19,17 @@
 				@endif
 			</h2>
 
-			<div class="template-filter filter-box pt-4">
-				<div class="d-flex align-items-center">
+			<div class="filter-box">
+				<span class="d-flex align-items-center mr-4">
+					<input type="hidden" name="sort_order" value="id" />	
+					<input type="hidden" name="sort_direction" value="desc" />	
 					<input type="hidden" name="category_uid" value="{{ request()->category_uid }}" />
-					<label class="font-weight-semibold mr-2">From</label>
-					<select class="select" name="from">
-						<option value="all" selected='selected'>{{ trans('messages.all') }}</option>
-						<option {{ request()->from == 'mine' ? 'selected' : '' }} value="mine">{{ trans('messages.my_templates') }}</option>
-						<option value="gallery">{{ trans('messages.gallery') }}</option>
-					</select>	
-				</div>
+					<input type="hidden" name="from" value="{{ request()->from }}" />
+					<input type="text" name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
+					<span class="material-icons-round">
+search
+</span>
+				</span>
 			</div>
 			<div class="template-list ajax-list">
 				
@@ -42,16 +43,8 @@
 				'uid' => $automation->uid,
 				'email_uid' => $email->uid,
 			]) }}',
-            container: $('.template-list'),
-            content: $('.template-list'),
-            data: function() {
-                return {
-                    from: $('[name=from]').val(),
-					sort_direction: 'asc',
-					sort_order: 'id',
-                    per_page: 12
-                };
-            }
+            container: $('.template-list-container'),
+            content: $('.template-list')
         });
 		
 		listTheme.load();
