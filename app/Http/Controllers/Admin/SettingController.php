@@ -9,6 +9,7 @@ use Acelle\Library\ExtendedSwiftMessage;
 use Illuminate\Support\Facades\Log;
 use Acelle\Model\Setting;
 use Acelle\Model\Language;
+use Acelle\Model\Template;
 use Illuminate\Support\Facades\Session;
 use Acelle\Helpers\LicenseHelper;
 use App;
@@ -505,13 +506,7 @@ class SettingController extends Controller
      */
     public function upgrade(Request $request)
     {
-        // @todo: workaround only, update translation files after successfully upgraded
-        if (Session::has('alert-success')) {
-            Language::dump();
-        }
-
         Log::info('Going to @upgrade page');
-
         // secret key to send to the verification server
         session(['secret' => $request->input('secret')]);
 
@@ -552,7 +547,11 @@ class SettingController extends Controller
             // REFRESH by redirecting to an entirely new page
             // Then make a new request from browser to load new config
             // A normal redirect() will retain the current setting
-            $pageUrl = action('Controller@runMigration');
+
+            // Do not use action('...'), the route may not exist yet
+            //     $pageUrl = action('Admin\Upgrade@migrate');
+            // Use route()
+            $pageUrl = url('/admin/upgrade/finalize');
             echo '<html>
                 <head>
                     <meta http-equiv="refresh" content="3;'.$pageUrl.'" />

@@ -111,7 +111,7 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
     Route::get('/demo/go/{view}', 'Controller@demoGo');
     Route::get('/autologin/{api_token}', 'Controller@autoLogin');
     Route::get('/reload/cache', 'Controller@reloadCache');
-    Route::get('/migrate/run', 'Controller@runMigration');
+    Route::get('/migrate/run', 'Admin\Upgrade@migrate');
     Route::post('/remote-job/{remote_job_token}', 'Controller@remoteJob');
 
     //Subscriber avatar
@@ -901,5 +901,5 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::post('admin/geoip/reset', 'GeoIpController@reset');
 
     // Update
-    Route::get('admin/upgrade/translation', 'Upgrade@updateTranslationFiles');
+    Route::get('admin/upgrade/finalize', 'Upgrade@finalize');
 });
