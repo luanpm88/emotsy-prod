@@ -569,7 +569,7 @@ class Email extends Model
         //       <a href="{BUNSUBSCRIBE_URL}"
         // become
         //       <a href="%7BUNSUBSCRIBE_URL%7D"
-        $body = inlineHtml($body);
+        $body = inlineHtml($body, $this->template->findCssFiles());
 
         return $body;
     }

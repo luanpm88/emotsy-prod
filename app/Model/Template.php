@@ -34,6 +34,7 @@ use Illuminate\Validation\ValidationException;
 use KubAT\PhpSimple\HtmlDomParser;
 use Acelle\Library\Tool;
 use Acelle\Library\StringHelper;
+use DOMDocument;
 use File;
 
 class Template extends Model
@@ -251,12 +252,21 @@ class Template extends Model
     {
         $copy = new self();
 
-        // Copy attributes
-        $copy->content = $this->content;
+        // UID must be present in order to create directory and to transformURL
+        $copy->generateUid();
+
+        // Copy content
+        // The two steps below are important
+        // First: convert $this' asset base URL to relative URL (for assets)
+        // Then: transform relative URLS for $copy
+        $copy->content = $this->getContentWithUntransformedAssetsUrls();
+        $copy->transformAssetsUrls();
+
+        // Copy flags
         $copy->builder = $this->builder;
+        $copy->is_default = false; // no longer default
 
         // Overwrite attributes :name
-        $copy->generateUid();  // UID must be present in order to create directory
         $copy->name = isset($attributes['name']) ? $attributes['name'] : $this->name;
 
         // IMPORTANT
@@ -291,8 +301,6 @@ class Template extends Model
 
         // try to find the main file, index.html | index.html | file_name.html | ...
         $indexFile = null;
-        $thumb = null;
-        $sub_path = '';
 
         // find index
         $possible_indexFile_names = array('index.html', 'index.htm');
@@ -327,8 +335,13 @@ class Template extends Model
         // read main file content
         $html_content = trim(file_get_contents($indexFile));
         $this->content = $html_content;
+        $this->transformAssetsUrls();
+        $this->save(); // already save
+
+        // copy template folder
         Tool::xcopy($directory, $this->getStoragePath());
-        $this->transformAssetsUrls(); // already save
+
+        // return newly created template
         return $this;
     }
 
@@ -499,10 +512,109 @@ class Template extends Model
         }
     }
 
+    public function findCssFiles()
+    {
+        // IMPORTANT
+        // + No external CSS
+        // + Only CSS in the template folder is considered
+        $files = [];
+
+        $document = new DOMDocument();
+        $document->loadHTML($this->content, LIBXML_NOWARNING | LIBXML_NOERROR);
+        $links = $document->getElementsByTagName('link');
+        foreach($links as $link) {
+            $href = $link->getAttribute('href');
+            if (!empty($href)) {
+                $path = $this->getAssetFileFromUrl($href);
+                if ($path) {
+                    $files[] = $path;
+                }
+            }
+        }
+        return $files;
+    }
+
+    // Important: url must have a leading slash
+    // Like: '/assets/path/file.jpg'
+    // Or: '/subdirectory/assets/path/file.jpg'
+    public function getAssetFileFromUrl($url)
+    {
+        // To remove query string if any like ?search=abc
+        // For example
+        //     parse_url('/assets/path/file.jpg?id=320943&search=', PHP_URL_PATH)
+        // Returns
+        //     /assets/path/file.jpg
+        $url = parse_url($url, PHP_URL_PATH);
+
+        // Clean up subdirectory, leaving the url as '/assets/path/file.jpg' only
+        $subdirectory = \Acelle\Helpers\getAppSubdirectory();
+        if ($subdirectory) {
+            // Make sure $subdirectory looks like '/subdir' ==> with a leading slash but without trailing one
+            $subdirectory = rtrim(join_paths('/', $subdirectory), '/');
+
+            // Remove subdirectory of URL
+            $url = str_replace($subdirectory, '', $url);
+        }
+
+        // preg_match('/\/assets\/(?<dirname>[^\/]+)\/(?<basename>[^\/]+)/', '/assets/dir/file.jpg', $match);
+        if (strpos($url, '/assets/') === 0) {
+            list($prefix, $dirname, $basename) = array_values(array_filter(explode('/', $url)));
+            $dirname = StringHelper::base64UrlDecode($dirname);
+            $absPath = storage_path(join_paths($dirname, $basename));
+
+            return $absPath;
+        } else {
+            return null;
+        }
+
+    }
+
+    public function extractAssetRelativePath($absPath)
+    {
+        $myPath = $this->getStoragePath('/');
+
+        if (strpos($absPath, $myPath) !== 0) {
+            return null;
+        }
+
+        $relativePath = trim(str_replace($myPath, '', $absPath), '/');
+        return empty($relativePath) ? null : $relativePath;
+    }
+
+    public function getContentWithUntransformedAssetsUrls()
+    {
+        // Replace #1
+        return StringHelper::transformUrls($this->content, function ($url) {
+            if (parse_url($url, PHP_URL_HOST) === false) {
+                // if url is invalid
+                return $url;
+            }
+
+            if (!is_null(parse_url($url, PHP_URL_HOST))) {
+                // url is with a host like "http://" or "//"
+                return $url;
+            }
+
+            if (strpos($url, '/') === 0) {
+                $relativePath = $this->extractAssetRelativePath($this->getAssetFileFromUrl($url));
+                if ($relativePath) {
+                    return $relativePath;
+                } else {
+                    return $url;
+                }
+            } elseif (strpos($url, 'data:') === 0) {
+                // base64 image. Like: "data:image/png;base64,iVBOR"
+                return $url;
+            } else {
+                // URL is a relative path like "images/banner.jpg"
+                return $url;
+            }
+        });
+    }
+
     public function transformAssetsUrls()
     {
         $this->content = $this->getContentWithTransformedAssetsUrls();
-        return $this->save();
     }
 
     /**
@@ -847,6 +959,7 @@ class Template extends Model
     {
         // DELTEE categories
         TemplateCategory::query()->delete();
+        self::default()->delete();
 
         // CREATE Cateogries again
         $categoryBasic = TemplateCategory::create(['name' => 'Basic']);

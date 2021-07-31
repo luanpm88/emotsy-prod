@@ -751,27 +751,16 @@ function cursorIterate($query, $orderBy, $size, $callback)
  *
  * @todo not very OOP here, consider moving this to a Helper instead
 */
-function inlineHtml($html)
+function inlineHtml($html, array $cssFiles)
 {
     // disable warning when parsing html content
     libxml_use_internal_errors(true);
 
     $htmldoc = new InlineStyle($html);
 
-    $doc = new \DOMDocument();
-    $doc->loadHTML($html);
-    $domcss = $doc->getElementsByTagName('link');
-    foreach ($domcss as $node) {
-        $arrContextOptions=array(
-            "ssl"=>array(
-                "verify_peer"=>false,
-                "verify_peer_name"=>false,
-            ),
-        );
-        
-        $response = file_get_contents($node->getAttribute('href'), false, stream_context_create($arrContextOptions));
-
-        $htmldoc->applyStylesheet($response);
+    foreach ($cssFiles as $file) {
+        $styles = file_get_contents($file);
+        $htmldoc->applyStylesheet($styles);
     }
 
     return $htmldoc->getHTML();
