@@ -56,5 +56,4 @@ class Upgrade extends Controller
             echo "Migration done! Redirecting...<meta http-equiv=\"refresh\" content=\"5;URL='".url('/')."'\" />";
         }
     }
-
 }

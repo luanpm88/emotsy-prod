@@ -369,14 +369,14 @@ class StringHelper
     {
         $document = new DOMDocument();
         $document->encoding = 'utf-8';
-        $document->loadHTML(mb_convert_encoding($content,'HTML-ENTITIES','UTF-8'), LIBXML_NOWARNING | LIBXML_NOERROR | LIBXML_HTML_NODEFDTD);
+        $document->loadHTML(mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'), LIBXML_NOWARNING | LIBXML_NOERROR | LIBXML_HTML_NODEFDTD);
 
         $replace = [
             'img' => 'src',
             'link' => 'href',
         ];
 
-        foreach($replace as $tag => $attribute) {
+        foreach ($replace as $tag => $attribute) {
             $elements = $document->getElementsByTagName($tag);
             foreach ($elements as $element) {
                 $url = trim($element->getAttribute($attribute));
@@ -423,9 +423,10 @@ class StringHelper
         return $newName;
     }
 
-    public static function transformUrlsFromAnyText(string $content, Closure $callback) {
-        preg_match_all( '/(href|src)=["\']([^("|\')]*)/i', $content, $matches );
-        foreach($matches[2] as $url) {
+    public static function transformUrlsFromAnyText(string $content, Closure $callback)
+    {
+        preg_match_all('/(href|src)=["\']([^("|\')]*)/i', $content, $matches);
+        foreach ($matches[2] as $url) {
             if (strpos($url, 'data:') !== 0 && strpos($url, 'http') !== 0 && strpos($url, '/') !== 0) {
                 $content = str_replace(
                     $url,
