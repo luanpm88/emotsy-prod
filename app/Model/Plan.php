@@ -115,7 +115,7 @@ class Plan extends Model
 
         $options = self::defaultOptions();
         foreach ($options as $type => $option) {
-            if ($type != 'sending_server_subaccount_uid' && !in_array($type, ['plain_text_footer', 'html_footer'])) {
+            if ($type != 'sending_server_subaccount_uid' && !in_array($type, ['plain_text_footer', 'html_footer', 'bounce_rate_theshold'])) {
                 $rules['options']['plan.options.'.$type] = 'sometimes|required';
             }
         }
@@ -984,8 +984,6 @@ class Plan extends Model
      */
     public function saveAll($request)
     {
-        $oldPlan = $this->replicate();
-
         $this->fillAll($request);
 
         $validator = $this->validate($request);
