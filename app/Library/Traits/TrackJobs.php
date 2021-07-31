@@ -109,7 +109,7 @@ trait TrackJobs
                     $closure($job, $monitor);
                 }
             }
-        })->dispatch();
+        })->onQueue('batch')->dispatch();
 
         $monitor->batch_id = $batch->id;
         $monitor->save();
