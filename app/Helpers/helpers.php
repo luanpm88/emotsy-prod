@@ -540,9 +540,16 @@ function format_number($number)
  *
  * @return string
  */
-function format_price($price, $format = '{PRICE}')
+function format_price($price, $format = '{PRICE}', $html=false)
 {
-    return str_replace('{PRICE}', format_number($price), $format);
+    if ($html) {
+        $html = str_replace('{PRICE}', ' <span class="p-amount">' . format_number($price) . '</span> ', $format);
+        // $html = str_replace(format_number($price), ' <span class="p-amount">' . format_number($price) . '</span> ', $html);
+        return $html;
+    } else {
+        return str_replace('{PRICE}', format_number($price), $format);
+    }
+    
 }
 
 /**

@@ -3733,4 +3733,12 @@
   'invoice.price' => 'Price',
   'invoice.cancel' => 'Cancel',
   'copy_plan' => 'Copy plan',
+  'subscription.secure_checkout' => 'ACELLE SECURE CHECKOUT',
+  'subscription.choose_plan.title' => 'Choose a plan',
+  'subscription.choose_plan.subtitle' => 'You need to subscribe to a plan in order to
+    experience the application.',
+  'subscription.billing_information.title' => 'Billing information',
+  'subscription.billing_information.subtitle' => 'Enter your billing information here and click next',
+  'subscription.payment_method.title' => 'Payment method',
+  'subscription.payment_method.subtitle' => 'Choose your preferred payment method',
 ) ?>

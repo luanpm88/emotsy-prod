@@ -185,6 +185,9 @@ Route::group(['middleware' => ['not_installed', 'auth']], function () {
 });
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function () {
+    // New subscription
+    Route::get('account/subscription', 'SubscriptionController@index');
+
     // Account subscription
     Route::post('subscription/invoice/{invoice_uid}/confirm', 'AccountSubscriptionController@confirmFree');
     Route::post('subscription/invoice/{invoice_uid}/cancel', 'AccountSubscriptionController@cancelInvoice');
