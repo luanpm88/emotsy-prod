@@ -374,11 +374,15 @@ class Invoice extends Model
                 $chargeInfo = trans('messages.bill.charge_before', [
                     'date' => \Acelle\Library\Tool::formatDate($subscription->current_period_ends_at),
                 ]);
+                $plan = $subscription->plan;
                 break;
             case self::TYPE_NEW_SUBSCRIPTION:
+                $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
                 $chargeInfo = trans('messages.bill.charge_now');
+                $plan = $subscription->plan;
                 break;
             case self::TYPE_CHANGE_PLAN:
+                $plan = \Acelle\Model\Plan::findByUid($data['new_plan_uid']);
                 $chargeInfo = trans('messages.bill.charge_now');
                 break;
             default:
@@ -402,6 +406,7 @@ class Invoice extends Model
             'pending' => $this->getPendingTransaction(),
             'invoice_uid' => $this->uid,
             'type' => $this->type,
+            'plan' => $plan,
         ];
     }
 

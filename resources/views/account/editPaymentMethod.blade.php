@@ -15,27 +15,29 @@
 
         <div class="sub-section mb-30 choose-payment-methods">      
             @foreach(Acelle\Library\Facades\Billing::getEnabledPaymentGateways() as $gateway)
-                <div class="d-flex p-3 choose-payment choose-payment-{{ $gateway->getType() }}">
-                    <div class="text-end pl-2 pr-2">
-                        <div class="d-flex align-items-center form-group-mb-0 pt-1" style="width: 30px">
-                            @include('helpers.form_control', [
-                                'type' => 'radio2',
-                                'name' => 'payment_method',
-                                'value' => request()->user()->customer->getPreferredPaymentGateway() ? request()->user()->customer->getPreferredPaymentGateway()->getType() : '',
-                                'label' => '',
-                                'help_class' => 'setting',
-                                'rules' => ['payment_method' => 'required'],
-                                'options' => [
-                                    ['value' => $gateway->getType(), 'text' => ''],
-                                ],
-                            ])
-                            <div class="check"></div>
+                <div class="choose-payment-method">
+                    <div class="d-flex p-3 choose-payment choose-payment-{{ $gateway->getType() }}">
+                        <div class="text-end pl-2 pr-2">
+                            <div class="d-flex align-items-center form-group-mb-0 pt-1" style="width: 30px">
+                                @include('helpers.form_control', [
+                                    'type' => 'radio2',
+                                    'name' => 'payment_method',
+                                    'value' => request()->user()->customer->getPreferredPaymentGateway() ? request()->user()->customer->getPreferredPaymentGateway()->getType() : '',
+                                    'label' => '',
+                                    'help_class' => 'setting',
+                                    'rules' => ['payment_method' => 'required'],
+                                    'options' => [
+                                        ['value' => $gateway->getType(), 'text' => ''],
+                                    ],
+                                ])
+                                <div class="check"></div>
+                            </div>
                         </div>
+                        <div class="mr-auto pr-4">
+                            <h4 class="font-weight-semibold mb-1">{{ $gateway->getName() }}</h4>
+                            <p class="mb-3">{{ trans('messages.'.$gateway->getType().'.user.description') }}</p>
+                        </div>                        
                     </div>
-                    <div class="mr-auto pr-4">
-                        <h4 class="font-weight-semibold mb-1">{{ $gateway->getName() }}</h4>
-                        <p class="mb-3">{{ trans('messages.'.$gateway->getType().'.user.description') }}</p>
-                    </div>                        
                 </div>
             @endforeach
         </div>
@@ -57,35 +59,61 @@
     </form>
 
     <script>
-        $('.edit-payment').on('submit', function(e) {
-            if (!$('.choose-payment-methods>div [type=radio]:checked').length) {
-                e.preventDefault();
+        $(function() {
+            $('.edit-payment').on('submit', function(e) {
+                if (!$('.choose-payment-methods>div [type=radio]:checked').length) {
+                    e.preventDefault();
 
-                swal({
-                    title: '{{ trans('messages.subscription.no_payment_method_selected') }}',
-                    text: "",
-                    confirmButtonColor: "#00695C",
-                    type: "error",
-                    allowOutsideClick: true,
-                    confirmButtonText: LANG_OK,
-                    customClass: "swl-success",
-                    html: true
+                    new Dialog('alert', {
+                        message: '{{ trans('messages.subscription.no_payment_method_selected') }}',
+                        title: "{{ trans('messages.notify.error') }}"
+                    });
+                }
+            });
+
+            var manager = new GroupManager();
+
+            $('.choose-payment-methods .choose-payment-method').each(function() {
+                manager.add({
+                    radio: $(this).find('input[name=payment_method]'),
+                    box: $(this)
                 });
-            }                
+            });
+
+            manager.bind(function(group, others) {
+                var doCheck = function() {
+                    var checked = group.radio.is(':checked');
+                    
+                    if (checked) {
+                        others.forEach(function(other) {
+                            other.box.removeClass("current");
+                        });
+                        group.box.addClass("current");
+                    } else {
+                        group.box.removeClass("current");
+                    }
+                };
+
+                group.radio.on('change', function() {
+                    doCheck();
+                });
+
+                group.box.on('click', function() {
+                    group.radio.prop('checked', true);
+
+                    doCheck();
+                });
+
+                doCheck();
+            });
+
+            // 
+            $('.other-payment-click').on('click', function() {
+                $('.edit-payment').show();
+                $('.current_payment').hide();
+                $(this).hide();
+            });
         });
-
-        $('.choose-payment-methods>div').on('click', function() {
-            $(this).find('[type=radio]').prop('checked', true);
-
-            $('.choose-payment-methods>div').removeClass('current');
-            $('.choose-payment-methods>div [type=radio]:checked').closest('.choose-payment').addClass('current');
-        });
-
-        $('.choose-payment-methods>div').removeClass('current');
-        $('.choose-payment-methods>div [type=radio]:checked').closest('.choose-payment').addClass('current');        
-
-        if ($('.choose-payment-methods>div [type=radio]').length == 1) {
-            $('.choose-payment-methods>div').first().click();
-        }
+        
     </script>
 @endsection

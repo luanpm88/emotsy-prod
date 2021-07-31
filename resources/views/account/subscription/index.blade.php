@@ -116,7 +116,7 @@
 
                     @if (\Auth::user()->customer->can('cancelNow', $subscription))
                         <a link-method="POST" link-confirm="{{ trans('messages.subscription.cancel_now.confirm') }}"
-                            href="{{ action('AccountSubscriptionController@cancelNow') }}"
+                            href="{{ action('SubscriptionController@cancelNow') }}"
                             class="btn btn-danger mr-10"
                         >
                             {{ trans('messages.subscription.cancel_now') }}

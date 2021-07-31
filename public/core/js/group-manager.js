@@ -3,9 +3,23 @@ class GroupManager {
         this.groups = [];
     }
 
-    bind(action) {
+    getOtherGroups(theGroup) {
+        var others = [];
         this.groups.forEach(function(group) {
-            action(group);
+            if (group != theGroup) {
+                others.push(group);
+            }
+        });
+
+        return others;
+    }
+
+    bind(action, otherGroups) {
+        var _this = this;
+
+        this.groups.forEach(function(group) {
+            var otherGroups = _this.getOtherGroups();
+            action(group, otherGroups);
         });
     }
 

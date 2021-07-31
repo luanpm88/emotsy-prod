@@ -10,14 +10,12 @@
         <button class="navbar-toggler" role="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-
         @php			
             $iconDir = "";
             if (Auth::user()->customer->getColorScheme() == 'white') {
                 $iconDir = "dark/";
             }
         @endphp
-
         <div class="collapse navbar-collapse" id="navbarsExample04">
             <ul class="navbar-nav me-auto mb-md-0">
                 <li class="nav-item" rel0="HomeController">

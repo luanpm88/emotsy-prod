@@ -45,7 +45,7 @@ class SubscriptionController extends Controller
         if ($subscription->isNew()) {
             $invoice = $subscription->getItsOnlyUnpaidInitInvoice();
 
-            return redirect()->action('AccountSubscriptionController@payment', [
+            return redirect()->action('SubscriptionController@payment', [
                 'invoice_uid' => $invoice->uid,
             ]);
         }
@@ -72,25 +72,38 @@ class SubscriptionController extends Controller
         }
 
         // Check if subscriotion is new
-        return redirect()->action('AccountSubscriptionController@index');
+        return redirect()->action('SubscriptionController@index');
     }
 
-    /**
-     * Checkout payment.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     **/
-    public function checkout(Request $request)
+    public function payment(Request $request)
     {
+        // Get current customer
         $customer = $request->user()->customer;
-        $subscription = $customer->subscription;
-        $gateway = $customer->getPreferredPaymentGateway();
-        $invoice = $subscription->getUnpaidInvoice();
 
-        // redirect to service checkout
-        return redirect()->away($gateway->getCheckoutUrl($invoice));
+        // get invoice
+        $invoice = $customer->invoices()->where('uid', '=', $request->invoice_uid)->first();
+
+        if (!$invoice || !$invoice->isNew()) {
+            return redirect()->action('SubscriptionController@index');
+        }
+
+        if ($invoice->isNew()) {
+            if ($invoice->getPendingTransaction()) {
+                return view('subscription.pending', [
+                    'invoice' => $invoice,
+                ]);
+            } else {
+                if ($invoice->isFree()) {
+                    return view('subscription.confirmFree', [
+                        'invoice' => $invoice,
+                    ]);
+                } else {
+                    return view('subscription.payment', [
+                        'invoice' => $invoice,
+                    ]);
+                }
+            }
+        }
     }
 
     public function confirmFree(Request $request)
@@ -105,46 +118,36 @@ class SubscriptionController extends Controller
         $invoice->confirmWithoutPayment();
 
         $request->session()->flash('alert-success', trans('messages.invoice.confirmed'));
-        return redirect()->action('AccountSubscriptionController@index');
+        return redirect()->action('SubscriptionController@index');
     }
 
-    /**
-     * Invoice payment.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     **/
-    public function payment(Request $request)
+    public function cancelInvoice(Request $request, $uid)
     {
-        // Get current customer
-        $customer = $request->user()->customer;
+        $invoice = \Acelle\Model\Invoice::findByUid($uid);
 
-        // get invoice
-        $invoice = $customer->invoices()->where('uid', '=', $request->invoice_uid)->first();
-
-        if (!$invoice || !$invoice->isNew()) {
-            return redirect()->action('AccountSubscriptionController@index');
+        if (!$request->user()->customer->can('delete', $invoice)) {
+            return $this->notAuthorized();
         }
 
-        if ($invoice->isNew()) {
-            if ($invoice->getPendingTransaction()) {
-                return view('account.subscription.pending', [
-                    'invoice' => $invoice,
-                ]);
-            } else {
-                if ($invoice->isFree()) {
-                    return view('account.subscription.confirmFree', [
-                        'invoice' => $invoice,
-                    ]);
-                } else {
-                    return view('account.subscription.payment', [
-                        'invoice' => $invoice,
-                    ]);
-                }
-            }
-        }
+        $invoice->cancel();
+
+        // Redirect to my subscription page
+        $request->session()->flash('alert-success', trans('messages.invoice.cancelled'));
+        return redirect()->action('SubscriptionController@index');
     }
+    
+    public function checkout(Request $request)
+    {
+        $customer = $request->user()->customer;
+        $subscription = $customer->subscription;
+        $gateway = $customer->getPreferredPaymentGateway();
+        $invoice = $subscription->getUnpaidInvoice();
+
+        // redirect to service checkout
+        return redirect()->away($gateway->getCheckoutUrl($invoice));
+    }
+
+    
     
     /**
      * Change plan.
@@ -178,7 +181,7 @@ class SubscriptionController extends Controller
             }
 
             // return to subscription
-            return redirect()->action('AccountSubscriptionController@payment', [
+            return redirect()->action('SubscriptionController@payment', [
                 'invoice_uid' => $changePlanInvoice->uid,
             ]);
         }
@@ -210,28 +213,7 @@ class SubscriptionController extends Controller
         $request->session()->flash('alert-success', trans('messages.subscription.cancelled'));
         return redirect()->action('AccountSubscriptionController@index');
     }
-
-    /**
-     * Cancel subscription at the end of current period.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function cancelInvoice(Request $request, $uid)
-    {
-        $invoice = \Acelle\Model\Invoice::findByUid($uid);
-
-        if (!$request->user()->customer->can('delete', $invoice)) {
-            return $this->notAuthorized();
-        }
-
-        $invoice->cancel();
-
-        // Redirect to my subscription page
-        $request->session()->flash('alert-success', trans('messages.invoice.cancelled'));
-        return redirect()->action('AccountSubscriptionController@index');
-    }
+    
 
     /**
      * Cancel subscription at the end of current period.
@@ -272,6 +254,6 @@ class SubscriptionController extends Controller
 
         // Redirect to my subscription page
         $request->session()->flash('alert-success', trans('messages.subscription.cancelled_now'));
-        return redirect()->action('AccountSubscriptionController@index');
+        return redirect()->action('SubscriptionController@index');
     }
 }

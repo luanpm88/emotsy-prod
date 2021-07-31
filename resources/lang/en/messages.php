@@ -2469,6 +2469,8 @@
   'payment.proceed_with_payment' => 'Proceed with Payment',
   'payment.agree_service_intro' => 'By clicking the <strong><i>Proceed with payment</i></strong> button,
     you agree to our <i>Term of Use</i> and <i>Privacy Policy</i>.',
+  'payment.agree_service_intro.free' => 'By clicking the <strong><i>Get started</i></strong> button,
+    you agree to our <i>Term of Use</i> and <i>Privacy Policy</i>.',
   'payment.agree_service_intro.no_plan' => 'By clicking the <strong><i>Proceed with payment</i></strong> button,
     you agree to our <i>Term of Use</i> and <i>Privacy Policy</i>.',
   'plan.review' => 'Plan review',
@@ -3741,4 +3743,12 @@
   'subscription.billing_information.subtitle' => 'Enter your billing information here and click next',
   'subscription.payment_method.title' => 'Payment method',
   'subscription.payment_method.subtitle' => 'Choose your preferred payment method',
+  'suscription.order_empty' => 'Choose one of the plans available and your
+    invoice details will be calculated and
+    display here',
+  'subscription.free_confirm.title' => 'Completed',
+  'subscription.free_confirm.subtitle' => 'Thank you for subscribing to our SAAS.',
+  'subscription.plan_chosen' => 'You have chosen :plan plan',
+  'subscription.checkout' => 'Checkout',
+  'subscription.payment_method.is_free' => 'The plan is FREE. You can get started now without payment',
 ) ?>

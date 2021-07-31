@@ -1,12 +1,17 @@
-@if (!$bill)
-    
-@else
-    <div class="upcoming-bill-box">
-        <div class="header">
-            <h4 class="mt-0 font-weight-semibold mb-1">{{ $bill['title'] }}</h4>
-            <div class="m-0">{!! $bill['description'] !!}</div>        
+@if ($bill)
+    <div class="card">
+        <div class="card-header py-3">
+            <div class="d-flex align-items-center">
+                <div>
+                    <h5 class="fw-600 mb-0 fs-6 text-start">
+                        {{ $bill['title'] }}
+                    </h5>
+                    <p class="m-0 text-muted">{!! $bill['description'] !!}</p>
+                </div>
+            </div>
+                
         </div>
-        <div class="body">
+        <div class="card-body">
             <div>
                 @foreach ($bill['bill'] as $item)
                     <div class="bill_item d-flex">
@@ -39,7 +44,7 @@
             @if ($bill['pending'])
                 <hr>
                 <div class="text-right">
-                    <a href="{{ action('AccountSubscriptionController@payment', [
+                    <a href="{{ action('SubscriptionController@payment', [
                         'invoice_uid' => $bill['invoice_uid'],
                     ]) }}" class="btn btn-warning button-loading full-width pr-20" style="pointer-events: auto;opacity:0.9">
                         {{ trans('messages.invoice.payment_is_being_verified') }}
@@ -49,7 +54,7 @@
             @elseif (isset($payButton) && !\Auth::user()->customer->preferredPaymentGatewayCanAutoCharge())
                 <hr>
                 <div class="text-left">
-                    <a href="{{ action('AccountSubscriptionController@payment', [
+                    <a href="{{ action('SubscriptionController@payment', [
                         'invoice_uid' => $bill['invoice_uid'],
                     ]) }}" class="btn btn-secondary">
                         {{ trans('messages.invoice.pay_now') }}

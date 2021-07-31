@@ -1,3 +1,9 @@
+@php			
+	$iconDir = "";
+	if (Auth::user()->customer->getColorScheme() == 'white') {
+		$iconDir = "dark/";
+	}
+@endphp
 <li class="nav-item dropdown">
 	<a href="{{ action('TemplateController@index') }}" class="nav-link d-flex align-items-center py-3 lvl-1 dropdown-toggle" id="content-menu" data-bs-toggle="dropdown" aria-expanded="false">
 		<i class="navbar-icon me-1">

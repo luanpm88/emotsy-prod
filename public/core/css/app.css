@@ -8,6 +8,9 @@
 .h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
     margin-bottom: .7rem;
 }
+.fs-6 {
+    font-size: 1.05rem!important;
+}
 input::-ms-reveal,
 input::-ms-clear {
 display: none;
@@ -338,7 +341,7 @@ h3 {
     color: inherit!important;
 }
 .text-muted2 {
-    opacity: 0.7;
+    opacity: 0.6;
 }
 .navbar-brand {
     padding: 14px 10px;
@@ -5738,19 +5741,17 @@ table.table-log tr th {
   align-items: center;
   margin-bottom: 5px;
 }
-.choose-payment-methods>div {
-  border-bottom: solid 1px #ddd;
-  cursor: pointer;
-  padding: 0 10px;
+.choose-payment-method {
+    border: solid 1px #ccc;
+    cursor: pointer;
+    padding: 3px 10px;
+    border-radius: 10px;
+    margin-bottom: .75rem;
+    background-color: rgba(0,0,0,0.02);
 }
-.choose-payment-methods>div:first-child {
-  border-top: solid 1px #ddd;
-}
-.choose-payment-methods>div:hover {
-  background-color: #f4f4f4;
-}
-.choose-payment-methods>div.current {
-  opacity: 1;
+.choose-payment-method:hover, .choose-payment-method.current {
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
+    background-color: #fff;
 }
 .tox:not([dir=rtl]) .tox-toolbar__group:not(:last-of-type) {
   border-right: none!important;
@@ -5849,6 +5850,7 @@ table.table-log tr th {
   font-size: 14px;
   color: #555;
   max-width: 500px;
+  padding-right: 40px;
 }
 .choose-payment-stripe h4 {
   color: transparent;
@@ -6248,7 +6250,7 @@ h1, h1 {
     white-space: normal;
 }
 .fix-drop-down {
-    max-height: calc(100vh - 100px);;
+    max-height: calc(100vh - 140px);;
     overflow: auto;
 }
 .log-menu-dropdown {
@@ -6400,6 +6402,7 @@ h1, h1 {
     transform: translateY(2px);
     margin-left: -32px;
     top: 17px;
+    word-wrap: initial;
 }
 
 .alert-info:before {
@@ -6816,11 +6819,13 @@ h3, h4 [class^="material-icons"] {
     color: #333;
     border: solid 1px transparent;
     transition: all 0.2s ease-in-out;
+    filter: grayscale(0.9);
 }
 .new-price-item:hover {
     background: #fff;
-    border: solid 1px #aaa;
+    border: solid 1px #ccc;
     box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+    filter: grayscale(0.0);
 }
 .new-price-item .header {
     
@@ -6844,7 +6849,11 @@ h3, h4 [class^="material-icons"] {
 }
 .new-price-item .time-box {
     padding: 5px 10px;
-    background-color: #dfdfdf;
+    background-color: #e5e5e5;
     font-weight: 600;
     border-radius: 10px;
+}
+.subscription-step.muted {
+    opacity: 0.8;
+    filter: grayscale(1);
 }
