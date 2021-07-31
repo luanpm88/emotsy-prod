@@ -5955,6 +5955,7 @@ table.table-log tr th {
 }
 .acelle-icon img {
   display: block;
+  width: 100%;
 }
 .d-flex {
   display: flex!important;
