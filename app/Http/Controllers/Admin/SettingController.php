@@ -551,7 +551,7 @@ class SettingController extends Controller
             // Do not use action('...'), the route may not exist yet
             //     $pageUrl = action('Admin\Upgrade@migrate');
             // Use route()
-            $pageUrl = url('/admin/upgrade/finalize');
+            $pageUrl = url('/migrate/run');
             echo '<html>
                 <head>
                     <meta http-equiv="refresh" content="3;'.$pageUrl.'" />

@@ -50,7 +50,7 @@ class Upgrade extends Controller
         Artisan::call('migrate', ['--force' => true]);
         sleep(3);
         if ($request->session()->has('upgraded')) {
-            $nextPage = action('Admin\Upgrade@finalize');
+            $nextPage = url('/admin/upgrade/finalize');
             echo "Finalization in progress...<meta http-equiv=\"refresh\" content=\"5;URL='".$nextPage."'\" />";
         } else {
             echo "Migration done! Redirecting...<meta http-equiv=\"refresh\" content=\"5;URL='".url('/')."'\" />";
