@@ -5,6 +5,10 @@
 @section('head')      
     <script type="text/javascript" src="{{ URL::asset('core/tinymce/tinymce.min.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('core/js/editor.js') }}"></script>
+
+    <!-- Dropzone -->
+	<script type="text/javascript" src="{{ URL::asset('core/dropzone/dropzone.js') }}"></script>
+	<link href="{{ URL::asset('core/dropzone/dropzone.css') }}" rel="stylesheet" type="text/css">
 @endsection
 
 @section('page_header')
@@ -27,7 +31,7 @@ forward_to_inbox
 
 @section('content')
     <div class="row">
-        <div class="col-md-8 mb-40">
+        <div class="col-md-8 mb-0">
             <h2 class="mt-0 mb-3">{{ trans('messages.campaign.content_management') }}</h2>
             <div class="sub-section d-flex">
                 <div class=" mr-auto pr-2">                    

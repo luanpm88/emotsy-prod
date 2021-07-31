@@ -12,7 +12,7 @@
 			@include('campaigns.template._tabs')
 			<div class="tab-content" id="pills-tabContent">
 				<div class="">
-					<div class="subsection pb-4">
+					<div class="subsection pb-3">
 						<h2 class="font-weight-semibold mb-0">
 							@if (request()->category_uid)
 								{{ Acelle\Model\TemplateCategory::findByUid(request()->category_uid)->name }}
@@ -20,34 +20,18 @@
 								{{ trans('messages.my_templates') }}
 							@endif
 						</h2>
-						<hr>
 
 						<div id="gallery" class="pb-4">
 							<div class="listing-form">				
-								<div class="row top-list-controls py-2">
+								<div class="row top-list-controls mt-0 py-2">
 									<div class="col-md-9">
-										<div class="filter-box">{{ request()->from }}
+										<div class="filter-box">
 											<span class="d-flex align-items-center mr-4">
-												<span class="title text-semibold text-muted mr-2">{{ trans('messages.sort_by') }}</span>
-												<select class="select mr-3" name="sort_order">
-													<option value="id">{{ trans('messages.default') }}</option>
-													<option value="created_at">{{ trans('messages.created_at') }}</option>
-													<option value="name">{{ trans('messages.name') }}</option>
-												</select>					
+												<input type="hidden" name="sort_order" value="id" />	
 												<input type="hidden" name="sort_direction" value="desc" />	
-												<input type="hidden" name="category_uid" value="{{ request()->category_uid }}" />				
-												<button class="btn btn-xs sort-direction mr-3 ml-2" rel="asc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
-													<span class="material-icons-outlined desc">
-sort
-</span>
-												</button>
-												<span class="title text-semibold text-muted mr-2">{{ trans('messages.from') }}</span>
-												<select class="select" name="from">
-													<option value="all" selected='selected'>{{ trans('messages.all') }}</option>
-													<option {{ request()->from == 'mine' ? 'selected' : '' }} value="mine">{{ trans('messages.my_templates') }}</option>
-													<option value="gallery">{{ trans('messages.gallery') }}</option>
-												</select>
-												<input name="keyword" style="margin-left: 15px" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
+												<input type="hidden" name="category_uid" value="{{ request()->category_uid }}" />
+												<input type="hidden" name="from" value="{{ request()->from }}" />
+												<input type="text" name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
 												<span class="material-icons-round">
 search
 </span>

@@ -591,15 +591,7 @@ label.switchery-double.checkbox-switchery {
   border: none;
   background: #333;
 }
-.dropzone {
-    border: 3px dashed rgba(0, 0, 0, 0.3) !important;
-    border-radius: 10px;
-}
-.dropzone.dz-clickable .dz-message, .dropzone.dz-clickable .dz-message * {
-    font-size: 20px;
-    color: rgba(0,0,0,0.4);
-    font-weight: 600;
-}
+
 .ui-pnotify.ui-pnotify-fade-in {
   z-index: 200000000000 !important;
 }

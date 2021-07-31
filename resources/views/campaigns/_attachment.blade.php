@@ -1,6 +1,3 @@
-<script type="text/javascript" src="{{ URL::asset('core/dropzone/js/dropzone.js') }}"></script>
-<link rel="stylesheet" type="text/css" href="{{ URL::asset('core/dropzone/css/dropzone.css') }}" />
-
 <div class="image_upload_div">
   <form action="{{ action('CampaignController@uploadAttachment', $campaign->uid) }}" class="dropzone">
      {{ csrf_field() }}
@@ -10,16 +7,16 @@
   <h3 class='mt-5'>{{ trans('messages.campaign.attached_files') }}<br/></h3>
 
   @if (!empty($campaign->getAttachments()))
-    <ul>
+    <ul class="ps-0">
       @foreach ($campaign->getAttachments() as $k=>$filename)
         @php
           $fileszie = formatSizeUnits(filesize($campaign->getAttachmentPath($filename)));
         @endphp
-        <li class="d-flex align-items-canter">
-          <div class="d-flex mr-auto">
-            <i class="material-icons-outlined fs-4 text-muted me-3">
-attach_file
-            </i>
+        <li class="d-flex align-items-canter py-2 border-top">
+          <div class="d-flex align-items-center mr-auto">
+            <span class="material-icons-outlined fs-4 text-muted me-3">
+              attach_email
+            </span>
             <span><name>{{ $filename }}</name><size>{{ trans('messages.campaign.attachment.file_size_is', ['size' => $fileszie]) }}</size></span> 
           </div>
           <div class="text-nowrap">
