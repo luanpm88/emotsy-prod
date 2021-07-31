@@ -65,11 +65,9 @@ sort
                             @endforeach
                         </select>
                     </span>
-                    <span class="filter-group">
+                    <span class="filter-group hide">
                         <select class="select" name="from">
                             <option value="all">{{ trans('messages.all') }}</option>
-                            <option value="mine" selected='selected'>{{ trans('messages.my_templates') }}</option>
-                            <option value="gallery">{{ trans('messages.gallery') }}</option>
                         </select>                                        
                     </span>
                     <span class="text-nowrap">
