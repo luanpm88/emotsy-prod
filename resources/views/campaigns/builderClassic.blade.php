@@ -6,7 +6,7 @@
 	<script type="text/javascript" src="{{ URL::asset('core/tinymce/tinymce.min.js') }}"></script>        
     <script type="text/javascript" src="{{ URL::asset('core/js/editor.js') }}"></script>
 
-    <script src="{{ URL::asset('assets2/js/UrlAutoFill.js') }}"></script>
+    <script src="{{ URL::asset('core/js/UrlAutoFill.js') }}"></script>
 @endsection
 
 @section('menu_title')
