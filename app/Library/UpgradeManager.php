@@ -545,8 +545,8 @@ class UpgradeManager
         // if the language files does not exist yet, just create it
         if (!file_exists($targetPath)) {
             $this->copy($sourcePath, $targetPath);
+        } else {
+            \Acelle\Helpers\updateTranslationFile($targetPath, $sourcePath, $overwrite = false);
         }
-
-        \Acelle\Helpers\updateTranslationFile($targetPath, $sourcePath, $overwrite = false);
     }
 }
