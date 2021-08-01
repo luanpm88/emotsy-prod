@@ -3751,4 +3751,5 @@
   'subscription.plan_chosen' => 'You have chosen :plan plan',
   'subscription.checkout' => 'Checkout',
   'subscription.payment_method.is_free' => 'The plan is FREE. You can get started now without payment',
+  'subscription.change_init_plan.confirm' => 'You are about to change to another plan!',
 ) ?>

@@ -26,7 +26,6 @@
                                 <p class="m-0 text-muted">{{ trans('messages.subscription.choose_plan.subtitle') }}</p>
                             </div>
                         </div>
-                            
                     </div>
                     <div class="card-body py-4" style="padding-left: 72px">
                         @if (empty($plans))
@@ -83,35 +82,9 @@
                     </div>
                 </div>
 
-                <div class="card mt-2 subscription-step muted">
-                    <div class="card-header py-3">
-                        <div class="d-flex align-items-center">
-                            <div class="me-3"><label class="subscription-step-number">2</label></div>
-                            <div>
-                                <h5 class="fw-600 mb-0 fs-6 text-start">
-                                    {{ trans('messages.subscription.billing_information.title') }}
-                                </h5>
-                                <p class="m-0 text-muted">{{ trans('messages.subscription.billing_information.subtitle') }}</p>
-                            </div>
-                        </div>
-                            
-                    </div>
-                </div>
+                @include('subscription._billingInformation')
 
-                <div class="card mt-2 subscription-step muted">
-                    <div class="card-header py-3">
-                        <div class="d-flex align-items-center">
-                            <div class="me-3"><label class="subscription-step-number">3</label></div>
-                            <div>
-                                <h5 class="fw-600 mb-0 fs-6 text-start">
-                                    {{ trans('messages.subscription.payment_method.title') }}
-                                </h5>
-                                <p class="m-0 text-muted">{{ trans('messages.subscription.payment_method.subtitle') }}</p>
-                            </div>
-                        </div>
-                            
-                    </div>
-                </div>
+                @include('subscription._paymentMethod')
             </div>
             <div class="col-md-4">
                 <div class="card mt-2">

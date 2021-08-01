@@ -24,7 +24,7 @@ class SubscriptionController extends Controller
         if (!$subscription ||
             $subscription->isEnded()
         ) {
-            return view('subscription.select_plan', [
+            return view('subscription.selectPlan', [
                 'plans' => Plan::getAvailablePlans(),
                 'subscription' => $subscription,
             ]);
@@ -72,7 +72,7 @@ class SubscriptionController extends Controller
         }
 
         // Check if subscriotion is new
-        return redirect()->action('SubscriptionController@index');
+        return redirect()->action('SubscriptionController@billingInformation');
     }
 
     public function payment(Request $request)
@@ -140,14 +140,59 @@ class SubscriptionController extends Controller
     {
         $customer = $request->user()->customer;
         $subscription = $customer->subscription;
-        $gateway = $customer->getPreferredPaymentGateway();
         $invoice = $subscription->getUnpaidInvoice();
 
+        $request->user()->customer->updatePaymentMethod([
+            'method' => $request->payment_method,
+        ]);
+
         // redirect to service checkout
-        return redirect()->away($gateway->getCheckoutUrl($invoice));
+        return redirect()->away($customer->getPreferredPaymentGateway()->getCheckoutUrl($invoice));
     }
 
-    
+    public function billingInformation(Request $request)
+    {
+        $customer = $request->user()->customer;
+        $subscription = $customer->subscription;
+        $invoice = $subscription->getUnpaidInvoice();
+        $billingAddress = $customer->getDefaultBillingAddress();
+
+        // has no address yet
+        if (!$billingAddress) {
+            $billingAddress = $customer->newBillingAddress();
+        }
+
+        // copy from contacy
+        if ($request->same_as_contact == 'true') {
+            $billingAddress->copyFromContact();
+        }
+
+        // Save posted data
+        if ($request->isMethod('post')) {
+            list($validator, $billingAddress) = $billingAddress->updateAll($request);
+            
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('subscription.billingInformation', [
+                    'billingAddress' => $billingAddress,
+                    'invoice' => $invoice,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            $request->session()->flash('alert-success', trans('messages.billing_address.updated'));
+
+            // return to subscription
+            return redirect()->action('SubscriptionController@payment', [
+                'invoice_uid' => $invoice->uid,
+            ]);
+        }
+
+        return view('subscription.billingInformation', [
+            'billingAddress' => $billingAddress,
+            'invoice' => $invoice,
+        ]);
+    }
     
     /**
      * Change plan.
@@ -177,7 +222,7 @@ class SubscriptionController extends Controller
                 $changePlanInvoice = $subscription->createChangePlanInvoice($newPlan);
             } catch (\Exception $e) {
                 $request->session()->flash('alert-error', $e->getMessage());
-                return redirect()->action('AccountSubscriptionController@index');
+                return redirect()->action('SubscriptionController@index');
             }
 
             // return to subscription
@@ -211,7 +256,7 @@ class SubscriptionController extends Controller
 
         // Redirect to my subscription page
         $request->session()->flash('alert-success', trans('messages.subscription.cancelled'));
-        return redirect()->action('AccountSubscriptionController@index');
+        return redirect()->action('SubscriptionController@index');
     }
     
 
@@ -233,7 +278,7 @@ class SubscriptionController extends Controller
 
         // Redirect to my subscription page
         $request->session()->flash('alert-success', trans('messages.subscription.resumed'));
-        return redirect()->action('AccountSubscriptionController@index');
+        return redirect()->action('SubscriptionController@index');
     }
     
     /**

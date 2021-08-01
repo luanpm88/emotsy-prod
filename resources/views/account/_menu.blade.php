@@ -27,10 +27,10 @@ credit_card
                     rel0="AccountController/subscription"
                     rel1="PaymentController"
                     rel2="AccountController/subscriptionNew"
-                    rel3="AccountSubscriptionController"
+                    rel3="SubscriptionController"
                     class="position-relative"
                 >
-                    <a href="{{ action("AccountSubscriptionController@index") }}" class="nav-link position-relative {{ isset($tab) && $tab == 'subscription' ? 'active' : '' }}">
+                    <a href="{{ action("SubscriptionController@index") }}" class="nav-link position-relative {{ isset($tab) && $tab == 'subscription' ? 'active' : '' }}">
                         <span class="material-icons-outlined">
 assignment
 </span> {{ trans('messages.subscription') }}

@@ -34,8 +34,8 @@
                 </a>
             </li>
         @endif
-        <li class="nav-item" rel0="AccountSubscriptionController/index">
-            <a href="{{ action('AccountSubscriptionController@index') }}" class="dropdown-item position-relative d-flex align-items-center">
+        <li class="nav-item" rel0="SubscriptionController/index">
+            <a href="{{ action('SubscriptionController@index') }}" class="dropdown-item position-relative d-flex align-items-center">
             <i class="navbar-icon mr-3">
                 <img src="{{ url('images/icons/'.$iconDir.'SVG/subscription.svg') }}" />
             </i>{{ trans('messages.subscriptions') }}

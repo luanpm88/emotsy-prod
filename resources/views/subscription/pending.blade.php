@@ -19,47 +19,9 @@
     <div class="container mt-4 mb-5">
         <div class="row">
             <div class="col-md-8">
-                <div class="card subscription-step muted">
-                    <div class="card-header py-3">
-                        <div class="d-flex align-items-center">
-                            <div class="me-3"><label class="subscription-step-number">1</label></div>
-                            <div>
-                                <h5 class="fw-600 mb-0 fs-6 text-start">
-                                    {{ trans('messages.subscription.plan_chosen', [
-                                        'plan' => $invoice->getBillingInfo()['plan']->name
-                                    ]) }}
-                                </h5>
-                                <p class="m-0 text-muted">{!! $invoice->getBillingInfo()['description'] !!}</p>
-                            </div>
-                            <div class="ms-auto">
-                                <span class="material-icons-outlined fs-4 text-success">
-                                    task_alt
-                                    </span>
-                            </div>
-                        </div>
-                            
-                    </div>
-                </div>
+                @include('subscription._selectPlan')
 
-                <div class="card mt-2 subscription-step muted">
-                    <div class="card-header py-3">
-                        <div class="d-flex align-items-center">
-                            <div class="me-3"><label class="subscription-step-number">2</label></div>
-                            <div>
-                                <h5 class="fw-600 mb-0 fs-6 text-start">
-                                    {{ trans('messages.subscription.billing_information.title') }}
-                                </h5>
-                                <p class="m-0 text-muted">{{ trans('messages.subscription.billing_information.subtitle') }}</p>
-                            </div>
-                            <div class="ms-auto">
-                                <span class="material-icons-outlined fs-4 text-success">
-                                    task_alt
-                                    </span>
-                            </div>
-                        </div>
-                            
-                    </div>
-                </div>
+                @include('subscription._billingInformation')
 
                 <div class="card mt-2 subscription-step">
                     <div class="card-header py-3">
@@ -92,6 +54,8 @@
                 @include('invoices.bill', [
                     'bill' => $invoice->getBillingInfo(),
                 ])
+
+                @include('subscription._checkout')
             </div>
         </div>
     </div>

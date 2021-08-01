@@ -1843,7 +1843,7 @@ class Customer extends Model
 
         $type = $meta['method'];
 
-        if (Billing::isGatewayTypeRegistered($type)) {
+        if ($type && Billing::isGatewayTypeRegistered($type)) {
             return Billing::getGateway($type);
         } else {
             // payment method was previously stored but it is dropped in the current version

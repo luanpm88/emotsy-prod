@@ -1,7 +1,7 @@
 @extends('layouts.popup.small')
 
 @section('title')
-    {{ trans('messages.edit_payment_method') }}
+    {{ trans('messages.billing_information') }}
 @endsection
 
 @section('content')

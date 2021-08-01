@@ -12,7 +12,7 @@
         <div class="alert alert-warning mt-20">
             <h4 class="ui-pnotify-title text-nowrap">
             {!! trans('messages.not_have_any_plan_notification', [
-                'link' => action('AccountSubscriptionController@index'),
+                'link' => action('SubscriptionController@index'),
             ]) !!}
             </h4>
             <div style="margin-top: 10px; clear: both; text-align: right; display: none;"></div>

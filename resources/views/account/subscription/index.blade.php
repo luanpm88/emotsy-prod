@@ -145,7 +145,7 @@
 
             <div class="mt-4">
                 @include('account._payment_info', [
-                    'redirect' => action('AccountSubscriptionController@index'),
+                    'redirect' => action('SubscriptionController@index'),
                 ])
             </div>
         </div>

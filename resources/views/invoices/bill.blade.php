@@ -62,7 +62,7 @@
 
                     @if ($bill['type'] == Acelle\Model\Invoice::TYPE_CHANGE_PLAN)
                         <a class="btn btn-link" link-method="POST" link-confirm="{{ trans('messages.invoice.cancel.confirm') }}"
-                            href="{{ action('AccountSubscriptionController@cancelInvoice', [
+                            href="{{ action('SubscriptionController@cancelInvoice', [
                                 'invoice_uid' => $bill['invoice_uid'],
                             ]) }}">
                             {{ trans('messages.invoice.cancel') }}
