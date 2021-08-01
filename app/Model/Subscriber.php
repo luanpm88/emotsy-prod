@@ -33,6 +33,7 @@ use DB;
 use Exception;
 use File;
 use Acelle\Library\Traits\HasUid;
+use Closure;
 
 class Subscriber extends Model
 {
@@ -682,25 +683,25 @@ class Subscriber extends Model
      *
      * @param MailList $list
      */
-    public function copy($list, $type = 'keep')
+    public function copy(MailList $list, Closure $duplicateCallback = null)
     {
         // find exists
         $copy = $list->subscribers()->where('email', '=', $this->email)->first();
 
-        if (!is_object($copy)) {
-            $copy = $this->replicate();
-            $copy->uid = uniqid();
-            $copy->mail_list_id = $list->id;
-            unset($copy->verify_result);
-            $copy->save();
+        if (!is_null($copy)) {
 
-            $copy = \Acelle\Model\Subscriber::find($copy->id);
-        } else {
-            // return if keep
-            if ($type == 'keep') {
-                return false;
+            if (!is_null($duplicateCallback)) {
+                $duplicateCallback($this);
             }
+
+            return null;
         }
+
+        // Actually copy
+        $copy = $this->replicate();
+        $copy->uid = uniqid();
+        $copy->mail_list_id = $list->id;
+        $copy->save();
 
         // update fields
         foreach ($this->subscriberFields as $item) {
@@ -719,15 +720,10 @@ class Subscriber extends Model
      *
      * @param MailList $list
      */
-    public function move($list, $type = 'keep')
+    public function move($list)
     {
-        $fromList = $this->mailList;
-        $this->copy($list, $type);
+        $this->copy($list);
         $this->delete();
-
-        // update related campaign cache information
-        $fromList->updateCachedInfo();
-        $list->updateCachedInfo();
     }
 
     /**
@@ -983,13 +979,10 @@ class Subscriber extends Model
     /**
      * Get tags.
      */
-    public function getTags()
+    public function getTags() : array
     {
-        if (!$this->tags) {
-            return [];
-        }
-
-        return json_decode($this->tags, true);
+        // Notice: json_decode() returns null if input is null or empty
+        return json_decode($this->tags, true) ?: [];
     }
 
     /**
@@ -1021,21 +1014,22 @@ class Subscriber extends Model
     /**
      * Add tags.
      */
-    public function updateTags($arr)
+    public function updateTags(array $newTags, $merge = false)
     {
-        if (!$arr) {
-            $arr = [];
-        }
-
         // remove trailing space
-        array_walk($arr, function (&$val) {
+        array_walk($newTags, function (&$val) {
             $val = trim($val);
         });
 
         // remove empty tag
-        $arr = array_filter($arr, function (&$val) {
+        $newTags = array_filter($newTags, function (&$val) {
             return !empty($val);
         });
+
+        if ($merge == true) {
+            $currentTags = $this->getTags();
+            $newTags = array_values(array_unique(array_merge($currentTags, $newTags)));
+        }
 
         // Without JSON_UNESCAPED_UNICODE specified
         // Results of json_encode(['русский']) may look like this
@@ -1044,7 +1038,7 @@ class Subscriber extends Model
         //
         // which cannot be searched for
         //
-        $this->tags = json_encode($arr, JSON_UNESCAPED_UNICODE);
+        $this->tags = json_encode($newTags, JSON_UNESCAPED_UNICODE);
         $this->save();
     }
 
