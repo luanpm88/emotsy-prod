@@ -1,4 +1,4 @@
-@extends('layouts.core.dark')
+@extends('layouts.core.backend_dark')
 
 @section('title', $language->name)
     

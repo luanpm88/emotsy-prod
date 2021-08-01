@@ -8,7 +8,7 @@
 	@yield('head')
 </head>
 <body class="layout-dark">
-	@include('layouts.core._menu_dark')
+	@include('layouts.core._menu_dark_backend')
 
     @yield('page_header')
 
@@ -20,7 +20,6 @@
 
 	<!-- Notification -->
 	@include('layouts.core._notify')
-	@include('layouts.core._notify_frontend')
 
 	<!-- display flash message -->
 	@include('layouts.core._flash')
