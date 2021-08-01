@@ -48,7 +48,7 @@
                     }
                     
                     if (parent.$('.listing-form').length) {
-                        TemplatesIndex.getList().load();
+                        parent.TemplatesIndex.getList().load();
                     } else {
                         window.location = '{{ action('Admin\TemplateController@index') }}';
                     }    

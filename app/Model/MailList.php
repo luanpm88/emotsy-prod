@@ -1883,7 +1883,9 @@ class MailList extends Model
             throw new \Exception(trans('messages.subscriber.blacklisted'));
         }
 
-        if ($this->subscribe_confirmation) {
+        if ($source == Subscriber::SUBSCRIPTION_TYPE_ADDED) {
+            $subscriber->status = 'subscribed';
+        } elseif ($this->subscribe_confirmation) {
             if ($subscriber->isSubscribed()) {
                 MailLog::info("Subscriber {$subscriber->email} already in the list");
             } else {
@@ -1912,7 +1914,7 @@ class MailList extends Model
         
         MailLog::info("Subscriber {$subscriber->email} is added to list {$this->name} via {$source}");
 
-        if ($this->subscribe_confirmation && !$subscriber->isSubscribed()) {
+        if ($this->subscribe_confirmation && !$subscriber->isSubscribed() && $source != Subscriber::SUBSCRIPTION_TYPE_ADDED) {
             MailLog::info("Send subscription confirmation email to {$subscriber->email}, list {$this->name}");
             $this->sendSubscriptionConfirmationEmail($subscriber);
         }

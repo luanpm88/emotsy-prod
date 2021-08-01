@@ -1960,8 +1960,6 @@
   'list.there_no_subaccount_sending_server' => '<span class="text-semibold">ERROR:</span> There are no active sending servers.',
   'embeded_form.show_invisible' => 'Show invisible field(s)',
   'paddle_card' => 'Paddle / Card',
-  'payment_method.paddle_card.button' => '<i class="icon-credit-card"></i> Pay with Paddle',
-  'paddle_card.pay_by_card' => '<i class="icon-credit-card"></i> Pay with Paddle',
   'paddle_card.purchasing_intro' => 'Please click the button below so we can setup your account for purchasing the <a><strong>:plan plan</strong></a> with the Pay by Card (Paddle) option
           . Your plan price is: <a><strong>:price</strong></a>',
   'paddle.vendor_id' => 'Vendor ID',
@@ -1979,8 +1977,6 @@
   'payu.salt' => 'Salt',
   'payu.payu_base_url' => 'PayU Base URL',
   'payumoney.wording' => 'Fill out PayU Money method settings below. You can find those settings in your PayU Money dashboard.',
-  'payment_method.payumoney.button' => '<i class="icon-credit-card"></i> Pay with PayU',
-  'payment_method_type_payumoney_button' => '<i class="fa fa-money"></i> Pay with PayU',
   'purchasing_intro_payumoney' => 'Please fill out the below information so we can setup your account for purchasing the <a><strong>:plan plan</strong></a> with the pay by Credit Card / Debit Card option
           . Your plan price is: <a><strong>:price</strong></a>',
   'pay_by_credit_debit_card' => 'Pay by Credit / Debit Card',
@@ -3711,4 +3707,30 @@
   'subscription.thanks.click_to_start' => 'Thank you for subscribing to our SAAS. Click the button
     below to get started',
   'invoice.confirmed' => 'Your subscription was successfully updated',
+  'copy_list' => 'Copy <span class="fw-600">:name</span> list',
+  'mail_mailer' => 'Mailer',
+  'copy_campaign' => 'Copy <span class="fw-600">:name</span> campaign',
+  'delete_campaign_confirm' => 'You\'re about to delete <span class="fw-600">:name</span> campaign.
+    This can not be undone.',
+  'campaign.open_click_rate' => 'Open/Click rate',
+  'growth_chart' => 'Growth chart',
+  'statistics_chart' => 'Statistics chart',
+  'ends_at' => 'Ends at',
+  'countries' => 'Countries',
+  'cron_string.copied' => 'Cron string was copied to clipboard',
+  'language.translate.intro' => '<p>Acelle Mail lets you customize the user interface (UI) text in all areas of the web
+    application like titles, labels, tooltips, links, buttons... You can translate it from the original
+    English language to Spanish and/or change these phrases the way you want.</p><p>
+      Phrases are organized in different files which you can choose in the list below
+    </p>',
+  'language.load_translate' => 'Load & Translate',
+  'language.translation' => 'Translation',
+  'language.select_translation_file' => 'Select file',
+  'language.discard_change' => 'Your change in the current file will be discarded.',
+  'product.title' => 'Title',
+  'campaign_status_ready' => 'Ready',
+  'loading_wait' => 'Loading, please wait...',
+  'invoice.price' => 'Price',
+  'invoice.cancel' => 'Cancel',
+  'copy_plan' => 'Copy plan',
 ) ?>

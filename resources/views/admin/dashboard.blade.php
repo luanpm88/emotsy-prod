@@ -42,20 +42,26 @@ assignment_turned_in
                     <li class="">
                         <div class="row">
                             <div class="col-sm-5 col-md-5">
-                                <h6 class="mt-0 mb-0 text-semibold">
-                                    <a href="{{ action('Admin\CustomerController@subscriptions', $subscription->customer->uid) }}">
-                                        <i class="material-icons-outlined me-3">
-                                            receipt_long
-</i>
-                                        {{ $subscription->plan->name }}
-                                    </a>
-                                </h6>
-                                <p class="mb-0">
-                                    <i class="material-icons-outlined me-2">
-person_outline
-</i>
-                                    {{ $subscription->customer->user->displayName() }}
-                                </p>
+                                <div class="d-flex">
+                                    <div class="me-3 pt-1">
+                                        <img width="35px" style="opacity:0.8" src="https://acelle.com/images/icons/dark/SVG/plan.svg">
+                                    </div>
+                                    <div>
+                                        <h6 class="mt-0 mb-0 text-semibold">
+                                            <a href="{{ action('Admin\CustomerController@subscriptions', $subscription->customer->uid) }}">
+                                                {{ $subscription->plan->name }}
+                                            </a>
+                                        </h6>
+                                        <p class="mb-0">
+                                            <i class="material-icons-outlined me-1">
+        person_outline
+        </i>
+                                            {{ $subscription->customer->user->displayName() }}
+                                        </p>
+                                    </div>
+                                </div>
+                                    
+                                    
                             </div>
                             <div class="col-sm-4 col-md-4 text-left">
                                 @if ($subscription->isEnded())

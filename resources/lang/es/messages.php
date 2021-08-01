@@ -1911,8 +1911,6 @@
   'list.there_no_subaccount_sending_server' => '<span class="text-semibold">ERROR:</span> No hay servidores de envío activos.',
   'embeded_form.show_invisible' => 'Mostrar campo/s invisible',
   'paddle_card' => 'Paleta / Tarjeta',
-  'payment_method.paddle_card.button' => '<i class="icon-credit-card"></i> Pagar con paleta',
-  'paddle_card.pay_by_card' => '<i class="icon-credit-card"></i> Pagar con paleta',
   'paddle_card.purchasing_intro' => 'Haga clic en el botón a continuación para que podamos configurar su cuenta para comprar el <a><strong>:plan </strong></a> con la opción Pagar con tarjeta (paleta)
       . El precio de su plan es: <a><strong>:price</strong></a>',
   'paddle.vendor_id' => 'ID Vendedor',
@@ -1930,8 +1928,6 @@
   'payu.salt' => 'Salt',
   'payu.payu_base_url' => 'Base URL PayU',
   'payumoney.wording' => 'Complete la configuración del método PayU Money a continuación. Puede encontrar esa configuración en su panel de control de PayU Money.',
-  'payment_method.payumoney.button' => '<i class="icon-credit-card"></i> pago con PayU',
-  'payment_method_type_payumoney_button' => '<i class="fa fa-money"></i> Pay con PayU',
   'purchasing_intro_payumoney' => 'Complete la siguiente información para que podamos configurar su cuenta para comprar el <a><strong>:plan </strong></a> con la opcion de pago por Tarjeta de credito / tarjeta de debito
       . El precio de su plan es: <a><strong>:price</strong></a>',
   'pay_by_credit_debit_card' => 'Pagar con Credito / Tarjeta de debito',
@@ -3749,4 +3745,10 @@
   'language.translation' => 'Translation',
   'language.select_translation_file' => 'Select file',
   'language.discard_change' => 'Your change in the current file will be discarded.',
+  'product.title' => 'Title',
+  'campaign_status_ready' => 'Ready',
+  'loading_wait' => 'Loading, please wait...',
+  'invoice.price' => 'Price',
+  'invoice.cancel' => 'Cancel',
+  'copy_plan' => 'Copy plan',
 ) ?>

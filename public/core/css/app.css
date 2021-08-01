@@ -5959,6 +5959,7 @@ table.table-log tr th {
 }
 .acelle-icon img {
   display: block;
+  width: 100%;
 }
 .d-flex {
   display: flex!important;
@@ -6867,4 +6868,13 @@ h3, h4 [class^="material-icons"] {
 .subscription-step .select-plan-tab:hover {
     box-shadow: 0 .5rem 1rem rgba(0,0,0,.05)!important;
     color: #333;
+}
+.dropzone {
+    border: 3px dashed rgba(0, 0, 0, 0.3) !important;
+    border-radius: 10px;
+}
+.dropzone.dz-clickable .dz-message, .dropzone.dz-clickable .dz-message * {
+    font-size: 20px;
+    color: rgba(0,0,0,0.4);
+    font-weight: 600;
 }

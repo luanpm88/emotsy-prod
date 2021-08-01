@@ -1,8 +1,5 @@
 @if ($templates->count() > 0)
-    <div id="layout" class="tab-pane active template-boxes layout mt-4" style="
-        margin-left: -20px;
-        margin-right: -20px;
-    ">
+    <div id="layout" class="tab-pane active template-boxes layout mt-4">
         @foreach ($templates as $key => $template)
             <a 
                 href="{{ action('CampaignController@templateLayout', ['uid' => $campaign->uid, 'template' => $template->uid]) }}"

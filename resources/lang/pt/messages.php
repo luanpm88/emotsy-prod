@@ -1909,8 +1909,6 @@
   'list.there_no_subaccount_sending_server' => '<span class="text-semibold">ERROR:</span> There are no active sending servers.',
   'embeded_form.show_invisible' => 'Show invisible field(s)',
   'paddle_card' => 'Paddle / Card',
-  'payment_method.paddle_card.button' => '<i class="icon-credit-card"></i> Pay with Paddle',
-  'paddle_card.pay_by_card' => '<i class="icon-credit-card"></i> Pay with Paddle',
   'paddle_card.purchasing_intro' => 'Please click the button below so we can setup your account for puchasing the <a><strong>:plan plan</strong></a> with the Pay by Card (Paddle) option
                 . Your plan price is: <a><strong>:price</strong></a>',
   'paddle.vendor_id' => 'Vendor ID',
@@ -1928,8 +1926,6 @@
   'payu.salt' => 'Salt',
   'payu.payu_base_url' => 'PayU Base URL',
   'payumoney.wording' => 'Fill out PayU Money method settings below. You can find those settings in your PayU Money dashboard.',
-  'payment_method.payumoney.button' => '<i class="icon-credit-card"></i> Pay with PayU',
-  'payment_method_type_payumoney_button' => '<i class="fa fa-money"></i> Pay with PayU',
   'purchasing_intro_payumoney' => 'Please fill out the below information so we can setup your account for puchasing the <a><strong>:plan plan</strong></a> with the pay by Credit Card / Debit Card option
                 . Your plan price is: <a><strong>:price</strong></a>',
   'pay_by_credit_debit_card' => 'Pay by Credit / Debit Card',
@@ -3747,4 +3743,10 @@
   'language.translation' => 'Translation',
   'language.select_translation_file' => 'Select file',
   'language.discard_change' => 'Your change in the current file will be discarded.',
+  'product.title' => 'Title',
+  'campaign_status_ready' => 'Ready',
+  'loading_wait' => 'Loading, please wait...',
+  'invoice.price' => 'Price',
+  'invoice.cancel' => 'Cancel',
+  'copy_plan' => 'Copy plan',
 ) ?>

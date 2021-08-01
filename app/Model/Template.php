@@ -23,7 +23,6 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use Validator;
 use ZipArchive;
 use RecursiveIteratorIterator;
@@ -522,7 +521,7 @@ class Template extends Model
         $document = new DOMDocument();
         $document->loadHTML($this->content, LIBXML_NOWARNING | LIBXML_NOERROR);
         $links = $document->getElementsByTagName('link');
-        foreach($links as $link) {
+        foreach ($links as $link) {
             $href = $link->getAttribute('href');
             if (!empty($href)) {
                 $path = $this->getAssetFileFromUrl($href);
@@ -566,7 +565,6 @@ class Template extends Model
         } else {
             return null;
         }
-
     }
 
     public function extractAssetRelativePath($absPath)
@@ -642,7 +640,7 @@ class Template extends Model
             if (strpos($url, '/') === 0) {
                 // absolute url with leading slash (/) like "/hello/world"
                 return ($host) ? join_url($host, $url) : $url;
-            } else if (strpos($url, 'data:') === 0) {
+            } elseif (strpos($url, 'data:') === 0) {
                 // base64 image. Like: "data:image/png;base64,iVBOR"
                 return $url;
             } else {

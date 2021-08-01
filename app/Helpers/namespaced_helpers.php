@@ -42,13 +42,15 @@ function generatePublicPath($absPath, $withHost = false)
     // If Laravel is under a subdirectory
     $subdirectory = getAppSubdirectory();
 
-    if (empty($subdirectory) || $absolute) {
+    if (empty($subdirectory) || $withHost) {
         // Return something like
-        //     "http://localhost/{subdirectory if any}/p/assets/ef99238abc92f43e038efb"   # absolute = true, OR
-        //     "/p/assets/ef99238abc92f43e038efb"                   # absolute = false
+        //     "http://localhost/{subdirectory if any}/p/assets/ef99238abc92f43e038efb"   # withHost = true, OR
+        //     "/p/assets/ef99238abc92f43e038efb"                   # withHost = false
         $url = route('public_assets', [ 'dirname' => $encodedDirname, 'basename' => $basename ], $withHost);
     } else {
-        $url = join_paths($subdirectory, route('public_assets', [ 'dirname' => $encodedDirname, 'basename' => $basename ], $absolute));
+        // Make sure the $subdirectory has a leading slash ('/')
+        $subdirectory = join_paths('/', $subdirectory);
+        $url = join_paths($subdirectory, route('public_assets', [ 'dirname' => $encodedDirname, 'basename' => $basename ], $withHost));
     }
 
     return $url;
@@ -62,6 +64,25 @@ function getAppSubdirectory()
     $path = parse_url(config('app.url'), PHP_URL_PATH);
     $path = trim($path, '/');
     return empty($path) ? null : $path;
+}
+
+// Get application host with {scheme}://{host}:{port} (without subdirectory)
+function getAppHost()
+{
+    $fullUrl = config('app.url');
+    $meta = parse_url($fullUrl);
+
+    if (!array_key_exists('scheme', $meta) || !array_key_exists('host', $meta)) {
+        throw new Exception('Invalid app.url setting');
+    }
+
+    $appHost = "{$meta['scheme']}://{$meta['host']}";
+
+    if (array_key_exists('port', $meta)) {
+        $appHost = "{$appHost}:{$meta['port']}";
+    }
+
+    return $appHost;
 }
 
 function updateTranslationFile($targetFile, $sourceFile, $overwriteTargetPhrases = false)
