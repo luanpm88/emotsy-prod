@@ -146,15 +146,9 @@
 				
 				if ($('.select-template-layout.selected').length == 0) {
 					// Success alert
-					swal({
-						title: "{{ trans('messages.template.need_select_template') }}",
-						text: "",
-						confirmButtonColor: "#666",
-						type: "error",
-						allowOutsideClick: true,
-						confirmButtonText: "{{ trans('messages.ok') }}",
-						customClass: "swl-error",
-						html:true
+					new Dialog('alert', {
+						title: "{{ trans('messages.notify.error') }}",
+						message: "{{ trans('messages.template.need_select_template') }}",
 					});
 					return;
 				}
