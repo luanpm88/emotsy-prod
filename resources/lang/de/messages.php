@@ -867,15 +867,6 @@
   'opened_at' => 'Geöffnet am',
   'ip' => 'IP',
   'area' => 'Gebiet',
-  'template_upload_guide' => '
-        Bitte laden Sie Ihr HTML-Template-Bündel hoch. Normalerweise sollte es eine .zip-Datei sein, die enthält:
-        <ul>
-          <li>Eine einzelne .html Datei und</li>
-          <li>Ein Verzeichnis auf der gleichen Ebene mit Asset-Dateien (JS, CSS, Bilder, etc.)</li>
-        </ul>
-        <br />
-        Bitte klicken Sie <a class="text-semibold" href=":link" target="_blank">[here]</a> Um eine Beispiel E-Mail Vorlage herunterzuladen
-      ',
   'disable' => 'Deaktivieren',
   'enable' => 'Aktiviere',
   'STYLE' => 'STYLE',
@@ -3720,4 +3711,7 @@
   'invoice.price' => 'Price',
   'invoice.cancel' => 'Cancel',
   'copy_plan' => 'Copy plan',
+  'template.upload.instruction' => 'Select a template package from your PC to upload. A template package should be a .ZIP archive containing an index.html file and other assets like CSS, images... You can download and try with a sample template package <a target="_blank" href=":link">here</a>',
+  'template.upload.warning' => 'Uploaded templates may not work well with the drag & drop builder. It is always recommended that you create a new template based on one of the awesome templates available, for optimized compatibility and efficiency',
+  'plugin.upload.instruction' => 'Select a plugin package from your PC to upload. Normally it is a ZIP archive containing the source files as well as meta information for the plugin.',
 ) ?>

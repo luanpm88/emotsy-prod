@@ -892,8 +892,6 @@
   'opened_at' => 'Opened at',
   'ip' => 'IP',
   'area' => 'Area',
-  'template_upload_guide' => '
-      Please upload your plugin file. Select your plugin archive and upload it',
   'disable' => 'Disable',
   'enable' => 'Enable',
   'STYLE' => 'STYLE',
@@ -3733,4 +3731,7 @@
   'invoice.price' => 'Price',
   'invoice.cancel' => 'Cancel',
   'copy_plan' => 'Copy plan',
+  'template.upload.instruction' => 'Select a template package from your PC to upload. A template package should be a .ZIP archive containing an index.html file and other assets like CSS, images... You can download and try with a sample template package <a target="_blank" href=":link">here</a>',
+  'template.upload.warning' => 'Uploaded templates may not work well with the drag & drop builder. It is always recommended that you create a new template based on one of the awesome templates available, for optimized compatibility and efficiency',
+  'plugin.upload.instruction' => 'Select a plugin package from your PC to upload. Normally it is a ZIP archive containing the source files as well as meta information for the plugin.',
 ) ?>
