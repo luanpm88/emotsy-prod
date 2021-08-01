@@ -10,8 +10,10 @@
             
             <h5 class="mb-3 mt-3">{{ trans('messages.automation.email.upload_template') }}</h4>
                 
-            <div class="alert alert-info mt-4">
-                {!! trans('messages.template_upload_guide', ["link" => 'https://s3.amazonaws.com/acellemail/newsletter-template-green.zip']) !!}
+            <p>{!! trans('messages.template.upload.instruction', ["link" => url('/download/Sample-Template.zip') ]) !!}</p>
+
+            <div class="alert alert-info">
+                {{ trans('messages.template.upload.warning') }}
             </div>
                 
             <form enctype="multipart/form-data" action="{{ action('Automation2Controller@templateUpload', [

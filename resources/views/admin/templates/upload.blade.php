@@ -22,9 +22,10 @@ file_upload
     
     <div class="row">
         <div class="col-md-8">
+            <p>{!! trans('messages.template.upload.instruction', ["link" => url('/download/Sample-Template.zip') ]) !!}</p>
         
             <div class="alert alert-info">
-                {!! trans('messages.template_upload_guide', ["link" => 'https://s3.amazonaws.com/acellemail/newsletter-template-green.zip']) !!}
+                {{ trans('messages.template.upload.warning') }}
             </div>
         
             <form enctype="multipart/form-data" action="{{ action('Admin\TemplateController@uploadTemplate') }}" method="POST" class="ajax_upload_form form-validate-jquery">
