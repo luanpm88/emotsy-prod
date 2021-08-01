@@ -689,7 +689,6 @@ class Subscriber extends Model
         $copy = $list->subscribers()->where('email', '=', $this->email)->first();
 
         if (!is_null($copy)) {
-
             if (!is_null($duplicateCallback)) {
                 $duplicateCallback($this);
             }

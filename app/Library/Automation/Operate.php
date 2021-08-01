@@ -35,8 +35,7 @@ class Operate extends Action
         if ($operationType == self::OPERATION_TAG) {
             $tags = $this->getOption('tags');
             $subscriber->updateTags($tags, $merge = true);
-            $this->logger->info( sprintf('* Tag contact "%s" with: %s', $subscriber->email, implode(', ', $tags)) );
-
+            $this->logger->info(sprintf('* Tag contact "%s" with: %s', $subscriber->email, implode(', ', $tags)));
         } elseif ($operationType == self::OPERATION_COPY || $operationType == self::OPERATION_MOVE) {
             $toListUid = $this->getOption('target_list_uid');
 
@@ -50,14 +49,14 @@ class Operate extends Action
                 throw new Exception("Cannot copy/move contact, target list does not exist: {$toListUid}");
             }
 
-            $duplicateCallback = function($subscriber_) use ($operationType, $toList) {
-                $this->logger->info( sprintf('Notice: skip %s contact "%s" to list "%s". Duplicate email', $operationType, $subscriber_->email, $toList->name) );
+            $duplicateCallback = function ($subscriber_) use ($operationType, $toList) {
+                $this->logger->info(sprintf('Notice: skip %s contact "%s" to list "%s". Duplicate email', $operationType, $subscriber_->email, $toList->name));
             };
 
             // @TODO: use copy instead of move
             $subscriber->copy($toList, $duplicateCallback);
 
-            $this->logger->info( sprintf('DONE: %s contact "%s" to list "%s"', $operationType, $subscriber->email, $toList->name) );
+            $this->logger->info(sprintf('DONE: %s contact "%s" to list "%s"', $operationType, $subscriber->email, $toList->name));
         } else {
             throw new Exception("Unknown operation type: {$operationType}");
         }
@@ -77,14 +76,12 @@ class Operate extends Action
     public function getProgressDescription()
     {
         $subscriber = $this->autoTrigger->subscriber;
-
         $operationType = $this->getOption('operation_type');
 
         if ($operationType == self::OPERATION_TAG) {
             $tags = $this->getOption('tags');
 
             return sprintf('* Tag contact "%s" with: %s', $subscriber->email, implode(', ', $tags));
-
         } elseif ($operationType == self::OPERATION_COPY || $operationType == self::OPERATION_MOVE) {
             $toListUid = $this->getOption('target_list_uid');
 
