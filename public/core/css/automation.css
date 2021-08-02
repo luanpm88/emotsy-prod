@@ -30,47 +30,6 @@ a {
 .text-warning {
     color: #f88400!important;
 }
-.box-list {
-  margin-right: -20px;
-}
-.box-list .box-item {
-  width: 320px;
-  float: left;
-  margin-right: 20px;
-  height: 140px;
-  text-align: center;
-  border: solid 1px #bbb;
-  padding: 20px;
-  margin-bottom: 20px;
-  border-radius: 5px;
-  color: #333;
-  cursor: pointer;
-}
-.box-list .box-item:hover {
-  border-color: #888;
-}
-.box-list .box-item.current {
-  border: 1.5px dashed #888;
-  background: #f4f4f4;
-  color: #555;
-  cursor: default;
-  pointer-events: none;
-  overflow: hidden;
-  position: relative;
-}
-.box-list .box-item.current:hover {
-  border-color: #aaa;
-}
-.box-list .box-item h4 {
-    font-weight: 600;
-    margin-bottom: 10px;
-}
-.box-list .box-item i.material-icons-outlined, .box-list .box-item i.material-icons {
-  font-size: 20px;
-}
-.box-list .box-item p {
-    margin-bottom: 0;
-}
 .line-item {
     display: flex;
     padding: 7px;
@@ -1201,16 +1160,6 @@ a:hover label {
     font-size: 14px;
     margin-top: 0;
     color: inherit;
-}
-a.trigger-woo-abandoned-cart {
-  background-image: url(../../images/WooCommerce_logo.svg);
-  background-size: 40px;
-  background-repeat: no-repeat;
-  background-position: left 20px top 18px;
-  transition: box-shadow 0.2s ease-in-out;
-}
-a.trigger-woo-abandoned-cart:hover {
-  box-shadow: 1px 1px 5px rgba(0,0,0,0.3);
 }
 .box-list .trigger-woo-abandoned-cart.current {
   background-image: url(../../images/WooCommerce_logo.svg);

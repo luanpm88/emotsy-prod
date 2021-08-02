@@ -9,14 +9,14 @@
             <div class="box-list mt-3">
 				<div class="box-list mt-5">
 					@foreach ($types as $type)
-						<a class="box-item trigger-select-but trigger-{{ $type }}
+						<a class="box-item trigger-select-but trigger-{{ $type }} shadow-sm
 								{{ $trigger->getOption('key') == $type ? 'current' : '' }}
 							"
 							data-key="{{ $type }}"						
 						>							
 							<h6 class="d-flex align-items-center text-center justify-content-center">
 								<i class="material-icons-outlined me-2">{{ trans('messages.automation.trigger.icon.' . $type) }}</i>
-								{{ trans('messages.automation.trigger.' . $type) }}</h6>
+								<span>{{ trans('messages.automation.trigger.' . $type) }}</span></h6>
 							<p>{{ trans('messages.automation.trigger.' . $type . '.desc') }}</p>
 						</a>
 					@endforeach                
