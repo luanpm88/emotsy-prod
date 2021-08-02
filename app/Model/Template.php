@@ -1143,17 +1143,18 @@ class Template extends Model
         $tmpZipFile = "{$tmpDir}.zip";
         $indexFile = join_paths($tmpDir, 'index.html');
 
+        // Copy template folder to tmp place
+        \Acelle\Helpers\pcopy($this->getStoragePath(), $tmpDir);
+
         // Transform templates URLs like src='/assets/base64/file.jpg' to src='file.jpg'
         $html = $this->getContentWithUntransformedAssetsUrls(
             $alsoUntransformUserAssets = true,
             function($userAssetFile, &$basename) use ($tmpDir) {
                 $basename = StringHelper::generateUniqueName($tmpDir, $basename);
-                \Acelle\Helpers\pcopy($userAssetFile, join_paths($tmpDir, $basename));
+                $copyPath = join_paths($tmpDir, $basename);
+                \Acelle\Helpers\pcopy($userAssetFile, $copyPath);
             }
         );
-
-        // Copy template folder to tmp place
-        \Acelle\Helpers\pcopy($this->getStoragePath(), $tmpDir);
 
         // Create index.html
         file_put_contents($indexFile, $html);
