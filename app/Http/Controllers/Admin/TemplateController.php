@@ -567,6 +567,15 @@ class TemplateController extends Controller
         ]);
     }
 
+    public function export(Request $request)
+    {
+        $template = Template::findByUid($request->uid);
+        
+        $zipPath = $template->createTmpZip();
+       
+        return response()->download($zipPath)->deleteFileAfterSend(true);
+    }
+
     public function changeName(Request $request)
     {
         $template = Template::findByUid($request->uid);
