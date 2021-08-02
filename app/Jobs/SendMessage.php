@@ -10,6 +10,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Acelle\Model\Subscriber;
+use Exception;
 
 class SendMessage implements ShouldQueue
 {
@@ -45,12 +46,12 @@ class SendMessage implements ShouldQueue
         // Check customer quota
         while ($this->campaign->customer->overQuota()) {
             // throw new \Exception('Customer has reached sending limit');
-            sleep(60);
+            throw new Exception('Reaching sending speed or quota limit, please RESUME your campaign later on');
         }
 
         // Check sending server quota
         while ($this->server->overQuota()) {
-            sleep(60);
+            throw new Exception('Reaching sending server limit, please RESUME your campaign later on');
         }
 
         $logger = $this->campaign->logger();
