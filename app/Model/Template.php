@@ -35,6 +35,7 @@ use Acelle\Library\Tool;
 use Acelle\Library\StringHelper;
 use DOMDocument;
 use File;
+use Exception;
 
 class Template extends Model
 {
@@ -533,9 +534,6 @@ class Template extends Model
         return $files;
     }
 
-    // Important: url must have a leading slash
-    // Like: '/assets/path/file.jpg'
-    // Or: '/subdirectory/assets/path/file.jpg'
     public function getAssetFileFromUrl($url)
     {
         // To remove query string if any like ?search=abc
@@ -567,6 +565,7 @@ class Template extends Model
         }
     }
 
+
     public function extractAssetRelativePath($absPath)
     {
         $myPath = $this->getStoragePath('/');
@@ -579,10 +578,18 @@ class Template extends Model
         return empty($relativePath) ? null : $relativePath;
     }
 
-    public function getContentWithUntransformedAssetsUrls()
+    public function getContentWithUntransformedAssetsUrls($untransformUserAssets = false, $processUserAssetCallback = null)
     {
+        // Clean up subdirectory, leaving the url as '/assets/path/file.jpg' only
+        $subdirectory = \Acelle\Helpers\getAppSubdirectory();
+        if ($subdirectory) {
+            // Make sure $subdirectory looks like: '/subdir'
+            // i.e. with a leading slash but without trailing one
+            $subdirectory = rtrim(join_paths('/', $subdirectory), '/');
+        }
+
         // Replace #1
-        return StringHelper::transformUrls($this->content, function ($url) {
+        return StringHelper::transformUrls($this->content, function ($url) use ($subdirectory, $untransformUserAssets, $processUserAssetCallback) {
             if (parse_url($url, PHP_URL_HOST) === false) {
                 // if url is invalid
                 return $url;
@@ -593,18 +600,59 @@ class Template extends Model
                 return $url;
             }
 
-            if (strpos($url, '/') === 0) {
-                $relativePath = $this->extractAssetRelativePath($this->getAssetFileFromUrl($url));
+            if (strpos($url, 'data:') === 0) {
+                // base64 image. Like: "data:image/png;base64,iVBOR"
+                return $url;
+            }
+
+            if (strpos($url, '/') !== 0) {
+                // Relative path, ignore
+                return $url;
+            }
+
+            if ($subdirectory) {
+                // Remove subdirectory of URL, keep the leading slash '/'
+                $url = str_replace($subdirectory, '', $url);
+            }
+
+            // There are two cases when we untransform a URL
+            // 1. Template local assets: '/assets/'
+            // 2. User library assets: '/files/'
+
+            // preg_match('/\/assets\/(?<dirname>[^\/]+)\/(?<basename>[^\/]+)/', '/assets/dir/file.jpg', $match);
+            if (strpos($url, '/assets/') === 0) {
+                $assetPath = $this->getAssetFileFromUrl($url);
+                $relativePath = $this->extractAssetRelativePath($assetPath);
+
                 if ($relativePath) {
                     return $relativePath;
                 } else {
                     return $url;
                 }
-            } elseif (strpos($url, 'data:') === 0) {
-                // base64 image. Like: "data:image/png;base64,iVBOR"
-                return $url;
+            } else if (strpos($url, '/files/') === 0 && $untransformUserAssets) {
+                // Okie, now process /files/uid/name.jpg pattern
+                list($prefix, $userUid, $basename) = array_values(array_filter(explode('/', $url)));
+
+                $user = User::findByUid($userUid);
+                if (is_null($user)) {
+                    return $url;
+                }
+
+                $assetPath = $user->getAssetsPath($basename);
+
+                // If file no longer exists
+                if (!file_exists($assetPath)) {
+                    return $url;
+                }
+
+                // Callback and return
+                if (!is_null($processUserAssetCallback)) {
+                    $processUserAssetCallback($assetPath, $basename); // Important: basename may be changed
+                }
+
+                // Return to replace
+                return $basename;
             } else {
-                // URL is a relative path like "images/banner.jpg"
                 return $url;
             }
         });
@@ -957,7 +1005,9 @@ class Template extends Model
     {
         // DELTEE categories
         TemplateCategory::query()->delete();
-        self::default()->delete();
+        foreach(self::default() as $template) {
+            $template->deleteAndCleanup();
+        }
 
         // CREATE Cateogries again
         $categoryBasic = TemplateCategory::create(['name' => 'Basic']);
@@ -1089,12 +1139,33 @@ class Template extends Model
 
     public function createTmpZip()
     {
-        $tmpZipPath = storage_path("tmp/template-" . $this->uid . ".zip");
+        $tmpDir = storage_path("tmp/template-" . $this->uid);
+        $tmpZipFile = "{$tmpDir}.zip";
+        $indexFile = join_paths($tmpDir, 'index.html');
 
-        file_put_contents($this->getStoragePath('index.html'), $this->content);
-        Tool::zip($this->getStoragePath(), $tmpZipPath);
+        // Transform templates URLs like src='/assets/base64/file.jpg' to src='file.jpg'
+        $html = $this->getContentWithUntransformedAssetsUrls(
+            $alsoUntransformUserAssets = true,
+            function($userAssetFile, &$basename) use ($tmpDir) {
+                $basename = StringHelper::generateUniqueName($tmpDir, $basename);
+                \Acelle\Helpers\pcopy($userAssetFile, join_paths($tmpDir, $basename));
+            }
+        );
 
-        return $tmpZipPath;
+        // Copy template folder to tmp place
+        \Acelle\Helpers\pcopy($this->getStoragePath(), $tmpDir);
+
+        // Create index.html
+        file_put_contents($indexFile, $html);
+
+        // Make zip file
+        Tool::zip($tmpDir, $tmpZipFile);
+
+        // Clean up tmp directory
+        File::deleteDirectory($tmpDir);
+
+        // Return zip file for download
+        return $tmpZipFile;
     }
 
     public function changeName($name)
