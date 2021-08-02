@@ -1,7 +1,7 @@
 <h4 class="mb-3">{{ trans('messages.automation.operation.' . request()->operation) }}</h4>
 <p>{{ trans('messages.automation.operation.' .request()->operation. '.desc') }}</p>
 
-<div class="row my-2">
+<div class="row my-2 hide">
     <div class="col-md-8">
         @include('helpers.form_control', [
             'type' => 'select',
@@ -10,8 +10,8 @@
             'name' => 'options[operation_type]',
             'value' => isset($element) ? $element->getOption('operation_type') : [],
             'options' => [
-                ['value' => 'move', 'text' => trans('messages.operation.action.move')],
                 ['value' => 'copy', 'text' => trans('messages.operation.action.copy')],
+                ['value' => 'move', 'text' => trans('messages.operation.action.move')],
                 ['value' => 'delete', 'text' => trans('messages.operation.action.delete')],
             ],
             'rules' => ['options.operation_type' => 'required'],
