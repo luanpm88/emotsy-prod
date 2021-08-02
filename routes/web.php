@@ -610,6 +610,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/users', 'UserController');
 
     // Template
+    Route::post('templates/{uid}/export', 'TemplateController@export');
     Route::match(['get','post'], 'admin/templates/{uid}/change-name', 'TemplateController@changeName');
     Route::match(['get','post'], 'admin/templates/{uid}/categories', 'TemplateController@categories');
 
