@@ -537,7 +537,7 @@ class Email extends Model
         }
 
         // STEP 05. Transform URLs
-        $body = $this->template->getContentWithTransformedAssetsUrls($this->getTrackingHost());
+        $body = $this->template->getContentWithTransformedAssetsUrls($this->getTrackingHostWithoutSubdirectory());
 
         if (is_null($msgId)) {
             $msgId = 'SAMPLE'; // for preview mode
@@ -720,6 +720,16 @@ class Email extends Model
     }
 
     public function getTrackingHost()
+    {
+        if ($this->trackingDomain()->exists()) {
+            return $this->trackingDomain->getUrl();
+        } else {
+            // Host WITH subdirectory
+            return config('app.url');
+        }
+    }
+
+    public function getTrackingHostWithoutSubdirectory()
     {
         if ($this->trackingDomain()->exists()) {
             return $this->trackingDomain->getUrl();
