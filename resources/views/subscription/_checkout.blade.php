@@ -1,20 +1,37 @@
 @if ($invoice->isNew() && !$invoice->getPendingTransaction())
     <div class="card mt-2">
         <div class="card-body">
-            <div class="alert alert-info">{!! trans('messages.payment.agree_service_intro') !!}</div>
-            <form id="checkoutForm" class="" action="{{ $invoice->isFree() ? action('SubscriptionController@confirmFree', [
-                'invoice_uid' => $invoice->uid
-            ]) : action('SubscriptionController@checkout') }}"
-                method="POST">
-                {{ csrf_field() }}
+            @if (isset($disabled) && $disabled)
+                <div class="alert alert-info">{!! trans('messages.payment.agree_service_intro') !!}</div>
+                <form id="checkoutForm" class="" action="{{ $invoice->isFree() ? action('SubscriptionController@confirmFree', [
+                    'invoice_uid' => $invoice->uid
+                ]) : action('SubscriptionController@checkout') }}"
+                    method="POST">
+                    {{ csrf_field() }}
 
-                <input type="hidden" name="payment_method" />
+                    <input type="hidden" name="payment_method" />
 
-                <input type="submit" name="new_payment" {{ isset($disabled) && $disabled ? 'disabled' : '' }}
-                    class="btn btn-primary py-2 fs-6 px-4 text-center rounded-3 shadow" style="width:100%"
-                    value="{{ $invoice->isFree() ? trans('messages.subscription.get_started') : trans('messages.subscription.checkout') }}"
-                >
-            </form>
+                    <input type="submit" name="new_payment" disabled
+                        class="btn btn-secondary py-2 fs-6 px-4 text-center rounded-3 shadow" style="width:100%"
+                        value="{{ $invoice->isFree() ? trans('messages.subscription.get_started') : trans('messages.subscription.checkout') }}"
+                    >
+                </form>
+            @else
+                <div class="alert alert-info">{!! trans('messages.payment.agree_service_intro') !!}</div>
+                <form id="checkoutForm" class="" action="{{ $invoice->isFree() ? action('SubscriptionController@confirmFree', [
+                    'invoice_uid' => $invoice->uid
+                ]) : action('SubscriptionController@checkout') }}"
+                    method="POST">
+                    {{ csrf_field() }}
+
+                    <input type="hidden" name="payment_method" />
+
+                    <input type="submit" name="new_payment"
+                        class="btn btn-primary py-2 fs-6 px-4 text-center rounded-3 shadow" style="width:100%"
+                        value="{{ $invoice->isFree() ? trans('messages.subscription.get_started') : trans('messages.subscription.checkout') }}"
+                    >
+                </form>
+            @endif
         </div>
     </div>
 
