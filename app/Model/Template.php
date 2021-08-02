@@ -1096,4 +1096,21 @@ class Template extends Model
 
         return $tmpZipPath;
     }
+
+    public function changeName($name)
+    {
+        $validator = \Validator::make(['name' => $name], [
+            'name' => 'required',
+        ]);
+
+        // redirect if fails
+        if ($validator->fails()) {
+            return $validator;
+        }
+
+        $this->name = $name;
+        $this->save();
+
+        return $validator;
+    }
 }

@@ -556,4 +556,35 @@ class TemplateController extends Controller
        
         return response()->download($zipPath)->deleteFileAfterSend(true);
     }
+
+    public function changeName(Request $request)
+    {
+        $template = Template::findByUid($request->uid);
+        
+        // authorize
+        if (!$request->user()->customer->can('update', $template)) {
+            return $this->notAuthorized();
+        }
+
+        if ($request->isMethod('post')) {
+            // change name
+            $validator = $template->changeName($request->name);
+
+            if ($validator->fails()) {
+                return response()->view('templates.changeName', [
+                    'template' => $template,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => trans('messages.template.name.changed'),
+            ], 201);
+        }
+
+        return view('templates.changeName', [
+            'template' => $template,
+        ]);
+    }
 }
