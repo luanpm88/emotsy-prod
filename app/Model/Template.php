@@ -1086,4 +1086,31 @@ class Template extends Model
             $template->categories()->attach($meta['category']->id);
         }
     }
+
+    public function createTmpZip()
+    {
+        $tmpZipPath = storage_path("tmp/template-" . $this->uid . ".zip");
+
+        file_put_contents($this->getStoragePath('index.html'), $this->content);
+        Tool::zip($this->getStoragePath(), $tmpZipPath);
+
+        return $tmpZipPath;
+    }
+
+    public function changeName($name)
+    {
+        $validator = \Validator::make(['name' => $name], [
+            'name' => 'required',
+        ]);
+
+        // redirect if fails
+        if ($validator->fails()) {
+            return $validator;
+        }
+
+        $this->name = $name;
+        $this->save();
+
+        return $validator;
+    }
 }

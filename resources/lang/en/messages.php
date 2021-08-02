@@ -3734,4 +3734,8 @@
   'invoice.price' => 'Price',
   'invoice.cancel' => 'Cancel',
   'copy_plan' => 'Copy plan',
+  'template.export' => 'Export',
+  'template.change_name' => 'Change name',
+  'template.change_name.intro' => 'Enter your new template name below',
+  'template.name.changed' => 'Template name was changed',
 ) ?>

@@ -310,6 +310,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('lists/{list_uid}/pages/{alias}/preview', 'PageController@preview');
 
     // Template
+    Route::post('templates/{uid}/export', 'TemplateController@export');
+    Route::match(['get','post'], 'templates/{uid}/change-name', 'TemplateController@changeName');
     Route::match(['get','post'], 'templates/{uid}/categories', 'TemplateController@categories');
 
     Route::match(['get','post'], 'templates/{uid}/update-thumb-url', 'TemplateController@updateThumbUrl');
@@ -608,6 +610,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/users', 'UserController');
 
     // Template
+    Route::match(['get','post'], 'admin/templates/{uid}/change-name', 'TemplateController@changeName');
     Route::match(['get','post'], 'admin/templates/{uid}/categories', 'TemplateController@categories');
 
     Route::match(['get','post'], 'admin/templates/{uid}/update-thumb-url', 'TemplateController@updateThumbUrl');
