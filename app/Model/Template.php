@@ -1086,4 +1086,14 @@ class Template extends Model
             $template->categories()->attach($meta['category']->id);
         }
     }
+
+    public function createTmpZip()
+    {
+        $tmpZipPath = storage_path("tmp/template-" . $this->uid . ".zip");
+
+        file_put_contents($this->getStoragePath('index.html'), $this->content);
+        Tool::zip($this->getStoragePath(), $tmpZipPath);
+
+        return $tmpZipPath;
+    }
 }

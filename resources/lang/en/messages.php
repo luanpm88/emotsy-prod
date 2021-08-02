@@ -3734,4 +3734,5 @@
   'invoice.price' => 'Price',
   'invoice.cancel' => 'Cancel',
   'copy_plan' => 'Copy plan',
+  'template.export' => 'Export',
 ) ?>

@@ -9,6 +9,7 @@ use Acelle\Library\Rss;
 use Acelle\Model\Setting;
 use App;
 use File;
+use Acelle\Library\Tool;
 
 class TemplateController extends Controller
 {
@@ -545,5 +546,14 @@ class TemplateController extends Controller
         return view('templates.categories', [
             'template' => $template,
         ]);
+    }
+
+    public function export(Request $request)
+    {
+        $template = Template::findByUid($request->uid);
+        
+        $zipPath = $template->createTmpZip();
+       
+        return response()->download($zipPath)->deleteFileAfterSend(true);
     }
 }

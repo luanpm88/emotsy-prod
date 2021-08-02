@@ -96,6 +96,20 @@ category
                                         </a>
                                     </li>
                                 @endif
+                                {{-- @if (Auth::user()->customer->can('read', $template))
+                                    <li>
+                                        <a
+                                            href="{{ action('TemplateController@export', $template->uid) }}"
+                                            role="button"
+                                            class="dropdown-item"
+                                            link-method="POST"
+                                        >
+                                            <span class="material-icons-outlined me-2">
+download
+</span> {{ trans("messages.template.export") }}
+                                        </a>
+                                    </li>
+                                @endif --}}
                                 @if (Auth::user()->customer->can('copy', $template))
                                     <li>
                                         <a
