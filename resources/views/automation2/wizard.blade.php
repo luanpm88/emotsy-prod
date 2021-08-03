@@ -6,8 +6,6 @@
             <form id="automationCreate" action="{{ action("Automation2Controller@wizard") }}" method="POST" class="form-validate-jqueryz">
                 {{ csrf_field() }}            
 
-                <input type="hidden" name="trigger_type" value="{{ request()->trigger_type }}" />
-
                 @foreach(request()->all() as $key => $value)
                     @if (is_array($value))
                         @foreach($value as $key2 => $value2)
