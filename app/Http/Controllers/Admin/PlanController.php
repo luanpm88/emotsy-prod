@@ -425,13 +425,6 @@ class PlanController extends Controller
         } elseif ($plan->getOption('sending_server_option') == Plan::SENDING_SERVER_OPTION_SUBACCOUNT) {
             return redirect()->action('Admin\PlanController@sendingServerSubaccount', $plan->uid);
         }
-
-        // fill all
-        $plan->fillAll($request);
-
-        return view('admin.plans.sending_server', [
-            'plan' => $plan,
-        ]);
     }
     
     /**
