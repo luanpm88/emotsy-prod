@@ -38,16 +38,26 @@
                         @if (Auth::user()->admin->can('update', $template))
                             <a href="{{ action('Admin\TemplateController@categories', [
                                 'uid' => $template->uid,
-                            ]) }}" class="no-margin stat-num template-categories">{{ $template->categories()->count() ? $template->categories->map(function ($cat) {
-                                return $cat->name;
-                            })->join(', ') : 'N/A' }}</a>
+                            ]) }}" class="no-margin stat-num template-categories">
+                                @if ($template->categories()->count())
+                                    {{ $template->categories->map(function ($cat) {
+                                        return $cat->name;
+                                    })->join(', ') }}
+                                @else
+                                    <span style="color:#ea8c8c;text-decoration: underline;text-decoration-style: dashed;text-underline-offset:4px" class="xtooltip" title="{{ trans('messages.template.category.notice') }}">{{ trans('messages.template.category.no_category') }}</span>
+                                @endif
+                            </a>
+
+                            @if ($template->categories()->count())
+                                <br>
+                                <span class="text-muted text-nowrap">{{ trans('messages.template.category') }}</span>
+                            @endif
                         @else
                             <span class="no-margin stat-num template-categories">{{ $template->categories()->count() ? $template->categories->map(function ($cat) {
                                 return $cat->name;
                             })->join(', ') : 'N/A' }}</span>
                         @endif
-                        <br>
-                        <span class="text-muted text-nowrap">{{ trans('messages.template.category') }}</span>
+
                     </div>
                 </td>
 

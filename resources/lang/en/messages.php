@@ -3645,9 +3645,10 @@
   'template.all_categories' => 'All categories',
   'campaign.template_name' => '[Campaign: ":name"]',
   'email.template_name' => '[Email: ":name"]',
+  'template.category.no_category' => 'No category set',
+  'template.category.notice' => 'Choose one or more category for your template to make it available to users',
   'template.set_template_category' => 'Set template category',
-  'template.set_template_category.intro' => 'Choose one or more categories for your template
-    <br>Notice: if your template does not fall upon any category, it will not be visible to users.',
+  'template.set_template_category.intro' => 'Choose one or more categories for your template. Notice: if your template does not fall upon any category, it will not be visible to users.',
   'template.categories' => 'Categories',
   'transaction.method.offline' => 'Offline',
   'transaction.method.stripe' => 'Stripe',
