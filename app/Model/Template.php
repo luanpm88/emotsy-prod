@@ -629,7 +629,7 @@ class Template extends Model
                 } else {
                     return $url;
                 }
-            } else if (strpos($url, '/files/') === 0 && $untransformUserAssets) {
+            } elseif (strpos($url, '/files/') === 0 && $untransformUserAssets) {
                 // Okie, now process /files/uid/name.jpg pattern
                 list($prefix, $userUid, $basename) = array_values(array_filter(explode('/', $url)));
 
@@ -1005,7 +1005,7 @@ class Template extends Model
     {
         // DELTEE categories
         TemplateCategory::query()->delete();
-        foreach(self::default() as $template) {
+        foreach (self::default() as $template) {
             $template->deleteAndCleanup();
         }
 
@@ -1149,7 +1149,7 @@ class Template extends Model
         // Transform templates URLs like src='/assets/base64/file.jpg' to src='file.jpg'
         $html = $this->getContentWithUntransformedAssetsUrls(
             $alsoUntransformUserAssets = true,
-            function($userAssetFile, &$basename) use ($tmpDir) {
+            function ($userAssetFile, &$basename) use ($tmpDir) {
                 $basename = StringHelper::generateUniqueName($tmpDir, $basename);
                 $copyPath = join_paths($tmpDir, $basename);
                 \Acelle\Helpers\pcopy($userAssetFile, $copyPath);

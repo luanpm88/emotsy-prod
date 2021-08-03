@@ -367,7 +367,7 @@ class StringHelper
 
     public static function transformUrls(string $content, Closure $callback)
     {
-        $html = self::updateHtml($content, function($document) use ($callback) {
+        $html = self::updateHtml($content, function ($document) use ($callback) {
             $replace = [
                 'img' => 'src',
                 'link' => 'href',
