@@ -561,6 +561,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('automation2/{uid}/trigger/select/confirm', 'Automation2Controller@triggerSelectConfirm');
     Route::match(['get'], 'automation2/{uid}/edit', 'Automation2Controller@edit');
     Route::match(['get', 'post'], 'automation2/create', 'Automation2Controller@create');
+    Route::get('automation2/create/trigger', 'Automation2Controller@createTrigger');
     Route::patch('automation2/disable', 'Automation2Controller@disable');
     Route::patch('automation2/enable', 'Automation2Controller@enable');
     Route::delete('automation2/delete', 'Automation2Controller@delete');

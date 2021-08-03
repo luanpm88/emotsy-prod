@@ -122,7 +122,7 @@ add
         var createAutomationPopup;
     
         function showCreateCampaignPopup() {
-            var url = '{{ action("Automation2Controller@create") }}';
+            var url = '{{ action("Automation2Controller@createTrigger") }}';
             
             createAutomationPopup = new Popup();
             createAutomationPopup.load(url);            

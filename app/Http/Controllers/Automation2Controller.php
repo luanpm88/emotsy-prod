@@ -44,7 +44,16 @@ class Automation2Controller extends Controller
             'automations' => $automations,
         ]);
     }
-    
+
+    public function createTrigger(Request $request)
+    {
+        $types = Automation2::getTriggerTypes();
+        
+        return view('automation2.createTrigger', [
+            'types' => $types,
+        ]);
+    }
+
     /**
      * Creating a new resource.
      *
@@ -53,12 +62,7 @@ class Automation2Controller extends Controller
     public function create(Request $request)
     {
         $customer = $request->user()->customer;
-        
-        // init automation
-        $automation = new Automation2([
-            'name' => trans('messages.automation.untitled'),
-        ]);
-        $automation->status = Automation2::STATUS_INACTIVE;
+        $automation = $customer->automation2s()->make()->newDefault();
         
         // authorize
         if (\Gate::denies('create', $automation)) {
@@ -67,11 +71,7 @@ class Automation2Controller extends Controller
         
         // saving
         if ($request->isMethod('post')) {
-            // fill before save
-            $automation->fillRequest($request);
-            
-            // make validator
-            $validator = Validator::make($request->all(), $automation->rules());
+            $validator = $automation->createFromArray($request->all());
             
             // redirect if fails
             if ($validator->fails()) {
@@ -80,12 +80,6 @@ class Automation2Controller extends Controller
                     'errors' => $validator->errors(),
                 ], 400);
             }
-            
-            // pass validation and save
-            $automation->mail_list_id = MailList::findByUid($request->mail_list_uid)->id;
-            $automation->customer_id = $customer->id;
-            $automation->data = '[{"title":"Click to choose a trigger","id":"trigger","type":"ElementTrigger","options":{"init":"false", "key": ""}}]';
-            $automation->save();
             
             return response()->json([
                 'status' => 'success',
@@ -220,20 +214,7 @@ class Automation2Controller extends Controller
             return $this->notAuthorized();
         }
         
-        $types = [
-            'welcome-new-subscriber',
-            'say-happy-birthday',
-            'subscriber-added-date',
-            'specific-date',
-            'say-goodbye-subscriber',
-            'api-3-0',
-            'weekly-recurring',
-            'monthly-recurring',
-        ];
-
-        if (config('custom.woo')) {
-            $types[] = 'woo-abandoned-cart';
-        }
+        $types = Automation2::getTriggerTypes();
         
         return view('automation2.triggerSelectPupop', [
             'types' => $types,

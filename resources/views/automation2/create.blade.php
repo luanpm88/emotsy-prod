@@ -5,6 +5,8 @@
         <div class="col-md-12">
             <form id="automationCreate" action="{{ action("Automation2Controller@create") }}" method="POST" class="form-validate-jqueryz">
                 {{ csrf_field() }}            
+
+                <input type="hidden" name="trigger_type" value="{{ request()->trigger_type }}" />
         
                 <h1 class="mb-20">{{ trans('messages.automation.create_automation') }}</h1>
             
