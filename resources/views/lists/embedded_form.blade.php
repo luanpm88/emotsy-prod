@@ -17,10 +17,10 @@
 
     @include("lists._menu")
 
-    <h3 class="text-semibold text-primary">{{ trans('messages.Embedded_form') }}</h3>
+    <h2 class="text-semibold text-primary my-4">{{ trans('messages.Embedded_form') }}</h2>
     <div class="row">
         <div class="col-md-12">
-            <h4 class="text-semibold">{{ trans('messages.Form_options') }}</h4>
+            <h4 class="text-semibold">{{ trans('messages.options') }}</h4>
             <form action="{{ action("MailListController@embeddedForm", $list->uid) }}" class="embedded-options-form">
                 <div class="d-flex justify-content-space-between" style="width:100%;justify-content: space-between">
                     <div class="me-4">

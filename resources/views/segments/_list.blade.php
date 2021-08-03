@@ -51,14 +51,14 @@ edit
                                     class="caret ml-0"></span></button>
                         <ul class="dropdown-menu dropdown-menu-end">
                             @if (\Gate::allows('delete', $item))
-                                <li><a class="ajax_link"
+                                <li><a class="dropdown-item list-action-single"
                                        link-confirm="{{ trans('messages.delete_segments_confirm') }}"
                                        href="{{ action('SegmentController@delete', ['list_uid' => $list->uid, "uids" => $item->uid]) }}"><i
                                                 class="icon-trash"></i> {{ trans("messages.delete") }}</a></li>
                             @endif
                             @if (\Gate::allows('export', $item))
                                 <li>
-                                    <a href="{{ action('SubscriberController@export', [
+                                    <a class="dropdown-item" href="{{ action('SubscriberController@export', [
                                         'list_uid' => $list->uid,
                                         'segment_uid' => $item->uid,
                                     ]) }}"><i
@@ -75,14 +75,18 @@ edit
     
 @elseif (!empty(request()->keyword))
     <div class="empty-list">
-        <i class="icon-make-group"></i>
+        <span class="material-icons-outlined">
+splitscreen
+</span>
 		<span class="line-1">
 			{{ trans('messages.no_search_result') }}
 		</span>
     </div>
 @else
     <div class="empty-list">
-        <i class="icon-make-group"></i>
+        <span class="material-icons-outlined">
+splitscreen
+</span>
 		<span class="line-1">
 			{{ trans('messages.segment_empty_line_1') }}
 		</span>
