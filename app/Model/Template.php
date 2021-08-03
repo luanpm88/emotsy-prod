@@ -252,8 +252,13 @@ class Template extends Model
     {
         $copy = new self();
 
-        // UID must be present in order to create directory and to transformURL
+        // UID and Customer ID must be present first, in order to create directory and to transformURL
         $copy->generateUid();
+        // IMPORTANT
+        // copy a shared template to customer --> then customer_id must be present
+        // copy a customer template to customer --> either present or null is ok
+        // copy a shared template to another shared template --> then customer_id must be empty (of course)
+        $copy->customer_id = isset($attributes['customer_id']) ? $attributes['customer_id'] : $this->customer_id;
 
         // Copy content
         // The two steps below are important
@@ -268,12 +273,6 @@ class Template extends Model
 
         // Overwrite attributes :name
         $copy->name = isset($attributes['name']) ? $attributes['name'] : $this->name;
-
-        // IMPORTANT
-        // copy a shared template to customer --> then customer_id must be present
-        // copy a customer template to customer --> either present or null is ok
-        // copy a shared template to another shared template --> then customer_id must be empty (of course)
-        $copy->customer_id = isset($attributes['customer_id']) ? $attributes['customer_id'] : $this->customer_id;
 
         // Then save, generate UID, created_at, updated_at
         $copy->save();
@@ -569,7 +568,6 @@ class Template extends Model
     public function extractAssetRelativePath($absPath)
     {
         $myPath = $this->getStoragePath('/');
-
         if (strpos($absPath, $myPath) !== 0) {
             return null;
         }
@@ -623,7 +621,6 @@ class Template extends Model
             if (strpos($url, '/assets/') === 0) {
                 $assetPath = $this->getAssetFileFromUrl($url);
                 $relativePath = $this->extractAssetRelativePath($assetPath);
-
                 if ($relativePath) {
                     return $relativePath;
                 } else {
