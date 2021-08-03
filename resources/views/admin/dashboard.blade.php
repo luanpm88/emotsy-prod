@@ -44,7 +44,7 @@ assignment_turned_in
                             <div class="col-sm-5 col-md-5">
                                 <div class="d-flex">
                                     <div class="me-3 pt-1">
-                                        <img width="35px" style="opacity:0.8" src="https://acelle.com/images/icons/dark/SVG/plan.svg">
+                                        <img width="35px" style="opacity:0.8" src="{{ url('images/icons/dark/SVG/plan.svg') }}">
                                     </div>
                                     <div>
                                         <h6 class="mt-0 mb-0 text-semibold">
