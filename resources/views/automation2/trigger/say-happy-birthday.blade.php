@@ -10,7 +10,7 @@
             'name' => 'options[before]',
             'value' => $trigger->getOption('before'),
             'help_class' => 'trigger',
-            'options' => $automation->getDelayBeforeOptions(),
+            'options' => Acelle\Model\Automation2::getDelayBeforeOptions(),
             'rules' => $rules,
         ])
 

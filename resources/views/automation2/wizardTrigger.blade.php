@@ -11,7 +11,7 @@
 					@foreach ($types as $type)
 						<a class="box-item trigger-select-but trigger-{{ $type }} shadow-sm"
 							data-key="{{ $type }}"	
-							href="{{ action('Automation2Controller@create', [
+							href="{{ action('Automation2Controller@wizardTriggerOption', [
 								'trigger_type' => $type,
 							]) }}"					
 						>							

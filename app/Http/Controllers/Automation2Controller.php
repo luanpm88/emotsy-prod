@@ -45,21 +45,73 @@ class Automation2Controller extends Controller
         ]);
     }
 
-    public function createTrigger(Request $request)
+    public function wizardTrigger(Request $request)
     {
         $types = Automation2::getTriggerTypes();
+
+        if ($request->trigger_type) {
+            $automation = new Automation2();
+
+            return view('automation2.wizardTriggerOption', [
+                'automation' => $automation,
+                'trigger' => $automation->getTrigger(),
+                'trigger_type' => $request->trigger_type,
+                'rules' => $this->triggerRules()[$request->trigger_type],
+            ]);
+        }
         
-        return view('automation2.createTrigger', [
+        return view('automation2.wizardTrigger', [
             'types' => $types,
         ]);
     }
+    
+    public function wizardTriggerOption(Request $request)
+    {
+        // saving
+        if ($request->isMethod('post')) {
+            $rules = $this->triggerRules()[$request->options['key']];
 
-    /**
-     * Creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create(Request $request)
+            // make validator
+            $validator = Validator::make($request->all(), array_merge($rules, [
+                'mail_list_uid' => 'required',
+            ]));
+                
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('automation2.wizardTriggerOption', [
+                    'trigger_type' => $request->trigger_type,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            $customer = $request->user()->customer;
+            $automation = $customer->automation2s()->make()->newDefault();
+            
+            return view('automation2.wizard', [
+                'automation' => $automation,
+                'trigger_type' => $request->trigger_type,
+            ]);
+        }
+        
+        return view('automation2.wizardTriggerOption', [
+            'trigger_type' => $request->trigger_type,
+        ]);
+    }
+
+    public function wizardListFieldSelect(Request $request)
+    {
+        if (!$request->list_uid) {
+            return null;
+        }
+
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+
+        return view('automation2.wizardListFieldSelect', [
+            'list' => $list,
+        ]);
+    }
+
+    public function wizard(Request $request)
     {
         $customer = $request->user()->customer;
         $automation = $customer->automation2s()->make()->newDefault();
@@ -75,7 +127,7 @@ class Automation2Controller extends Controller
             
             // redirect if fails
             if ($validator->fails()) {
-                return response()->view('automation2.create', [
+                return response()->view('automation2.wizard', [
                     'automation' => $automation,
                     'errors' => $validator->errors(),
                 ], 400);
@@ -88,7 +140,7 @@ class Automation2Controller extends Controller
             ], 201);
         }
         
-        return view('automation2.create', [
+        return view('automation2.wizard', [
             'automation' => $automation,
         ]);
     }
@@ -434,7 +486,7 @@ class Automation2Controller extends Controller
         }
         
         if ($request->key == 'wait') {
-            $delayOptions = $automation->getDelayOptions();
+            $delayOptions = \Acelle\Model\Automation2::getDelayOptions();
             $parts = explode(' ', $request->time);
             $title = trans('messages.time.wait_for') . ' ' . $parts[0] . ' ' . trans_choice('messages.time.' . $parts[1], $parts[0]);
 
@@ -582,7 +634,7 @@ class Automation2Controller extends Controller
         // saving
         if ($request->isMethod('post')) {
             if ($request->key == 'wait') {
-                $delayOptions = $automation->getDelayOptions();
+                $delayOptions = \Acelle\Model\Automation2::getDelayOptions();
                 $parts = explode(' ', $request->time);
                 $title = trans('messages.time.wait_for') . ' ' . $parts[0] . ' ' . trans_choice('messages.time.' . $parts[1], $parts[0]);
 

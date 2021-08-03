@@ -188,7 +188,6 @@ class Automation2 extends Model
     {
         return [
             'name' => 'required',
-            'mail_list_uid' => 'required',
         ];
     }
 
@@ -332,7 +331,7 @@ class Automation2 extends Model
     /**
      * Get delay options.
      */
-    public function getDelayOptions($moreOptions=[])
+    public static function getDelayOptions($moreOptions=[])
     {
         return array_merge($moreOptions, [
             ['text' => trans_choice('messages.automation.delay.minute', 1), 'value' => '1 minute'],
@@ -361,7 +360,7 @@ class Automation2 extends Model
     /**
      * Get delay or before options.
      */
-    public function getDelayBeforeOptions()
+    public static function getDelayBeforeOptions()
     {
         return [
             ['text' => trans_choice('messages.automation.delay.0_day', 0), 'value' => '0 day'],

@@ -560,8 +560,10 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('automation2/{uid}/trigger/select', 'Automation2Controller@triggerSelectPupop');
     Route::get('automation2/{uid}/trigger/select/confirm', 'Automation2Controller@triggerSelectConfirm');
     Route::match(['get'], 'automation2/{uid}/edit', 'Automation2Controller@edit');
-    Route::match(['get', 'post'], 'automation2/create', 'Automation2Controller@create');
-    Route::get('automation2/create/trigger', 'Automation2Controller@createTrigger');
+    Route::match(['get', 'post'], 'automation2/wizard', 'Automation2Controller@wizard');
+    Route::get('automation2/wizard/trigger', 'Automation2Controller@wizardTrigger');
+    Route::match(['get', 'post'], 'automation2/wizard/trigger/option', 'Automation2Controller@wizardTriggerOption');
+    Route::get('automation2/wizard/trigger/option/field-select', 'Automation2Controller@wizardListFieldSelect');
     Route::patch('automation2/disable', 'Automation2Controller@disable');
     Route::patch('automation2/enable', 'Automation2Controller@enable');
     Route::delete('automation2/delete', 'Automation2Controller@delete');
