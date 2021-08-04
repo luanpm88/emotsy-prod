@@ -37,19 +37,21 @@
 
     <script>
         $(function() {
-            $('#checkoutForm').submit(function(e) {
-                var payment_method = $(this).find('[name=payment_method]').val();
+            @if (!$invoice->isFree())
+                $('#checkoutForm').submit(function(e) {
+                    var payment_method = $(this).find('[name=payment_method]').val();
 
-                if (!payment_method) {
-                    e.preventDefault();
+                    if (!payment_method) {
+                        e.preventDefault();
 
-                    new Dialog('alert', {
-                        message: '{{ trans('messages.subscription.no_payment_method_selected') }}',
-                    })
+                        new Dialog('alert', {
+                            message: '{{ trans('messages.subscription.no_payment_method_selected') }}',
+                        })
 
-                    return false;
-                }
-            });
+                        return false;
+                    }
+                });
+            @endif
         });
     </script>
 @endif
