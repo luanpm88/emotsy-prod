@@ -4,6 +4,7 @@ namespace Acelle\Library;
 
 use File;
 use Carbon\Carbon;
+use Exception;
 
 class QuotaTracker
 {
@@ -11,8 +12,8 @@ class QuotaTracker
     protected $mode = 'minute'; // hour, day, month, year
     protected $seperator = ':';
     protected $blockFormat = [
-        'minute' => 'Ymdhi',
-        'hour' => 'Ymdh00',
+        'minute' => 'YmdHi',
+        'hour' => 'YmdH00',
         'day' => 'Ymd0000',
         'month' => 'Ym000000',
         'year' => 'Y00000000',
@@ -31,32 +32,47 @@ class QuotaTracker
         }
     }
 
-    public function count($now = null)
+    public function check(Carbon $now = null, array $limits = [])
     {
         $lock = new Lockable($this->filepath);
         $lock->getExclusiveLock(function ($fopen) use ($now) {
-            $currentBlock = $this->newBlock($now);
-            list($lastBlock, $count) = $this->parseLastRecord($fopen);
+            $now = $now ?: Carbon::now();
 
-            // EMPTY() is safer than IS_NULL()
-            if ($currentBlock == $lastBlock) {
-                $record = $this->buildRecord($lastBlock, $count + 1);
-                $this->updateRecord($record, $fopen);
-            } else {
-                $record = $this->buildRecord($currentBlock, $count = 1);
-                $this->addRecord($record, $fopen);
-            }
-        }, $timeout = 5);
+            $this->test($now, $limit, $fopen);
+            $this->count($now, $fopen);
+
+        }, $timeout = 15);
+    }
+
+    public function count(Carbon $now, $fopen)
+    {
+        $currentBlock = $this->makeBlock($now); // create block for the current date/time
+        list($lastBlock, $count) = $this->parseLastRecord($fopen);
+
+        // EMPTY() is safer than IS_NULL()
+        if ($currentBlock == $lastBlock) {
+            $record = $this->buildRecord($lastBlock, $count + 1);
+            $this->updateRecord($record, $fopen);
+        } else {
+            $record = $this->buildRecord($currentBlock, $count = 1);
+            $this->addRecord($record, $fopen);
+        }
+
     }
 
     private function parseLastRecord($fopen)
     {
         $lastRecord = $this->getLastRecord($fopen);
-        if (empty($lastRecord)) {
+        return $this->parseBlock($lastRecord);
+    }
+
+    private function parseBlock(string $record)
+    {
+        if (empty($record)) {
             return null;
         }
 
-        return explode($this->seperator, $lastRecord);
+        return explode($this->seperator, $record);
     }
 
     public function buildRecord($block, $count)
@@ -64,10 +80,11 @@ class QuotaTracker
         return "{$block}{$this->seperator}{$count}";
     }
 
-    public function newBlock($now = null)
+    public function makeBlock($now)
     {
+        $now = $now ?: Carbon::now();
         $format = $this->blockFormat[$this->mode];
-        return Carbon::now()->format($format);
+        return $now->format($format);
     }
 
     public function test()
@@ -200,5 +217,81 @@ class QuotaTracker
     public function readContent()
     {
         echo file_get_contents($this->filepath);
+    }
+
+    public function test(Carbon $now, array $limits, $fopen)
+    {
+        // [
+        //     [
+        //         'name' => 'Emails per minute',
+        //         'period_base' => 'minute'
+        //         'period_value' => '1'
+        //         'limit' => 10,
+        //     ], [
+        //         'name' => 'Emails per 12 hours',
+        //         'period_base' => 'hour',
+        //         'period_value' => '12',
+        //         'limit' => 2000
+        //     ], [
+        //         ....
+        //     ]
+        // ]
+        //
+
+        foreach($limits as $limit) {
+            $period = sprintf("%s %s", $limit['period_value'], $limit['period_base']);
+            $fromDatetime = $now->copy()->subtract($period);
+
+            $creditsUsed = $this->getCreditsUsed($fromDatetime, $now);
+
+            if ($creditsUsed >= $limit['limit']) {
+                throw new Exception(sprintf("%s exceeded! %s/%s used", $limit['name'], $creditsUsed, $limit['limit']));
+                //return false;
+            }
+
+            //return true;
+        }
+    }
+
+    public function getRecords(Carbon $fromDatetime, Carbon $toDatetime, $fopen)
+    {
+
+        $fromDatetimeStr = $this->makeBlock($fromDatetime);
+        $toDatetimeStr = $this->makeBlock($toDatetime);
+
+        echo "From: $fromDatetimeStr ==> $toDatetimeStr\n";
+
+        $records = [];
+        $file = fopen($this->filepath, 'r');
+        while (!feof($file)) {
+            $record = trim(fgets($file));
+            list($block, $count) = $this->parseBlock($record);
+
+            if (empty($block)) {
+                throw new Exception("Invalid block {$record}");
+            }
+
+            if ($block > $fromDatetimeStr && $block <= $toDatetimeStr) {
+                $records[] = [$block, $count];
+            }
+        }
+
+        // Close file
+        fclose($file);
+
+        // Return
+        return $records;
+    }
+
+    public function getCreditsUsed(Carbon $fromDatetime, Carbon $toDatetime)
+    {
+        $records = $this->getRecords($fromDatetime, $toDatetime);
+        $counts = array_map(function($record) {
+            list($block, $count) = $record;
+            return $count;
+        }, $records);
+
+        $total = array_sum($counts);
+        return $total;
     }
 }

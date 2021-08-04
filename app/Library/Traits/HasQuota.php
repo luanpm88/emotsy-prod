@@ -54,11 +54,12 @@ trait HasQuota
         }
     }
 
-    public function checkQuota()
+    public function checkQuota($name, array $limits)
     {
         // Check quota allowance
-        $quotaTracker = new QuotaTracker($this->getQuotaTrackerLogFile($name), $this->getQuotaSettings());
-        if (!$quotaTracker->check()) {
+        $quotaTracker = new QuotaTracker($this->getQuotaLogFile($name));
+        if (!$quotaTracker->check($limits, $now = null, $failed)) {
+        	var_dump($failed);
             throw new Exception("Quota limits reached"); // or Callback here
         }
     }
