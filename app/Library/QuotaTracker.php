@@ -31,11 +31,11 @@ class QuotaTracker
         }
     }
 
-    public function count()
+    public function count($now = null)
     {
         $lock = new Lockable($this->filepath);
-        $lock->getExclusiveLock(function($fopen) {
-            $currentBlock = $this->newBlock();
+        $lock->getExclusiveLock(function ($fopen) use ($now) {
+            $currentBlock = $this->newBlock($now);
             list($lastBlock, $count) = $this->parseLastRecord($fopen);
 
             var_dump($currentBlock);
@@ -68,7 +68,7 @@ class QuotaTracker
         return "{$block}{$this->seperator}{$count}";
     }
 
-    public function newBlock()
+    public function newBlock($now = null)
     {
         echo $this->blockFormat[$this->mode];
         $format = $this->blockFormat[$this->mode];
@@ -81,7 +81,8 @@ class QuotaTracker
     }
 
     // Thanks to https://stackoverflow.com/questions/15025875
-    private function getLastRecord($fopen) {
+    private function getLastRecord($fopen)
+    {
         // Find offline
         fseek($fopen, 0, SEEK_END);
         $offset = ftell($fopen) - 1; // Offset values from: -1, 0, 1, 2...
@@ -94,7 +95,7 @@ class QuotaTracker
 
         // Ignore consecutive empty newlines
         $char = fgetc($fopen);
-        while($offset >= 0 && ($char === "\n")) {
+        while ($offset >= 0 && ($char === "\n")) {
             fseek($fopen, $offset--);
             $char = fgetc($fopen);
         }
@@ -107,7 +108,7 @@ class QuotaTracker
         // Continue with offset $offset;
         fseek($fopen, $offset--);
         $char = fgetc($fopen);
-        while($offset >= 0 && $char != "\n") {
+        while ($offset >= 0 && $char != "\n") {
             fseek($fopen, $offset--);
             $char = fgetc($fopen);
         }
@@ -133,7 +134,7 @@ class QuotaTracker
 
         // Ignore consecutive empty newlines
         $char = fgetc($fopen);
-        while($offset >= 0 && ($char === "\n")) {
+        while ($offset >= 0 && ($char === "\n")) {
             echo "Result is is N\n";
             echo "Next with $offset\n";
             fseek($fopen, $offset--);
@@ -147,7 +148,7 @@ class QuotaTracker
         // Continue with offset $offset;
         fseek($fopen, $offset);
         $char = fgetc($fopen);
-        while($offset >= 0 && $char != "\n") {
+        while ($offset >= 0 && $char != "\n") {
             $offset -= 1;
             fseek($fopen, $offset);
             $char = fgetc($fopen);
@@ -172,7 +173,7 @@ class QuotaTracker
 
         fseek($fopen, $offset); //seek to the end of the line
         $char = fgetc($fopen);
-        while($offset > 0 && ($char === "\n")) {
+        while ($offset > 0 && ($char === "\n")) {
             $offset -= 1;
             fseek($fopen, $offset);
             $char = fgetc($fopen);
@@ -192,7 +193,7 @@ class QuotaTracker
         } else {
             fseek($fopen, $offset); //seek to the end of the line
             $char = fgetc($fopen);
-            while($offset > 0 && ($char === "\n")) {
+            while ($offset > 0 && ($char === "\n")) {
                 $offset -= 1;
                 fseek($fopen, $offset);
                 $char = fgetc($fopen);
@@ -207,5 +208,4 @@ class QuotaTracker
     {
         echo file_get_contents($this->filepath);
     }
-
 }
