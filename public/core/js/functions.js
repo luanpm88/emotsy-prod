@@ -65,11 +65,6 @@ function initJs(container)
         tags: true,
     });
 
-    // ulimited checkbox
-    container.find('.unlimited-check input[type=checkbox]').on('change', function() {
-        unlimitedCheck($(this));
-    }).trigger("change");
-
     // Select2 ajax
     container.find(".select2-ajax").each(function() {
         initSelect2Ajax($(this));
@@ -162,32 +157,6 @@ function initSelect2Ajax(select) {
         minimumInputLength: 0,
         templateResult: formatSelect2TextOption,
         templateSelection: formatSelect2TextSelected,
-    });
-}
-
-function unlimitedCheck(input) {
-    var box = input.parents(".boxing");
-    var checked = input.is(":checked");
-    // unlimited check
-    box.find("input[type=text]").each(function() {
-        var input = $(this);
-        var d_val = $(this).attr('default-value');
-
-        if (typeof(d_val) === 'undefined') {
-            d_val = 0;
-        }
-
-        if(checked) {
-            input.val(-1);
-            input.addClass("text-trans");
-            input.attr("readonly", "readonly");
-        } else {
-            if(input.val() == "-1") {
-                input.val(d_val);
-            }
-            input.removeClass("text-trans");
-            input.removeAttr("readonly", "readonly");
-        }
     });
 }
 

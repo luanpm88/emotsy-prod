@@ -1,5 +1,5 @@
 <div class="insight-topine d-flex small align-items-center">
-    <div class="insight-desc mr-auto">
+    <div class="insight-desc mr-auto pe-3">
         {{ trans('messages.automation.timline.intro') }}
     </div>
     <div class="insight-action">

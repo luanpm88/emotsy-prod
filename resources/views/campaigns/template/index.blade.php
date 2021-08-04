@@ -45,9 +45,6 @@ forward_to_inbox
                             ]) }}</p>
 
                             <p class="mt-20">
-                                <a href="{{ action('CampaignController@templateCreate', $campaign->uid) }}" class="btn btn-primary bg-grey-600 me-1">
-                                    {{ trans('messages.campaign.change_template') }}
-                                </a>
                                 @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']) && $campaign->template->builder)
                                     <a href="{{ action('CampaignController@templateEdit', $campaign->uid) }}" class="btn btn-primary me-1 template-compose">
                                         {{ trans('messages.campaign.email_builder_pro') }}
@@ -58,6 +55,9 @@ forward_to_inbox
                                         {{ trans('messages.campaign.email_builder_classic') }}
                                     </a>
                                 @endif
+                                <a href="{{ action('CampaignController@templateCreate', $campaign->uid) }}" class="btn btn-link bg-grey-600 me-1">
+                                    {{ trans('messages.campaign.change_template') }}
+                                </a>
                             </p>
                         </div>
                     </div>

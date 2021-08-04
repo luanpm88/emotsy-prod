@@ -1,5 +1,5 @@
 <div class="sub_section">
-    <h2 class="text-semibold">{{ trans('messages.list.title.edit') }}</h2>
+    <h2 class="text-semibold my-4">{{ trans('messages.list.title.edit') }}</h2>
     <h3 class="text-semibold">{{ trans('messages.list_details') }}
     </h3>
 

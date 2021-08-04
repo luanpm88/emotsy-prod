@@ -599,7 +599,7 @@ class SubscriberController extends Controller
         foreach ($subscribers->get() as $subscriber) {
             // authorize
             if (\Gate::allows('update', $to_list)) {
-                $subscriber->copy($to_list, $request->type);
+                $subscriber->copy($to_list);
             }
         }
 
@@ -643,7 +643,7 @@ class SubscriberController extends Controller
         foreach ($subscribers->get() as $subscriber) {
             // authorize
             if (\Gate::allows('update', $to_list)) {
-                $subscriber->move($to_list, $request->type);
+                $subscriber->move($to_list);
             }
         }
 

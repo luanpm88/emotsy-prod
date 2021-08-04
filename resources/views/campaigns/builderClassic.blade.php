@@ -1,4 +1,4 @@
-@extends('layouts.core.dark')
+@extends('layouts.core.frontend_dark')
 
 @section('title', trans('messages.edit_template'))
 
@@ -6,7 +6,7 @@
 	<script type="text/javascript" src="{{ URL::asset('core/tinymce/tinymce.min.js') }}"></script>        
     <script type="text/javascript" src="{{ URL::asset('core/js/editor.js') }}"></script>
 
-    <script src="{{ URL::asset('assets2/js/UrlAutoFill.js') }}"></script>
+    <script src="{{ URL::asset('core/js/UrlAutoFill.js') }}"></script>
 @endsection
 
 @section('menu_title')
@@ -108,6 +108,22 @@
             </div>            
         </div>   
     <form>
+
+    <script>
+        $(function() {
+            // Click to insert tag
+            $(document).on("click", ".insert_tag_button", function() {
+                var tag = $(this).attr("data-tag-name");
+
+                if($('textarea[name="html"]').length || $('textarea[name="content"]').length) {
+                    tinymce.activeEditor.execCommand('mceInsertContent', false, tag);
+                } else {
+                    speechSynthesis;
+                    $('textarea[name="plain"]').val($('textarea[name="plain"]').val()+tag);
+                }
+            });
+        });
+    </script>
 
     <script>
         var urlFill = new UrlAutoFill([

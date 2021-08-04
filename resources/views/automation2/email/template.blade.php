@@ -22,7 +22,7 @@
                                 <a href="{{ action('Automation2Controller@templateEdit', [
                                         'uid' => $automation->uid,
                                         'email_uid' => $email->uid,
-                                    ]) }}" class="btn btn-secondary mr-1 template-compose"
+                                    ]) }}" class="btn btn-primary mr-1 template-compose"
                                 >
                                     {{ trans('messages.campaign.compose_email') }}
                                 </a>
@@ -39,7 +39,7 @@
                             <a href="{{ action('Automation2Controller@templateRemove', [
                                     'uid' => $automation->uid,
                                     'email_uid' => $email->uid,
-                                ]) }}" class="btn btn-outline-primary template-change"
+                                ]) }}" class="btn btn-link template-change"
                             >
                                 {{ trans('messages.campaign.change_template') }}
                             </a>

@@ -24,7 +24,7 @@ file_upload
         <div class="col-md-6">
         
             <p class="">
-                {!! trans('messages.template_upload_guide', ["link" => 'https://s3.amazonaws.com/acellemail/newsletter-template-green.zip']) !!}
+                {{ trans('messages.plugin.upload.instruction') }}
             </p>
         
             <form enctype="multipart/form-data" action="{{ action('Admin\PluginController@install') }}"

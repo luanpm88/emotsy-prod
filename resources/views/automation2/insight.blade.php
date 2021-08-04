@@ -3,7 +3,7 @@
 @include('automation2._tabs', ['tab' => 'insight'])
     
 <div class="insight-topine flex small">
-    <div class="insight-desc mr-auto">
+    <div class="insight-desc mr-auto pe-3">
         {{ trans('messages.automation.your_overview') }}
     </div>
     <div class="insight-time">

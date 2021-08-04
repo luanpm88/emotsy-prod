@@ -10,7 +10,7 @@
             'name' => 'options[delay]',
             'value' => $trigger->getOption('delay'),
             'help_class' => 'trigger',
-            'options' => $automation->getDelayOptions(),
+            'options' => \Acelle\Model\Automation2::getDelayOptions(),
             'rules' => $rules,
         ])
         

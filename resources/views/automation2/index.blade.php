@@ -2,6 +2,15 @@
 
 @section('title', trans('messages.Automations'))
 
+@section('head')
+    <script type="text/javascript" src="{{ URL::asset('core/datetime/anytime.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/datetime/moment.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/datetime/pickadate/picker.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('core/datetime/pickadate/picker.date.js') }}"></script>
+
+    <link rel="stylesheet" type="text/css" href="{{ URL::asset('core/css/automation.css') }}">
+@endsection
+
 @section('page_header')
 
     <div class="page-title">				
@@ -87,7 +96,7 @@ search
                 </div>
             </div>
             <div class="col-md-2 text-end">
-                <a href="{{ action("Automation2Controller@create") }}" role="button" class="btn btn-secondary create-automation2">
+                <a href="{{ action("Automation2Controller@wizard") }}" role="button" class="btn btn-secondary create-automation2">
                     <span class="material-icons-round">
 add
 </span> {{ trans('messages.automation.create') }}
@@ -122,7 +131,7 @@ add
         var createAutomationPopup;
     
         function showCreateCampaignPopup() {
-            var url = '{{ action("Automation2Controller@create") }}';
+            var url = '{{ action("Automation2Controller@wizardTrigger") }}';
             
             createAutomationPopup = new Popup();
             createAutomationPopup.load(url);            

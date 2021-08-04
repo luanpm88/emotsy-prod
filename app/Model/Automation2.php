@@ -188,7 +188,6 @@ class Automation2 extends Model
     {
         return [
             'name' => 'required',
-            'mail_list_uid' => 'required',
         ];
     }
 
@@ -332,7 +331,7 @@ class Automation2 extends Model
     /**
      * Get delay options.
      */
-    public function getDelayOptions($moreOptions=[])
+    public static function getDelayOptions($moreOptions=[])
     {
         return array_merge($moreOptions, [
             ['text' => trans_choice('messages.automation.delay.minute', 1), 'value' => '1 minute'],
@@ -361,7 +360,7 @@ class Automation2 extends Model
     /**
      * Get delay or before options.
      */
-    public function getDelayBeforeOptions()
+    public static function getDelayBeforeOptions()
     {
         return [
             ['text' => trans_choice('messages.automation.delay.0_day', 0), 'value' => '0 day'],
@@ -1355,5 +1354,56 @@ class Automation2 extends Model
     {
         $trigger = $this->autoTriggers()->where('subscriber_id', $subscriber->id)->latest()->first();
         return $trigger;
+    }
+
+    public static function getTriggerTypes()
+    {
+        $types = [
+            'welcome-new-subscriber',
+            'say-happy-birthday',
+            'subscriber-added-date',
+            'specific-date',
+            'say-goodbye-subscriber',
+            'api-3-0',
+            'weekly-recurring',
+            'monthly-recurring',
+        ];
+
+        if (config('custom.woo')) {
+            $types[] = 'woo-abandoned-cart';
+        }
+
+        return $types;
+    }
+
+    public function newDefault($fields=[])
+    {
+        if (!isset($fields['name'])) {
+            $this->name = trans('messages.automation.untitled');
+        } else {
+            $this->name = $fields['name'];
+        }
+
+        $this->status = self::STATUS_INACTIVE;
+        
+        return $this;
+    }
+
+    public function createFromArray($fields)
+    {
+        // make validator
+        $validator = \Validator::make($fields, $this->rules());
+        
+        // redirect if fails
+        if ($validator->fails()) {
+            return $validator;
+        }
+        
+        // pass validation and save
+        $this->mail_list_id = \Acelle\Model\MailList::findByUid($fields['mail_list_uid'])->id;
+        $this->data = '[{"title":"Click to choose a trigger","id":"trigger","type":"ElementTrigger","options":{"init":"false", "key": ""}}]';
+        $this->save();
+
+        return $validator;
     }
 }

@@ -149,6 +149,7 @@
                     var checked = group.unlimitedCheck.is(':checked');
                     
                     if (checked) {
+                        group.currentValue = group.textBox.val();
                         group.textBox.val(-1);
                         group.textBox.addClass("text-trans");
                         group.textBox.attr("readonly", "readonly");
@@ -167,10 +168,6 @@
     
                 group.unlimitedCheck.on('change', function() {
                     doCheck();
-                });
-
-                group.textBox.on('change', function() {
-                    group.currentValue = $(this).val();
                 });
     
                 doCheck();

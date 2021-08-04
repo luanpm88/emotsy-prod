@@ -860,15 +860,6 @@
   'opened_at' => 'Abierto en',
   'ip' => 'IP',
   'area' => 'Área',
-  'template_upload_guide' => '
-    	Por favor sube tu paquete de plantillas HTML. Normalmente, será un archivo .zip que contiene:
-        <ul>
-		<li>Un solo archivo .html y </li>
-		<li>Un directorio en el mismo nivel que contiene archivos importantes(JS, CSS, Imagenes, etc.)</li>
-        </ul>
-        <br />
-	Haz click <a class="text-semibold" href=":link" target="_blank">[here]</a> para descargar un ejemplo de una plantilla de email
-      ',
   'disable' => 'Deshabilitar',
   'enable' => 'Habilitar',
   'STYLE' => 'STYLE',
@@ -3751,4 +3742,7 @@
   'invoice.price' => 'Price',
   'invoice.cancel' => 'Cancel',
   'copy_plan' => 'Copy plan',
+  'template.upload.instruction' => 'Select a template package from your PC to upload. A template package should be a .ZIP archive containing an index.html file and other assets like CSS, images... You can download and try with a sample template package <a target="_blank" href=":link">here</a>',
+  'template.upload.warning' => 'Uploaded templates may not work well with the drag & drop builder. It is always recommended that you create a new template based on one of the awesome templates available, for optimized compatibility and efficiency',
+  'plugin.upload.instruction' => 'Select a plugin package from your PC to upload. Normally it is a ZIP archive containing the source files as well as meta information for the plugin.',
 ) ?>

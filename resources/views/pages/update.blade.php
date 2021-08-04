@@ -17,11 +17,7 @@
 
 				@include("lists._menu")
 
-				<!--<h2 class="text-bold text-primary mb-10"><span class="material-icons-outlined">
-web
-</span> {{ trans('messages.update_page') }}</h2>-->
-
-                <h2>{{ trans('messages.' . $layout->alias) }}</h2>
+                <h2 class="my-4">{{ trans('messages.' . $layout->alias) }}</h2>
 
                 @if ($layout->alias == 'sign_up_form')
                     <p class="alert alert-info mt-20 mb-20">{{ trans('messages.sign_up_form_url') }}<br /> <a target="_blank" href="{{ action('PageController@signUpForm', ['list_uid' => $list->uid]) }}" class="text-semibold">{{ action('PageController@signUpForm', ['list_uid' => $list->uid]) }}</a></p>

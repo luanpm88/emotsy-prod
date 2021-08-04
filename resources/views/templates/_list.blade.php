@@ -71,6 +71,17 @@
                         <div class="btn-group">
                             <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
                             <ul class="dropdown-menu dropdown-menu-end">
+                                @if (Auth::user()->customer->can('update', $template))
+                                    <li>
+                                        <a class="dropdown-item change-template-name"
+                                            href="{{ action('TemplateController@changeName', [
+                                                'uid' => $template->uid,
+                                            ]) }}">
+                                            <span class="material-icons-outlined">subtitles</span>
+                                            {{ trans("messages.template.change_name") }}
+                                        </a>
+                                    </li>
+                                @endif
                                 @if (Auth::user()->customer->can('preview', $template))
                                     <li><a class="dropdown-item" href="#preview" onclick="popupwindow('{{ action('TemplateController@preview', $template->uid) }}', '{{ $template->name }}', 800, 800)"><span class="material-icons-outlined">
 zoom_in
@@ -93,6 +104,20 @@ insert_photo
                                             <span class="material-icons-outlined">
 category
 </span> {{ trans("messages.template.categories") }}
+                                        </a>
+                                    </li>
+                                @endif
+                                @if (Auth::user()->customer->can('read', $template))
+                                    <li>
+                                        <a
+                                            href="{{ action('TemplateController@export', $template->uid) }}"
+                                            role="button"
+                                            class="dropdown-item"
+                                            link-method="POST"
+                                        >
+                                            <span class="material-icons-outlined me-2">
+download
+</span> {{ trans("messages.template.export") }}
                                         </a>
                                     </li>
                                 @endif
@@ -130,6 +155,16 @@ delete_outline
     
     <script>
         $(function() {
+            // change name click
+            $('.change-template-name').on('click', function(e) {
+                e.preventDefault();
+                var url = $(this).attr('href');
+
+                TemplatesList.getChangeNamePopup().load({
+                    url: url
+                });
+            });
+
             $('.copy-template-button').on('click', function(e) {
                 e.preventDefault();			
                 var url = $(this).attr('href');
@@ -159,6 +194,7 @@ delete_outline
 
         var TemplatesList = {
 			copyPopup: null,
+            changeNamePopup: null,
 
 			getCopyPopup: function() {
 				if (this.copyPopup === null) {
@@ -166,6 +202,14 @@ delete_outline
 				}
 
 				return this.copyPopup;
+			},
+            
+            getChangeNamePopup: function() {
+				if (this.changeNamePopup === null) {
+					this.changeNamePopup = new Popup();
+				}
+
+				return this.changeNamePopup;
 			}
 		}
     </script>

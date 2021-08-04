@@ -1,6 +1,6 @@
 <div class="row">
     <div class="col-md-12">
-        <ul class="nav nav-tabs nav-tabs-top nav-underline">
+        <ul class="nav nav-tabs nav-tabs-top nav-underline mb-1">
             <li rel0="MailListController/overview" class="nav-item">
                 <a href="{{ action('MailListController@overview', $list->uid) }}" class="nav-link">
                 <span class="material-icons-outlined">

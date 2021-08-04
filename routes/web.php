@@ -324,6 +324,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('lists/{list_uid}/pages/{alias}/preview', 'PageController@preview');
 
     // Template
+    Route::post('templates/{uid}/export', 'TemplateController@export');
+    Route::match(['get','post'], 'templates/{uid}/change-name', 'TemplateController@changeName');
     Route::match(['get','post'], 'templates/{uid}/categories', 'TemplateController@categories');
 
     Route::match(['get','post'], 'templates/{uid}/update-thumb-url', 'TemplateController@updateThumbUrl');
@@ -572,7 +574,10 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('automation2/{uid}/trigger/select', 'Automation2Controller@triggerSelectPupop');
     Route::get('automation2/{uid}/trigger/select/confirm', 'Automation2Controller@triggerSelectConfirm');
     Route::match(['get'], 'automation2/{uid}/edit', 'Automation2Controller@edit');
-    Route::match(['get', 'post'], 'automation2/create', 'Automation2Controller@create');
+    Route::match(['get', 'post'], 'automation2/wizard', 'Automation2Controller@wizard');
+    Route::get('automation2/wizard/trigger', 'Automation2Controller@wizardTrigger');
+    Route::match(['get', 'post'], 'automation2/wizard/trigger/option', 'Automation2Controller@wizardTriggerOption');
+    Route::get('automation2/wizard/trigger/option/field-select', 'Automation2Controller@wizardListFieldSelect');
     Route::patch('automation2/disable', 'Automation2Controller@disable');
     Route::patch('automation2/enable', 'Automation2Controller@enable');
     Route::delete('automation2/delete', 'Automation2Controller@delete');
@@ -622,6 +627,8 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/users', 'UserController');
 
     // Template
+    Route::post('admin/templates/{uid}/export', 'TemplateController@export');
+    Route::match(['get','post'], 'admin/templates/{uid}/change-name', 'TemplateController@changeName');
     Route::match(['get','post'], 'admin/templates/{uid}/categories', 'TemplateController@categories');
 
     Route::match(['get','post'], 'admin/templates/{uid}/update-thumb-url', 'TemplateController@updateThumbUrl');

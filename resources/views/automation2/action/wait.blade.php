@@ -7,7 +7,7 @@
 
 <div class="row">
     @php
-        $delayOptions = $automation->getDelayOptions();
+        $delayOptions = \Acelle\Model\Automation2::getDelayOptions();
         $exist = false;
 
         foreach($delayOptions as $deplayOption) {

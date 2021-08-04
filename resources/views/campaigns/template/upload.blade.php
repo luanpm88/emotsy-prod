@@ -12,8 +12,10 @@
                 
             @include('campaigns.template._tabs')
             
+            <p>{!! trans('messages.template.upload.instruction', ["link" => url('/download/Sample-Template.zip') ]) !!}</p>
+
             <div class="alert alert-info">
-                {!! trans('messages.template_upload_guide', ["link" => 'https://s3.amazonaws.com/acellemail/newsletter-template-green.zip']) !!}
+                {{ trans('messages.template.upload.warning') }}
             </div>
             
             <form enctype="multipart/form-data" action="{{ action('CampaignController@templateUpload', $campaign->uid) }}" method="POST" class="ajax_upload_form form-validate-jquery">
