@@ -38,15 +38,11 @@ class QuotaTracker
             $currentBlock = $this->newBlock($now);
             list($lastBlock, $count) = $this->parseLastRecord($fopen);
 
-            var_dump($currentBlock);
-            var_dump($lastBlock);
             // EMPTY() is safer than IS_NULL()
             if ($currentBlock == $lastBlock) {
-                echo "update\n";
                 $record = $this->buildRecord($lastBlock, $count + 1);
                 $this->updateRecord($record, $fopen);
             } else {
-                echo "add\n";
                 $record = $this->buildRecord($currentBlock, $count = 1);
                 $this->addRecord($record, $fopen);
             }
@@ -70,7 +66,6 @@ class QuotaTracker
 
     public function newBlock($now = null)
     {
-        echo $this->blockFormat[$this->mode];
         $format = $this->blockFormat[$this->mode];
         return Carbon::now()->format($format);
     }
@@ -135,8 +130,6 @@ class QuotaTracker
         // Ignore consecutive empty newlines
         $char = fgetc($fopen);
         while ($offset >= 0 && ($char === "\n")) {
-            echo "Result is is N\n";
-            echo "Next with $offset\n";
             fseek($fopen, $offset--);
             $char = fgetc($fopen);
         }

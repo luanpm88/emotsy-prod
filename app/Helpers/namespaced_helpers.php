@@ -139,3 +139,13 @@ function pcopy($src, $dst)
         File::copyDirectory($src, $dst);
     }
 }
+
+function ptouch($filepath)
+{
+    $dirname = dirname($filepath);
+    if (!File::exists($dirname)) {
+        File::makeDirectory($dirname, 0777, true, true);
+    }
+
+    touch($filepath);
+}
