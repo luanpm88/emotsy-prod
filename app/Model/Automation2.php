@@ -1494,14 +1494,46 @@ class Automation2 extends Model
         } elseif ($type == 'weekly-recurring') {
             return [
                 'id' => 'trigger',
-                'title' => 'Weekly recurring',
+                'title' => trans('messages.automation.trigger.weekly-recurring'),
                 'type' => 'ElementTrigger',
                 'child' => NULL,
                 'options' => [
                     'key' => 'weekly-recurring',
                     'type' => 'datetime',
-                    'days_of_week' =>$params['options']['days_of_week'],
+                    'days_of_week' => $params['options']['days_of_week'],
                     'at' => $params['options']['at'],
+                    'init' => 'true',
+                ],
+                'last_executed' => NULL,
+                'evaluationResult' => NULL,
+            ];
+        } elseif ($type == 'monthly-recurring') {
+            return [
+                'id' => 'trigger',
+                'title' => trans('messages.automation.trigger.monthly-recurring'),
+                'type' => 'ElementTrigger',
+                'child' => NULL,
+                'options' => [
+                    'key' => 'monthly-recurring',
+                    'type' => 'datetime',
+                    'days_of_month' => $params['options']['days_of_month'],
+                    'at' => $params['options']['at'],
+                    'init' => 'true',
+                ],
+                'last_executed' => NULL,
+                'evaluationResult' => NULL,
+            ];
+        } elseif ($type == 'woo-abandoned-cart') {
+            return [
+                'id' => 'trigger',
+                'title' => trans('messages.automation.trigger.woo-abandoned-cart'),
+                'type' => 'ElementTrigger',
+                'child' => NULL,
+                'options' => [
+                    'key' => 'woo-abandoned-cart',
+                    'type' => 'woo-abandoned-cart',
+                    'source_uid' => $params['options']['source_uid'],
+                    'wait' => $params['options']['wait'],
                     'init' => 'true',
                 ],
                 'last_executed' => NULL,
