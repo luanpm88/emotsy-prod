@@ -9,7 +9,13 @@
                 @foreach(request()->all() as $key => $value)
                     @if (is_array($value))
                         @foreach($value as $key2 => $value2)
-                            <input type="hidden" name="{{ $key }}[{{ $key2 }}]" value="{{ $value2 }}" />
+                            @if (is_array($value2))
+                                @foreach($value2 as $key3 => $value3)
+                                    <input type="hidden" name="{{ $key }}[{{ $key2 }}][]" value="{{ $value3 }}" />
+                                @endforeach
+                            @else
+                                <input type="hidden" name="{{ $key }}[{{ $key2 }}]" value="{{ $value2 }}" />
+                            @endif
                         @endforeach 
                     @else
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}" />
