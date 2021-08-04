@@ -1500,12 +1500,8 @@ class Automation2 extends Model
                 'options' => [
                     'key' => 'weekly-recurring',
                     'type' => 'datetime',
-                    'days_of_week' => [
-                        0 => '1',
-                        1 => '2',
-                        2 => '4',
-                    ],
-                    'at' => '03:17 PM',
+                    'days_of_week' =>$params['options']['days_of_week'],
+                    'at' => $params['options']['at'],
                     'init' => 'true',
                 ],
                 'last_executed' => NULL,
