@@ -75,7 +75,7 @@ class Automation2 extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'mail_list_id', 'status', 'data'
+        'uid', 'name', 'mail_list_id', 'status', 'data'
     ];
 
     /**
@@ -159,24 +159,6 @@ class Automation2 extends Model
     public function timelines()
     {
         return $this->hasMany('Acelle\Model\Timeline')->orderBy('created_at', 'DESC');
-    }
-
-    /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating automation.
-        static::creating(function ($item) {
-            $item->uid = uniqid();
-        });
-
-        // Create uid when creating automation.
-        static::created(function ($item) {
-            $item->updateCache();
-        });
     }
 
     /**
@@ -1385,25 +1367,152 @@ class Automation2 extends Model
         }
 
         $this->status = self::STATUS_INACTIVE;
-        
+
         return $this;
     }
 
-    public function createFromArray($fields)
+    public function createFromArray($params)
     {
         // make validator
-        $validator = \Validator::make($fields, $this->rules());
-        
+        $validator = \Validator::make($params, $this->rules());
+
         // redirect if fails
         if ($validator->fails()) {
             return $validator;
         }
-        
+
+        $this->fill($params);
+
         // pass validation and save
-        $this->mail_list_id = \Acelle\Model\MailList::findByUid($fields['mail_list_uid'])->id;
-        $this->data = '[{"title":"Click to choose a trigger","id":"trigger","type":"ElementTrigger","options":{"init":"false", "key": ""}}]';
+        $this->mail_list_id = \Acelle\Model\MailList::findByUid($params['mail_list_uid'])->id;
+
+        $data = [
+            $this->createTrigger($params)
+        ];
+        $this->data = json_encode($data);
         $this->save();
 
         return $validator;
+    }
+
+    // Temporary function
+    public function createTrigger($params)
+    {
+        $type = $params['trigger_type'];
+        if ($type == 'welcome-new-subscriber') {
+            return [
+                'id' => 'trigger',
+                'title' => trans('messages.automation.trigger.tree.welcome-new-subscriber'),
+                'type' => 'ElementTrigger',
+                'child' => null,
+                'options' => [
+                  'key' => 'welcome-new-subscriber',
+                  'type' => 'list-subscription',
+                  'init' => true,
+                ],
+                'last_executed' => null,
+                'evaluationResult' => null,
+            ];
+        } elseif ($type == 'say-happy-birthday') {
+            return [
+                'id' => 'trigger',
+                'title' => trans('messages.automation.trigger.tree.say-happy-birthday'),
+                'type' => 'ElementTrigger',
+                'child' => NULL,
+                'options' => [
+                    'key' => 'say-happy-birthday',
+                    'type' => 'event',
+                    'field' => $params['options']['field'],
+                    'before' => $params['options']['before'],
+                    'at' => $params['options']['at'],
+                    'init' => 'true',
+                ],
+                'last_executed' => NULL,
+                'evaluationResult' => NULL,
+            ];
+        } elseif ($type == 'specific-date') {
+            return [
+                'id' => 'trigger',
+                'title' => trans('messages.automation.trigger.tree.specific-date'),
+                'type' => 'ElementTrigger',
+                'child' => NULL,
+                'options' => [
+                    'key' => 'specific-date',
+                    'type' => 'datetime',
+                    'date' => $params['options']['date'],
+                    'at' => $params['options']['at'],
+                    'init' => 'true',
+                ],
+                'last_executed' => NULL,
+                'evaluationResult' => NULL,
+            ];
+        } elseif ($type == 'subscriber-added-date') {
+            return [
+                'id' => 'trigger',
+                'title' => trans('messages.automation.trigger.tree.subscriber-added-date'),
+                'type' => 'ElementTrigger',
+                'child' => NULL,
+                'options' => [
+                    'key' => 'subscriber-added-date',
+                    'type' => 'event',
+                    'field' => 'created_at',
+                    'delay' => $params['options']['delay'],
+                    'at' => $params['options']['at'],
+                    'init' => 'true',
+                ],
+                'last_executed' => NULL,
+                'evaluationResult' => NULL,
+            ];
+        } elseif ($type == 'say-goodbye-subscriber') {
+            return [
+                'id' => 'trigger',
+                'title' => trans('messages.automation.trigger.tree.say-goodbye-subscriber'),
+                'type' => 'ElementTrigger',
+                'child' => NULL,
+                'options' => [
+                    'key' => 'say-goodbye-subscriber',
+                    'init' => 'true',
+                ],
+                'last_executed' => NULL,
+                'evaluationResult' => NULL,
+            ];
+        } elseif ($type == 'api-3-0') {
+            return [
+                'id' => 'trigger',
+                'title' => trans('messages.automation.trigger.tree.api-3-0'),
+                'type' => 'ElementTrigger',
+                'child' => NULL,
+                'options' => [
+                    'key' => 'api-3-0',
+                    'type' => 'api',
+                    'endpoint' => $params['options']['endpoint'],
+                    'init' => 'true',
+                ],
+                'last_executed' => NULL,
+                'evaluationResult' => NULL,
+            ];
+        } elseif ($type == 'weekly-recurring') {
+            return [
+                'id' => 'trigger',
+                'title' => 'Weekly recurring',
+                'type' => 'ElementTrigger',
+                'child' => NULL,
+                'options' => [
+                    'key' => 'weekly-recurring',
+                    'type' => 'datetime',
+                    'days_of_week' => [
+                        0 => '1',
+                        1 => '2',
+                        2 => '4',
+                    ],
+                    'at' => '03:17 PM',
+                    'init' => 'true',
+                ],
+                'last_executed' => NULL,
+                'evaluationResult' => NULL,
+            ];
+        }
+
+        throw new Exception("Invalid trigger type: ".$type);
     }
 }
