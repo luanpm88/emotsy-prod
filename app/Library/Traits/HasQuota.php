@@ -7,9 +7,9 @@ use Acelle\Library\QuotaTracker;
 
 trait HasQuota
 {
-	/** Other related functions are enforced in the HasQuotaInterafce **/
+    /** Other related functions are enforced in the HasQuotaInterafce **/
 
-	// public function getCreditsLimit(string $name) : ?int;
+    // public function getCreditsLimit(string $name) : ?int;
     // public function getCreditsLogFile(string $name) : string;
     // public function getQuotaSettings(string $name) : ?array;
     // public function getQuotaLogFile(string $name) : string;
@@ -27,26 +27,26 @@ trait HasQuota
 
     public function withQuota($name, Closure $execute, array $otherSubjects)
     {
-    	$otherSubjects[] = $this;
+        $otherSubjects[] = $this;
 
-        foreach($subjects as $subject) {
+        foreach ($subjects as $subject) {
             $subject->checkCredits($name);
             $subject->checkQuota($name);
-    	}
+        }
 
         // Okie, execute
         $execute();
 
         // Update credits used and tracker's log
-        foreach($subjects as $subject) {
+        foreach ($subjects as $subject) {
             $subject->countCreditUsed($name);
             $subject->updateQuotaLog($name);
-    	}
+        }
     }
 
     public function checkCredits($name)
     {
-    	$creditsUsed = $this->getCreditsUsed($name);
+        $creditsUsed = $this->getCreditsUsed($name);
 
         // Check credits used
         if ($creditsUsed >= $this->getCreditLimit($name)) {
@@ -56,7 +56,7 @@ trait HasQuota
 
     public function checkQuota()
     {
-    	// Check quota allowance
+        // Check quota allowance
         $quotaTracker = new QuotaTracker($this->getQuotaTrackerLogFile($name), $this->getQuotaSettings());
         if (!$quotaTracker->check()) {
             throw new Exception("Quota limits reached"); // or Callback here
@@ -66,10 +66,10 @@ trait HasQuota
     // MAIN
     public function countCreditUsed(string $name)
     {
-    	$filepath = $this->getCreditsLogFile($name);
-    	if (!file_exists($filepath)) {
-    		\Acelle\Helpers\ptouch($filepath);
-    	}
+        $filepath = $this->getCreditsLogFile($name);
+        if (!file_exists($filepath)) {
+            \Acelle\Helpers\ptouch($filepath);
+        }
 
         $json = json_decode(file_get_contents($filepath), true) ?: [];
 
@@ -84,7 +84,7 @@ trait HasQuota
 
     public function updateQuotaCounter(string $name)
     {
-    	$quotaTracker = new QuotaTracker($this->getQuotaLogFile($name), $this->getQuotaSettings($name));
-    	$quotaTracker->count();
+        $quotaTracker = new QuotaTracker($this->getQuotaLogFile($name), $this->getQuotaSettings($name));
+        $quotaTracker->count();
     }
 }
