@@ -30,7 +30,6 @@
                 url: this.url,
             })
             .done(function( response ) {
-                // console.log(response.columns);
                 CustomersGrowthChart.renderChart( response );
             });
         },

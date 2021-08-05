@@ -24,7 +24,6 @@
                 url: this.url,
             })
             .done(function( response ) {
-                console.log(response);
                 Campaigns24hChart.renderChart( response );
             });
         },

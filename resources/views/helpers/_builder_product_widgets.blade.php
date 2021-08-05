@@ -1075,7 +1075,6 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                 html = html.replace(/\*\|PRODUCT_QUANTITY\|\*/g, data.quantity);
                 element.obj.find('.preview-container').html(html);
                 if (data.image) {
-                    console.log(element.obj.find('.preview-container img'));
                     element.obj.find('.preview-container img').attr('src', data.image);
                 }
                 element.obj.find('.preview-container *').removeAttr('builder-element');

@@ -55,7 +55,6 @@ add
 
 
                     form.submit(function(e) {
-                        console.log(input.is(':checked'));
                         if (form.valid()) {
                             if (input.is(':checked')) {
                                 return true;

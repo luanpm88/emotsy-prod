@@ -93,7 +93,6 @@
             // Sending domains checking setting
             $(document).on("change", "input[name='plan[options][email_footer_enabled]']", function(e) {
                 var email_footer_enabled = $('input[name="plan[options][email_footer_enabled]"]:checked').val();
-                console.log(email_footer_enabled);
                 
                 if (email_footer_enabled == 'yes') {
                     $('input[name="plan[options][email_footer_trial_period_only]"]').closest('.checkbox').removeClass('disabled');
