@@ -32,10 +32,13 @@
 						</div>
 					@endif
 
-					@if ($campaign->status != 'new')
-						<span class="text-muted2">{{ trans('messages.run_at') }}: &nbsp;&nbsp;<i class="icon-alarm mr-0"></i> {{ isset($campaign->run_at) ? Tool::formatDateTime($campaign->run_at) : "" }}</span>
+					@if ($campaign->status != 'new' && isset($campaign->run_at))
+						<span class="text-muted2 d-block">{{ trans('messages.run_at') }}: <span class="material-icons-outlined">
+							alarm
+							</span>
+							 {{ isset($campaign->run_at) ? Tool::formatDateTime($campaign->run_at) : "" }}</span>
 					@else
-						<span class="text-muted2">{{ trans('messages.updated_at') }}: {{ Tool::formatDateTime($campaign->created_at) }}</span>
+						<span class="text-muted2 d-block">{{ trans('messages.updated_at') }}: {{ Tool::formatDateTime($campaign->created_at) }}</span>
 					@endif
 				</td>
 				@if ($campaign->status != 'new')
