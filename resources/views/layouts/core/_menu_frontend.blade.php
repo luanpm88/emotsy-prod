@@ -60,6 +60,7 @@
                         <span>{{ trans('messages.templates') }}</span>
                     </a>
                 </li>
+                @if (config('custom.woo'))
                 <li class="nav-item dropdown">
                     <a href=""
                         class="nav-link d-flex align-items-center py-3 lvl-1 dropdown-toggle"
@@ -88,6 +89,7 @@
                         </li>
                     </ul>
                 </li>
+                @endif
                 @if (
                     Auth::user()->customer->can("read", new Acelle\Model\SendingServer()) ||					
                     Auth::user()->customer->can("read", new Acelle\Model\EmailVerificationServer()) ||
