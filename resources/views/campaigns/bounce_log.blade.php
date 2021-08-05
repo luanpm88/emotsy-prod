@@ -51,4 +51,20 @@ search
         </div>
         <div class="pml-table-container"></div>
     </form>
+
+    <script>
+        var CampaignLogIndex = {
+            getList: function() {
+                return makeList({
+                    url: '{{ action('CampaignController@bounceLogListing', $campaign->uid) }}',
+                    container: $('.listing-form'),
+                    content: $('.pml-table-container')
+                });
+            }
+        };
+
+        $(function() {
+            CampaignLogIndex.getList().load();
+        });
+    </script>
 @endsection

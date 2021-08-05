@@ -96,7 +96,6 @@ class TrackingLog extends Model
                     $q->orwhere('campaigns.name', 'like', '%'.$keyword.'%')
                         ->orwhere('tracking_logs.status', 'like', '%'.$keyword.'%')
                         ->orwhere('sending_servers.name', 'like', '%'.$keyword.'%')
-                        ->orwhere(\DB::raw('CONCAT(first_name, last_name)'), 'like', '%'.$keyword.'%')
                         ->orwhere('subscribers.email', 'like', '%'.$keyword.'%');
                 });
             }
