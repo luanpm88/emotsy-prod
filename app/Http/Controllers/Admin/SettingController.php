@@ -352,21 +352,28 @@ class SettingController extends Controller
             if ($this->isDemoMode()) {
                 return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
-            
-            // build the message
-            $message = new ExtendedSwiftMessage();
-            $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
-            $message->setContentType('text/html; charset=utf-8');
 
-            $message->setSubject($request->input('subject'));
-            $message->setTo($request->input('to_email'));
-            $message->addPart($request->input('content'), 'text/html');
+            try {
+                // build the message
+                $message = new ExtendedSwiftMessage();
+                $message->setEncoder(new \Swift_Mime_ContentEncoder_PlainContentEncoder('8bit'));
+                $message->setContentType('text/html; charset=utf-8');
 
-            $mailer = App::make('xmailer');
-            $result = $mailer->sendWithDefaultFromAddress($message);
+                $message->setSubject($request->input('subject'));
+                $message->setTo($request->input('to_email'));
+                $message->addPart($request->input('content'), 'text/html');
 
-            $statusCode = $result['status'] == 'sent' ? 200 : 400;
-            return response()->json($result, $statusCode);
+                $mailer = App::make('xmailer');
+
+                $result = $mailer->sendWithDefaultFromAddress($message);
+
+                $statusCode = $result['status'] == 'sent' ? 200 : 400;
+                return response()->json($result, $statusCode);
+            } catch (\Exception $e) {
+                return response()->json([
+                    'error' => $e->getMessage(),
+                ], 400);
+            }
         }
 
         return view('admin.settings.mailerTest');
