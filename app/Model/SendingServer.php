@@ -32,11 +32,13 @@ use Acelle\Library\StringHelper;
 use Acelle\Library\Notification\BackendError as BackendErrorNotification;
 use Acelle\Library\Facades\Hook;
 use Acelle\Library\Traits\HasUid;
+use Acelle\Library\Traits\HasQuota;
+use Acelle\Library\Contracts\HasQuota as HasQuotaInterface;
 use Exception;
 
-class SendingServer extends Model
+class SendingServer extends Model implements HasQuotaInterface
 {
-    use HasUid;
+    use HasUid, HasQuota;
 
     const DELIVERY_STATUS_SENT = 'sent';
     const DELIVERY_STATUS_FAILED = 'failed';
@@ -1688,5 +1690,41 @@ class SendingServer extends Model
     public function allowOtherSendingDomains()
     {
         return false;
+    }
+
+    /***   IMPLEMENTATION OF HasQuotaInterface ***/
+    public function getCreditsLimit($name) : ?int
+    {
+        // Server does not have credits limit
+        return null;
+    }
+
+    // Subject to implement
+    public function getCreditsLogFile($name) : string
+    {
+        $filepath = storage_path("app/quota/{$name}-credits-used-{$this->uid}");
+        return $filepath;
+    }
+
+    // Subject to implement
+    public function getQuotaLogFile($name) : string
+    {
+        $filepath = storage_path("app/quota/{$name}-quota-log-{$this->uid}");
+        return $filepath;
+    }
+
+    // Subject to implement
+    public function getQuotaSettings($name) : ?array
+    {
+        // only one
+        $quota = [
+            [
+                'name' => 'Speed limit',
+                'period' => $this->getQuotaIntervalString(),
+                'limit' => $this->getSendingQuota(),
+            ]
+        ];
+
+        return $quota;
     }
 }

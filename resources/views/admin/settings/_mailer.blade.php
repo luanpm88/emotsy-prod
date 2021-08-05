@@ -142,7 +142,10 @@
             var url = $(this).attr('href');
 
             testPopup.data = $('.mailer-form').serialize();
-            testPopup.load(url);
+            testPopup.load({
+                url: url,
+                data: $('.mailer-form').serialize()
+            });
         });
     </script>
 @endif
