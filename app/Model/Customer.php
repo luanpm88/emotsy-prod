@@ -89,6 +89,11 @@ class Customer extends Model
         return $this->hasMany('Acelle\Model\Subscription');
     }
 
+    public function mailLists()
+    {
+        return $this->hasMany('Acelle\Model\MailList');
+    }
+
     public function user()
     {
         return $this->hasOne('Acelle\Model\User');
@@ -1410,8 +1415,7 @@ class Customer extends Model
      */
     public function getMailListSelectOptions($options = [], $cache = false)
     {
-        $query = \Acelle\Model\MailList::getAll();
-        $query->where('customer_id', '=', $this->id);
+        $query = $this->mailLists();
 
         # Other list
         if (isset($options['other_list_of'])) {
