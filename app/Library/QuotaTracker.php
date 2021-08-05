@@ -40,7 +40,6 @@ class QuotaTracker
 
             $this->test($now, $limit, $fopen);
             $this->count($now, $fopen);
-
         }, $timeout = 15);
     }
 
@@ -57,7 +56,6 @@ class QuotaTracker
             $record = $this->buildRecord($currentBlock, $count = 1);
             $this->addRecord($record, $fopen);
         }
-
     }
 
     private function parseLastRecord($fopen)
@@ -238,7 +236,7 @@ class QuotaTracker
         // ]
         //
 
-        foreach($limits as $limit) {
+        foreach ($limits as $limit) {
             $period = sprintf("%s %s", $limit['period_value'], $limit['period_base']);
             $fromDatetime = $now->copy()->subtract($period);
 
@@ -255,7 +253,6 @@ class QuotaTracker
 
     public function getRecords(Carbon $fromDatetime, Carbon $toDatetime, $fopen)
     {
-
         $fromDatetimeStr = $this->makeBlock($fromDatetime);
         $toDatetimeStr = $this->makeBlock($toDatetime);
 
@@ -286,7 +283,7 @@ class QuotaTracker
     public function getCreditsUsed(Carbon $fromDatetime, Carbon $toDatetime)
     {
         $records = $this->getRecords($fromDatetime, $toDatetime);
-        $counts = array_map(function($record) {
+        $counts = array_map(function ($record) {
             list($block, $count) = $record;
             return $count;
         }, $records);
