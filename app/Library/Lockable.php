@@ -46,7 +46,7 @@ class Lockable
     public function getExclusiveLock($callback, $timeout = 15, $timeoutCallback = null)
     {
         $start = time();
-        $reader = fopen($this->file, 'w');
+        $reader = fopen($this->file, 'r+');
         while (true) {
             // raise an exception and quit if timed out
             if ($this->isTimeout($start, $timeout)) {

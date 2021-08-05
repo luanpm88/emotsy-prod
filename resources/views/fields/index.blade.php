@@ -19,10 +19,10 @@
 
 	@include("lists._menu")
 
-	<h2 class="text-bold text-primary"><span class="material-icons-outlined">
+	<h2 class="text-primary my-4"><span class="material-icons-outlined">
 fact_check
 </span> {{ trans('messages.manage_list_fields') }}</h2>
-	<br />
+
 	<p>{!! trans('messages.fields_intro') !!}</p>
 
 	@if ($errors->has("miss_main_field_tag"))

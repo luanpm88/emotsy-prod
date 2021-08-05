@@ -2,6 +2,10 @@
 
 @section('title', trans('messages.plans'))
 
+@section('head')
+    <script type="text/javascript" src="{{ URL::asset('core/js/group-manager.js') }}"></script>
+@endsection
+
 @section('page_header')
 
     <div class="page-title" style="padding-bottom:0">

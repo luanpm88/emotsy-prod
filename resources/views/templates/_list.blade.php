@@ -107,7 +107,7 @@ category
                                         </a>
                                     </li>
                                 @endif
-                                {{-- @if (Auth::user()->customer->can('read', $template))
+                                @if (Auth::user()->customer->can('read', $template))
                                     <li>
                                         <a
                                             href="{{ action('TemplateController@export', $template->uid) }}"
@@ -120,7 +120,7 @@ download
 </span> {{ trans("messages.template.export") }}
                                         </a>
                                     </li>
-                                @endif --}}
+                                @endif
                                 @if (Auth::user()->customer->can('copy', $template))
                                     <li>
                                         <a

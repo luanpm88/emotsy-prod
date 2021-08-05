@@ -40,18 +40,34 @@
                             </div>
                         </label>
                         <div class="radio_more_box">
-                            <div class="boxing">
-                                @include('helpers.form_control', [
-                                    'type' => 'text',
-                                    'class' => 'numeric',
-                                    'name' => 'plan[options][sending_servers_max]',
-                                    'value' => $plan->getOption('sending_servers_max'),
-                                    'label' => trans('messages.max_sending_servers'),
-                                    'help_class' => 'plan',
-                                    'options' => ['true', 'false'],
-                                    'rules' => $plan->validationRules()['options'],
-                                    'unlimited_check' => true,
-                                ])
+                            <div class="mb-3 unlimited_control">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-4" style="width:400px">
+                                        @include('helpers.form_control.control', [
+                                            'type' => 'text',
+                                            'name' => 'plan[options][sending_servers_max]',
+                                            'value' => $plan->getOption('sending_servers_max'),
+                                            'label' => trans('messages.max_sending_servers'),
+                                            'help_class' => 'plan',
+                                            'attributes' => [
+                                                'default-value' => '10',
+                                            ],
+                                        ])
+                                    </div>
+                                    <div class="pt-3">
+                                        <div class="pt-2">
+                                            @include('helpers.form_control.control', [
+                                                'type' => 'checkbox',
+                                                'name' => 'unlimited',
+                                                'value' => '',
+                                                'label' => trans('messages.unlimited'),
+                                                'attributes' => [
+                                                    'checked' => $plan->getOption('sending_servers_max') == -1,
+                                                ],
+                                            ])
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                 
                             <p>
@@ -134,6 +150,52 @@
         </div>
         
     </form>
+
+    <script>
+        var ChangeTypePopup;
+
+        $(function() {
+            var manager = new GroupManager();
+
+            $('.unlimited_control').each(function() {
+                manager.add({
+                    textBox: $(this).find('input[type=text]'),
+                    unlimitedCheck: $(this).find('input[type=checkbox]'),
+                    defaultValue: $(this).find('input[type=text]').attr('default-value'),
+                    currentValue: $(this).find('input[type=text]').val()
+                });
+            });
+
+            manager.bind(function(group) {
+                var doCheck = function() {
+                    var checked = group.unlimitedCheck.is(':checked');
+                    
+                    if (checked) {
+                        group.currentValue = group.textBox.val();
+                        group.textBox.val(-1);
+                        group.textBox.addClass("text-trans");
+                        group.textBox.attr("readonly", "readonly");
+                    } else {
+                        if(group.textBox.val() == "-1") {
+                            if (group.currentValue != "-1") {
+                                group.textBox.val(group.currentValue);
+                            } else {
+                                group.textBox.val(group.defaultValue);
+                            }
+                        }
+                        group.textBox.removeClass("text-trans");
+                        group.textBox.removeAttr("readonly", "readonly");
+                    }
+                };
+
+                group.unlimitedCheck.on('change', function() {
+                    doCheck();
+                });
+
+                doCheck();
+            });
+        });
+    </script>
     
     <script>
         $(document).ready(function() {

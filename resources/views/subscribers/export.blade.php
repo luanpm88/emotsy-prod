@@ -12,7 +12,7 @@
 
     @include("lists._menu")
 
-    <h2 class="text-bold text-primary"><span class="material-icons-outlined">
+    <h2 class="text-primary my-4"><span class="material-icons-outlined">
 people
 </span> {{ trans('messages.export_subscribers') }}</h2>
 

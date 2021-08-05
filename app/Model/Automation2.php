@@ -75,7 +75,7 @@ class Automation2 extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'mail_list_id', 'status', 'data'
+        'uid', 'name', 'mail_list_id', 'status', 'data'
     ];
 
     /**
@@ -162,24 +162,6 @@ class Automation2 extends Model
     }
 
     /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating automation.
-        static::creating(function ($item) {
-            $item->uid = uniqid();
-        });
-
-        // Create uid when creating automation.
-        static::created(function ($item) {
-            $item->updateCache();
-        });
-    }
-
-    /**
      * Create automation rules.
      *
      * @return array
@@ -188,7 +170,6 @@ class Automation2 extends Model
     {
         return [
             'name' => 'required',
-            'mail_list_uid' => 'required',
         ];
     }
 
@@ -332,7 +313,7 @@ class Automation2 extends Model
     /**
      * Get delay options.
      */
-    public function getDelayOptions($moreOptions=[])
+    public static function getDelayOptions($moreOptions=[])
     {
         return array_merge($moreOptions, [
             ['text' => trans_choice('messages.automation.delay.minute', 1), 'value' => '1 minute'],
@@ -361,7 +342,7 @@ class Automation2 extends Model
     /**
      * Get delay or before options.
      */
-    public function getDelayBeforeOptions()
+    public static function getDelayBeforeOptions()
     {
         return [
             ['text' => trans_choice('messages.automation.delay.0_day', 0), 'value' => '0 day'],
@@ -1355,5 +1336,211 @@ class Automation2 extends Model
     {
         $trigger = $this->autoTriggers()->where('subscriber_id', $subscriber->id)->latest()->first();
         return $trigger;
+    }
+
+    public static function getTriggerTypes()
+    {
+        $types = [
+            'welcome-new-subscriber',
+            'say-happy-birthday',
+            'subscriber-added-date',
+            'specific-date',
+            'say-goodbye-subscriber',
+            'api-3-0',
+            'weekly-recurring',
+            'monthly-recurring',
+        ];
+
+        if (config('custom.woo')) {
+            $types[] = 'woo-abandoned-cart';
+        }
+
+        return $types;
+    }
+
+    public function newDefault($fields=[])
+    {
+        if (!isset($fields['name'])) {
+            $this->name = trans('messages.automation.untitled');
+        } else {
+            $this->name = $fields['name'];
+        }
+
+        $this->status = self::STATUS_INACTIVE;
+
+        return $this;
+    }
+
+    public function createFromArray($params)
+    {
+        // make validator
+        $validator = \Validator::make($params, $this->rules());
+
+        // redirect if fails
+        if ($validator->fails()) {
+            return $validator;
+        }
+
+        $this->fill($params);
+
+        // pass validation and save
+        $this->mail_list_id = \Acelle\Model\MailList::findByUid($params['mail_list_uid'])->id;
+
+        $data = [
+            $this->createTrigger($params)
+        ];
+        $this->data = json_encode($data);
+        $this->save();
+
+        return $validator;
+    }
+
+    // Temporary function
+    public function createTrigger($params)
+    {
+        $type = $params['trigger_type'];
+        if ($type == 'welcome-new-subscriber') {
+            return [
+                'id' => 'trigger',
+                'title' => trans('messages.automation.trigger.tree.welcome-new-subscriber'),
+                'type' => 'ElementTrigger',
+                'child' => null,
+                'options' => [
+                  'key' => 'welcome-new-subscriber',
+                  'type' => 'list-subscription',
+                  'init' => true,
+                ],
+                'last_executed' => null,
+                'evaluationResult' => null,
+            ];
+        } elseif ($type == 'say-happy-birthday') {
+            return [
+                'id' => 'trigger',
+                'title' => trans('messages.automation.trigger.tree.say-happy-birthday'),
+                'type' => 'ElementTrigger',
+                'child' => NULL,
+                'options' => [
+                    'key' => 'say-happy-birthday',
+                    'type' => 'event',
+                    'field' => $params['options']['field'],
+                    'before' => $params['options']['before'],
+                    'at' => $params['options']['at'],
+                    'init' => 'true',
+                ],
+                'last_executed' => NULL,
+                'evaluationResult' => NULL,
+            ];
+        } elseif ($type == 'specific-date') {
+            return [
+                'id' => 'trigger',
+                'title' => trans('messages.automation.trigger.tree.specific-date'),
+                'type' => 'ElementTrigger',
+                'child' => NULL,
+                'options' => [
+                    'key' => 'specific-date',
+                    'type' => 'datetime',
+                    'date' => $params['options']['date'],
+                    'at' => $params['options']['at'],
+                    'init' => 'true',
+                ],
+                'last_executed' => NULL,
+                'evaluationResult' => NULL,
+            ];
+        } elseif ($type == 'subscriber-added-date') {
+            return [
+                'id' => 'trigger',
+                'title' => trans('messages.automation.trigger.tree.subscriber-added-date'),
+                'type' => 'ElementTrigger',
+                'child' => NULL,
+                'options' => [
+                    'key' => 'subscriber-added-date',
+                    'type' => 'event',
+                    'field' => 'created_at',
+                    'delay' => $params['options']['delay'],
+                    'at' => $params['options']['at'],
+                    'init' => 'true',
+                ],
+                'last_executed' => NULL,
+                'evaluationResult' => NULL,
+            ];
+        } elseif ($type == 'say-goodbye-subscriber') {
+            return [
+                'id' => 'trigger',
+                'title' => trans('messages.automation.trigger.tree.say-goodbye-subscriber'),
+                'type' => 'ElementTrigger',
+                'child' => NULL,
+                'options' => [
+                    'key' => 'say-goodbye-subscriber',
+                    'init' => 'true',
+                ],
+                'last_executed' => NULL,
+                'evaluationResult' => NULL,
+            ];
+        } elseif ($type == 'api-3-0') {
+            return [
+                'id' => 'trigger',
+                'title' => trans('messages.automation.trigger.tree.api-3-0'),
+                'type' => 'ElementTrigger',
+                'child' => NULL,
+                'options' => [
+                    'key' => 'api-3-0',
+                    'type' => 'api',
+                    'endpoint' => $params['options']['endpoint'],
+                    'init' => 'true',
+                ],
+                'last_executed' => NULL,
+                'evaluationResult' => NULL,
+            ];
+        } elseif ($type == 'weekly-recurring') {
+            return [
+                'id' => 'trigger',
+                'title' => trans('messages.automation.trigger.weekly-recurring'),
+                'type' => 'ElementTrigger',
+                'child' => NULL,
+                'options' => [
+                    'key' => 'weekly-recurring',
+                    'type' => 'datetime',
+                    'days_of_week' => $params['options']['days_of_week'],
+                    'at' => $params['options']['at'],
+                    'init' => 'true',
+                ],
+                'last_executed' => NULL,
+                'evaluationResult' => NULL,
+            ];
+        } elseif ($type == 'monthly-recurring') {
+            return [
+                'id' => 'trigger',
+                'title' => trans('messages.automation.trigger.monthly-recurring'),
+                'type' => 'ElementTrigger',
+                'child' => NULL,
+                'options' => [
+                    'key' => 'monthly-recurring',
+                    'type' => 'datetime',
+                    'days_of_month' => $params['options']['days_of_month'],
+                    'at' => $params['options']['at'],
+                    'init' => 'true',
+                ],
+                'last_executed' => NULL,
+                'evaluationResult' => NULL,
+            ];
+        } elseif ($type == 'woo-abandoned-cart') {
+            return [
+                'id' => 'trigger',
+                'title' => trans('messages.automation.trigger.woo-abandoned-cart'),
+                'type' => 'ElementTrigger',
+                'child' => NULL,
+                'options' => [
+                    'key' => 'woo-abandoned-cart',
+                    'type' => 'woo-abandoned-cart',
+                    'source_uid' => $params['options']['source_uid'],
+                    'wait' => $params['options']['wait'],
+                    'init' => 'true',
+                ],
+                'last_executed' => NULL,
+                'evaluationResult' => NULL,
+            ];
+        }
+
+        throw new Exception("Invalid trigger type: ".$type);
     }
 }

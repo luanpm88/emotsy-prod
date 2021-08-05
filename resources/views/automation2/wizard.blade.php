@@ -3,8 +3,25 @@
 @section('content')
 	<div class="row">
         <div class="col-md-12">
-            <form id="automationCreate" action="{{ action("Automation2Controller@create") }}" method="POST" class="form-validate-jqueryz">
+            <form id="automationCreate" action="{{ action("Automation2Controller@wizard") }}" method="POST" class="form-validate-jqueryz">
                 {{ csrf_field() }}            
+
+                @foreach(request()->all() as $key => $value)
+                    @if (is_array($value))
+                        @foreach($value as $key2 => $value2)
+                            @if (is_array($value2))
+                                @foreach($value2 as $key3 => $value3)
+                                    <input type="hidden" name="{{ $key }}[{{ $key2 }}][]" value="{{ $value3 }}" />
+                                @endforeach
+                            @else
+                                <input type="hidden" name="{{ $key }}[{{ $key2 }}]" value="{{ $value2 }}" />
+                            @endif
+                        @endforeach 
+                    @else
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}" />
+                    @endif
+                    
+                @endforeach
         
                 <h1 class="mb-20">{{ trans('messages.automation.create_automation') }}</h1>
             
@@ -23,32 +40,6 @@
                         ])
                     </div>
                 </div>
-    
-                    
-                <h3 class="mt-30 mb-20">{{ trans('messages.automation.choose_a_mail_list') }}</h3>
-                <p class="mb-10">{{ trans('messages.automation.choose_a_mail_list.intro') }}</p>
-                    
-                <div class="row">
-                    <div class="col-md-6">
-                        @include('helpers.form_control', [
-                            'name' => 'mail_list_uid',
-                            'include_blank' => trans('messages.automation.choose_list'),
-                            'type' => 'select',
-                            'label' => '',
-                            'value' => (is_object($automation->mailList) ? $automation->mailList->uid : ''),
-                            'options' => Auth::user()->customer->readCache('MailListSelectOptions', []),
-                            'rules' => $automation->rules(),
-                        ])
-                    </div>
-                </div>
-
-                <div class="row mb-4">
-                    <div class="col-md-10">
-                        <div class="automation-segment">
-
-                        </div>
-                    </div>
-                </div>
                 
                 <div class="text-center">
                     <button class="btn btn-secondary mt-20">{{ trans('messages.automation.get_started') }}</button>
@@ -60,15 +51,6 @@
     </div>
         
     <script>
-        // automation segment
-        var automationSegment = new Box($('.automation-segment'));
-        $('[name=mail_list_uid]').change(function(e) {
-            var url = '{{ action('Automation2Controller@segmentSelect') }}?list_uid=' + $(this).val();
-
-            automationSegment.load(url);
-        });
-        $('[name=mail_list_uid]').change();
-
         $('#automationCreate').submit(function(e) {
             e.preventDefault();
             

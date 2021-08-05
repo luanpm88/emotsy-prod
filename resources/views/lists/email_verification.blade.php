@@ -14,7 +14,7 @@
 
     <div class="row">
         <div class="col-md-8">
-            <h2 class="text-semibold" style="margin-bottom: 10px">{{ trans('messages.list_verification') }}</h2>
+            <h2 class="text-semibold my-4" style="margin-bottom: 10px">{{ trans('messages.list_verification') }}</h2>
 
             <div id="progressBar" class="form-group processing hide">
                 <div id="errorBox" class="alert alert-danger" style="display: none; flex-direction: row; align-items: center; justify-content: space-between;">
