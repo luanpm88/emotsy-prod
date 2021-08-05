@@ -52,7 +52,7 @@
             <div class="col-md-12">
                 <div class="content-group-sm mt-4">
                     <div class="d-flex align-items-center">
-                        <h5 class="text-semibold mb-1 mt-0">{{ trans('messages.campaign') }}</h5>
+                        <h5 class="text-semibold mb-1 me-auto">{{ trans('messages.campaign') }}</h5>
                         <div class="pull-right text-primary text-semibold">
                             <span class="text-muted progress-xxs">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->campaignsCount()) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxCampaigns()) }}</span>
                             &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displayCampaignsUsage() }}
