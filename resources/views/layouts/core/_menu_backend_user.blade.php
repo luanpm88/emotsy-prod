@@ -36,7 +36,7 @@
         </li>
         <li><a href="{{ url("/logout") }}" class="dropdown-item d-flex align-items-center">
             <i class="acelle-icon mr-2">
-                <img src="{{ url('images/icons/'.$iconDir.'SVG/logout.svg') }}" />
+                <img style="height:19px;margin-top: 1px;" class="" src="{{ url('images/icons/'.$iconDir.'SVG/logout.svg') }}" />
             </i>{{ trans('messages.logout') }}</a></li>
     </ul>
 </li>
