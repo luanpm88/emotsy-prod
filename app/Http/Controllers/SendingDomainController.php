@@ -121,7 +121,7 @@ class SendingDomainController extends Controller
             $server = $plan->primarySendingServer();
         }
 
-        if ($server->allowVerifyingOwnDomainsRemotely()) {
+        if ($server && $server->allowVerifyingOwnDomainsRemotely()) {
             list($validator, $domain) = $domain->createFromArray($request->all(), $server); // server based domain
         } else {
             list($validator, $domain) = $domain->createFromArray($request->all(), null);    // app based domain

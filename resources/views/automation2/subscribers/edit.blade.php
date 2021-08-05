@@ -522,8 +522,6 @@
             
             e.select(); // highlight
             
-            console.log(e.getType());
-            
             // if click on a trigger
             if (e.getType() == 'ElementTrigger') {
                 var options = e.getOptions();
@@ -674,7 +672,6 @@
             });
 
             @if (request()->auto_popup)
-                // console.log(tree.child.getOptions());
                 doSelect(tree.child);
                 setTimeout(function() {
                     popup.load('https://product.com/automation2/{{ $automation->uid }}/email/setup?email_uid=' + tree.child.getOptions().email_uid,

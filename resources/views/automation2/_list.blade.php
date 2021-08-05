@@ -22,7 +22,7 @@
                             {{ $automation->name }}
                         </a>
                     </h5>
-                    <div class="text-semibold" data-popup="tooltip">
+                    <div class="" data-popup="tooltip">
                         {{ $automation->getBriefIntro() }}
                     </div>
                 </td>

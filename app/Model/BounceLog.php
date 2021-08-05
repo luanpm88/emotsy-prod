@@ -89,7 +89,6 @@ class BounceLog extends Model
                         ->orwhere('bounce_logs.bounce_type', 'like', '%'.$keyword.'%')
                         ->orwhere('bounce_logs.raw', 'like', '%'.$keyword.'%')
                         ->orwhere('sending_servers.name', 'like', '%'.$keyword.'%')
-                        ->orwhere(\DB::raw('CONCAT(first_name, last_name)'), 'like', '%'.$keyword.'%')
                         ->orwhere('subscribers.email', 'like', '%'.$keyword.'%');
                 });
             }

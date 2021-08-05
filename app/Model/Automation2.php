@@ -1418,7 +1418,7 @@ class Automation2 extends Model
                 'id' => 'trigger',
                 'title' => trans('messages.automation.trigger.tree.say-happy-birthday'),
                 'type' => 'ElementTrigger',
-                'child' => NULL,
+                'child' => null,
                 'options' => [
                     'key' => 'say-happy-birthday',
                     'type' => 'event',
@@ -1427,15 +1427,15 @@ class Automation2 extends Model
                     'at' => $params['options']['at'],
                     'init' => 'true',
                 ],
-                'last_executed' => NULL,
-                'evaluationResult' => NULL,
+                'last_executed' => null,
+                'evaluationResult' => null,
             ];
         } elseif ($type == 'specific-date') {
             return [
                 'id' => 'trigger',
                 'title' => trans('messages.automation.trigger.tree.specific-date'),
                 'type' => 'ElementTrigger',
-                'child' => NULL,
+                'child' => null,
                 'options' => [
                     'key' => 'specific-date',
                     'type' => 'datetime',
@@ -1443,15 +1443,15 @@ class Automation2 extends Model
                     'at' => $params['options']['at'],
                     'init' => 'true',
                 ],
-                'last_executed' => NULL,
-                'evaluationResult' => NULL,
+                'last_executed' => null,
+                'evaluationResult' => null,
             ];
         } elseif ($type == 'subscriber-added-date') {
             return [
                 'id' => 'trigger',
                 'title' => trans('messages.automation.trigger.tree.subscriber-added-date'),
                 'type' => 'ElementTrigger',
-                'child' => NULL,
+                'child' => null,
                 'options' => [
                     'key' => 'subscriber-added-date',
                     'type' => 'event',
@@ -1460,43 +1460,43 @@ class Automation2 extends Model
                     'at' => $params['options']['at'],
                     'init' => 'true',
                 ],
-                'last_executed' => NULL,
-                'evaluationResult' => NULL,
+                'last_executed' => null,
+                'evaluationResult' => null,
             ];
         } elseif ($type == 'say-goodbye-subscriber') {
             return [
                 'id' => 'trigger',
                 'title' => trans('messages.automation.trigger.tree.say-goodbye-subscriber'),
                 'type' => 'ElementTrigger',
-                'child' => NULL,
+                'child' => null,
                 'options' => [
                     'key' => 'say-goodbye-subscriber',
                     'init' => 'true',
                 ],
-                'last_executed' => NULL,
-                'evaluationResult' => NULL,
+                'last_executed' => null,
+                'evaluationResult' => null,
             ];
         } elseif ($type == 'api-3-0') {
             return [
                 'id' => 'trigger',
                 'title' => trans('messages.automation.trigger.tree.api-3-0'),
                 'type' => 'ElementTrigger',
-                'child' => NULL,
+                'child' => null,
                 'options' => [
                     'key' => 'api-3-0',
                     'type' => 'api',
                     'endpoint' => $params['options']['endpoint'],
                     'init' => 'true',
                 ],
-                'last_executed' => NULL,
-                'evaluationResult' => NULL,
+                'last_executed' => null,
+                'evaluationResult' => null,
             ];
         } elseif ($type == 'weekly-recurring') {
             return [
                 'id' => 'trigger',
                 'title' => trans('messages.automation.trigger.weekly-recurring'),
                 'type' => 'ElementTrigger',
-                'child' => NULL,
+                'child' => null,
                 'options' => [
                     'key' => 'weekly-recurring',
                     'type' => 'datetime',
@@ -1504,15 +1504,15 @@ class Automation2 extends Model
                     'at' => $params['options']['at'],
                     'init' => 'true',
                 ],
-                'last_executed' => NULL,
-                'evaluationResult' => NULL,
+                'last_executed' => null,
+                'evaluationResult' => null,
             ];
         } elseif ($type == 'monthly-recurring') {
             return [
                 'id' => 'trigger',
                 'title' => trans('messages.automation.trigger.monthly-recurring'),
                 'type' => 'ElementTrigger',
-                'child' => NULL,
+                'child' => null,
                 'options' => [
                     'key' => 'monthly-recurring',
                     'type' => 'datetime',
@@ -1520,15 +1520,15 @@ class Automation2 extends Model
                     'at' => $params['options']['at'],
                     'init' => 'true',
                 ],
-                'last_executed' => NULL,
-                'evaluationResult' => NULL,
+                'last_executed' => null,
+                'evaluationResult' => null,
             ];
         } elseif ($type == 'woo-abandoned-cart') {
             return [
                 'id' => 'trigger',
                 'title' => trans('messages.automation.trigger.woo-abandoned-cart'),
                 'type' => 'ElementTrigger',
-                'child' => NULL,
+                'child' => null,
                 'options' => [
                     'key' => 'woo-abandoned-cart',
                     'type' => 'woo-abandoned-cart',
@@ -1536,8 +1536,8 @@ class Automation2 extends Model
                     'wait' => $params['options']['wait'],
                     'init' => 'true',
                 ],
-                'last_executed' => NULL,
-                'evaluationResult' => NULL,
+                'last_executed' => null,
+                'evaluationResult' => null,
             ];
         }
 

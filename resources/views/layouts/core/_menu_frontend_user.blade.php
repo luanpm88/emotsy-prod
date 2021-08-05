@@ -19,7 +19,7 @@
     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="content-menu">
         @can("admin_access", Auth::user())
             <li class="border-bottom"><a href="{{ action("Admin\HomeController@index") }}" class="dropdown-item d-flex align-items-center">
-            <i class="navbar-icon mr-3">
+            <i class="navbar-icon mr-2">
                 <img src="{{ url('images/icons/'.$iconDir.'SVG/changeview.svg') }}" />
             </i>{{ trans('messages.admin_view') }}</a></li>
             <li class="divider"></li>
@@ -27,7 +27,7 @@
         @if (request()->user()->customer->activeSubscription())
             <li class="dropdown">
                 <a href="#" class="dropdown-item top-quota-button d-flex align-items-center" data-url="{{ action("AccountController@quotaLog") }}">
-                <i class="navbar-icon mr-3">
+                <i class="navbar-icon mr-2">
                 <img src="{{ url('images/icons/'.$iconDir.'SVG/sreport.svg') }}" />
             </i>
                     <span class="">{{ trans('messages.used_quota') }}</span>
@@ -36,7 +36,7 @@
         @endif
         <li class="nav-item" rel0="SubscriptionController/index">
             <a href="{{ action('SubscriptionController@index') }}" class="dropdown-item position-relative d-flex align-items-center">
-            <i class="navbar-icon mr-3">
+            <i class="navbar-icon mr-2">
                 <img src="{{ url('images/icons/'.$iconDir.'SVG/subscription.svg') }}" />
             </i>{{ trans('messages.subscriptions') }}
                 @if (Auth::user()->customer->hasSubscriptionNotice())
@@ -48,13 +48,13 @@
             </a>
         </li>
         <li class="nav-item" rel0="AccountController/billing"><a href="{{ action("AccountController@billing") }}" class="dropdown-item d-flex align-items-center">
-            <i class="navbar-icon mr-3">
+            <i class="navbar-icon mr-2">
                 <img src="{{ url('images/icons/'.$iconDir.'SVG/billing.svg') }}" />
             </i>{{ trans('messages.billing') }}
         
         </a></li>
         <li class="nav-item" rel0="AccountController/profile"><a href="{{ action("AccountController@profile") }}" class="dropdown-item d-flex align-items-center">
-            <i class="navbar-icon mr-3">
+            <i class="navbar-icon mr-2">
                 <img src="{{ url('images/icons/'.$iconDir.'SVG/account.svg') }}" />
             </i>{{ trans('messages.account') }}
         
@@ -62,15 +62,15 @@
         @if (Auth::user()->customer->canUseApi())
             <li class="nav-item" rel0="AccountController/api">
                 <a href="{{ action("AccountController@api") }}" class="dropdown-item d-flex align-items-center">
-                <i class="navbar-icon mr-3">
+                <i class="navbar-icon mr-2">
                 <img style="transform:scale(1.15)" src="{{ url('images/icons/'.$iconDir.'SVG/api.svg') }}" />
             </i>{{ trans('messages.campaign_api') }}
                 </a>
             </li>
         @endif
         <li><a href="{{ url("/logout") }}" class="dropdown-item d-flex align-items-center">
-            <i class="navbar-icon mr-3">
-                <img style="transform:scale(.95)" src="{{ url('images/icons/'.$iconDir.'SVG/logout.svg') }}" />
+            <i class="navbar-icon mr-2">
+                <img style="height:19px;margin-top: 1px;" style="transform:scale(.95)" src="{{ url('images/icons/'.$iconDir.'SVG/logout.svg') }}" />
             </i>{{ trans('messages.logout') }}
         </a></li>
     </ul>

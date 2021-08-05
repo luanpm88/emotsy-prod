@@ -276,7 +276,6 @@ search
 				}
 
 				if (form.find('.select_tool').length) {
-					console.log(data);
 					data.select_tool = form.find('.select_tool').val();
 				}
 

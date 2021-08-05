@@ -26,7 +26,6 @@
                         url: this.url,
                     })
                     .done(function( response ) {
-                        console.log(response);
                         ListsGrowthChart1.renderChart( response );
                     });
                 },
@@ -97,7 +96,6 @@
                             url: this.url,
                         })
                         .done(function( response ) {
-                            console.log(response);
                             ListsGrowthChart2.renderChart( response );
                         });
                     },

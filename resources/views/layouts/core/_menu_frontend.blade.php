@@ -58,6 +58,7 @@
                         <span>{{ trans('messages.templates') }}</span>
                     </a>
                 </li>
+                @if (config('custom.woo'))
                 <li class="nav-item dropdown">
                     <a href=""
                         class="nav-link d-flex align-items-center py-3 lvl-1 dropdown-toggle"
@@ -86,6 +87,7 @@
                         </li>
                     </ul>
                 </li>
+                @endif
                 @if (
                     Auth::user()->customer->can("read", new Acelle\Model\SendingServer()) ||					
                     Auth::user()->customer->can("read", new Acelle\Model\EmailVerificationServer()) ||
@@ -104,7 +106,7 @@
                                 <li class="nav-item" rel0="SendingServerController">
                                     <a href="{{ action('SendingServerController@index') }}"
                                         class="dropdown-item d-flex align-items-center">
-                                        <i class="navbar-icon mr-3" style="width:19px">
+                                        <i class="navbar-icon mr-2" style="width:19px">
                                     <img src="{{ url('images/icons/'.$iconDir.'SVG/server.svg') }}" />
                                     </i> {{ trans('messages.sending_servers') }}
                                     </a>
@@ -112,21 +114,21 @@
                             @endif
                             <li rel1="SendingDomainController">
                                 <a href="{{ action('SendingDomainController@index') }}" class="dropdown-item d-flex align-items-center">
-                                <i class="navbar-icon mr-3" style="width:20	px">
+                                <i class="navbar-icon mr-2" style="width:20	px">
                                     <img src="{{ url('images/icons/'.$iconDir.'SVG/domain.svg') }}" />
                                     </i> {{ trans('messages.sending_domains') }}
                                 </a>
                             </li>
                             <li class="nav-item" rel0="SenderController">
                                 <a href="{{ action('SenderController@index') }}" class="dropdown-item d-flex align-items-center">
-                                <i class="navbar-icon mr-3" style="width:20	px">
+                                <i class="navbar-icon mr-2" style="width:20	px">
                                     <img src="{{ url('images/icons/'.$iconDir.'SVG/identify.svg') }}" />
                                     </i> {{ trans('messages.verified_senders') }}
                                 </a>
                             </li>
                             <li class="nav-item" rel0="TrackingDomainController">
                                 <a href="{{ action('TrackingDomainController@index') }}" class="dropdown-item d-flex align-items-center">
-                                <i class="navbar-icon mr-3" style="width:20px">
+                                <i class="navbar-icon mr-2" style="width:20px">
                                     <img src="{{ url('images/icons/'.$iconDir.'SVG/domain.svg') }}" />
                                     </i> {{ trans('messages.tracking_domains') }}
                                 </a>
@@ -134,7 +136,7 @@
                             @if (Auth::user()->customer->can("read", new Acelle\Model\EmailVerificationServer()))
                                 <li class="nav-item" rel0="EmailVerificationServerController">
                                     <a href="{{ action('EmailVerificationServerController@index') }}" class="dropdown-item d-flex align-items-center">
-                                    <i class="navbar-icon mr-3" style="width:20px">
+                                    <i class="navbar-icon mr-2" style="width:20px">
                                     <img src="{{ url('images/icons/'.$iconDir.'SVG/server.svg') }}" />
                                     </i> {{ trans('messages.email_verification_servers') }}
                                     </a>
@@ -143,7 +145,7 @@
                             @if (Auth::user()->customer->can("read", new Acelle\Model\Blacklist()))
                                 <li class="nav-item" rel0="BlacklistController">
                                     <a href="{{ action('BlacklistController@index') }}" class="dropdown-item d-flex align-items-center">
-                                    <i class="navbar-icon mr-3" style="width:20px">
+                                    <i class="navbar-icon mr-2" style="width:20px">
                                     <img src="{{ url('images/icons/'.$iconDir.'SVG/blacklist.svg') }}" />
                                     </i> {{ trans('messages.blacklist') }}
                                     </a>

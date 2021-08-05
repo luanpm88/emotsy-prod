@@ -1177,6 +1177,8 @@ class MailList extends Model
                     $insertLimit = $this->getRemainingAddSubscribersQuota();
                 }
 
+                $insertLimit = ($insertLimit < 0) ? 0 : $insertLimit;
+
                 // if ($insertLimit == 0) { // only == 0 is enough
                 //     throw new \Exception(trans('messages.import.notice.over_quota'));
                 // }
