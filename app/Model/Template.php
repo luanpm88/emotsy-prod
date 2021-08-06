@@ -174,6 +174,7 @@ class Template extends Model
             ['name' => 'UNSUBSCRIBE_URL', 'required' => false],
             ['name' => 'SUBSCRIBER_UID', 'required' => false],
             ['name' => 'WEB_VIEW_URL', 'required' => false],
+            ['name' => 'UPDATE_PROFILE_URL', 'required' => false],
             ['name' => 'CAMPAIGN_NAME', 'required' => false],
             ['name' => 'CAMPAIGN_UID', 'required' => false],
             ['name' => 'CAMPAIGN_SUBJECT', 'required' => false],

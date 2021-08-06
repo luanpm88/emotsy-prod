@@ -59,7 +59,7 @@ class Automation2Controller extends Controller
                 'rules' => $this->triggerRules()[$request->trigger_type],
             ]);
         }
-        
+
         return view('automation2.wizardTrigger', [
             'types' => $types,
         ]);
@@ -75,7 +75,7 @@ class Automation2Controller extends Controller
             $validator = Validator::make($request->all(), array_merge($rules, [
                 'mail_list_uid' => 'required',
             ]));
-                
+
             // redirect if fails
             if ($validator->fails()) {
                 return response()->view('automation2.wizardTriggerOption', [
@@ -86,7 +86,7 @@ class Automation2Controller extends Controller
 
             $customer = $request->user()->customer;
             $automation = $customer->automation2s()->make()->newDefault();
-            
+
             return view('automation2.wizard', [
                 'automation' => $automation,
                 'trigger_type' => $request->trigger_type,
@@ -978,7 +978,7 @@ class Automation2Controller extends Controller
 
         // from
         if ($request->from == 'mine') {
-            $templates = $request->user()->customer->templates();
+            $templates = $request->user()->customer->templates()->notAssociated();
         } elseif ($request->from == 'gallery') {
             $templates = Template::shared();
         } else {
@@ -992,7 +992,7 @@ class Automation2Controller extends Controller
         if ($request->category_uid) {
             $templates = $templates->categoryUid($request->category_uid);
         }
-            
+
         $templates = $templates->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
 
