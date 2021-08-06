@@ -341,7 +341,7 @@ class CampaignController extends Controller
 
         // from
         if ($request->from == 'mine') {
-            $templates = $request->user()->customer->templates();
+            $templates = $request->user()->customer->templates()->notAssociated();
         } elseif ($request->from == 'gallery') {
             $templates = Template::shared();
         } else {
@@ -355,7 +355,7 @@ class CampaignController extends Controller
         if ($request->category_uid) {
             $templates = $templates->categoryUid($request->category_uid);
         }
-            
+
         $templates = $templates->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
 
@@ -1560,7 +1560,7 @@ class CampaignController extends Controller
             $validator = \Validator::make($request->all(), [
                 'name' => 'required',
             ]);
-            
+
             // redirect if fails
             if ($validator->fails()) {
                 return response()->view('campaigns.copy', [
