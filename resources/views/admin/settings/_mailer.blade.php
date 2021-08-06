@@ -9,7 +9,7 @@
                     'value' => (isset($env["MAIL_MAILER"]) ? $env["MAIL_MAILER"] : ""),
                     'options' => [["value" => "sendmail", "text" => trans('messages.sendmail')],["value" => "smtp", "text" => trans('messages.smtp')]],
                     'help_class' => 'env',
-                    'rules' => $env_rules
+                    'rules' => $rules
                 ])
             </div>
         </div>
@@ -22,7 +22,7 @@
                         'label' => trans('messages.hostname'),
                         'value' => (isset($env["MAIL_HOST"]) ? $env["MAIL_HOST"] : ""),
                         'help_class' => 'env',
-                        'rules' => $env_rules
+                        'rules' => $rules
                     ])
                 </div>
                 <div class="col-md-6">
@@ -34,7 +34,7 @@
                                 'label' => trans('messages.port'),
                                 'value' => (isset($env["MAIL_PORT"]) ? $env["MAIL_PORT"] : ""),
                                 'help_class' => 'env',
-                                'rules' => $env_rules
+                                'rules' => $rules
                             ])
                         </div>
                         <div class="col-md-6">
@@ -44,7 +44,7 @@
                                 'label' => trans('messages.encryption'),
                                 'value' => (isset($env["MAIL_ENCRYPTION"]) ? $env["MAIL_ENCRYPTION"] : ""),
                                 'help_class' => 'env',
-                                'rules' => $env_rules
+                                'rules' => $rules
                             ])
                         </div>
                     </div>
@@ -59,7 +59,7 @@
                         'label' => trans('messages.username'),
                         'value' => (isset($env["MAIL_USERNAME"]) ? $env["MAIL_USERNAME"] : ""),
                         'help_class' => 'env',
-                        'rules' => $env_rules
+                        'rules' => $rules
                     ])
                 </div>
                 <div class="col-md-6">
@@ -70,7 +70,7 @@
                         'value' => (isset($env["MAIL_PASSWORD"]) ? $env["MAIL_PASSWORD"] : ""),
                         'help_class' => 'env',
                         'eye' => true,
-                        'rules' => $env_rules
+                        'rules' => $rules
                     ])
                 </div>
             </div>
@@ -83,7 +83,7 @@
                         'label' => trans('messages.from_email'),
                         'value' => (isset($env["MAIL_FROM_ADDRESS"]) ? $env["MAIL_FROM_ADDRESS"] : ""),
                         'help_class' => 'env',
-                        'rules' => $env_rules
+                        'rules' => $rules
                     ])
                 </div>
                 <div class="col-md-6">
@@ -93,7 +93,7 @@
                         'label' => trans('messages.from_name'),
                         'value' => (isset($env["MAIL_FROM_NAME"]) ? $env["MAIL_FROM_NAME"] : ""),
                         'help_class' => 'env',
-                        'rules' => $env_rules
+                        'rules' => $rules
                     ])  
                 </div>
                 <div class="col-md-6 mailer-setting sendmail">

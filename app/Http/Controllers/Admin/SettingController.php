@@ -229,26 +229,24 @@ class SettingController extends Controller
             return $this->notAuthorized();
         }
 
-        // SMTP
-        $env = [
-            'MAIL_MAILER' => Setting::get('mailer.mailer') ?: Setting::get('mailer.driver'), // Laravel 5.8 compatibility
-            'MAIL_HOST' => Setting::get('mailer.host'),
-            'MAIL_PORT' => Setting::get('mailer.port'),
-            'MAIL_USERNAME' => Setting::get('mailer.username'),
-            'MAIL_PASSWORD' => Setting::get('mailer.password'),
-            'MAIL_ENCRYPTION' => Setting::get('mailer.encryption'),
-            'MAIL_FROM_ADDRESS' => Setting::get('mailer.from.address'),
-            'MAIL_FROM_NAME' => Setting::get('mailer.from.name'),
-            'sendmail_path' => Setting::get('mailer.sendmail_path') ?: "/usr/sbin/sendmail",
-        ];
-
-        if (null !== $request->old() && isset($request->old()['env'])) {
-            foreach ($request->old()['env'] as $name => $value) {
-                $env[$name] = $value;
-            }
+        if ($request->old('env')) {
+            $mailSettings = $request->old('env');
+        } else {
+            // SMTP
+            $mailSettings = [
+                'MAIL_MAILER' => Setting::get('mailer.mailer') ?: Setting::get('mailer.driver'), // Laravel 5.8 compatibility
+                'MAIL_HOST' => Setting::get('mailer.host'),
+                'MAIL_PORT' => Setting::get('mailer.port'),
+                'MAIL_USERNAME' => Setting::get('mailer.username'),
+                'MAIL_PASSWORD' => Setting::get('mailer.password'),
+                'MAIL_ENCRYPTION' => Setting::get('mailer.encryption'),
+                'MAIL_FROM_ADDRESS' => Setting::get('mailer.from.address'),
+                'MAIL_FROM_NAME' => Setting::get('mailer.from.name'),
+                'sendmail_path' => Setting::get('mailer.sendmail_path') ?: "/usr/sbin/sendmail",
+            ];
         }
 
-        $env_rules = [
+        $rules = [
             'smtp' => [
                 'env.MAIL_MAILER' => 'required',
                 'env.MAIL_HOST' => 'required',
@@ -272,55 +270,43 @@ class SettingController extends Controller
                 return view('somethingWentWrong', ['message' => trans('messages.operation_not_allowed_in_demo')]);
             }
 
-            $env = $request->env;
+            $mailSettings = $request->env;
 
-            $this->validate($request, $env_rules[$env['MAIL_MAILER']]);
+            $this->validate($request, $rules[$mailSettings['MAIL_MAILER']]);
 
-            // Check SMTP connection
-            $site_info = $request->all();
-            if ($env['MAIL_MAILER'] == 'smtp') {
-                $rules = [];
+            // Test connection if mailer == SMTP
+            if ($mailSettings['MAIL_MAILER'] == 'smtp') {
+                $moreRules = [];
                 $messages = [];
                 try {
-                    $transport = new \Swift_SmtpTransport($env['MAIL_HOST'], $env['MAIL_PORT'], $env['MAIL_ENCRYPTION']);
-                    $transport->setUsername($env['MAIL_USERNAME']);
-                    $transport->setPassword($env['MAIL_PASSWORD']);
-                    // @todo: it is not recommended to allow self-signed
+                    $transport = new \Swift_SmtpTransport($mailSettings['MAIL_HOST'], $mailSettings['MAIL_PORT'], $mailSettings['MAIL_ENCRYPTION']);
+                    $transport->setUsername($mailSettings['MAIL_USERNAME']);
+                    $transport->setPassword($mailSettings['MAIL_PASSWORD']);
                     $transport->setStreamOptions(array('ssl' => array('allow_self_signed' => true, 'verify_peer' => false, 'verify_peer_name' => false)));
                     $mailer = new \Swift_Mailer($transport);
                     $mailer->getTransport()->start();
                 } catch (\Swift_TransportException $e) {
-                    $rules['smtp_valid'] = 'required';
+                    $moreRules['smtp_valid'] = 'required';
                     $messages['required'] = $e->getMessage();
                 } catch (\Exception $e) {
-                    $rules['smtp_valid'] = 'required';
+                    $moreRules['smtp_valid'] = 'required';
                     $messages['required'] = $e->getMessage();
                 }
-                $this->validate($request, $rules, $messages);
-            }
 
-            // update env
-            foreach ($env as $key => $value) {
-                if (empty($value)) {
-                    $value = 'null';
-                }
-                if ($key == 'MAIL_PASSWORD') {
-                    Setting::setEnv($key, quoteDotEnvValue($value));
-                } else {
-                    Setting::setEnv($key, $value);
-                }
+                // Trick: make validation failed if SMTP test fails
+                $this->validate($request, $moreRules, $messages);
             }
 
             // update settings table
-            Setting::set('mailer.mailer', $env['MAIL_MAILER']);
-            Setting::set('mailer.host', $env['MAIL_HOST']);
-            Setting::set('mailer.port', $env['MAIL_PORT']);
-            Setting::set('mailer.encryption', $env['MAIL_ENCRYPTION']);
-            Setting::set('mailer.username', $env['MAIL_USERNAME']);
-            Setting::set('mailer.password', $env['MAIL_PASSWORD']);
-            Setting::set('mailer.from.name', $env['MAIL_FROM_NAME']);
-            Setting::set('mailer.from.address', $env['MAIL_FROM_ADDRESS']);
-            Setting::set('mailer.sendmail_path', $env['sendmail_path']);
+            Setting::set('mailer.mailer', $mailSettings['MAIL_MAILER']);
+            Setting::set('mailer.host', $mailSettings['MAIL_HOST']);
+            Setting::set('mailer.port', $mailSettings['MAIL_PORT']);
+            Setting::set('mailer.encryption', $mailSettings['MAIL_ENCRYPTION']);
+            Setting::set('mailer.username', $mailSettings['MAIL_USERNAME']);
+            Setting::set('mailer.password', $mailSettings['MAIL_PASSWORD']);
+            Setting::set('mailer.from.name', $mailSettings['MAIL_FROM_NAME']);
+            Setting::set('mailer.from.address', $mailSettings['MAIL_FROM_ADDRESS']);
+            Setting::set('mailer.sendmail_path', $mailSettings['sendmail_path']);
 
             // Redirect to my lists page
             $next = action('Admin\SettingController@mailer');
@@ -330,8 +316,8 @@ class SettingController extends Controller
         }
 
         return view('admin.settings.mailer', [
-            'env_rules' => $env_rules['smtp'],
-            'env' => $env,
+            'rules' => $rules,
+            'env' => $mailSettings,
         ]);
     }
 
@@ -364,7 +350,6 @@ class SettingController extends Controller
                 $message->addPart($request->input('content'), 'text/html');
 
                 $mailer = App::make('xmailer');
-
                 $result = $mailer->sendWithDefaultFromAddress($message);
 
                 $statusCode = $result['status'] == 'sent' ? 200 : 400;
