@@ -83,7 +83,6 @@
                         </tr>
                     @endforeach
                 </table>
-                <hr>
             @endif
         @endforeach
 
