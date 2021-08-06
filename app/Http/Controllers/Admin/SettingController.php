@@ -351,9 +351,7 @@ class SettingController extends Controller
 
                 $mailer = App::make('xmailer');
                 $result = $mailer->sendWithDefaultFromAddress($message);
-
-                $statusCode = $result['status'] == 'sent' ? 200 : 400;
-                return response()->json($result, $statusCode);
+                return response()->json(['status' => 'ok'], 200);
             } catch (\Exception $e) {
                 return response()->json([
                     'error' => $e->getMessage(),
