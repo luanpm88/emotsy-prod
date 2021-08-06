@@ -1113,6 +1113,11 @@ class Template extends Model
                 'dir' => database_path('templates/themes/001-yellow/5d7b527be2bd2'),
                 'category' => $categoryTheme,
                 'builder' => true,
+            ], [
+                'name' => 'Form Builder!',
+                'dir' => database_path('templates/basic/014-form/6037a23568208'),
+                'category' => $categoryTheme,
+                'builder' => true,
             ],
         ];
 

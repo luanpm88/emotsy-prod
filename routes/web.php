@@ -593,6 +593,9 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('sources/connect', 'SourceController@connect');
     Route::get('sources/listing', 'SourceController@listing');
     Route::resource('sources', 'SourceController');
+
+    // Popup
+    Route::get('popup', 'PopupController@index');
 });
 
 // ADMIN AREA
