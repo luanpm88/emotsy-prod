@@ -188,14 +188,7 @@ restart_alt
 
                             if (completeAlert) {
                                 // Success alert
-                                swal({
-                                    title: '{{ trans('messages.list.verify.complete') }}',
-                                    text: "",
-                                    confirmButtonColor: "#00695C",
-                                    type: "success",
-                                    allowOutsideClick: true,
-                                    confirmButtonText: LANG_OK,
-                                });
+                                alert('{{ trans('messages.list.verify.complete') }}');
                             }
                         } else if (result.status == "cancelled") {
                             /*
