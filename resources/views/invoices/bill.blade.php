@@ -38,10 +38,10 @@
             
             @if ($bill['pending'])
                 <hr>
-                <div class="text-right pointer-events-none">
+                <div class="text-right pe-none">
                     <a href="{{ action('SubscriptionController@payment', [
                         'invoice_uid' => $bill['invoice_uid'],
-                    ]) }}" class="btn btn-warning button-loading full-width pr-20" style="pointer-events: auto;opacity:0.9">
+                    ]) }}" class="btn btn-warning button-loading full-width pr-20 pe-none " style="pointer-events: auto;opacity:0.9">
                         {{ trans('messages.invoice.payment_is_being_verified') }}
                         <div class="loader"></div>
                     </a>
