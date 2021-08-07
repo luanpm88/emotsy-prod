@@ -27,7 +27,7 @@
                     @if (!\Auth::user()->customer->preferredPaymentGatewayCanAutoCharge())
                         @include('elements._notification', [
                             'level' => 'warning',
-                            'message' => trans('messages.have_new_renew_invoice')
+                            'message' => trans('messages.subscription.renew_invoice')
                         ])
                     @else
                         @include('elements._notification', [

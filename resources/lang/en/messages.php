@@ -3530,7 +3530,7 @@
   'subscription.status.pending_for_approval' => 'Pending for approval',
   'change_plan.pending_for_approval' => 'Change plan wait for approval',
   'renew_subscription.pending_for_approval' => 'Renew wait for approval',
-  'have_new_renew_invoice' => 'You have a pending renew invoice. Check the invoice information.',
+  'subscription.renew_invoice' => 'You have a pending renew invoice. Check the invoice information.',
   'have_new_change_plan_invoice' => 'You have a pending change plan invoice. Check the invoice information',
   'transaction.method.braintree' => 'Braintree',
   'transaction.method.coinpayments' => 'Coinpayments',
