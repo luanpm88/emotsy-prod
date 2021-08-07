@@ -21,6 +21,15 @@ class Invoice extends Model
     const TYPE_NEW_SUBSCRIPTION = 'new_subscription';
     const TYPE_CHANGE_PLAN = 'change_plan';
 
+    protected $fillable = [
+        'billing_first_name',
+        'billing_last_name',
+        'billing_address',
+        'billing_email',
+        'billing_phone',
+        'billing_country_id',
+    ];
+
     public function scopeNew($query)
     {
         $query->whereIn('status', [
@@ -555,5 +564,25 @@ class Invoice extends Model
             default:
                 throw new \Exception('Invoice type is not valid: ' . $this->type);
         }
+    }
+
+    public function updateBillingInformation($billing)
+    {
+        $this->fill($billing);
+
+        $validator = \Validator::make($billing, [
+            'billing_first_name' => 'required',
+            'billing_last_name' => 'required',
+            'billing_address' => 'required',
+            'billing_country_id' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return $validator;
+        }
+
+        $this->save();
+
+        return $validator;
     }
 }

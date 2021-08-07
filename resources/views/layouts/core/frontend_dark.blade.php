@@ -12,9 +12,6 @@
 
     @yield('page_header')
 
-    <!-- display flash message -->
-    @include('layouts.core._errors')
-
     <!-- main inner content -->
     @yield('content')
 

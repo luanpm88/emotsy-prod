@@ -5,8 +5,8 @@ class GroupManager {
 
     getOtherGroups(theGroup) {
         var others = [];
-        this.groups.forEach(function(group) {
-            if (group != theGroup) {
+        this.groups.forEach(function(group, index) {
+            if (index != theGroup.index) {
                 others.push(group);
             }
         });
@@ -14,16 +14,19 @@ class GroupManager {
         return others;
     }
 
-    bind(action, otherGroups) {
+    bind(action) {
         var _this = this;
 
         this.groups.forEach(function(group) {
-            var otherGroups = _this.getOtherGroups();
+            var otherGroups = _this.getOtherGroups(group);
             action(group, otherGroups);
         });
     }
 
     add(group) {
+        group = $.extend({}, group, {
+            index: this.groups.length,
+        });
         this.groups.push(group);
     }
 };

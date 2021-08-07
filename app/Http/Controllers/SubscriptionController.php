@@ -24,10 +24,7 @@ class SubscriptionController extends Controller
         if (!$subscription ||
             $subscription->isEnded()
         ) {
-            return view('subscription.selectPlan', [
-                'plans' => Plan::getAvailablePlans(),
-                'subscription' => $subscription,
-            ]);
+            return redirect()->action('SubscriptionController@selectPlan');
         }
 
         // @todo không để đây, chỉ test thôi, cần move qua cronjob
@@ -56,19 +53,58 @@ class SubscriptionController extends Controller
             'plan' => $subscription->plan,
         ]);
     }
+
+    public function selectPlan(Request $request)
+    {
+        // 
+        $customer = $request->user()->customer;
+        $subscription = $customer->subscription;
+
+        return view('subscription.selectPlan', [
+            'plans' => Plan::getAvailablePlans(),
+            'subscription' => $subscription,
+        ]);
+    }
     
     public function init(Request $request)
     {
         // Get current customer
         $customer = $request->user()->customer;
+        $subscription = $customer->subscription;
         $plan = Plan::findByUid($request->plan_uid);
 
+        // try to save old invoice billing info
+        if ($subscription &&
+            !$subscription->isEnded() &&
+            $subscription->getUnpaidInvoice()
+        ) {
+            $oldInvoice = $subscription->getUnpaidInvoice();
+
+            $oldBillingInfo = [
+                'billing_first_name' => $oldInvoice->billing_first_name,
+                'billing_last_name' => $oldInvoice->billing_last_name,
+                'billing_address' => $oldInvoice->billing_address,
+                'billing_email' => $oldInvoice->billing_email,
+                'billing_phone' => $oldInvoice->billing_phone,
+                'billing_country_id' => $oldInvoice->billing_country_id,
+            ];
+        }
+
         // create new subscription
+        $subscription = $customer->subscription;
         $subscription = $customer->assignPlan($plan);
 
         // create init invoice
         if (!$subscription->invoices()->new()->count()) {
-            $subscription->createInitInvoice();
+            $invoice = $subscription->createInitInvoice();
+        }
+
+        // copy old billing info
+        if (isset($oldBillingInfo)) {
+            $invoice = $subscription->getUnpaidInvoice();
+
+            $invoice->fill($oldBillingInfo);
+            $invoice->save();
         }
 
         // Check if subscriotion is new
@@ -155,26 +191,14 @@ class SubscriptionController extends Controller
         $customer = $request->user()->customer;
         $subscription = $customer->subscription;
         $invoice = $subscription->getUnpaidInvoice();
-        $billingAddress = $customer->getDefaultBillingAddress();
-
-        // has no address yet
-        if (!$billingAddress) {
-            $billingAddress = $customer->newBillingAddress();
-        }
-
-        // copy from contacy
-        if ($request->same_as_contact == 'true') {
-            $billingAddress->copyFromContact();
-        }
 
         // Save posted data
         if ($request->isMethod('post')) {
-            list($validator, $billingAddress) = $billingAddress->updateAll($request);
+            $validator = $invoice->updateBillingInformation($request->all());
             
             // redirect if fails
             if ($validator->fails()) {
                 return response()->view('subscription.billingInformation', [
-                    'billingAddress' => $billingAddress,
                     'invoice' => $invoice,
                     'errors' => $validator->errors(),
                 ], 400);
@@ -189,7 +213,6 @@ class SubscriptionController extends Controller
         }
 
         return view('subscription.billingInformation', [
-            'billingAddress' => $billingAddress,
             'invoice' => $invoice,
         ]);
     }
@@ -300,5 +323,57 @@ class SubscriptionController extends Controller
         // Redirect to my subscription page
         $request->session()->flash('alert-success', trans('messages.subscription.cancelled_now'));
         return redirect()->action('SubscriptionController@index');
+    }
+
+    public function orderBox(Request $request)
+    {
+        $customer = $request->user()->customer;
+        $subscription = $customer->subscription;
+
+        // choose a plan
+        if ($request->plan_uid) {
+            $plan = Plan::findByUid($request->plan_uid);
+
+            return view('subscription.orderBox', [
+                'subscription' => $subscription,
+                'bill' => [
+                    'title' => trans('messages.subscription.your_order'),
+                    'description' => trans('messages.subscription.your_order.desc', [
+                        'plan' => $plan->name,
+                    ]),
+                    'bill' => [
+                        [
+                            'title' => $plan->name,
+                            'description' => view('plans._bill_desc', ['plan' => $plan]),
+                            'price' => format_price($plan->price, $plan->currency->format),
+                            'tax' => format_price($plan->getTax(), $plan->currency->format),
+                            'discount' => format_price(0, $plan->currency->format),
+                        ]
+                    ],
+                    'charge_info' => trans('messages.bill.charge_now'),
+                    'total' => format_price($plan->total(), $plan->currency->format),
+                    'pending' => false,
+                    'invoice_uid' => '',
+                    'type' => \Acelle\Model\Invoice::TYPE_NEW_SUBSCRIPTION,
+                    'plan' => $plan,
+                ],
+            ]);
+        }
+
+        // choose a plan
+        elseif ($subscription) {
+            $invoice = $subscription->getUnpaidInvoice();
+            
+            return view('subscription.orderBox', [
+                'subscription' => $subscription,
+                'bill' => $invoice->getBillingInfo(),
+                'invoice' => $invoice,
+            ]);
+        }
+
+        return view('subscription.orderBox', [
+            'subscription' => $subscription,
+            'bill' => null,
+        ]);
     }
 }

@@ -1,9 +1,6 @@
 <div class="card subscription-step">
     <a 
-        link-method="POST" link-confirm="{{ trans('messages.subscription.change_init_plan.confirm') }}"
-        href="{{ action('SubscriptionController@cancelInvoice', [
-            'invoice_uid' => $invoice->uid,
-        ]) }}"
+        href="{{ action('SubscriptionController@selectPlan') }}"
         class="card-header py-3 d-block select-plan-tab">
         <div class="d-flex align-items-center">
             <div class="me-3"><label class="subscription-step-number bg-secondary">1</label></div>

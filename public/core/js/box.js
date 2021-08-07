@@ -10,23 +10,32 @@ class Box {
         if (typeof(callback) !== 'undefined') {
             this.callback = callback;
         }
+
+        this.box.html(`
+            <h4 class="mb-4">asdsada asdsa</h4>
+            <p>asdadasdasdsa asd asd asd asd asd ada dasd asd </p>
+            <span>asdadasdasdsa asd asd asd</span>
+        `);
+        placeholderLoading(this.box);
     }
     
     loading() {
-        if (!this.box.find('.box-loading').length) {
-            this.box.prepend(this.loadingHtml);
-        }
+        // if (!this.box.find('.box-loading').length) {
+        //     this.box.prepend(this.loadingHtml);
+        // }
         
-        this.box.addClass('box-is-loading');
+        // this.box.addClass('box-is-loading');
+        placeholderLoading(this.box);
     }
     
     loaded() {
-        // apply js for new content
-        this.applyJs();
+        // // apply js for new content
+        // this.applyJs();
         
-        // remove loading effects
-        this.box.find('.box-loading').remove();        
-        this.box.removeClass('box-is-loading');
+        // // remove loading effects
+        // this.box.find('.box-loading').remove();        
+        // this.box.removeClass('box-is-loading');
+        removePlaceholderLoading(this.box);
     }
     
     applyJs() {
@@ -53,6 +62,7 @@ class Box {
             url: _this.url,
             type: 'GET',
             dataType: 'html',
+            data: _this.data ? _this.data : {}
         }).always(function(response) {
             _this.box.html(response);
             

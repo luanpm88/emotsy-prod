@@ -3758,4 +3758,8 @@
   'template.change_name' => 'Change name',
   'template.change_name.intro' => 'Enter your new template name below',
   'template.name.changed' => 'Template name was changed',
+  'subscription.choose_a_plan' => 'Choose a plan to subscribe',
+  'subscription.your_order' => 'Your order',
+  'subscription.your_order.desc' => 'You’re subscring to plan <strong>:plan</strong>.
+    Below are your order details',
 ) ?>

@@ -6823,12 +6823,15 @@ h3, h4 [class^="material-icons"] {
     border: solid 1px transparent;
     transition: all 0.2s ease-in-out;
     filter: grayscale(0.9);
+    cursor: pointer;
 }
-.new-price-item:hover {
+.new-price-item:hover, .new-price-item.current {
     background: #fff;
     border: solid 1px #ccc;
-    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
     filter: grayscale(0.0);
+}
+.new-price-item.current {
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
 }
 .new-price-item .header {
     
@@ -6974,4 +6977,12 @@ a.trigger-woo-abandoned-cart {
 }
 a.trigger-woo-abandoned-cart:hover {
     box-shadow: 1px 1px 5px rgba(0,0,0,0.3);
+}
+.bg-no-order {
+    background-color: #e2f1d9;
+    color: #222;
+}
+hr {
+    background-color: rgba(0,0,0,.125);
+    opacity: 1;
 }

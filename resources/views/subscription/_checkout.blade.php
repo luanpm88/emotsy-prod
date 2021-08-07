@@ -1,8 +1,9 @@
 @if ($invoice->isNew() && !$invoice->getPendingTransaction())
-    <div class="card mt-2">
+    <div class="card shadow-sm border-top-0 rounded-bottom" style="margin-top: -10px;
+    border-radius: 0;">
         <div class="card-body">
-            @if (isset($disabled) && $disabled)
-                <div class="alert alert-info">{!! trans('messages.payment.agree_service_intro') !!}</div>
+            @if (!request()->payment_method)
+                <div class="alert alert-info bg-no-order">{!! trans('messages.payment.agree_service_intro') !!}</div>
                 <form id="checkoutForm" class="" action="{{ $invoice->isFree() ? action('SubscriptionController@confirmFree', [
                     'invoice_uid' => $invoice->uid
                 ]) : action('SubscriptionController@checkout') }}"
@@ -17,14 +18,14 @@
                     >
                 </form>
             @else
-                <div class="alert alert-info">{!! trans('messages.payment.agree_service_intro') !!}</div>
+                <div class="alert alert-info bg-no-order">{!! trans('messages.payment.agree_service_intro') !!}</div>
                 <form id="checkoutForm" class="" action="{{ $invoice->isFree() ? action('SubscriptionController@confirmFree', [
                     'invoice_uid' => $invoice->uid
                 ]) : action('SubscriptionController@checkout') }}"
                     method="POST">
                     {{ csrf_field() }}
 
-                    <input type="hidden" name="payment_method" />
+                    <input type="hidden" name="payment_method" value="{{ request()->payment_method }}" />
 
                     <input type="submit" name="new_payment"
                         class="btn btn-primary py-2 fs-6 px-4 text-center rounded-3 shadow" style="width:100%"

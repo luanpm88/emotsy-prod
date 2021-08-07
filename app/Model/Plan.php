@@ -1317,4 +1317,14 @@ class Plan extends Model
     {
         $query = $query->where('plans.visible', '=', true);
     }
+
+    public function getTax()
+    {
+        return ($this->price * ($this->vat/100));
+    }
+
+    public function total()
+    {
+        return $this->price + $this->getTax();
+    }
 }

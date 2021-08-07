@@ -1,4 +1,4 @@
-@extends('layouts.core.backend_dark')
+@extends('layouts.core.frontend_dark')
 
 @section('title', trans('messages.subscriptions'))
 
