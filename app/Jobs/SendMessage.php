@@ -65,7 +65,7 @@ class SendMessage implements ShouldQueue
         try {
             $sent = $this->server->send($message);
         } catch (Exception $ex) {
-            throw new Exception("Error sending to email address [%s]. Error: %s", $subscriber->email, $ex->getMessage());
+            throw new Exception("Error sending to email address [%s]. Error: %s", $this->subscriber->email, $ex->getMessage());
         }
 
         // Log
