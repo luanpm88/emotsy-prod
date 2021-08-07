@@ -208,7 +208,10 @@ restart_alt
 
 	                        if (completeAlert) {
 	                            // Success alert
-	                            alert('{{ trans('messages.import_completed') }}');
+                                new Dialog('alert', {
+                                    title: "{{ trans('messages.notify.success') }}",
+                                    message: '{!! trans('messages.import_completed') !!}',
+                                });
 	                        }
 	                    } else if (result.status == "cancelled") {
 	                        /*
@@ -270,7 +273,14 @@ restart_alt
                     processData: false
                 }).fail(function( jqXHR, textStatus, errorThrown ) {
                     AcelleImport.hideProgressBar();
+<<<<<<< HEAD
                     alert(errorThrown);
+=======
+                    notify({
+                        title: "{{ trans('messages.notify.error') }}",
+                        message: errorThrown,
+                    });
+>>>>>>> 712c5cc41 (remove swal js)
                 });
             },
 
@@ -291,7 +301,14 @@ restart_alt
                         AcelleImport.resetCurrentJob();
                     }
                 }).fail(function(jqXHR, textStatus, errorThrown) {
+<<<<<<< HEAD
                     alert(errorThrown);
+=======
+                    notify({
+                        title: "{{ trans('messages.notify.error') }}",
+                        message: errorThrown,
+                    });
+>>>>>>> 712c5cc41 (remove swal js)
 
                     // Resume progress checking
                     AcelleImport.checkProgress();
@@ -314,7 +331,14 @@ restart_alt
                         AcelleImport.resetCurrentJob();
                     }
                 }).fail(function(jqXHR, textStatus, errorThrown) {
+<<<<<<< HEAD
                     alert(errorThrown);
+=======
+                    notify({
+                        title: "{{ trans('messages.notify.error') }}",
+                        message: errorThrown,
+                    });
+>>>>>>> 712c5cc41 (remove swal js)
 
                     // Resume progress checking
                     AcelleImport.checkProgress();

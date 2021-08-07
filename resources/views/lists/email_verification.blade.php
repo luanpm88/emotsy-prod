@@ -188,7 +188,10 @@ restart_alt
 
                             if (completeAlert) {
                                 // Success alert
-                                alert('{{ trans('messages.list.verify.complete') }}');
+                                new Dialog('alert', {
+                                    title: "{{ trans('messages.notify.success') }}",
+                                    message: '{{ trans('messages.list.verify.complete') }}'
+                                });
                             }
                         } else if (result.status == "cancelled") {
                             /*

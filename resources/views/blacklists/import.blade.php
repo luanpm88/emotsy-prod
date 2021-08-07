@@ -166,13 +166,9 @@ file_upload
 
                             if (completeAlert) {
                                 // Success alert
-                                swal({
-                                    title: '{{ trans('messages.blacklist.import_process_done') }}',
-                                    text: "",
-                                    confirmButtonColor: "#00695C",
-                                    type: "success",
-                                    allowOutsideClick: true,
-                                    confirmButtonText: LANG_OK,
+                                notify({
+                                    title: "{{ trans('messages.notify.success') }}",
+                                    message: '{{ trans('messages.blacklist.import_process_done') }}',
                                 });
                             }
                         } else if (result.status == "cancelled") {
@@ -235,13 +231,9 @@ file_upload
                     processData: false
                 }).fail(function( jqXHR, textStatus, errorThrown ) {
                     AcelleImport.hideProgressBar();
-                    swal({
-                        title: errorThrown,
-                        text: "",
-                        confirmButtonColor: "#00695C",
-                        type: "error",
-                        allowOutsideClick: true,
-                        confirmButtonText: LANG_OK,
+                    notify({
+                        title: "{{ trans('messages.notify.error') }}",
+                        message: errorThrown,
                     });
                 });
             },
@@ -263,13 +255,9 @@ file_upload
                         AcelleImport.resetCurrentJob();
                     }
                 }).fail(function(jqXHR, textStatus, errorThrown) {
-                    swal({
-                        title: errorThrown,
-                        text: "",
-                        confirmButtonColor: "#00695C",
-                        type: "error",
-                        allowOutsideClick: true,
-                        confirmButtonText: LANG_OK,
+                    notify({
+                        title: "{{ trans('messages.notify.error') }}",
+                        message: errorThrown,
                     });
 
                     // Resume progress checking
@@ -293,13 +281,9 @@ file_upload
                         AcelleImport.resetCurrentJob();
                     }
                 }).fail(function(jqXHR, textStatus, errorThrown) {
-                    swal({
-                        title: errorThrown,
-                        text: "",
-                        confirmButtonColor: "#00695C",
-                        type: "error",
-                        allowOutsideClick: true,
-                        confirmButtonText: LANG_OK,
+                    notify({
+                        title: "{{ trans('messages.notify.error') }}",
+                        message: errorThrown,
                     });
 
                     // Resume progress checking

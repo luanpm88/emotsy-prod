@@ -61,15 +61,9 @@
             if (!$('.choose-payment-methods>div [type=radio]:checked').length) {
                 e.preventDefault();
 
-                swal({
-                    title: '{{ trans('messages.subscription.no_payment_method_selected') }}',
-                    text: "",
-                    confirmButtonColor: "#00695C",
-                    type: "error",
-                    allowOutsideClick: true,
-                    confirmButtonText: LANG_OK,
-                    customClass: "swl-success",
-                    html: true
+                notify({
+                    title: "{{ trans('messages.notify.error') }}",
+                    message: '{{ trans('messages.subscription.no_payment_method_selected') }}',
                 });
             }                
         });
