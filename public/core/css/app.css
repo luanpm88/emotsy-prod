@@ -6920,3 +6920,9 @@ a.trigger-woo-abandoned-cart:hover {
     margin-left: -7px;
     margin-right: -5px;
 }
+.svg-icon {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    fill: currentColor;
+}

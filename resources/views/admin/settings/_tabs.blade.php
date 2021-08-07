@@ -44,8 +44,6 @@ vpn_key
 	@if (Auth::user()->admin->getPermission("setting_upgrade_manager") == 'yes')
 		<li class="nav-item text-semibold">
 			<a class="nav-link {{ $action == "upgrade" ? "active" : "" }}" href="{{ action('Admin\SettingController@upgrade') }}">
-			<span class="material-icons-outlined">
-browser_updated
-</span> {{ trans('messages.upgrade.title.upgrade') }}</a></li>
+				<img src="{{ url('images/upgrade.svg') }}" width="20px" class="me-2" /> <span>{{ trans('messages.upgrade.title.upgrade') }}</span></a></li>
 	@endif
 </ul>
