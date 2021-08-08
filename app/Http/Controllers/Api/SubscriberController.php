@@ -154,6 +154,7 @@ class SubscriberController extends Controller
             'status' => $item->status,
             'source' => $item->from,
             'ip_address' => $item->ip,
+            'tags' => $item->getTags(),
         ];
 
         foreach ($list->fields as $field) {

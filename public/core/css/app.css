@@ -6986,3 +6986,24 @@ hr {
     background-color: rgba(0,0,0,.125);
     opacity: 1;
 }
+.top-notification-icon svg {
+    fill: currentColor;
+    width: 20px;
+    height: 20px;
+}
+.top-notification-icon-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 100%;
+    background: rgb(252 189 2);
+    box-shadow: 1px 1px 1px rgba(0,0,0,0.05);
+    margin-top: -15px;
+    margin-left: -7px;
+    margin-right: -5px;
+}
+.svg-icon {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    fill: currentColor;
+}

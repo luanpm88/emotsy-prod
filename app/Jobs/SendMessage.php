@@ -61,7 +61,12 @@ class SendMessage implements ShouldQueue
 
         // Actually send!
         $logger->info(sprintf('Sending to %s [Server "%s"]', $this->subscriber->email, $this->server->name));
-        $sent = $this->server->send($message);
+
+        try {
+            $sent = $this->server->send($message);
+        } catch (Exception $ex) {
+            throw new Exception(sprintf("Error sending to email address [%s]. Error: %s", $this->subscriber->email, $ex->getMessage()));
+        }
 
         // Log
         $this->campaign->trackMessage($sent, $this->subscriber, $this->server, $msgId);

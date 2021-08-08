@@ -46,16 +46,10 @@
                 })
                 .done(function( data ) {
                     removeMaskLoading();
-                    
-                    // Success alert
-                    swal({
-                        title: data.message,
-                        text: "",
-                        confirmButtonColor: "#00695C",
-                        type: "success",
-                        allowOutsideClick: true,
-                        confirmButtonText: "{{ trans('messages.ok') }}",
-                        customClass: "swl-success"
+
+                    notify({
+                        title: "{{ trans('messages.notify.success') }}",
+                        message: data.message,
                     });
                 });
             }

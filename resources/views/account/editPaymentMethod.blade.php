@@ -77,6 +77,9 @@
                 manager.add({
                     radio: $(this).find('input[name=payment_method]'),
                     box: $(this)
+                notify({
+                    title: "{{ trans('messages.notify.error') }}",
+                    message: '{{ trans('messages.subscription.no_payment_method_selected') }}',
                 });
             });
 

@@ -176,13 +176,9 @@ restart_alt
 
                             if (completeAlert) {
                                 // Success alert
-                                swal({
-                                    title: '{{ trans('messages.export_completed') }}',
-                                    text: "",
-                                    confirmButtonColor: "#00695C",
-                                    type: "success",
-                                    allowOutsideClick: true,
-                                    confirmButtonText: LANG_OK,
+                                notify({
+                                    title: "{{ trans('messages.notify.success') }}",
+                                    message: '{{ trans('messages.export_completed') }}',
                                 });
                             }
                         } else if (result.status == "cancelled") {
@@ -224,13 +220,9 @@ restart_alt
                     alert("Ajax failed");
                     return true;
                     AcelleExport.hideProgressBar();
-                    swal({
-                        title: errorThrown,
-                        text: "",
-                        confirmButtonColor: "#00695C",
-                        type: "error",
-                        allowOutsideClick: true,
-                        confirmButtonText: LANG_OK,
+                    notify({
+                        title: "{{ trans('messages.notify.error') }}",
+                        message: errorThrown,
                     });
                 });
             },
@@ -252,13 +244,9 @@ restart_alt
                         AcelleExport.resetCurrentJob();
                     }
                 }).fail(function(jqXHR, textStatus, errorThrown) {
-                    swal({
-                        title: errorThrown,
-                        text: "",
-                        confirmButtonColor: "#00695C",
-                        type: "error",
-                        allowOutsideClick: true,
-                        confirmButtonText: LANG_OK,
+                    notify({
+                        title: "{{ trans('messages.notify.error') }}",
+                        message: errorThrown,
                     });
 
                     // Resume progress checking

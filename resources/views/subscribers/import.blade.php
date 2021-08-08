@@ -208,14 +208,10 @@ restart_alt
 
 	                        if (completeAlert) {
 	                            // Success alert
-	                            swal({
-	                                title: '{{ trans('messages.import_completed') }}',
-	                                text: "",
-	                                confirmButtonColor: "#00695C",
-	                                type: "success",
-	                                allowOutsideClick: true,
-	                                confirmButtonText: LANG_OK,
-	                            });
+                                new Dialog('alert', {
+                                    title: "{{ trans('messages.notify.success') }}",
+                                    message: '{!! trans('messages.import_completed') !!}',
+                                });
 	                        }
 	                    } else if (result.status == "cancelled") {
 	                        /*
@@ -277,13 +273,9 @@ restart_alt
                     processData: false
                 }).fail(function( jqXHR, textStatus, errorThrown ) {
                     AcelleImport.hideProgressBar();
-                    swal({
-                        title: errorThrown,
-                        text: "",
-                        confirmButtonColor: "#00695C",
-                        type: "error",
-                        allowOutsideClick: true,
-                        confirmButtonText: LANG_OK,
+                    new Dialog('alert', {
+                        title: "{{ trans('messages.notify.error') }}",
+                        message: errorThrown,
                     });
                 });
             },
@@ -305,13 +297,9 @@ restart_alt
                         AcelleImport.resetCurrentJob();
                     }
                 }).fail(function(jqXHR, textStatus, errorThrown) {
-                    swal({
-                        title: errorThrown,
-                        text: "",
-                        confirmButtonColor: "#00695C",
-                        type: "error",
-                        allowOutsideClick: true,
-                        confirmButtonText: LANG_OK,
+                    new Dialog('alert', {
+                        title: "{{ trans('messages.notify.error') }}",
+                        message: errorThrown,
                     });
 
                     // Resume progress checking
@@ -335,13 +323,9 @@ restart_alt
                         AcelleImport.resetCurrentJob();
                     }
                 }).fail(function(jqXHR, textStatus, errorThrown) {
-                    swal({
-                        title: errorThrown,
-                        text: "",
-                        confirmButtonColor: "#00695C",
-                        type: "error",
-                        allowOutsideClick: true,
-                        confirmButtonText: LANG_OK,
+                    new Dialog('alert', {
+                        title: "{{ trans('messages.notify.error') }}",
+                        message: errorThrown,
                     });
 
                     // Resume progress checking
