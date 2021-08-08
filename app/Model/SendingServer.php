@@ -1693,9 +1693,9 @@ class SendingServer extends Model implements HasQuotaInterface
     }
 
     /***   IMPLEMENTATION OF HasQuotaInterface ***/
-    public function getCreditsLogFile($name) : string
+    public function getCreditsLogFile() : string
     {
-        $filepath = storage_path("app/quota/{$name}-credits-used-{$this->uid}");
+        $filepath = storage_path("app/quota/credits-log-{$this->uid}");
         return $filepath;
     }
 
@@ -1707,15 +1707,24 @@ class SendingServer extends Model implements HasQuotaInterface
 
     public function getQuotaSettings($name) : ?array
     {
+        // return "{$this->quota_base} {$this->quota_unit}";
         // only one
         $quota = [
             [
-                'name' => 'Speed limit',
-                'period' => $this->getQuotaIntervalString(),
-                'limit' => $this->getSendingQuota(),
+                'name' => "Sending limit of {$this->quota_value} per {$this->quota_unit} {$this->quota_base}",
+                'period_base' => $this->quota_base,
+                'period_value' => $this->quota_unit,
+                'limit' => $this->quota_value,
             ]
         ];
 
         return $quota;
+    }
+
+    public function setQuotaSettings($value, $periodUnit, $periodBase)
+    {
+        $this->quota_base = $periodBase;
+        $this->quota_unit = $periodUnit;
+        $this->quota_value = $value;
     }
 }

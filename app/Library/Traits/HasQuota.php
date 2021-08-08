@@ -4,10 +4,11 @@ namespace Acelle\Library\Traits;
 
 use Exception;
 use Acelle\Library\QuotaTracker;
+use Closure;
+use Carbon\Carbon;
 
 trait HasQuota
 {
-    const QUOTA_ZERO_CREDITS = 0;
     /** Other related functions are enforced in the HasQuotaInterafce **/
 
     // public function getCreditsLogFile(string $name) : string;
@@ -16,7 +17,7 @@ trait HasQuota
 
     public function getCreditsLogJson()
     {
-        $filepath = $this->getCreditsLogFile($name);
+        $filepath = $this->getCreditsLogFile();
         if (!file_exists($filepath)) {
             \Acelle\Helpers\ptouch($filepath);
         }
@@ -26,7 +27,8 @@ trait HasQuota
     }
 
     private function updateCreditsLog($json) {
-        file_put_contents($this->filepath, json_encode($json));
+        $filepath = $this->getCreditsLogFile();
+        file_put_contents($filepath, json_encode($json));
     }
 
     public function getRemainingCredits($name) {
@@ -50,43 +52,41 @@ trait HasQuota
             $json[$name] = $json[$name] + $count;
         }
 
-        $this->updateCreditsLog($json)
+        $this->updateCreditsLog($json);
+    }
+
+    public function setCredits($name, $count)
+    {
+        $json = $this->getCreditsLogJson();
+        $json[$name] = $count;
+        $this->updateCreditsLog($json);
     }
 
     public function withQuota($name, Closure $execute, array $subjects = [])
     {
-        $subjects[] = $this;
+        // Check credits and quota of the caller as well as the other $subjects
+        $this->countQuota($name, function() use ($name, $subjects) {
+            $this->countCreditsUsed($name);
 
-        foreach ($subjects as $subject) {
-            $subject->checkCredits($name);
-        }
+            //
+            foreach ($subjects as $subject) {
+                $subject->countQuota($name, function() {
+                    $subject->countCreditsUsed($name);
+                });
+            }
+        });
 
         // Okie, execute
         $execute();
-
-        // Update credits used and tracker's log
-        foreach ($subjects as $subject) {
-            $subject->countCreditsUsed($name);
-        }
     }
 
-    public function checkCredits($name)
+    // Closure is for checking sending credits
+    public function countQuota(string $name, Closure $callback = null)
     {
-        $creditsUsed = $this->getRemainingCredits($name);
-
-        // Check credits used
-        if ($creditsUsed === self::QUOTA_ZERO_CREDITS) {
-            throw new Exception("There is no `{$name}` credits left"); // or Callback here
-        }
-    }
-
-    public function checkQuota($name, array $limits)
-    {
+        $limits = $this->getQuotaSettings($name);
         // Check quota allowance
         $quotaTracker = new QuotaTracker($this->getQuotaLogFile($name));
-        if (!$quotaTracker->check($now = null, $limits, $failed)) {
-            throw new Exception("Quota limits reached"); // or Callback here
-        }
+        $quotaTracker->count(Carbon::now(), $limits, $callback);
     }
 
     // MAIN
@@ -98,16 +98,11 @@ trait HasQuota
         }
 
         $used = $json[$name];
-        if ($used === self::QUOTA_ZERO_CREDITS) {
+        if ($used === 0) {
             throw new Exception("Credits remaining is already 0");
         }
 
         $json[$name] = $json[$name] - 1;
-    }
-
-    public function updateQuotaCounter(string $name)
-    {
-        $quotaTracker = new QuotaTracker($this->getQuotaLogFile($name), $this->getQuotaSettings($name));
-        $quotaTracker->count();
+        $this->updateCreditsLog($json);
     }
 }
