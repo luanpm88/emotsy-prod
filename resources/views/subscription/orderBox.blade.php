@@ -4,9 +4,7 @@
     ])
 
     @if (isset($invoice))
-        @include('subscription._checkout', [
-            'disabled' => true,
-        ])
+        @include('subscription._checkout')
     @endif
 @else
     <div class="card shadow-sm rounded-3">

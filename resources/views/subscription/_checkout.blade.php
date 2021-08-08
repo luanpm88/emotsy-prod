@@ -2,7 +2,7 @@
     <div class="card shadow-sm border-top-0 rounded-bottom" style="margin-top: -10px;
     border-radius: 0;">
         <div class="card-body">
-            @if (!request()->payment_method)
+            @if (!request()->payment_method && !$invoice->isFree())
                 <div class="alert alert-info bg-no-order">{!! trans('messages.payment.agree_service_intro') !!}</div>
                 <form id="checkoutForm" class="" action="{{ $invoice->isFree() ? action('SubscriptionController@confirmFree', [
                     'invoice_uid' => $invoice->uid
