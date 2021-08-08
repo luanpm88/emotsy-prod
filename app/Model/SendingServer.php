@@ -1693,27 +1693,18 @@ class SendingServer extends Model implements HasQuotaInterface
     }
 
     /***   IMPLEMENTATION OF HasQuotaInterface ***/
-    public function getCreditsLimit($name) : ?int
-    {
-        // Server does not have credits limit
-        return null;
-    }
-
-    // Subject to implement
     public function getCreditsLogFile($name) : string
     {
         $filepath = storage_path("app/quota/{$name}-credits-used-{$this->uid}");
         return $filepath;
     }
 
-    // Subject to implement
     public function getQuotaLogFile($name) : string
     {
         $filepath = storage_path("app/quota/{$name}-quota-log-{$this->uid}");
         return $filepath;
     }
 
-    // Subject to implement
     public function getQuotaSettings($name) : ?array
     {
         // only one

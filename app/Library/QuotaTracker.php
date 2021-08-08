@@ -35,10 +35,10 @@ class QuotaTracker
     public function check(Carbon $now = null, array $limits = [])
     {
         $lock = new Lockable($this->filepath);
-        $lock->getExclusiveLock(function ($fopen) use ($now) {
+        $lock->getExclusiveLock(function ($fopen) use ($limits) {
             $now = $now ?: Carbon::now();
 
-            $this->test($now, $limit, $fopen);
+            $this->test($now, $limits, $fopen);
             $this->count($now, $fopen);
         }, $timeout = 15);
     }
@@ -78,6 +78,7 @@ class QuotaTracker
         return "{$block}{$this->seperator}{$count}";
     }
 
+    // Convert the provided datetime $now to a string
     public function makeBlock($now)
     {
         $now = $now ?: Carbon::now();
@@ -85,12 +86,6 @@ class QuotaTracker
         return $now->format($format);
     }
 
-    public function test()
-    {
-        return true || false;
-    }
-
-    // Thanks to https://stackoverflow.com/questions/15025875
     private function getLastRecord($fopen)
     {
         // Find offline
@@ -212,11 +207,6 @@ class QuotaTracker
         }
     }
 
-    public function readContent()
-    {
-        echo file_get_contents($this->filepath);
-    }
-
     public function test(Carbon $now, array $limits, $fopen)
     {
         // [
@@ -244,10 +234,7 @@ class QuotaTracker
 
             if ($creditsUsed >= $limit['limit']) {
                 throw new Exception(sprintf("%s exceeded! %s/%s used", $limit['name'], $creditsUsed, $limit['limit']));
-                //return false;
             }
-
-            //return true;
         }
     }
 
