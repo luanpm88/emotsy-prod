@@ -22,7 +22,6 @@
 
 namespace Acelle\Model;
 
-use Acelle\Library\QuotaTrackerFile;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use Acelle\Cashier\Cashier;
@@ -587,43 +586,13 @@ class Customer extends Model
     }
 
     /**
-     * Check if customer has used up all quota allocated.
-     *
-     * @return string
-     */
-    public function overQuota()
-    {
-        return !$this->getQuotaTracker()->check();
-    }
-
-    /**
-     * Increment quota usage.
-     */
-    public function countUsage(Carbon $timePoint = null)
-    {
-        return $this->getQuotaTracker($timePoint)->add();
-    }
-
-    /**
      * Get customer's sending quota rate.
      *
      * @return string
      */
     public function displaySendingQuotaUsage()
     {
-        if ($this->getSendingQuota() == -1) {
-            return trans('messages.unlimited');
-        }
-        // @todo use percentage helper here
-        return $this->getSendingQuotaUsagePercentage().'%';
-    }
-
-    /**
-     * Clean up the quota tracking files to prevent it from growing too large.
-     */
-    public function cleanupQuotaTracker()
-    {
-        $this->getQuotaTracker()->cleanupSeries();
+        throw new Exception('Invalid!!!')
     }
 
     /**
@@ -700,12 +669,7 @@ class Customer extends Model
      */
     public function getSendingQuotaUsage()
     {
-        try {
-            $tracker = $this->getQuotaTracker();
-            return $tracker->getUsage();
-        } catch (Exception $ex) {
-            throw new Exception("Error processing quota tracking file: ".$this->getSendingQuotaLockFile()." Error: ".$ex->getMessage());
-        }
+        throw new Exception('!!!!');
     }
 
     /**
@@ -731,40 +695,6 @@ class Customer extends Model
         return round((($count / $max) * 100), 2);
     }
 
-    /**
-     * Get the quota/limit object.
-     *
-     * @return array
-     */
-    public function getQuotaHash()
-    {
-        $current = $this->getCurrentSubscription();
-
-        // if (is_null($current->started_at)) {
-        //     throw new \Exception('Application error: subscription started_at not set!');
-        // }
-        
-        $quota = [
-            'start' => (isset($current->started_at) ? $current->started_at->timestamp : null),
-            'max' => $this->getOption('email_max'),
-        ];
-
-        return $quota;
-    }
-
-    /**
-     * Initialize the quota tracker.
-     *
-     * @return array
-     */
-    public function initQuotaTracker()
-    {
-        $this->quotaTracker = new QuotaTrackerFile($this->getSendingQuotaLockFile(), $this->getQuotaHash(), $this->getSendingLimits());
-        $this->quotaTracker->cleanupSeries();
-        // @note: in case of multi-process, the following command must be issued manually
-        //     $this->renewQuotaTracker();
-    }
-
     public function getSendingLimits()
     {
         $timeValue = $this->getOption('sending_quota_time');
@@ -775,30 +705,6 @@ class Customer extends Model
         $limit = $this->getOption('sending_quota');
 
         return ["{$timeValue} {$timeUnit}" => $limit];
-    }
-
-    /**
-     * Get sending quota lock file.
-     *
-     * @return string file path
-     */
-    public function getSendingQuotaLockFile()
-    {
-        return storage_path("app/customer/quota/{$this->uid}");
-    }
-
-    /**
-     * Get customer's QuotaTracker.
-     *
-     * @return array
-     */
-    public function getQuotaTracker()
-    {
-        if (!$this->quotaTracker) {
-            $this->initQuotaTracker();
-        }
-
-        return $this->quotaTracker;
     }
 
     /**

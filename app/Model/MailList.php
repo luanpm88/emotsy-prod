@@ -1620,7 +1620,6 @@ class MailList extends Model
             $id = RouletteWheel::take($selection);
             if (empty(self::$serverPools[$id])) {
                 $server = SendingServer::find($id);
-                $server->cleanupQuotaTracker();
                 MailLog::info(sprintf('Initialize delivery server `%s` (ID: %s)', $server->name, $id));
 
                 $server = SendingServer::mapServerType($server);
@@ -1631,23 +1630,6 @@ class MailList extends Model
                     $server->setSubAccount($subscription->subAccount);
                 }
                 self::$serverPools[$id] = $server;
-            }
-
-            if (self::$serverPools[$id]->overQuota()) {
-                // just wait until it is okie to go
-                // log every 60 seconds
-                if (!array_key_exists($id, $blacklisted) || time() - $blacklisted[$id] >= 60) {
-                    $blacklisted[$id] = time();
-                    MailLog::warning(sprintf('Sending server `%s` exceeds sending limit, skipped', self::$serverPools[$id]->name));
-                }
-
-                // if all sending servers are blacklisted
-                if (sizeof($blacklisted) == sizeof($selection)) {
-                    MailLog::warning('All sending servers exceed sending limit, waiting...');
-                    sleep(30);
-                }
-
-                continue;
             }
 
             MailLog::info(sprintf('Pick up delivery server `%s` (ID: %s)', self::$serverPools[$id]->name, $id));

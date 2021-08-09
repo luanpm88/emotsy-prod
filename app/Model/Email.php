@@ -208,17 +208,8 @@ class Email extends Model
     // It is just fine, we can think Email as an object depends on User/Customer
     public function deliverTo($subscriber, $triggerId = null)
     {
-        // @todo: code smell here, violation of Demeter Law
-        // @todo: performance
-        while ($this->automation->customer->overQuota()) {
-            MailLog::warning(sprintf('Email `%s` (%s) to `%s` halted, user exceeds sending limit', $this->subject, $this->uid, $subscriber->email));
-            sleep(60);
-        }
-
         $server = $subscriber->mailList->pickSendingServer();
-
         MailLog::info("Sending to subscriber `{$subscriber->email}`");
-
         list($message, $msgId) = $this->prepare($subscriber);
 
         if (config('app.demo') == true) {
@@ -373,10 +364,6 @@ class Email extends Model
 
         // create tracking log for message
         $this->trackingLogs()->create($params);
-
-        // increment customer quota usage
-        $this->automation->customer->countUsage();
-        $server->countUsage();
     }
 
     /**

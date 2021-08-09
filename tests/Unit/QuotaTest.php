@@ -62,7 +62,7 @@ class QuotaTest extends TestCase
         }
 
         echo "Result\nUsed credits {$use}, Remaining is {$server->getRemainingCredits('send')}\n";
-        $this->assertTrue($server->getRemainingCredits('send') == $credits - $use);
+        $this->assertEquals($server->getRemainingCredits('send'), $credits - $use);
     }
 
     public function test_speed_limit_exceeded()
@@ -85,7 +85,7 @@ class QuotaTest extends TestCase
                 echo "Use {$i}: remaining {$server->getRemainingCredits('send')}\n";
             }
         } finally {
-            $this->assertTrue($i == 5); // failed at the first try after limit is reached
+            $this->assertEquals($i, 5); // failed at the first try after limit is reached
         }
     }
 
@@ -107,7 +107,7 @@ class QuotaTest extends TestCase
                 echo "Use {$i}: remaining {$server->getRemainingCredits('send')}\n";
             }
         } finally {
-            $this->assertTrue($i == $credits + 1); // failed at the first try after limit is reached
+            $this->assertEquals($i, $credits + 1); // failed at the first try after limit is reached
         }
     }
 
@@ -127,7 +127,7 @@ class QuotaTest extends TestCase
                 });
             }
         } finally {
-            $this->assertTrue($i == $use + 1); // failed at the first try after limit is reached
+            $this->assertEquals($i, $use + 1); // failed at the first try after limit is reached
         }
     }
 
@@ -146,7 +146,7 @@ class QuotaTest extends TestCase
                 });
             }
         } finally {
-            $this->assertTrue($i == $use + 1); // failed at the first try after limit is reached
+            $this->assertEquals($i, $use + 1); // failed at the first try after limit is reached
         }
     }
 
@@ -199,7 +199,7 @@ class QuotaTest extends TestCase
                 echo "Use {$i}: remaining {$subscription->getRemainingCredits('send')}\n";
             }
         } finally {
-            $this->assertTrue($i == 11); // failed at the first try after limit is reached
+            $this->assertEquals($i, 11); // failed at the first try after limit is reached
         }
     }
 
@@ -218,14 +218,15 @@ class QuotaTest extends TestCase
         $subscription->plan = $plan;
 
         // If -1, then limit returned is empty
-        $this->assertTrue([] == $subscription->getQuotaSettings('has-only-one-quota-type-so-any-name-is-okie'));
+        $this->assertEmpty($subscription->getQuotaSettings('has-only-one-quota-type-so-any-name-is-okie'));
 
         // Max allowed + 1
         $use  = 101;
 
+        // Quota is null, so it just runs until sending credits == 0
+        // Expect to see an exception at 101th use!
         $this->expectException(Exception::class);
 
-        // Quota is null, so it just runs until sending credits == 0
         try {
             for($i = 1; $i <= $use; $i++) {
                 $subscription->withQuota('send', function() {
@@ -236,6 +237,67 @@ class QuotaTest extends TestCase
             }
         } finally {
             $this->assertTrue($i == 101 && 0 === $subscription->getRemainingCredits('send')); // failed at the first try after limit is reached
+        }
+    }
+
+    public function test_subscription_just_with_unlimited_sending_credits()
+    {
+        $subscription = $this->initSubscription();
+        $subscription->setCredits('send', -1);
+        $plan = Mockery::mock('plan');
+        $plan->shouldReceive('getOptions')->andReturn([
+            'sending_quota_time' => -1,
+            'sending_quota_time_unit' => 'day',
+            'sending_quota' => -1,
+        ]);
+
+        // Assign the mocked plan
+        $subscription->plan = $plan;
+        $tests = 100;
+        try {
+            for($i = 1; $i <= $tests; $i++) {
+                $subscription->withQuota('send', function() {
+                    // echo "Credits is deducted\n";
+                });
+
+                echo "Use {$i}: remaining {$subscription->getRemainingCredits('send')}\n";
+            }
+        } finally {
+            $this->assertEquals(Subscription::QUOTA_UNLIMITED, $subscription->getRemainingCredits('send')); // failed at the first try after limit is reached
+        }
+    }
+
+    public function test_subscription_just_with_unlimited_sending_credits_null_credits_used()
+    {
+        $subscription = $this->initSubscription();
+        $creditsLogFile = $subscription->getCreditsLogFile();
+
+        // Remove the (used) credits log file
+        if (File::exists($creditsLogFile)) {
+            File::delete($creditsLogFile);
+        }
+
+        $plan = Mockery::mock('plan');
+        $plan->shouldReceive('getOptions')->andReturn([
+            'sending_quota_time' => -1,
+            'sending_quota_time_unit' => 'day',
+            'sending_quota' => -1,
+        ]);
+
+        // Assign the mocked plan
+        $subscription->plan = $plan;
+        $tests = 100;
+        try {
+            for($i = 1; $i <= $tests; $i++) {
+                $subscription->withQuota('send', function() {
+                    // echo "Credits is deducted\n";
+                });
+
+                echo "Use {$i}: remaining {$subscription->getRemainingCredits('send')}\n";
+            }
+        } finally {
+            var_dump($subscription->getRemainingCredits('send'));
+            $this->assertEquals(Subscription::QUOTA_UNLIMITED, $subscription->getRemainingCredits('send')); // failed at the first try after limit is reached
         }
     }
 }

@@ -35,7 +35,7 @@ trait HasQuota
         $json = $this->getCreditsLogJson();
 
         if (!array_key_exists($name, $json)) {
-            throw new Exception("Credits log for `{$name}` is not yet initialized");
+            return self::QUOTA_UNLIMITED;
         }
 
         // This is the remaining credits
@@ -62,47 +62,49 @@ trait HasQuota
         $this->updateCreditsLog($json);
     }
 
-    public function withQuota($name, Closure $execute, array $subjects = [])
+    public function withQuota($name, Closure $execute)
     {
-        // Check credits and quota of the caller as well as the other $subjects
-        $this->countQuota($name, function() use ($name, $subjects) {
-            $this->countCreditsUsed($name);
+        // Check available credits and quota
+        // Count if passed, throw exception otherwise
+        $limits = $this->getQuotaSettings($name);
 
-            //
-            foreach ($subjects as $subject) {
-                $subject->countQuota($name, function() {
-                    $subject->countCreditsUsed($name);
-                });
-            }
+        // Check quota allowance
+        $quotaTracker = new QuotaTracker($this->getQuotaLogFile($name));
+        $now = Carbon::now();
+
+        // Count quota use
+        $quotaTracker->count($now, $limits, function() use ($name) {
+            // Take advantage of the lock to count remaining credits
+            $this->updateRemainingCredits($name);
         });
 
         // Okie, execute
         $execute();
     }
 
-    // Closure is for checking sending credits
-    public function countQuota(string $name, Closure $callback = null)
-    {
-        $limits = $this->getQuotaSettings($name);
-        // Check quota allowance
-        $quotaTracker = new QuotaTracker($this->getQuotaLogFile($name));
-        $quotaTracker->count(Carbon::now(), $limits, $callback);
-    }
-
     // MAIN
-    public function countCreditsUsed(string $name)
+    public function updateRemainingCredits(string $name)
     {
         $json = $this->getCreditsLogJson();
         if (!array_key_exists($name, $json)) {
-            throw new Exception("Credits log for `{$name}` is not yet initialized (make sure addCredits() or setCredits() is previously executed");
+            // No remaining credits information available, meaning "unlimited"
+            return;
         }
 
-        $used = $json[$name];
-        if ($used === 0) {
+        $remaining = $json[$name];
+
+        if ($remaining === self::QUOTA_UNLIMITED) {
+            // QUOTA_UNLIMITED (-1) also means "unlimited"
+            return;
+        }
+
+        if ($remaining === self::QUOTA_ZERO) {
+            // QUOTA_ZERO (0) means "limit reached"
             throw new Exception("Credits remaining is already 0");
         }
 
-        $json[$name] = $json[$name] - 1;
+        // Deduct remaining credits
+        $json[$name] = $remaining - 1;
         $this->updateCreditsLog($json);
     }
 }

@@ -4,10 +4,7 @@ namespace Acelle\Console\Commands;
 
 use Illuminate\Console\Command;
 use Acelle\Library\Log;
-use Acelle\Library\QuotaTrackerStd;
-use Acelle\Library\QuotaTrackerRedis;
 use Acelle\Library\StringHelper;
-use Acelle\Library\QuotaTracker;
 use Acelle\Library\ExtendedSwiftMessage;
 use Acelle\Model\Campaign;
 use Acelle\Model\User;

@@ -24,7 +24,6 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Log as MailLog;
-use Acelle\Library\QuotaTrackerFile;
 use Acelle\Library\IdentityStore;
 use Acelle\Library\ExtendedSwiftMessage;
 use Carbon\Carbon;
@@ -637,9 +636,7 @@ class SendingServer extends Model implements HasQuotaInterface
      */
     public function getSendingQuotaUsage()
     {
-        $tracker = $this->getQuotaTracker();
-
-        return $tracker->getUsage();
+        throw new Exception('!!!!');
     }
 
     /**
@@ -825,88 +822,6 @@ class SendingServer extends Model implements HasQuotaInterface
     {
         $this->status = 'active';
         $this->save();
-    }
-
-    /**
-     * Get sending server's QuotaTracker.
-     *
-     * @return array
-     */
-    public function getQuotaTracker()
-    {
-        if (!$this->quotaTracker) {
-            $this->initQuotaTracker();
-        }
-
-        return $this->quotaTracker;
-    }
-
-    /**
-     * Initialize the quota tracker.
-     */
-    public function initQuotaTracker()
-    {
-        $this->quotaTracker = new QuotaTrackerFile($this->getSendingQuotaLockFile(), ['start' => $this->created_at->timestamp, 'max' => -1], [$this->getQuotaIntervalString() => $this->getSendingQuota()]);
-        $this->quotaTracker->cleanupSeries();
-        // @note: in case of multi-process, the following command must be issued manually
-        //     $this->renewQuotaTracker();
-    }
-
-    /**
-     * Clean up the quota tracking files to prevent it from growing too large.
-     */
-    public function cleanupQuotaTracker()
-    {
-        // @todo: hard-coded for 1 month
-        $this->getQuotaTracker()->cleanupSeries(null, '1 month');
-    }
-
-    /**
-     * Get sending quota lock file.
-     *
-     * @return string file path
-     */
-    public function getSendingQuotaLockFile()
-    {
-        return storage_path("app/server/quota/{$this->uid}");
-    }
-
-    /**
-     * Get quota starting time.
-     *
-     * @return string
-     */
-    public function getQuotaIntervalString()
-    {
-        return "{$this->quota_base} {$this->quota_unit}";
-    }
-
-    /**
-     * Get quota starting time.
-     *
-     * @return array
-     */
-    public function getQuotaStartingTime()
-    {
-        return "{$this->getQuotaIntervalString()} ago";
-    }
-
-    /**
-     * Increment quota usage.
-     */
-    public function countUsage(Carbon $timePoint = null)
-    {
-        return $this->getQuotaTracker($timePoint)->add();
-    }
-
-    /**
-     * Check if user has used up all quota allocated.
-     *
-     * @return string
-     */
-    public function overQuota()
-    {
-        return !$this->getQuotaTracker()->check();
     }
 
     /**

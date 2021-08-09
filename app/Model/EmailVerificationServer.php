@@ -5,7 +5,6 @@ namespace Acelle\Model;
 use Illuminate\Database\Eloquent\Model;
 use GuzzleHttp\Client;
 use JsonPath\JsonObject;
-use Acelle\Library\QuotaTrackerFile;
 use Acelle\Library\Log as MailLog;
 use Acelle\Library\Traits\HasUid;
 use Exception;
@@ -16,7 +15,6 @@ class EmailVerificationServer extends Model
     
     // set the table name
     protected $table = 'email_verification_servers';
-    protected $quotaTracker;
 
     const STATUS_ACTIVE = 'active';
     const STATUS_INACTIVE = 'inactive';
@@ -47,16 +45,9 @@ class EmailVerificationServer extends Model
     public function verify($email)
     {
         // enforce the verification speed limit
-        $logged = false;
-        while ($this->isOverQuota()) {
-            if (!$logged) {
-                $logged = true;
-                $options = $this->getOptions();
-                $limit = "[{$options['limit_value']} / {$options['limit_base']} {$options['limit_unit']}]";
-                MailLog::warning(sprintf('Verification server `%s` (%s) is exceeding speed limit of %s, waiting...', $this->name, $this->id, $limit));
-            }
-            sleep(self::WAIT);
-        }
+        $options = $this->getOptions();
+        $limit = "[{$options['limit_value']} / {$options['limit_base']} {$options['limit_unit']}]";
+        MailLog::warning(sprintf('Verification server `%s` (%s) is exceeding speed limit of %s, waiting...', $this->name, $this->id, $limit));
 
         // retrieve the service settings
         $config = $this->getConfig();
@@ -115,7 +106,6 @@ class EmailVerificationServer extends Model
                 throw new Exception('Error verifying email address with service `'.$this->type."`. Response from service: ".$raw);
             }
             $mapped = $config['result_map'][$raw];
-            $this->countUsage();
 
             return [$mapped, $raw];
         }
@@ -145,7 +135,6 @@ class EmailVerificationServer extends Model
             throw new \Exception('Unexpected result from verification service: '.$raw);
         }
         $mapped = $config['result_map'][$result];
-        $this->countUsage();
 
         return [$mapped, $raw];
     }
@@ -383,84 +372,13 @@ class EmailVerificationServer extends Model
     }
 
     /**
-     * Get sending server's QuotaTracker.
-     *
-     * @return array
-     */
-    public function getQuotaTracker()
-    {
-        if (!$this->quotaTracker) {
-            $this->initQuotaTracker();
-        }
-
-        return $this->quotaTracker;
-    }
-
-    /**
      * Get credits used.
      *
      * @return int credit used
      */
     public function getCreditUsage()
     {
-        return $this->getQuotaTracker()->getUsage();
-    }
-
-    /**
-     * Get speed limit string.
-     *
-     * @return string speed limit
-     */
-    public function getSpeedLimitString()
-    {
-        $options = $this->getOptions();
-
-        return "{$options['limit_value']} / {$options['limit_base']} {$options['limit_unit']}";
-    }
-
-    /**
-     * Initialize the quota tracker.
-     */
-    public function initQuotaTracker()
-    {
-        $options = $this->getOptions();
-        $base = "{$options['limit_base']} {$options['limit_unit']}";
-        $limit = [
-            "{$base}" => $options['limit_value'],
-        ];
-
-        $this->quotaTracker = new QuotaTrackerFile($this->getQuotaLockFile(), ['start' => $this->created_at->timestamp, 'max' => -1], $limit);
-        $this->quotaTracker->cleanupSeries();
-    }
-
-    /**
-     * Get sending quota lock file.
-     *
-     * @return string file path
-     */
-    public function getQuotaLockFile()
-    {
-        return storage_path("app/server/quota/{$this->uid}");
-    }
-
-    /**
-     * Increment quota usage.
-     *
-     * @return mixed
-     */
-    public function countUsage(Carbon $timePoint = null)
-    {
-        return $this->getQuotaTracker($timePoint)->add();
-    }
-
-    /**
-     * Check if user has used up all quota allocated.
-     *
-     * @return bool
-     */
-    public function isOverQuota()
-    {
-        return !$this->getQuotaTracker()->check();
+        throw new Exception('!!!!')
     }
 
     /**
