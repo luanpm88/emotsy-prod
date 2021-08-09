@@ -9,10 +9,12 @@ use Illuminate\Database\Eloquent\Model;
 use Exception;
 use Acelle\Model\Invoice;
 use Acelle\Library\Traits\HasUid;
+use Acelle\Library\Traits\HasQuota;
+use Acelle\Library\Contracts\HasQuota as HasQuotaInterface;
 
-class Subscription extends Model
+class Subscription extends Model implements HasQuotaInterface
 {
-    use HasUid;
+    use HasUid, HasQuota;
     
     const STATUS_NEW = 'new';
     const STATUS_ACTIVE = 'active';
@@ -824,5 +826,42 @@ class Subscription extends Model
         // if subscription is new -> cancel now subscription.
         // Make sure a new subscription must have a pending invoice
         $this->cancelNow();
+    }
+
+    /***   IMPLEMENTATION OF HasQuotaInterface ***/
+    public function getCreditsLogFile() : string
+    {
+        $filepath = $this->customer->getLogPath("credits-log");
+        return $filepath;
+    }
+
+    public function getQuotaLogFile($name) : string
+    {
+        $filepath = $this->customer->getLogPath("quota-log-{$name}");
+        return $filepath;
+    }
+
+    public function getQuotaSettings($name) : ?array
+    {
+        $options = $this->plan->getOptions();
+
+        $timeValue = $options['sending_quota_time'];
+        if ($timeValue == -1) {
+            return []; // no limit
+        }
+
+        $timeUnit = $options['sending_quota_time_unit'];
+        $limit = $options['sending_quota'];
+
+        $quota = [
+            [
+                'name' => "Sending limit of {$limit} per {$timeValue} {$timeUnit}",
+                'period_base' => $timeUnit,
+                'period_value' => $timeValue,
+                'limit' => $limit,
+            ]
+        ];
+
+        return $quota;
     }
 }

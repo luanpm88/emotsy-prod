@@ -3511,8 +3511,6 @@
   'subscription.status.pending_for_approval' => 'Pending for approval',
   'change_plan.pending_for_approval' => 'Change plan wait for approval',
   'renew_subscription.pending_for_approval' => 'Renew wait for approval',
-  'have_new_renew_invoice' => 'You have a pending renew invoice. <a href=":link">Click here</a>
-      to check details',
   'have_new_change_plan_invoice' => 'You have a pending change plan invoice. <a href=":link">Click here</a>
       to check details',
   'transaction.method.braintree' => 'Braintree',
@@ -3736,4 +3734,11 @@
   'template.upload.instruction' => 'Select a template package from your PC to upload. A template package should be a .ZIP archive containing an index.html file and other assets like CSS, images... You can download and try with a sample template package <a target="_blank" href=":link">here</a>',
   'template.upload.warning' => 'Uploaded templates may not work well with the drag & drop builder. It is always recommended that you create a new template based on one of the awesome templates available, for optimized compatibility and efficiency',
   'plugin.upload.instruction' => 'Select a plugin package from your PC to upload. Normally it is a ZIP archive containing the source files as well as meta information for the plugin.',
+  'subscription.renew_invoice' => 'You have a pending renew invoice. Check the invoice information.',
+  'template.category.no_category' => 'No category set',
+  'template.category.notice' => 'Choose one or more category for your template to make it available to users',
+  'template.export' => 'Export',
+  'template.change_name' => 'Change name',
+  'template.change_name.intro' => 'Enter your new template name below',
+  'template.name.changed' => 'Template name was changed',
 ) ?>

@@ -47,26 +47,28 @@ class Lockable
     {
         $start = time();
         $reader = fopen($this->file, 'r+');
-        while (true) {
-            // raise an exception and quit if timed out
-            if ($this->isTimeout($start, $timeout)) {
-                if (is_null($timeoutCallback)) {
-                    throw new \Exception('Timeout getting lock #Lockable for: '.$this->file);
-                } else {
-                    $timeoutCallback();
+        try {
+            while (true) {
+                // raise an exception and quit if timed out
+                if ($this->isTimeout($start, $timeout)) {
+                    if (is_null($timeoutCallback)) {
+                        throw new \Exception('Timeout getting lock #Lockable for: '.$this->file);
+                    } else {
+                        $timeoutCallback();
+                        break;
+                    }
+                }
+
+                if (flock($reader, LOCK_EX | LOCK_NB)) {  // acquire an exclusive lock
+                    // execute the callback
+                    $callback($reader);
                     break;
                 }
             }
-
-            if (flock($reader, LOCK_EX | LOCK_NB)) {  // acquire an exclusive lock
-                // execute the callback
-                $callback($reader);
-
-                fflush($reader);
-                flock($reader, LOCK_UN);    // release the lock
-                fclose($reader);
-                break;
-            }
+        } finally {
+            fflush($reader);
+            flock($reader, LOCK_UN);    // release the lock
+            fclose($reader);
         }
     }
 

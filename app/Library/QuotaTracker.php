@@ -5,6 +5,7 @@ namespace Acelle\Library;
 use File;
 use Carbon\Carbon;
 use Exception;
+use Closure;
 
 class QuotaTracker
 {
@@ -32,18 +33,57 @@ class QuotaTracker
         }
     }
 
-    public function check(Carbon $now = null, array $limits = [])
+    public function count(Carbon $now = null, array $limits = [], Closure $callback = null)
     {
         $lock = new Lockable($this->filepath);
-        $lock->getExclusiveLock(function ($fopen) use ($now) {
+        $lock->getExclusiveLock(function ($fopen) use ($now, $limits, $callback) {
             $now = $now ?: Carbon::now();
 
-            $this->test($now, $limit, $fopen);
-            $this->count($now, $fopen);
+            // Throw an exception if test fails (quota exceeded)
+            $this->test($now, $limits, $fopen);
+
+            // Record credits use
+            $this->record($now, $fopen);
+
+            // Execute callback beore releasing lock
+            if (!is_null($callback)) {
+                $callback();
+            }
         }, $timeout = 15);
     }
 
-    public function count(Carbon $now, $fopen)
+    private function test(Carbon $now, array $limits, $fopen)
+    {
+        // [
+        //     [
+        //         'name' => 'Emails per minute',
+        //         'period_base' => 'minute'
+        //         'period_value' => '1'
+        //         'limit' => 10,
+        //     ], [
+        //         'name' => 'Emails per 12 hours',
+        //         'period_base' => 'hour',
+        //         'period_value' => '12',
+        //         'limit' => 2000
+        //     ], [
+        //         ....
+        //     ]
+        // ]
+        //
+
+        foreach ($limits as $limit) {
+            $period = sprintf("%s %s", $limit['period_value'], $limit['period_base']);
+            $fromDatetime = $now->copy()->subtract($period);
+
+            $creditsUsed = $this->getCreditsUsed($fromDatetime, $now, $fopen);
+
+            if ($creditsUsed >= $limit['limit']) {
+                throw new Exception(sprintf("%s exceeded! %s/%s used", $limit['name'], $creditsUsed, $limit['limit']));
+            }
+        }
+    }
+
+    private function record(Carbon $now, $fopen)
     {
         $currentBlock = $this->makeBlock($now); // create block for the current date/time
         list($lastBlock, $count) = $this->parseLastRecord($fopen);
@@ -78,6 +118,7 @@ class QuotaTracker
         return "{$block}{$this->seperator}{$count}";
     }
 
+    // Convert the provided datetime $now to a string
     public function makeBlock($now)
     {
         $now = $now ?: Carbon::now();
@@ -85,12 +126,6 @@ class QuotaTracker
         return $now->format($format);
     }
 
-    public function test()
-    {
-        return true || false;
-    }
-
-    // Thanks to https://stackoverflow.com/questions/15025875
     private function getLastRecord($fopen)
     {
         // Find offline
@@ -212,56 +247,20 @@ class QuotaTracker
         }
     }
 
-    public function readContent()
-    {
-        echo file_get_contents($this->filepath);
-    }
-
-    public function test(Carbon $now, array $limits, $fopen)
-    {
-        // [
-        //     [
-        //         'name' => 'Emails per minute',
-        //         'period_base' => 'minute'
-        //         'period_value' => '1'
-        //         'limit' => 10,
-        //     ], [
-        //         'name' => 'Emails per 12 hours',
-        //         'period_base' => 'hour',
-        //         'period_value' => '12',
-        //         'limit' => 2000
-        //     ], [
-        //         ....
-        //     ]
-        // ]
-        //
-
-        foreach ($limits as $limit) {
-            $period = sprintf("%s %s", $limit['period_value'], $limit['period_base']);
-            $fromDatetime = $now->copy()->subtract($period);
-
-            $creditsUsed = $this->getCreditsUsed($fromDatetime, $now);
-
-            if ($creditsUsed >= $limit['limit']) {
-                throw new Exception(sprintf("%s exceeded! %s/%s used", $limit['name'], $creditsUsed, $limit['limit']));
-                //return false;
-            }
-
-            //return true;
-        }
-    }
-
     public function getRecords(Carbon $fromDatetime, Carbon $toDatetime, $fopen)
     {
         $fromDatetimeStr = $this->makeBlock($fromDatetime);
         $toDatetimeStr = $this->makeBlock($toDatetime);
 
-        echo "From: $fromDatetimeStr ==> $toDatetimeStr\n";
-
         $records = [];
         $file = fopen($this->filepath, 'r');
         while (!feof($file)) {
             $record = trim(fgets($file));
+
+            if (empty($record)) {
+                break;
+            }
+
             list($block, $count) = $this->parseBlock($record);
 
             if (empty($block)) {
@@ -280,9 +279,9 @@ class QuotaTracker
         return $records;
     }
 
-    public function getCreditsUsed(Carbon $fromDatetime, Carbon $toDatetime)
+    public function getCreditsUsed(Carbon $fromDatetime, Carbon $toDatetime, $fopen)
     {
-        $records = $this->getRecords($fromDatetime, $toDatetime);
+        $records = $this->getRecords($fromDatetime, $toDatetime, $fopen);
         $counts = array_map(function ($record) {
             list($block, $count) = $record;
             return $count;
