@@ -6,8 +6,11 @@ use Tests\TestCase;
 
 use Acelle\Library\QuotaTracker;
 use Acelle\Model\SendingServer;
+use Acelle\Model\Subscription;
 use Exception;
 use File;
+use Mockery;
+
 class QuotaTest extends TestCase
 {
     public function initServer()
@@ -22,6 +25,20 @@ class QuotaTest extends TestCase
         }
 
         return $server;
+    }
+
+    public function initSubscription()
+    {
+        $subscription = Subscription::first();
+        $subscription->setCredits('send', 100);
+
+        $quotaLogFile = $subscription->getQuotaLogFile('send');
+
+        if (File::exists($quotaLogFile)) {
+            File::delete($quotaLogFile);
+        }
+
+        return $subscription;
     }
 
     /**
@@ -153,5 +170,72 @@ class QuotaTest extends TestCase
         $server->withQuota('send', function() {
             // echo "Credits is deducted\n";
         });
+    }
+
+    public function test_subscription_just_works()
+    {
+        $subscription = $this->initSubscription();
+        $plan = Mockery::mock('plan');
+        $plan->shouldReceive('getOptions')->andReturn([
+            'sending_quota_time' => 1,
+            'sending_quota_time_unit' => 'day',
+            'sending_quota' => 10,
+        ]);
+
+        // Assign the mocked plan
+        $subscription->plan = $plan;
+
+        // Max allowed + 1
+        $use  = 11;
+
+        $this->expectException(Exception::class);
+
+        try {
+            for($i = 1; $i <= $use; $i++) {
+                $subscription->withQuota('send', function() {
+                    // echo "Credits is deducted\n";
+                });
+
+                echo "Use {$i}: remaining {$subscription->getRemainingCredits('send')}\n";
+            }
+        } finally {
+            $this->assertTrue($i == 11); // failed at the first try after limit is reached
+        }
+    }
+
+    public function test_subscription_just_with_unlimited_sending_speed()
+    {
+        $subscription = $this->initSubscription();
+        $subscription->setCredits('send', 100);
+        $plan = Mockery::mock('plan');
+        $plan->shouldReceive('getOptions')->andReturn([
+            'sending_quota_time' => -1,
+            'sending_quota_time_unit' => 'day',
+            'sending_quota' => -1,
+        ]);
+
+        // Assign the mocked plan
+        $subscription->plan = $plan;
+
+        // If -1, then limit returned is empty
+        $this->assertTrue([] == $subscription->getQuotaSettings('has-only-one-quota-type-so-any-name-is-okie'));
+
+        // Max allowed + 1
+        $use  = 101;
+
+        $this->expectException(Exception::class);
+
+        // Quota is null, so it just runs until sending credits == 0
+        try {
+            for($i = 1; $i <= $use; $i++) {
+                $subscription->withQuota('send', function() {
+                    // echo "Credits is deducted\n";
+                });
+
+                echo "Use {$i}: remaining {$subscription->getRemainingCredits('send')}\n";
+            }
+        } finally {
+            $this->assertTrue($i == 101 && 0 === $subscription->getRemainingCredits('send')); // failed at the first try after limit is reached
+        }
     }
 }

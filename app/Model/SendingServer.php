@@ -1701,7 +1701,7 @@ class SendingServer extends Model implements HasQuotaInterface
 
     public function getQuotaLogFile($name) : string
     {
-        $filepath = storage_path("app/quota/{$name}-quota-log-{$this->uid}");
+        $filepath = storage_path("app/quota/quota-log-{$this->uid}-{$name}");
         return $filepath;
     }
 
