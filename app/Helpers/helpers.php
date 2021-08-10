@@ -174,7 +174,7 @@ function exec_enabled()
         exec('ls');
 
         return function_exists('exec') && !in_array('exec', array_map('trim', explode(', ', ini_get('disable_functions'))));
-    } catch (\Exception $ex) {
+    } catch (\Throwable $ex) {
         return false;
     }
 }
