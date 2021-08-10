@@ -169,25 +169,33 @@
     
                 doCheck();
             });
-        });
-    </script>
-        
-    <script>
-        $(document).ready(function() {
-            // all email verification servers checking
-            $(document).on("change", "input[name='plan[options][all_email_verification_servers]']", function(e) {
-                if($("input[name='plan[options][all_email_verification_servers]']:checked").length) {
-                    $(".email-verification-servers").find("input[type=checkbox]").each(function() {
-                        if($(this).is(":checked")) {
-                            $(this).parents(".form-group").find(".switchery").eq(1).click();
-                        }
-                    });
-                    $(".email-verification-servers").hide();
-                } else {
-                    $(".email-verification-servers").show();
-                }
+            
+
+            // select servers check
+            var manager2 = new GroupManager();
+    
+            manager2.add({
+                checkBox: $("input[name='plan[options][all_email_verification_servers]']"),
+                serversBox: $(".email-verification-servers")
             });
-            $("input[name='plan[options][all_email_verification_servers]']").trigger("change");
+    
+            manager2.bind(function(group) {
+                var doCheck = function() {
+                    var checked = group.checkBox.is(':checked');
+                    
+                    if (!checked) {
+                        group.serversBox.show();
+                    } else {
+                        group.serversBox.hide();
+                    }
+                };
+    
+                group.checkBox.on('change', function() {
+                    doCheck();
+                });
+    
+                doCheck();
+            });
         });
     </script>
         
