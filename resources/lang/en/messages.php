@@ -1776,7 +1776,7 @@
   'allow_customer_create_email_verification_servers' => 'Allows customer to add email verification servers',
   'setting_up_email_verification_servers_for_plan' => 'Setting up email verification servers for the plan',
   'setting_up_email_verification_servers_for_subscription' => 'Setting up email verification servers for the subscription',
-  'max_email_verification_servers' => 'Max email verification servers per customer',
+  'max_email_verification_servers' => 'Verification credits limit per billing cycle',
   'email_verification_servers_settings' => 'Email verification server settings',
   'use_all_email_verification_servers' => 'Use all email verification servers',
   'email_verification_server_no_active' => 'You have no active email verification servers',
