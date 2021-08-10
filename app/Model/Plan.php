@@ -481,6 +481,7 @@ class Plan extends Model
             'sending_domains_max' => '-1',
             'all_email_verification_servers' => 'yes',
             'create_email_verification_servers' => 'no',
+            'verification_credits_limit' => '10000',
             'email_verification_servers_max' => '-1',
             'list_import' => 'yes',
             'list_export' => 'yes',
