@@ -209,6 +209,8 @@ class MailListController extends Controller
             // Save field
             $field = new \Acelle\Model\Field();
             $field->mail_list_id = $list->id;
+            $field->visible = true;
+            $field->required = false;
             $field->fill($request->all());
             $field->save();
 

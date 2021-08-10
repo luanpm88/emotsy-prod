@@ -560,6 +560,22 @@ class ApiHelper
             'title' => trans('messages.subscription'),
             'functions' => [
                 [
+                    'view' => 'backend',
+                    'method' => 'GET',
+                    'uri' => '/api/v1/subscriptions',
+                    'description' => 'Get information about all subscriptions',
+                    'parameters' => [
+                        ['name' => '$per_page', 'description' => 'Number of subscriptions per page', 'optional' => true, 'default' => 25],
+                        ['name' => '$page', 'description' => 'Page number'],
+                    ],
+                    'returns' => 'Subscriptions information in json (plan, customer,... )',
+                    'example' => 'curl -X GET -H "accept:application/json" -G \
+' .action("Api\SubscriptionController@index").' \
+-d api_token=' .\Auth::user()->api_token.' \
+-d page=1',
+                ],
+
+                [
                     'method' => 'POST',
                     'uri' => '/api/v1/subscriptions',
                     'description' => 'Subscribe customer to a plan',
