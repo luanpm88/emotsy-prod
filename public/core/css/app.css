@@ -2351,9 +2351,6 @@ a.loading, button.loading {
     border-width: 0 1px 1px 0;
     background: #ddd;
 }
-.control-checkbox2 {
-    margin-top: 15px;
-}
 .control-checkbox2 label {
     display: inline;
 }
@@ -2361,7 +2358,7 @@ a.loading, button.loading {
     float: left;
     margin-right: 15px;
 }
-.radio.radio_box .checkbox label {
+.radio.radio_box .checkbox label input {
     padding-left: 35px;
 }
 @media (min-width: 1024px) {
@@ -2379,6 +2376,7 @@ a.loading, button.loading {
 }
 .radio_more_box {
     display: none;
+    padding-left: 30px;
 }
 ul.modern-listing li p {
     margin-bottom: 0;
@@ -2390,9 +2388,6 @@ ul.modern-listing li p {
 .radio_box .choice span:after {
     border-style: solid;
     border-width: 6px;
-}
-.radio_box rtitle {
-    font-size: 16px;
 }
 canvas[data-zr-dom-id='_zrender_hover_'] {
     display: none;
@@ -5180,9 +5175,6 @@ input.has-eye {
 .mc_section .table-box tbody tr td, .mc_section .table-box thead tr td {
   padding: 15px 10px;
 }
-.mc_section .control-checkbox2 {
-  margin-top: 25px;
-}
 .mc_section .bootstrap-switch.bootstrap-switch-animate .bootstrap-switch-container,
 .mc_section .bootstrap-switch.bootstrap-switch-focused .bootstrap-switch-container {
   line-height: 1 !important;
@@ -5563,9 +5555,8 @@ a.bg-active_with_pending:hover {
   justify-content: center;
 }
 .radio_box rtitle {
-    font-size: 16px;
     font-weight: 600;
-    font-size: 100%;
+    padding-left: 7px;
 }
 .modal-body p {
   font-size: 100%;

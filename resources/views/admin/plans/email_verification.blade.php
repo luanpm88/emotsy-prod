@@ -39,7 +39,8 @@
                             <label class="main-control">
                                 <input {{ ($plan->getOption('create_email_verification_servers') == 'yes' ? 'checked' : '') }} type="radio"
                                     name="plan[options][create_email_verification_servers]"
-                                    value="yes" class="styled" /> <rtitle>{{ trans('messages.plan.email_verification.use_own') }}</rtitle>
+                                    value="yes" class="styled" />
+                                    <rtitle>{{ trans('messages.plan.email_verification.use_own') }}</rtitle>
                                 <div class="desc text-normal mb-10">
                                     {{ trans('messages.plan.email_verification.use_own.intro') }}
                                 </div>
@@ -96,12 +97,12 @@
                                 @else
                                     <div class="email-verification-servers">
                                         <hr>
-                                        <p class="mb-5">{{ trans('messages.plan.email_verification.select_server') }}</p>
-                                        <div class="row">                                        
+                                        <p class="mb-0">{{ trans('messages.plan.email_verification.select_server') }}</p>
+                                        <div class="">                                        
                                             @foreach (Acelle\Model\EmailVerificationServer::getAllAdminActive()->orderBy("name")->get() as $server)
-                                                <div class="col-md-12">
-                                                    <div class="row">
-                                                        <div class="col-md-12">
+                                                <div class="">
+                                                    <div class="">
+                                                        <div class="form-group-mb-0 mt-2">
                                                             @include('helpers.form_control', [
                                                                 'type' => 'checkbox2',
                                                                 'name' => 'plan[email_verification_servers][' . $server->uid . '][check]',
