@@ -1,4 +1,4 @@
-<div class="card subscription-step">
+<div class="card subscription-step {{ ($invoice->type !== \Acelle\Model\Invoice::TYPE_NEW_SUBSCRIPTION) ? 'disabled' : '' }}">
     <a 
         href="{{ action('SubscriptionController@selectPlan') }}"
         class="card-header py-3 d-block select-plan-tab">

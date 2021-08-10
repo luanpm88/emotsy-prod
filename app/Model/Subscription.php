@@ -240,6 +240,19 @@ class Subscription extends Model implements HasQuotaInterface
         ]);
         $invoice->customer_id = $this->customer->id;
         $invoice->currency_id = $this->plan->currency_id;
+        
+        // default billing info
+        $billingAddress = $this->customer->getDefaultBillingAddress();
+        if ($billingAddress) {
+            $invoice->billing_first_name = $billingAddress->first_name;
+            $invoice->billing_last_name = $billingAddress->last_name;
+            $invoice->billing_address = $billingAddress->address;
+            $invoice->billing_email = $billingAddress->email;
+            $invoice->billing_phone = $billingAddress->phone;
+            $invoice->billing_country_id = $billingAddress->country_id;
+        }
+
+        // save
         $invoice->save();
 
         // data
@@ -286,7 +299,20 @@ class Subscription extends Model implements HasQuotaInterface
             'date' => \Acelle\Library\Tool::formatDate(\Carbon\Carbon::parse($metadata['endsAt'])),
         ]);
         $invoice->customer_id = $this->customer->id;
-        $invoice->currency_id = $this->plan->currency_id;
+        $invoice->currency_id = $this->plan->currency_id;        
+
+        // default billing info
+        $billingAddress = $this->customer->getDefaultBillingAddress();
+        if ($billingAddress) {
+            $invoice->billing_first_name = $billingAddress->first_name;
+            $invoice->billing_last_name = $billingAddress->last_name;
+            $invoice->billing_address = $billingAddress->address;
+            $invoice->billing_email = $billingAddress->email;
+            $invoice->billing_phone = $billingAddress->phone;
+            $invoice->billing_country_id = $billingAddress->country_id;
+        }
+
+        // save
         $invoice->save();
 
         // save data

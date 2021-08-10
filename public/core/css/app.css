@@ -7007,3 +7007,7 @@ hr {
     display: inline-block;
     fill: currentColor;
 }
+.subscription-step.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}

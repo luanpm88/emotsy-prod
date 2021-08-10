@@ -3762,4 +3762,5 @@
   'subscription.your_order' => 'Your order',
   'subscription.your_order.desc' => 'You’re subscring to plan <strong>:plan</strong>.
     Below are your order details',
+  'have_new_renew_invoice' => 'You have a pending renew invoice. Check the invoice information',
 ) ?>

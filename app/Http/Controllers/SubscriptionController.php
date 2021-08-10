@@ -254,7 +254,7 @@ class SubscriptionController extends Controller
             ]);
         }
         
-        return view('account.subscription.change_plan', [
+        return view('subscription.change_plan', [
             'subscription' => $subscription,
             'gateway' => $gateway,
             'plans' => $plans,

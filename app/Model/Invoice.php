@@ -391,6 +391,7 @@ class Invoice extends Model
                 $plan = $subscription->plan;
                 break;
             case self::TYPE_CHANGE_PLAN:
+                $data = $this->getMetadata();
                 $plan = \Acelle\Model\Plan::findByUid($data['new_plan_uid']);
                 $chargeInfo = trans('messages.bill.charge_now');
                 break;

@@ -124,7 +124,7 @@
                     @endif
                 @endif
             </div>
-            @include('account.subscription._invoices')
+            @include('subscription._invoices')
 
             <div class="sub-section">
                 <div class="">

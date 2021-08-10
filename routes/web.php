@@ -90,7 +90,6 @@ Route::get('assets/{dirname}/{basename}', [ function ($dirname, $basename) {
 
 // Setting upload path
 Route::get('setting/{filename}', 'SettingController@file');
-Route::get('/no-plan', 'AccountSubscriptionController@noPlan');
 
 // Translation data
 Route::get('/datatable_locale', 'Controller@datatable_locale');
@@ -196,22 +195,10 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::post('account/subscription/checkout', 'SubscriptionController@checkout');
     Route::post('account/subscription/cancel-now', 'SubscriptionController@cancelNow');
     Route::post('account/subscription/invoice/{invoice_uid}/cancel', 'SubscriptionController@cancelInvoice');
-    Route::post('account/subscription/invoice/{invoice_uid}/confirm', 'AccountSubscriptionController@confirmFree');
+    Route::post('account/subscription/invoice/{invoice_uid}/confirm', 'SubscriptionController@confirmFree');
     Route::get('account/subscription/payment/{invoice_uid}', 'SubscriptionController@payment');
     Route::post('account/subscription/init', 'SubscriptionController@init');
     Route::get('account/subscription', 'SubscriptionController@index');
-
-    // Account subscription
-    Route::post('subscription/invoice/{invoice_uid}/confirm', 'AccountSubscriptionController@confirmFree');
-    Route::post('subscription/invoice/{invoice_uid}/cancel', 'AccountSubscriptionController@cancelInvoice');
-    Route::match(['get', 'post'], 'subscription/change-plan', 'AccountSubscriptionController@changePlan');
-    Route::post('subscription/init', 'AccountSubscriptionController@init');
-    Route::get('subscription', 'AccountSubscriptionController@index');
-    Route::post('subscription/checkout', 'AccountSubscriptionController@checkout');
-    Route::get('subscription/payment/{invoice_uid}', 'AccountSubscriptionController@payment');
-    Route::post('subscription/cancel-now', 'AccountSubscriptionController@cancelNow');
-    Route::post('subscription/resume', 'AccountSubscriptionController@resume');
-    Route::post('subscription/cancel', 'AccountSubscriptionController@cancel');
 
     // Customer login back
     Route::get('customers/login-back', 'CustomerController@loginBack');

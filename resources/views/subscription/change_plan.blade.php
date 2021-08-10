@@ -47,7 +47,7 @@
                                             @else
                                                 <a
                                                     link-method="POST"
-                                                    href="{{ action('AccountSubscriptionController@changePlan', ['plan_uid' => $plan->uid]) }}"
+                                                    href="{{ action('SubscriptionController@changePlan', ['plan_uid' => $plan->uid]) }}"
                                                     class="btn btn-secondary btn-mc_mk mt-30">
                                                         {{ trans('messages.plan.select') }}
                                                 </a>
