@@ -11,6 +11,23 @@ use Acelle\Http\Controllers\Controller;
 class SubscriptionController extends Controller
 {
     /**
+     * Display all subscriptions.
+     *
+     * GET /api/v1/campaigns
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Request $request)
+    {
+        $user = \Auth::guard('api')->user();
+
+        $subscriptions = \Acelle\Model\Subscription::select('*')
+            ->paginate($request->per_page ? $request->per_page : 25);
+
+        return \Response::json($subscriptions, 200);
+    }
+
+    /**
      * Subscribe customer to a plan (For admin only).
      *
      * POST /api/v1/subscriptions
