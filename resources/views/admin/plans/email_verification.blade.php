@@ -35,38 +35,7 @@
                     <p>{{ trans('messages.plan.email_verification.intro') }}</p>
                         
                     <div class="form-group control-radio">
-                        <div class="radio_box" data-popup='tooltip' title="">
-                            <label class="main-control">
-                                <input {{ ($plan->getOption('create_email_verification_servers') == 'yes' ? 'checked' : '') }} type="radio"
-                                    name="plan[options][create_email_verification_servers]"
-                                    value="yes" class="styled" />
-                                    <rtitle>{{ trans('messages.plan.email_verification.use_own') }}</rtitle>
-                                <div class="desc text-normal mb-10">
-                                    {{ trans('messages.plan.email_verification.use_own.intro') }}
-                                </div>
-                            </label>
-                            <div class="radio_more_box">
-                                <div class="boxing">
-                                    @include('helpers.form_control', [
-                                        'type' => 'text',
-                                        'class' => 'numeric',
-                                        'name' => 'plan[options][email_verification_servers_max]',
-                                        'value' => $plan->getOption('email_verification_servers_max'),
-                                        'label' => trans('messages.max_email_verification_servers'),
-                                        'help_class' => 'plan',
-                                        'options' => ['true', 'false'],
-                                        'rules' => $plan->validationRules()['options'],
-                                    ])
-                                    <div class="checkbox inline text-semibold">
-                                        <label>
-                                            <input{{ $plan->getOption('email_verification_servers_max')  == -1 ? " checked=checked" : "" }} type="checkbox" class="unlimit-check styled">
-                                            {{ trans('messages.unlimited') }}
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <hr>
+                        
                         <div class="radio_box" data-popup='tooltip' title="">
                             <label class="main-control">
                                 <input {{ ($plan->getOption('create_email_verification_servers') == 'no' ? 'checked' : '') }} type="radio"
@@ -78,6 +47,33 @@
                                 </div>
                             </label>
                             <div class="radio_more_box">
+                                <div class="boxing">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            @include('helpers.form_control', [
+                                                'type' => 'text',
+                                                'class' => 'numeric',
+                                                'name' => 'plan[options][verification_credits_limit]',
+                                                'value' => $plan->getOption('verification_credits_limit'),
+                                                'label' => trans('messages.verification_credits_limit'),
+                                                'help_class' => 'plan',
+                                                'options' => ['true', 'false'],
+                                                'rules' => $plan->validationRules()['options'],
+                                            ])
+                                        </div>
+                                        <div class="col-md-4 pt-4">
+                                            <div class="checkbox inline text-semibold">
+                                                <label>
+                                                    <input{{ $plan->getOption('email_verification_servers_max')  == -1 ? " checked=checked" : "" }} type="checkbox" class="unlimit-check styled">
+                                                    {{ trans('messages.unlimited') }}
+                                                </label>
+                                            </div>
+                                        </div>
+                                            
+                                            
+                                    </div>
+                                </div>
+                                <hr>
                                 @include('helpers.form_control', ['type' => 'checkbox2',
                                     'class' => '',
                                     'name' => 'plan[options][all_email_verification_servers]',
@@ -96,7 +92,7 @@
                                     </div>
                                 @else
                                     <div class="email-verification-servers">
-                                        <hr>
+                                        
                                         <p class="mb-0">{{ trans('messages.plan.email_verification.select_server') }}</p>
                                         <div class="">                                        
                                             @foreach (Acelle\Model\EmailVerificationServer::getAllAdminActive()->orderBy("name")->get() as $server)
@@ -140,7 +136,7 @@
                 manager.add({
                     textBox: $(this).find('input[type=text]'),
                     unlimitedCheck: $(this).find('.unlimit-check'),
-                    defaultValue: '5',
+                    defaultValue: '10000',
                     currentValue: $(this).find('input[type=text]').val()
                 });
             });
