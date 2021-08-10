@@ -9,6 +9,11 @@ use Carbon\Carbon;
 
 trait HasQuota
 {
+    public function getQuotaTracker($name)
+    {
+        $quotaTracker = new QuotaTracker($this->getQuotaLogFile($name));
+        return $quotaTracker;
+    }
     /** Other related functions are enforced in the HasQuotaInterafce **/
 
     // public function getCreditsLogFile(string $name) : string;
@@ -69,11 +74,10 @@ trait HasQuota
         $limits = $this->getQuotaSettings($name);
 
         // Check quota allowance
-        $quotaTracker = new QuotaTracker($this->getQuotaLogFile($name));
         $now = Carbon::now();
 
         // Count quota use
-        $quotaTracker->count($now, $limits, function() use ($name) {
+        $this->getQuotaTracker($name)->count($now, $limits, function() use ($name) {
             // Take advantage of the lock to count remaining credits
             $this->updateRemainingCredits($name);
         });
@@ -87,8 +91,7 @@ trait HasQuota
     {
         $json = $this->getCreditsLogJson();
         if (!array_key_exists($name, $json)) {
-            // No remaining credits information available, meaning "unlimited"
-            return;
+            throw new Exception('No credits information available, initialize it first by setCredits() or addCredits()');
         }
 
         $remaining = $json[$name];
@@ -106,5 +109,10 @@ trait HasQuota
         // Deduct remaining credits
         $json[$name] = $remaining - 1;
         $this->updateCreditsLog($json);
+    }
+
+    public function getCreditsUsed(string $name, Carbon $from = null, Carbon $to = null)
+    {
+        return $this->getQuotaTracker($name)->getCreditsUsed($from, $to);
     }
 }

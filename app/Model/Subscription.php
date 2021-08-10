@@ -815,6 +815,31 @@ class Subscription extends Model implements HasQuotaInterface
         $this->cancelNow();
     }
 
+    public function getCreditsUsedDuringPlanCycle($name)
+    {
+        $interval = "{$this->plan->frequency_amount} {$this->plan->frequency_unit}"; // '1 month' or '1 year' for example
+        $from = Carbon::now()->subtract($interval);
+        return $this->getCreditsUsed($name, $from);
+    }
+
+    public function getCreditsLimit($name)
+    {
+        if ($name != 'send') {
+            throw new Exception("`{$name}` credis limit is not available");
+        }
+
+        return $this->plan->getOption('email_max');
+    }
+
+    public function getCreditsUsedPercentageDuringPlanCycle($name)
+    {
+        $creditsUsed = $this->getCreditsUsedDuringPlanCycle($name);
+        $creditsLimit = $this->plan->getOption('email_max');
+        $percentage = ($creditsLimit == Subscription::QUOTA_UNLIMITED) ? 0 : $creditsUsed / $creditsLimit;
+
+        return $percentage;
+    }
+
     /***   IMPLEMENTATION OF HasQuotaInterface ***/
     public function getCreditsLogFile() : string
     {
@@ -830,25 +855,6 @@ class Subscription extends Model implements HasQuotaInterface
 
     public function getQuotaSettings($name) : ?array
     {
-        $options = $this->plan->getOptions();
-
-        $timeValue = $options['sending_quota_time'];
-        if ($timeValue == -1) {
-            return []; // no limit
-        }
-
-        $timeUnit = $options['sending_quota_time_unit'];
-        $limit = $options['sending_quota'];
-
-        $quota = [
-            [
-                'name' => "Sending limit of {$limit} per {$timeValue} {$timeUnit}",
-                'period_base' => $timeUnit,
-                'period_value' => $timeValue,
-                'limit' => $limit,
-            ]
-        ];
-
-        return $quota;
+        return $this->plan->getQuotaSettings($name);
     }
 }

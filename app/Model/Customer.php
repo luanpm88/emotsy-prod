@@ -586,16 +586,6 @@ class Customer extends Model
     }
 
     /**
-     * Get customer's sending quota rate.
-     *
-     * @return string
-     */
-    public function displaySendingQuotaUsage()
-    {
-        throw new Exception('Invalid!!!')
-    }
-
-    /**
      * Get customer's color scheme.
      *
      * @return string
@@ -649,62 +639,6 @@ class Customer extends Model
         $this->status = 'active';
 
         return $this->save();
-    }
-
-    /**
-     * Get customer's quota.
-     *
-     * @return string
-     */
-    public function getSendingQuota()
-    {
-        // -1 indicate unlimited
-        return $this->getOption('email_max');
-    }
-
-    /**
-     * Get customer's sending quota.
-     *
-     * @return string
-     */
-    public function getSendingQuotaUsage()
-    {
-        throw new Exception('!!!!');
-    }
-
-    /**
-     * Get customer's sending quota rate.
-     *
-     * @return string
-     */
-    public function getSendingQuotaUsagePercentage()
-    {
-        $max = $this->getSendingQuota();
-        $count = $this->getSendingQuotaUsage();
-
-        if ($max == -1) {
-            return 0;
-        }
-        if ($max == 0) {
-            return 0;
-        }
-        if ($count > $max) {
-            return 100;
-        }
-
-        return round((($count / $max) * 100), 2);
-    }
-
-    public function getSendingLimits()
-    {
-        $timeValue = $this->getOption('sending_quota_time');
-        if ($timeValue == -1) {
-            return []; // no limit
-        }
-        $timeUnit = $this->getOption('sending_quota_time_unit');
-        $limit = $this->getOption('sending_quota');
-
-        return ["{$timeValue} {$timeUnit}" => $limit];
     }
 
     /**
@@ -1590,6 +1524,15 @@ class Customer extends Model
         $subscription->ends_at = null;
         $subscription->started_at = null;
         $subscription->status = Subscription::STATUS_NEW;
+
+        // Important:
+        // With current quota tracking design, there is no fixed 'available credits'
+        // As a result, the setCredits() method takes QUOTA_UNLIMITED value as default, meaning no credits check
+        // The application only enforce the quota limits rules: how many credits are allowed during a fixed period of time (month)
+        // It is pre-designed for "Buy Credits" feature which will be supported later on
+        $subscription->setCredits('send', self::QUOTA_UNLIMITED);
+
+        // Actually store
         $subscription->save();
 
         // create init invoice

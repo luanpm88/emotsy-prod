@@ -26,13 +26,6 @@ class QuotaTracker
         $this->createStorageFile();
     }
 
-    private function createStorageFile()
-    {
-        if (!file_exists($this->filepath)) {
-            touch($this->filepath);
-        }
-    }
-
     public function count(Carbon $now = null, array $limits = [], Closure $callback = null)
     {
         $lock = new Lockable($this->filepath);
@@ -50,6 +43,13 @@ class QuotaTracker
                 $callback();
             }
         }, $timeout = 15);
+    }
+
+    private function createStorageFile()
+    {
+        if (!file_exists($this->filepath)) {
+            touch($this->filepath);
+        }
     }
 
     private function test(Carbon $now, array $limits, $fopen)
@@ -247,15 +247,27 @@ class QuotaTracker
         }
     }
 
-    public function getRecords(Carbon $fromDatetime, Carbon $toDatetime, $fopen)
+    public function getRecords(Carbon $fromDatetime = null, Carbon $toDatetime = null, $fopen = null)
     {
+        $fromDatetime = $fromDatetime ?: Carbon::createFromTimestamp(0); // Create the earliest date of 1970-01-01
+        $toDatetime = $toDatetime ?: Carbon::now(); // Current date
+
         $fromDatetimeStr = $this->makeBlock($fromDatetime);
         $toDatetimeStr = $this->makeBlock($toDatetime);
 
         $records = [];
-        $file = fopen($this->filepath, 'r');
-        while (!feof($file)) {
-            $record = trim(fgets($file));
+
+        if (is_null($fopen)) {
+            $fopen = fopen($this->filepath, 'r');
+            $closeFile = true;
+        } else {
+            rewind($fopen);
+            $closeFile = false;
+        }
+
+        rewind($fopen);
+        while (!feof($fopen)) {
+            $record = trim(fgets($fopen));
 
             if (empty($record)) {
                 break;
@@ -272,14 +284,15 @@ class QuotaTracker
             }
         }
 
-        // Close file
-        fclose($file);
+        if ($closeFile) {
+            fclose($fopen);
+        }
 
         // Return
         return $records;
     }
 
-    public function getCreditsUsed(Carbon $fromDatetime, Carbon $toDatetime, $fopen)
+    public function getCreditsUsed(Carbon $fromDatetime = null, Carbon $toDatetime = null, $fopen = null)
     {
         $records = $this->getRecords($fromDatetime, $toDatetime, $fopen);
         $counts = array_map(function ($record) {

@@ -620,26 +620,6 @@ class SendingServer extends Model implements HasQuotaInterface
     }
 
     /**
-     * Get sending server's quota.
-     *
-     * @return string
-     */
-    public function getSendingQuota()
-    {
-        return $this->quota_value;
-    }
-
-    /**
-     * Get sending server's sending quota.
-     *
-     * @return string
-     */
-    public function getSendingQuotaUsage()
-    {
-        throw new Exception('!!!!');
-    }
-
-    /**
      * Get rules.
      *
      * @return string

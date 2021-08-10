@@ -1317,4 +1317,36 @@ class Plan extends Model
     {
         $query = $query->where('plans.visible', '=', true);
     }
+
+    public function getQuotaSettings($name) : ?array
+    {
+        $quota = [];
+        $options = $this->getOptions();
+
+        // Take limits from sending credits
+        $sendingCredits = $options['email_max'];
+        if ($sendingCredits != Subscription::QUOTA_UNLIMITED) {
+            $quota[] = [
+                'name' => "Plan's sending limit",
+                'period_base' => $this->frequency_unit,
+                'period_value' => $this->frequency_amount,
+                'limit' => $sendingCredits
+            ];
+        }
+
+        $timeValue = $options['sending_quota_time'];
+        if ($timeValue != Subscription::QUOTA_UNLIMITED) {
+            $timeUnit = $options['sending_quota_time_unit'];
+            $limit = $options['sending_quota'];
+
+            $quota[] = [
+                'name' => "Sending limit of {$limit} per {$timeValue} {$timeUnit}",
+                'period_base' => $timeUnit,
+                'period_value' => $timeValue,
+                'limit' => $limit,
+            ];
+        }
+
+        return $quota;
+    }
 }

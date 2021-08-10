@@ -19,9 +19,13 @@ class QuotaTest extends TestCase
         $server->setCredits('send', 100);
 
         $quotaLogFile = $server->getQuotaLogFile('send');
-
         if (File::exists($quotaLogFile)) {
             File::delete($quotaLogFile);
+        }
+
+        $creditsLogFile = $server->getCreditsLogFile();
+        if (File::exists($creditsLogFile)) {
+            File::delete($creditsLogFile);
         }
 
         return $server;
@@ -33,9 +37,13 @@ class QuotaTest extends TestCase
         $subscription->setCredits('send', 100);
 
         $quotaLogFile = $subscription->getQuotaLogFile('send');
-
         if (File::exists($quotaLogFile)) {
             File::delete($quotaLogFile);
+        }
+
+        $creditsLogFile = $subscription->getCreditsLogFile();
+        if (File::exists($creditsLogFile)) {
+            File::delete($creditsLogFile);
         }
 
         return $subscription;
@@ -63,6 +71,7 @@ class QuotaTest extends TestCase
 
         echo "Result\nUsed credits {$use}, Remaining is {$server->getRemainingCredits('send')}\n";
         $this->assertEquals($server->getRemainingCredits('send'), $credits - $use);
+        $this->assertEquals($server->getCreditsUsed('send'), $use);
     }
 
     public function test_speed_limit_exceeded()
@@ -175,11 +184,16 @@ class QuotaTest extends TestCase
     public function test_subscription_just_works()
     {
         $subscription = $this->initSubscription();
+        $subscription->setCredits('send', 10000);
         $plan = Mockery::mock('plan');
-        $plan->shouldReceive('getOptions')->andReturn([
-            'sending_quota_time' => 1,
-            'sending_quota_time_unit' => 'day',
-            'sending_quota' => 10,
+        $plan->shouldReceive('getQuotaSettings')->andReturn([
+            [
+                'name' => "Plan's sending limit",
+                'limit' => 10,
+                'period_base' => 'day',
+                'period_value' => 1,
+            ]
+
         ]);
 
         // Assign the mocked plan
@@ -208,17 +222,10 @@ class QuotaTest extends TestCase
         $subscription = $this->initSubscription();
         $subscription->setCredits('send', 100);
         $plan = Mockery::mock('plan');
-        $plan->shouldReceive('getOptions')->andReturn([
-            'sending_quota_time' => -1,
-            'sending_quota_time_unit' => 'day',
-            'sending_quota' => -1,
-        ]);
+        $plan->shouldReceive('getQuotaSettings')->andReturn([]);
 
         // Assign the mocked plan
         $subscription->plan = $plan;
-
-        // If -1, then limit returned is empty
-        $this->assertEmpty($subscription->getQuotaSettings('has-only-one-quota-type-so-any-name-is-okie'));
 
         // Max allowed + 1
         $use  = 101;
@@ -245,10 +252,14 @@ class QuotaTest extends TestCase
         $subscription = $this->initSubscription();
         $subscription->setCredits('send', -1);
         $plan = Mockery::mock('plan');
-        $plan->shouldReceive('getOptions')->andReturn([
-            'sending_quota_time' => -1,
-            'sending_quota_time_unit' => 'day',
-            'sending_quota' => -1,
+        $plan->shouldReceive('getQuotaSettings')->andReturn([
+            [
+                'name' => "Plan's sending limit",
+                'limit' => 999999,
+                'period_base' => 'month',
+                'period_value' => 1,
+            ]
+
         ]);
 
         // Assign the mocked plan
@@ -263,11 +274,13 @@ class QuotaTest extends TestCase
                 echo "Use {$i}: remaining {$subscription->getRemainingCredits('send')}\n";
             }
         } finally {
-            $this->assertEquals(Subscription::QUOTA_UNLIMITED, $subscription->getRemainingCredits('send')); // failed at the first try after limit is reached
+            // failed at the first try after limit is reached
+            $this->assertEquals(Subscription::QUOTA_UNLIMITED, $subscription->getRemainingCredits('send'));
+            $this->assertEquals($subscription->getCreditsUsed('send'), $tests);
         }
     }
 
-    public function test_subscription_just_with_unlimited_sending_credits_null_credits_used()
+    public function test_subscription_with_null_credits_used_information()
     {
         $subscription = $this->initSubscription();
         $creditsLogFile = $subscription->getCreditsLogFile();
@@ -278,26 +291,22 @@ class QuotaTest extends TestCase
         }
 
         $plan = Mockery::mock('plan');
-        $plan->shouldReceive('getOptions')->andReturn([
-            'sending_quota_time' => -1,
-            'sending_quota_time_unit' => 'day',
-            'sending_quota' => -1,
+        $plan->shouldReceive('getQuotaSettings')->andReturn([
+            [
+                'name' => "Plan's sending limit",
+                'limit' => -1,
+                'period_base' => 'month',
+                'period_value' => 1,
+            ]
+
         ]);
 
         // Assign the mocked plan
         $subscription->plan = $plan;
-        $tests = 100;
-        try {
-            for($i = 1; $i <= $tests; $i++) {
-                $subscription->withQuota('send', function() {
-                    // echo "Credits is deducted\n";
-                });
 
-                echo "Use {$i}: remaining {$subscription->getRemainingCredits('send')}\n";
-            }
-        } finally {
-            var_dump($subscription->getRemainingCredits('send'));
-            $this->assertEquals(Subscription::QUOTA_UNLIMITED, $subscription->getRemainingCredits('send')); // failed at the first try after limit is reached
-        }
+        $this->expectException(Exception::class);
+        $subscription->withQuota('send', function() {
+            // echo "Credits is deducted\n";
+        });
     }
 }

@@ -59,7 +59,7 @@
                 </td>
                 <td>
                     <div class="single-stat-box pull-left ml-20">
-                        <span class="text-muted"><strong>{{ number_with_delimiter($item->getSendingQuotaUsage()) }}</strong> {{ trans('messages.' . Acelle\Library\Tool::getPluralPrase('email', $item->getSendingQuotaUsage()) . '_quota') }}</span>
+                        <span class="text-muted"><strong>{{ number_with_delimiter($item->getCreditsUsed('send')) }}</strong> {{ trans('messages.' . Acelle\Library\Tool::getPluralPrase('email', $item->getCreditsUsed('send')) . '_quota') }}</span>
                         <br />
                         <span class="text-muted2">{{ trans('messages.sending_server.speed', ['limit' => $item->displayQuota()]) }}</span>
                     </div>
