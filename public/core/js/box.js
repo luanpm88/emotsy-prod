@@ -11,11 +11,7 @@ class Box {
             this.callback = callback;
         }
 
-        this.box.html(`
-            <h4 class="mb-4">asdsada asdsa</h4>
-            <p>asdadasdasdsa asd asd asd asd asd ada dasd asd </p>
-            <span>asdadasdasdsa asd asd asd</span>
-        `);
+        this.box.html(``);
         placeholderLoading(this.box);
     }
     

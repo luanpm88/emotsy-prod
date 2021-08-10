@@ -183,9 +183,7 @@
         });
 
         var sidebar = new Box($('.sidebar-content'));
-        var lastSaved = new Box($('.last_save_time'), $('.last_save_time').attr('data-url'));
-
-        
+        var lastSaved = new Box($('.last_save_time'), $('.last_save_time').attr('data-url'));        
 
         function toggleHistory() {
             var his = $('.history .history-list-items');
@@ -389,6 +387,8 @@
         }
     
         $(document).ready(function() {
+            lastSaved.load();
+            
             // load sidebar
             sidebar.load('{{ action('Automation2Controller@settings', $automation->uid) }}');
 
