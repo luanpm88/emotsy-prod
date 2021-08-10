@@ -29,6 +29,7 @@ use Acelle\Model\Subscription;
 use Acelle\Cashier\Cashier;
 use Acelle\Model\SendingServer;
 use Acelle\Library\Traits\HasUid;
+use Acelle\Library\QuotaManager;
 
 class Plan extends Model
 {
@@ -1325,7 +1326,7 @@ class Plan extends Model
 
         // Take limits from sending credits
         $sendingCredits = $options['email_max'];
-        if ($sendingCredits != Subscription::QUOTA_UNLIMITED) {
+        if ($sendingCredits != QuotaManager::QUOTA_UNLIMITED) {
             $quota[] = [
                 'name' => "Plan's sending limit",
                 'period_base' => $this->frequency_unit,
@@ -1335,7 +1336,7 @@ class Plan extends Model
         }
 
         $timeValue = $options['sending_quota_time'];
-        if ($timeValue != Subscription::QUOTA_UNLIMITED) {
+        if ($timeValue != QuotaManager::QUOTA_UNLIMITED) {
             $timeUnit = $options['sending_quota_time_unit'];
             $limit = $options['sending_quota'];
 

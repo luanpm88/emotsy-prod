@@ -1587,19 +1587,14 @@ class SendingServer extends Model implements HasQuotaInterface
         return false;
     }
 
+    public function setQuotaSettings($value, $periodUnit, $periodBase)
+    {
+        $this->quota_base = $periodBase;
+        $this->quota_unit = $periodUnit;
+        $this->quota_value = $value;
+    }
+
     /***   IMPLEMENTATION OF HasQuotaInterface ***/
-    public function getCreditsLogFile() : string
-    {
-        $filepath = storage_path("app/quota/credits-log-{$this->uid}");
-        return $filepath;
-    }
-
-    public function getQuotaLogFile($name) : string
-    {
-        $filepath = storage_path("app/quota/quota-log-{$this->uid}-{$name}");
-        return $filepath;
-    }
-
     public function getQuotaSettings($name) : ?array
     {
         // return "{$this->quota_base} {$this->quota_unit}";
@@ -1614,12 +1609,5 @@ class SendingServer extends Model implements HasQuotaInterface
         ];
 
         return $quota;
-    }
-
-    public function setQuotaSettings($value, $periodUnit, $periodBase)
-    {
-        $this->quota_base = $periodBase;
-        $this->quota_unit = $periodUnit;
-        $this->quota_value = $value;
     }
 }

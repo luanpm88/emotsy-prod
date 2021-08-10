@@ -35,13 +35,14 @@ class QuotaTracker
             // Throw an exception if test fails (quota exceeded)
             $this->test($now, $limits, $fopen);
 
-            // Record credits use
-            $this->record($now, $fopen);
-
-            // Execute callback beore releasing lock
+            // Execute callback beore writing
             if (!is_null($callback)) {
                 $callback();
             }
+
+            // Record credits use
+            $this->record($now, $fopen);
+
         }, $timeout = 15);
     }
 

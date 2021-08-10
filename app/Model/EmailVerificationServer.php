@@ -7,11 +7,14 @@ use GuzzleHttp\Client;
 use JsonPath\JsonObject;
 use Acelle\Library\Log as MailLog;
 use Acelle\Library\Traits\HasUid;
+use Acelle\Library\Traits\HasQuota;
+use Acelle\Library\Contracts\HasQuota as HasQuotaInterface;
 use Exception;
+use Acelle\Library\QuotaManager;
 
-class EmailVerificationServer extends Model
+class EmailVerificationServer extends Model implements HasQuotaInterface
 {
-    use HasUid;
+    use HasUid, HasQuota;
     
     // set the table name
     protected $table = 'email_verification_servers';
@@ -371,21 +374,13 @@ class EmailVerificationServer extends Model
         ]);
     }
 
-    /**
-     * Get credits used.
-     *
-     * @return int credit used
-     */
-    public function getCreditUsage()
+    public function getSpeedLimitString()
     {
-        throw new Exception('!!!!')
+        $options = $this->getOptions();
+
+        return "{$options['limit_value']} / {$options['limit_base']} {$options['limit_unit']}";
     }
 
-    /**
-     * Get service type name.
-     *
-     * @return string
-     */
     public function getTypeName()
     {
         try {
@@ -395,5 +390,34 @@ class EmailVerificationServer extends Model
         } catch (\Exception $ex) {
             return 'Error: Config missing!';
         }
+    }
+
+    /***   IMPLEMENTATION OF HasQuotaInterface ***/
+    public function getQuotaSettings($name) : ?array
+    {
+        $quota = [];
+        $options = $this->getOptions();
+
+        if ($options['limit_value'] != QuotaManager::QUOTA_UNLIMITED ) {
+            $quota[] = [
+                'name' => "Verification credits limit of {$options['limit_value']} per {$options['limit_unit']} {$options['limit_base']}",
+                'period_base' => $options['limit_base'],
+                'period_value' => $options['limit_unit'],
+                'limit' => $options['limit_value'],
+            ];
+        }
+
+        // Take limits from sending credits
+        $credits = '????';
+        if (false && $credits != QuotaManager::QUOTA_UNLIMITED) {
+            $quota[] = [
+                'name' => "Plan's verification limit",
+                'period_base' => '?',
+                'period_value' => '?',
+                'limit' => $redits
+            ];
+        }
+
+        return $quota;
     }
 }

@@ -11,6 +11,7 @@ use Acelle\Model\Invoice;
 use Acelle\Library\Traits\HasUid;
 use Acelle\Library\Traits\HasQuota;
 use Acelle\Library\Contracts\HasQuota as HasQuotaInterface;
+use Acelle\Library\QuotaManager;
 
 class Subscription extends Model implements HasQuotaInterface
 {
@@ -835,24 +836,12 @@ class Subscription extends Model implements HasQuotaInterface
     {
         $creditsUsed = $this->getCreditsUsedDuringPlanCycle($name);
         $creditsLimit = $this->plan->getOption('email_max');
-        $percentage = ($creditsLimit == Subscription::QUOTA_UNLIMITED) ? 0 : $creditsUsed / $creditsLimit;
+        $percentage = ($creditsLimit == QuotaManager::QUOTA_UNLIMITED) ? 0 : $creditsUsed / $creditsLimit;
 
         return $percentage;
     }
 
     /***   IMPLEMENTATION OF HasQuotaInterface ***/
-    public function getCreditsLogFile() : string
-    {
-        $filepath = $this->customer->getLogPath("credits-log");
-        return $filepath;
-    }
-
-    public function getQuotaLogFile($name) : string
-    {
-        $filepath = $this->customer->getLogPath("quota-log-{$name}");
-        return $filepath;
-    }
-
     public function getQuotaSettings($name) : ?array
     {
         return $this->plan->getQuotaSettings($name);
