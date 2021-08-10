@@ -220,7 +220,7 @@ class Email extends Model
             // additional log
             MailLog::info("[DEMO] Sent to subscriber `{$subscriber->email}`");
         } else {
-            $server->send($message);
+            $sent = $server->send($message);
             // additional log
             MailLog::info("Sent to subscriber `{$subscriber->email}`");
         }
