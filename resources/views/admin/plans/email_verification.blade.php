@@ -65,7 +65,7 @@
                                             <div class="checkbox inline text-semibold">
                                                 <label>
                                                     <input{{ $plan->getOption('email_verification_servers_max')  == -1 ? " checked=checked" : "" }} type="checkbox" class="unlimit-check styled">
-                                                    {{ trans('messages.unlimited') }}
+                                                    <span class="ms-1">{{ trans('messages.unlimited') }}</span>
                                                 </label>
                                             </div>
                                         </div>
