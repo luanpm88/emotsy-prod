@@ -731,8 +731,9 @@ function cursorIterate($query, $orderBy, $size, $callback)
     $cursor = null;
     $page = 1;
     do {
+        $q = clone $query;
         // The 4th parameter contains the offset cursor
-        $list = $query->orderBy($orderBy)->cursorPaginate($size, ['*'], 'cursor', $cursor);
+        $list = $q->orderBy($orderBy)->cursorPaginate($size, ['*'], 'cursor', $cursor);
         $callback($list->items(), $page);
         $cursor = $list->nextCursor();
         $page += 1;
