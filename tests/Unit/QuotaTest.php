@@ -165,6 +165,53 @@ class QuotaTest extends TestCase
         });
     }
 
+    public function test_exception_thrown_when_credits_file_is_missing_and_call_get_remaining_credits()
+    {
+        $server = $this->initServer();
+        $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 1, $base = 'minute');
+        $server->cleanupCreditsStorageFiles('send');
+        $this->expectException(Exception::class);
+        $server->getRemainingCredits('send');
+    }
+
+    public function test_exception_thrown_when_credits_file_is_missing_and_call_update_remaining_credits()
+    {
+        $server = $this->initServer();
+        $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 1, $base = 'minute');
+        $server->cleanupCreditsStorageFiles('send');
+        $this->expectException(Exception::class);
+        $server->updateRemainingCredits('send');
+    }
+
+    public function test_quota_is_not_counted_if_credit_check_fails()
+    {
+        $server = $this->initServer();
+        $server->setCredits('send', $credits = 100);
+        $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 1, $base = 'minute');
+
+        QuotaManager::count($server, 'send', function() {
+            // count
+        });
+
+        // Ok, now 99 remaining
+        $this->assertEquals($server->getRemainingCredits('send'), 99);
+        $this->assertEquals($server->getCreditsUsed('send'), 1);
+
+        // DELETE credit file
+        // Then the correct way is to use QuotaManager::enforce
+        // which does not count credits use and therefore does not throw exception (credits file missing)
+        // However, if we use QuotaManager::count, credits check will fail (exception)
+        // But we expect it that it does not log a credit use
+        $server->cleanupCreditsStorageFiles('send');
+
+        $this->expectException(Exception::class);
+        QuotaManager::count($server, 'send', function() {
+            // count
+        });
+
+        $this->assertEquals($server->getCreditsUsed('send'), 1);
+    }
+
     public function test_zero_credits_but_without_credits_count()
     {
         $server = $this->initServer();

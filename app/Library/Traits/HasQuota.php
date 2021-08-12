@@ -35,4 +35,9 @@ trait HasQuota
     {
         return $this->getQuotaManager($name)->getRemainingCredits();
     }
+
+    public function updateRemainingCredits($name)
+    {
+        return $this->getQuotaManager($name)->updateRemainingCredits();
+    }
 }
