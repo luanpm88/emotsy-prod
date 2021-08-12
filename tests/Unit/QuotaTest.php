@@ -190,6 +190,25 @@ class QuotaTest extends TestCase
         $this->assertEquals($server->getRemainingCredits('send'), $credits);
     }
 
+    public function test_enforce_quota_limit_without_credits_count_also_remove_credits_storage_file()
+    {
+        $server = $this->initServer();
+
+        // Clean up the credits storage file
+        $server->cleanupCreditsStorageFiles('send');
+
+        $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 1, $base = 'minute');
+        QuotaManager::enforce($server, 'send', function() {
+            // echo "Credits is deducted\n";
+        });
+
+        // A dummy asset to avoid test warning (no assert in test)
+        $this->assertTrue(true);
+
+        // The following row will throw an exception
+        // $server->getRemainingCredits('send');
+    }
+
     public function test_zero_credits_per_minute()
     {
         $server = $this->initServer();
