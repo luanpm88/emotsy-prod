@@ -174,7 +174,7 @@ function exec_enabled()
         exec('ls');
 
         return function_exists('exec') && !in_array('exec', array_map('trim', explode(', ', ini_get('disable_functions'))));
-    } catch (\Exception $ex) {
+    } catch (\Throwable $ex) {
         return false;
     }
 }
@@ -738,8 +738,9 @@ function cursorIterate($query, $orderBy, $size, $callback)
     $cursor = null;
     $page = 1;
     do {
+        $q = clone $query;
         // The 4th parameter contains the offset cursor
-        $list = $query->orderBy($orderBy)->cursorPaginate($size, ['*'], 'cursor', $cursor);
+        $list = $q->orderBy($orderBy)->cursorPaginate($size, ['*'], 'cursor', $cursor);
         $callback($list->items(), $page);
         $cursor = $list->nextCursor();
         $page += 1;
