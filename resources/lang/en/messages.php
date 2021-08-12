@@ -3764,4 +3764,5 @@
     Below are your order details',
   'have_new_renew_invoice' => 'You have a pending renew invoice. Check the invoice information',
   'verification_credits_limit' => 'Verification credits limit',
+  'invoice.change_plan.cancel' => 'Change your mind? Cick here to cancel',
 ) ?>

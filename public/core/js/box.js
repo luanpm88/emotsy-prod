@@ -32,6 +32,7 @@ class Box {
         // this.box.find('.box-loading').remove();        
         // this.box.removeClass('box-is-loading');
         removePlaceholderLoading(this.box);
+        this.applyJs();
     }
     
     applyJs() {

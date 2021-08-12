@@ -36,6 +36,21 @@
         </div>
     </div>
 
+    @if ($invoice->type == \Acelle\Model\Invoice::TYPE_CHANGE_PLAN)
+        <div class="text-center mt-4">
+            <a class="btn btn-link text-center rounded-3"
+                style="width:100%"
+                link-method="POST"
+                link-confirm="{{ trans('messages.invoice.cancel.confirm') }}"
+                href="{{ action('SubscriptionController@cancelInvoice', [
+                    'invoice_uid' => $bill['invoice_uid'],
+                ]) }}"
+            >
+                {{ trans('messages.invoice.change_plan.cancel') }}
+            </a>
+        </div>
+    @endif
+
     <script>
         $(function() {
             @if (!$invoice->isFree())
