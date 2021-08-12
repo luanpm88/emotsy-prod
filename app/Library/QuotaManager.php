@@ -138,7 +138,7 @@ class QuotaManager
         return $this->getQuotaTracker()->getCreditsUsed($from, $to);
     }
 
-    public function withQuota(Closure $execute)
+    public function withQuota(Closure $execute, $countCredits = true)
 	{
 	    // Check available credits and quota
 	    // Count if passed, throw exception otherwise
@@ -148,18 +148,29 @@ class QuotaManager
 	    $now = Carbon::now();
 
 	    // Count quota use
-	    $this->getQuotaTracker()->count($now, $limits, function() {
+	    $this->getQuotaTracker()->count($now, $limits, function() use ($countCredits) {
 	        // Take advantage of the lock to count remaining credits
-	        $this->updateRemainingCredits();
+	        if ($countCredits) {
+	        	$this->updateRemainingCredits();
+	        }
 	    });
 
 	    // Okie, execute
 	    $execute();
 	}
 
+	// There are two functions to use "count()" and "throttle()"
+	// + count() checks for quota limits as well as deduct credits used
+	// + enforce() only checks for quota limits, it does not defect credits used
 	public static function count(HasQuotaInterface $subject, string $name, Closure $execute)
 	{
 		$manager = static::with($subject, $name);
 		$manager->withQuota($execute);
+	}
+
+	public static function enforce(HasQuotaInterface $subject, string $name, Closure $execute)
+	{
+		$manager = static::with($subject, $name);
+		$manager->withQuota($execute, $countCredits = false);
 	}
 }

@@ -165,6 +165,31 @@ class QuotaTest extends TestCase
         });
     }
 
+    public function test_zero_credits_but_without_credits_count()
+    {
+        $server = $this->initServer();
+        $server->setCredits('send', QuotaManager::QUOTA_ZERO);
+        $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 1, $base = 'minute');
+        QuotaManager::enforce($server, 'send', function() {
+            // echo "Credits is deducted\n";
+        });
+
+        $this->assertEquals($server->getRemainingCredits('send'), QuotaManager::QUOTA_ZERO);
+    }
+
+    public function test_enforce_quota_limit_without_credits_count()
+    {
+        $server = $this->initServer();
+        $credits = rand(10,100);
+        $server->setCredits('send', $credits);
+        $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 1, $base = 'minute');
+        QuotaManager::enforce($server, 'send', function() {
+            // echo "Credits is deducted\n";
+        });
+
+        $this->assertEquals($server->getRemainingCredits('send'), $credits);
+    }
+
     public function test_zero_credits_per_minute()
     {
         $server = $this->initServer();
