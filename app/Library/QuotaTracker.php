@@ -5,6 +5,7 @@ namespace Acelle\Library;
 use File;
 use Carbon\Carbon;
 use Exception;
+use Acelle\Library\Exception\QuotaExceeded;
 use Closure;
 
 class QuotaTracker
@@ -20,10 +21,18 @@ class QuotaTracker
         'year' => 'Y00000000',
     ];
 
+    protected $quotaExceededCallback;
+
     public function __construct(string $filepath)
     {
         $this->filepath = $filepath;
         $this->createStorageFile();
+    }
+
+    public function whenQuotaExceeded(Closure $callback)
+    {
+        $this->quotaExceededCallback = $callback;
+        return $this;
     }
 
     public function count(Carbon $now = null, array $limits = [], Closure $callback = null)
@@ -79,7 +88,12 @@ class QuotaTracker
             $creditsUsed = $this->getCreditsUsed($fromDatetime, $now, $fopen);
 
             if ($creditsUsed >= $limit['limit']) {
-                throw new Exception(sprintf("%s exceeded! %s/%s used", $limit['name'], $creditsUsed, $limit['limit']));
+                if (!is_null($this->quotaExceededCallback)) {
+                    $quotaExceededCallback = $this->quotaExceededCallback;
+                    $quotaExceededCallback($limit, $creditsUsed, $now);
+                }
+
+                throw new QuotaExceeded(sprintf("%s exceeded! %s/%s used", $limit['name'], $creditsUsed, $limit['limit']));
             }
         }
     }
