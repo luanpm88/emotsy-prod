@@ -16,4 +16,5 @@ class Base implements ShouldQueue
     // resulting in confusing exception like "Job X has been tried too many times or timeout"
     public $failOnTimeout = true;
     public $tries = 1;
+    public $maxExceptions = 1;
 }

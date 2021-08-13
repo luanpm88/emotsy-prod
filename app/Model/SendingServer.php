@@ -33,6 +33,7 @@ use Acelle\Library\Facades\Hook;
 use Acelle\Library\Traits\HasUid;
 use Acelle\Library\Traits\HasQuota;
 use Acelle\Library\Contracts\HasQuota as HasQuotaInterface;
+use Acelle\Library\QuotaManager;
 use Exception;
 
 class SendingServer extends Model implements HasQuotaInterface
@@ -1594,19 +1595,19 @@ class SendingServer extends Model implements HasQuotaInterface
         $this->quota_value = $value;
     }
 
-    /***   IMPLEMENTATION OF HasQuotaInterface ***/
+    /*** IMPLEMENTATION OF HasQuotaInterface ***/
     public function getQuotaSettings($name) : ?array
     {
-        // return "{$this->quota_base} {$this->quota_unit}";
-        // only one
-        $quota = [
-            [
-                'name' => "Sending limit of {$this->quota_value} per {$this->quota_unit} {$this->quota_base}",
+        $quota = [];
+
+        if ($this->quota_value != QuotaManager::QUOTA_UNLIMITED) {
+            $quota[] = [
+                'name' => "Server's sending limit of {$this->quota_value} per {$this->quota_unit} {$this->quota_base}",
                 'period_base' => $this->quota_base,
                 'period_value' => $this->quota_unit,
                 'limit' => $this->quota_value,
-            ]
-        ];
+            ];
+        }
 
         return $quota;
     }

@@ -20,6 +20,7 @@ class SendMessage implements ShouldQueue
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $timeout = 120;
+    public $maxExceptions = 1; // This is required if retryUntil is used, otherwise, the default value is 255
 
     protected $subscriber;
     protected $server;
