@@ -92,7 +92,6 @@ class QuotaTracker
                     $quotaExceededCallback = $this->quotaExceededCallback;
                     $quotaExceededCallback($limit, $creditsUsed, $now);
                 }
-
                 throw new QuotaExceeded(sprintf("%s exceeded! %s/%s used", $limit['name'], $creditsUsed, $limit['limit']));
             }
         }

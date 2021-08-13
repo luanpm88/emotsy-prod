@@ -8,9 +8,13 @@ use Acelle\Library\QuotaTracker;
 use Acelle\Model\SendingServer;
 use Acelle\Model\Subscription;
 use Acelle\Model\EmailVerificationServer;
+use Acelle\Model\Subscriber;
+use Acelle\Model\Customer;
+use Acelle\Model\Campaign;
 use Acelle\Library\QuotaManager;
 use Acelle\Library\Exception\QuotaExceeded;
 use Acelle\Library\Exception\NoCreditsLeft;
+use Acelle\Jobs\SendMessage;
 use Exception;
 use File;
 use Mockery;
@@ -23,8 +27,6 @@ class QuotaTest extends TestCase
         $server = SendingServer::first();
         $server->cleanupCreditsStorageFiles('send');
         $server->setCredits('send', 100);
-
-
         return $server;
     }
 
@@ -33,7 +35,6 @@ class QuotaTest extends TestCase
         $subscription = Subscription::first();
         $subscription->cleanupCreditsStorageFiles('send');
         $subscription->setCredits('send', 100);
-
         return $subscription;
     }
 
@@ -426,5 +427,141 @@ class QuotaTest extends TestCase
             $this->assertEquals($server->getRemainingCredits('verify'), 0);
             $this->assertEquals($i, 11);
         }
+    }
+
+    private function prepareSendMessageTest()
+    {
+        // Server
+        $server = $this->initServer();
+        $server = Mockery::mock($server);
+        $server->shouldReceive('send')->andReturn(null);
+
+        // Subscription
+        $subscription = $this->initSubscription();
+        $plan = Mockery::mock('plan');
+
+
+        // Assign the mocked plan
+        $subscription->plan = $plan;
+
+        // Customer
+        $customer = Mockery::mock(new Customer());
+        $customer->shouldReceive('activeSubscription')->andReturn($subscription);
+
+        // Subscriber type is required as the new SendMessage(Subscriber $sub) has strict type parameter
+        $subscriber = Mockery::mock(new Subscriber());
+        $subscriber->shouldReceive('getEmail')->andReturn('test@example.com');
+
+        // Logger
+        $logger = Mockery::mock('logger');
+        $logger->shouldReceive('info')->andReturn(null);
+        $logger->shouldReceive('warning')->andReturn(null);
+        $logger->shouldReceive('error')->andReturn(null);
+
+        // Campaign
+        $campaign = Mockery::mock(new Campaign());
+        $campaign->shouldReceive('logger')->andReturn($logger);
+        $campaign->shouldReceive('prepareEmail')->andReturn(null);
+        $campaign->shouldReceive('trackMessage')->andReturn(null);
+        $campaign->customer = $customer;
+
+        return [$campaign, $subscriber, $server];
+    }
+
+    public function test_send_message_job_with_quota_exceeded()
+    {
+        list($campaign, $subscriber, $server) = $this->prepareSendMessageTest();
+
+        // Server Quota
+        $server->setQuotaSettings(0, $unit = 1, $base = 'minute');
+
+        // Subscription Quota
+        $campaign->customer->activeSubscription()->plan->shouldReceive('getQuotaSettings')->andReturn([]);
+
+        // SendMessage job
+        $sendMsgJob = new SendMessage($campaign, $subscriber, $server);
+        $sendMsgJob->send(function($exception) use (&$outcome) {
+            $outcome = $exception;
+        });
+
+        $this->assertInstanceOf(QuotaExceeded::class, $outcome);
+    }
+
+    public function test_send_message_job_with_quota_not_exceeded()
+    {
+        list($campaign, $subscriber, $server) = $this->prepareSendMessageTest();
+
+        // Server Quota
+        $server->setQuotaSettings(1, $unit = 1, $base = 'minute');
+
+        // Subscription Quota
+        $campaign->customer->activeSubscription()->plan->shouldReceive('getQuotaSettings')->andReturn([]);
+
+        // SendMessage job
+        $sendMsgJob = new SendMessage($campaign, $subscriber, $server);
+        $sendMsgJob->send(function($exception) use (&$outcome) {
+            $outcome = $exception;
+        });
+
+        $this->assertNull($outcome);
+    }
+
+    public function test_send_message_job_with_quota_exceeded_and_not_exceeded()
+    {
+        list($campaign, $subscriber, $server) = $this->prepareSendMessageTest();
+
+        // Server Quota
+        $server->setQuotaSettings(1, $unit = 1, $base = 'minute');
+
+        // Subscription Quota
+        $campaign->customer->activeSubscription()->plan->shouldReceive('getQuotaSettings')->andReturn([]);
+
+        // SendMessage job
+        $sendMsgJob = new SendMessage($campaign, $subscriber, $server);
+        $sendMsgJob->send(function($exception) use (&$outcome) {
+            $outcome = $exception;
+        });
+
+        // First send, okie
+        $this->assertNull($outcome);
+
+        $sendMsgJob->send(function($exception) use (&$outcome) {
+            $outcome = $exception;
+        });
+
+        // Second, quota exceeded
+        $this->assertInstanceOf(QuotaExceeded::class, $outcome);
+    }
+
+    public function test_send_message_job_with_quota_exceeded_and_not_exceeded_subscription()
+    {
+        list($campaign, $subscriber, $server) = $this->prepareSendMessageTest();
+
+        // Server Quota
+        $server->setQuotaSettings(9999, $unit = 1, $base = 'minute');
+
+        // Subscription Quota
+        $campaign->customer->activeSubscription()->plan->shouldReceive('getQuotaSettings')->andReturn([[
+            'name' => "Plan's sending limit",
+            'limit' => 1,
+            'period_base' => 'month',
+            'period_value' => 1,
+        ]]);
+
+        // SendMessage job
+        $sendMsgJob = new SendMessage($campaign, $subscriber, $server);
+        $sendMsgJob->send(function($exception) use (&$first) {
+            $first = $exception;
+        });
+
+        // First send, okie
+        $this->assertNull($first);
+
+        $sendMsgJob->send(function($exception) use (&$second) {
+            $second = $exception;
+        });
+
+        // Second, quota exceeded
+        $this->assertInstanceOf(QuotaExceeded::class, $second);
     }
 }
