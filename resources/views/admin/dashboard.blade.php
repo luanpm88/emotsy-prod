@@ -263,7 +263,9 @@ people_outline
                 <ul class="dotted-list topborder section">
                     <li>
                         <div class="unit size1of2">
-                            <strong><i class="icon-user-tie"></i> {{ trans('messages.admins') }}</strong>
+                            <strong><span class="material-icons-outlined me-2">
+manage_accounts
+</span> {{ trans('messages.admins') }}</strong>
                         </div>
                         <div class="lastUnit size1of2">
                             <mc:flag>{{ Auth::user()->admin->getAllAdmins()->count() }}</mc:flag>
@@ -281,7 +283,7 @@ people
                     </li>
                     <li class="selfclear">
                         <div class="unit size1of2">
-                            <strong><span class="material-icons-outlined">
+                            <strong><span class="material-icons-outlined me-2">
 dns
 </span> {{ trans('messages.sending_servers') }}</strong>
                         </div>
@@ -291,7 +293,7 @@ dns
                     </li>
                     <li>
                         <div class="unit size1of2">
-                            <strong><span class="material-icons-outlined">
+                            <strong><span class="material-icons-outlined me-2">
 public
 </span> {{ trans('messages.sending_domains') }}</strong>
                         </div>
