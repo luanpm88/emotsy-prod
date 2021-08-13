@@ -59,9 +59,7 @@ class QuotaTest extends TestCase
         $server->setQuotaSettings($limit = 10000000, $unit = 1, $base = 'minute');
 
         for($i = 1; $i <= $use; $i++) {
-            QuotaManager::with($server, 'send')->count(function() {
-                // echo "Credits is deducted\n";
-            });
+            QuotaManager::with($server, 'send')->count();
         }
 
         $this->assertEquals($server->getRemainingCredits('send'), $credits - $use);
@@ -81,9 +79,7 @@ class QuotaTest extends TestCase
 
         try {
             for($i = 1; $i <= $use; $i++) {
-                QuotaManager::with($server, 'send')->count(function() {
-                    // echo "Credits is deducted\n";
-                });
+                QuotaManager::with($server, 'send')->count();
             }
         } finally {
             $this->assertEquals($i, 5); // failed at the first try after limit is reached
@@ -108,9 +104,7 @@ class QuotaTest extends TestCase
 
         try {
             for($i = 1; $i <= $use; $i++) {
-                $quota->count(function() {
-                    // echo "Credits is deducted\n";
-                });
+                $quota->count();
             }
         } finally {
             $this->assertEquals($results[0]['limit'], $limitPerMinute ); // failed at the first try after limit is reached
@@ -134,9 +128,7 @@ class QuotaTest extends TestCase
 
         try {
             for($i = 1; $i <= $use; $i++) {
-                $quota->count(function() {
-                    // echo "Credits is deducted\n";
-                });
+                $quota->count();
             }
         } finally {
             $this->assertEquals($i, 2); // exception thrown if limit exceeded
@@ -156,9 +148,7 @@ class QuotaTest extends TestCase
 
         try {
             for($i = 1; $i <= $use; $i++) {
-                QuotaManager::with($server, 'send')->count(function() {
-                    // echo "Credits is deducted\n";
-                });
+                QuotaManager::with($server, 'send')->count();
             }
         } finally {
             $this->assertEquals($i, $credits + 1); // failed at the first try after limit is reached
@@ -176,9 +166,7 @@ class QuotaTest extends TestCase
 
         try {
             for($i = 1; $i <= $use; $i++) {
-                QuotaManager::with($server, 'send')->count(function() {
-                    // echo "Credits is deducted\n";
-                });
+                QuotaManager::with($server, 'send')->count();
             }
         } finally {
             $this->assertEquals($i, $use + 1); // failed at the first try after limit is reached
@@ -195,9 +183,7 @@ class QuotaTest extends TestCase
 
         try {
             for($i = 1; $i <= $use; $i++) {
-                QuotaManager::with($server, 'send')->count(function() {
-                    // echo "Credits is deducted\n";
-                });
+                QuotaManager::with($server, 'send')->count();
             }
         } finally {
             $this->assertEquals($i, $use + 1); // failed at the first try after limit is reached
@@ -210,9 +196,7 @@ class QuotaTest extends TestCase
         $server->setCredits('send', $credits = 0);
         $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 1, $base = 'minute');
         $this->expectException(NoCreditsLeft::class);
-        QuotaManager::with($server, 'send')->count(function() {
-            // echo "Credits is deducted\n";
-        });
+        QuotaManager::with($server, 'send')->count();
     }
 
     public function test_exception_thrown_when_credits_file_is_missing_and_call_get_remaining_credits()
@@ -239,9 +223,7 @@ class QuotaTest extends TestCase
         $server->setCredits('send', $credits = 100);
         $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 1, $base = 'minute');
 
-        QuotaManager::with($server, 'send')->count(function() {
-            // count
-        });
+        QuotaManager::with($server, 'send')->count();
 
         // Ok, now 99 remaining
         $this->assertEquals($server->getRemainingCredits('send'), 99);
@@ -255,9 +237,7 @@ class QuotaTest extends TestCase
         $server->cleanupCreditsStorageFiles('send');
 
         $this->expectException(Exception::class);
-        QuotaManager::with($server, 'send')->count(function() {
-            // count
-        });
+        QuotaManager::with($server, 'send')->count();
 
         // Credits used is still 1
         $this->assertEquals($server->getCreditsUsed('send'), 1);
@@ -268,9 +248,7 @@ class QuotaTest extends TestCase
         $server = $this->initServer();
         $server->setCredits('send', QuotaManager::QUOTA_ZERO);
         $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 1, $base = 'minute');
-        QuotaManager::with($server, 'send')->enforce(function() {
-            // echo "Credits is deducted\n";
-        });
+        QuotaManager::with($server, 'send')->enforce();
 
         $this->assertEquals($server->getRemainingCredits('send'), QuotaManager::QUOTA_ZERO);
     }
@@ -281,9 +259,7 @@ class QuotaTest extends TestCase
         $credits = rand(10,100);
         $server->setCredits('send', $credits);
         $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 1, $base = 'minute');
-        QuotaManager::with($server, 'send')->enforce(function() {
-            // echo "Credits is deducted\n";
-        });
+        QuotaManager::with($server, 'send')->enforce();
 
         $this->assertEquals($server->getRemainingCredits('send'), $credits);
     }
@@ -298,9 +274,7 @@ class QuotaTest extends TestCase
         $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 1, $base = 'minute');
 
         // enforce() ==> does not check credits
-        QuotaManager::with($server, 'send')->enforce(function() {
-            // echo "Credits is deducted\n";
-        });
+        QuotaManager::with($server, 'send')->enforce();
 
         // A dummy asset to avoid test warning (no assert in test)
         $this->assertTrue(true);
@@ -315,9 +289,7 @@ class QuotaTest extends TestCase
         $server->setCredits('send', $credits = 10000);
         $server->setQuotaSettings($limitsPerMinute = 0, $unit = 1, $base = 'minute');
         $this->expectException(QuotaExceeded::class);
-        QuotaManager::with($server, 'send')->count(function() {
-            // echo "Credits is deducted\n";
-        });
+        QuotaManager::with($server, 'send')->count();
     }
 
     public function test_subscription_just_works()
@@ -345,9 +317,7 @@ class QuotaTest extends TestCase
 
         try {
             for($i = 1; $i <= $use; $i++) {
-                QuotaManager::with($subscription, 'send')->count(function() {
-                    // echo "Credits is deducted\n";
-                });
+                QuotaManager::with($subscription, 'send')->count();
             }
         } finally {
             $this->assertEquals($i, 11); // failed at the first try after limit is reached
@@ -373,9 +343,7 @@ class QuotaTest extends TestCase
 
         try {
             for($i = 1; $i <= $use; $i++) {
-                QuotaManager::with($subscription, 'send')->count(function() {
-                    // echo "Credits is deducted\n";
-                });
+                QuotaManager::with($subscription, 'send')->count();
             }
         } finally {
             $this->assertTrue($i == 101 && 0 === $subscription->getRemainingCredits('send')); // failed at the first try after limit is reached
@@ -402,9 +370,7 @@ class QuotaTest extends TestCase
         $tests = 100;
         try {
             for($i = 1; $i <= $tests; $i++) {
-                QuotaManager::with($subscription, 'send')->count(function() {
-                    // echo "Credits is deducted\n";
-                });
+                QuotaManager::with($subscription, 'send')->count();
             }
         } finally {
             // failed at the first try after limit is reached
@@ -426,7 +392,7 @@ class QuotaTest extends TestCase
 
         $this->expectException(Exception::class);
 
-        QuotaManager::with($subscription, 'send')->count(function() { });
+        QuotaManager::with($subscription, 'send')->count();
     }
 
     public function test_subscription_does_not_allow_getting_remaining_credits_if_credits_setting_is_null()
@@ -453,9 +419,7 @@ class QuotaTest extends TestCase
         $this->expectException(Exception::class);
         try {
             for($i = 1; $i <= $tests; $i++) {
-                QuotaManager::with($server, 'verify')->count(function() {
-                    // do something and cost 1 credits;
-                });
+                QuotaManager::with($server, 'verify')->count();
             }
         } finally {
             // failed at the first try after limit is reached

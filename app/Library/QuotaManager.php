@@ -151,7 +151,7 @@ class QuotaManager
         return $this->getQuotaTracker()->getCreditsUsed($from, $to);
     }
 
-    private function withQuota(Closure $execute, $countCredits = true)
+    public function count(?bool $countCredits = true)
     {
         // Check available credits and quota
         // Count if passed, throw exception otherwise
@@ -174,21 +174,10 @@ class QuotaManager
                 $this->updateRemainingCredits();
             }
         });
-
-        // Okie, execute
-        $execute();
     }
 
-    // There are two functions to use "count()" and "throttle()"
-    // + count() checks for quota limits as well as deduct credits used
-    // + enforce() only checks for quota limits, it does not defect credits used
-    public function count(Closure $execute)
+    public function enforce()
     {
-        $this->withQuota($execute);
-    }
-
-    public function enforce(Closure $execute)
-    {
-        $this->withQuota($execute, $countCredits = false);
+        $this->count($countCredits = false);
     }
 }
