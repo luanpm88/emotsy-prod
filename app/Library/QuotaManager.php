@@ -36,7 +36,8 @@ class QuotaManager
         return $this;
     }
 
-    public static function with(HasQuotaInterface $subject, string $name) {
+    public static function with(HasQuotaInterface $subject, string $name)
+    {
         $manager = new static($subject, $name);
         return $manager;
     }
@@ -59,7 +60,7 @@ class QuotaManager
             $this->getCreditsLogFile(),
         ];
 
-        foreach($files as $file) {
+        foreach ($files as $file) {
             if (File::exists($file)) {
                 File::delete($file);
             }
@@ -86,12 +87,14 @@ class QuotaManager
         return $json;
     }
 
-    private function updateCreditsLog($json) {
+    private function updateCreditsLog($json)
+    {
         $filepath = $this->getCreditsStorageFile();
         file_put_contents($filepath, json_encode($json));
     }
 
-    public function getRemainingCredits() {
+    public function getRemainingCredits()
+    {
         $json = $this->getCreditsStorageJson();
         if (!array_key_exists($this->name, $json)) {
             throw new Exception(sprintf('Credits limit for object %s#%s is not initialized yet. Initiate it with setCredits or addCredits first', get_class($this->subject), $this->subject->uid));
@@ -164,11 +167,11 @@ class QuotaManager
         $tracker = $this->getQuotaTracker();
 
         if (!is_null($this->quotaExceededCallback)) {
-        	$tracker->whenQuotaExceeded($this->quotaExceededCallback);
+            $tracker->whenQuotaExceeded($this->quotaExceededCallback);
         }
 
         // Count quota use
-        $tracker->count($now, $limits, function() use ($countCredits) {
+        $tracker->count($now, $limits, function () use ($countCredits) {
             // Take advantage of the lock to count remaining credits
             if ($countCredits) {
                 $this->updateRemainingCredits();

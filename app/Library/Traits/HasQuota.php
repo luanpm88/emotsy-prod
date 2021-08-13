@@ -27,7 +27,8 @@ trait HasQuota
         return $this->getQuotaManager($name)->getCreditsUsed($from, $to);
     }
 
-    public function cleanupCreditsStorageFiles($name) {
+    public function cleanupCreditsStorageFiles($name)
+    {
         return $this->getQuotaManager($name)->cleanup();
     }
 

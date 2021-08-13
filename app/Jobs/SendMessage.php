@@ -92,9 +92,8 @@ class SendMessage implements ShouldQueue
             $logger->warning(sprintf("Sending to [%s] -> put on hold (for 60 seconds): %s", $email, $ex->getMessage()));
             $this->release(60);
 
-        // } catch (NoCreditsLeft $ex) {
+            // } catch (NoCreditsLeft $ex) {
             // Interupt campaign process if NoCredisLeft is thrown
-
         } catch (Exception $ex) {
             if (!is_null($exceptionCallback)) {
                 $exceptionCallback($ex);

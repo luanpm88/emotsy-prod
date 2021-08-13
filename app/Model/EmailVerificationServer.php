@@ -398,7 +398,7 @@ class EmailVerificationServer extends Model implements HasQuotaInterface
         $quota = [];
         $options = $this->getOptions();
 
-        if ($options['limit_value'] != QuotaManager::QUOTA_UNLIMITED ) {
+        if ($options['limit_value'] != QuotaManager::QUOTA_UNLIMITED) {
             $quota[] = [
                 'name' => "Verification credits limit of {$options['limit_value']} per {$options['limit_unit']} {$options['limit_base']}",
                 'period_base' => $options['limit_base'],

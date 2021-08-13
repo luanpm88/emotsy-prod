@@ -51,7 +51,6 @@ class QuotaTracker
 
             // Record credits use
             $this->record($now, $fopen);
-
         }, $timeout = 15);
     }
 

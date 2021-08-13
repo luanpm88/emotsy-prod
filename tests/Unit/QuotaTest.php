@@ -56,10 +56,10 @@ class QuotaTest extends TestCase
     {
         $server = $this->initServer();
         $server->setCredits('send', $credits = 100);
-        $use  = rand(3,10);
+        $use  = rand(3, 10);
         $server->setQuotaSettings($limit = 10000000, $unit = 1, $base = 'minute');
 
-        for($i = 1; $i <= $use; $i++) {
+        for ($i = 1; $i <= $use; $i++) {
             QuotaManager::with($server, 'send')->count();
         }
 
@@ -79,7 +79,7 @@ class QuotaTest extends TestCase
         $this->expectException(Exception::class);
 
         try {
-            for($i = 1; $i <= $use; $i++) {
+            for ($i = 1; $i <= $use; $i++) {
                 QuotaManager::with($server, 'send')->count();
             }
         } finally {
@@ -97,18 +97,18 @@ class QuotaTest extends TestCase
 
         //$this->expectException(Exception::class);
 
-        $quota = QuotaManager::with($server, 'send')->whenQuotaExceeded(function($limit, $creditsUsed, $time) use (&$results) {
+        $quota = QuotaManager::with($server, 'send')->whenQuotaExceeded(function ($limit, $creditsUsed, $time) use (&$results) {
             $results = [ $limit, $creditsUsed, $time ];
         });
 
         $this->expectException(QuotaExceeded::class);
 
         try {
-            for($i = 1; $i <= $use; $i++) {
+            for ($i = 1; $i <= $use; $i++) {
                 $quota->count();
             }
         } finally {
-            $this->assertEquals($results[0]['limit'], $limitPerMinute ); // failed at the first try after limit is reached
+            $this->assertEquals($results[0]['limit'], $limitPerMinute); // failed at the first try after limit is reached
             $this->assertEquals($i, 5); // exception thrown if limit exceeded
             $this->assertEquals($server->getCreditsUsed('send'), 4);
             $this->assertEquals($server->getRemainingCredits('send'), 96);
@@ -128,7 +128,7 @@ class QuotaTest extends TestCase
         $this->expectException(NoCreditsLeft::class);
 
         try {
-            for($i = 1; $i <= $use; $i++) {
+            for ($i = 1; $i <= $use; $i++) {
                 $quota->count();
             }
         } finally {
@@ -148,7 +148,7 @@ class QuotaTest extends TestCase
         $this->expectException(NoCreditsLeft::class);
 
         try {
-            for($i = 1; $i <= $use; $i++) {
+            for ($i = 1; $i <= $use; $i++) {
                 QuotaManager::with($server, 'send')->count();
             }
         } finally {
@@ -166,7 +166,7 @@ class QuotaTest extends TestCase
         $server->setQuotaSettings($limitPerMinute, $unit = 1, $base = 'minute');
 
         try {
-            for($i = 1; $i <= $use; $i++) {
+            for ($i = 1; $i <= $use; $i++) {
                 QuotaManager::with($server, 'send')->count();
             }
         } finally {
@@ -183,7 +183,7 @@ class QuotaTest extends TestCase
         $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 1, $base = 'minute');
 
         try {
-            for($i = 1; $i <= $use; $i++) {
+            for ($i = 1; $i <= $use; $i++) {
                 QuotaManager::with($server, 'send')->count();
             }
         } finally {
@@ -257,7 +257,7 @@ class QuotaTest extends TestCase
     public function test_enforce_quota_limit_without_credits_count()
     {
         $server = $this->initServer();
-        $credits = rand(10,100);
+        $credits = rand(10, 100);
         $server->setCredits('send', $credits);
         $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 1, $base = 'minute');
         QuotaManager::with($server, 'send')->enforce();
@@ -317,7 +317,7 @@ class QuotaTest extends TestCase
         $this->expectException(QuotaExceeded::class);
 
         try {
-            for($i = 1; $i <= $use; $i++) {
+            for ($i = 1; $i <= $use; $i++) {
                 QuotaManager::with($subscription, 'send')->count();
             }
         } finally {
@@ -343,7 +343,7 @@ class QuotaTest extends TestCase
         $this->expectException(Exception::class);
 
         try {
-            for($i = 1; $i <= $use; $i++) {
+            for ($i = 1; $i <= $use; $i++) {
                 QuotaManager::with($subscription, 'send')->count();
             }
         } finally {
@@ -370,7 +370,7 @@ class QuotaTest extends TestCase
         $subscription->plan = $plan;
         $tests = 100;
         try {
-            for($i = 1; $i <= $tests; $i++) {
+            for ($i = 1; $i <= $tests; $i++) {
                 QuotaManager::with($subscription, 'send')->count();
             }
         } finally {
@@ -419,7 +419,7 @@ class QuotaTest extends TestCase
         $tests = 11;
         $this->expectException(Exception::class);
         try {
-            for($i = 1; $i <= $tests; $i++) {
+            for ($i = 1; $i <= $tests; $i++) {
                 QuotaManager::with($server, 'verify')->count();
             }
         } finally {
@@ -480,7 +480,7 @@ class QuotaTest extends TestCase
 
         // SendMessage job
         $sendMsgJob = new SendMessage($campaign, $subscriber, $server);
-        $sendMsgJob->send(function($exception) use (&$outcome) {
+        $sendMsgJob->send(function ($exception) use (&$outcome) {
             $outcome = $exception;
         });
 
@@ -499,7 +499,7 @@ class QuotaTest extends TestCase
 
         // SendMessage job
         $sendMsgJob = new SendMessage($campaign, $subscriber, $server);
-        $sendMsgJob->send(function($exception) use (&$outcome) {
+        $sendMsgJob->send(function ($exception) use (&$outcome) {
             $outcome = $exception;
         });
 
@@ -518,14 +518,14 @@ class QuotaTest extends TestCase
 
         // SendMessage job
         $sendMsgJob = new SendMessage($campaign, $subscriber, $server);
-        $sendMsgJob->send(function($exception) use (&$outcome) {
+        $sendMsgJob->send(function ($exception) use (&$outcome) {
             $outcome = $exception;
         });
 
         // First send, okie
         $this->assertNull($outcome);
 
-        $sendMsgJob->send(function($exception) use (&$outcome) {
+        $sendMsgJob->send(function ($exception) use (&$outcome) {
             $outcome = $exception;
         });
 
@@ -550,14 +550,14 @@ class QuotaTest extends TestCase
 
         // SendMessage job
         $sendMsgJob = new SendMessage($campaign, $subscriber, $server);
-        $sendMsgJob->send(function($exception) use (&$first) {
+        $sendMsgJob->send(function ($exception) use (&$first) {
             $first = $exception;
         });
 
         // First send, okie
         $this->assertNull($first);
 
-        $sendMsgJob->send(function($exception) use (&$second) {
+        $sendMsgJob->send(function ($exception) use (&$second) {
             $second = $exception;
         });
 
