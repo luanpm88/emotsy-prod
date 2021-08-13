@@ -73,12 +73,34 @@
                 @endif --}}
             </div>
             <div class="col-md-4">
-                @include('invoices.bill', [
-                    'bill' => $invoice->getBillingInfo(),
-                ])
+                <div class="order-box" style="position: sticky;top: 80px;">
 
-                @include('subscription._checkout')
+                </div>
             </div>
         </div>
     </div>
+    <script>
+        var SubscriptionPayment = {
+            orderBox: null,
+
+            getOrderBox: function() {
+                if (this.orderBox == null) {
+                    this.orderBox = new Box($('.order-box'), '{{ action('SubscriptionController@orderBox') }}');
+                }
+                return this.orderBox;
+            }
+        }
+
+        $(function() {
+            // payment_method data
+            if ($('.choose-payment-methods>div [type=radio]:checked').length) {
+                SubscriptionPayment.getOrderBox().data = {
+                    payment_method: $('.choose-payment-methods>div [type=radio]:checked').val()
+                };
+            }
+
+            SubscriptionPayment.getOrderBox().load();
+        });
+        
+    </script>
 @endsection
