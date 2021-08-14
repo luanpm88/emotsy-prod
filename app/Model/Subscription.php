@@ -11,6 +11,7 @@ use Acelle\Model\Invoice;
 use Acelle\Library\Traits\HasUid;
 use Acelle\Library\Traits\HasQuota;
 use Acelle\Library\Contracts\HasQuota as HasQuotaInterface;
+use Acelle\Library\QuotaManager;
 
 class Subscription extends Model implements HasQuotaInterface
 {
@@ -854,40 +855,34 @@ class Subscription extends Model implements HasQuotaInterface
         $this->cancelNow();
     }
 
-    /***   IMPLEMENTATION OF HasQuotaInterface ***/
-    public function getCreditsLogFile() : string
+    public function getCreditsUsedDuringPlanCycle($name)
     {
-        $filepath = $this->customer->getLogPath("credits-log");
-        return $filepath;
+        $interval = "{$this->plan->frequency_amount} {$this->plan->frequency_unit}"; // '1 month' or '1 year' for example
+        $from = Carbon::now()->subtract($interval);
+        return $this->getCreditsUsed($name, $from);
     }
 
-    public function getQuotaLogFile($name) : string
+    public function getCreditsLimit($name)
     {
-        $filepath = $this->customer->getLogPath("quota-log-{$name}");
-        return $filepath;
-    }
-
-    public function getQuotaSettings($name) : ?array
-    {
-        $options = $this->plan->getOptions();
-
-        $timeValue = $options['sending_quota_time'];
-        if ($timeValue == -1) {
-            return []; // no limit
+        if ($name != 'send') {
+            throw new Exception("`{$name}` credis limit is not available");
         }
 
-        $timeUnit = $options['sending_quota_time_unit'];
-        $limit = $options['sending_quota'];
+        return $this->plan->getOption('email_max');
+    }
 
-        $quota = [
-            [
-                'name' => "Sending limit of {$limit} per {$timeValue} {$timeUnit}",
-                'period_base' => $timeUnit,
-                'period_value' => $timeValue,
-                'limit' => $limit,
-            ]
-        ];
+    public function getCreditsUsedPercentageDuringPlanCycle($name)
+    {
+        $creditsUsed = $this->getCreditsUsedDuringPlanCycle($name);
+        $creditsLimit = $this->plan->getOption('email_max');
+        $percentage = ($creditsLimit == QuotaManager::QUOTA_UNLIMITED) ? 0 : $creditsUsed / $creditsLimit;
 
-        return $quota;
+        return $percentage;
+    }
+
+    /***   IMPLEMENTATION OF HasQuotaInterface ***/
+    public function getQuotaSettings($name) : ?array
+    {
+        return $this->plan->getQuotaSettings($name);
     }
 }

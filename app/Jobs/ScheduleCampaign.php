@@ -18,6 +18,11 @@ class ScheduleCampaign implements ShouldQueue
 
     protected $campaign;
 
+    public $timeout = 300;
+    public $failOnTimeout = true;
+    public $tries = 1;
+    public $maxExceptions = 1;
+
     /**
      * Create a new job instance.
      *

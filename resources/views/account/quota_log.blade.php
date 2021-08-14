@@ -7,8 +7,8 @@
 
 @section('content')
     <!-- Alert if customer don't have any subscription -->
-    @if (is_object(\Auth::user()->customer) &&
-        !is_object(\Auth::user()->customer->subscription))
+    @if (\Auth::user()->customer &&
+        !\Auth::user()->customer->activeSubscription())
         <div class="alert alert-warning mt-4">
             <h4 class="ui-pnotify-title text-nowrap">
             {!! trans('messages.not_have_any_plan_notification', [
@@ -18,18 +18,21 @@
             <div style="margin-top: 10px; clear: both; text-align: right; display: none;"></div>
         </div>
     @else
+        @php
+            $subscription = \Auth::user()->customer->activeSubscription();
+        @endphp
         <div class="row quota_box mb-4">
             <div class="col-md-12">
                 <div class="content-group-sm">
                     <div class="d-flex align-items-center">
                         <h5 class="text-semibold mb-1 me-auto">{{ trans('messages.sending_quota') }}</h5>
                         <div class="pull-right text-primary text-semibold">
-                            <span class="text-muted">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->getSendingQuotaUsage()) }}/{{ (Auth::user()->customer->getSendingQuota() == -1) ? '∞' : \Acelle\Library\Tool::format_number(Auth::user()->customer->getSendingQuota()) }}</span>
-                            &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displaySendingQuotaUsage() }}
+                            <span class="text-muted">{{ number_with_delimiter($subscription->getCreditsUsedDuringPlanCycle('send')) }}/{{ ($subscription->getCreditsLimit('send') == -1) ? '∞' : number_with_delimiter($subscription->getCreditsLimit('send')) }}</span>
+                            &nbsp;&nbsp;&nbsp;{{ number_to_percentage($subscription->getCreditsUsedPercentageDuringPlanCycle('send')) }}
                         </div>
                     </div>
                     <div class="progress progress-xxs">
-                        <div class="progress-bar bg-warning" style="width: {{ Auth::user()->customer->getSendingQuotaUsagePercentage() }}%">
+                        <div class="progress-bar bg-warning" style="width: {{ $subscription->getCreditsUsedPercentageDuringPlanCycle('send') * 100 }}%">
                         </div>
                     </div>
                 </div>

@@ -22,7 +22,6 @@
 
 namespace Acelle\Model;
 
-use Acelle\Library\QuotaTrackerFile;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use Acelle\Cashier\Cashier;
@@ -42,6 +41,7 @@ use File;
 use Acelle\Library\Traits\TrackJobs;
 use Acelle\Jobs\ImportBlacklistJob;
 use Acelle\Library\Traits\HasUid;
+use Acelle\Library\QuotaManager;
 
 class Customer extends Model
 {
@@ -587,46 +587,6 @@ class Customer extends Model
     }
 
     /**
-     * Check if customer has used up all quota allocated.
-     *
-     * @return string
-     */
-    public function overQuota()
-    {
-        return !$this->getQuotaTracker()->check();
-    }
-
-    /**
-     * Increment quota usage.
-     */
-    public function countUsage(Carbon $timePoint = null)
-    {
-        return $this->getQuotaTracker($timePoint)->add();
-    }
-
-    /**
-     * Get customer's sending quota rate.
-     *
-     * @return string
-     */
-    public function displaySendingQuotaUsage()
-    {
-        if ($this->getSendingQuota() == -1) {
-            return trans('messages.unlimited');
-        }
-        // @todo use percentage helper here
-        return $this->getSendingQuotaUsagePercentage().'%';
-    }
-
-    /**
-     * Clean up the quota tracking files to prevent it from growing too large.
-     */
-    public function cleanupQuotaTracker()
-    {
-        $this->getQuotaTracker()->cleanupSeries();
-    }
-
-    /**
      * Get customer's color scheme.
      *
      * @return string
@@ -680,125 +640,6 @@ class Customer extends Model
         $this->status = 'active';
 
         return $this->save();
-    }
-
-    /**
-     * Get customer's quota.
-     *
-     * @return string
-     */
-    public function getSendingQuota()
-    {
-        // -1 indicate unlimited
-        return $this->getOption('email_max');
-    }
-
-    /**
-     * Get customer's sending quota.
-     *
-     * @return string
-     */
-    public function getSendingQuotaUsage()
-    {
-        try {
-            $tracker = $this->getQuotaTracker();
-            return $tracker->getUsage();
-        } catch (Exception $ex) {
-            throw new Exception("Error processing quota tracking file: ".$this->getSendingQuotaLockFile()." Error: ".$ex->getMessage());
-        }
-    }
-
-    /**
-     * Get customer's sending quota rate.
-     *
-     * @return string
-     */
-    public function getSendingQuotaUsagePercentage()
-    {
-        $max = $this->getSendingQuota();
-        $count = $this->getSendingQuotaUsage();
-
-        if ($max == -1) {
-            return 0;
-        }
-        if ($max == 0) {
-            return 0;
-        }
-        if ($count > $max) {
-            return 100;
-        }
-
-        return round((($count / $max) * 100), 2);
-    }
-
-    /**
-     * Get the quota/limit object.
-     *
-     * @return array
-     */
-    public function getQuotaHash()
-    {
-        $current = $this->getCurrentSubscription();
-
-        // if (is_null($current->started_at)) {
-        //     throw new \Exception('Application error: subscription started_at not set!');
-        // }
-        
-        $quota = [
-            'start' => (isset($current->started_at) ? $current->started_at->timestamp : null),
-            'max' => $this->getOption('email_max'),
-        ];
-
-        return $quota;
-    }
-
-    /**
-     * Initialize the quota tracker.
-     *
-     * @return array
-     */
-    public function initQuotaTracker()
-    {
-        $this->quotaTracker = new QuotaTrackerFile($this->getSendingQuotaLockFile(), $this->getQuotaHash(), $this->getSendingLimits());
-        $this->quotaTracker->cleanupSeries();
-        // @note: in case of multi-process, the following command must be issued manually
-        //     $this->renewQuotaTracker();
-    }
-
-    public function getSendingLimits()
-    {
-        $timeValue = $this->getOption('sending_quota_time');
-        if ($timeValue == -1) {
-            return []; // no limit
-        }
-        $timeUnit = $this->getOption('sending_quota_time_unit');
-        $limit = $this->getOption('sending_quota');
-
-        return ["{$timeValue} {$timeUnit}" => $limit];
-    }
-
-    /**
-     * Get sending quota lock file.
-     *
-     * @return string file path
-     */
-    public function getSendingQuotaLockFile()
-    {
-        return storage_path("app/customer/quota/{$this->uid}");
-    }
-
-    /**
-     * Get customer's QuotaTracker.
-     *
-     * @return array
-     */
-    public function getQuotaTracker()
-    {
-        if (!$this->quotaTracker) {
-            $this->initQuotaTracker();
-        }
-
-        return $this->quotaTracker;
     }
 
     /**
@@ -1684,6 +1525,15 @@ class Customer extends Model
         $subscription->ends_at = null;
         $subscription->started_at = null;
         $subscription->status = Subscription::STATUS_NEW;
+
+        // Important:
+        // With current quota tracking design, there is no fixed 'available credits'
+        // As a result, the setCredits() method takes QUOTA_UNLIMITED value as default, meaning no credits check
+        // The application only enforce the quota limits rules: how many credits are allowed during a fixed period of time (month)
+        // It is pre-designed for "Buy Credits" feature which will be supported later on
+        $subscription->setCredits('send', QuotaManager::QUOTA_UNLIMITED);
+
+        // Actually store
         $subscription->save();
 
         // create init invoice

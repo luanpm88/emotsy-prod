@@ -5,6 +5,9 @@ namespace Acelle\Helpers;
 use Acelle\Library\StringHelper;
 use Exception;
 use File;
+use Acelle\Library\Contracts\HasQuota as HasQuotaInterface;
+use Closure;
+use Carbon\Carbon;
 
 function generatePublicPath($absPath, $withHost = false)
 {

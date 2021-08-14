@@ -51,7 +51,9 @@
         </div>
     </div>
 	<hr />
-	<h3 class="text-primary"><i class="icon-user-tie"></i> {{ trans('messages.admin_info') }}</h3>
+	<h3 class="text-primary"><span class="material-icons-outlined">
+manage_accounts
+</span> {{ trans('messages.admin_info') }}</h3>
 	<div class="row">
         <div class="col-md-6">
             @include('helpers.form_control', [

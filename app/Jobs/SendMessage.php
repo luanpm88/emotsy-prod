@@ -10,11 +10,19 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Acelle\Model\Subscriber;
+use Acelle\Library\QuotaManager;
+use Acelle\Library\Exception\NoCreditsLeft;
+use Acelle\Library\Exception\QuotaExceeded;
 use Exception;
 
 class SendMessage implements ShouldQueue
 {
     use Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    public $timeout = 120;
+    public $maxExceptions = 1; // This is required if retryUntil is used, otherwise, the default value is 255
+    public $failOnTimeout = true;
+    public $tries = 1;
 
     protected $subscriber;
     protected $server;
@@ -33,6 +41,16 @@ class SendMessage implements ShouldQueue
     }
 
     /**
+     * Determine the time at which the job should timeout.
+     *
+     * @return \DateTime
+     */
+    public function retryUntil()
+    {
+        return now()->addHours(12);
+    }
+
+    /**
      * Execute the job.
      *
      * @return void
@@ -43,33 +61,48 @@ class SendMessage implements ShouldQueue
             return;
         }
 
-        // Check customer quota
-        while ($this->campaign->customer->overQuota()) {
-            // throw new \Exception('Customer has reached sending limit');
-            throw new Exception('Reaching sending speed or quota limit, please RESUME your campaign later on');
-        }
+        $this->send();
+    }
 
-        // Check sending server quota
-        while ($this->server->overQuota()) {
-            throw new Exception('Reaching sending server limit, please RESUME your campaign later on');
-        }
-
+    // Use a dedicated method with no dependency for easy testing
+    public function send($exceptionCallback = null)
+    {
         $logger = $this->campaign->logger();
+        $email = $this->subscriber->getEmail();
+        $subscription = $this->campaign->customer->activeSubscription();
 
         // Prepare the email message to send
         list($message, $msgId) = $this->campaign->prepareEmail($this->subscriber, $this->server);
 
         // Actually send!
-        $logger->info(sprintf('Sending to %s [Server "%s"]', $this->subscriber->email, $this->server->name));
+        $logger->info(sprintf('Sending to %s [Server "%s"]', $email, $this->server->name));
 
         try {
-            $sent = $this->server->send($message);
-        } catch (Exception $ex) {
-            throw new Exception(sprintf("Error sending to email address [%s]. Error: %s", $this->subscriber->email, $ex->getMessage()));
-        }
+            QuotaManager::with($subscription, 'send')->enforce();
+            QuotaManager::with($this->server, 'send')->enforce();
 
-        // Log
-        $this->campaign->trackMessage($sent, $this->subscriber, $this->server, $msgId);
-        $logger->info(sprintf('Sent to %s [Server "%s"]', $this->subscriber->email, $this->server->name));
+            $sent = $this->server->send($message);
+
+            // Log
+            $this->campaign->trackMessage($sent, $this->subscriber, $this->server, $msgId);
+            $logger->info(sprintf('Sent to %s [Server "%s"]', $email, $this->server->name));
+        } catch (QuotaExceeded $ex) {
+            if (!is_null($exceptionCallback)) {
+                $exceptionCallback($ex);
+            }
+            // Releease the job, have it tried again later on, after 1 minutes
+            $logger->warning(sprintf("Sending to [%s] -> put on hold (for 60 seconds): %s", $email, $ex->getMessage()));
+            $this->release(60);
+
+            // } catch (NoCreditsLeft $ex) {
+            // Interupt campaign process if NoCredisLeft is thrown
+        } catch (Exception $ex) {
+            if (!is_null($exceptionCallback)) {
+                $exceptionCallback($ex);
+            }
+            $message = sprintf("Error sending to email address [%s]. Error: %s", $email, $ex->getMessage());
+            $logger->error($message);
+            throw new Exception($message);
+        }
     }
 }

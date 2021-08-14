@@ -1331,4 +1331,9 @@ class Subscriber extends Model
             $query->where('subscribers.email', 'LIKE', "%{$cleanKeyword}%");
         });
     }
+
+    public function getEmail()
+    {
+        return $this->email;
+    }
 }

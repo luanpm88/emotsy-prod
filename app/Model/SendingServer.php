@@ -24,7 +24,6 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Log as MailLog;
-use Acelle\Library\QuotaTrackerFile;
 use Acelle\Library\IdentityStore;
 use Acelle\Library\ExtendedSwiftMessage;
 use Carbon\Carbon;
@@ -34,6 +33,7 @@ use Acelle\Library\Facades\Hook;
 use Acelle\Library\Traits\HasUid;
 use Acelle\Library\Traits\HasQuota;
 use Acelle\Library\Contracts\HasQuota as HasQuotaInterface;
+use Acelle\Library\QuotaManager;
 use Exception;
 
 class SendingServer extends Model implements HasQuotaInterface
@@ -621,28 +621,6 @@ class SendingServer extends Model implements HasQuotaInterface
     }
 
     /**
-     * Get sending server's quota.
-     *
-     * @return string
-     */
-    public function getSendingQuota()
-    {
-        return $this->quota_value;
-    }
-
-    /**
-     * Get sending server's sending quota.
-     *
-     * @return string
-     */
-    public function getSendingQuotaUsage()
-    {
-        $tracker = $this->getQuotaTracker();
-
-        return $tracker->getUsage();
-    }
-
-    /**
      * Get rules.
      *
      * @return string
@@ -825,88 +803,6 @@ class SendingServer extends Model implements HasQuotaInterface
     {
         $this->status = 'active';
         $this->save();
-    }
-
-    /**
-     * Get sending server's QuotaTracker.
-     *
-     * @return array
-     */
-    public function getQuotaTracker()
-    {
-        if (!$this->quotaTracker) {
-            $this->initQuotaTracker();
-        }
-
-        return $this->quotaTracker;
-    }
-
-    /**
-     * Initialize the quota tracker.
-     */
-    public function initQuotaTracker()
-    {
-        $this->quotaTracker = new QuotaTrackerFile($this->getSendingQuotaLockFile(), ['start' => $this->created_at->timestamp, 'max' => -1], [$this->getQuotaIntervalString() => $this->getSendingQuota()]);
-        $this->quotaTracker->cleanupSeries();
-        // @note: in case of multi-process, the following command must be issued manually
-        //     $this->renewQuotaTracker();
-    }
-
-    /**
-     * Clean up the quota tracking files to prevent it from growing too large.
-     */
-    public function cleanupQuotaTracker()
-    {
-        // @todo: hard-coded for 1 month
-        $this->getQuotaTracker()->cleanupSeries(null, '1 month');
-    }
-
-    /**
-     * Get sending quota lock file.
-     *
-     * @return string file path
-     */
-    public function getSendingQuotaLockFile()
-    {
-        return storage_path("app/server/quota/{$this->uid}");
-    }
-
-    /**
-     * Get quota starting time.
-     *
-     * @return string
-     */
-    public function getQuotaIntervalString()
-    {
-        return "{$this->quota_base} {$this->quota_unit}";
-    }
-
-    /**
-     * Get quota starting time.
-     *
-     * @return array
-     */
-    public function getQuotaStartingTime()
-    {
-        return "{$this->getQuotaIntervalString()} ago";
-    }
-
-    /**
-     * Increment quota usage.
-     */
-    public function countUsage(Carbon $timePoint = null)
-    {
-        return $this->getQuotaTracker($timePoint)->add();
-    }
-
-    /**
-     * Check if user has used up all quota allocated.
-     *
-     * @return string
-     */
-    public function overQuota()
-    {
-        return !$this->getQuotaTracker()->check();
     }
 
     /**
@@ -1692,39 +1588,27 @@ class SendingServer extends Model implements HasQuotaInterface
         return false;
     }
 
-    /***   IMPLEMENTATION OF HasQuotaInterface ***/
-    public function getCreditsLogFile() : string
-    {
-        $filepath = storage_path("app/quota/credits-log-{$this->uid}");
-        return $filepath;
-    }
-
-    public function getQuotaLogFile($name) : string
-    {
-        $filepath = storage_path("app/quota/quota-log-{$this->uid}-{$name}");
-        return $filepath;
-    }
-
-    public function getQuotaSettings($name) : ?array
-    {
-        // return "{$this->quota_base} {$this->quota_unit}";
-        // only one
-        $quota = [
-            [
-                'name' => "Sending limit of {$this->quota_value} per {$this->quota_unit} {$this->quota_base}",
-                'period_base' => $this->quota_base,
-                'period_value' => $this->quota_unit,
-                'limit' => $this->quota_value,
-            ]
-        ];
-
-        return $quota;
-    }
-
     public function setQuotaSettings($value, $periodUnit, $periodBase)
     {
         $this->quota_base = $periodBase;
         $this->quota_unit = $periodUnit;
         $this->quota_value = $value;
+    }
+
+    /*** IMPLEMENTATION OF HasQuotaInterface ***/
+    public function getQuotaSettings($name) : ?array
+    {
+        $quota = [];
+
+        if ($this->quota_value != QuotaManager::QUOTA_UNLIMITED) {
+            $quota[] = [
+                'name' => "Server's sending limit of {$this->quota_value} per {$this->quota_unit} {$this->quota_base}",
+                'period_base' => $this->quota_base,
+                'period_value' => $this->quota_unit,
+                'limit' => $this->quota_value,
+            ];
+        }
+
+        return $quota;
     }
 }
