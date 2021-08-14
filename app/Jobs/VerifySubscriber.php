@@ -12,6 +12,8 @@ class VerifySubscriber extends Base
 {
     use Batchable;
 
+    public $timeout = 120;
+
     protected $server;
     protected $subscriber;
 

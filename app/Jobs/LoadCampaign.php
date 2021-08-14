@@ -18,13 +18,10 @@ class LoadCampaign implements ShouldQueue
 {
     use Trackable, Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    /* Already specified by Base job
-     *
-     *     public $failOnTimeout = true;
-     *     public $tries = 1;
-     *
-     */
     public $timeout = 7200;
+    public $failOnTimeout = true;
+    public $tries = 1;
+    public $maxExceptions = 1;
 
     protected $campaign;
 

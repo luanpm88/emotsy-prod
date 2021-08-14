@@ -21,6 +21,8 @@ class SendMessage implements ShouldQueue
 
     public $timeout = 120;
     public $maxExceptions = 1; // This is required if retryUntil is used, otherwise, the default value is 255
+    public $failOnTimeout = true;
+    public $tries = 1;
 
     protected $subscriber;
     protected $server;
