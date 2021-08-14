@@ -5,6 +5,7 @@ namespace Acelle\Library;
 use File;
 use Carbon\Carbon;
 use Exception;
+use Acelle\Library\Exception\QuotaExceeded;
 use Closure;
 
 class QuotaTracker
@@ -20,17 +21,18 @@ class QuotaTracker
         'year' => 'Y00000000',
     ];
 
+    protected $quotaExceededCallback;
+
     public function __construct(string $filepath)
     {
         $this->filepath = $filepath;
         $this->createStorageFile();
     }
 
-    private function createStorageFile()
+    public function whenQuotaExceeded(Closure $callback)
     {
-        if (!file_exists($this->filepath)) {
-            touch($this->filepath);
-        }
+        $this->quotaExceededCallback = $callback;
+        return $this;
     }
 
     public function count(Carbon $now = null, array $limits = [], Closure $callback = null)
@@ -42,14 +44,21 @@ class QuotaTracker
             // Throw an exception if test fails (quota exceeded)
             $this->test($now, $limits, $fopen);
 
-            // Record credits use
-            $this->record($now, $fopen);
-
-            // Execute callback beore releasing lock
+            // Execute callback beore writing
             if (!is_null($callback)) {
                 $callback();
             }
+
+            // Record credits use
+            $this->record($now, $fopen);
         }, $timeout = 15);
+    }
+
+    private function createStorageFile()
+    {
+        if (!file_exists($this->filepath)) {
+            touch($this->filepath);
+        }
     }
 
     private function test(Carbon $now, array $limits, $fopen)
@@ -78,7 +87,11 @@ class QuotaTracker
             $creditsUsed = $this->getCreditsUsed($fromDatetime, $now, $fopen);
 
             if ($creditsUsed >= $limit['limit']) {
-                throw new Exception(sprintf("%s exceeded! %s/%s used", $limit['name'], $creditsUsed, $limit['limit']));
+                if (!is_null($this->quotaExceededCallback)) {
+                    $quotaExceededCallback = $this->quotaExceededCallback;
+                    $quotaExceededCallback($limit, $creditsUsed, $now);
+                }
+                throw new QuotaExceeded(sprintf("%s exceeded! %s/%s used", $limit['name'], $creditsUsed, $limit['limit']));
             }
         }
     }
@@ -247,15 +260,27 @@ class QuotaTracker
         }
     }
 
-    public function getRecords(Carbon $fromDatetime, Carbon $toDatetime, $fopen)
+    public function getRecords(Carbon $fromDatetime = null, Carbon $toDatetime = null, $fopen = null)
     {
+        $fromDatetime = $fromDatetime ?: Carbon::createFromTimestamp(0); // Create the earliest date of 1970-01-01
+        $toDatetime = $toDatetime ?: Carbon::now(); // Current date
+
         $fromDatetimeStr = $this->makeBlock($fromDatetime);
         $toDatetimeStr = $this->makeBlock($toDatetime);
 
         $records = [];
-        $file = fopen($this->filepath, 'r');
-        while (!feof($file)) {
-            $record = trim(fgets($file));
+
+        if (is_null($fopen)) {
+            $fopen = fopen($this->filepath, 'r');
+            $closeFile = true;
+        } else {
+            rewind($fopen);
+            $closeFile = false;
+        }
+
+        rewind($fopen);
+        while (!feof($fopen)) {
+            $record = trim(fgets($fopen));
 
             if (empty($record)) {
                 break;
@@ -272,14 +297,15 @@ class QuotaTracker
             }
         }
 
-        // Close file
-        fclose($file);
+        if ($closeFile) {
+            fclose($fopen);
+        }
 
         // Return
         return $records;
     }
 
-    public function getCreditsUsed(Carbon $fromDatetime, Carbon $toDatetime, $fopen)
+    public function getCreditsUsed(Carbon $fromDatetime = null, Carbon $toDatetime = null, $fopen = null)
     {
         $records = $this->getRecords($fromDatetime, $toDatetime, $fopen);
         $counts = array_map(function ($record) {

@@ -7,38 +7,44 @@ use Tests\TestCase;
 use Acelle\Library\QuotaTracker;
 use Acelle\Model\SendingServer;
 use Acelle\Model\Subscription;
+use Acelle\Model\EmailVerificationServer;
+use Acelle\Model\Subscriber;
+use Acelle\Model\Customer;
+use Acelle\Model\Campaign;
+use Acelle\Library\QuotaManager;
+use Acelle\Library\Exception\QuotaExceeded;
+use Acelle\Library\Exception\NoCreditsLeft;
+use Acelle\Jobs\SendMessage;
 use Exception;
 use File;
 use Mockery;
+use function Acelle\Helpers\withQuota;
 
 class QuotaTest extends TestCase
 {
     public function initServer()
     {
         $server = SendingServer::first();
+        $server->cleanupCreditsStorageFiles('send');
         $server->setCredits('send', 100);
-
-        $quotaLogFile = $server->getQuotaLogFile('send');
-
-        if (File::exists($quotaLogFile)) {
-            File::delete($quotaLogFile);
-        }
-
         return $server;
     }
 
     public function initSubscription()
     {
         $subscription = Subscription::first();
+        $subscription->cleanupCreditsStorageFiles('send');
         $subscription->setCredits('send', 100);
-
-        $quotaLogFile = $subscription->getQuotaLogFile('send');
-
-        if (File::exists($quotaLogFile)) {
-            File::delete($quotaLogFile);
-        }
-
         return $subscription;
+    }
+
+    public function initEmailVerificationServer()
+    {
+        $server = EmailVerificationServer::first();
+        $server->cleanupCreditsStorageFiles('verify');
+        $server->setCredits('verify', 100);
+
+        return $server;
     }
 
     /**
@@ -50,19 +56,15 @@ class QuotaTest extends TestCase
     {
         $server = $this->initServer();
         $server->setCredits('send', $credits = 100);
-        $use  = rand(3,10);
+        $use  = rand(3, 10);
         $server->setQuotaSettings($limit = 10000000, $unit = 1, $base = 'minute');
 
-        for($i = 1; $i <= $use; $i++) {
-            $server->withQuota('send', function() {
-                // echo "Credits is deducted\n";
-            });
-
-            echo "Use {$i}: remaining {$server->getRemainingCredits('send')}\n";
+        for ($i = 1; $i <= $use; $i++) {
+            QuotaManager::with($server, 'send')->count();
         }
 
-        echo "Result\nUsed credits {$use}, Remaining is {$server->getRemainingCredits('send')}\n";
-        $this->assertTrue($server->getRemainingCredits('send') == $credits - $use);
+        $this->assertEquals($server->getRemainingCredits('send'), $credits - $use);
+        $this->assertEquals($server->getCreditsUsed('send'), $use);
     }
 
     public function test_speed_limit_exceeded()
@@ -77,15 +79,62 @@ class QuotaTest extends TestCase
         $this->expectException(Exception::class);
 
         try {
-            for($i = 1; $i <= $use; $i++) {
-                $server->withQuota('send', function() {
-                    // echo "Credits is deducted\n";
-                });
-
-                echo "Use {$i}: remaining {$server->getRemainingCredits('send')}\n";
+            for ($i = 1; $i <= $use; $i++) {
+                QuotaManager::with($server, 'send')->count();
             }
         } finally {
-            $this->assertTrue($i == 5); // failed at the first try after limit is reached
+            $this->assertEquals($i, 5); // failed at the first try after limit is reached
+        }
+    }
+
+    public function test_speed_quota_exceeded_with_callback()
+    {
+        $server = $this->initServer();
+        $server->setCredits('send', $credits = 100);
+        $limitPerMinute = 4;
+        $use = 10;
+        $server->setQuotaSettings($limitPerMinute, $unit = 1, $base = 'minute');
+
+        //$this->expectException(Exception::class);
+
+        $quota = QuotaManager::with($server, 'send')->whenQuotaExceeded(function ($limit, $creditsUsed, $time) use (&$results) {
+            $results = [ $limit, $creditsUsed, $time ];
+        });
+
+        $this->expectException(QuotaExceeded::class);
+
+        try {
+            for ($i = 1; $i <= $use; $i++) {
+                $quota->count();
+            }
+        } finally {
+            $this->assertEquals($results[0]['limit'], $limitPerMinute); // failed at the first try after limit is reached
+            $this->assertEquals($i, 5); // exception thrown if limit exceeded
+            $this->assertEquals($server->getCreditsUsed('send'), 4);
+            $this->assertEquals($server->getRemainingCredits('send'), 96);
+        }
+    }
+
+    public function test_server_no_credits_left()
+    {
+        $server = $this->initServer();
+        $server->setCredits('send', $credits = 1);
+        $use = 10;
+        $server->setQuotaSettings(9999, $unit = 1, $base = 'minute');
+
+
+        $quota = QuotaManager::with($server, 'send');
+
+        $this->expectException(NoCreditsLeft::class);
+
+        try {
+            for ($i = 1; $i <= $use; $i++) {
+                $quota->count();
+            }
+        } finally {
+            $this->assertEquals($i, 2); // exception thrown if limit exceeded
+            $this->assertEquals($server->getCreditsUsed('send'), 1);
+            $this->assertEquals($server->getRemainingCredits('send'), 0);
         }
     }
 
@@ -96,18 +145,14 @@ class QuotaTest extends TestCase
         $use = 1000;
 
         $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 1, $base = 'minute');
-        $this->expectException(Exception::class);
+        $this->expectException(NoCreditsLeft::class);
 
         try {
-            for($i = 1; $i <= $use; $i++) {
-                $server->withQuota('send', function() {
-                    // echo "Credits is deducted\n";
-                });
-
-                echo "Use {$i}: remaining {$server->getRemainingCredits('send')}\n";
+            for ($i = 1; $i <= $use; $i++) {
+                QuotaManager::with($server, 'send')->count();
             }
         } finally {
-            $this->assertTrue($i == $credits + 1); // failed at the first try after limit is reached
+            $this->assertEquals($i, $credits + 1); // failed at the first try after limit is reached
         }
     }
 
@@ -121,13 +166,11 @@ class QuotaTest extends TestCase
         $server->setQuotaSettings($limitPerMinute, $unit = 1, $base = 'minute');
 
         try {
-            for($i = 1; $i <= $use; $i++) {
-                $server->withQuota('send', function() {
-                    // echo "Credits is deducted\n";
-                });
+            for ($i = 1; $i <= $use; $i++) {
+                QuotaManager::with($server, 'send')->count();
             }
         } finally {
-            $this->assertTrue($i == $use + 1); // failed at the first try after limit is reached
+            $this->assertEquals($i, $use + 1); // failed at the first try after limit is reached
         }
     }
 
@@ -140,13 +183,11 @@ class QuotaTest extends TestCase
         $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 1, $base = 'minute');
 
         try {
-            for($i = 1; $i <= $use; $i++) {
-                $server->withQuota('send', function() {
-                    // echo "Credits is deducted\n";
-                });
+            for ($i = 1; $i <= $use; $i++) {
+                QuotaManager::with($server, 'send')->count();
             }
         } finally {
-            $this->assertTrue($i == $use + 1); // failed at the first try after limit is reached
+            $this->assertEquals($i, $use + 1); // failed at the first try after limit is reached
         }
     }
 
@@ -155,10 +196,92 @@ class QuotaTest extends TestCase
         $server = $this->initServer();
         $server->setCredits('send', $credits = 0);
         $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 1, $base = 'minute');
+        $this->expectException(NoCreditsLeft::class);
+        QuotaManager::with($server, 'send')->count();
+    }
+
+    public function test_exception_thrown_when_credits_file_is_missing_and_call_get_remaining_credits()
+    {
+        $server = $this->initServer();
+        $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 1, $base = 'minute');
+        $server->cleanupCreditsStorageFiles('send');
         $this->expectException(Exception::class);
-        $server->withQuota('send', function() {
-            // echo "Credits is deducted\n";
-        });
+        $server->getRemainingCredits('send');
+    }
+
+    public function test_exception_thrown_when_credits_file_is_missing_and_call_update_remaining_credits()
+    {
+        $server = $this->initServer();
+        $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 1, $base = 'minute');
+        $server->cleanupCreditsStorageFiles('send');
+        $this->expectException(Exception::class);
+        $server->updateRemainingCredits('send');
+    }
+
+    public function test_quota_is_not_counted_if_credit_check_fails()
+    {
+        $server = $this->initServer();
+        $server->setCredits('send', $credits = 100);
+        $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 1, $base = 'minute');
+
+        QuotaManager::with($server, 'send')->count();
+
+        // Ok, now 99 remaining
+        $this->assertEquals($server->getRemainingCredits('send'), 99);
+        $this->assertEquals($server->getCreditsUsed('send'), 1);
+
+        // DELETE credit file
+        // Then the correct way is to use QuotaManager::enforce
+        // which does not count credits use and therefore does not throw exception (credits file missing)
+        // However, if we use QuotaManager::count, credits check will fail (exception)
+        // But we expect it that it does not log a credit use
+        $server->cleanupCreditsStorageFiles('send');
+
+        $this->expectException(Exception::class);
+        QuotaManager::with($server, 'send')->count();
+
+        // Credits used is still 1
+        $this->assertEquals($server->getCreditsUsed('send'), 1);
+    }
+
+    public function test_zero_credits_but_without_credits_count()
+    {
+        $server = $this->initServer();
+        $server->setCredits('send', QuotaManager::QUOTA_ZERO);
+        $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 1, $base = 'minute');
+        QuotaManager::with($server, 'send')->enforce();
+
+        $this->assertEquals($server->getRemainingCredits('send'), QuotaManager::QUOTA_ZERO);
+    }
+
+    public function test_enforce_quota_limit_without_credits_count()
+    {
+        $server = $this->initServer();
+        $credits = rand(10, 100);
+        $server->setCredits('send', $credits);
+        $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 1, $base = 'minute');
+        QuotaManager::with($server, 'send')->enforce();
+
+        $this->assertEquals($server->getRemainingCredits('send'), $credits);
+    }
+
+    public function test_enforce_quota_limit_without_credits_count_also_remove_credits_storage_file()
+    {
+        $server = $this->initServer();
+
+        // Clean up the credits storage file
+        $server->cleanupCreditsStorageFiles('send');
+
+        $server->setQuotaSettings($limitsPerMinute = 10000, $unit = 1, $base = 'minute');
+
+        // enforce() ==> does not check credits
+        QuotaManager::with($server, 'send')->enforce();
+
+        // A dummy asset to avoid test warning (no assert in test)
+        $this->assertTrue(true);
+
+        // The following row will throw an exception
+        // $server->getRemainingCredits('send');
     }
 
     public function test_zero_credits_per_minute()
@@ -166,20 +289,23 @@ class QuotaTest extends TestCase
         $server = $this->initServer();
         $server->setCredits('send', $credits = 10000);
         $server->setQuotaSettings($limitsPerMinute = 0, $unit = 1, $base = 'minute');
-        $this->expectException(Exception::class);
-        $server->withQuota('send', function() {
-            // echo "Credits is deducted\n";
-        });
+        $this->expectException(QuotaExceeded::class);
+        QuotaManager::with($server, 'send')->count();
     }
 
     public function test_subscription_just_works()
     {
         $subscription = $this->initSubscription();
+        $subscription->setCredits('send', 10000);
         $plan = Mockery::mock('plan');
-        $plan->shouldReceive('getOptions')->andReturn([
-            'sending_quota_time' => 1,
-            'sending_quota_time_unit' => 'day',
-            'sending_quota' => 10,
+        $plan->shouldReceive('getQuotaSettings')->andReturn([
+            [
+                'name' => "Plan's sending limit",
+                'limit' => 10,
+                'period_base' => 'day',
+                'period_value' => 1,
+            ]
+
         ]);
 
         // Assign the mocked plan
@@ -188,18 +314,14 @@ class QuotaTest extends TestCase
         // Max allowed + 1
         $use  = 11;
 
-        $this->expectException(Exception::class);
+        $this->expectException(QuotaExceeded::class);
 
         try {
-            for($i = 1; $i <= $use; $i++) {
-                $subscription->withQuota('send', function() {
-                    // echo "Credits is deducted\n";
-                });
-
-                echo "Use {$i}: remaining {$subscription->getRemainingCredits('send')}\n";
+            for ($i = 1; $i <= $use; $i++) {
+                QuotaManager::with($subscription, 'send')->count();
             }
         } finally {
-            $this->assertTrue($i == 11); // failed at the first try after limit is reached
+            $this->assertEquals($i, 11); // failed at the first try after limit is reached
         }
     }
 
@@ -208,34 +330,238 @@ class QuotaTest extends TestCase
         $subscription = $this->initSubscription();
         $subscription->setCredits('send', 100);
         $plan = Mockery::mock('plan');
-        $plan->shouldReceive('getOptions')->andReturn([
-            'sending_quota_time' => -1,
-            'sending_quota_time_unit' => 'day',
-            'sending_quota' => -1,
-        ]);
+        $plan->shouldReceive('getQuotaSettings')->andReturn([]);
 
         // Assign the mocked plan
         $subscription->plan = $plan;
 
-        // If -1, then limit returned is empty
-        $this->assertTrue([] == $subscription->getQuotaSettings('has-only-one-quota-type-so-any-name-is-okie'));
-
         // Max allowed + 1
         $use  = 101;
 
+        // Quota is null, so it just runs until sending credits == 0
+        // Expect to see an exception at 101th use!
         $this->expectException(Exception::class);
 
-        // Quota is null, so it just runs until sending credits == 0
         try {
-            for($i = 1; $i <= $use; $i++) {
-                $subscription->withQuota('send', function() {
-                    // echo "Credits is deducted\n";
-                });
-
-                echo "Use {$i}: remaining {$subscription->getRemainingCredits('send')}\n";
+            for ($i = 1; $i <= $use; $i++) {
+                QuotaManager::with($subscription, 'send')->count();
             }
         } finally {
             $this->assertTrue($i == 101 && 0 === $subscription->getRemainingCredits('send')); // failed at the first try after limit is reached
         }
+    }
+
+    public function test_subscription_just_with_unlimited_sending_credits()
+    {
+        $subscription = $this->initSubscription();
+        $subscription->setCredits('send', -1);
+        $plan = Mockery::mock('plan');
+        $plan->shouldReceive('getQuotaSettings')->andReturn([
+            [
+                'name' => "Plan's sending limit",
+                'limit' => 999999,
+                'period_base' => 'month',
+                'period_value' => 1,
+            ]
+
+        ]);
+
+        // Assign the mocked plan
+        $subscription->plan = $plan;
+        $tests = 100;
+        try {
+            for ($i = 1; $i <= $tests; $i++) {
+                QuotaManager::with($subscription, 'send')->count();
+            }
+        } finally {
+            // failed at the first try after limit is reached
+            $this->assertEquals(QuotaManager::QUOTA_UNLIMITED, $subscription->getRemainingCredits('send'));
+            $this->assertEquals($subscription->getCreditsUsed('send'), $tests);
+        }
+    }
+
+    public function test_subscription_does_not_allow_count_if_credits_setting_is_null()
+    {
+        $subscription = $this->initSubscription();
+
+        // DELETE FILES AND DO NOT INITIATE CREDITS
+        $subscription->cleanupCreditsStorageFiles('send');
+
+        $plan = Mockery::mock('plan');
+        $plan->shouldReceive('getQuotaSettings')->andReturn([]);
+        $subscription->plan = $plan;
+
+        $this->expectException(Exception::class);
+
+        QuotaManager::with($subscription, 'send')->count();
+    }
+
+    public function test_subscription_does_not_allow_getting_remaining_credits_if_credits_setting_is_null()
+    {
+        $subscription = $this->initSubscription();
+
+        // DELETE FILES AND DO NOT INITIATE CREDITS
+        $subscription->cleanupCreditsStorageFiles('send');
+
+        $plan = Mockery::mock('plan');
+        $plan->shouldReceive('getQuotaSettings')->andReturn([]);
+
+        // Assign the mocked plan
+        $subscription->plan = $plan;
+        $this->expectException(Exception::class);
+        $subscription->getRemainingCredits('send');
+    }
+
+    public function test_email_verification_server_just_works_with_credits_limit()
+    {
+        $server = $this->initEmailVerificationServer();
+        $server->setCredits('verify', 10);
+        $tests = 11;
+        $this->expectException(Exception::class);
+        try {
+            for ($i = 1; $i <= $tests; $i++) {
+                QuotaManager::with($server, 'verify')->count();
+            }
+        } finally {
+            // failed at the first try after limit is reached
+            $this->assertEquals($server->getRemainingCredits('verify'), 0);
+            $this->assertEquals($i, 11);
+        }
+    }
+
+    private function prepareSendMessageTest()
+    {
+        // Server
+        $server = $this->initServer();
+        $server = Mockery::mock($server);
+        $server->shouldReceive('send')->andReturn(null);
+
+        // Subscription
+        $subscription = $this->initSubscription();
+        $plan = Mockery::mock('plan');
+
+
+        // Assign the mocked plan
+        $subscription->plan = $plan;
+
+        // Customer
+        $customer = Mockery::mock(new Customer());
+        $customer->shouldReceive('activeSubscription')->andReturn($subscription);
+
+        // Subscriber type is required as the new SendMessage(Subscriber $sub) has strict type parameter
+        $subscriber = Mockery::mock(new Subscriber());
+        $subscriber->shouldReceive('getEmail')->andReturn('test@example.com');
+
+        // Logger
+        $logger = Mockery::mock('logger');
+        $logger->shouldReceive('info')->andReturn(null);
+        $logger->shouldReceive('warning')->andReturn(null);
+        $logger->shouldReceive('error')->andReturn(null);
+
+        // Campaign
+        $campaign = Mockery::mock(new Campaign());
+        $campaign->shouldReceive('logger')->andReturn($logger);
+        $campaign->shouldReceive('prepareEmail')->andReturn(null);
+        $campaign->shouldReceive('trackMessage')->andReturn(null);
+        $campaign->customer = $customer;
+
+        return [$campaign, $subscriber, $server];
+    }
+
+    public function test_send_message_job_with_quota_exceeded()
+    {
+        list($campaign, $subscriber, $server) = $this->prepareSendMessageTest();
+
+        // Server Quota
+        $server->setQuotaSettings(0, $unit = 1, $base = 'minute');
+
+        // Subscription Quota
+        $campaign->customer->activeSubscription()->plan->shouldReceive('getQuotaSettings')->andReturn([]);
+
+        // SendMessage job
+        $sendMsgJob = new SendMessage($campaign, $subscriber, $server);
+        $sendMsgJob->send(function ($exception) use (&$outcome) {
+            $outcome = $exception;
+        });
+
+        $this->assertInstanceOf(QuotaExceeded::class, $outcome);
+    }
+
+    public function test_send_message_job_with_quota_not_exceeded()
+    {
+        list($campaign, $subscriber, $server) = $this->prepareSendMessageTest();
+
+        // Server Quota
+        $server->setQuotaSettings(1, $unit = 1, $base = 'minute');
+
+        // Subscription Quota
+        $campaign->customer->activeSubscription()->plan->shouldReceive('getQuotaSettings')->andReturn([]);
+
+        // SendMessage job
+        $sendMsgJob = new SendMessage($campaign, $subscriber, $server);
+        $sendMsgJob->send(function ($exception) use (&$outcome) {
+            $outcome = $exception;
+        });
+
+        $this->assertNull($outcome);
+    }
+
+    public function test_send_message_job_with_quota_exceeded_and_not_exceeded()
+    {
+        list($campaign, $subscriber, $server) = $this->prepareSendMessageTest();
+
+        // Server Quota
+        $server->setQuotaSettings(1, $unit = 1, $base = 'minute');
+
+        // Subscription Quota
+        $campaign->customer->activeSubscription()->plan->shouldReceive('getQuotaSettings')->andReturn([]);
+
+        // SendMessage job
+        $sendMsgJob = new SendMessage($campaign, $subscriber, $server);
+        $sendMsgJob->send(function ($exception) use (&$outcome) {
+            $outcome = $exception;
+        });
+
+        // First send, okie
+        $this->assertNull($outcome);
+
+        $sendMsgJob->send(function ($exception) use (&$outcome) {
+            $outcome = $exception;
+        });
+
+        // Second, quota exceeded
+        $this->assertInstanceOf(QuotaExceeded::class, $outcome);
+    }
+
+    public function test_send_message_job_with_quota_exceeded_and_not_exceeded_subscription()
+    {
+        list($campaign, $subscriber, $server) = $this->prepareSendMessageTest();
+
+        // Server Quota
+        $server->setQuotaSettings(9999, $unit = 1, $base = 'minute');
+
+        // Subscription Quota
+        $campaign->customer->activeSubscription()->plan->shouldReceive('getQuotaSettings')->andReturn([[
+            'name' => "Plan's sending limit",
+            'limit' => 1,
+            'period_base' => 'month',
+            'period_value' => 1,
+        ]]);
+
+        // SendMessage job
+        $sendMsgJob = new SendMessage($campaign, $subscriber, $server);
+        $sendMsgJob->send(function ($exception) use (&$first) {
+            $first = $exception;
+        });
+
+        // First send, okie
+        $this->assertNull($first);
+
+        $sendMsgJob->send(function ($exception) use (&$second) {
+            $second = $exception;
+        });
+
+        // Second, quota exceeded
+        $this->assertInstanceOf(QuotaExceeded::class, $second);
     }
 }

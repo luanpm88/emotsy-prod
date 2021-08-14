@@ -6,6 +6,8 @@ class UpdateUserJob extends Base
 {
     protected $customer;
 
+    public $timeout = 120;
+
     public function __construct($customer)
     {
         $this->customer = $customer;
