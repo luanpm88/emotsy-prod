@@ -147,7 +147,7 @@
 
                 <p>{!! trans('messages.sending_servers.sending_limit.elasticemail.intro') !!}</p>
 
-                <div class="select-custom" data-url="{{ action('Admin\SendingServerController@sendingLimit', ['uid' => ($server->uid ? $server->uid : 0)]) }}">
+                <div class="sendind-limit-select-custom" data-url="{{ action('Admin\SendingServerController@sendingLimit', ['uid' => ($server->uid ? $server->uid : 0)]) }}">
                     @include ('admin.sending_servers.form._sending_limit', [
                         'quotaValue' => $server->quota_value,
                         'quotaBase' => $server->quota_base,
