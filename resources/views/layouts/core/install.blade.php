@@ -1,7 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	@include('layouts.core._head')
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="php-version" content="{{ phpversion() }}" />
+
+	<title>@yield('title')</title>
+
+	@include('layouts.core._includes')		
 
 	@include('layouts.core._script_vars')
 </head>
