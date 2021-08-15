@@ -130,7 +130,7 @@ class SubscriptionController extends Controller
                 ]);
             } else {
                 if ($invoice->isFree()) {
-                    return view('subscription.confirmFree', [
+                    return view('subscription.payment', [
                         'invoice' => $invoice,
                     ]);
                 } else {
@@ -149,6 +149,12 @@ class SubscriptionController extends Controller
 
         if (!$invoice->isFree()) {
             throw new \Exception('Invoice is not free!');
+        }
+
+        if ($request->payment_method) {
+            $request->user()->customer->updatePaymentMethod([
+                'method' => $request->payment_method,
+            ]);
         }
         
         $invoice->confirmWithoutPayment();

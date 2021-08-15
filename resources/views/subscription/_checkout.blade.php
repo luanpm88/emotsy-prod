@@ -1,7 +1,7 @@
 @if ($invoice->isNew() && !$invoice->getPendingTransaction())
     <div class="card shadow-sm border-top-0 rounded-bottom p-2" style="margin-top: -10px;
     border-radius: 0;">
-        <div class="card-body p-4">
+        <div class="card-body pe-4 ps-4 pb-4 pt-0">
             @if (!request()->payment_method && !$invoice->isFree())
                 <div class="alert alert-info bg-no-order">{!! trans('messages.payment.agree_service_intro') !!}</div>
                 <form id="checkoutForm" class="" action="{{ $invoice->isFree() ? action('SubscriptionController@confirmFree', [
