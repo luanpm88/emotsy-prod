@@ -97,7 +97,6 @@ class SendMessage implements ShouldQueue
 
             // Release the job, have it try again after 60 seconds and (hopefully) the quota limits will be lifted then as time goes by
             $this->release(60);
-
         } catch (Exception $ex) {
             if (!is_null($exceptionCallback)) {
                 $exceptionCallback($ex);

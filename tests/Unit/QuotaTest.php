@@ -24,7 +24,8 @@ class QuotaTest extends TestCase
 {
     public function initServer()
     {
-        $server = SendingServer::first();
+        $server = new SendingServer();
+        $server->generateUid();
         $server->cleanupCreditsStorageFiles('send');
         $server->setCredits('send', 100);
         return $server;
@@ -32,7 +33,8 @@ class QuotaTest extends TestCase
 
     public function initSubscription()
     {
-        $subscription = Subscription::first();
+        $subscription = new Subscription();
+        $subscription->generateUid();
         $subscription->cleanupCreditsStorageFiles('send');
         $subscription->setCredits('send', 100);
         return $subscription;
@@ -40,7 +42,8 @@ class QuotaTest extends TestCase
 
     public function initEmailVerificationServer()
     {
-        $server = EmailVerificationServer::first();
+        $server = new EmailVerificationServer();
+        $server->generateUid();
         $server->cleanupCreditsStorageFiles('verify');
         $server->setCredits('verify', 100);
 
@@ -415,6 +418,7 @@ class QuotaTest extends TestCase
     public function test_email_verification_server_just_works_with_credits_limit()
     {
         $server = $this->initEmailVerificationServer();
+        $server->setQuotaSettings(999, 1, 'minute');
         $server->setCredits('verify', 10);
         $tests = 11;
         $this->expectException(Exception::class);
