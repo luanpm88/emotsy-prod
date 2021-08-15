@@ -2289,12 +2289,12 @@
     Normally, you can enable this option for trial period',
   'plan.sending_server' => 'Sending server',
   'plan.sending_server.intro' => 'Choose how emails are actually delivered for users subscribing to this plan',
-  'plan.email_verification.intro' => 'Setting up email verification servers for the plan',
+  'plan.email_verification.intro' => 'Allow your users to verify every email address of their audience or mail lists. Verification shall be made against a remote or local service configured in Email Verification Servers managment',
   'plan.email_verification.use_own' => 'Use own email verification servers',
-  'plan.email_verification.use_own.intro' => 'Customer is allowed to add their own verification servers',
+  'plan.email_verification.use_own.intro' => 'Users are allowed to add their own verification servers',
   'plan.email_verification.use_system' => 'Use system\'s email verification servers',
-  'plan.email_verification.use_system.intro' => 'Customer is not allowed to add email verification servers.
-    Email verification shall be performed by system\'s email verification servers added by administrator. Specify the verification credits quota below',
+  'plan.email_verification.use_system.intro' => 'Users are not allowed to add email verification servers.
+    Verification shall be performed by system\'s email verification servers added by administrator in Email Verification Server management dashboard. You can specify the verification credits limits below',
   'plan.email_verification.select_server' => 'Select email verification server(s) that customer can use:',
   'plan.sending_server.not_set' => 'Not set',
   'plan.new_plan' => 'Add a new plan',
