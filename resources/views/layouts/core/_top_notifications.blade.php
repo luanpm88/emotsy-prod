@@ -15,7 +15,7 @@
 				</div>
 			</a>
 		</li>
-		@if (Auth::user()->customer && Auth::user()->customer->logs()->count() == 0)
+		@if (Auth::user()->admin && Auth::user()->admin->notifications()->count() == 0)
 			<li>
 				<a class="dropdown-item text-center" href="{{ action("Admin\NotificationController@index") }}">
 					<div class="material-icons-outlined fs-3 text-muted mb-2">
