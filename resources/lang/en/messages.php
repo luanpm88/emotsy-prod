@@ -3740,4 +3740,5 @@
   'template.change_name.intro' => 'Enter your new template name below',
   'template.name.changed' => 'Template name was changed',
   'verification_credits_limit' => 'Verification credits limit',
+  'automation.brief-intro.woo-abandoned-cart' => 'WooCommerce abandoned cart reminder',
 ) ?>
