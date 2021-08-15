@@ -78,12 +78,14 @@ class SendMessage implements ShouldQueue
         $logger->info(sprintf('Sending to %s [Server "%s"]', $email, $this->server->name));
 
         try {
+            // Count related quota trackers
             QuotaManager::with($subscription, 'send')->enforce();
             QuotaManager::with($this->server, 'send')->enforce();
 
+            // Actually send (or throw an exception)
             $sent = $this->server->send($message);
 
-            // Log
+            // Log successful shot
             $this->campaign->trackMessage($sent, $this->subscriber, $this->server, $msgId);
             $logger->info(sprintf('Sent to %s [Server "%s"]', $email, $this->server->name));
         } catch (QuotaExceeded $ex) {
@@ -92,10 +94,10 @@ class SendMessage implements ShouldQueue
             }
             // Releease the job, have it tried again later on, after 1 minutes
             $logger->warning(sprintf("Sending to [%s] -> put on hold (for 60 seconds): %s", $email, $ex->getMessage()));
+
+            // Release the job, have it try again after 60 seconds and (hopefully) the quota limits will be lifted then as time goes by
             $this->release(60);
 
-            // } catch (NoCreditsLeft $ex) {
-            // Interupt campaign process if NoCredisLeft is thrown
         } catch (Exception $ex) {
             if (!is_null($exceptionCallback)) {
                 $exceptionCallback($ex);
