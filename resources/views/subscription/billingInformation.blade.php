@@ -12,7 +12,7 @@
 @endsection
 
 @section('content')
-    <div class="container mt-4 mb-5">
+    <div class="container mt-4 pt-3 mb-5">
         <div class="row">
             <div class="col-md-8">
                 <!-- display flash message -->

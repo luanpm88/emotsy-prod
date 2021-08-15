@@ -6803,9 +6803,10 @@ h3, h4 [class^="material-icons"] {
     height: 40px;
     border-radius: 100%;
     text-align: center;
-    padding: 8px;
+    padding: 2px;
     font-weight: 600;
     color: #fff;
+    font-size: 24px;
 }
 .new-price-item {
     padding: 15px 20px;

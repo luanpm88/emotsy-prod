@@ -3478,7 +3478,7 @@
   'renew_bill.description' => 'Your\'re :plan plan. See the information below for renewing current plan.',
   'bill.next_period_ends_on' => 'Next period ends on :date',
   'invoice_type.subscription_init' => 'Subscribe to a Plan',
-  'subscription_init.bill_details' => 'New Subscription',
+  'subscription_init.bill_details' => 'Your order',
   'invoice.init_subscription.desc' => 'You’re subscring to plan <strong>:plan</strong>, and
       your subscription will be due on <strong>:date</strong>',
   'subscription.current_subscription.wording' => 'Thank you for being with us, you are
@@ -3526,7 +3526,7 @@
   'invoice.renew_transaction_failed.reconnect' => 'Something went wrong when charge renew invoice. Error: :error.
       <a href=":link">Click here</a> to check the payment serivce connection.',
   'transaction.method' => 'Method',
-  'invoice.init_subscription' => 'New Subscription',
+  'invoice.init_subscription' => 'Your order',
   'invoice.renew_subscription' => 'Renew Subscription',
   'subscription.status.wait_for_payment' => 'Wait for payment',
   'subscription.status.pending_for_approval' => 'Pending for approval',
