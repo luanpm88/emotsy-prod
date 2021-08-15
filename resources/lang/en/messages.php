@@ -2291,10 +2291,10 @@
   'plan.sending_server.intro' => 'Choose how emails are actually delivered for users subscribing to this plan',
   'plan.email_verification.intro' => 'Setting up email verification servers for the plan',
   'plan.email_verification.use_own' => 'Use own email verification servers',
-  'plan.email_verification.use_own.intro' => 'Customer is allowed to add their own sending servers',
+  'plan.email_verification.use_own.intro' => 'Customer is allowed to add their own verification servers',
   'plan.email_verification.use_system' => 'Use system\'s email verification servers',
   'plan.email_verification.use_system.intro' => 'Customer is not allowed to add email verification servers.
-    Emails shall be sent using system\'s email verification servers added by administrator',
+    Email verification shall be performed by system\'s email verification servers added by administrator. Specify the verification credits quota below',
   'plan.email_verification.select_server' => 'Select email verification server(s) that customer can use:',
   'plan.sending_server.not_set' => 'Not set',
   'plan.new_plan' => 'Add a new plan',

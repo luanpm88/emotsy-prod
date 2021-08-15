@@ -5557,6 +5557,8 @@ a.bg-active_with_pending:hover {
 .radio_box rtitle {
     font-weight: 600;
     padding-left: 7px;
+    font-size: 18px;
+    color: #333;
 }
 .modal-body p {
   font-size: 100%;
