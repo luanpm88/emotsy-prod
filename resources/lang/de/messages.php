@@ -890,7 +890,6 @@
   'opened_at' => 'Geöffnet am',
   'ip' => 'IP',
   'area' => 'Gebiet',
-  'template_upload_guide' => 'Bitte laden Sie Ihr HTML-Template-Bündel hoch. Normalerweise sollte es eine .zip-Datei sein, die enthält: <ul> <li>Eine einzelne .html Datei und</li> <li>Ein Verzeichnis auf der gleichen Ebene mit Asset-Dateien (JS, CSS, Bilder, etc.)</li></ul><br />Bitte klicken Sie <a class="text-semibold" href=":link" target="_blank">[here]</a> Um eine Beispiel E-Mail Vorlage herunterzuladen',
   'disable' => 'Deaktivieren',
   'enable' => 'Aktiviere',
   'STYLE' => 'STYLE',
@@ -1937,8 +1936,6 @@
   'list.there_no_subaccount_sending_server' => '<span class="text-semibold">FEHLER:</span> Es gibt keine aktiven Versandserver.',
   'embeded_form.show_invisible' => 'Zeige unsichtbare(s) Feld(er)',
   'paddle_card' => 'Paddle / Karte',
-  'payment_method.paddle_card.button' => '<i class="icon-credit-card"></i> Bezahlen mit Paddle',
-  'paddle_card.pay_by_card' => '<i class="icon-credit-card"></i> Bezahlen mit Paddle',
   'paddle_card.purchasing_intro' => 'Bitte klicken Sie auf die Schaltfläche unten, damit wir Ihr Konto für den Kauf des <a><strong>:plan Pakets</strong></a> einrichten und Sie mit der Kartenoption (Paddle) bezahlen können
                 . Ihr Paketpreis beträgt: <a><strong>:price</strong></a>',
   'paddle.vendor_id' => 'Verkäufer ID',
@@ -1956,8 +1953,6 @@
   'payu.salt' => 'Salt',
   'payu.payu_base_url' => 'PayU Basis URL',
   'payumoney.wording' => 'Füllen Sie die folgenden Einstellungen für die PayU Money-Methode aus. Sie finden diese Einstellungen in Ihrem PayU Money-Dashboard.',
-  'payment_method.payumoney.button' => '<i class="icon-credit-card"></i> Zahlen Sie mit PayU',
-  'payment_method_type_payumoney_button' => '<i class="fa fa-money"></i> Zahlen Sie mit PayU',
   'purchasing_intro_payumoney' => 'Bitte füllen Sie die folgenden Informationen aus, damit wir Ihr Konto für den Kauf des einrichten können <a><strong>:plan planen</strong></a> mit der Zahlung per Kreditkarte / Debitkarte Option
                 . Ihr Planpreis ist: <a><strong>:price</strong></a>',
   'pay_by_credit_debit_card' => 'Bezahlen Sie mit Kredit- / Debitkarte',
@@ -3344,8 +3339,6 @@
   'subscription.status.pending_for_approval' => 'Zur Genehmigung ausstehend',
   'change_plan.pending_for_approval' => 'Der Plan wird geändert, bitte warten Sie bis zur Genehmigung',
   'renew_subscription.pending_for_approval' => 'Warten Sie erneut, bis die Genehmigung vorliegt',
-  'have_new_renew_invoice' => 'Sie haben eine ausstehende Rechnung. <a href=":link"> Klicken Sie hier </a>
-       um Details zu überprüfen',
   'have_new_change_plan_invoice' => 'Sie haben eine ausstehende Rechnung. <a href=":link">Klicken Sie hier</a> um Details zu überprüfen',
   'transaction.method.braintree' => 'Braintree',
   'transaction.method.coinpayments' => 'Coinpayments',
@@ -3408,7 +3401,7 @@
   'automation.box.contacts_error' => 'Fehler',
   'automation.action' => 'Aktion',
   'automation.update_stats' => 'Aktualisierung',
-  'automation.last_activity' => 'letzte Bearbeitung',
+  'automation.last_activity' => 'Letzte Aktivität',
   'automation.retry' => 'Wiederholen',
   'automation.can_not_connect_acelle_sync' => 'Kann keine Verbindung zur WordPress-Site herstellen. Fehler: :error',
   'automation.shop_name' => 'Shop Name',
@@ -3434,7 +3427,6 @@
        E-Commerce unten, mit dem Sie sich verbinden können:',
   'source.Lazada' => 'Schleife',
   'source.last_sync_at' => 'Zuletzt synchronisiert um',
-  'c' => 'Sync',
   'source.delete.confirm' => 'Sie sind dabei, diese Quelle zu löschen',
   'source.delete.can_not' => 'Eine oder mehrere Quellen dürfen dies nicht.',
   'source.woo.desc' => 'Geben Sie hier Ihren WordPress Email App online -Enpoint ein, um eine Verbindung zu bestehenden WooCommerce-Shops herzustellen.
@@ -3617,6 +3609,68 @@
   'campaign.template.old_ver_error' => 'Kampagnen, die von früheren (älteren) Versionen erstellt wurden, können in der aktuellen Version nicht geladen werden
      des Antrags. Keine Sorge, es wird für neue Kampagnen, die Sie erstellen, korrekt funktionieren',
   'automation.send_test_email' => 'Senden Sie eine Test-E-Mail',
-  'automation.action.condition.select_criterion' => 'Kriterium auswählen',
-  'automation.last_activity' => 'Letzte Aktivität',
+  'copy_list' => 'Copy <span class="fw-600">:name</span> list',
+  'template.upload.instruction' => 'Select a template package from your PC to upload. A template package should be a .ZIP archive containing an index.html file and other assets like CSS, images... You can download and try with a sample template package <a target="_blank" href=":link">here</a>',
+  'template.upload.warning' => 'Uploaded templates may not work well with the drag & drop builder. It is always recommended that you create a new template based on one of the awesome templates available, for optimized compatibility and efficiency',
+  'plugin.upload.instruction' => 'Select a plugin package from your PC to upload. Normally it is a ZIP archive containing the source files as well as meta information for the plugin.',
+  'source.sync' => 'Sync',
+  'subscription.renew_invoice' => 'You have a pending renew invoice. Check the invoice information.',
+  'template.category.no_category' => 'No category set',
+  'template.category.notice' => 'Choose one or more category for your template to make it available to users',
+  'mail_mailer' => 'Mailer',
+  'copy_campaign' => 'Copy <span class="fw-600">:name</span> campaign',
+  'delete_campaign_confirm' => 'You\'re about to delete <span class="fw-600">:name</span> campaign.
+    This can not be undone.',
+  'campaign.open_click_rate' => 'Open/Click rate',
+  'growth_chart' => 'Growth chart',
+  'statistics_chart' => 'Statistics chart',
+  'ends_at' => 'Ends at',
+  'setting.recurring_charge_before_days.title' => 'Renewal invoices billing date',
+  'setting.recurring_charge_before_days.desc' => 'If your customers\' selected payment gateway supports
+    auto billing and if the customers have previously
+    stored a payment method, a credit or debit card for example, then you can specify a timeframe
+    for the application to automatically charge your customers\' card.',
+  'setting.recurring_charge_before_days.before_text' => 'Automatically charge a renewal invoice',
+  'setting.recurring_charge_before_days.after_text' => 'days before expiry date',
+  'countries' => 'Countries',
+  'offline.user.description' => 'Pay for your subscription & services outside of
+        the application, following the instructions provided during checkout',
+  'stripe.user.description' => 'Pay for your subscription & services using your debit
+    or credit cards. Auto billing is supported',
+  'braintree.user.description' => 'Pay for your subscription & services using your debit
+    or credit cards. Auto billing is supported',
+  'coinpayments.user.description' => 'Pay for your subscription & services with a cryptocurrency, via coinpayment.com',
+  'paystack.user.description' => 'Pay for your subscription & services using your debit
+        or credit cards. Auto billing is supported',
+  'paypal.user.description' => 'Pay for your subscription & services using your PayPal account.',
+  'razorpay.user.description' => 'Pay for your subscription & services using your debit
+        or credit cards. Auto billing is not supported',
+  'store.connected_with_acelle' => 'Your store is connected with Acelle',
+  'store.connected_with_acelle.desc' => 'While connected, Acelle can synchronize products
+    and contacts from your store to a specified mail list',
+  'source.refresh' => 'Refresh',
+  'subscription.thanks.click_to_start' => 'Thank you for subscribing to our SAAS. Click the button
+    below to get started',
+  'cron_string.copied' => 'Cron string was copied to clipboard',
+  'language.translate.intro' => '<p>Acelle Mail lets you customize the user interface (UI) text in all areas of the web
+    application like titles, labels, tooltips, links, buttons... You can translate it from the original
+    English language to Spanish and/or change these phrases the way you want.</p><p>
+      Phrases are organized in different files which you can choose in the list below
+    </p>',
+  'language.load_translate' => 'Load & Translate',
+  'language.translation' => 'Translation',
+  'language.select_translation_file' => 'Select file',
+  'language.discard_change' => 'Your change in the current file will be discarded.',
+  'invoice.confirmed' => 'Your subscription was successfully updated',
+  'product.title' => 'Title',
+  'campaign_status_ready' => 'Ready',
+  'loading_wait' => 'Loading, please wait...',
+  'invoice.price' => 'Price',
+  'invoice.cancel' => 'Cancel',
+  'copy_plan' => 'Copy plan',
+  'template.export' => 'Export',
+  'template.change_name' => 'Change name',
+  'template.change_name.intro' => 'Enter your new template name below',
+  'template.name.changed' => 'Template name was changed',
+  'verification_credits_limit' => 'Verification credits limit',
 ) ?>
