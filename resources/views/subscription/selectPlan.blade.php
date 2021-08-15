@@ -98,28 +98,23 @@
                     </div>
                 @endif
             </div>
-            <div class="col-md-4 position-relative">
-                <div class="order-box" style="position: sticky;top: 80px;">
-
-                </div>
-            </div>
         </div>
     </div>
 
     <script>
         var SubscriptionSelectPlan = {
-            orderBox: null,
+            // orderBox: null,
 
-            getOrderBox: function() {
-                if (this.orderBox == null) {
-                    this.orderBox = new Box($('.order-box'), '{{ action('SubscriptionController@orderBox') }}');
-                }
-                return this.orderBox;
-            }
+            // getOrderBox: function() {
+            //     if (this.orderBox == null) {
+            //         this.orderBox = new Box($('.order-box'), '{{ action('SubscriptionController@orderBox') }}');
+            //     }
+            //     return this.orderBox;
+            // }
         }
 
         $(function() {
-            SubscriptionSelectPlan.getOrderBox().load();
+            // SubscriptionSelectPlan.getOrderBox().load();
 
             var manager = new GroupManager();
             $('.plan-item').each(function() {
@@ -138,13 +133,9 @@
                     });
 
                     // load order
-                    SubscriptionSelectPlan.getOrderBox().load(group.url);
+                    // SubscriptionSelectPlan.getOrderBox().load(group.url);
                 })
             });
-
-            // if (!$('.plan-item.current').length) {
-            //     manager.groups[0].box.trigger('click');
-            // }
         });
     </script>
 @endsection

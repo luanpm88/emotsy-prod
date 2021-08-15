@@ -35,7 +35,18 @@
                     <p>{{ trans('messages.plan.email_verification.intro') }}</p>
                         
                     <div class="form-group control-radio">
-                        
+                        <div class="radio_box" data-popup='tooltip' title="">
+                            <label class="main-control">
+                                <input {{ ($plan->getOption('create_email_verification_servers') == 'yes' ? 'checked' : '') }} type="radio"
+                                    name="plan[options][create_email_verification_servers]"
+                                    value="yes" class="styled" />
+                                    <rtitle>{{ trans('messages.plan.email_verification.use_own') }}</rtitle>
+                                <div class="desc text-normal mb-10">
+                                    {{ trans('messages.plan.email_verification.use_own.intro') }}
+                                </div>
+                            </label>
+                        </div>
+                        <hr>
                         <div class="radio_box" data-popup='tooltip' title="">
                             <label class="main-control">
                                 <input {{ ($plan->getOption('create_email_verification_servers') == 'no' ? 'checked' : '') }} type="radio"
@@ -64,58 +75,13 @@
                                         <div class="col-md-4 pt-4">
                                             <div class="checkbox inline text-semibold">
                                                 <label>
-                                                    <input{{ $plan->getOption('email_verification_servers_max')  == -1 ? " checked=checked" : "" }} type="checkbox" class="unlimit-check styled">
+                                                    <input{{ $plan->getOption('verification_credits_limit')  == -1 ? " checked=checked" : "" }} type="checkbox" class="unlimit-check styled">
                                                     <span class="ms-1">{{ trans('messages.unlimited') }}</span>
                                                 </label>
                                             </div>
                                         </div>
-                                            
-                                            
                                     </div>
                                 </div>
-                                <hr>
-                                @include('helpers.form_control', ['type' => 'checkbox2',
-                                    'class' => '',
-                                    'name' => 'plan[options][all_email_verification_servers]',
-                                    'value' => $plan->getOption('all_email_verification_servers'),
-                                    'label' => trans('messages.use_all_email_verification_servers'),
-                                    'options' => ['no','yes'],
-                                    'help_class' => 'plan',
-                                    'rules' => $plan->validationRules()['options'],
-                                ])
-                                @if(!Acelle\Model\EmailVerificationServer::getAllAdminActive()->count())
-                                    <div class="empty-list">
-                                        <i class="icon-database-check"></i>
-                                        <span class="line-1">
-                                            {{ trans('messages.email_verification_server_no_active') }}
-                                        </span>
-                                    </div>
-                                @else
-                                    <div class="email-verification-servers">
-                                        
-                                        <p class="mb-0">{{ trans('messages.plan.email_verification.select_server') }}</p>
-                                        <div class="">                                        
-                                            @foreach (Acelle\Model\EmailVerificationServer::getAllAdminActive()->orderBy("name")->get() as $server)
-                                                <div class="">
-                                                    <div class="">
-                                                        <div class="form-group-mb-0 mt-2">
-                                                            @include('helpers.form_control', [
-                                                                'type' => 'checkbox2',
-                                                                'name' => 'plan[email_verification_servers][' . $server->uid . '][check]',
-                                                                'value' => $plan->plansEmailVerificationServers->contains('server_id', $server->id),
-                                                                'label' => $server->name,
-                                                                'options' => [false, true],
-                                                                'help_class' => 'plan',
-                                                                'rules' => $plan->validationRules()['options'],
-                                                            ])
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                @endif
-
                             </div>
                         </div>                        
                     </div>
@@ -164,33 +130,6 @@
                 };
     
                 group.unlimitedCheck.on('change', function() {
-                    doCheck();
-                });
-    
-                doCheck();
-            });
-            
-
-            // select servers check
-            var manager2 = new GroupManager();
-    
-            manager2.add({
-                checkBox: $("input[name='plan[options][all_email_verification_servers]']"),
-                serversBox: $(".email-verification-servers")
-            });
-    
-            manager2.bind(function(group) {
-                var doCheck = function() {
-                    var checked = group.checkBox.is(':checked');
-                    
-                    if (!checked) {
-                        group.serversBox.show();
-                    } else {
-                        group.serversBox.hide();
-                    }
-                };
-    
-                group.checkBox.on('change', function() {
                     doCheck();
                 });
     
