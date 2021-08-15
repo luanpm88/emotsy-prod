@@ -392,11 +392,16 @@ class EmailVerificationServer extends Model implements HasQuotaInterface
         }
     }
 
-    public function setQuotaSettings($value, $periodUnit, $periodBase)
+    public function setQuotaSettings($name, $value, $periodUnit, $periodBase)
     {
+        // $name is always 'verify'
+        if ($name != 'verify') {
+            throw "Invalid quota name for email verification server";
+        }
+
         $options = $this->getOptions();
-        $options['limit_base'] = $periodBase;
-        $options['limit_unit'] = $periodUnit;
+        $options['limit_base'] = $periodUnit;
+        $options['limit_unit'] = $periodBase;
         $options['limit_value'] = $value;
         $this->options = json_encode($options);
     }
@@ -404,14 +409,15 @@ class EmailVerificationServer extends Model implements HasQuotaInterface
     /***   IMPLEMENTATION OF HasQuotaInterface ***/
     public function getQuotaSettings($name) : ?array
     {
+        // always 'verify'
         $quota = [];
         $options = $this->getOptions();
 
         if ($options['limit_value'] != QuotaManager::QUOTA_UNLIMITED) {
             $quota[] = [
                 'name' => "Verification credits limit of {$options['limit_value']} per {$options['limit_unit']} {$options['limit_base']}",
-                'period_base' => $options['limit_base'],
-                'period_value' => $options['limit_unit'],
+                'period_base' => $options['limit_unit'],
+                'period_value' => $options['limit_base'],
                 'limit' => $options['limit_value'],
             ];
         }
