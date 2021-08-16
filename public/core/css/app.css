@@ -6045,7 +6045,6 @@ h1, h1 {
 }
 .empty-list [class^="material-icons"] {
     font-size: 390%;
-    display: block;
     opacity: 0.4;
 }
 .empty-list span.line-1 {
@@ -6918,4 +6917,153 @@ a.trigger-woo-abandoned-cart:hover {
     height: 20px;
     display: inline-block;
     fill: currentColor;
+}
+.leftbar-item {
+    display: none;
+}
+.leftbar-hide-menu {
+    display: none;
+}
+@media (min-width: 1200px) {
+    .leftbar .leftbar-hide-menu {
+        display: block;
+    }
+    body.leftbar {
+        padding-top: 0;
+    }
+    .leftbar .leftbar-item {
+        display: initial;
+    }
+    .leftbar .navbar-main {
+        width: 230px;
+        height: 100vh;
+        /* overflow: auto; */
+        display: block;
+        background-color: rgba(0, 25, 39, 0.85);
+    } 
+    .leftbar .navbar-main .navbar-nav {
+        display: block;
+    }
+    .leftbar .navbar-main .navbar-nav .lvl-1 {
+        display: block;
+        width: 100%;
+        border-radius: 0;
+    }
+    .leftbar .navbar-main .container-fluid {
+        display: block!important;
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .leftbar .page-container {
+        position: relative;
+        width: 100%!important;
+        max-width: none;
+        padding-left: 270px!important;
+        padding-right: 50px!important;
+        padding-top: 10px!important;
+        min-height: 100vh;
+    }
+    .leftbar .navbar-expand-xl .navbar-collapse {
+        display: block!important;
+    }
+    .leftbar .navbar-brand {
+        margin-top: 2px;
+        margin-bottom: 15px;
+    }
+    .leftbar .navbar-main .navbar-nav .lvl-1 {
+        padding-top: 11px!important;
+        padding-bottom: 11px!important;
+        padding-left: 10px!important;
+        padding-right: 10px!important;
+        margin-bottom: 1px;
+    }
+    .leftbar .navbar-main .navbar-nav .lvl-1 {
+        font-size: 0.9rem;
+    }
+    .leftbar .navbar-brand > img {
+        max-width: 132px;
+    }
+    .leftbar .navbar-main .dropdown-toggle::after {
+        position: absolute;
+        right: 10px;
+        transform: rotate(-90deg);
+    }
+    .leftbar .leftbar-hide-menu {
+        color: #fff;
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        opacity: 0.8;
+        cursor: pointer;
+    }
+    .leftbar .leftbar-hide-menu:hover {
+        opacity: 1;
+    }
+    .leftbar-hide-menu svg {
+        fill: currentColor;
+        width: 28px;
+    }
+    .leftbar .navbar-right {
+        position: absolute;
+        width: 100%;
+        bottom: 0;
+        border-top: solid 1px rgba(255,255,255,0.2);
+    }
+    .leftbar .customer-warning-icon {
+        right: 30px!important;
+        top: 12px!important;
+    }
+    .leftbar .menu-user-avatar {
+        transform: none!important;
+        height: 24px;
+        width: 24px;
+        display: inline-block;
+    }
+    .leftbar .main-menu {
+        max-height: calc(100vh - 176px);
+    }
+    .leftbar .navbar-nav .dropdown-menu {
+        left: 230px;
+        top: 0px;
+    }
+    .leftbar .navbar-nav .dropdown-menu-bottom {
+        bottom: 0px;
+        top: auto;
+    }
+
+
+    .leftbar-closed .page-container {
+        position: relative;
+        width: 100%!important;
+        max-width: none;
+        padding-left: 85px!important;
+        padding-right: 50px!important;
+        padding-top: 10px!important;
+        min-height: 100vh;
+    }
+    .leftbar-closed .navbar-main .navbar-nav .lvl-1 {
+        text-indent: -10000px;
+    }
+    .leftbar-closed .navbar-main {
+        width: 45px;
+    }
+    .leftbar-closed .navbar-nav .dropdown-menu {
+        left: 45px;
+    }
+    .leftbar-closed .navbar-main .dropdown-toggle::after {
+        text-indent: 0;
+        right: 0px;
+        font-size: 13px;
+        opacity: 0.7;
+    }
+    .leftbar-closed .navbar-brand {
+        display: none!important;
+    }
+    .leftbar-closed .navbar-main {
+        padding-top: 70px!important;
+    }
+    .leftbar-closed .leftbar-hide-menu {
+        transform: rotate(180deg);
+        right: 7px;
+    }
 }

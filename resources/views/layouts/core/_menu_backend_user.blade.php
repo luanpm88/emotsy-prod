@@ -9,11 +9,11 @@
     <a href="{{ action('TemplateController@index') }}" class="nav-link d-flex align-items-center ps-3 pe-1 py-3 lvl-1 dropdown-toggle"
         id="content-menu" data-bs-toggle="dropdown" aria-expanded="false">
         <i class="navbar-icon">
-            <img src="{{ Auth::user()->getProfileImageUrl() }}" style="border-radius:100%;transform:scale(1.5)" alt="">
+            <img src="{{ Auth::user()->getProfileImageUrl() }}" style="border-radius:100%;transform:scale(1.5)" class="menu-user-avatar" alt="">
         </i>
         <span>{{ Auth::user()->displayName() }}</span>
     </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="content-menu">
+    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-bottom" aria-labelledby="content-menu">
         @can("customer_access", Auth::user())
             <li class="border-bottom"><a href="{{ action("HomeController@index") }}" class="dropdown-item d-flex align-items-center">
             <i class="acelle-icon mr-2">

@@ -9,14 +9,14 @@
     <a href="{{ action('TemplateController@index') }}" class="nav-link d-flex align-items-center ps-3 pe-1 py-3 lvl-1 dropdown-toggle"
         id="content-menu" data-bs-toggle="dropdown" aria-expanded="false">
         <i class="navbar-icon">
-            <img src="{{ Auth::user()->getProfileImageUrl() }}" style="border-radius:100%;transform:scale(1.5)" alt="">
+            <img src="{{ Auth::user()->getProfileImageUrl() }}" style="border-radius:100%;transform:scale(1.5)" class="menu-user-avatar" alt="">
         </i>
         <span>{{ Auth::user()->displayName() }}</span>
         @if (Auth::user()->customer->hasSubscriptionNotice())
             <i class="material-icons-outlined customer-warning-icon text-danger" style="right:2px;color:rgb(236, 124, 124)!important;top:2px;position:absolute">info</i>
         @endif
     </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="content-menu">
+    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-bottom" aria-labelledby="content-menu">
         @can("admin_access", Auth::user())
             <li class="border-bottom"><a href="{{ action("Admin\HomeController@index") }}" class="dropdown-item d-flex align-items-center">
             <i class="navbar-icon mr-2">

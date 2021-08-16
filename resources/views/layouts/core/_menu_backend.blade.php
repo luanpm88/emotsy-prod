@@ -19,7 +19,7 @@
         @endphp
 
         <div class="collapse navbar-collapse" id="navbarsExample04">
-            <ul class="navbar-nav me-auto mb-md-0">
+            <ul class="navbar-nav me-auto mb-md-0 main-menu">
                 <li class="nav-item" rel0="HomeController">
 					<a href="{{ action('Admin\HomeController@index') }}" class="nav-link lvl-1 d-flex align-items-center">
 						<i class="acelle-icon mr-2">

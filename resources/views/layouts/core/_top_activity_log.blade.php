@@ -1,10 +1,11 @@
 <li class="nav-item dropdown">
 	<a href="{{ action('TemplateController@index') }}" class="nav-link d-flex align-items-center py-3 lvl-1 dropdown-toggle" id="content-menu" data-bs-toggle="dropdown" aria-expanded="false">
-		<i class="navbar-icon me-1">
+		<i class="navbar-icon">
 			<img src="{{ url('images/icons/'.$iconDir.'SVG/history.svg') }}" />
 		</i>
+		<span class="leftbar-item">Activities</span>
 	</a>
-	<ul class="dropdown-menu fix-drop-down dropdown-menu-end log-menu-dropdown activity_logs" aria-labelledby="content-menu">
+	<ul class="dropdown-menu fix-drop-down dropdown-menu-end log-menu-dropdown activity_logs dropdown-menu-bottom" aria-labelledby="content-menu">
 		<li class="activity_log_header">
 			<a class="dropdown-item fw-bold" href="{{ action("AccountController@logs") }}">
 				<div class="text-muted">
