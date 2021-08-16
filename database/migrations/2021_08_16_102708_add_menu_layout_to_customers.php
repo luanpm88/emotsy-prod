@@ -14,7 +14,7 @@ class AddMenuLayoutToCustomers extends Migration
     public function up()
     {
         Schema::table('customers', function (Blueprint $table) {
-            $table->string('menu_layout')->default('top');
+            $table->string('menu_layout')->default('none');
         });
     }
 

@@ -202,6 +202,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('customers/admin-area', 'CustomerController@adminArea');
 
     // Customer profile/information
+    Route::match(['get', 'post'], 'account/wizard/menu-layout', 'AccountController@wizardMenuLayout');
+    Route::match(['get', 'post'], 'account/wizard/color-scheme', 'AccountController@wizardColorScheme');
     Route::post('account/leftbar/state', 'AccountController@leftbarState');
     Route::post('account/payment/remove', 'AccountController@removePaymentMethod');
     Route::match(['get', 'post'], 'account/payment/edit', 'AccountController@editPaymentMethod');

@@ -14,7 +14,7 @@ class AddMenuLayoutToAdmins extends Migration
     public function up()
     {
         Schema::table('admins', function (Blueprint $table) {
-            $table->string('menu_layout')->default('top');
+            $table->string('menu_layout')->default('none');
         });
     }
 

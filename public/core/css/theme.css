@@ -1,5 +1,5 @@
 .theme-blue .navbar-main {
-    background-color: rgba(0, 48, 71, 0.8)!important;
+    background-color: rgba(0, 48, 71, 0.9)!important;
 }
 .theme-blue .btn-info {
     background-color: #97b5c9;
@@ -61,7 +61,7 @@
 }
 
 .theme-green .navbar-main {
-    background-color: rgba(0, 71, 38, 0.8)!important;
+    background-color: rgba(0, 71, 38, 0.9)!important;
 }
 .theme-green .btn-info {
     background-color: #97c9ac;
@@ -123,7 +123,7 @@
 }
 
 .theme-brown .navbar-main {
-    background-color: rgba(71, 38, 0, 0.8)!important;
+    background-color: rgba(71, 38, 0, 0.9)!important;
 }
 .theme-brown .btn-info {
     background-color: #c9ab97;
@@ -247,7 +247,7 @@
 }
 
 .theme-grey .navbar-main {
-    background-color: rgba(40,40,40,0.8)!important;
+    background-color: rgba(40,40,40,0.9)!important;
 }
 .theme-grey .btn-info {
     background-color: #c4c4c4;

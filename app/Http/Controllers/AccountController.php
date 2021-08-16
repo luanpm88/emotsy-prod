@@ -282,4 +282,33 @@ class AccountController extends Controller
     {
         $request->session()->put('customer-leftbar-state', $request->state);
     }
+
+    public function wizardColorScheme(Request $request)
+    {
+        $customer = $request->user()->customer;
+
+        // Save color scheme
+        if ($request->isMethod('post')) {
+            $customer->color_scheme = $request->color_scheme;
+            $customer->save();
+
+            return view('account.wizardMenuLayout');
+        }
+
+        return view('account.wizardColorScheme');
+    }
+
+    public function wizardMenuLayout(Request $request)
+    {
+        $customer = $request->user()->customer;
+
+        // Save color scheme
+        if ($request->isMethod('post')) {
+            $customer->menu_layout = $request->menu_layout;
+            $customer->save();
+            return;
+        }
+
+        return view('account.wizardMenuLayout');
+    }
 }

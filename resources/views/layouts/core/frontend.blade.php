@@ -56,6 +56,29 @@
 	@include('layouts.core._flash')
 
 	<script>
+		// Customer color scheme | menu layout wizard
+		@if (!Auth::user()->customer->color_scheme)
+			var layoutSetupPopup;
+
+			$(function() {
+				layoutSetupPopup = new Popup({
+					url: '{{ action('AccountController@wizardColorScheme') }}',
+				});
+				layoutSetupPopup.load();
+			});
+		@elseif (Auth::user()->customer->menu_layout == 'none')
+			var layoutSetupPopup;
+
+			$(function() {
+				layoutSetupPopup = new Popup({
+					url: '{{ action('AccountController@wizardMenuLayout') }}',
+				});
+				layoutSetupPopup.load();
+			});
+		@endif
+	</script>
+
+	<script>
 		@if (null !== Session::get('orig_admin_id') && Auth::user()->admin)
 			notify({
 				type: 'warning',
