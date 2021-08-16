@@ -11,10 +11,12 @@ use Acelle\Model\EmailVerificationServer;
 use Acelle\Model\Subscriber;
 use Acelle\Model\Customer;
 use Acelle\Model\Campaign;
+use Acelle\Model\MailList;
 use Acelle\Library\QuotaManager;
 use Acelle\Library\Exception\QuotaExceeded;
 use Acelle\Library\Exception\NoCreditsLeft;
 use Acelle\Jobs\SendMessage;
+use Acelle\Jobs\VerifySubscriber;
 use Exception;
 use File;
 use Mockery;
@@ -24,23 +26,28 @@ class QuotaTest extends TestCase
 {
     public function initServer()
     {
-        $server = SendingServer::first();
+        $server = new SendingServer();
+        $server->generateUid();
         $server->cleanupCreditsStorageFiles('send');
         $server->setCredits('send', 100);
+
         return $server;
     }
 
     public function initSubscription()
     {
-        $subscription = Subscription::first();
+        $subscription = new Subscription();
+        $subscription->generateUid();
         $subscription->cleanupCreditsStorageFiles('send');
+        $subscription->cleanupCreditsStorageFiles('verify');
         $subscription->setCredits('send', 100);
         return $subscription;
     }
 
     public function initEmailVerificationServer()
     {
-        $server = EmailVerificationServer::first();
+        $server = new EmailVerificationServer();
+        $server->generateUid();
         $server->cleanupCreditsStorageFiles('verify');
         $server->setCredits('verify', 100);
 
@@ -415,6 +422,7 @@ class QuotaTest extends TestCase
     public function test_email_verification_server_just_works_with_credits_limit()
     {
         $server = $this->initEmailVerificationServer();
+        $server->setQuotaSettings('verify', 999, 1, 'minute');
         $server->setCredits('verify', 10);
         $tests = 11;
         $this->expectException(Exception::class);
@@ -563,5 +571,110 @@ class QuotaTest extends TestCase
 
         // Second, quota exceeded
         $this->assertInstanceOf(QuotaExceeded::class, $second);
+    }
+
+    private function prepareVerifySubscriberTest()
+    {
+        // Server
+        $server = $this->initEmailVerificationServer();
+
+        // Subscription
+        $subscription = $this->initSubscription();
+        $plan = Mockery::mock('plan');
+
+        // Assign the mocked plan
+        $subscription->plan = $plan;
+
+        // Customer
+        $customer = Mockery::mock(new Customer());
+        $customer->shouldReceive('activeSubscription')->andReturn($subscription);
+
+        // Mail list
+        $list = Mockery::mock(new MailList());
+        $list->customer = $customer;
+
+        // Subscriber type is required as the new SendMessage(Subscriber $sub) has strict type parameter
+        $subscriber = Mockery::mock(new Subscriber());
+        $subscriber->mailList = $list;
+        $subscriber->shouldReceive('verify')->andReturn(null);
+
+        return [$subscriber, $server];
+    }
+
+    public function test_email_verification_server_job_server_quota_exceeded()
+    {
+        // Test setup
+        list($subscriber, $server) = $this->prepareVerifySubscriberTest();
+        $server->setQuotaSettings('verify', 2, $unit = 1, $base = 'minute');
+        $subscription = $subscriber->mailList->customer->activeSubscription();
+        $subscription->plan->shouldReceive('getQuotaSettings')->andReturn([]);
+
+        // SendMessage job
+        $verifyJob = new VerifySubscriber($subscriber, $server);
+
+        // First shot
+        $verifyJob->doVerify(function ($exception) use (&$outcome) {
+            $outcome = $exception;
+        });
+
+        // Second shot
+        $verifyJob->doVerify(function ($exception) use (&$outcome) {
+            $outcome = $exception;
+        });
+
+        // Just fine
+        $this->assertNull($outcome);
+
+        // Second short
+        $verifyJob->doVerify(function ($exception) use (&$outcome) {
+            $outcome = $exception;
+        });
+
+        // Second, quota exceeded
+        $this->assertInstanceOf(QuotaExceeded::class, $outcome);
+        $this->assertEquals($server->getCreditsUsed('verify'), 2);
+
+        // IMPORTANT: sacrisfy one credit here, since 'subscription.verify' is validate first (and pass) ==> so used credits is 3
+        $this->assertEquals($subscription->getCreditsUsed('verify'), 3);
+    }
+
+    public function test_email_verification_server_job_plan_quota_exceeded()
+    {
+        // Test setup
+        list($subscriber, $server) = $this->prepareVerifySubscriberTest();
+        $server->setQuotaSettings('verify', 9999, $unit = 1, $base = 'minute');
+        $subscription = $subscriber->mailList->customer->activeSubscription();
+        $subscription->plan->shouldReceive('getQuotaSettings')->andReturn([[
+            'name' => "Plan's sending limit",
+            'limit' => 2,
+            'period_base' => 'hour',
+            'period_value' => 1,
+        ]]);
+
+        // SendMessage job
+        $verifyJob = new VerifySubscriber($subscriber, $server);
+
+        // First shot
+        $verifyJob->doVerify(function ($exception) use (&$outcome) {
+            $outcome = $exception;
+        });
+
+        // Second shot
+        $verifyJob->doVerify(function ($exception) use (&$outcome) {
+            $outcome = $exception;
+        });
+
+        // Just fine
+        $this->assertNull($outcome);
+
+        // Second short
+        $verifyJob->doVerify(function ($exception) use (&$outcome) {
+            $outcome = $exception;
+        });
+
+        // Second, quota exceeded
+        $this->assertInstanceOf(QuotaExceeded::class, $outcome);
+        $this->assertEquals($server->getCreditsUsed('verify'), 2);
+        $this->assertEquals($subscription->getCreditsUsed('verify'), 2);
     }
 }

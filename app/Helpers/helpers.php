@@ -766,3 +766,20 @@ function inlineHtml($html, array $cssFiles)
 
     return $htmldoc->getHTML();
 }
+
+function putPermanentEnv($arr = [])
+{
+    $path = app()->environmentFilePath();
+    $config = file_get_contents($path);
+
+    foreach ($arr as $key => $value) {
+        $escaped = preg_quote('='.env($key), '/');
+        $config = preg_replace(
+            "/^{$key}{$escaped}/m",
+            "{$key}={$value}",
+            $config
+        );
+    }
+    
+    file_put_contents($path, $config);
+}

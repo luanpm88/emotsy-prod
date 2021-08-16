@@ -4,7 +4,6 @@ namespace Acelle\Jobs;
 
 class DeliverEmail extends Base
 {
-
     public $timeout = 120;
 
     protected $email;
