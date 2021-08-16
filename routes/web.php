@@ -202,6 +202,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('customers/admin-area', 'CustomerController@adminArea');
 
     // Customer profile/information
+    Route::post('account/leftbar/state', 'AccountController@leftbarState');
     Route::post('account/payment/remove', 'AccountController@removePaymentMethod');
     Route::match(['get', 'post'], 'account/payment/edit', 'AccountController@editPaymentMethod');
     Route::get('account/profile', 'AccountController@profile');
@@ -798,6 +799,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
 
 
     // Account
+    Route::post('admin/account/leftbar/state', 'AccountController@leftbarState');
     Route::get('admin/account/api/renew', 'AccountController@renewToken');
     Route::get('admin/account/api', 'AccountController@api');
     Route::get('admin/account/profile', 'AccountController@profile');

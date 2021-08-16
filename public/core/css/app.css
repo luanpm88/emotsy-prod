@@ -7051,16 +7051,16 @@ a.trigger-woo-abandoned-cart:hover {
         margin: 0;
     }
     .leftbar-closed .navbar-main {
-        width: 45px;
+        width: 50px;
     }
     .leftbar-closed .navbar-nav .dropdown-menu {
-        left: 45px;
+        left: 50px;
     }
     .leftbar-closed .navbar-main .dropdown-toggle::after {
         text-indent: 0;
-        right: -1px;
-        font-size: 13px;
-        opacity: 0.7;
+        right: 0px;
+        font-size: 12px;
+        opacity: 0;
     }
     .leftbar-closed .navbar-brand {
         display: none!important;
@@ -7071,6 +7071,14 @@ a.trigger-woo-abandoned-cart:hover {
     .leftbar-closed .leftbar-hide-menu {
         transform: rotate(180deg);
         right: 7px;
+    }
+    .leftbar-closed .lvl-1 .navbar-icon img {
+        opacity: 0.9;
+        transform: scale(1.1);
+    }
+    .leftbar-closed .navbar-main .navbar-nav .lvl-1 {
+        padding: 14px!important;
+        margin-bottom: 1px;
     }
 }
 .layout-select img {

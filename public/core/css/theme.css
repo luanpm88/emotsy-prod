@@ -331,6 +331,9 @@
 .theme-white.leftbar .leftbar-hide-menu {
     color: #333;
 }
+.theme-white.leftbar .navbar-right {
+    border-top: solid 1px rgba(0,0,0,0.1);
+}
 
 
 .text-default.theme-option {

@@ -277,4 +277,9 @@ class AccountController extends Controller
             'redirect' => $request->redirect ? $request->redirect : action('AccountController@billing'),
         ]);
     }
+
+    public function leftbarState(Request $request)
+    {
+        $request->session()->put('customer-leftbar-state', $request->state);
+    }
 }

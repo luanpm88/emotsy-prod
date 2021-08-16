@@ -36,13 +36,4 @@ $(function(){
         
         quotaPopup.load();
     });
-
-    //
-    $(document).on('click', '.leftbar .leftbar-hide-menu', function(e) {
-        if (!$('.leftbar').hasClass('leftbar-closed')) {
-            $('.leftbar').addClass('leftbar-closed');
-        } else {
-            $('.leftbar').removeClass('leftbar-closed');
-        }
-    });
 });

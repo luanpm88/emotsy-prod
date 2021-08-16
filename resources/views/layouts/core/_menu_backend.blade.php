@@ -396,3 +396,35 @@
         </div>
     </div>
 </nav>
+
+<script>
+    var MenuFrontend = {
+        saveLeftbarState: function(state) {
+            var url = '{{ action('Admin\AccountController@leftbarState') }}';
+
+            $.ajax({
+                method: "POST",
+                url: url,
+                data: {
+                    _token: CSRF_TOKEN,
+                    state: state,
+                }
+            });
+        }
+    };
+
+    $(function() {
+        //
+        $('.leftbar .leftbar-hide-menu').on('click', function(e) {
+            if (!$('.leftbar').hasClass('leftbar-closed')) {
+                $('.leftbar').addClass('leftbar-closed');
+
+                MenuFrontend.saveLeftbarState('closed');
+            } else {
+                $('.leftbar').removeClass('leftbar-closed');
+
+                MenuFrontend.saveLeftbarState('open');
+            }
+        });
+    });        
+</script>

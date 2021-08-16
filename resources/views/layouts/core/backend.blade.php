@@ -7,7 +7,9 @@
 
 	@yield('head')
 </head>
-<body class="theme-{{ Auth::user()->admin->getColorScheme() }} {{ Auth::user()->admin->menu_layout }}bar">
+<body class="theme-{{ Auth::user()->admin->getColorScheme() }} {{ Auth::user()->admin->menu_layout }}bar
+	{{ Auth::user()->admin->menu_layout }}bar-{{ request()->session()->get('admin-leftbar-state') }}	
+">
 	@include('layouts.core._menu_backend')
 
 	<main class="container page-container px-3">

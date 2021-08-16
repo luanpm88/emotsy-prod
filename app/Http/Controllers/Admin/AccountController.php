@@ -154,4 +154,9 @@ class AccountController extends Controller
 
         return redirect()->action('Admin\AccountController@api');
     }
+
+    public function leftbarState(Request $request)
+    {
+        $request->session()->put('admin-leftbar-state', $request->state);
+    }
 }
