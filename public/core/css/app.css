@@ -7073,3 +7073,20 @@ a.trigger-woo-abandoned-cart:hover {
         right: 7px;
     }
 }
+.layout-select img {
+    cursor: pointer;
+    opacity: 0.6;
+    transition: all 0.2s ease-in-out;
+}
+.layout-select:hover, .layout-select.selected {
+    cursor: pointer;
+    opacity: 1;
+}
+.layout-select:hover img, .layout-select.selected img {
+    opacity: 1;
+    box-shadow: 1px 1px 5px rgba(0,0,0,0.12);
+}
+.layout-select input:checked ~ img {
+    opacity: 1;
+    box-shadow: 1px 1px 5px rgba(0,0,0,0.12);
+}

@@ -8,7 +8,7 @@
 			margin-top: -10px;
 			position: absolute;"></i>
 		@endif
-		<span class="leftbar-item">Notifications</span>
+		<span class="leftbar-item">{{ trans('messages.notifications') }}</span>
 	</a>
 	<ul class="dropdown-menu fix-drop-down dropdown-menu-end log-menu-dropdown activity_logs dropdown-menu-bottom" aria-labelledby="content-menu">
 		<li class="activity_log_header">

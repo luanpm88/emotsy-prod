@@ -28,7 +28,7 @@
         <div class="row">
             <div class="col-md-3">
                 <div class="sub_section">
-                    <h2 class="text-semibold text-primary">{{ trans('messages.profile_photo') }}</h2>
+                    <h3 class="text-semibold text-primary mb-4">{{ trans('messages.profile_photo') }}</h3>
                     <div class="media profile-image">
                         <div class="media-left">
                             <a href="#" class="upload-media-container">
@@ -53,7 +53,7 @@ delete_outline
             </div>
             <div class="col-md-5">
                 <div class="sub_section">
-                    <h2 class="text-semibold text-primary">{{ trans('messages.basic_information') }}</h2>
+                    <h3 class="text-semibold text-primary mb-4">{{ trans('messages.basic_information') }}</h3>
 
                     <div class="row">
                         <div class="col-md-6">
@@ -68,8 +68,26 @@ delete_outline
 
                     @include('helpers.form_control', ['type' => 'select', 'name' => 'language_id', 'label' => trans('messages.language'), 'value' => $admin->language_id, 'options' => Acelle\Model\Language::getSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => $user->rules()])
 
+                    <h3 class="text-semibold text-primary mb-4 mt-5">{{ trans('messages.account.personality') }}</h3>
+
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <label class="mb-2">{{ trans('messages.account.menu_layout') }}</label>
+                            <div>
+                                <label class="layout-select me-3">
+                                    <input type="radio" name="menu_layout" value="top" {{ $admin->menu_layout == 'top' ? 'checked' : '' }} class="styled mr-2" />
+                                    <img src="{{ url('images/layout-menu-top.svg') }}" width="150px" />
+                                </label>
+                                <label class="layout-select">
+                                    <input type="radio" name="menu_layout" value="left" {{ $admin->menu_layout == 'left' ? 'checked' : '' }} class="styled mr-2"  />
+                                    <img src="{{ url('images/layout-menu-left.svg') }}" width="150px" />
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row">
-                        <div class="col-md-6 color-box">
+                        <div class="col-md-10 color-box">
                             @include('helpers.form_control', [
                                 'type' => 'select',
                                 'class' => '',
@@ -80,7 +98,9 @@ delete_outline
                                 'rules' => '',
                             ])
                         </div>
-                        <div class="col-md-6 color-box">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-10 color-box">
                             @include('helpers.form_control', [
                                 'type' => 'select',
                                 'class' => '',
@@ -100,7 +120,7 @@ delete_outline
             </div>
             <div class="col-md-4">
                 <div class="sub_section">
-                    <h2 class="text-semibold text-primary">{{ trans('messages.account') }}</h2>
+                    <h3 class="text-semibold text-primary mb-4">{{ trans('messages.account') }}</h3>
 
                     @include('helpers.form_control', ['type' => 'text', 'name' => 'email', 'value' => $user->email, 'help_class' => 'profile', 'rules' => $user->rules()])
 

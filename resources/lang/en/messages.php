@@ -3741,4 +3741,6 @@
   'template.name.changed' => 'Template name was changed',
   'verification_credits_limit' => 'Verification credits limit',
   'automation.brief-intro.woo-abandoned-cart' => 'WooCommerce abandoned cart reminder',
+  'account.personality' => 'Personality',
+  'account.menu_layout' => 'Menu layout',
 ) ?>

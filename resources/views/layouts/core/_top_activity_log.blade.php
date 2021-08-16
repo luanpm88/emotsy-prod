@@ -3,7 +3,7 @@
 		<i class="navbar-icon">
 			<img src="{{ url('images/icons/'.$iconDir.'SVG/history.svg') }}" />
 		</i>
-		<span class="leftbar-item">Activities</span>
+		<span class="leftbar-item">{{ trans('messages.activities') }}</span>
 	</a>
 	<ul class="dropdown-menu fix-drop-down dropdown-menu-end log-menu-dropdown activity_logs dropdown-menu-bottom" aria-labelledby="content-menu">
 		<li class="activity_log_header">
