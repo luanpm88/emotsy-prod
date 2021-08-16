@@ -6927,6 +6927,7 @@ a.trigger-woo-abandoned-cart:hover {
 @media (min-width: 1200px) {
     .leftbar .leftbar-hide-menu {
         display: block;
+        transition: transform 0.2s ease-in-out;
     }
     body.leftbar {
         padding-top: 0;
@@ -6940,6 +6941,7 @@ a.trigger-woo-abandoned-cart:hover {
         /* overflow: auto; */
         display: block;
         background-color: rgba(0, 25, 39, 0.85);
+        transition: width 0.1s ease-in-out;
     } 
     .leftbar .navbar-main .navbar-nav {
         display: block;
@@ -6962,6 +6964,7 @@ a.trigger-woo-abandoned-cart:hover {
         padding-right: 50px!important;
         padding-top: 10px!important;
         min-height: 100vh;
+        transition: padding 0.1s ease-in-out;
     }
     .leftbar .navbar-expand-xl .navbar-collapse {
         display: block!important;
@@ -7043,6 +7046,12 @@ a.trigger-woo-abandoned-cart:hover {
     }
     .leftbar-closed .navbar-main .navbar-nav .lvl-1 {
         text-indent: -10000px;
+        display: flex!important;
+        justify-self: center;
+
+    }
+    .leftbar-closed .navbar-main .navbar-nav .lvl-1 i {
+        margin: 0;
     }
     .leftbar-closed .navbar-main {
         width: 45px;
@@ -7052,7 +7061,7 @@ a.trigger-woo-abandoned-cart:hover {
     }
     .leftbar-closed .navbar-main .dropdown-toggle::after {
         text-indent: 0;
-        right: 0px;
+        right: -1px;
         font-size: 13px;
         opacity: 0.7;
     }
