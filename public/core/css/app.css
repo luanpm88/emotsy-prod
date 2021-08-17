@@ -7146,6 +7146,17 @@ a.trigger-woo-abandoned-cart:hover {
 .color-scheme-select.scheme-white:after {
     background: #eee;
 }
+.profile-scheme-select .color-scheme-select {
+    margin: 10px;
+    margin-right: 20px;
+}
+.profile-scheme-select .color-scheme-select:after {
+    width: 30px;
+    height: 30px;
+}
+.profile-scheme-select .color-scheme-select:checked::after {
+    
+}
 .top-user-menus {
     width: 500px;
     background: rgb(234, 252, 252);

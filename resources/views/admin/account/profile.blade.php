@@ -88,7 +88,17 @@ delete_outline
 
                     <div class="row">
                         <div class="col-md-10 color-box">
-                            @include('helpers.form_control', [
+                            <label class="mb-2">{{ trans('messages.color_scheme') }}</label>
+                            <div class="text-left mb-4 profile-scheme-select mt-2">
+                                <input type="radio" name="color_scheme" value="default" {{ !Auth::user()->admin->getColorScheme() || Auth::user()->admin->getColorScheme() == 'default' ? 'checked' : '' }} class="color-scheme-select scheme-default" />
+                                <input type="radio" name="color_scheme" value="blue" {{ Auth::user()->admin->getColorScheme() == 'blue' ? 'checked' : '' }} class="color-scheme-select scheme-blue" />
+                                <input type="radio" name="color_scheme" value="green" {{ Auth::user()->admin->getColorScheme() == 'green' ? 'checked' : '' }} class="color-scheme-select scheme-green" />
+                                <input type="radio" name="color_scheme" value="brown" {{ Auth::user()->admin->getColorScheme() == 'brown' ? 'checked' : '' }} class="color-scheme-select scheme-brown" />
+                                <input type="radio" name="color_scheme" value="pink" {{ Auth::user()->admin->getColorScheme() == 'pink' ? 'checked' : '' }} class="color-scheme-select scheme-pink" />
+                                <input type="radio" name="color_scheme" value="grey" {{ Auth::user()->admin->getColorScheme() == 'grey' ? 'checked' : '' }} class="color-scheme-select scheme-grey" />
+                                <input type="radio" name="color_scheme" value="white" {{ Auth::user()->admin->getColorScheme() == 'white' ? 'checked' : '' }} class="color-scheme-select scheme-white" />
+                            </div>
+                            {{-- @include('helpers.form_control', [
                                 'type' => 'select',
                                 'class' => '',
                                 'name' => 'color_scheme',
@@ -96,7 +106,7 @@ delete_outline
                                 'help_class' => 'admin',
                                 'options' => Acelle\Model\Admin::colors("color_scheme"),
                                 'rules' => '',
-                            ])
+                            ]) --}}
                         </div>
                     </div>
                     <div class="row">
