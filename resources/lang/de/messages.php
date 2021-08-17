@@ -2228,7 +2228,7 @@
   'plan.resource.intro' => 'Richten Sie das Kontingent Ihres Plans ein, um die Ressourcen oder Dienste zu begrenzen, die Benutzer, die diesen Plan abonniert haben, nutzen können',
   'plan.sending_server' => 'Sendeserver',
   'plan.sending_server.intro' => 'Richten Sie das Kontingent Ihres Plans ein, um die Ressourcen oder Dienste zu begrenzen, die Benutzer, die diesen Plan abonniert haben, nutzen können',
-   'plan.email_verification.intro' => 'Einrichten von E-Mail-Bestätigungsservern für den Plan',
+  'plan.email_verification.intro' => 'Einrichten von E-Mail-Bestätigungsservern für den Plan',
   'plan.email_verification.use_own' => 'Verwenden Sie eigene E-Mail-Bestätigungsserver',
   'plan.email_verification.use_own.intro' => 'Der Kunde darf seine eigenen Sendeserver hinzufügen',
   'plan.email_verification.use_system' => 'Verwenden Sie E-Mail-Überprüfungsserver des Systems',
@@ -2945,7 +2945,6 @@
   'sender.dropbox.reply.error.1' => 'Die von Ihnen eingegebene E-Mail-Adresse wurde noch nicht überprüft.',
   'subscription_done.razorpay.email' => 'Hallo :customer, <br/>Ihr Abonnement für den :plan Plan wurde erfolgreich erstellt.<br>
     Klicken Sie <a href=":link">hier</a> um Ihren Abonnementstatus zu überprüfen und mit Zahlung zu verarbeiten.',
-															 
   'use_custom_verification_email' => 'Verwenden Sie eine benutzerdefinierte Bestätigungs-E-Mail. Klicken
     <a href=":link" class="custom-verification-email-edit">hier</a> um es zu bestätigen',
   'custom_verification_email' => 'Benutzerdefinierte Bestätigungs-E-Mail',
@@ -2955,7 +2954,6 @@
   'builder.classic' => 'Klassik',
   'field.created' => 'Das Feld von List wurde erstellt',
   'subscription.has_renew_pending.warning' => 'Das Abonnement läuft bald ab! Sie sollten den aktuellen Plan erweitern oder erneuern, klicken Sie auf klicken <strong>Erneuern</strong>.',
-																							 
   'sending_server.default_email_verification.content' => '<!DOCTYPE html>
     <html>
     <head>
@@ -2976,7 +2974,7 @@
   'subscriber.bulk_delete' => 'Massenlöschung',
   'subscriber.bulk_delete.enter_emails' => 'Geben Sie E-Mail-Adressen ein, die Sie löschen möchten, getrennt durch ein Leerzeichen oder einen Zeilenumbruch',
   'subscriber.bulk_delete.enter_emails.confirm' => 'Sind Sie sicher, dass Sie Folgendes löschen möchten? 
-     <strong>:count</strong> Kontakt (e) aus dieser Mailingliste?',																				  
+     <strong>:count</strong> Kontakt (e) aus dieser Mailingliste?',
   'bulk_delete.ok_delete' => 'OK, LÖSCHEN',
   'subscriber.bulk_delete.enter_emails.empty' => 'Es wurden keine Abonnenten gefunden!',
   'segment.activities' => 'Aktivitäten',
@@ -3018,12 +3016,11 @@
   'campaign.preheader.intro' => '<strong>Preheader</strong> ist der kurze Zusammenfassungstext, der auf die Betreffzeile folgt
      beim Anzeigen einer E-Mail aus dem Posteingang',
   'automation.trigger.change.confirm' => 'Wenn Sie den Auslöser ändern, wird Ihr Automatisierungsverlauf gelöscht. Sind Sie sicher?',
-   'can_not_change_to_diff_currency_period_plan' => 'Der Plan kann nicht geändert werden, es ist nicht der gleiche Abrechnungszeitraum|Währung wie der aktuelle Plan',
+  'can_not_change_to_diff_currency_period_plan' => 'Der Plan kann nicht geändert werden, es ist nicht der gleiche Abrechnungszeitraum|Währung wie der aktuelle Plan',
   'import.notice.over_quota' => 'Hinweis: Das Listenkontingent wurde überschritten, bestimmte Datensätze wurden übersprungen',
   'subscription.log.subscribe' => 'Abonnieren von Plan <strong>:plan</strong>',
   'subscription.log.claimed' => 'Der Betrag von (<strong>:price</strong>) war vom Kunden <strong>beansprucht</strong>',
   'subscription.log.admin_approved' => 'Abonnement für <strong>:plan</strong> Plan ist <strong>genehmigt</strong> vom Administrator',
-											
   'subscription.log.admin_cancelled_now' => 'Abonnement für den <strong>:plan</strong> Plan ist
         <strong>ended</strong> von Admin',
   'subscription.log.plan_change' => 'Plan ändern von <strong>:old_plan</strong> auf
@@ -3043,7 +3040,7 @@
   'subscription.log.expired' => 'Abo für <strong>:plan</strong> Plan ist <strong>abgelaufen</strong>',
   'subscription.log.admin_plan_change_rejected' => 'Ändern des <strong>:plan</strong> Plan ist <strong>abgelehnt</strong> 
      vom Admin. Grund: ":reason"',
- 'subscription.log.admin_renew_rejected' => 'Verlängern des Plan <strong>:plan</strong> wurde <strong>abgelehnt</strong> 
+  'subscription.log.admin_renew_rejected' => 'Verlängern des Plan <strong>:plan</strong> wurde <strong>abgelehnt</strong> 
        vom Admin. Grund: ":reason"',
   'subscription.log.admin_plan_assigned' => '<strong>Zugewiesen</strong> an <strong>:plan</strong> Plan von Admin',
   'interval.day' => ':count Tag|:count Tage',
@@ -3126,7 +3123,6 @@
   'automation.subscriber.remove' => 'Aus der Automatisierung entfernen',
   'automation.subscriber.removed' => 'Der Abonnent wurde erfolgreich aus der Automatisierung entfernt',
   'automation.subscriber.restarted' => 'Der Abonnent wurde innerhalb der Automatisierung erfolgreich neu gestartet',
-  'import.notice.over_quota' => 'Hinweis: Das Listenkontingent wurde überschritten, bestimmte Datensätze wurden übersprungen',																																																																																								   
   'campaign.score.intro' => 'Bestimmte Tests können mit Ihrem E-Mail-Inhalt und Ihrer Kopfzeile durchgeführt werden, um eine Gesamtbewertung zu berechnen, die auf einer <strong>Sala 1 - 10</strong> ausgeführt wird. Je niedriger die Punktzahl ist, desto konformer ist Ihre E-Mail. Nachrichten mit einer Punktzahl von 5 oder weniger gelten als sicher, während Nachrichten mit einer Punktzahl von mehr als 5 vom ISP bei Spam behandelt werden können.',
   'sending_server.name.helpx' => 'Zum Beispiel: Mein AWS',
   'customer.one_time_token.generated' => 'Einmaliges Token wurde generiert',
@@ -3152,7 +3148,7 @@
   'plugin.updated' => 'Plugin wurde erfolgreich aktualisiert',
   'plugin.deleted' => 'Plugin wurde erfolgreich gelöscht',
   'plugin_empty_line_1' => 'Du hast kein Plugin',
-  'plugin.wording' => 'Stärken Sie Ihre Anwendung mit unzähligen fantastischen Plugins, die vom Acelle Mail Team entwickelt wurden. Integration einfacher als je zuvor!',																																										 
+  'plugin.wording' => 'Stärken Sie Ihre Anwendung mit unzähligen fantastischen Plugins, die vom Acelle Mail Team entwickelt wurden. Integration einfacher als je zuvor!',
   'plugins.deleted' => 'Ein oder mehrere Plugins wurden erfolgreich gelöscht',
   'plugins.disabled' => 'Ein oder mehrere Plugins wurden erfolgreich deaktiviert',
   'delete_plugins_confirm' => 'Sie sind dabei das :number Plugin aus der Liste zu löschen.',
@@ -3210,12 +3206,11 @@
   'automation.condition.cart_buy_item' => 'Kaufen Sie einen bestimmten Artikel',
   'automation.action.save' => 'Speichern',
   'automation.action.condition.cart_buy_anything.title' => 'Bedingung: Alles im Warenkorb kaufen',
-  'automation.action.condition.cart_buy_anything.title' => 'Bedingung: Alles im Warenkorb kaufen',																						 
   'automation.action.condition.cart_buy_item.title' => 'Bestellung: Kaufen von: “:item” Artikel',
   'condition.which_woo_item' => 'Welches Woocommerce-Produkt',
   'condition.select_woo_item' => 'Menüpunkt wählen',
   'automation.intro.woo-abandoned-cart' => 'Senden Sie Ihrem Käufer eine Erinnerung, wenn er gegangen ist
-       etwas im Warenkorb',  
+       etwas im Warenkorb',
   'automation.woo_items' => 'Produkt Liste',
   'automation.item_title' => '{PRODUCT_NAME}',
   'automation.item_description' => '{PRODUCT_DESCRIPTION}',
@@ -3224,7 +3219,7 @@
   'login.please_wait' => 'Einloggen, bitte wartemt...',
   'automation.shop_name' => 'Shop Name',
   'automation.shop_url' => 'URL',
-  'automation.connect_url.change' => 'Verändern',											  
+  'automation.connect_url.change' => 'Verändern',
   'automation.trigger.woo-abandoned-cart.download_plugin' => 'Wenn Sie sich nicht sicher sind
        Was Ihr WordPress-Endpunkt ist, bitte installieren
       <a target="_blank" href=":link">WordPress Plugin for Acelle Mail</a> plugin',
@@ -3259,7 +3254,7 @@
       <a href="http://:domain" target="_blank">http://:domain</a> auch zur Acelle-Quelle umgeleitet.
        Mit anderen Worten, machen Sie es zu einer Alias-URL oder Ihrer Acelle Mail-Webanwendung.',
   'tracking_domain.test.proceed' => 'Vorgehen',
-  'automation.delay.custom' => 'Benutzerdefiniert',										
+  'automation.delay.custom' => 'Benutzerdefiniert',
   'automation.contacts_in_action' => 'Kontakte in Aktion',
   'automation.contacts_done' => 'Kontakte fertig',
   'automation.contacts_skip_pending' => 'Kontakte übersprungen oder ausstehend',
@@ -3407,18 +3402,18 @@
   'bill.next_period_ends_on' => 'Die nächste Periode endet am :date',
   'invoice_type.subscription_init' => 'Abonnieren Sie einen Plan',
   'subscription_init.bill_details' => 'Neues Abonnement',
-  'invoice.init_subscription.desc' => 'Sie abonnieren den plan <strong>:plan </strong> und Ihr Abo ist am <strong>:date </ strong> fällig',															   
+  'invoice.init_subscription.desc' => 'Sie abonnieren den plan <strong>:plan </strong> und Ihr Abo ist am <strong>:date </ strong> fällig',
   'subscription.current_subscription.wording' => 'Danke, dass Sie bei uns sind, Sie sind
        derzeit Abonnent vom Plan <strong>:plan</strong>.<br>
       Ihre letzte Aufladung wurde am <strong>:next_on</strong> vorgenommen. <br> Die nächste Zahlung wird <strong>:remain</strong> fällig sein.',
-  'renew_subscription.desc' => 'Sie erneuern den Plan <strong>:plan</strong> und Ihr Abonnement wird am <strong>:date</strong> fällig',																   
+  'renew_subscription.desc' => 'Sie erneuern den Plan <strong>:plan</strong> und Ihr Abonnement wird am <strong>:date</strong> fällig',
   'bill.charge_before' => 'Bitte vor dem <strong>:date</strong> aufladen',
   'bill.auto_charge' => 'Automatische Aufladung vor <strong>:date</strong> aufladen',
   'upcoming_bill.title' => 'Bevorstehende Rechnung',
-  'upcoming_bill.desc' => 'Sie abonnieren Plan <strong>:plan</strong>. Ihr Abo wird fällig am <strong>:date</strong>',																   
+  'upcoming_bill.desc' => 'Sie abonnieren Plan <strong>:plan</strong>. Ihr Abo wird fällig am <strong>:date</strong>',
   'subscription_change_plan.bill_details' => 'Plan ändern',
   'change_plan.desc' => 'Sie wechseln vom Plan <strong>:plan</strong> zu Plan <strong>:newPlan</strong>. 
-  Die nächste Rechnung wird fällig <strong>:date</strong>',											 
+  Die nächste Rechnung wird fällig <strong>:date</strong>',
   'ends_on' => 'Endet am',
   'invoices' => 'Rechnungen',
   'invoice.status.new' => 'Neu',
@@ -3443,7 +3438,7 @@
   'invoice.cancel.confirm' => 'Sie sind im Begriff, diese Rechnung zu stornieren. Das kann nicht rückgängig gemacht werden!',
   'invoice.cancelled' => 'Rechnung wurde storniert',
   'cancel_invoice' => 'Rechnung stornieren',
-  'subscription.cancel_now_change_other_plan' => 'Sie wollen Ihren Plan ändern? Klicken Sie hier, um diese Rechnung zu stornieren.',										  
+  'subscription.cancel_now_change_other_plan' => 'Sie wollen Ihren Plan ändern? Klicken Sie hier, um diese Rechnung zu stornieren.',
   'invoice.renew_transaction_failed' => 'Bei der Rechnungserstellung ist ein Fehler aufgetreten: :error.
       <br>Überprüfen Sie die Transaktionen auf weitere Informationen.',
   'invoice.renew_transaction_failed.reconnect' => 'Bei der Rechnungserstellung ist ein Fehler aufgetreten: :error.
@@ -3506,7 +3501,7 @@
   'automation.action.operation.desc' => 'Führen Sie einen Vorgang aus wie: Kontakte aktualisieren/kopieren/verschieben/markieren',
   'automation.action.operation.icon' => 'lnr lnr-syncronisation',
   'automation.choose_an_operation' => 'Wählen Sie eine Operation',
-  'automation.choose_an_operation.desc' => 'Führen Sie eine Operation an dem Kontakt durch, der diesen Punkt der Automatisierung erreicht hat',											   
+  'automation.choose_an_operation.desc' => 'Führen Sie eine Operation an dem Kontakt durch, der diesen Punkt der Automatisierung erreicht hat',
   'automation.operation.icon.update_contact' => 'Menschen',
   'automation.operation.icon.tag_contact' => 'prüfen',
   'automation.operation.icon.copy_contact' => 'Kopieren',
@@ -3514,7 +3509,7 @@
   'automation.operation.update_contact.desc' => 'Aktualisieren Sie die Attribute des Kontakts wie: Vorname, Nachname, ... oder alle
        benutzerdefinierte Felder, die Ihr Kontakt hat',
   'automation.operation.tag_contact' => 'Tag Kontakt',
-  'automation.operation.tag_contact.desc' => 'Weisen Sie Ihrem Kontakt ein oder mehrere Tags zu. Später können Sie diese filtern. Ihre Kontakte nach Tag sortieren',							
+  'automation.operation.tag_contact.desc' => 'Weisen Sie Ihrem Kontakt ein oder mehrere Tags zu. Später können Sie diese filtern. Ihre Kontakte nach Tag sortieren',
   'automation.operation.copy_contact' => 'Kontakt kopieren',
   'automation.operation.copy_contact.desc' => 'Kopieren oder verschieben Sie den Kontakt in eine andere Liste. Sie können den Kontakt auch löschen
        aus deiner Liste',
@@ -3523,7 +3518,7 @@
   'operation.add_more' => 'Mehr hinzufügen',
   'automation.operation.save' => 'Speichern',
   'operation.tag_contact' => 'Tag Kontakt',
-  'operation.tag_contact.desc' => 'Sie sind im Begriff zu taggen. Geben Sie Ihre Tags in das Feld unten ein, drücken Sie zur Bestätigung die EINGABETASTE',			
+  'operation.tag_contact.desc' => 'Sie sind im Begriff zu taggen. Geben Sie Ihre Tags in das Feld unten ein, drücken Sie zur Bestätigung die EINGABETASTE',
   'operation.choose_an_action' => 'Wähle eine Aktion',
   'operation.action.move' => 'verschieben',
   'operation.action.copy' => 'Kopieren',
@@ -3573,7 +3568,7 @@
   'timeline.sort.auto_triggers.updated_at' => 'Neueste Aktivitäten zuerst',
   'timeline.sort.auto_triggers.created_at' => 'Zuletzt ausgelöst zuerst',
   'automation.remove_this_action' => 'Diese Aktion entfernen',
-  'automation.status.triggered.desc' => 'in Bearbeitung..',  
+  'automation.status.triggered.desc' => 'in Bearbeitung..',
   'timeline.sort.subscribers.created_at' => 'Neue Kontakte zuerst',
   'invoice.claimed' => 'Ihre Zahlung wird überprüft...',
   'invoice.claimed.wording' => 'Vielen Dank für die Zahlung! Ihr Abo wird jetzt überprüft und wird aktiviert, sobald die Zahlung bestätigt wurde.',
@@ -3714,7 +3709,39 @@
   'template.change_name' => 'Namen ändern',
   'template.change_name.intro' => 'Geben Sie unten Ihren neuen Vorlagennamen ein',
   'template.name.changed' => 'Vorlagenname wurde geändert',
-  'verification_credits_limit' => 'Limit für Verifizierungsguthaben',	
-  'automation.box.contacts_waiting' =>'warten...',
-  'automation.tag_enter_to_search_contacts' => 'Einen Kontakt suchen...', 
+  'verification_credits_limit' => 'Limit für Verifizierungsguthaben',
+  'payment.agree_service_intro.free' => 'By clicking the <strong><i>Get started</i></strong> button,
+    you agree to our <i>Term of Use</i> and <i>Privacy Policy</i>.',
+  'automation.contacts.search.placeholder' => 'Einen Kontakt suchen...',
+  'automation.contacts.trigger.waiting' => 'warten...',
+  'subscription.secure_checkout' => 'SECURE CHECKOUT',
+  'subscription.choose_plan.title' => 'Choose a plan',
+  'subscription.choose_plan.subtitle' => 'You need to subscribe to a plan in order to
+    experience the application.',
+  'subscription.billing_information.title' => 'Billing information',
+  'subscription.billing_information.subtitle' => 'Enter your billing information here and click next',
+  'subscription.payment_method.title' => 'Payment method',
+  'subscription.payment_method.subtitle' => 'Choose your preferred payment method',
+  'suscription.order_empty' => 'Choose one of the plans available and your
+    invoice details will be calculated and
+    display here',
+  'subscription.free_confirm.title' => 'Completed',
+  'subscription.free_confirm.subtitle' => 'Thank you for subscribing to our SAAS.',
+  'subscription.plan_chosen' => 'You have chosen :plan plan',
+  'subscription.payment_method.is_free' => 'The plan is FREE. You can get started now without payment',
+  'subscription.change_init_plan.confirm' => 'You are about to change to another plan!',
+  'subscription.choose_a_plan' => 'Choose a plan to subscribe',
+  'subscription.your_order' => 'Your order',
+  'subscription.your_order.desc' => 'You’re subscring to plan <strong>:plan</strong>.
+    Below are your order details',
+  'invoice.change_plan.cancel' => 'Change your mind? Cick here to cancel',
+  'automation.brief-intro.woo-abandoned-cart' => 'WooCommerce abandoned cart reminder',
+  'account.personality' => 'Personality',
+  'account.menu_layout' => 'Menu layout',
+  'account.color_scheme' => 'Choose your account color scheme',
+  'account.color_scheme.into' => 'Customize your account panel with color scheme.
+    Select one of color below you want to personalize your account',
+  'account.welcome_user' => 'Welcome back, :name!',
+  'account.menu_layout.into' => 'Select menu one of menu layouts above you like.
+    Menu layout help you easier to navigate through app pages depending on your prefer style',
 ) ?>

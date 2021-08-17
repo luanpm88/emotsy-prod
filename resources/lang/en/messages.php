@@ -2830,6 +2830,7 @@
   'automation.contacts.copy_to_new_list.enter_list_name' => 'New list name',
   'automation.contacts.copy_to_new_list.copy' => 'Create & Copy',
   'automation.contacts.search.placeholder' => 'Enter to search contacts...',
+  'automation.contacts.trigger.waiting' => 'Waiting...',
   'automation.profile.tag' => 'Save',
   'automation.email.summary.content' => 'Content',
   'automation.email.content.last_edit' => 'Last edit: :time',
