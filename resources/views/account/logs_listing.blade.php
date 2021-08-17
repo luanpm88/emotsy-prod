@@ -7,13 +7,13 @@
                 <td width="1%">
                     <img width="50" class="rounded-circle mr-10" src="{{ $item->customer->user->getProfileImageUrl() }}" alt="">
                 </td>
-                <td>
+                <td style="width:50%">
                     <p class="mb-0">                                                
                         {!! $item->message() !!}<br />
                         <span class="text-muted2">{{ trans('messages.' . $item->type) }}</span>
                     </p>
                 </td>
-                <td>
+                <td class="text-end">
                     <div class="pull-right">
                         <div class="text-semibold">{{ $item->created_at->diffForHumans() }}</div>
                         <span class="text-muted2">{{ Acelle\Library\Tool::formatDateTime($item->created_at) }}</span>

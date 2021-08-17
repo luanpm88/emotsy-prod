@@ -8,9 +8,21 @@
 	@yield('head')
 </head>
 <body class="theme-{{ Auth::user()->customer->getColorScheme() }} {{ Auth::user()->customer->menu_layout }}bar
-	{{ Auth::user()->customer->menu_layout }}bar-{{ request()->session()->get('customer-leftbar-state') }}
+	{{ Auth::user()->customer->menu_layout == 'left' ? 'left' : 'top' }}bar-{{ request()->session()->get('customer-leftbar-state') }}
 ">
 	@include('layouts.core._menu_frontend')
+
+	<div class="middle-bar">
+		<div class="middle-bar-head d-flex">
+			<div class="me-auto"></div>
+			<button class="btn btn-link fs-4 middle-bar-close-button"><span class="material-icons-round">
+				close
+				</span></button>
+		</div>
+		<div class="content">
+			
+		</div>
+	</div>
 
 	<main class="container page-container px-3">
 		

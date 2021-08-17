@@ -37,7 +37,14 @@ $(function(){
         quotaPopup.load();
     });
 
+
+    // leftbar scroll behaviour
     $('.leftbar .navbar-main').on( 'DOMMouseScroll mousewheel', function ( event ) {
+        if ($(this).parent('.dropdown-menu').length) {
+            console.log('dddd');
+            return;
+        }
+
         if( event.originalEvent.detail > 0 || event.originalEvent.wheelDelta < 0 ) { //alternative options for wheelData: wheelDeltaX & wheelDeltaY
           var isBottom = -(-$(this).css('margin-top').replace('px', '') - $(this).height()) - 10 < $(window).height();
           var adjust;
@@ -64,5 +71,20 @@ $(function(){
     });
     $( window ).on('resize', function() {
         $('.leftbar .navbar-main').css('margin-top', '0px');
+    });
+
+    // middle bar close
+    $('.middle-bar-close-button').on('click', function() {
+        hideMiddleBar();
+    });
+    $(document).on('mouseup', function(e) 
+    {
+        var container = $(".middle-bar");
+
+        // if the target of the click isn't the container nor a descendant of the container
+        if (!container.is(e.target) && container.has(e.target).length === 0) 
+        {
+            hideMiddleBar();
+        }
     });
 });

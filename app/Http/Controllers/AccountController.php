@@ -311,4 +311,9 @@ class AccountController extends Controller
 
         return view('account.wizardMenuLayout');
     }
+
+    public function activity(Request $request)
+    {
+        return view('account.activity');
+    }
 }

@@ -5,13 +5,16 @@
 	}
 @endphp
 <li class="nav-item dropdown">
-	<a href="{{ action('TemplateController@index') }}" class="nav-link d-flex align-items-center py-3 lvl-1 dropdown-toggle" id="content-menu" data-bs-toggle="dropdown" aria-expanded="false">
+	<a href="javascript:;"
+		class="nav-link d-flex align-items-center py-3 lvl-1 dropdown-toggle activities-menu-item"
+		id="content-menu"
+	>
 		<i class="navbar-icon">
 			<img src="{{ url('images/icons/'.$iconDir.'SVG/history.svg') }}" />
 		</i>
 		<span class="leftbar-item">{{ trans('messages.activities') }}</span>
 	</a>
-	<ul class="dropdown-menu fix-drop-down dropdown-menu-end log-menu-dropdown activity_logs dropdown-menu-bottom" aria-labelledby="content-menu">
+	{{-- <ul class="dropdown-menu fix-drop-down dropdown-menu-end log-menu-dropdown activity_logs dropdown-menu-bottom" aria-labelledby="content-menu">
 		<li class="activity_log_header">
 			<a class="dropdown-item fw-bold" href="{{ action("AccountController@logs") }}">
 				<div class="text-muted">
@@ -56,5 +59,19 @@
 				</span>
 			</a>
 		</li>
-	</ul>
+	</ul> --}}
 </li>
+
+<script>
+	var activityBox;
+
+	$(function() {
+		$('.activities-menu-item').on('click', function() {
+		openMiddleBar();
+
+			activityBox = new Box($('.middle-bar .content'), '{{ action('AccountController@activity') }}');
+
+			activityBox.load();
+		});
+	});
+</script>
