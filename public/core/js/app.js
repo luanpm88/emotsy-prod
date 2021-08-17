@@ -57,7 +57,7 @@ $(function(){
         } else {
             console.log(parseInt($(this).css('margin-top').replace('px', '')));
             console.log((parseInt($(this).css('margin-top').replace('px', '')) + 20) + 'px');
-            var isTop = parseInt($(this).css('margin-top').replace('px', '')) < 0;
+            var isTop = parseInt($(this).css('margin-top').replace('px', '')) + 20 < 0;
           
             if (isTop) {
                 adjust = (parseInt($(this).css('margin-top').replace('px', '')) + 20) + 'px';
@@ -68,5 +68,8 @@ $(function(){
         }
         //prevent page fom scrolling
         return false;
+    });
+    $( window ).on('resize', function() {
+        $('.leftbar .navbar-main').css('margin-top', '0px');
     });
 });
