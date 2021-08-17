@@ -414,12 +414,9 @@ class Automation2Controller extends Controller
             'send-an-email',
             'wait',
             'condition',
+            'operation',
         ];
 
-        if (config('custom.woo')) {
-            $types[] = 'operation';
-        }
-        
         return view('automation2.actionSelectPupop', [
             'types' => $types,
             'automation' => $automation,
