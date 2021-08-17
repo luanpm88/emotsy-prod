@@ -22,7 +22,7 @@
             }
         @endphp
 
-        <div class="collapse navbar-collapse {{ Auth::user()->customer->menu_layout }}bar-navbar" id="navbarsExample04">
+        <div class="collapse navbar-collapse" id="navbarsExample04">
             <ul class="navbar-nav me-auto mb-md-0 main-menu">
                 <li class="nav-item" rel0="HomeController">
                     <a href="{{ action('HomeController@index') }}" title="{{ trans('messages.dashboard') }}" class="leftbar-tooltip nav-link d-flex align-items-center py-3 lvl-1">
