@@ -56,7 +56,7 @@ class SubscriptionController extends Controller
 
     public function selectPlan(Request $request)
     {
-        // 
+        //
         $customer = $request->user()->customer;
         $subscription = $customer->subscription;
 

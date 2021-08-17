@@ -549,7 +549,6 @@ function format_price($price, $format = '{PRICE}', $html=false)
     } else {
         return str_replace('{PRICE}', format_number($price), $format);
     }
-    
 }
 
 /**

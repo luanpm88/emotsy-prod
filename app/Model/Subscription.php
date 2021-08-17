@@ -300,7 +300,7 @@ class Subscription extends Model implements HasQuotaInterface
             'date' => \Acelle\Library\Tool::formatDate(\Carbon\Carbon::parse($metadata['endsAt'])),
         ]);
         $invoice->customer_id = $this->customer->id;
-        $invoice->currency_id = $this->plan->currency_id;        
+        $invoice->currency_id = $this->plan->currency_id;
 
         // default billing info
         $billingAddress = $this->customer->getDefaultBillingAddress();
