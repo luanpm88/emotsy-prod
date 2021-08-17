@@ -7061,8 +7061,11 @@ a.trigger-woo-abandoned-cart:hover {
     }
     .leftbar-closed .navbar-main .dropdown-toggle::after {
         text-indent: 0;
-        right: 0px;
-        font-size: 12px;
+        right: 4px;
+        font-size: 9px;
+        opacity: 0.5;
+    }
+    .leftbar-closed .navbar-main .navbar-right .dropdown-toggle::after {
         opacity: 0;
     }
     .leftbar-closed .navbar-brand {
