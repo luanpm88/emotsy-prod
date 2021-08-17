@@ -373,7 +373,7 @@
     transition: transform 0.2s ease-in-out;
 }
 .topbar .middle-bar-close-button {
-    opacity: 65;    
+    opacity: 0.65;    
 }
 .topbar .middle-bar-close-button:hover {
     opacity: 1;
