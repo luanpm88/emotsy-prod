@@ -232,7 +232,7 @@
 							<span>{{ trans('messages.setting') }}</span>
                         <span class="caret"></span>
 					</a>
-                    <ul class="dropdown-menu">
+                    <ul class="dropdown-menu dropdown-menu-bottom">
 						@if (
 							Auth::user()->admin->getPermission("setting_general") != 'no' ||
 							Auth::user()->admin->getPermission("setting_sending") != 'no' ||
@@ -318,7 +318,7 @@
 							<span>{{ trans('messages.report') }}</span>
 							<span class="caret"></span>
 						</a>
-						<ul class="dropdown-menu">
+						<ul class="dropdown-menu dropdown-menu-bottom">
 							@if (Auth::user()->admin->getPermission("report_blacklist") != 'no')
 								<li class="nav-item" rel0="BlacklistController">
 									<a href="{{ action('Admin\BlacklistController@index') }}" class="dropdown-item d-flex align-items-center">
