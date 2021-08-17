@@ -7080,7 +7080,6 @@ a.trigger-woo-abandoned-cart:hover {
         display: none!important;
     }
     .leftbar-closed .navbar-main {
-        padding-top: 70px!important;
     }
     .leftbar-closed .leftbar-hide-menu {
         transform: rotate(180deg);
@@ -7093,6 +7092,9 @@ a.trigger-woo-abandoned-cart:hover {
     .leftbar-closed .navbar-main .navbar-nav .lvl-1 {
         padding: 14px!important;
         margin-bottom: 1px;
+    }
+    .leftbar-closed .navbar-main .navbar-nav {
+        margin-top: 70px;
     }
 }
 .layout-select img {
