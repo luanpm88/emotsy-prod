@@ -6970,8 +6970,8 @@ a.trigger-woo-abandoned-cart:hover {
         display: block!important;
     }
     .leftbar .navbar-brand {
-        margin-top: 10px;
-        margin-left: 10px;
+        margin-top: 20px;
+        margin-left: 20px;
         margin-bottom: 15px;
     }
     .leftbar .navbar-brand .default-logo {
@@ -6981,8 +6981,8 @@ a.trigger-woo-abandoned-cart:hover {
     .leftbar .navbar-main .navbar-nav .lvl-1 {
         padding-top: 11px!important;
         padding-bottom: 11px!important;
-        padding-left: 10px!important;
-        padding-right: 10px!important;
+        padding-left: 20px!important;
+        padding-right: 20px!important;
         margin-bottom: 1px;
     }
     .leftbar .navbar-main .navbar-nav .lvl-1 {
@@ -6993,14 +6993,14 @@ a.trigger-woo-abandoned-cart:hover {
     }
     .leftbar .navbar-main .dropdown-toggle::after {
         position: absolute;
-        right: 10px;
+        right: 20px;
         transform: rotate(-90deg);
     }
     .leftbar .leftbar-hide-menu {
         color: #fff;
         position: absolute;
-        top: 15px;
-        right: 15px;
+        top: 25px;
+        right: 25px;
         opacity: 0.8;
         cursor: pointer;
     }
