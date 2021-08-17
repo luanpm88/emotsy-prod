@@ -7109,3 +7109,21 @@ hr {
     width: 200px;
     background: transparent;
 }
+.notifications-list {
+
+}
+.notifications-list li {
+    list-style: none;
+}
+.notification-icon {
+    border-radius: 100%;
+    width: 25px;
+    height: 25px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.topbar .top-notification-icon {
+    margin-right: 0!important;
+}

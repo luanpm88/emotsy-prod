@@ -1,3 +1,14 @@
+<div class="d-flex">
+    <h3 class="me-auto">
+        <div class="text-muted mb-4">
+            {{ trans('messages.activities') }}
+        </div>
+    </h3>
+    <div>
+        <a href="{{ action("AccountController@logs") }}" class="btn btn-info">{{ trans('messages.all_activities') }}</a>
+    </div>
+</div>  
+
 @if (Auth::user()->customer->logs()->count() == 0)
     <div class="empty-list">
         <span class="material-icons-outlined">

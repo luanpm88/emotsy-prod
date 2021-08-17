@@ -229,18 +229,26 @@
         opacity: 0.7;
     }
     .leftbar .middle-bar-close-button {
-        opacity: 0.6;
+        opacity: 0.65;
     }
     .leftbar .middle-bar-close-button:hover {
         opacity: 1;
     }
     .leftbar .middle-bar .content {
-        padding: 20px;
+        padding: 10px 20px 20px 20px;
     }
     .leftbar .middle-bar-head {
         position: sticky;
         top: 0;
         z-index: 1;
+    }
+    .leftbar .middle-bar-head {
+        text-align: right;
+    }
+    .leftbar .middle-bar-head .middle-bar-close-button {
+        background: #fff;
+        border-radius: 30px 0px 0 30px;
+        margin-right: -4px;
     }
 }
 
@@ -270,7 +278,7 @@
         text-indent: -90000px;
     }
     .leftbar .middle-bar .content {
-        padding: 20px;
+        padding: 10px 20px 20px 20px;
     }
     .leftbar .middle-bar .action-log-box {
         height: auto;
@@ -285,7 +293,7 @@
         position: fixed;
         right: 0;
         left: auto;
-        height: 100vh;
+        height: calc(100vh - 53px);
     }
     .leftbar.middle-bar-open .page-container {
         transform: translateX(-420px);
@@ -293,7 +301,7 @@
         transition: transform 0.2s ease-in-out;
     }
     .leftbar .middle-bar-close-button {
-        opacity: 0.6;    
+        opacity: 0.65;    
     }
     .leftbar .middle-bar-close-button:hover {
         opacity: 1;
@@ -305,6 +313,15 @@
     }
     .leftbar .activities-menu-item .navbar-icon {
         margin-right: 0;
+    }
+    .leftbar .middle-bar-head .middle-bar-close-button {
+        transform: rotate(180deg);
+    }
+    .leftbar .middle-bar-head .middle-bar-close-button {
+        background: #fff;
+        border-radius: 30px 0px 0 30px;
+        margin-left: -3px;
+        transform: rotate(180deg);
     }
 }
 
@@ -333,7 +350,7 @@
     text-indent: -90000px;
 }
 .topbar .middle-bar .content {
-    padding: 20px;
+    padding: 10px 20px 20px 20px;
 }
 .topbar .middle-bar .action-log-box {
     height: auto;
@@ -348,7 +365,7 @@
     position: fixed;
     right: 0;
     left: auto;
-    height: 100vh;
+    height: calc(100vh - 53px);
 }
 .topbar.middle-bar-open .page-container {
     transform: translateX(-420px);
@@ -356,7 +373,7 @@
     transition: transform 0.2s ease-in-out;
 }
 .topbar .middle-bar-close-button {
-    opacity: 0.6;    
+    opacity: 65;    
 }
 .topbar .middle-bar-close-button:hover {
     opacity: 1;
@@ -368,4 +385,10 @@
 }
 .topbar .activities-menu-item .navbar-icon {
     margin-right: 0;
+}
+.topbar .middle-bar-head .middle-bar-close-button {
+    background: #fff;
+    border-radius: 30px 0px 0 30px;
+    margin-left: -3px;
+    transform: rotate(180deg);
 }

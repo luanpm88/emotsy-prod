@@ -12,6 +12,8 @@
 ">
 	@include('layouts.core._menu_backend')
 
+	@include('layouts.core._middle_bar')
+
 	<main class="container page-container px-3">
 		@yield('page_header')
 

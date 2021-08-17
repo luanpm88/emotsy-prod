@@ -12,17 +12,7 @@
 ">
 	@include('layouts.core._menu_frontend')
 
-	<div class="middle-bar">
-		<div class="middle-bar-head d-flex">
-			<div class="me-auto"></div>
-			<button class="btn btn-link fs-4 middle-bar-close-button"><span class="material-icons-round">
-				close
-				</span></button>
-		</div>
-		<div class="content">
-			
-		</div>
-	</div>
+	@include('layouts.core._middle_bar')
 
 	<main class="container page-container px-3">
 		
