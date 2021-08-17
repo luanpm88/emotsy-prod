@@ -65,7 +65,7 @@ class Customer extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'timezone', 'language_id', 'color_scheme', 'text_direction'
+        'name', 'timezone', 'language_id', 'color_scheme', 'text_direction', 'menu_layout'
     ];
 
     /**
@@ -608,7 +608,7 @@ class Customer extends Model
     public static function colors($default)
     {
         return [
-            ['value' => '', 'text' => trans('messages.system_default')],
+            ['value' => 'default', 'text' => trans('messages.system_default')],
             ['value' => 'blue', 'text' => trans('messages.blue')],
             ['value' => 'green', 'text' => trans('messages.green')],
             ['value' => 'brown', 'text' => trans('messages.brown')],

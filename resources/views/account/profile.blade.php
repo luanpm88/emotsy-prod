@@ -73,8 +73,26 @@ delete_outline
 
                     @include('helpers.form_control', ['type' => 'select', 'name' => 'language_id', 'label' => trans('messages.language'), 'value' => $customer->language_id, 'options' => Acelle\Model\Language::getSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => $user->rules()])
 
+                    <h3 class="text-semibold text-primary mb-4 mt-5">{{ trans('messages.account.personality') }}</h3>
+
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <label class="mb-2">{{ trans('messages.account.menu_layout') }}</label>
+                            <div>
+                                <label class="layout-select me-3">
+                                    <input type="radio" name="menu_layout" value="top" {{ $customer->menu_layout == 'top' || $customer->menu_layout == 'none' ? 'checked' : '' }} class="styled mr-2" />
+                                    <img src="{{ url('images/layout-menu-top.svg') }}" width="150px" />
+                                </label>
+                                <label class="layout-select">
+                                    <input type="radio" name="menu_layout" value="left" {{ $customer->menu_layout == 'left' ? 'checked' : '' }} class="styled mr-2"  />
+                                    <img src="{{ url('images/layout-menu-left.svg') }}" width="150px" />
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row">
-                        <div class="col-md-6 color-box">
+                        <div class="col-md-10 color-box">
                             @include('helpers.form_control', [
                                 'type' => 'select',
                                 'class' => '',
@@ -85,7 +103,9 @@ delete_outline
                                 'rules' => '',
                             ])
                         </div>
-                        <div class="col-md-6 color-box">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-10 color-box">
                             @include('helpers.form_control', [
                                 'type' => 'select',
                                 'class' => '',
