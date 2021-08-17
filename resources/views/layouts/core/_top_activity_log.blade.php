@@ -6,7 +6,7 @@
 @endphp
 <li class="nav-item dropdown">
 	<a href="javascript:;"
-		class="nav-link d-flex align-items-center py-3 lvl-1 dropdown-toggle activities-menu-item"
+		class="nav-link d-flex align-items-center py-3 lvl-1 dropdown-toggle activities-menu-item middle-bar-element"
 		id="content-menu"
 	>
 		<i class="navbar-icon">
@@ -21,11 +21,16 @@
 
 	$(function() {
 		$('.activities-menu-item').on('click', function() {
-		openMiddleBar();
+			if (middleBarShowed()) {
+				hideMiddleBar();
+			} else {
+				openMiddleBar();
 
-			activityBox = new Box($('.middle-bar .content'), '{{ action('AccountController@activity') }}');
+				activityBox = new Box($('.middle-bar .content'), '{{ action('AccountController@activity') }}');
 
-			activityBox.load();
+				activityBox.load();
+			}
+				
 		});
 	});
 </script>

@@ -1,6 +1,6 @@
 <li class="nav-item dropdown">
 	<a href="javascript:;"
-		class="nav-link d-flex align-items-center py-3 lvl-1 dropdown-toggle notifications-menu-item"
+		class="nav-link d-flex align-items-center py-3 lvl-1 dropdown-toggle notifications-menu-item middle-bar-element"
 		id="content-menu"
 	>
 		<i class="navbar-icon top-notification-icon">
@@ -20,11 +20,16 @@
 
 	$(function() {
 		$('.notifications-menu-item').on('click', function() {
-			openMiddleBar();
+			if (middleBarShowed()) {
+				hideMiddleBar();
+			} else {
+				openMiddleBar();
 
-			notificationBox = new Box($('.middle-bar .content'), '{{ action('Admin\NotificationController@popup') }}');
+				notificationBox = new Box($('.middle-bar .content'), '{{ action('Admin\NotificationController@popup') }}');
 
-			notificationBox.load();
+				notificationBox.load();
+			}
+			
 		});
 	});
 </script>

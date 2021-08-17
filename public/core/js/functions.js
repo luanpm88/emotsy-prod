@@ -112,6 +112,10 @@ function hideMiddleBar() {
     $('body').removeClass('middle-bar-open');
 }
 
+function middleBarShowed() {
+    return $('body').hasClass('middle-bar-open');
+}
+
 function placeholderLoading(container) {
     tags = 'h1,h2,h3,h4,h5,p,.btn,span,input,select,.alert,.progress-bar,label,a,textarea,i';
     container.find(tags).each(function() {
