@@ -3907,6 +3907,9 @@ form.loading input {
     z-index: 2;
     background-color: #fff;
 }
+.leftbar .top-sticky-content {
+    top: 0;
+}
 .api-copy-button, .api-token-copy-button {
     padding: 5px 16px!important;
 }
