@@ -57,23 +57,14 @@
 
 	<script>
 		// Customer color scheme | menu layout wizard
-		@if (!Auth::user()->customer->color_scheme)
-			var layoutSetupPopup;
+		@if (false)
+			var wizardUserPopup;
 
 			$(function() {
-				layoutSetupPopup = new Popup({
+				wizardUserPopup = new Popup({
 					url: '{{ action('AccountController@wizardColorScheme') }}',
 				});
-				layoutSetupPopup.load();
-			});
-		@elseif (Auth::user()->customer->menu_layout == 'none')
-			var layoutSetupPopup;
-
-			$(function() {
-				layoutSetupPopup = new Popup({
-					url: '{{ action('AccountController@wizardMenuLayout') }}',
-				});
-				layoutSetupPopup.load();
+				wizardUserPopup.load();
 			});
 		@endif
 	</script>
