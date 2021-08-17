@@ -290,6 +290,7 @@
     .leftbar.middle-bar-open .page-container {
         transform: translateX(-420px);
         opacity: 0.7;
+        transition: transform 0.2s ease-in-out;
     }
     .leftbar .middle-bar-close-button {
         opacity: 0.6;    
@@ -352,6 +353,7 @@
 .topbar.middle-bar-open .page-container {
     transform: translateX(-420px);
     opacity: 0.7;
+    transition: transform 0.2s ease-in-out;
 }
 .topbar .middle-bar-close-button {
     opacity: 0.6;    
