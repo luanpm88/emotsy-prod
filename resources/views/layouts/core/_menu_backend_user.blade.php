@@ -18,7 +18,7 @@
             <img src="{{ url('images/sign-stand.svg') }}" width="80px" />
         </li>
         <li class="p-3" style="width: 300px">
-            <div class="d-flex">
+            <div class="d-flex mb-2">
                 <div class="big-avatar me-3">
                     <img width="80px" class="" src="{{ Auth::user()->getProfileImageUrl() }}"
                         style="border-radius:100%"

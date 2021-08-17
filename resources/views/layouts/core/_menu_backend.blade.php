@@ -1,10 +1,10 @@
-<nav class="navbar navbar-expand-xl navbar-dark fixed-top navbar-main py-0">
+<nav class="navbar navbar-expand-xl navbar-dark fixed-top navbar-main py-0 navbar-backend">
     <div class="container-fluid ms-0">
         <a class="navbar-brand d-flex align-items-center me-2" href="{{ action('HomeController@index') }}">
             @if (\Acelle\Model\Setting::get('site_logo_small'))
                 <img class="logo" src="{{ action('SettingController@file', \Acelle\Model\Setting::get('site_logo_small')) }}" alt="">
             @else
-                <img class="logo" src="{{ URL::asset('images/logo-' . (Auth::user()->admin->getColorScheme() == "white" ? "dark" : "light") . '.svg') }}" alt="">
+                <img class="logo default-logo" src="{{ URL::asset('images/logo-' . (Auth::user()->admin->getColorScheme() == "white" ? "dark" : "light") . '.svg') }}" alt="">
             @endif
         </a>
         <button class="navbar-toggler" role="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
