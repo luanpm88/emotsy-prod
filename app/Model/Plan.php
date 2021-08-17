@@ -473,7 +473,7 @@ class Plan extends Model
             'all_sending_servers' => 'yes',
             'max_size_upload_total' => '500',
             'max_file_size_upload' => '5',
-            'unsubscribe_url_required' => 'yes',
+            'unsubscribe_url_required' => 'no',
             'access_when_offline' => 'no',
             //'create_sending_servers' => 'no',
             'create_sending_domains' => 'yes',

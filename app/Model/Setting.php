@@ -551,6 +551,12 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
+            'campaign.enforce_unsubscribe_url_check' => [
+                'cat' => 'others',
+                'value' => 'no',
+                'type' => 'text',
+                'not_required' => true,
+            ],
         ];
     }
 

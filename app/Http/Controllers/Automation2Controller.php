@@ -12,6 +12,7 @@ use Acelle\Model\Email;
 use Acelle\Model\Attachment;
 use Acelle\Model\Template;
 use Acelle\Model\Subscriber;
+use Acelle\Model\Setting;
 use Illuminate\Support\Facades\Storage;
 use Acelle\Model\TemplateCategory;
 use Exception;
@@ -1049,7 +1050,7 @@ class Automation2Controller extends Controller
             $this->validate($request, $rules);
 
             $plan = $request->user()->customer->activeSubscription()->plan;
-            if ($plan->getOption('unsubscribe_url_required') == 'yes') {
+            if ($plan->getOption('unsubscribe_url_required') == 'yes' && Setting::isYes('campaign.enforce_unsubscribe_url_check')) {
                 if (strpos($request->content, '{UNSUBSCRIBE_URL}') === false) {
                     return response()->json(['message' => trans('messages.template.validation.unsubscribe_url_required')], 400);
                 }
@@ -1753,7 +1754,7 @@ class Automation2Controller extends Controller
             $this->validate($request, $rules);
 
             $plan = $request->user()->customer->activeSubscription()->plan;
-            if ($plan->getOption('unsubscribe_url_required') == 'yes') {
+            if ($plan->getOption('unsubscribe_url_required') == 'yes' && Setting::isYes('campaign.enforce_unsubscribe_url_check')) {
                 if (strpos($request->content, '{UNSUBSCRIBE_URL}') === false) {
                     return response()->json(['message' => trans('messages.template.validation.unsubscribe_url_required')], 400);
                 }
