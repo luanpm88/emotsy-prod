@@ -1,6 +1,6 @@
-<div class="d-flex">
+<div class="d-flex mb-3">
     <h3 class="me-auto">
-        <div class="text-muted mb-4">
+        <div class="text-muted">
             {{ trans('messages.notifications') }}
         </div>
     </h3>
