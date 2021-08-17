@@ -39,28 +39,21 @@ $(function(){
 
     $('.leftbar .navbar-main').on( 'DOMMouseScroll mousewheel', function ( event ) {
         if( event.originalEvent.detail > 0 || event.originalEvent.wheelDelta < 0 ) { //alternative options for wheelData: wheelDeltaX & wheelDeltaY
-          //scroll down
-          console.log('Down');
-          console.log(-(-$(this).css('margin-top').replace('px', '') - $(this).height()));
-          console.log($(window).height());
-
-          var isBottom = -(-$(this).css('margin-top').replace('px', '') - $(this).height() + 20) <= $(window).height();
+          var isBottom = -(-$(this).css('margin-top').replace('px', '') - $(this).height()) - 10 < $(window).height();
           var adjust;
           
           if (!isBottom) {
-            adjust = ($(this).css('margin-top').replace('px', '') - 20) + 'px';
+            adjust = ($(this).css('margin-top').replace('px', '') - 10) + 'px';
           } else {
             adjust = (-$(this).height() + $(window).height()) + 'px';
           }
 
           $(this).css('margin-top', adjust);
         } else {
-            console.log(parseInt($(this).css('margin-top').replace('px', '')));
-            console.log((parseInt($(this).css('margin-top').replace('px', '')) + 20) + 'px');
-            var isTop = parseInt($(this).css('margin-top').replace('px', '')) + 20 < 0;
+            var isTop = parseInt($(this).css('margin-top').replace('px', '')) + 10 < 0;
           
             if (isTop) {
-                adjust = (parseInt($(this).css('margin-top').replace('px', '')) + 20) + 'px';
+                adjust = (parseInt($(this).css('margin-top').replace('px', '')) + 10) + 'px';
             } else {
                 adjust = '0px';
             }
