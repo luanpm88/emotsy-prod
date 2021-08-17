@@ -28,7 +28,7 @@
         <div class="row">
             <div class="col-md-3">
                 <div class="sub_section">
-                    <h2 class="text-semibold text-primary">{{ trans('messages.profile_photo') }}</h2>
+                    <h3 class="text-semibold text-primary mb-4">{{ trans('messages.profile_photo') }}</h3>
                     <div class="media profile-image">
                         <div class="media-left">
                             <a href="#" class="upload-media-container">
@@ -53,7 +53,7 @@ delete_outline
             </div>
             <div class="col-md-5">
                 <div class="sub_section">
-                    <h2 class="text-semibold text-primary">{{ trans('messages.basic_information') }}</h2>
+                    <h3 class="text-semibold text-primary mb-4">{{ trans('messages.basic_information') }}</h3>
 
                     <div class="row">
                         <div class="col-md-6">
@@ -68,9 +68,37 @@ delete_outline
 
                     @include('helpers.form_control', ['type' => 'select', 'name' => 'language_id', 'label' => trans('messages.language'), 'value' => $admin->language_id, 'options' => Acelle\Model\Language::getSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => $user->rules()])
 
+                    <h3 class="text-semibold text-primary mb-4 mt-5">{{ trans('messages.account.personality') }}</h3>
+
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <label class="mb-2">{{ trans('messages.account.menu_layout') }}</label>
+                            <div>
+                                <label class="layout-select me-3">
+                                    <input type="radio" name="menu_layout" value="top" {{ $admin->menu_layout == 'top' || $admin->menu_layout == 'none' ? 'checked' : '' }} class="styled mr-2" />
+                                    <img src="{{ url('images/layout-menu-top.svg') }}" width="150px" />
+                                </label>
+                                <label class="layout-select">
+                                    <input type="radio" name="menu_layout" value="left" {{ $admin->menu_layout == 'left' ? 'checked' : '' }} class="styled mr-2"  />
+                                    <img src="{{ url('images/layout-menu-left.svg') }}" width="150px" />
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row">
-                        <div class="col-md-6 color-box">
-                            @include('helpers.form_control', [
+                        <div class="col-md-12 color-box">
+                            <label class="mb-2">{{ trans('messages.color_scheme') }}</label>
+                            <div class="text-left mb-4 profile-scheme-select mt-2">
+                                <input type="radio" name="color_scheme" value="default" {{ !Auth::user()->admin->getColorScheme() || Auth::user()->admin->getColorScheme() == 'default' ? 'checked' : '' }} class="color-scheme-select scheme-default" />
+                                <input type="radio" name="color_scheme" value="blue" {{ Auth::user()->admin->getColorScheme() == 'blue' ? 'checked' : '' }} class="color-scheme-select scheme-blue" />
+                                <input type="radio" name="color_scheme" value="green" {{ Auth::user()->admin->getColorScheme() == 'green' ? 'checked' : '' }} class="color-scheme-select scheme-green" />
+                                <input type="radio" name="color_scheme" value="brown" {{ Auth::user()->admin->getColorScheme() == 'brown' ? 'checked' : '' }} class="color-scheme-select scheme-brown" />
+                                <input type="radio" name="color_scheme" value="pink" {{ Auth::user()->admin->getColorScheme() == 'pink' ? 'checked' : '' }} class="color-scheme-select scheme-pink" />
+                                <input type="radio" name="color_scheme" value="grey" {{ Auth::user()->admin->getColorScheme() == 'grey' ? 'checked' : '' }} class="color-scheme-select scheme-grey" />
+                                <input type="radio" name="color_scheme" value="white" {{ Auth::user()->admin->getColorScheme() == 'white' ? 'checked' : '' }} class="color-scheme-select scheme-white" />
+                            </div>
+                            {{-- @include('helpers.form_control', [
                                 'type' => 'select',
                                 'class' => '',
                                 'name' => 'color_scheme',
@@ -78,15 +106,17 @@ delete_outline
                                 'help_class' => 'admin',
                                 'options' => Acelle\Model\Admin::colors("color_scheme"),
                                 'rules' => '',
-                            ])
+                            ]) --}}
                         </div>
-                        <div class="col-md-6 color-box">
+                    </div>
+                    <div class="row">
+                        <div class="col-md-10 color-box">
                             @include('helpers.form_control', [
                                 'type' => 'select',
                                 'class' => '',
                                 'name' => 'text_direction',
                                 'value' => $admin->text_direction,
-                                'help_class' => 'customer',
+                                'help_class' => 'admin',
                                 'options' => [
                                     ['text' => trans('messages.text_direction.ltr'), 'value' => 'ltr'],
                                     ['text' => trans('messages.text_direction.rtl'), 'value' => 'rtl']
@@ -100,7 +130,7 @@ delete_outline
             </div>
             <div class="col-md-4">
                 <div class="sub_section">
-                    <h2 class="text-semibold text-primary">{{ trans('messages.account') }}</h2>
+                    <h3 class="text-semibold text-primary mb-4">{{ trans('messages.account') }}</h3>
 
                     @include('helpers.form_control', ['type' => 'text', 'name' => 'email', 'value' => $user->email, 'help_class' => 'profile', 'rules' => $user->rules()])
 

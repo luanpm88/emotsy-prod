@@ -3766,4 +3766,12 @@
   'verification_credits_limit' => 'Verification credits limit',
   'invoice.change_plan.cancel' => 'Change your mind? Cick here to cancel',
   'automation.brief-intro.woo-abandoned-cart' => 'WooCommerce abandoned cart reminder',
+  'account.personality' => 'Personality',
+  'account.menu_layout' => 'Menu layout',
+  'account.color_scheme' => 'Choose your account color scheme',
+  'account.color_scheme.into' => 'Customize your account panel with color scheme.
+    Select one of color below you want to personalize your account',
+  'account.welcome_user' => 'Welcome back, :name!',
+  'account.menu_layout.into' => 'Select menu one of menu layouts above you like.
+    Menu layout help you easier to navigate through app pages depending on your prefer style',
 ) ?>

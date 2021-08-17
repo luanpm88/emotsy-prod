@@ -10,6 +10,11 @@
         <button class="navbar-toggler" role="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
+
+        <span class="leftbar-hide-menu">
+            <svg class="SideBurgerIcon-image" viewBox="0 0 50 32"><path d="M49,4H19c-0.6,0-1-0.4-1-1s0.4-1,1-1h30c0.6,0,1,0.4,1,1S49.6,4,49,4z"></path><path d="M49,16H19c-0.6,0-1-0.4-1-1s0.4-1,1-1h30c0.6,0,1,0.4,1,1S49.6,16,49,16z"></path><path d="M49,28H19c-0.6,0-1-0.4-1-1s0.4-1,1-1h30c0.6,0,1,0.4,1,1S49.6,28,49,28z"></path><path d="M8.1,22.8c-0.3,0-0.5-0.1-0.7-0.3L0.7,15l6.7-7.8c0.4-0.4,1-0.5,1.4-0.1c0.4,0.4,0.5,1,0.1,1.4L3.3,15l5.5,6.2   c0.4,0.4,0.3,1-0.1,1.4C8.6,22.7,8.4,22.8,8.1,22.8z"></path></svg>
+        </span>
+
         @php			
             $iconDir = "";
             if (Auth::user()->customer->getColorScheme() == 'white') {
@@ -17,7 +22,7 @@
             }
         @endphp
         <div class="collapse navbar-collapse" id="navbarsExample04">
-            <ul class="navbar-nav me-auto mb-md-0">
+            <ul class="navbar-nav me-auto mb-md-0 main-menu">
                 <li class="nav-item" rel0="HomeController">
                     <a href="{{ action('HomeController@index') }}" class="nav-link d-flex align-items-center py-3 lvl-1">
                         <i class="navbar-icon">
@@ -165,3 +170,35 @@
         </div>
     </div>
 </nav>
+
+<script>
+    var MenuFrontend = {
+        saveLeftbarState: function(state) {
+            var url = '{{ action('AccountController@leftbarState') }}';
+
+            $.ajax({
+                method: "POST",
+                url: url,
+                data: {
+                    _token: CSRF_TOKEN,
+                    state: state,
+                }
+            });
+        }
+    };
+
+    $(function() {
+        //
+        $('.leftbar .leftbar-hide-menu').on('click', function(e) {
+            if (!$('.leftbar').hasClass('leftbar-closed')) {
+                $('.leftbar').addClass('leftbar-closed');
+
+                MenuFrontend.saveLeftbarState('closed');
+            } else {
+                $('.leftbar').removeClass('leftbar-closed');
+
+                MenuFrontend.saveLeftbarState('open');
+            }
+        });
+    });        
+</script>
