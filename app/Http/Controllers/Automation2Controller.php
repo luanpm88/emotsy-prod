@@ -975,7 +975,7 @@ class Automation2Controller extends Controller
 
         // from
         if ($request->from == 'mine') {
-            $templates = $request->user()->customer->templates()->notAssociated();
+            $templates = $request->user()->customer->templates();
         } elseif ($request->from == 'gallery') {
             $templates = Template::shared();
         } else {
@@ -983,7 +983,7 @@ class Automation2Controller extends Controller
                 ->orWhere('customer_id', '=', $request->user()->customer->id);
         }
 
-        $templates = $templates->search($request->keyword);
+        $templates = $templates->notAssociated()->search($request->keyword);
 
         // category id
         if ($request->category_uid) {
@@ -1047,6 +1047,13 @@ class Automation2Controller extends Controller
             );
             
             $this->validate($request, $rules);
+
+            $plan = $request->user()->customer->activeSubscription()->plan;
+            if ($plan->getOption('unsubscribe_url_required') == 'yes') {
+                if (strpos($request->content, '{UNSUBSCRIBE_URL}') === false) {
+                    return response()->json(['message' => trans('messages.template.validation.unsubscribe_url_required')], 400);
+                }
+            }
             
             $email->setTemplateContent($request->content);
             $email->save();
@@ -1744,6 +1751,13 @@ class Automation2Controller extends Controller
             );
             
             $this->validate($request, $rules);
+
+            $plan = $request->user()->customer->activeSubscription()->plan;
+            if ($plan->getOption('unsubscribe_url_required') == 'yes') {
+                if (strpos($request->content, '{UNSUBSCRIBE_URL}') === false) {
+                    return response()->json(['message' => trans('messages.template.validation.unsubscribe_url_required')], 400);
+                }
+            }
 
             $email->setTemplateContent($request->content);
 

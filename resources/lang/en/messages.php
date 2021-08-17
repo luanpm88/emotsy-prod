@@ -3017,6 +3017,7 @@
   'template.thumb.upload_thumbnail_url' => 'Select thumbnail url',
   'template.thumb.upload_thumbnail_url.intro' => 'Enter image url below which will be used as template thumbnail',
   'template.thumb.uploaded' => 'Template thumbnail was uploaded successfully',
+  'template.validation.unsubscribe_url_required' => '{UNSUBSCRIBE_URL} tag must be present in your email content',
   'campaign.plain_text_editor' => 'Plain text editor',
   'campaign.html_editor' => 'HTML Editor',
   'email.plain_text_editor' => 'Plain text editor',

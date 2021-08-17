@@ -410,6 +410,15 @@ class CampaignController extends Controller
 
             $this->validate($request, $rules);
 
+            // template extra validation by plan (unsubscribe URL for example)
+            // UGLY code here, @todo: find a good place to handle this type of validation
+            $plan = $request->user()->customer->activeSubscription()->plan;
+            if ($plan->getOption('unsubscribe_url_required') == 'yes') {
+                if (strpos($request->content, '{UNSUBSCRIBE_URL}') === false) {
+                    return response()->json(['message' => trans('messages.template.validation.unsubscribe_url_required')], 400);
+                }
+            }
+
             $campaign->setTemplateContent($request->content);
             $campaign->save();
 
@@ -615,8 +624,26 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
+        try {
+            $score = $campaign->score();
+        } catch (\Exception $e) {
+            $score = null;
+        }
+
         // validate and save posted data
         if ($request->isMethod('post') && $campaign->step() >= 5) {
+            // UGLY CODE
+            $plan = $customer->activeSubscription()->plan;
+            if ($plan->getOption('unsubscribe_url_required') == 'yes') {
+                if (strpos($campaign->getTemplateContent(), '{UNSUBSCRIBE_URL}') === false) {
+                    $request->session()->flash('alert-error', trans('messages.template.validation.unsubscribe_url_required'));
+                    return view('campaigns.confirm', [
+                        'campaign' => $campaign,
+                        'score' => $score,
+                    ]);
+                }
+            }
+
             // Save campaign
             // @todo: check campaign status before requeuing. Otherwise, several jobs shall be created and campaign will get sent several times
             $campaign->schedule();
@@ -625,12 +652,6 @@ class CampaignController extends Controller
             $campaign->log('started', $customer);
 
             return redirect()->action('CampaignController@index');
-        }
-
-        try {
-            $score = $campaign->score();
-        } catch (\Exception $e) {
-            $score = null;
         }
 
         return view('campaigns.confirm', [
@@ -1875,6 +1896,14 @@ class CampaignController extends Controller
             if ($validator->fails()) {
                 // faled
                 return response()->json($validator->errors(), 400);
+            }
+
+            // UGLY CODE here, @todo: find a better place to house this type of validation
+            $plan = $request->user()->customer->activeSubscription()->plan;
+            if ($plan->getOption('unsubscribe_url_required') == 'yes') {
+                if (strpos($request->html, '{UNSUBSCRIBE_URL}') === false) {
+                    return response()->json(['message' => trans('messages.template.validation.unsubscribe_url_required')], 400);
+                }
             }
             
             // Save template
