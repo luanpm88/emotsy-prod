@@ -200,6 +200,9 @@
         left: -420px;
         box-shadow: 1px 1px 8px rgba(0,0,0,0.3);
     }
+    .leftbar-closed .middle-bar {
+        margin-left: 60px;
+    }
     .leftbar .middle-bar:before {
         content: 'ss';
         position: fixed;
