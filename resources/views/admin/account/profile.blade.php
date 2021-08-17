@@ -87,7 +87,7 @@ delete_outline
                     </div>
 
                     <div class="row">
-                        <div class="col-md-10 color-box">
+                        <div class="col-md-12 color-box">
                             <label class="mb-2">{{ trans('messages.color_scheme') }}</label>
                             <div class="text-left mb-4 profile-scheme-select mt-2">
                                 <input type="radio" name="color_scheme" value="default" {{ !Auth::user()->admin->getColorScheme() || Auth::user()->admin->getColorScheme() == 'default' ? 'checked' : '' }} class="color-scheme-select scheme-default" />
