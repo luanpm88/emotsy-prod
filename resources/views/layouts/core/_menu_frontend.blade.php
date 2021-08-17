@@ -4,7 +4,7 @@
             @if (\Acelle\Model\Setting::get('site_logo_small'))
                 <img class="logo" src="{{ action('SettingController@file', \Acelle\Model\Setting::get('site_logo_small')) }}" alt="">
             @else
-                <img class="logo" src="{{ URL::asset('images/logo-' . (Auth::user()->customer->getColorScheme() == "white" ? "dark" : "light") . '.svg') }}" alt="">
+                <img class="logo default-logo" src="{{ URL::asset('images/logo-' . (Auth::user()->customer->getColorScheme() == "white" ? "dark" : "light") . '.svg') }}" alt="">
             @endif
         </a>
         <button class="navbar-toggler" role="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
@@ -22,10 +22,10 @@
             }
         @endphp
 
-        <div class="collapse navbar-collapse" id="navbarsExample04">
+        <div class="collapse navbar-collapse {{ Auth::user()->customer->menu_layout }}bar-navbar" id="navbarsExample04">
             <ul class="navbar-nav me-auto mb-md-0 main-menu">
                 <li class="nav-item" rel0="HomeController">
-                    <a href="{{ action('HomeController@index') }}" class="nav-link d-flex align-items-center py-3 lvl-1">
+                    <a href="{{ action('HomeController@index') }}" title="{{ trans('messages.dashboard') }}" class="leftbar-tooltip nav-link d-flex align-items-center py-3 lvl-1">
                         <i class="navbar-icon">
                             <img src="{{ url('images/icons/'.$iconDir.'SVG/home.svg') }}" />
                         </i>
@@ -33,7 +33,7 @@
                     </a>
                 </li>
                 <li class="nav-item" rel0="CampaignController">
-                    <a href="{{ action('CampaignController@index') }}" class="nav-link d-flex align-items-center py-3 lvl-1">
+                    <a title="{{ trans('messages.campaigns') }}" href="{{ action('CampaignController@index') }}" class="leftbar-tooltip nav-link d-flex align-items-center py-3 lvl-1">
                         <i class="navbar-icon">
                             <img src="{{ url('images/icons/'.$iconDir.'SVG/campaign.svg') }}" />
                         </i>
@@ -41,7 +41,7 @@
                     </a>
                 </li>
                 <li class="nav-item" rel0="Automation2Controller">
-                    <a href="{{ action('Automation2Controller@index') }}" class="nav-link d-flex align-items-center py-3 lvl-1">
+                    <a href="{{ action('Automation2Controller@index') }}" title="{{ trans('messages.automations') }}" class="leftbar-tooltip nav-link d-flex align-items-center py-3 lvl-1">
                         <i class="navbar-icon">
                             <img style="width: 17px" src="{{ url('images/icons/'.$iconDir.'SVG/automation.svg') }}" />
                         </i>
@@ -49,7 +49,7 @@
                     </a>
                 </li>
                 <li class="nav-item" rel0="MailListController">
-                    <a href="{{ action('MailListController@index') }}" class="nav-link d-flex align-items-center py-3 lvl-1">
+                    <a href="{{ action('MailListController@index') }}" title="{{ trans('messages.lists') }}" class="leftbar-tooltip nav-link d-flex align-items-center py-3 lvl-1">
                         <i class="navbar-icon">
                             <img style="width: 21px" src="{{ url('images/icons/'.$iconDir.'SVG/list.svg') }}" />
                         </i>
@@ -57,7 +57,7 @@
                     </a>
                 </li>
                 <li class="nav-item" rel0="TemplateController">
-                    <a href="{{ action('TemplateController@index') }}" class="nav-link d-flex align-items-center py-3 lvl-1">
+                    <a href="{{ action('TemplateController@index') }}" title="{{ trans('messages.templates') }}" class="leftbar-tooltip nav-link d-flex align-items-center py-3 lvl-1">
                         <i class="navbar-icon">
                             <img style="width: 18px" src="{{ url('images/icons/'.$iconDir.'SVG/template.svg') }}" />
                         </i>
@@ -66,8 +66,8 @@
                 </li>
                 @if (config('custom.woo'))
                 <li class="nav-item dropdown">
-                    <a href=""
-                        class="nav-link d-flex align-items-center py-3 lvl-1 dropdown-toggle"
+                    <a href="" title="{{ trans('messages.content') }}"
+                        class="leftbar-tooltip nav-link d-flex align-items-center py-3 lvl-1 dropdown-toggle"
                         id="content-menu" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="navbar-icon">
                             <img style="width: 17px" src="{{ url('images/icons/'.$iconDir.'SVG/content.svg') }}" />
@@ -101,7 +101,7 @@
                     true
                 )
                     <li class="nav-item dropdown">
-                        <a href="{{ action('TemplateController@index') }}" class="nav-link d-flex align-items-center py-3 lvl-1 dropdown-toggle" id="sending-menu" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a title="{{ trans('messages.sending') }}" href="{{ action('TemplateController@index') }}" class="leftbar-tooltip nav-link d-flex align-items-center py-3 lvl-1 dropdown-toggle" id="sending-menu" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="navbar-icon">
                                 <img style="width: 17px" src="{{ url('images/icons/'.$iconDir.'SVG/sending.svg') }}" />
                             </i>

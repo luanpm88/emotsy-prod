@@ -1,7 +1,7 @@
 function initJs(container)
 {
     // tooltip
-    container.find('.xtooltip:not([title=""]), [data-popup=tooltip]:not([title=""])').tooltipster({
+    container.find('.xtooltip:not([title=""]), [data-popup=tooltip]:not([title=""]), .leftbar-navbar .leftbar-tooltip:not([title=""])').tooltipster({
         theme: 'tooltipster-light'
     });
 

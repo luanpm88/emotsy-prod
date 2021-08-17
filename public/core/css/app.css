@@ -6970,8 +6970,13 @@ a.trigger-woo-abandoned-cart:hover {
         display: block!important;
     }
     .leftbar .navbar-brand {
-        margin-top: 2px;
+        margin-top: 10px;
+        margin-left: 10px;
         margin-bottom: 15px;
+    }
+    .leftbar .navbar-brand .default-logo {
+        margin-left: -10px;
+        margin-top: -17px;
     }
     .leftbar .navbar-main .navbar-nav .lvl-1 {
         padding-top: 11px!important;
