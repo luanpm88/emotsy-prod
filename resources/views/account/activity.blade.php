@@ -27,15 +27,15 @@
                     <!-- Sales stats -->
                     <div class="d-flex mb-3">
                         <div class="me-3">
-                            <a href="#"><img width="50px" class="rounded-circle shadow-sm" src="{{ $log->customer->user->getProfileImageUrl() }}" alt=""></a>
+                            <a href="#"><img width="40px" class="rounded-circle shadow-sm" src="{{ $log->customer->user->getProfileImageUrl() }}" alt=""></a>
                         </div>
 
                         <div class="card px-0 shadow-sm container-fluid">
                             <div class="card-body pt-2">
                                 <div class="d-flex align-items-center pt-1">
                                     <label class="panel-title text-semibold my-0 fw-600">{{ $log->customer->user->displayName() }}</label>
-                                    <div class="d-flex align-items-center ms-auto text-muted">
-                                        <span style="font-size: 18px" class="material-icons-outlined ms-auto me-2">
+                                    <div class="d-flex align-items-center ms-auto text-muted small">
+                                        <span class="material-icons-outlined ms-auto me-1 small">
                                             history
                                         </span>
                                         <div class="">
@@ -43,7 +43,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <p class="mb-0">{!! $log->message() !!}</p>
+                                <p class="mb-0 mt-1 small">{!! $log->message() !!}</p>
                             </div>
                         </div>
                     </div>
