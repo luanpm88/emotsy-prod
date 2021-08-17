@@ -41,70 +41,8 @@
             </div>
         </div>
     </div>
+
+    <div class="text-center mt-4">
+        <a href="{{ action("AccountController@logs") }}" class="btn btn-info">{{ trans('messages.all_activities') }}</a>
+    </div>
 @endif
-
-
-{{-- @extends('layouts.popup.large')
-
-@section('title')
-    {{ trans('messages.activities') }}
-@endsection
-
-@section('content')
-    <div id="ActivityPopupContainer"
-    data-url="{{ action('AccountController@logsListing') }}"
-    per-page="{{ Acelle\Model\Log::$itemsPerPage }}"                
-    >                
-    <div class="row top-list-controls py-2">
-        <div class="col-md-10">               
-            <div class="filter-box">
-                <span class="filter-group">
-                    <span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
-                    <select class="select" name="sort_order">
-                        <option value="created_at">{{ trans('messages.created_at') }}</option>
-                    </select>                                        
-                    <input type="hidden" name="sort_direction" value="desc" />
-<button type="button" class="btn btn-xs sort-direction" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" role="button" class="btn btn-xs">
-                        <span class="material-icons-outlined desc">
-sort
-</span>
-                    </button>
-                </span>
-                <span class="filter-group ml-10">
-                    <span class="title text-semibold text-muted">{{ trans('messages.type') }}</span>
-                    <select class="select" name="type">
-                        <option value="">{{ trans('messages.all') }}</option>
-                        <option value="list">{{ trans('messages.list') }}</option>
-                        <option value="segment">{{ trans('messages.segment') }}</option>
-                        <option value="page">{{ trans('messages.page') }}</option>
-                        <option value="subscriber">{{ trans('messages.subscriber') }}</option>
-                        <option value="campaign">{{ trans('messages.campaign') }}</option>
-                    </select>                                        
-                </span>
-            </div>
-        </div>
-    </div>
-
-    <div id="ActivityPopupContent" class="pml-table-container">
-        
-        
-        
-    </div>
-    </div>
-
-    <script>
-        var ActivityPopup = {
-            getList: function() {
-                return makeList({
-                    url: '{{ action('AccountController@logsListing') }}',
-                    container: $('#ActivityPopupContainer'),
-                    content: $('#ActivityPopupContent')
-                });
-            }
-        };
-
-        $(document).ready(function() {
-            ActivityPopup.getList().load();
-        });
-    </script>
-@endsection --}}
