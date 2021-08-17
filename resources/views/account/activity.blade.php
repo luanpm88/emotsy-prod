@@ -1,6 +1,6 @@
 <div class="d-flex">
     <h3 class="me-auto">
-        <div class="text-muted mb-4">
+        <div class="mb-4">
             {{ trans('messages.activities') }}
         </div>
     </h3>
