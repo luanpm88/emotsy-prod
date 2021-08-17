@@ -75,7 +75,7 @@ delete_outline
                             <label class="mb-2">{{ trans('messages.account.menu_layout') }}</label>
                             <div>
                                 <label class="layout-select me-3">
-                                    <input type="radio" name="menu_layout" value="top" {{ $admin->menu_layout == 'top' || $customer->menu_layout == 'none' ? 'checked' : '' }} class="styled mr-2" />
+                                    <input type="radio" name="menu_layout" value="top" {{ $admin->menu_layout == 'top' || $admin->menu_layout == 'none' ? 'checked' : '' }} class="styled mr-2" />
                                     <img src="{{ url('images/layout-menu-top.svg') }}" width="150px" />
                                 </label>
                                 <label class="layout-select">
@@ -106,7 +106,7 @@ delete_outline
                                 'class' => '',
                                 'name' => 'text_direction',
                                 'value' => $admin->text_direction,
-                                'help_class' => 'customer',
+                                'help_class' => 'admin',
                                 'options' => [
                                     ['text' => trans('messages.text_direction.ltr'), 'value' => 'ltr'],
                                     ['text' => trans('messages.text_direction.rtl'), 'value' => 'rtl']

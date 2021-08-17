@@ -16,7 +16,26 @@
             <i class="material-icons-outlined customer-warning-icon text-danger" style="right:2px;color:rgb(236, 124, 124)!important;top:2px;position:absolute">info</i>
         @endif
     </a>
-    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-bottom" aria-labelledby="content-menu">
+    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-bottom top-user-menus" aria-labelledby="content-menu">
+        <li class="backdrop p-4 d-flex align-items-center justify-content-center">
+            <img src="{{ url('images/paper-airplane.svg') }}" width="100px" />
+        </li>
+        <li class="p-3" style="width: 300px">
+            <div class="d-flex">
+                <div class="big-avatar me-3">
+                    <img width="80px" class="" src="{{ Auth::user()->getProfileImageUrl() }}"
+                        style="border-radius:100%"
+                        class="menu-user-avatar" alt="">
+                </div>
+                <div>
+                    <label class="fs-6 fw-600 d-flex align-items-center">
+                        <span class="me-3">{{ Auth::user()->displayName() }}</span>
+                    </label>
+                    <p class="mb-1 small text-muted">{{ Auth::user()->email }}</p>
+                    <span class="label label-flat bg-{{ Auth::user()->status }}">{{ trans('messages.' . Auth::user()->status) }}</span>
+                </div>
+            </div>
+        </li>
         @can("admin_access", Auth::user())
             <li class="border-bottom"><a href="{{ action("Admin\HomeController@index") }}" class="dropdown-item d-flex align-items-center">
             <i class="navbar-icon mr-2">
@@ -43,7 +62,7 @@
                     <i class="material-icons-outlined subscription-warning-icon text-danger" style="font-size: inherit;
                         position: absolute;
                         right: 0;
-                        top: 0;">info</i>
+                        top: 0;margin-top: 10px">info</i>
                 @endif
             </a>
         </li>
