@@ -6938,11 +6938,14 @@ a.trigger-woo-abandoned-cart:hover {
     .leftbar .navbar-main {
         width: 230px;
         height: 100vh;
-        /* overflow: auto; */
         display: block;
         background-color: rgba(0, 25, 39, 0.85);
         transition: width 0.1s ease-in-out;
+        min-height: 492px;
     } 
+    .leftbar-closed .navbar-main {
+        min-height: 525px;
+    }
     .leftbar .navbar-main .navbar-nav {
         display: block;
     }
@@ -7009,7 +7012,7 @@ a.trigger-woo-abandoned-cart:hover {
     }
     .leftbar-hide-menu svg {
         fill: currentColor;
-        width: 28px;
+        width: 27px;
     }
     .leftbar .navbar-right {
         position: absolute;
