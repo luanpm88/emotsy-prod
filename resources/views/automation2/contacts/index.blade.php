@@ -98,7 +98,7 @@ full-height
 
     <div class="input-with-icon mb-4">
         <i class="material-icons-outlined">search</i>
-        <input class="form-control mt-3" name="contact_keyword" placeholder='Enter to search contacts...' />
+        <input class="form-control mt-3" name="contact_keyword" placeholder='{{ trans('messages.automation.contacts.search.placeholder') }}' />
     </div>
         
     <div class="contacts_list ajax-list"></div>
