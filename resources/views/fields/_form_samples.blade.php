@@ -42,20 +42,20 @@ delete_outline
 		@if (in_array($type, ["dropdown","multiselect","checkbox","radio"]))
 			<tr class="child" parent="__index__">
 				<td></td>
-				<td colspan="5" class="sub_field_options">
+				<td colspan="3" class="sub_field_options">
 					<div class="row">
 						<div class="col-md-12">
 							<div class="row label-value-groups">
 								<div class="col-md-6 text-nowrap label-value-group" rel="0">
-									<div class="pull-left mr-10">@include('helpers.form_control', ['type' => 'text', 'placeholder' => trans('messages.label'), 'name' => 'fields[__index__][options][0][label]', 'label' => '', 'value' => '', 'help_class' => 'field'])</div>
-									<div class="pull-left mr-10">@include('helpers.form_control', ['type' => 'text', 'placeholder' => trans('messages.value'), 'name' => 'fields[__index__][options][0][value]', 'label' => '', 'value' => '', 'help_class' => 'field'])</div>
+									<div class="pull-left me-2">@include('helpers.form_control', ['type' => 'text', 'placeholder' => trans('messages.label'), 'name' => 'fields[__index__][options][0][label]', 'label' => '', 'value' => '', 'help_class' => 'field'])</div>
+									<div class="pull-left me-2">@include('helpers.form_control', ['type' => 'text', 'placeholder' => trans('messages.value'), 'name' => 'fields[__index__][options][0][value]', 'label' => '', 'value' => '', 'help_class' => 'field'])</div>
 									<div class="pull-left"><a href="#remove" onclick="$(this).parents('.label-value-group').remove()" class="btn btn-xs bg-grey-600"><i class="icon-cross"></i></a></div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</td>
-				<td>
+				<td colspan="3">
 					<a href="#add_more" class="btn btn-secondary add_label_value_group">{{ trans('messages.add_more') }}</a>
 				</td>
 			</tr>

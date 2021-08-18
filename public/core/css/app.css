@@ -700,7 +700,7 @@ h2 [class^="icon-"] {
     width: auto;
     margin: 0;
     display: inline;
-    max-width: 300px;
+    max-width: 180px;
 }
 .field-list .form-group {
     margin: 0;
@@ -721,7 +721,7 @@ input.error {
 .label-value-group {
     width: 100%;
     margin-bottom: 15px;
-    float: left;
+    display: flex;
 }
 .label-value-groups .label-value-group:first-child a.btn {
     display: none;
