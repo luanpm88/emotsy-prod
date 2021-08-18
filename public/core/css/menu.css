@@ -27,7 +27,7 @@
         min-height: 492px;
     } 
     .leftbar-closed .navbar-main {
-        min-height: 525px;
+        min-height: 565px;
     }
     .leftbar .navbar-main .navbar-nav {
         display: block;
@@ -170,10 +170,10 @@
     }
     .leftbar-closed .lvl-1 .navbar-icon img {
         opacity: 0.9;
-        transform: scale(1.1);
+        transform: scale(1);
     }
     .leftbar-closed .navbar-main .navbar-nav .lvl-1 {
-        padding: 14px 18px!important;
+        padding: 15px 18px!important;
         margin-bottom: 1px;
     }
     .leftbar-closed .navbar-main .navbar-nav {
@@ -202,6 +202,10 @@
     }
     .leftbar-closed .middle-bar {
         margin-left: 60px;
+    }
+    .leftbar-closed .main-menu .navbar-icon img, .leftbar-closed .navbar-right .navbar-icon img {
+        width: 1.4rem!important;
+        height: 1.4rem!important;
     }
 
     .leftbar .middle-bar .action-log-box {
