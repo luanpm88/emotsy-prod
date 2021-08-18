@@ -7116,6 +7116,7 @@ hr {
     background-size: cover;
     background-size: auto 100%;
     background-position: center right;
+    overflow: hidden;
 }
 .top-user-menus li {
     max-width: 300px;
