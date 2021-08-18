@@ -265,6 +265,7 @@
         margin: 0;
         height: 100vh;
         box-shadow: inset 0px 0px 15px rgba(0,0,0,0.1);
+        width: 0px;
     }
     .leftbar .middle-bar .content {
         padding: 10px 20px 20px 20px;
@@ -283,6 +284,7 @@
         right: 0;
         left: auto;
         height: calc(100vh - 53px);
+        width: 420px;
     }
     .leftbar.middle-bar-open .page-container {
         transform: translateX(-420px);
@@ -329,6 +331,7 @@
     margin: 0;
     height: 100vh;
     box-shadow: inset 0px 0px 15px rgba(0,0,0,0.1);
+    width: 0px;
 }
 .topbar .middle-bar .content {
     padding: 10px 20px 20px 20px;
@@ -347,6 +350,7 @@
     right: 0;
     left: auto;
     height: calc(100vh - 53px);
+    width: 420px;
 }
 .topbar.middle-bar-open .page-container {
     transform: translateX(-420px);
