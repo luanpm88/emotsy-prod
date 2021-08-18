@@ -198,20 +198,10 @@
         transition: all 0.2s ease-in-out;
         position: fixed;
         left: -420px;
-        box-shadow: 1px 1px 15px rgba(0,0,0,0.05);
+        box-shadow: inset 0px 0px 15px rgba(0,0,0,0.1);
     }
     .leftbar-closed .middle-bar {
         margin-left: 60px;
-    }
-    .leftbar .middle-bar:before {
-        content: 'ss';
-        position: fixed;
-        height: 100vh;
-        width: 1px;
-        margin-left: -1px;
-        background: transparent;
-        box-shadow: 1px 1px 8px rgba(0,0,0,0.3);
-        text-indent: -90000px;
     }
 
     .leftbar .middle-bar .action-log-box {
@@ -270,15 +260,7 @@
         border-radius: 0;
         margin: 0;
         height: 100vh;
-    }
-    .leftbar .middle-bar:before {
-        content: 'ss';
-        position: fixed;
-        height: 100vh;
-        width: 1px;
-        background: #fff;
-        box-shadow: 1px 1px 10px rgba(0,0,0,0.2);
-        text-indent: -90000px;
+        box-shadow: inset 0px 0px 15px rgba(0,0,0,0.1);
     }
     .leftbar .middle-bar .content {
         padding: 10px 20px 20px 20px;
@@ -323,7 +305,7 @@
     .leftbar .middle-bar-head .middle-bar-close-button {
         background: #fff;
         border-radius: 30px 0px 0 30px;
-        margin-left: -3px;
+        margin-left: -4px;
         transform: rotate(180deg);
     }
 }
@@ -342,15 +324,7 @@
     border-radius: 0;
     margin: 0;
     height: 100vh;
-}
-.topbar .middle-bar:before {
-    content: 'ss';
-    position: fixed;
-    height: 100vh;
-    width: 1px;
-    background: #fff;
-    box-shadow: 1px 1px 10px rgba(0,0,0,0.2);
-    text-indent: -90000px;
+    box-shadow: inset 0px 0px 15px rgba(0,0,0,0.1);
 }
 .topbar .middle-bar .content {
     padding: 10px 20px 20px 20px;
@@ -392,7 +366,7 @@
 .topbar .middle-bar-head .middle-bar-close-button {
     background: #fff;
     border-radius: 30px 0px 0 30px;
-    margin-left: -3px;
+    margin-left: -4px;
     transform: rotate(180deg);
 }
 
