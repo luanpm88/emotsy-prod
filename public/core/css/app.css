@@ -37,6 +37,24 @@ body {
     -moz-osx-font-smoothing: grayscale;
     text-rendering: geometricPrecision; */
 }
+*::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 3px rgba(0,0,0,0.05);
+    background-color: #eceff1;
+}
+
+*::-webkit-scrollbar
+{
+	width: 7px;
+	background-color: #F5F5F5;
+}
+
+*::-webkit-scrollbar-thumb
+{
+	background-color: #aaa;
+	border: 2px solid #aaa;
+    border-radius: 10px;
+}
 h2, .h2 {
     font-size: 28px;
 }
