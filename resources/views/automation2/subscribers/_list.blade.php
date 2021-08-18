@@ -71,13 +71,13 @@
 					<div class="btn-group">
 						<button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
 						<ul class="dropdown-menu dropdown-menu-end">
-							@if (\Gate::allows('subscribe', $item))
-								<li><a class="dropdown-item list-action-single" link-method="POST" href="{{ action('SubscriberController@subscribe', ['list_uid' => $list->uid, "uids" => $item->uid]) }}"><span class="material-icons-outlined">
+							@if (\Gate::allows('subscribe', $subscriber))
+								<li><a class="dropdown-item list-action-single" link-method="POST" href="{{ action('SubscriberController@subscribe', ['list_uid' => $list->uid, "uids" => $subscriber->uid]) }}"><span class="material-icons-outlined">
 mark_email_read
 </span> {{ trans('messages.subscribe') }}</a></li>
 							@endif
-							@if (\Gate::allows('unsubscribe', $item))
-								<li><a class="dropdown-item list-action-single" link-method="POST" href="{{ action('SubscriberController@unsubscribe', ['list_uid' => $list->uid, "uids" => $item->uid]) }}"><span class="material-icons-round">
+							@if (\Gate::allows('unsubscribe', $subscriber))
+								<li><a class="dropdown-item list-action-single" link-method="POST" href="{{ action('SubscriberController@unsubscribe', ['list_uid' => $list->uid, "uids" => $subscriber->uid]) }}"><span class="material-icons-round">
 logout
 </span> {{ trans('messages.unsubscribe') }}</a></li>
 							@endif
@@ -85,7 +85,7 @@ logout
 							<li>
 								<a href="#copy" class="dropdown-item copy_move_subscriber"
 									data-url="{{ action('SubscriberController@copyMoveForm', [
-										'uids' => $item->uid,
+										'uids' => $subscriber->uid,
 										'from_uid' => $list->uid,
 										'action' => 'copy',
 									]) }}">
@@ -97,7 +97,7 @@ copy_all
 							<li>
 								<a href="#move" class="dropdown-item copy_move_subscriber"
 									data-url="{{ action('SubscriberController@copyMoveForm', [
-										'uids' => $item->uid,
+										'uids' => $subscriber->uid,
 										'from_uid' => $list->uid,
 										'action' => 'move',
 									]) }}">
@@ -106,17 +106,17 @@ exit_to_app
 </span> {{ trans('messages.move_to') }}
 								</a>
 							</li>
-							@if (\Gate::allows('update', $item))
+							@if (\Gate::allows('update', $subscriber))
 								<li>
-									<a class="dropdown-item list-action-single" link-method="POST" link-confirm="{{ trans('messages.subscribers.resend_confirmation_email.confirm') }}" href="{{ action('SubscriberController@resendConfirmationEmail', ['list_uid' => $list->uid, "uids" => $item->uid]) }}">
+									<a class="dropdown-item list-action-single" link-method="POST" link-confirm="{{ trans('messages.subscribers.resend_confirmation_email.confirm') }}" href="{{ action('SubscriberController@resendConfirmationEmail', ['list_uid' => $list->uid, "uids" => $subscriber->uid]) }}">
 										<span class="material-icons-outlined">
 mark_email_read
 </span> {{ trans('messages.subscribers.resend_confirmation_email') }}
 									</a>
 								</li>
 							@endif
-							@if (\Gate::allows('delete', $item))
-								<li><a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.delete_subscribers_confirm') }}" href="{{ action('SubscriberController@delete', ['list_uid' => $list->uid, "uids" => $item->uid]) }}"><span class="material-icons-outlined">
+							@if (\Gate::allows('delete', $subscriber))
+								<li><a class="dropdown-item list-action-single" link-confirm="{{ trans('messages.delete_subscribers_confirm') }}" href="{{ action('SubscriberController@delete', ['list_uid' => $list->uid, "uids" => $subscriber->uid]) }}"><span class="material-icons-outlined">
 delete_outline
 </span> {{ trans("messages.delete") }}</a></li>
 							@endif	
