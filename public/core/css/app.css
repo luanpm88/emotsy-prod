@@ -6226,6 +6226,10 @@ h1, h1 {
     font-family: 'Material Icons Outlined';
     border: none;
     line-height: 21px;
+    opacity: 0.5;
+}
+.dropdown-toggle:hover::after {
+    opacity: 1;
 }
 .btn.dropdown-toggle {
     display: flex;
