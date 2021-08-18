@@ -107,7 +107,7 @@ people_outline
                 @forelse(Auth::user()->admin->recentCustomers() as $customer)
                     <li class="">
                         <div class="row">
-                            <div class="col-sm-5 col-md-5">
+                            <div class="col-sm-8 col-md-8">
                                 <div class="d-flex">
                                     <div class="me-3">
                                         <img width="40" class="rounded-circle shadow-sm mr-10 pull-left" src="{{ $customer->user->getProfileImageUrl() }}" alt="">
@@ -125,16 +125,11 @@ people_outline
                                 </div>
                                 
                             </div>
-                            <div class="col-sm-4 col-md-4 text-left">
-                                <h6 class="no-margin text-semibold">
+                            <div class="col-sm-4 col-md-4 text-end">
+                                <h6 class="no-margin text-semibold small">
                                     {{ Tool::formatDateTime($customer->created_at) }}
                                 </h6>
                                 <span class="">{{ trans('messages.created_at') }}</span>
-                            </div>
-                            <div class="col-sm-3 col-md-3 text-left">
-                                <span class="text-muted2 list-status pull-left">
-                                    <span class="label label-flat bg-{{ $customer->status }}">{{ trans('messages.subscription_status_' . $customer->status) }}</span>
-                                </span>
                             </div>
                         </div>
                     </li>
