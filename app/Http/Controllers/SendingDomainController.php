@@ -119,6 +119,8 @@ class SendingDomainController extends Controller
         $plan = $customer->activeSubscription()->plan;
         if ($plan->useSystemSendingServer()) {
             $server = $plan->primarySendingServer();
+        } else {
+            $server = null;
         }
 
         if ($server && $server->allowVerifyingOwnDomainsRemotely()) {
