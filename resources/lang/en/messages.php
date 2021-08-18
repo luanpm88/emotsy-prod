@@ -3777,4 +3777,5 @@
   'account.menu_layout.into' => 'Select menu one of menu layouts above you like.
     Menu layout help you easier to navigate through app pages depending on your prefer style',
   'all_activities' => 'All activities',
+  'embedded_form_code.copied' => 'Embedded code was copied',
 ) ?>
