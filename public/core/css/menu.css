@@ -198,7 +198,7 @@
         transition: all 0.2s ease-in-out;
         position: fixed;
         left: -420px;
-        box-shadow: 1px 1px 8px rgba(0,0,0,0.3);
+        box-shadow: 1px 1px 15px rgba(0,0,0,0.05);
     }
     .leftbar-closed .middle-bar {
         margin-left: 60px;
@@ -210,7 +210,7 @@
         width: 1px;
         margin-left: -1px;
         background: transparent;
-        box-shadow: 1px 1px 15px rgba(0,0,0,0.05);
+        box-shadow: 1px 1px 8px rgba(0,0,0,0.3);
         text-indent: -90000px;
     }
 
