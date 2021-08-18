@@ -53,7 +53,12 @@
                 </td>
                 <td class="text-center">
                     <span class="text-muted2 list-status">
-                        <span class="label label-flat bg-{{ $automation->status }}">{{ trans('messages.automation.status.' . $automation->status) }}</span>
+                        @if (empty($automation->last_error))
+                            <span class="label label-flat bg-{{ $automation->status }}">{{ trans('messages.automation.status.' . $automation->status) }}</span>
+                        @else
+                            <span class="label xtooltip label-flat bg-error" title="{{ $automation->last_error }}">Error</span>
+                            <pre style="display:none">{{ $automation->last_error }}</pre>
+                        @endif
                     </span>
                 </td>
                 <td class="text-end text-nowrap">
