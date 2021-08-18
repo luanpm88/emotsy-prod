@@ -173,7 +173,7 @@ b, strong {
     padding-left: 20px;
     padding-right: 20px;
 }
-.page-title .breadcrumb > li > a, .page-title .breadcrumb > li + li:before {
+.breadcrumb > li > a, .page-title .breadcrumb > li + li:before {
     color: #333;
 }
 .select2-search--dropdown .select2-search__field {
