@@ -8,3 +8,22 @@
         
     </div>
 </div>
+
+<script>
+    $(function() {
+        // middle bar close
+        $('.middle-bar-close-button').on('click', function() {
+            hideMiddleBar();
+        });
+        $(document).on('mouseup', function(e) 
+        {
+            var container = $(".middle-bar, .middle-bar-element");
+
+            // if the target of the click isn't the container nor a descendant of the container
+            if (!container.is(e.target) && container.has(e.target).length === 0) 
+            {
+                hideMiddleBar();
+            }
+        });
+    })
+</script>

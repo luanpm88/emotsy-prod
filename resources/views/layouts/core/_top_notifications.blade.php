@@ -20,16 +20,14 @@
 
 	$(function() {
 		$('.notifications-menu-item').on('click', function() {
-			if (middleBarShowed()) {
-				hideMiddleBar();
+			var sidebar = new Sidebar();
+			if(!sidebar.showed()) {
+				sidebar.load({
+					url: '{{ action('Admin\NotificationController@popup') }}'
+				});
 			} else {
-				openMiddleBar();
-
-				notificationBox = new Box($('.middle-bar .content'), '{{ action('Admin\NotificationController@popup') }}');
-
-				notificationBox.load();
-			}
-			
+				sidebar.hide();
+			}			
 		});
 	});
 </script>

@@ -43,6 +43,7 @@
 <script type="text/javascript" src="{{ URL::asset('core/js/link.js') }}"></script>
 <script type="text/javascript" src="{{ URL::asset('core/js/box.js') }}"></script>
 <script type="text/javascript" src="{{ URL::asset('core/js/popup.js') }}"></script>
+<script type="text/javascript" src="{{ URL::asset('core/js/sidebar.js') }}"></script>
 <script type="text/javascript" src="{{ URL::asset('core/js/list.js') }}"></script>
 <script type="text/javascript" src="{{ URL::asset('core/js/anotify.js') }}"></script>
 <script type="text/javascript" src="{{ URL::asset('core/js/dialog.js') }}"></script>

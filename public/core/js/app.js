@@ -37,7 +37,6 @@ $(function(){
         quotaPopup.load();
     });
 
-
     // leftbar scroll behaviour
     $('.leftbar .navbar-main').on( 'DOMMouseScroll mousewheel', function ( event ) {
         if ($(this).parent('.dropdown-menu').length) {
@@ -46,19 +45,19 @@ $(function(){
         }
 
         if( event.originalEvent.detail > 0 || event.originalEvent.wheelDelta < 0 ) { //alternative options for wheelData: wheelDeltaX & wheelDeltaY
-          var isBottom = -(-$(this).css('margin-top').replace('px', '') - $(this).height()) - 10 < $(window).height();
-          var adjust;
-          
-          if (!isBottom) {
+        var isBottom = -(-$(this).css('margin-top').replace('px', '') - $(this).height()) - 10 < $(window).height();
+        var adjust;
+        
+        if (!isBottom) {
             adjust = ($(this).css('margin-top').replace('px', '') - 10) + 'px';
-          } else {
+        } else {
             adjust = (-$(this).height() + $(window).height()) + 'px';
-          }
+        }
 
-          $(this).css('margin-top', adjust);
+        $(this).css('margin-top', adjust);
         } else {
             var isTop = parseInt($(this).css('margin-top').replace('px', '')) + 10 < 0;
-          
+        
             if (isTop) {
                 adjust = (parseInt($(this).css('margin-top').replace('px', '')) + 10) + 'px';
             } else {
@@ -71,20 +70,5 @@ $(function(){
     });
     $( window ).on('resize', function() {
         $('.leftbar .navbar-main').css('margin-top', '0px');
-    });
-
-    // middle bar close
-    $('.middle-bar-close-button').on('click', function() {
-        hideMiddleBar();
-    });
-    $(document).on('mouseup', function(e) 
-    {
-        var container = $(".middle-bar, .middle-bar-element");
-
-        // if the target of the click isn't the container nor a descendant of the container
-        if (!container.is(e.target) && container.has(e.target).length === 0) 
-        {
-            hideMiddleBar();
-        }
     });
 });
