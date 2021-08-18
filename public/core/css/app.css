@@ -6849,10 +6849,21 @@ h3, h4 [class^="material-icons"] {
     filter: grayscale(0.9);
     cursor: pointer;
 }
-.new-price-item:hover, .new-price-item.current {
+.new-price-item.showed {
     background: #fff;
     border: solid 1px #ccc;
     filter: grayscale(0.0);
+}
+.new-price-item:hover, .new-price-item.current {
+    background: #fff;
+    border: solid 1px #bbb;
+    filter: grayscale(0.0);
+    box-shadow: 0 .2rem 0.2rem rgba(0,0,0,.05);
+}
+.new-price-item.disabled {
+    opacity: 0.4;
+    pointer-events: none;
+    filter: grayscale(1);
 }
 .new-price-item.current {
     box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;

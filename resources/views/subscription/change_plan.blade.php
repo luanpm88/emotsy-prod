@@ -1,8 +1,6 @@
 @extends('layouts.popup.full')
 
 @section('content')
-
-    
     <div class="">
         <div class="row">
             <div class="col-md-12">
@@ -21,41 +19,62 @@
                             </div>
                         </div>
                     @else
-                        <div class="price-box price-selectable">
-                            <div class="price-table">
-                        
-                                @foreach ($plans as $plan)
-                                    <div class="price-line {{ $subscription->plan->uid == $plan->uid ? 'current' : '' }}">
-                                        <div class="price-header">
-                                            <lable class="plan-title">{{ $plan->name }}</lable>
-                                            <p>{{ $plan->description }}</p>
-                                        </div>
-                                        
-                                        <div class="price-item text-center">
-                                            <div>{{ trans('messages.plan.starting_at') }}</div>
-                                            <div class="plan-price">
-                                                {{ \Acelle\Library\Tool::format_price($plan->price, $plan->currency->format) }}
+                        <div class="new-price-box" style="margin-right: -30px">
+                            <div class="">
+
+                                @foreach ($plans as $key => $plan)
+                                    <div
+                                        data-url="{{ action('SubscriptionController@orderBox', [
+                                            'plan_uid' => $plan->uid,
+                                        ]) }}"
+                                        class="new-price-item mb-3 d-inline-block plan-item showed
+                                            {{ $subscription->plan->uid == $plan->uid ? 'disabled' : '' }}
+                                        "
+                                        style="width: calc(20% - 20px)">
+                                        <div style="height: 100px">
+                                            <div class="price">
+                                                {!! format_price($plan->price, $plan->currency->format, true) !!}
+                                                <span class="p-currency-code">{{ $plan->currency->code }}</span>
                                             </div>
-                                            <div>{{ $plan->displayFrequencyTime() }}</div>
-                                            
-                                            @if ($subscription->plan->uid == $plan->uid)
-                                                <a
-                                                    href="javascript:;"
-                                                    class="btn btn-secondary mt-30" disabled>
-                                                        {{ trans('messages.plan.current_subscribed') }}
-                                                </a>
-                                            @else
-                                                <a
-                                                    link-method="POST"
-                                                    href="{{ action('SubscriptionController@changePlan', ['plan_uid' => $plan->uid]) }}"
-                                                    class="btn btn-secondary btn-mc_mk mt-30">
-                                                        {{ trans('messages.plan.select') }}
-                                                </a>
-                                            @endif
+                                            <p><span class="material-icons-outlined text-muted2">
+                                                restore
+                                                </span> {{ $plan->displayFrequencyTime() }}</p>
                                         </div>
+                                        <hr class="mb-2" style="width: 40px">
+                                        <div style="height: 40px">
+                                            <label class="plan-title fs-5 fw-600 mt-0">{{ $plan->name }}</label>
+                                        </div>
+
+                                        <div style="height: 130px">
+                                            <p class="mt-4">{{ $plan->description }}</p>
+                                        </div>
+
+                                        <span class="time-box d-block text-center small py-2 fw-600">
+                                            <div class="mb-1">
+                                                <span>{{ $plan->displayTotalQuota() }} {{ trans('messages.sending_total_quota_label') }}</span>
+                                            </div>
+                                            <div>
+                                                <span>{{ $plan->displayMaxSubscriber() }} {{ trans('messages.contacts') }}</span>
+                                            </div>
+                                        </span>
+
+                                        @if ($subscription->plan->uid == $plan->uid)
+                                            <a
+                                                href="javascript:;"
+                                                class="btn btn-secondary rounded-3 d-block mt-4 shadow-sm" disabled>
+                                                    {{ trans('messages.plan.current_subscribed') }}
+                                            </a>
+                                        @else
+                                            <a
+                                                link-method="POST"
+                                                href="{{ action('SubscriptionController@changePlan', ['plan_uid' => $plan->uid]) }}"
+                                                class="btn btn-primary rounded-3 d-block mt-4 shadow-sm">
+                                                    {{ trans('messages.plan.select') }}
+                                            </a>
+                                        @endif
                                     </div>
                                 @endforeach
-                            
+
                             </div>
                         </div>
                     @endif
@@ -65,4 +84,26 @@
             <div class="col-md-1"></div>
         </div>
     </div>
+
+    <script>
+        $(function() {
+            var manager = new GroupManager();
+            $('.plan-item').each(function() {
+                manager.add({
+                    box: $(this),
+                    url: $(this).attr('data-url')
+                });
+            });
+
+            manager.bind(function(group, others) {
+                group.box.on('click', function() {
+                    group.box.addClass('current');
+
+                    others.forEach(function(other) {
+                        other.box.removeClass('current');
+                    });
+                })
+            });
+        });
+    </script>
 @endsection
