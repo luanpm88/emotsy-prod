@@ -66,20 +66,6 @@
                         <div class="btn-group">
                             <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                @can('view', $automation)
-                                    <li>
-                                        <a  
-                                            class="dropdown-item"                                          
-                                            href="{{ action('Automation2Controller@subscribers', [
-                                                "uid" => $automation->uid
-                                            ]) }}"
-                                        >
-                                            <span class="material-icons-round me-1">
-people_outline
-</span> {{ trans('messages.subscribers') }}
-                                        </a>
-                                    </li>
-                                @endcan
                                 @can('enable', $automation)
                                     <li>
                                         <a
