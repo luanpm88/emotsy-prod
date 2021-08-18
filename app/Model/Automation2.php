@@ -453,7 +453,6 @@ class Automation2 extends Model
         } catch (Throwable $ex) {
             $this->setLastError($ex->getMessage());
             $this->logger()->warning(sprintf('Error while executing automation "%s". %s', $this->name, $ex->getMessage()));
-            throw new Exception($ex);
         }
     }
 
