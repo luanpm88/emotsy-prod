@@ -199,7 +199,7 @@ class Email extends Model
 
         // Build a valid message with a fake contact
         // build a temporary subscriber oject used to pass through the sending methods
-        $subscriber = $this->createStdClassSubscriber(['email' => 'admin@outlook.com']);
+        $subscriber = $this->createStdClassSubscriber(['email' => $emailAddress]);
         list($message, $msgId) = $this->prepare($subscriber);
         $server->send($message);
     }
