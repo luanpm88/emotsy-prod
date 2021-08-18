@@ -29,8 +29,8 @@
                         <span class="me-3">{{ Auth::user()->displayName() }}</span>
                     </label>
                     <p class="mb-1 small text-muted">{{ Auth::user()->email }}</p>
-                    @if (Auth::user()->status) 
-                        <span class="label label-flat bg-{{ Auth::user()->status }}">{{ trans('messages.' . Auth::user()->status) }}</span>
+                    @if (Auth::user()->admin->status) 
+                        <span class="label label-flat bg-{{ Auth::user()->admin->status }}">{{ trans('messages.' . Auth::user()->admin->status) }}</span>
                     @endif
                 </div>
             </div>
