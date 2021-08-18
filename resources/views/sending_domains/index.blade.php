@@ -22,7 +22,7 @@
     @include('senders._menu')
     
     <h2>
-        <span class="text-semibold"><i class="icon-list2 mr-10"></i> {{ trans('messages.domains') }}</span>
+        <span class="text-semibold"><i class="icon-list2 me-2"></i> {{ trans('messages.domains') }}</span>
     </h2>
     
 	<div class="row">

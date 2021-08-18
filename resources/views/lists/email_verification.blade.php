@@ -50,7 +50,7 @@
                         <a id="doneBtn" target="_blank" href="#" type="button" class="btn btn-secondary success">
                             {{ trans('messages.label.done') }}
                         </a>
-                        <a id="retryBtn" href="retryBtn" class="btn bg-grey-600 mr-10 retry"><span class="material-icons-outlined">
+                        <a id="retryBtn" href="retryBtn" class="btn bg-grey-600 me-2 retry"><span class="material-icons-outlined">
 restart_alt
 </span> {{ trans('messages.retry') }}</a>
                     </div>
@@ -75,7 +75,7 @@ restart_alt
                 ])
 
                 <div class="text-left">
-                    <button id="startBtn" class="btn btn-secondary mr-10"> {{ trans('messages.verification.button.start') }}</button>
+                    <button id="startBtn" class="btn btn-secondary me-2"> {{ trans('messages.verification.button.start') }}</button>
                 </div>
             </form>
             

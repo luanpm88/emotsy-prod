@@ -58,7 +58,7 @@
             @if ($subscribers->count() >= 0)
                 
                 <div class="filter-box">
-                    <span class="mr-10 d-flex">
+                    <span class="me-2 d-flex">
                         <div class="mr-2">
                             @include('helpers.select_tool', [
                                 'disable_all_items' => false

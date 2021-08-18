@@ -40,7 +40,7 @@ file_upload
                 ])
 
                 <div class="text-left">
-                    <button class="btn btn-secondary mr-10 click-effect"><i class="icon-check"></i> {{ trans('messages.import') }}</button>
+                    <button class="btn btn-secondary me-2 click-effect"><i class="icon-check"></i> {{ trans('messages.import') }}</button>
                 </div>
 
             </form>

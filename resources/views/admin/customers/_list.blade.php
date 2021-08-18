@@ -5,7 +5,7 @@
         @foreach ($customers as $key => $item)
             <tr>
                 <td width="1%">
-                    <img width="80" class="rounded-circle mr-10" src="{{ $item->user->getProfileImageUrl() }}" alt="">
+                    <img width="50" class="rounded-circle me-2" src="{{ $item->user->getProfileImageUrl() }}" alt="">
                 </td>
                 <td>
                     <h5 class="m-0 text-bold">

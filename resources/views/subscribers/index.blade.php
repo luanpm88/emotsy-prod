@@ -33,7 +33,7 @@ add
 		<div class="row top-list-controls py-2">
 			<div class="col-md-12">
 				<div class="filter-box">
-					<span class="mr-10 d-flex">
+					<span class="me-2 d-flex">
 						<div class="mr-2">
 							@include('helpers.select_tool', [
 								'disable_all_items' => false

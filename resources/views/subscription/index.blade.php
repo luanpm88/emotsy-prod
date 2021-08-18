@@ -98,7 +98,7 @@
                     @if (\Auth::user()->customer->can('resume', $subscription))
                         <a link-method="POST" link-confirm="{{ trans('messages.subscription.resume.confirm') }}"
                             href="{{ action('SubscriptionController@resume') }}"
-                            class="btn btn-secondary mr-10"
+                            class="btn btn-secondary me-2"
                         >
                             {{ trans('messages.subscription.resume') }}
                         </a>
@@ -117,7 +117,7 @@
                     @if (\Auth::user()->customer->can('cancelNow', $subscription))
                         <a link-method="POST" link-confirm="{{ trans('messages.subscription.cancel_now.confirm') }}"
                             href="{{ action('SubscriptionController@cancelNow') }}"
-                            class="btn btn-danger mr-10"
+                            class="btn btn-danger me-2"
                         >
                             {{ trans('messages.subscription.cancel_now') }}
                         </a>

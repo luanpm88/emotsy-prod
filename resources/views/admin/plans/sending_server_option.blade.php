@@ -56,6 +56,6 @@
                         </div>
                     </label>
                 </div>
-            <button class="btn btn-secondary mr-10">{{ trans('messages.save') }}</button>
+            <button class="btn btn-secondary me-2">{{ trans('messages.save') }}</button>
         </form>
 @endsection
