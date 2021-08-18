@@ -1946,4 +1946,9 @@ class Customer extends Model
     {
         return $this->jobMonitors()->orderBy('job_monitors.id', 'DESC')->where('job_type', ImportBlacklistJob::class);
     }
+
+    public function getMenuLayout()
+    {
+        return ($this->menu_layout == 'left' ? 'left' : 'top');
+    }
 }
