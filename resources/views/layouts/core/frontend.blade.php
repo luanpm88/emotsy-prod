@@ -7,7 +7,7 @@
 
 	@yield('head')
 </head>
-<body class="theme-{{ Auth::user()->customer->getColorScheme() }} {{ Auth::user()->customer->menu_layout }}bar
+<body class="theme-{{ Auth::user()->customer->getColorScheme() }} {{ Auth::user()->customer->menu_layout == 'left' ? 'left' : 'top' }}bar
 	{{ Auth::user()->customer->menu_layout == 'left' ? 'left' : 'top' }}bar-{{ request()->session()->get('customer-leftbar-state') }}
 ">
 	@include('layouts.core._menu_frontend')
