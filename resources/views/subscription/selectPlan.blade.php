@@ -80,9 +80,12 @@
                                     </div>
 
                                     <span class="time-box d-block text-center small py-2 fw-600">
-                                        {{ trans('messages.plan.starting_at') }}
-                                        {!! format_price($plan->price, $plan->currency->format) !!} <br>
-                                        {{ $plan->displayFrequencyTime() }}
+                                        <div class="mb-1">
+                                            <span>{{ $plan->displayTotalQuota() }} {{ trans('messages.sending_total_quota_label') }}</span>
+                                        </div>
+                                        <div>
+                                            <span>{{ $plan->displayMaxSubscriber() }} {{ trans('messages.contacts') }}</span>
+                                        </div>
                                     </span>
 
                                     <a
