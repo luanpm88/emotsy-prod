@@ -314,6 +314,7 @@ class AccountController extends Controller
 
     public function activity(Request $request)
     {
+        sleep(2);
         return view('account.activity');
     }
 }
