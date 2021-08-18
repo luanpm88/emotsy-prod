@@ -11,14 +11,14 @@
 <ul class="notifications-list pl-0">
     @if (Auth::user()->admin && Auth::user()->admin->notifications()->count() == 0)
         <li>
-            <a class="text-center py-2" href="{{ action("Admin\NotificationController@index") }}">
-                <div class="material-icons-outlined fs-3 text-muted mb-2">
+            <div class="text-center py-2 d-block">
+                <span class="material-icons-outlined fs-2 text-muted mb-2">
                     running_with_errors
-                </div>
+                </span>
                 <div class="text-muted">
                     {{ trans('messages.no_activity_logs') }}
                 </div>
-            </a>
+            </div>
         </li>
     @endif
     @foreach (Auth::user()->admin->notifications()->take(20)->get() as $notification)
