@@ -106,7 +106,7 @@
                             </i>
                             <span>{{ trans('messages.sending') }}</span>
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="sending-menu">
+                        <ul class="dropdown-menu dropdown-menu-bottom" aria-labelledby="sending-menu">
                             @if (Auth::user()->customer->can("read", new Acelle\Model\SendingServer()))
                                 <li class="nav-item" rel0="SendingServerController">
                                     <a href="{{ action('SendingServerController@index') }}"
