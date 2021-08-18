@@ -55,7 +55,8 @@
         </li>
     @endforeach
 </ul>
-
-<div class="text-center mt-4">
-    <a href="{{ action("Admin\NotificationController@index") }}" class="btn btn-info">{{ trans('messages.all_logs') }}</a>
-</div>
+@if (Auth::user()->admin->notifications()->count() > 0)
+    <div class="text-center mt-4">
+        <a href="{{ action("Admin\NotificationController@index") }}" class="btn btn-info">{{ trans('messages.all_logs') }}</a>
+    </div>
+@endif
