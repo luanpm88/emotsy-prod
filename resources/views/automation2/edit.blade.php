@@ -87,7 +87,7 @@
 
         rect.operation {
             fill: #966089;
-
+            stroke: #d6a6ca;
         }
 
         g.wait > g > a tspan {
@@ -264,9 +264,7 @@
             $('.navbar h1').html(name);
         }
 
-        function SelectActionConfirm(key, insertToTree) {
-            window.insertToTree = insertToTree;
-
+        function SelectActionConfirm(key) {
             var url = '{{ action('Automation2Controller@actionSelectConfirm', $automation->uid) }}' + '?key=' + key;
             
             popup.load(url, function() {                
@@ -290,7 +288,7 @@
                             var newE = new ElementCondition({title: response.title, options: response.options});                            
                         }
 
-                        insertToTree(newE);
+                        MyAutomation.addToTree(newE);
 
                         newE.validate();
                         
@@ -317,7 +315,7 @@
             });
         }
 
-        function OpenActionSelectPopup(insertToTree, conditionBranch = null) {
+        function OpenActionSelectPopup(conditionBranch = null) {
             var hasChildren = false;
             if (conditionBranch == null) {
                 hasChildren = tree.getSelected().hasChildren();
@@ -342,7 +340,7 @@
                         });
                         
                         // add email to tree
-                        insertToTree(newE);
+                        MyAutomation.addToTree(newE);
 
                         // validate
                         newE.validate();
@@ -353,7 +351,7 @@
                         });
                     } else {
                         // show select trigger confirm box
-                        SelectActionConfirm(key, insertToTree);
+                        SelectActionConfirm(key);
                     }
                 });
             });
@@ -516,6 +514,12 @@
             }
         }
 
+        var MyAutomation = {
+            // Set the AddElement function
+            // It depends on the currently selected element
+            addToTree: null
+        };
+
         (function() {
             //var json = [
             //    {title: "Click to choose a trigger", id: "trigger", type: "ElementTrigger", options: {init: false}}
@@ -542,35 +546,44 @@
 
                 onadd: function(e) {
                     e.select();
-                    OpenActionSelectPopup(function(element) {
+
+                    MyAutomation.addToTree = function(element) {
                         e.insert(element);
                         e.getTrigger().organize();
 
                         // select new element
                         doSelect(element);
-                    });
+                    };
+
+                    OpenActionSelectPopup();
                 },
 
                 onaddyes: function(e) {
                     e.select();
-                    OpenActionSelectPopup(function(element) {
+
+                    MyAutomation.addToTree = function(element) {
                         e.insertYes(element);
                         e.getTrigger().organize();
 
                         // select new element
                         doSelect(element);
-                    }, 'yes');
+                    };
+
+                    OpenActionSelectPopup('yes');
                 },
 
                 onaddno: function(e) {
                     e.select();
-                    OpenActionSelectPopup(function(element) {
+
+                    MyAutomation.addToTree = function(element) {
                         e.insertNo(element);
                         e.getTrigger().organize();
 
                         // select new element
                         doSelect(element);
-                    }, 'no');
+                    };
+
+                    OpenActionSelectPopup('no');
                 },
 
                 validate: function(e) {
