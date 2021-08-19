@@ -341,7 +341,7 @@ class CampaignController extends Controller
 
         // from
         if ($request->from == 'mine') {
-            $templates = $request->user()->customer->templates()->notAssociated();
+            $templates = $request->user()->customer->templates();
         } elseif ($request->from == 'gallery') {
             $templates = Template::shared();
         } else {
@@ -349,7 +349,7 @@ class CampaignController extends Controller
                 ->orWhere('customer_id', '=', $request->user()->customer->id);
         }
 
-        $templates = $templates->search($request->keyword);
+        $templates = $templates->notAssociated()->search($request->keyword);
 
         // category id
         if ($request->category_uid) {
