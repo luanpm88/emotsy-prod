@@ -314,6 +314,7 @@ h3 {
 .dropdown-menu {
     box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
     font-size: 0.9rem;
+    overflow: hidden;
 }
 .select2-selection--multiple:not([class*=bg-]):not([class*=border-]) {
     padding: 0;
@@ -1148,9 +1149,6 @@ ul.install-steps li.enabled a:hover {
 }
 .sweet-alert h2 {
     color: #333;
-}
-.dropdown-menu {
-    overflow: inherit;
 }
 .dropdown-menu li ul {
     position: absolute;
