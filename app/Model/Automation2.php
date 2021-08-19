@@ -453,6 +453,9 @@ class Automation2 extends Model
         } catch (Throwable $ex) {
             $this->setLastError($ex->getMessage());
             $this->logger()->warning(sprintf('Error while executing automation "%s". %s', $this->name, $ex->getMessage()));
+        } finally {
+            // Update the updated_at field
+            $this->touch();
         }
     }
 
