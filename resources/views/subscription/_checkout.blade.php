@@ -2,8 +2,17 @@
     <div class="card shadow-sm border-top-0 rounded-bottom p-2" style="margin-top: -10px;
     border-radius: 0;">
         <div class="card-body pe-4 ps-4 pb-4 pt-0">
+            <div class="alert alert-info bg-no-order tos_link">
+                @if (Acelle\Model\Setting::get('terms_of_service.enabled') == 'no' && Acelle\Model\Setting::get('terms_of_service.content')) 
+                    {!! trans('messages.payment.agree_service_intro.term_link', [
+                        'link' => 'asas',
+                    ]) !!}
+                @else
+                    {!! trans('messages.payment.agree_service_intro') !!}
+                @endif
+            </div>
             @if (!request()->payment_method && !$invoice->isFree())
-                <div class="alert alert-info bg-no-order">{!! trans('messages.payment.agree_service_intro') !!}</div>
+                
                 <form id="checkoutForm" class="" action="{{ $invoice->isFree() ? action('SubscriptionController@confirmFree', [
                     'invoice_uid' => $invoice->uid
                 ]) : action('SubscriptionController@checkout') }}"
@@ -18,7 +27,7 @@
                     >
                 </form>
             @else
-                <div class="alert alert-info bg-no-order">{!! trans('messages.payment.agree_service_intro') !!}</div>
+
                 <form id="checkoutForm" class="" action="{{ $invoice->isFree() ? action('SubscriptionController@confirmFree', [
                     'invoice_uid' => $invoice->uid
                 ]) : action('SubscriptionController@checkout') }}"
@@ -68,6 +77,15 @@
                     }
                 });
             @endif
+
+            $('.tos_link a').on('click', function(e) {
+                e.preventDefault();
+
+                var popup = new Popup({
+                    url: '{{ action('Controller@termsOfService') }}'
+                });
+                popup.load();
+            });
         });
     </script>
 @endif

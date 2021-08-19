@@ -2469,10 +2469,8 @@
   'payment.proceed_with_payment' => 'Proceed with Payment',
   'payment.agree_service_intro' => 'By clicking the <strong><i>Proceed with payment</i></strong> button,
     you agree to our <i>Term of Use</i> and <i>Privacy Policy</i>.',
-  'payment.agree_service_intro.free' => 'By clicking the <strong><i>Get started</i></strong> button,
-    you agree to our <i>Term of Use</i> and <i>Privacy Policy</i>.',
-  'payment.agree_service_intro.no_plan' => 'By clicking the <strong><i>Proceed with payment</i></strong> button,
-    you agree to our <i>Term of Use</i> and <i>Privacy Policy</i>.',
+  'payment.agree_service_intro.term_link' => 'By clicking the <strong><i>Proceed with payment</i></strong> button,
+    you agree to our <a href=":link"><i>Term of Use</i> and <i>Privacy Policy</i></a>.',
   'plan.review' => 'Plan review',
   'subscription.status.active_pending' => 'Update pending',
   'subscription.status.change_plan_pending' => 'Changing Plan',
@@ -3778,4 +3776,10 @@
     Menu layout help you easier to navigate through app pages depending on your prefer style',
   'all_activities' => 'All activities',
   'embedded_form_code.copied' => 'Embedded code was copied',
+  'plan.tos' => 'Term of Service',
+  'plan.tos.intro' => 'Terms of service are the legal agreements between a service provider and a
+    person who wants to use that service. The person must agree to abide by the terms of service in
+    order to use the offered service.',
+  'plan.disable_terms_of_service' => 'Disable terms of service',
+  'plan.tos.updated' => 'Terms of service was updated',
 ) ?>

@@ -784,6 +784,34 @@ class PlanController extends Controller
         ]);
     }
 
+    public function tos(Request $request)
+    {
+        $plan = Plan::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('update', $plan)) {
+            return $this->notAuthorized();
+        }
+
+        if ($request->isMethod('post')) {
+            $validator = $plan->updateTos($request->all());
+            
+            // redirect if fails
+            if ($validator->fails()) {
+                return response()->view('admin.plans.tos', [
+                    'plan' => $plan,
+                    'errors' => $validator->errors(),
+                ], 400);
+            }
+
+            $request->session()->flash('alert-success', trans('messages.plan.tos.updated'));
+        }
+
+        return view('admin.plans.tos', [
+            'plan' => $plan,
+        ]);
+    }
+
     /**
      * Sending Limit Form.
      *

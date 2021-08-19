@@ -95,6 +95,9 @@ Route::get('setting/{filename}', 'SettingController@file');
 Route::get('/datatable_locale', 'Controller@datatable_locale');
 Route::get('/jquery_validate_locale', 'Controller@jquery_validate_locale');
 
+// Term of service
+Route::get('/terms-of-service', 'Controller@termsOfService');
+
 // For visitor with Web UI, loading the right app language
 Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
     // Helper method to generate other routes for authentication
@@ -815,6 +818,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::post('admin/account/contact', 'AccountController@contact');
 
     // Plan
+    Route::match(['get', 'post'], 'admin/plans/{uid}/tos', 'PlanController@tos');
     Route::post('admin/plans/{uid}/visible/on', 'PlanController@visibleOn');
     Route::post('admin/plans/{uid}/visible/off', 'PlanController@visibleOff');
 

@@ -1361,4 +1361,26 @@ class Plan extends Model
 
         return $quota;
     }
+
+    public function updateTos($params)
+    {
+        $rules = [];
+        if ($params['terms_of_service']['enabled'] == 'no') {
+            $rules['terms_of_service.content'] = 'required'; 
+        }
+
+        // make validator
+        $validator = \Validator::make($params, $rules);
+        
+        // redirect if fails
+        if ($validator->fails()) {
+            return $validator;
+        }
+
+        //
+        \Acelle\Model\Setting::set('terms_of_service.enabled', $params['terms_of_service']['enabled']);
+        \Acelle\Model\Setting::set('terms_of_service.content', $params['terms_of_service']['content']);
+
+        return $validator;
+    }
 }
