@@ -143,7 +143,7 @@ class TemplateController extends Controller
             return response()->json($validator->errors(), 400);
         }
         
-        $template->save();
+        $template->updateContent($request->content);
 
         // success
         return response()->json([

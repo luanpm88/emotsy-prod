@@ -1,18 +1,11 @@
 @if (!is_null($automation->last_error))
-<div class="alert alert-warning" style="display: flex; flex-direction: row; align-items: center; justify-content: space-between;">
-    <div style="display: flex; flex-direction: row; align-items: center;">
-        <div style="margin-right:15px">
-            <span class="material-icons-outlined">
-error_outline
-</span>
-        </div>
-        <div style="padding-right: 40px">
-            <h4>Execution Error</h4>
-            <p>{{ $automation->last_error }}</p>
-        </div>
+    <div class="mb-4">
+        @include('elements._notification', [
+            'level' => 'warning',
+            'message' => '<h4>Execution Error</h4>
+                <p>' . $automation->last_error . '</p>'
+        ])
     </div>
-    <!-- <button class="btn btn-secondary">Close</button> -->
-</div>
 @endif
 
 <div class="sidebar-header d-flex flex-center mb-2">
