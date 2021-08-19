@@ -81,6 +81,8 @@ $(document).ready(function() {
         remove_script_host: false,
         forced_root_block: "",
         skin: "oxide",
+        branding: false,
+        elementpath: false,
         plugins: [
           'table advlist autolink lists link image charmap print preview anchor directionality',
           'searchreplace visualblocks code fullscreen',
