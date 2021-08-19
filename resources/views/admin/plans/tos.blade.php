@@ -50,7 +50,7 @@
                     </div>
                     
                     @include('helpers.form_control', [
-                        'class' => 'setting-editor',
+                        'class' => 'builder-editor',
                         'type' => 'textarea',
                         'name' => 'terms_of_service[content]',
                         'label' => trans('messages.plan.tos'),

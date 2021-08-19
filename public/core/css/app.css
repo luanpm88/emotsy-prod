@@ -7180,3 +7180,7 @@ hr {
 .breadcrumb-item+.breadcrumb-item {
     padding-left: 5px;    
 }
+.tos-box {
+    max-height: calc(100vh - 240px);
+    overflow: auto;
+}

@@ -2,7 +2,9 @@
 
 @section('content')
 
-    {!! Acelle\Model\Setting::get('terms_of_service.content') !!}
+    <div class="tos-box">
+        {!! Acelle\Model\Setting::get('terms_of_service.content') !!}
+    </div>
 
     <hr>
 

@@ -32,7 +32,7 @@ $(document).ready(function() {
         convert_urls: false,
         remove_script_host: false,
         forced_root_block: "",
-        skin: "oxide-dark",
+        skin: "oxide",
         valid_elements : '*[*],meta[*]',
         valid_children: '+h1[div],+h2[div],+h3[div],+h4[div],+h5[div],+h6[div],+a[div]',
         extended_valid_elements : "meta[*]",
@@ -80,7 +80,7 @@ $(document).ready(function() {
         convert_urls: false,
         remove_script_host: false,
         forced_root_block: "",
-        skin: "oxide-dark",
+        skin: "oxide",
         plugins: [
           'table advlist autolink lists link image charmap print preview anchor directionality',
           'searchreplace visualblocks code fullscreen',
