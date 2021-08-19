@@ -61,8 +61,7 @@
 @section('content')
     <style>
         rect.selected {
-            stroke-width: 1 !important;;
-            stroke-dasharray: 5;
+            stroke-width: 4 !important;;
         }
 
         rect.element {
@@ -72,20 +71,23 @@
 
         rect.action {
             fill: rgb(101, 117, 138);
+            stroke:  rgb(154 181 214);
         }
 
         rect.trigger {
             fill: rgba(12, 12, 12, 0.49);
+            stroke: #c5c0c0;
         }
 
         rect.wait {
             fill: #fafafa;
-            stroke: #666;
+            stroke: #94a0d4;
             stroke-width: 1;
         }
 
         rect.operation {
             fill: #966089;
+
         }
 
         g.wait > g > a tspan {
@@ -94,6 +96,7 @@
 
         rect.condition {
             fill: #e47a50;
+            stroke: #ffb091;
         }
 
         g text:hover, g tspan:hover {
@@ -183,7 +186,7 @@
         });
 
         var sidebar = new Box($('.sidebar-content'));
-        var lastSaved = new Box($('.last_save_time'), $('.last_save_time').attr('data-url'));        
+        var lastSaved = new Box($('.last_save_time'), $('.last_save_time').attr('data-url'));
 
         function toggleHistory() {
             var his = $('.history .history-list-items');
@@ -297,10 +300,10 @@
                             popup.hide();
                             
                             notify({
-    type: 'success',
-    title: '{!! trans('messages.notify.success') !!}',
-    message: response.message
-});
+                                type: 'success',
+                                title: '{!! trans('messages.notify.success') !!}',
+                                message: response.message
+                            });
                         });
                     });
                 });
@@ -330,7 +333,7 @@
                 // when click on action type
                 popup.popup.find('.action-select-but').click(function() {
                     var key = $(this).attr('data-key');
-
+                    // EMAIL
                     if (key == 'send-an-email') {
                         // new action as email
                         var newE = new ElementAction({
@@ -351,7 +354,7 @@
                     } else {
                         // show select trigger confirm box
                         SelectActionConfirm(key, insertToTree);
-                    }                    
+                    }
                 });
             });
         }
@@ -388,7 +391,7 @@
     
         $(document).ready(function() {
             lastSaved.load();
-            
+
             // load sidebar
             sidebar.load('{{ action('Automation2Controller@settings', $automation->uid) }}');
 
