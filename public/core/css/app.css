@@ -211,7 +211,7 @@ a {
     margin-bottom: 30px;
 }
 .page-container {
-    padding-bottom: 100px;
+    padding-bottom: 80px;
     position: relative;
     min-height: calc(100vh - 64px);
 }
