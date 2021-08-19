@@ -3782,4 +3782,5 @@
     order to use the offered service.',
   'plan.disable_terms_of_service' => 'Disable terms of service',
   'plan.tos.updated' => 'Terms of service was updated',
+  'tos.i_agree' => 'I Agree',
 ) ?>
