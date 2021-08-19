@@ -119,12 +119,12 @@ dns
                                 @if (Auth::user()->admin->can('update', $planSendingServer->sendingServer))
                                     
                                     @if ($server->isExtended())
-                                        <a href="{{ $server->getEditUrl() }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-primary">{{ trans('messages.edit') }}</a>
+                                        <a href="{{ $server->getEditUrl() }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
                                     @else
-                                        <a href="{{ action('Admin\SendingServerController@edit', ["id" => $planSendingServer->sendingServer->uid, "type" => $planSendingServer->sendingServer->type]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-primary">{{ trans('messages.edit') }}</a>
+                                        <a href="{{ action('Admin\SendingServerController@edit', ["id" => $planSendingServer->sendingServer->uid, "type" => $planSendingServer->sendingServer->type]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" role="button" class="btn btn-secondary">{{ trans('messages.edit') }}</a>
                                     @endif
                                 @endif
-                                <a link-method="POST" href="{{ action('Admin\PlanController@removeSendingServer', ['id' => $plan->uid, 'sending_server_uid' => $planSendingServer->sendingServer->uid]) }}" class="btn btn-primary">{{ trans('messages.remove') }}</a>
+                                <a link-method="POST" href="{{ action('Admin\PlanController@removeSendingServer', ['id' => $plan->uid, 'sending_server_uid' => $planSendingServer->sendingServer->uid]) }}" class="btn btn-warning">{{ trans('messages.remove') }}</a>
                             </actions>
                         </li>
                     @endforeach
