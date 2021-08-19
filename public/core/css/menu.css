@@ -7,6 +7,9 @@
 .middle-bar {
     z-index: 10000;
 }
+.page-container {
+    transition: all 0.2s ease-in-out;
+}
 @media (min-width: 1200px) {
     .leftbar .leftbar-hide-menu {
         display: block;
@@ -50,7 +53,6 @@
         padding-right: 50px!important;
         padding-top: 10px!important;
         min-height: 100vh;
-        transition: padding 0.1s ease-in-out;
     }
     .leftbar .navbar-expand-xl .navbar-collapse {
         display: block!important;
