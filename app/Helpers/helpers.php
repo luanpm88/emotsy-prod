@@ -316,39 +316,6 @@ function Dot2LongIPv6($IPaddr)
 }
 
 /**
- * Paginate a Laravel collection, used for service only as
- * it DOES NOT return a true Pagination object (for rendering to view).
- *
- * @input Laravel Query Builder
- * @input callback function
- *
- * @return collection result set
- */
-function paginate($builder, $callback, $params = [])
-{
-    $default = [
-        'limit' => 10000,
-    ];
-
-    $params = array_merge($default, $params);
-
-    // in some cases, use the pre-computed count rather than counting against the builder
-    if (!array_key_exists('count', $params)) {
-        $params['count'] = $builder->count();
-    }
-
-    // count the number of pages needed
-    $pages = ceil($params['count'] / $params['limit']);
-
-    for ($page = 1; $page <= $pages; $page += 1) {
-        $offset = $params['limit'] * ($page - 1);
-
-        $builder = $builder->skip($offset)->take($params['limit']);
-        $callback($builder, $page);
-    }
-}
-
-/**
  * Overwrite the Laravel's Builder#paginate, accept a $total parameter specifying the total number of records.
  *
  * @param int      $perPage
@@ -402,27 +369,6 @@ function distinctCount($builder, $column = null, $method = 'group')
         ->count();
 
     return $count;
-}
-
-/**
- * Measure execution time of a script.
- *
- * @return float execution time
- */
-function measure($callback, $tests = 5)
-{
-    $results = [];
-
-    for ($i = 0; $i <= $tests; $i += 1) {
-        $start = microtime(true);
-        $callback();
-        $time = microtime(true) - $start;
-        $results[] = $time;
-    }
-    $agv = array_sum($results) / count($results);
-    echo "$agv\n";
-
-    return $agv;
 }
 
 /**
@@ -506,14 +452,6 @@ function extract_domain($email)
 function doublequote($str)
 {
     return sprintf('"%s"', preg_replace('/^"+|"+$/', '', $str));
-}
-
-function jsonGet($array, $path)
-{
-    $jsonObject = new \JsonPath\JsonObject($array);
-    $result = $jsonObject->get($path)[0];
-
-    return $result;
 }
 
 /**

@@ -1366,7 +1366,7 @@ class Plan extends Model
     {
         $rules = [];
         if ($params['terms_of_service']['enabled'] == 'no') {
-            $rules['terms_of_service.content'] = 'required'; 
+            $rules['terms_of_service.content'] = 'required';
         }
 
         // make validator
