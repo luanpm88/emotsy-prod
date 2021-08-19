@@ -241,8 +241,8 @@ class Controller extends BaseController
         echo get_app_identity();
     }
 
-    public function termOfService()
+    public function termsOfService()
     {
-        return view('termOfService');
+        return view('termsOfService');
     }
 }
