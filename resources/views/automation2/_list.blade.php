@@ -28,7 +28,7 @@
                 </td>
                 <td>
                     <h5 class="no-margin stat-num">
-                        {{ $automation->mailList->readCache('SubscriberCount') }}
+                        {{ $automation->mailList->readCache('SubscriberCount', '#') }}
                     </h5>
                     <span class="text-muted2">{{ trans('messages.automation.overview.contacts') }}</span>
                 </td>
@@ -46,10 +46,10 @@
                 </td>
                 <td>
                     <span class="no-margin text-bold">
-                        {{ Tool::formatDateTime($automation->created_at) }}
+                        {{ $automation->updated_at->diffForHumans(['options' => 2]) }}
                     </span>
                     <br />
-                    <span class="text-muted">{{ trans('messages.created_at') }}</span>
+                    <span class="text-muted">{{ trans('messages.automation.action.last_updated') }}</span>
                 </td>
                 <td class="text-center">
                     <span class="text-muted2 list-status">
