@@ -6098,6 +6098,11 @@ h1, h1 {
     cursor: pointer;
     transform: scale(0.5);
 }
+.switchery[type="checkbox"]:disabled, .styled[type="checkbox"]:disabled, .styled[type="radio"]:disabled {
+    opacity: 0.6;
+    filter: grayscale(100%);
+    pointer-events: none;
+}
 .switchery[type="checkbox"]:before, .styled[type="checkbox"]:before, .styled[type="radio"]:before {
     position: relative;
     display: inline-block;
