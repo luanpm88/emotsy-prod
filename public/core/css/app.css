@@ -4654,6 +4654,7 @@ pagination {
     display: inline-block;
     border-radius: 3px;
     z-index: 10;
+    position: fixed!important;
   }
   .AnyTime-cloak {
     position: absolute;
