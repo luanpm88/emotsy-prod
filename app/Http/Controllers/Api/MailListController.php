@@ -221,4 +221,33 @@ class MailListController extends Controller
             ), 200);
         }
     }
+
+    public function delete($uid)
+    {
+        $user = \Auth::guard('api')->user();
+        $list = \Acelle\Model\MailList::findByUid($uid);
+
+        // check if item exists
+        if (!$list) {
+            return \Response::json(array('status' => 0, 'message' => 'Item not found'), 404);
+        }
+
+        // authorize
+        if (!$user->can('delete', $list)) {
+            return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 401);
+        }
+
+        $list->delete();
+
+        // not needed as the related campaigns will be deleted as well
+        // $item->updateCachedInfo();
+
+        // Log
+        $list->log('deleted', $user->customer);
+
+        // update MailList cache
+        event(new \Acelle\Events\MailListUpdated($list));
+
+        return \Response::json(array('status' => 1, 'message' => 'Deleted'), 200);
+    }
 }

@@ -148,6 +148,19 @@ class ApiHelper
 -d tag=CUSTOM_FIELD_1 \
 -d default_value=test'
                 ],
+
+                [
+                    'method' => 'DELETE',
+                    'uri' => '/api/v1/lists/{uid}',
+                    'description' => 'Delete a list',
+                    'parameters' => [
+                        ['name' => '$uid', 'description' => 'List\'s uid'],
+                    ],
+                    'returns' => 'Result messages in json',
+                    'example' => 'curl -X DELETE -H "accept:application/json" -G \
+' .str_replace('-ID-', '<redbold>{uid}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\MailListController@delete", ['uid' => '-ID-']))).' \
+-d api_token=' .\Auth::user()->api_token,
+                ],
             ],
         ];
 

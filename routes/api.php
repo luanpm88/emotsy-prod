@@ -25,6 +25,7 @@ Route::group(['namespace' => 'Api', 'prefix' => 'v1', 'middleware' => 'auth:api'
     });
 
     // List
+    Route::delete('lists/{uid}', 'MailListController@delete');
     Route::post('lists/{uid}/add-field', 'MailListController@addField');
     Route::resource('lists', 'MailListController');
 
