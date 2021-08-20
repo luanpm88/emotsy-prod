@@ -34,13 +34,13 @@ class StringHelper
      *
      * @return string
      */
-    public static function base64UrlEncode($val)
+    public static function base64UrlEncode($string)
     {
-        if (is_null($val)) {
+        if (is_null($string)) {
             return null;
         }
 
-        return urlencode(base64_encode($val));
+        return str_replace(['+','/','='], ['-','_',''], base64_encode($string));
     }
 
     /**
@@ -51,13 +51,13 @@ class StringHelper
      *
      * @return string
      */
-    public static function base64UrlDecode($val)
+    public static function base64UrlDecode($string)
     {
-        if (is_null($val)) {
+        if (is_null($string)) {
             return null;
         }
 
-        return base64_decode(urldecode($val));
+        return base64_decode(str_replace(['-','_'], ['+','/'], $string));
     }
 
     /**
