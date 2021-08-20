@@ -557,7 +557,6 @@ class ApiHelper
                     'parameters' => [
                         ['name' => '$uid', 'description' => 'Customer\'s uid'],
                         ['name' => '$plan_uid', 'description' => 'Plan\'s uid'],
-                        ['name' => '$gateway', 'description' => 'Payment gateway: stripe|braintree|coinpayments|...'],
                     ],
                     'returns' => 'Action messages in json',
                     'example' => 'curl -X POST -H "accept:application/json" -G \
@@ -590,18 +589,16 @@ class ApiHelper
 
                 [
                     'method' => 'POST',
-                    'uri' => '/api/v1/subscriptions',
-                    'description' => 'Subscribe customer to a plan',
+                    'uri' => '/api/v1/customers/{uid}/assign-plan/{plan_uid}',
+                    'description' => 'Assign Plan to Customer',
                     'parameters' => [
-                        ['name' => '$customer_uid', 'description' => 'Customer\'s uid'],
+                        ['name' => '$uid', 'description' => 'Customer\'s uid'],
                         ['name' => '$plan_uid', 'description' => 'Plan\'s uid'],
                     ],
                     'returns' => 'Action messages in json',
                     'example' => 'curl -X POST -H "accept:application/json" -G \
-' .action("Api\SubscriptionController@store").' \
--d api_token=' .\Auth::user()->api_token.'  \
--d customer_uid={customer_uid} \
--d plan_uid={plan_uid}',
+' .str_replace('-plan_uid-', '<redbold>{plan_uid}</redbold>', str_replace('-uid-', '<redbold>{uid}</redbold>', action("Api\CustomerController@assignPlan", ['uid' => '-uid-', 'plan_uid' => '-plan_uid-']))).' \
+-d api_token=' .\Auth::user()->api_token,
                 ],
             ],
         ];
