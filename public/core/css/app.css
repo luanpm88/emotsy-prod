@@ -11,6 +11,9 @@
 .fs-6 {
     font-size: 1.05rem!important;
 }
+pre[class*="language-"] {
+    font-size: 12px!important;
+}
 input::-ms-reveal,
 input::-ms-clear {
 display: none;
