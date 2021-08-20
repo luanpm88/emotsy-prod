@@ -47,7 +47,7 @@ class CampaignController extends Controller
 
         // check if item exists
         if (!is_object($item)) {
-            return \Response::json(array('message' => 'Item not found'), 404);
+            return \Response::json(array('message' => 'Campaign not found'), 404);
         }
 
         // authorize
@@ -119,7 +119,7 @@ class CampaignController extends Controller
 
         // check if item exists
         if (!is_object($campaign)) {
-            return \Response::json(array('message' => 'Item not found'), 404);
+            return \Response::json(array('message' => 'Campaign not found'), 404);
         }
 
         // authorize

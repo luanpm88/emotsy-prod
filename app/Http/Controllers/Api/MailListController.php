@@ -48,7 +48,7 @@ class MailListController extends Controller
 
         // check if item exists
         if (!is_object($item)) {
-            return \Response::json(array('message' => 'Item not found'), 404);
+            return \Response::json(array('message' => 'Mail list not found'), 404);
         }
 
         // authorize
@@ -229,7 +229,7 @@ class MailListController extends Controller
 
         // check if item exists
         if (!$list) {
-            return \Response::json(array('status' => 0, 'message' => 'Item not found'), 404);
+            return \Response::json(array('status' => 0, 'message' => 'Mail list not found'), 404);
         }
 
         // authorize
