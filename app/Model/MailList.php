@@ -2120,4 +2120,49 @@ class MailList extends Model
 
         return $fields;
     }
+
+    public function defaultEmbeddedFormOptions()
+    {
+        return [
+            'form_title' => trans('messages.Subscribe_to_our_mailing_list'),
+            'redirect_url' => '',
+            'only_required_fields' => 'no',
+            'stylesheet' => 'yes',
+            'javascript' => 'yes',
+            'show_invisible' => 'no',
+            'custom_css' => '.subscribe-embedded-form {
+    color: #333
+}
+.subscribe-embedded-form label {
+    color: #555
+}',
+        ];
+    }
+
+    public function getEmbeddedFormOptions()
+    {
+        if ($this->embedded_form_options == null) {
+            return [];
+        }
+
+        return json_decode($this->embedded_form_options, true);
+    }
+
+    public function getEmbeddedFormOption($key)
+    {
+        $defaults = $this->defaultEmbeddedFormOptions();
+        $options = $this->getEmbeddedFormOptions();
+
+        if (isset($options[$key])) {
+            return $options[$key];
+        } else {
+            return $defaults[$key];
+        }
+    }
+
+    public function setEmbeddedFormOptions($params)
+    {
+        $this->embedded_form_options = json_encode($params);
+        $this->save();
+    }
 }

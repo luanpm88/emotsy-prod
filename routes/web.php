@@ -254,7 +254,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::resource('lists', 'MailListController');
     Route::get('lists/{uid}/edit', 'MailListController@edit');
     Route::patch('lists/{uid}/update', 'MailListController@update');
-    Route::get('lists/{uid}/embedded-form', 'MailListController@embeddedForm');
+    Route::match(['get', 'post'], 'lists/{uid}/embedded-form', 'MailListController@embeddedForm');
     Route::get('lists/{uid}/embedded-form-frame', 'MailListController@embeddedFormFrame');
 
     // Field

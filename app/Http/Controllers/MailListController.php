@@ -604,6 +604,10 @@ class MailListController extends Controller
             return $this->notAuthorized();
         }
 
+        if ($request->isMethod('post')) {
+            $list->setEmbeddedFormOptions($request->options);
+        }
+
         return view('lists.embedded_form', [
             'list' => $list,
         ]);
