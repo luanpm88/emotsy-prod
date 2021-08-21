@@ -7,6 +7,12 @@ use League\Pipeline\PipelineBuilder;
 use Acelle\Library\HtmlHandler\ParseRss;
 use Acelle\Library\HtmlHandler\ReplaceBareLineFeed;
 use Acelle\Library\HtmlHandler\AppendHtml;
+use Acelle\Library\HtmlHandler\Tag;
+use Acelle\Model\Subscriber;
+use Acelle\Model\Campaign;
+use Acelle\Model\MailList;
+use Mockery;
+use Exception;
 
 class HtmlHandlersTest extends TestCase
 {
@@ -50,12 +56,25 @@ class HtmlHandlersTest extends TestCase
 
     public function test_tag()
     {
-        $pipeline = new PipelineBuilder();
-        $pipeline->add(new Tag());
+        // List
+        $list = Mockery::mock(new MailList());
 
-        $html = "<html><body><div>Content main</div></body></html>";
+        // Campaign
+        $campaign = Mockery::mock(new Campaign());
+        $campaign->defaultMailList = $list;
+        $campaign->shouldReceive('isStdClassSubscriber')->andReturn(true);
+
+        // Subscriber
+        $subscriber = Mockery::mock(new Subscriber());
+        $subscriber->uid = '000000';
+
+        // Pipe
+        $pipeline = new PipelineBuilder();
+        $pipeline->add(new Tag($campaign, $subscriber, $msgId = 'TEST'));
+
+        $html = "<html><body><div>{SUBSCRIBER_UID}</div></body></html>";
         $out = $pipeline->build()->process($html);
 
-        $this->assertEquals($out, '<html><body><div>Content main</div><a>click me</a><p>read me</p></body></html>');
+        $this->assertEquals($out, '<html><body><div>000000</div></body></html>');
     }
 }
