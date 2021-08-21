@@ -21,7 +21,7 @@ function initJs(container)
 
     // datetime picker
     if (container.find(".pickadatetime").length) {
-        container.find(".pickatime, .time-selector").each(function() {
+        container.find(".pickadatetime").each(function() {
             var id = '_' + Math.random().toString(36).substr(2, 9);
             $(this).attr('id', id);
 
