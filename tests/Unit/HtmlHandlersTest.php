@@ -60,7 +60,7 @@ class HtmlHandlersTest extends TestCase
         $list = Mockery::mock(new MailList());
 
         // Campaign
-        $campaign = Mockery::mock(new Campaign());
+        $campaign = Mockery::mock(new Campaign(['name' => 'Campaign']));
         $campaign->defaultMailList = $list;
         $campaign->shouldReceive('isStdClassSubscriber')->andReturn(true);
 
@@ -71,10 +71,12 @@ class HtmlHandlersTest extends TestCase
         // Pipe
         $pipeline = new PipelineBuilder();
         $pipeline->add(new Tag($campaign, $subscriber, $msgId = 'TEST'));
+        $pipeline->add(new AppendHtml('<a>click me</a>'));
+        $pipeline->add(new AppendHtml('<p>read me</p>'));
 
-        $html = "<html><body><div>{SUBSCRIBER_UID}</div></body></html>";
+        $html = "<html><body><div>Campaign: '{CAMPAIGN_NAME}' Subscriber: '{SUBSCRIBER_UID}'</div></body></html>";
         $out = $pipeline->build()->process($html);
 
-        $this->assertEquals($out, '<html><body><div>000000</div></body></html>');
+        $this->assertEquals($out, "<html><body><div>Campaign: 'Campaign' Subscriber: '000000'</div><a>click me</a><p>read me</p></body></html>");
     }
 }
