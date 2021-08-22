@@ -7,7 +7,7 @@ use League\Pipeline\PipelineBuilder;
 use Acelle\Library\HtmlHandler\ParseRss;
 use Acelle\Library\HtmlHandler\ReplaceBareLineFeed;
 use Acelle\Library\HtmlHandler\AppendHtml;
-use Acelle\Library\HtmlHandler\Tag;
+use Acelle\Library\HtmlHandler\TransformTag;
 use Acelle\Model\Subscriber;
 use Acelle\Model\Campaign;
 use Acelle\Model\MailList;
@@ -54,7 +54,7 @@ class HtmlHandlersTest extends TestCase
         $this->assertEquals($out, '<html><body><div>Content main</div><a>click me</a><p>read me</p></body></html>');
     }
 
-    public function test_tag()
+    public function test_transform_tag()
     {
         // List
         $list = Mockery::mock(new MailList());
@@ -70,7 +70,7 @@ class HtmlHandlersTest extends TestCase
 
         // Pipe
         $pipeline = new PipelineBuilder();
-        $pipeline->add(new Tag($campaign, $subscriber, $msgId = 'TEST'));
+        $pipeline->add(new TransformTag($campaign, $subscriber, $msgId = 'TEST'));
         $pipeline->add(new AppendHtml('<a>click me</a>'));
         $pipeline->add(new AppendHtml('<p>read me</p>'));
 
