@@ -1,7 +1,5 @@
 <?php
 
-use \InlineStyle\InlineStyle;
-
 /**
  * Globally available helper methods.
  *
@@ -694,7 +692,7 @@ function inlineHtml($html, array $cssFiles)
     // disable warning when parsing html content
     libxml_use_internal_errors(true);
 
-    $htmldoc = new InlineStyle($html);
+    $htmldoc = new \Acelle\Library\InlineStyleWrapper($html);
 
     foreach ($cssFiles as $file) {
         $styles = file_get_contents($file);
