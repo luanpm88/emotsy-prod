@@ -86,7 +86,7 @@ class HtmlHandlersTest extends TestCase
         $html = "<html><body><div>Campaign: '{CAMPAIGN_NAME}' Subscriber: '{SUBSCRIBER_UID}'</div></body></html>";
         $out = $pipeline->build()->process($html);
 
-        $this->assertEquals($out, "<!DOCTYPE html><html><body><div>Campaign: 'Campaign' Subscriber: '000000'</div><a>click me</a><p>read me</p></body></html>");
+        $this->assertEquals($out, "<!DOCTYPE html><html><body><div>Campaign: 'Campaign' Subscriber: '%UID%'</div><a>click me</a><p>read me</p></body></html>");
     }
 
     public function test_inject_tracking_pixel()
@@ -151,7 +151,7 @@ class HtmlHandlersTest extends TestCase
         $this->assertTrue(strpos($html, '<title>') === false);
         $this->assertTrue(strpos($html, "\n") === false);
         $this->assertTrue(strpos($html, '<div>Hello world éèéêôâ</div>') !== false);
-        $this->assertTrue(strpos($html, "'000000'") !== false);
+        $this->assertTrue(strpos($html, "'%UID%'") !== false); // isStdClassSubscriber is always TRUE in test
     }
 
     public function test_test_campaign_html_content_with_tracking_domain()
@@ -192,8 +192,6 @@ class HtmlHandlersTest extends TestCase
 
         $html = $pipeline->build()->process("<title class='blue'>\nThisis the template title</title><a class=' big blue' href='https://mailchimp.com'></a><div>Campaign: '{CAMPAIGN_NAME}' Subscriber: '{SUBSCRIBER_UID}'</div>");
 
-        echo $html;
-
         // Examine the output with DOM
         $dom = new DOMDocument();
         $dom->loadHTML($html);
@@ -215,6 +213,6 @@ class HtmlHandlersTest extends TestCase
         $this->assertTrue(strpos($html, '<title>') === false);
         $this->assertTrue(strpos($html, "\n") === false);
         $this->assertTrue(strpos($html, '<div>Hello world éèéêôâ</div>') !== false);
-        $this->assertTrue(strpos($html, "'000000'") !== false);
+        $this->assertTrue(strpos($html, "'%UID%'") !== false);
     }
 }

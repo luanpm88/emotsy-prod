@@ -34,7 +34,6 @@ class TransformTag implements StageInterface
             'CAMPAIGN_FROM_EMAIL' => $this->campaign->from_email,
             'CAMPAIGN_FROM_NAME' => $this->campaign->from_name,
             'CAMPAIGN_REPLY_TO' => $this->campaign->reply_to,
-            'SUBSCRIBER_UID' => $this->subscriber->uid,
             'CURRENT_YEAR' => date('Y'),
             'CURRENT_MONTH' => date('m'),
             'CURRENT_DAY' => date('d'),
@@ -50,6 +49,7 @@ class TransformTag implements StageInterface
             $tags['UNSUBSCRIBE_URL'] = $sampleLink;
             $tags['UPDATE_PROFILE_URL'] = $sampleLink;
             $tags['WEB_VIEW_URL'] = $sampleLink;
+            $tags['SUBSCRIBER_UID'] = '%UID%';
 
             # Subscriber custom fields, including email
             $sample = '%PERSONALIZED-DATA%';
@@ -63,11 +63,12 @@ class TransformTag implements StageInterface
             $tags['FULL_NAME'] = $sample;
 
             // Only email is "reserved", overwrite previous $sample
-            $tags['SUBSCRIBER_EMAIL'] = $this->subscriber->email;
+            $tags['SUBSCRIBER_EMAIL'] = is_null($this->subscriber) ? 'email@sample.com' : $this->subscriber->email;
         } else {
             $tags['UPDATE_PROFILE_URL'] = $this->campaign->generateUpdateProfileUrl($this->subscriber);
             $tags['UNSUBSCRIBE_URL'] = $this->campaign->generateUnsubscribeUrl($this->msgId, $this->subscriber);
             $tags['WEB_VIEW_URL'] = $this->campaign->generateWebViewerUrl($this->msgId);
+            $tags['SUBSCRIBER_UID'] = $this->subscriber->uid;
 
             # Subscriber custom fields
             foreach ($this->campaign->defaultMailList->fields as $field) {
