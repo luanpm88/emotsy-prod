@@ -23,7 +23,9 @@
 namespace Acelle\Library;
 
 use DOMDocument;
+use DomXpath;
 use Closure;
+use Exception;
 
 class StringHelper
 {
@@ -206,6 +208,19 @@ class StringHelper
         return true;
     }
 
+    public static function appendHtml($content, $html)
+    {
+        return StringHelper::updateHtml($content, function($document) use ($html) {
+            $tmpDoc = new DOMDocument();
+            $tmpDoc->encoding = 'utf-8';
+            $tmpDoc->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8'), LIBXML_NOWARNING | LIBXML_NOERROR | LIBXML_HTML_NODEFDTD);
+            foreach ($tmpDoc->getElementsByTagName('body')->item(0)->childNodes as $node) {
+                $node = $document->importNode($node, true);
+                $document->getElementsByTagName('body')->item(0)->appendChild($node);
+            }
+        });
+    }
+
     public static function replaceBareLineFeed($content)
     {
         return trim(preg_replace("/(?<=[^\r])\n/", "\r\n", $content));
@@ -371,6 +386,7 @@ class StringHelper
             $replace = [
                 'img' => 'src',
                 'link' => 'href',
+                'a' => 'href',
             ];
 
             foreach ($replace as $tag => $attribute) {
@@ -383,7 +399,7 @@ class StringHelper
                         continue;
                     }
 
-                    $element->setAttribute($attribute, $callback($url));
+                    $element->setAttribute($attribute, $callback($url, $element));
                 }
             }
         });
@@ -400,7 +416,7 @@ class StringHelper
     {
         $document = new DOMDocument();
         $document->encoding = 'utf-8';
-        $document->loadHTML(mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'), LIBXML_NOWARNING | LIBXML_NOERROR | LIBXML_HTML_NODEFDTD);
+        $document->loadHTML(mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'), LIBXML_NOWARNING | LIBXML_NOERROR);
 
         $callback($document);
         // IMPORTANT:
@@ -411,12 +427,29 @@ class StringHelper
         // Would become:
         //     <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA kAAA..."
         $output = htmlspecialchars_decode(rawurldecode($document->saveHTML($document->documentElement)));
+        $output = '<!DOCTYPE html>'.$output; // saveHTML(params) removes DOCTYPE
         return $output;
     }
 
     public static function sanitizeFilename($filename)
     {
         return preg_replace('/[^a-zA-Z0-9\.\-]+/', '_', trim($filename));
+    }
+
+    public static function makeTrackableLink($url, $msgId)
+    {
+        $newUrl = route('clickTrackingUrl', [
+            'url' => StringHelper::base64UrlEncode($url),
+            'message_id' => StringHelper::base64UrlEncode($msgId),
+        ], true);
+
+        return $newUrl;
+    }
+
+    public static function makeTrackingPixel($msgId)
+    {
+        $url = route('openTrackingUrl', ['message_id' => StringHelper::base64UrlEncode($msgId)], true);
+        return '<img src="'.$url.'" width="0" height="0" alt="" style="visibility:hidden" />';
     }
 
     public static function generateUniqueName($directory, $name)
