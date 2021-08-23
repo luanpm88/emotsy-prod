@@ -714,6 +714,11 @@ function putPermanentEnv($arr = [])
             "{$key}={$value}",
             $config
         );
+
+        // if not exist
+        if (strpos($config, $key) === false) {
+            $config = $config . "\n" . $key . '=' . $value;
+        }
     }
     
     file_put_contents($path, $config);

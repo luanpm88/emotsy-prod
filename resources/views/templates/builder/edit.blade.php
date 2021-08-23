@@ -10,6 +10,8 @@
     <link href="{{ URL::asset('builder/builder.css') }}" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="{{ URL::asset('builder/builder.js') }}"></script>
 
+    {{-- @include('builder.themes.yoga') --}}
+
     @if (file_exists($template->getStoragePath('theme.js')))
         <script type="text/javascript">
             {!! Acelle\Library\StringHelper::transformUrlsFromAnyText(
