@@ -1308,6 +1308,10 @@ class Subscriber extends Model
         return $url;
     }
 
+    public function generateUpdateProfileUrl()
+    {
+        return route('updateProfileUrl', ['list_uid' => $this->mailList->uid, 'uid' => $this->uid, 'code' => $this->getSecurityToken('update-profile')]);
+    }
 
     // Change status to SUBSCRIBED
     // @important: need subscription log in the future?

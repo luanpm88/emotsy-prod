@@ -85,27 +85,19 @@ class TrackingDomainController extends Controller
      */
     public function store(Request $request)
     {
-        // Get current user
-        $current_user = $request->user();
-        $domain = new TrackingDomain();
-
         // authorize
-        if (!$request->user()->customer->can('create', $domain)) {
+        if (!$request->user()->customer->can('create', TrackingDomain::class)) {
             return $this->notAuthorized();
         }
 
-        // save posted data
-        $this->validate($request, $domain->rules());
+        list($domain, $validator) = TrackingDomain::createFromRequest($request);
 
-        // Save current user info
-        $domain->fill($request->all());
-        $domain->customer_id = $request->user()->customer->id;
-        $domain->status = TrackingDomain::STATUS_UNVERIFIED;
-
-        if ($domain->save()) {
-            $request->session()->flash('alert-success', trans('messages.tracking_domain.created'));
-            return redirect()->action('TrackingDomainController@index');
+        if ($validator->fails()) {
+            return back()->withErrors($validator->errors());
         }
+
+        $request->session()->flash('alert-success', trans('messages.tracking_domain.created'));
+        return redirect()->action('TrackingDomainController@index');
     }
 
     /**
@@ -128,8 +120,9 @@ class TrackingDomainController extends Controller
         $domain = TrackingDomain::findByUid($id);
         $hostname = parse_url(url('/'), PHP_URL_HOST);
 
-        return view('tracking_domains.show', [
+        return view('tracking_domains.show2', [
             'domain' => $domain,
+            'download' => url('tracking-1.0.0.zip'),
             'hostname' => $hostname,
         ]);
     }
@@ -180,10 +173,12 @@ class TrackingDomainController extends Controller
      */
     public function verify(Request $request, $uid)
     {
-        $debug = session()->has('tracking_domain_debug');
         $domain = TrackingDomain::findByUid($uid);
-        $domain->verify($debug);
-        return redirect()->action('TrackingDomainController@show', ['tracking_domain' => $uid]);
+        if ($domain->verify()) {
+            return response()->json(['success' => true], 200);
+        } else {
+            return response()->json(['success' => false], 200);
+        }
     }
 
     /**
@@ -214,5 +209,11 @@ class TrackingDomainController extends Controller
                 'domain' => $domain,
             ]);
         }
+    }
+
+    public function test(Request $request)
+    {
+        $domain = TrackingDomain::findByUid($request->uid);
+        echo 123;
     }
 }

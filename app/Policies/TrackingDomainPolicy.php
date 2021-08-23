@@ -16,7 +16,7 @@ class TrackingDomainPolicy
         return true;
     }
 
-    public function create(User $user, TrackingDomain $item, $role)
+    public function create(User $user)
     {
         return true;
     }

@@ -49,7 +49,7 @@ function generatePublicPath($absPath, $withHost = false)
         // Return something like
         //     "http://localhost/{subdirectory if any}/p/assets/ef99238abc92f43e038efb"   # withHost = true, OR
         //     "/p/assets/ef99238abc92f43e038efb"                   # withHost = false
-        $url = route('public_assets', [ 'dirname' => $encodedDirname, 'basename' => $basename ], $withHost);
+        $url = route('public_assets', [ 'dirname' => $encodedDirname, 'basename' => rawurlencode($basename) ], $withHost);
     } else {
         // Make sure the $subdirectory has a leading slash ('/')
         $subdirectory = join_paths('/', $subdirectory);
