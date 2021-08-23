@@ -17,8 +17,10 @@
     <form action="{ACTION}" method="POST" builder-element="FormElement" builder-container builder-wrapper role="main">
       <div class="p-5">
         <div class="">
-          <h1 builder-element builder-draggable builder-inline-edit>{LIST_NAME}</h1>
-          <p builder-element builder-draggable builder-inline-edit>{LIST_DESCRIPTION}</p>
+          <div class="container">
+            <h1 builder-element builder-draggable builder-inline-edit>{LIST_NAME}</h1>
+            <p builder-element builder-draggable builder-inline-edit>{LIST_DESCRIPTION}</p>
+          </div>
           <div class="row mt-4">
             <div class="col-md-6 col-sm-6">              
               <div builder-element="BlockElement" builder-container style="min-height: 300px" id="formContainer">
