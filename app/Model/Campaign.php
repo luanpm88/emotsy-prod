@@ -543,7 +543,7 @@ class Campaign extends Model
      *
      * @return string
      */
-    public function getHtmlContent($subscriber = null, $msgId = null, $server = null, $handlers = [])
+    public function getHtmlContent($subscriber = null, $msgId = null, $server = null)
     {
         if (!$this->template) {
             throw new Exception('No template available');
