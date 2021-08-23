@@ -45,7 +45,7 @@ class TransformTag implements StageInterface
         );
 
         # Subscriber specific
-        if (is_null($this->subscriber) || is_null($this->msgId) || $this->campaign->isStdClassSubscriber($this->subscriber)) {
+        if (is_null($this->subscriber) || empty($this->msgId) || $this->campaign->isStdClassSubscriber($this->subscriber)) {
             $sampleLink = route('campaign_message', [ 'message' => StringHelper::base64UrlEncode(trans('messages.email.test_link_note')) ]);
 
             if ($this->campaign->trackingDomain) {

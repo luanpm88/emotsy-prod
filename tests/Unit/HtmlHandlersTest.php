@@ -199,11 +199,11 @@ class HtmlHandlersTest extends TestCase
         $url = $a->getAttribute('href');
 
         // At first, URL is a tracking URL
-        $encoded = "aHR0cDovL2xvY2FsaG9zdC9wL1RWTkhTVVEvY2xpY2svYUhSMGNITTZMeTl0WVdsc1kyaHBiWEF1WTI5dA";
+        $encoded = "aHR0cDovL2xvY2FsaG9zdC9wL2FIUjBjSE02THk5dFlXbHNZMmhwYlhBdVkyOXQvY2xpY2svVFZOSFNVUQ";
         $this->assertEquals($url, "{$domain->scheme}://{$domain->name}/{$encoded}");
 
         // When decoded, it is a click trackable link
-        $this->assertEquals( StringHelper::base64UrlDecode($encoded), url('p/TVNHSUQ/click/aHR0cHM6Ly9tYWlsY2hpbXAuY29t') );
+        $this->assertEquals( StringHelper::base64UrlDecode($encoded), url('p/aHR0cHM6Ly9tYWlsY2hpbXAuY29t/click/TVNHSUQ') );
 
         // and resolving it to the original Mailchimp link
         $this->assertEquals( StringHelper::base64UrlDecode('aHR0cHM6Ly9tYWlsY2hpbXAuY29t'), 'https://mailchimp.com' );
@@ -266,11 +266,11 @@ class HtmlHandlersTest extends TestCase
         $url = $a->getAttribute('href');
 
         // At first, URL is a tracking URL
-        $encoded = "aHR0cDovL2xvY2FsaG9zdC9wL1RWTkhTVVEvY2xpY2svYUhSMGNITTZMeTl0WVdsc1kyaHBiWEF1WTI5dA";
+        $encoded = "aHR0cDovL2xvY2FsaG9zdC9wL2FIUjBjSE02THk5dFlXbHNZMmhwYlhBdVkyOXQvY2xpY2svVFZOSFNVUQ";
         $this->assertEquals($url, "{$domain->scheme}://{$domain->name}/{$encoded}");
 
         // When decoded, it is a click trackable link
-        $this->assertEquals( StringHelper::base64UrlDecode($encoded), url('p/TVNHSUQ/click/aHR0cHM6Ly9tYWlsY2hpbXAuY29t') );
+        $this->assertEquals( StringHelper::base64UrlDecode($encoded), url('p/aHR0cHM6Ly9tYWlsY2hpbXAuY29t/click/TVNHSUQ') );
 
         // and resolving it to the original Mailchimp link
         $this->assertEquals( StringHelper::base64UrlDecode('aHR0cHM6Ly9tYWlsY2hpbXAuY29t'), 'https://mailchimp.com' );

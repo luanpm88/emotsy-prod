@@ -512,20 +512,29 @@ class Campaign extends Model
     {
         $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from_email));
 
-        $unsubscribeUrl = $subscriber->generateUnsubscribeUrl($msgId);
-        if ($this->trackingDomain) {
-            $unsubscribeUrl = $this->trackingDomain->buildTrackingUrl($unsubscribeUrl);
+        if ($this->isStdClassSubscriber($subscriber)) {
+            $unsubscribeUrl = null;
+        } else {
+            $unsubscribeUrl = $subscriber->generateUnsubscribeUrl($msgId);
+            if ($this->trackingDomain) {
+                $unsubscribeUrl = $this->trackingDomain->buildTrackingUrl($unsubscribeUrl);
+            }
         }
 
-        return array(
+        $headers = array(
             'X-Acelle-Campaign-Id' => $this->uid,
             'X-Acelle-Subscriber-Id' => $subscriber->uid,
             'X-Acelle-Customer-Id' => $this->customer->uid,
             'X-Acelle-Message-Id' => $msgId,
             'X-Acelle-Sending-Server-Id' => $server->uid,
-            'List-Unsubscribe' => "<{$unsubscribeUrl}>",
             'Precedence' => 'bulk',
         );
+
+        if ($unsubscribeUrl) {
+            $headers['List-Unsubscribe'] = "<{$unsubscribeUrl}>";
+        }
+
+        return $headers;
     }
 
     /**
@@ -558,6 +567,26 @@ class Campaign extends Model
     }
 
     /**
+     * Build Email HTML content.
+     *
+     * @return string
+     */
+    public function getPlainContent($subscriber, $msgId, $server = null)
+    {
+        $pipeline = new PipelineBuilder();
+        $pipeline->add(new ReplaceBareLineFeed);
+        $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
+        $plain = $pipeline->build()->process($this->plain);
+
+        // Append footer
+        if ($this->footerEnabled()) {
+            $plain = $this->appendFooter($plain, $this->getPlainTextFooter());
+        }
+
+        return $plain;
+    }
+
+    /**
      * Get tagged Subject.
      *
      * @return string
@@ -565,6 +594,7 @@ class Campaign extends Model
     public function getSubject($subscriber, $msgId)
     {
         $pipeline = new PipelineBuilder();
+        $pipeline->add(new ReplaceBareLineFeed);
         $pipeline->add(new TransformTag($this, $subscriber, $msgId));
         return $pipeline->build()->process($this->subject);
     }
@@ -597,26 +627,6 @@ class Campaign extends Model
     public function getPlainTextFooter()
     {
         return $this->customer->getCurrentSubscription()->plan->getOption('plain_text_footer');
-    }
-
-    /**
-     * Build Email HTML content.
-     *
-     * @return string
-     */
-    public function getPlainContent($subscriber, $msgId, $server = null)
-    {
-        $plain = $this->tagMessage($this->plain, $subscriber, $msgId, $server);
-
-        // Append footer
-        if ($this->footerEnabled()) {
-            $plain = $this->appendFooter($plain, $this->getPlainTextFooter());
-        }
-
-        // Replace bare line feed char which is not accepted by Outlook, Yahoo, AOL...
-        $plain = StringHelper::replaceBareLineFeed($plain);
-
-        return $plain;
     }
 
     /**
