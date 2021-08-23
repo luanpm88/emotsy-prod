@@ -486,6 +486,11 @@ class StringHelper
         return $newName;
     }
 
+    public static function isTag($string)
+    {
+        return preg_match('/{[a-zA-Z0-9_]+}/', $string);
+    }
+
     public static function transformUrlsFromAnyText(string $content, Closure $callback)
     {
         preg_match_all('/(href|src)=["\']([^("|\')]*)/i', $content, $matches);

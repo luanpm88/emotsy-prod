@@ -693,6 +693,10 @@ class Template extends Model
                 return $url;
             }
 
+            if (StringHelper::isTag($url)) {
+                return $url;
+            }
+
             if (!is_null(parse_url($url, PHP_URL_HOST))) {
                 // url is with a host like "http://" or "//"
                 if (!is_null($urlTransform)) {
