@@ -154,8 +154,6 @@ class TemplateUrlTest extends TestCase
 
         $out = $this->getElementAttributes($html);
 
-        echo $html;
-
         // Transformed
         // $this->assertMatchesRegularExpression( '/^http.*\/assets\/.*sample.png$/', $out['relative']);
         $this->assertTrue( strpos($out['relative'], self::HOST) === 0 ); // contains "http:://localhost..."
