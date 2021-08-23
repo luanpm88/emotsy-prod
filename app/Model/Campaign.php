@@ -556,9 +556,9 @@ class Campaign extends Model
         $pipeline->add(new AppendHtml($this->getHtmlFooter()));
         $pipeline->add(new ParseRss);
         $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
+        $pipeline->add(new InjectTrackingPixel($msgId));
         $pipeline->add(new TransformUrl($this->template, $msgId, $this->trackingDomain));
         $pipeline->add(new MakeInlineCss( $this->template->findCssFiles() ));
-        $pipeline->add(new InjectTrackingPixel($msgId));
 
         $html = $pipeline->build()->process($this->getTemplateContent());
 

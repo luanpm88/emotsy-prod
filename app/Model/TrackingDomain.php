@@ -277,11 +277,8 @@ class TrackingDomain extends Model
 
         // Already a tracking domain
         if (strpos($url, $this->getUrl()) === 0) {
-            echo "\nIgnoring $url\n";
             return $url;
         }
-
-        echo "\nDoing something to $url\n";
 
         $encodedUrl = StringHelper::base64UrlEncode($url);
         return join_url($this->getUrl(), $encodedUrl);

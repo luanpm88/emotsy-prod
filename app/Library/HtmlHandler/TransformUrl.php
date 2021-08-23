@@ -40,7 +40,7 @@ class TransformUrl implements StageInterface
             }
 
             // Also, check if it is the currnet tracking URL, just ignore
-            if (strpos($url, $this->domain->getUrl()) === 0) {
+            if ($this->domain && strpos($url, $this->domain->getUrl()) === 0) {
                 return $url;
             }
 

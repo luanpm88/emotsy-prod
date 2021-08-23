@@ -259,8 +259,6 @@ class HtmlHandlersTest extends TestCase
 
         $html = $pipeline->build()->process("<title class='blue'>\nThisis the template title</title><a class=' big blue' href='https://mailchimp.com'></a><div>Campaign: '{CAMPAIGN_NAME}' Subscriber: '{SUBSCRIBER_UID}'</div><a name='unsubscribe' href='{UNSUBSCRIBE_URL}'>Unsubscribe</a>|{UPDATE_PROFILE_URL}|{WEB_VIEW_URL}");
 
-        echo $html;
-
         // Examine the output with DOM
         $dom = new DOMDocument();
         $dom->loadHTML($html);
@@ -288,5 +286,55 @@ class HtmlHandlersTest extends TestCase
         //$this->assertTrue(strpos($html, 'c/000000/unsubscribe/TVNHSUQ') !== false);
         //$this->assertTrue(strpos($html, 'update-profile') !== false);
         //$this->assertTrue(strpos($html, 'campaigns/TVNHSUQ/web-view') !== false);
+    }
+
+    public function test_test_campaign_with_special_tags_without_tracking_domain()
+    {
+        // Mail list
+        $list = new MailList;
+        $list->generateUid();
+
+        // Template
+        $template = Mockery::mock(new Template(['name' => 'Template']));
+        $template->generateUid();
+
+        // List
+        $list = Mockery::mock(new MailList());
+        $list->generateUid();
+
+        // Campaign
+        $campaign = Mockery::mock(new Campaign(['name' => 'Campaign']));
+        $campaign->defaultMailList = $list;
+
+        // Subscriber
+        $subscriber = Mockery::mock(new Subscriber());
+        $subscriber->mailList = $list;
+        $subscriber->uid = '000000';
+
+        $pipeline = new PipelineBuilder();
+        $pipeline->add(new AddDoctype);
+        $pipeline->add(new RemoveTitleTag);
+        $pipeline->add(new ReplaceBareLineFeed);
+        $pipeline->add(new AppendHtml('<div>Hello world éèéêôâ</div>'));
+        $pipeline->add(new ParseRss);
+        $pipeline->add(new TransformTag($campaign, $subscriber, 'MSGID', $server = null));
+        $pipeline->add(new InjectTrackingPixel('MSGID'));
+        $pipeline->add(new TransformUrl($template, 'MSGID', null)); // click url, tracking domain applied
+        $pipeline->add(new MakeInlineCss( [storage_path('tests/sample.css')] ));
+
+
+        $html = $pipeline->build()->process("<title class='blue'>\nThisis the template title</title><a class=' big blue' href='https://mailchimp.com'></a><div>Campaign: '{CAMPAIGN_NAME}' Subscriber: '{SUBSCRIBER_UID}'</div><a name='unsubscribe' href='{UNSUBSCRIBE_URL}'>Unsubscribe</a>|{UPDATE_PROFILE_URL}|{WEB_VIEW_URL}");
+
+        // Other assertinos
+        $this->assertTrue(strpos($html, '<!DOCTYPE html>') === 0);
+        $this->assertTrue(strpos($html, '<title>') === false);
+        $this->assertTrue(strpos($html, "\n") === false);
+        $this->assertTrue(strpos($html, '<div>Hello world éèéêôâ</div>') !== false);
+        $this->assertTrue(strpos($html, "'000000'") !== false);
+
+        // Special tags
+        $this->assertTrue(strpos($html, 'c/000000/unsubscribe/TVNHSUQ') !== false);
+        $this->assertTrue(strpos($html, 'update-profile') !== false);
+        $this->assertTrue(strpos($html, 'campaigns/TVNHSUQ/web-view') !== false);
     }
 }
