@@ -329,22 +329,31 @@ class Email extends Model
      */
     public function getCustomHeaders($subscriber, $server)
     {
-        $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from));
+        $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from_email));
 
-        $unsubscribeUrl = $subscriber->generateUnsubscribeUrl($msgId);
-        if ($this->trackingDomain) {
-            $unsubscribeUrl = $this->trackingDomain->buildTrackingUrl($unsubscribeUrl);
+        if ($this->isStdClassSubscriber($subscriber)) {
+            $unsubscribeUrl = null;
+        } else {
+            $unsubscribeUrl = $subscriber->generateUnsubscribeUrl($msgId);
+            if ($this->trackingDomain) {
+                $unsubscribeUrl = $this->trackingDomain->buildTrackingUrl($unsubscribeUrl);
+            }
         }
 
-        return array(
-            'X-Acelle-email-Id' => $this->uid,
+        $headers = array(
+            'X-Acelle-Campaign-Id' => $this->uid,
             'X-Acelle-Subscriber-Id' => $subscriber->uid,
-            'X-Acelle-Customer-Id' => $this->automation->customer->uid,
+            'X-Acelle-Customer-Id' => $this->customer->uid,
             'X-Acelle-Message-Id' => $msgId,
             'X-Acelle-Sending-Server-Id' => $server->uid,
-            'List-Unsubscribe' => "<{$unsubscribeUrl}>",
             'Precedence' => 'bulk',
         );
+
+        if ($unsubscribeUrl) {
+            $headers['List-Unsubscribe'] = "<{$unsubscribeUrl}>";
+        }
+
+        return $headers;
     }
 
     /**
@@ -378,7 +387,10 @@ class Email extends Model
      */
     public function getSubject($subscriber, $msgId)
     {
-        return $this->tagMessage($this->subject, $subscriber, $msgId, null);
+        $pipeline = new PipelineBuilder();
+        $pipeline->add(new ReplaceBareLineFeed);
+        $pipeline->add(new TransformTag($this, $subscriber, $msgId));
+        return $pipeline->build()->process($this->subject);
     }
 
     /**
