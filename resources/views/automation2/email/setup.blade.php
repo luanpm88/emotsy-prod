@@ -175,8 +175,6 @@
             var form = $(this);
             var url = form.attr('action');
             
-            console.log(url);
-            
             // loading effect
             popup.loading();
             

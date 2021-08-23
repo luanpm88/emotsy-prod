@@ -9,10 +9,13 @@ use Illuminate\Database\Eloquent\Model;
 use Exception;
 use Acelle\Model\Invoice;
 use Acelle\Library\Traits\HasUid;
+use Acelle\Library\Traits\HasQuota;
+use Acelle\Library\Contracts\HasQuota as HasQuotaInterface;
+use Acelle\Library\QuotaManager;
 
-class Subscription extends Model
+class Subscription extends Model implements HasQuotaInterface
 {
-    use HasUid;
+    use HasUid, HasQuota;
     
     const STATUS_NEW = 'new';
     const STATUS_ACTIVE = 'active';
@@ -182,6 +185,19 @@ class Subscription extends Model
         ]);
         $invoice->customer_id = $this->customer->id;
         $invoice->currency_id = $this->plan->currency_id;
+
+        // default billing info
+        $billingAddress = $this->customer->getDefaultBillingAddress();
+        if ($billingAddress) {
+            $invoice->billing_first_name = $billingAddress->first_name;
+            $invoice->billing_last_name = $billingAddress->last_name;
+            $invoice->billing_address = $billingAddress->address;
+            $invoice->billing_email = $billingAddress->email;
+            $invoice->billing_phone = $billingAddress->phone;
+            $invoice->billing_country_id = $billingAddress->country_id;
+        }
+
+        // save
         $invoice->save();
 
         // data
@@ -225,6 +241,19 @@ class Subscription extends Model
         ]);
         $invoice->customer_id = $this->customer->id;
         $invoice->currency_id = $this->plan->currency_id;
+        
+        // default billing info
+        $billingAddress = $this->customer->getDefaultBillingAddress();
+        if ($billingAddress) {
+            $invoice->billing_first_name = $billingAddress->first_name;
+            $invoice->billing_last_name = $billingAddress->last_name;
+            $invoice->billing_address = $billingAddress->address;
+            $invoice->billing_email = $billingAddress->email;
+            $invoice->billing_phone = $billingAddress->phone;
+            $invoice->billing_country_id = $billingAddress->country_id;
+        }
+
+        // save
         $invoice->save();
 
         // data
@@ -272,6 +301,19 @@ class Subscription extends Model
         ]);
         $invoice->customer_id = $this->customer->id;
         $invoice->currency_id = $this->plan->currency_id;
+
+        // default billing info
+        $billingAddress = $this->customer->getDefaultBillingAddress();
+        if ($billingAddress) {
+            $invoice->billing_first_name = $billingAddress->first_name;
+            $invoice->billing_last_name = $billingAddress->last_name;
+            $invoice->billing_address = $billingAddress->address;
+            $invoice->billing_email = $billingAddress->email;
+            $invoice->billing_phone = $billingAddress->phone;
+            $invoice->billing_country_id = $billingAddress->country_id;
+        }
+
+        // save
         $invoice->save();
 
         // save data
@@ -811,5 +853,36 @@ class Subscription extends Model
         // if subscription is new -> cancel now subscription.
         // Make sure a new subscription must have a pending invoice
         $this->cancelNow();
+    }
+
+    public function getCreditsUsedDuringPlanCycle($name)
+    {
+        $interval = "{$this->plan->frequency_amount} {$this->plan->frequency_unit}"; // '1 month' or '1 year' for example
+        $from = Carbon::now()->subtract($interval);
+        return $this->getCreditsUsed($name, $from);
+    }
+
+    public function getCreditsLimit($name)
+    {
+        if ($name != 'send') {
+            throw new Exception("`{$name}` credis limit is not available");
+        }
+
+        return $this->plan->getOption('email_max');
+    }
+
+    public function getCreditsUsedPercentageDuringPlanCycle($name)
+    {
+        $creditsUsed = $this->getCreditsUsedDuringPlanCycle($name);
+        $creditsLimit = $this->plan->getOption('email_max');
+        $percentage = ($creditsLimit == QuotaManager::QUOTA_UNLIMITED) ? 0 : $creditsUsed / $creditsLimit;
+
+        return $percentage;
+    }
+
+    /***   IMPLEMENTATION OF HasQuotaInterface ***/
+    public function getQuotaSettings($name) : ?array
+    {
+        return $this->plan->getQuotaSettings($name);
     }
 }

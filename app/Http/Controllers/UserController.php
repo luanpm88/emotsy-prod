@@ -83,7 +83,7 @@ class UserController extends Controller
 
         // If already logged in
         if (!is_null($request->user())) {
-            return redirect()->action('AccountSubscriptionController@index');
+            return redirect()->action('SubscriptionController@index');
         }
 
         // Initiate customer object for filling the form

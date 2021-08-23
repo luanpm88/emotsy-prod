@@ -107,10 +107,10 @@ people_outline
                 @forelse(Auth::user()->admin->recentCustomers() as $customer)
                     <li class="">
                         <div class="row">
-                            <div class="col-sm-5 col-md-5">
+                            <div class="col-sm-8 col-md-8">
                                 <div class="d-flex">
                                     <div class="me-3">
-                                        <img width="40" class="rounded-circle shadow-sm mr-10 pull-left" src="{{ $customer->user->getProfileImageUrl() }}" alt="">
+                                        <img width="40" class="rounded-circle shadow-sm me-2 pull-left" src="{{ $customer->user->getProfileImageUrl() }}" alt="">
                                     </div>
                                     <div>
                                         <h6 class="mt-0 mb-0 text-semibold">
@@ -125,16 +125,11 @@ people_outline
                                 </div>
                                 
                             </div>
-                            <div class="col-sm-4 col-md-4 text-left">
-                                <h6 class="no-margin text-semibold">
+                            <div class="col-sm-4 col-md-4 text-end">
+                                <h6 class="no-margin text-semibold small">
                                     {{ Tool::formatDateTime($customer->created_at) }}
                                 </h6>
                                 <span class="">{{ trans('messages.created_at') }}</span>
-                            </div>
-                            <div class="col-sm-3 col-md-3 text-left">
-                                <span class="text-muted2 list-status pull-left">
-                                    <span class="label label-flat bg-{{ $customer->status }}">{{ trans('messages.subscription_status_' . $customer->status) }}</span>
-                                </span>
                             </div>
                         </div>
                     </li>
@@ -263,7 +258,9 @@ people_outline
                 <ul class="dotted-list topborder section">
                     <li>
                         <div class="unit size1of2">
-                            <strong><i class="icon-user-tie"></i> {{ trans('messages.admins') }}</strong>
+                            <strong><span class="material-icons-outlined me-2">
+manage_accounts
+</span> {{ trans('messages.admins') }}</strong>
                         </div>
                         <div class="lastUnit size1of2">
                             <mc:flag>{{ Auth::user()->admin->getAllAdmins()->count() }}</mc:flag>
@@ -281,7 +278,7 @@ people
                     </li>
                     <li class="selfclear">
                         <div class="unit size1of2">
-                            <strong><span class="material-icons-outlined">
+                            <strong><span class="material-icons-outlined me-2">
 dns
 </span> {{ trans('messages.sending_servers') }}</strong>
                         </div>
@@ -291,7 +288,7 @@ dns
                     </li>
                     <li>
                         <div class="unit size1of2">
-                            <strong><span class="material-icons-outlined">
+                            <strong><span class="material-icons-outlined me-2">
 public
 </span> {{ trans('messages.sending_domains') }}</strong>
                         </div>

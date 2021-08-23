@@ -93,6 +93,7 @@ class PlanController extends Controller
             }
 
             $plan->admin_id = $user->admin->id;
+            $plan->status = \Acelle\Model\Plan::STATUS_INACTIVE;
             $plan->save();
 
             // check status

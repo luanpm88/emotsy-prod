@@ -35,7 +35,7 @@ sort
                             </button>
                         </span>
                         <span class="text-nowrap">
-                            <input name="search_keyword" value="{{ request()->search_keyword }}" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
+                            <input type="text" name="keyword" value="{{ request()->search_keyword }}" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
                             <span class="material-icons-round">
 search
 </span>
@@ -53,4 +53,20 @@ search
         <div class="pml-table-container">
         </div>
     </form>
+
+    <script>
+        var CampaignLogIndex = {
+            getList: function() {
+                return makeList({
+                    url: '{{ action('CampaignController@openLogListing', $campaign->uid) }}',
+                    container: $('.listing-form'),
+                    content: $('.pml-table-container')
+                });
+            }
+        };
+
+        $(function() {
+            CampaignLogIndex.getList().load();
+        });
+    </script>
 @endsection

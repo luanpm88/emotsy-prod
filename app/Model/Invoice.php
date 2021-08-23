@@ -21,6 +21,15 @@ class Invoice extends Model
     const TYPE_NEW_SUBSCRIPTION = 'new_subscription';
     const TYPE_CHANGE_PLAN = 'change_plan';
 
+    protected $fillable = [
+        'billing_first_name',
+        'billing_last_name',
+        'billing_address',
+        'billing_email',
+        'billing_phone',
+        'billing_country_id',
+    ];
+
     public function scopeNew($query)
     {
         $query->whereIn('status', [
@@ -374,11 +383,16 @@ class Invoice extends Model
                 $chargeInfo = trans('messages.bill.charge_before', [
                     'date' => \Acelle\Library\Tool::formatDate($subscription->current_period_ends_at),
                 ]);
+                $plan = $subscription->plan;
                 break;
             case self::TYPE_NEW_SUBSCRIPTION:
+                $subscription = Subscription::findByUid($this->getMetadata()['subscription_uid']);
                 $chargeInfo = trans('messages.bill.charge_now');
+                $plan = $subscription->plan;
                 break;
             case self::TYPE_CHANGE_PLAN:
+                $data = $this->getMetadata();
+                $plan = \Acelle\Model\Plan::findByUid($data['new_plan_uid']);
                 $chargeInfo = trans('messages.bill.charge_now');
                 break;
             default:
@@ -402,6 +416,7 @@ class Invoice extends Model
             'pending' => $this->getPendingTransaction(),
             'invoice_uid' => $this->uid,
             'type' => $this->type,
+            'plan' => $plan,
         ];
     }
 
@@ -550,5 +565,25 @@ class Invoice extends Model
             default:
                 throw new \Exception('Invoice type is not valid: ' . $this->type);
         }
+    }
+
+    public function updateBillingInformation($billing)
+    {
+        $this->fill($billing);
+
+        $validator = \Validator::make($billing, [
+            'billing_first_name' => 'required',
+            'billing_last_name' => 'required',
+            'billing_address' => 'required',
+            'billing_country_id' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return $validator;
+        }
+
+        $this->save();
+
+        return $validator;
     }
 }

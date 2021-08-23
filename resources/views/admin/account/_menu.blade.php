@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-md-12">
         <div class="tabbable">
-            <ul class="nav nav-tabs nav-tabs-top nav-underline">
+            <ul class="nav nav-tabs nav-tabs-top nav-underline mb-4">
                 <li class="nav-item" rel0="AccountController/profile">
                     <a href="{{ action("Admin\AccountController@profile") }}" class="nav-link">
                         <span class="material-icons-outlined">

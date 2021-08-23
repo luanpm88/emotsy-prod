@@ -15,7 +15,9 @@ class UpdateSubscriptionsKeys extends Migration
     public function up()
     {
         // Create temporary table
-        \DB::statement(sprintf('CREATE TABLE _tmp_subscriptions as SELECT * FROM %s', table('subscriptions')));
+        \DB::statement('DROP TABLE IF EXISTS _tmp_subscriptions');
+        \DB::statement(sprintf('CREATE TABLE _tmp_subscriptions LIKE %s', table('subscriptions')));
+        \DB::statement(sprintf('INSERT INTO _tmp_subscriptions SELECT * FROM %s', table('subscriptions')));
 
         // Clean up all subscription
         // $subscriptions = Subscription::all();

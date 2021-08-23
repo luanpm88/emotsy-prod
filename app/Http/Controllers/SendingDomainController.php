@@ -119,9 +119,11 @@ class SendingDomainController extends Controller
         $plan = $customer->activeSubscription()->plan;
         if ($plan->useSystemSendingServer()) {
             $server = $plan->primarySendingServer();
+        } else {
+            $server = null;
         }
 
-        if ($server->allowVerifyingOwnDomainsRemotely()) {
+        if ($server && $server->allowVerifyingOwnDomainsRemotely()) {
             list($validator, $domain) = $domain->createFromArray($request->all(), $server); // server based domain
         } else {
             list($validator, $domain) = $domain->createFromArray($request->all(), null);    // app based domain

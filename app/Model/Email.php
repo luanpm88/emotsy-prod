@@ -199,7 +199,7 @@ class Email extends Model
 
         // Build a valid message with a fake contact
         // build a temporary subscriber oject used to pass through the sending methods
-        $subscriber = $this->createStdClassSubscriber(['email' => 'admin@outlook.com']);
+        $subscriber = $this->createStdClassSubscriber(['email' => $emailAddress]);
         list($message, $msgId) = $this->prepare($subscriber);
         $server->send($message);
     }
@@ -208,17 +208,8 @@ class Email extends Model
     // It is just fine, we can think Email as an object depends on User/Customer
     public function deliverTo($subscriber, $triggerId = null)
     {
-        // @todo: code smell here, violation of Demeter Law
-        // @todo: performance
-        while ($this->automation->customer->overQuota()) {
-            MailLog::warning(sprintf('Email `%s` (%s) to `%s` halted, user exceeds sending limit', $this->subject, $this->uid, $subscriber->email));
-            sleep(60);
-        }
-
         $server = $subscriber->mailList->pickSendingServer();
-
         MailLog::info("Sending to subscriber `{$subscriber->email}`");
-
         list($message, $msgId) = $this->prepare($subscriber);
 
         if (config('app.demo') == true) {
@@ -229,7 +220,7 @@ class Email extends Model
             // additional log
             MailLog::info("[DEMO] Sent to subscriber `{$subscriber->email}`");
         } else {
-            $server->send($message);
+            $sent = $server->send($message);
             // additional log
             MailLog::info("Sent to subscriber `{$subscriber->email}`");
         }
@@ -373,10 +364,6 @@ class Email extends Model
 
         // create tracking log for message
         $this->trackingLogs()->create($params);
-
-        // increment customer quota usage
-        $this->automation->customer->countUsage();
-        $server->countUsage();
     }
 
     /**

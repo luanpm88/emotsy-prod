@@ -4,7 +4,7 @@
             @include('elements._notification', [
                 'level' => $n->level,
                 'title' => $n->title,
-                'message' => $n->message,
+                'message' => strip_tags($n->message),
                 'debug' => $n->debug,
                 'params' => ['id' => $n->uid, 'data-type' => 'admin-notification']
             ])

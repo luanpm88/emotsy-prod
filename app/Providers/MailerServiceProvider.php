@@ -29,11 +29,11 @@ class MailerServiceProvider extends ServiceProvider implements DeferrableProvide
     public function register()
     {
         $this->app->bind('xmailer', function ($app) {
-            $driver = Setting::get('mailer.driver') ?? config('mail.driver');
+            $mailer = Setting::get('mailer.mailer') ?? config('mail.mailer');
 
-            switch ($driver) {
+            switch ($mailer) {
                 case SendingServer::TYPE_SMTP:
-                    $mailer = SendingServerSmtp::instantiateFromSettings([
+                    $server = SendingServerSmtp::instantiateFromSettings([
                         'host' => Setting::get('mailer.host') ?? config('mail.host'),
                         'smtp_port' => Setting::get('mailer.port') ?? config('mail.port'),
                         'smtp_protocol' => Setting::get('mailer.encryption') ?? config('mail.encryption'),
@@ -46,18 +46,18 @@ class MailerServiceProvider extends ServiceProvider implements DeferrableProvide
                     break;
 
                 case SendingServer::TYPE_SENDMAIL:
-                    $mailer = SendingServerSendmail::instantiateFromSettings([
+                    $server = SendingServerSendmail::instantiateFromSettings([
                         'sendmail_path' => Setting::get('mailer.sendmail_path') ?? config('mail.sendmail'),
                         'from_name' => Setting::get('mailer.from.name') ?? config('mail.from.name'),
                         'from_address' => Setting::get('mailer.from.address') ?? config('mail.from.address'),
                     ]);
                     break;
                 default:
-                    throw new \Exception("Mail driver '{$driver}' not found by Acelle", 1);
+                    throw new \Exception("Mail mailer '{$mailer}' not found", 1);
                     break;
             }
 
-            return $mailer;
+            return $server;
         });
     }
 

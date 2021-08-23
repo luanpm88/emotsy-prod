@@ -12,3 +12,36 @@
 <input type="hidden" name="quota_value" value="{{ $quotaValue }}" />
 <input type="hidden" name="quota_base" value="{{ $quotaBase }}" />
 <input type="hidden" name="quota_unit" value="{{ $quotaUnit }}" />
+
+<script>
+    var SendingLimit = {
+        sendingLimitPopup: null,
+
+        getBox: function() {
+            return $('.sending-limit-box');
+        },
+
+        getSendingLimitPopup: function() {
+            if (this.sendingLimitPopup == null) {
+                this.sendingLimitPopup = new Popup({
+                    url: '{{ action('Admin\SendingServerController@sendingLimit', ['uid' => ($server->uid ? $server->uid : 0)]) }}'
+                });
+            }
+
+            return this.sendingLimitPopup;
+        }
+    }
+
+    $(function() {
+    });
+
+    $(function() {
+        $('[name="options[sending_limit]"]').on('change', function() {
+            var val = $(this).val();
+
+            if (val == 'custom') {
+                SendingLimit.getSendingLimitPopup().load();
+            }
+        });
+    });
+</script>

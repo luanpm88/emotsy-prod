@@ -5,7 +5,7 @@
         @foreach ($customers as $key => $item)
             <tr>
                 <td width="1%">
-                    <img width="80" class="rounded-circle mr-10" src="{{ $item->user->getProfileImageUrl() }}" alt="">
+                    <img width="50" class="rounded-circle me-2" src="{{ $item->user->getProfileImageUrl() }}" alt="">
                 </td>
                 <td>
                     <h5 class="m-0 text-bold">
@@ -29,16 +29,16 @@ assignment_turned_in
                     @endif
                 </td>
                 <td class="stat-fix-size">
-                    @if (is_object($item->subscription) && !$item->subscription->isEnded())
+                    @if ($item->activeSubscription())
                         <div class="d-flex">
                             <div class="single-stat-box pull-left me-5">
-                                <span class="no-margin text-primary stat-num">{{ $item->displaySendingQuotaUsage() }}</span>
+                                <span class="no-margin text-primary stat-num">{{ $item->activeSubscription()->getCreditsUsedPercentageDuringPlanCycle('send') }}</span>
                                 <div class="progress progress-xxs">
-                                    <div class="progress-bar progress-bar-info" style="width: {{ $item->getSendingQuotaUsagePercentage() }}%">
+                                    <div class="progress-bar progress-bar-info" style="width: {{ $item->activeSubscription()->getCreditsUsedPercentageDuringPlanCycle('send')*100 }}%">
                                     </div>
                                 </div>
                                 <span class="text-muted">
-                                    <strong>{{ \Acelle\Library\Tool::format_number($item->getSendingQuotaUsage()) }}/{{ ($item->getSendingQuota() == -1) ? '∞' : \Acelle\Library\Tool::format_number($item->getSendingQuota()) }}</strong>
+                                    <strong>{{ number_with_delimiter($item->activeSubscription()->getCreditsUsedDuringPlanCycle('send')) }}/{{ ($item->activeSubscription()->getCreditsLimit('send') == -1) ? '∞' : number_with_delimiter($item->activeSubscription()->getCreditsLimit('send')) }}</strong>
                                     <div class="text-nowrap">{{ trans('messages.sending_credits_used') }}</div>
                                 </span>
                             </div>

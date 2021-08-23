@@ -70,7 +70,7 @@
 			<div class="row top-list-controls py-2">
 				<div class="col-md-10">
 					<div class="filter-box">
-						<span class="mr-10">
+						<span class="me-2">
 							<div class="mr-2">
 								@include('helpers.select_tool', [
 									'disable_all_items' => false
@@ -300,7 +300,6 @@ exit_to_app
 				}
 
 				if (form.find('.select_tool').length) {
-					console.log(data);
 					data.select_tool = form.find('.select_tool').val();
 				}
 

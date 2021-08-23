@@ -84,14 +84,9 @@ file_upload
                     return;
                 }
 
-                swal({
-                    title: error,
-                    text: "",
-                    confirmButtonColor: "#00695C",
-                    type: "error",
-                    allowOutsideClick: true,
-                    confirmButtonText: LANG_OK,
-                    customClass: "swl-success"
+                notify({
+                    title: "{{ trans('messages.notify.error') }}",
+                    message: error,
                 });
             });
         }

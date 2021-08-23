@@ -58,8 +58,8 @@ close
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenu1">
-                                <li><a class="profile-remove-contact" href="#">{{ trans('messages.subscribers.profile.remove_subscriber') }}</a></li>
-                                <li><a class="profile-tag-contact" href="#">{{ trans('messages.subscribers.profile.manage_tags') }}</a></li>
+                                <li><a class="dropdown-item profile-remove-contact" href="#">{{ trans('messages.subscribers.profile.remove_subscriber') }}</a></li>
+                                <li><a class="dropdown-item profile-tag-contact" href="#">{{ trans('messages.subscribers.profile.manage_tags') }}</a></li>
                             </ul>
                             </div>
                         </div>
@@ -303,7 +303,7 @@ close
                         },
                         success: function (response) {
                             // notify
-                            // notify({
+                            notify({
     type: 'success',
     title: '{!! trans('messages.notify.success') !!}',
     message: response.message

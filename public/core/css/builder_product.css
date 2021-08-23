@@ -158,18 +158,18 @@
 }
 .product-placeholder {
     display: block!important;
-    position: absolute;
     top: 0;
     left: 0;
-    width: calc(100% - 30px);
-    height: calc(100% - 30px);
-    background: #f2f2f2;
+    background: #fbfcfc;
     padding: 30px;
     z-index: 2;
     border: dashed 2px #ddd;
     border-radius: 2px;
-    margin: 15px;
+    margin: 0;
     opacity: 1;
+    width: 100%;
+    margin-bottom: -190px;
+    height: 190px;
 }
 .product-widget[product-id] .product-placeholder {
     display: none!important;

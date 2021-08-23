@@ -7,8 +7,12 @@
 
 	@yield('head')
 </head>
-<body class="theme-{{ Auth::user()->customer->getColorScheme() }}">
+<body class="theme-{{ Auth::user()->customer->getColorScheme() }} {{ Auth::user()->customer->getMenuLayout() }}bar
+	{{ Auth::user()->customer->getMenuLayout() }}bar-{{ request()->session()->get('customer-leftbar-state') }}
+">
 	@include('layouts.core._menu_frontend')
+
+	@include('layouts.core._middle_bar')
 
 	<main class="container page-container px-3">
 		
@@ -52,6 +56,20 @@
 
 	<!-- display flash message -->
 	@include('layouts.core._flash')
+
+	<script>
+		// Customer color scheme | menu layout wizard
+		@if (false)
+			var wizardUserPopup;
+
+			$(function() {
+				wizardUserPopup = new Popup({
+					url: '{{ action('AccountController@wizardColorScheme') }}',
+				});
+				wizardUserPopup.load();
+			});
+		@endif
+	</script>
 
 	<script>
 		@if (null !== Session::get('orig_admin_id') && Auth::user()->admin)

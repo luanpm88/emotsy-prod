@@ -92,7 +92,8 @@ class Link {
                 // load confirm message
 				$.ajax({
 					url: _this.options.confirmUrl,
-					type: 'GET'
+					type: 'GET',
+                    data: _this.options.data
 				}).done(function(response) {
                     _this.dialog = new Dialog('confirm', {
                         message: response,

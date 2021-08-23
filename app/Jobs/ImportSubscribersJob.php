@@ -12,6 +12,13 @@ class ImportSubscribersJob extends Base
 {
     use Trackable;
 
+    /* Already specified by Base job
+     *
+     *     public $failOnTimeout = true;
+     *     public $tries = 1;
+     *
+     */
+
     public $timeout = 7200;
 
     // @todo this should better be a constant
@@ -48,7 +55,6 @@ class ImportSubscribersJob extends Base
      */
     public function handle()
     {
-
         // Use a logger to log failed
         $formatter = new LineFormatter("[%datetime%] %channel%.%level_name%: %message%\n");
         $logfile = $this->file.".log";

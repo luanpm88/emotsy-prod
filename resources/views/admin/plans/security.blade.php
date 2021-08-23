@@ -65,7 +65,7 @@
                         'rules' => $plan->validationRules()['general'],
                     ])
                     <hr>
-                    <button class="btn btn-secondary mr-10">{{ trans('messages.save') }}</button>
+                    <button class="btn btn-secondary me-2">{{ trans('messages.save') }}</button>
                     <a href="{{ action('Admin\PlanController@index') }}" role="button" class="btn btn-link">
                         {{ trans('messages.cancel') }}
                     </a>

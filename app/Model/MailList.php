@@ -1177,6 +1177,8 @@ class MailList extends Model
                     $insertLimit = $this->getRemainingAddSubscribersQuota();
                 }
 
+                $insertLimit = ($insertLimit < 0) ? 0 : $insertLimit;
+
                 // if ($insertLimit == 0) { // only == 0 is enough
                 //     throw new \Exception(trans('messages.import.notice.over_quota'));
                 // }
@@ -1618,7 +1620,6 @@ class MailList extends Model
             $id = RouletteWheel::take($selection);
             if (empty(self::$serverPools[$id])) {
                 $server = SendingServer::find($id);
-                $server->cleanupQuotaTracker();
                 MailLog::info(sprintf('Initialize delivery server `%s` (ID: %s)', $server->name, $id));
 
                 $server = SendingServer::mapServerType($server);
@@ -1629,23 +1630,6 @@ class MailList extends Model
                     $server->setSubAccount($subscription->subAccount);
                 }
                 self::$serverPools[$id] = $server;
-            }
-
-            if (self::$serverPools[$id]->overQuota()) {
-                // just wait until it is okie to go
-                // log every 60 seconds
-                if (!array_key_exists($id, $blacklisted) || time() - $blacklisted[$id] >= 60) {
-                    $blacklisted[$id] = time();
-                    MailLog::warning(sprintf('Sending server `%s` exceeds sending limit, skipped', self::$serverPools[$id]->name));
-                }
-
-                // if all sending servers are blacklisted
-                if (sizeof($blacklisted) == sizeof($selection)) {
-                    MailLog::warning('All sending servers exceed sending limit, waiting...');
-                    sleep(30);
-                }
-
-                continue;
             }
 
             MailLog::info(sprintf('Pick up delivery server `%s` (ID: %s)', self::$serverPools[$id]->name, $id));
@@ -2135,5 +2119,50 @@ class MailList extends Model
         }
 
         return $fields;
+    }
+
+    public function defaultEmbeddedFormOptions()
+    {
+        return [
+            'form_title' => trans('messages.Subscribe_to_our_mailing_list'),
+            'redirect_url' => '',
+            'only_required_fields' => 'no',
+            'stylesheet' => 'yes',
+            'javascript' => 'yes',
+            'show_invisible' => 'no',
+            'custom_css' => '.subscribe-embedded-form {
+    color: #333
+}
+.subscribe-embedded-form label {
+    color: #555
+}',
+        ];
+    }
+
+    public function getEmbeddedFormOptions()
+    {
+        if ($this->embedded_form_options == null) {
+            return [];
+        }
+
+        return json_decode($this->embedded_form_options, true);
+    }
+
+    public function getEmbeddedFormOption($key)
+    {
+        $defaults = $this->defaultEmbeddedFormOptions();
+        $options = $this->getEmbeddedFormOptions();
+
+        if (isset($options[$key])) {
+            return $options[$key];
+        } else {
+            return $defaults[$key];
+        }
+    }
+
+    public function setEmbeddedFormOptions($params)
+    {
+        $this->embedded_form_options = json_encode($params);
+        $this->save();
     }
 }

@@ -4,6 +4,8 @@ namespace Acelle\Jobs;
 
 class DeliverEmail extends Base
 {
+    public $timeout = 120;
+
     protected $email;
     protected $subscriber;
     protected $triggerId; // one email may be delivered to a given subscriber more than once (weekly recurring, birthday... for example)

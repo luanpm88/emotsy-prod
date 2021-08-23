@@ -53,7 +53,7 @@
                     @if (is_null($trigger))
                         <label title="" class="text-end">
                             <span class="">
-                                <span class="text-warning">Waiting...</span>
+                                <span class="text-warning">{{ trans('messages.automation.contacts.trigger.waiting') }}</span>
                             </span>
                         </label>
                         <desc>

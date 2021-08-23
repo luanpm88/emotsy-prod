@@ -9,9 +9,7 @@
             <li class="breadcrumb-item"><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
         </ul>
         <h1>
-            <span class="text-gear"><span class="material-icons-outlined">
-                browser_updated
-</span> {{ trans('messages.upgrade.title.upgrade') }}</span>
+            <img src="{{ url('images/upgrade.svg') }}" width="33px" class="me-2" /> {{ trans('messages.upgrade.title.upgrade') }}</span>
         </h1>
     </div>
 

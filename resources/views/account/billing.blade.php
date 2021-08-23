@@ -2,6 +2,10 @@
 
 @section('title', trans('messages.contact_information'))
 
+@section('head')
+    <script type="text/javascript" src="{{ URL::asset('core/js/group-manager.js') }}"></script>
+@endsection
+
 @section('page_header')
 
     <div class="page-title">
@@ -22,7 +26,7 @@
 
     <div class="row">
         <div class="col-md-6">
-            <h2>{{ trans('messages.billing_information') }}</h2>
+            <h3 class="mb-4">{{ trans('messages.billing_information') }}</h3>
             @if (!$customer->getDefaultBillingAddress())
                 <p>{{ trans('messages.has_no_billing_address') }}</p>
                 <div>
@@ -52,7 +56,7 @@
             @endif
         </div>
         <div class="col-md-4">
-            <h2>{{ trans('messages.payment_method') }}</h2>
+            <h3 class="mb-4">{{ trans('messages.payment_method') }}</h3>
 
             @include('account._payment_info', [
                 'redirect' => action('AccountController@billing'),

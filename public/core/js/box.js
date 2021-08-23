@@ -10,23 +10,29 @@ class Box {
         if (typeof(callback) !== 'undefined') {
             this.callback = callback;
         }
+
+        this.box.html(``);
+        placeholderLoading(this.box);
     }
     
     loading() {
-        if (!this.box.find('.box-loading').length) {
-            this.box.prepend(this.loadingHtml);
-        }
+        // if (!this.box.find('.box-loading').length) {
+        //     this.box.prepend(this.loadingHtml);
+        // }
         
-        this.box.addClass('box-is-loading');
+        // this.box.addClass('box-is-loading');
+        placeholderLoading(this.box);
     }
     
     loaded() {
-        // apply js for new content
-        this.applyJs();
+        // // apply js for new content
+        // this.applyJs();
         
-        // remove loading effects
-        this.box.find('.box-loading').remove();        
-        this.box.removeClass('box-is-loading');
+        // // remove loading effects
+        // this.box.find('.box-loading').remove();        
+        // this.box.removeClass('box-is-loading');
+        removePlaceholderLoading(this.box);
+        this.applyJs();
     }
     
     applyJs() {
@@ -53,6 +59,7 @@ class Box {
             url: _this.url,
             type: 'GET',
             dataType: 'html',
+            data: _this.data ? _this.data : {}
         }).always(function(response) {
             _this.box.html(response);
             

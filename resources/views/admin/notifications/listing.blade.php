@@ -31,13 +31,13 @@
                         </span>
                     @endif
                 </td>
-                <td>
+                <td width="40%">
                     <p class="mb-0" title="Debug: {{ $notification->debug }}">                                                
                         <span class="xtooltip tooltipstered">{!! $notification->title !!}</span><br />
                         <span class="text-muted2">{{ $notification->message }}</span>
                     </p>
                 </td>
-                <td>
+                <td class="text-end">
                     <div class="pull-right">
                         <div class="text-semibold">{{ $notification->created_at->diffForHumans() }}</div>
                         <span class="text-muted2">{{ Acelle\Library\Tool::formatDateTime($notification->created_at) }}</span>

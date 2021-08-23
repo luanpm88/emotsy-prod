@@ -1075,7 +1075,6 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
                 html = html.replace(/\*\|PRODUCT_QUANTITY\|\*/g, data.quantity);
                 element.obj.find('.preview-container').html(html);
                 if (data.image) {
-                    console.log(element.obj.find('.preview-container img'));
                     element.obj.find('.preview-container img').attr('src', data.image);
                 }
                 element.obj.find('.preview-container *').removeAttr('builder-element');
@@ -1227,7 +1226,7 @@ border-color: #9b5c8f;" class="btn btn-primary text-white">
             // default content html
             this.setContentHtml(`
                 <div preview="no" builder-element="ProductElement" builder-draggable class="product-widget">
-                    <div class="container py-3">
+                    <div class="container py-3 position-relative">
                         <div class="product-placeholder text-center" style="display:none">
                             <img src="{{ url('images/product-image-placeholder.svg') }}" width="100%" />
                             <a style="" class="mt-4 btnx btnx-primary">

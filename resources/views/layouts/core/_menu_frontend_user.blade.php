@@ -9,17 +9,42 @@
     <a href="{{ action('TemplateController@index') }}" class="nav-link d-flex align-items-center ps-3 pe-1 py-3 lvl-1 dropdown-toggle"
         id="content-menu" data-bs-toggle="dropdown" aria-expanded="false">
         <i class="navbar-icon">
-            <img src="{{ Auth::user()->getProfileImageUrl() }}" style="border-radius:100%;transform:scale(1.5)" alt="">
+            <img src="{{ Auth::user()->getProfileImageUrl() }}" style="border-radius:100%;" class="menu-user-avatar" alt="">
         </i>
         <span>{{ Auth::user()->displayName() }}</span>
         @if (Auth::user()->customer->hasSubscriptionNotice())
-            <i class="material-icons-outlined customer-warning-icon text-danger" style="right:2px;color:rgb(236, 124, 124)!important;top:2px;position:absolute">info</i>
+            <i class="material-icons-outlined customer-warning-icon text-danger" style="right: 3px!important;
+            color: rgb(236, 124, 124)!important;
+            top: 2px!important;
+            position: absolute;
+            text-indent: 0;transform:scale(1.2)">info</i>
         @endif
     </a>
-    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="content-menu">
+    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-bottom top-user-menus" aria-labelledby="content-menu">
+        <li class="backdrop p-4 d-flex align-items-center justify-content-center">
+            <img src="{{ url('images/paper-airplane.svg') }}" width="100px" />
+        </li>
+        <li class="p-3" style="width: 300px">
+            <div class="d-flex mb-2">
+                <div class="big-avatar me-3">
+                    <img width="80px" class="" src="{{ Auth::user()->getProfileImageUrl() }}"
+                        style="border-radius:100%"
+                        class="menu-user-avatar" alt="">
+                </div>
+                <div>
+                    <label class="fs-6 fw-600 d-flex align-items-center">
+                        <span class="me-3">{{ Auth::user()->displayName() }}</span>
+                    </label>
+                    <p class="mb-1 small text-muted">{{ Auth::user()->email }}</p>
+                    @if (Auth::user()->customer->status) 
+                        <span class="label label-flat bg-{{ Auth::user()->customer->status }}">{{ trans('messages.' . Auth::user()->customer->status) }}</span>
+                    @endif
+                </div>
+            </div>
+        </li>
         @can("admin_access", Auth::user())
             <li class="border-bottom"><a href="{{ action("Admin\HomeController@index") }}" class="dropdown-item d-flex align-items-center">
-            <i class="navbar-icon mr-3">
+            <i class="navbar-icon mr-2">
                 <img src="{{ url('images/icons/'.$iconDir.'SVG/changeview.svg') }}" />
             </i>{{ trans('messages.admin_view') }}</a></li>
             <li class="divider"></li>
@@ -27,34 +52,34 @@
         @if (request()->user()->customer->activeSubscription())
             <li class="dropdown">
                 <a href="#" class="dropdown-item top-quota-button d-flex align-items-center" data-url="{{ action("AccountController@quotaLog") }}">
-                <i class="navbar-icon mr-3">
+                <i class="navbar-icon mr-2">
                 <img src="{{ url('images/icons/'.$iconDir.'SVG/sreport.svg') }}" />
             </i>
                     <span class="">{{ trans('messages.used_quota') }}</span>
                 </a>
             </li>
         @endif
-        <li class="nav-item" rel0="AccountSubscriptionController/index">
-            <a href="{{ action('AccountSubscriptionController@index') }}" class="dropdown-item position-relative d-flex align-items-center">
-            <i class="navbar-icon mr-3">
+        <li class="nav-item" rel0="SubscriptionController/index">
+            <a href="{{ action('SubscriptionController@index') }}" class="dropdown-item position-relative d-flex align-items-center">
+            <i class="navbar-icon mr-2">
                 <img src="{{ url('images/icons/'.$iconDir.'SVG/subscription.svg') }}" />
             </i>{{ trans('messages.subscriptions') }}
                 @if (Auth::user()->customer->hasSubscriptionNotice())
                     <i class="material-icons-outlined subscription-warning-icon text-danger" style="font-size: inherit;
                         position: absolute;
                         right: 0;
-                        top: 0;">info</i>
+                        top: 0;margin-top: 10px">info</i>
                 @endif
             </a>
         </li>
         <li class="nav-item" rel0="AccountController/billing"><a href="{{ action("AccountController@billing") }}" class="dropdown-item d-flex align-items-center">
-            <i class="navbar-icon mr-3">
+            <i class="navbar-icon mr-2">
                 <img src="{{ url('images/icons/'.$iconDir.'SVG/billing.svg') }}" />
             </i>{{ trans('messages.billing') }}
         
         </a></li>
         <li class="nav-item" rel0="AccountController/profile"><a href="{{ action("AccountController@profile") }}" class="dropdown-item d-flex align-items-center">
-            <i class="navbar-icon mr-3">
+            <i class="navbar-icon mr-2">
                 <img src="{{ url('images/icons/'.$iconDir.'SVG/account.svg') }}" />
             </i>{{ trans('messages.account') }}
         
@@ -62,15 +87,15 @@
         @if (Auth::user()->customer->canUseApi())
             <li class="nav-item" rel0="AccountController/api">
                 <a href="{{ action("AccountController@api") }}" class="dropdown-item d-flex align-items-center">
-                <i class="navbar-icon mr-3">
+                <i class="navbar-icon mr-2">
                 <img style="transform:scale(1.15)" src="{{ url('images/icons/'.$iconDir.'SVG/api.svg') }}" />
             </i>{{ trans('messages.campaign_api') }}
                 </a>
             </li>
         @endif
         <li><a href="{{ url("/logout") }}" class="dropdown-item d-flex align-items-center">
-            <i class="navbar-icon mr-3">
-                <img style="transform:scale(.95)" src="{{ url('images/icons/'.$iconDir.'SVG/logout.svg') }}" />
+            <i class="navbar-icon mr-2">
+                <img style="height:19px;margin-top: 1px;" style="transform:scale(.95)" src="{{ url('images/icons/'.$iconDir.'SVG/logout.svg') }}" />
             </i>{{ trans('messages.logout') }}
         </a></li>
     </ul>

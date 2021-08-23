@@ -7,13 +7,11 @@
 
 	@yield('head')
 </head>
-<body class="layout-dark">
+<body class="layout-dark topbar">
 	@include('layouts.core._menu_dark_frontend')
+	@include('layouts.core._middle_bar')
 
     @yield('page_header')
-
-    <!-- display flash message -->
-    @include('layouts.core._errors')
 
     <!-- main inner content -->
     @yield('content')

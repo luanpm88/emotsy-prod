@@ -29,6 +29,7 @@ use Acelle\Model\Subscription;
 use Acelle\Cashier\Cashier;
 use Acelle\Model\SendingServer;
 use Acelle\Library\Traits\HasUid;
+use Acelle\Library\QuotaManager;
 
 class Plan extends Model
 {
@@ -55,7 +56,6 @@ class Plan extends Model
         'frequency_unit',
         'price',
         'vat',
-        'color',
         'currency_id',
         'tax_billing_required',
         'paddle_plan_id',
@@ -76,7 +76,6 @@ class Plan extends Model
             'frequency_unit' => 'required',
             'price' => 'required|min:0',
             'vat' => 'required|min:0',
-            'color' => 'required',
         );
 
         $options = self::defaultOptions();
@@ -108,7 +107,6 @@ class Plan extends Model
                 'plan.general.frequency_unit' => 'sometimes|required',
                 'plan.general.price' => 'required|min:0',
                 'plan.general.vat' => 'required|min:0',
-                'plan.general.color' => 'sometimes|required',
             ],
             'options' => [],
         ];
@@ -140,7 +138,6 @@ class Plan extends Model
             'frequency_amount' => 'required|min:1',
             'frequency_unit' => 'required',
             'price' => 'required|min:0',
-            'color' => 'required',
         );
 
         return $rules;
@@ -199,7 +196,6 @@ class Plan extends Model
             'frequency_amount' => 'required|min:1',
             'frequency_unit' => 'required',
             'price' => 'required|min:0',
-            'color' => 'required',
         );
 
         if ($this->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SUBACCOUNT) {
@@ -472,7 +468,7 @@ class Plan extends Model
             'all_sending_servers' => 'yes',
             'max_size_upload_total' => '500',
             'max_file_size_upload' => '5',
-            'unsubscribe_url_required' => 'yes',
+            'unsubscribe_url_required' => 'no',
             'access_when_offline' => 'no',
             //'create_sending_servers' => 'no',
             'create_sending_domains' => 'yes',
@@ -480,6 +476,7 @@ class Plan extends Model
             'sending_domains_max' => '-1',
             'all_email_verification_servers' => 'yes',
             'create_email_verification_servers' => 'no',
+            'verification_credits_limit' => '10000',
             'email_verification_servers_max' => '-1',
             'list_import' => 'yes',
             'list_export' => 'yes',
@@ -1316,5 +1313,69 @@ class Plan extends Model
     public function scopeAvailable($query)
     {
         $query = $query->where('plans.visible', '=', true);
+    }
+
+    public function getTax()
+    {
+        return ($this->price * ($this->vat/100));
+    }
+
+    public function total()
+    {
+        return $this->price + $this->getTax();
+    }
+
+    public function getQuotaSettings($name) : ?array
+    {
+        $quota = [];
+        $options = $this->getOptions();
+
+        // Take limits from sending credits
+        $sendingCredits = $options['email_max'];
+        if ($sendingCredits != QuotaManager::QUOTA_UNLIMITED) {
+            $quota[] = [
+                'name' => "Plan's sending limit",
+                'period_base' => $this->frequency_unit,
+                'period_value' => $this->frequency_amount,
+                'limit' => $sendingCredits
+            ];
+        }
+
+        $timeValue = $options['sending_quota_time'];
+        if ($timeValue != QuotaManager::QUOTA_UNLIMITED) {
+            $timeUnit = $options['sending_quota_time_unit'];
+            $limit = $options['sending_quota'];
+
+            $quota[] = [
+                'name' => "Sending limit of {$limit} per {$timeValue} {$timeUnit}",
+                'period_base' => $timeUnit,
+                'period_value' => $timeValue,
+                'limit' => $limit,
+            ];
+        }
+
+        return $quota;
+    }
+
+    public function updateTos($params)
+    {
+        $rules = [];
+        if ($params['terms_of_service']['enabled'] == 'no') {
+            $rules['terms_of_service.content'] = 'required';
+        }
+
+        // make validator
+        $validator = \Validator::make($params, $rules);
+        
+        // redirect if fails
+        if ($validator->fails()) {
+            return $validator;
+        }
+
+        //
+        \Acelle\Model\Setting::set('terms_of_service.enabled', $params['terms_of_service']['enabled']);
+        \Acelle\Model\Setting::set('terms_of_service.content', $params['terms_of_service']['content']);
+
+        return $validator;
     }
 }

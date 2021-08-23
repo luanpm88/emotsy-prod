@@ -139,7 +139,7 @@ class SubscriberController extends Controller
 
         // check if item exists
         if (!is_object($item)) {
-            return \Response::json(array('message' => 'Item not found'), 404);
+            return \Response::json(array('message' => 'Subscriber not found'), 404);
         }
 
         // authorize
@@ -154,6 +154,7 @@ class SubscriberController extends Controller
             'status' => $item->status,
             'source' => $item->from,
             'ip_address' => $item->ip,
+            'tags' => $item->getTags(),
         ];
 
         foreach ($list->fields as $field) {
@@ -182,7 +183,7 @@ class SubscriberController extends Controller
 
         // check if item exists
         if (!is_object($subscriber)) {
-            return \Response::json(array('status' => 0, 'message' => 'Item not found'), 404);
+            return \Response::json(array('status' => 0, 'message' => 'Subscriber not found'), 404);
         }
 
         $list = $subscriber->mailList;
@@ -234,7 +235,7 @@ class SubscriberController extends Controller
 
         // check if item exists
         if (!is_object($subscriber)) {
-            return \Response::json(array('status' => 0, 'message' => 'Item not found'), 404);
+            return \Response::json(array('status' => 0, 'message' => 'Subscriber not found'), 404);
         }
 
         $list = $subscriber->mailList;
@@ -287,14 +288,14 @@ class SubscriberController extends Controller
 
         // check if item exists
         if (!is_object($subscriber)) {
-            return \Response::json(array('status' => 0, 'message' => 'Item not found'), 404);
+            return \Response::json(array('status' => 0, 'message' => 'Subscriber not found'), 404);
         }
 
         $list = $subscriber->mailList;
 
         // check if item exists
         if (!is_object($subscriber)) {
-            return \Response::json(array('status' => 0, 'message' => 'Item not found'), 404);
+            return \Response::json(array('status' => 0, 'message' => 'Subscriber not found'), 404);
         }
 
         // authorize

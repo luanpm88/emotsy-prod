@@ -23,13 +23,13 @@
                 <div class="d-flex mb-2">
                     <label class="fw-600 me-auto">{{ trans('messages.sending_quota') }}</label>
                     <div class="pull-right text-semibold">
-                        <span class="text-muted">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->getSendingQuotaUsage()) }}/{{ (Auth::user()->customer->getSendingQuota() == -1) ? '∞' : \Acelle\Library\Tool::format_number(Auth::user()->customer->getSendingQuota()) }}</span>
-                        &nbsp;&nbsp;&nbsp;<span>{{ Auth::user()->customer->displaySendingQuotaUsage() }}</span>
+                        <span class="text-muted">{{ number_with_delimiter($sendingCreditsUsed) }}/{{ ($sendingCreditsLimit == -1) ? '∞' : $sendingCreditsLimit }}</span>
+                        &nbsp;&nbsp;&nbsp;<span>{{ number_to_percentage($sendingCreditsUsedPercentage) }}</span>
                     </div>
                 </div>
                 
                 <div class="progress progress-sm" style="height: 12px;">
-                    <div class="progress-bar progress-bar-striped bg-{{ Auth::user()->customer->getSendingQuotaUsagePercentage() >= 80 ? 'danger' : 'primary' }}" style="width: {{ Auth::user()->customer->getSendingQuotaUsagePercentage() }}%">
+                    <div class="progress-bar progress-bar-striped bg-{{ ($sendingCreditsUsedPercentage >= 0.8) ? 'danger' : 'primary' }}" style="width: {{ $sendingCreditsUsedPercentage*100  }}%">
                     </div>
                 </div>
             </div>

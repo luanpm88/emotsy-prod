@@ -24,4 +24,9 @@ trait HasUid
     {
         $this->uid = uniqid();
     }
+
+    public function getUid() : ?string
+    {
+        return $this->uid;
+    }
 }

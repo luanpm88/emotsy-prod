@@ -61,4 +61,9 @@ class NotificationController extends Controller
         // Redirect to my lists page
         echo trans('messages.notifications.deleted', ['number' => $count]);
     }
+
+    public function popup(Request $request)
+    {
+        return view('admin.notifications.popup');
+    }
 }

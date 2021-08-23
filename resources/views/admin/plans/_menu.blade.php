@@ -31,6 +31,11 @@
                             {{ trans('messages.plan.email_footer') }}
                         </a>
                     </li>
+                    <li rel0="PlanController/tos">
+                        <a class="dropdown-item" href="{{ action('Admin\PlanController@tos', $plan->uid) }}">
+                            {{ trans('messages.plan.tos') }}
+                        </a>
+                    </li>
                 </ul>
             </li>
             <li class="nav-item" rel0="PlanController/sendingServer" rel1="PlanController/sendingServers" rel2="PlanController/sendingServerSubaccount"

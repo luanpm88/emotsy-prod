@@ -240,4 +240,9 @@ class Controller extends BaseController
     {
         echo get_app_identity();
     }
+
+    public function termsOfService()
+    {
+        return view('termsOfService');
+    }
 }

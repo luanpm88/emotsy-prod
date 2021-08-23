@@ -27,7 +27,7 @@ people
 						<div class="col-md-10">
 							@if ($subscribers->count() >= 0)
 								<div class="filter-box">
-									<div class="btn-group list_actions mr-10" style="display:none">
+									<div class="btn-group list_actions me-2" style="display:none">
 										<button role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
 											{{ trans('messages.actions') }} <span class="number"></span><span class="caret"></span>
 										</button>
@@ -91,7 +91,7 @@ sort
 											@endforeach
 										</select>
 									</span>
-									<div class="btn-group list_columns mr-10">
+									<div class="btn-group list_columns me-2">
 										<button role="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown">
 											{{ trans('messages.columns') }} <span class="caret"></span>
 										</button>

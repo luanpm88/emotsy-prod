@@ -40,7 +40,7 @@ class Admin extends Model
      * @var array
      */
     protected $fillable = [
-        'timezone', 'language_id', 'color_scheme', 'text_direction'
+        'timezone', 'language_id', 'color_scheme', 'text_direction', 'menu_layout'
     ];
 
     /**
@@ -565,5 +565,10 @@ class Admin extends Model
     public function importBlacklistJobs()
     {
         return $this->jobMonitors()->orderBy('job_monitors.id', 'DESC')->where('job_type', ImportBlacklistJob::class);
+    }
+
+    public function getMenuLayout()
+    {
+        return ($this->menu_layout == 'left' ? 'left' : 'top');
     }
 }

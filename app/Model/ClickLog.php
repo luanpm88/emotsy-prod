@@ -126,7 +126,6 @@ class ClickLog extends Model
                         ->orwhere('click_logs.ip_address', 'like', '%'.$keyword.'%')
                         ->orwhere('click_logs.url', 'like', '%'.$keyword.'%')
                         ->orwhere('sending_servers.name', 'like', '%'.$keyword.'%')
-                        ->orwhere(\DB::raw('CONCAT(first_name, last_name)'), 'like', '%'.$keyword.'%')
                         ->orwhere('subscribers.email', 'like', '%'.$keyword.'%');
                 });
             }

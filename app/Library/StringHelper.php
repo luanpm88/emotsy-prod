@@ -34,13 +34,13 @@ class StringHelper
      *
      * @return string
      */
-    public static function base64UrlEncode($val)
+    public static function base64UrlEncode($string)
     {
-        if (is_null($val)) {
+        if (is_null($string)) {
             return null;
         }
 
-        return urlencode(base64_encode($val));
+        return str_replace(['+','/','='], ['-','_',''], base64_encode($string));
     }
 
     /**
@@ -51,13 +51,13 @@ class StringHelper
      *
      * @return string
      */
-    public static function base64UrlDecode($val)
+    public static function base64UrlDecode($string)
     {
-        if (is_null($val)) {
+        if (is_null($string)) {
             return null;
         }
 
-        return base64_decode(urldecode($val));
+        return base64_decode(str_replace(['-','_'], ['+','/'], $string));
     }
 
     /**
@@ -391,6 +391,11 @@ class StringHelper
         return $html;
     }
 
+    // @Important: use this helper method whenever it comes to update DOM document
+    // This method already solves the following:
+    // + UTF8 characters are wrongly encoded
+    // + Ampersand & is encoded to &amp;, breaking URLs
+    // + Others?
     public static function updateHtml(string $content, Closure $callback)
     {
         $document = new DOMDocument();
@@ -398,8 +403,14 @@ class StringHelper
         $document->loadHTML(mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'), LIBXML_NOWARNING | LIBXML_NOERROR | LIBXML_HTML_NODEFDTD);
 
         $callback($document);
-
-        $output = htmlspecialchars_decode(urldecode($document->saveHTML($document->documentElement)));
+        // IMPORTANT:
+        // Do not use urldecode() here, use rawurldecode() instead
+        // Otherwise, it will encode plus (+) chars to spaces, breaking IMG tag with Base64 src content:
+        // For example:
+        //     <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA+kAAA..."
+        // Would become:
+        //     <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA kAAA..."
+        $output = htmlspecialchars_decode(rawurldecode($document->saveHTML($document->documentElement)));
         return $output;
     }
 

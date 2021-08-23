@@ -1,7 +1,7 @@
 function initJs(container)
 {
     // tooltip
-    container.find('.xtooltip:not([title=""]), [data-popup=tooltip]:not([title=""])').tooltipster({
+    container.find('.xtooltip:not([title=""]), [data-popup=tooltip]:not([title=""]), .leftbar-navbar .leftbar-tooltip:not([title=""])').tooltipster({
         theme: 'tooltipster-light'
     });
 
@@ -21,7 +21,7 @@ function initJs(container)
 
     // datetime picker
     if (container.find(".pickadatetime").length) {
-        container.find(".pickatime, .time-selector").each(function() {
+        container.find(".pickadatetime").each(function() {
             var id = '_' + Math.random().toString(36).substr(2, 9);
             $(this).attr('id', id);
 
@@ -102,6 +102,18 @@ function initJs(container)
         
         input.focus();
     });
+}
+
+function openMiddleBar() {
+    $('body').addClass('middle-bar-open');
+}
+
+function hideMiddleBar() {
+    $('body').removeClass('middle-bar-open');
+}
+
+function middleBarShowed() {
+    return $('body').hasClass('middle-bar-open');
 }
 
 function placeholderLoading(container) {
