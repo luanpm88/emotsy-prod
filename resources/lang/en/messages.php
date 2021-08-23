@@ -3794,4 +3794,5 @@
   'plan.disable_terms_of_service' => 'Disable terms of service',
   'plan.tos.updated' => 'Terms of service was updated',
   'tos.i_agree' => 'I Agree',
+  'email.test_link_note' => 'This is a test link from a test or preview email. Don\'t worry, it will be transformed to a real link in a real campaign',
 ) ?>
