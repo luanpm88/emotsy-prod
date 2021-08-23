@@ -450,7 +450,7 @@ class StringHelper
     {
         $newUrl = route('clickTrackingUrl', [
             'url' => StringHelper::base64UrlEncode($url),
-            'message_id' => StringHelper::base64UrlEncode($msgId),
+            'message_id' => (empty($msgId)) ? null : StringHelper::base64UrlEncode($msgId),
         ], true);
 
         return $newUrl;
