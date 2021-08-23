@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>Form Builder</title>
-        <meta charset="utf-8">
+        <meta charset="utf-8">  
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
         
         @include('layouts.core._favicon')
@@ -12,6 +12,10 @@
 
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"> 
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"> 
+
+
+        <link type="text/css" rel="stylesheet" href="{{ URL::asset('core/css/form-builder.css') }}" />
 
         <style>
             .logo-img {
@@ -54,7 +58,7 @@
                     
                     root: '{{ URL::asset('builder') }}/',                
                     lang: {!! json_encode(language()->getBuilderLang()) !!},
-                    url: 'https://acelle.com/templates/610c9fe8d36c9/builder/edit/content',
+                    url: 'https://acelle.com/templates/6123035530020/builder/edit/content',
                     saveUrl: '',
                     saveMethod: 'POST',
                     uploadAssetUrl: '',
@@ -89,7 +93,39 @@
                         '{{ url('/images/backgrounds/images15.jpg') }}',
                         '{{ url('/images/backgrounds/images16.jpg') }}',
                         '{{ url('/images/backgrounds/images17.png') }}'
-                    ]
+                    ],
+                    loaded: function() {
+                        if (!editor.getIframeContent().find('#formContainer').children().length) {
+                            // add default widget
+                            formFields.forEach(function(field) {
+                                if (field.visible == 1) {
+                                    // create widget from field info
+                                    var className = field.type.charAt(0).toUpperCase() + field.type.slice(1) + 'FieldWidget';
+                                    var widget = eval('new ' + className + '(field)');
+                                    // insert widget content to editor
+                                    editor.getIframeContent().find('#formContainer').append(widget.getContentHtml());   
+                                }                   
+                            });
+
+                            // Add submit button
+                            var widget = new SubmitButtonWidget();
+                            // insert widget content to editor
+                            editor.getIframeContent().find('#formContainer').append(widget.getContentHtml());
+
+                            // editor.save();
+                        }
+
+                        // js auto height iframe
+                        editor.adjustIframeSize();
+
+                        editor.iframe.on('load', function() {
+                            editor.afterIframeLoaded();
+
+                            editor.getIframeContent().find('#formContainer').append(formBuilder.currentFormHtml);
+
+                            editor.adjustIframeSize();
+                        });
+                    }
                 });
             
                 editor.init();
@@ -105,7 +141,7 @@
                     </span>
                     Popup-Form Builder
                 </a>
-                <a class="navbar-brand d-flex align-items-center mr-0" href="#"><span class="material-icons-outlined">
+                <a class="navbar-brand d-flex align-items-center mr-0" href="{{ action('HomeController@index') }}"><span class="material-icons-outlined">
                     close
                     </span></a>
             </nav>
@@ -113,6 +149,22 @@
         <div class="d-flex">
             <div id="formCanvas"></div>
             <div id="formWidgetPanel"></div>
+        </div>
+
+        <div class="styles-settings">
+            <button class="styles-toggle btn btn-secondary px-2 py-1 shadow mb-2">
+                <span class="material-icons-round" style="line-height:30px">
+                    tune
+                </span>
+            </button>
+            <div class="styles-container shadow rounded-lg overflow-hidden p-4" style="display:none">
+                @foreach ($templates as $template)
+                    <a href="{{ action('TemplateController@builderEditContent', $template->uid) }}" class="style-item d-block rounded-3 overflow-hidden mb-4 shadow-sm">
+                        <img src="{{ $template->getThumbUrl() }}?v={{ rand(0,10) }}" />
+                    </a>
+                @endforeach
+            </div>
+                
         </div>
 
         <style>
@@ -150,8 +202,55 @@
         </div>
 
         <script>
+            var formBuilder = {
+                currentFormHtml: null,
+
+                showStyles: function() {
+                    $('.styles-container').slideDown();
+                },
+
+                hideStyles: function() {
+                    $('.styles-container').slideUp();
+                },
+
+                toogleStyles: function() {
+                    if ($('.styles-container').is(':visible')) {
+                        formBuilder.hideStyles();
+                    } else {
+                        formBuilder.showStyles();
+                    }
+                },
+            }
             $(function() {
                 $('.lds-dual-ring').remove();
+
+                $('.styles-toggle').on('click', function() {
+                    formBuilder.toogleStyles();
+                });
+
+                $(document).on('mouseup', function(e) 
+                {
+                    var container = $(".styles-container");
+
+                    // if the target of the click isn't the container nor a descendant of the container
+                    if (!container.is(e.target) && container.has(e.target).length === 0) 
+                    {
+                        formBuilder.hideStyles();
+                    }
+                });
+
+                $('.style-item').on('click', function(e) {
+                    e.preventDefault();
+                    var url = $(this).attr('href');
+
+                    editor.cleanUpContent();
+
+                    formBuilder.currentFormHtml = editor.getIframeContent().find('#formContainer').html();
+
+                    editor.iframe.attr('src', url);
+
+                    formBuilder.hideStyles();
+                });
             })
         </script>
   </body>

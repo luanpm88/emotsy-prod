@@ -1194,4 +1194,65 @@ class Template extends Model
         $this->content = tinyDocTypeTransform($content);
         $this->save();
     }
+
+    public static function resetFormTemplates()
+    {
+        TemplateCategory::where('name', '=', 'Form')->delete();
+        $categoryWoo = TemplateCategory::create(['name' => 'Form']);
+
+        // LIST all form templates here
+        $templates = [
+            [
+                'name' => '1 Column',
+                'dir' => database_path('templates/forms/001-column/6001a0a8583a7'),
+                'category' => $categoryWoo,
+            ], [
+                'name' => 'Pricing Table',
+                'dir' => database_path('templates/forms/002-2-columns/6002a2135b974'),
+                'category' => $categoryWoo,
+            ], [
+                'name' => 'Lists & Tables',
+                'dir' => database_path('templates/forms/003-dark-image-left/6003a2250a3a3'),
+                'category' => $categoryWoo,
+            ], [
+                'name' => 'One column layout',
+                'dir' => database_path('templates/forms/004-regform/6004a28418c95'),
+                'category' => $categoryWoo,
+            ], [
+                'name' => '1-2 column layout',
+                'dir' => database_path('templates/forms/005-full-background/6005a24ebdbd6'),
+                'category' => $categoryWoo,
+            ], [
+                'name' => '1-2-1 column layout',
+                'dir' => database_path('templates/forms/006-grap-money/6006a2401b055'),
+                'category' => $categoryWoo,
+            ], [
+                'name' => '1-3 column layout',
+                'dir' => database_path('templates/forms/007-checkout/6007a275bf375'),
+                'category' => $categoryWoo,
+            ], [
+                'name' => '1-3-1 column layout',
+                'dir' => database_path('templates/forms/008-blue-visa/6008a25ddce80'),
+                'category' => $categoryWoo,
+            ],
+        ];
+
+        // Delete existing template and create again with new updates
+        foreach ($templates as $meta) {
+            // UID is the folder name, "5d7b527be2bd2" for example
+            $uid = basename($meta['dir']);
+
+            // DELETE existing template, in case this migration is executed many times
+            Template::where('uid', $uid)->delete();
+
+            // Build $template attributes and create
+            $meta['uid'] = $uid;
+            $meta['is_default'] = true; // default templates that are originally created
+            $meta['builder'] = true;
+            $template = Template::createFromDirectory($meta, $meta['dir']);
+
+            // Set category
+            $template->categories()->attach($meta['category']->id);
+        }
+    }
 }
