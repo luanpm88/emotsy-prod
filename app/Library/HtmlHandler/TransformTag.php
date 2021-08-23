@@ -45,21 +45,7 @@ class TransformTag implements StageInterface
         );
 
         # Subscriber specific
-        if (!$this->campaign->isStdClassSubscriber($this->subscriber)) {
-            $tags['UPDATE_PROFILE_URL'] = $this->campaign->generateUpdateProfileUrl($this->subscriber);
-            $tags['UNSUBSCRIBE_URL'] = $this->campaign->generateUnsubscribeUrl($this->msgId, $this->subscriber);
-            $tags['WEB_VIEW_URL'] = $this->campaign->generateWebViewerUrl($this->msgId);
-
-            # Subscriber custom fields
-            foreach ($this->campaign->defaultMailList->fields as $field) {
-                $tags['SUBSCRIBER_'.$field->tag] = $this->subscriber->getValueByField($field);
-                $tags[$field->tag] = $this->subscriber->getValueByField($field);
-            }
-
-            // Special / shortcut fields
-            $tags['NAME'] = $this->subscriber->getFullName();
-            $tags['FULL_NAME'] = $this->subscriber->getFullName();
-        } else {
+        if (is_null($this->subscriber) || is_null($this->msgId) || $this->campaign->isStdClassSubscriber($this->subscriber)) {
             $sampleLink = route('campaign_message', [ 'message' => StringHelper::base64UrlEncode('This is a test link of a test campaign') ]);
             $tags['UNSUBSCRIBE_URL'] = $sampleLink;
             $tags['UPDATE_PROFILE_URL'] = $sampleLink;
@@ -78,6 +64,20 @@ class TransformTag implements StageInterface
 
             // Only email is "reserved", overwrite previous $sample
             $tags['SUBSCRIBER_EMAIL'] = $this->subscriber->email;
+        } else {
+            $tags['UPDATE_PROFILE_URL'] = $this->campaign->generateUpdateProfileUrl($this->subscriber);
+            $tags['UNSUBSCRIBE_URL'] = $this->campaign->generateUnsubscribeUrl($this->msgId, $this->subscriber);
+            $tags['WEB_VIEW_URL'] = $this->campaign->generateWebViewerUrl($this->msgId);
+
+            # Subscriber custom fields
+            foreach ($this->campaign->defaultMailList->fields as $field) {
+                $tags['SUBSCRIBER_'.$field->tag] = $this->subscriber->getValueByField($field);
+                $tags[$field->tag] = $this->subscriber->getValueByField($field);
+            }
+
+            // Special / shortcut fields
+            $tags['NAME'] = $this->subscriber->getFullName();
+            $tags['FULL_NAME'] = $this->subscriber->getFullName();
         }
 
         // Actually transform the message

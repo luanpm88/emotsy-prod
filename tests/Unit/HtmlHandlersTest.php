@@ -17,8 +17,11 @@ use Acelle\Model\Subscriber;
 use Acelle\Model\Campaign;
 use Acelle\Model\MailList;
 use Acelle\Model\Template;
+use Acelle\Model\TrackingDomain;
 use Mockery;
 use Exception;
+use DOMDocument;
+use Acelle\Library\StringHelper;
 
 class HtmlHandlersTest extends TestCase
 {
@@ -115,12 +118,9 @@ class HtmlHandlersTest extends TestCase
     public function test_test_campaign_html_content()
     {
         // Template
-        $html = "<html><body><a href='/hello/world'></body></html>";
         $template = Mockery::mock(new Template(['name' => 'Template']));
         $template->generateUid();
-        $template->content = $html;
         $msgId = 'TEST';
-        $domain = null;
 
         // List
         $list = Mockery::mock(new MailList());
@@ -145,8 +145,72 @@ class HtmlHandlersTest extends TestCase
         $pipeline->add(new MakeInlineCss( [storage_path('tests/sample.css')] ));
         $pipeline->add(new InjectTrackingPixel('MSGID'));
 
-        $html = $pipeline->build()->process("<title class='blue'>\nThisis the template title</title><a class=' big blue' href='images/logo.png'></a><div>Campaign: '{CAMPAIGN_NAME}' Subscriber: '{SUBSCRIBER_UID}'</div>");
+        $html = $pipeline->build()->process("<title class='blue'>\nThisis the template title</title><a class=' big blue' href='https://mailchimp.com'></a><div>Campaign: '{CAMPAIGN_NAME}' Subscriber: '{SUBSCRIBER_UID}'</div>");
 
+        $this->assertTrue(strpos($html, '<!DOCTYPE html>') === 0);
+        $this->assertTrue(strpos($html, '<title>') === false);
+        $this->assertTrue(strpos($html, "\n") === false);
+        $this->assertTrue(strpos($html, '<div>Hello world éèéêôâ</div>') !== false);
+        $this->assertTrue(strpos($html, "'000000'") !== false);
+    }
+
+    public function test_test_campaign_html_content_with_tracking_domain()
+    {
+        // Tracking domain
+        $domain = new TrackingDomain();
+        $domain->name = 'track.example.com';
+        $domain->scheme = 'https';
+
+        // Template
+        $html = "<html><body><a href='/hello/world'></body></html>";
+        $template = Mockery::mock(new Template(['name' => 'Template']));
+        $template->generateUid();
+
+        // List
+        $list = Mockery::mock(new MailList());
+
+        // Campaign
+        $campaign = Mockery::mock(new Campaign(['name' => 'Campaign']));
+        $campaign->defaultMailList = $list;
+        $campaign->shouldReceive('isStdClassSubscriber')->andReturn(true);
+
+        // Subscriber
+        $subscriber = Mockery::mock(new Subscriber());
+        $subscriber->uid = '000000';
+
+        $pipeline = new PipelineBuilder();
+        $pipeline->add(new AddDoctype);
+        $pipeline->add(new RemoveTitleTag);
+        $pipeline->add(new ReplaceBareLineFeed);
+        $pipeline->add(new AppendHtml('<div>Hello world éèéêôâ</div>'));
+        $pipeline->add(new ParseRss);
+        $pipeline->add(new TransformTag($campaign, $subscriber, 'MSGID', $server = null));
+
+        $pipeline->add(new TransformUrl($template, 'MSGID', $domain));
+        $pipeline->add(new MakeInlineCss( [storage_path('tests/sample.css')] ));
+        $pipeline->add(new InjectTrackingPixel('MSGID'));
+
+        $html = $pipeline->build()->process("<title class='blue'>\nThisis the template title</title><a class=' big blue' href='https://mailchimp.com'></a><div>Campaign: '{CAMPAIGN_NAME}' Subscriber: '{SUBSCRIBER_UID}'</div>");
+
+        echo $html;
+
+        // Examine the output with DOM
+        $dom = new DOMDocument();
+        $dom->loadHTML($html);
+        $a = $dom->getElementsByTagName('a')[0];
+        $url = $a->getAttribute('href');
+
+        // At first, URL is a tracking URL
+        $encoded = "aHR0cDovL2xvY2FsaG9zdC9wL1RWTkhTVVEvY2xpY2svYUhSMGNITTZMeTl0WVdsc1kyaHBiWEF1WTI5dA";
+        $this->assertEquals($url, "{$domain->scheme}://{$domain->name}/{$encoded}");
+
+        // When decoded, it is a click trackable link
+        $this->assertEquals( StringHelper::base64UrlDecode($encoded), url('p/TVNHSUQ/click/aHR0cHM6Ly9tYWlsY2hpbXAuY29t') );
+
+        // and resolving it to the original Mailchimp link
+        $this->assertEquals( StringHelper::base64UrlDecode('aHR0cHM6Ly9tYWlsY2hpbXAuY29t'), 'https://mailchimp.com' );
+
+        // Other assertinos
         $this->assertTrue(strpos($html, '<!DOCTYPE html>') === 0);
         $this->assertTrue(strpos($html, '<title>') === false);
         $this->assertTrue(strpos($html, "\n") === false);
