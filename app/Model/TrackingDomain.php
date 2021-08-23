@@ -271,9 +271,17 @@ class TrackingDomain extends Model
 
     public function buildTrackingUrl(string $url)
     {
-        if (is_null(parse_url($url, PHP_URL_HOST))) {
+        if (!parse_url($url, PHP_URL_HOST)) {
             throw new Exception('Cannot build tracking URL with "'.$url.'", a valid URL is required (with leading http:// or https:// or //');
         }
+
+        // Already a tracking domain
+        if (strpos($url, $this->getUrl()) === 0) {
+            echo "\nIgnoring $url\n";
+            return $url;
+        }
+
+        echo "\nDoing something to $url\n";
 
         $encodedUrl = StringHelper::base64UrlEncode($url);
         return join_url($this->getUrl(), $encodedUrl);

@@ -253,10 +253,11 @@ class HtmlHandlersTest extends TestCase
         $pipeline->add(new ParseRss);
         $pipeline->add(new TransformTag($campaign, $subscriber, 'MSGID', $server = null));
         $pipeline->add(new InjectTrackingPixel('MSGID'));
-        $pipeline->add(new TransformUrl($template, 'MSGID', $domain));
+        $pipeline->add(new TransformUrl($template, 'MSGID', $domain)); // click url, tracking domain applied
         $pipeline->add(new MakeInlineCss( [storage_path('tests/sample.css')] ));
 
-        $html = $pipeline->build()->process("<title class='blue'>\nThisis the template title</title><a class=' big blue' href='https://mailchimp.com'></a><div>Campaign: '{CAMPAIGN_NAME}' Subscriber: '{SUBSCRIBER_UID}'</div>{UNSUBSCRIBE_URL}|{UPDATE_PROFILE_URL}|{WEB_VIEW_URL}");
+
+        $html = $pipeline->build()->process("<title class='blue'>\nThisis the template title</title><a class=' big blue' href='https://mailchimp.com'></a><div>Campaign: '{CAMPAIGN_NAME}' Subscriber: '{SUBSCRIBER_UID}'</div><a name='unsubscribe' href='{UNSUBSCRIBE_URL}'>Unsubscribe</a>|{UPDATE_PROFILE_URL}|{WEB_VIEW_URL}");
 
         echo $html;
 
