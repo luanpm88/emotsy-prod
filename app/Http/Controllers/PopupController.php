@@ -4,6 +4,7 @@ namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Acelle\Model\TemplateCategory;
+use Acelle\Model\Template;
 
 class PopupController extends Controller
 {
@@ -30,6 +31,17 @@ class PopupController extends Controller
         return view('popup.index', [
             'formFields' => $formFields,
             'templates' => $templates,
+        ]);
+    }
+
+    public function content(Request $request)
+    {
+        // Generate info
+        $user = $request->user();
+        $template = Template::findByUid($request->template_uid);
+
+        return view('popup.content', [
+            'content' => $template->content,
         ]);
     }
 }

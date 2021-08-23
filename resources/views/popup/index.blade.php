@@ -58,7 +58,9 @@
                     
                     root: '{{ URL::asset('builder') }}/',                
                     lang: {!! json_encode(language()->getBuilderLang()) !!},
-                    url: 'https://acelle.com/templates/6123035530020/builder/edit/content',
+                    url: '{{ action('PopupController@content', [
+                        'template_uid' => $templates[0]->uid,
+                    ]) }}',
                     saveUrl: '',
                     saveMethod: 'POST',
                     uploadAssetUrl: '',
@@ -159,7 +161,9 @@
             </button>
             <div class="styles-container shadow rounded-lg overflow-hidden p-4" style="display:none">
                 @foreach ($templates as $template)
-                    <a href="{{ action('TemplateController@builderEditContent', $template->uid) }}" class="style-item d-block rounded-3 overflow-hidden mb-4 shadow-sm">
+                    <a href="{{ action('PopupController@content', [
+                        'template_uid' => $template->uid,
+                    ]) }}" class="style-item d-block rounded-3 overflow-hidden mb-4 shadow-sm">
                         <img src="{{ $template->getThumbUrl() }}?v={{ rand(0,10) }}" />
                     </a>
                 @endforeach

@@ -336,10 +336,10 @@ class TemplateController extends Controller
         $user = $request->user();
         $template = Template::findByUid($uid);
         
-        // // authorize
-        // if (!$request->user()->customer->can('update', $template)) {
-        //     return $this->notAuthorized();
-        // }
+        // authorize
+        if (!$request->user()->customer->can('update', $template)) {
+            return $this->notAuthorized();
+        }
 
         return view('templates.builder.content', [
             'content' => $template->content,

@@ -605,6 +605,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::resource('sources', 'SourceController');
 
     // Popup
+    Route::get('popup/content', 'PopupController@content');
     Route::get('popup', 'PopupController@index');
 });
 
