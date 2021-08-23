@@ -724,14 +724,6 @@ class InstallController extends Controller
     // Write configuration values to file
     public function writeEnv($request)
     {
-        // read app key from file
-        $file_path = base_path('.env');
-        $file = fopen($file_path, 'r') or die('Unable to open file!');
-        $app_config = fread($file, filesize($file_path));
-        preg_match('/APP_KEY=(.*)\n/', $app_config, $match);
-        $app_key = trim($match[1]);
-        fclose($file);
-
         // get database config
         $database = $request->session()->get('database');
         $database = !empty($database) ? $database : [];
@@ -740,39 +732,23 @@ class InstallController extends Controller
         $smtp = $request->session()->get('site_info');
         $smtp = !empty($smtp) ? $smtp : [];
 
-        $env_file = fopen(base_path('.env'), 'w') or die('Unable to open file!');
-        $config_string = 'APP_ENV=production
-APP_DEBUG=true
-APP_KEY='.$app_key.'
-APP_URL='.url('/').'
-
-DB_HOST='.(isset($database['hostname']) ? $database['hostname'] : '').'
-DB_DATABASE='.(isset($database['database_name']) ? $database['database_name'] : '').'
-DB_USERNAME='.(isset($database['username']) ? $database['username'] : '').'
-DB_PASSWORD='.(isset($database['password']) ? quoteDotEnvValue($database['password']) : '').'
-DB_PORT='.(isset($database['port']) ? $database['port'] : '').'
-DB_TABLES_PREFIX='.(isset($database['tables_prefix']) ? $database['tables_prefix'] : '').'
-
-CACHE_DRIVER=file
-SESSION_DRIVER=file
-QUEUE_DRIVER=database
-
-REDIS_HOST=localhost
-REDIS_PASSWORD=null
-REDIS_PORT=6379
-
-MAIL_MAILER='.(isset($smtp['mail_mailer']) ? $smtp['mail_mailer'] : 'mail').'
-MAIL_HOST='.(isset($smtp['smtp_hostname']) ? $smtp['smtp_hostname'] : '').'
-MAIL_PORT='.(isset($smtp['smtp_port']) ? $smtp['smtp_port'] : '').'
-MAIL_USERNAME="'.(isset($smtp['smtp_username']) ? $smtp['smtp_username'] : '').'"
-MAIL_PASSWORD="'.(isset($smtp['smtp_password']) ? quoteDotEnvValue($smtp['smtp_password']) : '').'"
-MAIL_ENCRYPTION='.(isset($smtp['smtp_encryption']) ? $smtp['smtp_encryption'] : '').'
-MAIL_FROM_ADDRESS="'.(isset($smtp['mail_from_email']) ? $smtp['mail_from_email'] : '').'"
-MAIL_FROM_NAME="'.(isset($smtp['mail_from_name']) ? $smtp['mail_from_name'] : '').'"
-';
-        $config_string;
-        fwrite($env_file, $config_string);
-        fclose($env_file);
+        putPermanentEnv([
+            'APP_URL' => url('/'),
+            'DB_HOST' => (isset($database['hostname']) ? $database['hostname'] : ''),
+            'DB_DATABASE' => (isset($database['database_name']) ? $database['database_name'] : ''),
+            'DB_USERNAME' => (isset($database['username']) ? $database['username'] : ''),
+            'DB_PASSWORD' => (isset($database['password']) ? quoteDotEnvValue($database['password']) : ''),
+            'DB_PORT' => (isset($database['port']) ? $database['port'] : ''),
+            'DB_TABLES_PREFIX' => (isset($database['tables_prefix']) ? $database['tables_prefix'] : ''),
+            'MAIL_MAILER' => (isset($smtp['mail_mailer']) ? $smtp['mail_mailer'] : 'mail'),
+            'MAIL_HOST' => (isset($smtp['smtp_hostname']) ? $smtp['smtp_hostname'] : ''),
+            'MAIL_PORT' => (isset($smtp['smtp_port']) ? $smtp['smtp_port'] : ''),
+            'MAIL_USERNAME' => (isset($smtp['smtp_username']) ? $smtp['smtp_username'] : ''),
+            'MAIL_PASSWORD' => (isset($smtp['smtp_password']) ? quoteDotEnvValue($smtp['smtp_password']) : ''),
+            'MAIL_ENCRYPTION' => (isset($smtp['smtp_encryption']) ? $smtp['smtp_encryption'] : ''),
+            'MAIL_FROM_ADDRESS' => (isset($smtp['mail_from_email']) ? $smtp['mail_from_email'] : ''),
+            'MAIL_FROM_NAME' => (isset($smtp['mail_from_name']) ? $smtp['mail_from_name'] : ''),
+        ]);
     }
 
     public function importDatabase($database)

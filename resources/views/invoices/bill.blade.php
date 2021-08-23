@@ -1,27 +1,27 @@
-@if (!$bill)
-    
-@else
-    <div class="upcoming-bill-box">
-        <div class="header">
-            <h4 class="mt-0 font-weight-semibold mb-1">{{ $bill['title'] }}</h4>
-            <div class="m-0">{!! $bill['description'] !!}</div>        
-        </div>
-        <div class="body">
+@if ($bill)
+    <div class="card shadow-sm rounded-3 px-2 py-2">
+        <div class="card-body p-4">
+            <h2 class="fw-600 mb-1 text-start">
+                {{ $bill['title'] }}
+            </h2>
+            <p class="m-0 text-muted">{!! $bill['description'] !!}</p>
+            <hr>
+
             <div>
                 @foreach ($bill['bill'] as $item)
                     <div class="bill_item d-flex">
                         <div class="mr-auto">
-                            <div class="font-weight-semibold">{{ trans('messages.invoice.price') }}</div>
+                            <p class="mb-0 font-weight-semibold">{{ trans('messages.invoice.price') }}</p>
                             <p class="mb-0">({{ $item['title'] }})</p>
-                            <div class="mb-0">{!! $item['description'] !!}</div>
+                            <p class="mb-0">{!! $item['description'] !!}</p>
                         </div>
-                        <div class="font-weight-semibold">{{ $item['price'] }}</div>
+                        <div class="font-weight-semibold fs-6"><span>{{ $item['price'] }}</span></div>
                     </div>
                     <div class="bill_item d-flex">
                         <div class="mr-auto">
-                            <div class="font-weight-semibold">{{ trans('messages.bill.tax') }}</div>
+                            <p class="mb-0 font-weight-semibold">{{ trans('messages.bill.tax') }}</p>
                         </div>
-                        <div class="font-weight-semibold">{{ $item['tax'] }}</div>
+                        <p class="mb-0 font-weight-semibold fs-6">{{ $item['tax'] }}</p>
                     </div>
                 @endforeach
             </div>
@@ -29,19 +29,19 @@
             <div>
                 <div class="total d-flex ">
                     <div class="mr-auto">
-                        <div class="font-weight-semibold">{{ trans('messages.bill.estimated_total') }}</div>
-                        <div>{!! $bill['charge_info'] !!}</div>
+                        <p class="mb-0 font-weight-semibold">{{ trans('messages.bill.estimated_total') }}</p>
+                        <p class="mb-0">{!! $bill['charge_info'] !!}</p>
                     </div>
-                    <div class="bill-total">{{ $bill['total'] }}</div>
+                    <p class="mb-0 bill-total fs-5 fw-bold">{{ $bill['total'] }}</p>
                 </div>
             </div>
             
             @if ($bill['pending'])
                 <hr>
-                <div class="text-right">
-                    <a href="{{ action('AccountSubscriptionController@payment', [
+                <div class="text-right pe-none">
+                    <a href="{{ action('SubscriptionController@payment', [
                         'invoice_uid' => $bill['invoice_uid'],
-                    ]) }}" class="btn btn-warning button-loading full-width pr-20" style="pointer-events: auto;opacity:0.9">
+                    ]) }}" class="btn btn-warning button-loading full-width pr-20 pe-none " style="width:100%;pointer-events: auto;opacity:0.9">
                         {{ trans('messages.invoice.payment_is_being_verified') }}
                         <div class="loader"></div>
                     </a>
@@ -49,7 +49,7 @@
             @elseif (isset($payButton) && !\Auth::user()->customer->preferredPaymentGatewayCanAutoCharge())
                 <hr>
                 <div class="text-left">
-                    <a href="{{ action('AccountSubscriptionController@payment', [
+                    <a href="{{ action('SubscriptionController@payment', [
                         'invoice_uid' => $bill['invoice_uid'],
                     ]) }}" class="btn btn-secondary">
                         {{ trans('messages.invoice.pay_now') }}
@@ -57,7 +57,7 @@
 
                     @if ($bill['type'] == Acelle\Model\Invoice::TYPE_CHANGE_PLAN)
                         <a class="btn btn-link" link-method="POST" link-confirm="{{ trans('messages.invoice.cancel.confirm') }}"
-                            href="{{ action('AccountSubscriptionController@cancelInvoice', [
+                            href="{{ action('SubscriptionController@cancelInvoice', [
                                 'invoice_uid' => $bill['invoice_uid'],
                             ]) }}">
                             {{ trans('messages.invoice.cancel') }}

@@ -18,10 +18,10 @@ class LoadCampaign implements ShouldQueue
 {
     use Trackable, Batchable, Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $timeout = 14400;
-    // to immediately fail, prevent it from being tried again,
-    // resulting in confusing exception like "Job X has been tried too many times or timeout"
+    public $timeout = 7200;
     public $failOnTimeout = true;
+    public $tries = 1;
+    public $maxExceptions = 1;
 
     protected $campaign;
 

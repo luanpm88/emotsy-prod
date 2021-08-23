@@ -11,6 +11,16 @@ use Acelle\Model\Customer;
  */
 class CustomerController extends Controller
 {
+    public function index()
+    {
+        $user = \Auth::guard('api')->user();
+
+        $customers = \Acelle\Model\MailList::getAll()
+            ->get();
+
+        return \Response::json($customers, 200);
+    }
+
     /**
      * Create new customer.
      *
@@ -98,7 +108,7 @@ class CustomerController extends Controller
 
         // check if item exists
         if (!is_object($customer)) {
-            return \Response::json(array('status' => 0, 'message' => 'Item not found'), 404);
+            return \Response::json(array('status' => 0, 'message' => 'Customer not found'), 404);
         }
 
         // authorize

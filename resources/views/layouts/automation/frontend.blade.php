@@ -84,7 +84,7 @@
 									<i class="material-icons-outlined me-2">multiline_chart</i>
 									<span class="">{{ trans('messages.used_quota') }}</span>
 								</a>
-								<a class="dropdown-item d-flex align-items-center" href="{{ action('AccountSubscriptionController@index') }}">
+								<a class="dropdown-item d-flex align-items-center" href="{{ action('SubscriptionController@index') }}">
 									<i class="material-icons-outlined me-2">redeem</i>
 									<span>{{ trans('messages.subscriptions') }}</span>
 								</a>

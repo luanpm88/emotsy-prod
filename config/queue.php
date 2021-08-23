@@ -38,7 +38,7 @@ return [
             'driver' => 'database',
             'table' => 'jobs',
             'queue' => 'default',
-            'retry_after' => 3600,
+            'retry_after' => 9000, // 2.5 hours, resume jobs that were terminated without having a chance to reset the reserved_at field to null
             'after_commit' => false,
         ],
 

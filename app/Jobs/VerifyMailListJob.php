@@ -55,6 +55,14 @@ class VerifyMailListJob extends Base
         // Get subscribers that are not verified
         $query = $this->mailList->subscribers()->unverified();
 
+        if (!$query->exists()) {
+            throw new Exception('There is no unverified contact in your list');
+        }
+
+        $this->monitor->updateJsonData([
+            'message' => "Verification is in progress ({$query->count()})...",
+        ]);
+
         // Query batches of 1000 records each, dispatch the verification job
         // Add job to batch
         cursorIterate($query, 'subscribers.id', $size = 1000, function ($subscribers, $page) {

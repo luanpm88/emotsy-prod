@@ -1,12 +1,8 @@
-<div class="modal-header">
-    <h5 class="modal-title">{{ trans('messages.plan.fitness') }}</h5>
-    <button role="button" class="close" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
-</div>
-<div class="modal-body">
+@extends('layouts.popup.small')
+
+@section('content')
     <div class="mc_section">
-        <form action="{{ action('Admin\SendingServerController@sendingLimit', ['uid' => ($server->uid ? $server->uid : 0)]) }}" method="POST">
+        <form id="sendingLimitForm" action="{{ action('Admin\SendingServerController@sendingLimit', ['uid' => ($server->uid ? $server->uid : 0)]) }}" method="POST">
             {{ csrf_field() }}
         
             <h2 class="text-semibold">{{ trans('messages.sending_quota') }}</h2>
@@ -46,8 +42,28 @@
                 </div>
             </div>
             <hr>
-            <button class="btn btn-secondary mr-10">{{ trans('messages.sending_limit.save') }}</button>
-            <a href="javascript:;" class="btn btn-link mr-10" data-dismiss="modal">{{ trans('messages.sending_limit.close') }}</a>
+            <button class="btn btn-secondary me-2">{{ trans('messages.sending_limit.save') }}</button>
+            <a href="javascript:;" class="btn btn-link me-2" data-dismiss="modal">{{ trans('messages.sending_limit.close') }}</a>
         </form>
     </div>
-</div>
+
+    <script>
+        $(function() {
+            // trigger modal form submit
+            $("#sendingLimitForm").submit(function( event ) {
+                event.preventDefault();
+
+                $.ajax({
+                    url: $(this).prop('action'),
+                    type: $(this).prop('method'),
+                    dataType: 'html',
+                    data: $(this).serialize(),
+                }).done(function(response) {
+                    SendingLimit.getSendingLimitPopup().hide();
+                    $('.sendind-limit-select-custom').html(response);                    
+                    initJs($('.sendind-limit-select-custom'));                    
+                });
+            });
+        });
+    </script>
+@endsection

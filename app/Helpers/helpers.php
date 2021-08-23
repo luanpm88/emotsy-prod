@@ -174,7 +174,7 @@ function exec_enabled()
         exec('ls');
 
         return function_exists('exec') && !in_array('exec', array_map('trim', explode(', ', ini_get('disable_functions'))));
-    } catch (\Exception $ex) {
+    } catch (\Throwable $ex) {
         return false;
     }
 }
@@ -316,39 +316,6 @@ function Dot2LongIPv6($IPaddr)
 }
 
 /**
- * Paginate a Laravel collection, used for service only as
- * it DOES NOT return a true Pagination object (for rendering to view).
- *
- * @input Laravel Query Builder
- * @input callback function
- *
- * @return collection result set
- */
-function paginate($builder, $callback, $params = [])
-{
-    $default = [
-        'limit' => 10000,
-    ];
-
-    $params = array_merge($default, $params);
-
-    // in some cases, use the pre-computed count rather than counting against the builder
-    if (!array_key_exists('count', $params)) {
-        $params['count'] = $builder->count();
-    }
-
-    // count the number of pages needed
-    $pages = ceil($params['count'] / $params['limit']);
-
-    for ($page = 1; $page <= $pages; $page += 1) {
-        $offset = $params['limit'] * ($page - 1);
-
-        $builder = $builder->skip($offset)->take($params['limit']);
-        $callback($builder, $page);
-    }
-}
-
-/**
  * Overwrite the Laravel's Builder#paginate, accept a $total parameter specifying the total number of records.
  *
  * @param int      $perPage
@@ -402,27 +369,6 @@ function distinctCount($builder, $column = null, $method = 'group')
         ->count();
 
     return $count;
-}
-
-/**
- * Measure execution time of a script.
- *
- * @return float execution time
- */
-function measure($callback, $tests = 5)
-{
-    $results = [];
-
-    for ($i = 0; $i <= $tests; $i += 1) {
-        $start = microtime(true);
-        $callback();
-        $time = microtime(true) - $start;
-        $results[] = $time;
-    }
-    $agv = array_sum($results) / count($results);
-    echo "$agv\n";
-
-    return $agv;
 }
 
 /**
@@ -508,14 +454,6 @@ function doublequote($str)
     return sprintf('"%s"', preg_replace('/^"+|"+$/', '', $str));
 }
 
-function jsonGet($array, $path)
-{
-    $jsonObject = new \JsonPath\JsonObject($array);
-    $result = $jsonObject->get($path)[0];
-
-    return $result;
-}
-
 /**
  * Format price.
  *
@@ -540,9 +478,15 @@ function format_number($number)
  *
  * @return string
  */
-function format_price($price, $format = '{PRICE}')
+function format_price($price, $format = '{PRICE}', $html=false)
 {
-    return str_replace('{PRICE}', format_number($price), $format);
+    if ($html) {
+        $html = str_replace('{PRICE}', ' <span class="p-amount">' . format_number($price) . '</span> ', $format);
+        // $html = str_replace(format_number($price), ' <span class="p-amount">' . format_number($price) . '</span> ', $html);
+        return $html;
+    } else {
+        return str_replace('{PRICE}', format_number($price), $format);
+    }
 }
 
 /**
@@ -731,8 +675,9 @@ function cursorIterate($query, $orderBy, $size, $callback)
     $cursor = null;
     $page = 1;
     do {
+        $q = clone $query;
         // The 4th parameter contains the offset cursor
-        $list = $query->orderBy($orderBy)->cursorPaginate($size, ['*'], 'cursor', $cursor);
+        $list = $q->orderBy($orderBy)->cursorPaginate($size, ['*'], 'cursor', $cursor);
         $callback($list->items(), $page);
         $cursor = $list->nextCursor();
         $page += 1;
@@ -757,4 +702,26 @@ function inlineHtml($html, array $cssFiles)
     }
 
     return $htmldoc->getHTML();
+}
+
+function putPermanentEnv($arr = [])
+{
+    $path = app()->environmentFilePath();
+    $config = file_get_contents($path);
+
+    foreach ($arr as $key => $value) {
+        $escaped = preg_quote('='.env($key), '/');
+        $config = preg_replace(
+            "/^{$key}{$escaped}/m",
+            "{$key}={$value}",
+            $config
+        );
+
+        // if not exist
+        if (strpos($config, $key) === false) {
+            $config = $config . "\n" . $key . '=' . $value;
+        }
+    }
+    
+    file_put_contents($path, $config);
 }

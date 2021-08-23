@@ -6,7 +6,7 @@
             <div class="mb-20">
                 <div class="row">
                     <div class="col-sm-12 col-md-12 col-lg-12">
-                        @include('account.subscription._invoices')
+                        @include('subscription._invoices')
                     </div>
                 </div>
             </div>

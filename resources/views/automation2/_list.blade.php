@@ -28,7 +28,7 @@
                 </td>
                 <td>
                     <h5 class="no-margin stat-num">
-                        {{ $automation->mailList->readCache('SubscriberCount') }}
+                        {{ $automation->mailList->readCache('SubscriberCount', '#') }}
                     </h5>
                     <span class="text-muted2">{{ trans('messages.automation.overview.contacts') }}</span>
                 </td>
@@ -46,14 +46,19 @@
                 </td>
                 <td>
                     <span class="no-margin text-bold">
-                        {{ Tool::formatDateTime($automation->created_at) }}
+                        {{ $automation->updated_at->diffForHumans(['options' => 2]) }}
                     </span>
                     <br />
-                    <span class="text-muted">{{ trans('messages.created_at') }}</span>
+                    <span class="text-muted">{{ trans('messages.automation.action.last_updated') }}</span>
                 </td>
                 <td class="text-center">
                     <span class="text-muted2 list-status">
-                        <span class="label label-flat bg-{{ $automation->status }}">{{ trans('messages.automation.status.' . $automation->status) }}</span>
+                        @if (empty($automation->last_error))
+                            <span class="label label-flat bg-{{ $automation->status }}">{{ trans('messages.automation.status.' . $automation->status) }}</span>
+                        @else
+                            <span class="label xtooltip label-flat bg-error" title="{{ $automation->last_error }}">Error</span>
+                            <pre style="display:none">{{ $automation->last_error }}</pre>
+                        @endif
                     </span>
                 </td>
                 <td class="text-end text-nowrap">
@@ -66,20 +71,6 @@
                         <div class="btn-group">
                             <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown"><span class="caret ml-0"></span></button>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                @can('view', $automation)
-                                    <li>
-                                        <a  
-                                            class="dropdown-item"                                          
-                                            href="{{ action('Automation2Controller@subscribers', [
-                                                "uid" => $automation->uid
-                                            ]) }}"
-                                        >
-                                            <span class="material-icons-round me-1">
-people_outline
-</span> {{ trans('messages.subscribers') }}
-                                        </a>
-                                    </li>
-                                @endcan
                                 @can('enable', $automation)
                                     <li>
                                         <a

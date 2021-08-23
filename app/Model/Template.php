@@ -1188,4 +1188,10 @@ class Template extends Model
 
         return $validator;
     }
+
+    public function updateContent($content)
+    {
+        $this->content = tinyDocTypeTransform($content);
+        $this->save();
+    }
 }

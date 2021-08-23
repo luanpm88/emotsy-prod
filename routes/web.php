@@ -90,11 +90,13 @@ Route::get('assets/{dirname}/{basename}', [ function ($dirname, $basename) {
 
 // Setting upload path
 Route::get('setting/{filename}', 'SettingController@file');
-Route::get('/no-plan', 'AccountSubscriptionController@noPlan');
 
 // Translation data
 Route::get('/datatable_locale', 'Controller@datatable_locale');
 Route::get('/jquery_validate_locale', 'Controller@jquery_validate_locale');
+
+// Term of service
+Route::get('/terms-of-service', 'Controller@termsOfService');
 
 // For visitor with Web UI, loading the right app language
 Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
@@ -185,23 +187,31 @@ Route::group(['middleware' => ['not_installed', 'auth']], function () {
 });
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function () {
-    // Account subscription
-    Route::post('subscription/invoice/{invoice_uid}/confirm', 'AccountSubscriptionController@confirmFree');
-    Route::post('subscription/invoice/{invoice_uid}/cancel', 'AccountSubscriptionController@cancelInvoice');
-    Route::match(['get', 'post'], 'subscription/change-plan', 'AccountSubscriptionController@changePlan');
-    Route::post('subscription/init', 'AccountSubscriptionController@init');
-    Route::get('subscription', 'AccountSubscriptionController@index');
-    Route::post('subscription/checkout', 'AccountSubscriptionController@checkout');
-    Route::get('subscription/payment/{invoice_uid}', 'AccountSubscriptionController@payment');
-    Route::post('subscription/cancel-now', 'AccountSubscriptionController@cancelNow');
-    Route::post('subscription/resume', 'AccountSubscriptionController@resume');
-    Route::post('subscription/cancel', 'AccountSubscriptionController@cancel');
+    // New subscription
+    Route::get('account/subscription/select-plan', 'SubscriptionController@selectPlan');
+    Route::get('account/subscription/order-box', 'SubscriptionController@orderBox');
+    Route::match(['get', 'post'], 'account/subscription/change-plan', 'SubscriptionController@changePlan');
+    Route::post('account/subscription/resume', 'SubscriptionController@resume');
+    Route::post('account/subscription/cancel', 'SubscriptionController@cancel');
+    Route::post('account/subscription/invoice/{invoice_uid}/confirm-free', 'SubscriptionController@confirmFree');
+    Route::match(['get', 'post'], 'account/subscription/billing-information', 'SubscriptionController@billingInformation');
+    Route::post('account/subscription/checkout', 'SubscriptionController@checkout');
+    Route::post('account/subscription/cancel-now', 'SubscriptionController@cancelNow');
+    Route::post('account/subscription/invoice/{invoice_uid}/cancel', 'SubscriptionController@cancelInvoice');
+    Route::post('account/subscription/invoice/{invoice_uid}/confirm', 'SubscriptionController@confirmFree');
+    Route::get('account/subscription/payment/{invoice_uid}', 'SubscriptionController@payment');
+    Route::post('account/subscription/init', 'SubscriptionController@init');
+    Route::get('account/subscription', 'SubscriptionController@index');
 
     // Customer login back
     Route::get('customers/login-back', 'CustomerController@loginBack');
     Route::get('customers/admin-area', 'CustomerController@adminArea');
 
     // Customer profile/information
+    Route::get('account/activity', 'AccountController@activity');
+    Route::match(['get', 'post'], 'account/wizard/menu-layout', 'AccountController@wizardMenuLayout');
+    Route::match(['get', 'post'], 'account/wizard/color-scheme', 'AccountController@wizardColorScheme');
+    Route::post('account/leftbar/state', 'AccountController@leftbarState');
     Route::post('account/payment/remove', 'AccountController@removePaymentMethod');
     Route::match(['get', 'post'], 'account/payment/edit', 'AccountController@editPaymentMethod');
     Route::get('account/profile', 'AccountController@profile');
@@ -244,7 +254,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::resource('lists', 'MailListController');
     Route::get('lists/{uid}/edit', 'MailListController@edit');
     Route::patch('lists/{uid}/update', 'MailListController@update');
-    Route::get('lists/{uid}/embedded-form', 'MailListController@embeddedForm');
+    Route::match(['get', 'post'], 'lists/{uid}/embedded-form', 'MailListController@embeddedForm');
     Route::get('lists/{uid}/embedded-form-frame', 'MailListController@embeddedFormFrame');
 
     // Field
@@ -604,6 +614,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/docs/api/v1', 'ApiController@doc');
 
     // Notification
+    Route::get('admin/notifications/popup', 'NotificationController@popup');
     Route::post('admin/notifications/delete', 'NotificationController@delete');
     Route::get('admin/notifications/listing', 'NotificationController@listing');
     Route::get('admin/notifications', 'NotificationController@index');
@@ -801,6 +812,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
 
 
     // Account
+    Route::post('admin/account/leftbar/state', 'AccountController@leftbarState');
     Route::get('admin/account/api/renew', 'AccountController@renewToken');
     Route::get('admin/account/api', 'AccountController@api');
     Route::get('admin/account/profile', 'AccountController@profile');
@@ -809,6 +821,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::post('admin/account/contact', 'AccountController@contact');
 
     // Plan
+    Route::match(['get', 'post'], 'admin/plans/{uid}/tos', 'PlanController@tos');
     Route::post('admin/plans/{uid}/visible/on', 'PlanController@visibleOn');
     Route::post('admin/plans/{uid}/visible/off', 'PlanController@visibleOff');
 

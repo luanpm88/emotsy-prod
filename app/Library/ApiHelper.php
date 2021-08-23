@@ -148,6 +148,19 @@ class ApiHelper
 -d tag=CUSTOM_FIELD_1 \
 -d default_value=test'
                 ],
+
+                [
+                    'method' => 'DELETE',
+                    'uri' => '/api/v1/lists/{uid}',
+                    'description' => 'Delete a list',
+                    'parameters' => [
+                        ['name' => '$uid', 'description' => 'List\'s uid'],
+                    ],
+                    'returns' => 'Result messages in json',
+                    'example' => 'curl -X DELETE -H "accept:application/json" -G \
+' .str_replace('-ID-', '<redbold>{uid}</redbold>', str_replace('-LIST_ID-', '<redbold>{list_uid}</redbold>', action("Api\MailListController@delete", ['uid' => '-ID-']))).' \
+-d api_token=' .\Auth::user()->api_token,
+                ],
             ],
         ];
 
@@ -544,7 +557,6 @@ class ApiHelper
                     'parameters' => [
                         ['name' => '$uid', 'description' => 'Customer\'s uid'],
                         ['name' => '$plan_uid', 'description' => 'Plan\'s uid'],
-                        ['name' => '$gateway', 'description' => 'Payment gateway: stripe|braintree|coinpayments|...'],
                     ],
                     'returns' => 'Action messages in json',
                     'example' => 'curl -X POST -H "accept:application/json" -G \
@@ -560,19 +572,33 @@ class ApiHelper
             'title' => trans('messages.subscription'),
             'functions' => [
                 [
-                    'method' => 'POST',
+                    'view' => 'backend',
+                    'method' => 'GET',
                     'uri' => '/api/v1/subscriptions',
-                    'description' => 'Subscribe customer to a plan',
+                    'description' => 'Get information about all subscriptions',
                     'parameters' => [
-                        ['name' => '$customer_uid', 'description' => 'Customer\'s uid'],
+                        ['name' => '$per_page', 'description' => 'Number of subscriptions per page', 'optional' => true, 'default' => 25],
+                        ['name' => '$page', 'description' => 'Page number'],
+                    ],
+                    'returns' => 'Subscriptions information in json (plan, customer,... )',
+                    'example' => 'curl -X GET -H "accept:application/json" -G \
+' .action("Api\SubscriptionController@index").' \
+-d api_token=' .\Auth::user()->api_token.' \
+-d page=1',
+                ],
+
+                [
+                    'method' => 'POST',
+                    'uri' => '/api/v1/customers/{uid}/assign-plan/{plan_uid}',
+                    'description' => 'Assign Plan to Customer',
+                    'parameters' => [
+                        ['name' => '$uid', 'description' => 'Customer\'s uid'],
                         ['name' => '$plan_uid', 'description' => 'Plan\'s uid'],
                     ],
                     'returns' => 'Action messages in json',
                     'example' => 'curl -X POST -H "accept:application/json" -G \
-' .action("Api\SubscriptionController@store").' \
--d api_token=' .\Auth::user()->api_token.'  \
--d customer_uid={customer_uid} \
--d plan_uid={plan_uid}',
+' .str_replace('-plan_uid-', '<redbold>{plan_uid}</redbold>', str_replace('-uid-', '<redbold>{uid}</redbold>', action("Api\CustomerController@assignPlan", ['uid' => '-uid-', 'plan_uid' => '-plan_uid-']))).' \
+-d api_token=' .\Auth::user()->api_token,
                 ],
             ],
         ];

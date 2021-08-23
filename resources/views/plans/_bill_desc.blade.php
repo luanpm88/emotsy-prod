@@ -1,16 +1,16 @@
 <div class="mt-2">
     @if (isset($endsAt))
         <div>
-            {{ trans('messages.ends_on') }}:
+            <span>{{ trans('messages.ends_on') }}</span>:
             <strong>{{ \Acelle\Library\Tool::formatDate($endsAt) }}</strong>
         </div>
-        <hr class="my-3">
+        <hr class="my-2">
     @endif
-    <div>
-        {{ $plan->displayTotalQuota() }} {{ trans('messages.sending_total_quota_label') }}
+    <div class="mb-1">
+        <span>{{ $plan->displayTotalQuota() }} {{ trans('messages.sending_total_quota_label') }}</span>
     </div>
     <div>
-        {{ $plan->displayMaxSubscriber() }} {{ trans('messages.contacts') }}
+        <span>{{ $plan->displayMaxSubscriber() }} {{ trans('messages.contacts') }}</span>
     </div>
     
 </div>

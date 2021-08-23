@@ -57,7 +57,7 @@ class Setting extends Model
      *
      * @return object
      */
-    public static function get($name)
+    public static function get($name, $defaultValue=null)
     {
         $setting = self::where('name', $name)->first();
 
@@ -67,7 +67,7 @@ class Setting extends Model
             return self::defaultSettings()[$name]['value'];
         } else {
             // @todo exception case not handled
-            return;
+            return $defaultValue;
         }
     }
 
@@ -548,6 +548,12 @@ class Setting extends Model
             'list.allow_single_optin' => [
                 'cat' => 'others',
                 'value' => 'yes',
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'campaign.enforce_unsubscribe_url_check' => [
+                'cat' => 'others',
+                'value' => 'no',
                 'type' => 'text',
                 'not_required' => true,
             ],

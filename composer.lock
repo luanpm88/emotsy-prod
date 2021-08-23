@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/luanpm88/acelle-cashier.git",
-                "reference": "e046f8adb8f54aed3f13eb323a4037e238f387a3"
+                "reference": "3ae92a329f58bfb9f5d23bbeb355c9bc38de81e5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/luanpm88/acelle-cashier/zipball/e046f8adb8f54aed3f13eb323a4037e238f387a3",
-                "reference": "e046f8adb8f54aed3f13eb323a4037e238f387a3",
+                "url": "https://api.github.com/repos/luanpm88/acelle-cashier/zipball/3ae92a329f58bfb9f5d23bbeb355c9bc38de81e5",
+                "reference": "3ae92a329f58bfb9f5d23bbeb355c9bc38de81e5",
                 "shasum": ""
             },
             "require": {
@@ -69,7 +69,7 @@
                 "issues": "https://github.com/laravel/cashier/issues",
                 "source": "https://github.com/laravel/cashier"
             },
-            "time": "2021-07-31T19:29:53+00:00"
+            "time": "2021-08-04T14:21:44+00:00"
         },
         {
             "name": "aws/aws-php-sns-message-validator",
@@ -2125,16 +2125,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v8.53.0",
+            "version": "v8.54.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "4b2e3e7317da82dd9f5b88d477abd93444748b43"
+                "reference": "7b88554cd1aeb52b7f82689bf244182e7a81894b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/4b2e3e7317da82dd9f5b88d477abd93444748b43",
-                "reference": "4b2e3e7317da82dd9f5b88d477abd93444748b43",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/7b88554cd1aeb52b7f82689bf244182e7a81894b",
+                "reference": "7b88554cd1aeb52b7f82689bf244182e7a81894b",
                 "shasum": ""
             },
             "require": {
@@ -2289,7 +2289,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2021-08-03T14:36:33+00:00"
+            "time": "2021-08-10T14:25:51+00:00"
         },
         {
             "name": "laravel/helpers",

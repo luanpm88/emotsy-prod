@@ -143,7 +143,7 @@ class TemplateController extends Controller
             return response()->json($validator->errors(), 400);
         }
         
-        $template->save();
+        $template->updateContent($request->content);
 
         // success
         return response()->json([
@@ -288,8 +288,7 @@ class TemplateController extends Controller
 
             $this->validate($request, $rules);
             
-            $template->content = $request->content;
-            $template->save();
+            $template->updateContent($request->content);
             
             return response()->json([
                 'status' => 'success',

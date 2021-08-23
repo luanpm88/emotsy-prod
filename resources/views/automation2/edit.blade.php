@@ -61,8 +61,7 @@
 @section('content')
     <style>
         rect.selected {
-            stroke-width: 1 !important;;
-            stroke-dasharray: 5;
+            stroke-width: 4 !important;;
         }
 
         rect.element {
@@ -72,20 +71,23 @@
 
         rect.action {
             fill: rgb(101, 117, 138);
+            stroke:  rgb(154 181 214);
         }
 
         rect.trigger {
             fill: rgba(12, 12, 12, 0.49);
+            stroke: #c5c0c0;
         }
 
         rect.wait {
             fill: #fafafa;
-            stroke: #666;
+            stroke: #94a0d4;
             stroke-width: 1;
         }
 
         rect.operation {
             fill: #966089;
+            stroke: #d6a6ca;
         }
 
         g.wait > g > a tspan {
@@ -94,6 +96,7 @@
 
         rect.condition {
             fill: #e47a50;
+            stroke: #ffb091;
         }
 
         g text:hover, g tspan:hover {
@@ -185,8 +188,6 @@
         var sidebar = new Box($('.sidebar-content'));
         var lastSaved = new Box($('.last_save_time'), $('.last_save_time').attr('data-url'));
 
-        
-
         function toggleHistory() {
             var his = $('.history .history-list-items');
 
@@ -263,9 +264,7 @@
             $('.navbar h1').html(name);
         }
 
-        function SelectActionConfirm(key, insertToTree) {
-            window.insertToTree = insertToTree;
-
+        function SelectActionConfirm(key) {
             var url = '{{ action('Automation2Controller@actionSelectConfirm', $automation->uid) }}' + '?key=' + key;
             
             popup.load(url, function() {                
@@ -289,7 +288,7 @@
                             var newE = new ElementCondition({title: response.title, options: response.options});                            
                         }
 
-                        insertToTree(newE);
+                        MyAutomation.addToTree(newE);
 
                         newE.validate();
                         
@@ -299,10 +298,10 @@
                             popup.hide();
                             
                             notify({
-    type: 'success',
-    title: '{!! trans('messages.notify.success') !!}',
-    message: response.message
-});
+                                type: 'success',
+                                title: '{!! trans('messages.notify.success') !!}',
+                                message: response.message
+                            });
                         });
                     });
                 });
@@ -316,7 +315,7 @@
             });
         }
 
-        function OpenActionSelectPopup(insertToTree, conditionBranch = null) {
+        function OpenActionSelectPopup(conditionBranch = null) {
             var hasChildren = false;
             if (conditionBranch == null) {
                 hasChildren = tree.getSelected().hasChildren();
@@ -332,7 +331,7 @@
                 // when click on action type
                 popup.popup.find('.action-select-but').click(function() {
                     var key = $(this).attr('data-key');
-
+                    // EMAIL
                     if (key == 'send-an-email') {
                         // new action as email
                         var newE = new ElementAction({
@@ -341,7 +340,7 @@
                         });
                         
                         // add email to tree
-                        insertToTree(newE);
+                        MyAutomation.addToTree(newE);
 
                         // validate
                         newE.validate();
@@ -352,8 +351,8 @@
                         });
                     } else {
                         // show select trigger confirm box
-                        SelectActionConfirm(key, insertToTree);
-                    }                    
+                        SelectActionConfirm(key);
+                    }
                 });
             });
         }
@@ -389,6 +388,8 @@
         }
     
         $(document).ready(function() {
+            lastSaved.load();
+
             // load sidebar
             sidebar.load('{{ action('Automation2Controller@settings', $automation->uid) }}');
 
@@ -513,6 +514,12 @@
             }
         }
 
+        var MyAutomation = {
+            // Set the AddElement function
+            // It depends on the currently selected element
+            addToTree: null
+        };
+
         (function() {
             //var json = [
             //    {title: "Click to choose a trigger", id: "trigger", type: "ElementTrigger", options: {init: false}}
@@ -539,35 +546,44 @@
 
                 onadd: function(e) {
                     e.select();
-                    OpenActionSelectPopup(function(element) {
+
+                    MyAutomation.addToTree = function(element) {
                         e.insert(element);
                         e.getTrigger().organize();
 
                         // select new element
                         doSelect(element);
-                    });
+                    };
+
+                    OpenActionSelectPopup();
                 },
 
                 onaddyes: function(e) {
                     e.select();
-                    OpenActionSelectPopup(function(element) {
+
+                    MyAutomation.addToTree = function(element) {
                         e.insertYes(element);
                         e.getTrigger().organize();
 
                         // select new element
                         doSelect(element);
-                    }, 'yes');
+                    };
+
+                    OpenActionSelectPopup('yes');
                 },
 
                 onaddno: function(e) {
                     e.select();
-                    OpenActionSelectPopup(function(element) {
+
+                    MyAutomation.addToTree = function(element) {
                         e.insertNo(element);
                         e.getTrigger().organize();
 
                         // select new element
                         doSelect(element);
-                    }, 'no');
+                    };
+
+                    OpenActionSelectPopup('no');
                 },
 
                 validate: function(e) {

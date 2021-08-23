@@ -19,7 +19,7 @@
         notify({
             type: 'warning',
             message: `{!! trans('messages.not_have_any_plan_notification', [
-                'link' => action('AccountSubscriptionController@index'),
+                'link' => action('SubscriptionController@index'),
             ]) !!}`,
             timeout: false,
         });

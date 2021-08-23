@@ -47,7 +47,8 @@
                     @if (!request()->operation_id)
                         var newE = new ElementOperation({title: response.title, options: response.options});
 
-                        tree.getSelected().insert(newE);
+                        // Master "MyAutomation" object
+                        MyAutomation.addToTree(newE);
 
                         newE.validate();
                         
@@ -61,10 +62,10 @@
                             }, 200);
                             
                             notify({
-    type: 'success',
-    title: '{!! trans('messages.notify.success') !!}',
-    message: response.message
-});
+                                type: 'success',
+                                title: '{!! trans('messages.notify.success') !!}',
+                                message: response.message
+                            });
                         });
                     @else
                         tree.getSelected().setOptions(response.options);
@@ -78,10 +79,10 @@
                             sidebar.load();
                             
                             notify({
-    type: 'success',
-    title: '{!! trans('messages.notify.success') !!}',
-    message: response.message
-});
+                                type: 'success',
+                                title: '{!! trans('messages.notify.success') !!}',
+                                message: response.message
+                            });
                         });
                     @endif
                 },

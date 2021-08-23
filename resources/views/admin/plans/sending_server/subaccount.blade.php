@@ -70,7 +70,7 @@ subtitles
                             </div>
                         </div>
 
-                        <button class="btn btn-secondary mr-10">{{ trans('messages.save') }}</button>
+                        <button class="btn btn-secondary me-2">{{ trans('messages.save') }}</button>
                     @else
                         <div class="alert alert-danger">
                             {!! trans('messages.plan_option.there_no_subaccount_sending_server') !!}

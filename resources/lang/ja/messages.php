@@ -3511,8 +3511,6 @@
   'subscription.status.pending_for_approval' => 'Pending for approval',
   'change_plan.pending_for_approval' => 'Change plan wait for approval',
   'renew_subscription.pending_for_approval' => 'Renew wait for approval',
-  'have_new_renew_invoice' => 'You have a pending renew invoice. <a href=":link">Click here</a>
-      to check details',
   'have_new_change_plan_invoice' => 'You have a pending change plan invoice. <a href=":link">Click here</a>
       to check details',
   'transaction.method.braintree' => 'Braintree',
@@ -3736,4 +3734,47 @@
   'template.upload.instruction' => 'Select a template package from your PC to upload. A template package should be a .ZIP archive containing an index.html file and other assets like CSS, images... You can download and try with a sample template package <a target="_blank" href=":link">here</a>',
   'template.upload.warning' => 'Uploaded templates may not work well with the drag & drop builder. It is always recommended that you create a new template based on one of the awesome templates available, for optimized compatibility and efficiency',
   'plugin.upload.instruction' => 'Select a plugin package from your PC to upload. Normally it is a ZIP archive containing the source files as well as meta information for the plugin.',
+  'subscription.renew_invoice' => 'You have a pending renew invoice. Check the invoice information.',
+  'template.category.no_category' => 'No category set',
+  'template.category.notice' => 'Choose one or more category for your template to make it available to users',
+  'template.export' => 'Export',
+  'template.change_name' => 'Change name',
+  'template.change_name.intro' => 'Enter your new template name below',
+  'template.name.changed' => 'Template name was changed',
+  'verification_credits_limit' => 'Verification credits limit',
+  'payment.agree_service_intro.free' => 'By clicking the <strong><i>Get started</i></strong> button,
+    you agree to our <i>Term of Use</i> and <i>Privacy Policy</i>.',
+  'subscription.secure_checkout' => 'ACELLE SECURE CHECKOUT',
+  'subscription.choose_plan.title' => 'Choose a plan',
+  'subscription.choose_plan.subtitle' => 'You need to subscribe to a plan in order to
+    experience the application.',
+  'subscription.billing_information.title' => 'Billing information',
+  'subscription.billing_information.subtitle' => 'Enter your billing information here and click next',
+  'subscription.payment_method.title' => 'Payment method',
+  'subscription.payment_method.subtitle' => 'Choose your preferred payment method',
+  'suscription.order_empty' => 'Choose one of the plans available and your
+    invoice details will be calculated and
+    display here',
+  'subscription.free_confirm.title' => 'Completed',
+  'subscription.free_confirm.subtitle' => 'Thank you for subscribing to our SAAS.',
+  'subscription.plan_chosen' => 'You have chosen :plan plan',
+  'subscription.payment_method.is_free' => 'The plan is FREE. You can get started now without payment',
+  'subscription.change_init_plan.confirm' => 'You are about to change to another plan!',
+  'subscription.choose_a_plan' => 'Choose a plan to subscribe',
+  'subscription.your_order' => 'Your order',
+  'subscription.your_order.desc' => 'You’re subscring to plan <strong>:plan</strong>.
+    Below are your order details',
+  'have_new_renew_invoice' => 'You have a pending renew invoice. Check the invoice information',
+  'invoice.change_plan.cancel' => 'Change your mind? Cick here to cancel',
+  'automation.brief-intro.woo-abandoned-cart' => 'WooCommerce abandoned cart reminder',
+  'account.personality' => 'Personality',
+  'account.menu_layout' => 'Menu layout',
+  'account.color_scheme' => 'Choose your account color scheme',
+  'account.color_scheme.into' => 'Customize your account panel with color scheme.
+    Select one of color below you want to personalize your account',
+  'account.welcome_user' => 'Welcome back, :name!',
+  'account.menu_layout.into' => 'Select menu one of menu layouts above you like.
+    Menu layout help you easier to navigate through app pages depending on your prefer style',
+  'automation.contacts.search.placeholder' => 'Enter to search contacts...',
+  'automation.contacts.trigger.waiting' => 'Waiting...',
 ) ?>

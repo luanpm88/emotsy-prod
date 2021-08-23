@@ -5,18 +5,19 @@ namespace Acelle\Model;
 use Illuminate\Database\Eloquent\Model;
 use GuzzleHttp\Client;
 use JsonPath\JsonObject;
-use Acelle\Library\QuotaTrackerFile;
 use Acelle\Library\Log as MailLog;
 use Acelle\Library\Traits\HasUid;
+use Acelle\Library\Traits\HasQuota;
+use Acelle\Library\Contracts\HasQuota as HasQuotaInterface;
 use Exception;
+use Acelle\Library\QuotaManager;
 
-class EmailVerificationServer extends Model
+class EmailVerificationServer extends Model implements HasQuotaInterface
 {
-    use HasUid;
+    use HasUid, HasQuota;
     
     // set the table name
     protected $table = 'email_verification_servers';
-    protected $quotaTracker;
 
     const STATUS_ACTIVE = 'active';
     const STATUS_INACTIVE = 'inactive';
@@ -47,16 +48,9 @@ class EmailVerificationServer extends Model
     public function verify($email)
     {
         // enforce the verification speed limit
-        $logged = false;
-        while ($this->isOverQuota()) {
-            if (!$logged) {
-                $logged = true;
-                $options = $this->getOptions();
-                $limit = "[{$options['limit_value']} / {$options['limit_base']} {$options['limit_unit']}]";
-                MailLog::warning(sprintf('Verification server `%s` (%s) is exceeding speed limit of %s, waiting...', $this->name, $this->id, $limit));
-            }
-            sleep(self::WAIT);
-        }
+        $options = $this->getOptions();
+        $limit = "[{$options['limit_value']} / {$options['limit_base']} {$options['limit_unit']}]";
+        MailLog::warning(sprintf('Verification server `%s` (%s) is exceeding speed limit of %s, waiting...', $this->name, $this->id, $limit));
 
         // retrieve the service settings
         $config = $this->getConfig();
@@ -115,7 +109,6 @@ class EmailVerificationServer extends Model
                 throw new Exception('Error verifying email address with service `'.$this->type."`. Response from service: ".$raw);
             }
             $mapped = $config['result_map'][$raw];
-            $this->countUsage();
 
             return [$mapped, $raw];
         }
@@ -145,7 +138,6 @@ class EmailVerificationServer extends Model
             throw new \Exception('Unexpected result from verification service: '.$raw);
         }
         $mapped = $config['result_map'][$result];
-        $this->countUsage();
 
         return [$mapped, $raw];
     }
@@ -382,35 +374,6 @@ class EmailVerificationServer extends Model
         ]);
     }
 
-    /**
-     * Get sending server's QuotaTracker.
-     *
-     * @return array
-     */
-    public function getQuotaTracker()
-    {
-        if (!$this->quotaTracker) {
-            $this->initQuotaTracker();
-        }
-
-        return $this->quotaTracker;
-    }
-
-    /**
-     * Get credits used.
-     *
-     * @return int credit used
-     */
-    public function getCreditUsage()
-    {
-        return $this->getQuotaTracker()->getUsage();
-    }
-
-    /**
-     * Get speed limit string.
-     *
-     * @return string speed limit
-     */
     public function getSpeedLimitString()
     {
         $options = $this->getOptions();
@@ -418,56 +381,6 @@ class EmailVerificationServer extends Model
         return "{$options['limit_value']} / {$options['limit_base']} {$options['limit_unit']}";
     }
 
-    /**
-     * Initialize the quota tracker.
-     */
-    public function initQuotaTracker()
-    {
-        $options = $this->getOptions();
-        $base = "{$options['limit_base']} {$options['limit_unit']}";
-        $limit = [
-            "{$base}" => $options['limit_value'],
-        ];
-
-        $this->quotaTracker = new QuotaTrackerFile($this->getQuotaLockFile(), ['start' => $this->created_at->timestamp, 'max' => -1], $limit);
-        $this->quotaTracker->cleanupSeries();
-    }
-
-    /**
-     * Get sending quota lock file.
-     *
-     * @return string file path
-     */
-    public function getQuotaLockFile()
-    {
-        return storage_path("app/server/quota/{$this->uid}");
-    }
-
-    /**
-     * Increment quota usage.
-     *
-     * @return mixed
-     */
-    public function countUsage(Carbon $timePoint = null)
-    {
-        return $this->getQuotaTracker($timePoint)->add();
-    }
-
-    /**
-     * Check if user has used up all quota allocated.
-     *
-     * @return bool
-     */
-    public function isOverQuota()
-    {
-        return !$this->getQuotaTracker()->check();
-    }
-
-    /**
-     * Get service type name.
-     *
-     * @return string
-     */
     public function getTypeName()
     {
         try {
@@ -477,5 +390,49 @@ class EmailVerificationServer extends Model
         } catch (\Exception $ex) {
             return 'Error: Config missing!';
         }
+    }
+
+    public function setQuotaSettings($name, $value, $periodUnit, $periodBase)
+    {
+        // $name is always 'verify'
+        if ($name != 'verify') {
+            throw "Invalid quota name for email verification server";
+        }
+
+        $options = $this->getOptions();
+        $options['limit_base'] = $periodUnit;
+        $options['limit_unit'] = $periodBase;
+        $options['limit_value'] = $value;
+        $this->options = json_encode($options);
+    }
+
+    /***   IMPLEMENTATION OF HasQuotaInterface ***/
+    public function getQuotaSettings($name) : ?array
+    {
+        // always 'verify'
+        $quota = [];
+        $options = $this->getOptions();
+
+        if ($options['limit_value'] != QuotaManager::QUOTA_UNLIMITED) {
+            $quota[] = [
+                'name' => "Verification credits limit of {$options['limit_value']} per {$options['limit_unit']} {$options['limit_base']}",
+                'period_base' => $options['limit_unit'],
+                'period_value' => $options['limit_base'],
+                'limit' => $options['limit_value'],
+            ];
+        }
+
+        // Take limits from sending credits
+        $credits = '????';
+        if (false && $credits != QuotaManager::QUOTA_UNLIMITED) {
+            $quota[] = [
+                'name' => "Plan's verification limit",
+                'period_base' => '?',
+                'period_value' => '?',
+                'limit' => $redits
+            ];
+        }
+
+        return $quota;
     }
 }

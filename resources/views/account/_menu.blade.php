@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-md-12">
-        <div class="tabbable">
-            <ul class="nav nav-tabs nav-tabs-top nav-underline">
+        <div class="tabbable pb-2">
+            <ul class="nav nav-tabs nav-tabs-top nav-underline mb-4">
                 <li rel0="AccountController/profile" class="nav-item">
                     <a href="{{ action("AccountController@profile") }}" class="nav-link">
                         <span class="material-icons-outlined">
@@ -27,10 +27,10 @@ credit_card
                     rel0="AccountController/subscription"
                     rel1="PaymentController"
                     rel2="AccountController/subscriptionNew"
-                    rel3="AccountSubscriptionController"
+                    rel3="SubscriptionController"
                     class="position-relative"
                 >
-                    <a href="{{ action("AccountSubscriptionController@index") }}" class="nav-link position-relative {{ isset($tab) && $tab == 'subscription' ? 'active' : '' }}">
+                    <a href="{{ action("SubscriptionController@index") }}" class="nav-link position-relative {{ isset($tab) && $tab == 'subscription' ? 'active' : '' }}">
                         <span class="material-icons-outlined">
 assignment
 </span> {{ trans('messages.subscription') }}

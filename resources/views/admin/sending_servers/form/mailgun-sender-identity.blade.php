@@ -68,7 +68,7 @@
         <div class="col-md-6">
             <br>
             <a href="https://app.mailgun.com" role="button" target="_blank"
-              class="btn btn-secondary mr-10">
+              class="btn btn-secondary me-2">
                 {{ trans('messages.sending_serbers.add_domain') }}
             </a>
             <a href="https://app.mailgun.com" role="button" target="_blank"
@@ -78,7 +78,7 @@
 
             <hr>
             <div class="mt-20">
-                <button class="btn btn-secondary mr-10">{{ trans('messages.save') }}</button>
+                <button class="btn btn-secondary me-2">{{ trans('messages.save') }}</button>
                 <a href="{{ action('Admin\SendingServerController@index') }}" role="button" class="btn btn-link">
                     {{ trans('messages.cancel') }}
                 </a>

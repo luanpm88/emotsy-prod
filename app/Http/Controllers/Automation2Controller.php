@@ -12,6 +12,7 @@ use Acelle\Model\Email;
 use Acelle\Model\Attachment;
 use Acelle\Model\Template;
 use Acelle\Model\Subscriber;
+use Acelle\Model\Setting;
 use Illuminate\Support\Facades\Storage;
 use Acelle\Model\TemplateCategory;
 use Exception;
@@ -59,7 +60,7 @@ class Automation2Controller extends Controller
                 'rules' => $this->triggerRules()[$request->trigger_type],
             ]);
         }
-        
+
         return view('automation2.wizardTrigger', [
             'types' => $types,
         ]);
@@ -75,7 +76,7 @@ class Automation2Controller extends Controller
             $validator = Validator::make($request->all(), array_merge($rules, [
                 'mail_list_uid' => 'required',
             ]));
-                
+
             // redirect if fails
             if ($validator->fails()) {
                 return response()->view('automation2.wizardTriggerOption', [
@@ -86,7 +87,7 @@ class Automation2Controller extends Controller
 
             $customer = $request->user()->customer;
             $automation = $customer->automation2s()->make()->newDefault();
-            
+
             return view('automation2.wizard', [
                 'automation' => $automation,
                 'trigger_type' => $request->trigger_type,
@@ -414,12 +415,9 @@ class Automation2Controller extends Controller
             'send-an-email',
             'wait',
             'condition',
+            'operation',
         ];
 
-        if (config('custom.woo')) {
-            $types[] = 'operation';
-        }
-        
         return view('automation2.actionSelectPupop', [
             'types' => $types,
             'automation' => $automation,
@@ -986,13 +984,13 @@ class Automation2Controller extends Controller
                 ->orWhere('customer_id', '=', $request->user()->customer->id);
         }
 
-        $templates = $templates->search($request->keyword);
+        $templates = $templates->notAssociated()->search($request->keyword);
 
         // category id
         if ($request->category_uid) {
             $templates = $templates->categoryUid($request->category_uid);
         }
-            
+
         $templates = $templates->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page);
 
@@ -1050,6 +1048,13 @@ class Automation2Controller extends Controller
             );
             
             $this->validate($request, $rules);
+
+            $plan = $request->user()->customer->activeSubscription()->plan;
+            if ($plan->getOption('unsubscribe_url_required') == 'yes' && Setting::isYes('campaign.enforce_unsubscribe_url_check')) {
+                if (strpos($request->content, '{UNSUBSCRIBE_URL}') === false) {
+                    return response()->json(['message' => trans('messages.template.validation.unsubscribe_url_required')], 400);
+                }
+            }
             
             $email->setTemplateContent($request->content);
             $email->save();
@@ -1747,6 +1752,13 @@ class Automation2Controller extends Controller
             );
             
             $this->validate($request, $rules);
+
+            $plan = $request->user()->customer->activeSubscription()->plan;
+            if ($plan->getOption('unsubscribe_url_required') == 'yes' && Setting::isYes('campaign.enforce_unsubscribe_url_check')) {
+                if (strpos($request->content, '{UNSUBSCRIBE_URL}') === false) {
+                    return response()->json(['message' => trans('messages.template.validation.unsubscribe_url_required')], 400);
+                }
+            }
 
             $email->setTemplateContent($request->content);
 

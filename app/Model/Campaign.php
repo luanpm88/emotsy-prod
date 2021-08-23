@@ -494,10 +494,6 @@ class Campaign extends Model
 
         // create tracking log for message
         TrackingLog::create($params);
-
-        // increment customer quota usage
-        $this->customer->countUsage();
-        $server->countUsage();
     }
 
     /**
@@ -3170,9 +3166,6 @@ class Campaign extends Model
 
             $server->setupBeforeSend($fromEmailAddress);
         }
-
-        // clean up the tracker to prevent the log file from growing very big
-        $this->customer->cleanupQuotaTracker();
 
         // Reset max_execution_time so that command can run for a long time without being terminated
         self::resetMaxExecutionTime();

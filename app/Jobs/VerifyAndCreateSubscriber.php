@@ -12,6 +12,8 @@ class VerifyAndCreateSubscriber extends Base
 {
     use Batchable;
 
+    public $timeout = 120;
+
     protected $list;
     protected $attributes; // Example: /home/acelle/storage/app/tmp/import-000000.csv
     protected $logger;

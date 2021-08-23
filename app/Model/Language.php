@@ -356,7 +356,12 @@ class Language extends Model
     public function createOrUpdateTranslationFiles()
     {
         foreach (Hook::execute('add_translation_file') as $source) {
+            // For example:
+            //     + resources / lang / default / message.php
             $originFile = join_paths($source['translation_folder'], $source['default'], $source['file_name']);
+
+            // Other files
+            //     + resources / lang / ja / messages.php
             $langFile = join_paths($source['translation_folder'], $this->code, $source['file_name']);
 
             if (!file_exists($originFile)) {
@@ -373,7 +378,7 @@ class Language extends Model
             if (!file_exists($langFile)) {
                 \Acelle\Helpers\pcopy($originFile, $langFile);
             } else {
-                // Update current language's file if it already exists, respect the current translation
+                // Update current language's file if it already exists, respect the existing translation
                 \Acelle\Helpers\updateTranslationFile($langFile, $originFile, $overwrite = false);
             }
         }
