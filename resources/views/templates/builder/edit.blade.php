@@ -12,7 +12,7 @@
 
     {{-- @include('builder.themes.yoga') --}}
 
-    {{-- @if (file_exists($template->getStoragePath('theme.js')))
+    @if (file_exists($template->getStoragePath('theme.js')))
         <script type="text/javascript">
             {!! Acelle\Library\StringHelper::transformUrlsFromAnyText(
                 file_get_contents($template->getStoragePath('theme.js')),
@@ -21,7 +21,7 @@
                 }
             ) !!}
         </script>
-    @endif --}}
+    @endif
 
     <style>
         .logo-img {

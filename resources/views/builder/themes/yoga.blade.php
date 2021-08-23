@@ -10,7 +10,7 @@
             this.setButtonHtml(`
                 <div class="content-widget-row">
                     <div class="widget-thumb">
-                        <img src="{{ \Acelle\Helpers\generatePublicPath(storage_path('app/builder/themes/yoga/images/widget-header.png')) }}"/>
+                        <img src="{{ url('themes/yoga/images/widget-header.png') }}"/>
                     </div>
                     <div class="desc">
                         <label>Header</label>
@@ -103,7 +103,7 @@
                                                                                 <table width="100%" cellpadding="0" cellspacing="0" border="0">
                                                                                     <tr style="line-height:0px">
                                                                                         <td style="" align="center">
-                                                                                            <![endif]--><img builder-element="" align="center" alt="Image" border="0" class="center autowidth fullwidth" src="{{ \Acelle\Helpers\generatePublicPath(storage_path('app/builder/themes/yoga/images/top_rounded.png')) }}"style="text-decoration: none; -ms-interpolation-mode: bicubic; border: 0; height: auto; width: 100%;  display: block;" title="Image" width="680">
+                                                                                            <![endif]--><img builder-element="" align="center" alt="Image" border="0" class="center autowidth fullwidth" src="{{ url('themes/yoga/images/top_rounded.png') }}"style="text-decoration: none; -ms-interpolation-mode: bicubic; border: 0; height: auto; width: 100%;  display: block;" title="Image" width="680">
                                                                                             <!--[if mso]>
                                                                                         </td>
                                                                                     </tr>
@@ -157,7 +157,7 @@
                                                                                 <table width="100%" cellpadding="0" cellspacing="0" border="0">
                                                                                     <tr style="line-height:0px">
                                                                                         <td style="padding-right: 0px;padding-left: 10px;" align="left">
-                                                                                            <![endif]--><img builder-element="" alt="Image" border="0" class="left fixedwidth" src="{{ \Acelle\Helpers\generatePublicPath(storage_path('app/builder/themes/yoga/images/loto_a.png')) }}"style="text-decoration: none; -ms-interpolation-mode: bicubic; border: 0; height: auto; width: 100%; max-width: 93px; display: block;" title="Image" width="93">
+                                                                                            <![endif]--><img builder-element="" alt="Image" border="0" class="left fixedwidth" src="{{ url('themes/yoga/images/loto_a.png') }}"style="text-decoration: none; -ms-interpolation-mode: bicubic; border: 0; height: auto; width: 100%; max-width: 93px; display: block;" title="Image" width="93">
                                                                                             <!--[if mso]>
                                                                                         </td>
                                                                                     </tr>
@@ -242,7 +242,7 @@
                                                                                 <table width="100%" cellpadding="0" cellspacing="0" border="0">
                                                                                     <tr style="line-height:0px">
                                                                                         <td style="padding-right: 0px;padding-left: 0px;" align="center">
-                                                                                            <![endif]--><img builder-element="" align="center" alt="Image" border="0" class="center autowidth fullwidth" src="{{ \Acelle\Helpers\generatePublicPath(storage_path('app/builder/themes/yoga/images/photo_placeholder.gif')) }}"style="text-decoration: none; -ms-interpolation-mode: bicubic; border: 0; height: auto; width: 100%; max-width: 330px; display: block;" title="Image" width="330">
+                                                                                            <![endif]--><img builder-element="" align="center" alt="Image" border="0" class="center autowidth fullwidth" src="{{ url('themes/yoga/images/photo_placeholder.gif') }}"style="text-decoration: none; -ms-interpolation-mode: bicubic; border: 0; height: auto; width: 100%; max-width: 330px; display: block;" title="Image" width="330">
                                                                                             <!--[if mso]>
                                                                                         </td>
                                                                                     </tr>
@@ -288,7 +288,7 @@
             this.setButtonHtml(`
                 <div class="content-widget-row">
                     <div class="widget-thumb">
-                        <img src="{{ \Acelle\Helpers\generatePublicPath(storage_path('app/builder/themes/yoga/images/widget-about-me.png')) }}" />
+                        <img src="{{ url('themes/yoga/images/widget-about-me.png') }}" />
                     </div>
                     <div class="desc">
                         <label>About Me</label>
@@ -326,7 +326,7 @@
                                                                                         <td style="padding-right: 10px;padding-left: 10px;" align="left">
                                                                                             <![endif]-->
                                                                                             <div style="font-size:1px;line-height:10px"> </div>
-                                                                                            <img builder-element="" alt="Image" border="0" class="left autowidth" src="{{ \Acelle\Helpers\generatePublicPath(storage_path('app/builder/themes/yoga/images/loto_b_min.png')) }}"style="text-decoration: none; -ms-interpolation-mode: bicubic; border: 0; height: auto; width: 100%; max-width: 79px; display: block;" title="Image" width="79">
+                                                                                            <img builder-element="" alt="Image" border="0" class="left autowidth" src="{{ url('themes/yoga/images/loto_b_min.png') }}"style="text-decoration: none; -ms-interpolation-mode: bicubic; border: 0; height: auto; width: 100%; max-width: 79px; display: block;" title="Image" width="79">
                                                                                             <div style="font-size:1px;line-height:10px"> </div>
                                                                                             <!--[if mso]>
                                                                                         </td>
@@ -439,7 +439,7 @@
             this.setButtonHtml(`
                 <div class="content-widget-row">
                     <div class="widget-thumb">
-                        <img src="{{ \Acelle\Helpers\generatePublicPath(storage_path('app/builder/themes/yoga/images/widget-experience-header.png')) }}" />
+                        <img src="{{ url('themes/yoga/images/widget-experience-header.png') }}" />
                     </div>
                     <div class="desc">
                         <label>Experience header</label>
@@ -475,7 +475,7 @@
                                                                                 <table width="100%" cellpadding="0" cellspacing="0" border="0">
                                                                                     <tr style="line-height:0px">
                                                                                         <td style="padding-right: 0px;padding-left: 0px;" align="center">
-                                                                                            <![endif]--><img builder-element="" align="center" alt="Image" border="0" class="center autowidth fullwidth" src="{{ \Acelle\Helpers\generatePublicPath(storage_path('app/builder/themes/yoga/images/bottom_rounded.png')) }}"style="text-decoration: none; -ms-interpolation-mode: bicubic; border: 0; height: auto; width: 100%;  display: block;" title="Image" width="680">
+                                                                                            <![endif]--><img builder-element="" align="center" alt="Image" border="0" class="center autowidth fullwidth" src="{{ url('themes/yoga/images/bottom_rounded.png') }}"style="text-decoration: none; -ms-interpolation-mode: bicubic; border: 0; height: auto; width: 100%;  display: block;" title="Image" width="680">
                                                                                             <!--[if mso]>
                                                                                         </td>
                                                                                     </tr>
@@ -487,7 +487,7 @@
                                                                                 <table width="100%" cellpadding="0" cellspacing="0" border="0">
                                                                                     <tr style="line-height:0px">
                                                                                         <td style="padding-right: 10px;padding-left: 10px;" align="left">
-                                                                                            <![endif]--><img builder-element="" alt="Image" border="0" class="left autowidth" src="{{ \Acelle\Helpers\generatePublicPath(storage_path('app/builder/themes/yoga/images/loto_c_min.png')) }}"style="text-decoration: none; -ms-interpolation-mode: bicubic; border: 0; height: auto; width: 100%; max-width: 83px; display: block;" title="Image" width="83">
+                                                                                            <![endif]--><img builder-element="" alt="Image" border="0" class="left autowidth" src="{{ url('themes/yoga/images/loto_c_min.png') }}"style="text-decoration: none; -ms-interpolation-mode: bicubic; border: 0; height: auto; width: 100%; max-width: 83px; display: block;" title="Image" width="83">
                                                                                             <div style="font-size:1px;line-height:10px"> </div>
                                                                                             <!--[if mso]>
                                                                                         </td>
@@ -582,9 +582,9 @@
                                                                                                 <table activate="activate" align="right" alignment="alignment" cellpadding="0" cellspacing="0" class="social_table" role="presentation" style="table-layout: fixed; vertical-align: top; border-spacing: 0; border-collapse: undefined; mso-table-tspace: 0; mso-table-rspace: 0; mso-table-bspace: 0; mso-table-lspace: 0;" to="to" valign="top">
                                                                                                     <tbody>
                                                                                                         <tr align="right" style="vertical-align: top; display: inline-block; text-align: right;" valign="top">
-                                                                                                            <td style="word-break: break-word; vertical-align: top; padding-bottom: 5px; padding-right: 0px; padding-left: 10px;" valign="top"><a builder-element="" builder-inline-edit="" href="https://instagram.com/" target="_blank"><img builder-element="" alt="Instagram" height="32" src="{{ \Acelle\Helpers\generatePublicPath(storage_path('app/builder/themes/yoga/images/instagram@2x.png')) }}"style="text-decoration: none; -ms-interpolation-mode: bicubic; height: auto; border: none; display: block;" title="Instagram" width="32"></a></td>
-                                                                                                            <td style="word-break: break-word; vertical-align: top; padding-bottom: 5px; padding-right: 0px; padding-left: 10px;" valign="top"><a builder-element="" builder-inline-edit="" href="https://www.linkedin.com/" target="_blank"><img builder-element="" alt="LinkedIn" height="32" src="{{ \Acelle\Helpers\generatePublicPath(storage_path('app/builder/themes/yoga/images/linkedin@2x.png')) }}"style="text-decoration: none; -ms-interpolation-mode: bicubic; height: auto; border: none; display: block;" title="LinkedIn" width="32"></a></td>
-                                                                                                            <td style="word-break: break-word; vertical-align: top; padding-bottom: 5px; padding-right: 0px; padding-left: 10px;" valign="top"><a builder-element="" builder-inline-edit="" href="mailto:" target="_blank"><img builder-element="" alt="E-Mail" height="32" src="{{ \Acelle\Helpers\generatePublicPath(storage_path('app/builder/themes/yoga/images/mail@2x.png')) }}"style="text-decoration: none; -ms-interpolation-mode: bicubic; height: auto; border: none; display: block;" title="E-Mail" width="32"></a></td>
+                                                                                                            <td style="word-break: break-word; vertical-align: top; padding-bottom: 5px; padding-right: 0px; padding-left: 10px;" valign="top"><a builder-element="" builder-inline-edit="" href="https://instagram.com/" target="_blank"><img builder-element="" alt="Instagram" height="32" src="{{ url('themes/yoga/images/instagram@2x.png') }}"style="text-decoration: none; -ms-interpolation-mode: bicubic; height: auto; border: none; display: block;" title="Instagram" width="32"></a></td>
+                                                                                                            <td style="word-break: break-word; vertical-align: top; padding-bottom: 5px; padding-right: 0px; padding-left: 10px;" valign="top"><a builder-element="" builder-inline-edit="" href="https://www.linkedin.com/" target="_blank"><img builder-element="" alt="LinkedIn" height="32" src="{{ url('themes/yoga/images/linkedin@2x.png') }}"style="text-decoration: none; -ms-interpolation-mode: bicubic; height: auto; border: none; display: block;" title="LinkedIn" width="32"></a></td>
+                                                                                                            <td style="word-break: break-word; vertical-align: top; padding-bottom: 5px; padding-right: 0px; padding-left: 10px;" valign="top"><a builder-element="" builder-inline-edit="" href="mailto:" target="_blank"><img builder-element="" alt="E-Mail" height="32" src="{{ url('themes/yoga/images/mail@2x.png') }}"style="text-decoration: none; -ms-interpolation-mode: bicubic; height: auto; border: none; display: block;" title="E-Mail" width="32"></a></td>
                                                                                                         </tr>
                                                                                                     </tbody>
                                                                                                 </table>
@@ -644,9 +644,9 @@
                                                                                                 <table activate="activate" align="left" alignment="alignment" cellpadding="0" cellspacing="0" class="social_table" role="presentation" style="table-layout: fixed; vertical-align: top; border-spacing: 0; border-collapse: undefined; mso-table-tspace: 0; mso-table-rspace: 0; mso-table-bspace: 0; mso-table-lspace: 0;" to="to" valign="top">
                                                                                                     <tbody>
                                                                                                         <tr align="left" style="vertical-align: top; display: inline-block; text-align: left;" valign="top">
-                                                                                                            <td style="word-break: break-word; vertical-align: top; padding-bottom: 5px; padding-right: 10px; padding-left: 0px;" valign="top"><a builder-element="" builder-inline-edit="" href="https://instagram.com/" target="_blank"><img builder-element="" alt="Instagram" height="32" src="{{ \Acelle\Helpers\generatePublicPath(storage_path('app/builder/themes/yoga/images/instagram@2x.png')) }}"style="text-decoration: none; -ms-interpolation-mode: bicubic; height: auto; border: none; display: block;" title="Instagram" width="32"></a></td>
-                                                                                                            <td style="word-break: break-word; vertical-align: top; padding-bottom: 5px; padding-right: 10px; padding-left: 0px;" valign="top"><a builder-element="" builder-inline-edit="" href="https://www.linkedin.com/" target="_blank"><img builder-element="" alt="LinkedIn" height="32" src="{{ \Acelle\Helpers\generatePublicPath(storage_path('app/builder/themes/yoga/images/linkedin@2x.png')) }}"style="text-decoration: none; -ms-interpolation-mode: bicubic; height: auto; border: none; display: block;" title="LinkedIn" width="32"></a></td>
-                                                                                                            <td style="word-break: break-word; vertical-align: top; padding-bottom: 5px; padding-right: 10px; padding-left: 0px;" valign="top"><a builder-element="" builder-inline-edit="" href="mailto:" target="_blank"><img builder-element="" alt="E-Mail" height="32" src="{{ \Acelle\Helpers\generatePublicPath(storage_path('app/builder/themes/yoga/images/mail@2x.png')) }}"style="text-decoration: none; -ms-interpolation-mode: bicubic; height: auto; border: none; display: block;" title="E-Mail" width="32"></a></td>
+                                                                                                            <td style="word-break: break-word; vertical-align: top; padding-bottom: 5px; padding-right: 10px; padding-left: 0px;" valign="top"><a builder-element="" builder-inline-edit="" href="https://instagram.com/" target="_blank"><img builder-element="" alt="Instagram" height="32" src="{{ url('themes/yoga/images/instagram@2x.png') }}"style="text-decoration: none; -ms-interpolation-mode: bicubic; height: auto; border: none; display: block;" title="Instagram" width="32"></a></td>
+                                                                                                            <td style="word-break: break-word; vertical-align: top; padding-bottom: 5px; padding-right: 10px; padding-left: 0px;" valign="top"><a builder-element="" builder-inline-edit="" href="https://www.linkedin.com/" target="_blank"><img builder-element="" alt="LinkedIn" height="32" src="{{ url('themes/yoga/images/linkedin@2x.png') }}"style="text-decoration: none; -ms-interpolation-mode: bicubic; height: auto; border: none; display: block;" title="LinkedIn" width="32"></a></td>
+                                                                                                            <td style="word-break: break-word; vertical-align: top; padding-bottom: 5px; padding-right: 10px; padding-left: 0px;" valign="top"><a builder-element="" builder-inline-edit="" href="mailto:" target="_blank"><img builder-element="" alt="E-Mail" height="32" src="{{ url('themes/yoga/images/mail@2x.png') }}"style="text-decoration: none; -ms-interpolation-mode: bicubic; height: auto; border: none; display: block;" title="E-Mail" width="32"></a></td>
                                                                                                         </tr>
                                                                                                     </tbody>
                                                                                                 </table>
@@ -695,7 +695,7 @@
             this.setButtonHtml(`
                 <div class="content-widget-row">
                     <div class="widget-thumb">
-                        <img src="{{ \Acelle\Helpers\generatePublicPath(storage_path('app/builder/themes/yoga/images/widget-experience-row.png')) }}" />
+                        <img src="{{ url('themes/yoga/images/widget-experience-row.png') }}" />
                     </div>
                     <div class="desc">
                         <label>Experience row</label>
@@ -907,7 +907,7 @@
             this.setButtonHtml(`
                 <div class="content-widget-row">
                     <div class="widget-thumb">
-                        <img src="{{ \Acelle\Helpers\generatePublicPath(storage_path('app/builder/themes/yoga/images/widget-footer.png')) }}" />
+                        <img src="{{ url('themes/yoga/images/widget-footer.png') }}" />
                     </div>
                     <div class="desc">
                         <label>Footer</label>
@@ -943,7 +943,7 @@
                                                                                 <table width="100%" cellpadding="0" cellspacing="0" border="0">
                                                                                     <tr style="line-height:0px">
                                                                                         <td style="padding-right: 0px;padding-left: 0px;" align="center">
-                                                                                            <![endif]--><img builder-element="" align="center" alt="Image" border="0" class="center fixedwidth" src="{{ \Acelle\Helpers\generatePublicPath(storage_path('app/builder/themes/yoga/images/footer_img.png')) }}"style="text-decoration: none; -ms-interpolation-mode: bicubic; border: 0; height: auto; width: 100%; max-width: 612px; display: block;" title="Image" width="612">
+                                                                                            <![endif]--><img builder-element="" align="center" alt="Image" border="0" class="center fixedwidth" src="{{ url('themes/yoga/images/footer_img.png') }}"style="text-decoration: none; -ms-interpolation-mode: bicubic; border: 0; height: auto; width: 100%; max-width: 612px; display: block;" title="Image" width="612">
                                                                                             <!--[if mso]>
                                                                                         </td>
                                                                                     </tr>
