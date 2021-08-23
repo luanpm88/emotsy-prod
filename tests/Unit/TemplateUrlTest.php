@@ -31,9 +31,9 @@ class TemplateUrlTest extends TestCase
             <html>
             <body>
                 <img name='relative' src='%relative'>
-                <img name='absolute' src='%absolute'>
+                <a name='absolute' href='%absolute'>Click me</a>
                 <img name='public' src='%public'>
-                <img name='cdn' src='%cdn'>
+                <a name='cdn' href='%cdn'>Click me</a>
                 <img name='empty' src='%empty'>
                 <img name='sharp' src='%sharp'>
             </body>
@@ -84,10 +84,16 @@ class TemplateUrlTest extends TestCase
 
     public function getElementAttributes($html)
     {
+        $map = [
+            'img' => 'src',
+            'link' => 'href',
+            'a' => 'href',
+        ];
     	$out = [];
     	$names = [ 'relative', 'absolute', 'public', 'cdn', 'empty', 'sharp' ];
     	foreach ($names as $name) {
-    		$out[$name] = $this->getElementByAttribute($html, 'name', $name)->getAttribute('src');
+            $element = $this->getElementByAttribute($html, 'name', $name);
+    		$out[$name] = $element->getAttribute($map[$element->nodeName]);
     	}
 
     	return $out;
@@ -96,7 +102,7 @@ class TemplateUrlTest extends TestCase
     public function test_transform_assets_urls_without_parameters()
     {
         $template = $this->initTemplate();
-        $html = $template->getContentWithTransformedAssetsUrls();
+        $html = $template->getContentWithTransformedAssetsUrls($template->content);
 
         $out = $this->getElementAttributes($html);
 
@@ -115,7 +121,7 @@ class TemplateUrlTest extends TestCase
     public function test_transform_assets_urls_with_host()
     {
         $template = $this->initTemplate();
-        $html = $template->getContentWithTransformedAssetsUrls($host = true);
+        $html = $template->getContentWithTransformedAssetsUrls($template->content, $host = true);
 
         $out = $this->getElementAttributes($html);
 
@@ -133,14 +139,38 @@ class TemplateUrlTest extends TestCase
 
     public function test_transform_assets_urls_with_host_and_transform_closure()
     {
-    	$this->assertTrue(true);
+        // IMPORTANT: only affect <A> tag
+        $template = $this->initTemplate();
+        $msgId = 'TEST';
+        $transform = function($url, $element) use ($msgId) {
+            if ($element->nodeName == 'a') {
+                return StringHelper::makeTrackableLink($url, $msgId);
+            } else {
+                return $url;
+            }
+        };
+
+        $html = $template->getContentWithTransformedAssetsUrls($template->content, $host = true, $transform, $domain = null);
+
+        $out = $this->getElementAttributes($html);
+
+        echo $html;
+
+        // Transformed
+        // $this->assertMatchesRegularExpression( '/^http.*\/assets\/.*sample.png$/', $out['relative']);
+        $this->assertTrue( strpos($out['relative'], self::HOST) === 0 ); // contains "http:://localhost..."
+
+        // Unchanged
+        $this->assertEquals( $out['public'], self::PUBLIC ); // unchanged
+        $this->assertEquals( $out['empty'], self::EMPTY ); // unchanged
+        $this->assertEquals( $out['sharp'], self::SHARP ); // unchanged
     }
 
     public function test_transform_assets_urls_with_host_and_tracking_domain()
     {
         $template = $this->initTemplate();
         $domain = $this->initTrackingDomain();
-        $html = $template->getContentWithTransformedAssetsUrls($host = true, $transform = null, $domain);
+        $html = $template->getContentWithTransformedAssetsUrls($template->content, $host = true, $transform = null, $domain);
 
         $out = $this->getElementAttributes($html);
 

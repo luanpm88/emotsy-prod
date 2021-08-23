@@ -36,6 +36,7 @@ use Acelle\Library\StringHelper;
 use DOMDocument;
 use File;
 use Exception;
+use Closure;
 use function Acelle\Helpers\getAppHost;
 
 class Template extends Model
@@ -659,14 +660,14 @@ class Template extends Model
 
     public function transformAssetsUrls()
     {
-        $this->content = $this->getContentWithTransformedAssetsUrls();
+        $this->content = $this->getContentWithTransformedAssetsUrls($this->content);
     }
 
     /**
      * Transform template's relative URLs to application's absolute URL, without hostname.
      * Execute this every time the template is SAVED
      */
-    public function getContentWithTransformedAssetsUrls($withHost = false, Closure $urlTransform = null, TrackingDomain $domain = null)
+    public function getContentWithTransformedAssetsUrls($html, $withHost = false, Closure $urlTransform = null, TrackingDomain $domain = null)
     {
         if (!is_null($domain) && $withHost == false) {
             throw new Exception('Passing third parameter while the first parameter is false');
@@ -681,7 +682,7 @@ class Template extends Model
         }
 
         // Replace #1
-        $content = StringHelper::transformUrls($this->content, function ($url) use ($withHost, $domain, $urlTransform) {
+        $content = StringHelper::transformUrls($html, function ($url, $element) use ($withHost, $domain, $urlTransform) {
             if ($url == '#') {
                 return $url;
             }
@@ -695,7 +696,7 @@ class Template extends Model
             if (!is_null(parse_url($url, PHP_URL_HOST))) {
                 // url is with a host like "http://" or "//"
                 if (!is_null($urlTransform)) {
-                    $url = $urlTransform($url);
+                    $url = $urlTransform($url, $element);
                 }
 
                 if ($domain) {
@@ -710,11 +711,11 @@ class Template extends Model
 
                 $urlWithHost = join_url(getAppHost(), $url);
                 if (!is_null($urlTransform)) {
-                    $urlWithHost = $urlTransform($urlWithHost);
+                    $urlWithHost = $urlTransform($urlWithHost, $element);
                 }
 
                 if ($domain) {
-                    return $domain->buildTrackingUrl($urlWithHost);
+                    return $domain->buildTrackingUrl($urlWithHost, $element);
                 } elseif ($withHost) {
                     return $urlWithHost;
                 } else {
@@ -732,7 +733,7 @@ class Template extends Model
                 );
 
                 if (!is_null($urlTransform)) {
-                    $url = $urlTransform($url);
+                    $url = $urlTransform($url, $element);
                 }
 
                 if ($domain) {
@@ -744,7 +745,7 @@ class Template extends Model
         });
 
         // By the way, fix <html>
-        $content = tinyDocTypeTransform($content);
+        //$content = tinyDocTypeTransform($content);
         return $content;
     }
 
