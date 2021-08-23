@@ -23,7 +23,7 @@ class TransformUrl implements StageInterface
 
     public function __invoke($html)
     {
-        $transformClosure = function($url, $element) {
+        $transformClosure = function ($url, $element) {
             if (!parse_url($url, PHP_URL_HOST)) {
                 throw new Exception("TransformUrl only works with public URLs. i.e. URLs with http:// or https:// or //");
             }

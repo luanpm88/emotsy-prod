@@ -23,7 +23,7 @@ class InlineStyleWrapper
         if ($html) {
             if ($html instanceof \DOMDocument) {
                 $this->loadDomDocument(clone $html);
-            } else if (strlen($html) <= PHP_MAXPATHLEN && file_exists($html)) {
+            } elseif (strlen($html) <= PHP_MAXPATHLEN && file_exists($html)) {
                 $this->loadHTMLFile($html);
             } else {
                 $this->loadHTML($html);
@@ -79,10 +79,10 @@ class InlineStyleWrapper
     public function applyStylesheet($stylesheet)
     {
         $stylesheet = (array) $stylesheet;
-        foreach($stylesheet as $ss) {
+        foreach ($stylesheet as $ss) {
             $parsed = $this->parseStylesheet($ss);
             $parsed = $this->sortSelectorsOnSpecificity($parsed);
-            foreach($parsed as $arr) {
+            foreach ($parsed as $arr) {
                 list($selector, $style) = $arr;
                 $this->applyRule($selector, $style);
             }
@@ -106,8 +106,7 @@ class InlineStyleWrapper
             }
 
             return $this->_getDomXpath()->query($xpathQuery);
-        }
-        catch(ParseException $e) {
+        } catch (ParseException $e) {
             // ignore css rule parse exceptions
         }
 
@@ -122,11 +121,11 @@ class InlineStyleWrapper
      */
     public function applyRule($selector, $style)
     {
-        if($selector) {
+        if ($selector) {
             $nodes = $this->_getNodesForCssSelector($selector);
             $style = $this->_styleToArray($style);
 
-            foreach($nodes as $node) {
+            foreach ($nodes as $node) {
                 $current = $node->hasAttribute("style") ?
                     $this->_styleToArray($node->getAttribute("style")) :
                     array();
@@ -179,37 +178,39 @@ class InlineStyleWrapper
      */
     public function extractStylesheets($node = null, $base = '', $devices = array('all', 'screen', 'handheld'), $remove = true)
     {
-        if(null === $node) {
+        if (null === $node) {
             $node = $this->_dom;
         }
 
         $stylesheets = array();
-        if($node->hasChildNodes()) {
+        if ($node->hasChildNodes()) {
             $removeQueue = array();
             /** @var $child \DOMElement */
-            foreach($node->childNodes as $child) {
+            foreach ($node->childNodes as $child) {
                 $nodeName = strtolower($child->nodeName);
-                if($nodeName === "style" && $this->isForAllowedMediaDevice($child->getAttribute('media'), $devices)) {
+                if ($nodeName === "style" && $this->isForAllowedMediaDevice($child->getAttribute('media'), $devices)) {
                     $stylesheets[] = $child->nodeValue;
                     $removeQueue[] = $child;
-                } else if($nodeName === "link" && strtolower($child->getAttribute('rel')) === 'stylesheet' && $this->isForAllowedMediaDevice($child->getAttribute('media'), $devices)) {
-                    if($child->hasAttribute("href")) {
+                } elseif ($nodeName === "link" && strtolower($child->getAttribute('rel')) === 'stylesheet' && $this->isForAllowedMediaDevice($child->getAttribute('media'), $devices)) {
+                    if ($child->hasAttribute("href")) {
                         $href = $child->getAttribute("href");
 
-                        if($base && false === strpos($href, "://")) {
+                        if ($base && false === strpos($href, "://")) {
                             $href = "{$base}/{$href}";
                         }
 
                         $ext = @file_get_contents($href);
 
-                        if($ext) {
+                        if ($ext) {
                             $removeQueue[] = $child;
                             $stylesheets[] = $ext;
                         }
                     }
                 } else {
-                    $stylesheets = array_merge($stylesheets,
-                        $this->extractStylesheets($child, $base, $devices, $remove));
+                    $stylesheets = array_merge(
+                        $stylesheets,
+                        $this->extractStylesheets($child, $base, $devices, $remove)
+                    );
                 }
             }
 
@@ -234,8 +235,7 @@ class InlineStyleWrapper
         $stylesheets = array();
 
         $nodes = $this->_getDomXpath()->query($xpathQuery);
-        foreach ($nodes as $node)
-        {
+        foreach ($nodes as $node) {
             $stylesheets[] = $node->nodeValue;
             $node->parentNode->removeChild($node);
         }
@@ -253,9 +253,11 @@ class InlineStyleWrapper
         $parsed = array();
         $stylesheet = $this->_stripStylesheet($stylesheet);
         $stylesheet = trim(trim($stylesheet), "}");
-        foreach(explode("}", $stylesheet) as $rule) {
+        foreach (explode("}", $stylesheet) as $rule) {
             //Don't parse empty rules
-            if(!trim($rule))continue;
+            if (!trim($rule)) {
+                continue;
+            }
             list($selector, $style) = explode("{", $rule, 2);
             foreach (explode(',', $selector) as $sel) {
                 $parsed[] = array(trim($sel), trim(trim($style), ";"));
@@ -302,11 +304,13 @@ class InlineStyleWrapper
     {
         $styles = array();
         $style = trim(trim($style), ";");
-        if($style) {
-            foreach(explode(";", $style) as $props) {
+        if ($style) {
+            foreach (explode(";", $style) as $props) {
                 $props = trim(trim($props), ";");
                 //Don't parse empty props
-                if(!trim($props))continue;
+                if (!trim($props)) {
+                    continue;
+                }
                 //Only match valid CSS rules
                 if (preg_match('#^([-a-z0-9\*]+):(.*)$#i', $props, $matches) && isset($matches[0], $matches[1], $matches[2])) {
                     list(, $prop, $val) = $matches;
@@ -321,7 +325,7 @@ class InlineStyleWrapper
     private function _arrayToStyle($array)
     {
         $st = array();
-        foreach($array as $prop => $val) {
+        foreach ($array as $prop => $val) {
             $st[] = "{$prop}:{$val}";
         }
         return \implode(';', $st);
@@ -335,10 +339,9 @@ class InlineStyleWrapper
      */
     private function _mergeStyles(array $styleA, array $styleB)
     {
-        foreach($styleB as $prop => $val) {
-            if(!isset($styleA[$prop])
-                || substr(str_replace(" ", "", strtolower($styleA[$prop])), -10) !== "!important")
-            {
+        foreach ($styleB as $prop => $val) {
+            if (!isset($styleA[$prop])
+                || substr(str_replace(" ", "", strtolower($styleA[$prop])), -10) !== "!important") {
                 $styleA[$prop] = $val;
             }
         }
@@ -349,7 +352,7 @@ class InlineStyleWrapper
     private function _stripStylesheet($s)
     {
         // strip comments
-        $s = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!','', $s);
+        $s = preg_replace('!/\*[^*]*\*+([^/][^*]*\*+)*/!', '', $s);
 
         // strip keyframes rules
         $s = preg_replace('/@[-|keyframes].*?\{.*?\}[ \r\n]*\}/s', '', $s);

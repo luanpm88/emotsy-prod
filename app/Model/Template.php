@@ -733,7 +733,7 @@ class Template extends Model
                 // Transform relative URLs to PUBLIC ABSOLUTE URLs with leading slash /
                 $url = \Acelle\Helpers\generatePublicPath(
                     $this->getStoragePath($url),
-                    $absolute = ( $withHost ) ? true : false
+                    $absolute = ($withHost) ? true : false
                 );
 
                 if (!is_null($urlTransform)) {

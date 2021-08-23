@@ -19,7 +19,6 @@ class TransformTag implements StageInterface
         $this->subscriber = $subscriber;
         $this->msgId = $msgId;
         $this->server = $server;
-
     }
     public function __invoke($html)
     {

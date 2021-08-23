@@ -10,7 +10,7 @@ use Twig\Environment;
 
 class ParseRss implements StageInterface
 {
-	public function __invoke($html)
+    public function __invoke($html)
     {
         $rss = new TwigFunction('rss', function ($url, $count = 10) {
             $dom = simplexml_load_string(file_get_contents($url), 'SimpleXMLElement', LIBXML_NOCDATA);

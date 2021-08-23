@@ -210,7 +210,7 @@ class StringHelper
 
     public static function appendHtml($content, $html)
     {
-        return StringHelper::updateHtml($content, function($document) use ($html) {
+        return StringHelper::updateHtml($content, function ($document) use ($html) {
             $tmpDoc = new DOMDocument();
             $tmpDoc->encoding = 'utf-8';
             $tmpDoc->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8'), LIBXML_NOWARNING | LIBXML_NOERROR | LIBXML_HTML_NODEFDTD);

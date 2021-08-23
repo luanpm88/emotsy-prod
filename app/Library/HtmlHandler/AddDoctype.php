@@ -7,9 +7,10 @@ use Acelle\Library\StringHelper;
 
 class AddDoctype implements StageInterface
 {
-	public function __invoke($html)
+    public function __invoke($html)
     {
-        $closure = function() {};
+        $closure = function () {
+        };
 
         // Call StringHelper::updateHtml in order to have DOCTYPE available
         return StringHelper::updateHtml($html, $closure);
