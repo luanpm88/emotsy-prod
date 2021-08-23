@@ -12,6 +12,7 @@ class TransformTag implements StageInterface
     public $msgId;
     public $server;
 
+    // Campaign or email
     public function __construct($campaign, $subscriber, $msgId, $server = null)
     {
         $this->campaign = $campaign;
