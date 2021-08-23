@@ -522,13 +522,18 @@ class Campaign extends Model
     {
         $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from_email));
 
+        $unsubscribeUrl = $subscriber->generateUnsubscribeUrl($msgId);
+        if ($this->trackingDomain) {
+            $unsubscribeUrl = $this->trackingDomain->buildTrackingUrl($unsubscribeUrl);
+        }
+
         return array(
             'X-Acelle-Campaign-Id' => $this->uid,
             'X-Acelle-Subscriber-Id' => $subscriber->uid,
             'X-Acelle-Customer-Id' => $this->customer->uid,
             'X-Acelle-Message-Id' => $msgId,
             'X-Acelle-Sending-Server-Id' => $server->uid,
-            'List-Unsubscribe' => '<'.$this->generateUnsubscribeUrl($msgId, $subscriber).'>',
+            'List-Unsubscribe' => "<{$unsubscribeUrl}>",
             'Precedence' => 'bulk',
         );
     }
@@ -1538,71 +1543,6 @@ class Campaign extends Model
             ->orderBy('aggregate', 'desc');
 
         return $records->take($number);
-    }
-
-    public function generateUnsubscribeUrl($msgId, $subscriber)
-    {
-        // in case of a fake object, for sending test email
-        if (is_a($subscriber, 'stdClass')) {
-            // @TODO workaround here
-            $path = route('unsubscribeUrl', [ 'subscriber' => 'unknown', 'message_id' => StringHelper::base64UrlEncode($msgId)], false);
-
-            return $path;
-        }
-
-        // OPTION 1: immediately opt out
-        $path = $subscriber->generateUnsubscribeUrl($msgId, $absoluteUrl = false);
-
-        // OPTION 2: unsubscribe form, @IMPORTANT: it does not produce tracking log!!
-        //$path = route('unsubscribeForm', ['list_uid' => $subscriber->mailList->uid, 'code' => $subscriber->getSecurityToken('unsubscribe'), 'uid' => $subscriber->uid], false);
-
-        return $this->buildPublicUrl($path);
-    }
-
-    public function generateWebViewerUrl($msgId)
-    {
-        $path = route('webViewerUrl', ['message_id' => StringHelper::base64UrlEncode($msgId)], false);
-
-        return $this->buildPublicUrl($path);
-    }
-
-    public function generateUpdateProfileUrl($subscriber)
-    {
-        $path = route('updateProfileUrl', ['list_uid' => $this->defaultMailList->uid, 'uid' => $subscriber->uid, 'code' => $subscriber->getSecurityToken('update-profile')], false);
-
-        return $this->buildPublicUrl($path);
-    }
-
-    public function buildTrackingUrl($path)
-    {
-        $host = $this->getTrackingHost();
-
-        return join_url($host, $path);
-    }
-
-    public function buildPublicUrl($path)
-    {
-        return join_url($this->getTrackingHost(), $path);
-    }
-
-    public function getTrackingHost()
-    {
-        if ($this->trackingDomain()->exists()) {
-            return $this->trackingDomain->getUrl();
-        } else {
-            // Host WITH subdirectory
-            return config('app.url');
-        }
-    }
-
-    public function getTrackingHostWithoutSubdirectory()
-    {
-        if ($this->trackingDomain()->exists()) {
-            return $this->trackingDomain->getUrl();
-        } else {
-            // Host without subdirectory
-            return \Acelle\Helpers\getAppHost();
-        }
     }
 
     /**

@@ -161,8 +161,8 @@ class InlineStyleWrapper
             $node->setAttribute("style", $this->_arrayToStyle($current));
             $node->removeAttribute('inlinestyle-original-style');
         }
-        return htmlspecialchars_decode(rawurldecode($clone->_dom->saveHTML($clone->_dom->documentElement)));
-        //return $clone->_dom->saveHTML();
+
+        return StringHelper::saveHTMLWithUTF8AndDoctype($clone->_dom);
     }
 
     /**

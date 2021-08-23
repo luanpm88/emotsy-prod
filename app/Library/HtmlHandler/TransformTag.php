@@ -46,6 +46,11 @@ class TransformTag implements StageInterface
         # Subscriber specific
         if (is_null($this->subscriber) || is_null($this->msgId) || $this->campaign->isStdClassSubscriber($this->subscriber)) {
             $sampleLink = route('campaign_message', [ 'message' => StringHelper::base64UrlEncode('This is a test link of a test campaign') ]);
+
+            if ($this->campaign->trackingDomain) {
+                $sampleLink = $this->campaign->trackingDomain->buildTrackingUrl($sampleLink);
+            }
+
             $tags['UNSUBSCRIBE_URL'] = $sampleLink;
             $tags['UPDATE_PROFILE_URL'] = $sampleLink;
             $tags['WEB_VIEW_URL'] = $sampleLink;
@@ -65,9 +70,20 @@ class TransformTag implements StageInterface
             // Only email is "reserved", overwrite previous $sample
             $tags['SUBSCRIBER_EMAIL'] = is_null($this->subscriber) ? 'email@sample.com' : $this->subscriber->email;
         } else {
-            $tags['UPDATE_PROFILE_URL'] = $this->campaign->generateUpdateProfileUrl($this->subscriber);
-            $tags['UNSUBSCRIBE_URL'] = $this->campaign->generateUnsubscribeUrl($this->msgId, $this->subscriber);
-            $tags['WEB_VIEW_URL'] = $this->campaign->generateWebViewerUrl($this->msgId);
+            $updateProfileUrl = $this->subscriber->generateUpdateProfileUrl();
+            $unsubscribeUrl = $this->subscriber->generateUnsubscribeUrl($this->msgId);
+            $webViewUrl = StringHelper::generateWebViewerUrl($this->msgId);
+
+            if ($this->campaign->trackingDomain) {
+                $updateProfileUrl = $this->campaign->trackingDomain->buildTrackingUrl($updateProfileUrl);
+                $unsubscribeUrl = $this->campaign->trackingDomain->buildTrackingUrl($unsubscribeUrl);
+                $webViewUrl = $this->campaign->trackingDomain->buildTrackingUrl($webViewUrl);
+            }
+
+            $tags['UPDATE_PROFILE_URL'] = $updateProfileUrl;
+            $tags['UNSUBSCRIBE_URL'] = $unsubscribeUrl;
+            $tags['WEB_VIEW_URL'] = $webViewUrl;
+
             $tags['SUBSCRIBER_UID'] = $this->subscriber->uid;
 
             # Subscriber custom fields

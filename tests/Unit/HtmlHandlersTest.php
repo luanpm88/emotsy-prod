@@ -112,7 +112,7 @@ class HtmlHandlersTest extends TestCase
         $html = "<html><body><div class='main'><a>Content main</a><span class='big blue '>Test<span></div></body></html>";
         $out = $pipeline->build()->process($html);
 
-        $this->assertEquals($out, '<html><body><div class="main"><a style="color:green">Content main</a><span class="big blue " style="font-weight:600;color:blue">Test<span></span></span></div></body></html>');
+        $this->assertEquals($out, '<!DOCTYPE html><html><body><div class="main"><a style="color:green">Content main</a><span class="big blue " style="font-weight:600;color:blue">Test<span></span></span></div></body></html>');
     }
 
     public function test_test_campaign_html_content()
@@ -214,5 +214,78 @@ class HtmlHandlersTest extends TestCase
         $this->assertTrue(strpos($html, "\n") === false);
         $this->assertTrue(strpos($html, '<div>Hello world éèéêôâ</div>') !== false);
         $this->assertTrue(strpos($html, "'%UID%'") !== false);
+    }
+
+    public function test_test_campaign_with_special_tags()
+    {
+        // Tracking domain
+        $domain = new TrackingDomain();
+        $domain->name = 'track.example.com';
+        $domain->scheme = 'https';
+
+        // Mail list
+        $list = new MailList;
+        $list->generateUid();
+
+        // Template
+        $template = Mockery::mock(new Template(['name' => 'Template']));
+        $template->generateUid();
+
+        // List
+        $list = Mockery::mock(new MailList());
+        $list->generateUid();
+
+        // Campaign
+        $campaign = Mockery::mock(new Campaign(['name' => 'Campaign']));
+        $campaign->defaultMailList = $list;
+        $campaign->trackingDomain = $domain;
+
+        // Subscriber
+        $subscriber = Mockery::mock(new Subscriber());
+        $subscriber->mailList = $list;
+        $subscriber->uid = '000000';
+
+        $pipeline = new PipelineBuilder();
+        $pipeline->add(new AddDoctype);
+        $pipeline->add(new RemoveTitleTag);
+        $pipeline->add(new ReplaceBareLineFeed);
+        $pipeline->add(new AppendHtml('<div>Hello world éèéêôâ</div>'));
+        $pipeline->add(new ParseRss);
+        $pipeline->add(new TransformTag($campaign, $subscriber, 'MSGID', $server = null));
+        $pipeline->add(new InjectTrackingPixel('MSGID'));
+        $pipeline->add(new TransformUrl($template, 'MSGID', $domain));
+        $pipeline->add(new MakeInlineCss( [storage_path('tests/sample.css')] ));
+
+        $html = $pipeline->build()->process("<title class='blue'>\nThisis the template title</title><a class=' big blue' href='https://mailchimp.com'></a><div>Campaign: '{CAMPAIGN_NAME}' Subscriber: '{SUBSCRIBER_UID}'</div>{UNSUBSCRIBE_URL}|{UPDATE_PROFILE_URL}|{WEB_VIEW_URL}");
+
+        echo $html;
+
+        // Examine the output with DOM
+        $dom = new DOMDocument();
+        $dom->loadHTML($html);
+        $a = $dom->getElementsByTagName('a')[0];
+        $url = $a->getAttribute('href');
+
+        // At first, URL is a tracking URL
+        $encoded = "aHR0cDovL2xvY2FsaG9zdC9wL1RWTkhTVVEvY2xpY2svYUhSMGNITTZMeTl0WVdsc1kyaHBiWEF1WTI5dA";
+        $this->assertEquals($url, "{$domain->scheme}://{$domain->name}/{$encoded}");
+
+        // When decoded, it is a click trackable link
+        $this->assertEquals( StringHelper::base64UrlDecode($encoded), url('p/TVNHSUQ/click/aHR0cHM6Ly9tYWlsY2hpbXAuY29t') );
+
+        // and resolving it to the original Mailchimp link
+        $this->assertEquals( StringHelper::base64UrlDecode('aHR0cHM6Ly9tYWlsY2hpbXAuY29t'), 'https://mailchimp.com' );
+
+        // Other assertinos
+        $this->assertTrue(strpos($html, '<!DOCTYPE html>') === 0);
+        $this->assertTrue(strpos($html, '<title>') === false);
+        $this->assertTrue(strpos($html, "\n") === false);
+        $this->assertTrue(strpos($html, '<div>Hello world éèéêôâ</div>') !== false);
+        $this->assertTrue(strpos($html, "'000000'") !== false);
+
+        // Special tags
+        //$this->assertTrue(strpos($html, 'c/000000/unsubscribe/TVNHSUQ') !== false);
+        //$this->assertTrue(strpos($html, 'update-profile') !== false);
+        //$this->assertTrue(strpos($html, 'campaigns/TVNHSUQ/web-view') !== false);
     }
 }

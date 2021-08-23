@@ -426,9 +426,19 @@ class StringHelper
         //     <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA+kAAA..."
         // Would become:
         //     <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA kAAA..."
+        return self::saveHTMLWithUTF8AndDoctype($document);
+    }
+
+    public static function saveHTMLWithUTF8AndDoctype($document)
+    {
         $output = htmlspecialchars_decode(rawurldecode($document->saveHTML($document->documentElement)));
         $output = '<!DOCTYPE html>'.$output; // saveHTML(params) removes DOCTYPE
         return $output;
+    }
+
+    public static function generateWebViewerUrl($msgId)
+    {
+        return route('webViewerUrl', ['message_id' => self::base64UrlEncode($msgId)]);
     }
 
     public static function sanitizeFilename($filename)
