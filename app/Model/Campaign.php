@@ -494,16 +494,6 @@ class Campaign extends Model
     }
 
     /**
-     * Get tagged Subject.
-     *
-     * @return string
-     */
-    public function getSubject($subscriber, $msgId)
-    {
-        return $this->tagMessage($this->subject, $subscriber, $msgId, null);
-    }
-
-    /**
      * Append footer.
      *
      * @return string.
@@ -565,6 +555,18 @@ class Campaign extends Model
         // $html = $this->wooTransform($html);
 
         return $html;
+    }
+
+    /**
+     * Get tagged Subject.
+     *
+     * @return string
+     */
+    public function getSubject($subscriber, $msgId)
+    {
+        $pipeline = new PipelineBuilder();
+        $pipeline->add(new TransformTag($this, $subscriber, $msgId));
+        return $pipeline->build()->process($this->subject);
     }
 
     /**
