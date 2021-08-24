@@ -402,6 +402,22 @@ class StringHelper
                     $element->setAttribute($attribute, $callback($url, $element));
                 }
             }
+
+            $xpath = new DOMXPath($document);
+            $elements = $xpath->query('//*[@style]');
+            foreach ($elements as $element) {
+                $style = $element->getAttribute('style');
+                preg_match_all('/url\([\'"]([^(\'|")]+)[\'"]\)/', $style, $matches, PREG_OFFSET_CAPTURE);
+
+                if (count($matches[1])) {
+                    foreach ($matches[1] as $node) {
+                        $url = $node[0];
+                        $newUrl = $callback($url, $element);
+                        
+                        $element->setAttribute('style', str_replace($url, $newUrl, $style));
+                    }
+                }
+            }
         });
 
         return $html;
