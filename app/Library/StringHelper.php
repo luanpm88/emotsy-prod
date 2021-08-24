@@ -407,7 +407,7 @@ class StringHelper
             $elements = $xpath->query('//*[@style]');
             foreach ($elements as $element) {
                 $style = $element->getAttribute('style');
-                preg_match_all('/url\([\'"]([^(\'|")]+)[\'"]\)/', $style, $matches, PREG_OFFSET_CAPTURE);
+                preg_match_all('/url\(\s*[\'"]?\s*([^(\'|")]+)\s*[\'"]?\s*\)/', $style, $matches, PREG_OFFSET_CAPTURE);
 
                 if (count($matches[1])) {
                     foreach ($matches[1] as $node) {
