@@ -120,13 +120,13 @@
                         // js auto height iframe
                         editor.adjustIframeSize();
 
-                        editor.iframe.on('load', function() {
-                            editor.afterIframeLoaded();
+                        // editor.iframe.on('load', function() {
+                        //     editor.afterIframeLoaded();
 
-                            editor.getIframeContent().find('#formContainer').append(formBuilder.currentFormHtml);
+                        //     editor.getIframeContent().find('#formContainer').append(formBuilder.currentFormHtml);
 
-                            editor.adjustIframeSize();
-                        });
+                        //     editor.adjustIframeSize();
+                        // });
                     }
                 });
             
@@ -247,11 +247,17 @@
                     e.preventDefault();
                     var url = $(this).attr('href');
 
-                    editor.cleanUpContent();
+                    var thisEditor = this;
 
+                    // save current form container
+                    editor.cleanUpContent();
                     formBuilder.currentFormHtml = editor.getIframeContent().find('#formContainer').html();
 
-                    editor.iframe.attr('src', url);
+                    editor.loadUrl(url, function() {
+                        // load saved form container to new template
+                        editor.getIframeContent().find('#formContainer').append(formBuilder.currentFormHtml);
+                        editor.adjustIframeSize();
+                    });
 
                     formBuilder.hideStyles();
                 });
