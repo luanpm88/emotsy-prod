@@ -241,6 +241,9 @@
         top: 0;
         z-index: 1;
     }
+    .leftbar .template-create-sticky {
+        top: 0;
+    }
     .leftbar .middle-bar-head {
         text-align: right;
     }

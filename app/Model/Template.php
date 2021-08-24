@@ -1186,15 +1186,30 @@ class Template extends Model
                 'category' => $categoryFeatured,
                 'builder' => true,
             ], [
-                'name' => 'Color Print - Your Print Companion',
-                'dir' => database_path('templates/themes/002-blue/5d7b526bbfd4c'),
-                'category' => $categoryTheme,
+            //     'name' => 'Form Builder!',
+            //     'dir' => database_path('templates/basic/014-form/6037a23568208'),
+            //     'category' => $categoryTheme,
+            //     'builder' => true,
+            // ], [
+                'name' => 'The hunt is on!',
+                'dir' => database_path('templates/featured/002-sport/00464e8382883'),
+                'category' => $categoryFeatured,
+                'builder' => true,
+            ], [
+                'name' => 'Give a gift. Change a life',
+                'dir' => database_path('templates/featured/003-give-away/01464e8382883'),
+                'category' => $categoryFeatured,
                 'builder' => true,
             ], [
                 'name' => 'Gift Card!',
-                'dir' => database_path('templates/themes/001-yellow/5d7b527be2bd2'),
-                'category' => $categoryTheme,
+                'dir' => database_path('templates/featured/004-yellow/5d7b527be2bd2'),
+                'category' => $categoryFeatured,
                 'builder' => true,
+            ], [
+                'name' => 'Color Print - Your Print Companion',
+                'dir' => database_path('templates/featured/005-blue/5d7b526bbfd4c'),
+                'category' => $categoryFeatured,
+                'builder' => true,            
             ],
         ];
 
