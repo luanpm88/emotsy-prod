@@ -113,20 +113,10 @@
                             var widget = new SubmitButtonWidget();
                             // insert widget content to editor
                             editor.getIframeContent().find('#formContainer').append(widget.getContentHtml());
-
-                            // editor.save();
                         }
 
                         // js auto height iframe
                         editor.adjustIframeSize();
-
-                        // editor.iframe.on('load', function() {
-                        //     editor.afterIframeLoaded();
-
-                        //     editor.getIframeContent().find('#formContainer').append(formBuilder.currentFormHtml);
-
-                        //     editor.adjustIframeSize();
-                        // });
                     }
                 });
             
@@ -134,7 +124,7 @@
             });
         </script>
     </head>
-    <body>
+    <body>        
         <div class="acelle-top-menu">
             <nav class="navbar fixed-top navbar-light bg-light shadow-sm">
                 <a class="navbar-brand d-flex align-items-center pl-0" href="{{ action('Admin\HomeController@index') }}">
@@ -197,13 +187,7 @@
                 }
             }
         </style>
-        <div style="text-align: center;
-            height: 100vh;
-            vertical-align: middle;
-            padding: auto;
-            display: flex;">
-            <div style="margin:auto" class="lds-dual-ring"></div>
-        </div>
+        
 
         <script>
             var formBuilder = {
