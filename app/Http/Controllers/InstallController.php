@@ -430,7 +430,7 @@ class InstallController extends Controller
                         ('license_type', '".$site_info['license_type']."', '".$date."', '".$date."');");
 
         // mail setting
-        \Acelle\Model\Setting::set('mailer.driver', $site_info['mail_mailer']);
+        \Acelle\Model\Setting::set('mailer.mailer', $site_info['mail_mailer']);
         \Acelle\Model\Setting::set('mailer.host', $site_info['smtp_hostname']);
         \Acelle\Model\Setting::set('mailer.port', $site_info['smtp_port']);
         \Acelle\Model\Setting::set('mailer.encryption', $site_info['smtp_encryption']);
