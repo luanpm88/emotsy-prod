@@ -60,7 +60,7 @@ fact_check
 							<input type="hidden" name="fields[{{ $item->uid }}][uid]" value="{{ $item->uid }}" />
 							<i data-action="move" class="icon icon-more2 list-drag-button"></i>
 						</td>
-						<td class="text-nowrap">
+						<td class="text-nowrap" style="width: 25%">
 							@include('helpers.form_control', ['type' => 'text', 'name' => 'fields[' . $item->uid . '][label]', 'label' => '', 'subfix' => trans('messages.' . $item->type), 'value' => $item->label, 'help_class' => 'field'])
 							<input type="hidden"
 								value="{{ $item->type }}"
@@ -74,14 +74,19 @@ fact_check
 							@include('helpers.form_control', ['disabled' => $item->tag == 'EMAIL', 'type' => 'checkbox', 'name' => 'fields[' . $item->uid . '][visible]', 'label' => '', 'value' => $item->visible, 'options' => [false,true], 'help_class' => 'field'])
 						</td>
 						<td class="text-nowrap">
-							@include('helpers.form_control', [
-								'disabled' => $item->tag == 'EMAIL',
-								'type' => 'text',
-								'name' => 'fields[' . $item->uid . '][tag]',
-								'label' => '',
-								'value' => $item->tag,
-								'help_class' => 'field',
-								'prefix' => "{SUBSCRIBER_", 'subfix' => "}"])
+							<div class="d-flex align-items-center">
+								<span>{SUBSCRIBER_</span>
+									@include('helpers.form_control', [
+									'disabled' => $item->tag == 'EMAIL',
+									'type' => 'text',
+									'name' => 'fields[' . $item->uid . '][tag]',
+									'label' => '',
+									'value' => $item->tag,
+									'help_class' => 'field',
+									])
+								<span>}</span>
+							</div>
+								
 						</td>
 						<td class="text-nowrap">
 							@include('helpers.form_control', ['type' => Acelle\Model\Field::getControlNameByType($item->type), 'name' => 'fields[' . $item->uid . '][default_value]', 'label' => '', 'value' => $item->default_value, 'help_class' => 'field'])

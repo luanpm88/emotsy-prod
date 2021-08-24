@@ -705,14 +705,14 @@ h2 [class^="icon-"] {
     overflow: hidden;
 }
 .field-list input {
-    width: auto;
+    width: 100%;
     margin: 0;
-    display: inline;
-    max-width: 180px;
+    display: inline-block;
 }
 .field-list .form-group {
     margin: 0;
-    display: inline;
+    display: inline-block;
+    max-width: 180px;
 }
 label.error {
     color: #F44336;

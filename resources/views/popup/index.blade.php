@@ -224,6 +224,20 @@
                         formBuilder.showStyles();
                     }
                 },
+
+                loadUrl: function(url) {
+                    // save current form container
+                    editor.cleanUpContent();
+                    formBuilder.currentFormHtml = editor.getIframeContent().find('#formContainer').html();
+
+                    editor.loadUrl(url, function() {
+                        // load saved form container to new template
+                        editor.getIframeContent().find('#formContainer').append(formBuilder.currentFormHtml);
+                        editor.adjustIframeSize();
+                    });
+
+                    formBuilder.hideStyles();
+                }
             }
             $(function() {
                 $('.lds-dual-ring').remove();
@@ -247,19 +261,7 @@
                     e.preventDefault();
                     var url = $(this).attr('href');
 
-                    var thisEditor = this;
-
-                    // save current form container
-                    editor.cleanUpContent();
-                    formBuilder.currentFormHtml = editor.getIframeContent().find('#formContainer').html();
-
-                    editor.loadUrl(url, function() {
-                        // load saved form container to new template
-                        editor.getIframeContent().find('#formContainer').append(formBuilder.currentFormHtml);
-                        editor.adjustIframeSize();
-                    });
-
-                    formBuilder.hideStyles();
+                    formBuilder.loadUrl(url);
                 });
             })
         </script>
