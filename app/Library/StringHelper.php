@@ -403,6 +403,7 @@ class StringHelper
                 }
             }
 
+            // find and replace all inline style background url
             $xpath = new DOMXPath($document);
             $elements = $xpath->query('//*[@style]');
             foreach ($elements as $element) {
