@@ -60,7 +60,7 @@ fact_check
 							<input type="hidden" name="fields[{{ $item->uid }}][uid]" value="{{ $item->uid }}" />
 							<i data-action="move" class="icon icon-more2 list-drag-button"></i>
 						</td>
-						<td class="text-nowrap" style="width: 25%">
+						<td class="text-nowrap" style="width: 28%">
 							@include('helpers.form_control', ['type' => 'text', 'name' => 'fields[' . $item->uid . '][label]', 'label' => '', 'subfix' => trans('messages.' . $item->type), 'value' => $item->label, 'help_class' => 'field'])
 							<input type="hidden"
 								value="{{ $item->type }}"

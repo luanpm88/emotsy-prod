@@ -47,7 +47,7 @@ delete_outline
 		@if (in_array($type, ["dropdown","multiselect","checkbox","radio"]))
 			<tr class="child" parent="__index__">
 				<td></td>
-				<td colspan="3" class="sub_field_options">
+				<td colspan="3" class="sub_field_options" width="50%">
 					<div class="row">
 						<div class="col-md-12">
 							<div class="row label-value-groups">
