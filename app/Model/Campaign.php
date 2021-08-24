@@ -494,16 +494,6 @@ class Campaign extends Model
     }
 
     /**
-     * Append footer.
-     *
-     * @return string.
-     */
-    public function appendFooter($body, $footer)
-    {
-        return $this->appendToBody($body, $footer);
-    }
-
-    /**
      * Build Email Custom Headers.
      *
      * @return Hash list of custom headers
@@ -573,15 +563,11 @@ class Campaign extends Model
      */
     public function getPlainContent($subscriber, $msgId, $server = null)
     {
+        $plain = $this->plain.$this->getPlainTextFooter();
         $pipeline = new PipelineBuilder();
         $pipeline->add(new ReplaceBareLineFeed);
         $pipeline->add(new TransformTag($this, $subscriber, $msgId, $server));
-        $plain = $pipeline->build()->process($this->plain);
-
-        // Append footer
-        if ($this->footerEnabled()) {
-            $plain = $this->appendFooter($plain, $this->getPlainTextFooter());
-        }
+        $plain = $pipeline->build()->process($plain);
 
         return $plain;
     }
@@ -2828,16 +2814,6 @@ class Campaign extends Model
         $this->defaultMailList->subscribers()->update(['status' => 'subscribed']);
         Blacklist::query()->delete();
         $this->trackingLogs()->delete();
-    }
-
-    public function appendToBody($html, $content)
-    {
-        $regexp = '/<\/body\s*>/i';
-        if (preg_match($regexp, $html) == true) {
-            return preg_replace($regexp, $content.'</body>', $html);
-        } else {
-            return $html.$content;
-        }
     }
 
     public function wooTransform($body)

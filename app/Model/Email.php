@@ -549,16 +549,6 @@ class Email extends Model
     }
 
     /**
-     * Append footer.
-     *
-     * @return string.
-     */
-    public function appendFooter($body, $footer)
-    {
-        return $this->appendToBody($body, $footer);
-    }
-
-    /**
      * Find sending domain from email.
      *
      * @return mixed
@@ -628,16 +618,6 @@ class Email extends Model
             }
         } else {
             $this->tracking_domain_id = null;
-        }
-    }
-
-    public function appendToBody($html, $content)
-    {
-        $regexp = '/<\/body\s*>/i';
-        if (preg_match($regexp, $html) == true) {
-            return preg_replace($regexp, $content.'</body>', $html);
-        } else {
-            return $html.$content;
         }
     }
 
