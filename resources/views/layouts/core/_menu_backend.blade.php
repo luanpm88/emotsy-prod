@@ -403,7 +403,7 @@
             var url = '{{ action('Admin\AccountController@leftbarState') }}';
 
             $.ajax({
-                method: "POST",
+                method: "GET",
                 url: url,
                 data: {
                     _token: CSRF_TOKEN,

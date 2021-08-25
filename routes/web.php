@@ -209,7 +209,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('account/activity', 'AccountController@activity');
     Route::match(['get', 'post'], 'account/wizard/menu-layout', 'AccountController@wizardMenuLayout');
     Route::match(['get', 'post'], 'account/wizard/color-scheme', 'AccountController@wizardColorScheme');
-    Route::post('account/leftbar/state', 'AccountController@leftbarState');
+    Route::get('account/leftbar/state', 'AccountController@leftbarState');
     Route::post('account/payment/remove', 'AccountController@removePaymentMethod');
     Route::match(['get', 'post'], 'account/payment/edit', 'AccountController@editPaymentMethod');
     Route::get('account/profile', 'AccountController@profile');
@@ -807,7 +807,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
 
 
     // Account
-    Route::post('admin/account/leftbar/state', 'AccountController@leftbarState');
+    Route::get('admin/account/leftbar/state', 'AccountController@leftbarState');
     Route::get('admin/account/api/renew', 'AccountController@renewToken');
     Route::get('admin/account/api', 'AccountController@api');
     Route::get('admin/account/profile', 'AccountController@profile');
