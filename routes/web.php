@@ -112,7 +112,6 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
     Route::get('/demo', 'Controller@demo');
     Route::get('/demo/go/{view}', 'Controller@demoGo');
     Route::get('/autologin/{api_token}', 'Controller@autoLogin');
-    Route::get('/reload/cache', 'Controller@reloadCache');
     Route::get('/migrate/run', 'Admin\Upgrade@migrate');
 
     //Subscriber avatar

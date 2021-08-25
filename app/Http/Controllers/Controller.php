@@ -199,19 +199,6 @@ class Controller extends BaseController
     }
 
     /**
-     * Reload application settings
-     *
-     * @todo only authenticated user can execute this
-     */
-    public function reloadCache()
-    {
-        $next = action('HomeController@index');
-        \Artisan::call('config:cache');
-        sleep(5);
-        return redirect()->away($next);
-    }
-    
-    /**
      * When user is diabled.
      *
      * @return \Illuminate\Http\Response
