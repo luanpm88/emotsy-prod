@@ -1199,6 +1199,7 @@ class Template extends Model
                 'dir' => database_path('templates/featured/003-give-away/01464e8382883'),
                 'category' => $categoryFeatured,
                 'builder' => true,
+                'theme' => 'kids',
             ], [
                 'name' => 'Gift Card!',
                 'dir' => database_path('templates/featured/004-yellow/5d7b527be2bd2'),
