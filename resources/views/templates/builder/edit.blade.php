@@ -10,7 +10,9 @@
     <link href="{{ URL::asset('builder/builder.css') }}" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="{{ URL::asset('builder/builder.js') }}"></script>
 
-    @include('builder.themes.yoga')
+    @if ($template->theme)
+        @include('builder.themes.' . $template->theme)
+    @endif
 
     <style>
         .logo-img {

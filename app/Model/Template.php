@@ -52,7 +52,7 @@ class Template extends Model
      * @var array
      */
     protected $fillable = [
-        'uid', 'name', 'content', 'builder', 'is_default'
+        'uid', 'name', 'content', 'builder', 'is_default', 'theme'
     ];
 
     /**
@@ -269,6 +269,9 @@ class Template extends Model
         // Then: transform relative URLS for $copy
         $copy->content = $this->getContentWithUntransformedAssetsUrls();
         $copy->transformAssetsUrls();
+
+        // copy theme
+        $copy->theme = $this->theme;
 
         // Copy flags
         $copy->builder = $this->builder;
@@ -1185,12 +1188,8 @@ class Template extends Model
                 'dir' => database_path('templates/featured/001-yoga/52264e8382883'),
                 'category' => $categoryFeatured,
                 'builder' => true,
+                'theme' => 'yoga',
             ], [
-            //     'name' => 'Form Builder!',
-            //     'dir' => database_path('templates/basic/014-form/6037a23568208'),
-            //     'category' => $categoryTheme,
-            //     'builder' => true,
-            // ], [
                 'name' => 'The hunt is on!',
                 'dir' => database_path('templates/featured/002-sport/00464e8382883'),
                 'category' => $categoryFeatured,
