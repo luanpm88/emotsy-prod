@@ -114,7 +114,6 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
     Route::get('/autologin/{api_token}', 'Controller@autoLogin');
     Route::get('/reload/cache', 'Controller@reloadCache');
     Route::get('/migrate/run', 'Admin\Upgrade@migrate');
-    Route::post('/remote-job/{remote_job_token}', 'Controller@remoteJob');
 
     //Subscriber avatar
     Route::get('assets/images/avatar/subscriber-{uid?}.jpg', 'SubscriberController@avatar');

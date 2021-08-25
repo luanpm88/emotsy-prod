@@ -200,15 +200,6 @@ class SettingController extends Controller
             return $this->notAuthorized();
         }
 
-        // Re-generate remote job url
-        if ($request->re_generate_remote_job_url) {
-            $remote_job_token = str_random(60);
-            Setting::set('remote_job_token', $remote_job_token);
-            echo action('Controller@remoteJob', ['remote_job_token' => $remote_job_token]);
-
-            return;
-        }
-
         $respone = \Acelle\Library\Tool::cronjobUpdateController($request, $this);
         if ($respone == 'done' || $respone['valid'] == true) {
             $next = action('Admin\SettingController@cronjob').'#result_box';
