@@ -10,18 +10,7 @@
     <link href="{{ URL::asset('builder/builder.css') }}" rel="stylesheet" type="text/css">
     <script type="text/javascript" src="{{ URL::asset('builder/builder.js') }}"></script>
 
-    {{-- @include('builder.themes.yoga') --}}
-
-    @if (file_exists($template->getStoragePath('theme.js')))
-        <script type="text/javascript">
-            {!! Acelle\Library\StringHelper::transformUrlsFromAnyText(
-                file_get_contents($template->getStoragePath('theme.js')),
-                function($url) use ($template) {
-                    return \Acelle\Helpers\generatePublicPath($template->getStoragePath($url));
-                }
-            ) !!}
-        </script>
-    @endif
+    @include('builder.themes.yoga')
 
     <style>
         .logo-img {
