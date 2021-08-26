@@ -7231,7 +7231,7 @@ hr {
     transition: all 0.2s ease-in-out;
     border-radius: 8px 8px 0 0;
 }
-.template-image-box:hover .preview_control {
+.template-image-box:hover .preview_control, .template-image-box2:hover .preview_control {
     display: flex;
     opacity: 1;
 }
@@ -7248,6 +7248,9 @@ hr {
     border-width: 2px;
     color: #333;
     box-shadow: 0 .125rem .35rem rgba(0,0,0,.1)!important;
+}
+.template-image-box2 {
+    position: relative;
 }
 .template-image-box2 img {
     width: 100%!important;
