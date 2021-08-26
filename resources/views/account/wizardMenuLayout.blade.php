@@ -37,7 +37,7 @@
             {{ trans('messages.account.menu_layout.into') }}
         </p>
         <div class="mt-5 text-center">
-            <button class="btn btn-secondary px-4">{{ trans('messages.ok') }}</button>
+            <button class="btn btn-primary px-4">{{ trans('messages.ok') }}</button>
         </div>
     </form>
 
