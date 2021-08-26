@@ -3799,4 +3799,8 @@
   'page.restore.confirm' => 'You\'re about to restore this page to default template. This can not be undone.',
   'page.reset_default' => 'Reset Default',
   'page.reset.success' => 'Reset successfully',
+  'product.no_product' => '<span class="fw-600 mb-2 d-block">You do not have any product yet</span>
+    Connect to your e-commerce platform or store to synchronize products and contacts <br>
+    Manage your audience in one centralized place',
+  'base_template_gallery' => 'Base Template Gallery',
 ) ?>

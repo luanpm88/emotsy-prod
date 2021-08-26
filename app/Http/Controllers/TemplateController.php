@@ -40,14 +40,17 @@ class TemplateController extends Controller
                 ->orWhere('customer_id', '=', $request->user()->customer->id);
         }
 
+        // view
+        $view = $request->view ? $request->view : 'grid';
+
         // sort, pagination
         $templates = $templates->search($request->keyword)
             ->categoryUid($request->category_uid)
             ->notAssociated()
             ->orderBy($request->sort_order, $request->sort_direction)
-            ->paginate($request->per_page ? $request->per_page : 8);
+            ->paginate($request->per_page ? $request->per_page : ($view == 'grid' ? 8 : 15));
             
-        $view = $request->view ? $request->view : 'grid';
+        
 
         return view('templates._list_' . $view, [
             'templates' => $templates,

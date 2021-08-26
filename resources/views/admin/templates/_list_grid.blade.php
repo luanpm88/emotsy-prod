@@ -42,11 +42,17 @@
                             @if (Auth::user()->admin->can('update', $template))
                                 <a href="{{ action('Admin\TemplateController@categories', [
                                     'uid' => $template->uid,
-                                ]) }}" class="template-categories border-bottom-dashed text-secondary">{{ $template->categories()->count() ? $template->categories->map(function ($cat) {
-                                    return $cat->name;
-                                })->join(', ') : 'N/A' }}</a>
+                                ]) }}" class="template-categories text-secondary">
+                                    @if ($template->categories()->count())
+                                        {{ $template->categories->map(function ($cat) {
+                                            return $cat->name;
+                                        })->join(', ') }}
+                                    @else
+                                        <span style="color:#ea8c8c;text-decoration: underline;text-decoration-style: dashed;text-underline-offset:4px" class="xtooltip" title="{{ trans('messages.template.category.notice') }}">{{ trans('messages.template.category.no_category') }}</span>
+                                    @endif    
+                                </a>
                             @else
-                                <span class="template-categories border-bottom-dashed">{{ $template->categories()->count() ? $template->categories->map(function ($cat) {
+                                <span class="template-categories">{{ $template->categories()->count() ? $template->categories->map(function ($cat) {
                                     return $cat->name;
                                 })->join(', ') : 'N/A' }}</span>
                             @endif

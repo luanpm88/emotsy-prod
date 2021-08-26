@@ -8,11 +8,42 @@
         <ul class="breadcrumb breadcrumb-caret position-right">
             <li class="breadcrumb-item"><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
         </ul>
-        <h1>
-            <span class="text-semibold"><span class="material-icons-round">
-                format_list_bulleted
-                </span> {{ trans('messages.templates') }}</span>
-        </h1>                
+
+        <div class="d-flex align-items-center">
+            <div>
+                <h1 class="d-flex align-items-center">
+                    <span class="material-icons-round me-3">
+                        format_list_bulleted
+                        </span> <span class="text-semibold">{{ trans('messages.templates') }}</span>
+                </h1> 
+            </div>
+            <div class="ms-auto">                
+                <a href="{{ action('TemplateController@index', [
+                    'from' => 'mine',
+                    'view' => 'list',
+                ]) }}"
+                    class="btn btn-light px-3 py-2 fw-600 {{ request()->from != 'gallery' ? 'focus' : '' }}"
+                >
+                    <span class="material-icons-outlined me-1">
+                        portrait
+                    </span>
+                    {{ trans('messages.my_templates') }}
+                </a>
+            
+                <a href="{{ action('TemplateController@index', [
+                    'from' => 'gallery',
+                    'view' => 'grid',
+                ]) }}"
+                    class="btn btn-light px-3 py-2 fw-600 {{ request()->from == 'gallery' ? 'focus' : '' }}"
+                >
+                    <span class="material-icons-outlined me-1">
+                        collections
+                    </span>
+                    {{ trans('messages.base_template_gallery') }}
+                </a>
+            </div>
+        </div>
+                           
     </div>
 
 @endsection
@@ -46,7 +77,6 @@ delete_outline
                         </ul>
                     </div>
                     <span class="filter-group">
-                        {{-- <span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span> --}}
                         <select class="select" name="sort_order">
                             <option value="created_at">{{ trans('messages.created_at') }}</option>
                             <option value="name">{{ trans('messages.name') }}</option>
@@ -58,27 +88,18 @@ sort
 </span>
                         </button>
                     </span>
+                    @if (request()->from != 'mine')
+                        <span class="filter-group">
+                            <select class="select" name="category_uid">
+                                <option value="">{{ trans('messages.template.all_categories') }}</option>
+                                @foreach (\Acelle\Model\TemplateCategory::all() as $category)
+                                    <option value="{{ $category->uid }}">{{ $category->name }}</option>
+                                @endforeach
+                            </select>
+                        </span>
+                    @endif
                     <span class="filter-group">
-                        <select class="select" name="category_uid">
-                            <option value="">{{ trans('messages.template.all_categories') }}</option>
-                            @foreach (\Acelle\Model\TemplateCategory::all() as $category)
-                                <option value="{{ $category->uid }}">{{ $category->name }}</option>
-                            @endforeach
-                        </select>
-                    </span>
-                    <span class="filter-group">
-                        <select class="select" name="from">
-                            @if (isSiteDemo())
-                                <option value="all">{{ trans('messages.all') }}</option>
-                                <option value="mine">{{ trans('messages.my_templates') }}</option>
-                                <option value="gallery" selected='selected'>{{ trans('messages.gallery') }}</option>
-                            @else
-                                <option value="all">{{ trans('messages.all') }}</option>
-                                <option value="mine" selected='selected'>{{ trans('messages.my_templates') }}</option>
-                                <option value="gallery">{{ trans('messages.gallery') }}</option>
-                            @endif
-                                
-                        </select>                                        
+                        <input type="hidden" name="from" value="{{ request()->from ? request()->from : 'mine' }}" />
                     </span>
                     <span class="text-nowrap">
                         <input type="text" name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
@@ -91,14 +112,20 @@ search
             <div class="text-end d-flex align-items-center ms-auto">
                 <div class="view-toggle d-flex ml-auto">
                     <div class="btn-group" role="group" aria-label="Basic example">
-                        <a href="{{ action('TemplateController@index') }}"
+                        <a href="{{ action('TemplateController@index', [
+                            'from' => request()->from ? request()->from : 'mine',
+                            'view' => 'grid',
+                        ]) }}"
                             class="btn btn-default view-toogle grid m-icon"
                         >
                             <span class="material-icons-outlined">
                                 grid_view
                             </span>
                         </a>
-                        <a href="{{ action('TemplateController@index', ['view' => 'list']) }}"
+                        <a href="{{ action('TemplateController@index', [
+                            'from' => request()->from ? request()->from : 'mine',
+                            'view' => 'list',
+                        ]) }}"
                             class="btn btn-default view-toogle list m-icon mr-3"
                         >
                             <span class="material-icons-outlined">
@@ -109,16 +136,17 @@ search
                 </div>
 
                 <div>
-                    <a href="{{ action('TemplateController@uploadTemplate') }}" class="btn btn-secondary ml-auto">
+                    <a href="{{ action('TemplateController@uploadTemplate') }}" class="btn btn-light ml-auto">
                         <span class="material-icons-outlined">
     file_upload
     </span> {{ trans('messages.upload') }}
-                    </a>
+                    </a>  
                     <a href="{{ action('TemplateController@builderCreate') }}" class="btn btn-secondary">
                         <span class="material-icons-round">
     add
     </span> {{ trans('messages.create') }}
                     </a>
+                                      
                 </div>
             </div>
         </div>

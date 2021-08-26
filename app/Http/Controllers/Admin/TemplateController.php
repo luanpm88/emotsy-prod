@@ -38,13 +38,14 @@ class TemplateController extends Controller
             return $this->notAuthorized();
         }
 
+        // view
+        $view = $request->view ? $request->view : 'grid';
+
         $templates = Template::shared()
             ->categoryUid($request->category_uid)
             ->search($request->keyword)
             ->orderBy($request->sort_order, $request->sort_direction)
-            ->paginate($request->per_page ? $request->per_page : 8);
-
-        $view = $request->view ? $request->view : 'grid';
+            ->paginate($request->per_page ? $request->per_page : ($view == 'grid' ? 8 : 15));
 
         return view('admin.templates._list_' . $view, [
             'templates' => $templates,

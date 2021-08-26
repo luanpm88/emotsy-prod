@@ -7242,3 +7242,10 @@ hr {
     border-radius: 4px;
     overflow: hidden;
 }
+.btn.focus {
+    background: #fff;
+    border-color: rgba(2, 120, 150, 0.75);
+    border-width: 2px;
+    color: #333;
+    box-shadow: 0 .125rem .35rem rgba(0,0,0,.1)!important;
+}
