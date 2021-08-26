@@ -486,6 +486,10 @@ function makeList(options) {
         return hasSelectTool() && options.container.find('.select_tool').val() == 'all_items';
     };
 
+    var resetPage = function() {
+        _list.url = _list.url.replace(/\?page=./g, '').replace(/&page=./g, '');
+    }
+
     // check if page checked half or all
     var checkPageChange = function() {
         var checkCount = getCheckCount();
@@ -544,11 +548,13 @@ function makeList(options) {
 
     // all filter in box change
     options.container.find('.filter-box select:not(.select_tool)').on('change', function() {
+        resetPage();
         _list.load();
     });
 
     // keyword input change
     options.container.find('.filter-box input[type=text]').on('keyup', function() {
+        resetPage();
         _list.load();
     });
 
