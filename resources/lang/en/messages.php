@@ -1563,7 +1563,7 @@
   'recent_subscriptions' => 'Recent subscriptions',
   'customers_growth' => 'Customers growth',
   'plans_chart' => 'Plans chart',
-  'operation_not_allowed_in_demo' => 'Operation not allowed in DEMO mode',
+  'operation_not_allowed_in_demo' => 'Operation is not allowed in DEMO mode',
   'follow_up_event_follow-up-not-opened' => 'not opened',
   'follow_up_event_follow-up-not-clicked' => 'not clicked',
   'not_have_any_plan_notification' => 'You are not subscribed to any active plan. <br /><a href=":link">Click here</a> to choose a plan and get started.',

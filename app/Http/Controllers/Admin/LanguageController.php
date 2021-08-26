@@ -9,7 +9,6 @@ use Acelle\Model\Language;
 
 class LanguageController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *
@@ -164,6 +163,10 @@ class LanguageController extends Controller
      */
     public function delete(Request $request)
     {
+        if (isSiteDemo()) {
+            return response()->json(["message" => trans('messages.operation_not_allowed_in_demo')], 404);
+        }
+
         $languages = Language::whereIn(
             'uid',
             is_array($request->uids) ? $request->uids : explode(',', $request->uids)
