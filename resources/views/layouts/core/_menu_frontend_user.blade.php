@@ -27,14 +27,16 @@
         <li class="p-3" style="width: 300px">
             <div class="d-flex mb-2">
                 <div class="big-avatar me-3">
-                    <img width="80px" class="" src="{{ Auth::user()->getProfileImageUrl() }}"
-                        style="border-radius:100%"
-                        class="menu-user-avatar" alt="">
+                    <a href="{{ action('AccountController@profile') }}">
+                        <img width="80px" class="" src="{{ Auth::user()->getProfileImageUrl() }}"
+                            style="border-radius:100%"
+                            class="menu-user-avatar" alt="">
+                    </a>
                 </div>
                 <div>
-                    <label class="fs-6 fw-600 d-flex align-items-center">
+                    <a href="{{ action('AccountController@profile') }}" class="fs-6 fw-600 d-flex align-items-center">
                         <span class="me-3">{{ Auth::user()->displayName() }}</span>
-                    </label>
+                    </a>
                     <p class="mb-1 small text-muted">{{ Auth::user()->email }}</p>
                     @if (Auth::user()->customer->status) 
                         <span class="label label-flat bg-{{ Auth::user()->customer->status }}">{{ trans('messages.' . Auth::user()->customer->status) }}</span>
