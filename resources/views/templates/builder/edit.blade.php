@@ -154,6 +154,9 @@
                 loaded: function() {
                     var thisEditor = this;
 
+                    // add custom css
+                    this.addCustomCss('{{ url('/core/css/builder_product.css') }}');
+
                     if (typeof(WidgetManager) !== 'undefined') {
                         var widgets = WidgetManager.init();
 
@@ -161,6 +164,27 @@
                             thisEditor.addContentWidget(widget, 0, 'Template Content');
                         });
                     }
+
+                    // click preview button
+                    $("#builder_iframe").contents().find("body").on('click', '.product-preview-but', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        var element = thisEditor.elementFactory($(this).parent());
+                        element.preview();
+                        {{-- thisEditor.select(element); --}}
+                        thisEditor.handleSelect();
+                        return false;
+                    })
+
+                    $("#builder_iframe").contents().find("body").on('click', '.product-unpreview-but', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        var element = thisEditor.elementFactory($(this).parent());
+                        element.unpreview();
+                        {{-- thisEditor.select(element); --}}
+                        thisEditor.handleSelect();
+                        return false;
+                    })
                 }
             });
           
