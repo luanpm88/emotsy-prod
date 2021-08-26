@@ -1036,6 +1036,8 @@ class Template extends Model
     public function uploadThumbnail($file)
     {
         $file->move($this->getStoragePath(), 'thumbnail.png');
+        // resize
+        resize_crop_image(596, 769, $this->getStoragePath('thumbnail.png'), $this->getStoragePath('thumbnail.png'));
     }
 
     /**
@@ -1047,6 +1049,8 @@ class Template extends Model
     {
         $contents = file_get_contents($url);
         file_put_contents($this->getStoragePath('thumbnail.png'), $contents);
+        // resize
+        resize_crop_image(596, 769, $this->getStoragePath('thumbnail.png'), $this->getStoragePath('thumbnail.png'));
     }
 
     /**
