@@ -15,7 +15,6 @@ use Acelle\Library\Log as MailLog;
 use Acelle\Model\Setting;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
-use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use Acelle\Jobs\DeliverEmail;
 use Acelle\Library\Traits\HasTemplate;
 use Acelle\Library\Traits\HasUid;

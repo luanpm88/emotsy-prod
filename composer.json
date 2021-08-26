@@ -49,7 +49,6 @@
         "sparkpost/sparkpost": "^2.1",
         "swiftmailer/swiftmailer": "~6.0",
         "symfony/yaml": "^4.4",
-        "tijsverkoyen/css-to-inline-styles": "^2.2",
         "twig/twig": "^3.0"
     },
     "require-dev": {

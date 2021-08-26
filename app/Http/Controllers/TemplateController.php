@@ -3,7 +3,6 @@
 namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
-use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use Acelle\Model\Template;
 use Acelle\Library\Rss;
 use Acelle\Model\Setting;
