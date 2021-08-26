@@ -19,7 +19,7 @@
 @endsection
 
 @section('content')
-    <div id="TemplatesIndexContainer" class="listing-form  view-{{ request()->view ? request()->view : 'grid' }}"
+    <div id="TemplatesIndexContainer" class="listing-form  view-{{ request()->view ? request()->view : 'list' }}"
         data-url="{{ action('Admin\TemplateController@listing') }}"
         per-page="{{ Acelle\Model\Template::$itemsPerPage }}"                    
     >                
