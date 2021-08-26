@@ -116,6 +116,10 @@ class PluginController extends Controller
      */
     public function delete(Request $request)
     {
+        if (isSiteDemo()) {
+            return response()->json(["message" => 'Operation is not allowed in DEMO mode'], 404);
+        }
+
         $items = \Acelle\Model\Plugin::whereIn(
             'uid',
             is_array($request->uids) ? $request->uids : explode(',', $request->uids)
