@@ -7212,7 +7212,7 @@ hr {
 }
 @media (min-width: 1200px) {
     .template-image-box {
-        height: 360px;
+        height: 370px;
     }
 }
 .preview_control {
@@ -7248,4 +7248,7 @@ hr {
     border-width: 2px;
     color: #333;
     box-shadow: 0 .125rem .35rem rgba(0,0,0,.1)!important;
+}
+.template-image-box2 img {
+    width: 100%!important;
 }
