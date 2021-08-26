@@ -338,6 +338,7 @@
   'layout.updated' => 'Layout was successfully updated',
   'template.uploaded' => 'Template was successfully uploaded',
   'saving_screenshot' => 'Saving template screenshot...',
+  'admin.template.list.intro' => 'Below are BASE templates available for all users registered in the applicaiton<br>When it comes to compose an email, users can upload or create a new email template from a base one',
   'create_campaign' => 'Create campaign',
   'untitled' => 'Untitled',
   'recipient' => 'Recipient',

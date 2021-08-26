@@ -12,7 +12,8 @@
             <span class="text-semibold"><span class="material-icons-round">
                 format_list_bulleted
                 </span> {{ trans('messages.templates') }}</span>
-        </h1>                
+        </h1>
+        <p style="margin-bottom:0">{!! trans('messages.admin.template.list.intro') !!}</p>
     </div>
 
 @endsection
