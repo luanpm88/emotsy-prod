@@ -3807,4 +3807,12 @@
   'tos.i_agree' => 'I Agree',
   'email.test_link_note' => 'This is a test link from a test or preview email. Don\'t worry, it will be transformed to a real link in a real campaign',
   'configuration.settings' => 'View hidden configuration settings',
+  'admin.template.list.intro' => 'Below are BASE templates available for all users registered in the applicaiton<br>When it comes to compose an email, users can upload or create a new email template from a base one',
+  'page.restore.confirm' => 'You\'re about to restore this page to default template. This can not be undone.',
+  'page.reset_default' => 'Reset Default',
+  'page.reset.success' => 'Reset successfully',
+  'product.no_product' => '<span class="fw-600 mb-2 d-block">You do not have any product yet</span>
+    Connect to your e-commerce platform or store to synchronize products and contacts <br>
+    Manage your audience in one centralized place',
+  'base_template_gallery' => 'Base Template Gallery',
 ) ?>
