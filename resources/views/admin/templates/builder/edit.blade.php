@@ -20,6 +20,8 @@
             margin-right: 15px;
         }
     </style>
+
+    @include('helpers._builder_product_widgets')
     
     <script>
         var CSRF_TOKEN = "{{ csrf_token() }}";
