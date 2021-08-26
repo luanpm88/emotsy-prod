@@ -35,9 +35,6 @@ class TemplateController extends Controller
             $templates = $request->user()->customer->templates();
         } elseif ($request->from == 'gallery') {
             $templates = Template::shared();
-        } else {
-            $templates = Template::shared()
-                ->orWhere('customer_id', '=', $request->user()->customer->id);
         }
 
         // view

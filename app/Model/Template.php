@@ -1209,7 +1209,7 @@ class Template extends Model
                 'name' => 'Color Print - Your Print Companion',
                 'dir' => database_path('templates/featured/005-blue/5d7b526bbfd4c'),
                 'category' => $categoryFeatured,
-                'builder' => true,            
+                'builder' => true,
             ],
         ];
 
