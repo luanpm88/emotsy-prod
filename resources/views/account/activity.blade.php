@@ -27,7 +27,7 @@
                     <!-- Sales stats -->
                     <div class="d-flex mb-3">
                         <div class="me-3">
-                            <a href="#"><img width="40px" class="rounded-circle shadow-sm" src="{{ $log->customer->user->getProfileImageUrl() }}" alt=""></a>
+                            <a href="{{ action('AccountController@profile') }}"><img width="40px" class="rounded-circle shadow-sm" src="{{ $log->customer->user->getProfileImageUrl() }}" alt=""></a>
                         </div>
 
                         <div class="card px-0 shadow-sm container-fluid">
