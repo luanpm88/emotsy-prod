@@ -41,7 +41,7 @@ class TemplateController extends Controller
         }
 
         // view
-        $view = $request->view ? $request->view : 'grid';
+        $view = $request->view ? $request->view : 'list';
 
         // sort, pagination
         $templates = $templates->search($request->keyword)
@@ -49,7 +49,6 @@ class TemplateController extends Controller
             ->notAssociated()
             ->orderBy($request->sort_order, $request->sort_direction)
             ->paginate($request->per_page ? $request->per_page : ($view == 'grid' ? 8 : 15));
-            
         
 
         return view('templates._list_' . $view, [
