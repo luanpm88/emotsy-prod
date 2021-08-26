@@ -107,7 +107,7 @@
     position: absolute;
     top: 0;
     height: 100%;
-    background-image: url(../images/loading.svg);
+    background-image: url(../../images/loading.svg);
     background-color: #f0e5f3;
     display: block;
     background-repeat: no-repeat;
