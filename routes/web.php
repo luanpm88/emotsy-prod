@@ -313,6 +313,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('lists/{list_uid}/segments/sample_condition', 'SegmentController@sample_condition');
 
     // Page
+    Route::post('lists/{list_uid}/pages/{alias}/restore-default', 'PageController@restoreDefault');
     Route::get('lists/{list_uid}/pages/{alias}/update', 'PageController@update');
     Route::post('lists/{list_uid}/pages/{alias}/update', 'PageController@update');
     Route::post('lists/{list_uid}/pages/{alias}/preview', 'PageController@preview');
