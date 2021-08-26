@@ -27,7 +27,7 @@
             {{-- <input type="radio" name="color_scheme" value="white" {{ Auth::user()->customer->getColorScheme() == 'white' ? 'checked' : '' }} class="color-scheme-select scheme-white" /> --}}
         </div>
         <div class="mt-5 text-center">
-            <button class="btn btn-secondary px-4">{{ trans('messages.next') }}</button>
+            <button class="btn btn-primary px-4">{{ trans('messages.next') }}</button>
         </div>
     </form>
 
