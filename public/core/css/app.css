@@ -7195,7 +7195,7 @@ hr {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 315px;
+    height: 325px;
     overflow: hidden;
     background: #ddd;
     position: relative;
@@ -7207,7 +7207,12 @@ hr {
 }
 @media (max-width: 768px) {
     .template-image-box {
-        height: 330px;
+        height: 430px;
+    }
+}
+@media (min-width: 1200px) {
+    .template-image-box {
+        height: 360px;
     }
 }
 .preview_control {
@@ -7224,11 +7229,16 @@ hr {
     display: flex;
     opacity: 0;
     transition: all 0.2s ease-in-out;
+    border-radius: 8px 8px 0 0;
 }
 .template-image-box:hover .preview_control {
     display: flex;
     opacity: 1;
 }
-.template-categories {
+.border-bottom-dashed {
     border-bottom: dashed 1px #333;
+}
+.template-card {
+    border-radius: 8px;
+    overflow: hidden;
 }

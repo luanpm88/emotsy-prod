@@ -2,7 +2,7 @@
     <div class="row mt-4">
         @foreach ($templates as $key => $template)
             <div class="col-md-3 col-sm-6 mb-4">
-                <div class="card mb-4 box-shadow">
+                <div class="card mb-4 box-shadow template-card">
                     <span class="template-image-box">
                         <img class="card-img-top" src="{{ $template->getThumbUrl() }}" style="height: 100%; width: auto; display: block;">
                         <div class="preview_control">
@@ -42,11 +42,11 @@
                             @if (Auth::user()->admin->can('update', $template))
                                 <a href="{{ action('Admin\TemplateController@categories', [
                                     'uid' => $template->uid,
-                                ]) }}" class="template-categories text-secondary">{{ $template->categories()->count() ? $template->categories->map(function ($cat) {
+                                ]) }}" class="template-categories border-bottom-dashed text-secondary">{{ $template->categories()->count() ? $template->categories->map(function ($cat) {
                                     return $cat->name;
                                 })->join(', ') : 'N/A' }}</a>
                             @else
-                                <span class="template-categories">{{ $template->categories()->count() ? $template->categories->map(function ($cat) {
+                                <span class="template-categories border-bottom-dashed">{{ $template->categories()->count() ? $template->categories->map(function ($cat) {
                                     return $cat->name;
                                 })->join(', ') : 'N/A' }}</span>
                             @endif
