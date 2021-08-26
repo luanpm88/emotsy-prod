@@ -18,13 +18,14 @@
 @endsection
 
 @section('content')
-    <div id="TemplatesIndexContainer" class="listing-form"
+    <div id="TemplatesIndexContainer" class="listing-form  view-{{ request()->view ? request()->view : 'grid' }}"
         data-url="{{ action('Admin\TemplateController@listing') }}"
         per-page="{{ Acelle\Model\Template::$itemsPerPage }}"                    
     >                
-        <div class="row top-list-controls py-2">
-            <div class="col-md-9">                
+        <div class="d-flex top-list-controls py-2">
+            <div class="">                
                 <div class="filter-box">
+                    <input type="hidden" name="view" value="{{ request()->view }}" />
                     <div class="checkbox inline check_all_list">
                         <label>
                             <input type="checkbox" name="page_checked" class="styled check_all">
@@ -78,17 +79,40 @@ search
                     </span>
                 </div>
             </div>
-            <div class="col-md-3 text-end d-flex align-items-center">
-                <a href="{{ action('Admin\TemplateController@uploadTemplate') }}" class="btn btn-secondary mr-2 ml-auto">
-                    <span class="material-icons-outlined">
-file_upload
-</span> {{ trans('messages.upload') }}
-                </a>
-                <a href="{{ action('Admin\TemplateController@builderCreate') }}" class="btn btn-secondary">
-                    <span class="material-icons-round">
-add
-</span> {{ trans('messages.create') }}
-                </a>
+            <div class="ms-auto text-end d-flex align-items-center">
+                <div class="text-end d-flex align-items-center ms-auto">
+                    <div class="view-toggle d-flex ml-auto">
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                            <a href="{{ action('Admin\TemplateController@index') }}"
+                                class="btn btn-default view-toogle grid m-icon"
+                            >
+                                <span class="material-icons-outlined">
+                                    grid_view
+                                </span>
+                            </a>
+                            <a href="{{ action('Admin\TemplateController@index', ['view' => 'list']) }}"
+                                class="btn btn-default view-toogle list m-icon mr-3"
+                            >
+                                <span class="material-icons-outlined">
+                                    reorder
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+    
+                    <div>
+                        <a href="{{ action('Admin\TemplateController@uploadTemplate') }}" class="btn btn-secondary ml-auto">
+                            <span class="material-icons-outlined">
+        file_upload
+        </span> {{ trans('messages.upload') }}
+                        </a>
+                        <a href="{{ action('Admin\TemplateController@builderCreate') }}" class="btn btn-secondary">
+                            <span class="material-icons-round">
+        add
+        </span> {{ trans('messages.create') }}
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
         
