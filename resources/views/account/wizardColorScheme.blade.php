@@ -48,7 +48,7 @@
                     data: $(this).serialize()
                 })
                 .done(function( response ) {
-                    layoutSetupPopup.loadHtml(response);
+                    wizardUserPopup.loadHtml(response);
                 });
             });
         });
