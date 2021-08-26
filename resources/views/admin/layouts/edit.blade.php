@@ -114,6 +114,12 @@
                 external_filemanager_path:APP_URL.replace('/index.php','')+"/filemanager2/",
                 filemanager_title:"Responsive Filemanager" ,
                 external_plugins: { "filemanager" : APP_URL.replace('/index.php','')+"/filemanager2/plugin.min.js"},
+                @if ($layout->type == 'page')
+                    content_css: [
+                        APP_URL.replace('/index.php','')+'/core/css/all.css',
+                    ],
+                    body_class : "list-page bg-slate-800",
+                @endif
                 setup: function (editor) {
                     
                     /* Menu button that has a simple "insert date" menu item, and a submenu containing other formats. */
