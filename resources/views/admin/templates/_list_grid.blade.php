@@ -14,7 +14,7 @@
                                 </div>
                                 <div>
                                     <div>
-                                        @if (Auth::user()->customer->can('update', $template))
+                                        @if (Auth::user()->admin->can('update', $template))
                                             @if (in_array(Acelle\Model\Setting::get('builder'), ['both','pro']) && $template->builder)
                                                 <div>
                                                     <a href="{{ action('Admin\TemplateController@builderEdit', $template->uid) }}" role="button" class="btn btn-primary btn-icon template-compose d-block mb-2">
@@ -39,7 +39,7 @@
                         <h6 title="{{ $template->name }}" class="fw-600 mt-1 mb-1 text-ellipsis">{{ $template->name }}</h6>
                         <p style="display: block;
                         overflow: hidden;" class="card-text">
-                            @if (Auth::user()->customer->can('update', $template))
+                            @if (Auth::user()->admin->can('update', $template))
                                 <a href="{{ action('Admin\TemplateController@categories', [
                                     'uid' => $template->uid,
                                 ]) }}" class="template-categories text-secondary">{{ $template->categories()->count() ? $template->categories->map(function ($cat) {
@@ -53,15 +53,15 @@
                         </p>
                         <div class="">
                             <div class="d-flex align-items-center justify-content-end">
-                                @if (Auth::user()->customer->can('preview', $template) ||
-                                    Auth::user()->customer->can('copy', $template) ||
-                                    Auth::user()->customer->can('delete', $template) ||
-                                    Auth::user()->customer->can('update', $template))
+                                @if (Auth::user()->admin->can('preview', $template) ||
+                                    Auth::user()->admin->can('copy', $template) ||
+                                    Auth::user()->admin->can('delete', $template) ||
+                                    Auth::user()->admin->can('update', $template))
                                     <div class="btn-group">
                                         <button role="button" class="btn btn-light dropdown-toggle" data-bs-toggle="dropdown">
                                             {{ trans('messages.actions') }} <span class="caret ml-0"></span></button>
                                         <ul class="dropdown-menu dropdown-menu-end">
-                                            @if (Auth::user()->customer->can('update', $template))
+                                            @if (Auth::user()->admin->can('update', $template))
                                                 <li>
                                                     <a class="dropdown-item change-template-name"
                                                         href="{{ action('Admin\TemplateController@changeName', [
@@ -72,12 +72,12 @@
                                                     </a>
                                                 </li>
                                             @endif
-                                            @if (Auth::user()->customer->can('preview', $template))
+                                            @if (Auth::user()->admin->can('preview', $template))
                                                 <li><a class="dropdown-item" href="#preview" onclick="popupwindow('{{ action('Admin\TemplateController@preview', $template->uid) }}', '{{ $template->name }}', 800, 800)"><span class="material-icons-outlined">
             zoom_in
             </span> {{ trans("messages.preview") }}</a></li>
                                             @endif
-                                            @if (Auth::user()->customer->can('update', $template))
+                                            @if (Auth::user()->admin->can('update', $template))
                                                 <li>
                                                     <a class="dropdown-item upload-thumb-button" href="{{ action('Admin\TemplateController@updateThumb', $template->uid) }}">
                                                         <span class="material-icons-outlined">
@@ -86,7 +86,7 @@
                                                     </a>
                                                 </li>
                                             @endif
-                                            @if (Auth::user()->customer->can('update', $template))
+                                            @if (Auth::user()->admin->can('update', $template))
                                                 <li>
                                                     <a class="dropdown-item template-categories" href="{{ action('Admin\TemplateController@categories', [
                                                         'uid' => $template->uid,
@@ -97,7 +97,7 @@
                                                     </a>
                                                 </li>
                                             @endif
-                                            @if (Auth::user()->customer->can('read', $template))
+                                            @if (Auth::user()->admin->can('read', $template))
                                                 <li>
                                                     <a
                                                         href="{{ action('Admin\TemplateController@export', $template->uid) }}"
@@ -111,7 +111,7 @@
                                                     </a>
                                                 </li>
                                             @endif
-                                            @if (Auth::user()->customer->can('copy', $template))
+                                            @if (Auth::user()->admin->can('copy', $template))
                                                 <li>
                                                     <a
                                                         href="{{ action('Admin\TemplateController@copy', $template->uid) }}"
@@ -125,7 +125,7 @@
                                                     </a>
                                                 </li>
                                             @endif
-                                            @if (Auth::user()->customer->can('delete', $template))
+                                            @if (Auth::user()->admin->can('delete', $template))
                                                 <li><a
                                                     class="dropdown-item list-action-single"
                                                     link-confirm="{{ trans('messages.delete_templates_confirm') }}"
