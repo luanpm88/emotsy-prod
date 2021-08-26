@@ -154,9 +154,6 @@
                 loaded: function() {
                     var thisEditor = this;
 
-                    // add custom css
-                    this.addCustomCss('{{ url('/core/css/builder_product.css') }}');
-
                     if (typeof(WidgetManager) !== 'undefined') {
                         var widgets = WidgetManager.init();
 
@@ -165,6 +162,11 @@
                         });
                     }
 
+                    // // product widgets
+                    // this.addContentWidget(new ProductListWidget(), 0, 'ProductCommerce');
+                    // this.addContentWidget(new ProductWidget(), 0, 'ProductCommerce');
+                    // add custom css
+                    this.addCustomCss('{{ url('/core/css/builder_product.css') }}');
                     // click preview button
                     $("#builder_iframe").contents().find("body").on('click', '.product-preview-but', function(e) {
                         e.preventDefault();
