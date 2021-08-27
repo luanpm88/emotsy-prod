@@ -59,7 +59,7 @@
 .theme-blue .nav-tabs > li > a.nav-link:focus {
     border-bottom-color: #1b5f9e;
 }
-body.dark.theme-blue, body.dark.theme-blue .modal-content, body.dark.theme-blue .top-user-menus li {
+body.dark.theme-blue, body.dark.theme-blue .modal-content, body.dark.theme-blue .dropdown-menu li {
     background-color: rgba(7, 37, 56, 1);
 }
 body.dark.theme-blue .navbar-main {
@@ -133,7 +133,7 @@ body.dark.theme-blue a:not(.btn, .dropdown-item):hover {
 .theme-green .nav-tabs > li > a.nav-link:focus {
     border-bottom-color: #0b7e45;
 }
-body.dark.theme-green, body.dark.theme-green .modal-content, body.dark.theme-green .top-user-menus li {
+body.dark.theme-green, body.dark.theme-green .modal-content, body.dark.theme-green .dropdown-menu li {
     background-color: rgb(13, 48, 44);
 }
 body.dark.theme-green .navbar-main {
@@ -207,7 +207,7 @@ body.dark.theme-green a:not(.btn, .dropdown-item):hover {
 .theme-brown .nav-tabs > li > a.nav-link:focus {
     border-bottom-color: #a15313;
 }
-body.dark.theme-brown, body.dark.theme-brown .modal-content, body.dark.theme-brown .top-user-menus li {
+body.dark.theme-brown, body.dark.theme-brown .modal-content, body.dark.theme-brown .dropdown-menu li {
     background-color: rgb(59, 42, 15);
 }
 body.dark.theme-brown .navbar-main {
@@ -281,7 +281,7 @@ body.dark.theme-brown a:not(.btn, .dropdown-item):hover {
 .theme-pink .nav-tabs > li > a.nav-link:focus {
     border-bottom-color: #d81b60;
 }
-body.dark.theme-pink, body.dark.theme-pink .modal-content, body.dark.theme-pink .top-user-menus li {
+body.dark.theme-pink, body.dark.theme-pink .modal-content, body.dark.theme-pink .dropdown-menu li {
     background-color: rgb(73, 29, 50);
 }
 body.dark.theme-pink .navbar-main {
@@ -355,7 +355,7 @@ body.dark.theme-pink a:not(.btn, .dropdown-item):hover {
 .theme-grey .nav-tabs > li > a.nav-link:focus {
     border-bottom-color: #666;
 }
-body.dark.theme-grey, body.dark.theme-grey .modal-content, body.dark.theme-grey .top-user-menus li {
+body.dark.theme-grey, body.dark.theme-grey .modal-content, body.dark.theme-grey .dropdown-menu li {
     background-color: rgb(40, 40, 40);
 }
 body.dark.theme-grey .navbar-main {

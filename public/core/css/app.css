@@ -5188,17 +5188,6 @@ input.has-eye {
   font-size: 14px;
   line-height: 26px;
 }
-.mc_section .table-box-head thead tr {
-  word-break: normal;
-  text-align: left;
-  background-color: #f2f2f2;
-  border-bottom: 1px solid #dedddc;
-  border-top: 1px solid #dedddc;
-  font-weight: 600;
-}
-.mc_section .table-box-head thead td {
-  border-bottom: 1px solid #dedddc;
-}
 .small-meta {
   font-size: 90%;
   line-height: inherit;
@@ -6128,7 +6117,7 @@ h1, h1 {
     text-indent: -90000px;
     top: 4px;
     /* transform: scale(1.9) translateY(90px); */
-    transform: translateY(20000px);
+    transform: translateY(19997px);
 }
 .switchery[type="checkbox"]:hover:before, .styled[type="checkbox"]:hover:before, .styled[type="radio"]:hover:before {
     background-color: #eff3f5;
