@@ -6154,7 +6154,7 @@ h1, h1 {
     border-radius: 100%;
     left: 3px;
     top: 7px;
-    transform: scale(2.2);
+    transform: translateY(19997px);
 }
 .styled.check_all {
     margin-right: 14px;
