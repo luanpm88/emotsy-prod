@@ -282,10 +282,10 @@ body.dark.theme-brown a:not(.btn, .dropdown-item):hover {
     border-bottom-color: #d81b60;
 }
 body.dark.theme-pink, body.dark.theme-pink .modal-content, body.dark.theme-pink .dropdown-menu li {
-    background-color: rgb(73, 29, 50);
+    background-color: rgb(57, 24, 37);
 }
 body.dark.theme-pink .navbar-main {
-    background-color: rgba(46, 13, 13, 0.9)!important;
+    background-color: rgba(46, 13, 29, 0.9)!important;
 }
 body.dark.theme-pink a:not(.btn, .dropdown-item) {
     color: #dd5fc8;
