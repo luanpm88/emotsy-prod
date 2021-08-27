@@ -399,3 +399,15 @@ body.dark .table>:not(:last-child)>:last-child>* {
 body.dark .table>thead {
     background-color: rgba(255,255,255,0.1);
 }
+body.dark .select2-dropdown {
+    background-color: rgba(0, 25, 39, 0.85);
+    color: rgba(255,255,255,0.75);
+    border-color: rgba(255,255,255,0.2);
+}
+body.dark .select2-container--default .select2-results__option[aria-selected=true] {
+    background: rgba(255,255,255,0.1);
+}
+body.dark .select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: rgba(255, 255, 255, 0.2)!important;
+    color: rgba(255, 255, 255, 0.85)!important;
+}

@@ -62,7 +62,7 @@
 body.dark.theme-blue, body.dark.theme-blue .modal-content, body.dark.theme-blue .dropdown-menu li {
     background-color: rgba(7, 37, 56, 1);
 }
-body.dark.theme-blue .navbar-main {
+body.dark.theme-blue .navbar-main, body.dark.theme-blue .select2-dropdown {
     background-color: rgba(0, 26, 38, 0.9)!important;
 }
 body.dark.theme-blue a:not(.btn, .dropdown-item) {
@@ -136,7 +136,7 @@ body.dark.theme-blue a:not(.btn, .dropdown-item):hover {
 body.dark.theme-green, body.dark.theme-green .modal-content, body.dark.theme-green .dropdown-menu li {
     background-color: rgb(13, 48, 44);
 }
-body.dark.theme-green .navbar-main {
+body.dark.theme-green .navbar-main, body.dark.theme-green .select2-dropdown {
     background-color: rgba(0, 38, 38, 0.9)!important;
 }
 body.dark.theme-green a:not(.btn, .dropdown-item) {
@@ -210,7 +210,7 @@ body.dark.theme-green a:not(.btn, .dropdown-item):hover {
 body.dark.theme-brown, body.dark.theme-brown .modal-content, body.dark.theme-brown .dropdown-menu li {
     background-color: rgb(59, 42, 15);
 }
-body.dark.theme-brown .navbar-main {
+body.dark.theme-brown .navbar-main, body.dark.theme-brown .select2-dropdown {
     background-color: rgba(37, 27, 7, 0.9)!important;
 }
 body.dark.theme-brown a:not(.btn, .dropdown-item) {
@@ -284,7 +284,7 @@ body.dark.theme-brown a:not(.btn, .dropdown-item):hover {
 body.dark.theme-pink, body.dark.theme-pink .modal-content, body.dark.theme-pink .dropdown-menu li {
     background-color: rgb(57, 24, 37);
 }
-body.dark.theme-pink .navbar-main {
+body.dark.theme-pink .navbar-main, body.dark.theme-pink .select2-dropdown {
     background-color: rgba(46, 13, 29, 0.9)!important;
 }
 body.dark.theme-pink a:not(.btn, .dropdown-item) {
@@ -358,8 +358,11 @@ body.dark.theme-pink a:not(.btn, .dropdown-item):hover {
 body.dark.theme-grey, body.dark.theme-grey .modal-content, body.dark.theme-grey .dropdown-menu li {
     background-color: rgb(40, 40, 40);
 }
-body.dark.theme-grey .navbar-main {
+body.dark.theme-grey .navbar-main, body.dark.theme-grey .select2-dropdown {
     background-color: rgba(25, 25, 25, 0.9)!important;
+}
+body.dark.theme-pink a:not(.btn, .dropdown-item):hover {
+    color: #ffbaff;
 }
 
 .theme-white .navbar-main {
@@ -396,6 +399,9 @@ body.dark.theme-white .navbar-main {
 }
 body.dark.theme-white .modal-content, body.dark.theme-white .dropdown-menu li {
     background-color: rgb(40, 40, 40);
+}
+body.dark.theme-white .select2-dropdown {
+    background-color: rgba(25, 25, 25, 0.9)!important;
 }
 
 
