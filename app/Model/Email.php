@@ -328,8 +328,7 @@ class Email extends Model
      */
     public function getCustomHeaders($subscriber, $server)
     {
-        $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from_email));
-
+        $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from));
         if ($this->isStdClassSubscriber($subscriber)) {
             $unsubscribeUrl = null;
         } else {
@@ -572,7 +571,7 @@ class Email extends Model
      */
     public function sign($message)
     {
-        $sendingDomain = $this->findSendingDomain($this->from_email);
+        $sendingDomain = $this->findSendingDomain($this->from);
 
         if (empty($sendingDomain)) {
             return $message;
