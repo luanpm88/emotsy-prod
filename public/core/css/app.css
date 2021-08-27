@@ -6174,7 +6174,7 @@ h1, h1 {
     height: 23px;
     border: solid 1px #ddd;
     border-radius: 20px;
-    transform: translateY(-5px) scale(1.9);
+    transform: translateY(19994px);
     transition: all .2s ease-in-out;
 }
 .styled3[type="checkbox"]:after {
@@ -6187,10 +6187,10 @@ h1, h1 {
     height: 23px;
     border: solid 1px #ccc;
     border-radius: 20px;
-    transform: translateY(-5px) scale(1.9);
+    transform: translateY(19994px);
     position: absolute;
     top: 4px;
-    left: -9px;
+    left: 0;
     box-shadow: 0 0 4px rgba(0,0,0,0.1);
     color: transparent;
     transition: all .2s ease-in-out;
@@ -6201,7 +6201,7 @@ h1, h1 {
     border-color: #3fba96;
 }
 .styled3[type="checkbox"]:checked:after {
-    left: 30px;
+    left: 21px;
 }
 .nav-underline .nav-item .nav-link {
     padding: 9px 0;
