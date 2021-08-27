@@ -567,7 +567,7 @@ function makeList(options) {
         } else {
             $('[name=sort_direction]').val('desc');
         }
-
+        resetPage();
         _list.load();
     });
 
