@@ -55,6 +55,15 @@
                     window.location.reload();
                 });
             });
+
+            $('#wizardColorScheme [name=menu_layout]').on('change', function(e) {
+                var type = $('#wizardColorScheme [name=menu_layout]:checked').val();
+
+                $('body').removeClass('topbar');
+                $('body').removeClass('leftbar');
+
+                $('body').addClass(type + 'bar');
+            });
         });
     </script>
 @endsection

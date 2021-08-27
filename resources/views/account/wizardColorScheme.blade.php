@@ -24,7 +24,7 @@
             <input type="radio" name="color_scheme" value="brown" {{ Auth::user()->customer->getColorScheme() == 'brown' ? 'checked' : '' }} class="color-scheme-select scheme-brown" />
             <input type="radio" name="color_scheme" value="pink" {{ Auth::user()->customer->getColorScheme() == 'pink' ? 'checked' : '' }} class="color-scheme-select scheme-pink" />
             <input type="radio" name="color_scheme" value="grey" {{ Auth::user()->customer->getColorScheme() == 'grey' ? 'checked' : '' }} class="color-scheme-select scheme-grey" />
-            {{-- <input type="radio" name="color_scheme" value="white" {{ Auth::user()->customer->getColorScheme() == 'white' ? 'checked' : '' }} class="color-scheme-select scheme-white" /> --}}
+            <input type="radio" name="color_scheme" value="white" {{ Auth::user()->customer->getColorScheme() == 'white' ? 'checked' : '' }} class="color-scheme-select scheme-white" />
         </div>
         <div class="mt-5 text-center">
             <button class="btn btn-primary px-4">{{ trans('messages.next') }}</button>
@@ -34,11 +34,30 @@
     <script>
         $(function() {
             $('.color-scheme-select').on('click', function(e) {
+                var value = $(this).val();
                 $("body").removeClass (function (index, className) {
                     return (className.match (/(^|\s)theme-\S+/g) || []).join(' ');
                 });
-                $('body').addClass('theme-' + $(this).val());
+                $('body').addClass('theme-' + value);
+
+                // change light icon
+                if (value == 'white') {
+                    $('.navbar-icon img').each(function() {
+                        $(this).attr('src', $(this).attr('src').replace('images/icons/SVG/', 'images/icons/dark/SVG/'));
+                        if($('.default-logo').length) {
+                            $('.default-logo').attr('src', $('.default-logo').attr('src').replace('logo-light.svg','logo-dark.svg'));
+                        }
+                    });
+                } else {
+                    $('.navbar-icon img').each(function() {
+                        $(this).attr('src', $(this).attr('src').replace('images/icons/dark/SVG/', 'images/icons/SVG/'));
+                        if($('.default-logo').length) {
+                            $('.default-logo').attr('src', $('.default-logo').attr('src').replace('logo-dark.svg', 'logo-light.svg'));
+                        }
+                    });
+                }
             });
+            
             $('#wizardColorScheme').on('submit', function(e) {
                 e.preventDefault();
 
