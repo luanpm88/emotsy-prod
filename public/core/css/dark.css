@@ -439,3 +439,9 @@ body.dark .btn.focus {
 body.dark .preview_control {
     background-color: rgba(0,0,0,0.6);
 }
+body.dark .api-detail {
+    background: rgba(255,255,255,0.05);
+}
+body.dark .label {
+    border-color: rgba(255,255,255,0.2);
+}

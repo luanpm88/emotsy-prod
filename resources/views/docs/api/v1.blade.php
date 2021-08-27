@@ -36,7 +36,7 @@
                                 {{ $function['description'] }}
                             </td>
                         </tr>
-                        <tr style="display:none;background: #f6f6f6">
+                        <tr style="display:none;" class="api-detail">
                             <td></td>
                             <td>
                                 <div>

@@ -7296,3 +7296,6 @@ hr {
 .svg-fill-current-all, .svg-fill-current-all * {
     fill: currentColor!important;
 }
+.api-detail {
+    background: #f6f6f6;
+}
