@@ -362,8 +362,10 @@ body.dark .alert-success {
 
 body.dark .dropdown-menu > .active > a,
 body.dark .dropdown-menu > .active > a:hover,
+body.dark .navbar-main .nav-item .dropdown-item:active,
 body.dark .dropdown-menu > .active > a:focus {
     background-color: rgba(255,255,255,0.1);
+    color: rgba(255, 255, 255, 0.85);
 }
 body.dark .dropdown-menu li:hover > a {
     background-color: rgba(255,255,255,0.05);
