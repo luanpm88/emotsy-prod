@@ -340,7 +340,7 @@ body.dark .alert-warning {
     color: rgba(255, 255, 255, 0.85);
 }
 body.dark .alert-danger {
-    background-color: rgba(112, 22, 0, 0.85);
+    background-color: rgba(112, 22, 0, 0.35);
     color: rgba(255, 255, 255, 0.85);
 }
 body.dark .list-setting {
@@ -441,4 +441,28 @@ body.dark .api-detail {
 }
 body.dark .label {
     border-color: rgba(255,255,255,0.2);
+}
+body.dark .switch-automation .select2 {
+    background: transparent;
+}
+body.dark .navbar-dark a {
+    color: #aaa;
+}
+body.dark .automation2 .diagram {
+    background-color: rgba(255,255,255,0.95);
+}
+body.dark .line-item:hover {
+    background: rgba(255,255,255,0.05);
+}
+body.dark .select-template-layout .panel-template-style {
+    color: rgba(255,255,255,0.85);
+}
+body.dark .select-template-layout:hover {
+    background-color: rgba(255,255,255,0.1);
+}
+body.dark .key-value-list li {
+    border-color: rgba(255,255,255,0.1);
+}
+body.dark .has-error .help-block {
+    color: #ff9daf;
 }

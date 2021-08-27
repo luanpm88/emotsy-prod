@@ -36,9 +36,6 @@ a {
     cursor: pointer;
     margin-bottom: 1em;
 }
-.line-item:hover {
-    background: #f5f5f5;
-}
 .line-item .line-icon {
     padding-right: 20px;
     font-size: 28px;
@@ -50,26 +47,6 @@ a {
 }
 .line-item .line-body p {
   margin-bottom: 0;
-}
-.hover-list li .list-body {
-  padding-right: 100px;
-  width: 100%;
-}
-.hover-list li .list-body h4 {
-  margin: 0 0 3px 0;
-  font-weight: 600;
-  color: #00695B;
-}
-.hover-list li .list-body p {
-  margin: 0;
-}
-.hover-list li .list-action {
-  align-items: center;
-  display: flex;
-  visibility: hidden;
-}
-.hover-list li:hover .list-action {
-  visibility: visible;
 }
 .mc-nav > li > a {
     padding: 0 0 5px 0;
@@ -437,7 +414,7 @@ label.switchery-double.checkbox-switchery {
   margin: 0;
 }
 .key-value-list li .value {
-  color: #555;
+  opacity: 0.8;
 }
 .key-value-list.list-small li label {
   font-size: 100%;
@@ -475,45 +452,6 @@ label.switchery-double.checkbox-switchery {
 }
 .hover-list {
   padding: 0;
-}
-.hover-list li {
-  display: flex;
-  list-style: none;
-  padding: 15px;
-  border: dashed 2px #fff;
-  border-radius: 15px;
-  align-items: center;
-}
-.hover-list li:hover {
-  border: dashed 2px #aaa;
-  cursor: pointer;
-}
-.hover-list li i {
-  font-size: 38px;
-  margin-right: 20px;
-  color: #333;
-  margin-top: 0;
-}
-.hover-list li .list-body {
-  padding-right: 100px;
-  width: 100%;
-}
-.hover-list li .list-body label {
-  margin: 0 0 3px 0;
-  font-weight: 600;
-  color: #00695B;
-  font-size: 110%;
-}
-.hover-list li .list-body p {
-  margin: 0;
-}
-.hover-list li .list-action {
-  align-items: center;
-  display: flex;
-  visibility: hidden;
-}
-.hover-list li:hover .list-action {
-  visibility: visible;
 }
 .template-boxes .panel-template-style {
   border-color: transparent;

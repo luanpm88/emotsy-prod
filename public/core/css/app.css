@@ -2786,7 +2786,7 @@ p.link-inline a {
   display: flex;
   list-style: none;
   padding: 15px;
-  border: dashed 2px #fff;
+  border: dashed 2px transparent;
   border-radius: 15px;
 }
 .hover-list li:hover {
