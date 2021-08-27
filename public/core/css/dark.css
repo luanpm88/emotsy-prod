@@ -24,7 +24,7 @@ body.dark {
 body.dark .navbar-main  {
     background-color: rgba(12, 26, 33, 0.85);
 }
-body.dark .top-user-menus li, body.dark .dropdown-menu, body.dark .select2-dropdown  {
+body.dark .top-user-menus li, body.dark .dropdown-menu, body.dark .select2-dropdown, body.dark .modal-content  {
     background-color: rgba(20, 36, 46, 1)
 }
 body.dark .progress{
@@ -173,9 +173,6 @@ body.dark .top-sticky-content {
     background-color: transparent;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-}
-body.dark .modal-content {
-    background-color: rgba(10, 35, 50, 1);
 }
 body.dark .btn-close:hover {
     color: rgba(255,255,255,0.7);
