@@ -290,6 +290,7 @@ class AccountController extends Controller
         // Save color scheme
         if ($request->isMethod('post')) {
             $customer->color_scheme = $request->color_scheme;
+            $customer->dark_mode = $request->dark_mode;
             $customer->save();
 
             return view('account.wizardMenuLayout');

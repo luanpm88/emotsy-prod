@@ -101,6 +101,7 @@ arrow_forward
     </div>
 </div>
 
+<script type="text/javascript" src="{{ URL::asset('core/echarts/dark.js') }}"></script> 
 <script>
     var CampaignsChart = {
         chart: $('#campaignChart'),
@@ -122,7 +123,7 @@ arrow_forward
 
         renderChart: function(data) {
                 // based on prepared DOM, initialize echarts instance
-                var myChart = echarts.init(CampaignsChart.chart[0]);
+                var myChart = echarts.init(CampaignsChart.chart[0], APP_THEME);
                 var colors = [
                     '#555555',
                     '#626eb2',

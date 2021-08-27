@@ -14,6 +14,7 @@
     </div>
 </div>
 
+<script type="text/javascript" src="{{ URL::asset('core/echarts/dark.js') }}"></script> 
 <script>
     $(function() {
         CustomersGrowthChart.showChart();
@@ -36,7 +37,7 @@
 
         renderChart: function(data) {
                 // based on prepared DOM, initialize echarts instance
-                var growthChart1 = echarts.init(CustomersGrowthChart.getChart()[0]);
+                var growthChart1 = echarts.init(CustomersGrowthChart.getChart()[0], APP_THEME);
 
                 var option = {
                     grid: {

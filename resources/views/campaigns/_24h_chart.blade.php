@@ -11,6 +11,7 @@
     </div>
 </div>
 
+<script type="text/javascript" src="{{ URL::asset('core/echarts/dark.js') }}"></script> 
 <script>
     var Campaigns24hChart = {
         url: '{{ action('CampaignController@chart24h', $campaign->uid) }}',
@@ -30,7 +31,7 @@
 
         renderChart: function(data) {
                 // based on prepared DOM, initialize echarts instance
-                var my2Chart = echarts.init(Campaigns24hChart.getChart()[0]);
+                var my2Chart = echarts.init(Campaigns24hChart.getChart()[0], APP_THEME);
 
                 var option = {
                     tooltip: {

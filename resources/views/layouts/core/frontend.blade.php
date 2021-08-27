@@ -9,13 +9,13 @@
 </head>
 <body class="theme-{{ Auth::user()->customer->getColorScheme() }} {{ Auth::user()->customer->getMenuLayout() }}bar
 	{{ Auth::user()->customer->getMenuLayout() }}bar-{{ request()->session()->get('customer-leftbar-state') }}
+	{{ Auth::user()->customer->dark_mode ? 'dark' : '' }}
 ">
 	@include('layouts.core._menu_frontend')
 
 	@include('layouts.core._middle_bar')
 
 	<main class="container page-container px-3">
-		
 		@yield('page_header')
 
 		<!-- display flash message -->

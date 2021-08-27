@@ -1,3 +1,4 @@
+<script type="text/javascript" src="{{ URL::asset('core/echarts/dark.js') }}"></script> 
 <div class="row">
     <div class="col-md-6">
         <!-- Basic column chart -->
@@ -32,7 +33,7 @@
         
                 renderChart: function(data) {
                         // based on prepared DOM, initialize echarts instance
-                        var growthChart1 = echarts.init(ListsGrowthChart1.getChart()[0]);
+                        var growthChart1 = echarts.init(ListsGrowthChart1.getChart()[0], APP_THEME);
         
                         var option = {
                             title: {
@@ -102,7 +103,7 @@
             
                     renderChart: function(data) {
                             // based on prepared DOM, initialize echarts instance
-                            var growthChart2 = echarts.init(ListsGrowthChart2.getChart()[0]);
+                            var growthChart2 = echarts.init(ListsGrowthChart2.getChart()[0], APP_THEME);
 
                             var colors = [
                                 '#5cb2b2',

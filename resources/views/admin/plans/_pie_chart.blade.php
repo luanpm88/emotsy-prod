@@ -29,6 +29,7 @@ auto_awesome
     </div>
 </div>
 
+<script type="text/javascript" src="{{ URL::asset('core/echarts/dark.js') }}"></script> 
 <script>
     $(function() {
         PlansPieChart.showChart();
@@ -51,7 +52,7 @@ auto_awesome
 
         renderChart: function(data) {
             // based on prepared DOM, initialize echarts instance
-            var growthChart2 = echarts.init(PlansPieChart.getChart()[0]);
+            var growthChart2 = echarts.init(PlansPieChart.getChart()[0], APP_THEME);
 
             var colors = [
                 '#5cb2b2',

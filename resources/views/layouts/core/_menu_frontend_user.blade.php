@@ -52,7 +52,7 @@
             <li class="divider"></li>
         @endif
         @if (request()->user()->customer->activeSubscription())
-            <li class="dropdown">
+            <li class="nav-item">
                 <a href="#" class="dropdown-item top-quota-button d-flex align-items-center" data-url="{{ action("AccountController@quotaLog") }}">
                 <i class="navbar-icon mr-2">
                 <img src="{{ url('images/icons/'.$iconDir.'SVG/sreport.svg') }}" />

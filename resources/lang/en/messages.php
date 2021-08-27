@@ -3804,4 +3804,5 @@
     Connect to your e-commerce platform or store to synchronize products and contacts <br>
     Manage your audience in one centralized place',
   'base_template_gallery' => 'Base Template Gallery',
+  'theme_mode' => 'Dark / Light',
 ) ?>

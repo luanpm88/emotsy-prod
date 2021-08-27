@@ -27,4 +27,6 @@
 	// current controller action
 	var CONTROLLER = '{{ $controller }}';
 	var ACTION = '{{ $action }}';
+
+	var APP_THEME = '{{ Auth::user()->customer->dark_mode ? 'dark' : '' }}';
 </script>

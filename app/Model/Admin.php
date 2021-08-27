@@ -40,7 +40,7 @@ class Admin extends Model
      * @var array
      */
     protected $fillable = [
-        'timezone', 'language_id', 'color_scheme', 'text_direction', 'menu_layout'
+        'timezone', 'language_id', 'color_scheme', 'text_direction', 'menu_layout', 'dark_mode'
     ];
 
     /**

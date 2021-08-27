@@ -45,6 +45,8 @@ arrow_forward
                     </div>
                 </div>
             </div>
+
+            <script type="text/javascript" src="{{ URL::asset('core/echarts/dark.js') }}"></script> 
             <script>
                 $(function() {
                     ClickPieChart.showChart();
@@ -67,7 +69,7 @@ arrow_forward
             
                     renderChart: function(data) {
                         // based on prepared DOM, initialize echarts instance
-                        var growthChart2 = echarts.init(ClickPieChart.getChart()[0]);
+                        var growthChart2 = echarts.init(ClickPieChart.getChart()[0], APP_THEME);
 
                         var colors = [
                             '#5cb2b2',
