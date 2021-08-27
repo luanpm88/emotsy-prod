@@ -343,7 +343,7 @@ body.dark .alert-danger {
     color: rgba(255, 255, 255, 0.85);
 }
 body.dark .list-setting {
-    border-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.1);
 }
 
 body.dark .box-list .box-item {
@@ -419,4 +419,10 @@ body.dark .radio_box rtitle {
 }
 body.dark .mc_list li:first-child, body.dark .mc_list li {
     border-color: rgba(255,255,255,0.2);
+}
+body.dark .breadcrumb-item.active {
+    color: rgba(255,255,255,0.6);
+}
+body.dark.theme-green .breadcrumb-item a {
+    color: rgba(255,255,255,0.8);
 }
