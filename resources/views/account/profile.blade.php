@@ -146,8 +146,8 @@ delete_outline
                 </div>
             </div>
         </div>
-
-        <div class="text-end">
+<hr>
+        <div class="text-start">
             <button class="btn btn-secondary"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
         </div>
 
