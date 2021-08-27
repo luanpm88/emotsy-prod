@@ -439,3 +439,9 @@ body.dark .btn.focus {
 body.dark .preview_control {
     background-color: rgba(0,0,0,0.6);
 }
+body.dark .nav-tabs > li.active > a.nav-link,
+body.dark .nav-tabs > li > a.nav-link.active,
+body.dark .nav-tabs > li > a.nav-link:hover,
+body.dark .nav-tabs > li > a.nav-link:focus {
+    border-bottom-color: #006d77;
+}
