@@ -5555,6 +5555,7 @@ a.bg-active_with_pending:hover {
     margin-bottom: 35px;
     background: #efeeea;
     padding-left: 100px;
+    border-radius: 5px;
 }
 .announce_box .announce_box-icon {
   font-size: 50px;

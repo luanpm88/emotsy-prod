@@ -411,3 +411,9 @@ body.dark .select2-container--default .select2-results__option--highlighted[aria
     background-color: rgba(255, 255, 255, 0.2)!important;
     color: rgba(255, 255, 255, 0.85)!important;
 }
+body.dark .announce_box {
+    background: rgba(255,255,255,0.1);
+}
+body.dark .radio_box rtitle {
+    color: rgba(255,255,255,0.85);
+}
