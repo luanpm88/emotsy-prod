@@ -18,8 +18,14 @@ body.dark::-webkit-scrollbar-thumb, body.dark *::-webkit-scrollbar-thumb
 }
 
 body.dark {
-    background-color: rgba(10, 35, 50, 1);
+    background-color: rgba(20, 36, 46, 1);
     color: rgba(255,255,255,0.85);
+}
+body.dark .navbar-main  {
+    background-color: rgba(12, 26, 33, 0.85);
+}
+body.dark .top-user-menus li, body.dark .dropdown-menu, body.dark .select2-dropdown  {
+    background-color: rgba(20, 36, 46, 1)
 }
 body.dark .progress{
     background-color: rgba(255,255,255,0.2);
@@ -119,6 +125,9 @@ body.dark .btn-light {
     border-color: transparent;
     color: rgba(255,255,255,0.85);
 }
+body.dark .btn-light:hover {
+    background-color: rgba(255,255,255,0.1);
+}
 body.dark .page-item .page-link {
     color: rgba(255,255,255,0.85);
     background-color: rgba(255,255,255,0.05);
@@ -200,16 +209,11 @@ body.dark .navbar-main .nav-item > .nav-link.active .navbar-icon {
 body.dark .table {
     color: rgba(255,255,255,0.85);
 }
-
-body.dark .top-user-menus li {
-    background-color: rgba(10, 35, 50, 1);
-}
 body.dark .dropdown-item {
     color: rgba(255,255,255,0.85);
 }
 body.dark .dropdown-menu {
     border-color: rgba(255,255,255,0.2);
-    background-color: rgba(10, 35, 50, 1);
 }
 
 body.dark .product-image-list {
@@ -400,7 +404,6 @@ body.dark .table>thead {
     background-color: rgba(255,255,255,0.1);
 }
 body.dark .select2-dropdown {
-    background-color: rgba(0, 25, 39, 0.85);
     color: rgba(255,255,255,0.75);
     border-color: rgba(255,255,255,0.2);
 }
@@ -425,4 +428,14 @@ body.dark .breadcrumb-item.active {
 }
 body.dark .breadcrumb-item a {
     color: rgba(255,255,255,0.8)!important;
+}
+body.dark .btn.focus {
+    background: rgba(255,255,255,0.8);
+    border-color: rgba(255,255,255,0.7);
+    border-width: 2px;
+    color: #333;
+    box-shadow: 0 .125rem .35rem rgba(0,0,0,.1)!important;
+}
+body.dark .preview_control {
+    background-color: rgba(0,0,0,0.6);
 }
