@@ -5410,8 +5410,8 @@ margin-left: -13px;
 .bg-paystack::after {
   background-image: url(../../images/paystack.png);
   background-size: 97px;
-margin-top: -14px;
-margin-left: -13px;
+    margin-top: -14px;
+    margin-left: -13px;
 }
 .plan-list-color-icon {
     height: 60px;
@@ -7291,4 +7291,11 @@ hr {
     opacity: 1;
     box-shadow: 1px 1px 5px rgba(0,0,0,0.12);
     filter: grayscale(0);
+}
+.dropdown-menu .navbar-icon svg {
+    width: 21px;
+    height: 21px;
+}
+.dropdown-menu .navbar-icon svg, .dropdown-menu .navbar-icon svg * {
+    fill: currentColor!important;
 }

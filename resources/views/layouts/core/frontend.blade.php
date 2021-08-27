@@ -59,7 +59,7 @@
 
 	<script>
 		// Customer color scheme | menu layout wizard
-		@if (false)
+		@if (true)
 			var wizardUserPopup;
 
 			$(function() {
