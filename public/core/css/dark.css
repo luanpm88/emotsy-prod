@@ -417,3 +417,6 @@ body.dark .announce_box {
 body.dark .radio_box rtitle {
     color: rgba(255,255,255,0.85);
 }
+body.dark .mc_list li:first-child, body.dark .mc_list li {
+    border-color: rgba(255,255,255,0.2);
+}
