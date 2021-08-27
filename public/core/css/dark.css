@@ -1,13 +1,13 @@
 body.dark::-webkit-scrollbar-track, body.dark *::-webkit-scrollbar-track
 {
 	-webkit-box-shadow: inset 0 0 3px rgba(255,255,255,0.5);
-    background-color: rgba(255,255,255,0.1);
+    background-color: rgba(255,255,255,0.05);
 }
 body.dark::-webkit-scrollbar, body.dark *::-webkit-scrollbar
 {
 	width: 6px;
     height: 6px;
-	background-color: rgba(255,255,255,0.1);
+	background-color: rgba(255,255,255,0.05);
     border-radius: 10px;
 }
 body.dark::-webkit-scrollbar-thumb, body.dark *::-webkit-scrollbar-thumb
@@ -72,7 +72,7 @@ body.dark .empty-list [class^="material-icons"] {
     color: rgba(255,255,255,0.7);
 }
 body.dark .card {
-    background-color: rgba(255,255,255,0.1);
+    background-color: rgba(255,255,255,0.05);
 }
 body.dark .middle-bar {
     background: rgba(0,0,0,0.3);
@@ -90,7 +90,7 @@ body.dark .text-muted {
     color: rgba(255,255,255,0.85)!important;
 }
 body.dark .btn.sort-direction {
-    background-color: rgba(255,255,255,0.1);
+    background-color: rgba(255,255,255,0.05);
     border-color: rgba(255,255,255,0.2);
     color: rgba(255,255,255,0.85);
 }
@@ -99,7 +99,7 @@ body.dark .btn.sort-direction:hover {
 }
 body.dark .form-control, body.dark .select2 {
     border-color: rgba(255,255,255,0.3);
-    background-color: rgba(255,255,255,0.1);
+    background-color: rgba(255,255,255,0.05);
     color: rgba(255,255,255,0.85);
 }
 body.dark .form-control:hover, body.dark .select2:hover {
@@ -126,7 +126,7 @@ body.dark .btn-light {
     color: rgba(255,255,255,0.85);
 }
 body.dark .btn-light:hover {
-    background-color: rgba(255,255,255,0.1);
+    background-color: rgba(255,255,255,0.05);
 }
 body.dark .page-item .page-link {
     color: rgba(255,255,255,0.85);
@@ -292,7 +292,7 @@ body.dark .theme-toggle .icon {
     top: -1px;
 }
 body.dark table.table-log tr th {
-    background: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.05);
     color: rgba(255, 255, 255, 0.85);
 }
 body.dark .dotted-list > li {
@@ -360,15 +360,15 @@ body.dark .alert-info {
 }
 body.dark .alert-success {
     color: rgba(255, 255, 255, 0.85);
-    background-color: #27583d;
-    border-color: #27583d;
+    background-color: rgba(0, 94, 31, 0.35);
+    border-color: rgba(0, 94, 31, 0.35);
 }
 
 body.dark .dropdown-menu > .active > a,
 body.dark .dropdown-menu > .active > a:hover,
 body.dark .navbar-main .nav-item .dropdown-item:active,
 body.dark .dropdown-menu > .active > a:focus {
-    background-color: rgba(255,255,255,0.1);
+    background-color: rgba(255,255,255,0.05);
     color: rgba(255, 255, 255, 0.85);
 }
 body.dark .dropdown-menu li:hover > a {
@@ -387,7 +387,7 @@ body.dark .top-user-menus .backdrop-backend {
 }
 
 body.dark .bg-white {
-    background: rgba(255,255,255,0.1)!important;
+    background: rgba(255,255,255,0.05)!important;
 }
 body.dark .select2-container--disabled .select2-selection--single {
     background-color: transparent !important;
@@ -398,7 +398,7 @@ body.dark .table>:not(:last-child)>:last-child>* {
     border-bottom-color: rgba(255,255,255,0.1);
 }
 body.dark .table>thead {
-    background-color: rgba(255,255,255,0.1);
+    background-color: rgba(255,255,255,0.05);
 }
 body.dark .select2-dropdown {
     color: rgba(255,255,255,0.75);
@@ -456,7 +456,7 @@ body.dark .select-template-layout .panel-template-style {
     color: rgba(255,255,255,0.85);
 }
 body.dark .select-template-layout:hover {
-    background-color: rgba(255,255,255,0.1);
+    background-color: rgba(255,255,255,0.05);
 }
 body.dark .key-value-list li {
     border-color: rgba(255,255,255,0.1);
