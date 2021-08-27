@@ -445,9 +445,7 @@ body.dark .label {
 body.dark .switch-automation .select2 {
     background: transparent;
 }
-body.dark .navbar-dark a {
-    color: #aaa;
-}
+
 body.dark .automation2 .diagram {
     background-color: rgba(255,255,255,0.95);
 }
