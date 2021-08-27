@@ -336,7 +336,7 @@ body.dark .dropdown-menu {
 }
 
 body.dark .alert-warning {
-    background-color: rgba(112, 66, 0, 0.85);
+    background-color: rgba(112, 66, 0, 0.35);
     color: rgba(255, 255, 255, 0.85);
 }
 body.dark .alert-danger {
