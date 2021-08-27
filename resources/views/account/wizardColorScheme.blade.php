@@ -20,7 +20,7 @@
 
         <div class="row">
             <div class="col-md-12" style="text-align: center">
-                <label class="mb-2  small text-muted">{{ trans('messages.theme_mode') }}:</label>
+                <label class="mb-3  small text-muted">{{ trans('messages.theme_mode') }}:</label>
                 <div class="mb-4">
                     <label class="dark-mode-select me-3">
                         <input style="display:none" type="radio" name="dark_mode" value="1" {{ Auth()->user()->customer->dark_mode ? 'checked' : '' }} class="styled mr-2" />

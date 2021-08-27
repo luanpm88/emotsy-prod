@@ -88,7 +88,7 @@ delete_outline
 
                     <div class="row">
                         <div class="col-md-12">
-                            <label class="mb-2">{{ trans('messages.theme_mode') }}</label>
+                            <label class="mb-3">{{ trans('messages.theme_mode') }}</label>
                             <div class="mb-4">
                                 <label class="dark-mode-select me-3">
                                     <input style="display:none" type="radio" name="dark_mode" value="1" {{ $admin->dark_mode ? 'checked' : '' }} class="styled mr-2" />
